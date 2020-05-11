@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA0F1CCF99
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 04:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD96F1CCF98
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 04:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729378AbgEKCRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729428AbgEKCRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 10 May 2020 22:17:13 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:49804 "EHLO huawei.com"
+Received: from szxga07-in.huawei.com ([45.249.212.35]:49826 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729195AbgEKCRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729246AbgEKCRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 10 May 2020 22:17:12 -0400
 Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id F1F80AF17779EC663B44;
-        Mon, 11 May 2020 10:17:08 +0800 (CST)
+        by Forcepoint Email with ESMTP id 02B05291D18D29504945;
+        Mon, 11 May 2020 10:17:09 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
  14.3.487.0; Mon, 11 May 2020 10:17:02 +0800
@@ -24,9 +24,9 @@ To:     Paul Walmsley <paul.walmsley@sifive.com>,
         <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
         Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH 01/10] riscv: Fix unmet direct dependencies built based on SOC_VIRT
-Date:   Mon, 11 May 2020 10:19:52 +0800
-Message-ID: <20200511022001.179767-2-wangkefeng.wang@huawei.com>
+Subject: [PATCH 02/10] riscv: stacktrace: Fix undefined reference to `walk_stackframe'
+Date:   Mon, 11 May 2020 10:19:53 +0800
+Message-ID: <20200511022001.179767-3-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200511022001.179767-1-wangkefeng.wang@huawei.com>
 References: <20200511022001.179767-1-wangkefeng.wang@huawei.com>
@@ -40,57 +40,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix unmet direct dependencies Warning and fix Kconfig indent.
-
-WARNING: unmet direct dependencies detected for POWER_RESET_SYSCON
-  Depends on [n]: POWER_RESET [=n] && OF [=y] && HAS_IOMEM [=y]
-  Selected by [y]:
-  - SOC_VIRT [=y]
-
-WARNING: unmet direct dependencies detected for POWER_RESET_SYSCON_POWEROFF
-  Depends on [n]: POWER_RESET [=n] && OF [=y] && HAS_IOMEM [=y]
-  Selected by [y]:
-  - SOC_VIRT [=y]
-
-WARNING: unmet direct dependencies detected for RTC_DRV_GOLDFISH
-  Depends on [n]: RTC_CLASS [=n] && OF [=y] && HAS_IOMEM [=y] && (GOLDFISH [=y] || COMPILE_TEST [=n])
-  Selected by [y]:
-  - SOC_VIRT [=y]
+Drop static declaration to fix following build error if FRAME_POINTER disabled,
+  riscv64-linux-ld: arch/riscv/kernel/perf_callchain.o: in function `.L0':
+  perf_callchain.c:(.text+0x2b8): undefined reference to `walk_stackframe'
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- arch/riscv/Kconfig.socs | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ arch/riscv/kernel/stacktrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index 4b2303ca20b9..6c88148f1b9b 100644
---- a/arch/riscv/Kconfig.socs
-+++ b/arch/riscv/Kconfig.socs
-@@ -11,14 +11,15 @@ config SOC_SIFIVE
- 	  This enables support for SiFive SoC platform hardware.
+diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
+index 38141a3c70f7..595342910c3f 100644
+--- a/arch/riscv/kernel/stacktrace.c
++++ b/arch/riscv/kernel/stacktrace.c
+@@ -65,7 +65,7 @@ void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
  
- config SOC_VIRT
--       bool "QEMU Virt Machine"
--       select POWER_RESET_SYSCON
--       select POWER_RESET_SYSCON_POWEROFF
--       select GOLDFISH
--       select RTC_DRV_GOLDFISH
--       select SIFIVE_PLIC
--       help
--         This enables support for QEMU Virt Machine.
-+	bool "QEMU Virt Machine"
-+	select POWER_RESET
-+	select POWER_RESET_SYSCON
-+	select POWER_RESET_SYSCON_POWEROFF
-+	select GOLDFISH
-+	select RTC_DRV_GOLDFISH if RTC_CLASS
-+	select SIFIVE_PLIC
-+	help
-+	  This enables support for QEMU Virt Machine.
+ #else /* !CONFIG_FRAME_POINTER */
  
- config SOC_KENDRYTE
- 	bool "Kendryte K210 SoC"
+-static void notrace walk_stackframe(struct task_struct *task,
++void notrace walk_stackframe(struct task_struct *task,
+ 	struct pt_regs *regs, bool (*fn)(unsigned long, void *), void *arg)
+ {
+ 	unsigned long sp, pc;
 -- 
 2.26.2
 
