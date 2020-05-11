@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEA41CDA4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1F31CD9EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730082AbgEKMmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 08:42:49 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:35497 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726934AbgEKMmt (ORCPT
+        id S1729791AbgEKMdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 08:33:11 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:29329 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727994AbgEKMdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 08:42:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1589200969; x=1620736969;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=+0kzseOEO2Wgx77lNa15u7+p1olXeh9q9Qu05DxPffM=;
-  b=hwmbJSTFLHfd1Fq0MJ5MUN0HXvk5uVehwiDtO7XVU9WAN3wHtzanJWmS
-   kcn2P9kDYwMYCMepe249H9RJQCzRRMpR68CtY63Bw13YyLpYG6rALSlNs
-   9YoeO6LdwaMAI/khhoQX7VCvOVXcSJJZzKWTUqIPGyvki2rHPQsG0BfRu
-   M=;
-IronPort-SDR: T1f0tZE5i4QokyyfFESrh/Sh92g8h/nk/Bli4jzDfh6Y5k95taw6IK/040R/6w64RvR7Rz4Z5V
- JpyYjgTlDfcg==
-X-IronPort-AV: E=Sophos;i="5.73,379,1583193600"; 
-   d="scan'208";a="29804199"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-98acfc19.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 11 May 2020 12:42:49 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1d-98acfc19.us-east-1.amazon.com (Postfix) with ESMTPS id 4B815A18DC;
-        Mon, 11 May 2020 12:42:36 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 11 May 2020 12:42:36 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.253) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 11 May 2020 12:42:21 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
-        <irogers@google.com>, <jolsa@redhat.com>, <kirill@shutemov.name>,
-        <mark.rutland@arm.com>, <mgorman@suse.de>, <minchan@kernel.org>,
-        <mingo@redhat.com>, <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <sblbir@amazon.com>, <shakeelb@google.com>,
-        <shuah@kernel.org>, <sj38.park@gmail.com>, <snu@amazon.de>,
-        <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v11 16/16] MAINTAINERS: Update for DAMON
-Date:   Mon, 11 May 2020 14:33:02 +0200
-Message-ID: <20200511123302.12520-17-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200511123302.12520-1-sjpark@amazon.com>
-References: <20200511123302.12520-1-sjpark@amazon.com>
+        Mon, 11 May 2020 08:33:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589200388; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=RfkZZdm4+9xPZMaooBJAUM5yHqUuxllDLzV8gnGuH2Y=;
+ b=PrwZuSzTxckO/0wVxVQHYAwqes9QM2ggMhstNmOPup9QGkp17ModFUNkDXtIcW0EVCqsyG9T
+ lfuMVkwijVQixDGqP3T0Ns0qyz8La6+Gg6G+cPJLXpN/guGGNX7ejX18IA0fw5NkEarJw2pD
+ IWJTBPJ2di3Ecojv1qm6fm1j/aI=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb94602.7f5a2cdb2b58-smtp-out-n05;
+ Mon, 11 May 2020 12:33:06 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 417D8C43636; Mon, 11 May 2020 12:33:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B6C25C432C2;
+        Mon, 11 May 2020 12:33:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B6C25C432C2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.253]
-X-ClientProxiedBy: EX13D06UWC001.ant.amazon.com (10.43.162.91) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2] ath10k: Remove msdu from idr when management pkt send
+ fails
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1588667015-25490-1-git-send-email-pillair@codeaurora.org>
+References: <1588667015-25490-1-git-send-email-pillair@codeaurora.org>
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rakesh Pillai <pillair@codeaurora.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200511123305.417D8C43636@smtp.codeaurora.org>
+Date:   Mon, 11 May 2020 12:33:05 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-This commit updates MAINTAINERS file for DAMON related files.
+> Currently when the sending of any management pkt
+> via wmi command fails, the packet is being unmapped
+> freed in the error handling. But the idr entry added,
+> which is used to track these packet is not getting removed.
+> 
+> Hence, during unload, in wmi cleanup, all the entries
+> in IDR are removed and the corresponding buffer is
+> attempted to be freed. This can cause a situation where
+> one packet is attempted to be freed twice.
+> 
+> Fix this error by rmeoving the msdu from the idr
+> list when the sending of a management packet over
+> wmi fails.
+> 
+> Tested HW: WCN3990
+> Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+> 
+> Fixes: 1807da49733e ("ath10k: wmi: add management tx by reference support over wmi")
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- MAINTAINERS | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Patch applied to ath-next branch of ath.git, thanks.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5a5332b3591d..cb4a7fa3cdfe 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4661,6 +4661,18 @@ F:	net/ax25/ax25_out.c
- F:	net/ax25/ax25_timer.c
- F:	net/ax25/sysctl_net_ax25.c
- 
-+DATA ACCESS MONITOR
-+M:	SeongJae Park <sjpark@amazon.de>
-+L:	linux-mm@kvack.org
-+S:	Maintained
-+F:	Documentation/admin-guide/mm/data_access_monitor.rst
-+F:	include/linux/damon.h
-+F:	include/trace/events/damon.h
-+F:	mm/damon-test.h
-+F:	mm/damon.c
-+F:	tools/damon/*
-+F:	tools/testing/selftests/damon/*
-+
- DAVICOM FAST ETHERNET (DMFE) NETWORK DRIVER
- L:	netdev@vger.kernel.org
- S:	Orphan
+c730c477176a ath10k: Remove msdu from idr when management pkt send fails
+
 -- 
-2.17.1
+https://patchwork.kernel.org/patch/11528409/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
