@@ -2,44 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1ADB1CD8D5
+	by mail.lfdr.de (Postfix) with ESMTP id 63FA11CD8D4
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729713AbgEKLsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:48:10 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:31161 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729453AbgEKLsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729695AbgEKLsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 May 2020 07:48:09 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:8795 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726068AbgEKLsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 07:48:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=2683; q=dns/txt; s=axis-central1;
+  d=axis.com; l=2003; q=dns/txt; s=axis-central1;
   t=1589197687; x=1620733687;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=nJ1qTOy5LEl+3ghrdE6ayVo+QTlImTiM42UK10R/CO0=;
-  b=YkqJNsobfGQ2J8y3QSAWjnq2d8D1eHYGoZhuunPo/gdtHmxQtBr21s2h
-   xtL9ZdeKUfW8qAAshPCApSMQAK/B1z+eSlUENdDZoWIKf4ilR9FFT5Aqh
-   nvWY4MpY1VPB4kAfV8Snq/bakWmrWrBLUCH8BAowJ7HVNSW5g6zYzn/3B
-   o0b2qNYyvgtQlryzKIFnT2r7TRLYZB5ZekCi2Q8SENGoBzg0f2V8kygyM
-   lNzi+sOcEa6Op0prqbhvGwooZAov/nbhHruIf4/+Sb2Xn9ZRKB9mc3BZG
-   UlGbkRtPBe0EW0vZq8rVTHR659wSGOO1ELk/P8NwgxcFi+DyGDBH12IUu
-   A==;
-IronPort-SDR: eWZuRw32j5JYJgOi5OmGwaaj8bk7KszfEuOPpxP4bH8Wi8itNv+fizjpxYs2CA1SNITyHvwDyy
- qF5XgZsbtYDgaXmRoOUZPIQjDvnmgDdVFNOj+YUImbRBZMNyhpfwCzvty6IclSGzLL0wn4Ylkg
- NMSpihDcfR3G7ROq4TYzqOCAX+eMijiP9tOhd2iSgF4dLKYOfzCfwuCXkzHJvihLExksYRL8+y
- icIrmdn+FfpXtULH6nfG6NJs0t6kxPaR7E/bKSLsZ87dQvssdR9LdF0N5Ld/GlMxn9zZsK4lbm
- 7jI=
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=OE/19k10wHaCTdv4vIwiGTk7dV4vSV5kv7LOywkW2XA=;
+  b=ilMvyZzrDAJxT/n6nX9VEfogHqmZys7oJaGHvehUGvfhtdaMg9EaoHM2
+   7arjC7HwSKbAKaq0hXkKMUwwlx57XR+OsXnKWoMaMYJVS5D9f2CYVDqnM
+   K13+gmC6UPKDHPrq2MJVVO5wyA4IDKBgcLrKz/h+fMfUXYYIgDPQYbIH6
+   mc++CW5OBQGGXJTO7J9BJtyYzMvAcDDb/1kTNhNeNi5vRJTYghkL0V2b6
+   gyTB5Nxdm+VykFNNkWvOtFadilRHuM7fY/rPZT2zwf3myJ30wDfsHSYbz
+   ZdgCW4AfFYtuzPeb8+kToDM0vFYL2sSftjutgtgknVl8cJEU15mikKLqc
+   g==;
+IronPort-SDR: 02SQVDjpik5zxGFTX9qHDTx6h+TsrBW/mI8e6OKwbZ2V2pIRyW0gJOUtBPc5udRSKYGCDz2TRP
+ BtyJ0kPw9EMk65iaw5ORSzp9FR2PlAKLwKZVIOb1ibUu6/FNY1nmP7ANumYzAQZ+TRbCCkFWU9
+ fSP209hHNrQC4vtajdNMSwRevwB1q82NqpdGDCvpH0ZfAAt1U83WkYo/oxzlW5BjHJvil8BRcR
+ BW850Lq1eZSWfp2aS/aljyQaVnsrwBMscwaPU3GPeH621K570R9Dc5C2oHI540MLBM5ol0uxE5
+ VYc=
 X-IronPort-AV: E=Sophos;i="5.73,379,1583190000"; 
-   d="scan'208";a="8358766"
+   d="scan'208";a="8596078"
 From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
 To:     <linux@armlinux.org.uk>, <jeyu@kernel.org>
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <kernel@axis.com>,
         Vincent Whitchurch <vincent.whitchurch@axis.com>
-Subject: [PATCH v2 1/2] module: allow arch overrides for .init section names
-Date:   Mon, 11 May 2020 13:48:02 +0200
-Message-ID: <20200511114803.4475-1-vincent.whitchurch@axis.com>
+Subject: [PATCH v2 2/2] ARM: module: fix handling of unwind init sections
+Date:   Mon, 11 May 2020 13:48:03 +0200
+Message-ID: <20200511114803.4475-2-vincent.whitchurch@axis.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200511114803.4475-1-vincent.whitchurch@axis.com>
+References: <20200511114803.4475-1-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -48,83 +50,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ARM stores unwind information for .init.text in sections named
-.ARM.extab.init.text and .ARM.exidx.init.text.  Since those aren't
-currently recognized as init sections, they're allocated along with the
-core section, and relocation fails if the core and the init section are
-allocated from different regions and can't reach other.
+Unwind information for init sections is placed in .ARM.exidx.init.text
+and .ARM.extab.init.text.  The module core doesn't know that these are
+init sections so they are allocated along with the core sections, and if
+the core and init sections get allocated in different memory regions
+(which is possible with CONFIG_ARM_MODULE_PLTS=y) and they can't reach
+each other, relocation fails:
 
   final section addresses:
-        ...
-        0x7f800000 .init.text
-        ..
-        0xcbb54078 .ARM.exidx.init.text
-        ..
+  	...
+  	0x7f800000 .init.text
+	..
+  	0xcbb54078 .ARM.exidx.init.text
+	..
 
  section 16 reloc 0 sym '': relocation 42 out of range (0xcbb54078 ->
  0x7f800000)
 
-Allow architectures to override the section name so that ARM can fix
-this.
+Fix this by informing the module core that these sections are init
+sections, and by removing the init unwind tables before the module core
+frees the init sections.
 
 Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
 ---
-v2: Add comment and move module_init_section() next to module_exit_section().
+v2: No changes.
 
- include/linux/moduleloader.h | 5 +++++
- kernel/module.c              | 9 +++++++--
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ arch/arm/kernel/module.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
-index ca92aea8a6bd..4fa67a8b2265 100644
---- a/include/linux/moduleloader.h
-+++ b/include/linux/moduleloader.h
-@@ -29,6 +29,11 @@ void *module_alloc(unsigned long size);
- /* Free memory returned from module_alloc. */
- void module_memfree(void *module_region);
- 
-+/* Determines if the section name is an init section (that is only used during
-+ * module loading).
-+ */
-+bool module_init_section(const char *name);
-+
- /* Determines if the section name is an exit section (that is only used during
-  * module unloading)
-  */
-diff --git a/kernel/module.c b/kernel/module.c
-index 33569a01d6e1..84d0c455fb44 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2400,7 +2400,7 @@ static void layout_sections(struct module *mod, struct load_info *info)
- 			if ((s->sh_flags & masks[m][0]) != masks[m][0]
- 			    || (s->sh_flags & masks[m][1])
- 			    || s->sh_entsize != ~0UL
--			    || strstarts(sname, ".init"))
-+			    || module_init_section(sname))
- 				continue;
- 			s->sh_entsize = get_offset(mod, &mod->core_layout.size, s, i);
- 			pr_debug("\t%s\n", sname);
-@@ -2433,7 +2433,7 @@ static void layout_sections(struct module *mod, struct load_info *info)
- 			if ((s->sh_flags & masks[m][0]) != masks[m][0]
- 			    || (s->sh_flags & masks[m][1])
- 			    || s->sh_entsize != ~0UL
--			    || !strstarts(sname, ".init"))
-+			    || !module_init_section(sname))
- 				continue;
- 			s->sh_entsize = (get_offset(mod, &mod->init_layout.size, s, i)
- 					 | INIT_OFFSET_MASK);
-@@ -2768,6 +2768,11 @@ void * __weak module_alloc(unsigned long size)
- 	return vmalloc_exec(size);
+diff --git a/arch/arm/kernel/module.c b/arch/arm/kernel/module.c
+index deef17f34bd2..af0a8500a24e 100644
+--- a/arch/arm/kernel/module.c
++++ b/arch/arm/kernel/module.c
+@@ -55,6 +55,13 @@ void *module_alloc(unsigned long size)
  }
+ #endif
  
-+bool __weak module_init_section(const char *name)
++bool module_init_section(const char *name)
 +{
-+	return strstarts(name, ".init");
++	return strstarts(name, ".init") ||
++		strstarts(name, ".ARM.extab.init") ||
++		strstarts(name, ".ARM.exidx.init");
 +}
 +
- bool __weak module_exit_section(const char *name)
+ bool module_exit_section(const char *name)
  {
- 	return strstarts(name, ".exit");
+ 	return strstarts(name, ".exit") ||
+@@ -409,8 +416,17 @@ module_arch_cleanup(struct module *mod)
+ #ifdef CONFIG_ARM_UNWIND
+ 	int i;
+ 
+-	for (i = 0; i < ARM_SEC_MAX; i++)
+-		if (mod->arch.unwind[i])
+-			unwind_table_del(mod->arch.unwind[i]);
++	for (i = 0; i < ARM_SEC_MAX; i++) {
++		unwind_table_del(mod->arch.unwind[i]);
++		mod->arch.unwind[i] = NULL;
++	}
++#endif
++}
++
++void __weak module_arch_freeing_init(struct module *mod)
++{
++#ifdef CONFIG_ARM_UNWIND
++	unwind_table_del(mod->arch.unwind[ARM_SEC_INIT]);
++	mod->arch.unwind[ARM_SEC_INIT] = NULL;
+ #endif
+ }
 -- 
 2.25.1
 
