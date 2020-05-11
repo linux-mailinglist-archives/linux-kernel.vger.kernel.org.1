@@ -2,115 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4ADA1CE47F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 701191CE484
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731447AbgEKTcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 15:32:10 -0400
-Received: from mail-eopbgr70059.outbound.protection.outlook.com ([40.107.7.59]:32386
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731199AbgEKTcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 15:32:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PkmsPt6s026EoCOvPFvmBUFyJQujJ8f5HRFxCa3uFbHbgh6ubE/RUZcz4ZBD3VHvwj20vXFMeFppjyjJ/qTpeYRqkz6iaJOCGDw9EON5A1FxrR5DDmlzsQ81g0SXM+dm3iyRcZVPIC82y7QLA4PbABxP/08WPS7PGL9synFmQ9oNQG7+RunLCKaXXWFtsUcBVGSsGm6cu4PsEumng4mqgwEah4H/q8bkUq705oUe6jgdJX9XL2p2y2FmJUuykCdaJD9043d2j5TTRg/yWMTSmBe72YVCvXl34MfMPjRYrnXXCeDDZBo3FICLJ86NYMzpQNqbvfyIh10T6QQ5GJECJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fK+qszBePQZd22vqz068pkGQUQypGtBzdjrE1sBA1TI=;
- b=jIae/1aS4asdo4RMBnHAtrk4Uc8aMbH/abeGZtLN3RgoHbY6n8fm++chtUPwK0HC+En7EwvL9LwSnZb9V8rFhK8FMl5UNTalco8nDENs7MBZvU6Rq/KlnWSFeY+IaaLyWICxel52fcs0wyQgk6cyvFjBR7cPjrxA6Etwjf1Nvhs2eG16uZuS1dvLRy/HeGU2io798FfX6hLAO7MpAf21YJjs/fWPFXg/Rey39XS0hDO7ImVFPFqqvDWXG41U92yQVVcG42M4Fctp2vKOYIjrvt+ZlkghNdGNs7H5vjtE6ecdLfyJaSYZJMQm2DSuKDlKrDnmEhnSSi8TCIfj50eI+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fK+qszBePQZd22vqz068pkGQUQypGtBzdjrE1sBA1TI=;
- b=Wykyy4kNlZei1F9RTiQtpP+46xC5j1321h8GkdCyBAHMbGPZi9kbuFIVMblumPBGDCuaJTipYhGUnRBi4OGXez+CMvilK0lgQ/RWwet/D0faEd7+AsA5CoMO4u8gTGeVUJIM6wN9cFEHqc2A5+C43nrlYDr+gPkjLrJ+mmTfcG0=
-Received: from AM0PR04MB7041.eurprd04.prod.outlook.com (2603:10a6:208:19a::13)
- by AM0PR04MB6356.eurprd04.prod.outlook.com (2603:10a6:208:17a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.28; Mon, 11 May
- 2020 19:32:05 +0000
-Received: from AM0PR04MB7041.eurprd04.prod.outlook.com
- ([fe80::1cab:2a78:51cb:2a00]) by AM0PR04MB7041.eurprd04.prod.outlook.com
- ([fe80::1cab:2a78:51cb:2a00%9]) with mapi id 15.20.2979.033; Mon, 11 May 2020
- 19:32:05 +0000
-From:   Christian Herber <christian.herber@nxp.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        David Jander <david@protonic.nl>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "mkl@pengutronix.de" <mkl@pengutronix.de>,
-        Marek Vasut <marex@denx.de>
-Subject: RE: Re: signal quality and cable diagnostic
-Thread-Topic: Re: signal quality and cable diagnostic
-Thread-Index: AdYnygHjlwz8mecvTV6Sgw0PGhSTqA==
-Date:   Mon, 11 May 2020 19:32:05 +0000
-Message-ID: <AM0PR04MB70410EA61C984E45615CCF8B86A10@AM0PR04MB7041.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [88.130.52.30]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 15c89018-82df-4792-9e90-08d7f5e1fd01
-x-ms-traffictypediagnostic: AM0PR04MB6356:
-x-microsoft-antispam-prvs: <AM0PR04MB635616DF7B6229D66743456A86A10@AM0PR04MB6356.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-forefront-prvs: 04004D94E2
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iyUqZLywB896OmabTy21MBiXg4ry8AoQtFtxC5ed9NDrxlLrYiGcyx+kSA+Me2c5XtwkChzPVNKXg9PeACoumABFryR8KFtizZ1yVSsSTh7s/KStsuEi8lJmmKQ2yW9cG1Czep9NK1h29TOzmjAqg1h8Nftk6aoAUHsR6+YjZ19ldCHLoN2yNjdyVu3LoyLauBvyjJbrjv3no155JUi7JHNQ0abUbe3c4NS5D3iWXJXNUCf19wdA06F/nfkvbW8oG86Xf9cmZoPKJ2d7KgxCJlpnn4ZwrUC4+sUlvUbGxSoVNk2wodotozkyadefda0yYPvrj4tvMoMaaKNC4JK2Faqn7ijXXBOkOE/Lyj47akrbV32Bjs7FEQaEgee9mIzUE8E2GUCX+3P/UO0ZkwtJ32CQvM2itBEUtQfJTJcik33JfZNp5+Gr8vL49j7eQ7MdJKEwYuV3CD+ANWMUJEYkXl8Gx5Y23RPDflSFkxEWMpwNPCzqAdj500Snqu5wEWtcqB3I4VOT8J9PkgJmlm2ifTFv17LDtjOiPksVQ97vUO2TMtZC3F9Ut7c2oHFwK5HxaM4KeW+as73l5MtjnjLyICJVwUqRoerfPxBuARPO7yk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB7041.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(136003)(39860400002)(376002)(346002)(33430700001)(4326008)(7696005)(9686003)(55016002)(44832011)(66946007)(86362001)(2906002)(66556008)(64756008)(76116006)(66476007)(66446008)(52536014)(33656002)(966005)(6506007)(4744005)(8676002)(8936002)(186003)(478600001)(33440700001)(71200400001)(26005)(7416002)(110136005)(54906003)(5660300002)(53546011)(316002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: RHuqAUQnHJBeZwgku2VB+7u2HgVvn4RqqZ9y11Op4Vf/QFEcQF7wJYRS/nAZhQzgRVqyzIYSmAw8WIK+F01cOyUsghDIpjGIThKzFPqM4YHILB1wcDPopXYr2nN1XnT0PAwiJTjLDrJWTtN0UJDe0lzsPgm5N9Y8T9PiNPty2fgpKX9kUlz/KFzU/+FDX24+fHeHIAU51TZAgUhh7my+y9m/ww9uW6GQfgrsJZRzxaHR1x2gwsNeUJTHjDBNRYgAPPag2sxs/KGKu2OjteeqPeRE3cWDkXAp+TNW70x91KJs3Kh1MeGbwKxvtK2L/DJb01CESicz/qoMjhAc9el4l6ng8LAqUhqYZ2jTc2MEr835y3KWiEyO09PwEMnQ4vDAQZdGroXQH4OUPCm20mST7fJ8iJaEwIln/Zx9YqeJer6pNU9svkT5fgp3+FAhxr3McPCBg9RuaBg6cFWb5AdqKBCXGd37dHI4d99o4yLf44I=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1731454AbgEKTdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 15:33:02 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:49834 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729453AbgEKTdB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 15:33:01 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 45FF1803080A;
+        Mon, 11 May 2020 19:32:58 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Q65asuHJMWNf; Mon, 11 May 2020 22:32:57 +0300 (MSK)
+Date:   Mon, 11 May 2020 22:32:55 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/6] dmaengine: dw: Print warning if multi-block is
+ unsupported
+Message-ID: <20200511193255.t6orpcdz5ukmwmqo@mobilestation>
+References: <20200306131048.ADBE18030797@mail.baikalelectronics.ru>
+ <20200508105304.14065-1-Sergey.Semin@baikalelectronics.ru>
+ <20200508105304.14065-5-Sergey.Semin@baikalelectronics.ru>
+ <20200508112604.GJ185537@smile.fi.intel.com>
+ <20200508115334.GE4820@sirena.org.uk>
+ <20200511021016.wptcgnc3iq3kadgz@mobilestation>
+ <20200511115813.GG8216@sirena.org.uk>
+ <20200511134502.hjbu5evkiuh75chr@mobilestation>
+ <CAHp75VdOi1rwaKjzowhj0KA-eNNL4NxpiCeqfELFgO_RcnZ-xw@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15c89018-82df-4792-9e90-08d7f5e1fd01
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2020 19:32:05.5889
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: FVHfoMTt10plXaAlkDO4mfBt25Szp3jvtyax0QxmFBUacRWn+Wqjhu0WfFXcSsj4hxNKFvY1lGUhXEfgByaOcjVzlBsBm2V0Kp5UMLCOGfs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6356
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAHp75VdOi1rwaKjzowhj0KA-eNNL4NxpiCeqfELFgO_RcnZ-xw@mail.gmail.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On May 11, 2020 4:33:53 PM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> Are the classes part of the Open Alliance specification? Ideally we
-> want to report something standardized, not something proprietary to
-> NXP.
->
->        Andrew
+On Mon, May 11, 2020 at 04:58:53PM +0300, Andy Shevchenko wrote:
+> On Mon, May 11, 2020 at 4:48 PM Serge Semin
+> <Sergey.Semin@baikalelectronics.ru> wrote:
+> >
+> > On Mon, May 11, 2020 at 12:58:13PM +0100, Mark Brown wrote:
+> > > On Mon, May 11, 2020 at 05:10:16AM +0300, Serge Semin wrote:
+> > >
+> > > > Alas linearizing the SPI messages won't help in this case because the DW DMA
+> > > > driver will split it into the max transaction chunks anyway.
+> > >
+> > > That sounds like you need to also impose a limit on the maximum message
+> > > size as well then, with that you should be able to handle messages up
+> > > to whatever that limit is.  There's code for that bit already, so long
+> > > as the limit is not too low it should be fine for most devices and
+> > > client drivers can see the limit so they can be updated to work with it
+> > > if needed.
+> >
+> > Hmm, this might work. The problem will be with imposing such limitation through
+> > the DW APB SSI driver. In order to do this I need to know:
+> > 1) Whether multi-block LLP is supported by the DW DMA controller.
+> > 2) Maximum DW DMA transfer block size.
+> > Then I'll be able to use this information in the can_dma() callback to enable
+> > the DMA xfers only for the safe transfers. Did you mean something like this when
+> > you said "There's code for that bit already" ? If you meant the max_dma_len
+> > parameter, then setting it won't work, because it just limits the SG items size
+> > not the total length of a single transfer.
+> >
+> > So the question is of how to export the multi-block LLP flag from DW DMAc
+> > driver. Andy?
+> 
+> I'm not sure I understand why do you need this being exported. Just
+> always supply SG list out of single entry and define the length
+> according to the maximum segment size (it's done IIRC in SPI core).
 
-Hi Andrew,
+Finally I see your point. So you suggest to feed the DMA engine with SG list
+entries one-by-one instead of sending all of them at once in a single
+dmaengine_prep_slave_sg() -> dmaengine_submit() -> dma_async_issue_pending()
+session. Hm, this solution will work, but there is an issue. There is no
+guarantee, that Tx and Rx SG lists are symmetric, consisting of the same
+number of items with the same sizes. It depends on the Tx/Rx buffers physical
+address alignment and their offsets within the memory pages. Though this
+problem can be solved by making the Tx and Rx SG lists symmetric. I'll have
+to implement a clever DMA IO loop, which would extract the DMA
+addresses/lengths from the SG entries and perform the single-buffer DMA 
+transactions with the DMA buffers of the same length.
 
-Such mechanisms are standardized and supported by pretty much all devices i=
-n the market. The Open Alliance specification is publicly available here: h=
-ttp://www.opensig.org/download/document/218/Advanced_PHY_features_for_autom=
-otive_Ethernet_V1.0.pdf
+Regarding noLLP being exported. Obviously I intended to solve the problem in a
+generic way since the problem is common for noLLP DW APB SSI/DW DMAC combination.
+In order to do this we need to know whether the multi-block LLP feature is
+unsupported by the DW DMA controller. We either make such info somehow exported
+from the DW DMA driver, so the DMA clients (like Dw APB SSI controller driver)
+could be ready to work around the problem; or just implement a flag-based quirk
+in the DMA client driver, which would be enabled in the platform-specific basis
+depending on the platform device actually detected (for instance, a specific
+version of the DW APB SSI IP). AFAICS You'd prefer the later option. 
 
-As the specification is newer than the 100BASE-T1 spec, do not expect first=
- generation devices to follow the register definitions as per Open Alliance=
-. But for future devices, also registers should be same across different ve=
-ndors.
+Regarding SPI core toggling CS. It is irrelevant to this problem, since DMA
+transactions are implemented within a single SPI transfer so the CS won't be
+touched by the SPI core while we are working wht the xfer descriptor. Though
+the problem with DW APB SSI native CS automatic toggling will persist anyway
+no matter whether the multi-block LLPs are supported on not.
 
-Christian
+-Sergey
+
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
