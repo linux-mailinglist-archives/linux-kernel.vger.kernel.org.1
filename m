@@ -2,145 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F364B1CDBCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DA81CDBDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730245AbgEKNua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 09:50:30 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:37225 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730236AbgEKNua (ORCPT
+        id S1730202AbgEKNxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 09:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730179AbgEKNxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 09:50:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589205028;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dYIcn+3D286vkydQaVSkgnA5hSu+m3hsQi8qZsqHYj8=;
-        b=g5mZaB0H8NtwhPwOEZf7PlBHsboJYDI3cwOeL3fqXw/s7TGANQRQB8cGTdA2lVXuvQ85/G
-        gMlOb1s1nQ0Y7xOFQkRAXrNAZWqDhxLzX53OJg5gGnmnTlYhPrQneXGTvNvcym+r70ERXZ
-        vm1KC2CcUTDWt8fzeiPXVuSqMaln9f4=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-416-UiK0YUflNHm0UDWOXpvKkg-1; Mon, 11 May 2020 09:50:27 -0400
-X-MC-Unique: UiK0YUflNHm0UDWOXpvKkg-1
-Received: by mail-wm1-f71.google.com with SMTP id j5so8359613wmi.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 06:50:26 -0700 (PDT)
+        Mon, 11 May 2020 09:53:09 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4375C05BD09
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 06:53:07 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id i15so11043378wrx.10
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 06:53:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Lsw/Iaiux+MLh4zGmzRDP0c55QH0mpEc78oqXzNiG98=;
+        b=FE5d1H+JCXwrPfWWVUSjdCEORrTF5KH5QEwN0eKZ5RekgQ9yCjVJRgfUBSKFVvI0kk
+         IQDaQaLZECPBBUD1IEuB//5mRQ5kDvCw+yZuWq78HFJ/AQnA/PcdMKnAFS8nxzDq7gk7
+         bUfIsRuqNr5F2CwE8s8BLhDJ3y/Bkdz5o+0esyL2lnasdMYxIUY0YemT4ZDCkgZM5iD3
+         MYcETM3NiBlFLnHlUAtcnPL8OCctyMZmTu0og9i5DB6UCg0OoZrfhrbyyFFdgU3VPhsC
+         xBWwu/kllU39dID7325H2WRqDuFMFIlSOH19oM3WtmRfISXMJu6PL++RT1d6oDehHbNH
+         KkaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dYIcn+3D286vkydQaVSkgnA5hSu+m3hsQi8qZsqHYj8=;
-        b=LGOTVcXQBHP4SOoofQgbWQsbrW2WQjE9fwvegmMPiyUy4RoblnHvtZM21DCYy/3Rds
-         49cn/YL3z1wccFjHLgJg0i9/AtSmXUi41a56I00OnFW6Cqk8xrYmTny/cYNdpxNszRCd
-         PWjlmGLoVzJfwmplBoM0uv+oCnEQL3jm6n2kxzAwvaG2kiJsYFIWm2jZq+OphsZ0CB3i
-         9NNTtL4+VBrm6XtfCXbfZSJHKES/v5nVYEsGw5jNc3Jz02rZXjwAIjuphAw5NpcasyZt
-         1arp+RG/ZBjEvo9ztc5RyC72LC2ONymqHiwxzV83LXKvbnYeH4d4dbB6oGA3yu3DR0LT
-         QwuA==
-X-Gm-Message-State: AGi0PuYCMzv2snHcgFTBqdQV/xTKgSTalBrrVL2L/vWjIg3PJeFKqM0x
-        SNqB6xuSfP02C5rVosC/zOwOUc3zBVjMuobSUGECgU55qh3WYD3PEMVkD6TjcrQIUW8uyPYvaVR
-        QIP48CRsn+mBqXjiZgMZ4uZj0
-X-Received: by 2002:a1c:7213:: with SMTP id n19mr6013793wmc.88.1589205025671;
-        Mon, 11 May 2020 06:50:25 -0700 (PDT)
-X-Google-Smtp-Source: APiQypISo3KIFEJ7LYAXA24Bc5EMlbCgV7DLtmc2WcZnpfaF2Wz6YDCNkPryNeTkCD/TXK9yqXQ6gA==
-X-Received: by 2002:a1c:7213:: with SMTP id n19mr6013774wmc.88.1589205025409;
-        Mon, 11 May 2020 06:50:25 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:4c95:a679:8cf7:9fb6? ([2001:b07:6468:f312:4c95:a679:8cf7:9fb6])
-        by smtp.gmail.com with ESMTPSA id k5sm16690003wrx.16.2020.05.11.06.50.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 May 2020 06:50:24 -0700 (PDT)
-Subject: Re: [PATCH] kvm/x86 : Remove redundant pic_in_kernel
-To:     =?UTF-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <HKAPR02MB42914E8F73424BCF815DAC6CE0A10@HKAPR02MB4291.apcprd02.prod.outlook.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <65b8f660-1d78-10f5-fe61-54de94cd5017@redhat.com>
-Date:   Mon, 11 May 2020 15:50:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Lsw/Iaiux+MLh4zGmzRDP0c55QH0mpEc78oqXzNiG98=;
+        b=fzjfmAqcMFS7BD/xGbUBCIIvwK/eZ2F4PxRBw3w8JIG+QohRDih4ab7b3Igka6/Ts4
+         P0m94MrHHV7ecHrga0DBzA5mr5tjN5t2jxGiv2m3lx9uZzFzgy1OtfrtiadgEwsj9Vuq
+         qVSpIrLHSjOSZv9trrpgjPoYZPuCb32cIuwz8NiQM+F5iy9aopGnjrwUKHDpLDrNWXVg
+         mwyB65DClp4c7xhYXUfB04Ijlf0yI5ZjKYN5fWm7uTJFBR6EC/0q6JITOk4saOWBNbd4
+         A0RNf87A1p3Sk12VDrZUxqTaSnhbfmmdKgSJB2UKVX5xNROnHvy2AWRFfaceJBfSRFHb
+         ORjw==
+X-Gm-Message-State: AGi0PuZdE985Aj+M5IW/AteFuxy8kSDgiV0VX/ZfG6O4SHcK09SMkRlj
+        nUPfcH/hFKD8HZKV0i4JRSMz
+X-Google-Smtp-Source: APiQypKLR7w5vtkQydqOzRJhjmHfs8vunCC7k4wUj/rDfBqhz40FPYcftWjvftN1NJnhpSr26EDm0A==
+X-Received: by 2002:a05:6000:1045:: with SMTP id c5mr4880337wrx.31.1589205186193;
+        Mon, 11 May 2020 06:53:06 -0700 (PDT)
+Received: from dkxps.local (dslb-002-204-227-207.002.204.pools.vodafone-ip.de. [2.204.227.207])
+        by smtp.gmail.com with ESMTPSA id v205sm9220018wmg.11.2020.05.11.06.53.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 06:53:05 -0700 (PDT)
+From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
+To:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
+Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
+        bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
+        jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
+        jinpu.wang@cloud.ionos.com, pankaj.gupta@cloud.ionos.com,
+        Roman Pen <roman.penyaev@profitbricks.com>,
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v15 01/25] sysfs: export sysfs_remove_file_self()
+Date:   Mon, 11 May 2020 15:51:07 +0200
+Message-Id: <20200511135131.27580-2-danil.kipnis@cloud.ionos.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200511135131.27580-1-danil.kipnis@cloud.ionos.com>
+References: <20200511135131.27580-1-danil.kipnis@cloud.ionos.com>
 MIME-Version: 1.0
-In-Reply-To: <HKAPR02MB42914E8F73424BCF815DAC6CE0A10@HKAPR02MB4291.apcprd02.prod.outlook.com>
-Content-Type: text/plain; charset=gbk
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/05/20 13:21, ÅíºÆ(Richard) wrote:
-> pic_in_kernel() and irqchip_kernel() have the same implementation.
-> 
-> Signed-off-by: Peng Hao <richard.peng@oppo.com>
+From: Jack Wang <jinpu.wang@cloud.ionos.com>
 
-Thanks for the patch, this is interesting!  And there is also
-ioapic_in_kernel.  However, the three functions are used in different
-cases, for example ioapic_in_kernel before accessing kvm->arch.vioapic.
- So the right thing to do would be to keep the functions, but change
-them to just return irqchip_kernel(kvm).
+Function is going to be used in transport over RDMA module
+in subsequent patches, so export it to GPL modules.
 
-Paolo
+Signed-off-by: Roman Pen <roman.penyaev@profitbricks.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+[jwang: extend the commit message]
+Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+---
+ fs/sysfs/file.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> ---
->  arch/x86/kvm/irq.h | 9 ---------
->  arch/x86/kvm/x86.c | 6 +++---
->  2 files changed, 3 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/irq.h b/arch/x86/kvm/irq.h
-> index f173ab6..3ad07ca 100644
-> --- a/arch/x86/kvm/irq.h
-> +++ b/arch/x86/kvm/irq.h
-> @@ -66,15 +66,6 @@ void kvm_pic_destroy(struct kvm *kvm);
->  int kvm_pic_read_irq(struct kvm *kvm);
->  void kvm_pic_update_irq(struct kvm_pic *s);
-> 
-> -static inline int pic_in_kernel(struct kvm *kvm)
-> -{
-> -int mode = kvm->arch.irqchip_mode;
-> -
-> -/* Matches smp_wmb() when setting irqchip_mode */
-> -smp_rmb();
-> -return mode == KVM_IRQCHIP_KERNEL;
-> -}
-> -
->  static inline int irqchip_split(struct kvm *kvm)
->  {
->  int mode = kvm->arch.irqchip_mode;
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index d786c7d..559053f 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3710,7 +3710,7 @@ static int kvm_vcpu_ioctl_interrupt(struct kvm_vcpu *vcpu,
->   * With in-kernel LAPIC, we only use this to inject EXTINT, so
->   * fail for in-kernel 8259.
->   */
-> -if (pic_in_kernel(vcpu->kvm))
-> +if (irqchip_kernel(vcpu->kvm))
->  return -ENXIO;
-> 
->  if (vcpu->arch.pending_external_vector != -1)
-> @@ -7622,7 +7622,7 @@ static int emulator_fix_hypercall(struct x86_emulate_ctxt *ctxt)
->  static int dm_request_for_irq_injection(struct kvm_vcpu *vcpu)
->  {
->  return vcpu->run->request_interrupt_window &&
-> -likely(!pic_in_kernel(vcpu->kvm));
-> +likely(!irqchip_kernel(vcpu->kvm));
->  }
-> 
->  static void post_kvm_run_save(struct kvm_vcpu *vcpu)
-> @@ -7634,7 +7634,7 @@ static void post_kvm_run_save(struct kvm_vcpu *vcpu)
->  kvm_run->cr8 = kvm_get_cr8(vcpu);
->  kvm_run->apic_base = kvm_get_apic_base(vcpu);
->  kvm_run->ready_for_interrupt_injection =
-> -pic_in_kernel(vcpu->kvm) ||
-> +irqchip_kernel(vcpu->kvm) ||
->  kvm_vcpu_ready_for_interrupt_injection(vcpu);
->  }
-> 
-> --
-> 2.7.4
+diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
+index 26bbf960e2a2..d81f9f974a35 100644
+--- a/fs/sysfs/file.c
++++ b/fs/sysfs/file.c
+@@ -492,6 +492,7 @@ bool sysfs_remove_file_self(struct kobject *kobj, const struct attribute *attr)
+ 	kernfs_put(kn);
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(sysfs_remove_file_self);
+ 
+ void sysfs_remove_files(struct kobject *kobj, const struct attribute * const *ptr)
+ {
+-- 
+2.20.1
 
