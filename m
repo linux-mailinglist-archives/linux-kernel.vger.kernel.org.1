@@ -2,152 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BB01CE2A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713FC1CE2BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731160AbgEKS1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 14:27:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731152AbgEKS1b (ORCPT
+        id S1731224AbgEKS2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 14:28:20 -0400
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:35394 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729727AbgEKS2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 14:27:31 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89321C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 11:27:31 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jYD8o-0003O2-8G; Mon, 11 May 2020 20:27:02 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id C49A9FFBF8; Mon, 11 May 2020 20:27:00 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [patch V4 part 2 10/18] x86/entry/64: Check IF in __preempt_enable_notrace() thunk
-In-Reply-To: <87k11j4ogb.fsf@nanos.tec.linutronix.de>
-References: <20200505134112.272268764@linutronix.de> <20200505134341.087595319@linutronix.de> <CALCETrVpSj9fVyUHp-Q_tT-xLgTfYR5JFv52AsOuGJsDYeN3-Q@mail.gmail.com> <87k11l4d7l.fsf@nanos.tec.linutronix.de> <87k11j4ogb.fsf@nanos.tec.linutronix.de>
-Date:   Mon, 11 May 2020 20:27:00 +0200
-Message-ID: <87r1vq5nuz.fsf@nanos.tec.linutronix.de>
+        Mon, 11 May 2020 14:28:19 -0400
+Received: by mail-pj1-f68.google.com with SMTP id ms17so8199808pjb.0;
+        Mon, 11 May 2020 11:28:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VlcIlbKUmV2Z0lZsaJ/MguViZcS3naoljRGqlVyUKTk=;
+        b=DIdGTt40rE+KhPVZ8Dj006Gm6BxsQlALxQP5iFnMqad06CnyKBo2TT/hrDOxnYB5eU
+         QKUQxkdIvRMTsnfkPeDVYBPXThC2rz9hEpgGt5w/fVi2WxX6Qqq2AXM68E+l6oGN7wCn
+         q9+wZg9Onca0NWptpEUgwMWc+zFFAf5dE40TwEmdvLJhupTkBKU0x9tUNvr8rHv1zHsU
+         GFygIJmx0rDPptG4wkrcH7Za0eOlpbtkBZ+XkrA6x4ECAa1B5acgfVQCpxJN/7Gpbl2p
+         kQQk+SPkpoyr+AbnQ2bbj/ZeWcOwmp6h52lLFT57KeUHJ4aYld6mKEmf22U90wT8XJfm
+         w/4w==
+X-Gm-Message-State: AGi0PuY/bJrNd4JOdVCn/Aamv80l3zYJy8p85Ewbeh+Qrd/mM+96Q69b
+        EbIG/Np4vsIfZRvBE0zdrlfMQfZEhJ4=
+X-Google-Smtp-Source: APiQypISO15fI9lHsIZIQ9EvEPWgAkglXwXVHMxT7KKCWrrAa1iRQnwjK4EfReJHcdP1wqsU+aIbiQ==
+X-Received: by 2002:a17:902:d689:: with SMTP id v9mr16640720ply.328.1589221697990;
+        Mon, 11 May 2020 11:28:17 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id a7sm9951520pfg.157.2020.05.11.11.28.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 11:28:15 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id E966B40605; Mon, 11 May 2020 18:28:14 +0000 (UTC)
+Date:   Mon, 11 May 2020 18:28:14 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     akpm@linux-foundation.org, jeyu@kernel.org, shuah@kernel.org,
+        Markus.Elfring@web.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, lixuefeng@loongson.cn
+Subject: Re: [PATCH v4 0/4] Fix some issues about kmod
+Message-ID: <20200511182814.GS11244@42.do-not-panic.com>
+References: <1587452704-1299-1-git-send-email-yangtiezhu@loongson.cn>
+ <9b50d2b1-2fb4-10a1-5966-5458507a9b05@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9b50d2b1-2fb4-10a1-5966-5458507a9b05@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Gleixner <tglx@linutronix.de> writes:
-> Thomas Gleixner <tglx@linutronix.de> writes:
->> Let me stare into that again.
->
-> There are a few preempt_disable/enable() pairs in some of the helper
-> functions which are called in various places. That means we would have
-> to chase all of them and provide 'naked' helpers for these particular
-> call chains. I'll fix the changelog and add a comment to make clear what
-> this is about.
+On Mon, May 11, 2020 at 08:59:37PM +0800, Tiezhu Yang wrote:
+> Hi,
+> 
+> Could you please apply the following three patches?
+> 
+> [v4,1/4] selftests: kmod: Use variable NAME in kmod_test_0001()
+> https://lore.kernel.org/patchwork/patch/1227980/
+> 
+> [v4,2/4] kmod: Remove redundant "be an" in the comment
+> https://lore.kernel.org/patchwork/patch/1227982/
+> 
+> [v4,4/4] test_kmod: Avoid potential double free in trigger_config_run_type()
+> https://lore.kernel.org/patchwork/patch/1227978/
 
-I actually sat down and chased it. It's mostly the tracing code - again,
-particularly the hardware latency tracer. There is really no point to
-invoke that from the guts of nmi_enter() and nmi_exit().
+Andrew,
 
-Neither for #DB, #BP nor #MCE there is a reason to invoke that at
-all. If someone does hardware latency analysis then #DB and #BP should
-not be in use at all. If so, shrug. If #MCE hits, then the hardware
-induced latency is the least of the worries.
+These 3 patches should be fine.
 
-So the only relevant place is actually NMI which wants to be tracked to
-avoid false positives. But that tracking really can wait to the point
-where the NMI has actually reached halfways stable state.
+I am re-working a replacement proper fix for patch #3, that requires a
+change to the umh. I'll try to iron this out today.
 
-The other place which as preempt_disable/enable_notrace() in it is
-rcu_is_watching() but it's trivial enough to provide a naked version for
-that.
-
-Thanks,
-
-        tglx
-
-8<------------------
-Subject: nmi, tracing: Provide nmi_enter/exit_notrace()
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Mon, 11 May 2020 10:57:16 +0200
-
-To fully isolate #DB and #BP from instrumentable code it's necessary to
-avoid invoking the hardware latency tracer on nmi_enter/exit().
-
-Provide nmi_enter/exit() variants which are not invoking the hardware
-latency tracer. That allows to put calls explicitely into the call sites
-outside of the kprobe handling.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V5: New patch
----
- include/linux/hardirq.h |   18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
-
---- a/include/linux/hardirq.h
-+++ b/include/linux/hardirq.h
-@@ -77,28 +77,38 @@ extern void irq_exit(void);
- /*
-  * nmi_enter() can nest up to 15 times; see NMI_BITS.
-  */
--#define nmi_enter()						\
-+#define nmi_enter_notrace()					\
- 	do {							\
- 		arch_nmi_enter();				\
- 		printk_nmi_enter();				\
- 		lockdep_off();					\
--		ftrace_nmi_enter();				\
- 		BUG_ON(in_nmi() == NMI_MASK);			\
- 		__preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET);	\
- 		rcu_nmi_enter();				\
- 		lockdep_hardirq_enter();			\
- 	} while (0)
- 
--#define nmi_exit()						\
-+#define nmi_enter()						\
-+	do {							\
-+		nmi_enter_notrace();				\
-+		ftrace_nmi_enter();				\
-+	} while (0)
-+
-+#define nmi_exit_notrace()					\
- 	do {							\
- 		lockdep_hardirq_exit();				\
- 		rcu_nmi_exit();					\
- 		BUG_ON(!in_nmi());				\
- 		__preempt_count_sub(NMI_OFFSET + HARDIRQ_OFFSET);	\
--		ftrace_nmi_exit();				\
- 		lockdep_on();					\
- 		printk_nmi_exit();				\
- 		arch_nmi_exit();				\
- 	} while (0)
- 
-+#define nmi_exit()						\
-+	do {							\
-+		ftrace_nmi_exit();				\
-+		nmi_exit_notrace();				\
-+	} while (0)
-+
- #endif /* LINUX_HARDIRQ_H */
+  Luis
