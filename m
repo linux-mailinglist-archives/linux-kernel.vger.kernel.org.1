@@ -2,59 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BC21CD832
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C341CD851
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729861AbgEKL0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:26:05 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:52408 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729736AbgEKLZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:25:58 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id BA6B1EC8239F9FC32A17;
-        Mon, 11 May 2020 19:25:55 +0800 (CST)
-Received: from use12-sp2.huawei.com (10.67.189.174) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 11 May 2020 19:25:46 +0800
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-To:     <axboe@kernel.dk>, <viro@zeniv.linux.org.uk>
-CC:     <io-uring@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <nixiaoming@huawei.com>,
-        <wangle6@huawei.com>
-Subject: [PATCH] fs:io_uring:Remove duplicate semicolons at the end of line
-Date:   Mon, 11 May 2020 19:25:43 +0800
-Message-ID: <1589196343-84741-1-git-send-email-nixiaoming@huawei.com>
-X-Mailer: git-send-email 1.8.5.6
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.189.174]
-X-CFilter-Loop: Reflected
+        id S1730036AbgEKL2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:28:02 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:46759 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729776AbgEKLZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 07:25:47 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49LJX20v6gz9ty3j;
+        Mon, 11 May 2020 13:25:38 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id NqNxRUCBBwBn; Mon, 11 May 2020 13:25:38 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49LJX2054Fz9ty3g;
+        Mon, 11 May 2020 13:25:38 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id AFE2B8B7AE;
+        Mon, 11 May 2020 13:25:44 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 6q_Lt9UBIjVo; Mon, 11 May 2020 13:25:44 +0200 (CEST)
+Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7FFEC8B7AD;
+        Mon, 11 May 2020 13:25:44 +0200 (CEST)
+Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 60FBE65A09; Mon, 11 May 2020 11:25:44 +0000 (UTC)
+Message-Id: <bdafc1ecebbf47df0289e5433e5dc060555d0228.1589196133.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1589196133.git.christophe.leroy@csgroup.eu>
+References: <cover.1589196133.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v3 18/45] powerpc/mm: Refactor pte_update() on nohash/32
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 11 May 2020 11:25:44 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove duplicate semicolons at the end of line in fs/io_uring.c
+When CONFIG_PTE_64BIT is set, pte_update() operates on
+'unsigned long long'
+When CONFIG_PTE_64BIT is not set, pte_update() operates on
+'unsigned long'
 
-Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+In asm/page.h, we have pte_basic_t which is 'unsigned long long'
+when CONFIG_PTE_64BIT is set and 'unsigned long' otherwise.
+
+Refactor pte_update() using pte_basic_t.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- fs/io_uring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/include/asm/nohash/32/pgtable.h | 26 +++-----------------
+ 1 file changed, 4 insertions(+), 22 deletions(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 381d50b..8c543f7 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -5379,7 +5379,7 @@ static inline struct file *io_file_from_index(struct io_ring_ctx *ctx,
- 	struct fixed_file_table *table;
+diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
+index 523c4c3876c5..9eaf386a747b 100644
+--- a/arch/powerpc/include/asm/nohash/32/pgtable.h
++++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
+@@ -222,12 +222,9 @@ static inline void pmd_clear(pmd_t *pmdp)
+  * to properly flush the virtually tagged instruction cache of
+  * those implementations.
+  */
+-#ifndef CONFIG_PTE_64BIT
+-static inline unsigned long pte_update(pte_t *p,
+-				       unsigned long clr,
+-				       unsigned long set)
++static inline pte_basic_t pte_update(pte_t *p, unsigned long clr, unsigned long set)
+ {
+-#ifdef PTE_ATOMIC_UPDATES
++#if defined(PTE_ATOMIC_UPDATES) && !defined(CONFIG_PTE_64BIT)
+ 	unsigned long old, tmp;
  
- 	table = &ctx->file_data->table[index >> IORING_FILE_TABLE_SHIFT];
--	return table->files[index & IORING_FILE_TABLE_MASK];;
-+	return table->files[index & IORING_FILE_TABLE_MASK];
+ 	__asm__ __volatile__("\
+@@ -241,8 +238,8 @@ static inline unsigned long pte_update(pte_t *p,
+ 	: "r" (p), "r" (clr), "r" (set), "m" (*p)
+ 	: "cc" );
+ #else /* PTE_ATOMIC_UPDATES */
+-	unsigned long old = pte_val(*p);
+-	unsigned long new = (old & ~clr) | set;
++	pte_basic_t old = pte_val(*p);
++	pte_basic_t new = (old & ~(pte_basic_t)clr) | set;
+ 
+ #if defined(CONFIG_PPC_8xx) && defined(CONFIG_PPC_16K_PAGES)
+ 	p->pte = p->pte1 = p->pte2 = p->pte3 = new;
+@@ -257,21 +254,6 @@ static inline unsigned long pte_update(pte_t *p,
+ #endif
+ 	return old;
  }
+-#else /* CONFIG_PTE_64BIT */
+-static inline unsigned long long pte_update(pte_t *p,
+-					    unsigned long clr,
+-					    unsigned long set)
+-{
+-	unsigned long long old = pte_val(*p);
+-	*p = __pte((old & ~(unsigned long long)clr) | set);
+-
+-#ifdef CONFIG_44x
+-	if ((old & _PAGE_USER) && (old & _PAGE_EXEC))
+-		icache_44x_need_flush = 1;
+-#endif
+-	return old;
+-}
+-#endif /* CONFIG_PTE_64BIT */
  
- static int io_file_get(struct io_submit_state *state, struct io_kiocb *req,
+ #define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
+ static inline int __ptep_test_and_clear_young(unsigned int context, unsigned long addr, pte_t *ptep)
 -- 
-1.8.5.6
+2.25.0
 
