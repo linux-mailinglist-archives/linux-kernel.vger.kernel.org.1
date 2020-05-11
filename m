@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A5C1CD74F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2897F1CD756
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729287AbgEKLLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:11:30 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:33994 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgEKLL3 (ORCPT
+        id S1729426AbgEKLMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725993AbgEKLMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:11:29 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04BBBLrD037346;
-        Mon, 11 May 2020 06:11:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589195481;
-        bh=CISqFCxu5t1PMoQny1CBKpSz9hzWS0lgiIvGz7SxhJg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=GpNiWynafDZa99VZDkD2G498YjQqyj2XZFeL+K2CqcbKkoGoCdyJw66FSJKO4jlMe
-         PS/nWFHw07WTBhicFjgSdhkR78LLPIqKlmNb39O/ityyVZOF84Vw65Ojytm8ndY71+
-         UODRCjBrkLs9/b0VkfvK3y3yb5QXgaVVusQ2WoNk=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04BBBK0U042948
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 May 2020 06:11:21 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 11
- May 2020 06:11:20 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 11 May 2020 06:11:20 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04BBBHKd091718;
-        Mon, 11 May 2020 06:11:17 -0500
-Subject: Re: [PATCH v3 2/2] soc: ti: add k3 platforms chipid module driver
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Santosh Shilimkar <ssantosh@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Dave Gerlach <d-gerlach@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>
-References: <20200508100100.20740-1-grygorii.strashko@ti.com>
- <20200508100100.20740-3-grygorii.strashko@ti.com>
- <CAK8P3a0vewSiFc4rXu43_bs_A85EYx12_YuyBaU3PYJ1HszE=w@mail.gmail.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <6614f29d-1796-18d9-9b78-214f56964a35@ti.com>
-Date:   Mon, 11 May 2020 14:11:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 11 May 2020 07:12:34 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E23C061A0C;
+        Mon, 11 May 2020 04:12:32 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id u6so8988097ljl.6;
+        Mon, 11 May 2020 04:12:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mMtYnNr5g5oPqRSwkm+a7GegW70Zgr2odwgJUALqy5M=;
+        b=jzqMD4GFmw7hY4mmQs5D/9emGa0bpq2rJne0VNBhNf7hDbgXzXSJdNelFjR8vQxxEf
+         GXNYV85NSCrdSPYGque0Gvj3jmGLG9j4pVGU7BkQOp20xLyHhFnjs527WzLav09tvRon
+         0+tUg0YHMuipCcP+ijS6f5sbmDHRu5Ghunh49b0m/f0Bdu2ZO1jmnYd/r3QSOyANWI3F
+         D33VH9Q5SpGycQrsec5UaKFg2Xhp0vrYnXOxhBxW8Aq0CP8DG21ZUNCGlrjxbvpvINJC
+         alIXV+4qQ8pIw+8dsYczW8nCA6QOWxwNvdxGcYmGS4pSHiz3dkBgsQfWL3VRG2xTCSly
+         /1Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mMtYnNr5g5oPqRSwkm+a7GegW70Zgr2odwgJUALqy5M=;
+        b=g2Kv7BeHrHrG2NW5UwGfFhrESyDehVd0s7o/zyvDRWjKOTnCNziPZ9e9lhyYmzphwz
+         qb+dDJsPN6zXCGBFEe+V4Qz2jmD4SUgvUz/bEGXzfKtl557oWHMXMxfWGSRZm2nCVJ5A
+         qwLRfaTmNiXGD0l1PNDU3oO+fKu3NWKfKUJ0FE+hguPLhIelxB5e7V+z8JAFjTJQhxRk
+         ZhL8IV7jvFB2n7oJRcxcIFApimpxieHbckiqdG33Wcd0H4ckBKmyl1lV+cpfPj71VjPK
+         n0nhuyk5qieALpP98o0K9tGK6OaTsJfc8YJlO2faBv61//DwAvVEQUNeaCfiEkct+mSc
+         bjLA==
+X-Gm-Message-State: AOAM532dHH8goTpN/AHRu7tj64SiSloCAQNcGjP36uBsNWImGCupe3gL
+        uCLgKUhI40YiOfXlpsObqMg=
+X-Google-Smtp-Source: ABdhPJx0rQ9Nle2jdwmDEEXHCuUDR4FhUp2ahZdnjHyWpmgvZ4u3vONskdSLbOwjYap4pMLl29pcLA==
+X-Received: by 2002:a2e:8047:: with SMTP id p7mr9430036ljg.206.1589195549981;
+        Mon, 11 May 2020 04:12:29 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:540:28d4:e600:cdb2:b5ce:8f29:26b7])
+        by smtp.gmail.com with ESMTPSA id a10sm9498128ljp.16.2020.05.11.04.12.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 04:12:29 -0700 (PDT)
+From:   nikitos.tr@gmail.com
+To:     pavel@ucw.cz
+Cc:     dmurphy@ti.com, robh+dt@kernel.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Nikita Travkin <nikitos.tr@gmail.com>
+Subject: [PATCH v2 1/3] dt-bindings: vendor-prefixes: Add Shanghai Awinic Technology Co., Ltd.
+Date:   Mon, 11 May 2020 16:11:26 +0500
+Message-Id: <20200511111128.16210-1-nikitos.tr@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0vewSiFc4rXu43_bs_A85EYx12_YuyBaU3PYJ1HszE=w@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+From: Nikita Travkin <nikitos.tr@gmail.com>
 
-On 09/05/2020 01:17, Arnd Bergmann wrote:
-> On Fri, May 8, 2020 at 12:01 PM Grygorii Strashko
-> <grygorii.strashko@ti.com> wrote:
-> 
->> +static int __init k3_chipinfo_init(void)
->> +{
->> +       struct soc_device_attribute *soc_dev_attr;
->> +       struct soc_device *soc_dev;
->> +       struct device_node *node;
->> +       struct regmap *regmap;
->> +       u32 partno_id;
->> +       u32 variant;
->> +       u32 jtag_id;
->> +       u32 mfg;
->> +       int ret;
->> +
->> +       node = of_find_compatible_node(NULL, NULL, "ti,am654-chipid");
->> +       if (!node)
->> +               return -ENODEV;
-> 
-> This will fail the initcall and print a warning when the kernel runs on any
-> other SoC. Would it be possible to just make this a platform_driver?
-> 
-> If not, I think you should silently return success when the device
-> node is absent.
+Add the "awinic" vendor prefix for Shanghai Awinic Technology Co., Ltd.
+Website: https://www.awinic.com/
 
-Thank you for your report.
-Can' make it platform drv., as te SoC info need to be accessible by divers early.
-I'll fix it to return success.
+Signed-off-by: Nikita Travkin <nikitos.tr@gmail.com>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 442579a4c837..8da5b275ece8 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -133,6 +133,8 @@ patternProperties:
+     description: Shanghai AVIC Optoelectronics Co., Ltd.
+   "^avnet,.*":
+     description: Avnet, Inc.
++  "^awinic,.*":
++    description: Shanghai Awinic Technology Co., Ltd.
+   "^axentia,.*":
+     description: Axentia Technologies AB
+   "^axis,.*":
 -- 
-Best regards,
-grygorii
+2.20.1
+
