@@ -2,119 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE6B1CD813
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69001CD85F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729672AbgEKLZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:25:35 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:8132 "EHLO pegase1.c-s.fr"
+        id S1730066AbgEKL26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:28:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729580AbgEKLZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:25:31 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49LJWk4Dq0z9ty3k;
-        Mon, 11 May 2020 13:25:22 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id wGN_it8mbnWn; Mon, 11 May 2020 13:25:22 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49LJWk3MVtz9ty3g;
-        Mon, 11 May 2020 13:25:22 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1F8828B7AE;
-        Mon, 11 May 2020 13:25:29 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id XRFE_p_tBFYi; Mon, 11 May 2020 13:25:29 +0200 (CEST)
-Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DD0538B7AD;
-        Mon, 11 May 2020 13:25:28 +0200 (CEST)
-Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id C44F465A09; Mon, 11 May 2020 11:25:28 +0000 (UTC)
-Message-Id: <70bad8bc9b7a4326a4d20849bccdfad078c004ac.1589196133.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1589196133.git.christophe.leroy@csgroup.eu>
-References: <cover.1589196133.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3 03/45] powerpc/kasan: Fix shadow pages allocation failure
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 11 May 2020 11:25:28 +0000 (UTC)
+        id S1729642AbgEKLZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 07:25:32 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C62C2082E;
+        Mon, 11 May 2020 11:25:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589196332;
+        bh=qMkiO+nWfOUzErqZNGHGc5Th27FIV5HW8D5tvjyuXHs=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=0oXMv+ETdO3rQxlCT0GO3lg73QBlXaBRcVjUnmUmVSboJLx5amHazoi5qvJWKDrRC
+         zzEaPGumfz6VaPkcXFGWHOspaKif1CwGLM9rZiH91DnCeeV2pivO4KSRJcXUb7LItx
+         EDEHzmf2oVptDj5bzZr3iOYblS4ZmO+DHjPHJI0Y=
+Date:   Mon, 11 May 2020 12:25:29 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1589185530-28170-1-git-send-email-hayashi.kunihiko@socionext.com>
+References: <1589185530-28170-1-git-send-email-hayashi.kunihiko@socionext.com>
+Subject: Re: [PATCH 1/2] spi: uniphier: Depend on HAS_IOMEM
+Message-Id: <158919630590.8372.2120054682053294081.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Doing kasan pages allocation in MMU_init is too early, kernel doesn't
-have access yet to the entire memory space and memblock_alloc() fails
-when the kernel is a bit big.
+On Mon, 11 May 2020 17:25:29 +0900, Kunihiko Hayashi wrote:
+> The driver uses devm_ioremap_resource() which is only available when
+> CONFIG_HAS_IOMEM is set, so the driver depends on this option.
 
-Do it from kasan_init() instead.
+Applied to
 
-Fixes: 2edb16efc899 ("powerpc/32: Add KASAN support")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/kasan.h      | 2 --
- arch/powerpc/mm/init_32.c             | 2 --
- arch/powerpc/mm/kasan/kasan_init_32.c | 4 +++-
- 3 files changed, 3 insertions(+), 5 deletions(-)
+   local tree asoc/for-5.7
 
-diff --git a/arch/powerpc/include/asm/kasan.h b/arch/powerpc/include/asm/kasan.h
-index fc900937f653..4769bbf7173a 100644
---- a/arch/powerpc/include/asm/kasan.h
-+++ b/arch/powerpc/include/asm/kasan.h
-@@ -27,12 +27,10 @@
- 
- #ifdef CONFIG_KASAN
- void kasan_early_init(void);
--void kasan_mmu_init(void);
- void kasan_init(void);
- void kasan_late_init(void);
- #else
- static inline void kasan_init(void) { }
--static inline void kasan_mmu_init(void) { }
- static inline void kasan_late_init(void) { }
- #endif
- 
-diff --git a/arch/powerpc/mm/init_32.c b/arch/powerpc/mm/init_32.c
-index 872df48ae41b..a6991ef8727d 100644
---- a/arch/powerpc/mm/init_32.c
-+++ b/arch/powerpc/mm/init_32.c
-@@ -170,8 +170,6 @@ void __init MMU_init(void)
- 	btext_unmap();
- #endif
- 
--	kasan_mmu_init();
--
- 	setup_kup();
- 
- 	/* Shortly after that, the entire linear mapping will be available */
-diff --git a/arch/powerpc/mm/kasan/kasan_init_32.c b/arch/powerpc/mm/kasan/kasan_init_32.c
-index 8b15fe09b967..b7c287adfd59 100644
---- a/arch/powerpc/mm/kasan/kasan_init_32.c
-+++ b/arch/powerpc/mm/kasan/kasan_init_32.c
-@@ -131,7 +131,7 @@ static void __init kasan_unmap_early_shadow_vmalloc(void)
- 	flush_tlb_kernel_range(k_start, k_end);
- }
- 
--void __init kasan_mmu_init(void)
-+static void __init kasan_mmu_init(void)
- {
- 	int ret;
- 	struct memblock_region *reg;
-@@ -159,6 +159,8 @@ void __init kasan_mmu_init(void)
- 
- void __init kasan_init(void)
- {
-+	kasan_mmu_init();
-+
- 	kasan_remap_early_shadow_ro();
- 
- 	clear_page(kasan_early_shadow_page);
--- 
-2.25.0
+Thanks!
 
+[1/2] spi: uniphier: Depend on HAS_IOMEM
+      (no commit info)
+[2/2] spi: uniphier: Use devm_platform_get_and_ioremap_resource() to simplify code
+      (no commit info)
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
