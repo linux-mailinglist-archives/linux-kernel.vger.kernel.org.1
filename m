@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1831CE1A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 19:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3BEA1CE1BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 19:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730800AbgEKR0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 13:26:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:36646 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729698AbgEKR0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 13:26:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 658B930E;
-        Mon, 11 May 2020 10:26:08 -0700 (PDT)
-Received: from [10.37.12.116] (unknown [10.37.12.116])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2C3493F305;
-        Mon, 11 May 2020 10:26:00 -0700 (PDT)
-Subject: Re: [PATCH] coresight: platform: use dev_warn instead of
- dev_warn_once
-To:     mathieu.poirier@linaro.org, kathirav@codeaurora.org
-Cc:     mike.leach@linaro.org, alexander.shishkin@linux.intel.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1588933721-18700-1-git-send-email-kathirav@codeaurora.org>
- <20200511165851.GB13202@xps15>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <2d59194a-2785-8762-81cd-bef34c6a51ec@arm.com>
-Date:   Mon, 11 May 2020 18:31:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1730996AbgEKRbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 13:31:41 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:27597 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729698AbgEKRbl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 13:31:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589218300;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M7lM8hUA0SbdYYpVAj09UaKq4AT4gRnDmZQFc7p0Moo=;
+        b=i6vfjCtmOKlCvNoUHW62kMCslfaxoUwW4f7kWNkcUaGGZUI5th/6Xow5j5a26ggxKZ/kyw
+        C4bOwF7rbSIYU9qp4b4vf2jfCiACEHAJfMqtEBsRR56Q33frfj9CoQTfR+1qVg1AdO0ZWG
+        98jNM9D8dpcVU0Wj+ZIb/i+7xu0fTeo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-228-gL6XFok0Oly971BA8NDF1Q-1; Mon, 11 May 2020 13:31:24 -0400
+X-MC-Unique: gL6XFok0Oly971BA8NDF1Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 851C819057A0;
+        Mon, 11 May 2020 17:31:22 +0000 (UTC)
+Received: from [10.10.116.128] (ovpn-116-128.rdu2.redhat.com [10.10.116.128])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BC9E66606E;
+        Mon, 11 May 2020 17:31:20 +0000 (UTC)
+Subject: Re: INFO: task hung in do_read_cache_page (3)
+To:     syzbot <syzbot+518c54e255b5031adde4@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, amir73il@gmail.com, axboe@kernel.dk,
+        darrick.wong@oracle.com, jack@suse.cz, josef@toxicpanda.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com, william.kucharski@oracle.com,
+        willy@infradead.org
+References: <000000000000dc82ac05a55f3005@google.com>
+From:   Mike Christie <mchristi@redhat.com>
+Message-ID: <c8f94666-3e55-2421-78c6-c2cdd0f24d16@redhat.com>
+Date:   Mon, 11 May 2020 12:31:20 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200511165851.GB13202@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <000000000000dc82ac05a55f3005@google.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11/2020 05:58 PM, Mathieu Poirier wrote:
-> Hi Kathiravan,
+On 5/11/20 8:19 AM, syzbot wrote:
+> syzbot has bisected this bug to:
 > 
-> On Fri, May 08, 2020 at 03:58:41PM +0530, Kathiravan T wrote:
->> When more than one coresight components uses the obsolete DT bindings,
->> warning is displayed for only one component and not for the others.
->> Lets warn it for all components by replacing dev_warn_once with dev_warn.
->>
->> Signed-off-by: Kathiravan T <kathirav@codeaurora.org>
->> ---
->>   drivers/hwtracing/coresight/coresight-platform.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
->> index 43418a2..b7d9a02 100644
->> --- a/drivers/hwtracing/coresight/coresight-platform.c
->> +++ b/drivers/hwtracing/coresight/coresight-platform.c
->> @@ -284,7 +284,7 @@ static int of_get_coresight_platform_data(struct device *dev,
->>   	if (!parent) {
->>   		legacy_binding = true;
->>   		parent = node;
->> -		dev_warn_once(dev, "Uses obsolete Coresight DT bindings\n");
->> +		dev_warn(dev, "Uses obsolete Coresight DT bindings\n");
+> commit 2da22da573481cc4837e246d0eee4d518b3f715e
+> Author: Mike Christie <mchristi@redhat.com>
+> Date:   Tue Aug 13 16:39:52 2019 +0000
 > 
-> We made a concious decision to use dev_warn_once() rather than dev_warn().
-> There can be a lot of coresight devices on a platform and warning for every
-> device doesn't do anything more than adding noise.
+>     nbd: fix zero cmd timeout handling v2
 > 
-> If one device is using obsolete bindings the others very likely to do so as
-> well.  While fixing one device, checking the remaining devices should be
-> intuitive.
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11d6ab14100000
+> start commit:   e99332e7 gcc-10: mark more functions __init to avoid secti..
+> git tree:       upstream
+> final crash:    https://syzkaller.appspot.com/x/report.txt?x=13d6ab14100000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15d6ab14100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8a96cf498e199d8b
+> dashboard link: https://syzkaller.appspot.com/bug?extid=518c54e255b5031adde4
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=146e45ec100000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=164444a4100000
+> 
+> Reported-by: syzbot+518c54e255b5031adde4@syzkaller.appspotmail.com
+> Fixes: 2da22da57348 ("nbd: fix zero cmd timeout handling v2")
+> 
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
 
-Exactly ! Or someone could repeat the process until all are fixed ;-)
+How do you adjust/modify what is expected from the test or what is
+reported as an error?
 
-Cheers
-Suzuki
+The patch added back behavior that got removed. With the patch we expect
+the hung task warnings, because we specifically want to hold onto
+running commands for longer than 120/hung_task_timeout seconds
+
