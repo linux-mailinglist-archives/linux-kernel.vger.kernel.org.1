@@ -2,200 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 366481CD82C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5915A1CD810
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729922AbgEKL0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:26:21 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2184 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729864AbgEKL0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:26:16 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 3774A85C518BDB71CCA5;
-        Mon, 11 May 2020 12:26:15 +0100 (IST)
-Received: from [127.0.0.1] (10.47.0.142) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 11 May
- 2020 12:26:13 +0100
-Subject: Re: [PATCH RFC v3 09/12] perf metricgroup: Split up
- metricgroup__add_metric()
-To:     Jiri Olsa <jolsa@redhat.com>, <qiangqing.zhang@nxp.com>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <namhyung@kernel.org>, <will@kernel.org>, <ak@linux.intel.com>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <irogers@google.com>, <robin.murphy@arm.com>,
-        <zhangshaokun@hisilicon.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <1588852671-61996-1-git-send-email-john.garry@huawei.com>
- <1588852671-61996-10-git-send-email-john.garry@huawei.com>
- <20200511110118.GA2986380@krava>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <eeb29c90-52fc-fd17-6ad0-745372a1a15d@huawei.com>
-Date:   Mon, 11 May 2020 12:25:22 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
-MIME-Version: 1.0
-In-Reply-To: <20200511110118.GA2986380@krava>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.0.142]
-X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+        id S1729555AbgEKLZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:25:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726068AbgEKLZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 07:25:26 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1A3520722;
+        Mon, 11 May 2020 11:25:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589196326;
+        bh=23t0/WcS+2Mlv461sc+mk+6Tyg7VLqyFZMsaM2GNRP8=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=qgF3COVBhRMrAD+N2rt5A0nGnoRrFMvXWIoourMXjd9CjX4ozvuZNoZgDKsLWjLlR
+         9jPCRhWD8iBui2HB561GKJ4NhQ8/KdalJZXV7nXd3/7UD7u6XUub9LB1yTvbIEOHGc
+         dmmAJwrL2zemuMiG71Q/ZOqSdoYw8LWb3ElLrweo=
+Date:   Mon, 11 May 2020 12:25:23 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     mazziesaccount@gmail.com,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     brendanhiggins@google.com, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        sre@kernel.org
+In-Reply-To: <20200509151519.GA7100@localhost.localdomain>
+References: <20200509151519.GA7100@localhost.localdomain>
+Subject: Re: [PATCH] lib: linear_ranges: Add missing MODULE_LICENSE()
+Message-Id: <158919630590.8372.10685814849051811697.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/05/2020 12:01, Jiri Olsa wrote:
-> On Thu, May 07, 2020 at 07:57:48PM +0800, John Garry wrote:
->> To aid supporting system event metric groups, break up the function
->> metricgroup__add_metric() into a part which iterates metrics and a part
->> which actually "adds" the metric.
->>
->> No functional change intended.
-> 
-> this no longer applied on Arnaldo's perf/core,
+On Sat, 9 May 2020 18:15:19 +0300, Matti Vaittinen wrote:
+> When linear_ranges is compiled as module we get warning
+> about missing MODULE_LICENSE(). Fix it by adding
+> MODULE_LICENSE("GPL") as is suggested by SPDX and EXPORTs.
 
+Applied to
 
-Hi jirka,
+   local tree asoc/for-5.7
 
-> it's very busy part now :-\
+Thanks!
 
-Right.
+[1/1] lib: linear_ranges: Add missing MODULE_LICENSE()
+      (no commit info)
 
-So I could rebase and resend, but I rather avoid that if possible since 
-the metric code is so busy.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-The point is that I would like to see progress on the kernel part first 
-(to expose per-PMU sysfs identifier file). Once we agreement there, then 
-I can promote this series to non-RFC and ensure I'm based on acme tip.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Hi Joakim, can you progress 
-https://lore.kernel.org/linux-arm-kernel/20200226073433.5834-1-qiangqing.zhang@nxp.com/ 
-to non-RFC now?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-John
-
-
-> 
-> jirka
-> 
->>
->> Signed-off-by: John Garry <john.garry@huawei.com>
->> ---
->>   tools/perf/util/metricgroup.c | 75 ++++++++++++++++++++++++++-----------------
->>   1 file changed, 45 insertions(+), 30 deletions(-)
->>
->> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
->> index 926449a7cdbf..d1033756a1bc 100644
->> --- a/tools/perf/util/metricgroup.c
->> +++ b/tools/perf/util/metricgroup.c
->> @@ -231,6 +231,12 @@ static bool match_metric(const char *n, const char *list)
->>   	return false;
->>   }
->>   
->> +static bool match_pe_metric(struct pmu_event *pe, const char *metric)
->> +{
->> +	return match_metric(pe->metric_group, metric) ||
->> +	       match_metric(pe->metric_name, metric);
->> +}
->> +
->>   struct mep {
->>   	struct rb_node nd;
->>   	const char *name;
->> @@ -485,6 +491,40 @@ static bool metricgroup__has_constraint(struct pmu_event *pe)
->>   	return false;
->>   }
->>   
->> +static int metricgroup__add_metric_pmu_event(struct pmu_event *pe,
->> +					     struct strbuf *events,
->> +					     struct list_head *group_list)
->> +{
->> +	const char **ids;
->> +	int idnum;
->> +	struct egroup *eg;
->> +
->> +	pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
->> +
->> +	if (expr__find_other(pe->metric_expr, NULL, &ids, &idnum) < 0)
->> +		return 0;
->> +
->> +	if (events->len > 0)
->> +		strbuf_addf(events, ",");
->> +
->> +	if (metricgroup__has_constraint(pe))
->> +		metricgroup__add_metric_non_group(events, ids, idnum);
->> +	else
->> +		metricgroup__add_metric_weak_group(events, ids, idnum);
->> +
->> +	eg = malloc(sizeof(*eg));
->> +	if (!eg)
->> +		return -ENOMEM;
->> +	eg->ids = ids;
->> +	eg->idnum = idnum;
->> +	eg->metric_name = pe->metric_name;
->> +	eg->metric_expr = pe->metric_expr;
->> +	eg->metric_unit = pe->unit;
->> +	list_add_tail(&eg->nd, group_list);
->> +
->> +	return 0;
->> +}
->> +
->>   static int metricgroup__add_metric(const char *metric, struct strbuf *events,
->>   				   struct list_head *group_list)
->>   {
->> @@ -502,37 +542,12 @@ static int metricgroup__add_metric(const char *metric, struct strbuf *events,
->>   			break;
->>   		if (!pe->metric_expr)
->>   			continue;
->> -		if (match_metric(pe->metric_group, metric) ||
->> -		    match_metric(pe->metric_name, metric)) {
->> -			const char **ids;
->> -			int idnum;
->> -			struct egroup *eg;
->> -
->> -			pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
->>   
->> -			if (expr__find_other(pe->metric_expr,
->> -					     NULL, &ids, &idnum) < 0)
->> -				continue;
->> -			if (events->len > 0)
->> -				strbuf_addf(events, ",");
->> -
->> -			if (metricgroup__has_constraint(pe))
->> -				metricgroup__add_metric_non_group(events, ids, idnum);
->> -			else
->> -				metricgroup__add_metric_weak_group(events, ids, idnum);
->> -
->> -			eg = malloc(sizeof(struct egroup));
->> -			if (!eg) {
->> -				ret = -ENOMEM;
->> -				break;
->> -			}
->> -			eg->ids = ids;
->> -			eg->idnum = idnum;
->> -			eg->metric_name = pe->metric_name;
->> -			eg->metric_expr = pe->metric_expr;
->> -			eg->metric_unit = pe->unit;
->> -			list_add_tail(&eg->nd, group_list);
->> -			ret = 0;
->> +		if (match_pe_metric(pe, metric)) {
->> +			ret = metricgroup__add_metric_pmu_event(pe, events,
->> +								group_list);
->> +			if (ret)
->> +				return ret;
->>   		}
->>   	}
->>   	return ret;
->> -- 
->> 2.16.4
->>
-> 
-> .
-> 
-
+Mark
