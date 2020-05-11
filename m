@@ -2,120 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93341CE887
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 00:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 681C81CE88A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 00:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgEKWxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 18:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
+        id S1727869AbgEKWyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 18:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725836AbgEKWx2 (ORCPT
+        by vger.kernel.org with ESMTP id S1725828AbgEKWyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 18:53:28 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DB9C061A0C;
-        Mon, 11 May 2020 15:53:27 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id i68so9556287qtb.5;
-        Mon, 11 May 2020 15:53:27 -0700 (PDT)
+        Mon, 11 May 2020 18:54:11 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC6AC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 15:54:11 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id c18so10403084ile.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 15:54:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YphSq6A1v4I+cV1naaXrYy9+htaDBx1Hhi/F0oFai1E=;
-        b=vc3uSObPLePA6JT0lSL3grgVDF8dkVZqHkTljTrBVZapWRF92Thk9z0hcIIUhu2Mwg
-         wkXlTsyNDosMUUWpL3ho7Ar2sEWUEIbA2DZdWnswQhvGfnBUWdDPmlZ/8LmtJnOzopJs
-         x2py/I3vEg2KGuD0i673/J2rFs/bOTC9pRclJ1E4tHtzOLx9uwohYfl+m6bs4ozrUFkw
-         eaSyVIyatC2Cnz1wgnECAuu6hA8UkOLvE5m3d0grTgjA0Wyf8k0w+f5VS4hXrqbYXI1e
-         DxXrNHsgEc7e5fPHAp2Qfq/s3HglwjFBWC3VNiLwfG7E5UU8WV5bvZmPIEgaPn8Zi5p+
-         HMtw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GPqPt+LvpyhigCOhSWJiaFTaWdPgFw1mAm/F4h69auc=;
+        b=uftKWEI+n9GZB7RWezlifiB8sDtRPtbEmmq8HWPjeWwJ/cRYg2pl5241xRCuo4BSo8
+         YIt7mTpu+MNAxKxfMKwf0r6TzoEGEEnbPoaBNwHaqdxlo5SJT8ToQPemoR0rJKzVBak9
+         EYGunad7teqx3hUoYD2jU8JiGxklWqYQyidGtANjKQGDeQH4tuTrjI1RHN0rN85y52tZ
+         7/qRpGbRDFCotBApI6/NmVBtyvlKxAkIVbboat/cdWxDZk4URHiTOvmLYPtC2BE79xzq
+         xxeinuSye7EkIV2qSaFvgnxdAg+wgP1/WufaWIeRM1foOzSfUHWd+I9AAjAsBESWOhHt
+         Jbuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=YphSq6A1v4I+cV1naaXrYy9+htaDBx1Hhi/F0oFai1E=;
-        b=p+bDCKEhpWkdTl7r6U4tt2+Ywr1S4KmsP9zYHPhYrcel8XIMIRvgwiSBFv8kjxQnEO
-         ntLWbNQgmaoJg1kiBt6KEZWYfQlZT6+lcmo9uS1K8YDtHA0usvSvtDNa3wesECre4F31
-         9IpJKXBax0uPFX3kMJkEWC/8goLozaoyyH3HzyKyMb3uXo2MqmdL6Fw9vxOv1jZO2dZf
-         WSRwk2SB26aWowzIwdw6LWHqi/6b/Pp1rglaxqC15Ya/PT1c1YRie3upaoLVjMaAfPF/
-         xJdypjSeY7BkEqUOnzkFKm8PVfqBoUAjBn1rXvq4+Tyy/hzX7CGvdq6NyUUk43GVMS78
-         ZYUw==
-X-Gm-Message-State: AGi0Pua/jXTq8rztatBwqT48IZeqQM/OGCHKd1U19fbCqs/7uV16VOb+
-        M37r00RGXPvT8UNLf68GW/AhnjH971g=
-X-Google-Smtp-Source: APiQypLYqUazQMqxESsO3qdbOBln1514e3zcNq96foSMd6Kfctag6VJpizyanbpss3qBoDztbfVW/A==
-X-Received: by 2002:ac8:839:: with SMTP id u54mr12267672qth.382.1589237606886;
-        Mon, 11 May 2020 15:53:26 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id b33sm2382131qtk.97.2020.05.11.15.53.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 15:53:26 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Mon, 11 May 2020 18:53:24 -0400
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Mike Lothian <mike@fireburn.co.uk>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>
-Subject: Re: [PATCH v2 4/5] efi/x86: Remove extra headroom for setup block
-Message-ID: <20200511225324.GA1307788@rani.riverdale.lan>
-References: <20200303221205.4048668-5-nivedita@alum.mit.edu>
- <20200511170149.1363260-1-mike@fireburn.co.uk>
- <20200511183645.GA596850@rani.riverdale.lan>
- <CAMj1kXEmJRpVyWDVkBn9eL0y0J4iVrUkYZd_pk_oKOeQPH661g@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GPqPt+LvpyhigCOhSWJiaFTaWdPgFw1mAm/F4h69auc=;
+        b=Z/agDtt3XTVzz77J3fVuU4bv/SWRGoy0P6gdmfS0KAe0pLgK32ShbApJy27ro4znOP
+         QkXaC7eVf8bmu+IrDFwpx+E79FqthTd0H5RHCcFe/4Oe5CeBR46gxytlVgHTI+uJ/fy1
+         fC+p0hWR3dfxEN+3L78/rbqtCn3AYehs3kEeKC7w1IwdKq/p4Lu8Evw+1OBTXR4orHL2
+         Yytgpas2993ZyYjbqbvOhlwhM4+13b937DLQu13f0qL4OhbQiqqmi+9rFFHuV3RFgWxR
+         hDFreUMr0td4TmwIHHSEKpgcm+c7iKGvb2q1Y9i1sDSTizhoWrWq5mGQWGIPk995aVmb
+         iEgQ==
+X-Gm-Message-State: AGi0PuarTGSSWvvTd6zhRb6pA/gdBRwxv3TRbImz9KnrsnOnba+FC/Nm
+        /Tbr3sKfuSHJTL0z2jhHiJon0fCEoYW9YbTMXw==
+X-Google-Smtp-Source: APiQypLLW4kSraX2xLdb7NEi1dpDxPOGfEEYBhEvfQrmvqmgM2Iz6CPpGFFnvqB7VN7uslkJKhSqvkvjyD9jGJb51NE=
+X-Received: by 2002:a92:bf06:: with SMTP id z6mr17283577ilh.191.1589237651050;
+ Mon, 11 May 2020 15:54:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXEmJRpVyWDVkBn9eL0y0J4iVrUkYZd_pk_oKOeQPH661g@mail.gmail.com>
+References: <20200504230309.237398-1-ndesaulniers@google.com>
+ <CAKwvOdmspKUknbzDn9kY2jMgkFw=Ktvst0ZtwambDOfybqJGWw@mail.gmail.com>
+ <CAMzpN2iDottAY3p=GS0A_7XX7bpmWsmSOEcztMXNEEvcwHirjg@mail.gmail.com>
+ <CAKwvOdnxV_KwC-q73e3basJvo4-9FCGeMUOrZLj5xyt6Yyeh2A@mail.gmail.com> <CAMzpN2gTEwGh0U+L3_R6pC8Qmv1iY7bRTiTEXD86mF3u9Nnkqg@mail.gmail.com>
+In-Reply-To: <CAMzpN2gTEwGh0U+L3_R6pC8Qmv1iY7bRTiTEXD86mF3u9Nnkqg@mail.gmail.com>
+From:   Brian Gerst <brgerst@gmail.com>
+Date:   Mon, 11 May 2020 18:54:00 -0400
+Message-ID: <CAMzpN2jcCM4m_HnJPc6kpVhnf588w6bPxYM_bCEd3OgbnvBvTg@mail.gmail.com>
+Subject: Re: [PATCH] x86: support i386 with Clang
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Dmitry Golovin <dima@golovin.in>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 11:13:00PM +0200, Ard Biesheuvel wrote:
-> On Mon, 11 May 2020 at 20:36, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+On Mon, May 11, 2020 at 3:34 PM Brian Gerst <brgerst@gmail.com> wrote:
+>
+> On Mon, May 11, 2020 at 2:46 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
 > >
-> > On Mon, May 11, 2020 at 06:01:49PM +0100, Mike Lothian wrote:
-> > > Hi
-> > >
-> > > This patch has been causing issues for me since switching to GCC 10.1:
-> > >
-> > >   CALL    scripts/checksyscalls.sh
-> > >   CALL    scripts/atomic/check-atomics.sh
-> > >   DESCEND  objtool
-> > >   CHK     include/generated/compile.h
-> > >   HOSTCC  arch/x86/boot/tools/build
-> > > /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld: error: linker defined: multiple definition of '_end'
-> > > /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld: /tmp/ccEkW0jM.o: previous definition here
-> > > collect2: error: ld returned 1 exit status
-> > > make[1]: *** [scripts/Makefile.host:103: arch/x86/boot/tools/build] Error 1
-> > > make: *** [arch/x86/Makefile:303: bzImage] Error 2
-> > >
-> > > Cheers
-> > >
-> > > Mike
+> > On Mon, May 11, 2020 at 11:09 AM Brian Gerst <brgerst@gmail.com> wrote:
+> > > This looks like the same issue that we just discussed for bitops.h.
+> > > Add the "b" operand size modifier to force it to use the 8-bit
+> > > register names (and probably also needs the "w" modifier in the 16-bit
+> > > case).
 > >
-> > I'm not getting an error even with gcc 10 for some reason, but I can see
-> > that it is busted. It's using the linker-defined _end symbol which is
-> > just pass the end of the .bss.
-> >
-> > Does adding "static" to the declaration of _end fix your error?
-> 
-> This is in a host tool, so it depends on the builtin linker script the
-> toolchain decides to use. This is risky, though, as it may be using
-> PROVIDE() for _end, which means that in cases where it doesn't break,
-> other references to _end that may exist will be linked to the wrong
-> symbol. I don't think 'build' should be expected to do anything
-> interesting with its own representation in memory, but better fix it
-> nonetheless.
+> > While it does feel familiar, it is slightly different.
+> > https://godbolt.org/z/Rme4Zg
+> > That case was both compilers validating the inline asm, yet generating
+> > assembly that the assembler would choke on.  This case is validation
+> > in the front end failing.
+>
+> > long long ret;
+> > switch (sizeof(ret)) {
+> > case 1:
+> >         asm ("movb $5, %0" : "=q" (ret));
+> >         break;
+> > case 8:;
+> > }
+>
+> So if the issue here is that the output variable type is long long,
+> what code is using a 64-bit percpu variable on a 32-bit kernel?  Can
+> you give a specific file that fails to build with Clang?  If Clang is
+> choking on it it may be silently miscompiling on GCC.
 
-Right, _end _is_ getting redefined in my system linker script too: I can
-see with objdump that the final _end symbol in my version of build is
-actually pointing beyond the .bss. But my toolchain doesn't report an
-error for some reason.
+On further investigation, 64-bit percpu operations fall back to the
+generic code on x86-32, so there is no problem with miscompiling here.
 
-> 
-> Arvind: mind sending a fix for this, please?
+On a side note from looking at the preprocessed output of the percpu
+macros: they generate a ton of extra dead code because the core macros
+also have a switch on data size.  I will take a stab at cleaning that
+up.
 
-Yeah, I have one ready -- was just waiting to hear back if "static" did
-fix it, but I can send it out now.
+--
+Brian Gerst
