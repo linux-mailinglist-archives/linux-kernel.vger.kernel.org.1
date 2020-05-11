@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E001CE6D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0681CE62A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732264AbgEKVEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44004 "EHLO
+        id S1732027AbgEKU7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 16:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731916AbgEKU7i (ORCPT
+        by vger.kernel.org with ESMTP id S1731921AbgEKU7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 May 2020 16:59:38 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41390C061A0C;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF68BC061A0E;
         Mon, 11 May 2020 13:59:38 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jYFWR-0005m4-7N; Mon, 11 May 2020 22:59:35 +0200
+        id 1jYFWT-0005mm-8p; Mon, 11 May 2020 22:59:37 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 5F4551C0838;
-        Mon, 11 May 2020 22:59:25 +0200 (CEST)
-Date:   Mon, 11 May 2020 20:59:25 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 3D4E61C04CC;
+        Mon, 11 May 2020 22:59:26 +0200 (CEST)
+Date:   Mon, 11 May 2020 20:59:26 -0000
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu-tasks: Allow rcu_read_unlock_trace() under
- scheduler locks
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: core/rcu] rcu-tasks: Add Kconfig option to mediate smp_mb() vs. IPI
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158923076530.390.5183687395305308409.tip-bot2@tip-bot2>
+Message-ID: <158923076608.390.17677066133129942133.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -49,68 +47,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     b38f57c1fe64276773b124dffb0a139cc32ab3cb
-Gitweb:        https://git.kernel.org/tip/b38f57c1fe64276773b124dffb0a139cc32ab3cb
+Commit-ID:     9ae58d7bd11f1fc4c96389df11751f8593d8bd33
+Gitweb:        https://git.kernel.org/tip/9ae58d7bd11f1fc4c96389df11751f8593d8bd33
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Fri, 20 Mar 2020 14:29:08 -07:00
+AuthorDate:    Wed, 18 Mar 2020 17:16:37 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 27 Apr 2020 11:03:52 -07:00
 
-rcu-tasks: Allow rcu_read_unlock_trace() under scheduler locks
+rcu-tasks: Add Kconfig option to mediate smp_mb() vs. IPI
 
-The rcu_read_unlock_trace() can invoke rcu_read_unlock_trace_special(),
-which in turn can call wake_up().  Therefore, if any scheduler lock is
-held across a call to rcu_read_unlock_trace(), self-deadlock can occur.
-This commit therefore uses the irq_work facility to defer the wake_up()
-to a clean environment where no scheduler locks will be held.
+This commit provides a new TASKS_TRACE_RCU_READ_MB Kconfig option that
+enables use of read-side memory barriers by both rcu_read_lock_trace()
+and rcu_read_unlock_trace() when the are executed with the
+current->trc_reader_special.b.need_mb flag set.  This flag is currently
+never set.  Doing that is the subject of a later commit.
 
-Reported-by: Steven Rostedt <rostedt@goodmis.org>
-[ paulmck: Update #includes for m68k per kbuild test robot. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h  | 12 +++++++++++-
- kernel/rcu/update.c |  1 +
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ include/linux/rcupdate_trace.h |  3 ++-
+ kernel/rcu/Kconfig             | 18 ++++++++++++++++++
+ kernel/rcu/tasks.h             |  3 ++-
+ 3 files changed, 22 insertions(+), 2 deletions(-)
 
+diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
+index c42b365..4c25a41 100644
+--- a/include/linux/rcupdate_trace.h
++++ b/include/linux/rcupdate_trace.h
+@@ -50,7 +50,8 @@ static inline void rcu_read_lock_trace(void)
+ 	struct task_struct *t = current;
+ 
+ 	WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting) + 1);
+-	if (t->trc_reader_special.b.need_mb)
++	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
++	    t->trc_reader_special.b.need_mb)
+ 		smp_mb(); // Pairs with update-side barriers
+ 	rcu_lock_acquire(&rcu_trace_lock_map);
+ }
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index cb1d18e..0ebe15a 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -234,4 +234,22 @@ config RCU_NOCB_CPU
+ 	  Say Y here if you want to help to debug reduced OS jitter.
+ 	  Say N here if you are unsure.
+ 
++config TASKS_TRACE_RCU_READ_MB
++	bool "Tasks Trace RCU readers use memory barriers in user and idle"
++	depends on RCU_EXPERT
++	default PREEMPT_RT || NR_CPUS < 8
++	help
++	  Use this option to further reduce the number of IPIs sent
++	  to CPUs executing in userspace or idle during tasks trace
++	  RCU grace periods.  Given that a reasonable setting of
++	  the rcupdate.rcu_task_ipi_delay kernel boot parameter
++	  eliminates such IPIs for many workloads, proper setting
++	  of this Kconfig option is important mostly for aggressive
++	  real-time installations and for battery-powered devices,
++	  hence the default chosen above.
++
++	  Say Y here if you hate IPIs.
++	  Say N here if you hate read-side memory barriers.
++	  Take the default if you are unsure.
++
+ endmenu # "RCU Subsystem"
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index a9e8ecb..dd311e9 100644
+index 4857450..4147857 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -729,6 +729,16 @@ void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
- DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
- 		 "RCU Tasks Trace");
- 
-+/*
-+ * This irq_work handler allows rcu_read_unlock_trace() to be invoked
-+ * while the scheduler locks are held.
-+ */
-+static void rcu_read_unlock_iw(struct irq_work *iwp)
-+{
-+	wake_up(&trc_wait);
-+}
-+static DEFINE_IRQ_WORK(rcu_tasks_trace_iw, rcu_read_unlock_iw);
-+
- /* If we are the last reader, wake up the grace-period kthread. */
- void rcu_read_unlock_trace_special(struct task_struct *t, int nesting)
+@@ -734,7 +734,8 @@ void rcu_read_unlock_trace_special(struct task_struct *t, int nesting)
  {
-@@ -742,7 +752,7 @@ void rcu_read_unlock_trace_special(struct task_struct *t, int nesting)
- 		WRITE_ONCE(t->trc_reader_special.b.need_qs, false);
- 	WRITE_ONCE(t->trc_reader_nesting, nesting);
- 	if (nq && atomic_dec_and_test(&trc_n_readers_need_end))
--		wake_up(&trc_wait);
-+		irq_work_queue(&rcu_tasks_trace_iw);
- }
- EXPORT_SYMBOL_GPL(rcu_read_unlock_trace_special);
+ 	int nq = t->trc_reader_special.b.need_qs;
  
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index c579934..b1f07a0 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -41,6 +41,7 @@
- #include <linux/sched/isolation.h>
- #include <linux/kprobes.h>
- #include <linux/slab.h>
-+#include <linux/irq_work.h>
- 
- #define CREATE_TRACE_POINTS
- 
+-	if (t->trc_reader_special.b.need_mb)
++	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
++	    t->trc_reader_special.b.need_mb)
+ 		smp_mb(); // Pairs with update-side barriers.
+ 	// Update .need_qs before ->trc_reader_nesting for irq/NMI handlers.
+ 	if (nq)
