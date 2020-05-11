@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2C01CDD0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733091CDD0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729871AbgEKOYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 10:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728090AbgEKOYY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 10:24:24 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A035C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 07:24:24 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id f13so9271053qkh.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 07:24:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=twjRjT2Wvsa2Tj+eD74MQswCgBJyV7ZtvVkgi+TE9UQ=;
-        b=fpGx6N7DNhBxVLwQyeexrEdltZQN2DZv7wmEZzAqZUZRDiMPEF0mBtb8C5H8zuTvAF
-         mAYVknYYg/i7DAe675ObdafxuTG4o0i62Tj571zqSqlpBHaSqpNhBTxJW7dPrNULDNx/
-         aUMbGmSbUeH/J0OGoqOEIrJ7/bjjsIigzIZgXEX9IAFOCI5cznCfAMEElagLJ9+4Aeq6
-         0oTKJy4Yrq9hDtiRftAfnnkNZojLl7t1c3XJMQLou4luSavi/oqxWFDbAI2+CeD85GuA
-         2tHduSbB0tqE+QaXgUtuESM3ZfpGMwMkWq+S14ggQhaqWQ5f3N+Rh0hM+GzSGQcwsxtJ
-         hAmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=twjRjT2Wvsa2Tj+eD74MQswCgBJyV7ZtvVkgi+TE9UQ=;
-        b=CV7b0CBUALgSNOYP7Lp/Rh8AMsF0yMOmQNL/qk/bD0wKIjqqRT3lNIWayClPuJcHk+
-         QcaSfG61vd6bJTK1MTUjXgHcg0LkXLChuHT8fiSHcuRpdu+pzRxN9Ks+ksSYjeUlixtH
-         Pkz9+Eyvksc+IXmNt9Q4gcXo5cjkjwajQ9DvPJVXB0xQN0MH3nCRepQPdSK+HOxHUF03
-         I04GicEmof/gbUcZWGRhLc7FsPzrrwDaU95tCPd/KKOKgXLmhGJtxAfCCRqhp1dnGfYs
-         XXDhhOO987inPdHayNjaMkNrAdLxHRfcVXnCP7uTlF2urTE7bUJGdWExGhXE3ApDhUXP
-         9bYQ==
-X-Gm-Message-State: AGi0PuZTXh2FvIPdATSz8u9rK8Y3KM2TtbY4SlqJj6tUpG6luWgwHNmf
-        PX2iK0iyNV00kFINbp1mydc=
-X-Google-Smtp-Source: APiQypI0WWPgA6ZJzn5oadeRVnpu4qnGgdwyRN5ER+xZcazf4xXRXFT+S6lwV3DabqutxGbMJDmPlw==
-X-Received: by 2002:a37:65cd:: with SMTP id z196mr8886195qkb.473.1589207063461;
-        Mon, 11 May 2020 07:24:23 -0700 (PDT)
-Received: from localhost ([199.96.181.106])
-        by smtp.gmail.com with ESMTPSA id a190sm4025692qkc.118.2020.05.11.07.24.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 07:24:22 -0700 (PDT)
-Date:   Mon, 11 May 2020 10:24:18 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     rostedt@goodmis.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, wangle6@huawei.com
-Subject: Re: [PATCH] trace: Remove duplicate semicolons at the end of line
-Message-ID: <20200511142418.GB16815@mtj.duckdns.org>
-References: <1589196062-84310-1-git-send-email-nixiaoming@huawei.com>
+        id S1729916AbgEKOZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 10:25:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725993AbgEKOZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 10:25:24 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2128A20720;
+        Mon, 11 May 2020 14:25:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589207124;
+        bh=Mog0uHKNGC4M58mR6XZNypAnj4EbLBN8Kksnmu+paY4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hvmpmyVrRNbi0A3YvOn3ZCPJYU+VTX5gO2746dD3N6Hv4Hlu5VcceNIHCjx3N4t9g
+         /rQxL3rh/3DQqjaTbAq/aivalGVLtQEIfXKEPWc7OeJxiMmPAj/45hkdx/0y7E8uHj
+         BL29kx1UHt5XgWMjZcffDrSgz3SjeObAqGDbUyDw=
+Date:   Mon, 11 May 2020 22:25:10 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Anson Huang <anson.huang@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>
+Subject: Re: [PATCH V4 0/4] ARM: imx7ulp: support HSRUN mode
+Message-ID: <20200511142509.GA26997@dragon>
+References: <1586954449-17463-1-git-send-email-peng.fan@nxp.com>
+ <DB6PR0402MB27607B567D3FD7731A41E75688A50@DB6PR0402MB2760.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1589196062-84310-1-git-send-email-nixiaoming@huawei.com>
+In-Reply-To: <DB6PR0402MB27607B567D3FD7731A41E75688A50@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 07:21:02PM +0800, Xiaoming Ni wrote:
-> Remove duplicate semicolons at the end of line in
-> include/trace/events/iocost.h
+On Thu, May 07, 2020 at 06:27:52AM +0000, Peng Fan wrote:
+> > Subject: [PATCH V4 0/4] ARM: imx7ulp: support HSRUN mode
 > 
-> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> Ping..
+> 
+> Thanks,
+> Peng.
+> 
+> > 
+> > From: Peng Fan <peng.fan@nxp.com>
+> > 
+> > V4:
+> >   Fix dt_bindings check
+> >   The same patchset was wrongly posted as V2,
+> >   https://patchwork.kernel.org/cover/11485107/
+> > 
+> > This is a splited part from V2:
+> > ARM: imx7ulp: add cpufreq using cpufreq-dt
+> > https://patchwork.kernel.org/cover/11390589/
+> > Nothing changed
+> > 
+> > The original V2 patchset is to support i.MX7ULP cpufreq, still waiting the
+> > virtual clk being accepted. so to decouple, this patchset only takes the run
+> > mode part.
+> > 
+> > Peng Fan (4):
+> >   dt-bindings: fsl: add i.MX7ULP PMC binding doc
 
-Acked-by: Tejun Heo <tj@kernel.org>
+Need an ACK from Rob on this new binding.
 
-iocost changes normally goes through the block tree. Can you please resend
-with Jens Axboe <axboe@kernel.dk> and linux-block@vger.kernel.org added to
-the cc list?
+Shawn
 
-Thanks.
-
--- 
-tejun
+> >   ARM: dts: imx7ulp: add pmc node
+> >   ARM: imx: imx7ulp: support HSRUN mode
+> >   ARM: imx: cpuidle-imx7ulp: Stop mode disallowed when HSRUN
+> > 
+> >  .../bindings/arm/freescale/imx7ulp_pmc.yaml        | 32
+> > ++++++++++++++++++++++
+> >  arch/arm/boot/dts/imx7ulp.dtsi                     | 10 +++++++
+> >  arch/arm/mach-imx/common.h                         |  1 +
+> >  arch/arm/mach-imx/cpuidle-imx7ulp.c                | 14 ++++++++--
+> >  arch/arm/mach-imx/pm-imx7ulp.c                     | 25
+> > +++++++++++++++++
+> >  5 files changed, 79 insertions(+), 3 deletions(-)  create mode 100644
+> > Documentation/devicetree/bindings/arm/freescale/imx7ulp_pmc.yaml
+> > 
+> > --
+> > 2.16.4
+> 
