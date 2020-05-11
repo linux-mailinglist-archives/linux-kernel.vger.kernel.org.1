@@ -2,231 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FA71CDE20
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE631CDE57
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729999AbgEKPHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 11:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
+        id S1730153AbgEKPIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 11:08:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728090AbgEKPHI (ORCPT
+        by vger.kernel.org with ESMTP id S1728090AbgEKPIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 11:07:08 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31DF8C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:07:08 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id z80so4518078qka.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:07:08 -0700 (PDT)
+        Mon, 11 May 2020 11:08:22 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C34C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:08:20 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id y24so19747739wma.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:08:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ANAit2WX+K9wu4n6he8ngZbFdqawZzoQDVcmzxgA7go=;
-        b=vFO25KpXwg/4vtW8tD+XIfm9LH46+fQ6vvusO0tJeYwSNeBknXcUE5831e2qvIbxNB
-         +vEmtna2uZpKf+W/kuG3dxSgsESJKBqc4IhSu+vI0v1ulFrcCqAfkILo2N91JoiKJ1VS
-         IeKrygvNCP9TwKSM4nZZV+6aUOr9YP4M9uU2NnO214vrmh+gcV3XI6IYat+zBLyslXuz
-         qBTXHi14HEys8m8tByH7DOimgJvM9+KyoJhvhLRU6cUdxDSd9pfqwDB/NC1bpgSTNoHb
-         q4xx6h6LAXEjkdPchQEnaYQXvlQK/oG/0FN9w9FLsVDpbYuXFot5iHbtHU6WrxwDv07O
-         REGw==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/J8miyILwwd4yeHypeApHEY6tVwb+3C32vv+icx83JU=;
+        b=OTdMO8s1WgboMNhaDTGwQRLL6oPTm6LLnYMKvpds/gLxCEYm/L/tz9ICUGzZLiU3ei
+         YvwiSmIcssbhOdrNVTjU1HfBqBCs40dnl89hXOHPRmjaAeJghS71NCJu97EEFzClXyBj
+         zTErYcE0rLjPIXk+WVMw1CWhUrB1AnSiADXS9GirXjYlf3y0SX2kJ2UxyLMjh70hVx8I
+         8EHLcu3Ps8hB00DG8HRf8pVDeNBL0fkVe//Q9BB7IlC/wjAB4W/ZNdfHvQ/nEkSNqcuW
+         58RZ2Gwh4Oygoe8bll6iXGBANCMQIPkT9lY0vDfjRphc+q+S6RvvW0gPn4yLXGy29b/Y
+         zW1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ANAit2WX+K9wu4n6he8ngZbFdqawZzoQDVcmzxgA7go=;
-        b=SBmDBEvjSWqBUE+587cpeyIq/rkqGJJFEUn5bBCjJ4a8cYt0Ig6yn7WvorlC5A9BvV
-         Z0ldLuiN8qGydsCAXEG4txEnx0FdYD9o3oxIdZVnD/PFSamuHHCgHycJKjfnAcS4WpAF
-         2umNgnxiDGPBu8dBDZIqq20pyXBmngJxEYVE+T7gB1b0CmlFBVKUCnxLzwms+tkOKsIk
-         jZ6vEN7ipW9I41zdzBrwwkCqPcqhdLbhIQCpdvTNjvsjEQCJoIlcgFCqN8BOMfsShlFR
-         ZogFkxcSPgGZsMAvX6Z9TNfBh6L8xLSnCRuF/1lYH1uB85EYs/bI+2QRb6h0iMspQhZq
-         NLoA==
-X-Gm-Message-State: AGi0PuYSJUcOkn3c38fVYtcJVlN24u0Ts9ONXbWfK4p5Aq43GGF+9xsP
-        Ky/Z6x5Xru4dPf6EC7C5LMSbRA==
-X-Google-Smtp-Source: APiQypI3zax9mzs3ycZgpcHPMyHsq5/Hz/R3+ZSCs3htkIuCuIQ6i4eEs5zbW+/YH57wPpBL6Xadpg==
-X-Received: by 2002:a37:9344:: with SMTP id v65mr14585673qkd.366.1589209627242;
-        Mon, 11 May 2020 08:07:07 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:2627])
-        by smtp.gmail.com with ESMTPSA id l22sm8360550qki.45.2020.05.11.08.07.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/J8miyILwwd4yeHypeApHEY6tVwb+3C32vv+icx83JU=;
+        b=WZRqE8QLpZVtovscKoNec4daLaZp9GoBP/d2tX9OvFZK7p09+oJ5GbR1Lq8ExFgrg8
+         Cfzy0tRPFvcv9lWhVwQtQI7vQKL0vAT7Ct5njWrywv27QwgSO4GZbQ42C9VneT1BRaP1
+         MWUVI8fnhsB+2ZSxARKEKRXXcmc0Gl1s7wRnKVEmeMGvRVAnJXC3ZWMZlR47NhcIJ4rj
+         x1aBoKkpKDnBPOfSNmcxV/AoRsJ0G/lltNtFQWaBRshyHzwsbF8Vav22XJJlvlhEFlRe
+         EvVb4TVFbVbIv/gHI3og7N/kx6ciJVpdlm0u0IhRP4tEV4+yinSqEOenQZzGCReQIcIc
+         CU0A==
+X-Gm-Message-State: AGi0PuZUAbRZdn2BT5pPFTQRF4N6YMInHPDtNO4wPCpyAvqXiAvqWwMf
+        nnMZ/+0546TeG64Gt8cgfh3qhw==
+X-Google-Smtp-Source: APiQypKvNSjq4TfJ0CivzedoluQIOXBiXcFnJi5slyojLcRrav800+2iZaWdjk73vkbbGixHhUBMBA==
+X-Received: by 2002:a1c:2457:: with SMTP id k84mr30052808wmk.96.1589209699367;
+        Mon, 11 May 2020 08:08:19 -0700 (PDT)
+Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
+        by smtp.gmail.com with ESMTPSA id 94sm3514792wrf.74.2020.05.11.08.08.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 08:07:06 -0700 (PDT)
-Date:   Mon, 11 May 2020 11:06:48 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Joonsoo Kim <js1304@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 05/18] mm: memcontrol: convert page cache to a new
- mem_cgroup_charge() API
-Message-ID: <20200511150648.GA306292@cmpxchg.org>
-References: <20200420221126.341272-1-hannes@cmpxchg.org>
- <20200420221126.341272-6-hannes@cmpxchg.org>
- <20200422064041.GE6780@js1304-desktop>
- <20200422120946.GA358439@cmpxchg.org>
- <20200423052450.GA12538@js1304-desktop>
- <20200508160122.GB181181@cmpxchg.org>
- <alpine.LSU.2.11.2005102350360.2769@eggly.anvils>
+        Mon, 11 May 2020 08:08:18 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Rob Herring <robh+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Fabien Parent <fparent@baylibre.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Edwin Peer <edwin.peer@broadcom.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Stephane Le Provost <stephane.leprovost@mediatek.com>,
+        Pedro Tsai <pedro.tsai@mediatek.com>,
+        Andrew Perepech <andrew.perepech@mediatek.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v2 00/14] mediatek: add support for MediaTek Ethernet MAC
+Date:   Mon, 11 May 2020 17:07:45 +0200
+Message-Id: <20200511150759.18766-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2005102350360.2769@eggly.anvils>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 12:38:04AM -0700, Hugh Dickins wrote:
-> On Fri, 8 May 2020, Johannes Weiner wrote:
-> > 
-> > I looked at this some more, as well as compared it to non-shmem
-> > swapping. My conclusion is - and Hugh may correct me on this - that
-> > the deletion looks mandatory but is actually an optimization. Page
-> > reclaim will ultimately pick these pages up.
-> > 
-> > When non-shmem pages are swapped in by readahead (locked until IO
-> > completes) and their page tables are simultaneously unmapped, the
-> > zap_pte_range() code calls free_swap_and_cache() and the locked pages
-> > are stranded in the swap cache with no page table references. We rely
-> > on page reclaim to pick them up later on.
-> > 
-> > The same appears to be true for shmem. If the references to the swap
-> > page are zapped while we're trying to swap in, we can strand the page
-> > in the swap cache. But it's not up to swapin to detect this reliably,
-> > it just frees the page more quickly than having to wait for reclaim.
-> 
-> I think you've got all that exactly right, thanks for working it out.
-> It originates from v3.7's 215c02bc33bb ("tmpfs: fix shmem_getpage_gfp()
-> VM_BUG_ON") - in which I also had to thank you.
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-I should have looked where it actually came from - I had forgotten
-about that patch!
+This adds support for the Ethernet Controller present on MediaTeK SoCs
+from the MT8* family.
 
-> I think I chose to do the delete_from_swap_cache() right there, partly
-> because of following shmem_unuse_inode() code which already did that,
-> partly on the basis that while we have to observe the case then it's
-> better to clean it up, and partly out of guilt that our page lock here
-> is what had prevented shmem_undo_range() from completing its job; but
-> I believe you're right that unused swapcache reclaim would sort it out
-> eventually.
+The first two patches add binding documents for the PERICFG syscon and
+for the MAC itself.
 
-That makes sense to me.
+Patches 3/14 & 4/14 do some cleanup of the mediatek ethernet drivers
+directory.
 
-> > diff --git a/mm/shmem.c b/mm/shmem.c
-> > index e80167927dce..236642775f89 100644
-> > --- a/mm/shmem.c
-> > +++ b/mm/shmem.c
-> > @@ -640,7 +640,7 @@ static int shmem_add_to_page_cache(struct page *page,
-> >  		xas_lock_irq(&xas);
-> >  		entry = xas_find_conflict(&xas);
-> >  		if (entry != expected)
-> > -			xas_set_err(&xas, -EEXIST);
-> > +			xas_set_err(&xas, expected ? -ENOENT : -EEXIST);
-> 
-> Two things on this.
-> 
-> Minor matter of taste, I'd prefer that as
-> 			xas_set_err(&xas, entry ? -EEXIST : -ENOENT);
-> which would be more general and more understandable -
-> but what you have written should be fine for the actual callers.
+Patch 5/14 provides a new helper that allows to retrieve the address of
+the net_device associated with given private data address.
 
-Yes, checking `expected' was to differentiate the behavior depending
-on the callsite. But testing `entry' is more obvious in that location.
+Patches 6-8/14 introduce the managed variant of register_netdev().
 
-> Except... I think returning -ENOENT there will not work correctly,
-> in the case of a punched hole.  Because (unless you've reworked it
-> and I just haven't looked) shmem_getpage_gfp() knows to retry in
-> the case of -EEXIST, but -ENOENT will percolate up to shmem_fault()
-> and result in a SIGBUS, or a read/write error, when the hole should
-> just get refilled instead.
+Patch 9/11 adds the new ethernet driver.
 
-Good catch, I had indeed missed that. I'm going to make it retry on
--ENOENT as well.
+The rest of the patches add DT fixups for the boards already supported
+upstream.
 
-We could have it go directly to allocating a new page, but it seems
-unnecessarily complicated: we've already been retrying in this
-situation until now, so I would stick to "there was a race, retry."
+v1 -> v2:
+- add a generic helper for retrieving the net_device associated with given
+  private data
+- fix several typos in commit messages
+- remove MTK_MAC_VERSION and don't set the driver version
+- use NET_IP_ALIGN instead of a magic number (2) but redefine it as it defaults
+  to 0 on arm64
+- don't manually turn the carrier off in mtk_mac_enable()
+- process TX cleanup in napi poll callback
+- configure pause in the adjust_link callback
+- use regmap_read_poll_timeout() instead of handcoding the polling
+- use devres_find() to verify that struct net_device is managed by devres in
+  devm_register_netdev()
+- add a patch moving all networking devres helpers into net/devres.c
+- tweak the dma barriers: remove where unnecessary and add comments to the
+  remaining barriers
+- don't reset internal counters when enabling the NIC
+- set the net_device's mtu size instead of checking the framesize in
+  ndo_start_xmit() callback
+- fix a race condition in waking up the netif queue
+- don't emit log messages on OOM errors
+- use dma_set_mask_and_coherent()
+- use eth_hw_addr_random()
+- rework the receive callback so that we reuse the previous skb if unmapping
+  fails, like we already do if skb allocation fails
+- rework hash table operations: add proper timeout handling and clear bits when
+  appropriate
 
-> Not something that needs fixing in a hurry (it took trinity to
-> generate this racy case in the first place), I'll take another look
-> once I've pulled it into a tree (or collected next mmotm) - unless
-> you've already have changed it around by then.
+Bartosz Golaszewski (14):
+  dt-bindings: arm: add a binding document for MediaTek PERICFG
+    controller
+  dt-bindings: net: add a binding document for MediaTek Ethernet MAC
+  net: ethernet: mediatek: rename Kconfig prompt
+  net: ethernet: mediatek: remove unnecessary spaces from Makefile
+  net: core: provide priv_to_netdev()
+  net: move devres helpers into a separate source file
+  net: devres: define a separate devres structure for
+    devm_alloc_etherdev()
+  net: devres: provide devm_register_netdev()
+  net: ethernet: mtk-eth-mac: new driver
+  ARM64: dts: mediatek: add pericfg syscon to mt8516.dtsi
+  ARM64: dts: mediatek: add the ethernet node to mt8516.dtsi
+  ARM64: dts: mediatek: add an alias for ethernet0 for pumpkin boards
+  ARM64: dts: mediatek: add ethernet pins for pumpkin boards
+  ARM64: dts: mediatek: enable ethernet on pumpkin boards
 
-Attaching a delta fix based on your observations.
+ .../arm/mediatek/mediatek,pericfg.yaml        |   34 +
+ .../bindings/net/mediatek,eth-mac.yaml        |   80 +
+ arch/arm64/boot/dts/mediatek/mt8516.dtsi      |   17 +
+ .../boot/dts/mediatek/pumpkin-common.dtsi     |   34 +
+ drivers/net/ethernet/mediatek/Kconfig         |    8 +-
+ drivers/net/ethernet/mediatek/Makefile        |    3 +-
+ drivers/net/ethernet/mediatek/mtk_eth_mac.c   | 1561 +++++++++++++++++
+ include/linux/netdevice.h                     |   14 +
+ net/Makefile                                  |    2 +-
+ net/devres.c                                  |   95 +
+ net/ethernet/eth.c                            |   28 -
+ 11 files changed, 1845 insertions(+), 31 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/mediatek,eth-mac.yaml
+ create mode 100644 drivers/net/ethernet/mediatek/mtk_eth_mac.c
+ create mode 100644 net/devres.c
 
-Andrew, barring any objections to this, could you please fold it into
-the version you have in your tree already?
-
----
-
-From 33d03ceebce0a6261d472ddc9c5a07940f44714c Mon Sep 17 00:00:00 2001
-From: Johannes Weiner <hannes@cmpxchg.org>
-Date: Mon, 11 May 2020 10:45:14 -0400
-Subject: [PATCH] mm: memcontrol: convert page cache to a new
- mem_cgroup_charge() API fix
-
-Incorporate Hugh's feedback:
-
-- shmem_getpage_gfp() needs to handle the new -ENOENT that was
-  previously implied in the -EEXIST when a swap entry changed under us
-  in any way. Otherwise hole punching could cause a racing fault to
-  SIGBUS instead of allocating a new page.
-
-- It is indeed page reclaim that picks up any swapcache we leave
-  stranded when free_swap_and_cache() runs on a page locked by
-  somebody else. Document that our delete_from_swap_cache() is an
-  optimization, not something we rely on for correctness.
-
-- Style cleanup: testing `expected' to decide on -EEXIST vs -ENOENT
-  differentiates the callsites, but is a bit awkward to read. Test
-  `entry' instead.
-
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/shmem.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/mm/shmem.c b/mm/shmem.c
-index afd5a057ebb7..00fb001e8f3e 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -638,7 +638,7 @@ static int shmem_add_to_page_cache(struct page *page,
- 		xas_lock_irq(&xas);
- 		entry = xas_find_conflict(&xas);
- 		if (entry != expected)
--			xas_set_err(&xas, expected ? -ENOENT : -EEXIST);
-+			xas_set_err(&xas, entry ? -EEXIST : -ENOENT);
- 		xas_create_range(&xas);
- 		if (xas_error(&xas))
- 			goto unlock;
-@@ -1686,10 +1686,13 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
- 		 * We already confirmed swap under page lock, but
- 		 * free_swap_and_cache() only trylocks a page, so it
- 		 * is just possible that the entry has been truncated
--		 * or holepunched since swap was confirmed.
--		 * shmem_undo_range() will have done some of the
--		 * unaccounting, now delete_from_swap_cache() will do
--		 * the rest.
-+		 * or holepunched since swap was confirmed. This could
-+		 * occur at any time while the page is locked, and
-+		 * usually page reclaim will take care of the stranded
-+		 * swapcache page. But when we catch it, we may as
-+		 * well clean up after ourselves: shmem_undo_range()
-+		 * will have done some of the unaccounting, now
-+		 * delete_from_swap_cache() will do the rest.
- 		 */
- 		if (error == -ENOENT)
- 			delete_from_swap_cache(page);
-@@ -1765,7 +1768,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
- 	if (xa_is_value(page)) {
- 		error = shmem_swapin_page(inode, index, &page,
- 					  sgp, gfp, vma, fault_type);
--		if (error == -EEXIST)
-+		if (error == -EEXIST || error == -ENOENT)
- 			goto repeat;
- 
- 		*pagep = page;
 -- 
-2.26.2
+2.25.0
+
