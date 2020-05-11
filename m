@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2B11CDDAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB7C1CDDB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730534AbgEKOvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 10:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730473AbgEKOvB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 10:51:01 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075D1C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 07:51:00 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id f134so6170305wmf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 07:50:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qaGHgoIklkuNmpEkyLvRjJ4yCE6OQ1c2IuH8BxH75mY=;
-        b=nc2MC9jZYPU+Gglr1zHepF2nPUzMK7u7MNLTcsttxd5kG+Y8Bv980mUeu06OEqBCm4
-         9VhiUSpnHMjHBPMNq5iapkg1qfmOy+Gb/klsL66PneNY1D1WAIIus1bwFOnfiF/C85nz
-         65hPxJeEYWxq5iC3HDK5jBQ2SvDsTZ1aj2tSlLMj+LntTzyuF+3xNhSj380CO7DM7U2M
-         x6h0V9XNj2BHI/+BEB5YIe9IBbk/E9oWpts2ivEi99qq8s2yTWVO6f9AsKgG7aMiJIL8
-         s53N/vvsX6DHGlkuQU0m1TuTCyzCm9Hu4EtENbo+0v/453byPncW801jPJQ5GxZ7l9O3
-         b0LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qaGHgoIklkuNmpEkyLvRjJ4yCE6OQ1c2IuH8BxH75mY=;
-        b=GUJRxXmiJYbpwJfxlQTz6LNi0hQniNG+ItQlSGXNI6HTu+NCctJZbnqaTdOje6Nj89
-         th6udlq+6e+UUnagRVVvAxjma7lr2MuHPmFcjf+5+DBJyLE7t+EUI1EuVren7fZMWPzw
-         mgxfWtoFKT3s3Kh/woI7tW5L9GSUwpzNvCMxGXn3i6dk4g9Mo5YZeqn7Njkz4U28FN8A
-         u+TK1Nfxra1GsJiGDM/vZP0kkQ1OkXwCB31KL5tAsRoTT0O72myW7YH+ZNjgdS2oKjI4
-         YNwfjMipGE2PsqmF+C/BulXuEOqtH4dQXDJqba6lZcDi066TCumUWdvb9NHuWx9BrYhy
-         Jvwg==
-X-Gm-Message-State: AGi0Puaz4YlliypHO4igiEID6lmfs3slAg5S4TTztMrDTSy7J7I/49Xu
-        KZWmjKn4tzfLGnYW3G655HDokA==
-X-Google-Smtp-Source: APiQypIH+48uGTVlu0nxuHnlstFTZhuvmqjc/WYbSFNTlGuarz/lnSa9XuHiTJbY5VntBekm2bjTcA==
-X-Received: by 2002:a05:600c:1008:: with SMTP id c8mr30947100wmc.14.1589208658760;
-        Mon, 11 May 2020 07:50:58 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id 33sm18512983wrk.61.2020.05.11.07.50.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 07:50:58 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, Samuel Zou <zou_wei@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 3/3] nvmem: jz4780-efuse: Use PTR_ERR_OR_ZERO() to simplify code
-Date:   Mon, 11 May 2020 15:50:42 +0100
-Message-Id: <20200511145042.31223-4-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200511145042.31223-1-srinivas.kandagatla@linaro.org>
-References: <20200511145042.31223-1-srinivas.kandagatla@linaro.org>
+        id S1730529AbgEKOw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 10:52:57 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2186 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730251AbgEKOw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 10:52:57 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 9E81F9E1ADD340018546;
+        Mon, 11 May 2020 15:52:55 +0100 (IST)
+Received: from [127.0.0.1] (10.47.0.142) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 11 May
+ 2020 15:52:54 +0100
+Subject: Re: [PATCH RFC v3 02/12] perf jevents: Add support for system events
+ tables
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <namhyung@kernel.org>, <will@kernel.org>, <ak@linux.intel.com>,
+        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <qiangqing.zhang@nxp.com>, <irogers@google.com>,
+        <robin.murphy@arm.com>, <zhangshaokun@hisilicon.com>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <1588852671-61996-1-git-send-email-john.garry@huawei.com>
+ <1588852671-61996-3-git-send-email-john.garry@huawei.com>
+ <20200511110127.GB2986380@krava>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <7d416932-12a0-8130-354a-f0a9898d9bf6@huawei.com>
+Date:   Mon, 11 May 2020 15:52:02 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200511110127.GB2986380@krava>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.0.142]
+X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Zou <zou_wei@huawei.com>
+On 11/05/2020 12:01, Jiri Olsa wrote:
+> On Thu, May 07, 2020 at 07:57:41PM +0800, John Garry wrote:
+> 
+> SNIP
+> 
+>>   
+>> +static bool is_sys_dir(char *fname)
+>> +{
+>> +	char *pos;
+>> +
+>> +	while (true) {
+>> +		pos = strchr(fname, '/');
+> 
+> would strrchr be faster?
 
-Fixes coccicheck warning:
+maybe, I'll check the logic here to see if it can be reduced
 
-drivers/nvmem/jz4780-efuse.c:214:1-3: WARNING: PTR_ERR_OR_ZERO can be used
+  also I thought there's something like
+> basename function that could be usable in here?
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Samuel Zou <zou_wei@huawei.com>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/nvmem/jz4780-efuse.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+it's tricky, as we support putting JSONs in ./, or ./sys, or ./cpu
 
-diff --git a/drivers/nvmem/jz4780-efuse.c b/drivers/nvmem/jz4780-efuse.c
-index 512e1872ba36..0b01b840edd9 100644
---- a/drivers/nvmem/jz4780-efuse.c
-+++ b/drivers/nvmem/jz4780-efuse.c
-@@ -211,10 +211,8 @@ static int jz4780_efuse_probe(struct platform_device *pdev)
- 	cfg.priv = efuse;
- 
- 	nvmem = devm_nvmem_register(dev, &cfg);
--	if (IS_ERR(nvmem))
--		return PTR_ERR(nvmem);
- 
--	return 0;
-+	return PTR_ERR_OR_ZERO(nvmem);
- }
- 
- static const struct of_device_id jz4780_efuse_match[] = {
--- 
-2.21.0
+But I'll revisit this, as I cannot understand the logic at a glance, 
+which is not good...
+
+Thanks,
+John
+
+> 
+> jirka
+> 
+>> +
+>> +		if (!pos) {
+>> +			if (!strcmp(fname, "sys"))
+>> +				return true;
+>> +			return false;
+>> +		}
+>> +
+>> +		fname = pos + 1;
+>> +	}
+>> +
+>> +	return false;
+>> +}
+> 
+> .
+> 
 
