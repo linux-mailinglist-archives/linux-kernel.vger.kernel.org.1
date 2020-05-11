@@ -2,103 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E19251CDA5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2C81CDA57
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729693AbgEKMov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 08:44:51 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:35268 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727994AbgEKMou (ORCPT
+        id S1730140AbgEKMmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 08:42:53 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:45625 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729666AbgEKMmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 08:44:50 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BCh13x116569;
-        Mon, 11 May 2020 12:43:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=sRhykJRt+02a/ywrImldoXMo6gkw76OTd0/TBwg0Xhc=;
- b=l+HzZvBCl7Zta+t4P/ch8wb3AcHdJu2jPuK/L0ugyxGHJo0jbl6L9WKGq7q7M+k8l/xT
- L5+C3WidGWYzKJTvL0KeDIFObWhi0jrfe0sPycY5edRQbFrP1frjdxt507RKU7l2dC++
- 7Mf6lpuAk1KqXOmrJs/0eoumKumE/ku+B6ECWWeHro6W2KY+vSo+6Yu+yGyx+erW/eoa
- lv0qdIkja6zEYWQkgk6VgyM2tnNerDpymhD7ZmF62DJI8GzO+NbksGqjL86RxeLTH/wl
- +RLyAh6rIEkj50eh/rd1hMEbV0wfbaqzxnCJj2KxYmPM+oHWyiAiU9V2s/ayf73yGyUI Hg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 30x3mbmsxx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 May 2020 12:43:53 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BCbYKO029882;
-        Mon, 11 May 2020 12:43:53 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 30x63mmsh2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 May 2020 12:43:52 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04BChmN6002746;
-        Mon, 11 May 2020 12:43:49 GMT
-Received: from linux-1.home (/92.157.36.49)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 11 May 2020 05:43:48 -0700
-Subject: Re: [patch V4 part 5 04/31] x86/entry: Split idtentry_enter/exit()
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-References: <20200505135341.730586321@linutronix.de>
- <20200505135828.499985727@linutronix.de>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <d1cc2985-dca5-2ea8-ee9f-12086c2abe39@oracle.com>
-Date:   Mon, 11 May 2020 14:42:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Mon, 11 May 2020 08:42:52 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7E8055C0081;
+        Mon, 11 May 2020 08:42:51 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 11 May 2020 08:42:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=LwUS7EdzKn64SedzwWMrtH0cjWc
+        iOHlJCMLvGeb+ziQ=; b=D9+5etmDfCEqjeK2DeQ0h1Wa55xH8Wjgi8Z87jnpAbQ
+        37sP/nZ4qcfMdoLpm68pZUWq7lxhl5TtbrwVIdznCD/V/krOPVH9CJZy378PVsji
+        x9Sj7t9xZiSsqD9xWOxI4MLB4cTaEk+eQntZwWhf/XMEfbPG3Dcso7rbC08Fe2T1
+        /GyjqAPjKSJZA9cFANBbQKA7UMwa2ZuqGnHsHUT1c2aFl+bPGuSRgqT0xsMIe8Sv
+        fBfF70LucSdvEoYj3wYpfEWO120O85YymQFCuF3v3RQjiHDfYck66WTBI3gZDpwo
+        75SsnapyxboZGwmMhHndR7ycE5AU4IKP09HeauaBStA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=LwUS7E
+        dzKn64SedzwWMrtH0cjWciOHlJCMLvGeb+ziQ=; b=IKaKXAWa/e9hbi4Bh3pPbn
+        yRfCY3KU8IoUHVek7FpkmKuqghXQldCXDATc8DtaXVp20R9NjVRS1v4t3coaIvj1
+        LRm+bkXsc/Mm2JbuRJY6eZ8fUlTuHN8p0YkLLy175AodhakV4V2IufBHCOqMTw+0
+        SpxNhGj7S0esFTLqJOe/1S9HVQT2mtYTTiKRFQGKa0DrXhBsdERMeKz4cxZketr9
+        d+MbPG3VkVveSGgQecQ3SwSY+jlUuKBnuV6EPig/d5YWU/H9kggh9m0D76y+1cys
+        Lzba7jFTWfVnsEYtz1/NyW400T6eJshk1q8bEXq3O14TZ7f1Ue+9d4BF67XwWetg
+        ==
+X-ME-Sender: <xms:R0i5XuqL3_3hug-BGHFSpGtmruFvd_-v-Z_n_n8pV7zX_dM7MYYOgg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrledtgdehtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:R0i5XoX4xbW0ustp5-hauH7UThD1uM2wW4TGAqy9wKDqH_puj-Az0g>
+    <xmx:R0i5Xi_lUHGj7LX8zr1QCFf0eztpGB44CqJUWF7fo3-QMQZzOJTXuQ>
+    <xmx:R0i5XhHPUz_JK-FaapuzfMJ_weQqdLU9TscWupNOUcnhQkHIldtC_Q>
+    <xmx:S0i5XrSYMBwe5o9XlEFZBnva7-nIj4z5oO8HHkWs09qtqFzG_-zdEQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9AE853280060;
+        Mon, 11 May 2020 08:42:47 -0400 (EDT)
+Date:   Mon, 11 May 2020 14:42:45 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org,
+        Alistair Francis <alistair@alistair23.me>,
+        linux-kernel@vger.kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, alistair23@gmail.com
+Subject: Re: [PATCH v2] spi: sun6i: Add support for GPIO chip select lines
+Message-ID: <20200511124245.j5pdnpsuhixzvs32@gilmour.lan>
+References: <20200511045330.690507-1-alistair@alistair23.me>
+ <158919630591.8372.404655401498379497.b4-ty@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200505135828.499985727@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9617 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
- malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005110104
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9617 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 impostorscore=0
- mlxscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999 phishscore=0
- malwarescore=0 lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005110104
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pan7d2v2d5d6woy5"
+Content-Disposition: inline
+In-Reply-To: <158919630591.8372.404655401498379497.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 5/5/20 3:53 PM, Thomas Gleixner wrote:
-> Split the implementation of idtentry_enter/exit() out into inline functions
-> so that variaants of idtentry_enter/exit() can be implemented without
+--pan7d2v2d5d6woy5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-typo: "variaants"
+Hi Mark
 
-alex.
+On Mon, May 11, 2020 at 12:25:35PM +0100, Mark Brown wrote:
+> On Sun, 10 May 2020 21:53:30 -0700, Alistair Francis wrote:
+> > Set use_gpio_descriptors as true to support using generic GPIO
+> > lines for the chip select.
+>=20
+> Applied to
+>=20
+>    local tree asoc/for-5.7
 
-> duplicating code.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->   arch/x86/entry/common.c |   37 +++++++++++++++++++++----------------
->   1 file changed, 21 insertions(+), 16 deletions(-)
+Are you sure this is the proper tree?
+
+Maxime
+
+--pan7d2v2d5d6woy5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXrlIRQAKCRDj7w1vZxhR
+xdG7AQCDOq4jweV0JSLjkAtdWOcG+q5K0eA3YJ6cDKXKDjvoZgEAiCXDDT4BkV28
+Fcl4Hx8EELgjn1vtcI7hLwSEnzTABQ0=
+=P7p2
+-----END PGP SIGNATURE-----
+
+--pan7d2v2d5d6woy5--
