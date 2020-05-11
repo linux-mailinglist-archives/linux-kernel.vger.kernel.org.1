@@ -2,95 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CFB1CD9FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879A01CDA04
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729972AbgEKMeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 08:34:15 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:64162 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729416AbgEKMeO (ORCPT
+        id S1730030AbgEKMe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 08:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727019AbgEKMe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 08:34:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589200453; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=K/ZVBtan0dAMs+9OwwNDoOBPaVIbhgR20VKrES40O3Q=;
- b=tdzX/Og6GN28Rwn+1gLgeaPAjCmBas9BesdtK14dgp6mGThkOT/5APNHwKH1r+kJ2zsAhyP4
- QLH45PTu54hni011uPwMkoyEH5AXTxRnuf66iCuD6Sv2s2ZXAKa2oIgBJ7GBOfIIziGmmsso
- kvQSTmU62tCALKYWXeO53B9U74E=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb94630.7f93acdfeab0-smtp-out-n04;
- Mon, 11 May 2020 12:33:52 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D753CC43637; Mon, 11 May 2020 12:33:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 75375C432C2;
-        Mon, 11 May 2020 12:33:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 75375C432C2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Mon, 11 May 2020 08:34:57 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92356C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 05:34:57 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jY7dq-0005NH-GU; Mon, 11 May 2020 14:34:42 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id DE8FAFFBF8; Mon, 11 May 2020 14:34:41 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Radoslaw Biernacki <biernacki@google.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     x86@kernel.org, Ross Zwisler <zwisler@google.com>,
+        Daniel Drake <drake@endlessm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Len Brown <len.brown@intel.com>,
+        Linux Upstreaming Team <linux@endlessm.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/tsc: Use hard-coded crystal clock for Skylake mobile
+In-Reply-To: <CAM4=Rn+7RGHEGa7u33zUA0b-cBehadw4NKN75JtjKjOhxm2Fxg@mail.gmail.com>
+References: <20200509113717.9084-1-pmenzel@molgen.mpg.de> <87eerr3ppb.fsf@nanos.tec.linutronix.de> <edc5af47-27e6-753f-c095-bd3087942690@molgen.mpg.de> <CAM4=Rn+7RGHEGa7u33zUA0b-cBehadw4NKN75JtjKjOhxm2Fxg@mail.gmail.com>
+Date:   Mon, 11 May 2020 14:34:41 +0200
+Message-ID: <87y2py6466.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] wil6210: avoid gcc-10 zero-length-bounds warning
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200505143332.1398524-1-arnd@arndb.de>
-References: <20200505143332.1398524-1-arnd@arndb.de>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Maya Erez <merez@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dedy Lansky <dlansky@codeaurora.org>,
-        Ahmad Masri <amasri@codeaurora.org>,
-        Alexei Avshalom Lazar <ailizaro@codeaurora.org>,
-        Tzahi Sabo <stzahi@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Lior David <liord@codeaurora.org>,
-        linux-wireless@vger.kernel.org, wil6210@qti.qualcomm.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200511123352.D753CC43637@smtp.codeaurora.org>
-Date:   Mon, 11 May 2020 12:33:52 +0000 (UTC)
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@arndb.de> wrote:
+Radoslaw Biernacki <biernacki@google.com> writes:
+> We found that regression only on specific SKU which was used in one
+> model of ChromeBook.
+> What's interesting is that some other SKU is fine.
+>
+> The consequences of this are rather not trivial,
+> so this was considered a quickfix and temporary till we develop
+> something better.
+> In contrast to ChromeOs, I know that there is no way of finding if
+> there are in fact regressions on generic kernel in the field (this is
+> SKU dependent),
+> but we also think that this problem should be addressed in a better
+> way (if possible).
 
-> gcc-10 warns about accesses inside of a zero-length array:
-> 
-> drivers/net/wireless/ath/wil6210/cfg80211.c: In function 'wil_cfg80211_scan':
-> drivers/net/wireless/ath/wil6210/cfg80211.c:970:23: error: array subscript 255 is outside the bounds of an interior zero-length array 'struct <anonymous>[0]' [-Werror=zero-length-bounds]
->   970 |   cmd.cmd.channel_list[cmd.cmd.num_channels++].channel = ch - 1;
->       |   ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from drivers/net/wireless/ath/wil6210/wil6210.h:17,
->                  from drivers/net/wireless/ath/wil6210/cfg80211.c:11:
-> drivers/net/wireless/ath/wil6210/wmi.h:477:4: note: while referencing 'channel_list'
->   477 |  } channel_list[0];
->       |    ^~~~~~~~~~~~
-> 
-> Turn this into a flexible array to avoid the warning.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Fix the BIOS to setup the CPUID/MSRs correctly?
 
-Patch applied to ath-next branch of ath.git, thanks.
+Thanks,
 
-04a4d3416372 wil6210: avoid gcc-10 zero-length-bounds warning
-
--- 
-https://patchwork.kernel.org/patch/11529309/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+        tglx
