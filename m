@@ -2,178 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108881CDA99
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6431CDAA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729728AbgEKNAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 09:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727827AbgEKNAM (ORCPT
+        id S1729980AbgEKNBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 09:01:15 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:16733 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727827AbgEKNBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 09:00:12 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF917C061A0C;
-        Mon, 11 May 2020 06:00:11 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id h4so17948170wmb.4;
-        Mon, 11 May 2020 06:00:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:references:user-agent:to:cc:subject:in-reply-to
-         :message-id:date:mime-version;
-        bh=GT1dtgToCuf3JZQXWgmn/1+1Vz720HE+8i0ZCjTlo7w=;
-        b=KMIYu0AtbfomOEZKHqvTVcN79xGzhnfhHfc7vhfsX/lwOqA1f19NINZIIxSAUC6QLQ
-         5VsPpzc0E+023+kEaNkndCHKiXjMuzEWlkp6VsqvTWnMhnzY1MTQCODGdxGf9/zTdUsr
-         HbkSTNLDGabEucMdKXdALoz7wQVWpsotJTehLTQRh+jYB06ncAumAb2Am9CGttiGR5Sh
-         aiiikjtkdt/06zyvSctEimqsm8VJNYrnfWXwVvrHb92UNz9uA/ux8QfhDPgCZEihPtvH
-         NwvSlbe6MGUoGWWvSseNcxCfF8QM7aOQuwsYrw4PWWDp/xctTdAJICB2yEgDBdKfIRaC
-         Hzqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:references:user-agent:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=GT1dtgToCuf3JZQXWgmn/1+1Vz720HE+8i0ZCjTlo7w=;
-        b=pMOUrg3QGClVIPQhdVKAscw+O4OgkDvjRLqwl2KlCLqzSiRRlzq6alKJcbUIslsvx3
-         gy32gojR8U09GXuxZhXzqim64bqLRu7/GS+2bedt8I4/baGFmp8hcsCGqBVk2bW6A7ST
-         BPXqJBvEXNDe3aqey35gZwI7vqFa2iXyiJE9JZiHvc8B8alzQMjHzEkv5JoVAgH8t1MV
-         PBByTqROVg7UIj3Yqa2sX+VCjTKSJr1gMdJz7q2EyHYZmoId+Z5Zuz9QYu/IW3yIBBGm
-         lfQQln21GdyPPd3q1CUGcxqYkczzE95B051r3BTxM+zYrIb25BU/P0ZJDGASUQe1v0Yg
-         jD/w==
-X-Gm-Message-State: AGi0Pua0omwPWO/goomQM2967UocxWA+LO1PxlGTUVE+QoPlH7913PNp
-        0sC/NrX1Fg/JTQKpuzB7GkFLXQvd1Is=
-X-Google-Smtp-Source: APiQypIdEhVCj3AfwnDtXHxVYKduAfM7hgi55kuPoCwoSEKk/rppyVs+ayP4HIB75wIQ3XU0hprR4g==
-X-Received: by 2002:a1c:e305:: with SMTP id a5mr14612754wmh.1.1589202009946;
-        Mon, 11 May 2020 06:00:09 -0700 (PDT)
-Received: from darkstar ([51.154.17.58])
-        by smtp.gmail.com with ESMTPSA id 5sm26454868wmz.16.2020.05.11.06.00.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 11 May 2020 06:00:08 -0700 (PDT)
-From:   Patrick Bellasi <patrick.bellasi@matbug.net>
-X-Google-Original-From: Patrick Bellasi <patrick.bellasi@matbug.com>
-References: <20200501114927.15248-1-qais.yousef@arm.com> <20200501114927.15248-2-qais.yousef@arm.com> <87d07krjyk.derkling@matbug.com> <20200505145637.5daqhatsm5bjsok7@e107158-lin.cambridge.arm.com>
-User-agent: mu4e 1.4.3; emacs 26.3
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] Documentation/sysctl: Document uclamp sysctl knobs
-In-reply-to: <20200505145637.5daqhatsm5bjsok7@e107158-lin.cambridge.arm.com>
-Message-ID: <877dxik4ob.derkling@matbug.com>
-Date:   Mon, 11 May 2020 15:00:04 +0200
+        Mon, 11 May 2020 09:01:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589202074; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=DDYrY47HSTYss32CprtbeYo3Xm5nNQMfOh6XX4YKxGc=;
+ b=lw/hstxfUXbCPM5i46xY+0PHDkeGzi941OS9MpXKSAsJaoQTqfB6zQI01VOb3MCQEbi/aMpX
+ ibuAWu9XaJKGk+STUlp+FnVKeReTY7rvTKssB6xrafofI+pvHUoulbc8Qpdk07RovL0ZMZMW
+ kkN+mrGvcTUalzcxMM1+JntbFBw=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb94c70.7f8434bba0d8-smtp-out-n03;
+ Mon, 11 May 2020 13:00:32 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7E203C44798; Mon, 11 May 2020 13:00:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E7DFCC44792;
+        Mon, 11 May 2020 13:00:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E7DFCC44792
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] carl9170: Replace zero-length array with flexible-array
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200507185132.GA14046@embeddedor>
+References: <20200507185132.GA14046@embeddedor>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Christian Lamparter <chunkeey@googlemail.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200511130032.7E203C44798@smtp.codeaurora.org>
+Date:   Mon, 11 May 2020 13:00:32 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
-Hi Qais,
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-On Tue, May 05, 2020 at 16:56:37 +0200, Qais Yousef <qais.yousef@arm.com> wrote...
+This was sent twice so I'm dropping this version.
 
->> > +sched_util_clamp_min_rt_default:
->> > +================================
->> > +
->> > +By default Linux is tuned for performance. Which means that RT tasks always run
->> > +at the highest frequency and most capable (highest capacity) CPU (in
->> > +heterogeneous systems).
->> > +
->> > +Uclamp achieves this by setting the requested uclamp.min of all RT tasks to
->> > +SCHED_CAPACITY_SCALE (1024) by default, which effectively boosts the tasks to
->> > +run at the highest frequency and biases them to run on the biggest CPU.
->> > +
->> > +This knob allows admins to change the default behavior when uclamp is being
->> > +used. In battery powered devices particularly, running at the maximum
->> > +capacity and frequency will increase energy consumption and shorten the battery
->> > +life.
->> > +
->> > +This knob is only effective for RT tasks which the user hasn't modified their
->> > +requested uclamp.min value via sched_setattr() syscall.
->> > +
->> > +This knob will not escape the constraint imposed by sched_util_clamp_min
->> > +defined above.
->> 
->> Perhaps it's worth to specify that this value is going to be clamped by
->> the values above? Otherwise it's a bit ambiguous to know what happen
->> when it's bigger than schedu_util_clamp_min.
->
-> Hmm for me that sentence says exactly what you're asking for.
->
-> So what you want is
->
-> 	s/will not escape the constraint imposed by/will be clamped by/
->
-> ?
->
-> I'm not sure if this will help if the above is already ambiguous. Maybe if
-> I explicitly say
->
-> 	..will not escape the *range* constrained imposed by..
->
-> sched_util_clamp_min is already defined as a range constraint, so hopefully it
-> should hit the mark better now?
+Patch set to Superseded.
 
-Right, that also can work.
+-- 
+https://patchwork.kernel.org/patch/11534683/
 
->> 
->> > +Any modification is applied lazily on the next opportunity the scheduler needs
->> > +to calculate the effective value of uclamp.min of the task.
->>                     ^^^^^^^^^
->> 
->> This is also an implementation detail, I would remove it.
->
-> The idea is that this value is not updated 'immediately'/synchronously. So
-> currently RUNNING tasks will not see the effect, which could generate confusion
-> when users trip over it. IMO giving an idea of how it's updated will help with
-> expectation of the users. I doubt any will care, but I think it's an important
-> behavior element that is worth conveying and documenting. I'd be happy to
-> reword it if necessary.
-
-Right, I agree on giving an hint on the lazy update. What I was pointing
-out was mainly the reference to the 'effective' value. Maybe we can just
-drop that word.
-
-> I have this now
->
-> """
->  984 This knob will not escape the range constraint imposed by sched_util_clamp_min
->  985 defined above.
->  986
->  987 For example if
->  988
->  989         sched_util_clamp_min_rt_default = 800
->  990         sched_util_clamp_min = 600
->  991
->  992 Then the boost will be clamped to 600 because 800 is outside of the permissible
->  993 range of [0:600]. This could happen for instance if a powersave mode will
->  994 restrict all boosts temporarily by modifying sched_util_clamp_min. As soon as
->  995 this restriction is lifted, the requested sched_util_clamp_min_rt_default
->  996 will take effect.
->  997
->  998 Any modification is applied lazily to currently running tasks and should be
->  999 visible by the next wakeup.
-> """
-
-That's better IMHO, would just slightly change the last sentence to:
-
-       Any modification is applied lazily to tasks and is effective
-       starting from their next wakeup.
-
-Best,
-Patrick
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
