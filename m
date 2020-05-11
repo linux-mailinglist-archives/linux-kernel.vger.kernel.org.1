@@ -2,76 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC011CDF06
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEEAF1CDF0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730289AbgEKP34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 11:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730084AbgEKP3v (ORCPT
+        id S1729781AbgEKPbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 11:31:01 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:52660 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727093AbgEKPbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 11:29:51 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48CEC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:29:50 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id s9so8291253eju.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:29:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=j2EBovtjYHzHuqz+1wm5uCdWmDSHR/d49IJX3mtpaZU=;
-        b=Stdz7+RrZ51VU+h0fnhZk5Gy2uraxyqKnQxPhWgKRwU/V/rZJh/Et00Qty37flUEB6
-         UFQqZHi3XWny/uHY7zMBDkCfiVyh+aexgD5BX+8oUY4Igl4t/BDT6XK05IwoABKmQ8Cq
-         rTzstvdcZ+/E3MB1MtXiFmRLXEMYoIGD4ts3Vr+WOEzCw05WHTbYyy1NXQP4Vc3QKzRR
-         6UjaROwAD462JusLk2wM7OEtq1/yvAKOkJ65hNGvLrypIn7f96jf3opAQq0hBfZYNXkB
-         i/qUO3EbZ61jmajFRJfdTDSNDrt2fkj9o/8fmmOCs0FqD3w1yQDhsNLIEVD3RyEmjvhG
-         AfMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=j2EBovtjYHzHuqz+1wm5uCdWmDSHR/d49IJX3mtpaZU=;
-        b=lQlMdN3KGuPzd42wrwUYwsgTZcl915syKPyeIb9KzX6A7iiviumF//1XzuAdcqbIAF
-         QM6MXET3KfUGc4zzipRRWNfGiFMGaksJMiqVex0mv9EA5w6SiURHB+zBfwcKC4IeX7mI
-         ewkYFjaFiAE7Qz0zIU6VAJko293ObXhtajLhMbtmhN4AsrabNDwvVh1RX3Lh5xZq0aSt
-         uhGy/FsEVVGPhzx6HKqPuUkfKehM41PwLoN4qz32/sTeI7ED0fkQKUBaY6H2W07juJ+9
-         UZv0gTBvtG5YasPaa81OgqI7jFq3F0He5hs2mMo3j2CIWi7K4hpsCw9hvwDW3mCBOAWJ
-         JLEw==
-X-Gm-Message-State: AGi0PuY7JC8WGm+iYBk+d+ZJods58traIPRq+ISp4Y2f0SkM57s0Ilfg
-        nBy6d9iGG/VdawmgOAgMXaADvhgSKjJEBwL56dA=
-X-Google-Smtp-Source: APiQypKg6KvhstZSYbsEDQpuJueCatwrg6pdgSHnyF5NNyM4tSsRfJkVpV/6dHnjRcvKz35DXM6zLddidcHglhQFwVA=
-X-Received: by 2002:a17:906:4317:: with SMTP id j23mr13417900ejm.377.1589210989328;
- Mon, 11 May 2020 08:29:49 -0700 (PDT)
+        Mon, 11 May 2020 11:31:00 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 3BCD62A0923
+Received: by earth.universe (Postfix, from userid 1000)
+        id 0AA733C08C6; Mon, 11 May 2020 17:30:56 +0200 (CEST)
+Date:   Mon, 11 May 2020 17:30:55 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     linux-pm@vger.kernel.org, robh@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        "Andrew F . Davis" <afd@ti.com>
+Subject: Re: [PATCH v2] dt-bindings: power: Convert bq27xxx dt to yaml
+Message-ID: <20200511153055.7u7afdcpcfbsmswq@earth.universe>
+References: <20200507183013.27261-1-dmurphy@ti.com>
+ <20200510161721.257vprq6rqp64wu5@earth.universe>
+ <fb9b240e-9bfe-1295-6fc4-700d886ea7c9@ti.com>
+ <20200511143241.nmkti7meahvj2swt@earth.universe>
+ <8674289c-038d-d811-4786-322d66072527@ti.com>
+ <20200511145700.lnytcr747snnolya@earth.universe>
+ <57e2495d-ec06-53ff-c2b5-10062da2848f@ti.com>
 MIME-Version: 1.0
-Reply-To: ymrzerbo@gmail.com
-Received: by 2002:a50:3a06:0:0:0:0:0 with HTTP; Mon, 11 May 2020 08:29:48
- -0700 (PDT)
-From:   "Mr.Zerbo Yameogo" <ymrzerbo@gmail.com>
-Date:   Mon, 11 May 2020 17:29:48 +0200
-X-Google-Sender-Auth: c8Z_0wp_70OAKUrXgMhR-6i-WsU
-Message-ID: <CAJTskJV-RbO+mNtQeO-hP358-8LEMJBCpTka=abr9OPUbXUh9w@mail.gmail.com>
-Subject: VERY URGENT.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="p6a5pm5xcfp2qz24"
+Content-Disposition: inline
+In-Reply-To: <57e2495d-ec06-53ff-c2b5-10062da2848f@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
 
-           Greetings!
+--p6a5pm5xcfp2qz24
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-How are you with your family today? I hope both of you are in good
-health. Decently I know that this message might meet you in utmost
-surprise as we never know each other before. I am Mr. Zerbo Yameogo; a
-banker by profession, I need your urgent assist in transferring the
-sum of $10.5 Million U.S Dollars into your account. It is 100% risk
-free and under this achievement you are entitled to receive 40% of the
-total cash. More details will be sent to you on confirmation of your
-interest.
+Hi,
 
-Regards;
+On Mon, May 11, 2020 at 09:55:11AM -0500, Dan Murphy wrote:
+> On 5/11/20 9:57 AM, Sebastian Reichel wrote:
+> > On Mon, May 11, 2020 at 09:29:59AM -0500, Dan Murphy wrote:
+> > > On 5/11/20 9:32 AM, Sebastian Reichel wrote:
+> > > > On Mon, May 11, 2020 at 07:25:06AM -0500, Dan Murphy wrote:
+> > > > > On 5/10/20 11:17 AM, Sebastian Reichel wrote:
+> > > > > > This needs is missing the power-supplies property. The N900 DT
+> > > > > > contains a bq27200 referencing the charger, so it should fail t=
+he DT
+> > > > > > check without the property being listed here.
+> > > > > Hmm.=A0 I ran the dt checker specifically on the binding and it d=
+id not fail.
+> > > > > Unless I need to build some other DTs as well.
+> > > > > Either I will have the power-supplies property
+> > > > I just tried it myself. The problem is the way you are specifying
+> > > > the compatible strings. This is the parsing result:
+> > > >=20
+> > > > enum: ['ti,bq27200 - BQ27200', 'ti,bq27210 - BQ27210', 'ti,bq27500 =
+- deprecated,
+> > > >         use revision specific property below', ...
+> > > >=20
+> > > > You can see this in Documentation/devicetree/bindings/processed-sch=
+ema.yaml, which
+> > > > is generated by running the check. The compatible comments need a #=
+ as separation
+> > > > character like this to generate proper bindings:
+> > > >=20
+> > > > properties:
+> > > >     compatible:
+> > > >       enum:
+> > > >         - ti,bq27200 # BQ27200
+> > > >         - ti,bq27210 # BQ27210
+> > > >         - ti,bq27500 # deprecated, use revision specific property b=
+elow
+> > > Well honestly not sure why we need the comment either.=A0These are pr=
+etty
+> > > self explanatory maybe we should just remove the additional comments
+> > Fine with me.
+> Ack
+> >=20
+> > > Any consideration on just removing the deprecated values?
+> > Let's keep them with their comment for now. Removing them should
+> > start with marking them as depracated in the binding and generating
+> > a runtime warning in the driver, so that people become aware of the
+> > problem. At least for ti,bq27500 we have mainline users At least for
+> > ti,bq27500 we have mainline users.
+>=20
+> There are only 2 dts files that have this reference unless we are not sure
+> which device is actually in use.
 
-Mr. Zerbo Yameogo
+DT is considered ABI and one is supposed to be able to boot a new
+kernel with an old DT. It's not enough to just update the in-tree
+dts files. I suppose we can consider removing support for the old
+compatible values after having the warning being printed for some
+time and the mainline users being converted to the new binding.
+
+-- Sebastian
+
+--p6a5pm5xcfp2qz24
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl65b6oACgkQ2O7X88g7
++prdsA/+LRNbHjpJM/eGMeZL07Zi7D0x1usYEjVEkUDLpt4jUoyk+rwGe7Lf5c/f
+UZJHzGn6FvTKpNi8IJNYZ/mBywIPIyt/0PYqAuHpE2vNaEB+g7IA4KzDkWlLOxxX
+Oep5YeyezarXQwLrv/2m6DFvOYteMxn1/FPwGgMED3T6diw1691ajAmLTSyshshp
+tKkXtK0gMcPHNKzdSh85z7eNXRGpQh0V9Zi+iOc6Hz1/VlC+cPysOgF2zjaUTfAR
+g0E+jR7FAfBsexmQt/IedMS1vjusQhqQN/ogQrjGEkRnoAb1HgJojvLWmLfRgn/k
+bF7uwfh+fqShrkBtyl7uPJQMsAMuTKkWNZwjaNtZfsyylpLP7ugDiBVqUg+ni17d
+mkcYKuQ9hdJQ99Rkn/FH+atEUKqnCUzX5PKgMMfyszeklyAZ8fEi1D3/0w7A8U39
+a96TBija1qzCQh3yR4vLNkeNoVajlf0k1xdigL2YKvDMjQ3AyTRdDzD1/6/Zn9VS
+mVyczXSpb27X5oNGOPrstf/UQvtzTJ6nUIdVnOeGzu0m0LWQ7ViAneKdePT9aNKY
+RohcxgnRxnIeTcKdzy119iE3kHogyf0hgeH0HUBfv/wuWGQHHFpTFv97bG23C3p+
+gv34Kd8ytuTW8ga9M4nFCyVqFWI5riic49ZbtGqxuwwXKaPOMqs=
+=0M+W
+-----END PGP SIGNATURE-----
+
+--p6a5pm5xcfp2qz24--
