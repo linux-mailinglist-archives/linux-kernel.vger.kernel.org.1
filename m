@@ -2,123 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCB91CE53D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 22:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BC21CE545
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 22:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731548AbgEKUSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 16:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727873AbgEKUS3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 16:18:29 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF58C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 13:18:29 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id b8so5049035pgi.11
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 13:18:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+m8sVUgc8aPcmghox0D5Tb+emn0mp6DYOcFERI7ISpQ=;
-        b=ciEjpD2YdDzSCTfHuoXy/3ajnn9CSNdCqZ1psuhJVatGZygL37Iuh+7h7Ai7PCiWG2
-         Qh8Y438cE71v4/X/mh79hbmj/ZkPw8NVPzyrb1IubcctyM/7hfKld+4HzfBsGkIvLaQH
-         NV2NEZYROQEWIajvRJF7j9kvd/oYzwEP6mc6YsFgb5fV8sT0HK3U/OgEZF9vA3iPHNvb
-         iE817v59mM347GZ6KKbaZDnOPEngKh9Cxs8THlYMc+L0F1T+vmJ61cofOHZKuGyDvS+7
-         yWQ1wX0FGX88oV2bQFJGfpC1+A7c/fOuk4k2NSpJPWu5aHq4YM5q98QuJPcBaHe/RpT4
-         6pqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+m8sVUgc8aPcmghox0D5Tb+emn0mp6DYOcFERI7ISpQ=;
-        b=Fzpjmx7vZ8yPq4RrKRQLZh+5zag1BhDmZ5YFho1fAUOOEYJKQZFQmk2fZ2cny9X2kn
-         IOINYAKsaUeXu28D7gdplOPdZAtZJTWFeTD4w+/H+T32Tuk2tzJrrRUd4T7OKzl6fF2B
-         VChC7FcESQJ1K8C2Va4fqF8IbHG5fhclkMLbjGHfdnsLwqfXzu8eoPhud00sB7lwf7ZG
-         trEngi3tfgGNURv9XuCiPsbkXQ6jWzUgHVdOMGM8QQZ+8Bj5ycg7csBshf+hT99R3KnD
-         DQvyjtB/uZx6FRSYxb3kifLJIQZcGnKtwmZyIrCRW6QIkCBof+4VHN14W/ZutMvvk2mb
-         xbKw==
-X-Gm-Message-State: AGi0PuYMhXGllTxIfhrDVu92zdPSxGMelYqjhjxchkE7wXuhUsPgx3yT
-        lHBI2veINLG1Dlvv5wVH0/lgFGFrVg0v1RDEPIVxtQ==
-X-Google-Smtp-Source: APiQypL0NijdFR+l6HOF3b13nE9gWqAqZhSNYbhzaEJXXfZT50vsqXzcwLFAojmfCvcwO1Bh+xXLq74pqkGFb+GVVAE=
-X-Received: by 2002:aa7:8084:: with SMTP id v4mr15521498pff.39.1589228308658;
- Mon, 11 May 2020 13:18:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200504230309.237398-1-ndesaulniers@google.com>
- <CAKwvOdmspKUknbzDn9kY2jMgkFw=Ktvst0ZtwambDOfybqJGWw@mail.gmail.com>
- <CAMzpN2iDottAY3p=GS0A_7XX7bpmWsmSOEcztMXNEEvcwHirjg@mail.gmail.com>
- <CAKwvOdnxV_KwC-q73e3basJvo4-9FCGeMUOrZLj5xyt6Yyeh2A@mail.gmail.com> <CAMzpN2gTEwGh0U+L3_R6pC8Qmv1iY7bRTiTEXD86mF3u9Nnkqg@mail.gmail.com>
-In-Reply-To: <CAMzpN2gTEwGh0U+L3_R6pC8Qmv1iY7bRTiTEXD86mF3u9Nnkqg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 11 May 2020 13:18:15 -0700
-Message-ID: <CAKwvOd=dxX-KG3o6tyYmnoxMwVHvFvvHdaC5G+8ynGEFhZarVQ@mail.gmail.com>
-Subject: Re: [PATCH] x86: support i386 with Clang
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Dmitry Golovin <dima@golovin.in>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        id S1731612AbgEKUUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 16:20:54 -0400
+Received: from mga18.intel.com ([134.134.136.126]:19258 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727873AbgEKUUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 16:20:53 -0400
+IronPort-SDR: T5ubHYuCdz/0lOb8uC9yTdY66mDZonsdGY325hTFKDetQ6d8xpnkyBKn89L3DxhF2RnlxpSEZK
+ aznVAdiutX2g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 13:20:52 -0700
+IronPort-SDR: nypXNphGh+lKqXHZpB+uuiJybEv0x3zwxO/6ScPS0+9khIxC7PjKTQkIJBZGZX5Nl5de3epUzc
+ o4RwJiefW7WQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,381,1583222400"; 
+   d="scan'208";a="463292524"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by fmsmga005.fm.intel.com with ESMTP; 11 May 2020 13:20:52 -0700
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org,
         "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Rik van Riel <riel@surriel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v3 10/10] x86/fpu/xstate: Restore supervisor states for signal return
+Date:   Mon, 11 May 2020 13:20:06 -0700
+Message-Id: <20200511202006.10295-1-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200328164307.17497-11-yu-cheng.yu@intel.com>
+References: <20200328164307.17497-11-yu-cheng.yu@intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 12:34 PM Brian Gerst <brgerst@gmail.com> wrote:
->
-> On Mon, May 11, 2020 at 2:46 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > On Mon, May 11, 2020 at 11:09 AM Brian Gerst <brgerst@gmail.com> wrote:
-> > > This looks like the same issue that we just discussed for bitops.h.
-> > > Add the "b" operand size modifier to force it to use the 8-bit
-> > > register names (and probably also needs the "w" modifier in the 16-bit
-> > > case).
-> >
-> > While it does feel familiar, it is slightly different.
-> > https://godbolt.org/z/Rme4Zg
-> > That case was both compilers validating the inline asm, yet generating
-> > assembly that the assembler would choke on.  This case is validation
-> > in the front end failing.
->
-> > long long ret;
-> > switch (sizeof(ret)) {
-> > case 1:
-> >         asm ("movb $5, %0" : "=q" (ret));
-> >         break;
-> > case 8:;
-> > }
->
-> So if the issue here is that the output variable type is long long,
-> what code is using a 64-bit percpu variable on a 32-bit kernel?  Can
-> you give a specific file that fails to build with Clang?  If Clang is
-> choking on it it may be silently miscompiling on GCC.
+As described in the previous patch, the signal return fast path directly
+restores user states from the user buffer.  Once that succeeds, restore
+supervisor states (but only when they are not yet restored).
 
-I'm not sure that's the case.  Applying this patch, undoing the hunk
-in percpu_from_op() we get tons of errors.  Looking at one:
+For the slow path, save supervisor states to preserve them across context
+switches, and restore after the user states are restored.
 
-kernel/events/core.c:8679:8: error: invalid output size for constraint '=q'
-./include/linux/percpu-defs.h:446:2: note: expanded from macro '__this_cpu_read'
-        raw_cpu_read(pcp);                                              \
-        ^
-...
+The previous version has the overhead of an XSAVES in both the fast and the
+slow paths.  It is addressed as the following:
 
-There's nothing wrong with this line, it's reading a percpu u64 into a
-local u64.  The error comes from validating the inline asm in the dead
-branch.
+- In the fast path, only do an XRSTORS.
+- In the slow path, do a supervisor-state-only XSAVES, and relocate the
+  buffer contents.
+
+Some thoughts in the implementation:
+
+- In the slow path, can any supervisor state become stale between
+  save/restore?
+
+  Answer: set_thread_flag(TIF_NEED_FPU_LOAD) protects the xstate buffer.
+
+- In the slow path, can any code reference a stale supervisor state
+  register between save/restore?
+
+  Answer: In the current lazy-restore scheme, any reference to xstate
+  registers needs fpregs_lock()/fpregs_unlock() and __fpregs_load_activate().
+
+- Are there other options?
+
+  One other option is eagerly restoring all supervisor states.
+
+  Currently, CET user-mode states and ENQCMD's PASID do not need to be
+  eagerly restored.  The upcoming CET kernel-mode states (24 bytes) need
+  to be eagerly restored.  To me, eagerly restoring all supervisor states
+  adds more overhead then benefit at this point.
+
+Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
+---
+v3:
+- Change copy_xregs_to_kernel() to copy_supervisor_to_kernel(), which is
+  introduced in a previous patch.
+- Update commit log.
+
+ arch/x86/kernel/fpu/signal.c | 27 ++++++++++++++++++++++-----
+ 1 file changed, 22 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index 545ca4314096..4dad5afc938d 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -347,6 +347,23 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
+ 		ret = copy_user_to_fpregs_zeroing(buf_fx, user_xfeatures, fx_only);
+ 		pagefault_enable();
+ 		if (!ret) {
++
++			/*
++			 * Restore supervisor states: previous context switch
++			 * etc has done XSAVES and saved the supervisor states
++			 * in the kernel buffer from which they can be restored
++			 * now.
++			 *
++			 * We cannot do a single XRSTORS here - which would
++			 * be nice - because the rest of the FPU registers are
++			 * being restored from a user buffer directly. The
++			 * single XRSTORS happens below, when the user buffer
++			 * has been copied to the kernel one.
++			 */
++			if (test_thread_flag(TIF_NEED_FPU_LOAD) &&
++			    xfeatures_mask_supervisor())
++				copy_kernel_to_xregs(&fpu->state.xsave,
++						     xfeatures_mask_supervisor());
+ 			fpregs_mark_activate();
+ 			fpregs_unlock();
+ 			return 0;
+@@ -364,14 +381,25 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
+ 	}
+ 
+ 	/*
+-	 * The current state of the FPU registers does not matter. By setting
+-	 * TIF_NEED_FPU_LOAD unconditionally it is ensured that the our xstate
+-	 * is not modified on context switch and that the xstate is considered
++	 * By setting TIF_NEED_FPU_LOAD it is ensured that our xstate is
++	 * not modified on context switch and that the xstate is considered
+ 	 * to be loaded again on return to userland (overriding last_cpu avoids
+ 	 * the optimisation).
+ 	 */
+-	set_thread_flag(TIF_NEED_FPU_LOAD);
++	fpregs_lock();
++
++	if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
++
++		/*
++		 * Supervisor states are not modified by user space input.  Save
++		 * current supervisor states first and invalidate the FPU regs.
++		 */
++		if (xfeatures_mask_supervisor())
++			copy_supervisor_to_kernel(&fpu->state.xsave);
++		set_thread_flag(TIF_NEED_FPU_LOAD);
++	}
+ 	__fpu_invalidate_fpregs_state(fpu);
++	fpregs_unlock();
+ 
+ 	if (use_xsave() && !fx_only) {
+ 		u64 init_bv = xfeatures_mask_user() & ~user_xfeatures;
+@@ -393,7 +421,13 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
+ 		fpregs_lock();
+ 		if (unlikely(init_bv))
+ 			copy_kernel_to_xregs(&init_fpstate.xsave, init_bv);
+-		ret = copy_kernel_to_xregs_err(&fpu->state.xsave, user_xfeatures);
++
++		/*
++		 * Restore previously saved supervisor xstates along with
++		 * copied-in user xstates.
++		 */
++		ret = copy_kernel_to_xregs_err(&fpu->state.xsave,
++					       user_xfeatures | xfeatures_mask_supervisor());
+ 
+ 	} else if (use_fxsr()) {
+ 		ret = __copy_from_user(&fpu->state.fxsave, buf_fx, state_size);
 -- 
-Thanks,
-~Nick Desaulniers
+2.21.0
+
