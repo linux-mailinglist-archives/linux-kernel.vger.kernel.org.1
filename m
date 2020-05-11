@@ -2,127 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B5B1CD875
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E105F1CD87A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729877AbgEKLaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:30:08 -0400
-Received: from mail-am6eur05on2051.outbound.protection.outlook.com ([40.107.22.51]:35097
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729763AbgEKL35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:29:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PrB7az6Se4vnY1hDos44bcWB4DUlXJhzFzavv5rRkrLW6NSJ6ByvW3UybqyhXpWq+cMP58F0muKWFZNmD1k7ZRVoRPwPXL45PH2/dLA0V7DYUnt4KREhjhqWAuD2j2JqWwqrphkCqVgLBFXsUnhT+l60DUX/z0TDin5t3mKBYGjPyR7NN1KZC1Wblj5B1dgxKNmUr+KyFl4geRF++M9OTxCM3DcjzDeMS5RdfNAQObgq07CT2FowG/l3UVo3zcR8djqBPoNLmIMULZwfu17ksD0EYeolShqXoS77wDhMhun9oepRcUkf6m61i4s4FjgT4tAR4/prg+ww9H+hjbopYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ObWcEOpEpFfJVPvHgm43Z5lZ0yWMZH7Kj09ih2sUlqQ=;
- b=IDBG96fDVjQZ1NGxR1M8jeiaCR3Ujq0EmXr/QAy0pp+Edby54+DncpPnHqM0MlTMJd+1E8goS4MNxhaC49GdcIFF9iEcdx0pGb4hFMVPGyJ3W6CleKkY5XA8cMbBJ7PnToqSGlYTj08TrHzi/DRJm2/p4Ff+F9VhYJ9IhnPJ5ri1ULj6UHksVP4Tg0sE7BJ/68MGG2d29mxX12hcrJhJlbPC8MLK5LsDVhOaBCP5oHTGbzUoUt2J2Fghl2uzUgp9B82Xv6OxnHg89/wzVqtZYHPZamVZGelzJTwATvSriEFEPgKSXu4cw29jB6nIvclffF5tqq6LZLEb/Luz3fZpJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ObWcEOpEpFfJVPvHgm43Z5lZ0yWMZH7Kj09ih2sUlqQ=;
- b=Xn1SEQKb1oeEJdB7xERLdkIW1EySQMDwhZpiIxp2fMOJpmXeXmoqPJbj47IyKXM00+f5jyptaFu83jzJN8OrMcSftGGpnRqDSqTeqTHqKkIGfoXme9P0nvLPxlIL8U//e+W4Ovpov/2pimrD3NzSfNDxPogPsH6krIwuz/cx+Ps=
-Received: from AM6PR0402MB3911.eurprd04.prod.outlook.com
- (2603:10a6:209:1c::10) by AM6PR0402MB3320.eurprd04.prod.outlook.com
- (2603:10a6:209:5::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27; Mon, 11 May
- 2020 11:29:52 +0000
-Received: from AM6PR0402MB3911.eurprd04.prod.outlook.com
- ([fe80::a5f9:57c:97d3:491f]) by AM6PR0402MB3911.eurprd04.prod.outlook.com
- ([fe80::a5f9:57c:97d3:491f%6]) with mapi id 15.20.2979.033; Mon, 11 May 2020
- 11:29:52 +0000
-From:   Anson Huang <anson.huang@nxp.com>
-To:     Aisheng Dong <aisheng.dong@nxp.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH] dt-bindings: reset: Convert i.MX7 reset to json-schema
-Thread-Topic: [PATCH] dt-bindings: reset: Convert i.MX7 reset to json-schema
-Thread-Index: AQHWJds0OPSvvSW4KEe8q/kgqrzEB6iiv38AgAADi5A=
-Date:   Mon, 11 May 2020 11:29:51 +0000
-Message-ID: <AM6PR0402MB3911ED577118BB1A0B12E3FFF5A10@AM6PR0402MB3911.eurprd04.prod.outlook.com>
-References: <1589012077-12088-1-git-send-email-Anson.Huang@nxp.com>
- <AM6PR04MB4966E5E547A29199B84936A180A10@AM6PR04MB4966.eurprd04.prod.outlook.com>
-In-Reply-To: <AM6PR04MB4966E5E547A29199B84936A180A10@AM6PR04MB4966.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [92.121.68.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: be39db33-fe36-404c-4006-08d7f59e9f43
-x-ms-traffictypediagnostic: AM6PR0402MB3320:|AM6PR0402MB3320:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR0402MB332048A2B623866A8D4C164CF5A10@AM6PR0402MB3320.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-forefront-prvs: 04004D94E2
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xYB+wtYYdCwsSvxypFWVqeNLvXQSYwpzevM27Gg5UN03woSc6OcvR3ZctX4sR5lnsw4BfFUx+hgT129ULu2qvA0K8dvOEQLVIPsh8JWWNH+aB4nzO6lPnW+Q3pJLqsxxIB/UAU43i9ghBHmfvnGhZp1XLGhZUtxGsJ9QMuAqpHxuFvV225YWZ44oh0BwEEm9f34BMr8ic4mF9h0dgfvioxdgdYlruL7cZLGeo9oDJLZ2SoRPm56pgLJ/eMbMpMQ8EFac0Z6mvR2Ay431Bxrwqexw0I12je8x82dTnNJrmuSlXvQdw/i7gLgI2Hc68gIALBhCiesDz8Ty5jlaigGMWrRgEgn33M8fvGfcndq8JvuntnlxlQ6HAizFfTH9NndbrrZl90v7OJzC4wnzDiDvO6Wai8JDxVUhnwbO/UjxYzra6TViNVuIpEyifw7qSZGpnzB7/CBtpUjManL7DxjafWyZDWGJv+6EOUodo4PMvHIE6tpUPF1+LIOnljPpYIyZDwz+258qA+8TI9eZWOl4viXfJXUUu6MmMn1TQOYkNxQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR0402MB3911.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(346002)(396003)(366004)(376002)(136003)(33430700001)(478600001)(86362001)(44832011)(33440700001)(186003)(26005)(110136005)(6506007)(2906002)(316002)(66476007)(66556008)(64756008)(66446008)(8676002)(52536014)(5660300002)(66946007)(33656002)(8936002)(76116006)(4326008)(7696005)(9686003)(55016002)(71200400001)(921003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: E03Wi1iyO2PB4lkv+3nKoaQSN7q8BMSVoOe89Lr3TFkQ3L0rvmojv/PpdpKPVYU79CBGIv4pU6zlfzeIVTfrpxnWNjlmNYx1zH+iEBLxG8nmqpgbSPRH+4qKzlbZkuMX+pQ5Lul0lc9NVp0DHtoVKCTQH1Ez5sM+Kv7BHl23kH+dbgxCKqSAobg7Rid4tufrAtiTjd0VQi96++3YUZi4KgNO98mymKcFH4DC7vPXDYdAwpkxowcscrIB+SfKnvulXmicer0y8JEOua9Zv/XTXV3gWJCj+QMoU5R0n2W0/iWXwcv6yIUjoKQd7SwKW7RKQyi6wYoAUSaAjMpZ0ctntRod6eKpQjPVkcKW7I1mDU2Zk0G/3lcb/0wzZdu/O3oBABXRDtiL4tb2HKu379EEtaqSYmVParyvC6yr4IbLPlzcFCpcC/ti+5lwspkCviE9EeKzIFgjZjYF5K+CCqQdJRTGNymQ0GyJf9ciEQQCYLs=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: be39db33-fe36-404c-4006-08d7f59e9f43
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2020 11:29:52.1027
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pd5HphrPJQcB420keX35oDsRZix6VaVA2SVS5nFeMrNMcawxK4Av6myvJpvv62NnRtn/3wW9Qpq2CzKwG/PT+Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0402MB3320
+        id S1729396AbgEKLce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726068AbgEKLcd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 07:32:33 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11EA4C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 04:32:33 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id s8so10484672wrt.9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 04:32:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id;
+        bh=bRoIPhzywEMW2nC1PP+OH7tOtDfVH3W4Ay+XMph+/U4=;
+        b=ItN+48Jca7pgHLGEyItSVjmO7lnHS93ruqgj8eMIfjY45HC423mVO0WVYMX/C3GKjR
+         iH0zWg1QZCwJZN6O9tQysmWyizU+u1XQ7ocrZaDBzH04MM/hnQ6KsHiuwSvvJE5mqti/
+         ziIdnUG1bY74huXvqa2hwaEfxkGBQFuNrnxMkRoMHsgFtQmSXHSIsOWjXu/UTtpCDIJr
+         3FFZsKBahkr78b59ctqY9nCvOtId+KRZz5niYHFz9rqyd2bXX1cSUch0RYf8SJFRN7Jh
+         yyQndvnmzR/Nft+aXxnmv2Fxw/37C+oNftMkOlwPd6XNweO+sZlwB7mhOB5qwh7GZlWL
+         /Ccg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=bRoIPhzywEMW2nC1PP+OH7tOtDfVH3W4Ay+XMph+/U4=;
+        b=g73TTW8GM0JjSXD5B83V5wzz9jF2y/LxRE9rWpw+VmnCLk2Kd+MXbl8ddjtur6jrgm
+         iV4KXoJEN3YokQELMf/Cw7hLz7qL7pmHbjdR6K6K4xUKT5/EQut2K4R5inaChp6hlmWE
+         Uv5bshfEWN0RL8WIUpAdmFINj6D2lo+CADYpBVZ1Dl3ld47KHBwxKtPN0JFPFv48llfQ
+         9oO1u7MM12U5VIeIcT9GwSka6HhIcu3L0PVNogkWmKkZlIVq65qOrMk/iV7F6bBdHlLj
+         8MWnfcO4kGR9zoFx0XhFPbmqY5Y68s5ZGKTZd0PmmrjFGshGDl8fKL6iOa8VGxA/wqnJ
+         Up+Q==
+X-Gm-Message-State: AGi0PuarptOmqI8Gluj4csc4s/i2cwCV3wappqvl1sErWTf7IUkCUtaK
+        x38Z5AmS1zNCsSVJeR4o+GPBEKXu
+X-Google-Smtp-Source: APiQypIWxNi/9RKhCjbyYL0Piqp5EiwN2r6VO/TUMTuLR1p2c0AaTNmvlyXF83oFI9eqeVsOgZ6jSQ==
+X-Received: by 2002:a5d:56c6:: with SMTP id m6mr18206382wrw.78.1589196751145;
+        Mon, 11 May 2020 04:32:31 -0700 (PDT)
+Received: from ogabbay-VM.habana-labs.com ([31.154.190.6])
+        by smtp.gmail.com with ESMTPSA id u12sm27830595wmu.25.2020.05.11.04.32.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 04:32:30 -0700 (PDT)
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     linux-kernel@vger.kernel.org, oshpigelman@habana.ai,
+        ttayar@habana.ai, gregkh@linuxfoundation.org
+Subject: [PATCH 00/11] Adding GAUDI ASIC support to habanalabs driver
+Date:   Mon, 11 May 2020 14:32:21 +0300
+Message-Id: <20200511113232.5771-1-oded.gabbay@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gU3ViamVjdDogUkU6IFtQQVRDSF0gZHQtYmluZGluZ3M6IHJlc2V0OiBDb252ZXJ0IGku
-TVg3IHJlc2V0IHRvIGpzb24tc2NoZW1hDQo+IA0KPiBbLi4uXQ0KPiANCj4gPiArDQo+ID4gK21h
-aW50YWluZXJzOg0KPiA+ICsgIC0gQW5zb24gSHVhbmcgPEFuc29uLkh1YW5nQG54cC5jb20+DQo+
-ID4gKw0KPiA+ICtkZXNjcmlwdGlvbjogfA0KPiA+ICsgIFRoZSBzeXN0ZW0gcmVzZXQgY29udHJv
-bGxlciBjYW4gYmUgdXNlZCB0byByZXNldCB2YXJpb3VzIHNldCBvZg0KPiA+ICsgIHBlcmlwaGVy
-YWxzLiBEZXZpY2Ugbm9kZXMgdGhhdCBuZWVkIGFjY2VzcyB0byByZXNldCBsaW5lcyBzaG91bGQN
-Cj4gPiArICBzcGVjaWZ5IHRoZW0gYXMgYSByZXNldCBwaGFuZGxlIGluIHRoZWlyIGNvcnJlc3Bv
-bmRpbmcgbm9kZSBhcw0KPiA+ICsgIHNwZWNpZmllZCBpbiByZXNldC50eHQuDQo+ID4gKw0KPiA+
-ICsgIEZvciBsaXN0IG9mIGFsbCB2YWxpZCByZXNldCBpbmRpY2VzIHNlZQ0KPiA+ICsgICAgPGR0
-LWJpbmRpbmdzL3Jlc2V0L2lteDctcmVzZXQuaD4gZm9yIGkuTVg3LA0KPiA+ICsgICAgPGR0LWJp
-bmRpbmdzL3Jlc2V0L2lteDhtcS1yZXNldC5oPiBmb3IgaS5NWDhNUSBhbmQNCj4gPiArICAgIDxk
-dC1iaW5kaW5ncy9yZXNldC9pbXg4bXEtcmVzZXQuaD4gZm9yIGkuTVg4TU0gYW5kDQo+ID4gKyAg
-ICA8ZHQtYmluZGluZ3MvcmVzZXQvaW14OG1xLXJlc2V0Lmg+IGZvciBpLk1YOE1OIGFuZA0KPiAN
-Cj4gSG93IGFib3V0IGNvbWJpbmUgYWJvdmUgdGhyZWUgaXRlbXM/DQoNCldpbGwgZG8uDQoNCj4g
-DQo+ID4gKyAgICA8ZHQtYmluZGluZ3MvcmVzZXQvaW14OG1wLXJlc2V0Lmg+IGZvciBpLk1YOE1Q
-DQo+ID4gKw0KPiA+ICtwcm9wZXJ0aWVzOg0KPiA+ICsgIGNvbXBhdGlibGU6DQo+ID4gKyAgICBp
-dGVtczoNCj4gPiArICAgICAgLSBlbnVtOg0KPiA+ICsgICAgICAgIC0gZnNsLGlteDdkLXNyYw0K
-PiA+ICsgICAgICAgIC0gZnNsLGlteDhtcS1zcmMNCj4gPiArICAgICAgICAtIGZzbCxpbXg4bW0t
-c3JjDQo+ID4gKyAgICAgICAgLSBmc2wsaW14OG1uLXNyYw0KPiA+ICsgICAgICAgIC0gZnNsLGlt
-eDhtcC1zcmMNCj4gPiArICAgICAgLSBjb25zdDogc3lzY29uDQo+ID4gKw0KPiA+ICsgIHJlZzoN
-Cj4gPiArICAgIG1heEl0ZW1zOiAxDQo+ID4gKw0KPiA+ICsgIGludGVycnVwdHM6DQo+ID4gKyAg
-ICBtYXhJdGVtczogMQ0KPiA+ICsNCj4gPiArICAnI3Jlc2V0LWNlbGxzJzoNCj4gPiArICAgIGNv
-bnN0OiAxDQo+ID4gKw0KPiA+ICtyZXF1aXJlZDoNCj4gPiArICAtIGNvbXBhdGlibGUNCj4gPiAr
-ICAtIHJlZw0KPiA+ICsgIC0gaW50ZXJydXB0cw0KPiA+ICsgIC0gJyNyZXNldC1jZWxscycNCj4g
-PiArDQo+ID4gK2FkZGl0aW9uYWxQcm9wZXJ0aWVzOiBmYWxzZQ0KPiA+ICsNCj4gPiArZXhhbXBs
-ZXM6DQo+ID4gKyAgLSB8DQo+ID4gKyAgICAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvaW50ZXJydXB0
-LWNvbnRyb2xsZXIvYXJtLWdpYy5oPg0KPiA+ICsNCj4gPiArICAgIHJlc2V0LWNvbnRyb2xsZXJA
-MzAzOTAwMDAgew0KPiA+ICsgICAgICAgIGNvbXBhdGlibGUgPSAiZnNsLGlteDdkLXNyYyIsICJz
-eXNjb24iOw0KPiA+ICsgICAgICAgIHJlZyA9IDwweDMwMzkwMDAwIDB4MjAwMD47DQo+ID4gKyAg
-ICAgICAgaW50ZXJydXB0cyA9IDxHSUNfU1BJIDg5IElSUV9UWVBFX0xFVkVMX0hJR0g+Ow0KPiA+
-ICsgICAgICAgICNyZXNldC1jZWxscyA9IDwxPjsNCj4gPiArICAgIH07DQo+ID4gKw0KPiA+ICsu
-Li4NCj4gDQo+IElzIHRoaXMgcmVxdWlyZWQ/DQoNCkl0IGNhbiBiZSByZW1vdmVkLCB3aWxsIHJl
-bW92ZSBpdCBpbiBuZXh0IHZlcnNpb24uDQoNCkFuc29uDQo=
+This patch-set adds support for initializing and sending workloads to
+habanalabs deep-learning training accelerator ASIC, called GAUDI.
+
+The GAUDI ASIC is based on the same architecture as the GOYA ASIC and
+therefore, the driver's common code is applicable to it with only a few
+changes. Almost all of the code included in this patch-set is the
+ASIC-depedent code which is different per ASIC.
+
+Similar to GOYA, GAUDI includes a set of eight TPC cores, a GEMM engine and
+DMA channels to move data between host and different memories of the ASIC.
+Each engine has a hardware queue manager (QMAN) attached to it, which
+exposes 4 streams to allow complex programs with control flows (in
+GOYA you had 1 stream per QMAN).
+
+Patches 1-4 are changes to the common code that are needed for GAUDI. patch
+5 adds the registers header files. patch 6 adds the GAUDI definitions to
+the uapi file. patches 7-10 adds the GAUDI code itself and patch 11 enables
+the GAUDI code in the driver.
+
+Thanks,
+Oded
+
+Oded Gabbay (7):
+  habanalabs: set PM profile to auto only for goya
+  habanalabs: support clock gating enable/disable
+  habanalabs: add gaudi asic registers header files
+  uapi: habanalabs: add gaudi defines
+  habanalabs: add gaudi asic-dependent code
+  habanalabs: add hwmgr module for gaudi
+  habanalabs: enable gaudi code in driver
+
+Omer Shpigelman (4):
+  habanalabs: add dedicated define for hard reset
+  habanalabs: get card type, location from F/W
+  habanalabs: add gaudi security module
+  habanalabs: add gaudi profiler module
+
+ .../ABI/testing/debugfs-driver-habanalabs     |   10 +
+ .../ABI/testing/sysfs-driver-habanalabs       |   17 +
+ drivers/misc/habanalabs/Makefile              |    3 +
+ drivers/misc/habanalabs/debugfs.c             |   61 +
+ drivers/misc/habanalabs/device.c              |   13 +-
+ drivers/misc/habanalabs/gaudi/Makefile        |    5 +
+ drivers/misc/habanalabs/gaudi/gaudi.c         | 7430 ++++++++++++++
+ drivers/misc/habanalabs/gaudi/gaudiP.h        |  259 +
+ .../misc/habanalabs/gaudi/gaudi_coresight.c   |  885 ++
+ drivers/misc/habanalabs/gaudi/gaudi_hwmgr.c   |  117 +
+ .../misc/habanalabs/gaudi/gaudi_security.c    | 9114 +++++++++++++++++
+ drivers/misc/habanalabs/goya/goya.c           |   12 +
+ drivers/misc/habanalabs/habanalabs.h          |   32 +-
+ drivers/misc/habanalabs/habanalabs_drv.c      |   13 +-
+ drivers/misc/habanalabs/habanalabs_ioctl.c    |    2 +
+ drivers/misc/habanalabs/include/armcp_if.h    |   22 +-
+ .../include/gaudi/asic_reg/cpu_if_regs.h      |  174 +
+ .../include/gaudi/asic_reg/dma0_core_masks.h  |  348 +
+ .../include/gaudi/asic_reg/dma0_core_regs.h   |  156 +
+ .../include/gaudi/asic_reg/dma0_qm_masks.h    |  800 ++
+ .../include/gaudi/asic_reg/dma0_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/dma1_core_regs.h   |  156 +
+ .../include/gaudi/asic_reg/dma1_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/dma2_core_regs.h   |  156 +
+ .../include/gaudi/asic_reg/dma2_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/dma3_core_regs.h   |  156 +
+ .../include/gaudi/asic_reg/dma3_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/dma4_core_regs.h   |  156 +
+ .../include/gaudi/asic_reg/dma4_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/dma5_core_regs.h   |  156 +
+ .../include/gaudi/asic_reg/dma5_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/dma6_core_regs.h   |  156 +
+ .../include/gaudi/asic_reg/dma6_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/dma7_core_regs.h   |  156 +
+ .../include/gaudi/asic_reg/dma7_qm_regs.h     |  834 ++
+ .../gaudi/asic_reg/dma_if_e_n_down_ch0_regs.h |  896 ++
+ .../gaudi/asic_reg/dma_if_e_n_down_ch1_regs.h |  896 ++
+ .../include/gaudi/asic_reg/dma_if_e_n_regs.h  |  860 ++
+ .../gaudi/asic_reg/dma_if_e_s_down_ch0_regs.h |  896 ++
+ .../gaudi/asic_reg/dma_if_e_s_down_ch1_regs.h |  896 ++
+ .../include/gaudi/asic_reg/dma_if_e_s_regs.h  |  860 ++
+ .../gaudi/asic_reg/dma_if_w_n_down_ch0_regs.h |  896 ++
+ .../gaudi/asic_reg/dma_if_w_n_down_ch1_regs.h |  896 ++
+ .../include/gaudi/asic_reg/dma_if_w_n_regs.h  |  860 ++
+ .../gaudi/asic_reg/dma_if_w_s_down_ch0_regs.h |  896 ++
+ .../gaudi/asic_reg/dma_if_w_s_down_ch1_regs.h |  896 ++
+ .../include/gaudi/asic_reg/dma_if_w_s_regs.h  |  860 ++
+ .../include/gaudi/asic_reg/gaudi_blocks.h     | 4974 +++++++++
+ .../include/gaudi/asic_reg/gaudi_regs.h       |  299 +
+ .../include/gaudi/asic_reg/mme0_ctrl_regs.h   | 1456 +++
+ .../include/gaudi/asic_reg/mme0_qm_masks.h    |  800 ++
+ .../include/gaudi/asic_reg/mme0_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/mme1_ctrl_regs.h   | 1456 +++
+ .../include/gaudi/asic_reg/mme2_ctrl_regs.h   | 1456 +++
+ .../include/gaudi/asic_reg/mme2_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/mme3_ctrl_regs.h   | 1456 +++
+ .../include/gaudi/asic_reg/mmu_up_regs.h      |   72 +
+ .../gaudi/asic_reg/nif_rtr_ctrl_0_regs.h      |  896 ++
+ .../gaudi/asic_reg/nif_rtr_ctrl_1_regs.h      |  896 ++
+ .../gaudi/asic_reg/nif_rtr_ctrl_2_regs.h      |  896 ++
+ .../gaudi/asic_reg/nif_rtr_ctrl_3_regs.h      |  896 ++
+ .../gaudi/asic_reg/nif_rtr_ctrl_4_regs.h      |  896 ++
+ .../gaudi/asic_reg/nif_rtr_ctrl_5_regs.h      |  896 ++
+ .../gaudi/asic_reg/nif_rtr_ctrl_6_regs.h      |  896 ++
+ .../gaudi/asic_reg/nif_rtr_ctrl_7_regs.h      |  896 ++
+ .../include/gaudi/asic_reg/psoc_etr_regs.h    |  114 +
+ .../gaudi/asic_reg/psoc_global_conf_masks.h   |  502 +
+ .../gaudi/asic_reg/psoc_global_conf_regs.h    | 1062 ++
+ .../gaudi/asic_reg/psoc_hbm_pll_regs.h        |  114 +
+ .../gaudi/asic_reg/psoc_pci_pll_regs.h        |  114 +
+ .../gaudi/asic_reg/psoc_timestamp_regs.h      |   56 +
+ .../gaudi/asic_reg/sif_rtr_ctrl_0_regs.h      |  896 ++
+ .../gaudi/asic_reg/sif_rtr_ctrl_1_regs.h      |  896 ++
+ .../gaudi/asic_reg/sif_rtr_ctrl_2_regs.h      |  896 ++
+ .../gaudi/asic_reg/sif_rtr_ctrl_3_regs.h      |  896 ++
+ .../gaudi/asic_reg/sif_rtr_ctrl_4_regs.h      |  896 ++
+ .../gaudi/asic_reg/sif_rtr_ctrl_5_regs.h      |  896 ++
+ .../gaudi/asic_reg/sif_rtr_ctrl_6_regs.h      |  896 ++
+ .../gaudi/asic_reg/sif_rtr_ctrl_7_regs.h      |  896 ++
+ .../include/gaudi/asic_reg/stlb_regs.h        |   82 +
+ .../include/gaudi/asic_reg/tpc0_cfg_masks.h   | 2578 +++++
+ .../include/gaudi/asic_reg/tpc0_cfg_regs.h    | 1226 +++
+ .../include/gaudi/asic_reg/tpc0_qm_masks.h    |  800 ++
+ .../include/gaudi/asic_reg/tpc0_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/tpc1_cfg_regs.h    | 1226 +++
+ .../include/gaudi/asic_reg/tpc1_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/tpc2_cfg_regs.h    | 1226 +++
+ .../include/gaudi/asic_reg/tpc2_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/tpc3_cfg_regs.h    | 1226 +++
+ .../include/gaudi/asic_reg/tpc3_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/tpc4_cfg_regs.h    | 1226 +++
+ .../include/gaudi/asic_reg/tpc4_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/tpc5_cfg_regs.h    | 1226 +++
+ .../include/gaudi/asic_reg/tpc5_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/tpc6_cfg_regs.h    | 1226 +++
+ .../include/gaudi/asic_reg/tpc6_qm_regs.h     |  834 ++
+ .../include/gaudi/asic_reg/tpc7_cfg_regs.h    | 1226 +++
+ .../include/gaudi/asic_reg/tpc7_qm_regs.h     |  834 ++
+ drivers/misc/habanalabs/include/gaudi/gaudi.h |   59 +
+ .../include/gaudi/gaudi_async_events.h        |  310 +
+ .../include/gaudi/gaudi_async_ids_map.h       |  687 ++
+ .../include/gaudi/gaudi_coresight.h           |  367 +
+ .../habanalabs/include/gaudi/gaudi_fw_if.h    |   36 +
+ .../habanalabs/include/gaudi/gaudi_masks.h    |  450 +
+ .../habanalabs/include/gaudi/gaudi_packets.h  |  212 +
+ .../habanalabs/include/gaudi/gaudi_reg_map.h  |   27 +
+ .../include/hw_ip/mmu/mmu_general.h           |    2 +-
+ .../habanalabs/include/hw_ip/mmu/mmu_v1_1.h   |   16 +
+ drivers/misc/habanalabs/sysfs.c               |    8 +-
+ include/uapi/misc/habanalabs.h                |  167 +-
+ 110 files changed, 90045 insertions(+), 16 deletions(-)
+ create mode 100644 drivers/misc/habanalabs/gaudi/Makefile
+ create mode 100644 drivers/misc/habanalabs/gaudi/gaudi.c
+ create mode 100644 drivers/misc/habanalabs/gaudi/gaudiP.h
+ create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_coresight.c
+ create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_hwmgr.c
+ create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_security.c
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/cpu_if_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma0_core_masks.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma0_core_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma0_qm_masks.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma0_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma1_core_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma1_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma2_core_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma2_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma3_core_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma3_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma4_core_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma4_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma5_core_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma5_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma6_core_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma6_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma7_core_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma7_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma_if_e_n_down_ch0_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma_if_e_n_down_ch1_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma_if_e_n_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma_if_e_s_down_ch0_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma_if_e_s_down_ch1_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma_if_e_s_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma_if_w_n_down_ch0_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma_if_w_n_down_ch1_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma_if_w_n_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma_if_w_s_down_ch0_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma_if_w_s_down_ch1_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/dma_if_w_s_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/gaudi_blocks.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/gaudi_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/mme0_ctrl_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/mme0_qm_masks.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/mme0_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/mme1_ctrl_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/mme2_ctrl_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/mme2_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/mme3_ctrl_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/mmu_up_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nif_rtr_ctrl_0_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nif_rtr_ctrl_1_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nif_rtr_ctrl_2_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nif_rtr_ctrl_3_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nif_rtr_ctrl_4_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nif_rtr_ctrl_5_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nif_rtr_ctrl_6_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nif_rtr_ctrl_7_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/psoc_etr_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/psoc_global_conf_masks.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/psoc_global_conf_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/psoc_hbm_pll_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/psoc_pci_pll_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/psoc_timestamp_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/sif_rtr_ctrl_0_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/sif_rtr_ctrl_1_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/sif_rtr_ctrl_2_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/sif_rtr_ctrl_3_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/sif_rtr_ctrl_4_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/sif_rtr_ctrl_5_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/sif_rtr_ctrl_6_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/sif_rtr_ctrl_7_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/stlb_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc0_cfg_masks.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc0_cfg_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc0_qm_masks.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc0_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc1_cfg_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc1_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc2_cfg_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc2_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc3_cfg_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc3_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc4_cfg_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc4_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc5_cfg_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc5_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc6_cfg_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc6_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc7_cfg_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/tpc7_qm_regs.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/gaudi.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/gaudi_async_events.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/gaudi_async_ids_map.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/gaudi_coresight.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/gaudi_masks.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/gaudi_packets.h
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/gaudi_reg_map.h
+ create mode 100644 drivers/misc/habanalabs/include/hw_ip/mmu/mmu_v1_1.h
+
+-- 
+2.17.1
+
