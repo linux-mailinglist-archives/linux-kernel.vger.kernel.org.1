@@ -2,70 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650691CE379
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFDF1CE387
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731329AbgEKTAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 15:00:52 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:37402 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729215AbgEKTAw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 15:00:52 -0400
-Received: by mail-ot1-f66.google.com with SMTP id z17so8457977oto.4;
-        Mon, 11 May 2020 12:00:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=j7xRIk08LHaTIuVFVtGkI3fwGt5b1JCXDy7E9EOvWFM=;
-        b=WCILvaf1UV3BfgbifA5qXpPDB8rqff3oE+CiRsNdI8sgVfdMjXe8xv/nqq2J/bK8/Z
-         jC4p3V2Hjzf8dyzz3blc6G7aJPrS7MxpLpuGZfK467gr1A9HSdKZxlBBmXxVvheXvCMN
-         D4GYE8vvqi/rfxguQSY2T0tdaziMGCUCkwX1qL/W+dhrQ0Ia1TGmo26QI42b6CSI4K1+
-         metRcD53fyZFIT3uRSpC+dqDmmukFqgZRdFl162qz8Aya4sVFF+g8Bh6PZpVqoyBS3Fv
-         oeSPD9NqVyhJ621cttkvFQ+MrjJqUi4uT/v/y/G+AwaNvSR8yWJ3fDAKqSOjr09O0iR2
-         n3yg==
-X-Gm-Message-State: AGi0PuYodtNx9ol6dShBc/sFDxm8Lerw8y2g9h3volf2RgVQh8xUoAgF
-        epkejHelNEbpsiAcZ0099Q==
-X-Google-Smtp-Source: APiQypK4m+nEx51SAOpCo4hXspoWSJO375okq4FXdsc/DLg4tc2+uL6CuiP0XGg8DZ3PkTTIbfCRXQ==
-X-Received: by 2002:a9d:6c48:: with SMTP id g8mr12906647otq.226.1589223651507;
-        Mon, 11 May 2020 12:00:51 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 43sm2883948otv.36.2020.05.11.12.00.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 12:00:50 -0700 (PDT)
-Received: (nullmailer pid 8731 invoked by uid 1000);
-        Mon, 11 May 2020 19:00:50 -0000
-Date:   Mon, 11 May 2020 14:00:50 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dianders@chromium.org, agross@kernel.org, mka@chromium.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        evgreen@chromium.org, ohad@wizery.com
-Subject: Re: [PATCH v2 3/7] dt-bindings: remoteproc: qcom: Use memory-region
- to reference memory
-Message-ID: <20200511190050.GA8671@bogus>
-References: <20200421143228.8981-1-sibis@codeaurora.org>
- <20200421143228.8981-4-sibis@codeaurora.org>
+        id S1731208AbgEKTDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 15:03:51 -0400
+Received: from mga12.intel.com ([192.55.52.136]:11261 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728613AbgEKTDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 15:03:51 -0400
+IronPort-SDR: OQLI/1yQsIY/Vcrv6DGU7Tg050zo5zEPdY/Ezd7h5OFy5F4nBa6L4p3z1soPM/YrjWKal9QLQ6
+ Gmly6pxUE7wA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 12:03:47 -0700
+IronPort-SDR: P0puikl7IKLENmxHcD9tPx2nAPmyP9LaL8lPpxJkIVNXit7NhCytw3wRgL6/wJ5dbXk16ombmH
+ LoHM5qE1CFVw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,381,1583222400"; 
+   d="scan'208";a="306261928"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.25])
+  by FMSMGA003.fm.intel.com with ESMTP; 11 May 2020 12:03:46 -0700
+Date:   Mon, 11 May 2020 12:03:41 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Raj, Ashok" <ashok.raj@linux.intel.com>,
+        Evan Green <evgreen@chromium.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>, x86@kernel.org,
+        linux-pci <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Ghorai, Sukumar" <sukumar.ghorai@intel.com>,
+        "Amara, Madhusudanarao" <madhusudanarao.amara@intel.com>,
+        "Nandamuri, Srikanth" <srikanth.nandamuri@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: MSI interrupt for xhci still lost on 5.6-rc6 after cpu hotplug
+Message-ID: <20200511190341.GA95413@otc-nc-03>
+References: <20200508005528.GB61703@otc-nc-03>
+ <87368almbm.fsf@nanos.tec.linutronix.de>
+ <20200508160958.GA19631@otc-nc-03>
+ <87h7wqjrsk.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200421143228.8981-4-sibis@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87h7wqjrsk.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Apr 2020 20:02:24 +0530, Sibi Sankar wrote:
-> Use memory-region property to reference mba and mpss memory regions.
-> 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
->  .../devicetree/bindings/remoteproc/qcom,q6v5.txt          | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
+Hi Thomas, 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On Fri, May 08, 2020 at 06:49:15PM +0200, Thomas Gleixner wrote:
+> Ashok,
+> 
+> "Raj, Ashok" <ashok.raj@intel.com> writes:
+> > With legacy MSI we can have these races and kernel is trying to do the
+> > song and dance, but we see this happening even when IR is turned on.
+> > Which is perplexing. I think when we have IR, once we do the change vector 
+> > and flush the interrupt entry cache, if there was an outstandng one in 
+> > flight it should be in IRR. Possibly should be clearned up by the
+> > send_cleanup_vector() i suppose.
+> 
+> Ouch. With IR this really should never happen and yes the old vector
+> will catch one which was raised just before the migration disabled the
+> IR entry. During the change nothing can go wrong because the entry is
+> disabled and only reenabled after it's flushed which will send a pending
+> one to the new vector.
+
+with IR, I'm not sure if we actually mask the interrupt except when
+its a Posted Interrupt. 
+
+We do an atomic update to IRTE, with cmpxchg_double
+
+	ret = cmpxchg_double(&irte->low, &irte->high,
+			     irte->low, irte->high,
+			     irte_modified->low, irte_modified->high);
+
+followed by flushing the interrupt entry cache. After which any 
+old ones in flight before the flush should be sittig in IRR
+on the outgoing cpu.
+
+The send_cleanup_vector() sends IPI to the apic_id->old_cpu which 
+would be the cpu we are running on correct? and this is a self_ipi
+to IRQ_MOVE_CLEANUP_VECTOR.
+
+smp_irq_move_cleanup_interrupt() seems to check IRR with 
+apicid_prev_vector()
+
+	irr = apic_read(APIC_IRR + (vector / 32 * 0x10));
+	if (irr & (1U << (vector % 32))) {
+		apic->send_IPI_self(IRQ_MOVE_CLEANUP_VECTOR);
+		continue;
+	}
+
+And this would allow any pending IRR bits in the outgoing CPU to 
+call the relevant ISR's before draining all vectors on the outgoing
+CPU. 
+
+Does it sound right?
+
+I couldn't quite pin down how the device ISR's are hooked up through
+this send_cleanup_vector() and what follows.
+
