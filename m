@@ -2,83 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD141CE260
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8A31CE264
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729769AbgEKSPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 14:15:00 -0400
-Received: from mga06.intel.com ([134.134.136.31]:48472 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729673AbgEKSO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 14:14:59 -0400
-IronPort-SDR: sUAk0p1aeW/MFSEKzEXBwTFjcaBUwvxKeJUhwM6K6/LP3ZjrYL8LbLDCr1uXJg3hits8GyIaQW
- wobFUbridamg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 11:14:58 -0700
-IronPort-SDR: BpkxzblzM2I1siBJKtycZz+TxOlbj8w5qCdZbj8vzlbHy6R/TrVYfwAIndohx7bWNz5Jz4keiU
- hfre976NkXeA==
-X-IronPort-AV: E=Sophos;i="5.73,380,1583222400"; 
-   d="scan'208";a="409004530"
-Received: from rchatre-mobl.amr.corp.intel.com (HELO [10.254.97.196]) ([10.254.97.196])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 11:14:58 -0700
-Subject: Re: [PATCH v2 09/10] x86/resctrl: Add arch_has_sparse_bitmaps to
- explain AMD/Intel CAT difference
-To:     James Morse <james.morse@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>
-References: <20200430170400.21501-1-james.morse@arm.com>
- <20200430170400.21501-10-james.morse@arm.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <8383ddd9-5849-d948-c391-aeb0cc927423@intel.com>
-Date:   Mon, 11 May 2020 11:14:57 -0700
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1731093AbgEKSPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 14:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731028AbgEKSPj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 14:15:39 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0241EC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 11:15:38 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id c12so14929397oic.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 11:15:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6mgvjghZiYTF9zH7EeHRTUDg6GuL2xPwV37xssz6FIw=;
+        b=vtmAc/wdbIs4w7yFUzlqE/S89iEkcxv6b1eS/OYEtdJOaw1Alx1MAww5YzT2zvZHSv
+         itb4PNSLC/D14+IOMaFq4vugbibA+U+1yXqa6r209fGMKw7GbM/0Ly2WyGTAHRu/RDD5
+         pHb1T8rITCoIWAXGxgk+UMY45Fp2CtawWc++r8udh/nqpgH2FffdHNbIODk/pTgC8fHh
+         pD7mAGXmKihQeswPYHB6eQLvZcoYfP1f8pZ4genVWYYV+w8MYSF2D5crAsS8GQU8HDxo
+         ee9mRuSWuQa61U5FsijQDE9MMeRjWPXnC2BPWUSsleSvvlg82a8zCWIE5TngjUMrRJo4
+         wbMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6mgvjghZiYTF9zH7EeHRTUDg6GuL2xPwV37xssz6FIw=;
+        b=jffEyAB8fk7LEbi1qDAXs82Kxr/NL3cfBj7ppNSq6WhOOHxz2lr0IVseLhx8C8up+q
+         kNeyA21tUzHCBdnhqoG5pvk9NfiCJHcTEvQ6bwi8PhICR28wHe3wnDG3y2v8FVHGsyUz
+         qi5JbohbfbEmVMU5QSzzTGJ4A/PaHp3Emp8oZWpqJ2LAe3XjXjwYvtZPxFNHhik7ha1r
+         liq9Py8r2Blu2hOua0mdClqXLWlj2p05DszoLt1VXUIMJdHK0RF7eutEcqzMIB7is8VW
+         BERsR01J7BTkLsBbBKu4fNm1/RDAILwwRImsFAiJz34CymWafFDDiR8L+uSHlUKZAAFt
+         WOgQ==
+X-Gm-Message-State: AGi0PuZF71xHLwrPJYt3kLB6nxoh16Kv/tk9veidTthohscdWF5DI5oZ
+        ICwvtiEUZB0dR2WkhPIPpSycjs7cRSAPI7C7v+F+PA==
+X-Google-Smtp-Source: APiQypLSdJT4xHf4H+XN7iHPQqXxy0Box30MtYmQzmNbxOVl887RMLB+Lie+VSGxraK1T2rWKPgxAcGRDaNaX7KIhsg=
+X-Received: by 2002:aca:3254:: with SMTP id y81mr574945oiy.172.1589220936906;
+ Mon, 11 May 2020 11:15:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200430170400.21501-10-james.morse@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200511151334.362-1-srinivas.kandagatla@linaro.org> <20200511151334.362-3-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20200511151334.362-3-srinivas.kandagatla@linaro.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 11 May 2020 11:15:01 -0700
+Message-ID: <CAGETcx8p95B0FpSmibSig7N=B=ZLZqyF7CNwvoht6OaJuux1Cg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] slimbus: core: Fix mismatch in of_node_get/put
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+On Mon, May 11, 2020 at 8:13 AM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+> From: Saravana Kannan <saravanak@google.com>
+>
+> Adding missing corresponding of_node_put
+>
+> Fixes: 7588a511bdb4 ("slimbus: core: add support to device tree helper")
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> [Srini: added fixes tag, removed NULL check and updated log]
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  drivers/slimbus/core.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
+> index 1f3beee74fdf..ae1e248a8fb8 100644
+> --- a/drivers/slimbus/core.c
+> +++ b/drivers/slimbus/core.c
+> @@ -282,6 +282,7 @@ EXPORT_SYMBOL_GPL(slim_register_controller);
+>  /* slim_remove_device: Remove the effect of slim_add_device() */
+>  static void slim_remove_device(struct slim_device *sbdev)
+>  {
+> +       of_node_put(sbdev->dev.of_node);
+>         device_unregister(&sbdev->dev);
+>  }
+>
 
-On 4/30/2020 10:03 AM, James Morse wrote:
-> Intel expects the cache bitmap provided by user-space to have on a
-> single span of 1s, whereas AMD can support bitmaps like 0xf00f.
-> Arm's MPAM support also allows sparse bitmaps.
-> 
-> To move resctrl out to /fs/ we need to explain platform differences
-> like this. Add a resource property arch_has_sparse_bitmaps. Test this
-> around the 'non-consecutive' test in cbm_validate().
-> 
-> Merging the validate calls causes AMD top gain the min_cbm_bits test
-> needed for Haswell, but as it always sets this value to 1, it will
-> never match.
-> 
-> CC: Babu Moger <Babu.Moger@amd.com>
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+The edits look fine to me.
 
-The Intel bits do indeed look good to me but we should check the AMD
-portion ... I peeked at the AMD spec [1] and found "If an L3_MASK_n
-register is programmed with all 0’s, that COS will be prevented from
-allocating any lines in the L3 cache" ... so AMD does allow bitmasks of
-all 0's (Intel does not).
-
-Does MPAM also allow all 0's? Perhaps "arch_has_sparse_bitmaps" can be
-used to indicate that also?
-
-Reinette
- [1] https://developer.amd.com/wp-content/resources/56375.pdf
-
-
-
+-Saravana
