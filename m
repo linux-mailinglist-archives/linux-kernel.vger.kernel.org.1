@@ -2,71 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB8D1CCEF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 02:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F267B1CCEF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 02:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729469AbgEKA5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 20:57:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35694 "EHLO mail.kernel.org"
+        id S1729490AbgEKA61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 20:58:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729095AbgEKA5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 20:57:33 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729095AbgEKA61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 May 2020 20:58:27 -0400
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1D03207FF;
-        Mon, 11 May 2020 00:57:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A341A24954
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 00:58:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589158652;
-        bh=LpZzJNZGmsoRYfY3qNWlHhWaDTqLtBQwXcNrDeXRhAI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BLCEQUijg1l/kP1iVWLZtToWBUN0TbgETDk4LIeWK9lrnhjjuP/YwKpwlB7pfpiIH
-         ul1imYYFV8YR5MxBGyyqLGMALNw4aMjkqC8N0g7iArzZl/Uv4OHi7Y38XS0tUsImo4
-         FuQhcgFErvObEM3EAs70l9VIvt7JeTu4c9uFy2ao=
-Date:   Mon, 11 May 2020 09:57:28 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Borislav Petkov <bp@alien8.de>, Kees Cook <keescook@chromium.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Regression with *bootconfig: Fix to remove bootconfig data from
- initrd while boot*
-Message-Id: <20200511095728.8490ad9e3d5a25e7400a4910@kernel.org>
-In-Reply-To: <9b1ba335-071d-c983-89a4-2677b522dcc8@molgen.mpg.de>
-References: <9b1ba335-071d-c983-89a4-2677b522dcc8@molgen.mpg.de>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=default; t=1589158706;
+        bh=EexeP/ilwIZIsF6lCaIb4mzp2+v0kWIN11dxzvZYatU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=O/3TcNgVcp3io/qY+F35V6gKwN9vVwERE1h2SfqO7vUUTVzZ8bU8kXhLgZ7yxoLF2
+         7iOn/PaIgdS8ilbWQeUc81v7ddhJxGVMcXI8Mng+pDNFDPIUZbdkqekvEu0EUGBwIr
+         Qja12BvW2RseNdTHvXUbOLgZ2KaR4LAUqllzzz8w=
+Received: by mail-wr1-f48.google.com with SMTP id w7so8819388wre.13
+        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 17:58:26 -0700 (PDT)
+X-Gm-Message-State: AGi0Pua3kfNHADf08NdLhxhHOWsyt6HrzbX03LLbmDi/Aq59gpZSsYhz
+        +AYgnne+8q4fEW/CyqE5wkO2+3ZNY4SIb48H5tc/iQ==
+X-Google-Smtp-Source: APiQypKQx34W5bTiJF1j8ItGCE+ziX9ZT/qr+fACzfs4qZF6q1/RHJSRLQQRtnSlqdQcApFgan5R32tlDjB+XdDBE1o=
+X-Received: by 2002:adf:eccf:: with SMTP id s15mr14992853wro.70.1589158705155;
+ Sun, 10 May 2020 17:58:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200505134354.774943181@linutronix.de> <20200505134904.273363275@linutronix.de>
+In-Reply-To: <20200505134904.273363275@linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sun, 10 May 2020 17:58:14 -0700
+X-Gmail-Original-Message-ID: <CALCETrXd+-nvDcwupvbtr8-Gj2RQsGfFiUu-wr86dw4-nJ=S5w@mail.gmail.com>
+Message-ID: <CALCETrXd+-nvDcwupvbtr8-Gj2RQsGfFiUu-wr86dw4-nJ=S5w@mail.gmail.com>
+Subject: Re: [patch V4 part 3 10/29] x86/idtentry: Provide macros to
+ define/declare IDT entry points
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 May 2020 19:16:47 +0200
-Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+On Tue, May 5, 2020 at 7:15 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Provide DECLARE/DEFINE_IDTENTRY() macros.
 
-> Dear Masami,
-> 
-> 
-> Commit de462e5f10 (bootconfig: Fix to remove bootconfig data from initrd 
-> while boot) causes a cosmetic regression on my x86 system with Debian 
-> Sid/unstable.
-> 
-> Despite having no `bootconfig` parameter on the Linux CLI, the warning 
-> below is shown.
-> 
->      'bootconfig' found on command line, but no bootconfig found
-> 
-> Reverting the commit fixes it.
+Acked-by: Andy Lutomirski <luto@kernel.org>
 
-Oops, sorry about that.
-I'll fix it soon.
+except:
 
-Thanks!
+>
+> DEFINE_IDTENTRY() provides a wrapper which acts as the function
+> definition. The exception handler body is just appended to it with curly
+> brackets. The entry point is marked notrace/noprobe so that irq tracing and
+> the enter_from_user_mode() can be moved into the C-entry point.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+"noinstr", perhaps?  I'm guessing you write this text before noinstr happened.
+
+Also, would it perhaps make sense in the future to include the
+idtentry macro somehow (via inline asm or gcc options) so that
+DEFINE_IDTENTRY() could emit the stub instead of leaving it to
+DECLARE_IDTENTRY()?  It might end up too messy in practice, I suppose.
+This is obviously not worth changing right now, but maybe down the
+road.
