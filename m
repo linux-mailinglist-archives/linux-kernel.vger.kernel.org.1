@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE1A1CDF14
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2121CDF28
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730319AbgEKPcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 11:32:20 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:53978 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727994AbgEKPcT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 11:32:19 -0400
-Received: by mail-wm1-f65.google.com with SMTP id k12so18447355wmj.3;
-        Mon, 11 May 2020 08:32:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4/5Nwk9mLhRZScYYCn9683XrSojxRsX8XSuLtfNRp8A=;
-        b=WGJDx612oqrb49MW8+SD+uUXyfJzvaTqDgPbb77Yl7WtLYJphJNU0/ChfaR8Q+LaNY
-         SwmkhK2s/XaJs8HhcguQQHHAwD5dd8XM3HgC48l5bqUzIB/o9yltQbzeru5BKgirMM2j
-         PLPufO8POanZakPa3Yk1HkdNEQM98hu/sT3Bcbc1ewo4QtYaAydHSE/eH4Akr6A7/dF+
-         Y6q28EETeP2m0nTO5CDaSmx2M8Tr6f0lFlbqjPc6jMtexNboYbFvgbwEfVePGe32JrMy
-         Tcet1Ks7dkPNbdOWfexVHYWpKQNSDTFJ0fngbxXcU4wMNnU9jSmlvUQVBWOsw6B7IAzT
-         YT6g==
-X-Gm-Message-State: AGi0PubbTtep7uHHrFqqcN8qbQfa/Z8ClorXAEatRHbZvSV3/tZCSOBX
-        UIB/mLLbQXPxtdnOVLz+YV6dqeC2
-X-Google-Smtp-Source: APiQypK85TB4whX36I8/SG1CyR1R9Kq/5evRMvh5tebUY7NF3E42iOhAs7jNrcK9J3lezxEIt9MiJw==
-X-Received: by 2002:a1c:770e:: with SMTP id t14mr31102935wmi.187.1589211137820;
-        Mon, 11 May 2020 08:32:17 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id 7sm20219591wra.50.2020.05.11.08.32.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 08:32:17 -0700 (PDT)
-Date:   Mon, 11 May 2020 15:32:15 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Wei Liu <wei.liu@kernel.org>, linux-pci@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Allison Randal <allison@lohutok.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Enrico Weigelt <info@metux.net>
-Subject: Re: [PATCH] PCI: export and use pci_msi_get_hwirq in pci-hyperv.c
-Message-ID: <20200511153215.spcqylnde6p36n6j@liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net>
-References: <20200422195818.35489-1-wei.liu@kernel.org>
- <20200507205831.GA30988@bogus>
+        id S1729648AbgEKPgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 11:36:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729207AbgEKPgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 11:36:46 -0400
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33E36208CA
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 15:36:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589211405;
+        bh=i3uY6cCArW5hN5wosQGib94nUFas1R+dCNb46rnxnio=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Mand0CvgonAGC5tTER+gjn+UohBoFWO9E+pZN3apVITUdnYCHVAmLp0NEc8uYh98N
+         /wifwK92lqfAfP6sw9L+wWpbXDFB6mv8Syvn5eQhJ+R0OgZgYWIzompe9OVQMzydtM
+         049xxjdwYGxUSCTTO18sd3JPRPkRaF6J4hU4xSew=
+Received: by mail-wr1-f54.google.com with SMTP id l18so11521974wrn.6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:36:45 -0700 (PDT)
+X-Gm-Message-State: AGi0PuaosbqNB1HYU+ex4cwIqybTQ+9khZK7lO7JBpJXNcmNUMcEMgim
+        OPODbFhrWpcP/1989BUx6fbsxg2fQUBUeUGiepp8nw==
+X-Google-Smtp-Source: APiQypKYHwNhLBwoJlhPPniwIw7oYGiw+n5i3yhd81TiNyC7Z2AxSsFXseCP0z5QwgjDURBB18+lg0Z/ydWdr/AywuM=
+X-Received: by 2002:adf:a298:: with SMTP id s24mr9033222wra.184.1589211403564;
+ Mon, 11 May 2020 08:36:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507205831.GA30988@bogus>
-User-Agent: NeoMutt/20180716
+References: <20200508144043.13893-1-joro@8bytes.org> <CALCETrX0ubjc0Gf4hCY9RWH6cVEKF1hv3RzqToKMt9_bEXXBvw@mail.gmail.com>
+ <20200508213609.GU8135@suse.de> <CALCETrVxP87o2+aaf=RLW--DSpMrs=BXSQphN6bG5Y4X+OY8GQ@mail.gmail.com>
+ <20200509175217.GV8135@suse.de> <CALCETrVU-+G3K5ABBRSEMiwnskL4mZsVcoTESZXnu34J7TaOqw@mail.gmail.com>
+ <20200511074243.GE2957@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200511074243.GE2957@hirez.programming.kicks-ass.net>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 11 May 2020 08:36:31 -0700
+X-Gmail-Original-Message-ID: <CALCETrVyoAXXOqm8cYs+31fjWK8mcnKR+wM0_HeJx9=bOaZC6Q@mail.gmail.com>
+Message-ID: <CALCETrVyoAXXOqm8cYs+31fjWK8mcnKR+wM0_HeJx9=bOaZC6Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] mm: Get rid of vmalloc_sync_(un)mappings()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Andy Lutomirski <luto@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        Joerg Roedel <joro@8bytes.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 03:58:31PM -0500, Rob Herring wrote:
-> On Wed, Apr 22, 2020 at 07:58:15PM +0000, Wei Liu wrote:
-> > There is a functionally identical function in pci-hyperv.c. Drop it and
-> > use pci_msi_get_hwirq instead.
-> > 
-> > This requires exporting pci_msi_get_hwirq and declaring it in msi.h.
-> > 
-> > No functional change intended.
-> > 
-> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> > ---
-> >  arch/x86/include/asm/msi.h          | 4 ++++
-> >  arch/x86/kernel/apic/msi.c          | 5 +++--
-> >  drivers/pci/controller/pci-hyperv.c | 8 +-------
-> >  3 files changed, 8 insertions(+), 9 deletions(-)
-> 
-> Would be better if done in a way to remove an x86 dependency. 
+On Mon, May 11, 2020 at 12:42 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Sat, May 09, 2020 at 12:05:29PM -0700, Andy Lutomirski wrote:
+>
+> > On x86_64, the only real advantage is that the handful of corner cases
+> > that make vmalloc faults unpleasant (mostly relating to vmap stacks)
+> > go away.  On x86_32, a bunch of mind-bending stuff (everything your
+> > series deletes but also almost everything your series *adds*) goes
+> > away.  There may be a genuine tiny performance hit on 2-level systems
+> > due to the loss of huge pages in vmalloc space, but I'm not sure I
+> > care or that we use them anyway on these systems.  And PeterZ can stop
+> > even thinking about RCU.
+> >
+> > Am I making sense?
+>
+> I think it'll work for x86_64 and that is really all I care about :-)
 
-This is a good point, Rob. I will see what I can do.
+Sadly, I think that Joerg has convinced my that this doesn't really
+work for 32-bit unless we rework the LDT code or drop support for
+something that we might not want to drop support for.  So, last try --
+maybe we can start defeaturing 32-bit:
 
-Wei.
+What if we make 32-bit PTI depend on PAE?  And drop 32-bit Xen PV
+support?  And make 32-bit huge pages depend on PAE?  Then 32-bit
+non-PAE can use the direct-mapped LDT, 32-bit PTI (and optionally PAE
+non-PTI) can use the evil virtually mapped LDT.  And 32-bit non-PAE
+(the 2-level case) will only have pointers to page tables at the top
+level.  And then we can preallocate.
 
-> 
-> I guess this would do it:
-> 
-> #define pci_msi_get_hwirq NULL
-> 
-> when GENERIC_MSI_DOMAIN_OPS is enabled.
+Or maybe we don't want to defeature this much, or maybe the memory hit
+from this preallocation will hurt little 2-level 32-bit systems too
+much.
+
+(Xen 32-bit PV support seems to be on its way out upstream.)
