@@ -2,71 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 429381CE102
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 18:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DE51CE10A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 18:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730761AbgEKQyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 12:54:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730730AbgEKQyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 12:54:54 -0400
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5FA2206D7;
-        Mon, 11 May 2020 16:54:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589216094;
-        bh=5jw+X8a/R6vFcGmFXw7JIS0WUsW0JoyIYxX+t4OB5Ag=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=gFXE0Qtoo8LjfV8B+CWnmXDMyguZ2dwzxEH9iagTP1mMTZsy9Qb5Xu3/rH8nZAMWQ
-         l7ZDOv2br2MsgYpwYEFWeZCe2mY/NEcAst+rZZldejkuCBToTCYWdbp4+4mm/zSJVI
-         zozb+LfsiOb6/qgXi7EJq1TN+IL8uJQxGHsq08NU=
-Subject: Re: [PATCH 4.14 00/22] 4.14.180-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, shuah <shuah@kernel.org>
-References: <20200508123033.915895060@linuxfoundation.org>
-From:   shuah <shuah@kernel.org>
-Message-ID: <d420c85d-5584-13c7-b3f7-45e58329f9a5@kernel.org>
-Date:   Mon, 11 May 2020 10:54:53 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1730747AbgEKQ64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 12:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730376AbgEKQ64 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 12:58:56 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32FDC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 09:58:54 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id s20so4182975plp.6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 09:58:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/050qfJ93sW4lLOTbSTbI1quifuX07x4Ug4l6sawsaw=;
+        b=k4meKUSx1VcNFh0d8UQiBhM67iGelQTg5p104vT+K5hAqKvRAtLK3hNjXOHCas+u7y
+         Y8OByJqu4RNU8G5VD5Knc6eBHU0BRWIaWWxMc28JAym5OFMoUg9Q4JywBA6VZaXLHUT9
+         Dfs8GWJupDNkqNX/geKvgWMOKLginkX9+2IhU2gM3pZ22umGgBsXOX0LYVPp6ZuY/LVT
+         LWVjkGrp5rUHewFiigSuNt1FSAJYE4KYKW+GI8h99wAoGfr5CDUpOs20dL77L4p0zehz
+         exRkC8g3MTd8oV8LREgDRIKweMoETCZdUan0uNp7qbrrqA8I1SBqq4x7wvCRKj56F1By
+         bjOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/050qfJ93sW4lLOTbSTbI1quifuX07x4Ug4l6sawsaw=;
+        b=PKXo1VByh7PzM3tCJEV8l/PZ3O6+IAIU26fT+9bGFFBYING/iILRPW0Y+r51hDKUQ/
+         gtS9HW1IzXtp4pvvW9DprhlGawSTtC+BBJbzS2zStE0M9FSG5oWRNPPkW/b+qrbE0e+U
+         P3LIbvKZUmRNzrqS94f34cjHB8pcK4iRlpjywMEC1RMZp+qrER1t3Je3+qFmpvOaNGJc
+         juzzGKe60aMnffVvDXIFUek/FKoco8BfGINe3qW4d9xAgb7WgyoVgtY8Jthx3MKTRywo
+         XmbFPJYkJX3N7K9KqSM/o7Lc6ymFT45EhoIGwfnSaSfY9xIS7on6SPmFDz4S5kIRPzPi
+         xBKQ==
+X-Gm-Message-State: AGi0PuaHAcgtM5xTgRY0X8Fkjk/Kd/rUS85GbtgIoo5pfxCRyxqePv+c
+        q2kGpc9HrgrPRvmyicKnDZtIzw==
+X-Google-Smtp-Source: APiQypL6tL6YIy2dWdZgtY2PfLN89QTp9W/mkGnBVqR6ETrEu681DfbBZeIWFIx98Ge53JPtN6uVlg==
+X-Received: by 2002:a17:90b:b07:: with SMTP id bf7mr24037509pjb.231.1589216334380;
+        Mon, 11 May 2020 09:58:54 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id x4sm9684537pff.67.2020.05.11.09.58.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 09:58:53 -0700 (PDT)
+Date:   Mon, 11 May 2020 10:58:51 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Kathiravan T <kathirav@codeaurora.org>
+Cc:     suzuki.poulose@arm.com, mike.leach@linaro.org,
+        alexander.shishkin@linux.intel.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] coresight: platform: use dev_warn instead of
+ dev_warn_once
+Message-ID: <20200511165851.GB13202@xps15>
+References: <1588933721-18700-1-git-send-email-kathirav@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20200508123033.915895060@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1588933721-18700-1-git-send-email-kathirav@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/8/20 6:35 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.180 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 10 May 2020 12:29:44 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.180-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hi Kathiravan,
 
-Compiled and booted on my test system. No dmesg regressions.
+On Fri, May 08, 2020 at 03:58:41PM +0530, Kathiravan T wrote:
+> When more than one coresight components uses the obsolete DT bindings,
+> warning is displayed for only one component and not for the others.
+> Lets warn it for all components by replacing dev_warn_once with dev_warn.
+> 
+> Signed-off-by: Kathiravan T <kathirav@codeaurora.org>
+> ---
+>  drivers/hwtracing/coresight/coresight-platform.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
+> index 43418a2..b7d9a02 100644
+> --- a/drivers/hwtracing/coresight/coresight-platform.c
+> +++ b/drivers/hwtracing/coresight/coresight-platform.c
+> @@ -284,7 +284,7 @@ static int of_get_coresight_platform_data(struct device *dev,
+>  	if (!parent) {
+>  		legacy_binding = true;
+>  		parent = node;
+> -		dev_warn_once(dev, "Uses obsolete Coresight DT bindings\n");
+> +		dev_warn(dev, "Uses obsolete Coresight DT bindings\n");
 
-thanks,
--- Shuah
+We made a concious decision to use dev_warn_once() rather than dev_warn().
+There can be a lot of coresight devices on a platform and warning for every
+device doesn't do anything more than adding noise.
+
+If one device is using obsolete bindings the others very likely to do so as
+well.  While fixing one device, checking the remaining devices should be
+intuitive.
+
+Thanks,
+Mathieu 
+
+>  	}
+>  
+>  	conn = pdata->conns;
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
