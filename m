@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1E11CD92B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AFC1CD939
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729962AbgEKL7d convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 May 2020 07:59:33 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:39149 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729929AbgEKL7b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:59:31 -0400
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 50DF220006;
-        Mon, 11 May 2020 11:59:28 +0000 (UTC)
-Date:   Mon, 11 May 2020 13:59:26 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Christophe Kerello <christophe.kerello@st.com>
-Cc:     <richard@nod.at>, <vigneshr@ti.com>, <robh+dt@kernel.org>,
-        <mark.rutland@arm.com>, <gregkh@linuxfoundation.org>,
-        <boris.brezillon@collabora.com>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>, <marex@denx.de>
-Subject: Re: [PATCH v4 10/10] mtd: rawnand: stm32_fmc2: get resources from
- parent node
-Message-ID: <20200511135926.3e5c622d@xps13>
-In-Reply-To: <3377adc6-3e5e-b9b7-12be-c7aa44bfac82@st.com>
-References: <1588756279-17289-1-git-send-email-christophe.kerello@st.com>
-        <1588756279-17289-11-git-send-email-christophe.kerello@st.com>
-        <20200511111855.48216940@xps13>
-        <3377adc6-3e5e-b9b7-12be-c7aa44bfac82@st.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729685AbgEKMBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 08:01:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729453AbgEKMBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 08:01:09 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 678C320722;
+        Mon, 11 May 2020 12:01:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589198468;
+        bh=BB6veEoV8nefsa+08kyEFgzfgF9CioJSfxrRXxxpGDc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BrKY4dvm1TbXW8OXgqloAaQhVnhtdE1TgqLTPSgR0C8liM10np9COgFzeUnhsKoXV
+         T/l8vatda0KgEebBEakMtBLrNohd5EWAnnWjH5oVvSDrB/k9VO8hFHzX+M+8/L8VSb
+         iHsWX5W/gYrUW4gwYScxJ1anvV1swkck1wIYWOEQ=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Shuah Khan <shuah@kernel.org>, Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Li Philip <philip.li@intel.com>,
+        Liu Yiding <yidingx.liu@intel.com>,
+        Xiao Yang <yangx.jy@cn.fujitsu.com>
+Subject: [PATCH] selftests/ftrace: Use /bin/echo for backslash included command
+Date:   Mon, 11 May 2020 21:01:02 +0900
+Message-Id: <158919846272.12476.10277703957544382089.stgit@devnote2>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200511182752.c83f3454bcb3e205cf2bda4a@kernel.org>
+References: <20200511182752.c83f3454bcb3e205cf2bda4a@kernel.org>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+Since the built-in echo has different behavior in POSIX shell
+(dash) and bash, kprobe_syntax_errors.tc can fail on dash which
+interpret backslash escape automatically.
 
-Christophe Kerello <christophe.kerello@st.com> wrote on Mon, 11 May
-2020 12:21:03 +0200:
+To fix this issue, we explicitly use /bin/echo -E (not interpret
+backslash escapes) if the command string can include backslash.
 
-> Hi Miquel,
-> 
-> On 5/11/20 11:18 AM, Miquel Raynal wrote:
-> > Hi Christophe,
-> > 
-> > Christophe Kerello <christophe.kerello@st.com> wrote on Wed, 6 May 2020
-> > 11:11:19 +0200:
-> >   
-> >> FMC2 EBI support has been added. Common resources (registers base
-> >> and clock) are now shared between the 2 drivers. It means that the
-> >> common resources should now be found in the parent device when EBI
-> >> node is available.
-> >>
-> >> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
-> >> ---  
-> > 
-> > [...]
-> >   
-> >> +
-> >> +static bool stm32_fmc2_nfc_check_for_parent(struct platform_device *pdev)
-> >> +{
-> >> +	u32 i;
-> >> +	int nb_resources = 0;
-> >> +
-> >> +	/* Count the number of resources in reg property */
-> >> +	for (i = 0; i < pdev->num_resources; i++) {
-> >> +		struct resource *res = &pdev->resource[i];
-> >> +
-> >> +		if (resource_type(res) == IORESOURCE_MEM)
-> >> +			nb_resources++;
-> >> +	}
-> >> +
-> >> +	/* Each CS needs 3 resources defined (data, cmd and addr) */
-> >> +	if (nb_resources % 3)
-> >> +		return false;
-> >> +
-> >> +	return true;
-> >> +}  
-> > 
-> > This function looks fragile. Why not just checking the compatible
-> > string of the parent node?
-> >   
-> 
-> Yes, it is another way to check that we have an EBI parent node.
-> 
-> In this implementation, I was checking the number of reg tuples.
-> In case we have 6, it means that the register base address is defined in the parent node (EBI node).
-> In case we have 7, it means that the register base address is defined in the current node (NFC node).
+Reported-by: Liu Yiding <yidingx.liu@intel.com>
+Suggested-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ tools/testing/selftests/ftrace/test.d/functions    |    8 +++++---
+ .../ftrace/test.d/kprobe/kprobe_syntax_errors.tc   |    4 +++-
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
-Yes, I understand what you are doing, but I kind of dislike the logic.
-Relying on the number of reg tuples is something that can be done (I
-used it myself one time), but I think this is more a hack that you do
-when you have no other way to differentiate. I guess the proper way
-would be to look at the parent's compatible. If it matches what you
-expect, then you can store the dev->of_node->parent->dev somewhere in
-your controller's structure and then use it to initialize the clock and
-regmap. This way you don't have to move anything else in the probe path.
+diff --git a/tools/testing/selftests/ftrace/test.d/functions b/tools/testing/selftests/ftrace/test.d/functions
+index 61a3c7e2634d..69708830026f 100644
+--- a/tools/testing/selftests/ftrace/test.d/functions
++++ b/tools/testing/selftests/ftrace/test.d/functions
+@@ -119,12 +119,14 @@ yield() {
+     ping $LOCALHOST -c 1 || sleep .001 || usleep 1 || sleep 1
+ }
+ 
++# Since probe event command may include backslash, explicitly use /bin/echo -E
++# to NOT interpret it.
+ ftrace_errlog_check() { # err-prefix command-with-error-pos-by-^ command-file
+-    pos=$(echo -n "${2%^*}" | wc -c) # error position
+-    command=$(echo "$2" | tr -d ^)
++    pos=$(/bin/echo -En "${2%^*}" | wc -c) # error position
++    command=$(/bin/echo -E "$2" | tr -d ^)
+     echo "Test command: $command"
+     echo > error_log
+-    (! echo "$command" >> "$3" ) 2> /dev/null
++    (! /bin/echo -E "$command" >> "$3" ) 2> /dev/null
+     grep "$1: error:" -A 3 error_log
+     N=$(tail -n 1 error_log | wc -c)
+     # "  Command: " and "^\n" => 13
+diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
+index ef1e9bafb098..4cfcf9440a1a 100644
+--- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
++++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
+@@ -91,7 +91,9 @@ esac
+ if grep -q "Create/append/" README && grep -q "imm-value" README; then
+ echo 'p:kprobes/testevent _do_fork' > kprobe_events
+ check_error '^r:kprobes/testevent do_exit'	# DIFF_PROBE_TYPE
+-echo 'p:kprobes/testevent _do_fork abcd=\1' > kprobe_events
++
++# Explicitly use /bin/echo -E to not interpret \1
++/bin/echo -E 'p:kprobes/testevent _do_fork abcd=\1' > kprobe_events
+ check_error 'p:kprobes/testevent _do_fork ^bcd=\1'	# DIFF_ARG_TYPE
+ check_error 'p:kprobes/testevent _do_fork ^abcd=\1:u8'	# DIFF_ARG_TYPE
+ check_error 'p:kprobes/testevent _do_fork ^abcd=\"foo"'	# DIFF_ARG_TYPE
 
-
-Thanks,
-Miquèl
