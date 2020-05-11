@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E8B1CD87E
+	by mail.lfdr.de (Postfix) with ESMTP id E03FA1CD87F
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729601AbgEKLck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39902 "EHLO
+        id S1729698AbgEKLcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728776AbgEKLck (ORCPT
+        by vger.kernel.org with ESMTP id S1729563AbgEKLcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:32:40 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A85B3C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 04:32:39 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id f134so5509874wmf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 04:32:39 -0700 (PDT)
+        Mon, 11 May 2020 07:32:41 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BA7C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 04:32:41 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id y16so3316861wrs.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 04:32:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=GEgujft/FvfB+35pBFaRy4JR8B5RPGb8OIs/5dvvq4Y=;
-        b=mCpoN1tk/k+WFmtPHxYJ0HTmD8D0i4czRUMCFow6BNk6RPBQ1XylvcgE6e12xIgZ8L
-         oxfzYvW467H/0K00nvrlkWuYXHtyCnYMusq5CR6h5ywnmIjFmFgCX8AnDCfQvyodIO2D
-         /Fqzj8GRzVrU5kubJwclFh3+vnsO0mIwcpzs5iry8f7i0pQKgylxNH4t3kn6v61FjOq8
-         vRCFCZmkUMYcxQGvV6+eBG2QIMJpW7ZCJCeVFKPcdfLBXLRyDuMTTlTqITD1PFs0O9sH
-         fYAbfUbuPmA6uQFRbAZLPgo0hTV5DWmfvnEm2UC1RlJw42oFzgAWYqH2pRlehW80sIRu
-         1dDQ==
+        bh=vvpjcDEwFZ+gJRXyrqzCqXoLGtqfNWB0kYqf8KIErV4=;
+        b=ZUAuKlVE9Ri6ufrjyakVsQqh1OedUQs123AJNtufx/GGYIq/JCtaECSm51X2ofBy4y
+         oJXJ5tVLmOn23G/04s45tDjHR60jnV9sPNheWsc98dIuGW2TxsUgIsf+cusIfJPk+NdF
+         5LaLXQyOSDeO+t1NJ8BsgR420jKLdDOLXulxYg3qS2xUoWWEclDAD+VY73yRFt2g/EFz
+         VQRM5EKGci97N92Q6PM5tymBuQSPjYeRaoYy3lb1KImUmHfn+IXD44SP/iJ01pqcxKUF
+         zSwCMLwoH15UQ4Z44bEHOR6mG7iiFw4pSv8nh8euwwdRTf/Qw4edG40uDt63819vXzJZ
+         sv5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references;
-        bh=GEgujft/FvfB+35pBFaRy4JR8B5RPGb8OIs/5dvvq4Y=;
-        b=n5KoXMSEwE7X+ZF6Lo48QlvMPVa74NNULodvB9pEDcL2MBXvMfrUmH/f/DNnkAo/Yc
-         VkJX10l3M4jCsUI95YAk/H+pepiY+y8O9CyV49rgaKoqTEGxkMvueaiWvvu4faR3IjYq
-         8v1nOdF2rJQKJUsJeVaSz7bZbVo3i0lDsq7iYQ2HG8wCGDEM1pbNNlsT90c1SAQ3XZwQ
-         rzL981wJ8vWvay2Flk5P55FubOvBBTCs+iYSyA93D5lOi1fwcyRhTyzMWARydbI75LhL
-         73HnJ5xmQSkNbu1P/QOMJ5WwajHWNFaYvqt4CfRwZYa8DlIAaFpCO+pYVkYKqY07WbyK
-         ZwzA==
-X-Gm-Message-State: AGi0PubRlqnTEf35kKDYfipSmUuSfxqbrHt66xFTW/U6E95bgZOswRoi
-        3UFvcDn+iO1WV+Y3Wyzt4XL0ymJl
-X-Google-Smtp-Source: APiQypL91Sn+3bIIst8YoHXZH9Z6LmymrZS8dwy0ouRx4xzYv6Y7sxPgdRGLhJx6uUyioJeQxmjQvA==
-X-Received: by 2002:a1c:2888:: with SMTP id o130mr10859547wmo.138.1589196757799;
-        Mon, 11 May 2020 04:32:37 -0700 (PDT)
+        bh=vvpjcDEwFZ+gJRXyrqzCqXoLGtqfNWB0kYqf8KIErV4=;
+        b=YYb4lzkuvBEYvi4HlywuVMM6Rh4wzpG95zxcdaEB8jDoS60Oc10BHRATX2x5nnU8WI
+         zgh6ihNnaoWaOZPjdT6V5OzD3v11po8SMrKqT8uo1brnLQpFQCXsXEwyUbEHIm83QbhO
+         kIyB3nVjJXMXXqTKsLLECUydIiLDVXMh4A/+B3ZOI1U8JHEv74pm9FDu8Hb1RrGiYYiL
+         UfTomzYgTA32WCgGcePIVzd46HgI09BQIsRjoDi/v7P5zSQXCM7VQG4D+hRWxf3ErAxZ
+         re+SRu+88Fin3oiiqql39SnrWtKgS3uGNFTmuOvG1lSj/y9bshqSaMT65t0/hxJX6fbF
+         LwqA==
+X-Gm-Message-State: AGi0Puarl6lv0Cqo/8gAhiK2xUmbFx6mIhBYiJeSEAHHAY7UpXXhPN9J
+        W8014aQtSWEIAzsMFesSeHP7U+51
+X-Google-Smtp-Source: APiQypLFg1Toc7tWR9ld5xElbUYrfhhyXU0Ie/JMXJazSO4POZn7vp0/YXtgnepj/4uNbTF4mdXqGw==
+X-Received: by 2002:adf:eac6:: with SMTP id o6mr18328213wrn.297.1589196759551;
+        Mon, 11 May 2020 04:32:39 -0700 (PDT)
 Received: from ogabbay-VM.habana-labs.com ([31.154.190.6])
-        by smtp.gmail.com with ESMTPSA id u12sm27830595wmu.25.2020.05.11.04.32.35
+        by smtp.gmail.com with ESMTPSA id u12sm27830595wmu.25.2020.05.11.04.32.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 04:32:36 -0700 (PDT)
+        Mon, 11 May 2020 04:32:38 -0700 (PDT)
 From:   Oded Gabbay <oded.gabbay@gmail.com>
 To:     linux-kernel@vger.kernel.org, oshpigelman@habana.ai,
         ttayar@habana.ai, gregkh@linuxfoundation.org
-Subject: [PATCH 01/11] habanalabs: add dedicated define for hard reset
-Date:   Mon, 11 May 2020 14:32:22 +0300
-Message-Id: <20200511113232.5771-2-oded.gabbay@gmail.com>
+Subject: [PATCH 02/11] habanalabs: set PM profile to auto only for goya
+Date:   Mon, 11 May 2020 14:32:23 +0300
+Message-Id: <20200511113232.5771-3-oded.gabbay@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200511113232.5771-1-oded.gabbay@gmail.com>
 References: <20200511113232.5771-1-oded.gabbay@gmail.com>
@@ -61,53 +61,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Omer Shpigelman <oshpigelman@habana.ai>
+For Gaudi, the driver doesn't change the PM profile automatically due to
+device-controlled PM capabilities. Therefore, set the PM profile to auto
+only for Goya so the driver's code to automatically change the profile
+won't run on Gaudi.
 
-Gaudi requires longer waiting during reset due to closing of network ports.
-Add this explanation to the relevant comment in the code and add a
-dedicated define for this reset timeout period, instead of multiplying
-another define.
-
-Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
-Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
 Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
 ---
- drivers/misc/habanalabs/device.c     | 5 +++--
- drivers/misc/habanalabs/habanalabs.h | 2 ++
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ drivers/misc/habanalabs/sysfs.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/misc/habanalabs/device.c b/drivers/misc/habanalabs/device.c
-index c89157dafa33..f618cff9a167 100644
---- a/drivers/misc/habanalabs/device.c
-+++ b/drivers/misc/habanalabs/device.c
-@@ -1326,11 +1326,12 @@ void hl_device_fini(struct hl_device *hdev)
- 	 * This function is competing with the reset function, so try to
- 	 * take the reset atomic and if we are already in middle of reset,
- 	 * wait until reset function is finished. Reset function is designed
--	 * to always finish (could take up to a few seconds in worst case).
-+	 * to always finish. However, in Gaudi, because of all the network
-+	 * ports, the hard reset could take between 10-30 seconds
- 	 */
+diff --git a/drivers/misc/habanalabs/sysfs.c b/drivers/misc/habanalabs/sysfs.c
+index e478a191e5f5..36f4f68c8cef 100644
+--- a/drivers/misc/habanalabs/sysfs.c
++++ b/drivers/misc/habanalabs/sysfs.c
+@@ -410,7 +410,10 @@ int hl_sysfs_init(struct hl_device *hdev)
+ {
+ 	int rc;
  
- 	timeout = ktime_add_us(ktime_get(),
--				HL_PENDING_RESET_PER_SEC * 1000 * 1000 * 4);
-+				HL_HARD_RESET_MAX_TIMEOUT * 1000 * 1000);
- 	rc = atomic_cmpxchg(&hdev->in_reset, 0, 1);
- 	while (rc) {
- 		usleep_range(50, 200);
-diff --git a/drivers/misc/habanalabs/habanalabs.h b/drivers/misc/habanalabs/habanalabs.h
-index cfb306daa8d4..d77410886a67 100644
---- a/drivers/misc/habanalabs/habanalabs.h
-+++ b/drivers/misc/habanalabs/habanalabs.h
-@@ -25,6 +25,8 @@
+-	hdev->pm_mng_profile = PM_AUTO;
++	if (hdev->asic_type == ASIC_GOYA)
++		hdev->pm_mng_profile = PM_AUTO;
++	else
++		hdev->pm_mng_profile = PM_MANUAL;
+ 	hdev->max_power = hdev->asic_prop.max_power_default;
  
- #define HL_PENDING_RESET_PER_SEC	30
- 
-+#define HL_HARD_RESET_MAX_TIMEOUT	120
-+
- #define HL_DEVICE_TIMEOUT_USEC		1000000 /* 1 s */
- 
- #define HL_HEARTBEAT_PER_USEC		5000000 /* 5 s */
+ 	hdev->asic_funcs->add_device_attr(hdev, &hl_dev_clks_attr_group);
 -- 
 2.17.1
 
