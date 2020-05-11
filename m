@@ -2,249 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EACC1CE903
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 01:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4BF1CE937
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 01:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728049AbgEKXTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 19:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725987AbgEKXTD (ORCPT
+        id S1728369AbgEKXdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 19:33:42 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:35420 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726874AbgEKXdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 19:19:03 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536ECC05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 16:19:01 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id f134so7604542wmf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 16:19:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=htWLsPXxnD3s+Ak+OsHOd4Z+bbLisHPSJDmkJfsO+9A=;
-        b=MWoKMev1EAGY5CSGNDm4/jSw+i1b4/V0SZ6GGxEyoe8ve85KRM0TX9lOlHb+sfqbnp
-         qlYVx8mQEN/1vuw0Qm8mtLgkS1FUhNShNpSm2VC1jxVmZlJIcTDJq+75U/nwrCPSXo1s
-         yTh01AyujaFFL1ToNgCZO/gqAHTg0HsT9unfLZwzfkHBNCLOWIj23C12g0/+QAoNgPK2
-         HHVM2ZcpfNPMcPZB+0lW5HwaeHFve8EQ22+RE3xIenBoObHSTB1of8073J+inwt2ZYI1
-         XveanW4AWhtUjRN+ph9jAk/IUfI4/TjUN3+dvdHitIXKvI5sSR7Gs2dBuuq2Thhds1Jp
-         akpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=htWLsPXxnD3s+Ak+OsHOd4Z+bbLisHPSJDmkJfsO+9A=;
-        b=fqQxZM8a/wNCZnSFwYyStwNF4MrxayNnjXh4BOBYrpgzcyn3O22OCMhTXyjmD2Aqcf
-         ydtNYd8dv+me6PL7pCwzXPy6j9gsRGWSY/I6RoGjXo9+gTLdvtYeETYBs5Ulv0eE3qxX
-         qcYwZ5x+ZwDi87/C8mRrnrv5VqeZNl81NFxUj5G11jHJS+46c/mmeMDWKGwD5lKdMMqM
-         EmT77IBCbUCzGLgpgKewcm7D5XqOIWpSZ5wMthp30ReqZWAXh4QhLn3WJ9o5F8F1zYXo
-         +xe55cVIsb16I5T/D+DsF2syijY+8esnkZTIjAZFOYhCkVhbwEHMw+ek0gNZI6Et7ckQ
-         vdiw==
-X-Gm-Message-State: AGi0Puam7b/r7/rYAXJsnaPJJj9vPfeXTEj7+wDLmUe0/CeKjUHU2oUX
-        izQA/PPCiXkULrSE/SVOzT7bfw==
-X-Google-Smtp-Source: APiQypJkEvfnL3ff6hmymJTiKdHywu/T6Kx/KgGG3Oaligwi4hbo1zKKuHyNqU+zFf8l+Rn63x43yw==
-X-Received: by 2002:a1c:3581:: with SMTP id c123mr23251363wma.150.1589239139895;
-        Mon, 11 May 2020 16:18:59 -0700 (PDT)
-Received: from localhost.localdomain ([176.61.57.127])
-        by smtp.gmail.com with ESMTPSA id t2sm29844707wmt.15.2020.05.11.16.18.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 16:18:59 -0700 (PDT)
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, bryan.odonoghue@linaro.org
-Cc:     Nikolaus Voss <nikolaus.voss@loewensteinmedical.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Gustavo A . R . Silva" <garsilva@embeddedor.com>,
-        Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/1] usb: typec: tps6598x: Add USB role switching logic
-Date:   Tue, 12 May 2020 00:19:30 +0100
-Message-Id: <20200511231930.2825183-2-bryan.odonoghue@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200511231930.2825183-1-bryan.odonoghue@linaro.org>
-References: <20200511231930.2825183-1-bryan.odonoghue@linaro.org>
+        Mon, 11 May 2020 19:33:41 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BNWCCB096110;
+        Mon, 11 May 2020 23:32:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=SUCMQvMGKbnOyya5OIEHaJXAFNdV/cZdhlH9Unt5TlA=;
+ b=oO5fFGiOYKj0RbbJQITeWxcUQMrXtrZVRi3R2Fulw132X/tYQnlj79YbUdTnBWhNKfSH
+ eV6tEp/NNkqh3DfCWTXfsx30F6h81y0TCEgFhcc7NHVxQ0OAN865/dleihwB2OCr7sAh
+ rzBuM+aUlIcGjkCV6wA9EUQo2jOpXSVm/Kf0bupmgtXOAcgYhLhoR8filBeCE6RdqM1Q
+ gXw2VdmADaEGV5FygM++Io6vC8Qeecbza5waPi2DapIqBHyePc6WcStmmn19xKeREfhq
+ yt2kJpdWBwhG/ImSssEqd3EBJXWPhOlHW4qZh4TI0a2hrJpMgzeb2yDU34zDmQZkuhpG qA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 30x3mbqy9w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 May 2020 23:32:14 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BNNu4b005736;
+        Mon, 11 May 2020 23:29:56 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 30ydsp8634-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 May 2020 23:29:56 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04BNTbb3004361;
+        Mon, 11 May 2020 23:29:37 GMT
+Received: from [10.154.189.6] (/10.154.189.6)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 11 May 2020 16:29:37 -0700
+Subject: Re: [RFC 14/43] mm: memblock: PKRAM: prevent memblock resize from
+ clobbering preserved pages
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        willy@infradead.org, corbet@lwn.net, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        akpm@linux-foundation.org, hughd@google.com, ebiederm@xmission.com,
+        masahiroy@kernel.org, ardb@kernel.org, ndesaulniers@google.com,
+        dima@golovin.in, daniel.kiper@oracle.com, nivedita@alum.mit.edu,
+        rafael.j.wysocki@intel.com, dan.j.williams@intel.com,
+        zhenzhong.duan@oracle.com, jroedel@suse.de, bhe@redhat.com,
+        guro@fb.com, Thomas.Lendacky@amd.com,
+        andriy.shevchenko@linux.intel.com, keescook@chromium.org,
+        hannes@cmpxchg.org, minchan@kernel.org, mhocko@kernel.org,
+        ying.huang@intel.com, yang.shi@linux.alibaba.com,
+        gustavo@embeddedor.com, ziqian.lzq@antfin.com,
+        vdavydov.dev@gmail.com, jason.zeng@intel.com, kevin.tian@intel.com,
+        zhiyuan.lv@intel.com, lei.l.li@intel.com, paul.c.lai@intel.com,
+        ashok.raj@intel.com, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kexec@lists.infradead.org
+References: <1588812129-8596-1-git-send-email-anthony.yznaga@oracle.com>
+ <1588812129-8596-15-git-send-email-anthony.yznaga@oracle.com>
+ <20200511135727.GA983798@linux.ibm.com>
+From:   Anthony Yznaga <anthony.yznaga@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <54773d69-1a2b-1ab3-24d9-b322d580fb42@oracle.com>
+Date:   Mon, 11 May 2020 16:29:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <20200511135727.GA983798@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=2 mlxscore=0
+ adultscore=0 mlxlogscore=999 malwarescore=0 bulkscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005110172
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 impostorscore=0
+ mlxscore=0 suspectscore=2 bulkscore=0 mlxlogscore=999 phishscore=0
+ malwarescore=0 lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005110173
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds USB role switch support to the tps6598x.
 
-The setup to initiate or accept a data-role switch is both assumed and
-currently required to be baked-into the firmware as described in TI's
-document here.
 
-Link: https://www.ti.com/lit/an/slva843a/slva843a.pdf
+On 5/11/20 6:57 AM, Mike Rapoport wrote:
+> On Wed, May 06, 2020 at 05:41:40PM -0700, Anthony Yznaga wrote:
+>> The size of the memblock reserved array may be increased while preserved
+>> pages are being reserved. When this happens, preserved pages that have
+>> not yet been reserved are at risk for being clobbered when space for a
+>> larger array is allocated.
+>> When called from memblock_double_array(), a wrapper around
+>> memblock_find_in_range() walks the preserved pages pagetable to find
+>> sufficiently sized ranges without preserved pages and passes them to
+>> memblock_find_in_range().
+> I'd suggest to create an array of memblock_region's that will contain
+> the PKRAM ranges before kexec and pass this array to the new kernel.
+> Then, somewhere in start_kerenel() replace replace
+> memblock.reserved->regions with that array. 
 
-With this change its possible to use the USB role-switch API to detect and
-notify role-switches to downstream consumers.
+I'll look into doing this.  Thanks!
 
-Tested with a ChipIdea controller on a Qualcomm MSM8939.
+Anthony
 
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Nikolaus Voss <nikolaus.voss@loewensteinmedical.de>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Gustavo A. R. Silva <garsilva@embeddedor.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: linux-usb@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- drivers/usb/typec/tps6598x.c | 57 +++++++++++++++++++++++++++++++-----
- 1 file changed, 50 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/usb/typec/tps6598x.c b/drivers/usb/typec/tps6598x.c
-index defa651282b0..b7c9fe5caabe 100644
---- a/drivers/usb/typec/tps6598x.c
-+++ b/drivers/usb/typec/tps6598x.c
-@@ -12,6 +12,7 @@
- #include <linux/regmap.h>
- #include <linux/interrupt.h>
- #include <linux/usb/typec.h>
-+#include <linux/usb/role.h>
- 
- /* Register offsets */
- #define TPS_REG_VID			0x00
-@@ -94,6 +95,7 @@ struct tps6598x {
- 	struct typec_port *port;
- 	struct typec_partner *partner;
- 	struct usb_pd_identity partner_identity;
-+	struct usb_role_switch *role_sw;
- };
- 
- /*
-@@ -190,6 +192,23 @@ static int tps6598x_read_partner_identity(struct tps6598x *tps)
- 	return 0;
- }
- 
-+static void tps6598x_set_data_role(struct tps6598x *tps,
-+				   enum typec_data_role role, bool connected)
-+{
-+	enum usb_role role_val;
-+
-+	if (role == TYPEC_HOST)
-+		role_val = USB_ROLE_HOST;
-+	else
-+		role_val = USB_ROLE_DEVICE;
-+
-+	if (!connected)
-+		role_val = USB_ROLE_NONE;
-+
-+	usb_role_switch_set_role(tps->role_sw, role_val);
-+	typec_set_data_role(tps->port, role);
-+}
-+
- static int tps6598x_connect(struct tps6598x *tps, u32 status)
- {
- 	struct typec_partner_desc desc;
-@@ -220,7 +239,7 @@ static int tps6598x_connect(struct tps6598x *tps, u32 status)
- 	typec_set_pwr_opmode(tps->port, mode);
- 	typec_set_pwr_role(tps->port, TPS_STATUS_PORTROLE(status));
- 	typec_set_vconn_role(tps->port, TPS_STATUS_VCONN(status));
--	typec_set_data_role(tps->port, TPS_STATUS_DATAROLE(status));
-+	tps6598x_set_data_role(tps, TPS_STATUS_DATAROLE(status), true);
- 
- 	tps->partner = typec_register_partner(tps->port, &desc);
- 	if (IS_ERR(tps->partner))
-@@ -240,7 +259,7 @@ static void tps6598x_disconnect(struct tps6598x *tps, u32 status)
- 	typec_set_pwr_opmode(tps->port, TYPEC_PWR_MODE_USB);
- 	typec_set_pwr_role(tps->port, TPS_STATUS_PORTROLE(status));
- 	typec_set_vconn_role(tps->port, TPS_STATUS_VCONN(status));
--	typec_set_data_role(tps->port, TPS_STATUS_DATAROLE(status));
-+	tps6598x_set_data_role(tps, TPS_STATUS_DATAROLE(status), false);
- }
- 
- static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
-@@ -328,7 +347,7 @@ static int tps6598x_dr_set(struct typec_port *port, enum typec_data_role role)
- 		goto out_unlock;
- 	}
- 
--	typec_set_data_role(tps->port, role);
-+	tps6598x_set_data_role(tps, role, true);
- 
- out_unlock:
- 	mutex_unlock(&tps->lock);
-@@ -452,6 +471,7 @@ static int tps6598x_probe(struct i2c_client *client)
- {
- 	struct typec_capability typec_cap = { };
- 	struct tps6598x *tps;
-+	struct fwnode_handle *fwnode;
- 	u32 status;
- 	u32 conf;
- 	u32 vid;
-@@ -495,11 +515,22 @@ static int tps6598x_probe(struct i2c_client *client)
- 	if (ret < 0)
- 		return ret;
- 
-+	fwnode = device_get_named_child_node(&client->dev, "connector");
-+	if (IS_ERR(fwnode))
-+		return PTR_ERR(fwnode);
-+
-+	tps->role_sw = fwnode_usb_role_switch_get(fwnode);
-+	if (IS_ERR(tps->role_sw)) {
-+		ret = PTR_ERR(tps->role_sw);
-+		goto err_fwnode_put;
-+	}
-+
- 	typec_cap.revision = USB_TYPEC_REV_1_2;
- 	typec_cap.pd_revision = 0x200;
- 	typec_cap.prefer_role = TYPEC_NO_PREFERRED_ROLE;
- 	typec_cap.driver_data = tps;
- 	typec_cap.ops = &tps6598x_ops;
-+	typec_cap.fwnode = fwnode;
- 
- 	switch (TPS_SYSCONF_PORTINFO(conf)) {
- 	case TPS_PORTINFO_SINK_ACCESSORY:
-@@ -525,12 +556,16 @@ static int tps6598x_probe(struct i2c_client *client)
- 		typec_cap.data = TYPEC_PORT_DFP;
- 		break;
- 	default:
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto err_role_put;
- 	}
- 
- 	tps->port = typec_register_port(&client->dev, &typec_cap);
--	if (IS_ERR(tps->port))
--		return PTR_ERR(tps->port);
-+	if (IS_ERR(tps->port)) {
-+		ret = PTR_ERR(tps->port);
-+		goto err_role_put;
-+	}
-+	fwnode_handle_put(fwnode);
- 
- 	if (status & TPS_STATUS_PLUG_PRESENT) {
- 		ret = tps6598x_connect(tps, status);
-@@ -545,12 +580,19 @@ static int tps6598x_probe(struct i2c_client *client)
- 	if (ret) {
- 		tps6598x_disconnect(tps, 0);
- 		typec_unregister_port(tps->port);
--		return ret;
-+		goto err_role_put;
- 	}
- 
- 	i2c_set_clientdata(client, tps);
- 
- 	return 0;
-+
-+err_role_put:
-+	usb_role_switch_put(tps->role_sw);
-+err_fwnode_put:
-+	fwnode_handle_put(fwnode);
-+
-+	return ret;
- }
- 
- static int tps6598x_remove(struct i2c_client *client)
-@@ -559,6 +601,7 @@ static int tps6598x_remove(struct i2c_client *client)
- 
- 	tps6598x_disconnect(tps, 0);
- 	typec_unregister_port(tps->port);
-+	usb_role_switch_put(tps->role_sw);
- 
- 	return 0;
- }
--- 
-2.25.1
+>
+>> Signed-off-by: Anthony Yznaga <anthony.yznaga@oracle.com>
+>> ---
+>>  include/linux/pkram.h |  3 +++
+>>  mm/memblock.c         | 15 +++++++++++++--
+>>  mm/pkram.c            | 51 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>>  3 files changed, 67 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/linux/pkram.h b/include/linux/pkram.h
+>> index edc5d8bef9d3..409022e1472f 100644
+>> --- a/include/linux/pkram.h
+>> +++ b/include/linux/pkram.h
+>> @@ -62,6 +62,9 @@ struct page *pkram_load_page(struct pkram_stream *ps, unsigned long *index,
+>>  ssize_t pkram_write(struct pkram_stream *ps, const void *buf, size_t count);
+>>  size_t pkram_read(struct pkram_stream *ps, void *buf, size_t count);
+>>  
+>> +phys_addr_t pkram_memblock_find_in_range(phys_addr_t start, phys_addr_t end,
+>> +					 phys_addr_t size, phys_addr_t align);
+>> +
+>>  #ifdef CONFIG_PKRAM
+>>  extern unsigned long pkram_reserved_pages;
+>>  void pkram_reserve(void);
+>> diff --git a/mm/memblock.c b/mm/memblock.c
+>> index c79ba6f9920c..69ae883b8d21 100644
+>> --- a/mm/memblock.c
+>> +++ b/mm/memblock.c
+>> @@ -16,6 +16,7 @@
+>>  #include <linux/kmemleak.h>
+>>  #include <linux/seq_file.h>
+>>  #include <linux/memblock.h>
+>> +#include <linux/pkram.h>
+>>  
+>>  #include <asm/sections.h>
+>>  #include <linux/io.h>
+>> @@ -349,6 +350,16 @@ phys_addr_t __init_memblock memblock_find_in_range(phys_addr_t start,
+>>  	return ret;
+>>  }
+>>  
+>> +phys_addr_t __init_memblock __memblock_find_in_range(phys_addr_t start,
+>> +					phys_addr_t end, phys_addr_t size,
+>> +					phys_addr_t align)
+>> +{
+>> +	if (IS_ENABLED(CONFIG_PKRAM))
+>> +		return pkram_memblock_find_in_range(start, end, size, align);
+>> +	else
+>> +		return memblock_find_in_range(start, end, size, align);
+>> +}
+>> +
+>>  static void __init_memblock memblock_remove_region(struct memblock_type *type, unsigned long r)
+>>  {
+>>  	type->total_size -= type->regions[r].size;
+>> @@ -447,11 +458,11 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
+>>  		if (type != &memblock.reserved)
+>>  			new_area_start = new_area_size = 0;
+>>  
+>> -		addr = memblock_find_in_range(new_area_start + new_area_size,
+>> +		addr = __memblock_find_in_range(new_area_start + new_area_size,
+>>  						memblock.current_limit,
+>>  						new_alloc_size, PAGE_SIZE);
+>>  		if (!addr && new_area_size)
+>> -			addr = memblock_find_in_range(0,
+>> +			addr = __memblock_find_in_range(0,
+>>  				min(new_area_start, memblock.current_limit),
+>>  				new_alloc_size, PAGE_SIZE);
+>>  
+>> diff --git a/mm/pkram.c b/mm/pkram.c
+>> index dd3c89614010..e49c9bcd3854 100644
+>> --- a/mm/pkram.c
+>> +++ b/mm/pkram.c
+>> @@ -1238,3 +1238,54 @@ void pkram_free_pgt(void)
+>>  	__free_pages_core(virt_to_page(pkram_pgd), 0);
+>>  	pkram_pgd = NULL;
+>>  }
+>> +
+>> +static int __init_memblock pkram_memblock_find_cb(struct pkram_pg_state *st, unsigned long base, unsigned long size)
+>> +{
+>> +	unsigned long end = base + size;
+>> +	unsigned long addr;
+>> +
+>> +	if (size < st->min_size)
+>> +		return 0;
+>> +
+>> +	addr =  memblock_find_in_range(base, end, st->min_size, PAGE_SIZE);
+>> +	if (!addr)
+>> +		return 0;
+>> +
+>> +	st->retval = addr;
+>> +	return 1;
+>> +}
+>> +
+>> +/*
+>> + * It may be necessary to allocate a larger reserved memblock array
+>> + * while populating it with ranges of preserved pages.  To avoid
+>> + * trampling preserved pages that have not yet been added to the
+>> + * memblock reserved list this function implements a wrapper around
+>> + * memblock_find_in_range() that restricts searches to subranges
+>> + * that do not contain preserved pages.
+>> + */
+>> +phys_addr_t __init_memblock pkram_memblock_find_in_range(phys_addr_t start,
+>> +					phys_addr_t end, phys_addr_t size,
+>> +					phys_addr_t align)
+>> +{
+>> +	struct pkram_pg_state st = {
+>> +		.range_cb = pkram_memblock_find_cb,
+>> +		.min_addr = start,
+>> +		.max_addr = end,
+>> +		.min_size = PAGE_ALIGN(size),
+>> +		.find_holes = true,
+>> +	};
+>> +
+>> +	if (!pkram_reservation_in_progress)
+>> +		return memblock_find_in_range(start, end, size, align);
+>> +
+>> +	if (!pkram_pgd) {
+>> +		WARN_ONCE(1, "No preserved pages pagetable\n");
+>> +		return memblock_find_in_range(start, end, size, align);
+>> +	}
+>> +
+>> +	WARN_ONCE(memblock_bottom_up(), "PKRAM: bottom up memblock allocation not yet supported\n");
+>> +
+>> +	pkram_walk_pgt_rev(&st, pkram_pgd);
+>> +
+>> +	return st.retval;
+>> +}
+>> -- 
+>> 2.13.3
+>>
 
