@@ -2,75 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C21C1CD1BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 08:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD4A1CD1BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 08:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728467AbgEKGP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 02:15:59 -0400
-Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:53364 "EHLO
-        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726054AbgEKGP7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 02:15:59 -0400
-Received: from mxbackcorp1j.mail.yandex.net (mxbackcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::162])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id F3FC92E14DC;
-        Mon, 11 May 2020 09:15:20 +0300 (MSK)
-Received: from vla5-58875c36c028.qloud-c.yandex.net (vla5-58875c36c028.qloud-c.yandex.net [2a02:6b8:c18:340b:0:640:5887:5c36])
-        by mxbackcorp1j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id 9lzX6X5efJ-FJWipr4m;
-        Mon, 11 May 2020 09:15:20 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1589177720; bh=YYyYBM3hFKxurJJ19a+KMzEF5sBPCd+yAZICqfQZ1kI=;
-        h=Message-ID:Date:To:From:Subject;
-        b=cFuE1RTTWYnhFE7ZV5dOckfVWGuAXegRVFDD89mRp/eyG7rqYugzR+Bq2Fs7QRw7n
-         GDKkc0r3PpnLzUGVEz7GUKp2PQdI8geQVAHpzBaB1QTG2l/1arv2AtAY4fRnbzoYXL
-         m6Ynw8skx8YKAOgAgCNcWnTxRyd2Uf1ARYNM14dY=
-Authentication-Results: mxbackcorp1j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:423::1:1])
-        by vla5-58875c36c028.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id nVyDhfSKjI-FJYuoUQD;
-        Mon, 11 May 2020 09:15:19 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: [PATCH] f2fs: report delalloc reserve as non-free in statfs for
- project quota
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
-Date:   Mon, 11 May 2020 09:15:18 +0300
-Message-ID: <158917771894.228779.2521743301299120701.stgit@buzz>
-User-Agent: StGit/0.22-32-g6a05
+        id S1728356AbgEKGPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 02:15:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726054AbgEKGPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 02:15:52 -0400
+Received: from localhost (unknown [122.167.117.121])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7122B20708;
+        Mon, 11 May 2020 06:15:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589177752;
+        bh=YmpQqO+voOin9Eh8PZUZNka6aTn/VjZ8uHlXHkUb+QU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KTb3jHj7c+P9BCBcaBUICxIuo2mSN1YH2hwV2iRlIlo13WQbJ2Vhe0uLpiuVOQnpm
+         mXAJvVrP6oBmeg4OcXEqo4N9/qECck8o+t+LDGAFZPwI8x0AxXQ2kcsQCn5sr+eqFs
+         2nTKox51G6EWKiHRs33ENWPWggZ6pPLWfEAvK6+g=
+Date:   Mon, 11 May 2020 11:45:46 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Samuel Zou <zou_wei@huawei.com>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        sanyog.r.kale@intel.com, pierre-louis.bossart@linux.intel.com,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] soundwire: qcom: Use IRQF_ONESHOT
+Message-ID: <20200511061546.GQ1375924@vkoul-mobl>
+References: <1588735553-34219-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1588735553-34219-1-git-send-email-zou_wei@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reserved space isn't committed yet but cannot be used for
-allocations. For userspace it has no difference from used space.
+On 06-05-20, 11:25, Samuel Zou wrote:
+> Fixes coccicheck error:
+> 
+> drivers/soundwire/qcom.c:815:7-32: ERROR: Threaded IRQ with
+> no primary handler requested without IRQF_ONESHOT
 
-See the same fix in ext4 commit f06925c73942 ("ext4: report delalloc
-reserve as non-free in statfs for project quota").
+Applied, thanks
 
-Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Fixes: ddc34e328d06 ("f2fs: introduce f2fs_statfs_project")
----
- fs/f2fs/super.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index f2dfc21c6abb..c5e8cb31626f 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -1292,7 +1292,8 @@ static int f2fs_statfs_project(struct super_block *sb,
- 		limit >>= sb->s_blocksize_bits;
- 
- 	if (limit && buf->f_blocks > limit) {
--		curblock = dquot->dq_dqb.dqb_curspace >> sb->s_blocksize_bits;
-+		curblock = (dquot->dq_dqb.dqb_curspace +
-+			    dquot->dq_dqb.dqb_rsvspace) >> sb->s_blocksize_bits;
- 		buf->f_blocks = limit;
- 		buf->f_bfree = buf->f_bavail =
- 			(buf->f_blocks > curblock) ?
-
+-- 
+~Vinod
