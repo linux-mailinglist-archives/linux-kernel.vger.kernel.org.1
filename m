@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505391CE095
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 18:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C186E1CE09E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 18:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730632AbgEKQfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 12:35:10 -0400
-Received: from verein.lst.de ([213.95.11.211]:36967 "EHLO verein.lst.de"
+        id S1729789AbgEKQfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 12:35:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729862AbgEKQfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 12:35:09 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 796BC68BEB; Mon, 11 May 2020 18:35:04 +0200 (CEST)
-Date:   Mon, 11 May 2020 18:35:04 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Roman Zippel <zippel@linux-m68k.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, Michal Simek <monstr@monstr.eu>,
-        Jessica Yu <jeyu@kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        linux-c6x-dev@linux-c6x.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Openrisc <openrisc@lists.librecores.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-riscv@lists.infradead.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: sort out the flush_icache_range mess
-Message-ID: <20200511163503.GA32228@lst.de>
-References: <20200510075510.987823-1-hch@lst.de> <CAMuHMdXazsBw0mjJd0uFHQud7qbb5-Uw-PTDB3+-M=huRWOfgQ@mail.gmail.com> <20200511151356.GB28634@lst.de> <CAMuHMdU1xAmyWysi5xRoaRL7PFurPncvEL0CcEY0V_sUz3EJPw@mail.gmail.com>
+        id S1727820AbgEKQfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 12:35:40 -0400
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 565092075E;
+        Mon, 11 May 2020 16:35:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589214939;
+        bh=8TFQb1GM4g3bo5bqMC8d7iejuG4LFgF8oh8M3+ixynU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=xIQ4UlcpTLAEYtdkn2VyVddK0ErnEM/0K1pGj3X3b9PNzir9/CHLG0o74cO5bDbWH
+         +u6PPYb7JBOfPN1jhkHEoCwSglcRBjqEVeDbAMYxVsdMkjDGUA1NwXCfByXYsdejKR
+         +y8Q1Kss4JriSxencPVJJ1j0dTfHyGB7DH1F9pUQ=
+Subject: Re: [PATCH 5.4 00/50] 5.4.40-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org, shuah <shuah@kernel.org>
+References: <20200508123043.085296641@linuxfoundation.org>
+From:   shuah <shuah@kernel.org>
+Message-ID: <e090d5ed-3e18-333e-221b-197a30c102e8@kernel.org>
+Date:   Mon, 11 May 2020 10:35:26 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdU1xAmyWysi5xRoaRL7PFurPncvEL0CcEY0V_sUz3EJPw@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200508123043.085296641@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 05:25:45PM +0200, Geert Uytterhoeven wrote:
-> > Do you want to drop the:
-> >
-> >     select HAVE_AOUT if MMU
-> >
-> > for m68k then?
+On 5/8/20 6:35 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.40 release.
+> There are 50 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> If that helps to reduce maintenance, it's fine for me.
-> That leaves alpha as the sole user?
+> Responses should be made by Sun, 10 May 2020 12:29:44 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.40-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Yes.  And for alpha it isn't classic Linux a.out, but the OSF/1 ECOFF
-format, which might lead to further cleanups eventually.
+Compiled and booted on my test system. I am seeing the following
+regression in dmesg and with a new emergency message.
+
+Initramfs unpacking failed: Decoding failed
+
+I don't know why yet. I will debug and let you know.
+
+thanks,
+-- Shuah
