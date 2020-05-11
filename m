@@ -2,76 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F951CE37F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1EF61CE393
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731351AbgEKTBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 15:01:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731341AbgEKTA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 15:00:56 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1731318AbgEKTGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 15:06:38 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29058 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731246AbgEKTGh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 15:06:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589223996;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oqf/KDuLojDbfB1GjtcgpUnIV6apc16crSMVbd9O8A4=;
+        b=hF3HkiCxEokQvbcfLJFHOnWB065PxvenqNv4KUTlHwLFXk7zj2jbh0Q8MejIyZ7uWE5JkW
+        rN1Ww5mIJEx543IDDhZ/EYSA/5IW5ksRkUNU8yiEI/q0fOUeGMSi70pdJXUAhIIwGaL4zc
+        ng1d9emnZ9NVhTmBOVeoFvVpHKAllz8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-108-Ee0psfbIP7-P37Lvb-TSBw-1; Mon, 11 May 2020 15:06:34 -0400
+X-MC-Unique: Ee0psfbIP7-P37Lvb-TSBw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E09820752;
-        Mon, 11 May 2020 19:00:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589223656;
-        bh=PvdKEGsipmrx4D03jNv7tvPaZh5l7RzD7G9RdrqGFFU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M/pfmXIBUwhfb+Os5O+v1+GVZBDK+ZTs5awbIB1Je4Pn5W3GySpKkQWVSu6Bm+nFY
-         Smsu46qlmqDnAqSr80ieYs8M7t+jqX4sK0qlKByV1b3RQT56X1R2aN0sMwY9vGkeIM
-         1ZdsPUao9aNgwugA9DR1GfUTy/KndmZEvK58rKBc=
-Date:   Mon, 11 May 2020 14:05:28 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Arnaldo Melo <arnaldo.melo@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf script: Replace zero-length array with
- flexible-array
-Message-ID: <20200511190528.GA15810@embeddedor>
-References: <20200507190615.GA15677@embeddedor>
- <20200511154812.GD5377@kernel.org>
- <20200511172620.GA14618@embeddedor>
- <AA4613D1-106B-4B4D-9470-EBEA2A527DC7@gmail.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A1F6F8005AD;
+        Mon, 11 May 2020 19:06:33 +0000 (UTC)
+Received: from prarit.bos.redhat.com (prarit-guest.7a2m.lab.eng.bos.redhat.com [10.16.222.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F3A539CB9;
+        Mon, 11 May 2020 19:06:32 +0000 (UTC)
+From:   Prarit Bhargava <prarit@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Prarit Bhargava <prarit@redhat.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH] intel-speed-select: Fix json perf-profile output output
+Date:   Mon, 11 May 2020 15:06:28 -0400
+Message-Id: <20200511190628.25661-1-prarit@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AA4613D1-106B-4B4D-9470-EBEA2A527DC7@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 03:48:55PM -0300, Arnaldo Melo wrote:
-> >> 
-> >> Can you split this into a kernel part and tools/ one? Also this is
-> >not
-> >> really just for "perf script", so please adjust the subject line too
-> >:-)
-> >> 
-> >
-> >Sure thing. :)
-> >
-> >Is that OK if I use "perf: " for the tools part and "perf/x86: " for
-> >the
-> >kernel part?
-> 
-> perf tools: Summary
-> 
-> Since it touches multiple perf tools, 
-> 
-> perf script: If it was only about 'perf script'
+The 'intel-speed-select -f json perf-profile get-lock-status' command
+outputs the package, die, and cpu data as separate fields.
 
-OK. I've got it.
+ex)
 
-Thanks
---
-Gustavo
+  "package-0": {
+    "die-0": {
+      "cpu-0": {
+
+Commit 74062363f855 ("tools/power/x86/intel-speed-select: Avoid duplicate Package strings for json") prettied this output so that it is a single line for
+some json output commands and the same should be done for other commands.
+
+Output package, die, and cpu info in a single line when using json output.
+
+Signed-off-by: Prarit Bhargava <prarit@redhat.com>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: platform-driver-x86@vger.kernel.org
+---
+ .../x86/intel-speed-select/isst-display.c     | 26 +++++++++++++------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/tools/power/x86/intel-speed-select/isst-display.c b/tools/power/x86/intel-speed-select/isst-display.c
+index f6e2ce181123..e105fece47b6 100644
+--- a/tools/power/x86/intel-speed-select/isst-display.c
++++ b/tools/power/x86/intel-speed-select/isst-display.c
+@@ -316,21 +316,31 @@ void isst_ctdp_display_core_info(int cpu, FILE *outf, char *prefix,
+ {
+ 	char header[256];
+ 	char value[256];
++	int level = 1;
++
++	if (out_format_is_json()) {
++		snprintf(header, sizeof(header), "package-%d:die-%d:cpu-%d",
++			 get_physical_package_id(cpu), get_physical_die_id(cpu),
++			 cpu);
++		format_and_print(outf, level++, header, NULL);
++	} else {
++		snprintf(header, sizeof(header), "package-%d",
++			 get_physical_package_id(cpu));
++		format_and_print(outf, level++, header, NULL);
++		snprintf(header, sizeof(header), "die-%d",
++			 get_physical_die_id(cpu));
++		format_and_print(outf, level++, header, NULL);
++		snprintf(header, sizeof(header), "cpu-%d", cpu);
++		format_and_print(outf, level++, header, NULL);
++	}
+ 
+-	snprintf(header, sizeof(header), "package-%d",
+-		 get_physical_package_id(cpu));
+-	format_and_print(outf, 1, header, NULL);
+-	snprintf(header, sizeof(header), "die-%d", get_physical_die_id(cpu));
+-	format_and_print(outf, 2, header, NULL);
+-	snprintf(header, sizeof(header), "cpu-%d", cpu);
+-	format_and_print(outf, 3, header, NULL);
+ 	if (str0 && !val)
+ 		snprintf(value, sizeof(value), "%s", str0);
+ 	else if (str1 && val)
+ 		snprintf(value, sizeof(value), "%s", str1);
+ 	else
+ 		snprintf(value, sizeof(value), "%u", val);
+-	format_and_print(outf, 4, prefix, value);
++	format_and_print(outf, level, prefix, value);
+ 
+ 	format_and_print(outf, 1, NULL, NULL);
+ }
+-- 
+2.18.4
+
