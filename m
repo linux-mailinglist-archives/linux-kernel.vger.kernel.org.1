@@ -2,135 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCC11CCF2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 03:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDA71CCF31
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 03:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729278AbgEKBbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 21:31:06 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:49916 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729217AbgEKBbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 21:31:06 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 8E1C236E49384F496D23;
-        Mon, 11 May 2020 09:31:03 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.93) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Mon, 11 May 2020
- 09:30:37 +0800
-Subject: Re: [PATCH -next] riscv: perf_event: Make some funciton static
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <alankao@andestech.com>
-References: <mhng-158b6408-4023-446d-89b4-b4416ba80718@palmerdabbelt-glaptop1>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <b5635dbb-5bd6-ca01-ca3b-4932941fd19a@huawei.com>
-Date:   Mon, 11 May 2020 09:30:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1729294AbgEKBcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 21:32:11 -0400
+Received: from smtprelay0096.hostedemail.com ([216.40.44.96]:43492 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728468AbgEKBcK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 May 2020 21:32:10 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id A5CE218224D6B;
+        Mon, 11 May 2020 01:32:09 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3870:3871:3872:3873:3874:4321:5007:6119:7903:10004:10400:10848:11026:11232:11658:11914:12297:12438:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21451:21627:21990:30034:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: paste63_6a0e2d4071849
+X-Filterd-Recvd-Size: 1626
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 11 May 2020 01:32:08 +0000 (UTC)
+Message-ID: <8bf0f4bc3ff924143fe1a90d112c73047de0288d.camel@perches.com>
+Subject: Re: [PATCH -next 0/2] sparc: use snprintf() in show() methods
+From:   Joe Perches <joe@perches.com>
+To:     chenzhou <chenzhou10@huawei.com>, davem@davemloft.net
+Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sun, 10 May 2020 18:32:07 -0700
+In-Reply-To: <887e9dc1-745b-fd2d-39fe-3354e25c6ce8@huawei.com>
+References: <20200509091849.116954-1-chenzhou10@huawei.com>
+         <d31e35da0921eb88424e2b201a38b3b8b2d2580c.camel@perches.com>
+         <887e9dc1-745b-fd2d-39fe-3354e25c6ce8@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-In-Reply-To: <mhng-158b6408-4023-446d-89b4-b4416ba80718@palmerdabbelt-glaptop1>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.166.215.93]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2020-05-11 at 09:24 +0800, chenzhou wrote:
+> Sorry, i made a mistake, should be scnprintf().
 
-On 2020/5/9 1:13, Palmer Dabbelt wrote:
-> What's the "-next" for?  This seems appropriate for an RC to me, as 
-> it's a
-> build fix.
+No worries.
 
-Thanks for your review, this patch and "[PATCH -next] riscv: perf: 
-RISCV_BASE_PMU
+But why do you think this is useful?
+Is it likely that either snprint length will exceed PAGE_SIZE?
 
-should be closeable", I fix the issue based on linux-next, so add the 
-next prefix ; )
-
-and we also found some another build issue when add RISCV arch to huawei 
-build robot,
-
-will send out the patches later.
-
-
->
-> On Thu, 07 May 2020 08:04:44 PDT (-0700), wangkefeng.wang@huawei.com 
-> wrote:
->> Fixes the following warning detected when running make with W=1,
->> ../arch/riscv/kernel/perf_event.c:150:5: warning: no previous 
->> prototype for ‘riscv_map_cache_decode’ [-Wmissing-prototypes]
->>  int riscv_map_cache_decode(u64 config, unsigned int *type,
->>      ^~~~~~~~~~~~~~~~~~~~~~
->> ../arch/riscv/kernel/perf_event.c:345:13: warning: no previous 
->> prototype for ‘riscv_base_pmu_handle_irq’ [-Wmissing-prototypes]
->>  irqreturn_t riscv_base_pmu_handle_irq(int irq_num, void *dev)
->>              ^~~~~~~~~~~~~~~~~~~~~~~~~
->> ../arch/riscv/kernel/perf_event.c:364:6: warning: no previous 
->> prototype for ‘release_pmc_hardware’ [-Wmissing-prototypes]
->>  void release_pmc_hardware(void)
->>       ^~~~~~~~~~~~~~~~~~~~
->> ../arch/riscv/kernel/perf_event.c:467:12: warning: no previous 
->> prototype for ‘init_hw_perf_events’ [-Wmissing-prototypes]
->>  int __init init_hw_perf_events(void)
->>             ^~~~~~~~~~~~~~~~~~~
->>
->> Cc: Alan Kao <alankao@andestech.com>
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> ---
->>  arch/riscv/kernel/perf_event.c | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/riscv/kernel/perf_event.c 
->> b/arch/riscv/kernel/perf_event.c
->> index 91626d9ae5f2..c835f0362d94 100644
->> --- a/arch/riscv/kernel/perf_event.c
->> +++ b/arch/riscv/kernel/perf_event.c
->> @@ -147,7 +147,7 @@ static int riscv_map_hw_event(u64 config)
->>      return riscv_pmu->hw_events[config];
->>  }
->>
->> -int riscv_map_cache_decode(u64 config, unsigned int *type,
->> +static int riscv_map_cache_decode(u64 config, unsigned int *type,
->>                 unsigned int *op, unsigned int *result)
->>  {
->>      return -ENOENT;
->> @@ -342,7 +342,7 @@ static void riscv_pmu_del(struct perf_event 
->> *event, int flags)
->>
->>  static DEFINE_MUTEX(pmc_reserve_mutex);
->>
->> -irqreturn_t riscv_base_pmu_handle_irq(int irq_num, void *dev)
->> +static irqreturn_t riscv_base_pmu_handle_irq(int irq_num, void *dev)
->>  {
->>      return IRQ_NONE;
->>  }
->> @@ -361,7 +361,7 @@ static int reserve_pmc_hardware(void)
->>      return err;
->>  }
->>
->> -void release_pmc_hardware(void)
->> +static void release_pmc_hardware(void)
->>  {
->>      mutex_lock(&pmc_reserve_mutex);
->>      if (riscv_pmu->irq >= 0)
->> @@ -464,7 +464,7 @@ static const struct of_device_id 
->> riscv_pmu_of_ids[] = {
->>      { /* sentinel value */ }
->>  };
->>
->> -int __init init_hw_perf_events(void)
->> +static int __init init_hw_perf_events(void)
->>  {
->>      struct device_node *node = of_find_node_by_type(NULL, "pmu");
->>      const struct of_device_id *of_id;
->
-> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
->
-> .
->
+> 
+> On 2020/5/9 19:40, Joe Perches wrote:
+> > On Sat, 2020-05-09 at 17:18 +0800, Chen Zhou wrote:
+> > > snprintf() returns the number of bytes that would be written,
+> > > which may be greater than the the actual length to be written.
+> > []
+> > > Chen Zhou (2):
+> > >   sparc: use snprintf() in show_pciobppath_attr() in pci.c
+> > >   sparc: use snprintf() in show_pciobppath_attr() in vio.c
+> > Your subjects are a bit off: snprintf vs scnprintf
+> > 
+> > 
+> > 
+> > 
+> 
+> 
 
