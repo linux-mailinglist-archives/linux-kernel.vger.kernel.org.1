@@ -2,150 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2461CE1E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 19:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67F11CE1FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 19:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730624AbgEKRmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 13:42:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726310AbgEKRmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 13:42:16 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97DD52070B;
-        Mon, 11 May 2020 17:42:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589218935;
-        bh=a3Iyd0AtJyoc/jnDu0wU+xUacgHz++uvOIDW/S793sI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qeIHokrg81Z1PpYZkgeLSu43ScttAjHimGyFySHs1JaZipMJOdDVuxsk37D1z6OxC
-         tYAXdXDKrjgLv/54g3h+wFPvjPlsmwMX0TtiIKxKyX8Tij3eU5FdehSvD83aHJNf8F
-         2H13GhEvNX4lBB+icp38E9m7TN/zUo1KJzbLtBbY=
-Date:   Mon, 11 May 2020 12:46:47 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND] ASoC: Intel: Skylake: Replace zero-length array with
- flexible-array
-Message-ID: <20200511174647.GA17318@embeddedor>
+        id S1730048AbgEKRr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 13:47:58 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34706 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726310AbgEKRr6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 13:47:58 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04BHZtqx098804;
+        Mon, 11 May 2020 13:47:39 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30wry0nbd5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 May 2020 13:47:39 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04BHa3UB099843;
+        Mon, 11 May 2020 13:47:38 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30wry0nbcb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 May 2020 13:47:38 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04BHlbYA028935;
+        Mon, 11 May 2020 17:47:37 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma01fra.de.ibm.com with ESMTP id 30wm559yfg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 May 2020 17:47:36 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04BHlYSm64290822
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 May 2020 17:47:34 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9EB434C046;
+        Mon, 11 May 2020 17:47:34 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 933F54C044;
+        Mon, 11 May 2020 17:47:32 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon, 11 May 2020 17:47:32 +0000 (GMT)
+Date:   Mon, 11 May 2020 23:17:31 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Mel Gorman <mgorman@suse.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Christopher Lameter <cl@linux.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 3/3] mm/page_alloc: Keep memoryless cpuless node 0
+ offline
+Message-ID: <20200511174731.GD1961@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20200428093836.27190-1-srikar@linux.vnet.ibm.com>
+ <20200428093836.27190-4-srikar@linux.vnet.ibm.com>
+ <20200428165912.ca1eadefbac56d740e6e8fd1@linux-foundation.org>
+ <20200429014145.GD19958@linux.vnet.ibm.com>
+ <20200429122211.GD28637@dhcp22.suse.cz>
+ <20200430071820.GF19958@linux.vnet.ibm.com>
+ <20200504093712.GL22838@dhcp22.suse.cz>
+ <20200508130304.GA1961@linux.vnet.ibm.com>
+ <3bfe7469-1d8c-baa4-6d9d-f4786492eaa8@redhat.com>
+ <ce9d47bc-f92c-dd22-0d59-e8d59c913526@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <ce9d47bc-f92c-dd22-0d59-e8d59c913526@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-11_08:2020-05-11,2020-05-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 mlxscore=0 clxscore=1015 lowpriorityscore=0 spamscore=0
+ suspectscore=2 mlxlogscore=999 malwarescore=0 impostorscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005110137
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+* David Hildenbrand <david@redhat.com> [2020-05-08 15:42:12]:
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+Hi David,
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+Thanks for the steps to tryout.
 
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
+> > 
+> > #! /bin/bash
+> > sudo x86_64-softmmu/qemu-system-x86_64 \
+> >     --enable-kvm \
+> >     -m 4G,maxmem=20G,slots=2 \
+> >     -smp sockets=2,cores=2 \
+> >     -numa node,nodeid=0,cpus=0-1,mem=4G -numa node,nodeid=1,cpus=2-3,mem=0G \
+> 
+> Sorry, this line has to be
+> 
+> -numa node,nodeid=0,cpus=0-3,mem=4G -numa node,nodeid=1,mem=0G \
+> 
+> >     -kernel /home/dhildenb/git/linux/arch/x86_64/boot/bzImage \
+> >     -append "console=ttyS0 rd.shell rd.luks=0 rd.lvm=0 rd.md=0 rd.dm=0" \
+> >     -initrd /boot/initramfs-5.2.8-200.fc30.x86_64.img \
+> >     -machine pc,nvdimm \
+> >     -nographic \
+> >     -nodefaults \
+> >     -chardev stdio,id=serial \
+> >     -device isa-serial,chardev=serial \
+> >     -chardev socket,id=monitor,path=/var/tmp/monitor,server,nowait \
+> >     -mon chardev=monitor,mode=readline
+> > 
+> > to get a cpu-less and memory-less node 1. Never tried with node 0.
+> > 
 
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
+I tried 
 
-sizeof(flexible-array-member) triggers a warning because flexible array
-members have incomplete type[1]. There are some instances of code in
-which the sizeof operator is being incorrectly/erroneously applied to
-zero-length arrays and the result is zero. Such instances may be hiding
-some bugs. So, this work (flexible-array member conversions) will also
-help to get completely rid of those sorts of issues.
+qemu-system-x86_64 -enable-kvm -m 4G,maxmem=20G,slots=2 -smp sockets=2,cores=2 -cpu host -numa node,nodeid=0,cpus=0-3,mem=4G -numa node,nodeid=1,mem=0G -vga none -nographic -serial mon:stdio /home/srikar/fedora.qcow2
 
-This issue was found with the help of Coccinelle.
+and the resulting guest was.
 
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+[root@localhost ~]# numactl -H
+available: 1 nodes (0)
+node 0 cpus: 0 1 2 3
+node 0 size: 3927 MB
+node 0 free: 3316 MB
+node distances:
+node   0
+  0:  10
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- sound/soc/intel/atom/sst-atom-controls.h |    2 +-
- sound/soc/intel/skylake/skl-i2s.h        |    2 +-
- sound/soc/intel/skylake/skl-topology.h   |    4 ++--
- sound/soc/intel/skylake/skl.h            |    2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+[root@localhost ~]# lscpu
+Architecture:        x86_64
+CPU op-mode(s):      32-bit, 64-bit
+Byte Order:          Little Endian
+Address sizes:       40 bits physical, 48 bits virtual
+CPU(s):              4
+On-line CPU(s) list: 0-3
+Thread(s) per core:  1
+Core(s) per socket:  2
+Socket(s):           2
+NUMA node(s):        1
+Vendor ID:           GenuineIntel
+CPU family:          6
+Model:               46
+Model name:          Intel(R) Xeon(R) CPU           X7560  @ 2.27GHz
+Stepping:            6
+CPU MHz:             2260.986
+BogoMIPS:            4521.97
+Virtualization:      VT-x
+Hypervisor vendor:   KVM
+Virtualization type: full
+L1d cache:           32K
+L1i cache:           32K
+L2 cache:            4096K
+L3 cache:            16384K
+NUMA node0 CPU(s):   0-3
+Flags:               fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni vmx ssse3 cx16 sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer hypervisor lahf_lm cpuid_fault pti ssbd ibrs ibpb tpr_shadow vnmi flexpriority ept vpid tsc_adjust arat umip arch_capabilities
 
-diff --git a/sound/soc/intel/atom/sst-atom-controls.h b/sound/soc/intel/atom/sst-atom-controls.h
-index 5356e954a732..620b48d2a064 100644
---- a/sound/soc/intel/atom/sst-atom-controls.h
-+++ b/sound/soc/intel/atom/sst-atom-controls.h
-@@ -410,7 +410,7 @@ struct sst_cmd_set_gain_dual {
- struct sst_cmd_set_params {
- 	struct sst_destination_id dst;
- 	u16 command_id;
--	char params[0];
-+	char params[];
- } __packed;
- 
- 
-diff --git a/sound/soc/intel/skylake/skl-i2s.h b/sound/soc/intel/skylake/skl-i2s.h
-index d7c15873c0d4..dfce91e11be1 100644
---- a/sound/soc/intel/skylake/skl-i2s.h
-+++ b/sound/soc/intel/skylake/skl-i2s.h
-@@ -46,7 +46,7 @@ struct skl_i2s_config_mclk {
- struct skl_i2s_config_mclk_ext {
- 	u32 mdivctrl;
- 	u32 mdivr_count;
--	u32 mdivr[0];
-+	u32 mdivr[];
- } __packed;
- 
- struct skl_i2s_config_blob_signature {
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index e967800dbb62..d2cd8ef8e97f 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -119,7 +119,7 @@ struct skl_cpr_gtw_cfg {
- struct skl_dma_control {
- 	u32 node_id;
- 	u32 config_length;
--	u32 config_data[0];
-+	u32 config_data[];
- } __packed;
- 
- struct skl_cpr_cfg {
-@@ -152,7 +152,7 @@ struct skl_up_down_mixer_cfg {
- 
- struct skl_algo_cfg {
- 	struct skl_base_cfg  base_cfg;
--	char params[0];
-+	char params[];
- } __packed;
- 
- struct skl_base_outfmt_cfg {
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 2bfbf59277c4..26057f38a014 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -49,7 +49,7 @@ struct skl_astate_param {
- 
- struct skl_astate_config {
- 	u32 count;
--	struct skl_astate_param astate_table[0];
-+	struct skl_astate_param astate_table[];
- };
- 
- struct skl_fw_config {
+[root@localhost ~]# cat /sys/devices/system/node/online
+0
+[root@localhost ~]# cat /sys/devices/system/node/possible
+0-1
 
+---------------------------------------------------------------------------------
+
+I also tried
+
+qemu-system-x86_64 -enable-kvm -m 4G,maxmem=20G,slots=2 -smp sockets=2,cores=2 -cpu host -numa node,nodeid=1,cpus=0-3,mem=4G -numa node,nodeid=0,mem=0G -vga none -nographic -serial mon:stdio /home/srikar/fedora.qcow2
+
+and the resulting guest was.
+
+[root@localhost ~]# numactl -H
+available: 1 nodes (0)
+node 0 cpus: 0 1 2 3
+node 0 size: 3927 MB
+node 0 free: 3316 MB
+node distances:
+node   0
+  0:  10
+
+[root@localhost ~]# lscpu
+Architecture:        x86_64
+CPU op-mode(s):      32-bit, 64-bit
+Byte Order:          Little Endian
+Address sizes:       40 bits physical, 48 bits virtual
+CPU(s):              4
+On-line CPU(s) list: 0-3
+Thread(s) per core:  1
+Core(s) per socket:  2
+Socket(s):           2
+NUMA node(s):        1
+Vendor ID:           GenuineIntel
+CPU family:          6
+Model:               46
+Model name:          Intel(R) Xeon(R) CPU           X7560  @ 2.27GHz
+Stepping:            6
+CPU MHz:             2260.986
+BogoMIPS:            4521.97
+Virtualization:      VT-x
+Hypervisor vendor:   KVM
+Virtualization type: full
+L1d cache:           32K
+L1i cache:           32K
+L2 cache:            4096K
+L3 cache:            16384K
+NUMA node0 CPU(s):   0-3
+Flags:               fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni vmx ssse3 cx16 sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer hypervisor lahf_lm cpuid_fault pti ssbd ibrs ibpb tpr_shadow vnmi flexpriority ept vpid tsc_adjust arat umip arch_capabilities
+
+[root@localhost ~]# cat /sys/devices/system/node/online
+0
+[root@localhost ~]# cat /sys/devices/system/node/possible
+0-1
+
+Even without my patch, both the combinations, I am still unable to see a
+cpuless, memoryless node being online. And the interesting part being even
+if I mark node 0 as cpuless,memoryless and node 1 as actual node, the system
+somewhere marks node 0 as the actual node.
+
+> 
+> David / dhildenb
+> 
+
+-- 
+Thanks and Regards
+Srikar Dronamraju
