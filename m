@@ -2,63 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED831CD7DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F711CD7F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729741AbgEKLVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:21:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:57666 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728574AbgEKLVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:21:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BCE1E101E;
-        Mon, 11 May 2020 04:21:51 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 378E33F7B4;
-        Mon, 11 May 2020 04:21:50 -0700 (PDT)
-Date:   Mon, 11 May 2020 12:21:47 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Wei Hu <weh@microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, robh@kernel.org, bhelgaas@google.com,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, decui@microsoft.com,
-        mikelley@microsoft.com
-Subject: Re: [PATCH v3 0/2] Fix PCI HyperV device error handling
-Message-ID: <20200511112147.GD24954@e121166-lin.cambridge.arm.com>
-References: <20200507050126.10871-1-weh@microsoft.com>
+        id S1729562AbgEKLWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:22:43 -0400
+Received: from mailgate1.rohmeurope.com ([87.129.152.131]:62230 "EHLO
+        mailgate1.rohmeurope.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728531AbgEKLWn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 07:22:43 -0400
+X-AuditID: c0a8fbf4-473ff70000004419-63-5eb935810752
+Received: from smtp.reu.rohmeu.com (will-cas001.reu.rohmeu.com [192.168.251.177])
+        by mailgate1.rohmeurope.com (Symantec Messaging Gateway) with SMTP id 1F.48.17433.18539BE5; Mon, 11 May 2020 13:22:41 +0200 (CEST)
+Received: from WILL-MAIL001.REu.RohmEu.com ([fe80::2915:304f:d22c:c6ba]) by
+ WILL-CAS001.REu.RohmEu.com ([fe80::d57e:33d0:7a5d:f0a6%16]) with mapi id
+ 14.03.0487.000; Mon, 11 May 2020 13:22:29 +0200
+From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+To:     "sre@kernel.org" <sre@kernel.org>,
+        "zou_wei@huawei.com" <zou_wei@huawei.com>
+CC:     "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] power: supply: Make bd9995x_chip_reset static
+Thread-Topic: [PATCH -next] power: supply: Make bd9995x_chip_reset static
+Thread-Index: AQHWJ4RI9k+/do5SNk+x8ujOfU5vjqiinGQA
+Date:   Mon, 11 May 2020 11:22:26 +0000
+Message-ID: <ff7faf0add4155a10e3df12fceea8bda17050021.camel@fi.rohmeurope.com>
+References: <1589195577-8723-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <1589195577-8723-1-git-send-email-zou_wei@huawei.com>
+Accept-Language: en-US, de-DE
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [62.78.225.252]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FD505BECFCC1BA488BB47146A054A152@de.rohmeurope.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507050126.10871-1-weh@microsoft.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMKsWRmVeSWpSXmKPExsVyYMXvjbqNpjvjDH5vN7PobZrOZHF51xw2
+        i8+9RxgtTu8usXj04QibA6tHy5G3rB6bVnWyecw7GejxeZNcAEsUt01SYklZcGZ6nr5dAnfG
+        7BVaBT08FecWeDQwPuHuYuTkkBAwkTg+4RFTFyMXh5DANUaJn19bWSCcE4wSt77OZu5i5OBg
+        E7CR6LrJDtIgIhAk8XDZPGYQm1ngKKPEi/UFILawgIfE9slfmSBqPCWmzV4NVW8k0bL6GFg9
+        i4CqxI3bcxhBRvIK+En83acKEhYScJTYNuUIWAmngJNEV+t+FhCbUUBWorPhHRPEKnGJTc++
+        s0LcLCCxZM95ZghbVOLl439QcUWJ7d/XsYCMZxbQlFi/Sx/CdJD4dTwHYoqixJTuh2CH8QoI
+        Spyc+YRlAqPYLCQLZiE0z0JonoWkeRaS5gWMrKsYJXITM3PSE0tSDfWKUkv1ivIzcoFUcn7u
+        JkZI9H3Zwfj/kOchRiYOxkOMkhxMSqK8p7R2xgnxJeWnVGYkFmfEF5XmpBYfYpTgYFYS4fW4
+        tyNOiDclsbIqtSgfJiXNwaIkzqv+cGKskADIruzU1ILUIpisDAeHkgSvmgnQUMGi1PTUirTM
+        nBKENBMHJ8hwLimR4tS8lNSixNKSjHhQyogvBiYNkBQP0N6ZIO28xQWJuUBRiNZTjIYcE17O
+        XcTMcXLVEiB5ZO7SRcxCLHn5ealS4rw/QBoEQBoySvPg1r1iFOdgVBLmNQAmWSEeYEqGm/YK
+        aBET0KKHz7eBLCpJREhJNTDq/1bWKLrzc5KuyvN853kG3Y+yNkdc/L79hfJO06VFyqa/9hWa
+        zOnZeXjfGcUjHBHrL3+1nrz04I8dK687a3q/vHEgo7vzxNqZ2qFRJTIaK8/OmzI7x1P9jo7Z
+        ySvVcprXrm9sYwqXXOBlbmUQum/ib22m7ZceKa46wM7JoHDpoUWL7s3i54LeSizFGYmGWsxF
+        xYkATXh7yYYDAAA=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 01:01:26PM +0800, Wei Hu wrote:
-> This series better handles some PCI HyperV error cases in general
-> and for kdump case. Some of review comments from previous individual
-> patch reviews, including splitting into separate patches, have already
-> been incorporated. Thanks Lorenzo Pieralisi for the review and
-> suggestions, as well as Michael Kelley's contribution to the commit
-> log.
-> 
-> Thanks,
-> Wei
-> 
-> 
-> Wei Hu (2):
->   PCI: hv: Fix the PCI HyperV probe failure path to release resource
->     properly
->   PCI: hv: Retry PCI bus D0 entry when the first attempt failed with
->     invalid device state
-> 
->  drivers/pci/controller/pci-hyperv.c | 60 ++++++++++++++++++++++++++---
->  1 file changed, 54 insertions(+), 6 deletions(-)
-
-Applied to pci/hv, thanks.
-
-Lorenzo
+DQpPbiBNb24sIDIwMjAtMDUtMTEgYXQgMTk6MTIgKzA4MDAsIFNhbXVlbCBab3Ugd3JvdGU6DQo+
+IEZpeCB0aGUgZm9sbG93aW5nIHNwYXJzZSB3YXJuaW5nOg0KPiANCj4gZHJpdmVycy9wb3dlci9z
+dXBwbHkvYmQ5OTk1NC1jaGFyZ2VyLmM6MTAyODo2OiB3YXJuaW5nOiBzeW1ib2wNCj4gJ2JkOTk5
+NXhfY2hpcF9yZXNldCcgd2FzIG5vdCBkZWNsYXJlZC4NCj4gDQo+IFRoZSBiZDk5OTV4X2NoaXBf
+cmVzZXQoKSBoYXMgb25seSBvbmUgY2FsbCBzaXRlIHdpdGhpbiBiZDk5OTU0LQ0KPiBjaGFyZ2Vy
+LmMNCj4gSXQgc2hvdWxkIGJlIHN0YXRpYw0KPiANCj4gRml4ZXM6IDA5MDJmODM2NjQ5MSAoInBv
+d2VyOiBzdXBwbHk6IFN1cHBvcnQgUk9ITSBiZDk5OTU0IGNoYXJnZXIiKQ0KPiBSZXBvcnRlZC1i
+eTogSHVsayBSb2JvdCA8aHVsa2NpQGh1YXdlaS5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IFNhbXVl
+bCBab3UgPHpvdV93ZWlAaHVhd2VpLmNvbT4NCg0KUmV2aWV3ZWQtYnk6IE1hdHRpIFZhaXR0aW5l
+biA8bWF0dGkudmFpdHRpbmVuQGZpLnJvaG1ldXJvcGUuY29tPg0KDQo+IC0tLQ0KPiAgZHJpdmVy
+cy9wb3dlci9zdXBwbHkvYmQ5OTk1NC1jaGFyZ2VyLmMgfCAyICstDQo+ICAxIGZpbGUgY2hhbmdl
+ZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL3Bvd2VyL3N1cHBseS9iZDk5OTU0LWNoYXJnZXIuYw0KPiBiL2RyaXZlcnMvcG93ZXIvc3Vw
+cGx5L2JkOTk5NTQtY2hhcmdlci5jDQo+IGluZGV4IDNkYTM5YzcuLmZmZDhiZmEgMTAwNjQ0DQo+
+IC0tLSBhL2RyaXZlcnMvcG93ZXIvc3VwcGx5L2JkOTk5NTQtY2hhcmdlci5jDQo+ICsrKyBiL2Ry
+aXZlcnMvcG93ZXIvc3VwcGx5L2JkOTk5NTQtY2hhcmdlci5jDQo+IEBAIC0xMDI1LDcgKzEwMjUs
+NyBAQCBzdGF0aWMgaW50IGJkOTk5NXhfZndfcHJvYmUoc3RydWN0DQo+IGJkOTk5NXhfZGV2aWNl
+ICpiZCkNCj4gIAlyZXR1cm4gMDsNCj4gIH0NCj4gIA0KPiAtdm9pZCBiZDk5OTV4X2NoaXBfcmVz
+ZXQodm9pZCAqYmQpDQo+ICtzdGF0aWMgdm9pZCBiZDk5OTV4X2NoaXBfcmVzZXQodm9pZCAqYmQp
+DQo+ICB7DQo+ICAJX19iZDk5OTV4X2NoaXBfcmVzZXQoYmQpOw0KPiAgfQ0KDQo=
