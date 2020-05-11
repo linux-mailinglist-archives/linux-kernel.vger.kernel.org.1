@@ -2,122 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7B91CDE3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE2E1CDE7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730549AbgEKPIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 11:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730509AbgEKPIn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 11:08:43 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E2BC05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:08:41 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id y24so19749437wma.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:08:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nZF4M1Ryr6CWnpRgUMWuRsLTKn/UHmWXZ3+MZTEjA0A=;
-        b=seBpYegPZMs/leR6JMfg7RpttvfOQmjhwYGL5XqCrl0ivqZ8SgNJfl5MrK6SNZU0x7
-         s+P+5zxeVYMfWsvU+TruIPRs58u2N7gNKpF12dehHxew8uZn0wyQlXvRs81sH/cUAU/A
-         kDiLytEcupQFinP/tSVSDYeJHqjKGk/S/swcSaT9uPiZDBURaYvEzFY1KQfq187G//Gn
-         fP7p4AVjZ9rbwczBJGBw15zMRSFOqPTKu+IA1dWJoqAajrlxLUjrFo00xOd0Oskl6NXS
-         vFI181kFNL42vS94eYWzxhtiRzUpW9BwFO6iLc+Bp3c1tgfqYpiA57PqAjvUSUmXKZ85
-         b5iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nZF4M1Ryr6CWnpRgUMWuRsLTKn/UHmWXZ3+MZTEjA0A=;
-        b=I4xd1tQdofI/Si6s73aJXLuUvcqPnG+75B2Jwu0tctsmRxWSmvX8wqG4D3bKVB8Cni
-         pENazZH+4LPzysoM+arLkdax2137QqeYrkwbD5rG7D7Aelsy4gmVkNx9RKnq65loo4IV
-         zQsWfOQMxIv6xdiEwJwCccbAD01RXK+pOOd0BCZLzN4zS/Ll1KdfNj8ulf1+T6hO2y9/
-         MRfqoiz//TX3/q9elBeLdySoPq5XWQoCBq4e+d/BJnGplG0XuB+HeqvBvGIzSkKSYSBi
-         DS977tVtNpXt35rL3Y8pyUESI5b4MnVx1+AUoXfwV2Voey5CBdunbnrJwVJNAmSTsqsM
-         Ah4A==
-X-Gm-Message-State: AGi0PuZlz7qUVcQxCokFWnZF0xpCVXWzVGF5HtlRB5oURxtXwuARyfmo
-        vNKpg7uHBZoe5LFqmH7YHgD46Q==
-X-Google-Smtp-Source: APiQypIPr9fJcUgRNwzXEgdam3rXk6Or+HXAPoKGbi/pvrOEjCYCARRhvNo55PBWgkqCWw6ysRwOhw==
-X-Received: by 2002:a1c:2e91:: with SMTP id u139mr31309130wmu.18.1589209720425;
-        Mon, 11 May 2020 08:08:40 -0700 (PDT)
-Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id 94sm3514792wrf.74.2020.05.11.08.08.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 08:08:39 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Rob Herring <robh+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S1730071AbgEKPL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 11:11:29 -0400
+Received: from verein.lst.de ([213.95.11.211]:36580 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729439AbgEKPL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 11:11:27 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 2865568BFE; Mon, 11 May 2020 17:11:21 +0200 (CEST)
+Date:   Mon, 11 May 2020 17:11:20 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Fabien Parent <fparent@baylibre.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Edwin Peer <edwin.peer@broadcom.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Stephane Le Provost <stephane.leprovost@mediatek.com>,
-        Pedro Tsai <pedro.tsai@mediatek.com>,
-        Andrew Perepech <andrew.perepech@mediatek.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 14/14] ARM64: dts: mediatek: enable ethernet on pumpkin boards
-Date:   Mon, 11 May 2020 17:07:59 +0200
-Message-Id: <20200511150759.18766-15-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200511150759.18766-1-brgl@bgdev.pl>
-References: <20200511150759.18766-1-brgl@bgdev.pl>
+        Roman Zippel <zippel@linux-m68k.org>,
+        Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-c6x-dev@linux-c6x.org,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv@lists.infradead.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 31/31] module: move the set_fs hack for
+ flush_icache_range to m68k
+Message-ID: <20200511151120.GA28634@lst.de>
+References: <20200510075510.987823-1-hch@lst.de> <20200510075510.987823-32-hch@lst.de> <CAMuHMdU_OxNoKfO=i903kx0mgk0-i2h4u2ase3m9_dn6oFh_5g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdU_OxNoKfO=i903kx0mgk0-i2h4u2ase3m9_dn6oFh_5g@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Mon, May 11, 2020 at 09:40:39AM +0200, Geert Uytterhoeven wrote:
+> On Sun, May 10, 2020 at 9:57 AM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > flush_icache_range generally operates on kernel addresses, but for some
+> > reason m68k needed a set_fs override.  Move that into the m68k code
+> > insted of keeping it in the module loader.
+> >
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> 
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Add remaining properties to the ethernet node and enable it.
-
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- .../boot/dts/mediatek/pumpkin-common.dtsi      | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi b/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
-index 4b1d5f69aba6..dfceffe6950a 100644
---- a/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
-@@ -167,6 +167,24 @@ &uart0 {
- 	status = "okay";
- };
- 
-+&ethernet {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&ethernet_pins_default>;
-+	phy-handle = <&eth_phy>;
-+	phy-mode = "rmii";
-+	mac-address = [00 00 00 00 00 00];
-+	status = "okay";
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		eth_phy: ethernet-phy@0 {
-+			reg = <0>;
-+		};
-+	};
-+};
-+
- &usb0 {
- 	status = "okay";
- 	dr_mode = "peripheral";
--- 
-2.25.0
-
+Btw, do you know what part of flush_icache_range relied on set_fs?
+Do any of the m68k maintainers have an idea how to handle that in
+a nicer way when we can split the implementations?
