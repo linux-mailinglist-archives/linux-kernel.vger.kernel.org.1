@@ -2,106 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2749D1CD4C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 11:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF3B1CD4CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 11:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729270AbgEKJWn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 May 2020 05:22:43 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:48493 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgEKJWm (ORCPT
+        id S1729382AbgEKJXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 05:23:24 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:36334 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgEKJXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 05:22:42 -0400
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id D238124000F;
-        Mon, 11 May 2020 09:22:38 +0000 (UTC)
-Date:   Mon, 11 May 2020 11:22:37 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Christophe Kerello <christophe.kerello@st.com>
-Cc:     <richard@nod.at>, <vigneshr@ti.com>, <robh+dt@kernel.org>,
-        <mark.rutland@arm.com>, <gregkh@linuxfoundation.org>,
-        <boris.brezillon@collabora.com>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>, <marex@denx.de>
-Subject: Re: [PATCH v4 00/10] add STM32 FMC2 EBI controller driver
-Message-ID: <20200511112237.20751831@xps13>
-In-Reply-To: <1588756279-17289-1-git-send-email-christophe.kerello@st.com>
-References: <1588756279-17289-1-git-send-email-christophe.kerello@st.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 11 May 2020 05:23:24 -0400
+Received: by mail-wr1-f68.google.com with SMTP id y16so2803524wrs.3;
+        Mon, 11 May 2020 02:23:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YMRVaoGd7XDxLJTKtDh7pUXdfydxobundGlGWCD7a4s=;
+        b=nTOc/m/J4picsnNW86nkUrTZ4oLjvFNmsnyHLZRuu5IFv7smiG+k54AKFI86cp7iDI
+         j/6Fi3ZuXZzVEuC+Fzwr/1jEGuWLY70fb2jwurQzVH90htd9TSiRBTIYkVIRq9CtN+GB
+         C9u9L9xuUxzBofMsXG2QVVwpXVOELjlkcYN+AtWZHxSSGH/4rAkc9Eo4sVaYfMAfBRuX
+         PCXqJ5csLMtCAefIFR+DXCeyFHCbf4dbV9C+A0abLavXOu2Rc0Ldv6brcjvuHFHva0+K
+         hd9QpyHmkhibLXbcjYKQovb7Ou+JKDtFF8pn4v4ToyM9gd1NqI/UnQ9ez7slmf3xLYrH
+         qZEQ==
+X-Gm-Message-State: AGi0Pub7sUR5FuqGzGaxzboguMY0MF5TJbop6s6BcncnF74sVesvy7KL
+        C/+SXEeYVrg2DMXP42VwRJFlKuBG
+X-Google-Smtp-Source: APiQypLBIua8zxmeT5qFYH3i8hqZ1S42D3OK4AlQWsCNzA868V57dR2WcHbSh+kV/mErfE7rcxTTEQ==
+X-Received: by 2002:adf:e38b:: with SMTP id e11mr18080351wrm.343.1589189001351;
+        Mon, 11 May 2020 02:23:21 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:59c:65b4:1d66:e6e? ([2601:647:4802:9070:59c:65b4:1d66:e6e])
+        by smtp.gmail.com with ESMTPSA id b12sm5741106wrq.82.2020.05.11.02.23.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 May 2020 02:23:20 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 1/7] block: Extand commit_rqs() to do batch
+ processing
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Baolin Wang <baolin.wang7@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>, axboe@kernel.dk,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1587888520.git.baolin.wang7@gmail.com>
+ <c8bd9e5ba815a3f1bc9dac0a4bc2fbadadbc0a43.1587888520.git.baolin.wang7@gmail.com>
+ <20200427154645.GA1201@infradead.org>
+ <e4d47000-f89c-a135-ae58-011f0e9cc39e@grimberg.me>
+ <20200508214639.GA1389136@T590>
+ <fe6bd8b9-6ed9-b225-f80c-314746133722@grimberg.me>
+ <20200508232222.GA1391368@T590>
+ <CADBw62ooysT7TJ5CjpPBC6zs7pvpUQysg8QqP9oW5jN7BSYS7g@mail.gmail.com>
+ <20200509094306.GA1414369@T590>
+ <6579459b-aa98-78f2-f805-a6cd46f37b6c@grimberg.me>
+ <20200511012942.GA1418834@T590>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <8f2ddabc-01d0-dae9-f958-1b26a6bdf58c@grimberg.me>
+Date:   Mon, 11 May 2020 02:23:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200511012942.GA1418834@T590>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
 
-Christophe Kerello <christophe.kerello@st.com> wrote on Wed, 6 May 2020
-11:11:09 +0200:
+>>> Basically, my idea is to dequeue request one by one, and for each
+>>> dequeued request:
+>>>
+>>> - we try to get a budget and driver tag, if both succeed, add the
+>>> request to one per-task list which can be stored in stack variable,
+>>> then continue to dequeue more request
+>>>
+>>> - if either budget or driver tag can't be allocated for this request,
+>>> marks the last request in the per-task list as .last, and send the
+>>> batching requests stored in the list to LLD
+>>>
+>>> - when queueing batching requests to LLD, if one request isn't queued
+>>> to driver successfully, calling .commit_rqs() like before, meantime
+>>> adding the remained requests in the per-task list back to scheduler
+>>> queue or hctx->dispatch.
+>>
+>> Sounds good to me.
+>>
+>>> One issue is that this way might degrade sequential IO performance if
+>>> the LLD just tells queue busy to blk-mq via return value of .queue_rq(),
+>>> so I guess we still may need one flag, such as BLK_MQ_F_BATCHING_SUBMISSION.
+>>
+>> Why is that degrading sequential I/O performance? because the specific
+> 
+> Some devices may only return BLK_STS_RESOURCE from .queue_rq(), then more
+> requests are dequeued from scheduler queue if we always queue batching IOs
+> to LLD, and chance of IO merge is reduced, so sequential IO performance will
+> be effected.
+> 
+> Such as some scsi device which doesn't use sdev->queue_depth for
+> throttling IOs.
+> 
+> For virtio-scsi or virtio-blk, we may stop queue for avoiding the
+> potential affect.
 
-> The FMC2 functional block makes the interface with: synchronous and
-> asynchronous static devices (such as PSNOR, PSRAM or other memory-mapped
-> peripherals) and NAND flash memories.
-> Its main purposes are:
->   - to translate AXI transactions into the appropriate external device
->     protocol
->   - to meet the access time requirements of the external devices
-> All external devices share the addresses, data and control signals with the
-> controller. Each external device is accessed by means of a unique Chip
-> Select. The FMC2 performs only one access at a time to an external device.
-> 
-> Changes in v4:
->  - bindings:
->    - fix filename: st,stm32-fmc2-ebi.yaml
-> 
-> Changes in v3:
->  - NAND:
->    - rename labels used on errors
->    - add in the commit log the reason to increase FMC2_TIMEOUT_MS (patch 3)
->    - add Miquel reviewed-by tag (patches 2/4/5/9)
->  - EBI:
->    - move in memory folder
->    - merge MFD and BUS drivers to avoid a MFD driver
->  - bindings:
->    - pattern name has been modified
->    - vendor properties have been modified
->      - s/_/-/
->      - add unit suffix (-ns) on timing properties
-> 
-> Christophe Kerello (10):
->   mtd: rawnand: stm32_fmc2: manage all errors cases at probe time
->   mtd: rawnand: stm32_fmc2: remove useless inline comments
->   mtd: rawnand: stm32_fmc2: use FMC2_TIMEOUT_MS for timeouts
->   mtd: rawnand: stm32_fmc2: cleanup
->   mtd: rawnand: stm32_fmc2: use FIELD_PREP/FIELD_GET macros
->   dt-bindings: mtd: update STM32 FMC2 NAND controller documentation
->   dt-bindings: memory-controller: add STM32 FMC2 EBI controller
->     documentation
->   memory: stm32-fmc2-ebi: add STM32 FMC2 EBI controller driver
->   mtd: rawnand: stm32_fmc2: use regmap APIs
->   mtd: rawnand: stm32_fmc2: get resources from parent node
-> 
->  .../memory-controllers/st,stm32-fmc2-ebi.yaml      |  261 +++++
->  .../bindings/mtd/st,stm32-fmc2-nand.yaml           |   19 +-
->  drivers/memory/Kconfig                             |   10 +
->  drivers/memory/Makefile                            |    1 +
->  drivers/memory/stm32-fmc2-ebi.c                    | 1206 ++++++++++++++++++++
->  drivers/mtd/nand/raw/Kconfig                       |    1 +
->  drivers/mtd/nand/raw/stm32_fmc2_nand.c             | 1176 ++++++++++---------
->  7 files changed, 2061 insertions(+), 613 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
->  create mode 100644 drivers/memory/stm32-fmc2-ebi.c
-> 
-
-I'm fine with the preparation patches 1-5 but the other patches need
-Rob's hack and probably more changes. If it's fine with you I can apply
-these patches for the next merge window and let more time to work on
-the last 5.
-
-Thanks,
-Miquèl
+Do we have a way to characterize such devices? I'd assume that most
+devices will benefit from the batching so maybe the flag needs to be
+inverted? BLK_MQ_F_DONT_BATCHING_SUBMISSION?
