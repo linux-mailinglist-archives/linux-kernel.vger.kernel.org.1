@@ -2,156 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08AF51CDB51
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C44BC1CDB28
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729753AbgEKNgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 09:36:16 -0400
-Received: from m177129.mail.qiye.163.com ([123.58.177.129]:38992 "EHLO
-        m177129.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729641AbgEKNgQ (ORCPT
+        id S1729709AbgEKN1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 09:27:06 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:50970 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727019AbgEKN1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 09:36:16 -0400
-X-Greylist: delayed 570 seconds by postgrey-1.27 at vger.kernel.org; Mon, 11 May 2020 09:36:13 EDT
-Received: from vivo.com (wm-2.qy.internal [127.0.0.1])
-        by m177129.mail.qiye.163.com (Hmail) with ESMTP id 226BB5C277D;
-        Mon, 11 May 2020 21:26:08 +0800 (CST)
+        Mon, 11 May 2020 09:27:05 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 848842A13D9
+Message-ID: <cc259e64e01b0700d63b955ad0ab6933b3f71447.camel@collabora.com>
+Subject: Re: [PATCH v3 3/3] media: rkvdec: Add the VP9 backend
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Gustavo Padovan <gustavo.padovan@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Date:   Mon, 11 May 2020 10:26:53 -0300
+In-Reply-To: <CAAFQd5C3MpWqRRMGQJTW8rNz65T2CRYj6yFa56mJWR+DFqrFzg@mail.gmail.com>
+References: <20200505134110.3435-1-ezequiel@collabora.com>
+         <20200505134110.3435-4-ezequiel@collabora.com>
+         <8e8eda07-e5f5-86dc-899b-0823ea0479f2@xs4all.nl>
+         <b2160325f5b9bae5b437a37069db926d2a464e8d.camel@collabora.com>
+         <CAAFQd5C3MpWqRRMGQJTW8rNz65T2CRYj6yFa56mJWR+DFqrFzg@mail.gmail.com>
+Organization: Collabora
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <ANcALQDPCP5Hd0yYHkOTZKph.3.1589203568035.Hmail.bernard@vivo.com>
-To:     "Ruhl, Michael J" <michael.j.ruhl@intel.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Tom St Denis <tom.stdenis@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Ori Messinger <Ori.Messinger@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "opensource.kernel@vivo.com" <opensource.kernel@vivo.com>
-Subject: =?UTF-8?B?UmU6UkU6IFtQQVRDSCB2Ml0gZHJtL2FtZC9hbWRncHU6IGNsZWFudXAgY29kaW5nIHN0eWxlIGEgYml0?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 157.0.31.122
-In-Reply-To: <14063C7AD467DE4B82DEDB5C278E8663010E20C5BD@FMSMSX108.amr.corp.intel.com>
+User-Agent: Evolution 3.36.0-1 
 MIME-Version: 1.0
-Received: from bernard@vivo.com( [157.0.31.122) ] by ajax-webmail ( [127.0.0.1] ) ; Mon, 11 May 2020 21:26:08 +0800 (GMT+08:00)
-From:   Bernard <bernard@vivo.com>
-Date:   Mon, 11 May 2020 21:26:08 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVITklCQkJNQ0xKQk9DSVlXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMTU1LSUxOT0NIN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6NRg6Nyo*KzgrTjMfSwIiMxA0LyEwCxNVSFVKTkNCSUtITkxPSUlJVTMWGhIXVRkeCRUaCR87
-        DRINFFUYFBZFWVdZEgtZQVlKTkxVS1VISlVKSUlZV1kIAVlBSktMTEI3Bg++
-X-HM-Tid: 0a7203ea06156447kurs226bb5c277d
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cgrlj5Hku7bkurrvvJoiUnVobCwgTWljaGFlbCBKIiA8bWljaGFlbC5qLnJ1aGxAaW50ZWwuY29t
-Pgrlj5HpgIHml6XmnJ/vvJoyMDIwLTA1LTA4IDIzOjQ1OjA3CuaUtuS7tuS6uu+8mkJlcm5hcmQg
-WmhhbyA8YmVybmFyZEB2aXZvLmNvbT4sQWxleCBEZXVjaGVyIDxhbGV4YW5kZXIuZGV1Y2hlckBh
-bWQuY29tPiwiQ2hyaXN0aWFuIEvDtm5pZyIgPGNocmlzdGlhbi5rb2VuaWdAYW1kLmNvbT4sIkRh
-dmlkIChDaHVuTWluZykgWmhvdSIgPERhdmlkMS5aaG91QGFtZC5jb20+LERhdmlkIEFpcmxpZSA8
-YWlybGllZEBsaW51eC5pZT4sRGFuaWVsIFZldHRlciA8ZGFuaWVsQGZmd2xsLmNoPixUb20gU3Qg
-RGVuaXMgPHRvbS5zdGRlbmlzQGFtZC5jb20+LFNhbSBSYXZuYm9yZyA8c2FtQHJhdm5ib3JnLm9y
-Zz4sT3JpIE1lc3NpbmdlciA8T3JpLk1lc3NpbmdlckBhbWQuY29tPiwiYW1kLWdmeEBsaXN0cy5m
-cmVlZGVza3RvcC5vcmciIDxhbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZz4sImRyaS1kZXZl
-bEBsaXN0cy5mcmVlZGVza3RvcC5vcmciIDxkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
-PiwibGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZyIgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5l
-bC5vcmc+CuaKhOmAgeS6uu+8miJvcGVuc291cmNlLmtlcm5lbEB2aXZvLmNvbSIgPG9wZW5zb3Vy
-Y2Uua2VybmVsQHZpdm8uY29tPgrkuLvpopjvvJpSRTogW1BBVENIIHYyXSBkcm0vYW1kL2FtZGdw
-dTogY2xlYW51cCBjb2Rpbmcgc3R5bGUgYSBiaXQ+Pi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
-Cj4+RnJvbTogZHJpLWRldmVsIDxkcmktZGV2ZWwtYm91bmNlc0BsaXN0cy5mcmVlZGVza3RvcC5v
-cmc+IE9uIEJlaGFsZiBPZgo+PkJlcm5hcmQgWmhhbwo+PlNlbnQ6IFRodXJzZGF5LCBNYXkgNywg
-MjAyMCA1OjEzIEFNCj4+VG86IEFsZXggRGV1Y2hlciA8YWxleGFuZGVyLmRldWNoZXJAYW1kLmNv
-bT47IENocmlzdGlhbiBLw7ZuaWcKPj48Y2hyaXN0aWFuLmtvZW5pZ0BhbWQuY29tPjsgRGF2aWQg
-KENodW5NaW5nKSBaaG91Cj4+PERhdmlkMS5aaG91QGFtZC5jb20+OyBEYXZpZCBBaXJsaWUgPGFp
-cmxpZWRAbGludXguaWU+OyBEYW5pZWwgVmV0dGVyCj4+PGRhbmllbEBmZndsbC5jaD47IFRvbSBT
-dCBEZW5pcyA8dG9tLnN0ZGVuaXNAYW1kLmNvbT47IFNhbSBSYXZuYm9yZwo+PjxzYW1AcmF2bmJv
-cmcub3JnPjsgT3JpIE1lc3NpbmdlciA8T3JpLk1lc3NpbmdlckBhbWQuY29tPjsgQmVybmFyZAo+
-PlpoYW8gPGJlcm5hcmRAdml2by5jb20+OyBhbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsg
-ZHJpLQo+PmRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgbGludXgta2VybmVsQHZnZXIua2Vy
-bmVsLm9yZwo+PkNjOiBvcGVuc291cmNlLmtlcm5lbEB2aXZvLmNvbQo+PlN1YmplY3Q6IFtQQVRD
-SCB2Ml0gZHJtL2FtZC9hbWRncHU6IGNsZWFudXAgY29kaW5nIHN0eWxlIGEgYml0Cj4+Cj4+VGhl
-cmUgaXMgREVWSUNFX0FUVFIgbWVjaGFuaXNtIGluIHNlcGFyYXRlIGF0dHJpYnV0ZSBkZWZpbmUu
-Cj4+U28gdGhpcyBjaGFuZ2UgaXMgdG8gdXNlIGF0dHIgYXJyYXksIGFsc28gdXNlCj4+c3lzZnNf
-Y3JlYXRlX2ZpbGVzIGluIGluaXQgZnVuY3Rpb24gJiBzeXNmc19yZW1vdmVfZmlsZXMgaW4KPj5m
-aW5pIGZ1bmN0aW9uLgo+PlRoaXMgbWF5YmUgbWFrZSB0aGUgY29kZSBhIGJpdCByZWFkYWJsZS4K
-Pj4KPj5TaWduZWQtb2ZmLWJ5OiBCZXJuYXJkIFpoYW8gPGJlcm5hcmRAdml2by5jb20+Cj4+Cj4+
-Q2hhbmdlcyBzaW5jZSBWMToKPj4qVXNlIERFVklDRV9BVFRSIG1lY2hhbmlzbQo+Pgo+Pkxpbmsg
-Zm9yIFYxOgo+PipodHRwczovL2xvcmUua2VybmVsLm9yZy9wYXRjaHdvcmsvcGF0Y2gvMTIyODA3
-Ni8KPj4tLS0KPj4gZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X3ZyYW1fbWdyLmMg
-fCA0MyArKysrKystLS0tLS0tLS0tLS0tCj4+LQo+PiAxIGZpbGUgY2hhbmdlZCwgMTMgaW5zZXJ0
-aW9ucygrKSwgMzAgZGVsZXRpb25zKC0pCj4+Cj4+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2Ry
-bS9hbWQvYW1kZ3B1L2FtZGdwdV92cmFtX21nci5jCj4+Yi9kcml2ZXJzL2dwdS9kcm0vYW1kL2Ft
-ZGdwdS9hbWRncHVfdnJhbV9tZ3IuYwo+PmluZGV4IDgyYTMyOTllNTNjMC4uNTdiYmM3MDY2MmZm
-IDEwMDY0NAo+Pi0tLSBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV92cmFtX21n
-ci5jCj4+KysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X3ZyYW1fbWdyLmMK
-Pj5AQCAtMTQ4LDYgKzE0OCwxNSBAQCBzdGF0aWMgREVWSUNFX0FUVFIobWVtX2luZm9fdmlzX3Zy
-YW1fdXNlZCwKPj5TX0lSVUdPLAo+PiBzdGF0aWMgREVWSUNFX0FUVFIobWVtX2luZm9fdnJhbV92
-ZW5kb3IsIFNfSVJVR08sCj4+IAkJICAgYW1kZ3B1X21lbV9pbmZvX3ZyYW1fdmVuZG9yLCBOVUxM
-KTsKPj4KPj4rc3RhdGljIHN0cnVjdCBhdHRyaWJ1dGUgKmFtZGdwdV92cmFtX21ncl9hdHRyaWJ1
-dGVzW10gPSB7Cj4+KwkmZGV2X2F0dHJfbWVtX2luZm9fdnJhbV90b3RhbC5hdHRyLAo+PisJJmRl
-dl9hdHRyX21lbV9pbmZvX3Zpc192cmFtX3RvdGFsLmF0dHIsCj4+KwkmZGV2X2F0dHJfbWVtX2lu
-Zm9fdnJhbV91c2VkLmF0dHIsCj4+KwkmZGV2X2F0dHJfbWVtX2luZm9fdmlzX3ZyYW1fdXNlZC5h
-dHRyLAo+PisJJmRldl9hdHRyX21lbV9pbmZvX3ZyYW1fdmVuZG9yLmF0dHIsCj4+KwlOVUxMCj4+
-K307Cj4+Kwo+PiAvKioKPj4gICogYW1kZ3B1X3ZyYW1fbWdyX2luaXQgLSBpbml0IFZSQU0gbWFu
-YWdlciBhbmQgRFJNIE1NCj4+ICAqCj4+QEAgLTE3MiwzMSArMTgxLDkgQEAgc3RhdGljIGludCBh
-bWRncHVfdnJhbV9tZ3JfaW5pdChzdHJ1Y3QKPj50dG1fbWVtX3R5cGVfbWFuYWdlciAqbWFuLAo+
-PiAJbWFuLT5wcml2ID0gbWdyOwo+Pgo+PiAJLyogQWRkIHRoZSB0d28gVlJBTS1yZWxhdGVkIHN5
-c2ZzIGZpbGVzICovCj4+LQlyZXQgPSBkZXZpY2VfY3JlYXRlX2ZpbGUoYWRldi0+ZGV2LAo+PiZk
-ZXZfYXR0cl9tZW1faW5mb192cmFtX3RvdGFsKTsKPj4tCWlmIChyZXQpIHsKPj4tCQlEUk1fRVJS
-T1IoIkZhaWxlZCB0byBjcmVhdGUgZGV2aWNlIGZpbGUKPj5tZW1faW5mb192cmFtX3RvdGFsXG4i
-KTsKPj4tCQlyZXR1cm4gcmV0Owo+Pi0JfQo+Pi0JcmV0ID0gZGV2aWNlX2NyZWF0ZV9maWxlKGFk
-ZXYtPmRldiwKPj4mZGV2X2F0dHJfbWVtX2luZm9fdmlzX3ZyYW1fdG90YWwpOwo+Pi0JaWYgKHJl
-dCkgewo+Pi0JCURSTV9FUlJPUigiRmFpbGVkIHRvIGNyZWF0ZSBkZXZpY2UgZmlsZQo+Pm1lbV9p
-bmZvX3Zpc192cmFtX3RvdGFsXG4iKTsKPj4tCQlyZXR1cm4gcmV0Owo+Pi0JfQo+Pi0JcmV0ID0g
-ZGV2aWNlX2NyZWF0ZV9maWxlKGFkZXYtPmRldiwKPj4mZGV2X2F0dHJfbWVtX2luZm9fdnJhbV91
-c2VkKTsKPj4tCWlmIChyZXQpIHsKPj4tCQlEUk1fRVJST1IoIkZhaWxlZCB0byBjcmVhdGUgZGV2
-aWNlIGZpbGUKPj5tZW1faW5mb192cmFtX3VzZWRcbiIpOwo+Pi0JCXJldHVybiByZXQ7Cj4+LQl9
-Cj4+LQlyZXQgPSBkZXZpY2VfY3JlYXRlX2ZpbGUoYWRldi0+ZGV2LAo+PiZkZXZfYXR0cl9tZW1f
-aW5mb192aXNfdnJhbV91c2VkKTsKPj4tCWlmIChyZXQpIHsKPj4tCQlEUk1fRVJST1IoIkZhaWxl
-ZCB0byBjcmVhdGUgZGV2aWNlIGZpbGUKPj5tZW1faW5mb192aXNfdnJhbV91c2VkXG4iKTsKPj4t
-CQlyZXR1cm4gcmV0Owo+Pi0JfQo+Pi0JcmV0ID0gZGV2aWNlX2NyZWF0ZV9maWxlKGFkZXYtPmRl
-diwKPj4mZGV2X2F0dHJfbWVtX2luZm9fdnJhbV92ZW5kb3IpOwo+Pi0JaWYgKHJldCkgewo+Pi0J
-CURSTV9FUlJPUigiRmFpbGVkIHRvIGNyZWF0ZSBkZXZpY2UgZmlsZQo+Pm1lbV9pbmZvX3ZyYW1f
-dmVuZG9yXG4iKTsKPj4tCQlyZXR1cm4gcmV0Owo+Pi0JfQo+PisJcmV0ID0gc3lzZnNfY3JlYXRl
-X2ZpbGVzKCZhZGV2LT5kZXYtPmtvYmosCj4+YW1kZ3B1X3ZyYW1fbWdyX2F0dHJpYnV0ZXMpOwo+
-PisJaWYgKHJldCkKPj4rCQlEUk1fRVJST1IoIkZhaWxlZCB0byByZWdpc3RlciBzeXNmc1xuIik7
-Cj4KPlRoaXMgbG9va3MgZ29vZCB0byBtZS4KPgo+SSB0aGluayB0aGF0IHRoZXJlIGlzIGEgbmV3
-IGVycm9yIG1hY3JvIChkcm1fZXJyPykgdGhhdCB5b3UgbWlnaHQKPndhbnQgdG8gdXNlIGluc3Rl
-YWQgb2YgRFJNX0VSUk9SKCkuCj4KPk90aGVyd2lzZToKPgo+QWNrZWQtYnk6IE1pY2hhZWwgSi4g
-UnVobCA8bWljaGFlbC5qLnJ1aGxAaW50ZWwuY29tPgo+Cj5tCgpIaQpTdXJlLCBJIGFtIHdpbGxp
-bmcgdG8gbWFrZSB0aGlzIG1vZGlmaWNhdGlvbiwgYWxzbyBpbiBHUFUgVE9ETyBsaXN0LCB0aGVy
-ZSBpcyBvbmUgY29udGVudDoKIkNvbnZlcnQgbG9nZ2luZyB0byBkcm1fKiBmdW5jdGlvbnMgd2l0
-aCBkcm1fZGV2aWNlIHBhcmFtYXRlcixGb3IgZHJpdmVycyB3aGljaCBjb3VsZCAKaGF2ZSBtdWx0
-aXBsZSBpbnN0YW5jZXMsIGl0IGlzIG5lY2Vzc2FyeSB0byBkaWZmZXJlbnRpYXRlIGJldHdlZW4g
-d2hpY2ggaXMgd2hpY2ggaW4gdGhlIGxvZ3MuIApTaW5jZSBEUk1fSU5GTy9XQVJOL0VSUk9SIGRv
-buKAmXQgZG8gdGhpcywgZHJpdmVycyB1c2VkIGRldl9pbmZvL3dhcm4vZXJyIHRvIG1ha2UgCnRo
-aXMgZGlmZmVyZW50aWF0aW9uLiBXZSBub3cgaGF2ZSBkcm1fKiB2YXJpYW50cyBvZiB0aGUgZHJt
-IHByaW50IGZ1bmN0aW9ucywgc28gd2UgY2FuIHN0YXJ0IAp0byBjb252ZXJ0IHRob3NlIGRyaXZl
-cnMgYmFjayB0byB1c2luZyBkcm0tZm9ybWF0dGVkIHNwZWNpZmljIGxvZyBtZXNzYWdlcy4iCkZy
-b20gaHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2MvaHRtbC92NS43LXJjNS9ncHUvdG9kby5odG1s
-I3N1YnN5c3RlbS13aWRlLXJlZmFjdG9yaW5ncy4KCkJ1dCBpIGhhdmUgdG8gc2F5IHRoYXQgbm93
-IGluIHRoZSBEUk0vQU1EIG1vZHVsZXMsIGFsbCBhcmUgdXNlZCBEUk1fSU5GTy9XQVJOSU5HL0VS
-Uk9SCkknbSBub3Qgc3VyZSB3ZWF0aGVyIG1haW50YWluZXJzIHdhbnQgdG8gcmVwbGFjZSB0aGVz
-ZS4KClJlZ2FyZHMsCkJlcm5hcmQKCj4+Cj4+IAlyZXR1cm4gMDsKPj4gfQo+PkBAIC0yMTksMTEg
-KzIwNiw3IEBAIHN0YXRpYyBpbnQgYW1kZ3B1X3ZyYW1fbWdyX2Zpbmkoc3RydWN0Cj4+dHRtX21l
-bV90eXBlX21hbmFnZXIgKm1hbikKPj4gCXNwaW5fdW5sb2NrKCZtZ3ItPmxvY2spOwo+PiAJa2Zy
-ZWUobWdyKTsKPj4gCW1hbi0+cHJpdiA9IE5VTEw7Cj4+LQlkZXZpY2VfcmVtb3ZlX2ZpbGUoYWRl
-di0+ZGV2LCAmZGV2X2F0dHJfbWVtX2luZm9fdnJhbV90b3RhbCk7Cj4+LQlkZXZpY2VfcmVtb3Zl
-X2ZpbGUoYWRldi0+ZGV2LAo+PiZkZXZfYXR0cl9tZW1faW5mb192aXNfdnJhbV90b3RhbCk7Cj4+
-LQlkZXZpY2VfcmVtb3ZlX2ZpbGUoYWRldi0+ZGV2LCAmZGV2X2F0dHJfbWVtX2luZm9fdnJhbV91
-c2VkKTsKPj4tCWRldmljZV9yZW1vdmVfZmlsZShhZGV2LT5kZXYsCj4+JmRldl9hdHRyX21lbV9p
-bmZvX3Zpc192cmFtX3VzZWQpOwo+Pi0JZGV2aWNlX3JlbW92ZV9maWxlKGFkZXYtPmRldiwKPj4m
-ZGV2X2F0dHJfbWVtX2luZm9fdnJhbV92ZW5kb3IpOwo+PisJc3lzZnNfcmVtb3ZlX2ZpbGVzKCZh
-ZGV2LT5kZXYtPmtvYmosCj4+YW1kZ3B1X3ZyYW1fbWdyX2F0dHJpYnV0ZXMpOwo+PiAJcmV0dXJu
-IDA7Cj4+IH0KPj4KPj4tLQo+PjIuMjYuMgo+Pgo+Pl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCj4+ZHJpLWRldmVsIG1haWxpbmcgbGlzdAo+PmRyaS1kZXZl
-bEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPj5odHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAoNCg0K
+On Fri, 2020-05-08 at 18:56 +0200, Tomasz Figa wrote:
+> On Fri, May 8, 2020 at 6:26 PM Ezequiel Garcia <ezequiel@collabora.com> wrote:
+> > On Fri, 2020-05-08 at 12:34 +0200, Hans Verkuil wrote:
+> > > On 05/05/2020 15:41, Ezequiel Garcia wrote:
+> > > > From: Boris Brezillon <boris.brezillon@collabora.com>
+> > > > 
+> > > > The Rockchip VDEC supports VP9 profile 0 up to 4096x2304@30fps. Add
+> > > > a backend for this new format.
+> > > > 
+> > > > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > > > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> > > > ---
+> > > >  drivers/staging/media/rkvdec/Makefile     |    2 +-
+> > > >  drivers/staging/media/rkvdec/rkvdec-vp9.c | 1577 +++++++++++++++++++++
+> > > >  drivers/staging/media/rkvdec/rkvdec.c     |   56 +-
+> > > >  drivers/staging/media/rkvdec/rkvdec.h     |    6 +
+> > > >  4 files changed, 1637 insertions(+), 4 deletions(-)
+> > > >  create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
+> > > > 
+> > > > diff --git a/drivers/staging/media/rkvdec/Makefile b/drivers/staging/media/rkvdec/Makefile
+> > > > index c08fed0a39f9..cb86b429cfaa 100644
+> > > > --- a/drivers/staging/media/rkvdec/Makefile
+> > > > +++ b/drivers/staging/media/rkvdec/Makefile
+> > > > @@ -1,3 +1,3 @@
+> > > >  obj-$(CONFIG_VIDEO_ROCKCHIP_VDEC) += rockchip-vdec.o
+> > > > 
+> > > > -rockchip-vdec-y += rkvdec.o rkvdec-h264.o
+> > > > +rockchip-vdec-y += rkvdec.o rkvdec-h264.o rkvdec-vp9.o
+> > > > diff --git a/drivers/staging/media/rkvdec/rkvdec-vp9.c b/drivers/staging/media/rkvdec/rkvdec-vp9.c
+> > > > new file mode 100644
+> > > > index 000000000000..37d0ea4e3570
+> > > > --- /dev/null
+> > > > +++ b/drivers/staging/media/rkvdec/rkvdec-vp9.c
+> > > > @@ -0,0 +1,1577 @@
+> > > 
+> > > <snip>
+> > > 
+> > > > +static void init_inter_probs(struct rkvdec_ctx *ctx,
+> > > > +                        const struct rkvdec_vp9_run *run)
+> > > > +{
+> > > > +   const struct v4l2_ctrl_vp9_frame_decode_params *dec_params;
+> > > > +   struct rkvdec_vp9_ctx *vp9_ctx = ctx->priv;
+> > > > +   struct rkvdec_vp9_priv_tbl *tbl = vp9_ctx->priv_tbl.cpu;
+> > > > +   struct rkvdec_vp9_inter_frame_probs *rkprobs;
+> > > > +   const struct v4l2_vp9_probabilities *probs;
+> > > > +   unsigned int i, j, k;
+> > > > +
+> > > > +   rkprobs = &tbl->probs.inter;
+> > > > +   dec_params = run->decode_params;
+> > > > +   probs = &dec_params->probs;
+> > > > +
+> > > > +   /*
+> > > > +    * inter probs
+> > > > +    * 151 x 128 bits, aligned to 152 x 128 bits
+> > > > +    * inter only
+> > > > +    * intra_y_mode & inter_block info 6 x 128 bits
+> > > > +    */
+> > > > +
+> > > > +   memcpy(rkprobs->y_mode, probs->y_mode, sizeof(rkprobs->y_mode));
+> > > > +   memcpy(rkprobs->comp_mode, probs->comp_mode,
+> > > > +          sizeof(rkprobs->comp_mode));
+> > > > +   memcpy(rkprobs->comp_ref, probs->comp_ref,
+> > > > +          sizeof(rkprobs->comp_ref));
+> > > > +   memcpy(rkprobs->single_ref, probs->single_ref,
+> > > > +          sizeof(rkprobs->single_ref));
+> > > > +   memcpy(rkprobs->inter_mode, probs->inter_mode,
+> > > > +          sizeof(rkprobs->inter_mode));
+> > > > +   memcpy(rkprobs->interp_filter, probs->interp_filter,
+> > > > +          sizeof(rkprobs->interp_filter));
+> > > > +
+> > > > +   /* 128 x 128 bits coeff related */
+> > > > +   for (i = 0; i < ARRAY_SIZE(probs->coef); i++) {
+> > > > +           for (j = 0; j < ARRAY_SIZE(probs->coef[0]); j++) {
+> > > > +                   for (k = 0; k < ARRAY_SIZE(probs->coef[0][0]); k++)
+> > > > +                           write_coeff_plane(probs->coef[i][j][k],
+> > > > +                                             rkprobs->coef[k][i][j]);
+> > > > +           }
+> > > > +   }
+> > > > +
+> > > > +   /* intra uv mode 6 x 128 */
+> > > > +   memcpy(rkprobs->uv_mode_0_2, &probs->uv_mode[0],
+> > > > +          sizeof(rkprobs->uv_mode_0_2));
+> > > > +   memcpy(rkprobs->uv_mode_3_5, &probs->uv_mode[3],
+> > > > +          sizeof(rkprobs->uv_mode_3_5));
+> > > > +   memcpy(rkprobs->uv_mode_6_8, &probs->uv_mode[6],
+> > > > +          sizeof(rkprobs->uv_mode_6_8));
+> > > > +   memcpy(rkprobs->uv_mode_9, &probs->uv_mode[9],
+> > > > +          sizeof(rkprobs->uv_mode_9));
+> > > > +
+> > > > +   /* mv related 6 x 128 */
+> > > > +   memcpy(rkprobs->mv.joint, probs->mv.joint,
+> > > > +          sizeof(rkprobs->mv.joint));
+> > > > +   memcpy(rkprobs->mv.sign, probs->mv.sign,
+> > > > +          sizeof(rkprobs->mv.sign));
+> > > > +   memcpy(rkprobs->mv.class, probs->mv.class,
+> > > > +          sizeof(rkprobs->mv.class));
+> > > > +   memcpy(rkprobs->mv.class0_bit, probs->mv.class0_bit,
+> > > > +          sizeof(rkprobs->mv.class0_bit));
+> > > > +   memcpy(rkprobs->mv.bits, probs->mv.bits,
+> > > > +          sizeof(rkprobs->mv.bits));
+> > > > +   memcpy(rkprobs->mv.class0_fr, probs->mv.class0_fr,
+> > > > +          sizeof(rkprobs->mv.class0_fr));
+> > > > +   memcpy(rkprobs->mv.fr, probs->mv.fr,
+> > > > +          sizeof(rkprobs->mv.fr));
+> > > > +   memcpy(rkprobs->mv.class0_hp, probs->mv.class0_hp,
+> > > > +          sizeof(rkprobs->mv.class0_hp));
+> > > > +   memcpy(rkprobs->mv.hp, probs->mv.hp,
+> > > > +          sizeof(rkprobs->mv.hp));
+> > > 
+> > > Can't you just do: 'rkprobs->mv = probs->mv'?
+> > > 
+> > 
+> > I think I'd like to keep this as-is.
+> > 
+> > Having the memcpy makes it explicit that we are copying
+> > these structs around. While the assignment would
+> > bring type checking, it can be misleading for readers.
+> 
+> On the other hand, it's not obvious from the code that all fields of
+> the structure are copied. Perhaps memcpy(&rkprobs->mv, &probs->mv,
+> sizeof(rkprobs->mv)) would be a good compromise?
+
+Well, that would effectively (inadvertedly) tie probs:mv to rkprobs:mv,
+so we might as well do something like:
+
+(thanks Boris for the suggestion)
+
+--- a/drivers/staging/media/rkvdec/rkvdec-vp9.c
++++ b/drivers/staging/media/rkvdec/rkvdec-vp9.c
+@@ -48,17 +48,7 @@ struct rkvdec_vp9_inter_frame_probs {
+        u8 uv_mode_9[9];
+        u8 padding4[7];
+        u8 padding5[16];
+-       struct {
+-               u8 joint[3];
+-               u8 sign[2];
+-               u8 class[2][10];
+-               u8 class0_bit[2];
+-               u8 bits[2][10];
+-               u8 class0_fr[2][2][3];
+-               u8 fr[2][3];
+-               u8 class0_hp[2];
+-               u8 hp[2];
+-       } mv;
++       struct v4l2_vp9_mv_probabilities mv;
+ };
+
+
+However, I'm reluctant to consider any of these suggestions
+because we are effectively matching a hardware descriptor
+to a software interface, where the latter is unstable.
+
+If we were to change the software interface at any point,
+we'd break this driver.
+
+The more I think about this, the more I think the drivers
+needs to stay as-is.
+
+Thanks,
+Ezequiel
+
