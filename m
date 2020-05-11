@@ -2,290 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D291CD292
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 09:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3511CD29E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 09:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728562AbgEKHbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 03:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
+        id S1728977AbgEKHcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 03:32:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725916AbgEKHbJ (ORCPT
+        with ESMTP id S1728564AbgEKHcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 03:31:09 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B98C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 00:31:07 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id k12so16842863wmj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 00:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=u/c2TqKgKJopQqqgPouzz8FU8h9cHatEsqHl7LLH6wY=;
-        b=eeZ4/dWfksZbvurF5GewZ0SUQcLEWKGYHDF0UD69fssqdT+KLgPSsqdz7iZBXQUX1v
-         k6gvAQIUJGOC8VPS7WVR9HIG8rV7hsVoO4DUGcdPCKfgjvRtmoGSkYrH684bdT8t3t8q
-         84CU4YqHrzdgHRrp9ilUiV4ziZj+/XeaBfvDLK+C1wPf7wwyxu7m+/ubw0VGBWelzfSy
-         ojn9MKASl0qEDvZSvWiMlwTw/ovVkcYoHNcO706s9snDjI5bbou/oH9hfmn7mkHKRQsb
-         3kS/esClFDnzAJjuvkirHJR55VBlOyTEwFy/YAhv5c75RNML+72oopTWZrLTv9H9Zem4
-         +Hkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=u/c2TqKgKJopQqqgPouzz8FU8h9cHatEsqHl7LLH6wY=;
-        b=FQcebTa/R/mF5226k+0EC//LVmO+afxITkaa6ikPzTuq6vljN2VnJRoFxCFuFpHElR
-         pJ3zBx29kjijv8qqe53AUH08D+rYyJSEHPZicG8CZI1Gs4VQoMf84ZaqjVpoBTJ9xa1+
-         pYOrjXL6BfupwSLUl1EpI0jZlGrUDsU0ozjEjFn0MWzrS6pwVUAdLUbOCjKf2qVMiBUn
-         AzIpf0Fs/hgNWYBqBxHVvaRyIqfhHFQ+/ew2eGJoiVWjZlTK+QuHpl1T/DjDXALO7U/o
-         P4X8VED8v98eN3qxA3eOcjA+v9mW+wfZmhsygM1R9y+jT0oVyz0B/MUbmRmKuzJtDUEX
-         4ovA==
-X-Gm-Message-State: AGi0PuZ2N8FyMbLds//UrS6pfg1jMYI9LghXYr/ns3pEcIpsw5ZvlGVU
-        Q221Xa/EhgpAP4/G3vX2Ec8=
-X-Google-Smtp-Source: APiQypIWFEib7KFXUE3voJad2W7Qi9KWkt6qKweHeSQCyVlDwjreBHcfxWKePu/hel/D8hBVENjRGg==
-X-Received: by 2002:a05:600c:114d:: with SMTP id z13mr30018787wmz.54.1589182266494;
-        Mon, 11 May 2020 00:31:06 -0700 (PDT)
-Received: from akira-laptop.home ([2a01:cb19:8b28:7600:a0b9:1c6f:cfba:2b21])
-        by smtp.gmail.com with ESMTPSA id q2sm14359023wrx.60.2020.05.11.00.31.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 00:31:06 -0700 (PDT)
-Message-ID: <bea27b6f2e78aa96a6a96e18a7d562b2564b188f.camel@gmail.com>
-Subject: Re: [PATCH v6 1/9] w1_therm: adding code comments and code
- reordering
-From:   Akira shimahara <akira215corp@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>, greg@kroah.com
-Cc:     zbr@ioremap.net, linux-kernel@vger.kernel.org
-Date:   Mon, 11 May 2020 09:31:04 +0200
-In-Reply-To: <47e5d267-071a-f6cb-33d3-2a6f1c3ba67e@infradead.org>
-References: <20200510141506.172021-1-akira215corp@gmail.com>
-         <47e5d267-071a-f6cb-33d3-2a6f1c3ba67e@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+        Mon, 11 May 2020 03:32:21 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6E3C061A0C;
+        Mon, 11 May 2020 00:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UQU0B9NH1zcG5ih3frGbvcAoJriOpbADo62D6un1kGw=; b=P8dhMvRZsO8HVSTS2DKAhF4+Dz
+        l3+qc9UNmKUvRNxyjm1fe3xdICnaYrQKfmOFATzkAIA+m/55V7+aGGbsb24aXS93rtFf+TDD+3h/j
+        +WcquBE0T/zxLzUhRauRp/opgqKE8XryQTA+G8Jmp+J5XSJsHCIjLysjbehvGdp++fWujWmpOufCo
+        Dcht8qJgNXr3YA1l6sNQunsdCYslASmkMQkVQHwf7C4FfAK3lWRfXTjd4ogg08M0tlXXtbM+P+kwF
+        6tRNzMrRnuylt7QDtGn75SzZsYyEcmnzBnt0g5sDJk7XFLqH2SdQm72ztyhSO6ysYzo/nYNoAMH1y
+        PSfnKYpw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jY2uY-0006aH-EN; Mon, 11 May 2020 07:31:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 94E02301A80;
+        Mon, 11 May 2020 09:31:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 792BB2077D3FE; Mon, 11 May 2020 09:31:34 +0200 (CEST)
+Date:   Mon, 11 May 2020 09:31:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Joerg Roedel <jroedel@suse.de>, Joerg Roedel <joro@8bytes.org>,
+        x86@kernel.org, hpa@zytor.com,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, rjw@rjwysocki.net,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [RFC PATCH 0/7] mm: Get rid of vmalloc_sync_(un)mappings()
+Message-ID: <20200511073134.GD2957@hirez.programming.kicks-ass.net>
+References: <20200508144043.13893-1-joro@8bytes.org>
+ <20200508192000.GB2957@hirez.programming.kicks-ass.net>
+ <20200508213407.GT8135@suse.de>
+ <20200509092516.GC2957@hirez.programming.kicks-ass.net>
+ <20200510011157.GU16070@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200510011157.GU16070@bombadil.infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, May 09, 2020 at 06:11:57PM -0700, Matthew Wilcox wrote:
+> Iterating an XArray (whether the entire thing
+> or with marks) is RCU-safe and faster than iterating a linked list,
+> so this should solve the problem?
 
-Le dimanche 10 mai 2020 à 20:33 -0700, Randy Dunlap a écrit :
-> Hi,
-> 
-> A few more comments here (inline):
-> 
-> On 5/10/20 7:15 AM, Akira Shimahara wrote:
-> 
-> >  drivers/w1/slaves/w1_therm.c | 398 ++++++++++++++++++++---------------
-> >  1 file changed, 232 insertions(+), 166 deletions(-)
-> > 
-> > diff --git a/drivers/w1/slaves/w1_therm.c b/drivers/w1/slaves/w1_therm.c
-> > index 18f08d7..890cf09 100644
-> > --- a/drivers/w1/slaves/w1_therm.c
-> > +++ b/drivers/w1/slaves/w1_therm.c
-> > @@ -41,42 +41,55 @@
-> >  static int w1_strong_pullup = 1;
-> >  module_param_named(strong_pullup, w1_strong_pullup, int, 0);
-> >  
-> > +/* Helpers Macros */
-> > +
-> > +/* return the address of the refcnt in the family data */
-> > +#define THERM_REFCNT(family_data) \
-> > +	(&((struct w1_therm_family_data *)family_data)->refcnt)
-> > +
-> > +/* Structs definition */
-> > +
-> > +/**
-> > + * struct w1_therm_family_converter - bind device specific functions
-> > + * @broken: flag for non registred families
-> 
->                         non-registered
-
-Noted, will be corrected
-
-> 
-> > + * @reserved: not used here
-> > + * @f: pointer to the device binding structure
-> > + * @convert: pointer to the device conversion function
-> > + * @precision: pointer to the device precicion function
-> 
->                                         precision
-
-Noted, will be corrected
-
-> 
-> > + * @eeprom: pointer to eeprom function
-> > + */
-> > +struct w1_therm_family_converter {
-> > +	u8		broken;
-> > +	u16		reserved;
-> > +	struct w1_family	*f;
-> > +	int		(*convert)(u8 rom[9]);
-> > +	int		(*precision)(struct device *device, int val);
-> > +	int		(*eeprom)(struct device *device);
-> > +};
-> > +
-> > +/**
-> > + * struct w1_therm_family_data - device data
-> > + * @rom: ROM id of the device
-> > + * @refcnt: ref count
-> > + */
-> >  struct w1_therm_family_data {
-> >  	uint8_t rom[9];
-> 
-> Why is "rom" 9 bytes in length?  Does it come from some
-> spec or standard?  Can it be a macro instead of an arbitrary
-> magic number?
-
-9 bytes is required per device communication protocol (8 data bytes + 1 CRC). I
-will detailled that in comments but I don't think that macro is required.
-
-> 
-> >  	atomic_t refcnt;
-> >  };
-> >  
-> > +/**
-> > + * struct therm_info - store temperature reading
-> > + * @rom: readen device data
-> 
->             read
-
-Noted, will be corrected
-
-> 
-> > + * @crc: computed crc from rom
-> > + * @verdict: 1 crc checked, 0 crc not matching
-> > + */
-> >  struct therm_info {
-> >  	u8 rom[9];
-> >  	u8 crc;
-> >  	u8 verdict;
-> >  };
-> >  
-> ...
-> 
-
-Same as above
-
-> >  
-> > +/* Interface Functions declaration */
-> > +
-> > +/**
-> > + * w1_therm_add_slave() - Called when a new slave is discovered
-> > + * @sl: slave just discovered by the master.
-> > + *
-> > + * Called by the master when the slave is discovered on the bus.Used to
-> 
->                                                                bus. Used to
-> 
-> > + * initialized slave state before the beginning of any communication.
-> 
->       initialize
-
-Noted, will be corrected
-
-> 
-> > + *
-> > + * Return: 0 - If success, negative kernel code otherwise
-> > + */
-> > +static int w1_therm_add_slave(struct w1_slave *sl);
-> > +
-> > +/**
-> > + * w1_therm_remove_slave() - Called when a slave is removed
-> > + * @sl: slave to be removed.
-> > + *
-> > + * Called by the master when the slave is considered not to be on the bus
-> > + * anymore. Used to free memory.
-> > + */
-> > +static void w1_therm_remove_slave(struct w1_slave *sl);
-> > +
-> > +/* Family attributes */
-> > +
-> >  static struct attribute *w1_therm_attrs[] = {
-> >  	&dev_attr_w1_slave.attr,
-> >  	NULL,
-> > @@ -101,6 +140,8 @@ static struct attribute *w1_ds28ea00_attrs[] = {
-> >  	NULL,
-> >  };
-> >  
-> > +/* Attribute groups */
-> > +
-> >  ATTRIBUTE_GROUPS(w1_therm);
-> >  ATTRIBUTE_GROUPS(w1_ds28ea00);
-> >  
-> > @@ -154,6 +195,8 @@ static const struct hwmon_chip_info w1_chip_info = {
-> >  #define W1_CHIPINFO	NULL
-> >  #endif
-> >  
-> > +/* Family operations */
-> > +
-> >  static struct w1_family_ops w1_therm_fops = {
-> >  	.add_slave	= w1_therm_add_slave,
-> >  	.remove_slave	= w1_therm_remove_slave,
-> > @@ -168,6 +211,8 @@ static struct w1_family_ops w1_ds28ea00_fops = {
-> >  	.chip_info	= W1_CHIPINFO,
-> >  };
-> >  
-> > +/* Family binding operations struct */
-> > +
-> >  static struct w1_family w1_therm_family_DS18S20 = {
-> >  	.fid = W1_THERM_DS18S20,
-> >  	.fops = &w1_therm_fops,
-> ...
-> 
-> > @@ -407,6 +332,7 @@ error:
-> >  	return ret;
-> >  }
-> >  
-> > +/* The return value is millidegrees Centigrade. */
-> 
->                                        Celsius. */
-
-Noted, will be corrected
-
-> 
-> >  static inline int w1_DS18B20_convert_temp(u8 rom[9])
-> >  {
-> >  	s16 t = le16_to_cpup((__le16 *)rom);
-> > @@ -414,6 +340,7 @@ static inline int w1_DS18B20_convert_temp(u8 rom[9])
-> >  	return t*1000/16;
-> >  }
-> >  
-> > +/* The return value is millidegrees Centigrade. */
-> 
-> ditto.
-
-Noted, will be corrected
-
-> 
-> >  static inline int w1_DS18S20_convert_temp(u8 rom[9])
-> 
-> 9?
-
-Same as above
-
-> 
-> ...
-> 
-> > @@ -564,6 +529,81 @@ error:
-> >  	return ret;
-> >  }
-> >  
-> > +static inline int w1_therm_eeprom(struct device *device)
-> > +{
-> > +	struct w1_slave *sl = dev_to_w1_slave(device);
-> > +	struct w1_master *dev = sl->master;
-> > +	u8 rom[9], external_power;
-> 
-> 9?
-
-Same as above
-
-> 
-> 
-> thanks.
-
-Thanks again for your time
-
-Akira Shimahara
-
+It can hardly be faster if you want all elements -- which is I think the
+case here. We only call into this if we change an entry, and then we
+need to propagate that change to all.
