@@ -2,107 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9119D1CDCC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB3F1CDCB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730444AbgEKONO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 10:13:14 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:58846 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730158AbgEKONO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 10:13:14 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BDWmSA076390;
-        Mon, 11 May 2020 14:12:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=1IEnxUPpak89jkl33+lzIJqyM1JskIuq+H7ZJ/8P3AY=;
- b=dFKBOE5TwdKxRnT7ECKXgIzRdINLe84spnzMR+H5Rw/Sfhtq4oJ4X8BdeHQCSeO5mbmi
- IcvzhPIfWXeFh/zkRvlN2XJGIwiF7YoDhQyv2kH2Y03dWRT9HqORTi9ZdTLj8PB38cXJ
- 6WhhD3cXFM7fkhNGONrkZ8X9OCMNadV3/jckHS7+3fHpclKdj5Q53yJ417smN2JWHwJY
- NKFF8oYRHALGeO1u+VMugDOZx4VnVC8AQQP/teEukoaY+oK4fHi8ZxPHkMcnOmNVewPz
- oPvAbUShB84AUmAjc+WS9YjMZnXih3NP5VEFxNci4zruWc9pnLyUQE87uQpugFZTV/LS EA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 30x3gmdafk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 May 2020 14:12:26 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BDYToT004470;
-        Mon, 11 May 2020 14:12:25 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 30xbgef4yt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 May 2020 14:12:25 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04BECMdq007545;
-        Mon, 11 May 2020 14:12:22 GMT
-Received: from linux-1.home (/92.157.36.49)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 11 May 2020 07:12:22 -0700
-Subject: Re: [patch V4 part 5 09/31] x86/entry: Remove the transition
- leftovers
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-References: <20200505135341.730586321@linutronix.de>
- <20200505135829.018447955@linutronix.de>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <4cdbbc1f-aeb6-233f-6a4c-54ebe20b1051@oracle.com>
-Date:   Mon, 11 May 2020 16:11:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200505135829.018447955@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1730424AbgEKOLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 10:11:32 -0400
+Received: from mail-eopbgr1320125.outbound.protection.outlook.com ([40.107.132.125]:63808
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730314AbgEKOL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 10:11:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Jh/Jgchc2XqvX4G+oKZL1WS+aKhxg3zJeRxYwqdUyi0sSEUTeEEyaAVtycy/reDYdQk+9+ohMwJIklTr9T0Gt9cv51Mdz6vqorjYgsIo5f4gTWPv5SskkBIvcMN0Zewi83XJSpm8pIZZfN/vJ15fYlkTh5VTajedysr8AeXS17yytFBuUm+CG4dbNRXLhtWLXa/o3Z2jpKUS9quUqqspU60NDwii+hxsfwYK9r3y4tGjx0MPxnDedA/10U/DNH5HwIqLrV210gQGVtr6oFdb04tuGfXHytKhIONbjxhS5CczpszzvjAp/hrJqZm9gG2NpGLZtP3YttgbmN9bgtOndA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gbtQKxVOAfiR4njrekkmCrT9W4lFFwM4LpR2xN6Bew8=;
+ b=dIPFeRC+ze52jgCdONzn6QKa6VN8MFlnTINSBWSyjB143tpb6eXHy+T51r1JpPRNQP2VZK/4u0q+JZPxdJQim9NKvZOcOPR8g0YjQcvluQwMXkrMTFpikOqfw/Kj5BoxvUiE+k/wylVpvsbiky7XVQ5w7E9YO9wNS4fROwSuGPyV2vo8FGYfrZ55h1A0oqinzBi/0dV1sGPWO/uXWKRF6xUsUVvBrZHWKH20paEYqTjteLvhPIovN49vWoLQkmxhlBVysjzXPlgpx1OkZUWIpzVHOWNl23gJHjtotB42V6BsS5MaqCBppSChdXNS32HyUT+ymFQ3eZG1fz4CZAwAAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gbtQKxVOAfiR4njrekkmCrT9W4lFFwM4LpR2xN6Bew8=;
+ b=gk6cYpF4guYDL8xFr/lmPCD2bqcoxW3CsI3U5iPeEHQYU0VzhYs8wK9HXajWEnXF/+/xCJEops0atI7o0JJaQzCu2sfDHdkpbAVVkXIhv0RIHS8JlFt0ncoFBPNWoEUxPulqxkYEzWw/wkRXj/YtkB/Q/dqa8uJKSRaqseNwkrU=
+Received: from SG2P153MB0213.APCP153.PROD.OUTLOOK.COM (2603:1096:4:8c::10) by
+ SG2P153MB0270.APCP153.PROD.OUTLOOK.COM (2603:1096:4:ad::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3021.1; Mon, 11 May 2020 14:11:22 +0000
+Received: from SG2P153MB0213.APCP153.PROD.OUTLOOK.COM
+ ([fe80::9979:a66f:c953:ce10]) by SG2P153MB0213.APCP153.PROD.OUTLOOK.COM
+ ([fe80::9979:a66f:c953:ce10%5]) with mapi id 15.20.3021.002; Mon, 11 May 2020
+ 14:11:22 +0000
+From:   Wei Hu <weh@microsoft.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: RE: [PATCH v3 2/2] PCI: hv: Retry PCI bus D0 entry when the first
+ attempt failed with invalid device state
+Thread-Topic: [PATCH v3 2/2] PCI: hv: Retry PCI bus D0 entry when the first
+ attempt failed with invalid device state
+Thread-Index: AQHWJCzash5RmaIcnEaW8yRfAeCuS6iixDMAgAAuD3A=
+Date:   Mon, 11 May 2020 14:11:21 +0000
+Message-ID: <SG2P153MB0213CB7EB0E1BE05F2D621CEBBA10@SG2P153MB0213.APCP153.PROD.OUTLOOK.COM>
+References: <20200507050300.10974-1-weh@microsoft.com>
+ <20200511112112.GC24954@e121166-lin.cambridge.arm.com>
+In-Reply-To: <20200511112112.GC24954@e121166-lin.cambridge.arm.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9617 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- spamscore=0 suspectscore=0 phishscore=0 bulkscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005110112
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9617 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- clxscore=1015 spamscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0
- malwarescore=0 priorityscore=1501 mlxscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005110112
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Owner=weh@microsoft.com;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-05-11T14:11:19.8431719Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=5dc7db8c-1ff0-4a09-8a09-1e83ea86ebaf;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Extended_MSFT_Method=Automatic
+authentication-results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [180.157.10.88]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: da23b11f-0327-4122-c509-08d7f5b52ef4
+x-ms-traffictypediagnostic: SG2P153MB0270:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SG2P153MB02703A3C9D4D71AB75A1796CBBA10@SG2P153MB0270.APCP153.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 04004D94E2
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: c/WVSRO5fYpKioiFnaa7ebbE17wssSYj/tjO2hWfbQs1V+vJX3FkKz9GqXRjhzr+wfOFBs476XidpXyf5fZzjyBUYYzwNOLGhHxeeoLbsRUTH5ehJHEMCAagNG+//f19kbj5xhnjHAZOvEmyGV+rFMZic41VJ4+TIuHouNvykWKscwYLk057FFIQc+51y+e1O1ZsLToMptmWMe437Hv+3xfc/y2iM4o87qglslBfoGCJZpmdmDyZz7qWHIfXilhoxmzuokFNgV9mqZfZNg6zu/Yr4tkugM80wMIJ+IgWKIzYV9vCPxamvVuz+GLfpF99y8Ti2WD3YO2LmDj9D8fAf+PL5uylLDnmz8rpgsjI1bt1TMWKECtIC4RB6rSaYN55sgj765a8FulfdlavkpGDJlYlolJNAQNfHOZ9QAF8EOY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2P153MB0213.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(376002)(346002)(366004)(136003)(396003)(33430700001)(55016002)(8936002)(82950400001)(82960400001)(4326008)(76116006)(66446008)(66556008)(66946007)(2906002)(66476007)(10290500003)(64756008)(6916009)(52536014)(86362001)(478600001)(8676002)(107886003)(9686003)(316002)(71200400001)(5660300002)(53546011)(186003)(26005)(7696005)(33440700001)(33656002)(6506007)(8990500004)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: Yuk6/yGN/B4Wz0/pFWgnPilcMXbs3nfkutpmipwpU7rPCkK38b8/wRzbBfZYdkqUEKQnnTb5A0RpGOZZ8QOjC1/XE2Q/05hNXkiEZIYE57E6cU/YAgv2UKkePb0B/HI4/E+JjY2OvTIZjZUKezr5E5Fc8awYBaXR5Sm0TVI8q4UFZzp1U1KVX0Nj8kNG0ZTgQVxiuWukVvFHPZV6q4owgtyJJgctgE2TtB5IW+x3LhG90DZnS88IWGhqC5jF+xUDJTLFM6PPso7PaWWvOc+z9E21addVTRFZ8k6Pda73saIdUreByuzaLK+r+HoQzjByFb+Zy68HZN1kUaL7emq7UJqVmKhE791rGQKyP4IqswO1wl2+uYxiVa4toyvpFOhVati/dULkyVO29FW87TcyDbUqAnE0DXQjtVBKKA0cFatSSShdikUrwkOZqCHFZsuJzTCDx8iYDqbGEYHd97S0fZ4TEaJXfdSaqrTvOb0NYY8=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da23b11f-0327-4122-c509-08d7f5b52ef4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2020 14:11:21.7675
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: I4QPNRr5lL3tP0zZm6/+aAg89bQPqBnGJ57UviO/PZxAPc+NzVL9yg57YZrlNzvpr34d8pfgDFynPfopBiARKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2P153MB0270
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 5/5/20 3:53 PM, Thomas Gleixner wrote:
-> Now that all exceptions are converted over the sane flag is not longer
 
-typo: "not" instead of "no" (the sane flag is no longer needed).
+> -----Original Message-----
+> From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Sent: Monday, May 11, 2020 7:21 PM
+> To: Wei Hu <weh@microsoft.com>
+> Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+> <haiyangz@microsoft.com>; Stephen Hemminger <sthemmin@microsoft.com>;
+> wei.liu@kernel.org; robh@kernel.org; bhelgaas@google.com; linux-
+> hyperv@vger.kernel.org; linux-pci@vger.kernel.org; linux-
+> kernel@vger.kernel.org; Dexuan Cui <decui@microsoft.com>; Michael Kelley
+> <mikelley@microsoft.com>
+> Subject: Re: [PATCH v3 2/2] PCI: hv: Retry PCI bus D0 entry when the firs=
+t
+> attempt failed with invalid device state
+>=20
+> On Thu, May 07, 2020 at 01:03:00PM +0800, Wei Hu wrote:
+> > In the case of kdump, the PCI device was not cleanly shut down before
+> > the kdump kernel starts. This causes the initial attempt of entering
+> > D0 state in the kdump kernel to fail with invalid device state
+> > returned from Hyper-V host.
+> > When this happens, explicitly call PCI bus exit and retry to enter the
+> > D0 state.
+> >
+> > Signed-off-by: Wei Hu <weh@microsoft.com>
+> > ---
+> >     v2: Incorporate review comments from Michael Kelley, Dexuan Cui and
+> >     Bjorn Helgaas
+> >
+> >  drivers/pci/controller/pci-hyperv.c | 40
+> > +++++++++++++++++++++++++++--
+> >  1 file changed, 38 insertions(+), 2 deletions(-)
+>=20
+> Subject: exceeded 80 chars and commit log needed rewording and paragraphs
+> rewrapping. I did it this time but please pay attention to commit log con=
+tent
+> (and format).
 
-> needed. Also the vector argument of idtentry_body on 64 bit is pointless
-> now.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->   arch/x86/entry/entry_32.S       |    3 +--
->   arch/x86/entry/entry_64.S       |   26 ++++----------------------
->   arch/x86/include/asm/idtentry.h |    6 +++---
->   3 files changed, 8 insertions(+), 27 deletions(-)
-> 
+Got it. Thanks much for correcting it for me this time!
 
-alex.
+Wei
+
+>=20
+> Thanks,
+> Lorenzo
+>=20
+
