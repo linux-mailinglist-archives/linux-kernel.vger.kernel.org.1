@@ -2,111 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CFD1CD493
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 11:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6AE31CD495
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 11:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729329AbgEKJMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 05:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46388 "EHLO
+        id S1729355AbgEKJMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 05:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729298AbgEKJL5 (ORCPT
+        with ESMTP id S1729298AbgEKJMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 05:11:57 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C14DC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 02:11:57 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id h17so1042572wrc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 02:11:56 -0700 (PDT)
+        Mon, 11 May 2020 05:12:07 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E94DC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 02:12:07 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id u35so1303966pgk.6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 02:12:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0CinOkbYS8oPgPVLI49BKt2JzQLqGPZqhctItxxwelA=;
-        b=h4rIFRGn0yKy4FgF2CPDHTuSqgim5fjp6Ly9Ueas+XY00rIljDAeF2fRgJ3GyRmMva
-         juSun8H2JFb0tKhLNykj5s7WbdhQtMrb6yKjQ3/EG1CrxrYWGuMXykVRWcToDMvHyZWd
-         kwRsJAkax1d6Xmna3tnM/71z6J0ExhjpOI7pA=
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=b+Mlgkinizfq7UrxWGAHt/L4TYtTIRO7c2K3Tv2ItVI=;
+        b=BF99Zi2+i7t+LijfD0bmRX3cUyo5Pijv2tYnyN+UZMc3wEvH6fWvtCh12UvCOj4qV0
+         f5OZnWbTCbzoJGKFuCJPD4Pmz2FD5dLtsJVkv2CYIbw0+9XuutXtEzQl7t0q9c/1aNIZ
+         SQkEz0McKeekY53U3bc6sVZQsBCqbgFryVJU2TzJElLxFDUHSHSpN0mM+IukICL9qF5/
+         68Qc//AGKPmRUK+kTNZnIY4kKbXrdcYhfBcucSc2IYPeUWg2zhC2p0Zwuwl3u3zRuKdv
+         5gKITG3vWVP6MjAOcy2cr0j/08sx8AWyufwEILNI9Yzvq6L5gyG5/op6LOQPctvVKGi1
+         BL4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0CinOkbYS8oPgPVLI49BKt2JzQLqGPZqhctItxxwelA=;
-        b=GJw26BVatspKL/eEFhKDETty1xwfqRpT9LRqxM9FrwzH4OkTgxb8RISWJu3KmYsAKf
-         KoyL3xEhzpxm9zqpAGh2eJ3GcnnYtFP5f+VAN/TLdythF5CfWz0tiRcQTcAHaY1o5VQl
-         mCQoHsl/JjA7zVf2pge160xBCyJC1RzcNpQren4sB7Cc2kgXGRGm5gVf8+9OlG7MEgjA
-         q/kXkU4GOBQERsLuAipW9csLrasMusl54MQXUYfBiMx6fBWAk/nlBQxbIC00BmrGJCHP
-         7gs43SSBrP9agn5ElEvKtHJ73BPFU60qQP6H6UFeF+If/s2ZQ93IGEmvg+8UV4YGVn2Y
-         9nBw==
-X-Gm-Message-State: AGi0PuYCRWd7As5JQAUmh059OBw+ICNCTY/g5G8ooRDGnDHsdzZAxjxh
-        jca10cXzEQlkVcPCL96jli3ZXd+RBsc=
-X-Google-Smtp-Source: APiQypIe/NcTRB7OjwoRrwiqdLysAONSgQ8XmUpqQiiFNg4nNfp3xqmACL1LU9lULCHwhJ4moMYGIg==
-X-Received: by 2002:adf:e582:: with SMTP id l2mr18950634wrm.392.1589188315492;
-        Mon, 11 May 2020 02:11:55 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id t4sm17506299wri.54.2020.05.11.02.11.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 02:11:54 -0700 (PDT)
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Olof Johansson <olof@lixom.net>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 3/3] misc/habalabs: don't set default fence_ops->wait
-Date:   Mon, 11 May 2020 11:11:42 +0200
-Message-Id: <20200511091142.208787-3-daniel.vetter@ffwll.ch>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200511091142.208787-1-daniel.vetter@ffwll.ch>
-References: <20200511091142.208787-1-daniel.vetter@ffwll.ch>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=b+Mlgkinizfq7UrxWGAHt/L4TYtTIRO7c2K3Tv2ItVI=;
+        b=Ui3RI4w+lOSiBqAsk8bihRh/cXjdL4VbA4hMmi4TjZNH6TVmScm/Co5Oe6mgaAvIU6
+         oUiIW7aIQzCHg9xL38BXvDIWzDa2LOas0dRIBjED8QyqrutA6tEytM5sm3mzNCg26I0T
+         gVmAMsow5MVE3RY5namNlX/eM7U9NVqQLzl7GnwHP2T6wAnp9udYz+AxtgLc1Tjxz6Bl
+         Hm9nxAh8OuVm/OFVGAhcLqR7GslEWrNNz/Et2sCAuYnqvyR/+6DOpYNeTuVewSec7ThE
+         aZJIX4xziULgBAljqy0G7P+URteAiy/D0KN/2N4OsMj81m0K/16rgcP5DfsAvp/6ySDc
+         577A==
+X-Gm-Message-State: AGi0PuaNxfi4IrR3wpupgJE2t+cjgqHi2UHf0Fey+MqJrE3lh4RoNw5H
+        pn6xhY19o3Zv7PLtVXTvL6a9hIoDp4EHicNhdpk=
+X-Google-Smtp-Source: APiQypLbpPFU+Elq/+w00lt2lk2qPsAMBhvNKyR1nb0c4MfobH1qTCY4aizmBY/l4dTuG30wxDu2zVQtBEtTTWfg3JU=
+X-Received: by 2002:a63:6f07:: with SMTP id k7mr14343180pgc.274.1589188327020;
+ Mon, 11 May 2020 02:12:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a17:90a:4805:0:0:0:0 with HTTP; Mon, 11 May 2020 02:12:06
+ -0700 (PDT)
+Reply-To: anitkwas@gmail.com
+From:   "Ms. Anita Kwassou" <samolele24@gmail.com>
+Date:   Mon, 11 May 2020 09:12:06 +0000
+Message-ID: <CABnV1HiRLspB25Fwpn3Bhe5aQz2bxDUDxs-NjFuONmwj4PN53A@mail.gmail.com>
+Subject: hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's the default.
+Dear friend,
 
-Also so much for "we're not going to tell the graphics people how to
-review their code", dma_fence is a pretty core piece of gpu driver
-infrastructure. And it's very much uapi relevant, including piles of
-corresponding userspace protocols and libraries for how to pass these
-around.
+I am writing to you from Paraguay on a business trip with my new
+partner after the successful transfer of the funds in the amount of $
+5.5 million.
 
-Would be great if habanalabs would not use this (from a quick look
-it's not needed at all), since open source the userspace and playing
-by the usual rules isn't on the table. If that's not possible (because
-it's actually using the uapi part of dma_fence to interact with gpu
-drivers) then we have exactly what everyone promised we'd want to
-avoid.
+Yes, as I told you before, I am not a greedy person and also like to
+recognize the efforts of someone, no matter what might be the problem,
+I will request you to contact my secretary:
 
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: 	Olof Johansson <olof@lixom.net>
-Cc: Oded Gabbay <oded.gabbay@gmail.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
----
- drivers/misc/habanalabs/command_submission.c | 1 -
- 1 file changed, 1 deletion(-)
+Ms. Anita Kwassou
+E-Mail: anitkwas@gmail.com
 
-diff --git a/drivers/misc/habanalabs/command_submission.c b/drivers/misc/habanalabs/command_submission.c
-index 409276b6374d..cc3ce759b6c3 100644
---- a/drivers/misc/habanalabs/command_submission.c
-+++ b/drivers/misc/habanalabs/command_submission.c
-@@ -46,7 +46,6 @@ static const struct dma_fence_ops hl_fence_ops = {
- 	.get_driver_name = hl_fence_get_driver_name,
- 	.get_timeline_name = hl_fence_get_timeline_name,
- 	.enable_signaling = hl_fence_enable_signaling,
--	.wait = dma_fence_default_wait,
- 	.release = hl_fence_release
- };
- 
--- 
-2.26.2
+Ms. Anita will send you Eighty Thousand dollars (US$80.000.00) which
+is been rolled to you into an international ATM visa card,
 
+I give you this compensation for all your past efforts and the amount
+you invested in the translation process, but you couldn't complete
+with me because of fear and disbelieve.
+
+I am also giving to you this small amount as an appreciation for God's
+endless mercies to make in this my dream come true, and also for
+leading me peacefully to this country.
+
+Contact Ms. Anita and discuss with him on how you want the ATM card
+sent to you and try to inform me as soon as you received the card.
+
+Best wishes,
+Mr. Sam Olele
