@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AF11CDCB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9119D1CDCC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730397AbgEKOLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 10:11:19 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:33648 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730180AbgEKOLR (ORCPT
+        id S1730444AbgEKONO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 10:13:14 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:58846 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730158AbgEKONO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 10:11:17 -0400
-Received: by mail-pf1-f193.google.com with SMTP id x77so4804466pfc.0;
-        Mon, 11 May 2020 07:11:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AWgg7qj1bkym/xNblxQzDHT3If2HCewLrF/zJm6gRzY=;
-        b=npawjWnwtbK/fg8Yq6Frejo0kpo7h9WnRz/l1yBtBW482mr4oFAS2C7X0dURs0p6k2
-         U6DNLUs3t5YFi8ACItK//MfI6SHmvRKtppysbN0pUCF/WxwSJsXzbInb6fueD6Msd2wA
-         uvkSa6Lei/iaZD0Q1OhKTAwHdlTdymrx0ZG7dKMDzuLMuyEiVOSPzaOynprs9YL19c53
-         3lRzWst6p/AnKXPaLTnWLo0om7oEvHFcz1POEnWNgeRoNbvpE4Wb4OH1huufn7VatB30
-         aE10OimdCe2wOc9Fz8SqLLeohUa9IJbgXHPcE945j3AQdbRv7sFKe71xJN8xYFDU+VLT
-         f3aA==
-X-Gm-Message-State: AGi0PuZ4m4Y09i2VXVACgSMVGQow72zG2Yl9xPyXfKr7zVVxVjLVc/6F
-        5e2dOxfAPKAmwPGUrmIvnnA=
-X-Google-Smtp-Source: APiQypJAWxBoNUs8vRFOmSa70+GttdBRfZ31F3iEsLPfSIWeZ0YvxscN5GsJ8v/OgCgqmm2miDWFVw==
-X-Received: by 2002:a63:ee4f:: with SMTP id n15mr14981159pgk.149.1589206276809;
-        Mon, 11 May 2020 07:11:16 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id g40sm10650446pje.38.2020.05.11.07.11.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 07:11:14 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id C270E40605; Mon, 11 May 2020 14:11:13 +0000 (UTC)
-Date:   Mon, 11 May 2020 14:11:13 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Jiri Pirko <jiri@resnulli.us>, jeyu@kernel.org,
-        akpm@linux-foundation.org, arnd@arndb.de, rostedt@goodmis.org,
-        mingo@redhat.com, aquini@redhat.com, cai@lca.pw, dyoung@redhat.com,
-        bhe@redhat.com, peterz@infradead.org, tglx@linutronix.de,
-        gpiccoli@canonical.com, pmladek@suse.com, tiwai@suse.de,
-        schlad@suse.de, andriy.shevchenko@linux.intel.com,
-        keescook@chromium.org, daniel.vetter@ffwll.ch, will@kernel.org,
-        mchehab+samsung@kernel.org, kvalo@codeaurora.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/15] net: taint when the device driver firmware crashes
-Message-ID: <20200511141113.GP11244@42.do-not-panic.com>
-References: <20200509043552.8745-1-mcgrof@kernel.org>
- <20200509113546.7dcd1599@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Mon, 11 May 2020 10:13:14 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BDWmSA076390;
+        Mon, 11 May 2020 14:12:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=1IEnxUPpak89jkl33+lzIJqyM1JskIuq+H7ZJ/8P3AY=;
+ b=dFKBOE5TwdKxRnT7ECKXgIzRdINLe84spnzMR+H5Rw/Sfhtq4oJ4X8BdeHQCSeO5mbmi
+ IcvzhPIfWXeFh/zkRvlN2XJGIwiF7YoDhQyv2kH2Y03dWRT9HqORTi9ZdTLj8PB38cXJ
+ 6WhhD3cXFM7fkhNGONrkZ8X9OCMNadV3/jckHS7+3fHpclKdj5Q53yJ417smN2JWHwJY
+ NKFF8oYRHALGeO1u+VMugDOZx4VnVC8AQQP/teEukoaY+oK4fHi8ZxPHkMcnOmNVewPz
+ oPvAbUShB84AUmAjc+WS9YjMZnXih3NP5VEFxNci4zruWc9pnLyUQE87uQpugFZTV/LS EA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 30x3gmdafk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 May 2020 14:12:26 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BDYToT004470;
+        Mon, 11 May 2020 14:12:25 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 30xbgef4yt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 May 2020 14:12:25 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04BECMdq007545;
+        Mon, 11 May 2020 14:12:22 GMT
+Received: from linux-1.home (/92.157.36.49)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 11 May 2020 07:12:22 -0700
+Subject: Re: [patch V4 part 5 09/31] x86/entry: Remove the transition
+ leftovers
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+References: <20200505135341.730586321@linutronix.de>
+ <20200505135829.018447955@linutronix.de>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <4cdbbc1f-aeb6-233f-6a4c-54ebe20b1051@oracle.com>
+Date:   Mon, 11 May 2020 16:11:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200509113546.7dcd1599@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200505135829.018447955@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9617 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ spamscore=0 suspectscore=0 phishscore=0 bulkscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005110112
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9617 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ clxscore=1015 spamscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 priorityscore=1501 mlxscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005110112
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 09, 2020 at 11:35:46AM -0700, Jakub Kicinski wrote:
-> On Sat,  9 May 2020 04:35:37 +0000 Luis Chamberlain wrote:
-> > Device driver firmware can crash, and sometimes, this can leave your
-> > system in a state which makes the device or subsystem completely
-> > useless. Detecting this by inspecting /proc/sys/kernel/tainted instead
-> > of scraping some magical words from the kernel log, which is driver
-> > specific, is much easier. So instead this series provides a helper which
-> > lets drivers annotate this and shows how to use this on networking
-> > drivers.
-> > 
-> > My methodology for finding when firmware crashes is to git grep for
-> > "crash" and then doing some study of the code to see if this indeed
-> > a place where the firmware crashes. In some places this is quite
-> > obvious.
-> > 
-> > I'm starting off with networking first, if this gets merged later on I
-> > can focus on the other drivers, but I already have some work done on
-> > other subsytems.
-> > 
-> > Review, flames, etc are greatly appreciated.
+
+On 5/5/20 3:53 PM, Thomas Gleixner wrote:
+> Now that all exceptions are converted over the sane flag is not longer
+
+typo: "not" instead of "no" (the sane flag is no longer needed).
+
+> needed. Also the vector argument of idtentry_body on 64 bit is pointless
+> now.
 > 
-> Tainting itself may be useful, but that's just the first step. I'd much
-> rather see folks start using the devlink health infrastructure. Devlink
-> is netlink based, but it's _not_ networking specific (many of its
-> optional features obviously are, but don't let that mislead you).
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>   arch/x86/entry/entry_32.S       |    3 +--
+>   arch/x86/entry/entry_64.S       |   26 ++++----------------------
+>   arch/x86/include/asm/idtentry.h |    6 +++---
+>   3 files changed, 8 insertions(+), 27 deletions(-)
 > 
-> With devlink health we get (a) a standard notification on the failure; 
-> (b) information/state dump in a (somewhat) structured form, which can be
-> collected & shared with vendors; (c) automatic remediation (usually
-> device reset of some scope).
 
-It indeed sounds very useful!
-
-> Now regarding the tainting - as I said it may be useful, but don't we
-> have to define what constitutes a "firmware crash"?
-
-Yes indeed, I missed clarifying this in the documentation. I'll do so
-in my next respin.
-
-> There are many
-> failure modes, some perfectly recoverable (e.g. processing queue hang), 
-> some mere bugs (e.g. device fails to initialize some functions). All of
-> them may impact the functioning of the system. How do we choose those
-> that taint? 
-
-Its up to the maintainers of the device driver, what I was aiming for
-were those firmware crashes which indeed *can* have an impact on user
-experience, and can *even* potentially require a driver removal / addition
-to to get things back in order again.
-
-  Luis
+alex.
