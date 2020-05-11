@@ -2,97 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2121CDF28
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F881CDF2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729648AbgEKPgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 11:36:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729207AbgEKPgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 11:36:46 -0400
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33E36208CA
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 15:36:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589211405;
-        bh=i3uY6cCArW5hN5wosQGib94nUFas1R+dCNb46rnxnio=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Mand0CvgonAGC5tTER+gjn+UohBoFWO9E+pZN3apVITUdnYCHVAmLp0NEc8uYh98N
-         /wifwK92lqfAfP6sw9L+wWpbXDFB6mv8Syvn5eQhJ+R0OgZgYWIzompe9OVQMzydtM
-         049xxjdwYGxUSCTTO18sd3JPRPkRaF6J4hU4xSew=
-Received: by mail-wr1-f54.google.com with SMTP id l18so11521974wrn.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:36:45 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaosbqNB1HYU+ex4cwIqybTQ+9khZK7lO7JBpJXNcmNUMcEMgim
-        OPODbFhrWpcP/1989BUx6fbsxg2fQUBUeUGiepp8nw==
-X-Google-Smtp-Source: APiQypKYHwNhLBwoJlhPPniwIw7oYGiw+n5i3yhd81TiNyC7Z2AxSsFXseCP0z5QwgjDURBB18+lg0Z/ydWdr/AywuM=
-X-Received: by 2002:adf:a298:: with SMTP id s24mr9033222wra.184.1589211403564;
- Mon, 11 May 2020 08:36:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200508144043.13893-1-joro@8bytes.org> <CALCETrX0ubjc0Gf4hCY9RWH6cVEKF1hv3RzqToKMt9_bEXXBvw@mail.gmail.com>
- <20200508213609.GU8135@suse.de> <CALCETrVxP87o2+aaf=RLW--DSpMrs=BXSQphN6bG5Y4X+OY8GQ@mail.gmail.com>
- <20200509175217.GV8135@suse.de> <CALCETrVU-+G3K5ABBRSEMiwnskL4mZsVcoTESZXnu34J7TaOqw@mail.gmail.com>
- <20200511074243.GE2957@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200511074243.GE2957@hirez.programming.kicks-ass.net>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 11 May 2020 08:36:31 -0700
-X-Gmail-Original-Message-ID: <CALCETrVyoAXXOqm8cYs+31fjWK8mcnKR+wM0_HeJx9=bOaZC6Q@mail.gmail.com>
-Message-ID: <CALCETrVyoAXXOqm8cYs+31fjWK8mcnKR+wM0_HeJx9=bOaZC6Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/7] mm: Get rid of vmalloc_sync_(un)mappings()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Andy Lutomirski <luto@kernel.org>, Joerg Roedel <jroedel@suse.de>,
-        Joerg Roedel <joro@8bytes.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S1729856AbgEKPg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 11:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729207AbgEKPgz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 11:36:55 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A0DC061A0C;
+        Mon, 11 May 2020 08:36:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=amgk2kJlCbYp1G7kuYGnL7Ih27zYi++B9lrM3oyQ2eI=; b=YQQ8JUaDtgcYpTofYqCyLiD9b6
+        lieYTmBAmmqWEyEgpmyeqBxWCZHSyOAfqQ1HS5jHqbQc6Ib1ZoWZy6yAozq6YzvfEa86XUrgyeaCt
+        /uvm0n2yfJQxbKAAlh5Uf/4RQX6fbN3EqQX8gnwcWzpYOtRs9i4Ql6dAEzTY1pzbBh4aljvIpmZKL
+        6n/8IrW38tR+AOUpl2kru4iU9Mtme9ahZvf7BaH+MyXdcKRMttZtwAcvQHYWBgKAva79Sb2A10GT+
+        em/jtrmjNxX5BCrD9xGDELFNw0/WXZQe2/2YozUJXUcVIMy7taWdHINHfrCaqutrgGqJJfDIk+v9g
+        7tPvHy9w==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jYAU8-0001Rk-Mk; Mon, 11 May 2020 15:36:52 +0000
+Subject: Re: [PATCH v7 09/18] pstore/blk: Introduce backend for block devices
+To:     Kees Cook <keescook@chromium.org>,
+        WeiXiong Liao <liaoweixiong@allwinnertech.com>
+Cc:     Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        Rob Herring <robh@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+References: <20200510202436.63222-1-keescook@chromium.org>
+ <20200510202436.63222-10-keescook@chromium.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <2b4fec3e-53f7-b8d9-49f8-d24401f83363@infradead.org>
+Date:   Mon, 11 May 2020 08:36:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200510202436.63222-10-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 12:42 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Sat, May 09, 2020 at 12:05:29PM -0700, Andy Lutomirski wrote:
->
-> > On x86_64, the only real advantage is that the handful of corner cases
-> > that make vmalloc faults unpleasant (mostly relating to vmap stacks)
-> > go away.  On x86_32, a bunch of mind-bending stuff (everything your
-> > series deletes but also almost everything your series *adds*) goes
-> > away.  There may be a genuine tiny performance hit on 2-level systems
-> > due to the loss of huge pages in vmalloc space, but I'm not sure I
-> > care or that we use them anyway on these systems.  And PeterZ can stop
-> > even thinking about RCU.
-> >
-> > Am I making sense?
->
-> I think it'll work for x86_64 and that is really all I care about :-)
+On 5/10/20 1:24 PM, Kees Cook wrote:
+> diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
+> index 98d2457bdd9f..92ba73bd0b62 100644
+> --- a/fs/pstore/Kconfig
+> +++ b/fs/pstore/Kconfig
+> @@ -160,3 +160,67 @@ config PSTORE_ZONE
+>  	help
+>  	  The common layer for pstore/blk (and pstore/ram in the future)
+>  	  to manage storage in zones.
+> +
+> +config PSTORE_BLK
+> +	tristate "Log panic/oops to a block device"
+> +	depends on PSTORE
+> +	depends on BLOCK
+> +	select PSTORE_ZONE
+> +	default n
+> +	help
+> +	  This enables panic and oops message to be logged to a block dev
+> +	  where it can be read back at some later point.
+> +
+> +	  If unsure, say N.
+> +
+> +config PSTORE_BLK_BLKDEV
+> +	string "block device identifier"
+> +	depends on PSTORE_BLK
+> +	default ""
+> +	help
+> +	  Which block device should be used for pstore/blk.
+> +
+> +	  It accept the following variants:
+> +	  1) <hex_major><hex_minor> device number in hexadecimal represents
+> +	     itself no leading 0x, for example b302.
 
-Sadly, I think that Joerg has convinced my that this doesn't really
-work for 32-bit unless we rework the LDT code or drop support for
-something that we might not want to drop support for.  So, last try --
-maybe we can start defeaturing 32-bit:
+	     itself with no leading 0x,
 
-What if we make 32-bit PTI depend on PAE?  And drop 32-bit Xen PV
-support?  And make 32-bit huge pages depend on PAE?  Then 32-bit
-non-PAE can use the direct-mapped LDT, 32-bit PTI (and optionally PAE
-non-PTI) can use the evil virtually mapped LDT.  And 32-bit non-PAE
-(the 2-level case) will only have pointers to page tables at the top
-level.  And then we can preallocate.
+> +	  2) /dev/<disk_name> represents the device number of disk
+> +	  3) /dev/<disk_name><decimal> represents the device number
+> +	     of partition - device number of disk plus the partition number
+> +	  4) /dev/<disk_name>p<decimal> - same as the above, this form is
+> +	     used when disk name of partitioned disk ends with a digit.
+> +	  5) PARTUUID=00112233-4455-6677-8899-AABBCCDDEEFF representing the
+> +	     unique id of a partition if the partition table provides it.
+> +	     The UUID may be either an EFI/GPT UUID, or refer to an MSDOS
+> +	     partition using the format SSSSSSSS-PP, where SSSSSSSS is a zero-
+> +	     filled hex representation of the 32-bit "NT disk signature", and PP
+> +	     is a zero-filled hex representation of the 1-based partition number.
+> +	  6) PARTUUID=<UUID>/PARTNROFF=<int> to select a partition in relation
+> +	     to a partition with a known unique id.
+> +	  7) <major>:<minor> major and minor number of the device separated by
+> +	     a colon.
 
-Or maybe we don't want to defeature this much, or maybe the memory hit
-from this preallocation will hurt little 2-level 32-bit systems too
-much.
 
-(Xen 32-bit PV support seems to be on its way out upstream.)
+-- 
+~Randy
+
