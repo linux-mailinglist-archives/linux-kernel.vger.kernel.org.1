@@ -2,174 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A071CD27F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 09:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6AC1CD285
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 09:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728615AbgEKHWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 03:22:32 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:57148 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725790AbgEKHWc (ORCPT
+        id S1728808AbgEKHYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 03:24:01 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:46027 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728554AbgEKHYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 03:22:32 -0400
-X-IronPort-AV: E=Sophos;i="5.73,378,1583164800"; 
-   d="scan'208";a="91905791"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 11 May 2020 15:22:27 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id 11D734BCC89B;
-        Mon, 11 May 2020 15:22:27 +0800 (CST)
-Received: from [10.167.220.69] (10.167.220.69) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Mon, 11 May 2020 15:22:27 +0800
-Message-ID: <5EB8FD31.9020906@cn.fujitsu.com>
-Date:   Mon, 11 May 2020 15:22:25 +0800
-From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
-User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
+        Mon, 11 May 2020 03:24:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589181839; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=opEe6VhtUet0pRSIKtH8L9rJzKOnftJQipiXpDz646A=;
+ b=QLKGLOlbKNM78GLSsbf6fac5SLEPM5UqiScXY6KZ6u4FrZYrzCJ29/k/tzjzu4ChHtIhJQkf
+ z0qbfp5lduYt8hffwKQ+NweiCLDoYND4drijOfgEYFl5CxHyFC5BAEsoQ9JD9dSrHUniuVl3
+ bzTxfa13ZCiclowcp9U7MQm26Wk=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb8fd8e.7f19c8556538-smtp-out-n04;
+ Mon, 11 May 2020 07:23:58 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B8AFDC433F2; Mon, 11 May 2020 07:23:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rananta)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 43C8CC433CB;
+        Mon, 11 May 2020 07:23:58 +0000 (UTC)
 MIME-Version: 1.0
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-CC:     Steven Rostedt <rostedt@goodmis.org>,
-        Shuah Khan <shuah@kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Li Philip <philip.li@intel.com>,
-        Liu Yiding <yidingx.liu@intel.com>
-Subject: Re: [PATCH 3/3] selftests/ftrace: Use /bin/echo instead of built-in
- echo
-References: <158834025077.28357.15141584656220094821.stgit@devnote2>    <158834028054.28357.398159034694277189.stgit@devnote2>  <5EB3AE7C.5@cn.fujitsu.com> <20200507181505.3e8369ee39f14d9c74ec986b@kernel.org>
-In-Reply-To: <20200507181505.3e8369ee39f14d9c74ec986b@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.167.220.69]
-X-ClientProxiedBy: G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) To
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
-X-yoursite-MailScanner-ID: 11D734BCC89B.AFEAC
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
-X-Spam-Status: No
+Date:   Mon, 11 May 2020 00:23:58 -0700
+From:   rananta@codeaurora.org
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     jslaby@suse.com, andrew@daynix.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tty: hvc: Fix data abort due to race in hvc_open
+In-Reply-To: <20200510064819.GB3400311@kroah.com>
+References: <20200428032601.22127-1-rananta@codeaurora.org>
+ <20200506094851.GA2787548@kroah.com>
+ <98bbe7afabf48d8e8fe839fdc9e836a5@codeaurora.org>
+ <20200510064819.GB3400311@kroah.com>
+Message-ID: <77d889be4e0cb0e6e30f96199e2d843d@codeaurora.org>
+X-Sender: rananta@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/5/7 17:15, Masami Hiramatsu wrote:
-> On Thu, 7 May 2020 14:45:16 +0800
-> Xiao Yang<yangx.jy@cn.fujitsu.com>  wrote:
->
->> On 2020/5/1 21:38, Masami Hiramatsu wrote:
->>> Since the built-in echo has different behavior in POSIX shell
->>> (dash) and bash, we forcibly use /bin/echo -E (not interpret
->>> backslash escapes) by default.
->>>
->>> This also fixes some test cases which expects built-in
->>> echo command.
->>>
->>> Reported-by: Liu Yiding<yidingx.liu@intel.com>
->>> Signed-off-by: Masami Hiramatsu<mhiramat@kernel.org>
->>> ---
->>>    tools/testing/selftests/ftrace/test.d/functions    |    3 +++
->>>    .../test.d/trigger/trigger-trace-marker-hist.tc    |    2 +-
->>>    .../trigger-trace-marker-synthetic-kernel.tc       |    4 ++++
->>>    .../trigger/trigger-trace-marker-synthetic.tc      |    4 ++--
->>>    4 files changed, 10 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/tools/testing/selftests/ftrace/test.d/functions b/tools/testing/selftests/ftrace/test.d/functions
->>> index 5d4550591ff9..ea59b6ea2c3e 100644
->>> --- a/tools/testing/selftests/ftrace/test.d/functions
->>> +++ b/tools/testing/selftests/ftrace/test.d/functions
->>> @@ -1,3 +1,6 @@
->>> +# Since the built-in echo has different behavior in POSIX shell (dash) and
->>> +# bash, we forcibly use /bin/echo -E (not interpret backslash escapes).
->>> +alias echo="/bin/echo -E"
->> Hi Masami, Steven
->>
->> It seems that only kprobe_syntax_errors.tc is impacted by the issue
->> currently.  Is it necessary for all tests to use /bin/echo and could we
->> just make kprobe_syntax_errors.tc use /bin/echo?
->
-> Yes, I would like to unify the "echo"'s behavior among the testcases
-> instead of patching each failure in the future.
-> Or would you have any concern on it?
-Hi Masami,
+On 2020-05-09 23:48, Greg KH wrote:
+> On Sat, May 09, 2020 at 06:30:56PM -0700, rananta@codeaurora.org wrote:
+>> On 2020-05-06 02:48, Greg KH wrote:
+>> > On Mon, Apr 27, 2020 at 08:26:01PM -0700, Raghavendra Rao Ananta wrote:
+>> > > Potentially, hvc_open() can be called in parallel when two tasks calls
+>> > > open() on /dev/hvcX. In such a scenario, if the
+>> > > hp->ops->notifier_add()
+>> > > callback in the function fails, where it sets the tty->driver_data to
+>> > > NULL, the parallel hvc_open() can see this NULL and cause a memory
+>> > > abort.
+>> > > Hence, serialize hvc_open and check if tty->private_data is NULL
+>> > > before
+>> > > proceeding ahead.
+>> > >
+>> > > The issue can be easily reproduced by launching two tasks
+>> > > simultaneously
+>> > > that does nothing but open() and close() on /dev/hvcX.
+>> > > For example:
+>> > > $ ./simple_open_close /dev/hvc0 & ./simple_open_close /dev/hvc0 &
+>> > >
+>> > > Signed-off-by: Raghavendra Rao Ananta <rananta@codeaurora.org>
+>> > > ---
+>> > >  drivers/tty/hvc/hvc_console.c | 16 ++++++++++++++--
+>> > >  1 file changed, 14 insertions(+), 2 deletions(-)
+>> > >
+>> > > diff --git a/drivers/tty/hvc/hvc_console.c
+>> > > b/drivers/tty/hvc/hvc_console.c
+>> > > index 436cc51c92c3..ebe26fe5ac09 100644
+>> > > --- a/drivers/tty/hvc/hvc_console.c
+>> > > +++ b/drivers/tty/hvc/hvc_console.c
+>> > > @@ -75,6 +75,8 @@ static LIST_HEAD(hvc_structs);
+>> > >   */
+>> > >  static DEFINE_MUTEX(hvc_structs_mutex);
+>> > >
+>> > > +/* Mutex to serialize hvc_open */
+>> > > +static DEFINE_MUTEX(hvc_open_mutex);
+>> > >  /*
+>> > >   * This value is used to assign a tty->index value to a hvc_struct
+>> > > based
+>> > >   * upon order of exposure via hvc_probe(), when we can not match it
+>> > > to
+>> > > @@ -346,16 +348,24 @@ static int hvc_install(struct tty_driver
+>> > > *driver, struct tty_struct *tty)
+>> > >   */
+>> > >  static int hvc_open(struct tty_struct *tty, struct file * filp)
+>> > >  {
+>> > > -	struct hvc_struct *hp = tty->driver_data;
+>> > > +	struct hvc_struct *hp;
+>> > >  	unsigned long flags;
+>> > >  	int rc = 0;
+>> > >
+>> > > +	mutex_lock(&hvc_open_mutex);
+>> > > +
+>> > > +	hp = tty->driver_data;
+>> > > +	if (!hp) {
+>> > > +		rc = -EIO;
+>> > > +		goto out;
+>> > > +	}
+>> > > +
+>> > >  	spin_lock_irqsave(&hp->port.lock, flags);
+>> > >  	/* Check and then increment for fast path open. */
+>> > >  	if (hp->port.count++ > 0) {
+>> > >  		spin_unlock_irqrestore(&hp->port.lock, flags);
+>> > >  		hvc_kick();
+>> > > -		return 0;
+>> > > +		goto out;
+>> > >  	} /* else count == 0 */
+>> > >  	spin_unlock_irqrestore(&hp->port.lock, flags);
+>> >
+>> > Wait, why isn't this driver just calling tty_port_open() instead of
+>> > trying to open-code all of this?
+>> >
+>> > Keeping a single mutext for open will not protect it from close, it will
+>> > just slow things down a bit.  There should already be a tty lock held by
+>> > the tty core for open() to keep it from racing things, right?
+>> The tty lock should have been held, but not likely across ->install() 
+>> and
+>> ->open() callbacks, thus resulting in a race between hvc_install() and
+>> hvc_open(),
+> 
+> How?  The tty lock is held in install, and should not conflict with
+> open(), otherwise, we would be seeing this happen in all tty drivers,
+> right?
+> 
+Well, I was expecting the same, but IIRC, I see that the open() was 
+being
+called in parallel for the same device node.
 
-Very sorry for the late reply.
-
-We may not avoid fixing related failures after your change:
-1) We have to reuse built-in echo (do alias echo=echo) if we want to 
-test common_pid for histogram.
-2) We have to reuse built-in echo if some new tests want to interpret 
-backslash escapes in future.
-
-Is it simple to provide two implementations of echo?(built-in echo and 
-echo command?) and then just apply echo command for kprobe_syntax_errors.tc?
-
-BTW: My suggestion may not be correct.
-
-Best Regards,
-Xiao Yang
->
-> Thank you,
->
->>
->> Best Regards,
->> Xiao Yang
->>
->>>
->>>    clear_trace() { # reset trace output
->>>        echo>   trace
->>> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-hist.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-hist.tc
->>> index ab6bedb25736..b3f70f53ee69 100644
->>> --- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-hist.tc
->>> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-hist.tc
->>> @@ -30,7 +30,7 @@ fi
->>>
->>>    echo "Test histogram trace_marker tigger"
->>>
->>> -echo 'hist:keys=common_pid'>   events/ftrace/print/trigger
->>> +echo 'hist:keys=ip'>   events/ftrace/print/trigger
->>>    for i in `seq 1 10` ; do echo "hello">   trace_marker; done
->>>    grep 'hitcount: *10$' events/ftrace/print/hist>   /dev/null || \
->>>        fail "hist trigger did not trigger correct times on trace_marker"
->>> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-synthetic-kernel.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-synthetic-kernel.tc
->>> index 18b4d1c2807e..c1625d945f4d 100644
->>> --- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-synthetic-kernel.tc
->>> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-synthetic-kernel.tc
->>> @@ -44,6 +44,10 @@ echo 'latency u64 lat'>   synthetic_events
->>>    echo 'hist:keys=pid:ts0=common_timestamp.usecs'>   events/sched/sched_waking/trigger
->>>    echo 'hist:keys=common_pid:lat=common_timestamp.usecs-$ts0:onmatch(sched.sched_waking).latency($lat)'>   events/ftrace/print/trigger
->>>    echo 'hist:keys=common_pid,lat:sort=lat'>   events/synthetic/latency/trigger
->>> +
->>> +# We have to use the built-in echo here because waking up pid must be same
->>> +# as echoing pid.
->>> +alias echo=echo
->>>    sleep 1
->>>    echo "hello">   trace_marker
->>>
->>> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-synthetic.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-synthetic.tc
->>> index dd262d6d0db6..23e52c8d71de 100644
->>> --- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-synthetic.tc
->>> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-trace-marker-synthetic.tc
->>> @@ -36,8 +36,8 @@ fi
->>>    echo "Test histogram trace_marker to trace_marker latency histogram trigger"
->>>
->>>    echo 'latency u64 lat'>   synthetic_events
->>> -echo 'hist:keys=common_pid:ts0=common_timestamp.usecs if buf == "start"'>   events/ftrace/print/trigger
->>> -echo 'hist:keys=common_pid:lat=common_timestamp.usecs-$ts0:onmatch(ftrace.print).latency($lat) if buf == "end"'>>   events/ftrace/print/trigger
->>> +echo 'hist:keys=ip:ts0=common_timestamp.usecs if buf == "start"'>   events/ftrace/print/trigger
->>> +echo 'hist:keys=ip:lat=common_timestamp.usecs-$ts0:onmatch(ftrace.print).latency($lat) if buf == "end"'>>   events/ftrace/print/trigger
->>>    echo 'hist:keys=common_pid,lat:sort=lat'>   events/synthetic/latency/trigger
->>>    echo -n "start">   trace_marker
->>>    echo -n "end">   trace_marker
->>>
->>>
->>>
->>> .
->>>
->>
->>
->>
->
->
-
-
-
+Is it expected that the tty core would allow only one thread to
+access the dev-node, while blocking the other, or is it the client
+driver's responsibility to handle the exclusiveness?
+>> where hvc_install() sets a data and the hvc_open() clears it. 
+>> hvc_open()
+>> doesn't
+>> check if the data was set to NULL and proceeds.
+> 
+> What data is being set that hvc_open is checking?
+hvc_install sets tty->private_data to hp, while hvc_open sets it to NULL 
+(in one of the paths).
+> 
+> And you are not grabbing a lock in your install callback, you are only
+> serializing your open call here, I don't see how this is fixing 
+> anything
+> other than perhaps slowing down your codepaths.
+Basically, my intention was to add a NULL check before accessing *hp in 
+open().
+The intention of the lock was to protect against this check.
+If the tty layer would have taken care of this, then perhaps there won't 
+be a
+need to check for NULL.
+> 
+> As an arument why this isn't correct, can you answer why this same type
+> of change wouldn't be required for all tty drivers in the tree?
+> 
+I agree, that if it's already taken care by the tty-core, we don't need 
+it here.
+Correct me if I'm wrong, but looks like the tty layer is allowing 
+parallel accesses
+to open(),
+> thanks,
+> 
+> greg k-h
