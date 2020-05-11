@@ -2,85 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D4C1CD387
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 10:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F471CD38C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 10:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728683AbgEKIKc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 May 2020 04:10:32 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:38117 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726082AbgEKIKb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 04:10:31 -0400
-Received: by mail-oi1-f195.google.com with SMTP id r66so14371898oie.5;
-        Mon, 11 May 2020 01:10:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4G9OIpAZMoU+Rj2h+bioE7h+vc9JYbzJCpmFc3kICmI=;
-        b=dbzc9l0N5cSXVn1MV0O2ZEYZ3r64Sk6YC6FDgcQn6dMzAp9Sm8FxthruHRuBYjfXID
-         Pe0aad35ag4QCAZ0kMoCRyBykhSCXnThIfeECZquxh1DoPlbyenpfFnJfcOAy60ABhy2
-         f3yPZIYzFyTbs2BtMaQgbEHDyJlZiFG6b22bh1hl4FxhhSfqaycruJMJi/GdXGnvT4kC
-         stRX7Xcn5NopAI1QAxOvGGyJkwxythZDFFxoY5qct+KULTBzuPsfeOZcGnNFPp/M/4y4
-         O0CSTs7JYcKFg9ttrjWsVDCpobmEMkgrGA5wBS230hZ43DdDYauI1ZMu3scLwgj/E597
-         9RPQ==
-X-Gm-Message-State: AGi0PuZqj3+2/Z89tK7pdNhfniASxy5PMvQ+Zi0Wi2g1HymGGzxZwZ7p
-        R/VR8dvyhUqrvqlmVreeNt16yam+xYKnAyf8tVw=
-X-Google-Smtp-Source: APiQypKcyiojqidAHlOj8oSMY7ShqOJrg8KWoMbdo1YAO1r/T/TsDKRHOwo7/z6H7ej1tOAPJXBdiVBBO2gOYF4KirQ=
-X-Received: by 2002:aca:aa8c:: with SMTP id t134mr19456537oie.103.1589184630867;
- Mon, 11 May 2020 01:10:30 -0700 (PDT)
+        id S1728817AbgEKIMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 04:12:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40664 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726319AbgEKIMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 04:12:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 6E202ADC2;
+        Mon, 11 May 2020 08:12:09 +0000 (UTC)
+Subject: Re: [PATCH] xen-platform: Constify dev_pm_ops
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        boris.ostrovsky@oracle.com, sstabellini@kernel.org
+Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <20200509134755.15038-1-rikard.falkeborn@gmail.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <03d892fb-eb90-19e1-9d23-71d4b9df75ff@suse.com>
+Date:   Mon, 11 May 2020 10:12:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <CAB4CAwdqo7=MvyG_PE+PGVfeA17AHF5i5JucgaKqqMX6mjArbQ@mail.gmail.com>
- <5029155.caIQduTdCh@kreacher> <CAB4CAwfFeJjrxQvpUz3V6VMW4aHWd7iZD6Xpu6rAnaPv=ZpFeg@mail.gmail.com>
- <79452135.44xTU8OeJi@kreacher> <CAB4CAwfSAjZUTf5DwqrJUV5BH5mx6EZMnnDjkCLHb_nA6jjvsA@mail.gmail.com>
-In-Reply-To: <CAB4CAwfSAjZUTf5DwqrJUV5BH5mx6EZMnnDjkCLHb_nA6jjvsA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 11 May 2020 10:10:20 +0200
-Message-ID: <CAJZ5v0jaYrtj2+TNsiByd8HJmyT8OpCtEUfG+LRAHuvy0NRB3w@mail.gmail.com>
-Subject: Re: System fails to exit s2idle by a keystroke on my laptop
-To:     Chris Chiu <chiu@endlessm.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Linux Upstreaming Team <linux@endlessm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200509134755.15038-1-rikard.falkeborn@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 8:54 AM Chris Chiu <chiu@endlessm.com> wrote:
->
-> On Sat, May 9, 2020 at 12:50 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> >
-> > On Friday, May 8, 2020 10:22:09 AM CEST Chris Chiu wrote:
-> > > On Fri, May 8, 2020 at 2:05 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> > >
-> > > Ｈi Rafael,
-> > >     Thanks for your patch. I tried it on my laptop and it's also
-> > > working fine. Wake up by keystroke/power button/lid open all work as
-> > > expected. Thanks.
-> >
-> > Thanks for the confirmation!
-> >
-> > Please also verify the final version of the patch available from
-> >
-> > https://patchwork.kernel.org/patch/11537215/
-> >
-> > Of course, it will only make a difference if the ec_no_wakeup switch is set
-> > on your system (either as a result of blacklisting or via the kernel command
-> > line).
-> >
-> > Thanks!
-> >
-> >
-> >
->
-> Thanks. Rafael. I've tested it on my laptop and it's still working well.
+On 09.05.20 15:47, Rikard Falkeborn wrote:
+> dev_pm_ops is never modified, so mark it const to allow the compiler to
+> put it in read-only memory.
+> 
+> Before:
+>     text    data     bss     dec     hex filename
+>     2457    1668     256    4381    111d drivers/xen/platform-pci.o
+> 
+> After:
+>     text    data     bss     dec     hex filename
+>     2681    1444     256    4381    111d drivers/xen/platform-pci.o
+> 
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-Thanks!
+Reviewed-by: Juergen Gross <jgross@suse.com>
+
+
+Juergen
