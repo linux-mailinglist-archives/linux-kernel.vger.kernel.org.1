@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 078141CE651
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B502E1CE69E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732252AbgEKVBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44162 "EHLO
+        id S1732123AbgEKVCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 17:02:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732097AbgEKVAG (ORCPT
+        by vger.kernel.org with ESMTP id S1732068AbgEKVAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 17:00:06 -0400
+        Mon, 11 May 2020 17:00:01 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A79C05BD09;
-        Mon, 11 May 2020 14:00:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE38C061A0E;
+        Mon, 11 May 2020 14:00:01 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jYFWr-00061T-LQ; Mon, 11 May 2020 23:00:01 +0200
+        id 1jYFWp-00060s-Iy; Mon, 11 May 2020 22:59:59 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id DFD3C1C086F;
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 2E2991C07F8;
         Mon, 11 May 2020 22:59:43 +0200 (CEST)
 Date:   Mon, 11 May 2020 20:59:43 -0000
-From:   "tip-bot2 for Zhaolong Zhang" <tip-bot2@linutronix.de>
+From:   "tip-bot2 for Mauro Carvalho Chehab" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu: Fix the (t=0 jiffies) false positive
-Cc:     Zhaolong Zhang <zhangzl2013@126.com>,
+Subject: [tip: core/rcu] rcu: Get rid of some doc warnings in update.c
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158923078382.390.9243348981726326890.tip-bot2@tip-bot2>
+Message-ID: <158923078309.390.2071709326416344298.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -48,85 +48,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     fcbcc0e700500fcecf24b9b705825135de30415e
-Gitweb:        https://git.kernel.org/tip/fcbcc0e700500fcecf24b9b705825135de30415e
-Author:        Zhaolong Zhang <zhangzl2013@126.com>
-AuthorDate:    Thu, 05 Mar 2020 14:56:11 -08:00
+Commit-ID:     c28d5c09d09f86374a00b70a57d3cb75e3fc7fa9
+Gitweb:        https://git.kernel.org/tip/c28d5c09d09f86374a00b70a57d3cb75e3fc7fa9
+Author:        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+AuthorDate:    Tue, 17 Mar 2020 15:54:18 +01:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 27 Apr 2020 11:01:16 -07:00
 
-rcu: Fix the (t=0 jiffies) false positive
+rcu: Get rid of some doc warnings in update.c
 
-It is possible that an over-long grace period will end while the RCU
-CPU stall warning message is printing.  In this case, the estimate of
-the offending grace period's duration can be erroneous due to refetching
-of rcu_state.gp_start, which will now be the time of the newly started
-grace period.  Computation of this duration clearly needs to use the
-start time for the old over-long grace period, not the fresh new one.
-This commit avoids such errors by causing both print_other_cpu_stall() and
-print_cpu_stall() to reuse the value previously fetched by their caller.
+This commit escapes *ret, because otherwise the documentation system
+thinks that this is an incomplete emphasis block:
 
-Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
+	./kernel/rcu/update.c:65: WARNING: Inline emphasis start-string without end-string.
+	./kernel/rcu/update.c:65: WARNING: Inline emphasis start-string without end-string.
+	./kernel/rcu/update.c:70: WARNING: Inline emphasis start-string without end-string.
+	./kernel/rcu/update.c:82: WARNING: Inline emphasis start-string without end-string.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ kernel/rcu/update.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index e7da111..3a7bc99 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -371,7 +371,7 @@ static void rcu_check_gp_kthread_starvation(void)
- 	}
- }
- 
--static void print_other_cpu_stall(unsigned long gp_seq)
-+static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- {
- 	int cpu;
- 	unsigned long flags;
-@@ -408,7 +408,7 @@ static void print_other_cpu_stall(unsigned long gp_seq)
- 	for_each_possible_cpu(cpu)
- 		totqlen += rcu_get_n_cbs_cpu(cpu);
- 	pr_cont("\t(detected by %d, t=%ld jiffies, g=%ld, q=%lu)\n",
--	       smp_processor_id(), (long)(jiffies - rcu_state.gp_start),
-+	       smp_processor_id(), (long)(jiffies - gps),
- 	       (long)rcu_seq_current(&rcu_state.gp_seq), totqlen);
- 	if (ndetected) {
- 		rcu_dump_cpu_stacks();
-@@ -442,7 +442,7 @@ static void print_other_cpu_stall(unsigned long gp_seq)
- 	rcu_force_quiescent_state();  /* Kick them all. */
- }
- 
--static void print_cpu_stall(void)
-+static void print_cpu_stall(unsigned long gps)
- {
- 	int cpu;
- 	unsigned long flags;
-@@ -467,7 +467,7 @@ static void print_cpu_stall(void)
- 	for_each_possible_cpu(cpu)
- 		totqlen += rcu_get_n_cbs_cpu(cpu);
- 	pr_cont("\t(t=%lu jiffies g=%ld q=%lu)\n",
--		jiffies - rcu_state.gp_start,
-+		jiffies - gps,
- 		(long)rcu_seq_current(&rcu_state.gp_seq), totqlen);
- 
- 	rcu_check_gp_kthread_starvation();
-@@ -546,7 +546,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
- 
- 		/* We haven't checked in, so go dump stack. */
--		print_cpu_stall();
-+		print_cpu_stall(gps);
- 		if (rcu_cpu_stall_ftrace_dump)
- 			rcu_ftrace_dump(DUMP_ALL);
- 
-@@ -555,7 +555,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
- 
- 		/* They had a few time units to dump stack, so complain. */
--		print_other_cpu_stall(gs2);
-+		print_other_cpu_stall(gs2, gps);
- 		if (rcu_cpu_stall_ftrace_dump)
- 			rcu_ftrace_dump(DUMP_ALL);
- 	}
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index 28a8bdc..72461dd 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -63,12 +63,12 @@ module_param(rcu_normal_after_boot, int, 0);
+  * rcu_read_lock_held_common() - might we be in RCU-sched read-side critical section?
+  * @ret:	Best guess answer if lockdep cannot be relied on
+  *
+- * Returns true if lockdep must be ignored, in which case *ret contains
++ * Returns true if lockdep must be ignored, in which case ``*ret`` contains
+  * the best guess described below.  Otherwise returns false, in which
+- * case *ret tells the caller nothing and the caller should instead
++ * case ``*ret`` tells the caller nothing and the caller should instead
+  * consult lockdep.
+  *
+- * If CONFIG_DEBUG_LOCK_ALLOC is selected, set *ret to nonzero iff in an
++ * If CONFIG_DEBUG_LOCK_ALLOC is selected, set ``*ret`` to nonzero iff in an
+  * RCU-sched read-side critical section.  In absence of
+  * CONFIG_DEBUG_LOCK_ALLOC, this assumes we are in an RCU-sched read-side
+  * critical section unless it can prove otherwise.  Note that disabling
+@@ -82,7 +82,7 @@ module_param(rcu_normal_after_boot, int, 0);
+  *
+  * Note that if the CPU is in the idle loop from an RCU point of view (ie:
+  * that we are in the section between rcu_idle_enter() and rcu_idle_exit())
+- * then rcu_read_lock_held() sets *ret to false even if the CPU did an
++ * then rcu_read_lock_held() sets ``*ret`` to false even if the CPU did an
+  * rcu_read_lock().  The reason for this is that RCU ignores CPUs that are
+  * in such a section, considering these as in extended quiescent state,
+  * so such a CPU is effectively never in an RCU read-side critical section
