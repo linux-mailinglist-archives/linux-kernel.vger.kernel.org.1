@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC571CE6E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317DF1CE6B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732523AbgEKVEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
+        id S1731942AbgEKU7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 16:59:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731875AbgEKU7b (ORCPT
+        by vger.kernel.org with ESMTP id S1731850AbgEKU72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 16:59:31 -0400
+        Mon, 11 May 2020 16:59:28 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7877C05BD09;
-        Mon, 11 May 2020 13:59:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00AF2C061A0C;
+        Mon, 11 May 2020 13:59:27 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jYFWH-0005ji-4H; Mon, 11 May 2020 22:59:25 +0200
+        id 1jYFWI-0005kG-Ef; Mon, 11 May 2020 22:59:26 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id BB80E1C07B4;
-        Mon, 11 May 2020 22:59:21 +0200 (CEST)
-Date:   Mon, 11 May 2020 20:59:21 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 9C1231C07EB;
+        Mon, 11 May 2020 22:59:22 +0200 (CEST)
+Date:   Mon, 11 May 2020 20:59:22 -0000
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] ftrace: Use synchronize_rcu_tasks_rude() instead of
- ftrace_sync()
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: core/rcu] rcu-tasks: Add IPI failure count to statistics
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158923076164.390.8535049254984522740.tip-bot2@tip-bot2>
+Message-ID: <158923076254.390.1974673313422754363.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -50,85 +47,66 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     e5a971d76d701dbff9e5dbaa84dc9e8c3081a867
-Gitweb:        https://git.kernel.org/tip/e5a971d76d701dbff9e5dbaa84dc9e8c3081a867
+Commit-ID:     7e0669c3e9dec367ecb63062898c70c1c596b749
+Gitweb:        https://git.kernel.org/tip/7e0669c3e9dec367ecb63062898c70c1c596b749
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Fri, 03 Apr 2020 12:10:28 -07:00
+AuthorDate:    Wed, 25 Mar 2020 14:36:05 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 27 Apr 2020 11:03:53 -07:00
 
-ftrace: Use synchronize_rcu_tasks_rude() instead of ftrace_sync()
+rcu-tasks: Add IPI failure count to statistics
 
-This commit replaces the schedule_on_each_cpu(ftrace_sync) instances
-with synchronize_rcu_tasks_rude().
+This commit adds a failure-return count for smp_call_function_single(),
+and adds this to the console messages for rcutorture writer stalls and at
+the end of rcutorture testing.
 
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-[ paulmck: Make Kconfig adjustments noted by kbuild test robot. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/trace/Kconfig  |  1 +
- kernel/trace/ftrace.c | 17 +++--------------
- 2 files changed, 4 insertions(+), 14 deletions(-)
+ kernel/rcu/tasks.h | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 402eef8..ae69010 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -158,6 +158,7 @@ config FUNCTION_TRACER
- 	select CONTEXT_SWITCH_TRACER
- 	select GLOB
- 	select TASKS_RCU if PREEMPTION
-+	select TASKS_RUDE_RCU
- 	help
- 	  Enable the kernel to trace every kernel function. This is done
- 	  by using a compiler feature to insert a small, 5-byte No-Operation
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 041694a..771eace 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -160,17 +160,6 @@ static void ftrace_pid_func(unsigned long ip, unsigned long parent_ip,
- 	op->saved_func(ip, parent_ip, op, regs);
- }
- 
--static void ftrace_sync(struct work_struct *work)
--{
--	/*
--	 * This function is just a stub to implement a hard force
--	 * of synchronize_rcu(). This requires synchronizing
--	 * tasks even in userspace and idle.
--	 *
--	 * Yes, function tracing is rude.
--	 */
--}
--
- static void ftrace_sync_ipi(void *data)
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 0d1b5bf..0a580ef 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -32,6 +32,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
+  * @gp_start: Most recent grace-period start in jiffies.
+  * @n_gps: Number of grace periods completed since boot.
+  * @n_ipis: Number of IPIs sent to encourage grace periods to end.
++ * @n_ipis_fails: Number of IPI-send failures.
+  * @pregp_func: This flavor's pre-grace-period function (optional).
+  * @pertask_func: This flavor's per-task scan function (optional).
+  * @postscan_func: This flavor's post-task scan function (optional).
+@@ -51,6 +52,7 @@ struct rcu_tasks {
+ 	unsigned long gp_start;
+ 	unsigned long n_gps;
+ 	unsigned long n_ipis;
++	unsigned long n_ipis_fails;
+ 	struct task_struct *kthread_ptr;
+ 	rcu_tasks_gp_func_t gp_func;
+ 	pregp_func_t pregp_func;
+@@ -290,12 +292,12 @@ static void __init rcu_tasks_bootup_oddness(void)
+ /* Dump out rcutorture-relevant state common to all RCU-tasks flavors. */
+ static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
  {
- 	/* Probably not needed, but do it anyway */
-@@ -256,7 +245,7 @@ static void update_ftrace_function(void)
- 	 * Make sure all CPUs see this. Yes this is slow, but static
- 	 * tracing is slow and nasty to have enabled.
- 	 */
--	schedule_on_each_cpu(ftrace_sync);
-+	synchronize_rcu_tasks_rude();
- 	/* Now all cpus are using the list ops. */
- 	function_trace_op = set_function_trace_op;
- 	/* Make sure the function_trace_op is visible on all CPUs */
-@@ -2932,7 +2921,7 @@ int ftrace_shutdown(struct ftrace_ops *ops, int command)
- 		 * infrastructure to do the synchronization, thus we must do it
- 		 * ourselves.
- 		 */
--		schedule_on_each_cpu(ftrace_sync);
-+		synchronize_rcu_tasks_rude();
- 
- 		/*
- 		 * When the kernel is preeptive, tasks can be preempted
-@@ -5887,7 +5876,7 @@ ftrace_graph_release(struct inode *inode, struct file *file)
- 		 * infrastructure to do the synchronization, thus we must do it
- 		 * ourselves.
- 		 */
--		schedule_on_each_cpu(ftrace_sync);
-+		synchronize_rcu_tasks_rude();
- 
- 		free_ftrace_hash(old_hash);
- 	}
+-	pr_info("%s: %s(%d) since %lu g:%lu i:%lu %c%c %s\n",
++	pr_info("%s: %s(%d) since %lu g:%lu i:%lu/%lu %c%c %s\n",
+ 		rtp->kname,
+-		tasks_gp_state_getname(rtp),
+-		data_race(rtp->gp_state),
++		tasks_gp_state_getname(rtp), data_race(rtp->gp_state),
+ 		jiffies - data_race(rtp->gp_jiffies),
+-		data_race(rtp->n_gps), data_race(rtp->n_ipis),
++		data_race(rtp->n_gps),
++		data_race(rtp->n_ipis_fails), data_race(rtp->n_ipis),
+ 		".k"[!!data_race(rtp->kthread_ptr)],
+ 		".C"[!!data_race(rtp->cbs_head)],
+ 		s);
+@@ -909,6 +911,7 @@ static void trc_wait_for_one_reader(struct task_struct *t,
+ 					     trc_read_check_handler, t, 0)) {
+ 			// Just in case there is some other reason for
+ 			// failure than the target CPU being offline.
++			rcu_tasks_trace.n_ipis_fails++;
+ 			per_cpu(trc_ipi_to_cpu, cpu) = false;
+ 			t->trc_ipi_to_cpu = cpu;
+ 			if (atomic_dec_and_test(&trc_n_readers_need_end)) {
