@@ -2,90 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E2C1CE83D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 00:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126AC1CE84E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 00:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727836AbgEKWjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 18:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725836AbgEKWjQ (ORCPT
+        id S1725888AbgEKWmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 18:42:24 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:48746 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725854AbgEKWmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 18:39:16 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79586C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 15:39:16 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id u35so2228226pgk.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 15:39:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iAjP/dx+TOMD3h2UkM1NHk9+DSE/HLxGXOk37w+Uu04=;
-        b=QuMzdF6PS8DlHrgHS13L45Y9TnYal1cjdG9qFL4fSAMYsADcAWEElruJKaZMbOYFY8
-         LLYN/42JZ4pb/bgLL6M2LY+My3cI4oIAEiUGxljboC2qy+VchFpRvHmr0RbSV8NUHYru
-         ZE+amPP6HfKJFhKzEmlKRLFeK6aGAM3UVxyiY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iAjP/dx+TOMD3h2UkM1NHk9+DSE/HLxGXOk37w+Uu04=;
-        b=fbz1pXrlH7SqLcM76vmCPQXpCmEA4VFNc9M4CoxLnH5onvNGrZeZa3cjjkhzT7xsfV
-         ac07ESWizaFqVjPid9iLWzJEM87K6m/inOEEG6ZEJaOTw8MP9kVyLn/ymbaA3NAMsMDC
-         Yb0mqqaDRW28Ib/h1ioKKWswC6+GGuJSP4wM1+D9k6VMhrBkmfPtXYZ/6WXHNiCHkNkt
-         hkQ+zs6vAbcWAKQXWLifiq09GeP92dPVafX61pFLsjesRP0iWI6b5iMrtw2IPQxwtM8A
-         js5z+YqKj/hnMEVV9qzkj4aA9mvs5haW2bOI1E6S05MSQ/AwV7Mnxux4VNRor0omRgRq
-         Jznw==
-X-Gm-Message-State: AGi0PuYp8D4PqYcGxVg4qJpIgNkDWAvXYr05pcNcb2VG21UKMNEySxaH
-        FnIdvk5dkDofAD78hqKJSY30Yg==
-X-Google-Smtp-Source: APiQypJrZN+k1vOsrote6dfc4R1IK2fAk8lFQlDXHNEbyE2cjka13mhe1A3zpKLQZ+uySGgGBTXm7Q==
-X-Received: by 2002:a63:7801:: with SMTP id t1mr15712443pgc.192.1589236755921;
-        Mon, 11 May 2020 15:39:15 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y2sm10207468pfq.16.2020.05.11.15.39.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 15:39:14 -0700 (PDT)
-Date:   Mon, 11 May 2020 15:39:13 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Cc:     Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Rob Herring <robh@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v7 00/18] pstore: mtd: support crash log to block and mtd
- device
-Message-ID: <202005111537.E2DA45A259@keescook>
-References: <20200510202436.63222-1-keescook@chromium.org>
+        Mon, 11 May 2020 18:42:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589236941;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=5AW1tPrIf1NH23mBvqTHaK47Gct2K80GUJUWM/a2mOg=;
+        b=d9zhqa5CM9mYwpZb3WK9JxT58CX8qMTaNKbAlN0YENVVpbJ/HRGw3ySuqT2CSwWQz3UivF
+        QBSlMy2n1p5aHIZfDHvKdJ1XoYucRzkKc+6Y08WD++h+6SqNg706EdmWIWA7aMfW8DX7x1
+        EfK8Ec+OHaRBL17MvjCSeji7cqMr4as=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-411-72MkkdwwNAqOVOmAuvb87w-1; Mon, 11 May 2020 18:42:18 -0400
+X-MC-Unique: 72MkkdwwNAqOVOmAuvb87w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C02E5A0BD7;
+        Mon, 11 May 2020 22:42:15 +0000 (UTC)
+Received: from Whitewolf.redhat.com (ovpn-117-238.rdu2.redhat.com [10.10.117.238])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C29DE77F2E;
+        Mon, 11 May 2020 22:42:13 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     nouveau@lists.freedesktop.org
+Cc:     "Alex Deucher" <alexander.deucher@amd.com>,
+        "Pankaj Bharadiya" <pankaj.laxminarayan.bharadiya@intel.com>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        "David Airlie" <airlied@linux.ie>, "Takashi Iwai" <tiwai@suse.de>,
+        "Sean Paul" <seanpaul@chromium.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, "Ben Skeggs" <bskeggs@redhat.com>,
+        "Lyude Paul" <lyude@redhat.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        "Jani Nikula" <jani.nikula@intel.com>,
+        "Ilia Mirkin" <imirkin@alum.mit.edu>
+Subject: [PATCH v3 0/5] drm/nouveau: DP interlace fixes
+Date:   Mon, 11 May 2020 18:41:22 -0400
+Message-Id: <20200511224148.598468-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200510202436.63222-1-keescook@chromium.org>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 10, 2020 at 01:24:18PM -0700, Kees Cook wrote:
->   pstore/ram: Move dump_oops to end of module_param list
->   pstore/platform: Switch pstore_info::name to const
->   pstore/platform: Move module params after declarations
->   pstore/platform: Use backend name for console registration
->   pstore/ram: Refactor ftrace buffer merging
->   pstore/ftrace: Provide ftrace log merging routine
->   printk: Introduce kmsg_dump_reason_str()
+Currently, nouveau doesn't actually bother to try probing whether or not
+it can actually handle interlaced modes over DisplayPort. As a result,
+on volta and later we'll end up trying to set an interlaced mode even
+when it's not supported and cause the front end for the display engine
+to hang.
 
-For those following along, I've added these to for-next/pstore, as
-they're all prep patches for the rest of this series.
+So, let's teach nouveau to reject interlaced modes on hardware that
+can't actually handle it. Additionally for MST, since we accomplish this
+by simply reusing more of the SST mode validation we also get (some)
+basic bw validation for modes we detect on MST connectors completely for
+free.
+
+Lyude Paul (5):
+  drm/nouveau/kms/nv50-: Initialize core channel in
+    nouveau_display_create()
+  drm/nouveau/kms/nv50-: Probe SOR and PIOR caps for DP interlacing
+    support
+  drm/nouveau/kms/gv100-: Add support for interlaced modes
+  drm/nouveau/kms/nv50-: Move 8BPC limit for MST into
+    nv50_mstc_get_modes()
+  drm/nouveau/kms/nv50-: Share DP SST mode_valid() handling with MST
+
+ drivers/gpu/drm/nouveau/dispnv50/core.h     |  7 +++
+ drivers/gpu/drm/nouveau/dispnv50/core507d.c | 15 ++++++
+ drivers/gpu/drm/nouveau/dispnv50/core827d.c |  1 +
+ drivers/gpu/drm/nouveau/dispnv50/core907d.c |  1 +
+ drivers/gpu/drm/nouveau/dispnv50/core917d.c |  1 +
+ drivers/gpu/drm/nouveau/dispnv50/corec37d.c | 26 +++++++++
+ drivers/gpu/drm/nouveau/dispnv50/corec57d.c |  1 +
+ drivers/gpu/drm/nouveau/dispnv50/disp.c     | 58 +++++++++++++++------
+ drivers/gpu/drm/nouveau/dispnv50/disp.h     |  1 +
+ drivers/gpu/drm/nouveau/dispnv50/headc37d.c |  5 +-
+ drivers/gpu/drm/nouveau/dispnv50/headc57d.c |  5 +-
+ drivers/gpu/drm/nouveau/dispnv50/pior507d.c |  8 +++
+ drivers/gpu/drm/nouveau/dispnv50/sor507d.c  |  7 +++
+ drivers/gpu/drm/nouveau/dispnv50/sor907d.c  | 11 ++++
+ drivers/gpu/drm/nouveau/dispnv50/sorc37d.c  |  9 ++++
+ drivers/gpu/drm/nouveau/nouveau_connector.c | 48 +++++++++++------
+ drivers/gpu/drm/nouveau/nouveau_connector.h |  5 ++
+ drivers/gpu/drm/nouveau/nouveau_dp.c        | 31 +++++++++++
+ drivers/gpu/drm/nouveau/nouveau_encoder.h   |  8 +++
+ 19 files changed, 213 insertions(+), 35 deletions(-)
 
 -- 
-Kees Cook
+2.26.2
+
