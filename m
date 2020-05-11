@@ -2,88 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE54D1CE90D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 01:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6ED81CE927
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 01:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgEKXab convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 May 2020 19:30:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbgEKXab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 19:30:31 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50FB8206CC;
-        Mon, 11 May 2020 23:30:30 +0000 (UTC)
-Date:   Mon, 11 May 2020 19:30:28 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: ftrace: function radeon_init not traceable
-Message-ID: <20200511193028.3551d838@oasis.local.home>
-In-Reply-To: <d38aacb6-58ef-b1e5-431b-c945380d20cc@molgen.mpg.de>
-References: <01e29852-c9db-8181-e4fa-dda50f774cf6@molgen.mpg.de>
-        <20200511145812.7206b095@gandalf.local.home>
-        <d38aacb6-58ef-b1e5-431b-c945380d20cc@molgen.mpg.de>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728133AbgEKXci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 19:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728050AbgEKXcf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 19:32:35 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87FEC05BD09
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 16:32:34 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id u15so626397plm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 16:32:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xU6XMFoWF023UKxWu5DBFTUKYIQF4dpwdxpl48CmnvI=;
+        b=hmkTZmcY9eimS7zi32p2CbRuT9se7M2eQNUTTR3FZqdvTCpZc3jZjXqT4gpZdmE769
+         AZtNeOpQEhsX+ga2HTyU6+lHdh+IT0MBBzJ+2FOzsnYLYbCH+hTuIet0bGweiZtC+12q
+         kDXwi87kgJ7ITnkNTpTREfS+Qqxxp4erB3IAE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xU6XMFoWF023UKxWu5DBFTUKYIQF4dpwdxpl48CmnvI=;
+        b=jzwF3SlNLXlQbGkgDfshON57KDYZCb3Cw1xJ1mRgRYvDUROBIXCX6y2bXkzqFnLcBs
+         wCvWWLh9bid4LqIgrhzONzJ2tMRyZLXg6p8U7Oaik4emFTVN1xZCcYQR3YWp8ozB9K60
+         FsktPhAvovrn6IxBi9+Lh0ckgfyBH867TpccZZLJ2MADF/xdB0rCD4EUPtRDflYzsaOf
+         d3SSchSGlOxpzDVPFQRPdHh0QcCNGadnamhiFXljZB1bQI9cxtRjK7HJqTbgg4ispi+s
+         OLwzQFkLX9FF5OUU0FO6YGuDPG3wdwF4Mt0ia6MX7CH6UvAD08vFTRhwgCGsOkbX8PRH
+         Q0oA==
+X-Gm-Message-State: AGi0PubDHOodBrzb5jnqDXyTfwYLk5oo+NMXy+oXavcd8HZtO0fof+Ay
+        TaEFbyggZh7blTzuQr8QT1LWNw==
+X-Google-Smtp-Source: APiQypIgnigda0IfbYZaAZeoDqi306WfjOgDzWWw5NxF50ONJAY+5AzUPXuEd44x79WdKoX43FT6NA==
+X-Received: by 2002:a17:90a:f98b:: with SMTP id cq11mr24781058pjb.193.1589239952517;
+        Mon, 11 May 2020 16:32:32 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 23sm8996607pgm.18.2020.05.11.16.32.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 16:32:31 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     WeiXiong Liao <liaoweixiong@allwinnertech.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: [PATCH v8 00/11] pstore: mtd: support crash log to block and mtd device
+Date:   Mon, 11 May 2020 16:32:18 -0700
+Message-Id: <20200511233229.27745-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 May 2020 01:07:44 +0200
-Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+Hi,
 
-> >>
-> >>       initcall_debug log_buf_len=32M trace_buf_size=57074K trace_clock=global trace_options=nooverwrite,funcgraph-abstime,funcgraph-cpu,funcgraph-duration,funcgraph-proc,funcgraph-tail,nofuncgraph-overhead,context-info,graph-time ftrace=function_graph ftrace_graph_max_depth=1 ftrace_graph_filter=radeon_init
-> >>
-> >> But ftrace “rejects” that:
-> >>
-> >>       [    0.075538] ftrace: allocating 30958 entries in 61 pages
-> >>       [    0.084542] ftrace: allocated 61 pages with 5 groups
-> >>       [    0.094184] ftrace: function radeon_init not traceable
-> >>
-> >> I believe it worked in the past. Is there a way to trace that init function?  
-> > 
-> > Did it every work for modules? radeon_init() isn't in the symbol table at
-> > boot up.
-> > 
-> > [   15.066951] systemd-journald[124]: Successfully sent stream file descriptor to service manager.
-> > [   15.098265] hub 1-0:1.0: USB hub found
-> > [   15.104006] systemd-journald[124]: Successfully sent stream file descriptor to service manager.
-> > [   15.112965] hub 1-0:1.0: 2 ports detected
-> > [   15.118116] probe of 1-0:1.0 returned 1 after 19873 usecs
-> > [   15.124007] calling  radeon_init+0x0/0x1000 [radeon] @ 133
-> > 
-> > The radeon_init is called after systemd is running, so it is definitely
-> > from a module.
-> > 
-> > Perhaps you had it built in before?  
-> 
-> You are right. Probably I did. Can you suggest how to set up ftrace to 
-> trace a module?
+After some small fixes, here's v8. :) Thanks!
 
-In recent kernels there was a feature to function trace modules before
-they are loaded, but that feature isn't yet available on mainline. I
-could add it when I get a chance, but that wont be in the near future.
+-Kees
 
-Also, the function graph wont work for that either, as that isn't set
-up to preload before functions. But since you have
-ftrace_graph_max_depth of one, you don't need the graph, the limiting
-of the function (set_ftrace_filter) is good enough. But again, that
-only works after boot up.
+v8:
+- oops -> kmsg dump (WeiXiong)
+- typo/language fixes (Randy)
+- fix bdev failure paths (WeiXiong)
+- fix dev_err() -> pr_err (WeiXiong)
 
-> > 
-> > Probably because the filtering failed, so there is no filter.  
-> 
-> Is that the intended behavior? Or should nothing be traced?
+v7: https://lore.kernel.org/lkml/20200510202436.63222-1-keescook@chromium.org/
+v6: https://lore.kernel.org/lkml/20200509234103.46544-1-keescook@chromium.org/
+v5: https://lore.kernel.org/lkml/1589022854-19821-1-git-send-email-liaoweixiong@allwinnertech.com/
+v4: https://lore.kernel.org/lkml/20200508064004.57898-1-keescook@chromium.org/
+v3: https://lore.kernel.org/lkml/1585126506-18635-1-git-send-email-liaoweixiong@allwinnertech.com/
+v2: https://lore.kernel.org/lkml/1581078355-19647-1-git-send-email-liaoweixiong@allwinnertech.com/
+v1: https://lore.kernel.org/lkml/1579482233-2672-1-git-send-email-liaoweixiong@allwinnertech.com/
 
-Well, it's just like writing something not acceptable in the filter
-functions. If it fails, it does not filter. So yes, it is expected
-behavior.
+Kees Cook (1):
+  pstore/blk: Introduce "best_effort" mode
 
--- Steve
+WeiXiong Liao (10):
+  pstore/zone: Introduce common layer to manage storage zones
+  pstore/blk: Introduce backend for block devices
+  pstore/zone,blk: Add support for pmsg frontend
+  pstore/zone,blk: Add console frontend support
+  pstore/zone,blk: Add ftrace frontend support
+  Documentation: Add details for pstore/blk
+  pstore/zone: Provide way to skip "broken" zone for MTD devices
+  pstore/blk: Provide way to query pstore configuration
+  pstore/blk: Support non-block storage devices
+  mtd: Support kmsg dumper based on pstore/blk
+
+ Documentation/admin-guide/pstore-blk.rst |  243 ++++
+ MAINTAINERS                              |    1 +
+ drivers/mtd/Kconfig                      |   10 +
+ drivers/mtd/Makefile                     |    1 +
+ drivers/mtd/mtdpstore.c                  |  563 +++++++++
+ fs/pstore/Kconfig                        |  109 ++
+ fs/pstore/Makefile                       |    6 +
+ fs/pstore/blk.c                          |  521 ++++++++
+ fs/pstore/zone.c                         | 1463 ++++++++++++++++++++++
+ include/linux/pstore_blk.h               |  118 ++
+ include/linux/pstore_zone.h              |   60 +
+ 11 files changed, 3095 insertions(+)
+ create mode 100644 Documentation/admin-guide/pstore-blk.rst
+ create mode 100644 drivers/mtd/mtdpstore.c
+ create mode 100644 fs/pstore/blk.c
+ create mode 100644 fs/pstore/zone.c
+ create mode 100644 include/linux/pstore_blk.h
+ create mode 100644 include/linux/pstore_zone.h
+
+-- 
+2.20.1
+
