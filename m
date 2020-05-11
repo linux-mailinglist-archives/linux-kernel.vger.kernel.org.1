@@ -2,129 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B20011CD08E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 06:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 238D31CD098
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 06:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726082AbgEKEGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 00:06:46 -0400
-Received: from mga14.intel.com ([192.55.52.115]:48024 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725562AbgEKEGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 00:06:46 -0400
-IronPort-SDR: 78flkJke5T4+9SrJCgyUbATRBoqF/vowHLOam1FbbwrT6ViNcY6xmUq6XpapBM9dpYJhZQgfuU
- ciD5gU2P4ysw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2020 21:06:46 -0700
-IronPort-SDR: R1+LY30KTPMSOw3qDGYQEwMNTCGL+HNvL/01ZR5wLVUwTtX7DSFXL+Fn6YNhELVlGkVEd4tj6F
- XrKpDYJbtJpQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,378,1583222400"; 
-   d="scan'208";a="306062857"
-Received: from wxiao3-mobl.ccr.corp.intel.com (HELO [10.255.28.27]) ([10.255.28.27])
-  by FMSMGA003.fm.intel.com with ESMTP; 10 May 2020 21:06:41 -0700
-Subject: Re: [LKP] Re: [pipe] f2af7d90e2: xfstests.btrfs.052.fail
-To:     Matthew Wilcox <willy@infradead.org>,
-        kernel test robot <rong.a.chen@intel.com>
-Cc:     0day robot <lkp@intel.com>, Jens Axboe <axboe@kernel.dk>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-References: <20200511010957.GW5770@shao2-debian>
- <20200511011601.GV16070@bombadil.infradead.org>
-From:   Li Zhijian <zhijianx.li@intel.com>
-Message-ID: <b6cb98f4-4265-b518-f692-d56d3fb1cad5@intel.com>
-Date:   Mon, 11 May 2020 12:06:20 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
+        id S1726068AbgEKEXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 00:23:15 -0400
+Received: from conuserg-08.nifty.com ([210.131.2.75]:29748 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgEKEXP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 00:23:15 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 04B4LsSl009856;
+        Mon, 11 May 2020 13:21:54 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 04B4LsSl009856
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1589170915;
+        bh=bEd3hBdLhKUwiRkpNdiCa9W/1TH8Wtl6cdq8NlrF14Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=befzyPqsVsx2syuhFxp9p3bHbYTwnF9na1iJjkcFtrZuEsAUiCR57FjAh2LZgozLt
+         QYSv3U1HPIqe523P/m7N96jfhZY+htjvMmQz9gyGuqtNJOEM1uZw4LXN7yfrt99sqM
+         54xQ5cy4vDKxFWuwxjkv4dwsUEBsom3FPn2eOQ+IRunljIYd4cye/W/qXOh5tHDQPg
+         AWOmbnh69qkGpCKA54DyuoioAD4uc8S8KillSpfPNB5Z4I6EgSmbkOGp2NAB1M3tQr
+         HY5lVGMR3BV1vNsk2DPlZttslCSi89jcjeFHSzmo9MrE3FGUp+CzCvX1li/2OgvE+P
+         /OXaJCnUw8w5g==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: make module name conflict fatal error
+Date:   Mon, 11 May 2020 13:21:49 +0900
+Message-Id: <20200511042149.1712876-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200511011601.GV16070@bombadil.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew
+I think all the warnings have been fixed by now. Make it a fatal error.
 
-with a quick look into the dmesg
-looks this commit broke the preparation of LKP tests
+Check it before modpost because we need to stop building *.ko files.
+Also, pass modules.order via a script parameter.
 
-[   32.677588] install debs round two: dpkg -i --force-confdef 
---force-depends /opt/deb/gawk_1%3a4.1.4+dfsg-1_amd64.deb
-[ 32.677593]-
-[   32.697180] tar: ./control: Cannot write: Invalid argument
-[ 32.697184]-
-[   32.705025] tar: ./md5sums: Cannot write: Invalid argument
-[ 32.705030]-
-[   32.710034] tar: ./postinst: Cannot write: Invalid argument
-[ 32.710039]-
-[   32.743721] tar: ./prerm: Cannot write: Invalid argument
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-i tried apt command, it also failed with this commit
-root@vm-snb-186 ~# apt update
-Ign:1 http://linux-ftp.sh.intel.com/pub/mirrors/debian stretch InRelease
-Get:2 http://linux-ftp.sh.intel.com/pub/mirrors/debian testing InRelease 
-[116 kB]
-Ign:2 http://linux-ftp.sh.intel.com/pub/mirrors/debian testing InRelease
-Get:3 http://linux-ftp.sh.intel.com/pub/mirrors/debian unstable 
-InRelease [146 kB]
-Ign:3 http://linux-ftp.sh.intel.com/pub/mirrors/debian unstable InRelease
-Get:4 http://linux-ftp.sh.intel.com/pub/mirrors/debian stretch Release 
-[118 kB]
-Err:4 http://linux-ftp.sh.intel.com/pub/mirrors/debian stretch Release
-   Error writing to output file - write (22: Invalid argument)
-Get:5 http://linux-ftp.sh.intel.com/pub/mirrors/debian testing Release 
-[115 kB]
-Err:5 http://linux-ftp.sh.intel.com/pub/mirrors/debian testing Release
-   Error writing to output file - write (22: Invalid argument)
-Get:6 http://linux-ftp.sh.intel.com/pub/mirrors/debian unstable Release 
-[145 kB]
-Get:7 http://linux-ftp.sh.intel.com/pub/mirrors/debian unstable 
-Release.gpg [1601 B]
-Err:7 http://linux-ftp.sh.intel.com/pub/mirrors/debian unstable Release.gpg
-   Error writing to output file - write (22: Invalid argument)
-Reading package lists... Done
-E: The repository 'http://linux-ftp.sh.intel.com/pub/mirrors/debian 
-stretch Release' does not have a Release file.
-N: Updating from such a repository can't be done securely, and is 
-therefore disabled by default.
-N: See apt-secure(8) manpage for repository creation and user 
-configuration details.
-E: The repository 'http://linux-ftp.sh.intel.com/pub/mirrors/debian 
-testing Release' does not have a Release file.
-N: Updating from such a repository can't be done securely, and is 
-therefore disabled by default.
-N: See apt-secure(8) manpage for repository creation and user 
-configuration details.
-E: The repository 'http://linux-ftp.sh.intel.com/pub/mirrors/debian 
-unstable Release' is not signed.
-N: Updating from such a repository can't be done securely, and is 
-therefore disabled by default.
-N: See apt-secure(8) manpage for repository creation and user 
-configuration details.
+ Makefile                 |  7 +++++--
+ scripts/modules-check.sh | 16 +++++++++++++---
+ 2 files changed, 18 insertions(+), 5 deletions(-)
 
-everything works well without f2af7d90e2 in our environment
-
-
-Thanks
-
-
-On 5/11/20 9:16 AM, Matthew Wilcox wrote:
-> On Mon, May 11, 2020 at 09:09:57AM +0800, kernel test robot wrote:
->>      --- tests/btrfs/095.out	2020-04-09 10:45:28.000000000 +0800
->>      +++ /lkp/benchmarks/xfstests/results//btrfs/095.out.bad	2020-05-06 21:13:51.276485703 +0800
->>      @@ -1,35 +1,9 @@
->>       QA output created by 095
->>      -Blocks modified: [135 - 164]
->>      -Blocks modified: [768 - 792]
->>      +awk: line 19: function strtonum never defined
->>      +awk: line 19: function strtonum never defined
->>      +awk: line 19: function strtonum never defined
->>      +awk: line 19: function strtonum never defined
-> This looks like a problem with the test setup.
-> _______________________________________________
-> LKP mailing list -- lkp@lists.01.org
-> To unsubscribe send an email to lkp-leave@lists.01.org
+diff --git a/Makefile b/Makefile
+index 1162cb04860c..a2e4d0945500 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1328,9 +1328,12 @@ all: modules
+ # using awk while concatenating to the final file.
+ 
+ PHONY += modules
+-modules: $(if $(KBUILD_BUILTIN),vmlinux) modules.order
++modules: $(if $(KBUILD_BUILTIN),vmlinux) modules_check
+ 	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modpost
+-	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/modules-check.sh
++
++PHONY += modules_check
++modules_check: modules.order
++	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/modules-check.sh $<
+ 
+ modules.order: descend
+ 	$(Q)$(AWK) '!x[$$0]++' $(addsuffix /$@, $(build-dirs)) > $@
+diff --git a/scripts/modules-check.sh b/scripts/modules-check.sh
+index f51f446707b8..43de226071ae 100755
+--- a/scripts/modules-check.sh
++++ b/scripts/modules-check.sh
+@@ -3,14 +3,24 @@
+ 
+ set -e
+ 
++if [ $# != 1 ]; then
++	echo "Usage: $0 <modules.order>" >& 2
++	exit 1
++fi
++
++exit_code=0
++
+ # Check uniqueness of module names
+ check_same_name_modules()
+ {
+-	for m in $(sed 's:.*/::' modules.order | sort | uniq -d)
++	for m in $(sed 's:.*/::' $1 | sort | uniq -d)
+ 	do
+-		echo "warning: same module names found:" >&2
++		echo "error: the following would cause module name conflict:" >&2
+ 		sed -n "/\/$m/s:^:  :p" modules.order >&2
++		exit_code=1
+ 	done
+ }
+ 
+-check_same_name_modules
++check_same_name_modules "$1"
++
++exit $exit_code
+-- 
+2.25.1
 
