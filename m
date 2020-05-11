@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF701CDF05
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272661CDF02
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730240AbgEKP3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 11:29:52 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:35461 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726934AbgEKP3t (ORCPT
+        id S1729949AbgEKP3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 11:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728084AbgEKP3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 May 2020 11:29:49 -0400
-Received: from mail-qk1-f178.google.com ([209.85.222.178]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1N9MYu-1j4W2J3Bn2-015GDz for <linux-kernel@vger.kernel.org>; Mon, 11 May
- 2020 17:29:47 +0200
-Received: by mail-qk1-f178.google.com with SMTP id b188so10119108qkd.9
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:29:47 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYWVo022InwBklR4erVADxzq0IiImvaDS14HZ7iTYw2Y+Tmbl5u
-        Uv+sLsZPcFulL2bLkhjjX/PVocqnnKXM39FpH9s=
-X-Google-Smtp-Source: APiQypJqkx9Wh1nNgK7vVycduyuXesKEQUeeckiF+gPcu6V41M9Z/9Eq//BTqI9+j2JHqoWMGtanrCSLxeUhS5Jd6lo=
-X-Received: by 2002:a37:4e08:: with SMTP id c8mr16010333qkb.286.1589210986640;
- Mon, 11 May 2020 08:29:46 -0700 (PDT)
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0732CC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:29:49 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id s186so8301334qkd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:29:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SbH9x/CkQSfgCR3TtI5p1rcbLe7fbAtxJCxzsNodcvw=;
+        b=bBPjkmZZY6OYg37ybNNLJqNZByCg+jG6MuCltmYzWJou+SGdt466roOT1KPUcgUCVT
+         DX6EBpghtV6V7MRYm23XiRUjYC4F8AOFie3GXhVqnx5tXJPLsP40EKI2CW4jEibQRNSq
+         un/pkX3/ZhSTkua45qW4L3kIKAreoE1syQ4POBAlnFEELQCXwN7z6wV6OoI9n/rmcM96
+         M+gmUMWsniny7+xvcm62yrk4XPBykbxY5gXGM51f1g+f8RQHn641fdLjnVtkMUUyJuZY
+         IqNaLIXJggo48nT+/cffsgfpBt7KaiiqP3wFhUWbwgjvf/nT1UeD+eMivR5IQs8u6rIp
+         k91g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SbH9x/CkQSfgCR3TtI5p1rcbLe7fbAtxJCxzsNodcvw=;
+        b=psBY0FIiyCFHltyicXBYZjIwshMfha90USmWwxrUkAC32Utv9TG/4bT59h9lZuNImw
+         BjcTc3phvbSnME3cBj91WA5NiNFZ4pa6Or+NRAvKvqVUAvXAol3rpnl7dL67dziEUYUW
+         e69f9xMMobpxtp/zl/RM7LEPsmBlha73yA/pjxjo0BcorYt/a7euMHl7m9+FpEP+LxKL
+         xuGcP1eSWvBpSkU71BVXm7wI8vdKrUvXxccwlKTikUPzd2Mo3p/Jfx8WajE5XApMpB0Z
+         x0zXThsF6okBIKS0MCAyQ87zlL9AIC6nCP7u9neZumqPU1OmJmhZgW00XOl9g3U77B39
+         YCfg==
+X-Gm-Message-State: AGi0PubU9TNgV2rRQQmb1VMWwDScEDYRgO1EKw343AnNZQHoDDlPGEEF
+        oi/hOE6V7A3qZgbFDnl+iwF0tXFeS1bsihnobTfbvprl1y0=
+X-Google-Smtp-Source: APiQypKX0Q13t3+cRVtB2L1Y7CqsrZIP+WqU2HZA/8frKpvdFCRvz7+q+6PURIyWJPK/ouzO9Gvv/48W84FRFCrc4fU=
+X-Received: by 2002:a37:9d55:: with SMTP id g82mr13974698qke.407.1589210987755;
+ Mon, 11 May 2020 08:29:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAK8P3a3LokurC0n9XiwtPQh9ZgQcswMKY4b+TEsQh1VgYDNeWA@mail.gmail.com>
- <20200408035118.GA1451@andestech.com> <CAK8P3a1JS3_2fWrhNTZx0eTWjJa-GTb4AscTPqydpSP5EB15Yw@mail.gmail.com>
- <20200414151748.GA5624@afzalpc> <CAK8P3a0JW9x-Wk9Ec3+zLjPHbWAvPQx8MF-xe-PnWUgEjRAuTg@mail.gmail.com>
- <20200415135407.GA6553@afzalpc> <20200503145017.GA5074@afzalpc>
- <CAK8P3a3OC5UO72rTDWi6+XgmExJmkATEjscq8hns8Bng06OpcQ@mail.gmail.com>
- <20200504091018.GA24897@afzalpc> <CAK8P3a25sZ9B+AE=EJyJZSU91CkBLLR6p2nixw_=UAbczg3RiQ@mail.gmail.com>
- <20200511142113.GA31707@afzalpc>
-In-Reply-To: <20200511142113.GA31707@afzalpc>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 11 May 2020 17:29:29 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0=+aBJLTvHOskTv=tba_s5b5MzWrYG8mxH3iLNy4hfBw@mail.gmail.com>
-Message-ID: <CAK8P3a0=+aBJLTvHOskTv=tba_s5b5MzWrYG8mxH3iLNy4hfBw@mail.gmail.com>
-Subject: Re: ARM: static kernel in vmalloc space (was Re: [PATCH 0/3] Highmem
- support for 32-bit RISC-V)
-To:     afzal mohammed <afzal.mohd.ma@gmail.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200408014010.80428-1-peterx@redhat.com> <20200408174732.bc448bbe41d190bfe5cc252e@linux-foundation.org>
+ <CACT4Y+bhQVcpSkSh_OZ5ZanfFZUqn2iypLhG_Z-nWKTkaYr1jw@mail.gmail.com>
+ <CAHk-=wgjGgfUfVm_DpTay5TS03pLCgUWqRpQS++90fSE2V-e=g@mail.gmail.com>
+ <20200410092951.6db32bfe@canb.auug.org.au> <7325374A-6072-44E4-85EE-F97FC7E8565F@lca.pw>
+ <CACT4Y+ZE1XhYpTsjP1J1PyUsEHYKvchww71aHb7UnSk5=4xUrw@mail.gmail.com> <20200416103446.09cb27e1@canb.auug.org.au>
+In-Reply-To: <20200416103446.09cb27e1@canb.auug.org.au>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 11 May 2020 17:29:35 +0200
+Message-ID: <CACT4Y+YL1zCXp23NROvkry-WjPYTLbbduM5Mnwn1JJd6Bi9_PQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] mm: Two small fixes for recent syzbot reports
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Qian Cai <cai@lca.pw>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Jens Axboe <axboe@kernel.dk>,
+        Christoph Lameter <cl@linux.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Dan Rue <dan.rue@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:r4zcMHCTCI4e1WcOWKSfX0GQqAfiHZSjBjZkV89H3zSVO+tjoBz
- 4fGx3dWzOBmkjU6OoAqJc++71zy9WpabMtPCVDonh0Bvyuy8WAe9TRmh/mNJcWHjeGYSw2O
- GTJczLkN410tPdhk6AsJKrOTLSJYIC7QHkqyitvFB21qxumo4/zK0EQcVQs/gdJYVA0HUR2
- YxY8Xplx/Qpgsvo5PjkhQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kwwigW7yKJQ=:P3WjjYxQ4beOwZm3XJN4aX
- mmqm7XsJfBuXFt9neLIE4CcVW2U5uaVKVi7OQGn4yfRHC/XLMec5Rj/pEeURIz0lSDss/RtyD
- Do9Gy42hBnkJS2cWEjIVOVie2mkoTzURSVUDUzV82poQx7NhFnE5P2sZZJY/MijKHj4NPoAAY
- hWbTO3EaOaldMpyPGjDx9Dlwz2xtHQDUKFfFzsvGLQylSNHlUHQOyJ27YrGbMOyukuzzfgUvg
- F14XVpTJ1Y/6m8s941Dd/6Q4XOHsHux2QF/G3irnYEK3u51VOx95sX9ngld2PU806uqNZv8Bf
- RZxC66bDBlMdQ3yFU+E/cgxslHrJjupHldhHTQhwXpQDT3E2XaR824mzs3qgU7wJbQO84NrmK
- O59rUkVS65ZmoiugTVw8bfXlYA7pFfLWQzysMfYAsjcuzd8Tzue+jZJK10cr7LBhPDYJxf2WG
- k/NwKnTh4XjozkaxAqarxZEMLcKF588ohb17RNuNtk5stdTp90JVNeGhQcgn1RKoqxK6wFiDA
- kZ05MFZOwg2GpOyeOkDR0Ol/zvh4Jhk5cgW9mWkBDEm9j0C78a2/AU/k7eLbA5Gl59ubWYXyv
- yw3Bo5qKrHynaiwULxLCqJgTps4WwM8nr2qD+ItQmBsh7FPeKmYRLBcWoNtSdXNuKjJOU/PLq
- oSLmJIiANVmsbI5Pi+xtlBNK+2mZY0VZ0KGopsP0E2EkcQCguafH3Wbh2o7r9+CKlBTepmLz5
- mtwiA7Zy08r6b2B4d43L+M52/NzeHArpoVDL0AK+PaaEMG05To1dSr82dczWlknXqi71L1omh
- rp+c1gFaz9pTcwYhiI+6+8rqHbuyiC0H2J0tsY+cNyhwBpA040=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 4:21 PM afzal mohammed <afzal.mohd.ma@gmail.com> wrote:
+On Thu, Apr 16, 2020 at 2:34 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
-> Hi,
+> Hi Dmitry,
 >
-> Kernel now boots to prompt w/ static kernel mapping moved to vmalloc
-> space.
+> On Tue, 14 Apr 2020 13:12:50 +0200 Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > AI: we need to CC linux-next@ on linux-next build/boot failures. I
+> > will work on this.
+> > We have functionality to CC given emails on _all_ bugs on the given
+> > tree, but we don't have this for build/boot bugs only. I will try to
+> > add this soon.
+> > Stephen, do you want to be CCed as well? Or just linux-next@?
 >
-> Changes currently done have a couple of platform specific things, this
-> has to be modified to make it multiplatform friendly (also to be taken
-> care is ARM_PATCH_PHYS_VIRT case).
+> Please cc me as well, thanks.
 
-Nice!
+To close the loop: I implemented and deployed 2 improvements:
 
-> Module address space has to be taken care as well.
+1. Notion of per-repo "build maintainers":
+https://github.com/google/syzkaller/commit/88cb3e92ba25303ab67aaceb083fe7304fccd32f
+Now linux-next@ and Stephen should be CCed on all linux-next breakages
+automatically.
 
-What do you currently do with the module address space? I suppose the
-easiest way is to just always put modules into vmalloc space, as we already
-do with CONFIG_ARM_MODULE_PLTS when the special area gets full,
-but that could be optimized once the rest works.
-
-        Arnd
+2. Finding maintainers for build errors:
+https://github.com/google/syzkaller/commit/65a44e22ba217ef7272b9d3735e9d12cfaa204f6
+syzbot will attempt to extract the broken file name from make output
+and then run get_matainers.pl on it to find relevant emails.
