@@ -2,133 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6061CD168
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 07:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A08A1CD153
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 07:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728772AbgEKFsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 01:48:42 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:40332 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728705AbgEKFsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 01:48:40 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3846E1A0942;
-        Mon, 11 May 2020 07:48:35 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A65341A0A96;
-        Mon, 11 May 2020 07:48:25 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7C070402AB;
-        Mon, 11 May 2020 13:48:13 +0800 (SGT)
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     xiaoliang.yang_1@nxp.com, po.liu@nxp.com, claudiu.manoil@nxp.com,
-        alexandru.marginean@nxp.com, vladimir.oltean@nxp.com,
-        leoyang.li@nxp.com, mingkai.hu@nxp.com, andrew@lunn.ch,
-        f.fainelli@gmail.com, vivien.didelot@gmail.com,
-        davem@davemloft.net, jiri@resnulli.us, idosch@idosch.org,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, horatiu.vultur@microchip.com,
-        alexandre.belloni@bootlin.com, allan.nielsen@microchip.com,
-        joergen.andreasen@microchip.com, UNGLinuxDriver@microchip.com,
-        vinicius.gomes@intel.com, nikolay@cumulusnetworks.com,
-        roopa@cumulusnetworks.com, linux-devel@linux.nxdi.nxp.com
-Subject: [PATCH v1 net-next 3/3] net: dsa: felix: add support Credit Based Shaper(CBS) for hardware offload
-Date:   Mon, 11 May 2020 13:43:32 +0800
-Message-Id: <20200511054332.37690-4-xiaoliang.yang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200511054332.37690-1-xiaoliang.yang_1@nxp.com>
-References: <20200511054332.37690-1-xiaoliang.yang_1@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727927AbgEKFnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 01:43:52 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45572 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725916AbgEKFnw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 01:43:52 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tomeu)
+        with ESMTPSA id 682772A02BF
+Subject: Re: [PATCH 00/15][RFC] Add regulator devfreq support to Panfrost
+To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20200510165538.19720-1-peron.clem@gmail.com>
+From:   Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Message-ID: <20af7963-1d5a-d274-a46e-ca9a287d745a@collabora.com>
+Date:   Mon, 11 May 2020 07:43:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <20200510165538.19720-1-peron.clem@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VSC9959 hardware support the Credit Based Shaper(CBS) which part
-of the IEEE-802.1Qav. This patch support sch_cbs set for VSC9959.
+On 5/10/20 6:55 PM, Clément Péron wrote:
+> Hi,
+> 
+> This serie cleans and adds regulator support to Panfrost devfreq.
+> This is mostly based on comment for the freshly introduced lima
+> devfreq.
+> 
+> We need to add regulator support because on Allwinner the GPU OPP
+> table defines both frequencies and voltages.
+> 
+> First patches [01-08] should not change the actual behavior
+> and introduce a proper panfrost_devfreq struct.
+> 
+> Fatches after are WIP and add regulator support.
+> 
+> However I got several issues first we need to avoid getting regulator
+> if devfreq get by itself the regulator, but as of today the OPP
+> framework only get and don't enable the regulator...
+> An HACK for now is to add regulator-always-on in the device-tree.
+> 
+> Then when I enable devfreq I got several faults like.
+> I'm totally noob on GPU sched/fault and couldn't be helpfull with this.
 
-Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
----
- drivers/net/dsa/ocelot/felix_vsc9959.c | 52 +++++++++++++++++++++++++-
- 1 file changed, 51 insertions(+), 1 deletion(-)
+Do you know at which frequencies do the faults happen? From what I can 
+see, it's just the GPU behaving erratically, and the CPU reading random 
+values from the GPU registers. Given the subject of this series, I guess 
+the GPU isn't getting enough power.
 
-diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
-index ccbd875c7a47..d8d1657ee8ba 100644
---- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-+++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-@@ -208,7 +208,7 @@ static const u32 vsc9959_qsys_regmap[] = {
- 	REG(QSYS_QMAXSDU_CFG_6,			0x00f62c),
- 	REG(QSYS_QMAXSDU_CFG_7,			0x00f648),
- 	REG(QSYS_PREEMPTION_CFG,		0x00f664),
--	REG_RESERVED(QSYS_CIR_CFG),
-+	REG(QSYS_CIR_CFG,			0x000000),
- 	REG(QSYS_EIR_CFG,			0x000004),
- 	REG(QSYS_SE_CFG,			0x000008),
- 	REG(QSYS_SE_DWRR_CFG,			0x00000c),
-@@ -1354,6 +1354,54 @@ static int vsc9959_qos_port_tas_set(struct ocelot *ocelot, int port,
- 	return ret;
- }
- 
-+int vsc9959_qos_port_cbs_set(struct dsa_switch *ds, int port,
-+			     struct tc_cbs_qopt_offload *cbs_qopt)
-+{
-+	struct ocelot *ocelot = ds->priv;
-+	int port_ix = port * 8 + cbs_qopt->queue;
-+	u32 cbs = 0;
-+	u32 cir = 0;
-+
-+	if (cbs_qopt->queue >= ds->num_tx_queues)
-+		return -EINVAL;
-+
-+	if (!cbs_qopt->enable) {
-+		ocelot_write_gix(ocelot, QSYS_CIR_CFG_CIR_RATE(0) |
-+				 QSYS_CIR_CFG_CIR_BURST(0),
-+				 QSYS_CIR_CFG, port_ix);
-+
-+		ocelot_rmw_gix(ocelot, 0, QSYS_SE_CFG_SE_AVB_ENA,
-+			       QSYS_SE_CFG, port_ix);
-+
-+		return 0;
-+	}
-+
-+	/* Rate unit is 100 kbps */
-+	cir = DIV_ROUND_UP(cbs_qopt->idleslope, 100);
-+	cir = (cir ? cir : 1);
-+	cir = min_t(u32, GENMASK(14, 0), cir);
-+	/* Burst unit is 4kB */
-+	cbs = DIV_ROUND_UP(cbs_qopt->hicredit, 4096);
-+	/* Avoid using zero burst size */
-+	cbs = (cbs ? cbs : 1);
-+	cbs = min_t(u32, GENMASK(5, 0), cbs);
-+	ocelot_write_gix(ocelot,
-+			 QSYS_CIR_CFG_CIR_RATE(cir) |
-+			 QSYS_CIR_CFG_CIR_BURST(cbs),
-+			 QSYS_CIR_CFG,
-+			 port_ix);
-+
-+	ocelot_rmw_gix(ocelot,
-+		       QSYS_SE_CFG_SE_FRM_MODE(0) |
-+		       QSYS_SE_CFG_SE_AVB_ENA,
-+		       QSYS_SE_CFG_SE_AVB_ENA |
-+		       QSYS_SE_CFG_SE_FRM_MODE_M,
-+		       QSYS_SE_CFG,
-+		       port_ix);
-+
-+	return 0;
-+}
-+
- static int vsc9959_port_setup_tc(struct dsa_switch *ds, int port,
- 				 enum tc_setup_type type,
- 				 void *type_data)
-@@ -1363,6 +1411,8 @@ static int vsc9959_port_setup_tc(struct dsa_switch *ds, int port,
- 	switch (type) {
- 	case TC_SETUP_QDISC_TAPRIO:
- 		return vsc9959_qos_port_tas_set(ocelot, port, type_data);
-+	case TC_SETUP_QDISC_CBS:
-+		return vsc9959_qos_port_cbs_set(ds, port, type_data);
- 	default:
- 		return -EOPNOTSUPP;
- 	}
--- 
-2.17.1
+There could be a problem with the OPP table, might be a good idea to see 
+what levels are problematic and try with a more conservative table.
 
+Besides that, there could be a problem with clock frequency changes, or 
+voltage changes. It may take some time for the final state to be stable, 
+depending how the regulation happens.
+
+Thanks,
+
+Tomeu
+
+
+
+
+> I got this running glmark2 on T720 (Allwinner H6) with Mesa 20.0.5.
+> # glmark2-es2-drm
+> =======================================================
+>      glmark2 2017.07
+> =======================================================
+>      OpenGL Information
+>      GL_VENDOR:     Panfrost
+>      GL_RENDERER:   Mali T720 (Panfrost)
+>      GL_VERSION:    OpenGL ES 2.0 Mesa 20.0.5
+> =======================================================
+> 
+> [   93.550063] panfrost 1800000.gpu: GPU Fault 0x00000088 (UNKNOWN) at 0x0000000080117100
+> [   94.045401] panfrost 1800000.gpu: gpu sched timeout, js=0, config=0x3700, status=0x8, head=0x21d6c00, tail=0x21d6c00, sched_job=00000000e3c2132f
+> 
+> [  328.871070] panfrost 1800000.gpu: Unhandled Page fault in AS0 at VA 0x0000000000000000
+> [  328.871070] Reason: TODO
+> [  328.871070] raw fault status: 0xAA0003C2
+> [  328.871070] decoded fault status: SLAVE FAULT
+> [  328.871070] exception type 0xC2: TRANSLATION_FAULT_LEVEL2
+> [  328.871070] access type 0x3: WRITE
+> [  328.871070] source id 0xAA00
+> [  329.373327] panfrost 1800000.gpu: gpu sched timeout, js=1, config=0x3700, status=0x8, head=0xa1a4900, tail=0xa1a4900, sched_job=000000007ac31097
+> [  329.386527] panfrost 1800000.gpu: js fault, js=0, status=DATA_INVALID_FAULT, head=0xa1a4c00, tail=0xa1a4c00
+> [  329.396293] panfrost 1800000.gpu: gpu sched timeout, js=0, config=0x3700, status=0x58, head=0xa1a4c00, tail=0xa1a4c00, sched_job=0000000004c90381
+> [  329.411521] panfrost 1800000.gpu: Unhandled Page fault in AS0 at VA 0x0000000000000000
+> [  329.411521] Reason: TODO
+> [  329.411521] raw fault status: 0xAA0003C2
+> [  329.411521] decoded fault status: SLAVE FAULT
+> [  329.411521] exception type 0xC2: TRANSLATION_FAULT_LEVEL2
+> [  329.411521] access type 0x3: WRITE
+> [  329.411521] source id 0xAA00
+> 
+> Thanks for your reviews, help on this serie,
+> Clement
+> 
+> Clément Péron (15):
+>    drm/panfrost: avoid static declaration
+>    drm/panfrost: clean headers in devfreq
+>    drm/panfrost: don't use pfdevfreq.busy_count to know if hw is idle
+>    drm/panfrost: introduce panfrost_devfreq struct
+>    drm/panfrost: use spinlock instead of atomic
+>    drm/panfrost: properly handle error in probe
+>    drm/panfrost: use device_property_present to check for OPP
+>    drm/panfrost: move devfreq_init()/fini() in device
+>    drm/panfrost: dynamically alloc regulators
+>    drm/panfrost: add regulators to devfreq
+>    drm/panfrost: set devfreq clock name
+>    arm64: defconfig: Enable devfreq cooling device
+>    arm64: dts: allwinner: h6: Add cooling map for GPU
+>    [DO NOT MERGE] arm64: dts: allwinner: h6: Add GPU OPP table
+>    [DO NOT MERGE] arm64: dts: allwinner: force GPU regulator to be always
+> 
+>   .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |   1 +
+>   arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 102 ++++++++++
+>   arch/arm64/configs/defconfig                  |   1 +
+>   drivers/gpu/drm/panfrost/panfrost_devfreq.c   | 190 ++++++++++++------
+>   drivers/gpu/drm/panfrost/panfrost_devfreq.h   |  32 ++-
+>   drivers/gpu/drm/panfrost/panfrost_device.c    |  56 ++++--
+>   drivers/gpu/drm/panfrost/panfrost_device.h    |  14 +-
+>   drivers/gpu/drm/panfrost/panfrost_drv.c       |  15 +-
+>   drivers/gpu/drm/panfrost/panfrost_job.c       |  10 +-
+>   9 files changed, 310 insertions(+), 111 deletions(-)
+> 
