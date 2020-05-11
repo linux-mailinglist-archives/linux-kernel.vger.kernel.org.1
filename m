@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513941CD49C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 11:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755B01CD4A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 11:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729373AbgEKJMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 05:12:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727873AbgEKJMu (ORCPT
+        id S1729163AbgEKJPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 05:15:44 -0400
+Received: from zimbra2.kalray.eu ([92.103.151.219]:60634 "EHLO
+        zimbra2.kalray.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgEKJPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 05:12:50 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9BAC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 02:12:49 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id y16so2759231wrs.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 02:12:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XQ+jP1nnCzNmRgk4F+3KfRo8E6ew3xugv14WTX3xrhk=;
-        b=Fm8+Q/rCElaq3BLoRIbF3S9bCVcrGdOm3rPI51n/OU1oCeN8q+stJOSantTvxh0XOY
-         2ffWhNM8aHIKi2E5n13RjB9GnvRGTBmBhwH2LnEadzSU430Lml4Cyag+MsUTQBdBOtz+
-         VLiFLtK6uryhGD2KkPGlNdeTAkQPL7xP73YEbCi4PEy/9Q4aG/s9vijC3hP8zzWz787r
-         KgsJS9HEt/eD4iPoQ8GpOUrp2igAdLAOXTc1lWe6YkzadPrsil8S7hhL4blrUNJ3DL4C
-         VTDRxxhDXOm92IvZfXx4b7u31JOSfY8tkXxGp/D8iSggF3/GcH2k1SsidgLIhwUg0I+w
-         Z/sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XQ+jP1nnCzNmRgk4F+3KfRo8E6ew3xugv14WTX3xrhk=;
-        b=NP/BWnzRHaH38bE0su9UmjfNODFuHLM3UQ9dg/7A8eyWcV+GvhWj05dePj6JyssFf1
-         dADvipeeOifOIuh+pQPgelyYH3gXSBXUDARinMHlvYEgkoPFicBXhUdcCa1rbn8Etkj8
-         Q4ItLKfpG500NfYu6dao0Wizs8edkcggkiR6q7gQE7oRart9B2XIiPGC97YdA9+aWvQj
-         q80BsgZ7h6JsZ0WdQCbttf0/5xx9vnTIEmh3hf43aJ1aH9dndyFS8RWkrqF04VRBtacv
-         yJ3icOIY864ocYtKCpiofDmnirzn+KxFSDKfoXMa2A7k3WixWD4wB/eOxoZpTD+7BDoL
-         gKxg==
-X-Gm-Message-State: AGi0PuZ5kLBLZvpRo6sLI7ieGzkDpU9sHaDPkKXGmr3MQdM3FyudrUEr
-        lF9iwx1xg6akNgaAuBIzerM3tQ==
-X-Google-Smtp-Source: APiQypJkQszfVt9LmkmPmAW4ZwUnumovrA3iOpsWmo0yzVR9npMGeno/vkDpgIRNqChqhH40S4dRQg==
-X-Received: by 2002:adf:aacb:: with SMTP id i11mr17940151wrc.6.1589188368141;
-        Mon, 11 May 2020 02:12:48 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:d6cc:2030:37c1:9964])
-        by smtp.gmail.com with ESMTPSA id t71sm27159533wmt.31.2020.05.11.02.12.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 02:12:47 -0700 (PDT)
-Date:   Mon, 11 May 2020 10:12:44 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, sudeep.holla@arm.com,
-        rafael@kernel.org, viresh.kumar@linaro.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        fweisbec@gmail.com, tkjos@google.com, kernel-team@android.com
-Subject: Re: [PATCH 00/14] Modularize schedutil
-Message-ID: <20200511091244.GB229633@google.com>
-References: <20200507181012.29791-1-qperret@google.com>
- <20200508081128.GM5298@hirez.programming.kicks-ass.net>
- <20200508103721.GA3860390@kroah.com>
- <20200508111612.GA252673@google.com>
- <20200508113141.GB5298@hirez.programming.kicks-ass.net>
- <20200508130507.GA10541@google.com>
- <20200508140938.GA3344@hirez.programming.kicks-ass.net>
+        Mon, 11 May 2020 05:15:43 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra2.kalray.eu (Postfix) with ESMTP id 78E6827E02D1;
+        Mon, 11 May 2020 11:15:41 +0200 (CEST)
+Received: from zimbra2.kalray.eu ([127.0.0.1])
+        by localhost (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id WDeo-rWdb0Zi; Mon, 11 May 2020 11:15:41 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra2.kalray.eu (Postfix) with ESMTP id DD1DA27E053C;
+        Mon, 11 May 2020 11:15:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra2.kalray.eu DD1DA27E053C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalray.eu;
+        s=32AE1B44-9502-11E5-BA35-3734643DEF29; t=1589188540;
+        bh=1E0dJW1iWPRM52gggcDmbsBZvxVR2MdnQlbb2736LeU=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=h0D7i/uhQ8BxlWA9ortvEs7mvNZz1J1xZrXrcTSUUzgDAIdsRlyhBxkQjTsH1/4N9
+         6eLECjkLpZVnXfY64hL/eo6O0YUkbbVBbLevpkH+fWogwIQTo4qtHD5wLyC5iPC0Bu
+         KhWwgRNh10gyWQqAKQBmpIKvgxDD5m3QXWKiJsXQ=
+X-Virus-Scanned: amavisd-new at zimbra2.kalray.eu
+Received: from zimbra2.kalray.eu ([127.0.0.1])
+        by localhost (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id kRPqEYn9ZcLd; Mon, 11 May 2020 11:15:40 +0200 (CEST)
+Received: from zimbra2.kalray.eu (localhost [127.0.0.1])
+        by zimbra2.kalray.eu (Postfix) with ESMTP id C6F1427E02D1;
+        Mon, 11 May 2020 11:15:40 +0200 (CEST)
+Date:   Mon, 11 May 2020 11:15:40 +0200 (CEST)
+From:   =?utf-8?Q?Cl=C3=A9ment?= Leger <cleger@kalray.eu>
+To:     s-anna <s-anna@ti.com>
+Cc:     Peng Fan <peng.fan@nxp.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>
+Message-ID: <1847639658.1891474.1589188540520.JavaMail.zimbra@kalray.eu>
+In-Reply-To: <aff9b0dc-12e0-18a3-ed67-e3bed0424662@ti.com>
+References: <1586420572-28353-1-git-send-email-peng.fan@nxp.com> <20200410012034.GU20625@builder.lan> <AM0PR04MB44816C59A9BE84465AC8F2C388DE0@AM0PR04MB4481.eurprd04.prod.outlook.com> <20200411015104.GJ576963@builder.lan> <AM0PR04MB4481CF4ACD86C69B329D5F2188DD0@AM0PR04MB4481.eurprd04.prod.outlook.com> <07eb5b9f-60cd-6555-1904-7b348bdc43f2@ti.com> <DB6PR0402MB2760A0F6D7BC0F5AC7207E1188D50@DB6PR0402MB2760.eurprd04.prod.outlook.com> <aff9b0dc-12e0-18a3-ed67-e3bed0424662@ti.com>
+Subject: Re: [PATCH 1/2] remoteproc: drop memset when loading elf segments
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508140938.GA3344@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [192.168.40.202]
+X-Mailer: Zimbra 8.8.15_GA_3895 (ZimbraWebClient - GC81 (Linux)/8.8.15_GA_3895)
+Thread-Topic: remoteproc: drop memset when loading elf segments
+Thread-Index: biEmLGpskBEqbrR8acDJ7LHDqg0/VA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+----- On 21 Apr, 2020, at 20:25, s-anna s-anna@ti.com wrote:
 
-On Friday 08 May 2020 at 16:09:38 (+0200), Peter Zijlstra wrote:
-> Do note that (afaik) ARM64 (and Power and probably others) has modules
-> in an address space that is not reachable from regular kernel text and
-> needs those intermediate trampolines.
+>>>
+>>> Hi Peng,
+>>>
+>>> The trick is to use the ioremap_wc() variant instead of ioremap() in yo=
+ur
+>>> platform driver while mapping the TCMs. I know multiple folks have run =
+into
+>>> this issue. This is what most of the remoteproc drivers use, and mmio-s=
+ram
+>>> driver also uses the same.
+>>=20
+>> TCM is different from OCRAM in i.MX chips.
+>> ioremap_wc not work for TCM memory, I just tried that.
+>=20
+> What ARM core is this? Is it a standard ARM TCM memory? The TCM
+> interfaces from standard ARM cores in general are treated as normal
+> memory, so write combine should be ok on them. When you say it doesn't
+> work, whats not working - the memcpy/memset or the remoteproc doesn't boo=
+t?
+>=20
+>> I am thinking we change memset/memcpy to use
+>> memset_io/memcpy_fromio/memcpy_toio for remoteproc common code,
+>=20
+> This has other implications. Not everything is IO memory to make this
+> change in the common core.
 
-Right, but I meant this series in its current form doesn't actively make
-things worse for existing users. That is, the act of modularizing
-schedutil has no impact on those who compile it in (because I agree that
-would be a solid reason for refusing that series), and they are still
-perfectly free to do so.
+Hi Suman,
 
-The 'new' users who deliberately decide to compile it as a module will
-have to pay that price, but that is their choice. And in the Android
-case, as you've understood, this is a price we are ready to pay.
+AFAIK, most (if not all) the drivers are using ioremap to expose the
+remoteproc memories. Since these are IO memories, then care should be
+taken when writing/reading from them and memset_io/memcpy_fromio
+/memcpy_toio should be used (or ioread/write). Currently, this is not
+the case in the remoteproc driver and it works because everything is
+aligned and there is no misaligned access. IMHO, as suggested by Peng,
+remoteproc core should use such accessors.
 
-Thanks,
-Quentin
+We (at Kalray) have some modifications to do that since
+there were some misalignment after modifying the resource table (64 bits
+fields).
+
+The only drawback that I can see using io memcpy is potentially a loss
+of performance for processors not requiring any alignement check. But
+other than that, it seems safer for everyon and performance in init does
+not seems really critical.
+
+>=20
+> If this is a custom memory interface requiring specific handling, then
+> one option is to provide and use your own ops->load function within the
+> driver. This is what I do for one of our remoteprocs that requires a
+> specific memcpy handling semantics.
+
+This does not only apply to firmware loading. This applies to all the
+resource table accesses which are currently done using direct accesses
+to members. They should also used io memcpy.
+
+Regards,
+
+Cl=C3=A9ment
+
+>=20
+> regards
+> Suman
