@@ -2,85 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905271CE3A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653C11CE3B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731346AbgEKTOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 15:14:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35708 "EHLO mx2.suse.de"
+        id S1731367AbgEKTRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 15:17:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728613AbgEKTOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 15:14:20 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0909DAF6F;
-        Mon, 11 May 2020 19:14:21 +0000 (UTC)
-Date:   Mon, 11 May 2020 21:14:14 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: [RFC PATCH 0/7] mm: Get rid of vmalloc_sync_(un)mappings()
-Message-ID: <20200511191414.GY8135@suse.de>
-References: <20200508144043.13893-1-joro@8bytes.org>
- <CALCETrX0ubjc0Gf4hCY9RWH6cVEKF1hv3RzqToKMt9_bEXXBvw@mail.gmail.com>
- <20200508213609.GU8135@suse.de>
- <CALCETrVxP87o2+aaf=RLW--DSpMrs=BXSQphN6bG5Y4X+OY8GQ@mail.gmail.com>
- <20200509175217.GV8135@suse.de>
- <CALCETrVU-+G3K5ABBRSEMiwnskL4mZsVcoTESZXnu34J7TaOqw@mail.gmail.com>
- <20200511074243.GE2957@hirez.programming.kicks-ass.net>
- <CALCETrVyoAXXOqm8cYs+31fjWK8mcnKR+wM0_HeJx9=bOaZC6Q@mail.gmail.com>
+        id S1730974AbgEKTRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 15:17:14 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6275206E6;
+        Mon, 11 May 2020 19:17:13 +0000 (UTC)
+Date:   Mon, 11 May 2020 15:17:12 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v5] streamline_config.pl: add LMC_KEEP to preserve some
+ kconfigs
+Message-ID: <20200511151712.21a767d9@gandalf.local.home>
+In-Reply-To: <20200510010603.3896-1-changbin.du@gmail.com>
+References: <20200510010603.3896-1-changbin.du@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrVyoAXXOqm8cYs+31fjWK8mcnKR+wM0_HeJx9=bOaZC6Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 08:36:31AM -0700, Andy Lutomirski wrote:
-> What if we make 32-bit PTI depend on PAE?
+On Sun, 10 May 2020 09:06:03 +0800
+Changbin Du <changbin.du@gmail.com> wrote:
 
-It already does, PTI support for legacy paging had to be removed because
-there were memory corruption problems with THP. The reason was that huge
-PTEs in the user-space area were mapped in two page-tables (kernel and
-user), but A/D bits were only fetched from the kernel part. To not make
-things more complicated we agreed on just not supporting PTI without
-PAE.
-
-> And drop 32-bit Xen PV support?  And make 32-bit huge pages depend on
-> PAE?  Then 32-bit non-PAE can use the direct-mapped LDT, 32-bit PTI
-> (and optionally PAE non-PTI) can use the evil virtually mapped LDT.
-> And 32-bit non-PAE (the 2-level case) will only have pointers to page
-> tables at the top level.  And then we can preallocate.
-
-Not sure I can follow you here. How can 32-bit PTI with PAE use the LDT
-from the direct mapping? I am guessing you want to get rid of the
-SHARED_KERNEL_PMD==0 case for PAE kernels. This would indeed make
-syncing unneccessary on PAE, but pre-allocation would still be needed
-for 2-level paging. Just the amount of memory needed for the
-pre-allocated PTE pages is half as big as it would be with PAE.
-
-> Or maybe we don't want to defeature this much, or maybe the memory hit
-> from this preallocation will hurt little 2-level 32-bit systems too
-> much.
-
-It will certainly make Linux less likely to boot on low-memory x86-32
-systems, whoever will be affected by this.
+> Sometimes it is useful to preserve batches of configs when making
+> localmodconfig. For example, I usually don't want any usb and fs
+> modules to be disabled. Now we can do it by:
+> 
+>  $ make LMC_KEEP="drivers/usb:fs" localmodconfig
+> 
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> 
 
 
-	Joerg
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+-- Steve
