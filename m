@@ -2,139 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949411CE511
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 22:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14A51CE533
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 22:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731522AbgEKUH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 16:07:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727873AbgEKUHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 16:07:55 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F9ED206F5;
-        Mon, 11 May 2020 20:07:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589227674;
-        bh=/Oy/Sf2u70Yzd63mUcR8KEbAcs1JY1pR2AzcGOPrLA4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=RxVbVM1go98ghgRmXsKhAPljplz/QBHdCeitk1fe1WOPCo3w6VLg/KUYs2uAX8Ac2
-         sahuyYyvVhljvswaAIiglR9itd+IHOPwQ5k8VXpa+ZevDvxsMxxp3tn71XIPReCLph
-         AsS2Xd0UPrVEo9FvHopYfrp9mGtGHkZyUBOHK/pM=
-Date:   Mon, 11 May 2020 15:12:27 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] perf/core: Replace zero-length array with flexible-array
-Message-ID: <20200511201227.GA14041@embeddedor>
+        id S1731240AbgEKUOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 16:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727873AbgEKUOQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 16:14:16 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166A7C061A0C;
+        Mon, 11 May 2020 13:14:16 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jYEoP-0004s2-DW; Mon, 11 May 2020 22:14:05 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 9C713FFBF8; Mon, 11 May 2020 22:14:04 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     "Raj\, Ashok" <ashok.raj@intel.com>
+Cc:     "Raj\, Ashok" <ashok.raj@linux.intel.com>,
+        Evan Green <evgreen@chromium.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>, x86@kernel.org,
+        linux-pci <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Ghorai\, Sukumar" <sukumar.ghorai@intel.com>,
+        "Amara\, Madhusudanarao" <madhusudanarao.amara@intel.com>,
+        "Nandamuri\, Srikanth" <srikanth.nandamuri@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: MSI interrupt for xhci still lost on 5.6-rc6 after cpu hotplug
+In-Reply-To: <20200511190341.GA95413@otc-nc-03>
+References: <20200508005528.GB61703@otc-nc-03> <87368almbm.fsf@nanos.tec.linutronix.de> <20200508160958.GA19631@otc-nc-03> <87h7wqjrsk.fsf@nanos.tec.linutronix.de> <20200511190341.GA95413@otc-nc-03>
+Date:   Mon, 11 May 2020 22:14:04 +0200
+Message-ID: <87h7wm5iwj.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+Ashok,
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+"Raj, Ashok" <ashok.raj@intel.com> writes:
+> On Fri, May 08, 2020 at 06:49:15PM +0200, Thomas Gleixner wrote:
+>> "Raj, Ashok" <ashok.raj@intel.com> writes:
+>> > With legacy MSI we can have these races and kernel is trying to do the
+>> > song and dance, but we see this happening even when IR is turned on.
+>> > Which is perplexing. I think when we have IR, once we do the change vector 
+>> > and flush the interrupt entry cache, if there was an outstandng one in 
+>> > flight it should be in IRR. Possibly should be clearned up by the
+>> > send_cleanup_vector() i suppose.
+>> 
+>> Ouch. With IR this really should never happen and yes the old vector
+>> will catch one which was raised just before the migration disabled the
+>> IR entry. During the change nothing can go wrong because the entry is
+>> disabled and only reenabled after it's flushed which will send a pending
+>> one to the new vector.
+>
+> with IR, I'm not sure if we actually mask the interrupt except when
+> its a Posted Interrupt.
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+Indeed. Memory tricked me.
 
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
+> We do an atomic update to IRTE, with cmpxchg_double
+>
+> 	ret = cmpxchg_double(&irte->low, &irte->high,
+> 			     irte->low, irte->high,
+> 			     irte_modified->low, irte_modified->high);
 
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
+We only do this if:
 
-sizeof(flexible-array-member) triggers a warning because flexible array
-members have incomplete type[1]. There are some instances of code in
-which the sizeof operator is being incorrectly/erroneously applied to
-zero-length arrays and the result is zero. Such instances may be hiding
-some bugs. So, this work (flexible-array member conversions) will also
-help to get completely rid of those sorts of issues.
+        if ((irte->pst == 1) || (irte_modified->pst == 1))
 
-This issue was found with the help of Coccinelle.
+i.e. the irte entry was or is going to be used for posted interrupts.
 
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+In the non-posted remapping case we do:
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- include/linux/perf_event.h | 4 ++--
- kernel/events/callchain.c  | 2 +-
- kernel/events/internal.h   | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+       set_64bit(&irte->low, irte_modified->low);
+       set_64bit(&irte->high, irte_modified->high);
 
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 9c3e7619c929..306b07b56cc6 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -61,7 +61,7 @@ struct perf_guest_info_callbacks {
- 
- struct perf_callchain_entry {
- 	__u64				nr;
--	__u64				ip[0]; /* /proc/sys/kernel/perf_event_max_stack */
-+	__u64				ip[]; /* /proc/sys/kernel/perf_event_max_stack */
- };
- 
- struct perf_callchain_entry_ctx {
-@@ -113,7 +113,7 @@ struct perf_raw_record {
- struct perf_branch_stack {
- 	__u64				nr;
- 	__u64				hw_idx;
--	struct perf_branch_entry	entries[0];
-+	struct perf_branch_entry	entries[];
- };
- 
- struct task_struct;
-diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
-index c2b41a263166..b1991043b7d8 100644
---- a/kernel/events/callchain.c
-+++ b/kernel/events/callchain.c
-@@ -16,7 +16,7 @@
- 
- struct callchain_cpus_entries {
- 	struct rcu_head			rcu_head;
--	struct perf_callchain_entry	*cpu_entries[0];
-+	struct perf_callchain_entry	*cpu_entries[];
- };
- 
- int sysctl_perf_event_max_stack __read_mostly = PERF_MAX_STACK_DEPTH;
-diff --git a/kernel/events/internal.h b/kernel/events/internal.h
-index f16f66b6b655..fcbf5616a441 100644
---- a/kernel/events/internal.h
-+++ b/kernel/events/internal.h
-@@ -55,7 +55,7 @@ struct perf_buffer {
- 	void				*aux_priv;
- 
- 	struct perf_event_mmap_page	*user_page;
--	void				*data_pages[0];
-+	void				*data_pages[];
- };
- 
- extern void rb_free(struct perf_buffer *rb);
--- 
-2.26.2
+> followed by flushing the interrupt entry cache. After which any 
+> old ones in flight before the flush should be sittig in IRR
+> on the outgoing cpu.
 
+Correct.
+
+> The send_cleanup_vector() sends IPI to the apic_id->old_cpu which 
+> would be the cpu we are running on correct? and this is a self_ipi
+> to IRQ_MOVE_CLEANUP_VECTOR.
+
+Yes, for the IR case the cleanup vector IPI is sent right away because
+the IR logic allegedly guarantees that after flushing the IRTE cache no
+interrupt can be sent to the old vector. IOW, after the flush a vector
+sent to the previous CPU must be already in the IRR of that CPU.
+
+> smp_irq_move_cleanup_interrupt() seems to check IRR with 
+> apicid_prev_vector()
+>
+> 	irr = apic_read(APIC_IRR + (vector / 32 * 0x10));
+> 	if (irr & (1U << (vector % 32))) {
+> 		apic->send_IPI_self(IRQ_MOVE_CLEANUP_VECTOR);
+> 		continue;
+> 	}
+>
+> And this would allow any pending IRR bits in the outgoing CPU to 
+> call the relevant ISR's before draining all vectors on the outgoing
+> CPU.
+
+No. When the CPU goes offline it does not handle anything after moving
+the interrupts away. The pending bits are handled in fixup_irq() after
+the forced migration. If the vector is set in the IRR it sends an IPI to
+the new target CPU.
+
+That IRR check is paranoia for the following case where interrupt
+migration happens between live CPUs:
+
+    Old CPU
+
+    set affinity                <- device sends to old vector/cpu
+    ...                 
+    irte_...()
+    send_cleanup_vector();
+
+    handle_cleanup_vector()     <- Would remove the vector
+                                   without that IRR check and
+                                   then result in a spurious interrupt
+
+This should actually never happen because the cleanup vector is the
+lowest priority vector.
+
+> I couldn't quite pin down how the device ISR's are hooked up through
+> this send_cleanup_vector() and what follows.
+
+Device ISRs don't know anything about the underlying irq machinery.
+
+The non IR migration does:
+
+    Old CPU          New CPU
+
+    set affinity
+    ...                 
+                                <- device sends to new vector/cpu
+                     handle_irq
+                       ack()
+                        apic_ack_irq()
+                          irq_complete_move()
+                            send_cleanup_vector()
+
+    handle_cleanup_vector()
+
+In case that an interrupt still hits the old CPU:
+
+    set affinity                <- device sends to old vector/cpu
+    ...
+    handle_irq
+     ack()
+      apic_ack_irq()
+       irq_complete_move()      (Does not send cleanup vector because wrong CPU)
+
+                                <- device sends to new vector/cpu
+                     handle_irq
+                       ack()
+                        apic_ack_irq()
+                          irq_complete_move()
+                            send_cleanup_vector()
+
+    handle_cleanup_vector()
+
+Thanks,
+
+        tglx
