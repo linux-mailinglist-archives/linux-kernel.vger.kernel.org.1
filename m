@@ -2,126 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4ACC1CE458
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959FD1CE467
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731604AbgEKTZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 15:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731435AbgEKTZ5 (ORCPT
+        id S1731340AbgEKT2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 15:28:05 -0400
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:42238 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731041AbgEKT2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 15:25:57 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938F7C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 12:25:56 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id d21so3161495ljg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 12:25:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K8qsP9f01zYI2FG5AHJbY5zyiEiDXE7JO73B2LPyuuk=;
-        b=eCzyF9ad4mLhonROo2UoMiLVGBExQnaiRf9l23hKPyejSyFqFIjrimXANkos02NXtb
-         ByeavwvD4+oOP+T+BEJh5yWO2J+QfwDvd0k9mrUi2vnpE0uo5wKR887fKtXFr2tqimkz
-         ZEQAo6a1ppAt2qKtd5Gw4rzdHzlwmEOwbEWHD/f4xxaweI2M24kRwl4hSnVF/23W4BV1
-         k0px4mbhLGducOkZFLAhRgbKrPe7DVDoBBrTwDnAr95ywubHQ2osz8e0UmZokRPPTLzZ
-         nYlwsbqcvg353xe4LO9UPmLR1Lw9BHWEwC/Mu4sPg1dv2TEB1ghZi3RK3oTdokUAyAuy
-         Meag==
+        Mon, 11 May 2020 15:28:04 -0400
+Received: by mail-oo1-f65.google.com with SMTP id a83so383996oob.9;
+        Mon, 11 May 2020 12:28:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K8qsP9f01zYI2FG5AHJbY5zyiEiDXE7JO73B2LPyuuk=;
-        b=VOe3YOtM2/u13xKJ3q4BUD0WWbIvCPeLZ05f7Xv9/C/lAzoDCxSsas0rIHThxsV2kk
-         fjfRULnC9yoIBjCYy64m8dISm3n1eU1ZI9AMNGe9ifbVnYJVbdniEYRHPAWsUnOAZw8b
-         Oz+HRTADM5EgutyLSq8Fz38TeE1uDbnKk7jwLA1kEdsWL9wznLzpL/PbmfKrNKLnsJPB
-         mjU72oXpUvIrpuJsAWd88N6IRgmAoQzHMmZkFtSw1YN/3NRt7YHVSvU82ZHki22JpMIV
-         Q4U+bgg65d02ZXqEWnmRiVjBev9lSJ8K9b3rsRvwv6HaNi6oQpskTNN5CrCgM6mSh2Em
-         H1OQ==
-X-Gm-Message-State: AOAM532PxTaOJTAEOSBd9JT4eaWXbKP744jzMig7SICMreISu8y9bZxt
-        l9ltQ9l+mesaXhCkgIXgNc4uz0bGBnewCeFM2a3FaA==
-X-Google-Smtp-Source: ABdhPJwF+9uUqhKZmYNQyo01CKwtZ1axcR7g6ZA7oelYkwDP2Zx4LgmYUhqID3o/t1Bw5kz5IC6j52EW5bbdBcn6HQ4=
-X-Received: by 2002:a05:651c:319:: with SMTP id a25mr10617744ljp.209.1589225154955;
- Mon, 11 May 2020 12:25:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Emf4N/7dlv5y0nf57uZJUU2fdy2hoXmMKpVjXqXIJnw=;
+        b=PaoxMhLZ6A+CwO41EyxPlZquzVLoeujqodWX6an5ILlza+iFxAv8pyLlK9g9T3S3df
+         kqRVSutiIPmVlElaqaoH3SfmjkPcErSsMZw/bRceRRsWrAFyWWoTqKuahQXZTByCzvbP
+         k04o35T3wtNp9mKNtBj25N6yD971tqY0a0qfNJlDECD1k9XahxFTB7m431tNR2b+QDTO
+         41/U5KdMiWWRer6i59KmJ/gZOa1zEJn+rp9KbN+XRmEdFEYwBrGdbCEYCrbyhqWvf+mm
+         M47JByf5BGSrrOvMi+FaGHK++3PCyzjSVyXs/le38PgfGuSnqE8YparKWI+DA9iB+txN
+         qWMg==
+X-Gm-Message-State: AGi0PuZIR7hqdPob/yIs+//D47WxTs0InjN8eYjyaAuElCv1NO7sJ1pN
+        jE2bo8CP6YD/nR3Y2oQmUA==
+X-Google-Smtp-Source: APiQypLpZUlZA09Gp153soJvjjPccTy0M0+x7Bh2/sf1+5RWavVxkFH7hU+ErykOaetTP/Uu0yMDeg==
+X-Received: by 2002:a4a:254f:: with SMTP id v15mr6119240ooe.17.1589225282244;
+        Mon, 11 May 2020 12:28:02 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 64sm2885440otb.14.2020.05.11.12.28.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 12:28:01 -0700 (PDT)
+Received: (nullmailer pid 14321 invoked by uid 1000);
+        Mon, 11 May 2020 19:28:00 -0000
+Date:   Mon, 11 May 2020 14:28:00 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, heikki.krogerus@linux.intel.com,
+        twawrzynczak@chromium.org, Benson Leung <bleung@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: Re: [PATCH 1/2] dt-bindings: chrome: Add cros-ec-typec mux props
+Message-ID: <20200511192800.GA28762@bogus>
+References: <20200422222242.241699-1-pmalani@chromium.org>
 MIME-Version: 1.0
-References: <20200506141821.GA9773@lorien.usersys.redhat.com> <20200507203612.GF19331@lorien.usersys.redhat.com>
-In-Reply-To: <20200507203612.GF19331@lorien.usersys.redhat.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 11 May 2020 21:25:43 +0200
-Message-ID: <CAKfTPtAztaT_===uTs6feFp4ZwPX=+UJKHwOoTOVSdsERNG3WQ@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/fair: Fix enqueue_task_fair warning some more
-To:     Phil Auld <pauld@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200422222242.241699-1-pmalani@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 May 2020 at 22:36, Phil Auld <pauld@redhat.com> wrote:
->
-> sched/fair: Fix enqueue_task_fair warning some more
->
-> The recent patch, fe61468b2cb (sched/fair: Fix enqueue_task_fair warning)
-> did not fully resolve the issues with the rq->tmp_alone_branch !=
-> &rq->leaf_cfs_rq_list warning in enqueue_task_fair. There is a case where
-> the first for_each_sched_entity loop exits due to on_rq, having incompletely
-> updated the list.  In this case the second for_each_sched_entity loop can
-> further modify se. The later code to fix up the list management fails to do
-> what is needed because se no longer points to the sched_entity which broke
-> out of the first loop.
->
-> Address this by calling leaf_add_rq_list if there are throttled parents while
-> doing the second for_each_sched_entity loop.
->
-
-Fixes: fe61468b2cb (sched/fair: Fix enqueue_task_fair warning)
-
-> Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Signed-off-by: Phil Auld <pauld@redhat.com>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-
-With the Fixes tag and the typo mentioned by Tao
-
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-
+On Wed, Apr 22, 2020 at 03:22:39PM -0700, Prashant Malani wrote:
+> Add properties for mode, orientation and USB data role switches for
+> Type C connectors. When available, these will allow the Type C connector
+> class port driver to configure the various switches according to USB PD
+> information (like orientation, alt mode etc.) provided by the Chrome OS
+> EC controller.
+> 
+> Signed-off-by: Prashant Malani <pmalani@chromium.org>
 > ---
->  kernel/sched/fair.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 02f323b85b6d..c6d57c334d51 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -5479,6 +5479,13 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->                 /* end evaluation on encountering a throttled cfs_rq */
->                 if (cfs_rq_throttled(cfs_rq))
->                         goto enqueue_throttle;
+>  .../bindings/chrome/google,cros-ec-typec.yaml | 27 ++++++++++++++++++-
+>  1 file changed, 26 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml b/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml
+> index 6d7396ab8bee..b5814640aa32 100644
+> --- a/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml
+> +++ b/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml
+> @@ -21,7 +21,21 @@ properties:
+>      const: google,cros-ec-typec
+>  
+>    connector:
+> -    $ref: /schemas/connector/usb-connector.yaml#
+> +    allOf:
+> +      - $ref: /schemas/connector/usb-connector.yaml#
+> +      - type: object
+> +        properties:
+
+These don't seem CrOS EC specific, so why document them as such. 
+
+> +          mode-switch:
+> +            description: Reference to a DT node for the USB Type C Multiplexer
+> +              controlling the data lines routing for this connector.
+
+This is for alternate mode muxing I presume.
+
+We already have a mux-control binding. Why not use that here?
+
 > +
-> +               /*
-> +                * One parent has been throttled and cfs_rq removed from the
-> +                * list. Add it back to not break the leaf list.
-> +                */
-> +               if (throttled_hierarchy(cfs_rq))
-> +                       list_add_leaf_cfs_rq(cfs_rq);
->         }
->
->  enqueue_throttle:
-> --
-> 2.18.0
->
-> V2 rework the fix based on Vincent's suggestion. Thanks Vincent.
->
->
-> Cheers,
-> Phil
->
-> --
->
+> +          orientation-switch:
+> +            description: Reference to a DT node for the USB Type C orientation
+> +              switch for this connector.
+
+What's in this node?
+
+> +
+> +          usb-role-switch:
+> +            description: Reference to a DT node for the USB Data role switch
+> +              for this connector.
+>  
+>  required:
+>    - compatible
+> @@ -49,6 +63,17 @@ examples:
+>              data-role = "dual";
+>              try-power-role = "source";
+>            };
+> +
+> +          connector@1 {
+> +            compatible = "usb-c-connector";
+> +            reg = <1>;
+> +            power-role = "dual";
+> +            data-role = "host";
+> +            try-power-role = "source";
+> +            mode-switch = <&typec_mux>;
+> +            orientation-switch = <&typec_orientation_switch>;
+> +            usb-role-switch = <&typec_mux>;
+> +          };
+>          };
+>        };
+>      };
+> -- 
+> 2.26.1.301.g55bc3eb7cb9-goog
+> 
