@@ -2,147 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74731CD3E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 10:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAECF1CD3EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 10:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729140AbgEKI2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 04:28:23 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:62830 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728344AbgEKI2X (ORCPT
+        id S1729143AbgEKIan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 04:30:43 -0400
+Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:58604 "EHLO
+        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1728702AbgEKIan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 04:28:23 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04B8S0Bg010988;
-        Mon, 11 May 2020 10:28:12 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=ARKtW82Ju4foRRG5jzp6GKL8UxrRXVO/KxZ4yej17EA=;
- b=YFyWS89NgLXHX4OBgXe4bdHZ0ZrWu3Se8fTc63Y7Y7DZ1QCCq3Hd6g+I9JYmYYTEmEcY
- oMDyhNRAzcGcsj4jrNNcl5qEQy/W4P0iBT84tCCw894FoqHhLIHhDIRgoeCOLz/jMwOa
- xdIXW8pRnV/jgNccj3k6tzeSOlvLjCCn3FDmVpcu6DYota4vSFCdOHMfZVviRLnYONC9
- uXwtKcj+BW8RSD/0e733l81RcgUU1B4R8EuolGkDqpLbsJZ8yjTXzHcWfGaaoQ0LW2hC
- mn/9z3mAQ86o5V+xQgSZmyAFm/nNwJXG6aJ7ygfyA3RrRhk7tZNSYmxOcAwFJAC9DWsU jQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30wj01sa7x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 May 2020 10:28:11 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6D58A10002A;
-        Mon, 11 May 2020 10:28:06 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag5node2.st.com [10.75.127.14])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5B1482B27B5;
-        Mon, 11 May 2020 10:28:06 +0200 (CEST)
-Received: from [10.131.226.156] (10.75.127.47) by SFHDAG5NODE2.st.com
- (10.75.127.14) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 11 May
- 2020 10:28:04 +0200
-Subject: Re: [PATCH 2/4] i2c: addition of client reg/unreg callbacks
-To:     Alain Volmat <alain.volmat@st.com>, <wsa@kernel.org>,
-        <robh+dt@kernel.org>
-CC:     <mark.rutland@arm.com>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@st.com>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>
-References: <1588657871-14747-1-git-send-email-alain.volmat@st.com>
- <1588657871-14747-3-git-send-email-alain.volmat@st.com>
-From:   Pierre Yves MORDRET <pierre-yves.mordret@st.com>
-Message-ID: <a68f47ca-47e1-a293-f4ad-a5104c9ee620@st.com>
-Date:   Mon, 11 May 2020 10:28:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Mon, 11 May 2020 04:30:43 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id C7A462002518;
+        Mon, 11 May 2020 16:30:40 +0800 (HKT)
+X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
+Received: from mail.gtsys.com.hk ([127.0.0.1])
+        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id AuE0Dfh_okQ8; Mon, 11 May 2020 16:30:40 +0800 (HKT)
+Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id A2E5320020CB;
+        Mon, 11 May 2020 16:30:40 +0800 (HKT)
+Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
+        by s01.gtsys.com.hk (Postfix) with ESMTP id 96943C01F94;
+        Mon, 11 May 2020 16:30:40 +0800 (HKT)
+Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
+        id 3F6272001DE; Mon, 11 May 2020 16:30:40 +0800 (HKT)
+From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
+To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>,
+        Jack Lo <jack.lo@gtsys.com.hk>
+Cc:     Mark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/3] spi: spi-rockchip spi slave mode
+Date:   Mon, 11 May 2020 16:30:19 +0800
+Message-Id: <20200511083022.23678-1-chris.ruehl@gtsys.com.hk>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <1588657871-14747-3-git-send-email-alain.volmat@st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG5NODE2.st.com
- (10.75.127.14)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-11_03:2020-05-11,2020-05-11 signatures=0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+The spi-rockchip driver does not implement spi slave mode, but the register map
+have a corresponding flag. An example implementation found
+here: https://dev.t-firefly.com/thread-101485-1-1.html
+This patchset clean the compatiblity names and add support slave mode.
+We need the slave mode for our project, but the PCBA is not yet available
+in consequence the code in the patch isn't tested yet but need your review.
 
-Reviewed-by: Pierre-Yves MORDRET <pierre-yves.mordret@st.com>
+Patch 1/3
+Cleanup, move from the compatibily layer struct spi_master over
+to struct spi_controller, and rename the related function calls.
 
-Thanks
+Patch 2/3
+Add support for spi slave mode and support function
 
-On 5/5/20 7:51 AM, Alain Volmat wrote:
-> Addition of two callbacks reg_client and unreg_client that can be
-> implemented by adapter drivers in order to take action whenever a
-> client is being registered to it.
-> 
-> Signed-off-by: Alain Volmat <alain.volmat@st.com>
-> ---
->  drivers/i2c/i2c-core-base.c | 11 +++++++++++
->  include/linux/i2c.h         |  6 ++++++
->  2 files changed, 17 insertions(+)
-> 
-> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-> index 2e4560671183..4c84c6264314 100644
-> --- a/drivers/i2c/i2c-core-base.c
-> +++ b/drivers/i2c/i2c-core-base.c
-> @@ -319,6 +319,12 @@ static int i2c_device_probe(struct device *dev)
->  	if (!client)
->  		return 0;
->  
-> +	if (client->adapter->algo->reg_client) {
-> +		status = client->adapter->algo->reg_client(client);
-> +		if (status)
-> +			return status;
-> +	}
-> +
->  	driver = to_i2c_driver(dev->driver);
->  
->  	client->irq = client->init_irq;
-> @@ -417,6 +423,8 @@ static int i2c_device_probe(struct device *dev)
->  put_sync_adapter:
->  	if (client->flags & I2C_CLIENT_HOST_NOTIFY)
->  		pm_runtime_put_sync(&client->adapter->dev);
-> +	if (client->adapter->algo->reg_client)
-> +		client->adapter->algo->unreg_client(client);
->  
->  	return status;
->  }
-> @@ -445,6 +453,9 @@ static int i2c_device_remove(struct device *dev)
->  	if (client->flags & I2C_CLIENT_HOST_NOTIFY)
->  		pm_runtime_put(&client->adapter->dev);
->  
-> +	if (client->adapter->algo->unreg_client)
-> +		client->adapter->algo->unreg_client(client);
-> +
->  	return status;
->  }
->  
-> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-> index 45d36ba4826b..61b838caf454 100644
-> --- a/include/linux/i2c.h
-> +++ b/include/linux/i2c.h
-> @@ -509,6 +509,8 @@ i2c_register_board_info(int busnum, struct i2c_board_info const *info,
->   *   so e.g. PMICs can be accessed very late before shutdown. Optional.
->   * @functionality: Return the flags that this algorithm/adapter pair supports
->   *   from the ``I2C_FUNC_*`` flags.
-> + * @reg_client: Callback informing that a new client is being registered
-> + * @unreg_client: Callback informing that a client is being removed
->   * @reg_slave: Register given client to I2C slave mode of this adapter
->   * @unreg_slave: Unregister given client from I2C slave mode of this adapter
->   *
-> @@ -545,6 +547,10 @@ struct i2c_algorithm {
->  	/* To determine what the adapter supports */
->  	u32 (*functionality)(struct i2c_adapter *adap);
->  
-> +	/* To inform the adapter of the probe/remove of a client */
-> +	int (*reg_client)(struct i2c_client *client);
-> +	void (*unreg_client)(struct i2c_client *client);
-> +
->  #if IS_ENABLED(CONFIG_I2C_SLAVE)
->  	int (*reg_slave)(struct i2c_client *client);
->  	int (*unreg_slave)(struct i2c_client *client);
-> 
+Patch 3/3
+Use OF property num-cs and enable support for cs_gpiods
+
+IMHO its wrong, that the num_chipselect is set fixed to the amount of 
+native chip-select lines. SPI0 which has two native lines, while the others
+SPIs one native cs line only.
+Set max_native_cs in the controller struct with ROCKCHIP_SPI_MAX_CS_NUM seems
+the correct way to do and let num-cs the OF / dts config set the CS count for
+the boards.
+
+Patch against next-20200508
+
+Thanks for review!
+
+Happy hacking
+Chris
+
+Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+---
+
