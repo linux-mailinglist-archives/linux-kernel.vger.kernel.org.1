@@ -2,108 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0902B1CD2C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 09:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5C51CD2CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 09:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729084AbgEKHim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 03:38:42 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:51535 "EHLO mx1.molgen.mpg.de"
+        id S1729160AbgEKHj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 03:39:29 -0400
+Received: from mail-db8eur05on2043.outbound.protection.outlook.com ([40.107.20.43]:6144
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728638AbgEKHii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 03:38:38 -0400
-Received: from [192.168.0.3] (ip5f5af07e.dynamic.kabel-deutschland.de [95.90.240.126])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 350442002EE14;
-        Mon, 11 May 2020 09:38:35 +0200 (CEST)
-Subject: Re: [PATCH] x86/tsc: Use hard-coded crystal clock for Skylake mobile
-To:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-Cc:     Radoslaw Biernacki <biernacki@google.com>,
-        Ross Zwisler <zwisler@google.com>,
-        Daniel Drake <drake@endlessm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Len Brown <len.brown@intel.com>, linux@endlessm.com,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20200509113717.9084-1-pmenzel@molgen.mpg.de>
- <87eerr3ppb.fsf@nanos.tec.linutronix.de>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <edc5af47-27e6-753f-c095-bd3087942690@molgen.mpg.de>
-Date:   Mon, 11 May 2020 09:38:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728564AbgEKHj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 03:39:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YR4TlL2xGffxYgUtqKP9LsRSodprz3v/xWzmU9kWAwZ0o2sTmNQG3OE0irJJM4Rjr7CKRIwagZlw1M+g2Ow7zQAVadVubp9SHSQhZF0KgxD9riSuoskHW6ndq6bpQ+6pS0YnSynqfl9EtX2+BtqlLIrcXf7B05w4tvSSIACGglfGFEd4xS+k6uc+yqmuY/L+4znFbaYbKOZuqF9COpRQMoPCuvfeS9dzU4hSqVkeCMM2pa9bIPgGYdCOukGXXBqEyS6CR36Mfl17k6685dizhMQ1iQcq3zSCcKacxbAJ6HdajGrn+Sdvgl8j8vFF/jpjPbFYYot+KoMsEVElWJj7XA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6m5QxZ+QonAKIeBDhhCF+PHH4T0n5bZ/Y4NjCqvwh5Y=;
+ b=DvfZdv6xoZgEqvsp+tRlU+DR/T8Vq7iMooednthp1bi2gMBgFROX6tUpAsC0znHW6yiMzo+Um0MASKEyDConIaOvTBccf3bPLMsZoIK4j6NEhiVKhgEXdvBzj3l1i5txNBKGEdga49683oXaZV58wi8GETAgZEwle8O/5Q6TpIHoqwXVLhSq3pk4pJXxURqYTcg5RRAxHhtZk573iqtqtEEI7jlfkpZEOb7B6A/zCoKHz+Aj+aYvru2Nrkp1eEblcoUfXFyzlZdkKmPkDrv3QohpiQxtyYw5y9r5wlRivOJBa0dXANhzWJG7RdVRQhXt9XIy6qLZOUWtf9/iR23YGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6m5QxZ+QonAKIeBDhhCF+PHH4T0n5bZ/Y4NjCqvwh5Y=;
+ b=hm8VOOLHBtpBLJmQKMMLYLINEXTk4tNML/Bm8Ok6esVd+38YcAsznI0Qo/6AUMEx7yGvVhVJvy8oLmWWDIG2B1a05rmIWHVdJuKWtDXsHnUmAppJbI//1iGH0ZqXW53g27EU7QX2AIzVerpF8x/9vJrWO9h8MSRK4HMHD7sz9yA=
+Authentication-Results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
+ by AM0PR04MB4194.eurprd04.prod.outlook.com (2603:10a6:208:66::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.33; Mon, 11 May
+ 2020 07:39:26 +0000
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::c4fe:d4a4:f0e1:a75b]) by AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::c4fe:d4a4:f0e1:a75b%4]) with mapi id 15.20.2979.033; Mon, 11 May 2020
+ 07:39:26 +0000
+Date:   Mon, 11 May 2020 13:09:12 +0530
+From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        linux.cj@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Varun Sethi <V.Sethi@nxp.com>,
+        "Rajesh V . Bikkina" <rajesh.bikkina@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        netdev <netdev@vger.kernel.org>, Marcin Wojtas <mw@semihalf.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Makarand Pawagi <makarand.pawagi@nxp.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [net-next PATCH v3 4/5] net: phy: Introduce fwnode_get_phy_id()
+Message-ID: <20200511073912.GB12725@lsv03152.swis.in-blr01.nxp.com>
+References: <20200505132905.10276-1-calvin.johnson@oss.nxp.com>
+ <20200505132905.10276-5-calvin.johnson@oss.nxp.com>
+ <67e263cf-5cd7-98d1-56ff-ebd9ac2265b6@arm.com>
+ <CAHp75Vew8Fh6HEoOACk+J9KCpw+AE2t2+oFnXteK1eShopfYAA@mail.gmail.com>
+ <83ab4ca4-9c34-4cdd-4413-3b4cdf96727d@arm.com>
+ <20200508160755.GB10296@lsv03152.swis.in-blr01.nxp.com>
+ <20200508181301.GF298574@lunn.ch>
+ <1e33605e-42fd-baf8-7584-e8fcd5ca6fd3@arm.com>
+ <20200508202722.GI298574@lunn.ch>
+ <97a9e145-bbaa-efb8-6215-dc3109ee7290@arm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <97a9e145-bbaa-efb8-6215-dc3109ee7290@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: SG2PR06CA0247.apcprd06.prod.outlook.com
+ (2603:1096:4:ac::31) To AM0PR04MB5636.eurprd04.prod.outlook.com
+ (2603:10a6:208:130::22)
 MIME-Version: 1.0
-In-Reply-To: <87eerr3ppb.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR06CA0247.apcprd06.prod.outlook.com (2603:1096:4:ac::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.28 via Frontend Transport; Mon, 11 May 2020 07:39:19 +0000
+X-Originating-IP: [14.142.151.118]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e7d926ff-e79f-4eb8-006d-08d7f57e6daf
+X-MS-TrafficTypeDiagnostic: AM0PR04MB4194:|AM0PR04MB4194:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR04MB41946D5B226BB3FB1F3A788BD2A10@AM0PR04MB4194.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 04004D94E2
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3/CIjRd7XrEsty0U0aL9MLiOSAjBofgmAVsp2Kuok/kmDA0md0OVlNEDqJe52+lXO0viykniklQYf1oAjhaUn+XVO13TqThpW68ffWTx5329Unt4xO69OpBBp+HwhpNlhkqn2mPKaQjSKTiwZpElNRxq+Z+jEE78L0vXuwMveW/t7Uz7+5SC9+S1G1LRJo+qs1rpPFpOabpFzP8ySRY9S/JDSGyxr50uX7PoGoQWO4pLRglDUzR7qeFayPbrAVamacw+B7bqAPNh2Lel0zPQkZq3gS1wWixrHL7Q/d4vNiYYPDP8+izj4imwxz3hQIwYqXEMsC4LLm7tbz5meN/634WvrV5gqLt07tsQXQXRWn+NLranqw51lHKtqcr58Y73+r9+kADOL8bmHrR8FMmZIH/Pzp7O46yHVJolmm+FngJPWdMhaHeNxEMXFqvCegf3TjczJ0lb1ZZa8WFw9iIIgg2LGpcyqVOZLszzD4SAu4FxrpN4Coa/7b3s1sk0aiPSyvZlLeLihKhpia/OteeuBEfV+hWho/nsT9i7cmUb1fRvLS8WopNlYhno86ORpgvV
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(376002)(346002)(396003)(136003)(33430700001)(33656002)(55236004)(26005)(1006002)(6666004)(53546011)(6506007)(956004)(4326008)(44832011)(6916009)(478600001)(316002)(54906003)(7416002)(66556008)(9686003)(66476007)(4744005)(66946007)(7696005)(8676002)(186003)(33440700001)(55016002)(86362001)(52116002)(1076003)(2906002)(16526019)(8936002)(5660300002)(110426005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 9ckdkpFCil8z+UEF2QIVdvqkn7+V8nW7RuvBUxHiFm3YpNK2Y/2bVUykuCzGJGnn/4NAqZ+fAKXhrGJFO4FcwKm8+xKkKJiOZ5v8dm4MbFdCiq87iP6N9El0O1cuyr/h9Fl9LxtpdRvTHq8VfASets/8jwJlvEerDXoG/I4iZe601nBZw0m13e92h9BDjNauaoh62WmqJ+PLgtwjS/uiT86K3CGiPxDB1p5pTB2V9KR+SNeEM6FA5B6Qp+IWCGAbHE4MlgTwDET0cSWdggN7IKFwOzLwjlHcCMCH0UchT5giO+G5s15aWZh1Zl6Op8GIKD+Ok9ibdar4HQAh1Z8BjRXZNG8iGb3cFkxV0VKdC8dBc8msu4rNSEPlC9VbLzvYwIvQJe8Ql1rcr1G3rFMEbypvSIPGIiZ3/QF7AvEKFk98KojY8ZFs0vl8cjTyRsqbWdb0jwj4GfCpNGYFk7F9eP6CS4DEnaNOFZHqLgObIKg=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e7d926ff-e79f-4eb8-006d-08d7f57e6daf
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2020 07:39:25.8899
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yYP7UTQj2kVsZ+YxDo5+llv6ER4IzxC6fW2HV3IMw4cnN9WQrpkuhQAjR1GAvtF+qZtPJLj/vcNzSyhiRTL2qg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB4194
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Thomas,
-
-
-Thank you for the quick reply.
-
-Am 11.05.20 um 09:17 schrieb Thomas Gleixner:
-
-> Paul Menzel <pmenzel@molgen.mpg.de> writes:
+On Fri, May 08, 2020 at 05:48:33PM -0500, Jeremy Linton wrote:
+> Hi,
 > 
-> please send patches to LKML and not offlist.
-
-Sorry about that. From `MAINTAINERS` I thought x86@kernel.org is wanted. 
-Other subsystems list LKML explicitly there.
-
->> From: Radoslaw Biernacki <biernacki@google.com>
->>
->> @@ -636,10 +636,24 @@ unsigned long native_calibrate_tsc(void)
->>   	 * Denverton SoCs don't report crystal clock, and also don't support
->>   	 * CPUID.0x16 for the calculation below, so hardcode the 25MHz crystal
->>   	 * clock.
->> +	 * Also estimation code is not reliable and gives 1.5%  difference for
->> +	 * tsc/clock ratio on Skylake mobile. Therefore below is a hardcoded
->> +	 * crystal frequency for Skylake which was removed by upstream commit
->> +	 * "x86/tsc: Use CPUID.0x16 to calculate missing crystal frequency"
->> +	 * This is temporary workaround for bugs:
->> +	 * b/148108096, b/154283905, b/146787525, b/153400677, b/148178929
->> +	 * chromium/1031054
->>   	 */
->> -	if (crystal_khz == 0 &&
->> -			boot_cpu_data.x86_model == INTEL_FAM6_ATOM_GOLDMONT_D)
->> -		crystal_khz = 25000;
->> +	if (crystal_khz == 0) {
->> +		switch (boot_cpu_data.x86_model) {
->> +		case INTEL_FAM6_SKYLAKE_MOBILE:
->> +			crystal_khz = 24000;	/* 24.0 MHz */
->> +			break;
->> +		case INTEL_FAM6_ATOM_GOLDMONT_X:
->> +			crystal_khz = 25000;	/* 25.0 MHz */
->> +			break;
->> +		}
+> On 5/8/20 3:27 PM, Andrew Lunn wrote:
+> > > > There is a very small number of devices where the vendor messed up,
+> > > > and did not put valid contents in the ID registers. In such cases, we
+> > > > can read the IDs from device tree. These are then used in exactly the
+> > > > same way as if they were read from the device.
+> > > > 
+> > > 
+> > > Is that the case here?
+> > 
+> > Sorry, I don't understand the question?
 > 
-> Aside of being a workaround for Google issues which are probably caused > by broken BIOSes
+> I was asking in general, does this machine report the ID's correctly. More
+> directed at Calvin, but part of it is the board vendor too. So I suspect no
+> one can really answer "yes", despite that seeming to be the case.
 
-Even if it was caused by broken firmware, wouldn’t Linux’ no regression 
-policy still consider this a regression as user should be able to the 
-Linux kernel “no matter what”?
+I had tested RGMII PHYs(AR8035) with c22 using mdiobus_register. Vendor ID was
+read out correctly while autoprobing.
 
-> that patch is broken.
-> 
->     INTEL_FAM6_ATOM_GOLDMONT_D != INTEL_FAM6_ATOM_GOLDMONT_X
+AQR107(c45) PHYs that were connected gave back 0x00. This is expected
+because the MDIO bus is configured to talk c22.
 
-Good catch. The commit didn’t apply cleanly to the master branch, and I 
-missed this.
-
-I’ll wait for Radoslaw to comment before proceeding further with this.
-
-
-Kind regards,
-
-Paul
+Regards
+Calvin
