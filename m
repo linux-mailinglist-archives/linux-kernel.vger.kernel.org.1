@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B7A1CD0F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 06:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB021CD10A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 06:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728621AbgEKEqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 00:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728396AbgEKEp6 (ORCPT
+        id S1729294AbgEKErY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 00:47:24 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:55975 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728030AbgEKErV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 00:45:58 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90410C061A0E;
-        Sun, 10 May 2020 21:45:58 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jY0KD-005jJW-5C; Mon, 11 May 2020 04:45:57 +0000
-From:   Al Viro <viro@ZenIV.linux.org.uk>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 19/19] atm: switch do_atmif_sioc() to direct use of atm_dev_ioctl()
-Date:   Mon, 11 May 2020 05:45:53 +0100
-Message-Id: <20200511044553.1365660-19-viro@ZenIV.linux.org.uk>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200511044553.1365660-1-viro@ZenIV.linux.org.uk>
-References: <20200511044328.GP23230@ZenIV.linux.org.uk>
- <20200511044553.1365660-1-viro@ZenIV.linux.org.uk>
+        Mon, 11 May 2020 00:47:21 -0400
+X-IronPort-AV: E=Sophos;i="5.73,378,1583164800"; 
+   d="scan'208";a="91900972"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 11 May 2020 12:47:18 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id EE3B24BCC8AE;
+        Mon, 11 May 2020 12:47:17 +0800 (CST)
+Received: from [10.167.226.45] (10.167.226.45) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Mon, 11 May 2020 12:47:21 +0800
+Subject: Re: [PATCH] selftests:mptcp: fix empty optstring
+To:     <shuah@kernel.org>
+CC:     Li Zhijian <zhijianx.li@intel.com>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <matthieu.baerts@tessares.net>
+References: <20200402065216.23301-1-zhijianx.li@intel.com>
+From:   Li Zhijian <lizhijian@cn.fujitsu.com>
+Message-ID: <4bdd5672-eb24-2e49-e286-702510be0882@cn.fujitsu.com>
+Date:   Mon, 11 May 2020 12:47:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200402065216.23301-1-zhijianx.li@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.167.226.45]
+X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201)
+X-yoursite-MailScanner-ID: EE3B24BCC8AE.A1CAF
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@cn.fujitsu.com
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+ping
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
- net/atm/ioctl.c | 25 ++++---------------------
- 1 file changed, 4 insertions(+), 21 deletions(-)
 
-diff --git a/net/atm/ioctl.c b/net/atm/ioctl.c
-index 52f2c77e656f..838ebf0cabbf 100644
---- a/net/atm/ioctl.c
-+++ b/net/atm/ioctl.c
-@@ -286,30 +286,13 @@ static int do_atm_iobuf(struct socket *sock, unsigned int cmd,
- static int do_atmif_sioc(struct socket *sock, unsigned int cmd,
- 			 unsigned long arg)
- {
--	struct atmif_sioc __user *sioc;
--	struct compat_atmif_sioc __user *sioc32;
-+	struct compat_atmif_sioc __user *sioc32 = compat_ptr(arg);
-+	int number;
- 	u32 data;
--	void __user *datap;
--	int err;
- 
--	sioc = compat_alloc_user_space(sizeof(*sioc));
--	sioc32 = compat_ptr(arg);
--
--	if (copy_in_user(&sioc->number, &sioc32->number, 2 * sizeof(int)) ||
--	    get_user(data, &sioc32->arg))
--		return -EFAULT;
--	datap = compat_ptr(data);
--	if (put_user(datap, &sioc->arg))
-+	if (get_user(data, &sioc32->arg) || get_user(number, &sioc32->number))
- 		return -EFAULT;
--
--	err = do_vcc_ioctl(sock, cmd, (unsigned long) sioc, 0);
--
--	if (!err) {
--		if (copy_in_user(&sioc32->length, &sioc->length,
--				 sizeof(int)))
--			err = -EFAULT;
--	}
--	return err;
-+	return atm_dev_ioctl(cmd, compat_ptr(data), &sioc32->length, number, 0);
- }
- 
- static int do_atm_ioctl(struct socket *sock, unsigned int cmd32,
--- 
-2.11.0
+On 4/2/20 2:52 PM, Li Zhijian wrote:
+> From: Li Zhijian <lizhijian@cn.fujitsu.com>
+>
+> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+> ---
+>   tools/testing/selftests/net/mptcp/pm_netlink.sh | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/net/mptcp/pm_netlink.sh b/tools/testing/selftests/net/mptcp/pm_netlink.sh
+> index 9172746b6cf0..8c7998c64d9e 100755
+> --- a/tools/testing/selftests/net/mptcp/pm_netlink.sh
+> +++ b/tools/testing/selftests/net/mptcp/pm_netlink.sh
+> @@ -8,8 +8,7 @@ usage() {
+>   	echo "Usage: $0 [ -h ]"
+>   }
+>   
+> -
+> -while getopts "$optstring" option;do
+> +while getopts "h" option;do
+>   	case "$option" in
+>   	"h")
+>   		usage $0
+
+
 
