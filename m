@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC5A1CDCC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AF01CDCCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730485AbgEKONa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 10:13:30 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:37778 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730158AbgEKONa (ORCPT
+        id S1730508AbgEKOOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 10:14:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730180AbgEKOOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 10:13:30 -0400
-Received: by mail-pl1-f194.google.com with SMTP id x10so3992299plr.4;
-        Mon, 11 May 2020 07:13:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OZEIorHaxAgVk8tXwMYpPYJTnU15riroFxTlZzxMGoY=;
-        b=NFwnbaRdKb/MG0EhIoKzcerRLvdISY08pDODi09BCWepHTec4ARyeTzmgH5mKEzLep
-         khF5Ho0acAdDLc1JzSxJFTZPF4RNkV+ZNRUzcyPQMi8y4GCzr0JK4bZr9fLSSMlx5eNH
-         quY80wmvM43Sp2ZErumQ1sudYWckLUKPbjciHZ2OGDKqHCeuq4PsidBQbXbY1lCFsnS8
-         RbrPAaPm5FFa7OO6XzjmFRrJ3p0xML64tT6/p2af71b5JuOoU0h89i4fFOJqOyCKGz1k
-         V6RegZTrdIQU91zM6ggJ6XOUbxzziFOYdECMtiAVX0ohcAkFJfT65X642AcOTCxE+SIh
-         6UhA==
-X-Gm-Message-State: AGi0PuakkDQJbuVeisQ6nZwGkQUO2Mn83Po0h1mXRI632R9eSOvGZqM+
-        NFgNUXMUrqhjgtyDaJ1ukpU=
-X-Google-Smtp-Source: APiQypKUuFyt94VWg5zbOUc0tpZSyVaLJaz5nZz5HPWNK22nq+c7IWmoodIm6WEFGB2pMV3qQbTqlg==
-X-Received: by 2002:a17:90a:ead6:: with SMTP id ev22mr22563757pjb.94.1589206409284;
-        Mon, 11 May 2020 07:13:29 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id q62sm4723143pfc.132.2020.05.11.07.13.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 07:13:27 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 0DB6940605; Mon, 11 May 2020 14:13:27 +0000 (UTC)
-Date:   Mon, 11 May 2020 14:13:27 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Shannon Nelson <snelson@pensando.io>
-Cc:     Andrew Lunn <andrew@lunn.ch>, jeyu@kernel.org,
-        akpm@linux-foundation.org, arnd@arndb.de, rostedt@goodmis.org,
-        mingo@redhat.com, aquini@redhat.com, cai@lca.pw, dyoung@redhat.com,
-        bhe@redhat.com, peterz@infradead.org, tglx@linutronix.de,
-        gpiccoli@canonical.com, pmladek@suse.com, tiwai@suse.de,
-        schlad@suse.de, andriy.shevchenko@linux.intel.com,
-        keescook@chromium.org, daniel.vetter@ffwll.ch, will@kernel.org,
-        mchehab+samsung@kernel.org, kvalo@codeaurora.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/15] net: taint when the device driver firmware crashes
-Message-ID: <20200511141326.GQ11244@42.do-not-panic.com>
-References: <20200509043552.8745-1-mcgrof@kernel.org>
- <1e097eb0-6132-f549-8069-d13b678183f5@pensando.io>
- <20200510015814.GE362499@lunn.ch>
- <01831b19-5890-e7e0-3801-068dfab5c92a@pensando.io>
+        Mon, 11 May 2020 10:14:34 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E712C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 07:14:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=T9Qnr/2MzlWVnks5PwjcDz5PI6t5JFXZYCHiiiwBn94=; b=hqEfK482wRokrGdrAabZBo4Dn6
+        H0k1Bbwg0Vi08tsmwkQG+EteB+nkAOP2QTEIkjj6zeBYQ0/777WpIlSS9lzfGgDBeQIOmXDYMbbWX
+        YtFu681uKQlUn1xvGn2UYqjl0ZYSg24rALU3Km+xSD0EEaTc4rVNG6uSYu3r55wvhdBzr5Aqq7KfU
+        Io9bWaAxMDtaK0sSULhOtQtCePnYNi7v2CmOD1byl9nyx+qBCVHu6X/DxRIMPiF7UKt+Ow+yhf5Zn
+        BI1R2bVQFU4TkfoTvXgPQggiIVNQ3rWrnB/J3sZS5jreNAM3qK07Ik/TwbApdiTBbq0qSJ4sAomnF
+        aD9u7ziQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jY9Bn-0008Hp-90; Mon, 11 May 2020 14:13:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6D007301EFB;
+        Mon, 11 May 2020 16:13:48 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BCA4D2870CB3F; Mon, 11 May 2020 16:13:48 +0200 (CEST)
+Date:   Mon, 11 May 2020 16:13:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexandre Chartre <alexandre.chartre@oracle.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch V4 part 5 07/31] x86/entry: Provide
+ idtentry_entry/exit_cond_rcu()
+Message-ID: <20200511141348.GH2957@hirez.programming.kicks-ass.net>
+References: <20200505135341.730586321@linutronix.de>
+ <20200505135828.808686575@linutronix.de>
+ <72cb3e24-3f82-7e2a-7630-233749c780c4@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <01831b19-5890-e7e0-3801-068dfab5c92a@pensando.io>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <72cb3e24-3f82-7e2a-7630-233749c780c4@oracle.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 09, 2020 at 07:15:23PM -0700, Shannon Nelson wrote:
-> On 5/9/20 6:58 PM, Andrew Lunn wrote:
-> > On Sat, May 09, 2020 at 06:01:51PM -0700, Shannon Nelson wrote:
-> > As for firmware, how much damage can the firmware do as it crashed? If
-> > it is a DMA master, it could of splattered stuff through
-> > memory. Restarting the firmware is not going to reverse the damage it
-> > has done.
-> > 
-> True, and tho' the driver might get the thing restarted, it wouldn't
-> necessarily know what kind of damage had ensued.
+On Mon, May 11, 2020 at 03:53:17PM +0200, Alexandre Chartre wrote:
+> 
+> On 5/5/20 3:53 PM, Thomas Gleixner wrote:
+> > The pagefault handler cannot use the regular idtentry_enter() because on
+> > that invokes rcu_irq_enter() the pagefault was caused in the kernel.
+> 
+> I am struggling to understand this part of the sentence: "because on
+> that invokes rcu_irq_enter() the pagefault was caused in the kernel."
+> 
+> Do you mean: "because that invokes rcu_irq_enter() if the pagefault was
+> caused in the kernel." ?
 
-Indeed, it is those uknowns which we currently assume is just fine, but
-in reality can be damaging. Today we just move on with life, but such
-information is useful for analysis.
+The problem is that rcu_irq_enter() uses per-cpu state and expect
+rcu_irq_exit() to be called on the very same cpu we did enter on.
 
-  Luis
+However, #PF likes to schedule and breaks that expectation.
+
+While there are more exceptions that schedule when from userspace, #PF
+is the only one that does so when from kernel space, which makes is
+'special'.
