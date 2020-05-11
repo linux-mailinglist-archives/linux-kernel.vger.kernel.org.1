@@ -2,176 +2,387 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BC21CE545
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 22:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A791CE541
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 22:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731612AbgEKUUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 16:20:54 -0400
-Received: from mga18.intel.com ([134.134.136.126]:19258 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727873AbgEKUUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 16:20:53 -0400
-IronPort-SDR: T5ubHYuCdz/0lOb8uC9yTdY66mDZonsdGY325hTFKDetQ6d8xpnkyBKn89L3DxhF2RnlxpSEZK
- aznVAdiutX2g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 13:20:52 -0700
-IronPort-SDR: nypXNphGh+lKqXHZpB+uuiJybEv0x3zwxO/6ScPS0+9khIxC7PjKTQkIJBZGZX5Nl5de3epUzc
- o4RwJiefW7WQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,381,1583222400"; 
-   d="scan'208";a="463292524"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by fmsmga005.fm.intel.com with ESMTP; 11 May 2020 13:20:52 -0700
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Rik van Riel <riel@surriel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [PATCH v3 10/10] x86/fpu/xstate: Restore supervisor states for signal return
-Date:   Mon, 11 May 2020 13:20:06 -0700
-Message-Id: <20200511202006.10295-1-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200328164307.17497-11-yu-cheng.yu@intel.com>
-References: <20200328164307.17497-11-yu-cheng.yu@intel.com>
+        id S1731349AbgEKUUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 16:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727873AbgEKUUV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 16:20:21 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B40C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 13:20:21 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id s186so9426524qkd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 13:20:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:user-agent:in-reply-to:references:mime-version
+         :content-transfer-encoding:subject:to:cc:from:message-id;
+        bh=R8nilJ4CcTJaHyQ3czgk5Dtf5WYQNvIraDoZesffuVY=;
+        b=nH8mE8A/qTjN7djkR2O9CuROi0sRqXXH+kuYM02WhAUFhSKbrbaWmd9efEyVKLUl/C
+         Oar5s9QwcAZzMDq6elXFjZzfR5sdR3LPV7oLoPa2+2DgCfoEou2LR20ptdh4kNWtr3LX
+         frMqxT64LCA0uU9Ga75P6ufOlrxrPelcGACDwkAYbkuML1X11n0v7yrLdBba+Wqn0d1b
+         ArCmrRxsh4wZEyE2+8je06bORCnUdCZoAwY/CR1HUEqrbIHsoAceR/pTFHtwVwYpPVRx
+         o680cCK6qVNLOUU2gbSkOcUlHTr+P07aWyd1i9RVEqsqHLquK/esQ2zphwATqm8jo0K0
+         VzGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:user-agent:in-reply-to:references
+         :mime-version:content-transfer-encoding:subject:to:cc:from
+         :message-id;
+        bh=R8nilJ4CcTJaHyQ3czgk5Dtf5WYQNvIraDoZesffuVY=;
+        b=PtepANnaHRGO/TiPw1YJeUNc+r09baHRfn5ZAoHo+48rtBBwUHLAFta90Hi1zTURTD
+         fOhOQDiK4S7qjjMjmSnlrknbWtZo0wBxRnjEvtJ8l057ZS8ObAnS3VgDWt1ROVBKrq5P
+         hx5M9IKyi7wgreXsBQAgdhiLTWJXQ1Li+FoOHUKw3U0765as7gJiQbgNrEv6TBw+RcWv
+         ywW7DCp1LTu8uuuB+TAtRnRerSRIATCnsoluryF9WXB6qBx0pV1fofPOoh/yvxnO5K9+
+         v2enBGnKgIh8ythZyHXvZVGul9/JG+OEs0mDM+opYttTTVnccU8UitzbChX+JD8vb6ki
+         OTRw==
+X-Gm-Message-State: AGi0PubR5WqHVg4f4fPoWZsptT9m6M5HLILB/9WNyyqvzgSdjoB5mJeg
+        zcHPe840R9MecDQ+j4FTBdUf1/RK
+X-Google-Smtp-Source: APiQypL8tblGtMBDY6G1sq+WK++Zg3S0NYkPjRDKgFvw2OPBQBxyOCQZUUn5nK/y6PEPk6zCKInNzw==
+X-Received: by 2002:a37:9d4f:: with SMTP id g76mr8410016qke.235.1589228420346;
+        Mon, 11 May 2020 13:20:20 -0700 (PDT)
+Received: from [10.94.16.134] (189-94-128-6.3g.claro.net.br. [189.94.128.6])
+        by smtp.gmail.com with ESMTPSA id t21sm2566873qtb.0.2020.05.11.13.20.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 11 May 2020 13:20:19 -0700 (PDT)
+Date:   Mon, 11 May 2020 17:20:08 -0300
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20200511195643.GA9850@embeddedor>
+References: <20200511195643.GA9850@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] perf tools: Replace zero-length array with flexible-array
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+CC:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+From:   Arnaldo Melo <arnaldo.melo@gmail.com>
+Message-ID: <0C076F02-CEB7-4DBC-8337-CCEBC0870E44@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As described in the previous patch, the signal return fast path directly
-restores user states from the user buffer.  Once that succeeds, restore
-supervisor states (but only when they are not yet restored).
 
-For the slow path, save supervisor states to preserve them across context
-switches, and restore after the user states are restored.
 
-The previous version has the overhead of an XSAVES in both the fast and the
-slow paths.  It is addressed as the following:
+On May 11, 2020 4:56:43 PM GMT-03:00, "Gustavo A=2E R=2E Silva" <gustavoar=
+s@kernel=2Eorg> wrote:
+>The current codebase makes use of the zero-length array language
+>extension to the C90 standard, but the preferred mechanism to declare
+>variable-length types such as these ones is a flexible array
+>member[1][2],
+>introduced in C99:
+>
+>struct foo {
+>        int stuff;
+>        struct boo array[];
+>};
+>
+>By making use of the mechanism above, we will get a compiler warning
+>in case the flexible array does not occur last in the structure, which
+>will help us prevent some kind of undefined behavior bugs from being
+>inadvertently introduced[3] to the codebase from now on=2E
+>
+>Also, notice that, dynamic memory allocations won't be affected by
+>this change:
+>
+>"Flexible array members have incomplete type, and so the sizeof
+>operator
+>may not be applied=2E As a quirk of the original implementation of
+>zero-length arrays, sizeof evaluates to zero=2E"[1]
+>
+>sizeof(flexible-array-member) triggers a warning because flexible array
+>members have incomplete type[1]=2E There are some instances of code in
+>which the sizeof operator is being incorrectly/erroneously applied to
+>zero-length arrays and the result is zero=2E Such instances may be hiding
+>some bugs=2E So, this work (flexible-array member conversions) will also
+>help to get completely rid of those sorts of issues=2E
+>
+>This issue was found with the help of Coccinelle=2E
 
-- In the fast path, only do an XRSTORS.
-- In the slow path, do a supervisor-state-only XSAVES, and relocate the
-  buffer contents.
+Thanks, applied
 
-Some thoughts in the implementation:
+- Arnaldo
+>
+>[1] https://gcc=2Egnu=2Eorg/onlinedocs/gcc/Zero-Length=2Ehtml
+>[2] https://github=2Ecom/KSPP/linux/issues/21
+>[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+>
+>Signed-off-by: Gustavo A=2E R=2E Silva <gustavoars@kernel=2Eorg>
+>---
+> tools/perf/bench/sched-messaging=2Ec       | 2 +-
+> tools/perf/builtin-inject=2Ec              | 2 +-
+> tools/perf/builtin-script=2Ec              | 2 +-
+> tools/perf/builtin-timechart=2Ec           | 2 +-
+> tools/perf/util/annotate=2Eh               | 4 ++--
+> tools/perf/util/branch=2Eh                 | 2 +-
+> tools/perf/util/cputopo=2Eh                | 2 +-
+> tools/perf/util/dso=2Eh                    | 4 ++--
+> tools/perf/util/event=2Eh                  | 2 +-
+> tools/perf/util/jitdump=2Ec                | 2 +-
+> tools/perf/util/jitdump=2Eh                | 6 +++---
+> tools/perf/util/ordered-events=2Eh         | 2 +-
+> tools/perf/util/pstack=2Ec                 | 2 +-
+> tools/perf/util/symbol=2Eh                 | 2 +-
+> tools/perf/util/unwind-libunwind-local=2Ec | 2 +-
+> 15 files changed, 19 insertions(+), 19 deletions(-)
+>
+>diff --git a/tools/perf/bench/sched-messaging=2Ec
+>b/tools/perf/bench/sched-messaging=2Ec
+>index 97e4a4fb3362=2E=2E71d830d7b923 100644
+>--- a/tools/perf/bench/sched-messaging=2Ec
+>+++ b/tools/perf/bench/sched-messaging=2Ec
+>@@ -40,7 +40,7 @@ struct sender_context {
+> 	unsigned int num_fds;
+> 	int ready_out;
+> 	int wakefd;
+>-	int out_fds[0];
+>+	int out_fds[];
+> };
+>=20
+> struct receiver_context {
+>diff --git a/tools/perf/builtin-inject=2Ec b/tools/perf/builtin-inject=2E=
+c
+>index 7e124a7b8bfd=2E=2E8f983877c42d 100644
+>--- a/tools/perf/builtin-inject=2Ec
+>+++ b/tools/perf/builtin-inject=2Ec
+>@@ -51,7 +51,7 @@ struct perf_inject {
+> struct event_entry {
+> 	struct list_head node;
+> 	u32		 tid;
+>-	union perf_event event[0];
+>+	union perf_event event[];
+> };
+>=20
+>static int output_bytes(struct perf_inject *inject, void *buf, size_t
+>sz)
+>diff --git a/tools/perf/builtin-script=2Ec b/tools/perf/builtin-script=2E=
+c
+>index 1f57a7ecdf3d=2E=2E02d64a9c6f64 100644
+>--- a/tools/perf/builtin-script=2Ec
+>+++ b/tools/perf/builtin-script=2Ec
+>@@ -2619,7 +2619,7 @@ static int __cmd_script(struct perf_script
+>*script)
+> struct script_spec {
+> 	struct list_head	node;
+> 	struct scripting_ops	*ops;
+>-	char			spec[0];
+>+	char			spec[];
+> };
+>=20
+> static LIST_HEAD(script_specs);
+>diff --git a/tools/perf/builtin-timechart=2Ec
+>b/tools/perf/builtin-timechart=2Ec
+>index 9e84fae9b096=2E=2E0ba568efa939 100644
+>--- a/tools/perf/builtin-timechart=2Ec
+>+++ b/tools/perf/builtin-timechart=2Ec
+>@@ -128,7 +128,7 @@ struct sample_wrapper {
+> 	struct sample_wrapper *next;
+>=20
+> 	u64		timestamp;
+>-	unsigned char	data[0];
+>+	unsigned char	data[];
+> };
+>=20
+> #define TYPE_NONE	0
+>diff --git a/tools/perf/util/annotate=2Eh b/tools/perf/util/annotate=2Eh
+>index 2d88069d6428=2E=2E0a0cd4f32175 100644
+>--- a/tools/perf/util/annotate=2Eh
+>+++ b/tools/perf/util/annotate=2Eh
+>@@ -144,7 +144,7 @@ struct annotation_line {
+> 	u32			 idx;
+> 	int			 idx_asm;
+> 	int			 data_nr;
+>-	struct annotation_data	 data[0];
+>+	struct annotation_data	 data[];
+> };
+>=20
+> struct disasm_line {
+>@@ -227,7 +227,7 @@ void symbol__calc_percent(struct symbol *sym,
+>struct evsel *evsel);
+> struct sym_hist {
+> 	u64		      nr_samples;
+> 	u64		      period;
+>-	struct sym_hist_entry addr[0];
+>+	struct sym_hist_entry addr[];
+> };
+>=20
+> struct cyc_hist {
+>diff --git a/tools/perf/util/branch=2Eh b/tools/perf/util/branch=2Eh
+>index 154a05cd03af=2E=2E748f1d23a5c4 100644
+>--- a/tools/perf/util/branch=2Eh
+>+++ b/tools/perf/util/branch=2Eh
+>@@ -41,7 +41,7 @@ struct branch_entry {
+> struct branch_stack {
+> 	u64			nr;
+> 	u64			hw_idx;
+>-	struct branch_entry	entries[0];
+>+	struct branch_entry	entries[];
+> };
+>=20
+> /*
+>diff --git a/tools/perf/util/cputopo=2Eh b/tools/perf/util/cputopo=2Eh
+>index 7bf6b811f715=2E=2E6201c3790d86 100644
+>--- a/tools/perf/util/cputopo=2Eh
+>+++ b/tools/perf/util/cputopo=2Eh
+>@@ -22,7 +22,7 @@ struct numa_topology_node {
+>=20
+> struct numa_topology {
+> 	u32				nr;
+>-	struct numa_topology_node	nodes[0];
+>+	struct numa_topology_node	nodes[];
+> };
+>=20
+> struct cpu_topology *cpu_topology__new(void);
+>diff --git a/tools/perf/util/dso=2Eh b/tools/perf/util/dso=2Eh
+>index 2db64b79617a=2E=2Ed7ba29ad19ff 100644
+>--- a/tools/perf/util/dso=2Eh
+>+++ b/tools/perf/util/dso=2Eh
+>@@ -136,7 +136,7 @@ struct dso_cache {
+> 	struct rb_node	rb_node;
+> 	u64 offset;
+> 	u64 size;
+>-	char data[0];
+>+	char data[];
+> };
+>=20
+> struct auxtrace_cache;
+>@@ -208,7 +208,7 @@ struct dso {
+> 	struct nsinfo	*nsinfo;
+> 	struct dso_id	 id;
+> 	refcount_t	 refcnt;
+>-	char		 name[0];
+>+	char		 name[];
+> };
+>=20
+> /* dso__for_each_symbol - iterate over the symbols of given type
+>diff --git a/tools/perf/util/event=2Eh b/tools/perf/util/event=2Eh
+>index b8289f160f07=2E=2E6ae01c3c2ffa 100644
+>--- a/tools/perf/util/event=2Eh
+>+++ b/tools/perf/util/event=2Eh
+>@@ -79,7 +79,7 @@ struct sample_read {
+>=20
+> struct ip_callchain {
+> 	u64 nr;
+>-	u64 ips[0];
+>+	u64 ips[];
+> };
+>=20
+> struct branch_stack;
+>diff --git a/tools/perf/util/jitdump=2Ec b/tools/perf/util/jitdump=2Ec
+>index e3ccb0ce1938=2E=2E32bb05e03fb2 100644
+>--- a/tools/perf/util/jitdump=2Ec
+>+++ b/tools/perf/util/jitdump=2Ec
+>@@ -57,7 +57,7 @@ struct debug_line_info {
+> 	unsigned long vma;
+> 	unsigned int lineno;
+>	/* The filename format is unspecified, absolute path, relative etc=2E */
+>-	char const filename[0];
+>+	char const filename[];
+> };
+>=20
+> struct jit_tool {
+>diff --git a/tools/perf/util/jitdump=2Eh b/tools/perf/util/jitdump=2Eh
+>index f2c3823cc81a=2E=2Eab2842def83d 100644
+>--- a/tools/perf/util/jitdump=2Eh
+>+++ b/tools/perf/util/jitdump=2Eh
+>@@ -93,7 +93,7 @@ struct debug_entry {
+> 	uint64_t addr;
+> 	int lineno;	    /* source line number starting at 1 */
+> 	int discrim;	    /* column discriminator, 0 is default */
+>-	const char name[0]; /* null terminated filename, \xff\0 if same as
+>previous entry */
+>+	const char name[]; /* null terminated filename, \xff\0 if same as
+>previous entry */
+> };
+>=20
+> struct jr_code_debug_info {
+>@@ -101,7 +101,7 @@ struct jr_code_debug_info {
+>=20
+> 	uint64_t code_addr;
+> 	uint64_t nr_entry;
+>-	struct debug_entry entries[0];
+>+	struct debug_entry entries[];
+> };
+>=20
+> struct jr_code_unwinding_info {
+>@@ -110,7 +110,7 @@ struct jr_code_unwinding_info {
+> 	uint64_t unwinding_size;
+> 	uint64_t eh_frame_hdr_size;
+> 	uint64_t mapped_size;
+>-	const char unwinding_data[0];
+>+	const char unwinding_data[];
+> };
+>=20
+> union jr_entry {
+>diff --git a/tools/perf/util/ordered-events=2Eh
+>b/tools/perf/util/ordered-events=2Eh
+>index 0920fb0ec6cc=2E=2E75345946c4b9 100644
+>--- a/tools/perf/util/ordered-events=2Eh
+>+++ b/tools/perf/util/ordered-events=2Eh
+>@@ -29,7 +29,7 @@ typedef int (*ordered_events__deliver_t)(struct
+>ordered_events *oe,
+>=20
+> struct ordered_events_buffer {
+> 	struct list_head	list;
+>-	struct ordered_event	event[0];
+>+	struct ordered_event	event[];
+> };
+>=20
+> struct ordered_events {
+>diff --git a/tools/perf/util/pstack=2Ec b/tools/perf/util/pstack=2Ec
+>index 80ff41fc45be=2E=2Ea1d1e4ef6257 100644
+>--- a/tools/perf/util/pstack=2Ec
+>+++ b/tools/perf/util/pstack=2Ec
+>@@ -15,7 +15,7 @@
+> struct pstack {
+> 	unsigned short	top;
+> 	unsigned short	max_nr_entries;
+>-	void		*entries[0];
+>+	void		*entries[];
+> };
+>=20
+> struct pstack *pstack__new(unsigned short max_nr_entries)
+>diff --git a/tools/perf/util/symbol=2Eh b/tools/perf/util/symbol=2Eh
+>index 93fc43db1be3=2E=2Eff4f4c47e148 100644
+>--- a/tools/perf/util/symbol=2Eh
+>+++ b/tools/perf/util/symbol=2Eh
+>@@ -55,7 +55,7 @@ struct symbol {
+> 	u8		inlined:1;
+> 	u8		arch_sym;
+> 	bool		annotate2;
+>-	char		name[0];
+>+	char		name[];
+> };
+>=20
+> void symbol__delete(struct symbol *sym);
+>diff --git a/tools/perf/util/unwind-libunwind-local=2Ec
+>b/tools/perf/util/unwind-libunwind-local=2Ec
+>index b4649f5a0c2f=2E=2E9aededc0bc06 100644
+>--- a/tools/perf/util/unwind-libunwind-local=2Ec
+>+++ b/tools/perf/util/unwind-libunwind-local=2Ec
+>@@ -243,7 +243,7 @@ struct eh_frame_hdr {
+> 	 *    encoded_t fde_addr;
+> 	 * } binary_search_table[fde_count];
+> 	 */
+>-	char data[0];
+>+	char data[];
+> } __packed;
+>=20
+>static int unwind_spec_ehframe(struct dso *dso, struct machine
+>*machine,
 
-- In the slow path, can any supervisor state become stale between
-  save/restore?
-
-  Answer: set_thread_flag(TIF_NEED_FPU_LOAD) protects the xstate buffer.
-
-- In the slow path, can any code reference a stale supervisor state
-  register between save/restore?
-
-  Answer: In the current lazy-restore scheme, any reference to xstate
-  registers needs fpregs_lock()/fpregs_unlock() and __fpregs_load_activate().
-
-- Are there other options?
-
-  One other option is eagerly restoring all supervisor states.
-
-  Currently, CET user-mode states and ENQCMD's PASID do not need to be
-  eagerly restored.  The upcoming CET kernel-mode states (24 bytes) need
-  to be eagerly restored.  To me, eagerly restoring all supervisor states
-  adds more overhead then benefit at this point.
-
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
----
-v3:
-- Change copy_xregs_to_kernel() to copy_supervisor_to_kernel(), which is
-  introduced in a previous patch.
-- Update commit log.
-
- arch/x86/kernel/fpu/signal.c | 27 ++++++++++++++++++++++-----
- 1 file changed, 22 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index 545ca4314096..4dad5afc938d 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -347,6 +347,23 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 		ret = copy_user_to_fpregs_zeroing(buf_fx, user_xfeatures, fx_only);
- 		pagefault_enable();
- 		if (!ret) {
-+
-+			/*
-+			 * Restore supervisor states: previous context switch
-+			 * etc has done XSAVES and saved the supervisor states
-+			 * in the kernel buffer from which they can be restored
-+			 * now.
-+			 *
-+			 * We cannot do a single XRSTORS here - which would
-+			 * be nice - because the rest of the FPU registers are
-+			 * being restored from a user buffer directly. The
-+			 * single XRSTORS happens below, when the user buffer
-+			 * has been copied to the kernel one.
-+			 */
-+			if (test_thread_flag(TIF_NEED_FPU_LOAD) &&
-+			    xfeatures_mask_supervisor())
-+				copy_kernel_to_xregs(&fpu->state.xsave,
-+						     xfeatures_mask_supervisor());
- 			fpregs_mark_activate();
- 			fpregs_unlock();
- 			return 0;
-@@ -364,14 +381,25 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 	}
- 
- 	/*
--	 * The current state of the FPU registers does not matter. By setting
--	 * TIF_NEED_FPU_LOAD unconditionally it is ensured that the our xstate
--	 * is not modified on context switch and that the xstate is considered
-+	 * By setting TIF_NEED_FPU_LOAD it is ensured that our xstate is
-+	 * not modified on context switch and that the xstate is considered
- 	 * to be loaded again on return to userland (overriding last_cpu avoids
- 	 * the optimisation).
- 	 */
--	set_thread_flag(TIF_NEED_FPU_LOAD);
-+	fpregs_lock();
-+
-+	if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
-+
-+		/*
-+		 * Supervisor states are not modified by user space input.  Save
-+		 * current supervisor states first and invalidate the FPU regs.
-+		 */
-+		if (xfeatures_mask_supervisor())
-+			copy_supervisor_to_kernel(&fpu->state.xsave);
-+		set_thread_flag(TIF_NEED_FPU_LOAD);
-+	}
- 	__fpu_invalidate_fpregs_state(fpu);
-+	fpregs_unlock();
- 
- 	if (use_xsave() && !fx_only) {
- 		u64 init_bv = xfeatures_mask_user() & ~user_xfeatures;
-@@ -393,7 +421,13 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 		fpregs_lock();
- 		if (unlikely(init_bv))
- 			copy_kernel_to_xregs(&init_fpstate.xsave, init_bv);
--		ret = copy_kernel_to_xregs_err(&fpu->state.xsave, user_xfeatures);
-+
-+		/*
-+		 * Restore previously saved supervisor xstates along with
-+		 * copied-in user xstates.
-+		 */
-+		ret = copy_kernel_to_xregs_err(&fpu->state.xsave,
-+					       user_xfeatures | xfeatures_mask_supervisor());
- 
- 	} else if (use_fxsr()) {
- 		ret = __copy_from_user(&fpu->state.fxsave, buf_fx, state_size);
--- 
-2.21.0
-
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
