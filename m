@@ -2,96 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A11E1CE262
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB501CE266
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731085AbgEKSPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 14:15:22 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:13050 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729673AbgEKSPV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 14:15:21 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04BI5q4g194657;
-        Mon, 11 May 2020 14:15:18 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30yaeja9ke-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 May 2020 14:15:18 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04BI1Bq5021203;
-        Mon, 11 May 2020 18:15:15 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 30wm55mvve-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 May 2020 18:15:15 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04BIFDiq56361002
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 May 2020 18:15:13 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8C40F52052;
-        Mon, 11 May 2020 18:15:13 +0000 (GMT)
-Received: from [9.199.34.77] (unknown [9.199.34.77])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 1DE4852063;
-        Mon, 11 May 2020 18:15:10 +0000 (GMT)
-Subject: Re: [PATCH] perf powerpc: Don't ignore sym-handling.c file
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>, acme@kernel.org
-Cc:     leo.yan@linaro.org, jolsa@kernel.org,
-        naveen.n.rao@linux.vnet.ibm.com, linux-kernel@vger.kernel.org
-References: <20200509112113.174745-1-ravi.bangoria@linux.ibm.com>
-From:   Sandipan Das <sandipan@linux.ibm.com>
-Message-ID: <88066ce0-f586-b88d-75b5-2706684818d7@linux.ibm.com>
-Date:   Mon, 11 May 2020 23:45:09 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1731051AbgEKSRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 14:17:12 -0400
+Received: from mga03.intel.com ([134.134.136.65]:53698 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729678AbgEKSRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 14:17:11 -0400
+IronPort-SDR: 9L4snjHpDpN67h0KhUNqufKvZo8GCBVf31NpAAW0RvOXEEXiVHoKkswqHNKCXFnQ9Fs20DuFfM
+ +USTCitSbs/A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 11:17:11 -0700
+IronPort-SDR: 38zTCriKg5Yq9VmhZtWaXyixpm+lKVTUX16kvRsUQbv+OUmVYmqVh259nwt+H8KjuKpm2g0qk4
+ x3XR6ktGUvag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,380,1583222400"; 
+   d="scan'208";a="306251281"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.1.152]) ([10.213.1.152])
+  by FMSMGA003.fm.intel.com with ESMTP; 11 May 2020 11:17:09 -0700
+Subject: Re: [PATCH RESEND] ASoC: Intel: Skylake: Replace zero-length array
+ with flexible-array
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <20200511174647.GA17318@embeddedor>
+From:   Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <d973f704-539e-eac8-122f-52f6b5d0e123@intel.com>
+Date:   Mon, 11 May 2020 20:17:08 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200509112113.174745-1-ravi.bangoria@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200511174647.GA17318@embeddedor>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-11_08:2020-05-11,2020-05-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
- priorityscore=1501 malwarescore=0 adultscore=0 mlxlogscore=999 mlxscore=0
- impostorscore=0 spamscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005110138
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 09/05/20 4:51 pm, Ravi Bangoria wrote:
-> Commit 7eec00a74720 ("perf symbols: Consolidate symbol fixup issue")
-> removed powerpc specific sym-handling.c file from Build. This wasn't
-> caught by build CI because all functions in this file are declared
-> as __weak in common code. Fix it.
+On 2020-05-11 7:46 PM, Gustavo A. R. Silva wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
 > 
-> Fixes: 7eec00a74720 ("perf symbols: Consolidate symbol fixup issue")
-> Reported-by: Sandipan Das <sandipan@linux.ibm.com>
-> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+> struct foo {
+>          int stuff;
+>          struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > ---
->  tools/perf/arch/powerpc/util/Build | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/perf/arch/powerpc/util/Build b/tools/perf/arch/powerpc/util/Build
-> index e5c9504f8586..e86e210bf514 100644
-> --- a/tools/perf/arch/powerpc/util/Build
-> +++ b/tools/perf/arch/powerpc/util/Build
-> @@ -2,6 +2,7 @@ perf-y += header.o
->  perf-y += kvm-stat.o
->  perf-y += perf_regs.o
->  perf-y += mem-events.o
-> +perf-y += sym-handling.o
->  
->  perf-$(CONFIG_DWARF) += dwarf-regs.o
->  perf-$(CONFIG_DWARF) += skip-callchain-idx.o
+>   sound/soc/intel/atom/sst-atom-controls.h |    2 +-
+>   sound/soc/intel/skylake/skl-i2s.h        |    2 +-
+>   sound/soc/intel/skylake/skl-topology.h   |    4 ++--
+>   sound/soc/intel/skylake/skl.h            |    2 +-
+>   4 files changed, 5 insertions(+), 5 deletions(-)
 > 
 
-Thanks for fixing this!
+Acked-by: Cezary Rojewski <cezary.rojewski@intel.com>
 
-Acked-by: Sandipan Das <sandipan@linux.ibm.com>
+Thanks,
+Czarek
