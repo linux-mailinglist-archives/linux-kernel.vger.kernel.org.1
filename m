@@ -2,69 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555D01CCF34
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 03:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 948141CCF39
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 03:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729137AbgEKBgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 21:36:22 -0400
-Received: from mga05.intel.com ([192.55.52.43]:3855 "EHLO mga05.intel.com"
+        id S1729227AbgEKBja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 21:39:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728381AbgEKBgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 21:36:22 -0400
-IronPort-SDR: UzlKFjr7B0avonjXh/HaKZ2mwf4B8y7rW/slzZwmHYS9hq++l3Lc37XjCuQCFII7hg+41sc66b
- WDz4ytRf2GxQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2020 18:36:21 -0700
-IronPort-SDR: hJ0RYXuNfJOqMfsJen2/OqlQJteg6//q7UrCk7QgeIqux0q3WuWLlkUJIygQegbRS6tQJiViHu
- XlV9mXHcldPg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,378,1583222400"; 
-   d="scan'208";a="436492239"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.3]) ([10.239.13.3])
-  by orsmga005.jf.intel.com with ESMTP; 10 May 2020 18:36:20 -0700
-Subject: Re: [pipe] f2af7d90e2: xfstests.btrfs.052.fail
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     0day robot <lkp@intel.com>, Jens Axboe <axboe@kernel.dk>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-References: <20200511010957.GW5770@shao2-debian>
- <20200511011601.GV16070@bombadil.infradead.org>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <01134103-4ca4-958a-f627-a17097315429@intel.com>
-Date:   Mon, 11 May 2020 09:36:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1728381AbgEKBja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 May 2020 21:39:30 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 471B7207FF;
+        Mon, 11 May 2020 01:39:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589161169;
+        bh=am+eWUmxcP2bsJRpLx1IxtNAzjyf4uJ9CE9NU9+VV4g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZmV1Z+9JgrDcuGQn+nqAAmFqyrfQeO6QedzQFdRWaCJKzBK4qEHXvKpwR8JZ840Uy
+         QHuXZ1Hsu2RUFvcRooYjpDKPLaj/wEFL8JH9uiecxsgrijQnxnLKWpeZl19GrJ91dL
+         e8QksDoJXwyTGoSge+Joitn+dCbwjBlLUu/3qKn0=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        stable@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] bootconfig: Fix to prevent warning message if no bootconfig option
+Date:   Mon, 11 May 2020 10:39:24 +0900
+Message-Id: <158916116468.21787.14558782332170588206.stgit@devnote2>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200511095728.8490ad9e3d5a25e7400a4910@kernel.org>
+References: <20200511095728.8490ad9e3d5a25e7400a4910@kernel.org>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-In-Reply-To: <20200511011601.GV16070@bombadil.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit de462e5f1071 ("bootconfig: Fix to remove bootconfig
+data from initrd while boot") causes a cosmetic regression
+on dmesg, which warns "no bootconfig data" message without
+bootconfig cmdline option.
 
+Fix setup_boot_config() by moving no bootconfig check after
+commandline option check.
 
-On 5/11/20 9:16 AM, Matthew Wilcox wrote:
-> On Mon, May 11, 2020 at 09:09:57AM +0800, kernel test robot wrote:
->>      --- tests/btrfs/095.out	2020-04-09 10:45:28.000000000 +0800
->>      +++ /lkp/benchmarks/xfstests/results//btrfs/095.out.bad	2020-05-06 21:13:51.276485703 +0800
->>      @@ -1,35 +1,9 @@
->>       QA output created by 095
->>      -Blocks modified: [135 - 164]
->>      -Blocks modified: [768 - 792]
->>      +awk: line 19: function strtonum never defined
->>      +awk: line 19: function strtonum never defined
->>      +awk: line 19: function strtonum never defined
->>      +awk: line 19: function strtonum never defined
-> This looks like a problem with the test setup.
->
+Fixes: de462e5f1071 ("bootconfig: Fix to remove bootconfig data from initrd while boot")
+Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ init/main.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Hi Matthew,
+diff --git a/init/main.c b/init/main.c
+index 1a5da2c2660c..5803ecb411ab 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -400,9 +400,8 @@ static void __init setup_boot_config(const char *cmdline)
+ 	char *data, *copy;
+ 	int ret;
+ 
++	/* Cut out the bootconfig data even if we have no bootconfig option */
+ 	data = get_boot_config_from_initrd(&size, &csum);
+-	if (!data)
+-		goto not_found;
+ 
+ 	strlcpy(tmp_cmdline, boot_command_line, COMMAND_LINE_SIZE);
+ 	parse_args("bootconfig", tmp_cmdline, NULL, 0, 0, 0, NULL,
+@@ -411,6 +410,11 @@ static void __init setup_boot_config(const char *cmdline)
+ 	if (!bootconfig_found)
+ 		return;
+ 
++	if (!data) {
++		pr_err("'bootconfig' found on command line, but no bootconfig found\n");
++		return;
++	}
++
+ 	if (size >= XBC_DATA_MAX) {
+ 		pr_err("bootconfig size %d greater than max size %d\n",
+ 			size, XBC_DATA_MAX);
+@@ -446,8 +450,6 @@ static void __init setup_boot_config(const char *cmdline)
+ 		extra_init_args = xbc_make_cmdline("init");
+ 	}
+ 	return;
+-not_found:
+-	pr_err("'bootconfig' found on command line, but no bootconfig found\n");
+ }
+ 
+ #else
 
-Thanks for the response, we'll double check it.
-
-Best Regards,
-Rong Chen
