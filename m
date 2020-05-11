@@ -2,175 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A73E1CD224
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 08:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35231CD21E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 08:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728613AbgEKGzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 02:55:53 -0400
-Received: from twhmllg3.macronix.com ([122.147.135.201]:45756 "EHLO
-        TWHMLLG3.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728353AbgEKGzx (ORCPT
+        id S1728454AbgEKGzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 02:55:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726438AbgEKGzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 02:55:53 -0400
-Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
-        by TWHMLLG3.macronix.com with ESMTP id 04B6subk017855;
-        Mon, 11 May 2020 14:54:56 +0800 (GMT-8)
-        (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
-        by Forcepoint Email with ESMTP id CB39D9EF3346938A34B5;
-        Mon, 11 May 2020 14:54:56 +0800 (CST)
-In-Reply-To: <20200505120123.24962338@collabora.com>
-References: <1587451187-6889-1-git-send-email-masonccyang@mxic.com.tw>  <20200421092328.129308f6@collabora.com>
-        <20200427175536.2mmei2fy6f7bg6jm@yadavpratyush.com>     <OF18214CA5.6A9B2B30-ON48258558.001D894C-48258558.002249E0@mxic.com.tw>
-        <20200428085401.574wmo6qddmumd7q@yadavpratyush.com>     <OF04289CE2.B346916F-ON48258559.002280BD-48258559.00295800@mxic.com.tw>
-        <20200429181856.kkavelcczylg4yxf@yadavpratyush.com>     <OF28AE0642.4F34D6BB-ON4825855F.002D6E58-4825855F.003458C9@mxic.com.tw>
-        <20200505114443.6ebd5d3c@collabora.com> <20200505120123.24962338@collabora.com>
-To:     "Boris Brezillon" <boris.brezillon@collabora.com>
-Cc:     broonie@kernel.org, juliensu@mxic.com.tw,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        "Pratyush Yadav" <me@yadavpratyush.com>, miquel.raynal@bootlin.com,
-        "Pratyush Yadav" <p.yadav@ti.com>, richard@nod.at,
-        tudor.ambarus@microchip.com, vigneshr@ti.com
-Subject: Re: [PATCH v2 0/5] mtd: spi-nor: Add support for Octal 8D-8D-8D mode
+        Mon, 11 May 2020 02:55:11 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD71C061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 23:55:11 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id t3so6710161otp.3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 23:55:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessm-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NqE5Hd6mfokSG+/fYRFQAPgofHTiWpj3lFcNor9u7kc=;
+        b=Zg11uLNU9ywU36wb9YDC/vWtcGTb03E8YdiJ0DCgs4CFFAhhLJ1RIkzQzTryf4jaxq
+         YBJ3t796heGmNrxmFjgB0VQTo7gXh7lKcxbrgk7foaMVMJXw+Q85cSbM5phLukcsZFCs
+         JpbjAyYV1ScyY/FKb29xvy2GrG2b+MgCM+lL69Gad/0filOPGUKUtPBP/8oVwJzjYyIF
+         WnJCLUCIJaRirrMuvApKGEUYBFVgcqxhvopk0NZjyh4bcJHCwHAhKMB6wVz5p77Hbo9k
+         UOUF+8QD3dj1w8UciJreTMX2LRuu1u6lG/TBpwlZ133chk1H3o1BD2irZMo33jbUFdr+
+         LqBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NqE5Hd6mfokSG+/fYRFQAPgofHTiWpj3lFcNor9u7kc=;
+        b=B+1hemqKpF+bbSa1QYcn41l5Dq0e7bfJ6yZmyrV87NSnS77md5TtpuX1tQlPjo6v1l
+         HG50TUByp+Km1i+RNL5fhclLo1sUEnRkVpeeOqOvi2qwMF0Xf1Qcke30UM6BuJm60smG
+         xhIEmQBaZ5YiHxcGOsrFefz8iUHsnN2LLgAMLzTLMFpuXhOpzIcCC2L+gcEoZu/MN50c
+         +wzxt7VUi5nk+BU34T6PGFjDHkqrAPJDOZKwOVFt9WbUxmJmJzH9OZSt7rfsfZl4NimT
+         3+EInrOthUakzIz1eBtjgAW3FRQQreZn5dU8EycXJ4kodOEnsMtaxl5VCn3o6Ag6GEM7
+         3xAQ==
+X-Gm-Message-State: AGi0PuZQQ2ZqlgLb+evmwFO/Mm+TpXJVCRlRAFU64ffjQp7FZwgz89Ar
+        2CUnok+ghaiCJFOrmRPw9bZFTEz+SkYKwoD6ZGL7cw==
+X-Google-Smtp-Source: APiQypJx8MZQXkFp5WsraQLtG72h4Sny3Lasm6pZs7q/K/VxbPocZXTT3hNxCb9DL3z70CaYxjtiG9/cPAgn1SDWbQY=
+X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr12002639otp.144.1589180110526;
+ Sun, 10 May 2020 23:55:10 -0700 (PDT)
 MIME-Version: 1.0
-X-KeepSent: 38C348F3:6278EE64-48258565:0025C5C2;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF38C348F3.6278EE64-ON48258565.0025C5C2-48258565.0025FD93@mxic.com.tw>
-From:   masonccyang@mxic.com.tw
-Date:   Mon, 11 May 2020 14:54:56 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
- 2020/05/11 PM 02:54:56,
-        Serialize complete at 2020/05/11 PM 02:54:56
-Content-Type: text/plain; charset="US-ASCII"
-X-MAIL: TWHMLLG3.macronix.com 04B6subk017855
+References: <13031978.1nyG40egBz@kreacher>
+In-Reply-To: <13031978.1nyG40egBz@kreacher>
+From:   Chris Chiu <chiu@endlessm.com>
+Date:   Mon, 11 May 2020 14:54:59 +0800
+Message-ID: <CAB4CAwfpO6=24tdVBtZ258hAE=sMyww-P9t1PC=BALhy3rHxSQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ACPI: EC: s2idle: Avoid premature returns from acpi_s2idle_wake()
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Todd Brandt <todd.e.brandt@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Boris,
-
-
-> > > > 
-> > > > To clarify a bit more, the idea is that we transmit the opcode MSB 
-
-> > > > first, just we do for the address. Assume we want to issue the 
-command 
-> > > > 0x05. In 1S mode, we set cmd.opcode to 0x05. Here cmd.nbytes == 1. 
-Treat 
-> > > 
-> > > > is as a 1-byte value, so the MSB is the same as the LSB. We 
-directly 
-> > > > send 0x5 on the bus. 
-> > > 
-> > > There are many SPI controllers driver use "op->cmd.opcode" directly,
-> > > so is spi-mxic.c.
-> > > 
-> > > i.e,.
-> > > ret = mxic_spi_data_xfer(mxic, &op->cmd.opcode, NULL, 
-op->cmd.nbytes); 
-> > 
-> > Just because you do it doesn't mean it's right. And most controllers 
-use
-> > the opcode value, they don't dereference the pointer as you do here.
-> > 
-> > > 
-> > > > 
-> > > > If cmd.nbytes == 2, then the opcode would be 0x05FA (assuming 
-extension 
-> > > > is invert of command). So we send the MSB (0x05) first, and LSB 
-(0xFA) 
-> > > > next. 
-> > > 
-> > > My platform is Xilinx Zynq platform which CPU is ARMv7 processor.
-> > > 
-> > > In 1-1-1 mode, it's OK to send 1 byte command by u16 opcode but
-> > > in 8D-8D-8D mode, I need to patch
-> > > 
-> > > i.e.,
-> > > op->cmd.opcode = op->cmd.opcode | (ext << 8);
-> > > 
-> > > rather than your patch. 
-> > 
-> > Seriously, how hard is it to extract each byte from the u16 if your
-> > controller needs to pass things in a different order? I mean, that's
-> > already how it's done for the address cycle, so why is it a problem
-> > here? This sounds like bikeshedding to me. If the order is properly
-> > documented in the kernel doc, I see no problem having it grouped in 
-one
-> > u16, with the first cmd cycle placed in the MSB and the second one in
-> > the LSB.
-> 
-> So, I gave it a try, and we're talking about something as simple as the
-> below diff. And yes, the mxic controller needs to be patched before
-> extending the cmd.opcode field, but we're talking about one driver here
-> (all other drivers should be fine). Oh, and if you look a few lines 
-below
-> the changed lines, you'll notice that we do exactly the same for the
-> address.
-
-yup,
-thanks again for your time & comments.
-
-> 
-> --->8---
-> diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-> index 69491f3a515d..c3f4136a7c1d 100644
-> --- a/drivers/spi/spi-mxic.c
-> +++ b/drivers/spi/spi-mxic.c
-> @@ -356,6 +356,7 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
->         int nio = 1, i, ret;
->         u32 ss_ctrl;
->         u8 addr[8];
-> +       u8 cmd[2];
-> 
->         ret = mxic_spi_set_freq(mxic, mem->spi->max_speed_hz);
->         if (ret)
-> @@ -393,7 +394,10 @@ static int mxic_spi_mem_exec_op(struct spi_mem 
-*mem,
->         writel(readl(mxic->regs + HC_CFG) | HC_CFG_MAN_CS_ASSERT,
->                mxic->regs + HC_CFG);
-> 
-> -       ret = mxic_spi_data_xfer(mxic, &op->cmd.opcode, NULL, 1);
-> +       for (i = 0; i < op->cmd.nbytes; i++)
-> +               cmd[i] = op->cmd.opcode >> (8 * (op->cmd.nbytes - i - 
-1));
+On Sat, May 9, 2020 at 4:44 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+>
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> If the EC GPE status is not set after checking all of the other GPEs,
+> acpi_s2idle_wake() returns 'false', to indicate that the SCI event
+> that has just triggered is not a system wakeup one, but it does that
+> without canceling the pending wakeup and re-arming the SCI for system
+> wakeup which is a mistake, because it may cause s2idle_loop() to busy
+> spin until the next valid wakeup event.  [If that happens, the first
+> spurious wakeup is still pending after acpi_s2idle_wake() has
+> returned, so s2idle_enter() does nothing, acpi_s2idle_wake()
+> is called again and it sees that the SCI has triggered, but no GPEs
+> are active, so 'false' is returned again, and so on.]
+>
+> Fix that by moving all of the GPE checking logic from
+> acpi_s2idle_wake() to acpi_ec_dispatch_gpe() and making the
+> latter return 'true' only if a non-EC GPE has triggered and
+> 'false' otherwise, which will cause acpi_s2idle_wake() to
+> cancel the pending SCI wakeup and re-arm the SCI for system
+> wakeup regardless of the EC GPE status.
+>
+> This also addresses a lockup observed on an Elitegroup EF20EA laptop
+> after attempting to wake it up from suspend-to-idle by a key press.
+>
+> Fixes: d5406284ff80 ("ACPI: PM: s2idle: Refine active GPEs check")
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=207603
+> Reported-by: Todd Brandt <todd.e.brandt@linux.intel.com>
+> Fixes: fdde0ff8590b ("ACPI: PM: s2idle: Prevent spurious SCIs from waking up the system")
+> Link: https://lore.kernel.org/linux-acpi/CAB4CAwdqo7=MvyG_PE+PGVfeA17AHF5i5JucgaKqqMX6mjArbQ@mail.gmail.com/
+> Reported-by: Chris Chiu <chiu@endlessm.com>
+> Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+Tested-by: Chris Chiu <chiu@endlessm.com>
+>
+> -> v2:
+>    * Improve the changelog and add more tags.
+>
+> ---
+>  drivers/acpi/ec.c       |   24 ++++++++++++++++--------
+>  drivers/acpi/internal.h |    1 -
+>  drivers/acpi/sleep.c    |   14 ++------------
+>  3 files changed, 18 insertions(+), 21 deletions(-)
+>
+> Index: linux-pm/drivers/acpi/sleep.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/sleep.c
+> +++ linux-pm/drivers/acpi/sleep.c
+> @@ -1013,21 +1013,11 @@ static bool acpi_s2idle_wake(void)
+>                 if (acpi_check_wakeup_handlers())
+>                         return true;
+>
+> -               /*
+> -                * If the status bit is set for any enabled GPE other than the
+> -                * EC one, the wakeup is regarded as a genuine one.
+> -                */
+> -               if (acpi_ec_other_gpes_active())
+> +               /* Check non-EC GPE wakeups and dispatch the EC GPE. */
+> +               if (acpi_ec_dispatch_gpe())
+>                         return true;
+>
+>                 /*
+> -                * If the EC GPE status bit has not been set, the wakeup is
+> -                * regarded as a spurious one.
+> -                */
+> -               if (!acpi_ec_dispatch_gpe())
+> -                       return false;
+> -
+> -               /*
+>                  * Cancel the wakeup and process all pending events in case
+>                  * there are any wakeup ones in there.
+>                  *
+> Index: linux-pm/drivers/acpi/ec.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/ec.c
+> +++ linux-pm/drivers/acpi/ec.c
+> @@ -1994,23 +1994,31 @@ void acpi_ec_set_gpe_wake_mask(u8 action
+>                 acpi_set_gpe_wake_mask(NULL, first_ec->gpe, action);
+>  }
+>
+> -bool acpi_ec_other_gpes_active(void)
+> -{
+> -       return acpi_any_gpe_status_set(first_ec ? first_ec->gpe : U32_MAX);
+> -}
+> -
+>  bool acpi_ec_dispatch_gpe(void)
+>  {
+>         u32 ret;
+>
+>         if (!first_ec)
+> +               return acpi_any_gpe_status_set(U32_MAX);
 > +
-> +       ret = mxic_spi_data_xfer(mxic, cmd, NULL, op->cmd.nbytes);
->         if (ret)
->                 goto out;
-> 
-
-best regards,
-Mason
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+> +       /*
+> +        * Report wakeup if the status bit is set for any enabled GPE other
+> +        * than the EC one.
+> +        */
+> +       if (acpi_any_gpe_status_set(first_ec->gpe))
+> +               return true;
+> +
+> +       if (ec_no_wakeup)
+>                 return false;
+>
+> +       /*
+> +        * Dispatch the EC GPE in-band, but do not report wakeup in any case
+> +        * to allow the caller to process events properly after that.
+> +        */
+>         ret = acpi_dispatch_gpe(NULL, first_ec->gpe);
+> -       if (ret == ACPI_INTERRUPT_HANDLED) {
+> +       if (ret == ACPI_INTERRUPT_HANDLED)
+>                 pm_pr_dbg("EC GPE dispatched\n");
+> -               return true;
+> -       }
+> +
+>         return false;
+>  }
+>  #endif /* CONFIG_PM_SLEEP */
+> Index: linux-pm/drivers/acpi/internal.h
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/internal.h
+> +++ linux-pm/drivers/acpi/internal.h
+> @@ -202,7 +202,6 @@ void acpi_ec_remove_query_handler(struct
+>
+>  #ifdef CONFIG_PM_SLEEP
+>  void acpi_ec_flush_work(void);
+> -bool acpi_ec_other_gpes_active(void);
+>  bool acpi_ec_dispatch_gpe(void);
+>  #endif
+>
+>
+>
+>
