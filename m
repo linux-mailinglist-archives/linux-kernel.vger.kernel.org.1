@@ -2,260 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F791CE85E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 00:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F7A1CE85F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 00:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727929AbgEKWmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 18:42:52 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:55593 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727869AbgEKWmu (ORCPT
+        id S1727954AbgEKWoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 18:44:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725881AbgEKWoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 18:42:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589236968;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DlyNHDl8KxH4zPVWg9+orgF6JTxBo0YxYPLLcH1FDlI=;
-        b=iTOU/u4618oQ9feqwUNAy5IAWuZXDb1ic9JMW35adMo6xd8AS4PAr5UlntKVPTcX58Smi+
-        J6X2XByPtFW3BubWxZ+8j2MT1wu9OucyuC61VyIIv50uGHTh57RiCI6Zm5MUhwdzrb74+6
-        PYr0Lon6sD5i0GxZ/uWf9IXGvDB0Im4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-158-qXaCobmkOVqb1Amk44Hg5A-1; Mon, 11 May 2020 18:42:44 -0400
-X-MC-Unique: qXaCobmkOVqb1Amk44Hg5A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 221A8107ACCA;
-        Mon, 11 May 2020 22:42:43 +0000 (UTC)
-Received: from Whitewolf.redhat.com (ovpn-117-238.rdu2.redhat.com [10.10.117.238])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E730D78480;
-        Mon, 11 May 2020 22:42:41 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     nouveau@lists.freedesktop.org
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Takashi Iwai <tiwai@suse.de>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] drm/nouveau/kms/nv50-: Share DP SST mode_valid() handling with MST
-Date:   Mon, 11 May 2020 18:41:27 -0400
-Message-Id: <20200511224148.598468-6-lyude@redhat.com>
-In-Reply-To: <20200511224148.598468-1-lyude@redhat.com>
-References: <20200511224148.598468-1-lyude@redhat.com>
+        Mon, 11 May 2020 18:44:12 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07E2C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 15:44:11 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id u15so11425027ljd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 15:44:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ef1MTgEAKFw6adwkz7lKMErPGJSzzTLWzjNkQKbUYbc=;
+        b=TimCyhVh0uT7+DD4xHDKexQ7z2FT9uSIOSfRBHYiJ4c5NxH2eSgaWHVEGWvywrzrCf
+         RUPmhi9KtMqjETmLJvB/kXG+BScPM+Hprl4SA2n7X81v7kRP0/pK7bk+tE56vCXh+NPm
+         g2ql7SK1MeoEN+FkX5/vY53gboaqX5UP7BgrKSTRBiSrGmjSBI46F8Q+JFL5FB/OcG9X
+         P3eloax74J6iQGYmFcd733jhJ27gW3VJi/PNLTRavFvYkv4Nd4R9fIH3Z+KpkCMWcuXB
+         zq2AqAOAfDEU8q1vc2C/W0G2ZZpRewsb2lvxzkpjmLOO8F+OpZo5aEXKrGPs2vE5DfFi
+         15NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=ef1MTgEAKFw6adwkz7lKMErPGJSzzTLWzjNkQKbUYbc=;
+        b=adOtAnQoYs/zZAnu+SdXuHOm0VY+F/LC4iXDmO903IQVjSWooeZ4v1cLPSqFBChT/+
+         dz+sEt8hE7tfHYWWefuQSXRrpxD/OSimT7XfgH99Ik92Il3dh7Eie/jFDy/lhJ1ta4kI
+         1Hn4qqbJ/U7Tp1mTgZvPYg2ifSvixrnR2ILAe880wO1NRG2V45xSuIVV8MYOQLVWlVKT
+         sk78lWTPBx3s0AZFLOni9xaXl5jSJICn4bLv544mON7p8fHRl43j8pBVhHprgjncL6tl
+         mjattsxaFvNHor1nHM0Aw5/5wGmhSCGfnu5YnPkel7wv4cHtuciyaVO7C/D0J1mrVlCt
+         KyBw==
+X-Gm-Message-State: AOAM530fOqSsm+HW4nz5Z0W29Zg6BcmgiHGDc9jKE5au3kDObhYgBJQs
+        OuWr6AWU13384T83V8r/Iqs6S+KtwpGNMtmX1os=
+X-Google-Smtp-Source: ABdhPJx7bIzO6uHubD+MJkUstESZ4o7b1yKhaRXqFTRUHytpD72IP1xJQQlVySX+etyJz/IbHc7Vt+7VKa9l9+3F5bo=
+X-Received: by 2002:a2e:9118:: with SMTP id m24mr12008744ljg.172.1589237050297;
+ Mon, 11 May 2020 15:44:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Received: by 2002:a05:6512:15d:0:0:0:0 with HTTP; Mon, 11 May 2020 15:44:09
+ -0700 (PDT)
+Reply-To: mrs.minaabrunel30@gmail.com
+From:   "Mrs. Mina A. Brunel" <abuduhassan1000@gmail.com>
+Date:   Tue, 12 May 2020 00:44:09 +0200
+Message-ID: <CAHZefCh8YjcVkS0v3NiUHKZvF3FoGgnyzkOjQR7FrAsnnGwy=w@mail.gmail.com>
+Subject: My Dear in the lord
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the nv50_mstc_mode_valid() function is happy to take any and
-all modes, even the ones we can't actually support sometimes like
-interlaced modes.
+My Dear in the lord
 
-Luckily, the only difference between the mode validation that needs to
-be performed for MST vs. SST is that eventually we'll need to check the
-minimum PBN against the MSTB's full PBN capabilities (remember-we don't
-care about the current bw state here). Otherwise, all of the other code
-can be shared.
 
-So, we move all of the common mode validation in
-nouveau_connector_mode_valid() into a separate helper,
-nv50_dp_mode_valid(), and use that from both nv50_mstc_mode_valid() and
-nouveau_connector_mode_valid(). Note that we allow for returning the
-calculated clock that nv50_dp_mode_valid() came up with, since we'll
-eventually want to use that for PBN calculation in
-nv50_mstc_mode_valid().
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in
+Burkina Faso, I am married to Mr. Brunel Patrice, a politician who
+owns a small gold company in Burkina Faso; He died of Leprosy and
+Radesyge, in the year February 2010, During his lifetime he deposited
+the sum of =E2=82=AC 8.5 Million Euro) Eight million, Five hundred thousand
+Euros in a bank in Ouagadougou the capital city of Burkina Faso in
+West Africa. The money was from the sale of his company and death
+benefits payment and entitlements of my deceased husband by his
+company.
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
----
- drivers/gpu/drm/nouveau/dispnv50/disp.c     |  9 +++-
- drivers/gpu/drm/nouveau/nouveau_connector.c | 46 ++++++++++++---------
- drivers/gpu/drm/nouveau/nouveau_connector.h |  5 +++
- drivers/gpu/drm/nouveau/nouveau_dp.c        | 31 ++++++++++++++
- drivers/gpu/drm/nouveau/nouveau_encoder.h   |  4 ++
- 5 files changed, 75 insertions(+), 20 deletions(-)
+I am sending you this message with heavy tears in my eyes and great
+sorrow in my heart, and also praying that it will reach you in good
+health because I am not in good health, I sleep every night without
+knowing if I may be alive to see the next day. I am suffering from
+long time cancer and presently I am partially suffering from Leprosy,
+which has become difficult for me to move around. I was married to my
+late husband for more than 6 years without having a child and my
+doctor confided that I have less chance to live, having to know when
+the cup of death will come, I decided to contact you to claim the fund
+since I don't have any relation I grew up from an orphanage home.
 
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-index c49a6c47c66f..f3a77267ff09 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-@@ -1052,7 +1052,14 @@ static enum drm_mode_status
- nv50_mstc_mode_valid(struct drm_connector *connector,
- 		     struct drm_display_mode *mode)
- {
--	return MODE_OK;
-+	struct nv50_mstc *mstc = nv50_mstc(connector);
-+	struct nouveau_encoder *outp = mstc->mstm->outp;
-+
-+	/* TODO: calculate the PBN from the dotclock and validate against the
-+	 * MSTB's max possible PBN
-+	 */
-+
-+	return nv50_dp_mode_valid(connector, outp, mode, NULL);
- }
- 
- static int
-diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.c b/drivers/gpu/drm/nouveau/nouveau_connector.c
-index 6dae00da5d7e..1b383ae0248f 100644
---- a/drivers/gpu/drm/nouveau/nouveau_connector.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
-@@ -38,6 +38,7 @@
- #include "nouveau_reg.h"
- #include "nouveau_drv.h"
- #include "dispnv04/hw.h"
-+#include "dispnv50/disp.h"
- #include "nouveau_acpi.h"
- 
- #include "nouveau_display.h"
-@@ -1033,6 +1034,29 @@ get_tmds_link_bandwidth(struct drm_connector *connector)
- 		return 112000 * duallink_scale;
- }
- 
-+enum drm_mode_status
-+nouveau_conn_mode_clock_valid(const struct drm_display_mode *mode,
-+			      const unsigned min_clock,
-+			      const unsigned max_clock,
-+			      unsigned int *clock_out)
-+{
-+	unsigned int clock = mode->clock;
-+
-+	if ((mode->flags & DRM_MODE_FLAG_3D_MASK) ==
-+	    DRM_MODE_FLAG_3D_FRAME_PACKING)
-+		clock *= 2;
-+
-+	if (clock < min_clock)
-+		return MODE_CLOCK_LOW;
-+	if (clock > max_clock)
-+		return MODE_CLOCK_HIGH;
-+
-+	if (clock_out)
-+		*clock_out = clock;
-+
-+	return MODE_OK;
-+}
-+
- static enum drm_mode_status
- nouveau_connector_mode_valid(struct drm_connector *connector,
- 			     struct drm_display_mode *mode)
-@@ -1041,7 +1065,6 @@ nouveau_connector_mode_valid(struct drm_connector *connector,
- 	struct nouveau_encoder *nv_encoder = nv_connector->detected_encoder;
- 	struct drm_encoder *encoder = to_drm_encoder(nv_encoder);
- 	unsigned min_clock = 25000, max_clock = min_clock;
--	unsigned clock = mode->clock;
- 
- 	switch (nv_encoder->dcb->type) {
- 	case DCB_OUTPUT_LVDS:
-@@ -1064,29 +1087,14 @@ nouveau_connector_mode_valid(struct drm_connector *connector,
- 	case DCB_OUTPUT_TV:
- 		return get_slave_funcs(encoder)->mode_valid(encoder, mode);
- 	case DCB_OUTPUT_DP:
--		if (mode->flags & DRM_MODE_FLAG_INTERLACE &&
--		    !nv_encoder->caps.dp_interlace)
--			return MODE_NO_INTERLACE;
--
--		max_clock  = nv_encoder->dp.link_nr;
--		max_clock *= nv_encoder->dp.link_bw;
--		clock = clock * (connector->display_info.bpc * 3) / 10;
--		break;
-+		return nv50_dp_mode_valid(connector, nv_encoder, mode, NULL);
- 	default:
- 		BUG();
- 		return MODE_BAD;
- 	}
- 
--	if ((mode->flags & DRM_MODE_FLAG_3D_MASK) == DRM_MODE_FLAG_3D_FRAME_PACKING)
--		clock *= 2;
--
--	if (clock < min_clock)
--		return MODE_CLOCK_LOW;
--
--	if (clock > max_clock)
--		return MODE_CLOCK_HIGH;
--
--	return MODE_OK;
-+	return nouveau_conn_mode_clock_valid(mode, min_clock, max_clock,
-+					     NULL);
- }
- 
- static struct drm_encoder *
-diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.h b/drivers/gpu/drm/nouveau/nouveau_connector.h
-index de84fb4708c7..9e062c7adec8 100644
---- a/drivers/gpu/drm/nouveau/nouveau_connector.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_connector.h
-@@ -195,6 +195,11 @@ int nouveau_conn_atomic_get_property(struct drm_connector *,
- 				     const struct drm_connector_state *,
- 				     struct drm_property *, u64 *);
- struct drm_display_mode *nouveau_conn_native_mode(struct drm_connector *);
-+enum drm_mode_status
-+nouveau_conn_mode_clock_valid(const struct drm_display_mode *,
-+			      const unsigned min_clock,
-+			      const unsigned max_clock,
-+			      unsigned *clock);
- 
- #ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
- extern int nouveau_backlight_init(struct drm_connector *);
-diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
-index 2674f1587457..8a0f7994e1ae 100644
---- a/drivers/gpu/drm/nouveau/nouveau_dp.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
-@@ -98,3 +98,34 @@ nouveau_dp_detect(struct nouveau_encoder *nv_encoder)
- 		return NOUVEAU_DP_SST;
- 	return ret;
- }
-+
-+/* TODO:
-+ * - Use the minimum possible BPC here, once we add support for the max bpc
-+ *   property.
-+ * - Validate the mode against downstream port caps (see
-+ *   drm_dp_downstream_max_clock())
-+ * - Validate against the DP caps advertised by the GPU (we don't check these
-+ *   yet)
-+ */
-+enum drm_mode_status
-+nv50_dp_mode_valid(struct drm_connector *connector,
-+		   struct nouveau_encoder *outp,
-+		   const struct drm_display_mode *mode,
-+		   unsigned *out_clock)
-+{
-+	const unsigned min_clock = 25000;
-+	unsigned max_clock, clock;
-+	enum drm_mode_status ret;
-+
-+	if (mode->flags & DRM_MODE_FLAG_INTERLACE && !outp->caps.dp_interlace)
-+		return MODE_NO_INTERLACE;
-+
-+	max_clock = outp->dp.link_nr * outp->dp.link_bw;
-+	clock = mode->clock * (connector->display_info.bpc * 3) / 10;
-+
-+	ret = nouveau_conn_mode_clock_valid(mode, min_clock, max_clock,
-+					    &clock);
-+	if (out_clock)
-+		*out_clock = clock;
-+	return ret;
-+}
-diff --git a/drivers/gpu/drm/nouveau/nouveau_encoder.h b/drivers/gpu/drm/nouveau/nouveau_encoder.h
-index 3217f587eceb..de51733b0476 100644
---- a/drivers/gpu/drm/nouveau/nouveau_encoder.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_encoder.h
-@@ -104,6 +104,10 @@ enum nouveau_dp_status {
- };
- 
- int nouveau_dp_detect(struct nouveau_encoder *);
-+enum drm_mode_status nv50_dp_mode_valid(struct drm_connector *,
-+					struct nouveau_encoder *,
-+					const struct drm_display_mode *,
-+					unsigned *clock);
- 
- struct nouveau_connector *
- nouveau_encoder_connector_get(struct nouveau_encoder *encoder);
--- 
-2.26.2
+I have decided to donate this money for the support of helping
+Motherless babies/Less privileged/Widows and churches also to build
+the house of God because I am dying and diagnosed with cancer for
+about 3 years ago. I have decided to donate from what I have inherited
+from my late husband to you for the good work of Almighty God; I will
+be going in for an operation surgery soon.
 
+Now I want you to stand as my next of kin to claim the funds for
+charity purposes. Because of this money remains unclaimed after my
+death, the bank executives or the government will take the money as
+unclaimed fund and maybe use it for selfishness and worthless
+ventures, I need a very honest person who can claim this money and use
+it for Charity works, for orphanages, widows and also build schools
+and churches for less privilege that will be named after my late
+husband and my name.
+
+I need your urgent answer to know if you will be able to execute this
+project, and I will give you more information on how the fund will be
+transferred to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
