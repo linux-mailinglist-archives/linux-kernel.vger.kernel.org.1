@@ -2,77 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76ED31CE723
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 872421CE72E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727876AbgEKVJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:09:08 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([146.101.78.151]:47399 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725888AbgEKVJH (ORCPT
+        id S1727100AbgEKVLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 17:11:51 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:38658 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725810AbgEKVLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 17:09:07 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-277-ofGzWwF0MoWtalZnKw9quw-1; Mon, 11 May 2020 22:09:03 +0100
-X-MC-Unique: ofGzWwF0MoWtalZnKw9quw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 11 May 2020 22:09:03 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 11 May 2020 22:09:03 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'psmith@gnu.org'" <psmith@gnu.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: I disabled more compiler warnings..
-Thread-Topic: I disabled more compiler warnings..
-Thread-Index: AQHWJwHjj7O/Wk29GEyLgXD8YJ1BI6iigEwggACtZraAADOL0A==
-Date:   Mon, 11 May 2020 21:09:03 +0000
-Message-ID: <90909f30775744b89d1a0c40265779d9@AcuMS.aculab.com>
-References: <CAHk-=wjah-fkfzMdmCNN8v7uriJsGeYjHh18wkXDZa2sxuAXzA@mail.gmail.com>
-         <8320f29ca61146fc985083621685ac95@AcuMS.aculab.com>
-         <CAHk-=whLY8dXE6qMuPNE+Tjc6uXy+W2jACyWLxtRUH6GU2=PAA@mail.gmail.com>
- <0ff4860b4202a6ef3bb3b29912d083d471e1cc1d.camel@gnu.org>
-In-Reply-To: <0ff4860b4202a6ef3bb3b29912d083d471e1cc1d.camel@gnu.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 11 May 2020 17:11:50 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BL70nI133523;
+        Mon, 11 May 2020 21:11:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=8rJnnjudDG8o1gMfcWeFlPJcaBQ58zmQlTl62GDpyRU=;
+ b=qVL5BiKyKwoOHkDieP0PlZn+m1hBmbIZwsRlFAbmnRV7meP3znJ1wDSy9mkzZCOPZagb
+ UQWPM70HgQtJXwibYAQT+wRdkcJOaRW/0tOuP6GjFxAgXNqn35SLS7Tzg9CO9ncTvxbw
+ 3trYhVzXvbg6ziYufareesHzVXek5NseITAbt34FvxPGUFhfsyz+5LCq48C5yul25pgB
+ 4ZNT0hNS+CIpJnfcm6xoIbj+Kn2U1D0BBmvO5/zN6l6TLl91p4AzArutGokJG2sIqQ/c
+ 5dxDlLZNU8OWMwegXmwP14KtrPUipSj/ZFpOQWxLOhXqMwjpX+gmBmXwISs1OHmQpVkr IA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 30x3gsfj5s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 May 2020 21:11:41 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BL7c2k138858;
+        Mon, 11 May 2020 21:11:40 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 30x63nepa2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 May 2020 21:11:40 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04BLBd4f015077;
+        Mon, 11 May 2020 21:11:39 GMT
+Received: from dhcp-10-159-239-226.vpn.oracle.com (/10.159.239.226)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 11 May 2020 14:11:39 -0700
+Subject: Re: [PATCH 1/2] IB/sa: Resolving use-after-free in ib_nl_send_msg.
+To:     Mark Bloch <markb@mellanox.com>,
+        "Wan, Kaike" <kaike.wan@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
+        =?UTF-8?Q?H=c3=a5kon_Bugge?= <haakon.bugge@oracle.com>,
+        Srinivas Eeda <srinivas.eeda@oracle.com>,
+        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
+        Doug Ledford <dledford@redhat.com>
+References: <1588876487-5781-1-git-send-email-divya.indi@oracle.com>
+ <1588876487-5781-2-git-send-email-divya.indi@oracle.com>
+ <7572e503-312c-26a8-c8c2-05515f1c4f84@mellanox.com>
+ <MW3PR11MB4665120FE43314C22A862324F4A50@MW3PR11MB4665.namprd11.prod.outlook.com>
+ <b387f32b-c990-614b-c631-b38ddf821757@mellanox.com>
+From:   Divya Indi <divya.indi@oracle.com>
+Message-ID: <9cdcdf41-5ae9-dcac-d72a-77482ea6a59e@oracle.com>
+Date:   Mon, 11 May 2020 14:10:59 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+In-Reply-To: <b387f32b-c990-614b-c631-b38ddf821757@mellanox.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=11
+ malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005110159
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ malwarescore=0 adultscore=0 mlxscore=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 clxscore=1015 bulkscore=0 phishscore=0
+ suspectscore=11 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005110159
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogUGF1bCBTbWl0aA0KPiBTZW50OiAxMSBNYXkgMjAyMCAxODo1OQ0KPiBPbiBNb24sIDIw
-MjAtMDUtMTEgYXQgMTA6NDEgLTA3MDAsIExpbnVzIFRvcnZhbGRzIHdyb3RlOg0KPiA+IE9uIE1v
-biwgTWF5IDExLCAyMDIwIGF0IDEyOjQzIEFNIERhdmlkIExhaWdodCA8DQo+ID4gRGF2aWQuTGFp
-Z2h0QGFjdWxhYi5jb20+IHdyb3RlOg0KPiA+ID4NCj4gPiA+IEkndmUgbm90IGxvb2tlZCBpbnNp
-ZGUgZ21ha2UsIGJ1dCBJIGZpeGVkIG5tYWtlIHNvIHRoYXQgaXQNCj4gPiA+IHByb3Blcmx5IHVz
-ZWQgYSBzaW5nbGUgam9iIHRva2VuIHBpcGUgZm9yIHRoZSBlbnRpcmUgKE5ldEJTRCkNCj4gPiA+
-IGJ1aWxkIGFuZCB0aGVuIGZsdXNoZWQgYW5kIHJlZmlsbGVkIGl0IHdpdGggJ2Fib3J0JyB0b2tl
-bnMNCj4gPiA+IHdoZW4gYW55IGNvbW1hbmQgZmFpbGVkLg0KPiA+ID4gVGhhdCBtYWRlIHRoZSBi
-dWlsZCBzdG9wIGFsbW9zdCBpbW1lZGlhdGVseS4NCj4gPg0KPiA+IFRoZSBHTlUgam9ic2VydmVy
-IGRvZXNuJ3QgaGF2ZSBhbnl0aGluZyBsaWtlIHRoYXQsIGFmYWlrLg0KPiA+DQo+ID4gSSB0aGlu
-ayBpdCBhbHdheXMgd3JpdGVzIGEgJysnIGNoYXJhY3RlciBhcyBhIHRva2VuLCBzbyBJIGd1ZXNz
-IGl0DQo+ID4gY291bGQgYmUgZXh0ZW5kZWQgdG8gd3JpdGUgc29tZXRoaW5nIGVsc2UgZm9yIHRo
-ZSAiYWJvcnQgbm93Ig0KPiA+IHNpdHVhdGlvbiAocHJlc3VtYWJseSBhICctJyBjaGFyYWN0ZXIp
-Lg0KPiANCj4gVGhhdCB3YXMgZXhhY3RseSBteSBwbGFuLg0KDQpJU1RSIHVzaW5nICcqJyA6LSkg
-V2FzIGEgbG9uZyB0aW1lIGFnby4NCg0KT25lIHByb2JsZW0gaXMgZW5zdXJpbmcgdGhhdCBhbGwg
-dGhlIHJlY3Vyc2l2ZSBtYWtlcyBhY3R1YWxseQ0KdXNlIHRoZSBzYW1lIHRva2VuIHF1ZXVlLg0K
-VGhlIExpbnV4IGtlcm5lbCBidWlsZCBhY3RzIGFzIHRob3VnaCB0aGUgc3ViLW1ha2VzIGhhdmUg
-dGhlaXINCm93biBxdWV1ZSAtIEkgY2VydGFpbmx5IGhhZCB0byBmaXggdGhhdCBhcyB3ZWxsLg0K
-DQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQs
-IE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86
-IDEzOTczODYgKFdhbGVzKQ0K
+Hi Mark,
 
+Please find my comments inline -
+
+On 5/7/20 2:40 PM, Mark Bloch wrote:
+>
+> On 5/7/2020 13:16, Wan, Kaike wrote:
+>>
+>>> -----Original Message-----
+>>> From: Mark Bloch <markb@mellanox.com>
+>>> Sent: Thursday, May 07, 2020 3:36 PM
+>>> To: Divya Indi <divya.indi@oracle.com>; linux-kernel@vger.kernel.org; linux-
+>>> rdma@vger.kernel.org; Jason Gunthorpe <jgg@ziepe.ca>; Wan, Kaike
+>>> <kaike.wan@intel.com>
+>>> Cc: Gerd Rausch <gerd.rausch@oracle.com>; Håkon Bugge
+>>> <haakon.bugge@oracle.com>; Srinivas Eeda <srinivas.eeda@oracle.com>;
+>>> Rama Nichanamatlu <rama.nichanamatlu@oracle.com>; Doug Ledford
+>>> <dledford@redhat.com>
+>>> Subject: Re: [PATCH 1/2] IB/sa: Resolving use-after-free in ib_nl_send_msg.
+>>>
+>>>
+>>>> @@ -1123,6 +1156,18 @@ int ib_nl_handle_resolve_resp(struct sk_buff
+>>>> *skb,
+>>>>
+>>>>  	send_buf = query->mad_buf;
+>>>>
+>>>> +	/*
+>>>> +	 * Make sure the IB_SA_NL_QUERY_SENT flag is set before
+>>>> +	 * processing this query. If flag is not set, query can be accessed in
+>>>> +	 * another context while setting the flag and processing the query
+>>> will
+>>>> +	 * eventually release it causing a possible use-after-free.
+>>>> +	 */
+>>>> +	if (unlikely(!ib_sa_nl_query_sent(query))) {
+>>> Can't there be a race here where you check the flag (it isn't set) and before
+>>> you call wait_event() the flag is set and wake_up() is called which means you
+>>> will wait here forever?
+>> Should wait_event() catch that? That is,  if the flag is not set, wait_event() will sleep until the flag is set.
+>>
+>>  or worse, a timeout will happen the query will be
+>>> freed and them some other query will call wake_up() and we have again a
+>>> use-after-free.
+>> The request has been deleted from the request list by this time and therefore the timeout should have no impact here.
+>>
+>>
+>>>> +		spin_unlock_irqrestore(&ib_nl_request_lock, flags);
+>>>> +		wait_event(wait_queue, ib_sa_nl_query_sent(query));
+>>> What if there are two queries sent to userspace, shouldn't you check and
+>>> make sure you got woken up by the right one setting the flag?
+>> The wait_event() is conditioned on the specific query (ib_sa_nl_query_sent(query)), not on the wait_queue itself.
+> Right, missed that this macro is expends into some inline code.
+>
+> Looking at the code a little more, I think this also fixes another issue.
+> Lets say ib_nl_send_msg() returns an error but before we do the list_del() in
+> ib_nl_make_request() there is also a timeout, so in ib_nl_request_timeout()
+> we will do list_del() and then another one list_del() will be done in ib_nl_make_request().
+>
+>>> Other than that, the entire solution makes it very complicated to reason with
+>>> (flags set/checked without locking etc) maybe we should just revert and fix it
+>>> the other way?
+>> The flag could certainly be set under the lock, which may reduce complications.
+> Anything that can help here with this.
+> For me in ib_nl_make_request() the comment should also explain that not only ib_nl_handle_resolve_resp()
+> is waiting for the flag to be set but also ib_nl_request_timeout() and that a timeout can't happen
+> before the flag is set.
+
+ib_nl_request_timeout() would re-queue the query to the request list if the flag is not set. 
+However, makes sense! Noted, il add the comment in ib_nl_make_request to make things more clear.
+
+Thanks,
+Divya
+
+> Mark
+>  
+>> Kaike
+>> i
