@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2F71CE61C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 22:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BC31CE6E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731870AbgEKU7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 16:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43928 "EHLO
+        id S1732297AbgEKVEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 17:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731832AbgEKU7Z (ORCPT
+        by vger.kernel.org with ESMTP id S1731871AbgEKU7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 16:59:25 -0400
+        Mon, 11 May 2020 16:59:31 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7064CC05BD09;
-        Mon, 11 May 2020 13:59:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5800C061A0C;
+        Mon, 11 May 2020 13:59:30 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jYFWF-0005iN-Jo; Mon, 11 May 2020 22:59:23 +0200
+        id 1jYFWL-0005iz-CH; Mon, 11 May 2020 22:59:29 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 923581C06E5;
-        Mon, 11 May 2020 22:59:20 +0200 (CEST)
-Date:   Mon, 11 May 2020 20:59:20 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 52CCF1C0494;
+        Mon, 11 May 2020 22:59:21 +0200 (CEST)
+Date:   Mon, 11 May 2020 20:59:21 -0000
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu: Remove self-stack-trace when all quiescent states seen
+Subject: [tip: core/rcu] rcu: Use data_race() for RCU expedited CPU
+ stall-warning prints
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158923076050.390.11074838018481966087.tip-bot2@tip-bot2>
+Message-ID: <158923076125.390.1656849191203394981.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -47,37 +48,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     33b2b93bd831fc0e994654cef3d046c713e3b55e
-Gitweb:        https://git.kernel.org/tip/33b2b93bd831fc0e994654cef3d046c713e3b55e
+Commit-ID:     654db05cee8186cf9438d94ef32a4f9ffe964e57
+Gitweb:        https://git.kernel.org/tip/654db05cee8186cf9438d94ef32a4f9ffe964e57
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Fri, 03 Apr 2020 14:12:07 -07:00
+AuthorDate:    Sun, 09 Feb 2020 02:35:22 -08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 27 Apr 2020 11:04:37 -07:00
 
-rcu: Remove self-stack-trace when all quiescent states seen
+rcu: Use data_race() for RCU expedited CPU stall-warning prints
 
-When all quiescent states have been seen, it is normally the grace-period
-kthread that is in trouble.  Although the existing stack trace from
-the current CPU might possibly provide useful information, experience
-indicates that there is too much noise for this to be worthwhile.
-
-This commit therefore removes this stack trace from the output.
+Although the accesses used to determine whether or not an expedited
+stall should be printed are an integral part of the concurrency algorithm
+governing use of the corresponding variables, the values that are simply
+printed are ancillary.  As such, it is best to use data_race() for these
+accesses in order to provide the greatest latitude in the use of KCSAN
+for the other accesses that are an integral part of the algorithm.  This
+commit therefore changes the relevant uses of READ_ONCE() to data_race().
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 2 --
- 1 file changed, 2 deletions(-)
+ kernel/rcu/tree_exp.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 4da41a6..535762b 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -440,8 +440,6 @@ static void print_other_cpu_stall(unsigned long gp_seq)
- 			       rcu_state.name, j - gpa, j, gpa,
- 			       READ_ONCE(jiffies_till_next_fqs),
- 			       rcu_get_root()->qsmask);
--			/* In this case, the current CPU might be at fault. */
--			sched_show_task(current);
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 1a617b9..e1a7986 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -542,8 +542,8 @@ static void synchronize_rcu_expedited_wait(void)
  		}
- 	}
- 	/* Rewrite if needed in case of slow consoles. */
+ 		pr_cont(" } %lu jiffies s: %lu root: %#lx/%c\n",
+ 			jiffies - jiffies_start, rcu_state.expedited_sequence,
+-			READ_ONCE(rnp_root->expmask),
+-			".T"[!!rnp_root->exp_tasks]);
++			data_race(rnp_root->expmask),
++			".T"[!!data_race(rnp_root->exp_tasks)]);
+ 		if (ndetected) {
+ 			pr_err("blocking rcu_node structures:");
+ 			rcu_for_each_node_breadth_first(rnp) {
+@@ -553,8 +553,8 @@ static void synchronize_rcu_expedited_wait(void)
+ 					continue;
+ 				pr_cont(" l=%u:%d-%d:%#lx/%c",
+ 					rnp->level, rnp->grplo, rnp->grphi,
+-					READ_ONCE(rnp->expmask),
+-					".T"[!!rnp->exp_tasks]);
++					data_race(rnp->expmask),
++					".T"[!!data_race(rnp->exp_tasks)]);
+ 			}
+ 			pr_cont("\n");
+ 		}
