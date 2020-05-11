@@ -2,196 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3B91CD63B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 12:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E111CD64B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 12:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729241AbgEKKPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 06:15:15 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:41358 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725983AbgEKKPP (ORCPT
+        id S1729408AbgEKKSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 06:18:40 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:41077 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729294AbgEKKSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 06:15:15 -0400
-Received: from ravnborg.org (unknown [158.248.194.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 5D1762001E;
-        Mon, 11 May 2020 12:15:09 +0200 (CEST)
-Date:   Mon, 11 May 2020 12:15:08 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     srk@48.io
-Cc:     Andrzej Hajda <a.hajda@samsung.com>, Marek Vasut <marex@denx.de>,
-        devicetree@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        David Airlie <airlied@linux.ie>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Sean Cross <xobs@kosagi.com>
-Subject: Re: [PATCH 1/2] dt-bindings: it6251: add bindings for IT6251
- LVDS-to-eDP bridge
-Message-ID: <20200511101508.GA7971@ravnborg.org>
-References: <20200509111732.26102-1-srk@48.io>
- <20200509111732.26102-2-srk@48.io>
+        Mon, 11 May 2020 06:18:35 -0400
+Received: by mail-oi1-f193.google.com with SMTP id 19so14615110oiy.8;
+        Mon, 11 May 2020 03:18:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dhHEh+pNrtrDrMKnU82n0ghqaec/6dzj+ojpD1sC6tU=;
+        b=un/cVaLel2W3SxT+qj0wyFwQaFU2JAXahi2YRif47BWsQx0bZ5ArA8gTAbv7/oBil2
+         v1UfMY/4kmadVoy6sxrt6aP8Ke0rrALV+44qXqdf0Zki8kNsNcT2+lxmX3YWRPXmcuQR
+         BbjOpXkghxF5BGXgJ8eYTyh3OkF6gXD58PeFaqfeaG0s3WQ25+ZRK1q8jPuiSNggzEB3
+         LGVzFHxNSSX1yaVsnphUiwGP7+c7hjJlko6A1P0teryGZs7Gj0+CyMfn11yGb51O5c9F
+         IkOnlSM7nJpbnoAleIaC7/fFre+NnZzsZlrNHcB7rn1IgmYqS5dUNYWcz7U/V/t8iDiE
+         V30g==
+X-Gm-Message-State: AGi0PuZzEGSVXZswo2XR8GgvRyEetPbFC2O2M2PcNWkZ+0W/6piuD4GL
+        ZvqDgs5aczx+AUvKeWIiu1N3sxOs+xDWArX15LY=
+X-Google-Smtp-Source: APiQypLbjyTZbvqRLGoc90pFkCHUbFvz5HgFxZ0FoH+dKrKDX/RlQwLNKA9fzQii+Qv4ryb+mU1sZeCNokwWcDCIukA=
+X-Received: by 2002:aca:f541:: with SMTP id t62mr18420359oih.148.1589192313970;
+ Mon, 11 May 2020 03:18:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200509111732.26102-2-srk@48.io>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=ULXz4hXy c=1 sm=1 tr=0
-        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
-        a=kj9zAlcOel0A:10 a=VwQbUJbxAAAA:8 a=YpGV6msqAAAA:8 a=e5mUnYsNAAAA:8
-        a=gEfo2CItAAAA:8 a=_yH9q9Z6AjBviL3TOqQA:9 a=rbfOVJjzkGrPOjLs:21
-        a=2oGGWDTR31z2Z5qq:21 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=7Sa5D-Tva0wx0rmpRu8Y:22 a=Vxmtnl_E_bksehYqCbjh:22
-        a=sptkURWiP4Gy88Gu7hUp:22
+References: <20200324135328.5796-1-geert+renesas@glider.be>
+ <20200324135653.6676-1-geert+renesas@glider.be> <20200324135653.6676-4-geert+renesas@glider.be>
+ <CACRpkdbN82n3B+Q-QVjB1jLpJAYS19fKukkDXQm3gZsuFFFM_w@mail.gmail.com>
+In-Reply-To: <CACRpkdbN82n3B+Q-QVjB1jLpJAYS19fKukkDXQm3gZsuFFFM_w@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 11 May 2020 12:18:22 +0200
+Message-ID: <CAMuHMdXskE8_A4gbFVWfPVdcxBO-CfaMDEehSxGAK_aC0MQ7=A@mail.gmail.com>
+Subject: Re: [PATCH v6 4/8] gpiolib: Add support for GPIO lookup by line name
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Harish Jenny K N <harish_kandiga@mentor.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Alexander Graf <graf@amazon.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Phil Reid <preid@electromag.com.au>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        QEMU Developers <qemu-devel@nongnu.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard/Marek.
+Hi Linus,
 
-On Sat, May 09, 2020 at 01:17:31PM +0200, srk@48.io wrote:
-> From: Marek Vasut <marex@denx.de>
-> 
-> Add DT bindings for ITE IT6251 LVDS-to-eDP bridge.
+On Thu, Mar 26, 2020 at 10:18 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Tue, Mar 24, 2020 at 2:57 PM Geert Uytterhoeven
+> <geert+renesas@glider.be> wrote:
+> > Currently a GPIO lookup table can only refer to a specific GPIO by a
+> > tuple, consisting of a GPIO controller label and a GPIO offset inside
+> > the controller.
+> >
+> > However, a GPIO may also carry a line name, defined by DT or ACPI.
+> > If present, the line name is the most use-centric way to refer to a
+> > GPIO.  Hence add support for looking up GPIOs by line name.
+> >
+> > Implement this by reusing the existing gpiod_lookup infrastructure.
+> > Rename gpiod_lookup.chip_label to gpiod_lookup.key, to make it clear
+> > that this field can have two meanings, and update the kerneldoc and
+> > GPIO_LOOKUP*() macros.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > Reviewed-by: Ulrich Hecht <uli+renesas@fpond.eu>
+> > Reviewed-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+> > Tested-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+>
+> I kind of like this approach, however there are things here that
+> need to be considered: the line name is in no way globally unique,
+> and I think there are already quite a few GPIO chips that
+> have the same line names assigned for every instance of that
+> chip.
+>
+> gpiochip_set_desc_names() only warns if there is a line with
+> the same name on the same gpio_chip.
 
-Looks good, just a few comments in the following.
+on a _different_ gpio chip.
 
-	Sam
-> 
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> Signed-off-by: Richard Marko <srk@48.io>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Sean Cross <xobs@kosagi.com>
-> Cc: devicetree@vger.kernel.org
-> To: dri-devel@lists.freedesktop.org
-> ---
->  .../bindings/display/bridge/ite,it6251.yaml   | 97 +++++++++++++++++++
->  1 file changed, 97 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/ite,it6251.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/ite,it6251.yaml b/Documentation/devicetree/bindings/display/bridge/ite,it6251.yaml
-> new file mode 100644
-> index 000000000000..8daa44a30fa1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/bridge/ite,it6251.yaml
-> @@ -0,0 +1,97 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/bridge/ite,it6251.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: ITE IT6251 LVDS-to-eDP bridge bindings
-> +
-> +maintainers:
-> +  - Marek Vasut <marex@denx.de>
-> +  - Richard Marko <srk@48.io>
-> +
-> +description: |
-> +  The IT6251 is a high-performance single-chip
-> +  De-SSC LVDS to DisplayPort converter.
-> +  Combined with LVDS receiver and DisplayPort Transmitter,
-> +  the IT6251 supports LVDS input and DisplayPort 1.1a
-> +  output by conversion function.
-> +
-> +properties:
-> +  compatible:
-> +    const: ite,it6251
-> +
-> +  reg:
-> +    items:
-> +      - description: I2C address of the bridge
-> +      - description: I2C address of the LVDS part
-> +
-> +  reg-names:
-> +    items:
-> +      - const: bridge
-> +      - const: lvds
-> +
-> +  ports:
-> +    type: object
-> +
-> +    properties:
-> +      "#address-cells":
-> +        const: 1
-> +
-> +      "#size-cells":
-> +        const: 0
-> +
-> +      port@0:
-> +        type: object
-> +        description: |
-> +         Video port for eDP output (typically panel).
-port@0 is in most (all?) cases input today.
-Take for example a look at: toshiba,tc358768.yaml
-Could we do the same here?
+> I suppose we need to document that the line name look-up
+> will be on a first-come-first-served basis: whatever line
+> we find first with this name is what you will get a reference
+> to, no matter what chip it is on, and it is possible albeit
+> not recommended that some other chip has a line with the
+> same name.
 
-> +
-> +      port@1:
-> +        type: object
-> +        description: |
-> +          Video port for LVDS input.
-> +
-> +    required:
-> +      - port@0
-> +      - port@1
-> +
-> +    additionalProperties: false
-> +
-> +  power-supply: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - power-supply
-> +  - ports
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-Add an extra level named "i2c" like we do in other bridge examples.
-> +    it6251@5c {
-My personal preference is 4 spaces for indent.
-But 2 spaces is also fine.
+Agreed.
 
-> +      compatible = "ite,it6251";
-> +      reg = <0x5c>, <0x5e>;
-> +      reg-names = "bridge", "lvds";
-> +      power-supply = <&reg_display>;
-> +
-> +      ports {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        port@0 {
-> +          reg = <0>;
-> +          bridge_out_edp0: endpoint {
-> +            remote-endpoint = <&panel_in_edp0>;
-> +          };
-> +        };
-> +
-> +        port@1 {
-> +          reg = <1>;
-> +          bridge_in_lvds0: endpoint {
-> +            remote-endpoint = <&lvds0_out>;
-> +          };
-> +        };
-> +      };
-> +    };
+Gr{oetje,eeting}s,
 
-End with a line containing only "..."
+                        Geert
 
-This is an optional end-marker.
-See lvds-codec.yaml for an example.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-	Sam
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
