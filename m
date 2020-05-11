@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB101CD3E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 10:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B940C1CD3C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 10:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729129AbgEKI3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 04:29:35 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4327 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728341AbgEKI3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 04:29:34 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 6C974235951EAA2CC910;
-        Mon, 11 May 2020 16:29:32 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 11 May 2020 16:29:25 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <song@kernel.org>
-CC:     <linux-raid@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangxiongfeng2@huawei.com>
-Subject: [PATCH] md: add a newline when printing parameter 'start_ro' by sysfs
-Date:   Mon, 11 May 2020 16:23:25 +0800
-Message-ID: <1589185405-39519-1-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+        id S1729177AbgEKIZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 04:25:41 -0400
+Received: from mx.socionext.com ([202.248.49.38]:36091 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729129AbgEKIZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 04:25:40 -0400
+Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
+  by mx.socionext.com with ESMTP; 11 May 2020 17:25:39 +0900
+Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
+        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id 09B4A1800CF;
+        Mon, 11 May 2020 17:25:39 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Mon, 11 May 2020 17:25:38 +0900
+Received: from plum.e01.socionext.com (unknown [10.213.132.32])
+        by kinkan.css.socionext.com (Postfix) with ESMTP id 8392C1A0E67;
+        Mon, 11 May 2020 17:25:38 +0900 (JST)
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: [PATCH 1/2] spi: uniphier: Depend on HAS_IOMEM
+Date:   Mon, 11 May 2020 17:25:29 +0900
+Message-Id: <1589185530-28170-1-git-send-email-hayashi.kunihiko@socionext.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a missing newline when printing module parameter 'start_ro' by
-sysfs.
+The driver uses devm_ioremap_resource() which is only available when
+CONFIG_HAS_IOMEM is set, so the driver depends on this option.
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 ---
- drivers/md/md.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 271e8a5..acffcc0 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -9785,7 +9785,7 @@ static __exit void md_exit(void)
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index 17e7e4a..099d6a7 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -844,6 +844,7 @@ config SPI_TXX9
+ config SPI_UNIPHIER
+ 	tristate "Socionext UniPhier SPI Controller"
+ 	depends on (ARCH_UNIPHIER || COMPILE_TEST) && OF
++	depends on HAS_IOMEM
+ 	help
+ 	  This enables a driver for the Socionext UniPhier SoC SCSSI SPI controller.
  
- static int get_ro(char *buffer, const struct kernel_param *kp)
- {
--	return sprintf(buffer, "%d", start_readonly);
-+	return sprintf(buffer, "%d\n", start_readonly);
- }
- static int set_ro(const char *val, const struct kernel_param *kp)
- {
 -- 
-1.7.12.4
+2.7.4
 
