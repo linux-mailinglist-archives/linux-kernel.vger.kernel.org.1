@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7AC1CE698
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B79A1CE6C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732108AbgEKVCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44580 "EHLO
+        id S1731993AbgEKVDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 17:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732073AbgEKVCq (ORCPT
+        by vger.kernel.org with ESMTP id S1732203AbgEKVDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 17:02:46 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A40BC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 14:02:46 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id f6so5116955pgm.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 14:02:46 -0700 (PDT)
+        Mon, 11 May 2020 17:03:37 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD43C061A0C;
+        Mon, 11 May 2020 14:03:37 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id f12so9226366edn.12;
+        Mon, 11 May 2020 14:03:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=sSsJuiuQVhX5mi+0hDBDIBKGp39VuH2U96/o+lEhntI=;
-        b=stiW8was2ZkQrskwkMD/u2MqfHNAkQB3uEQRKk2uZn0hcIA29HYKSr3aPf1ip6E+NJ
-         FBhCXI0cO1MfkYL21OBWDivT/nxpnciW3X0O1EqTHGxnd8rpceTIlIywSF+1WmHuRxLd
-         1eLOhrAeK4ff1GxvFOIr2SXkukkZy++YIzbggOIiW2e5u3u/lnt+5FDSuTgryx2rkQsp
-         hQIPP9Z8tcIch+2lr4rzOjabDM15Elvzb+15SWvw/UA1FQisl+VB4bH375R7ztwqqNeE
-         NeKVvvMeTtV9hM9NktOXPBE921OW8ecDMiTIWudZCcpglwaq+LZldC2cKOdGsPe/TkZz
-         9NtQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7kphY5Feu5GjDCyOhiwD3l7TIWgkPBf49fwmfgZutZM=;
+        b=pi2B1oEEkaOLcGDjYguTzZ1wVBUAaddjGKvbTSIB33jMGte38wfkA0RWPar7kH5D16
+         TuvXrhWYBBST5nztNM/k6ZK3rdZbNpHdgQN6WkuJp1Je5EUenMjPMKteynJV6Sc4qI+a
+         AAUzW8Dj9Xxd8T4ggFrXmvSjakXJm0oNtXKoKgh5ZimIvOx3y3gj5Z/lQa2FR30djnBj
+         kmCN9Hvtb0cIpyBQMdqoBKyQ4yCOi600/WwUG278KA6r5ih2jpYF9CyU5f6CYRDa2y3g
+         HYmUOqPlGVf9JTE7N5BzTFM1WGzL0Bqxhiw6kE0sFMZmbh32/muIFoexknNSy7J6/lGj
+         bmEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=sSsJuiuQVhX5mi+0hDBDIBKGp39VuH2U96/o+lEhntI=;
-        b=i/GwAVdCVduRDKcK3I6n5m/mGsrGEnFmSZ48J0bIk8EApQNRHnfYK101ND4li35AAS
-         DJPBRnGKi9U0XUK4Sm9SbZUJJajS1Sg7btlj7XhM666V7pB47jdg61ZY96ntX4yVWG60
-         /rNlICoEFlUgVKEiCN2k02RTKocDhjiw136DKd64Yga15SOzGDAOwkyx/djiyVzPtSRB
-         0NWIxWAsAngSyY0YBoh/5OgN9AaSkLqw7MALJRJStvjfveD04MXNOmyE8/+oOeQ2YDMh
-         AyLu++04bx/GSSn4BsQW4WXrQy+E7luVCfLqBnZy2RGRPiiky8PJ1oA/bjBfWR9o97/U
-         WFxg==
-X-Gm-Message-State: AGi0Pubp3xoYBqVfQ6/sDuMzBDzHfT2shp1d/7oPOlfJkEpaJqsKvmJu
-        k87qXtXST5ESOXjcLLMq5Do=
-X-Google-Smtp-Source: APiQypJRVv554GH4F41XHegtP2kTtAQfKN5F1lohS2Cs+iIkrMulrtyKgFejve5HIUAqf2YdCxUfsA==
-X-Received: by 2002:a63:5a41:: with SMTP id k1mr17002700pgm.424.1589230964794;
-        Mon, 11 May 2020 14:02:44 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id p24sm9899121pff.92.2020.05.11.14.02.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 14:02:43 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-kernel@vger.kernel.org
-Cc:     eric@anholt.net, linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH] MAINTAINERS: Update Raspberry Pi development repository
-Date:   Mon, 11 May 2020 14:02:42 -0700
-Message-Id: <20200511210242.27892-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200511110250.23869-1-nsaenzjulienne@suse.de>
-References: <20200511110250.23869-1-nsaenzjulienne@suse.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7kphY5Feu5GjDCyOhiwD3l7TIWgkPBf49fwmfgZutZM=;
+        b=FOqUENhESjvv+c2VlZnA61UDtdMTxRS7uATuIBpFLiz0ihaVc1e52kTEgl2J099aYr
+         czQ2TuNzyD2cri0ikwmznmd1ksSCCoyj79OfTbb22Jm/GMfPJ27vZVB1at4TjMSoMoc3
+         u1D6tW8i0GCkoJt2Yf8YFNALLVl5cXpHzjVnuJhqJAkotsD2nII9A8Pw+WDcFiSAXnst
+         PuWCJeZOQVabeJRUrIaSJSGTPkiwUT0lw7YzamInpYlWjcsWSdEYsKWTWqbWOEmzxpo3
+         85QbfH1MzIpO4UKJ5U8fCGtD1tfO6nbQM6OOHdbYcYjFxdznQUjAajkAODnjfMy5v8WN
+         OWFg==
+X-Gm-Message-State: AGi0PuYFE9u6yufdBRje77ZCB4+8jVy8HXsrRafsfBDFE9pKgmWdVUGQ
+        l3BKPaU7Pi4R25FgwI1h98ixpLMLGW2KgfcnZas=
+X-Google-Smtp-Source: APiQypLxSSuCw1Ty0QrHn8r+5pFK0ZY0obh40lVL+pboWUJzbPHEHgusS2MaIPc+AXlLln+Srs+52jPCEAvCaqzoFUQ=
+X-Received: by 2002:aa7:dcc3:: with SMTP id w3mr14329504edu.231.1589231015906;
+ Mon, 11 May 2020 14:03:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200501205201.149804-1-konradybcio@gmail.com> <CAOCk7NqbOsQ2Bz1K8Gkeh75pLHDaUn6MhE1T7NkMYEHOPoL0NQ@mail.gmail.com>
+In-Reply-To: <CAOCk7NqbOsQ2Bz1K8Gkeh75pLHDaUn6MhE1T7NkMYEHOPoL0NQ@mail.gmail.com>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Mon, 11 May 2020 23:03:00 +0200
+Message-ID: <CAMS8qEWNuuo5t+D1Xq_aNbh5-GSvVSMJM6BpKX4SR=-2eBegpQ@mail.gmail.com>
+Subject: Re: [PATCH] drivers: gpu: drm: Add MDP5 configuration for MSM8x36 and
+ its derivatives, such as MSM8939.
+To:     Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Cc:     skrzynka@konradybcio.pl, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Allison Randal <allison@lohutok.net>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        zhengbin <zhengbin13@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 May 2020 13:02:50 +0200, Nicolas Saenz Julienne <nsaenzjulienne@suse.de> wrote:
-> Eric Anholt's repo isn't used anymore. List current one.
-> 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> ---
+>Is the "| 0" really adding value here?
 
-Applied to maintainers/next, thanks!
---
-Florian
+As far as I can see, it is present in every other config.
