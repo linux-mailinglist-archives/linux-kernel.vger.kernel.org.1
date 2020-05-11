@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1281CE6F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207881CE6EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732353AbgEKVFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43926 "EHLO
+        id S1732545AbgEKVE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 17:04:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731826AbgEKU7Z (ORCPT
+        by vger.kernel.org with ESMTP id S1731855AbgEKU72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 16:59:25 -0400
+        Mon, 11 May 2020 16:59:28 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43970C061A0E;
-        Mon, 11 May 2020 13:59:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8610C061A0C;
+        Mon, 11 May 2020 13:59:28 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jYFWF-0005gy-0k; Mon, 11 May 2020 22:59:23 +0200
+        id 1jYFWJ-0005hj-6T; Mon, 11 May 2020 22:59:27 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 76B8A1C04E3;
-        Mon, 11 May 2020 22:59:19 +0200 (CEST)
-Date:   Mon, 11 May 2020 20:59:19 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 33D661C06DA;
+        Mon, 11 May 2020 22:59:20 +0200 (CEST)
+Date:   Mon, 11 May 2020 20:59:20 -0000
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcutorture: Mark data-race potential for
- rcu_barrier() test statistics
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: [tip: core/rcu] rcutorture: Add KCSAN stubs
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158923075942.390.10031929584805507102.tip-bot2@tip-bot2>
+Message-ID: <158923076014.390.18323037136530045995.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -49,51 +47,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     c9527bebb017b891d1a2bbb96217bd5225488a0e
-Gitweb:        https://git.kernel.org/tip/c9527bebb017b891d1a2bbb96217bd5225488a0e
+Commit-ID:     3b2a47398552938d2ae0091f35eb3658a52a0769
+Gitweb:        https://git.kernel.org/tip/3b2a47398552938d2ae0091f35eb3658a52a0769
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Tue, 18 Feb 2020 13:41:02 -08:00
+AuthorDate:    Mon, 13 Apr 2020 16:30:35 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 27 Apr 2020 11:05:13 -07:00
 
-rcutorture: Mark data-race potential for rcu_barrier() test statistics
+rcutorture: Add KCSAN stubs
 
-The n_barrier_successes, n_barrier_attempts, and
-n_rcu_torture_barrier_error variables are updated (without access
-markings) by the main rcu_barrier() test kthread, and accessed (also
-without access markings) by the rcu_torture_stats() kthread.  This of
-course can result in KCSAN complaints.
-
-Because the accesses are in diagnostic prints, this commit uses
-data_race() to excuse the diagnostic prints from the data race.  If this
-were to ever cause bogus statistics prints (for example, due to store
-tearing), any misleading information would be disambiguated by the
-presence or absence of an rcutorture splat.
-
-This data race was reported by KCSAN.  Not appropriate for backporting
-due to failure being unlikely and due to the mild consequences of the
-failure, namely a confusing rcutorture console message.
+This commit adds stubs for KCSAN's data_race(), ASSERT_EXCLUSIVE_WRITER(),
+and ASSERT_EXCLUSIVE_ACCESS() macros to allow code using these macros to
+move ahead.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/rcu/rcutorture.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/rcu/rcutorture.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 7e2ea0c..d0345d1 100644
+index 5453bd5..7e2ea0c 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -1456,9 +1456,9 @@ rcu_torture_stats_print(void)
- 		atomic_long_read(&n_rcu_torture_timers));
- 	torture_onoff_stats();
- 	pr_cont("barrier: %ld/%ld:%ld\n",
--		n_barrier_successes,
--		n_barrier_attempts,
--		n_rcu_torture_barrier_error);
-+		data_race(n_barrier_successes),
-+		data_race(n_barrier_attempts),
-+		data_race(n_rcu_torture_barrier_error));
+@@ -51,6 +51,18 @@
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com> and Josh Triplett <josh@joshtriplett.org>");
  
- 	pr_alert("%s%s ", torture_type, TORTURE_FLAG);
- 	if (atomic_read(&n_rcu_torture_mberror) ||
++#ifndef data_race
++#define data_race(expr)							\
++	({								\
++		expr;							\
++	})
++#endif
++#ifndef ASSERT_EXCLUSIVE_WRITER
++#define ASSERT_EXCLUSIVE_WRITER(var) do { } while (0)
++#endif
++#ifndef ASSERT_EXCLUSIVE_ACCESS
++#define ASSERT_EXCLUSIVE_ACCESS(var) do { } while (0)
++#endif
+ 
+ /* Bits for ->extendables field, extendables param, and related definitions. */
+ #define RCUTORTURE_RDR_SHIFT	 8	/* Put SRCU index in upper bits. */
