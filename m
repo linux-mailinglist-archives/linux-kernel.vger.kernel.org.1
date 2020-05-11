@@ -2,230 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D751CD902
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE361CD90A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729785AbgEKLyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:54:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729327AbgEKLyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:54:39 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D670206F5;
-        Mon, 11 May 2020 11:54:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589198078;
-        bh=MxDDXrsETU8jDz6m4aDv3ewZQ0i9ii9l2ZaMmydtqac=;
-        h=Subject:To:Cc:From:Date:From;
-        b=eeSTCOdQm08fulWu8hQ3JSjxwFPe1RHsGB62v44Rhj+m7e7fUsufpSJ71cbOXFt7K
-         ggCm1svrnsfuuEfRHp+6r+lWqEjXKhWnxrfVasMvIm3fyxYntp6PkYDkY3i9IuBzz/
-         XhlG8nocwILM2edT1ABx5Ox1ZwTwX565guaDuli0=
-Subject: Linux 5.4.40
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date:   Mon, 11 May 2020 13:54:34 +0200
-Message-ID: <158919807452194@kroah.com>
+        id S1729768AbgEKLzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:55:46 -0400
+Received: from mail-bn7nam10on2089.outbound.protection.outlook.com ([40.107.92.89]:59072
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726068AbgEKLzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 07:55:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xs6OjW6hd5GqHN7qC8q0o0/t4M6oFk/4tX1ZFpexjjOIBOY0Ay+nZS7vg9q7RZEm0FIyyJFDfpMZaR+sZUeP1XY0oOdLdn2bpuQH9CbtzndBH3OAAlpiG9n5My3W7dy2CF8a/mmOAE16q7z67KA/EQlSLw+zxGIjT84lS6YDYZcCr7GbHH58uuMqxG9bPBxHEFe8kAddspmcK1E8NzAUmzF/EShGigL/zEmGKuLWWOplRMXJx162KpuLjfSNlN2cnHXbK5r2sJJjqusgeBotns4xszErjMQpEt5bqWytSb0t+RGOwbKLPEM4lSsqYEOzPa5Cmfw9wKgEMLBXKSbhMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pVM2gluDSkR1MjGCqSk4Gsgw+aRMEnhzDkjhScP4TCk=;
+ b=fadG9jlb+lybd6aH37Lnf3MK5OMpBTZKyIVlLRahYblEIr+DfEKe5fI9MenxoKFQESfTpVegMaQE2RESuWx/bLrqjADw6MyPqmRG7SkbncPzs0Ove9/nsEsdw3QKCXACJs0zLKEsTIsKtmLTzultJXHwD7WfUnXMvtQGq4qF/PqA5rk5vyF44MPM5ViS/LU7eCZbvSJHZ7jyyByAXEN5Exkx8cu88D/I9D3cCZbb7SXrqJWJscQIMHORxMBAH6jOi4aqvJbTcN9sYf08JqOjbjYaAh6QQqs9T4h2zRUc/GxduL0uTi9rz/qx3n+nDMSyUkm+MoZmhr4ylV7oSHy+eA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pVM2gluDSkR1MjGCqSk4Gsgw+aRMEnhzDkjhScP4TCk=;
+ b=gTN1iBN4wmk/s78U7Nc+DZp5x7kwFHUPojQGr8PFUCMGerbg3kTgscVqhG0WuNKv5cz+OjEkX/mLXwwcsYI4VQ5vBMmxCyj6ndMGSK90zN8fo88N2aOJgsSNoKYwk9MiVNjlP+uogJgsNmCVdZid408Dfh0bolpOKYxzzJJx+YE=
+Authentication-Results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=amd.com;
+Received: from CY4PR12MB1159.namprd12.prod.outlook.com (2603:10b6:903:36::17)
+ by CY4PR12MB1944.namprd12.prod.outlook.com (2603:10b6:903:127::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.28; Mon, 11 May
+ 2020 11:55:40 +0000
+Received: from CY4PR12MB1159.namprd12.prod.outlook.com
+ ([fe80::e9c0:2506:396c:70b7]) by CY4PR12MB1159.namprd12.prod.outlook.com
+ ([fe80::e9c0:2506:396c:70b7%10]) with mapi id 15.20.2979.033; Mon, 11 May
+ 2020 11:55:40 +0000
+From:   Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+To:     Brian Starkey <brian.starkey@arm.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Simon Ser <contact@emersion.fr>,
+        Leandro Ribeiro <leandro.ribeiro@collabora.com>,
+        Helen Koike <helen.koike@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH V4 0/3] drm/vkms: Introduces writeback support
+Date:   Mon, 11 May 2020 07:55:21 -0400
+Message-Id: <20200511115524.22602-1-Rodrigo.Siqueira@amd.com>
+X-Mailer: git-send-email 2.26.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: YT1PR01CA0104.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2c::13) To CY4PR12MB1159.namprd12.prod.outlook.com
+ (2603:10b6:903:36::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from atma2.hitronhub.home (2607:fea8:56a0:11a1::2) by YT1PR01CA0104.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2c::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.28 via Frontend Transport; Mon, 11 May 2020 11:55:39 +0000
+X-Mailer: git-send-email 2.26.2
+X-Originating-IP: [2607:fea8:56a0:11a1::2]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 8d85039c-7aa6-47de-f4eb-08d7f5a23a05
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1944:
+X-Microsoft-Antispam-PRVS: <CY4PR12MB1944E64B28F7CAA67551F6D698A10@CY4PR12MB1944.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 04004D94E2
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dJAzY+kitmP+ImE/OCfviNFD3XNA14OfeV1VRI2hP28tefBRFfvEBxAPWWz2cMjUTrL0R4YgTN6MI8bH/YvEhsExnldVDtBEwHuR4Kqf3Go7e26wEpisTE1lH+N95GI/ExZAaIeEzEfi8Sre8To0xHprZ4W6/J+MPdAxZQ7FP2lpqy95jY8QCIKh94kIzAsXIep5Ufac4qTKyjgphkszBazFIaK0D3XVKH4/0/X7hl5cI1Z/7vN3RtrYFCF4OkqZQ4nUm5d8Q7aCcMbQ8b+VbU8Glb1h+cQdwBz2fU+lk2FtmVLqK2DtHvVuwxowiQkgVf1ZUQSPK5n39Z4xVSxbD8QQUUTKsk7ty0VZwU6HWDKT1CTV806vljh0mt4bpjgT2WinN6+GP5ny13l7uqKJqjpaQypU+XzcP9GEL+hvNWdoKR27EySv2CpcmkxZ/FXQcVKFR97P+HdSNv+wO7m6pO/4OAuMDpIFoZD9ym8hOJZ39C1mqVxuto6ktsKSYB3UV+h1Snizh0FJa0xSMujQiP0V3JVo5UGZlY4Kx4OUsIFTFPzmcqKrh9A3AHxwGe+L
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1159.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(396003)(136003)(366004)(39860400002)(346002)(33430700001)(966005)(36756003)(66946007)(66476007)(86362001)(66556008)(1076003)(6666004)(6506007)(16526019)(52116002)(186003)(316002)(110136005)(2616005)(4326008)(478600001)(6512007)(2906002)(6486002)(5660300002)(33440700001)(8676002)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: /7h6M8L5RhXeUM0anFNXMIf6095JdG6sXSPhIrTVHWMKCsCsPY0sgD+5c1asK3K40bPe2KyfYjpbXO32OKrVOYWityjPZpuT2dswCeWsq5/4HvIwn4XSIHwcyv+a+AH7FR6XmkO5VyEr8jULLAdJGUYSNklxQPtllbglPBrNObGJa0GffDQMPAPQdyj7BLwX49mcMDcFuRbKPzrURGSrnBt9KPI1KgYegRxwJOwDRvVWvYkD3hJXqQjZ38y1etkpw1RCizfzJkpsb7jKIFodRnVlmP+utjhqbn9urLcHW1WxMOSl2m0N69lCQDOC/uXW/t5bncMZC9jMS2gp+dYHNnJQb5gFApwXptRFI620ONwwuujRV4XIwVp/xTYQu9oPU2sEt03MkOIakOyTJ//qIOmxDfQsppmmbpin5AP29w/eZ+aAUCtkqKA3CTEjbPgxZ/sJIN82NlEIQeVdhEc6FfAc2efTuw5lu7BOEGhH2ihzi7WEDaXZLup0Cscuf4jMWRUfFiTIV99Cj23PXzIzzw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d85039c-7aa6-47de-f4eb-08d7f5a23a05
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2020 11:55:40.6129
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QqqRGWaIJVkzJaH7yCXbkfa4dPMPRFyZhXfRMjSyi6W/NPFo1jBzcO4l5AeibrD4xUY9JhgB/cdmm/WcV6reng==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1944
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm announcing the release of the 5.4.40 kernel.
+This is the V4 version of a series that introduces basic writeback
+support to VKMS. This patchset starts with a pre-work that aims to make
+VKMS composer operations ready for getting the writeback support; it has
+updates on the CRC functions and reworks a small part of the VKMS
+framebuffer operations. Finally, the latest patch introduces the
+writeback support in VKMS.
 
-All users of the 5.4 kernel series must upgrade.
+The previous series was reviewed and tested, this patchset only rebases
+the code on the latest version of drm-misc-next (I also tested it). It
+is important to highlight, that we have an IGT test for validating
+writeback feature as can be seen at:
 
-The updated 5.4.y git tree can be found at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.4.y
-and can be browsed at the normal kernel.org git web browser:
-	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+IGT writeback tests: https://patchwork.freedesktop.org/series/68352/
 
-thanks,
+Best Regards
 
-greg k-h
+Rodrigo Siqueira (3):
+  drm/vkms: Decouple crc operations from composer
+  drm/vkms: Compute CRC without change input data
+  drm/vkms: Add support for writeback
 
-------------
+ drivers/gpu/drm/vkms/Makefile         |   9 +-
+ drivers/gpu/drm/vkms/vkms_composer.c  |  94 +++++++++++------
+ drivers/gpu/drm/vkms/vkms_drv.c       |   4 +
+ drivers/gpu/drm/vkms/vkms_drv.h       |   8 ++
+ drivers/gpu/drm/vkms/vkms_output.c    |  10 ++
+ drivers/gpu/drm/vkms/vkms_writeback.c | 142 ++++++++++++++++++++++++++
+ 6 files changed, 233 insertions(+), 34 deletions(-)
+ create mode 100644 drivers/gpu/drm/vkms/vkms_writeback.c
 
- Makefile                                              |    2 
- arch/hexagon/include/asm/io.h                         |   12 +---
- arch/hexagon/kernel/hexagon_ksyms.c                   |    2 
- arch/hexagon/mm/ioremap.c                             |    2 
- arch/x86/kvm/vmx/ops.h                                |    1 
- drivers/acpi/sleep.c                                  |    5 -
- drivers/base/swnode.c                                 |   14 ++--
- drivers/devfreq/devfreq.c                             |    4 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c                |    3 -
- drivers/gpu/drm/amd/display/dc/core/dc_link.c         |    9 ---
- drivers/gpu/drm/amd/powerplay/hwmgr/processpptables.c |   26 ++++++++
- drivers/gpu/drm/bridge/analogix/analogix_dp_core.c    |   33 +++++++----
- drivers/gpu/drm/exynos/exynos_dp.c                    |   29 +++++----
- drivers/gpu/drm/i915/display/intel_display.c          |    7 +-
- drivers/gpu/drm/rockchip/analogix_dp-rockchip.c       |   36 ++++++------
- drivers/mfd/intel-lpss.c                              |    2 
- drivers/net/ethernet/broadcom/bcmsysport.c            |    3 -
- drivers/net/ethernet/broadcom/genet/bcmgenet.c        |    3 -
- drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c   |    9 ++-
- drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c |   12 ++--
- drivers/net/wimax/i2400m/usb-fw.c                     |    1 
- drivers/platform/x86/gpd-pocket-fan.c                 |    2 
- drivers/remoteproc/qcom_q6v5_mss.c                    |    2 
- drivers/usb/dwc3/core.h                               |    4 +
- drivers/usb/dwc3/gadget.c                             |   52 +++++++++++++----
- drivers/vhost/vsock.c                                 |    5 +
- fs/cifs/connect.c                                     |    6 ++
- include/drm/bridge/analogix_dp.h                      |    5 +
- include/linux/ieee80211.h                             |    9 +++
- include/linux/io.h                                    |    2 
- include/net/udp.h                                     |    7 ++
- kernel/trace/trace_events_hist.c                      |    7 ++
- lib/devres.c                                          |   19 ++++++
- lib/mpi/longlong.h                                    |   34 +++++------
- mm/mremap.c                                           |   10 +++
- net/core/netclassid_cgroup.c                          |    4 -
- net/mac80211/mlme.c                                   |    2 
- net/mac80211/rx.c                                     |    8 +-
- net/mac80211/sta_info.c                               |    3 -
- net/mac80211/status.c                                 |    5 -
- net/mac80211/tx.c                                     |    2 
- net/sctp/sm_make_chunk.c                              |    6 +-
- scripts/config                                        |    5 +
- sound/pci/hda/hda_intel.c                             |    9 +--
- sound/soc/codecs/hdac_hdmi.c                          |    6 +-
- sound/soc/codecs/sgtl5000.c                           |   34 +++++++++++
- sound/soc/codecs/sgtl5000.h                           |    1 
- sound/soc/sh/rcar/ssi.c                               |   11 +++
- sound/soc/sh/rcar/ssiu.c                              |    2 
- sound/soc/soc-topology.c                              |   53 +++++++++++++-----
- tools/arch/arm64/include/uapi/asm/unistd.h            |    1 
- tools/lib/bpf/Makefile                                |    2 
- tools/testing/selftests/ipc/msgque.c                  |    2 
- 53 files changed, 379 insertions(+), 156 deletions(-)
-
-Aaron Ma (1):
-      drm/amdgpu: Fix oops when pp_funcs is unset in ACPI event
-
-Alex Elder (1):
-      remoteproc: qcom_q6v5_mss: fix a bug in q6v5_probe()
-
-Amadeusz Sławiński (7):
-      ASoC: topology: Check return value of soc_tplg_create_tlv
-      ASoC: topology: Check return value of soc_tplg_*_create
-      ASoC: topology: Check soc_tplg_add_route return value
-      ASoC: topology: Check return value of pcm_new_ver
-      ASoC: topology: Check return value of soc_tplg_dai_config
-      ASoC: topology: Fix endianness issue
-      ASoC: codecs: hdac_hdmi: Fix incorrect use of list_for_each_entry
-
-Arnaldo Carvalho de Melo (1):
-      tools headers UAPI: Sync copy of arm64's asm/unistd.h with the kernel sources
-
-Brendan Higgins (1):
-      Revert "software node: Simplify software_node_release() function"
-
-Christoph Hellwig (1):
-      hexagon: clean up ioremap
-
-Doug Berger (2):
-      net: bcmgenet: suppress warnings on failed Rx SKB allocations
-      net: systemport: suppress warnings on failed Rx SKB allocations
-
-Greg Kroah-Hartman (1):
-      Linux 5.4.40
-
-Hans de Goede (1):
-      platform/x86: GPD pocket fan: Fix error message when temp-limits are out of range
-
-Jere Leppänen (1):
-      sctp: Fix SHUTDOWN CTSN Ack in the peer restart case
-
-Jeremie Francois (on alpha) (1):
-      scripts/config: allow colons in option strings for sed
-
-Jia He (1):
-      vhost: vsock: kick send_pkt worker once device is started
-
-Jiri Slaby (1):
-      cgroup, netclassid: remove double cond_resched
-
-Julien Beraud (2):
-      net: stmmac: fix enabling socfpga's ptp_ref_clock
-      net: stmmac: Fix sub-second increment
-
-Madhuparna Bhowmik (1):
-      mac80211: sta_info: Add lockdep condition for RCU list usage
-
-Marek Szyprowski (2):
-      drm/bridge: analogix_dp: Split bind() into probe() and real bind()
-      PM / devfreq: Add missing locking while setting suspend_freq
-
-Matt Roper (1):
-      drm/i915: Extend WaDisableDARBFClkGating to icl,ehl,tgl
-
-Matthias Blankertz (4):
-      ASoC: rsnd: Fix parent SSI start/stop in multi-SSI mode
-      ASoC: rsnd: Fix HDMI channel mapping for multi-SSI mode
-      ASoC: rsnd: Don't treat master SSI in multi SSI setup as parent
-      ASoC: rsnd: Fix "status check failed" spam for multi-SSI
-
-Nathan Chancellor (1):
-      lib/mpi: Fix building for powerpc with clang
-
-Nick Desaulniers (1):
-      hexagon: define ioremap_uc
-
-Paulo Alcantara (1):
-      cifs: do not share tcons with DFS
-
-Qian Cai (1):
-      x86/kvm: fix a missing-prototypes "vmread_error"
-
-Rafael J. Wysocki (1):
-      ACPI: PM: s2idle: Fix comment in acpi_s2idle_prepare_late()
-
-Ronnie Sahlberg (1):
-      cifs: protect updating server->dstaddr with a spinlock
-
-Sandeep Raghuraman (1):
-      drm/amdgpu: Correctly initialize thermal controller for GPUs with Powerplay table v0 (e.g Hawaii)
-
-Sebastian Reichel (1):
-      ASoC: sgtl5000: Fix VAG power-on handling
-
-Takashi Iwai (1):
-      ALSA: hda: Match both PCI ID and SSID for driver blacklist
-
-Thadeu Lima de Souza Cascardo (1):
-      libbpf: Fix readelf output parsing for Fedora
-
-Thinh Nguyen (1):
-      usb: dwc3: gadget: Properly set maxpacket limit
-
-Thomas Pedersen (1):
-      mac80211: add ieee80211_is_any_nullfunc()
-
-Tuowen Zhao (2):
-      lib: devres: add a helper function for ioremap_uc
-      mfd: intel-lpss: Use devm_ioremap_uc for MMIO
-
-Tyler Hicks (1):
-      selftests/ipc: Fix test failure seen after initial test run
-
-Vamshi K Sthambamkadi (1):
-      tracing: Fix memory leaks in trace_events_hist.c
-
-Will Deacon (1):
-      mm/mremap: Add comment explaining the untagging behaviour of mremap()
-
-Willem de Bruijn (1):
-      udp: document udp_rcv_segment special case for looped packets
-
-Xiyu Yang (1):
-      wimax/i2400m: Fix potential urb refcnt leak
-
-Zhan Liu (1):
-      Revert "drm/amd/display: setting the DIG_MODE to the correct value."
-
+-- 
+2.26.2
