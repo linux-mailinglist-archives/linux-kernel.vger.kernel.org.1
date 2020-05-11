@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41B21CE703
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6031CE6AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732258AbgEKVFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
+        id S1731782AbgEKU7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 16:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729714AbgEKU7R (ORCPT
+        by vger.kernel.org with ESMTP id S1731375AbgEKU7V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 16:59:17 -0400
+        Mon, 11 May 2020 16:59:21 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F59BC061A0C;
-        Mon, 11 May 2020 13:59:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C939C05BD09;
+        Mon, 11 May 2020 13:59:21 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jYFW7-0005f7-VT; Mon, 11 May 2020 22:59:16 +0200
+        id 1jYFW9-0005fo-7g; Mon, 11 May 2020 22:59:17 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 9BD051C001F;
-        Mon, 11 May 2020 22:59:15 +0200 (CEST)
-Date:   Mon, 11 May 2020 20:59:15 -0000
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id DD2111C0494;
+        Mon, 11 May 2020 22:59:16 +0200 (CEST)
+Date:   Mon, 11 May 2020 20:59:16 -0000
+From:   "tip-bot2 for Jason Yan" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Allow --kconfig options to override --kcsan defaults
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: core/rcu] rcutorture: Make rcu_fwds and rcu_fwd_emergency_stop static
+Cc:     Hulk Robot <hulkci@huawei.com>, Jason Yan <yanaijie@huawei.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158923075553.390.7107471949147633823.tip-bot2@tip-bot2>
+Message-ID: <158923075682.390.12246694601760269827.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -47,65 +48,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     3d17ded9021e3ad949021619e5fc6da81bc6d6d0
-Gitweb:        https://git.kernel.org/tip/3d17ded9021e3ad949021619e5fc6da81bc6d6d0
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 09 Apr 2020 16:10:36 -07:00
+Commit-ID:     afbc1574f1da13d2fd2b30a96090b37c5933f957
+Gitweb:        https://git.kernel.org/tip/afbc1574f1da13d2fd2b30a96090b37c5933f957
+Author:        Jason Yan <yanaijie@huawei.com>
+AuthorDate:    Thu, 09 Apr 2020 19:42:38 +08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Thu, 07 May 2020 10:15:29 -07:00
 
-torture: Allow --kconfig options to override --kcsan defaults
+rcutorture: Make rcu_fwds and rcu_fwd_emergency_stop static
 
-Currently, attempting to override a --kcsan default with a --kconfig
-option might or might not work.  However, it would be good to allow the
-user to adjust the --kcsan defaults, for example, to specify a different
-time for CONFIG_KCSAN_REPORT_ONCE_IN_MS.  This commit therefore uses the
-new config_override_param() bash function to apply the --kcsan defaults
-and then apply the --kconfig options, which allows this overriding
-to occur.
+This commit fixes the following sparse warning:
 
+kernel/rcu/rcutorture.c:1695:16: warning: symbol 'rcu_fwds' was not declared. Should it be static?
+kernel/rcu/rcutorture.c:1696:6: warning: symbol 'rcu_fwd_emergency_stop' was not declared. Should it be static?
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 7 ++++---
- tools/testing/selftests/rcutorture/bin/kvm.sh            | 3 ---
- 2 files changed, 4 insertions(+), 6 deletions(-)
+ kernel/rcu/rcutorture.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index 1801b06..b7296f1 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -73,8 +73,9 @@ else
- fi
- echo " --- $config_template" >> $resdir/ConfigFragment.input
- cat $config_template >> $resdir/ConfigFragment.input
--config_override_param "--kconfig argument" Kc1 Kc2 "$TORTURE_KCONFIG_ARG"
--cp $T/Kc2 $resdir/ConfigFragment
-+config_override_param "--kcsan options" Kc1 Kc2 "$TORTURE_KCONFIG_KCSAN_ARG"
-+config_override_param "--kconfig argument" Kc2 Kc3 "$TORTURE_KCONFIG_ARG"
-+cp $T/Kc3 $resdir/ConfigFragment
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 3d47dca..c7b7594 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1721,8 +1721,8 @@ struct rcu_fwd {
+ 	unsigned long rcu_launder_gp_seq_start;
+ };
  
- base_resdir=`echo $resdir | sed -e 's/\.[0-9]\+$//'`
- if test "$base_resdir" != "$resdir" -a -f $base_resdir/bzImage -a -f $base_resdir/vmlinux
-@@ -87,7 +88,7 @@ then
- 	ln -s $base_resdir/.config $resdir  # for kvm-recheck.sh
- 	# Arch-independent indicator
- 	touch $resdir/builtkernel
--elif kvm-build.sh $T/Kc2 $resdir
-+elif kvm-build.sh $T/Kc3 $resdir
- then
- 	# Had to build a kernel for this test.
- 	QEMU="`identify_qemu vmlinux`"
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 75ae8e3..e001fc4 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -205,9 +205,6 @@ else
- 	exit 1
- fi
+-struct rcu_fwd *rcu_fwds;
+-bool rcu_fwd_emergency_stop;
++static struct rcu_fwd *rcu_fwds;
++static bool rcu_fwd_emergency_stop;
  
--TORTURE_KCONFIG_ARG="${TORTURE_KCONFIG_ARG} ${TORTURE_KCONFIG_KCSAN_ARG}"
--TORTURE_KCONFIG_ARG="`echo ${TORTURE_KCONFIG_ARG} | sed -e 's/^ *//' -e 's/ *$//'`"
--
- CONFIGFRAG=${KVM}/configs/${TORTURE_SUITE}; export CONFIGFRAG
- 
- defaultconfigs="`tr '\012' ' ' < $CONFIGFRAG/CFLIST`"
+ static void rcu_torture_fwd_cb_hist(struct rcu_fwd *rfp)
+ {
