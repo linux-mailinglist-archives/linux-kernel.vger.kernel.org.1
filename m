@@ -2,86 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A671CE5CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 22:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207F01CE5E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 22:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731748AbgEKUmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 16:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41244 "EHLO
+        id S1731944AbgEKUnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 16:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727873AbgEKUmP (ORCPT
+        with ESMTP id S1731932AbgEKUnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 16:42:15 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1736CC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 13:42:15 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id h12so7775018pjz.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 13:42:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=L0ujHhYjn1+l5Du4Cf/Op9n57dP6YBTeNtQSbhJ4WaM=;
-        b=bRH+BqW3tymeUZNtM20Cab39LSZo4tL64IdqbXNToOvjNU2SuNaAGoMFZJ2rJ+QdRR
-         zpKcz52/K+qJHrcnYQ3khK54m63b0uXv984/UkJUslY0F9FMq9sBaL0GiAvJ0gR+DB+X
-         +bEcr8D70A7VIniiugQ6RIc0qJZDr7pR2CbVh9OK3GD4qaiwcAowS0E/typzsCO1F3dq
-         GpGjQHSOqzpqyi5PGcmA8WDIEQ03efsE4ydkyqLYl7Yp31Ip3CjUWmEKMEeXiGJinUzn
-         UAPdQsNxX99mznyVI6pJKApSu8fcytMCICpdLV1M6Ve0XBTdqghurkXf7aWy1QeWi26h
-         xkZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=L0ujHhYjn1+l5Du4Cf/Op9n57dP6YBTeNtQSbhJ4WaM=;
-        b=aRmJTHInpTYjz3XrueKmZRXvR5cFauR0S2/4s8B4lx5ionrfIgyUSLgSQhBZmTksab
-         iEMnegWc2sK91CCsU4842CEInykwKOiYX/c7RwLckcy5khwwYnaW/breVlR3EqmUyfnx
-         msm2BK/EA9dY9sbTeSX+ahDegFBBdVskBblx3tNVSrdStPqbVnyaOZ1eWzVXKt4Lr+0y
-         w+6KUo0J5ODN6Uys+2u57ke6NJOArpClnhy9m3bDHItcUgqVJJmjomDFlkhMgOGqH8Ls
-         blcTLlb7FZuiArVAXS52wODODpTYf3N6VkK+FXHgohfJbCMbtpLOl29MnWttjW1Vac2e
-         mV/Q==
-X-Gm-Message-State: AGi0PubSUlAB0BQaRHZquVAi/KXSR2Sn4d69RxevAo0maJHzR+tjUfmY
-        qqDglF0IiQLIJ9CK3KDTDjOaNA==
-X-Google-Smtp-Source: APiQypJqGUDfmLWXT4BAaNDoVAbixKZ7OGc6VuC7mSLh0WTg9haz0ObS+LOPNwBpO+Zzp2972AASbw==
-X-Received: by 2002:a17:90a:ea07:: with SMTP id w7mr24663889pjy.172.1589229734487;
-        Mon, 11 May 2020 13:42:14 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:911f:9a95:56a4:6995? ([2605:e000:100e:8c61:911f:9a95:56a4:6995])
-        by smtp.gmail.com with ESMTPSA id s22sm10036420pfd.51.2020.05.11.13.42.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 May 2020 13:42:13 -0700 (PDT)
-Subject: Re: [PATCH] trace: Remove duplicate semicolons at the end of line
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     mingo@redhat.com, tj@kernel.org, linux-kernel@vger.kernel.org,
-        wangle6@huawei.com
-References: <1589196062-84310-1-git-send-email-nixiaoming@huawei.com>
- <20200511164019.354a6d60@gandalf.local.home>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <cd5edf3f-3f33-f199-4479-3cb740467b23@kernel.dk>
-Date:   Mon, 11 May 2020 14:42:12 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200511164019.354a6d60@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        Mon, 11 May 2020 16:43:11 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20287C061A0C;
+        Mon, 11 May 2020 13:43:11 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::d71])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id A0FD3120ED540;
+        Mon, 11 May 2020 13:43:10 -0700 (PDT)
+Date:   Mon, 11 May 2020 13:43:09 -0700 (PDT)
+Message-Id: <20200511.134309.870356538874716906.davem@davemloft.net>
+To:     joe@perches.com
+Cc:     kuba@kernel.org, netdev@vger.kernel.org, andrew@lunn.ch,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3] checkpatch: warn about uses of ENOTSUPP
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <c4c6fee41ceb2eb4b583df37ad0d659357cd81d8.camel@perches.com>
+References: <20200511170807.2252749-1-kuba@kernel.org>
+        <c4c6fee41ceb2eb4b583df37ad0d659357cd81d8.camel@perches.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 11 May 2020 13:43:10 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/20 2:40 PM, Steven Rostedt wrote:
-> On Mon, 11 May 2020 19:21:02 +0800
-> Xiaoming Ni <nixiaoming@huawei.com> wrote:
-> 
->> Remove duplicate semicolons at the end of line in
->> include/trace/events/iocost.h
-> 
-> This looks like it should go through Jens's tree.
+From: Joe Perches <joe@perches.com>
+Date: Mon, 11 May 2020 10:16:34 -0700
 
-I'll add it for 5.8, thanks.
+> No worries here and it's not worth a respin, but
+> typically the patch changelog goes below the --- line.
 
--- 
-Jens Axboe
-
+I ask people explicitly to keep the changelog in the commit message
+proper, the more information we have in the GIT history the better.
