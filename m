@@ -2,56 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817D61CE72C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7994C1CE731
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728181AbgEKVLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:11:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725888AbgEKVLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 17:11:24 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90A0720836;
-        Mon, 11 May 2020 21:11:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589231483;
-        bh=UTbTm++8n1i5+8gpoyrj8bjLx9n97J0BhZSZ+eXg4SM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IiLcHFYcraLjJV+Jzc7qEmx+NomfJ1/WNEHXIAbI+dvzxN9fKuHJW9K5G/xidO805
-         yRDXie7P68uvY0/eLWqwriQp0s5iaWqj2m2xgqggx63FqK1UZegLOkEgSqG/6+rwCu
-         WCMU4TRu46XTINcJTUDHls7QegV9BBOQTMzEzugQ=
-Date:   Mon, 11 May 2020 14:11:22 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Mel Gorman <mgorman@suse.de>, Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: fix LRU balancing effect of new transparent huge
- pages
-Message-Id: <20200511141122.9b03e2f0852b57b224eab066@linux-foundation.org>
-In-Reply-To: <20200509141946.158892-1-shakeelb@google.com>
-References: <20200509141946.158892-1-shakeelb@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1725929AbgEKVNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 17:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725355AbgEKVNG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 17:13:06 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58214C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 14:13:06 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id j21so5120919pgb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 14:13:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=googlenew;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hUQMJys9GXX0OApmECyo7V+SJ+sKw8u+lJewTe9R5AU=;
+        b=ZKEW3toQkxakBREaqJqBiIE7vNAgIgbSlR89IzT1kwQYXkICDfbpQO8esDKoLJJ8mw
+         tXRfh6B0tTtaZZ2jyHU9NeDVmSBprIjhvLhu6De1dx2wFt05O6caAHsZEL3ESIu7ATWh
+         MgLznWvYwtFwu0fds2ZHicQiRkzFYhu94qwLsb6C/SNHk0Z4vwCdBciOgh7HrDgZy3ra
+         yMz10O5CaJfddKRo6jcz6WaZEJAzQaedyaYuvI9qTPUx0DLensSrIPmMpmLSdTbsLvFA
+         6Fe4Rx8YFQbjCHp1vaxY4U8PWavZByIJJd7tdihMrLrG5ln2z3uWzvuGfyCvd415yPdn
+         +AYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hUQMJys9GXX0OApmECyo7V+SJ+sKw8u+lJewTe9R5AU=;
+        b=NmyEZTWSMcjDdKqIiUVwtgFY0Kf1SR0avVH30sQ/RLSolXG8OcZdI67bdvnj3TfyXB
+         KRvKGupDyoHoCi8hZ8fhImx38EzqgQKUhbFd3G3R2NmyyqxbqwQxw+2/BQ8rxxqX/k7i
+         qPt+6tciRhcBjqUfKv2BfAHLuWIMRrE73lGynInVdXfwq0lt7FtsYw0cn/jzfDB7pacq
+         n+s7aTGHMMXqsu2/Ue6ib+2On9SDw8VKfzIi+Jdor4AVgUNXbG/7utNpy84QTZNQvo6f
+         dNWVOHkwhl0KuV3jhkNMxyWU10k1WMPvdi2NcBaLUyE9vq16bQPNi/Pd9yWNQ8CZ/77y
+         y2SQ==
+X-Gm-Message-State: AOAM530NmeTPcMwqJXJ7VQfegkV/dVt+VAbopEeNJneyV8kBKK8BWrgI
+        xBtujsrwsuheaFmu77Kde81y0A==
+X-Google-Smtp-Source: ABdhPJz0vPahRYr9Z3u+DQ62wb8D6DV32O/3QHkApFFpe2HvnuBdo6EtGykV8XZSwWdslWFSKHTpzQ==
+X-Received: by 2002:a63:1f0e:: with SMTP id f14mr4948063pgf.405.1589231585784;
+        Mon, 11 May 2020 14:13:05 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id s9sm10071376pfc.179.2020.05.11.14.13.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 May 2020 14:13:04 -0700 (PDT)
+Subject: Re: [PATCHv3 42/50] xtensa: Add loglvl to show_trace()
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@kernel.org>, Jiri Slaby <jslaby@suse.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org
+References: <20200418201944.482088-1-dima@arista.com>
+ <20200418201944.482088-43-dima@arista.com>
+ <20200511194534.GA1018386@kernel.org>
+From:   Dmitry Safonov <dima@arista.com>
+Message-ID: <fa4a0d52-3186-27eb-69f7-3bd7ba7fa00a@arista.com>
+Date:   Mon, 11 May 2020 22:12:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200511194534.GA1018386@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  9 May 2020 07:19:46 -0700 Shakeel Butt <shakeelb@google.com> wrote:
+Hi Mike,
 
-> Currently, THP are counted as single pages until they are split right
-> before being swapped out. However, at that point the VM is already in
-> the middle of reclaim, and adjusting the LRU balance then is useless.
+On 5/11/20 8:45 PM, Mike Rapoport wrote:
+[..]
+>> @@ -511,7 +515,7 @@ void show_stack(struct task_struct *task, unsigned long *sp)
+>>  	print_hex_dump(KERN_INFO, " ", DUMP_PREFIX_NONE,
+>>  		       STACK_DUMP_LINE_SIZE, STACK_DUMP_ENTRY_SIZE,
+>>  		       sp, len, false);
+>> -	show_trace(task, sp);
+>> +	show_trace(task, stack, KERN_INFO);
 > 
-> Always account THP by the number of basepages, and remove the fixup
-> from the splitting path.
+> it should have been
+> 
+> 	show_trace(task, sp, KERN_INFO);
 
-Confused.  What kernel is this applicable to?
+Thank you for noticing it!
+
+> 
+> Andrew, can you fold the following patch as a fixup please:
+> 
+> 
+> diff --git a/arch/xtensa/kernel/traps.c b/arch/xtensa/kernel/traps.c
+> index f9217b6b45c8..efc3a29cde80 100644
+> --- a/arch/xtensa/kernel/traps.c
+> +++ b/arch/xtensa/kernel/traps.c
+> @@ -515,7 +515,7 @@ void show_stack(struct task_struct *task, unsigned long *sp, const char *loglvl)
+>  	print_hex_dump(loglvl, " ", DUMP_PREFIX_NONE,
+>  		       STACK_DUMP_LINE_SIZE, STACK_DUMP_ENTRY_SIZE,
+>  		       sp, len, false);
+> -	show_trace(task, stack, loglvl);
+> +	show_trace(task, sp, loglvl);
+>  }
+>  
+>  DEFINE_SPINLOCK(die_lock);
+> 
+
+Thanks,
+          Dmitry
