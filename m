@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AFC1CD939
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1271CD940
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729685AbgEKMBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 08:01:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45270 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729453AbgEKMBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 08:01:09 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        id S1729826AbgEKMDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 08:03:35 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:47847 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729696AbgEKMDf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 08:03:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589198614; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=HLhZMaOCv1O1jz47tTVuggCyPQt8joEJFRzbgN2Z4oQ=; b=aM14ZEN6dvkGW71qaA1ZuuSlRXgiyB8j93+I18rDxF6BK8zyBuxLR5yBRj4xGki6DBJYnYOR
+ Lig38WWiXw4wnb9KAQ+O5QsDhK7/qUubvhaz2FPeOBiB+pEVhNHAoYP8FQTJl6j203L+sVCA
+ CXaCrBZ3KD2DU1E9Qs+E8TxYIVo=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5eb93ee5d84a535c3ec10ee1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 May 2020 12:02:45
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C6E2EC433BA; Mon, 11 May 2020 12:02:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 678C320722;
-        Mon, 11 May 2020 12:01:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589198468;
-        bh=BB6veEoV8nefsa+08kyEFgzfgF9CioJSfxrRXxxpGDc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BrKY4dvm1TbXW8OXgqloAaQhVnhtdE1TgqLTPSgR0C8liM10np9COgFzeUnhsKoXV
-         T/l8vatda0KgEebBEakMtBLrNohd5EWAnnWjH5oVvSDrB/k9VO8hFHzX+M+8/L8VSb
-         iHsWX5W/gYrUW4gwYScxJ1anvV1swkck1wIYWOEQ=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Shuah Khan <shuah@kernel.org>, Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Li Philip <philip.li@intel.com>,
-        Liu Yiding <yidingx.liu@intel.com>,
-        Xiao Yang <yangx.jy@cn.fujitsu.com>
-Subject: [PATCH] selftests/ftrace: Use /bin/echo for backslash included command
-Date:   Mon, 11 May 2020 21:01:02 +0900
-Message-Id: <158919846272.12476.10277703957544382089.stgit@devnote2>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200511182752.c83f3454bcb3e205cf2bda4a@kernel.org>
-References: <20200511182752.c83f3454bcb3e205cf2bda4a@kernel.org>
-User-Agent: StGit/0.17.1-dirty
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 642A5C433F2;
+        Mon, 11 May 2020 12:02:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 642A5C433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Michal Kazior <michal.kazior@tieto.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Wen Gong <wgong@codeaurora.org>,
+        Erik Stromdahl <erik.stromdahl@gmail.com>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/2] ath10k: fix gcc-10 zero-length-bounds warnings
+References: <20200509120707.188595-1-arnd@arndb.de>
+        <20200509154818.GB27779@embeddedor>
+Date:   Mon, 11 May 2020 15:02:38 +0300
+In-Reply-To: <20200509154818.GB27779@embeddedor> (Gustavo A. R. Silva's
+        message of "Sat, 9 May 2020 10:48:18 -0500")
+Message-ID: <87zhae4r35.fsf@kamboji.qca.qualcomm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the built-in echo has different behavior in POSIX shell
-(dash) and bash, kprobe_syntax_errors.tc can fail on dash which
-interpret backslash escape automatically.
+"Gustavo A. R. Silva" <gustavoars@kernel.org> writes:
 
-To fix this issue, we explicitly use /bin/echo -E (not interpret
-backslash escapes) if the command string can include backslash.
+> Arnd,
+>
+> On Sat, May 09, 2020 at 02:06:32PM +0200, Arnd Bergmann wrote:
+>> gcc-10 started warning about out-of-bounds access for zero-length
+>> arrays:
+>> 
+>> In file included from drivers/net/wireless/ath/ath10k/core.h:18,
+>>                  from drivers/net/wireless/ath/ath10k/htt_rx.c:8:
+>> drivers/net/wireless/ath/ath10k/htt_rx.c: In function 'ath10k_htt_rx_tx_fetch_ind':
+>> drivers/net/wireless/ath/ath10k/htt.h:1683:17: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'struct htt_tx_fetch_record[0]' [-Wzero-length-bounds]
+>>  1683 |  return (void *)&ind->records[le16_to_cpu(ind->num_records)];
+>>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/net/wireless/ath/ath10k/htt.h:1676:29: note: while referencing 'records'
+>>  1676 |  struct htt_tx_fetch_record records[0];
+>>       |                             ^~~~~~~
+>> 
+>> Make records[] a flexible array member to allow this, moving it behind
+>> the other zero-length member that is not accessed in a way that gcc
+>> warns about.
+>> 
+>> Fixes: 3ba225b506a2 ("treewide: Replace zero-length array with
+>> flexible-array member")
+>
+> This treewide patch no longer contains changes for ath10k. I removed them
+> since Monday (05/04/2020). So, this "Fixes" tag does not apply.
 
-Reported-by: Liu Yiding <yidingx.liu@intel.com>
-Suggested-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- tools/testing/selftests/ftrace/test.d/functions    |    8 +++++---
- .../ftrace/test.d/kprobe/kprobe_syntax_errors.tc   |    4 +++-
- 2 files changed, 8 insertions(+), 4 deletions(-)
+Ok, I'll remove it. Also I'll take these to my ath.git tree, not to
+net-next.
 
-diff --git a/tools/testing/selftests/ftrace/test.d/functions b/tools/testing/selftests/ftrace/test.d/functions
-index 61a3c7e2634d..69708830026f 100644
---- a/tools/testing/selftests/ftrace/test.d/functions
-+++ b/tools/testing/selftests/ftrace/test.d/functions
-@@ -119,12 +119,14 @@ yield() {
-     ping $LOCALHOST -c 1 || sleep .001 || usleep 1 || sleep 1
- }
- 
-+# Since probe event command may include backslash, explicitly use /bin/echo -E
-+# to NOT interpret it.
- ftrace_errlog_check() { # err-prefix command-with-error-pos-by-^ command-file
--    pos=$(echo -n "${2%^*}" | wc -c) # error position
--    command=$(echo "$2" | tr -d ^)
-+    pos=$(/bin/echo -En "${2%^*}" | wc -c) # error position
-+    command=$(/bin/echo -E "$2" | tr -d ^)
-     echo "Test command: $command"
-     echo > error_log
--    (! echo "$command" >> "$3" ) 2> /dev/null
-+    (! /bin/echo -E "$command" >> "$3" ) 2> /dev/null
-     grep "$1: error:" -A 3 error_log
-     N=$(tail -n 1 error_log | wc -c)
-     # "  Command: " and "^\n" => 13
-diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
-index ef1e9bafb098..4cfcf9440a1a 100644
---- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
-+++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
-@@ -91,7 +91,9 @@ esac
- if grep -q "Create/append/" README && grep -q "imm-value" README; then
- echo 'p:kprobes/testevent _do_fork' > kprobe_events
- check_error '^r:kprobes/testevent do_exit'	# DIFF_PROBE_TYPE
--echo 'p:kprobes/testevent _do_fork abcd=\1' > kprobe_events
-+
-+# Explicitly use /bin/echo -E to not interpret \1
-+/bin/echo -E 'p:kprobes/testevent _do_fork abcd=\1' > kprobe_events
- check_error 'p:kprobes/testevent _do_fork ^bcd=\1'	# DIFF_ARG_TYPE
- check_error 'p:kprobes/testevent _do_fork ^abcd=\1:u8'	# DIFF_ARG_TYPE
- check_error 'p:kprobes/testevent _do_fork ^abcd=\"foo"'	# DIFF_ARG_TYPE
-
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
