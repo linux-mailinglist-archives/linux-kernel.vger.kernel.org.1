@@ -2,72 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69001CD85F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BA31CD812
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730066AbgEKL26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:28:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40932 "EHLO mail.kernel.org"
+        id S1729657AbgEKLZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:25:33 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:37544 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729642AbgEKLZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729476AbgEKLZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 May 2020 07:25:32 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C62C2082E;
-        Mon, 11 May 2020 11:25:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589196332;
-        bh=qMkiO+nWfOUzErqZNGHGc5Th27FIV5HW8D5tvjyuXHs=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=0oXMv+ETdO3rQxlCT0GO3lg73QBlXaBRcVjUnmUmVSboJLx5amHazoi5qvJWKDrRC
-         zzEaPGumfz6VaPkcXFGWHOspaKif1CwGLM9rZiH91DnCeeV2pivO4KSRJcXUb7LItx
-         EDEHzmf2oVptDj5bzZr3iOYblS4ZmO+DHjPHJI0Y=
-Date:   Mon, 11 May 2020 12:25:29 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <1589185530-28170-1-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1589185530-28170-1-git-send-email-hayashi.kunihiko@socionext.com>
-Subject: Re: [PATCH 1/2] spi: uniphier: Depend on HAS_IOMEM
-Message-Id: <158919630590.8372.2120054682053294081.b4-ty@kernel.org>
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49LJWl4C5sz9ty3l;
+        Mon, 11 May 2020 13:25:23 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id acT_-EypnjxF; Mon, 11 May 2020 13:25:23 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49LJWl3TH2z9ty3g;
+        Mon, 11 May 2020 13:25:23 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2DCB68B7AE;
+        Mon, 11 May 2020 13:25:30 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id xEtjsWY2sOmL; Mon, 11 May 2020 13:25:30 +0200 (CEST)
+Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E8ADD8B7AD;
+        Mon, 11 May 2020 13:25:29 +0200 (CEST)
+Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id CE73865A09; Mon, 11 May 2020 11:25:29 +0000 (UTC)
+Message-Id: <dcf55a2c04e7ffdc3c2cd7bb3c507da97210a773.1589196133.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1589196133.git.christophe.leroy@csgroup.eu>
+References: <cover.1589196133.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v3 04/45] powerpc/kasan: Remove unnecessary page table locking
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 11 May 2020 11:25:29 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 May 2020 17:25:29 +0900, Kunihiko Hayashi wrote:
-> The driver uses devm_ioremap_resource() which is only available when
-> CONFIG_HAS_IOMEM is set, so the driver depends on this option.
+Commit 45ff3c559585 ("powerpc/kasan: Fix parallel loading of
+modules.") added spinlocks to manage parallele module loading.
 
-Applied to
+Since then commit 47febbeeec44 ("powerpc/32: Force KASAN_VMALLOC for
+modules") converted the module loading to KASAN_VMALLOC.
 
-   local tree asoc/for-5.7
+The spinlocking has then become unneeded and can be removed to
+simplify kasan_init_shadow_page_tables()
 
-Thanks!
+Also remove inclusion of linux/moduleloader.h and linux/vmalloc.h
+which are not needed anymore since the removal of modules management.
 
-[1/2] spi: uniphier: Depend on HAS_IOMEM
-      (no commit info)
-[2/2] spi: uniphier: Use devm_platform_get_and_ioremap_resource() to simplify code
-      (no commit info)
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/mm/kasan/kasan_init_32.c | 19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+diff --git a/arch/powerpc/mm/kasan/kasan_init_32.c b/arch/powerpc/mm/kasan/kasan_init_32.c
+index b7c287adfd59..91e2ade75192 100644
+--- a/arch/powerpc/mm/kasan/kasan_init_32.c
++++ b/arch/powerpc/mm/kasan/kasan_init_32.c
+@@ -5,9 +5,7 @@
+ #include <linux/kasan.h>
+ #include <linux/printk.h>
+ #include <linux/memblock.h>
+-#include <linux/moduleloader.h>
+ #include <linux/sched/task.h>
+-#include <linux/vmalloc.h>
+ #include <asm/pgalloc.h>
+ #include <asm/code-patching.h>
+ #include <mm/mmu_decl.h>
+@@ -34,31 +32,22 @@ static int __init kasan_init_shadow_page_tables(unsigned long k_start, unsigned
+ {
+ 	pmd_t *pmd;
+ 	unsigned long k_cur, k_next;
+-	pte_t *new = NULL;
+ 
+ 	pmd = pmd_ptr_k(k_start);
+ 
+ 	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd++) {
++		pte_t *new;
++
+ 		k_next = pgd_addr_end(k_cur, k_end);
+ 		if ((void *)pmd_page_vaddr(*pmd) != kasan_early_shadow_pte)
+ 			continue;
+ 
+-		if (!new)
+-			new = memblock_alloc(PTE_FRAG_SIZE, PTE_FRAG_SIZE);
++		new = memblock_alloc(PTE_FRAG_SIZE, PTE_FRAG_SIZE);
+ 
+ 		if (!new)
+ 			return -ENOMEM;
+ 		kasan_populate_pte(new, PAGE_KERNEL);
+-
+-		smp_wmb(); /* See comment in __pte_alloc */
+-
+-		spin_lock(&init_mm.page_table_lock);
+-			/* Has another populated it ? */
+-		if (likely((void *)pmd_page_vaddr(*pmd) == kasan_early_shadow_pte)) {
+-			pmd_populate_kernel(&init_mm, pmd, new);
+-			new = NULL;
+-		}
+-		spin_unlock(&init_mm.page_table_lock);
++		pmd_populate_kernel(&init_mm, pmd, new);
+ 	}
+ 	return 0;
+ }
+-- 
+2.25.0
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
