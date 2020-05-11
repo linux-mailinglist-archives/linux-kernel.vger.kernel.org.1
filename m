@@ -2,85 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585601CE15E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 19:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826521CE2AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730836AbgEKRQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 13:16:38 -0400
-Received: from smtprelay0153.hostedemail.com ([216.40.44.153]:34178 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728556AbgEKRQh (ORCPT
+        id S1731196AbgEKS1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 14:27:41 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:43149 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731176AbgEKS1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 13:16:37 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id B80131802EF0E;
-        Mon, 11 May 2020 17:16:36 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2565:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3872:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4362:5007:6119:7875:7903:7974:8660:8957:9025:10004:10400:10848:11232:11658:11914:12043:12295:12297:12555:12696:12737:12740:12760:12895:12986:13069:13148:13230:13311:13357:13439:14096:14097:14157:14181:14659:14721:21080:21433:21451:21627:21811:21939:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: feast86_39949ece28c5c
-X-Filterd-Recvd-Size: 2164
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 11 May 2020 17:16:35 +0000 (UTC)
-Message-ID: <c4c6fee41ceb2eb4b583df37ad0d659357cd81d8.camel@perches.com>
-Subject: Re: [PATCH net-next v3] checkpatch: warn about uses of ENOTSUPP
-From:   Joe Perches <joe@perches.com>
-To:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net
-Cc:     netdev@vger.kernel.org, andrew@lunn.ch,
+        Mon, 11 May 2020 14:27:39 -0400
+Received: by mail-oi1-f195.google.com with SMTP id j16so15937987oih.10;
+        Mon, 11 May 2020 11:27:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8UqBS1lQR2q+XxDhxu6aNZ/bIhX5PHWACaiv6Dgd2LQ=;
+        b=YbHcgpDdJs5V45uRHYQDmKiW9LuZ5J7XKTLr5zolG5vbG2mWZISHY5pWw19EI8FoSP
+         X4Lj0qzDBC9iUdWNDJFeOkpHI461f8sH/BFvYefyz7xQLIw4czlvWNmVk2gA7/1U12kv
+         6oezpghRUpL/1ANP1hHbO09D8EqJoATZ9JWxZynjELgdg+7IbaEmZLde7bfS4Y8tHpzB
+         j5tW4PZ/kRTYv0trpgddIF90EvCwqGJp08YD4fHtTJD/QkRD63aaxP/NaQMVg22ki/Zi
+         L6mwP74FOcxAp2lM769MC/WWq6E51/f3u+fXXdMXsmCNQFRG8Oz5bTzLqq9SWhB0NQQF
+         qO4Q==
+X-Gm-Message-State: AGi0PubTgzysPV3v8gJN0rTW4BdPaLyKIdo5dMgg8v1+ouZSp6Flpke3
+        i3ryUmxs6B7u28IAwJGnNA==
+X-Google-Smtp-Source: APiQypK6P/hEdy6mo2ATCuUvZ14EVXN/An88waBSg+NBZOfZZiZiojO0qq3eBtkwOGsdP9sQoPEKeg==
+X-Received: by 2002:aca:4ac3:: with SMTP id x186mr11881071oia.81.1589221658261;
+        Mon, 11 May 2020 11:27:38 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v27sm2942183oov.14.2020.05.11.11.27.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 11:27:37 -0700 (PDT)
+Received: (nullmailer pid 18590 invoked by uid 1000);
+        Mon, 11 May 2020 17:17:43 -0000
+Date:   Mon, 11 May 2020 12:17:43 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Joseph Lo <josephl@nvidia.com>, linux-tegra@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Mon, 11 May 2020 10:16:34 -0700
-In-Reply-To: <20200511170807.2252749-1-kuba@kernel.org>
-References: <20200511170807.2252749-1-kuba@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+Subject: Re: [PATCH 0/2] memory: tegra: EMC scaling is not a clock provider
+Message-ID: <20200511171743.GA16850@bogus>
+References: <20200506123236.7463-1-geert+renesas@glider.be>
+ <20200507200718.GD2981633@ulmo>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200507200718.GD2981633@ulmo>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-05-11 at 10:08 -0700, Jakub Kicinski wrote:
-> ENOTSUPP often feels like the right error code to use, but it's
-> in fact not a standard Unix error. E.g.:
+On Thu, May 07, 2020 at 10:07:18PM +0200, Thierry Reding wrote:
+> On Wed, May 06, 2020 at 02:32:34PM +0200, Geert Uytterhoeven wrote:
+> > 	Hi all,
+> > 
+> > The Tegra EMC scaling support code is not a clock provider, but merely a
+> > clock consumer, and thus does not need to include
+> > <linux/clk-provider.h>.
+> > 
+> > However, drivers/memory/tegra/tegra210-emc-table.c relies on
+> > tegra210-emc.h to include <linux/of.h> through <linux/clk-provider.h>.
+> > Hence the first patch makes <linux/of_reserved_mem.h> self-contained
+> > first.
+> > 
+> > Thanks for your comments!
+> > 
+> > Geert Uytterhoeven (2):
+> >   of: Make <linux/of_reserved_mem.h> self-contained
+> >   memory: tegra: Drop <linux/clk-provider.h>
+> > 
+> >  drivers/memory/tegra/tegra210-emc-core.c | 1 -
+> >  drivers/memory/tegra/tegra210-emc.h      | 1 -
+> >  include/linux/of_reserved_mem.h          | 1 +
+> >  3 files changed, 1 insertion(+), 2 deletions(-)
 > 
-> $ python
-> > > > import errno
-> > > > errno.errorcode[errno.ENOTSUPP]
-> Traceback (most recent call last):
->   File "<stdin>", line 1, in <module>
-> AttributeError: module 'errno' has no attribute 'ENOTSUPP'
+> Ah... I should've read the cover letter first. Looks like I need to take
+> that first patch through the Tegra tree as well to avoid introducing the
+> build error in the second patch.
 > 
-> There were numerous commits converting the uses back to EOPNOTSUPP
-> but in some cases we are stuck with the high error code for backward
-> compatibility reasons.
-> 
-> Let's try prevent more ENOTSUPPs from getting into the kernel.
-> 
-> Recent example:
-> https://lore.kernel.org/netdev/20200510182252.GA411829@lunn.ch/
-> 
-> v3 (Joe):
->  - fix the "not file" condition.
-> 
-> v2 (Joe):
->  - add a link to recent discussion,
->  - don't match when scanning files, not patches to avoid sudden
->    influx of conversion patches.
-> https://lore.kernel.org/netdev/20200511165319.2251678-1-kuba@kernel.org/
-> 
-> v1:
-> https://lore.kernel.org/netdev/20200510185148.2230767-1-kuba@kernel.org/
-> 
-> Suggested-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> Acked-by: Joe Perches <joe@perches.com>
-> ---
+> Rob, do you mind if I pick up patch 1 of this into the same OF branch
+> that I already carry the memory-region-names patches on?
 
-Thanks.
+No, it's fine.
 
-No worries here and it's not worth a respin, but
-typically the patch changelog goes below the --- line.
-
-
+Acked-by: Rob Herring <robh@kernel.org>
