@@ -2,148 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF58A1CD8DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA631CD8E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729727AbgEKLtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:49:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727873AbgEKLtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:49:16 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6607220735;
-        Mon, 11 May 2020 11:49:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589197755;
-        bh=G+wgiTDTWIi7ajc/ou5pxD/+OW5419RPkT5HXf5jP1E=;
-        h=Subject:To:Cc:From:Date:From;
-        b=uIgnkHK7QEfRpRUp9N6JU3d9kzkiDu4R2cYoblec3iz6Xi2UFs44rq8CtXdnX84qy
-         FAksoPJlvOcT500ydCuhrFFvT3QJH5EtL921aKBMHKZlmPcMp2rdtIkxVYM4mldJQD
-         Ud6YfbKpjbu7vYsZ0LFA0peAX3E313w++xHcuNbE=
-Subject: Linux 4.14.180
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date:   Mon, 11 May 2020 13:49:09 +0200
-Message-ID: <1589197749146101@kroah.com>
+        id S1729564AbgEKLv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727019AbgEKLvZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 07:51:25 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04A4C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 04:51:25 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id m13so7270502otf.6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 04:51:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NeHRpybSf1hZUCecDPTXMsxHP/0MCclV9yk5G+Y9ElM=;
+        b=FvCTwObSUK/MSdWWjp6LdXPWvXftuK25+1iJJPGIDFcuzADJ1lqKsneCun9PQlUILM
+         IbHxRU/2/UxYvP86NguZ6KvjiOasgPyzGxY+Wl/0kttIzOpE0s/lCVm7xk0H20W/xuwR
+         5fMs/5LZRiZ7F53MqB3Eyakhbw3Xe/Xc2eOSVenLMLbvMUdE8sa2B8SB4geRaRjMMvPW
+         BT9ihGf+3XwjsG/o62/6vsF8MyqF60zAy93GRzu/pQAH/SbZeInVVMY1gqk6oZAgbUmF
+         36d0FVFknNDNXbJ3LwO76AZHx5FpSR7essMlz83xi3MGSyEPQZPavQ7E6NvJsheFFrIS
+         eSQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NeHRpybSf1hZUCecDPTXMsxHP/0MCclV9yk5G+Y9ElM=;
+        b=LkRK/mX3ZEORU2pLb0GG8wyoKqHjVWeId24ZhdjuRQyXD+/pJ8yNFSTJRoOToetEsd
+         goerErbj4KV8vd3Coi0sQTd6Y7omcIM24UrSEQUs/4SKC+Ls/LX5ZSo6OKhazzqxofm+
+         N9Oh+mzVwR2HSJaGSO8CS50/GQtTdBwDymwysDnNLWZLesy/kCwsEoMGVjpnqY0YmScF
+         nwk0t4y1tVOFPyxrp5EOKtEG+vGiGEBg7CZzRVEtlKw5br0x7zjSR2hRAphXTKZeS++u
+         SeysXn85wmhyT+Ijb9emnokhcS0yTzBpZ0Ys+IR8W8X9ua9iJn6Y3bSreVfaQf3oBPYO
+         F6cA==
+X-Gm-Message-State: AGi0PuZLSAbYWCzFzpimdMYHR/D5yK3YdKUORtKw7+Il2ypkmHWaZUk+
+        /DNXBgQmjCoqB6EmVfz7jVbc+mXOlm4OLMFwcHM=
+X-Google-Smtp-Source: APiQypKe8DbCslhOawkFJNWKH2byflMD0hHrGXS+wW3bBQQ2xV7wcWU40RYmF45OSY/L3pWRXRLWwJ7rkCiyCwlq2sA=
+X-Received: by 2002:a9d:7990:: with SMTP id h16mr11948575otm.145.1589197884912;
+ Mon, 11 May 2020 04:51:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200510111015.20134-1-oshpigelman@habana.ai>
+In-Reply-To: <20200510111015.20134-1-oshpigelman@habana.ai>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Mon, 11 May 2020 14:50:40 +0300
+Message-ID: <CAFCwf10ufEaTEDuyKJ+m4tdvk3n4g3dxW94LWsRqoO-zcDw0Tg@mail.gmail.com>
+Subject: Re: [PATCH] habanalabs: check if CoreSight is supported
+To:     Omer Shpigelman <oshpigelman@habana.ai>
+Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm announcing the release of the 4.14.180 kernel.
+On Sun, May 10, 2020 at 2:10 PM Omer Shpigelman <oshpigelman@habana.ai> wrote:
+>
+> Coresight is not supported on simulator, therefore add a boolean for
+> checking that (currently used by un-upstreamed code).
+>
+> Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
+> ---
+>  drivers/misc/habanalabs/goya/goya.c  | 1 +
+>  drivers/misc/habanalabs/habanalabs.h | 2 ++
+>  2 files changed, 3 insertions(+)
+>
+> diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+> index b3e2354aaca2..fb2ff82e0db5 100644
+> --- a/drivers/misc/habanalabs/goya/goya.c
+> +++ b/drivers/misc/habanalabs/goya/goya.c
+> @@ -751,6 +751,7 @@ static int goya_sw_init(struct hl_device *hdev)
+>         }
+>
+>         spin_lock_init(&goya->hw_queues_lock);
+> +       hdev->supports_coresight = true;
+>
+>         return 0;
+>
+> diff --git a/drivers/misc/habanalabs/habanalabs.h b/drivers/misc/habanalabs/habanalabs.h
+> index a68df32094f1..cfb306daa8d4 100644
+> --- a/drivers/misc/habanalabs/habanalabs.h
+> +++ b/drivers/misc/habanalabs/habanalabs.h
+> @@ -1415,6 +1415,7 @@ struct hl_device_idle_busy_ts {
+>   * @cdev_sysfs_created: were char devices and sysfs nodes created.
+>   * @stop_on_err: true if engines should stop on error.
+>   * @supports_sync_stream: is sync stream supported.
+> + * @supports_coresight: is CoreSight supported.
+>   */
+>  struct hl_device {
+>         struct pci_dev                  *pdev;
+> @@ -1498,6 +1499,7 @@ struct hl_device {
+>         u8                              cdev_sysfs_created;
+>         u8                              stop_on_err;
+>         u8                              supports_sync_stream;
+> +       u8                              supports_coresight;
+>
+>         /* Parameters for bring-up */
+>         u8                              mmu_enable;
+> --
+> 2.17.1
+>
 
-All users of the 4.14 kernel series must upgrade.
-
-The updated 4.14.y git tree can be found at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.14.y
-and can be browsed at the normal kernel.org git web browser:
-	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
-
-thanks,
-
-greg k-h
-
-------------
-
- Makefile                                              |    2 -
- arch/powerpc/kernel/pci_of_scan.c                     |   12 +++++-
- arch/s390/kernel/diag.c                               |    2 -
- arch/s390/kernel/smp.c                                |    4 +-
- arch/s390/kernel/trace.c                              |    2 -
- drivers/net/dsa/b53/b53_common.c                      |   30 +++++++++++++--
- drivers/net/dsa/b53/b53_regs.h                        |    3 +
- drivers/net/ethernet/broadcom/bcmsysport.c            |    3 +
- drivers/net/ethernet/broadcom/genet/bcmgenet.c        |    3 +
- drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c   |    9 +++-
- drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c |   12 ++++--
- drivers/net/wimax/i2400m/usb-fw.c                     |    1 
- drivers/vhost/vsock.c                                 |    5 ++
- fs/cifs/connect.c                                     |    2 +
- include/linux/ieee80211.h                             |    9 ++++
- kernel/trace/trace.c                                  |    5 ++
- kernel/trace/trace_events.c                           |   31 +++++++---------
- lib/mpi/longlong.h                                    |   34 +++++++++---------
- net/core/netclassid_cgroup.c                          |    4 --
- net/mac80211/mlme.c                                   |    2 -
- net/mac80211/rx.c                                     |    8 +---
- net/mac80211/status.c                                 |    5 +-
- net/mac80211/tx.c                                     |    2 -
- net/sctp/sm_make_chunk.c                              |    6 ++-
- scripts/config                                        |    5 ++
- sound/pci/hda/hda_intel.c                             |    9 ++--
- sound/soc/codecs/hdac_hdmi.c                          |    6 +--
- sound/soc/codecs/sgtl5000.c                           |   34 ++++++++++++++++++
- sound/soc/codecs/sgtl5000.h                           |    1 
- sound/soc/sh/rcar/ssiu.c                              |    2 -
- sound/soc/soc-topology.c                              |    4 +-
- tools/testing/selftests/ipc/msgque.c                  |    2 -
- 32 files changed, 181 insertions(+), 78 deletions(-)
-
-Alexey Kardashevskiy (1):
-      powerpc/pci/of: Parse unassigned resources
-
-Amadeusz Sławiński (2):
-      ASoC: topology: Check return value of pcm_new_ver
-      ASoC: codecs: hdac_hdmi: Fix incorrect use of list_for_each_entry
-
-Doug Berger (2):
-      net: bcmgenet: suppress warnings on failed Rx SKB allocations
-      net: systemport: suppress warnings on failed Rx SKB allocations
-
-Florian Fainelli (1):
-      net: dsa: b53: Rework ARL bin logic
-
-Greg Kroah-Hartman (1):
-      Linux 4.14.180
-
-Jere Leppänen (1):
-      sctp: Fix SHUTDOWN CTSN Ack in the peer restart case
-
-Jeremie Francois (on alpha) (1):
-      scripts/config: allow colons in option strings for sed
-
-Jia He (1):
-      vhost: vsock: kick send_pkt worker once device is started
-
-Jiri Slaby (1):
-      cgroup, netclassid: remove double cond_resched
-
-Julien Beraud (2):
-      net: stmmac: fix enabling socfpga's ptp_ref_clock
-      net: stmmac: Fix sub-second increment
-
-Matthias Blankertz (1):
-      ASoC: rsnd: Fix HDMI channel mapping for multi-SSI mode
-
-Nathan Chancellor (1):
-      lib/mpi: Fix building for powerpc with clang
-
-Philipp Rudo (1):
-      s390/ftrace: fix potential crashes when switching tracers
-
-Ronnie Sahlberg (1):
-      cifs: protect updating server->dstaddr with a spinlock
-
-Sebastian Reichel (1):
-      ASoC: sgtl5000: Fix VAG power-on handling
-
-Steven Rostedt (VMware) (1):
-      tracing: Reverse the order of trace_types_lock and event_mutex
-
-Takashi Iwai (1):
-      ALSA: hda: Match both PCI ID and SSID for driver blacklist
-
-Thomas Pedersen (1):
-      mac80211: add ieee80211_is_any_nullfunc()
-
-Tyler Hicks (1):
-      selftests/ipc: Fix test failure seen after initial test run
-
-Xiyu Yang (1):
-      wimax/i2400m: Fix potential urb refcnt leak
-
+This patch is:
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
