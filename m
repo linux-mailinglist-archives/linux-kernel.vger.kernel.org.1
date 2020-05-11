@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925FE1CE18F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 19:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E43CF1CE1E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 19:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730964AbgEKRVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 13:21:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730644AbgEKRVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 13:21:49 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6451E20746;
-        Mon, 11 May 2020 17:21:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589217708;
-        bh=uLiY26Fl0HsdaY+0df8HTe/ulHJxBjmHpFvc/MQdxKo=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=D85ROROMtcdx6iqvyEY3chT8cRwx2acwED/ck89w9onUCiajphvGfrEaUuGOYC7ja
-         87qbsFodx/iGjXkelEMrwc0r+VX06FWesqsnMaF3dFTzFq/o4+v3KNJpaghu4zqI+8
-         kuSN6VvDWwH8O69xThbxxzSEvUhRK73ymiQ183F0=
-Date:   Mon, 11 May 2020 18:21:46 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <1589185530-28170-1-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1589185530-28170-1-git-send-email-hayashi.kunihiko@socionext.com>
-Subject: Re: [PATCH 1/2] spi: uniphier: Depend on HAS_IOMEM
-Message-Id: <158921769452.22432.4067237223059688972.b4-ty@kernel.org>
+        id S1729698AbgEKRlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 13:41:50 -0400
+Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:60802 "EHLO
+        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726310AbgEKRlt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 13:41:49 -0400
+X-Greylist: delayed 1193 seconds by postgrey-1.27 at vger.kernel.org; Mon, 11 May 2020 13:41:49 EDT
+Received: from shadbolt.e.decadent.org.uk ([88.96.1.126] helo=xylophone)
+        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1jYC7h-0001Fq-To; Mon, 11 May 2020 18:21:50 +0100
+Message-ID: <6a43d9b82e321aef0324d10a5e2f3dc4961a7fe9.camel@codethink.co.uk>
+Subject: Re: [PATCH 5.4 00/50] 5.4.40-rc1 review
+From:   Ben Hutchings <ben.hutchings@codethink.co.uk>
+To:     shuah <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, stable@vger.kernel.org
+Date:   Mon, 11 May 2020 18:21:48 +0100
+In-Reply-To: <e090d5ed-3e18-333e-221b-197a30c102e8@kernel.org>
+References: <20200508123043.085296641@linuxfoundation.org>
+         <e090d5ed-3e18-333e-221b-197a30c102e8@kernel.org>
+Organization: Codethink Ltd.
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 May 2020 17:25:29 +0900, Kunihiko Hayashi wrote:
-> The driver uses devm_ioremap_resource() which is only available when
-> CONFIG_HAS_IOMEM is set, so the driver depends on this option.
+On Mon, 2020-05-11 at 10:35 -0600, shuah wrote:
+> On 5/8/20 6:35 AM, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.4.40 release.
+> > There are 50 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Sun, 10 May 2020 12:29:44 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.40-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
+> 
+> Compiled and booted on my test system. I am seeing the following
+> regression in dmesg and with a new emergency message.
+> 
+> Initramfs unpacking failed: Decoding failed
+> 
+> I don't know why yet. I will debug and let you know.
 
-Applied to
+At a guess: you upgraded to Ubuntu 20.04, and the default initramfs
+compression changed to lz4.  Or something like that.
 
-   local tree spi/for-5.7
+Ben.
 
-Thanks!
+-- 
+Ben Hutchings, Software Developer                         Codethink Ltd
+https://www.codethink.co.uk/                 Dale House, 35 Dale Street
+                                     Manchester, M1 2HF, United Kingdom
 
-[1/2] spi: uniphier: Depend on HAS_IOMEM
-      (no commit info)
-[2/2] spi: uniphier: Use devm_platform_get_and_ioremap_resource() to simplify code
-      (no commit info)
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
