@@ -2,215 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A4A1CE1F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 19:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2461CE1E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 19:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730959AbgEKRo1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 May 2020 13:44:27 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:36801 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728711AbgEKRo0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 13:44:26 -0400
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id E52B1200006;
-        Mon, 11 May 2020 17:44:21 +0000 (UTC)
-Date:   Mon, 11 May 2020 19:44:20 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6?= Rojas <noltari@gmail.com>
-Cc:     computersforpeace@gmail.com, kdasu.kdev@gmail.com, richard@nod.at,
-        vigneshr@ti.com, sumit.semwal@linaro.org,
-        linux-mtd@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH 3/3] nand: brcmnand: support v2.1-v2.2 controllers
-Message-ID: <20200511194420.00af6b1f@xps13>
-In-Reply-To: <20200510151406.2527856-3-noltari@gmail.com>
-References: <20200510151406.2527856-1-noltari@gmail.com>
-        <20200510151406.2527856-3-noltari@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1730624AbgEKRmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 13:42:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726310AbgEKRmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 13:42:16 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97DD52070B;
+        Mon, 11 May 2020 17:42:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589218935;
+        bh=a3Iyd0AtJyoc/jnDu0wU+xUacgHz++uvOIDW/S793sI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qeIHokrg81Z1PpYZkgeLSu43ScttAjHimGyFySHs1JaZipMJOdDVuxsk37D1z6OxC
+         tYAXdXDKrjgLv/54g3h+wFPvjPlsmwMX0TtiIKxKyX8Tij3eU5FdehSvD83aHJNf8F
+         2H13GhEvNX4lBB+icp38E9m7TN/zUo1KJzbLtBbY=
+Date:   Mon, 11 May 2020 12:46:47 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] ASoC: Intel: Skylake: Replace zero-length array with
+ flexible-array
+Message-ID: <20200511174647.GA17318@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Álvaro,
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-Álvaro Fernández Rojas <noltari@gmail.com> wrote on Sun, 10 May 2020
-17:14:06 +0200:
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-> Tested on Netgear DGND3700v2 (BCM6362 with v2.2 controller).
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
 
-I'd propose to do this in two steps:
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
 
-First rename what needs to be rename to be more accurate without adding
-anything specific to this version of the IP, then, in another patch,
-just add the necessary bits.
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
 
-> 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> ---
->  drivers/mtd/nand/raw/brcmnand/brcmnand.c | 76 +++++++++++++++++++++---
->  1 file changed, 67 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-> index 72b268d8e3a4..718c601d0e59 100644
-> --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-> @@ -338,6 +338,36 @@ enum brcmnand_reg {
->  	BRCMNAND_FC_BASE,
->  };
->  
-> +/* BRCMNAND v2.1-v2.2 */
-> +static const u16 brcmnand_regs_v21[] = {
-> +	[BRCMNAND_CMD_START]		=  0x04,
-> +	[BRCMNAND_CMD_EXT_ADDRESS]	=  0x08,
-> +	[BRCMNAND_CMD_ADDRESS]		=  0x0c,
-> +	[BRCMNAND_INTFC_STATUS]		=  0x5c,
-> +	[BRCMNAND_CS_SELECT]		=  0x14,
-> +	[BRCMNAND_CS_XOR]		=  0x18,
-> +	[BRCMNAND_LL_OP]		=     0,
-> +	[BRCMNAND_CS0_BASE]		=  0x40,
-> +	[BRCMNAND_CS1_BASE]		=     0,
-> +	[BRCMNAND_CORR_THRESHOLD]	=     0,
-> +	[BRCMNAND_CORR_THRESHOLD_EXT]	=     0,
-> +	[BRCMNAND_UNCORR_COUNT]		=     0,
-> +	[BRCMNAND_CORR_COUNT]		=     0,
-> +	[BRCMNAND_CORR_EXT_ADDR]	=  0x60,
-> +	[BRCMNAND_CORR_ADDR]		=  0x64,
-> +	[BRCMNAND_UNCORR_EXT_ADDR]	=  0x68,
-> +	[BRCMNAND_UNCORR_ADDR]		=  0x6c,
-> +	[BRCMNAND_SEMAPHORE]		=  0x50,
-> +	[BRCMNAND_ID]			=  0x54,
-> +	[BRCMNAND_ID_EXT]		=     0,
-> +	[BRCMNAND_LL_RDATA]		=     0,
-> +	[BRCMNAND_OOB_READ_BASE]	=  0x20,
-> +	[BRCMNAND_OOB_READ_10_BASE]	=     0,
-> +	[BRCMNAND_OOB_WRITE_BASE]	=  0x30,
-> +	[BRCMNAND_OOB_WRITE_10_BASE]	=     0,
-> +	[BRCMNAND_FC_BASE]		= 0x200,
-> +};
-> +
->  /* BRCMNAND v3.3-v4.0 */
->  static const u16 brcmnand_regs_v33[] = {
->  	[BRCMNAND_CMD_START]		=  0x04,
-> @@ -571,12 +601,16 @@ static int brcmnand_revision_init(struct brcmnand_controller *ctrl)
->  {
->  	static const unsigned int block_sizes_v6[] = { 8, 16, 128, 256, 512, 1024, 2048, 0 };
->  	static const unsigned int block_sizes_v4[] = { 16, 128, 8, 512, 256, 1024, 2048, 0 };
-> -	static const unsigned int page_sizes[] = { 512, 2048, 4096, 8192, 0 };
-> +	static const unsigned int block_sizes_v2_2[] = { 16, 128, 8, 512, 256, 0 };
-> +	static const unsigned int block_sizes[] = { 16, 128, 8, 512, 0 };
-> +	static const unsigned int page_sizes_v3_4[] = { 512, 2048, 4096, 8192, 0 };
-> +	static const unsigned int page_sizes_v2_2[] = { 512, 2048, 4096, 0 };
-> +	static const unsigned int page_sizes[] = { 512, 2048, 0 };
+sizeof(flexible-array-member) triggers a warning because flexible array
+members have incomplete type[1]. There are some instances of code in
+which the sizeof operator is being incorrectly/erroneously applied to
+zero-length arrays and the result is zero. Such instances may be hiding
+some bugs. So, this work (flexible-array member conversions) will also
+help to get completely rid of those sorts of issues.
 
-Can you name a version everywhere?
+This issue was found with the help of Coccinelle.
 
->  
->  	ctrl->nand_version = nand_readreg(ctrl, 0) & 0xffff;
->  
-> -	/* Only support v4.0+? */
-> -	if (ctrl->nand_version < 0x0400) {
-> +	/* Only support v2.1+ */
-> +	if (ctrl->nand_version < 0x0201) {
->  		dev_err(ctrl->dev, "version %#x not supported\n",
->  			ctrl->nand_version);
->  		return -ENODEV;
-> @@ -593,6 +627,8 @@ static int brcmnand_revision_init(struct brcmnand_controller *ctrl)
->  		ctrl->reg_offsets = brcmnand_regs_v50;
->  	else if (ctrl->nand_version >= 0x0303)
->  		ctrl->reg_offsets = brcmnand_regs_v33;
-> +	else if (ctrl->nand_version >= 0x0201)
-> +		ctrl->reg_offsets = brcmnand_regs_v21;
->  
->  	/* Chip-select stride */
->  	if (ctrl->nand_version >= 0x0701)
-> @@ -618,14 +654,27 @@ static int brcmnand_revision_init(struct brcmnand_controller *ctrl)
->  		ctrl->max_page_size = 16 * 1024;
->  		ctrl->max_block_size = 2 * 1024 * 1024;
->  	} else {
-> -		ctrl->page_sizes = page_sizes;
-> +		if (ctrl->nand_version >= 0x0304)
-> +			ctrl->page_sizes = page_sizes_v3_4;
-> +		else if (ctrl->nand_version >= 0x0202)
-> +			ctrl->page_sizes = page_sizes_v2_2;
-> +		else
-> +			ctrl->page_sizes = page_sizes;
-> +
->  		if (ctrl->nand_version >= 0x0600)
->  			ctrl->block_sizes = block_sizes_v6;
-> -		else
-> +		else if (ctrl->nand_version >= 0x0400)
->  			ctrl->block_sizes = block_sizes_v4;
-> +		else if (ctrl->nand_version >= 0x0202)
-> +			ctrl->block_sizes = block_sizes_v2_2;
-> +		else
-> +			ctrl->block_sizes = block_sizes;
->  
->  		if (ctrl->nand_version < 0x0400) {
-> -			ctrl->max_page_size = 4096;
-> +			if (ctrl->nand_version < 0x0202)
-> +				ctrl->max_page_size = 2048;
-> +			else
-> +				ctrl->max_page_size = 4096;
->  			ctrl->max_block_size = 512 * 1024;
->  		}
->  	}
-> @@ -811,6 +860,9 @@ static void brcmnand_wr_corr_thresh(struct brcmnand_host *host, u8 val)
->  	enum brcmnand_reg reg = BRCMNAND_CORR_THRESHOLD;
->  	int cs = host->cs;
->  
-> +	if (!ctrl->reg_offsets[reg])
-> +		return;
-> +
->  	if (ctrl->nand_version == 0x0702)
->  		bits = 7;
->  	else if (ctrl->nand_version >= 0x0600)
-> @@ -869,8 +921,10 @@ static inline u32 brcmnand_spare_area_mask(struct brcmnand_controller *ctrl)
->  		return GENMASK(7, 0);
->  	else if (ctrl->nand_version >= 0x0600)
->  		return GENMASK(6, 0);
-> -	else
-> +	else if (ctrl->nand_version >= 0x0303)
->  		return GENMASK(5, 0);
-> +	else
-> +		return GENMASK(4, 0);
->  }
->  
->  #define NAND_ACC_CONTROL_ECC_SHIFT	16
-> @@ -2390,9 +2444,11 @@ static int brcmnand_set_cfg(struct brcmnand_host *host,
->  
->  	tmp = nand_readreg(ctrl, acc_control_offs);
->  	tmp &= ~brcmnand_ecc_level_mask(ctrl);
-> -	tmp |= cfg->ecc_level << NAND_ACC_CONTROL_ECC_SHIFT;
->  	tmp &= ~brcmnand_spare_area_mask(ctrl);
-> -	tmp |= cfg->spare_area_size;
-> +	if (ctrl->nand_version >= 0x0302) {
-> +		tmp |= cfg->ecc_level << NAND_ACC_CONTROL_ECC_SHIFT;
-> +		tmp |= cfg->spare_area_size;
-> +	}
->  	nand_writereg(ctrl, acc_control_offs, tmp);
->  
->  	brcmnand_set_sector_size_1k(host, cfg->sector_size_1k);
-> @@ -2766,6 +2822,8 @@ const struct dev_pm_ops brcmnand_pm_ops = {
->  EXPORT_SYMBOL_GPL(brcmnand_pm_ops);
->  
->  static const struct of_device_id brcmnand_of_match[] = {
-> +	{ .compatible = "brcm,brcmnand-v2.1" },
-> +	{ .compatible = "brcm,brcmnand-v2.2" },
->  	{ .compatible = "brcm,brcmnand-v4.0" },
->  	{ .compatible = "brcm,brcmnand-v5.0" },
->  	{ .compatible = "brcm,brcmnand-v6.0" },
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
 
-You should also document these new bindings in a separate patch
-(before this one).
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ sound/soc/intel/atom/sst-atom-controls.h |    2 +-
+ sound/soc/intel/skylake/skl-i2s.h        |    2 +-
+ sound/soc/intel/skylake/skl-topology.h   |    4 ++--
+ sound/soc/intel/skylake/skl.h            |    2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-Thanks,
-Miquèl
+diff --git a/sound/soc/intel/atom/sst-atom-controls.h b/sound/soc/intel/atom/sst-atom-controls.h
+index 5356e954a732..620b48d2a064 100644
+--- a/sound/soc/intel/atom/sst-atom-controls.h
++++ b/sound/soc/intel/atom/sst-atom-controls.h
+@@ -410,7 +410,7 @@ struct sst_cmd_set_gain_dual {
+ struct sst_cmd_set_params {
+ 	struct sst_destination_id dst;
+ 	u16 command_id;
+-	char params[0];
++	char params[];
+ } __packed;
+ 
+ 
+diff --git a/sound/soc/intel/skylake/skl-i2s.h b/sound/soc/intel/skylake/skl-i2s.h
+index d7c15873c0d4..dfce91e11be1 100644
+--- a/sound/soc/intel/skylake/skl-i2s.h
++++ b/sound/soc/intel/skylake/skl-i2s.h
+@@ -46,7 +46,7 @@ struct skl_i2s_config_mclk {
+ struct skl_i2s_config_mclk_ext {
+ 	u32 mdivctrl;
+ 	u32 mdivr_count;
+-	u32 mdivr[0];
++	u32 mdivr[];
+ } __packed;
+ 
+ struct skl_i2s_config_blob_signature {
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index e967800dbb62..d2cd8ef8e97f 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -119,7 +119,7 @@ struct skl_cpr_gtw_cfg {
+ struct skl_dma_control {
+ 	u32 node_id;
+ 	u32 config_length;
+-	u32 config_data[0];
++	u32 config_data[];
+ } __packed;
+ 
+ struct skl_cpr_cfg {
+@@ -152,7 +152,7 @@ struct skl_up_down_mixer_cfg {
+ 
+ struct skl_algo_cfg {
+ 	struct skl_base_cfg  base_cfg;
+-	char params[0];
++	char params[];
+ } __packed;
+ 
+ struct skl_base_outfmt_cfg {
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 2bfbf59277c4..26057f38a014 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -49,7 +49,7 @@ struct skl_astate_param {
+ 
+ struct skl_astate_config {
+ 	u32 count;
+-	struct skl_astate_param astate_table[0];
++	struct skl_astate_param astate_table[];
+ };
+ 
+ struct skl_fw_config {
+
