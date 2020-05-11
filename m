@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5961CE6F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FBD1CE6B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732383AbgEKVFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43936 "EHLO
+        id S1731987AbgEKU7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 16:59:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731843AbgEKU71 (ORCPT
+        by vger.kernel.org with ESMTP id S1731885AbgEKU7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 16:59:27 -0400
+        Mon, 11 May 2020 16:59:34 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650DBC061A0C;
-        Mon, 11 May 2020 13:59:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F4DC05BD0A;
+        Mon, 11 May 2020 13:59:33 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jYFWH-0005jw-SU; Mon, 11 May 2020 22:59:25 +0200
+        id 1jYFWO-0005ke-07; Mon, 11 May 2020 22:59:32 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 3AD671C04CC;
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id EFD9F1C07F8;
         Mon, 11 May 2020 22:59:22 +0200 (CEST)
 Date:   Mon, 11 May 2020 20:59:22 -0000
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu-tasks: Allow standalone use of TASKS_{TRACE_,}RCU
+Subject: [tip: core/rcu] rcutorture: Add TRACE02 scenario enabling RCU Tasks
+ Trace IPIs
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158923076214.390.16365922587319898600.tip-bot2@tip-bot2>
+Message-ID: <158923076292.390.13705656012616834525.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -47,123 +48,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     25246fc83155b254534ce579fb713828fb5e621a
-Gitweb:        https://git.kernel.org/tip/25246fc83155b254534ce579fb713828fb5e621a
+Commit-ID:     039f3cc93aa07a90ad5df95d7820b67b0689126d
+Gitweb:        https://git.kernel.org/tip/039f3cc93aa07a90ad5df95d7820b67b0689126d
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Sun, 05 Apr 2020 20:49:13 -07:00
+AuthorDate:    Tue, 24 Mar 2020 08:00:04 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 27 Apr 2020 11:03:53 -07:00
 
-rcu-tasks: Allow standalone use of TASKS_{TRACE_,}RCU
+rcutorture: Add TRACE02 scenario enabling RCU Tasks Trace IPIs
 
-This commit allows TASKS_TRACE_RCU to be used independently of TASKS_RCU
-and vice versa.
+This commit adds a TRACE02 scenario which enables preemption and RCU
+Tasks Trace IPIs, more specifically, disabling heavyweight readers.
 
-[ paulmck: Fix conditional compilation per kbuild test robot feedback. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 54 +++++++++++++++++++++++++--------------------
- 1 file changed, 30 insertions(+), 24 deletions(-)
+ tools/testing/selftests/rcutorture/configs/rcu/CFLIST       |  1 +-
+ tools/testing/selftests/rcutorture/configs/rcu/TRACE01      |  1 +-
+ tools/testing/selftests/rcutorture/configs/rcu/TRACE02      | 11 +++++++-
+ tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot |  1 +-
+ 4 files changed, 14 insertions(+)
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRACE02
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 0a580ef..ce23f6c 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -244,27 +244,6 @@ static void __init rcu_spawn_tasks_kthread_generic(struct rcu_tasks *rtp)
- 	smp_mb(); /* Ensure others see full kthread. */
- }
- 
--/* Do the srcu_read_lock() for the above synchronize_srcu().  */
--void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
--{
--	preempt_disable();
--	current->rcu_tasks_idx = __srcu_read_lock(&tasks_rcu_exit_srcu);
--	preempt_enable();
--}
--
--static void exit_tasks_rcu_finish_trace(struct task_struct *t);
--
--/* Do the srcu_read_unlock() for the above synchronize_srcu().  */
--void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
--{
--	struct task_struct *t = current;
--
--	preempt_disable();
--	__srcu_read_unlock(&tasks_rcu_exit_srcu, t->rcu_tasks_idx);
--	preempt_enable();
--	exit_tasks_rcu_finish_trace(t);
--}
--
- #ifndef CONFIG_TINY_RCU
- 
- /*
-@@ -303,7 +282,9 @@ static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
- 		s);
- }
- 
--#ifdef CONFIG_TASKS_RCU
-+static void exit_tasks_rcu_finish_trace(struct task_struct *t);
-+
-+#if defined(CONFIG_TASKS_RCU) || defined(CONFIG_TASKS_TRACE_RCU)
- 
- ////////////////////////////////////////////////////////////////////////
- //
-@@ -374,6 +355,10 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
- 	rtp->postgp_func(rtp);
- }
- 
-+#endif /* #if defined(CONFIG_TASKS_RCU) || defined(CONFIG_TASKS_TRACE_RCU) */
-+
-+#ifdef CONFIG_TASKS_RCU
-+
- ////////////////////////////////////////////////////////////////////////
- //
- // Simple variant of RCU whose quiescent states are voluntary context
-@@ -577,8 +562,29 @@ static void show_rcu_tasks_classic_gp_kthread(void)
- 	show_rcu_tasks_generic_gp_kthread(&rcu_tasks, "");
- }
- 
-+/* Do the srcu_read_lock() for the above synchronize_srcu().  */
-+void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
-+{
-+	preempt_disable();
-+	current->rcu_tasks_idx = __srcu_read_lock(&tasks_rcu_exit_srcu);
-+	preempt_enable();
-+}
-+
-+/* Do the srcu_read_unlock() for the above synchronize_srcu().  */
-+void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
-+{
-+	struct task_struct *t = current;
-+
-+	preempt_disable();
-+	__srcu_read_unlock(&tasks_rcu_exit_srcu, t->rcu_tasks_idx);
-+	preempt_enable();
-+	exit_tasks_rcu_finish_trace(t);
-+}
-+
- #else /* #ifdef CONFIG_TASKS_RCU */
- static void show_rcu_tasks_classic_gp_kthread(void) { }
-+void exit_tasks_rcu_start(void) { }
-+void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
- #endif /* #else #ifdef CONFIG_TASKS_RCU */
- 
- #ifdef CONFIG_TASKS_RUDE_RCU
-@@ -1075,7 +1081,7 @@ static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)
- }
- 
- /* Report any needed quiescent state for this exiting task. */
--void exit_tasks_rcu_finish_trace(struct task_struct *t)
-+static void exit_tasks_rcu_finish_trace(struct task_struct *t)
- {
- 	WRITE_ONCE(t->trc_reader_checked, true);
- 	WARN_ON_ONCE(t->trc_reader_nesting);
-@@ -1170,7 +1176,7 @@ static void show_rcu_tasks_trace_gp_kthread(void)
- }
- 
- #else /* #ifdef CONFIG_TASKS_TRACE_RCU */
--void exit_tasks_rcu_finish_trace(struct task_struct *t) { }
-+static void exit_tasks_rcu_finish_trace(struct task_struct *t) { }
- static inline void show_rcu_tasks_trace_gp_kthread(void) {}
- #endif /* #else #ifdef CONFIG_TASKS_TRACE_RCU */
- 
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
+index dfb1817..f2b20db 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
++++ b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
+@@ -16,3 +16,4 @@ TASKS02
+ TASKS03
+ RUDE01
+ TRACE01
++TRACE02
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01 b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
+index 078e2c1..12e7661 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
+@@ -7,4 +7,5 @@ CONFIG_PREEMPT=n
+ CONFIG_DEBUG_LOCK_ALLOC=y
+ CONFIG_PROVE_LOCKING=y
+ #CHECK#CONFIG_PROVE_RCU=y
++CONFIG_TASKS_TRACE_RCU_READ_MB=y
+ CONFIG_RCU_EXPERT=y
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02 b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02
+new file mode 100644
+index 0000000..b69ed66
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02
+@@ -0,0 +1,11 @@
++CONFIG_SMP=y
++CONFIG_NR_CPUS=4
++CONFIG_HOTPLUG_CPU=y
++CONFIG_PREEMPT_NONE=n
++CONFIG_PREEMPT_VOLUNTARY=n
++CONFIG_PREEMPT=y
++CONFIG_DEBUG_LOCK_ALLOC=n
++CONFIG_PROVE_LOCKING=n
++#CHECK#CONFIG_PROVE_RCU=n
++CONFIG_TASKS_TRACE_RCU_READ_MB=n
++CONFIG_RCU_EXPERT=y
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
+new file mode 100644
+index 0000000..9675ad6
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
+@@ -0,0 +1 @@
++rcutorture.torture_type=tasks-tracing
