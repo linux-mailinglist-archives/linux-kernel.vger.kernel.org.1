@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F21B1CE6DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817E11CE6A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732510AbgEKVEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43984 "EHLO
+        id S1732050AbgEKU76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 16:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731894AbgEKU7f (ORCPT
+        by vger.kernel.org with ESMTP id S1726946AbgEKU7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 16:59:35 -0400
+        Mon, 11 May 2020 16:59:41 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98BDC061A0E;
-        Mon, 11 May 2020 13:59:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2E9C061A0C;
+        Mon, 11 May 2020 13:59:41 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jYFWP-0005nr-D0; Mon, 11 May 2020 22:59:33 +0200
+        id 1jYFWU-0005o5-Tu; Mon, 11 May 2020 22:59:39 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 18C201C07EB;
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 7AA211C06DA;
         Mon, 11 May 2020 22:59:27 +0200 (CEST)
 Date:   Mon, 11 May 2020 20:59:27 -0000
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu-tasks: Split ->trc_reader_need_end
+Subject: [tip: core/rcu] rcu-tasks: Provide boot parameter to delay IPIs until
+ late in grace period
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158923076703.390.6550904402071606798.tip-bot2@tip-bot2>
+Message-ID: <158923076742.390.5618701239564079461.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -47,204 +48,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     276c410448dbca357a2bc3539acfe04862e5f172
-Gitweb:        https://git.kernel.org/tip/276c410448dbca357a2bc3539acfe04862e5f172
+Commit-ID:     b0afa0f056676ffe0a7213818f09d2460adbcc16
+Gitweb:        https://git.kernel.org/tip/b0afa0f056676ffe0a7213818f09d2460adbcc16
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Tue, 17 Mar 2020 16:02:06 -07:00
+AuthorDate:    Tue, 17 Mar 2020 11:39:26 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 27 Apr 2020 11:03:52 -07:00
 
-rcu-tasks: Split ->trc_reader_need_end
+rcu-tasks: Provide boot parameter to delay IPIs until late in grace period
 
-This commit splits ->trc_reader_need_end by using the rcu_special union.
-This change permits readers to check to see if a memory barrier is
-required without any added overhead in the common case where no such
-barrier is required.  This commit also adds the read-side checking.
-Later commits will add the machinery to properly set the new
-->trc_reader_special.b.need_mb field.
+This commit provides a rcupdate.rcu_task_ipi_delay kernel boot parameter
+that specifies how old the RCU tasks trace grace period must be before
+the grace-period kthread starts sending IPIs.  This delay allows more
+tasks to pass through rcu_tasks_qs() quiescent states, thus reducing
+(or even eliminating) the number of IPIs that must be sent.
 
-This commit also makes rcu_read_unlock_trace_special() tolerate nested
-read-side critical sections within interrupt and NMI handlers.
+On a short rcutorture test setting this kernel boot parameter to HZ/2
+resulted in zero IPIs for all 877 RCU-tasks trace grace periods that
+elapsed during that test.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate_trace.h | 11 +++++++----
- include/linux/sched.h          |  4 ++--
- init/init_task.c               |  1 +-
- kernel/fork.c                  |  1 +-
- kernel/rcu/tasks.h             | 33 ++++++++++++++++++++-------------
- 5 files changed, 31 insertions(+), 19 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt |  7 +++++++
+ kernel/rcu/tasks.h                              | 13 +++++++++----
+ 2 files changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-index ed97e10..c42b365 100644
---- a/include/linux/rcupdate_trace.h
-+++ b/include/linux/rcupdate_trace.h
-@@ -31,7 +31,7 @@ static inline int rcu_read_lock_trace_held(void)
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index f2a93c8..aaa8678 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4286,6 +4286,13 @@
+ 			only normal grace-period primitives.  No effect
+ 			on CONFIG_TINY_RCU kernels.
  
- #ifdef CONFIG_TASKS_TRACE_RCU
- 
--void rcu_read_unlock_trace_special(struct task_struct *t);
-+void rcu_read_unlock_trace_special(struct task_struct *t, int nesting);
- 
- /**
-  * rcu_read_lock_trace - mark beginning of RCU-trace read-side critical section
-@@ -50,6 +50,8 @@ static inline void rcu_read_lock_trace(void)
- 	struct task_struct *t = current;
- 
- 	WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting) + 1);
-+	if (t->trc_reader_special.b.need_mb)
-+		smp_mb(); // Pairs with update-side barriers
- 	rcu_lock_acquire(&rcu_trace_lock_map);
- }
- 
-@@ -69,10 +71,11 @@ static inline void rcu_read_unlock_trace(void)
- 
- 	rcu_lock_release(&rcu_trace_lock_map);
- 	nesting = READ_ONCE(t->trc_reader_nesting) - 1;
--	WRITE_ONCE(t->trc_reader_nesting, nesting);
--	if (likely(!READ_ONCE(t->trc_reader_need_end)) || nesting)
-+	if (likely(!READ_ONCE(t->trc_reader_special.s)) || nesting) {
-+		WRITE_ONCE(t->trc_reader_nesting, nesting);
- 		return;  // We assume shallow reader nesting.
--	rcu_read_unlock_trace_special(t);
-+	}
-+	rcu_read_unlock_trace_special(t, nesting);
- }
- 
- void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 864f60e..9437b53 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -613,7 +613,7 @@ union rcu_special {
- 		u8			blocked;
- 		u8			need_qs;
- 		u8			exp_hint; /* Hint for performance. */
--		u8			pad; /* No garbage from compiler! */
-+		u8			need_mb; /* Readers need smp_mb(). */
- 	} b; /* Bits. */
- 	u32 s; /* Set of bits. */
- };
-@@ -727,7 +727,7 @@ struct task_struct {
- #ifdef CONFIG_TASKS_TRACE_RCU
- 	int				trc_reader_nesting;
- 	int				trc_ipi_to_cpu;
--	bool				trc_reader_need_end;
-+	union rcu_special		trc_reader_special;
- 	bool				trc_reader_checked;
- 	struct list_head		trc_holdout_list;
- #endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
-diff --git a/init/init_task.c b/init/init_task.c
-index e8b3740..825972d 100644
---- a/init/init_task.c
-+++ b/init/init_task.c
-@@ -143,6 +143,7 @@ struct task_struct init_task
- #endif
- #ifdef CONFIG_TASKS_TRACE_RCU
- 	.trc_reader_nesting = 0,
-+	.trc_reader_special.s = 0,
- 	.trc_holdout_list = LIST_HEAD_INIT(init_task.trc_holdout_list),
- #endif
- #ifdef CONFIG_CPUSETS
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 72e9396..96eb4b5 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1685,6 +1685,7 @@ static inline void rcu_copy_process(struct task_struct *p)
- #endif /* #ifdef CONFIG_TASKS_RCU */
- #ifdef CONFIG_TASKS_TRACE_RCU
- 	p->trc_reader_nesting = 0;
-+	p->trc_reader_special.s = 0;
- 	INIT_LIST_HEAD(&p->trc_holdout_list);
- #endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
- }
++	rcupdate.rcu_task_ipi_delay= [KNL]
++			Set time in jiffies during which RCU tasks will
++			avoid sending IPIs, starting with the beginning
++			of a given grace period.  Setting a large
++			number avoids disturbing real-time workloads,
++			but lengthens grace periods.
++
+ 	rcupdate.rcu_task_stall_timeout= [KNL]
+ 			Set timeout in jiffies for RCU task stall warning
+ 			messages.  Disable with a value less than or equal
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index eeac4a1..17b1b9a 100644
+index 71462cf..eeac4a1 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -723,10 +723,17 @@ DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
- 		 "RCU Tasks Trace");
+@@ -74,6 +74,11 @@ static struct rcu_tasks rt_name =					\
+ /* Track exiting tasks in order to allow them to be waited for. */
+ DEFINE_STATIC_SRCU(tasks_rcu_exit_srcu);
  
- /* If we are the last reader, wake up the grace-period kthread. */
--void rcu_read_unlock_trace_special(struct task_struct *t)
-+void rcu_read_unlock_trace_special(struct task_struct *t, int nesting)
- {
--	WRITE_ONCE(t->trc_reader_need_end, false);
--	if (atomic_dec_and_test(&trc_n_readers_need_end))
-+	int nq = t->trc_reader_special.b.need_qs;
++/* Avoid IPIing CPUs early in the grace period. */
++#define RCU_TASK_IPI_DELAY (HZ / 2)
++static int rcu_task_ipi_delay __read_mostly = RCU_TASK_IPI_DELAY;
++module_param(rcu_task_ipi_delay, int, 0644);
 +
-+	if (t->trc_reader_special.b.need_mb)
-+		smp_mb(); // Pairs with update-side barriers.
-+	// Update .need_qs before ->trc_reader_nesting for irq/NMI handlers.
-+	if (nq)
-+		WRITE_ONCE(t->trc_reader_special.b.need_qs, false);
-+	WRITE_ONCE(t->trc_reader_nesting, nesting);
-+	if (nq && atomic_dec_and_test(&trc_n_readers_need_end))
- 		wake_up(&trc_wait);
- }
- EXPORT_SYMBOL_GPL(rcu_read_unlock_trace_special);
-@@ -777,8 +784,8 @@ static void trc_read_check_handler(void *t_in)
- 	// Get here if the task is in a read-side critical section.  Set
- 	// its state so that it will awaken the grace-period kthread upon
- 	// exit from that critical section.
--	WARN_ON_ONCE(t->trc_reader_need_end);
--	WRITE_ONCE(t->trc_reader_need_end, true);
-+	WARN_ON_ONCE(t->trc_reader_special.b.need_qs);
-+	WRITE_ONCE(t->trc_reader_special.b.need_qs, true);
+ /* Control stall timeouts.  Disable with <= 0, otherwise jiffies till stall. */
+ #define RCU_TASK_STALL_TIMEOUT (HZ * 60 * 10)
+ static int rcu_task_stall_timeout __read_mostly = RCU_TASK_STALL_TIMEOUT;
+@@ -713,6 +718,10 @@ DECLARE_WAIT_QUEUE_HEAD(trc_wait);	// List of holdout tasks.
+ // Record outstanding IPIs to each CPU.  No point in sending two...
+ static DEFINE_PER_CPU(bool, trc_ipi_to_cpu);
  
- reset_ipi:
- 	// Allow future IPIs to be sent on CPU and for task.
-@@ -804,8 +811,8 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
- 	// exit from that critical section.
- 	if (unlikely(t->trc_reader_nesting)) {
- 		atomic_inc(&trc_n_readers_need_end); // One more to wait on.
--		WARN_ON_ONCE(t->trc_reader_need_end);
--		WRITE_ONCE(t->trc_reader_need_end, true);
-+		WARN_ON_ONCE(t->trc_reader_special.b.need_qs);
-+		WRITE_ONCE(t->trc_reader_special.b.need_qs, true);
- 	}
- 	return true;
- }
-@@ -884,7 +891,7 @@ static void rcu_tasks_trace_pregp_step(void)
- static void rcu_tasks_trace_pertask(struct task_struct *t,
- 				    struct list_head *hop)
++void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
++DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
++		 "RCU Tasks Trace");
++
+ /* If we are the last reader, wake up the grace-period kthread. */
+ void rcu_read_unlock_trace_special(struct task_struct *t)
  {
--	WRITE_ONCE(t->trc_reader_need_end, false);
-+	WRITE_ONCE(t->trc_reader_special.b.need_qs, false);
- 	WRITE_ONCE(t->trc_reader_checked, false);
- 	t->trc_ipi_to_cpu = -1;
- 	trc_wait_for_one_reader(t, hop);
-@@ -916,7 +923,7 @@ static void show_stalled_task_trace(struct task_struct *t, bool *firstreport)
- 		 ".i"[is_idle_task(t)],
- 		 ".N"[cpu > 0 && tick_nohz_full_cpu(cpu)],
- 		 t->trc_reader_nesting,
--		 " N"[!!t->trc_reader_need_end],
-+		 " N"[!!t->trc_reader_special.b.need_qs],
- 		 cpu);
- 	sched_show_task(t);
- }
-@@ -980,11 +987,11 @@ static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)
- 			break;  // Count reached zero.
- 		// Stall warning time, so make a list of the offenders.
- 		for_each_process_thread(g, t)
--			if (READ_ONCE(t->trc_reader_need_end))
-+			if (READ_ONCE(t->trc_reader_special.b.need_qs))
- 				trc_add_holdout(t, &holdouts);
- 		firstreport = true;
- 		list_for_each_entry_safe(t, g, &holdouts, trc_holdout_list)
--			if (READ_ONCE(t->trc_reader_need_end)) {
-+			if (READ_ONCE(t->trc_reader_special.b.need_qs)) {
- 				show_stalled_task_trace(t, &firstreport);
- 				trc_del_holdout(t);
- 			}
-@@ -1003,8 +1010,8 @@ void exit_tasks_rcu_finish_trace(struct task_struct *t)
- 	WRITE_ONCE(t->trc_reader_checked, true);
- 	WARN_ON_ONCE(t->trc_reader_nesting);
- 	WRITE_ONCE(t->trc_reader_nesting, 0);
--	if (WARN_ON_ONCE(READ_ONCE(t->trc_reader_need_end)))
--		rcu_read_unlock_trace_special(t);
-+	if (WARN_ON_ONCE(READ_ONCE(t->trc_reader_special.b.need_qs)))
-+		rcu_read_unlock_trace_special(t, 0);
+@@ -998,10 +1007,6 @@ void exit_tasks_rcu_finish_trace(struct task_struct *t)
+ 		rcu_read_unlock_trace_special(t);
  }
  
+-void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
+-DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
+-		 "RCU Tasks Trace");
+-
  /**
+  * call_rcu_tasks_trace() - Queue a callback trace task-based grace period
+  * @rhp: structure to be used for queueing the RCU updates.
