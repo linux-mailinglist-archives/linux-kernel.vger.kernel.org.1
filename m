@@ -2,78 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A9C1CE469
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527CF1CE475
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731413AbgEKT2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 15:28:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731041AbgEKT2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 15:28:14 -0400
-Received: from localhost (p54B33735.dip0.t-ipconnect.de [84.179.55.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72E8720736;
-        Mon, 11 May 2020 19:28:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589225294;
-        bh=FMwzC3cALZ1gMh74zM2EdN04monzRvOqcDXsP/XMYfM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UrKMbmSv5YAwrVOtA8tfs2ILIeXJZz/MQMTYqXgwWoH7UYeSZseBS/qE7WrwVB40G
-         GMzJwTAqgg4xYqQvlMNQBCkdgCd9SbBoLkgB5BAi/27uJlQt13m+0pDAZarmyAyNZX
-         bQbr9ASBhxN41RwGwwY42o/5gwQhFjthIb/NOh2g=
-Date:   Mon, 11 May 2020 21:28:10 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel@pengutronix.de, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH] i2c: algo-pca: update contact email
-Message-ID: <20200511192810.GB8724@ninjato>
-References: <20200502142650.19089-1-wsa@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uZ3hkaAS1mZxFaxD"
-Content-Disposition: inline
-In-Reply-To: <20200502142650.19089-1-wsa@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1731516AbgEKT3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 15:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731353AbgEKT27 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 15:28:59 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FC5C061A0C;
+        Mon, 11 May 2020 12:28:59 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id k1so12462812wrx.4;
+        Mon, 11 May 2020 12:28:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ZAtH0faIljYlKbUs4LOqwPvsHvq1UMeElD7Sjj/OCPg=;
+        b=eSLzEC3SAsl3cXTDCPbtCGyX8b2dFryfRulWYzicOAsqusDu34FRZwOuHH8HUh0qBI
+         XuQumhjFb9KdzljstM2R5RpVmMwrhlQj2RVC6Ada+RHuVbMZ0IPfH+d4DZh+X9V/Ppnq
+         YisCkeowg2JpZIpfvSzft5Sb0pHA8TuG6pQyRvkbDMaBRv4hvL36txLFMflZ8J+XAPqL
+         FylG7Ts6DqwWevPNj80HwojO2onvzq3dWqgtWiBTmVrxmunF66B0/62AoV4+dzl5r7cv
+         Ab8B2Sxi5nsVHLq9W4zBpFtrdW4NyVjRt5JJcvc1rO6RsHZmEUzSgGtSk9tVTY/T4LG+
+         9oqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZAtH0faIljYlKbUs4LOqwPvsHvq1UMeElD7Sjj/OCPg=;
+        b=QG2qnpcfbV5lHkvqOtBE4E+Ria0WZd1y8HxGNnDgLQ7YihHRnjkCGGq7C7zmcfts9e
+         B/px4bZZIqJSiOjX4FAvH9QebmZHiuQ+T9h05EKu2LxfiGDxVEwDaPNbqe0UBq6yooy6
+         xgK8W+gfmAHaNpUB12Fcdd471SgW0/eCW4RjTokNrZE+A1kvlQFjRfLqPSbMjLecZDbI
+         STEgj6TQs4n9iRhrdcLl/49+x/eumSZRjmXaPxGXnuNccphEwooyV3qCpRTGnMGouSSz
+         P+GEa1cgrRf9GOtvLemKPr6HUPBNwvn0pOujeN+BuKJ8jztkIp5S14WJW1LWORWlNHTE
+         w25g==
+X-Gm-Message-State: AGi0Pub3/oAGfHUuWFArlxk/BrJ70iVbSMI37FNT9cSmKFECCP2X4KGr
+        GqeLwNvERcyp6ENHIBy+/0c=
+X-Google-Smtp-Source: APiQypL550SiDakiWSzBnEQgDEpmGUtS2Kxf+BKvqRsSGWbsDn8qXbb87i4v281xXMYsGjt4jNmqOA==
+X-Received: by 2002:a5d:4008:: with SMTP id n8mr7444252wrp.82.1589225338114;
+        Mon, 11 May 2020 12:28:58 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2dce:7200:7930:ad7c:21cb:6736])
+        by smtp.gmail.com with ESMTPSA id u9sm7218846wmb.19.2020.05.11.12.28.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 12:28:57 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: correct path in TEGRA VIDEO DRIVER
+Date:   Mon, 11 May 2020 21:28:44 +0200
+Message-Id: <20200511192844.11044-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 423d10a99b30 ("media: tegra: Add Tegra210 Video input driver") added
+the driver to drivers/staging/media/tegra-video/, but commit 2c6b617f2cca
+("MAINTAINERS: Add Tegra Video driver section") added a file entry
+referring to drivers/staging/media/tegra/.
 
---uZ3hkaAS1mZxFaxD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
 
-On Sat, May 02, 2020 at 04:26:49PM +0200, Wolfram Sang wrote:
-> The 'pengutronix' address is defunct for years. Use the proper contact
-> address.
->=20
-> Signed-off-by: Wolfram Sang <wsa@kernel.org>
+  warning: no file matches  F:  drivers/staging/media/tegra/
 
-Applied to for-current, thanks!
+Adjust the file entry in TEGRA VIDEO DRIVER to the correct path.
 
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+Sowjanya, please ack this minor patch.
 
---uZ3hkaAS1mZxFaxD
-Content-Type: application/pgp-signature; name="signature.asc"
+applies cleanly on next-20200511
 
------BEGIN PGP SIGNATURE-----
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl65p0oACgkQFA3kzBSg
-KbYuJQ//ZJOhNkugBIt2mTUQ5fqsVlAk5C17ICHev/VWCnnHBBt8ikztnUS9oRRF
-/zcYWLpuPsehIthFFEfVNRUIGyq6yKrLAFBd3Njw4U1WKf6okjLl5jyEiVwNsh7d
-6Gh95AQiXg5rKxbrzBT83qzP1BQszxevsvCUGkcTE+wwHphA1ghnNb/3P/acV94G
-4o7g/FreFNXzOldohVlMTKjNjCc/35PSAUvBIol6kZQnE5EoGPEoMtgBD7LaDRHv
-5HUgEv/EMv9tobc/+RSCCHZ470ociwg/NX+ay+GyBAvXC3aoSwvIzvHB1E1daRyG
-yy7RetqWN2AU+t3DB5pdM4R5iXuuL9jgfYQJ0iX1Y1Rj8q0RnuMG/ziZPx3IP+YW
-J4jw6Wv16q0yORj1N+/2PA7WEgr8G6F5mf5BQBld0wQewuXl9Y4ROOQueGDdodJe
-xzn2j5VXba3sLgBY3/oWNDb/4nFPgZwm1tgcLS+tBaH9xbUImcPUJN5AwfDe8Xwn
-ImI2aZnRjQ5E3YjgSTTofCvHUICQDfBhJWO9NG7XWnLGf9HJ6QMGnudfBcZ2O2+u
-b77q69D8Btg1Byx9aiwPJ0GGEdyw2+BQm6cNdUm4vFxkDgofPB2TNtfs9+oMJfr9
-anzWj7HJ93Whqr64jo3YwzUTElPIm7KSMZ6aRywCSYfy7Br65lU=
-=tZcz
------END PGP SIGNATURE-----
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0abba1aff1ae..dd310f1c3bb7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16679,7 +16679,7 @@ L:	linux-media@vger.kernel.org
+ L:	linux-tegra@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
+-F:	drivers/staging/media/tegra/
++F:	drivers/staging/media/tegra-video/
+ 
+ TEGRA XUSB PADCTL DRIVER
+ M:	JC Kuo <jckuo@nvidia.com>
+-- 
+2.17.1
 
---uZ3hkaAS1mZxFaxD--
