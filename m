@@ -2,62 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB0E1CD437
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 10:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F32F1CD42D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 10:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729250AbgEKIt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 04:49:58 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:36900 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728562AbgEKIt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 04:49:57 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id BB63AB93F3FEEFD6C057;
-        Mon, 11 May 2020 16:49:53 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 11 May 2020 16:49:45 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <ezequiel@vanguardiasur.com.ar>, <mchehab@kernel.org>
-CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangxiongfeng2@huawei.com>
-Subject: [PATCH] [media] tw686x: add a missing newline when printing parameter 'dma_mode'
-Date:   Mon, 11 May 2020 16:43:46 +0800
-Message-ID: <1589186626-17243-1-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        id S1729022AbgEKIpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 04:45:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:53866 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728471AbgEKIpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 04:45:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DACED6E;
+        Mon, 11 May 2020 01:45:18 -0700 (PDT)
+Received: from [192.168.0.7] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5787B3F305;
+        Mon, 11 May 2020 01:45:16 -0700 (PDT)
+Subject: Re: [PATCH v2] sched/debug: Fix requested task uclamp values shown in
+ procfs
+To:     Pavankumar Kondeti <pkondeti@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>
+References: <1589162011-4998-1-git-send-email-pkondeti@codeaurora.org>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <da48db5b-a2b3-1e4c-fcb9-67f5b03c33dd@arm.com>
+Date:   Mon, 11 May 2020 10:45:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+In-Reply-To: <1589162011-4998-1-git-send-email-pkondeti@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I cat module parameter 'dma_mode' by sysfs, it displays as follows.
-It is better to add a newline for easy reading.
+On 11/05/2020 03:53, Pavankumar Kondeti wrote:
+> The intention of commit 96e74ebf8d59 ("sched/debug: Add task uclamp
+> values to SCHED_DEBUG procfs") was to print requested and effective
+> task uclamp values. The requested values printed are read from p->uclamp,
+> which holds the last effective values. Fix this by printing the values
+> from p->uclamp_req.
+> 
+> Fixes: 96e74ebf8d59 ("sched/debug: Add task uclamp values to SCHED_DEBUG procfs")
+> Tested-and-reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+> Signed-off-by: Pavankumar Kondeti <pkondeti@codeaurora.org>
+> ---
+> 
+> V2: Added "requested" prefix (suggested by Valentin)
 
-[root@hulk-202 ~]# cat /sys/module/tw686x/parameters/dma_mode
-memcpy[root@hulk-202 ~]#
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
----
- drivers/media/pci/tw686x/tw686x-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/pci/tw686x/tw686x-core.c b/drivers/media/pci/tw686x/tw686x-core.c
-index 74ae4f0..bfc61da 100644
---- a/drivers/media/pci/tw686x/tw686x-core.c
-+++ b/drivers/media/pci/tw686x/tw686x-core.c
-@@ -71,7 +71,7 @@ static const char *dma_mode_name(unsigned int mode)
- 
- static int tw686x_dma_mode_get(char *buffer, const struct kernel_param *kp)
- {
--	return sprintf(buffer, "%s", dma_mode_name(dma_mode));
-+	return sprintf(buffer, "%s\n", dma_mode_name(dma_mode));
- }
- 
- static int tw686x_dma_mode_set(const char *val, const struct kernel_param *kp)
--- 
-1.7.12.4
-
+> 
+>  kernel/sched/debug.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+> index a562df5..77ecebd 100644
+> --- a/kernel/sched/debug.c
+> +++ b/kernel/sched/debug.c
+> @@ -948,8 +948,8 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
+>  	P(se.avg.util_est.enqueued);
+>  #endif
+>  #ifdef CONFIG_UCLAMP_TASK
+> -	__PS("uclamp.min", p->uclamp[UCLAMP_MIN].value);
+> -	__PS("uclamp.max", p->uclamp[UCLAMP_MAX].value);
+> +	__PS("requested uclamp.min", p->uclamp_req[UCLAMP_MIN].value);
+> +	__PS("requested uclamp.max", p->uclamp_req[UCLAMP_MAX].value);
+>  	__PS("effective uclamp.min", uclamp_eff_value(p, UCLAMP_MIN));
+>  	__PS("effective uclamp.max", uclamp_eff_value(p, UCLAMP_MAX));
+>  #endif
