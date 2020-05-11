@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4DD01CDE3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7B91CDE3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730560AbgEKPJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 11:09:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45682 "EHLO
+        id S1730549AbgEKPIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 11:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730462AbgEKPIk (ORCPT
+        by vger.kernel.org with ESMTP id S1730509AbgEKPIn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 11:08:40 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5B8C05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:08:40 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id g12so19703260wmh.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:08:39 -0700 (PDT)
+        Mon, 11 May 2020 11:08:43 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E2BC05BD09
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:08:41 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id y24so19749437wma.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:08:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KiLRpfO6b7G+PZFXWrA65hqZV6E46x1U4Qg5U0775pc=;
-        b=oCYe8gxrsb/8td/jVnM+76EnsEaUJm0Tw62USaNMXXLzhPeP2Raxa4qM2uMqbWDTpH
-         tDbnc2TfFcgYOAckv78xY78GlbHkdTVS7vgeXY2VqYITf6fSe+2A6JBIqDcTPA8YbBz0
-         qoBisEzlmO56MR+MjwDSHvAjpU/2YQCp9TlFHCtsSY3XHRrAVPWG07uMmyrkVf4jGZVC
-         wcBGt9lfggYUVrX7j7djZTeH6NfPmR09L3x3ge5m7NDff/LBBTEKf20JwuAjnB8bPZmf
-         192y26SwSsKp4UDi9f6CyHUzJ46En2MCUZQrLZTAT5GxjySYZCwjSVc6LSHKmw88+c6C
-         N8UA==
+        bh=nZF4M1Ryr6CWnpRgUMWuRsLTKn/UHmWXZ3+MZTEjA0A=;
+        b=seBpYegPZMs/leR6JMfg7RpttvfOQmjhwYGL5XqCrl0ivqZ8SgNJfl5MrK6SNZU0x7
+         s+P+5zxeVYMfWsvU+TruIPRs58u2N7gNKpF12dehHxew8uZn0wyQlXvRs81sH/cUAU/A
+         kDiLytEcupQFinP/tSVSDYeJHqjKGk/S/swcSaT9uPiZDBURaYvEzFY1KQfq187G//Gn
+         fP7p4AVjZ9rbwczBJGBw15zMRSFOqPTKu+IA1dWJoqAajrlxLUjrFo00xOd0Oskl6NXS
+         vFI181kFNL42vS94eYWzxhtiRzUpW9BwFO6iLc+Bp3c1tgfqYpiA57PqAjvUSUmXKZ85
+         b5iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KiLRpfO6b7G+PZFXWrA65hqZV6E46x1U4Qg5U0775pc=;
-        b=OO6K4I24+XVAPfmK8fe7VJwOC/PE/YKuIKxuAtKJQNwLcYdXHGMNSk6KU20fmvaB7U
-         suUoSBZ/7ftOIj/GNlu2BJGXJSqaKUEw0eYUF54kP6S1icT8adCjilPv9cGYi4yrErXn
-         euZSMDk7VNnPIgqCPQH/mHAH/C+Ku5nJk/BCsIbub0mseDhaE4uY6Tw/LDtZn6exhnU0
-         MgmJOohC/erq7mP0Qpzlr+L0zzUHXk4od9RlZw/5vXQ6shdvInBov2cgjfOpXW+VVKFr
-         AJlPrYdIopHRqShRxv4NmMoLYm7H5eHzJeong0PQv615GmbmoCPGAEoCqwcKyGyTlgfe
-         vonw==
-X-Gm-Message-State: AGi0PuajuFNnBoY55KkENmt9w+kkpJzuJ6+7ykvCWNaZlEAT/dYjjVmK
-        Cjc+/RArLRDVOINgZazRksyJDg==
-X-Google-Smtp-Source: APiQypITmPETczyz929tepB6ElHqCDCdOl6rPzyocONlBGydghLbf/NhrY+/vuSp72Y0ABP9l620WQ==
-X-Received: by 2002:a1c:9948:: with SMTP id b69mr30816508wme.44.1589209718831;
-        Mon, 11 May 2020 08:08:38 -0700 (PDT)
+        bh=nZF4M1Ryr6CWnpRgUMWuRsLTKn/UHmWXZ3+MZTEjA0A=;
+        b=I4xd1tQdofI/Si6s73aJXLuUvcqPnG+75B2Jwu0tctsmRxWSmvX8wqG4D3bKVB8Cni
+         pENazZH+4LPzysoM+arLkdax2137QqeYrkwbD5rG7D7Aelsy4gmVkNx9RKnq65loo4IV
+         zQsWfOQMxIv6xdiEwJwCccbAD01RXK+pOOd0BCZLzN4zS/Ll1KdfNj8ulf1+T6hO2y9/
+         MRfqoiz//TX3/q9elBeLdySoPq5XWQoCBq4e+d/BJnGplG0XuB+HeqvBvGIzSkKSYSBi
+         DS977tVtNpXt35rL3Y8pyUESI5b4MnVx1+AUoXfwV2Voey5CBdunbnrJwVJNAmSTsqsM
+         Ah4A==
+X-Gm-Message-State: AGi0PuZlz7qUVcQxCokFWnZF0xpCVXWzVGF5HtlRB5oURxtXwuARyfmo
+        vNKpg7uHBZoe5LFqmH7YHgD46Q==
+X-Google-Smtp-Source: APiQypIPr9fJcUgRNwzXEgdam3rXk6Or+HXAPoKGbi/pvrOEjCYCARRhvNo55PBWgkqCWw6ysRwOhw==
+X-Received: by 2002:a1c:2e91:: with SMTP id u139mr31309130wmu.18.1589209720425;
+        Mon, 11 May 2020 08:08:40 -0700 (PDT)
 Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id 94sm3514792wrf.74.2020.05.11.08.08.37
+        by smtp.gmail.com with ESMTPSA id 94sm3514792wrf.74.2020.05.11.08.08.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 08:08:38 -0700 (PDT)
+        Mon, 11 May 2020 08:08:39 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Rob Herring <robh+dt@kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
@@ -67,9 +67,9 @@ Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Pedro Tsai <pedro.tsai@mediatek.com>,
         Andrew Perepech <andrew.perepech@mediatek.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 13/14] ARM64: dts: mediatek: add ethernet pins for pumpkin boards
-Date:   Mon, 11 May 2020 17:07:58 +0200
-Message-Id: <20200511150759.18766-14-brgl@bgdev.pl>
+Subject: [PATCH v2 14/14] ARM64: dts: mediatek: enable ethernet on pumpkin boards
+Date:   Mon, 11 May 2020 17:07:59 +0200
+Message-Id: <20200511150759.18766-15-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200511150759.18766-1-brgl@bgdev.pl>
 References: <20200511150759.18766-1-brgl@bgdev.pl>
@@ -82,37 +82,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Setup the pin control for the Ethernet MAC.
+Add remaining properties to the ethernet node and enable it.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ .../boot/dts/mediatek/pumpkin-common.dtsi      | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi b/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
-index 97d9b000c37e..4b1d5f69aba6 100644
+index 4b1d5f69aba6..dfceffe6950a 100644
 --- a/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
 +++ b/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
-@@ -219,4 +219,19 @@ gpio_mux_int_n_pin {
- 			bias-pull-up;
- 		};
- 	};
+@@ -167,6 +167,24 @@ &uart0 {
+ 	status = "okay";
+ };
+ 
++&ethernet {
++	pinctrl-names = "default";
++	pinctrl-0 = <&ethernet_pins_default>;
++	phy-handle = <&eth_phy>;
++	phy-mode = "rmii";
++	mac-address = [00 00 00 00 00 00];
++	status = "okay";
 +
-+	ethernet_pins_default: ethernet {
-+		pins_ethernet {
-+			pinmux = <MT8516_PIN_0_EINT0__FUNC_EXT_TXD0>,
-+				 <MT8516_PIN_1_EINT1__FUNC_EXT_TXD1>,
-+				 <MT8516_PIN_5_EINT5__FUNC_EXT_RXER>,
-+				 <MT8516_PIN_6_EINT6__FUNC_EXT_RXC>,
-+				 <MT8516_PIN_7_EINT7__FUNC_EXT_RXDV>,
-+				 <MT8516_PIN_8_EINT8__FUNC_EXT_RXD0>,
-+				 <MT8516_PIN_9_EINT9__FUNC_EXT_RXD1>,
-+				 <MT8516_PIN_12_EINT12__FUNC_EXT_TXEN>,
-+				 <MT8516_PIN_38_MRG_DI__FUNC_EXT_MDIO>,
-+				 <MT8516_PIN_39_MRG_DO__FUNC_EXT_MDC>;
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		eth_phy: ethernet-phy@0 {
++			reg = <0>;
 +		};
 +	};
- };
++};
++
+ &usb0 {
+ 	status = "okay";
+ 	dr_mode = "peripheral";
 -- 
 2.25.0
 
