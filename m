@@ -2,176 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A4C1CE6F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4731CE715
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732565AbgEKVFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:05:20 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:40844 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732559AbgEKVFR (ORCPT
+        id S1732023AbgEKVHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 17:07:19 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:55204 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731868AbgEKVHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 17:05:17 -0400
-Received: by mail-pf1-f195.google.com with SMTP id x2so5300612pfx.7;
-        Mon, 11 May 2020 14:05:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=t75vcHrGDSnK85bf5vWlaxNV98NfbPo5RXTgDatbL1Y=;
-        b=HsdVMKiDoumTkY2XsGzvllSC8ymXW9YgK2KnNfm0PRsjXI50nl0KKiJ4bwwrfA2WIj
-         tb3vY+88E/nCY7wRfNYMs5qSbf9HLXW0tGCqYc6rFoiAZBgNkjay742Rsh5AKjXMEvwp
-         lpgyEelAQVH39B7iHRDkMtLJhFI7U/qwuoqviugzlXzx73AXkc6+Jw7PRUa4sAknoLeq
-         plquygjQgZW15mEC7AJvzLTyDce/bSAm5XR5rqimKfQtu+xWWJNczKT2eHdfkrWOsu+j
-         UbMDQZxJ0jkFR/lL0Uh7oXz6Pm2jBnP0GSiHcitU7S2Xzyq6IozC9gVAHjk9wZxih9kD
-         ti+w==
-X-Gm-Message-State: AGi0PubED1jzW73VFJHiUwP/lseJ68r7vUs54mqj+/yL92l6hVSy0WOc
-        V7akPGEZsEZP9fzOTp1LEvx2sj+1hdYaVA==
-X-Google-Smtp-Source: APiQypLR9L4ljsK/1jNhGMDg4kZpQacuA0w6REvupxynKl/3lP68buLEUEk7PY9ibjXqDydibHJprA==
-X-Received: by 2002:a62:34c1:: with SMTP id b184mr17463057pfa.73.1589231116431;
-        Mon, 11 May 2020 14:05:16 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id t74sm10232698pfc.64.2020.05.11.14.05.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 14:05:14 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id E54B140605; Mon, 11 May 2020 21:05:13 +0000 (UTC)
-Date:   Mon, 11 May 2020 21:05:13 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Rafael Aquini <aquini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        dyoung@redhat.com, bhe@redhat.com, corbet@lwn.net,
-        keescook@chromium.org, akpm@linux-foundation.org, cai@lca.pw,
-        rdunlap@infradead.org, tytso@mit.edu, bunk@kernel.org,
-        torvalds@linux-foundation.org, gregkh@linuxfoundation.org,
-        labbott@redhat.com, jeffm@suse.com, jikos@kernel.org, jeyu@suse.de,
-        tiwai@suse.de, AnDavis@suse.com, rpalethorpe@suse.de
-Subject: Re: [PATCH v3] kernel: add panic_on_taint
-Message-ID: <20200511210513.GU11244@42.do-not-panic.com>
-References: <20200509135737.622299-1-aquini@redhat.com>
- <20200511182455.GR11244@42.do-not-panic.com>
- <20200511200325.GE367616@optiplex-lnx>
+        Mon, 11 May 2020 17:07:18 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BL71iA061885;
+        Mon, 11 May 2020 21:07:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=IAJQLbVwVP5lVN0Y4tvhElORwcq/7GVBvYMoChGS9P0=;
+ b=GKJ5EedjP3Dlo0z6HOaxnd0AT0iQfG+koP9cVjxuwSqvWOIRFSTuE168QASjdwbGHHyE
+ sEuhck3jjNRMTswPwUxM62rY2TZOZQ6wUt6tphXOwyQihWVidpTSmCOWo7FlIkP7mFjB
+ llYCVeLJ1SWaWoGyN6ZsjiGIByIRxJkhsEXAegdY7TiTwvVjK+rHFsxh3wY1SDAEnLHH
+ VkiFDKN+/OB/AJD74jL5fMEwFF9SJASNeqLH2VnjRBiOhnvFpy8SRd9qtbYlRdf+1GvM
+ KMFLSkbRd4fqxykMNeOwIa2QjFNWqJmXvRSdTgzTvpQcCqSu2qYPKOMLfQfiboo1op+v LQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 30x3mbqh5s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 May 2020 21:07:07 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BKwEpk068680;
+        Mon, 11 May 2020 21:07:07 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 30x69rs11b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 May 2020 21:07:07 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04BL76pk022354;
+        Mon, 11 May 2020 21:07:06 GMT
+Received: from dhcp-10-159-239-226.vpn.oracle.com (/10.159.239.226)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 11 May 2020 14:07:05 -0700
+Subject: Re: [PATCH 1/2] IB/sa: Resolving use-after-free in ib_nl_send_msg.
+To:     "Wan, Kaike" <kaike.wan@intel.com>,
+        Mark Bloch <markb@mellanox.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
+        =?UTF-8?Q?H=c3=a5kon_Bugge?= <haakon.bugge@oracle.com>,
+        Srinivas Eeda <srinivas.eeda@oracle.com>,
+        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
+        Doug Ledford <dledford@redhat.com>
+References: <1588876487-5781-1-git-send-email-divya.indi@oracle.com>
+ <1588876487-5781-2-git-send-email-divya.indi@oracle.com>
+ <7572e503-312c-26a8-c8c2-05515f1c4f84@mellanox.com>
+ <MW3PR11MB4665120FE43314C22A862324F4A50@MW3PR11MB4665.namprd11.prod.outlook.com>
+From:   Divya Indi <divya.indi@oracle.com>
+Message-ID: <54a2c84e-1745-cae5-e0b5-4d63013aef32@oracle.com>
+Date:   Mon, 11 May 2020 14:06:25 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200511200325.GE367616@optiplex-lnx>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <MW3PR11MB4665120FE43314C22A862324F4A50@MW3PR11MB4665.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
+ spamscore=0 suspectscore=11 mlxscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005110158
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 impostorscore=0
+ mlxscore=0 suspectscore=11 bulkscore=0 mlxlogscore=999 phishscore=0
+ malwarescore=0 lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005110159
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 04:03:25PM -0400, Rafael Aquini wrote:
-> On Mon, May 11, 2020 at 06:24:55PM +0000, Luis Chamberlain wrote:
-> > On Sat, May 09, 2020 at 09:57:37AM -0400, Rafael Aquini wrote:
-> > > +Trigger Kdump on add_taint()
-> > > +============================
-> > > +
-> > > +The kernel parameter, panic_on_taint, calls panic() from within add_taint(),
-> > > +whenever the value set in this bitmask matches with the bit flag being set
-> > > +by add_taint(). This will cause a kdump to occur at the panic() call.
-> > > +In cases where a user wants to specify this during runtime,
-> > > +/proc/sys/kernel/panic_on_taint can be set to a respective bitmask value
-> > > +to achieve the same behaviour.
-> > > +
-> > >  Contact
-> > >  =======
-> > >  
-> > > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > > index 7bc83f3d9bdf..4a69fe49a70d 100644
-> > > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > > @@ -3404,6 +3404,21 @@
-> > >  	panic_on_warn	panic() instead of WARN().  Useful to cause kdump
-> > >  			on a WARN().
-> > >  
-> > > +	panic_on_taint=	[KNL] conditionally panic() in add_taint()
-> > > +			Format: <str>
-> > > +			Specifies, as a string, the TAINT flag set that will
-> > > +			compose a bitmask for calling panic() when the kernel
-> > > +			gets tainted.
-> > > +			See Documentation/admin-guide/tainted-kernels.rst for
-> > > +			details on the taint flags that users can pick to
-> > > +			compose the bitmask to assign to panic_on_taint.
-> > > +			When the string is prefixed with a '-' the bitmask
-> > > +			set in panic_on_taint will be mutually exclusive
-> > > +			with the sysctl knob kernel.tainted, and any attempt
-> > > +			to write to that sysctl will fail with -EINVAL for
-> > > +			any taint value that masks with the flags set for
-> > > +			this option.
-> > 
-> > This talks about using a string, but that it sets a bitmask. Its not
-> > very clear that one must use the string representation from each taint
-> > flag. Also, I don't think to use the character representation as we
-> > limit ourselves to the alphabet and quirky what-should-be-arbitrary
-> > characters that represent the taint flags. The taint flag character
-> > representation is juse useful for human reading of a panic, but I think
-> > because of the limitation of the mask with the alphabet this was not
-> > such a great idea long term.
-> >
-> 
-> I respectfully disagree with you on this one, but that might be just
-> because I'm a non-native English speaker and the cause of confusion is 
-> not very clear to me. Would you mind providing a blurb with a text that
-> you think it would be clearer on this regard?
+Hi,
 
-A simple example of what can be used and what it would mean would
-suffice.
+Thanks for taking the time to review. Please find my comments inline -
 
-> Also, making the input of the option to match with something one
-> is used to see in taint reports make it easier to use. It would
-> be still a human setting the boot option, so it makes sense to
-> utilize a known/meaningful representation for panic_on_taint input.
+On 5/7/20 1:16 PM, Wan, Kaike wrote:
+>
+>> -----Original Message-----
+>> From: Mark Bloch <markb@mellanox.com>
+>> Sent: Thursday, May 07, 2020 3:36 PM
+>> To: Divya Indi <divya.indi@oracle.com>; linux-kernel@vger.kernel.org; linux-
+>> rdma@vger.kernel.org; Jason Gunthorpe <jgg@ziepe.ca>; Wan, Kaike
+>> <kaike.wan@intel.com>
+>> Cc: Gerd Rausch <gerd.rausch@oracle.com>; Håkon Bugge
+>> <haakon.bugge@oracle.com>; Srinivas Eeda <srinivas.eeda@oracle.com>;
+>> Rama Nichanamatlu <rama.nichanamatlu@oracle.com>; Doug Ledford
+>> <dledford@redhat.com>
+>> Subject: Re: [PATCH 1/2] IB/sa: Resolving use-after-free in ib_nl_send_msg.
+>>
+>>
+>>> @@ -1123,6 +1156,18 @@ int ib_nl_handle_resolve_resp(struct sk_buff
+>>> *skb,
+>>>
+>>>  	send_buf = query->mad_buf;
+>>>
+>>> +	/*
+>>> +	 * Make sure the IB_SA_NL_QUERY_SENT flag is set before
+>>> +	 * processing this query. If flag is not set, query can be accessed in
+>>> +	 * another context while setting the flag and processing the query
+>> will
+>>> +	 * eventually release it causing a possible use-after-free.
+>>> +	 */
+>>> +	if (unlikely(!ib_sa_nl_query_sent(query))) {
+>> Can't there be a race here where you check the flag (it isn't set) and before
+>> you call wait_event() the flag is set and wake_up() is called which means you
+>> will wait here forever?
+> Should wait_event() catch that? That is,  if the flag is not set, wait_event() will sleep until the flag is set.
+>
+>  or worse, a timeout will happen the query will be
+>> freed and them some other query will call wake_up() and we have again a
+>> use-after-free.
+> The request has been deleted from the request list by this time and therefore the timeout should have no impact here.
+>
+>
+>>> +		spin_unlock_irqrestore(&ib_nl_request_lock, flags);
+>>> +		wait_event(wait_queue, ib_sa_nl_query_sent(query));
+>> What if there are two queries sent to userspace, shouldn't you check and
+>> make sure you got woken up by the right one setting the flag?
+> The wait_event() is conditioned on the specific query (ib_sa_nl_query_sent(query)), not on the wait_queue itself.
+>
+>> Other than that, the entire solution makes it very complicated to reason with
+>> (flags set/checked without locking etc) maybe we should just revert and fix it
+>> the other way?
+> The flag could certainly be set under the lock, which may reduce complications. 
 
-Yes, however I still believe that what we are printing is only doing
-a disservice to limiting the size of our bitmask.
+We could use a lock or use atomic operations. However, the reason for not doing so was that
+we have 1 writer and multiple readers of the IB_SA_NL_QUERY_SENT flag and the readers 
+wouldnt mind reading a stale value. 
 
-> > So, I don't think we should keep on extending the alphabet use case, a
-> > simple digit representation would suffice. I think this means we'd need
-> > two params one for exclusive and one for the value of the taint.
-> > 
-> > Using a hex value or number also lets us make the input value shorter.
-> >
-> 
-> Albeit you're right on the limitation of an alphabetical representation, 
-> the truth is that taint flags are not introduced that frequently.
-> Considering how many times these flags were introduced in the past,
-> one could infer we probably will not run out of alphabet in the next 20 
-> years (a couple of new flags gets introduced every 2 years, or so, in
-> average), and the rate of change in these seems to be slowing down
-> considerably, as in the past 5 years, we've seen only 2 new flags.
-> 
-> I'm not against your suggestion, though, but I think it makes
-> clumsier to utilize the feature as you now require 2 kernel
-> cmdline options, instead of just one, and a less intuitive
-> way of setting it via base16 values. All at the expense of 
-> a theoretical shortage of taint flags. 
-> 
-> If the others that were already OK with the simple string interface 
-> don't object your change suggestions in that regard, I'll refactor
-> the parser to meet them. 
+Would it still be better to have a lock for this flag? 
 
-It is just silly for us to restrict our bitmask to the alphabet. The
-alphabetic restrictions were useful for print until we started running
-out of meaningful characters, moving forward they'll just be a nuisance.
+Thanks,
+Divya
 
-I don't think its wise to encourage their use now for input, now that
-we have realized that their use will be pointless soon.
-
-> > If a kernel boots with panic-on-taint flag not yet supported, we don't
-> > complain, therefore getting a false sense of security that we will panic
-> > with a not yet supported taint flag. I think we should pr_warn() or
-> > fail to boot when that happens.
-> >
-> 
-> Bear in mind that these very early print outs (like the ones eventually
-> produced by setting panic_on_taint) to the log buffer might get lost in 
-> verbose-logging long-running time systems, but apart from that, I see no 
-> problems in being a little bit more verbose in that parser. I'll make
-> the changes for a next revision, if no one else objects them.
-
-See mitigations_parse_cmdline(), we pr_crit() there as well if we enter
-a wrong value. I think that's the best we can do.
-
-  Luis
+>
+> Kaike
+>
