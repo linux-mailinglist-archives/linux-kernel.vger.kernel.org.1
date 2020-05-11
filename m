@@ -2,180 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452141CD429
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 10:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB0E1CD437
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 10:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729181AbgEKIkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 04:40:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:53816 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728562AbgEKIkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 04:40:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 889E0D6E;
-        Mon, 11 May 2020 01:40:46 -0700 (PDT)
-Received: from [192.168.0.7] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37E343F305;
-        Mon, 11 May 2020 01:40:45 -0700 (PDT)
-Subject: Re: [PATCH v2] sched/fair: Fix enqueue_task_fair warning some more
-To:     Tao Zhou <zohooouoto@zoho.com.cn>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Tao Zhou <ouwen210@hotmail.com>
-References: <20200506141821.GA9773@lorien.usersys.redhat.com>
- <20200507203612.GF19331@lorien.usersys.redhat.com>
- <20200508151515.GA25974@geo.homenetwork>
- <CAKfTPtCeA1VcEierR5iyQJApU5JMFQqkMSR+2JGU4o5cG76opQ@mail.gmail.com>
- <20200508170213.GA27353@geo.homenetwork>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <801229de-200d-c9d5-7fd3-8556c5abc064@arm.com>
-Date:   Mon, 11 May 2020 10:40:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729250AbgEKIt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 04:49:58 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:36900 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728562AbgEKIt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 04:49:57 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id BB63AB93F3FEEFD6C057;
+        Mon, 11 May 2020 16:49:53 +0800 (CST)
+Received: from linux-ibm.site (10.175.102.37) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 11 May 2020 16:49:45 +0800
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     <ezequiel@vanguardiasur.com.ar>, <mchehab@kernel.org>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangxiongfeng2@huawei.com>
+Subject: [PATCH] [media] tw686x: add a missing newline when printing parameter 'dma_mode'
+Date:   Mon, 11 May 2020 16:43:46 +0800
+Message-ID: <1589186626-17243-1-git-send-email-wangxiongfeng2@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-In-Reply-To: <20200508170213.GA27353@geo.homenetwork>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.102.37]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/05/2020 19:02, Tao Zhou wrote:
-> On Fri, May 08, 2020 at 05:27:44PM +0200, Vincent Guittot wrote:
->> On Fri, 8 May 2020 at 17:12, Tao Zhou <zohooouoto@zoho.com.cn> wrote:
->>>
->>> Hi Phil,
->>>
->>> On Thu, May 07, 2020 at 04:36:12PM -0400, Phil Auld wrote:
->>>> sched/fair: Fix enqueue_task_fair warning some more
+When I cat module parameter 'dma_mode' by sysfs, it displays as follows.
+It is better to add a newline for easy reading.
 
-[...]
+[root@hulk-202 ~]# cat /sys/module/tw686x/parameters/dma_mode
+memcpy[root@hulk-202 ~]#
 
->>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->>>> index 02f323b85b6d..c6d57c334d51 100644
->>>> --- a/kernel/sched/fair.c
->>>> +++ b/kernel/sched/fair.c
->>>> @@ -5479,6 +5479,13 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->>>>               /* end evaluation on encountering a throttled cfs_rq */
->>>>               if (cfs_rq_throttled(cfs_rq))
->>>>                       goto enqueue_throttle;
->>>> +
->>>> +               /*
->>>> +                * One parent has been throttled and cfs_rq removed from the
->>>> +                * list. Add it back to not break the leaf list.
->>>> +                */
->>>> +               if (throttled_hierarchy(cfs_rq))
->>>> +                       list_add_leaf_cfs_rq(cfs_rq);
->>>>       }
->>>
->>> I was confused by why the throttled cfs rq can be on list.
->>> It is possible when enqueue a task and thanks to the 'threads'.
->>> But I think the above comment does not truely put the right
->>> intention, right ?
->>> If throttled parent is onlist, the child cfs_rq is ignored
->>> to be added to the leaf cfs_rq list me think.
->>>
->>> unthrottle_cfs_rq() follows the same logic if i am not wrong.
->>> Is it necessary to add the above to it ?
->>
->> When a cfs_rq is throttled, its sched group is dequeued and all child
->> cfs_rq are removed from  leaf_cfs_rq list. But the sched group of the
->> child cfs_rq stay enqueued in the throttled cfs_rq so child sched
->> group->on_rq might be still set.
-> 
-> If there is a throttle of throttle, and unthrottle the child throttled
-> cfs_rq(ugly):
->                                ...
->                                 |
->                       cfs_rq throttled (parent A)
->                                 |
->                                 |
->                       cfs_rq in hierarchy (B)
->                                 |
->                                 |
->                       cfs_rq throttled (C)
->                                 |
->                                ...
-> 
-> Then unthrottle the child throttled cfs_rq C, now the A is on the 
-> leaf_cfs_rq list. sched_group entity of C is enqueued to B, and 
-> sched_group entity of B is on_rq and is ignored by enqueue but in
-> the throttled hierarchy and not add to leaf_cfs_rq list.
-> The above may be absolutely wrong that I miss something.
-> 
-> Another thing :
-> In enqueue_task_fair():
-> 
-> 	for_each_sched_entity(se) {
-> 		cfs_rq = cfs_rq_of(se);
-> 
-> 		if (list_add_leaf_cfs_rq(cfs_rq))
-> 			break;
-> 	}
-> 
-> In unthrottle_cfs_rq():
-> 
-> 	for_each_sched_entity(se) {
-> 		cfs_rq = cfs_rq_of(se);
-> 
-> 		list_add_leaf_cfs_rq(cfs_rq);
-> 	}
-> 
-> The difference between them is that if condition, add if
-> condition to unthrottle_cfs_rq() may be an optimization and
-> keep the same.
-> 
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+---
+ drivers/media/pci/tw686x/tw686x-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'm not 100% sure if this is exactly what Tao pointed out here but I
-also had difficulties understanding understanding how this patch works:
+diff --git a/drivers/media/pci/tw686x/tw686x-core.c b/drivers/media/pci/tw686x/tw686x-core.c
+index 74ae4f0..bfc61da 100644
+--- a/drivers/media/pci/tw686x/tw686x-core.c
++++ b/drivers/media/pci/tw686x/tw686x-core.c
+@@ -71,7 +71,7 @@ static const char *dma_mode_name(unsigned int mode)
+ 
+ static int tw686x_dma_mode_get(char *buffer, const struct kernel_param *kp)
+ {
+-	return sprintf(buffer, "%s", dma_mode_name(dma_mode));
++	return sprintf(buffer, "%s\n", dma_mode_name(dma_mode));
+ }
+ 
+ static int tw686x_dma_mode_set(const char *val, const struct kernel_param *kp)
+-- 
+1.7.12.4
 
-                       p.se
-                        |
-      __________________|
-      |
-      V
-     cfs_c -> tg_c ->  se_c (se->on_rq = 1)
-                        |
-      __________________|
-      |
-      v
-     cfs_b -> tg_b ->  se_b
-                        |
-      __________________|
-      |
-      V
-     cfs_a -> tg_a ->  se_a
-                        |
-      __________________|
-      |
-      V
-     cfs_r -> tg_r
-      |
-      V
-      rq
-
-(1) The incomplete update happens with cfs_c at the end of
-    enqueue_entity() in the first loop because of 'if ( .... ||
-    cfs_bandwidth_used())' (cfs_b->on_list=0 since cfs_a is throttled)
-
-(2) se_c breaks out of the first loop (se_c->on_rq = 1)
-
-(3) With the patch cfs_b is added back to the list.
-    But only because cfs_a->on_list=1.
-
-But since cfs_a is throttled it should be cfs_a->on_list=0 as well.
-throttle_cfs_rq()->walk_tg_tree_from(..., tg_throttle_down, ...) should
-include cfs_a when calling list_del_leaf_cfs_rq().
-
-IMHO, throttle_cfs_rq() calls tg_throttle_down() for the throttled
-cfs_rq too.
-
-
-Another thing: Why don't we use throttled_hierarchy(cfs_rq) instead of
-cfs_bandwidth_used() in enqueue_entity() as well?
