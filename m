@@ -2,415 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034641CDC0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A620F1CDBD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730287AbgEKNxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 09:53:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730272AbgEKNxk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 09:53:40 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A50C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 06:53:38 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id 50so10537124wrc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 06:53:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CApeDRpcs9y+uCevURcB1yZFuinPxngxdJkSfuMz9fI=;
-        b=JHy/gUKfg1p4f3bY5ru2S7ahjDr3JutKZnHuaZo0vLhGaXdw0HzTcZQWW+fvz2rrCh
-         a9Mc2RJMmU1T5j150QJLsDDoEApnm8jFNM3aZ0q7DEM0/DtHaOWBCdLOE7Srf4G0wRUs
-         Fm1+ITt+6oXdaJxqNERW0mviLw65OYvZvhExq1qGncC/X+wtDJ4/e31zERVygB7hlbgk
-         kpdXy3oEUPferu284FrcDDhffCQaRpZzgwGNsGqnAaDNtyfizyNyn/kcv6mEQ9cD54q/
-         s3Jxkb4lEzjett3YeVFSkVOxwAmQ57wspa2mRt7Z+9F4uz4hMy3G+wPvGYjiqgmV7Kc5
-         gHUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CApeDRpcs9y+uCevURcB1yZFuinPxngxdJkSfuMz9fI=;
-        b=h6d3pRJ5u6P0kDtVpR70fHCQFDPJLKXn8GheS9PF3sfpSKZWTGCBkjRTffq362Pdrk
-         Nnm7bYdwSYiehEf96Nn8WcH451kYrjJoWRLC1QSqNsVEwdwZnFQOqQEfPbNOFHxgjeKY
-         rgsUzAyb/OwboIO+c5Bm4UjAgRHZNW8eXl7IyUWUPkvNOFXYF8oII1h719uukms7IQuy
-         Hsi6+q0S+o0jCKcUsDOCzg3m1o25h2YCV81txpTsF/ERKGg65PQnF89HmGCQ5cyynVsg
-         0xe0AsHwDBI7jKcuReDw0m+3d+BcK9QvN/iTOhe2TB/Z9KImCMQrnAiUs4/ok0nBz1LR
-         PVhw==
-X-Gm-Message-State: AGi0PuYqxCuNleqaVPWpiiKz80yqCkoKAZgdEB5N9IzYZUpNfq1ElztG
-        hCqyi3U6jeWUefBVL60K8ekk
-X-Google-Smtp-Source: APiQypLq0/iTieJihfePA7+4sK2uqFWVHw8wzzExvn1tVie84qlnLQvBkjyuvGnq4ZUrbq1eol3EpA==
-X-Received: by 2002:a5d:51c9:: with SMTP id n9mr18818254wrv.84.1589205217185;
-        Mon, 11 May 2020 06:53:37 -0700 (PDT)
-Received: from dkxps.local (dslb-002-204-227-207.002.204.pools.vodafone-ip.de. [2.204.227.207])
-        by smtp.gmail.com with ESMTPSA id v205sm9220018wmg.11.2020.05.11.06.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 06:53:36 -0700 (PDT)
-From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
-To:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
-        bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
-        jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
-        jinpu.wang@cloud.ionos.com, pankaj.gupta@cloud.ionos.com,
+        id S1729968AbgEKNxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 09:53:06 -0400
+Received: from mail-eopbgr150081.outbound.protection.outlook.com ([40.107.15.81]:46936
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726068AbgEKNxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 09:53:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KD1zKHPocl/DKZF00C3Jgc3L+yzaWtkM4fmpbyZACQ3QrIVEw3k6m0aFUmobUOKnX6YhGx30fotzdB8bQ0vzoBM7Tw8nEHkgiYm8EsqlsXGzkVIpxC/GdXgEJRNr/T99fh6MIXAk4Z1jRiALh2QJCna76eqzTc57CkhteszGR+j3b8wd/uZF4d5dYd5j/Y7Jk2XsF/mAT37D9ZVXucFaJW7ymYrDfUWIsyOHG1ZKzx4hmTMP3XxgYzmrusSEOOJ8mg1GqFMyXWEncLgfqpRMXMXdyYHcQY4jCUQUrsSJHERJn/0KDTH+F5bMHzCBQTmbiswsG+z4+ga0qQLZs4NWpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g5ZJ7nwLAEgiloip484vc2nqKALP6FN62V+Jo5+D1fA=;
+ b=msohBbo/PUsGUBo6mznKtwuieVd8+8RlPdFrcrbTUYQFbTryjsrhgXd42CQcxL0EdzyuCqCzp80CplC0wh3PhanJ89SFxXdB2EBocFmy6D5UbjmEFzWcNgSjVLH7LGDke3/qtkvq6iaWurrNdywsOyCxN4fMjpHgqeVdmTqlMhOyCaq74fPoRBf7o62d9oGqoRlJc3oFG7OxWRP2XYbbQTI/yGr52mPp8g7xF0z8+4CO6kNab+O01wTKE3t9QMiFC2NX0VMMIkXUavrkqkLryEq0u9OZM7fRKJJeaPlFWqKeyT5RqIyX3buR3ot/nIKUfu5HCAewvaVyY3NEtAeEGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g5ZJ7nwLAEgiloip484vc2nqKALP6FN62V+Jo5+D1fA=;
+ b=bPWKt1+j5uF0mCPq8Q7FVExWYPhxGAt82FRoHFmI9ncZOg5+2ysUJx6HoZtzXFRJJ/ijeXKDYTSTBt5lx7lngXwf+Dmv/2odzl4M3jtA4cdu/osx6IkkOxgbBqnXjFat7qjRWwomvxgn6vsMDaeK7vk7obS+Tly03fvr+x6OL1o=
+Authentication-Results: arndb.de; dkim=none (message not signed)
+ header.d=none;arndb.de; dmarc=none action=none header.from=mellanox.com;
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
+ by VI1PR05MB5775.eurprd05.prod.outlook.com (2603:10a6:803:ca::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.30; Mon, 11 May
+ 2020 13:53:02 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::a47b:e3cd:7d6d:5d4e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::a47b:e3cd:7d6d:5d4e%6]) with mapi id 15.20.2979.033; Mon, 11 May 2020
+ 13:53:01 +0000
+Date:   Mon, 11 May 2020 10:52:57 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Ben Skeggs <bskeggs@redhat.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Christoph Hellwig <hch@lst.de>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v15 24/25] block/rnbd: a bit of documentation
-Date:   Mon, 11 May 2020 15:51:30 +0200
-Message-Id: <20200511135131.27580-25-danil.kipnis@cloud.ionos.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200511135131.27580-1-danil.kipnis@cloud.ionos.com>
-References: <20200511135131.27580-1-danil.kipnis@cloud.ionos.com>
+Subject: Re: [PATCH 2/2] nouveau: fix dependencies for DEVICE_PRIVATE
+Message-ID: <20200511135257.GT19158@mellanox.com>
+References: <20200508144017.3501418-1-arnd@arndb.de>
+ <20200508144017.3501418-2-arnd@arndb.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508144017.3501418-2-arnd@arndb.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: MN2PR19CA0042.namprd19.prod.outlook.com
+ (2603:10b6:208:19b::19) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR19CA0042.namprd19.prod.outlook.com (2603:10b6:208:19b::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.33 via Frontend Transport; Mon, 11 May 2020 13:53:01 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jY8rZ-0005a8-Vh; Mon, 11 May 2020 10:52:57 -0300
+X-Originating-IP: [142.68.57.212]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1892e4fe-c0ee-47e4-5f8b-08d7f5b29eef
+X-MS-TrafficTypeDiagnostic: VI1PR05MB5775:
+X-Microsoft-Antispam-PRVS: <VI1PR05MB5775A05924E1426342803552CFA10@VI1PR05MB5775.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-Forefront-PRVS: 04004D94E2
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fZt6VaK45FmKIEiVbbdPOuFBXam2z7LSd7B4Bgx4mnEKs9gP8W7YtJ6QR6DTJthM4W8UtmF2Aga1kVRZWFgboxEDxJZq+wTbYo0zxKCPgj/mpO8oTI0C6lCpw7nqnP9c9N/IULfIcZPeL7XkxW3dHD1yYyKnUi0xscmHJQ8K7/kn70Z8+oKnNHBO10K/YiPeMUGZ6Mh3yi1Z2zLXo5Y881yO4Oos9gOJ1S4t8e/9SfKW4psrK0zkZigJY43tOxPFcHO5Anx6pVPNFSfcuCsNE5uo5de3yrP0mmr9XEHHpmw5C0aEj9BZ114WmwO76T9O0DHcnIp1p5RaruzFh20xNjqw7Jqdd7yg4GifDbXVwaVYlNBsGYjdPwEo0ozQc8Z/6pLxKPtjKzvCcLe7DG0SSwN7SlQcMSDUI5Lzo2AWb+SDDf/6mvCNDND53S91807tUAiluQZYDwnAVvGzEk4RNt0gfKd5xa962PFRExBZjjnzNML9WNpgWmoq0ePDnNZ4bAvkSlEeJEf5WPH234LLZP17av/j+Goaf2F43VPi1OIVTFB+HG1o1OFFIfhCzNkw
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(376002)(346002)(396003)(366004)(136003)(33430700001)(2616005)(36756003)(26005)(5660300002)(4744005)(478600001)(186003)(2906002)(1076003)(8676002)(316002)(54906003)(33440700001)(33656002)(66946007)(66476007)(8936002)(52116002)(6916009)(9746002)(9786002)(86362001)(7416002)(4326008)(66556008)(24400500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: BY/oXkvYyC8NByrdiEWbBYbEmPfwK8PollehsQ3uDEyQIb1NKNbxnJIstmMVZNshrIIuhFXQ+gQD2Lu6kgMncOhsayWKf1vru1bDXUGsIAH9vCLk+O5N7b7G2x/dFIDRRGvfOWcsWp8u7t1FkFEOk5d5lOo9llkK7JH0asJ/rVN2M67KU75pml3GbU8pxIj/2nwMhyb1vQcVgtYay6x/pk5i7cXQ1mHIWCkr8YNLQlJR2oeiMO96RSKwdhUtD1FttJMruOzegpT5xHOGYf/vwHqgGjy5v3n7ST2dPp1V/g4W984hN51WvgopJWgXTRz7da/xGfMlEmZDlMn0nw2LBsczyXy9mZMddDPQD0SbgejBmj0QkFoBhq51rpDt039MlPL/O7vT19cqwdsql89JC9iIB5e+ZM2D2RwIAXlD1QTuQSL67mRmxwkcxHlp0bMXVRSvFELtRYkWwcCTVdr1pfltdLKQjIgTmL7S+oSRwba5aMNCjaNZBCgPzi1eThcX
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1892e4fe-c0ee-47e4-5f8b-08d7f5b29eef
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2020 13:53:01.7974
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hfir74XcsyAKSreaMY/Uq0DVLRmfj7GSdR6SVjVoMk7uAmyBXd9b0mKhVSCQQlAjYDfU+fIr8OlNGFRezCkJ4Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5775
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@cloud.ionos.com>
+On Fri, May 08, 2020 at 04:40:09PM +0200, Arnd Bergmann wrote:
+> CONFIG_DEVICE_PRIVATE cannot be selected in configurations
+> without ZONE_DEVICE:
+> 
+> WARNING: unmet direct dependencies detected for DEVICE_PRIVATE
+>   Depends on [n]: ZONE_DEVICE [=n]
+>   Selected by [y]:
+>   - DRM_NOUVEAU_SVM [=y] && HAS_IOMEM [=y] && DRM_NOUVEAU [=y] && MMU [=y] && STAGING [=y]
+> kernel/resource.c:1653:28: error: use of undeclared identifier 'PA_SECTION_SHIFT'
+>         size = ALIGN(size, 1UL << PA_SECTION_SHIFT);
+>                                   ^
+> kernel/resource.c:1654:48: error: use of undeclared identifier 'MAX_PHYSMEM_BITS'
+> 
+> Add a dependency for Nouveau to avoid broken randconfig builds.
+> 
+> Fixes: d2c63df2242e ("mm/hmm: make CONFIG_DEVICE_PRIVATE into a
+> select")
 
-README with description of major sysfs entries, sysfs documentation
-are moved to ABI dir as Bart suggested.
+I've reverted the patch this fixes, it seems more trouble than it is
+worth.
 
-Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
----
- Documentation/ABI/testing/sysfs-block-rnbd    |  46 ++++++++
- .../ABI/testing/sysfs-class-rnbd-client       | 111 ++++++++++++++++++
- .../ABI/testing/sysfs-class-rnbd-server       |  50 ++++++++
- drivers/block/rnbd/README                     |  92 +++++++++++++++
- 4 files changed, 299 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-block-rnbd
- create mode 100644 Documentation/ABI/testing/sysfs-class-rnbd-client
- create mode 100644 Documentation/ABI/testing/sysfs-class-rnbd-server
- create mode 100644 drivers/block/rnbd/README
-
-diff --git a/Documentation/ABI/testing/sysfs-block-rnbd b/Documentation/ABI/testing/sysfs-block-rnbd
-new file mode 100644
-index 000000000000..8f070b47f361
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-block-rnbd
-@@ -0,0 +1,46 @@
-+What:		/sys/block/rnbd<N>/rnbd/unmap_device
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	To unmap a volume, "normal" or "force" has to be written to:
-+		/sys/block/rnbd<N>/rnbd/unmap_device
-+
-+		When "normal" is used, the operation will fail with EBUSY if any process
-+		is using the device.  When "force" is used, the device is also unmapped
-+		when device is in use.  All I/Os that are in progress will fail.
-+
-+		Example:
-+
-+		# echo "normal" > /sys/block/rnbd0/rnbd/unmap_device
-+
-+What:		/sys/block/rnbd<N>/rnbd/state
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	The file contains the current state of the block device. The state file
-+		returns "open" when the device is successfully mapped from the server
-+		and accepting I/O requests. When the connection to the server gets
-+		disconnected in case of an error (e.g. link failure), the state file
-+		returns "closed" and all I/O requests submitted to it will fail with -EIO.
-+
-+What:		/sys/block/rnbd<N>/rnbd/session
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	RNBD uses RTRS session to transport the data between client and
-+		server.  The entry "session" contains the name of the session, that
-+		was used to establish the RTRS session.  It's the same name that
-+		was passed as server parameter to the map_device entry.
-+
-+What:		/sys/block/rnbd<N>/rnbd/mapping_path
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Contains the path that was passed as "device_path" to the map_device
-+		operation.
-+
-+What:		/sys/block/rnbd<N>/rnbd/access_mode
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Contains the device access mode: ro, rw or migration.
-diff --git a/Documentation/ABI/testing/sysfs-class-rnbd-client b/Documentation/ABI/testing/sysfs-class-rnbd-client
-new file mode 100644
-index 000000000000..c084f203b41e
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-class-rnbd-client
-@@ -0,0 +1,111 @@
-+What:		/sys/class/rnbd-client
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Provide information about RNBD-client.
-+		All sysfs files that are not read-only provide the usage information on read:
-+
-+		Example:
-+		# cat /sys/class/rnbd-client/ctl/map_device
-+
-+		> Usage: echo "sessname=<name of the rtrs session> path=<[srcaddr,]dstaddr>
-+		> [path=<[srcaddr,]dstaddr>] device_path=<full path on remote side>
-+		> [access_mode=<ro|rw|migration>] > map_device
-+		>
-+		> addr ::= [ ip:<ipv4> | ip:<ipv6> | gid:<gid> ]
-+
-+What:		/sys/class/rnbd-client/ctl/map_device
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Expected format is the following:
-+
-+		sessname=<name of the rtrs session>
-+		path=<[srcaddr,]dstaddr> [path=<[srcaddr,]dstaddr> ...]
-+		device_path=<full path on remote side>
-+		[access_mode=<ro|rw|migration>]
-+
-+		Where:
-+
-+		sessname: accepts a string not bigger than 256 chars, which identifies
-+		a given session on the client and on the server.
-+		I.e. "clt_hostname-srv_hostname" could be a natural choice.
-+
-+		path:     describes a connection between the client and the server by
-+		specifying destination and, when required, the source address.
-+		The addresses are to be provided in the following format:
-+
-+		ip:<IPv6>
-+		ip:<IPv4>
-+		gid:<GID>
-+
-+		for example:
-+
-+		path=ip:10.0.0.66
-+		The single addr is treated as the destination.
-+		The connection will be established to this server from any client IP address.
-+
-+		path=ip:10.0.0.66,ip:10.0.1.66
-+		First addr is the source address and the second is the destination.
-+
-+		If multiple "path=" options are specified multiple connection
-+		will be established and data will be sent according to
-+		the selected multipath policy (see RTRS mp_policy sysfs entry description).
-+
-+		device_path: Path to the block device on the server side. Path is specified
-+		relative to the directory on server side configured in the
-+		'dev_search_path' module parameter of the rnbd_server.
-+		The rnbd_server prepends the <device_path> received from client
-+		with <dev_search_path> and tries to open the
-+		<dev_search_path>/<device_path> block device.  On success,
-+		a /dev/rnbd<N> device file, a /sys/block/rnbd_client/rnbd<N>/
-+		directory and an entry in /sys/class/rnbd-client/ctl/devices
-+		will be created.
-+
-+		If 'dev_search_path' contains '%SESSNAME%', then each session can
-+		have different devices namespace, e.g. server was configured with
-+		the following parameter "dev_search_path=/run/rnbd-devs/%SESSNAME%",
-+		client has this string "sessname=blya device_path=sda", then server
-+		will try to open: /run/rnbd-devs/blya/sda.
-+
-+		access_mode: the access_mode parameter specifies if the device is to be
-+		mapped as "ro" read-only or "rw" read-write. The server allows
-+		a device to be exported in rw mode only once. The "migration"
-+		access mode has to be specified if a second mapping in read-write
-+		mode is desired.
-+
-+		By default "rw" is used.
-+
-+		Exit Codes:
-+
-+		If the device is already mapped it will fail with EEXIST. If the input
-+		has an invalid format it will return EINVAL. If the device path cannot
-+		be found on the server, it will fail with ENOENT.
-+
-+		Finding device file after mapping
-+		---------------------------------
-+
-+		After mapping, the device file can be found by:
-+		o  The symlink /sys/class/rnbd-client/ctl/devices/<device_id>
-+		points to /sys/block/<dev-name>. The last part of the symlink destination
-+		is the same as the device name.  By extracting the last part of the
-+		path the path to the device /dev/<dev-name> can be build.
-+
-+		o /dev/block/$(cat /sys/class/rnbd-client/ctl/devices/<device_id>/dev)
-+
-+		How to find the <device_id> of the device is described on the next
-+		section.
-+
-+What:		/sys/class/rnbd-client/ctl/devices/
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	For each device mapped on the client a new symbolic link is created as
-+		/sys/class/rnbd-client/ctl/devices/<device_id>, which points
-+		to the block device created by rnbd (/sys/block/rnbd<N>/).
-+		The <device_id> of each device is created as follows:
-+
-+		- If the 'device_path' provided during mapping contains slashes ("/"),
-+		they are replaced by exclamation mark ("!") and used as as the
-+		<device_id>. Otherwise, the <device_id> will be the same as the
-+		"device_path" provided.
-diff --git a/Documentation/ABI/testing/sysfs-class-rnbd-server b/Documentation/ABI/testing/sysfs-class-rnbd-server
-new file mode 100644
-index 000000000000..ba60a90c0e45
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-class-rnbd-server
-@@ -0,0 +1,50 @@
-+What:		/sys/class/rnbd-server
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	provide information about RNBD-server.
-+
-+What:		/sys/class/rnbd-server/ctl/
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	When a client maps a device, a directory entry with the name of the
-+		block device is created under /sys/class/rnbd-server/ctl/devices/.
-+
-+What:		/sys/class/rnbd-server/ctl/devices/<device_name>/block_dev
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Is a symlink to the sysfs entry of the exported device.
-+
-+		Example:
-+		block_dev -> ../../../../class/block/ram0
-+
-+What:		/sys/class/rnbd-server/ctl/devices/<device_name>/sessions/
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	For each client a particular device is exported to, following directory will be
-+		created:
-+
-+		/sys/class/rnbd-server/ctl/devices/<device_name>/sessions/<session-name>/
-+
-+		When the device is unmapped by that client, the directory will be removed.
-+
-+What:		/sys/class/rnbd-server/ctl/devices/<device_name>/sessions/<session-name>/read_only
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Contains '1' if device is mapped read-only, otherwise '0'.
-+
-+What:		/sys/class/rnbd-server/ctl/devices/<device_name>/sessions/<session-name>/mapping_path
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Contains the relative device path provided by the user during mapping.
-+
-+What:		/sys/class/rnbd-server/ctl/devices/<device_name>/sessions/<session-name>/access_mode
-+Date:		Feb 2020
-+KernelVersion:	5.7
-+Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+Description:	Contains the device access mode: ro, rw or migration.
-diff --git a/drivers/block/rnbd/README b/drivers/block/rnbd/README
-new file mode 100644
-index 000000000000..1773c0aa0bd4
---- /dev/null
-+++ b/drivers/block/rnbd/README
-@@ -0,0 +1,92 @@
-+********************************
-+RDMA Network Block Device (RNBD)
-+********************************
-+
-+Introduction
-+------------
-+
-+RNBD (RDMA Network Block Device) is a pair of kernel modules
-+(client and server) that allow for remote access of a block device on
-+the server over RTRS protocol using the RDMA (InfiniBand, RoCE, iWARP)
-+transport. After being mapped, the remote block devices can be accessed
-+on the client side as local block devices.
-+
-+I/O is transferred between client and server by the RTRS transport
-+modules. The administration of RNBD and RTRS modules is done via
-+sysfs entries.
-+
-+Requirements
-+------------
-+
-+  RTRS kernel modules
-+
-+Quick Start
-+-----------
-+
-+Server side:
-+  # modprobe rnbd_server
-+
-+Client side:
-+  # modprobe rnbd_client
-+  # echo "sessname=blya path=ip:10.50.100.66 device_path=/dev/ram0" > \
-+            /sys/devices/virtual/rnbd-client/ctl/map_device
-+
-+  Where "sessname=" is a session name, a string to identify the session
-+  on client and on server sides; "path=" is a destination IP address or
-+  a pair of a source and a destination IPs, separated by comma.  Multiple
-+  "path=" options can be specified in order to use multipath  (see RTRS
-+  description for details); "device_path=" is the block device to be
-+  mapped from the server side. After the session to the server machine is
-+  established, the mapped device will appear on the client side under
-+  /dev/rnbd<N>.
-+
-+
-+RNBD-Server Module Parameters
-+=============================
-+
-+dev_search_path
-+---------------
-+
-+When a device is mapped from the client, the server generates the path
-+to the block device on the server side by concatenating dev_search_path
-+and the "device_path" that was specified in the map_device operation.
-+
-+The default dev_search_path is: "/".
-+
-+dev_search_path option can also contain %SESSNAME% in order to provide
-+different device namespaces for different sessions.  See "device_path"
-+option for details.
-+
-+============================
-+Protocol (rnbd/rnbd-proto.h)
-+============================
-+
-+1. Before mapping first device from a given server, client sends an
-+RNBD_MSG_SESS_INFO to the server. Server responds with
-+RNBD_MSG_SESS_INFO_RSP. Currently the messages only contain the protocol
-+version for backward compatibility.
-+
-+2. Client requests to open a device by sending RNBD_MSG_OPEN message. This
-+contains the path to the device and access mode (read-only or writable).
-+Server responds to the message with RNBD_MSG_OPEN_RSP. This contains
-+a 32 bit device id to be used for  IOs and device "geometry" related
-+information: side, max_hw_sectors, etc.
-+
-+3. Client attaches RNBD_MSG_IO to each IO message send to a device. This
-+message contains device id, provided by server in his rnbd_msg_open_rsp,
-+sector to be accessed, read-write flags and bi_size.
-+
-+4. Client closes a device by sending RNBD_MSG_CLOSE which contains only the
-+device id provided by the server.
-+
-+=========================================
-+Contributors List(in alphabetical order)
-+=========================================
-+Danil Kipnis <danil.kipnis@profitbricks.com>
-+Fabian Holler <mail@fholler.de>
-+Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-+Jack Wang <jinpu.wang@profitbricks.com>
-+Kleber Souza <kleber.souza@profitbricks.com>
-+Lutz Pogrell <lutz.pogrell@cloud.ionos.com>
-+Milind Dumbare <Milind.dumbare@gmail.com>
-+Roman Penyaev <roman.penyaev@profitbricks.com>
--- 
-2.20.1
-
+Thanks,
+Jason
