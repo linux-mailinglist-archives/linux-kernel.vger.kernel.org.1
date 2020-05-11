@@ -2,120 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBAB1CD9B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816021CD9CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729989AbgEKM0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 08:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729960AbgEKM0I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 08:26:08 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D9AC05BD0A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 05:26:06 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id r7so7753749edo.11
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 05:26:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2EN8bcyFVSWdG2LyezQQ8oCrjUutuFeHxXpmjXGuS0M=;
-        b=TocUd7QBMuxELeVQIclwEwhNwZ51aFXx4DeH5YgrrumzZciDVWnPvzltX/S1ugv1ii
-         5E0iZOqOZgwgYeazNVKnAscq1Gf0jJaYh7zXejxjfmsLdTBq4ann9CBZ0Zp+Et1gnOx6
-         csGJZAegn3dXfqJgRVFCHUXWbN4lRvZ4bmgmE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2EN8bcyFVSWdG2LyezQQ8oCrjUutuFeHxXpmjXGuS0M=;
-        b=rBLAprvMQNW01MApetPcjTwCdyWFRpmr745L0eIPo+X+uqE+wpvGYpXeFpIwwa8nca
-         RBcH5vw1GuFzgYMj9NIzqSKl1H2f4RxQhr3l2jpwKmh9BaWNXOb6XPgtLKfg2j6xnZtj
-         JkHVldnb63YqVp9dak83+0YHh/ouV7QUVld2jAA/LMWycKX2vrg5cROydkM7y839147r
-         AreTXXNHNtOKjdOZA0BMyzYbEck38qGJZqE5+1CAN4BbbEZfZ3NsLHP5geiLQz1ok+9b
-         x7d25hmt4SKQm5SLym7tq0rWgMzUMS+fbtV3Nfikfrs0QtzVcWTTECHym7cMYX+FpOtr
-         ndeg==
-X-Gm-Message-State: AGi0PuYlsQjH3wRhiymlj1Y9Ce/o4LrKL5QpObvRObtvUXTLHIRe5bSY
-        GLO21WE5YH5nbk/eq9V/ts9Rq9WxuG+44dy/UdXWKA==
-X-Google-Smtp-Source: APiQypI0RnkmhdnNNKq94iFMEVCCm1LcUFOTW66OOLC6+dFFohZ56vzj/6GxcQ/jT8FOFcqF+Rlp5uYkhgYIYqDhLNo=
-X-Received: by 2002:aa7:cdd9:: with SMTP id h25mr13644594edw.17.1589199964897;
- Mon, 11 May 2020 05:26:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <1585733475-5222-1-git-send-email-chakragithub@gmail.com>
- <CAJfpegtk=pbLgBzM92tRq8UMUh+vxcDcwLL77iAcv=Mxw3r4Lw@mail.gmail.com>
- <CAH7=fosGV3AOcU9tG0AK3EJ2yTXZL3KGfsuVUA5gMBjC4Nn-WQ@mail.gmail.com>
- <CAH7=fosz9KDSBN86+7OxYTLJWUSdUSkeLZR5Y0YyM6=GE0BdOw@mail.gmail.com>
- <CAJfpegvWBHootLiE_zsw35G6Ee387V=Da_wCzaV9NhZQVDKYGg@mail.gmail.com> <CAH7=fosn3fnNBkKzHNBSvoQh+Gjpi2J0mZ3rRENitMmFmpHcUw@mail.gmail.com>
-In-Reply-To: <CAH7=fosn3fnNBkKzHNBSvoQh+Gjpi2J0mZ3rRENitMmFmpHcUw@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 11 May 2020 14:25:53 +0200
-Message-ID: <CAJfpegu4BzWybuBH=-ojqZ5Qfw4+0Lv+yqbTrerw3+tb=qghWw@mail.gmail.com>
-Subject: Re: [PATCH] fuse:rely on fuse_perm for exec when no mode bits set
-To:     Chakra Divi <chakragithub@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1729609AbgEKM2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 08:28:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729343AbgEKM2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 08:28:23 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF3DD207FF;
+        Mon, 11 May 2020 12:28:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589200103;
+        bh=1NdyNA3J3Yq4GF6v9HalR4dr/LL5h+c+E7CSWgyAJww=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rfxtQxF6apz0ygIr6KQOAkFJKCNLaGsSrSwuFhYvY/mcLyTLsIjIsg3yWlbR4UDDy
+         M4RYPvXRkt5uQcSJK5qOuSlCu5nTorzwImpjTDJ5Z6Vel/JcnzUknK8/326bRp1V8+
+         iimbdr1FUeE2E7LZsIqXUzz6FeTZD1DCc7EfoDfk=
+Date:   Mon, 11 May 2020 21:28:16 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch V4 part 3 01/29] x86/traps: Mark fixup_bad_iret()
+ noinstr
+Message-Id: <20200511212816.45516d0e9e72c1ea543b0a36@kernel.org>
+In-Reply-To: <20200505134903.346741553@linutronix.de>
+References: <20200505134354.774943181@linutronix.de>
+        <20200505134903.346741553@linutronix.de>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 8, 2020 at 12:14 PM Chakra Divi <chakragithub@gmail.com> wrote:
->
-> On Tue, Apr 28, 2020 at 1:51 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
-> >
-> > On Mon, Apr 27, 2020 at 3:46 PM Chakra Divi <chakragithub@gmail.com> wrote:
-> > >
-> > > On Tue, Apr 21, 2020 at 4:21 PM Chakra Divi <chakragithub@gmail.com> wrote:
-> > > >
-> > > > On Mon, Apr 20, 2020 at 4:55 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
-> > > > >
-> > > > > On Wed, Apr 1, 2020 at 11:31 AM Chakra Divi <chakragithub@gmail.com> wrote:
-> > > > > >
-> > > > > > In current code, for exec we are checking mode bits
-> > > > > > for x bit set even though the fuse_perm_getattr returns
-> > > > > > success. Changes in this patch avoids mode bit explicit
-> > > > > > check, leaves the exec checking to fuse file system
-> > > > > > in uspace.
-> > > > >
-> > > > > Why is this needed?
-> > > >
-> > > > Thanks for responding Miklos. We have an use case with our remote file
-> > > > system mounted on fuse , where permissions checks will happen remotely
-> > > > without the need of mode bits. In case of read, write it worked
-> > > > without issues. But for executable files, we found that fuse kernel is
-> > > > explicitly checking 'x' mode bit set on the file. We want this
-> > > > checking also to be pushed to remote instead of kernel doing it - so
-> > > > modified the kernel code to send getattr op to usespace in exec case
-> > > > too.
-> > >
-> > > Any help on this Miklos....
-> >
-> > I still don't understand what you are requesting.  What your patch
-> > does is unconditionally allow execution, even without any 'x' bits in
-> > the mode.  What does that achieve?
->
-> Thanks for the help Miklos. We have a network based filesystem that
-> supports acls.
-> As our filesystem give granular access, we wipe out the mode bits and
-> completely rely on ACLs.
+On Tue, 05 May 2020 15:43:55 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-Are you using POSIX ACLs?   Why can't you translate the ACL's back
-into mode bits (that's what all filesystems do)?
+> This is called from deep entry ASM in a situation where instrumentation
+> will cause more harm than providing useful information.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
->
-> Fuse works well for all other ops (with default_permissions disabled )
->  as all the checks are done at the filesystems.
-> But only executables have problems because fuse kernel rejects the
-> execution by doing access checks on mode bit.
-> To push this check to filesystem, in the above patch - i'm relying on
-> return value from fuse_perm_getattr() ignoring the mode bits.
->
-> When the fuse module is asked to rely on filesystem for access checks,
-> why do we need this explicit check for executables?
+Looks good to me.
 
-Because there's no other check.  Have you noticed that with your patch
-*all* files become executable?  I guess that's not what you wanted...
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-Thanks,
-Miklos
+Thank you,
+
+> ---
+>  arch/x86/kernel/traps.c |   16 +++++++++-------
+>  1 file changed, 9 insertions(+), 7 deletions(-)
+> 
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -621,7 +621,7 @@ struct bad_iret_stack {
+>  	struct pt_regs regs;
+>  };
+>  
+> -asmlinkage __visible notrace
+> +asmlinkage __visible noinstr
+>  struct bad_iret_stack *fixup_bad_iret(struct bad_iret_stack *s)
+>  {
+>  	/*
+> @@ -632,19 +632,21 @@ struct bad_iret_stack *fixup_bad_iret(st
+>  	 * just below the IRET frame) and we want to pretend that the
+>  	 * exception came from the IRET target.
+>  	 */
+> -	struct bad_iret_stack *new_stack =
+> -		(struct bad_iret_stack *)this_cpu_read(cpu_tss_rw.x86_tss.sp0) - 1;
+> +	struct bad_iret_stack tmp, *new_stack =
+> +		(struct bad_iret_stack *)__this_cpu_read(cpu_tss_rw.x86_tss.sp0) - 1;
+>  
+> -	/* Copy the IRET target to the new stack. */
+> -	memmove(&new_stack->regs.ip, (void *)s->regs.sp, 5*8);
+> +	/* Copy the IRET target to the temporary storage. */
+> +	memcpy(&tmp.regs.ip, (void *)s->regs.sp, 5*8);
+>  
+>  	/* Copy the remainder of the stack from the current stack. */
+> -	memmove(new_stack, s, offsetof(struct bad_iret_stack, regs.ip));
+> +	memcpy(&tmp, s, offsetof(struct bad_iret_stack, regs.ip));
+> +
+> +	/* Update the entry stack */
+> +	memcpy(new_stack, &tmp, sizeof(tmp));
+>  
+>  	BUG_ON(!user_mode(&new_stack->regs));
+>  	return new_stack;
+>  }
+> -NOKPROBE_SYMBOL(fixup_bad_iret);
+>  #endif
+>  
+>  static bool is_sysenter_singlestep(struct pt_regs *regs)
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
