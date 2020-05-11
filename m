@@ -2,125 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A051CDE84
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C6A1CDE93
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbgEKPL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 11:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46214 "EHLO
+        id S1729807AbgEKPNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 11:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729439AbgEKPLz (ORCPT
+        by vger.kernel.org with ESMTP id S1729439AbgEKPNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 11:11:55 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11133C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:11:55 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id k18so1022917ion.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:11:55 -0700 (PDT)
+        Mon, 11 May 2020 11:13:43 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F0EC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:13:41 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id l11so5536507wru.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:13:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5AwyrPvA3Ww23WwD/ecqGKqCatnslIQLQmzYWK6xUDQ=;
-        b=bJTcVQrg2kn2NyqNxsmzk1xu6PQogygnXPZGousMw9W2p9jUqM7TnUKz58aFCSDQSX
-         esNiQLFIm7O9COwUFMuLYYxq3zrHFMyekg3ko2GxiK5NaLjA8bs81IURmUAH5H1DAt1g
-         RUjSAuA5RIeFT3m+3OTKlzizg80ttHJ2i3tjXAq1U23iqOGQGGvTX5YOi55kVYAp3liA
-         JNtJmgmsxs8v9MACnftEKbazF/4/icnOj0SBEOkKguQAFrOT4KK7PJn0JpYXzJcPsu91
-         b2mwXBjsiW+qiU92UTd8Kj2+UrjvWkEM28d1V0eCdUFi+IKJ2qanJo1tJ2td6fUuwd+a
-         7vtg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jtFl5WZ/AnekaDuOseiV7nKEmSW+0VpwWZe6MDcoEpY=;
+        b=vVqhr64mJKTqh4sfX89mA4741REJbiLtPLaN1zJhb1nJThFXcVWxkEytdo+PdZjnrP
+         cBRUrpUXbh87tRQWvggPx9voIu3SWzlfAlyDvG12GAZR+cDpRIBbUNXKE+JujMrGm0Ta
+         gAcRG7XlOHr1wpyiV5DlXuaJMH6in+4ffCbAYjZ3A8jBKtltLr9RBecwfnYHhIEQyfbb
+         M8n8sN6Tt+713s7vaBCgh5CsDvzEwE/jgfXI1N4zDUNVkC6RrX4U/MvbITBuUHoEUDOR
+         HziPKavrDSbUxWueXBD/gNksklT0QWzfztZG3/chamNW6ekYWvvvdTerS4m3GYsYfLCu
+         vxdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5AwyrPvA3Ww23WwD/ecqGKqCatnslIQLQmzYWK6xUDQ=;
-        b=h+GTiUDf8G2zLy+VCAlchrM+LP/rVNVrNGFMbP/5/bIU2gCytjyOdZWp/zqtSKX8yO
-         o+7sfHvCIAHvJ3m7dYKeGywl6lOZEwcQKCIcAtg4bH3op4pVU2JzpAQ48T6LA0nx7vps
-         dR/buD+HWF0A1st84jPrzQm1B35FUI1x7eq8c0aANMstYBIoq/bn7nfZbGYS6vkqvmDq
-         tPjRGetwnlmRcJYhrLJDbqtjSv1lRQikK/tc3fei6VkyUYThEdDefSmWHRmWCoIPVPVe
-         nPhOnTxA9KZRiM+8zSnK/mq6gB47tTNFwuOZKL9ls6zm8L9Vg8RunkhNavP8PXOhy4Rp
-         cIsg==
-X-Gm-Message-State: AGi0PuaVzO8NMs92sBamqoZPZyuiQ9Q9QRqwEF4VAPdpA75NmvjqtfeQ
-        Rjn4ouyvAqUIymbhuFoZZX4bcJAZBlmHUgo8I1c=
-X-Google-Smtp-Source: APiQypLYkIwp2zwYR0/XHVuSRpG/Ze8NBJQYJ44O/eFUSnH1CdPwPmHX9VYEMhBvcYuvufq4ZjvssJb/60oFkGM3d3w=
-X-Received: by 2002:a05:6602:34c:: with SMTP id w12mr15448536iou.56.1589209914364;
- Mon, 11 May 2020 08:11:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jtFl5WZ/AnekaDuOseiV7nKEmSW+0VpwWZe6MDcoEpY=;
+        b=uaj+ODGjFpdm4Mi0OAk855NdCYdEi8+yofFgADX5YCBTuX5FpPj0AJjPhyIytqaOAs
+         +VHk55Q6AmBUeuccONcpSNVYuCanMq7XillJP1M5+XXCzJlaK3yiGIN6iSXtD2mZ/CNh
+         VEZLAcMYhGCOW1adfC8GRnCLgDIpIL+sGGUUFNc9s/uFSAuDASAuvZFPACWi/JBdRkpw
+         4o52k18vaTUt276cZxF7g0mkvjAdXrQqqIwBJRK6Yn9RWijg766ZmGZu4w8KN6eXEeBr
+         PaFQaurXya58qPgj99mcC3X4TZ1dhCYKxiKO4nxoqul7Dy2R+6ucxyNT/QCrBgZ6c5la
+         Gn2A==
+X-Gm-Message-State: AGi0PualmDwUpwjt6MkGXtI7L8kffA0202nOuwp0zhDnZY1XeWAeEyGs
+        /RVf87/i4tUTDQgI+0KkCKhL5tV1hlE=
+X-Google-Smtp-Source: APiQypKr8OPml61W2ltO6RLXhHYSg6nntdTMGDdFP82ZPNFdE1gpP9FfNDSdS220tUgKqZz2HCNGnA==
+X-Received: by 2002:adf:fa44:: with SMTP id y4mr6821044wrr.135.1589210020272;
+        Mon, 11 May 2020 08:13:40 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.gmail.com with ESMTPSA id t7sm15462181wrq.39.2020.05.11.08.13.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 08:13:39 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/2] slimbus: patches for 5.8
+Date:   Mon, 11 May 2020 16:13:32 +0100
+Message-Id: <20200511151334.362-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20200505135341.730586321@linutronix.de> <20200505135829.384803459@linutronix.de>
- <CAJhGHyCgGxia1hzTWVF+-s5AXnUM9SnvxdfJK5PsZQCDbWfKNw@mail.gmail.com> <87v9l25yk7.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87v9l25yk7.fsf@nanos.tec.linutronix.de>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Mon, 11 May 2020 23:11:43 +0800
-Message-ID: <CAJhGHyCePEuXjN91pSu=-yqUnafb2E5Hn8-e2UCUg0RYM0DZKA@mail.gmail.com>
-Subject: Re: [patch V4 part 5 13/31] x86/irq: Convey vector as argument and
- not in ptregs
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+Hi Greg,
 
-On Mon, May 11, 2020 at 10:35 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Lai,
->
-> Lai Jiangshan <jiangshanlai+lkml@gmail.com> writes:
-> > On Tue, May 5, 2020 at 10:23 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >> +SYM_CODE_START(irq_entries_start)
-> >> +    vector=FIRST_EXTERNAL_VECTOR
-> >> +    .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
-> >> +       UNWIND_HINT_IRET_REGS
-> >> +       .byte   0x6a, vector
-> >> +       jmp     common_interrupt
-> >> +       .align  8
-> >> +    vector=vector+1
-> >> +    .endr
-> >> +SYM_CODE_END(irq_entries_start)
-> >
-> > Using ".byte   0x6a, vector" is somewhat ugly.
-> >
-> > I hope it should be " pushq $(s8_to_s64(vector))", which can also
-> > help to reduce bunches of comments about ".byte   0x6a, vector".
-> >
-> > However, I don't know how to implement s8_to_s64() here.
->
-> Neither do I.
->
-> > But at least the following code works (generates the same two-byte
-> > machine code as ".byte 0x6a, vector" does):
-> >
-> >         .if vector < 128
-> >         pushq $(vector)
-> >         .else
-> >         pushq $(0xffffffffffffff00+vector)
-> >         .endif
->
-> Only slightly less ugly and needs as much commentry as the above.
+Here are two slimbus patches for 5.8, Can you please queue them up for 5.8.
 
-Agree.
+Thanks,
+srini
 
-Just FYI, I tried this later, it can work.
+Saravana Kannan (2):
+  slimbus: core: Set fwnode for a device when setting of_node
+  slimbus: core: Fix mismatch in of_node_get/put
 
-#define S8_TO_S64(vector) ((vector>>7)*0xffffffffffffff00+vector)
+ drivers/slimbus/core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks
-Lai
+-- 
+2.21.0
+
