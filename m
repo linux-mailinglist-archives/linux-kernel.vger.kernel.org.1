@@ -2,126 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253641CD8D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1ADB1CD8D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729678AbgEKLrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:47:53 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:48773 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726068AbgEKLrx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:47:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589197671;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3w35s2VPWNSVC4QQTyJuFQK6xGQBwZTv524lsRRQU4Y=;
-        b=UuCHmTpLYbqr0HtFbWb6kVOgjf2hyzQTZ4Yki1lF6fq2YDXCzawF2y2dNc+JGpMmoHs06V
-        3O/dLnl28VmG73zbSeOmmFSNs1uKM6jxgWdSMX9t1RmcZc0pGZ0Pj7vVtQI/M2T0c8anPh
-        wTRd01KjJIJESr7Bs/y3GmC1u4RusiQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-420-yydiaoxdN2W6BzEXr0MpJA-1; Mon, 11 May 2020 07:47:48 -0400
-X-MC-Unique: yydiaoxdN2W6BzEXr0MpJA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 111578010FA;
-        Mon, 11 May 2020 11:47:46 +0000 (UTC)
-Received: from T590 (ovpn-13-75.pek2.redhat.com [10.72.13.75])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7C0787526B;
-        Mon, 11 May 2020 11:47:35 +0000 (UTC)
-Date:   Mon, 11 May 2020 19:47:31 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Baolin Wang <baolin.wang7@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>, axboe@kernel.dk,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2 1/7] block: Extand commit_rqs() to do batch
- processing
-Message-ID: <20200511114731.GA1525935@T590>
-References: <20200427154645.GA1201@infradead.org>
- <e4d47000-f89c-a135-ae58-011f0e9cc39e@grimberg.me>
- <20200508214639.GA1389136@T590>
- <fe6bd8b9-6ed9-b225-f80c-314746133722@grimberg.me>
- <20200508232222.GA1391368@T590>
- <CADBw62ooysT7TJ5CjpPBC6zs7pvpUQysg8QqP9oW5jN7BSYS7g@mail.gmail.com>
- <20200509094306.GA1414369@T590>
- <6579459b-aa98-78f2-f805-a6cd46f37b6c@grimberg.me>
- <20200511012942.GA1418834@T590>
- <8f2ddabc-01d0-dae9-f958-1b26a6bdf58c@grimberg.me>
+        id S1729713AbgEKLsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:48:10 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:31161 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729453AbgEKLsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 07:48:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=2683; q=dns/txt; s=axis-central1;
+  t=1589197687; x=1620733687;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=nJ1qTOy5LEl+3ghrdE6ayVo+QTlImTiM42UK10R/CO0=;
+  b=YkqJNsobfGQ2J8y3QSAWjnq2d8D1eHYGoZhuunPo/gdtHmxQtBr21s2h
+   xtL9ZdeKUfW8qAAshPCApSMQAK/B1z+eSlUENdDZoWIKf4ilR9FFT5Aqh
+   nvWY4MpY1VPB4kAfV8Snq/bakWmrWrBLUCH8BAowJ7HVNSW5g6zYzn/3B
+   o0b2qNYyvgtQlryzKIFnT2r7TRLYZB5ZekCi2Q8SENGoBzg0f2V8kygyM
+   lNzi+sOcEa6Op0prqbhvGwooZAov/nbhHruIf4/+Sb2Xn9ZRKB9mc3BZG
+   UlGbkRtPBe0EW0vZq8rVTHR659wSGOO1ELk/P8NwgxcFi+DyGDBH12IUu
+   A==;
+IronPort-SDR: eWZuRw32j5JYJgOi5OmGwaaj8bk7KszfEuOPpxP4bH8Wi8itNv+fizjpxYs2CA1SNITyHvwDyy
+ qF5XgZsbtYDgaXmRoOUZPIQjDvnmgDdVFNOj+YUImbRBZMNyhpfwCzvty6IclSGzLL0wn4Ylkg
+ NMSpihDcfR3G7ROq4TYzqOCAX+eMijiP9tOhd2iSgF4dLKYOfzCfwuCXkzHJvihLExksYRL8+y
+ icIrmdn+FfpXtULH6nfG6NJs0t6kxPaR7E/bKSLsZ87dQvssdR9LdF0N5Ld/GlMxn9zZsK4lbm
+ 7jI=
+X-IronPort-AV: E=Sophos;i="5.73,379,1583190000"; 
+   d="scan'208";a="8358766"
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     <linux@armlinux.org.uk>, <jeyu@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@axis.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+Subject: [PATCH v2 1/2] module: allow arch overrides for .init section names
+Date:   Mon, 11 May 2020 13:48:02 +0200
+Message-ID: <20200511114803.4475-1-vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f2ddabc-01d0-dae9-f958-1b26a6bdf58c@grimberg.me>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 02:23:14AM -0700, Sagi Grimberg wrote:
-> 
-> > > > Basically, my idea is to dequeue request one by one, and for each
-> > > > dequeued request:
-> > > > 
-> > > > - we try to get a budget and driver tag, if both succeed, add the
-> > > > request to one per-task list which can be stored in stack variable,
-> > > > then continue to dequeue more request
-> > > > 
-> > > > - if either budget or driver tag can't be allocated for this request,
-> > > > marks the last request in the per-task list as .last, and send the
-> > > > batching requests stored in the list to LLD
-> > > > 
-> > > > - when queueing batching requests to LLD, if one request isn't queued
-> > > > to driver successfully, calling .commit_rqs() like before, meantime
-> > > > adding the remained requests in the per-task list back to scheduler
-> > > > queue or hctx->dispatch.
-> > > 
-> > > Sounds good to me.
-> > > 
-> > > > One issue is that this way might degrade sequential IO performance if
-> > > > the LLD just tells queue busy to blk-mq via return value of .queue_rq(),
-> > > > so I guess we still may need one flag, such as BLK_MQ_F_BATCHING_SUBMISSION.
-> > > 
-> > > Why is that degrading sequential I/O performance? because the specific
-> > 
-> > Some devices may only return BLK_STS_RESOURCE from .queue_rq(), then more
-> > requests are dequeued from scheduler queue if we always queue batching IOs
-> > to LLD, and chance of IO merge is reduced, so sequential IO performance will
-> > be effected.
-> > 
-> > Such as some scsi device which doesn't use sdev->queue_depth for
-> > throttling IOs.
-> > 
-> > For virtio-scsi or virtio-blk, we may stop queue for avoiding the
-> > potential affect.
-> 
-> Do we have a way to characterize such devices? I'd assume that most
+ARM stores unwind information for .init.text in sections named
+.ARM.extab.init.text and .ARM.exidx.init.text.  Since those aren't
+currently recognized as init sections, they're allocated along with the
+core section, and relocation fails if the core and the init section are
+allocated from different regions and can't reach other.
 
-It may not be easy.
+  final section addresses:
+        ...
+        0x7f800000 .init.text
+        ..
+        0xcbb54078 .ARM.exidx.init.text
+        ..
 
-> devices will benefit from the batching so maybe the flag needs to be
-> inverted? BLK_MQ_F_DONT_BATCHING_SUBMISSION?
+ section 16 reloc 0 sym '': relocation 42 out of range (0xcbb54078 ->
+ 0x7f800000)
 
-Actually I'd rather to not add any flag, and we may use some algorithm
-(maybe EWMA or other intelligent stuff, or use hctx->dispatch_busy directly)
-to figure out one dynamic batching number which is used to dequeue requests
-from scheduler or sw queue.
+Allow architectures to override the section name so that ARM can fix
+this.
 
-Then just one single dispatch io code path is enough.
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+v2: Add comment and move module_init_section() next to module_exit_section().
 
-Thanks, 
-Ming
+ include/linux/moduleloader.h | 5 +++++
+ kernel/module.c              | 9 +++++++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+index ca92aea8a6bd..4fa67a8b2265 100644
+--- a/include/linux/moduleloader.h
++++ b/include/linux/moduleloader.h
+@@ -29,6 +29,11 @@ void *module_alloc(unsigned long size);
+ /* Free memory returned from module_alloc. */
+ void module_memfree(void *module_region);
+ 
++/* Determines if the section name is an init section (that is only used during
++ * module loading).
++ */
++bool module_init_section(const char *name);
++
+ /* Determines if the section name is an exit section (that is only used during
+  * module unloading)
+  */
+diff --git a/kernel/module.c b/kernel/module.c
+index 33569a01d6e1..84d0c455fb44 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -2400,7 +2400,7 @@ static void layout_sections(struct module *mod, struct load_info *info)
+ 			if ((s->sh_flags & masks[m][0]) != masks[m][0]
+ 			    || (s->sh_flags & masks[m][1])
+ 			    || s->sh_entsize != ~0UL
+-			    || strstarts(sname, ".init"))
++			    || module_init_section(sname))
+ 				continue;
+ 			s->sh_entsize = get_offset(mod, &mod->core_layout.size, s, i);
+ 			pr_debug("\t%s\n", sname);
+@@ -2433,7 +2433,7 @@ static void layout_sections(struct module *mod, struct load_info *info)
+ 			if ((s->sh_flags & masks[m][0]) != masks[m][0]
+ 			    || (s->sh_flags & masks[m][1])
+ 			    || s->sh_entsize != ~0UL
+-			    || !strstarts(sname, ".init"))
++			    || !module_init_section(sname))
+ 				continue;
+ 			s->sh_entsize = (get_offset(mod, &mod->init_layout.size, s, i)
+ 					 | INIT_OFFSET_MASK);
+@@ -2768,6 +2768,11 @@ void * __weak module_alloc(unsigned long size)
+ 	return vmalloc_exec(size);
+ }
+ 
++bool __weak module_init_section(const char *name)
++{
++	return strstarts(name, ".init");
++}
++
+ bool __weak module_exit_section(const char *name)
+ {
+ 	return strstarts(name, ".exit");
+-- 
+2.25.1
 
