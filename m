@@ -2,62 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4954C1CD93A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F521CD964
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729836AbgEKMBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 08:01:10 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:53574 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729416AbgEKMBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 08:01:09 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 5EE5B974246F5E3FBDED;
-        Mon, 11 May 2020 20:01:07 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 11 May 2020 20:01:01 +0800
-From:   Ma Feng <mafeng.ma@huawei.com>
-To:     <bfields@fieldses.org>, <chuck.lever@oracle.com>
-CC:     <linux-nfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] nfsd: Fix old-style function definition
-Date:   Mon, 11 May 2020 20:07:08 +0800
-Message-ID: <1589198828-11226-1-git-send-email-mafeng.ma@huawei.com>
-X-Mailer: git-send-email 2.6.2
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+        id S1729792AbgEKMJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 08:09:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727019AbgEKMJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 08:09:07 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C81D7206A3;
+        Mon, 11 May 2020 12:08:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589198946;
+        bh=mVcHpYr8BlCyOG2eKO0soJ2fpI5Gd9d4rcKM3c/u/7U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gDf8fPEAcYrSz+3Y8AGtvJqxVwGZlpJz0qbKZYyXyDYGGS8J3bZIm7u4bZnHDnUXC
+         vzGIeGdDEkZIdim+Dzd3P/3lYF4SJglRmp9WW6E6w/Yt+2z6EG1KzsG+1USNwt2iyp
+         Si2JDjicMwZ4is8NPgSYA+gJ1IFimVSBqT2bUjzU=
+Date:   Mon, 11 May 2020 21:08:57 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch V4 part 3 02/29] x86/traps: Mark sync_regs() noinstr
+Message-Id: <20200511210857.22b4404f12bda5bd59bf62ff@kernel.org>
+In-Reply-To: <20200505134903.439765290@linutronix.de>
+References: <20200505134354.774943181@linutronix.de>
+        <20200505134903.439765290@linutronix.de>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix warning:
+On Tue, 05 May 2020 15:43:56 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-fs/nfsd/nfssvc.c:604:6: warning: old-style function definition [-Wold-style-definition]
- bool i_am_nfsd()
-      ^~~~~~~~~
+> Replace the notrace and NOKPROBE annotations with noinstr.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Ma Feng <mafeng.ma@huawei.com>
----
- fs/nfsd/nfssvc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Looks good to me.
 
-diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-index 4f588c0..b603dfc 100644
---- a/fs/nfsd/nfssvc.c
-+++ b/fs/nfsd/nfssvc.c
-@@ -601,7 +601,7 @@ static const struct svc_serv_ops nfsd_thread_sv_ops = {
- 	.svo_module		= THIS_MODULE,
- };
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
 
--bool i_am_nfsd()
-+bool i_am_nfsd(void)
- {
- 	return kthread_func(current) == nfsd;
- }
---
-2.6.2
+Thanks!
 
+> ---
+>  arch/x86/kernel/traps.c |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -639,14 +639,13 @@ NOKPROBE_SYMBOL(do_int3);
+>   * to switch to the normal thread stack if the interrupted code was in
+>   * user mode. The actual stack switch is done in entry_64.S
+>   */
+> -asmlinkage __visible notrace struct pt_regs *sync_regs(struct pt_regs *eregs)
+> +asmlinkage __visible noinstr struct pt_regs *sync_regs(struct pt_regs *eregs)
+>  {
+>  	struct pt_regs *regs = (struct pt_regs *)this_cpu_read(cpu_current_top_of_stack) - 1;
+>  	if (regs != eregs)
+>  		*regs = *eregs;
+>  	return regs;
+>  }
+> -NOKPROBE_SYMBOL(sync_regs);
+>  
+>  struct bad_iret_stack {
+>  	void *error_entry_ret;
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
