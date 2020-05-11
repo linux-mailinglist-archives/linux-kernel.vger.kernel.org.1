@@ -2,109 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FD71CD3C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 10:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBB41CD3D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 10:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729119AbgEKIZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 04:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729033AbgEKIZi (ORCPT
+        id S1729215AbgEKI0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 04:26:37 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:46632 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728556AbgEKI0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 04:25:38 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC95DC05BD0A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 01:25:37 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id r17so3679957lff.9
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 01:25:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WDxg1DeZ8sJ0XodxOs3Lm7xIglVAG2LNLkzOH+NSeUw=;
-        b=a9kB4Tqs2dCfJPVXLW7rIUKcpadFGS95KUujA0Gg0bh3yvN04Iz5hXJvAqcYo0Fo0S
-         e2r7UnavF1g1b/yQKVtxwTj7QwPbAZ4neNiZ+DiFmEf1XD98zE76t0mSXo8oAcg+X3xe
-         l+jRZpz/1I1nC+f0b95Q4F33TiK5C7hQ9tkUIklIWnGk6+TMkp4h1ffCL9jUxWSQEeok
-         /l5ckU8tbMHVzxKLO7uOVNcKFbKJS/tFAODjz+tXLPwLtLlAvjsEsKOjCOyYnJ5jZ41z
-         yWY4QOs6wuj7Z5j0d/7twGR1B7bJocqwEe4xr1rhP/AdovuJq9xM0J1y/TbQuZnAcZOS
-         WtMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WDxg1DeZ8sJ0XodxOs3Lm7xIglVAG2LNLkzOH+NSeUw=;
-        b=V0gD9Urqz85jUUsUpIeo8Y5+qUNJjcxf1tMZokoygFcsBaRKgsxo+hEGGgSgJK11JI
-         f3IBoPFokaTbhcGZ1DFp9fEkUoolWp7CGoVaTq7QxDYyDxroaF420/qEJPn8rMZ13ydK
-         6hARqHEZCmkB77of0JY0BHqaoi9NH4DQLloY/3mil+3o5TxM/tbv1mEC4sAppTsFgl2s
-         UROQDti40HDuG6CFMp85X2d962k8qwGbtdwF+N3UVVSPMGHrlrGnzmMwr3/qnG8iEQ6x
-         HlXYebndeDKSE6IFAVgENTeJKCzQbrf5lAVeN+4XtWFlWRd2bk0bJT1LUc3fxZDFagc3
-         EYCg==
-X-Gm-Message-State: AOAM530LmMxyHEky8iAfZyvkgrznc/0iqE1iju8nc/6eoTyR1OBSId/h
-        9mPQ+LqnbzTkLmuT6YYCX2TZ0wEnCEhIBQ==
-X-Google-Smtp-Source: ABdhPJwG0Z0oAyGtpSM5Xhb1unFN6lqX0CQnA/utE93CSThdYjV3Swfvkr8C4tDKnBb/YXkFbUWqSA==
-X-Received: by 2002:a19:e013:: with SMTP id x19mr1639311lfg.49.1589185536031;
-        Mon, 11 May 2020 01:25:36 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:482:2677:ba:b682:3c24:214e? ([2a00:1fa0:482:2677:ba:b682:3c24:214e])
-        by smtp.gmail.com with ESMTPSA id s27sm9101690ljo.80.2020.05.11.01.25.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 May 2020 01:25:35 -0700 (PDT)
-Subject: Re: [PATCH v2 2/7] dt-bindings: watchdog: dw-wdt: Support devices
- with asynch clocks
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-mips@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200306132758.703FC8030704@mail.baikalelectronics.ru>
- <20200510105807.880-1-Sergey.Semin@baikalelectronics.ru>
- <20200510105807.880-3-Sergey.Semin@baikalelectronics.ru>
-From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <f065ff5f-af86-4293-b208-766e41699436@cogentembedded.com>
-Date:   Mon, 11 May 2020 11:25:31 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 11 May 2020 04:26:37 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04B8IcDZ000838;
+        Mon, 11 May 2020 10:26:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=Ru+Sn0FTJTVqbWOdslDA8U6LFzVoFwyVpPARpJGF2gA=;
+ b=FGeCx4LV77IswcaXp29EjbpT4kc5n3OE65604Q8NzAiZPXfAmmq4GGxc9FAmwjtGPrRv
+ fj2fI99u2SxUBkeVvPcItTSSsRoaTBG3JeodKJGvNzbenjkCQgjAaPkOXPWb2aAv2BlZ
+ cQzDZAazTU92bMS1906+iMgipZNIpXh0t9R8wKrlpOsPGuoH4a8zmlN2Do6X9//E2reb
+ 0GpHCg0Dlsa99yszPvYx6orte5fgz+IrjKETPaEFtBGImV275y/ASaYMLO7Oafxnbzls
+ yNiva4uSqU+nR8unYu/f9nf+VQ2HsnFOHRUlbUg3lQtlTTDwHWwTz8+A3i2yzTH+/lIk wA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30wkdgrtx9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 May 2020 10:26:22 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5A7CA100034;
+        Mon, 11 May 2020 10:26:22 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag5node2.st.com [10.75.127.14])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2650A2B27B0;
+        Mon, 11 May 2020 10:26:22 +0200 (CEST)
+Received: from [10.131.226.156] (10.75.127.46) by SFHDAG5NODE2.st.com
+ (10.75.127.14) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 11 May
+ 2020 10:26:20 +0200
+Subject: Re: [PATCH 1/4] i2c: smbus: add core function handling SMBus
+ host-notify
+To:     Alain Volmat <alain.volmat@st.com>, <wsa@kernel.org>,
+        <robh+dt@kernel.org>
+CC:     <mark.rutland@arm.com>, <mcoquelin.stm32@gmail.com>,
+        <alexandre.torgue@st.com>, <linux-i2c@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>
+References: <1588657871-14747-1-git-send-email-alain.volmat@st.com>
+ <1588657871-14747-2-git-send-email-alain.volmat@st.com>
+From:   Pierre Yves MORDRET <pierre-yves.mordret@st.com>
+Message-ID: <c80936d4-2905-096c-9848-3f16444eaedc@st.com>
+Date:   Mon, 11 May 2020 10:26:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200510105807.880-3-Sergey.Semin@baikalelectronics.ru>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1588657871-14747-2-git-send-email-alain.volmat@st.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG6NODE2.st.com (10.75.127.17) To SFHDAG5NODE2.st.com
+ (10.75.127.14)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-11_03:2020-05-11,2020-05-11 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Hi all,
 
-On 10.05.2020 13:58, Serge Semin wrote:
+Reviewed-by: Pierre-Yves MORDRET <pierre-yves.mordret@st.com>
 
-> DW Watchdog IP core can be synthesised with asynchronous timer/APB
-> clocks support (WDT_ASYNC_CLK_MODE_ENABLE == 1). In this case
-> a separate clock signal is supposed to be used to feed watchdog timer
-> and APB interface of the device. Lets along with the watchdog timer
-                                        ^ verb missing? or comma?
+Thanks
 
-> reference clock expect to have the optional APB3 bu interface clock
-> sepcified in a DW WDT dt node.
-
-    Specified.
-
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: linux-mips@vger.kernel.org
-[...]
-
-MBR, Sergei
+On 5/5/20 7:51 AM, Alain Volmat wrote:
+> SMBus Host-Notify protocol, from the adapter point of view
+> consist of receiving a message from a client, including the
+> client address and some other data.
+> 
+> It can be simply handled by creating a new slave device
+> and registering a callback performing the parsing of the
+> message received from the client.
+> 
+> This commit introduces two new core functions
+>   * i2c_new_smbus_host_notify_device
+>   * i2c_free_smbus_host_notify_device
+> that take care of registration of the new slave device and
+> callback and will call i2c_handle_smbus_host_notify once a
+> Host-Notify event is received.
+> 
+> Signed-off-by: Alain Volmat <alain.volmat@st.com>
+> ---
+>  drivers/i2c/i2c-core-smbus.c | 105 +++++++++++++++++++++++++++++++++++
+>  include/linux/i2c-smbus.h    |   2 +
+>  2 files changed, 107 insertions(+)
+> 
+> diff --git a/drivers/i2c/i2c-core-smbus.c b/drivers/i2c/i2c-core-smbus.c
+> index b34d2ff06931..0c7e135c73e1 100644
+> --- a/drivers/i2c/i2c-core-smbus.c
+> +++ b/drivers/i2c/i2c-core-smbus.c
+> @@ -708,3 +708,108 @@ int of_i2c_setup_smbus_alert(struct i2c_adapter *adapter)
+>  }
+>  EXPORT_SYMBOL_GPL(of_i2c_setup_smbus_alert);
+>  #endif
+> +
+> +struct i2c_smbus_host_notify_status {
+> +	bool notify_start;
+> +	u8 addr;
+> +};
+> +
+> +static int i2c_smbus_host_notify_cb(struct i2c_client *client,
+> +				    enum i2c_slave_event event, u8 *val)
+> +{
+> +	struct i2c_smbus_host_notify_status *status = client->dev.platform_data;
+> +	int ret;
+> +
+> +	switch (event) {
+> +	case I2C_SLAVE_WRITE_REQUESTED:
+> +		status->notify_start = true;
+> +		break;
+> +	case I2C_SLAVE_WRITE_RECEIVED:
+> +		/* We only retrieve the first byte received (addr)
+> +		 * since there is currently no way to retrieve the data
+> +		 * parameter from the client.
+> +		 */
+> +		if (!status->notify_start)
+> +			break;
+> +		status->addr = *val;
+> +		status->notify_start = false;
+> +		break;
+> +	case I2C_SLAVE_STOP:
+> +		ret = i2c_handle_smbus_host_notify(client->adapter,
+> +						   status->addr);
+> +		if (ret < 0) {
+> +			dev_warn(&client->adapter->dev, "failed to handle host_notify (%d)\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +		break;
+> +	default:
+> +		/* Only handle necessary events */
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * i2c_new_smbus_host_notify_device - get a client for SMBus host-notify support
+> + * @adapter: the target adapter
+> + * Context: can sleep
+> + *
+> + * Setup handling of the SMBus host-notify protocol on a given I2C bus segment.
+> + *
+> + * Handling is done by creating a device and its callback and handling data
+> + * received via the SMBus host-notify address (0x8)
+> + *
+> + * This returns the client, which should be ultimately freed using
+> + * i2c_free_smbus_host_notify_device(); or an ERRPTR to indicate an error.
+> + */
+> +struct i2c_client *i2c_new_smbus_host_notify_device(struct i2c_adapter *adapter)
+> +{
+> +	struct i2c_board_info host_notify_board_info = {
+> +		I2C_BOARD_INFO("smbus_host_notify", 0x08),
+> +		.flags  = I2C_CLIENT_SLAVE,
+> +	};
+> +	struct i2c_smbus_host_notify_status *status;
+> +	struct i2c_client *client;
+> +	int ret;
+> +
+> +	status = kzalloc(sizeof(struct i2c_smbus_host_notify_status),
+> +			 GFP_KERNEL);
+> +	if (!status)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	host_notify_board_info.platform_data = status;
+> +
+> +	client = i2c_new_client_device(adapter, &host_notify_board_info);
+> +	if (IS_ERR(client)) {
+> +		kfree(status);
+> +		return client;
+> +	}
+> +
+> +	ret = i2c_slave_register(client, i2c_smbus_host_notify_cb);
+> +	if (ret) {
+> +		i2c_unregister_device(client);
+> +		kfree(status);
+> +		return ERR_PTR(ret);
+> +	}
+> +
+> +	return client;
+> +}
+> +EXPORT_SYMBOL_GPL(i2c_new_smbus_host_notify_device);
+> +
+> +/**
+> + * i2c_free_smbus_host_notify_device - free the client for SMBus host-notify
+> + * support
+> + * @client: the client to free
+> + * Context: can sleep
+> + *
+> + * Free the i2c_client allocated via i2c_new_smbus_host_notify_device
+> + */
+> +void i2c_free_smbus_host_notify_device(struct i2c_client *client)
+> +{
+> +	i2c_slave_unregister(client);
+> +	kfree(client->dev.platform_data);
+> +	i2c_unregister_device(client);
+> +}
+> +EXPORT_SYMBOL_GPL(i2c_free_smbus_host_notify_device);
+> diff --git a/include/linux/i2c-smbus.h b/include/linux/i2c-smbus.h
+> index 8c5459034f92..926f6d8ae30d 100644
+> --- a/include/linux/i2c-smbus.h
+> +++ b/include/linux/i2c-smbus.h
+> @@ -38,5 +38,7 @@ static inline int of_i2c_setup_smbus_alert(struct i2c_adapter *adap)
+>  	return 0;
+>  }
+>  #endif
+> +struct i2c_client *i2c_new_smbus_host_notify_device(struct i2c_adapter *adapter);
+> +void i2c_free_smbus_host_notify_device(struct i2c_client *client);
+>  
+>  #endif /* _LINUX_I2C_SMBUS_H */
+> 
