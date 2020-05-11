@@ -2,108 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFDF1CE387
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DFD91CE38B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731208AbgEKTDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 15:03:51 -0400
-Received: from mga12.intel.com ([192.55.52.136]:11261 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728613AbgEKTDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 15:03:51 -0400
-IronPort-SDR: OQLI/1yQsIY/Vcrv6DGU7Tg050zo5zEPdY/Ezd7h5OFy5F4nBa6L4p3z1soPM/YrjWKal9QLQ6
- Gmly6pxUE7wA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 12:03:47 -0700
-IronPort-SDR: P0puikl7IKLENmxHcD9tPx2nAPmyP9LaL8lPpxJkIVNXit7NhCytw3wRgL6/wJ5dbXk16ombmH
- LoHM5qE1CFVw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,381,1583222400"; 
-   d="scan'208";a="306261928"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.25])
-  by FMSMGA003.fm.intel.com with ESMTP; 11 May 2020 12:03:46 -0700
-Date:   Mon, 11 May 2020 12:03:41 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     "Raj, Ashok" <ashok.raj@linux.intel.com>,
-        Evan Green <evgreen@chromium.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>, x86@kernel.org,
-        linux-pci <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Ghorai, Sukumar" <sukumar.ghorai@intel.com>,
-        "Amara, Madhusudanarao" <madhusudanarao.amara@intel.com>,
-        "Nandamuri, Srikanth" <srikanth.nandamuri@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: MSI interrupt for xhci still lost on 5.6-rc6 after cpu hotplug
-Message-ID: <20200511190341.GA95413@otc-nc-03>
-References: <20200508005528.GB61703@otc-nc-03>
- <87368almbm.fsf@nanos.tec.linutronix.de>
- <20200508160958.GA19631@otc-nc-03>
- <87h7wqjrsk.fsf@nanos.tec.linutronix.de>
+        id S1731291AbgEKTE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 15:04:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731263AbgEKTE2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 15:04:28 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BEC4C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 12:04:28 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id 188so8453069lfa.10
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 12:04:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YzsKJVzyv809UlovZpoNnJ1plerWdeBBXFFvRwVCLfU=;
+        b=Aityn5qwpqm1WDEUGTp+1nV456XmvV8CfFEmW41oj4/bMkwJhVeEng5HZPhERMEjHU
+         nCY9cggNS6UjKU4dGM6tzdYgB+qfI9VUHZ+DaRJy6199MAVi3dYOMOGDK92kbBygXWj9
+         X+8s8UBqSDnkYdebJ7Q86uwTiep2ZsMcMt2rA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YzsKJVzyv809UlovZpoNnJ1plerWdeBBXFFvRwVCLfU=;
+        b=Lf53/13rpQQQ9ePSBBxmNqxSoWHMkcU/OQ6UTQY0kv6BMfFU9dNB/NF428XM1glygd
+         8Wtw9eR58Kfz6KAUGhYYAdcvki/8owhzKaLIn3PjeDZc/R4CkBfZWISKlHmQ9ESYe35A
+         mwrEW5p4FMktJHwdn3UFacYf+aW+tjiIIhohiiEKlzRF8fXnjEm2mM4H+wf60/X2KG4u
+         z+jG02XvX7UoOYW025WcRme/vo9XO/NXPrJPgm6eHVyA6q+1foqtahY6BHf33xxc5VFS
+         McvIdljgtg/vF4oGnyFbvME/DOmux5TPpgoP2Ymr8GyCoH2tNlekaDakhu3N8E520AyP
+         K47g==
+X-Gm-Message-State: AOAM533r5wJUcwB/HN1W+EjT289wcKtS//Ra6U7d5eReyubwG3/x3l46
+        XZFtuL8jiJZBFBLJSnpKiZMQlI8InVY=
+X-Google-Smtp-Source: ABdhPJyS1XWaqaHux1LMnMiinLlJW+wZD8f59hn6tffAeW3HfTf9Ema5E0K47haNVRQ7JlSavY+yBQ==
+X-Received: by 2002:ac2:4354:: with SMTP id o20mr3094608lfl.102.1589223866538;
+        Mon, 11 May 2020 12:04:26 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id o204sm12034279lff.64.2020.05.11.12.04.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 May 2020 12:04:25 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id e25so10777048ljg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 12:04:25 -0700 (PDT)
+X-Received: by 2002:a2e:9a54:: with SMTP id k20mr11892212ljj.265.1589223865222;
+ Mon, 11 May 2020 12:04:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h7wqjrsk.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <mhng-81c83c19-6f5d-4ed1-a0bb-26accf4b7d3a@palmerdabbelt-glaptop1>
+ <CAHk-=win0EVU_GuO=GuJu3Ck0WG1B3+ub-CjncM3B1G9x5d9cw@mail.gmail.com> <mvmr1vqkhxb.fsf@suse.de>
+In-Reply-To: <mvmr1vqkhxb.fsf@suse.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 11 May 2020 12:04:09 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj8Cks7L2H9ToNWEMmqECYEfX0uyCXpW1OsZ+NAooi2Cw@mail.gmail.com>
+Message-ID: <CAHk-=wj8Cks7L2H9ToNWEMmqECYEfX0uyCXpW1OsZ+NAooi2Cw@mail.gmail.com>
+Subject: Re: [GIT PULL] RISC-V Fixes for 5.7-rc5
+To:     Andreas Schwab <schwab@suse.de>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas, 
+On Mon, May 11, 2020 at 1:13 AM Andreas Schwab <schwab@suse.de> wrote:
+>
+> On Mai 09 2020, Linus Torvalds wrote:
+>
+> > glibc depending on kernel version is WRONG. It's bogus. You can't do
+> > feature detection based on kernel version, it's fundamentally broken.
+> >
+> > So I really would prefer to see glibc fixed not to do that stupid
+> > thing, instead of adding pointless vdso notes to the kernel.
+>
+> I'm not aware of any discussion or bug report on this issue.  Any
+> pointer?
 
-On Fri, May 08, 2020 at 06:49:15PM +0200, Thomas Gleixner wrote:
-> Ashok,
-> 
-> "Raj, Ashok" <ashok.raj@intel.com> writes:
-> > With legacy MSI we can have these races and kernel is trying to do the
-> > song and dance, but we see this happening even when IR is turned on.
-> > Which is perplexing. I think when we have IR, once we do the change vector 
-> > and flush the interrupt entry cache, if there was an outstandng one in 
-> > flight it should be in IRR. Possibly should be clearned up by the
-> > send_cleanup_vector() i suppose.
-> 
-> Ouch. With IR this really should never happen and yes the old vector
-> will catch one which was raised just before the migration disabled the
-> IR entry. During the change nothing can go wrong because the entry is
-> disabled and only reenabled after it's flushed which will send a pending
-> one to the new vector.
+We've discussed it informally several times, but that really is just
+"I remember mentioning this before" than anything else.
 
-with IR, I'm not sure if we actually mask the interrupt except when
-its a Posted Interrupt. 
+Basically, testing kernel versions is pretty much always a bug. You
+_will_ get it wrong, sometimes spectacularly (we've had programs
+literally break when the major number changed, because they only
+checked the minor number).
 
-We do an atomic update to IRTE, with cmpxchg_double
+Other times you'll get it wrong in subtler ways - testing for features
+by version number is wrong, if that feature is then disabled by a
+config option (a lot of new kernel features work that way).
 
-	ret = cmpxchg_double(&irte->low, &irte->high,
-			     irte->low, irte->high,
-			     irte_modified->low, irte_modified->high);
+Or, the already mentioned "distros often port back features to their
+older kernels". The latest example of that is Wireguard being ported
+back to Ubuntu 20.04 - using kernel version 5.4, even though WG was
+actually upstreamed in 5.6.
 
-followed by flushing the interrupt entry cache. After which any 
-old ones in flight before the flush should be sittig in IRR
-on the outgoing cpu.
+So the whole "look at kernel version to determine if it does X" is
+simply fundamentally wrong.
 
-The send_cleanup_vector() sends IPI to the apic_id->old_cpu which 
-would be the cpu we are running on correct? and this is a self_ipi
-to IRQ_MOVE_CLEANUP_VECTOR.
+Why is glibc doing it in the first place? Is it some historical thing
+that is simply irrelevant on RISC-V simply because RISC-V doesn't have
+that kind of history, perhaps?
 
-smp_irq_move_cleanup_interrupt() seems to check IRR with 
-apicid_prev_vector()
-
-	irr = apic_read(APIC_IRR + (vector / 32 * 0x10));
-	if (irr & (1U << (vector % 32))) {
-		apic->send_IPI_self(IRQ_MOVE_CLEANUP_VECTOR);
-		continue;
-	}
-
-And this would allow any pending IRR bits in the outgoing CPU to 
-call the relevant ISR's before draining all vectors on the outgoing
-CPU. 
-
-Does it sound right?
-
-I couldn't quite pin down how the device ISR's are hooked up through
-this send_cleanup_vector() and what follows.
-
+                 Linus
