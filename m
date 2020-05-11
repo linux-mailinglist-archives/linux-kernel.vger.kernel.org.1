@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC741CE65E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5561CE63B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732302AbgEKVBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44146 "EHLO
+        id S1732222AbgEKVAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 17:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731956AbgEKVAE (ORCPT
+        by vger.kernel.org with ESMTP id S1732133AbgEKVAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 17:00:04 -0400
+        Mon, 11 May 2020 17:00:14 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83484C061A0C;
-        Mon, 11 May 2020 14:00:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E51BC061A0C;
+        Mon, 11 May 2020 14:00:14 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jYFWs-00061l-RJ; Mon, 11 May 2020 23:00:02 +0200
+        id 1jYFWx-00062J-Bs; Mon, 11 May 2020 23:00:07 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 4348F1C0845;
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 96D421C0870;
         Mon, 11 May 2020 22:59:44 +0200 (CEST)
 Date:   Mon, 11 May 2020 20:59:44 -0000
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu: Expedite first two FQS scans under
- callback-overload conditions
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: core/rcu] drm: Make drm_dp_mst_dsc_aux_for_port() safe for old
+ compilers
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        Joe Perches <joe@perches.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158923078420.390.1907320308978977444.tip-bot2@tip-bot2>
+Message-ID: <158923078455.390.9569709273729823212.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -48,100 +51,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     1fca4d12f46371a34bf90af87f49548dd026c3ca
-Gitweb:        https://git.kernel.org/tip/1fca4d12f46371a34bf90af87f49548dd026c3ca
+Commit-ID:     53965dbe5396d2945c7cf53c77c7b5532b08791c
+Gitweb:        https://git.kernel.org/tip/53965dbe5396d2945c7cf53c77c7b5532b08791c
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Sat, 22 Feb 2020 20:07:09 -08:00
+AuthorDate:    Wed, 19 Feb 2020 16:42:47 -08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 27 Apr 2020 11:01:16 -07:00
 
-rcu: Expedite first two FQS scans under callback-overload conditions
+drm: Make drm_dp_mst_dsc_aux_for_port() safe for old compilers
 
-Even if some CPUs have excessive numbers of callbacks, RCU's grace-period
-kthread will still wait normally between successive force-quiescent-state
-scans.  The first two are the most important, as they are the ones that
-enlist aid from the scheduler when overloaded.  This commit therefore
-omits the wait before the first and the second force-quiescent-state
-scan under callback-overload conditions.
+Older compilers either want two extra pairs of curly braces around the
+initializer for local variable desc, or they want a single pair of curly
+braces with nothing inside.  Because current Linux-kernel practice favors
+the latter, this commit makes it so.
 
-This approach was inspired by a discussion with Jeff Roberson.
-
+Suggested-by: Chris Wilson <chris@chris-wilson.co.uk>
+Suggested-by: Joe Perches <joe@perches.com>
+Suggested-by: Christoph Hellwig <hch@infradead.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 19 +++++++++++++++----
- kernel/rcu/tree.h |  1 +
- 2 files changed, 16 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/drm_dp_mst_topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c88240a..0132bc6 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1624,12 +1624,16 @@ static bool rcu_gp_fqs_check_wake(int *gfp)
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index 70c4b7a..c409867 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -5494,7 +5494,7 @@ struct drm_dp_aux *drm_dp_mst_dsc_aux_for_port(struct drm_dp_mst_port *port)
  {
- 	struct rcu_node *rnp = rcu_get_root();
+ 	struct drm_dp_mst_port *immediate_upstream_port;
+ 	struct drm_dp_mst_port *fec_port;
+-	struct drm_dp_desc desc = { 0 };
++	struct drm_dp_desc desc = { };
+ 	u8 endpoint_fec;
+ 	u8 endpoint_dsc;
  
--	/* Someone like call_rcu() requested a force-quiescent-state scan. */
-+	// If under overload conditions, force an immediate FQS scan.
-+	if (*gfp & RCU_GP_FLAG_OVLD)
-+		return true;
-+
-+	// Someone like call_rcu() requested a force-quiescent-state scan.
- 	*gfp = READ_ONCE(rcu_state.gp_flags);
- 	if (*gfp & RCU_GP_FLAG_FQS)
- 		return true;
- 
--	/* The current grace period has completed. */
-+	// The current grace period has completed.
- 	if (!READ_ONCE(rnp->qsmask) && !rcu_preempt_blocked_readers_cgp(rnp))
- 		return true;
- 
-@@ -1667,13 +1671,15 @@ static void rcu_gp_fqs(bool first_time)
- static void rcu_gp_fqs_loop(void)
- {
- 	bool first_gp_fqs;
--	int gf;
-+	int gf = 0;
- 	unsigned long j;
- 	int ret;
- 	struct rcu_node *rnp = rcu_get_root();
- 
- 	first_gp_fqs = true;
- 	j = READ_ONCE(jiffies_till_first_fqs);
-+	if (rcu_state.cbovld)
-+		gf = RCU_GP_FLAG_OVLD;
- 	ret = 0;
- 	for (;;) {
- 		if (!ret) {
-@@ -1698,7 +1704,11 @@ static void rcu_gp_fqs_loop(void)
- 			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 					       TPS("fqsstart"));
- 			rcu_gp_fqs(first_gp_fqs);
--			first_gp_fqs = false;
-+			gf = 0;
-+			if (first_gp_fqs) {
-+				first_gp_fqs = false;
-+				gf = rcu_state.cbovld ? RCU_GP_FLAG_OVLD : 0;
-+			}
- 			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 					       TPS("fqsend"));
- 			cond_resched_tasks_rcu_qs();
-@@ -1718,6 +1728,7 @@ static void rcu_gp_fqs_loop(void)
- 				j = 1;
- 			else
- 				j = rcu_state.jiffies_force_qs - j;
-+			gf = 0;
- 		}
- 	}
- }
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 9dc2ec0..44edd0a 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -359,6 +359,7 @@ struct rcu_state {
- /* Values for rcu_state structure's gp_flags field. */
- #define RCU_GP_FLAG_INIT 0x1	/* Need grace-period initialization. */
- #define RCU_GP_FLAG_FQS  0x2	/* Need grace-period quiescent-state forcing. */
-+#define RCU_GP_FLAG_OVLD 0x4	/* Experiencing callback overload. */
- 
- /* Values for rcu_state structure's gp_state field. */
- #define RCU_GP_IDLE	 0	/* Initial state and no GP in progress. */
