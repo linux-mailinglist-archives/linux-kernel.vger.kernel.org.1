@@ -2,96 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218A31CE2AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60581CE2B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731184AbgEKS1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 14:27:39 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:44625 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729772AbgEKS1h (ORCPT
+        id S1731220AbgEKS1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 14:27:49 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:35532 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731208AbgEKS1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 14:27:37 -0400
-Received: by mail-ot1-f67.google.com with SMTP id j4so8345490otr.11;
-        Mon, 11 May 2020 11:27:36 -0700 (PDT)
+        Mon, 11 May 2020 14:27:47 -0400
+Received: by mail-oi1-f196.google.com with SMTP id o7so15979571oif.2;
+        Mon, 11 May 2020 11:27:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8XrifLV0oFLLyLn6BjacaXHOgkoMzKo1Zf9sFmdQHNs=;
-        b=G60V4HPihHQCP5D/9xCTwgJrRKG8R/57MdgMZOcVIwObqbi6ROz+5gXSf7gINf/3A3
-         orGsLBOxigH5QEpMMBcwboxroHURQU4SoZ19t6KUoAa/ot+n78DYV7dpGTJIq/ubSfjd
-         YM2ooaMFqyX0d2zoyO4isBgq9J7YAy9Zc6wiwlsU0MbjYwX4fMgQD8fh74Osr282uKNR
-         yvtCvdBIi4ZVBMsdmur8p7JbhNLtrxuYDVamjkd7J8IKQ2YQtdeiL9JxliA/HtN+TZhs
-         sGPW22qITz7sFqHGvcnVxau1qNC5KRU/tfJZUpfAURT/+IVPOfHs9GLCj/Y3troImh1O
-         oSAw==
-X-Gm-Message-State: AGi0PuZmfpy+032aeRoH13wmhP17E7Eat9Xpx0oXS7J33OFZWwHoGrWJ
-        54r/oAi7S529GnBBdVXcKw==
-X-Google-Smtp-Source: APiQypIEDiszqremOLj3ZVCWNAGbs747WHBAa7K2a7Gvw2bUX1jdvt5C7wSdJKYiwrOZmAnZ6GAWZg==
-X-Received: by 2002:a9d:2264:: with SMTP id o91mr13983559ota.258.1589221656049;
-        Mon, 11 May 2020 11:27:36 -0700 (PDT)
+        bh=AF44SBQidL/1nuTUY00MQnDKIQPVWNPKZOL9w+D+Z08=;
+        b=FaKTCDNNDI1JSfVVpva2xLUavzYmsOE8PZUPprG9yotpAsnhR9leOm2KeCT6Byczef
+         hzndFH39S7cBlOHbIOnywrPtKtikS4G6gqnygFqleV07Ut4bgF9EgK5LNahV8+/ZMlSB
+         ATbuXolqj+yBEhvNsjfkezI+E9ltvZxGeypD3ZwPTtLjEdwmIhAl6IN3bme4K0Woq/z6
+         LIldXWsGuBdNnHI+ALV2BnJL1pMbu9rP92u+pZlTStUi2UEYJMBtcxwrDeW+ysx/p5iG
+         z4xnt7+BjcAPO0uZLN4gh8ACluEx2gl93gaEnQOhS3oOcuz+2qeFe+RUViJFDg8iIFsd
+         Cthw==
+X-Gm-Message-State: AGi0PuZrkgRqPVteCJUMOrGI6Gl6u8LppYCyjMt7gMBmrY7JXu9iLTqs
+        R368qOWGicFeAhYAKU97yA==
+X-Google-Smtp-Source: APiQypJZp8K7ZKYFivbdUWwWOufHVF5HSbqXoCMZfWZ7Fhk4i9srELxLj+oi9ZKacSVH9aLLafe8xQ==
+X-Received: by 2002:a05:6808:b36:: with SMTP id t22mr21158774oij.121.1589221665737;
+        Mon, 11 May 2020 11:27:45 -0700 (PDT)
 Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j186sm4802742oia.31.2020.05.11.11.27.34
+        by smtp.gmail.com with ESMTPSA id x5sm3322995oif.29.2020.05.11.11.27.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 11:27:35 -0700 (PDT)
-Received: (nullmailer pid 19748 invoked by uid 1000);
-        Mon, 11 May 2020 16:09:49 -0000
-Date:   Mon, 11 May 2020 11:09:49 -0500
+        Mon, 11 May 2020 11:27:45 -0700 (PDT)
+Received: (nullmailer pid 20642 invoked by uid 1000);
+        Mon, 11 May 2020 16:10:23 -0000
+Date:   Mon, 11 May 2020 11:10:23 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Tali Perry <tali.perry1@gmail.com>
-Cc:     tmaimon77@gmail.com, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, benjaminfair@google.com, kfting@nuvoton.com,
-        openbmc@lists.ozlabs.org, andriy.shevchenko@linux.intel.com,
-        wsa@the-dreams.de, avifishman70@gmail.com, venture@google.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-i2c@vger.kernel.org, brendanhiggins@google.com,
-        yuenn@google.com, ofery@google.com
-Subject: Re: [PATCH v10 1/3] dt-bindings: i2c: npcm7xx: add NPCM I2C
- controller
-Message-ID: <20200511160949.GA19364@bogus>
-References: <20200510102330.66715-1-tali.perry1@gmail.com>
- <20200510102330.66715-2-tali.perry1@gmail.com>
+To:     Alim Akhtar <alim.akhtar@samsung.com>
+Cc:     devicetree@vger.kernel.org, krzk@kernel.org,
+        stanley.chu@mediatek.com, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, cang@codeaurora.org,
+        linux-arm-kernel@lists.infradead.org, martin.petersen@oracle.com,
+        kwmad.kim@samsung.com, linux-samsung-soc@vger.kernel.org,
+        avri.altman@wdc.com
+Subject: Re: [PATCH v8 08/10] dt-bindings: ufs: Add DT binding documentation
+ for ufs
+Message-ID: <20200511161023.GA20124@bogus>
+References: <20200511020031.25730-1-alim.akhtar@samsung.com>
+ <CGME20200511021406epcas5p229fb46815d3c29ae06709fa6160e0308@epcas5p2.samsung.com>
+ <20200511020031.25730-9-alim.akhtar@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200510102330.66715-2-tali.perry1@gmail.com>
+In-Reply-To: <20200511020031.25730-9-alim.akhtar@samsung.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 May 2020 13:23:28 +0300, Tali Perry wrote:
-> Added device tree binding documentation for Nuvoton BMC
-> NPCM I2C controller.
+On Mon, 11 May 2020 07:30:29 +0530, Alim Akhtar wrote:
+> This patch adds DT binding for samsung ufs hci
 > 
-> Signed-off-by: Tali Perry <tali.perry1@gmail.com>
+> Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
 > ---
->  .../bindings/i2c/nuvoton,npcm7xx-i2c.yaml     | 62 +++++++++++++++++++
->  1 file changed, 62 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.yaml
+>  .../bindings/ufs/samsung,exynos-ufs.yaml      | 92 +++++++++++++++++++
+>  1 file changed, 92 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
 > 
 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.yaml: properties:compatible: [{'const': 'nuvoton,npcm7xx-i2c'}] is not of type 'object', 'boolean'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.yaml: properties:clock-frequency:enum: False schema does not allow [100000, 400000, 1000000]
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.yaml: properties:clocks: {'maxItems': 1, 'items': [{'description': 'Reference clock for the I2C bus'}]} is not valid under any of the given schemas (Possible causes of the failure):
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.yaml: properties:clocks: 'maxItems' is not one of ['type', 'description', 'dependencies', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'allOf', 'anyOf', 'oneOf', '$ref']
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.example.dt.yaml: ufs@15570000: 'pclk-freq-avail-range' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.yaml: properties:clock-frequency: 'maxItems' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'default', '$ref']
-Documentation/devicetree/bindings/Makefile:12: recipe for target 'Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.example.dts' failed
-make[1]: *** [Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.yaml: ignoring, error in schema: properties: compatible
-warning: no schema found in file: ./Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.yaml: ignoring, error in schema: properties: compatible
-warning: no schema found in file: ./Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.yaml
-Makefile:1300: recipe for target 'dt_binding_check' failed
-make: *** [dt_binding_check] Error 2
-
-See https://patchwork.ozlabs.org/patch/1287083
+See https://patchwork.ozlabs.org/patch/1287439
 
 If you already ran 'make dt_binding_check' and didn't see the above
 error(s), then make sure dt-schema is up to date:
