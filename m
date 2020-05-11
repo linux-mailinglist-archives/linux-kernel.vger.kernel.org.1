@@ -2,109 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E9F1CD5EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 12:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 915871CD616
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 12:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729260AbgEKKIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 06:08:42 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:42311 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725983AbgEKKIm (ORCPT
+        id S1729220AbgEKKLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 06:11:54 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42862 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725983AbgEKKLy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 06:08:42 -0400
-Received: by mail-ed1-f65.google.com with SMTP id s10so7421038edy.9;
-        Mon, 11 May 2020 03:08:40 -0700 (PDT)
+        Mon, 11 May 2020 06:11:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589191912;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=8dqwlRs0MIbbYYZ5cTiHH12yPXOUWNjjWHMIX42DRKA=;
+        b=cwlZ+Ifw6MBmt+FAw1LUQpacznpsSltr+VZONPUZhD0iYRUu9kOFG72N4rEeGDn22UvfaR
+        TRUeOLLNnMxef57BZVshptldOXbMubwlD7rnNXccpJJSHIOoVC3OwerGWBhkea3jmUderU
+        TEAAran2UvYxR3TYmmv3RTdueMtAENg=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-507-fJZyUoPWO7GK1IaZhRqhWA-1; Mon, 11 May 2020 06:11:48 -0400
+X-MC-Unique: fJZyUoPWO7GK1IaZhRqhWA-1
+Received: by mail-pg1-f200.google.com with SMTP id b131so1371410pga.9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 03:11:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ADM8r+B0dzyP5A/vqyNmonnjvaPcrODBmZPyMqMMxIs=;
-        b=qwcJ/U4lMnxfhStkH1TeBu1nnGL/VamUIPI6uUaTqGgUn0w7hZ4ovPOHFR7Ee0GRqh
-         8aum25vzSOgS6GWJhlNKm7Orn2BdSq7VcGYZJw0xddzStZylWAMXIjLcpa+Rykkf3lJq
-         z378MI3yjLb4rzqfQNtW4GcfjS/8giGCHfFfvtNCW+66oQ3y6ZRx18DR3MVHQBqiqask
-         Y2+c5G3KLnKqmkHlsSzjEl3GCCp6VPSZ1DIv0xSRvch+u5g0vneXHBWYsAxZGxSV1Ig2
-         zNST5BafTWPyc8Poy3r8rmc13QG5JpajmW8QOMz+s1ZVyxarri0pJxLzXL4ofao7mwZa
-         aP+w==
-X-Gm-Message-State: AGi0PuYSNg2M7CI1jFMj9Mwzy3wA7he6JUv1S+XD17eDhY8JNVMshxdO
-        7+D/kh9NsTDziCPzYuhLNUF8aXvK
-X-Google-Smtp-Source: APiQypIIjKKjypDAYbOFH4MiQWndpu/est9zg63nnHoe6ueUE/9p66tdn9yO2ilqbrvMJLoHMfCWHw==
-X-Received: by 2002:a05:6402:28e:: with SMTP id l14mr12321849edv.184.1589191719680;
-        Mon, 11 May 2020 03:08:39 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.237])
-        by smtp.googlemail.com with ESMTPSA id ga1sm1242231ejb.65.2020.05.11.03.08.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 11 May 2020 03:08:39 -0700 (PDT)
-Date:   Mon, 11 May 2020 12:08:36 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jonathan Bakker <xc-racer2@live.ca>
-Cc:     kgene@kernel.org, gregkh@linuxfoundation.org, jslaby@suse.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: serial: samsung: Correct clock selection logic
-Message-ID: <20200511100836.GA16828@kozik-lap>
-References: <BN6PR04MB06604E63833EA41837EBF77BA3A30@BN6PR04MB0660.namprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <BN6PR04MB06604E63833EA41837EBF77BA3A30@BN6PR04MB0660.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8dqwlRs0MIbbYYZ5cTiHH12yPXOUWNjjWHMIX42DRKA=;
+        b=dK8guA1LuDimQXsDmXpDams6Ziy+/mMyMxSB29HHh00Ub5bqYd6jzszYJL7wSPKjtU
+         lamr/9ZsSDVGWYB0nb+eFl1N9JKH5g/hPWRVjZzsn0rIYhGAxQx6n2EveQDWK+86LgT1
+         NZk2UBrZ3M9kk70JhhHQ54mwWzRPE1HA3ruEQHIsFBFdZS9zsY/dtdz56I0Fq/HiZkCL
+         pWMinYb6lMz7OlfvLUaRGycwDGwyT9xTIpu4sjJWsK5A/PlgIvI7JclrQZRWv1Qs6n37
+         eAprHfswgXoD5lPcAUBWSHnWbjTWnADobC3CQBoufwc+wb8H8TtbaB8r06tG7hRa62g7
+         erSQ==
+X-Gm-Message-State: AGi0PuaAI1jNCRvpjGCEd7PKzQ6BAE8cZ9ZcrdTUrCJKYw1JgfjTL+QR
+        oM4Om7ZMGhR3TbZsMk+QV6ObB9Er8T8RI5f1S8ISWJ4e19qvj8G5OSnrfU527ER1m86eqQFOWID
+        T9vwXGNSBekXCG8vCCLfkK4sg
+X-Received: by 2002:a17:90a:2344:: with SMTP id f62mr19416883pje.152.1589191907144;
+        Mon, 11 May 2020 03:11:47 -0700 (PDT)
+X-Google-Smtp-Source: APiQypI6U2PBXvp5NefRkcNxi8d5R6lAoUyguWTMssi1lnpWsenTGf54ZPP0B9tvxz5rBp8n9A2vjg==
+X-Received: by 2002:a17:90a:2344:: with SMTP id f62mr19416853pje.152.1589191906709;
+        Mon, 11 May 2020 03:11:46 -0700 (PDT)
+Received: from localhost ([223.235.87.110])
+        by smtp.gmail.com with ESMTPSA id h13sm7567956pgm.69.2020.05.11.03.11.45
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 11 May 2020 03:11:46 -0700 (PDT)
+From:   Bhupesh Sharma <bhsharma@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     bhsharma@redhat.com, bhupesh.linux@gmail.com,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        aelior@marvell.com, GR-everest-linux-l2@marvell.com,
+        manishc@marvell.com, davem@davemloft.net, irusskikh@marvell.com
+Subject: [PATCH v2 0/2] net: Optimize the qed* allocations inside kdump kernel
+Date:   Mon, 11 May 2020 15:41:40 +0530
+Message-Id: <1589191902-958-1-git-send-email-bhsharma@redhat.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 06:34:33PM -0700, Jonathan Bakker wrote:
-> Some variants of the samsung tty driver can pick which clock
-> to use for their baud rate generation.  In the DT conversion,
-> a default clock was selected to be used if a specific one wasn't
-> assigned and then a comparison of which clock rate worked better
-> was done.  Unfortunately, the comparison was implemented in such
-> a way that only the default clock was ever actually compared.
-> Fix this by iterating through all possible clocks, except when a
-> specific clock has already been picked via clk_sel (which is
-> only possible via board files).
-> 
-> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
-> ---
->  drivers/tty/serial/samsung_tty.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-> index 73f951d65b93..9d2b4be44209 100644
-> --- a/drivers/tty/serial/samsung_tty.c
-> +++ b/drivers/tty/serial/samsung_tty.c
-> @@ -1281,14 +1281,14 @@ static unsigned int s3c24xx_serial_getclk(struct s3c24xx_uart_port *ourport,
->  	struct s3c24xx_uart_info *info = ourport->info;
->  	struct clk *clk;
->  	unsigned long rate;
-> -	unsigned int cnt, baud, quot, clk_sel, best_quot = 0;
-> +	unsigned int cnt, baud, quot, best_quot = 0;
->  	char clkname[MAX_CLK_NAME_LENGTH];
->  	int calc_deviation, deviation = (1 << 30) - 1;
->  
-> -	clk_sel = (ourport->cfg->clk_sel) ? ourport->cfg->clk_sel :
-> -			ourport->info->def_clk_sel;
->  	for (cnt = 0; cnt < info->num_clks; cnt++) {
-> -		if (!(clk_sel & (1 << cnt)))
-> +		/* Keep selected clock if provided */
+Changes since v1:
+----------------
+- v1 can be seen here: http://lists.infradead.org/pipermail/kexec/2020-May/024935.html
+- Addressed review comments received on v1:
+  * Removed unnecessary paranthesis.
+  * Used a different macro for minimum RX/TX ring count value in kdump
+    kernel.
 
-Makes sense and good catch.
+Since kdump kernel(s) run under severe memory constraint with the
+basic idea being to save the crashdump vmcore reliably when the primary
+kernel panics/hangs, large memory allocations done by a network driver
+can cause the crashkernel to panic with OOM.
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+The qed* drivers take up approximately 214MB memory when run in the
+kdump kernel with the default configuration settings presently used in
+the driver. With an usual crashkernel size of 512M, this allocation
+is equal to almost half of the total crashkernel size allocated.
 
-I wonder about the s3c24xx_serial_enable_baudclk() which has similar
-pattern - is there
-testing only def_clk_sel on purpose?
+See some logs obtained via memstrack tool (see [1]) below:
+ dracut-pre-pivot[676]: ======== Report format module_summary: ========
+ dracut-pre-pivot[676]: Module qed using 149.6MB (2394 pages), peak allocation 149.6MB (2394 pages)
+ dracut-pre-pivot[676]: Module qede using 65.3MB (1045 pages), peak allocation 65.3MB (1045 pages)
 
-Best regards,
-Krzysztof
+This patchset tries to reduce the overall memory allocation profile of
+the qed* driver when they run in the kdump kernel. With these
+optimization we can see a saving of approx 85M in the kdump kernel:
+ dracut-pre-pivot[671]: ======== Report format module_summary: ========
+ dracut-pre-pivot[671]: Module qed using 124.6MB (1993 pages), peak allocation 124.7MB (1995 pages)
+ <..snip..>
+ dracut-pre-pivot[671]: Module qede using 4.6MB (73 pages), peak allocation 4.6MB (74 pages)
 
-> +		if (ourport->cfg->clk_sel &&
-> +			!(ourport->cfg->clk_sel & (1 << cnt)))
->  			continue;
->  
->  		sprintf(clkname, "clk_uart_baud%d", cnt);
-> -- 
-> 2.20.1
-> 
+And the kdump kernel can save vmcore successfully via both ssh and nfs
+interfaces.
+
+This patchset contains two patches:
+[PATCH 1/2] - Reduces the default TX and RX ring count in kdump kernel.
+[PATCH 2/2] - Disables qed SRIOV feature in kdump kernel (as it is
+              normally not a supported kdump target for saving
+	      vmcore).
+
+[1]. Memstrack tool: https://github.com/ryncsn/memstrack
+
+Bhupesh Sharma (2):
+  net: qed*: Reduce RX and TX default ring count when running inside
+    kdump kernel
+  net: qed: Disable SRIOV functionality inside kdump kernel
+
+ drivers/net/ethernet/qlogic/qed/qed_sriov.h  | 10 +++++++---
+ drivers/net/ethernet/qlogic/qede/qede.h      |  2 ++
+ drivers/net/ethernet/qlogic/qede/qede_main.c | 13 ++++++++++---
+ 3 files changed, 19 insertions(+), 6 deletions(-)
+
+-- 
+2.7.4
+
