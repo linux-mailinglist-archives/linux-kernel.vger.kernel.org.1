@@ -2,152 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB3F1CDCB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3241CDCCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730424AbgEKOLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 10:11:32 -0400
-Received: from mail-eopbgr1320125.outbound.protection.outlook.com ([40.107.132.125]:63808
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730314AbgEKOL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 10:11:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jh/Jgchc2XqvX4G+oKZL1WS+aKhxg3zJeRxYwqdUyi0sSEUTeEEyaAVtycy/reDYdQk+9+ohMwJIklTr9T0Gt9cv51Mdz6vqorjYgsIo5f4gTWPv5SskkBIvcMN0Zewi83XJSpm8pIZZfN/vJ15fYlkTh5VTajedysr8AeXS17yytFBuUm+CG4dbNRXLhtWLXa/o3Z2jpKUS9quUqqspU60NDwii+hxsfwYK9r3y4tGjx0MPxnDedA/10U/DNH5HwIqLrV210gQGVtr6oFdb04tuGfXHytKhIONbjxhS5CczpszzvjAp/hrJqZm9gG2NpGLZtP3YttgbmN9bgtOndA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gbtQKxVOAfiR4njrekkmCrT9W4lFFwM4LpR2xN6Bew8=;
- b=dIPFeRC+ze52jgCdONzn6QKa6VN8MFlnTINSBWSyjB143tpb6eXHy+T51r1JpPRNQP2VZK/4u0q+JZPxdJQim9NKvZOcOPR8g0YjQcvluQwMXkrMTFpikOqfw/Kj5BoxvUiE+k/wylVpvsbiky7XVQ5w7E9YO9wNS4fROwSuGPyV2vo8FGYfrZ55h1A0oqinzBi/0dV1sGPWO/uXWKRF6xUsUVvBrZHWKH20paEYqTjteLvhPIovN49vWoLQkmxhlBVysjzXPlgpx1OkZUWIpzVHOWNl23gJHjtotB42V6BsS5MaqCBppSChdXNS32HyUT+ymFQ3eZG1fz4CZAwAAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gbtQKxVOAfiR4njrekkmCrT9W4lFFwM4LpR2xN6Bew8=;
- b=gk6cYpF4guYDL8xFr/lmPCD2bqcoxW3CsI3U5iPeEHQYU0VzhYs8wK9HXajWEnXF/+/xCJEops0atI7o0JJaQzCu2sfDHdkpbAVVkXIhv0RIHS8JlFt0ncoFBPNWoEUxPulqxkYEzWw/wkRXj/YtkB/Q/dqa8uJKSRaqseNwkrU=
-Received: from SG2P153MB0213.APCP153.PROD.OUTLOOK.COM (2603:1096:4:8c::10) by
- SG2P153MB0270.APCP153.PROD.OUTLOOK.COM (2603:1096:4:ad::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3021.1; Mon, 11 May 2020 14:11:22 +0000
-Received: from SG2P153MB0213.APCP153.PROD.OUTLOOK.COM
- ([fe80::9979:a66f:c953:ce10]) by SG2P153MB0213.APCP153.PROD.OUTLOOK.COM
- ([fe80::9979:a66f:c953:ce10%5]) with mapi id 15.20.3021.002; Mon, 11 May 2020
- 14:11:22 +0000
-From:   Wei Hu <weh@microsoft.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: RE: [PATCH v3 2/2] PCI: hv: Retry PCI bus D0 entry when the first
- attempt failed with invalid device state
-Thread-Topic: [PATCH v3 2/2] PCI: hv: Retry PCI bus D0 entry when the first
- attempt failed with invalid device state
-Thread-Index: AQHWJCzash5RmaIcnEaW8yRfAeCuS6iixDMAgAAuD3A=
-Date:   Mon, 11 May 2020 14:11:21 +0000
-Message-ID: <SG2P153MB0213CB7EB0E1BE05F2D621CEBBA10@SG2P153MB0213.APCP153.PROD.OUTLOOK.COM>
-References: <20200507050300.10974-1-weh@microsoft.com>
- <20200511112112.GC24954@e121166-lin.cambridge.arm.com>
-In-Reply-To: <20200511112112.GC24954@e121166-lin.cambridge.arm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Owner=weh@microsoft.com;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-05-11T14:11:19.8431719Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=5dc7db8c-1ff0-4a09-8a09-1e83ea86ebaf;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Extended_MSFT_Method=Automatic
-authentication-results: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [180.157.10.88]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: da23b11f-0327-4122-c509-08d7f5b52ef4
-x-ms-traffictypediagnostic: SG2P153MB0270:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SG2P153MB02703A3C9D4D71AB75A1796CBBA10@SG2P153MB0270.APCP153.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 04004D94E2
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: c/WVSRO5fYpKioiFnaa7ebbE17wssSYj/tjO2hWfbQs1V+vJX3FkKz9GqXRjhzr+wfOFBs476XidpXyf5fZzjyBUYYzwNOLGhHxeeoLbsRUTH5ehJHEMCAagNG+//f19kbj5xhnjHAZOvEmyGV+rFMZic41VJ4+TIuHouNvykWKscwYLk057FFIQc+51y+e1O1ZsLToMptmWMe437Hv+3xfc/y2iM4o87qglslBfoGCJZpmdmDyZz7qWHIfXilhoxmzuokFNgV9mqZfZNg6zu/Yr4tkugM80wMIJ+IgWKIzYV9vCPxamvVuz+GLfpF99y8Ti2WD3YO2LmDj9D8fAf+PL5uylLDnmz8rpgsjI1bt1TMWKECtIC4RB6rSaYN55sgj765a8FulfdlavkpGDJlYlolJNAQNfHOZ9QAF8EOY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2P153MB0213.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(376002)(346002)(366004)(136003)(396003)(33430700001)(55016002)(8936002)(82950400001)(82960400001)(4326008)(76116006)(66446008)(66556008)(66946007)(2906002)(66476007)(10290500003)(64756008)(6916009)(52536014)(86362001)(478600001)(8676002)(107886003)(9686003)(316002)(71200400001)(5660300002)(53546011)(186003)(26005)(7696005)(33440700001)(33656002)(6506007)(8990500004)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: Yuk6/yGN/B4Wz0/pFWgnPilcMXbs3nfkutpmipwpU7rPCkK38b8/wRzbBfZYdkqUEKQnnTb5A0RpGOZZ8QOjC1/XE2Q/05hNXkiEZIYE57E6cU/YAgv2UKkePb0B/HI4/E+JjY2OvTIZjZUKezr5E5Fc8awYBaXR5Sm0TVI8q4UFZzp1U1KVX0Nj8kNG0ZTgQVxiuWukVvFHPZV6q4owgtyJJgctgE2TtB5IW+x3LhG90DZnS88IWGhqC5jF+xUDJTLFM6PPso7PaWWvOc+z9E21addVTRFZ8k6Pda73saIdUreByuzaLK+r+HoQzjByFb+Zy68HZN1kUaL7emq7UJqVmKhE791rGQKyP4IqswO1wl2+uYxiVa4toyvpFOhVati/dULkyVO29FW87TcyDbUqAnE0DXQjtVBKKA0cFatSSShdikUrwkOZqCHFZsuJzTCDx8iYDqbGEYHd97S0fZ4TEaJXfdSaqrTvOb0NYY8=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1730501AbgEKOOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 10:14:00 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:51342 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730489AbgEKON7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 10:13:59 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BDZjdf007101;
+        Mon, 11 May 2020 14:13:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=8prh65ahEbXqnO+VBBdG5CKN1+9p3No5FuVaz0SanQY=;
+ b=qqvMDhzsqjY+TBfq5ylIDgiuLwKEQY/dLMyH9BE4aJLTbEdXnPjhhj0gBH5OZ+5oqUb3
+ mQGOh5povasQMMYG8MUidlFgyZ6mjYlluJZdeBz3J6CGgn+Iyf8dzGALNYqpfwZ6i0Yn
+ zXSp3MiKSSdhdk+k4CrYsLJh8h2gpaUCG3o+c+FK/JREEDu9RcLVeKCgxYt8dvckA8IW
+ MH9WuUKsgaODHBfO8Rjp9N+qBsKLjFKLONSI99vGuKERFb+ffoDNRSc/7AyI0WgVnabm
+ UeOYBlxs/3ROAbGaGtlncCSzgIOiGrBaMw1ffJ90uRI4VcJx399i/OCClEdELpS46UMB nQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 30x3mbn9un-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 May 2020 14:13:32 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BDXwLW136961;
+        Mon, 11 May 2020 14:11:32 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 30x6ew3km3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 May 2020 14:11:32 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04BEBQrr005761;
+        Mon, 11 May 2020 14:11:26 GMT
+Received: from [10.175.13.248] (/10.175.13.248)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 11 May 2020 07:11:26 -0700
+Subject: Re: [PATCH RFC] Microcode late loading feature identification
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <1587972479-10971-1-git-send-email-mihai.carabas@oracle.com>
+From:   Mihai Carabas <mihai.carabas@oracle.com>
+Message-ID: <56ae9070-5960-1498-c021-74ef4451c222@oracle.com>
+Date:   Mon, 11 May 2020 17:11:23 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: da23b11f-0327-4122-c509-08d7f5b52ef4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2020 14:11:21.7675
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: I4QPNRr5lL3tP0zZm6/+aAg89bQPqBnGJ57UviO/PZxAPc+NzVL9yg57YZrlNzvpr34d8pfgDFynPfopBiARKg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2P153MB0270
+In-Reply-To: <1587972479-10971-1-git-send-email-mihai.carabas@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: ro
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9617 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005110112
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9617 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 impostorscore=0
+ mlxscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999 phishscore=0
+ malwarescore=0 lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005110112
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+La 27.04.2020 10:27, Mihai Carabas a scris:
+> This RFC patch set aims to provide a way to identify the modifications
+> brought in by the new microcode updated at runtime (aka microcode late
+> loading). This was debated last year and this patch set implements
+> point #1 from Thomas Gleixner's idea:
+> https://lore.kernel.org/lkml/alpine.DEB.2.21.1909062237580.1902@nanos.tec.linutronix.de/
+> 
 
++Ashok and Thomas to get a feedback from vendor side on file 
+format/integration in the microcode blob and signature.
 
-> -----Original Message-----
-> From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Sent: Monday, May 11, 2020 7:21 PM
-> To: Wei Hu <weh@microsoft.com>
-> Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-> <haiyangz@microsoft.com>; Stephen Hemminger <sthemmin@microsoft.com>;
-> wei.liu@kernel.org; robh@kernel.org; bhelgaas@google.com; linux-
-> hyperv@vger.kernel.org; linux-pci@vger.kernel.org; linux-
-> kernel@vger.kernel.org; Dexuan Cui <decui@microsoft.com>; Michael Kelley
-> <mikelley@microsoft.com>
-> Subject: Re: [PATCH v3 2/2] PCI: hv: Retry PCI bus D0 entry when the firs=
-t
-> attempt failed with invalid device state
->=20
-> On Thu, May 07, 2020 at 01:03:00PM +0800, Wei Hu wrote:
-> > In the case of kdump, the PCI device was not cleanly shut down before
-> > the kdump kernel starts. This causes the initial attempt of entering
-> > D0 state in the kdump kernel to fail with invalid device state
-> > returned from Hyper-V host.
-> > When this happens, explicitly call PCI bus exit and retry to enter the
-> > D0 state.
-> >
-> > Signed-off-by: Wei Hu <weh@microsoft.com>
-> > ---
-> >     v2: Incorporate review comments from Michael Kelley, Dexuan Cui and
-> >     Bjorn Helgaas
-> >
-> >  drivers/pci/controller/pci-hyperv.c | 40
-> > +++++++++++++++++++++++++++--
-> >  1 file changed, 38 insertions(+), 2 deletions(-)
->=20
-> Subject: exceeded 80 chars and commit log needed rewording and paragraphs
-> rewrapping. I did it this time but please pay attention to commit log con=
-tent
-> (and format).
+Thank you,
+Mihai
 
-Got it. Thanks much for correcting it for me this time!
-
-Wei
-
->=20
-> Thanks,
-> Lorenzo
->=20
+> This patch set has the following patches:
+> 
+> - patch 1 is introducing a new metadata file that comes with the microcode
+> (provided by the CPU manufacture) that describes what modifications are
+> done by loading the new microcode
+> 
+> - patch 2 parses the metadata file and is verifying it against kernel
+> policy. In this patch, as an RFC, as a kernel policy, it was imposed
+> the rule of not allowing to remove any feature. If so, it won't be
+> loaded a new microcode. The policy can be further extended and describe
+> in different ways
+> 
+> - patch 3 adds the documentation of the metadata file format
+> 
+> 
+> How to test:
+> 
+> - place metadata file in /lib/firmware/intel-ucode/ together with the
+> microcode blob:
+> 
+> [root@ovs108 ~]# ls -l /lib/firmware/intel-ucode
+> total 96
+> -rw-r--r--.   1 root root 34816 Mar 11 00:27 06-55-04
+> -rw-r--r--.   1 root root    84 Mar 25 03:13 06-55-04.metadata
+> 
+> The microcode blob can be taken from the microcode_ctl package.
+> 
+> - after installing the kernel and rebooting the machine run "dracut -f
+> --no-early-microcode" to create an initramfs without the microcode (and
+> avoid early loading)
+> 
+> - reboot
+> 
+> - after rebooting issue: echo 1 > /sys/devices/system/cpu/microcode/reload
+> 
+> [root@ovs108 ~]# cat /lib/firmware/intel-ucode/06-55-04.metadata
+> m - 0x00000122
+> c + 0x00000007 0x00 0x00000000 0x021cbfbb 0x00000000 0x00000000
+> 
+> [root@ovs108 ~]# echo 1 > /sys/devices/system/cpu/microcode/reload
+> [root@ovs108 ~]# dmesg | tail -2
+> [ 1285.729841] microcode: Kernel policy does not allow to remove MSR: 122
+> [ 1285.737144] microcode: kernel does not support the new microcode: intel-ucode/06-55-04
+> 
+> [root@ovs108 ~]# cat /lib/firmware/intel-ucode/06-55-04.metadata
+> m + 0x00000122
+> c + 0x00000007 0x00 0x00000000 0x021cbfbb 0x00000000 0x00000000
+> [root@ovs108 ~]# echo 1 > /sys/devices/system/cpu/microcode/reload
+> [root@ovs108 ~]# dmesg | tail -10
+> [ 1220.212415] microcode: updated to revision 0x2000065, date = 2019-09-05
+> [ 1220.212645] microcode: Reload completed, microcode revision: 0x2000065
+> 
+> Mihai Carabas (3):
+>    x86: microcode: intel: read microcode metadata file
+>    x86: microcode: intel: process microcode metadata
+>    Documentation: x86: microcode: add description for metadata file
+> 
+>   Documentation/x86/microcode.rst       | 36 +++++++++++++
+>   arch/x86/kernel/cpu/microcode/intel.c | 97 +++++++++++++++++++++++++++++++++++
+>   2 files changed, 133 insertions(+)
+> 
 
