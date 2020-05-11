@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B735A1CDDD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDBA1CDE15
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729086AbgEKOzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 10:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726410AbgEKOzH (ORCPT
+        id S1729995AbgEKPEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 11:04:10 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:38156 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729439AbgEKPEJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 10:55:07 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55209C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 07:55:06 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id b18so641054ilf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 07:55:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j4cTbhBEuzkRPdUYgvhBb3SOKxTd9Blhp/EM3p/3NNE=;
-        b=Qmt0davupjiYVu1SLiWVLBR6s9BkOUUSUU1ayEVcBxGlaHKqe1IuuQlwsuzy4pfFuq
-         ++A89cYwrQ/2pnyDtD0k0BqyJVtnGB/2wt2gMmBOTNY2AvOUcStPtOYycJjIva9Fnq0i
-         npqwYDfquFOENdPpKawKn8ZhSQ4udZKqLkQeM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j4cTbhBEuzkRPdUYgvhBb3SOKxTd9Blhp/EM3p/3NNE=;
-        b=j09w3ENmyoaPkrNvC8SJN7wdXrdI2C2GkyBRFuomVgbvMBN3q1n217aIxtF7zQGTwG
-         bv2cp+yEkPNvzsb9AwGFr2dox0CTo7bRjH68X0bzgtGniTjxAa1mhpnjRD0Iu++127G/
-         +1V51uCKoNyfuTI1YpNqgzOxQoopQf/2N4PYXfM2FDNQy6vkktj5O7DwNVP5rBfyN32G
-         clHB1P+uN0uLhANe0/l2tCQicydlP6EfgZltLfMeGVaN1OkV7sKhyu5NhKDblBTGuHMj
-         tp5LLEV17NDIQf2ZqFHO0QlszwjjoO1L2Jj8wCfN7bNDIsc0787V4L1/c8/9+Nr3lXwj
-         Lj4A==
-X-Gm-Message-State: AGi0PubTH5zI8d8OeSLJgaPdPIpIlNTPxa3g2oTd3J032jQ/3JmuNfhw
-        BAKV0dO4TbNs4Dv07iNcfISOzUozw2IaGtYQCkEIzw==
-X-Google-Smtp-Source: APiQypI7SLb+js7Li3zB6H/D2jeISjXKOrnBDGxv6XSkD/EuSL7YGUQj7huzsPFv+2U6Gp8ctThXn5cQTzNHjAwBa7U=
-X-Received: by 2002:a05:6e02:80e:: with SMTP id u14mr17777271ilm.176.1589208905586;
- Mon, 11 May 2020 07:55:05 -0700 (PDT)
+        Mon, 11 May 2020 11:04:09 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04BF46RQ021721;
+        Mon, 11 May 2020 10:04:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589209446;
+        bh=PaHM7ncRDAEeXG4G61hU0xZ07/k9Q++S5viFtly/yvY=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=aBdUYVv5/S69k7u1l/tYskoGTZuUF/9VtRtxiZXl8RrwNk6CVOgPDv4SvHgwL6KxC
+         VVqCbJz1jRdwEpB20Beb63Zmi2kvVM1Z/9N17sJF7SgJGoih78A+zrVCUFih8Oagpw
+         4lFLpCf6mwNvQse64wxJYv1zTZSgQLp85IF7Ui9o=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04BF46fI069574;
+        Mon, 11 May 2020 10:04:06 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 11
+ May 2020 10:04:05 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 11 May 2020 10:04:05 -0500
+Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04BF44HX084827;
+        Mon, 11 May 2020 10:04:04 -0500
+Subject: Re: [PATCH v2] dt-bindings: power: Convert bq27xxx dt to yaml
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+CC:     <linux-pm@vger.kernel.org>, <robh@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        "Andrew F . Davis" <afd@ti.com>
+References: <20200507183013.27261-1-dmurphy@ti.com>
+ <20200510161721.257vprq6rqp64wu5@earth.universe>
+ <fb9b240e-9bfe-1295-6fc4-700d886ea7c9@ti.com>
+ <20200511143241.nmkti7meahvj2swt@earth.universe>
+ <8674289c-038d-d811-4786-322d66072527@ti.com>
+ <20200511145700.lnytcr747snnolya@earth.universe>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <57e2495d-ec06-53ff-c2b5-10062da2848f@ti.com>
+Date:   Mon, 11 May 2020 09:55:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <cover.1583332764.git.vpillai@digitalocean.com>
- <20200510234652.249917-1-joel@joelfernandes.org> <20200511134921.GC2940@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200511134921.GC2940@hirez.programming.kicks-ass.net>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 11 May 2020 10:54:54 -0400
-Message-ID: <CAEXW_YQvVvNS5e89YQX7GALxPUXoymuZ_pDN+5iaAj_yiN3abg@mail.gmail.com>
-Subject: Re: [PATCH RFC] Add support for core-wide protection of IRQ and softirq
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Vineeth Pillai <vpillai@digitalocean.com>,
-        Allison Randal <allison@lohutok.net>,
-        Armijn Hemel <armijn@tjaldur.nl>,
-        Ben Segall <bsegall@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Muchun Song <smuchun@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200511145700.lnytcr747snnolya@earth.universe>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 9:49 AM Peter Zijlstra <peterz@infradead.org> wrote:
+Sebastian
+
+On 5/11/20 9:57 AM, Sebastian Reichel wrote:
+> Hi,
 >
-> On Sun, May 10, 2020 at 07:46:52PM -0400, Joel Fernandes (Google) wrote:
-> > With current core scheduling patchset, non-threaded IRQ and softirq
-> > victims can leak data from its hyperthread to a sibling hyperthread
-> > running an attacker.
-> >
-> > For MDS, it is possible for the IRQ and softirq handlers to leak data to
-> > either host or guest attackers. For L1TF, it is possible to leak to
-> > guest attackers. There is no possible mitigation involving flushing of
-> > buffers to avoid this since the execution of attacker and victims happen
-> > concurrently on 2 or more HTs.
-> >
-> > The solution in this patch is to monitor the outer-most core-wide
-> > irq_enter() and irq_exit() executed by any sibling. In between these
-> > two, we mark the core to be in a special core-wide IRQ state.
+> On Mon, May 11, 2020 at 09:29:59AM -0500, Dan Murphy wrote:
+>> On 5/11/20 9:32 AM, Sebastian Reichel wrote:
+>>> On Mon, May 11, 2020 at 07:25:06AM -0500, Dan Murphy wrote:
+>>>> On 5/10/20 11:17 AM, Sebastian Reichel wrote:
+>>>>> This needs is missing the power-supplies property. The N900 DT
+>>>>> contains a bq27200 referencing the charger, so it should fail the DT
+>>>>> check without the property being listed here.
+>>>> Hmm.  I ran the dt checker specifically on the binding and it did not fail.
+>>>> Unless I need to build some other DTs as well.
+>>>> Either I will have the power-supplies property
+>>> I just tried it myself. The problem is the way you are specifying
+>>> the compatible strings. This is the parsing result:
+>>>
+>>> enum: ['ti,bq27200 - BQ27200', 'ti,bq27210 - BQ27210', 'ti,bq27500 - deprecated,
+>>>         use revision specific property below', ...
+>>>
+>>> You can see this in Documentation/devicetree/bindings/processed-schema.yaml, which
+>>> is generated by running the check. The compatible comments need a # as separation
+>>> character like this to generate proper bindings:
+>>>
+>>> properties:
+>>>     compatible:
+>>>       enum:
+>>>         - ti,bq27200 # BQ27200
+>>>         - ti,bq27210 # BQ27210
+>>>         - ti,bq27500 # deprecated, use revision specific property below
+>> Well honestly not sure why we need the comment either. These are pretty
+>> self explanatory maybe we should just remove the additional comments
+> Fine with me.
+Ack
 >
-> Another possible option is force_irqthreads :-) That would cure it
-> nicely.
+>> Any consideration on just removing the deprecated values?
+> Let's keep them with their comment for now. Removing them should
+> start with marking them as depracated in the binding and generating
+> a runtime warning in the driver, so that people become aware of the
+> problem. At least for ti,bq27500 we have mainline users At least for
+> ti,bq27500 we have mainline users.
 
-Yes true, it was definitely my "plan B" at one point if this patch
-showed any regression. Lastly, people not doing force_irqthreads would
-still leave a hole open and it'd be nice to solve it by "default" than
-depending on user/sysadmin configuration (same argument against
-interrupt affinities, it is another knob for the sysadmin/designer to
-configure correctly, Another argument being not all interrupts can be
-threaded / affinitized).
+There are only 2 dts files that have this reference unless we are not 
+sure which device is actually in use.
 
-Thanks in advance for reviewing the patch,
+Dan
 
- - Joel
+
+> -- Sebastian
