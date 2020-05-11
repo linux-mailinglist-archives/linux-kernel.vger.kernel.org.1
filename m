@@ -2,128 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F36C1CE593
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 22:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094F21CE59C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 22:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731670AbgEKUce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 16:32:34 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:51810 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729517AbgEKUce (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 16:32:34 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04BKVEkt007501;
-        Mon, 11 May 2020 13:32:22 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=bx4LY6G6nJlkmqstEEk1mLsJHjOTD1FXyyrTYaxmjq0=;
- b=WQzNszmncK7X86QMNqe5V/8WZ4GTEdXFSfL1vZYI4fLVifJ9RwRHps8IjofaYExiRECK
- 6fl7pPo9sKgofzu44DuOXTieGzYha+f5CMIm4zlFCPamxaFthBmx0oEyJ3DLgul0Nnap
- LEi/verU/Bkf0nn2zbm4XmYMyB7K8kWGK60= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 30xc7e08x6-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 11 May 2020 13:32:22 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Mon, 11 May 2020 13:32:20 -0700
+        id S1731722AbgEKUdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 16:33:05 -0400
+Received: from mail-mw2nam12on2139.outbound.protection.outlook.com ([40.107.244.139]:43083
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731629AbgEKUdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 16:33:04 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nPZYHIKC0yP0t4EAKohAfYhNOxIl6pNSZsticwgLZfzLevtkZwHYQcObtmPWXmBDAm9SapCCnVPB7PxEHWphpnUcohEerURoV2c3jWclO5QTMnL4YlbBnDU+KQEWhL+2VQ3+uZuNgcJJ9THfzOzVc/WOcu9a6onYr0OXYjB3Sy/Usk9AAc9fN3bvNK6bdwI6jH5POE181lWHK/62N2o5gjPKdkUB0uH5ZNK26r8JQjNJ5o/HY/K7S9hQzx0nCGwIYqfczs32QDT/Luv7/VMpW1omPsvLyxGEMoYkVripeMhDayQHsD4und5hvRoHv/HQyUGPRYMyeBNXnJHkB9aR8A==
+ b=JNOC2mg3UjMN0y+8UXbo2RPv6xZFS/4pCLIdhBwldH5tp1iSdjmemeIFUWEgj0Bd/0U5pCPMF0rMyaXerty8s48MmwdKKdZOOUYwAXuHxZ3KkTSQBOwHqrsMQvO+oooHV4dsFPygNgDMWbw3cHMgkfuw/Lgt7gOdR6ID5bQvcvCWUHbx3WRGFp9sh4m/q361pWNwAzlCS0PxUQLKDYgCoE9WB9zSZVsn/B46FWc9JkcZ98D9Iji2oUaCdxas13c6iVdnL0RTsfL6k0LFXZNLWADTxnTT78MMg+ORDhbnt5uvsyQKIGt1U2hvmOdm3fAES5UQg/pPdIM1yoXPqyTzkw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bx4LY6G6nJlkmqstEEk1mLsJHjOTD1FXyyrTYaxmjq0=;
- b=GNJcOI1i4wwownTWG41mhk0TnOHFJB1iyX+3MdcmOU5L5F1MazZBdYQ1uS5dJQO2s0TAblVafj09e1NvadCY/updA31h4CO/Vq7Qw0v6DrTHxdh8aaYDby4lLkIbXYQE2iIHU/Y/UbpIXeNJLDq+KiDUoZtArafDUUQ4d4aWM4aRqaoTf1Se9VJh1EdTTDJtxUzCsd4E2/8R6UcX7tAgC/vldnV/SJHN5owrsOiIxSAXLwrw4LR1hPaxe2eBgV1QHZfj6jm+TyrA0HWEY/sWAM2okly/weOrXSi+oTelzjWXX9mRpceWSeeMdGi+sA6Xdlg+tKrAIaFyixWAOxo3ZQ==
+ bh=UEOZexBqQe7wkq6C760pOvBnmfScgEkjAY+7waV2JIo=;
+ b=Zk0jAMtLNRug/vrFN2uBZEHslg4BwXOf590F2OiC77+H/jm5wug3A5JD+57pwFd0H+nNj6nRt3Ov6RvPjf3HVJQ/bsBzwn7R2lN9QNnLX+czb6/0TwEeEzXZiJ8et77PwjWO0f1JEvcqb+szLlg2l/+QDC405xLTmoVV77O9UbCmac/MD6cPQjr+xhyP/3QlTVhzozyqZc1joBZJsxtrUMYV4yTzDTr2zM1GSHtfHrjY61L1SnjV6M5d2zDwi4r2pavFme7wHaRDsTnH0uNUeacZFWelpUXDLzvdcvtb+WYkGVDxJdaDXtLR3OFUHdOTF/c4ovM0E2jkR5zCnJGaHg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bx4LY6G6nJlkmqstEEk1mLsJHjOTD1FXyyrTYaxmjq0=;
- b=Vcg2xovu47aPM88RvrSywGjFxbuEIiA7MqaBZUo8YkCXbec24N5A339y5PGpVq9ZwcxbF32EgrcmMgRfZvLs5idinrTXPqiNZsR4GjEQSVIYXrpJ4d7x9HaYLGD29Z/pJcow82hUog0tfYhxZ42n8NbWTI+sk8YI+EPA2lhIBVY=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2760.namprd15.prod.outlook.com (2603:10b6:a03:159::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.34; Mon, 11 May
- 2020 20:32:20 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.2979.033; Mon, 11 May 2020
- 20:32:20 +0000
-Subject: Re: [PATCH bpf] samples: bpf: fix build error
-To:     Matteo Croce <mcroce@redhat.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Joe Stringer <joe@ovn.org>, Jakub Kicinski <kuba@kernel.org>
-References: <20200511113234.80722-1-mcroce@redhat.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <0dd7c40b-c80b-9149-f022-d8113b77558a@fb.com>
-Date:   Mon, 11 May 2020 13:32:05 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
-In-Reply-To: <20200511113234.80722-1-mcroce@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY3PR10CA0024.namprd10.prod.outlook.com
- (2603:10b6:a03:255::29) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+ bh=UEOZexBqQe7wkq6C760pOvBnmfScgEkjAY+7waV2JIo=;
+ b=JsgKYwjfNSXfPUljsQzui0Iic6mlPqPrsk4XxrL9kfEoeAMQjcWw+990Q8/JWQr+tWcrPAmGsqwGw9Wv/1aigJ7cwAJqeyICVdfpp+hByOPlv4qDXGvhXQdK9EYiVr3IYd528oLd+YQ8to+qE8itzoqMV3YZVJFXAhVsgce/dhg=
+Authentication-Results: amperecomputing.com; dkim=none (message not signed)
+ header.d=none;amperecomputing.com; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from BYAPR01MB4598.prod.exchangelabs.com (2603:10b6:a03:8a::18) by
+ BYAPR01MB4981.prod.exchangelabs.com (2603:10b6:a03:1d::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2979.35; Mon, 11 May 2020 20:33:00 +0000
+Received: from BYAPR01MB4598.prod.exchangelabs.com
+ ([fe80::296c:b848:8bf0:6f2c]) by BYAPR01MB4598.prod.exchangelabs.com
+ ([fe80::296c:b848:8bf0:6f2c%5]) with mapi id 15.20.2979.033; Mon, 11 May 2020
+ 20:32:58 +0000
+From:   Tuan Phan <tuanphan@os.amperecomputing.com>
+Cc:     patches@amperecomputing.com, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] perf: arm_dsu: Support DSU ACPI devices.
+Date:   Mon, 11 May 2020 13:32:40 -0700
+Message-Id: <1589229160-18558-1-git-send-email-tuanphan@os.amperecomputing.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR05CA0056.namprd05.prod.outlook.com
+ (2603:10b6:a03:74::33) To BYAPR01MB4598.prod.exchangelabs.com
+ (2603:10b6:a03:8a::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from macbook-pro-52.local.dhcp.thefacebook.com (2620:10d:c090:400::5:3585) by BY3PR10CA0024.namprd10.prod.outlook.com (2603:10b6:a03:255::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.28 via Frontend Transport; Mon, 11 May 2020 20:32:19 +0000
-X-Originating-IP: [2620:10d:c090:400::5:3585]
+Received: from aptiov-dev-Latitude-E7470.amperecomputing.com (4.28.12.214) by BYAPR05CA0056.namprd05.prod.outlook.com (2603:10b6:a03:74::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3000.11 via Frontend Transport; Mon, 11 May 2020 20:32:58 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [4.28.12.214]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: af8a0372-f898-4b95-ec5b-08d7f5ea6713
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2760:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2760E1BF200D5830E77540A3D3A10@BYAPR15MB2760.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:293;
+X-MS-Office365-Filtering-Correlation-Id: 827201bf-5b43-434d-e5f1-08d7f5ea7df5
+X-MS-TrafficTypeDiagnostic: BYAPR01MB4981:|BYAPR01MB4981:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR01MB498188B557743BBF2E5A4249E0A10@BYAPR01MB4981.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1332;
 X-Forefront-PRVS: 04004D94E2
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fOGwj1I+ISGl9P+PtWPlYZtlm+UX0P8NtFpqEfywZLUiV2LatwPJIl9Evhhh0bTj2uH5APz7CqQlaljeyJLNs2KVnoqN3lYGW9Ry76RB11/gF861eyn4ZtLrnl8WMBvIlupzPTm0Injz5vws8RtNM6EMpGIpLv43YwTCOvlVgr/FD6NwrQfDPtxiJyBr25Y8/JURkTfjfdwEFk+i1qe1M3BzYP+HdTnJ6jeWN09+1Wl75UO2rBY95RfujztvvTlxOqHS7yT22+Un5ytHsva8cU3D2OCM6lew6u9QfGEM9Zun+2udJCchddLSISNoMPj1BZZe7dfCyuAFFWalJvBAkKE1/SNWEkNQGyjYN+LFMpR/F9/LVGGFWkkHo+u+/yparikn2WPWHjFekpecbDKkR6uX52oE2WEFwIMikChyX1ePChi8s4ob87S5upBU6qz0Cju3DZl01ybgSey7It6D9MPoQAY+ZrARukiKnHsHoBpVsiBuPHIo+V1DuXjB4i1oI7Us1q5AAcAyeTupjnm+3sM+tcL9iFBhehiIf5Z1utl/VK4BBn10W2SWOZe3hfiX
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(346002)(39860400002)(396003)(366004)(136003)(33430700001)(4326008)(31686004)(2616005)(4744005)(66946007)(86362001)(66556008)(2906002)(6666004)(31696002)(478600001)(6486002)(66476007)(8676002)(6512007)(8936002)(186003)(316002)(5660300002)(53546011)(54906003)(33440700001)(6506007)(52116002)(36756003)(16526019)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: FoPrCzB6PtDLfBAjWj68f9+ODydIqzms9/AcPPr+TMtu07TXtujU1BZHFTHj6sAPE0sqEUufbPvHwVVLk9ny3jvfNrfuOwtQnt4FwtP4l8dWxsW9NK8n39JODoKYLxD6gECCqBOHiO12B7Oyi/Kx8N0DIa2I31eBR+2p0usv3eBogi/h646aSxJ7+EdPY1T2hHgVXynDXww42MtoU6u4S/3K2gAv0K7ko8R9QC3vqS+dY5qB7IKtapKuTTPYnB8G31Knzli7FuccuaGz78zvrTGOivwzLb5GH8KPtlAceJwHB07ZouhTos7IM/GnvzxDGxs9m2UPFjXS6Gu2QNJe3j8UckVnsO5qBiDD88KJHjNsrPM8oM5pN41CFxWE0MYb6jx2Ii9xDYS9tpFc8Mz0sZel9nCi3X9SmafniMDDxpC9p7XnP43+7KQN0UTVO9XVfk24TIGL3fUJgvnZS0t3m1kQcZmiNRhDGEBflVuNxBmCsAzuGZLZnu3gTOUYVqNa0ai89yWCQJ99gTaCBpRqjg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: af8a0372-f898-4b95-ec5b-08d7f5ea6713
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2020 20:32:19.9154
+X-Microsoft-Antispam-Message-Info: MwaKkY0gJGOH3UArFDo//Pf1o3RDRQdJuYhz6YuUeLj4aHBfBemWIJbwg602Bc0kHZZS+F9xGJ2r2k9FXJ7jMJ2y0gnomsndhfzK4QHRVfH0ITxaPdHKvfd7e2iVskS8lCJ2V4QcEx7UnajQqpX5pP17xiMQyGSxte718WZ1P+qO5muT7bKV8I6fitMcHZzQu2NYh+TyosMhbtgbCWvPNEc4JjQtrqj1/qpoaPdfMG0nHWSZHX54TqH45RP6KvVPg5DpqjNbBuGQrZAlNgD5hBmUcNtWFYZTw3BjwCTWUW5YZVA0BPEkOnhMxdT7p+AcULpiT++somOlri7pViqMU7nPwV3pFRqpddYFFuJJ4jYMgUYpA7z+qpyoed5qtBMxlgJj06nHv+O9jtytcbC3jZyLosvpPciCWlanyyUNFpOCZdmJDQRxBBcLuM8KmAW+ba46/01iSkbirWM2H5li1t9855TywHeNj5p5tG9AmQBK+grxgWlDGrTZcsMIQss7JQNlACURYx1G9JZ+9faqKp4ziGIVoA6cJlProQ/LFEU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB4598.prod.exchangelabs.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(376002)(136003)(39840400004)(396003)(33430700001)(6666004)(66476007)(2906002)(66556008)(16526019)(186003)(66946007)(26005)(86362001)(8936002)(8676002)(109986005)(5660300002)(4326008)(6486002)(6506007)(956004)(2616005)(52116002)(54906003)(33440700001)(316002)(6512007)(478600001)(266003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 8jD0pEwSrokQLrsu4FbQDlUgyGAVge7M5W1x4I2/XfJysOVb/fj/RGmb+L+daxgy1RcSnNIekB9fambCd5E83hlmRd1U/9QZdVVOSLMCgpD3tD2YLF0CtcewXWMwAL3Oe/VJ6eghmsxW1zUevebzrKhlaSlNkYKvPBumYoP8foEmiFcAqZu+6gpU06cPYaC7n2DQexMPMwvH1cf2V4o89YiGSxG36Lk1Qfpp+iojSQs3/lDOO7/on2CBa23I2hi9TR7X9BJdB+Y5uitl8BLbXgknqvzV2EKTPhvqomV1OB2UcWnwf9D9VH4GGEk/HP2oqeL3ROUDbLwAjYXgimSeaoxWiPndzG+rhdf4YMmcii33VYzUceAZZGtvKdGTXr7OufRW5RGNr8y5NJCr9OMpAxuD3uhvoYmxHfSZADIjCP0w7vEnjskFoFO7+2gbrtegMpGSh3ns/tZqw7RnaM7RtCQSITv0v8llEghqM46yvbQ=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 827201bf-5b43-434d-e5f1-08d7f5ea7df5
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2020 20:32:58.3294
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QQOvorZmp8HlDlG9ag3Ho3GGZuQ/UPIZOIZT5Nx//gmbooVottPGT08h0tHZnNvy
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2760
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-11_10:2020-05-11,2020-05-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1011
- mlxlogscore=825 priorityscore=1501 lowpriorityscore=0 suspectscore=0
- adultscore=0 impostorscore=0 malwarescore=0 bulkscore=0 spamscore=0
- mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005110156
-X-FB-Internal: deliver
+X-MS-Exchange-CrossTenant-UserPrincipalName: jIpNrE+sdzPV0monBQcn9ench0MpCgB2ucrUtgD9Mbl1sXRd6/Za0d6uEY4PwpagIPFI+5Oqv7cT9zymziwfBFTBct68Ok4rZj5dU6b29rx91hYbqNhbGEhv93XAYab6
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB4981
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add ACPI node probing device support. Each DSU ACPI node
+defines a "cpus" package with a per cpu MPIDR element.
 
+Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
+---
+Changes in v2:
+- Removed IRQF_SHARED.
+- Fixed ACPI runtime detection.
 
-On 5/11/20 4:32 AM, Matteo Croce wrote:
-> GCC 10 is very strict about symbol clash, and lwt_len_hist_user contains
-> a symbol which clashes with libbpf:
-> 
-> /usr/bin/ld: samples/bpf/lwt_len_hist_user.o:(.bss+0x0): multiple definition of `bpf_log_buf'; samples/bpf/bpf_load.o:(.bss+0x8c0): first defined here
-> collect2: error: ld returned 1 exit status
-> 
-> bpf_log_buf here seems to be a leftover, so removing it.
-> 
-> Signed-off-by: Matteo Croce <mcroce@redhat.com>
+The ACPI binding spec for DSU ACPI node is under beta and located
+in ARM server group under project "ACPI on ARM".
 
-Acked-by: Yonghong Song <yhs@fb.com>
+ drivers/perf/arm_dsu_pmu.c | 71 ++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 63 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
+index 70968c8..784d177 100644
+--- a/drivers/perf/arm_dsu_pmu.c
++++ b/drivers/perf/arm_dsu_pmu.c
+@@ -11,6 +11,7 @@
+ #define DRVNAME		PMUNAME "_pmu"
+ #define pr_fmt(fmt)	DRVNAME ": " fmt
+ 
++#include <linux/acpi.h>
+ #include <linux/bitmap.h>
+ #include <linux/bitops.h>
+ #include <linux/bug.h>
+@@ -603,18 +604,21 @@ static struct dsu_pmu *dsu_pmu_alloc(struct platform_device *pdev)
+ }
+ 
+ /**
+- * dsu_pmu_dt_get_cpus: Get the list of CPUs in the cluster.
++ * dsu_pmu_dt_get_cpus: Get the list of CPUs in the cluster
++ * from device tree.
+  */
+-static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
++static int dsu_pmu_dt_get_cpus(struct platform_device *pdev)
+ {
+ 	int i = 0, n, cpu;
+ 	struct device_node *cpu_node;
++	struct dsu_pmu *dsu_pmu =
++		(struct dsu_pmu *) platform_get_drvdata(pdev);
+ 
+-	n = of_count_phandle_with_args(dev, "cpus", NULL);
++	n = of_count_phandle_with_args(pdev->dev.of_node, "cpus", NULL);
+ 	if (n <= 0)
+ 		return -ENODEV;
+ 	for (; i < n; i++) {
+-		cpu_node = of_parse_phandle(dev, "cpus", i);
++		cpu_node = of_parse_phandle(pdev->dev.of_node, "cpus", i);
+ 		if (!cpu_node)
+ 			break;
+ 		cpu = of_cpu_node_to_id(cpu_node);
+@@ -626,11 +630,54 @@ static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
+ 		 */
+ 		if (cpu < 0)
+ 			continue;
+-		cpumask_set_cpu(cpu, mask);
++		cpumask_set_cpu(cpu, &dsu_pmu->associated_cpus);
+ 	}
+ 	return 0;
+ }
+ 
++/**
++ * dsu_pmu_acpi_get_cpus: Get the list of CPUs in the cluster
++ * from ACPI.
++ */
++static int dsu_pmu_acpi_get_cpus(struct platform_device *pdev)
++{
++	int i, cpu, ret;
++	const union acpi_object *obj;
++	struct acpi_device *adev = ACPI_COMPANION(&pdev->dev);
++	struct dsu_pmu *dsu_pmu =
++		(struct dsu_pmu *) platform_get_drvdata(pdev);
++
++	ret = acpi_dev_get_property(adev, "cpus", ACPI_TYPE_PACKAGE, &obj);
++	if (ret < 0)
++		return ret;
++
++	for (i = 0; i < obj->package.count; i++) {
++		/* Each element is the MPIDR of associated cpu */
++		for_each_possible_cpu(cpu) {
++			if (cpu_physical_id(cpu) ==
++				obj->package.elements[i].integer.value)
++				cpumask_set_cpu(cpu, &dsu_pmu->associated_cpus);
++		}
++	}
++	return 0;
++}
++
++static int dsu_pmu_platform_get_cpus(struct platform_device *pdev)
++{
++	int ret = -ENOENT;
++	struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
++
++	if (IS_ERR_OR_NULL(fwnode))
++		return ret;
++
++	if (is_of_node(fwnode))
++		ret = dsu_pmu_dt_get_cpus(pdev);
++	else if (is_acpi_device_node(fwnode))
++		ret = dsu_pmu_acpi_get_cpus(pdev);
++
++	return ret;
++}
++
+ /*
+  * dsu_pmu_probe_pmu: Probe the PMU details on a CPU in the cluster.
+  */
+@@ -683,7 +730,9 @@ static int dsu_pmu_device_probe(struct platform_device *pdev)
+ 	if (IS_ERR(dsu_pmu))
+ 		return PTR_ERR(dsu_pmu);
+ 
+-	rc = dsu_pmu_dt_get_cpus(pdev->dev.of_node, &dsu_pmu->associated_cpus);
++	platform_set_drvdata(pdev, dsu_pmu);
++
++	rc = dsu_pmu_platform_get_cpus(pdev);
+ 	if (rc) {
+ 		dev_warn(&pdev->dev, "Failed to parse the CPUs\n");
+ 		return rc;
+@@ -707,7 +756,6 @@ static int dsu_pmu_device_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	dsu_pmu->irq = irq;
+-	platform_set_drvdata(pdev, dsu_pmu);
+ 	rc = cpuhp_state_add_instance(dsu_pmu_cpuhp_state,
+ 						&dsu_pmu->cpuhp_node);
+ 	if (rc)
+@@ -754,11 +802,19 @@ static const struct of_device_id dsu_pmu_of_match[] = {
+ 	{ .compatible = "arm,dsu-pmu", },
+ 	{},
+ };
++MODULE_DEVICE_TABLE(of, dsu_pmu_of_match);
++
++static const struct acpi_device_id dsu_pmu_acpi_match[] = {
++	{ "ARMHD500", 0},
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, dsu_pmu_acpi_match);
+ 
+ static struct platform_driver dsu_pmu_driver = {
+ 	.driver = {
+ 		.name	= DRVNAME,
+ 		.of_match_table = of_match_ptr(dsu_pmu_of_match),
++		.acpi_match_table = ACPI_PTR(dsu_pmu_acpi_match),
+ 	},
+ 	.probe = dsu_pmu_device_probe,
+ 	.remove = dsu_pmu_device_remove,
+@@ -827,7 +883,6 @@ static void __exit dsu_pmu_exit(void)
+ module_init(dsu_pmu_init);
+ module_exit(dsu_pmu_exit);
+ 
+-MODULE_DEVICE_TABLE(of, dsu_pmu_of_match);
+ MODULE_DESCRIPTION("Perf driver for ARM DynamIQ Shared Unit");
+ MODULE_AUTHOR("Suzuki K Poulose <suzuki.poulose@arm.com>");
+ MODULE_LICENSE("GPL v2");
+-- 
+2.7.4
+
