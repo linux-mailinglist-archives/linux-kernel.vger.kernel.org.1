@@ -2,119 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541CE1CE24D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2FD1CE242
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730943AbgEKSKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 14:10:42 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:38421 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726891AbgEKSKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 14:10:42 -0400
-Received: from localhost.localdomain (ip5f5af07e.dynamic.kabel-deutschland.de [95.90.240.126])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1730981AbgEKSHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 14:07:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726310AbgEKSHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 14:07:34 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 3091F2002EE0A;
-        Mon, 11 May 2020 20:10:39 +0200 (CEST)
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Subject: [PATCH] clocksource: Add `nopmtmr` to disable ACPI PM Timer at run-time
-Date:   Mon, 11 May 2020 20:07:02 +0200
-Message-Id: <20200511180702.27893-1-pmenzel@molgen.mpg.de>
-X-Mailer: git-send-email 2.26.2
+        by mail.kernel.org (Postfix) with ESMTPSA id DF289206B9;
+        Mon, 11 May 2020 18:07:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589220453;
+        bh=AjhQehnqqCRy3dkHsP4GQFNBPBEeAG//pizYIZloL9w=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=E1QD+ZjefiTyJwsr5Xk2RJkDLYwElxGwtsjE1tkGhGSCRnrfETbo1KtdzhmvdlddW
+         R2aKvTsIUgFifb/bUmFyHcT0QW0baNWgjDQVpZ72o5dHomYZD9Mm5uq5DmZQxhUNQv
+         niwWga+chMstorT26VX23UI6d6cMy3Fr+03gTeLE=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id CE255352271C; Mon, 11 May 2020 11:07:33 -0700 (PDT)
+Date:   Mon, 11 May 2020 11:07:33 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Qian Cai <cai@lca.pw>, Elver Marco <elver@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [PATCH -next v2] locking/osq_lock: annotate a data race in
+ osq_lock
+Message-ID: <20200511180733.GA2869@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200509161217.GN2869@paulmck-ThinkPad-P72>
+ <45D9EEEB-D887-485D-9045-417A7F2C6A1A@lca.pw>
+ <20200509213654.GO2869@paulmck-ThinkPad-P72>
+ <20200511155812.GB22270@willie-the-truck>
+ <20200511164319.GV2869@paulmck-ThinkPad-P72>
+ <20200511165216.GA23081@willie-the-truck>
+ <20200511172918.GW2869@paulmck-ThinkPad-P72>
+ <20200511173412.GC23081@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200511173412.GC23081@willie-the-truck>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initializing the ACPI Power Management Timer takes 33 ms on the ASUS
-F2A85-M PRO.
+On Mon, May 11, 2020 at 06:34:13PM +0100, Will Deacon wrote:
+> On Mon, May 11, 2020 at 10:29:18AM -0700, Paul E. McKenney wrote:
+> > On Mon, May 11, 2020 at 05:52:17PM +0100, Will Deacon wrote:
+> > > On Mon, May 11, 2020 at 09:43:19AM -0700, Paul E. McKenney wrote:
+> > > > On Mon, May 11, 2020 at 04:58:13PM +0100, Will Deacon wrote:
+> > > > > On Sat, May 09, 2020 at 02:36:54PM -0700, Paul E. McKenney wrote:
+> > > > > > diff --git a/kernel/locking/osq_lock.c b/kernel/locking/osq_lock.c
+> > > > > > index 1f77349..1de006e 100644
+> > > > > > --- a/kernel/locking/osq_lock.c
+> > > > > > +++ b/kernel/locking/osq_lock.c
+> > > > > > @@ -154,7 +154,11 @@ bool osq_lock(struct optimistic_spin_queue *lock)
+> > > > > >  	 */
+> > > > > >  
+> > > > > >  	for (;;) {
+> > > > > > -		if (prev->next == node &&
+> > > > > > +		/*
+> > > > > > +		 * cpu_relax() below implies a compiler barrier which would
+> > > > > > +		 * prevent this comparison being optimized away.
+> > > > > > +		 */
+> > > > > > +		if (data_race(prev->next) == node &&
+> > > > > >  		    cmpxchg(&prev->next, node, NULL) == node)
+> > > > > >  			break;
+> > > > > 
+> > > > > I'm fine with the data_race() placement, but I don't find the comment
+> > > > > very helpful. We assign the result of a READ_ONCE() to 'prev' in the
+> > > > > loop, so I don't think that the cpu_relax() is really relevant.
+> > > > 
+> > > > Suppose that the compiler loaded a value that was not equal to "node".
+> > > > In that case, the cmpxchg() won't happen, so something else must force
+> > > > the compiler to do the reload in order to avoid an infinite loop, right?
+> > > > Or am I missing something here?
+> > > 
+> > > Then we just go round the loop and reload prev:
+> > > 
+> > > 	prev = READ_ONCE(node->prev);
+> > > 
+> > > which should be enough to stop the compiler, no?
+> > 
+> > Yes, that would also work.  Either have the cpu_relax() or a barrier()
+> > or whatever on the one hand, or, as you say, turn the data_race() into
+> > a READ_ONCE().  I personally prefer the READ_ONCE() myself, unless that
+> > would undesirably suppress other KCSAN warnings.
+> 
+> No, I mean here is the code after this patch is applied:
+> 
+> 	for (;;) {
+> 		if (data_race(prev->next) == node &&
+> 		    cmpxchg(&prev->next, node, NULL) == node)
+> 			break;
+> 
+> 		/*
+> 		 * We can only fail the cmpxchg() racing against an unlock(),
+> 		 * in which case we should observe @node->locked becomming
+> 		 * true.
+> 		 */
+> 		if (smp_load_acquire(&node->locked))
+> 			return true;
+> 
+> 		cpu_relax();
+> 
+> 		/*
+> 		 * Or we race against a concurrent unqueue()'s step-B, in which
+> 		 * case its step-C will write us a new @node->prev pointer.
+> 		 */
+> 		prev = READ_ONCE(node->prev);
+> 	}
+> 
+> I'm saying that this READ_ONCE at the end of the loop should be sufficient
+> to stop the compiler making value assumptions about prev->next. Do you
+> agree?
 
-     [    0.248373] calling  init_acpi_pm_clocksource+0x0/0x197 @ 1
-     [    0.282913] clocksource: acpi_pm: mask: 0xffffff max_cycles: 0xffffff, max_idle_ns: 2085701024 ns
-     [    0.282916] initcall init_acpi_pm_clocksource+0x0/0x197 returned 0 after 33731 usecs
+Good point, and I would certainly hope so!
 
-Currently, it’s only possible to disable that clocksource with the
-Kconfig option `X86_PM_TIMER`, so add the option `nopmtmr` to disable
-that clocksource at run-time.
-
-     [    0.248381] calling  init_acpi_pm_clocksource+0x0/0x197 @ 1
-     [    0.248383] initcall init_acpi_pm_clocksource+0x0/0x197 returned -19 after 0 usecs
-
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
----
-Please consider this a request for comments.
-
-1.  What would be the correct return value? Can ENODEV be used?
-2.  Should the attribute `__read_mostly` be added?
----
- Documentation/admin-guide/kernel-parameters.txt |  2 ++
- drivers/clocksource/acpi_pm.c                   | 15 +++++++++++++++
- 2 files changed, 17 insertions(+)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 7bc83f3d9bdf..4ea7fa94b015 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3246,6 +3246,8 @@
- 
- 	nopcid		[X86-64] Disable the PCID cpu feature.
- 
-+	nopmtmr		[X86] Disable the ACPI Power Management Timer.
-+
- 	norandmaps	Don't use address space randomization.  Equivalent to
- 			echo 0 > /proc/sys/kernel/randomize_va_space
- 
-diff --git a/drivers/clocksource/acpi_pm.c b/drivers/clocksource/acpi_pm.c
-index eb596ff9e7bb..c1249f9c9acf 100644
---- a/drivers/clocksource/acpi_pm.c
-+++ b/drivers/clocksource/acpi_pm.c
-@@ -30,6 +30,7 @@
-  * in arch/i386/kernel/acpi/boot.c
-  */
- u32 pmtmr_ioport __read_mostly;
-+static bool nopmtmr;
- 
- static inline u32 read_pmtmr(void)
- {
-@@ -177,6 +178,9 @@ static int __init init_acpi_pm_clocksource(void)
- 	u64 value1, value2;
- 	unsigned int i, j = 0;
- 
-+	if (nopmtmr)
-+		return -ENODEV;
-+
- 	if (!pmtmr_ioport)
- 		return -ENODEV;
- 
-@@ -239,3 +243,14 @@ static int __init parse_pmtmr(char *arg)
- 	return 1;
- }
- __setup("pmtmr=", parse_pmtmr);
-+
-+/*
-+ * Allow to disable PMTimer at run-time.
-+ */
-+static int __init parse_nopmtmr(char *arg)
-+{
-+	nopmtmr = true;
-+
-+	return 0;
-+}
-+__setup("nopmtmr", parse_nopmtmr);
--- 
-2.26.2
-
+							Thanx, Paul
