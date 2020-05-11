@@ -2,106 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAD31CDA5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B1D1CDA2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729940AbgEKMoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 08:44:07 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:45347 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727994AbgEKMoH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 08:44:07 -0400
-Received: from mail-qk1-f172.google.com ([209.85.222.172]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MOzGc-1jkAUS32IG-00PQ2t; Mon, 11 May 2020 14:44:04 +0200
-Received: by mail-qk1-f172.google.com with SMTP id s186so7662073qkd.4;
-        Mon, 11 May 2020 05:44:04 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaIsogpDW4q0xfIfh2nLLDItGl3HD4VDuhTGW08gi+f/xDp5E9p
-        Gx9Ln2nXu7Dp2huGzlFvqP7aEMDXupeYft+tGNc=
-X-Google-Smtp-Source: APiQypJj5dbLl2D8uRc+Ry1heWpkBlw/Bp5L9Wsf0VuOnzzkwLnibuXV3LsJgJmP788MknPtCTQN8rBbz17c2WDRPWk=
-X-Received: by 2002:a37:c96:: with SMTP id 144mr13680641qkm.138.1589201043482;
- Mon, 11 May 2020 05:44:03 -0700 (PDT)
+        id S1730130AbgEKMi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 08:38:58 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4390 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730049AbgEKMi5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 08:38:57 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 97C0786391CC538598C0;
+        Mon, 11 May 2020 20:38:49 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 11 May 2020 20:38:48 +0800
+From:   Ma Feng <mafeng.ma@huawei.com>
+To:     <linux@armlinux.org.uk>, <ben.dooks@codethink.co.uk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ARM: topology: make cpu_corepower_mask static
+Date:   Mon, 11 May 2020 20:44:55 +0800
+Message-ID: <1589201095-12884-1-git-send-email-mafeng.ma@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-References: <20200508100100.20740-1-grygorii.strashko@ti.com>
- <20200508100100.20740-3-grygorii.strashko@ti.com> <CAK8P3a0vewSiFc4rXu43_bs_A85EYx12_YuyBaU3PYJ1HszE=w@mail.gmail.com>
- <6614f29d-1796-18d9-9b78-214f56964a35@ti.com>
-In-Reply-To: <6614f29d-1796-18d9-9b78-214f56964a35@ti.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 11 May 2020 14:43:47 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a19RC1hPZkLiGCEHFuHDNxNLiAg34RdbBZ=gxDhRg4RpA@mail.gmail.com>
-Message-ID: <CAK8P3a19RC1hPZkLiGCEHFuHDNxNLiAg34RdbBZ=gxDhRg4RpA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] soc: ti: add k3 platforms chipid module driver
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Santosh Shilimkar <ssantosh@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Dave Gerlach <d-gerlach@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:wPzum95NXpE728ysndebC9ABEw3kiSk6N1VPe2lsUP1a2SHFC8u
- ZBahnPzRO0bbtflhNvy2BOlFbakk9ShIPDNbm+fXch9yDKlcczcSVhQIX9+daJMVV5568VO
- o49K2CL0eGD60jjNtPMTPacqZCheBw3NvRpiH3gx73I09VbhJbJJYgH/P2eRVEh/dNNo29D
- /4xZc5Qvy3UxzvDwdgWDw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8T/FTbHk/CE=:gqjAp2ER7SwEAc2ritTiOQ
- viTpkGFgZiU+L0k1FSywlqR/TRE4s5mQQm8w/g7XNWobZjRO0XQBn+Zhjt0fnKbLKJTVyaD8w
- HWiJxqHTiXnK1loAPZr+jeC+VDVaAvbIU00Hxw3/c0bXFWXSgwTStnDitj/mrb6lnvxmcLGm1
- LrHsuZpnhZstQaN+MjeMuOM+7bAwPnowqM8O1CnnAcB9sVM2UH6wsQE1SCRauzsW7AWqIN8Zu
- Y7j4tD46h4Aj0L6buBsLPUaZaQjric1wNA4SD7z05wCgNaB8NJFcPQKD3LKbXMST+VTuW4Pq+
- 0jAXL2VhHE0ddY2Gtf7Ps4ej4vjCFyeRyTXjT7kybA0Ed4WxINBjSnv4lRtMzjzzxu4azHhDi
- H1am1CFB2+sYeUAl6iZ4yWvxpY8kIImsAi79HL/12K7ZyOvB8kbkwW+44OQ6FA+dU84ipbtin
- /7Znz/QNFDD3EXAtoVbhpwCtYOlHx59Z8tNsAhJ8Kv7vemgT/32vHdn0mA1zPjbfkDvcwDsyY
- JXsTttotUiZS4fPSvH2fW6+PDeQdlP6GRjlE5wxsmAd1nVA72RW/Zuseau0tD7n63Cgv6ELyS
- DJ6GqaXyRvDoWepa90eUunQRa1zaxhQc8hiNA9ioXo8ATOYvmMaFqAXj6/eFTjPOJHOFKG0ML
- XsMkqIPVJoAyYaYkSVMds3HKbYimesFXzzF40cNfCbXiVl3CVredoQl2iNht6rrJC3mTUBP2E
- KibVpfGiL3gwP6Xo/RhTxAT8BtZFB1j0esRgfFZpOM8xn0qnWQAIrIiNMKvxJBa14jjcIjNSm
- igR+s8K+Ua+HTl70X2IrQRtxSuI8thn0DCURg+jBGMCquELTXI=
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 1:11 PM Grygorii Strashko
-<grygorii.strashko@ti.com> wrote:
->
-> Hi Arnd,
->
-> On 09/05/2020 01:17, Arnd Bergmann wrote:
-> > On Fri, May 8, 2020 at 12:01 PM Grygorii Strashko
-> > <grygorii.strashko@ti.com> wrote:
-> >
-> >> +static int __init k3_chipinfo_init(void)
-> >> +{
-> >> +       struct soc_device_attribute *soc_dev_attr;
-> >> +       struct soc_device *soc_dev;
-> >> +       struct device_node *node;
-> >> +       struct regmap *regmap;
-> >> +       u32 partno_id;
-> >> +       u32 variant;
-> >> +       u32 jtag_id;
-> >> +       u32 mfg;
-> >> +       int ret;
-> >> +
-> >> +       node = of_find_compatible_node(NULL, NULL, "ti,am654-chipid");
-> >> +       if (!node)
-> >> +               return -ENODEV;
-> >
-> > This will fail the initcall and print a warning when the kernel runs on any
-> > other SoC. Would it be possible to just make this a platform_driver?
-> >
-> > If not, I think you should silently return success when the device
-> > node is absent.
->
-> Thank you for your report.
-> Can' make it platform drv., as the SoC info need to be accessible by divers early.
+Fix sparse warning:
 
-Which drivers in particular? In most cases you should be able to still do this
-right by relying on initcall ordering as long as this one can only be built-in
-(or possibly only a module for compile-testing).
+arch/arm/kernel/topology.c:184:22: warning: symbol 'cpu_corepower_mask'
+was not declared. Should it be static?
 
-      Arnd
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Ma Feng <mafeng.ma@huawei.com>
+---
+ arch/arm/kernel/topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/kernel/topology.c b/arch/arm/kernel/topology.c
+index b5adaf7..563fdaa 100644
+--- a/arch/arm/kernel/topology.c
++++ b/arch/arm/kernel/topology.c
+@@ -181,7 +181,7 @@ static inline void update_cpu_capacity(unsigned int cpuid) {}
+  * The current assumption is that we can power gate each core independently.
+  * This will be superseded by DT binding once available.
+  */
+-const struct cpumask *cpu_corepower_mask(int cpu)
++static const struct cpumask *cpu_corepower_mask(int cpu)
+ {
+ 	return &cpu_topology[cpu].thread_sibling;
+ }
+--
+2.6.2
+
