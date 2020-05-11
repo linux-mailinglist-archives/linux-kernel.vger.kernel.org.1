@@ -2,184 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8FC1CE1BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 19:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1831CE1A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 19:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730988AbgEKRbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 13:31:06 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2188 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729698AbgEKRbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 13:31:06 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 1BBEFD5F880730EEF03C;
-        Mon, 11 May 2020 18:31:04 +0100 (IST)
-Received: from localhost (10.47.24.74) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 11 May
- 2020 18:31:03 +0100
-Date:   Mon, 11 May 2020 18:30:38 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Saravanan Sekar <saravanan@linumiz.com>
-CC:     Jonathan Cameron <jic23@kernel.org>, <robh+dt@kernel.org>,
-        <knaack.h@gmx.de>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <broonie@kernel.org>, <lgirdwood@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH v2 3/4] iio: accel: wsen-itds accel documentation
-Message-ID: <20200511183038.000031cf@Huawei.com>
-In-Reply-To: <9e7b0365-deed-a647-ec36-b4e6ccfa2ae4@linumiz.com>
-References: <20200429133943.18298-1-saravanan@linumiz.com>
-        <20200429133943.18298-4-saravanan@linumiz.com>
-        <20200503130103.16a92131@archlinux>
-        <9e7b0365-deed-a647-ec36-b4e6ccfa2ae4@linumiz.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1730800AbgEKR0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 13:26:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:36646 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729698AbgEKR0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 13:26:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 658B930E;
+        Mon, 11 May 2020 10:26:08 -0700 (PDT)
+Received: from [10.37.12.116] (unknown [10.37.12.116])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2C3493F305;
+        Mon, 11 May 2020 10:26:00 -0700 (PDT)
+Subject: Re: [PATCH] coresight: platform: use dev_warn instead of
+ dev_warn_once
+To:     mathieu.poirier@linaro.org, kathirav@codeaurora.org
+Cc:     mike.leach@linaro.org, alexander.shishkin@linux.intel.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1588933721-18700-1-git-send-email-kathirav@codeaurora.org>
+ <20200511165851.GB13202@xps15>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <2d59194a-2785-8762-81cd-bef34c6a51ec@arm.com>
+Date:   Mon, 11 May 2020 18:31:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <20200511165851.GB13202@xps15>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.24.74]
-X-ClientProxiedBy: lhreml732-chm.china.huawei.com (10.201.108.83) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 May 2020 20:11:55 +0200
-Saravanan Sekar <saravanan@linumiz.com> wrote:
-
-> Hi Jonathan,
+On 05/11/2020 05:58 PM, Mathieu Poirier wrote:
+> Hi Kathiravan,
 > 
-> On 03/05/20 2:01 pm, Jonathan Cameron wrote:
-> > On Wed, 29 Apr 2020 15:39:42 +0200
-> > Saravanan Sekar<saravanan@linumiz.com>  wrote:
-> >  
-> >> Add documentation about device operating mode and output data range
-> >> supported according to operating mode
-> >>
-> >> Signed-off-by: Saravanan Sekar<saravanan@linumiz.com>
-> >> ---
-> >>   .../ABI/testing/sysfs-bus-iio-wsen-itds       | 23 +++++++++++++++++++
-> >>   1 file changed, 23 insertions(+)
-> >>   create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-wsen-itds
-> >>
-> >> diff --git a/Documentation/ABI/testing/sysfs-bus-iio-wsen-itds b/Documentation/ABI/testing/sysfs-bus-iio-wsen-itds
-> >> new file mode 100644
-> >> index 000000000000..5979f2b8aa1a
-> >> --- /dev/null
-> >> +++ b/Documentation/ABI/testing/sysfs-bus-iio-wsen-itds
-> >> @@ -0,0 +1,23 @@
-> >> +What:		/sys/bus/iio/devices/iio\:device0/in_accel_samp_freq_available
-> >> +KernelVersion:	5.7
-> >> +Contact:	linux-iio@vger.kernel.org
-> >> +Description:
-> >> +		Reading gives range of sample frequencies available for current operating mode
-> >> +		after one data has generated.  
-> > This is standard ABI so should be the main docs, not here.
-> > It also takes absolute precedence over the power modes (as mentioned below, no
-> > standard userspace will be able to use those).  So if the frequency is
-> > only available in high perf mode, then we change to high perf mode.
-> >  
-> >> +
-> >> +		Access: Read
-> >> +		Valid values: represented in Hz
-> >> +		- range [12.5, 1600] for high permormance mode
-> >> +		- range [1.6, 200] for normal/low power mode
-> >> +
-> >> +What:		/sys/bus/iio/devices/iio\:device0/operating_mode
-> >> +KernelVersion:	5.7
-> >> +Contact:	linux-iio@vger.kernel.org
-> >> +Description:
-> >> +		Represents the device operating mode. High performance mode gives high output
-> >> +		data rate and low noise compared to normal mode. Normal mode consumes less
-> >> +		current.  In single shot device enters to lowpower after one data has
-> >> +		generated.
-> >> +
-> >> +		Access: Read, Write
-> >> +		Valid values: "lowpower", "normal", "high_perf", "single_shot"  
-> > The issue with these sort of 'mode' interface is almost no userspace will ever use them.
-> > They are too unpredictable across different types of devices.  
-> I don't understand how can we assume or say no one will use this. The 
-> device supports multiple features
-> and my understanding is driver should support according to device, not 
-> reverse.
-
-The aim of a subsystem and an ABI definition for such is to 'unify' and provide standard
-ways of doing things.  It is against that 'standard' that userspace code will generally
-be written.  So every time we define custom ABI for a device, we have basically written
-something that the vast majority of userspace code will never use.  The only exception
-is code written for a particular device.
-
-So we have two options for features like this:
-
-1) Map them to existing ABI wherever possible - ensure the code people have written
-   already for userspace will do what they would expect.  Here it's a case of providing
-   'reasonable' configuration for the full range of sampling frequencies.  That may
-   miss some corners that are optimal but we may have to live with that.
-
-2) Define new ABI that is 'generic' so that future user space code can use it.
-   The problem with power modes is they are extremely device specific, so this second
-   option is one we have never succeeded with.  In theory you could define a set of
-   modes, but they would need to fully describing.  As in you would need a record that
-   tells userspace every characteristic that is affected by each mode.
-   To put it bluntly software doesn't read data sheets.  (nor for that matter to
-   most userspace code developers :)
-
-> This is more or
-> less device specific and no sure idea about bring all the device in one 
-> umbrella.
-
-We have existing userspace code - quite a bit of it.  That code should work for your device.
-It doesn't know about your own magic interface, so it won't use it.
-That's the point of standardization around one interface, we want it to work.
-Note that the only way we make that happen is to review new ABI very carefully
-and often block it entirely.
-
-> > Some of these should also not be exposed to userspace anyway as they are about 'how'
-> > you are using the driver.  For example, if you aren't doing triggered capture then
-> > single_shot is almost always the correct option. Annoyingly I see high performance
-> > mode gives lower noise...
-> >
-> > So no need to expose single_shot to userspace.
-> >
-> > For the others we are just looking at different power vs speed and accuracy trade offs.
-> > Those are better exposed by what they effect.  Here the big control for that is
-> > sampling frequency.
-> >
-> > So if we assume the user is never going to touch this control (if it's even there)
-> > then we probably want to assume they want the best possible accuracy for whatever
-> > frequency they are running at.  So transition across the modes to provide that.
-> >
-> > Should we ever support low power mode?  It sounds nice on paper, but in reality
-> > userspace won't use so I suspect we should just drop it - certainly in an initial
-> > patch submission (as it will hold up acceptance).  Even if we did support
-> > it, as mentioned above ABI controls will take precedence so we are looking
-> > at a 'hint' not a control of mode.
-> >
-> > ABI is a pain, and we will put a lot of effort into not expanding it unless
-> > there is a good usecase plus no way of mapping to existing ABI.  
-> Obviously without any reason or requirement device manufacture won't 
-> come-up these kind of feature.
-
-Agreed, there are clear reasons for doing this, but until we understand the
-target use case it is very hard to have a discussion about how an ABI will
-be expanded.
-
-> I will change the driver as you don't accept at least for initial version.
-
-Great.
-
-Thanks,
-
-Jonathan
-
-
+> On Fri, May 08, 2020 at 03:58:41PM +0530, Kathiravan T wrote:
+>> When more than one coresight components uses the obsolete DT bindings,
+>> warning is displayed for only one component and not for the others.
+>> Lets warn it for all components by replacing dev_warn_once with dev_warn.
+>>
+>> Signed-off-by: Kathiravan T <kathirav@codeaurora.org>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-platform.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
+>> index 43418a2..b7d9a02 100644
+>> --- a/drivers/hwtracing/coresight/coresight-platform.c
+>> +++ b/drivers/hwtracing/coresight/coresight-platform.c
+>> @@ -284,7 +284,7 @@ static int of_get_coresight_platform_data(struct device *dev,
+>>   	if (!parent) {
+>>   		legacy_binding = true;
+>>   		parent = node;
+>> -		dev_warn_once(dev, "Uses obsolete Coresight DT bindings\n");
+>> +		dev_warn(dev, "Uses obsolete Coresight DT bindings\n");
 > 
+> We made a concious decision to use dev_warn_once() rather than dev_warn().
+> There can be a lot of coresight devices on a platform and warning for every
+> device doesn't do anything more than adding noise.
 > 
-> Thanks,
-> Saravanan
-> 
+> If one device is using obsolete bindings the others very likely to do so as
+> well.  While fixing one device, checking the remaining devices should be
+> intuitive.
 
+Exactly ! Or someone could repeat the process until all are fixed ;-)
 
+Cheers
+Suzuki
