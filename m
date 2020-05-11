@@ -2,124 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5871CDA93
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D6C1CDAA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729416AbgEKM7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 08:59:02 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:58093 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727827AbgEKM7B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 08:59:01 -0400
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id BBCCF24001A;
-        Mon, 11 May 2020 12:58:56 +0000 (UTC)
-Date:   Mon, 11 May 2020 14:58:55 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Christophe Kerello <christophe.kerello@st.com>
-Cc:     <richard@nod.at>, <vigneshr@ti.com>, <robh+dt@kernel.org>,
-        <mark.rutland@arm.com>, <gregkh@linuxfoundation.org>,
-        <boris.brezillon@collabora.com>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>, <marex@denx.de>
-Subject: Re: [PATCH v4 10/10] mtd: rawnand: stm32_fmc2: get resources from
- parent node
-Message-ID: <20200511145855.35c6abfb@xps13>
-In-Reply-To: <0c704fea-f2a6-2cec-8741-d322acf6afd5@st.com>
-References: <1588756279-17289-1-git-send-email-christophe.kerello@st.com>
-        <1588756279-17289-11-git-send-email-christophe.kerello@st.com>
-        <20200511111855.48216940@xps13>
-        <3377adc6-3e5e-b9b7-12be-c7aa44bfac82@st.com>
-        <20200511135926.3e5c622d@xps13>
-        <0c704fea-f2a6-2cec-8741-d322acf6afd5@st.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1730025AbgEKNBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 09:01:43 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:56596 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726687AbgEKNBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 09:01:43 -0400
+Received: from [10.130.0.52] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT9s5TLleRVczAA--.23S3;
+        Mon, 11 May 2020 20:59:38 +0800 (CST)
+References: <1587452704-1299-1-git-send-email-yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v4 0/4] Fix some issues about kmod
+Cc:     yangtiezhu@loongson.cn, Markus.Elfring@web.de,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        lixuefeng@loongson.cn
+To:     akpm@linux-foundation.org, jeyu@kernel.org, mcgrof@kernel.org,
+        shuah@kernel.org
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <9b50d2b1-2fb4-10a1-5966-5458507a9b05@loongson.cn>
+Date:   Mon, 11 May 2020 20:59:37 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1587452704-1299-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxT9s5TLleRVczAA--.23S3
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYF7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2js
+        IEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
+        5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeV
+        CFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2
+        V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUb0D73UUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+Hi,
 
-Christophe Kerello <christophe.kerello@st.com> wrote on Mon, 11 May
-2020 14:47:09 +0200:
+Could you please apply the following three patches?
 
-> Hi Miquel,
-> 
-> On 5/11/20 1:59 PM, Miquel Raynal wrote:
-> > Hi Christophe,
-> > 
-> > Christophe Kerello <christophe.kerello@st.com> wrote on Mon, 11 May
-> > 2020 12:21:03 +0200:
-> >   
-> >> Hi Miquel,
-> >>
-> >> On 5/11/20 11:18 AM, Miquel Raynal wrote:  
-> >>> Hi Christophe,
-> >>>
-> >>> Christophe Kerello <christophe.kerello@st.com> wrote on Wed, 6 May 2020
-> >>> 11:11:19 +0200:  
-> >>>    >>>> FMC2 EBI support has been added. Common resources (registers base  
-> >>>> and clock) are now shared between the 2 drivers. It means that the
-> >>>> common resources should now be found in the parent device when EBI
-> >>>> node is available.
-> >>>>
-> >>>> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
-> >>>> ---  
-> >>>
-> >>> [...]  
-> >>>    >>>> +  
-> >>>> +static bool stm32_fmc2_nfc_check_for_parent(struct platform_device *pdev)
-> >>>> +{
-> >>>> +	u32 i;
-> >>>> +	int nb_resources = 0;
-> >>>> +
-> >>>> +	/* Count the number of resources in reg property */
-> >>>> +	for (i = 0; i < pdev->num_resources; i++) {
-> >>>> +		struct resource *res = &pdev->resource[i];
-> >>>> +
-> >>>> +		if (resource_type(res) == IORESOURCE_MEM)
-> >>>> +			nb_resources++;
-> >>>> +	}
-> >>>> +
-> >>>> +	/* Each CS needs 3 resources defined (data, cmd and addr) */
-> >>>> +	if (nb_resources % 3)
-> >>>> +		return false;
-> >>>> +
-> >>>> +	return true;
-> >>>> +}  
-> >>>
-> >>> This function looks fragile. Why not just checking the compatible
-> >>> string of the parent node?  
-> >>>    >>  
-> >> Yes, it is another way to check that we have an EBI parent node.
-> >>
-> >> In this implementation, I was checking the number of reg tuples.
-> >> In case we have 6, it means that the register base address is defined in the parent node (EBI node).
-> >> In case we have 7, it means that the register base address is defined in the current node (NFC node).  
-> > 
-> > Yes, I understand what you are doing, but I kind of dislike the logic.
-> > Relying on the number of reg tuples is something that can be done (I
-> > used it myself one time), but I think this is more a hack that you do
-> > when you have no other way to differentiate. I guess the proper way
-> > would be to look at the parent's compatible. If it matches what you
-> > expect, then you can store the dev->of_node->parent->dev somewhere in
-> > your controller's structure and then use it to initialize the clock and
-> > regmap. This way you don't have to move anything else in the probe path.
-> >   
-> 
-> OK, I will check the compatible string of the parent device using of_device_is_compatible API in v5.
-> In case of the parent is found, I will add it in the structure of the controller (dev_parent).
-> I will rely on this field only to get the common resources (the register base address and the clock) in the NFC node or in the EBI node.
+[v4,1/4] selftests: kmod: Use variable NAME in kmod_test_0001()
+https://lore.kernel.org/patchwork/patch/1227980/
 
-I had something slightly different in mind: what about setting a
-default value to this field as being the controller's device itself.
-This way, once it is set to either the parent device or the device
-itself, you can use it "blindly" in your devm_clk_get/regmap_init calls?
+[v4,2/4] kmod: Remove redundant "be an" in the comment
+https://lore.kernel.org/patchwork/patch/1227982/
+
+[v4,4/4] test_kmod: Avoid potential double free in trigger_config_run_type()
+https://lore.kernel.org/patchwork/patch/1227978/
+
+Thanks,
+Tiezhu Yang
+
