@@ -2,224 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984981CD55F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 11:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE881CD568
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 11:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729439AbgEKJgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 05:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725790AbgEKJgj (ORCPT
+        id S1729491AbgEKJhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 05:37:11 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:21744 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729459AbgEKJhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 05:36:39 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D19C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 02:36:38 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id x73so6930691lfa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 02:36:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BZCRMF2/Mc5tNQ7BKp3A1EJqxFWcIg8LW8tmexmzs48=;
-        b=HuZYxy6J2ZkS5FZKxM9pdnuJVqjysWauuV2D5iWSQVp1aledpnDTittIQwaGmKRaaQ
-         N1IBxfyfFxPuzsi7ZaGRPxo1L1OmaSlpjAvVp4GM3ATEJh5GfBu3dgzIkgpD5jlLbU5r
-         aqfGthM55ihOYmvSt7j9k3GwDtIOTBtXHqh+clDvnBBUQQz0p9PZgtA5l5Yh+QSn29Hn
-         oIg0kjLalUJmKpKUuWiICqQTBrGyZQwmtEerMovY+JOFGzOS3vjcxKyVwI0xfZBkkkn/
-         pXrl1GFvEfBSUARGlqEbRCyvroAVaI9qo6kVBLYsVk3P1VfAXSRNd+XTMsb5Y05Ri8HS
-         siwA==
+        Mon, 11 May 2020 05:37:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589189828;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9/z8oJy0DrW82NKQzFo0pYOXFvWx+Vn3ieQ420AJ3lc=;
+        b=Or824gshAxJh9WOS+X/WmIVuhaACN/xsBpOMow3E7W7/tNv3v5zydn5wBdNRVYnKgMGqZd
+        hIRYGEyJpBX3pyvj0YrEdtX07AhYX1+AuEUmgX4kjIaQKr6/Viugg2zG5STQwWBQA2NORY
+        y0JlmGkDpG9l4Oc4H8vCPart9d87y9U=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-380-x5Nmtl54NsWQZnneZiV0WA-1; Mon, 11 May 2020 05:37:05 -0400
+X-MC-Unique: x5Nmtl54NsWQZnneZiV0WA-1
+Received: by mail-wr1-f69.google.com with SMTP id h12so4974576wrr.19
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 02:37:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BZCRMF2/Mc5tNQ7BKp3A1EJqxFWcIg8LW8tmexmzs48=;
-        b=lLqpnHwyZrr3YjyBsbJZjIn9aX45iwot2Q6tplXs21r/tgDsPiawnVcITP/5MimL40
-         za56yE9wen3Fsp2jE7RtYplX60PVPscefSiHy78FDq6+SsWEnoIcbe0hVLLOpB7CufkU
-         2xT59SMJUXuoU6D1FiyJ7EhFHseDQuQtGFxfHulB8DQn9rs2//WQSfKBaDmO6eDK/tuB
-         dXaBPxo0BwjfDZpiqG1GMZzDmtMegz9HCQy8/K1EiOEdqn9fgjqNiAopBtC/OO/bcsQV
-         FGsnjkiE+N7MgbQy2t5L0Z5yjbRXNmKNTFX0PM41GLDFdlrOnhcwPFpKp/7XrX4O2m6a
-         aURw==
-X-Gm-Message-State: AOAM5326f9sgglo5LUTzT4egPhkh2nOq2GpzCGuIIcB3IcQflHiHcGeO
-        F0e7cT9epVtJCiDimnr370B5+rkw0rsz7yyBxV4dQw==
-X-Google-Smtp-Source: ABdhPJwT41GQxfG4Rosu+MW5aPgQjZJB/NhcfXXX70DGKhnexGfAF68cbugxdC8dGM6UVKoMzmBOhGAwKrVJXxzU090=
-X-Received: by 2002:ac2:46c1:: with SMTP id p1mr9898041lfo.25.1589189797122;
- Mon, 11 May 2020 02:36:37 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9/z8oJy0DrW82NKQzFo0pYOXFvWx+Vn3ieQ420AJ3lc=;
+        b=Hl1jGuS0jcszVkZrJO7WH6+lXfzY+ATvvXITD7cIstzNDzlAmWhUTw3WVYOog3mD0W
+         LZGBPJjpSbZAHYMSvPMYegSZ45CK67ZM9r2gj7tdHa9G1/GeLXr4Jdc88UmOwwL/CRfN
+         V78PUVaX3PqTqw8pOW3gTtim4+AMs3eIaZ/xZtZTODa6PfQC2/DvoXK7yrI4EZS8M7SF
+         t8212+DAfxsjIYbfid44dBMrhiwN7JcBHgoR2neo2rHOVunx+hEQwRUNpNv6q0CC6quZ
+         EdQzpnVlum95dsRWANKEM8VlvFEe0x5UVCKtHfKXs+eIZthJ4pfgu0i6rSAVDztSz21L
+         x2tQ==
+X-Gm-Message-State: AGi0PuZ/artx+fFUlHh99l0bQcWZd011MKCYZBjCNv+4DWTK8Hq7ytQd
+        ubLtaBbZpqJyW1kZ2qZyfHTyH91mRGgGq678ZZqwxa5KnoM+6ziVdWzEKjw9+vknMbuLN6BlKvW
+        WirbBgUL7xcm08WnGwpdZPzam
+X-Received: by 2002:adf:9447:: with SMTP id 65mr18006254wrq.331.1589189824501;
+        Mon, 11 May 2020 02:37:04 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLgXJL2J4QG833y891iupVzJ12ZpeHXWlbbAPxxD6jgWVlOjQHWoAXK6Z1hUwl6JqLwXHJL/w==
+X-Received: by 2002:adf:9447:: with SMTP id 65mr18006221wrq.331.1589189824311;
+        Mon, 11 May 2020 02:37:04 -0700 (PDT)
+Received: from localhost.localdomain ([194.230.155.159])
+        by smtp.gmail.com with ESMTPSA id r14sm1636537wmb.2.2020.05.11.02.37.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 May 2020 02:37:03 -0700 (PDT)
+Subject: Re: [PATCH v2 0/5] Statsfs: a new ram-based file sytem for Linux
+ kernel statistics
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Adams <jwadams@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Emanuele Giuseppe Esposito <e.emanuelegiuseppe@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        David Rientjes <rientjes@google.com>
+References: <20200504110344.17560-1-eesposit@redhat.com>
+ <CA+VK+GN=iDhDV2ZDJbBsxrjZ3Qoyotk_L0DvsbwDVvqrpFZ8fQ@mail.gmail.com>
+ <29982969-92f6-b6d0-aeae-22edb401e3ac@redhat.com>
+From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Message-ID: <20c45f7b-3daa-c300-a8e7-0fd26664080b@redhat.com>
+Date:   Mon, 11 May 2020 11:37:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200506141821.GA9773@lorien.usersys.redhat.com>
- <20200507203612.GF19331@lorien.usersys.redhat.com> <20200508151515.GA25974@geo.homenetwork>
- <CAKfTPtCeA1VcEierR5iyQJApU5JMFQqkMSR+2JGU4o5cG76opQ@mail.gmail.com>
- <20200508170213.GA27353@geo.homenetwork> <801229de-200d-c9d5-7fd3-8556c5abc064@arm.com>
-In-Reply-To: <801229de-200d-c9d5-7fd3-8556c5abc064@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 11 May 2020 11:36:24 +0200
-Message-ID: <CAKfTPtAq9GDgvok5Z87mHL++ie+tiuyHHnruGea1+jvfffzpvw@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/fair: Fix enqueue_task_fair warning some more
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Tao Zhou <zohooouoto@zoho.com.cn>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Tao Zhou <ouwen210@hotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <29982969-92f6-b6d0-aeae-22edb401e3ac@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 May 2020 at 10:40, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->
-> On 08/05/2020 19:02, Tao Zhou wrote:
-> > On Fri, May 08, 2020 at 05:27:44PM +0200, Vincent Guittot wrote:
-> >> On Fri, 8 May 2020 at 17:12, Tao Zhou <zohooouoto@zoho.com.cn> wrote:
-> >>>
-> >>> Hi Phil,
-> >>>
-> >>> On Thu, May 07, 2020 at 04:36:12PM -0400, Phil Auld wrote:
-> >>>> sched/fair: Fix enqueue_task_fair warning some more
->
-> [...]
->
-> >>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> >>>> index 02f323b85b6d..c6d57c334d51 100644
-> >>>> --- a/kernel/sched/fair.c
-> >>>> +++ b/kernel/sched/fair.c
-> >>>> @@ -5479,6 +5479,13 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
-> >>>>               /* end evaluation on encountering a throttled cfs_rq */
-> >>>>               if (cfs_rq_throttled(cfs_rq))
-> >>>>                       goto enqueue_throttle;
-> >>>> +
-> >>>> +               /*
-> >>>> +                * One parent has been throttled and cfs_rq removed from the
-> >>>> +                * list. Add it back to not break the leaf list.
-> >>>> +                */
-> >>>> +               if (throttled_hierarchy(cfs_rq))
-> >>>> +                       list_add_leaf_cfs_rq(cfs_rq);
-> >>>>       }
-> >>>
-> >>> I was confused by why the throttled cfs rq can be on list.
-> >>> It is possible when enqueue a task and thanks to the 'threads'.
-> >>> But I think the above comment does not truely put the right
-> >>> intention, right ?
-> >>> If throttled parent is onlist, the child cfs_rq is ignored
-> >>> to be added to the leaf cfs_rq list me think.
-> >>>
-> >>> unthrottle_cfs_rq() follows the same logic if i am not wrong.
-> >>> Is it necessary to add the above to it ?
-> >>
-> >> When a cfs_rq is throttled, its sched group is dequeued and all child
-> >> cfs_rq are removed from  leaf_cfs_rq list. But the sched group of the
-> >> child cfs_rq stay enqueued in the throttled cfs_rq so child sched
-> >> group->on_rq might be still set.
-> >
-> > If there is a throttle of throttle, and unthrottle the child throttled
-> > cfs_rq(ugly):
-> >                                ...
-> >                                 |
-> >                       cfs_rq throttled (parent A)
-> >                                 |
-> >                                 |
-> >                       cfs_rq in hierarchy (B)
-> >                                 |
-> >                                 |
-> >                       cfs_rq throttled (C)
-> >                                 |
-> >                                ...
-> >
-> > Then unthrottle the child throttled cfs_rq C, now the A is on the
-> > leaf_cfs_rq list. sched_group entity of C is enqueued to B, and
-> > sched_group entity of B is on_rq and is ignored by enqueue but in
-> > the throttled hierarchy and not add to leaf_cfs_rq list.
-> > The above may be absolutely wrong that I miss something.
-> >
-> > Another thing :
-> > In enqueue_task_fair():
-> >
-> >       for_each_sched_entity(se) {
-> >               cfs_rq = cfs_rq_of(se);
-> >
-> >               if (list_add_leaf_cfs_rq(cfs_rq))
-> >                       break;
-> >       }
-> >
-> > In unthrottle_cfs_rq():
-> >
-> >       for_each_sched_entity(se) {
-> >               cfs_rq = cfs_rq_of(se);
-> >
-> >               list_add_leaf_cfs_rq(cfs_rq);
-> >       }
-> >
-> > The difference between them is that if condition, add if
-> > condition to unthrottle_cfs_rq() may be an optimization and
-> > keep the same.
-> >
->
-> I'm not 100% sure if this is exactly what Tao pointed out here but I
-> also had difficulties understanding understanding how this patch works:
->
->                        p.se
->                         |
->       __________________|
->       |
->       V
->      cfs_c -> tg_c ->  se_c (se->on_rq = 1)
->                         |
->       __________________|
->       |
->       v
->      cfs_b -> tg_b ->  se_b
->                         |
->       __________________|
->       |
->       V
->      cfs_a -> tg_a ->  se_a
->                         |
->       __________________|
->       |
->       V
->      cfs_r -> tg_r
->       |
->       V
->       rq
->
 
-In your example, which cfs_ rq has been throttled ? cfs_a ?
+On 5/8/20 11:44 AM, Paolo Bonzini wrote:
+> So in general I'd say the sources/values model holds up.  We certainly
+> want to:
+> 
+> - switch immediately to callbacks instead of the type constants (so that
+> core statsfs code only does signed/unsigned)
+> 
+> - add a field to distinguish cumulative and floating properties (and use
+> it to determine the default file mode)
+> 
+> - add a new argument to statsfs_create_source and statsfs_create_values
+> that makes it not create directories and files respectively
+> 
+> - add a new API to look for a statsfs_value recursively in all the
+> subordinate sources, and pass the source/value pair to a callback
+> function; and reimplement recursive aggregation and clear in terms of
+> this function.
 
-> (1) The incomplete update happens with cfs_c at the end of
->     enqueue_entity() in the first loop because of 'if ( .... ||
->     cfs_bandwidth_used())' (cfs_b->on_list=0 since cfs_a is throttled)
+Ok I will apply this, thank you for all the suggestions. 
+I will post the v3 patchset in the next few weeks. 
 
-so cfs_c is added with the 1st loop
+In the meanwhile, I wrote the documentation you asked (even though it's 
+going to change in v3), you can find it here:
 
->
-> (2) se_c breaks out of the first loop (se_c->on_rq = 1)
->
-> (3) With the patch cfs_b is added back to the list.
->     But only because cfs_a->on_list=1.
+https://github.com/esposem/linux/commit/dfa92f270f1aed73d5f3b7f12640b2a1635c711f
 
-hmm I don't understand the link between cfs_b been added and cfs_a->on_list=1
+Thank you,
+Emanuele
 
-cfs_b is added with 2nd loop because its throttle_count > 0 due to
-cfs_a been throttled (purpose of this patch)
-
->
-> But since cfs_a is throttled it should be cfs_a->on_list=0 as well.
-
-So 2nd loop breaks because cfs_a is throttled
-
-The 3rd loop will add cfs_a
-
-> throttle_cfs_rq()->walk_tg_tree_from(..., tg_throttle_down, ...) should
-> include cfs_a when calling list_del_leaf_cfs_rq().
->
-> IMHO, throttle_cfs_rq() calls tg_throttle_down() for the throttled
-> cfs_rq too.
->
->
-> Another thing: Why don't we use throttled_hierarchy(cfs_rq) instead of
-> cfs_bandwidth_used() in enqueue_entity() as well?
-
-Mainly to be conservative because as this patch demonstrates, there
-are a lot of possible use cases and combinations and I can't ensure
-that it is always safe to use the throttled_hierarchy.
