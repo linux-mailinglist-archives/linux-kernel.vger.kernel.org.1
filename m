@@ -2,118 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1EF61CE393
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865821CE3A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731318AbgEKTGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 15:06:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29058 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731246AbgEKTGh (ORCPT
+        id S1731357AbgEKTPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 15:15:38 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:35722 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728613AbgEKTPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 15:06:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589223996;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=oqf/KDuLojDbfB1GjtcgpUnIV6apc16crSMVbd9O8A4=;
-        b=hF3HkiCxEokQvbcfLJFHOnWB065PxvenqNv4KUTlHwLFXk7zj2jbh0Q8MejIyZ7uWE5JkW
-        rN1Ww5mIJEx543IDDhZ/EYSA/5IW5ksRkUNU8yiEI/q0fOUeGMSi70pdJXUAhIIwGaL4zc
-        ng1d9emnZ9NVhTmBOVeoFvVpHKAllz8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-108-Ee0psfbIP7-P37Lvb-TSBw-1; Mon, 11 May 2020 15:06:34 -0400
-X-MC-Unique: Ee0psfbIP7-P37Lvb-TSBw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A1F6F8005AD;
-        Mon, 11 May 2020 19:06:33 +0000 (UTC)
-Received: from prarit.bos.redhat.com (prarit-guest.7a2m.lab.eng.bos.redhat.com [10.16.222.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F3A539CB9;
-        Mon, 11 May 2020 19:06:32 +0000 (UTC)
-From:   Prarit Bhargava <prarit@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Prarit Bhargava <prarit@redhat.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH] intel-speed-select: Fix json perf-profile output output
-Date:   Mon, 11 May 2020 15:06:28 -0400
-Message-Id: <20200511190628.25661-1-prarit@redhat.com>
+        Mon, 11 May 2020 15:15:38 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04BJFZNf083357;
+        Mon, 11 May 2020 14:15:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589224535;
+        bh=i3l1grILIbxc03pyhfwIusQdRfYWPfn5hdnAbv7xGzw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=QRIMqbF5Jue8dYveT0mJj8JkwiOMW3yewVqcZtzlL7XYiQcg2jxMw0fHBVbwXHXHn
+         spp0E7TO0OMq0zksJd5IIKLjfrq7KgeVKY9f4f7VWLxSiDdGfbjojZI89IjY95YZbr
+         L7fuius7nMy3/X0cBiAiOs5p7OZ1nikRCrRqBekc=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04BJFZHA077175
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 May 2020 14:15:35 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 11
+ May 2020 14:15:34 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 11 May 2020 14:15:34 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04BJFVuO003772;
+        Mon, 11 May 2020 14:15:34 -0500
+Subject: Re: [PATCH v2] dt-bindings: power: Convert bq27xxx dt to yaml
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+CC:     <linux-pm@vger.kernel.org>, <robh@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        "Andrew F . Davis" <afd@ti.com>
+References: <20200507183013.27261-1-dmurphy@ti.com>
+ <20200510161721.257vprq6rqp64wu5@earth.universe>
+ <fb9b240e-9bfe-1295-6fc4-700d886ea7c9@ti.com>
+ <20200511143241.nmkti7meahvj2swt@earth.universe>
+ <8674289c-038d-d811-4786-322d66072527@ti.com>
+ <20200511145700.lnytcr747snnolya@earth.universe>
+ <57e2495d-ec06-53ff-c2b5-10062da2848f@ti.com>
+ <20200511153055.7u7afdcpcfbsmswq@earth.universe>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <767f3083-45ae-9198-0a25-6beddc7e0c03@ti.com>
+Date:   Mon, 11 May 2020 14:06:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20200511153055.7u7afdcpcfbsmswq@earth.universe>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'intel-speed-select -f json perf-profile get-lock-status' command
-outputs the package, die, and cpu data as separate fields.
+Sebastian
 
-ex)
+On 5/11/20 10:30 AM, Sebastian Reichel wrote:
+> Hi,
+>
+> On Mon, May 11, 2020 at 09:55:11AM -0500, Dan Murphy wrote:
+>> On 5/11/20 9:57 AM, Sebastian Reichel wrote:
+>>> On Mon, May 11, 2020 at 09:29:59AM -0500, Dan Murphy wrote:
+>>>> On 5/11/20 9:32 AM, Sebastian Reichel wrote:
+>>>>> On Mon, May 11, 2020 at 07:25:06AM -0500, Dan Murphy wrote:
+>>>>>> On 5/10/20 11:17 AM, Sebastian Reichel wrote:
+>>>>>>> This needs is missing the power-supplies property. The N900 DT
+>>>>>>> contains a bq27200 referencing the charger, so it should fail the DT
+>>>>>>> check without the property being listed here.
+>>>>>> Hmm.  I ran the dt checker specifically on the binding and it did not fail.
+>>>>>> Unless I need to build some other DTs as well.
+>>>>>> Either I will have the power-supplies property
+>>>>> I just tried it myself. The problem is the way you are specifying
+>>>>> the compatible strings. This is the parsing result:
+>>>>>
+>>>>> enum: ['ti,bq27200 - BQ27200', 'ti,bq27210 - BQ27210', 'ti,bq27500 - deprecated,
+>>>>>          use revision specific property below', ...
+>>>>>
+>>>>> You can see this in Documentation/devicetree/bindings/processed-schema.yaml, which
+>>>>> is generated by running the check. The compatible comments need a # as separation
+>>>>> character like this to generate proper bindings:
+>>>>>
+>>>>> properties:
+>>>>>      compatible:
+>>>>>        enum:
+>>>>>          - ti,bq27200 # BQ27200
+>>>>>          - ti,bq27210 # BQ27210
+>>>>>          - ti,bq27500 # deprecated, use revision specific property below
+>>>> Well honestly not sure why we need the comment either. These are pretty
+>>>> self explanatory maybe we should just remove the additional comments
+>>> Fine with me.
+>> Ack
+>>>> Any consideration on just removing the deprecated values?
+>>> Let's keep them with their comment for now. Removing them should
+>>> start with marking them as depracated in the binding and generating
+>>> a runtime warning in the driver, so that people become aware of the
+>>> problem. At least for ti,bq27500 we have mainline users At least for
+>>> ti,bq27500 we have mainline users.
+>> There are only 2 dts files that have this reference unless we are not sure
+>> which device is actually in use.
+> DT is considered ABI and one is supposed to be able to boot a new
+> kernel with an old DT. It's not enough to just update the in-tree
+> dts files. I suppose we can consider removing support for the old
+> compatible values after having the warning being printed for some
+> time and the mainline users being converted to the new binding.
 
-  "package-0": {
-    "die-0": {
-      "cpu-0": {
+Yes I know. I may have said that before.
 
-Commit 74062363f855 ("tools/power/x86/intel-speed-select: Avoid duplicate Package strings for json") prettied this output so that it is a single line for
-some json output commands and the same should be done for other commands.
+After looking at the driver and how this is all stitched together I 
+think I am just going to stick to the DT conversion as is.
 
-Output package, die, and cpu info in a single line when using json output.
+I will make the basic changes for conversion but any changes to the 
+compatibles should be done later.
 
-Signed-off-by: Prarit Bhargava <prarit@redhat.com>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: platform-driver-x86@vger.kernel.org
----
- .../x86/intel-speed-select/isst-display.c     | 26 +++++++++++++------
- 1 file changed, 18 insertions(+), 8 deletions(-)
+Dan
 
-diff --git a/tools/power/x86/intel-speed-select/isst-display.c b/tools/power/x86/intel-speed-select/isst-display.c
-index f6e2ce181123..e105fece47b6 100644
---- a/tools/power/x86/intel-speed-select/isst-display.c
-+++ b/tools/power/x86/intel-speed-select/isst-display.c
-@@ -316,21 +316,31 @@ void isst_ctdp_display_core_info(int cpu, FILE *outf, char *prefix,
- {
- 	char header[256];
- 	char value[256];
-+	int level = 1;
-+
-+	if (out_format_is_json()) {
-+		snprintf(header, sizeof(header), "package-%d:die-%d:cpu-%d",
-+			 get_physical_package_id(cpu), get_physical_die_id(cpu),
-+			 cpu);
-+		format_and_print(outf, level++, header, NULL);
-+	} else {
-+		snprintf(header, sizeof(header), "package-%d",
-+			 get_physical_package_id(cpu));
-+		format_and_print(outf, level++, header, NULL);
-+		snprintf(header, sizeof(header), "die-%d",
-+			 get_physical_die_id(cpu));
-+		format_and_print(outf, level++, header, NULL);
-+		snprintf(header, sizeof(header), "cpu-%d", cpu);
-+		format_and_print(outf, level++, header, NULL);
-+	}
- 
--	snprintf(header, sizeof(header), "package-%d",
--		 get_physical_package_id(cpu));
--	format_and_print(outf, 1, header, NULL);
--	snprintf(header, sizeof(header), "die-%d", get_physical_die_id(cpu));
--	format_and_print(outf, 2, header, NULL);
--	snprintf(header, sizeof(header), "cpu-%d", cpu);
--	format_and_print(outf, 3, header, NULL);
- 	if (str0 && !val)
- 		snprintf(value, sizeof(value), "%s", str0);
- 	else if (str1 && val)
- 		snprintf(value, sizeof(value), "%s", str1);
- 	else
- 		snprintf(value, sizeof(value), "%u", val);
--	format_and_print(outf, 4, prefix, value);
-+	format_and_print(outf, level, prefix, value);
- 
- 	format_and_print(outf, 1, NULL, NULL);
- }
--- 
-2.18.4
 
+> -- Sebastian
