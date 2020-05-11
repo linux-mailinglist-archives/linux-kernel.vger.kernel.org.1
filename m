@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397D31CDDE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14ED31CDDF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729604AbgEKO5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 10:57:35 -0400
-Received: from sonic308-56.consmr.mail.ne1.yahoo.com ([66.163.187.31]:34012
-        "EHLO sonic308-56.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728367AbgEKO5f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 10:57:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1589209053; bh=TYgdp/zNeW9P5rVjVpFopjba7a+Fm8hxyemx2bQVZd8=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Ukza4caJV712bf4k5vkb6gI8N2c+8bj75P+J7SNAaETY1KLxFJbW1Ya34na9sZw3jjyDthszv+TYKTlIccyTxFg9g/f6SZy/cdR78qj5VNYHuyeqw063qWo9lEPrmJ/nepsqV7qu7R7U9u4dC/SnWkx+Iib2sxJcN0exnmnC14yQYipKaVNFXq4/nBGyPZsEyaQQNHYnBSxs/ildI8Tn/yzQIQn0YNW4JjYoOJdxX7nQ5duUIwKQbzCmb10O5z/MTvXn+5ZDH61sxNO4ABZvwNhSw4KGwx06LOfCUxEL/WYHurmI7B/YRHveipb7WGQxGPw3lWf9VyULKUnrU/TyUQ==
-X-YMail-OSG: AmlN0ZcVM1kcjlYqovM0fuiRKCIW739NSqcNdjERkf2tTr8lNr.Wfen1A4gt.Ea
- x76J4FA5ygtXnC6KiJ3D9ELz8o31I5Al60aTVRVGzlG5K_JHExFYStfAHc86tnRfOHr0Z6gDLBeB
- 5rSEyGbX2Sl6W4DKDi.vkrRiL3ggs4g1hqjN0fnHKlGWvURHuKYKS5_FaFJ0YFofIrT0twb6b7fW
- o80u85OsK6k_IFOk54yycw8akfn6wEG.wSuvmozuqzReKRlkHFYW1dBwg_kK6SUWpDjGpA7ZJ80q
- S6_V_TdkrSy500ilQzkbRquczw_Ha0zbp5VJvNWv6PzdOLhIFe1hSPdY1kNWUnkrZwNEvTTv0ks8
- IMJH5sFe9iaMo3in9NjVwfmOWapdExHepVWGvMcQknJiIMVM8cNDWkrinv5SKW.F18liagbUZxw8
- NtZkcE9Hdou6nTHk8_XOamBJObc2SzPTbw.OJZL0haCGDwcL_DqRYlBkFn654H8G0rRX42nSY9tF
- dpsCoP.RDlXLJYLrk1wu7vKeUZmXvCQqsrNvsrfQegLiopYLAwxEf.Wlvt3CdFcEqfg0LZDNiPaw
- JLc033CUmZ8s5hqvNyEtcCY7tVYH7E9pey5uIUzUjCs7JZYhYdi1AdsqNyHKy6PR_Jzh7kOGW8lf
- SXuqoDQbg8NUoZ.okWoRn2RVhxfF5oqK7t7bfIDUzFTg8tzXtGQvOPINRZXHZnIAKWWZofuc0dlt
- kVCuFLWm.o2bVe0cfTvDobOAkj7prKVGFEjwUjYtA7vOrlmoYtqT1nzMxXB.J0PJNnaliB.bF585
- sC.fY9EWSGr3fgL8f3EmWWZPthi6uoHAlgLP30LGJKQGQyREqNH9cpJsuWArPcGWaS.sT1WWxVHT
- _0Y6J6tIny95o5wp5._9tiP9r.PGlyJ3JmwtuwaMFDdU.nu40MoiB2Gc9ADeicQuLpdCFNulw4a8
- b5udzi_6Q5p966x0kzn.x1PRLxDgajbqt4HgSQWQLWqOK6fEs4OtsZ6A3Lx7ibBclOsPkMUY.vmG
- 7yjp.N7I0RzM9mmRIJWDSZd_7s3puLRiRxroXRIb8Gh2l5o9ntFaG8.2GJx8ULGbbKNBrURjIX.q
- KkjYAtzCPg4Rw6Ki8JKtnvIlyOOWO94UIy624xM7OEF6VJh6D3.Jyc4HObt5GeUaZl2duSRUbW7s
- iIujW_DPmjkSjoof3IAiyp367Uewq7X6gm3_quPfr3wBmSWA6_R35d8U1941sVmnquz6gfS_91.o
- Qp9TBrJR2cwq2cUX1S.jCWG.YZPQoclpaWm_NyAlzaJkhzUKo8JbAMXh9H8.AJ3lA42kACdb3omf
- N1JwCykZZ4IHN8FDRGmHm47RgsIbg6JNb
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ne1.yahoo.com with HTTP; Mon, 11 May 2020 14:57:33 +0000
-Date:   Mon, 11 May 2020 14:57:32 +0000 (UTC)
-From:   Mrs m compola <mmrsgrorvinte@gmail.com>
-Reply-To: mcompola444@gmail.com
-Message-ID: <527660704.1374381.1589209052087@mail.yahoo.com>
-Subject: Dear Friend, My present internet connection is very slow in case
- you
+        id S1729688AbgEKO7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 10:59:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727019AbgEKO7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 10:59:17 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B959420643;
+        Mon, 11 May 2020 14:59:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589209157;
+        bh=h6Ea4lLoHxX7Auk/jUvpA6sDRTJxI89bcfhFCCCylgg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wKZwMCRGb/qPVQrXagi72UbQrDDDpUCfscELhKXUCYWtWz/96oJ3TsTAVuOo9hq3N
+         OTup9e3bn90dJWWmHxlKrSdmxAXWW+8b1fClhGGt1d9f8pbz6odwWVeOYY4PQ/tUpC
+         Fx64l5wovGXZdTUhdEqOyQyid+5J32xaXo4AOdek=
+Date:   Mon, 11 May 2020 15:59:09 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
+        gregkh@linuxfoundation.org, agross@kernel.org,
+        kgdb-bugreport@lists.sourceforge.net, catalin.marinas@arm.com,
+        linux-serial@vger.kernel.org, sumit.garg@linaro.org,
+        corbet@lwn.net, mingo@redhat.com, hpa@zytor.com,
+        tglx@linutronix.de, frowand.list@gmail.com, bp@alien8.de,
+        bjorn.andersson@linaro.org, jslaby@suse.com,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Allison Randal <allison@lohutok.net>,
+        Dave Martin <Dave.Martin@arm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        James Morse <james.morse@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        jinho lim <jordan.lim@samsung.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 05/11] arm64: Add call_break_hook() to early_brk64()
+ for early kgdb
+Message-ID: <20200511145908.GA22040@willie-the-truck>
+References: <20200428211351.85055-1-dianders@chromium.org>
+ <20200428141218.v3.5.I22067ad43e77ddfd4b64c2d49030628480f9e8d9@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <527660704.1374381.1589209052087.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15902 YMailNodin Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428141218.v3.5.I22067ad43e77ddfd4b64c2d49030628480f9e8d9@changeid>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Doug,
 
+On Tue, Apr 28, 2020 at 02:13:45PM -0700, Douglas Anderson wrote:
+> diff --git a/arch/arm64/kernel/debug-monitors.c b/arch/arm64/kernel/debug-monitors.c
+> index 48222a4760c2..59c353dfc8e9 100644
+> --- a/arch/arm64/kernel/debug-monitors.c
+> +++ b/arch/arm64/kernel/debug-monitors.c
+> @@ -297,7 +297,7 @@ void unregister_kernel_break_hook(struct break_hook *hook)
+>  	unregister_debug_hook(&hook->node);
+>  }
+>  
+> -static int call_break_hook(struct pt_regs *regs, unsigned int esr)
+> +int call_break_hook(struct pt_regs *regs, unsigned int esr)
+>  {
+>  	struct break_hook *hook;
+>  	struct list_head *list;
+> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+> index cf402be5c573..a8173f0c1774 100644
+> --- a/arch/arm64/kernel/traps.c
+> +++ b/arch/arm64/kernel/traps.c
+> @@ -1044,6 +1044,9 @@ int __init early_brk64(unsigned long addr, unsigned int esr,
+>  	if ((comment & ~KASAN_BRK_MASK) == KASAN_BRK_IMM)
+>  		return kasan_handler(regs, esr) != DBG_HOOK_HANDLED;
+>  #endif
+> +	if (call_break_hook(regs, esr) == DBG_HOOK_HANDLED)
+> +		return 0;
 
-Dear Friend, My present internet connection is very slow in case you
-received my email in your spam
+I think this just means we're not running debug_traps_init() early enough,
+and actually the KASAN early handler is unnecessary too.
 
-How are you today?.With due respect to your person and much sincerity
-of purpose,Well it is a pleasure to contact you on this regard and i
-pray that this will turn out to be everlasting relationship for both
-of us. However it's just my urgent need for a Foreign partner that
-made me to contact you for this Transaction,I got your contact from
-internet, while searching for a reliable someone that I can go into
-partnership with. I am Mrs.mcompola, from BURKINA FASO, West
-Africa .Presently i work in the Bank as bill and exchange manager.
+If we call debug_traps_init() directly from setup_arch() and drop the
+arch_initcall(), can we then drop early_brk64 entirely?
 
-I have the opportunity of transferring the left over fund $5.4 Million
-us dollars of one of my Bank clients who died in the collapsing of the
-world trade center on september 11th 2001.I have placed this fund to
-and escrow account without name of beneficiary.i will use my position
-here in the bank to effect a hitch free transfer of the fund to your
-bank account and there will be no trace.
-
-I agree that 40% of this money will be for you as my foriegn
-partner,50% for me while 10% will be for the expenses that will occur
-in this transaction .If you are really interested in my proposal
-further details of the Transfer will be forwarded unto you as soon as
-I receive your willingness mail for successful transfer.
-
-Yours Faithfully,
-Mrs.mcompola444@gmail.com
+Will
