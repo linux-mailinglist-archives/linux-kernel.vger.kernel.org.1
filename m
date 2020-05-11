@@ -2,244 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB6C1CDB23
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08AF51CDB51
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729616AbgEKNZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 09:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729555AbgEKNZw (ORCPT
+        id S1729753AbgEKNgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 09:36:16 -0400
+Received: from m177129.mail.qiye.163.com ([123.58.177.129]:38992 "EHLO
+        m177129.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729641AbgEKNgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 09:25:52 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEBAC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 06:25:52 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 184F72A1629
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id E7BA7480105; Mon, 11 May 2020 15:25:45 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Support Opensource <support.opensource@diasemi.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCHv3 5/5] ASoC: da7213: add default clock handling
-Date:   Mon, 11 May 2020 15:25:44 +0200
-Message-Id: <20200511132544.82364-6-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200511132544.82364-1-sebastian.reichel@collabora.com>
-References: <20200511132544.82364-1-sebastian.reichel@collabora.com>
+        Mon, 11 May 2020 09:36:16 -0400
+X-Greylist: delayed 570 seconds by postgrey-1.27 at vger.kernel.org; Mon, 11 May 2020 09:36:13 EDT
+Received: from vivo.com (wm-2.qy.internal [127.0.0.1])
+        by m177129.mail.qiye.163.com (Hmail) with ESMTP id 226BB5C277D;
+        Mon, 11 May 2020 21:26:08 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ANcALQDPCP5Hd0yYHkOTZKph.3.1589203568035.Hmail.bernard@vivo.com>
+To:     "Ruhl, Michael J" <michael.j.ruhl@intel.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Tom St Denis <tom.stdenis@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Ori Messinger <Ori.Messinger@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "opensource.kernel@vivo.com" <opensource.kernel@vivo.com>
+Subject: =?UTF-8?B?UmU6UkU6IFtQQVRDSCB2Ml0gZHJtL2FtZC9hbWRncHU6IGNsZWFudXAgY29kaW5nIHN0eWxlIGEgYml0?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 157.0.31.122
+In-Reply-To: <14063C7AD467DE4B82DEDB5C278E8663010E20C5BD@FMSMSX108.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from bernard@vivo.com( [157.0.31.122) ] by ajax-webmail ( [127.0.0.1] ) ; Mon, 11 May 2020 21:26:08 +0800 (GMT+08:00)
+From:   Bernard <bernard@vivo.com>
+Date:   Mon, 11 May 2020 21:26:08 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVITklCQkJNQ0xKQk9DSVlXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMTU1LSUxOT0NIN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6NRg6Nyo*KzgrTjMfSwIiMxA0LyEwCxNVSFVKTkNCSUtITkxPSUlJVTMWGhIXVRkeCRUaCR87
+        DRINFFUYFBZFWVdZEgtZQVlKTkxVS1VISlVKSUlZV1kIAVlBSktMTEI3Bg++
+X-HM-Tid: 0a7203ea06156447kurs226bb5c277d
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds default clock/PLL configuration to the driver
-for usage with generic drivers like simple-card for usage
-with a fixed rate clock.
-
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- sound/soc/codecs/da7213.c | 76 ++++++++++++++++++++++++++++++++++++---
- sound/soc/codecs/da7213.h |  2 ++
- 2 files changed, 73 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 3e6ad996741b..4a0edd3b7f83 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -1156,6 +1156,7 @@ static int da7213_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_soc_dai *dai)
- {
- 	struct snd_soc_component *component = dai->component;
-+	struct da7213_priv *da7213 = snd_soc_component_get_drvdata(component);
- 	u8 dai_ctrl = 0;
- 	u8 fs;
- 
-@@ -1181,33 +1182,43 @@ static int da7213_hw_params(struct snd_pcm_substream *substream,
- 	switch (params_rate(params)) {
- 	case 8000:
- 		fs = DA7213_SR_8000;
-+		da7213->out_rate = DA7213_PLL_FREQ_OUT_98304000;
- 		break;
- 	case 11025:
- 		fs = DA7213_SR_11025;
-+		da7213->out_rate = DA7213_PLL_FREQ_OUT_90316800;
- 		break;
- 	case 12000:
- 		fs = DA7213_SR_12000;
-+		da7213->out_rate = DA7213_PLL_FREQ_OUT_98304000;
- 		break;
- 	case 16000:
- 		fs = DA7213_SR_16000;
-+		da7213->out_rate = DA7213_PLL_FREQ_OUT_98304000;
- 		break;
- 	case 22050:
- 		fs = DA7213_SR_22050;
-+		da7213->out_rate = DA7213_PLL_FREQ_OUT_90316800;
- 		break;
- 	case 32000:
- 		fs = DA7213_SR_32000;
-+		da7213->out_rate = DA7213_PLL_FREQ_OUT_98304000;
- 		break;
- 	case 44100:
- 		fs = DA7213_SR_44100;
-+		da7213->out_rate = DA7213_PLL_FREQ_OUT_90316800;
- 		break;
- 	case 48000:
- 		fs = DA7213_SR_48000;
-+		da7213->out_rate = DA7213_PLL_FREQ_OUT_98304000;
- 		break;
- 	case 88200:
- 		fs = DA7213_SR_88200;
-+		da7213->out_rate = DA7213_PLL_FREQ_OUT_90316800;
- 		break;
- 	case 96000:
- 		fs = DA7213_SR_96000;
-+		da7213->out_rate = DA7213_PLL_FREQ_OUT_98304000;
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -1392,9 +1403,9 @@ static int da7213_set_component_sysclk(struct snd_soc_component *component,
- }
- 
- /* Supported PLL input frequencies are 32KHz, 5MHz - 54MHz. */
--static int da7213_set_component_pll(struct snd_soc_component *component,
--				    int pll_id, int source,
--				    unsigned int fref, unsigned int fout)
-+static int _da7213_set_component_pll(struct snd_soc_component *component,
-+				     int pll_id, int source,
-+				     unsigned int fref, unsigned int fout)
- {
- 	struct da7213_priv *da7213 = snd_soc_component_get_drvdata(component);
- 
-@@ -1503,6 +1514,16 @@ static int da7213_set_component_pll(struct snd_soc_component *component,
- 	return 0;
- }
- 
-+static int da7213_set_component_pll(struct snd_soc_component *component,
-+				    int pll_id, int source,
-+				    unsigned int fref, unsigned int fout)
-+{
-+	struct da7213_priv *da7213 = snd_soc_component_get_drvdata(component);
-+	da7213->fixed_clk_auto_pll = false;
-+
-+	return _da7213_set_component_pll(component, pll_id, source, fref, fout);
-+}
-+
- /* DAI operations */
- static const struct snd_soc_dai_ops da7213_dai_ops = {
- 	.hw_params	= da7213_hw_params,
-@@ -1532,6 +1553,43 @@ static struct snd_soc_dai_driver da7213_dai = {
- 	.symmetric_rates = 1,
- };
- 
-+static int da7213_set_auto_pll(struct snd_soc_component *component, bool enable)
-+{
-+	struct da7213_priv *da7213 = snd_soc_component_get_drvdata(component);
-+	int mode;
-+
-+	if (!da7213->fixed_clk_auto_pll)
-+		return 0;
-+
-+	da7213->mclk_rate = clk_get_rate(da7213->mclk);
-+
-+	if (enable)
-+		mode = DA7213_SYSCLK_PLL;
-+	else
-+		mode = DA7213_SYSCLK_MCLK;
-+
-+	switch (da7213->out_rate) {
-+	case DA7213_PLL_FREQ_OUT_90316800:
-+		if (da7213->mclk_rate == 11289600 ||
-+		    da7213->mclk_rate == 22579200 ||
-+		    da7213->mclk_rate == 45158400)
-+			mode = DA7213_SYSCLK_MCLK;
-+		break;
-+	case DA7213_PLL_FREQ_OUT_98304000:
-+		if (da7213->mclk_rate == 12288000 ||
-+		    da7213->mclk_rate == 24576000 ||
-+		    da7213->mclk_rate == 49152000)
-+			mode = DA7213_SYSCLK_MCLK;
-+
-+		break;
-+	default:
-+		return -1;
-+	}
-+
-+	return _da7213_set_component_pll(component, 0, mode,
-+					 da7213->mclk_rate, da7213->out_rate);
-+}
-+
- static int da7213_set_bias_level(struct snd_soc_component *component,
- 				 enum snd_soc_bias_level level)
- {
-@@ -1551,6 +1609,8 @@ static int da7213_set_bias_level(struct snd_soc_component *component,
- 						"Failed to enable mclk\n");
- 					return ret;
- 				}
-+
-+				da7213_set_auto_pll(component, true);
- 			}
- 		}
- 		break;
-@@ -1562,8 +1622,10 @@ static int da7213_set_bias_level(struct snd_soc_component *component,
- 					    DA7213_VMID_EN | DA7213_BIAS_EN);
- 		} else {
- 			/* Remove MCLK */
--			if (da7213->mclk)
-+			if (da7213->mclk) {
-+				da7213_set_auto_pll(component, false);
- 				clk_disable_unprepare(da7213->mclk);
-+			}
- 		}
- 		break;
- 	case SND_SOC_BIAS_OFF:
-@@ -1693,7 +1755,6 @@ static struct da7213_platform_data
- 	return pdata;
- }
- 
--
- static int da7213_probe(struct snd_soc_component *component)
- {
- 	struct da7213_priv *da7213 = snd_soc_component_get_drvdata(component);
-@@ -1829,6 +1890,11 @@ static int da7213_probe(struct snd_soc_component *component)
- 			return PTR_ERR(da7213->mclk);
- 		else
- 			da7213->mclk = NULL;
-+	} else {
-+		/* Do automatic PLL handling assuming fixed clock until
-+		 * set_pll() has been called. This makes the codec usable
-+		 * with the simple-audio-card driver. */
-+		da7213->fixed_clk_auto_pll = true;
- 	}
- 
- 	return 0;
-diff --git a/sound/soc/codecs/da7213.h b/sound/soc/codecs/da7213.h
-index 3890829dfb6e..97ccf0ddd2be 100644
---- a/sound/soc/codecs/da7213.h
-+++ b/sound/soc/codecs/da7213.h
-@@ -535,10 +535,12 @@ struct da7213_priv {
- 	struct regulator_bulk_data supplies[DA7213_NUM_SUPPLIES];
- 	struct clk *mclk;
- 	unsigned int mclk_rate;
-+	unsigned int out_rate;
- 	int clk_src;
- 	bool master;
- 	bool alc_calib_auto;
- 	bool alc_en;
-+	bool fixed_clk_auto_pll;
- 	struct da7213_platform_data *pdata;
- };
- 
--- 
-2.26.2
-
+Cgrlj5Hku7bkurrvvJoiUnVobCwgTWljaGFlbCBKIiA8bWljaGFlbC5qLnJ1aGxAaW50ZWwuY29t
+Pgrlj5HpgIHml6XmnJ/vvJoyMDIwLTA1LTA4IDIzOjQ1OjA3CuaUtuS7tuS6uu+8mkJlcm5hcmQg
+WmhhbyA8YmVybmFyZEB2aXZvLmNvbT4sQWxleCBEZXVjaGVyIDxhbGV4YW5kZXIuZGV1Y2hlckBh
+bWQuY29tPiwiQ2hyaXN0aWFuIEvDtm5pZyIgPGNocmlzdGlhbi5rb2VuaWdAYW1kLmNvbT4sIkRh
+dmlkIChDaHVuTWluZykgWmhvdSIgPERhdmlkMS5aaG91QGFtZC5jb20+LERhdmlkIEFpcmxpZSA8
+YWlybGllZEBsaW51eC5pZT4sRGFuaWVsIFZldHRlciA8ZGFuaWVsQGZmd2xsLmNoPixUb20gU3Qg
+RGVuaXMgPHRvbS5zdGRlbmlzQGFtZC5jb20+LFNhbSBSYXZuYm9yZyA8c2FtQHJhdm5ib3JnLm9y
+Zz4sT3JpIE1lc3NpbmdlciA8T3JpLk1lc3NpbmdlckBhbWQuY29tPiwiYW1kLWdmeEBsaXN0cy5m
+cmVlZGVza3RvcC5vcmciIDxhbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZz4sImRyaS1kZXZl
+bEBsaXN0cy5mcmVlZGVza3RvcC5vcmciIDxkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
+PiwibGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZyIgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5l
+bC5vcmc+CuaKhOmAgeS6uu+8miJvcGVuc291cmNlLmtlcm5lbEB2aXZvLmNvbSIgPG9wZW5zb3Vy
+Y2Uua2VybmVsQHZpdm8uY29tPgrkuLvpopjvvJpSRTogW1BBVENIIHYyXSBkcm0vYW1kL2FtZGdw
+dTogY2xlYW51cCBjb2Rpbmcgc3R5bGUgYSBiaXQ+Pi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
+Cj4+RnJvbTogZHJpLWRldmVsIDxkcmktZGV2ZWwtYm91bmNlc0BsaXN0cy5mcmVlZGVza3RvcC5v
+cmc+IE9uIEJlaGFsZiBPZgo+PkJlcm5hcmQgWmhhbwo+PlNlbnQ6IFRodXJzZGF5LCBNYXkgNywg
+MjAyMCA1OjEzIEFNCj4+VG86IEFsZXggRGV1Y2hlciA8YWxleGFuZGVyLmRldWNoZXJAYW1kLmNv
+bT47IENocmlzdGlhbiBLw7ZuaWcKPj48Y2hyaXN0aWFuLmtvZW5pZ0BhbWQuY29tPjsgRGF2aWQg
+KENodW5NaW5nKSBaaG91Cj4+PERhdmlkMS5aaG91QGFtZC5jb20+OyBEYXZpZCBBaXJsaWUgPGFp
+cmxpZWRAbGludXguaWU+OyBEYW5pZWwgVmV0dGVyCj4+PGRhbmllbEBmZndsbC5jaD47IFRvbSBT
+dCBEZW5pcyA8dG9tLnN0ZGVuaXNAYW1kLmNvbT47IFNhbSBSYXZuYm9yZwo+PjxzYW1AcmF2bmJv
+cmcub3JnPjsgT3JpIE1lc3NpbmdlciA8T3JpLk1lc3NpbmdlckBhbWQuY29tPjsgQmVybmFyZAo+
+PlpoYW8gPGJlcm5hcmRAdml2by5jb20+OyBhbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsg
+ZHJpLQo+PmRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgbGludXgta2VybmVsQHZnZXIua2Vy
+bmVsLm9yZwo+PkNjOiBvcGVuc291cmNlLmtlcm5lbEB2aXZvLmNvbQo+PlN1YmplY3Q6IFtQQVRD
+SCB2Ml0gZHJtL2FtZC9hbWRncHU6IGNsZWFudXAgY29kaW5nIHN0eWxlIGEgYml0Cj4+Cj4+VGhl
+cmUgaXMgREVWSUNFX0FUVFIgbWVjaGFuaXNtIGluIHNlcGFyYXRlIGF0dHJpYnV0ZSBkZWZpbmUu
+Cj4+U28gdGhpcyBjaGFuZ2UgaXMgdG8gdXNlIGF0dHIgYXJyYXksIGFsc28gdXNlCj4+c3lzZnNf
+Y3JlYXRlX2ZpbGVzIGluIGluaXQgZnVuY3Rpb24gJiBzeXNmc19yZW1vdmVfZmlsZXMgaW4KPj5m
+aW5pIGZ1bmN0aW9uLgo+PlRoaXMgbWF5YmUgbWFrZSB0aGUgY29kZSBhIGJpdCByZWFkYWJsZS4K
+Pj4KPj5TaWduZWQtb2ZmLWJ5OiBCZXJuYXJkIFpoYW8gPGJlcm5hcmRAdml2by5jb20+Cj4+Cj4+
+Q2hhbmdlcyBzaW5jZSBWMToKPj4qVXNlIERFVklDRV9BVFRSIG1lY2hhbmlzbQo+Pgo+Pkxpbmsg
+Zm9yIFYxOgo+PipodHRwczovL2xvcmUua2VybmVsLm9yZy9wYXRjaHdvcmsvcGF0Y2gvMTIyODA3
+Ni8KPj4tLS0KPj4gZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X3ZyYW1fbWdyLmMg
+fCA0MyArKysrKystLS0tLS0tLS0tLS0tCj4+LQo+PiAxIGZpbGUgY2hhbmdlZCwgMTMgaW5zZXJ0
+aW9ucygrKSwgMzAgZGVsZXRpb25zKC0pCj4+Cj4+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2Ry
+bS9hbWQvYW1kZ3B1L2FtZGdwdV92cmFtX21nci5jCj4+Yi9kcml2ZXJzL2dwdS9kcm0vYW1kL2Ft
+ZGdwdS9hbWRncHVfdnJhbV9tZ3IuYwo+PmluZGV4IDgyYTMyOTllNTNjMC4uNTdiYmM3MDY2MmZm
+IDEwMDY0NAo+Pi0tLSBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV92cmFtX21n
+ci5jCj4+KysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X3ZyYW1fbWdyLmMK
+Pj5AQCAtMTQ4LDYgKzE0OCwxNSBAQCBzdGF0aWMgREVWSUNFX0FUVFIobWVtX2luZm9fdmlzX3Zy
+YW1fdXNlZCwKPj5TX0lSVUdPLAo+PiBzdGF0aWMgREVWSUNFX0FUVFIobWVtX2luZm9fdnJhbV92
+ZW5kb3IsIFNfSVJVR08sCj4+IAkJICAgYW1kZ3B1X21lbV9pbmZvX3ZyYW1fdmVuZG9yLCBOVUxM
+KTsKPj4KPj4rc3RhdGljIHN0cnVjdCBhdHRyaWJ1dGUgKmFtZGdwdV92cmFtX21ncl9hdHRyaWJ1
+dGVzW10gPSB7Cj4+KwkmZGV2X2F0dHJfbWVtX2luZm9fdnJhbV90b3RhbC5hdHRyLAo+PisJJmRl
+dl9hdHRyX21lbV9pbmZvX3Zpc192cmFtX3RvdGFsLmF0dHIsCj4+KwkmZGV2X2F0dHJfbWVtX2lu
+Zm9fdnJhbV91c2VkLmF0dHIsCj4+KwkmZGV2X2F0dHJfbWVtX2luZm9fdmlzX3ZyYW1fdXNlZC5h
+dHRyLAo+PisJJmRldl9hdHRyX21lbV9pbmZvX3ZyYW1fdmVuZG9yLmF0dHIsCj4+KwlOVUxMCj4+
+K307Cj4+Kwo+PiAvKioKPj4gICogYW1kZ3B1X3ZyYW1fbWdyX2luaXQgLSBpbml0IFZSQU0gbWFu
+YWdlciBhbmQgRFJNIE1NCj4+ICAqCj4+QEAgLTE3MiwzMSArMTgxLDkgQEAgc3RhdGljIGludCBh
+bWRncHVfdnJhbV9tZ3JfaW5pdChzdHJ1Y3QKPj50dG1fbWVtX3R5cGVfbWFuYWdlciAqbWFuLAo+
+PiAJbWFuLT5wcml2ID0gbWdyOwo+Pgo+PiAJLyogQWRkIHRoZSB0d28gVlJBTS1yZWxhdGVkIHN5
+c2ZzIGZpbGVzICovCj4+LQlyZXQgPSBkZXZpY2VfY3JlYXRlX2ZpbGUoYWRldi0+ZGV2LAo+PiZk
+ZXZfYXR0cl9tZW1faW5mb192cmFtX3RvdGFsKTsKPj4tCWlmIChyZXQpIHsKPj4tCQlEUk1fRVJS
+T1IoIkZhaWxlZCB0byBjcmVhdGUgZGV2aWNlIGZpbGUKPj5tZW1faW5mb192cmFtX3RvdGFsXG4i
+KTsKPj4tCQlyZXR1cm4gcmV0Owo+Pi0JfQo+Pi0JcmV0ID0gZGV2aWNlX2NyZWF0ZV9maWxlKGFk
+ZXYtPmRldiwKPj4mZGV2X2F0dHJfbWVtX2luZm9fdmlzX3ZyYW1fdG90YWwpOwo+Pi0JaWYgKHJl
+dCkgewo+Pi0JCURSTV9FUlJPUigiRmFpbGVkIHRvIGNyZWF0ZSBkZXZpY2UgZmlsZQo+Pm1lbV9p
+bmZvX3Zpc192cmFtX3RvdGFsXG4iKTsKPj4tCQlyZXR1cm4gcmV0Owo+Pi0JfQo+Pi0JcmV0ID0g
+ZGV2aWNlX2NyZWF0ZV9maWxlKGFkZXYtPmRldiwKPj4mZGV2X2F0dHJfbWVtX2luZm9fdnJhbV91
+c2VkKTsKPj4tCWlmIChyZXQpIHsKPj4tCQlEUk1fRVJST1IoIkZhaWxlZCB0byBjcmVhdGUgZGV2
+aWNlIGZpbGUKPj5tZW1faW5mb192cmFtX3VzZWRcbiIpOwo+Pi0JCXJldHVybiByZXQ7Cj4+LQl9
+Cj4+LQlyZXQgPSBkZXZpY2VfY3JlYXRlX2ZpbGUoYWRldi0+ZGV2LAo+PiZkZXZfYXR0cl9tZW1f
+aW5mb192aXNfdnJhbV91c2VkKTsKPj4tCWlmIChyZXQpIHsKPj4tCQlEUk1fRVJST1IoIkZhaWxl
+ZCB0byBjcmVhdGUgZGV2aWNlIGZpbGUKPj5tZW1faW5mb192aXNfdnJhbV91c2VkXG4iKTsKPj4t
+CQlyZXR1cm4gcmV0Owo+Pi0JfQo+Pi0JcmV0ID0gZGV2aWNlX2NyZWF0ZV9maWxlKGFkZXYtPmRl
+diwKPj4mZGV2X2F0dHJfbWVtX2luZm9fdnJhbV92ZW5kb3IpOwo+Pi0JaWYgKHJldCkgewo+Pi0J
+CURSTV9FUlJPUigiRmFpbGVkIHRvIGNyZWF0ZSBkZXZpY2UgZmlsZQo+Pm1lbV9pbmZvX3ZyYW1f
+dmVuZG9yXG4iKTsKPj4tCQlyZXR1cm4gcmV0Owo+Pi0JfQo+PisJcmV0ID0gc3lzZnNfY3JlYXRl
+X2ZpbGVzKCZhZGV2LT5kZXYtPmtvYmosCj4+YW1kZ3B1X3ZyYW1fbWdyX2F0dHJpYnV0ZXMpOwo+
+PisJaWYgKHJldCkKPj4rCQlEUk1fRVJST1IoIkZhaWxlZCB0byByZWdpc3RlciBzeXNmc1xuIik7
+Cj4KPlRoaXMgbG9va3MgZ29vZCB0byBtZS4KPgo+SSB0aGluayB0aGF0IHRoZXJlIGlzIGEgbmV3
+IGVycm9yIG1hY3JvIChkcm1fZXJyPykgdGhhdCB5b3UgbWlnaHQKPndhbnQgdG8gdXNlIGluc3Rl
+YWQgb2YgRFJNX0VSUk9SKCkuCj4KPk90aGVyd2lzZToKPgo+QWNrZWQtYnk6IE1pY2hhZWwgSi4g
+UnVobCA8bWljaGFlbC5qLnJ1aGxAaW50ZWwuY29tPgo+Cj5tCgpIaQpTdXJlLCBJIGFtIHdpbGxp
+bmcgdG8gbWFrZSB0aGlzIG1vZGlmaWNhdGlvbiwgYWxzbyBpbiBHUFUgVE9ETyBsaXN0LCB0aGVy
+ZSBpcyBvbmUgY29udGVudDoKIkNvbnZlcnQgbG9nZ2luZyB0byBkcm1fKiBmdW5jdGlvbnMgd2l0
+aCBkcm1fZGV2aWNlIHBhcmFtYXRlcixGb3IgZHJpdmVycyB3aGljaCBjb3VsZCAKaGF2ZSBtdWx0
+aXBsZSBpbnN0YW5jZXMsIGl0IGlzIG5lY2Vzc2FyeSB0byBkaWZmZXJlbnRpYXRlIGJldHdlZW4g
+d2hpY2ggaXMgd2hpY2ggaW4gdGhlIGxvZ3MuIApTaW5jZSBEUk1fSU5GTy9XQVJOL0VSUk9SIGRv
+buKAmXQgZG8gdGhpcywgZHJpdmVycyB1c2VkIGRldl9pbmZvL3dhcm4vZXJyIHRvIG1ha2UgCnRo
+aXMgZGlmZmVyZW50aWF0aW9uLiBXZSBub3cgaGF2ZSBkcm1fKiB2YXJpYW50cyBvZiB0aGUgZHJt
+IHByaW50IGZ1bmN0aW9ucywgc28gd2UgY2FuIHN0YXJ0IAp0byBjb252ZXJ0IHRob3NlIGRyaXZl
+cnMgYmFjayB0byB1c2luZyBkcm0tZm9ybWF0dGVkIHNwZWNpZmljIGxvZyBtZXNzYWdlcy4iCkZy
+b20gaHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2MvaHRtbC92NS43LXJjNS9ncHUvdG9kby5odG1s
+I3N1YnN5c3RlbS13aWRlLXJlZmFjdG9yaW5ncy4KCkJ1dCBpIGhhdmUgdG8gc2F5IHRoYXQgbm93
+IGluIHRoZSBEUk0vQU1EIG1vZHVsZXMsIGFsbCBhcmUgdXNlZCBEUk1fSU5GTy9XQVJOSU5HL0VS
+Uk9SCkknbSBub3Qgc3VyZSB3ZWF0aGVyIG1haW50YWluZXJzIHdhbnQgdG8gcmVwbGFjZSB0aGVz
+ZS4KClJlZ2FyZHMsCkJlcm5hcmQKCj4+Cj4+IAlyZXR1cm4gMDsKPj4gfQo+PkBAIC0yMTksMTEg
+KzIwNiw3IEBAIHN0YXRpYyBpbnQgYW1kZ3B1X3ZyYW1fbWdyX2Zpbmkoc3RydWN0Cj4+dHRtX21l
+bV90eXBlX21hbmFnZXIgKm1hbikKPj4gCXNwaW5fdW5sb2NrKCZtZ3ItPmxvY2spOwo+PiAJa2Zy
+ZWUobWdyKTsKPj4gCW1hbi0+cHJpdiA9IE5VTEw7Cj4+LQlkZXZpY2VfcmVtb3ZlX2ZpbGUoYWRl
+di0+ZGV2LCAmZGV2X2F0dHJfbWVtX2luZm9fdnJhbV90b3RhbCk7Cj4+LQlkZXZpY2VfcmVtb3Zl
+X2ZpbGUoYWRldi0+ZGV2LAo+PiZkZXZfYXR0cl9tZW1faW5mb192aXNfdnJhbV90b3RhbCk7Cj4+
+LQlkZXZpY2VfcmVtb3ZlX2ZpbGUoYWRldi0+ZGV2LCAmZGV2X2F0dHJfbWVtX2luZm9fdnJhbV91
+c2VkKTsKPj4tCWRldmljZV9yZW1vdmVfZmlsZShhZGV2LT5kZXYsCj4+JmRldl9hdHRyX21lbV9p
+bmZvX3Zpc192cmFtX3VzZWQpOwo+Pi0JZGV2aWNlX3JlbW92ZV9maWxlKGFkZXYtPmRldiwKPj4m
+ZGV2X2F0dHJfbWVtX2luZm9fdnJhbV92ZW5kb3IpOwo+PisJc3lzZnNfcmVtb3ZlX2ZpbGVzKCZh
+ZGV2LT5kZXYtPmtvYmosCj4+YW1kZ3B1X3ZyYW1fbWdyX2F0dHJpYnV0ZXMpOwo+PiAJcmV0dXJu
+IDA7Cj4+IH0KPj4KPj4tLQo+PjIuMjYuMgo+Pgo+Pl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCj4+ZHJpLWRldmVsIG1haWxpbmcgbGlzdAo+PmRyaS1kZXZl
+bEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPj5odHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAoNCg0K
