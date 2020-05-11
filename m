@@ -2,95 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378581CDD58
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 471A21CDD5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 16:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729887AbgEKOgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 10:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727820AbgEKOgc (ORCPT
+        id S1730332AbgEKOho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 10:37:44 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:33197 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725993AbgEKOhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 10:36:32 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C077C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 07:36:31 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jY9X7-0008BQ-AC; Mon, 11 May 2020 16:35:53 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 6510FFFBF8; Mon, 11 May 2020 16:35:52 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [patch V4 part 5 13/31] x86/irq: Convey vector as argument and not in ptregs
-In-Reply-To: <CAJhGHyCgGxia1hzTWVF+-s5AXnUM9SnvxdfJK5PsZQCDbWfKNw@mail.gmail.com>
-References: <20200505135341.730586321@linutronix.de> <20200505135829.384803459@linutronix.de> <CAJhGHyCgGxia1hzTWVF+-s5AXnUM9SnvxdfJK5PsZQCDbWfKNw@mail.gmail.com>
-Date:   Mon, 11 May 2020 16:35:52 +0200
-Message-ID: <87v9l25yk7.fsf@nanos.tec.linutronix.de>
+        Mon, 11 May 2020 10:37:43 -0400
+Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 8AFFD240016;
+        Mon, 11 May 2020 14:37:40 +0000 (UTC)
+Date:   Mon, 11 May 2020 16:37:40 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>, od@zcrc.me,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] rtc: ingenic: Only support probing from devicetree
+Message-ID: <20200511143740.GU34497@piout.net>
+References: <20200505221336.222313-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505221336.222313-1-paul@crapouillou.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lai,
+On 06/05/2020 00:13:30+0200, Paul Cercueil wrote:
+> With the recent work on supporting Device Tree on Ingenic SoCs, no
+> driver ever probes from platform code anymore, so we can clean a bit
+> this driver by removing the non-devicetree paths.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/rtc/Kconfig      |  1 +
+>  drivers/rtc/rtc-jz4740.c | 20 +++-----------------
+>  2 files changed, 4 insertions(+), 17 deletions(-)
+> 
 
-Lai Jiangshan <jiangshanlai+lkml@gmail.com> writes:
-> On Tue, May 5, 2020 at 10:23 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->> +SYM_CODE_START(irq_entries_start)
->> +    vector=FIRST_EXTERNAL_VECTOR
->> +    .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
->> +       UNWIND_HINT_IRET_REGS
->> +       .byte   0x6a, vector
->> +       jmp     common_interrupt
->> +       .align  8
->> +    vector=vector+1
->> +    .endr
->> +SYM_CODE_END(irq_entries_start)
->
-> Using ".byte   0x6a, vector" is somewhat ugly.
->
-> I hope it should be " pushq $(s8_to_s64(vector))", which can also
-> help to reduce bunches of comments about ".byte   0x6a, vector".
->
-> However, I don't know how to implement s8_to_s64() here.
+All applied, thanks.
 
-Neither do I.
-
-> But at least the following code works (generates the same two-byte
-> machine code as ".byte 0x6a, vector" does):
->
->         .if vector < 128
->         pushq $(vector)
->         .else
->         pushq $(0xffffffffffffff00+vector)
->         .endif
-
-Only slightly less ugly and needs as much commentry as the above.
-
-Thanks,
-
-        tglx
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
