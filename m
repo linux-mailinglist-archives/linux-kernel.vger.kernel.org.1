@@ -2,83 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FAC1CE346
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED48D1CE356
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731142AbgEKSyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 14:54:15 -0400
-Received: from smtprelay0148.hostedemail.com ([216.40.44.148]:43678 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729453AbgEKSyP (ORCPT
+        id S1731283AbgEKSzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 14:55:10 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:44203 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729319AbgEKSzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 14:54:15 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 536534DCF;
-        Mon, 11 May 2020 18:54:14 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2282:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3871:4250:4321:5007:6119:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:12986:13069:13311:13357:13439:14181:14659:14721:21063:21080:21365:21451:21627:21990:30029:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: grain11_24e0b558a6440
-X-Filterd-Recvd-Size: 2578
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 11 May 2020 18:54:13 +0000 (UTC)
-Message-ID: <59b3e2aac1388209d168a31294dfd2b1f7d21513.camel@perches.com>
-Subject: Re: [PATCH] Revert "dynamic_debug: Remove unnecessary __used"
-From:   Joe Perches <joe@perches.com>
-To:     Elliot Berman <eberman@codeaurora.org>,
-        Jason Baron <jbaron@akamai.com>
-Cc:     Trilok Soni <tsoni@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Mon, 11 May 2020 11:54:12 -0700
-In-Reply-To: <1589221618-21808-1-git-send-email-eberman@codeaurora.org>
-References: <1589221618-21808-1-git-send-email-eberman@codeaurora.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        Mon, 11 May 2020 14:55:09 -0400
+Received: by mail-oi1-f196.google.com with SMTP id a2so15842091oia.11;
+        Mon, 11 May 2020 11:55:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=15fqUTBbGkCYYgO6aQ2//ab8dhylYn7tEDS1rTwHFVM=;
+        b=Zvq3vWIt4q8RBm26+eh2qBq+amueBZBeY/AVVBUDzuw42dtgPBcMnxlcPMAcAm5c2E
+         m1yR67VDSsbP5FZIG9//dYIVPcFyCSBVeITyCFLoSXWbHX20Qvx/oGjjkF/IJNMz7usU
+         DhZeHQVd0j0BRlgZo0RD5uJgeTyXdCI/8VultuJObz6yE8+jhXbCUoKLdr/sGWNduZKa
+         pCuFixyT2PlaJwcraBrOmK36eMm9zCYHRvRTeDB1VjW1lx6uby4z3v24L8wYtnOmUVDt
+         ARYv1g01vyEbE4y8XKowHanjVp4WneLmSti0H84d+kGuK73dcafjcAjzIbref7wNssKk
+         VnkA==
+X-Gm-Message-State: AGi0PuY3BBPVS74llEr6mKZ3Je+WphkW5FnES6Q/yG5vx3GCoL2r2t/I
+        TduepPmTk9ThgEmX3gsj2Q==
+X-Google-Smtp-Source: APiQypJUK52Qvz/hH1CBnkScZtXZIATgQ5sOjkBcv7OmmrpsWSUvPZiWoAXmBcreoTsVSEWK7XfpbA==
+X-Received: by 2002:aca:3b41:: with SMTP id i62mr2758590oia.101.1589223308498;
+        Mon, 11 May 2020 11:55:08 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f16sm4749433oib.25.2020.05.11.11.55.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 11:55:07 -0700 (PDT)
+Received: (nullmailer pid 31916 invoked by uid 1000);
+        Mon, 11 May 2020 18:55:07 -0000
+Date:   Mon, 11 May 2020 13:55:07 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     s.hauer@pengutronix.de, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, bgolaszewski@baylibre.com,
+        festevam@gmail.com, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
+        shawnguo@kernel.org, linus.walleij@linaro.org,
+        linux-kernel@vger.kernel.org, Linux-imx@nxp.com
+Subject: Re: [PATCH V2] dt-bindings: gpio: Convert i.MX to json-schema
+Message-ID: <20200511185507.GA31675@bogus>
+References: <1587477823-21036-1-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1587477823-21036-1-git-send-email-Anson.Huang@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-05-11 at 11:26 -0700, Elliot Berman wrote:
-> This reverts commit c0d2af637863940b1a4fb208224ca7acb905c39f.
+On Tue, 21 Apr 2020 22:03:43 +0800, Anson Huang wrote:
+> Convert the i.MX GPIO binding to DT schema format using json-schema.
 > 
-> Some compilers[1] may break dynamic_hex_dump by optimizing the
-> DYNAMIC_DEBUG_BRANCH check inside __dynamic_func_call_no_desc and completely
-> removing the dynamic debug metadata. Thus, there is no dynamic_debug control
-> site to enable or disable. The if condition is optimized away based on the
-> initial value of flags (i.e. if DEBUG macro is present).
-> 
-> [1]: This behavior is present on [aarch64-gnu-linux-gcc (Ubuntu/Linaro
-> 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609] and [Android Common Kernel
-> toolchain: "Android (6051079 based on r370808) clang version
-> 10.0.1"] using arm64 default defconfig + DYNAMIC_DEBUG enabled.
-> 
-> Change-Id: I28e9b86088eee5d5ed2384fbcea2ac2e7337a559
-> Signed-off-by: Elliot Berman <eberman@codeaurora.org>
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 > ---
-
-Change-Id: probably isn't necessary.
-
-Is there a separate mechanism possible to avoid bloating the
-otherwise unused content?
-
->  include/linux/dynamic_debug.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Changes since V1:
+> 	- improve compatible;
+> 	- drop clocks description.
+> ---
+>  .../devicetree/bindings/gpio/fsl-imx-gpio.txt      | 35 -----------
+>  .../devicetree/bindings/gpio/fsl-imx-gpio.yaml     | 68 ++++++++++++++++++++++
+>  2 files changed, 68 insertions(+), 35 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/gpio/fsl-imx-gpio.txt
+>  create mode 100644 Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
 > 
-> diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
-> index abcd5fd..7518db4f 100644
-> --- a/include/linux/dynamic_debug.h
-> +++ b/include/linux/dynamic_debug.h
-> @@ -79,7 +79,7 @@ void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
->  			 const char *fmt, ...);
->  
->  #define DEFINE_DYNAMIC_DEBUG_METADATA(name, fmt)		\
-> -	static struct _ddebug  __aligned(8)			\
-> +	static struct _ddebug __used __aligned(8)		\
->  	__attribute__((section("__verbose"))) name = {		\
->  		.modname = KBUILD_MODNAME,			\
->  		.function = __func__,				\
 
+Applied, thanks!
