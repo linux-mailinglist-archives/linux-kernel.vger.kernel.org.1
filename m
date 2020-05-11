@@ -2,95 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0A41CD158
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 07:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32ED1CD16B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 07:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbgEKFsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 01:48:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44738 "EHLO mail.kernel.org"
+        id S1728260AbgEKFvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 01:51:07 -0400
+Received: from m15-113.126.com ([220.181.15.113]:57757 "EHLO m15-113.126.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725916AbgEKFsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 01:48:11 -0400
-Received: from sekiro (amontpellier-556-1-155-96.w109-210.abo.wanadoo.fr [109.210.131.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9CDB120735;
-        Mon, 11 May 2020 05:48:08 +0000 (UTC)
-Date:   Mon, 11 May 2020 07:48:03 +0200
-From:   Ludovic Desroches <ludovic.desroches@microchip.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dmaengine: at_xdmac: Replace zero-length array with
- flexible-array
-Message-ID: <20200511054803.yrz4hc4y4z5vscpl@sekiro>
-References: <20200507190046.GA15298@embeddedor>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507190046.GA15298@embeddedor>
+        id S1726319AbgEKFvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 01:51:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=VVIDTnJayPp7ynQcTv
+        yLSNpQVf+58l1JIpEMGTe0U6A=; b=pBVmzxw5PZjs8M63LInyMBbBgsuBfkDNbt
+        /E2zdKrRxR+po7J2SPUPFurINsuve6rXrmVGlVdmRc0Xg0cWpQbYxfrCQz0s+DE2
+        2JufKe26XvooJ27jQ2rPfgVv5JYA7gX4VXxcFrJ1L3VU7DqZx3Q6FSc29UpNR/T7
+        RP5ImzdvY=
+Received: from coding1221.verisilicon.com (unknown [222.65.245.108])
+        by smtp3 (Coremail) with SMTP id DcmowAAHTgW_57heZMonFA--.29754S2;
+        Mon, 11 May 2020 13:50:56 +0800 (CST)
+From:   joe_zhuchg@126.com
+To:     jassisinghbrar@gmail.com
+Cc:     linux-kernel@vger.kernel.org,
+        Joe Zhu <Chunguang.Zhu@verisilicon.com>
+Subject: [PATCH] mailbox: no error log in mbox_client_txdone() for tx done by irq
+Date:   Mon, 11 May 2020 13:50:52 +0800
+Message-Id: <20200511055052.23868-1-joe_zhuchg@126.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: DcmowAAHTgW_57heZMonFA--.29754S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Xw48GFW7Xr1DtrWftr4Dtwb_yoWftrb_Cr
+        n5uFy7ur1UCFyFywnrAw4fJ34ayr45Xa1q9asrtF9xt34jvFyjqr1Dtrs3Aw18CF4Dur12
+        y390vws7twn3AjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUePCztUUUUU==
+X-Originating-IP: [222.65.245.108]
+X-CM-SenderInfo: pmrhs6xkxfxwa6rslhhfrp/1tbiVwghN1pEALSDZwAAsH
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 02:00:46PM -0500, Gustavo A. R. Silva wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> sizeof(flexible-array-member) triggers a warning because flexible array
-> members have incomplete type[1]. There are some instances of code in
-> which the sizeof operator is being incorrectly/erroneously applied to
-> zero-length arrays and the result is zero. Such instances may be hiding
-> some bugs. So, this work (flexible-array member conversions) will also
-> help to get completely rid of those sorts of issues.
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Acked-by: Ludovic Desroches<ludovic.desroches@microchip.com>
+From: Joe Zhu <Chunguang.Zhu@verisilicon.com>
 
-Ludovic Desroches
-> ---
->  drivers/dma/at_xdmac.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dma/at_xdmac.c b/drivers/dma/at_xdmac.c
-> index bb0eaf38b594..fd92f048c491 100644
-> --- a/drivers/dma/at_xdmac.c
-> +++ b/drivers/dma/at_xdmac.c
-> @@ -212,7 +212,7 @@ struct at_xdmac {
->         struct clk              *clk;
->         u32                     save_gim;
->         struct dma_pool         *at_xdmac_desc_pool;
-> -       struct at_xdmac_chan    chan[0];
-> +       struct at_xdmac_chan    chan[];
->  };
-> 
-> 
-> 
+client does not know and not care about how controller implement tx done.
+mbox_client_txdone() may be called when controller uses irq method.
+
+Signed-off-by: Joe Zhu <Chunguang.Zhu@verisilicon.com>
+---
+ drivers/mailbox/mailbox.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
+index 0b821a5b2db8..116124adf188 100644
+--- a/drivers/mailbox/mailbox.c
++++ b/drivers/mailbox/mailbox.c
+@@ -189,7 +189,9 @@ EXPORT_SYMBOL_GPL(mbox_chan_txdone);
+ void mbox_client_txdone(struct mbox_chan *chan, int r)
+ {
+ 	if (unlikely(!(chan->txdone_method & TXDONE_BY_ACK))) {
+-		dev_err(chan->mbox->dev, "Client can't run the TX ticker\n");
++		if (unlikely(!(chan->txdone_method & TXDONE_BY_IRQ)))
++			dev_err(chan->mbox->dev,
++			       "Client can't run the TX ticker\n");
+ 		return;
+ 	}
+ 
+-- 
+2.17.1
+
