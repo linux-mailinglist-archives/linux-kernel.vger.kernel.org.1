@@ -2,239 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665751CCFD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 04:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1A31CCFD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 04:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728237AbgEKCo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 22:44:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48874 "EHLO mail.kernel.org"
+        id S1728309AbgEKCrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 22:47:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726013AbgEKCo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 22:44:28 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        id S1725830AbgEKCrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 May 2020 22:47:08 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4116920820;
-        Mon, 11 May 2020 02:44:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6434B2137B;
+        Mon, 11 May 2020 02:47:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589165067;
-        bh=8L9FDF4no7+/puiAJxaaBkaIAsM7CjahfcFOlftQHgc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ev2EyPPf/NnjFauStDQEsb4T5AgD+bMqxYlm/LPj/HZcINHp1hYnFMbh4NqKhU+CX
-         se5sO+i1hhq6OOKDJdLuMThOGSjV3HC9ROA+cUMMJaNHYWGXeYnFbgrrXFNmXzs1QE
-         wh+vrMfowggESChHpbWmmygsKO2XiixQZZVKuUAY=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 233BC3523303; Sun, 10 May 2020 19:44:27 -0700 (PDT)
-Date:   Sun, 10 May 2020 19:44:27 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "kernel-team@fb.com," <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>, dipankar <dipankar@in.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Glexiner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH RFC tip/core/rcu 09/16] rcu-tasks: Add an RCU-tasks rude
- variant
-Message-ID: <20200511024427.GT2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200312181702.8443-9-paulmck@kernel.org>
- <20200316194754.GA172196@google.com>
- <CAEXW_YREzQ8hMP_vGiQFiNAtwxPn_C0TG6mH68QaS8cES-Jr3Q@mail.gmail.com>
- <20200316203241.GB3199@paulmck-ThinkPad-P72>
- <20200316173219.1f8b7443@gandalf.local.home>
- <CAEXW_YRtGhiaz+86pTL2WTyx5tqrpjB-bgQbnMLXjSQXPCmYfw@mail.gmail.com>
- <20200316180352.4816cb99@gandalf.local.home>
- <CAJhGHyAaktwgv63XcUaLduKyYSwA+OuTLU_h7XAgyD6CKZp5Mg@mail.gmail.com>
- <20200510154908.GR2869@paulmck-ThinkPad-P72>
- <CAJhGHyB4xQqKpYwOZdznVTzGjLaJuDPy4upDny9mdnUb1oAKCg@mail.gmail.com>
+        s=default; t=1589165227;
+        bh=FDKtUnOQ3qIeGS0KtMK0l6lFpy1aHBPs2Ihinmou1Ak=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=wKP/0Hpi1SXbKWsvBIudbmbNfb2BoLIYPl0qlQICVmmlTalOfyCVLY0F/d2rqVMmr
+         PdFooKWT90ikdzAPx5dneEc3vRUc7WpQVxVFRHkUltO0Ki08HJ9AMXA5Y6upU4T7oT
+         /7g+gxPHvIi1unXv8TWmC67WvAaKovZ3kXdzbPOM=
+Date:   Sun, 10 May 2020 19:47:05 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     tanhuazhong <tanhuazhong@huawei.com>
+Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <salil.mehta@huawei.com>,
+        <yisen.zhuang@huawei.com>, <linuxarm@huawei.com>
+Subject: Re: [PATCH net-next 3/5] net: hns3: provide .get_cmdq_stat
+ interface for the client
+Message-ID: <20200510194705.0082267b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1b76cac7-b1cc-cbab-cef4-cefeaa25ac62@huawei.com>
+References: <1589016461-10130-1-git-send-email-tanhuazhong@huawei.com>
+        <1589016461-10130-4-git-send-email-tanhuazhong@huawei.com>
+        <20200509134816.534860ab@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <1b76cac7-b1cc-cbab-cef4-cefeaa25ac62@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJhGHyB4xQqKpYwOZdznVTzGjLaJuDPy4upDny9mdnUb1oAKCg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 08:06:29AM +0800, Lai Jiangshan wrote:
-> On Sun, May 10, 2020 at 11:49 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Sun, May 10, 2020 at 05:59:27PM +0800, Lai Jiangshan wrote:
-> > > On Tue, Mar 17, 2020 at 6:03 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > > >
-> > > > On Mon, 16 Mar 2020 17:45:40 -0400
-> > > > Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > >
-> > > > > >
-> > > > > > Same for the function side (if not even more so). This would require adding
-> > > > > > a srcu_read_lock() to all functions that can be traced! That would be a huge
-> > > > > > kill in performance. Probably to the point no one would bother even using
-> > > > > > function tracer.
-> > > > >
-> > > > > Point well taken! Thanks,
-> > > >
-> > > > Actually, it's worse than that. (We talked about this on IRC but I wanted
-> > > > it documented here too).
-> > > >
-> > > > You can't use any type of locking, unless you insert it around all the
-> > > > callers of the nops (which is unreasonable).
-> > > >
-> > > > That is, we have gcc -pg -mfentry that creates at the start of all traced
-> > > > functions:
-> > > >
-> > > >  <some_func>:
-> > > >     call __fentry__
-> > > >     [code for function here]
-> > > >
-> > > > At boot up (or even by the compiler itself) we convert that to:
-> > > >
-> > > >  <some_func>:
-> > > >     nop
-> > > >     [code for function here]
-> > > >
-> > > >
-> > > > When we want to trace this function we use text_poke (with current kernels)
-> > > > and convert it to this:
-> > > >
-> > > >  <some_func>:
-> > > >     call trace_trampoline
-> > > >     [code for function here]
-> > > >
-> > > >
-> > > > That trace_trampoline can be allocated, which means when its no longer
-> > > > needed, it must be freed. But when do we know it's safe to free it? Here's
-> > > > the issue.
-> > > >
-> > > >
-> > > >  <some_func>:
-> > > >     call trace_trampoline  <- interrupt happens just after the jump
-> > > >     [code for function here]
-> > > >
-> > > > Now the task has just executed the call to the trace_trampoline. Which
-> > > > means the instruction pointer is set to the start of the trampoline. But it
-> > > > has yet executed that trampoline.
-> > > >
-> > > > Now if the task is preempted, and a real time hog is keeping it from
-> > > > running for minutes at a time (which is possible!). And in the mean time,
-> > > > we are done with that trampoline and free it. What happens when that task
-> > > > is scheduled back? There's no more trampoline to execute even though its
-> > > > instruction pointer is to execute the first operand on the trampoline!
-> > > >
-> > > > I used the analogy of jumping off the cliff expecting a magic carpet to be
-> > > > there to catch you, and just before you land, it disappears. That would be
-> > > > a very bad day indeed!
-> > > >
-> > > > We have no way to add a grace period between the start of a function (can
-> > > > be *any* function) and the start of the trampoline.
-> > >
-> > > Hello
-> > >
-> > > I think adding a small number of instructions to preempt_schedule_irq()
-> > > is sufficient to create the needed protected region between the start
-> > > of a function and the trampoline body.
-> > >
-> > > preempt_schedule_irq() {
-> > > +  if (unlikely(is_trampoline_page(page_of(interrupted_ip)))) {
-> > > +      return; // don't do preempt schedule
-> > > +
-> > > +  }
-> > >   preempt_schedule_irq() original body
-> > > }
-> > >
-> > > // generated on trampoline pages
-> > > trace_trampoline() {
-> > >    preempt_disable();
-> > >    trace_trampoline body
-> > >    jmp preempt_enable_traced(clobbers)
-> > > }
-> > >
-> > > asm(kernel text):
-> > > preempt_enable_traced:
-> > >    preempt_enable_notrace();
-> > >    restore cobblers
-> > >    return(the return ip on the stack is traced_function_start_code)
-> > >
-> > >
-> > > If the number of instructions added in preempt_schedule_irq() and
-> > > the complexity to make trampoline ip detectable(is_trampoline_page(),
-> > > or is_trampoline_range()) are small, and tasks_rcu is rendered useless,
-> > > I think it will be win-win.
-> >
-> > It certainly would provide a nice reduction in code size!
-> >
-> > This would provide a zero-instructions preempt_disable() at the beginning
-> > of the trampoline and a zero-instructions preempt_enable_no_resched() at
-> > the end, correct?  If so, wouldn't this create a potentially long (though
-> > "weak") preempt-disable region extending to the next preempt_enable(),
-> > local_bh_enable(), schedule(), interrupt, transition to userspace,
-> > or similar?  This could be quite some time.  Note that cond_resched()
-> > wouldn't help, given that this is only in PREEMPT=y kernels.
-> >
-> > The "weak" refers to the fact that if a second resched IPI arrived in the
-> > meantime, preemption would then happen.  But without that second IPI,
-> > the request for preemption could be ignored for quite some time.
-> >
-> > Or am I missing something here?
+On Mon, 11 May 2020 08:13:06 +0800 tanhuazhong wrote:
+> On 2020/5/10 4:48, Jakub Kicinski wrote:
+> > On Sat, 9 May 2020 17:27:39 +0800 Huazhong Tan wrote:  
+> >> diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+> >> index 5602bf2..7506cab 100644
+> >> --- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+> >> +++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+> >> @@ -552,6 +552,7 @@ struct hnae3_ae_ops {
+> >>   	int (*set_vf_mac)(struct hnae3_handle *handle, int vf, u8 *p);
+> >>   	int (*get_module_eeprom)(struct hnae3_handle *handle, u32 offset,
+> >>   				 u32 len, u8 *data);
+> >> +	bool (*get_cmdq_stat)(struct hnae3_handle *handle);
+> >>   };  
+> > 
+> > I don't see anything in this series using this new interface, why is it
+> > added now?
 > 
-> Hello,
-> 
-> I'm sorry to note that preempt_enable_traced() is in *kernel text*, it
-> is *not* in trace_trampoline_protected region. So preempt_enable_traced()
-> can be preempted. And preempt_enable_notrace() in it checks any previous
-> resched requested during the trampoline. So no resched request is lost.
-> 
-> The idea is that "semi-automatically preempt-disable-protecting"
-> the trampoline. "semi" means the trampoline still needs
-> preempt_disable() and the beginning, and preempt_enable() at
-> the end after leaving trace_trampoline_preempt_protected region.
-> "automatically" means the region between the start ip of
-> trampoline and the first preempt_disable() is also protected.
-> This automatically protected region is IP based, which means the
-> code should be put in "trace_trampoline_preempt_protected".
+> This interface is needed by the roce client, whose patch will be
+> upstreamed to the rdma tree, it is other branch. So we provide this 
+> interface previously, then the rdma guy will upstream their patch later,
+> maybe linux-5.8-rc*.
 
-Good point, and I did fail to connect the dots in your earlier email.
-
-> In my previous email, "trace_trampoline_preempt_protected" is detected
-> by information in the "struct page". But the trampolines are often
-> created in module_alloc() region, if so, 13-page bitmap is sufficient
-> to store "is this virtual-page-frame-number in trace_trampoline?" info
-> for all vpfn in 1520 MB module_alloc() region. If the bitmap
-> is too big for some cases, we might need to use bloom filter
-> for the fast path. I still don't know what is the best way to control
-> the ip of trace_trampoline or attach info to it and to fast detect it.
-
-Or perhaps use a different approach to trampoline allocation as Masami
-suggests.
-
-							Thanx, Paul
-
-> Thanks,
-> Lai
-> 
-> >
-> >                                                         Thanx, Paul
-> >
-> > > Thanks
-> > >
-> > > Lai
-> > >
-> > > > Since the problem is
-> > > > that the task was non-voluntarily preempted before it could execute the
-> > > > trampoline, and that trampolines are not allowed (suppose) to call
-> > > > schedule, then we have our quiescent state to track (voluntary scheduling).
-> > > > When all tasks have either voluntarily scheduled, or entered user space
-> > > > after disconnecting a trampoline from a function, we know that it is safe to
-> > > > free the trampoline.
-> > > >
-> > > > -- Steve
+Understood. Please make sure to include this kind of information in the
+cover letter in the future.
