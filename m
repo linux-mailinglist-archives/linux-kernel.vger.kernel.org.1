@@ -2,107 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A26751CDE0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18CF1CDE18
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 17:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729732AbgEKPDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 11:03:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44762 "EHLO
+        id S1730108AbgEKPER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 11:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726438AbgEKPDL (ORCPT
+        by vger.kernel.org with ESMTP id S1729439AbgEKPEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 11:03:11 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F9AC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:03:10 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id c124so15122008oib.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:03:10 -0700 (PDT)
+        Mon, 11 May 2020 11:04:16 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2448CC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:04:16 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 18so4867527pfx.6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 08:04:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7qV0qj2vY3QMnSRpzrXrBmdMrKIn2fose2w49TIcUwA=;
-        b=a72v2AhlK0RMWvywkFLjZmfhzZvIhJmPEoTvBRAk/SnK/GdMXVYpYNlhlUjfan9HTI
-         AYtNSsKZ6jFvdDP3utjWR5R1FanExkscDVG4oyyb4sjLyrHCghImpPzcEV6eLXWps7gE
-         LW8KG+jisGg9a8JULKt2vAZ1gfNW/YVyhRCxg=
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OHJUJ17/FC2dTwIgyVRhAvuaLoEHHB7DiP06YRCuurY=;
+        b=W3Wyw/BUOFmcN5z76mdD+d+AeYX5Q0cmBijeoqCywy8tYJ3IBFQaqDiQ0DBOeAMKw7
+         1P/0/r46pvYDxyvlYRqxrVxdypSk3TOTiwTbHstWNTuX5UB5ytnVMGF88fosyXZfi+kP
+         eGqJEFO32NTM9OVlqFPg5UJAKjrpQsScFR+27sPkHu1WEPclfyOVdBvnC834jRM9ODQP
+         qiUHnzvdDY4p6IZhunNByn5DzR8foi2gwsALibAOd4xVUhdRJjNId94vOx4L2ceDBK6I
+         uTSWBJmP9KC3YASV6qXD1a4J7gmCAtxrvOIKaPKrGW6ok6f4OP7DeJMj2i0oTW0Y+SeD
+         J6Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7qV0qj2vY3QMnSRpzrXrBmdMrKIn2fose2w49TIcUwA=;
-        b=GHeue4DeMonQCgXw/Q0V4GsIgNGs5Jo3Uhe6ZI/1XDv9K9XzqYWaPQDg6E/F5qUnem
-         EOqPTIJZJpqDQWjshQt1JYR3tGf1wBQJjHjhb8zGoo7zB4n/AESt9qFovNl54BmSg38F
-         dafXTPlA4llX0ouSeJLkindJFmAX5heJiqZaWLa7kOgiWyc+vtkGhccNcJX2U762F8h7
-         ZP3JaZykQT3XoNkMPSXJPqo7Ytu1QvCYfwjAP4T8+f8SVjsgP/E0Q9/DCM0KGokUR/P5
-         GRTTjrwOeI6Qa15XsIxOrMBJtzZ5DyAPI8PenCmmt7Rp4W6ewlGlWk3BeYi/ieLxBaQz
-         jjDw==
-X-Gm-Message-State: AGi0PuYrf/DESggcw0VH7rVZDYEzgBsHGhczXnseUdEbm5a8mtWRnQ+X
-        DnsMqNc151PgoAaeB0WgZp8wZYxo1UFwihYyUVKneA==
-X-Google-Smtp-Source: APiQypJyBxpFVBJJmxojQB9sRbIOUW8mGmPu1/0vDgQqL0jXLAatzNPx3bnAkXEfHiEEDH2+PiwShECoXmBHDelm2zs=
-X-Received: by 2002:aca:52d5:: with SMTP id g204mr19998120oib.14.1589209389691;
- Mon, 11 May 2020 08:03:09 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OHJUJ17/FC2dTwIgyVRhAvuaLoEHHB7DiP06YRCuurY=;
+        b=OszuuIbvC6PetsiDqt5PDaTqkwOp+LDjyp4R3F5oz1J6TSlOlmpzdM2bozI3z/yrPY
+         c6CO0xWabTymCH4Rp7tQj45m8El4YGPsyku4Z+N+SZ5H2sjiYgUl/kFtMzkjm6s3f8cO
+         zDvbsLy/GNHLTvxwWoMf0jgvhdPPM1tXFDWZcmReAOssCFs3OFxv80hdofBI+Xcgxcqg
+         gi8UvKyTs3aUPqk0wR6W9P7teJlGmy9a8JSViqHY94qWhhhoeoF/xxJ+n+ZndIS2w05s
+         feBtWAq4gyoJh0JwiRc+SfKgIm8MBAnSQYfzooCIkvDRHi1+RgTjzvoULPMUHcW1HXlj
+         exFQ==
+X-Gm-Message-State: AGi0PubWAbBoJCz0wmkdfLzIKRABlhS8Z2piGBkDOmJrKEHINMFbla3L
+        QlX+ZsP0B4wV1cTCjH8Ovl1vSA==
+X-Google-Smtp-Source: APiQypJP/+pPEqvkAfi8g+IHjolppYyg14pV7OIOuz2+kkHrLUoxUsD6RhBmqj/GotdKeMJPQVmcsA==
+X-Received: by 2002:a63:6fce:: with SMTP id k197mr15097130pgc.431.1589209455711;
+        Mon, 11 May 2020 08:04:15 -0700 (PDT)
+Received: from ?IPv6:2605:e000:100e:8c61:2dd6:4c58:486d:263e? ([2605:e000:100e:8c61:2dd6:4c58:486d:263e])
+        by smtp.gmail.com with ESMTPSA id h13sm8108267pgm.69.2020.05.11.08.04.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 May 2020 08:04:14 -0700 (PDT)
+Subject: Re: [PATCH] fs:io_uring:Remove duplicate semicolons at the end of
+ line
+To:     Xiaoming Ni <nixiaoming@huawei.com>, viro@zeniv.linux.org.uk
+Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wangle6@huawei.com
+References: <1589196343-84741-1-git-send-email-nixiaoming@huawei.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <4dda3bd2-595f-9cdb-a22f-3b56d6ba16c2@kernel.dk>
+Date:   Mon, 11 May 2020 09:04:13 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200508204751.155488-1-lyude@redhat.com> <20200508204751.155488-2-lyude@redhat.com>
- <20200511144935.GD16815@mtj.duckdns.org>
-In-Reply-To: <20200511144935.GD16815@mtj.duckdns.org>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Mon, 11 May 2020 17:02:58 +0200
-Message-ID: <CAKMK7uFDp_9SWUtMOfKaSLu3FNq5w=HWDo9FOeRsD204eR327g@mail.gmail.com>
-Subject: Re: [RFC v4 01/12] kthread: Add kthread_queue_flush_work()
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Lyude Paul <lyude@redhat.com>,
-        Nouveau Dev <nouveau@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Liang Chen <cl@rock-chips.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1589196343-84741-1-git-send-email-nixiaoming@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 4:49 PM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Fri, May 08, 2020 at 04:46:51PM -0400, Lyude Paul wrote:
-> > +bool kthread_queue_flush_work(struct kthread_work *work,
-> > +                           struct kthread_flush_work *fwork);
-> > +void __kthread_flush_work_fn(struct kthread_work *work);
->
-> As an exposed interface, this doesn't seem great. What the user wants to say
-> is "wait for the current instance of this guy" and the interface is asking
-> them to queue an extra work item whose queueing return state should be
-> checked and depending on that result wait on its internal completion.
->
-> I'm skeptical this is a good idea in general given that unless you define
-> "this instance" at the time of queueing the work item which is being
-> waited-upon, there's no way to guarantee that the instance you're queueing
-> the flush work item on is the instance you want unless the queuer is holding
-> external synchronization which prevents the instance from running. That's a
-> really confusing semantics to expose in the interface.
->
-> What the above means is that the ordering that you want is only defined
-> through your own locking and that maybe suggests that the sequencing should
-> be implemented on that side too. It may be a bit more code but a sequence
-> counter + wait queue might be the better solution here.
+On 5/11/20 5:25 AM, Xiaoming Ni wrote:
+> Remove duplicate semicolons at the end of line in fs/io_uring.c
 
-Aside from this, flush_$stuff interfaces are very easy to deadlock.
-That's why e.g. flush_work() for normal workqueues has lockdep
-annotations (lockdep doesn't see through wait/wake_up dependencies
-without some help because cross-release didn't land for real). So I
-think if we need something like this, it needs to be a lot more
-explicit, and come with the right lockdep annotations.
--Daniel
+Applied, thanks.
+
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+Jens Axboe
+
