@@ -2,54 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6291CE37E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF661CE382
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731344AbgEKTA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 15:00:56 -0400
-Received: from sender4-of-o51.zoho.com ([136.143.188.51]:21127 "EHLO
+        id S1731359AbgEKTBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 15:01:25 -0400
+Received: from sender4-of-o51.zoho.com ([136.143.188.51]:21195 "EHLO
         sender4-of-o51.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729215AbgEKTAz (ORCPT
+        with ESMTP id S1728613AbgEKTBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 15:00:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1589223616; cv=none; 
+        Mon, 11 May 2020 15:01:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1589223630; cv=none; 
         d=zohomail.com; s=zohoarc; 
-        b=B1X7gjK0SaSBbOecihU3V1h723kvH3VUtqyei/Tk47yktixnA8jRtViQ2Swe6GlDY/ndXfOsEu/ZwjEKJefQG5qy2Gr2ztHgP9kmMzHO007aXjInppJFM7gbP5U+frhmBMGjhhAF7xb4jQ5O4Wbh0X/rl71WX8C19YV24RMUtvI=
+        b=EAxC538SB8vOCCYGhkRtnWPw64VWnXSoz3LHOGMNYMA8wRYwFun2jTwbrfYBQqOsK7mM08FCYeoVvtuTnPDhOXZM7OY4o/zOKzdtFu233mfaeV/x6ij2qk5sDdMqJlOK9ZZHcaOQZhritUAoXt4peMzLi0PROikhUu9JZ6+WuKo=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1589223616; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=S00r81D2Ko0kQyZGpHMx3uADqFI0Su0WIYx5Ou1xMzU=; 
-        b=LsdPd7vACFwL+7d62NcGJt/3H0U8tBMUrkCvH9fPx7/4juGaJhnrjz7Uf8yl4D6kTDkupD15ddAruQC7wvzKQfOWGJXnjpNJV7AzStbDOQdbLtIUB7MnX36qhfvJBmrrUT4MAIX3kdK4HnxUP7gyyM5bcUPzhq10gioHnKNMHrM=
+        t=1589223630; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=WsbSEiFa18++eNck0KrubU8CHN+H3s8dS+I69ppF7T8=; 
+        b=YKyduWTbKyIC1aQuzAqbu5DJgupbUhGySEo+OFWmqRQxivyBiLjNH9SvR7GIwGc5C/RH2Hd2BPwBuuj2cgoR5IJvu0OWUQsHnggfGQclxlvf2AU4SQZ0HlLMVWx/z6ccJapnpNKJKgAJYI2gwBa0CwuUK2z8gybz4OvABUxiQnU=
 ARC-Authentication-Results: i=1; mx.zohomail.com;
         dkim=pass  header.i=apertussolutions.com;
         spf=pass  smtp.mailfrom=dpsmith@apertussolutions.com;
         dmarc=pass header.from=<dpsmith@apertussolutions.com> header.from=<dpsmith@apertussolutions.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1589223616;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1589223630;
         s=zoho; d=apertussolutions.com; i=dpsmith@apertussolutions.com;
         h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        bh=S00r81D2Ko0kQyZGpHMx3uADqFI0Su0WIYx5Ou1xMzU=;
-        b=cGqfsP5ELyTFhdDVij90EepZASDYn+7THT4xRajLzeGY6VbXex/WuSAWOvsyqohR
-        HDepon/jwE1q4CczEAojnBh/M6AUAfXjX+w3uBk/+FziqniIlXSTPLKT5cJdJ1+rgSE
-        VsdBoEID8KaOnGhyPkgKRvqxRsNcTjigN3ERF53k=
+        bh=WsbSEiFa18++eNck0KrubU8CHN+H3s8dS+I69ppF7T8=;
+        b=WpM+xv1mxliGqktO9qHZ9W+7jfQa/w21YibxdnTCiRQppZHyEnv0DFWGQ3lfkcLv
+        ab36b3lf302BI5ztK/vntoJbOKaiWjweCn1OrULiE4ymmj5v0JSnErbpDn/+JA7b+XJ
+        33VpB9NEpnxvlYYbJMgWVfw8ye6/6jFf+/tWsxEA=
 Received: from [10.10.1.24] (c-73-129-47-101.hsd1.md.comcast.net [73.129.47.101]) by mx.zohomail.com
-        with SMTPS id 1589223613759454.8456864775825; Mon, 11 May 2020 12:00:13 -0700 (PDT)
+        with SMTPS id 1589223627112236.7109391326611; Mon, 11 May 2020 12:00:27 -0700 (PDT)
 Subject: Re: [RFC PATCH 00/12] x86: Trenchboot secure late launch Linux kernel
  support
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Matthew Garrett <mjg59@google.com>,
-        Ross Philipson <ross.philipson@oracle.com>,
+To:     Matthew Garrett <mjg59@google.com>,
+        Daniel Kiper <daniel.kiper@oracle.com>
+Cc:     Ross Philipson <ross.philipson@oracle.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         the arch/x86 maintainers <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        linux-doc@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, trenchboot-devel@googlegroups.com
+        "H. Peter Anvin" <hpa@zytor.com>,
+        trenchboot-devel@googlegroups.com,
+        Ard Biesheuvel <ardb@kernel.org>, leif@nuviainc.com,
+        eric.snowberg@oracle.com, piotr.krol@3mdeb.com,
+        krystian.hebel@3mdeb.com, michal.zygowski@3mdeb.com,
+        James Bottomley <james.bottomley@hansenpartnership.com>,
+        andrew.cooper3@citrix.com
 References: <20200325194317.526492-1-ross.philipson@oracle.com>
  <CACdnJut56WuqO=uLff0qy1Jp=C6f_sRxLpRBsrzb6byBsFYdCg@mail.gmail.com>
- <CALCETrUshiLMHyf4DShgDRtCvnzUVyRQgmgCiudvhuhw05cDxg@mail.gmail.com>
- <6bb09673-292e-b056-3755-ffc51a1d6b59@apertussolutions.com>
- <CALCETrUnyTbihpqjZ-rwKDsyS=1yMg1KGTD60PJMj7R1-5PbhA@mail.gmail.com>
+ <20200326134011.c4dswiq2g7eln3qd@tomti.i.net-space.pl>
+ <CACdnJutT1F7YJ5KFkyuaZv=nj8GqC+mrnoAsHZfMP1ZRNUQg3Q@mail.gmail.com>
 From:   "Daniel P. Smith" <dpsmith@apertussolutions.com>
-Message-ID: <d72b87f4-4e71-0b32-7faf-35f910ea76a4@apertussolutions.com>
+Message-ID: <e8908622-cf20-b2a4-672f-9072f5ea806b@apertussolutions.com>
 Autocrypt: addr=dpsmith@apertussolutions.com; prefer-encrypt=mutual; keydata=
  mQMuBFYrueARCACPWL3r2bCSI6TrkIE/aRzj4ksFYPzLkJbWLZGBRlv7HQLvs6i/K4y/b4fs
  JDq5eL4e9BdfdnZm/b+K+Gweyc0Px2poDWwKVTFFRgxKWq9R7McwNnvuZ4nyXJBVn7PTEn/Z
@@ -81,11 +85,11 @@ Autocrypt: addr=dpsmith@apertussolutions.com; prefer-encrypt=mutual; keydata=
  ke943EIUts9CmFAHt8cNPYOPRd20pPu4VFNBuT4fv9Ys0iv0XGCEP+sos7/pgJ3gV3pCOric
  p15jV4OIYQQYEQgACQUCViu54AIbDAAKCRBTc6WbYpR8Khu7AP9NJrBUn94C/3PeNbtQlEGZ
  NV46Mx5HF0P27lH3sFpNrwD/dVdZ5PCnHQYBZ287ZxVfVr4Zuxjo5yJbRjT93Hl0vMY=
-Date:   Mon, 11 May 2020 15:00:11 -0400
+Date:   Mon, 11 May 2020 15:00:24 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CALCETrUnyTbihpqjZ-rwKDsyS=1yMg1KGTD60PJMj7R1-5PbhA@mail.gmail.com>
+In-Reply-To: <CACdnJutT1F7YJ5KFkyuaZv=nj8GqC+mrnoAsHZfMP1ZRNUQg3Q@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -95,57 +99,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/20 7:13 PM, Andy Lutomirski wrote:
+On 3/26/20 4:19 PM, Matthew Garrett wrote:
+> How does Windows manage this? Retaining access to EFI runtime services
+> is necessary, and the areas in the memory map marked as runtime
+> services code or data should be considered part of the TCB and
+> measured - they're very much not part of the gap.
 >=20
-> Hmm.  I don't have any real objection to the kernel supporting this
-> type of secure launch, but I do have some more questions first.
 
-Coming back through the thread to ensure all questions have been
-responded before a submission patch set is sent.
+Dave Weston was kind enough to speak at PSEC specifically on how they
+are leveraging DRTM.
 
-> One of the problems with the old tboot code and the general state of
-> dynamic-root-of-trust is that it's an incredible pain in the neck to
-> even test.  I think it would be helpful if I could build a kernel that
-> supported secure launch (Intel or AMD) and just run the thing.  I
-> realize that you're planning to integrate this into GRUB, etc, but it
-> might be nice if even existing GRUB and EFI shell can do this.  How
-> hard would it be to make the kernel support a mode where whatever
-> blobs are required are in the initrd or built in like firmware and
-> where I could set a command line argument like secure_launch=3Don and
-> have the kernel secure launch itself?
->=20
-> Are you planning on supporting a mode where kernel A kexecs to kernel
-> B, kernel B is secure launched, and then kernel B resumes kernel A and
-> re-launches it?  If so, would it work better if the measured state of
-> the kernel were the *uncompressed* text or even the uncompressed and
-> alternative-ified text?  Or is the idea that the secure launch entry
-> will figure out that it's actually a resume and not a fresh boot and
-> behave accordingly?
-
-A primary purpose of the TrenchBoot project is to make using DRTM
-seamless for people, e.g. a few config settings and it just works(tm).
-To achieve what you are proposing, the kernel would have to know how to
-do both the DL preamble (pre-launch in tboot) and DL entry (post-launch
-in tboot). The short answer is we are working towards that capability.
-First is the ability to handle the DL entry, which is SecureLaunch. For
-now we are clearing the SECRETS bit and doing the SEXIT leaf on kexec
-and S5 to minimize the risk of bricking your system with TXT. Later the
-DL preamble can be added to kexec such that the user space can
-coordinate a DRTM launch. Not sure if this is exactly what you are
-envisioning but albeit at least a close approximation.
-
-
-> What's the situation like in a VM?  Can I run the secure launch entry
-> in a VM somehow?  Can I actually initiate the dynamic launch from the
-> VM?
-
-A DL entails calling a CPU instruction which take over full control of
-the system. If a hypervisor blindly allowed a VM to directly call the
-op, it would end up with full control of the system outside of the
-hypervisor. With that said, An approach on the roadmap for TrenchBoot is
-how a hypervisor and a VM might coordinate the use of a DL to establish
-a new measurement chain consisting of runtime inspection of the
-hypervisor which in-turn has a means to establish the integrity of the VM.
+https://www.platformsecuritysummit.com/2019/speaker/weston/
 
 V/r,
 DPS
