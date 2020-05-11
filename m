@@ -2,101 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527CF1CE475
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2CA1CE46C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731516AbgEKT3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 15:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
+        id S1731444AbgEKT2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 15:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731353AbgEKT27 (ORCPT
+        by vger.kernel.org with ESMTP id S1731416AbgEKT2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 15:28:59 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FC5C061A0C;
-        Mon, 11 May 2020 12:28:59 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id k1so12462812wrx.4;
-        Mon, 11 May 2020 12:28:59 -0700 (PDT)
+        Mon, 11 May 2020 15:28:17 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BADC05BD09
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 12:28:17 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id h12so7717052pjz.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 12:28:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=ZAtH0faIljYlKbUs4LOqwPvsHvq1UMeElD7Sjj/OCPg=;
-        b=eSLzEC3SAsl3cXTDCPbtCGyX8b2dFryfRulWYzicOAsqusDu34FRZwOuHH8HUh0qBI
-         XuQumhjFb9KdzljstM2R5RpVmMwrhlQj2RVC6Ada+RHuVbMZ0IPfH+d4DZh+X9V/Ppnq
-         YisCkeowg2JpZIpfvSzft5Sb0pHA8TuG6pQyRvkbDMaBRv4hvL36txLFMflZ8J+XAPqL
-         FylG7Ts6DqwWevPNj80HwojO2onvzq3dWqgtWiBTmVrxmunF66B0/62AoV4+dzl5r7cv
-         Ab8B2Sxi5nsVHLq9W4zBpFtrdW4NyVjRt5JJcvc1rO6RsHZmEUzSgGtSk9tVTY/T4LG+
-         9oqQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SWP2X2+azRyixrjWTJYqW45Td6DT0R10Lg/kNNX7rQU=;
+        b=sfGBcaJAVbA0yCwLUwwt/T6iRz+IEXOpy/ZZTCYfyGa/rx+1MFRKy2zZciZtQoD/7c
+         YXyl6J2vMthSGMl2uhBetDDrggS6aUMUHzUUEyp9taZhklrs6E+AHINYyUj1I9eiF65n
+         DI0cXimOZva3DrLFtGLOUID6tScG//Z5XvaIs9psFN93f5DNY9f4/ArxBd9LwyWlEOiV
+         Lr6NoGMwiCDjyd1pjRxvmAw754CG7BnYtfvJiK5X3zEpdZ8NsKXiNCTkWPiE2hceRdRi
+         yLT0vKxsBbH15fMwluRfuKTXq79QYWUixK1N+KNGEIeqD7SQzqc+C6dMzhwkw9EpGafQ
+         QCWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ZAtH0faIljYlKbUs4LOqwPvsHvq1UMeElD7Sjj/OCPg=;
-        b=QG2qnpcfbV5lHkvqOtBE4E+Ria0WZd1y8HxGNnDgLQ7YihHRnjkCGGq7C7zmcfts9e
-         B/px4bZZIqJSiOjX4FAvH9QebmZHiuQ+T9h05EKu2LxfiGDxVEwDaPNbqe0UBq6yooy6
-         xgK8W+gfmAHaNpUB12Fcdd471SgW0/eCW4RjTokNrZE+A1kvlQFjRfLqPSbMjLecZDbI
-         STEgj6TQs4n9iRhrdcLl/49+x/eumSZRjmXaPxGXnuNccphEwooyV3qCpRTGnMGouSSz
-         P+GEa1cgrRf9GOtvLemKPr6HUPBNwvn0pOujeN+BuKJ8jztkIp5S14WJW1LWORWlNHTE
-         w25g==
-X-Gm-Message-State: AGi0Pub3/oAGfHUuWFArlxk/BrJ70iVbSMI37FNT9cSmKFECCP2X4KGr
-        GqeLwNvERcyp6ENHIBy+/0c=
-X-Google-Smtp-Source: APiQypL550SiDakiWSzBnEQgDEpmGUtS2Kxf+BKvqRsSGWbsDn8qXbb87i4v281xXMYsGjt4jNmqOA==
-X-Received: by 2002:a5d:4008:: with SMTP id n8mr7444252wrp.82.1589225338114;
-        Mon, 11 May 2020 12:28:58 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2dce:7200:7930:ad7c:21cb:6736])
-        by smtp.gmail.com with ESMTPSA id u9sm7218846wmb.19.2020.05.11.12.28.56
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SWP2X2+azRyixrjWTJYqW45Td6DT0R10Lg/kNNX7rQU=;
+        b=UfdsSZ/ZIoyj1B2fSUPo69mvaEKPVwgTFizcmUYVgk7/5KpprQvCKJvhy3GsdpEUzv
+         yfdgf5P1oAp9gkgRKtQtF/Y4z0YXNjSBgWHHqWWq5UCLFToFrn+dpt8fugGIAxhWo8NZ
+         tJbHdks5an+DrePeNHbQ6abEIaMb07EGs9R7T35mviKhZft0H/CDmdZFmflOV4WW1pR4
+         gL/owAyTOlzWoSHPKxJBBHqJ+i4a6N/mHDSgLzid4OXQGB6+2XxNBgMsn6dmDPyRdVhP
+         nulljcUwbKU3XAPmxJ++HqmpMK71M/SZal6DHBAwi48xG/zvb970nbCL0uM7B8sCu0gK
+         lqzQ==
+X-Gm-Message-State: AGi0PuZjB2xOyjWO7NJeqYCR7IzK3IpD06PlUQ/4//BfPMS4vmjRtbP6
+        T90NeL4Cg9K3oXs7We8JCf4w1A==
+X-Google-Smtp-Source: APiQypIr4WjwzqF01mqiFbRCkzXFDcsV8vJ6bRcKT9P0+wyECmYt6TgczN9wRKV2kYBT/QbSNs6vZg==
+X-Received: by 2002:a17:90b:3588:: with SMTP id mm8mr22957368pjb.202.1589225296927;
+        Mon, 11 May 2020 12:28:16 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id fu12sm10800758pjb.20.2020.05.11.12.28.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 12:28:57 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: correct path in TEGRA VIDEO DRIVER
-Date:   Mon, 11 May 2020 21:28:44 +0200
-Message-Id: <20200511192844.11044-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 11 May 2020 12:28:16 -0700 (PDT)
+Date:   Mon, 11 May 2020 12:29:09 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     robh+dt@kernel.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, evgreen@chromium.org,
+        ohad@wizery.com, mka@chromium.org, dianders@chromium.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 6/7] arm64: dts: qcom: sc7180: Add Q6V5 MSS node
+Message-ID: <20200511192909.GC2166963@builder.lan>
+References: <20200421143228.8981-1-sibis@codeaurora.org>
+ <20200421143228.8981-7-sibis@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200421143228.8981-7-sibis@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 423d10a99b30 ("media: tegra: Add Tegra210 Video input driver") added
-the driver to drivers/staging/media/tegra-video/, but commit 2c6b617f2cca
-("MAINTAINERS: Add Tegra Video driver section") added a file entry
-referring to drivers/staging/media/tegra/.
+On Tue 21 Apr 07:32 PDT 2020, Sibi Sankar wrote:
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+> This patch adds Q6V5 MSS PAS remoteproc node for SC7180 SoCs.
+> 
 
-  warning: no file matches  F:  drivers/staging/media/tegra/
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Adjust the file entry in TEGRA VIDEO DRIVER to the correct path.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-Sowjanya, please ack this minor patch.
-
-applies cleanly on next-20200511
-
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0abba1aff1ae..dd310f1c3bb7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16679,7 +16679,7 @@ L:	linux-media@vger.kernel.org
- L:	linux-tegra@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
--F:	drivers/staging/media/tegra/
-+F:	drivers/staging/media/tegra-video/
- 
- TEGRA XUSB PADCTL DRIVER
- M:	JC Kuo <jckuo@nvidia.com>
--- 
-2.17.1
-
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 36 ++++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> index 65c14a6d13fef..94cead96eade0 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -1323,6 +1323,42 @@ pinconf-sd-cd {
+>  			};
+>  		};
+>  
+> +		remoteproc_mpss: remoteproc@4080000 {
+> +			compatible = "qcom,sc7180-mpss-pas";
+> +			reg = <0 0x04080000 0 0x4040>;
+> +
+> +			interrupts-extended = <&intc GIC_SPI 266 IRQ_TYPE_EDGE_RISING>,
+> +					      <&modem_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
+> +					      <&modem_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
+> +					      <&modem_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
+> +					      <&modem_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
+> +					      <&modem_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
+> +			interrupt-names = "wdog", "fatal", "ready", "handover",
+> +					  "stop-ack", "shutdown-ack";
+> +
+> +			clocks = <&rpmhcc RPMH_CXO_CLK>;
+> +			clock-names = "xo";
+> +
+> +			power-domains = <&aoss_qmp AOSS_QMP_LS_MODEM>,
+> +					<&rpmhpd SC7180_CX>,
+> +					<&rpmhpd SC7180_MSS>;
+> +			power-domain-names = "load_state", "cx", "mss";
+> +
+> +			memory-region = <&mpss_mem>;
+> +
+> +			qcom,smem-states = <&modem_smp2p_out 0>;
+> +			qcom,smem-state-names = "stop";
+> +
+> +			status = "disabled";
+> +
+> +			glink-edge {
+> +				interrupts = <GIC_SPI 449 IRQ_TYPE_EDGE_RISING>;
+> +				label = "modem";
+> +				qcom,remote-pid = <1>;
+> +				mboxes = <&apss_shared 12>;
+> +			};
+> +		};
+> +
+>  		sdhc_2: sdhci@8804000 {
+>  			compatible = "qcom,sc7180-sdhci", "qcom,sdhci-msm-v5";
+>  			reg = <0 0x08804000 0 0x1000>;
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
