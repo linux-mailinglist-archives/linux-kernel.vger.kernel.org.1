@@ -2,276 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9791CD9F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A52C1CD9A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 14:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729854AbgEKMeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 08:34:05 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:41810 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728367AbgEKMeE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 08:34:04 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04BCXwwK056420;
-        Mon, 11 May 2020 07:33:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589200438;
-        bh=F3ki1mQxyvwiG49j9FhGin3FqAgAN01/D6XjYGfeuc8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=nLuqfACWXcGZGQZ/7schkjTSz7zv4XJ4oVpzvasC+NcgNj34Kd56yiXlkIshRRMbd
-         Mqtckc6YxtXyGEviDKtZ/I4dpgNL+Yjr6bCRGZ5Qg7PzaoteWLxfg9noz3igbzybCl
-         IYMw53EPdNo5fTbXgYre3JpMcxVhsvO/guDD0a0I=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04BCXwM6111293;
-        Mon, 11 May 2020 07:33:58 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 11
- May 2020 07:33:58 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 11 May 2020 07:33:58 -0500
-Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04BCXwZT030336;
-        Mon, 11 May 2020 07:33:58 -0500
-Subject: Re: [PATCH v2] dt-bindings: power: Convert bq27xxx dt to yaml
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-CC:     <linux-pm@vger.kernel.org>, <robh@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        "Andrew F . Davis" <afd@ti.com>
-References: <20200507183013.27261-1-dmurphy@ti.com>
- <20200510161721.257vprq6rqp64wu5@earth.universe>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <fb9b240e-9bfe-1295-6fc4-700d886ea7c9@ti.com>
-Date:   Mon, 11 May 2020 07:25:06 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729857AbgEKMZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 08:25:54 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4389 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729763AbgEKMZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 08:25:48 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 009F7FA603E696F8AFB2;
+        Mon, 11 May 2020 20:25:43 +0800 (CST)
+Received: from [127.0.0.1] (10.173.220.25) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 11 May 2020
+ 20:25:32 +0800
+Subject: Re: [RFC PATCH v3 1/2] arm64: tlb: Detect the ARMv8.4 TLBI RANGE
+ feature
+To:     Mark Rutland <mark.rutland@arm.com>
+CC:     <will@kernel.org>, <catalin.marinas@arm.com>,
+        <suzuki.poulose@arm.com>, <maz@kernel.org>, <steven.price@arm.com>,
+        <guohanjun@huawei.com>, <olof@lixom.net>,
+        <linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <xiexiangyou@huawei.com>, <zhangshaokun@hisilicon.com>,
+        <linux-mm@kvack.org>, <arm@kernel.org>, <prime.zeng@hisilicon.com>,
+        <kuhn.chenqun@huawei.com>, <linux-arm-kernel@lists.infradead.org>
+References: <20200414112835.1121-1-yezhenyu2@huawei.com>
+ <20200414112835.1121-2-yezhenyu2@huawei.com>
+ <20200505101405.GB82424@C02TD0UTHF1T.local>
+From:   Zhenyu Ye <yezhenyu2@huawei.com>
+Message-ID: <cb9d32b6-a9d8-3737-e69d-df4191b7afa9@huawei.com>
+Date:   Mon, 11 May 2020 20:25:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20200510161721.257vprq6rqp64wu5@earth.universe>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20200505101405.GB82424@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.173.220.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian
-
-On 5/10/20 11:17 AM, Sebastian Reichel wrote:
-> Hi Dan,
->
-> On Thu, May 07, 2020 at 01:30:13PM -0500, Dan Murphy wrote:
->> Convert the bq27xxx.txt to yaml format
+On 2020/5/5 18:14, Mark Rutland wrote:
+> On Tue, Apr 14, 2020 at 07:28:34PM +0800, Zhenyu Ye wrote:
+>> ARMv8.4-TLBI provides TLBI invalidation instruction that apply to a
+>> range of input addresses. This patch detect this feature.
 >>
->> CC: Pali Rohár <pali@kernel.org>
->> CC: Andrew F. Davis <afd@ti.com>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>> Signed-off-by: Zhenyu Ye <yezhenyu2@huawei.com>
 >> ---
-> This needs is missing the power-supplies property. The N900 DT
-> contains a bq27200 referencing the charger, so it should fail the DT
-> check without the property being listed here.
-
-Hmm.  I ran the dt checker specifically on the binding and it did not 
-fail.  Unless I need to build some other DTs as well.
-
-Either I will have the power-supplies property
-
->
->>   .../bindings/power/supply/bq27xxx.txt         | 56 ------------
->>   .../bindings/power/supply/bq27xxx.yaml        | 86 +++++++++++++++++++
->>   2 files changed, 86 insertions(+), 56 deletions(-)
->>   delete mode 100644 Documentation/devicetree/bindings/power/supply/bq27xxx.txt
->>   create mode 100644 Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
+>>  arch/arm64/include/asm/cpucaps.h |  3 ++-
+>>  arch/arm64/include/asm/sysreg.h  |  4 ++++
+>>  arch/arm64/kernel/cpufeature.c   | 11 +++++++++++
+>>  3 files changed, 17 insertions(+), 1 deletion(-)
 >>
->> diff --git a/Documentation/devicetree/bindings/power/supply/bq27xxx.txt b/Documentation/devicetree/bindings/power/supply/bq27xxx.txt
->> deleted file mode 100644
->> index 4fa8e08df2b6..000000000000
->> --- a/Documentation/devicetree/bindings/power/supply/bq27xxx.txt
->> +++ /dev/null
->> @@ -1,56 +0,0 @@
->> -TI BQ27XXX fuel gauge family
->> -
->> -Required properties:
->> -- compatible: contains one of the following:
->> - * "ti,bq27200" - BQ27200
->> - * "ti,bq27210" - BQ27210
->> - * "ti,bq27500" - deprecated, use revision specific property below
->> - * "ti,bq27510" - deprecated, use revision specific property below
->> - * "ti,bq27520" - deprecated, use revision specific property below
->> - * "ti,bq27500-1" - BQ27500/1
->> - * "ti,bq27510g1" - BQ27510-g1
->> - * "ti,bq27510g2" - BQ27510-g2
->> - * "ti,bq27510g3" - BQ27510-g3
->> - * "ti,bq27520g1" - BQ27520-g1
->> - * "ti,bq27520g2" - BQ27520-g2
->> - * "ti,bq27520g3" - BQ27520-g3
->> - * "ti,bq27520g4" - BQ27520-g4
->> - * "ti,bq27521" - BQ27521
->> - * "ti,bq27530" - BQ27530
->> - * "ti,bq27531" - BQ27531
->> - * "ti,bq27541" - BQ27541
->> - * "ti,bq27542" - BQ27542
->> - * "ti,bq27546" - BQ27546
->> - * "ti,bq27742" - BQ27742
->> - * "ti,bq27545" - BQ27545
->> - * "ti,bq27411" - BQ27411
->> - * "ti,bq27421" - BQ27421
->> - * "ti,bq27425" - BQ27425
->> - * "ti,bq27426" - BQ27426
->> - * "ti,bq27441" - BQ27441
->> - * "ti,bq27621" - BQ27621
->> -- reg: integer, I2C address of the fuel gauge.
->> -
->> -Optional properties:
->> -- monitored-battery: phandle of battery characteristics node
->> -    The fuel gauge uses the following battery properties:
->> -    + energy-full-design-microwatt-hours
->> -    + charge-full-design-microamp-hours
->> -    + voltage-min-design-microvolt
->> -  Both or neither of the *-full-design-*-hours properties must be set.
->> -  See Documentation/devicetree/bindings/power/supply/battery.txt
->> -
->> -Example:
->> -
->> -	bat: battery {
->> -		compatible = "simple-battery";
->> -		voltage-min-design-microvolt = <3200000>;
->> -		energy-full-design-microwatt-hours = <5290000>;
->> -		charge-full-design-microamp-hours = <1430000>;
->> -	};
->> -
->> -	bq27510g3: fuel-gauge@55 {
->> -		compatible = "ti,bq27510g3";
->> -		reg = <0x55>;
->> -		monitored-battery = <&bat>;
->> -	};
->> diff --git a/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml b/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
->> new file mode 100644
->> index 000000000000..54f497c291f2
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
->> @@ -0,0 +1,86 @@
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright (C) 2020 Texas Instruments Incorporated
->> +%YAML 1.2
->> +---
->> +$id: "http://devicetree.org/schemas/power/supply/bq27xxx.yaml#"
->> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>> diff --git a/arch/arm64/include/asm/cpucaps.h b/arch/arm64/include/asm/cpucaps.h
+>> index 8eb5a088ae65..950095a72617 100644
+>> --- a/arch/arm64/include/asm/cpucaps.h
+>> +++ b/arch/arm64/include/asm/cpucaps.h
+>> @@ -61,7 +61,8 @@
+>>  #define ARM64_HAS_AMU_EXTN			51
+>>  #define ARM64_HAS_ADDRESS_AUTH			52
+>>  #define ARM64_HAS_GENERIC_AUTH			53
+>> +#define ARM64_HAS_TLBI_RANGE			54
+>>  
+>> -#define ARM64_NCAPS				54
+>> +#define ARM64_NCAPS				55
+>>  
+>>  #endif /* __ASM_CPUCAPS_H */
+>> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+>> index ebc622432831..ac1b98650234 100644
+>> --- a/arch/arm64/include/asm/sysreg.h
+>> +++ b/arch/arm64/include/asm/sysreg.h
+>> @@ -592,6 +592,7 @@
+>>  
+>>  /* id_aa64isar0 */
+>>  #define ID_AA64ISAR0_RNDR_SHIFT		60
+>> +#define ID_AA64ISAR0_TLBI_RANGE_SHIFT	56
+>>  #define ID_AA64ISAR0_TS_SHIFT		52
+>>  #define ID_AA64ISAR0_FHM_SHIFT		48
+>>  #define ID_AA64ISAR0_DP_SHIFT		44
+>> @@ -605,6 +606,9 @@
+>>  #define ID_AA64ISAR0_SHA1_SHIFT		8
+>>  #define ID_AA64ISAR0_AES_SHIFT		4
+>>  
+>> +#define ID_AA64ISAR0_TLBI_RANGE_NI	0x0
+>> +#define ID_AA64ISAR0_TLBI_RANGE		0x2
 >> +
->> +title: TI BQ27XXX fuel gauge family
->> +
->> +maintainers:
->> +  - Pali Rohár <pali@kernel.org>
->> +  - Andrew F. Davis <afd@ti.com>
->> +  - Sebastian Reichel <sre@kernel.org>
->> +
->> +description: |
->> +  Support various Texas Instruments fuel gauge devices that share similar
->> +  register maps and power supply properties
-> allOf:
->    - $ref: power-supply.yaml#
-Ack
->
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - ti,bq27200 - BQ27200
->> +      - ti,bq27210 - BQ27210
->> +      - ti,bq27500 - deprecated, use revision specific property below
->> +      - ti,bq27510 - deprecated, use revision specific property below
->> +      - ti,bq27520 - deprecated, use revision specific property below
-> There is a deprecated property ("deprecated: true"), but IDK how to
-> apply it to specific compatible values. Maybe Rob can help out here.
-> Otherwise it's not a blocker, since the conversion is still an
-> improvement without having explicit deprecation marks :)
->
-I would prefer to do this in separate patches.
+>>  /* id_aa64isar1 */
+>>  #define ID_AA64ISAR1_I8MM_SHIFT		52
+>>  #define ID_AA64ISAR1_DGH_SHIFT		48
+>> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+>> index 9fac745aa7bb..31bcfd0722b5 100644
+>> --- a/arch/arm64/kernel/cpufeature.c
+>> +++ b/arch/arm64/kernel/cpufeature.c
+>> @@ -124,6 +124,7 @@ static bool __system_matches_cap(unsigned int n);
+>>   */
+>>  static const struct arm64_ftr_bits ftr_id_aa64isar0[] = {
+>>  	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR0_RNDR_SHIFT, 4, 0),
+>> +	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR0_TLBI_RANGE_SHIFT, 4, 0),
+> 
+> This should be FTR_HIDDEN as userspace has no reason to see this.
+> 
+> Otherwise this all seems to match the ARM ARM.
+> 
+> Mark.
+> 
 
-The code still contains these deprecated values.
+OK, I will change it to FTR_HIDDEN in next version series.
 
-So technically we should remove them in this conversion from the 
-binding, code and the 2 bindings that they are associated with.
+Thanks,
+Zhenyu
 
-These have been marked deprecated since 2017.
 
-I know we are not supposed to remove items from the bindings so at the 
-very least we should remove them from the code and update the devicetree 
-files and as you said mark these as deprecated and removed in this 
-conversion.
-
->> +      - ti,bq27500-1 - BQ27500/1
->> +      - ti,bq27510g1 - BQ27510-g1
->> +      - ti,bq27510g2 - BQ27510-g2
->> +      - ti,bq27510g3 - BQ27510-g3
->> +      - ti,bq27520g1 - BQ27520-g1
->> +      - ti,bq27520g2 - BQ27520-g2
->> +      - ti,bq27520g3 - BQ27520-g3
->> +      - ti,bq27520g4 - BQ27520-g4
->> +      - ti,bq27521 - BQ27521
->> +      - ti,bq27530 - BQ27530
->> +      - ti,bq27531 - BQ27531
->> +      - ti,bq27541 - BQ27541
->> +      - ti,bq27542 - BQ27542
->> +      - ti,bq27546 - BQ27546
->> +      - ti,bq27742 - BQ27742
->> +      - ti,bq27545 - BQ27545
->> +      - ti,bq27411 - BQ27411
->> +      - ti,bq27421 - BQ27421
->> +      - ti,bq27425 - BQ27425
->> +      - ti,bq27426 - BQ27426
->> +      - ti,bq27441 - BQ27441
->> +      - ti,bq27621 - BQ27621
->> +
->> +  reg:
->> +    maxItems: 1
->> +    description: integer, I2C address of the fuel gauge.
->> +
->> +  monitored-battery:
->> +    description: |
->> +       phandle of battery characteristics node.
->> +       The fuel gauge uses the following battery properties:
->> +       - energy-full-design-microwatt-hours
->> +       - charge-full-design-microamp-hours
->> +       - voltage-min-design-microvolt
->> +       Both or neither of the *-full-design-*-hours properties must be set.
->> +       See Documentation/devicetree/bindings/power/supply/battery.txt
-> power-supplies: true
-Ack
->
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    i2c0 {
->> +      #address-cells = <1>;
->> +      #size-cells = <0>;
->> +      bat: battery {
->> +        compatible = "simple-battery";
->> +        voltage-min-design-microvolt = <3200000>;
->> +        energy-full-design-microwatt-hours = <5290000>;
->> +        charge-full-design-microamp-hours = <1430000>;
->> +      };
->> +
->> +      bq27510g3: fuel-gauge@55 {
->> +        compatible = "ti,bq27510g3";
->> +        reg = <0x55>;
->> +        monitored-battery = <&bat>;
->> +      };
->> +    };
-> Otherwise looks good to me.
-
-Ack
-
-Dan
-
->
-> -- Sebastian
