@@ -2,79 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713FC1CE2BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D47B31CE2CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731224AbgEKS2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 14:28:20 -0400
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:35394 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729727AbgEKS2T (ORCPT
+        id S1731089AbgEKSaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 14:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729673AbgEKSaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 14:28:19 -0400
-Received: by mail-pj1-f68.google.com with SMTP id ms17so8199808pjb.0;
-        Mon, 11 May 2020 11:28:18 -0700 (PDT)
+        Mon, 11 May 2020 14:30:20 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AB7BC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 11:30:20 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id g2so6242936vsb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 11:30:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=CZOZ6zJl7K+CX7mG44VkFRrQ+i68m5YSb/XRoNfw+DM=;
+        b=LbarCSCy7ft6SndYsJOseGnYnOlsXtlazRIL6bJ0wQM/b2WfZIaptB7LENF4jbZi0b
+         V+j18TneinnkmDI3Xjd64XkYNnRudf3tYo2ezz//SHSFxKgi1z9Yritsmvx5/uhxqcpf
+         1zg4ixzVutme/BBmEN3/g3a9qHdYMlhEAyO2x+CbkUO+qmVUteE+bltL82KKc1+IzEOg
+         WzuOuBMWtElByKHLnzwP/FxBzM7AWL4fw+YjQFNS0XMK+O0RLHFJTbJJMtkxMLM333Tr
+         avXJi3utWSB2L/taI22OAXUtMXuHW2ie1ARFoRoJJuJM7ywUSjWf2hshxB4fiGZo/BnM
+         f4/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VlcIlbKUmV2Z0lZsaJ/MguViZcS3naoljRGqlVyUKTk=;
-        b=DIdGTt40rE+KhPVZ8Dj006Gm6BxsQlALxQP5iFnMqad06CnyKBo2TT/hrDOxnYB5eU
-         QKUQxkdIvRMTsnfkPeDVYBPXThC2rz9hEpgGt5w/fVi2WxX6Qqq2AXM68E+l6oGN7wCn
-         q9+wZg9Onca0NWptpEUgwMWc+zFFAf5dE40TwEmdvLJhupTkBKU0x9tUNvr8rHv1zHsU
-         GFygIJmx0rDPptG4wkrcH7Za0eOlpbtkBZ+XkrA6x4ECAa1B5acgfVQCpxJN/7Gpbl2p
-         kQQk+SPkpoyr+AbnQ2bbj/ZeWcOwmp6h52lLFT57KeUHJ4aYld6mKEmf22U90wT8XJfm
-         w/4w==
-X-Gm-Message-State: AGi0PuY/bJrNd4JOdVCn/Aamv80l3zYJy8p85Ewbeh+Qrd/mM+96Q69b
-        EbIG/Np4vsIfZRvBE0zdrlfMQfZEhJ4=
-X-Google-Smtp-Source: APiQypISO15fI9lHsIZIQ9EvEPWgAkglXwXVHMxT7KKCWrrAa1iRQnwjK4EfReJHcdP1wqsU+aIbiQ==
-X-Received: by 2002:a17:902:d689:: with SMTP id v9mr16640720ply.328.1589221697990;
-        Mon, 11 May 2020 11:28:17 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id a7sm9951520pfg.157.2020.05.11.11.28.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 11:28:15 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id E966B40605; Mon, 11 May 2020 18:28:14 +0000 (UTC)
-Date:   Mon, 11 May 2020 18:28:14 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     akpm@linux-foundation.org, jeyu@kernel.org, shuah@kernel.org,
-        Markus.Elfring@web.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, lixuefeng@loongson.cn
-Subject: Re: [PATCH v4 0/4] Fix some issues about kmod
-Message-ID: <20200511182814.GS11244@42.do-not-panic.com>
-References: <1587452704-1299-1-git-send-email-yangtiezhu@loongson.cn>
- <9b50d2b1-2fb4-10a1-5966-5458507a9b05@loongson.cn>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=CZOZ6zJl7K+CX7mG44VkFRrQ+i68m5YSb/XRoNfw+DM=;
+        b=rseS3vVu4iFvRgjYvqYutjfaCC++0qFZaO0PQsxUgn4L08o3H7wy8oz7AgRRQiJhBq
+         zfhbkOME+dya6xSNyQwICmqMPRrFRlph6a2XQTyQCd61cDK7oxPBwRmGMi2s4Uqh0/3C
+         SOBfGeY9FQB65aB0LV3GqfGaAdRgfGbsMfN1YTRhPXGWUccOZM7YoGPkIIUG6FNHpAcV
+         3zAnrW/QObuRTLxgNkH/+feRou4hveGne5Zqr6twET3GW990Xmi5rOM84XZisUK7ERTj
+         /D1Nn9k/jyEuQLtINjKgivllywMKIGXaZQmA6MPxFwXDtwJ+0Da35cqihPv+JcjhxXy4
+         D9xA==
+X-Gm-Message-State: AGi0PuYoO8XUq334PiUVLaUJ8g4UKx+peaGai3afuefNUJMN1OUAeRWj
+        +pecOw+P1vPgt02XU93CFAjF0nR87CxbanYKdQc=
+X-Google-Smtp-Source: APiQypKNsi22xLOY/vHsU+h8CFH6M3MP/7vKafU7D4OHNVt5AGxzrdN/g7hBUaNvLnnIkf4ngQHO3cLMAJLt73mRQMg=
+X-Received: by 2002:a67:f258:: with SMTP id y24mr13332034vsm.112.1589221819166;
+ Mon, 11 May 2020 11:30:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9b50d2b1-2fb4-10a1-5966-5458507a9b05@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:ab0:2307:0:0:0:0:0 with HTTP; Mon, 11 May 2020 11:30:18
+ -0700 (PDT)
+Reply-To: azizdake0@gmail.com
+From:   Aziz Dake <barristerpaulwilliams62@gmail.com>
+Date:   Mon, 11 May 2020 11:30:18 -0700
+Message-ID: <CAKkeDRqJq_BjamuTEyqN7K3vbBhBr0zwXNKhUNsi4dm=fkOMRw@mail.gmail.com>
+Subject: From Honourable Barrister Aziz Dake.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 08:59:37PM +0800, Tiezhu Yang wrote:
-> Hi,
-> 
-> Could you please apply the following three patches?
-> 
-> [v4,1/4] selftests: kmod: Use variable NAME in kmod_test_0001()
-> https://lore.kernel.org/patchwork/patch/1227980/
-> 
-> [v4,2/4] kmod: Remove redundant "be an" in the comment
-> https://lore.kernel.org/patchwork/patch/1227982/
-> 
-> [v4,4/4] test_kmod: Avoid potential double free in trigger_config_run_type()
-> https://lore.kernel.org/patchwork/patch/1227978/
+Attn: Sir/Madam
 
-Andrew,
+I am Honourable Barrister Aziz the personal resident Attorney here in
+Burkina Faso to Late Mr. Muammar Muhammad Abu Minyar al-Gaddafi of
+Libya c. 1942 =E2=80=93 20 October 2011.
 
-These 3 patches should be fine.
+My client Late Mr. Muammar Muhammad Abu Minyar al-Gaddafi c. 1942 =E2=80=93=
+ 20
+October 2011, was having a deposit sum of {thirty million four Hundred
+thousand united state dollars} only ($30.4M USD) with a security
+finance firm affiliated with African development bank here in Burkina
+Faso.
 
-I am re-working a replacement proper fix for patch #3, that requires a
-change to the umh. I'll try to iron this out today.
+With the above explanation=E2=80=99s I want to move this money from Burkina
+Faso to your country, affidavit on your name, but note that this is a
+deal between me and you and should not be related to anybody until the
+deal is over for security reasons, please if interested reply as soon
+as possible.
 
-  Luis
+Thanks,
+Honourable Barrister Aziz Dake.
