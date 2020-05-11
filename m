@@ -2,117 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156E81CE47D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A1B81CE481
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731394AbgEKTac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 15:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731200AbgEKTac (ORCPT
+        id S1731410AbgEKTcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 15:32:10 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:35890 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731041AbgEKTcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 15:30:32 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D54C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 12:30:31 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id p25so5176952pfn.11
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 12:30:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gzyfnO/5LbG2mrH2lA0azbgAQiWtK0agPG/QW/aD0JA=;
-        b=OzVpqUU6k4CDMc0nrbShznwLyn+kmnl+BiPHhPbWnikxGiuco8hPSb3nS1q3qW7Cek
-         TlIdfXMHgEChfZXCfsI3of4zCEHuppr5PoCE3ZmpK0SP1LiofuG1NSTRPyOmD0nbKgGD
-         Bwa03tUplrVt+uaafrpI8WO/Kiw8FLdoImebhEbTRHIm2mxwGlr8SIVV8RSntyAW7IIW
-         m9WJ98M8I/GIgMuti/4gM3KJ4GRCV7VPnkIyNoVSwhRvr8uOQ9XfPJNaLkNucRR21ygo
-         7yLopUX/fMQxLY0w5Z54iE/yRdh2wOKRkc5CN/QWkO77VCCiI1CCgHTzJiuY46Yq4gJI
-         1epw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gzyfnO/5LbG2mrH2lA0azbgAQiWtK0agPG/QW/aD0JA=;
-        b=sh+3gLOwemgYqS6ohScmspFw9hf/FO7xF9KD/osAyTyLXDMIV68sQcCuLZb2LGsNJW
-         VHTxVveo3iaxHn/r8mClCNswYA5TaUe/umgcSysUGfDDl+xQ8jCXXsCgAYqeNhf6Hj2m
-         iMPBmjVg+oMRn4xeKbiYZs6I+FFEwBabF1Jn5mAbB+R5BLGCKnGXcUqBh6X97aupNjnr
-         wQO7a0+lYZeT5cttIc2qwIt/+6Bo/+sz6n9VUtiKywE5C15Y7PJFcANw0+zm7Gvl0HkN
-         y7NyQ+70zdCQWaEsJEbe5Ey5mL+AQvG9UUHo4Aj2v+K7tfojeAsZqwVAWZHXdCZ+eJa1
-         i37A==
-X-Gm-Message-State: AGi0PuaiHCIratG7Fxd/FHAoJ/27rX3N5LYl5Q5RDV41cXCycSDJpd5y
-        /ncoBklxoWSSunz5WIKuxFYNTA==
-X-Google-Smtp-Source: APiQypIOtVLmN26sBLQEPnN3hrhyIv6xvI5WifHGysFUwEmFLrhzINvd3EvqA0ARHr6GkqxEp7LIOw==
-X-Received: by 2002:a63:750b:: with SMTP id q11mr15767211pgc.138.1589225431230;
-        Mon, 11 May 2020 12:30:31 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id z185sm8726197pgz.26.2020.05.11.12.30.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 12:30:30 -0700 (PDT)
-Date:   Mon, 11 May 2020 12:31:24 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
-        swboyd@chromium.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, dianders@chromium.org,
-        evgreen@chromium.org, mka@chromium.org
-Subject: Re: [PATCH v6] iommu/arm-smmu-qcom: Request direct mapping for modem
- device
-Message-ID: <20200511193124.GG20625@builder.lan>
-References: <20200511175532.25874-1-sibis@codeaurora.org>
+        Mon, 11 May 2020 15:32:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589225529; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=sAZDaw+WM1tRH6zdEndZjZXWJLv0r3DaQahoiRA1aOI=; b=ncTIibIny9D0pnj/JoyZKs2qj6bUj86KvOxn+Zmd0N295gm99pGh2ad3/Hx+JRWOzIEQy3D/
+ rvURtiDwogASpVdFYG+P0lLspuO5MZr0Br1wWunjlryI6Fg/OPFozdzLUuXnV2K4PH+xXVcj
+ dLEOK9r7s4eLfn1YKEkM0myf32A=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb9a825.7ffa94fa3848-smtp-out-n04;
+ Mon, 11 May 2020 19:31:49 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D98E7C432C2; Mon, 11 May 2020 19:31:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.179] (cpe-76-167-231-33.san.res.rr.com [76.167.231.33])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: eberman)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 34720C433F2;
+        Mon, 11 May 2020 19:31:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 34720C433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=eberman@codeaurora.org
+Subject: Re: [PATCH] Revert "dynamic_debug: Remove unnecessary __used"
+To:     Joe Perches <joe@perches.com>, Jason Baron <jbaron@akamai.com>
+Cc:     Trilok Soni <tsoni@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Murali Nalajala <mnalajal@codeaurora.org>
+References: <1589221618-21808-1-git-send-email-eberman@codeaurora.org>
+ <59b3e2aac1388209d168a31294dfd2b1f7d21513.camel@perches.com>
+From:   Elliot Berman <eberman@codeaurora.org>
+Message-ID: <9b6694ac-acb3-6bc4-49c9-39ad1c64d6e1@codeaurora.org>
+Date:   Mon, 11 May 2020 12:31:47 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200511175532.25874-1-sibis@codeaurora.org>
+In-Reply-To: <59b3e2aac1388209d168a31294dfd2b1f7d21513.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 11 May 10:55 PDT 2020, Sibi Sankar wrote:
+On 5/11/2020 11:54 AM, Joe Perches wrote> Change-Id: probably isn't necessary.
 
-> The modem remote processor has two access paths to DDR. One path is
-> directly connected to DDR and another path goes through an SMMU. The
-> SMMU path is configured to be a direct mapping because it's used by
-> various peripherals in the modem subsystem. Typically this direct
-> mapping is configured statically at EL2 by QHEE (Qualcomm's Hypervisor
-> Execution Environment) before the kernel is entered.
-> 
-> In certain firmware configuration, especially when the kernel is already
-> in full control of the SMMU, defer programming the modem SIDs to the
-> kernel. Let's add compatibles here so that we can have the kernel
-> program the SIDs for the modem in these cases.
-> 
+Thanks for the catch
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> 
+> Is there a separate mechanism possible to avoid bloating the
+> otherwise unused content?
 
-Regards,
-Bjorn
-
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
-> 
-> V6
->  * Rebased on Will's for-joerg/arm-smmu/updates
->  * Reword commit message and add more details [Stephen]
-> 
->  drivers/iommu/arm-smmu-qcom.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/iommu/arm-smmu-qcom.c b/drivers/iommu/arm-smmu-qcom.c
-> index 5bedf21587a56..cf01d0215a397 100644
-> --- a/drivers/iommu/arm-smmu-qcom.c
-> +++ b/drivers/iommu/arm-smmu-qcom.c
-> @@ -17,7 +17,9 @@ static const struct of_device_id qcom_smmu_client_of_match[] = {
->  	{ .compatible = "qcom,mdp4" },
->  	{ .compatible = "qcom,mdss" },
->  	{ .compatible = "qcom,sc7180-mdss" },
-> +	{ .compatible = "qcom,sc7180-mss-pil" },
->  	{ .compatible = "qcom,sdm845-mdss" },
-> +	{ .compatible = "qcom,sdm845-mss-pil" },
->  	{ }
->  };
->  
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+This struct is being used in lib/dynamic_debug.c but compiler doesn't know
+about this usage when optimizing the struct/branch away.
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
