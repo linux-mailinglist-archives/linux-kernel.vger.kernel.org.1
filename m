@@ -2,108 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4DE21CE7D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4BA1CE7D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728003AbgEKV6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:58:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727860AbgEKV6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 17:58:20 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728047AbgEKV7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 17:59:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:50838 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727835AbgEKV7M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 17:59:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589234351;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lG05Rn0O+ELWikk9dZBI+YfJaiuIbJQEERVy0w4Y7tg=;
+        b=io1tk0TqFvFfIqkf3VjPVBy76av9HQaTz/R20worBO71xUArtKBOw11pEDzURhOc6OYC9e
+        VU0aULnO3adoEZLVohKDwbavWQrP5Snq1zvljkg+NdaX7lL+0h03baycSo5umPcVdU8LbH
+        leYFOSU2GnerONzdOLU2NzK8HhExQrM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-426-igxqb0uCNjCy1dgbOX5KDw-1; Mon, 11 May 2020 17:59:10 -0400
+X-MC-Unique: igxqb0uCNjCy1dgbOX5KDw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7AE0B2070B;
-        Mon, 11 May 2020 21:58:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589234298;
-        bh=tXYiBL6lhcDBOgVrVzxBviFHcr3U2rw6/zqjTPOU8TU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sjnyo8wqX93srFtzj5MP4ju3f3Wtp95Z+K+KSj7HazuHN20Tj7yLVkftqG9hBG5pc
-         Axod5Eghd8FqjYA6qjlCGMHXYjzGAETWnmRLy799ViXfYSO92sArbLrNAhnqTBdl6H
-         2CyOT9kpwpLrRF03R+uFYBWQGiLxKfcdNP3NOLgc=
-Date:   Mon, 11 May 2020 14:58:17 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Mel Gorman <mgorman@suse.de>, Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: fix LRU balancing effect of new transparent huge
- pages
-Message-Id: <20200511145817.a1379d6117b43c3f6474e199@linux-foundation.org>
-In-Reply-To: <CALvZod7848_BETonZJFxXN1n1E7KtZ4DzT1-BeaN6hvBysN8WQ@mail.gmail.com>
-References: <20200509141946.158892-1-shakeelb@google.com>
-        <20200511141122.9b03e2f0852b57b224eab066@linux-foundation.org>
-        <CALvZod7848_BETonZJFxXN1n1E7KtZ4DzT1-BeaN6hvBysN8WQ@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED3E281C9A7;
+        Mon, 11 May 2020 21:59:08 +0000 (UTC)
+Received: from optiplex-lnx.redhat.com (unknown [10.3.128.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8C18638DE2;
+        Mon, 11 May 2020 21:59:07 +0000 (UTC)
+From:   Rafael Aquini <aquini@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, mcgrof@kernel.org,
+        keescook@chromium.org, yzaikin@google.com
+Subject: [PATCH] kernel: sysctl: ignore invalid taint bits introduced via kernel.tainted and taint the kernel with TAINT_USER on writes
+Date:   Mon, 11 May 2020 17:59:04 -0400
+Message-Id: <20200511215904.719257-1-aquini@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 May 2020 14:38:23 -0700 Shakeel Butt <shakeelb@google.com> wrote:
+The sysctl knob allows any user with SYS_ADMIN capability to
+taint the kernel with any arbitrary value, but this might
+produce an invalid flags bitset being committed to tainted_mask.
 
-> On Mon, May 11, 2020 at 2:11 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> >
-> > On Sat,  9 May 2020 07:19:46 -0700 Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > > Currently, THP are counted as single pages until they are split right
-> > > before being swapped out. However, at that point the VM is already in
-> > > the middle of reclaim, and adjusting the LRU balance then is useless.
-> > >
-> > > Always account THP by the number of basepages, and remove the fixup
-> > > from the splitting path.
-> >
-> > Confused.  What kernel is this applicable to?
-> 
-> It is still applicable to the latest Linux kernel.
+This patch introduces a simple way for proc_taint() to ignore
+any eventual invalid bit coming from the user input before
+committing those bits to the kernel tainted_mask, as well as
+it makes clear use of TAINT_USER flag to mark the kernel
+tainted by user everytime a taint value is written
+to the kernel.tainted sysctl.
 
-The patch has
+Signed-off-by: Rafael Aquini <aquini@redhat.com>
+---
+ kernel/sysctl.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-> @@ -288,7 +288,7 @@ static void __activate_page(struct page *page, struct lruvec *lruvec,
->  
->  		__count_vm_events(PGACTIVATE, nr_pages);
->  		__count_memcg_events(lruvec_memcg(lruvec), PGACTIVATE, nr_pages);
-> -		update_page_reclaim_stat(lruvec, file, 1);
-> +		update_page_reclaim_stat(lruvec, file, 1, nr_pages);
->  	}
->  }
-
-but current mainline is quite different:
-
-static void __activate_page(struct page *page, struct lruvec *lruvec,
-			    void *arg)
-{
-	if (PageLRU(page) && !PageActive(page) && !PageUnevictable(page)) {
-		int file = page_is_file_lru(page);
-		int lru = page_lru_base_type(page);
-
-		del_page_from_lru_list(page, lruvec, lru);
-		SetPageActive(page);
-		lru += LRU_ACTIVE;
-		add_page_to_lru_list(page, lruvec, lru);
-		trace_mm_lru_activate(page);
-
-		__count_vm_event(PGACTIVATE);
-		update_page_reclaim_stat(lruvec, file, 1);
-	}
-}
-
-q:/usr/src/linux-5.7-rc5> patch -p1 --dry-run < ~/x.txt
-checking file mm/swap.c
-Hunk #2 FAILED at 288.
-Hunk #3 FAILED at 546.
-Hunk #4 FAILED at 564.
-Hunk #5 FAILED at 590.
-Hunk #6 succeeded at 890 (offset -9 lines).
-Hunk #7 succeeded at 915 (offset -9 lines).
-Hunk #8 succeeded at 958 with fuzz 2 (offset -10 lines).
-4 out of 8 hunks FAILED
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 8a176d8727a3..f0a4fb38ac62 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -2623,17 +2623,32 @@ static int proc_taint(struct ctl_table *table, int write,
+ 		return err;
+ 
+ 	if (write) {
++		int i;
++
++		/*
++		 * Ignore user input that would make us committing
++		 * arbitrary invalid TAINT flags in the loop below.
++		 */
++		tmptaint &= (1UL << TAINT_FLAGS_COUNT) - 1;
++
+ 		/*
+ 		 * Poor man's atomic or. Not worth adding a primitive
+ 		 * to everyone's atomic.h for this
+ 		 */
+-		int i;
+ 		for (i = 0; i < BITS_PER_LONG && tmptaint >> i; i++) {
+ 			if ((tmptaint >> i) & 1)
+ 				add_taint(i, LOCKDEP_STILL_OK);
+ 		}
++
++		/*
++		 * Users with SYS_ADMIN capability can include any arbitrary
++		 * taint flag by writing to this interface. If that's the case,
++		 * we also need to mark the kernel "tainted by user".
++		 */
++		add_taint(TAINT_USER, LOCKDEP_STILL_OK);
+ 	}
+ 
++
+ 	return err;
+ }
+ 
+-- 
+2.25.4
 
