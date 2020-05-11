@@ -2,144 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DAC1CD610
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 12:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610C41CD61B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 12:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729358AbgEKKL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 06:11:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:38871 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729305AbgEKKL6 (ORCPT
+        id S1729387AbgEKKMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 06:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729231AbgEKKMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 06:11:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589191916;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=ZN7xwg5CWZvOzQGTmaByrLX25ajcsG3GF52exfugwgc=;
-        b=bGnAz+EvMKihQjuT4lj344jlprwrC+m0nsEX6URRFQ/Gby19OHhj8jcz8gn/XwVxIHVUN4
-        dQ1rrVtP+YdHV1Y+87dPMTJPSMyKtIYFryv95DjFIz9/+HijpLOrifjf+N0YZU9Gh3soGp
-        dfBGhnb+/2Pjl1KJjYVeTPIxyYiAqNU=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-315-GRFP5Sg8PXyF7zCf3qotCA-1; Mon, 11 May 2020 06:11:55 -0400
-X-MC-Unique: GRFP5Sg8PXyF7zCf3qotCA-1
-Received: by mail-pg1-f200.google.com with SMTP id g11so7386130pgd.20
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 03:11:55 -0700 (PDT)
+        Mon, 11 May 2020 06:12:09 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4119BC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 03:12:08 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id f134so5253652wmf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 03:12:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AxDN71QWVlIvPR/Qe9BjED7lK/KCTSrcSC7GeFvMB4Y=;
+        b=b+tSFMrvsOVBFnenMDfROizokqqsnSkXcglzgocb+51zy42IXbNcvm5CHNupiOZMBs
+         ANqitFhidqbalpsVfp+bA/q0JND5ePnK4K7dgxr1Y+0WOZLuIknw/CLde/AY7WU+iUoV
+         fDLkN/x1hi73cW3Lol0SnEsnc+wQwS//RVi7k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ZN7xwg5CWZvOzQGTmaByrLX25ajcsG3GF52exfugwgc=;
-        b=EDMEKKyaDXnnu4e0aIOvHtpb2HCFe2QAGtRiINBoekw9Za7mxfxuox+4GxTcnPLZYM
-         05wmGjQ/ta8nGjfn6Buxhdg2cbgh+lnSXHB6MYrqn8/qtMUW+gxLwQGitq/0R6LDjzev
-         Pq8WRdX0/8Ba0k6V0EckI7uIn1lCa7m2ODVkfdcmaeHyC3vOLapVdvAPhCC4nbQ2jyyN
-         vTY/2ytMcl1yQhcRMwrTNrIlCXzdXQ0aEzmDEifLQAnDCOHgLN8CnErRDLf0Zj27TaLF
-         NKspKIfBIgLxoSO5Obw6KT7jV65QE7geDSgV3K8u6nQPmeStID+WDxgzwLP5gTWEOvtF
-         K9tg==
-X-Gm-Message-State: AGi0PuaqJUrxTuowKl3CtD6QeKppfgVejXBXWA7qaG7wDdjiiN5ZdnwB
-        A4uUDDChVUuW4+TLCTqLr/BrVRsWu0HfiD+/Hw0zYNEjYWuzFquplp8uUl8wsi7K6KGzx97s+lM
-        Qry0brrTk2G2ZiZMZu/QQXkb8
-X-Received: by 2002:a17:902:32b:: with SMTP id 40mr14128019pld.73.1589191913262;
-        Mon, 11 May 2020 03:11:53 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJWyWXGdAoto/0EXXwdx9Dr2HzYt8dFPCj8KebFaRpzS/r4xZule3kpAQxzMDRxJPy9o+z/rg==
-X-Received: by 2002:a17:902:32b:: with SMTP id 40mr14127998pld.73.1589191912970;
-        Mon, 11 May 2020 03:11:52 -0700 (PDT)
-Received: from localhost ([223.235.87.110])
-        by smtp.gmail.com with ESMTPSA id s136sm9033998pfc.29.2020.05.11.03.11.51
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 May 2020 03:11:52 -0700 (PDT)
-From:   Bhupesh Sharma <bhsharma@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     bhsharma@redhat.com, bhupesh.linux@gmail.com,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        aelior@marvell.com, GR-everest-linux-l2@marvell.com,
-        manishc@marvell.com, davem@davemloft.net, irusskikh@marvell.com
-Subject: [PATCH v2 2/2] net: qed: Disable SRIOV functionality inside kdump kernel
-Date:   Mon, 11 May 2020 15:41:42 +0530
-Message-Id: <1589191902-958-3-git-send-email-bhsharma@redhat.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589191902-958-1-git-send-email-bhsharma@redhat.com>
-References: <1589191902-958-1-git-send-email-bhsharma@redhat.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=AxDN71QWVlIvPR/Qe9BjED7lK/KCTSrcSC7GeFvMB4Y=;
+        b=rn3kGuxwA0nzrgKB/Yf5PXJg03/5vXQAQGUuLLY8LzF25f9NHJ/2u6eDDy2KmYDwUm
+         TskJ3f0TqXZnwIddzcgsUCpYj140slw6oss7cpBwnuZbsawEHC0AEvh3PawXlhlQpx3y
+         e4HsLcxSe7Wfg2X5PW5TvESUhu85dgoncOvFX2RBiiuckharDpYg6zgWjDcxKjJfM8l9
+         OOLxrY8OHBQPDhOJ7mbQ+HRU4HVhRqhX0e6NzfBJfbg4pwChPy36cfhLzvH0QYNNYYdI
+         5/NMzaNBiZA8D/qfyfJQKD1eVJrhq3nLvMUhTMtStxQNOyuqVBcO8fvlWq+WfuznrWZM
+         fRuw==
+X-Gm-Message-State: AGi0PuaUe+kGeQ8F7Vki4OSqB1+hQPt6ENNjLun1CQB+17rF8LVZpEx9
+        6ZD5UZqF1bwrzU4khjiirmw9mQ==
+X-Google-Smtp-Source: APiQypJduS5g8MSJy/JNzf+Alo7zIfVFjEdcgIp2nM0k6p91EvBmHQ+tR8aq272pVf8oIkv+vmiJPw==
+X-Received: by 2002:a05:600c:230e:: with SMTP id 14mr2914697wmo.45.1589191925721;
+        Mon, 11 May 2020 03:12:05 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id a10sm18015507wrp.0.2020.05.11.03.12.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 03:12:05 -0700 (PDT)
+Date:   Mon, 11 May 2020 12:12:02 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linaro-mm-sig@lists.linaro.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH 2/3] dma-fence: use default wait function for mock fences
+Message-ID: <20200511101202.GB206103@phenom.ffwll.local>
+Mail-Followup-To: Chris Wilson <chris@chris-wilson.co.uk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linaro-mm-sig@lists.linaro.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        linux-media@vger.kernel.org
+References: <20200511091142.208787-1-daniel.vetter@ffwll.ch>
+ <20200511091142.208787-2-daniel.vetter@ffwll.ch>
+ <158919006380.1729.6928823811672806738@build.alporthouse.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <158919006380.1729.6928823811672806738@build.alporthouse.com>
+X-Operating-System: Linux phenom 5.6.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we have kdump kernel(s) running under severe memory constraint
-it makes sense to disable the qed SRIOV functionality when running the
-kdump kernel as kdump configurations on several distributions don't
-support SRIOV targets for saving the vmcore (see [1] for example).
+On Mon, May 11, 2020 at 10:41:03AM +0100, Chris Wilson wrote:
+> Quoting Daniel Vetter (2020-05-11 10:11:41)
+> > No need to micro-optmize when we're waiting in a mocked object ...
+> 
+> It's setting up the expected return values for the test.
 
-Currently the qed SRIOV functionality ends up consuming memory in
-the kdump kernel, when we don't really use the same.
+Drat, I suspect something like that but didn't spot it. Kinda wondering
+whether we should maybe lift the -ETIME special case to the generic
+version. But that's not really a safe thing to do there, drivers might
+actually use it for funny stuff.
 
-An example log seen in the kdump kernel with the SRIOV functionality
-enabled can be seen below (obtained via memstrack tool, see [2]):
- dracut-pre-pivot[676]: ======== Report format module_summary: ========
- dracut-pre-pivot[676]: Module qed using 149.6MB (2394 pages), peak allocation 149.6MB (2394 pages)
-
-This patch disables the SRIOV functionality inside kdump kernel and with
-the same applied the memory consumption goes down:
- dracut-pre-pivot[671]: ======== Report format module_summary: ========
- dracut-pre-pivot[671]: Module qed using 124.6MB (1993 pages), peak allocation 124.7MB (1995 pages)
-
-[1]. https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/managing_monitoring_and_updating_the_kernel/installing-and-configuring-kdump_managing-monitoring-and-updating-the-kernel#supported-kdump-targets_supported-kdump-configurations-and-targets
-[2]. Memstrack tool: https://github.com/ryncsn/memstrack
-
-Cc: kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Ariel Elior <aelior@marvell.com>
-Cc: GR-everest-linux-l2@marvell.com
-Cc: Manish Chopra <manishc@marvell.com>
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Bhupesh Sharma <bhsharma@redhat.com>
----
- drivers/net/ethernet/qlogic/qed/qed_sriov.h  | 10 +++++++---
- drivers/net/ethernet/qlogic/qede/qede_main.c |  2 +-
- 2 files changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_sriov.h b/drivers/net/ethernet/qlogic/qed/qed_sriov.h
-index 368e88565783..aabeaf03135e 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_sriov.h
-+++ b/drivers/net/ethernet/qlogic/qed/qed_sriov.h
-@@ -32,6 +32,7 @@
- 
- #ifndef _QED_SRIOV_H
- #define _QED_SRIOV_H
-+#include <linux/crash_dump.h>
- #include <linux/types.h>
- #include "qed_vf.h"
- 
-@@ -40,9 +41,12 @@
- #define QED_VF_ARRAY_LENGTH (3)
- 
- #ifdef CONFIG_QED_SRIOV
--#define IS_VF(cdev)             ((cdev)->b_is_vf)
--#define IS_PF(cdev)             (!((cdev)->b_is_vf))
--#define IS_PF_SRIOV(p_hwfn)     (!!((p_hwfn)->cdev->p_iov_info))
-+#define IS_VF(cdev)             (is_kdump_kernel() ? \
-+				 (0) : ((cdev)->b_is_vf))
-+#define IS_PF(cdev)             (is_kdump_kernel() ? \
-+				 (1) : !((cdev)->b_is_vf))
-+#define IS_PF_SRIOV(p_hwfn)     (is_kdump_kernel() ? \
-+				 (0) : !!((p_hwfn)->cdev->p_iov_info))
- #else
- #define IS_VF(cdev)             (0)
- #define IS_PF(cdev)             (1)
-diff --git a/drivers/net/ethernet/qlogic/qede/qede_main.c b/drivers/net/ethernet/qlogic/qede/qede_main.c
-index 1a83d1fd8ccd..28afa0c49fe8 100644
---- a/drivers/net/ethernet/qlogic/qede/qede_main.c
-+++ b/drivers/net/ethernet/qlogic/qede/qede_main.c
-@@ -1194,7 +1194,7 @@ static int qede_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	case QEDE_PRIVATE_VF:
- 		if (debug & QED_LOG_VERBOSE_MASK)
- 			dev_err(&pdev->dev, "Probing a VF\n");
--		is_vf = true;
-+		is_vf = is_kdump_kernel() ? false : true;
- 		break;
- 	default:
- 		if (debug & QED_LOG_VERBOSE_MASK)
--- 
-2.7.4
-
+Anyway motivation is that I'm pondering some extensions of dma_fence_wait
+and removing as many of the ->wait hooks as possible would have helped.
+But there's some nastier stuff like the legacy nouvea and radeon ones.
+-Daniel
