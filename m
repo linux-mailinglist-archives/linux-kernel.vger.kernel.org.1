@@ -2,161 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080491CCF51
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 03:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1A81CCF5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 04:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729319AbgEKB5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 21:57:41 -0400
-Received: from lgeamrelo11.lge.com ([156.147.23.51]:47034 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728963AbgEKB5l (ORCPT
+        id S1729375AbgEKCNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 22:13:52 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:36168 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729102AbgEKCNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 21:57:41 -0400
-Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
-        by 156.147.23.51 with ESMTP; 11 May 2020 10:57:38 +0900
-X-Original-SENDERIP: 156.147.1.125
-X-Original-MAILFROM: iamjoonsoo.kim@lge.com
-Received: from unknown (HELO localhost) (10.177.220.187)
-        by 156.147.1.125 with ESMTP; 11 May 2020 10:57:38 +0900
-X-Original-SENDERIP: 10.177.220.187
-X-Original-MAILFROM: iamjoonsoo.kim@lge.com
-Date:   Mon, 11 May 2020 10:57:32 +0900
-From:   Joonsoo Kim <iamjoonsoo.kim@lge.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 05/18] mm: memcontrol: convert page cache to a new
- mem_cgroup_charge() API
-Message-ID: <20200511015732.GA7749@js1304-desktop>
-References: <20200420221126.341272-1-hannes@cmpxchg.org>
- <20200420221126.341272-6-hannes@cmpxchg.org>
- <20200422064041.GE6780@js1304-desktop>
- <20200422120946.GA358439@cmpxchg.org>
- <20200423052450.GA12538@js1304-desktop>
- <20200508160122.GB181181@cmpxchg.org>
+        Sun, 10 May 2020 22:13:52 -0400
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200511021348epoutp01f32797e9dfdd372a84ae5ccbe9429a58~N14l3J3MT2291622916epoutp01Q
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 02:13:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200511021348epoutp01f32797e9dfdd372a84ae5ccbe9429a58~N14l3J3MT2291622916epoutp01Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1589163228;
+        bh=59ChBBALtCV0OHCYik7G7Vhyml1OCuFRXmuIWrOExQs=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=SNQkpwmA8V++2sFwgeiwUYAplzrpWGDeh3FQtrQ95hDh445591WF3QPQUlKAws0gw
+         APYRp8yiyD6S2QsOGQFfw2jllf/95y2mLsKOf2jWF75Z1GavwWc2Vt1ixo0W6mPjec
+         AH21QUntro08jLyciqFbwMMEnlngfVmzwzlVkOeY=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20200511021348epcas5p23c5901997f4574164ff2f0a649e77a70~N14lXY3EI1832818328epcas5p2i;
+        Mon, 11 May 2020 02:13:48 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A8.9E.23569.CD4B8BE5; Mon, 11 May 2020 11:13:48 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200511021347epcas5p2ebef1a4c4aecac26dde73c5d0cc88455~N14kil1wW1832818328epcas5p2f;
+        Mon, 11 May 2020 02:13:47 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200511021347epsmtrp2d1aac297e091258d60438fd021f27dda~N14khJ4Ej1467414674epsmtrp2L;
+        Mon, 11 May 2020 02:13:47 +0000 (GMT)
+X-AuditID: b6c32a4a-3c7ff70000005c11-dd-5eb8b4dc08b0
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C6.E6.18461.BD4B8BE5; Mon, 11 May 2020 11:13:47 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200511021345epsmtip26537285c1e7c299a73d8e33304b6657d~N14if_74I3210532105epsmtip2i;
+        Mon, 11 May 2020 02:13:45 +0000 (GMT)
+From:   Alim Akhtar <alim.akhtar@samsung.com>
+To:     robh@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-scsi@vger.kernel.org,
+        krzk@kernel.org, avri.altman@wdc.com, martin.petersen@oracle.com,
+        kwmad.kim@samsung.com, stanley.chu@mediatek.com,
+        cang@codeaurora.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Subject: [PATCH v8 00/10] exynos-ufs: Add support for UFS HCI
+Date:   Mon, 11 May 2020 07:30:21 +0530
+Message-Id: <20200511020031.25730-1-alim.akhtar@samsung.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508160122.GB181181@cmpxchg.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrGKsWRmVeSWpSXmKPExsWy7bCmpu6dLTviDFb1CFs8mLeNzeLlz6ts
+        Fp/WL2O1mH/kHKvF+fMb2C1ubjnKYrHp8TVWi8u75rBZzDi/j8mi+/oONovlx/8xWfzfs4Pd
+        YunWm4wOvB6X+3qZPDat6mTz2Lyk3qPl5H4Wj49Pb7F49G1ZxejxeZOcR/uBbqYAjigum5TU
+        nMyy1CJ9uwSujFn7DrIWdEhXrG5cxN7A+Fiki5GTQ0LAROL97YusXYxcHEICuxklbncdYIJw
+        PjFKXHt5HirzjVHiU+NTJpiW47MnQ1XtZZTonfYJymlhkrh54BQjSBWbgLbE3elbwDpEBIQl
+        jnxrA4szC9xgkniw0gXEFhawleg69JUFxGYRUJX4tPc6excjBwevgI1E1y8NiGXyEqs3HGAG
+        sXkFBCVOznzCAjFGXqJ562xmkL0SAgs5JF5M+cMO0eAi8eT5WWYIW1ji1fEtUHEpic/v9rKB
+        zJcQyJbo2WUMEa6RWDrvGAuEbS9x4MocFpASZgFNifW79CFW8Un0/n7CBNHJK9HRJgRRrSrR
+        /O4qVKe0xMTublYI20Ni0vsvYHEhgViJ4xduM09glJuF5IFZSB6YhbBsASPzKkbJ1ILi3PTU
+        YtMCo7zUcr3ixNzi0rx0veT83E2M4KSk5bWD8eGDD3qHGJk4GA8xSnAwK4nwLs/dESfEm5JY
+        WZValB9fVJqTWnyIUZqDRUmcN6lxS5yQQHpiSWp2ampBahFMlomDU6qBSe6Wxn3nqNiNf934
+        eCVP3m+8oq32/fGz5qdqc7MiJ329eXm379n5+Tz/xN98k4tyPlnl7he01fWeoxej3o9PS8L8
+        zn74zzLN+e2LNStr7v+Ke/XDWlj8ievjPXo7Wj+KmUQHHXDlKz7l8WPJ97uMORdtRVRn6WWq
+        Fu2ffmJjPLd6VK7ZChcBufkHT/k135LOi//Ucrhtmp6QfDQnt+5lMS/V8EB7x/siW981xu1c
+        z9RUv6bs1QLzL7zvEzbuOPph4rHUC7oaKf+Ofe2ez/RJZ98r70yzkzMTuysPXY1iEHljd7DG
+        +pxYv06e7ZP2bU4t6av3fDTfmn9hOneAEctJHqUMUycDTwlhnl2qGz82KrEUZyQaajEXFScC
+        AJ+VZYm5AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrALMWRmVeSWpSXmKPExsWy7bCSvO7tLTviDGZPFLd4MG8bm8XLn1fZ
+        LD6tX8ZqMf/IOVaL8+c3sFvc3HKUxWLT42usFpd3zWGzmHF+H5NF9/UdbBbLj/9jsvi/Zwe7
+        xdKtNxkdeD0u9/UyeWxa1cnmsXlJvUfLyf0sHh+f3mLx6NuyitHj8yY5j/YD3UwBHFFcNimp
+        OZllqUX6dglcGbP2HWQt6JCuWN24iL2B8bFIFyMnh4SAicTx2ZOZuhi5OIQEdjNKLJjzmgUi
+        IS1xfeMEdghbWGLlv+fsEEVNTBJ35i0GS7AJaEvcnb6FCcQWASo68q2NEcRmFnjGJHHqYSmI
+        LSxgK9F16CvYUBYBVYlPe68D9XJw8ArYSHT90oCYLy+xesMBZhCbV0BQ4uTMJywgJcwC6hLr
+        5wlBTJSXaN46m3kCI/8sJFWzEKpmIalawMi8ilEytaA4Nz232LDAMC+1XK84Mbe4NC9dLzk/
+        dxMjOFK0NHcwbl/1Qe8QIxMH4yFGCQ5mJRHe5bk74oR4UxIrq1KL8uOLSnNSiw8xSnOwKInz
+        3ihcGCckkJ5YkpqdmlqQWgSTZeLglGpgspBh0g3f1pf1WfLZ4RgXMWc15TC972nhnxsM74rm
+        NDVq5ZakX9H/Zhf6h0Mu/NO+NXl3Fvb/3eBXero1Nd7779eUQ9Vcv/8ZNf2UTiu1OHK5+2L7
+        nz37tgkdfVC+wJLfcvkuH+EbhYVasjwnes2nnVrZr9+qsU25e8mEk6FJZ4RPttqVhRjUCqxT
+        W7pmRozfPPOVu/demb3rh7rtQ9te2bOCh9x6i3Y92vHl+8tFZqqrDlQ5tR+8tor/9wnOhf+K
+        +qWXn+CRfvF8Y5Kt4du/TrELp54QnTIxTnZTqv4bvQlfzpjrfedWPuj099dCm02zOvtZZNtq
+        Ps97d/ZIqNt8v8S50hUTUucefl997qzbNCWW4oxEQy3mouJEAN1kQxEDAwAA
+X-CMS-MailID: 20200511021347epcas5p2ebef1a4c4aecac26dde73c5d0cc88455
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200511021347epcas5p2ebef1a4c4aecac26dde73c5d0cc88455
+References: <CGME20200511021347epcas5p2ebef1a4c4aecac26dde73c5d0cc88455@epcas5p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 12:01:22PM -0400, Johannes Weiner wrote:
-> On Thu, Apr 23, 2020 at 02:25:06PM +0900, Joonsoo Kim wrote:
-> > On Wed, Apr 22, 2020 at 08:09:46AM -0400, Johannes Weiner wrote:
-> > > On Wed, Apr 22, 2020 at 03:40:41PM +0900, Joonsoo Kim wrote:
-> > > > On Mon, Apr 20, 2020 at 06:11:13PM -0400, Johannes Weiner wrote:
-> > > > > @@ -1664,29 +1678,22 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
-> > > > >  			goto failed;
-> > > > >  	}
-> > > > >  
-> > > > > -	error = mem_cgroup_try_charge_delay(page, charge_mm, gfp, &memcg);
-> > > > > -	if (!error) {
-> > > > > -		error = shmem_add_to_page_cache(page, mapping, index,
-> > > > > -						swp_to_radix_entry(swap), gfp);
-> > > > > -		/*
-> > > > > -		 * We already confirmed swap under page lock, and make
-> > > > > -		 * no memory allocation here, so usually no possibility
-> > > > > -		 * of error; but free_swap_and_cache() only trylocks a
-> > > > > -		 * page, so it is just possible that the entry has been
-> > > > > -		 * truncated or holepunched since swap was confirmed.
-> > > > > -		 * shmem_undo_range() will have done some of the
-> > > > > -		 * unaccounting, now delete_from_swap_cache() will do
-> > > > > -		 * the rest.
-> > > > > -		 */
-> > > > > -		if (error) {
-> > > > > -			mem_cgroup_cancel_charge(page, memcg);
-> > > > > -			delete_from_swap_cache(page);
-> > > > > -		}
-> > > > > -	}
-> > > > > -	if (error)
-> > > > > +	error = shmem_add_to_page_cache(page, mapping, index,
-> > > > > +					swp_to_radix_entry(swap), gfp,
-> > > > > +					charge_mm);
-> > > > > +	/*
-> > > > > +	 * We already confirmed swap under page lock, and make no
-> > > > > +	 * memory allocation here, so usually no possibility of error;
-> > > > > +	 * but free_swap_and_cache() only trylocks a page, so it is
-> > > > > +	 * just possible that the entry has been truncated or
-> > > > > +	 * holepunched since swap was confirmed.  shmem_undo_range()
-> > > > > +	 * will have done some of the unaccounting, now
-> > > > > +	 * delete_from_swap_cache() will do the rest.
-> > > > > +	 */
-> > > > > +	if (error) {
-> > > > > +		delete_from_swap_cache(page);
-> > > > >  		goto failed;
-> > > > 
-> > > > -EEXIST (from swap cache) and -ENOMEM (from memcg) should be handled
-> > > > differently. delete_from_swap_cache() is for -EEXIST case.
-> > > 
-> > > Good catch, I accidentally changed things here.
-> > > 
-> > > I was just going to change it back, but now I'm trying to understand
-> > > how it actually works.
-> > > 
-> > > Who is removing the page from swap cache if shmem_undo_range() races
-> > > but we fail to charge the page?
-> > > 
-> > > Here is how this race is supposed to be handled: The page is in the
-> > > swapcache, we have it locked and confirmed that the entry in i_pages
-> > > is indeed a swap entry. We charge the page, then we try to replace the
-> > > swap entry in i_pages with the actual page. If we determine, under
-> > > tree lock now, that shmem_undo_range has raced with us, unaccounted
-> > > the swap space, but must have failed to get the page lock, we remove
-> > > the page from swap cache on our side, to free up swap slot and page.
-> > > 
-> > > But what if shmem_undo_range() raced with us, deleted the swap entry
-> > > from i_pages while we had the page locked, but then we simply failed
-> > > to charge? We unlock the page and return -EEXIST (shmem_confirm_swap
-> > > at the exit). The page with its userdata is now in swapcache, but no
-> > > corresponding swap entry in i_pages. shmem_getpage_gfp() sees the
-> > > -EEXIST, retries, finds nothing in i_pages and allocates a new, empty
-> > > page.
-> > > 
-> > > Aren't we leaking the swap slot and the page?
-> > 
-> > Yes, you're right! It seems that it's possible to leak the swap slot
-> > and the page. Race could happen for all the places after lock_page()
-> > and shmem_confirm_swap() are done. And, I think that it's not possible
-> > to fix the problem in shmem_swapin_page() side since we can't know the
-> > timing that trylock_page() is called. Maybe, solution would be,
-> > instead of using free_swap_and_cache() in shmem_undo_range() that
-> > calls trylock_page(), to use another function that calls lock_page().
-> 
-> I looked at this some more, as well as compared it to non-shmem
-> swapping. My conclusion is - and Hugh may correct me on this - that
-> the deletion looks mandatory but is actually an optimization. Page
-> reclaim will ultimately pick these pages up.
-> 
-> When non-shmem pages are swapped in by readahead (locked until IO
-> completes) and their page tables are simultaneously unmapped, the
-> zap_pte_range() code calls free_swap_and_cache() and the locked pages
-> are stranded in the swap cache with no page table references. We rely
-> on page reclaim to pick them up later on.
-> 
-> The same appears to be true for shmem. If the references to the swap
-> page are zapped while we're trying to swap in, we can strand the page
-> in the swap cache. But it's not up to swapin to detect this reliably,
-> it just frees the page more quickly than having to wait for reclaim.
-> 
-> That being said, my patch introduces potentially undesirable behavior
-> (although AFAICS no correctness problem): We should only delete the
-> page from swapcache when we actually raced with undo_range - which we
-> see from the swap entry having been purged from the page cache
-> tree. If we delete the page from swapcache just because we failed to
-> charge it, the next fault has to read the still-valid page again from
-> the swap device.
+This patch-set introduces UFS (Universal Flash Storage) host controller support
+for Samsung family SoC. Mostly, it consists of UFS PHY and host specific driver.
 
-I got it! Thanks for explanation.
+- Changes since v7:
+* fixed review comments from Rob and Kishon
+* Addeded reviwed-by tags
+* rebased on top of v5.7-rc4
+ 
+- Changes since v6:
+* Addressed review comments from Avri and Christoph
+* Added Reviewed-by tags of Avri and Can on various patches
 
-Thanks.
+- Changes since v5:
+* re-introduce various quicks which was removed because of no driver
+* consumer of those quirks, initial 4 patches does the same.
+* Added Reviewed-by tags
+* rebased on top of v5.7-rc1
+* included Kiwoong's patch in this series, which this driver needs
+
+- Changes since v4:
+* Addressed review comments from Avir and Rob 
+* Minor improvment on the ufs phy and ufshc drivers
+* Added Tested-by from Pawel
+* Change UFS binding to DT schema format
+
+
+- Changes since v3:
+* Addressed Kishon's and Avir's review comments
+* fixed make dt_binding_check error as pointed by Rob 
+
+- Changes since v2:
+* fixed build warning by kbuild test robot 
+* Added Reported-by tags
+
+- Changes since v1:
+* fixed make dt_binding_check error as pointed by Rob
+* Addressed Krzysztof's review comments
+* Added Reviewed-by tags
+
+Note: This series is based on Linux-5.7-rc4 (commit: 0e698dfa2822)
+
+Alim Akhtar (9):
+  scsi: ufs: add quirk to fix mishandling utrlclr/utmrlclr
+  scsi: ufs: add quirk to disallow reset of interrupt aggregation
+  scsi: ufs: add quirk to enable host controller without hce
+  scsi: ufs: introduce UFSHCD_QUIRK_PRDT_BYTE_GRAN quirk
+  dt-bindings: phy: Document Samsung UFS PHY bindings
+  phy: samsung-ufs: add UFS PHY driver for samsung SoC
+  dt-bindings: ufs: Add DT binding documentation for ufs
+  scsi: ufs-exynos: add UFS host support for Exynos SoCs
+  arm64: dts: Add node for ufs exynos7
+
+Kiwoong Kim (1):
+  scsi: ufs: add quirk to fix abnormal ocs fatal error
+
+ .../bindings/phy/samsung,ufs-phy.yaml         |   75 +
+ .../bindings/ufs/samsung,exynos-ufs.yaml      |   92 ++
+ .../boot/dts/exynos/exynos7-espresso.dts      |    4 +
+ arch/arm64/boot/dts/exynos/exynos7.dtsi       |   44 +-
+ drivers/phy/samsung/Kconfig                   |    9 +
+ drivers/phy/samsung/Makefile                  |    1 +
+ drivers/phy/samsung/phy-exynos7-ufs.h         |   86 ++
+ drivers/phy/samsung/phy-samsung-ufs.c         |  380 +++++
+ drivers/phy/samsung/phy-samsung-ufs.h         |  143 ++
+ drivers/scsi/ufs/Kconfig                      |   12 +
+ drivers/scsi/ufs/Makefile                     |    1 +
+ drivers/scsi/ufs/ufs-exynos.c                 | 1300 +++++++++++++++++
+ drivers/scsi/ufs/ufs-exynos.h                 |  284 ++++
+ drivers/scsi/ufs/ufshcd.c                     |  126 +-
+ drivers/scsi/ufs/ufshcd.h                     |   29 +
+ drivers/scsi/ufs/unipro.h                     |   33 +
+ 16 files changed, 2605 insertions(+), 14 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/samsung,ufs-phy.yaml
+ create mode 100644 Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
+ create mode 100644 drivers/phy/samsung/phy-exynos7-ufs.h
+ create mode 100644 drivers/phy/samsung/phy-samsung-ufs.c
+ create mode 100644 drivers/phy/samsung/phy-samsung-ufs.h
+ create mode 100644 drivers/scsi/ufs/ufs-exynos.c
+ create mode 100644 drivers/scsi/ufs/ufs-exynos.h
+
+
+base-commit: 0e698dfa282211e414076f9dc7e83c1c288314fd
+-- 
+2.17.1
 
