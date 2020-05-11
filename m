@@ -2,81 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677B31CDB74
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E2D1CDB7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729738AbgEKNk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 09:40:28 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:51143 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726115AbgEKNk2 (ORCPT
+        id S1730034AbgEKNmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 09:42:01 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:34683 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726438AbgEKNmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 09:40:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589204427; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=BjnT+wQssjNt8bOOqGZ9Ke9C4pujItT6DZsy/y1cchM=; b=nfc2QDHKVaZBzJdKP14JvUJw+uHK8ajUwr5yQZUnBMHfSgpSoK9AkbamrC+zfY4jfRFX1paE
- ZlXszFyD1MlNvY/ZeYH7K0SDN+++2JOgckd7gs3O8kAWOfF0gWU+J3k4/d9PzVnjuMupHFmx
- XDnxWaFcaEuIv5Thtx+3prDuxps=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb955c4.7fe1efd24b20-smtp-out-n05;
- Mon, 11 May 2020 13:40:20 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8B55EC433CB; Mon, 11 May 2020 13:40:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from charante-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4786EC433F2;
-        Mon, 11 May 2020 13:40:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4786EC433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=charante@codeaurora.org
-From:   Charan Teja Reddy <charante@codeaurora.org>
-To:     akpm@linux-foundation.org, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, vinmenon@codeaurora.org,
-        Charan Teja Reddy <charante@codeaurora.org>
-Subject: [PATCH] mm, page_alloc: reset the zone->watermark_boost early
-Date:   Mon, 11 May 2020 19:10:08 +0530
-Message-Id: <1589204408-5152-1-git-send-email-charante@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        Mon, 11 May 2020 09:42:01 -0400
+Received: by mail-pg1-f193.google.com with SMTP id f6so4583268pgm.1;
+        Mon, 11 May 2020 06:42:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VIDelSWrVMd4wzslSXY+S/8EPWOMtPyA+78GmbBUxQs=;
+        b=eVzjHAMcNCzzovnEkM9oLssKIHrKfQB9g8fPqRc/y/H76V5BYVQg35CDjulPLNuVgd
+         gVMDftssU/Bsu81woOVa2tdH6CzHLPNPPeBZ9LVpokwKZv8yT7ToSduCNP0PmtE2wGcA
+         hvMKQ4VudXr0KdDUPT7zLmhUGGp3JMlA8jQWJdJ/va+3HpyLL+w33bSlLESY6OJxmAHr
+         VCw4YmK15FddqU9Ut61oMjhOfGr2ZHbOvwiKmfTDJRhkcE22LXnjI0LpaFfq0nt8EqBP
+         5e+u9LvfUBjIq+wXTEGJ8CQACk36SNed+ddPXRLyCc/WHoKLJsapxH2ckFEIJDBgi2/0
+         3W2g==
+X-Gm-Message-State: AGi0PubcibCv8413Yj+28GpMJlUhzu/9TKZgyJVXNgqjq2LGeQCN/RYE
+        tgGzZyhErDCP73otnp5rRdw=
+X-Google-Smtp-Source: APiQypIZPBaiUhTo+Rf4nWN5ZuL6XAd113JqiuXFvjEua9tZjOZI8u/9GM/EHMsS8Y4Ci3SNd/frlg==
+X-Received: by 2002:a63:c109:: with SMTP id w9mr14561069pgf.114.1589204520151;
+        Mon, 11 May 2020 06:42:00 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id y13sm9305612pfc.78.2020.05.11.06.41.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 06:41:59 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 7423C40605; Mon, 11 May 2020 13:41:58 +0000 (UTC)
+Date:   Mon, 11 May 2020 13:41:58 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
+        rostedt@goodmis.org, mingo@redhat.com, jack@suse.cz,
+        ming.lei@redhat.com, nstange@suse.de, akpm@linux-foundation.org,
+        mhocko@suse.com, yukuai3@huawei.com, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Omar Sandoval <osandov@fb.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v4 1/5] block: revert back to synchronous request_queue
+ removal
+Message-ID: <20200511134158.GM11244@42.do-not-panic.com>
+References: <20200509031058.8239-1-mcgrof@kernel.org>
+ <20200509031058.8239-2-mcgrof@kernel.org>
+ <20200510062058.GA3394360@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200510062058.GA3394360@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Updating the zone watermarks by any means, like extra_free_kbytes,
-min_free_kbytes, water_mark_scale_factor e.t.c, when watermark_boost is
-set will result into the higher low and high watermarks than the user
-asks. This can be avoided by resetting the zone->watermark_boost to zero
-early.
+On Sun, May 10, 2020 at 08:20:58AM +0200, Greg KH wrote:
+> On Sat, May 09, 2020 at 03:10:54AM +0000, Luis Chamberlain wrote:
+> > Commit dc9edc44de6c ("block: Fix a blk_exit_rl() regression") merged on
+> > v4.12 moved the work behind blk_release_queue() into a workqueue after a
+> > splat floated around which indicated some work on blk_release_queue()
+> > could sleep in blk_exit_rl(). This splat would be possible when a driver
+> > called blk_put_queue() or blk_cleanup_queue() (which calls blk_put_queue()
+> > as its final call) from an atomic context.
+> > 
+> > blk_put_queue() decrements the refcount for the request_queue kobject,
+> > and upon reaching 0 blk_release_queue() is called. Although blk_exit_rl()
+> > is now removed through commit db6d9952356 ("block: remove request_list code")
+> > on v5.0, we reserve the right to be able to sleep within blk_release_queue()
+> > context.
+> > 
+> > The last reference for the request_queue must not be called from atomic
+> > context. *When* the last reference to the request_queue reaches 0 varies,
+> > and so let's take the opportunity to document when that is expected to
+> > happen and also document the context of the related calls as best as possible
+> > so we can avoid future issues, and with the hopes that the synchronous
+> > request_queue removal sticks.
+> > 
+> > We revert back to synchronous request_queue removal because asynchronous
+> > removal creates a regression with expected userspace interaction with
+> > several drivers. An example is when removing the loopback driver, one
+> > uses ioctls from userspace to do so, but upon return and if successful,
+> > one expects the device to be removed. Likewise if one races to add another
+> > device the new one may not be added as it is still being removed. This was
+> > expected behavior before and it now fails as the device is still present
+> > and busy still. Moving to asynchronous request_queue removal could have
+> > broken many scripts which relied on the removal to have been completed if
+> > there was no error. Document this expectation as well so that this
+> > doesn't regress userspace again.
+> > 
+> > Using asynchronous request_queue removal however has helped us find
+> > other bugs. In the future we can test what could break with this
+> > arrangement by enabling CONFIG_DEBUG_KOBJECT_RELEASE.
+> 
+> You are adding documenation and might_sleep() calls all over the place
+> in here, making the "real" change in the patch hard to pick out.
+> 
+> How about you split this up into 3 patches, one for documentation, one
+> for might_sleep() and one for the real change?  Or maybe just 2 patches,
+> but what you have here seems excessive.
 
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
----
- mm/page_alloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sure.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 1b265b09..822e262 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7746,9 +7746,9 @@ static void __setup_per_zone_wmarks(void)
- 			    mult_frac(zone_managed_pages(zone),
- 				      watermark_scale_factor, 10000));
- 
-+		zone->watermark_boost = 0;
- 		zone->_watermark[WMARK_LOW]  = min_wmark_pages(zone) + tmp;
- 		zone->_watermark[WMARK_HIGH] = min_wmark_pages(zone) + tmp * 2;
--		zone->watermark_boost = 0;
- 
- 		spin_unlock_irqrestore(&zone->lock, flags);
- 	}
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
+  Luis
