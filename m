@@ -2,175 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05151D0305
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 01:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6011D02FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 01:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731654AbgELX01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 19:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37214 "EHLO
+        id S1731606AbgELXZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 19:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgELX01 (ORCPT
+        with ESMTP id S1726031AbgELXZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 19:26:27 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33449C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 16:26:27 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id hi11so10278269pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 16:26:27 -0700 (PDT)
+        Tue, 12 May 2020 19:25:08 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94FCC061A0C;
+        Tue, 12 May 2020 16:25:08 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id n11so6890378pgl.9;
+        Tue, 12 May 2020 16:25:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wQXNcvMIvuLWXBulBjsu4xZzdHuqAR8TIZKekjTyhlo=;
-        b=P3kGD60Tv5PddUoiNeSk5xXwUVHvLr8agI3C6C8WLsfQDozJYIzFZ0lMUSwRFAPqr5
-         4EFSuXqSC+og26lTAhRn1qtMV9BX5ZyMdUkwohwcVlY/368tH2swkasQovIKKKqqFxky
-         OrLOk+aFrN6IABcWZh4qrejDALHz39LiMN4KocGTHdUJKUGynHQDx2Nu8/PimfntZyGo
-         OtgVgrkRpXzU8UNhGQD201B3QfyqA9GlGqypmNi1G1rvigKjvuQpjIpFg+vTQx0oGA1p
-         Y0T1CdvzRyzCYUo05Vb9DAnMmqIEZLxjol/FyOl3iNzuKg7U6+sh5NCuyVg9Phc+uJ9C
-         rZQA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=FpcFfkc/yG9vq9eXWklG8CGjwtKug3YGgFN39WyeyGc=;
+        b=pWipj/rYO4TE/WgccVGCKMhCO9dOQMqbFgFILxy9bPyfdAGU1AtXDDAPLFE5d8BWYI
+         y8h0guWLroeHHFvshFPgfDBEmOBlBrNj/JhqWtissEv8GDGrkVAGwfcj/J+til5ld39Q
+         thnBvYCXu26hayF9UigwA4E9gGpRbfhzbNfY/sY6qG4jAQD+dccELCfuxT/jEOuK3mGm
+         elBCMpGuoEH9Rv6OALCkus/pHOOWd8KbSHckTf5EJDK0m38v+T6292Y/4FG6gZAmN3QS
+         UamcfP8ImTECWAyv7V7C5ACDg9cHr4B4WH7xilGOx3JOD2eacTv87TnouwuuY5P6NUZ8
+         sDtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wQXNcvMIvuLWXBulBjsu4xZzdHuqAR8TIZKekjTyhlo=;
-        b=UYq0NApB82+dBtWb0zWfyjU5XmedMptcjZWQoFEe2hLfXvHMjXreNYPreZbWzR+PO6
-         wpLG/1UjW57NjPkRdaj8etlF3zTCOmJ2f+/jOiEOda+Og3cbF3K2YUpoxofy7FHZKhOA
-         5K/e7RgQzkhEaAAsfAA39bfGQQy4Ij3QkPS61uZ0E9aWamWmdGzpGVRk+BhlrM1+Rrr2
-         8bG2dKhKReR6Xk2D2cbeL/vsYE9y8v67L9zsK4pQL6kgVco9v26a+ClLQUrX/4EfMTsg
-         3d54trBBXiox55MOnKDj6lDamSIsoQqSa5K16jtcByQiwBV3tytfETk56LUP0NUi4WUR
-         W4yA==
-X-Gm-Message-State: AGi0PuY911ij9Z7pmXuKPTpTVgQ3THW5dmmHR4NqoeqPrXhuRT3uGqf1
-        Cna99lvD0d/iX/MZWW/zfN3R/g==
-X-Google-Smtp-Source: APiQypKXiCxAFgVP7ryK8y1SNwvYRfjGXKCvOmqnPlYZne/14774FvtVroFdvtm9PAXltVFfaj8AtA==
-X-Received: by 2002:a17:902:bd42:: with SMTP id b2mr21186869plx.219.1589325986556;
-        Tue, 12 May 2020 16:26:26 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id i2sm4584284pgb.14.2020.05.12.16.26.25
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=FpcFfkc/yG9vq9eXWklG8CGjwtKug3YGgFN39WyeyGc=;
+        b=eucHbVcoeZKTHw4N+fONryzFzIJ6K58dJBWwPxnyam7yxTIFzkNIxc3krH9BHdQ3C3
+         mEiSt3HtAHvgHhy8CQRLMF9LGleckaGJuZPhjz4TyB94S/VnlvGnjBTGP30HtVd3RdW9
+         8uJ1yVemvKq0Zem/VSn/w8PoL+b9fME1NvckLqrhDLTaoQGIxtFhTAPatAc2EWwdnTAW
+         PUHRJEr4/OsGoU0yC/xtSnsxYOb9U/krmh2Hermfbb9DMQwpA8BB06Sx7/rd6+dqq3SP
+         VWKvzsWeLNq9wNqmAqy81cCqrTHFSYKlaB4HDuL6RiUJ79LmSh96Bqj/5e3SiEHFxdeN
+         fFog==
+X-Gm-Message-State: AOAM531TNah3Gyt+w30CfgUloAjh5yKJ5eE1U5myq86GIWCbM1RDq0l4
+        IsfvqFWaEX2A8IFF9EodjAk=
+X-Google-Smtp-Source: ABdhPJzLZlncWatTS+oNiA4vxd3oVeXcykQQb3eNLFClvMbGM8HbwrjGaxKq48Gne8Qhoh171ik1lA==
+X-Received: by 2002:a63:77c6:: with SMTP id s189mr12368295pgc.267.1589325908104;
+        Tue, 12 May 2020 16:25:08 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:3c2a:73a9:c2cf:7f45])
+        by smtp.gmail.com with ESMTPSA id m4sm94819pje.47.2020.05.12.16.25.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 16:26:25 -0700 (PDT)
-Date:   Tue, 12 May 2020 16:24:53 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     Baolin Wang <baolin.wang7@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-remoteproc@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
-        kernel@collabora.com
-Subject: Re: [PATCH] hwspinlock: Simplify Kconfig
-Message-ID: <20200512232453.GD16107@builder.lan>
-References: <20200414220943.6203-1-ezequiel@collabora.com>
- <CADBw62oJj_x046piRbPP48A04ALo-w2J6jZXNspyN5eOGj-TEg@mail.gmail.com>
- <CAAEAJfDDOwhjiTX4eXkHnU=+NTRXroFXCbEqa1B43C41LaTkBg@mail.gmail.com>
+        Tue, 12 May 2020 16:25:07 -0700 (PDT)
+Date:   Tue, 12 May 2020 16:25:05 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Luca Weiss <luca@z3ntu.xyz>,
+        Tomas Novotny <tomas@novotny.cz>, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 1/4] dt-bindings: input: gpio-vibrator: Don't require
+ enable-gpios
+Message-ID: <20200512232505.GF89269@dtor-ws>
+References: <20200512222205.1456300-1-megous@megous.com>
+ <20200512222205.1456300-2-megous@megous.com>
+ <20200512225212.GE89269@dtor-ws>
+ <20200512230557.zvdgwhbqygc2fufv@core.my.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAAEAJfDDOwhjiTX4eXkHnU=+NTRXroFXCbEqa1B43C41LaTkBg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200512230557.zvdgwhbqygc2fufv@core.my.home>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 06 May 19:39 PDT 2020, Ezequiel Garcia wrote:
-
-> Hello,
-> 
-> On Wed, 15 Apr 2020 at 10:33, Baolin Wang <baolin.wang7@gmail.com> wrote:
-> >
-> > Hi Ezequiel,
-> >
-> > On Wed, Apr 15, 2020 at 6:09 AM Ezequiel Garcia <ezequiel@collabora.com> wrote:
-> > >
-> > > Every hwspinlock driver is expected to depend on the
-> > > hwspinlock core, so it's possible to simplify the
-> > > Kconfig, factoring out the HWSPINLOCK dependency.
-> > >
-> > > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> >
-> > Looks reasonable to me.
-> > Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
-> >
-> 
-> Gentle ping.
-> 
-
-Applied.
-
-Thanks,
-Bjorn
-
-> Thanks!
-> Ezequiel
-> 
+On Wed, May 13, 2020 at 01:05:57AM +0200, Ondřej Jirman wrote:
+> On Tue, May 12, 2020 at 03:52:12PM -0700, Dmitry Torokhov wrote:
+> > On Wed, May 13, 2020 at 12:22:02AM +0200, Ondrej Jirman wrote:
+> > > It is possible to turn the motor on/off just by enabling/disabling
+> > > the vcc-supply.
+> > > 
+> > > Signed-off-by: Ondrej Jirman <megous@megous.com>
+> > > Acked-by: Rob Herring <robh@kernel.org>
 > > > ---
-> > >  drivers/hwspinlock/Kconfig | 10 ++++------
-> > >  1 file changed, 4 insertions(+), 6 deletions(-)
-> > >
-> > > diff --git a/drivers/hwspinlock/Kconfig b/drivers/hwspinlock/Kconfig
-> > > index 826a1054100d..32cd26352f38 100644
-> > > --- a/drivers/hwspinlock/Kconfig
-> > > +++ b/drivers/hwspinlock/Kconfig
-> > > @@ -6,9 +6,10 @@
-> > >  menuconfig HWSPINLOCK
-> > >         bool "Hardware Spinlock drivers"
-> > >
-> > > +if HWSPINLOCK
-> > > +
-> > >  config HWSPINLOCK_OMAP
-> > >         tristate "OMAP Hardware Spinlock device"
-> > > -       depends on HWSPINLOCK
-> > >         depends on ARCH_OMAP4 || SOC_OMAP5 || SOC_DRA7XX || SOC_AM33XX || SOC_AM43XX || ARCH_K3 || COMPILE_TEST
-> > >         help
-> > >           Say y here to support the OMAP Hardware Spinlock device (firstly
-> > > @@ -18,7 +19,6 @@ config HWSPINLOCK_OMAP
-> > >
-> > >  config HWSPINLOCK_QCOM
-> > >         tristate "Qualcomm Hardware Spinlock device"
-> > > -       depends on HWSPINLOCK
-> > >         depends on ARCH_QCOM || COMPILE_TEST
-> > >         select MFD_SYSCON
-> > >         help
-> > > @@ -30,7 +30,6 @@ config HWSPINLOCK_QCOM
-> > >
-> > >  config HWSPINLOCK_SIRF
-> > >         tristate "SIRF Hardware Spinlock device"
-> > > -       depends on HWSPINLOCK
-> > >         depends on ARCH_SIRF || COMPILE_TEST
-> > >         help
-> > >           Say y here to support the SIRF Hardware Spinlock device, which
-> > > @@ -43,7 +42,6 @@ config HWSPINLOCK_SIRF
-> > >  config HWSPINLOCK_SPRD
-> > >         tristate "SPRD Hardware Spinlock device"
-> > >         depends on ARCH_SPRD || COMPILE_TEST
-> > > -       depends on HWSPINLOCK
-> > >         help
-> > >           Say y here to support the SPRD Hardware Spinlock device.
-> > >
-> > > @@ -52,7 +50,6 @@ config HWSPINLOCK_SPRD
-> > >  config HWSPINLOCK_STM32
-> > >         tristate "STM32 Hardware Spinlock device"
-> > >         depends on MACH_STM32MP157 || COMPILE_TEST
-> > > -       depends on HWSPINLOCK
-> > >         help
-> > >           Say y here to support the STM32 Hardware Spinlock device.
-> > >
-> > > @@ -60,7 +57,6 @@ config HWSPINLOCK_STM32
-> > >
-> > >  config HSEM_U8500
-> > >         tristate "STE Hardware Semaphore functionality"
-> > > -       depends on HWSPINLOCK
-> > >         depends on ARCH_U8500 || COMPILE_TEST
-> > >         help
-> > >           Say y here to support the STE Hardware Semaphore functionality, which
-> > > @@ -68,3 +64,5 @@ config HSEM_U8500
-> > >           SoC.
-> > >
-> > >           If unsure, say N.
-> > > +
-> > > +endif # HWSPINLOCK
-> > > --
-> > > 2.26.0.rc2
-> > >
-> >
-> >
-> > --
-> > Baolin Wang
+> > >  Documentation/devicetree/bindings/input/gpio-vibrator.yaml | 1 -
+> > >  1 file changed, 1 deletion(-)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/input/gpio-vibrator.yaml b/Documentation/devicetree/bindings/input/gpio-vibrator.yaml
+> > > index 2384465eaa19..c700b640bd53 100644
+> > > --- a/Documentation/devicetree/bindings/input/gpio-vibrator.yaml
+> > > +++ b/Documentation/devicetree/bindings/input/gpio-vibrator.yaml
+> > > @@ -24,7 +24,6 @@ properties:
+> > >  
+> > >  required:
+> > >    - compatible
+> > > -  - enable-gpios
+> > 
+> > Hmm we need at least one of the 2 (gpio and supply). Should we encode it
+> > in the binding?
+> 
+> Not sure how to encode either one or the other property being required, but
+> not both at once.
+> 
+> Maybe I can add a supply-vibrator compatible to the driver and binding and
+> make requirements dependent on the compatible?
+
+Rob is our bindings overlord... I'll defer to him here.
+
+Thanks.
+
+-- 
+Dmitry
