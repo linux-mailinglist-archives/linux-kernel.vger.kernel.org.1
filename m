@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7501D022F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C644B1D023E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732036AbgELWZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
+        id S1732076AbgELWZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 18:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731780AbgELWXd (ORCPT
+        by vger.kernel.org with ESMTP id S1731674AbgELWXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 18:23:33 -0400
+        Tue, 12 May 2020 18:23:13 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC7CC061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32223C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:13 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jYdIB-0004fW-UT; Wed, 13 May 2020 00:22:29 +0200
+        id 1jYdIC-0004gW-Rb; Wed, 13 May 2020 00:22:29 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 0F6891006FB;
-        Wed, 13 May 2020 00:22:27 +0200 (CEST)
-Message-Id: <20200512213810.104271669@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 4E8FD1001FC;
+        Wed, 13 May 2020 00:22:28 +0200 (CEST)
+Message-Id: <20200512213810.212055069@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 12 May 2020 23:01:06 +0200
+Date:   Tue, 12 May 2020 23:01:07 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -50,7 +50,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V5 07/38] x86/entry/64: Move do_softirq_own_stack() to C
+Subject: [patch V5 08/38] x86/entry: Split idtentry_enter/exit()
 References: <20200512210059.056244513@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -63,59 +63,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first step to get rid of the ENTER/LEAVE_IRQ_STACK ASM macro maze.  Use
-the new C code helpers to move do_softirq_own_stack() out of ASM code.
+Split the implementation of idtentry_enter/exit() out into inline functions
+so that variants of idtentry_enter/exit() can be implemented without
+duplicating code.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V5: Convert to the new helpers
----
- arch/x86/entry/entry_64.S |   13 -------------
- arch/x86/kernel/irq_64.c  |    9 +++++++++
- 2 files changed, 9 insertions(+), 13 deletions(-)
+ arch/x86/entry/common.c |   37 +++++++++++++++++++++----------------
+ 1 file changed, 21 insertions(+), 16 deletions(-)
 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1145,19 +1145,6 @@ SYM_FUNC_START(asm_call_on_stack)
- 	ret
- SYM_FUNC_END(asm_call_on_stack)
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -539,22 +539,7 @@ void noinstr idtentry_enter(struct pt_re
+ 	}
+ }
  
--/* Call softirq on interrupt stack. Interrupts are off. */
--.pushsection .text, "ax"
--SYM_FUNC_START(do_softirq_own_stack)
--	pushq	%rbp
--	mov	%rsp, %rbp
--	ENTER_IRQ_STACK regs=0 old_rsp=%r11
--	call	__do_softirq
--	LEAVE_IRQ_STACK regs=0
--	leaveq
--	ret
--SYM_FUNC_END(do_softirq_own_stack)
--.popsection
--
- #ifdef CONFIG_XEN_PV
- /*
-  * A note on the "critical region" in our callback handler.
---- a/arch/x86/kernel/irq_64.c
-+++ b/arch/x86/kernel/irq_64.c
-@@ -20,6 +20,7 @@
- #include <linux/sched/task_stack.h>
+-/**
+- * idtentry_exit - Common code to handle return from exceptions
+- * @regs:	Pointer to pt_regs (exception entry regs)
+- *
+- * Depending on the return target (kernel/user) this runs the necessary
+- * preemption and work checks if possible and required and returns to
+- * the caller with interrupts disabled and no further work pending.
+- *
+- * This is the last action before returning to the low level ASM code which
+- * just needs to return to the appropriate context.
+- *
+- * Invoked by all exception/interrupt IDTENTRY handlers which are not
+- * returning through the paranoid exit path (all except NMI, #DF and the IST
+- * variants of #MC and #DB) and are therefore on the thread stack.
+- */
+-void noinstr idtentry_exit(struct pt_regs *regs)
++static __always_inline void __idtentry_exit(struct pt_regs *regs)
+ {
+ 	lockdep_assert_irqs_disabled();
  
- #include <asm/cpu_entry_area.h>
-+#include <asm/irq_stack.h>
- #include <asm/io_apic.h>
- #include <asm/apic.h>
- 
-@@ -70,3 +71,11 @@ int irq_init_percpu_irqstack(unsigned in
- 		return 0;
- 	return map_irq_stack(cpu);
+@@ -610,3 +595,23 @@ void noinstr idtentry_exit(struct pt_reg
+ 		rcu_irq_exit();
+ 	}
  }
 +
-+void do_softirq_own_stack(void)
++/**
++ * idtentry_exit - Common code to handle return from exceptions
++ * @regs:	Pointer to pt_regs (exception entry regs)
++ *
++ * Depending on the return target (kernel/user) this runs the necessary
++ * preemption and work checks if possible and required and returns to
++ * the caller with interrupts disabled and no further work pending.
++ *
++ * This is the last action before returning to the low level ASM code which
++ * just needs to return to the appropriate context.
++ *
++ * Invoked by all exception/interrupt IDTENTRY handlers which are not
++ * returning through the paranoid exit path (all except NMI, #DF and the IST
++ * variants of #MC and #DB) and are therefore on the thread stack.
++ */
++void noinstr idtentry_exit(struct pt_regs *regs)
 +{
-+	if (irqstack_active())
-+		__do_softirq();
-+	else
-+		run_on_irqstack(__do_softirq, NULL);
++	__idtentry_exit(regs);
 +}
 
