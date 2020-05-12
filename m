@@ -2,75 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4371CF3DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 13:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508C91CF3EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 14:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729807AbgELL4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 07:56:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:53370 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726891AbgELL4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 07:56:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0AEAD30E;
-        Tue, 12 May 2020 04:56:53 -0700 (PDT)
-Received: from [10.37.12.83] (unknown [10.37.12.83])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ECEF53F71E;
-        Tue, 12 May 2020 04:56:50 -0700 (PDT)
-Subject: Re: [PATCH v2] memory/samsung: reduce unnecessary mutex lock area
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        Bernard Zhao <bernard@vivo.com>,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, opensource.kernel@vivo.com,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>
-References: <edf839ce-cc61-73dc-e017-b49648b94d1c@web.de>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <c910fa00-c27b-9854-9ab2-6f37c28b87f6@arm.com>
-Date:   Tue, 12 May 2020 12:56:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729278AbgELMCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 08:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726891AbgELMCt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 08:02:49 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84646C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 05:02:49 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id c21so5716818lfb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 05:02:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Lext7JJwzoW0/UxTIqMqP+ZnyTLemfiC1Guac74bUBk=;
+        b=AHrNZT7U55JnEquIWVWAKVppYEhj8DWQlg7uan0Bvf1x9FZvHjyBdNOstxxKt6dayw
+         SqZmVtuFoz/wSHPPx+LNTF9urxI1jVFxkJBvMz04nRJDTbR6RTE66SYBN13Z8sy/7Eay
+         hQkb/9m62+XIRpvLYRN/3blwEK6zSN5Q9UBJxBina607c/OZMn1qARID//pXiqgsIe6u
+         HEnymo3TUXFPTd94Sp6d17U8Ub3PQQrS965KF33RLItN4mRAw1Cu0BmkEJQ1WHidx22s
+         HbbqQungotmuSWQ96p1UW/jpgpk7/hgw2tzIJHpWhLkaf77ei1w3p4bpD0XV4BQ/VxEa
+         pzLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lext7JJwzoW0/UxTIqMqP+ZnyTLemfiC1Guac74bUBk=;
+        b=MoXG+iRmJ4AzdrgQBzhqc8wyBqNrlunTupMLjeBdfgPM1l0Lg560IEVFe3T1CEOtMT
+         qmMW1nW3arDV9VcQpmGFA0HtwRJy9bkpzjI84A36l0WhzYBN5Wzngf0yShwr/xv2m+CT
+         thwTK8am/bxWi7IQcFGaM/Qh2BVhxj7YAjgYM/H/3uFBGpcCtczYC0TuVnAT/1ABww7M
+         0ge1af8/KC9GVINp8ci3yGYCpOw4P8XC8VuGzfq1aBUYvCh6b3hSkN/NacSnvNockXA2
+         txI/cCnb3DNSiuae6yiNTp47zafBxTqDfNnzqeOx/V9AzzKMCe4+LLwA3+YxIyxOusKH
+         8Qag==
+X-Gm-Message-State: AOAM530vCcJzD7az0N1WmN6+YXmKHWWjYbP77joD8wWzC/MQ0+NXO8iW
+        SR8jXyjKImsC2IMS9EqTOgSEkHh6wBtyXPwXcHRGfA==
+X-Google-Smtp-Source: ABdhPJzo7NWlWIkZPrVRUnHMxtPzZnHYqSFfMyggszoIWIf5ZsymS3tqfDN91Hsnym3QaEEpGy9pwTuwELKGkE4bNtM=
+X-Received: by 2002:ac2:414c:: with SMTP id c12mr14173516lfi.47.1589284967861;
+ Tue, 12 May 2020 05:02:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <edf839ce-cc61-73dc-e017-b49648b94d1c@web.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <85b8dc9e6288270bbfdf55f1c156dba160293f01.1588239081.git.michal.simek@xilinx.com>
+In-Reply-To: <85b8dc9e6288270bbfdf55f1c156dba160293f01.1588239081.git.michal.simek@xilinx.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 12 May 2020 14:02:36 +0200
+Message-ID: <CACRpkdZzTgkeqGdBbUW4XrH_q9DAG_uaOQ5icRtmzinN7oEzUg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: vendor-prefixes: Add U-Boot bootloader prefix
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michal Simek <monstr@monstr.eu>, git@xilinx.com,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Tom Rini <trini@konsulko.com>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 30, 2020 at 11:31 AM Michal Simek <michal.simek@xilinx.com> wrote:
 
+> List U-Boot project in vendor prefixes.
+>
+> For more information take a look at:
+> https://en.wikipedia.org/wiki/Das_U-Boot
+> Source code is available here:
+> https://gitlab.denx.de/u-boot/u-boot
+>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> ---
+>
+> The patch was created based on discussion with Rob
+> https://lore.kernel.org/linux-devicetree/CAL_Jsq+ehJSK7sjqmKtWOVjr-QZ3LDB+ywCO85uF8WJ+cB=AAw@mail.gmail.com/
 
-On 5/12/20 12:40 PM, Markus Elfring wrote:
->> Maybe dmc->df->lock seems not needed to protect "if (ret)
->> & dev_warn" branch. Maybe this change speed up the code a bit.
-> 
-> I suggest to improve also this commit message.
-> 
-> * Please reduce uncertainty.
-> 
-> * An imperative wording is probably preferred, isn't it?
->    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=152036d1379ffd6985262743dcf6b0f9c75f83a4#n151
-> 
-> * Will it be more appropriate to refer to the transformation “Reduce the lock scope”?
-> 
-> * Would you like to add the tag “Fixes” to the change description?
-> 
-> Regards,
-> Markus
-> 
+Makes sense.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Thank you Markus for providing to Bernard helpful suggestions.
-
-@Bernard please read the link above and send v3
-
-Something like: 'memory/samsung: reduce protected code area in IRQ
-handler' for the subject header would be better.
-Then in the message explain (without 'maybe') that it will speed-up a
-bit this IRQ processing and there is no need to protect return value or
-printing.
-
-Regards,
-Lukasz
+Yours,
+Linus Walleij
