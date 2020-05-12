@@ -2,226 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C4B1CF9EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE83F1CF983
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730750AbgELP4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 11:56:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727099AbgELP4r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 11:56:47 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC38C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:56:46 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id x8so11380421qtr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:56:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:resent-from:resent-date:resent-message-id:resent-to:date:to:cc
-         :subject:message-id:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=YTol6dHr+6rHPhQFDRRXm4Yh0yJozmGBuLj8k4WvEXE=;
-        b=aMN75WZGYLhraM9q8J4y6dRaNMfAK8+tZq5w7XkhLPGY2zitLnMUdQERdS4NHKVTDQ
-         h2Rn1D0XSS/B0JfGGE+XtcoIN8Xtbmlhaf2Nh4s84d/ub+b9AOXsAexjcCLj8P1qLiaO
-         yXYT85ZimX22iDivrYDoGBs+SiCWkcLiRIZGjkQQwfnxbsjMzqqB822Uvr0JUIEAYNrH
-         D4gpKYsv98e7Lnt6KiSHofV2sLZRH+gog2wzqOjiWGZ69Tq/0lFXOY8W+LrrrDjvWVud
-         aytGn+zfaT38ysy00ox56i+S5y/RrbONBumSEn/80rTck3LKO6MGekFgJG+C+5Xh88Cb
-         jcLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:resent-from:resent-date:resent-message-id
-         :resent-to:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YTol6dHr+6rHPhQFDRRXm4Yh0yJozmGBuLj8k4WvEXE=;
-        b=mVNpHWPAwBLUArx/s9TdkUot0VqHxPpTgoCnj4qGHAsRxoijuOkq255rZHcoMkyuHf
-         /zXHZXZ+Mni0SwTsPLGwD8EpN9QP/qSYifZYxPlQwCR9S7UECw1jK9rU4LoZpyBJ8/su
-         LA9uAr0vS/TFvAvfFo1Kk0naIHT/Hkqaap0hehYG74/n42HEu6r5HXTzc5mB95Yj+Crj
-         X0r/DFa6ceUVxgBSBu69aTf7qg69EzEaiAvSYv4QlTk2ru5PiTxDUXKEz7RBW1cXimIQ
-         b2eRvpKh3m7xibbE/vueHvri3fqeoDLNGaoY9fRjYYB3OAzjCOxcztftg9oZ/7ezUgMC
-         rc8A==
-X-Gm-Message-State: AGi0PuaG0Y2MGATkKSUl/VuYAQ/sKX4OBDxHP+bQ9bsMY6rt4QDXRr1E
-        HCJEzvv5gqbC69+FH3/qRH8=
-X-Google-Smtp-Source: APiQypL/8GMVSzXHs4wqXLlheSbmcLArUlohtgLXWOFITrF8iC0731T8d0ad/GXUJyKoKtIcho1cJQ==
-X-Received: by 2002:ac8:2a70:: with SMTP id l45mr23119755qtl.232.1589299006116;
-        Tue, 12 May 2020 08:56:46 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id 62sm11250431qkh.113.2020.05.12.08.56.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 08:56:45 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E6D6A40AFD; Tue, 12 May 2020 12:56:43 -0300 (-03)
-Date:   Tue, 12 May 2020 12:41:25 -0300
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: perf seg fault
-Message-ID: <20200512154125.GO28888@kernel.org>
-References: <0cad7834-07b4-ec2f-13b5-d6a10b21ce48@intel.com>
- <0517775a-3e0f-f900-4687-069d115077bd@intel.com>
- <20200512151043.GC3158213@krava>
+        id S1730014AbgELPoe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 May 2020 11:44:34 -0400
+Received: from muru.com ([72.249.23.125]:54086 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726388AbgELPoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 11:44:34 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 667CC8047;
+        Tue, 12 May 2020 15:45:22 +0000 (UTC)
+Date:   Tue, 12 May 2020 08:44:30 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: Re: Bug with omap3-isp - 30 seconds delay for probe success
+Message-ID: <20200512154430.GL37466@atomide.com>
+References: <FC4C8A15-077F-46BA-9C69-947BC820EE9D@goldelico.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200512151043.GC3158213@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <FC4C8A15-077F-46BA-9C69-947BC820EE9D@goldelico.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, May 12, 2020 at 05:10:43PM +0200, Jiri Olsa escreveu:
-> On Tue, May 12, 2020 at 05:58:29PM +0300, Adrian Hunter wrote:
-> > Forgot to cc mailing list
-> > 
-> > On 12/05/20 5:50 pm, Adrian Hunter wrote:
-> > > Hi
-> > > 
-> > > I am getting a seg fault from your perf/core branch, as follows:
-> > > 
-> > > # perf record uname
-> > > Linux
-> > > [ perf record: Woken up 1 times to write data ]
-> > > [ perf record: Captured and wrote 0.005 MB perf.data (7 samples) ]
-> > > perf: Segmentation fault
-> > > Obtained 6 stack frames.
-> > > [0x4e75b4]
-> > > [0x5d1ad0]
-> > > [0x5c9860]
-> > > [0x4a6e5c]
-> > > [0x5cb39b]
-> > > [0x76c89f]
-> > > Segmentation fault
-> > > 
-> > > It goes away with --no-bpf-event:
-> > > 
-> > > # perf record --no-bpf-event uname
-> > > Linux
-> > > [ perf record: Woken up 1 times to write data ]
-> > > [ perf record: Captured and wrote 0.005 MB perf.data (7 samples) ]
-> > > #
-> > > 
-> > > kernel is from the same branch
-> > > 
-> > > # uname -a
-> > > Linux buildroot 5.7.0-rc2-00028-g0fdddf5a583a #165 SMP Tue May 12 16:27:53
-> > > EEST 2020 x86_64 GNU/Linux
-> > > 
-> > > # perf version --build-options
-> > > perf version 5.6.g0fdddf5a583a
-> > >                  dwarf: [ OFF ]  # HAVE_DWARF_SUPPORT
-> > >     dwarf_getlocations: [ OFF ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
-> > >                  glibc: [ on  ]  # HAVE_GLIBC_SUPPORT
-> > >                   gtk2: [ OFF ]  # HAVE_GTK2_SUPPORT
-> > >          syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
-> > >                 libbfd: [ on  ]  # HAVE_LIBBFD_SUPPORT
-> > >                 libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
-> > >                libnuma: [ OFF ]  # HAVE_LIBNUMA_SUPPORT
-> > > numa_num_possible_cpus: [ OFF ]  # HAVE_LIBNUMA_SUPPORT
-> > >                libperl: [ OFF ]  # HAVE_LIBPERL_SUPPORT
-> > >              libpython: [ OFF ]  # HAVE_LIBPYTHON_SUPPORT
-> > >               libslang: [ on  ]  # HAVE_SLANG_SUPPORT
-> > >              libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
-> > >              libunwind: [ OFF ]  # HAVE_LIBUNWIND_SUPPORT
-> > >     libdw-dwarf-unwind: [ OFF ]  # HAVE_DWARF_SUPPORT
-> > >                   zlib: [ OFF ]  # HAVE_ZLIB_SUPPORT
-> > >                   lzma: [ OFF ]  # HAVE_LZMA_SUPPORT
-> > >              get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
-> > >                    bpf: [ OFF ]  # HAVE_LIBBPF_SUPPORT
+Hi,
 
-
-Humm, maybe this?
-
-make -C tools clean
-rm -rf /tmp/build/perf
-mkdir -p /tmp/build/perf
-make -C tools/perf O=/tmp/build/perf install-bin
-
-[root@five ~]# perf -vv
-perf version 5.7.rc2.g2dbd8814c26b
-                 dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
-    dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
-                 glibc: [ on  ]  # HAVE_GLIBC_SUPPORT
-                  gtk2: [ on  ]  # HAVE_GTK2_SUPPORT
-         syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
-                libbfd: [ on  ]  # HAVE_LIBBFD_SUPPORT
-                libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
-               libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-               libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
-             libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
-              libslang: [ on  ]  # HAVE_SLANG_SUPPORT
-             libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
-             libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
-    libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
-                  zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
-                  lzma: [ on  ]  # HAVE_LZMA_SUPPORT
-             get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
-                   bpf: [ OFF ]  # HAVE_LIBBPF_SUPPORT
-                   aio: [ on  ]  # HAVE_AIO_SUPPORT
-                  zstd: [ on  ]  # HAVE_ZSTD_SUPPORT
-[root@five ~]# perf record uname
-Linux
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 0.029 MB perf.data (7 samples) ]
-perf: Segmentation fault
-Obtained 6 stack frames.
-perf(sighandler_dump_stack+0x3e) [0x4fc7be]
-/lib64/libc.so.6(+0x3c6af) [0x7f073b8a16af]
-perf(perf_mmap__read_init+0x20) [0x5d9570]
-perf() [0x4c7758]
-/lib64/libpthread.so.0(+0x94e1) [0x7f073c28a4e1]
-/lib64/libc.so.6(clone+0x42) [0x7f073b9666a2]
-Segmentation fault (core dumped)
-[root@five ~]#
-
-?
-
-> > >                    aio: [ on  ]  # HAVE_AIO_SUPPORT
-> > >                   zstd: [ OFF ]  # HAVE_ZSTD_SUPPORT
-> > > 
-> > > 
-> > > Any thoughts?
+* H. Nikolaus Schaller <hns@goldelico.com> [200509 12:12]:
+> resend from correct mail address
+> ---
 > 
-> hum, I don't see that, do you reproduce with DEBUG=1?
-> to get more verbose backtrace
+> Hi Tony,
+> I am observing an issue with omap3-isp for a while. It seems
+> to have started with v5.6 but I have preferred to invest some
+> time into analysis of the problem instead of trying a bisect.
+> 
+> The problem is that there is a
+> 
+> [   32.483703] WARNING: CPU: 0 PID: 2052 at drivers/base/dd.c:270 driver_deferred_probe_check_state+0x44/0x5c
+> [   32.498809] omap3isp 480bc000.isp: deferred probe timeout, ignoring dependency
+> 
+> from the driver, just after exactly 30 seconds. This is when
+> driver_deferred_probe_timeout had timed out (chaning driver_deferred_probe_timeout makes
+> it take more or less time).
+> 
+> So something is requested for by the omap3-isp driver which never becomes
+> available.
+> 
+> Some analysis shows that the omap3-isp is the only device calling of_iommu_xlate()
+> with a NULL opp table which ends up in driver_deferred_probe_check_state() to return
+> -EPROBE_DEFER until 30 seconds have passed.
+> 
+> Well, it seems to be resonable that there are no ops returned by iommu_ops_from_fwnode()
+> since there is no firmware for the ISP. But there should be no timeout.
+> 
+> This of_iommu_xlate() is called from of_iommu_configure() in the loop to handle
+> all "iommus" references. There is one for omap34xx and omap36xx.dtsi and the mmu_isp
+> is defined in omap3.dtsi. They refer to compatible = "ti,omap2-iommu"; and
+> ti,hwmods = "mmu_isp";
+> 
+> Are there any ideas what in the iommu or hwmods or firmware loading for the mmu_isp
+> may have changed recently?
 
-[root@five ~]# uname -a
-Linux five 5.7.0-rc2 #1 SMP Tue Apr 21 11:06:25 -03 2020 x86_64 x86_64 x86_64 GNU/Linux
-[root@five ~]# perf record uname
-Linux
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 0.030 MB perf.data (7 samples) ]
-[root@five ~]# uname -a
-Linux five 5.7.0-rc2 #1 SMP Tue Apr 21 11:06:25 -03 2020 x86_64 x86_64 x86_64 GNU/Linux
-[root@five ~]#
+Sorry no idea what might have changed there. Adding Sakari to Cc,
+maybe he has some ideas. In any case, nowadays we should be able to
+boot the isp with dts data only with ti-sysc and that way use reset
+drivers and genpd if needed to configure things properly.
 
-[root@five ~]# uname -a
-Linux five 5.7.0-rc2 #1 SMP Tue Apr 21 11:06:25 -03 2020 x86_64 x86_64 x86_64 GNU/Linux
-[root@five ~]# perf -vv
-perf version 5.7.rc2.g2dbd8814c26b
-                 dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
-    dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
-                 glibc: [ on  ]  # HAVE_GLIBC_SUPPORT
-                  gtk2: [ on  ]  # HAVE_GTK2_SUPPORT
-         syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
-                libbfd: [ on  ]  # HAVE_LIBBFD_SUPPORT
-                libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
-               libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-               libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
-             libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
-              libslang: [ on  ]  # HAVE_SLANG_SUPPORT
-             libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
-             libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
-    libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
-                  zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
-                  lzma: [ on  ]  # HAVE_LZMA_SUPPORT
-             get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
-                   bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
-                   aio: [ on  ]  # HAVE_AIO_SUPPORT
-                  zstd: [ on  ]  # HAVE_ZSTD_SUPPORT
-[root@five ~]#
+Regards,
+
+Tony
+
+
+> Anyways the omap3-isp seems to be initialized after this 30 seconds timeout and
+> responds to media-ctl.
+> 
+> A more complete log attached.
+> 
+> BR,
+> Nikolaus
+> 
+> 
+> [   32.478759] ------------[ cut here ]------------
+> [   32.483703] WARNING: CPU: 0 PID: 2052 at drivers/base/dd.c:270 driver_deferred_probe_check_state+0x44/0x5c
+> [   32.498809] omap3isp 480bc000.isp: deferred probe timeout, ignoring dependency
+> [   32.498840] Modules linked in: omapdrm libertas_sdio libertas cfg80211 panel_tpo_td028ttec1 snd_soc_simple_card snd_soc_simple_card_utils snd_soc_omap_twl4030 simple_bridge wwan_on_off pvrsrvkm_omap3630_sgx530_125 snd_soc_gtm601 pwm_omap_dmtimer omap_aes_driver crypto_engine omap_crypto omap_sham omap3_isp videobuf2_dma_contig videobuf2_memops videobuf2_v4l2 videobuf2_common bq27xxx_battery_hdq bq27xxx_battery omap_hdq omap2430 bmp280_spi bmp280_i2c itg3200 bmp280 at24 tsc2007 leds_tca6507 bma180 phy_twl4030_usb musb_hdrc twl4030_pwrbutton hci_uart snd_soc_twl4030 twl4030_vibra btbcm ov9655 twl4030_madc v4l2_fwnode twl4030_charger videodev hmc5843_i2c bluetooth hmc5843_core gnss_sirf industrialio_triggered_buffer mc kfifo_buf ecdh_generic snd_soc_si47xx ecc gnss snd_soc_omap_mcbsp snd_soc_ti_sdma ehci_omap omapdss omapdss_base drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec display_connector generic_adc_battery drm industrialio drm_panel_orientation_quirks input_polldev
+> [   32.509704]  pwm_bl ip_tables x_tables ipv6 nf_defrag_ipv6 autofs4
+> [   32.612792] CPU: 0 PID: 2052 Comm: kworker/0:5 Not tainted 5.7.0-rc4-letux+ #2570
+> [   32.620758] Hardware name: Generic OMAP36xx (Flattened Device Tree)
+> [   32.627471] Workqueue: events deferred_probe_work_func
+> [   32.632995] [<c010f1f4>] (unwind_backtrace) from [<c010a7c8>] (show_stack+0x10/0x14)
+> [   32.641235] [<c010a7c8>] (show_stack) from [<c047d3c4>] (dump_stack+0x88/0xa8)
+> [   32.648925] [<c047d3c4>] (dump_stack) from [<c01304f0>] (__warn+0xc8/0xf4)
+> [   32.656249] [<c01304f0>] (__warn) from [<c013058c>] (warn_slowpath_fmt+0x70/0x9c)
+> [   32.664215] [<c013058c>] (warn_slowpath_fmt) from [<c056fa44>] (driver_deferred_probe_check_state+0x44/0x5c)
+> [   32.674652] [<c056fa44>] (driver_deferred_probe_check_state) from [<c05641d4>] (of_iommu_configure+0x98/0x1b4)
+> [   32.685302] [<c05641d4>] (of_iommu_configure) from [<c06dd6cc>] (of_dma_configure+0x1d8/0x234)
+> [   32.694458] [<c06dd6cc>] (of_dma_configure) from [<c056fc6c>] (really_probe+0x104/0x324)
+> [   32.703063] [<c056fc6c>] (really_probe) from [<c05700dc>] (driver_probe_device+0x10c/0x154)
+> [   32.711944] [<c05700dc>] (driver_probe_device) from [<c056e3a8>] (bus_for_each_drv+0x90/0xb8)
+> [   32.721008] [<c056e3a8>] (bus_for_each_drv) from [<c056ff1c>] (__device_attach+0x90/0x120)
+> [   32.729797] [<c056ff1c>] (__device_attach) from [<c056efdc>] (bus_probe_device+0x28/0x80)
+> [   32.738494] [<c056efdc>] (bus_probe_device) from [<c056f464>] (deferred_probe_work_func+0x5c/0x80)
+> [   32.748016] [<c056f464>] (deferred_probe_work_func) from [<c014986c>] (process_one_work+0x1e4/0x394)
+> [   32.757720] [<c014986c>] (process_one_work) from [<c0149a44>] (process_scheduled_works+0x28/0x30)
+> [   32.767150] [<c0149a44>] (process_scheduled_works) from [<c0149f38>] (worker_thread+0x210/0x2d8)
+> [   32.776489] [<c0149f38>] (worker_thread) from [<c014e7cc>] (kthread+0x138/0x148)
+> [   32.784362] [<c014e7cc>] (kthread) from [<c0100148>] (ret_from_fork+0x14/0x2c)
+> [   32.792022] Exception stack(0xda649fb0 to 0xda649ff8)
+> [   32.797393] 9fa0:                                     00000000 00000000 00000000 00000000
+> [   32.806091] 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> [   32.814788] 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> [   32.842346] omap3isp 480bc000.isp: supply vdd-csiphy1 not found, using dummy regulator
+> [   32.855133] omap3isp 480bc000.isp: supply vdd-csiphy2 not found, using dummy regulator
+> [   32.864746] omap3isp 480bc000.isp: Revision 15.0 found
+> [   32.870971] omap-iommu 480bd400.mmu: 480bd400.mmu: version 1.1
+> [   32.879913] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP CCP2 was not initialized!
+> [   32.897247] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP CSI2a was not initialized!
+> [   32.917999] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP CCDC was not initialized!
+> [   32.938446] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP preview was not initialized!
+> [   32.966888] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP resizer was not initialized!
+> [   32.987548] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP AEWB was not initialized!
+> [   33.010803] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP AF was not initialized!
+> [   33.026519] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP histogram was not initialized!
+> [   33.052062] ov9655 1-0030: ov9655_probe
+> [   33.064910] ov9655 1-0030: supply dvdd not found, using dummy regulator
+> [   33.075714] ov9655 1-0030: supply dovdd not found, using dummy regulator
+> [   33.097900] ov9655 1-0030: __ov9655_set_power on=1
+> [   33.206787] ov9655 1-0030: OV9655 read register 1c : 7f
+> [   33.212707] ov9655 1-0030: OV9655 read register 1d : a2
+> [   33.220336] ov9655 1-0030: OV9655 read register 0a : 96
+> [   33.226104] ov9655 1-0030: OV9655 read register 0b : 57
+> [   33.231872] ov9655 1-0030: __ov9655_set_power on=0
+> [   33.238586] ov9655 1-0030: OV9655 REV5 detected at address 0x30
+> [   33.258605] platform sound_bluetooth: deferred probe pending
+> [   35.915588] omap-iommu 480bd400.mmu: 480bd400.mmu: version 1.1
+> [   36.040069] ov9655 1-0030: ov9655_open
