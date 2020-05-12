@@ -2,138 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1E11CE966
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 01:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D121CE969
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 02:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728215AbgEKX72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 19:59:28 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:28060 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725836AbgEKX71 (ORCPT
+        id S1728264AbgELAAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 20:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725836AbgELAAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 19:59:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589241565;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=su7IZNhrlE7HNdooJKGpydIdN6GK+u6wNKS/k/H3gwU=;
-        b=gV0GwK5cUb7WDE3saJPkEc7ym4otGNFxXbOroWcjUlHVgVibM/QgZAOvVNVaKMfyVZH0TJ
-        UYkEiNXXmzxbMhkL8JScCXv7txb4OLFFBSrhue6cEUITXJuPT1+zaX9iO+mjtEPfIA1CV6
-        nWv1KledZg0AmOzjwADt0LWejIFEt1Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-5uBBaGbQOweF80mZGFTuOA-1; Mon, 11 May 2020 19:59:21 -0400
-X-MC-Unique: 5uBBaGbQOweF80mZGFTuOA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B203518A0724;
-        Mon, 11 May 2020 23:59:19 +0000 (UTC)
-Received: from optiplex-lnx (unknown [10.3.128.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 974156444B;
-        Mon, 11 May 2020 23:59:17 +0000 (UTC)
-Date:   Mon, 11 May 2020 19:59:14 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Tso Ted <tytso@mit.edu>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, keescook@chromium.org,
-        yzaikin@google.com
-Subject: Re: [PATCH] kernel: sysctl: ignore invalid taint bits introduced via
- kernel.tainted and taint the kernel with TAINT_USER on writes
-Message-ID: <20200511235914.GF367616@optiplex-lnx>
-References: <20200511215904.719257-1-aquini@redhat.com>
- <20200511231045.GV11244@42.do-not-panic.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200511231045.GV11244@42.do-not-panic.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Mon, 11 May 2020 20:00:04 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DD8C061A0C;
+        Mon, 11 May 2020 17:00:04 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::d71])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 0DDDB120ED551;
+        Mon, 11 May 2020 17:00:04 -0700 (PDT)
+Date:   Mon, 11 May 2020 17:00:03 -0700 (PDT)
+Message-Id: <20200511.170003.1583663679589394092.davem@davemloft.net>
+To:     hch@lst.de
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: improve msg_control kernel vs user pointer handling
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200511115913.1420836-1-hch@lst.de>
+References: <20200511115913.1420836-1-hch@lst.de>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 11 May 2020 17:00:04 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 11:10:45PM +0000, Luis Chamberlain wrote:
-> On Mon, May 11, 2020 at 05:59:04PM -0400, Rafael Aquini wrote:
-> > The sysctl knob allows any user with SYS_ADMIN capability to
-> > taint the kernel with any arbitrary value, but this might
-> > produce an invalid flags bitset being committed to tainted_mask.
-> > 
-> > This patch introduces a simple way for proc_taint() to ignore
-> > any eventual invalid bit coming from the user input before
-> > committing those bits to the kernel tainted_mask, as well as
-> > it makes clear use of TAINT_USER flag to mark the kernel
-> > tainted by user everytime a taint value is written
-> > to the kernel.tainted sysctl.
-> > 
-> > Signed-off-by: Rafael Aquini <aquini@redhat.com>
-> > ---
-> >  kernel/sysctl.c | 17 ++++++++++++++++-
-> >  1 file changed, 16 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> > index 8a176d8727a3..f0a4fb38ac62 100644
-> > --- a/kernel/sysctl.c
-> > +++ b/kernel/sysctl.c
-> > @@ -2623,17 +2623,32 @@ static int proc_taint(struct ctl_table *table, int write,
-> >  		return err;
-> >  
-> >  	if (write) {
-> > +		int i;
-> > +
-> > +		/*
-> > +		 * Ignore user input that would make us committing
-> > +		 * arbitrary invalid TAINT flags in the loop below.
-> > +		 */
-> > +		tmptaint &= (1UL << TAINT_FLAGS_COUNT) - 1;
-> 
-> This looks good but we don't pr_warn() of information lost on intention.
->
+From: Christoph Hellwig <hch@lst.de>
+Date: Mon, 11 May 2020 13:59:10 +0200
 
-Are you thinking in sth like:
+> this series replace the msg_control in the kernel msghdr structure
+> with an anonymous union and separate fields for kernel vs user
+> pointers.  In addition to helping a bit with type safety and reducing
+> sparse warnings, this also allows to remove the set_fs() in
+> kernel_recvmsg, helping with an eventual entire removal of set_fs().
 
-+               if (tmptaint > TAINT_FLAGS_MAX) {
-+                       tmptaint &= TAINT_FLAGS_MAX;
-+                       pr_warn("proc_taint: out-of-range invalid input ignored"
-+                               " tainted_mask adjusted to 0x%x\n", tmptaint);
-+               }
+Looks good.  Things actually used to be a lot worse in the original
+compat code but Al Viro cleaned it up into the state it is in right
+now.
 
-?
- 
-> > +
-> >  		/*
-> >  		 * Poor man's atomic or. Not worth adding a primitive
-> >  		 * to everyone's atomic.h for this
-> >  		 */
-> > -		int i;
-> >  		for (i = 0; i < BITS_PER_LONG && tmptaint >> i; i++) {
-> >  			if ((tmptaint >> i) & 1)
-> >  				add_taint(i, LOCKDEP_STILL_OK);
-> >  		}
-> > +
-> > +		/*
-> > +		 * Users with SYS_ADMIN capability can include any arbitrary
-> > +		 * taint flag by writing to this interface. If that's the case,
-> > +		 * we also need to mark the kernel "tainted by user".
-> > +		 */
-> > +		add_taint(TAINT_USER, LOCKDEP_STILL_OK);
-> 
-> I'm in favor of this however I'd like to hear from Ted on if it meets
-> the original intention. I would think he had a good reason not to add
-> it here.
->
-
-Fair enough. The impression I got by reading Ted's original commit
-message is that the intent was to have TAINT_USER as the flag set 
-via this interface, even though the code was allowing for any 
-arbitrary value. I think it's OK to let the user fiddle with
-the flags, as it's been allowed since the introduction of
-this interface, but we need to reflect that fact in the
-tainting itself. Since TAINT_USER is not used anywhere,
-this change perfectly communicates that fact without
-the need for introducing yet another taint flag.
-
-Cheers!
--- Rafael
-
+Series applied to net-next, thanks!
