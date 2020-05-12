@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066371CF3D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 13:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C55F1CF3DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 13:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729728AbgELL4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 07:56:37 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:34388 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726891AbgELL4g (ORCPT
+        id S1729769AbgELL5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 07:57:18 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:63192 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726891AbgELL5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 07:56:36 -0400
+        Tue, 12 May 2020 07:57:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1589284596; x=1620820596;
+  t=1589284637; x=1620820637;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=FpB4jRuf05olBtSWXQPq6g3iU18ntS9IuGVrC5txsAA=;
-  b=AuhqpD0d6VX1PLEowe9bAlALfECjse/MyrfkOWRrDsXoBPXPGUSWg3kB
-   czxFOkvf0pK/Uojr72giojHQf3Q1SdAXuyITZKcBTYvgIPlnZm/0uC1Rs
-   xDMgnCOC7kODpieSAAx8a8gLugaEv+AlRulQcYoH4cQEVqNwxCks8R9GB
-   E=;
-IronPort-SDR: YwvWL01OQTBA6PL/6MgMCnuF68kXrS1qjM+8Cykk1GFcunQ/jZYwuvQ+S2L814bXFniUR9Y9uh
- MDp5Zup9X0Pw==
+  bh=TuErZGYEF/r+cILDRcbHLjrkMjcNpTWU7RttOJ6Gqis=;
+  b=mBs0GJsNyuzO/StSCI01xvHXeUhFVw4n+11n9+uxxnpLkZPMKdR+SsgS
+   27nyISLACZM7CDuqzoVPzd7MGPggeLmYZghlKFwX0tfDwfwKh1i38YO57
+   MTZOu9UaPOF29FE7YY9bPThNZYv8XKhoGYDYjQlK46y89dp5RvrlRDp/F
+   Q=;
+IronPort-SDR: VWl3qAAAXMla1WDe1JTw39mfWCZTOKYjyvjS9Ed/vVzmlphe9r23FiDhX2eydYmwDFUa0I5jXn
+ TC315Tp7TifQ==
 X-IronPort-AV: E=Sophos;i="5.73,383,1583193600"; 
-   d="scan'208";a="44226956"
-Received: from sea32-co-svc-lb4-vlan2.sea.corp.amazon.com (HELO email-inbound-relay-2b-4e24fd92.us-west-2.amazon.com) ([10.47.23.34])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 12 May 2020 11:56:36 +0000
+   d="scan'208";a="29889184"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-168cbb73.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 12 May 2020 11:57:13 +0000
 Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-4e24fd92.us-west-2.amazon.com (Postfix) with ESMTPS id 1C946A2266;
-        Tue, 12 May 2020 11:56:33 +0000 (UTC)
+        by email-inbound-relay-2c-168cbb73.us-west-2.amazon.com (Postfix) with ESMTPS id 3AF73A2125;
+        Tue, 12 May 2020 11:57:10 +0000 (UTC)
 Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
  EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 12 May 2020 11:56:32 +0000
+ id 15.0.1497.2; Tue, 12 May 2020 11:57:09 +0000
 Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.100) by
  EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 12 May 2020 11:56:17 +0000
+ id 15.0.1497.2; Tue, 12 May 2020 11:56:54 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -55,9 +55,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
         <linux-damon@amazon.com>, <linux-mm@kvack.org>,
         <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC v8 4/8] mm/damon/schemes: Implement a debugfs interface
-Date:   Tue, 12 May 2020 13:53:39 +0200
-Message-ID: <20200512115343.27699-5-sjpark@amazon.com>
+Subject: [RFC v8 5/8] mm/damon-test: Add kunit test case for regions age accounting
+Date:   Tue, 12 May 2020 13:53:40 +0200
+Message-ID: <20200512115343.27699-6-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200512115343.27699-1-sjpark@amazon.com>
 References: <20200512115343.27699-1-sjpark@amazon.com>
@@ -73,227 +73,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit implements a debugfs interface for the data access
-monitoring oriented memory management schemes.  It is supposed to be
-used by administrators and/or privileged user space programs.  Users can
-read and update the rules using ``<debugfs>/damon/schemes`` file.  The
-format is::
-
-    <min/max size> <min/max access frequency> <min/max age> <action>
+After merges of regions, each region should know their last shape in
+proper way to measure the changes from the last modification and reset
+the age if the changes are significant.  This commit adds kunit test
+cases checking whether the regions are knowing their last shape properly
+after merges of regions.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- mm/damon.c | 174 ++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 172 insertions(+), 2 deletions(-)
+ mm/damon-test.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/mm/damon.c b/mm/damon.c
-index 13275c31a6c5..be8a986f08e0 100644
---- a/mm/damon.c
-+++ b/mm/damon.c
-@@ -174,6 +174,29 @@ static void damon_destroy_task(struct damon_task *t)
- 	damon_free_task(t);
- }
+diff --git a/mm/damon-test.h b/mm/damon-test.h
+index 851c2062a480..c7a7f3b9b57f 100644
+--- a/mm/damon-test.h
++++ b/mm/damon-test.h
+@@ -551,6 +551,8 @@ static void damon_test_merge_regions_of(struct kunit *test)
  
-+static struct damos *damon_new_scheme(
-+		unsigned int min_sz_region, unsigned int max_sz_region,
-+		unsigned int min_nr_accesses, unsigned int max_nr_accesses,
-+		unsigned int min_age_region, unsigned int max_age_region,
-+		enum damos_action action)
-+{
-+	struct damos *scheme;
-+
-+	scheme = kmalloc(sizeof(*scheme), GFP_KERNEL);
-+	if (!scheme)
-+		return NULL;
-+	scheme->min_sz_region = min_sz_region;
-+	scheme->max_sz_region = max_sz_region;
-+	scheme->min_nr_accesses = min_nr_accesses;
-+	scheme->max_nr_accesses = max_nr_accesses;
-+	scheme->min_age_region = min_age_region;
-+	scheme->max_age_region = max_age_region;
-+	scheme->action = action;
-+	INIT_LIST_HEAD(&scheme->list);
-+
-+	return scheme;
-+}
-+
- static void damon_add_scheme(struct damon_ctx *ctx, struct damos *s)
- {
- 	list_add_tail(&s->list, &ctx->schemes_list);
-@@ -1439,6 +1462,147 @@ static ssize_t debugfs_monitor_on_write(struct file *file,
- 	return ret;
- }
- 
-+static ssize_t sprint_schemes(struct damon_ctx *c, char *buf, ssize_t len)
-+{
-+	struct damos *s;
-+	int written = 0;
-+	int rc;
-+
-+	damon_for_each_scheme(c, s) {
-+		rc = snprintf(&buf[written], len - written,
-+				"%u %u %u %u %u %u %d\n",
-+				s->min_sz_region, s->max_sz_region,
-+				s->min_nr_accesses, s->max_nr_accesses,
-+				s->min_age_region, s->max_age_region,
-+				s->action);
-+		if (!rc)
-+			return -ENOMEM;
-+
-+		written += rc;
-+	}
-+	return written;
-+}
-+
-+static ssize_t debugfs_schemes_read(struct file *file, char __user *buf,
-+		size_t count, loff_t *ppos)
-+{
-+	struct damon_ctx *ctx = &damon_user_ctx;
-+	char *kbuf;
-+	ssize_t len;
-+
-+	kbuf = kmalloc(count, GFP_KERNEL);
-+	if (!kbuf)
-+		return -ENOMEM;
-+
-+	len = sprint_schemes(ctx, kbuf, count);
-+	if (len < 0)
-+		goto out;
-+	len = simple_read_from_buffer(buf, count, ppos, kbuf, len);
-+
-+out:
-+	kfree(kbuf);
-+	return len;
-+}
-+
-+static void free_schemes_arr(struct damos **schemes, ssize_t nr_schemes)
-+{
-+	ssize_t i;
-+
-+	for (i = 0; i < nr_schemes; i++)
-+		kfree(schemes[i]);
-+	kfree(schemes);
-+}
-+
-+/*
-+ * Converts a string into an array of struct damos pointers
-+ *
-+ * Returns an array of struct damos pointers that converted if the conversion
-+ * success, or NULL otherwise.
-+ */
-+static struct damos **str_to_schemes(const char *str, ssize_t len,
-+				ssize_t *nr_schemes)
-+{
-+	struct damos *scheme, **schemes;
-+	const int max_nr_schemes = 256;
-+	int pos = 0, parsed, ret;
-+	unsigned int min_sz, max_sz, min_nr_a, max_nr_a, min_age, max_age;
-+	unsigned int action;
-+
-+	schemes = kmalloc_array(max_nr_schemes, sizeof(scheme),
-+			GFP_KERNEL);
-+	if (!schemes)
-+		return NULL;
-+
-+	*nr_schemes = 0;
-+	while (pos < len && *nr_schemes < max_nr_schemes) {
-+		ret = sscanf(&str[pos], "%u %u %u %u %u %u %u%n",
-+				&min_sz, &max_sz, &min_nr_a, &max_nr_a,
-+				&min_age, &max_age, &action, &parsed);
-+		if (ret != 7)
-+			break;
-+		if (action >= DAMOS_ACTION_LEN) {
-+			pr_err("wrong action %d\n", action);
-+			goto fail;
-+		}
-+
-+		pos += parsed;
-+		scheme = damon_new_scheme(min_sz, max_sz, min_nr_a, max_nr_a,
-+				min_age, max_age, action);
-+		if (!scheme)
-+			goto fail;
-+
-+		schemes[*nr_schemes] = scheme;
-+		*nr_schemes += 1;
-+	}
-+	if (!*nr_schemes)
-+		goto fail;
-+	return schemes;
-+fail:
-+	free_schemes_arr(schemes, *nr_schemes);
-+	return NULL;
-+}
-+
-+static ssize_t debugfs_schemes_write(struct file *file, const char __user *buf,
-+		size_t count, loff_t *ppos)
-+{
-+	struct damon_ctx *ctx = &damon_user_ctx;
-+	char *kbuf;
-+	struct damos **schemes;
-+	ssize_t nr_schemes = 0, ret;
-+	int err;
-+
-+	if (*ppos)
-+		return -EINVAL;
-+
-+	kbuf = kmalloc(count, GFP_KERNEL);
-+	if (!kbuf)
-+		return -ENOMEM;
-+
-+	ret = simple_write_to_buffer(kbuf, count, ppos, buf, count);
-+	if (ret < 0)
-+		goto out;
-+
-+	schemes = str_to_schemes(kbuf, ret, &nr_schemes);
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	if (ctx->kdamond) {
-+		ret = -EBUSY;
-+		goto unlock_out;
-+	}
-+
-+	err = damon_set_schemes(ctx, schemes, nr_schemes);
-+	if (err)
-+		ret = err;
-+	else
-+		nr_schemes = 0;
-+unlock_out:
-+	mutex_unlock(&ctx->kdamond_lock);
-+	free_schemes_arr(schemes, nr_schemes);
-+out:
-+	kfree(kbuf);
-+	return ret;
-+}
-+
- static ssize_t damon_sprint_pids(struct damon_ctx *ctx, char *buf, ssize_t len)
- {
- 	struct damon_task *t;
-@@ -1664,6 +1828,12 @@ static const struct file_operations pids_fops = {
- 	.write = debugfs_pids_write,
- };
- 
-+static const struct file_operations schemes_fops = {
-+	.owner = THIS_MODULE,
-+	.read = debugfs_schemes_read,
-+	.write = debugfs_schemes_write,
-+};
-+
- static const struct file_operations record_fops = {
- 	.owner = THIS_MODULE,
- 	.read = debugfs_record_read,
-@@ -1680,10 +1850,10 @@ static struct dentry *debugfs_root;
- 
- static int __init damon_debugfs_init(void)
- {
--	const char * const file_names[] = {"attrs", "record",
-+	const char * const file_names[] = {"attrs", "record", "schemes",
- 		"pids", "monitor_on"};
- 	const struct file_operations *fops[] = {&attrs_fops, &record_fops,
--		&pids_fops, &monitor_on_fops};
-+		&schemes_fops, &pids_fops, &monitor_on_fops};
+ 	unsigned long saddrs[] = {0, 114, 130, 156, 170};
+ 	unsigned long eaddrs[] = {112, 130, 156, 170, 230};
++	unsigned long lsa[] = {0, 114, 130, 156, 184};
++	unsigned long lea[] = {100, 122, 156, 170, 230};
  	int i;
  
- 	debugfs_root = debugfs_create_dir("damon", NULL);
+ 	t = damon_new_task(42);
+@@ -567,6 +569,9 @@ static void damon_test_merge_regions_of(struct kunit *test)
+ 		r = __nth_region_of(t, i);
+ 		KUNIT_EXPECT_EQ(test, r->vm_start, saddrs[i]);
+ 		KUNIT_EXPECT_EQ(test, r->vm_end, eaddrs[i]);
++		KUNIT_EXPECT_EQ(test, r->last_vm_start, lsa[i]);
++		KUNIT_EXPECT_EQ(test, r->last_vm_end, lea[i]);
++
+ 	}
+ 	damon_free_task(t);
+ }
 -- 
 2.17.1
 
