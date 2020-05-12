@@ -2,132 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43BFD1CFE16
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 21:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A331CFE32
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 21:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730934AbgELTOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 15:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgELTOG (ORCPT
+        id S1730911AbgELTYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 15:24:25 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:58604 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgELTYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 15:14:06 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86C3C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 12:14:04 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id hi11so10001805pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 12:14:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8VAWJvEx809/evnC9HkWYNOh4uNvamJHZhEDIvsQGJg=;
-        b=qQiCjD3T9CULb/q9bhJP94W6BH8SG7q3MvKH6FepDbpRQlAn3VpAzhZpuxHI7npENn
-         2uNO9Aklh7RPnI1S6JqXoiLU8h1UwmAOmEuyJqiU1ZsTu1LgO8nFTmnkXCkNOt0pbrHK
-         eCeFWIWof5FkY8F8VZFfgqKU0e9xw91Rf6ZoH6okwk23XzpNVjfd/1vCWKmbMBfJK4IG
-         vZlXAygq1NujsZqDYozn1rE4UuEUMZhJM7twUGx94vkub58ZG5qOK9kzYzTIVJRfCqI2
-         /Ue0CZZawLXe64gwbcAB2sw+besbVKwK++z2Yb+A9+KJQRVRw9Mo0gWss81p52LHYjyp
-         1pCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8VAWJvEx809/evnC9HkWYNOh4uNvamJHZhEDIvsQGJg=;
-        b=QaJwHVDxm8hqTZONQMKmgvJVPRPvHzmLvRNp8aEO9qwDJqgmMld2asm0SXMvwqhgbS
-         Ux6G7Q5mMKyl9bdt1uCSQA+G8wyz6Sso2rKyjr6xdSBajnckB27jokXQjr0k2rMt2hr/
-         zl8CuCj8IHHVisA/AFLVtl2IDt/+6Sp3mzw80koiZgZPyGTG1g+xp3dYt4y/QrjPWIrX
-         ADm59ZIr7pMh2sv3EiQXy+QdMY+exe4p886+eJ2u/lrCWgwgnj5K1lnBd8Zbz/uP1Csd
-         QQaFowBZRVCSBnQysaHnDqBrpZ4j9GPLmEIt5fW+WZt3evMJYqqrWIKJTZlrjzgKOMN3
-         7cfg==
-X-Gm-Message-State: AGi0PuYpSAddfu0/T2+UirNoXtjjDMLDqKeZtESbEX9A704Nht5w+zwK
-        1PFDZP5KfifTwS5BGxm0EAoc9TallAA=
-X-Google-Smtp-Source: APiQypL3gnOLeOpwMtmrfVojAqfgL6kN/sk2+t5bsXUUapRJEqdvSSznjQ8hkJjSRzkKg9PIXpuxMg==
-X-Received: by 2002:a17:902:7e4b:: with SMTP id a11mr22170702pln.168.1589310844081;
-        Tue, 12 May 2020 12:14:04 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id x12sm12219169pfo.62.2020.05.12.12.14.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 12:14:03 -0700 (PDT)
-Date:   Tue, 12 May 2020 12:12:30 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Cc:     linux-remoteproc@vger.kernel.org, ohad@wizery.com,
-        linux-kernel@vger.kernel.org, tsoni@codeaurora.org,
-        psodagud@codeaurora.org, sidgup@codeaurora.org
-Subject: Re: [PATCH] remoteproc: core: Prevent system suspend during
- remoteproc recovery
-Message-ID: <20200512191230.GB16107@builder.lan>
-References: <1588183482-21146-1-git-send-email-rishabhb@codeaurora.org>
+        Tue, 12 May 2020 15:24:25 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04CJONQT051359;
+        Tue, 12 May 2020 14:24:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589311463;
+        bh=JV3NkJcEcKPyn54NlxuDfeDsXdREcpR0zm2k3q5672g=;
+        h=From:To:CC:Subject:Date;
+        b=PYIiGEjiMYDcgLk6tL0jo04FKvpiiVtFDHo8fkonh97aVhU0mLEDaSH4ZOG4KqYzx
+         8UVaHL1iH426bjTPe+SBaZv0caQIxfB+zzgKBcLHa3lIViTBL2d6p30/izBMic/U+8
+         3BgJ16iihoWMWOLth2UfGmuRDsiA7dQZPqfy7vmI=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04CJONu9056909;
+        Tue, 12 May 2020 14:24:23 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 12
+ May 2020 14:24:23 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 12 May 2020 14:24:23 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04CJONFf026311;
+        Tue, 12 May 2020 14:24:23 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <sre@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <robh@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        "Andrew F . Davis" <afd@ti.com>
+Subject: [PATCH v3] dt-bindings: power: Convert bq27xxx dt to yaml
+Date:   Tue, 12 May 2020 14:14:51 -0500
+Message-ID: <20200512191451.1517-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588183482-21146-1-git-send-email-rishabhb@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 29 Apr 11:04 PDT 2020, Rishabh Bhatnagar wrote:
+Convert the bq27xxx.txt to yaml format
 
-> The system might go into suspend during recovery of any remoteproc.
-> This will interrupt the recovery process in between increasing the
-> recovery time. Make the platform device as wakeup capable and
-> use pm_stay_wake/pm_relax APIs to avoid system from going into
-> suspend during recovery.
-> 
-> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> Acked-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
+CC: Pali Rohár <pali@kernel.org>
+CC: Andrew F. Davis <afd@ti.com>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ .../bindings/power/supply/bq27xxx.txt         | 56 ------------
+ .../bindings/power/supply/bq27xxx.yaml        | 91 +++++++++++++++++++
+ 2 files changed, 91 insertions(+), 56 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/bq27xxx.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
 
-Please don't forget to add a version to $subject and provide a Changelog
-here next time you're respinning something.
+diff --git a/Documentation/devicetree/bindings/power/supply/bq27xxx.txt b/Documentation/devicetree/bindings/power/supply/bq27xxx.txt
+deleted file mode 100644
+index 4fa8e08df2b6..000000000000
+--- a/Documentation/devicetree/bindings/power/supply/bq27xxx.txt
++++ /dev/null
+@@ -1,56 +0,0 @@
+-TI BQ27XXX fuel gauge family
+-
+-Required properties:
+-- compatible: contains one of the following:
+- * "ti,bq27200" - BQ27200
+- * "ti,bq27210" - BQ27210
+- * "ti,bq27500" - deprecated, use revision specific property below
+- * "ti,bq27510" - deprecated, use revision specific property below
+- * "ti,bq27520" - deprecated, use revision specific property below
+- * "ti,bq27500-1" - BQ27500/1
+- * "ti,bq27510g1" - BQ27510-g1
+- * "ti,bq27510g2" - BQ27510-g2
+- * "ti,bq27510g3" - BQ27510-g3
+- * "ti,bq27520g1" - BQ27520-g1
+- * "ti,bq27520g2" - BQ27520-g2
+- * "ti,bq27520g3" - BQ27520-g3
+- * "ti,bq27520g4" - BQ27520-g4
+- * "ti,bq27521" - BQ27521
+- * "ti,bq27530" - BQ27530
+- * "ti,bq27531" - BQ27531
+- * "ti,bq27541" - BQ27541
+- * "ti,bq27542" - BQ27542
+- * "ti,bq27546" - BQ27546
+- * "ti,bq27742" - BQ27742
+- * "ti,bq27545" - BQ27545
+- * "ti,bq27411" - BQ27411
+- * "ti,bq27421" - BQ27421
+- * "ti,bq27425" - BQ27425
+- * "ti,bq27426" - BQ27426
+- * "ti,bq27441" - BQ27441
+- * "ti,bq27621" - BQ27621
+-- reg: integer, I2C address of the fuel gauge.
+-
+-Optional properties:
+-- monitored-battery: phandle of battery characteristics node
+-    The fuel gauge uses the following battery properties:
+-    + energy-full-design-microwatt-hours
+-    + charge-full-design-microamp-hours
+-    + voltage-min-design-microvolt
+-  Both or neither of the *-full-design-*-hours properties must be set.
+-  See Documentation/devicetree/bindings/power/supply/battery.txt
+-
+-Example:
+-
+-	bat: battery {
+-		compatible = "simple-battery";
+-		voltage-min-design-microvolt = <3200000>;
+-		energy-full-design-microwatt-hours = <5290000>;
+-		charge-full-design-microamp-hours = <1430000>;
+-	};
+-
+-	bq27510g3: fuel-gauge@55 {
+-		compatible = "ti,bq27510g3";
+-		reg = <0x55>;
+-		monitored-battery = <&bat>;
+-	};
+diff --git a/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml b/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
+new file mode 100644
+index 000000000000..03d1020a2e47
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
+@@ -0,0 +1,91 @@
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2020 Texas Instruments Incorporated
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/power/supply/bq27xxx.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: TI BQ27XXX fuel gauge family
++
++maintainers:
++  - Pali Rohár <pali@kernel.org>
++  - Andrew F. Davis <afd@ti.com>
++  - Sebastian Reichel <sre@kernel.org>
++
++description: |
++  Support various Texas Instruments fuel gauge devices that share similar
++  register maps and power supply properties
++
++allOf:
++  - $ref: power-supply.yaml#
++
++properties:
++  compatible:
++    enum:
++      - ti,bq27200
++      - ti,bq27210
++      - ti,bq27500 # deprecated, use revision specific property below
++      - ti,bq27510 # deprecated, use revision specific property below
++      - ti,bq27520 # deprecated, use revision specific property below
++      - ti,bq27500-1
++      - ti,bq27510g1
++      - ti,bq27510g2
++      - ti,bq27510g3
++      - ti,bq27520g1
++      - ti,bq27520g2
++      - ti,bq27520g3
++      - ti,bq27520g4
++      - ti,bq27521
++      - ti,bq27530
++      - ti,bq27531
++      - ti,bq27541
++      - ti,bq27542
++      - ti,bq27546
++      - ti,bq27742
++      - ti,bq27545
++      - ti,bq27411
++      - ti,bq27421
++      - ti,bq27425
++      - ti,bq27426
++      - ti,bq27441
++      - ti,bq27621
++
++  reg:
++    maxItems: 1
++    description: integer, I2C address of the fuel gauge.
++
++  monitored-battery:
++    description: |
++       phandle of battery characteristics node.
++       The fuel gauge uses the following battery properties:
++       - energy-full-design-microwatt-hours
++       - charge-full-design-microamp-hours
++       - voltage-min-design-microvolt
++       Both or neither of the *-full-design-*-hours properties must be set.
++       See Documentation/devicetree/bindings/power/supply/battery.txt
++
++  power-supplies: true
++
++required:
++  - compatible
++  - reg
++additionalProperties: false
++
++examples:
++  - |
++    i2c0 {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      bat: battery {
++        compatible = "simple-battery";
++        voltage-min-design-microvolt = <3200000>;
++        energy-full-design-microwatt-hours = <5290000>;
++        charge-full-design-microamp-hours = <1430000>;
++      };
++
++      bq27510g3: fuel-gauge@55 {
++        compatible = "ti,bq27510g3";
++        reg = <0x55>;
++        monitored-battery = <&bat>;
++      };
++    };
+-- 
+2.25.1
 
-I've picked this up now.
-
-Thanks,
-Bjorn
-
->  drivers/remoteproc/qcom_q6v5_pas.c   | 2 ++
->  drivers/remoteproc/remoteproc_core.c | 5 +++++
->  2 files changed, 7 insertions(+)
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-> index edf9d0e..e608578 100644
-> --- a/drivers/remoteproc/qcom_q6v5_pas.c
-> +++ b/drivers/remoteproc/qcom_q6v5_pas.c
-> @@ -398,6 +398,8 @@ static int adsp_probe(struct platform_device *pdev)
->  	adsp->has_aggre2_clk = desc->has_aggre2_clk;
->  	platform_set_drvdata(pdev, adsp);
->  
-> +	device_wakeup_enable(adsp->dev);
-> +
->  	ret = adsp_alloc_memory_region(adsp);
->  	if (ret)
->  		goto free_rproc;
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index 097f33e..6a1cb98 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -1712,6 +1712,8 @@ static void rproc_crash_handler_work(struct work_struct *work)
->  
->  	if (!rproc->recovery_disabled)
->  		rproc_trigger_recovery(rproc);
-> +
-> +	pm_relax(rproc->dev.parent);
->  }
->  
->  /**
-> @@ -2208,6 +2210,9 @@ void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type)
->  		return;
->  	}
->  
-> +	/* Prevent suspend while the remoteproc is being recovered */
-> +	pm_stay_awake(rproc->dev.parent);
-> +
->  	dev_err(&rproc->dev, "crash detected in %s: type %s\n",
->  		rproc->name, rproc_crash_to_string(type));
->  
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
