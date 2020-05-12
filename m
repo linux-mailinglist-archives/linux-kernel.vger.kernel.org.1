@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 498B51CEB7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 05:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47E81CEB60
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 05:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728866AbgELDbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 23:31:24 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:35382 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728455AbgELDbU (ORCPT
+        id S1728767AbgELD2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 23:28:50 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:38622 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727942AbgELD2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 23:31:20 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04C3N3Np072963;
-        Tue, 12 May 2020 03:31:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
- message-id : date : from : to : cc : subject : references : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=4bAuAI6MNYAXc//k73oPqBbwpdcjw/L0xcodzJz3lMw=;
- b=RPeJmGzxh2P4GuzVH5aIZ+Hk7deq5f+CCeCG16647QardtoQ6iqRCcSuNysqh6PaAjsu
- dSnhmIyXdhBKJ0KfSAvEcnTFVgI66+f1kVFj9H+qv9RanMCfUw+qLB+oKYZpb++orJ0S
- erXhCCNjhUhWypmJl3HxCmsFvWEzw6Ez3bHk1qIhAlKNkNXjWe+SrZSF+U868EuAj/pN
- CkoN0tIz0ypvpsRX5Nl3AncWD4GjRXssMz6t5VxQiSC6M/yl1ehll+Uj3BK3sjVAnKHO
- CTWAPRrTpNAhSMvK4SSVb2/nmSE4Do/p1p0WUR2wPv8elNO4saroHMQXlzY5CeIRKqxd Hw== 
+        Mon, 11 May 2020 23:28:49 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04C3RKxJ105296;
+        Tue, 12 May 2020 03:28:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=9vyTDBtmAZzufdi8K/i1nWRvrNIE3ofFmBBIEvSA+6U=;
+ b=p7OTze74rl+nofgA4ArDD/+Re4ZlfOMc8kbFoLmTgifvEPH8gIF+Vd0hOdffEFeqfAGZ
+ sK2pK6zSbotwh5ldbX7KQXAdv2szFP5/OwNs9pWulk04f6rbc6e61vHLOPP6pg64YNF3
+ Zgi+vYlaMQsy1/qbIP+i/Uxwb6TQ1/OKfkfIC+jPm7pMj7TdENodR+PrKehqgB8dQRTN
+ mHkEd0hE0+kipp8Kxw4rYfSPZMxGDytUPdZ+WA/QrOciKE/18UXwyM2NPaBIvZsX1XSb
+ 3y2E/8gBv9oGJJXBfOHJJjsAS5svJQzodNwpXvJL/WZRJsXrsovyRKtJnzc21O3/M/gZ Ew== 
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 30x3mbrgkg-1
+        by userp2130.oracle.com with ESMTP id 30x3gmghsc-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 May 2020 03:31:14 +0000
+        Tue, 12 May 2020 03:28:46 +0000
 Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04C3MVoH016085;
-        Tue, 12 May 2020 03:29:13 GMT
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04C3Mnfj016267;
+        Tue, 12 May 2020 03:28:45 GMT
 Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 30xbggtnp4-1
+        by aserp3020.oracle.com with ESMTP id 30xbggtkvv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 May 2020 03:29:13 +0000
-Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04C3TCY2019111;
-        Tue, 12 May 2020 03:29:12 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201) by default (Oracle
- Beehive Gateway v4.0) with ESMTP ; Mon, 11 May 2020 20:28:41 -0700
-MIME-Version: 1.0
-Message-ID: <158925392374.17325.12424804060546822236.b4-ty@oracle.com>
-Date:   Tue, 12 May 2020 03:28:28 +0000 (UTC)
+        Tue, 12 May 2020 03:28:45 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04C3Sio9018971;
+        Tue, 12 May 2020 03:28:44 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 11 May 2020 20:28:43 -0700
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     linux-scsi@vger.kernel.org, James Smart <james.smart@broadcom.com>,
-        Colin King <colin.king@canonical.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] scsi: lpfc: remove redundant initialization to variable
- rc
-References: <20200507203111.64709-1-colin.king@canonical.com>
-In-Reply-To: <20200507203111.64709-1-colin.king@canonical.com>
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
+Subject: Re: [PATCH] scsi: libsas: Replace zero-length array with flexible-array
+Date:   Mon, 11 May 2020 23:28:30 -0400
+Message-Id: <158925392373.17325.6941458410294631284.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.26.2
-Content-Type: text/plain; charset=ascii
+In-Reply-To: <20200507192147.GA16206@embeddedor>
+References: <20200507192147.GA16206@embeddedor>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=967
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=678
  spamscore=0 suspectscore=0 phishscore=0 bulkscore=0 mlxscore=0
  malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2003020000 definitions=main-2005120029
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 impostorscore=0
- mlxscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999 phishscore=0
- malwarescore=0 lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005120029
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=720
+ clxscore=1011 spamscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 priorityscore=1501 mlxscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005120029
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 May 2020 21:31:11 +0100, Colin King wrote:
+On Thu, 7 May 2020 14:21:47 -0500, Gustavo A. R. Silva wrote:
 
-> The variable rc is being initialized with a value that is never read
-> and it is being updated later with a new value.  The initialization is
-> redundant and can be removed.
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> [...]
 
 Applied to 5.8/scsi-queue, thanks!
 
-[1/1] scsi: lpfc: Remove redundant initialization to variable rc
-      https://git.kernel.org/mkp/scsi/c/6e27a86aed97
+[1/1] scsi: libsas: Replace zero-length array with flexible-array
+      https://git.kernel.org/mkp/scsi/c/00b42b70ae52
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
