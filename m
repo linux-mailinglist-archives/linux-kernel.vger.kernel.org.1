@@ -2,223 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB111CF243
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 12:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A8D1CF255
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 12:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729288AbgELKZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 06:25:39 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:39355 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgELKZb (ORCPT
+        id S1729462AbgELK2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 06:28:25 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:41887 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727783AbgELK2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 06:25:31 -0400
-Received: by mail-oi1-f195.google.com with SMTP id b18so17770891oic.6;
-        Tue, 12 May 2020 03:25:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SJA+CSUUeulPKUWaZTIkg+AKeXhyhy6/pqCXSNlbPQk=;
-        b=n4wodyKwBxlAStQfR46jgVrGm4T92JBdztQ5wU7wYB8+Y96WyML1EufPRZLozGWeMI
-         XyzIjad1nHLmUlAyXxoS1VpaCWxPFs/E10eddzt3wS734Mjx4AGMt3/F1QQvJK4gSwb9
-         jTK1ldZXR8qIYI99mMyjn1gLjDoqMAa8e8BEj69l1ZeIonE+P5O3iIl3HV86sJfAaBn4
-         QhMN4dgX1FnJu6EOmHUkaBraw+FhbVB4n9p4vO3Vpn01eA+y27YdGMdL/FpDdspmnuK1
-         tg4UwAizfjIWJRDylSPqZbww7HnYq94+j/6ZINsDRY2Zn3+yeShBcjmwC/xZLIGmqR2A
-         sQ8Q==
-X-Gm-Message-State: AGi0PuZVFmahwTOAe6gyZv6GXaKR4Skm/IABkOVkNRfUN37rtWxwTC0R
-        +gyyD1bRNh8mfZx95mGUafZ/2PpjHTVwdabTous=
-X-Google-Smtp-Source: APiQypIFgb8NNQyeYQ0k1Vg8pPKIj+36cBweV8fqY7PA9w8/4A0Q2u+zI9TbnrUsrezSgvRPvU80DO4waoJJXgmXphs=
-X-Received: by 2002:aca:c441:: with SMTP id u62mr23686655oif.110.1589279128346;
- Tue, 12 May 2020 03:25:28 -0700 (PDT)
+        Tue, 12 May 2020 06:28:22 -0400
+Received: from mail-qt1-f180.google.com ([209.85.160.180]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MHG0U-1jLCc82Sv2-00DEJu; Tue, 12 May 2020 12:28:20 +0200
+Received: by mail-qt1-f180.google.com with SMTP id y42so7097262qth.0;
+        Tue, 12 May 2020 03:28:20 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYA2rM97A6BB72XvpRQ81qHsHeH0leCWPVjCbRDXUMJTZegpE/y
+        B5ke0EU3n4RP0XdN64lWN0yzT82i3kb6nqKBbaw=
+X-Google-Smtp-Source: APiQypID9P3IO33VSSILUAUK8JOXEo3/DbHEXUUySTRMkqv/o64ii1dm1lh05k5ftbIAxEWVzcphEuU5vm3ymxXvjhQ=
+X-Received: by 2002:aed:2441:: with SMTP id s1mr14382814qtc.304.1589279299325;
+ Tue, 12 May 2020 03:28:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200507181012.29791-1-qperret@google.com> <20200508081128.GM5298@hirez.programming.kicks-ass.net>
- <20200508103721.GA3860390@kroah.com> <20200508111612.GA252673@google.com>
- <20200508113141.GB5298@hirez.programming.kicks-ass.net> <20200508130507.GA10541@google.com>
- <CAJZ5v0iaa_VCtN608QKTYZ-A6QG_7bwxihxSgoEGv1LcSK-ksA@mail.gmail.com>
- <20200511090049.GA229633@google.com> <CAJZ5v0jKMgFsR0dXDt4si5hT9QF2evaoMS-13y-Qde8UpcaARg@mail.gmail.com>
- <20200512092102.GA16151@google.com>
-In-Reply-To: <20200512092102.GA16151@google.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 12 May 2020 12:25:17 +0200
-Message-ID: <CAJZ5v0hm3Tv2yZKLzM9a+kJuB1V5_eFOEKT-uM318dzeKV3_Qw@mail.gmail.com>
-Subject: Re: [PATCH 00/14] Modularize schedutil
-To:     Quentin Perret <qperret@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
+References: <20200512043149.10719-1-Andrea.Ho@advantech.com.tw>
+ <CAK8P3a1gKHir-hVoX_mFzqcOF=9NfM1NqO96kC-=6ZHf6Lojdg@mail.gmail.com> <20200512101511.GA3991701@kroah.com>
+In-Reply-To: <20200512101511.GA3991701@kroah.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 12 May 2020 12:28:03 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2kqvxgV3oymtC+ppX5Y8+1C_LwmNb5-nz527hKKes-WQ@mail.gmail.com>
+Message-ID: <CAK8P3a2kqvxgV3oymtC+ppX5Y8+1C_LwmNb5-nz527hKKes-WQ@mail.gmail.com>
+Subject: Re: [V3,1/1] Input/misc: add support for Advantech software defined button
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrea.Ho@advantech.com.tw,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        "Luis R. Rodriguez" <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Todd Kjos <tkjos@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        voyandrea@gmail.com, amy.shih@advantech.com.tw,
+        oakley.ding@advantech.com.tw, HY.Lee@advantech.com.tw
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:UL9y76oYmONKSLO6P81Rqv6T48d2k1yuPlO287Bl946a4auqDWd
+ NXn0br83Lli6w9mgVBGBighXT2glzkPSmjcbFoFu/tPHugpRVHA6ZvDD57glbbL+jwTBeLk
+ S7eaproos0XLRvXvHdozbJnhT29+wPoww6TizJEFG/1Syt4G0tkK/yNmrWlvD3xtHDNCxuI
+ +uThrU4OXyFtg+BsmoARQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FrKWeI4IP0w=:Ku+i4EA8XezXbDsWLa5SU2
+ v1p+N3uAKxr1yuU2EoW3Lm46Xw8o/qAzS/tVzHhKL9hzTVRf4AmxsRJxDSuV4tQK4RJgqOHOM
+ anZwFw3hCshMzwEp7my4VFUdUPUmI/InYGAgQNw+e2EK3zEzmSmkAMVDOt34oPaINQjILQOGD
+ qEY0zrXtxZ6jZHJV/aRti/+NedYM3TS665Ao/Dh4qhkZoXhjYn2LSv3ltz2PdaAM69K9w3zkd
+ pGmfs1sPOHwPWrDqjCzpsU5tySo2btuS53iK+nDWz5LCCuJj1lVLMOmrk+7qEq5NDgW1QHxcX
+ 63UqpZonXKUMrTU57IW6w34PoypJZP6kbniMV9CRrwJSKwMAQefycvzJC+7hcn4jo2L43aMDb
+ lnOOyZHkXZf6563nsUwQKZTRAyAhNA2i1TkPnyFAN9broOCD33XD9j1Q4s6N5vZJRs58yvLxV
+ ePew/YNpZv/QviU7qDSMW3nvL5wNawdkIhrKu3n5ZNHlqLZV31zFwYrGer7kA06thbbRbFwPp
+ X3HwCO0hmparI+gNBOTc7BLvgJVNugArwpVW8RudIlpTVW5en0USEyZ8uUfWUu4W/wW4IVh3Y
+ h3w2VMtfYq5eAGkS0ZsO2jWWeXscH2rCeV15tFIkSshxwRacR5WLH2ETDn9cFHJmAJ+qkW9q8
+ nWZ1yGjbzBTXhX4aRXDFYATVCnMWY997zGvrbU77M7mKzawYxqgA46GEyJOt7+1e35g38zBIL
+ Cn/L9VwC7T9X/9wi0BeCPYn/qeEXep/UYZZO2h7gzn4P3U9HJEm/uuFTXvgkGoiwEeZGmAo4Y
+ GSEoyCMb7FhHVFLJs59ESne+kc8BU0r9qOxLnbdnQVtrAe9+N8=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 11:21 AM Quentin Perret <qperret@google.com> wrote:
+On Tue, May 12, 2020 at 12:15 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Hi Rafael,
+> On Tue, May 12, 2020 at 12:08:08PM +0200, Arnd Bergmann wrote:
+> > > +MODULE_LICENSE("GPL");
+> >
+> > These generally go at the bottom of the file.
+> >
+> > The license tag here does not match the one in the SPDX header, after
+> > you changed the other one to v2-only.
 >
-> On Monday 11 May 2020 at 17:26:26 (+0200), Rafael J. Wysocki wrote:
-> > On Mon, May 11, 2020 at 11:00 AM Quentin Perret <qperret@google.com> wrote:
-> > > The base idea is, anything that we know from experience is used by
-> > > everybody can be built in, anything else will need investigation. And as
-> > > you've understood, schedutil falls in that second category.
-> >
-> > The fact that the vendor sets up a different governor by default
-> > doesn't mean that there should be no way to switch over to schedutil
-> > IMO.
->
-> Well, there will always be the option to load the schedutil module ;-)
+> Yes it does, they mean the same thing, see modules.h for the details if
+> you are curious.
 
-Yeah, fair enough.
+Ok, thanks for the clarification.
 
-> <snip>
-> > > the reason that dependency was added originally was
-> > >    because sugov was the only place where util clamps where taken into
-> > >    accounts. But that is no longer true -- we check them in the capacity
-> > >    aware wake-up path as well, which is entirely independent from the
-> > >    currently running governor;
-> >
-> > But this is done under the assumption that the governor will also take
-> > the clamps into account, isn't it?
->
-> Even if that was correct, it's not clear a compile-time dependency makes
-> that assumption true, right?
-
-It indicates that the functional dependency is there if you will.
-
-Otherwise it would be kind of hidden and likely to become confusing.
-
-> For governors and the like, if the option is =n, then you can hard-rely
-> on it not being used. But if it is =y, you cannot assume anything
-> what-so-ever. EAS does a run-time check for that exact reason -- a
-> sole Kconfig dependency typically doesn't work for that.
-
-Obviously Kconfig dependencies cannot replace runtime checks, but OTOH
-the latter are guaranteed to fail if the given piece of code is not
-there in the kernel even.
-
-> > Otherwise you can see your "low util" tasks running at high
-> > frequencies and "high util" ones running slowly.  Surely, that's not
-> > desirable?
-> >
-> > IIUC, the task placement needs to be consistent with the governor's
-> > decisions for things to work as expected.
->
-> Sure, but, say, the 'performance' governor could give you some of that too.
-
-Well, kind of, and the 'powersave' governor can do that too in theory.
-
-> That is, you could use uclamp.min on some tasks to ensure they are
-> biased to bigger CPUs, and just stick the frequency to max. I wouldn't
-> be surprised to see setups like that on non-battery-powered devices for
-> instance. And yes, there are non-battery-powered devices that use big
-> little out there (TVs and such, often because the only SOCs matching
-> their requirements are mobile SOCs).
-
-I would not conflate the use cases for uclamps and big-little.
-
-Anyway, there are some cases in which using uclamps without schedutil
-might make theoretical sense, but I'm not sure how useful that would
-be in practice.
-
-> > >  - because of the above, it is (now) largely useless: a compile time
-> > >    dependency doesn't guarantee we are actually running with schedutil
-> > >    at all;
-> > >  - it is artificial: there are no actual compilation dependencies
-> > >    between sugov and uclamp, everything will compile just fine without
-> > >    that 'depends on';
-> >
-> > That actually is the case, but it doesn't mean that there is no
-> > dependency in there.
->
-> Sure, and the dependency did make sense when uclamp was first introduced.
-> At the time, the clamp values where used _only_ in schedutil. So, it
-> was fair to say "if schedutil is =n, there is no way the clamps will ever
-> be useful to anything else, so the uclamp code can be safely compiled
-> out". That is no longer true, and if you want to make uclamp work only
-> with schedutil (which I would advise against for the above reason), then
-> a Kconfig dependency doesn't seem to be the right tool for that anyway.
-
-Still, IMO it would be fair to say that if uclamps are used, schedutil
-is very likely to be preferred.
-
-Kconfig can be made select schedutil when enabling uclamps or similar
-to express that preference.
-
-> > > Or maybe you were thinking of something else?
-> > >
-> > > > > That of course is only true if we can
-> > > > > agree on a reasonable set of exported symbols, so I'll give others some
-> > > > > time to complain and see if I can post a v2 addressing these issues!
-> > > >
-> > > > This isn't just about exported symbols, it is about what is regarded
-> > > > as essential and what isn't.
-> > >
-> > > Right, the exported symbols are, IMO, quite interesting because they
-> > > show how 'core' the governor is. But what exactly do you mean by
-> > > 'essential' here? Essential in what sense?
-> >
-> > IMO the question is how much value there is in making it possible to
-> > avoid loading a particular piece of kernel code into memory.
-> >
-> > You've demonstrated that it can be done with schedutil, but does that
-> > matter that it needs to be done?
-> >
-> > I thought that the original idea was to make it closely integrated
-> > with the scheduler, so it could access the scheduler's data structures
-> > (that we specifically didn't want to expose to the *other* governors)
-> > and so as to avoid forgetting about any dependencies when making
-> > changes to either the scheduler or schedutil.  Allowing it to be build
-> > as a module would make make us have to worry about those things again,
-> > so is it really worth it?
->
-> Right, so, if there is a strong technical reason to keep schedutil a
-> bool option (such as accessing data structures we really don't want to
-> export),
-
-The bool option is the status quo and there needs to be a strong
-technical reason to allow it to be modular (as that would cause the
-complexity to increase).
-
-> then sure, I'll have no choice but to accept it. Now, assuming
-> that I fix the usage of 'runqueues', is there anything in particular
-> that you think is wrong in the series?
-
-Well, define "wrong". :-)
-
-Some pieces of the series look like general improvements, but some of
-them don't.
-
-And the fact that something can be done alone should not be regarded
-as a good enough reason for doing it in my view.
-
-> Note that if one day keeping schedutil modular becomes a blocker for a
-> new feature, then we'll have the option to make it bool again. But is
-> there something like that already?
-
-Putting it this way isn't entirely fair IMO.
-
-What you are proposing is basically to add complexity and the reason
-for doing that seems to be convenience (and that's not the users'
-convenience for that matter) which is not really super-convincing.
-
-Cheers!
+      Arnd
