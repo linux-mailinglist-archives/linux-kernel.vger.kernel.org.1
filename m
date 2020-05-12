@@ -2,232 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694AC1CFA6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 18:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5081CFA7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 18:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbgELQUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 12:20:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725816AbgELQUb (ORCPT
+        id S1727794AbgELQWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 12:22:21 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:34354 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725851AbgELQWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 12:20:31 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5DE0C05BD09
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 09:20:31 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id a68so2457406otb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 09:20:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qNiF29/cfN4VOlPkYqMr3FarYTQvhg96vG8RwMx8obo=;
-        b=fsPcxtuC5PpoLYTssI5SGf/6vhYUMtFrAVBJbQ1d3x8lk5v8vASrBlnFdbeMiPq+6P
-         Vme/VMZP8fTBjIew6ey/nysjt2nTd9gNydCPEATJcAyzdF2IbKuOybaFFxfOGo24AqoB
-         V0bG7FETglPGytl2yPPLsnQ70K08olAQJrw6U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qNiF29/cfN4VOlPkYqMr3FarYTQvhg96vG8RwMx8obo=;
-        b=rrdOa7jfIh/to9aZ83+6+Ucm0EIaOthSA+xSe3N4eEN4koZcT6yvoO4F5ZnM/O5zgC
-         uA9bRajw1kVxRv5VrUBnwN8XTLBomvXQPXieXgzuKiE8QLUwke5zWbN94d5IRYcVL5ca
-         8gSGjvoIxzDcT5s5GiRGEobpz6GDKnBn+D6Z3RaJI22ml4g7Zv/vqaQYJVUS8JEaBXnt
-         KaKE72JjHwiYdmysNZ7+dHsP2PtcamUDXdzeR/eno72VBxCwc+QgbM5cJoS8V8EofHXo
-         i/WcXnGqeFTO8Njsq+sWUJbTXweWQ4uwySN6CDwBfjfeIOCJQII5DTmz+Ygr5JiiK947
-         fjXg==
-X-Gm-Message-State: AGi0PuZMOT5dc6KcSlx4ksN1ztaHItY6iIJ8xRGt9XT+MFWa5rflY5Sp
-        veeCNCEQXu+GdF0HNonyJDgmwdsApbz5iWDK9NEk8B49hgo=
-X-Google-Smtp-Source: APiQypLzwJ2N5RH2XCd3WgUPk4t5u8HeN20VhSqItHVV2w3B/gXscK+eUnKjAqBXtvQvkZWPey63DGcS+5p9q4wOBIA=
-X-Received: by 2002:a9d:d06:: with SMTP id 6mr18373833oti.188.1589300430108;
- Tue, 12 May 2020 09:20:30 -0700 (PDT)
+        Tue, 12 May 2020 12:22:20 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04CGCJmt015556;
+        Tue, 12 May 2020 16:21:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=OyaR5MxMU3PPoMjghDt25i0Hctx3uK2R6FlsBKH+A5c=;
+ b=WB1ARAwXINLjYpP5h6QLVmPJVJzLCG084isZwoPbJDzgY7XckKnh9KRr0N2dzUF4zwrH
+ K6lZ9py+qbqpK/5En0f0Cj6SB0+yAwk6XgsEcbFLawbFabrFeg/JXc/5PxYL1qD3DfDC
+ mjgmAL9+kL+2D/J5sRRszQWKP6KRkEed95MiJXYDYezw0UujemgFOehTOXuhF6a9SysU
+ WnqMO+Z2LNt9GxL/eWCqp0jO1xQLjsoUU45TgVeZEIggTeMPWurjlcoLQFBV0iqSud04
+ I7kdy0AG0vbK5Y/WSRbIeyfpGRnAYLP+lM1PiWoSnSMFjigykDT4/yLnWWSMewI/bq+k LA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 30x3gmm2wc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 May 2020 16:21:54 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04CGINVq155386;
+        Tue, 12 May 2020 16:21:54 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 30x69tjj1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 May 2020 16:21:54 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04CGLp24001016;
+        Tue, 12 May 2020 16:21:52 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 12 May 2020 09:21:51 -0700
+To:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Cc:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, avri.altman@wdc.com,
+        alim.akhtar@samsung.com, jejb@linux.ibm.com, beanhuo@micron.com,
+        cang@codeaurora.org, matthias.bgg@gmail.com, bvanassche@acm.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com
+Subject: Re: [PATCH v2 4/4] scsi: ufs-mediatek: customize WriteBooster flush
+ policy
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+References: <20200509093716.21010-1-stanley.chu@mediatek.com>
+        <20200509093716.21010-5-stanley.chu@mediatek.com>
+        <635f91f6-3a27-ffdd-4021-67705d4063fc@codeaurora.org>
+Date:   Tue, 12 May 2020 12:21:47 -0400
+In-Reply-To: <635f91f6-3a27-ffdd-4021-67705d4063fc@codeaurora.org> (Asutosh
+        Das's message of "Mon, 11 May 2020 19:19:42 -0700")
+Message-ID: <yq1v9l115us.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.0.91 (gnu/linux)
 MIME-Version: 1.0
-References: <20200512085944.222637-1-daniel.vetter@ffwll.ch>
- <20200512085944.222637-11-daniel.vetter@ffwll.ch> <879b127e-2180-bc59-f522-252416a7ac01@amd.com>
-In-Reply-To: <879b127e-2180-bc59-f522-252416a7ac01@amd.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Tue, 12 May 2020 18:20:18 +0200
-Message-ID: <CAKMK7uF1c3R7DTsvRaBfzRVAx03Z+AiUnqdAzP=mt4d=KsoEgg@mail.gmail.com>
-Subject: Re: [RFC 10/17] drm/amdgpu: s/GFP_KERNEL/GFP_ATOMIC in scheduler code
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9619 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
+ spamscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005120124
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9619 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ clxscore=1015 spamscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 priorityscore=1501 mlxscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005120123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 5:56 PM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
+
+Hi Asutosh!
+
+> Patchset looks good to me.
 >
-> Hui what? Of hand that doesn't looks correct to me.
+> Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
 
-It's not GFP_ATOMIC, it's just that GFP_ATOMIC is the only shotgun we
-have to avoid direct reclaim. And direct reclaim might need to call
-into your mmu notifier, which might need to wait on a fence, which is
-never going to happen because your scheduler is stuck.
+When you want to approve an entire series, please respond to the cover
+letter email. Otherwise the kernel.org tooling will only record the tag
+for the individual patch you are responding to. In this case only patch
+4 got tagged as reviewed in patchwork.
 
-Note that all the explanations for the deadlocks and stuff I'm trying
-to hunt here are in the other patches, the driver ones are more
-informational, so I left these here rather bare-bones to shut up
-lockdep so I can get through the entire driver and all major areas
-(scheduler, reset, modeset code).
-
-Now you can do something like GFP_NOFS, but the only reasons that
-works is because the direct reclaim annotations
-(fs_reclaim_acquire/release) only validates against __GFP_FS, and not
-against any of the other flags. We should probably add some lockdep
-annotations so that __GFP_RECLAIM is annotated against the
-__mmu_notifier_invalidate_range_start_map lockdep map I've recently
-added for mmu notifiers. End result (assuming I'm not mixing anything
-up here, this is all rather tricky stuff): GFP_ATOMIC is the only kind
-of memory allocation you can do.
-
-> Why the heck should this be an atomic context? If that's correct
-> allocating memory is the least of the problems we have.
-
-It's not about atomic, it's !__GFP_RECLAIM. Which more or less is
-GFP_ATOMIC. Correct fix is probably GFP_ATOMIC + a mempool for the
-scheduler fixes so that if you can't allocate them for some reason,
-you at least know that your scheduler should eventually retire retire
-some of them, which you can then pick up from the mempool to guarantee
-forward progress.
-
-But I really didn't dig into details of the code, this was just a quick hac=
-k.
-
-So sleeping and taking all kinds of locks (but not all, e.g.
-dma_resv_lock and drm_modeset_lock are no-go) is still totally ok.
-Just think
-
-#define GFP_NO_DIRECT_RECLAIM GFP_ATOMIC
-
-Cheers, Daniel
-
->
-> Regards,
-> Christian.
->
-> Am 12.05.20 um 10:59 schrieb Daniel Vetter:
-> > My dma-fence lockdep annotations caught an inversion because we
-> > allocate memory where we really shouldn't:
-> >
-> >       kmem_cache_alloc+0x2b/0x6d0
-> >       amdgpu_fence_emit+0x30/0x330 [amdgpu]
-> >       amdgpu_ib_schedule+0x306/0x550 [amdgpu]
-> >       amdgpu_job_run+0x10f/0x260 [amdgpu]
-> >       drm_sched_main+0x1b9/0x490 [gpu_sched]
-> >       kthread+0x12e/0x150
-> >
-> > Trouble right now is that lockdep only validates against GFP_FS, which
-> > would be good enough for shrinkers. But for mmu_notifiers we actually
-> > need !GFP_ATOMIC, since they can be called from any page laundering,
-> > even if GFP_NOFS or GFP_NOIO are set.
-> >
-> > I guess we should improve the lockdep annotations for
-> > fs_reclaim_acquire/release.
-> >
-> > Ofc real fix is to properly preallocate this fence and stuff it into
-> > the amdgpu job structure. But GFP_ATOMIC gets the lockdep splat out of
-> > the way.
-> >
-> > v2: Two more allocations in scheduler paths.
-> >
-> > Frist one:
-> >
-> >       __kmalloc+0x58/0x720
-> >       amdgpu_vmid_grab+0x100/0xca0 [amdgpu]
-> >       amdgpu_job_dependency+0xf9/0x120 [amdgpu]
-> >       drm_sched_entity_pop_job+0x3f/0x440 [gpu_sched]
-> >       drm_sched_main+0xf9/0x490 [gpu_sched]
-> >
-> > Second one:
-> >
-> >       kmem_cache_alloc+0x2b/0x6d0
-> >       amdgpu_sync_fence+0x7e/0x110 [amdgpu]
-> >       amdgpu_vmid_grab+0x86b/0xca0 [amdgpu]
-> >       amdgpu_job_dependency+0xf9/0x120 [amdgpu]
-> >       drm_sched_entity_pop_job+0x3f/0x440 [gpu_sched]
-> >       drm_sched_main+0xf9/0x490 [gpu_sched]
-> >
-> > Cc: linux-media@vger.kernel.org
-> > Cc: linaro-mm-sig@lists.linaro.org
-> > Cc: linux-rdma@vger.kernel.org
-> > Cc: amd-gfx@lists.freedesktop.org
-> > Cc: intel-gfx@lists.freedesktop.org
-> > Cc: Chris Wilson <chris@chris-wilson.co.uk>
-> > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> > Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
-> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > ---
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c | 2 +-
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c   | 2 +-
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c  | 2 +-
-> >   3 files changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c b/drivers/gpu/dr=
-m/amd/amdgpu/amdgpu_fence.c
-> > index d878fe7fee51..055b47241bb1 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
-> > @@ -143,7 +143,7 @@ int amdgpu_fence_emit(struct amdgpu_ring *ring, str=
-uct dma_fence **f,
-> >       uint32_t seq;
-> >       int r;
-> >
-> > -     fence =3D kmem_cache_alloc(amdgpu_fence_slab, GFP_KERNEL);
-> > +     fence =3D kmem_cache_alloc(amdgpu_fence_slab, GFP_ATOMIC);
-> >       if (fence =3D=3D NULL)
-> >               return -ENOMEM;
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c b/drivers/gpu/drm/=
-amd/amdgpu/amdgpu_ids.c
-> > index fe92dcd94d4a..fdcd6659f5ad 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-> > @@ -208,7 +208,7 @@ static int amdgpu_vmid_grab_idle(struct amdgpu_vm *=
-vm,
-> >       if (ring->vmid_wait && !dma_fence_is_signaled(ring->vmid_wait))
-> >               return amdgpu_sync_fence(sync, ring->vmid_wait, false);
-> >
-> > -     fences =3D kmalloc_array(sizeof(void *), id_mgr->num_ids, GFP_KER=
-NEL);
-> > +     fences =3D kmalloc_array(sizeof(void *), id_mgr->num_ids, GFP_ATO=
-MIC);
-> >       if (!fences)
-> >               return -ENOMEM;
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c b/drivers/gpu/drm=
-/amd/amdgpu/amdgpu_sync.c
-> > index b87ca171986a..330476cc0c86 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c
-> > @@ -168,7 +168,7 @@ int amdgpu_sync_fence(struct amdgpu_sync *sync, str=
-uct dma_fence *f,
-> >       if (amdgpu_sync_add_later(sync, f, explicit))
-> >               return 0;
-> >
-> > -     e =3D kmem_cache_alloc(amdgpu_sync_slab, GFP_KERNEL);
-> > +     e =3D kmem_cache_alloc(amdgpu_sync_slab, GFP_ATOMIC);
-> >       if (!e)
-> >               return -ENOMEM;
-> >
->
-
-
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+-- 
+Martin K. Petersen	Oracle Linux Engineering
