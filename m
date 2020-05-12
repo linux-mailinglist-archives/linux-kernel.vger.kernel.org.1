@@ -2,155 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463A11CEA8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 04:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91171CEA92
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 04:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728554AbgELCLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 22:11:13 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:62051 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727892AbgELCLM (ORCPT
+        id S1728602AbgELCMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 22:12:07 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:33399 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727892AbgELCMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 22:11:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589249472; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=QNYQNyInAghRaEYuVraZ7NwiX9YVEOfA+XK0Ft46+dA=; b=F7E1vzNeq1EDks6H/NYHw79BIrCRiXvavwU9XvuysOxeznS9ze6/MIbk8esqtKawEovIQoZs
- Q8dUHuzAy92t/dW/XXCuz6wELbdTYOBuSFqjRRhp+RkrDLLxIFI/I23OpI60JxDfLZq57NLh
- +JtQRAn3OrS5dQDiovHpFb68Jxc=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eba05bb.7f2dc19e9c38-smtp-out-n03;
- Tue, 12 May 2020 02:11:07 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DDD58C433BA; Tue, 12 May 2020 02:11:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pkondeti)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1CE62C433CB;
-        Tue, 12 May 2020 02:10:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1CE62C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pkondeti@codeaurora.org
-Date:   Tue, 12 May 2020 07:40:56 +0530
-From:   Pavan Kondeti <pkondeti@codeaurora.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/2] sched/uclamp: Add a new sysctl to control RT default
- boost value
-Message-ID: <20200512021056.GA31725@codeaurora.org>
-References: <20200511154053.7822-1-qais.yousef@arm.com>
+        Mon, 11 May 2020 22:12:07 -0400
+Received: by mail-oi1-f194.google.com with SMTP id o24so16964126oic.0;
+        Mon, 11 May 2020 19:12:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=a6FnCmniEb0SZj05Hm52FA7/odoyQ0dRtkEViBqLyQk=;
+        b=gFCMk08jK4+HJJmHisoizBRuhbsTZeCEPRBsDlvZUnl8lwLuaYv2APt+Rdfq1cmmsP
+         6SKEy/7ASYxoPa3ZKJUv0IKrqMVDMMCIFVkY1SOALbRjL41tzyosDPHO9WYtocgu0iqH
+         j9RtLFD5GEdVL7FmS2bVRNQlq2nDFRof5hannXi/SIKjhUaTtFkhINDpPvezZPrLilF0
+         shd9UIgUTNgbjC29OAZJNoOHqa9NVOt4e90hn5sQClSGjog1WPD+u0Bx9r92LEAr3SIY
+         wi/aCG/VvEl0yzAXyYi/Z0BWePx0Wic3fGLlnp0KQfTpTrKGTluEvIPxSLchkfFhENR/
+         lBhg==
+X-Gm-Message-State: AGi0PubAkR+oT/fuYFOBvxgEVDk/0BnSODfRw41BEXclNIzXoGxJO3EG
+        mBXmW1GuYLMl7tXro0XCOQ==
+X-Google-Smtp-Source: APiQypLyUokqa9+HwgdwMV+wpVX5omYrQpTlGxbxo5UJ8ncdqjh4nKtXr+dGUhC/l1K5SQDIn8SHuA==
+X-Received: by 2002:a54:4512:: with SMTP id l18mr21349336oil.81.1589249526246;
+        Mon, 11 May 2020 19:12:06 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t6sm3146401otb.27.2020.05.11.19.12.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 19:12:05 -0700 (PDT)
+Received: (nullmailer pid 20842 invoked by uid 1000);
+        Tue, 12 May 2020 02:12:04 -0000
+Date:   Mon, 11 May 2020 21:12:04 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, atish.patra@wdc.com,
+        devicetree@vger.kernel.org
+Subject: Re: [RFC PATCH 4/4] dt-bindings: net: phy: extend dt binding for
+ VSC8541 ethernet-phy
+Message-ID: <20200512021204.GA12999@bogus>
+References: <1588072608-7747-1-git-send-email-sagar.kadam@sifive.com>
+ <1588072608-7747-5-git-send-email-sagar.kadam@sifive.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200511154053.7822-1-qais.yousef@arm.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <1588072608-7747-5-git-send-email-sagar.kadam@sifive.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 04:40:52PM +0100, Qais Yousef wrote:
-> RT tasks by default run at the highest capacity/performance level. When
-> uclamp is selected this default behavior is retained by enforcing the
-> requested uclamp.min (p->uclamp_req[UCLAMP_MIN]) of the RT tasks to be
-> uclamp_none(UCLAMP_MAX), which is SCHED_CAPACITY_SCALE; the maximum
-> value.
+On Tue, Apr 28, 2020 at 04:16:48AM -0700, Sagar Shrikant Kadam wrote:
+> Adding a OUI (Organizationally Unique Identifier) for VSC8541-01
+> device to dt node requires a corresponding dt-binding entry as well
+> so that checkpatch doesn't complain with a warning:
 > 
-> This is also referred to as 'the default boost value of RT tasks'.
+> DT compatible string "ethernet-phy-id0007.0771" appears un-documented
 > 
-> See commit 1a00d999971c ("sched/uclamp: Set default clamps for RT tasks").
-> 
-> On battery powered devices, it is desired to control this default
-> (currently hardcoded) behavior at runtime to reduce energy consumed by
-> RT tasks.
-> 
-> For example, a mobile device manufacturer where big.LITTLE architecture
-> is dominant, the performance of the little cores varies across SoCs, and
-> on high end ones the big cores could be too power hungry.
-> 
-> Given the diversity of SoCs, the new knob allows manufactures to tune
-> the best performance/power for RT tasks for the particular hardware they
-> run on.
-> 
-> They could opt to further tune the value when the user selects
-> a different power saving mode or when the device is actively charging.
-> 
-> The runtime aspect of it further helps in creating a single kernel image
-> that can be run on multiple devices that require different tuning.
-> 
-> Keep in mind that a lot of RT tasks in the system are created by the
-> kernel. On Android for instance I can see over 50 RT tasks, only
-> a handful of which created by the Android framework.
-> 
-> To control the default behavior globally by system admins and device
-> integrators, introduce the new sysctl_sched_uclamp_util_min_rt_default
-> to change the default boost value of the RT tasks.
-> 
-> I anticipate this to be mostly in the form of modifying the init script
-> of a particular device.
-> 
-> Whenever the new default changes, it'd be applied lazily on the next
-> opportunity the scheduler needs to calculate the effective uclamp.min
-> value for the task, assuming that it still uses the system default value
-> and not a user applied one.
-> 
-> Tested on Juno-r2 in combination with the RT capacity awareness [1].
-> By default an RT task will go to the highest capacity CPU and run at the
-> maximum frequency, which is particularly energy inefficient on high end
-> mobile devices because the biggest core[s] are 'huge' and power hungry.
-> 
-> With this patch the RT task can be controlled to run anywhere by
-> default, and doesn't cause the frequency to be maximum all the time.
-> Yet any task that really needs to be boosted can easily escape this
-> default behavior by modifying its requested uclamp.min value
-> (p->uclamp_req[UCLAMP_MIN]) via sched_setattr() syscall.
-> 
-> [1] 804d402fb6f6: ("sched/rt: Make RT capacity-aware")
-> 
+> Here extend the existing dt binding of VSC8531 device to include
+> VSC8541 device example.
 
-I have tested this patch on SDM845 running V5.7-rc4 and it works as expected.
+Checkpatch.pl is just dumb here and can be ignored. We have the regex 
+that documents this compatible. We don't need every VID/PID listed.
 
-Default: i.e /proc/sys/kernel/sched_util_clamp_min_rt_default = 1024.
-
-RT task runs on BIG cluster every time at max frequency. Both effective
-and requested uclamp.min are set to 1024
-
-With /proc/sys/kernel/sched_util_clamp_min_rt_default = 128
-
-RT task runs on Little cluster (max capacity is 404) and frequency scaling
-happens as per the change in utilization. Both effective and requested
-uclamp are set to 128.
-
-Feel free to add
-
-Tested-by: Pavankumar Kondeti <pkondeti@codeaurora.org>
-
-Thanks,
-Pavan
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+> 
+> Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+> ---
+>  Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt b/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
+> index 5ff37c6..774448a 100644
+> --- a/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
+> +++ b/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
+> @@ -68,3 +68,6 @@ Example:
+>                  vsc8531,led-0-mode	= <LINK_1000_ACTIVITY>;
+>                  vsc8531,led-1-mode	= <LINK_100_ACTIVITY>;
+>          };
+> +        vsc8541_0: ethernet-phy@0 {
+> +                compatible = "ethernet-phy-id0007.0771";
+> +	};
+> -- 
+> 2.7.4
+> 
