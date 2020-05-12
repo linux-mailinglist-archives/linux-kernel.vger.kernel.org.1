@@ -2,179 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2791CF5D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 15:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DB31CF5E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 15:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730094AbgELNab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 09:30:31 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35188 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726891AbgELNab (ORCPT
+        id S1730075AbgELNeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 09:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727783AbgELNeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 09:30:31 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04CD4erx011485;
-        Tue, 12 May 2020 09:30:10 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30yv20sce2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 May 2020 09:30:10 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04CD5kj2013895;
-        Tue, 12 May 2020 09:30:10 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30yv20sccu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 May 2020 09:30:09 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04CDL6oC024738;
-        Tue, 12 May 2020 13:30:08 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 30wm56anbd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 May 2020 13:30:08 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04CDU5DL48627818
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 May 2020 13:30:05 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BA2BC42056;
-        Tue, 12 May 2020 13:30:05 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 770434204D;
-        Tue, 12 May 2020 13:29:58 +0000 (GMT)
-Received: from srikart450.in.ibm.com (unknown [9.199.47.102])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 12 May 2020 13:29:58 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Christopher Lameter <cl@linux.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: [PATCH v4 3/3] mm/page_alloc: Keep memoryless cpuless node 0 offline
-Date:   Tue, 12 May 2020 18:59:37 +0530
-Message-Id: <20200512132937.19295-4-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200512132937.19295-1-srikar@linux.vnet.ibm.com>
-References: <20200512132937.19295-1-srikar@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-12_03:2020-05-11,2020-05-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- suspectscore=0 bulkscore=0 clxscore=1015 spamscore=0 phishscore=0
- priorityscore=1501 mlxlogscore=999 adultscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005120094
+        Tue, 12 May 2020 09:34:16 -0400
+X-Greylist: delayed 184 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 12 May 2020 06:34:15 PDT
+Received: from mo6-p00-ob.smtp.rzone.de (mo6-p00-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50571C061A0C;
+        Tue, 12 May 2020 06:34:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1589290453;
+        s=strato-dkim-0002; d=hartkopp.net;
+        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=iioaOC2kwzSvST2vkplX1ofGaA5MXnollnoM6Iyjnu4=;
+        b=aet29nPvce+u6VcTVK9T1X3vIERya2mcys21wxc5I/hKEnmhJERSpkbK8P7GsIjnYA
+        rXq+JvRmnCFl8AuvrxuKnGteq04nDU4fznG8jixNSvmdoXlNQ00t8Vo5OxEAZmDll3nj
+        0T9jU4d14Bk84DQSSUsdbxsRDGVaA3Owkt8+0mNWlztWaDZ6jyuAIGMR1hcbh+2dBqto
+        +MIjpZ/qNg57+xD7NfnL5qzst/dOuP8GdDSI4m8rmAxI0DNspzb3oKJlEnl6MWFqGccZ
+        lXp/mc5lHLzF39oPhXSHkdpm37qHg10ZuEdQGLCsXmdhjlHAkDY/JaUXvjf53OE8NxPf
+        8djw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3PMaViOoLMGX8h5lSA="
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.192.66]
+        by smtp.strato.de (RZmta 46.6.2 DYNA|AUTH)
+        with ESMTPSA id j023c5w4CDV5xsj
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Tue, 12 May 2020 15:31:05 +0200 (CEST)
+Subject: Re: [PATCH] can: Replace zero-length array with flexible-array
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200507185118.GA14022@embeddedor>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <0420f571-2d6a-c830-2029-8da60e3c2094@hartkopp.net>
+Date:   Tue, 12 May 2020 15:30:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200507185118.GA14022@embeddedor>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently Linux kernel with CONFIG_NUMA on a system with multiple
-possible nodes, marks node 0 as online at boot.  However in practice,
-there are systems which have node 0 as memoryless and cpuless.
 
-This can cause numa_balancing to be enabled on systems with only one node
-with memory and CPUs. The existence of this dummy node which is cpuless and
-memoryless node can confuse users/scripts looking at output of lscpu /
-numactl.
 
-By marking, N_ONLINE as NODE_MASK_NONE, lets stop assuming that Node 0 is
-always online.
+On 2020-05-07 20:51, Gustavo A. R. Silva wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>          int stuff;
+>          struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>   include/linux/can/skb.h |    2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+> index a954def26c0d..900b9f4e0605 100644
+> --- a/include/linux/can/skb.h
+> +++ b/include/linux/can/skb.h
+> @@ -34,7 +34,7 @@
+>   struct can_skb_priv {
+>   	int ifindex;
+>   	int skbcnt;
+> -	struct can_frame cf[0];
+> +	struct can_frame cf[];
+>   };
+>   
+>   static inline struct can_skb_priv *can_skb_prv(struct sk_buff *skb)
+> 
 
-v5.7-rc3
- available: 2 nodes (0,2)
- node 0 cpus:
- node 0 size: 0 MB
- node 0 free: 0 MB
- node 2 cpus: 0 1 2 3 4 5 6 7
- node 2 size: 32625 MB
- node 2 free: 31490 MB
- node distances:
- node   0   2
-   0:  10  20
-   2:  20  10
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-proc and sys files
-------------------
- /sys/devices/system/node/online:            0,2
- /proc/sys/kernel/numa_balancing:            1
- /sys/devices/system/node/has_cpu:           2
- /sys/devices/system/node/has_memory:        2
- /sys/devices/system/node/has_normal_memory: 2
- /sys/devices/system/node/possible:          0-31
+@Gustavo: Just to be sure:
 
-v5.7-rc3 + patch
-------------------
- available: 1 nodes (2)
- node 2 cpus: 0 1 2 3 4 5 6 7
- node 2 size: 32625 MB
- node 2 free: 31487 MB
- node distances:
- node   2
-   2:  10
+ From the referenced URLs I got the information that the sizeof() 
+operator causes problems when applied to e.g. cf[0].
 
-proc and sys files
-------------------
-/sys/devices/system/node/online:            2
-/proc/sys/kernel/numa_balancing:            0
-/sys/devices/system/node/has_cpu:           2
-/sys/devices/system/node/has_memory:        2
-/sys/devices/system/node/has_normal_memory: 2
-/sys/devices/system/node/possible:          0-31
+We don't have this case in our code - but one question remains to me:
 
-Note: On Powerpc, cpu_to_node of possible but not present cpus would
-previously return 0. Hence this commit depends on commit ("powerpc/numa: Set
-numa_node for all possible cpus") and commit ("powerpc/numa: Prefer node id
-queried from vphn"). Without the 2 commits, Powerpc system might crash.
+We are using the above construct to ensure the padding between the two 
+'int' values and the struct can_frame which enforces a 64 bit alignment.
 
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc: Christopher Lameter <cl@linux.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-Cc: David Hildenbrand <david@redhat.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
-Changelog v1:->v2:
-- Rebased to v5.7-rc3
-Link v2: https://lore.kernel.org/linuxppc-dev/20200428093836.27190-1-srikar@linux.vnet.ibm.com/t/#u
+This intention is not affected by the patch, right?
 
- mm/page_alloc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 69827d4..03b8959 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -116,8 +116,10 @@ struct pcpu_drain {
-  */
- nodemask_t node_states[NR_NODE_STATES] __read_mostly = {
- 	[N_POSSIBLE] = NODE_MASK_ALL,
-+#ifdef CONFIG_NUMA
-+	[N_ONLINE] = NODE_MASK_NONE,
-+#else
- 	[N_ONLINE] = { { [0] = 1UL } },
--#ifndef CONFIG_NUMA
- 	[N_NORMAL_MEMORY] = { { [0] = 1UL } },
- #ifdef CONFIG_HIGHMEM
- 	[N_HIGH_MEMORY] = { { [0] = 1UL } },
--- 
-1.8.3.1
-
+Best,
+Oliver
