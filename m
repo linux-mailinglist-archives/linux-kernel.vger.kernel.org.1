@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2221D023D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E0E1D0203
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731646AbgELWZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55522 "EHLO
+        id S1731696AbgELWXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 18:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731703AbgELWXV (ORCPT
+        by vger.kernel.org with ESMTP id S1731678AbgELWXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 18:23:21 -0400
+        Tue, 12 May 2020 18:23:14 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 101E0C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1636FC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:14 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jYdIH-0004kH-RR; Wed, 13 May 2020 00:22:35 +0200
+        id 1jYdIJ-0004lP-3R; Wed, 13 May 2020 00:22:37 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 543C91001FC;
-        Wed, 13 May 2020 00:22:33 +0200 (CEST)
-Message-Id: <20200512213810.611305682@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 93214100605;
+        Wed, 13 May 2020 00:22:34 +0200 (CEST)
+Message-Id: <20200512213810.713078890@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 12 May 2020 23:01:11 +0200
+Date:   Tue, 12 May 2020 23:01:12 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -50,7 +50,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V5 12/38] x86/entry: Provide idtentry_entry/exit_cond_rcu()
+Subject: [patch V5 13/38] x86/entry: Switch page fault exception to IDTENTRY_RAW
 References: <20200512210059.056244513@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -63,235 +63,327 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pagefault handler cannot use the regular idtentry_enter() because that
-invokes rcu_irq_enter() if the pagefault was caused in the kernel. Not a
-problem per se, but kernel side page faults can schedule which is not
-possible without invoking rcu_irq_exit().
+Convert page fault exceptions to IDTENTRY_RAW:
+  - Implement the C entry point with DEFINE_IDTENTRY_RAW
+  - Add the CR2 read into the exception handler
+  - Add the idtentry_enter/exit_cond_rcu() invocations in
+    in the regular page fault handler and use the regular
+    idtentry_enter/exit() for the async PF part.
+  - Emit the ASM stub with DECLARE_IDTENTRY_RAW
+  - Remove the ASM idtentry in 64bit
+  - Remove the CR2 read from 64bit
+  - Remove the open coded ASM entry code in 32bit
+  - Fixup the XEN/PV code
+  - Remove the old prototypes
 
-Adding rcu_irq_exit() and a matching rcu_irq_enter() into the actual
-pagefault handling code would be possible, but not pretty either.
-
-Provide idtentry_entry/exit_cond_rcu() which calls rcu_irq_enter() only
-when RCU is not watching. The conditional RCU enabling is a correctness
-issue: A kernel page fault which hits a RCU idle reason can neither
-schedule nor is it likely to survive. But avoiding RCU warnings or RCU side
-effects is at least increasing the chance for useful debug output.
-
-The function is also useful for implementing lightweight reschedule IPI and
-KVM posted interrupt IPI entry handling later.
+No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V5: Add comments about the rcu_exit conditional and make changelog readable.
----
- arch/x86/entry/common.c         |  142 +++++++++++++++++++++++++++++++++++-----
- arch/x86/include/asm/idtentry.h |    3 
- 2 files changed, 128 insertions(+), 17 deletions(-)
+ arch/x86/entry/entry_32.S       |   30 -----------------
+ arch/x86/entry/entry_64.S       |   19 -----------
+ arch/x86/include/asm/idtentry.h |    3 +
+ arch/x86/include/asm/traps.h    |   11 ------
+ arch/x86/kernel/idt.c           |    4 +-
+ arch/x86/kernel/kvm.c           |   14 ++++----
+ arch/x86/mm/fault.c             |   69 +++++++++++++++++++++++++++-------------
+ arch/x86/xen/enlighten_pv.c     |    2 -
+ arch/x86/xen/xen-asm_64.S       |    2 -
+ 9 files changed, 62 insertions(+), 92 deletions(-)
 
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -515,6 +515,36 @@ SYSCALL_DEFINE0(ni_syscall)
- 	return -ENOSYS;
- }
+--- a/arch/x86/entry/entry_32.S
++++ b/arch/x86/entry/entry_32.S
+@@ -1395,36 +1395,6 @@ BUILD_INTERRUPT3(hv_stimer0_callback_vec
  
-+static __always_inline bool __idtentry_enter(struct pt_regs *regs,
-+					     bool cond_rcu)
-+{
-+	if (user_mode(regs)) {
-+		enter_from_user_mode();
-+	} else {
-+		if (!cond_rcu || !__rcu_is_watching()) {
-+			/*
-+			 * If RCU is not watching then the same careful
-+			 * sequence vs. lockdep and tracing is required.
-+			 */
-+			lockdep_hardirqs_off(CALLER_ADDR0);
-+			rcu_irq_enter();
-+			instrumentation_begin();
-+			trace_hardirqs_off_prepare();
-+			instrumentation_end();
-+			return true;
-+		} else {
-+			/*
-+			 * If RCU is watching then the combo function
-+			 * can be used.
-+			 */
-+			instrumentation_begin();
-+			trace_hardirqs_off();
-+			instrumentation_end();
-+		}
-+	}
-+	return false;
-+}
-+
- /**
-  * idtentry_enter - Handle state tracking on idtentry
-  * @regs:	Pointer to pt_regs of interrupted context
-@@ -532,19 +562,60 @@ SYSCALL_DEFINE0(ni_syscall)
-  */
- void noinstr idtentry_enter(struct pt_regs *regs)
- {
--	if (user_mode(regs)) {
--		enter_from_user_mode();
--	} else {
--		lockdep_hardirqs_off(CALLER_ADDR0);
--		rcu_irq_enter();
--		instrumentation_begin();
--		trace_hardirqs_off_prepare();
--		instrumentation_end();
--	}
-+	__idtentry_enter(regs, false);
-+}
-+
-+/**
-+ * idtentry_enter_cond_rcu - Handle state tracking on idtentry with conditional
-+ *			     RCU handling
-+ * @regs:	Pointer to pt_regs of interrupted context
-+ *
-+ * Invokes:
-+ *  - lockdep irqflag state tracking as low level ASM entry disabled
-+ *    interrupts.
-+ *
-+ *  - Context tracking if the exception hit user mode.
-+ *
-+ *  - The hardirq tracer to keep the state consistent as low level ASM
-+ *    entry disabled interrupts.
-+ *
-+ * For kernel mode entries the conditional RCU handling is useful for two
-+ * purposes
-+ *
-+ * 1) Pagefaults: Kernel code can fault and sleep, e.g. on exec. This code
-+ *    is not in an RCU idle section. If rcu_irq_enter() would be invoked
-+ *    then nothing would invoke rcu_irq_exit() before scheduling.
-+ *
-+ *   If the kernel faults in a RCU idle section then all bets are off
-+ *   anyway but at least avoiding a subsequent issue vs. RCU is helpful for
-+ *   debugging.
-+ *
-+ * 2) Scheduler IPI: To avoid the overhead of a regular idtentry vs. RCU
-+ *    and irq_enter() the IPI can be made lightweight if the tracepoints
-+ *    are not enabled. While the IPI functionality itself does not require
-+ *    RCU (folding preempt count) it still calls out into instrumentable
-+ *    functions, e.g. ack_APIC_irq(). The scheduler IPI can hit RCU idle
-+ *    sections, so RCU needs to be adjusted. For the fast path case, e.g.
-+ *    KVM kicking a vCPU out of guest mode this can be avoided because the
-+ *    IPI is handled after KVM reestablished kernel context including RCU.
-+ *
-+ * For user mode entries enter_from_user_mode() must be invoked to
-+ * establish the proper context for NOHZ_FULL. Otherwise scheduling on exit
-+ * would not be possible.
-+ *
-+ * Returns: True if RCU has been adjusted on a kernel entry
-+ *	    False otherwise
-+ *
-+ * The return value must be fed into the rcu_exit argument of
-+ * idtentry_exit_cond_rcu().
-+ */
-+bool noinstr idtentry_enter_cond_rcu(struct pt_regs *regs)
-+{
-+	return __idtentry_enter(regs, true);
- }
+ #endif /* CONFIG_HYPERV */
  
- static __always_inline void __idtentry_exit(struct pt_regs *regs,
--					    bool preempt_hcall)
-+					    bool preempt_hcall, bool rcu_exit)
- {
- 	lockdep_assert_irqs_disabled();
+-SYM_CODE_START(page_fault)
+-	ASM_CLAC
+-	pushl	$do_page_fault
+-	jmp	common_exception_read_cr2
+-SYM_CODE_END(page_fault)
+-
+-SYM_CODE_START_LOCAL_NOALIGN(common_exception_read_cr2)
+-	/* the function address is in %gs's slot on the stack */
+-	SAVE_ALL switch_stacks=1 skip_gs=1 unwind_espfix=1
+-
+-	ENCODE_FRAME_POINTER
+-
+-	/* fixup %gs */
+-	GS_TO_REG %ecx
+-	movl	PT_GS(%esp), %edi
+-	REG_TO_PTGS %ecx
+-	SET_KERNEL_GS %ecx
+-
+-	GET_CR2_INTO(%ecx)			# might clobber %eax
+-
+-	/* fixup orig %eax */
+-	movl	PT_ORIG_EAX(%esp), %edx		# get the error code
+-	movl	$-1, PT_ORIG_EAX(%esp)		# no syscall to restart
+-
+-	TRACE_IRQS_OFF
+-	movl	%esp, %eax			# pt_regs pointer
+-	CALL_NOSPEC edi
+-	jmp	ret_from_exception
+-SYM_CODE_END(common_exception_read_cr2)
+-
+ SYM_CODE_START_LOCAL_NOALIGN(common_exception)
+ 	/* the function address is in %gs's slot on the stack */
+ 	SAVE_ALL switch_stacks=1 skip_gs=1 unwind_espfix=1
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -507,15 +507,6 @@ SYM_CODE_END(spurious_entries_start)
+ 	call	error_entry
+ 	UNWIND_HINT_REGS
  
-@@ -570,7 +641,12 @@ static __always_inline void __idtentry_e
- 				if (IS_ENABLED(CONFIG_DEBUG_ENTRY))
- 					WARN_ON_ONCE(!on_thread_stack());
- 				instrumentation_begin();
--				rcu_irq_exit_preempt();
-+				/*
-+				 * Conditional for idtentry_exit_cond_rcu(),
-+				 * unconditional for all other users.
-+				 */
-+				if (rcu_exit)
-+					rcu_irq_exit_preempt();
- 				if (need_resched())
- 					preempt_schedule_irq();
- 				/* Covers both tracing and lockdep */
-@@ -602,11 +678,22 @@ static __always_inline void __idtentry_e
- 		trace_hardirqs_on_prepare();
- 		lockdep_hardirqs_on_prepare(CALLER_ADDR0);
- 		instrumentation_end();
--		rcu_irq_exit();
-+		/*
-+		 * Conditional for idtentry_exit_cond_rcu(), unconditional
-+		 * for all other users.
-+		 */
-+		if (rcu_exit)
-+			rcu_irq_exit();
- 		lockdep_hardirqs_on(CALLER_ADDR0);
- 	} else {
--		/* IRQ flags state is correct already. Just tell RCU */
--		rcu_irq_exit();
-+		/*
-+		 * IRQ flags state is correct already. Just tell RCU.
-+		 *
-+		 * Conditional for idtentry_exit_cond_rcu(), unconditional
-+		 * for all other users.
-+		 */
-+		if (rcu_exit)
-+			rcu_irq_exit();
- 	}
- }
+-	.if \vector == X86_TRAP_PF
+-		/*
+-		 * Store CR2 early so subsequent faults cannot clobber it. Use R12 as
+-		 * intermediate storage as RDX can be clobbered in enter_from_user_mode().
+-		 * GET_CR2_INTO can clobber RAX.
+-		 */
+-		GET_CR2_INTO(%r12);
+-	.endif
+-
+ 	.if \sane == 0
+ 	TRACE_IRQS_OFF
  
-@@ -627,7 +714,28 @@ static __always_inline void __idtentry_e
-  */
- void noinstr idtentry_exit(struct pt_regs *regs)
- {
--	__idtentry_exit(regs, false);
-+	__idtentry_exit(regs, false, true);
-+}
-+
-+/**
-+ * idtentry_exit_cond_rcu - Handle return from exception with conditional RCU
-+ *			    handling
-+ * @regs:	Pointer to pt_regs (exception entry regs)
-+ * @rcu_exit:	Invoke rcu_irq_exit() if true
-+ *
-+ * Depending on the return target (kernel/user) this runs the necessary
-+ * preemption and work checks if possible and reguired and returns to
-+ * the caller with interrupts disabled and no further work pending.
-+ *
-+ * This is the last action before returning to the low level ASM code which
-+ * just needs to return to the appropriate context.
-+ *
-+ * Counterpart to idtentry_enter_cond_rcu(). The return value of the entry
-+ * function must be fed into the @rcu_exit argument.
-+ */
-+void noinstr idtentry_exit_cond_rcu(struct pt_regs *regs, bool rcu_exit)
-+{
-+	__idtentry_exit(regs, false, rcu_exit);
- }
+@@ -534,10 +525,6 @@ SYM_CODE_END(spurious_entries_start)
+ 		movq	$-1, ORIG_RAX(%rsp)	/* no syscall to restart */
+ 	.endif
  
- #ifdef CONFIG_XEN_PV
-@@ -659,11 +767,11 @@ static void __xen_pv_evtchn_do_upcall(vo
- 	set_irq_regs(old_regs);
+-	.if \vector == X86_TRAP_PF
+-		movq	%r12, %rdx		/* Move CR2 into 3rd argument */
+-	.endif
+-
+ 	call	\cfunc
  
- 	if (IS_ENABLED(CONFIG_PREEMPTION)) {
--		__idtentry_exit(regs, false);
-+		__idtentry_exit(regs, false, true);
- 	} else {
- 		bool inhcall = __this_cpu_read(xen_in_preemptible_hcall);
+ 	.if \sane == 0
+@@ -1060,12 +1047,6 @@ apicinterrupt IRQ_WORK_VECTOR			irq_work
+ #endif
  
--		__idtentry_exit(regs, inhcall && need_resched());
-+		__idtentry_exit(regs, inhcall && need_resched(), true);
- 	}
- }
- #endif /* CONFIG_XEN_PV */
+ /*
+- * Exception entry points.
+- */
+-
+-idtentry	X86_TRAP_PF		page_fault		do_page_fault			has_error_code=1
+-
+-/*
+  * Reload gs selector with exception handling
+  * edi:  new selector
+  *
 --- a/arch/x86/include/asm/idtentry.h
 +++ b/arch/x86/include/asm/idtentry.h
-@@ -10,6 +10,9 @@
- void idtentry_enter(struct pt_regs *regs);
- void idtentry_exit(struct pt_regs *regs);
+@@ -364,7 +364,8 @@ DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_GP,
+ DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_AC,	exc_alignment_check);
  
-+bool idtentry_enter_cond_rcu(struct pt_regs *regs);
-+void idtentry_exit_cond_rcu(struct pt_regs *regs, bool rcu_exit);
+ /* Raw exception entries which need extra work */
+-DECLARE_IDTENTRY_RAW(X86_TRAP_BP,	exc_int3);
++DECLARE_IDTENTRY_RAW(X86_TRAP_BP,		exc_int3);
++DECLARE_IDTENTRY_RAW_ERRORCODE(X86_TRAP_PF,	exc_page_fault);
+ 
+ #ifdef CONFIG_X86_MCE
+ DECLARE_IDTENTRY_MCE(X86_TRAP_MC,	exc_machine_check);
+--- a/arch/x86/include/asm/traps.h
++++ b/arch/x86/include/asm/traps.h
+@@ -9,17 +9,6 @@
+ #include <asm/idtentry.h>
+ #include <asm/siginfo.h>			/* TRAP_TRACE, ... */
+ 
+-#define dotraplinkage __visible
+-
+-asmlinkage void page_fault(void);
+-asmlinkage void async_page_fault(void);
+-
+-#if defined(CONFIG_X86_64) && defined(CONFIG_XEN_PV)
+-asmlinkage void xen_page_fault(void);
+-#endif
+-
+-dotraplinkage void do_page_fault(struct pt_regs *regs, unsigned long error_code, unsigned long address);
+-
+ #ifdef CONFIG_X86_64
+ asmlinkage __visible notrace struct pt_regs *sync_regs(struct pt_regs *eregs);
+ asmlinkage __visible notrace
+--- a/arch/x86/kernel/idt.c
++++ b/arch/x86/kernel/idt.c
+@@ -59,7 +59,7 @@ static const __initconst struct idt_data
+ 	INTG(X86_TRAP_DB,		asm_exc_debug),
+ 	SYSG(X86_TRAP_BP,		asm_exc_int3),
+ #ifdef CONFIG_X86_32
+-	INTG(X86_TRAP_PF,		page_fault),
++	INTG(X86_TRAP_PF,		asm_exc_page_fault),
+ #endif
+ };
+ 
+@@ -153,7 +153,7 @@ static const __initconst struct idt_data
+  * stacks work only after cpu_init().
+  */
+ static const __initconst struct idt_data early_pf_idts[] = {
+-	INTG(X86_TRAP_PF,		page_fault),
++	INTG(X86_TRAP_PF,		asm_exc_page_fault),
+ };
+ 
+ /*
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -218,7 +218,7 @@ void kvm_async_pf_task_wake(u32 token)
+ }
+ EXPORT_SYMBOL_GPL(kvm_async_pf_task_wake);
+ 
+-u32 kvm_read_and_reset_pf_reason(void)
++u32 noinstr kvm_read_and_reset_pf_reason(void)
+ {
+ 	u32 reason = 0;
+ 
+@@ -230,9 +230,8 @@ u32 kvm_read_and_reset_pf_reason(void)
+ 	return reason;
+ }
+ EXPORT_SYMBOL_GPL(kvm_read_and_reset_pf_reason);
+-NOKPROBE_SYMBOL(kvm_read_and_reset_pf_reason);
+ 
+-bool __kvm_handle_async_pf(struct pt_regs *regs, u32 token)
++noinstr bool __kvm_handle_async_pf(struct pt_regs *regs, u32 token)
+ {
+ 	u32 reason = kvm_read_and_reset_pf_reason();
+ 
+@@ -244,6 +243,9 @@ bool __kvm_handle_async_pf(struct pt_reg
+ 		return false;
+ 	}
+ 
++	idtentry_enter(regs);
++	instrumentation_begin();
 +
- /**
-  * DECLARE_IDTENTRY - Declare functions for simple IDT entry points
-  *		      No error code pushed by hardware
+ 	/*
+ 	 * If the host managed to inject an async #PF into an interrupt
+ 	 * disabled region, then die hard as this is not going to end well
+@@ -258,13 +260,13 @@ bool __kvm_handle_async_pf(struct pt_reg
+ 		/* Page is swapped out by the host. */
+ 		kvm_async_pf_task_wait_schedule(token);
+ 	} else {
+-		rcu_irq_enter();
+ 		kvm_async_pf_task_wake(token);
+-		rcu_irq_exit();
+ 	}
++
++	instrumentation_end();
++	idtentry_exit(regs);
+ 	return true;
+ }
+-NOKPROBE_SYMBOL(__kvm_handle_async_pf);
+ 
+ static void __init paravirt_ops_setup(void)
+ {
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -1521,11 +1521,38 @@ trace_page_fault_entries(struct pt_regs
+ 		trace_page_fault_kernel(address, regs, error_code);
+ }
+ 
+-dotraplinkage void
+-do_page_fault(struct pt_regs *regs, unsigned long hw_error_code,
+-		unsigned long address)
++static __always_inline void
++handle_page_fault(struct pt_regs *regs, unsigned long error_code,
++			      unsigned long address)
+ {
++	trace_page_fault_entries(regs, error_code, address);
++
++	if (unlikely(kmmio_fault(regs, address)))
++		return;
++
++	/* Was the fault on kernel-controlled part of the address space? */
++	if (unlikely(fault_in_kernel_space(address))) {
++		do_kern_addr_fault(regs, error_code, address);
++	} else {
++		do_user_addr_fault(regs, error_code, address);
++		/*
++		 * User address page fault handling might have reenabled
++		 * interrupts. Fixing up all potential exit points of
++		 * do_user_addr_fault() and its leaf functions is just not
++		 * doable w/o creating an unholy mess or turning the code
++		 * upside down.
++		 */
++		local_irq_disable();
++	}
++}
++
++DEFINE_IDTENTRY_RAW_ERRORCODE(exc_page_fault)
++{
++	unsigned long address = read_cr2();
++	bool rcu_exit;
++
+ 	prefetchw(&current->mm->mmap_sem);
++
+ 	/*
+ 	 * KVM has two types of events that are, logically, interrupts, but
+ 	 * are unfortunately delivered using the #PF vector.  These events are
+@@ -1540,28 +1567,28 @@ do_page_fault(struct pt_regs *regs, unsi
+ 	 * getting values from real and async page faults mixed up.
+ 	 *
+ 	 * Fingers crossed.
++	 *
++	 * The async #PF handling code takes care of idtentry handling
++	 * itself.
+ 	 */
+ 	if (kvm_handle_async_pf(regs, (u32)address))
+ 		return;
+ 
+-	trace_page_fault_entries(regs, hw_error_code, address);
++	/*
++	 * Entry handling for valid #PF from kernel mode is slightly
++	 * different: RCU is already watching and rcu_irq_enter() must not
++	 * be invoked because a kernel fault on a user space address might
++	 * sleep.
++	 *
++	 * In case the fault hit a RCU idle region the conditional entry
++	 * code reenabled RCU to avoid subsequent wreckage which helps
++	 * debugability.
++	 */
++	rcu_exit = idtentry_enter_cond_rcu(regs);
+ 
+-	if (unlikely(kmmio_fault(regs, address)))
+-		return;
++	instrumentation_begin();
++	handle_page_fault(regs, error_code, address);
++	instrumentation_end();
+ 
+-	/* Was the fault on kernel-controlled part of the address space? */
+-	if (unlikely(fault_in_kernel_space(address))) {
+-		do_kern_addr_fault(regs, hw_error_code, address);
+-	} else {
+-		do_user_addr_fault(regs, hw_error_code, address);
+-		/*
+-		 * User address page fault handling might have reenabled
+-		 * interrupts. Fixing up all potential exit points of
+-		 * do_user_addr_fault() and its leaf functions is just not
+-		 * doable w/o creating an unholy mess or turning the code
+-		 * upside down.
+-		 */
+-		local_irq_disable();
+-	}
++	idtentry_exit_cond_rcu(regs, rcu_exit);
+ }
+-NOKPROBE_SYMBOL(do_page_fault);
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -627,7 +627,7 @@ static struct trap_array_entry trap_arra
+ #ifdef CONFIG_IA32_EMULATION
+ 	{ entry_INT80_compat,          xen_entry_INT80_compat,          false },
+ #endif
+-	{ page_fault,                  xen_page_fault,                  false },
++	TRAP_ENTRY(exc_page_fault,			false ),
+ 	TRAP_ENTRY(exc_divide_error,			false ),
+ 	TRAP_ENTRY(exc_bounds,				false ),
+ 	TRAP_ENTRY(exc_invalid_op,			false ),
+--- a/arch/x86/xen/xen-asm_64.S
++++ b/arch/x86/xen/xen-asm_64.S
+@@ -43,7 +43,7 @@ xen_pv_trap asm_exc_invalid_tss
+ xen_pv_trap asm_exc_segment_not_present
+ xen_pv_trap asm_exc_stack_segment
+ xen_pv_trap asm_exc_general_protection
+-xen_pv_trap page_fault
++xen_pv_trap asm_exc_page_fault
+ xen_pv_trap asm_exc_spurious_interrupt_bug
+ xen_pv_trap asm_exc_coprocessor_error
+ xen_pv_trap asm_exc_alignment_check
 
