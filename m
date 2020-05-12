@@ -2,118 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6082F1CFA88
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 18:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F871CFA81
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 18:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727907AbgELQYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 12:24:43 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:9996 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725851AbgELQYm (ORCPT
+        id S1727858AbgELQXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 12:23:49 -0400
+Received: from smtprelay0236.hostedemail.com ([216.40.44.236]:35566 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725851AbgELQXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 12:24:42 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04CGFuqw025440;
-        Tue, 12 May 2020 09:23:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pfpt0818;
- bh=1r6cd4S8RMtPNhd34CncojOuEsgGyyr3fSzoDBmCBaA=;
- b=dz9MjXR3RWwr+z+H4pj5Vv+ykwxVY+fYTYcevnqpDTMi1EWutaVXpiLO+7BKHOJiHDPR
- WWGcg91qticg6bS4b45MIGPZUP9MC+U6Wc3EpAckuNdB6PxAxc/I7bC8mMZ5TzXT2rKk
- /ek03Dkj7BJOEYWFfEednV8Fsv6g/Zs9KPKxcy4adam8ECPWVL5NfqbyFh9pVkfJFVsJ
- s/mOwKwPtYH4BkkpEyLOi4JeaSqBMOVPcykVfQv8ibj/cjcNC7MDnFSJHxMT/RO+B268
- nVEmtsTRBQfTt/Lj7UNPZVVHdahcMoiD6A9+uipoPN3R0PUCfUmge7u6fxDsUw7ZVs0n GA== 
-Received: from sc-exch04.marvell.com ([199.233.58.184])
-        by mx0a-0016f401.pphosted.com with ESMTP id 30wsvqmts0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 12 May 2020 09:23:39 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 12 May
- 2020 09:23:38 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 12 May
- 2020 09:23:37 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 12 May 2020 09:23:37 -0700
-Received: from [10.193.39.5] (unknown [10.193.39.5])
-        by maili.marvell.com (Postfix) with ESMTP id 2853A3F703F;
-        Tue, 12 May 2020 09:23:29 -0700 (PDT)
-Subject: Re: [EXT] [PATCH 09/15] qed: use new module_firmware_crashed()
-To:     Luis Chamberlain <mcgrof@kernel.org>
-CC:     <jeyu@kernel.org>, <akpm@linux-foundation.org>, <arnd@arndb.de>,
-        <rostedt@goodmis.org>, <mingo@redhat.com>, <aquini@redhat.com>,
-        <cai@lca.pw>, <dyoung@redhat.com>, <bhe@redhat.com>,
-        <peterz@infradead.org>, <tglx@linutronix.de>,
-        <gpiccoli@canonical.com>, <pmladek@suse.com>, <tiwai@suse.de>,
-        <schlad@suse.de>, <andriy.shevchenko@linux.intel.com>,
-        <keescook@chromium.org>, <daniel.vetter@ffwll.ch>,
-        <will@kernel.org>, <mchehab+samsung@kernel.org>,
-        <kvalo@codeaurora.org>, <davem@davemloft.net>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2 <GR-everest-linux-l2@marvell.com>
-References: <20200509043552.8745-1-mcgrof@kernel.org>
- <20200509043552.8745-10-mcgrof@kernel.org>
- <2aaddb69-2292-ff3f-94c7-0ab9dbc8e53c@marvell.com>
- <20200509164229.GJ11244@42.do-not-panic.com>
-From:   Igor Russkikh <irusskikh@marvell.com>
-Message-ID: <e10b611e-f925-f12d-bcd2-ba60d86dd8d0@marvell.com>
-Date:   Tue, 12 May 2020 19:23:28 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101
- Thunderbird/77.0
+        Tue, 12 May 2020 12:23:49 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 5274B180A9553;
+        Tue, 12 May 2020 16:23:48 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 90,9,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:560:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2693:2731:2828:2895:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:5007:6238:7875:9010:10004:10400:10450:10455:10848:11232:11473:11658:11914:12043:12297:12555:12740:12760:12895:12986:13138:13149:13161:13229:13230:13231:13439:13870:14096:14097:14180:14181:14659:14721:19904:19999:21060:21080:21324:21451:21627:21740:21741:30030:30034:30054:30070:30083:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
+X-HE-Tag: ice59_5b42530d4ca5b
+X-Filterd-Recvd-Size: 2966
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 12 May 2020 16:23:46 +0000 (UTC)
+Message-ID: <80146d5713f8579a92b4da1e2b7d7626999dd9be.camel@perches.com>
+Subject: Re: MAINTAINERS: Wrong ordering in VIRTIO BALLOON
+From:   Joe Perches <joe@perches.com>
+To:     David Hildenbrand <david@redhat.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 12 May 2020 09:23:45 -0700
+In-Reply-To: <bb2eea77-72df-6c53-5397-de057ffc9dd8@redhat.com>
+References: <alpine.DEB.2.21.2005120717260.3701@felia>
+         <bb2eea77-72df-6c53-5397-de057ffc9dd8@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-In-Reply-To: <20200509164229.GJ11244@42.do-not-panic.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-12_05:2020-05-11,2020-05-12 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
->> So I think its not a good place to insert this call.
->> Its hard to find exact good place to insert it in qed.
+On Tue, 2020-05-12 at 08:38 +0200, David Hildenbrand wrote:
+> On 12.05.20 07:21, Lukas Bulwahn wrote:
+> > Hi David,
+> > 
+> > with your commit 6d6b93b9afd8 ("MAINTAINERS: Add myself as virtio-balloon 
+> > co-maintainer"), visible on next-20200508, ./scripts/checkpatch.pl -f 
+> > MAINTAINERS complains:
+> > 
+> > WARNING: Misordered MAINTAINERS entry - list file patterns in alphabetic order
+> > #17982: FILE: MAINTAINERS:17982:
+> > +F:	include/uapi/linux/virtio_balloon.h
+> > +F:	include/linux/balloon_compaction.h
+> > 
+> > This is due to wrong ordering of the entries in your submission. If you 
+> > would like me to send you a patch fixing that, please just let me know.
+> > 
+> > It is a recent addition to checkpatch.pl to report ordering problems in 
+> > MAINTAINERS, so you might have not seen that at submission time.
 > 
-> Is there a way to check if what happened was indeed a fw crash?
-
-Our driver has two firmwares (slowpath and fastpath).
-For slowpath firmware the way to understand it crashed is to observe command
-response timeout. This is in qed_mcp.c, around "The MFW failed to respond to
-command" traceout.
-
-For fastpath this is tricky, think you may leave the above place as the only
-place to invoke module_firmware_crashed()
-
+> Thanks for the notification Lukas,
 > 
->> One more thing is that AFAIU taint flag gets permanent on kernel, but
-> for
->> example our device can recover itself from some FW crashes, thus it'd be
->> transparent for user.
+> b962ee8622d0 ("checkpatch: additional MAINTAINER section entry ordering
+> checks") is not in Linus' tree yet AFAIKS.
 > 
-> Similar things are *supposed* to recoverable with other device, however
-> this can also sometimes lead to a situation where devices are not usable
-> anymore, and require a full driver unload / load.
+> I can see that 3b50142d8528 ("MAINTAINERS: sort field names for all
+> entries") is upstream. I do wonder if we should just do another batch
+> update after the checkpatch patch is upstream instead, I guess more will
+> pile up?
 > 
->> Whats the logical purpose of module_firmware_crashed? Does it mean fatal
->> unrecoverable error on device?
+> @mst, joe, what do you prefer?
 > 
-> Its just to annotate on the module and kernel that this has happened.
-> 
-> I take it you may agree that, firmware crashing *often* is not good
-> design,
-> and these issues should be reported to / fixed by vendors. In cases
-> where driver bugs are reported it is good to see if a firmware crash has
-> happened before, so that during analysis this is ruled out.
+> 1. I can resend the original patch.
+> 2. Lukas can send a fixup that we might want to squash.
+> 3. We wait until the checkpatch change goes upstream and to a final
+> batch update.
 
-Probably, but still I see some misalignment here, in sense that taint is about
-the kernel state, not about a hardware state indication.
+A fixup patch would work.
 
-devlink health could really be a much better candidate for such things.
+I think if Linus every once in awhile just before an -rc1 runs
+scripts/parse-maintainers like:
 
-Regards
-  Igor
+commit 3b50142d8528 ("MAINTAINERS: sort field names for all entries")
+
+then these sorts of individual patches would not matter much.
+
+This first time the script was run, I think there was just 1 patch
+conflict from -next to Linus' tree, and that scripted change was
+fairly large.
+
+As the changes will generally be smaller in the future, it's unlikely
+there will be a significant number of conflicts.
+
+
