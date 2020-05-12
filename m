@@ -2,171 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F761CFE1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 21:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67ECC1CFE27
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 21:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730887AbgELTTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 15:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgELTTM (ORCPT
+        id S1731022AbgELTUp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 May 2020 15:20:45 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48070 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgELTUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 15:19:12 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A18DC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 12:19:12 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 145so6814677pfw.13
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 12:19:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NTFtvW9Z7pWHfvK8fawdp7hae6YucW8EOFMduRCV3ZM=;
-        b=LYPD0EMLPWcRjpoJJOSPnayGtY5iiroLZNWvWRoFNMwZYTCjp3oUawMMewKUSMtG2R
-         qrJwi+t0+gZluRbMON0FXIrSa4BUQ5AkeJJsxZB0RUk9Rc+2dkcgbVfb+VeiB9ZCSReA
-         ZORFY2HVTm2u28VVFhRJaICAG5yw+BEhib++U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NTFtvW9Z7pWHfvK8fawdp7hae6YucW8EOFMduRCV3ZM=;
-        b=Wk5WTVVQmkqLGEiAfv/iNacxXPSos9AFkON+X0SxYwTcVj91ebimiQDXAzkOpmWlA6
-         Fsz0IUSs7t6hkLt4FR70Ndyo1u7YpDi/FaDlwTolLOpDKpvlW+vd/eR8yKEkCgNZiFnb
-         THtJ4Bt49LNCgr6GbYv5wMm4xwALJmrxyhHmCzLIUYBCpLQlkABKbFySbHw4qwJq3W5C
-         QTP41ULhoGwRNWMpkh0a9c0RNE7fU10TIOBuqF2VtZvYWNELggDKsupj2hsPH8dCNr98
-         DbEX704d81NFk2fGtd8HenROAdoe5f0H1zICQaq/iJBkL3R6rLETzBqoumeZL8JpqWYs
-         Wh8A==
-X-Gm-Message-State: AGi0PuaQvx4In9lDZpa5f2wIJt+wqtKFsYsQZuftTXhNyDfUpBpy0P+i
-        72Ft65fudmiya/2krmWTyCMB2Q==
-X-Google-Smtp-Source: APiQypJYSPGb/vm2e7JVL672lR8HWUaeJEC0T9D2V0BWqJ254UQ5es/Lp06OSWAnhHJEse3mY7fuWw==
-X-Received: by 2002:a62:5ec7:: with SMTP id s190mr21792580pfb.130.1589311151493;
-        Tue, 12 May 2020 12:19:11 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:476b:691:abc3:38db])
-        by smtp.gmail.com with ESMTPSA id s15sm1532655pgv.5.2020.05.12.12.19.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 12:19:10 -0700 (PDT)
-Date:   Tue, 12 May 2020 12:19:10 -0700
-From:   Prashant Malani <pmalani@chromium.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Benson Leung <bleung@chromium.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH 2/4] usb: typec: mux: intel_pmc_mux: Support for static
- SBU/HSL orientation
-Message-ID: <20200512191910.GD136540@google.com>
-References: <20200507150900.12102-1-heikki.krogerus@linux.intel.com>
- <20200507150900.12102-3-heikki.krogerus@linux.intel.com>
- <20200507224041.GA247416@google.com>
- <20200508111840.GG645261@kuha.fi.intel.com>
- <20200511133202.GA2085641@kuha.fi.intel.com>
- <20200511175719.GA136540@google.com>
- <20200512142251.GD2085641@kuha.fi.intel.com>
+        Tue, 12 May 2020 15:20:44 -0400
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1jYaS8-0002XR-Ms; Tue, 12 May 2020 19:20:33 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id ED86367BB3; Tue, 12 May 2020 12:20:30 -0700 (PDT)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id E8090AC1DB;
+        Tue, 12 May 2020 12:20:30 -0700 (PDT)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     sathyanarayanan.kuppuswamy@linux.intel.com
+cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        liudongdong 00290354 <liudongdong3@huawei.com>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH v1 1/1] PCI/ERR: Handle fatal error recovery for non-hotplug capable devices
+In-reply-to: <f4bbacd3af453285271c8fc733652969e11b84f8.1588821160.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <18609.1588812972@famine> <f4bbacd3af453285271c8fc733652969e11b84f8.1588821160.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Comments: In-reply-to sathyanarayanan.kuppuswamy@linux.intel.com
+   message dated "Wed, 06 May 2020 20:32:59 -0700."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512142251.GD2085641@kuha.fi.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <9907.1589311230.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Tue, 12 May 2020 12:20:30 -0700
+Message-ID: <9908.1589311230@famine>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heikki,
+sathyanarayanan.kuppuswamy@linux.intel.com wrote:
 
-On Tue, May 12, 2020 at 05:22:51PM +0300, Heikki Krogerus wrote:
-> Hi Prashant,
-> 
-> On Mon, May 11, 2020 at 10:57:19AM -0700, Prashant Malani wrote:
-> > Hi Heikki,
-> > 
-> > Thanks a lot for looking into this. Kindly see my response inline:
-> > 
-> > On Mon, May 11, 2020 at 04:32:02PM +0300, Heikki Krogerus wrote:
-> > > On Fri, May 08, 2020 at 02:18:44PM +0300, Heikki Krogerus wrote:
-> > > > Hi Prashant,
-> > > > 
-> > > > On Thu, May 07, 2020 at 03:40:41PM -0700, Prashant Malani wrote:
-> > > > > > +static int sbu_orientation(struct pmc_usb_port *port)
-> > > > > > +{
-> > > > > > +	if (port->sbu_orientation)
-> > > > > > +		return port->sbu_orientation - 1;
-> > > > > > +
-> > > > > > +	return port->orientation - 1;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int hsl_orientation(struct pmc_usb_port *port)
-> > > > > > +{
-> > > > > > +	if (port->hsl_orientation)
-> > > > > > +		return port->hsl_orientation - 1;
-> > > > > > +
-> > > > > > +	return port->orientation - 1;
-> > > > > > +}
-> > > > > > +
-> > > > > >  static int pmc_usb_command(struct pmc_usb_port *port, u8 *msg, u32 len)
-> > > > > >  {
-> > > > > >  	u8 response[4];
-> > > > > > @@ -151,8 +170,9 @@ pmc_usb_mux_dp(struct pmc_usb_port *port, struct typec_mux_state *state)
-> > > > > >  
-> > > > > >  	req.mode_data = (port->orientation - 1) << PMC_USB_ALTMODE_ORI_SHIFT;
-> > > > > >  	req.mode_data |= (port->role - 1) << PMC_USB_ALTMODE_UFP_SHIFT;
-> > > > > > -	req.mode_data |= (port->orientation - 1) << PMC_USB_ALTMODE_ORI_AUX_SHIFT;
-> > > > > > -	req.mode_data |= (port->orientation - 1) << PMC_USB_ALTMODE_ORI_HSL_SHIFT;
-> > > > > > +
-> > > > > > +	req.mode_data |= sbu_orientation(port) << PMC_USB_ALTMODE_ORI_AUX_SHIFT;
-> > > > > 
-> > > > > I'm curious to know what would happen when sbu-orientation == "normal".
-> > > > > That means |port->sbu_orientation| == 1.
-> > > > > 
-> > > > > It sounds like what should happen is the AUX_SHIFT orientation
-> > > > > setting should follow what |port->orientation| is, but here it
-> > > > > looks like it will always be set to |port->sbu_orientation - 1|, i.e 0,
-> > > > > even if port->orientation == TYPEC_ORIENTATION_REVERSE, i.e 2, meaning
-> > > > > it should be set to 1 ?
-> > > > 
-> > > > I'll double check this, and get back to you..
-> > > 
-> > > This is not exactly an answer to your question, but it seems that
-> > > those bits are only valid if "Alternate-Direct" message is used.
-> > > Currently the driver does not support that message.
-> > Could you kindly provide some detail on when "Alternate-Direct" would be
-> > preferred to the current method?
-> 
-> Alternate Mode Direct request is supposed to be used if an alternate
-> mode is entered directly from disconnected state.
+>From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>
+>If there are non-hotplug capable devices connected to a given
+>port, then during the fatal error recovery(triggered by DPC or
+>AER), after calling reset_link() function, we cannot rely on
+>hotplug handler to detach and re-enumerate the device drivers
+>in the affected bus. Instead, we will have to let the error
+>recovery handler call report_slot_reset() for all devices in
+>the bus to notify about the reset operation. Although this is
+>only required for non hot-plug capable devices, doing it for
+>hotplug capable devices should not affect the functionality.
 
-Ack.
-> 
-> > Also, is there anything on the PMC side which is preventing the use of
-> > "Alternate-Direct" messages? It seems like the state transition diagram
-> > there would be simpler, although I'm likely missing significant details
-> > here.
-> 
-> So we actually should use the "direct" request if we are in
-> disconnected state to enter alt modes if I understood correctly. But
-> otherwise we should use the normal Alternate Mode request and not the
-> Alternate Mode "direct" request. And I'm afraid I don't know why.
+	Yicong,
 
-SG.
-> 
-> > > I think the correct thing to do now is to remove the two lines from
-> > > the driver where those bits (ORI-HSL and ORI-Aux) are set.
-> > I see. How would orientation then be handled in a retimer configuration
-> > where AUX/SBU is flipped by the retimer itself?
-> 
-> Note that if we send a separate "connection" request first, then we
-> already tell the HSL and SBU orientation as part of the payload of
-> that request. That is why there is no need to tell about the HSL and
-> SBU orientation with the normal Alternate Mode Request.
-> 
-> So we have already handled the HSL and SBU orientation by the time
-> this function is called.
+	Does the patch below also resolve the issue for you, as with
+your changed version of my original patch?
 
-Thanks for the explanation. I assume the HSL and SBU bit setting lines
-will be removed from pmc_usb_mux_tbt() too?
+	-J
 
-Best regards,
+>Along with above issue, this fix also applicable to following
+>issue.
+>
+>Commit 6d2c89441571 ("PCI/ERR: Update error status after
+>reset_link()") added support to store status of reset_link()
+>call. Although this fixed the error recovery issue observed if
+>the initial value of error status is PCI_ERS_RESULT_DISCONNECT
+>or PCI_ERS_RESULT_NO_AER_DRIVER, it also discarded the status
+>result from report_frozen_detected. This can cause a failure to
+>recover if _NEED_RESET is returned by report_frozen_detected and
+>report_slot_reset is not invoked.
+>
+>Such an event can be induced for testing purposes by reducing the
+>Max_Payload_Size of a PCIe bridge to less than that of a device
+>downstream from the bridge, and then initiating I/O through the
+>device, resulting in oversize transactions.  In the presence of DPC,
+>this results in a containment event and attempted reset and recovery
+>via pcie_do_recovery.  After 6d2c89441571 report_slot_reset is not
+>invoked, and the device does not recover.
+>
+>[original patch is from jay.vosburgh@canonical.com]
+>[original patch link https://lore.kernel.org/linux-pci/18609.1588812972@famine/]
+>Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
+>Signed-off-by: Jay Vosburgh <jay.vosburgh@canonical.com>
+>Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>---
+> drivers/pci/pcie/err.c | 19 +++++++++++++++----
+> 1 file changed, 15 insertions(+), 4 deletions(-)
+>
+>diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+>index 14bb8f54723e..db80e1ecb2dc 100644
+>--- a/drivers/pci/pcie/err.c
+>+++ b/drivers/pci/pcie/err.c
+>@@ -165,13 +165,24 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+> 	pci_dbg(dev, "broadcast error_detected message\n");
+> 	if (state == pci_channel_io_frozen) {
+> 		pci_walk_bus(bus, report_frozen_detected, &status);
+>-		status = reset_link(dev);
+>-		if (status != PCI_ERS_RESULT_RECOVERED) {
+>+		status = PCI_ERS_RESULT_NEED_RESET;
+>+	} else {
+>+		pci_walk_bus(bus, report_normal_detected, &status);
+>+	}
+>+
+>+	if (status == PCI_ERS_RESULT_NEED_RESET) {
+>+		if (reset_link) {
+>+			if (reset_link(dev) != PCI_ERS_RESULT_RECOVERED)
+>+				status = PCI_ERS_RESULT_DISCONNECT;
+>+		} else {
+>+			if (pci_bus_error_reset(dev))
+>+				status = PCI_ERS_RESULT_DISCONNECT;
+>+		}
+>+
+>+		if (status == PCI_ERS_RESULT_DISCONNECT) {
+> 			pci_warn(dev, "link reset failed\n");
+> 			goto failed;
+> 		}
+>-	} else {
+>-		pci_walk_bus(bus, report_normal_detected, &status);
+> 	}
 > 
-> 
-> thanks,
-> 
-> -- 
-> heikki
+> 	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
+>-- 
+>2.17.1
+>
+
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
