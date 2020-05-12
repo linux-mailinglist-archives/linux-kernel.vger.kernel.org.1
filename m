@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B64C1CF7FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 950A01CF801
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730479AbgELOzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 10:55:25 -0400
-Received: from mga05.intel.com ([192.55.52.43]:29542 "EHLO mga05.intel.com"
+        id S1730500AbgELOzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 10:55:31 -0400
+Received: from mga05.intel.com ([192.55.52.43]:29539 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730401AbgELOzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 10:55:13 -0400
-IronPort-SDR: c27ePeBpwIbFBWlumWTlx0MjUChnf78lDw6ANtmg/CywCgB5H37bkgyGP5tuXUiAqE1KwusDrZ
- BHulRxDKDfUA==
+        id S1730395AbgELOzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 10:55:11 -0400
+IronPort-SDR: vQQhiBNwN2DevXZkSmOBOVU0d2N/D62fw3TZ/RbUJnoQZ40AwVWih55NNZ/v1KNvzMXvEycTkF
+ oeoHrCeF3gfg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 07:55:08 -0700
-IronPort-SDR: crp+24nBYeGf1LK6A4n56AffdBqwAkM8ZNkWoKPED3TwSlSg3XtcmAXygJaPE62wIjAwQME1/P
- Ft8hAFWvYeew==
+IronPort-SDR: nl+l8WrMJYlk+I0Wiyt9ow1VS7LlUUw5/ez85ZaAUZE41MTBX0wuUR8IoxqmowSCh7TrB66EKl
+ KzASr10sx4Qg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,384,1583222400"; 
-   d="scan'208";a="371587816"
+   d="scan'208";a="371587820"
 Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
   by fmsmga001.fm.intel.com with ESMTP; 12 May 2020 07:55:08 -0700
 From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
@@ -39,9 +39,9 @@ To:     linux-kernel@vger.kernel.org, x86@kernel.org,
         Fenghua Yu <fenghua.yu@intel.com>,
         Peter Zijlstra <peterz@infradead.org>
 Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [PATCH v4 05/10] x86/fpu/xstate: Define new functions for clearing fpregs and xstates
-Date:   Tue, 12 May 2020 07:54:39 -0700
-Message-Id: <20200512145444.15483-6-yu-cheng.yu@intel.com>
+Subject: [PATCH v4 06/10] x86/fpu/xstate: Update sanitize_restored_xstate() for supervisor xstates
+Date:   Tue, 12 May 2020 07:54:40 -0700
+Message-Id: <20200512145444.15483-7-yu-cheng.yu@intel.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200512145444.15483-1-yu-cheng.yu@intel.com>
 References: <20200512145444.15483-1-yu-cheng.yu@intel.com>
@@ -52,183 +52,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenghua Yu <fenghua.yu@intel.com>
+The function sanitize_restored_xstate() sanitizes user xstates of an XSAVE
+buffer by clearing bits not in the input 'xfeatures' from the buffer's
+header->xfeatures, effectively resetting those features back to the init
+state.
 
-Currently, fpu__clear() clears all fpregs and xstates.  Once XSAVES
-supervisor states are introduced, supervisor settings (e.g. CET xstates)
-must remain active for signals; It is necessary to have separate functions:
+When supervisor xstates are introduced, it is necessary to make sure only
+user xstates are sanitized.  Ensure supervisor bits in header->xfeatures
+stay set and supervisor states are not modified.
 
-- Create fpu__clear_user_states(): clear only user settings for signals;
-- Create fpu__clear_all(): clear both user and supervisor settings in
-   flush_thread().
+To make names clear, also:
 
-Also modify copy_init_fpstate_to_fpregs() to take a mask from above two
-functions.
+- Rename the function to sanitize_restored_user_xstate().
+- Rename input parameter 'xfeatures' to 'user_xfeatures'.
+- In __fpu__restore_sig(), rename 'xfeatures' to 'user_xfeatures'.
 
-Remove obvious side-comment in fpu__clear(), while at it.
-
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Co-developed-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
 ---
 v3:
-- Put common code into a static function fpu__clear(), with a parameter
-  user_only.
+- Change xfeatures_user to user_xfeatures.
 
-v2:
-- Fixed an issue where fpu__clear_user_states() drops supervisor xstates.
-- Revise commit log.
+ arch/x86/kernel/fpu/signal.c | 37 +++++++++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 13 deletions(-)
 
- arch/x86/include/asm/fpu/internal.h |  3 +-
- arch/x86/kernel/fpu/core.c          | 49 +++++++++++++++++++----------
- arch/x86/kernel/fpu/signal.c        |  4 +--
- arch/x86/kernel/process.c           |  2 +-
- arch/x86/kernel/signal.c            |  2 +-
- 5 files changed, 39 insertions(+), 21 deletions(-)
-
-diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-index ccb1bb32ad7d..a42fcb4b690d 100644
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -31,7 +31,8 @@ extern void fpu__save(struct fpu *fpu);
- extern int  fpu__restore_sig(void __user *buf, int ia32_frame);
- extern void fpu__drop(struct fpu *fpu);
- extern int  fpu__copy(struct task_struct *dst, struct task_struct *src);
--extern void fpu__clear(struct fpu *fpu);
-+extern void fpu__clear_user_states(struct fpu *fpu);
-+extern void fpu__clear_all(struct fpu *fpu);
- extern int  fpu__exception_code(struct fpu *fpu, int trap_nr);
- extern int  dump_fpu(struct pt_regs *ptregs, struct user_i387_struct *fpstate);
- 
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 12c70840980e..7fddd5d60443 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -294,12 +294,10 @@ void fpu__drop(struct fpu *fpu)
-  * Clear FPU registers by setting them up from
-  * the init fpstate:
-  */
--static inline void copy_init_fpstate_to_fpregs(void)
-+static inline void copy_init_fpstate_to_fpregs(u64 features_mask)
- {
--	fpregs_lock();
--
- 	if (use_xsave())
--		copy_kernel_to_xregs(&init_fpstate.xsave, -1);
-+		copy_kernel_to_xregs(&init_fpstate.xsave, features_mask);
- 	else if (static_cpu_has(X86_FEATURE_FXSR))
- 		copy_kernel_to_fxregs(&init_fpstate.fxsave);
- 	else
-@@ -307,9 +305,6 @@ static inline void copy_init_fpstate_to_fpregs(void)
- 
- 	if (boot_cpu_has(X86_FEATURE_OSPKE))
- 		copy_init_pkru_to_fpregs();
--
--	fpregs_mark_activate();
--	fpregs_unlock();
- }
- 
- /*
-@@ -318,18 +313,40 @@ static inline void copy_init_fpstate_to_fpregs(void)
-  * Called by sys_execve(), by the signal handler code and by various
-  * error paths.
-  */
--void fpu__clear(struct fpu *fpu)
-+static void fpu__clear(struct fpu *fpu, int user_only)
- {
--	WARN_ON_FPU(fpu != &current->thread.fpu); /* Almost certainly an anomaly */
-+	WARN_ON_FPU(fpu != &current->thread.fpu);
- 
--	fpu__drop(fpu);
-+	if (!static_cpu_has(X86_FEATURE_FPU)) {
-+		fpu__drop(fpu);
-+		fpu__initialize(fpu);
-+		return;
-+	}
- 
--	/*
--	 * Make sure fpstate is cleared and initialized.
--	 */
--	fpu__initialize(fpu);
--	if (static_cpu_has(X86_FEATURE_FPU))
--		copy_init_fpstate_to_fpregs();
-+	fpregs_lock();
-+
-+	if (user_only) {
-+		if (!fpregs_state_valid(fpu, smp_processor_id()) &&
-+		    xfeatures_mask_supervisor())
-+			copy_kernel_to_xregs(&fpu->state.xsave,
-+					     xfeatures_mask_supervisor());
-+		copy_init_fpstate_to_fpregs(xfeatures_mask_user());
-+	} else {
-+		copy_init_fpstate_to_fpregs(xfeatures_mask_all);
-+	}
-+
-+	fpregs_mark_activate();
-+	fpregs_unlock();
-+}
-+
-+void fpu__clear_user_states(struct fpu *fpu)
-+{
-+	fpu__clear(fpu, 1);
-+}
-+
-+void fpu__clear_all(struct fpu *fpu)
-+{
-+	fpu__clear(fpu, 0);
- }
- 
- /*
 diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index 3df0cfae535f..cd6eafba12da 100644
+index cd6eafba12da..40583487883e 100644
 --- a/arch/x86/kernel/fpu/signal.c
 +++ b/arch/x86/kernel/fpu/signal.c
-@@ -289,7 +289,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 			 IS_ENABLED(CONFIG_IA32_EMULATION));
- 
- 	if (!buf) {
--		fpu__clear(fpu);
-+		fpu__clear_user_states(fpu);
- 		return 0;
- 	}
- 
-@@ -416,7 +416,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 
- err_out:
- 	if (ret)
--		fpu__clear(fpu);
-+		fpu__clear_user_states(fpu);
- 	return ret;
+@@ -211,9 +211,9 @@ int copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
  }
  
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 9da70b279dad..de182b84723a 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -191,7 +191,7 @@ void flush_thread(void)
- 	flush_ptrace_hw_breakpoint(tsk);
- 	memset(tsk->thread.tls_array, 0, sizeof(tsk->thread.tls_array));
- 
--	fpu__clear(&tsk->thread.fpu);
-+	fpu__clear_all(&tsk->thread.fpu);
- }
- 
- void disable_TSC(void)
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index 83b74fb38c8f..0052bbe5dfd4 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -732,7 +732,7 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs)
- 		/*
- 		 * Ensure the signal handler starts with the new fpu state.
+ static inline void
+-sanitize_restored_xstate(union fpregs_state *state,
+-			 struct user_i387_ia32_struct *ia32_env,
+-			 u64 xfeatures, int fx_only)
++sanitize_restored_user_xstate(union fpregs_state *state,
++			      struct user_i387_ia32_struct *ia32_env,
++			      u64 user_xfeatures, int fx_only)
+ {
+ 	struct xregs_state *xsave = &state->xsave;
+ 	struct xstate_header *header = &xsave->header;
+@@ -226,13 +226,22 @@ sanitize_restored_xstate(union fpregs_state *state,
  		 */
--		fpu__clear(fpu);
-+		fpu__clear_user_states(fpu);
+ 
+ 		/*
+-		 * Init the state that is not present in the memory
+-		 * layout and not enabled by the OS.
++		 * 'user_xfeatures' might have bits clear which are
++		 * set in header->xfeatures. This represents features that
++		 * were in init state prior to a signal delivery, and need
++		 * to be reset back to the init state.  Clear any user
++		 * feature bits which are set in the kernel buffer to get
++		 * them back to the init state.
++		 *
++		 * Supervisor state is unchanged by input from userspace.
++		 * Ensure supervisor state bits stay set and supervisor
++		 * state is not modified.
+ 		 */
+ 		if (fx_only)
+ 			header->xfeatures = XFEATURE_MASK_FPSSE;
+ 		else
+-			header->xfeatures &= xfeatures;
++			header->xfeatures &= user_xfeatures |
++					     xfeatures_mask_supervisor();
  	}
- 	signal_setup_done(failed, ksig, stepping);
- }
+ 
+ 	if (use_fxsr()) {
+@@ -281,7 +290,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
+ 	struct task_struct *tsk = current;
+ 	struct fpu *fpu = &tsk->thread.fpu;
+ 	struct user_i387_ia32_struct env;
+-	u64 xfeatures = 0;
++	u64 user_xfeatures = 0;
+ 	int fx_only = 0;
+ 	int ret = 0;
+ 
+@@ -314,7 +323,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
+ 			trace_x86_fpu_xstate_check_failed(fpu);
+ 		} else {
+ 			state_size = fx_sw_user.xstate_size;
+-			xfeatures = fx_sw_user.xfeatures;
++			user_xfeatures = fx_sw_user.xfeatures;
+ 		}
+ 	}
+ 
+@@ -349,7 +358,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
+ 		 */
+ 		fpregs_lock();
+ 		pagefault_disable();
+-		ret = copy_user_to_fpregs_zeroing(buf_fx, xfeatures, fx_only);
++		ret = copy_user_to_fpregs_zeroing(buf_fx, user_xfeatures, fx_only);
+ 		pagefault_enable();
+ 		if (!ret) {
+ 			fpregs_mark_activate();
+@@ -362,7 +371,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
+ 
+ 
+ 	if (use_xsave() && !fx_only) {
+-		u64 init_bv = xfeatures_mask_user() & ~xfeatures;
++		u64 init_bv = xfeatures_mask_user() & ~user_xfeatures;
+ 
+ 		if (using_compacted_format()) {
+ 			ret = copy_user_to_xstate(&fpu->state.xsave, buf_fx);
+@@ -375,12 +384,13 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
+ 		if (ret)
+ 			goto err_out;
+ 
+-		sanitize_restored_xstate(&fpu->state, envp, xfeatures, fx_only);
++		sanitize_restored_user_xstate(&fpu->state, envp, user_xfeatures,
++					      fx_only);
+ 
+ 		fpregs_lock();
+ 		if (unlikely(init_bv))
+ 			copy_kernel_to_xregs(&init_fpstate.xsave, init_bv);
+-		ret = copy_kernel_to_xregs_err(&fpu->state.xsave, xfeatures);
++		ret = copy_kernel_to_xregs_err(&fpu->state.xsave, user_xfeatures);
+ 
+ 	} else if (use_fxsr()) {
+ 		ret = __copy_from_user(&fpu->state.fxsave, buf_fx, state_size);
+@@ -389,7 +399,8 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
+ 			goto err_out;
+ 		}
+ 
+-		sanitize_restored_xstate(&fpu->state, envp, xfeatures, fx_only);
++		sanitize_restored_user_xstate(&fpu->state, envp,
++					      user_xfeatures, fx_only);
+ 
+ 		fpregs_lock();
+ 		if (use_xsave()) {
 -- 
 2.21.0
 
