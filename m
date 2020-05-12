@@ -2,139 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E141CEC69
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 07:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B751CEC6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 07:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728115AbgELFYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 01:24:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37526 "EHLO
+        id S1728711AbgELFZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 01:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725814AbgELFYO (ORCPT
+        by vger.kernel.org with ESMTP id S1726289AbgELFZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 01:24:14 -0400
+        Tue, 12 May 2020 01:25:46 -0400
 Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318DEC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 22:24:14 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id s20so4889467plp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 22:24:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB42C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 22:25:45 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id f15so4889090plr.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 22:25:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=jfC4N65vXGbABmirxUbwuTEeeDvoR72Zy98HX99h9ok=;
-        b=AOfsAxk5BJNVbrevyPvI8/HrGs/eeWO+2y1kNk+7R0AKyBO+OOFSxI12CRfKgEI7j+
-         naT8Xg2NzTkyKRcJ9M7CqujnbiYZM3VBaZs9v+04O8phv559Pzk5AS3cgNKVY/kGfKJy
-         qEX8Byz+9n6strmwgZ64FUAJNNmRjUXAuXKaM=
+         :content-disposition:in-reply-to;
+        bh=qY4tIWDJLygZQYEHexbugEUDcuN3ImOXtPyRSj2Tmbo=;
+        b=UqL+G4svk3bMMRb1G1HJ83F+j3EPH3Vh6vnvyxepjH08v+uIeRrDEaRwEi6iY3uK/O
+         eQZdIBa2yFiAzh7ndKZerzIKrMybuDYA3tR1BgJ94Ko6EtNJVHmJfK2ZaV0sWOjPhFOT
+         7l41urSld5o73mzAeptvdKcPymsEKPm/NfZkgH59wZXQkCBzZm2yAR4eh2BCZjgKytIZ
+         jMpHkSbiWADXMwdqdVf/YZxp9doSfSplRjuLDCT9HGmGiOsRVsFDlcxP8zHd0tUQaKUV
+         47TP9BrLyQRkFjoNj387MAXQUVYlYw0CLi/ob8h5bd9e3HgCEsQwSHA3JQ/kSaZH07R8
+         SJnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jfC4N65vXGbABmirxUbwuTEeeDvoR72Zy98HX99h9ok=;
-        b=Mi+BJgeA2lpVflngYy9zro7jq2384tjK2c7oQWMMdfL54na9ApZ35SvvO3ZOE8jmEl
-         RuhT+NBW1Xg+hqz2tjQhIKZ0N31p+T8qwHDJt1EeDz2Hp0KnqyopWwI2eA+6aSEFlS7Q
-         kG1AafQjLG+MeTZ9oNKBSfvF6cbTE6jAQ5Crzc1oXmpW7mtkvHAI+aJgQloMxtjzLrsT
-         ea5LAK1e8tw79BJMbqD8pFT1EtQ248ISSaw3tZjHoY1i9xpP4J25Pist3v4xInuw1YaC
-         M0CoMdbFRkS+eGSw2XKIU/XWHjbnOBavdtsZUP/+PFeO1/2PoEIh3sTt90B5b+p7+ZMA
-         +RLA==
-X-Gm-Message-State: AOAM531ZX6v80kBFTrLLQant+LTK2oc7kaBJ1RMSmyVhlygIhTp28fY5
-        k59N+nqaEkzYbVRKY2YU2rkp8A==
-X-Google-Smtp-Source: ABdhPJxl1Ugzm578aHj3k9+WEXeAs8KN2PSPhcPvtRj92RMTWYBi22PNpuPubFjaea1ILBbMle6V5A==
-X-Received: by 2002:a17:90a:19c9:: with SMTP id 9mr1610623pjj.77.1589261053505;
-        Mon, 11 May 2020 22:24:13 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 1sm10921354pff.180.2020.05.11.22.24.11
+         :mime-version:content-disposition:in-reply-to;
+        bh=qY4tIWDJLygZQYEHexbugEUDcuN3ImOXtPyRSj2Tmbo=;
+        b=A+KRHk0kchiKCyUQEppIadBOREYtFjN7i9pIEWyFOH6OR/w6n5RNZZ5fhVvZypI1Pw
+         HxUyfHBOGZRcDv58UfBYFdaTxZZz9b+oHvhI95WcN2NVM9ZquG2e2ncXbD7OXsCTCWRq
+         3qrLJjCwdw5vbrNgQf59gpPeWMaYEZvRFp2u4KHGN7FL4/NFW/1utM+G28fC3v+zN06x
+         CZxuUlX/tqhpfHgoMDYaJJBlklC76zi8VkwDSNUg2nJw+weRK79LmwPGcf4WETA4ebw3
+         1LOF4sOP1uHWhXNwMQCFiYAwjZhDGedrk1j4Wmfx7f8rMClK2x7708de8iuc0On09snw
+         /Wng==
+X-Gm-Message-State: AOAM531ZZdE95honOfC8SCDQ2tq2Ztjlj3sZcD7Z/xbq4DcGfLBekWOL
+        MPAMVGBrsEr0JuwvVTgopb0ytw==
+X-Google-Smtp-Source: ABdhPJxLiAh4YWUEEFs84ClWwP2pdJ/iMPgKckY4JWQXIdGqJrQGjpc5bov6yWSLe1sONjTFXGjpLg==
+X-Received: by 2002:a17:902:9f97:: with SMTP id g23mr1640890plq.30.1589261145272;
+        Mon, 11 May 2020 22:25:45 -0700 (PDT)
+Received: from yoga (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id z13sm11733513pjz.42.2020.05.11.22.25.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 22:24:11 -0700 (PDT)
-Date:   Mon, 11 May 2020 22:24:10 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] tpm: eventlog: Replace zero-length array with
- flexible-array member
-Message-ID: <202005112224.9EFD07F5@keescook>
-References: <20200508163826.GA768@embeddedor>
+        Mon, 11 May 2020 22:25:44 -0700 (PDT)
+Date:   Mon, 11 May 2020 22:25:41 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     agross@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, nishakumari@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org,
+        rnayak@codeaurora.org
+Subject: Re: [v2 4/4] regulator: qcom: labibb: Add SC interrupt handling
+Message-ID: <20200512052541.GF1302550@yoga>
+References: <20200508204200.13481-1-sumit.semwal@linaro.org>
+ <20200508204200.13481-5-sumit.semwal@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200508163826.GA768@embeddedor>
+In-Reply-To: <20200508204200.13481-5-sumit.semwal@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 11:38:26AM -0500, Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> sizeof(flexible-array-member) triggers a warning because flexible array
-> members have incomplete type[1]. There are some instances of code in
-> which the sizeof operator is being incorrectly/erroneously applied to
-> zero-length arrays and the result is zero. Such instances may be hiding
-> some bugs. So, this work (flexible-array member conversions) will also
-> help to get completely rid of those sorts of issues.
-> 
-> Also, the following issue shows up due to the flexible-array member
-> having incomplete type[4]:
-> 
-> drivers/char/tpm/eventlog/tpm2.c: In function ‘tpm2_bios_measurements_start’:
-> drivers/char/tpm/eventlog/tpm2.c:54:46: error: invalid application of ‘sizeof’ to incomplete type ‘u8[]’ {aka ‘unsigned char[]’}
->    54 |  size = sizeof(struct tcg_pcr_event) - sizeof(event_header->event)
->       |                                              ^
-> drivers/char/tpm/eventlog/tpm2.c: In function ‘tpm2_bios_measurements_next’:
-> drivers/char/tpm/eventlog/tpm2.c:102:10: error: invalid application of ‘sizeof’ to incomplete type ‘u8[]’ {aka ‘unsigned char[]’}
->   102 |    sizeof(event_header->event) + event_header->event_size;
->       |          ^
-> drivers/char/tpm/eventlog/tpm2.c: In function ‘tpm2_binary_bios_measurements_show’:
-> drivers/char/tpm/eventlog/tpm2.c:140:10: error: invalid application of ‘sizeof’ to incomplete type ‘u8[]’ {aka ‘unsigned char[]’}
->   140 |    sizeof(event_header->event) + event_header->event_size;
->       |          ^
-> scripts/Makefile.build:266: recipe for target 'drivers/char/tpm/eventlog/tpm2.o' failed
-> make[3]: *** [drivers/char/tpm/eventlog/tpm2.o] Error 1
-> 
-> As mentioned above: "Flexible array members have incomplete type, and
-> so the sizeof operator may not be applied. As a quirk of the original
-> implementation of zero-length arrays, sizeof evaluates to zero."[1] As
-> in "sizeof(event_header->event) always evaluated to 0, so removing it
-> has no effect".
-> 
-> Lastly, make use of the struct_size() helper to deal with the
-> flexible array member and its host structure.
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> [4] https://github.com/KSPP/linux/issues/43
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+On Fri 08 May 13:42 PDT 2020, Sumit Semwal wrote:
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> From: Nisha Kumari <nishakumari@codeaurora.org>
+> 
+> Add Short circuit interrupt handling and recovery for the lab and
+> ibb regulators on qcom platforms.
+> 
+> The client panel drivers need to register for REGULATOR_EVENT_OVER_CURRENT
+> notification which will be triggered on short circuit. They should
+> try to enable the regulator once, and if it doesn't get enabled,
+> handle shutting down the panel accordingly.
+> 
+> Signed-off-by: Nisha Kumari <nishakumari@codeaurora.org>
+> Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
+> 
+> --
+> v2: sumits: reworked handling to user regmap_read_poll_timeout, and handle it
+>     per-regulator instead of clearing both lab and ibb errors on either irq
+>     triggering. Also added REGULATOR_EVENT_OVER_CURRENT handling and
+>     notification to clients.
+> ---
+>  drivers/regulator/qcom-labibb-regulator.c | 103 +++++++++++++++++++++-
+>  1 file changed, 100 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/regulator/qcom-labibb-regulator.c b/drivers/regulator/qcom-labibb-regulator.c
+> index a9dc7c060375..3539631c9f96 100644
+> --- a/drivers/regulator/qcom-labibb-regulator.c
+> +++ b/drivers/regulator/qcom-labibb-regulator.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  // Copyright (c) 2019, The Linux Foundation. All rights reserved.
+>  
+> +#include <linux/interrupt.h>
+>  #include <linux/module.h>
+>  #include <linux/of_irq.h>
+>  #include <linux/of.h>
+> @@ -18,11 +19,15 @@
+>  #define REG_LABIBB_ENABLE_CTL		0x46
+>  #define LABIBB_STATUS1_VREG_OK_BIT	BIT(7)
+>  #define LABIBB_CONTROL_ENABLE		BIT(7)
+> +#define LABIBB_STATUS1_SC_DETECT_BIT	BIT(6)
+>  
+>  #define LAB_ENABLE_CTL_MASK		BIT(7)
+>  #define IBB_ENABLE_CTL_MASK		(BIT(7) | BIT(6))
+>  
+>  #define POWER_DELAY			8000
+> +#define POLLING_SCP_DONE_INTERVAL_US	5000
+> +#define POLLING_SCP_TIMEOUT		16000
+> +
+>  
+>  struct labibb_regulator {
+>  	struct regulator_desc		desc;
+> @@ -30,6 +35,8 @@ struct labibb_regulator {
+>  	struct regmap			*regmap;
+>  	struct regulator_dev		*rdev;
+>  	u16				base;
+> +	int				sc_irq;
+> +	int				vreg_enabled;
+>  	u8				type;
+>  };
+>  
+> @@ -112,9 +119,10 @@ static int qcom_labibb_regulator_enable(struct regulator_dev *rdev)
+>  		return ret;
+>  	}
+>  
+> -	if (ret)
+> +	if (ret) {
+> +		reg->vreg_enabled = 1;
+>  		return 0;
+> -
+> +	}
+>  
+>  	dev_err(reg->dev, "Can't enable %s\n", reg->desc.name);
+>  	return -EINVAL;
+> @@ -140,8 +148,10 @@ static int qcom_labibb_regulator_disable(struct regulator_dev *rdev)
+>  		return ret;
+>  	}
+>  
+> -	if (!ret)
+> +	if (!ret) {
+> +		reg->vreg_enabled = 0;
+>  		return 0;
+> +	}
+>  
+>  	dev_err(reg->dev, "Can't disable %s\n", reg->desc.name);
+>  	return -EINVAL;
+> @@ -153,6 +163,70 @@ static struct regulator_ops qcom_labibb_ops = {
+>  	.is_enabled		= qcom_labibb_regulator_is_enabled,
+>  };
+>  
+> +
+> +static irqreturn_t labibb_sc_err_handler(int irq, void *_reg)
+> +{
+> +	int ret, count;
+> +	u16 reg;
+> +	u8 sc_err_mask;
+> +	unsigned int val;
+> +	struct labibb_regulator *labibb_reg = (struct labibb_regulator *)_reg;
 
--- 
-Kees Cook
+No need to explicitly typecast a void *.
+
+> +	bool in_sc_err, reg_en, scp_done = false;
+
+reg_en is unused.
+
+> +
+> +	if (irq == labibb_reg->sc_irq)
+
+When is this false?
+
+> +		reg = labibb_reg->base + REG_LABIBB_STATUS1;
+> +	else
+> +		return IRQ_HANDLED;
+> +
+> +	sc_err_mask = LABIBB_STATUS1_SC_DETECT_BIT;
+> +
+> +	ret = regmap_bulk_read(labibb_reg->regmap, reg, &val, 1);
+
+Just inline reg->base + REG_LABIBB_STATUS1 in this call.
+
+> +	if (ret < 0) {
+> +		dev_err(labibb_reg->dev, "Read failed, ret=%d\n", ret);
+> +		return IRQ_HANDLED;
+> +	}
+> +	dev_dbg(labibb_reg->dev, "%s SC error triggered! STATUS1 = %d\n",
+> +		labibb_reg->desc.name, val);
+> +
+> +	in_sc_err = !!(val & sc_err_mask);
+> +
+> +	/*
+> +	 * The SC(short circuit) fault would trigger PBS(Portable Batch
+> +	 * System) to disable regulators for protection. This would
+> +	 * cause the SC_DETECT status being cleared so that it's not
+> +	 * able to get the SC fault status.
+> +	 * Check if the regulator is enabled in the driver but
+> +	 * disabled in hardware, this means a SC fault had happened
+> +	 * and SCP handling is completed by PBS.
+> +	 */
+> +	if (!in_sc_err) {
+
+	if (!(val & LABIBB_STATUS1_SC_DETECT_BIT)) {
+
+> +
+> +		reg = labibb_reg->base + REG_LABIBB_ENABLE_CTL;
+> +
+> +		ret = regmap_read_poll_timeout(labibb_reg->regmap,
+> +					reg, val,
+> +					!(val & LABIBB_CONTROL_ENABLE),
+> +					POLLING_SCP_DONE_INTERVAL_US,
+> +					POLLING_SCP_TIMEOUT);
+> +
+> +		if (!ret && labibb_reg->vreg_enabled) {
+
+Wouldn't be fine to assume that if you get a short circuit IRQ the
+regulator is enabled?
+
+If you are worried about racing with a disable this won't work anyways,
+and you better enable_irq()/disable_irq() in regulator enable/disable,
+respectively.
+
+> +			dev_dbg(labibb_reg->dev,
+> +				"%s has been disabled by SCP\n",
+> +				labibb_reg->desc.name);
+> +			scp_done = true;
+> +		}
+
+If you flip the poll check around you will get here by not being in an
+short-circuit condition and you conclude that the regulator is still on;
+in which case you can just return here.
+
+That way you can drop in_sc_err and scp_done and flatten below
+conditional section.
+
+> +	}
+> +
+> +	if (in_sc_err || scp_done) {
+> +		regulator_lock(labibb_reg->rdev);
+> +		regulator_notifier_call_chain(labibb_reg->rdev,
+> +						REGULATOR_EVENT_OVER_CURRENT,
+> +						NULL);
+> +		regulator_unlock(labibb_reg->rdev);
+> +	}
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  static int register_labibb_regulator(struct qcom_labibb *labibb,
+>  				const struct labibb_regulator_data *reg_data,
+>  				struct device_node *of_node)
+> @@ -181,6 +255,29 @@ static int register_labibb_regulator(struct qcom_labibb *labibb,
+>  	reg->desc.type = REGULATOR_VOLTAGE;
+>  	reg->desc.ops = &qcom_labibb_ops;
+>  
+> +	reg->sc_irq = -EINVAL;
+> +	ret = of_irq_get_byname(of_node, reg_data->irq_name);
+> +	if (ret < 0)
+> +		dev_dbg(labibb->dev,
+
+Isn't this an error?
+
+> +			"Unable to get %s, ret = %d\n",
+> +			reg_data->irq_name, ret);
+> +	else
+> +		reg->sc_irq = ret;
+> +
+> +	if (reg->sc_irq > 0) {
+> +		ret = devm_request_threaded_irq(labibb->dev,
+> +						reg->sc_irq,
+> +						NULL, labibb_sc_err_handler,
+> +						IRQF_ONESHOT |
+> +						IRQF_TRIGGER_RISING,
+
+Omit IRQF_TRIGGER_RISING and let that come from DT.
+
+> +						reg_data->irq_name, labibb);
+> +		if (ret) {
+> +			dev_err(labibb->dev, "Failed to register '%s' irq ret=%d\n",
+> +				reg_data->irq_name, ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+
+Regards,
+Bjorn
+
+>  	cfg.dev = labibb->dev;
+>  	cfg.driver_data = reg;
+>  	cfg.regmap = labibb->regmap;
+> -- 
+> 2.26.2
+> 
