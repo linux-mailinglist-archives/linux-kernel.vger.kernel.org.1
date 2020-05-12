@@ -2,293 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C02E1CF1B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 11:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0091CF104
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 11:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729245AbgELJgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 05:36:46 -0400
-Received: from lgeamrelo11.lge.com ([156.147.23.51]:42371 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726193AbgELJgp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 05:36:45 -0400
-Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
-        by 156.147.23.51 with ESMTP; 12 May 2020 18:06:40 +0900
-X-Original-SENDERIP: 156.147.1.125
-X-Original-MAILFROM: changjoon.lee@lge.com
-Received: from unknown (HELO MacBookPro.local.net) (10.157.161.30)
-        by 156.147.1.125 with ESMTP; 12 May 2020 18:06:40 +0900
-X-Original-SENDERIP: 10.157.161.30
-X-Original-MAILFROM: changjoon.lee@lge.com
-From:   changjoon.lee@lge.com
-To:     tiwai@suse.de
-Cc:     alsa-devel@alsa-project.org, linux@endlessm.com,
-        linux-kernel@vger.kernel.org, ChangJoon Lee <changjoon.lee@lge.com>
-Subject: [PATCH 1/1] Updated negative return values for documentation update.
-Date:   Tue, 12 May 2020 18:05:47 +0900
-Message-Id: <20200512090547.76991-2-changjoon.lee@lge.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200512090547.76991-1-changjoon.lee@lge.com>
-References: <20200512090547.76991-1-changjoon.lee@lge.com>
+        id S1729259AbgELJGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 05:06:19 -0400
+Received: from ozlabs.org ([203.11.71.1]:51665 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725776AbgELJGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 05:06:18 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49LsNm0Jq9z9sRY;
+        Tue, 12 May 2020 19:06:15 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1589274376;
+        bh=UKtCMmj3h8KVNRGWszZ5HeqNppiHaCBc4J6oD6lYmog=;
+        h=Date:From:To:Cc:Subject:From;
+        b=KyT3fk47WT3dI8L02PPGgATiSn0vXelAFJlrZ1RiWlBiK2xVfBu7UqmVlXJbgwlkg
+         pEJXe/gkd9vKeCjk0VARd36pO+VN1ZMr7GkkrTQ3mdHo3Dv3y4RY86Mcwx9wCRfJka
+         IR0qpN3+MucKu/T0sx3Krjwlg4K1MavNS0oYYAWv0O9kdtIiBWsS+DTsK7veRVSeIm
+         wsgG++7gEnRq5rvK0AmyIytKgSCfFNZmurwHDL6cbuBZ4FjaUapxw36FDXTXlGDAYx
+         pIubWae3nZa6cuussmO89UTDm6opAkaRmriFEfCsy06NE9qNZuRt6llLNegmii8Ffv
+         aNr52/tttjFuw==
+Date:   Tue, 12 May 2020 19:06:14 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Howells <dhowells@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the fsinfo tree with the kbuild tree
+Message-ID: <20200512190614.1bebd8ba@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/DsywktJnIZ9OIlJ.O2pS6xB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChangJoon Lee <changjoon.lee@lge.com>
+--Sig_/DsywktJnIZ9OIlJ.O2pS6xB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: ChangJoon Lee <changjoon.lee@lge.com>
----
- src/pcm/pcm.c | 57 ++++++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 54 insertions(+), 3 deletions(-)
+Hi all,
 
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 1064044c..b53797a6 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -820,6 +820,7 @@ int snd_pcm_nonblock(snd_pcm_t *pcm, int nonblock)
-  * \param sig Signal to raise: < 0 disable, 0 default (SIGIO)
-  * \param pid Process ID to signal: 0 current
-  * \return 0 on success otherwise a negative error code
-+ * \return -ENOSYS Async is not supported on this PCM
-  *
-  * A signal is raised every period.
-  */
-@@ -850,6 +851,7 @@ int snd_pcm_async(snd_pcm_t *pcm, int sig, pid_t pid)
-  * \param pcm PCM handle
-  * \param info Information container
-  * \return 0 on success otherwise a negative error code
-+ * \return -ENOSYS Info is not supported on this PCM
-  */
- int snd_pcm_info(snd_pcm_t *pcm, snd_pcm_info_t *info)
- {
-@@ -867,6 +869,7 @@ int snd_pcm_info(snd_pcm_t *pcm, snd_pcm_info_t *info)
-  * \param pcm PCM handle
-  * \param params Configuration space definition container
-  * \return 0 on success otherwise a negative error code
-+ * \return -EBADFD PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-  */
- int snd_pcm_hw_params_current(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
- {
-@@ -933,6 +936,7 @@ int snd_pcm_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
- /** \brief Remove PCM hardware configuration and free associated resources
-  * \param pcm PCM handle
-  * \return 0 on success otherwise a negative error code
-+ * \return -ENOSYS Hw_free is not supported on this PCM
-  */
- int snd_pcm_hw_free(snd_pcm_t *pcm)
- {
-@@ -960,7 +964,9 @@ int snd_pcm_hw_free(snd_pcm_t *pcm)
-  * \param pcm PCM handle
-  * \param params Configuration container
-  * \return 0 on success otherwise a negative error code
-- *
-+ * \retval -EIO PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -EINVAL Incorrect parameter, avail_min cannot be 0
-+ * 
-  * The software parameters can be changed at any time.
-  * The hardware parameters cannot be changed when the stream is
-  * running (active).
-@@ -1017,6 +1023,7 @@ int snd_pcm_sw_params(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
-  * \param pcm PCM handle
-  * \param status Status container
-  * \return 0 on success otherwise a negative error code
-+ * \return -ENOSYS Status is not supported on this PCM
-  *
-  * The function is thread-safe when built with the proper option.
-  */
-@@ -1060,7 +1067,8 @@ snd_pcm_state_t snd_pcm_state(snd_pcm_t *pcm)
-  * \brief (DEPRECATED) Synchronize stream position with hardware
-  * \param pcm PCM handle
-  * \return 0 on success otherwise a negative error code
-- *
-+ * \retval -EIO PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * 
-  * Note this function does not update the actual r/w pointer
-  * for applications. The function #snd_pcm_avail_update()
-  * have to be called before any mmap begin+commit operation.
-@@ -1089,6 +1097,7 @@ int snd_pcm_hwsync(snd_pcm_t *pcm)
-  * \param pcm PCM handle
-  * \param delayp Returned delay in frames
-  * \return 0 on success otherwise a negative error code
-+ * \retval -EIO PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-  *
-  * For playback the delay is defined as the time that a frame that is written
-  * to the PCM stream shortly after this call will take to be actually
-@@ -1133,6 +1142,7 @@ int snd_pcm_delay(snd_pcm_t *pcm, snd_pcm_sframes_t *delayp)
-  * \brief Resume from suspend, no samples are lost
-  * \param pcm PCM handle
-  * \return 0 on success otherwise a negative error code
-+ * \retval -EIO    PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-  * \retval -EAGAIN resume can't be proceed immediately (audio hardware is probably still suspended)
-  * \retval -ENOSYS hardware doesn't support this feature
-  *
-@@ -1166,6 +1176,8 @@ int snd_pcm_resume(snd_pcm_t *pcm)
-  * \param avail Number of available frames when timestamp was grabbed
-  * \param tstamp Hi-res timestamp
-  * \return 0 on success otherwise a negative error code
-+ * \retval -EIO    PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -ENOSYS Hi-res timestamp is not supported on this system.
-  *
-  * Note this function does not update the actual r/w pointer
-  * for applications.
-@@ -1194,6 +1206,9 @@ int snd_pcm_htimestamp(snd_pcm_t *pcm, snd_pcm_uframes_t *avail, snd_htimestamp_
-  * \brief Prepare PCM for use
-  * \param pcm PCM handle
-  * \return 0 on success otherwise a negative error code
-+ * \retval -EIO    PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -ENOSYS Prepare is not supported on this PCM
-+ * \retval -EBADFD PCM is not in the right state (#SND_PCM_STATE_DISCONNECTED)
-  *
-  * The function is thread-safe when built with the proper option.
-  */
-@@ -1222,6 +1237,8 @@ int snd_pcm_prepare(snd_pcm_t *pcm)
-  * \brief Reset PCM position
-  * \param pcm PCM handle
-  * \return 0 on success otherwise a negative error code
-+ * \retval -EIO    PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -ENOSYS Reset is not supported on this PCM
-  *
-  * Reduce PCM delay to 0.
-  *
-@@ -1249,6 +1266,8 @@ int snd_pcm_reset(snd_pcm_t *pcm)
-  * \brief Start a PCM
-  * \param pcm PCM handle
-  * \return 0 on success otherwise a negative error code
-+ * \retval -EIO    PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -EBADFD PCM is not in the right state (#SND_PCM_STATE_PREPARED)
-  *
-  * The function is thread-safe when built with the proper option.
-  */
-@@ -1274,6 +1293,8 @@ int snd_pcm_start(snd_pcm_t *pcm)
-  * \brief Stop a PCM dropping pending frames
-  * \param pcm PCM handle
-  * \return 0 on success otherwise a negative error code
-+ * \retval -EIO    PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -EBADFD PCM is not in the right state (Should be PREPARED,RUNNING,XRUN,PAUSED,DRAINING,SETUP or SUSPENDED)
-  *
-  * This function stops the PCM <i>immediately</i>.
-  * The pending samples on the buffer are ignored.
-@@ -1309,7 +1330,10 @@ int snd_pcm_drop(snd_pcm_t *pcm)
-  * \brief Stop a PCM preserving pending frames
-  * \param pcm PCM handle
-  * \return 0 on success otherwise a negative error code
-+ * \retval -EIO    PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -EBADFD PCM is not in the right state (Should be PREPARED,RUNNING,XRUN,PAUSED or DRAINING,SETUP or SUSPENDED)
-  * \retval -ESTRPIPE a suspend event occurred
-+ * \retval -ENOSYS Drain is not supported on this PCM
-  *
-  * For playback wait for all pending frames to be played and then stop
-  * the PCM.
-@@ -1345,6 +1369,10 @@ int snd_pcm_drain(snd_pcm_t *pcm)
-  * \param pcm PCM handle
-  * \param enable 0 = resume, 1 = pause
-  * \return 0 on success otherwise a negative error code
-+ * \retval -EIO    PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -EBADFD PCM is not in the right state (Should be PREPARED,RUNNING,XRUN,PAUSED or DRAINING)
-+ * \retval -ESTRPIPE a suspend event occurred
-+ * \retval -ENOSYS Pause is not supported on this PCM
-  *
-  * Note that this function works only on the hardware which supports
-  * pause feature.  You can check it via \link ::snd_pcm_hw_params_can_pause() \endlink
-@@ -1377,6 +1405,10 @@ int snd_pcm_pause(snd_pcm_t *pcm, int enable)
-  * \brief Get safe count of frames which can be rewinded
-  * \param pcm PCM handle
-  * \return a positive number of frames or negative error code
-+ * \retval -EIO    PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -EBADFD PCM is not in the right state (Should be PREPARED,RUNNING,XRUN,PAUSED or DRAINING)
-+ * \retval -ESTRPIPE a suspend event occurred
-+ * \retval -ENOSYS Rewindable is not supported on this PCM
-  *
-  * Note: The snd_pcm_rewind() can accept bigger value than returned
-  * by this function. But it is not guaranteed that output stream
-@@ -1412,6 +1444,9 @@ snd_pcm_sframes_t snd_pcm_rewindable(snd_pcm_t *pcm)
-  * \param frames wanted displacement in frames
-  * \return a positive number for actual displacement otherwise a
-  * negative error code
-+ * \retval -EIO    PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -EBADFD PCM is not in the right state (Should be PREPARED,RUNNING,XRUN,PAUSED or DRAINING)
-+ * \retval -ENOSYS Rewind is not supported on this PCM
-  *
-  * The function is thread-safe when built with the proper option.
-  */
-@@ -1443,6 +1478,9 @@ snd_pcm_sframes_t snd_pcm_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
-  * \brief Get safe count of frames which can be forwarded
-  * \param pcm PCM handle
-  * \return a positive number of frames or negative error code
-+ * \retval -EIO    PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -EBADFD PCM is not in the right state (Should be PREPARED,RUNNING,XRUN,PAUSED or DRAINING)
-+ * \retval -ENOSYS Forwardable is not supported on this PCM
-  *
-  * Note: The snd_pcm_forward() can accept bigger value than returned
-  * by this function. But it is not guaranteed that output stream
-@@ -1478,6 +1516,9 @@ snd_pcm_sframes_t snd_pcm_forwardable(snd_pcm_t *pcm)
-  * \param frames wanted skip in frames
-  * \return a positive number for actual skip otherwise a negative error code
-  * \retval 0 means no action
-+ * \retval -EIO    PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -EBADFD PCM is not in the right state (Should be PREPARED,RUNNING,XRUN,PAUSED or DRAINING)
-+ * \retval -ENOSYS Forward is not supported on this PCM
-  *
-  * The function is thread-safe when built with the proper option.
-  */
-@@ -1517,6 +1558,8 @@ use_default_symbol_version(__snd_pcm_forward, snd_pcm_forward, ALSA_0.9.0rc8);
-  * \param size frames to be written
-  * \return a positive number of frames actually written otherwise a
-  * negative error code
-+ * \retval -EIO    PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -EINVAL Access type is not Interleave type.
-  * \retval -EBADFD PCM is not in the right state (#SND_PCM_STATE_PREPARED or #SND_PCM_STATE_RUNNING)
-  * \retval -EPIPE an underrun occurred
-  * \retval -ESTRPIPE a suspend event occurred (stream is suspended and waiting for an application recovery)
-@@ -1556,6 +1599,8 @@ snd_pcm_sframes_t snd_pcm_writei(snd_pcm_t *pcm, const void *buffer, snd_pcm_ufr
-  * \param size frames to be written
-  * \return a positive number of frames actually written otherwise a
-  * negative error code
-+ * \retval -EIO    PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -EINVAL Access type is not Non-Interleave type.
-  * \retval -EBADFD PCM is not in the right state (#SND_PCM_STATE_PREPARED or #SND_PCM_STATE_RUNNING)
-  * \retval -EPIPE an underrun occurred
-  * \retval -ESTRPIPE a suspend event occurred (stream is suspended and waiting for an application recovery)
-@@ -1595,6 +1640,8 @@ snd_pcm_sframes_t snd_pcm_writen(snd_pcm_t *pcm, void **bufs, snd_pcm_uframes_t
-  * \param size frames to be read
-  * \return a positive number of frames actually read otherwise a
-  * negative error code
-+ * \retval -EIO PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -EINVAL Access type is not Interleave type.
-  * \retval -EBADFD PCM is not in the right state (#SND_PCM_STATE_PREPARED or #SND_PCM_STATE_RUNNING)
-  * \retval -EPIPE an overrun occurred
-  * \retval -ESTRPIPE a suspend event occurred (stream is suspended and waiting for an application recovery)
-@@ -1634,6 +1681,8 @@ snd_pcm_sframes_t snd_pcm_readi(snd_pcm_t *pcm, void *buffer, snd_pcm_uframes_t
-  * \param size frames to be read
-  * \return a positive number of frames actually read otherwise a
-  * negative error code
-+ * \retval -EIO PCM has not been setup (PCM isn't configured yet, or lifecycle of PCM has been ended)
-+ * \retval -EINVAL Access type is not Non-Interleave type.
-  * \retval -EBADFD PCM is not in the right state (#SND_PCM_STATE_PREPARED or #SND_PCM_STATE_RUNNING)
-  * \retval -EPIPE an overrun occurred
-  * \retval -ESTRPIPE a suspend event occurred (stream is suspended and waiting for an application recovery)
-@@ -1669,8 +1718,9 @@ snd_pcm_sframes_t snd_pcm_readn(snd_pcm_t *pcm, void **bufs, snd_pcm_uframes_t s
- /**
-  * \brief Link two PCMs
-  * \param pcm1 first PCM handle
-- * \param pcm2 first PCM handle
-+ * \param pcm2 second PCM handle
-  * \return 0 on success otherwise a negative error code
-+ * \retval -ENOSYS Link is not supported on pcm1
-  *
-  * The two PCMs will start/stop/prepare in sync.
-  */ 
-@@ -1691,6 +1741,7 @@ int snd_pcm_link(snd_pcm_t *pcm1, snd_pcm_t *pcm2)
-  * \brief Remove a PCM from a linked group
-  * \param pcm PCM handle
-  * \return 0 on success otherwise a negative error code
-+ * \retval -ENOSYS Unlink is not supported on this PCM.
-  */
- int snd_pcm_unlink(snd_pcm_t *pcm)
- {
--- 
-2.26.2
+Today's linux-next merge of the fsinfo tree got a conflict in:
 
+  samples/vfs/Makefile
+
+between commit:
+
+  757172f3d6f9 ("samples: vfs: build sample programs for target architectur=
+e")
+
+from the kbuild tree and commits:
+
+  51d01aee410b ("fsinfo: Add fsinfo() syscall to query filesystem informati=
+on")
+  d3ee0e9da65d ("fsinfo: sample: Mount listing program")
+
+from the fsinfo tree.
+
+I fixed it up (I think - see below) and can carry the fix as necessary.
+This is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc samples/vfs/Makefile
+index 00b6824f9237,19be60ab950e..000000000000
+--- a/samples/vfs/Makefile
++++ b/samples/vfs/Makefile
+@@@ -1,5 -1,17 +1,7 @@@
+  # SPDX-License-Identifier: GPL-2.0-only
+- userprogs :=3D test-fsmount test-statx
+ -# List of programs to build
+++userprogs :=3D test-fsinfo test-fsmount test-mntinfo test-statx
+ +always-y :=3D $(userprogs)
+ =20
+ -hostprogs :=3D \
+ -	test-fsinfo \
+ -	test-fsmount \
+ -	test-mntinfo \
+ -	test-statx
+ +userccflags +=3D -I usr/include
++=20
+ -always-y :=3D $(hostprogs)
+ -
+ -HOSTCFLAGS_test-fsinfo.o +=3D -I$(objtree)/usr/include
+ -HOSTLDLIBS_test-fsinfo +=3D -static -lm
+ -HOSTCFLAGS_test-mntinfo.o +=3D -I$(objtree)/usr/include
+ -
+ -HOSTCFLAGS_test-fsmount.o +=3D -I$(objtree)/usr/include
+ -HOSTCFLAGS_test-statx.o +=3D -I$(objtree)/usr/include
+++test-fsinfo-userldflags +=3D -static -lm
+
+--Sig_/DsywktJnIZ9OIlJ.O2pS6xB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl66ZwYACgkQAVBC80lX
+0Gyrgwf/TroM/ljpR4nfHsAWMy010Dknbm4qYWoXazH+WE9VtxmSC+u/m2cCyOVq
+CabYrrq0o5MaTeesrGlnaQwbK8v0Tqu/kJwTUbIakww/+O/Gf8zAqO7YckzIgj0G
+X5+vmAzc8/GMMywHmO0X2UApE8D8xy4s+hO+trvFdh9lXgLQ6znUj+o5LO7Pers3
+TBEmINhL3mldDr4u0R2NP+pAYzGGCOkFIDk2CYSS2DzNEq85gd7AiHNSlLq1pUCH
+5XEY1hzp8dZsOM4Ir3j1EZfNeAO6VPscvzzTPpSe3LMOg9VpJIO/Ldr1troFBKKR
+H2Wjz+h1cfLB4h5j2MHLbV4MUV3Qcw==
+=QtnA
+-----END PGP SIGNATURE-----
+
+--Sig_/DsywktJnIZ9OIlJ.O2pS6xB--
