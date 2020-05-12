@@ -2,70 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2CB1CF7A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4B61CF7B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730273AbgELOpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 10:45:49 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:46815 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727109AbgELOpt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 10:45:49 -0400
-Received: by mail-ot1-f68.google.com with SMTP id z25so10651878otq.13;
-        Tue, 12 May 2020 07:45:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=XYysbw64UkCclCYgM2OGMnJLATIny63RyaD7MCp3KWY=;
-        b=QJYGF8tW9ZukY2gkx2g2/RVwvADh1GrD8UlVhHy9LUc7fsbWpnNK0ihQX6k7bg+PuO
-         174b3w3NGSByrKgL3Fo2/e4TbTsn3TpZ93BduCVqIgQNbsE8ixyh0zsrwsUjDr8Waao+
-         qFobxbwQcJ0HH/YHBSG0XgRL9XxicntETEkbl64ipopQKoarYwOteQcLPk87QrzJOmE4
-         rSQCLvbG8H1pb9Evuu7Vj0lxG6q8nJCFpPiMfLrfnKTDAoJmgRx+hssLP4wlhLBaeMEg
-         cYcfyk35eOq10G9rjP9HJkQmoAdpA1irgdoW3L49Uj3QuIur9zRIbXhJyQnrheV4RGlD
-         tUcg==
-X-Gm-Message-State: AGi0PuZQ+4IM7chEewjs9C14+GmwAWJjCA6aXIUx7pEN90MplfjYb5+C
-        ekqYLPZFOSHW6UDw2DVXyQ==
-X-Google-Smtp-Source: APiQypLRGe0NVHMWRSwEojjjgvnlc6nzTgMEhuo7RsnCK7kq1DAeK9fk+yuKCGhkNMIq7L2fX3NANQ==
-X-Received: by 2002:a9d:7a98:: with SMTP id l24mr17726019otn.79.1589294748487;
-        Tue, 12 May 2020 07:45:48 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x186sm1026630ooa.4.2020.05.12.07.45.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 07:45:47 -0700 (PDT)
-Received: (nullmailer pid 8681 invoked by uid 1000);
-        Tue, 12 May 2020 14:45:46 -0000
-Date:   Tue, 12 May 2020 09:45:46 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Saravanan Sekar <saravanan@linumiz.com>
-Cc:     robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        knaack.h@gmx.de, pmeerw@pmeerw.net, jic23@kernel.org,
-        broonie@kernel.org, lars@metafoo.de, lgirdwood@gmail.com
-Subject: Re: [PATCH v2 1/4] dt-bindings: iio: add document bindings for
- wsen-itds accel sensor
-Message-ID: <20200512144546.GA7376@bogus>
-References: <20200429133943.18298-1-saravanan@linumiz.com>
- <20200429133943.18298-2-saravanan@linumiz.com>
+        id S1730308AbgELOrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 10:47:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36974 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727099AbgELOrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 10:47:07 -0400
+Received: from [10.44.0.192] (unknown [103.48.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5779E206A3;
+        Tue, 12 May 2020 14:46:58 +0000 (UTC)
+Subject: Re: [PATCH 29/31] binfmt_flat: use flush_icache_user_range
+To:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Roman Zippel <zippel@linux-m68k.org>
+Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
+        x86@kernel.org, linux-alpha@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linux-fsdevel@vger.kernel.org
+References: <20200510075510.987823-1-hch@lst.de>
+ <20200510075510.987823-30-hch@lst.de>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <484af2c0-2450-b40a-8322-e691495c45aa@linux-m68k.org>
+Date:   Wed, 13 May 2020 00:46:55 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429133943.18298-2-saravanan@linumiz.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200510075510.987823-30-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Apr 2020 15:39:40 +0200, Saravanan Sekar wrote:
-> Add device tree binding information for wsen-itds accel sensor driver.
-> 
-> Signed-off-by: Saravanan Sekar <saravanan@linumiz.com>
-> ---
->  .../bindings/iio/accel/we,wsen-itds.yaml      | 55 +++++++++++++++++++
->  1 file changed, 55 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/accel/we,wsen-itds.yaml
-> 
+Hi Christoph,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On 10/5/20 5:55 pm, Christoph Hellwig wrote:
+> load_flat_file works on user addresses.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+
+Regards
+Greg
+
+
+
+> ---
+>   fs/binfmt_flat.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/binfmt_flat.c b/fs/binfmt_flat.c
+> index 831a2b25ba79f..6f0aca5379da2 100644
+> --- a/fs/binfmt_flat.c
+> +++ b/fs/binfmt_flat.c
+> @@ -854,7 +854,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+>   #endif /* CONFIG_BINFMT_FLAT_OLD */
+>   	}
+>   
+> -	flush_icache_range(start_code, end_code);
+> +	flush_icache_user_range(start_code, end_code);
+>   
+>   	/* zero the BSS,  BRK and stack areas */
+>   	if (clear_user((void __user *)(datapos + data_len), bss_len +
+> 
