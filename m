@@ -2,83 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A35911CF944
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E0D1CF940
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730745AbgELPd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 11:33:57 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:37380 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730382AbgELPd4 (ORCPT
+        id S1730603AbgELPd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 11:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgELPd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 11:33:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589297636; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=dze1SlsXMpqtXCRYq9gWZjlDDJ3FZrxJhv0pJVE1AgI=; b=GsTepM5oeoXyrqdu2gRit+2lsWsBNVwPo7sCJZFuKo4mBVKTVWQ9bWfnewYFlL/UVDFcOA2i
- j8xbi59uKddlb3fyCQVFKZPEh2Sspzvra+a/ywStrsbtiQfgbxgorM3gYt7Ct1oUAqgeTQES
- lEmDm2WHAywE4Fo16QGavGJVv0s=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ebac19b.7fa3d65d7ed8-smtp-out-n05;
- Tue, 12 May 2020 15:32:43 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BE76EC433BA; Tue, 12 May 2020 15:32:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CEFC9C433CB;
-        Tue, 12 May 2020 15:32:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CEFC9C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v1 6/6] bus: mhi: core: Introduce sysfs entries for MHI
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hemantk@codeaurora.org
-References: <1589250796-32020-1-git-send-email-bbhatt@codeaurora.org>
- <1589250796-32020-7-git-send-email-bbhatt@codeaurora.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <7a77e057-a053-89df-4f6e-6e0aa1cce256@codeaurora.org>
-Date:   Tue, 12 May 2020 09:32:41 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <1589250796-32020-7-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 12 May 2020 11:33:27 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA01C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:33:26 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id j6so13446040qvn.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:33:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=O4K/En/qONOrXfLbIOD+SAfMhnyVUMpgoQRYv855ayg=;
+        b=GzrS3eiCs4SWgs4rXVtiEMJ5SY1GXLMgdf+qBsR1IoUXVpZsXVpKigGa12lkVWAeES
+         nbe2Elcxtg2LuveNS2Px9o/JYn84n+Q0tZZj4UqAecRv3vcGjequfkIUje6fFsU0MZaa
+         6+NOS04ajywceQ72ucEPik8OzGjPWQgFIJYor7hHEzjo/OYF0zvatTXTJ0c5cuoWNBbZ
+         Li2KKhjp/RYNgmDybwQjFf4dmzhNU03lnqxMqoAkU22lOK+r/Q/cLmi76LaGFv6kgTJ9
+         w3zFOKZsF4kdH0OFyPD2Lxf1app6kZmNFZgRImcHZVIDluWoSH5thOwa19pPv0UCcofu
+         DhoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=O4K/En/qONOrXfLbIOD+SAfMhnyVUMpgoQRYv855ayg=;
+        b=dVb5rxDa5jb9IY1c2dUpNZEUk/CtQZQ2N6MqU657jRfjgn2pGknBqWDu1IK04v0SZy
+         QG8GpCAqKA95QEGB1lNxxt5Vof2Oo5tiCU2HjstR1M7eVIoZCLoLXTEGeNOHK/PpGNlE
+         m9RqltDGCAPBfQvujgO36G02hCwy89ffyrbpAYzbYmYuw9eqRCEzFmjfqVa0RIDug6pW
+         wum39EAdvxr27KDN8BNUanDPTAOcq7A3s6d3Ltl1oymt/2v3+tvztDvb5lbnx1SDorcq
+         u2SIRmblNYIAjID5J/3H/4QHTHPKNL64sqyFqrE+WMYl0iwwYKxU7ZCohTqsiJ1tLm8C
+         5IlA==
+X-Gm-Message-State: AGi0Pua7jhydUpWIKyikBWKbiz71Pn/Pcxs9Bn7LEnYvEo2dg6bnmTY6
+        nO6APoyrgDkmBCW+1bB/qn1PeUHlrshClXXX
+X-Google-Smtp-Source: APiQypKfnEEfyHaQw/SU5Vb20eSqgtjr049W054488qV7bm/XNr+knjg4rY6hU/wZl2lbj72dlKv7q3OsyQPU6cX
+X-Received: by 2002:a0c:9ad5:: with SMTP id k21mr14928022qvf.2.1589297605130;
+ Tue, 12 May 2020 08:33:25 -0700 (PDT)
+Date:   Tue, 12 May 2020 17:33:19 +0200
+Message-Id: <29bd753d5ff5596425905b0b07f51153e2345cc1.1589297433.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
+Subject: [PATCH 1/3] kasan: consistently disable debugging features
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/2020 8:33 PM, Bhaumik Bhatt wrote:
-> Introduce sysfs entries to enable userspace clients the ability to read
-> the serial number and the OEM PK Hash values obtained from BHI. OEMs
-> need to read these device-specific hardware information values through
-> userspace for factory testing purposes and cannot be exposed via degbufs
-> as it may remain disabled for performance reasons. Also, update the
-> documentation for ABI to include these entries.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->   Documentation/ABI/stable/sysfs-bus-mhi | 25 ++++++++++++++++
->   drivers/bus/mhi/core/init.c            | 53 ++++++++++++++++++++++++++++++++++
->   2 files changed, 78 insertions(+)
->   create mode 100644 Documentation/ABI/stable/sysfs-bus-mhi
+KASAN is incompatible with some kernel debugging/tracing features.
+There's been multiple patches that disable those feature for some of
+KASAN files one by one. Instead of prolonging that, disable these
+features for all KASAN files at once.
 
-I think you need to update MAINTAINERS as well.
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+---
+ mm/kasan/Makefile | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
+diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
+index 08b43de2383b..434d503a6525 100644
+--- a/mm/kasan/Makefile
++++ b/mm/kasan/Makefile
+@@ -1,23 +1,28 @@
+ # SPDX-License-Identifier: GPL-2.0
+ KASAN_SANITIZE := n
+-UBSAN_SANITIZE_common.o := n
+-UBSAN_SANITIZE_generic.o := n
+-UBSAN_SANITIZE_generic_report.o := n
+-UBSAN_SANITIZE_tags.o := n
++UBSAN_SANITIZE := n
+ KCOV_INSTRUMENT := n
+ 
++# Disable ftrace to avoid recursion.
+ CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_generic.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_generic_report.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_init.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_quarantine.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_report.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_tags.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_tags_report.o = $(CC_FLAGS_FTRACE)
+ 
+ # Function splitter causes unnecessary splits in __asan_load1/__asan_store1
+ # see: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63533
+-
+ CFLAGS_common.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
+ CFLAGS_generic.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
+ CFLAGS_generic_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
++CFLAGS_init.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
++CFLAGS_quarantine.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
++CFLAGS_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
+ CFLAGS_tags.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
++CFLAGS_tags_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
+ 
+ obj-$(CONFIG_KASAN) := common.o init.o report.o
+ obj-$(CONFIG_KASAN_GENERIC) += generic.o generic_report.o quarantine.o
 -- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.26.2.645.ge9eca65c58-goog
+
