@@ -2,220 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698571CEC52
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 07:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 435F01CEC58
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 07:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728766AbgELFN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 01:13:57 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:44920 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725814AbgELFN4 (ORCPT
+        id S1728815AbgELFO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 01:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725776AbgELFO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 01:13:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589260435; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=vnJZoIczJd+Nx4ZHUh2bb/pAfZ5qGHf3HGR3EAiVMWY=; b=s2otOE5lGZnCFr1HbETMWbPZ5B3FxcPzSLxYHHqyjoq8aj2yMsO1IUqo/MLTqXKuwsaNblnd
- X5qTashMs8rXbocLqkLgZ2U2uQgRfTl/XuW1J48yp1pOyBwi9wXzEpp2rpAGasPZppRURXVm
- XpWtiAJyYlDdwhM/HbLHYxJVGs4=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eba307d.7fe834207e30-smtp-out-n02;
- Tue, 12 May 2020 05:13:33 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D39B2C43637; Tue, 12 May 2020 05:13:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.102] (unknown [183.83.139.238])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3D635C433CB;
-        Tue, 12 May 2020 05:13:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3D635C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=charante@codeaurora.org
-Subject: Re: [PATCH] dma-buf: fix use-after-free in dmabuffs_dname
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-kernel@vger.kernel.org, vinmenon@codeaurora.org,
-        sumit.semwal@linaro.org, ghackmann@google.com, fengc@google.com,
-        linux-media@vger.kernel.org
-References: <1588060442-28638-1-git-send-email-charante@codeaurora.org>
- <20200505100806.GA4177627@kroah.com>
- <8424b2ac-3ea6-6e5b-b99c-951a569f493d@codeaurora.org>
- <20200506090002.GA2619587@kroah.com>
-From:   Charan Teja Kalla <charante@codeaurora.org>
-Message-ID: <3bc8dd81-f298-aea0-f218-2e2ef12ca603@codeaurora.org>
-Date:   Tue, 12 May 2020 10:43:18 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 12 May 2020 01:14:57 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B30C05BD09
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 22:14:56 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id j21so5611096pgb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 22:14:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3KgDwL4jTZSbdM6dDCdBrk9zZ/jBRwWTO1ICAFFMTh0=;
+        b=vDQXBNadfhjrgUfrXrCJgVZpGlN+Kp3lQw+DWHzORFIQTAcoT0bfWrgrz+Ocp+W8+T
+         NJv5/81yfNou3cTJWqF70oPbScunuoEUyPRwmjitVjZEBqgzhcHwSelPI1Wijhoa+Dlo
+         dNXZOsz3asKOSfXnAcyJX2BtSoNmcXAuz4HWD0UJe4QifVJWuqqzv3WxKAgKndlnyrE6
+         mxGViQZz0mnbVDlB0/50UKcCjLE1CGegw/WYZqDtNZOHwM3KET5O1wAw0e+JRBPKTkCH
+         69FawH6DE/JZXsMKfux5NRSCfpCV8IjZampjQ/yK2fH3AFI83ncwh7+mtec/Uw/TJhc9
+         CpDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3KgDwL4jTZSbdM6dDCdBrk9zZ/jBRwWTO1ICAFFMTh0=;
+        b=RI3OyVlUKvdrEaEQ209NGHNX5yzlXWzwXMoJFlN3Z22VLD4eb4JOHf2GdhrTYB+iEF
+         MVGvPGHNz5nyTxoun25b9xYk7ES3b5K2S6sJH4EfeEGVLxchd9cgyCfXGj4QlW5540Sx
+         kHJEs/p6oRpQAJ0877YQC+dtGU0M4So2bhV9ZtTjsqpyZ82i9I80yFzz7tW/emVoIY5k
+         5JNYJjK7AxNwYgb4v9CQgG0oPuZzlz30WPJsVu+zNhGdtAuvs6ApOFY9SP6SvFxAkDNN
+         leH06/0EYMxZP0kj3Jmcz4eXRrIxAwBdqvcRL3r7wDwJ2uf1pq+Yfjtv1lXrQhJ6fZ86
+         kJuQ==
+X-Gm-Message-State: AGi0Pua/mzG6x0KYCTZ/MmiB9ojkz/usifzDjAUAXGXiXN7dTxBh7tjh
+        0JPWb/lhabog7hvj9vpwXLL4gD06HFQ=
+X-Google-Smtp-Source: APiQypJS5MlArQOm+F1lj4dnvTyYs8jFwXEUecOX+vcz+8GK8SG9mCF0p/0mIA/EMovIGzMIzBKkvg==
+X-Received: by 2002:a63:c306:: with SMTP id c6mr18129415pgd.311.1589260495916;
+        Mon, 11 May 2020 22:14:55 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id c63sm10806244pfc.2.2020.05.11.22.14.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 22:14:55 -0700 (PDT)
+Date:   Mon, 11 May 2020 22:13:21 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     rishabhb@codeaurora.org
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ohad@wizery.com, mathieu.poirier@linaro.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, sidgup@codeaurora.org,
+        linux-remoteproc-owner@vger.kernel.org
+Subject: Re: [PATCH 2/3] remoteproc: Add inline coredump functionality
+Message-ID: <20200512051321.GA16107@builder.lan>
+References: <1587062312-4939-1-git-send-email-rishabhb@codeaurora.org>
+ <1587062312-4939-2-git-send-email-rishabhb@codeaurora.org>
+ <20200507202121.GK2329931@builder.lan>
+ <7deb97ab40dd36d5a51111147cf4c14e@codeaurora.org>
+ <20200512003028.GA2165@builder.lan>
+ <7396b8707d4cf38173f2d1b3968e7fc6@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20200506090002.GA2619587@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7396b8707d4cf38173f2d1b3968e7fc6@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon 11 May 17:41 PDT 2020, rishabhb@codeaurora.org wrote:
 
-Thank you Greg for the comments.
+> On 2020-05-11 17:30, Bjorn Andersson wrote:
+> > On Mon 11 May 17:11 PDT 2020, rishabhb@codeaurora.org wrote:
+> > > On 2020-05-07 13:21, Bjorn Andersson wrote:
+> > > > On Thu 16 Apr 11:38 PDT 2020, Rishabh Bhatnagar wrote:
+> > > > > diff --git a/drivers/remoteproc/remoteproc_coredump.c
+> > > > > b/drivers/remoteproc/remoteproc_coredump.c
+[..]
+> > > > > +static ssize_t rproc_read_dump(char *buffer, loff_t offset, size_t
+> > > > > count,
+> > > > > +				void *data, size_t header_size)
+> > > > > +{
+> > > > > +	void *device_mem;
+> > > > > +	size_t data_left, copy_size, bytes_left = count;
+> > > > > +	unsigned long addr;
+> > > > > +	struct rproc_coredump_state *dump_state = data;
+> > > > > +	struct rproc *rproc = dump_state->rproc;
+> > > > > +	void *elfcore = dump_state->header;
+> > > > > +
+> > > > > +	/* Copy the header first */
+> > > > > +	if (offset < header_size) {
+> > > > > +		copy_size = header_size - offset;
+> > > > > +		copy_size = min(copy_size, bytes_left);
+> > > > > +
+> > > > > +		memcpy(buffer, elfcore + offset, copy_size);
+> > > > > +		offset += copy_size;
+> > > > > +		bytes_left -= copy_size;
+> > > > > +		buffer += copy_size;
+> > > > > +	}
+> > > >
+> > > > Perhaps you can take inspiration from devcd_readv() here?
+> > > >
+> > > > > +
+> > > > > +	while (bytes_left) {
+> > > > > +		addr = resolve_addr(offset - header_size,
+> > > > > +				    &rproc->dump_segments, &data_left);
+> > > > > +		/* EOF check */
+> > > > > +		if (data_left == 0) {
+> > > >
+> > > > Afaict data_left denotes the amount of data left in this particular
+> > > > segment, rather than in the entire core.
+> > > >
+> > > Yes, but it only returns 0 when the final segment has been copied
+> > > completely.  Otherwise it gives data left to copy for every segment
+> > > and moves to next segment once the current one is copied.
+> > 
+> > You're right.
+> > 
+> > > > I think you should start by making bytes_left the minimum of the core
+> > > > size and @count and then have this loop as long as bytes_left, copying
+> > > > data to the buffer either from header or an appropriate segment based on
+> > > > the current offset.
+> > > >
+> > > That would require an extra function that calculates entire core size,
+> > > as its not available right now. Do you see any missed corner cases
+> > > with this
+> > > approach?
+> > 
+> > You're looping over all the segments as you're building the header
+> > anyways, so you could simply store this in the dump_state. I think this
+> > depend more on the ability to reuse the read function between inline and
+> > default coredump.
+> > 
+> > Regards,
+> > Bjorn
+> 
+> Wouldn't the first if condition take care of "default" dump as it is?
+> The header_size in that case would involve the 'header + all segments'.
 
-On 5/6/2020 2:30 PM, Greg KH wrote:
-> On Wed, May 06, 2020 at 02:00:10PM +0530, Charan Teja Kalla wrote:
->> Thank you Greg for the reply.
->>
->> On 5/5/2020 3:38 PM, Greg KH wrote:
->>> On Tue, Apr 28, 2020 at 01:24:02PM +0530, Charan Teja Reddy wrote:
->>>> The following race occurs while accessing the dmabuf object exported as
->>>> file:
->>>> P1				P2
->>>> dma_buf_release()          dmabuffs_dname()
->>>> 			   [say lsof reading /proc/<P1 pid>/fd/<num>]
->>>>
->>>> 			   read dmabuf stored in dentry->fsdata
->>>> Free the dmabuf object
->>>> 			   Start accessing the dmabuf structure
->>>>
->>>> In the above description, the dmabuf object freed in P1 is being
->>>> accessed from P2 which is resulting into the use-after-free. Below is
->>>> the dump stack reported.
->>>>
->>>> Call Trace:
->>>>    kasan_report+0x12/0x20
->>>>    __asan_report_load8_noabort+0x14/0x20
->>>>    dmabuffs_dname+0x4f4/0x560
->>>>    tomoyo_realpath_from_path+0x165/0x660
->>>>    tomoyo_get_realpath
->>>>    tomoyo_check_open_permission+0x2a3/0x3e0
->>>>    tomoyo_file_open
->>>>    tomoyo_file_open+0xa9/0xd0
->>>>    security_file_open+0x71/0x300
->>>>    do_dentry_open+0x37a/0x1380
->>>>    vfs_open+0xa0/0xd0
->>>>    path_openat+0x12ee/0x3490
->>>>    do_filp_open+0x192/0x260
->>>>    do_sys_openat2+0x5eb/0x7e0
->>>>    do_sys_open+0xf2/0x180
->>>>
->>>> Fixes: bb2bb90 ("dma-buf: add DMA_BUF_SET_NAME ioctls")
->>> Nit, please read the documentation for how to do a Fixes: line properly,
->>> you need more digits:
->>> 	Fixes: bb2bb9030425 ("dma-buf: add DMA_BUF_SET_NAME ioctls")
->>
->> Will update the patch
->>
->>
->>>> Reported-by:syzbot+3643a18836bce555bff6@syzkaller.appspotmail.com
->>>> Signed-off-by: Charan Teja Reddy<charante@codeaurora.org>
->>> Also, any reason you didn't include the other mailing lists that
->>> get_maintainer.pl said to?
->>
->> Really sorry for not sending to complete list. Added now.
->>
->>
->>> And finally, no cc: stable in the s-o-b area for an issue that needs to
->>> be backported to older kernels?
->>
->> Will update the patch.
->>
->>
->>>> ---
->>>>    drivers/dma-buf/dma-buf.c | 25 +++++++++++++++++++++++--
->>>>    include/linux/dma-buf.h   |  1 +
->>>>    2 files changed, 24 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
->>>> index 570c923..069d8f78 100644
->>>> --- a/drivers/dma-buf/dma-buf.c
->>>> +++ b/drivers/dma-buf/dma-buf.c
->>>> @@ -25,6 +25,7 @@
->>>>    #include <linux/mm.h>
->>>>    #include <linux/mount.h>
->>>>    #include <linux/pseudo_fs.h>
->>>> +#include <linux/dcache.h>
->>>>    #include <uapi/linux/dma-buf.h>
->>>>    #include <uapi/linux/magic.h>
->>>> @@ -38,18 +39,34 @@ struct dma_buf_list {
->>>>    static struct dma_buf_list db_list;
->>>> +static void dmabuf_dent_put(struct dma_buf *dmabuf)
->>>> +{
->>>> +	if (atomic_dec_and_test(&dmabuf->dent_count)) {
->>>> +		kfree(dmabuf->name);
->>>> +		kfree(dmabuf);
->>>> +	}
->>> Why not just use a kref instead of an open-coded atomic value?
->>
->> Kref approach looks cleaner. will update the patch accordingly.
->>
->>
->>>> +}
->>>> +
->>>>    static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
->>>>    {
->>>>    	struct dma_buf *dmabuf;
->>>>    	char name[DMA_BUF_NAME_LEN];
->>>>    	size_t ret = 0;
->>>> +	spin_lock(&dentry->d_lock);
->>>>    	dmabuf = dentry->d_fsdata;
->>>> +	if (!dmabuf || !atomic_add_unless(&dmabuf->dent_count, 1, 0)) {
->>>> +		spin_unlock(&dentry->d_lock);
->>>> +		goto out;
->>> How can dmabuf not be valid here?
->>>
->>> And isn't there already a usecount for the buffer?
->>
->> dmabuf exported as file simply relies on that file's refcount, thus fput()
->> releases the dmabuf.
->>
->> We are storing the dmabuf in the dentry->d_fsdata but there is no binding
->> between the dentry and the dmabuf. So, flow will be like
->>
->> 1) P1 calls fput(dmabuf_fd)
->>
->> 2) P2 trying to access the file information of P1.
->>      Eg: lsof command trying to list out the dmabuf_fd information using
->> /proc/<P1 pid>/fd/dmabuf_fd
->>
->> 3) P1 calls the file->f_op->release(dmabuf_fd_file)(ends up in calling
->> dma_buf_release()),   thus frees up the dmabuf buffer.
->>
->> 4) P2 access the dmabuf stored in the dentry->d_fsdata which was freed in
->> step 3.
->>
->> So we need to have some refcount mechanism to avoid the use-after-free in
->> step 4.
-> Ok, but watch out, now you have 2 different reference counts for the
-> same structure.  Keeping them coordinated is almost always an impossible
-> task so you need to only rely on one.  If you can't use the file api,
-> just drop all of the reference counting logic in there and only use the
-> kref one.
+Correct.
 
-I feel that changing the refcount logic now to dma-buf objects involve 
-changes in
-
-the core dma-buf framework. NO? Instead, how about passing the user 
-passed name directly
-
-in the ->d_fsdata inplace of dmabuf object? Because we just need user 
-passed name in the
-
-dmabuffs_dname(). With this we can avoid the need for extra refcount on 
-dmabuf.
-
-Posted patch-V2: https://lkml.org/lkml/2020/5/8/158
-
-
->
-> good luck!
->
-> greg k-h
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+Regards,
+Bjorn
