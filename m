@@ -2,130 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9AD1CF1B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 11:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0161CF1BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 11:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728854AbgELJfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 05:35:38 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4778 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725889AbgELJfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 05:35:37 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 5A47A4F51B544F654850;
-        Tue, 12 May 2020 17:35:33 +0800 (CST)
-Received: from [127.0.0.1] (10.166.213.7) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Tue, 12 May 2020
- 17:35:24 +0800
-Subject: Re: [PATCH] scsi: hisi_sas: display correct proc_name in sysfs
-To:     John Garry <john.garry@huawei.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Xiang Chen <chenxiang66@hisilicon.com>
-References: <20200512063318.13825-1-yanaijie@huawei.com>
- <66c3318d-e8fa-9ff4-c7f4-ebe23925b807@huawei.com>
-From:   Jason Yan <yanaijie@huawei.com>
-Message-ID: <dacd7cbe-3d84-2b35-e63a-af6179aa5221@huawei.com>
-Date:   Tue, 12 May 2020 17:35:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        id S1729256AbgELJib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 05:38:31 -0400
+Received: from aclms1.advantech.com.tw ([61.58.41.199]:62168 "EHLO
+        ACLMS1.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726187AbgELJia (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 05:38:30 -0400
+Received: from taipei08.ADVANTECH.CORP (unverified [172.20.0.235]) by ACLMS1.advantech.com.tw
+ (Clearswift SMTPRS 5.6.0) with ESMTP id <Tdf16602db0ac14014b1d04@ACLMS1.advantech.com.tw>;
+ Tue, 12 May 2020 17:38:28 +0800
+Received: from ADVANTECH.CORP (172.17.10.130) by taipei08.ADVANTECH.CORP
+ (172.20.0.235) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Tue, 12 May
+ 2020 17:38:27 +0800
+From:   <Amy.Shih@advantech.com.tw>
+To:     <she90122@gmail.com>
+CC:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <amy.shih@advantech.com.tw>, <oakley.ding@advantech.com.tw>,
+        <jia.sui@advantech.com.cn>, <yuechao.zhao@advantech.com.cn>,
+        <Hy.Lee@advantech.com.tw>
+Subject: [v1,1/1] hwmon: (nct7904) Fix the incorrect rang of temperature limitation registers.
+Date:   Tue, 12 May 2020 09:38:06 +0000
+Message-ID: <20200512093806.28515-1-Amy.Shih@advantech.com.tw>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <66c3318d-e8fa-9ff4-c7f4-ebe23925b807@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.166.213.7]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [172.17.10.130]
+X-ClientProxiedBy: ACLDAG.ADVANTECH.CORP (172.20.2.88) To
+ taipei08.ADVANTECH.CORP (172.20.0.235)
+X-StopIT: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Amy Shih <amy.shih@advantech.com.tw>
 
+The format of temperature limitation registers are 8-bit 2's complement
+and the range is -128~127.
+Converts the reading value to signed char to fix the incorrect range
+of temperature limitation registers.
 
-在 2020/5/12 16:23, John Garry 写道:
-> On 12/05/2020 07:33, Jason Yan wrote:
->> The 'proc_name' entry in sysfs for hisi_sas is 'null' now becuase it is
->> not initialized in scsi_host_template. It looks like:
->>
->> [root@localhost ~]# cat /sys/class/scsi_host/host2/proc_name
->> (null)
->>
-> 
-> hmmm.. it would be good to tell us what this buys us, apart from the 
-> proc_name file.
-> 
+Signed-off-by: Amy Shih <amy.shih@advantech.com.tw>
+---
+ drivers/hwmon/nct7904.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-When there is more than one storage cards(or controllers) in the system, 
-I'm tring to find out which host is belong to which card. And then I 
-found this in scsi_host in sysfs but the output is '(null)' which is odd.
-
-> I mean, if we had the sht show_info method implemented, then it could be 
-> useful (which is even marked as obsolete now).
-> 
-
-I found this is interesting while in the sysfs filesystem we have a 
-procfs stuff in it. I was planned to rename this entry to 'name' and use 
-the struct member 'name' directly in struct scsi_host_template. But this 
-may break userspace applications.
-
-> Thanks,
-> John
-> 
->> While the other driver's entry looks like:
->>
->> linux-vnMQMU:~ # cat /sys/class/scsi_host/host0/proc_name
->> megaraid_sas
->>
->> Cc: John Garry <john.garry@huawei.com>
->> Cc: Xiang Chen <chenxiang66@hisilicon.com>
->> Signed-off-by: Jason Yan <yanaijie@huawei.com>
->> ---
->>   drivers/scsi/hisi_sas/hisi_sas_v1_hw.c | 1 +
->>   drivers/scsi/hisi_sas/hisi_sas_v2_hw.c | 1 +
->>   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 1 +
->>   3 files changed, 3 insertions(+)
->>
->> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c 
->> b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
->> index fa25766502a2..c205bff20943 100644
->> --- a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
->> +++ b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
->> @@ -1757,6 +1757,7 @@ static struct device_attribute 
->> *host_attrs_v1_hw[] = {
->>   static struct scsi_host_template sht_v1_hw = {
->>       .name            = DRV_NAME,
->> +    .proc_name        = DRV_NAME,
->>       .module            = THIS_MODULE,
->>       .queuecommand        = sas_queuecommand,
->>       .target_alloc        = sas_target_alloc,
->> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c 
->> b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
->> index e05faf315dcd..c725cffe141e 100644
->> --- a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
->> +++ b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
->> @@ -3533,6 +3533,7 @@ static struct device_attribute 
->> *host_attrs_v2_hw[] = {
->>   static struct scsi_host_template sht_v2_hw = {
->>       .name            = DRV_NAME,
->> +    .proc_name        = DRV_NAME,
->>       .module            = THIS_MODULE,
->>       .queuecommand        = sas_queuecommand,
->>       .target_alloc        = sas_target_alloc,
->> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c 
->> b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
->> index 374885aa8d77..59b1421607dd 100644
->> --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
->> +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
->> @@ -3071,6 +3071,7 @@ static int debugfs_set_bist_v3_hw(struct 
->> hisi_hba *hisi_hba, bool enable)
->>   static struct scsi_host_template sht_v3_hw = {
->>       .name            = DRV_NAME,
->> +    .proc_name        = DRV_NAME,
->>       .module            = THIS_MODULE,
->>       .queuecommand        = sas_queuecommand,
->>       .target_alloc        = sas_target_alloc,
->>
-> 
-> 
-> .
+diff --git a/drivers/hwmon/nct7904.c b/drivers/hwmon/nct7904.c
+index 6fb06f7..04f2a8e 100644
+--- a/drivers/hwmon/nct7904.c
++++ b/drivers/hwmon/nct7904.c
+@@ -390,6 +390,7 @@ static int nct7904_read_temp(struct device *dev, u32 attr, int channel,
+ 	struct nct7904_data *data = dev_get_drvdata(dev);
+ 	int ret, temp;
+ 	unsigned int reg1, reg2, reg3;
++	s8 temps;
+ 
+ 	switch (attr) {
+ 	case hwmon_temp_input:
+@@ -495,7 +496,8 @@ static int nct7904_read_temp(struct device *dev, u32 attr, int channel,
+ 
+ 	if (ret < 0)
+ 		return ret;
+-	*val = ret * 1000;
++	temps = ret;
++	*val = temps * 1000;
+ 	return 0;
+ }
+ 
+-- 
+1.8.3.1
 
