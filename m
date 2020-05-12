@@ -2,84 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD52A1CFD12
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 20:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905671CFD26
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 20:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730968AbgELSSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 14:18:47 -0400
-Received: from alexa-out-blr-01.qualcomm.com ([103.229.18.197]:62322 "EHLO
-        alexa-out-blr-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725938AbgELSSq (ORCPT
+        id S1729194AbgELSWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 14:22:55 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:46509 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbgELSWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 14:18:46 -0400
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by alexa-out-blr-01.qualcomm.com with ESMTP/TLS/AES256-SHA; 12 May 2020 23:48:43 +0530
-Received: from c-rbokka-linux.qualcomm.com ([10.206.232.238])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 12 May 2020 23:48:24 +0530
-Received: by c-rbokka-linux.qualcomm.com (Postfix, from userid 203305)
-        id 6D0A72ACA; Tue, 12 May 2020 23:48:23 +0530 (IST)
-From:   Ravi Kumar Bokka <rbokka@codeaurora.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        rnayak@codeaurora.org, saiprakash.ranjan@codeaurora.org,
-        dhavalp@codeaurora.org, mturney@codeaurora.org,
-        sparate@codeaurora.org, c_rbokka@codeaurora.org,
-        mkurumel@codeaurora.org, Ravi Kumar Bokka <rbokka@codeaurora.org>
-Subject: [RFC v1 3/3] arm64: dts: qcom: sc7180: Add qfprom-efuse
-Date:   Tue, 12 May 2020 23:48:00 +0530
-Message-Id: <1589307480-27508-4-git-send-email-rbokka@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589307480-27508-1-git-send-email-rbokka@codeaurora.org>
-References: <1589307480-27508-1-git-send-email-rbokka@codeaurora.org>
+        Tue, 12 May 2020 14:22:55 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jYZYL-0006pL-CA; Tue, 12 May 2020 18:22:53 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] fs: remove redundant assignment to variable ret
+Date:   Tue, 12 May 2020 19:22:53 +0100
+Message-Id: <20200512182253.223249-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds device tree node for qfprom-efuse controller.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
+The variable ret is being assigned a value that is never read and it
+is being updated later with a new value. The assignment is redundant
+and can be removed.
+
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- arch/arm64/boot/dts/qcom/sc7180-idp.dts | 4 ++++
- arch/arm64/boot/dts/qcom/sc7180.dtsi    | 9 +++++++++
- 2 files changed, 13 insertions(+)
+ fs/super.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-index 4dd8ebc..7378c82 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-@@ -234,6 +234,10 @@
- 	};
- };
- 
-+&qfprom_efuse {
-+	vcc-supply = <&vreg_l11a_1p8>;
-+};
-+
- &qspi {
- 	status = "okay";
- 	pinctrl-names = "default";
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 4216b57..bbd22fb 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -457,6 +457,15 @@
- 			#power-domain-cells = <1>;
- 		};
- 
-+		qfprom_efuse: efuse@780000 {
-+			compatible = "qcom,sc7180-qfprom-efuse";
-+			reg = <0 0x00780000 0 0x100>,
-+			      <0 0x00780120 0 0x7a0>,
-+			      <0 0x00782000 0 0x100>;
-+			clocks = <&gcc GCC_SEC_CTRL_CLK_SRC>;
-+			clock-names = "secclk";
-+		};
-+
- 		qfprom@784000 {
- 			compatible = "qcom,qfprom";
- 			reg = <0 0x00784000 0 0x8ff>;
+diff --git a/fs/super.c b/fs/super.c
+index b0a511bef4a0..6674c2af26ef 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -2052,7 +2052,6 @@ SYSCALL_DEFINE5(watch_sb,
+ 		if (drop_s_count)
+ 			put_super(s);
+ 	} else {
+-		ret = -EBADSLT;
+ 		down_write(&s->s_umount);
+ 		ret = remove_watch_from_object(s->s_watchers, wqueue,
+ 					       s->s_unique_id, false);
 -- 
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, hosted by the Linux Foundation.
+2.25.1
 
