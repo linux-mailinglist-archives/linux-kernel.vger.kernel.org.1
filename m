@@ -2,147 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A5C1CF95B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B491CF964
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730813AbgELPh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 11:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730785AbgELPh3 (ORCPT
+        id S1730851AbgELPhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 11:37:39 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:34017 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727847AbgELPhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 11:37:29 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FECC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:37:28 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id u6so14152946ljl.6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:37:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U3mfWUpC6bH/0PPzXG5Sq3RBRbSppz1EWcuNQTMG4no=;
-        b=OtmcAawdVwZKG0M4kx0M+jrAJrJ1G8XEe6FS6/gIpKW8YlvvcI+MbEI73prV/Re8NB
-         kfVrqKnsXX/z8j2S9JCcSMF+x9IrlFuT/dRhsCYoWSO9brOKkkel3EoQT9HVHNkOAFZR
-         u3SK7kTeFtpAVEIs+r01cEzhEPtSvAoIMgaPmloMPyD3Sr3wevwmfBffVsZkDrv0tiew
-         Ej6+/AVE05h8zDM0MwzyKbGmq6f9TF8ftwLcPe3t24NEOU0sxN5kl8ufSEKoc3N4xNzD
-         S9oXqMeVmjGsNSGA3d2JW1HsaLgJyKm6mEFB19vsJrI2yzuz6Ih6kU4pvoADlSdXFnaV
-         +paQ==
+        Tue, 12 May 2020 11:37:38 -0400
+Received: by mail-oi1-f194.google.com with SMTP id c12so17589927oic.1;
+        Tue, 12 May 2020 08:37:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U3mfWUpC6bH/0PPzXG5Sq3RBRbSppz1EWcuNQTMG4no=;
-        b=XqpUQB7CvVG08yZXUAxXM+ptEI3WWnwngldXuV075Qkt7TzLmdhMwgZKvd6pX4AhVa
-         ++W1A0R/bRC589huFACm5oU559UlYDHHHafkLQCt07wEycK/y8rg9LIhzuivkVC40Xdv
-         RcoVDFN/rnFTMnkX1JD17CniXoFg8KAcy42SNwNrAus3/Fh/c5BA31/RkUsLsIvfukoM
-         pFSBtfGN2nHaZnlnzaBCHu6IUN+9Fsf7zkLp5Fq2kuJTWf7e30aRLocPxczGgNFNLDID
-         g9OqHQyTp21Bf589dE/pdpVddc2Q7YbuVr/9Id3tXiwnrVhKdcpafnvbWaj5rG3axBRT
-         r/9A==
-X-Gm-Message-State: AOAM533n2A3y5ORDITjmdt3XSUUnaBdQ7fpWcBxbe7hQhc88Y/t/cX+v
-        mGCVrT0R97woe4OOAIRhH5wV0Lj/xYzoU8ZxpjiUoA==
-X-Google-Smtp-Source: ABdhPJzSzvPBzHJJyhmdNxeCDNn0RGhxwM4L9OsASaWkxZEseTcQrITCOOAq3lvC6NY1FGK3OODa4SHdRTxY9uynbbg=
-X-Received: by 2002:a2e:9455:: with SMTP id o21mr14273685ljh.245.1589297847090;
- Tue, 12 May 2020 08:37:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PCyVx6YxchGHNw6iJ+ojabd2z3U8e+KigXbn5+BW+HM=;
+        b=J03VJ5/SPvSQt6f1Fe4ytraUMBwkvGTlYPlMlAa5Ku37lufCQmN6H9RrgpCqvoV4wf
+         R8hK3NienpuGlXrKdRmn3Of/7EY7UaST8nLpdrMDc62u9fT4841pzHzFeVWro+OpG6VP
+         Sj1XDF0V3IFRoSrSsHGr/wUZe7lLfZVHkn4CfUuYKtl4yJoyCPUdsT59nktftw50o8zI
+         K6g1+f2rlsL70j4HUOAJt4uM230h66WTurd6LPbm69hBWtuapq3uH28NwrlD/feNZUHM
+         fO0KXmT6JD7YXl8OlbyY44TjOZQ3qv9A5n5BmIswye6NnCz8mdFbT9xM6K+miQc0Ntvv
+         o8bg==
+X-Gm-Message-State: AGi0PuaRsrfhYd/8KL/c4ezFtEXxS6/muTe+tGilr1MA4Aq+xGn6vDwG
+        vcnPRKpcoKaTn99Ng3kxUA==
+X-Google-Smtp-Source: APiQypKNT+mcx7T9+iUMFNsVArR3hQ4oj99NzmMx2VYonYzt1n3FPZS5ZEefObr7Lq8RTsR/f9TlMA==
+X-Received: by 2002:aca:7504:: with SMTP id q4mr23486434oic.31.1589297856746;
+        Tue, 12 May 2020 08:37:36 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i81sm424098oif.26.2020.05.12.08.37.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 08:37:35 -0700 (PDT)
+Received: (nullmailer pid 24510 invoked by uid 1000);
+        Tue, 12 May 2020 15:37:34 -0000
+Date:   Tue, 12 May 2020 10:37:34 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        Peter Hurley <peter@hurleysoftware.com>,
+        Alan Cox <gnomes@lxorguk.ukuu.org.uk>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-omap@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/6] dt-bindings: serdev: ngsm: Add binding for
+ serdev-ngsm
+Message-ID: <20200512153734.GA24449@bogus>
+References: <20200430174615.41185-1-tony@atomide.com>
+ <20200430174615.41185-3-tony@atomide.com>
 MIME-Version: 1.0
-References: <20200511224430.HDJjRC68z%akpm@linux-foundation.org>
- <3b612c3e-ce52-ba92-eb02-0fa7fd38819f@infradead.org> <20200512121750.GA397968@cmpxchg.org>
-In-Reply-To: <20200512121750.GA397968@cmpxchg.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 12 May 2020 21:07:15 +0530
-Message-ID: <CA+G9fYvZ1SFX1b7+3_X9L+snPxV_zGHykuDD96Me+gM++BYTBg@mail.gmail.com>
-Subject: Re: mmotm 2020-05-11-15-43 uploaded (mm/memcontrol.c, huge pages)
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>, linux-fsdevel@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        mhocko@suse.cz, mm-commits@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200430174615.41185-3-tony@atomide.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The THP page size macros are CONFIG_TRANSPARENT_HUGEPAGE only.
->
-> We already ifdef most THP-related code in memcg, but not these
-> particular stats. Memcg used to track the pages as they came in, and
-> PageTransHuge() + hpage_nr_pages() work when THP is not compiled in.
->
-> Switching to native vmstat counters, memcg doesn't see the pages, it
-> only gets a count of THPs. To translate that to bytes, it has to know
-> how big the THPs are - and that's only available for CONFIG_THP.
->
-> Add the necessary ifdefs. /proc/meminfo, smaps etc. also don't show
-> the THP counters when the feature is compiled out. The event counts
-> (THP_FAULT_ALLOC, THP_COLLAPSE_ALLOC) were already conditional also.
->
-> Style touchup: HPAGE_PMD_NR * PAGE_SIZE is silly. Use HPAGE_PMD_SIZE.
-
-Build tested and build pass on x86_64.
-
->
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
+On Thu, 30 Apr 2020 10:46:11 -0700, Tony Lindgren wrote:
+> Add a binding document for a generic serdev-ngsm driver that can be
+> used to bring up TS 27.010 line discipline with Linux n_gsm support
+> on a serial port.
+> 
+> As the Motorola Mapphone modems require some custom handling, they
+> are handled with a separate compatible.
+> 
+> Let's also add vendor string for ETSI as we're using a ETSI 3GPP
+> TS 27.010 standard.
+> 
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
 > ---
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 738d071ba1ef..47c685088a2c 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1401,9 +1401,11 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
->                        (u64)memcg_page_state(memcg, NR_WRITEBACK) *
->                        PAGE_SIZE);
->
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->         seq_buf_printf(&s, "anon_thp %llu\n",
->                        (u64)memcg_page_state(memcg, NR_ANON_THPS) *
-> -                      HPAGE_PMD_NR * PAGE_SIZE);
-> +                      HPAGE_PMD_SIZE);
-> +#endif
->
->         for (i = 0; i < NR_LRU_LISTS; i++)
->                 seq_buf_printf(&s, "%s %llu\n", lru_list_name(i),
-> @@ -3752,7 +3754,9 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
->  static const unsigned int memcg1_stats[] = {
->         NR_FILE_PAGES,
->         NR_ANON_MAPPED,
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->         NR_ANON_THPS,
-> +#endif
->         NR_SHMEM,
->         NR_FILE_MAPPED,
->         NR_FILE_DIRTY,
-> @@ -3763,7 +3767,9 @@ static const unsigned int memcg1_stats[] = {
->  static const char *const memcg1_stat_names[] = {
->         "cache",
->         "rss",
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->         "rss_huge",
-> +#endif
->         "shmem",
->         "mapped_file",
->         "dirty",
-> @@ -3794,8 +3800,10 @@ static int memcg_stat_show(struct seq_file *m, void *v)
->                 if (memcg1_stats[i] == MEMCG_SWAP && !do_memsw_account())
->                         continue;
->                 nr = memcg_page_state_local(memcg, memcg1_stats[i]);
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->                 if (memcg1_stats[i] == NR_ANON_THPS)
->                         nr *= HPAGE_PMD_NR;
-> +#endif
->                 seq_printf(m, "%s %lu\n", memcg1_stat_names[i], nr * PAGE_SIZE);
->         }
->
+>  .../bindings/serdev/serdev-ngsm.yaml          | 64 +++++++++++++++++++
+>  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+>  2 files changed, 66 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/serdev/serdev-ngsm.yaml
+> 
 
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
+Reviewed-by: Rob Herring <robh@kernel.org>
