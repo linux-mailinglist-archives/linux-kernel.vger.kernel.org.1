@@ -2,136 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0511CEC64
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 07:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941DD1CEC6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 07:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728725AbgELFWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 01:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728115AbgELFWH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 01:22:07 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16452C05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 22:22:07 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id mq3so8923494pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 22:22:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Tui6R+wLa0kQmrDETUfafc3KbI5b0/0SxwmiRjNIF7A=;
-        b=cfLoppT6e2JbWKXLzwROnhBqU7urDGmXU6Ivw2izkCXo/+x7WT/Ebs1LICZTajvBLq
-         3asbc7tjFnP38cIPLziD7oWYkFhtGKVBRMn0MsxP0ouJdxB/FZZ+XXdBniOBsRzzJ47S
-         VvHVnTfJyrUrE66iJ6A9neuBL/mUQBnftZqfQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tui6R+wLa0kQmrDETUfafc3KbI5b0/0SxwmiRjNIF7A=;
-        b=UQMI79ndVlWr1+Bsz60OoqQqfISdayf0nCWB7+3JVBRapTxBlunoM81oHD3B+1ntRQ
-         vX8uOW9HfmaIfSGEF3y3JkvTgSZzQ41B7eaKrRMZ4MMnqIWZdkqto5EInzVEzJlqJOzl
-         RTi/X2qmNW262LNnGrmCknxUBP3lVyz5q8UvVllW/pdj1DVX42Wztw1IqdzOUZgmhnGi
-         9/IhqAG34Wan0Tw8BApG+necLKVULfpu/OoFRaQx63ZqtbipA7Ptre56Y4tRt3wjOfh9
-         aJiWK80Jhu6fMdIE2WjUojoGwZNKN4xNk7+ifMuGZxK4f8n/IabVcOJXFhjZNt96l093
-         cFmQ==
-X-Gm-Message-State: AOAM533l+Ko/VlFXgTvmsU8XsOCZQhCD2z6ylTcIKRXYHftGfuWyM7qO
-        p4TlwSTL/+uU5XWBKcmKn3KgYA==
-X-Google-Smtp-Source: ABdhPJzpcqmP6SfdzxFzIUYtW3i2pwdFwJgS5MLGiC8zzR/ZRdQQ6sNBrbCe+7GqW7hufQlLuAGEnw==
-X-Received: by 2002:a17:90a:24ac:: with SMTP id i41mr790988pje.24.1589260926558;
-        Mon, 11 May 2020 22:22:06 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id gz19sm11526688pjb.7.2020.05.11.22.22.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 22:22:05 -0700 (PDT)
-Date:   Mon, 11 May 2020 22:22:04 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Xiaoming Ni <nixiaoming@huawei.com>,
-        Al Viro <viro@ZenIV.linux.org.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Helge Deller <deller@gmx.de>,
-        Parisc List <linux-parisc@vger.kernel.org>, yzaikin@google.com,
-        linux-fsdevel@vger.kernel.org,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: linux-next: manual merge of the vfs tree with the parisc-hd tree
-Message-ID: <202005112219.0FB0A7A@keescook>
-References: <20200511111123.68ccbaa3@canb.auug.org.au>
- <99095805-8cbe-d140-e2f1-0c5a3e84d7e7@huawei.com>
- <20200512003305.GX11244@42.do-not-panic.com>
+        id S1728778AbgELFYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 01:24:20 -0400
+Received: from mga09.intel.com ([134.134.136.24]:15645 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728711AbgELFYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 01:24:20 -0400
+IronPort-SDR: /6r60VZiiwfo+5OB4qwnWspmb9eGHqqF4hgXOw+kxeAYjJhWx319djXYhQhZFoOUxCdSBFNPId
+ 1uYG7UE/Oj0Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 22:24:20 -0700
+IronPort-SDR: F98HwDyVSjbx/SQx2p30vPgDw5cQVggbCKfGIL9T1jiYnTudc9Oudat3zuzev+481IFZHkYIbZ
+ 0FqRBiGE8mKg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,382,1583222400"; 
+   d="scan'208";a="463638615"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 11 May 2020 22:24:18 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jYNOs-00048g-54; Tue, 12 May 2020 13:24:18 +0800
+Date:   Tue, 12 May 2020 13:23:51 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:core/rcu] BUILD SUCCESS
+ 68f0f2690e183306b52671a9ad09fb31808b0500
+Message-ID: <5eba32e7.g39sp9mjHGscM3cf%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512003305.GX11244@42.do-not-panic.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 12:33:05AM +0000, Luis Chamberlain wrote:
-> On Mon, May 11, 2020 at 09:55:16AM +0800, Xiaoming Ni wrote:
-> > On 2020/5/11 9:11, Stephen Rothwell wrote:
-> > > Hi all,
-> > > 
-> > > Today's linux-next merge of the vfs tree got a conflict in:
-> > > 
-> > >    kernel/sysctl.c
-> > > 
-> > > between commit:
-> > > 
-> > >    b6522fa409cf ("parisc: add sysctl file interface panic_on_stackoverflow")
-> > > 
-> > > from the parisc-hd tree and commit:
-> > > 
-> > >    f461d2dcd511 ("sysctl: avoid forward declarations")
-> > > 
-> > > from the vfs tree.
-> > > 
-> > > I fixed it up (see below) and can carry the fix as necessary. This
-> > > is now fixed as far as linux-next is concerned, but any non trivial
-> > > conflicts should be mentioned to your upstream maintainer when your tree
-> > > is submitted for merging.  You may also want to consider cooperating
-> > > with the maintainer of the conflicting tree to minimise any particularly
-> > > complex conflicts.
-> > > 
-> > 
-> > 
-> > Kernel/sysctl.c contains more than 190 interface files, and there are a
-> > large number of config macro controls. When modifying the sysctl interface
-> > directly in kernel/sysctl.c , conflicts are very easy to occur.
-> > 
-> > At the same time, the register_sysctl_table() provided by the system can
-> > easily add the sysctl interface, and there is no conflict of kernel/sysctl.c
-> > .
-> > 
-> > Should we add instructions in the patch guide (coding-style.rst
-> > submitting-patches.rst):
-> > Preferentially use register_sysctl_table() to add a new sysctl interface,
-> > centralize feature codes, and avoid directly modifying kernel/sysctl.c ?
-> 
-> Yes, however I don't think folks know how to do this well. So I think we
-> just have to do at least start ourselves, and then reflect some of this
-> in the docs.  The reason that this can be not easy is that we need to
-> ensure that at an init level we haven't busted dependencies on setting
-> this. We also just don't have docs on how to do this well.
-> 
-> > In addition, is it necessary to transfer the architecture-related sysctl
-> > interface to arch/xxx/kernel/sysctl.c ?
-> 
-> Well here's an initial attempt to start with fs stuff in a very
-> conservative way. What do folks think?
-> 
-> [...]
-> +static unsigned long zero_ul;
-> +static unsigned long long_max = LONG_MAX;
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/rcu
+branch HEAD: 68f0f2690e183306b52671a9ad09fb31808b0500  Merge branch 'for-mingo' of git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu into core/rcu
 
-I think it'd be nice to keep these in one place for others to reuse,
-though that means making them non-static. (And now that I look at them,
-I thought they were supposed to be const?)
+elapsed time: 499m
 
--- 
-Kees Cook
+configs tested: 114
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+m68k                             allyesconfig
+sparc                            allyesconfig
+powerpc                      tqm8xx_defconfig
+riscv                          rv32_defconfig
+sh                        edosk7705_defconfig
+sh                          lboxre2_defconfig
+sh                           se7722_defconfig
+xtensa                    xip_kc705_defconfig
+arm                              alldefconfig
+i386                              allnoconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20200511
+i386                 randconfig-a005-20200511
+i386                 randconfig-a003-20200511
+i386                 randconfig-a001-20200511
+i386                 randconfig-a004-20200511
+i386                 randconfig-a002-20200511
+x86_64               randconfig-a006-20200512
+x86_64               randconfig-a004-20200512
+x86_64               randconfig-a002-20200512
+i386                 randconfig-a012-20200511
+i386                 randconfig-a016-20200511
+i386                 randconfig-a014-20200511
+i386                 randconfig-a011-20200511
+i386                 randconfig-a013-20200511
+i386                 randconfig-a015-20200511
+i386                 randconfig-a012-20200512
+i386                 randconfig-a016-20200512
+i386                 randconfig-a014-20200512
+i386                 randconfig-a011-20200512
+i386                 randconfig-a013-20200512
+i386                 randconfig-a015-20200512
+x86_64               randconfig-a005-20200511
+x86_64               randconfig-a003-20200511
+x86_64               randconfig-a006-20200511
+x86_64               randconfig-a004-20200511
+x86_64               randconfig-a001-20200511
+x86_64               randconfig-a002-20200511
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+x86_64                              defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
