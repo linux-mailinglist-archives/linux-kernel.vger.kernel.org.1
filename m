@@ -2,216 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBA31D0177
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA001D0163
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 23:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731522AbgELWAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728313AbgELWAu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 18:00:50 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B47FC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:00:49 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id y18so240833pfl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:00:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ddE82/gNSNp4A/gKz3+NrCd0gdVAPuOemEUxiIBW/OQ=;
-        b=K9gJNy9fjti0A6468uJpUTKSWwglc3ucBlRAKSfhako2ebKTZl/n1ksMJ/s4RjOlZK
-         LhJV5amDlFSHc7SL8VyqRUPXH9AUmwslY+bBtd6YhwsxUc17UgPKrWfD7Qs8/vDv4Y2i
-         L612f453UM427YXGrYwF+xXa8J2wWeGbS9nMzh1y0elHqRv7vx5zKonOLyXwO08/ajqo
-         vGwXjZfRKkLOFYbq2L3+vAOqNq6NsV+VvMwefddwKjRlSeTDUvDnFppxUjvo/sLF4Cys
-         rx06EVJ0aZy3JWaYcwmwv+tT6b5ZyYA6FLI3K0bj90WMTRtYaAveeGOkU3QEM2igBBgu
-         rMGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ddE82/gNSNp4A/gKz3+NrCd0gdVAPuOemEUxiIBW/OQ=;
-        b=q9HWp2/8RpQ+/O1VlEmkUbi6tLLsEsdP3KBWd9+sN+vwF2XFhrzu+T0+jvXzOweqmy
-         xIO15HQ/Aegzz23YJoNnH/ub4BVx8IljE9ee1NQu686jAMJ1JveSXf94k3biwhQuf3Jt
-         E2vaBpK1nN1qInw2erGDO7Hgtl0ySXW2MLklTseRBeon8lEKvgBe6jovm5+qhFEDsqwS
-         qq+WKhrgNyQGdyMKT1pYkbEbS+W/0HvJM1zKDaBR4PDhdncIwt+MCNHgkJP6/FSFsDXX
-         GxZYkVv+JdkdyEe123QOfGh/zcifhjX54oyXg2pvS4BeX/aH9q18G4H8QLqSQ1oxjRq8
-         Cnqg==
-X-Gm-Message-State: AGi0PuanAK9v2Vv5c16HN2ZJIjnXW+rzDnjJuksVj9PVcCVOx6UC/6pM
-        O6osBdP7GmWhvS0Y1DL2fEKDXg==
-X-Google-Smtp-Source: APiQypIMfdb0+fcMj9TDpn2dvSQKBqSJtstGJU7yN/HLaXZ3pFGFn7vRtBXipHuHeQtsHuxMUtb5iw==
-X-Received: by 2002:aa7:8b0d:: with SMTP id f13mr22921440pfd.270.1589320848502;
-        Tue, 12 May 2020 15:00:48 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id 184sm13200508pfy.144.2020.05.12.15.00.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 15:00:47 -0700 (PDT)
-Date:   Tue, 12 May 2020 14:59:15 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     linux-pm@vger.kernel.org, evgreen@chromium.org, mka@chromium.org,
-        akashast@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] interconnect: Add helpers for enabling/disabling a
- path
-Message-ID: <20200512215915.GL2165@builder.lan>
-References: <20200507120846.8354-1-georgi.djakov@linaro.org>
+        id S1731532AbgELV7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 17:59:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728313AbgELV7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 17:59:20 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2180206B7;
+        Tue, 12 May 2020 21:59:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589320760;
+        bh=umeyPfzMnWUsI5DYYCbU0pSKl5SS197xscOjTElhVOU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Orwq489TX5Fd2s66luzYbKVVgduIHMk5HY1Z5C2/g255CTs0S+aNNxq/hJsS/Y41o
+         W8r0qfRHsg71g6f6Rxqm6CQwuwh6IBrjpO2gNOLIXo4fj0upk24RpESOk6UItCHhiL
+         YVKL1XGaqCNX3GK3lmfbBhf5Q01Dnb+hT43e1oCQ=
+Date:   Tue, 12 May 2020 14:59:17 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Amol Grover <frextrite@gmail.com>
+Cc:     Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        sfr@canb.auug.org.au, "David S . Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH net 2/2 RESEND] ipmr: Add lockdep expression to
+ ipmr_for_each_table macro
+Message-ID: <20200512145917.729db7bd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200512171710.GA3200@workstation-portable>
+References: <20200509072243.3141-1-frextrite@gmail.com>
+        <20200509072243.3141-2-frextrite@gmail.com>
+        <20200509141938.028fa959@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20200512051705.GB9585@madhuparna-HP-Notebook>
+        <20200512171710.GA3200@workstation-portable>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507120846.8354-1-georgi.djakov@linaro.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 07 May 05:08 PDT 2020, Georgi Djakov wrote:
-
-> There is a repeated pattern in multiple drivers where they want to switch
-> the bandwidth between zero and some other value. This is happening often
-> in the suspend/resume callbacks. Let's add helper functions to enable and
-> disable the path, so that callers don't have to take care of remembering
-> the bandwidth values and handle this in the framework instead.
+On Tue, 12 May 2020 22:47:10 +0530 Amol Grover wrote:
+> > > This is a strange condition, IMHO. How can we be fine with either
+> > > lock.. This is supposed to be the writer side lock, one can't have 
+> > > two writer side locks..
+> > > 
+> > > I think what is happening is this:
+> > > 
+> > > ipmr_net_init() -> ipmr_rules_init() -> ipmr_new_table()
+> > > 
+> > > ipmr_new_table() returns an existing table if there is one, but
+> > > obviously none can exist at init.  So a better fix would be:
+> > > 
+> > > #define ipmr_for_each_table(mrt, net)					\
+> > > 	list_for_each_entry_rcu(mrt, &net->ipv4.mr_tables, list,	\
+> > > 				lockdep_rtnl_is_held() ||		\
+> > > 				list_empty(&net->ipv4.mr_tables))
+> > >  
 > 
-> With this patch the users can call icc_disable() and icc_enable() to lower
-> their bandwidth request to zero and then restore it back to it's previous
-> value.
-> 
-> Suggested-by: Evan Green <evgreen@chromium.org>
-> Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+> Jakub, I agree, this condition looks better (and correct) than the one I
+> proposed. I'll do the changes as necessary. Also, do you want me to add
+> the full trace to the git commit body as well? I omitted it on purpose
+> to not make it messy.
 
-Nice
+In this case we can leave it at the depth of IPMR code + the caller, so:
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+[    1.534758]  ? ipmr_get_table+0x3c/0x70
+[    1.535430]  ? ipmr_new_table+0x1c/0x60
+[    1.536173]  ? ipmr_net_init+0x7b/0x170
+[    1.536923]  ? register_pernet_subsys+0xd/0x30
 
-Regards,
-Bjorn
+This makes it clear that the problem happens at net namespace init.
 
-> ---
-> v2: https://lore.kernel.org/r/20200428091650.27669-1-georgi.djakov@linaro.org/
-> * Extract the common code into __icc_enable() (Matthias)
-> 
-> 
->  drivers/interconnect/core.c     | 39 ++++++++++++++++++++++++++++++++-
->  drivers/interconnect/internal.h |  2 ++
->  include/linux/interconnect.h    | 12 ++++++++++
->  3 files changed, 52 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
-> index f5699ed34e43..d5e0f93c942d 100644
-> --- a/drivers/interconnect/core.c
-> +++ b/drivers/interconnect/core.c
-> @@ -158,6 +158,7 @@ static struct icc_path *path_init(struct device *dev, struct icc_node *dst,
->  		hlist_add_head(&path->reqs[i].req_node, &node->req_list);
->  		path->reqs[i].node = node;
->  		path->reqs[i].dev = dev;
-> +		path->reqs[i].enabled = true;
->  		/* reference to previous node was saved during path traversal */
->  		node = node->reverse;
->  	}
-> @@ -249,9 +250,12 @@ static int aggregate_requests(struct icc_node *node)
->  	if (p->pre_aggregate)
->  		p->pre_aggregate(node);
->  
-> -	hlist_for_each_entry(r, &node->req_list, req_node)
-> +	hlist_for_each_entry(r, &node->req_list, req_node) {
-> +		if (!r->enabled)
-> +			continue;
->  		p->aggregate(node, r->tag, r->avg_bw, r->peak_bw,
->  			     &node->avg_bw, &node->peak_bw);
-> +	}
->  
->  	return 0;
->  }
-> @@ -571,6 +575,39 @@ int icc_set_bw(struct icc_path *path, u32 avg_bw, u32 peak_bw)
->  }
->  EXPORT_SYMBOL_GPL(icc_set_bw);
->  
-> +static int __icc_enable(struct icc_path *path, bool enable)
-> +{
-> +	int i;
-> +
-> +	if (!path)
-> +		return 0;
-> +
-> +	if (WARN_ON(IS_ERR(path) || !path->num_nodes))
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&icc_lock);
-> +
-> +	for (i = 0; i < path->num_nodes; i++)
-> +		path->reqs[i].enabled = enable;
-> +
-> +	mutex_unlock(&icc_lock);
-> +
-> +	return icc_set_bw(path, path->reqs[0].avg_bw,
-> +			  path->reqs[0].peak_bw);
-> +}
-> +
-> +int icc_disable(struct icc_path *path)
-> +{
-> +	return __icc_enable(path, false);
-> +}
-> +EXPORT_SYMBOL_GPL(icc_disable);
-> +
-> +int icc_enable(struct icc_path *path)
-> +{
-> +	return __icc_enable(path, true);
-> +}
-> +EXPORT_SYMBOL_GPL(icc_enable);
-> +
->  /**
->   * icc_get() - return a handle for path between two endpoints
->   * @dev: the device requesting the path
-> diff --git a/drivers/interconnect/internal.h b/drivers/interconnect/internal.h
-> index bf18cb7239df..f5f82a5c939e 100644
-> --- a/drivers/interconnect/internal.h
-> +++ b/drivers/interconnect/internal.h
-> @@ -14,6 +14,7 @@
->   * @req_node: entry in list of requests for the particular @node
->   * @node: the interconnect node to which this constraint applies
->   * @dev: reference to the device that sets the constraints
-> + * @enabled: indicates whether the path with this request is enabled
->   * @tag: path tag (optional)
->   * @avg_bw: an integer describing the average bandwidth in kBps
->   * @peak_bw: an integer describing the peak bandwidth in kBps
-> @@ -22,6 +23,7 @@ struct icc_req {
->  	struct hlist_node req_node;
->  	struct icc_node *node;
->  	struct device *dev;
-> +	bool enabled;
->  	u32 tag;
->  	u32 avg_bw;
->  	u32 peak_bw;
-> diff --git a/include/linux/interconnect.h b/include/linux/interconnect.h
-> index 770692421f4c..2b7b331c9354 100644
-> --- a/include/linux/interconnect.h
-> +++ b/include/linux/interconnect.h
-> @@ -30,6 +30,8 @@ struct icc_path *icc_get(struct device *dev, const int src_id,
->  struct icc_path *of_icc_get(struct device *dev, const char *name);
->  struct icc_path *devm_of_icc_get(struct device *dev, const char *name);
->  void icc_put(struct icc_path *path);
-> +int icc_disable(struct icc_path *path);
-> +int icc_enable(struct icc_path *path);
->  int icc_set_bw(struct icc_path *path, u32 avg_bw, u32 peak_bw);
->  void icc_set_tag(struct icc_path *path, u32 tag);
->  
-> @@ -57,6 +59,16 @@ static inline void icc_put(struct icc_path *path)
->  {
->  }
->  
-> +static inline int icc_disable(struct icc_path *path)
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline int icc_enable(struct icc_path *path)
-> +{
-> +	return 0;
-> +}
-> +
->  static inline int icc_set_bw(struct icc_path *path, u32 avg_bw, u32 peak_bw)
->  {
->  	return 0;
+Thanks!
