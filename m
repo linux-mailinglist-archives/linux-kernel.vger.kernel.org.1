@@ -2,99 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53EFF1CF64F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 15:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3875B1CF653
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730085AbgELN7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 09:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728085AbgELN7J (ORCPT
+        id S1730080AbgELOBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 10:01:07 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:38153 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727859AbgELOBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 09:59:09 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B95BC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 06:59:09 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id l12so6185998pgr.10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 06:59:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/rSnXf/LR2mEg6YBHE96iKMOvPT6rw9BrJsNQPuqh+I=;
-        b=G+5xeZhp79EgQEfRC9B4mRED7ZcB4fv3ORF2m5YjrWT3/S6x8H6qYt9BnXCNyUmmSy
-         AX1Im/G5JxV87HD1/1Pg5cJ8zIAx5F2ZGksW/fuhZL+H5Ht+jNLbKOv2ZBPywRtyMqxw
-         grOaa6Qz15snhJAWd4a5gSqNyjCydNDwWmkcPTm2ICselBSGwYa929/D326T12lyHHiC
-         XNlHB8NL5PwdkVpa+EIowRf0hHNgTPRwoCqRQmncRbiOQVakZkdS5ykXretlVymSd3cY
-         0IwQ6NEL+VvymgiLExSfF+O6jfCvaQsbilc8XnCdvL5vTFDOZ9oYmGu9yjmB177QYWqh
-         cPGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/rSnXf/LR2mEg6YBHE96iKMOvPT6rw9BrJsNQPuqh+I=;
-        b=ebpHS/Wl8qezq1c92VPSINUoYF02XtMT/hIBTFB4eS3lcgMR5kcqLLsYSgaBkrsDOm
-         02S4QaZRs4/NQ0d3sclNTVi3FV/hdI1ABEhmavY29PO3W3aCbcYXrqVjXmvmj9mZGTPg
-         Bh+pd/2LaXKotHB1UJWxt4FUyjMBi1FXNW+4EgiwIyoRRwJhyKOxKEgYxhaqAGa5RqhB
-         ueNBkkTQge6ujKAFQOJZYkUVNJi8lCvZ3y7J/X24Hxs7YlS9xodvSKojtHgqJFgvGdFb
-         LIY0HsIUx2Sw5cdeOsSRfu1P1/Z35CaC741yTNUl28HwuI6KLmg+oFbhzJHfn59YCX2T
-         KM9A==
-X-Gm-Message-State: AOAM533mUlQHglr/pQBtd9h4EhgU4nc5/3HS4xTaKXsykOS+KSpZM8ai
-        lmZwwcibT0FImhWSwsKqe/srRQ==
-X-Google-Smtp-Source: ABdhPJymlc4g8AwytnuWMBdPjQzNPQw9vQwsIPI1BvYOSYxy4P8yAcJCciDAB/7ihk/wxDV9wyzBsw==
-X-Received: by 2002:a62:f24e:: with SMTP id y14mr3404268pfl.116.1589291948432;
-        Tue, 12 May 2020 06:59:08 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id l3sm2177892pju.38.2020.05.12.06.59.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 12 May 2020 06:59:07 -0700 (PDT)
-Date:   Tue, 12 May 2020 21:59:10 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc:     acme@kernel.org, sandipan@linux.ibm.com, jolsa@kernel.org,
-        naveen.n.rao@linux.vnet.ibm.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf powerpc: Don't ignore sym-handling.c file
-Message-ID: <20200512135910.GB20352@leoy-ThinkPad-X240s>
-References: <20200509112113.174745-1-ravi.bangoria@linux.ibm.com>
+        Tue, 12 May 2020 10:01:07 -0400
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 04CE0off022097;
+        Tue, 12 May 2020 23:00:51 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 04CE0off022097
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1589292051;
+        bh=LSYtSnqE2loIysnLi9PlyYmgllRh5Q8uKVWak+A+U5g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jGkAdtHAcADhEIXU4tQ5Jl5cfsDaZTHiYyE8lRmFpGfAhZ1lyxGChMXy3NEp+SUF0
+         rolFoBUsYSmMWtV9ckbJpTTziF3c/vhnBKMHvRbovlaT6Rp7LMNArYdqW7hX34B6Iw
+         PE22TdTUr33JzD+N2zR0qIE8HA4WXnn5RuWWya54qsVfXraIQVvS5B03dxnUo7oH88
+         b0B/dC/gTJ5Id1ul49WWxs9ZFot4vKJuK6z5PCUDzEUktAlYQmYHNJu0a/o8uCjd3h
+         0MVkKKDNleca1PKphFnG2NrQPm5ut/523aBUV/ksfF/jV/AUHbzxou60uYuU9u5XAu
+         SzPQscQRySXIA==
+X-Nifty-SrcIP: [209.85.217.43]
+Received: by mail-vs1-f43.google.com with SMTP id x6so7909788vso.1;
+        Tue, 12 May 2020 07:00:51 -0700 (PDT)
+X-Gm-Message-State: AGi0PuazPbw557PFeaDE78gd1y62p1PoTo3XP3fUmZsr7OgcZxC8t1FE
+        3hKXmMzF5GVbooo3xeWMpUU3NE10/bwhVzuTSAI=
+X-Google-Smtp-Source: APiQypLlSu7obGufgeyKGM208Jk0P/54bCxkjvodFG+fIfo2MG9URlZjMz3fDLbxNXoVrUj35b/spnQpLfcGDp8jqQI=
+X-Received: by 2002:a67:db0d:: with SMTP id z13mr15766817vsj.155.1589292049868;
+ Tue, 12 May 2020 07:00:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200509112113.174745-1-ravi.bangoria@linux.ibm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200512195712.690f02bb@canb.auug.org.au>
+In-Reply-To: <20200512195712.690f02bb@canb.auug.org.au>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 12 May 2020 23:00:13 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ-=A0nDZK0FTzgJ6oJ-VbV33F1rVjvBAWgybSsUXaPVA@mail.gmail.com>
+Message-ID: <CAK7LNAQ-=A0nDZK0FTzgJ6oJ-VbV33F1rVjvBAWgybSsUXaPVA@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the fsinfo tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Howells <dhowells@redhat.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 09, 2020 at 04:51:13PM +0530, Ravi Bangoria wrote:
-> Commit 7eec00a74720 ("perf symbols: Consolidate symbol fixup issue")
-> removed powerpc specific sym-handling.c file from Build. This wasn't
-> caught by build CI because all functions in this file are declared
-> as __weak in common code. Fix it.
-> 
-> Fixes: 7eec00a74720 ("perf symbols: Consolidate symbol fixup issue")
-> Reported-by: Sandipan Das <sandipan@linux.ibm.com>
-> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+On Tue, May 12, 2020 at 6:57 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the fsinfo tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>
+> /usr/lib/gcc-cross/x86_64-linux-gnu/9/../../../../x86_64-linux-gnu/bin/ld: cannot find /usr/lib/x86_64-linux-gnu/libm-2.30.a
+> /usr/lib/gcc-cross/x86_64-linux-gnu/9/../../../../x86_64-linux-gnu/bin/ld: cannot find /usr/lib/x86_64-linux-gnu/libmvec.a
+>
+> I don't know if this is a quirk of the build system or Debian's cross
+> compiler setup.  Both those files exist in /usr/x86_64-linux-gnu/lib/.
+>
+> Masahiro, any thoughts?
+>
+> I have disabled the building of test_fsinfo for now:
+>
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Tue, 12 May 2020 19:49:33 +1000
+> Subject: [PATCH] disable building fo test-fsinfo for now
+>
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 > ---
->  tools/perf/arch/powerpc/util/Build | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/perf/arch/powerpc/util/Build b/tools/perf/arch/powerpc/util/Build
-> index e5c9504f8586..e86e210bf514 100644
-> --- a/tools/perf/arch/powerpc/util/Build
-> +++ b/tools/perf/arch/powerpc/util/Build
-> @@ -2,6 +2,7 @@ perf-y += header.o
->  perf-y += kvm-stat.o
->  perf-y += perf_regs.o
->  perf-y += mem-events.o
-> +perf-y += sym-handling.o
+>  samples/vfs/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/samples/vfs/Makefile b/samples/vfs/Makefile
+> index f5bc5dfdf045..97e54c8be358 100644
+> --- a/samples/vfs/Makefile
+> +++ b/samples/vfs/Makefile
+> @@ -1,5 +1,5 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -userprogs := test-fsinfo test-fsmount test-mntinfo test-statx
+> +userprogs := test-fsmount test-mntinfo test-statx
+>  always-y := $(userprogs)
+>
+>  userccflags += -I usr/include
+> --
+> 2.26.2
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
-My bad, thanks for fixing.  FWIW:
 
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
+I also failed to build it, but the error message
+was different.
 
->  perf-$(CONFIG_DWARF) += dwarf-regs.o
->  perf-$(CONFIG_DWARF) += skip-callchain-idx.o
-> -- 
-> 2.21.1
-> 
+
+
+The following worked for me at least.
+(Ubuntu 20.04).
+
+
+
+diff --git a/samples/vfs/Makefile b/samples/vfs/Makefile
+index 97e54c8be358..539fb3a56af3 100644
+--- a/samples/vfs/Makefile
++++ b/samples/vfs/Makefile
+@@ -1,7 +1,8 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-userprogs := test-fsmount test-mntinfo test-statx
++userprogs := test-fsinfo test-fsmount test-mntinfo test-statx
+ always-y := $(userprogs)
+
+ userccflags += -I usr/include
+
+-test-fsinfo-userldflags += -static -lm
++test-fsinfo-userldflags := -static
++test-fsinfo-userldlibs := -lm
+
+
+
+
+David,
+
+BTW, why is '-static' needed here?
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
