@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0921CEB63
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 05:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 420EC1CEB73
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 05:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728794AbgELD3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 23:29:04 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:38872 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728709AbgELD3D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 23:29:03 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04C3RLxY105406;
-        Tue, 12 May 2020 03:28:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=Ul1MQ9V/DIgV6pt2ygn/L2NqNfjK8CMuQ9o1DGGXPHc=;
- b=Bpthnbw0LWJDqfpRI3aStgG9H+2vFx3GquljTwNuzhCq8GO+verXEkBYeAStXMuSqYgu
- fvVtYaobhqLE+n6YK2XSVwyuTjlk61UdYqp6Bw50/3Qjf/716oryffHJba9589XyEJ45
- Ta46wyvbbzt1K0hel2onR0ltM27sM4qMXlNqW6Pmc+VJTWISIxwzVNQkEr34uW+8gYeW
- 2V64vf0vzM7n3NS0USHQwGiUpkDZphXypby514oBU00nwNd/dZg648HIDEQLMij53kw2
- KF2+wxwzMppfe3pt6+hgnmSpHILuqIE6Vy07cwnFKZjuP5mNSf+hq7Ao0oEbA/nVOwuA WQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 30x3gmghsu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 May 2020 03:28:54 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04C3NsMC044088;
-        Tue, 12 May 2020 03:28:54 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 30ydspj6ac-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 May 2020 03:28:54 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04C3Sre1004039;
-        Tue, 12 May 2020 03:28:53 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 11 May 2020 20:28:52 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Zou Wei <zou_wei@huawei.com>, aacraid@microsemi.com,
-        jejb@linux.ibm.com
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
-Subject: Re: [PATCH -next v2] scsi: aacraid: Use memdup_user() as a cleanup
-Date:   Mon, 11 May 2020 23:28:37 -0400
-Message-Id: <158925392372.17325.1168480334838921553.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <1587868964-75969-1-git-send-email-zou_wei@huawei.com>
-References: <1587868964-75969-1-git-send-email-zou_wei@huawei.com>
+        id S1728774AbgELDan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 23:30:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728115AbgELDam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 23:30:42 -0400
+Received: from localhost (unknown [171.76.78.167])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88FDD206B9;
+        Tue, 12 May 2020 03:30:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589254241;
+        bh=QNWc4mCSUQkWmfV/BNuwNh/r3Nw7d08P4k2wYg5jrDo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DXljxuItkt/Ukfz/eJPpHgaVnfEHwiP5bCPwjke9teJ8Hob+gJ3hupnjt2b1996UX
+         leH+KWNPvkvy0IFqe3koseuEWo8D7y9XlJOL6lqXlOo4JOJjM4PRBL2WpFxKPzEt+V
+         WYcVWKB2KW0zGtvRBbH5De9dgkRJKGfSYUO9N2Ts=
+Date:   Tue, 12 May 2020 09:00:35 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, tiwai@suse.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        broonie@kernel.org, srinivas.kandagatla@linaro.org,
+        jank@cadence.com, mengdong.lin@intel.com,
+        slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+Subject: Re: [PATCH 3/3] soundwire: bus_type: add sdw_master_device support
+Message-ID: <20200512033035.GV1375924@vkoul-mobl>
+References: <20200429185145.12891-1-yung-chuan.liao@linux.intel.com>
+ <20200429185145.12891-4-yung-chuan.liao@linux.intel.com>
+ <20200511063227.GS1375924@vkoul-mobl>
+ <e214d308-1b92-a7a5-3c76-da05dca99cc5@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 mlxscore=0
- adultscore=0 mlxlogscore=846 malwarescore=0 bulkscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005120029
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=900
- clxscore=1015 spamscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0
- malwarescore=0 priorityscore=1501 mlxscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005120029
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e214d308-1b92-a7a5-3c76-da05dca99cc5@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Apr 2020 10:42:44 +0800, Zou Wei wrote:
-
-> Fix coccicheck warning which recommends to use memdup_user().
+On 11-05-20, 14:00, Pierre-Louis Bossart wrote:
+> > > +	md = &bus->md;
+> > > +	md->dev.bus = &sdw_bus_type;
+> > > +	md->dev.type = &sdw_master_type;
+> > > +	md->dev.parent = parent;
+> > > +	md->dev.of_node = parent->of_node;
+> > > +	md->dev.fwnode = fwnode;
+> > > +	md->dev.dma_mask = parent->dma_mask;
+> > > +
+> > > +	dev_set_name(&md->dev, "sdw-master-%d", bus->link_id);
+> > 
+> > This give nice sdw-master-0. In DT this comes from reg property. I dont
+> > seem to recall if the ACPI/Disco spec treats link_id as unique across
+> > the system, can you check that please, if not we would need to update
+> > this.
+> Table 3 in the Disco for Soundwire 1.0 spec: "all LinkID values are relative
+> to the immediate parent Device."
 > 
-> This patch fixes the following coccicheck warning:
-> 
-> drivers/scsi/aacraid/commctrl.c:516:15-22: WARNING opportunity for memdup_user
+> There isn't any known implementation with more than one controller.
 
-Applied to 5.8/scsi-queue, thanks!
+But then it can come in "future" right. So lets try to make it future
+proof by not using the link_id (we can expose that as a sysfs if people
+want to know). So a global unique id needs to allocated (hint: idr or
+equivalent) and used as master_id
 
-[1/1] scsi: aacraid: Use memdup_user() as a cleanup
-      https://git.kernel.org/mkp/scsi/c/8d925b1f00e6
-
+Thanks
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+~Vinod
