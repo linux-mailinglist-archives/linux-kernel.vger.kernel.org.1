@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A541CF23F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 12:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA851CF27B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 12:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729381AbgELKWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 06:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726193AbgELKWb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 06:22:31 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD572C061A0C;
-        Tue, 12 May 2020 03:22:30 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Lv4g2Rthz9sRR;
-        Tue, 12 May 2020 20:22:27 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1589278947;
-        bh=/GZZFyB+aFFlCyjr23L7LSS3yMR1k47VEqh349nkQIw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UJftmxFjAA8GPsiYmaObEBrJoaar3UudCrxhh5N+KX96sz8W7Rfo1jNbIXpOImao0
-         yfTh1KW0ovaznt65LzJTwK/IfW02lK2p/zwbrtzMAPg5KjweXysOJBLqLadiFYi8tX
-         F6yeEhWZE2cw10bHo6ubPMGajmILB75Xw2AwAkRhUlqR411rBR9Q8JZ2UIpliJrkyq
-         cgnw0oYdaFFy61GMg8j2gPAl+FwYXKZY45ZWRlJdY0xYzX1rZ67BRVqF10iLq25FCW
-         xuTx0Z+30lkGmrYyt7DcNadpolcsBOoZORLn+tA3D/L5urfG9e26I+svRwaVBre6uf
-         VRYZL7MTUp1Dw==
-Date:   Tue, 12 May 2020 20:22:26 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build warning after merge of the fsinfo tree
-Message-ID: <20200512202226.79191a47@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DpkWlS5_5lCn=ntsZD6cdKc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1729518AbgELKcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 06:32:39 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:51996 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729412AbgELKci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 06:32:38 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 72DE0200F2E;
+        Tue, 12 May 2020 12:32:37 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E6ABC200F8B;
+        Tue, 12 May 2020 12:32:32 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0D4E9402BC;
+        Tue, 12 May 2020 18:32:26 +0800 (SGT)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_asrc: Set ASR76K and ASR56K based on processing clock
+Date:   Tue, 12 May 2020 18:22:59 +0800
+Message-Id: <1589278979-31008-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/DpkWlS5_5lCn=ntsZD6cdKc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The processing clock is different for platforms, so it is better
+to set ASR76K and ASR56K based on processing clock, rather than
+hard coding the value for them.
 
-Hi all,
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Mihai Serban <mihai.serban@nxp.com>
+---
+ sound/soc/fsl/fsl_asrc.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-After merging the fsinfo tree, today's linux-next build (powerpc
-allyesconfig) produced this warning:
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 067a54ab554f..ca926915068f 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -858,6 +858,8 @@ static const struct regmap_config fsl_asrc_regmap_config = {
+  */
+ static int fsl_asrc_init(struct fsl_asrc *asrc)
+ {
++	unsigned long ipg_rate;
++
+ 	/* Halt ASRC internal FP when input FIFO needs data for pair A, B, C */
+ 	regmap_write(asrc->regmap, REG_ASRCTR, ASRCTR_ASRCEN);
+ 
+@@ -875,11 +877,14 @@ static int fsl_asrc_init(struct fsl_asrc *asrc)
+ 	regmap_update_bits(asrc->regmap, REG_ASRTFR1,
+ 			   ASRTFR1_TF_BASE_MASK, ASRTFR1_TF_BASE(0xfc));
+ 
+-	/* Set the processing clock for 76KHz to 133M */
+-	regmap_write(asrc->regmap, REG_ASR76K, 0x06D6);
+-
+-	/* Set the processing clock for 56KHz to 133M */
+-	return regmap_write(asrc->regmap, REG_ASR56K, 0x0947);
++	/*
++	 * Set the period of the 76KHz and 56KHz sampling clocks based on
++	 * the ASRC processing clock.
++	 * On iMX6, ipg_clk = 133MHz, REG_ASR76K = 0x06D6, REG_ASR56K = 0x0947
++	 */
++	ipg_rate = clk_get_rate(asrc->ipg_clk);
++	regmap_write(asrc->regmap, REG_ASR76K, ipg_rate / 76000);
++	return regmap_write(asrc->regmap, REG_ASR56K, ipg_rate / 56000);
+ }
+ 
+ /**
+-- 
+2.21.0
 
-samples/watch_queue/watch_test.c: In function 'saw_super_change':
-samples/watch_queue/watch_test.c:107:21: warning: format '%llx' expects arg=
-ument of type 'long long unsigned int', but argument 2 has type '__u64' {ak=
-a 'long unsigned int'} [-Wformat=3D]
-  107 |  printf("SUPER %08llx change=3D%u[%s]\n",
-      |                ~~~~~^
-      |                     |
-      |                     long long unsigned int
-      |                %08lx
-  108 |         s->sb_id, n->subtype, super_subtypes[n->subtype]);
-      |         ~~~~~~~~    =20
-      |          |
-      |          __u64 {aka long unsigned int}
-
-Introduced by commit
-
-  6e1617461ab8 ("watch_queue: sample: Display superblock notifications")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/DpkWlS5_5lCn=ntsZD6cdKc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl66eOIACgkQAVBC80lX
-0GyOowf+JHW7zSsZKLVrh5V+7ItvkpGU/ylg4IJgJrtX//MkAJ7wE1ejNvzQZF2P
-Q96MJq21YHd/y3e/y9AIHmrpJBVrtN8MjgfnZmFju4BV7AfaCgOi4ZStUNacq9LV
-N1cxiG/cypwmNYVqqlSAhj/4YJc7XbUfvP77f1VUvmQsCwJO5iBh8e7uBwGyFneu
-V1FA8efmzSlM6efLNmeU9mAzO530qTU2UrokzT8vSha7mDu0LAEtiA9PyLL1DuCw
-Lk1UhX7kJfREFUmqk2akP9r9VwZaylcG5V3PxZx1dhm5Finodc6zjTmBEvLAvDYv
-Eor2Vo/YSN0WSkUhvCGFlBUV9NYQ+Q==
-=2if9
------END PGP SIGNATURE-----
-
---Sig_/DpkWlS5_5lCn=ntsZD6cdKc--
