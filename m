@@ -2,119 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1834F1D022C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2CA1D0247
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732022AbgELWYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
+        id S1731334AbgELW0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 18:26:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731994AbgELWYm (ORCPT
+        by vger.kernel.org with ESMTP id S1727971AbgELW0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 18:24:42 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B66AC061A0C;
-        Tue, 12 May 2020 15:24:42 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id f134so11971897wmf.1;
-        Tue, 12 May 2020 15:24:42 -0700 (PDT)
+        Tue, 12 May 2020 18:26:51 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE74C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:26:51 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a21so15486892ljj.11
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:26:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=T6/lnxUNaPxPPXlTLJRj6AhR7vTkkb3EZ8aqBlM0OWk=;
-        b=SrTd/ro7AvaEauxrrPTxDh3wvmrjWHigYFTwI6OCAchA0LTOoEpBuyhjdECOi3W5JP
-         nloq0YQb4LVaFJ6VN6jMc4vp45mu2GK2NfcpiPSB7PZcjFY/G4TJ/29TgVI+riddVEoL
-         zUHupnteXosHUlb6g5tBM3MRUBRaAsYsPgJw5YGIK6TJcOeGeHWH2noAhwAjEgJ7xuNp
-         NNWp6qZDm9EDrFYn8eWry4sxi1E95y7tlM33Mvgvv9fYzK+5509XDCTKjRnTh53apiu2
-         Uz9wc7CXgR42yew0ceWmexHuk4qJEcsX4qtzfW0GyiDsj0ePezsQiGlpEqBQz3rQxeQC
-         ZpSw==
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=t1GCnSY4uTkAcfm2Amgz7mdBr4uRw86tBEsv4bxmQzY=;
+        b=mwlbZQAfvfOzwB6ODiMJXWLYT1su4PF828fSWj2MzV2UAihilJRaooKhp4G2RSNKKL
+         8U03XKz4i6TmLdGyJiwS9bV8GU1CmYvqMj7wP1lE/fxakYbdbcv5QYS4uhdm00U2jXoJ
+         kDkEClnyf3wM520UyQjv/dEFBLuVwTRXkr6oaBmgLPYdryH7y2rMuVu9ABRJ2aTq7o5j
+         D70OH4dM+VI6M+ovdGggtM+Z1dGHbe9lGg0NYVqzcdxkUCSr1yR4apP37J5Lg7SnB1tw
+         2ptPSn5bwdHODa3LjzfS4p77gbHmSH+ReJKG7qafpjKUA6AEsskQ8am9RD6yrF9Gja2J
+         0OMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=T6/lnxUNaPxPPXlTLJRj6AhR7vTkkb3EZ8aqBlM0OWk=;
-        b=GujbnWv5+SB277d9bNMCbcOMg3wGZsdrrw17pWgFf9Sj+oog6aKn3KdqDh49JdrHra
-         VtwaopqEvxgoBFp+Z4gBNoAFtWOXXYN4LDX1YHodlBtUDMBPG+cfD8avIrRplkVFkQzZ
-         Lt9bAgXkf6E3KFVQG5u4efqqWOUKck+4Vi7y/kErkHozz//Cylfv0GywlNlbkigvMehY
-         n2bE4plcXrlgkIZSIn3+AMjuInZmJ1asWrKqE8n00/J64q5RDgTdD3nIturI3CFJPC4/
-         3nuR/fGhLikrlV90HbSjWv8Yoj0d1H410AEo9DV9xeKrCKBVGbALAmeh4SJX2Gc7RPDx
-         9t5g==
-X-Gm-Message-State: AGi0Puabrw42p9goXtTK0bRxGpri/xJmYIY4xo8QGuTTocyWvIbQxoy7
-        5/pjlNMsB8Nk5TR6MI2XsfA=
-X-Google-Smtp-Source: APiQypIFFG9NZZdOzQj9vGlbbtC4ygVpYGhkLOO2LmO2sp/3GaDT2eT9UR+jUxCZfNfk8KIGsqyO7A==
-X-Received: by 2002:a1c:f211:: with SMTP id s17mr43022273wmc.168.1589322280765;
-        Tue, 12 May 2020 15:24:40 -0700 (PDT)
-Received: from localhost.localdomain (p200300F137132E00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3713:2e00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id b2sm21758758wrm.30.2020.05.12.15.24.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=t1GCnSY4uTkAcfm2Amgz7mdBr4uRw86tBEsv4bxmQzY=;
+        b=pG9SmBNf6aAiq5r+ymPvx86PgdAjTURs6PC/N50yExLabIGHWqHooCHEEZxlJPACHz
+         j3JIXxFDpePvNtulJ5UTXuxM8DjwtUYrMADbHsLFvhcfiSje2lf7BLHhq1eo0Xqeflg1
+         +0ymDr1qt2h6vX482BlxS6aDhYzXp05d3LAxGQklEN1U0eVd1VM/zusEoSJNKw2jRTb6
+         gn7839TbCjI+S0pvgmoM3FG4WCGDhel1Z4N97c3FSZkxQXjkp4/ItbLOOSCnZ8qx5B/D
+         5IxEjbEPXlOL9kKg9vPPJKkwUjykEpRapD+CDjrEBXUERvD4eFP9fMdhA5UOg2JBfWaJ
+         h78w==
+X-Gm-Message-State: AOAM53050q3pXkO9TeGhAGWeJxc7FmExpeMYWQauoUJpHiD1Wq5+b7pT
+        MPYE359+xs4vgUCuMO1rPGIaXEYRhb/VaQ==
+X-Google-Smtp-Source: ABdhPJwEduG0cPtm1XlGc9w4iKYmhxowK3sFh1H/aNyWh4z7t2H+0oB7q+2VOgPira1wZz5X0+1tdw==
+X-Received: by 2002:a2e:9cd:: with SMTP id 196mr14484595ljj.226.1589322409674;
+        Tue, 12 May 2020 15:26:49 -0700 (PDT)
+Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
+        by smtp.gmail.com with ESMTPSA id c79sm14992881lfg.29.2020.05.12.15.26.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 15:24:40 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     kishon@ti.com, robh+dt@kernel.org, vkoul@kernel.org,
-        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org
-Cc:     narmstrong@baylibre.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, hexdump0815@googlemail.com,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Thomas Graichen <thomas.graichen@gmail.com>
-Subject: [PATCH v2 6/6] phy: amlogic: meson8b-usb2: Add a compatible string for Meson8m2
-Date:   Wed, 13 May 2020 00:24:24 +0200
-Message-Id: <20200512222424.549351-7-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200512222424.549351-1-martin.blumenstingl@googlemail.com>
-References: <20200512222424.549351-1-martin.blumenstingl@googlemail.com>
+        Tue, 12 May 2020 15:26:48 -0700 (PDT)
+Date:   Wed, 13 May 2020 00:26:48 +0200
+From:   Niklas <niklas.soderlund@ragnatech.se>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v4 1/3] media: rcar-vin: Invalidate pipeline if
+ conversion is not possible on input formats
+Message-ID: <20200512222648.GD2542285@oden.dyn.berto.se>
+References: <1586945948-11026-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1586945948-11026-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1586945948-11026-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 3.10 vendor kernel sets the ACA_ENABLE bit on Meson8b, Meson8m2 and
-GXBB, but not on Meson8. Add a compatible string for Meson8m2 which also
-sets that bit.
-While here, also update the Kconfig text and MODULE_DESCRIPTION.
+Hi Lad,
 
-Tested-by: Thomas Graichen <thomas.graichen@gmail.com>
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/phy/amlogic/Kconfig            | 2 +-
- drivers/phy/amlogic/phy-meson8b-usb2.c | 6 +++++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+Thanks for your work.
 
-diff --git a/drivers/phy/amlogic/Kconfig b/drivers/phy/amlogic/Kconfig
-index 3495b23af797..5ec53874d1ea 100644
---- a/drivers/phy/amlogic/Kconfig
-+++ b/drivers/phy/amlogic/Kconfig
-@@ -3,7 +3,7 @@
- # Phy drivers for Amlogic platforms
- #
- config PHY_MESON8B_USB2
--	tristate "Meson8, Meson8b and GXBB USB2 PHY driver"
-+	tristate "Meson8, Meson8b, Meson8m2 and GXBB USB2 PHY driver"
- 	default ARCH_MESON
- 	depends on OF && (ARCH_MESON || COMPILE_TEST)
- 	depends on USB_SUPPORT
-diff --git a/drivers/phy/amlogic/phy-meson8b-usb2.c b/drivers/phy/amlogic/phy-meson8b-usb2.c
-index 436dfa1a8a04..03c061dd5f0d 100644
---- a/drivers/phy/amlogic/phy-meson8b-usb2.c
-+++ b/drivers/phy/amlogic/phy-meson8b-usb2.c
-@@ -302,6 +302,10 @@ static const struct of_device_id phy_meson8b_usb2_of_match[] = {
- 		.compatible = "amlogic,meson8b-usb2-phy",
- 		.data = &phy_meson8b_usb2_match_data
- 	},
-+	{
-+		.compatible = "amlogic,meson8m2-usb2-phy",
-+		.data = &phy_meson8b_usb2_match_data
-+	},
- 	{
- 		.compatible = "amlogic,meson-gxbb-usb2-phy",
- 		.data = &phy_meson8b_usb2_match_data
-@@ -320,5 +324,5 @@ static struct platform_driver phy_meson8b_usb2_driver = {
- module_platform_driver(phy_meson8b_usb2_driver);
- 
- MODULE_AUTHOR("Martin Blumenstingl <martin.blumenstingl@googlemail.com>");
--MODULE_DESCRIPTION("Meson8, Meson8b and GXBB USB2 PHY driver");
-+MODULE_DESCRIPTION("Meson8, Meson8b, Meson8m2 and GXBB USB2 PHY driver");
- MODULE_LICENSE("GPL");
+On 2020-04-15 11:19:06 +0100, Lad Prabhakar wrote:
+> Up until now the VIN was capable to convert any of its supported input mbus
+> formats to any of it's supported output pixel formats. With the addition of
+> RAW formats this is no longer true.
+
+Add blank line.
+
+> This patch invalidates the pipeline by adding a check if given vin input
+> format can be converted to supported output pixel format.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+
+I like this patch I think there is a typo bellow and patch [1] have been 
+merged in the media-tree which unfortunately addes one more thing to do 
+in this patch. In rvin_enum_fmt_vid_cap() there is a TODO noted for what 
+needs to be done. In imagine the fix is simple and the end result would 
+look something like this.
+
+    switch (f->mbus_code) {
+    case 0:
+    case MEDIA_BUS_FMT_YUYV8_1X16:
+    case MEDIA_BUS_FMT_UYVY8_1X16:
+    case MEDIA_BUS_FMT_UYVY8_2X8:
+    case MEDIA_BUS_FMT_UYVY10_2X10:
+    case MEDIA_BUS_FMT_RGB888_1X24:
+        break;
+    case MEDIA_BUS_FMT_SRGGB8_1X8:
+        if (f->index)
+            return -EINVAL;
+
+        f->pixelformat = V4L2_PIX_FMT_SRGGB8;
+        return 0;
+    case default:
+        return -EINVAL;
+    }
+
+1. d5f74a1eff9aef3b ("media: rcar-vin: Make use of V4L2_CAP_IO_MC")
+
+> ---
+>  drivers/media/platform/rcar-vin/rcar-dma.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
+> index 1a30cd036371..48bd9bfc3948 100644
+> --- a/drivers/media/platform/rcar-vin/rcar-dma.c
+> +++ b/drivers/media/platform/rcar-vin/rcar-dma.c
+> @@ -1109,13 +1109,17 @@ static int rvin_mc_validate_format(struct rvin_dev *vin, struct v4l2_subdev *sd,
+>  	case MEDIA_BUS_FMT_UYVY8_1X16:
+>  	case MEDIA_BUS_FMT_UYVY8_2X8:
+>  	case MEDIA_BUS_FMT_UYVY10_2X10:
+> +		break;
+>  	case MEDIA_BUS_FMT_RGB888_1X24:
+> -		vin->mbus_code = fmt.format.code;
+
+This is not right is it?
+
+Should you not add a case for MEDIA_BUS_FMT_SRGGB8_1X8 instead of taking 
+over MEDIA_BUS_FMT_RGB888_1X24?
+
+> +		if (vin->format.pixelformat != V4L2_PIX_FMT_SRGGB8)
+> +			return -EPIPE;
+>  		break;
+>  	default:
+>  		return -EPIPE;
+>  	}
+>  
+> +	vin->mbus_code = fmt.format.code;
+> +
+>  	switch (fmt.format.field) {
+>  	case V4L2_FIELD_TOP:
+>  	case V4L2_FIELD_BOTTOM:
+> -- 
+> 2.20.1
+> 
+
 -- 
-2.26.2
-
+Regards,
+Niklas Söderlund
