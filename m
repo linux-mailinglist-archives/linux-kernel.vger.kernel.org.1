@@ -2,101 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E2DC1CF6B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADA41CF6DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730324AbgELOPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 10:15:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:55872 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729519AbgELOPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 10:15:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B69A530E;
-        Tue, 12 May 2020 07:15:42 -0700 (PDT)
-Received: from gaia (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DBB263F71E;
-        Tue, 12 May 2020 07:15:41 -0700 (PDT)
-Date:   Tue, 12 May 2020 15:15:35 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: Kmemleak infrastructure improvement for task_struct leaks and
- call_rcu()
-Message-ID: <20200512141535.GA14943@gaia>
-References: <20200507171607.GD3180@gaia>
- <40B2408F-05DD-4A82-BF97-372EA09FA873@lca.pw>
- <20200509094455.GA4351@gaia>
- <3F734E14-8E37-4967-B080-A25D0C58199C@lca.pw>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3F734E14-8E37-4967-B080-A25D0C58199C@lca.pw>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1730319AbgELORa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 10:17:30 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2956 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729336AbgELORa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 10:17:30 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04CEBH1m009256;
+        Tue, 12 May 2020 10:17:12 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30ws5f45jh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 May 2020 10:17:12 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04CEBVxM010678;
+        Tue, 12 May 2020 10:17:11 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30ws5f45gf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 May 2020 10:17:11 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04CEGHW2001007;
+        Tue, 12 May 2020 14:17:09 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 30wm55en15-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 May 2020 14:17:09 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04CEH7du46203022
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 May 2020 14:17:07 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EAF424C064;
+        Tue, 12 May 2020 14:17:06 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AC2FB4C046;
+        Tue, 12 May 2020 14:17:05 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.144.67])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 12 May 2020 14:17:05 +0000 (GMT)
+Message-ID: <1589293025.5098.53.camel@linux.ibm.com>
+Subject: Re: [RFC][PATCH 1/3] evm: Move hooks outside LSM infrastructure
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        "david.safford@gmail.com" <david.safford@gmail.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        John Johansen <john.johansen@canonical.com>,
+        "matthewgarrett@google.com" <matthewgarrett@google.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
+Date:   Tue, 12 May 2020 10:17:05 -0400
+In-Reply-To: <09ee169cfd70492cb526bcb30f99d693@huawei.com>
+References: <20200429073935.11913-1-roberto.sassu@huawei.com>
+         <1588794293.4624.21.camel@linux.ibm.com>
+         <1588799408.4624.28.camel@linux.ibm.com>
+         <ab879f9e66874736a40e9c566cadc272@huawei.com>
+         <1588864628.5685.78.camel@linux.ibm.com>
+         <750ab4e0990f47e4aea10d0e580b1074@huawei.com>
+         <1588884313.5685.110.camel@linux.ibm.com>
+         <84e6acad739a415aa3e2457b5c37979f@huawei.com>
+         <1588957684.5146.70.camel@linux.ibm.com>
+         <414644a0be9e4af880452f4b5079aba1@huawei.com>
+         <1589233010.5091.49.camel@linux.ibm.com>
+         <09ee169cfd70492cb526bcb30f99d693@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-12_03:2020-05-11,2020-05-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ phishscore=0 spamscore=0 impostorscore=0 malwarescore=0 mlxlogscore=999
+ lowpriorityscore=0 bulkscore=0 adultscore=0 priorityscore=1501 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005120106
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 10, 2020 at 05:27:41PM -0400, Qian Cai wrote:
-> On May 9, 2020, at 5:44 AM, Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > On Thu, May 07, 2020 at 01:29:04PM -0400, Qian Cai wrote:
-> >> On May 7, 2020, at 1:16 PM, Catalin Marinas <catalin.marinas@arm.com> wrote:
-> >>> I don't mind adding additional tracking info if it helps with debugging.
-> >>> But if it's for improving false positives, I'd prefer to look deeper
-> >>> into figure out why the pointer reference graph tracking failed.
-> >> 
-> >> No, the task struct leaks are real leaks. It is just painful to figure
-> >> out the missing or misplaced put_task_struct() from the kmemleak
-> >> reports at the moment.
+On Tue, 2020-05-12 at 07:54 +0000, Roberto Sassu wrote:
+> > > > Roberto, EVM is only triggered by IMA, unless you've modified the
+> > > > kernel to do otherwise.
+> > >
+> > > EVM would deny xattr/attr operations even if IMA is disabled in the
+> > > kernel configuration. For example, evm_setxattr() returns the value
+> > > from evm_protect_xattr(). IMA is not involved there.
 > > 
-> > We could log the callers to get_task_struct() and put_task_struct(),
-> > something like __builtin_return_address(0) (how does this work if the
-> > function is inlined?). If it's not the full backtrace, it shouldn't slow
-> > down kmemleak considerably. I don't think it's worth logging only the
-> > first/last calls to get/put. You'd hope that put is called in reverse
-> > order to get.
-> > 
-> > I think it may be better if this is added as a new allocation pointed to
-> > from kmemleak_object rather than increasing this structure since it will
-> > be added on a case by case basis. When dumping the leak information, it
-> > would also dump the get/put calls, in the order they were called. We
-> > could add some simple refcount tracking (++ for get, -- for put) to
-> > easily notice any imbalance.
-> > 
-> > I'm pretty busy next week but happy to review if you have a patch ;).
+> > Commit ae1ba1676b88 ("EVM: Allow userland to permit modification of
+> > EVM-protected metadata") introduced EVM_ALLOW_METADATA_WRITES
+> > to allow writing the EVM portable and immutable file signatures.
 > 
-> I am still thinking about a more generic way for all those
-> refcount-based leaks without needing of manual annotation of all those
-> places. Today, I had another one,
+> According to Documentation/ABI/testing/evm:
 > 
-> unreferenced object 0xe6ff008924f28500 (size 128):
->   comm "qemu-kvm", pid 4835, jiffies 4295141828 (age 6944.120s)
->   hex dump (first 32 bytes):
->     01 00 00 00 6b 6b 6b 6b 00 00 00 00 ad 4e ad de  ....kkkk.....N..
->     ff ff ff ff 6b 6b 6b 6b ff ff ff ff ff ff ff ff  ....kkkk........
->   backtrace:
->     [<000000005ed1a868>] slab_post_alloc_hook+0x74/0x9c
->     [<00000000c65ee7dc>] kmem_cache_alloc_trace+0x2b4/0x3d4
->     [<000000009efa9e6e>] do_eventfd+0x54/0x1ac
->     [<000000001146e724>] __arm64_sys_eventfd2+0x34/0x44
->     [<0000000096fc3a61>] do_el0_svc+0x128/0x1dc
->     [<000000005ae8f980>] el0_sync_handler+0xd0/0x268
->     [<0000000043f2c790>] el0_sync+0x164/0x180
-> 
-> That is eventfd_ctx_fileget() / eventfd_ctx_put() pairs.
+> Note that once a key has been loaded, it will no longer be
+> possible to enable metadata modification.
 
-In this case it uses kref_get() to increment the refcount. We could add
-a kmemleak_add_trace() which allocates a new array and stores the stack
-trace, linked to the original object. Similarly for kref_put().
+Not any key, but the HMAC key.
+ 
+2         Permit modification of EVM-protected metadata at
+          runtime. Not supported if HMAC validation and
+          creation is enabled.
 
-If we do this for each inc/dec call, I'd leave it off as default and
-only enable it explicitly by cmdline argument or
-/sys/kerne/debug/kmemleak when needed. In most cases you'd hope there is
-no leak, so no point in tracking additional metadata. But if you do hit
-a problem, just enable the additional tracking to help with the
-debugging.
+Each time the EVM protected file metadata is updated, the EVM HMAC is
+updated, assuming the existing EVM HMAC is valid.  Userspace should
+not have access to the HMAC key, so we only allow writing EVM
+signatures.
 
--- 
-Catalin
+The only difference between writing the original EVM signature and the
+new portable and immutable signature is the security.ima xattr
+requirement.  Since the new EVM signature does not include the
+filesystem specific data, something else needs to bind the file
+metadata to the file data.  Thus the IMA xattr requirement.
+
+Assuming that the new EVM signature is written last, as long as there
+is an IMA xattr, there shouldn't be a problem writing the new EVM
+signature.
+
+Mimi
