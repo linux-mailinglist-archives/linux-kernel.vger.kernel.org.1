@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7C51CF5B2
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF361CF5B1
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 15:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730119AbgELN0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 09:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56616 "EHLO
+        id S1730105AbgELN0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 09:26:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730075AbgELN00 (ORCPT
+        with ESMTP id S1729918AbgELN02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 09:26:26 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63108C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 06:26:26 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id l17so1820438wrr.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 06:26:26 -0700 (PDT)
+        Tue, 12 May 2020 09:26:28 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E46C05BD09
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 06:26:28 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id e16so15376540wra.7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 06:26:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OOA2tjrCMzpEGVQ4wsZGsx+qQve4HNZ307qi+80/974=;
-        b=tFn1g6VnvjqXPa5wWer0AZBSgCntLE7a3TDJber7TVz1ksZz0vw9pfhNaKabsusts3
-         Q4u3+Y5oY5lvmSGLH9CJQ6iSHnMcGwSbDi5N3mV6iaXU3iwtcRge+GOCgHJTPwx0Dunt
-         2WFUIUd54IjSQ9oSGEb5gWVJfC/jZJ4qc9HgNV0GYgD+1BXgina5rNgxqjWB/aEYVW5+
-         7le4q61yeaatKEThlrAGb+ERtdyhtKTxWq8CMOPXoSKqAyWd9kFZ6ufh5iuxUIRomUzA
-         PmDi5o+TmXmttNyl87E1DKIAW4CJtNXTrTnaFSIGPzR94ZZjgoBRGo+8WdBKfJvQHsR5
-         byRQ==
+        bh=itZ8nYpO9rVwAB+XOSiZ1Zaz+WlUMeN8KYJbRrgai8w=;
+        b=s5XV7mjGrnG0C7b3JFLWA/serjUzf8eM5Sv6bPOzzXrvy+bBn5NGBA9t3ERPFyJuv2
+         SJow9GGfQvqbEJVESTH5XaRi90qYMpkAc+33nM7/TD7ZR1hX6v4OJx27XmVk0E2Ua+0d
+         OqhN5SQaS1ajL2aQAdCfmyj6fWL1oVA/nBjIhPvI+Aj7x30jz7wxC2/JcETHuxaAcBB5
+         L8ywmE6m4FE94yCLZXU+LyWBxWS25UJ7Yj6YtCist9nBGE0fUFb/fO7lTzHvgMgJr8k6
+         5aV2w0izr+/SeOV1SgeR5tFhJsdUfk0n7g/S3Kdy+4sfHzBCmohoIfu8Us6qrTf3KT9/
+         8JiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OOA2tjrCMzpEGVQ4wsZGsx+qQve4HNZ307qi+80/974=;
-        b=Fsrov2pGTC/m9Uo/vFlPmf33pxb1XhLa6AhFK6HwtKj1Ny1e2mGLTNKodPy0TZ/4gP
-         aLu4JoJOnD7epUyY5y/+9tI0ew4W5AqUnyCLUI9rNww1mDCoScSmQHG5xe54TjjPY05Q
-         T3P+G282sFw9gtxuwarJ0PUQ/V4zxtxsSa3iN2UAEfHmaS6xCbqfVVHatHtdtHNwhPvT
-         aGiXWdJCOlPNHuMIZzTcPA1SO5KNHbRYiMtsVG1jbjSANCftB4cwY2Bh34dK4effd+J/
-         yq6hyDH7TYEY9pkO7mhBOqd+aRJwZnLlUymxAMSaRBsvbF0m9fVRlJUxeJ47xFPdJW+s
-         Isfw==
-X-Gm-Message-State: AGi0PuYHL0Mf/YJzxZtiYeSzAbxYZIbznVD1Gh7YgS3tqtT12cs03Ykd
-        eYoUNiqm6rSzh1Qmi0IChhP5kA==
-X-Google-Smtp-Source: APiQypLPHEVWduy/3LzWWOhygupngnUuDQ/k1GFsn734lHfe0CkKPw+iJ6B+0gL3o0nrI8H96uujxg==
-X-Received: by 2002:a5d:400f:: with SMTP id n15mr13811365wrp.419.1589289984995;
-        Tue, 12 May 2020 06:26:24 -0700 (PDT)
+        bh=itZ8nYpO9rVwAB+XOSiZ1Zaz+WlUMeN8KYJbRrgai8w=;
+        b=SSpVgPrV+DUrmE2JTG69RhGeQyUa+cl5eDuFj9u0v1CMlPiH6XSJXjMDTVfp8im7eO
+         9VSYpMvdFaDR514tXAYuxob1tY3QP1xYEsHN9d2uEpWNVqe2YDIB3cBN/rgmuf0nDK5L
+         pKKJggWtaCalXjMhnVCYJPZ+U5Y/uKV5m5qFZCFya3G+ClZqVLaF7pgupJ63vlBWX6Uv
+         gWoL6kpS80H7y9sLkwgP6P05mxkvOeZ9uhC/aS83I/PNnv5wnbLdYmBTvKBJZN6EwR7W
+         zq2mNrQnL8qMsy1EtK8EuFc1GzlLRUEpO1lh5QW7sMTOvIdXTZllCOkk2JmdODQF51rp
+         06iw==
+X-Gm-Message-State: AOAM5311IJeQUpt+Jb3uH5REmtjStyPG/0VGpYRfBtOVRQRZtsy+6dGy
+        55rsnTiRPNTwIPkLYye9EKLKvg==
+X-Google-Smtp-Source: ABdhPJygO+LIUhXBZipYlpV1NjUWfdUnA48iHtMRa0nv+p1cN8d+bHqiZL+GB9Ig3+I8VNBJDIQMug==
+X-Received: by 2002:adf:de05:: with SMTP id b5mr1650574wrm.299.1589289986709;
+        Tue, 12 May 2020 06:26:26 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:4460:3fd3:382:4a71])
-        by smtp.gmail.com with ESMTPSA id g15sm14441844wro.71.2020.05.12.06.26.23
+        by smtp.gmail.com with ESMTPSA id g15sm14441844wro.71.2020.05.12.06.26.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 06:26:24 -0700 (PDT)
+        Tue, 12 May 2020 06:26:26 -0700 (PDT)
 From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     lee.jones@linaro.org, srinivas.kandagatla@linaro.org,
-        rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amit.kucheria@verdurent.com
+To:     khilman@baylibre.com
 Cc:     Neil Armstrong <narmstrong@baylibre.com>,
         linux-amlogic@lists.infradead.org, linux-pm@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/6] MAINTAINERS: add myself as maintainer for Khadas MCU drivers
-Date:   Tue, 12 May 2020 15:26:12 +0200
-Message-Id: <20200512132613.31507-6-narmstrong@baylibre.com>
+Subject: [PATCH v2 6/6] arm64: dts: meson-khadas-vim3: add Khadas MCU nodes
+Date:   Tue, 12 May 2020 15:26:13 +0200
+Message-Id: <20200512132613.31507-7-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20200512132613.31507-1-narmstrong@baylibre.com>
 References: <20200512132613.31507-1-narmstrong@baylibre.com>
@@ -68,35 +66,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the HWMON and NVMEM drivers along the MFD drivers and header
-as Maintained by myself.
+Add the Khadas MCU node with active FAN thermal nodes for all the
+Khadas VIM3 variants.
 
 Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 ---
- MAINTAINERS | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ .../boot/dts/amlogic/meson-khadas-vim3.dtsi   | 23 +++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b816a453b10e..609baa78d810 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9431,6 +9431,16 @@ F:	include/linux/kdb.h
- F:	include/linux/kgdb.h
- F:	kernel/debug/
+diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+index 094ecf2222bb..3325e54ea690 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+@@ -183,6 +183,23 @@
+ 	hdmi-phandle = <&hdmi_tx>;
+ };
  
-+KHADAS MCU MFD DRIVER
-+M:	Neil Armstrong <narmstrong@baylibre.com>
-+L:	linux-amlogic@lists.infradead.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/mfd/khadas,mcu.yaml
-+F:	drivers/mfd/khadas-mcu.c
-+F:	include/linux/mfd/khadas-mcu.h
-+F:	drivers/hwmon/khadas-mcu-fan.c
-+F:	drivers/nvmem/khadas-mcu-user-mem.c
++&cpu_thermal {
++	trips {
++		cpu_active: cpu-active {
++			temperature = <80000>; /* millicelsius */
++			hysteresis = <2000>; /* millicelsius */
++			type = "active";
++		};
++	};
 +
- KMEMLEAK
- M:	Catalin Marinas <catalin.marinas@arm.com>
- S:	Maintained
++	cooling-maps {
++		map {
++			trip = <&cpu_active>;
++			cooling-device = <&khadas_mcu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++		};
++	};
++};
++
+ &ext_mdio {
+ 	external_phy: ethernet-phy@0 {
+ 		/* Realtek RTL8211F (0x001cc916) */
+@@ -222,6 +239,12 @@
+ 	pinctrl-0 = <&i2c_ao_sck_pins>, <&i2c_ao_sda_pins>;
+ 	pinctrl-names = "default";
+ 
++	khadas_mcu: system-controller@18 {
++		compatible = "khadas,mcu";
++		reg = <0x18>;
++		#cooling-cells = <2>;
++	};
++
+ 	gpio_expander: gpio-controller@20 {
+ 		compatible = "ti,tca6408";
+ 		reg = <0x20>;
 -- 
 2.22.0
 
