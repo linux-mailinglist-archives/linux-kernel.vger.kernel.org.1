@@ -2,110 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7181CF7F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8FDA1CF7FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729936AbgELOy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 10:54:57 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:48225 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725929AbgELOy5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 10:54:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589295296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ayS808bLgmNMdF8Jk/2gP5FgQYDM/m50c1GF+CBCNaA=;
-        b=a0JZ00v/v/fhWh2rNcv78AEFqsLw7aOFBtkZqlr4hD/eW5GmS+LgOGdLmTxTq7t3x6Q/k9
-        hCnDwwsFyzEWyE2+dIDwgDYxDQKu6+HaHJj3iCmECn7SZfa0zpDNZQqQ/LbcG9ljShZIpP
-        1krIoqGEbB23KbyWVxpH1EvjlYguqbE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-297-angpt5usPPCy0Cv76CkZiw-1; Tue, 12 May 2020 10:54:54 -0400
-X-MC-Unique: angpt5usPPCy0Cv76CkZiw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 295F01906808;
-        Tue, 12 May 2020 14:54:38 +0000 (UTC)
-Received: from max.home.com (unknown [10.40.192.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E5E205D9DD;
-        Tue, 12 May 2020 14:54:36 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] GFS2 fixes for 5.7
-Date:   Tue, 12 May 2020 16:54:34 +0200
-Message-Id: <20200512145434.160164-1-agruenba@redhat.com>
+        id S1730407AbgELOzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 10:55:11 -0400
+Received: from mga05.intel.com ([192.55.52.43]:29538 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726300AbgELOzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 10:55:10 -0400
+IronPort-SDR: irdUGMSg1wCWkrNpILLMfIXQLzaqQtmeS5Q9xxRflgyW53QufH1Vm5b6tuI5hZ4/PowrFPKuhN
+ nsPHMxE2uwZA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 07:55:08 -0700
+IronPort-SDR: yz6+Y/azMzkeEK1dNt8OSDFG7bqgE/MryKUfcN7gUu5F6ZlEe6D9sGfLolS3RYmWDvrB7SVkj6
+ 9FN+TIAWjSOw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,384,1583222400"; 
+   d="scan'208";a="371587800"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by fmsmga001.fm.intel.com with ESMTP; 12 May 2020 07:55:08 -0700
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Rik van Riel <riel@surriel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH v4 01/10] x86/fpu/xstate: Rename validate_xstate_header() to validate_user_xstate_header()
+Date:   Tue, 12 May 2020 07:54:35 -0700
+Message-Id: <20200512145444.15483-2-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200512145444.15483-1-yu-cheng.yu@intel.com>
+References: <20200512145444.15483-1-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+From: Fenghua Yu <fenghua.yu@intel.com>
 
-could you please pull the following fixes for gfs2?
+The function validate_xstate_header() validates an xstate header coming
+from userspace (PTRACE or sigreturn).  To make it clear, rename it to
+validate_user_xstate_header().
 
-Thanks a lot,
-Andreas
+Suggested-by: Dave Hansen <dave.hansen@intel.com>
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Reviewed-by: Borislav Petkov <bp@suse.de>
+---
+v3:
+- Change validate_xstate_header_from_user() to validate_user_xstate_header().
 
-The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
+ arch/x86/include/asm/fpu/xstate.h | 2 +-
+ arch/x86/kernel/fpu/regset.c      | 2 +-
+ arch/x86/kernel/fpu/signal.c      | 2 +-
+ arch/x86/kernel/fpu/xstate.c      | 6 +++---
+ 4 files changed, 6 insertions(+), 6 deletions(-)
 
-  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.7-rc1.fixes
-
-for you to fetch changes up to b14c94908b1b884276a6608dea3d0b1b510338b7:
-
-  Revert "gfs2: Don't demote a glock until its revokes are written" (2020-05-08 15:01:25 -0500)
-
-----------------------------------------------------------------
-Various gfs2 fixes
-
-Fixes for bugs prior to v5.7-rc1:
-- Fix random block reads when reading fragmented journals (v5.2).
-- Fix a possible random memory access in gfs2_walk_metadata (v5.3).
-
-Fixes for v5.7-rc1:
-- Fix several overlooked gfs2_qa_get / gfs2_qa_put imbalances.
-- Fix several bugs in the new filesystem withdraw logic.
-
-----------------------------------------------------------------
-Andreas Gruenbacher (3):
-      gfs2: Another gfs2_walk_metadata fix
-      gfs2: More gfs2_find_jhead fixes
-      gfs2: Grab glock reference sooner in gfs2_add_revoke
-
-Bob Peterson (11):
-      gfs2: fix withdraw sequence deadlock
-      gfs2: Fix error exit in do_xmote
-      gfs2: Fix BUG during unmount after file system withdraw
-      gfs2: Fix use-after-free in gfs2_logd after withdraw
-      gfs2: Fix problems regarding gfs2_qa_get and _put
-      gfs2: Change BUG_ON to an assert_withdraw in gfs2_quota_change
-      gfs2: remove check for quotas on in gfs2_quota_check
-      gfs2: move privileged user check to gfs2_quota_lock_check
-      gfs2: don't call quota_unhold if quotas are not locked
-      gfs2: If go_sync returns error, withdraw but skip invalidate
-      Revert "gfs2: Don't demote a glock until its revokes are written"
-
- fs/gfs2/bmap.c    | 16 +++++++++-------
- fs/gfs2/glock.c   |  6 ++----
- fs/gfs2/inode.c   |  7 ++++---
- fs/gfs2/log.c     | 11 ++++++++---
- fs/gfs2/lops.c    | 19 ++++++++++++-------
- fs/gfs2/meta_io.c |  2 +-
- fs/gfs2/quota.c   | 13 +++++--------
- fs/gfs2/quota.h   |  3 ++-
- fs/gfs2/super.c   |  1 -
- fs/gfs2/util.c    | 10 ++++++----
- 10 files changed, 49 insertions(+), 39 deletions(-)
+diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
+index c6136d79f8c0..fc4db51f3b53 100644
+--- a/arch/x86/include/asm/fpu/xstate.h
++++ b/arch/x86/include/asm/fpu/xstate.h
+@@ -56,6 +56,6 @@ int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
+ int copy_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf);
+ 
+ /* Validate an xstate header supplied by userspace (ptrace or sigreturn) */
+-extern int validate_xstate_header(const struct xstate_header *hdr);
++int validate_user_xstate_header(const struct xstate_header *hdr);
+ 
+ #endif
+diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
+index d652b939ccfb..bd1d0649f8ce 100644
+--- a/arch/x86/kernel/fpu/regset.c
++++ b/arch/x86/kernel/fpu/regset.c
+@@ -139,7 +139,7 @@ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
+ 	} else {
+ 		ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, xsave, 0, -1);
+ 		if (!ret)
+-			ret = validate_xstate_header(&xsave->header);
++			ret = validate_user_xstate_header(&xsave->header);
+ 	}
+ 
+ 	/*
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index 400a05e1c1c5..585e3651b98f 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -366,7 +366,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
+ 			ret = __copy_from_user(&fpu->state.xsave, buf_fx, state_size);
+ 
+ 			if (!ret && state_size > offsetof(struct xregs_state, header))
+-				ret = validate_xstate_header(&fpu->state.xsave.header);
++				ret = validate_user_xstate_header(&fpu->state.xsave.header);
+ 		}
+ 		if (ret)
+ 			goto err_out;
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index 32b153d38748..8ed64397c78b 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -472,7 +472,7 @@ int using_compacted_format(void)
+ }
+ 
+ /* Validate an xstate header supplied by userspace (ptrace or sigreturn) */
+-int validate_xstate_header(const struct xstate_header *hdr)
++int validate_user_xstate_header(const struct xstate_header *hdr)
+ {
+ 	/* No unknown or supervisor features may be set */
+ 	if (hdr->xfeatures & (~xfeatures_mask | XFEATURE_MASK_SUPERVISOR))
+@@ -1147,7 +1147,7 @@ int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
+ 
+ 	memcpy(&hdr, kbuf + offset, size);
+ 
+-	if (validate_xstate_header(&hdr))
++	if (validate_user_xstate_header(&hdr))
+ 		return -EINVAL;
+ 
+ 	for (i = 0; i < XFEATURE_MAX; i++) {
+@@ -1201,7 +1201,7 @@ int copy_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf)
+ 	if (__copy_from_user(&hdr, ubuf + offset, size))
+ 		return -EFAULT;
+ 
+-	if (validate_xstate_header(&hdr))
++	if (validate_user_xstate_header(&hdr))
+ 		return -EINVAL;
+ 
+ 	for (i = 0; i < XFEATURE_MAX; i++) {
+-- 
+2.21.0
 
