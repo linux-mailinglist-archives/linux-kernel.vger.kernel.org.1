@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAED61CF59E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 15:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38791CF59A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 15:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730049AbgELNX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 09:23:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57502 "EHLO mail.kernel.org"
+        id S1730022AbgELNXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 09:23:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727859AbgELNXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729866AbgELNXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 May 2020 09:23:49 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17DC52075E;
+        by mail.kernel.org (Postfix) with ESMTPSA id 37EBF207DD;
         Tue, 12 May 2020 13:23:49 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jYUsu-0006Oe-07; Tue, 12 May 2020 09:23:48 -0400
-Message-ID: <20200512132347.887995207@goodmis.org>
+        id 1jYUsu-0006PA-4k; Tue, 12 May 2020 09:23:48 -0400
+Message-ID: <20200512132348.029291894@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 12 May 2020 09:23:19 -0400
+Date:   Tue, 12 May 2020 09:23:20 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [for-linus][PATCH 2/3] tracing: Wait for preempt irq delay thread to execute
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [for-linus][PATCH 3/3] bootconfig: Fix to prevent warning message if no bootconfig option
 References: <20200512132317.343672858@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -37,83 +37,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-A bug report was posted that running the preempt irq delay module on a slow
-machine, and removing it quickly could lead to the thread created by the
-modlue to execute after the module is removed, and this could cause the
-kernel to crash. The fix for this was to call kthread_stop() after creating
-the thread to make sure it finishes before allowing the module to be
-removed.
+Commit de462e5f1071 ("bootconfig: Fix to remove bootconfig
+data from initrd while boot") causes a cosmetic regression
+on dmesg, which warns "no bootconfig data" message without
+bootconfig cmdline option.
 
-Now this caused the opposite problem on fast machines. What now happens is
-the kthread_stop() can cause the kthread never to execute and the test never
-to run. To fix this, add a completion and wait for the kthread to execute,
-then wait for it to end.
+Fix setup_boot_config() by moving no bootconfig check after
+commandline option check.
 
-This issue caused the ftracetest selftests to fail on the preemptirq tests.
+Link: http://lkml.kernel.org/r/9b1ba335-071d-c983-89a4-2677b522dcc8@molgen.mpg.de
+Link: http://lkml.kernel.org/r/158916116468.21787.14558782332170588206.stgit@devnote2
 
-Link: https://lore.kernel.org/r/20200510114210.15d9e4af@oasis.local.home
-
-Cc: stable@vger.kernel.org
-Fixes: d16a8c31077e ("tracing: Wait for preempt irq delay thread to finish")
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Fixes: de462e5f1071 ("bootconfig: Fix to remove bootconfig data from initrd while boot")
+Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/preemptirq_delay_test.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ init/main.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/trace/preemptirq_delay_test.c b/kernel/trace/preemptirq_delay_test.c
-index c4c86de63cf9..312d1a0ca3b6 100644
---- a/kernel/trace/preemptirq_delay_test.c
-+++ b/kernel/trace/preemptirq_delay_test.c
-@@ -16,6 +16,7 @@
- #include <linux/printk.h>
- #include <linux/string.h>
- #include <linux/sysfs.h>
-+#include <linux/completion.h>
+diff --git a/init/main.c b/init/main.c
+index 1a5da2c2660c..5803ecb411ab 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -400,9 +400,8 @@ static void __init setup_boot_config(const char *cmdline)
+ 	char *data, *copy;
+ 	int ret;
  
- static ulong delay = 100;
- static char test_mode[12] = "irq";
-@@ -28,6 +29,8 @@ MODULE_PARM_DESC(delay, "Period in microseconds (100 us default)");
- MODULE_PARM_DESC(test_mode, "Mode of the test such as preempt, irq, or alternate (default irq)");
- MODULE_PARM_DESC(burst_size, "The size of a burst (default 1)");
++	/* Cut out the bootconfig data even if we have no bootconfig option */
+ 	data = get_boot_config_from_initrd(&size, &csum);
+-	if (!data)
+-		goto not_found;
  
-+static struct completion done;
-+
- #define MIN(x, y) ((x) < (y) ? (x) : (y))
+ 	strlcpy(tmp_cmdline, boot_command_line, COMMAND_LINE_SIZE);
+ 	parse_args("bootconfig", tmp_cmdline, NULL, 0, 0, 0, NULL,
+@@ -411,6 +410,11 @@ static void __init setup_boot_config(const char *cmdline)
+ 	if (!bootconfig_found)
+ 		return;
  
- static void busy_wait(ulong time)
-@@ -114,6 +117,8 @@ static int preemptirq_delay_run(void *data)
- 	for (i = 0; i < s; i++)
- 		(testfuncs[i])(i);
- 
-+	complete(&done);
-+
- 	set_current_state(TASK_INTERRUPTIBLE);
- 	while (!kthread_should_stop()) {
- 		schedule();
-@@ -128,15 +133,18 @@ static int preemptirq_delay_run(void *data)
- static int preemptirq_run_test(void)
- {
- 	struct task_struct *task;
--
- 	char task_name[50];
- 
-+	init_completion(&done);
-+
- 	snprintf(task_name, sizeof(task_name), "%s_test", test_mode);
- 	task =  kthread_run(preemptirq_delay_run, NULL, task_name);
- 	if (IS_ERR(task))
- 		return PTR_ERR(task);
--	if (task)
-+	if (task) {
-+		wait_for_completion(&done);
- 		kthread_stop(task);
++	if (!data) {
++		pr_err("'bootconfig' found on command line, but no bootconfig found\n");
++		return;
 +	}
- 	return 0;
++
+ 	if (size >= XBC_DATA_MAX) {
+ 		pr_err("bootconfig size %d greater than max size %d\n",
+ 			size, XBC_DATA_MAX);
+@@ -446,8 +450,6 @@ static void __init setup_boot_config(const char *cmdline)
+ 		extra_init_args = xbc_make_cmdline("init");
+ 	}
+ 	return;
+-not_found:
+-	pr_err("'bootconfig' found on command line, but no bootconfig found\n");
  }
  
+ #else
 -- 
 2.26.2
 
