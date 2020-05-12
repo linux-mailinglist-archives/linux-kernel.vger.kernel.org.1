@@ -2,126 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0671D0342
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 01:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1CF1D0347
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 01:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731680AbgELX4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 19:56:15 -0400
-Received: from mail-bn8nam12on2112.outbound.protection.outlook.com ([40.107.237.112]:54752
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725938AbgELX4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 19:56:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DI374Tu4EBjxJWx0t71a/nyVlu2RMbhoCuZikt38c5MF90xXZ+hk+gN2qWY8I6zmAdjVZFAiZEiuRprNgVg0D4IxUgpCS4CAFqcO21ha3yXweriiThJRlkThA2m8pzn9HQ6glqkSYKl6A9zUFNflf9AxNLSvQ4MFqO5HR7w6mV8tOvJHahLGYQsvUsxWpOLLLWXf4MGWudLN/EReK5DT6IRYMDEwDUSSrr0QjvSahpXi3NWjK4Sy0WOjcOENDzL86QnJ/8CTFUQD+KKhG122nLRPkQDcePJJlt2Kj093olxXpJou+OMr1xQsg1xjcBbQTUvrlpMwP03qzFFmJ4NsCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wi+mvriKrHdXCtzGusI/raAWcPX1KK+A2npRlQxCM8M=;
- b=Dt67R9DoRsUir6yGFJavnkjAhTb41ld3k39f7+j+u2CNqZoHlOEAwZN4anKgBn6P0pwnaMvwHLmzLp/3WVD2pMk3gNPt1HNfPwLbKhy5NwgjgUC7BpBX84yHMk+LoWjOYLayF/hX+Q6LkdRr6VBxrtoOko5CC7lxaHako5wP8JeteofCuQQq/DClHbIXjpRVc1oAVEx7etPj7hBrmGbPndsoBmi/oLIUo8lvLWGSHnIaMdB+/eyqcLX8wHK8x4KdtvkGnkMaw+z0ORDV0adCDKZazpeQOnfj3QDwFd4dgvlTmhmZXWHXSyFW7Ie8HJMglN34prYChIYeNnhFipUGWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+        id S1731735AbgELX5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 19:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbgELX5r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 19:57:47 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB0CC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 16:57:47 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id p21so1078039pgm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 16:57:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wi+mvriKrHdXCtzGusI/raAWcPX1KK+A2npRlQxCM8M=;
- b=P3miKNoWOi7shMOt1+zUz364qa5z1F5TTFfXDJRI7dfUJWfN6Tra9nfvaxskAkiU7TuC7EW0acBVhJfAyHFH/qArGsIaKxObLcE4yEiLumET14JbqlkHvsrhTujOPLmvzCY/6KMN9y7aIUYUpniouf2Tl25hU8IRyvo42l6LoTs=
-Authentication-Results: amperecomputing.com; dkim=none (message not signed)
- header.d=none;amperecomputing.com; dmarc=none action=none
- header.from=os.amperecomputing.com;
-Received: from BYAPR01MB4598.prod.exchangelabs.com (2603:10b6:a03:8a::18) by
- BYAPR01MB4470.prod.exchangelabs.com (2603:10b6:a03:a3::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2979.34; Tue, 12 May 2020 23:56:09 +0000
-Received: from BYAPR01MB4598.prod.exchangelabs.com
- ([fe80::296c:b848:8bf0:6f2c]) by BYAPR01MB4598.prod.exchangelabs.com
- ([fe80::296c:b848:8bf0:6f2c%5]) with mapi id 15.20.2979.033; Tue, 12 May 2020
- 23:56:09 +0000
-From:   Tuan Phan <tuanphan@os.amperecomputing.com>
-Cc:     patches@amperecomputing.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ACPI/IORT: Fix PMCG node always look for a single ID mapping.
-Date:   Tue, 12 May 2020 16:56:00 -0700
-Message-Id: <1589327760-5464-1-git-send-email-tuanphan@os.amperecomputing.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR11CA0108.namprd11.prod.outlook.com
- (2603:10b6:a03:f4::49) To BYAPR01MB4598.prod.exchangelabs.com
- (2603:10b6:a03:8a::18)
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/un83eq62ib7sMEBamqsTej2IdlfzhbBhP+Wn1rFlVw=;
+        b=UEfD8pEyXNO1N8kgnrJK8T/3rhVXgWPjLWlN+Y1j9OXH8AlHW2iBRg+mElxjb2A0pj
+         YfTrukk3ZWjZlQHoWFa90FUzcjYnuLz1T771TfwQvrP1PSda8JMpIDUzKCl9hbgNb/Fp
+         rlLSxVnU9nRzG8dbeuyBJL3wapz3qWZgC0TI0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/un83eq62ib7sMEBamqsTej2IdlfzhbBhP+Wn1rFlVw=;
+        b=qxG+MuL3CpD3QLk30NjjcOW8H7FCJ2RXLQgC/CTYv8Lbu0WYACSoIvu/awCPR/QjPH
+         TcDQsZiKASpTBsxdhiFpFeMCDHJqu21KLt3uGVp8/YJF5IdJ6PlunF3eWy10Ws5d2VS/
+         vAKT0tCkqAXyvyOcVOBPv5aG1Cty1iTxyMcmvernH4mBOO16QveufKs9tYiT7g9wPRU0
+         x1ObglZFmM4GhV7OeHm6k12N2BfSS7CSjGUcGj7MgdhEWzbPCWKg1bIFIP7Ikk/cMnTO
+         hZYKhZojH8F3BaIkKCiEFI4IadceVL1TE32+2kbJ0YylKZ0PcGMAr4u47PzUCTE5w5zD
+         17sg==
+X-Gm-Message-State: AGi0PuafB6E+TYKRkjqvn7d8w6CTolJ4TKJXGSEqZkjQ41EKWOCs3OzX
+        1svJzz/r4U0qoWGuRib35IZRNg==
+X-Google-Smtp-Source: APiQypKLCiYnLwVN1YMsLc9KIENkyooXV7ldGuJb8isv4LBxYRuK4jAVvJZGE5SScqNhGl3zo3n87w==
+X-Received: by 2002:aa7:8b15:: with SMTP id f21mr23148055pfd.72.1589327866540;
+        Tue, 12 May 2020 16:57:46 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z60sm14218113pjj.14.2020.05.12.16.57.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 16:57:45 -0700 (PDT)
+Date:   Tue, 12 May 2020 16:57:44 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>, jmorris@namei.org,
+        sashal@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 4/6] pstore/ram: Introduce max_reason and convert
+ dump_oops
+Message-ID: <202005121652.7EC6FE3@keescook>
+References: <20200506211523.15077-1-keescook@chromium.org>
+ <20200506211523.15077-5-keescook@chromium.org>
+ <20200512233504.GA118720@sequoia>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from aptiov-dev-Latitude-E7470.amperecomputing.com (4.28.12.214) by BYAPR11CA0108.namprd11.prod.outlook.com (2603:10b6:a03:f4::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2979.27 via Frontend Transport; Tue, 12 May 2020 23:56:08 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [4.28.12.214]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b9646e35-e9a3-4389-80c0-08d7f6d00aba
-X-MS-TrafficTypeDiagnostic: BYAPR01MB4470:|BYAPR01MB4470:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR01MB4470043D943312C8E874F4B5E0BE0@BYAPR01MB4470.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-Forefront-PRVS: 0401647B7F
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VrkyULwcnOqwaBimedbvL37OHbB/q9N24Pw1qVyuk8lcuO55LciY+YyBlKtiFRTVs6Effp2fYaWAlEqjAzmqzsRBGCvofgrAEheRezATJCyr+XZm7e0ImD/vFDx/CYO/0yyYL0YrQPtooWuO259JqzApizo8sphSCFUG7KqutgT+topn/c8tzCrY/TiKCfmpuW8lBGCCwD/3Gmaje8UKwrGeuBBvW/wj+mPHUzq6arbE0PTh4qNGQYU8MKKPDy/LnIbN0Cp3NTaIeHmv8dGetykZ6CeSAjmvmxhyTxLIjTTvtGgNlbuB5ZgWSPGWFPlVaspYPojaFVUvpBUqo4yQFgUZg/aQy74gRHWNbF2XvsLF9GMnPR7r5U0i5meaZSeHl9kccadXvLoXaSSICrYTcFeeFlxqQmPkAaS3GjvlS5MdQ9t2Phw4Mlm3iDtLGUu/h9n4R6EUbIz3F/GCV4Ze4CWLlxQiv3tRnTUyiY2RbghJAYnVOqwjZMl10GspZvuG+or9TMLt02iaum7I9XE2ITeOWtniydTkh6sg0IJf7dw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB4598.prod.exchangelabs.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39850400004)(366004)(376002)(396003)(346002)(33430700001)(8936002)(6506007)(86362001)(16526019)(186003)(52116002)(6666004)(26005)(8676002)(2906002)(33440700001)(66946007)(6512007)(6486002)(4326008)(54906003)(5660300002)(478600001)(316002)(109986005)(66556008)(956004)(2616005)(66476007)(266003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: OgpZQbnge20v7hxFuHhE4VSY8ZJWjqC+uDuHREnzYPBWElLjjtIQKR3Plb5T7wdzpgAIX+vMgsxpuvCpoJ2bvGIWFGtNYha3YILfSuZmkMa4Tkic5DutImvWZdZq9+R4W5yhZ4AQzJ/T+FT54XmsNjzmFJeFMxSVqe930iTjgvpzlTx6YsvPZBOZHAud7k/zzs203e6yMQalVDPVVOmvEMYRYvaMEuPHf3oTBPd7qEVxSA7GeiZIrmdBX7DXfD+q4mJt/n/CbujoEryCN4nsaVhJq1w/advs0jVXoTH4BFno5o2LJtJdmKPtPsrlUpole9uRT2nZ6wcVzI9uIyIarwKeTXj2ZejmdKTrrSpdjmChm4fLyGX8NDcvL+eMZ+GSEP8Mk8LnfrO60Qyx3IagE+1G2RFPGZfAZbI6FG7NkdDIIWOcPZ1JjKzYMaV8pri4gFCtdqjL2rHCjwaJ8ExCkts/NP/EpshYFZBLFU+ohws=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b9646e35-e9a3-4389-80c0-08d7f6d00aba
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2020 23:56:09.2459
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BCZseUeoiUG1JMdsxqjzTA1PCHZwETxmCqg6q0fgGeQocgh46dRZPwgxp2wvAyt4Rw/Zfaoq6LFVGRndDoKSk4TzGdt9GWMCHDBpoZBk660OTCdYdQD3hAxZGr2hmyK8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB4470
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200512233504.GA118720@sequoia>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PMCG node can have zero ID mapping if its overflow interrupt
-is wire based. The code to parse PMCG node can not assume it will
-have a single ID mapping.
+On Tue, May 12, 2020 at 06:35:04PM -0500, Tyler Hicks wrote:
+> On 2020-05-06 14:15:21, Kees Cook wrote:
+> > From: Pavel Tatashin <pasha.tatashin@soleen.com>
+> > 
+> > Now that pstore_register() can correctly pass max_reason to the kmesg
+> > dump facility, introduce a new "max_reason" module parameter and
+> > "max-reason" Device Tree field.
+> > 
+> > The "dump_oops" module parameter and "dump-oops" Device
+> > Tree field are now considered deprecated, but are now automatically
+> > converted to their corresponding max_reason values when present, though
+> > the new max_reason setting has precedence.
+> > 
+> > For struct ramoops_platform_data, the "dump_oops" member is entirely
+> > replaced by a new "max_reason" member, with the only existing user
+> > updated in place.
+> > 
+> > Additionally remove the "reason" filter logic from ramoops_pstore_write(),
+> > as that is not specifically needed anymore, though technically
+> > this is a change in behavior for any ramoops users also setting the
+> > printk.always_kmsg_dump boot param, which will cause ramoops to behave as
+> > if max_reason was set to KMSG_DUMP_MAX.
+> > 
+> > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> > Link: https://lore.kernel.org/r/20200505154510.93506-4-pasha.tatashin@soleen.com
+> > Link: https://lore.kernel.org/r/20200505154510.93506-5-pasha.tatashin@soleen.com
+> > Co-developed-by: Kees Cook <keescook@chromium.org>
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  Documentation/admin-guide/ramoops.rst     | 14 +++++--
+> >  drivers/platform/chrome/chromeos_pstore.c |  2 +-
+> >  fs/pstore/ram.c                           | 51 +++++++++++++++--------
+> >  include/linux/pstore_ram.h                |  2 +-
+> >  4 files changed, 45 insertions(+), 24 deletions(-)
+> > 
+> > diff --git a/Documentation/admin-guide/ramoops.rst b/Documentation/admin-guide/ramoops.rst
+> > index 6dbcc5481000..a60a96218ba9 100644
+> > --- a/Documentation/admin-guide/ramoops.rst
+> > +++ b/Documentation/admin-guide/ramoops.rst
+> > @@ -32,11 +32,17 @@ memory to be mapped strongly ordered, and atomic operations on strongly ordered
+> >  memory are implementation defined, and won't work on many ARMs such as omaps.
+> >  
+> >  The memory area is divided into ``record_size`` chunks (also rounded down to
+> > -power of two) and each oops/panic writes a ``record_size`` chunk of
+> > +power of two) and each kmesg dump writes a ``record_size`` chunk of
+> >  information.
+> >  
+> > -Dumping both oopses and panics can be done by setting 1 in the ``dump_oops``
+> > -variable while setting 0 in that variable dumps only the panics.
+> > +Limiting which kinds of kmsg dumps are stored can be controlled via
+> > +the ``max_reason`` value, as defined in include/linux/kmsg_dump.h's
+> > +``enum kmsg_dump_reason``. For example, to store both Oopses and Panics,
+> > +``max_reason`` should be set to 2 (KMSG_DUMP_OOPS), to store only Panics
+> > +``max_reason`` should be set to 1 (KMSG_DUMP_PANIC). Setting this to 0
+> > +(KMSG_DUMP_UNDEF), means the reason filtering will be controlled by the
+> > +``printk.always_kmsg_dump`` boot param: if unset, it'll be KMSG_DUMP_OOPS,
+> > +otherwise KMSG_DUMP_MAX.
+> >  
+> >  The module uses a counter to record multiple dumps but the counter gets reset
+> >  on restart (i.e. new dumps after the restart will overwrite old ones).
+> > @@ -90,7 +96,7 @@ Setting the ramoops parameters can be done in several different manners:
+> >          .mem_address            = <...>,
+> >          .mem_type               = <...>,
+> >          .record_size            = <...>,
+> > -        .dump_oops              = <...>,
+> > +        .max_reason             = <...>,
+> >          .ecc                    = <...>,
+> >    };
+> >  
+> > diff --git a/drivers/platform/chrome/chromeos_pstore.c b/drivers/platform/chrome/chromeos_pstore.c
+> > index d13770785fb5..fa51153688b4 100644
+> > --- a/drivers/platform/chrome/chromeos_pstore.c
+> > +++ b/drivers/platform/chrome/chromeos_pstore.c
+> > @@ -57,7 +57,7 @@ static struct ramoops_platform_data chromeos_ramoops_data = {
+> >  	.record_size	= 0x40000,
+> >  	.console_size	= 0x20000,
+> >  	.ftrace_size	= 0x20000,
+> > -	.dump_oops	= 1,
+> > +	.max_reason	= KMSG_DUMP_OOPS,
+> >  };
+> >  
+> >  static struct platform_device chromeos_ramoops = {
+> > diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
+> > index c2f76b650f91..b8dac1d04e96 100644
+> > --- a/fs/pstore/ram.c
+> > +++ b/fs/pstore/ram.c
+> > @@ -57,10 +57,15 @@ module_param(mem_type, uint, 0600);
+> >  MODULE_PARM_DESC(mem_type,
+> >  		"set to 1 to try to use unbuffered memory (default 0)");
+> >  
+> > -static int dump_oops = 1;
+> > -module_param(dump_oops, int, 0600);
+> > +static int ramoops_dump_oops = -1;
+> > +module_param_named(dump_oops, ramoops_dump_oops, int, 0400);
+> >  MODULE_PARM_DESC(dump_oops,
+> > -		"set to 1 to dump oopses, 0 to only dump panics (default 1)");
+> > +		 "set to 1 to dump oopses & panics, 0 to only dump panics (deprecated: use max_reason instead)");
+> > +
+> > +static int ramoops_max_reason = KMESG_DUMP_OOPS;
+> > +module_param_named(max_reason, ramoops_max_reason, int, 0400);
+> > +MODULE_PARM_DESC(max_reason,
+> > +		 "maximum reason for kmsg dump (default 2: Oops and Panic) ");
+> >  
+> >  static int ramoops_ecc;
+> >  module_param_named(ecc, ramoops_ecc, int, 0600);
+> > @@ -81,7 +86,6 @@ struct ramoops_context {
+> >  	size_t console_size;
+> >  	size_t ftrace_size;
+> >  	size_t pmsg_size;
+> > -	int dump_oops;
+> >  	u32 flags;
+> >  	struct persistent_ram_ecc_info ecc_info;
+> >  	unsigned int max_dump_cnt;
+> > @@ -382,16 +386,14 @@ static int notrace ramoops_pstore_write(struct pstore_record *record)
+> >  		return -EINVAL;
+> >  
+> >  	/*
+> > -	 * Out of the various dmesg dump types, ramoops is currently designed
+> > -	 * to only store crash logs, rather than storing general kernel logs.
+> > +	 * We could filter on record->reason here if we wanted to (which
+> > +	 * would duplicate what happened before the "max_reason" setting
+> > +	 * was added), but that would defeat the purpose of a system
+> > +	 * changing printk.always_kmsg_dump, so instead log everything that
+> > +	 * the kmsg dumper sends us, since it should be doing the filtering
+> > +	 * based on the combination of printk.always_kmsg_dump and our
+> > +	 * requested "max_reason".
+> >  	 */
+> > -	if (record->reason != KMSG_DUMP_OOPS &&
+> > -	    record->reason != KMSG_DUMP_PANIC)
+> > -		return -EINVAL;
+> > -
+> > -	/* Skip Oopes when configured to do so. */
+> > -	if (record->reason == KMSG_DUMP_OOPS && !cxt->dump_oops)
+> > -		return -EINVAL;
+> >  
+> >  	/*
+> >  	 * Explicitly only take the first part of any new crash.
+> > @@ -692,7 +694,14 @@ static int ramoops_parse_dt(struct platform_device *pdev,
+> >  	pdata->mem_size = resource_size(res);
+> >  	pdata->mem_address = res->start;
+> >  	pdata->mem_type = of_property_read_bool(of_node, "unbuffered");
+> > -	pdata->dump_oops = !of_property_read_bool(of_node, "no-dump-oops");
+> > +	/*
+> > +	 * Setting "no-dump-oops" is deprecated and will be ignored if
+> > +	 * "max_reason" is also specified.
+> > +	 */
+> > +	if (of_property_read_bool(of_node, "no-dump-oops"))
+> > +		pdata->max_reason = KMSG_DUMP_PANIC;
+> > +	else
+> > +		pdata->max_reason = KMSG_DUMP_OOPS;
+> >  
+> >  #define parse_size(name, field, default_value) {			\
+> >  		ret = ramoops_parse_dt_size(pdev, name, default_value,	\
+> > @@ -708,6 +717,7 @@ static int ramoops_parse_dt(struct platform_device *pdev,
+> >  	parse_size("pmsg-size", pdata->pmsg_size, 0);
+> >  	parse_size("ecc-size", pdata->ecc_info.ecc_size, 0);
+> >  	parse_size("flags", pdata->flags, 0);
+> > +	parse_size("max-reason", pdata->max_reason, pdata->max_reason);
+> >  
+> >  #undef parse_size
+> >  
+> > @@ -791,7 +801,6 @@ static int ramoops_probe(struct platform_device *pdev)
+> >  	cxt->console_size = pdata->console_size;
+> >  	cxt->ftrace_size = pdata->ftrace_size;
+> >  	cxt->pmsg_size = pdata->pmsg_size;
+> > -	cxt->dump_oops = pdata->dump_oops;
+> >  	cxt->flags = pdata->flags;
+> >  	cxt->ecc_info = pdata->ecc_info;
+> >  
+> > @@ -834,8 +843,10 @@ static int ramoops_probe(struct platform_device *pdev)
+> >  	 * the single region size is how to check.
+> >  	 */
+> >  	cxt->pstore.flags = 0;
+> > -	if (cxt->max_dump_cnt)
+> > +	if (cxt->max_dump_cnt) {
+> >  		cxt->pstore.flags |= PSTORE_FLAGS_DMESG;
+> > +		cxt->pstore.max_reason = pdata->max_reason;
+> > +	}
+> >  	if (cxt->console_size)
+> >  		cxt->pstore.flags |= PSTORE_FLAGS_CONSOLE;
+> >  	if (cxt->max_ftrace_cnt)
+> > @@ -871,7 +882,7 @@ static int ramoops_probe(struct platform_device *pdev)
+> >  	mem_size = pdata->mem_size;
+> >  	mem_address = pdata->mem_address;
+> >  	record_size = pdata->record_size;
+> > -	dump_oops = pdata->dump_oops;
+> > +	ramoops_max_reason = pdata->max_reason;
+> >  	ramoops_console_size = pdata->console_size;
+> >  	ramoops_pmsg_size = pdata->pmsg_size;
+> >  	ramoops_ftrace_size = pdata->ftrace_size;
+> > @@ -954,7 +965,11 @@ static void __init ramoops_register_dummy(void)
+> >  	pdata.console_size = ramoops_console_size;
+> >  	pdata.ftrace_size = ramoops_ftrace_size;
+> >  	pdata.pmsg_size = ramoops_pmsg_size;
+> > -	pdata.dump_oops = dump_oops;
+> > +	/* Parse deprecated module param "dump_oops" into "max_reason". */
+> > +	if (ramoops_dump_oops != -1)
+> > +		pdata.max_reason = ramoops_dump_oops ? KMSG_DUMP_OOPS
+> > +						     : KMSG_DUMP_PANIC;
+> > +	pdata.max_reason = ramoops_max_reason;
+> 
+> This isn't quite right. We're conditionally assigning pdata.max_reason
+> and then immediately re-assigning it.
+> 
+> IIUC, we're just missing an else block and it should look like this:
+> 
+> 	/* Parse deprecated module param "dump_oops" into "max_reason". */
+> 	if (ramoops_dump_oops != -1)
+> 		pdata.max_reason = ramoops_dump_oops ? KMSG_DUMP_OOPS
+> 						     : KMSG_DUMP_PANIC;
+> 	else
+> 		pdata.max_reason = ramoops_max_reason;
 
-Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
----
-Changes in v2:
-- Used pmcg node to detect wired base overflow interrupt.
- 
- drivers/acpi/arm64/iort.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Oops, yes. ramoops_max_reason needs to also have an "unset" value so
+this can determine which was set... I'll get this fixed. Thanks for
+double-checking this!
 
-diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-index ed3d2d1..11a4e8e 100644
---- a/drivers/acpi/arm64/iort.c
-+++ b/drivers/acpi/arm64/iort.c
-@@ -414,6 +414,7 @@ static struct acpi_iort_node *iort_node_get_id(struct acpi_iort_node *node,
- static int iort_get_id_mapping_index(struct acpi_iort_node *node)
- {
- 	struct acpi_iort_smmu_v3 *smmu;
-+	struct acpi_iort_pmcg *pmcg;
- 
- 	switch (node->type) {
- 	case ACPI_IORT_NODE_SMMU_V3:
-@@ -441,6 +442,10 @@ static int iort_get_id_mapping_index(struct acpi_iort_node *node)
- 
- 		return smmu->id_mapping_index;
- 	case ACPI_IORT_NODE_PMCG:
-+		pmcg = (struct acpi_iort_pmcg *)node->node_data;
-+		if (pmcg->overflow_gsiv)
-+			return -EINVAL;
-+
- 		return 0;
- 	default:
- 		return -EINVAL;
 -- 
-2.7.4
-
+Kees Cook
