@@ -2,133 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821751CEBAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 05:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5BD21D26F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 08:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbgELDso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 23:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51040 "EHLO
+        id S1725967AbgENGEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 02:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725892AbgELDso (ORCPT
+        by vger.kernel.org with ESMTP id S1725794AbgENGEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 23:48:44 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF31C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 20:48:42 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id x8so9900920qtr.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 20:48:42 -0700 (PDT)
+        Thu, 14 May 2020 02:04:22 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BD3C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 23:04:22 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id mq3so12109199pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 23:04:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :organization:user-agent:mime-version;
-        bh=5n6oxKBMVWx60og62lkJZft41oxpnNerVi+unngwoHA=;
-        b=qVLaB/gCHZnYpvyak3zXsNxqXEbCRkuc8oJhxATrqS5TqrZcJqAdG8Fc2wVgnTqJNS
-         peeEYBoyICAZ95H3eIAkBiEoIxNNQ2YkLBS78lx2pEWAB6q7pdXWp2YFrYQ9RO6PSM3B
-         raQJgsuVlT0Qv5uhnyCI6hSWlKqyw3BdB+YXmS+Xjmy0nQLrxKCPUxTCCv6BkiuTq3jV
-         TEd9RvZvvGjQ0UgVQAJ27Nt9XlOUnZI83vvAMmp6vjFzw1WYir+F3ODrlsWrGnST2xFX
-         Uz444K+iVu9X7jae/3GCuME1uARtUsUbInj6TmXzRg3nVYP7VPavuTwKBa0rUyHK+QUb
-         //9A==
+        h=from:to:cc:subject:date:message-id;
+        bh=jIhLxFkEstOsX75pumvf5hU2eBHJHovEbl4Iz1TB1jM=;
+        b=L0W/K1xnR7MMQITjCNmLpKOXf7FvtySaQ3VbWxyy+zvlzITfyanCbXc9KlwTBBhvLw
+         t51+JQFvtipVmwE6S+b+MUn1JG1Kwlq+MEXyoDr5aMDnHjrVIzqGGdnC4hcRNs3bYxkT
+         60jUs75foj5zcp36N8W5Pw/Dr9XIjcNtcCgEoflNRTVNo6+yjeeeuuCsvxkRmUMbQor8
+         q2PZOaBLV5ovzv1btAdtbkLPA4MD8/hNc2n8XvNgJ0M2seZJ4YcTxPrNJME0AG/dVEka
+         TyU7HXt66Vxa70HfCFlsSs12EEdFV/y7hZGQzLQf33gB4v9gJpMAh5DB6CcDjecCoL5G
+         PGlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version;
-        bh=5n6oxKBMVWx60og62lkJZft41oxpnNerVi+unngwoHA=;
-        b=JYOb9TZOyMJ4fHYoNDVNwgbX73rPVTs9Qga6q4iwhekflk0qqHMzG1e36zzBIk5Ncy
-         sr3++MpApnK4+JND81X7NZ3dP7thWVBVnVvJ0rJFeowt5/GO5zdsH8w79cAbITWoWPlh
-         BsAptNaQe01i3B/ctoUFWwdEsl2nPuQUu+M2wiRLw6KARMwEfoRFnqS3gtQz5mCSJ1j6
-         1WC1pv1eoX1fncK71p24+UXB0myxNPL2LqJfhZgyv9hBGf3Xw2+ECOrQcK16jlHQHJRk
-         PrCR8M4E6CChdSdse8168mzTsbl7q3hDWY0C+34Rk1ymZF9ZmG44/Dm54QpdtWKyknaK
-         Xg5Q==
-X-Gm-Message-State: AGi0PuaYBXiYUplribSQRlgDxMFdIOWjLDDs7zd5Tza4NyavBDJAINyN
-        kJDIN/9fkxRd1/q6BmroSVbs1Gog
-X-Google-Smtp-Source: APiQypIHxD9o4naWzpwiO7jiQkdx1FGK6nxiI2U65jKm3mAquoGEZw8ubeU7uvcDocVVsdGPh2jGPA==
-X-Received: by 2002:ac8:739a:: with SMTP id t26mr19487947qtp.311.1589255321911;
-        Mon, 11 May 2020 20:48:41 -0700 (PDT)
-Received: from LeoBras (143-255-224-253.dynamic.desktop.com.br. [143.255.224.253])
-        by smtp.gmail.com with ESMTPSA id d4sm10580366qtw.25.2020.05.11.20.48.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 20:48:40 -0700 (PDT)
-Message-ID: <f967cab2b473406ee6427f40109c85d46b438271.camel@gmail.com>
-Subject: Re: [PATCH v3 1/1] ppc/crash: Reset spinlocks during crash
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     peterz@infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Enrico Weigelt <info@metux.net>
-Date:   Tue, 12 May 2020 00:48:28 -0300
-In-Reply-To: <20200409002726.GA5135@blackberry>
-References: <20200401000020.590447-1-leonardo@linux.ibm.com>
-         <871rp6t9di.fsf@mpe.ellerman.id.au>
-         <02e74be19534ab1db2f16a0c89ecb164e380c12a.camel@linux.ibm.com>
-         <1585895551.7o9oa0ey62.astroid@bobo.none>
-         <fb98f346a4d6a9d689ae64dae33cbd45d2f8b0df.camel@linux.ibm.com>
-         <87v9majhh2.fsf@mpe.ellerman.id.au> <20200409002726.GA5135@blackberry>
-Organization: IBM
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-4yilsMbkz+4cNur9Wxoo"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-MIME-Version: 1.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=jIhLxFkEstOsX75pumvf5hU2eBHJHovEbl4Iz1TB1jM=;
+        b=EPZEtu62iw0++fdctR4Qt2YBYJpqBFdjPOGLRKRMhZoGK7WbJyFfW+rW87CVN7BXLs
+         PKwuS1cVF0BA32JvTaDu7R7rOIhsbtQ+wPo+pg8vpUEeGvcUPQ8R7ogTKWhc1wMr7C2n
+         KjILFFJjBp4lWp9CR95op1Y4CEUz8rhOjWq9eTT5xg/7KMBpbFAlXqLmVJLW9q2nqKJm
+         EmPbIDXyyUXNAB6uVzreggvwA96cJ1Xvjyi9YvWDk5kWHArXbCFArVejSXWr4kS8c+vE
+         KaEZzzI3vvafjPhImyf4z84FEidvUFPUAuSmFHYcnYPKP5Xt2q510dOuFBRoMr7KNont
+         ZLPw==
+X-Gm-Message-State: AGi0PuZJkYrtEUpeAzsz6mKjgdsa7fWTU2cUF/7WNyykMc023aPciyK0
+        C7pPbO/J9ljEgDqhhl0WHqM=
+X-Google-Smtp-Source: APiQypIbm5vJB/18u0FHVukAqq/pAqHrSF7OX5evfSOxMv2SwznRLQtf/p9XqjdQHR8VtGHuxbTxFQ==
+X-Received: by 2002:a17:90a:104f:: with SMTP id y15mr40049008pjd.191.1589436261882;
+        Wed, 13 May 2020 23:04:21 -0700 (PDT)
+Received: from localhost.localdomain.localdomain ([124.156.176.138])
+        by smtp.gmail.com with ESMTPSA id m6sm17087974pjo.5.2020.05.13.23.04.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 13 May 2020 23:04:21 -0700 (PDT)
+From:   Qingjie Xing <xqjcool@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, linux-kernel@vger.kernel.org,
+        Qingjie Xing <xqjcool@gmail.com>
+Subject: [PATCH] kernel/sched/wait.c: set timeout to 0 when kthread should stop
+Date:   Mon, 11 May 2020 23:50:21 -0400
+Message-Id: <1589255421-28264-1-git-send-email-xqjcool@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Using kthread_stop() to terminate a thread causes tcp_recvmsg()
+to enter a dead loop when the kernel thread uses tcp_recvmsg()
+to receive a message.
 
---=-4yilsMbkz+4cNur9Wxoo
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+tcp_recvmsg()-->sk_wait_data()-->sk_wait_event()-->wait_woken().
 
-Hello Paul, thanks for the reply!
+wait_woken() will directly return unchanged timeout value rather
+than be executed as normally.
 
-On Thu, 2020-04-09 at 10:27 +1000, Paul Mackerras wrote:
-> On Wed, Apr 08, 2020 at 10:21:29PM +1000, Michael Ellerman wrote:
-> > We should be able to just allocate the rtas_args on the stack, it's onl=
-y
-> > ~80 odd bytes. And then we can use rtas_call_unlocked() which doesn't
-> > take the global lock.
->=20
-> Do we instantiate a 64-bit RTAS these days, or is it still 32-bit?
+tcp_recvmsg () will continues to execute sk_wait_data(). So finally
+this situation will creat an endless loop that cannot be exited.
 
-According to LoPAR, we can use instantiate-rtas or instantiate-rtas-64.=20
-It looks like we do instantiate-rtas today (grep pointed only to
-prom_instantiate_rtas()).
+Signed-off-by: Qingjie Xing <xqjcool@gmail.com>
+---
+ kernel/sched/wait.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> In the old days we had to make sure the RTAS argument buffer was
-> below the 4GB point.  If that's still necessary then perhaps putting
-> rtas_args inside the PACA would be the way to go.
-
-Yes, we still need to make sure of this. I will study more about PACA
-and try to implement that way.
-
-Best regards,
-Leonardo Bras
-
---=-4yilsMbkz+4cNur9Wxoo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQJIBAABCAAyFiEEMdeUgIzgjf6YmUyOlQYWtz9SttQFAl66HIwUHGxlb2JyYXMu
-Y0BnbWFpbC5jb20ACgkQlQYWtz9SttQPLA//fKKlapt9WdFQ67p8gkh+h3LOaBKS
-u1snYTTmKCwrvTt+MCvLADzcJRTEDOcQmfCP2qYbwOJ4eI1rwzND2NwpTZx1yVJ3
-/oPkWaS8uW57rGC1cYUXYS6VxWwTYgNHSDqqV4+oqfKriuu2WuHZ93fN8C8yWxfK
-EiL/DnyMCNxpuAelTuZI7SpLmbfYptqASCSHmqJNmU+SDyqxC0dCuAVsa+wutrTy
-RQTtSPhSxJhGEy07wHJWwDPqFCj4s7L88JyCKpahIGszP/eodf5r90yqf4za+BzC
-y+qAizOH0NhyIcCtzlMmXK3t2d6MheJgkAzmI+O02uRiAPf5x1GOOyE6aAj7qQcU
-K9m+tcVIFPWry9oZVxhYWCQwwd6v4jmiIU4YvN4SD6gZxj3vWNvLbgFBwLw8PyGr
-WcLccCQYhCWBhYFct7C6dC6DtBeoS6TNrMjh4nEEVTk9jeRLhI13/w06GAWlGXiP
-nSfpf2VIrK/lHzCiM8kq4rg3NcVUHOewecxq0OlK3UzXEa8mkONXrcz648OErcGP
-HdJq4ZHNzG7Nq7CM7EYtI0sxvcsMVanD8nSfIwxpo4SBq0fgWzZo3spiUL5QQB1L
-3Db6YAZqt6MeCySwJAXnlvsHB8Nx+WasWNwhWqcsmbvDYB9xQnMWoSteaZb0yyeO
-hCjbzahPdaxTPgM=
-=1RoD
------END PGP SIGNATURE-----
-
---=-4yilsMbkz+4cNur9Wxoo--
+diff --git a/kernel/sched/wait.c b/kernel/sched/wait.c
+index ba059fb..a27bbbd 100644
+--- a/kernel/sched/wait.c
++++ b/kernel/sched/wait.c
+@@ -431,6 +431,8 @@ long wait_woken(struct wait_queue_entry *wq_entry, unsigned mode, long timeout)
+ 	set_current_state(mode); /* A */
+ 	if (!(wq_entry->flags & WQ_FLAG_WOKEN) && !is_kthread_should_stop())
+ 		timeout = schedule_timeout(timeout);
++	if (is_kthread_should_stop())
++		timeout = 0;
+ 	__set_current_state(TASK_RUNNING);
+ 
+ 	/*
+-- 
+1.8.3.1
 
