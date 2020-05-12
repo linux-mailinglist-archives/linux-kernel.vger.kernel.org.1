@@ -2,160 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5521CEC42
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 07:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 749DB1CEC4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 07:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728718AbgELE74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 00:59:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725814AbgELE7z (ORCPT
+        id S1728390AbgELFIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 01:08:47 -0400
+Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:1716 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725536AbgELFIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 00:59:55 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B0DC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 21:59:54 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id g4so11804002ybf.21
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 21:59:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=wTMtR6SinjsfSneLfEmzXkUvLzSb3s46ODVv49BzMq4=;
-        b=gfrRAg6HGRG/LTUkmM7Q9ttYyM+8mzucwFcrUkPcW3ZJHVWHiToeUeu1CcH4rvUCQJ
-         3mF7k9PPMUnt906rf2JagbXdLXzgtG/ypxsjndr+mzLfDWW0Kvcp12LqZUuEX0/TzJaV
-         pBTrnuyeK8FFXecWBj5iA5NWIY+vGYzpKjfc/rQLCb8FhAJqlanV3dAmtIUp0MubTC/G
-         ld484k0DS904lpBVTzeO83f9X+PsekabZ2DPshX1izSuRONCIIGmwzc8aRo0XKPAYfV7
-         3SxdUtfZf9kJRyrbM/my5DTXTbFjAUDHP1wIxX7lYX3ggbtfcNfNmQV1ETDmj/m90hmi
-         NdNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=wTMtR6SinjsfSneLfEmzXkUvLzSb3s46ODVv49BzMq4=;
-        b=XPTUAvKcBdIlyCaGcP/mLEydsGRG7USEPMbjW75a0zjzTN199tSGJGyreprQOYavn7
-         3HbvDLRW3dT0Eb5mGmEDGxLUqfawOxsBxvw70cbeQmjSUBzk5ZSr/g8+s+Fxa12NYUfo
-         WMSprkVN6BY3dJVlsam7n2JO72lpJOb7k1hV3280gsjbARA9Kh8Y+DgLjnLYmmEGcEwZ
-         8jfs9vy5r5s1AiHFgK8vYmfGWM1wv5BxIqG4SXaoTiaUkifRXpsBvrKIiwvobDliGn0r
-         Loq61gqULj0WLAVDAGjsj7u0NVysSSMmBM0CGZKkDcoWRZvgNAojCWKetdg/Se+zMKqA
-         cigQ==
-X-Gm-Message-State: AGi0PuZWLdbp6pqPqaHwiMSs7yvJoZuTDVw79+Hw2f0RBloQbjD7EZn+
-        cd25ebLlLT6AUTmeWhX6h8kyqp5inP+8
-X-Google-Smtp-Source: APiQypK4W8IIdmnhxjuRK4vWBSaU8V84q0u4mcblA5POpheyVAwREoSiRrBRXNdt9pMAvUHmRWvqZsPq0pJY
-X-Received: by 2002:a25:3207:: with SMTP id y7mr17701571yby.463.1589259593405;
- Mon, 11 May 2020 21:59:53 -0700 (PDT)
-Date:   Tue, 12 May 2020 14:59:36 +1000
-In-Reply-To: <20200508145624.1.I4d7421c6bbb1f83ea58419082481082e19097841@changeid>
-Message-Id: <20200512145930.1.I4d7421c6bbb1f83ea58419082481082e19097841@changeid>
-Mime-Version: 1.0
-References: <20200508145624.1.I4d7421c6bbb1f83ea58419082481082e19097841@changeid>
-X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
-Subject: [PATCH] perf record: Use an eventfd to wakeup when done
-From:   Anand K Mistry <amistry@google.com>
-To:     linux-perf-users@vger.kernel.org
-Cc:     Anand K Mistry <amistry@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 12 May 2020 01:08:46 -0400
+Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
+        by mx0b-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04C50kAK019824;
+        Mon, 11 May 2020 22:03:35 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=proofpoint;
+ bh=c/Aj1oJ4Y+Jz5KJ9u5unNNgPdvWK/m+/Xv3LLiUzgJA=;
+ b=sTUxrZxn8Lb8nfW2HC1WwnObKQgEPdxVfeOjAtPaCcZZXKmyA+E9x9qO3DLJeL9vUOok
+ 13Uk4aWkCkrFeRCyTcqyYtqYQLXYO42acINf/CXQdlNm2iOYtGZJIcoH0L6cXzxA3FKU
+ GYdR0E1s31AHusqI1uWdlFKnMTIin80gKaUNhhXwzimrjqZd8cqEgzG1MC8+eWq8GH3i
+ m2YfgiiccrTotIY5xSMg2u3hEKyDyUyAu4vrxoECnjVBc+FIKhT5O0b/8jBDqosTgTwe
+ qcM8550/6pfxvmcL7OUKLvIsW+X0VPFrGWwjrs3TdzOFdz2hBDQMDXyF/6g4GhiNK3/T eg== 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2043.outbound.protection.outlook.com [104.47.66.43])
+        by mx0b-0014ca01.pphosted.com with ESMTP id 30wr3xhftf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 May 2020 22:03:35 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CBJALGEWdS4inCMXVKmf1XW4QvyDS8f+uCUOTVjXlCu5GFbLcMrBqATBoR4OqVUvOnsUQVISTniB+cyrfcSsmTYCzNr9uMOuYsCZz6lTscyQJ1AqxwvYY1O0h6ZZmK/hZLt9y3QKLYUgUet74I8k+yBVKsb6nmYS/BEEo9kgn1ov6hajkpc0VWrLNwzvsKS/7gA+9yDf1AsuSM4+oR0Pv+BzfNr0BLSOzK0AkiKspMUfujDbuIOiDSuFQNqct/1XI5hzozFytG6aqEjFxoM/DSkBBhxH5cTEjWPXLB7R4gHg8f6XfTotHvHN0exayt7uGTz2J7DNuetJkDszFrXaog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c/Aj1oJ4Y+Jz5KJ9u5unNNgPdvWK/m+/Xv3LLiUzgJA=;
+ b=j4rTRYR900w3cWwo6MHjbBKhPukNoT4+m/0vreVygDk43iTaDZuK65KEr9jBoXCi8P73iuXhYoR1Gepl9L7PUO5zfxAQ1IUGmwUQg5PTSVk2X8EJVW2VSDk17r1O+5oVfG9Bcjj92UtuiLa3csEpAqFJUx8goaFgm6BaKPTyQi9zYUhSE4HPsgGcN0rW9ITatC8DDvBrmWEZYKa9pmU0ARTBvLb+kRKXSW4iWVQBSyA3ZKRhLrIizuznrc/67kJ/3BTg/tEoP0ltr3OE7RwQbCkTuLsiuohQJj9NX7Dvjhi1/SCG2gJiEskfnEdorsIGkj+icqHE21HyAbJNSe5bOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
+ dkim=pass header.d=cadence.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c/Aj1oJ4Y+Jz5KJ9u5unNNgPdvWK/m+/Xv3LLiUzgJA=;
+ b=QVDP7MTYDMIHf7GbRP9DQyRAA/GN488AVF2TKrvWW4NxK81dvXWlG3W8vryaCmNj6QQnZGmFnpSEPt7jVwng4cywrNy65x8G3yLwmtnkFKHJ26a1KTMjh0yDi3zABgubhG3n0yAM66874zzjdqxZGW2Fjy0pBslZh4Q1Lk2DmAg=
+Received: from DM5PR07MB3196.namprd07.prod.outlook.com (2603:10b6:3:e4::16) by
+ DM5PR07MB3909.namprd07.prod.outlook.com (2603:10b6:4:af::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2979.26; Tue, 12 May 2020 05:03:33 +0000
+Received: from DM5PR07MB3196.namprd07.prod.outlook.com
+ ([fe80::19d0:3872:2f5e:220b]) by DM5PR07MB3196.namprd07.prod.outlook.com
+ ([fe80::19d0:3872:2f5e:220b%4]) with mapi id 15.20.2979.033; Tue, 12 May 2020
+ 05:03:33 +0000
+From:   Parshuram Raju Thombare <pthombar@cadence.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+CC:     "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
+        "vitor.soares@synopsys.com" <vitor.soares@synopsys.com>,
+        Przemyslaw Gaj <pgaj@cadence.com>,
+        "linux-i3c@lists.infradead.org" <linux-i3c@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Milind Parab <mparab@cadence.com>,
+        "praneeth@ti.com" <praneeth@ti.com>
+Subject: RE: [PATCH v7 1/7] i3c: master: secondary master initialization
+ document
+Thread-Topic: [PATCH v7 1/7] i3c: master: secondary master initialization
+ document
+Thread-Index: AQHWJ5Xdp1p7GypmlkGN/TuO2SBczKijDKwAgADX4VA=
+Date:   Tue, 12 May 2020 05:03:32 +0000
+Message-ID: <DM5PR07MB3196C4B887D5D4720971BF11C1BE0@DM5PR07MB3196.namprd07.prod.outlook.com>
+References: <1589202702-4879-1-git-send-email-pthombar@cadence.com>
+        <1589202759-5677-1-git-send-email-pthombar@cadence.com>
+ <20200511180500.6e1c4453@collabora.com>
+In-Reply-To: <20200511180500.6e1c4453@collabora.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccHRob21iYXJcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy1lYzM5NDdmZi05NDBkLTExZWEtODU4NC0xMDY1MzBlZjIyZjVcYW1lLXRlc3RcZWMzOTQ4MDEtOTQwZC0xMWVhLTg1ODQtMTA2NTMwZWYyMmY1Ym9keS50eHQiIHN6PSI1NjMiIHQ9IjEzMjMzNzMzNDExNzA0NDA2MSIgaD0iNUhzbTFBYzUwMVFTeER2TFBxc2ZnREwwamVrPSIgaWQ9IiIgYmw9IjAiIGJvPSIxIi8+PC9tZXRhPg==
+x-dg-rorf: true
+authentication-results: collabora.com; dkim=none (message not signed)
+ header.d=none;collabora.com; dmarc=none action=none header.from=cadence.com;
+x-originating-ip: [59.145.174.78]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7ebd17dc-ba51-43d7-d87c-08d7f631d1d2
+x-ms-traffictypediagnostic: DM5PR07MB3909:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR07MB3909BB26AB1CAFBAED64D376C1BE0@DM5PR07MB3909.namprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0401647B7F
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ipym0Q+dPvdjI2fXV2NnbqvQkjOtwfUKWUDYNnG9/Kh6VgWs74kjIt85eAuwFgn8CDVIrRfKFwD1sIAxUOYbBQ9tw1aCBklmBppqsVgK9HfQRMtopPOXP4OAIO0nRwFBUVFCuwOr8n7REKEH785dRyexwwGoxqlilFzcLIeoimUDyYV01aXrYP/6kPX/gjoAWO7915GhxoxamHK5wco4lW5+/P1rzxQH1rH75ygrfEw01GyvoptryUiInpVoYv7wTsg3vS38XkicC0OtRMuaAZCPTTOd6jJgy1fnH+djCcFCsyhsWPKQy8t+Jpft7OUoWvmCZB5s4MGrTo4NCVfjDpgj0s3BzVYZ2q8n5mW8J3qEvs0PQZ3d+qt20bGvVo7sjTWBVBl8vANCHxEvMavbOMzJEKpdMNjB0dV3E6qMfWxhI3WxserQ9D8aqMbxeRJR+EDvOGfV9du7ty3sUNSF9gpjUENGJ616xe8ZvHQ3OAEMLJGgZYkyizxk3XTV8mzwFHHsXJmek2nTgNpxKpqtv8uD5qQwdzun+NLQPSXHJFFTPCzhS+bylKML0ookfPCK
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR07MB3196.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(39860400002)(376002)(366004)(346002)(36092001)(33430700001)(8676002)(66446008)(64756008)(66556008)(66946007)(76116006)(8936002)(66476007)(6916009)(33440700001)(4744005)(186003)(86362001)(26005)(4326008)(71200400001)(5660300002)(9686003)(2906002)(54906003)(316002)(478600001)(33656002)(7696005)(6506007)(55016002)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Tjz5skwv0ya6ekKDiIT5Ruf5l9qPSFxXAprWY8rbBNUyo6RqZ/mTrO7rYJw9bTEEPNCvOl9hybNM//TvfnzQufWD+ZYRn7RxJpkZTTfkeGNIcFg8FuGLujxVqZ6+oCC25c8dcW6/VCdYnaqE7tvV3dnSHzQI2GODEvTEIWJSItaV3Rq6yqo1p7K9aPNLNJAGg9v+GBm+dNIgykN4kOgR1Zvr1mGvY1mloT5ME+Qbybdu0kTirwF8pvxflpqKslx2tSJPpO8ULxRlpmSDl+JjFvCBAOe/mmZmlPoqZNEiW++u1dLy7T/XWSTpLa9zyiviM5KnoXZ6WD2JwFruM/D0tufsAxYmfr5znbIhpzxh9rGy4f0QUHCOiz14NakN7lv3Bb+/qxGpz6HMon/7JchwBars4jr+7gnfkAmx29jzk5RCy7twOVCf5Fi4j6Z5aTzbjrniktjW9qg01NiKXimwR5A9LKP49Txth//qCLvdVAk=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ebd17dc-ba51-43d7-d87c-08d7f631d1d2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 May 2020 05:03:32.8681
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dA5xVqJJSefAxRyHTgQYRXPhSZ9B0fXBVyHAq+gvSQSCOmkL2Ty3w1zk0XEq0Int1z/igrh/yOhCWZ14bzCAa1oTiw3RY8vaxTgLBeMhm90=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR07MB3909
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-12_01:2020-05-11,2020-05-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 mlxscore=0
+ phishscore=0 clxscore=1015 suspectscore=0 impostorscore=0 malwarescore=0
+ mlxlogscore=493 adultscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005120044
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The setting and checking of 'done' contains a rare race where the signal
-handler setting 'done' is run after checking to break the loop, but
-before waiting in evlist__poll(). In this case, the main loop won't wake
-up until either another signal is sent, or the perf data fd causes a
-wake up.
+>> Document describing secondary master initialization,
+>> mastership handover and DEFSLVS handling processes.
+>
+>Thanks for doing that, but you probably didn't try to compile the doc
+>(the formatting is all messed up).
+>
+># make htmldocs
 
-The following simple script can trigger this condition (but you might
-need to run it for several hours):
-for ((i = 0; i >= 0; i++)) ; do
-  echo "Loop $i"
-  delay=$(echo "scale=4; 0.1 * $RANDOM/32768" | bc)
-  ./perf record -- sleep 30000000 >/dev/null&
-  pid=$!
-  sleep $delay
-  kill -TERM $pid
-  echo "PID $pid"
-  wait $pid
-done
+Yes, it looks messed in email but I built html format of doc and formatting=
+ was ok.
+May be because some tab/space issue it is looking  messed up in email.
+I will check that.
 
-At some point, the loop will stall. Adding logging, even though perf has
-received the SIGTERM and set 'done = 1', perf will remain sleeping until
-a second signal is sent.
+Regards,
+Parshuram Thombare
 
-Signed-off-by: Anand K Mistry <amistry@google.com>
-
----
-
- tools/perf/builtin-record.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 1ab349abe90469..099ecaa66732a2 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -53,6 +53,7 @@
- #include <unistd.h>
- #include <sched.h>
- #include <signal.h>
-+#include <sys/eventfd.h>
- #include <sys/mman.h>
- #include <sys/wait.h>
- #include <sys/types.h>
-@@ -518,15 +519,28 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
- 
- static volatile int signr = -1;
- static volatile int child_finished;
-+static int done_fd = -1;
- 
- static void sig_handler(int sig)
- {
-+	u64 tmp = 1;
- 	if (sig == SIGCHLD)
- 		child_finished = 1;
- 	else
- 		signr = sig;
- 
- 	done = 1;
-+
-+	/*
-+	 * It is possible for this signal handler to run after done is checked
-+	 * in the main loop, but before the perf counter fds are polled. If this
-+	 * happens, the poll() will continue to wait even though done is set,
-+	 * and will only break out if either another signal is received, or the
-+	 * counters are ready for read. To ensure the poll() doesn't sleep when
-+	 * done is set, use an eventfd (done_fd) to wake up the poll().
-+	 */
-+	if (write(done_fd, &tmp, sizeof(tmp)) < 0)
-+		pr_err("failed to signal wakeup fd\n");
- }
- 
- static void sigsegv_handler(int sig)
-@@ -1424,6 +1438,17 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 	int fd;
- 	float ratio = 0;
- 
-+	done_fd = eventfd(0, EFD_NONBLOCK);
-+	if (done_fd < 0) {
-+		pr_err("Failed to create wakeup eventfd, error: %m\n");
-+		return -1;
-+	}
-+	err = evlist__add_pollfd(rec->evlist, done_fd);
-+	if (err < 0) {
-+		pr_err("Failed to add wakeup eventfd to poll list\n");
-+		return -1;
-+	}
-+
- 	atexit(record__sig_exit);
- 	signal(SIGCHLD, sig_handler);
- 	signal(SIGINT, sig_handler);
--- 
-2.26.2.645.ge9eca65c58-goog
 
