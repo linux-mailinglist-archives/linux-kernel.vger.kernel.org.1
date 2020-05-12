@@ -2,112 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A51581CF670
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FDF1CF67A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729973AbgELOG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 10:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
+        id S1730093AbgELOIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 10:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728283AbgELOG7 (ORCPT
+        with ESMTP id S1727859AbgELOIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 10:06:59 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1883C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 07:06:58 -0700 (PDT)
+        Tue, 12 May 2020 10:08:40 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E925CC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 07:08:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pKb7TBlLHJxHT49BEZUwW80DII8+mBmNWxxoWsxXBxI=; b=LCwr5v5lNheIrqZTGzNsVqnRkd
-        ZUGQj6kgJuWhpLZBrclbQ/F/npSJSXv3dDO413T6PfTvIWGCGtM9EVH7mpk0EKkyz3fHCfJSJQAVl
-        2tJuZOFNwyoDQpooxdbGrlf0KfCv3bCw/cxlYz5N5UbLnLQBCrFMk7JVLf/msluUOTHSmVCQGOtSD
-        XztDM/sqjJFP/gtOHKFYDNv0LH7qTLt19iB3dTi/FEJbbKnzoyaownBqdNPrIhbuTmM7rAAHwG9kI
-        cB3+Q44ZMUF93DONv11zeB+Zi8jfdTP7fJWsuy+VVvwdfXE9hoQ6AiUXM/yrZV+T/2Bg3y2h7Dn1+
-        x5DsroYw==;
+        bh=fzwFqbLGDZkv7zVEdnOkAnrFdnE9KNFZhl2rWunK4uU=; b=Vm7xbu1WPV9rFcmXbY0vufqy69
+        VxYkGncfQBanfOlxD+iMe05h1iEOIHmHJF9cLtCJrykt5M1F/MXVel26a7HC/vO8B6/I2vQhsHNoK
+        RMT+JpiwO0rtNjNj9i8bLi6HE9nGCsCtk0pwdGrY2IYESesk7ZAhXlfmt4s5rfunKXzPOpyK/M/VB
+        8I8WH3FZhXaRRCEkeblPSU2cbznHbj5tQ313Oq7fBypecu8LGm7bKLNCwZC78p43hKndUNMQ2u/EL
+        OuvJdveia5YREEuQwHTuqhAzTvf/IRRU0C5W0u/VzK56klr5uE5lF+VozugNNcLx+TyUgMDQFuB+p
+        SakVOIVQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jYVYa-0003uG-6G; Tue, 12 May 2020 14:06:52 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jYVZu-00069L-Fo; Tue, 12 May 2020 14:08:14 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2A7083011E6;
-        Tue, 12 May 2020 16:06:50 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AB2BB304DB2;
+        Tue, 12 May 2020 16:08:11 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1A3D620962E25; Tue, 12 May 2020 16:06:50 +0200 (CEST)
-Date:   Tue, 12 May 2020 16:06:50 +0200
+        id 6E62620962E33; Tue, 12 May 2020 16:08:11 +0200 (CEST)
+Date:   Tue, 12 May 2020 16:08:11 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH v2] sched/fair: Fix enqueue_task_fair warning some more
-Message-ID: <20200512140650.GJ2978@hirez.programming.kicks-ass.net>
-References: <20200506141821.GA9773@lorien.usersys.redhat.com>
- <20200507203612.GF19331@lorien.usersys.redhat.com>
- <CAKfTPtAztaT_===uTs6feFp4ZwPX=+UJKHwOoTOVSdsERNG3WQ@mail.gmail.com>
- <20200511204410.GI13245@lorien.usersys.redhat.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        mingo@redhat.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        daniel.lezcano@linaro.org, tglx@linutronix.de,
+        sboyd@codeaurora.org, john.stultz@linaro.org
+Subject: Re: [PATCH 2/5] arm64: perf: Implement correct cap_user_time
+Message-ID: <20200512140811.GK2978@hirez.programming.kicks-ass.net>
+References: <20200512124058.833263033@infradead.org>
+ <20200512124450.824507755@infradead.org>
+ <20200512140301.GC20352@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200511204410.GI13245@lorien.usersys.redhat.com>
+In-Reply-To: <20200512140301.GC20352@leoy-ThinkPad-X240s>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 04:44:10PM -0400, Phil Auld wrote:
-> Peter/Ingo, do you want me to resend or can you fix when applying?
+On Tue, May 12, 2020 at 10:03:01PM +0800, Leo Yan wrote:
+> > +	if (userpg->shift == 32) {
+> 
+> Thanks a lot for the patch set, some typos:
+> 
+> s/shift/time_shift
+> 
+> > +		userpg->shift = 31;
+> 
+> s/shift/time_shift
 
-I now have this, do I need more edits?
-
----
-
-Subject: sched/fair: Fix enqueue_task_fair warning some more
-From: Phil Auld <pauld@redhat.com>
-Date: Thu, 7 May 2020 16:36:12 -0400
-
-From: Phil Auld <pauld@redhat.com>
-
-sched/fair: Fix enqueue_task_fair warning some more
-
-The recent patch, fe61468b2cb (sched/fair: Fix enqueue_task_fair warning)
-did not fully resolve the issues with the rq->tmp_alone_branch !=
-&rq->leaf_cfs_rq_list warning in enqueue_task_fair. There is a case where
-the first for_each_sched_entity loop exits due to on_rq, having incompletely
-updated the list.  In this case the second for_each_sched_entity loop can
-further modify se. The later code to fix up the list management fails to do
-what is needed because se no longer points to the sched_entity which broke
-out of the first loop.
-
-Address this by calling list_add_leaf_cfs_rq if there are throttled
-parents while doing the second for_each_sched_entity loop.
-
-Fixes: fe61468b2cb (sched/fair: Fix enqueue_task_fair warning)
-Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Phil Auld <pauld@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Link: https://lkml.kernel.org/r/20200507203612.GF19331@lorien.usersys.redhat.com
----
- kernel/sched/fair.c |    7 +++++++
- 1 file changed, 7 insertions(+)
-
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5479,6 +5479,13 @@ enqueue_task_fair(struct rq *rq, struct
- 		/* end evaluation on encountering a throttled cfs_rq */
- 		if (cfs_rq_throttled(cfs_rq))
- 			goto enqueue_throttle;
-+
-+               /*
-+                * One parent has been throttled and cfs_rq removed from the
-+                * list. Add it back to not break the leaf list.
-+                */
-+               if (throttled_hierarchy(cfs_rq))
-+                       list_add_leaf_cfs_rq(cfs_rq);
- 	}
- 
- enqueue_throttle:
+Blergh.. so much for me not taking the time to dig out the arm64 cross
+compiler :/ Sorry about that.
