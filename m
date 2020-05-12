@@ -2,143 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4917D1CF942
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7DA1CF94A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730724AbgELPdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 11:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
+        id S1730765AbgELPeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 11:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgELPda (ORCPT
+        with ESMTP id S1726891AbgELPeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 11:33:30 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83BECC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:33:30 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id j21so14482062qtq.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:33:30 -0700 (PDT)
+        Tue, 12 May 2020 11:34:22 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66200C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:34:22 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id e6so9556542pjt.4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:34:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=A/fbgfde0XyUO2F69Y6u/rjH6iJE5L1jOqri/XRSNJ0=;
-        b=OiYty1LLPBdF9b+KHB2sQJZthi1uyyrFmJ6OMV73nN6Q4lo54stAQRQor8jfW6sCTc
-         Jheo5t2EO42la+M4i9sc+hkE2rA0GvVjYQW+u2Ro5JHiTuqnwlRxa48GOgySDwPYN2pO
-         0um6Tqg+blJsLtI3JQoZagq1/RzZUhQJAtGJAw7FaMgUayoENLooHv95+lY4HSRXOoaB
-         4NZri7zOA151tsPJXto8ruKSn0FfIwd4lE/J99eya7bghAXMNfVgwJ5LmfYGuJwZ3S6f
-         wRNrqXxmmplHDmwdfu1lTsk4RudKLZ4YASyfO+XQqb0GZy+W3yaEpGVRM++vy/lP64E4
-         ossg==
+        bh=S1nGYbQQUmvuJU/OQ0QH/3SmFbvxo3s8FBGQi1+ShN0=;
+        b=JhRgWIyGDLGDgVyj026NrKDvn6dkTCd+VU8mrYizgnc2WSuuh0KpIX2YDQFjoGLhrS
+         ZVYeOZ5ffD+ZChhzZUQkkYPazdKadKg4uqhWA8a4VoAH9bI69Ar1hoePsH567m87/L4J
+         bxIvjQWufessKMrKot/IlfwZ/AwsJ0mo3QyMw70GBO3RVxIWAY9xdVh2um3imALaO2PQ
+         3F97ygOyuEiXg46fHynVzEe1INWAM0MNHlcpmgH0sMbthqGtsMuxGeiq0g9q8GZZQvpM
+         xIeBJG6EbmtCeLTn1ucAXafQGlZaB71i2FUDvRoSvbuSZICBzLtn4GTL7Paow3nMLNQw
+         yIxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=A/fbgfde0XyUO2F69Y6u/rjH6iJE5L1jOqri/XRSNJ0=;
-        b=uIaQlpWgxYlhIF+2xiLfbGQtXKrmj858tSKV5NWwJwAsRYUg4bMVdN2AE+T1gUReSz
-         UqgQybTBpdwkJcx2uilHJ4xAGzkQ56a/eAYNKYkDREEcUs48YxP4gBXAooBwZhceDf5c
-         02YEsVe4nBerCdeyCUu+9DL6h17lJ7lLG8x+qF6/RmZ5E/Tt7y2zxXmcaZlLcL3cgxbn
-         iAya6TM8/Cvgt5tOY8NoJvnCTYHSP2aTSxQ4zxqHjxLl6yKAjwYX8loppnPbHcTplBoZ
-         bBOm+1GzNrm5CLvPR0cjGuCdgeUYiEQI748vnQn8QG6eezJxqtV36h/ehkWu1QvBSUMB
-         IA7w==
-X-Gm-Message-State: AGi0PuYFLu6XFmg+Lmmov/zpIPErkgtYLpC1PYqVJL6EZMyhb6p2stT9
-        xKC5/YpLgDPK8jy9bYv8nzm0wkpimN/SnfwS
-X-Google-Smtp-Source: APiQypIERxlPnFV/TJVvio2/Q0FI1L3ad5PuT996yCjeBj3CqaKpCQfb+sN8sSbhvhX0uf7wDrrwnvfEFDCph/jL
-X-Received: by 2002:a05:6214:1812:: with SMTP id o18mr21635775qvw.64.1589297609674;
- Tue, 12 May 2020 08:33:29 -0700 (PDT)
-Date:   Tue, 12 May 2020 17:33:21 +0200
-In-Reply-To: <29bd753d5ff5596425905b0b07f51153e2345cc1.1589297433.git.andreyknvl@google.com>
-Message-Id: <45b445a76a79208918f0cc44bfabebaea909b54d.1589297433.git.andreyknvl@google.com>
-Mime-Version: 1.0
-References: <29bd753d5ff5596425905b0b07f51153e2345cc1.1589297433.git.andreyknvl@google.com>
-X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
-Subject: [PATCH 3/3] kasan: add missing functions declarations to kasan.h
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S1nGYbQQUmvuJU/OQ0QH/3SmFbvxo3s8FBGQi1+ShN0=;
+        b=Wc6TAeb9w1MhsUBW96DRRVdNYXYsvMgdYRIYQZQhEZ9JK26pO4vbb4QBtsSDOy2OGf
+         ZDevHz4nR/mxXfSgIUgrXgTXXmadE8cVOnYeYYH78tt0lsaLoe1iZWaUaMmu9pmPEdfz
+         T560XcK2ZGiIAwHt+35ffWXqmh6XqPLza/lqa1HD4oS7I8XiK7k/0EvZINTaO+fWJA+z
+         3cdBFy/7x35scgrkrSVFaxIH9ONxe9n2MAjJewyJfOfUuWc8Xl190vWMrUeDnoEamRVA
+         xUzJJkyS8XCUrNnkjU9djxO+pl9rMiY6bTVm2jqgo6FazgFxaMbIZ4SvbG1PY7vs9eJJ
+         OK+Q==
+X-Gm-Message-State: AGi0Pubp4AB026N67ihdqrWmJbfYzVl86mfmQZvni90bvV/Cya2TH4ax
+        AvibmJGj0dEXE+/pZGj/fki9FAtZrYBFxW+3CnIEyw==
+X-Google-Smtp-Source: APiQypK7/bKHf1kUJGGT+0rp9NRHuxwfhfT/LmdCu+FeC9iSpuFycx5/OjmLZJ4ijBHilmyuUebshEcCuTnSMQIolWQ=
+X-Received: by 2002:a17:90a:dc01:: with SMTP id i1mr27443683pjv.166.1589297661687;
+ Tue, 12 May 2020 08:34:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200512063728.17785-1-leon@kernel.org>
+In-Reply-To: <20200512063728.17785-1-leon@kernel.org>
 From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+Date:   Tue, 12 May 2020 17:34:10 +0200
+Message-ID: <CAAeHK+zFDoykmS3KD88hD3S8R09n064c7n1gLDurMr0KOhte5A@mail.gmail.com>
+Subject: Re: [PATCH rdma-next 0/2] Fix kasan compilation warnings
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <adech.fo@gmail.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
         Leon Romanovsky <leonro@mellanox.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Leon Romanovsky <leon@kernel.org>
+        Ingo Molnar <mingo@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Michal Marek <mmarek@suse.cz>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KASAN is currently missing declarations for __asan_report* and
-__hwasan* functions. This can lead to compiler warnings.
+On Tue, May 12, 2020 at 8:37 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> From: Leon Romanovsky <leonro@mellanox.com>
+>
+> Hi,
+>
+> The following two fixes are adding missing function prototypes
+> declarations to internal kasan header in order to eliminate compilation
+> warnings.
+>
+> Thanks
+>
+> Leon Romanovsky (2):
+>   kasan: fix compilation warnings due to missing function prototypes
+>   kasan: add missing prototypes to fix compilation warnings
 
-Reported-by: Leon Romanovsky <leon@kernel.org>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- mm/kasan/kasan.h | 34 ++++++++++++++++++++++++++++++++--
- 1 file changed, 32 insertions(+), 2 deletions(-)
+Hi Leon,
 
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index e8f37199d885..cfade6413528 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -212,8 +212,6 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
- asmlinkage void kasan_unpoison_task_stack_below(const void *watermark);
- void __asan_register_globals(struct kasan_global *globals, size_t size);
- void __asan_unregister_globals(struct kasan_global *globals, size_t size);
--void __asan_loadN(unsigned long addr, size_t size);
--void __asan_storeN(unsigned long addr, size_t size);
- void __asan_handle_no_return(void);
- void __asan_alloca_poison(unsigned long addr, size_t size);
- void __asan_allocas_unpoison(const void *stack_top, const void *stack_bottom);
-@@ -228,6 +226,8 @@ void __asan_load8(unsigned long addr);
- void __asan_store8(unsigned long addr);
- void __asan_load16(unsigned long addr);
- void __asan_store16(unsigned long addr);
-+void __asan_loadN(unsigned long addr, size_t size);
-+void __asan_storeN(unsigned long addr, size_t size);
- 
- void __asan_load1_noabort(unsigned long addr);
- void __asan_store1_noabort(unsigned long addr);
-@@ -239,6 +239,21 @@ void __asan_load8_noabort(unsigned long addr);
- void __asan_store8_noabort(unsigned long addr);
- void __asan_load16_noabort(unsigned long addr);
- void __asan_store16_noabort(unsigned long addr);
-+void __asan_loadN_noabort(unsigned long addr, size_t size);
-+void __asan_storeN_noabort(unsigned long addr, size_t size);
-+
-+void __asan_report_load1_noabort(unsigned long addr);
-+void __asan_report_store1_noabort(unsigned long addr);
-+void __asan_report_load2_noabort(unsigned long addr);
-+void __asan_report_store2_noabort(unsigned long addr);
-+void __asan_report_load4_noabort(unsigned long addr);
-+void __asan_report_store4_noabort(unsigned long addr);
-+void __asan_report_load8_noabort(unsigned long addr);
-+void __asan_report_store8_noabort(unsigned long addr);
-+void __asan_report_load16_noabort(unsigned long addr);
-+void __asan_report_store16_noabort(unsigned long addr);
-+void __asan_report_load_n_noabort(unsigned long addr, size_t size);
-+void __asan_report_store_n_noabort(unsigned long addr, size_t size);
- 
- void __asan_set_shadow_00(const void *addr, size_t size);
- void __asan_set_shadow_f1(const void *addr, size_t size);
-@@ -247,4 +262,19 @@ void __asan_set_shadow_f3(const void *addr, size_t size);
- void __asan_set_shadow_f5(const void *addr, size_t size);
- void __asan_set_shadow_f8(const void *addr, size_t size);
- 
-+void __hwasan_load1_noabort(unsigned long addr);
-+void __hwasan_store1_noabort(unsigned long addr);
-+void __hwasan_load2_noabort(unsigned long addr);
-+void __hwasan_store2_noabort(unsigned long addr);
-+void __hwasan_load4_noabort(unsigned long addr);
-+void __hwasan_store4_noabort(unsigned long addr);
-+void __hwasan_load8_noabort(unsigned long addr);
-+void __hwasan_store8_noabort(unsigned long addr);
-+void __hwasan_load16_noabort(unsigned long addr);
-+void __hwasan_store16_noabort(unsigned long addr);
-+void __hwasan_loadN_noabort(unsigned long addr, size_t size);
-+void __hwasan_storeN_noabort(unsigned long addr, size_t size);
-+
-+void __hwasan_tag_memory(unsigned long addr, u8 tag, unsigned long size);
-+
- #endif
--- 
-2.26.2.645.ge9eca65c58-goog
+I've mailed a series with slightly different/fuller fixes for these issues.
 
+Thanks for the report!
+
+>
+>  mm/kasan/common.c |  3 ---
+>  mm/kasan/kasan.h  | 15 +++++++++++++++
+>  2 files changed, 15 insertions(+), 3 deletions(-)
+>
+> --
+> 2.26.2
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20200512063728.17785-1-leon%40kernel.org.
