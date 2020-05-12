@@ -2,152 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8A21CEA31
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 03:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 252141CEA39
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 03:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728504AbgELBlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 21:41:52 -0400
-Received: from mga12.intel.com ([192.55.52.136]:9229 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726415AbgELBlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 21:41:51 -0400
-IronPort-SDR: exlohjUI850FVKrEPwdfA9SVXRUXE/iIcjK6epf52DKSSyvsiQ3lSowllvIdR1m/2Ya/eDOkGL
- RlVpMKP49jdg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 18:41:51 -0700
-IronPort-SDR: wnh2eKpbeDdDj9ggrOoM0lv7opNBNP7149lSboourFsKOItRoVF61HxP51QwoBbiI+wsxPro+z
- tyl2wAZaleog==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,381,1583222400"; 
-   d="scan'208";a="463593457"
-Received: from schittir-mobl.amr.corp.intel.com (HELO ellie) ([10.212.37.169])
-  by fmsmga006.fm.intel.com with ESMTP; 11 May 2020 18:41:49 -0700
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
-        xiaoliang.yang_1@nxp.com, po.liu@nxp.com, claudiu.manoil@nxp.com,
-        alexandru.marginean@nxp.com, vladimir.oltean@nxp.com,
-        leoyang.li@nxp.com, mingkai.hu@nxp.com, andrew@lunn.ch,
-        f.fainelli@gmail.com, vivien.didelot@gmail.com,
-        davem@davemloft.net, jiri@resnulli.us, idosch@idosch.org,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, horatiu.vultur@microchip.com,
-        alexandre.belloni@bootlin.com, allan.nielsen@microchip.com,
-        joergen.andreasen@microchip.com, UNGLinuxDriver@microchip.com,
-        nikolay@cumulusnetworks.com, roopa@cumulusnetworks.com,
-        linux-devel@linux.nxdi.nxp.com
-Subject: Re: [PATCH v1 net-next 3/3] net: dsa: felix: add support Credit Based Shaper(CBS) for hardware offload
-In-Reply-To: <20200511054332.37690-4-xiaoliang.yang_1@nxp.com>
-References: <20200511054332.37690-1-xiaoliang.yang_1@nxp.com> <20200511054332.37690-4-xiaoliang.yang_1@nxp.com>
-Date:   Mon, 11 May 2020 18:41:49 -0700
-Message-ID: <873686rkte.fsf@intel.com>
+        id S1728508AbgELBpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 21:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726874AbgELBpQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 21:45:16 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BD2C05BD09
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 18:45:15 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id u35so2419786pgk.6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 18:45:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EzSvlPNDgC8QL7k10YiJ3iEGWBUqaT/TcSlvZ5anIbI=;
+        b=Z1GpKQFF7AJRwxu45DBLZusPUf9VrAZH9t36YQCR9/bdtM/LwWvR0hmpxb5eChwkxr
+         ZYPpknWrHs4x0/fy/4PVbHVu12DzYD8T0uT6V7WT6w+nvKNM1MFUgKiBJ/Il4FkqjlCX
+         9vHCpt6s1AFL5sEcyRKUONVy8e4zPif8so9I5Y2YSsVKojAOlhM4maBJvqvSy3ZUR5t5
+         2jPEFETY8XL3FR6C+5gG01ynTgmOSLxKlzO9B0s8PcKEm+s9ZS69yY+VN6DytgTF01NA
+         fCmovQ5o9DCOOJGJl8r7+EGAGOhFtKmdk/yWM3TqrgMUm+yRyAPsqmUWgrjKJgMAlGfW
+         Rweg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EzSvlPNDgC8QL7k10YiJ3iEGWBUqaT/TcSlvZ5anIbI=;
+        b=E7+0M0pReHSriOhxnIgZFw3zQIRDDkG1deAdI/8LtSP4tO0RxwryEVuKLYc/nlQ2Lf
+         hKi43NoYyiNqJMn/kExEGPQEQ0hrEY549kSJGuMluf9mO5BRJDYEEpyXEXWCuRVnq2tl
+         yYL53BEPEQk/s8RPh8OzSECKIqFf9vRuQSWNaHTGUigyONTVkYDHOtP3/rDG+NarX+Pw
+         Cz3nnykS7TlSfsEAX/5OlHU8gbhaF2V3B3QvyLPRS1Kok1EkVjNTfBKHqX60rLo3Pd2l
+         4xZKZBmMybdDJ4VwkkpebIgtzxekqKPTj5nwX2r0v8HTVYCQHPw6xZiXCq8uPGX38rII
+         K3lw==
+X-Gm-Message-State: AGi0PubMhZ8HjiT4neuOtrm/On93u1Lp2VsqmJ3u2gDRWg5sg54CHpjI
+        I6l0PHoyIlpbM70DTiE++KB5/w==
+X-Google-Smtp-Source: APiQypJsZ7ZIXhfW5xJ/S5w9zLmhRM6eJ1H7SWozJ4hVlmFcnAYBLrV/n7xK+cO90AVmYEBQp8f+Mw==
+X-Received: by 2002:aa7:9802:: with SMTP id e2mr18728502pfl.213.1589247913730;
+        Mon, 11 May 2020 18:45:13 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id z66sm520869pfz.141.2020.05.11.18.45.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 18:45:13 -0700 (PDT)
+Date:   Mon, 11 May 2020 18:43:39 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     agross@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, nishakumari@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org,
+        rnayak@codeaurora.org
+Subject: Re: [v2 1/4] dt-bindings: regulator: Add labibb regulator
+Message-ID: <20200512014339.GE57962@builder.lan>
+References: <20200508204200.13481-1-sumit.semwal@linaro.org>
+ <20200508204200.13481-2-sumit.semwal@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508204200.13481-2-sumit.semwal@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xiaoliang Yang <xiaoliang.yang_1@nxp.com> writes:
+On Fri 08 May 13:41 PDT 2020, Sumit Semwal wrote:
 
-> VSC9959 hardware support the Credit Based Shaper(CBS) which part
-> of the IEEE-802.1Qav. This patch support sch_cbs set for VSC9959.
->
-> Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+> From: Nisha Kumari <nishakumari@codeaurora.org>
+> 
+> Adding the devicetree binding for labibb regulator.
+> 
+> Signed-off-by: Nisha Kumari <nishakumari@codeaurora.org>
+> Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
+
+Sorry, I missed this when we talked about it. But please rewrite this in
+yaml.
+
+> 
+> --
+> v2: updated for better compatible string and names.
 > ---
->  drivers/net/dsa/ocelot/felix_vsc9959.c | 52 +++++++++++++++++++++++++-
->  1 file changed, 51 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
-> index ccbd875c7a47..d8d1657ee8ba 100644
-> --- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-> +++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-> @@ -208,7 +208,7 @@ static const u32 vsc9959_qsys_regmap[] = {
->  	REG(QSYS_QMAXSDU_CFG_6,			0x00f62c),
->  	REG(QSYS_QMAXSDU_CFG_7,			0x00f648),
->  	REG(QSYS_PREEMPTION_CFG,		0x00f664),
-> -	REG_RESERVED(QSYS_CIR_CFG),
-> +	REG(QSYS_CIR_CFG,			0x000000),
->  	REG(QSYS_EIR_CFG,			0x000004),
->  	REG(QSYS_SE_CFG,			0x000008),
->  	REG(QSYS_SE_DWRR_CFG,			0x00000c),
-> @@ -1354,6 +1354,54 @@ static int vsc9959_qos_port_tas_set(struct ocelot *ocelot, int port,
->  	return ret;
->  }
->  
-> +int vsc9959_qos_port_cbs_set(struct dsa_switch *ds, int port,
-> +			     struct tc_cbs_qopt_offload *cbs_qopt)
-> +{
-> +	struct ocelot *ocelot = ds->priv;
-> +	int port_ix = port * 8 + cbs_qopt->queue;
-> +	u32 cbs = 0;
-> +	u32 cir = 0;
+>  .../regulator/qcom-labibb-regulator.txt       | 47 +++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.txt b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.txt
+> new file mode 100644
+> index 000000000000..6e639d69f780
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.txt
+> @@ -0,0 +1,47 @@
+> +Qualcomm's LAB(LCD AMOLED Boost)/IBB(Inverting Buck Boost) Regulator
 > +
-> +	if (cbs_qopt->queue >= ds->num_tx_queues)
-> +		return -EINVAL;
+> +LAB can be used as a positive boost power supply and IBB can be used as a negative
+> +boost power supply for display panels. Currently implemented for pmi8998.
 > +
-> +	if (!cbs_qopt->enable) {
-> +		ocelot_write_gix(ocelot, QSYS_CIR_CFG_CIR_RATE(0) |
-> +				 QSYS_CIR_CFG_CIR_BURST(0),
-> +				 QSYS_CIR_CFG, port_ix);
+> +Main node required properties:
 > +
-> +		ocelot_rmw_gix(ocelot, 0, QSYS_SE_CFG_SE_AVB_ENA,
-> +			       QSYS_SE_CFG, port_ix);
-> +
-> +		return 0;
-> +	}
-> +
-> +	/* Rate unit is 100 kbps */
-> +	cir = DIV_ROUND_UP(cbs_qopt->idleslope, 100);
-> +	cir = (cir ? cir : 1);
-> +	cir = min_t(u32, GENMASK(14, 0), cir);
+> +- compatible:			Must be:
+> +				"qcom,pmi8998-lab-ibb"
+> +- #address-cells:		Must be 1
+> +- #size-cells:			Must be 0
 
-Please rename 'cir' to "rate" or "idleslope".
+But the children doesn't have reg properties...
 
-Also consider using clamp_t here and below (I just found out about it).
-
-> +	/* Burst unit is 4kB */
-> +	cbs = DIV_ROUND_UP(cbs_qopt->hicredit, 4096);
-> +	/* Avoid using zero burst size */
-> +	cbs = (cbs ? cbs : 1);
-> +	cbs = min_t(u32, GENMASK(5, 0), cbs);
-
-And please(!) rename 'cbs' to "burst" or "hicredit". Re-using the name
-"cbs" with a completely different meaning here is confusing.
-
-> +	ocelot_write_gix(ocelot,
-> +			 QSYS_CIR_CFG_CIR_RATE(cir) |
-> +			 QSYS_CIR_CFG_CIR_BURST(cbs),
-> +			 QSYS_CIR_CFG,
-> +			 port_ix);
 > +
-> +	ocelot_rmw_gix(ocelot,
-> +		       QSYS_SE_CFG_SE_FRM_MODE(0) |
-> +		       QSYS_SE_CFG_SE_AVB_ENA,
-> +		       QSYS_SE_CFG_SE_AVB_ENA |
-> +		       QSYS_SE_CFG_SE_FRM_MODE_M,
-> +		       QSYS_SE_CFG,
-> +		       port_ix);
+> +LAB subnode required properties:
 > +
-> +	return 0;
-> +}
+> +- interrupts:			Specify the interrupts as per the interrupt
+> +				encoding.
+> +- interrupt-names:		Interrupt names to match up 1-to-1 with
+> +				the interrupts specified in 'interrupts'
+> +				property.
+
+Do specify the expected string (and given that you already have the
+lab & ibb subnodes, you don't need to include this in the string).
+
+Regards,
+Bjorn
+
 > +
->  static int vsc9959_port_setup_tc(struct dsa_switch *ds, int port,
->  				 enum tc_setup_type type,
->  				 void *type_data)
-> @@ -1363,6 +1411,8 @@ static int vsc9959_port_setup_tc(struct dsa_switch *ds, int port,
->  	switch (type) {
->  	case TC_SETUP_QDISC_TAPRIO:
->  		return vsc9959_qos_port_tas_set(ocelot, port, type_data);
-> +	case TC_SETUP_QDISC_CBS:
-> +		return vsc9959_qos_port_cbs_set(ds, port, type_data);
->  	default:
->  		return -EOPNOTSUPP;
->  	}
+> +IBB subnode required properties:
+> +
+> +- interrupts:			Specify the interrupts as per the interrupt
+> +				encoding.
+> +- interrupt-names:		Interrupt names to match up 1-to-1 with
+> +				the interrupts specified in 'interrupts'
+> +				property.
+> +
+> +Example:
+> +	pmi8998_lsid1: pmic@3 {
+> +		labibb {
+> +			compatible = "qcom,pmi8998-lab-ibb";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			lab: lab {
+> +				interrupts = <0x3 0xde 0x0 IRQ_TYPE_EDGE_RISING>;
+> +				interrupt-names = "lab-sc-err";
+> +			};
+> +
+> +			ibb: ibb {
+> +				interrupts = <0x3 0xdc 0x2 IRQ_TYPE_EDGE_RISING>;
+> +				interrupt-names = "ibb-sc-err";
+> +			};
+> +
+> +		};
+> +	};
 > -- 
-> 2.17.1
->
-
--- 
-Vinicius
+> 2.26.2
+> 
