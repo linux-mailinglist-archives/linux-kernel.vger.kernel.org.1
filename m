@@ -2,155 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6851CEB24
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 05:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C00431CEB22
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 05:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728617AbgELDJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 23:09:48 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:25765 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728110AbgELDJs (ORCPT
+        id S1728575AbgELDJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 23:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728115AbgELDJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 23:09:48 -0400
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 04C39X8H032485
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 12:09:33 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 04C39X8H032485
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1589252974;
-        bh=rA8J4h8s7FTnqZbQ11ES1S2G/1hnGX0Gtq+vp70wCsE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WVU1N2PZsDU6eMWru2/F5a2gQNjpq1p7Wta+H6Hz28U0UMed8O0xuxcMwVA8FBFDW
-         49erQ6JSaW6zbVST33S10tK25KAumY6gvvyZsg6DvHS1va1pzGIkUg1eEzEFSJ+PEk
-         qnCv9KqFjmHV/dQnbEuCIf9kIfqiG4E+zwi0U5Rfs9Pq/XfKPb6o5JGXCdDs8W9Spd
-         KmB7pSMGLLT/8qyr2rCjSVKhYl7Ff/OhcpJxGmGvVTaa0SQKn2sTQbzI0nXj0pqZ/C
-         J76j2e8GeHNcxQJKpPrkF+j0kOK7ySOa0y/quEoO8fWtjmPyXnvvsfpD4UR8c5qMLb
-         bDGj2FKKJ+CIg==
-X-Nifty-SrcIP: [209.85.221.182]
-Received: by mail-vk1-f182.google.com with SMTP id j127so2936341vke.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 20:09:33 -0700 (PDT)
-X-Gm-Message-State: AGi0PubXh7j5K/gfkyTRVB2gmftKpi2t+3Vp/iWNo7ma9p6gDIRC2ftd
-        OF6TTxCAoZ5Pm8whkmoWVvjtduope9WL8Sj1QcM=
-X-Google-Smtp-Source: APiQypIsHzbW3//5XymjHuAku6kajN66DWqQK4B5LMsnOCveflW3gGJLLqS2Vh/U3G8N4egyYqO02bB4w6BDiAdZEH8=
-X-Received: by 2002:a1f:c443:: with SMTP id u64mr12700259vkf.26.1589252972453;
- Mon, 11 May 2020 20:09:32 -0700 (PDT)
+        Mon, 11 May 2020 23:09:09 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA14C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 20:09:09 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id w7so13480113wre.13
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 20:09:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=/f5FL1X1JNjKC8X7IV1LVF/oUqEdfaWNE8EPlcXSEkg=;
+        b=evN85VA8D+wR2TvJ0jMGOae/gPelGw1KwQsM96BscXK0lsd1EsDWylWQ2am2xaZuRO
+         bno38GnZDaavp/I7vQe0nvCvr7AWmIjC/JtC9Tq6yq8Bpx4EG31K2vnobIRPQidr/zwc
+         TbbR3bBs2zstjy4dGFde9hoxNwOi+gA10SnIDqiHq4WkgsjroBIo+sNFTwUK3arfiXwP
+         Xxih+zaUQ6X+6JLUk9v7gEUZHFMZO2urXgIaZHPLXpFDI5f4w8RsI7S1rFuTp4s1KzqV
+         5s9ASXsTmYla99MlwKH7Xud0K6JmCuEbGglzcN63iQESPX3z+JM9+vAzkWUBeAI024qN
+         akfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=/f5FL1X1JNjKC8X7IV1LVF/oUqEdfaWNE8EPlcXSEkg=;
+        b=pdIX6RQOC2jgmStszl31Tp0AlTH14KaPtQB2Nkg+F7EGbp4JSZlh2nVPCH/mHriPEd
+         m5TUPpDpYcf3ATf0xmW229KBNWHyyBnZq8Mbly17s7VwpLYCI64aLLZqlycMQls8YytS
+         0baPBcWvzOcda6n9g5AvvEWLDmavA6ULc/RjNOghhZo3CM1w0hYNbxOEZVKnPB4oufuF
+         nckqnn4hEDe2Ki4UUMI3ThNd3O5aFgM4pwkg0AY1fsQJ3B3tHvW43k4hlSAuuIXgKbRw
+         CeyQXzzXz68+dgR461+ig2Dju7m01VnwMbs4fkj4tQXq+UBuGWXq+tiVAR96y+HYmdiA
+         wu0w==
+X-Gm-Message-State: AGi0PuYDXlBesbFYY/LOsvcP4muq8ytCAtQOavdGvP1vCMejO05m7Mn5
+        BUuysDSgFkqLAoA/ZUqY/zqaHc5vhX6WUR6/bp4=
+X-Google-Smtp-Source: APiQypK20PbVvsLSQ7oDpGi3R5GD8i5vto20jQdgtt/bUUQRRVOED/OF96WxCWcUBVlNAAHHXcIUxLwzljl4iSsxATg=
+X-Received: by 2002:adf:ed8d:: with SMTP id c13mr22777835wro.154.1589252947917;
+ Mon, 11 May 2020 20:09:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200428070614.GB992660@kroah.com> <20200502052619.26457-1-xujialu@vimux.org>
- <20200502052619.26457-3-xujialu@vimux.org>
-In-Reply-To: <20200502052619.26457-3-xujialu@vimux.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 12 May 2020 12:08:56 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR1zbFxpPkWi4BMtQSAJs4zNa1QBfzVeu=NnJy-RjNfbA@mail.gmail.com>
-Message-ID: <CAK7LNAR1zbFxpPkWi4BMtQSAJs4zNa1QBfzVeu=NnJy-RjNfbA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] scripts: Add a intermediate file for 'make gtags'
-To:     xujialu <xujialu@vimux.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reply-To: abd747591@gmail.com
+Received: by 2002:a5d:40ca:0:0:0:0:0 with HTTP; Mon, 11 May 2020 20:09:07
+ -0700 (PDT)
+From:   Mr Abd Manaf <abdmanaf2002@gmail.com>
+Date:   Tue, 12 May 2020 04:09:07 +0100
+X-Google-Sender-Auth: 3-9Jcr4I1_PW0GMo1HQnkTCxRn4
+Message-ID: <CAJDZiB8s_vGhG-zfZjXRPHzvMUagQM4YPyEMkewSPzZtzTuJmg@mail.gmail.com>
+Subject: Good Morning!
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 2, 2020 at 2:34 PM xujialu <xujialu@vimux.org> wrote:
->
-> As 'GTAGS Manual' said: If =C2=B4gtags.files=C2=B4 exists in the current =
-directory
-> directory or a file is specified by the -f option, target files are
-> limited by it.
->
-> So add gtags.files just like cscope.files.
->
-> Signed-off-by: xujialu <xujialu@vimux.org>
-> ---
->  Makefile        | 2 +-
->  scripts/tags.sh | 3 ++-
->  2 files changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index 679f302a8b8b..2c8304ae103f 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1398,7 +1398,7 @@ MRPROPER_FILES +=3D .config .config.old .version \
->
->  # Directories & files removed with 'make distclean'
->  DISTCLEAN_DIRS  +=3D
-> -DISTCLEAN_FILES +=3D tags TAGS cscope* GPATH GTAGS GRTAGS GSYMS
-> +DISTCLEAN_FILES +=3D tags TAGS cscope* GPATH GTAGS GRTAGS GSYMS gtags.fi=
-les
->
->  # clean - Delete most, but leave enough to build external modules
->  #
-> diff --git a/scripts/tags.sh b/scripts/tags.sh
-> index 941a5c61d343..e2edd0cf67ec 100755
-> --- a/scripts/tags.sh
-> +++ b/scripts/tags.sh
-> @@ -142,7 +142,8 @@ docscope()
->
->  dogtags()
->  {
-> -       all_target_sources | gtags -i -f -
-> +       all_target_sources > gtags.files
-> +       gtags -i -f gtags.files
->  }
+Dear Sir/Madam.
 
-My previous reply was not sent to the list.
+I am, MR.Abd Manaf,I have (15.5 M Dollars) to transfer into your
+account, I will send you more details about this deal and the
+procedures to follow when I receive a positive response from you,
 
-Here is the summary of my view.
-
-
-
-With my basic knowledge of UNIX
-such as the concept of pipe, redirect, etc.,
-the following two commands should do the same work.
-
-
-[1] { echo file lists; }  |  gtags  -f  -
-
-[2] { echo file lists; }  > tmpfile
-    gtags -f  tmpfile
-
-
-
-
-
-The gtags manual also says:
--f, --file file
-       Give  a  list of candidates of target files.
-       Files which are not on the list are ignored.
-       The argument file can be set to =C2=B4-=C2=B4 to accept
-       a list of files from the standard input.
-
-
-
-This patch looks no point to me.
-
-
-
-
-As for the cscope.files, we had a reason to have it separately.
-
-
-This commit:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/history/history.git/commit/=
-?id=3D3cd681bae4360e2f67ef9b232db28e13319f1c17
-
-
-And, the bug was elaborated here:
-
-https://bugzilla.kernel.org/show_bug.cgi?id=3D1948
-
-
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+Yours Sincerely,
