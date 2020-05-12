@@ -2,62 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0071CEF8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 10:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C41771CEF96
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 10:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729263AbgELIxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 04:53:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40914 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726067AbgELIxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 04:53:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 05E73ABC7;
-        Tue, 12 May 2020 08:53:52 +0000 (UTC)
-From:   Andreas Schwab <schwab@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] RISC-V Fixes for 5.7-rc5
-References: <mhng-81c83c19-6f5d-4ed1-a0bb-26accf4b7d3a@palmerdabbelt-glaptop1>
-        <CAHk-=win0EVU_GuO=GuJu3Ck0WG1B3+ub-CjncM3B1G9x5d9cw@mail.gmail.com>
-        <mvmr1vqkhxb.fsf@suse.de>
-        <CAHk-=wj8Cks7L2H9ToNWEMmqECYEfX0uyCXpW1OsZ+NAooi2Cw@mail.gmail.com>
-X-Yow:  Two LITTLE black dots and one BIG black dot...nice 'n' FLUFFY!!
-Date:   Tue, 12 May 2020 10:53:49 +0200
-In-Reply-To: <CAHk-=wj8Cks7L2H9ToNWEMmqECYEfX0uyCXpW1OsZ+NAooi2Cw@mail.gmail.com>
-        (Linus Torvalds's message of "Mon, 11 May 2020 12:04:09 -0700")
-Message-ID: <mvmftc5jzz6.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.0.91 (gnu/linux)
+        id S1729312AbgELIyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 04:54:20 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:21280 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729267AbgELIyT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 04:54:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589273659; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=4myBv0Eb7CjTFQWgbEm87difECtLoTIZZdLheI+zz60=;
+ b=mZQpOwVEddvl1YivjyKSt22Kv/Ng93zZc83lva6gZ0EGVt7mE47xK2EInyLEIlsKOHMBrlNF
+ S379gWa0dx5xhV5b2Sx7+Yx7vKi2amYE02gLdZ8qminkkM+orcFF+o8Ore3Zl+eG+5NclfGe
+ /Yad0JOWONeb2aMV7GUkRZWXQ8k=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eba6429.7f5a33950fb8-smtp-out-n05;
+ Tue, 12 May 2020 08:54:01 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B5FC6C44788; Tue, 12 May 2020 08:54:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6B1F5C433CB;
+        Tue, 12 May 2020 08:53:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6B1F5C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] b43: remove dead function b43_rssinoise_postprocess()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200507110741.37757-1-yanaijie@huawei.com>
+References: <20200507110741.37757-1-yanaijie@huawei.com>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     <davem@davemloft.net>, <tglx@linutronix.de>,
+        <linux-wireless@vger.kernel.org>, <b43-dev@lists.infradead.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jason Yan <yanaijie@huawei.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200512085400.B5FC6C44788@smtp.codeaurora.org>
+Date:   Tue, 12 May 2020 08:54:00 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mai 11 2020, Linus Torvalds wrote:
+Jason Yan <yanaijie@huawei.com> wrote:
 
-> Why is glibc doing it in the first place? Is it some historical thing
-> that is simply irrelevant on RISC-V simply because RISC-V doesn't have
-> that kind of history, perhaps?
+> This function is dead for more than 10 years. Remove it.
+> 
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 
-It is completely generic.  Even new architectures become old over time
-and accumulate cruft.  The idea is that if you configure glibc with
---enable-kernel=VERSION, it assumes that all syscalls from kernel
-VERSION are guaranteed to exist, and drops the fallbacks for those
-syscalls, or uses them in the first place (if no useful fallback
-existed).  From time to time the absolute minimum supported kernel
-version is increased (this happend the last time in 2017, when x86 and
-x86_64 moved the mininum from 2.6.32 to 3.2, after all other
-architectures did that step in 2016), which allows removing the fallback
-code that becomes obsolete.
+Patch applied to wireless-drivers-next.git, thanks.
 
-Andreas.
+f2cd32a443da rndis_wlan: Remove logically dead code
 
 -- 
-Andreas Schwab, SUSE Labs, schwab@suse.de
-GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
-"And now for something completely different."
+https://patchwork.kernel.org/patch/11533111/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
