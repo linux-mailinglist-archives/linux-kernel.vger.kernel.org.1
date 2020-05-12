@@ -2,84 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6366B1CE97B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 02:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793701CE967
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 01:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728306AbgELAJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 20:09:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34718 "EHLO mx2.suse.de"
+        id S1728240AbgEKX7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 19:59:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbgELAJ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 20:09:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 4FB97AE9A;
-        Tue, 12 May 2020 00:09:27 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     akpm@linux-foundation.org
-Cc:     peterz@infradead.org, oleg@redhat.com, paulmck@kernel.org,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        dave@stgolabs.net, Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH 2/2] kernel/sys: do not grab tasklist_lock for sys_setpriority(PRIO_PROCESS)
-Date:   Mon, 11 May 2020 17:03:53 -0700
-Message-Id: <20200512000353.23653-3-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200512000353.23653-1-dave@stgolabs.net>
-References: <20200512000353.23653-1-dave@stgolabs.net>
+        id S1725836AbgEKX7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 19:59:31 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6201B206D9;
+        Mon, 11 May 2020 23:59:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589241571;
+        bh=L4VABxveNVwchcVUSQ8OFXctOzFp7NnpxV6moCUD/4g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N3bVDGDbFH/Rbi+0kBb+7UzrnBaamX1lgUkoutInS8GaF2gZW3Vl7ewU53K1oPLqh
+         8gfpDFqjG7M0Ls1fJt4M1Qahtf5duPUsXwKPNCFGH0BTIBsXKEdsg3y1+0sUd/Bk0U
+         zzPtXiieFlqX2ro7opKBhRAm6oMBB5EwWlSsOA0k=
+Date:   Mon, 11 May 2020 19:04:04 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Arnaldo Melo <arnaldo.melo@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH] perf tools: Replace zero-length array with flexible-array
+Message-ID: <20200512000404.GA4897@embeddedor>
+References: <20200511195643.GA9850@embeddedor>
+ <0C076F02-CEB7-4DBC-8337-CCEBC0870E44@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0C076F02-CEB7-4DBC-8337-CCEBC0870E44@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This option does not iterate the tasklist and we already have
-an rcu aware stable pointer. Also, the nice value is not serialized
-by this lock. Reduce the scope of this lock to just PRIO_PGRP
-and PRIO_USER - which need to to set the priorities atomically
-to the list of tasks, at least vs fork().
+On Mon, May 11, 2020 at 05:20:08PM -0300, Arnaldo Melo wrote:
+> 
+> Thanks, applied
+> 
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- kernel/sys.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+Thanks, Arnaldo. 
 
-diff --git a/kernel/sys.c b/kernel/sys.c
-index 0b72184f5e3e..f9f87775d6d2 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -214,16 +214,19 @@ SYSCALL_DEFINE3(setpriority, int, which, int, who, int, niceval)
- 		niceval = MAX_NICE;
- 
- 	rcu_read_lock();
--	read_lock(&tasklist_lock);
--	switch (which) {
--	case PRIO_PROCESS:
-+
-+	if (which == PRIO_PROCESS) {
- 		if (who)
- 			p = find_task_by_vpid(who);
- 		else
- 			p = current;
- 		if (p)
- 			error = set_one_prio(p, niceval, error);
--		break;
-+		goto out_rcu;
-+	}
-+
-+	read_lock(&tasklist_lock);
-+	switch (which) {
- 	case PRIO_PGRP:
- 		if (who)
- 			pgrp = find_vpid(who);
-@@ -253,6 +256,7 @@ SYSCALL_DEFINE3(setpriority, int, which, int, who, int, niceval)
- 	}
- out_unlock:
- 	read_unlock(&tasklist_lock);
-+out_rcu:
- 	rcu_read_unlock();
- out:
- 	return error;
--- 
-2.26.1
+I wonder if could also take the other two:
 
+https://lore.kernel.org/lkml/20200511200911.GA13149@embeddedor/
+https://lore.kernel.org/lkml/20200511201227.GA14041@embeddedor/
+
+--
+Gustavo
