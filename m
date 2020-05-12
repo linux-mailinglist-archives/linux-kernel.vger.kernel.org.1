@@ -2,66 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076D41CEA82
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 04:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169831CEA96
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 04:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728511AbgELCGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 22:06:22 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4335 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728452AbgELCGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 22:06:21 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id B9529A8BC8D1999137CE;
-        Tue, 12 May 2020 10:06:19 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 12 May 2020 10:06:13 +0800
-From:   Samuel Zou <zou_wei@huawei.com>
-To:     <ssantosh@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Samuel Zou <zou_wei@huawei.com>
-Subject: [PATCH -next] drivers: soc: ti: knav_qmss_queue: Make knav_gp_range_ops static
-Date:   Tue, 12 May 2020 10:12:20 +0800
-Message-ID: <1589249540-105611-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1728612AbgELCMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 22:12:41 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:34880 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727892AbgELCMl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 22:12:41 -0400
+X-IronPort-AV: E=Sophos;i="5.73,381,1583164800"; 
+   d="scan'208";a="91931189"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 12 May 2020 10:12:38 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id E26BF4BCC89B;
+        Tue, 12 May 2020 10:12:34 +0800 (CST)
+Received: from [10.167.220.69] (10.167.220.69) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Tue, 12 May 2020 10:12:35 +0800
+Message-ID: <5EBA0611.1070608@cn.fujitsu.com>
+Date:   Tue, 12 May 2020 10:12:33 +0800
+From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+To:     Xiao Yang <yangx.jy@cn.fujitsu.com>
+CC:     <linux-kernel@vger.kernel.org>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <acme@kernel.org>, <joe@perches.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2] tools/perf/util/*.c: Use "%zu" output format for size_t
+ type
+References: <20200226010818.8639-1-yangx.jy@cn.fujitsu.com>
+In-Reply-To: <20200226010818.8639-1-yangx.jy@cn.fujitsu.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.167.220.69]
+X-ClientProxiedBy: G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) To
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
+X-yoursite-MailScanner-ID: E26BF4BCC89B.AF650
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+Hi,
 
-drivers/soc/ti/knav_qmss_queue.c:412:23: warning: symbol 'knav_gp_range_ops' was not declared.
+Ping!
 
-The knav_acc_firmwares has only call site within knav_qmss_queue.c
-It should be static
+Thanks,
+Xiao Yang
+On 2020/2/26 9:08, Xiao Yang wrote:
+> Avoid the following errors when building perf on i386:
+> -----------------------------------------------
+> util/session.c: In function 'perf_session__process_compressed_event':
+> util/session.c:91:11: error: format '%ld' expects argument of type 'long int', but argument 4 has type 'size_t {aka unsigned int}' [-Werror=format=]
+>    pr_debug("decomp (B): %ld to %ld\n", src_size, decomp_size);
+> ...
+> til/zstd.c: In function 'zstd_decompress_stream':
+> util/zstd.c:102:11: error: format '%ld' expects argument of type 'long int', but argument 4 has type 'size_t {aka unsigned int}' [-Werror=format=]
+>      pr_err("failed to decompress (B): %ld ->  %ld, dst_size %ld : %s\n",
+> ...
+> -----------------------------------------------
+> 
+> Reported-by: kernel test robot<lkp@intel.com>
+> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
+> ---
+>   tools/perf/util/session.c | 2 +-
+>   tools/perf/util/zstd.c    | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> index d0d7d25b23e3..55c3d2fefd41 100644
+> --- a/tools/perf/util/session.c
+> +++ b/tools/perf/util/session.c
+> @@ -88,7 +88,7 @@ static int perf_session__process_compressed_event(struct perf_session *session,
+>   		session->decomp_last = decomp;
+>   	}
+> 
+> -	pr_debug("decomp (B): %ld to %ld\n", src_size, decomp_size);
+> +	pr_debug("decomp (B): %zu to %zu\n", src_size, decomp_size);
+> 
+>   	return 0;
+>   }
+> diff --git a/tools/perf/util/zstd.c b/tools/perf/util/zstd.c
+> index d2202392ffdb..a051237cacf2 100644
+> --- a/tools/perf/util/zstd.c
+> +++ b/tools/perf/util/zstd.c
+> @@ -99,7 +99,7 @@ size_t zstd_decompress_stream(struct zstd_data *data, void *src, size_t src_size
+>   	while (input.pos<  input.size) {
+>   		ret = ZSTD_decompressStream(data->dstream,&output,&input);
+>   		if (ZSTD_isError(ret)) {
+> -			pr_err("failed to decompress (B): %ld ->  %ld, dst_size %ld : %s\n",
+> +			pr_err("failed to decompress (B): %zu ->  %zu, dst_size %zu : %s\n",
+>   			       src_size, output.size, dst_size, ZSTD_getErrorName(ret));
+>   			break;
+>   		}
 
-Fixes: 41f93af900a2 ("soc: ti: add Keystone Navigator QMSS driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Samuel Zou <zou_wei@huawei.com>
----
- drivers/soc/ti/knav_qmss_queue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/ti/knav_qmss_queue.c b/drivers/soc/ti/knav_qmss_queue.c
-index 37f3db6..aa071d9 100644
---- a/drivers/soc/ti/knav_qmss_queue.c
-+++ b/drivers/soc/ti/knav_qmss_queue.c
-@@ -409,7 +409,7 @@ static int knav_gp_close_queue(struct knav_range_info *range,
- 	return 0;
- }
- 
--struct knav_range_ops knav_gp_range_ops = {
-+static struct knav_range_ops knav_gp_range_ops = {
- 	.set_notify	= knav_gp_set_notify,
- 	.open_queue	= knav_gp_open_queue,
- 	.close_queue	= knav_gp_close_queue,
--- 
-2.6.2
 
