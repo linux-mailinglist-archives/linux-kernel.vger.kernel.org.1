@@ -2,86 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC621D0182
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB071D0189
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731542AbgELWDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:03:33 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:48311 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728313AbgELWDc (ORCPT
+        id S1731585AbgELWDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 18:03:45 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:53276 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728313AbgELWDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 18:03:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589321011;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ns5UOQMLizpSxZdFpRK9TbCkGBwHVENlcHczF4G1fL8=;
-        b=GIs92r1+5nz8mVeriRwhTQ1n+A77LC+5gqTWCUV2qS06lcAtvWY5j41Ow7cU4RqAtjpSJo
-        s8PROhhmLEN0KNpg0CpJlNxx1hDR8LQofSuKdqA/QNmelvtQC08whwWYEIgMuuDGlyVX7N
-        XbGtRAo42vjXrpKoYK26Qpd0X/pWj3c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-164-0MUo9GkKPLKCnl2yk28XwQ-1; Tue, 12 May 2020 18:03:28 -0400
-X-MC-Unique: 0MUo9GkKPLKCnl2yk28XwQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3F194473;
-        Tue, 12 May 2020 22:03:26 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-59.rdu2.redhat.com [10.10.112.59])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 29D2953E3B;
-        Tue, 12 May 2020 22:03:24 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAHmME9q-TxHo5o63rxHzKwV_kWV9u+MoxBQM5Yz3hODGCj7RhQ@mail.gmail.com>
-References: <CAHmME9q-TxHo5o63rxHzKwV_kWV9u+MoxBQM5Yz3hODGCj7RhQ@mail.gmail.com> <CAHmME9oXiTmVuOYmG=K3ijWK+zP2yB9a2CFjbLx_5fkDiH30Tg@mail.gmail.com> <20200511215101.302530-1-Jason@zx2c4.com> <2620780.1589289425@warthog.procyon.org.uk>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     dhowells@redhat.com, keyrings@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel-hardening@lists.openwall.com,
-        Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH v3] security/keys: rewrite big_key crypto to use library interface
+        Tue, 12 May 2020 18:03:44 -0400
+Received: by mail-pj1-f65.google.com with SMTP id hi11so10202018pjb.3;
+        Tue, 12 May 2020 15:03:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jPas3FVTQ077tq4XLx1f6zCjNgfjXBxht/KPP+7OEug=;
+        b=az4dz60fUx0TGGjY0OrzgvIn5nL20WbvyWATzslSo72V9Xh97IG4zxDBaUFWstzD83
+         1cJAssqckTzhAJrErel+8Jy5DyzW1W+EHs6SWD/zvCpQmYoe43upNVCoRYFlUXxu/laS
+         Is4FhS9BzLfVBg5gKkA+WS/y8VQHD2eEITkyk9CVaPatEyRsmHwBluvFJsqxGaKIRKor
+         UVPiDusOgvr3IQXwqYS9QqdfNlhVYE6/LZy0l1zRgjL1Qge5g5UnmNltUJcOj2EIadNx
+         aYnCPDUqT3COouxtUA8A631HOJExzblSCrybWmvJalZnexGSuifiJhfImrPJhtJUBKLQ
+         fCdA==
+X-Gm-Message-State: AGi0PuaTP6oVnQzFYJJlsyhQWfZc2pCYQSdyDWzr3/1eW/7jJ4QieZ/r
+        UGk++10ynz+ne2w/ovCeJRU=
+X-Google-Smtp-Source: APiQypLRR8P3Hy27Aan2ceEueeRcL0xTQS/0wfLdqo/lGe83BBK2NFiFKG1bubvoAzbVD2Yk3HpUbQ==
+X-Received: by 2002:a17:902:c281:: with SMTP id i1mr21719181pld.85.1589321023383;
+        Tue, 12 May 2020 15:03:43 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id o27sm681142pgd.18.2020.05.12.15.03.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 15:03:42 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 76A134063E; Tue, 12 May 2020 22:03:41 +0000 (UTC)
+Date:   Tue, 12 May 2020 22:03:41 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Xiaoming Ni <nixiaoming@huawei.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Helge Deller <deller@gmx.de>,
+        Parisc List <linux-parisc@vger.kernel.org>, yzaikin@google.com,
+        linux-fsdevel@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: linux-next: manual merge of the vfs tree with the parisc-hd tree
+Message-ID: <20200512220341.GE11244@42.do-not-panic.com>
+References: <20200511111123.68ccbaa3@canb.auug.org.au>
+ <99095805-8cbe-d140-e2f1-0c5a3e84d7e7@huawei.com>
+ <20200512003305.GX11244@42.do-not-panic.com>
+ <87y2pxs73w.fsf@x220.int.ebiederm.org>
+ <20200512172413.GC11244@42.do-not-panic.com>
+ <87k11hrqzc.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2858488.1589321003.1@warthog.procyon.org.uk>
-Date:   Tue, 12 May 2020 23:03:23 +0100
-Message-ID: <2858489.1589321003@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87k11hrqzc.fsf@x220.int.ebiederm.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-
-> So long as that ->update function:
-> 1. Deletes the old on-disk data.
-> 2. Deletes the old key from the inode.
-> 3. Generates a new key using get_random_bytes.
-> 4. Stores that new key in the inode.
-> 5. Encrypts the updated data afresh with the new key.
-> 6. Puts the updated data onto disk,
+On Tue, May 12, 2020 at 12:40:55PM -0500, Eric W. Biederman wrote:
+> Luis Chamberlain <mcgrof@kernel.org> writes:
 > 
-> then this is fine with me, and feel free to have my Acked-by if you
-> want. But if it doesn't do that -- i.e. if it tries to reuse the old
-> key or similar -- then this isn't fine. But it sounds like from what
-> you've described that things are actually fine, in which case, I guess
-> it makes sense to apply your patch ontop of mine and commit these.
+> > On Tue, May 12, 2020 at 06:52:35AM -0500, Eric W. Biederman wrote:
+> >> Luis Chamberlain <mcgrof@kernel.org> writes:
+> >> 
+> >> > +static struct ctl_table fs_base_table[] = {
+> >> > +	{
+> >> > +		.procname	= "fs",
+> >> > +		.mode		= 0555,
+> >> > +		.child		= fs_table,
+> >> > +	},
+> >> > +	{ }
+> >> > +};
+> >>   ^^^^^^^^^^^^^^^^^^^^^^^^ You don't need this at all.
+> >> > > +static int __init fs_procsys_init(void)
+> >> > +{
+> >> > +	struct ctl_table_header *hdr;
+> >> > +
+> >> > +	hdr = register_sysctl_table(fs_base_table);
+> >>               ^^^^^^^^^^^^^^^^^^^^^ Please use register_sysctl instead.
+> >> 	AKA
+> >>         hdr = register_sysctl("fs", fs_table);
+> >
+> > Ah, much cleaner thanks!
+> 
+> It is my hope you we can get rid of register_sysctl_table one of these
+> days.  It was the original interface but today it is just a
+> compatibility wrapper.
+> 
+> I unfortunately ran out of steam last time before I finished converting
+> everything over.
 
-Yep.  It calls big_key_destroy(), which clears away the old stuff just as when
-a key is being destroyed, then generic_key_instantiate() just as when a key is
-being set up.
+Let's give it one more go. I'll start with the fs stuff.
 
-The key ID and the key metadata (ownership, perms, expiry) are maintained, but
-the payload is just completely replaced.
-
-David
-
+  Luis
