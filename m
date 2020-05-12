@@ -2,128 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB98F1CF935
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35911CF944
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730568AbgELPcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 11:32:16 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:59055 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726388AbgELPcQ (ORCPT
+        id S1730745AbgELPd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 11:33:57 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:37380 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730382AbgELPd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 11:32:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589297534;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3znfxGl3Y8dtZtdYEiFhfu/pKUx/1DihfE1tclQt+xI=;
-        b=iE1w5kIFrZ8lziTDGQeWbNCfQZAvyEQvSSE/CVg3DLkOmNzmqRMAQl3iGLkRDsjGIaZ6lS
-        9f+o07Jw3d+Ch9B6IX/P/vVrj1B3FyS740jKAtZv+rfdKdKDJTMm+u6Aox6WX+FzMjKL3c
-        7OJ+QaqO0h7lqPyIAy6y6YbSTkpx3Fs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-370-_q3gu77AM26zTzK1ED8dgQ-1; Tue, 12 May 2020 11:32:13 -0400
-X-MC-Unique: _q3gu77AM26zTzK1ED8dgQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 12 May 2020 11:33:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589297636; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=dze1SlsXMpqtXCRYq9gWZjlDDJ3FZrxJhv0pJVE1AgI=; b=GsTepM5oeoXyrqdu2gRit+2lsWsBNVwPo7sCJZFuKo4mBVKTVWQ9bWfnewYFlL/UVDFcOA2i
+ j8xbi59uKddlb3fyCQVFKZPEh2Sspzvra+a/ywStrsbtiQfgbxgorM3gYt7Ct1oUAqgeTQES
+ lEmDm2WHAywE4Fo16QGavGJVv0s=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ebac19b.7fa3d65d7ed8-smtp-out-n05;
+ Tue, 12 May 2020 15:32:43 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BE76EC433BA; Tue, 12 May 2020 15:32:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E5B419200C0;
-        Tue, 12 May 2020 15:32:11 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-116-85.rdu2.redhat.com [10.10.116.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2E5FE6E9E0;
-        Tue, 12 May 2020 15:32:10 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id AE9CE220C05; Tue, 12 May 2020 11:32:09 -0400 (EDT)
-Date:   Tue, 12 May 2020 11:32:09 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/8] KVM: x86: Interrupt-based mechanism for async_pf
- 'page present' notifications
-Message-ID: <20200512153209.GC138129@redhat.com>
-References: <20200511164752.2158645-1-vkuznets@redhat.com>
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CEFC9C433CB;
+        Tue, 12 May 2020 15:32:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CEFC9C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v1 6/6] bus: mhi: core: Introduce sysfs entries for MHI
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hemantk@codeaurora.org
+References: <1589250796-32020-1-git-send-email-bbhatt@codeaurora.org>
+ <1589250796-32020-7-git-send-email-bbhatt@codeaurora.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <7a77e057-a053-89df-4f6e-6e0aa1cce256@codeaurora.org>
+Date:   Tue, 12 May 2020 09:32:41 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200511164752.2158645-1-vkuznets@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <1589250796-32020-7-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vitaly,
+On 5/11/2020 8:33 PM, Bhaumik Bhatt wrote:
+> Introduce sysfs entries to enable userspace clients the ability to read
+> the serial number and the OEM PK Hash values obtained from BHI. OEMs
+> need to read these device-specific hardware information values through
+> userspace for factory testing purposes and cannot be exposed via degbufs
+> as it may remain disabled for performance reasons. Also, update the
+> documentation for ABI to include these entries.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ---
+>   Documentation/ABI/stable/sysfs-bus-mhi | 25 ++++++++++++++++
+>   drivers/bus/mhi/core/init.c            | 53 ++++++++++++++++++++++++++++++++++
+>   2 files changed, 78 insertions(+)
+>   create mode 100644 Documentation/ABI/stable/sysfs-bus-mhi
 
-Are there any corresponding qemu patches as well to enable new
-functionality. Wanted to test it.
+I think you need to update MAINTAINERS as well.
 
-Thanks
-Vivek
-
-On Mon, May 11, 2020 at 06:47:44PM +0200, Vitaly Kuznetsov wrote:
-> Concerns were expressed around (ab)using #PF for KVM's async_pf mechanism,
-> it seems that re-using #PF exception for a PV mechanism wasn't a great
-> idea after all. The Grand Plan is to switch to using e.g. #VE for 'page
-> not present' events and normal APIC interrupts for 'page ready' events.
-> This series does the later.
-> 
-> Changes since RFC:
-> - Using #PF for 'page ready' is deprecated and removed [Paolo Bonzini]
-> - 'reason' field in 'struct kvm_vcpu_pv_apf_data' is not used for 'page ready'
->   notifications and 'pageready_token' is not used for 'page not present' events
->   [Paolo Bonzini]
-> - Renamed MSR_KVM_ASYNC_PF2 -> MSR_KVM_ASYNC_PF_INT [Peter Xu]
-> - Drop 'enabled' field from MSR_KVM_ASYNC_PF_INT [Peter Xu]
-> - Other minor changes supporting the above.
-> 
-> Vitaly Kuznetsov (8):
->   Revert "KVM: async_pf: Fix #DF due to inject "Page not Present" and
->     "Page Ready" exceptions simultaneously"
->   KVM: x86: extend struct kvm_vcpu_pv_apf_data with token info
->   KVM: introduce kvm_read_guest_offset_cached()
->   KVM: x86: interrupt based APF page-ready event delivery
->   KVM: x86: acknowledgment mechanism for async pf page ready
->     notifications
->   KVM: x86: announce KVM_FEATURE_ASYNC_PF_INT
->   KVM: x86: Switch KVM guest to using interrupts for page ready APF
->     delivery
->   KVM: x86: drop KVM_PV_REASON_PAGE_READY case from
->     kvm_handle_page_fault()
-> 
->  Documentation/virt/kvm/cpuid.rst     |   6 ++
->  Documentation/virt/kvm/msr.rst       | 106 ++++++++++++++------
->  arch/s390/include/asm/kvm_host.h     |   2 +
->  arch/x86/entry/entry_32.S            |   5 +
->  arch/x86/entry/entry_64.S            |   5 +
->  arch/x86/include/asm/hardirq.h       |   3 +
->  arch/x86/include/asm/irq_vectors.h   |   6 +-
->  arch/x86/include/asm/kvm_host.h      |   7 +-
->  arch/x86/include/asm/kvm_para.h      |   6 ++
->  arch/x86/include/uapi/asm/kvm_para.h |  11 ++-
->  arch/x86/kernel/irq.c                |   9 ++
->  arch/x86/kernel/kvm.c                |  42 ++++++--
->  arch/x86/kvm/cpuid.c                 |   3 +-
->  arch/x86/kvm/mmu/mmu.c               |  10 +-
->  arch/x86/kvm/x86.c                   | 142 ++++++++++++++++++---------
->  include/linux/kvm_host.h             |   3 +
->  include/uapi/linux/kvm.h             |   1 +
->  virt/kvm/async_pf.c                  |  10 ++
->  virt/kvm/kvm_main.c                  |  19 +++-
->  19 files changed, 295 insertions(+), 101 deletions(-)
-> 
-> -- 
-> 2.25.4
-> 
-
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
