@@ -2,140 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08241CF3B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 13:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107CE1CF3B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 13:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729737AbgELLt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 07:49:59 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:53002 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729700AbgELLt4 (ORCPT
+        id S1729688AbgELLtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 07:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729652AbgELLtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 07:49:56 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 8E42E803080B;
-        Tue, 12 May 2020 11:49:48 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id X9U0mGSQWcVy; Tue, 12 May 2020 14:49:47 +0300 (MSK)
-Date:   Tue, 12 May 2020 14:49:46 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        <linux-mips@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/6] dt-bindings: dma: dw: Add max burst transaction
- length property
-Message-ID: <20200512114946.x777yb6bhe22ccn5@mobilestation>
-References: <20200306131048.ADBE18030797@mail.baikalelectronics.ru>
- <20200508105304.14065-1-Sergey.Semin@baikalelectronics.ru>
- <20200508105304.14065-3-Sergey.Semin@baikalelectronics.ru>
- <20200508111242.GH185537@smile.fi.intel.com>
- <20200511200528.nfkc2zkh3bvupn7l@mobilestation>
- <20200511210138.GN185537@smile.fi.intel.com>
- <20200511213531.wnywlljiulvndx6s@mobilestation>
- <20200512090804.GR185537@smile.fi.intel.com>
+        Tue, 12 May 2020 07:49:51 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53B1C05BD09
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 04:49:49 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id z72so13311762wmc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 04:49:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A2Mcpf/ILTeuFmBUFhpYWTiaZtQu3vqTzJ1nZU97Aks=;
+        b=KqWbIdJUedo7tBvw/qpVmXNEaBG5VLl8QeLV+5HY5XNd4xPo67WpsvwwHtegd5XxZ6
+         Jet8kLCrLPZx8SXE6MfuLtwzJUxHL6YFTbQGFN8JJzTx4Grt5lDA0l0ZWpzLbEEt7aIx
+         VMK9ivwx/G1Hxu2kxYPfMdpm2FKU4wdZk15IewaBxGvMxpVSE4cFcb07gPRx5P5usPnW
+         h6l5FARMKkfUq9unek8GxLm19q4kqk/FTfd80n5YLY8wEmvLMeixK6zhKEvVYFKY7lq9
+         bt9R0oQ0NsKT7eijP6zLLudxANtB3ISCXt2WTykzMtp5iE8/3tq4THclvhAItAvvl8sx
+         CEaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A2Mcpf/ILTeuFmBUFhpYWTiaZtQu3vqTzJ1nZU97Aks=;
+        b=R9DYM8YS1RDa2+4gUTjI3g3aGV3KH+O4upTl3JXKIuS2ST+xR3Xqpuda/MVCzGITkG
+         6bRk9i6w4mTVlaNSUJfr1gP0ELVprm1isQ+kLiPijggYirM9mtsyN8RN3H2VZ/RAsThX
+         xOXxRsSD+7AE5jMlDuy6KYIMdPs5QHBAUnboyZ+yArxhV5WNGBApqS/8HOwQwjla6kQN
+         8KHqMtoC57XHnNo++jbtnnnYCszElfTEc8nlPNkPxPGkLUcqVya2E/XRLIc7Fx+ume4l
+         bdphTTNgwlcb0sR487Eo6Zjw6nA13MWqMfmdSntBt4kTyuhO0l1ZlLL9VykUszoQpQfv
+         1i0Q==
+X-Gm-Message-State: AGi0PuYUSgNUblXamQ7eVFew0C5Segs3Mz5I5PbsNi7bOv+Q8Hll8Pkc
+        cGRwfXDDWXrBYhJj0FdjsyY3fQ==
+X-Google-Smtp-Source: APiQypLN2bAiVp61F45KywfR703a8KYR4PiJo/5siuqqoiFFKRaDBQfVIvi/C6A5bnDqZirbU4HyVA==
+X-Received: by 2002:a1c:9a45:: with SMTP id c66mr11192058wme.133.1589284188478;
+        Tue, 12 May 2020 04:49:48 -0700 (PDT)
+Received: from localhost.localdomain ([176.61.57.127])
+        by smtp.gmail.com with ESMTPSA id 10sm8970405wmw.26.2020.05.12.04.49.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 04:49:47 -0700 (PDT)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        shawn.guo@linaro.org, p.zabel@pengutronix.de,
+        vincent.knecht@mailoo.org, konradybcio@gmail.com,
+        bryan.odonoghue@linaro.org
+Subject: [PATCH v4 0/2] Add Qualcomm MSM8939 GCC binding and driver
+Date:   Tue, 12 May 2020 12:50:21 +0100
+Message-Id: <20200512115023.2856617-1-bryan.odonoghue@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200512090804.GR185537@smile.fi.intel.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 12:08:04PM +0300, Andy Shevchenko wrote:
-> On Tue, May 12, 2020 at 12:35:31AM +0300, Serge Semin wrote:
-> > On Tue, May 12, 2020 at 12:01:38AM +0300, Andy Shevchenko wrote:
-> > > On Mon, May 11, 2020 at 11:05:28PM +0300, Serge Semin wrote:
-> > > > On Fri, May 08, 2020 at 02:12:42PM +0300, Andy Shevchenko wrote:
-> > > > > On Fri, May 08, 2020 at 01:53:00PM +0300, Serge Semin wrote:
-> > > > > > This array property is used to indicate the maximum burst transaction
-> > > > > > length supported by each DMA channel.
-> > > > > 
-> > > > > > +  snps,max-burst-len:
-> > > > > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > > > > > +    description: |
-> > > > > > +      Maximum length of burst transactions supported by hardware.
-> > > > > > +      It's an array property with one cell per channel in units of
-> > > > > > +      CTLx register SRC_TR_WIDTH/DST_TR_WIDTH (data-width) field.
-> > > > > > +    items:
-> > > > > > +      maxItems: 8
-> > > > > > +      items:
-> > > > > 
-> > > > > > +        enum: [4, 8, 16, 32, 64, 128, 256]
-> > > > > 
-> > > > > Isn't 1 allowed?
-> > > > 
-> > > > Burst length of 1 unit is supported, but in accordance with Data Book the MAX
-> > > > burst length is limited to be equal to a value from the set I submitted. So the
-> > > > max value can be either 4, or 8, or 16 and so on.
-> > > 
-> > > Hmm... It seems you mistakenly took here DMAH_CHx_MAX_MULT_SIZE pre-silicon
-> > > configuration parameter instead of runtime as described in Table 26:
-> > > CTLx.SRC_MSIZE and DEST_MSIZE Decoding.
-> > 
-> > No. You misunderstood what I meant. We shouldn't use a runtime parameters values
-> > here. Why would we?
-> 
-> Because what we describe in the DTS is what user may do to the hardware. In
-> some cases user might want to limit this to 1, how to achieve that?
+V4:
+- Moves headers from 1/1 to 0/1 - patch squashing error - Rob
+- Identifies licensing as GPL v2.0-only, thanks for pointing this out. - Rob
+- Adds Tested-by: Vincent Knecht <vincent.knecht@mailoo.org>, thanks for
+  testing this. - Vincent
+- https://github.com/bryanodonoghue/linux/pull/new/clk-next+msm8939-v2.1
+- https://github.com/bryanodonoghue/linux/pull/new/clk-next+msm8939-v4
 
-No, dts isn't about hardware configuration, it's about hardware description. It's not
-what user want, it's about what hardware can and can't. If a developer wants to limit
-it to 1, one need to do this in software. The IP-core just can't be synthesized
-with such limitation. No matter what, it must be no less than 4 as I described
-in the enum setting.
+V3:
+This update removes the old clock name arrays which I forgot to prune in
+the previous V2.
 
-> 
-> Rob, is there any clarification that schema describes only synthesized values?
-> Or i.o.w. shall we allow user to setup whatever hardware supports at run time?
+git diff bod/clk-next+msm8939 bod/clk-next+msm8939-v2.1
 
-One more time. max-burst-len set to 1 wouldn't describe the real hardware capability
-because the Dw DMAC IP-core simply can't be synthesized with such max-burst-len.
-In this patch I submitted the "max-burst-len" property, not just "burst-len"
-setting.
+V2:
+This update does the following
 
-> 
-> > Property "snps,max-burst-len" matches DMAH_CHx_MAX_MULT_SIZE
-> > config parameter.
-> 
-> Why? User should have a possibility to ask whatever hardware supports at run time.
+1. Drops code in the probe routine to add xo and sleep_clk. Instead
+   the DTS for the GCC will need to declare both of those clocks for the
+   GCC controller.
 
-Because the run time parameter is limited with DMAH_CHx_MAX_MULT_SIZE value, you agreed
-with that further and "snps,max-burst-len" is about hardware limitation. For the
-same reason the dma-channels property is limited to belong the segment 1 - 8, dma-masters
-number must be limited with 1 - 4, block_size should be one of the set [3, 7, 15, 31, 63,
-127, 255, 511, 1023, 2047, 4095] and so on. For instance, the block-size can be
-set any but not greater than a value of the "block-size" property found in the
-dt node or retrieved from the corresponding IP param register. It's not what user want,
-but what hardware can support.
+2. Supplants parent_names for parent_data for all clocks.
 
--Sergey
+3. Squashes down the previous three patches into two.
 
-> 
-> > See a comment to the "SRC_MSIZE" and "DEST_MSIZE" fields of the
-> > registers. You'll find out that their maximum value is determined by the
-> > DMAH_CHx_MAX_MULT_SIZE parameter, which must belong to the set [4, 8, 16, 32, 64,
-> > 128, 256]. So no matter how you synthesize the DW DMAC block you'll have at least
-> > 4x max burst length supported.
-> 
-> That's true.
-> 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+4. Drops the git log of copying files. The git log makes clear the silicon
+   is highly similar, so, you can just as easily read the log and do a
+   diff.
+
+5. Doesn't update the MSM8916 with parent_data.
+   Happy to do this at a later date but, don't have the time to validate
+   this properly at the moment. This set focuses on the MSM8939 alone.
+
+6. Dropped comment and boilerplate license text as indicated.
+
+7. Dropped dependency on COMMON_CLK_QCOM seems to not be needed.
+
+8. Easily view the changes here:
+   git add bod https://github.com/bryanodonoghue/linux.git
+   git fetch bod
+   git diff bod/clk-next+msm8939 bod/clk-next+msm8939-v2   
+
+V1:
+These three patches add support for the MSM8939 Global Clock Controller.
+The MSM8939 is a derivation of the MSM8916 sharing the large majority of
+its clock settings with MSM8916, however, there are enough changes, in some
+cases mutually incompatible changes that necessitate a separate driver.
+
+I thought it was both important and useful to show in the git log the
+differences between MSM8916 and MSM8939 so, one patch copies the MSM8916
+driver while another patch applies the entire gamut of MSM8939 changes,
+squashing down from a git log of approximately 31 separate commits.
+
+For reference that log is here:
+https://github.com/bryanodonoghue/linux/pull/new/msm8939-clk-next-reference-log
+
+Generally speaking MSM8939 differes from MSM8916 in two key ways.
+
+- New and higher clock frequencies for existing IP blocks.
+- New PLLs to drive those higher frequencies
+
+Bryan O'Donoghue (2):
+  clk: qcom: Add DT bindings for MSM8939 GCC
+  clk: qcom: gcc-msm8939: Add MSM8939 Generic Clock Controller
+
+ .../devicetree/bindings/clock/qcom,gcc.yaml   |    3 +
+ drivers/clk/qcom/Kconfig                      |    8 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/gcc-msm8939.c                | 3999 +++++++++++++++++
+ include/dt-bindings/clock/qcom,gcc-msm8939.h  |  206 +
+ include/dt-bindings/reset/qcom,gcc-msm8939.h  |  110 +
+ 6 files changed, 4327 insertions(+)
+ create mode 100644 drivers/clk/qcom/gcc-msm8939.c
+ create mode 100644 include/dt-bindings/clock/qcom,gcc-msm8939.h
+ create mode 100644 include/dt-bindings/reset/qcom,gcc-msm8939.h
+
+-- 
+2.25.1
+
