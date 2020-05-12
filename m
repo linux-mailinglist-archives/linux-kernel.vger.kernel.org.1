@@ -2,101 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030E31CF363
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 13:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1EA1CF373
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 13:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729471AbgELLd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 07:33:58 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:48414 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726187AbgELLd6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 07:33:58 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 907665787C08C24FD799;
-        Tue, 12 May 2020 19:33:56 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Tue, 12 May 2020
- 19:33:46 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <john.garry@huawei.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>
-Subject: [PATCH v2] scsi: hisi_sas: display proc_name in sysfs
-Date:   Tue, 12 May 2020 19:32:58 +0800
-Message-ID: <20200512113258.30781-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.3
+        id S1729522AbgELLha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 07:37:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728085AbgELLh2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 07:37:28 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3044C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 04:37:26 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id o8so2139155vkd.12
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 04:37:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j3KKWLl8HkCXQ+MjcPLWxrbD4LKOdKANjNPpG/Ugus0=;
+        b=Vbge21sbZsurEnSDxiksRTO9LZRl3h2o3BB6q1sAGyp/DOuqkK9GiqIwfc1pn2rKaQ
+         +FOZP1b81+/JyMT6ifVCGu6OuMY8LeGnbZMahPjvjNxM8MiDlDifwD608MPe8WxX2RcB
+         tEiqz96bDFDg0Hp/zaEQhF9th2wdMK/Dw15F4sxHzJVApsdZJP8RoHkvv2IJOmd54QWs
+         DF6a8YPJC1TSjX/ZCfJVpcSSvVsW5ZniqxI3vPjuCEuakvdiRcbFRgJALcargyo7JKye
+         E1z4azcfHOLWj19CKF53Dniupqfd0fYW3VRrKj9vEz91uXYLPR3j7bHxv1KYNEHIX8Qk
+         MJCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j3KKWLl8HkCXQ+MjcPLWxrbD4LKOdKANjNPpG/Ugus0=;
+        b=o1WRLpkTYFRRIQ5UEj+yj4yinPYoeEVHYS1u7AG6y+vmZ+PL1J5Bjy/sxxb0ATQHrZ
+         +BDyX5rAyyoKxw+JfvYENieek54CPZZBJUhurk/qqv4O/W7GrcJqYy21J+rTh3925qyS
+         sPt0PucqRSMroko+OixIqQkec+wc1LGKj3J9g2rRBXSOMq8johLre09YlEKfrz63FeOO
+         WFEJ3vFQABG7QvVdOTfQadK9VWJewPbbaw/f4kLzPAIkpVnCdG3ucuQ+XSFVwM2QHToS
+         uE+1GDDT4qYTfUDnXMjEPpjzW5iW0otm/M6Yu1UdYx7RLcLgGrrKS9nICeI5caSH3iW1
+         Xzdg==
+X-Gm-Message-State: AGi0PuYf34vSbZBON8BAgwx/nwhbEXQgnep0mc50jWvuyJbAif/kppga
+        m3LPO0YoE/hUI/LmKp9UxWIetwrUe+Vd4CzoxCY=
+X-Google-Smtp-Source: APiQypIQM2/qGTsyEbGNVjZeO6kaUSKCSi0gcRXR6wsSfcpJVHlkk5f8mQh/QXyXnkH5Y0GCjhYJfKkFAWpoM6ISnAE=
+X-Received: by 2002:a1f:2f91:: with SMTP id v139mr15017877vkv.22.1589283445902;
+ Tue, 12 May 2020 04:37:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+References: <20200511115524.22602-1-Rodrigo.Siqueira@amd.com> <20200511115524.22602-3-Rodrigo.Siqueira@amd.com>
+In-Reply-To: <20200511115524.22602-3-Rodrigo.Siqueira@amd.com>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Tue, 12 May 2020 12:34:47 +0100
+Message-ID: <CACvgo53KfLkTg4UvT5E+afX+z4FjMcpdctD5=v32WJs6TS5s5g@mail.gmail.com>
+Subject: Re: [PATCH V4 2/3] drm/vkms: Compute CRC without change input data
+To:     Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Cc:     Brian Starkey <brian.starkey@arm.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Simon Ser <contact@emersion.fr>,
+        Leandro Ribeiro <leandro.ribeiro@collabora.com>,
+        Helen Koike <helen.koike@collabora.com>,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'proc_name' entry in sysfs for hisi_sas is 'null' now becuase it is
-not initialized in scsi_host_template. It looks like:
+Hi Rodrigo,
 
-[root@localhost ~]# cat /sys/class/scsi_host/host2/proc_name
-(null)
+On Mon, 11 May 2020 at 12:55, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com> wrote:
+>
+> From: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+>
+> The compute_crc() function is responsible for calculating the
+> framebuffer CRC value; due to the XRGB format, this function has to
+> ignore the alpha channel during the CRC computation. Therefore,
+> compute_crc() set zero to the alpha channel directly in the input
+> framebuffer, which is not a problem since this function receives a copy
+> of the original buffer. However, if we want to use this function in a
+> context without a buffer copy, it will change the initial value. This
+> patch makes compute_crc() calculate the CRC value without modifying the
+> input framebuffer.
+>
+> Signed-off-by: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+> ---
+>  drivers/gpu/drm/vkms/vkms_composer.c | 31 +++++++++++++++++-----------
+>  1 file changed, 19 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
+> index 258e659ecfba..686d25e7b01d 100644
+> --- a/drivers/gpu/drm/vkms/vkms_composer.c
+> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
+> @@ -9,33 +9,40 @@
+>
+>  #include "vkms_drv.h"
+>
+> +static u32 get_pixel_from_buffer(int x, int y, const u8 *buffer,
+> +                                const struct vkms_composer *composer)
+> +{
+> +       int src_offset = composer->offset + (y * composer->pitch)
+> +                                         + (x * composer->cpp);
+> +
+> +       return *(u32 *)&buffer[src_offset];
+> +}
+> +
+>  /**
+>   * compute_crc - Compute CRC value on output frame
+>   *
+> - * @vaddr_out: address to final framebuffer
+> + * @vaddr: address to final framebuffer
+>   * @composer: framebuffer's metadata
+>   *
+>   * returns CRC value computed using crc32 on the visible portion of
+>   * the final framebuffer at vaddr_out
+>   */
+> -static uint32_t compute_crc(void *vaddr_out, struct vkms_composer *composer)
+> +static uint32_t compute_crc(const u8 *vaddr,
+> +                           const struct vkms_composer *composer)
+>  {
+> -       int i, j, src_offset;
+> +       int x, y;
+>         int x_src = composer->src.x1 >> 16;
+>         int y_src = composer->src.y1 >> 16;
+>         int h_src = drm_rect_height(&composer->src) >> 16;
+>         int w_src = drm_rect_width(&composer->src) >> 16;
+> -       u32 crc = 0;
+> +       u32 crc = 0, pixel = 0;
+>
+> -       for (i = y_src; i < y_src + h_src; ++i) {
+> -               for (j = x_src; j < x_src + w_src; ++j) {
+> -                       src_offset = composer->offset
+> -                                    + (i * composer->pitch)
+> -                                    + (j * composer->cpp);
+> +       for (y = y_src; y < y_src + h_src; ++y) {
+> +               for (x = x_src; x < x_src + w_src; ++x) {
+>                         /* XRGB format ignores Alpha channel */
+> -                       memset(vaddr_out + src_offset + 24, 0,  8);
+> -                       crc = crc32_le(crc, vaddr_out + src_offset,
+> -                                      sizeof(u32));
+> +                       pixel = get_pixel_from_buffer(x, y, vaddr, composer);
+> +                       bitmap_clear((void *)&pixel, 0, 8);
+> +                       crc = crc32_le(crc, (void *)&pixel, sizeof(u32));
+>                 }
+>         }
+>
+IMHO using something like the following makes the code far simpler and clearer.
 
-While the other driver's entry looks like:
+offset = composer->offset + (y_src * composer->pitch) + (x_src * composer->cpp);
 
-linux-vnMQMU:~ # cat /sys/class/scsi_host/host0/proc_name
-megaraid_sas
+for (i = 0; i < h_src; i++, offset += composer->pitch) {
+   for (j = 0; j < w_src; j++, offset += composer->cpp) {
+      pixel = get_pixel_from_buffer(vaddr, offset);
+      crc = crc32_le(crc, &pixel, sizeof(u32); // cast should not be needed
+   }
+}
 
-Cc: John Garry <john.garry@huawei.com>
-Cc: Xiang Chen <chenxiang66@hisilicon.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
-Acked-by: John Garry <john.garry@huawei.com>
----
+With the bitmap_clear() and related comment moved into get_pixel_from_buffer().
 
- v2: change subject to "display proc_name in sysfs" and add "Acked-by" tag.
-
- drivers/scsi/hisi_sas/hisi_sas_v1_hw.c | 1 +
- drivers/scsi/hisi_sas/hisi_sas_v2_hw.c | 1 +
- drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 1 +
- 3 files changed, 3 insertions(+)
-
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
-index fa25766502a2..c205bff20943 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
-@@ -1757,6 +1757,7 @@ static struct device_attribute *host_attrs_v1_hw[] = {
- 
- static struct scsi_host_template sht_v1_hw = {
- 	.name			= DRV_NAME,
-+	.proc_name		= DRV_NAME,
- 	.module			= THIS_MODULE,
- 	.queuecommand		= sas_queuecommand,
- 	.target_alloc		= sas_target_alloc,
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
-index e05faf315dcd..c725cffe141e 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
-@@ -3533,6 +3533,7 @@ static struct device_attribute *host_attrs_v2_hw[] = {
- 
- static struct scsi_host_template sht_v2_hw = {
- 	.name			= DRV_NAME,
-+	.proc_name		= DRV_NAME,
- 	.module			= THIS_MODULE,
- 	.queuecommand		= sas_queuecommand,
- 	.target_alloc		= sas_target_alloc,
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-index 374885aa8d77..59b1421607dd 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-@@ -3071,6 +3071,7 @@ static int debugfs_set_bist_v3_hw(struct hisi_hba *hisi_hba, bool enable)
- 
- static struct scsi_host_template sht_v3_hw = {
- 	.name			= DRV_NAME,
-+	.proc_name		= DRV_NAME,
- 	.module			= THIS_MODULE,
- 	.queuecommand		= sas_queuecommand,
- 	.target_alloc		= sas_target_alloc,
--- 
-2.21.3
-
+-Emil
