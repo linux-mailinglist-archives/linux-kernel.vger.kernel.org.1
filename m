@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6131CEFCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 10:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B2E1CEFD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 10:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729317AbgELI5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 04:57:25 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:52626 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729266AbgELI5Y (ORCPT
+        id S1729339AbgELI6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 04:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725776AbgELI6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 04:57:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589273844; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=DMtktCBHuFmI7IB/IC26FyahHzkN5D96bU1y5iktrYY=;
- b=QKzOe9x96SsUdX+y2SwdJPL3tH9jRdDrwK6Iv7wrWWbZD93ezCtTrAjlaKhjKWU+utcacI5A
- sDOFhfzglOoOLgZ5UvU51AFmElwrhNUOQ8ISAryj/4+y7dwKZF3WXIGoI43DTA7mIOXidZ2W
- KfVcH19p1PWcqTQ8ZVXamlN0X8g=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eba64ef.7fe56311aae8-smtp-out-n03;
- Tue, 12 May 2020 08:57:19 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 18711C432C2; Tue, 12 May 2020 08:57:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        Tue, 12 May 2020 04:58:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7538EC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 01:58:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1I1EUzsXfpvR0+SnUXqMXlU26M2INlMVph+MUYQS+cI=; b=KjtedJkYK4JIJ9RoybiQdeUiMu
+        AKoWhm4YU+GjO5Sb9R6jxNbR0bjJ+5o8Q0iu8i3YUNZMgt6d2ohef1Hk4zrCnn401/FwDjD7JL4qw
+        cVKZR52EY2z0gO9gAn6YALTVRWU+t/Bo1k6SJeuLOY1mcVqsiV4PBQvmdj5hicKcAbAE0UTGpDSC0
+        hXe9cBA03qyMxMZ5mwGrAFxeSmHpM7K1V+AFwAlltfYUAcY6VBlM6oMt/TaTmSgKt3og5i1kuMjEd
+        SBGgniVxUxkdJ2BuPovIlZCl7QemHRFJeaOKh0zgVVVZb7qTzYKIcXWgaEVj/YvM8bKFbAr9pW47O
+        2vKi5IHQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jYQjQ-0006jg-6A; Tue, 12 May 2020 08:57:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A323AC433CB;
-        Tue, 12 May 2020 08:57:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A323AC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A91C4305EEF;
+        Tue, 12 May 2020 10:57:41 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 929A3286BFA73; Tue, 12 May 2020 10:57:41 +0200 (CEST)
+Date:   Tue, 12 May 2020 10:57:41 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Enrico Weigelt <info@metux.net>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/3] arm64: perf_event: Fix time offset prior to epoch
+Message-ID: <20200512085741.GG2978@hirez.programming.kicks-ass.net>
+References: <20200505135544.6003-1-leo.yan@linaro.org>
+ <20200511092200.GF2957@hirez.programming.kicks-ass.net>
+ <20200511092519.GA3001@hirez.programming.kicks-ass.net>
+ <20200512063812.GA20352@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] rndis_wlan: Replace zero-length array with flexible-array
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200507192647.GA16710@embeddedor>
-References: <20200507192647.GA16710@embeddedor>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jussi Kivilinna <jussi.kivilinna@iki.fi>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200512085718.18711C432C2@smtp.codeaurora.org>
-Date:   Tue, 12 May 2020 08:57:18 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200512063812.GA20352@leoy-ThinkPad-X240s>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+On Tue, May 12, 2020 at 02:38:12PM +0800, Leo Yan wrote:
 
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> sizeof(flexible-array-member) triggers a warning because flexible array
-> members have incomplete type[1]. There are some instances of code in
-> which the sizeof operator is being incorrectly/erroneously applied to
-> zero-length arrays and the result is zero. Such instances may be hiding
-> some bugs. So, this work (flexible-array member conversions) will also
-> help to get completely rid of those sorts of issues.
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> I have verified this change, it works as expected on my Arm64 board.
+> Also paste the updated code which makes building success with minor
+> fixing.
 
-Patch applied to wireless-drivers-next.git, thanks.
+W00t !
 
-bd7db3021aa7 rndis_wlan: Replace zero-length array with flexible-array
+> I am not sure how to proceed, will you merge this?  Or you want me to
+> send out formal patches (or only for the Arm64 part)?
 
--- 
-https://patchwork.kernel.org/patch/11534803/
+I suppose I can write a Changelog for the thing, Will asked for another
+change as well.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> P.s. it's shame I still missed you guys suggestion in prvious thread
+> even though you have provide enough ifno, and thank you for the helping!
+
+All good.
+
+
+> ---8<---
+
+> -	/*
+> -	 * time_shift is not expected to be greater than 31 due to
+> -	 * the original published conversion algorithm shifting a
+> -	 * 32-bit value (now specifies a 64-bit value) - refer
+> -	 * perf_event_mmap_page documentation in perf_event.h.
+> -	 */
+> -	if (shift == 32) {
+> -		shift = 31;
+> -		userpg->time_mult >>= 1;
+> -	}
+
+Is there a reason you completely lost that? IIRC I preserved that.
+Although I don't know if it is still relevant.
+
+I'll keep it for now, and removal can be a separate patch with proper
+justification, ok?
