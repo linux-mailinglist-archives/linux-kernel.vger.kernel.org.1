@@ -2,103 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6291B1D02F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 01:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C05151D0305
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 01:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731621AbgELXU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 19:20:29 -0400
-Received: from mga04.intel.com ([192.55.52.120]:19892 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726031AbgELXU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 19:20:29 -0400
-IronPort-SDR: YdYNx9pKyBQHCPxFmdAz9etEPjqCe0hxmlIKAw31JWiR80A1g3yGf3uzNI9B5iVutV+d2sA1u+
- xUyEgcqYJvXA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 16:20:28 -0700
-IronPort-SDR: 2bY9aIWdEVA4WohSO5BDZLI/cBY8KdAlvgEdhIP3IFHm0VOoDp5+sZbA7MgK4kJDb3DtXanXPV
- d+dfWu+hj77A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,385,1583222400"; 
-   d="scan'208";a="280304543"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga002.jf.intel.com with ESMTP; 12 May 2020 16:20:28 -0700
-Message-ID: <5cc163ff9058d1b27778e5f0a016c88a3b1a1598.camel@intel.com>
-Subject: Re: [PATCH v10 01/26] Documentation/x86: Add CET description
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Date:   Tue, 12 May 2020 16:20:32 -0700
-In-Reply-To: <dd5b9bab31ecf247a0b4890e22bfbb486ff52001.camel@intel.com>
-References: <20200429220732.31602-1-yu-cheng.yu@intel.com>
-         <20200429220732.31602-2-yu-cheng.yu@intel.com>
-         <b5197a8d-5d8b-e1f7-68d4-58d80261904c@intel.com>
-         <dd5b9bab31ecf247a0b4890e22bfbb486ff52001.camel@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1731654AbgELX01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 19:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbgELX01 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 19:26:27 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33449C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 16:26:27 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id hi11so10278269pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 16:26:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wQXNcvMIvuLWXBulBjsu4xZzdHuqAR8TIZKekjTyhlo=;
+        b=P3kGD60Tv5PddUoiNeSk5xXwUVHvLr8agI3C6C8WLsfQDozJYIzFZ0lMUSwRFAPqr5
+         4EFSuXqSC+og26lTAhRn1qtMV9BX5ZyMdUkwohwcVlY/368tH2swkasQovIKKKqqFxky
+         OrLOk+aFrN6IABcWZh4qrejDALHz39LiMN4KocGTHdUJKUGynHQDx2Nu8/PimfntZyGo
+         OtgVgrkRpXzU8UNhGQD201B3QfyqA9GlGqypmNi1G1rvigKjvuQpjIpFg+vTQx0oGA1p
+         Y0T1CdvzRyzCYUo05Vb9DAnMmqIEZLxjol/FyOl3iNzuKg7U6+sh5NCuyVg9Phc+uJ9C
+         rZQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wQXNcvMIvuLWXBulBjsu4xZzdHuqAR8TIZKekjTyhlo=;
+        b=UYq0NApB82+dBtWb0zWfyjU5XmedMptcjZWQoFEe2hLfXvHMjXreNYPreZbWzR+PO6
+         wpLG/1UjW57NjPkRdaj8etlF3zTCOmJ2f+/jOiEOda+Og3cbF3K2YUpoxofy7FHZKhOA
+         5K/e7RgQzkhEaAAsfAA39bfGQQy4Ij3QkPS61uZ0E9aWamWmdGzpGVRk+BhlrM1+Rrr2
+         8bG2dKhKReR6Xk2D2cbeL/vsYE9y8v67L9zsK4pQL6kgVco9v26a+ClLQUrX/4EfMTsg
+         3d54trBBXiox55MOnKDj6lDamSIsoQqSa5K16jtcByQiwBV3tytfETk56LUP0NUi4WUR
+         W4yA==
+X-Gm-Message-State: AGi0PuY911ij9Z7pmXuKPTpTVgQ3THW5dmmHR4NqoeqPrXhuRT3uGqf1
+        Cna99lvD0d/iX/MZWW/zfN3R/g==
+X-Google-Smtp-Source: APiQypKXiCxAFgVP7ryK8y1SNwvYRfjGXKCvOmqnPlYZne/14774FvtVroFdvtm9PAXltVFfaj8AtA==
+X-Received: by 2002:a17:902:bd42:: with SMTP id b2mr21186869plx.219.1589325986556;
+        Tue, 12 May 2020 16:26:26 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id i2sm4584284pgb.14.2020.05.12.16.26.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 16:26:25 -0700 (PDT)
+Date:   Tue, 12 May 2020 16:24:53 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     Baolin Wang <baolin.wang7@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-remoteproc@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
+        kernel@collabora.com
+Subject: Re: [PATCH] hwspinlock: Simplify Kconfig
+Message-ID: <20200512232453.GD16107@builder.lan>
+References: <20200414220943.6203-1-ezequiel@collabora.com>
+ <CADBw62oJj_x046piRbPP48A04ALo-w2J6jZXNspyN5eOGj-TEg@mail.gmail.com>
+ <CAAEAJfDDOwhjiTX4eXkHnU=+NTRXroFXCbEqa1B43C41LaTkBg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAEAJfDDOwhjiTX4eXkHnU=+NTRXroFXCbEqa1B43C41LaTkBg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-04-29 at 16:02 -0700, Yu-cheng Yu wrote:
-> On Wed, 2020-04-29 at 15:53 -0700, Dave Hansen wrote:
-> > On 4/29/20 3:07 PM, Yu-cheng Yu wrote:
-> > > +Note:
-> > > +  There is no CET-enabling arch_prctl function.  By design, CET is enabled
-> > > +  automatically if the binary and the system can support it.
-> > 
-> > I think Andy and I danced around this last time.  Let me try to say it
-> > more explicitly.
-> > 
-> > I want CET kernel enabling to able to be disconnected from the on-disk
-> > binary.  I want a binary compiled with CET to be able to disable it, and
-> > I want a binary not compiled with CET to be able to enable it.  I want
-> > different threads in a process to be able to each have different CET status.
+On Wed 06 May 19:39 PDT 2020, Ezequiel Garcia wrote:
+
+> Hello,
 > 
-> The kernel patches we have now can be modified to support this model.  If after
-> discussion this is favorable, I will modify code accordingly.
-
-To turn on/off and to lock CET are application-level decisions.  The kernel does
-not prevent any of those.  Should there be a need to provide an arch_prctl() to
-turn on CET, it can be added without any conflict to this series.
-
-> > Which JITs was this tested with?  I think as a bare minimum we need to
-> > know that this design can accommodate _a_ modern JIT.  It would be
-> > horrible if the browser javascript engines couldn't use this design, for
-> > instance.
+> On Wed, 15 Apr 2020 at 10:33, Baolin Wang <baolin.wang7@gmail.com> wrote:
+> >
+> > Hi Ezequiel,
+> >
+> > On Wed, Apr 15, 2020 at 6:09 AM Ezequiel Garcia <ezequiel@collabora.com> wrote:
+> > >
+> > > Every hwspinlock driver is expected to depend on the
+> > > hwspinlock core, so it's possible to simplify the
+> > > Kconfig, factoring out the HWSPINLOCK dependency.
+> > >
+> > > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> >
+> > Looks reasonable to me.
+> > Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
+> >
 > 
-> JIT work is still in progress.  When that is available I will test it.
+> Gentle ping.
+> 
 
-I found CET has been enabled in LLVM JIT, Mesa JIT as well as sljit which is
-used by jit.  So the current model works with JIT.
+Applied.
 
-Yu-cheng
+Thanks,
+Bjorn
 
+> Thanks!
+> Ezequiel
+> 
+> > > ---
+> > >  drivers/hwspinlock/Kconfig | 10 ++++------
+> > >  1 file changed, 4 insertions(+), 6 deletions(-)
+> > >
+> > > diff --git a/drivers/hwspinlock/Kconfig b/drivers/hwspinlock/Kconfig
+> > > index 826a1054100d..32cd26352f38 100644
+> > > --- a/drivers/hwspinlock/Kconfig
+> > > +++ b/drivers/hwspinlock/Kconfig
+> > > @@ -6,9 +6,10 @@
+> > >  menuconfig HWSPINLOCK
+> > >         bool "Hardware Spinlock drivers"
+> > >
+> > > +if HWSPINLOCK
+> > > +
+> > >  config HWSPINLOCK_OMAP
+> > >         tristate "OMAP Hardware Spinlock device"
+> > > -       depends on HWSPINLOCK
+> > >         depends on ARCH_OMAP4 || SOC_OMAP5 || SOC_DRA7XX || SOC_AM33XX || SOC_AM43XX || ARCH_K3 || COMPILE_TEST
+> > >         help
+> > >           Say y here to support the OMAP Hardware Spinlock device (firstly
+> > > @@ -18,7 +19,6 @@ config HWSPINLOCK_OMAP
+> > >
+> > >  config HWSPINLOCK_QCOM
+> > >         tristate "Qualcomm Hardware Spinlock device"
+> > > -       depends on HWSPINLOCK
+> > >         depends on ARCH_QCOM || COMPILE_TEST
+> > >         select MFD_SYSCON
+> > >         help
+> > > @@ -30,7 +30,6 @@ config HWSPINLOCK_QCOM
+> > >
+> > >  config HWSPINLOCK_SIRF
+> > >         tristate "SIRF Hardware Spinlock device"
+> > > -       depends on HWSPINLOCK
+> > >         depends on ARCH_SIRF || COMPILE_TEST
+> > >         help
+> > >           Say y here to support the SIRF Hardware Spinlock device, which
+> > > @@ -43,7 +42,6 @@ config HWSPINLOCK_SIRF
+> > >  config HWSPINLOCK_SPRD
+> > >         tristate "SPRD Hardware Spinlock device"
+> > >         depends on ARCH_SPRD || COMPILE_TEST
+> > > -       depends on HWSPINLOCK
+> > >         help
+> > >           Say y here to support the SPRD Hardware Spinlock device.
+> > >
+> > > @@ -52,7 +50,6 @@ config HWSPINLOCK_SPRD
+> > >  config HWSPINLOCK_STM32
+> > >         tristate "STM32 Hardware Spinlock device"
+> > >         depends on MACH_STM32MP157 || COMPILE_TEST
+> > > -       depends on HWSPINLOCK
+> > >         help
+> > >           Say y here to support the STM32 Hardware Spinlock device.
+> > >
+> > > @@ -60,7 +57,6 @@ config HWSPINLOCK_STM32
+> > >
+> > >  config HSEM_U8500
+> > >         tristate "STE Hardware Semaphore functionality"
+> > > -       depends on HWSPINLOCK
+> > >         depends on ARCH_U8500 || COMPILE_TEST
+> > >         help
+> > >           Say y here to support the STE Hardware Semaphore functionality, which
+> > > @@ -68,3 +64,5 @@ config HSEM_U8500
+> > >           SoC.
+> > >
+> > >           If unsure, say N.
+> > > +
+> > > +endif # HWSPINLOCK
+> > > --
+> > > 2.26.0.rc2
+> > >
+> >
+> >
+> > --
+> > Baolin Wang
