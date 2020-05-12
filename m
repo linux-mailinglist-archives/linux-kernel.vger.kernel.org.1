@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3084B1CFE62
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 21:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7441CFE70
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 21:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730945AbgELTfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 15:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgELTfN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 15:35:13 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9868C061A0C;
-        Tue, 12 May 2020 12:35:13 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477:9e51:a893:b0fe:602a])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 118B412832C6C;
-        Tue, 12 May 2020 12:35:13 -0700 (PDT)
-Date:   Tue, 12 May 2020 12:35:12 -0700 (PDT)
-Message-Id: <20200512.123512.1831107664735178245.davem@davemloft.net>
-To:     grygorii.strashko@ti.com
-Cc:     arnd@arndb.de, netdev@vger.kernel.org, tony@atomide.com,
-        linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, clay@daemons.net, dmurphy@ti.com
-Subject: Re: [PATCH net v4] net: ethernet: ti: Remove TI_CPTS_MOD workaround
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200512100230.17752-1-grygorii.strashko@ti.com>
-References: <20200512100230.17752-1-grygorii.strashko@ti.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 12 May 2020 12:35:13 -0700 (PDT)
+        id S1731056AbgELTgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 15:36:37 -0400
+Received: from mga02.intel.com ([134.134.136.20]:50368 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725554AbgELTgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 15:36:36 -0400
+IronPort-SDR: DJEQO43y8PgWG4nzq0uRG3fhGGSnD9P74Cg2WYk5A+bRcjnp1sv2LAcKXvddzgi/XpMbnRmc3X
+ 3NLrAwnGU2Sw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 12:36:31 -0700
+IronPort-SDR: 40b3KvgkS9aSfwRCgpfLB4gaMBu95CKV3Stjz1bYcKsh385+GCLANaLSVBNa9TnjMSRSs1ldeo
+ Rz4DqPcnq4sg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,384,1583222400"; 
+   d="scan'208";a="286765976"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 12 May 2020 12:36:26 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jYahW-000D61-2b; Wed, 13 May 2020 03:36:26 +0800
+Date:   Wed, 13 May 2020 03:36:16 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Vishal Sagar <vishal.sagar@xilinx.com>,
+        Hyun Kwon <hyunk@xilinx.com>,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        robh+dt@kernel.org, mark.rutland@arm.com,
+        Michal Simek <monstr@monstr.eu>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, hans.verkuil@cisco.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dinesh Kumar <dineshk@xilinx.com>,
+        Sandip Kothari <sandipk@xilinx.com>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Jacopo Mondi <jacopo@jmondi.org>
+Cc:     kbuild-all@lists.01.org, Hyun Kwon <hyun.kwon@xilinx.com>,
+        Vishal Sagar <vishal.sagar@xilinx.com>
+Subject: Re: [PATCH v13 2/2] media: v4l: xilinx: Add Xilinx MIPI CSI-2 Rx
+ Subsystem driver
+Message-ID: <202005130315.tuxScSNE%lkp@intel.com>
+References: <20200512151947.120348-3-vishal.sagar@xilinx.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200512151947.120348-3-vishal.sagar@xilinx.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
-Date: Tue, 12 May 2020 13:02:30 +0300
+Hi Vishal,
 
-> From: Clay McClure <clay@daemons.net>
-> 
-> My recent commit b6d49cab44b5 ("net: Make PTP-specific drivers depend on
-> PTP_1588_CLOCK") exposes a missing dependency in defconfigs that select
-> TI_CPTS without selecting PTP_1588_CLOCK, leading to linker errors of the
-> form:
-> 
-> drivers/net/ethernet/ti/cpsw.o: in function `cpsw_ndo_stop':
-> cpsw.c:(.text+0x680): undefined reference to `cpts_unregister'
->  ...
-> 
-> That's because TI_CPTS_MOD (which is the symbol gating the _compilation_ of
-> cpts.c) now depends on PTP_1588_CLOCK, and so is not enabled in these
-> configurations, but TI_CPTS (which is the symbol gating _calls_ to the cpts
-> functions) _is_ enabled. So we end up compiling calls to functions that
-> don't exist, resulting in the linker errors.
-> 
-> This patch fixes build errors and restores previous behavior by:
->  - ensure PTP_1588_CLOCK=y in TI specific configs and CPTS will be built
->  - remove TI_CPTS_MOD and, instead, add dependencies from CPTS in
->    TI_CPSW/TI_KEYSTONE_NETCP/TI_CPSW_SWITCHDEV as below:
-> 
->    config TI_CPSW_SWITCHDEV
->    ...
->     depends on TI_CPTS || !TI_CPTS
-> 
->    which will ensure proper dependencies PTP_1588_CLOCK -> TI_CPTS ->
-> TI_CPSW/TI_KEYSTONE_NETCP/TI_CPSW_SWITCHDEV and build type selection.
-> 
-> Note. For NFS boot + CPTS all of above configs have to be built-in.
-> 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Dan Murphy <dmurphy@ti.com>
-> Cc: Tony Lindgren <tony@atomide.com>
-> Fixes: b6d49cab44b5 ("net: Make PTP-specific drivers depend on PTP_1588_CLOCK")
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Signed-off-by: Clay McClure <clay@daemons.net>
-> [grygorii.strashko@ti.com: rewording, add deps cpsw/netcp from cpts, drop IS_REACHABLE]
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Thank you for the patch! Perhaps something to improve:
 
-Applied, thanks.
+[auto build test WARNING on linuxtv-media/master]
+[also build test WARNING on v5.7-rc5 next-20200512]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+
+url:    https://github.com/0day-ci/linux/commits/Vishal-Sagar/Add-support-for-Xilinx-CSI2-Receiver-Subsystem/20200512-232348
+base:   git://linuxtv.org/media_tree.git master
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-191-gc51a0382-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> drivers/media/platform/xilinx/xilinx-csi2rxss.c:816:5: sparse: sparse: symbol 'xcsi2rxss_enum_mbus_code' was not declared. Should it be static?
+
+Please review and possibly fold the followup patch.
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
