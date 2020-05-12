@@ -2,111 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D407F1CF20C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 12:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85FC1CF215
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 12:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729152AbgELKB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 06:01:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:51426 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725889AbgELKB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 06:01:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5BF391FB;
-        Tue, 12 May 2020 03:01:28 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.28.99])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E94313F71E;
-        Tue, 12 May 2020 03:01:23 -0700 (PDT)
-Date:   Tue, 12 May 2020 11:01:14 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Leo Yan <leo.yan@linaro.org>, Will Deacon <will@kernel.org>,
-        Marc Zyngier <maz@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Enrico Weigelt <info@metux.net>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/3] arm64: perf_event: Fix time offset prior to epoch
-Message-ID: <20200512100114.GA60359@C02TD0UTHF1T.local>
-References: <20200505135544.6003-1-leo.yan@linaro.org>
- <20200511092200.GF2957@hirez.programming.kicks-ass.net>
- <20200511092519.GA3001@hirez.programming.kicks-ass.net>
- <20200512063812.GA20352@leoy-ThinkPad-X240s>
- <20200512091918.GH2978@hirez.programming.kicks-ass.net>
+        id S1729367AbgELKCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 06:02:51 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:59336 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725889AbgELKCu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 06:02:50 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04CA2bK8048126;
+        Tue, 12 May 2020 05:02:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589277757;
+        bh=BGrIbY3cp+/L7d+Mq2hbW6lY+Zs3bK2D/B59HXAbyJQ=;
+        h=From:To:CC:Subject:Date;
+        b=lL6lcuIbtrbAGkkKLFH9xPCH56NnLBn6xzo0LnGxJmANkKZ5vT0BhSOU7FwVJityx
+         VTdaySDWyo3nfL+msZ4wU4TOc1/1anVBda10cHGnwQuR1nqzX8SlACAqAFkRl05ZKl
+         nNf0p+0+d33o2ekLkuy/OSB0zVEfjYv2X2wuSvL8=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04CA2bPv084175
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 May 2020 05:02:37 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 12
+ May 2020 05:02:37 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 12 May 2020 05:02:37 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04CA2aB0014537;
+        Tue, 12 May 2020 05:02:36 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Arnd Bergmann <arnd@arndb.de>, <netdev@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>
+CC:     <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        Clay McClure <clay@daemons.net>, Dan Murphy <dmurphy@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH net v4] net: ethernet: ti: Remove TI_CPTS_MOD workaround
+Date:   Tue, 12 May 2020 13:02:30 +0300
+Message-ID: <20200512100230.17752-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512091918.GH2978@hirez.programming.kicks-ass.net>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 11:19:18AM +0200, Peter Zijlstra wrote:
-> On Tue, May 12, 2020 at 02:38:12PM +0800, Leo Yan wrote:
-> > @@ -1165,28 +1166,26 @@ device_initcall(armv8_pmu_driver_init)
-> >  void arch_perf_update_userpage(struct perf_event *event,
-> >  			       struct perf_event_mmap_page *userpg, u64 now)
-> >  {
-> > +	struct clock_read_data *rd;
-> > +	unsigned int seq;
-> >  
-> >  	/*
-> >  	 * Internal timekeeping for enabled/running/stopped times
-> >  	 * is always computed with the sched_clock.
-> >  	 */
-> >  	userpg->cap_user_time = 1;
-> > +	userpg->cap_user_time_zero = 1;
-> >  
-> > +	do {
-> > +		rd = sched_clock_read_begin(&seq);
-> > +
-> > +		userpg->time_mult = rd->mult;
-> > +		userpg->time_shift = rd->shift;
-> > +		userpg->time_zero = rd->epoch_ns;
-> > +
-> > +		userpg->time_zero -= (rd->epoch_cyc * rd->mult) >> rd->shift;
-> 
-> Damn, I think this is broken vs the counter wrapping.
-> 
-> So what the sched_clock code does is:
-> 
-> 	cyc_to_ns((cyc - rd->epoch_cyc) & rd->sched_clock_mask, rd->mult, rd->shift)
-> 
-> But because the perf interface assumes a simple linear relation, we
-> can't express that properly.
-> 
-> Now, your arm64 counter is 56 bits, so wrapping is rare, but still, we
-> should probably fix that. And that probably needs an ABI extention
-> *sigh*.
+From: Clay McClure <clay@daemons.net>
 
-FWIW, its's /at least/ 56 bits wide, and the ARM ARM says that it
-shouldn't wrap in fewer than 40 years, so no correct implementation
-should wrap before the 2050s.
+My recent commit b6d49cab44b5 ("net: Make PTP-specific drivers depend on
+PTP_1588_CLOCK") exposes a missing dependency in defconfigs that select
+TI_CPTS without selecting PTP_1588_CLOCK, leading to linker errors of the
+form:
 
-If it's wider than 56 bits, the 56-bit portion could wrap more quickly
-than that, so we should probably always treat it as 64-bits.
+drivers/net/ethernet/ti/cpsw.o: in function `cpsw_ndo_stop':
+cpsw.c:(.text+0x680): undefined reference to `cpts_unregister'
+ ...
 
-From ARMv8.6 it's always 64 bits wide @ a nominal 1GHz, and a 64-bit
-wrap will take ~584.9 years (with a 56-bit wrap taking ~834 days).
+That's because TI_CPTS_MOD (which is the symbol gating the _compilation_ of
+cpts.c) now depends on PTP_1588_CLOCK, and so is not enabled in these
+configurations, but TI_CPTS (which is the symbol gating _calls_ to the cpts
+functions) _is_ enabled. So we end up compiling calls to functions that
+don't exist, resulting in the linker errors.
 
-See D11.1.2 "The system counter" in the latest ARM ARM (0487F.b):
+This patch fixes build errors and restores previous behavior by:
+ - ensure PTP_1588_CLOCK=y in TI specific configs and CPTS will be built
+ - remove TI_CPTS_MOD and, instead, add dependencies from CPTS in
+   TI_CPSW/TI_KEYSTONE_NETCP/TI_CPSW_SWITCHDEV as below:
 
-https://static.docs.arm.com/ddi0487/fb/DDI0487F_b_armv8_arm.pdf?_ga=2.83012310.1749782910.1589218924-1447552059.1588172444
+   config TI_CPSW_SWITCHDEV
+   ...
+    depends on TI_CPTS || !TI_CPTS
 
-https://developer.arm.com/docs/ddi0487/latest
+   which will ensure proper dependencies PTP_1588_CLOCK -> TI_CPTS ->
+TI_CPSW/TI_KEYSTONE_NETCP/TI_CPSW_SWITCHDEV and build type selection.
 
-Thanks,
-Mark.
+Note. For NFS boot + CPTS all of above configs have to be built-in.
+
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Dan Murphy <dmurphy@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>
+Fixes: b6d49cab44b5 ("net: Make PTP-specific drivers depend on PTP_1588_CLOCK")
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Clay McClure <clay@daemons.net>
+[grygorii.strashko@ti.com: rewording, add deps cpsw/netcp from cpts, drop IS_REACHABLE]
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+---
+
+v3: https://lkml.org/lkml/2020/5/8/356
+v2: https://lkml.org/lkml/2020/5/4/751
+
+ arch/arm/configs/keystone_defconfig  |  1 +
+ arch/arm/configs/omap2plus_defconfig |  1 +
+ drivers/net/ethernet/ti/Kconfig      | 16 ++++++----------
+ drivers/net/ethernet/ti/Makefile     |  2 +-
+ 4 files changed, 9 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arm/configs/keystone_defconfig b/arch/arm/configs/keystone_defconfig
+index 11e2211f9007..84a3b055f253 100644
+--- a/arch/arm/configs/keystone_defconfig
++++ b/arch/arm/configs/keystone_defconfig
+@@ -147,6 +147,7 @@ CONFIG_I2C_DAVINCI=y
+ CONFIG_SPI=y
+ CONFIG_SPI_DAVINCI=y
+ CONFIG_SPI_SPIDEV=y
++CONFIG_PTP_1588_CLOCK=y
+ CONFIG_PINCTRL_SINGLE=y
+ CONFIG_GPIOLIB=y
+ CONFIG_GPIO_SYSFS=y
+diff --git a/arch/arm/configs/omap2plus_defconfig b/arch/arm/configs/omap2plus_defconfig
+index 395588209b27..c3f749650d5d 100644
+--- a/arch/arm/configs/omap2plus_defconfig
++++ b/arch/arm/configs/omap2plus_defconfig
+@@ -274,6 +274,7 @@ CONFIG_SPI_TI_QSPI=m
+ CONFIG_HSI=m
+ CONFIG_OMAP_SSI=m
+ CONFIG_SSI_PROTOCOL=m
++CONFIG_PTP_1588_CLOCK=y
+ CONFIG_PINCTRL_SINGLE=y
+ CONFIG_DEBUG_GPIO=y
+ CONFIG_GPIO_SYSFS=y
+diff --git a/drivers/net/ethernet/ti/Kconfig b/drivers/net/ethernet/ti/Kconfig
+index 8e348780efb6..62f809b67469 100644
+--- a/drivers/net/ethernet/ti/Kconfig
++++ b/drivers/net/ethernet/ti/Kconfig
+@@ -49,6 +49,7 @@ config TI_CPSW_PHY_SEL
+ config TI_CPSW
+ 	tristate "TI CPSW Switch Support"
+ 	depends on ARCH_DAVINCI || ARCH_OMAP2PLUS || COMPILE_TEST
++	depends on TI_CPTS || !TI_CPTS
+ 	select TI_DAVINCI_MDIO
+ 	select MFD_SYSCON
+ 	select PAGE_POOL
+@@ -64,6 +65,7 @@ config TI_CPSW_SWITCHDEV
+ 	tristate "TI CPSW Switch Support with switchdev"
+ 	depends on ARCH_DAVINCI || ARCH_OMAP2PLUS || COMPILE_TEST
+ 	depends on NET_SWITCHDEV
++	depends on TI_CPTS || !TI_CPTS
+ 	select PAGE_POOL
+ 	select TI_DAVINCI_MDIO
+ 	select MFD_SYSCON
+@@ -77,23 +79,16 @@ config TI_CPSW_SWITCHDEV
+ 	  will be called cpsw_new.
+ 
+ config TI_CPTS
+-	bool "TI Common Platform Time Sync (CPTS) Support"
+-	depends on TI_CPSW || TI_KEYSTONE_NETCP || TI_CPSW_SWITCHDEV || COMPILE_TEST
++	tristate "TI Common Platform Time Sync (CPTS) Support"
++	depends on ARCH_OMAP2PLUS || ARCH_KEYSTONE || COMPILE_TEST
+ 	depends on COMMON_CLK
+-	depends on POSIX_TIMERS
++	depends on PTP_1588_CLOCK
+ 	---help---
+ 	  This driver supports the Common Platform Time Sync unit of
+ 	  the CPSW Ethernet Switch and Keystone 2 1g/10g Switch Subsystem.
+ 	  The unit can time stamp PTP UDP/IPv4 and Layer 2 packets, and the
+ 	  driver offers a PTP Hardware Clock.
+ 
+-config TI_CPTS_MOD
+-	tristate
+-	depends on TI_CPTS
+-	depends on PTP_1588_CLOCK
+-	default y if TI_CPSW=y || TI_KEYSTONE_NETCP=y || TI_CPSW_SWITCHDEV=y
+-	default m
+-
+ config TI_K3_AM65_CPSW_NUSS
+ 	tristate "TI K3 AM654x/J721E CPSW Ethernet driver"
+ 	depends on ARCH_K3 && OF && TI_K3_UDMA_GLUE_LAYER
+@@ -114,6 +109,7 @@ config TI_KEYSTONE_NETCP
+ 	select TI_DAVINCI_MDIO
+ 	depends on OF
+ 	depends on KEYSTONE_NAVIGATOR_DMA && KEYSTONE_NAVIGATOR_QMSS
++	depends on TI_CPTS || !TI_CPTS
+ 	---help---
+ 	  This driver supports TI's Keystone NETCP Core.
+ 
+diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/Makefile
+index 53792190e9c2..cb26a9d21869 100644
+--- a/drivers/net/ethernet/ti/Makefile
++++ b/drivers/net/ethernet/ti/Makefile
+@@ -13,7 +13,7 @@ obj-$(CONFIG_TI_DAVINCI_EMAC) += ti_davinci_emac.o
+ ti_davinci_emac-y := davinci_emac.o davinci_cpdma.o
+ obj-$(CONFIG_TI_DAVINCI_MDIO) += davinci_mdio.o
+ obj-$(CONFIG_TI_CPSW_PHY_SEL) += cpsw-phy-sel.o
+-obj-$(CONFIG_TI_CPTS_MOD) += cpts.o
++obj-$(CONFIG_TI_CPTS) += cpts.o
+ obj-$(CONFIG_TI_CPSW) += ti_cpsw.o
+ ti_cpsw-y := cpsw.o davinci_cpdma.o cpsw_ale.o cpsw_priv.o cpsw_sl.o cpsw_ethtool.o
+ obj-$(CONFIG_TI_CPSW_SWITCHDEV) += ti_cpsw_new.o
+-- 
+2.17.1
+
