@@ -2,244 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2751CFF97
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 22:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500191CFFE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 22:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731258AbgELUjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 16:39:20 -0400
-Received: from muru.com ([72.249.23.125]:54188 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731209AbgELUjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 16:39:18 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 3D16C812F;
-        Tue, 12 May 2020 20:40:04 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     linux-omap@vger.kernel.org
-Cc:     "Andrew F . Davis" <afd@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Suman Anna <s-anna@ti.com>, Tero Kristo <t-kristo@ti.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Subject: [PATCH 6/6] ARM: dts: Configure omap4 and 5 l4_abe for genpd and drop platform data
-Date:   Tue, 12 May 2020 13:38:52 -0700
-Message-Id: <20200512203852.29499-7-tony@atomide.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200512203852.29499-1-tony@atomide.com>
-References: <20200512203852.29499-1-tony@atomide.com>
+        id S1731176AbgELUyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 16:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725938AbgELUyz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 16:54:55 -0400
+X-Greylist: delayed 822 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 12 May 2020 13:54:55 PDT
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F7FC061A0C;
+        Tue, 12 May 2020 13:54:55 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 49M8pb1h0QzQlJh;
+        Tue, 12 May 2020 22:41:11 +0200 (CEST)
+Authentication-Results: spamfilter02.heinlein-hosting.de (amavisd-new);
+        dkim=pass (2048-bit key) reason="pass (just generated, assumed good)"
+        header.d=mailbox.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1589316069;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=MHE5HDYUp4ziY4D8HlKdrvvV3+WoPULvfdhF5zVXVow=;
+        b=x+9/A1OdczhM/9J4mozc0t4zDAnMYC7w7Wy7n/vgpr9Ko3TnZGe26KcVhCDqVgynRnL48m
+        QlMlcr06l09187DMD8yfeT0ihABTolD9w9MajIeQhmOjKpTK/LpcXDC5r+j0Rpx3/IRg9v
+        55RxYBwjIszNsoF6qkcUlEc4xcu96dIIEt2uyH/lO4aa4z4b6jep+j87dfXZxQQbVTw+EL
+        9nf/Jf/5ooR3wrk/zzU/TBw+3gjl3ILdBD1BfdL7dr78aap4LqwAKfYX4WMsWJIbgZythV
+        azLqSF3mCaqrpTpIQ3RuuP0tEKaMqBK8hPmGKgS+VEbD6g6oiQxe1rFF38Il5w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :message-id:date:date:subject:subject:from:from:received; s=
+        mail20150812; t=1589316068; bh=18gqh2bI5mRZ87cfRXk7+SQH6lRaU/Zej
+        e9HRPdkQ9E=; b=kepMPCCFDjoGSM0iJT622cLcScB2XDeCJqOLjllrJmV+P1pXQ
+        5BexN9QyP9WLbVOiQLDiuTr53VPQZHip0pgrCj7XD0zls4HnKaqq8y4rIPZz/Az+
+        DNdT/kF7Yd4+tclo4Yu4IQsi/EYB6FgZSgO/w7x24BoEUbj2ZehbnSdGdvDaUZVS
+        Jhcfr0nP2z7A2OFe0ofEJH5jYYmKEc0D+nr4RLYljZDjbC2aremYmsPC2VC2Qqki
+        VMAbumMJOOl8bolElT6ZcAwD0L8WmqLJkiWTQBfY1538qk3tGHg+EyPSYYOvOw8N
+        05iYCoxuD6pcPaoZRcs9bNOJOFAt4wikcYPGg==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by spamfilter02.heinlein-hosting.de (spamfilter02.heinlein-hosting.de [80.241.56.116]) (amavisd-new, port 10030)
+        with ESMTP id g1Avzd_OYPJZ; Tue, 12 May 2020 22:41:08 +0200 (CEST)
+From:   =?UTF-8?q?Bernhard=20=C3=9Cbelacker?= <bernhardu@mailbox.org>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        linux-input@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Bernhard=20=C3=9Cbelacker?= <bernhardu@mailbox.org>,
+        Otmar Meier <otmarjun.meier@nexgo.de>
+Subject: [PATCH] platform/x86: touchscreen_dmi: Add info for the Trekstor Yourbook C11B
+Date:   Tue, 12 May 2020 22:40:09 +0200
+Message-Id: <20200512204009.4751-1-bernhardu@mailbox.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 28EC51807
+X-Rspamd-Score: -4.38 / 15.00 / 15.00
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can power off l4_abe domain when not in use when we configure it for
-genpd. And with that change, we can now also drop the old unused legacy
-platform data.
+Add touchscreen info for the Trekstor Yourbook C11B. It seems to
+use the same touchscreen as the Primebook C11, so we only add a new DMI
+match.
 
-Note that we also need to now use "simple-pm-bus" instead of "simple-bus"
-for PM runtime to get enabled for the bus.
-
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Cc: Otmar Meier <otmarjun.meier@nexgo.de>
+Reported-and-tested-by: Otmar Meier <otmarjun.meier@nexgo.de>
+Signed-off-by: Bernhard Übelacker <bernhardu@mailbox.org>
 ---
- arch/arm/boot/dts/omap4-l4-abe.dtsi        |  7 +++--
- arch/arm/boot/dts/omap4.dtsi               |  6 ++++
- arch/arm/boot/dts/omap5-l4-abe.dtsi        |  7 +++--
- arch/arm/boot/dts/omap5.dtsi               |  6 ++++
- arch/arm/mach-omap2/omap_hwmod_44xx_data.c | 33 ----------------------
- arch/arm/mach-omap2/omap_hwmod_54xx_data.c | 31 --------------------
- 6 files changed, 22 insertions(+), 68 deletions(-)
+ drivers/platform/x86/touchscreen_dmi.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/omap4-l4-abe.dtsi b/arch/arm/boot/dts/omap4-l4-abe.dtsi
---- a/arch/arm/boot/dts/omap4-l4-abe.dtsi
-+++ b/arch/arm/boot/dts/omap4-l4-abe.dtsi
-@@ -1,14 +1,17 @@
- &l4_abe {						/* 0x40100000 */
--	compatible = "ti,omap4-l4-abe", "simple-bus";
-+	compatible = "ti,omap4-l4-abe", "simple-pm-bus";
- 	reg = <0x40100000 0x400>,
- 	      <0x40100400 0x400>;
- 	reg-names = "la", "ap";
-+	power-domains = <&prm_abe>;
-+	clocks = <&abe_clkctrl OMAP4_L4_ABE_CLKCTRL 0>;
-+	clock-names = "fck";
- 	#address-cells = <1>;
- 	#size-cells = <1>;
- 	ranges = <0x00000000 0x40100000 0x100000>,	/* segment 0 */
- 		 <0x49000000 0x49000000 0x100000>;
- 	segment@0 {					/* 0x40100000 */
--		compatible = "simple-bus";
-+		compatible = "simple-pm-bus";
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		ranges =
-diff --git a/arch/arm/boot/dts/omap4.dtsi b/arch/arm/boot/dts/omap4.dtsi
---- a/arch/arm/boot/dts/omap4.dtsi
-+++ b/arch/arm/boot/dts/omap4.dtsi
-@@ -637,6 +637,12 @@ prm_tesla: prm@400 {
- 		#reset-cells = <1>;
- 	};
- 
-+	prm_abe: prm@500 {
-+		compatible = "ti,omap4-prm-inst", "ti,omap-prm-inst";
-+		reg = <0x500 0x100>;
-+		#power-domain-cells = <0>;
-+	};
-+
- 	prm_core: prm@700 {
- 		compatible = "ti,omap4-prm-inst", "ti,omap-prm-inst";
- 		reg = <0x700 0x100>;
-diff --git a/arch/arm/boot/dts/omap5-l4-abe.dtsi b/arch/arm/boot/dts/omap5-l4-abe.dtsi
---- a/arch/arm/boot/dts/omap5-l4-abe.dtsi
-+++ b/arch/arm/boot/dts/omap5-l4-abe.dtsi
-@@ -1,14 +1,17 @@
- &l4_abe {						/* 0x40100000 */
--	compatible = "ti,omap5-l4-abe", "simple-bus";
-+	compatible = "ti,omap5-l4-abe", "simple-pm-bus";
- 	reg = <0x40100000 0x400>,
- 	      <0x40100400 0x400>;
- 	reg-names = "la", "ap";
-+	power-domains = <&prm_abe>;
-+	clocks = <&abe_clkctrl OMAP5_L4_ABE_CLKCTRL 0>;
-+	clock-names = "fck";
- 	#address-cells = <1>;
- 	#size-cells = <1>;
- 	ranges = <0x00000000 0x40100000 0x100000>,	/* segment 0 */
- 		 <0x49000000 0x49000000 0x100000>;
- 	segment@0 {					/* 0x40100000 */
--		compatible = "simple-bus";
-+		compatible = "simple-pm-bus";
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		ranges =
-diff --git a/arch/arm/boot/dts/omap5.dtsi b/arch/arm/boot/dts/omap5.dtsi
---- a/arch/arm/boot/dts/omap5.dtsi
-+++ b/arch/arm/boot/dts/omap5.dtsi
-@@ -563,6 +563,12 @@ prm_dsp: prm@400 {
- 		#reset-cells = <1>;
- 	};
- 
-+	prm_abe: prm@500 {
-+		compatible = "ti,omap5-prm-inst", "ti,omap-prm-inst";
-+		reg = <0x500 0x100>;
-+		#power-domain-cells = <0>;
-+	};
-+
- 	prm_core: prm@700 {
- 		compatible = "ti,omap5-prm-inst", "ti,omap-prm-inst";
- 		reg = <0x700 0x100>;
-diff --git a/arch/arm/mach-omap2/omap_hwmod_44xx_data.c b/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
---- a/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
-@@ -124,21 +124,6 @@ static struct omap_hwmod_class omap44xx_l4_hwmod_class = {
- 	.name	= "l4",
- };
- 
--/* l4_abe */
--static struct omap_hwmod omap44xx_l4_abe_hwmod = {
--	.name		= "l4_abe",
--	.class		= &omap44xx_l4_hwmod_class,
--	.clkdm_name	= "abe_clkdm",
--	.prcm = {
--		.omap4 = {
--			.clkctrl_offs = OMAP4_CM1_ABE_L4ABE_CLKCTRL_OFFSET,
--			.context_offs = OMAP4_RM_ABE_AESS_CONTEXT_OFFSET,
--			.lostcontext_mask = OMAP4430_LOSTMEM_AESSMEM_MASK,
--			.flags	      = HWMOD_OMAP4_NO_CONTEXT_LOSS_BIT,
--		},
--	},
--};
--
- /* l4_cfg */
- static struct omap_hwmod omap44xx_l4_cfg_hwmod = {
- 	.name		= "l4_cfg",
-@@ -1007,22 +992,6 @@ static struct omap_hwmod_ocp_if omap44xx_l4_cfg__l3_main_3 = {
- 	.user		= OCP_USER_MPU | OCP_USER_SDMA,
- };
- 
--/* l3_main_1 -> l4_abe */
--static struct omap_hwmod_ocp_if omap44xx_l3_main_1__l4_abe = {
--	.master		= &omap44xx_l3_main_1_hwmod,
--	.slave		= &omap44xx_l4_abe_hwmod,
--	.clk		= "l3_div_ck",
--	.user		= OCP_USER_MPU | OCP_USER_SDMA,
--};
--
--/* mpu -> l4_abe */
--static struct omap_hwmod_ocp_if omap44xx_mpu__l4_abe = {
--	.master		= &omap44xx_mpu_hwmod,
--	.slave		= &omap44xx_l4_abe_hwmod,
--	.clk		= "ocp_abe_iclk",
--	.user		= OCP_USER_MPU | OCP_USER_SDMA,
--};
--
- /* l3_main_1 -> l4_cfg */
- static struct omap_hwmod_ocp_if omap44xx_l3_main_1__l4_cfg = {
- 	.master		= &omap44xx_l3_main_1_hwmod,
-@@ -1266,8 +1235,6 @@ static struct omap_hwmod_ocp_if *omap44xx_hwmod_ocp_ifs[] __initdata = {
- 	&omap44xx_l3_main_1__l3_main_3,
- 	&omap44xx_l3_main_2__l3_main_3,
- 	&omap44xx_l4_cfg__l3_main_3,
--	&omap44xx_l3_main_1__l4_abe,
--	&omap44xx_mpu__l4_abe,
- 	&omap44xx_l3_main_1__l4_cfg,
- 	&omap44xx_l3_main_2__l4_per,
- 	&omap44xx_l4_cfg__l4_wkup,
-diff --git a/arch/arm/mach-omap2/omap_hwmod_54xx_data.c b/arch/arm/mach-omap2/omap_hwmod_54xx_data.c
---- a/arch/arm/mach-omap2/omap_hwmod_54xx_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_54xx_data.c
-@@ -121,19 +121,6 @@ static struct omap_hwmod_class omap54xx_l4_hwmod_class = {
- 	.name	= "l4",
- };
- 
--/* l4_abe */
--static struct omap_hwmod omap54xx_l4_abe_hwmod = {
--	.name		= "l4_abe",
--	.class		= &omap54xx_l4_hwmod_class,
--	.clkdm_name	= "abe_clkdm",
--	.prcm = {
--		.omap4 = {
--			.clkctrl_offs = OMAP54XX_CM_ABE_L4_ABE_CLKCTRL_OFFSET,
--			.flags = HWMOD_OMAP4_NO_CONTEXT_LOSS_BIT,
--		},
--	},
--};
--
- /* l4_cfg */
- static struct omap_hwmod omap54xx_l4_cfg_hwmod = {
- 	.name		= "l4_cfg",
-@@ -618,22 +605,6 @@ static struct omap_hwmod_ocp_if omap54xx_l4_cfg__l3_main_3 = {
- 	.user		= OCP_USER_MPU | OCP_USER_SDMA,
- };
- 
--/* l3_main_1 -> l4_abe */
--static struct omap_hwmod_ocp_if omap54xx_l3_main_1__l4_abe = {
--	.master		= &omap54xx_l3_main_1_hwmod,
--	.slave		= &omap54xx_l4_abe_hwmod,
--	.clk		= "abe_iclk",
--	.user		= OCP_USER_MPU | OCP_USER_SDMA,
--};
--
--/* mpu -> l4_abe */
--static struct omap_hwmod_ocp_if omap54xx_mpu__l4_abe = {
--	.master		= &omap54xx_mpu_hwmod,
--	.slave		= &omap54xx_l4_abe_hwmod,
--	.clk		= "abe_iclk",
--	.user		= OCP_USER_MPU | OCP_USER_SDMA,
--};
--
- /* l3_main_1 -> l4_cfg */
- static struct omap_hwmod_ocp_if omap54xx_l3_main_1__l4_cfg = {
- 	.master		= &omap54xx_l3_main_1_hwmod,
-@@ -741,8 +712,6 @@ static struct omap_hwmod_ocp_if *omap54xx_hwmod_ocp_ifs[] __initdata = {
- 	&omap54xx_l3_main_1__l3_main_3,
- 	&omap54xx_l3_main_2__l3_main_3,
- 	&omap54xx_l4_cfg__l3_main_3,
--	&omap54xx_l3_main_1__l4_abe,
--	&omap54xx_mpu__l4_abe,
- 	&omap54xx_l3_main_1__l4_cfg,
- 	&omap54xx_l3_main_2__l4_per,
- 	&omap54xx_l3_main_1__l4_wkup,
+diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
+index 6ec8923dec1a..d87315892458 100644
+--- a/drivers/platform/x86/touchscreen_dmi.c
++++ b/drivers/platform/x86/touchscreen_dmi.c
+@@ -1106,6 +1106,14 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
+ 			DMI_MATCH(DMI_BIOS_VERSION, "TREK.G.WI71C.JGBMRBA05"),
+ 		},
+ 	},
++	{
++		/* Trekstor Yourbook C11B (same touchscreen as the Primebook C11) */
++		.driver_data = (void *)&trekstor_primebook_c11_data,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TREKSTOR"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "YOURBOOK C11B"),
++		},
++	},
+ 	{
+ 		/* Yours Y8W81, same case and touchscreen as Chuwi Vi8 */
+ 		.driver_data = (void *)&chuwi_vi8_data,
 -- 
-2.26.2
+2.20.1
+
