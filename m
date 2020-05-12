@@ -2,91 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955021CFEEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 22:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D43141CFEF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 22:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731150AbgELUGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 16:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34196 "EHLO
+        id S1731140AbgELUHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 16:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgELUGr (ORCPT
+        with ESMTP id S1725938AbgELUHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 16:06:47 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6C5C061A0C;
-        Tue, 12 May 2020 13:06:47 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id s10so15518739iog.7;
-        Tue, 12 May 2020 13:06:47 -0700 (PDT)
+        Tue, 12 May 2020 16:07:52 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C631EC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 13:07:52 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x13so1002015pfn.11
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 13:07:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=5gYRNxsl+AJhtF04Scdhgt92FgaaH0tr9cW3OfY8ghg=;
-        b=B1dEFzwlpmVU422p3FMoQ/2Agz+JD5HFnJJsznQT+Z6BVKUFOD5nzaX4Ej3qjl6jYg
-         eGzz4yRKzXJFTRYRogi/CoJ+OQ+mHWn7sIIW4N+TeaBqwx3d21TOo9lAMPfb7h9Lk28o
-         0aUs8bp90sNxhLpRZ4wBvZboDtXnRKvALd2evsPxeH3+K8eja74l+rRaXUqimN8n7RoV
-         10W9YoewtKR/WVS4Qlq5wT2kZyrc94NIqbYRVGDz4jOTU97moeAOMFb+D5KCag4FzN09
-         soOTCuTxN6OqY8h3z6+AJrphAmn2UlSAnXXqIX3R4Zg+ZhBOAMJx/+6ZFdQf1NydboQK
-         EDdw==
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=rhtiEIBdzrHkDBisACwiSoBSZLTSxhAWeD0kG6AJCFU=;
+        b=H5iBBvNakTJBq65S0nZntk6pa2kBI14r+JX5VeLNl0q/aSIb/oOQ5cr3B5ryhwWmRJ
+         Qv5/d2wU1pzVzv+HpZXfwy4Il/mtIWoxr8hE6LRJ+3uD13CSwrYAQmP3CST8spjPid1g
+         DbEQl/LlxgyBbFP2WkWeDCbufGZoDefL3Lgrh7iOORUEnZ1MWFSxG0WIYT8ZbZrDRRNM
+         24SAphwjXWQjnh72iqX+TLs4r9HVZe2WEXV9145cVwrnl5mSmCzFTDOe9o6QDbmSzE0R
+         gc6C1T6ILCw0YUviirEtZPUWm3Ey/XSn9yVSH4YZGqM/2TV+ylRvb8iwgkEctkcbcmoa
+         Cj/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=5gYRNxsl+AJhtF04Scdhgt92FgaaH0tr9cW3OfY8ghg=;
-        b=Bq1+Flr+JGW5s4I6Yh0MYbAlDL+AHpMkqJw4hbz4d4VWN/M7IAyXVhYRiBhklH8mYc
-         0UMdZ6o17TUqwZ+3bAaZftS0kE2j8z+VuIK//aIZaT6d2DYNPZwBmmo/QeNqxlIw2w9l
-         t6XwtVrxb3kkTH37uuHpfClFpciwIn05U8VEGKsw+8kZtrQx1cJ/vys+AgOiGJ1nsiec
-         xb5161j/7uE5lFUVuGF89lVoURMPtOmo5zVt2OIrGliFtc13bZc7x7SmXs7nC383T2Kx
-         /wVVKzXP8kvDiNvQGCgYYPqaGaD3UWJo8bzUUwkKRA0E0840JeTjNS4bx77epd+nCXwa
-         sN4Q==
-X-Gm-Message-State: AGi0PubefBPY63/B9Mt1Bzz21ZSGqdBNlpsJJhBa9N5Sfu+mZvhjS4ob
-        qJWU4GAbU7MPpoHeaM674Gs6bEJdO95ydfVDyY4=
-X-Google-Smtp-Source: APiQypI5Ez6wBRTtNiR23CWKmDd9v/YKydLRgNpwuOsa0fEFEnN+OfJIe5g9k7ceLDoqDWAa1KQhb2WwbUuKYGrID9Q=
-X-Received: by 2002:a6b:7d4a:: with SMTP id d10mr22667811ioq.70.1589314006427;
- Tue, 12 May 2020 13:06:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200504031340.7103-1-nick.desaulniers@gmail.com>
- <CA+icZUUOaqeKeh6n4BJq2k6XQWAfNghUj57j42ZX5qyd3iOmLw@mail.gmail.com>
- <20200505004738.ew2lcp27c2n4jqia@google.com> <CAK7LNAR7-VMEWBcJ_Wd+61ZDHEa0gD8FaSs63YPu7m_FgH8Htg@mail.gmail.com>
- <CAKwvOdmEP9Auuc+M+MqPoQmx+70DgdsPYZQ6pg=8oGnfCviqRA@mail.gmail.com> <20200512200114.64vo5lbl7wk2tzxk@google.com>
-In-Reply-To: <20200512200114.64vo5lbl7wk2tzxk@google.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Tue, 12 May 2020 22:06:35 +0200
-Message-ID: <CA+icZUUvdso=R3579RReTFk=ts0rNNCwcx9ydGGsG++sT8=abQ@mail.gmail.com>
-Subject: Re: [PATCH] Makefile: support compressed debug info
-To:     Fangrui Song <maskray@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <nick.desaulniers@gmail.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Changbin Du <changbin.du@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=rhtiEIBdzrHkDBisACwiSoBSZLTSxhAWeD0kG6AJCFU=;
+        b=maZnpOoMPxQtRCBV9cjZLtAcMMlNmEeMUZkHN4cHtEsZZy6CWrM/6cZX3QSKCf7Or8
+         cttE9NzGkNGVtmoGWzvfGCg8TYA0piP6vbpijmirkUNEUWbcdLg46CzbSLSdTTUUUpky
+         Fapith9/7FnqF7r1AF7aFlBS2d6HD+JC/bdt0NujQt6DqJe3etNfbnZksCDbWO8RXyKG
+         M0ZHo7jCwUqsVMtDvVMqk0eQhKwnF8u2ZWbhIEC7OOXTMGKoPfnCJpbLWtE2kLTdDueL
+         nxT7tTIN8m8SfCGefqHdSQnCv8ZxVfA2/LHPEUmgD8UpdFpzDN1D+q/IN1+eLXH+0hbm
+         aUkw==
+X-Gm-Message-State: AOAM532CHU/d7FsvLcuuQZzK99xjt4sj4epglmbLRylBhSM10X23JgqM
+        Eqw9/Ret5V+kw3QYxkiOSpqcVw==
+X-Google-Smtp-Source: ABdhPJwYVudVGNEQY4Il1qQDZHj/08latFnDIYDe8ER9Rqo1bss5a2rLcmgYlaAvcJbIK4Yv5CGZ9g==
+X-Received: by 2002:a63:c04a:: with SMTP id z10mr8395941pgi.430.1589314072335;
+        Tue, 12 May 2020 13:07:52 -0700 (PDT)
+Received: from ?IPv6:2601:646:c200:1ef2:a93f:12ed:b744:bd73? ([2601:646:c200:1ef2:a93f:12ed:b744:bd73])
+        by smtp.gmail.com with ESMTPSA id x132sm12819152pfc.57.2020.05.12.13.07.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 May 2020 13:07:51 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [RFC v4][PATCH part-1 0/7] ASI - Part I (ASI Infrastructure and PTI)
+Date:   Tue, 12 May 2020 13:07:28 -0700
+Message-Id: <7F322031-034E-4B36-A60F-663EAA4C99C9@amacapital.net>
+References: <a65d6cbf-41de-3001-6792-21a4233d8467@intel.com>
+Cc:     Alexandre Chartre <alexandre.chartre@oracle.com>,
+        rkrcmar@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
+        luto@kernel.org, peterz@infradead.org, x86@kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, konrad.wilk@oracle.com,
+        jan.setjeeilers@oracle.com, liran.alon@oracle.com,
+        junaids@google.com, graf@amazon.de, rppt@linux.vnet.ibm.com,
+        kuzuno@gmail.com, mgross@linux.intel.com
+In-Reply-To: <a65d6cbf-41de-3001-6792-21a4233d8467@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+X-Mailer: iPhone Mail (17E262)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 10:01 PM Fangrui Song <maskray@google.com> wrote:
->
-> On 2020-05-12, Nick Desaulniers wrote:
-...
-> >I have a patch series that enables dwarf5 support in the kernel that
-> >I'm working up to.  I wanted to send this first.  Both roughly reduce
-> >the debug info size by 20% each, though I haven't measured them
-> >together, yet.  Requires ToT binutils because there have been many
-> >fixes from reports of mine recently.
->
-> This will be awesome! I also heard that enabling DWARF v5 for our object
-> files can easily make debug info size smaller by 20%. Glad that the
-> kernel can benefit it as well:)
 
-Please CC me on your pathcset - 20% smaller - I flip out.
+> On May 12, 2020, at 10:45 AM, Dave Hansen <dave.hansen@intel.com> wrote:
+>=20
+> =EF=BB=BFOn 5/4/20 7:49 AM, Alexandre Chartre wrote:
+>> This version 4 of the kernel Address Space Isolation (ASI) RFC. I have
+>> broken it down into three distinct parts:
+>>=20
+>> - Part I: ASI Infrastructure and PTI (this part)
+>> - Part II: Decorated Page-Table
+>> - Part III: ASI Test Driver and CLI
+>>=20
+>> Part I is similar to RFCv3 [3] with some small bug fixes. Parts II and II=
+I
+>> extend the initial patchset: part II introduces decorated page-table in
+>> order to provide convenient page-table management functions, and part III=
 
-- Sedat -
+>> provides a driver and CLI for testing ASI (using parts I and II).
+>=20
+> These look interesting.  I haven't found any holes in your methods,
+> although the interrupt depth tracking worries me a bit.  I tried and
+> failed to do a similar thing with PTI in the NMI path, but you might
+> have just bested me there. :)
+>=20
+> It's very interesting that you've been able to implement PTI underneath
+> all of this, and the "test driver" is really entertaining!
+>=20
+> That said, this is working in some of the nastiest corners of the x86
+> code and this is going to take quite an investment to get reviewed.  I'm
+> not *quite* sure it's all worth it.
+>=20
+> So, this isn't being ignored, I'm just not quite sure what to do with
+> it, yet.
+
+I=E2=80=99m going to wait until the dust settles on tglx=E2=80=99s big entry=
+ rework before I look at this.=
