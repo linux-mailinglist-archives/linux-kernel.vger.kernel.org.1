@@ -2,145 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72AF1D0213
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2578A1D0008
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 23:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731898AbgELWYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
+        id S1731206AbgELVCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 17:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730712AbgELWXi (ORCPT
+        by vger.kernel.org with ESMTP id S1726885AbgELVCC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 18:23:38 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 590A1C05BD09
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:38 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jYdIo-0005B9-AL; Wed, 13 May 2020 00:23:08 +0200
-Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id CA9C6100605;
-        Wed, 13 May 2020 00:23:05 +0200 (CEST)
-Message-Id: <20200512213813.284961536@linutronix.de>
-User-Agent: quilt/0.65
-Date:   Tue, 12 May 2020 23:01:37 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V5 38/38] x86/entry: Remove the TRACE_IRQS cruft
-References: <20200512210059.056244513@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+        Tue, 12 May 2020 17:02:02 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE41C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 14:02:02 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id v63so6967596pfb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 14:02:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ayvF8u1Trz98kPzut/fpymP+skmFBSVYrYtlr1DmSGU=;
+        b=FylPsE15RtP6ywL7le1gyvsxrmPItQoeC/5Ryg5WHuwi0HcfkcvPiSWmUjVKs8lCMX
+         bmDljyY3/7gvmviPldTdLfU4Gs8NapeSyUdlJsTReKuUfoyOHDeg65aEuEAKZWWskEYx
+         ZbZUOyUzIJptP/QoXJsD/1wRwyX3QKwfRhEYzozjKVwvpZWNK+GnE594UG/v3AhgeGfv
+         gofkpVIahbbP3/7V7MmAgKiAeY7fZ0ppG22okSItXuwTjx6U9Jcki7Sq5Yi7wkbznQz1
+         Ch87INmwG2hjL+9unZhTUzOOtMPkkYN6BDbMCi/1bDTHkBy0AvM5TQwMGDjbf5JZ+L5m
+         ZXVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ayvF8u1Trz98kPzut/fpymP+skmFBSVYrYtlr1DmSGU=;
+        b=dPbeSnkN4qheNPEIAdijPP7awIeFvhTMWNhXp0STOsdiJiV0ZMq07q/qQ8iC+kf80L
+         JcGIPJRoyBPZ+xMxFu62/ERdHE2/6uZ2pB4PBH5M+UAKJIHBTyh9F6i1ECJ07wbT/WAV
+         XZnnyW6Wfu3aebSfXoqOXL4h1mmAc9tIxq3/1AEJE5KldgvxddGUZCaOG6ZJhH3vLp9d
+         wKLNrh0qyR//dhbLUMco3ygccxnZkLYS0Qu7ZpSVJkHCwGgKCT0sFCP2YzzssmuC0SRa
+         jtSlM1gNw1ikJixvAxKfAXn906ECBQhn4b4+wWWPUkHeIotrHwxqQ8Sz0EVH1BkuwACN
+         I8Zw==
+X-Gm-Message-State: AGi0PuaLHtdHO0FduaPfAscCggQOvsGzQQMgSnlXE3kzKtrcs1igb7VL
+        PEAUe2QLPmfm4k3E/5fSbhJ1ayTugAE=
+X-Google-Smtp-Source: APiQypKlB/jxdOAsAkgCZwJcJ3f8Oon0jsH3vtTXx3EiO/PQpimL6MarV7shEWha7UHZ3nX7tUkusw==
+X-Received: by 2002:aa7:9258:: with SMTP id 24mr23618884pfp.35.1589317321647;
+        Tue, 12 May 2020 14:02:01 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id s123sm12859105pfs.170.2020.05.12.14.02.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 14:02:00 -0700 (PDT)
+Date:   Tue, 12 May 2020 14:02:00 -0700 (PDT)
+X-Google-Original-Date: Tue, 12 May 2020 13:54:00 PDT (-0700)
+Subject:     Re: [PATCH -next] riscv: perf: RISCV_BASE_PMU should be closeable
+In-Reply-To: <20200507150445.174390-2-wangkefeng.wang@huawei.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        wangkefeng.wang@huawei.com, alankao@andestech.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     wangkefeng.wang@huawei.com
+Message-ID: <mhng-58148e77-03b6-4c56-98ea-0d0cbf99d522@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No more users.
+On Thu, 07 May 2020 08:04:45 PDT (-0700), wangkefeng.wang@huawei.com wrote:
+> As 178e9fc47aae("perf: riscv: preliminary RISC-V support") said,
+> For RISCV_BASE_PMU, 'this option can also be disable to reduce kernel size',
+> but it could not work well, we need diable both RISCV_BASE_PMU and
+> PERF_EVENTS manually, or build error will occur when only disable
+> RISCV_BASE_PMU.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/entry/entry_64.S       |   13 -------------
- arch/x86/entry/thunk_64.S       |    9 +--------
- arch/x86/include/asm/irqflags.h |   10 ----------
- 3 files changed, 1 insertion(+), 31 deletions(-)
+I'm worried this belies a larger issue related to how this PMU stuff works, but
+we have only one PMU right now so it's not a pressing issue.  I've taken this
+onto fixes.
 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -53,19 +53,6 @@ SYM_CODE_START(native_usergs_sysret64)
- SYM_CODE_END(native_usergs_sysret64)
- #endif /* CONFIG_PARAVIRT */
- 
--.macro TRACE_IRQS_FLAGS flags:req
--#ifdef CONFIG_TRACE_IRQFLAGS
--	btl	$9, \flags		/* interrupts off? */
--	jnc	1f
--	TRACE_IRQS_ON
--1:
--#endif
--.endm
--
--.macro TRACE_IRQS_IRETQ
--	TRACE_IRQS_FLAGS EFLAGS(%rsp)
--.endm
--
- /*
-  * 64-bit SYSCALL instruction entry. Up to 6 arguments in registers.
-  *
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -3,7 +3,6 @@
-  * Save registers before calling assembly functions. This avoids
-  * disturbance of register allocation in some inline assembly constructs.
-  * Copyright 2001,2002 by Andi Kleen, SuSE Labs.
-- * Added trace_hardirqs callers - Copyright 2007 Steven Rostedt, Red Hat, Inc.
-  */
- #include <linux/linkage.h>
- #include "calling.h"
-@@ -37,11 +36,6 @@ SYM_FUNC_END(\name)
- 	_ASM_NOKPROBE(\name)
- 	.endm
- 
--#ifdef CONFIG_TRACE_IRQFLAGS
--	THUNK trace_hardirqs_on_thunk,trace_hardirqs_on_caller,1
--	THUNK trace_hardirqs_off_thunk,trace_hardirqs_off_caller,1
--#endif
--
- #ifdef CONFIG_PREEMPTION
- 	THUNK preempt_schedule_thunk, preempt_schedule
- 	THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
-@@ -49,8 +43,7 @@ SYM_FUNC_END(\name)
- 	EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
- #endif
- 
--#if defined(CONFIG_TRACE_IRQFLAGS) \
-- || defined(CONFIG_PREEMPTION)
-+#ifdef CONFIG_PREEMPTION
- SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
- 	popq %r11
- 	popq %r10
---- a/arch/x86/include/asm/irqflags.h
-+++ b/arch/x86/include/asm/irqflags.h
-@@ -172,14 +172,4 @@ static inline int arch_irqs_disabled(voi
- }
- #endif /* !__ASSEMBLY__ */
- 
--#ifdef __ASSEMBLY__
--#ifdef CONFIG_TRACE_IRQFLAGS
--#  define TRACE_IRQS_ON		call trace_hardirqs_on_thunk;
--#  define TRACE_IRQS_OFF	call trace_hardirqs_off_thunk;
--#else
--#  define TRACE_IRQS_ON
--#  define TRACE_IRQS_OFF
--#endif
--#endif /* __ASSEMBLY__ */
--
- #endif
+Thanks!
 
+>
+> Cc: Alan Kao <alankao@andestech.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  arch/riscv/include/asm/perf_event.h | 8 ++------
+>  arch/riscv/kernel/Makefile          | 2 +-
+>  2 files changed, 3 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/perf_event.h b/arch/riscv/include/asm/perf_event.h
+> index 0234048b12bc..062efd3a1d5d 100644
+> --- a/arch/riscv/include/asm/perf_event.h
+> +++ b/arch/riscv/include/asm/perf_event.h
+> @@ -12,19 +12,14 @@
+>  #include <linux/ptrace.h>
+>  #include <linux/interrupt.h>
+>
+> +#ifdef CONFIG_RISCV_BASE_PMU
+>  #define RISCV_BASE_COUNTERS	2
+>
+>  /*
+>   * The RISCV_MAX_COUNTERS parameter should be specified.
+>   */
+>
+> -#ifdef CONFIG_RISCV_BASE_PMU
+>  #define RISCV_MAX_COUNTERS	2
+> -#endif
+> -
+> -#ifndef RISCV_MAX_COUNTERS
+> -#error "Please provide a valid RISCV_MAX_COUNTERS for the PMU."
+> -#endif
+>
+>  /*
+>   * These are the indexes of bits in counteren register *minus* 1,
+> @@ -82,6 +77,7 @@ struct riscv_pmu {
+>  	int		irq;
+>  };
+>
+> +#endif
+>  #ifdef CONFIG_PERF_EVENTS
+>  #define perf_arch_bpf_user_pt_regs(regs) (struct user_regs_struct *)regs
+>  #endif
+> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> index 1f5736e996fd..b355cf485671 100644
+> --- a/arch/riscv/kernel/Makefile
+> +++ b/arch/riscv/kernel/Makefile
+> @@ -43,7 +43,7 @@ obj-$(CONFIG_MODULE_SECTIONS)	+= module-sections.o
+>  obj-$(CONFIG_FUNCTION_TRACER)	+= mcount.o ftrace.o
+>  obj-$(CONFIG_DYNAMIC_FTRACE)	+= mcount-dyn.o
+>
+> -obj-$(CONFIG_PERF_EVENTS)	+= perf_event.o
+> +obj-$(CONFIG_RISCV_BASE_PMU)	+= perf_event.o
+>  obj-$(CONFIG_PERF_EVENTS)	+= perf_callchain.o
+>  obj-$(CONFIG_HAVE_PERF_REGS)	+= perf_regs.o
+>  obj-$(CONFIG_RISCV_SBI)		+= sbi.o
