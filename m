@@ -2,83 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313A51CF2BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 12:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B531CF2C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 12:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729539AbgELKmd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 May 2020 06:42:33 -0400
-Received: from mail.itasa.com.ar ([190.124.15.130]:16616 "EHLO envases.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726187AbgELKmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 06:42:32 -0400
-Received: from 21cn.com (192.254.72.18) by ITA-SV004.ita.local (192.168.0.31)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1531.3; Tue, 12
- May 2020 07:40:05 -0300
-Reply-To: <robturner-purchase@exporttogroup.co>
-From:   exporttogroup <nvega@itasa.com.ar>
-To:     <linux-kernel@vger.kernel.org>
-Subject: Quotation request  to linux-kernel@vger.kernel.org
-Date:   Tue, 12 May 2020 03:42:29 -0700
-Message-ID: <20200512034228.7FC1F2455E083FE7@itasa.com.ar>
+        id S1729600AbgELKn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 06:43:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729405AbgELKn2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 06:43:28 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE8BC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 03:43:28 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id x8so10481478qtr.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 03:43:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=90JVe73i/s7Z9GUVzBQi0xV2WZvGBs6rUJMcUr4qmBc=;
+        b=gXpfEIdMgQC9SYThaLjtF+JqTksuh2TpO3KwtRaD0Q/d8/sF3X0ZEzgSBYCSJvZBgb
+         LfZq8BXeVObsfo7eI9HNitAYfiVa/foKQJOoDZPBx8SKbNJ8qjpSYYCrsWR7ZJhhJq/w
+         uhjAJXQhseAaw7m8NNeOJMjc9NNHfC1s3CmzFbdnRp12CYtN1jgbemJRhEv1qCuMfTqk
+         wLGqkroGqd7yh0IbTK3DmImx+XkHSk/9VwzGLane1nmKEVhHZ1X1JLHHRxdLW+vo1ubq
+         TIPdRPbIXHtLQT2ahTZB/MN5+3gdERRz9tkXJK+EIdNB6wuhxOUbKNBteWju1XM/oWqo
+         pZjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=90JVe73i/s7Z9GUVzBQi0xV2WZvGBs6rUJMcUr4qmBc=;
+        b=SIJAUVX4zmOx853mxnJuvJOFIujDPV3OBbpzwAnESUDVTBLy7T8N+40HP1U7K3HmTO
+         IrsJWm4/nbj6AkU1/wrUkfvZkNFCW4DT6CNIRA9Vh4VVazytt+LjhZYIF7Bv56/YGZBD
+         8SvGtYUqvVegfhh6ycHpthLX9DKHdHKYAo6sH+vaxF8ijVvZPa+rnzGkQmcahtq87RPg
+         Of/qcnPb/R6LxVHyLkLx4WE68z/+eZr9FmlZ5XfbxuvA/1UZ8zb22t/WYS3sINqnc1qJ
+         vIzgGxOaSFPwRfxpLmyU/yy14yQ4JNchixUxqAlxP4WWehoPiclPcwPVP2iT8vV9ND5A
+         vxzg==
+X-Gm-Message-State: AGi0PuYhSrFVbVq4CGXiSMcrk/+OLTc1WXhepGtTugFFqmhVn6o+xMBU
+        PiMzsFlBVuC+i0qYWiDILCHJEPF12zyzmcPy2Og+ibco
+X-Google-Smtp-Source: APiQypKvEybCvnJT5+PUzpjSf4oc/1mLHh8BoCicYfxDxeaUTImC0dhwBykDH5TFNpdykQ05fDusxKJ6udAceZJmYpw=
+X-Received: by 2002:ac8:5209:: with SMTP id r9mr20680327qtn.57.1589280207508;
+ Tue, 12 May 2020 03:43:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-ClientProxiedBy: ITA-SV004.ita.local (192.168.0.31) To ITA-SV004.ita.local
- (192.168.0.31)
+References: <20200511101828.30046-1-geert+renesas@glider.be>
+In-Reply-To: <20200511101828.30046-1-geert+renesas@glider.be>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 12 May 2020 12:43:16 +0200
+Message-ID: <CAMpxmJXD9WgrFnKvS2a=iOCVuYiqdTGwp+r2BjOv2RJH2R=s1Q@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: Document that GPIO line names are not globally unique
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Sir/Madame
+pon., 11 maj 2020 o 12:18 Geert Uytterhoeven <geert+renesas@glider.be>
+napisa=C5=82(a):
+>
+> gpiochip_set_desc_names() no longer rejects GPIO line name collisions.
+> Hence GPIO line names are not guaranteed to be globally unique.
+> In case of multiple GPIO lines with the same name, gpio_name_to_desc()
+> will return the first match found.
+>
+> Update the comments for gpio_name_to_desc() and
+> gpiochip_set_desc_names() to match reality.
+>
+> Fixes: f881bab038c9667d ("gpio: keep the GPIO line names internal")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/gpio/gpiolib.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index 99533f4cb5d332a9..98822412f565073a 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -296,6 +296,9 @@ static int gpiodev_add_to_list(struct gpio_device *gd=
+ev)
+>
+>  /*
+>   * Convert a GPIO name to its descriptor
+> + * Note that there is no guarantee that GPIO names are globally unique!
+> + * Hence this function will return, if it exists, a reference to the fir=
+st GPIO
+> + * line found that matches the given name.
+>   */
+>  static struct gpio_desc *gpio_name_to_desc(const char * const name)
+>  {
+> @@ -329,10 +332,12 @@ static struct gpio_desc *gpio_name_to_desc(const ch=
+ar * const name)
+>  }
+>
+>  /*
+> - * Takes the names from gc->names and checks if they are all unique. If =
+they
+> - * are, they are assigned to their gpio descriptors.
+> + * Take the names from gc->names and assign them to their GPIO descripto=
+rs.
+> + * Warn if a name is already used for a GPIO line on a different GPIO ch=
+ip.
+>   *
+> - * Warning if one of the names is already used for a different GPIO.
+> + * Note that:
+> + *   1. Non-unique names are still accepted,
+> + *   2. Name collisions within the same GPIO chip are not reported.
+>   */
+>  static int gpiochip_set_desc_names(struct gpio_chip *gc)
+>  {
+> --
+> 2.17.1
+>
 
-Good day.
-I am Rob Turner, Head of Procurement. Our marketing unit 
-requested your  products Models after coming across your Trade 
-fair catalog last year and Webpage on registered trade site,
- 
-we are interested to Purchase your products and its accessories 
-as requested by our customers here in UK Market and Europe, 
-Please send us your Updated product catalog.
+This makes me wonder whether I should do something about this in
+libgpiod? Looks to me like gpiod_chip_find_line() and the global
+gpiod_line_find() are no longer reliable and should probably return
+all lines whose names match.
 
-Please if you know your company will be able to handle extra 
-purchase this year as we have good business experience.
- 
-Once we confirm your competitive Price List of your product and 
-company Terms, we will place Market order immediately with our 
-company certificate and experience in business.
-
-Send your reply to robturner-purchase@exporttogroup.co for us to 
-be able to treat with care and urgent.
-
-Regards
-  Rob Turner
- Head of Procurement Operations
- robturner-purchase@exporttogroup.co
-
- www.exporttogroup.co
-
-REGISTERED OFFICE 171 VICTORIA STREET, LONDON SW1E 5NN
-COMPANY REGISTRATION NUMBER 233462 VAT NO. GB232457280
-
-
-This e-mail may contain confidential and/or privileged 
-information.If you are not the intended recipient (or have 
-received this e-mail in error) please notify the sender 
-immediately and destroy this e-mail. Any unauthorised copying, 
-disclosure or distribution of the material in this e-mail is 
-strictly forbidden
-Este e-mail pode conter informações confidenciais e / ou 
-privilegiadas. Se você não for o destinatário pretendido (ou 
-tiver recebido este e-mail por engano), notifique o remetente 
-imediatamente e destrua este e-mail. Qualquer cópia, divulgação 
-ou distribuição não autorizada do material neste e-mail é 
-estritamente proibida.
- Before printing think about your responsibility for the  
-ENVIRONMENT
-
-
-
-
-
+Bart
