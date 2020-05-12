@@ -2,100 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBA01CEBD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 06:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E494E1CEBC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 06:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgELEJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 00:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725851AbgELEJh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 00:09:37 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62A2C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 21:09:37 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id s69so559029pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 21:09:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=6S28BNiWmQ/hEXUnU1MTnqXBi18kA3ePoZOYdtU1cwQ=;
-        b=zKPMo9VxVy3jMqZvbDFZzd0rfMvjK8sIRqKU+RRM8fhiK3BsQbxVPPqNYrdq3CNlJp
-         srwFwGJmFE53BiW8OELV7eGESL1CDt3+K4ya4VOcLbsiDUEhRhJL5Hsx5wYQmr4/a1ha
-         npM2phtb/qYoGwQEx97t6GacPM8Z7YAe5eoPRlt84htL5JM81zMsdpd3BUasJ+/8QsnH
-         dkV7TQ2UOgKSRXuw2IGL0NHMPpGwN/hPYlde9jC+uvFu5gspfztR7vKX+YVtfvubS0Zb
-         /IgWuGFfL2eesthQolXE8F1dD/HdpBfJqLHJnovOiJQqYzfmg/aL8KblwwEQlXwQIPtH
-         rPJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=6S28BNiWmQ/hEXUnU1MTnqXBi18kA3ePoZOYdtU1cwQ=;
-        b=D6ftAVV0HmaInTlqe3kyldaEg80G8BJ3wTcsYbF/162yDu8wbDN+8+2xDNSOKYqO2l
-         Gvap8T9nwBZcnnQNYhT75aPPr3JvkAGlACJvU9aYkHxCtyBZ17/i6dvLP02wwZuSUf4Z
-         U66soagmWWC7rwnTBqjQ7SjvB0mbDugx2zbA86Z8/+NvVSbJ7pdHFXTeCwj4lzcvf8Yi
-         wb/+w5ZfkdNIPQ7WVRemuiySjcYyTur2ck5Cp36LGKDhSskZgMIZkqrArrQKlV8CN71i
-         QtaK0UHzGg43SLbZKu7+df25ieU+Y2rxzgrCi6Iy+RkqIBKqHxVaV3NzbamVg3lD1wQ8
-         vOyg==
-X-Gm-Message-State: AGi0PuY7tlXYOPalbpXzTOOQUHqZQ0DtQlawjAnvZsdkkLWynw1hOO5G
-        EyF5trPRcBvKnEddIKW4zmHCAA==
-X-Google-Smtp-Source: APiQypIz5wcptWAsZSR4zFqLILzJ6EQ/AyMRL3bPtWuTsky6Bgy54mQMi2/qmxe6ZV1FPbWCHDML+A==
-X-Received: by 2002:a17:902:728e:: with SMTP id d14mr18153543pll.107.1589256577364;
-        Mon, 11 May 2020 21:09:37 -0700 (PDT)
-Received: from localhost.localdomain ([240e:362:443:6f00:91af:f25c:441c:7ba4])
-        by smtp.gmail.com with ESMTPSA id e4sm9471527pge.45.2020.05.11.21.09.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 May 2020 21:09:36 -0700 (PDT)
-From:   Zhangfei Gao <zhangfei.gao@linaro.org>
-To:     Joerg Roedel <joro@8bytes.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        jean-philippe <jean-philippe@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Zhangfei Gao <zhangfei.gao@linaro.org>
-Subject: [PATCH 2/2] ACPI/IORT: Let pci_fixup_final access iommu_fwnode
-Date:   Tue, 12 May 2020 12:08:31 +0800
-Message-Id: <1589256511-12446-3-git-send-email-zhangfei.gao@linaro.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589256511-12446-1-git-send-email-zhangfei.gao@linaro.org>
-References: <1589256511-12446-1-git-send-email-zhangfei.gao@linaro.org>
+        id S1725967AbgELEIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 00:08:46 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:42879 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725554AbgELEIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 00:08:46 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49LknQ5ZkKz9sRf;
+        Tue, 12 May 2020 14:08:42 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1589256524;
+        bh=JZ51i3i4AIOfFcpdw05cKI7JblWRDIAPMwXLUOY5IOg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Pto2LKYK6YeLAlY/0AwN5HgyTTZm7lTiMgvzBYKPDM8ONir7nq490howafSQr5Arj
+         u2Z3brYRjmWabgT5FI+oB+p3/l9V2Fb3K/xkl3/VPvqKyY/jVnDNsF2dm8FwCV2S4Z
+         mlmfamOE9ERnSoamOGOU1/1rfeUC8FCgqd4C+m4JS4sfz+kuY3nMBEHqEpS7MDTFJR
+         1rlqhs8su1MzYojY07lQqhvtLiaL12VnPjYmngqRuFMgzgB1rpNJdDFL40/QWru42h
+         ZCv3Y14xnK86IpnvTXUsaeaAoeJH5UN9YS0fQ68DMOJnC3CkrA8GOFzBHmj3I84bn/
+         1tSTuJIiA9jKw==
+Date:   Tue, 12 May 2020 14:08:40 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christophe Kerello <christophe.kerello@st.com>
+Subject: linux-next: build failure after merge of the nand tree
+Message-ID: <20200512140840.0e102581@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/Kk17_c2x/oBhBhM2KSzkr/t";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calling pci_fixup_final after iommu_fwspec_init, which alloc
-iommu_fwnode. Some platform devices appear as PCI but are
-actually on the AMBA bus, and they need fixup in
-drivers/pci/quirks.c handling iommu_fwnode.
-So calling pci_fixup_final after iommu_fwnode is allocated.
+--Sig_/Kk17_c2x/oBhBhM2KSzkr/t
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
----
- drivers/acpi/arm64/iort.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi all,
 
-diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-index 7d04424..02e361d 100644
---- a/drivers/acpi/arm64/iort.c
-+++ b/drivers/acpi/arm64/iort.c
-@@ -1027,6 +1027,7 @@ const struct iommu_ops *iort_iommu_configure(struct device *dev)
- 		info.node = node;
- 		err = pci_for_each_dma_alias(to_pci_dev(dev),
- 					     iort_pci_iommu_init, &info);
-+		pci_fixup_device(pci_fixup_final, to_pci_dev(dev));
- 
- 		fwspec = dev_iommu_fwspec_get(dev);
- 		if (fwspec && iort_pci_rc_supports_ats(node))
--- 
-2.7.4
+After merging the nand tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
+drivers/mtd/nand/raw/stm32_fmc2_nand.c: In function 'stm32_fmc2_nfc_write_d=
+ata':
+drivers/mtd/nand/raw/stm32_fmc2_nand.c:1294:34: error: 'fmc2' undeclared (f=
+irst use in this function)
+ 1294 |   stm32_fmc2_nfc_set_buswidth_16(fmc2, true);
+      |                                  ^~~~
+drivers/mtd/nand/raw/stm32_fmc2_nand.c:1294:34: note: each undeclared ident=
+ifier is reported only once for each function it appears in
+
+Caused by commit
+
+  6c1c863ca431 ("mtd: rawnand: stm32_fmc2: cleanup")
+
+I have used the nand tree from next-20200511 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Kk17_c2x/oBhBhM2KSzkr/t
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl66IUgACgkQAVBC80lX
+0Gyxhwf+OT25PnqT/kCynU9+imdzK0hJadZEiDkD48ogaSrHJpndYqkAFE9kGK/q
+kInIi/yWWsGAh+TcNjA0EMVyISLrnFDhiyUpt14IBmvVk/2iipLAhHSHqLabyKww
+Dbi1Dnz2e3lkzY1X5veHmD3e+F3dcLXv88zs8tzdo9xK1udVTgUsAgxKWYw2+cws
+s4C7ZrRodD+nwDn2JO7hSH/ztTt63bFY/AElUvAIoNEEYNMM9o5cJ/2gezbJUDMC
+u1zCJG8X4yl/JOiF81Q0sDOs1G+bVPg6QaFE9UiFqoMzHLFaPBI+y/43mRePx8Gp
+fP9sIjxv91JnUz0X7QvinxCKdeA0Zw==
+=sTn0
+-----END PGP SIGNATURE-----
+
+--Sig_/Kk17_c2x/oBhBhM2KSzkr/t--
