@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B101D020D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DEA1D023B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731854AbgELWXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
+        id S1731704AbgELWXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 18:23:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728351AbgELWXc (ORCPT
+        by vger.kernel.org with ESMTP id S1731690AbgELWXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 18:23:32 -0400
+        Tue, 12 May 2020 18:23:16 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C05EC061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B3BC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:16 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jYdIO-0004pC-8K; Wed, 13 May 2020 00:22:40 +0200
+        id 1jYdIP-0004qB-Ah; Wed, 13 May 2020 00:22:42 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 93B181006A1;
-        Wed, 13 May 2020 00:22:39 +0200 (CEST)
-Message-Id: <20200512213811.124011892@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id CEB48100605;
+        Wed, 13 May 2020 00:22:40 +0200 (CEST)
+Message-Id: <20200512213811.213646521@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 12 May 2020 23:01:16 +0200
+Date:   Tue, 12 May 2020 23:01:17 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -50,7 +50,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V5 17/38] x86/entry/32: Remove common_exception
+Subject: [patch V5 18/38] x86/irq: Use generic irq_regs implementation
 References: <20200512210059.056244513@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -63,41 +63,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No more users.
+The only difference is the name of the per-CPU variable: irq_regs
+vs. __irq_regs, but the accessor functions are identical.
+
+Remove the pointless copy and use the generic variant.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/entry/entry_32.S |   21 ---------------------
- 1 file changed, 21 deletions(-)
+V5: New patch.
+---
+ arch/x86/include/asm/irq_regs.h |   32 --------------------------------
+ arch/x86/kernel/irq.c           |    3 ---
+ 2 files changed, 35 deletions(-)
 
---- a/arch/x86/entry/entry_32.S
-+++ b/arch/x86/entry/entry_32.S
-@@ -1394,27 +1394,6 @@ BUILD_INTERRUPT3(hv_stimer0_callback_vec
+--- a/arch/x86/include/asm/irq_regs.h
++++ /dev/null
+@@ -1,32 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Per-cpu current frame pointer - the location of the last exception frame on
+- * the stack, stored in the per-cpu area.
+- *
+- * Jeremy Fitzhardinge <jeremy@goop.org>
+- */
+-#ifndef _ASM_X86_IRQ_REGS_H
+-#define _ASM_X86_IRQ_REGS_H
+-
+-#include <asm/percpu.h>
+-
+-#define ARCH_HAS_OWN_IRQ_REGS
+-
+-DECLARE_PER_CPU(struct pt_regs *, irq_regs);
+-
+-static inline struct pt_regs *get_irq_regs(void)
+-{
+-	return __this_cpu_read(irq_regs);
+-}
+-
+-static inline struct pt_regs *set_irq_regs(struct pt_regs *new_regs)
+-{
+-	struct pt_regs *old_regs;
+-
+-	old_regs = get_irq_regs();
+-	__this_cpu_write(irq_regs, new_regs);
+-
+-	return old_regs;
+-}
+-
+-#endif /* _ASM_X86_IRQ_REGS_32_H */
+--- a/arch/x86/kernel/irq.c
++++ b/arch/x86/kernel/irq.c
+@@ -26,9 +26,6 @@
+ DEFINE_PER_CPU_SHARED_ALIGNED(irq_cpustat_t, irq_stat);
+ EXPORT_PER_CPU_SYMBOL(irq_stat);
  
- #endif /* CONFIG_HYPERV */
+-DEFINE_PER_CPU(struct pt_regs *, irq_regs);
+-EXPORT_PER_CPU_SYMBOL(irq_regs);
+-
+ atomic_t irq_err_count;
  
--SYM_CODE_START_LOCAL_NOALIGN(common_exception)
--	/* the function address is in %gs's slot on the stack */
--	SAVE_ALL switch_stacks=1 skip_gs=1 unwind_espfix=1
--	ENCODE_FRAME_POINTER
--
--	/* fixup %gs */
--	GS_TO_REG %ecx
--	movl	PT_GS(%esp), %edi		# get the function address
--	REG_TO_PTGS %ecx
--	SET_KERNEL_GS %ecx
--
--	/* fixup orig %eax */
--	movl	PT_ORIG_EAX(%esp), %edx		# get the error code
--	movl	$-1, PT_ORIG_EAX(%esp)		# no syscall to restart
--
--	TRACE_IRQS_OFF
--	movl	%esp, %eax			# pt_regs pointer
--	CALL_NOSPEC edi
--	jmp	ret_from_exception
--SYM_CODE_END(common_exception)
--
- SYM_CODE_START_LOCAL_NOALIGN(handle_exception)
- 	/* the function address is in %gs's slot on the stack */
- 	SAVE_ALL switch_stacks=1 skip_gs=1 unwind_espfix=1
+ /*
 
