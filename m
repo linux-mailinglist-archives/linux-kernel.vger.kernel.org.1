@@ -2,126 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC901CED22
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 08:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0D11CED26
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 08:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728772AbgELGk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 02:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725987AbgELGk5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 02:40:57 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CDEC061A0C;
-        Mon, 11 May 2020 23:40:56 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id u6so12261636ljl.6;
-        Mon, 11 May 2020 23:40:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=CvDFw3VxZkX78aA+MdfUy4a8VmJHp4z5s/fOMPEwqfQ=;
-        b=Bd33efnXE88VWqLM9bDrxn8uzAhETLqeNNnaUtoxd7tYE2HBkf4C3c1NamPswJcGD4
-         b40w77ZcdtFoJOJPA9M6JURDOFnFubs6oHOKKnAERMdmHnxcEaxr1L5jTPSzS+DKGF8B
-         HUzc7mnAnCZ9LcvcW3tOE7mT81ftX1kaG2+7+tKA5qC9oiWPED5qupwREMAF8HtfmN3z
-         stfFng5kQqvknayHKTO87Cit80dvR5RGogU6P88CHEDwPr03PZ5sGoxtAVA2RbyTcGAq
-         w9v5qFdLJW/qGLi+lAj8kl1WZCgP4nXJpDW1DC5wV7j1Pc6XAWhzkXOdLnMzL9zBvgaH
-         AZQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :date:message-id:mime-version;
-        bh=CvDFw3VxZkX78aA+MdfUy4a8VmJHp4z5s/fOMPEwqfQ=;
-        b=H5hPy1jx6gnhQPlrU+4czF7Rwk1KK39ru1/zNGvP9cOGvJmmpHjtYyIX8t47OnqLkw
-         Vg5T0ackZv6UI5qbnZoR7xtkn4VxkrLhZ31smsaKXHv4TMEAqHVhhOQwUfYPf/HQETy5
-         DrtufyhmxgprAZQdKlARXAJycz4hKdwz8QxmKpaEwESD9x7qC6NvOXDM4iccpwItTxey
-         xGfPEvhGnvgQdmMoNZcIyAgp3UdW3Ewn5Bo2T+X25FxW2Vu/CpFMRVV3GXIuUoyamPdp
-         +UIdXj3hm5VE/99HpncJl6erGyRtuiwXPddleqVbjiDRV8/5IDVoHupEZWOsu/QlMA2r
-         LHaA==
-X-Gm-Message-State: AOAM530xDkdxVEsUHin0MLP6nFObK7LsxkZn1SN+ZnB0HE3DNcNsRDvg
-        PUNSTcpfkPT5u8s9d1x0a2E=
-X-Google-Smtp-Source: ABdhPJwMIxXKqZg9TJAoa+cxwCGsXoXtp+dvXK94pDmluoVg92qTksjGCWtkRhjO5mm2pvwfqHw7rQ==
-X-Received: by 2002:a2e:8944:: with SMTP id b4mr12748662ljk.84.1589265654887;
-        Mon, 11 May 2020 23:40:54 -0700 (PDT)
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
-        by smtp.gmail.com with ESMTPSA id r13sm9734148ljh.66.2020.05.11.23.40.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 11 May 2020 23:40:53 -0700 (PDT)
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH v2] usb: raw-gadget: fix gadget endpoint selection
-In-Reply-To: <20200509170843.GD2482887@kroah.com>
-References: <2f05fe9aa7e4bcb1bad3f6d11e48a411c901af68.1588197975.git.andreyknvl@google.com> <875zdabzs3.fsf@kernel.org> <CAAeHK+yxoYigM7uWC3cpKmCjgMLXQ1pT=MkJ7XQYCVRgZ-DdTQ@mail.gmail.com> <87zhahlenu.fsf@kernel.org> <20200509170843.GD2482887@kroah.com>
-Date:   Tue, 12 May 2020 09:40:49 +0300
-Message-ID: <87mu6d4pvy.fsf@kernel.org>
+        id S1728863AbgELGmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 02:42:45 -0400
+Received: from mga14.intel.com ([192.55.52.115]:40946 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725536AbgELGmo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 02:42:44 -0400
+IronPort-SDR: UCfaLSUeia/RFp2I8nygP95OmvnPplJjDIHsT2TegA/p3wy8cy8jFsVelvntbtiEyYAeQJ6yvl
+ hoA9ytvJPHzA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 23:42:44 -0700
+IronPort-SDR: 1tiEiWhxupsymV5zFEjn4Lx/KOB/N5fKsP5Dv6VPZaVYK01KcefeemHtX/AAofvKteE/wX5Igv
+ fGBE7U9tTxrw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,382,1583222400"; 
+   d="scan'208";a="371468310"
+Received: from liming1-mobl1.ccr.corp.intel.com (HELO yhuang-mobile.ccr.corp.intel.com) ([10.254.212.233])
+  by fmsmga001.fm.intel.com with ESMTP; 11 May 2020 23:42:42 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: [PATCH] mm, swap: Use prandom_u32_max()
+Date:   Tue, 12 May 2020 14:41:46 +0800
+Message-Id: <20200512064147.514493-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+To improve the code readability and get random number with higher
+quality.
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: Hugh Dickins <hughd@google.com>
+---
+ mm/swapfile.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> On Sat, May 09, 2020 at 11:02:13AM +0300, Felipe Balbi wrote:
->>=20
->> Hi,
->>=20
->> Andrey Konovalov <andreyknvl@google.com> writes:
->> >> here you're changing userspace ABI. Aren't we going to possibly break
->> >> some existing applications?
->> >
->> > Hi Felipe,
->> >
->> >  I've been working on tests for Raw Gadget for the last few weeks [1],
->> > which revealed a few problems with the interface. This isn't yet
->> > included into any released kernel, so my hope that changing the ABI is
->> > OK during the rc stage.
->>=20
->> Fair enough. If that's okay with Greg, it's okay with me, but then how
->> do we include it into the -rc seen as it's not really a fix?
->>=20
->> Greg, are you okay with me including such large patches during the -rc?
->> They essentially add new IOCTLs to the raw-gadget interface.
->
-> Yes, as the driver only went in for -rc1, it's fine to add fixes like
-> this so late as we don't want to ship a -final with it in broken form.
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index a0a123e59ce6..2ec8b21201d6 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -3220,7 +3220,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 		 * select a random position to start with to help wear leveling
+ 		 * SSD
+ 		 */
+-		p->cluster_next = 1 + (prandom_u32() % p->highest_bit);
++		p->cluster_next = 1 + prandom_u32_max(p->highest_bit);
+ 		nr_cluster = DIV_ROUND_UP(maxpages, SWAPFILE_CLUSTER);
+ 
+ 		cluster_info = kvcalloc(nr_cluster, sizeof(*cluster_info),
+-- 
+2.26.2
 
-Thanks, I'll prepare a pull request containing it.
-
-cheers
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl66RPEACgkQzL64meEa
-mQauvA//RClDtkgGG6+X7US8hr34DwyDpHe+viSSYdHCtCF0Wsjkd5q55u9PIwBu
-DHxZc7kOIwoMEWJaTyx8nb02zrMN1UeyEMzL6vhCuLKDXUn/SsmaujPh2whJlBBz
-zvp89pkxF/Sup2TwNQyA9KAaf5xmS5kUZAebXdOVxczicfa91pwYzY96NUp5OG32
-MNDZDVNlYzxxGbHvEdE9/azwGnPHwRBlWomvb/YnaUbwMG6+ZQicS9+bFxsp+TQx
-j4+1AzX1fj/YTS+fME3pUiFLsuOF2h6V3iLhm4RhFLJoZ8MQ2JqAtO7zd9PxjzUU
-ZSu3KyqQ3TswX/WGoSRBPw6gJX/RrP1Gmnu32okfXKsZeLl8XVbhDTHzTlyGQKB9
-NAakHCE7egZ4h1vK81aC4kVuvOBayPP6nbiAN1QNC6OeN2WXhvp2FXN8bd7/RDtp
-w4OEpWm3MGMAxlXic2GkJchUsYxEmQQ2rPE1xG/eGCc7vASbHjLOB28raH7EiDU+
-U0zJ8xpIpviX+Z07EWHeGWO99ENk45ZqRWu8L4jMPIhnc54NM7OBcDZTY3hhw2IH
-dQkL39KouhMFH8e2hGkHvn/vOBHNcCKE7Ofnb4mzxe8XB5zWEJVFja8iQy0XIt6p
-ql34MLf7ciYoAWHdWpbISmTcrCIlQAUgQHNf0EFTMeZwgCwvbNk=
-=3yqU
------END PGP SIGNATURE-----
---=-=-=--
