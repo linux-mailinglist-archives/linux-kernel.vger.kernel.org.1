@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C561D020A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84D61D020F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731823AbgELWXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:23:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55536 "EHLO
+        id S1731869AbgELWXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 18:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731726AbgELWXY (ORCPT
+        by vger.kernel.org with ESMTP id S1731794AbgELWXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 18:23:24 -0400
+        Tue, 12 May 2020 18:23:35 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FE9C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD08EC05BD09
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:35 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jYdI5-0004b5-8f; Wed, 13 May 2020 00:22:22 +0200
+        id 1jYdI6-0004bG-Hi; Wed, 13 May 2020 00:22:23 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id C04A21006A1;
-        Wed, 13 May 2020 00:22:20 +0200 (CEST)
-Message-Id: <20200512213809.583980272@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 0A1AC1006FB;
+        Wed, 13 May 2020 00:22:22 +0200 (CEST)
+Message-Id: <20200512213809.678944067@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 12 May 2020 23:01:01 +0200
+Date:   Tue, 12 May 2020 23:01:02 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -50,8 +50,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V5 02/38] x86/entry/64: Use native swapgs in
- asm_native_load_gs_index()
+Subject: [patch V5 03/38] nmi, tracing: Provide nmi_enter/exit_notrace()
 References: <20200512210059.056244513@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -64,41 +63,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When PARAVIRT_XXL is in use, then load_gs_index() uses
-xen_load_gs_index() and (asm_))native_load_gs_index() is unused.
+To fully isolate #DB and #BP from instrumentable code it's necessary to
+avoid invoking the hardware latency tracer on nmi_enter/exit().
 
-It's therefore pointless to use the paravirtualized SWAPGS implementation
-in asm_native_load_gs_index(). Switch it to a plain swapgs.
+Provide nmi_enter/exit() variants which are not invoking the hardware
+latency tracer. That allows to put calls explicitely into the call sites
+outside of the kprobe handling.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Juergen Gross <jgross@suse.com>
 ---
- arch/x86/entry/entry_64.S |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+V5: New patch
+---
+ include/linux/hardirq.h |   18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1043,11 +1043,11 @@ idtentry simd_coprocessor_error		do_simd
+--- a/include/linux/hardirq.h
++++ b/include/linux/hardirq.h
+@@ -77,28 +77,38 @@ extern void irq_exit(void);
+ /*
+  * nmi_enter() can nest up to 15 times; see NMI_BITS.
   */
- SYM_FUNC_START(asm_native_load_gs_index)
- 	FRAME_BEGIN
--	SWAPGS
-+	swapgs
- .Lgs_change:
- 	movl	%edi, %gs
- 2:	ALTERNATIVE "", "mfence", X86_BUG_SWAPGS_FENCE
--	SWAPGS
-+	swapgs
- 	FRAME_END
- 	ret
- SYM_FUNC_END(asm_native_load_gs_index)
-@@ -1057,7 +1057,7 @@ EXPORT_SYMBOL(asm_native_load_gs_index)
- 	.section .fixup, "ax"
- 	/* running with kernelgs */
- SYM_CODE_START_LOCAL_NOALIGN(.Lbad_gs)
--	SWAPGS					/* switch back to user gs */
-+	swapgs					/* switch back to user gs */
- .macro ZAP_GS
- 	/* This can't be a string because the preprocessor needs to see it. */
- 	movl $__USER_DS, %eax
+-#define nmi_enter()						\
++#define nmi_enter_notrace()					\
+ 	do {							\
+ 		arch_nmi_enter();				\
+ 		printk_nmi_enter();				\
+ 		lockdep_off();					\
+-		ftrace_nmi_enter();				\
+ 		BUG_ON(in_nmi() == NMI_MASK);			\
+ 		__preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET);	\
+ 		rcu_nmi_enter();				\
+ 		lockdep_hardirq_enter();			\
+ 	} while (0)
+ 
+-#define nmi_exit()						\
++#define nmi_enter()						\
++	do {							\
++		nmi_enter_notrace();				\
++		ftrace_nmi_enter();				\
++	} while (0)
++
++#define nmi_exit_notrace()					\
+ 	do {							\
+ 		lockdep_hardirq_exit();				\
+ 		rcu_nmi_exit();					\
+ 		BUG_ON(!in_nmi());				\
+ 		__preempt_count_sub(NMI_OFFSET + HARDIRQ_OFFSET);	\
+-		ftrace_nmi_exit();				\
+ 		lockdep_on();					\
+ 		printk_nmi_exit();				\
+ 		arch_nmi_exit();				\
+ 	} while (0)
+ 
++#define nmi_exit()						\
++	do {							\
++		ftrace_nmi_exit();				\
++		nmi_exit_notrace();				\
++	} while (0)
++
+ #endif /* LINUX_HARDIRQ_H */
 
