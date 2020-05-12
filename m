@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483141CFFFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 23:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CCB11CFFFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 23:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731184AbgELU7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 16:59:51 -0400
-Received: from lists.gateworks.com ([108.161.130.12]:51278 "EHLO
-        lists.gateworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgELU7v (ORCPT
+        id S1731255AbgELU76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 16:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731083AbgELU76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 16:59:51 -0400
-Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
-        by lists.gateworks.com with esmtp (Exim 4.82)
-        (envelope-from <tharvey@gateworks.com>)
-        id 1jYc2a-0007Ai-WC; Tue, 12 May 2020 21:02:17 +0000
-From:   Tim Harvey <tharvey@gateworks.com>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH] ARM: dts: imx6qdl-gw560x: add lsm9ds1 iio imu/magn support
-Date:   Tue, 12 May 2020 13:59:37 -0700
-Message-Id: <1589317177-8703-1-git-send-email-tharvey@gateworks.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 12 May 2020 16:59:58 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69603C061A0C;
+        Tue, 12 May 2020 13:59:58 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id q24so10005096pjd.1;
+        Tue, 12 May 2020 13:59:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IJPL9Tl1cgActLuK4g/HRhyhZpVeiRdgyWh88fXkA+w=;
+        b=OHrva3OtIfkvxENY7wpj/fPhbyf8DcMvdrS2KP0ysWrSpz4mxaNsIDn2wnh3QYK54q
+         fo9J9nU2TZq3Sw8TA+Z0R/lCFxtBrBy7dtvhMnhFXXX2vkl+uDBpTR450URMLJsmJK0y
+         wb7M9g+RbxshL3G5Ry5qd9EbQD5Ftcy56E116a0c5wdK4N/pt/pId4Da4k0aSIE+jEWE
+         FUML6G7C5PN2NMxyBnr8oxwTk59YaPMEJxYLDgf6ehJ+d0efVkRw5tImFoFnXkGMYGrE
+         EyNcL1Dxw9q9dYMxx4eusEpsh7QVLo7VkqF7y1BLv5/NoWS+q8FwlrD5nATzcjfOWoOr
+         1H0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IJPL9Tl1cgActLuK4g/HRhyhZpVeiRdgyWh88fXkA+w=;
+        b=ZxRvgqci0C5qiAxOkk24Y5cyL277UjLgA2RR9TWl+8CXLB+oAHdkipdgLJja/BqgtY
+         VeC+pfqVrzHad3f5moF76nh7fjCQ/gTsouZV92uiL3cf5+nu/TOFJ7PHmFSLJ1vF4BeS
+         hL58sjwgRBQ/WS5OQv8EYzOmHgn+kMBKLagKNHSMm6GiBi82KJDIAheLfTYDWMmWos8f
+         42kGaiKD/l/klOfQoAmZ6uqHLVRSwVp/gkr+KyV+ue9xjdzN3VWuBjeulmjy3wpzMFAr
+         HjnVfROyAoMfiadKQe5pVbsZ6ACTywDAUH7CEtWPjWrBHKo6lbBRayySUWaZcgHYj04v
+         7xsg==
+X-Gm-Message-State: AGi0PubMvoKgd/y/q2LuDHl/jnEygm3wGQ+HGpjrOfNWGb6HucdM6Rlr
+        YW8pOwHmXh7HsQA0bCk3qZU8ml28oBJ3+WGNFng=
+X-Google-Smtp-Source: APiQypLqRUkFh5Gq4ZARlaTpFxPfK5sVf01Itv5Lo33wIETMAdD0Tv6bI9JM3S3OgvhG7Hi8srQ//CYX2STx/6trW6A=
+X-Received: by 2002:a17:90b:3717:: with SMTP id mg23mr31789295pjb.129.1589317197919;
+ Tue, 12 May 2020 13:59:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <1589316769-13277-1-git-send-email-alencar.fmce@imbel.gov.br>
+In-Reply-To: <1589316769-13277-1-git-send-email-alencar.fmce@imbel.gov.br>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 12 May 2020 23:59:46 +0300
+Message-ID: <CAHp75VfLMUCpDWr4_Wo3Gqd4rZdC3dEFhQfmwjF6eTxaLMxYvw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] video: fbdev: ssd1307fb: Added support to Column offset
+To:     Rodrigo Rolim Mendes de Alencar <455.rodrigo.alencar@gmail.com>
+Cc:     linux-fbdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "maxime.ripard" <maxime.ripard@free-electrons.com>,
+        alencar.fmce@imbel.gov.br
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add one node for the accel/gyro i2c device and another for the separate
-magnetometer device in the lsm9ds1.
+On Tue, May 12, 2020 at 11:55 PM Rodrigo Rolim Mendes de Alencar
+<455.rodrigo.alencar@gmail.com> wrote:
+>
+> This patch provides support for displays like VGM128064B0W10,
+> which requires a column offset of 2, i.e., its segments starts
+> in SEG2 and ends in SEG129.
 
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
----
- arch/arm/boot/dts/imx6qdl-gw560x.dtsi | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+Thank you!
 
-diff --git a/arch/arm/boot/dts/imx6qdl-gw560x.dtsi b/arch/arm/boot/dts/imx6qdl-gw560x.dtsi
-index e8e36df..69ca70d 100644
---- a/arch/arm/boot/dts/imx6qdl-gw560x.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw560x.dtsi
-@@ -295,6 +295,15 @@
- 		VDDIO-supply = <&reg_3p3v>;
- 	};
- 
-+	magn@1c {
-+		compatible = "st,lsm9ds1-magn";
-+		reg = <0x1c>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_mag>;
-+		interrupt-parent = <&gpio5>;
-+		interrupts = <9 IRQ_TYPE_EDGE_RISING>;
-+	};
-+
- 	tca8418: keypad@34 {
- 		compatible = "ti,tca8418";
- 		pinctrl-names = "default";
-@@ -389,6 +398,16 @@
- 			};
- 		};
- 	};
-+
-+	imu@6a {
-+		compatible = "st,lsm9ds1-imu";
-+		reg = <0x6a>;
-+		st,drdy-int-pin = <1>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_imu>;
-+		interrupt-parent = <&gpio5>;
-+		interrupts = <6 IRQ_TYPE_LEVEL_HIGH>;
-+	};
- };
- 
- &i2c3 {
-@@ -609,6 +628,12 @@
- 		>;
- 	};
- 
-+	pinctrl_imu: imugrp {
-+		fsl,pins = <
-+			MX6QDL_PAD_DISP0_DAT12__GPIO5_IO06	0x1b0b0
-+		>;
-+	};
-+
- 	pinctrl_keypad: keypadgrp {
- 		fsl,pins = <
- 			MX6QDL_PAD_DISP0_DAT17__GPIO5_IO11	0x0001b0b0 /* KEYPAD_IRQ# */
-@@ -616,6 +641,12 @@
- 		>;
- 	};
- 
-+	pinctrl_mag: maggrp {
-+		fsl,pins = <
-+			MX6QDL_PAD_DISP0_DAT15__GPIO5_IO09	0x1b0b0
-+		>;
-+	};
-+
- 	pinctrl_pcie: pciegrp {
- 		fsl,pins = <
- 			MX6QDL_PAD_DISP0_DAT10__GPIO4_IO31	0x1b0b0    /* PCI_RST# */
+>         if (of_property_read_u32(node, "solomon,page-offset", &par->page_offset))
+>                 par->page_offset = 1;
+>
+> +       if (of_property_read_u32(node, "solomon,col-offset", &par->col_offset))
+> +               par->col_offset = 0;
+> +
+>         if (of_property_read_u32(node, "solomon,com-offset", &par->com_offset))
+>                 par->com_offset = 0;
+
+Needs to be rebased on top of latest changes (can be, in particular,
+found in Linux Next tree).
+
 -- 
-2.7.4
-
+With Best Regards,
+Andy Shevchenko
