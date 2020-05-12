@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E92B61D0202
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C561D020A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731686AbgELWXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55490 "EHLO
+        id S1731823AbgELWXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 18:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731668AbgELWXM (ORCPT
+        by vger.kernel.org with ESMTP id S1731726AbgELWXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 18:23:12 -0400
+        Tue, 12 May 2020 18:23:24 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986D3C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FE9C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:24 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jYdI4-0004b4-3X; Wed, 13 May 2020 00:22:21 +0200
+        id 1jYdI5-0004b5-8f; Wed, 13 May 2020 00:22:22 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 8171A100605;
-        Wed, 13 May 2020 00:22:19 +0200 (CEST)
-Message-Id: <20200512213809.492016025@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id C04A21006A1;
+        Wed, 13 May 2020 00:22:20 +0200 (CEST)
+Message-Id: <20200512213809.583980272@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 12 May 2020 23:01:00 +0200
+Date:   Tue, 12 May 2020 23:01:01 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -50,7 +50,8 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V5 01/38] x86/kvm/svm: Use uninstrumented wrmsrl() to restore GS
+Subject: [patch V5 02/38] x86/entry/64: Use native swapgs in
+ asm_native_load_gs_index()
 References: <20200512210059.056244513@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -63,47 +64,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On guest exit MSR_GS_BASE contains whatever the guest wrote to it and the
-first action after returning from the ASM code is to set it to the host
-kernel value. This uses wrmsrl() which is interesting at least.
+When PARAVIRT_XXL is in use, then load_gs_index() uses
+xen_load_gs_index() and (asm_))native_load_gs_index() is unused.
 
-wrmsrl() is either using native_write_msr() or the paravirt variant. The
-XEN_PV code is uninteresting as nested SVM in a XEN_PV guest does not work.
-
-But native_write_msr() can be placed out of line by the compiler especially
-when paravirtualization is enabled in the kernel configuration. The
-function is marked notrace, but still can be probed if
-CONFIG_KPROBE_EVENTS_ON_NOTRACE is enabled.
-
-That would be a fatal problem as kprobe events use per-CPU variables which
-are GS based and would be accessed with the guest GS. Depending on the GS
-value this would either explode in colorful ways or lead to completely
-undebugable data corruption.
-
-Aside of that native_write_msr() contains a tracepoint which objtool
-complains about as it is invoked from the noinstr section.
-
-As this cannot run inside a XEN_PV guest there is no point in using
-wrmsrl(). Use native_wrmsrl() instead which is just a plain native WRMSR
-without tracing or anything else attached.
+It's therefore pointless to use the paravirtualized SWAPGS implementation
+in asm_native_load_gs_index(). Switch it to a plain swapgs.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
 Cc: Juergen Gross <jgross@suse.com>
 ---
- arch/x86/kvm/svm/svm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/entry/entry_64.S |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3306,7 +3306,7 @@ static noinstr void svm_vcpu_enter_exit(
- 	__svm_vcpu_run(svm->vmcb_pa, (unsigned long *)&svm->vcpu.arch.regs);
- 
- #ifdef CONFIG_X86_64
--	wrmsrl(MSR_GS_BASE, svm->host.gs_base);
-+	native_wrmsrl(MSR_GS_BASE, svm->host.gs_base);
- #else
- 	loadsegment(fs, svm->host.fs);
- #ifndef CONFIG_X86_32_LAZY_GS
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -1043,11 +1043,11 @@ idtentry simd_coprocessor_error		do_simd
+  */
+ SYM_FUNC_START(asm_native_load_gs_index)
+ 	FRAME_BEGIN
+-	SWAPGS
++	swapgs
+ .Lgs_change:
+ 	movl	%edi, %gs
+ 2:	ALTERNATIVE "", "mfence", X86_BUG_SWAPGS_FENCE
+-	SWAPGS
++	swapgs
+ 	FRAME_END
+ 	ret
+ SYM_FUNC_END(asm_native_load_gs_index)
+@@ -1057,7 +1057,7 @@ EXPORT_SYMBOL(asm_native_load_gs_index)
+ 	.section .fixup, "ax"
+ 	/* running with kernelgs */
+ SYM_CODE_START_LOCAL_NOALIGN(.Lbad_gs)
+-	SWAPGS					/* switch back to user gs */
++	swapgs					/* switch back to user gs */
+ .macro ZAP_GS
+ 	/* This can't be a string because the preprocessor needs to see it. */
+ 	movl $__USER_DS, %eax
 
