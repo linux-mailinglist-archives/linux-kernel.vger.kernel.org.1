@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C924B1D0259
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432481D025A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731271AbgELWbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:31:14 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:21733 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728220AbgELWbN (ORCPT
+        id S1731333AbgELWbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 18:31:15 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:36779 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbgELWbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 May 2020 18:31:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589322672;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YD4eV5Zg/zcvyFEl47MW+GCWx9tAYaUwV9UBJhWyuxU=;
-        b=SQw4qi4QPfzCYHw5aKVFwZKT6HxL7CTyL/RWEmtHD9DNBqt2Rbb5KCaL1F1f3a63OUsLw+
-        XT6ZEpXrl5jbBYE7dOa/8tmezEdUkr33fUUlN8pq/HQzBjE56b2jOFbnCRWb04Img6y/8r
-        Kor3Y4LsqE/uIRc3lBbPsNPQ4PIMMr4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-174-6JPl9u_LNFOfLYPirTHD0A-1; Tue, 12 May 2020 18:31:00 -0400
-X-MC-Unique: 6JPl9u_LNFOfLYPirTHD0A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5ABF4EC1A1;
-        Tue, 12 May 2020 22:30:59 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.36.110.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C195410001B3;
-        Tue, 12 May 2020 22:30:56 +0000 (UTC)
-Date:   Wed, 13 May 2020 00:31:03 +0200
-From:   Eugene Syromiatnikov <esyr@redhat.com>
-To:     Sergey Organov <sorganov@gmail.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] uapi, posix-timers: provide clockid-related macros
- and functions to UAPI
-Message-ID: <20200512223103.GC1016@asgard.redhat.com>
-References: <20190923130531.GA27774@asgard.redhat.com>
- <87y2pxvsbr.fsf@osv.gnss.ru>
+Received: by mail-pj1-f66.google.com with SMTP id q24so10096198pjd.1;
+        Tue, 12 May 2020 15:31:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WkWxKR9pBfc58a1dbN8nbKjJim/7aXCa3UgG7dxJjk4=;
+        b=HYnpmAhDpqHBUiL8RIJFL7CVr4rIBaW4yZRR+kAeWsewegDdK3mZSMscCV9pIKKSeW
+         XoYHp7B0jEHTmAg818tD8mUN/+3HORk6pVrnTRBJspXfpQCcsffFgMsQOjF/fNN76/x1
+         NDZpJ5JxqsQrNzlHgGzffjsEUpsUowhB+BZlxMHI4dE+sZLPJcVf/DrKU1CjFW8CcRdD
+         E8Q4O8CuCdPa++Ky4vjy+kBpV87DrEVerK/nEvKJdoGSAtf1ikfpWrXazVqJWiYw/+8s
+         Z7sNj4/fqU78aQA0+HMZnpn4Ssj3/hGRhVm3o+upNljAhl3ocLpvp/8tUQvgQsYH4guQ
+         dQvQ==
+X-Gm-Message-State: AGi0PuY1wBCVSTohLp1a78E0t4Zl9nnCkLi0KYRim54budfEi4Spoyeu
+        Y3G+ivlWB3OgHusDQT3jVFc=
+X-Google-Smtp-Source: APiQypLrjBA7She0nP+YDikODlUlHGiHQIsgAZbqmYPQb0MLNtvitmQSyo6GKRENaqYo68EVMqNzew==
+X-Received: by 2002:a17:90a:fd8c:: with SMTP id cx12mr30597764pjb.211.1589322672838;
+        Tue, 12 May 2020 15:31:12 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id d2sm13247052pfc.7.2020.05.12.15.31.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 15:31:11 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id F17A04063E; Tue, 12 May 2020 22:31:10 +0000 (UTC)
+Date:   Tue, 12 May 2020 22:31:10 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Rafael Aquini <aquini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        keescook@chromium.org, akpm@linux-foundation.org,
+        yzaikin@google.com, tytso@mit.edu
+Subject: Re: [PATCH] kernel: sysctl: ignore out-of-range taint bits
+ introduced via kernel.tainted
+Message-ID: <20200512223110.GF11244@42.do-not-panic.com>
+References: <20200512174653.770506-1-aquini@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87y2pxvsbr.fsf@osv.gnss.ru>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20200512174653.770506-1-aquini@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 10:58:16PM +0300, Sergey Organov wrote:
-> Eugene Syromiatnikov <esyr@redhat.com> writes:
+On Tue, May 12, 2020 at 01:46:53PM -0400, Rafael Aquini wrote:
+> The sysctl knob allows users with SYS_ADMIN capability to
+> taint the kernel with any arbitrary value, but this might
+> produce an invalid flags bitset being committed to tainted_mask.
 > 
-> > As of now, there is no interface exposed for converting pid/fd into
-> > clockid and vice versa; linuxptp, for example, has been carrying these
-> > definitions in missing.h header for quite some time[1].
-> >
-> > [1] https://sourceforge.net/p/linuxptp/code/ci/af380e86/tree/missing.h
-> >
-> > Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
-> > ---
-> > Changes since v1[1]:
-> >  * Actually tried to build with the patch and fixed the build error
-> >    reported by kbuild test robot[2].
-> >
-> > [1] https://lkml.org/lkml/2019/9/20/698
-> > [2] https://lkml.org/lkml/2019/9/22/13
-> > ---
-> >  include/linux/posix-timers.h | 47 +------------------------------------------
-> >  include/uapi/linux/time.h    | 48 ++++++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 49 insertions(+), 46 deletions(-)
+> This patch introduces a simple way for proc_taint() to ignore
+> any eventual invalid bit coming from the user input before
+> committing those bits to the kernel tainted_mask.
 > 
-> Was this patch applied, rejected, lost?
-> 
-> I can't find it in the current master.
+> Signed-off-by: Rafael Aquini <aquini@redhat.com>
 
-IIRC, it was ignored.
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
 
+  Luis
