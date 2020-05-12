@@ -2,137 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3FF1CFE41
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 21:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9821CFE4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 21:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730723AbgELT1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 15:27:24 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:35878 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgELT1Y (ORCPT
+        id S1730975AbgELTat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 15:30:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgELTat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 15:27:24 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04CJNHsN171902;
-        Tue, 12 May 2020 19:26:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=B1ilk38pVJNHZxtzKrEaQQmfeMCogI5wZ4W4cxoKqao=;
- b=o3maW5csK70kotv7E5lIflQZ+u7EKprZxTRfg8ifZGlXpTy/igvyAEBbHyODj9DwVXim
- G98q0xFRZhF6JXOHIonEygmtt1KR29UnDN2zVXO3uYNrdNAMRdecK7aNu4lp/1KDtmQY
- XN64GfVpoGdAfL8Kye5L9kTUtAwYhcZK/FoCK4vSux55d/Cnk2D6zLhcyonWCkVItPOm
- QksOKWkWkTFA+5LxejbhmpxxxZhR4u8sXKiQMtaXE8JHlIT3LH3KIAyWxm9I3XzxUVms
- yh4Ge6vxCJR5x3YOXrLDFLT3ZjJP5i2dACy5JcMamyWQfRhirffy8z6w0IgD6plGWJH8 SA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 3100xwgb40-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 May 2020 19:26:50 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04CJIk6m130040;
-        Tue, 12 May 2020 19:26:50 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 3100ynesuj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 May 2020 19:26:50 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04CJQhbD018845;
-        Tue, 12 May 2020 19:26:43 GMT
-Received: from linux-1.home (/92.157.36.49)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 12 May 2020 12:26:42 -0700
-Subject: Re: [RFC v4][PATCH part-1 0/7] ASI - Part I (ASI Infrastructure and
- PTI)
-To:     Dave Hansen <dave.hansen@intel.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     pbonzini@redhat.com, konrad.wilk@oracle.com,
-        jan.setjeeilers@oracle.com, liran.alon@oracle.com,
-        junaids@google.com, graf@amazon.de, rppt@linux.vnet.ibm.com,
-        kuzuno@gmail.com, mgross@linux.intel.com
-References: <20200504144939.11318-1-alexandre.chartre@oracle.com>
- <a65d6cbf-41de-3001-6792-21a4233d8467@intel.com>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <bdfe70f7-2c61-092a-86d0-a7c71e6a3a8d@oracle.com>
-Date:   Tue, 12 May 2020 21:25:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <a65d6cbf-41de-3001-6792-21a4233d8467@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Tue, 12 May 2020 15:30:49 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C616C061A0C;
+        Tue, 12 May 2020 12:30:49 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477:9e51:a893:b0fe:602a])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 8452F128325B0;
+        Tue, 12 May 2020 12:30:47 -0700 (PDT)
+Date:   Tue, 12 May 2020 12:30:46 -0700 (PDT)
+Message-Id: <20200512.123046.2245363690581586050.davem@davemloft.net>
+To:     brgl@bgdev.pl
+Cc:     robh+dt@kernel.org, matthias.bgg@gmail.com, john@phrozen.org,
+        sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com, kuba@kernel.org,
+        arnd@arndb.de, fparent@baylibre.com, hkallweit1@gmail.com,
+        edwin.peer@broadcom.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        stephane.leprovost@mediatek.com, pedro.tsai@mediatek.com,
+        andrew.perepech@mediatek.com, bgolaszewski@baylibre.com
+Subject: Re: [PATCH v2 05/14] net: core: provide priv_to_netdev()
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <CAMRc=MdUCkgCo8UndDbhQRZt_tXJJjtR4uM2g05N5ti7Hw1f2w@mail.gmail.com>
+References: <20200511150759.18766-6-brgl@bgdev.pl>
+        <20200511.134117.1336222619714836904.davem@davemloft.net>
+        <CAMRc=MdUCkgCo8UndDbhQRZt_tXJJjtR4uM2g05N5ti7Hw1f2w@mail.gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9619 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005120145
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9619 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 cotscore=-2147483648 bulkscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 lowpriorityscore=0
- impostorscore=0 spamscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
- suspectscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005120145
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 12 May 2020 12:30:48 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Tue, 12 May 2020 08:04:39 +0200
 
-Hi Dave,
+> I will if you insist but would you mind sharing some details on why it
+> was removed? To me it still makes more sense than storing the pointer
+> to a structure in *that* structure.
 
-On 5/12/20 7:45 PM, Dave Hansen wrote:
-> On 5/4/20 7:49 AM, Alexandre Chartre wrote:
->> This version 4 of the kernel Address Space Isolation (ASI) RFC. I have
->> broken it down into three distinct parts:
->>
->>   - Part I: ASI Infrastructure and PTI (this part)
->>   - Part II: Decorated Page-Table
->>   - Part III: ASI Test Driver and CLI
->>
->> Part I is similar to RFCv3 [3] with some small bug fixes. Parts II and III
->> extend the initial patchset: part II introduces decorated page-table in
->> order to provide convenient page-table management functions, and part III
->> provides a driver and CLI for testing ASI (using parts I and II).
-> 
-> These look interesting.  I haven't found any holes in your methods,
-> although the interrupt depth tracking worries me a bit.  I tried and
-> failed to do a similar thing with PTI in the NMI path, but you might
-> have just bested me there. :)
+Flexibility in implementation of where the private data is located
+and how it is allocated.
 
-Thanks for taking a look. I am glad it seems okay, I have run several tests
-and was unable to have it fail (so far) while previous versions were easily
-breakable.
-
-> It's very interesting that you've been able to implement PTI underneath
-> all of this, and the "test driver" is really entertaining!
-
-Yeah, this a kind of PTI on steroid as part of the implementation was done
-based on the PTI implementation but making it more generic. The test driver
-has proven very useful for testing and debugging. I am currently using it
-(with some extensions) for helping me define the KVM ASI: I can connect the
-driver to a KVM ASI, dump the KVM ASI faults and dynamically add mappings;
-this is very handy.
-
-> That said, this is working in some of the nastiest corners of the x86
-> code and this is going to take quite an investment to get reviewed.  I'm
-> not *quite* sure it's all worth it.
-
-I am also concerned about making changes in all these nasty corners. I am a
-bit more confident now that it is working to implement PTI because PTI provides
-a good stress test for ASI. I am also waiting for (and reviewing) all x86/entry
-changes from tglx; this greatly cleans up the entry code and will hopefully help
-for the integration of ASI. I will rebase as soon as these all changes are
-integrated and check the benefit for ASI.
-
-> So, this isn't being ignored, I'm just not quite sure what to do with
-> it, yet.
-> 
-
-I am working on defining ASI for KVM. Hopefully this will provide a good
-usage example, and make the changes more compelling.
-
-Thanks.
-
-alex.
+And yes, I do insist.
