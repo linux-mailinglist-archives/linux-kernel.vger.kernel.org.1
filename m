@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A9B1CF0BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 11:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522A71CF0E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 11:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729760AbgELJCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 05:02:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728490AbgELJB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 05:01:27 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11292207FF;
-        Tue, 12 May 2020 09:01:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589274087;
-        bh=C3guuoMqBfrmKZqycLGf0H3TPGSppBdGMcJv42z9iVw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=yHWFno2u2Adj+OTBopbDm+rmB0LKoWEKwpFgU4RMqTJ/8KI4tb30C+7NAu9pJdoXb
-         7ZC1FbHX5zNlBumOuA0tu55BTTu6Upm8S8XI031/dEvXUzBcoHWNUuKE11glDDiz4e
-         sYb+5yLHw/gRuuhq4hEJ4xNhrS6BMKypmfVm6P1c=
-From:   Will Deacon <will@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>
-Subject: [PATCH] READ_ONCE: Fix comment describing 2x32-bit atomicity
-Date:   Tue, 12 May 2020 10:01:01 +0100
-Message-Id: <20200512090101.2497-1-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S1729932AbgELJDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 05:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729917AbgELJDf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 05:03:35 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9C2C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 02:03:35 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id w10so1998039ljo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 02:03:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=odTSOiCuFW0TklzckYCQG6DvBZsnxyimLAqm7OGXvHY=;
+        b=Ywl9SCvmKHiY3yhke36DIUNmXVxZ6RZr1xQLCdhcAt85loO8f5QwAB9C3nGM5nD4Qu
+         f0R75AM9wTccysNCrLcqDuC5lR4c3X6AOy1hH9gHjmegqRErxUkJkm5OmYYHSO4TvrhB
+         PH5idrhfg3BEv7YfjDO+igNoMGDfj2w2J31J7b9pU+c4YPcOITqFzGPcngUw1BfyvrBh
+         lM+A+9Q2E444kyAS72sbp8wFRpD5qlv2L/tSZUcCViXCKmjrAq7iWh5h8/mLzBtQOuok
+         YMY1uQHfvX5V0PQYVFda7s12RfxtqpZIoduOTEtDPVPNnnxoAO+ZLEcHtC9qf4rtGni3
+         OlVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=odTSOiCuFW0TklzckYCQG6DvBZsnxyimLAqm7OGXvHY=;
+        b=JFxmj8It1zdvAh/Yd/6XbAmuBh+K0UJc8uTWbsLJQlRwNNxp6j0Jc613wG8JJP8ZYl
+         CJn5crjtckNlwWLo2TdbC94uEPo9DJp4j+JeOpfn1ebfuhvMSkiahjF0k6OfB+XQY+zh
+         LPKdu+WRlrooeOGhsQuTWHjP+k8uHa/hkVTZkxeGk8UVkthP1a7Tu9QisdB/p0akumoG
+         5k5ajNsaBq/RSBWkw2iAjJDiBj+5TPnb0gBgUm/buhzRFYe8BM7mv5ftMf1UmJoB2bdH
+         wGoOU6r6Aw6drIHB/mZSD5tTgjUlqXIFU5HR1trAJfh0JCu/Yl8mH2uwuTxO52rjp54d
+         +hgg==
+X-Gm-Message-State: AOAM5319OwtI1avPgilSiR2eYMtDjJTcGYjNjuiHHONvOpi4PcX77S80
+        0rEIXxjOAIgDgfPu0AAki2j/7wzzhjaiuF0kjh2Dew==
+X-Google-Smtp-Source: ABdhPJx6/P82+0XHIa1NIY1LjcUbB3jwhI5ZVx5pNhIaNBB7mCBqt3/s4nMi5LWlq/CfR62xLIDpTHxQXgTayF6LqSY=
+X-Received: by 2002:a2e:81d5:: with SMTP id s21mr12786190ljg.258.1589274213796;
+ Tue, 12 May 2020 02:03:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <BN6PR04MB0660DD24B7B4418DCC2806FBA3A30@BN6PR04MB0660.namprd04.prod.outlook.com>
+ <BN6PR04MB066041D27D2A70B6B00C4751A3A00@BN6PR04MB0660.namprd04.prod.outlook.com>
+In-Reply-To: <BN6PR04MB066041D27D2A70B6B00C4751A3A00@BN6PR04MB0660.namprd04.prod.outlook.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 12 May 2020 11:03:22 +0200
+Message-ID: <CACRpkdZ-uuzjbHz9oXwjkTBO5ss1KcBN2Vth6N6h32zmgYhAUA@mail.gmail.com>
+Subject: Re: [PATCH v2] iio: light: gp2ap002: Take runtime PM reference on
+ light read
+To:     Jonathan Bakker <xc-racer2@live.ca>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-READ_ONCE() permits 64-bit accesses on 32-bit architectures, since this
-crops up in a few places and is generally harmless because either the
-upper bits are always zero (e.g. for a virtual address or 32-bit time_t)
-or the architecture provides 64-bit atomicity anyway.
+On Sun, May 10, 2020 at 5:58 PM Jonathan Bakker <xc-racer2@live.ca> wrote:
 
-Update the corresponding comment above compiletime_assert_rwonce_type(),
-which incorrectly states that 32-bit x86 provides 64-bit atomicity, and
-instead reference 32-bit Armv7 with LPAE.
+> The light sensor needs the regulators to be enabled which means
+> the runtime PM needs to be on.  This only happened when the
+> proximity part of the chip was enabled.
+>
+> As fallout from this change, only report changes to the prox
+> state in the interrupt handler when it is explicitly enabled.
+>
+> Fixes: 97d642e23037 ("iio: light: Add a driver for Sharp GP2AP002x00F")
+> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Reported-by: Jann Horn <jannh@google.com>
-Signed-off-by: Will Deacon <will@kernel.org>
----
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Applies on top of the READ_ONCE() pile I sent last night (v5).
+Sorry for missing this!
 
- include/linux/compiler.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index 741c93c62ecf..e24cc3a2bc3e 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -384,9 +384,9 @@ static inline void *offset_to_ptr(const int *off)
- 
- /*
-  * Yes, this permits 64-bit accesses on 32-bit architectures. These will
-- * actually be atomic in many cases (namely x86), but for others we rely on
-- * the access being split into 2x32-bit accesses for a 32-bit quantity (e.g.
-- * a virtual address) and a strong prevailing wind.
-+ * actually be atomic in some cases (namely Armv7 + LPAE), but for others we
-+ * rely on the access being split into 2x32-bit accesses for a 32-bit quantity
-+ * (e.g. a virtual address) and a strong prevailing wind.
-  */
- #define compiletime_assert_rwonce_type(t)					\
- 	compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),	\
--- 
-2.26.2.645.ge9eca65c58-goog
-
+Yours,
+Linus Walleij
