@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5309F1CEF15
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 10:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7021CEF24
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 10:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729136AbgELI2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 04:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
+        id S1729242AbgELI3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 04:29:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726187AbgELI2S (ORCPT
+        by vger.kernel.org with ESMTP id S1729174AbgELI3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 04:28:18 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C48CC061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 01:28:16 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id u20so2313328ljo.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 01:28:16 -0700 (PDT)
+        Tue, 12 May 2020 04:29:03 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B1CC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 01:29:02 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id j5so14243823wrq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 01:29:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=95GbR0TC2RxBW+8LeWrRYGNf93ycRXGQPznoeVFPxjc=;
-        b=YfkdN1kciz/KYl7ns9JAwxFgNKOP0wPqdPc0ksttDUXqoTzfw1QKp22yiiZ9wos4sM
-         cD/T2xO2XyMpnqLje9FcDcKEbtfwPmaQNsZZ1XNzfiC7zSwqXRHe7okFEm9DQaXMw3Kn
-         rIlgEHeUZQh54spRfnUN602nZsqVlZSkNlSDWTOgvsuzcz3Vu49JwfGBSJqhPbykgjhU
-         w8LGUzhqT2fz7f5n6SjJGAhrdAos8uKkxaE/Ofqlt05zf5WFDQ/wIqWttnjZ2d+ZUD3E
-         +ZgJxOUuAxhvEUW2qhIf41VgrWnKpEAVMtsgJzu03g5qJrihJhoDY3Z1iZTkfuCbTPEF
-         qZLQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CLwgn00j3cccENKknkxTYm+dTCnpuQMyc2nOwSHSj2c=;
+        b=BYn6G5G3mtGsIR1q4yA4kFS7gfXpBHHdZKx0VJK7nrUiNtfFh+DdPFXdeAXqIZvVDv
+         v0PgNgzR4GT8M52jE89yjyq94Q62WiavRzf0MTRQgnu0uJbfVVCLlPY/JVLeo33RV7j9
+         HBq3nfoDVTq7kErmLaSWtEpPMXkVZkcLD2+OHGVEeVKJppnkAW6Z4U6xU/Nh1x/yWenb
+         MQylVsHkc79+ixLtUnYaOMMSzQZhVr3XrGvWnCefe37GJAxHKcYxhkjCCBSMiXXlzZ2y
+         CKWAeixz+8wDaMHk3ppW6gRgFeVBXo/XCvEWzOBxMPeQDHO64hnF7wpRSx/0m9UW6cIa
+         RxtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=95GbR0TC2RxBW+8LeWrRYGNf93ycRXGQPznoeVFPxjc=;
-        b=Nd/peUuln1nEmUC/Qdh2c87VN/MqTzZfpQB+nXyZURGpymKvfHibKdF99lYrKVMNEY
-         2mGm5QyxP0UO4+asyvJO9sdivSgTzWASpnCd7WBPaHPHDzsxGDlq327slay5qVmWKoA1
-         btJdDB2MP2Icd4q5p93eWjk6Q7OBIz28YHJhhSb+S0tjKfrnu2IpXOF/+o8GcsPXtQqX
-         P4Ik9y2elt0HdcPm8/hZ6pgiBcEWmcJuqZjn/+3nmjpTh1cfZEDNpps2FUk2B7EDIUdN
-         3oOyV7PtNdTQPIT6bG94PxKGw04NynZvZ6UOYZO2J4hQxT5A+tubmKCXb2+02Vy09aCt
-         hh6A==
-X-Gm-Message-State: AOAM532l1y2za2SVQMGzPS0BsWkmqUVcjYhgxLu12IUyYvC2j0rcEmoL
-        GqdiFSU7EjN5V6MdsbehNU5S7OJ9ptI=
-X-Google-Smtp-Source: ABdhPJzP7yoMA2P0CSPKne8R1Adb7IieSl92dmH9QBd5oCS/wyRf/9ihDL58+wdT1kWj7l7HqUi5Hw==
-X-Received: by 2002:a2e:b891:: with SMTP id r17mr13079793ljp.34.1589272094748;
-        Tue, 12 May 2020 01:28:14 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:61b:c4fe:68d6:9937:777b:c884? ([2a00:1fa0:61b:c4fe:68d6:9937:777b:c884])
-        by smtp.gmail.com with ESMTPSA id t16sm14599694lff.72.2020.05.12.01.28.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 May 2020 01:28:14 -0700 (PDT)
-Subject: Re: [PATCH 1/3] net: add a CMSG_USER_DATA macro
-To:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200511115913.1420836-1-hch@lst.de>
- <20200511115913.1420836-2-hch@lst.de>
-From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <f754c4ac-db7d-6688-5582-2a5f476b0f08@cogentembedded.com>
-Date:   Tue, 12 May 2020 11:28:08 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CLwgn00j3cccENKknkxTYm+dTCnpuQMyc2nOwSHSj2c=;
+        b=oy5/KFsAdfqaRz6Nn6+J/mv/kcMQSF20xLG07hXqWlaNqDjVOEbHKkq5oPzBYOSDFQ
+         0CaRTD/T/MXuQmTAjh48dYYcbQy2tujBZ7jnp26zq8o8WHsYH18DCpj1/29hIivwTK3/
+         xkHE30BWnjL3h5i32Y1PZ7JQZ7IEcl4lM7JGky7yVJ+xfSj65yJAmwdIWldYDUITBAl9
+         cYzt2YBG3+GyaartnFdcItt67nTyYsBZBzZY1lQb+ulspMNC648rEBsVrDiJU0QQTtlt
+         v7Q4f9n3pQq+3d3yWffCBguXGieFPij8/2cbTcgis/vjyyEc2F9e2sYa7W4dHpeRWwzq
+         ResA==
+X-Gm-Message-State: AGi0PuYmcBBi9DN8ZP+IS49h+89OVfpJTudJL29BKuWyVB7VYPUwnUap
+        EUzIG96BwwQT5+/ebf+0BWRra7dXkv4JYDguaCA=
+X-Google-Smtp-Source: APiQypKiw4ztGscW4TPsTbkxd70wqekjLwotcF9sLjfkoh2+IyKcOT4dTgbQuhjEHTTRs0ceruxRG49EoxIeiRErzTc=
+X-Received: by 2002:adf:c7c3:: with SMTP id y3mr23375923wrg.196.1589272141413;
+ Tue, 12 May 2020 01:29:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200511115913.1420836-2-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200508091340.11711-1-zhang.lyra@gmail.com> <20200511164647.GA13202@xps15>
+In-Reply-To: <20200511164647.GA13202@xps15>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Tue, 12 May 2020 16:28:25 +0800
+Message-ID: <CAAfSe-v4h4p5bGPrTo3U+GxNGMxK78ZKK-L=Eiyb=Fnq+Do9Ng@mail.gmail.com>
+Subject: Re: [PATCH] coresight: tmc: mark coresight_tmc_groups with static
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Tue, 12 May 2020 at 00:46, Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
+>
+> Hi Chunyan,
+>
+> On Fri, May 08, 2020 at 05:13:40PM +0800, Chunyan Zhang wrote:
+> > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> >
+> > Sparse reports a warning like:
+> > drivers/hwtracing/coresight/coresight-tmc.c:364:30: warning: symbol
+> > 'coresight_tmc_groups' was not declared. Should it be static? [sparse]
+> >
+> > coresight_tmc_groups is used in the local file only, so it should be
+> > marked with static.
+> >
+> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > ---
+> >  drivers/hwtracing/coresight/coresight-tmc.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/hwtracing/coresight/coresight-tmc.c b/drivers/hwtr=
+acing/coresight/coresight-tmc.c
+> > index 1cf82fa..39fba1d 100644
+> > --- a/drivers/hwtracing/coresight/coresight-tmc.c
+> > +++ b/drivers/hwtracing/coresight/coresight-tmc.c
+> > @@ -361,7 +361,7 @@ static ssize_t buffer_size_store(struct device *dev=
+,
+> >       .name =3D "mgmt",
+> >  };
+> >
+> > -const struct attribute_group *coresight_tmc_groups[] =3D {
+> > +static const struct attribute_group *coresight_tmc_groups[] =3D {
+>
+> This has already been addressed by Stephen [1] earlier in this cycle.  It=
+ is
+> currently in linux-next and will be submitted for inclusion in the next c=
+ycle.
+>
+> Thanks,
+> Mathieu
+>
+> [1]. https://www.spinics.net/lists/arm-kernel/msg801714.html
 
-On 11.05.2020 14:59, Christoph Hellwig wrote:
+It is better, I will backport this patch=E3=80=82
 
-> Add a variant of CMSG_DATA that operates on user pointer to avoid
-> sparse warnings about casting to/from user pointers.  Also fix up
-> CMSG_DATA to rely on the gcc extension that allows void pointer
-> arithmetics to cut down on the amount of casts.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-[...]
-> diff --git a/net/core/scm.c b/net/core/scm.c
-> index dc6fed1f221c4..abfdc85a64c1b 100644
-> --- a/net/core/scm.c
-> +++ b/net/core/scm.c
-[...]
-> @@ -300,7 +300,7 @@ void scm_detach_fds(struct msghdr *msg, struct scm_cookie *scm)
->   	if (fdnum < fdmax)
->   		fdmax = fdnum;
->   
-> -	for (i=0, cmfptr=(__force int __user *)CMSG_DATA(cm); i<fdmax;
-> +	for (i=0, cmfptr =(int __user *)CMSG_USER_DATA(cm); i<fdmax;
+Thanks Mathieu=EF=BC=81
 
-    Perhaps it's time to add missing spaces consistently, not just one that 
-you added?
-
->   	     i++, cmfptr++)
->   	{
->   		struct socket *sock;
-
-MBR, Sergei
+>
+> >       &coresight_tmc_group,
+> >       &coresight_tmc_mgmt_group,
+> >       NULL,
+> > --
+> > 1.9.1
+> >
