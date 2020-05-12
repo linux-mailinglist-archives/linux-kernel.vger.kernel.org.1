@@ -2,77 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C97A1CF490
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 14:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C3C1CF4AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 14:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729819AbgELMjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 08:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49252 "EHLO
+        id S1729711AbgELMrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 08:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726891AbgELMjn (ORCPT
+        by vger.kernel.org with ESMTP id S1727783AbgELMrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 08:39:43 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BDEC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 05:39:41 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id d22so4380650lfm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 05:39:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=25aT1ziSREt2eMOH6nsVJvOqQf6doh6zTNEBSQtRoDU=;
-        b=iHTf3EVIIRiEb72XuGUomprsvnNGQ+UeAARBK2vWrskrSY0EB2+77Riro6pz/huYPp
-         bXc9r/+Y7EzoPKPQtijEmDicF54n5WvN/plSpdFoE2+gM/c78SqKRKjvQ/sLjpJRPiwT
-         2yNiOguiUBXgJYmxtkF9E+o9p+T6xno22cTWEOXs5HEdjSxOWkJcnc+WoGT1+GnZ+rXp
-         BbamOfNgs59p25Gqv+z7pErjw7nLuJfvgDlxiwfxdGHmTpppohL1szGatZT8AThk1793
-         KnYzculIZWcuF0Jh7O1Khd9V2wJ9y6anBy7F5P1rGWvPRTS5u5M+LOOzKXFtauObR6zQ
-         mtdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=25aT1ziSREt2eMOH6nsVJvOqQf6doh6zTNEBSQtRoDU=;
-        b=eVzYqPKQ2PEJ6On+UYeG+8Bd1kqK6mjiyn65uNrxZgNuuVxKXYyVLse7Apu/zUe+v8
-         4pubMUEOzUWVVvdAf+fO5SLP8PNiKvMmSwyhkV4qZ0VJoreI0UOGbIEGkEKDku7NwOMW
-         SV8noqTpXrk+OXkTndIm3bM7QzWBibc2M+jo1QlsWykvg2HITOw5wVnMSghQNOzw2M57
-         yNRZycvp2BQsX+b9HwCcOjcvCkHtxjBoQGCZJFpurhVncF/qFgdKJq7Gz8bWzshS7+tG
-         rKhR/19XFnn1OXZewe0szMMaSNBtyfZXy+vbY5gDcYp15KE1ZUpKLLFdAgD7F7aP6LCb
-         6bgA==
-X-Gm-Message-State: AOAM53116thfKUPJRHY7lrIBGIW0VHDu7TxJv+o2MHcK56Y2I9dZ8yc8
-        2AKfZP2SOSN7yzNtZzWqeeOx8Ua82yf29Y3Ojoegdw==
-X-Google-Smtp-Source: ABdhPJy982LB8WEWnoxD748+g+BE0ldEg+fuodtryc5lutvhkFozBxxrxRYRJy4YQkWQ3F5aEx64rkO/sq7gk+PeqNs=
-X-Received: by 2002:a19:42c3:: with SMTP id p186mr14256672lfa.194.1589287179678;
- Tue, 12 May 2020 05:39:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200503164549.163884-1-paul@crapouillou.net>
-In-Reply-To: <20200503164549.163884-1-paul@crapouillou.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 12 May 2020 14:39:28 +0200
-Message-ID: <CACRpkdaZzDXxuKnCiXpaWabO_ZDzmgGRVWAGXh9X_0+stii8Mw@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: ingenic: Add irq_{request,release}_resources callbacks
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     od@zcrc.me,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 12 May 2020 08:47:09 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F90C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 05:47:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=j5f0cEjVT47LMjbR5r5vLspcnzuMNgALjw8aeh6aFX4=; b=TidL0ORJTKOVa0bDnGfXHzicek
+        yKnXEi6hNoK93p3Tr1XDMTJaHw7dFVR+aCLJGxIgksFnEbxJjvAQmfstNWM2J1knXPlO/WyFB30OJ
+        TWyA2kIteGpgKO293o8rmclkBYyGOsUV6/PszuR6UsPYtngq/zOwh4FtN8s14grfEddNEGmbXhk5T
+        F8LJoimtAwW9TeIcEOzFiaidQBz7/5QWrFTSB21RMhBufMdpT+y3wD3C6M1Ph7CV061OQY7bQSaZS
+        krFDdL+niMH7v/ZGmt+yFbG3toIgdIgAJ52dBEOBFNVn8rdA3l94rkOvTauIiUeJ8xUV3/ng9NUsS
+        esJ0XPgw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jYUJE-0007C1-2F; Tue, 12 May 2020 12:46:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 41329301EFB;
+        Tue, 12 May 2020 14:46:53 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 22AB720962E53; Tue, 12 May 2020 14:46:53 +0200 (CEST)
+Message-ID: <20200512124058.833263033@infradead.org>
+User-Agent: quilt/0.66
+Date:   Tue, 12 May 2020 14:40:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Leo Yan <leo.yan@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        mingo@redhat.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        daniel.lezcano@linaro.org, tglx@linutronix.de,
+        sboyd@codeaurora.org, john.stultz@linaro.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 0/5] arm64: perf: Proper cap_user_time* support
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 3, 2020 at 6:45 PM Paul Cercueil <paul@crapouillou.net> wrote:
+Prompted by Leo's patches, here a series that corrects the arm64 perf cap_user_time situation.
 
-> These are called when a GPIO is to be used as IRQ.
->
-> Without these custom callbacks, when an interrupt is requested directly
-> and not through gpiod_to_irq(), the request fails because the GPIO is
-> not necesarily in input mode. These callbacks simply enforce that the
-> requested GPIO is in input mode.
->
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-
-Patch applied.
-
-Yours,
-Linus Walleij
