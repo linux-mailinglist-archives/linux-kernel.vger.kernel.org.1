@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D391CF4A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 14:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02FC11CF4BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 14:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729692AbgELMpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 08:45:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727783AbgELMpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 08:45:23 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE13A20674;
-        Tue, 12 May 2020 12:45:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589287523;
-        bh=B8EsQkIZ4mWzMFetp7c3r9TqEBFzsY2l1zuTizTYPB4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Mez8boHcMnR+mev15Qse9ch6E4/Ezv+JCkJDwFG9E8tW1tilmUDFKHY1Ah04d6BaH
-         Aig7VFji0wMpoH0NpnAqDOuDS+tTWi+z3cieLPwzSxsc04qLUd8ixLtn+9mb0jgCzN
-         BryR2K1An27QybVGN8qEiBY50g9twxf+3cLm4pH0=
-Date:   Tue, 12 May 2020 13:45:20 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Lubomir Rintel <lkundrak@v3.sk>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH 07/11] ASoC: mmp-sspa: Prepare/unprepare the clocks
-Message-ID: <20200512124520.GH5110@sirena.org.uk>
-References: <20200511210134.1224532-1-lkundrak@v3.sk>
- <20200511210134.1224532-8-lkundrak@v3.sk>
+        id S1729931AbgELMsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 08:48:10 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33333 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729626AbgELMsK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 08:48:10 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jYUKM-00007g-AO; Tue, 12 May 2020 12:48:06 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/amdgpu: remove redundant assignment to variable ret
+Date:   Tue, 12 May 2020 13:48:06 +0100
+Message-Id: <20200512124806.195856-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="smOfPzt+Qjm5bNGJ"
-Content-Disposition: inline
-In-Reply-To: <20200511210134.1224532-8-lkundrak@v3.sk>
-X-Cookie: The only perfect science is hind-sight.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
---smOfPzt+Qjm5bNGJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The variable ret is being initializeed with a value that is never read
+and it is being updated later with a new value. The initialization
+is redundant and can be removed.
 
-On Mon, May 11, 2020 at 11:01:30PM +0200, Lubomir Rintel wrote:
-> The driver enables the clocks without preparing them and disables
-> without unpreparing afterwards. Fix that.
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This fix should've been earlier in the series so it could be sent as a
-fix.
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
+index 90610b4f2c75..e9e59bc68c9f 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
+@@ -441,7 +441,7 @@ int amdgpu_xgmi_set_pstate(struct amdgpu_device *adev, int pstate)
+ 
+ int amdgpu_xgmi_update_topology(struct amdgpu_hive_info *hive, struct amdgpu_device *adev)
+ {
+-	int ret = -EINVAL;
++	int ret;
+ 
+ 	/* Each psp need to set the latest topology */
+ 	ret = psp_xgmi_set_topology_info(&adev->psp,
+-- 
+2.25.1
 
---smOfPzt+Qjm5bNGJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl66ml8ACgkQJNaLcl1U
-h9CzLgf+Jh8LwbiE+tnUKFZaCx9Xvm8TpBqizolD7ds1chpXzCKwvsCD05D6xK1c
-+pHm2YbWUn9S8j1WfrsfjyVqFVs04kBNbEl4gN4zNhNfT+t8bZ96c8MJLaJDBNO8
-8rjXWZwanFpNCHI3PMqZ9mtMMZciEnKCzvxOfh0Cf//nPoExjVNYu6RkdRlxhOYB
-gxWXMJhfDryXdkfiCpigwLeePjFdME9Pwfdt+i02oKnLZKGZJXJyEmzHxdWa66Wp
-7XMKQYf81z5vDKteF4X4osscnFuMDKtcbW/Jmy6PRYz00zsJF6pnrfe47bRxOSmy
-i75Py2lUbkbyLBjn/oBevQ1588aDlw==
-=3JaX
------END PGP SIGNATURE-----
-
---smOfPzt+Qjm5bNGJ--
