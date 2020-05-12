@@ -2,99 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914F71CF263
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 12:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A391CF286
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 12:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729487AbgELKaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 06:30:24 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4396 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729349AbgELKaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 06:30:24 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id D25D48F8059F1425D55C;
-        Tue, 12 May 2020 18:30:21 +0800 (CST)
-Received: from [127.0.0.1] (10.166.213.7) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Tue, 12 May 2020
- 18:30:14 +0800
-Subject: Re: [PATCH] scsi: hisi_sas: display correct proc_name in sysfs
-To:     John Garry <john.garry@huawei.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Xiang Chen <chenxiang66@hisilicon.com>
-References: <20200512063318.13825-1-yanaijie@huawei.com>
- <66c3318d-e8fa-9ff4-c7f4-ebe23925b807@huawei.com>
- <dacd7cbe-3d84-2b35-e63a-af6179aa5221@huawei.com>
- <920c5d36-5637-1fba-034b-8ea3d41c131c@huawei.com>
-From:   Jason Yan <yanaijie@huawei.com>
-Message-ID: <1043f72a-7f4c-eb5c-eeb2-227f5321fed5@huawei.com>
-Date:   Tue, 12 May 2020 18:30:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        id S1729553AbgELKdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 06:33:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729336AbgELKdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 06:33:19 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D009206DD;
+        Tue, 12 May 2020 10:33:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589279598;
+        bh=iOtZ2eVyp6uykbgj4qii/+7h1t5fhrWXPOp64vb39Pk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lUBRFPsWwF1B/9EwmQHd1AszTkgFtKc1UlbdnkEZkL8PWqW/9u4peAjCF+tt6E6/k
+         E2WpIRHdC4aCOqXDTK9uUqPZlo4WtTgZZUCSs3QizExQM/zrBSNpO0mlLX1X4Nxi/Y
+         nxYlTjJe8u1e3cUxYpbX6qxs71/8IbdwTgrMks64=
+Date:   Tue, 12 May 2020 11:33:16 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Steve Lee <steves.lee.maxim@gmail.com>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        ckeepax@opensource.cirrus.com, geert@linux-m68k.org,
+        rf@opensource.wolfsonmicro.com, shumingf@realtek.com,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        krzk@kernel.org, dmurphy@ti.com, jack.yu@realtek.com,
+        nuno.sa@analog.com, steves.lee@maximintegrated.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        ryan.lee.maxim@gmail.com
+Subject: Re: [PATCH 2/2] ASoC: max98390: Added Amplifier Driver
+Message-ID: <20200512103316.GB5110@sirena.org.uk>
+References: <20200509031919.9006-1-steves.lee@maximintegrated.com>
+ <20200511110346.GE8216@sirena.org.uk>
+ <CABff4NQXs622x1X6ZvNABHNZoTMS57f4Y5sdo1Cng3JeTgboCw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <920c5d36-5637-1fba-034b-8ea3d41c131c@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.166.213.7]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gatW/ieO32f1wygP"
+Content-Disposition: inline
+In-Reply-To: <CABff4NQXs622x1X6ZvNABHNZoTMS57f4Y5sdo1Cng3JeTgboCw@mail.gmail.com>
+X-Cookie: The only perfect science is hind-sight.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--gatW/ieO32f1wygP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-在 2020/5/12 18:00, John Garry 写道:
-> On 12/05/2020 10:35, Jason Yan wrote:
->>
->>
->> 在 2020/5/12 16:23, John Garry 写道:
->>> On 12/05/2020 07:33, Jason Yan wrote:
->>>> The 'proc_name' entry in sysfs for hisi_sas is 'null' now becuase it is
->>>> not initialized in scsi_host_template. It looks like:
->>>>
->>>> [root@localhost ~]# cat /sys/class/scsi_host/host2/proc_name
->>>> (null)
->>>>
->>>
->>> hmmm.. it would be good to tell us what this buys us, apart from the 
->>> proc_name file.
->>>
->>
->> When there is more than one storage cards(or controllers) in the 
->> system, I'm tring to find out which host is belong to which card. And 
->> then I found this in scsi_host in sysfs but the output is '(null)' 
->> which is odd.
-> 
-> "dmesg | grep host" would give this info, like:
-> 
-> root@(none)$ dmesg | grep host0
-> [    8.877245] scsi host0: hisi_sas_v2_hw
-> 
+On Tue, May 12, 2020 at 06:13:05PM +0900, Steve Lee wrote:
+> On Mon, May 11, 2020 at 8:03 PM Mark Brown <broonie@kernel.org> wrote:
 
-NO, if long time after the system boot, dmesg cannot get this 
-infomation. It is flushed by other logs.
+> > > +static const char * const max98390_current_limit_text[] = {
+> > > +     "0.00A", "0.50A", "1.00A", "1.05A", "1.10A", "1.15A", "1.20A", "1.25A",
+> > > +     "1.30A", "1.35A", "1.40A", "1.45A", "1.50A", "1.55A", "1.60A", "1.65A",
 
->>
->>> I mean, if we had the sht show_info method implemented, then it could 
->>> be useful (which is even marked as obsolete now).
->>>
->>
->> I found this is interesting while in the sysfs filesystem we have a 
->> procfs stuff in it.
-> 
-> It's only the name of the procfs entry, if it exists.
-> 
-> And, since .show_info is obsolete, I don't see why .proc_name is not 
-> also obsolete.
-> 
->> I was planned to rename this entry to 'name' and use the struct member 
->> 'name' directly in struct scsi_host_template. But this may break 
->> userspace applications.
->>
-> 
-> Thanks,
-> John
-> 
-> .
+> > This looks like it should be in DT too.
 
+> Since this control  is needed while running system according to system
+> battery situation.
+> I'd keep this mixer for further use.
+
+That's...  interesting for a current limit, and sounds like it would
+have issues for the common case use of current limits to protect the
+hardware.
+
+> > > +static int max98390_dsm_calib_get(struct snd_kcontrol *kcontrol,
+> > > +             struct snd_ctl_elem_value *ucontrol)
+> > > +{
+> > > +     struct snd_soc_component *component =
+> > > +             snd_soc_kcontrol_component(kcontrol);
+> > > +
+> > > +     dev_warn(component->dev, "Get dsm_calib_get not supported\n");
+> > > +
+> > > +     return 0;
+> > > +}
+
+> > Just don't implement the operation if you can't implement it.
+
+> If this not exist as dummy operation and all mixer was not working and
+> could not implement better idea.
+
+Could you be more specific about what you mean by "not working" or how
+simply not initializing the value returned fixes things please?
+
+> Could you consider it as with warn message ?
+
+No, if there's a problem here we should fix it properly.
+
+--gatW/ieO32f1wygP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl66e2sACgkQJNaLcl1U
+h9CQogf/R4loaD+oS7rnJp6kgm9vB0jnWzpi3rqYFNStSnuHqRBItJeYQU5jCjuT
+A+pMPMF6GX70+4mnWRA7Lj54J5JDWqGX39pARZYckUdT82q/xwi5EJdjPN18wqQn
+sP/GFgc+qi8It3N+2HJOXtHuUO+MhG12PpRVJ87lH3JVzM1pmOFsBjsb82DXTQL0
+lmq8EqokSzxiY4M1b7bNjIyEqI6Lm53IGo16zfqapaNdjbvN14Y7/Ma4oVcBUhXA
+0fezppgi5AzD8HgWAVhPHxfaCCUrIjW2mE8c31K6oHma6SkvXT+Ys045NXX4YUJw
+qz/dy7x/0rIvjJKMcOFFXHYU/KPRPw==
+=msPs
+-----END PGP SIGNATURE-----
+
+--gatW/ieO32f1wygP--
