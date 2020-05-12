@@ -2,188 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012251CEA5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 03:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 965D91CEA5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 03:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728547AbgELB6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 21:58:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:44464 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726874AbgELB6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 21:58:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 17A5B1FB;
-        Mon, 11 May 2020 18:58:06 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.73.104])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5F9DE3F71E;
-        Mon, 11 May 2020 18:58:02 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
-Subject: [PATCH V3] arm64/cpufeature: Validate hypervisor capabilities during CPU hotplug
-Date:   Tue, 12 May 2020 07:27:27 +0530
-Message-Id: <1589248647-22925-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S1728491AbgELB5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 21:57:48 -0400
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:41772 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726874AbgELB5s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 21:57:48 -0400
+Received: by mail-oo1-f65.google.com with SMTP id t3so2383359oou.8;
+        Mon, 11 May 2020 18:57:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=00kOp9ExmdOEb2m+UR6ZmOPdOYVhMumUnUk3jnpY3fM=;
+        b=G4hGY+FMaPOfGU8jevafQyTksi81Vf0D+3JvmW2WGc3fkoQACQUEdSv1v7gnQGqFar
+         3zDMXamIefPv83QIiKxIcbxSwIVJPyNIOxLjFDZ7zp25uvHe/R2iXXWRIGmS24fn0Sv9
+         cFDL4aET/SRAZLccO5pODsrRgUHXWGcfZXNXRhkGSQIi9Sfu63Pvdhlk6pjG0mw85+bi
+         W8mVj89KID5byzf6T3mF+zA5LCbChu0Qp1EXztm1OQrC2h+LmUmWMopdraAwASLr4Qq+
+         qNMSgIwz5ZulMdYmiNd/EFw/mmbCyLNmDXQ4Ut06GnjEJS8MtZGQrl3OYkGIytZMlajq
+         erPg==
+X-Gm-Message-State: AGi0Pua+HG+bWAy4RbIUlIM39H/+3+XZ85esU1Q690PwWYT9rFPYcfxp
+        e34zRtQHbypyodsARIVRYw==
+X-Google-Smtp-Source: APiQypLVvE1qKMDCU4a7JudoWuDD5bs0jk6oxiKcKgyBAPrg3Y8unux/pWp/iq+9KH+E5bd84bhtVQ==
+X-Received: by 2002:a4a:615d:: with SMTP id u29mr16314383ooe.15.1589248667406;
+        Mon, 11 May 2020 18:57:47 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id g6sm366903otj.6.2020.05.11.18.57.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 18:57:46 -0700 (PDT)
+Received: (nullmailer pid 20999 invoked by uid 1000);
+        Tue, 12 May 2020 01:57:45 -0000
+Date:   Mon, 11 May 2020 20:57:45 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org,
+        Chris Brandt <chris.brandt@renesas.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: timer: renesas: ostm: Convert to json-schema
+Message-ID: <20200512015745.GA20909@bogus>
+References: <20200427193224.29548-1-geert+renesas@glider.be>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200427193224.29548-1-geert+renesas@glider.be>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This validates hypervisor capabilities like VMID width, IPA range for any
-hot plug CPU against system finalized values. KVM's view of the IPA space
-is used while allowing a given CPU to come up. While here, it factors out
-get_vmid_bits() for general use.
+On Mon, 27 Apr 2020 21:32:24 +0200, Geert Uytterhoeven wrote:
+> Convert the Renesas OS Timer (OSTM) Device Tree binding documentation to
+> json-schema.
+> 
+> Document missing properties.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> For a clean dtbs_check, this depends on "[PATCH] ARM: dts: r7s9210: Remove
+> bogus clock-names from OSTM nodes"
+> (https://lore.kernel.org/r/20200427192932.28967-1-geert+renesas@glider.be)
+> which I intend to queue as a fix for v5.7.
+> 
+>  .../bindings/timer/renesas,ostm.txt           | 31 ----------
+>  .../bindings/timer/renesas,ostm.yaml          | 59 +++++++++++++++++++
+>  2 files changed, 59 insertions(+), 31 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/timer/renesas,ostm.txt
+>  create mode 100644 Documentation/devicetree/bindings/timer/renesas,ostm.yaml
+> 
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: James Morse <james.morse@arm.com>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: kvmarm@lists.cs.columbia.edu
-Cc: linux-kernel@vger.kernel.org
-
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Suggested-by: Suzuki Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-Changes in V3:
-
-- Dropped "#ifdef CONFIG_KVM_ARM_HOST" per Marc
-- Dropped ID_AA64MMFR0_PARANGE_MASK (for now)
-- Updated the commit message per Marc
-
-Changes in V2: (https://patchwork.kernel.org/patch/11535359/)
-
-- Added is_hyp_mode_available() check per Marc
-- Moved verify_kvm_capabilities() into cpufeature.c per Marc
-- Added helper get_kvm_ipa_limit() to fetch kvm_ipa_limit per Marc
-- Renamed kvm as hyp including the commit message per Marc
-
-Changes in V1: (https://patchwork.kernel.org/patch/11532565/)
-
- arch/arm64/include/asm/cpufeature.h | 18 ++++++++++++++++
- arch/arm64/include/asm/kvm_mmu.h    |  2 +-
- arch/arm64/kernel/cpufeature.c      | 33 +++++++++++++++++++++++++++++
- arch/arm64/kvm/reset.c              |  5 +++++
- 4 files changed, 57 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index afe08251ff95..1291ad5a9ccb 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -745,6 +745,24 @@ static inline bool cpu_has_hw_af(void)
- extern bool cpu_has_amu_feat(int cpu);
- #endif
- 
-+static inline unsigned int get_vmid_bits(u64 mmfr1)
-+{
-+	int vmid_bits;
-+
-+	vmid_bits = cpuid_feature_extract_unsigned_field(mmfr1,
-+						ID_AA64MMFR1_VMIDBITS_SHIFT);
-+	if (vmid_bits == ID_AA64MMFR1_VMIDBITS_16)
-+		return 16;
-+
-+	/*
-+	 * Return the default here even if any reserved
-+	 * value is fetched from the system register.
-+	 */
-+	return 8;
-+}
-+
-+u32 get_kvm_ipa_limit(void);
-+
- #endif /* __ASSEMBLY__ */
- 
- #endif
-diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
-index 30b0e8d6b895..a7137e144b97 100644
---- a/arch/arm64/include/asm/kvm_mmu.h
-+++ b/arch/arm64/include/asm/kvm_mmu.h
-@@ -416,7 +416,7 @@ static inline unsigned int kvm_get_vmid_bits(void)
- {
- 	int reg = read_sanitised_ftr_reg(SYS_ID_AA64MMFR1_EL1);
- 
--	return (cpuid_feature_extract_unsigned_field(reg, ID_AA64MMFR1_VMIDBITS_SHIFT) == 2) ? 16 : 8;
-+	return get_vmid_bits(reg);
- }
- 
- /*
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 9fac745aa7bb..30917fe7942a 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -2181,6 +2181,36 @@ static void verify_sve_features(void)
- 	/* Add checks on other ZCR bits here if necessary */
- }
- 
-+#ifdef CONFIG_KVM_ARM_HOST
-+void verify_hyp_capabilities(void)
-+{
-+	u64 safe_mmfr1, mmfr0, mmfr1;
-+	int parange, ipa_max;
-+	unsigned int safe_vmid_bits, vmid_bits;
-+
-+	safe_mmfr1 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR1_EL1);
-+	mmfr0 = read_cpuid(ID_AA64MMFR0_EL1);
-+	mmfr1 = read_cpuid(ID_AA64MMFR1_EL1);
-+
-+	/* Verify VMID bits */
-+	safe_vmid_bits = get_vmid_bits(safe_mmfr1);
-+	vmid_bits = get_vmid_bits(mmfr1);
-+	if (vmid_bits < safe_vmid_bits) {
-+		pr_crit("CPU%d: VMID width mismatch\n", smp_processor_id());
-+		cpu_die_early();
-+	}
-+
-+	/* Verify IPA range */
-+	parange = mmfr0 & 0x7;
-+	ipa_max = id_aa64mmfr0_parange_to_phys_shift(parange);
-+	if (ipa_max < get_kvm_ipa_limit()) {
-+		pr_crit("CPU%d: IPA range mismatch\n", smp_processor_id());
-+		cpu_die_early();
-+	}
-+}
-+#else	/* !CONFIG_KVM_ARM_HOST */
-+static inline void verify_hyp_capabilities(void) { }
-+#endif	/* CONFIG_KVM_ARM_HOST */
- 
- /*
-  * Run through the enabled system capabilities and enable() it on this CPU.
-@@ -2206,6 +2236,9 @@ static void verify_local_cpu_capabilities(void)
- 
- 	if (system_supports_sve())
- 		verify_sve_features();
-+
-+	if (is_hyp_mode_available())
-+		verify_hyp_capabilities();
- }
- 
- void check_local_cpu_capabilities(void)
-diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
-index 30b7ea680f66..841b492ff334 100644
---- a/arch/arm64/kvm/reset.c
-+++ b/arch/arm64/kvm/reset.c
-@@ -340,6 +340,11 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
- 	return ret;
- }
- 
-+u32 get_kvm_ipa_limit(void)
-+{
-+	return kvm_ipa_limit;
-+}
-+
- void kvm_set_ipa_limit(void)
- {
- 	unsigned int ipa_max, pa_max, va_max, parange;
--- 
-2.20.1
-
+Applied, thanks!
