@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C3A1CF53B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 15:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F251CF55C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 15:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729584AbgELNHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 09:07:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727859AbgELNHN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 09:07:13 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D04C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 06:07:11 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id a9so10485725lfb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 06:07:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SYjGwEqwJi4TpJx+ELjK3LcgOeRjatzjbSESVJciwRM=;
-        b=ikt+LOB0DjgrTfnRpL4B2H5QWFHR2SH8zrWJJEuOs3OvpZJ5CtIyIqyhDIkxgVAzPT
-         hR6y7D+ifa6SEIa2dpKznZ6SkxtuSwXCqnIkxPbj7pfACVVvKx9MDjTCRoMhvcTgrUmj
-         gCCuqfO4KhpygE+aCGaEUPI90nzxzmqTSz6ot7paRvhESEhZrtjHj+gfekmBZvjCasxC
-         vQEA1SJfjCge0QUVukY7MFfSt8KOgZIAm35FryDwf7XS/95nXuKZqgdWUs9DE7i9ab1O
-         Mpd+gXHEZKTHktPRVBD+xGi6bjW1tdcmWu7b44IQAP0sVz6650JxnFMIe7p0+tO6dhmk
-         GciQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SYjGwEqwJi4TpJx+ELjK3LcgOeRjatzjbSESVJciwRM=;
-        b=A13UhR/bdj+JjKFuWIsT19HnUudUZ77Nd3qZCF0DSQqemV4u4Wg59hPvWHBoPYUhkA
-         CL7orTJgevg1aMKTL3kmeSwj22WhIgkieOlF6h/14rnz4u3SbRiA+s0UflXpsTcr6FL1
-         ad6NEnwEekLJzOCI1mWIP+gFXDEUCuj194VK0Et2kZpg+DReyjssWOfwnbGHApwY1hAY
-         1TiNmcokCmIGHbACr/u6O7Rox+/zj52feAOq1DLUDm3GAh0mKG34Sc5dSyTTwVAsqSUg
-         P+EkDANFjubg90agkUZ7o1YviZe/J3c2tjSiE74h9gbbzZENfoy62xR7l0iEtpsYV5gS
-         XG4w==
-X-Gm-Message-State: AOAM530BtzHR5RZXOSCjzWBFwkX6XLEYnNqld+R/JeVmUOmTDciyGS2t
-        Z+YsAJbZhyEoxgjGThpsaLAKDJha2eHAPXgF7sjm7A==
-X-Google-Smtp-Source: ABdhPJx7a9QY2omkKlC/zH0ZVmVYVJmI9DQqmgoG//tzBF2K3jVYW0SFtjof8OK67Ca+0O0KBL6AoUAH3Zy6ftjdu6M=
-X-Received: by 2002:ac2:5e70:: with SMTP id a16mr14689641lfr.77.1589288830292;
- Tue, 12 May 2020 06:07:10 -0700 (PDT)
+        id S1730016AbgELNOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 09:14:47 -0400
+Received: from www.zeus03.de ([194.117.254.33]:53898 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726891AbgELNOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 09:14:47 -0400
+X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Tue, 12 May 2020 09:14:46 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=bVnvR3rOZs7GQ5Rx/p20PMBOzRG4
+        5vFIXWPPh4D/qKA=; b=OQg+dVZ/hvYZcb9qtk8hkak52UNO4J1vCotQUy18WU0q
+        nZ63gSXb59JW8mL+J9qfkjH0ihXkzTYoQw48IYCxwqPBNzJMNoYWGlpuScyzKlSJ
+        9Mq7k8vHTvlcH0uPJkr3z5AsG5dtvvzY4mxgmGgbaJOXyYOtHtWgDmBVdb3scbM=
+Received: (qmail 2948160 invoked from network); 12 May 2020 15:08:04 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 12 May 2020 15:08:04 +0200
+X-UD-Smtp-Session: l3s3148p1@ZV9lJ3Ol5MQgAwDPXw2aAE67cgFBY+HL
+Date:   Tue, 12 May 2020 15:08:03 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     peda@axentia.se, robh@kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] i2c: mux: demux-pinctrl: Fix an error handling path in
+ 'i2c_demux_pinctrl_probe()'
+Message-ID: <20200512130802.GC13516@ninjato>
+References: <20200506192100.194821-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-References: <20200504154757.17519-1-ckeepax@opensource.cirrus.com> <20200504154757.17519-3-ckeepax@opensource.cirrus.com>
-In-Reply-To: <20200504154757.17519-3-ckeepax@opensource.cirrus.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 12 May 2020 15:06:59 +0200
-Message-ID: <CACRpkdYSzdUgZgA6jtdP3K9bWTF=-whkQCr=bKkr_Z0VXywdkA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] pinctrl: lochnagar: Move binding over to dtschema
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, patches@opensource.cirrus.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nmemrqcdn5VTmUEE"
+Content-Disposition: inline
+In-Reply-To: <20200506192100.194821-1-christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 4, 2020 at 5:48 PM Charles Keepax
-<ckeepax@opensource.cirrus.com> wrote:
 
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> ---
->
-> Changes since v1:
->  - Moved sub-node into MFD file leaving just the properties in here
->  - Removed contains on the compatible
->  - Added a required -pins suffix for pinmux/ctrl nodes
->  - Added some extra blank lines for readability
+--nmemrqcdn5VTmUEE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Backed out v1 since I see there is some discussion on these still (sorry for
-missing this).
+On Wed, May 06, 2020 at 09:21:00PM +0200, Christophe JAILLET wrote:
+> A call to 'i2c_demux_deactivate_master()' is missing in the error handling
+> path, as already done in the remove function.
+>=20
+> Fixes: 50a5ba876908 ("i2c: mux: demux-pinctrl: add driver")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-I'll hold this off until there is consensus.
+Applied to for-current, thanks! Peter, I hope you are okay with me
+applying patches for my strange driver directly.
 
-Yours,
-Linus Walleij
+
+--nmemrqcdn5VTmUEE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl66n7IACgkQFA3kzBSg
+KbYd7w//QfbfCkh7Qi2tx9ZYq6DwTGtz92vvLnKEiVAe684hJqfbIT58KB6Y+xxs
+hvLU37hPtQHEylKHPjZKP4reKet/qhMBwa+izmicml37AYk/WT+bISP7bDz/cZm6
+9gR9FGV/236CcswGGLcru8Us9PnxWnajXTq/Zgfb0/WcGfD+cV5zc3EDlR4iTAs/
+wwJH7sLUoC6HTLWtEHDX9wRc35Baq1TqrHrecknGPctQgj2HNxickJrHJNclkEJ7
+ZqTs//75b7SXWE4eE2WG4PYY2m12NkAuzTwkWLTJdmuuINBtbfEpJsfuONd1CX1j
+PP/y25ssXKY5W0Qxq8/iR/Vb5rla2NtvOowCMjlWCTQmOkoaR1/wWJ12fDx4XOuj
+Ut+zNMSg6OnnnW56rMe8pe54PjYszVuC9wwZk9skcuFWRYOVU5Vi0zfTIXnO5WHO
+pBR6+BSHd04tndfm14qwNGIUa7DY4XwL07VlZVVHJ7vuzk8WyM65O2YuyfNh12O2
+6zOMrG+FLYnDH4yiusAgQVEE3utwknrxUm5y0YI7SMLOnhHpbc7UAnhWk0H+AKeW
+3jooXGPRT7BOSMLlRc6tvW3EEDJpjB6iUN8CNkc0yFSEFpGXS32YC1hTMcuNvcbG
+NXvY6NpeIWHNfXoWZgcrJzMwqcXxhR79oWSyEdn2E69AFUMPmOs=
+=Nlce
+-----END PGP SIGNATURE-----
+
+--nmemrqcdn5VTmUEE--
