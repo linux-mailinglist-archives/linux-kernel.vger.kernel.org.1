@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D22F1CFEF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 22:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9901CFEF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 22:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731165AbgELUHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 16:07:37 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:54834 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgELUHh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 16:07:37 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id EF38A803080B;
-        Tue, 12 May 2020 20:07:34 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 0qIQxjXwpsZz; Tue, 12 May 2020 23:07:34 +0300 (MSK)
-Date:   Tue, 12 May 2020 23:07:33 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
-        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
-        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Allison Randal <allison@lohutok.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/17] spi: dw: Add generic DW DMA controller support
-Message-ID: <20200512200733.bdbbhkjkwjd5yzqq@mobilestation>
-References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
- <20200508133336.GK4820@sirena.org.uk>
+        id S1731180AbgELUHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 16:07:55 -0400
+Received: from www.zeus03.de ([194.117.254.33]:38446 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731168AbgELUHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 16:07:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=yUF4VJEAnlfiS6JRxzh+1bzIfJxa
+        yjiNdic4HEyYt+k=; b=yzpK9buRsJFEleBzux6A3e0nFIA5i/t9edRq+IxZk6RN
+        VzMP/oXEubqvAkWNiYZ9Ubpn8nM7Q87Nmp2cgtPUcPl+L+R3EsiIfaG9G1/T6Qt5
+        8GjkBYTqx+lxi8enBxpPXpQL8rImSvOOzoJobHFHr69PHS+THMPU3H0HBSxEg5Y=
+Received: (qmail 3071369 invoked from network); 12 May 2020 22:07:52 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 12 May 2020 22:07:52 +0200
+X-UD-Smtp-Session: l3s3148p1@ene2BHmlEsogAwDPXw2aAE67cgFBY+HL
+Date:   Tue, 12 May 2020 22:07:51 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Corey Minyard <minyard@acm.org>
+Cc:     linux-i2c@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] char: ipmi: convert to use i2c_new_client_device()
+Message-ID: <20200512200751.GA6960@ninjato>
+References: <20200326210958.13051-1-wsa+renesas@sang-engineering.com>
+ <20200326210958.13051-2-wsa+renesas@sang-engineering.com>
+ <20200512182517.GP9902@minyard.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="X1bOJ3K7DJ5YkBrT"
 Content-Disposition: inline
-In-Reply-To: <20200508133336.GK4820@sirena.org.uk>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20200512182517.GP9902@minyard.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 02:33:36PM +0100, Mark Brown wrote:
-> On Fri, May 08, 2020 at 04:29:25PM +0300, Serge Semin wrote:
-> 
-> > Serge Semin (17):
-> >   dt-bindings: spi: Convert DW SPI binding to DT schema
-> 
-> Please don't make new feature development dependent on conversion to the
-> new schema format, there's quite a backlog of reviews of schema
-> conversions so it can slow things down.  It's good to do the conversions
-> but please do them after adding any new stuff to the binding rather than
-> before.
 
-So by saying this do you want me to revert an order of the first two patches
-in the series, right? So the series would first add the DMA properties support
-to the binding, then would convert the binding file to DT schema.
+--X1bOJ3K7DJ5YkBrT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--Sergey
+On Tue, May 12, 2020 at 01:25:17PM -0500, Corey Minyard wrote:
+> On Thu, Mar 26, 2020 at 10:09:58PM +0100, Wolfram Sang wrote:
+> > Move away from the deprecated API.
+> >=20
+> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+>=20
+> Ok by me.
+>=20
+> Acked-by: Corey Minyard <cminyard@mvista.com>
+>=20
+> Do you want me to take this, or is this part of something else?  I can
+> submit it if you like.
 
+I'd prefer if you take it. But I can take it if it is easier for you.
+
+Thanks!
+
+
+--X1bOJ3K7DJ5YkBrT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl67AhMACgkQFA3kzBSg
+KbYwCw//fDMbW7wdG4KvmjCNqawMQBB3jse+reI2CNpwfVGllfcKbL4a+KmcJRLK
+Pfb+JHUj313OnkfTTmgmzsLiwrHgVDuyPP/j78ChzNY2hTLs9g8EWcmnHxYzdKWj
+7ZnRYaYq9amNC2gnvyVl2mbguTU8AnpFvJGl163wb7bZ+khrUUpVSscmdVbnN/LN
+9ZbPyIP+1E+kwcr27EwyktGA56lSLTnQPOgLOOIznRw7dX2vjFvyxLK5aNzrdTml
+EzSaUfl41xghq8BOeo2DTCWUM3nGs12fGqPspCbDk7v+zmrWyboiNSNln4oBIhv7
+1UHRm4/ABF+q5J0r9nNe08m8eps3694CuStqfZPzwx3boUAxWcF9U+q3JFLsOVuH
+fBgcc/fMRX8Z9ZyRWPGlEYKkGwZzC5ug3Gs0wM3ybmSZrxdSrSces8z0ARC2j9qA
+P3OL4zucLAOXyQMdYMTUAFRyYSPH2MyPTSx6i32UcjO0aQJDAv1lq3DeGkrovaOH
+pTJH9fSJ/ggDul8H3YrwXWhoqxTWlr5HuhgWvhhgCFCW96YwUohWKcvPXMMD+wX1
+dN5Uy7fpXZA6ZKU+F0Dq0CD65nma1CRVC6AlMHLGmeQSuMYb6RCWH+ko7ymCl9M+
+hVvizVbNrJF2NZepi/5LRXHUUjvrzLXdc4cEKfiz3LeHnpMIAb4=
+=ty69
+-----END PGP SIGNATURE-----
+
+--X1bOJ3K7DJ5YkBrT--
