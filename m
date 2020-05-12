@@ -2,176 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9B01CF7FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A03B1CF805
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730455AbgELOzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 10:55:18 -0400
-Received: from mga05.intel.com ([192.55.52.43]:29542 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730427AbgELOzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 10:55:15 -0400
-IronPort-SDR: kF5FZw7CwEzpW1894SIjBMtY8REUKLBxxI63FjjIxNTGVtuB+dlhjzO60T0jtzGw3PZsDveEWH
- K0ZVuoHcq0aA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 07:55:09 -0700
-IronPort-SDR: srqrD3ZvNeQU8lTt1JVGLc/dHOudLcRCzOl7+nBE/KwQFwAYkBWVeY6Z6prfBbsfPxscWRdGio
- +zY7Sg3qRX8w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,384,1583222400"; 
-   d="scan'208";a="371587835"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by fmsmga001.fm.intel.com with ESMTP; 12 May 2020 07:55:09 -0700
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Rik van Riel <riel@surriel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [PATCH v4 10/10] x86/fpu/xstate: Restore supervisor states for signal return
-Date:   Tue, 12 May 2020 07:54:44 -0700
-Message-Id: <20200512145444.15483-11-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200512145444.15483-1-yu-cheng.yu@intel.com>
-References: <20200512145444.15483-1-yu-cheng.yu@intel.com>
+        id S1730524AbgELOzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 10:55:43 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:43487 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727958AbgELOzn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 10:55:43 -0400
+Received: by mail-oi1-f195.google.com with SMTP id i22so1854132oik.10;
+        Tue, 12 May 2020 07:55:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fQ/KirqKw6BO2UGDgRcS3zleuiv+6S0ku0zLBHrcdQE=;
+        b=B+WTLvJgFm4p2L6t1i5L9KUz3yO2X6IBwts1XOY58mRbFk7msGAjkoIQvARexAlxGL
+         Jc1Rj7u2iBTgNnQbyECP/XrbwkRQNR8O2inCxwh61RH7hSr2/hbXN+yt5NVWL+JoUZfO
+         tpc5qAIqs8KQUDLTVDQUbDWMihk24ZQRZMKk6uneRKtSQrYdeYP4Gooqztt7v1xTzubf
+         JniJbjMy4IgXjGYG4O27/3mb2dUl0UxVsSzOLkBoiLYg3DFjXedHFkJBn87u1hjTt3KV
+         4/SFA4WX19lumBg9U33/HdjTa3D0CEpHenoxoymPoMg4CGkYjS8kVDGOswOc6SPutEUr
+         +fFQ==
+X-Gm-Message-State: AGi0PuYWP4QQ8pCSePK+6NiCp/be2450kBUCq7epXh9psGGffRPYZ9Op
+        5H1s9mT8SklswgQyjdCsrQ==
+X-Google-Smtp-Source: APiQypKGFg5K792meOQtyk/OqmaGeRZs+OjkzVpOC5F4wC2KYFUclFMd7QTJb3TdXvy6aRGZ9Dv7iw==
+X-Received: by 2002:aca:5513:: with SMTP id j19mr22756944oib.31.1589295342052;
+        Tue, 12 May 2020 07:55:42 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id c84sm5382655oig.37.2020.05.12.07.55.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 07:55:40 -0700 (PDT)
+Received: (nullmailer pid 31636 invoked by uid 1000);
+        Tue, 12 May 2020 14:55:39 -0000
+Date:   Tue, 12 May 2020 09:55:39 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux-imx@nxp.com
+Subject: Re: [PATCH V4 2/5] dt-bindings: clock: Convert i.MX6SX clock to
+ json-schema
+Message-ID: <20200512145539.GA25671@bogus>
+References: <1588207921-20604-1-git-send-email-Anson.Huang@nxp.com>
+ <1588207921-20604-2-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1588207921-20604-2-git-send-email-Anson.Huang@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As described in the previous patch, the signal return fast path directly
-restores user states from the user buffer.  Once that succeeds, restore
-supervisor states (but only when they are not yet restored).
+On Thu, Apr 30, 2020 at 08:51:58AM +0800, Anson Huang wrote:
+> Convert the i.MX6SX clock binding to DT schema format using json-schema.
+> 
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> ---
+> Changes since V3:
+> 	- update license to be with (GPL-2.0-only OR BSD-2-Clause);
+> 	- remove unnecessary minItem for interrupts;
+> 	- remove label in example.
+> ---
+>  .../devicetree/bindings/clock/imx6sx-clock.txt     | 13 -----
+>  .../devicetree/bindings/clock/imx6sx-clock.yaml    | 64 ++++++++++++++++++++++
+>  2 files changed, 64 insertions(+), 13 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/clock/imx6sx-clock.txt
+>  create mode 100644 Documentation/devicetree/bindings/clock/imx6sx-clock.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/imx6sx-clock.txt b/Documentation/devicetree/bindings/clock/imx6sx-clock.txt
+> deleted file mode 100644
+> index 22362b9..0000000
+> --- a/Documentation/devicetree/bindings/clock/imx6sx-clock.txt
+> +++ /dev/null
+> @@ -1,13 +0,0 @@
+> -* Clock bindings for Freescale i.MX6 SoloX
+> -
+> -Required properties:
+> -- compatible: Should be "fsl,imx6sx-ccm"
+> -- reg: Address and length of the register set
+> -- #clock-cells: Should be <1>
+> -- clocks: list of clock specifiers, must contain an entry for each required
+> -  entry in clock-names
+> -- clock-names: should include entries "ckil", "osc", "ipp_di0" and "ipp_di1"
+> -
+> -The clock consumer should specify the desired clock by having the clock
+> -ID in its "clocks" phandle cell.  See include/dt-bindings/clock/imx6sx-clock.h
+> -for the full list of i.MX6 SoloX clock IDs.
+> diff --git a/Documentation/devicetree/bindings/clock/imx6sx-clock.yaml b/Documentation/devicetree/bindings/clock/imx6sx-clock.yaml
+> new file mode 100644
+> index 0000000..2c7f625
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/imx6sx-clock.yaml
+> @@ -0,0 +1,64 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/imx6sx-clock.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Clock bindings for Freescale i.MX6 SoloX
+> +
+> +maintainers:
+> +  - Anson Huang <Anson.Huang@nxp.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: fsl,imx6sx-ccm
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 2
 
-For the slow path, save supervisor states to preserve them across context
-switches, and restore after the user states are restored.
+Need to define what each one is:
 
-The previous version has the overhead of an XSAVES in both the fast and the
-slow paths.  It is addressed as the following:
+interrupts:
+  items:
+    - description: ...
+    - description: ...
 
-- In the fast path, only do an XRSTORS.
-- In the slow path, do a supervisor-state-only XSAVES, and relocate the
-  buffer contents.
+And you should explain why this was added.
 
-Some thoughts in the implementation:
-
-- In the slow path, can any supervisor state become stale between
-  save/restore?
-
-  Answer: set_thread_flag(TIF_NEED_FPU_LOAD) protects the xstate buffer.
-
-- In the slow path, can any code reference a stale supervisor state
-  register between save/restore?
-
-  Answer: In the current lazy-restore scheme, any reference to xstate
-  registers needs fpregs_lock()/fpregs_unlock() and __fpregs_load_activate().
-
-- Are there other options?
-
-  One other option is eagerly restoring all supervisor states.
-
-  Currently, CET user-mode states and ENQCMD's PASID do not need to be
-  eagerly restored.  The upcoming CET kernel-mode states (24 bytes) need
-  to be eagerly restored.  To me, eagerly restoring all supervisor states
-  adds more overhead then benefit at this point.
-
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
----
-v3:
-- Change copy_xregs_to_kernel() to copy_supervisor_to_kernel(), which is
-  introduced in a previous patch.
-- Update commit log.
-
- arch/x86/kernel/fpu/signal.c | 44 ++++++++++++++++++++++++++++++++----
- 1 file changed, 39 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index c0e07b548076..003735eec674 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -347,6 +347,23 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 		ret = copy_user_to_fpregs_zeroing(buf_fx, user_xfeatures, fx_only);
- 		pagefault_enable();
- 		if (!ret) {
-+
-+			/*
-+			 * Restore supervisor states: previous context switch
-+			 * etc has done XSAVES and saved the supervisor states
-+			 * in the kernel buffer from which they can be restored
-+			 * now.
-+			 *
-+			 * We cannot do a single XRSTORS here - which would
-+			 * be nice - because the rest of the FPU registers are
-+			 * being restored from a user buffer directly. The
-+			 * single XRSTORS happens below, when the user buffer
-+			 * has been copied to the kernel one.
-+			 */
-+			if (test_thread_flag(TIF_NEED_FPU_LOAD) &&
-+			    xfeatures_mask_supervisor())
-+				copy_kernel_to_xregs(&fpu->state.xsave,
-+						     xfeatures_mask_supervisor());
- 			fpregs_mark_activate();
- 			fpregs_unlock();
- 			return 0;
-@@ -364,14 +381,25 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 	}
- 
- 	/*
--	 * The current state of the FPU registers does not matter. By setting
--	 * TIF_NEED_FPU_LOAD unconditionally it is ensured that the our xstate
--	 * is not modified on context switch and that the xstate is considered
-+	 * By setting TIF_NEED_FPU_LOAD it is ensured that our xstate is
-+	 * not modified on context switch and that the xstate is considered
- 	 * to be loaded again on return to userland (overriding last_cpu avoids
- 	 * the optimisation).
- 	 */
--	set_thread_flag(TIF_NEED_FPU_LOAD);
-+	fpregs_lock();
-+
-+	if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
-+
-+		/*
-+		 * Supervisor states are not modified by user space input.  Save
-+		 * current supervisor states first and invalidate the FPU regs.
-+		 */
-+		if (xfeatures_mask_supervisor())
-+			copy_supervisor_to_kernel(&fpu->state.xsave);
-+		set_thread_flag(TIF_NEED_FPU_LOAD);
-+	}
- 	__fpu_invalidate_fpregs_state(fpu);
-+	fpregs_unlock();
- 
- 	if (use_xsave() && !fx_only) {
- 		u64 init_bv = xfeatures_mask_user() & ~user_xfeatures;
-@@ -393,7 +421,13 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 		fpregs_lock();
- 		if (unlikely(init_bv))
- 			copy_kernel_to_xregs(&init_fpstate.xsave, init_bv);
--		ret = copy_kernel_to_xregs_err(&fpu->state.xsave, user_xfeatures);
-+
-+		/*
-+		 * Restore previously saved supervisor xstates along with
-+		 * copied-in user xstates.
-+		 */
-+		ret = copy_kernel_to_xregs_err(&fpu->state.xsave,
-+					       user_xfeatures | xfeatures_mask_supervisor());
- 
- 	} else if (use_fxsr()) {
- 		ret = __copy_from_user(&fpu->state.fxsave, buf_fx, state_size);
--- 
-2.21.0
-
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: 32k osc
+> +      - description: 24m osc
+> +      - description: ipp_di0 clock input
+> +      - description: ipp_di1 clock input
+> +      - description: anaclk1 clock input
+> +      - description: anaclk2 clock input
+> +
+> +  clock-names:
+> +    items:
+> +      - const: ckil
+> +      - const: osc
+> +      - const: ipp_di0
+> +      - const: ipp_di1
+> +      - const: anaclk1
+> +      - const: anaclk2
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - '#clock-cells'
+> +  - clocks
+> +  - clock-names
+> +
+> +examples:
+> +  # Clock Control Module node:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    clock-controller@20c4000 {
+> +        compatible = "fsl,imx6sx-ccm";
+> +        reg = <0x020c4000 0x4000>;
+> +        interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 88 IRQ_TYPE_LEVEL_HIGH>;
+> +        #clock-cells = <1>;
+> +        clocks = <&ckil>, <&osc>, <&ipp_di0>, <&ipp_di1>, <&anaclk1>, <&anaclk2>;
+> +        clock-names = "ckil", "osc", "ipp_di0", "ipp_di1", "anaclk1", "anaclk2";
+> +    };
+> -- 
+> 2.7.4
+> 
