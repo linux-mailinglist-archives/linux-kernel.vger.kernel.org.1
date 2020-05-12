@@ -2,70 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4151CF254
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 12:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A831CF25A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 12:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729451AbgELK2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 06:28:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728416AbgELK2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 06:28:22 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36D03206A3;
-        Tue, 12 May 2020 10:28:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589279301;
-        bh=zpiNmb4UCtavZMNo6BKDHyMlep5F58zW98wc3jsNU58=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=ihzpMPLAN81AlB25/9+LOE8ebLXxL9p8Pg4XBABQl/FDbwirChiSg0NqiDbyUICtM
-         CGM3YqXUwIwt0UNR/9lK5dRG+l4pBg5YaLuyq113Cjw8m0Y1V1cZAX+J0g7yVWJ43j
-         y8SHmOZ37Vf+QufDa9IByqy9+ylQ/+DwQk6gn05c=
-Date:   Tue, 12 May 2020 11:28:19 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-In-Reply-To: <1587720562-15293-1-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1587720562-15293-1-git-send-email-hayashi.kunihiko@socionext.com>
-Subject: Re: [PATCH v2] dt-bindings: spi: Convert UniPhier SPI controller to json-schema
-Message-Id: <158927929911.28665.8593031021251686663.b4-ty@kernel.org>
+        id S1729379AbgELK27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 06:28:59 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:57276 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727783AbgELK2t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 06:28:49 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jYS9X-0006TO-0M; Tue, 12 May 2020 10:28:47 +0000
+Date:   Tue, 12 May 2020 12:28:46 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Christian Brauner <christian@brauner.io>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the pidfd tree
+Message-ID: <20200512102846.alrmccyzou5rymnq@wittgenstein>
+References: <20200512201811.12480da0@canb.auug.org.au>
+ <20200512102024.f7sycax5qzvxay7t@wittgenstein>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200512102024.f7sycax5qzvxay7t@wittgenstein>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Apr 2020 18:29:22 +0900, Kunihiko Hayashi wrote:
-> Convert UniPhier SPI controller binding to DT schema format.
+On Tue, May 12, 2020 at 12:20:24PM +0200, Christian Brauner wrote:
+> On Tue, May 12, 2020 at 08:18:11PM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > After merging the pidfd tree, today's linux-next build (x86_64
+> > allnoconfig) failed like this:
+> > 
+> > fs/nsfs.c:232:6: error: redefinition of 'proc_ns_file'
+> >   232 | bool proc_ns_file(const struct file *file)
+> >       |      ^~~~~~~~~~~~
+> > In file included from fs/nsfs.c:6:
+> > include/linux/proc_fs.h:194:20: note: previous definition of 'proc_ns_file' was here
+> >   194 | static inline bool proc_ns_file(const struct file *file)
+> >       |                    ^~~~~~~~~~~~
+> > 
+> > Caused by commit
+> > 
+> >   1e76b8ad203a ("nsproxy: attach to namespaces via pidfds")
+> > 
+> > I have applied the following hack for today:
+> 
+> Thanks for spotting this. I'll fix this now.
 
-Applied to
+diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
+index acfd5012db4e..592a6e47b235 100644
+--- a/include/linux/proc_fs.h
++++ b/include/linux/proc_fs.h
+@@ -70,7 +70,7 @@ struct proc_dir_entry *proc_create_single_data(const char *name, umode_t mode,
+                int (*show)(struct seq_file *, void *), void *data);
+ #define proc_create_single(name, mode, parent, show) \
+        proc_create_single_data(name, mode, parent, show, NULL)
+-
++
+ extern struct proc_dir_entry *proc_create_data(const char *, umode_t,
+                                               struct proc_dir_entry *,
+                                               const struct proc_ops *,
+@@ -104,7 +104,6 @@ struct proc_dir_entry *proc_create_net_single_write(const char *name, umode_t mo
+                                                    proc_write_t write,
+                                                    void *data);
+ extern struct pid *tgid_pidfd_to_pid(const struct file *file);
+-extern bool proc_ns_file(const struct file *file);
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-5.8
+ #ifdef CONFIG_PROC_PID_ARCH_STATUS
+ /*
+@@ -160,11 +159,6 @@ static inline struct pid *tgid_pidfd_to_pid(const struct file *file)
+        return ERR_PTR(-EBADF);
+ }
 
-Thanks!
+-static inline bool proc_ns_file(const struct file *file)
+-{
+-       return false;
+-}
+-
+ #endif /* CONFIG_PROC_FS */
 
-[1/1] spi: Convert UniPhier SPI controller to json-schema
-      commit: 5483ef03e075c1625c66ba728b55ef67f7cb3ed1
+ struct net;
+@@ -185,4 +179,6 @@ static inline struct pid_namespace *proc_pid_ns(const struct inode *inode)
+        return inode->i_sb->s_fs_info;
+ }
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
++bool proc_ns_file(const struct file *file);
++
+ #endif /* _LINUX_PROC_FS_H */
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+should fix it cleanly.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Thanks, I've added an allnoconfig to my local tests now!
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Christian
