@@ -2,80 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BED71CE992
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 02:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2271CE994
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 02:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728190AbgELAVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 20:21:14 -0400
-Received: from fieldses.org ([173.255.197.46]:55234 "EHLO fieldses.org"
+        id S1728261AbgELAWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 20:22:23 -0400
+Received: from fieldses.org ([173.255.197.46]:55248 "EHLO fieldses.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbgELAVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 20:21:13 -0400
+        id S1725854AbgELAWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 20:22:23 -0400
 Received: by fieldses.org (Postfix, from userid 2815)
-        id DD4588A6; Mon, 11 May 2020 20:21:12 -0400 (EDT)
-Date:   Mon, 11 May 2020 20:21:12 -0400
+        id EED9623E4; Mon, 11 May 2020 20:22:22 -0400 (EDT)
+Date:   Mon, 11 May 2020 20:22:22 -0400
 From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Cc:     chuck.lever@oracle.com, trond.myklebust@hammerspace.com,
-        anna.schumaker@netapp.com, davem@davemloft.net, kuba@kernel.org,
-        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] sunrpc: add missing newline when printing parameter
- 'pool_mode' by sysfs
-Message-ID: <20200512002112.GA17212@fieldses.org>
-References: <1588901580-44687-1-git-send-email-wangxiongfeng2@huawei.com>
- <1588901580-44687-2-git-send-email-wangxiongfeng2@huawei.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the nfsd tree
+Message-ID: <20200512002222.GB17212@fieldses.org>
+References: <20200508104720.5c7f72a5@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1588901580-44687-2-git-send-email-wangxiongfeng2@huawei.com>
+In-Reply-To: <20200508104720.5c7f72a5@canb.auug.org.au>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 09:32:59AM +0800, Xiongfeng Wang wrote:
-> When I cat parameter '/sys/module/sunrpc/parameters/pool_mode', it
-> displays as follows. It is better to add a newline for easy reading.
+On Fri, May 08, 2020 at 10:47:20AM +1000, Stephen Rothwell wrote:
+> After merging the nfsd tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> kernel/trace/trace_hwlat.c:329:12: error: conflicting types for 'kthread_fn'
+>   329 | static int kthread_fn(void *data)
+>       |            ^~~~~~~~~~
+> In file included from kernel/trace/trace_hwlat.c:40:
+> include/linux/kthread.h:60:7: note: previous declaration of 'kthread_fn' was here
+>    60 | void *kthread_fn(struct task_struct *k);
+>       |       ^~~~~~~~~~
+> 
+> Caused by commit
+> 
+>   7df082e85764 ("kthread: save thread function")
+> 
+> I have used the nfsd tree from next-20200507 for today.
 
-Applying for 5.8.  I assume Trond's getting the other patch.
+Whoops, I forgot to say thanks for this report.  I renamed the
+kthread_fn in my patches to kthread_func.
 
 --b.
-
-> 
-> [root@hulk-202 ~]# cat /sys/module/sunrpc/parameters/pool_mode
-> global[root@hulk-202 ~]#
-> 
-> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-> ---
->  net/sunrpc/svc.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/net/sunrpc/svc.c b/net/sunrpc/svc.c
-> index 187dd4e..d8ef47f 100644
-> --- a/net/sunrpc/svc.c
-> +++ b/net/sunrpc/svc.c
-> @@ -88,15 +88,15 @@ struct svc_pool_map svc_pool_map = {
->  	switch (*ip)
->  	{
->  	case SVC_POOL_AUTO:
-> -		return strlcpy(buf, "auto", 20);
-> +		return strlcpy(buf, "auto\n", 20);
->  	case SVC_POOL_GLOBAL:
-> -		return strlcpy(buf, "global", 20);
-> +		return strlcpy(buf, "global\n", 20);
->  	case SVC_POOL_PERCPU:
-> -		return strlcpy(buf, "percpu", 20);
-> +		return strlcpy(buf, "percpu\n", 20);
->  	case SVC_POOL_PERNODE:
-> -		return strlcpy(buf, "pernode", 20);
-> +		return strlcpy(buf, "pernode\n", 20);
->  	default:
-> -		return sprintf(buf, "%d", *ip);
-> +		return sprintf(buf, "%d\n", *ip);
->  	}
->  }
->  
-> -- 
-> 1.7.12.4
