@@ -2,91 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E91171CEA92
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 04:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076D41CEA82
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 04:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728602AbgELCMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 22:12:07 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:33399 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727892AbgELCMH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 22:12:07 -0400
-Received: by mail-oi1-f194.google.com with SMTP id o24so16964126oic.0;
-        Mon, 11 May 2020 19:12:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=a6FnCmniEb0SZj05Hm52FA7/odoyQ0dRtkEViBqLyQk=;
-        b=gFCMk08jK4+HJJmHisoizBRuhbsTZeCEPRBsDlvZUnl8lwLuaYv2APt+Rdfq1cmmsP
-         6SKEy/7ASYxoPa3ZKJUv0IKrqMVDMMCIFVkY1SOALbRjL41tzyosDPHO9WYtocgu0iqH
-         j9RtLFD5GEdVL7FmS2bVRNQlq2nDFRof5hannXi/SIKjhUaTtFkhINDpPvezZPrLilF0
-         shd9UIgUTNgbjC29OAZJNoOHqa9NVOt4e90hn5sQClSGjog1WPD+u0Bx9r92LEAr3SIY
-         wi/aCG/VvEl0yzAXyYi/Z0BWePx0Wic3fGLlnp0KQfTpTrKGTluEvIPxSLchkfFhENR/
-         lBhg==
-X-Gm-Message-State: AGi0PubAkR+oT/fuYFOBvxgEVDk/0BnSODfRw41BEXclNIzXoGxJO3EG
-        mBXmW1GuYLMl7tXro0XCOQ==
-X-Google-Smtp-Source: APiQypLyUokqa9+HwgdwMV+wpVX5omYrQpTlGxbxo5UJ8ncdqjh4nKtXr+dGUhC/l1K5SQDIn8SHuA==
-X-Received: by 2002:a54:4512:: with SMTP id l18mr21349336oil.81.1589249526246;
-        Mon, 11 May 2020 19:12:06 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t6sm3146401otb.27.2020.05.11.19.12.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 19:12:05 -0700 (PDT)
-Received: (nullmailer pid 20842 invoked by uid 1000);
-        Tue, 12 May 2020 02:12:04 -0000
-Date:   Mon, 11 May 2020 21:12:04 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, atish.patra@wdc.com,
-        devicetree@vger.kernel.org
-Subject: Re: [RFC PATCH 4/4] dt-bindings: net: phy: extend dt binding for
- VSC8541 ethernet-phy
-Message-ID: <20200512021204.GA12999@bogus>
-References: <1588072608-7747-1-git-send-email-sagar.kadam@sifive.com>
- <1588072608-7747-5-git-send-email-sagar.kadam@sifive.com>
+        id S1728511AbgELCGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 22:06:22 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:4335 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728452AbgELCGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 22:06:21 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id B9529A8BC8D1999137CE;
+        Tue, 12 May 2020 10:06:19 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 12 May 2020 10:06:13 +0800
+From:   Samuel Zou <zou_wei@huawei.com>
+To:     <ssantosh@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Samuel Zou <zou_wei@huawei.com>
+Subject: [PATCH -next] drivers: soc: ti: knav_qmss_queue: Make knav_gp_range_ops static
+Date:   Tue, 12 May 2020 10:12:20 +0800
+Message-ID: <1589249540-105611-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588072608-7747-5-git-send-email-sagar.kadam@sifive.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 04:16:48AM -0700, Sagar Shrikant Kadam wrote:
-> Adding a OUI (Organizationally Unique Identifier) for VSC8541-01
-> device to dt node requires a corresponding dt-binding entry as well
-> so that checkpatch doesn't complain with a warning:
-> 
-> DT compatible string "ethernet-phy-id0007.0771" appears un-documented
-> 
-> Here extend the existing dt binding of VSC8531 device to include
-> VSC8541 device example.
+Fix the following sparse warning:
 
-Checkpatch.pl is just dumb here and can be ignored. We have the regex 
-that documents this compatible. We don't need every VID/PID listed.
+drivers/soc/ti/knav_qmss_queue.c:412:23: warning: symbol 'knav_gp_range_ops' was not declared.
 
-> 
-> Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-> ---
->  Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt b/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
-> index 5ff37c6..774448a 100644
-> --- a/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
-> +++ b/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
-> @@ -68,3 +68,6 @@ Example:
->                  vsc8531,led-0-mode	= <LINK_1000_ACTIVITY>;
->                  vsc8531,led-1-mode	= <LINK_100_ACTIVITY>;
->          };
-> +        vsc8541_0: ethernet-phy@0 {
-> +                compatible = "ethernet-phy-id0007.0771";
-> +	};
-> -- 
-> 2.7.4
-> 
+The knav_acc_firmwares has only call site within knav_qmss_queue.c
+It should be static
+
+Fixes: 41f93af900a2 ("soc: ti: add Keystone Navigator QMSS driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Samuel Zou <zou_wei@huawei.com>
+---
+ drivers/soc/ti/knav_qmss_queue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/soc/ti/knav_qmss_queue.c b/drivers/soc/ti/knav_qmss_queue.c
+index 37f3db6..aa071d9 100644
+--- a/drivers/soc/ti/knav_qmss_queue.c
++++ b/drivers/soc/ti/knav_qmss_queue.c
+@@ -409,7 +409,7 @@ static int knav_gp_close_queue(struct knav_range_info *range,
+ 	return 0;
+ }
+ 
+-struct knav_range_ops knav_gp_range_ops = {
++static struct knav_range_ops knav_gp_range_ops = {
+ 	.set_notify	= knav_gp_set_notify,
+ 	.open_queue	= knav_gp_open_queue,
+ 	.close_queue	= knav_gp_close_queue,
+-- 
+2.6.2
+
