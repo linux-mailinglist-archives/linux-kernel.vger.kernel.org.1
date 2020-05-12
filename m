@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C88851CFCAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 19:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D34751CFCBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 20:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgELRz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 13:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
+        id S1730560AbgELSAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 14:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgELRzz (ORCPT
+        with ESMTP id S1725938AbgELSAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 13:55:55 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA57C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 10:55:55 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id e25so14714343ljg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 10:55:55 -0700 (PDT)
+        Tue, 12 May 2020 14:00:34 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D989DC05BD09
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 11:00:32 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id i16so13249538ils.12
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 11:00:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3bulAdEa0YtKfLDEvgJtXxjULACbMmllrhnt0TNqof4=;
-        b=CWdQqBq1nuGjhJoclSNUa09Dolztaz1qyxLzybRgOWH7y6Ivq+vHLMs+I0nOQr1YiA
-         uoujI+0guXsvOyLdafj1E2h+Zf6USlqbOJXX7UD0YJoir1Wy4RBNAnnV9Y3CI3Bgp2Uw
-         AsIEhnHzYauu2pddTvUCz0gmyPah5iLyZepsNGIILsejF5o3R6JY5cAfkis56zOAJpk6
-         9ri55ILWUPS510A6izprONAhGJKX0CLsIsNnkzX38ikEbtPpYognCa5YSKjWnHEOWBw7
-         UUBnCe5svoHBKfW+O14ceTksj/JOIll6zDZCTuaDoXxPCsT4fhof5njy4pdAASe0IY15
-         88Xw==
+        bh=cLEAYLVD6JreucQil+ujhm8FErflJCkoe7KXXK012mc=;
+        b=JpAw+cFGmfHBajujn/xovuM0dYlazaSRxJ4KOtDR8DxkxTDdhtE1+ux/9NOdXlkDvb
+         Yj5I98DG6givG6zWx5FND6O4IbR9RmMma41huxQDdrAFggw14jKpQ6A8aCQjY5lNRLaJ
+         TtOlnoUqEuX2PFLxUBkT45aJ2ipRGUiirEJKSQ8+dIFJ57Bmx6oE6c8Vhs02VfxbT7mR
+         JfL9SB7n3gHK8JbOhQmkzLxnr/v0qljAoDLqHHpHq57tY72JlfgJJ3aykj1tLeQtIDDf
+         OOfoPyKWJWz1awCXqduOmpzQDGDJriVLYqiGyOEOK2s0Ek0MioR+r97kcvvl5CTgCUBu
+         BnBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3bulAdEa0YtKfLDEvgJtXxjULACbMmllrhnt0TNqof4=;
-        b=OeybWJTF8Rg49rGW3xeqUWS0HxHgm0nvmv/dP6xOi3MmcI0cwhSM/EH3W1Q8cl2/Ra
-         ERrGYLVhxS4tCaSHuAJlvht8iRZ5Ej3l0HXDzhJU/3jGkpTBxo+V8mcDdZ6D7bfapyLE
-         oPxJYc0zBcaBPMZgAKp+IdElXfO2xReUKOYSQU0D14kKUxCkDwfOVabNTJBu+7h0zO0J
-         BnKb3mFCuv64cYTbku3gVCnuOmHNz/vHZC/zMnAWnoYyu0MgNq1NLhunmLnqrgxbuKBL
-         kfNRvnO278k/YH8cXQKClePD+JkLuGnw+2pYytlqDB3bOw7cg6ryrm26BVQR4D5fJjyL
-         MSGw==
-X-Gm-Message-State: AOAM530YcBwwCtzNKnE1GholjhHqA8v2CFcda68kB96+kvMWMsTaFmyQ
-        uyTGTL1rJJuGy5+5GE2txEmosh1ZfJpcVwrysVB0gA==
-X-Google-Smtp-Source: ABdhPJzZacOxTdIXmG/y1xsQxdbn3Gu8/UFKbgfmJOJX/ZNurJQYUVI8JZg3cgz/pPjpbuDDAZX5z8N5dh2UjcLF3g8=
-X-Received: by 2002:a2e:b6cf:: with SMTP id m15mr13942720ljo.168.1589306153711;
- Tue, 12 May 2020 10:55:53 -0700 (PDT)
+        bh=cLEAYLVD6JreucQil+ujhm8FErflJCkoe7KXXK012mc=;
+        b=TiLpguve1+LsD2AbwoY8anjTZsHwiUom/306aEOABtCuVeJJmO9wMLuBVjyv66uzMS
+         A7vGG53x/4w5hdCPKBsgGcpwQ3CF4uOKXZGLEzx0C4g2wDDfPrX80MmyLNSq7ia5SObR
+         6uwYGof5n1niT64uVfjARy9MwXOWOgR1Kv1Tq3fP7qMTVbGI0cz/AuBqfgdNl2qGarCe
+         HZLEEvf0N9jyWKpchplk/TZe2HEu1OBiUxk3hB4i4mC/XlkyH5qxW6nVrDam0tdr3yH8
+         kfaNcBB4T1noK4ze3/oRqWcVx8rzV2+t/FOxg90RpGzVp4wU+TuErqsHrc5iQOf+UUbg
+         jm0Q==
+X-Gm-Message-State: AGi0Puag03/b0ARMWW7IASTvWijXUfCdGRePl4C8g+5azAhwv54y3G8j
+        ZJVKXKN7U+nEYLFFY4x5dCfGyiMAQ53Yf4wDXS4SwQ==
+X-Google-Smtp-Source: APiQypImINfWk/azU+gh8VqSVBC+bjXOzMV58x6QAkL+twgu0FTJCnw6HhztAFigezzRtYkv2vWuAeZSEaiXI9PcO8g=
+X-Received: by 2002:a92:390f:: with SMTP id g15mr1559060ila.72.1589306432104;
+ Tue, 12 May 2020 11:00:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200419001858.105281-1-hector.bujanda@digi.com>
- <CAMRc=MeHun_WEApEXP59ZszGa2n+wbU9qq3wU1VO9o590rO-Pw@mail.gmail.com>
- <CACRpkdaeXFW5K=Npy2ubWsffc7aepEQ5kSJ2HrkrESjaTy_psQ@mail.gmail.com>
- <CAMRc=MdwSpWkgLTHN+6cOdG7aBAWWYFBC4+tfSNtA2HgX6s_3A@mail.gmail.com>
- <B0E9AFA73AF60B42B6D323E0C4FEB06F01AFAC5A@dor-sms-xch01.digi.com>
- <20200430145844.GA28588@sol> <CAMRc=Md5-OgNySDG+XHKow0YSzcZHNtWWPwbmd159fpWL8YAJA@mail.gmail.com>
-In-Reply-To: <CAMRc=Md5-OgNySDG+XHKow0YSzcZHNtWWPwbmd159fpWL8YAJA@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 12 May 2020 19:55:42 +0200
-Message-ID: <CACRpkdbZPhkzuUvwDnBWTvweBukQRcWx0w=2seQsVBEP8Fv_BA@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: add GPIO_SET_DEBOUNCE_IOCTL
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Kent Gibson <warthog618@gmail.com>,
-        "Bujanda, Hector" <Hector.Bujanda@digi.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20200507053547.13707-1-calvin.johnson@oss.nxp.com>
+In-Reply-To: <20200507053547.13707-1-calvin.johnson@oss.nxp.com>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Tue, 12 May 2020 12:00:21 -0600
+Message-ID: <CANLsYkzeHpZygbQtz8Ed7dEaVMz362ftHQJ50DrBYR=+72NpJQ@mail.gmail.com>
+Subject: Re: [PATCH] coresight: cti: remove incorrect NULL return check
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mike Leach <mike.leach@linaro.org>, linux.cj@gmail.com,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 4, 2020 at 12:32 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+Hi Greg,
 
-> Ideally we'd have to introduce new versions of gpioevent_request,
-> gpioline_request, gpioline_info and gpioevent_data structs - this time
-> with enough additional padding and no alignment issues. Then we could
-> add the debounce properly.
+On Wed, 6 May 2020 at 23:36, Calvin Johnson <calvin.johnson@oss.nxp.com> wrote:
+>
+> fwnode_find_reference() doesn't return NULL and hence that check
+> should be avoided.
+>
+> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Hm that sounds massive. Is it really that bad?
+I just noticed you were not CC'ed on the original conversation Calvin
+and I had and as such you probably don't know what to do with this
+patch.  Please see if you can pick it up as a fix for 5.7.  If that is
+not possible I will queue it up for inclusion in the 5.8 cycle.
 
-> This would of course add a lot of cruft to the uAPI code. I'd start by
-> moving it out of drivers/gpio/gpiolib.c into a new file:
-> drivers/gpio/gpiolib-cdev.c. This way we'd have everything related to
-> the character device in one place. It would make it easier to: a) add
-> a config option for disabling it entirely and b) add a config option
-> to disable the v1 of the ioctl()s.
+Thanks,
+Mathieu
 
-Its good to break out for code maintenance no matter what we do
-with it :)
-
-I would however not make it in any way totally optional, because the
-big win with the character device over the legacy sysfs is to always
-be available.
-
-> Linus: about the software-debounce you mentioned: do you think it
-> somehow plugs the hole we identified here?
-
-Hm, I don't quite understand what the hole is I guess...
-
-Linus
+> ---
+>
+>  drivers/hwtracing/coresight/coresight-cti-platform.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/hwtracing/coresight/coresight-cti-platform.c b/drivers/hwtracing/coresight/coresight-cti-platform.c
+> index b44d83142b62..2fdaeec80ee5 100644
+> --- a/drivers/hwtracing/coresight/coresight-cti-platform.c
+> +++ b/drivers/hwtracing/coresight/coresight-cti-platform.c
+> @@ -120,7 +120,7 @@ static int cti_plat_create_v8_etm_connection(struct device *dev,
+>
+>         /* Can optionally have an etm node - return if not  */
+>         cs_fwnode = fwnode_find_reference(root_fwnode, CTI_DT_CSDEV_ASSOC, 0);
+> -       if (IS_ERR_OR_NULL(cs_fwnode))
+> +       if (IS_ERR(cs_fwnode))
+>                 return 0;
+>
+>         /* allocate memory */
+> @@ -393,7 +393,7 @@ static int cti_plat_create_connection(struct device *dev,
+>                 /* associated device ? */
+>                 cs_fwnode = fwnode_find_reference(fwnode,
+>                                                   CTI_DT_CSDEV_ASSOC, 0);
+> -               if (!IS_ERR_OR_NULL(cs_fwnode)) {
+> +               if (!IS_ERR(cs_fwnode)) {
+>                         assoc_name = cti_plat_get_csdev_or_node_name(cs_fwnode,
+>                                                                      &csdev);
+>                         fwnode_handle_put(cs_fwnode);
+> --
+> 2.17.1
+>
