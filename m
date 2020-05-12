@@ -2,84 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0FF1CEBBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 06:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136361CEBB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 05:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725898AbgELEFl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 May 2020 00:05:41 -0400
-Received: from mail.itasa.com.ar ([190.124.15.130]:55492 "EHLO envases.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgELEFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 00:05:41 -0400
-X-Greylist: delayed 902 seconds by postgrey-1.27 at vger.kernel.org; Tue, 12 May 2020 00:05:40 EDT
-Received: from 21cn.com (192.254.72.18) by ITA-SV004.ita.local (192.168.0.31)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1531.3; Tue, 12
- May 2020 00:48:11 -0300
-Reply-To: <robturner-purchase@exporttogroup.co>
-From:   exporttogroup <nvega@itasa.com.ar>
-To:     <linux-kernel@vger.kernel.org>
-Subject: Quotation request  to linux-kernel@vger.kernel.org
-Date:   Mon, 11 May 2020 20:50:35 -0700
-Message-ID: <20200511205034.50956CAA7F395FF8@itasa.com.ar>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-ClientProxiedBy: ITA-SV004.ita.local (192.168.0.31) To ITA-SV004.ita.local
- (192.168.0.31)
+        id S1728672AbgELDzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 23:55:18 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:39330 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727942AbgELDzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 23:55:18 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn9wXHrpeBpwzAA--.21S2;
+        Tue, 12 May 2020 11:55:03 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH] btrfs: Remove duplicated include in block-group.c
+Date:   Tue, 12 May 2020 11:55:03 +0800
+Message-Id: <1589255703-7193-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxn9wXHrpeBpwzAA--.21S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYO7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z2
+        80aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
+        4I1lc2xSY4AK67AK6r48MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
+        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
+        xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
+        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2
+        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43
+        ZEXa7VUjHGQDUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Sir/Madame
+disk-io.h is included more than once in block-group.c, remove it.
 
-Good day.
-I am Rob Turner, Head of Procurement. Our marketing unit 
-requested your  products Models after coming across your Trade 
-fair catalog last year and Webpage on registered trade site,
- 
-we are interested to Purchase your products and its accessories 
-as requested by our customers here in UK Market and Europe, 
-Please send us your Updated product catalog.
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ fs/btrfs/block-group.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Please if you know your company will be able to handle extra 
-purchase this year as we have good business experience.
- 
-Once we confirm your competitive Price List of your product and 
-company Terms, we will place Market order immediately with our 
-company certificate and experience in business.
-
-Send your reply to robturner-purchase@exporttogroup.co for us to 
-be able to treat with care and urgent.
-
-Regards
-  Rob Turner
- Head of Procurement Operations
- robturner-purchase@exporttogroup.co
-
- www.exporttogroup.co
-
-REGISTERED OFFICE 171 VICTORIA STREET, LONDON SW1E 5NN
-COMPANY REGISTRATION NUMBER 233462 VAT NO. GB232457280
-
-
-This e-mail may contain confidential and/or privileged 
-information.If you are not the intended recipient (or have 
-received this e-mail in error) please notify the sender 
-immediately and destroy this e-mail. Any unauthorised copying, 
-disclosure or distribution of the material in this e-mail is 
-strictly forbidden
-Este e-mail pode conter informações confidenciais e / ou 
-privilegiadas. Se você não for o destinatário pretendido (ou 
-tiver recebido este e-mail por engano), notifique o remetente 
-imediatamente e destrua este e-mail. Qualquer cópia, divulgação 
-ou distribuição não autorizada do material neste e-mail é 
-estritamente proibida.
- Before printing think about your responsibility for the  
-ENVIRONMENT
-
-
-
-
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 696f471..d3d5cf4 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -7,7 +7,6 @@
+ #include "disk-io.h"
+ #include "free-space-cache.h"
+ #include "free-space-tree.h"
+-#include "disk-io.h"
+ #include "volumes.h"
+ #include "transaction.h"
+ #include "ref-verify.h"
+-- 
+2.1.0
 
