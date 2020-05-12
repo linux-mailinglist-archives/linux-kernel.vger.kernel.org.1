@@ -2,110 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFB71CF73C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C3F1CF929
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730219AbgELOgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 10:36:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726300AbgELOgE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 10:36:04 -0400
-Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A98C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 07:36:03 -0700 (PDT)
-Received: from fencepost.gnu.org ([2001:470:142:3::e]:41908)
-        by eggs.gnu.org with esmtp (Exim 4.90_1)
-        (envelope-from <psmith@gnu.org>)
-        id 1jYW0m-0001BG-1K; Tue, 12 May 2020 10:36:00 -0400
-Received: from pool-98-118-0-140.bstnma.fios.verizon.net ([98.118.0.140]:53680 helo=pdslaptop.home)
-        by fencepost.gnu.org with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
-        (Exim 4.82)
-        (envelope-from <psmith@gnu.org>)
-        id 1jYW0k-00082Z-Ka; Tue, 12 May 2020 10:35:58 -0400
-Message-ID: <73dace5aca21bee09ce12aa8dcfd50daa2cd6051.camel@gnu.org>
-Subject: Re: I disabled more compiler warnings..
-From:   Paul Smith <psmith@gnu.org>
-Reply-To: psmith@gnu.org
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Linus Torvalds' <torvalds@linux-foundation.org>
-Cc:     'Arnd Bergmann' <arnd@arndb.de>,
-        'Masahiro Yamada' <yamada.masahiro@socionext.com>,
-        'Linux Kernel Mailing List' <linux-kernel@vger.kernel.org>
-Date:   Tue, 12 May 2020 10:35:57 -0400
-In-Reply-To: <5564c992dfeb40adbc3e6f6a29e43d2e@AcuMS.aculab.com>
-References: <CAHk-=wjah-fkfzMdmCNN8v7uriJsGeYjHh18wkXDZa2sxuAXzA@mail.gmail.com>
-         <8320f29ca61146fc985083621685ac95@AcuMS.aculab.com>
-         <CAHk-=whLY8dXE6qMuPNE+Tjc6uXy+W2jACyWLxtRUH6GU2=PAA@mail.gmail.com>
-         <0ff4860b4202a6ef3bb3b29912d083d471e1cc1d.camel@gnu.org>
-         <90909f30775744b89d1a0c40265779d9@AcuMS.aculab.com>
-         <5564c992dfeb40adbc3e6f6a29e43d2e@AcuMS.aculab.com>
-Organization: GNU's Not UNIX!
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        id S1730457AbgELPaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 11:30:24 -0400
+Received: from mga01.intel.com ([192.55.52.88]:27052 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725912AbgELPaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 11:30:23 -0400
+IronPort-SDR: 3b5vhqxJ0WuCgOoGVJD8tXx/IJNWxyYF/vL4KUDI/tyEar6YN7gCHM9wMW6hMBDD4TB7gIacLL
+ bDSdSPSOxxRg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 08:30:23 -0700
+IronPort-SDR: ZK3Se/fAkNFyJF7QxFxocRhwMaC21XL7PjjHBRWOuKhXYlwUSsgU9zriRl+JD5WOMbFHC3V6Jr
+ FnvElm6Y+HgQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,384,1583222400"; 
+   d="scan'208";a="409336630"
+Received: from bmtannen-mobl.amr.corp.intel.com (HELO [10.255.228.231]) ([10.255.228.231])
+  by orsmga004.jf.intel.com with ESMTP; 12 May 2020 08:30:21 -0700
+Subject: Re: [PATCH 3/3] soundwire: bus_type: add sdw_master_device support
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     alsa-devel@alsa-project.org, tiwai@suse.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        broonie@kernel.org, srinivas.kandagatla@linaro.org,
+        jank@cadence.com, mengdong.lin@intel.com,
+        slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+References: <20200429185145.12891-1-yung-chuan.liao@linux.intel.com>
+ <20200429185145.12891-4-yung-chuan.liao@linux.intel.com>
+ <20200511063227.GS1375924@vkoul-mobl>
+ <e214d308-1b92-a7a5-3c76-da05dca99cc5@linux.intel.com>
+ <20200512033035.GV1375924@vkoul-mobl>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <84f09843-3245-5fa4-530f-c915b28e9bc5@linux.intel.com>
+Date:   Tue, 12 May 2020 09:36:25 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200512033035.GV1375924@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-05-12 at 07:55 +0000, David Laight wrote:
-> > One problem is ensuring that all the recursive makes actually
-> > use the same token queue.
-> > The Linux kernel build acts as though the sub-makes have their
-> > own queue - I certainly had to fix that as well.
 
-I don't understand this... I guess I'm not familiar enough with the
-kernel build system.
 
-> I think I've remembered the obvious thing that made it work better.
+On 5/11/20 10:30 PM, Vinod Koul wrote:
+> On 11-05-20, 14:00, Pierre-Louis Bossart wrote:
+>>>> +	md = &bus->md;
+>>>> +	md->dev.bus = &sdw_bus_type;
+>>>> +	md->dev.type = &sdw_master_type;
+>>>> +	md->dev.parent = parent;
+>>>> +	md->dev.of_node = parent->of_node;
+>>>> +	md->dev.fwnode = fwnode;
+>>>> +	md->dev.dma_mask = parent->dma_mask;
+>>>> +
+>>>> +	dev_set_name(&md->dev, "sdw-master-%d", bus->link_id);
+>>>
+>>> This give nice sdw-master-0. In DT this comes from reg property. I dont
+>>> seem to recall if the ACPI/Disco spec treats link_id as unique across
+>>> the system, can you check that please, if not we would need to update
+>>> this.
+>> Table 3 in the Disco for Soundwire 1.0 spec: "all LinkID values are relative
+>> to the immediate parent Device."
+>>
+>> There isn't any known implementation with more than one controller.
 > 
-> When a job ends it is important to get a new token from the jobserver
-> rather than reusing the one to hand.
-> Otherwise you don't seen the 'abort' marker for ages.
+> But then it can come in "future" right. So lets try to make it future
+> proof by not using the link_id (we can expose that as a sysfs if people
+> want to know). So a global unique id needs to allocated (hint: idr or
+> equivalent) and used as master_id
 
-If GNU make retrieved a token then it will always put that token back
-into the jobserver pipe when the job ends, and get another one when the
-next job is to start.  To do otherwise would mean that some makes could
-hoard tokens.
+Can you clarify if you are asking for a global ID for Intel/ACPI 
+platforms, or for DT as well? I can't figure out from the 
+soundwire-controller.yaml definitions if there is already a notion of 
+unique ID.
 
-However, the jobserver is implemented such that make itself is not
-considered a job, even a sub-make.  The way it works is that when you
-invoke a recursive make the parent make will obtain a jobserver token
-for that recursive invocation (like it does for every job), then that
-sub-make can "pass on" that token: in other words, the sub-make has a
-free token that it can always use without querying the jobserver.
+properties:
+   $nodename:
+     pattern: "^soundwire(@.*)?$"
 
-This way every invocation of recursive make can always make progress,
-at least serially.
-
-I can see that in the "fast fail" model this could be problematic, but
-it should only ever be an issue in situations where a sub-make was
-running serially for some reason: either the structure of the
-prerequisites means it's naturally serial, or else someone added
-.NOTPARALLEL to the makefile or something.  As soon as make wants to
-run a second job in parallel it will go to the jobserver and discover
-the "failure" token.
-
-Changing this will require thought.  We can't just skip the free token
-otherwise you can get into a state where all your tokens are used by
-recursive makes and no make can get a new token to run a job.
-
-I can see two possible solutions:
-
-First, when a sub-make starts it could put back one token into the
-jobserver, representing the token the parent make obtained for it, then
-proceed to always get a token before every job (no free token).  This
-means that sometimes a sub-make won't be able to run any jobs at all:
-it can get locked out waiting for a token.  Maybe that's not a problem.
-
-The other idea is to keep the free token but make it a last resort
-rather than a first resort.  This has the nice properties that (a)
-we'll see failures fast and (b) we still have a free token, but the
-code is more complex: basically we'd need to perform a non-blocking
-read on the jobserver FD and if we didn't get anything back, we'd use
-our free token if it's still available: if not we'd do a blocking read
-on the jobserver FD to wait for a new token.
-
+    soundwire@c2d0000 {
+         #address-cells = <2>;
+         #size-cells = <0>;
+         reg = <0x0c2d0000 0x2000>;
