@@ -2,124 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E951CEE63
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 09:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0871CEE70
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 09:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728988AbgELHns convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 May 2020 03:43:48 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:46193 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725823AbgELHnr (ORCPT
+        id S1728967AbgELHrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 03:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgELHrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 03:43:47 -0400
-Received: by mail-ot1-f66.google.com with SMTP id z25so9733775otq.13;
-        Tue, 12 May 2020 00:43:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WL99cZpSCjAY9uTUemuiOdybxhEn/p8SNKkMW2pnMgk=;
-        b=UWfiuJ1JfrhBaZAuKcvb251vQMZUZxP6ntM+CasVEGUuDByMshQ4AkU7RrnO4/SlLz
-         X4oYzFb6UliokNfhYEgnBC0nnyNQpZmc+O7fGZr5amyPhr1cIIe/4rSuCm8gqlgj/FQr
-         ++kyEpzk6RO3nmTIGO0Uge5OlEHbsOKrpeHDSmItzOri1HNVpqoGdEJofGG4IAmpumTj
-         UPTpxnUFJwSNCambQMmeRTyoozBAdUSt08yoJl9zYDbQj51ZR14f1cSCR9BNXhVy1irk
-         i4U5SA/GB+/uUEvfLp0GITSwUidSTuTtLBsJXY8MztmWIbRjXsQb/HUdmHpPKshIyDnE
-         HYXA==
-X-Gm-Message-State: AGi0PuanBb5RTaSTFotTjFYhnFbmUJ66ufhnGx5DFq9u/NqaDRTOs8Dk
-        7AafZ7YqJzOjnKxR3HJPE4g5NTLs9qfmqCKOUcQ=
-X-Google-Smtp-Source: APiQypIDWmbHTXLtnOKXo30M5B3vTkf3nDlAfbBCqheKh4YZxA4lrYnndNhzQpgu3wBVeeut/IwxOF4lTFymYCLt8jo=
-X-Received: by 2002:a9d:7990:: with SMTP id h16mr15276353otm.145.1589269426183;
- Tue, 12 May 2020 00:43:46 -0700 (PDT)
+        Tue, 12 May 2020 03:47:13 -0400
+Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E144C061A0C;
+        Tue, 12 May 2020 00:47:13 -0700 (PDT)
+Received: from localhost.localdomain (unknown [142.147.94.151])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 4E06F20F0D;
+        Tue, 12 May 2020 07:47:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1589269631; bh=eJnR5u9wxpZzi1TozIj3O/mYN+6KO3jlz58PZP+YVW4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZbYyrnF3hSjwCtirbdGDp0J4DGKLQ7ysSKyPS362UyOEuwQxvwDSoZ84jzBWqT9Gl
+         IDn2YIflZhAldAnNG0RD5p2UOB9XndcAmc5aqLMb4WUP+KDD/vHUZgP09A/53ddyWN
+         gOpdmztyzkrLQtrRlMEvGqbUOmbWiNZC0Ovj8nawL1pK3dVCnx22ubhwRzGnT7s6ch
+         J2zewRI6vCOCd58Vx44bsXIA9D0xZAPxPzzUhaZ+Ctg87aqVPwt4fsl/iDejmOegSS
+         ZBe8RzTnXt5UpYUQpb3JQpfFSlKWhwC3KFscIJgostZeoxOQp2RYJavXngADIX1m2K
+         pjahXVDheWarA==
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-pci@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Paul Burton <paulburton@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH v9 1/5] PCI: Don't disable decoding when mmio_always_on is set
+Date:   Tue, 12 May 2020 15:43:55 +0800
+Message-Id: <20200512074413.3557835-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200427060551.1372591-1-jiaxun.yang@flygoat.com>
+References: <20200427060551.1372591-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-References: <20200511154930.190212-1-Jerome.Pouiller@silabs.com> <20200511154930.190212-14-Jerome.Pouiller@silabs.com>
-In-Reply-To: <20200511154930.190212-14-Jerome.Pouiller@silabs.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 12 May 2020 09:43:34 +0200
-Message-ID: <CAMuHMdVZxy+FZGPhDxotCBeEX3O4ZMkmGAwmVFXQE9ZoijDN5g@mail.gmail.com>
-Subject: Re: [PATCH 13/17] staging: wfx: fix endianness of the field 'len'
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     driverdevel <devel@driverdev.osuosl.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jerome,
+Don't disable MEM/IO decoding when a device have both non_compliant_bars
+and mmio_always_on.
 
-On Mon, May 11, 2020 at 5:53 PM Jerome Pouiller
-<Jerome.Pouiller@silabs.com> wrote:
-> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
->
-> The struct hif_msg is received from the hardware. So, it declared as
-> little endian. However, it is also accessed from many places in the
-> driver. Sparse complains about that:
->
->     drivers/staging/wfx/bh.c:88:32: warning: restricted __le16 degrades to integer
->     drivers/staging/wfx/bh.c:88:32: warning: restricted __le16 degrades to integer
->     drivers/staging/wfx/bh.c:93:32: warning: restricted __le16 degrades to integer
->     drivers/staging/wfx/bh.c:93:32: warning: cast to restricted __le16
->     drivers/staging/wfx/bh.c:93:32: warning: restricted __le16 degrades to integer
->     drivers/staging/wfx/bh.c:121:25: warning: incorrect type in argument 2 (different base types)
->     drivers/staging/wfx/bh.c:121:25:    expected unsigned int len
->     drivers/staging/wfx/bh.c:121:25:    got restricted __le16 [usertype] len
->     drivers/staging/wfx/hif_rx.c:27:22: warning: restricted __le16 degrades to integer
->     drivers/staging/wfx/hif_rx.c:347:39: warning: incorrect type in argument 7 (different base types)
->     drivers/staging/wfx/hif_rx.c:347:39:    expected unsigned int [usertype] len
->     drivers/staging/wfx/hif_rx.c:347:39:    got restricted __le16 const [usertype] len
->     drivers/staging/wfx/hif_rx.c:365:39: warning: incorrect type in argument 7 (different base types)
->     drivers/staging/wfx/hif_rx.c:365:39:    expected unsigned int [usertype] len
->     drivers/staging/wfx/hif_rx.c:365:39:    got restricted __le16 const [usertype] len
->     drivers/staging/wfx/./traces.h:195:1: warning: incorrect type in assignment (different base types)
->     drivers/staging/wfx/./traces.h:195:1:    expected int msg_len
->     drivers/staging/wfx/./traces.h:195:1:    got restricted __le16 const [usertype] len
->     drivers/staging/wfx/./traces.h:195:1: warning: incorrect type in assignment (different base types)
->     drivers/staging/wfx/./traces.h:195:1:    expected int msg_len
->     drivers/staging/wfx/./traces.h:195:1:    got restricted __le16 const [usertype] len
->     drivers/staging/wfx/debug.c:319:20: warning: restricted __le16 degrades to integer
->     drivers/staging/wfx/secure_link.c:85:27: warning: restricted __le16 degrades to integer
->     drivers/staging/wfx/secure_link.c:85:27: warning: restricted __le16 degrades to integer
+That would allow us quirk devices with junk in BARs but can't disable
+their decoding.
 
-Thanks for your patch!
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Acked-by: Bjorn Helgaas <helgaas@kernel.org>
+---
+ drivers/pci/probe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> In order to make Sparse happy and to keep access from the driver easy,
-> this patch declare 'len' with native endianness.
->
-> On reception of hardware data, this patch takes care to do byte-swap and
-> keep Sparse happy.
-
-Which means sparse can no longer do any checking on the field,
-and new bugs may/will creep in in the future, unnoticed.
-
-> --- a/drivers/staging/wfx/hif_api_general.h
-> +++ b/drivers/staging/wfx/hif_api_general.h
-> @@ -23,7 +23,10 @@
->  #define HIF_COUNTER_MAX           7
->
->  struct hif_msg {
-> -       __le16 len;
-> +       // len is in fact little endian. However, it is widely used in the
-> +       // driver, so we declare it in native byte order and we reorder just
-> +       // before/after send/receive it (see bh.c).
-> +       u16    len;
-
-While there's a small penalty associated with always doing the conversion
-on big-endian platforms, it will probably be lost in the noise anyway.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 77b8a145c39b..d9c2c3301a8a 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -1822,7 +1822,7 @@ int pci_setup_device(struct pci_dev *dev)
+ 	/* Device class may be changed after fixup */
+ 	class = dev->class >> 8;
+ 
+-	if (dev->non_compliant_bars) {
++	if (dev->non_compliant_bars && !dev->mmio_always_on) {
+ 		pci_read_config_word(dev, PCI_COMMAND, &cmd);
+ 		if (cmd & (PCI_COMMAND_IO | PCI_COMMAND_MEMORY)) {
+ 			pci_info(dev, "device has non-compliant BARs; disabling IO/MEM decoding\n");
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.26.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
