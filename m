@@ -2,59 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0B71CF8C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182E41CF8D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730224AbgELPQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 11:16:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52956 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725888AbgELPQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 11:16:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 713BDAD31;
-        Tue, 12 May 2020 15:16:05 +0000 (UTC)
-Date:   Tue, 12 May 2020 17:16:00 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
-Subject: Re: next/master bisection: baseline.login on jetson-tk1
-Message-ID: <20200512151600.GD8135@suse.de>
-References: <5eb9fab4.1c69fb81.a1f1c.0e95@mx.google.com>
- <a868fa70-9039-f72a-39c6-5464a9d06db2@collabora.com>
+        id S1730357AbgELPTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 11:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730236AbgELPTD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 11:19:03 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154F6C061A0C;
+        Tue, 12 May 2020 08:19:03 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jYWgN-0007Dx-Es; Tue, 12 May 2020 17:18:59 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id EE15D1C02FC;
+        Tue, 12 May 2020 17:18:58 +0200 (CEST)
+Date:   Tue, 12 May 2020 15:18:58 -0000
+From:   "tip-bot2 for Masami Hiramatsu" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/kprobes] kprobes: Support __kprobes blacklist in modules
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200505134059.678201813@linutronix.de>
+References: <20200505134059.678201813@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a868fa70-9039-f72a-39c6-5464a9d06db2@collabora.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <158929673889.390.13328702877624565278.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guillaume,
+The following commit has been merged into the core/kprobes branch of tip:
 
-thanks for the report!
+Commit-ID:     1e6769b0aece51ea7a3dc3117c37d4a5669e4a21
+Gitweb:        https://git.kernel.org/tip/1e6769b0aece51ea7a3dc3117c37d4a5669e4a21
+Author:        Masami Hiramatsu <mhiramat@kernel.org>
+AuthorDate:    Thu, 26 Mar 2020 23:49:48 +09:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 12 May 2020 17:15:32 +02:00
 
-On Tue, May 12, 2020 at 07:05:13AM +0100, Guillaume Tucker wrote:
-> > Summary:
-> >   Start:      4b20e7462caa6 Add linux-next specific files for 20200511
-> >   Plain log:  https://storage.kernelci.org/next/master/next-20200511/arm/tegra_defconfig/gcc-8/lab-collabora/baseline-tegra124-jetson-tk1.txt
-> >   HTML log:   https://storage.kernelci.org/next/master/next-20200511/arm/tegra_defconfig/gcc-8/lab-collabora/baseline-tegra124-jetson-tk1.html
-> >   Result:     3eeeb45c6d044 iommu: Remove add_device()/remove_device() code-paths
+kprobes: Support __kprobes blacklist in modules
 
-Okay, so it faults at
+Support __kprobes attribute for blacklist functions in modules.  The
+__kprobes attribute functions are stored in .kprobes.text section.
 
-	PC is at __iommu_probe_device+0x20/0x1b8
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+Acked-by: Peter Zijlstra <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200505134059.678201813@linutronix.de
 
-Can you translate that for me into a code-line, please? That would help
-finding the issue.
+---
+ include/linux/module.h |  4 ++++-
+ kernel/kprobes.c       | 42 +++++++++++++++++++++++++++++++++++++++++-
+ kernel/module.c        |  4 ++++-
+ 3 files changed, 50 insertions(+)
 
-
-Thanks,
-
-	Joerg
-
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 1ad393e..369c354 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -489,6 +489,10 @@ struct module {
+ 	unsigned int num_ftrace_callsites;
+ 	unsigned long *ftrace_callsites;
+ #endif
++#ifdef CONFIG_KPROBES
++	void *kprobes_text_start;
++	unsigned int kprobes_text_size;
++#endif
+ 
+ #ifdef CONFIG_LIVEPATCH
+ 	bool klp; /* Is this a livepatch module? */
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 570d608..b754999 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -2179,6 +2179,19 @@ int kprobe_add_area_blacklist(unsigned long start, unsigned long end)
+ 	return 0;
+ }
+ 
++/* Remove all symbols in given area from kprobe blacklist */
++static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
++{
++	struct kprobe_blacklist_entry *ent, *n;
++
++	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
++		if (ent->start_addr < start || ent->start_addr >= end)
++			continue;
++		list_del(&ent->list);
++		kfree(ent);
++	}
++}
++
+ int __init __weak arch_populate_kprobe_blacklist(void)
+ {
+ 	return 0;
+@@ -2215,6 +2228,28 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
+ 	return ret ? : arch_populate_kprobe_blacklist();
+ }
+ 
++static void add_module_kprobe_blacklist(struct module *mod)
++{
++	unsigned long start, end;
++
++	start = (unsigned long)mod->kprobes_text_start;
++	if (start) {
++		end = start + mod->kprobes_text_size;
++		kprobe_add_area_blacklist(start, end);
++	}
++}
++
++static void remove_module_kprobe_blacklist(struct module *mod)
++{
++	unsigned long start, end;
++
++	start = (unsigned long)mod->kprobes_text_start;
++	if (start) {
++		end = start + mod->kprobes_text_size;
++		kprobe_remove_area_blacklist(start, end);
++	}
++}
++
+ /* Module notifier call back, checking kprobes on the module */
+ static int kprobes_module_callback(struct notifier_block *nb,
+ 				   unsigned long val, void *data)
+@@ -2225,6 +2260,11 @@ static int kprobes_module_callback(struct notifier_block *nb,
+ 	unsigned int i;
+ 	int checkcore = (val == MODULE_STATE_GOING);
+ 
++	if (val == MODULE_STATE_COMING) {
++		mutex_lock(&kprobe_mutex);
++		add_module_kprobe_blacklist(mod);
++		mutex_unlock(&kprobe_mutex);
++	}
+ 	if (val != MODULE_STATE_GOING && val != MODULE_STATE_LIVE)
+ 		return NOTIFY_DONE;
+ 
+@@ -2255,6 +2295,8 @@ static int kprobes_module_callback(struct notifier_block *nb,
+ 				kill_kprobe(p);
+ 			}
+ 	}
++	if (val == MODULE_STATE_GOING)
++		remove_module_kprobe_blacklist(mod);
+ 	mutex_unlock(&kprobe_mutex);
+ 	return NOTIFY_DONE;
+ }
+diff --git a/kernel/module.c b/kernel/module.c
+index 646f1e2..978f3fa 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -3194,6 +3194,10 @@ static int find_module_sections(struct module *mod, struct load_info *info)
+ 					    sizeof(*mod->ei_funcs),
+ 					    &mod->num_ei_funcs);
+ #endif
++#ifdef CONFIG_KPROBES
++	mod->kprobes_text_start = section_objs(info, ".kprobes.text", 1,
++						&mod->kprobes_text_size);
++#endif
+ 	mod->extable = section_objs(info, "__ex_table",
+ 				    sizeof(*mod->extable), &mod->num_exentries);
+ 
