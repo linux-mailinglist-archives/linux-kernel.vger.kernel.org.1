@@ -2,102 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26C61CEAB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 04:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6341CEAC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 04:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728590AbgELCUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 22:20:06 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:37710 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728301AbgELCUF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 22:20:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589250005; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=k2YIPX12MuXHG4Ed0EuQtB9gnhkLejakrxn5AILaJgM=; b=GtGpcsocr7MWZoYWhISm1A/+I/SpgoVCvPBXktE34LdydoG5Gt40xMKT41EX5oFbDqZd04Zv
- 7qDnXO/N3ojEtzbwV/FxFRlBDWdnrGm4h1bUChc1AWhv3OuQqn/5ZiDlQL5EjD9hztgkt4SJ
- 3GmnFf4SL/F+lKZrkCN76m9GLQQ=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5eba07c377c5b4a9096c17d8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 May 2020 02:19:47
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8B23EC44788; Tue, 12 May 2020 02:19:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.8.150] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4DE55C433CB;
-        Tue, 12 May 2020 02:19:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4DE55C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v2 4/4] scsi: ufs-mediatek: customize WriteBooster flush
- policy
-To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com
-Cc:     beanhuo@micron.com, cang@codeaurora.org, matthias.bgg@gmail.com,
-        bvanassche@acm.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com
-References: <20200509093716.21010-1-stanley.chu@mediatek.com>
- <20200509093716.21010-5-stanley.chu@mediatek.com>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <635f91f6-3a27-ffdd-4021-67705d4063fc@codeaurora.org>
-Date:   Mon, 11 May 2020 19:19:42 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200509093716.21010-5-stanley.chu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1728467AbgELCcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 22:32:43 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:59210 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727892AbgELCcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 22:32:42 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 285F11A0E7B;
+        Tue, 12 May 2020 04:32:40 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BE8731A0E81;
+        Tue, 12 May 2020 04:32:35 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id D8E03402BC;
+        Tue, 12 May 2020 10:32:29 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     p.zabel@pengutronix.de, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] dt-bindings: reset: Convert i.MX reset to json-schema
+Date:   Tue, 12 May 2020 10:23:14 +0800
+Message-Id: <1589250194-29441-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/9/2020 2:37 AM, Stanley Chu wrote:
-> Change the WriteBooster policy to keep VCC on during
-> runtime suspend if available WriteBooster buffer is less
-> than 80%.
-> 
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-> ---
->   drivers/scsi/ufs/ufs-mediatek.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
-> index 56620f7d88ce..94e97701f456 100644
-> --- a/drivers/scsi/ufs/ufs-mediatek.c
-> +++ b/drivers/scsi/ufs/ufs-mediatek.c
-> @@ -271,6 +271,7 @@ static int ufs_mtk_init(struct ufs_hba *hba)
->   
->   	/* Enable WriteBooster */
->   	hba->caps |= UFSHCD_CAP_WB_EN;
-> +	hba->vps->wb_flush_threshold = UFS_WB_BUF_REMAIN_PERCENT(80);
->   
->   	/*
->   	 * ufshcd_vops_init() is invoked after
-> 
+Convert the i.MX reset binding to DT schema format using json-schema.
 
-Patchset looks good to me.
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ .../devicetree/bindings/reset/fsl,imx-src.txt      | 49 ------------------
+ .../devicetree/bindings/reset/fsl,imx-src.yaml     | 58 ++++++++++++++++++++++
+ 2 files changed, 58 insertions(+), 49 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/reset/fsl,imx-src.txt
+ create mode 100644 Documentation/devicetree/bindings/reset/fsl,imx-src.yaml
 
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
-
-
+diff --git a/Documentation/devicetree/bindings/reset/fsl,imx-src.txt b/Documentation/devicetree/bindings/reset/fsl,imx-src.txt
+deleted file mode 100644
+index 6ed79e6..0000000
+--- a/Documentation/devicetree/bindings/reset/fsl,imx-src.txt
++++ /dev/null
+@@ -1,49 +0,0 @@
+-Freescale i.MX System Reset Controller
+-======================================
+-
+-Please also refer to reset.txt in this directory for common reset
+-controller binding usage.
+-
+-Required properties:
+-- compatible: Should be "fsl,<chip>-src"
+-- reg: should be register base and length as documented in the
+-  datasheet
+-- interrupts: Should contain SRC interrupt and CPU WDOG interrupt,
+-  in this order.
+-- #reset-cells: 1, see below
+-
+-example:
+-
+-src: src@20d8000 {
+-        compatible = "fsl,imx6q-src";
+-        reg = <0x020d8000 0x4000>;
+-        interrupts = <0 91 0x04 0 96 0x04>;
+-        #reset-cells = <1>;
+-};
+-
+-Specifying reset lines connected to IP modules
+-==============================================
+-
+-The system reset controller can be used to reset the GPU, VPU,
+-IPU, and OpenVG IP modules on i.MX5 and i.MX6 ICs. Those device
+-nodes should specify the reset line on the SRC in their resets
+-property, containing a phandle to the SRC device node and a
+-RESET_INDEX specifying which module to reset, as described in
+-reset.txt
+-
+-example:
+-
+-        ipu1: ipu@2400000 {
+-                resets = <&src 2>;
+-        };
+-        ipu2: ipu@2800000 {
+-                resets = <&src 4>;
+-        };
+-
+-The following RESET_INDEX values are valid for i.MX5:
+-GPU_RESET     0
+-VPU_RESET     1
+-IPU1_RESET    2
+-OPEN_VG_RESET 3
+-The following additional RESET_INDEX value is valid for i.MX6:
+-IPU2_RESET    4
+diff --git a/Documentation/devicetree/bindings/reset/fsl,imx-src.yaml b/Documentation/devicetree/bindings/reset/fsl,imx-src.yaml
+new file mode 100644
+index 0000000..276a533
+--- /dev/null
++++ b/Documentation/devicetree/bindings/reset/fsl,imx-src.yaml
+@@ -0,0 +1,58 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/reset/fsl,imx-src.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale i.MX System Reset Controller
++
++maintainers:
++  - Philipp Zabel <p.zabel@pengutronix.de>
++
++description: |
++  The system reset controller can be used to reset the GPU, VPU,
++  IPU, and OpenVG IP modules on i.MX5 and i.MX6 ICs. Those device
++  nodes should specify the reset line on the SRC in their resets
++  property, containing a phandle to the SRC device node and a
++  RESET_INDEX specifying which module to reset, as described in
++  reset.txt
++
++  The following RESET_INDEX values are valid for i.MX5:
++    GPU_RESET     0
++    VPU_RESET     1
++    IPU1_RESET    2
++    OPEN_VG_RESET 3
++  The following additional RESET_INDEX value is valid for i.MX6:
++    IPU2_RESET    4
++
++properties:
++  compatible:
++    items:
++      - const: "fsl,imx51-src"
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    minItems: 1
++    maxItems: 2
++
++  '#reset-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - '#reset-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    src@73fd0000 {
++        compatible = "fsl,imx51-src";
++        reg = <0x73fd0000 0x4000>;
++        interrupts = <75>;
++        #reset-cells = <1>;
++    };
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+2.7.4
+
