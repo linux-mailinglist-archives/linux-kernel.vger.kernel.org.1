@@ -2,113 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A26B21CED60
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 08:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954D91CED66
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 08:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728951AbgELGzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 02:55:20 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:47567 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725823AbgELGzR (ORCPT
+        id S1727815AbgELG5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 02:57:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725814AbgELG5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 02:55:17 -0400
-Received: by mail-io1-f72.google.com with SMTP id v23so11928025ioj.14
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 23:55:16 -0700 (PDT)
+        Tue, 12 May 2020 02:57:21 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7132DC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 23:57:21 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id x10so4990651plr.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 23:57:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xESt8YrdF5zA7OhTRZwQ+JJUIra4yQxemc2O867l028=;
+        b=VMRbs0PHQWvOftRxUJW++79cw5PG5idWx50PkcZn+aKCIc29PQ60fCbNcQgFUNVVqk
+         sdyIhki9WgY4wPnBnzXgJcOw69bSpnxwWWVQzpxPmYKuGEhSlR0vF2bnH2H0AGK7c06I
+         d5X/wrA1QU/fshcMRO+pBIePVhV1NEO6W69zMuA3jj/U5N5DC7yckl3AGb4nZigsWzwP
+         tT38ovAl+wpb68X/jPpChDDVu8QUBI3kaDX6tdm4lMQM+PZDWA3eKYeoLERgcPBFrDDG
+         fLAQHTtX5B9ZatTMWnxQ6upKLw5az7B7ZJ5Pyg9lB+a2ZZ4fXfU7MiAimZurPAXbPiz2
+         utWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=nYuxikRQd1y8JjIoZo7imSaZgwUVBRsszkZdjA7ikeA=;
-        b=Uwby7gX1ICqRy1g4Qmgd6cl0Zd4uEEEYPfM/BFaZE+R/VwHsG5ZoMQZQY3oorid1LO
-         mqrkquT5C3icmCQFVKPTcNR57SKVNvhWKPwaviGq8MKEgSrjIcdWel4GqilaiOjgeZ6y
-         fSdeFSDA1LjvicIf1hInzWcWFq/o0AOJMcy0Q5rhpsEkicWzJ+C2XarLABZ8co6N+xM6
-         xbhKyQpu7uR0fzVW/tFMQ9duJGEtf4ZjbTiTYwj1yaZDnPTay2DQmHHqPw3HsIsm9lQK
-         iRNefjuhtyQVpgCy3RuzFVnACplXOQb8xwDr7IvI3IAwwXdzwklaEkzsljxNYU1n1/Gt
-         Slyg==
-X-Gm-Message-State: AGi0PuYfZsxjx0108vgOP4RbquMAt+GKssF0MAcWZxEheAiMxJB5QDB/
-        1gJe51qz2EOrs/yWGA2fFVtCOXbIAWsLrq+XVW4RR1KXuSW6
-X-Google-Smtp-Source: APiQypJTfjl8Mevb0+zyALKxqVwVDOoXBPw6Xzhz5l0uVnLgmpdB6UQxigcW76BTbcAmcXQnzr5NoJqJxwVI8QHzZgBDc31kCc7p
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xESt8YrdF5zA7OhTRZwQ+JJUIra4yQxemc2O867l028=;
+        b=Bbi2LdmEwQAetuOK1+pWyacVgNaieXmi1rzoodBxxbDU7+rW6gTHPuxgci/MYAWSRP
+         9D/k/VfUBbrON76Ph7pgdDqNh+4rBIcZXvNo9fpd2bE5a1wQcveSH1gopNjUz1prCKuF
+         MMRUooXM3y6hGwKFduO3cA3IS+tCjDPKCErkHKHlTWSJGmSY+DeaeIGl9h5IQqkAs3GW
+         Br8h8C0TJtqjRgF2y+PIdYhC/YlgxXNw4rT4PDF+aJtQ5rc69VQWIqGzaqxpqvvo6t47
+         VOQst08WArltsOtfWWKdCJ2fuif3cKsuS5ZAuJYQetdtWvD73/3C0tRcjKBV4GW0uJoJ
+         o2xQ==
+X-Gm-Message-State: AGi0PuZUd+6Go/hJf/y5SuR0MaK/Mx4dHinB/nzcSTvMY9eQf2FIdjXA
+        lnU0irWSFRwsYi7QVLtRCHpU
+X-Google-Smtp-Source: APiQypIdRl4nB/2mZFYqstDYIZKg6KAQai2y8tkp/VYwtSTyd5EaZqNMdtCSHUciPW9Ml8VDxxqTwg==
+X-Received: by 2002:a17:902:930b:: with SMTP id bc11mr19040031plb.2.1589266640847;
+        Mon, 11 May 2020 23:57:20 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6007:2f23:5151:5dd:ea86:4678])
+        by smtp.gmail.com with ESMTPSA id n23sm11709667pjq.18.2020.05.11.23.57.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 11 May 2020 23:57:20 -0700 (PDT)
+Date:   Tue, 12 May 2020 12:27:15 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Hemant Kumar <hemantk@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org
+Subject: Re: [PATCH v1 5/5] bus: mhi: core: Handle write lock properly in
+ mhi_pm_m0_transition
+Message-ID: <20200512065715.GG4928@Mani-XPS-13-9360>
+References: <1589248989-23824-1-git-send-email-hemantk@codeaurora.org>
+ <1589248989-23824-6-git-send-email-hemantk@codeaurora.org>
 MIME-Version: 1.0
-X-Received: by 2002:a02:c6c5:: with SMTP id r5mr15913250jan.133.1589266516187;
- Mon, 11 May 2020 23:55:16 -0700 (PDT)
-Date:   Mon, 11 May 2020 23:55:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000026a06e05a56df22f@google.com>
-Subject: general protection fault in nfsd_reply_cache_free_locked
-From:   syzbot <syzbot+a29df412692980277f9d@syzkaller.appspotmail.com>
-To:     bfields@fieldses.org, chuck.lever@oracle.com,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1589248989-23824-6-git-send-email-hemantk@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, May 11, 2020 at 07:03:09PM -0700, Hemant Kumar wrote:
+> Take write lock only to protect db_mode member of mhi channel.
+> This allows rest of the mhi channels to just take read lock which
+> fine grains the locking. It prevents channel readers to starve if
+> they try to enter critical section after a writer.
+> 
+> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
 
-syzbot found the following crash on:
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-HEAD commit:    6e7f2eac Merge tag 'arm64-fixes' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14567034100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b0212dbee046bc1f
-dashboard link: https://syzkaller.appspot.com/bug?extid=a29df412692980277f9d
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+Thanks,
+Mani
 
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+a29df412692980277f9d@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
-CPU: 0 PID: 27932 Comm: kworker/u4:4 Not tainted 5.7.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-RIP: 0010:nfsd_reply_cache_free_locked+0x2d/0x380 fs/nfsd/nfscache.c:122
-Code: 56 41 55 41 54 49 89 fc 55 48 89 f5 53 48 89 d3 e8 08 c0 2f ff 48 8d 7d 61 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 08 84 c0 0f 85 a7 02 00 00
-RSP: 0018:ffffc90008bb7b70 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff888000026000 RCX: dffffc0000000000
-RDX: 0000000000000002 RSI: ffffffff82436ea8 RDI: 0000000000000011
-RBP: ffffffffffffffb0 R08: ffff888093792400 R09: fffffbfff185cf3e
-R10: ffffffff8c2e79ef R11: fffffbfff185cf3d R12: ffff888000100000
-R13: ffff888000100008 R14: 0000000000000000 R15: ffff888000100000
-FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2c531000 CR3: 00000000685a2000 CR4: 00000000001426f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- nfsd_reply_cache_shutdown+0x150/0x350 fs/nfsd/nfscache.c:203
- nfsd_exit_net+0x189/0x4c0 fs/nfsd/nfsctl.c:1504
- ops_exit_list.isra.0+0xa8/0x150 net/core/net_namespace.c:186
- cleanup_net+0x511/0xa50 net/core/net_namespace.c:603
- process_one_work+0x965/0x16a0 kernel/workqueue.c:2268
- worker_thread+0x96/0xe20 kernel/workqueue.c:2414
- kthread+0x388/0x470 kernel/kthread.c:268
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-Modules linked in:
----[ end trace 54f06072fc6a1afa ]---
-RIP: 0010:nfsd_reply_cache_free_locked+0x2d/0x380 fs/nfsd/nfscache.c:122
-Code: 56 41 55 41 54 49 89 fc 55 48 89 f5 53 48 89 d3 e8 08 c0 2f ff 48 8d 7d 61 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 08 84 c0 0f 85 a7 02 00 00
-RSP: 0018:ffffc90008bb7b70 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff888000026000 RCX: dffffc0000000000
-RDX: 0000000000000002 RSI: ffffffff82436ea8 RDI: 0000000000000011
-RBP: ffffffffffffffb0 R08: ffff888093792400 R09: fffffbfff185cf3e
-R10: ffffffff8c2e79ef R11: fffffbfff185cf3d R12: ffff888000100000
-R13: ffff888000100008 R14: 0000000000000000 R15: ffff888000100000
-FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2c531000 CR3: 0000000094cfb000 CR4: 00000000001426f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> ---
+>  drivers/bus/mhi/core/pm.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index 345f197..de5abb2 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -288,14 +288,18 @@ int mhi_pm_m0_transition(struct mhi_controller *mhi_cntrl)
+>  	for (i = 0; i < mhi_cntrl->max_chan; i++, mhi_chan++) {
+>  		struct mhi_ring *tre_ring = &mhi_chan->tre_ring;
+>  
+> -		write_lock_irq(&mhi_chan->lock);
+> -		if (mhi_chan->db_cfg.reset_req)
+> +		if (mhi_chan->db_cfg.reset_req) {
+> +			write_lock_irq(&mhi_chan->lock);
+>  			mhi_chan->db_cfg.db_mode = true;
+> +			write_unlock_irq(&mhi_chan->lock);
+> +		}
+> +
+> +		read_lock_irq(&mhi_chan->lock);
+>  
+>  		/* Only ring DB if ring is not empty */
+>  		if (tre_ring->base && tre_ring->wp  != tre_ring->rp)
+>  			mhi_ring_chan_db(mhi_cntrl, mhi_chan);
+> -		write_unlock_irq(&mhi_chan->lock);
+> +		read_unlock_irq(&mhi_chan->lock);
+>  	}
+>  
+>  	mhi_cntrl->wake_put(mhi_cntrl, false);
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
