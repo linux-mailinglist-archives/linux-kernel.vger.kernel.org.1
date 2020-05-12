@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F571CF605
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 15:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C62B11CF60C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 15:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730039AbgELNnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 09:43:33 -0400
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:37241 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729519AbgELNnd (ORCPT
+        id S1730086AbgELNoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 09:44:24 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:49521 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726891AbgELNoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 09:43:33 -0400
-Received: from localhost.localdomain ([93.22.148.175])
-        by mwinf5d15 with ME
-        id dpjT2200B3nHaxZ03pjT5r; Tue, 12 May 2020 15:43:31 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 12 May 2020 15:43:31 +0200
-X-ME-IP: 93.22.148.175
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, linux-omap@vger.kernel.org
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ASoC: ti: omap-mcbsp: Fix an error handling path in 'asoc_mcbsp_probe()'
-Date:   Tue, 12 May 2020 15:43:25 +0200
-Message-Id: <20200512134325.252073-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Tue, 12 May 2020 09:44:24 -0400
+Received: (qmail 22763 invoked by uid 500); 12 May 2020 09:44:22 -0400
+Received: from localhost (sendmail-bs@127.0.0.1)
+  by localhost with SMTP; 12 May 2020 09:44:22 -0400
+Date:   Tue, 12 May 2020 09:44:22 -0400 (EDT)
+From:   Alan Stern <stern@rowland.harvard.edu>
+X-X-Sender: stern@netrider.rowland.org
+To:     Joel Fernandes <joel@joelfernandes.org>
+cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <vpillai@digitalocean.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Daniel Lustig <dlustig@nvidia.com>, <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH 0/3] tools/memory-model, Documentation/litmus-test: Sort
+ out location of litmus test and README
+In-Reply-To: <20200512021309.GA197229@google.com>
+Message-ID: <Pine.LNX.4.44L0.2005120942100.21033-100000@netrider.rowland.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an error occurs after the call to 'omap_mcbsp_init()', the reference to
-'mcbsp->fclk' must be decremented, as already done in the remove function.
+On Mon, 11 May 2020, Joel Fernandes wrote:
 
-This can be achieved easily by using the devm_ variant of 'clk_get()'
-when the reference is taken in 'omap_mcbsp_init()'
+> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> Date: Mon, 11 May 2020 22:06:46 -0400
+> Subject: [PATCH] docs: litmus-tests: Clarify about the RCU pre-initialization
+>  test
+> 
+> Since this test was moved to tools/memory-model/, make sure that it is
+> at least referenced from Documentation/litmus-tests/'s README.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  Documentation/litmus-tests/README | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/litmus-tests/README b/Documentation/litmus-tests/README
+> index ac0b270b456c1..53f09e74734a4 100644
+> --- a/Documentation/litmus-tests/README
+> +++ b/Documentation/litmus-tests/README
+> @@ -11,7 +11,6 @@ tools/memory-model/README.
+>  
+>  atomic (/atomic derectory)
+>  --------------------------
+> -
+>  Atomic-RMW+mb__after_atomic-is-stronger-than-acquire.litmus
+>      Test that an atomic RMW followed by a smp_mb__after_atomic() is
+>      stronger than a normal acquire: both the read and write parts of
+> @@ -23,8 +22,11 @@ Atomic-RMW-ops-are-atomic-WRT-atomic_set.litmus
+>  
+>  RCU (/rcu directory)
+>  --------------------
+> -
+>  RCU+sync+read.litmus
+>  RCU+sync+free.litmus
+>      Both the above litmus tests demonstrate the RCU grace period guarantee
+>      that an RCU read-side critical section can never span a grace period.
+> +
+> +MP+onceassign+derefonce.litmus (moved to tools/memory-model/litmus-tests/)
+> +   Demonstrates that rcu_assign_pointer() and rcu_dereference() to
+> +   ensure that an RCU reader will not see pre-initialization garbage.
 
-This fixes the leak in the probe and has the side effect to simplify both
-the error handling path of 'omap_mcbsp_init()' and the remove function.
+The grammar in this sentence is awful.  Should the first "that" be 
+changed to "the use of"?
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-I've not been able to identify the when the issue has been introduced, so
-no Fixes: tag.
----
- sound/soc/ti/omap-mcbsp.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
-index 0348963f4df7..6c83b9888467 100644
---- a/sound/soc/ti/omap-mcbsp.c
-+++ b/sound/soc/ti/omap-mcbsp.c
-@@ -686,7 +686,7 @@ static int omap_mcbsp_init(struct platform_device *pdev)
- 	mcbsp->dma_data[1].addr = omap_mcbsp_dma_reg_params(mcbsp,
- 						SNDRV_PCM_STREAM_CAPTURE);
- 
--	mcbsp->fclk = clk_get(&pdev->dev, "fck");
-+	mcbsp->fclk = devm_clk_get(&pdev->dev, "fck");
- 	if (IS_ERR(mcbsp->fclk)) {
- 		ret = PTR_ERR(mcbsp->fclk);
- 		dev_err(mcbsp->dev, "unable to get fck: %d\n", ret);
-@@ -711,7 +711,7 @@ static int omap_mcbsp_init(struct platform_device *pdev)
- 		if (ret) {
- 			dev_err(mcbsp->dev,
- 				"Unable to create additional controls\n");
--			goto err_thres;
-+			return ret;
- 		}
- 	}
- 
-@@ -724,8 +724,6 @@ static int omap_mcbsp_init(struct platform_device *pdev)
- err_st:
- 	if (mcbsp->pdata->buffer_size)
- 		sysfs_remove_group(&mcbsp->dev->kobj, &additional_attr_group);
--err_thres:
--	clk_put(mcbsp->fclk);
- 	return ret;
- }
- 
-@@ -1442,8 +1440,6 @@ static int asoc_mcbsp_remove(struct platform_device *pdev)
- 
- 	omap_mcbsp_st_cleanup(pdev);
- 
--	clk_put(mcbsp->fclk);
--
- 	return 0;
- }
- 
--- 
-2.25.1
+Alan
 
