@@ -2,147 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6869A1D0292
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF1F1D029F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731549AbgELWxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60184 "EHLO
+        id S1731580AbgELW5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 18:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727899AbgELWxD (ORCPT
+        with ESMTP id S1725938AbgELW5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 18:53:03 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B440C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:53:03 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id 79so6793527iou.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:53:03 -0700 (PDT)
+        Tue, 12 May 2020 18:57:05 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4384C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:57:05 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id v15so3129494qvr.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:57:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rbksr85X1t9NeTW2nK2Gw8Z3WTyso7gugVZpgKykZDw=;
-        b=QMRj3KeSy3swo2oLnAkMXF6O9qLOuI1O4A/Y5gC61yBgZeVtW9UbbdQ7RrMAQvFBqv
-         Srvk+f4ITY4C7BJFYwcibovAUP++bCVr+pTcnyKtOjQAUsQQ+6J/cDTodCVRDHADrGqG
-         rlPnwp1yiBZrnmX5p9dXiySdpxOMoOTdKgWoE=
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uw6rcMifPeMm4u4SGK3ZasDqkkdkPJx5dwRBOhb9iZ0=;
+        b=Fo9KNuvX7TEGQgNrP52TRDep9vxdmN6lPqGfnpBGIBh9wjAB8AKtPP/Vqb7ViMW3Di
+         xeZMTfN09TVP/s7ZQCmIHH6jhRiLYTAVIXIXOKudV3tl//5uF0X1/kzjgfSM0Oj4ULck
+         l9NVd3YzTKjAgXRt1YRh1wvOsXex1hNf1OeCa15HKUtQo0QJ1FzMZDMAoeG3lnguurKt
+         0JWFTTsPu0tf03pF6ik2qK3NFsWA5Jd1mhl1QDdfSF2jSgYTBz4rzbkZ+kU8mbOSG5kh
+         QZvtN4Ycns0x0bwu3qCEvWkT/drJsG/nWpo8qETwaKR0X3pbeDhn9MS07P7Sp57k0GJK
+         6zwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rbksr85X1t9NeTW2nK2Gw8Z3WTyso7gugVZpgKykZDw=;
-        b=EO8z3ODstxGDY2hYAh5CO8ibkVXFtmgPoS1V69R1EHUlN/+WL576cxazQkU16Zij4V
-         g6W7OFteEemRz5eXrKfCe5f4vNhl4KJMIz3tv+X0btQK4O5h6MDbDSMP3SBWDFQMhHHk
-         psnpm1PnsLjv6+/nuTlZfEbucGiobS6wXVoretQb9eDUzXsgbkykAjutQM6UPnkJvRMS
-         7lf6W6oSTNwMhuvTIDp291yo9sA+v580DCBft9BS6eaLQhQfEXBEtFoEczDM/unj78NL
-         oTYuJG4veVZfjLS/hnliEhP2Y+QVvYvj2FvIaV3vGQvzPqU6V9vpJBghFoX0mW16OOvp
-         cOGw==
-X-Gm-Message-State: AGi0Pub4PYY0eyajPsVLBzaJqs4mrOqMy3YXexnv/1OnMW8uVi0u53C0
-        n018A4oFU7tG183SqPAWUXlIX3Rl+6ew/O5/gfFFlQ==
-X-Google-Smtp-Source: APiQypIhCDJ21tBkwqWH+vwILqA9HOMVsY2ZF1oAcrxSNyf6NfGGsxusSYew2fGc38GsAJ15okrtHB06h8dqDuygzpA=
-X-Received: by 2002:a5e:8411:: with SMTP id h17mr1790878ioj.1.1589323982360;
- Tue, 12 May 2020 15:53:02 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uw6rcMifPeMm4u4SGK3ZasDqkkdkPJx5dwRBOhb9iZ0=;
+        b=bRh4PyquBOl8AwcQ6mWOjqZbgG3d92NcU3/GiozILvwbKqnzoJxvlxwZHA83qXP3bv
+         PplJQbTJtcStm7WvAjdW9zZC2m+zeld50r13BYXfKJyL3YXkhNbk9wQ2IvLWB9z3rNpw
+         3hU/DzYarLPVmc5FlYdNSt8T89wXdFyoiyydM/ag5BBuhvY7+7xC2McdE47dEFtznOzv
+         mNK9ri8wxe8Dx0ZD4pVyO8AjyTZ0PHp0NZdyZ8nkCSgBX/JBjQkvJMmgdSy4lc3i5DgV
+         ZMOIEv5z2ojLgq6mFFWkAfvyIl5k8jxS9Kb897NP53zlh3yldADo3arYDR0eF4VbeZMJ
+         KsiQ==
+X-Gm-Message-State: AGi0PuYNiXVROfC859oMVIZ5UI3mLpaCb+nYJQI9+3IdAZZjwN5CE8Q9
+        i+BMjtdU23yzUdYzrqqxapj9Cw==
+X-Google-Smtp-Source: APiQypIVWK4DOItsAwZSF++TtWpZGg68EDxJaQnUCromDwnEvmQDQRxuDhdiWxCkFJmry65ErRlOuQ==
+X-Received: by 2002:ad4:4d44:: with SMTP id m4mr18915485qvm.236.1589324224935;
+        Tue, 12 May 2020 15:57:04 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:2627])
+        by smtp.gmail.com with ESMTPSA id h185sm12160202qkc.19.2020.05.12.15.57.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 15:57:04 -0700 (PDT)
+Date:   Tue, 12 May 2020 18:56:45 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 06/19] mm: memcg/slab: obj_cgroup API
+Message-ID: <20200512225645.GA488426@cmpxchg.org>
+References: <20200422204708.2176080-1-guro@fb.com>
+ <20200422204708.2176080-7-guro@fb.com>
+ <20200507210314.GD161043@cmpxchg.org>
+ <20200507222631.GA81857@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20200323015735.236279-1-joel@joelfernandes.org>
- <7809dbfa-7a76-8663-799a-908c4ead8d30@gmail.com> <21e1ba24-22d0-8083-770c-53d320ba5420@gmail.com>
- <fd7e7c6f-fda1-7f2b-19f3-a09b73b10de8@gmail.com> <CAEXW_YSjo2hgvg-FN_MR7FVEcp-7gH17jb0-262k+ydSuuDjuQ@mail.gmail.com>
- <20200512163022.GI2869@paulmck-ThinkPad-P72> <20200512214342.GA89170@google.com>
- <d1809f12-77a3-65e4-7af2-bdd87c48ada7@gmail.com>
-In-Reply-To: <d1809f12-77a3-65e4-7af2-bdd87c48ada7@gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 12 May 2020 18:52:49 -0400
-Message-ID: <CAEXW_YQfUFQmfyj9NnkJKcSH7-15FjEbFDP=GoYRR9OCwyJOWw@mail.gmail.com>
-Subject: Re: [PATCH 4/3] docs: litmus-tests: Clarify about the RCU
- pre-initialization test
-To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200507222631.GA81857@carbon.dhcp.thefacebook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 5:49 PM Akira Yokosawa <akiyks@gmail.com> wrote:
->
-> On Tue, 12 May 2020 17:43:42 -0400, Joel Fernandes wrote:
-> > On Tue, May 12, 2020 at 09:30:22AM -0700, Paul E. McKenney wrote:
-> >> On Tue, May 12, 2020 at 11:41:01AM -0400, Joel Fernandes wrote:
-> >>> On Tue, May 12, 2020 at 11:07 AM Akira Yokosawa <akiyks@gmail.com> wrote:
-> >>>>
-> >>>> From 7bb979aacd8788d174df8a56e9803ba9e5b7a381 Mon Sep 17 00:00:00 2001
-> >>>> From: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >>>> Date: Mon, 11 May 2020 22:06:46 -0400
-> >>>> Subject: [PATCH 4/3] docs: litmus-tests: Clarify about the RCU pre-initialization test
-> >>>>
-> >>>> Since this test returned to tools/memory-model/, make sure that it is
-> >>>> at least referenced from Documentation/litmus-tests/'s README.
-> >>>>
-> >>>> Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >>>> Co-developed-by: Akira Yokosawa <akiyks@gmail.com>
-> >>>> [Alan: grammar nit]
-> >>>> Suggested-by: Alan Stern <stern@rowland.harvard.edu>
-> >>>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >>>> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-> >>>> ---
-> >>>> I said in the earlier message:
-> >>>>
-> >>>>> The explanation under tools/memory-model/litmus-tests/README also need the same
-> >>>>> rewording.
-> >>>>
-> >>>> , but obviously I was confused. It is good as is.
-> >>>>
-> >>>> This is on top of my earlier patch series.
-> >>>>
-> >>>> Joel, Alan, does this work with you?
-> >>>
-> >>> Yes, thanks a lot for doing it. Paul are you Ok with it too?
-> >>
-> >> Looks good to me!
-> >>
-> >> Could one of you please send a patch series and instructions, which I
-> >> -think- will be of the form:
-> >>
-> >> o    Revert a5cca3485d92 ("Documentation: LKMM: Move
-> >>      MP+onceassign+derefonce to new litmus-tests/rcu/")
-> >>
-> >> o    Apply a series of patches.
-> >
-> > Rebased Akira's 3 and my 1 on top of your /dev branch with the ordering done as above:
->
-> Oh, I missed the reordering part in my PATCH RESEND series.
->
+On Thu, May 07, 2020 at 03:26:31PM -0700, Roman Gushchin wrote:
+> On Thu, May 07, 2020 at 05:03:14PM -0400, Johannes Weiner wrote:
+> > On Wed, Apr 22, 2020 at 01:46:55PM -0700, Roman Gushchin wrote:
+> > > --- a/mm/memcontrol.c
+> > > +++ b/mm/memcontrol.c
+> > > @@ -257,6 +257,78 @@ struct cgroup_subsys_state *vmpressure_to_css(struct vmpressure *vmpr)
+> > >  }
+> > >  
+> > >  #ifdef CONFIG_MEMCG_KMEM
+> > > +extern spinlock_t css_set_lock;
+> > > +
+> > > +static void obj_cgroup_release(struct percpu_ref *ref)
+> > > +{
+> > > +	struct obj_cgroup *objcg = container_of(ref, struct obj_cgroup, refcnt);
+> > > +	struct mem_cgroup *memcg;
+> > > +	unsigned int nr_bytes;
+> > > +	unsigned int nr_pages;
+> > > +	unsigned long flags;
+> > > +
+> > > +	nr_bytes = atomic_read(&objcg->nr_charged_bytes);
+> > > +	WARN_ON_ONCE(nr_bytes & (PAGE_SIZE - 1));
+> > > +	nr_pages = nr_bytes >> PAGE_SHIFT;
+> > 
+> > What guarantees that we don't have a partial page in there at this
+> > point? I guess any outstanding allocations would pin the objcg, so
+> > when it's released all objects have been freed.
+> 
+> Right, this is exactly the reason why there can't be a partial page
+> at this point.
+> 
+> > 
+> > But if that's true, how can we have full pages remaining in there now?
+> 
+> Imagine the following sequence:
+> 1) CPU0: objcg == stock->cached_objcg
+> 2) CPU1: we do a small allocation (e.g. 92 bytes), page is charged
+> 3) CPU1: a process from another memcg is allocating something, stock if flushed,
+>    objcg->nr_charged_bytes = PAGE_SIZE - 92
+> 5) CPU0: we do release this object, 92 bytes are added to stock->nr_bytes
+> 6) CPU0: stock is flushed, 92 bytes are added to objcg->nr_charged_bytes
+> 
+> In the result, nr_charged_bytes == PAGE_SIZE. This PAGE will be uncharged
+> in obj_cgroup_release().
+> 
+> I've double checked this, it's actually pretty easy to trigger in the real life.
 
-That's Ok, I took care of it ;-) You passed me the ball, I hit it into the goal.
+Ah, so no outstanding allocations, but a full page split between the
+percpu cache and objcg->nr_charged_bytes.
 
-> Paul, it's up to you which you pull/apply.
+Would it simplify things if refill_obj_stock() drained on >= PAGE_SIZE
+stock instead of > PAGE_SIZE?
 
-Indeed! ;-)
+Otherwise, the scenario above would be good to have as a comment as
+the drain on release is not self-explanatory.
 
- - Joel
+> > > +int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
+> > > +{
+> > > +	struct mem_cgroup *memcg;
+> > > +	unsigned int nr_pages, nr_bytes;
+> > > +	int ret;
+> > > +
+> > > +	if (consume_obj_stock(objcg, size))
+> > > +		return 0;
+> > > +
+> > > +	rcu_read_lock();
+> > > +	memcg = obj_cgroup_memcg(objcg);
+> > > +	css_get(&memcg->css);
+> > > +	rcu_read_unlock();
+> > > +
+> > > +	nr_pages = size >> PAGE_SHIFT;
+> > > +	nr_bytes = size & (PAGE_SIZE - 1);
+> > > +
+> > > +	if (nr_bytes)
+> > > +		nr_pages += 1;
+> > > +
+> > > +	ret = __memcg_kmem_charge(memcg, gfp, nr_pages);
+> > 
+> > If consume_obj_stock() fails because some other memcg is cached,
+> > should this try to consume the partial page in objcg->nr_charged_bytes
+> > before getting more pages?
+> 
+> We can definitely do it, but I'm not sure if it's good for the performance.
+> 
+> Dealing with nr_charged_bytes will require up to two atomic writes,
+> so calling __memcg_kmem_charge() can be faster if memcg is cached
+> on percpu stock.
 
+Hm, but it's the slowpath. And sooner or later somebody has to deal
+with the remaining memory in there.
 
->
->         Thanks, Akira
->
-> >
-> > Could you pull?
-> >
-> > git://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git (branch for-paul-dev)
-> >
-> > Thanks!
-> >
-> >  - Joel
-> >
+> > > +	if (!ret && nr_bytes)
+> > > +		refill_obj_stock(objcg, PAGE_SIZE - nr_bytes);
+> > 
+> > This will put the cgroup into the cache if the allocation resulted in
+> > a partially free page.
+> > 
+> > But if this was a page allocation, we may have objcg->nr_cache_bytes
+> > from a previous subpage allocation that we should probably put back
+> > into the stock.
+> 
+> Yeah, we can do this, but I don't know if there will be any benefits.
+
+It's mostly about understanding the code.
+
+> Actually we don't wanna to touch objcg->nr_cache_bytes too often, as
+> it can become a contention point if there are many threads allocating
+> in the memory cgroup.
+> 
+> So maybe we want to do the opposite: relax it a bit and stop flushing
+> it on every stock refill and flush only if it exceeds a certain value.
+
+That could be useful, yes.
+
+> > It's not a common case, I'm just trying to understand what
+> > objcg->nr_cache_bytes holds and when it does so.
+> 
+> So it's actually a centralized leftover from the rounding of the actual
+> charge to the page size.
+
+It would be good to add code comments explaining this.
+
+Thanks!
