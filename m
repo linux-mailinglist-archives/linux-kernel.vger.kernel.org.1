@@ -2,162 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDA81CED05
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 08:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC901CED22
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 08:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728812AbgELG3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 02:29:09 -0400
-Received: from mga11.intel.com ([192.55.52.93]:17012 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbgELG3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 02:29:09 -0400
-IronPort-SDR: Fx5LTXu93RNPTLwZaqRKglOYx70HqVNTXzAHSsGlSpCGAln726/PXVEkyt0Tg6GbDl2uMVAJsz
- I0sR89HouAWQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 23:29:05 -0700
-IronPort-SDR: /Y5kg64+S31ucd4p+4SmiR92N4ZG/BgCIhfNT4xaQeFfxwlNgLfZwi5/LlB/d7o47z4SuN7JJN
- W5kkDOGBmCXg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,382,1583222400"; 
-   d="scan'208";a="463653475"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
-  by fmsmga006.fm.intel.com with ESMTP; 11 May 2020 23:29:02 -0700
-Date:   Tue, 12 May 2020 14:39:03 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Yongbo Zhang <giraffesnn123@gmail.com>, broonie@kernel.org,
-        lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Chen Li <licheng0822@thundersoft.com>
-Cc:     kbuild-all@lists.01.org, alsa-devel@alsa-project.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yongbo Zhang <giraffesnn123@gmail.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: rsnd: add interrupt support for SSI BUSIF buffer
-Message-ID: <20200512063903.GB20612@xsang-OptiPlex-9020>
+        id S1728772AbgELGk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 02:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725987AbgELGk5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 02:40:57 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CDEC061A0C;
+        Mon, 11 May 2020 23:40:56 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id u6so12261636ljl.6;
+        Mon, 11 May 2020 23:40:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=CvDFw3VxZkX78aA+MdfUy4a8VmJHp4z5s/fOMPEwqfQ=;
+        b=Bd33efnXE88VWqLM9bDrxn8uzAhETLqeNNnaUtoxd7tYE2HBkf4C3c1NamPswJcGD4
+         b40w77ZcdtFoJOJPA9M6JURDOFnFubs6oHOKKnAERMdmHnxcEaxr1L5jTPSzS+DKGF8B
+         HUzc7mnAnCZ9LcvcW3tOE7mT81ftX1kaG2+7+tKA5qC9oiWPED5qupwREMAF8HtfmN3z
+         stfFng5kQqvknayHKTO87Cit80dvR5RGogU6P88CHEDwPr03PZ5sGoxtAVA2RbyTcGAq
+         w9v5qFdLJW/qGLi+lAj8kl1WZCgP4nXJpDW1DC5wV7j1Pc6XAWhzkXOdLnMzL9zBvgaH
+         AZQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
+         :date:message-id:mime-version;
+        bh=CvDFw3VxZkX78aA+MdfUy4a8VmJHp4z5s/fOMPEwqfQ=;
+        b=H5hPy1jx6gnhQPlrU+4czF7Rwk1KK39ru1/zNGvP9cOGvJmmpHjtYyIX8t47OnqLkw
+         Vg5T0ackZv6UI5qbnZoR7xtkn4VxkrLhZ31smsaKXHv4TMEAqHVhhOQwUfYPf/HQETy5
+         DrtufyhmxgprAZQdKlARXAJycz4hKdwz8QxmKpaEwESD9x7qC6NvOXDM4iccpwItTxey
+         xGfPEvhGnvgQdmMoNZcIyAgp3UdW3Ewn5Bo2T+X25FxW2Vu/CpFMRVV3GXIuUoyamPdp
+         +UIdXj3hm5VE/99HpncJl6erGyRtuiwXPddleqVbjiDRV8/5IDVoHupEZWOsu/QlMA2r
+         LHaA==
+X-Gm-Message-State: AOAM530xDkdxVEsUHin0MLP6nFObK7LsxkZn1SN+ZnB0HE3DNcNsRDvg
+        PUNSTcpfkPT5u8s9d1x0a2E=
+X-Google-Smtp-Source: ABdhPJwMIxXKqZg9TJAoa+cxwCGsXoXtp+dvXK94pDmluoVg92qTksjGCWtkRhjO5mm2pvwfqHw7rQ==
+X-Received: by 2002:a2e:8944:: with SMTP id b4mr12748662ljk.84.1589265654887;
+        Mon, 11 May 2020 23:40:54 -0700 (PDT)
+Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
+        by smtp.gmail.com with ESMTPSA id r13sm9734148ljh.66.2020.05.11.23.40.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 11 May 2020 23:40:53 -0700 (PDT)
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH v2] usb: raw-gadget: fix gadget endpoint selection
+In-Reply-To: <20200509170843.GD2482887@kroah.com>
+References: <2f05fe9aa7e4bcb1bad3f6d11e48a411c901af68.1588197975.git.andreyknvl@google.com> <875zdabzs3.fsf@kernel.org> <CAAeHK+yxoYigM7uWC3cpKmCjgMLXQ1pT=MkJ7XQYCVRgZ-DdTQ@mail.gmail.com> <87zhahlenu.fsf@kernel.org> <20200509170843.GD2482887@kroah.com>
+Date:   Tue, 12 May 2020 09:40:49 +0300
+Message-ID: <87mu6d4pvy.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508074753.10362-1-giraffesnn123@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yongbo,
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Thank you for the patch! Perhaps something to improve:
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
 
-[auto build test WARNING on asoc/for-next]
-[also build test WARNING on v5.7-rc4 next-20200508]
-[if your patch is applied to the wrong git tree, please drop us a note to help
-improve the system. BTW, we also suggest to use '--base' option to specify the
-base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+> On Sat, May 09, 2020 at 11:02:13AM +0300, Felipe Balbi wrote:
+>>=20
+>> Hi,
+>>=20
+>> Andrey Konovalov <andreyknvl@google.com> writes:
+>> >> here you're changing userspace ABI. Aren't we going to possibly break
+>> >> some existing applications?
+>> >
+>> > Hi Felipe,
+>> >
+>> >  I've been working on tests for Raw Gadget for the last few weeks [1],
+>> > which revealed a few problems with the interface. This isn't yet
+>> > included into any released kernel, so my hope that changing the ABI is
+>> > OK during the rc stage.
+>>=20
+>> Fair enough. If that's okay with Greg, it's okay with me, but then how
+>> do we include it into the -rc seen as it's not really a fix?
+>>=20
+>> Greg, are you okay with me including such large patches during the -rc?
+>> They essentially add new IOCTLs to the raw-gadget interface.
+>
+> Yes, as the driver only went in for -rc1, it's fine to add fixes like
+> this so late as we don't want to ship a -final with it in broken form.
 
-url:    https://github.com/0day-ci/linux/commits/Yongbo-Zhang/ASoC-rsnd-add-interrupt-support-for-SSI-BUSIF-buffer/20200509-035713
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-:::::: branch date: 6 hours ago
-:::::: commit date: 6 hours ago
+Thanks, I'll prepare a pull request containing it.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kbuild test robot <lkp@intel.com>
+cheers
 
+=2D-=20
+balbi
 
-cppcheck warnings: (new ones prefixed by >>)
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
->> sound/soc/sh/rcar/ssi.c:531:1: warning: Unmatched '{'. Configuration: ''. [syntaxError]
-   {
-   ^
->> sound/soc/sh/rcar/ssi.c:531:1: warning: Unmatched '{'. Configuration: 'DEBUG'. [syntaxError]
-   {
-   ^
+-----BEGIN PGP SIGNATURE-----
 
-# https://github.com/0day-ci/linux/commit/391d452251464b78f72ba3a1fd9b6091b3d4a942
-git remote add linux-review https://github.com/0day-ci/linux
-git remote update linux-review
-git checkout 391d452251464b78f72ba3a1fd9b6091b3d4a942
-vim +531 sound/soc/sh/rcar/ssi.c
-
-ae5c322303fff5 Kuninori Morimoto 2013-07-21  527  
-ae5c322303fff5 Kuninori Morimoto 2013-07-21  528  static int rsnd_ssi_quit(struct rsnd_mod *mod,
-2c0fac19de2cd7 Kuninori Morimoto 2015-06-15  529  			 struct rsnd_dai_stream *io,
-690602fcd85385 Kuninori Morimoto 2015-01-15  530  			 struct rsnd_priv *priv)
-ae5c322303fff5 Kuninori Morimoto 2013-07-21 @531  {
-ae5c322303fff5 Kuninori Morimoto 2013-07-21  532  	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
-ae5c322303fff5 Kuninori Morimoto 2013-07-21  533  	struct device *dev = rsnd_priv_to_dev(priv);
-391d452251464b Yongbo Zhang      2020-05-08  534  	int is_tdm, is_tdm_split;
-391d452251464b Yongbo Zhang      2020-05-08  535  	int id = rsnd_mod_id(mod);
-391d452251464b Yongbo Zhang      2020-05-08  536  	int i;
-391d452251464b Yongbo Zhang      2020-05-08  537  	u32 sys_int_enable = 0;
-391d452251464b Yongbo Zhang      2020-05-08  538  
-391d452251464b Yongbo Zhang      2020-05-08  539  	is_tdm		= rsnd_runtime_is_tdm(io);
-391d452251464b Yongbo Zhang      2020-05-08  540  	is_tdm_split	= rsnd_runtime_is_tdm_split(io);
-ae5c322303fff5 Kuninori Morimoto 2013-07-21  541  
-fd9adcfdc1434f Kuninori Morimoto 2016-02-18  542  	if (!rsnd_ssi_is_run_mods(mod, io))
-fd9adcfdc1434f Kuninori Morimoto 2016-02-18  543  		return 0;
-fd9adcfdc1434f Kuninori Morimoto 2016-02-18  544  
-e5d9cfc6f5fe56 Andrzej Hajda     2015-12-24  545  	if (!ssi->usrcnt) {
-c0ea089dbad47a Kuninori Morimoto 2018-10-30  546  		dev_err(dev, "%s usrcnt error\n", rsnd_mod_name(mod));
-e5d9cfc6f5fe56 Andrzej Hajda     2015-12-24  547  		return -EIO;
-e5d9cfc6f5fe56 Andrzej Hajda     2015-12-24  548  	}
-e7d850dd10f4e6 Kuninori Morimoto 2015-10-26  549  
-26d34b11af6a34 Kuninori Morimoto 2016-02-18  550  	rsnd_ssi_master_clk_stop(mod, io);
-e7d850dd10f4e6 Kuninori Morimoto 2015-10-26  551  
-e7d850dd10f4e6 Kuninori Morimoto 2015-10-26  552  	rsnd_mod_power_off(mod);
-e7d850dd10f4e6 Kuninori Morimoto 2015-10-26  553  
-e7d850dd10f4e6 Kuninori Morimoto 2015-10-26  554  	ssi->usrcnt--;
-e7d850dd10f4e6 Kuninori Morimoto 2015-10-26  555  
-203cdf51f28820 Kuninori Morimoto 2018-06-12  556  	if (!ssi->usrcnt) {
-203cdf51f28820 Kuninori Morimoto 2018-06-12  557  		ssi->cr_own	= 0;
-203cdf51f28820 Kuninori Morimoto 2018-06-12  558  		ssi->cr_mode	= 0;
-203cdf51f28820 Kuninori Morimoto 2018-06-12  559  		ssi->wsr	= 0;
-203cdf51f28820 Kuninori Morimoto 2018-06-12  560  	}
-203cdf51f28820 Kuninori Morimoto 2018-06-12  561  
-391d452251464b Yongbo Zhang      2020-05-08  562  	/* disable busif buffer over/under run interrupt. */
-391d452251464b Yongbo Zhang      2020-05-08  563  	if (is_tdm || is_tdm_split) {
-391d452251464b Yongbo Zhang      2020-05-08  564  		switch (id) {
-391d452251464b Yongbo Zhang      2020-05-08  565  		case 0:
-391d452251464b Yongbo Zhang      2020-05-08  566  		case 1:
-391d452251464b Yongbo Zhang      2020-05-08  567  		case 2:
-391d452251464b Yongbo Zhang      2020-05-08  568  		case 3:
-391d452251464b Yongbo Zhang      2020-05-08  569  		case 4:
-391d452251464b Yongbo Zhang      2020-05-08  570  			for (i = 0; i < 4; i++) {
-391d452251464b Yongbo Zhang      2020-05-08  571  				sys_int_enable = rsnd_mod_read(mod,
-391d452251464b Yongbo Zhang      2020-05-08  572  						SSI_SYS_INT_ENABLE(i * 2));
-391d452251464b Yongbo Zhang      2020-05-08  573  				sys_int_enable &= ~(0xf << (id * 4));
-391d452251464b Yongbo Zhang      2020-05-08  574  				rsnd_mod_write(mod,
-391d452251464b Yongbo Zhang      2020-05-08  575  					       SSI_SYS_INT_ENABLE(i * 2),
-391d452251464b Yongbo Zhang      2020-05-08  576  					       sys_int_enable);
-391d452251464b Yongbo Zhang      2020-05-08  577  			}
-391d452251464b Yongbo Zhang      2020-05-08  578  
-391d452251464b Yongbo Zhang      2020-05-08  579  			break;
-391d452251464b Yongbo Zhang      2020-05-08  580  		case 9:
-391d452251464b Yongbo Zhang      2020-05-08  581  			for (i = 0; i < 4; i++) {
-391d452251464b Yongbo Zhang      2020-05-08  582  				sys_int_enable = rsnd_mod_read(mod,
-391d452251464b Yongbo Zhang      2020-05-08  583  					SSI_SYS_INT_ENABLE((i * 2) + 1));
-391d452251464b Yongbo Zhang      2020-05-08  584  				sys_int_enable &= ~(0xf << 4);
-391d452251464b Yongbo Zhang      2020-05-08  585  				rsnd_mod_write(mod,
-391d452251464b Yongbo Zhang      2020-05-08  586  					       SSI_SYS_INT_ENABLE((i * 2) + 1),
-391d452251464b Yongbo Zhang      2020-05-08  587  					       sys_int_enable);
-391d452251464b Yongbo Zhang      2020-05-08  588  			}
-391d452251464b Yongbo Zhang      2020-05-08  589  
-391d452251464b Yongbo Zhang      2020-05-08  590  			break;
-391d452251464b Yongbo Zhang      2020-05-08  591  		}
-391d452251464b Yongbo Zhang      2020-05-08  592  
-ae5c322303fff5 Kuninori Morimoto 2013-07-21  593  	return 0;
-ae5c322303fff5 Kuninori Morimoto 2013-07-21  594  }
-ae5c322303fff5 Kuninori Morimoto 2013-07-21  595  
-
-:::::: The code at line 531 was first introduced by commit
-:::::: ae5c322303fff50b93d60e34c6563f1264a5941b ASoC: add Renesas R-Car SSI feature
-
-:::::: TO: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-:::::: CC: Mark Brown <broonie@linaro.org>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
+iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl66RPEACgkQzL64meEa
+mQauvA//RClDtkgGG6+X7US8hr34DwyDpHe+viSSYdHCtCF0Wsjkd5q55u9PIwBu
+DHxZc7kOIwoMEWJaTyx8nb02zrMN1UeyEMzL6vhCuLKDXUn/SsmaujPh2whJlBBz
+zvp89pkxF/Sup2TwNQyA9KAaf5xmS5kUZAebXdOVxczicfa91pwYzY96NUp5OG32
+MNDZDVNlYzxxGbHvEdE9/azwGnPHwRBlWomvb/YnaUbwMG6+ZQicS9+bFxsp+TQx
+j4+1AzX1fj/YTS+fME3pUiFLsuOF2h6V3iLhm4RhFLJoZ8MQ2JqAtO7zd9PxjzUU
+ZSu3KyqQ3TswX/WGoSRBPw6gJX/RrP1Gmnu32okfXKsZeLl8XVbhDTHzTlyGQKB9
+NAakHCE7egZ4h1vK81aC4kVuvOBayPP6nbiAN1QNC6OeN2WXhvp2FXN8bd7/RDtp
+w4OEpWm3MGMAxlXic2GkJchUsYxEmQQ2rPE1xG/eGCc7vASbHjLOB28raH7EiDU+
+U0zJ8xpIpviX+Z07EWHeGWO99ENk45ZqRWu8L4jMPIhnc54NM7OBcDZTY3hhw2IH
+dQkL39KouhMFH8e2hGkHvn/vOBHNcCKE7Ofnb4mzxe8XB5zWEJVFja8iQy0XIt6p
+ql34MLf7ciYoAWHdWpbISmTcrCIlQAUgQHNf0EFTMeZwgCwvbNk=
+=3yqU
+-----END PGP SIGNATURE-----
+--=-=-=--
