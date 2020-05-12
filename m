@@ -2,82 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D693E1CF7E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0751CF7F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730211AbgELOxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 10:53:00 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:46636 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725929AbgELOw7 (ORCPT
+        id S1730310AbgELOyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 10:54:05 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29836 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727850AbgELOyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 10:52:59 -0400
-Received: by mail-ot1-f68.google.com with SMTP id z25so10672616otq.13;
-        Tue, 12 May 2020 07:52:59 -0700 (PDT)
+        Tue, 12 May 2020 10:54:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589295242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YZOs/bxxTbikpapKhWDX3v8GWxjINqQOFJaU3KA5ktI=;
+        b=FDOhFiBkaGnfCd5a6YQuC+eKq29L6ejIDulwOKPjXqJH5BHFBE276iJvBktGbfNoLZJkKB
+        5HHkARwp+1XGK7hOQjvkDXWbLxhR135YnxIscJTQhj9VrBVdvSduUg+DUXYvHnAwd4Vw4m
+        efjgtxK+6CmLvkDw0+5hA0fzzg8LHQo=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-113-BOsHana_NwyMgPasZ30MqA-1; Tue, 12 May 2020 10:53:44 -0400
+X-MC-Unique: BOsHana_NwyMgPasZ30MqA-1
+Received: by mail-wr1-f70.google.com with SMTP id q13so7067270wrn.14
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 07:53:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zvQTYh4b4eUlBTZLUxX1hHRbUDU2+a4tZbKUdGnF3aw=;
-        b=SRzmVqAsJaWsfn0lMAMVnb0PLU0RsHTZJy67X/1Au9Mex2B+bRm+KCZAPJeEyDrIbk
-         98HGSWAH12RkOagZUTcS684fWBN6C8G/Yp3x86ZBdPrlIcxj/D4doL7kbW7H1PQ9qVzN
-         LRkNYVQREy+2jFeGaBMtxhu0+3dnDeYNv96lsy63IFB7ubJ1AZO5GJ22XTpII9bP4SGE
-         12zAsIEV8DvyF8PK/C7PPNNjJ0Eqcv5gpwr0lxpFIU8bS1y6tH67HHr9uSCSNs+9CVB1
-         zSwVDO4cKcQWrxitJumej3cnhYSv2As6iZMNDSQdFrNfZtsZMRLvaeFIn9B5i3R0dCkt
-         AIhQ==
-X-Gm-Message-State: AGi0PuYC9YD2cKKokLBTICeHp9YfaZ8aYYanDZ32QxRDhcChenPNE9+i
-        +tjc7nmXNm/1uph8qs2kdA==
-X-Google-Smtp-Source: APiQypIeWKML2Q2yIs+q1ZFta2wuSTpS8VDHIRQT/NP72fQGGMWPfyUkA8nAi41dFXRwTXFKKHTXJw==
-X-Received: by 2002:a9d:7e99:: with SMTP id m25mr4092098otp.45.1589295178802;
-        Tue, 12 May 2020 07:52:58 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t20sm3475826ott.51.2020.05.12.07.52.57
+         :mime-version:content-disposition:in-reply-to;
+        bh=YZOs/bxxTbikpapKhWDX3v8GWxjINqQOFJaU3KA5ktI=;
+        b=L5kbWd6MJprYSA8DLfOSMKQpwuVqFD3H/oyhxF4GGbouZOmKdbaZong74rqUZExjLS
+         u0ASqxPScHsHni8ftpiq4sfelEXyz/9QBO17wJJodFLulg3f+q+r2KIfrfkCEhk10xl6
+         Y+NJJ1S5biwbQPJtrSs5254g7cKCyJ/y09l0mVW9OC4mURykI801tAuL7LLvCqfi7eOp
+         bvBd+mRRB2T0eEFVvs8C2hElBKg83h1xWdVnreo05cHZybpq6Msi1xnkCfPEG2jJqY07
+         AXKL5Jjl6AwKpgA3FQ9n4N2fwBZqb7WBVaPeY31Oqx7Tx/MnM4WSMB97GmDeP0nZhQTQ
+         eaFw==
+X-Gm-Message-State: AGi0PuZFdcukb3VAOz0fSCRtdB9Shjcs78LZD3hvOyy9zMbg5pXSOLuh
+        Xr6taGDtWRC3jyjjNcGsx/aQrxe4pCVBrsyKFGPOu9fWxTuOnihFG/yvlymDahQDtsjiZeUzxL3
+        12/jSohZ61vd3YCl2f5KAS4TN
+X-Received: by 2002:adf:e4cf:: with SMTP id v15mr24982840wrm.43.1589295223008;
+        Tue, 12 May 2020 07:53:43 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIw5On7DBpVmIndpyIiLyjKFPEMnKTaMXAz7znewwU/ycqbbRTJxLZoZDsaR40tXDplD0nbCA==
+X-Received: by 2002:adf:e4cf:: with SMTP id v15mr24982818wrm.43.1589295222757;
+        Tue, 12 May 2020 07:53:42 -0700 (PDT)
+Received: from redhat.com (bzq-79-179-68-225.red.bezeqint.net. [79.179.68.225])
+        by smtp.gmail.com with ESMTPSA id v131sm4782950wmb.27.2020.05.12.07.53.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 07:52:58 -0700 (PDT)
-Received: (nullmailer pid 25183 invoked by uid 1000);
-        Tue, 12 May 2020 14:52:56 -0000
-Date:   Tue, 12 May 2020 09:52:56 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-serial@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jason Cooper <jason@lakedaemon.net>, dmaengine@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-Subject: Re: [PATCH 17/18] dt-bindings: gpio: rcar: Add r8a7742 (RZ/G1H)
- support
-Message-ID: <20200512145256.GA25121@bogus>
-References: <1588197415-13747-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1588197415-13747-18-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Tue, 12 May 2020 07:53:42 -0700 (PDT)
+Date:   Tue, 12 May 2020 10:53:39 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Bharat Bhushan <bbhushan2@marvell.com>
+Cc:     jean-philippe@linaro.org, joro@8bytes.org, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        eric.auger.pro@gmail.com, eric.auger@redhat.com
+Subject: Re: [PATCH v5] iommu/virtio: Use page size bitmap supported by
+ endpoint
+Message-ID: <20200512105149-mutt-send-email-mst@kernel.org>
+References: <20200505093004.1935-1-bbhushan2@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1588197415-13747-18-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200505093004.1935-1-bbhushan2@marvell.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Apr 2020 22:56:54 +0100, Lad Prabhakar wrote:
-> Renesas RZ/G1H (R8A7742) SoC GPIO blocks are identical to the R-Car Gen2
-> family. Add support for its GPIO controllers.
+On Tue, May 05, 2020 at 03:00:04PM +0530, Bharat Bhushan wrote:
+> Different endpoint can support different page size, probe
+> endpoint if it supports specific page size otherwise use
+> global page sizes.
 > 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> Signed-off-by: Bharat Bhushan <bbhushan2@marvell.com>
 > ---
->  Documentation/devicetree/bindings/gpio/renesas,gpio-rcar.txt | 1 +
->  1 file changed, 1 insertion(+)
+> v4->v5:
+>  - Rebase to Linux v5.7-rc4
 > 
+> v3->v4:
+>  - Fix whitespace error
+> 
+> v2->v3:
+>  - Fixed error return for incompatible endpoint
+>  - __u64 changed to __le64 in header file
+> 
+>  drivers/iommu/virtio-iommu.c      | 48 ++++++++++++++++++++++++++++---
+>  include/uapi/linux/virtio_iommu.h |  7 +++++
+>  2 files changed, 51 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+> index d5cac4f46ca5..9513d2ab819e 100644
+> --- a/drivers/iommu/virtio-iommu.c
+> +++ b/drivers/iommu/virtio-iommu.c
+> @@ -78,6 +78,7 @@ struct viommu_endpoint {
+>  	struct viommu_dev		*viommu;
+>  	struct viommu_domain		*vdomain;
+>  	struct list_head		resv_regions;
+> +	u64				pgsize_bitmap;
+>  };
+>  
+>  struct viommu_request {
+> @@ -415,6 +416,19 @@ static int viommu_replay_mappings(struct viommu_domain *vdomain)
+>  	return ret;
+>  }
+>  
+> +static int viommu_set_pgsize_bitmap(struct viommu_endpoint *vdev,
+> +				    struct virtio_iommu_probe_pgsize_mask *mask,
+> +				    size_t len)
+> +{
+> +	u64 pgsize_bitmap = le64_to_cpu(mask->pgsize_bitmap);
+> +
+> +	if (len < sizeof(*mask))
+> +		return -EINVAL;
+> +
+> +	vdev->pgsize_bitmap = pgsize_bitmap;
+> +	return 0;
+> +}
+> +
+>  static int viommu_add_resv_mem(struct viommu_endpoint *vdev,
+>  			       struct virtio_iommu_probe_resv_mem *mem,
+>  			       size_t len)
+> @@ -499,6 +513,9 @@ static int viommu_probe_endpoint(struct viommu_dev *viommu, struct device *dev)
+>  		case VIRTIO_IOMMU_PROBE_T_RESV_MEM:
+>  			ret = viommu_add_resv_mem(vdev, (void *)prop, len);
+>  			break;
+> +		case VIRTIO_IOMMU_PROBE_T_PAGE_SIZE_MASK:
+> +			ret = viommu_set_pgsize_bitmap(vdev, (void *)prop, len);
+> +			break;
+>  		default:
+>  			dev_err(dev, "unknown viommu prop 0x%x\n", type);
+>  		}
 
-Acked-by: Rob Herring <robh@kernel.org>
+So given this is necessary early in boot, how about we
+add this in the config space? And maybe ACPI too ...
+
+
+> @@ -630,7 +647,7 @@ static int viommu_domain_finalise(struct viommu_endpoint *vdev,
+>  
+>  	vdomain->id		= (unsigned int)ret;
+>  
+> -	domain->pgsize_bitmap	= viommu->pgsize_bitmap;
+> +	domain->pgsize_bitmap	= vdev->pgsize_bitmap;
+>  	domain->geometry	= viommu->geometry;
+>  
+>  	vdomain->map_flags	= viommu->map_flags;
+> @@ -654,6 +671,29 @@ static void viommu_domain_free(struct iommu_domain *domain)
+>  	kfree(vdomain);
+>  }
+>  
+> +/*
+> + * Check whether the endpoint's capabilities are compatible with other
+> + * endpoints in the domain. Report any inconsistency.
+> + */
+> +static bool viommu_endpoint_is_compatible(struct viommu_endpoint *vdev,
+> +					  struct viommu_domain *vdomain)
+> +{
+> +	struct device *dev = vdev->dev;
+> +
+> +	if (vdomain->viommu != vdev->viommu) {
+> +		dev_err(dev, "cannot attach to foreign vIOMMU\n");
+> +		return false;
+> +	}
+> +
+> +	if (vdomain->domain.pgsize_bitmap != vdev->pgsize_bitmap) {
+> +		dev_err(dev, "incompatible domain bitmap 0x%lx != 0x%llx\n",
+> +			vdomain->domain.pgsize_bitmap, vdev->pgsize_bitmap);
+> +		return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +
+>  static int viommu_attach_dev(struct iommu_domain *domain, struct device *dev)
+>  {
+>  	int i;
+> @@ -670,9 +710,8 @@ static int viommu_attach_dev(struct iommu_domain *domain, struct device *dev)
+>  		 * owns it.
+>  		 */
+>  		ret = viommu_domain_finalise(vdev, domain);
+> -	} else if (vdomain->viommu != vdev->viommu) {
+> -		dev_err(dev, "cannot attach to foreign vIOMMU\n");
+> -		ret = -EXDEV;
+> +	} else if (!viommu_endpoint_is_compatible(vdev, vdomain)) {
+> +		ret = -EINVAL;
+>  	}
+>  	mutex_unlock(&vdomain->mutex);
+>  
+> @@ -886,6 +925,7 @@ static int viommu_add_device(struct device *dev)
+>  
+>  	vdev->dev = dev;
+>  	vdev->viommu = viommu;
+> +	vdev->pgsize_bitmap = viommu->pgsize_bitmap;
+>  	INIT_LIST_HEAD(&vdev->resv_regions);
+>  	dev_iommu_priv_set(dev, vdev);
+>  
+> diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
+> index 48e3c29223b5..2cced7accc99 100644
+> --- a/include/uapi/linux/virtio_iommu.h
+> +++ b/include/uapi/linux/virtio_iommu.h
+> @@ -111,6 +111,7 @@ struct virtio_iommu_req_unmap {
+>  
+>  #define VIRTIO_IOMMU_PROBE_T_NONE		0
+>  #define VIRTIO_IOMMU_PROBE_T_RESV_MEM		1
+> +#define VIRTIO_IOMMU_PROBE_T_PAGE_SIZE_MASK	2
+>  
+>  #define VIRTIO_IOMMU_PROBE_T_MASK		0xfff
+>  
+> @@ -119,6 +120,12 @@ struct virtio_iommu_probe_property {
+>  	__le16					length;
+>  };
+>  
+> +struct virtio_iommu_probe_pgsize_mask {
+> +	struct virtio_iommu_probe_property	head;
+> +	__u8					reserved[4];
+> +	__le64					pgsize_bitmap;
+> +};
+> +
+>  #define VIRTIO_IOMMU_RESV_MEM_T_RESERVED	0
+>  #define VIRTIO_IOMMU_RESV_MEM_T_MSI		1
+>  
+> -- 
+> 2.17.1
+
