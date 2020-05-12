@@ -2,61 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0BF1CE9C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 02:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D5F1CE9D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 02:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728411AbgELAvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 20:51:22 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:54816 "EHLO vps0.lunn.ch"
+        id S1728299AbgELA4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 20:56:35 -0400
+Received: from mga12.intel.com ([192.55.52.136]:36642 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728105AbgELAvW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 20:51:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=LShQuoqlZ+XLoTKllfhTPEDKn/0lzvkQf/MfOEIVBaE=; b=DtZzqbeE+FFjojDA3LJLRpCThT
-        66KM3heiH6q568GJJ2V/Rg0QbTzobGqpycPY8oXv3C89eaUidkLgKjarp8jpu9XB4isXGBYifE5d7
-        GKBMdAicRpYPGL0A22+W7dqgvUJ6yxJd8QJ7FkBUQFjscWfpaVjA7+rMDmlzN8ioDnQE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jYJ8g-001vCF-80; Tue, 12 May 2020 02:51:18 +0200
-Date:   Tue, 12 May 2020 02:51:18 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Doug Berger <opendmb@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 3/4] net: ethernet: introduce phy_set_pause
-Message-ID: <20200512005118.GE409897@lunn.ch>
-References: <1589243050-18217-1-git-send-email-opendmb@gmail.com>
- <1589243050-18217-4-git-send-email-opendmb@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1589243050-18217-4-git-send-email-opendmb@gmail.com>
+        id S1728105AbgELA4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 20:56:35 -0400
+IronPort-SDR: FdxSaoSTi91oPsNbnmcuPF+a4Bbf00J6mZ5SwllUtUJ8ezTfcC9a1x/T8h7xm/jOtX5EhPsdR4
+ 3/1nvAi6P+9Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 17:56:35 -0700
+IronPort-SDR: cvFulzHyc6zjTWxm9v/k/Dr4cBjfdprX5LLtXpTnSCmkLw4FzgeER4Z6Wu9a7KqJtd1/9rezdz
+ 3CmU5/liMPUA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,381,1583222400"; 
+   d="scan'208";a="286458375"
+Received: from allen-box.sh.intel.com ([10.239.159.139])
+  by fmsmga004.fm.intel.com with ESMTP; 11 May 2020 17:56:33 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     ashok.raj@intel.com, jacob.jun.pan@linux.intel.com,
+        Liu Yi L <yi.l.liu@intel.com>, kevin.tian@intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v5 0/5] iommu/vt-d: Add page request draining support
+Date:   Tue, 12 May 2020 08:53:02 +0800
+Message-Id: <20200512005307.19860-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 05:24:09PM -0700, Doug Berger wrote:
-> This commit introduces the phy_set_pause function to the phylib as
-> a helper to support the set_pauseparam ethtool method.
-> 
-> It is hoped that the new behavior introduced by this function will
-> be widely embraced and the phy_set_sym_pause and phy_set_asym_pause
-> functions can be deprecated. Those functions are retained for all
-> existing users and for any desenting opinions on my interpretation
-> of the functionality.
+When a PASID is stopped or terminated, there can be pending PRQs
+(requests that haven't received responses) in the software and
+remapping hardware. The pending page requests must be drained
+so that the pasid could be reused. The chapter 7.10 in the VT-d
+specification specifies the software steps to drain pending page
+requests and responses.
 
-It would be good to add comments to phy_set_sym_pause and
-phy_set_asym_pause indicating they are deprecated and point to
-phy_set_pause().
+This includes two parts:
+ - PATCH 1/5 ~ 2/5: refactor the qi_submit_sync() to support multiple
+   descriptors per submission which will be used in the following
+   patch.
+ - PATCH 3/5 ~ 5/5: add page request drain support after a pasid entry
+   is torn down.
 
-	Andrew
+This series is based on Jacob's vSVA support hence the guest pasid
+could also be drained.
+
+https://lkml.org/lkml/2020/4/21/1038
+
+Best regards,
+baolu
+
+Change log:
+v4->v5:
+  - Only set FPD bit in PASID entry when entry changed from present
+    to non-present;
+  - Check pri_support in drain helper;
+  - Refine the wait/completion usage.
+
+v3->v4:
+  - Remove prq drain in mm notifier;
+  - Set PASID FPD bit when pasid is cleared in mm notifier and clear
+    it in unbound().
+
+ v2->v3:
+  - Address Kevin's review comments
+    - Squash the first 2 patches together;
+    - The prq thread is serialized, no need to consider reentrance;
+    - Ensure no new-coming prq before drain prq in queue;
+    - Handle page request overflow case.
+
+ v1->v2:
+  - Fix race between multiple prq handling threads.
+
+Lu Baolu (5):
+  iommu/vt-d: Multiple descriptors per qi_submit_sync()
+  iommu/vt-d: debugfs: Add support to show inv queue internals
+  iommu/vt-d: Disable non-recoverable fault processing before unbind
+  iommu/vt-d: Add page request draining support
+  iommu/vt-d: Remove redundant IOTLB flush
+
+ drivers/iommu/dmar.c                |  63 ++++++++------
+ drivers/iommu/intel-iommu-debugfs.c |  62 ++++++++++++++
+ drivers/iommu/intel-iommu.c         |   4 +-
+ drivers/iommu/intel-pasid.c         |  30 +++++--
+ drivers/iommu/intel-pasid.h         |   4 +-
+ drivers/iommu/intel-svm.c           | 128 ++++++++++++++++++++++++----
+ drivers/iommu/intel_irq_remapping.c |   2 +-
+ include/linux/intel-iommu.h         |  13 ++-
+ 8 files changed, 253 insertions(+), 53 deletions(-)
+
+-- 
+2.17.1
+
