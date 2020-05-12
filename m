@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2712E1CF0E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 11:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C350C1CF092
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 11:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729411AbgELJD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 05:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
+        id S1729531AbgELJBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 05:01:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729325AbgELJAB (ORCPT
+        by vger.kernel.org with ESMTP id S1729358AbgELJAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 05:00:01 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C51C05BD0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 02:00:00 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id m12so15932239wmc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 02:00:00 -0700 (PDT)
+        Tue, 12 May 2020 05:00:03 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 193A9C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 02:00:02 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id m24so11242253wml.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 02:00:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NZNungkfzjrpX3wvUKHqphES4AQA2BjvgdkrK2cjuiE=;
-        b=CLBPuhz5g03xplqY3Lp/3c6jCI7cBpGlK2yI20bsQjZlk+Y0DSRAAzM7Uk0yJ/74fT
-         qODjSJnOacCEhx0BQuKhrp9xCJljtl7WlTp/enOv9Yf5zmkcwWAQwPHdsOTS6iInjswc
-         E2mZfpyZhXG3pjjGV03WLfeasYqdUTvXYUfyk=
+        bh=Z86jDMPjYosEVmpvz8g87itNg+tEFmiX7DLzwmjjruY=;
+        b=e347cRrTqkHcsmJyCgB3TVco449DVfioti3xt++37x7bJTFMigGg5EWlMaf/MjZpmR
+         eYVFJlx9g9Vm+NEIhg3iXwKg86toJqtzlt+iCudluN0BiyTQqaBnCZJLIa0zEEFILrRP
+         R3mU5I3uQHXrIj7OqeDSyBNZDBZCv72rxHs1Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NZNungkfzjrpX3wvUKHqphES4AQA2BjvgdkrK2cjuiE=;
-        b=A4S5i4HahqAt5vcCSEJbuTnY6z0NmQprEvFkWoEVrApXsb9B0IvpPnV1UwX5eK6ghw
-         oV65aIm6lvrlP23FUVA1YPiB/UMvIm9vWQcwigiZWTCQE5RakZB5j2ab5SWtxBtKTXLS
-         ninteV2OztCokWdFa8v2OBDKhubvqSFA1qFCqsaXZUCACq+EGDLafged7Hp8j5QExTWR
-         qhFscKwMagIQLhvxJegXxt0OYAPX/fMtyZ3pF8cCefR+ftGOqAqgUb1panzhTm46LEZn
-         AkzBrMErHq6cCnjr6xFGm6r6j0Kj2YMV6OSDTmaJyaCwwnyxgwKE2Yh+5ao9rVIR/umH
-         s2gg==
-X-Gm-Message-State: AGi0PuY4ql5bJMiT8Arun+K++fN2TVZ+phBpTvisN4+8+MjvzQEh9SR+
-        1WBWtusaP1ivO7CzMPFuoYBbcg==
-X-Google-Smtp-Source: APiQypKft08OoGrIYtbiSYRYQwvgFtVy2fvk5tEE2SUvyg8qKyVKerp+e40UsbcgCmUWXpSeXbccUQ==
-X-Received: by 2002:a05:600c:2055:: with SMTP id p21mr13223418wmg.127.1589273999661;
-        Tue, 12 May 2020 01:59:59 -0700 (PDT)
+        bh=Z86jDMPjYosEVmpvz8g87itNg+tEFmiX7DLzwmjjruY=;
+        b=SX02p5cRodxOx+JjSywq9A62+mke8657/IdQ9A8EinceRJ/e9zDRp/zNBXeIWZaAod
+         kCHhPAh0qLSkKJiutXzuiuhG34GFevEz8zbqXMoy6ljq8lmKi/b9MikPsqCqf0hWtKPB
+         VDpftbtxKIL2cNiFgSGFzsuwnKXOdV83BP9WuimNOKRBShtqTq1tqncubP8Bqj2ETWv+
+         8ka88HntSGSRvBF2qXbGZkJ8/wWlOQ3cz08Ffwwyu/+l5M5jbPtZjL2qfxcohbi6b8Rc
+         tqv+CpmCPEaJ1P6pZ3iNteUinaoXZAvAquozC7uEyPo+DVo22oFFlOi2dNsfxRV2LSnG
+         bHtw==
+X-Gm-Message-State: AGi0PubpY6MyRth4mr/mK7wXERkcAG5yTwJx7OgsXFK02n3Q5e4yda9w
+        mKt9l2ENDl6ARzIo0js/QUkoRw==
+X-Google-Smtp-Source: APiQypJT+3YqWFL2wx/F/qRbovKxB7nonvtIP8MsamotNvxRkHjM8KCOP8ZK10mJhOIGdoSiUWqbbA==
+X-Received: by 2002:a1c:6344:: with SMTP id x65mr19610953wmb.51.1589274000857;
+        Tue, 12 May 2020 02:00:00 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id y10sm18845457wrd.95.2020.05.12.01.59.58
+        by smtp.gmail.com with ESMTPSA id y10sm18845457wrd.95.2020.05.12.01.59.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 01:59:59 -0700 (PDT)
+        Tue, 12 May 2020 02:00:00 -0700 (PDT)
 From:   Daniel Vetter <daniel.vetter@ffwll.ch>
 To:     DRI Development <dri-devel@lists.freedesktop.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -55,10 +55,13 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Chris Wilson <chris@chris-wilson.co.uk>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [RFC 03/17] dma-fence: prime lockdep annotations
-Date:   Tue, 12 May 2020 10:59:30 +0200
-Message-Id: <20200512085944.222637-4-daniel.vetter@ffwll.ch>
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: [RFC 04/17] drm/vkms: Annotate vblank timer
+Date:   Tue, 12 May 2020 10:59:31 +0200
+Message-Id: <20200512085944.222637-5-daniel.vetter@ffwll.ch>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200512085944.222637-1-daniel.vetter@ffwll.ch>
 References: <20200512085944.222637-1-daniel.vetter@ffwll.ch>
@@ -70,37 +73,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Two in one go:
-- it is allowed to call dma_fence_wait() while holding a
-  dma_resv_lock(). This is fundamental to how eviction works with ttm,
-  so required.
-
-- it is allowed to call dma_fence_wait() from memory reclaim contexts,
-  specifically from shrinker callbacks (which i915 does), and from mmu
-  notifier callbacks (which amdgpu does, and which i915 sometimes also
-  does, and probably always should, but that's kinda a debate). Also
-  for stuff like HMM we really need to be able to do this, or things
-  get real dicey.
-
-Consequence is that any critical path necessary to get to a
-dma_fence_signal for a fence must never a) call dma_resv_lock nor b)
-allocate memory with GFP_KERNEL. Also by implication of
-dma_resv_lock(), no userspace faulting allowed. That's some supremely
-obnoxious limitations, which is why we need to sprinkle the right
-annotations to all relevant paths.
-
-The one big locking context we're leaving out here is mmu notifiers,
-added in
-
-commit 23b68395c7c78a764e8963fc15a7cfd318bf187f
-Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Mon Aug 26 22:14:21 2019 +0200
-
-    mm/mmu_notifiers: add a lockdep map for invalidate_range_start/end
-
-that one covers a lot of other callsites, and it's also allowed to
-wait on dma-fences from mmu notifiers. But there's no ready-made
-functions exposed to prime this, so I've left it out for now.
+This is needed to signal the fences from page flips, annotate it
+accordingly. We need to annotate entire timer callback since if we get
+stuck anywhere in there, then the timer stops, and hence fences stop.
+Just annotating the top part that does the vblank handling isn't
+enough.
 
 Cc: linux-media@vger.kernel.org
 Cc: linaro-mm-sig@lists.linaro.org
@@ -111,35 +88,45 @@ Cc: Chris Wilson <chris@chris-wilson.co.uk>
 Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 Cc: Christian König <christian.koenig@amd.com>
 Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+Cc: Haneen Mohammed <hamohammed.sa@gmail.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
 ---
- drivers/dma-buf/dma-resv.c | 1 +
- include/linux/dma-fence.h  | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/gpu/drm/vkms/vkms_crtc.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma-buf/dma-resv.c b/drivers/dma-buf/dma-resv.c
-index 99c0a33c918d..392c336f0732 100644
---- a/drivers/dma-buf/dma-resv.c
-+++ b/drivers/dma-buf/dma-resv.c
-@@ -115,6 +115,7 @@ static int __init dma_resv_lockdep(void)
- 	if (ret == -EDEADLK)
- 		dma_resv_lock_slow(&obj, &ctx);
- 	fs_reclaim_acquire(GFP_KERNEL);
-+	__dma_fence_might_wait();
- 	fs_reclaim_release(GFP_KERNEL);
- 	ww_mutex_unlock(&obj.lock);
- 	ww_acquire_fini(&ctx);
-diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-index 3f288f7db2ef..09e23adb351d 100644
---- a/include/linux/dma-fence.h
-+++ b/include/linux/dma-fence.h
-@@ -360,6 +360,7 @@ dma_fence_get_rcu_safe(struct dma_fence __rcu **fencep)
- #ifdef CONFIG_LOCKDEP
- bool dma_fence_begin_signalling(void);
- void dma_fence_end_signalling(bool cookie);
-+void __dma_fence_might_wait(void);
- #else
- static inline bool dma_fence_begin_signalling(void)
- {
+diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
+index ac85e17428f8..a53a40848a72 100644
+--- a/drivers/gpu/drm/vkms/vkms_crtc.c
++++ b/drivers/gpu/drm/vkms/vkms_crtc.c
+@@ -1,5 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ 
++#include <linux/dma-fence.h>
++
+ #include <drm/drm_atomic.h>
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_probe_helper.h>
+@@ -14,7 +16,9 @@ static enum hrtimer_restart vkms_vblank_simulate(struct hrtimer *timer)
+ 	struct drm_crtc *crtc = &output->crtc;
+ 	struct vkms_crtc_state *state;
+ 	u64 ret_overrun;
+-	bool ret;
++	bool ret, fence_cookie;
++
++	fence_cookie = dma_fence_begin_signalling();
+ 
+ 	ret_overrun = hrtimer_forward_now(&output->vblank_hrtimer,
+ 					  output->period_ns);
+@@ -49,6 +53,8 @@ static enum hrtimer_restart vkms_vblank_simulate(struct hrtimer *timer)
+ 			DRM_DEBUG_DRIVER("Composer worker already queued\n");
+ 	}
+ 
++	dma_fence_end_signalling(fence_cookie);
++
+ 	return HRTIMER_RESTART;
+ }
+ 
 -- 
 2.26.2
 
