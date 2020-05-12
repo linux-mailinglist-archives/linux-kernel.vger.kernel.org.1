@@ -2,76 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9261CEB74
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 05:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498B51CEB7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 05:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728842AbgELDaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 23:30:46 -0400
-Received: from mxhk.zte.com.cn ([63.217.80.70]:61864 "EHLO mxhk.zte.com.cn"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728753AbgELDao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 23:30:44 -0400
-Received: from mse-fl2.zte.com.cn (unknown [10.30.14.239])
-        by Forcepoint Email with ESMTPS id 81AE933B73D18C427C12;
-        Tue, 12 May 2020 11:30:14 +0800 (CST)
-Received: from notes_smtp.zte.com.cn (notes_smtp.zte.com.cn [10.30.1.239])
-        by mse-fl2.zte.com.cn with ESMTP id 04C3Pnvg019360;
-        Tue, 12 May 2020 11:25:49 +0800 (GMT-8)
-        (envelope-from tan.hu@zte.com.cn)
-Received: from fox-host8.localdomain ([10.74.120.8])
-          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
-          with ESMTP id 2020051211260006-3533846 ;
-          Tue, 12 May 2020 11:26:00 +0800 
-From:   Tan Hu <tan.hu@zte.com.cn>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, jack@suse.cz, xue.zhihong@zte.com.cn,
-        wang.yi59@zte.com.cn, wang.liang82@zte.com.cn,
-        Tan Hu <tan.hu@zte.com.cn>
-Subject: [PATCH v3] lib/flex_proportions.c: cleanup __fprop_inc_percpu_max
-Date:   Tue, 12 May 2020 11:27:34 +0800
-Message-Id: <1589254054-48833-1-git-send-email-tan.hu@zte.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
- 21, 2013) at 2020-05-12 11:26:00,
-        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
- 2020-05-12 11:25:51,
-        Serialize complete at 2020-05-12 11:25:51
-X-MAIL: mse-fl2.zte.com.cn 04C3Pnvg019360
+        id S1728866AbgELDbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 23:31:24 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:35382 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728455AbgELDbU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 23:31:20 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04C3N3Np072963;
+        Tue, 12 May 2020 03:31:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
+ message-id : date : from : to : cc : subject : references : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=4bAuAI6MNYAXc//k73oPqBbwpdcjw/L0xcodzJz3lMw=;
+ b=RPeJmGzxh2P4GuzVH5aIZ+Hk7deq5f+CCeCG16647QardtoQ6iqRCcSuNysqh6PaAjsu
+ dSnhmIyXdhBKJ0KfSAvEcnTFVgI66+f1kVFj9H+qv9RanMCfUw+qLB+oKYZpb++orJ0S
+ erXhCCNjhUhWypmJl3HxCmsFvWEzw6Ez3bHk1qIhAlKNkNXjWe+SrZSF+U868EuAj/pN
+ CkoN0tIz0ypvpsRX5Nl3AncWD4GjRXssMz6t5VxQiSC6M/yl1ehll+Uj3BK3sjVAnKHO
+ CTWAPRrTpNAhSMvK4SSVb2/nmSE4Do/p1p0WUR2wPv8elNO4saroHMQXlzY5CeIRKqxd Hw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 30x3mbrgkg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 May 2020 03:31:14 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04C3MVoH016085;
+        Tue, 12 May 2020 03:29:13 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 30xbggtnp4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 May 2020 03:29:13 +0000
+Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04C3TCY2019111;
+        Tue, 12 May 2020 03:29:12 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201) by default (Oracle
+ Beehive Gateway v4.0) with ESMTP ; Mon, 11 May 2020 20:28:41 -0700
+MIME-Version: 1.0
+Message-ID: <158925392374.17325.12424804060546822236.b4-ty@oracle.com>
+Date:   Tue, 12 May 2020 03:28:28 +0000 (UTC)
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     linux-scsi@vger.kernel.org, James Smart <james.smart@broadcom.com>,
+        Colin King <colin.king@canonical.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] scsi: lpfc: remove redundant initialization to variable
+ rc
+References: <20200507203111.64709-1-colin.king@canonical.com>
+In-Reply-To: <20200507203111.64709-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.26.2
+Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=967
+ spamscore=0 suspectscore=0 phishscore=0 bulkscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005120029
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 impostorscore=0
+ mlxscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999 phishscore=0
+ malwarescore=0 lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005120029
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the given type has fraction smaller than max_frac/FPROP_FRAC_BASE,
-the code could be modified to call __fprop_inc_percpu() directly and
-easier to understand. After this patch, fprop_reflect_period_percpu()
-will be called twice, and quicky return on pl->period == p->period
-test, so it would not result to significant downside of performance.
+On Thu, 7 May 2020 21:31:11 +0100, Colin King wrote:
 
-Thanks for Jan's guidance.
+> The variable rc is being initialized with a value that is never read
+> and it is being updated later with a new value.  The initialization is
+> redundant and can be removed.
 
-Signed-off-by: Tan Hu <tan.hu@zte.com.cn>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- lib/flex_proportions.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Applied to 5.8/scsi-queue, thanks!
 
-diff --git a/lib/flex_proportions.c b/lib/flex_proportions.c
-index 7852bfff5..451543937 100644
---- a/lib/flex_proportions.c
-+++ b/lib/flex_proportions.c
-@@ -266,8 +266,7 @@ void __fprop_inc_percpu_max(struct fprop_global *p,
- 		if (numerator >
- 		    (((u64)denominator) * max_frac) >> FPROP_FRAC_SHIFT)
- 			return;
--	} else
--		fprop_reflect_period_percpu(p, pl);
--	percpu_counter_add_batch(&pl->events, 1, PROP_BATCH);
--	percpu_counter_add(&p->events, 1);
-+	}
-+
-+	__fprop_inc_percpu(p, pl);
- }
+[1/1] scsi: lpfc: Remove redundant initialization to variable rc
+      https://git.kernel.org/mkp/scsi/c/6e27a86aed97
+
 -- 
-2.19.1
-
+Martin K. Petersen	Oracle Linux Engineering
