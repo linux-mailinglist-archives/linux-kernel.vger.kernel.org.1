@@ -2,63 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7CC1CEF02
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 10:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619101CEF0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 10:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729133AbgELIX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 04:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726187AbgELIX1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 04:23:27 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D172C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 01:23:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FeXpGIxuOOt5NISH1tSfIL+s7TUHX+8me1nLN/9ADvk=; b=i6SU59fOcGddhGDUD+VClLsFLL
-        BwegR24zHzIlToIMxvSLrH+k3fQ4bqty2PopniUZNPhxUv6Fwtbz9GYab7Wj5uz/MeN/uzi692V+E
-        bVvG/KZU6ErSqNEQfVpbCKmb5G9MX/OvHELkg+/s0KkUxMvoHL8QBgHQ8zPDaH7avq168QqN5ppTh
-        A8/nbI3V/RXMfb6Y45F0JMNK8GVm2Ep9EuvAX/6bqG6Wa8wfzvSeM0YVtYEmMcmJaoQfwhfuv/5hO
-        dElD35pQk92ZGSCSU1VJfCcTxJg0n23blhNaxeFhRCCTHRJssV41+Ql4mxxwc/lmPt5tDIGKQzhDk
-        rHaY4LXw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jYQBv-0003H6-I3; Tue, 12 May 2020 08:23:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 642F63011E6;
-        Tue, 12 May 2020 10:23:06 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4FDD82096103E; Tue, 12 May 2020 10:23:06 +0200 (CEST)
-Date:   Tue, 12 May 2020 10:23:06 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, elver@google.com, tglx@linutronix.de,
-        paulmck@kernel.org, mingo@kernel.org
-Subject: Re: [PATCH v5 17/18] READ_ONCE: Use data_race() to avoid KCSAN
- instrumentation
-Message-ID: <20200512082306.GF2978@hirez.programming.kicks-ass.net>
-References: <20200511204150.27858-1-will@kernel.org>
- <20200511204150.27858-18-will@kernel.org>
+        id S1729191AbgELIYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 04:24:45 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2191 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725987AbgELIYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 04:24:44 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 010C748A63C88A72CE11;
+        Tue, 12 May 2020 09:24:43 +0100 (IST)
+Received: from [127.0.0.1] (10.210.169.134) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 12 May
+ 2020 09:24:42 +0100
+Subject: Re: [PATCH] scsi: hisi_sas: display correct proc_name in sysfs
+To:     Jason Yan <yanaijie@huawei.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Xiang Chen <chenxiang66@hisilicon.com>
+References: <20200512063318.13825-1-yanaijie@huawei.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <66c3318d-e8fa-9ff4-c7f4-ebe23925b807@huawei.com>
+Date:   Tue, 12 May 2020 09:23:51 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200511204150.27858-18-will@kernel.org>
+In-Reply-To: <20200512063318.13825-1-yanaijie@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.169.134]
+X-ClientProxiedBy: lhreml733-chm.china.huawei.com (10.201.108.84) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 09:41:49PM +0100, Will Deacon wrote:
+On 12/05/2020 07:33, Jason Yan wrote:
+> The 'proc_name' entry in sysfs for hisi_sas is 'null' now becuase it is
+> not initialized in scsi_host_template. It looks like:
+> 
+> [root@localhost ~]# cat /sys/class/scsi_host/host2/proc_name
+> (null)
+> 
 
-> +	data_race(({ __WRITE_ONCE(*__xp, val); 0; }));			\
+hmmm.. it would be good to tell us what this buys us, apart from the 
+proc_name file.
 
-That had me blink for a little, I see how we got there, but urgh.
+I mean, if we had the sht show_info method implemented, then it could be 
+useful (which is even marked as obsolete now).
 
-Anyway, it's all in *much* better shape now than it was, so no real
-copmlaints.
+Thanks,
+John
+
+> While the other driver's entry looks like:
+> 
+> linux-vnMQMU:~ # cat /sys/class/scsi_host/host0/proc_name
+> megaraid_sas
+> 
+> Cc: John Garry <john.garry@huawei.com>
+> Cc: Xiang Chen <chenxiang66@hisilicon.com>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> ---
+>   drivers/scsi/hisi_sas/hisi_sas_v1_hw.c | 1 +
+>   drivers/scsi/hisi_sas/hisi_sas_v2_hw.c | 1 +
+>   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 1 +
+>   3 files changed, 3 insertions(+)
+> 
+> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
+> index fa25766502a2..c205bff20943 100644
+> --- a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
+> +++ b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
+> @@ -1757,6 +1757,7 @@ static struct device_attribute *host_attrs_v1_hw[] = {
+>   
+>   static struct scsi_host_template sht_v1_hw = {
+>   	.name			= DRV_NAME,
+> +	.proc_name		= DRV_NAME,
+>   	.module			= THIS_MODULE,
+>   	.queuecommand		= sas_queuecommand,
+>   	.target_alloc		= sas_target_alloc,
+> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
+> index e05faf315dcd..c725cffe141e 100644
+> --- a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
+> +++ b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
+> @@ -3533,6 +3533,7 @@ static struct device_attribute *host_attrs_v2_hw[] = {
+>   
+>   static struct scsi_host_template sht_v2_hw = {
+>   	.name			= DRV_NAME,
+> +	.proc_name		= DRV_NAME,
+>   	.module			= THIS_MODULE,
+>   	.queuecommand		= sas_queuecommand,
+>   	.target_alloc		= sas_target_alloc,
+> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> index 374885aa8d77..59b1421607dd 100644
+> --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> @@ -3071,6 +3071,7 @@ static int debugfs_set_bist_v3_hw(struct hisi_hba *hisi_hba, bool enable)
+>   
+>   static struct scsi_host_template sht_v3_hw = {
+>   	.name			= DRV_NAME,
+> +	.proc_name		= DRV_NAME,
+>   	.module			= THIS_MODULE,
+>   	.queuecommand		= sas_queuecommand,
+>   	.target_alloc		= sas_target_alloc,
+> 
+
