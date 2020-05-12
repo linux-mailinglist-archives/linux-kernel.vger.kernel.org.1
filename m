@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD181CF52D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 15:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612361CF533
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 15:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729928AbgELNC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 09:02:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:54684 "EHLO foss.arm.com"
+        id S1729983AbgELNEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 09:04:24 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:55666 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725923AbgELNC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 09:02:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E887630E;
-        Tue, 12 May 2020 06:02:56 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D35A3F71E;
-        Tue, 12 May 2020 06:02:56 -0700 (PDT)
-Subject: Re: your "x86: mm: convert dump_pagetables to use walk_page_range"
- change
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     the arch/x86 maintainers <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-References: <d573dc7e-e742-84de-473d-f971142fa319@suse.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <d95d756d-e940-d81e-d6ca-e45054df72c4@arm.com>
-Date:   Tue, 12 May 2020 14:02:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1725923AbgELNEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 09:04:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=jK4zL75kEjZz1WHIcEzDIz6MmRgpd2lB37qu5hoigyE=; b=tjtqKokOyIfsk0LplqjjgiF8GQ
+        XQJaeOnbZX3W0brBh+PAsB2gClQIUJOLSsgbUFCTMBNPDEqPK+ATDHT8xvJEfbaNtKyxGz4PdIErE
+        tmjm/JXTaID0uuSczX0FzK0Agi3iyaGawjwixtGjZrowAt17HUotA9IR+R/Jk0tsE+0c=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jYUa2-001zBu-6i; Tue, 12 May 2020 15:04:18 +0200
+Date:   Tue, 12 May 2020 15:04:18 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Michal Kubecek <mkubecek@suse.cz>, Marek Vasut <marex@denx.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        mkl@pengutronix.de, kernel@pengutronix.de,
+        David Jander <david@protonic.nl>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christian Herber <christian.herber@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: signal quality and cable diagnostic
+Message-ID: <20200512130418.GF409897@lunn.ch>
+References: <20200511141310.GA2543@pengutronix.de>
+ <20200511145926.GC8503@lion.mk-sys.cz>
+ <20200512064858.GA16536@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <d573dc7e-e742-84de-473d-f971142fa319@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200512064858.GA16536@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/05/2020 10:39, Jan Beulich wrote:
-> Steven,
+> > As for getting / setting the threshold, perhaps ETHTOOL_MSG_LINKINFO_GET
+> > and ETHTOOL_MSG_LINKINFO_SET. Unless you expect more configurable
+> > parameters like this in which case we may want to consider adding new
+> > request type (e.g. link params or link management).
+> 
+> Currently in my short term todo are:
+> - SQI
 
-Hi Jan,
 
-> in the description of this change you say:
-> 
-> "The effective permissions are passed down the chain using new fields in
->   struct pg_state."
-> 
-> I don't see how this works, and I suppose this part of the change is
-> (part of) the reason why a W+X warning has magically disappeared in
-> 5.6.x (compared to 5.5.x) when running a 32-bit kernel under Xen.
-> 
-> Quoting the relevant piece of code:
-> 
-> 	if (level > 0) {
-> 		new_eff = effective_prot(st->prot_levels[level - 1],
-> 					 new_prot);
-> 	} else {
-> 		new_eff = new_prot;
-> 	}
-> 
-> 	if (level >= 0)
-> 		st->prot_levels[level] = new_eff;
-> 
-> The generic framework calls note_page() only for leaf pages or holes
-> afaics. The protections for a leaf page found at a level other than
-> the numerically highest one have no meaning at all for a mapping at
-> a later address mapped with a numerically higher level mapping.
-> Instead it's the non-leaf page tables for that specific address
-> which determine the effective protection for any particular mapping.
-> 
-> To take an example, suppose the first present leaf page is found
-> at level 4. st->prot_levels[] will be all zero at this time, from
-> which it follows that new_eff will be zero then, too.
-> 
-> I don't think the intended effect can be achieved without either
-> retaining the original behavior of passing the effective protection
-> into note_page(), or calling note_page() also for non-leaf pages
-> (indicating to it which case it is, and adjusting it accordingly).
-> 
-> Am I overlooking something?
+> - PHY undervoltage
+> - PHY overtemerature
 
-Sadly I don't think you are - you're reasoning seems correct. It looks 
-like the computation of effective permissions will need to be done in 
-ptdump.c rather than dump_pagetables.c - as it's only ptdump.c that 
-deals with the non-leaf entries as you point out.
+Do you only have alarms? Or are current values available for voltage
+and temperature?
 
-> Additionally I'd like to note that note_page()'s "unsigned long val"
-> parameter isn't wide enough for 32-bit PAE PTEs, and hence the NX
-> flag will always be seen as clear in new_prot in such configs.
+Both of these would fit hwmon. It even has the option to set the alarm
+thresholds. The advantage of hwmon is that they are then just more
+sensors. You could even include the temperature sensor into a thermal
+zone to influence cooling. There are a couple of PHYs which already do
+hwmon, so there is code you can copy.
 
-Ah, interesting. I'm not sure what type is actually guaranteed to be 
-correct. pgprotval_t is x86 specific, but it might be necessary to 
-extend it to other architectures. I think I got the "unsigned long" from 
-the generic page.h (and because it happens to work on most 
-architectures) - but hadn't noticed that that file was specifically only 
-for NOMMU architectures.
+> So far, I have no idea for PHY health diagnostic.
+> 
+> If we consider at least the  mandatory properties listed in the opensig, then
+> we would get following list:
+> 
+> - DCQ (dynamic channel group)
+>   - SQI (Signal Quality Index)
+> - HDD (Harness defect detection group)
+>   - OS (Open/Short detection) ----------------- implemented, cable test
+>     request.
+> - LQ (Link Quality)
+>   - LTT (Link-training time. The time of the last link training)
+>   - LFL (Link Failures and Losses. Number of link losses since the last
+>     power cycle)
+>   - COM (communication ready) ----------------- implemented?
+> - POL (Polarity detection & correction)
+>   - DET (Polarity detect)
 
-I'll see if I can come up with fixes, but if you've got anything ready 
-already then please jump in.
+Voltage and temperature are about the package. These are about the
+link. So they better fit ETHTOOL_MSG_LINKINFO_SET or similar.
 
-Steve
+It sounds like LFL are statistic counters? PHYs can have their own
+counters, which ethtool -S will return.
+
+Does POLL somehow map to MDI MDIX? I guess not, since this is a T1.
+
+     Andrew
