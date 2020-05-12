@@ -2,144 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CC61CFC24
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 19:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A97B1CFC2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 19:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728224AbgELR2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 13:28:03 -0400
-Received: from mga12.intel.com ([192.55.52.136]:18465 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725554AbgELR2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 13:28:02 -0400
-IronPort-SDR: fpHXy++5fyEYManVvpGTOvRbms5B132QQYeHksVALRsYKAPAtdl9JrL5jY2AE0zf1S0AN0bscG
- Q9cL+qevXM1w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 10:28:01 -0700
-IronPort-SDR: mp2rj3uAt55q5WHrbIIQcB7PSgrbm7VVL6xmMNNGZCJTIYRl4kjU9B0QvhTmrAe0iSL43+VyQa
- Syy0RXQ0J4oQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,384,1583222400"; 
-   d="scan'208";a="463834390"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by fmsmga006.fm.intel.com with ESMTP; 12 May 2020 10:28:01 -0700
-Date:   Tue, 12 May 2020 10:28:01 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Babu Moger <babu.moger@amd.com>, Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        mchehab+samsung@kernel.org, changbin.du@intel.com,
-        Nadav Amit <namit@vmware.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        yang.shi@linux.alibaba.com,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        anshuman.khandual@arm.com, Jan Kiszka <jan.kiszka@siemens.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        steven.price@arm.com, rppt@linux.vnet.ibm.com, peterx@redhat.com,
-        Dan Williams <dan.j.williams@intel.com>,
-        Arjun Roy <arjunroy@google.com>, logang@deltatee.com,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>, justin.he@arm.com,
-        robin.murphy@arm.com, ira.weiny@intel.com,
-        Kees Cook <keescook@chromium.org>,
-        Juergen Gross <jgross@suse.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        pawan.kumar.gupta@linux.intel.com,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        vineela.tummalapalli@intel.com, yamada.masahiro@socionext.com,
-        sam@ravnborg.org, acme@redhat.com, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>
-Subject: Re: [PATCH v3 3/3] KVM: x86: Move MPK feature detection to common
- code
-Message-ID: <20200512172800.GB12100@linux.intel.com>
-References: <158923982830.20128.14580309786525588408.stgit@naples-babu.amd.com>
- <158923999440.20128.4859351750654993810.stgit@naples-babu.amd.com>
- <CALMp9eTs4hYpDK+KzXEzaAptcfor+9f7cM9Yd9kvd5v27sdFRw@mail.gmail.com>
- <2fb5fd86-5202-f61b-fd55-b3554c5826da@amd.com>
- <CALMp9eRT69LWGE8dZVuLv2mxgc_R3W1SnPswHkhS8K0ZUX_B-Q@mail.gmail.com>
+        id S1728338AbgELRaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 13:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726890AbgELRav (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 13:30:51 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917FFC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 10:30:51 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id m7so5658103plt.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 10:30:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uwHdadffELF6O3Ox9C2J9UrmgnS3D4KFbraj16AD0PI=;
+        b=fCfpVlpsGcefVpnK833KEICYAiK6PPdm+7Hgo6P4xiIs1AthyUaTes1RRoyWsfR9i5
+         H/6RCPsfT3DzDeNiBbY6Y5M9mgBVDL22QcZ2U1CmFm2KueiDUE3vI1FmZH3Q0wlqzrTH
+         KrteQlpjsS14+Hx6q5m7GiiE3Y/+TfnARNv+9Oi1R6sCLHD5GtNe3VeJafdqLF/N8ZMX
+         wJW3S//w/5fkW/G7lZDeZRXG869TUAMDA97RGg+l3kU9olTViqTFXG//p/uyJdU3qv3T
+         ev7rHopoKPWCHVsVEg2TeavP9Ezgo4y8vNDKUTGu007zd733XFthSI9JYj8hX0V01wPv
+         mJjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uwHdadffELF6O3Ox9C2J9UrmgnS3D4KFbraj16AD0PI=;
+        b=maWl+sDjKDzwBEXNNdOpz4tudyhNNyIEbuSnbdjFIG1rtNAlE6RbDl29UZnIunEyVG
+         L4XiEaGXSfP+OEOxfqm73bX6DalSMqZiN1Tdhr1zmd46+lZhXgOj/3+m/xlaUUg4fjgf
+         BdSa8mtvaSDBUziwfFmD9V/c6FlaUlHfcuho8bl/Xq9HoKbynyCT+Yz7fF4SDjq8Uw38
+         dVJtsNn0xFsXqTbLK3oUxFfFeK9VXaIHBZoEz1kT3ZHQUW98VxqYzVqBx0tDOiphHwS8
+         QlBzT4cnKyHoWC82ojWrmgGJ4PSSONrlgD4zdk+E++xSN9aMKUyfHL5hRhVPyMMQzsy6
+         Oq5g==
+X-Gm-Message-State: AGi0PubR2o85J6oZypaDWl3qVR2nBfczD1zMUYb9sD2Lr5hY83UNmwNK
+        nLJLqVJnbID1+9REMkTU9S56Sw==
+X-Google-Smtp-Source: APiQypJ1naeDJnJozrJ4B9Xp2/Gjh1uEfEb/1H/CK20riED1XpH9FpOX7zFR/K2HUX3er/fBTJ2MNw==
+X-Received: by 2002:a17:90a:5b:: with SMTP id 27mr31396022pjb.190.1589304651035;
+        Tue, 12 May 2020 10:30:51 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id l15sm13636543pjk.56.2020.05.12.10.30.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 10:30:50 -0700 (PDT)
+Date:   Tue, 12 May 2020 10:29:17 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, arnd@arndb.de,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v2] misc: fastrpc: fix potential fastrpc_invoke_ctx leak
+Message-ID: <20200512172917.GG57962@builder.lan>
+References: <20200512110930.2550-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALMp9eRT69LWGE8dZVuLv2mxgc_R3W1SnPswHkhS8K0ZUX_B-Q@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200512110930.2550-1-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 09:58:19AM -0700, Jim Mattson wrote:
-> On Tue, May 12, 2020 at 8:12 AM Babu Moger <babu.moger@amd.com> wrote:
-> >
-> >
-> >
-> > On 5/11/20 6:51 PM, Jim Mattson wrote:
-> > > On Mon, May 11, 2020 at 4:33 PM Babu Moger <babu.moger@amd.com> wrote:
-> > >>
-> > >> Both Intel and AMD support (MPK) Memory Protection Key feature.
-> > >> Move the feature detection from VMX to the common code. It should
-> > >> work for both the platforms now.
-> > >>
-> > >> Signed-off-by: Babu Moger <babu.moger@amd.com>
-> > >> ---
-> > >>  arch/x86/kvm/cpuid.c   |    4 +++-
-> > >>  arch/x86/kvm/vmx/vmx.c |    4 ----
-> > >>  2 files changed, 3 insertions(+), 5 deletions(-)
-> > >>
-> > >> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> > >> index 901cd1fdecd9..3da7d6ea7574 100644
-> > >> --- a/arch/x86/kvm/cpuid.c
-> > >> +++ b/arch/x86/kvm/cpuid.c
-> > >> @@ -278,6 +278,8 @@ void kvm_set_cpu_caps(void)
-> > >>  #ifdef CONFIG_X86_64
-> > >>         unsigned int f_gbpages = F(GBPAGES);
-> > >>         unsigned int f_lm = F(LM);
-> > >> +       /* PKU is not yet implemented for shadow paging. */
-> > >> +       unsigned int f_pku = tdp_enabled ? F(PKU) : 0;
-> > >
-> > > I think we still want to require that OSPKE be set on the host before
-> > > exposing PKU to the guest.
-> > >
-> >
-> > Ok I can add this check.
-> >
-> > +       unsigned int f_pku = tdp_enabled && F(OSPKE)? F(PKU) : 0;
+On Tue 12 May 04:09 PDT 2020, Srinivas Kandagatla wrote:
+
+> fastrpc_invoke_ctx can have refcount of 2 in error path where
+> rpmsg_send() fails to send invoke message. decrement the refcount
+> properly in the error path to fix this leak.
 > 
-> That doesn't do what you think it does. F(OSPKE) is a non-zero
-> constant, so that conjunct is always true.
+> This also fixes below static checker warning:
+> 
+> drivers/misc/fastrpc.c:990 fastrpc_internal_invoke()
+> warn: 'ctx->refcount.refcount.ref.counter' not decremented on lines: 990.
+> 
+> Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context")
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-My vote would be to omit f_pku and adjust the cap directly, e.g.
+Thanks, that looks better.
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 6828be99b9083..998c902df9e57 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -326,7 +326,7 @@ void kvm_set_cpu_caps(void)
-        );
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-        kvm_cpu_cap_mask(CPUID_7_ECX,
--               F(AVX512VBMI) | F(LA57) | 0 /*PKU*/ | 0 /*OSPKE*/ | F(RDPID) |
-+               F(AVX512VBMI) | F(LA57) | F(PKU) | 0 /*OSPKE*/ | F(RDPID) |
-                F(AVX512_VPOPCNTDQ) | F(UMIP) | F(AVX512_VBMI2) | F(GFNI) |
-                F(VAES) | F(VPCLMULQDQ) | F(AVX512_VNNI) | F(AVX512_BITALG) |
-                F(CLDEMOTE) | F(MOVDIRI) | F(MOVDIR64B) | 0 /*WAITPKG*/
-@@ -334,6 +334,8 @@ void kvm_set_cpu_caps(void)
-        /* Set LA57 based on hardware capability. */
-        if (cpuid_ecx(7) & F(LA57))
-                kvm_cpu_cap_set(X86_FEATURE_LA57);
-+       if (!tdp_enabled || !boot_cpu_has(OSPKE))
-+               kvm_cpu_cap_clear(X86_FEATURE_PKU);
+Regards,
+Bjorn
 
-        kvm_cpu_cap_mask(CPUID_7_EDX,
-                F(AVX512_4VNNIW) | F(AVX512_4FMAPS) | F(SPEC_CTRL) |
+> ---
+> Changes since v1:
+> 	moved fastrpc_context_put to fastrpc_invoke_send()
+> 
+>  drivers/misc/fastrpc.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+> index 9065d3e71ff7..7939c55daceb 100644
+> --- a/drivers/misc/fastrpc.c
+> +++ b/drivers/misc/fastrpc.c
+> @@ -904,6 +904,7 @@ static int fastrpc_invoke_send(struct fastrpc_session_ctx *sctx,
+>  	struct fastrpc_channel_ctx *cctx;
+>  	struct fastrpc_user *fl = ctx->fl;
+>  	struct fastrpc_msg *msg = &ctx->msg;
+> +	int ret;
+>  
+>  	cctx = fl->cctx;
+>  	msg->pid = fl->tgid;
+> @@ -919,7 +920,13 @@ static int fastrpc_invoke_send(struct fastrpc_session_ctx *sctx,
+>  	msg->size = roundup(ctx->msg_sz, PAGE_SIZE);
+>  	fastrpc_context_get(ctx);
+>  
+> -	return rpmsg_send(cctx->rpdev->ept, (void *)msg, sizeof(*msg));
+> +	ret = rpmsg_send(cctx->rpdev->ept, (void *)msg, sizeof(*msg));
+> +
+> +	if (ret)
+> +		fastrpc_context_put(ctx);
+> +
+> +	return ret;
+> +
+>  }
+>  
+>  static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
+> -- 
+> 2.21.0
+> 
