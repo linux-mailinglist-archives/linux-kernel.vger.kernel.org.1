@@ -2,183 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39111CFD98
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 20:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE521CFD77
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 20:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728306AbgELSp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 14:45:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49890 "EHLO
+        id S1728294AbgELSne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 14:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgELSp5 (ORCPT
+        with ESMTP id S1725554AbgELSnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 14:45:57 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E44EC05BD09
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 11:45:57 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id g11so2523015plp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 11:45:57 -0700 (PDT)
+        Tue, 12 May 2020 14:43:33 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36177C061A0C;
+        Tue, 12 May 2020 11:43:33 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id u22so5739727plq.12;
+        Tue, 12 May 2020 11:43:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zZYcnqjCNMBDkiuBF30WgUKhKuqwDskkezv7osc3SDY=;
-        b=W3grnYeRkCxIK+83TB2Ok5SeVivN3G6KhcXRcwaZwzjvJiAfxUnI/aNrH59tvh0Mx3
-         iJ8DRMRdo+X5efhzmCT6wk/3wD16VELIlUIFf5jKMgJkkcJCCiaEiraYizM8GxIvAJpm
-         1mCiMMTV5qJvr02JSS4i8lmy7uMv1mh0AjdYY=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yEQQ3oY6n+6Y5G7SrZB9zIDyQj6Eog3Iin7PH+iGp/c=;
+        b=KcxcfLLj2zlF9sfSUoowcJSR21V6lFSddOpYjAZgCfrJoNrbZQE4Wn7O4OTEmCQDsQ
+         zuJIZcN9aAGS/bPN+ZfjKh58iDq5PSK4D7ZMEvRFFtcn0qv+rDITU/gT0XbKh6Vp/lOG
+         8hv/kvmFBSCQaPupN31nRIBtTxzumBenrnV/g/0+vHexRAyEjHTtbN6FBM6Z/pvZNQMT
+         wIXRoqU3Fq3e+s600oQT3XQ1vcF1nou0jvud2iM2HclUmgYLHtxZGn7PcAEIUJn/+TDE
+         IF30QnV+7CwocCCtYvuc2HASis6ND1L0THtDg4E97xfGF28k79epP4Oh+27Rf7nWaX0n
+         AXTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zZYcnqjCNMBDkiuBF30WgUKhKuqwDskkezv7osc3SDY=;
-        b=F1pm8dUuvlbetnHpDqjvxE0J9QaD9nW3FexK2ess1SHnnWHTKaAFjv1+yLMcU/hohj
-         e6oaOUzQHq50HidXJDbggbIt2u1VDU/rpiXRKOkJAyHOdEslqHMwNJ3FBxQKFugXT61K
-         Y0Z/Nx2RhnuprWsdYf2qg5HpbM08uPOUz09eU4Gk+EKzW3aXzlYk+wPQZcGi2bPH5Pq3
-         YKzapPLYBg6ALkF7kjnnvwFp86yFeg/WE7L5Oc6peppqjgWqBiZtxX4KPn3H8225hWB5
-         X4e5OIi2/OCu0hSkfGlk9AaPisFBpPA1qOerLTeCdIza1uzY0+ta8jYafRf9yIyAYyNS
-         Uw8A==
-X-Gm-Message-State: AGi0PuZJy5fRfkS+2xJt8bHgPmv3dWS+299LNjbJejejmsRjs287zBN0
-        /lE0f2AwIiI0P15TjUfLgMzU3TBcFrk=
-X-Google-Smtp-Source: APiQypI6ohAa/WrLufnFCTk94UW9/+pjeT7ykwvlKnDw8ueWBgFKU29Es1jSMPsrXtFJCfxGDn7Jow==
-X-Received: by 2002:a17:90a:284e:: with SMTP id p14mr30042197pjf.10.1589309156921;
-        Tue, 12 May 2020 11:45:56 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d203sm12240380pfd.79.2020.05.12.11.45.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 11:45:55 -0700 (PDT)
-Date:   Tue, 12 May 2020 11:45:54 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        James Morris <jmorris@namei.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 0/6] allow ramoops to collect all kmesg_dump events
-Message-ID: <202005121111.6BECC45@keescook>
-References: <20200506211523.15077-1-keescook@chromium.org>
- <20200512131655.GE17734@linux-b0ei>
- <CA+CK2bBMUxxuTBicQ7ihKpN3jK94mMjcNCXhnAXUaODce09Wmw@mail.gmail.com>
- <20200512155207.GF17734@linux-b0ei>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yEQQ3oY6n+6Y5G7SrZB9zIDyQj6Eog3Iin7PH+iGp/c=;
+        b=q1pcYfd8yUeFFWRd9NP1avAGmDh3cbjYILNxRVzmWj9rCjl5Fsc+xJ5KgRuO58NjoZ
+         9+sfPbSEgcqXyb3tubEj3nbmnkpCQuakzPVzqEP1uBF0/M6IxoIZ1QecTMFP5hFVkwiL
+         KXLRVDPOvWaRAlyi+r8rP8eDO4QOH1R70fH42QkbpGW1cEO9u1LptZLGZWdVyDEO1YTd
+         hwndTcH/M5boXARQgA/Rv6t6+rGaYlN09NqNAe0xnjeiqCW/b7XzPIr2gttMnHBSbCQp
+         kNffyAp/8M+EsrMiwlNijiehmlNEA0CZXZMHi2T0fLIIf8We3bWPsLVJMR3AmBaE+MnX
+         Cl/w==
+X-Gm-Message-State: AGi0PuZoJegclzIJP2ZqiUVYileHcy/N8xyEMRZnqXRqG447c/FHglrs
+        3tiHPbt0Dri9lnokcXhBd80DW2rL
+X-Google-Smtp-Source: APiQypK86i+XgsSCfbBIThKrVEfVIiPh+0/4/VL7zndVgxQMlqoEDRvnOdn4xlt1baUNlwp8WICS6A==
+X-Received: by 2002:a17:90a:cb8c:: with SMTP id a12mr30448567pju.153.1589309012268;
+        Tue, 12 May 2020 11:43:32 -0700 (PDT)
+Received: from [10.230.191.242] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id q2sm12712326pfl.174.2020.05.12.11.43.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 May 2020 11:43:31 -0700 (PDT)
+Subject: Re: [PATCH net-next 3/4] net: ethernet: introduce phy_set_pause
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1589243050-18217-1-git-send-email-opendmb@gmail.com>
+ <1589243050-18217-4-git-send-email-opendmb@gmail.com>
+ <20200512005118.GE409897@lunn.ch>
+From:   Doug Berger <opendmb@gmail.com>
+Message-ID: <569e5f7b-6a6e-a350-53c1-cc6b234078f0@gmail.com>
+Date:   Tue, 12 May 2020 11:46:20 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512155207.GF17734@linux-b0ei>
+In-Reply-To: <20200512005118.GE409897@lunn.ch>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 05:52:07PM +0200, Petr Mladek wrote:
-> On Tue 2020-05-12 10:03:44, Pavel Tatashin wrote:
-> > > OK, I personally see this as two separate problems:
-> > >
-> > >    1. Missing support to set loglevel per console.
-> > >    2. Missing support to dump messages for other reasons.
-> > >
-> > > I would remove the paragraph about console log levels completely.
-> > 
-> > OK, I see your point, this paragraph can be removed, however, I think
-> > it makes it clear to understand the rationale for this change. As I
-> > understand, the per console loglevel has been proposed but were never
-> > accepted.
-
-I understood Pavel's rationale as an output from my questions in the v1
-series, that went like this, paraphrased:
-
-Pavel: "I need to have other kmsg dump reasons available to pstore."
-Kees:  "Why can't you just use the pstore console dumper?"
-Pavel: "It's too much for the slow device; we only need to know about
-        specific events that are already provided by kmsg dump."
-Kees:  "Ah! Sounds good, max_reasons it is."
-
-So, AIUI, loglevel remains orthogonal to this, and it's my fault for
-even causing to be be brought up. Please disregard! :)
-
-> > printk.always_kmsg_dump is not working for me because ramoops has its
-> > own filtering based on dump_oops boolean, and ignores everything but
-> > panics and conditionally oops.
-> > max_reason makes the ramoops internal logic cleaner compared to using dump_oops.
+On 5/11/2020 5:51 PM, Andrew Lunn wrote:
+> On Mon, May 11, 2020 at 05:24:09PM -0700, Doug Berger wrote:
+>> This commit introduces the phy_set_pause function to the phylib as
+>> a helper to support the set_pauseparam ethtool method.
+>>
+>> It is hoped that the new behavior introduced by this function will
+>> be widely embraced and the phy_set_sym_pause and phy_set_asym_pause
+>> functions can be deprecated. Those functions are retained for all
+>> existing users and for any desenting opinions on my interpretation
+>> of the functionality.
 > 
-> I see. Just to be sure. Is the main reason to add max_reason parameter
-> to keep complatibility of the deprecated dump_oops parameter? Or is
-> there any real use case for this granularity?
-
-In my mind it seemed like a nice mapping, so it was an easy port.
-
-> I wonder if anyone is actually using the ramoops.dump_oops parameter
-> in reality. I would personally make it deprecated and change the
-> default behavior to work according to printk.always_kmsg_dump parameter.
-
-Yes. For things I'm aware of: ARM devices with very tiny persistent RAM
-were using ramoops and setting dump_oops to 0 (specifically, setting
-the DT "no-dump-oops" to 1), and larger Android and Chrome OS devices
-using ramoops were setting to dump_oops to 1[1].
-
-The logic built into pstore recognizes a difference between panic and
-non-panic dumps as well, as the expectation is that there is little to
-no kernel infrastructure available for use during a panic kmsg.
-
-> IMHO, ramoops.dump_oops just increases complexity and should not have
-> been introduced at all. I would try hard to avoid introducing even bigger
-> complecity and mess.
-
-I think dump_oops was the wrong implementation, but granularity control
-is still needed. It is an old parameter, and is baked into many device
-trees on systems, so I can't just drop it. (In fact, I've had to support
-some other DT compat issues[2] as well.)
-
-> I know that there is the "do not break existing userspace" rule. The
-> question is if there is any user and if it is worth it.
-
-For dump_oops, yes, there is unfortunately.
-
-> > I agree, the reasons in kmsg_dump_reason do not order well  (I
-> > actually want to add another reason for kexec type reboots, and where
-> > do I put it?), so how about if we change the ordering list to
-> > bitfield/flags, and instead of max_reason provide: "reasons" bitset?
+> It would be good to add comments to phy_set_sym_pause and
+> phy_set_asym_pause indicating they are deprecated and point to
+> phy_set_pause().
 > 
-> It looks too complicated. I would really try hard to avoid the
-> parameter at all.
+> 	Andrew
+> 
 
-Here are the problems I see being solved by this:
+To be clear, this patch set reflects the pauseparam implementation I
+desire for the bcmgenet driver. I attempted to implement it as a common
+phylib service with the hope that it would help other network driver
+maintainers add support for pause in a common way.
 
-- lifting kmsg dump reason filtering out of the individual pstore
-  backends and making it part of the "infrastructure", so that
-  there is a central place to set expectations. Right now there
-  is a mix of explicit and implicit kmsg dump handling:
+I would like to get feedback/consensus that it is desirable behavior for
+other drivers to implement before promoting the change of existing
+implementations.
 
-  - arch/powerpc/kernel/nvram_64.c has a hard-coded list
-  - drivers/firmware/efi/efi-pstore.c doesn't expect anything but
-    OOPS and PANIC.
-  - drivers/mtd/mtdoops.c tries to filter using its own dump_oops
-    and doesn't expect anything but OOPS and PANIC.
-  - fs/pstore/ram.c: has a hard-coded list and uses its own
-    dump_oops.
-  - drivers/mtd/mtdpstore.c (under development[3]) expected only
-    OOPS and PANIC and had its own dump_oops.
+In particular, I would like to know Russell King's opinion since he has
+clearly observed (and documented) the short comings of current
+implementations as part of his phylink work.
 
-- providing a way for backends that can deal with all kmsg dump reasons
-  to do so without breaking existing default behavior (i.e. getting
-  Pavel what he's interested in).
+If others agree with this being the way to move forward, I will submit
+another revision with your suggested comments about deprecation within
+the specified functions.
 
-So, that said, I'm totally fine with a bit field. I just need a way to
-map the kmsg dump reasons onto the existing backend expectations and to
-have Pavel's needs addressed.
-
--Kees
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/platform/chrome/chromeos_pstore.c?h=v5.6#n60
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/pstore/ram.c?h=v5.6#n708
-[3] https://lore.kernel.org/lkml/20200511233229.27745-11-keescook@chromium.org/
-
--- 
-Kees Cook
+Thanks for the feedback,
+    Doug
