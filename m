@@ -2,152 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0599E1CF4F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 14:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 018711CF4F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 14:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730026AbgELMyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 08:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730015AbgELMyS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 08:54:18 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB1BC05BD10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 05:54:15 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id e26so21614712wmk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 05:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fvKbAOWfl/knTZNX27VnXfewubIaPbz+/XetIklYZ7g=;
-        b=CtAO3vqc/5ciyMQoZsCfVYtGsZMc+eGRSXx8OOoeAcTbEVI4XVBa71bqTsRSIHZ0gK
-         cIoZxWJLoMHxPgfW90arxdJ8OlAjwSTl9umY/OPCe30eJ/bW7vTcQkNceICuv313oULW
-         TOGrpVNZ9fr3FpbebaRAGuhnQhXb7jCQv3QOwonNO2kt4Ps1rNkm//Xwdg34qLqRAsiw
-         ZF0XfOyfRoK6lhpW+QCop6SAla1XYxNLOWCXFpFzGfqvQkIGLdm42P0TaQuoqZBRveos
-         tJhRidy4xOS3ok+vXCq8VghzXgIU1qoCXK7qMumPAlU/3O+ElEbAbTKGV5pfpG4mgQ0B
-         137Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fvKbAOWfl/knTZNX27VnXfewubIaPbz+/XetIklYZ7g=;
-        b=eDRtFmFR/kMNMIG8ZAbKyqMCpf8wlCSgEe/mI+QzjdlvakimZAzolLBvTY70r9INMH
-         hGs88orJp6dwgDOT0H5qp3jJe3A5grUKqFBubtUqhausQ484xrMYRnctQPDXYAktDhMY
-         GH/c/KceE8BZcR7d5++DOc7L9TGx1vN9Ynx7KDmmD/aWIY5quYim1mPN0Lczs9QgUtWK
-         bw9DhU8svSsvQ7PcEPcNeeq7pF58f8sVmCuloHYU4DO+8yWSerUR+C6HI3iTVb4Sf0aq
-         6O8xXDzaJkPB4GqoES8stF2LVx1K+NS8l6BBuDwDrIM1LeEme4mFTvn7Wlt1T2Y7YGxV
-         22Ig==
-X-Gm-Message-State: AOAM5309DB0D6oHQ5bnvDcIcONsj9dpKtgSHFl3EfMb2vshbbMOKsF28
-        pgI7q+Ok3CfsdlmaT5e8eEC+sg==
-X-Google-Smtp-Source: ABdhPJwY/a0cn3q6lCGX60mZA2InAaE/IzVG1DBnCICgZqVoe54tj6ukY4c547zEb5HQfe3aDNwFYA==
-X-Received: by 2002:a1c:444:: with SMTP id 65mr351423wme.21.1589288054568;
-        Tue, 12 May 2020 05:54:14 -0700 (PDT)
-Received: from localhost.localdomain (212-39-89-66.ip.btc-net.bg. [212.39.89.66])
-        by smtp.googlemail.com with ESMTPSA id n13sm2433938wrs.2.2020.05.12.05.54.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 May 2020 05:54:13 -0700 (PDT)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org, rjw@rjwysocki.net,
-        saravanak@google.com, sibis@codeaurora.org, mka@chromium.org
-Cc:     robh+dt@kernel.org, rnayak@codeaurora.org,
-        bjorn.andersson@linaro.org, vincent.guittot@linaro.org,
-        jcrouse@codeaurora.org, evgreen@chromium.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, georgi.djakov@linaro.org
-Subject: [PATCH v8 10/10] OPP: Add support for setting interconnect-tags
-Date:   Tue, 12 May 2020 15:53:27 +0300
-Message-Id: <20200512125327.1868-11-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200512125327.1868-1-georgi.djakov@linaro.org>
-References: <20200512125327.1868-1-georgi.djakov@linaro.org>
+        id S1730067AbgELMyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 08:54:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35970 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730043AbgELMyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 08:54:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 631AEADFF;
+        Tue, 12 May 2020 12:54:33 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 4E671DA70B; Tue, 12 May 2020 14:53:39 +0200 (CEST)
+Date:   Tue, 12 May 2020 14:53:39 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH] btrfs: Remove duplicated include in block-group.c
+Message-ID: <20200512125339.GB18421@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+References: <1589255703-7193-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1589255703-7193-1-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sibi Sankar <sibis@codeaurora.org>
+On Tue, May 12, 2020 at 11:55:03AM +0800, Tiezhu Yang wrote:
+> disk-io.h is included more than once in block-group.c, remove it.
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-Add support for setting tags on icc paths associated with
-the opp_table.
-
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
----
-v8:
-* New patch, picked from here:
-  https://lore.kernel.org/r/20200504202243.5476-11-sibis@codeaurora.org
-
- drivers/opp/of.c | 24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index 3a64f2aa0f86..fd148d54022f 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -336,6 +336,7 @@ int _of_find_icc_paths(struct opp_table *opp_table, struct device *dev)
- {
- 	struct device_node *np;
- 	int ret, i, count, num_paths;
-+	u32 tag;
- 
- 	np = of_node_get(dev->of_node);
- 	if (!np)
-@@ -344,20 +345,25 @@ int _of_find_icc_paths(struct opp_table *opp_table, struct device *dev)
- 	count = of_count_phandle_with_args(np, "interconnects",
- 					   "#interconnect-cells");
- 	of_node_put(np);
--	if (count < 0)
--		return 0;
-+	if (count < 0) {
-+		ret = 0;
-+		goto put_np;
-+	}
- 
- 	/* two phandles when #interconnect-cells = <1> */
- 	if (count % 2) {
- 		dev_err(dev, "%s: Invalid interconnects values\n", __func__);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto put_np;
- 	}
- 
- 	num_paths = count / 2;
- 	opp_table->paths = kcalloc(num_paths, sizeof(*opp_table->paths),
- 				   GFP_KERNEL);
--	if (!opp_table->paths)
--		return -ENOMEM;
-+	if (!opp_table->paths) {
-+		ret = -ENOMEM;
-+		goto put_np;
-+	}
- 
- 	for (i = 0; i < num_paths; i++) {
- 		opp_table->paths[i] = of_icc_get_by_index(dev, i);
-@@ -369,8 +375,14 @@ int _of_find_icc_paths(struct opp_table *opp_table, struct device *dev)
- 			}
- 			goto err;
- 		}
-+
-+		/* Set tag if present */
-+		if (!of_property_read_u32_index(np, "interconnect-tags",
-+						i, &tag))
-+			icc_set_tag(opp_table->paths[i], tag);
- 	}
- 	opp_table->path_count = num_paths;
-+	of_node_put(np);
- 
- 	return 0;
- 
-@@ -380,6 +392,8 @@ int _of_find_icc_paths(struct opp_table *opp_table, struct device *dev)
- 
- 	kfree(opp_table->paths);
- 	opp_table->paths = NULL;
-+put_np:
-+	of_node_put(np);
- 
- 	return ret;
- }
+Applied, thanks.
