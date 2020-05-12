@@ -2,117 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7021CEF24
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 10:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649481CEF1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 10:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729242AbgELI3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 04:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37920 "EHLO
+        id S1729161AbgELI2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 04:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729174AbgELI3D (ORCPT
+        by vger.kernel.org with ESMTP id S1725987AbgELI2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 04:29:03 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B1CC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 01:29:02 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id j5so14243823wrq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 01:29:02 -0700 (PDT)
+        Tue, 12 May 2020 04:28:46 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3A0C061A0C;
+        Tue, 12 May 2020 01:28:45 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id x16so2537479oop.13;
+        Tue, 12 May 2020 01:28:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CLwgn00j3cccENKknkxTYm+dTCnpuQMyc2nOwSHSj2c=;
-        b=BYn6G5G3mtGsIR1q4yA4kFS7gfXpBHHdZKx0VJK7nrUiNtfFh+DdPFXdeAXqIZvVDv
-         v0PgNgzR4GT8M52jE89yjyq94Q62WiavRzf0MTRQgnu0uJbfVVCLlPY/JVLeo33RV7j9
-         HBq3nfoDVTq7kErmLaSWtEpPMXkVZkcLD2+OHGVEeVKJppnkAW6Z4U6xU/Nh1x/yWenb
-         MQylVsHkc79+ixLtUnYaOMMSzQZhVr3XrGvWnCefe37GJAxHKcYxhkjCCBSMiXXlzZ2y
-         CKWAeixz+8wDaMHk3ppW6gRgFeVBXo/XCvEWzOBxMPeQDHO64hnF7wpRSx/0m9UW6cIa
-         RxtQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4kVbCD/n1BkwyUP75XXZyibv77Dl7m/9w8NUlO/ODo8=;
+        b=NSSEVtZzCAOoJnCBRGpAISiJPumtC6nRBgwN1dJVFHrMJZ9cvdBP/T1Di8fhz6ZBKz
+         fo/8rFdpC3gjPTdS6MD3FGzhtHhTHvBwyyfMTFjLkYRnL3O8itA6gq4ZA/hUAlicP9DI
+         BDUabtDb9ADFlO42SoHa2INT/libldyoEnECR6KgxWumkx+YFEEMXCZiaInu9WwtZYFT
+         X4vVdn0thMVjC0P1mpGSdUTXFikV3dHCOCB+kw7fxYpaxIOdn3oscGU1qrHmP/dAXtH6
+         m2StRiTuPE/ibiNJ+uTq3xt122yd7Mjf8wCQYYmb8JVFGWUoplzJXuqa3GHgB2aeAmJW
+         ArwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CLwgn00j3cccENKknkxTYm+dTCnpuQMyc2nOwSHSj2c=;
-        b=oy5/KFsAdfqaRz6Nn6+J/mv/kcMQSF20xLG07hXqWlaNqDjVOEbHKkq5oPzBYOSDFQ
-         0CaRTD/T/MXuQmTAjh48dYYcbQy2tujBZ7jnp26zq8o8WHsYH18DCpj1/29hIivwTK3/
-         xkHE30BWnjL3h5i32Y1PZ7JQZ7IEcl4lM7JGky7yVJ+xfSj65yJAmwdIWldYDUITBAl9
-         cYzt2YBG3+GyaartnFdcItt67nTyYsBZBzZY1lQb+ulspMNC648rEBsVrDiJU0QQTtlt
-         v7Q4f9n3pQq+3d3yWffCBguXGieFPij8/2cbTcgis/vjyyEc2F9e2sYa7W4dHpeRWwzq
-         ResA==
-X-Gm-Message-State: AGi0PuYmcBBi9DN8ZP+IS49h+89OVfpJTudJL29BKuWyVB7VYPUwnUap
-        EUzIG96BwwQT5+/ebf+0BWRra7dXkv4JYDguaCA=
-X-Google-Smtp-Source: APiQypKiw4ztGscW4TPsTbkxd70wqekjLwotcF9sLjfkoh2+IyKcOT4dTgbQuhjEHTTRs0ceruxRG49EoxIeiRErzTc=
-X-Received: by 2002:adf:c7c3:: with SMTP id y3mr23375923wrg.196.1589272141413;
- Tue, 12 May 2020 01:29:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4kVbCD/n1BkwyUP75XXZyibv77Dl7m/9w8NUlO/ODo8=;
+        b=kTnfaB61giIbmb9yjdhRmimtHP0CoDy0ZZUjnSBnhQOMGEpFmFJ6xcI1hP6dGxsg/m
+         yQ3d3bVVHPZtldBGHRB+5LMmK3TU3m5QkZj548dy6RqOXLMEaAcc5kr/bQ9wywfZps7u
+         XmoJX3KXeplHvoJVcVcPpo16qpNmMYI8Sso8y+BgNWXISn0ECRpgtHPVqwfiABjc5C2D
+         icF6GhF1X+1MJKpM/sER4x4HE73tIqOALrdlNNOwpV7NT96PdYIfLtXYtS4QLKQw52YQ
+         ySzWYsH4kypiQ0Sp5WV8o9tPXIX42I/j6NIV/jM5Fnr9KJujwzGjGt+34ucPC5M1n4nQ
+         h6eA==
+X-Gm-Message-State: AGi0PuYf4pA1ox36a2xXr/DHHRR8IBW4fB3djRS70M/tA56EphqguE53
+        taqtTXkezbDPbRviW+gQb/Q=
+X-Google-Smtp-Source: APiQypJRTj5+9cONY8dNEGUIzp1fPmf0fr/ec3M0P9oSIqqLi1wBJo1+hy8gD7ULHcol5h8ZFsQS9g==
+X-Received: by 2002:a4a:d8d7:: with SMTP id c23mr17048455oov.8.1589272125154;
+        Tue, 12 May 2020 01:28:45 -0700 (PDT)
+Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id l2sm5243695oib.58.2020.05.12.01.28.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 01:28:44 -0700 (PDT)
+Date:   Tue, 12 May 2020 01:28:43 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-kbuild@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: Re: [PATCH v5 0/5] Allow ld.lld to link the MIPS VDSO
+Message-ID: <20200512082843.GA3815743@ubuntu-s3-xlarge-x86>
+References: <20200423171807.29713-1-natechancellor@gmail.com>
+ <20200428221419.2530697-1-natechancellor@gmail.com>
+ <20200512080509.GA9433@alpha.franken.de>
 MIME-Version: 1.0
-References: <20200508091340.11711-1-zhang.lyra@gmail.com> <20200511164647.GA13202@xps15>
-In-Reply-To: <20200511164647.GA13202@xps15>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Tue, 12 May 2020 16:28:25 +0800
-Message-ID: <CAAfSe-v4h4p5bGPrTo3U+GxNGMxK78ZKK-L=Eiyb=Fnq+Do9Ng@mail.gmail.com>
-Subject: Re: [PATCH] coresight: tmc: mark coresight_tmc_groups with static
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200512080509.GA9433@alpha.franken.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 May 2020 at 00:46, Mathieu Poirier
-<mathieu.poirier@linaro.org> wrote:
->
-> Hi Chunyan,
->
-> On Fri, May 08, 2020 at 05:13:40PM +0800, Chunyan Zhang wrote:
-> > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> >
-> > Sparse reports a warning like:
-> > drivers/hwtracing/coresight/coresight-tmc.c:364:30: warning: symbol
-> > 'coresight_tmc_groups' was not declared. Should it be static? [sparse]
-> >
-> > coresight_tmc_groups is used in the local file only, so it should be
-> > marked with static.
-> >
-> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > ---
-> >  drivers/hwtracing/coresight/coresight-tmc.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/hwtracing/coresight/coresight-tmc.c b/drivers/hwtr=
-acing/coresight/coresight-tmc.c
-> > index 1cf82fa..39fba1d 100644
-> > --- a/drivers/hwtracing/coresight/coresight-tmc.c
-> > +++ b/drivers/hwtracing/coresight/coresight-tmc.c
-> > @@ -361,7 +361,7 @@ static ssize_t buffer_size_store(struct device *dev=
-,
-> >       .name =3D "mgmt",
-> >  };
-> >
-> > -const struct attribute_group *coresight_tmc_groups[] =3D {
-> > +static const struct attribute_group *coresight_tmc_groups[] =3D {
->
-> This has already been addressed by Stephen [1] earlier in this cycle.  It=
- is
-> currently in linux-next and will be submitted for inclusion in the next c=
-ycle.
->
-> Thanks,
-> Mathieu
->
-> [1]. https://www.spinics.net/lists/arm-kernel/msg801714.html
+On Tue, May 12, 2020 at 10:05:09AM +0200, Thomas Bogendoerfer wrote:
+> On Tue, Apr 28, 2020 at 03:14:14PM -0700, Nathan Chancellor wrote:
+> > [..]
+> > Please let me know if there are any issues!
+> 
+> I found no issues in my tests. Is this the final state ? If yes, I'm
+> going to apply it to mips-next.
+> 
+> Thomas.
+> 
+> -- 
+> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+> good idea.                                                [ RFC1925, 2.3 ]
 
-It is better, I will backport this patch=E3=80=82
+Maciej seemed to have some issue with the way I worded the commit
+message of patch 4 but I have not heard anything back about my
+suggestion and Fangrui commented that --eh-frame-hdr might not be
+necessary but if everything works fine for you with this version, I
+am not inclined to touch it.
 
-Thanks Mathieu=EF=BC=81
+If you feel this is good to go, I am happy to let it go in. Thanks for
+accepting it!
 
->
-> >       &coresight_tmc_group,
-> >       &coresight_tmc_mgmt_group,
-> >       NULL,
-> > --
-> > 1.9.1
-> >
+Cheers,
+Nathan
