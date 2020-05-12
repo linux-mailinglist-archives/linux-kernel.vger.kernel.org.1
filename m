@@ -2,661 +2,656 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897291CFCFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 20:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969BE1CFD03
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 20:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730865AbgELSRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 14:17:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730761AbgELSRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 14:17:04 -0400
-Received: from localhost.localdomain (cpe-70-114-128-244.austin.res.rr.com [70.114.128.244])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7065E20722;
-        Tue, 12 May 2020 18:17:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589307423;
-        bh=4VBSjr/AS7K4F+/Lo+CsoVm+q7u6g43ne/8qY1+1k9c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gNkdHU0a3UiAV9KJrEg36RcvK69ZnPzWbaO2c8kjE8aSBM8QkrWKuyXeNssKIrV6O
-         vdRyOOVDbSrfuioFuODh376w9hWLEgfkOGIzCI/JnieIHrY4sz/h0HTbZDAh1xquXq
-         TeTE0ESxxd3HfVd0aeNdMhrp9K/NtfdLKQ0iougA=
-From:   Dinh Nguyen <dinguyen@kernel.org>
-To:     linux-clk@vger.kernel.org
-Cc:     dinguyen@kernel.org, linux-kernel@vger.kernel.org,
-        sboyd@kernel.org, mturquette@baylibre.com
-Subject: [RESEND PATCHv7 5/5] clk: socfpga: agilex: add clock driver for the Agilex platform
-Date:   Tue, 12 May 2020 13:16:47 -0500
-Message-Id: <20200512181647.5071-5-dinguyen@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200512181647.5071-1-dinguyen@kernel.org>
-References: <20200512181647.5071-1-dinguyen@kernel.org>
+        id S1730930AbgELSRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 14:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730898AbgELSRT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 14:17:19 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC46EC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 11:17:18 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id r22so4934101pga.12
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 11:17:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=v3Rtz4zM5EQMYQmQW+AF0BF582tqFRbYnQOIbab4DbI=;
+        b=fpoGeGSJ+h7fidUVC2lvV1Bzre1xgKDaFjL5OUNetV8lLWT8w6LSZhruTdTDmhu8hA
+         2Qj7jav02Cu/00DZwmExqYWticCRr1Mt57S1PlcOW7wkdI9nX7n7pZvngXSSESeYHbQL
+         gazVBQ9jnkxr39Alpmo2wjyJ48vpWbmH6QCnTXKH0RNNdFg5xEHrPkVhi3UikUnORA5W
+         PQ/PzjY6IOaqI6sLCfoUgovYJ4Pwn3xUVuOQUJmzCUAjqy/aYWII/5R2sojz6kJuXo2k
+         EaSW+yov7/LEWcsG3yMeZHVEfPr0kT3CPishMxM7MpWb8G1qoy951WQC3VhgJnheMP0Z
+         Uovw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=v3Rtz4zM5EQMYQmQW+AF0BF582tqFRbYnQOIbab4DbI=;
+        b=nzOUTu8dAakS+8TcqxsoQN9p0Y7P6CLNgqV5TzAfMaJA+iMoX82LqVlZ+d3b5KAjzC
+         zNTIifJy6qL8GcIUV0OJzvr3WrrrOIIL82E1UInhAnHJgo9OGp+Dx8LKBQRTOVFW+gfr
+         08yrFVVw5SIvq1k0FClzG4+CoR1VUy1dDpWSu5+D0EQJiFIqRg/c2bHem6xc6SYIorzo
+         m4iJzB9XOudlwaIe/11sXXB4zUxWmZ0s+PUi6QQk9BLCSjSZHing9oy7B+/USobQFdkA
+         yWSJQUKKfDuSFldLnHGI2ijXWI2hh1NH6oT+xtP9d2fU76kHFZiDeTvPDgm/h5Jg6wn2
+         IlLQ==
+X-Gm-Message-State: AGi0PuY4HQApAHHAbMphrJYCuhgGH227dcgKc1Nvk/Ks1apmyaNtkt8U
+        D7idw2E+V2LRJIIA6tMSrwGP
+X-Google-Smtp-Source: APiQypK9+5a0H9AgkvOldW7uHf0tIpnBI5DRzGRjsDhPo1Y6OhsdjSzG6czFfKsC3+USS7Kr2ohvZQ==
+X-Received: by 2002:a63:b604:: with SMTP id j4mr20320103pgf.124.1589307438073;
+        Tue, 12 May 2020 11:17:18 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([157.46.15.210])
+        by smtp.gmail.com with ESMTPSA id b16sm12614472pfi.74.2020.05.12.11.17.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 12 May 2020 11:17:17 -0700 (PDT)
+Date:   Tue, 12 May 2020 23:47:06 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     linux-renesas-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>, sakari.ailus@iki.fi,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Hyun Kwon <hyunk@xilinx.com>, Rob Herring <robh+dt@kernel.org>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+Subject: Re: [PATCH v9 2/4] media: i2c: Add MAX9286 driver
+Message-ID: <20200512181706.GA21014@Mani-XPS-13-9360>
+References: <20200512155105.1068064-1-kieran.bingham+renesas@ideasonboard.com>
+ <20200512155105.1068064-3-kieran.bingham+renesas@ideasonboard.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200512155105.1068064-3-kieran.bingham+renesas@ideasonboard.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the most part the Agilex clock structure is very similar to
-Stratix10, so we re-use most of the Stratix10 clock driver.
+On Tue, May 12, 2020 at 04:51:03PM +0100, Kieran Bingham wrote:
+> The MAX9286 is a 4-channel GMSL deserializer with coax or STP input and
+> CSI-2 output. The device supports multicamera streaming applications,
+> and features the ability to synchronise the attached cameras.
+> 
+> CSI-2 output can be configured with 1 to 4 lanes, and a control channel
+> is supported over I2C, which implements an I2C mux to facilitate
+> communications with connected cameras across the reverse control
+> channel.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> 
+> --
+> v2:
+>  - Fix MAINTAINERS entry
+> 
+> This posting is released with the following modifications to work
+> without Sakari's VC developments:
+>  - max9286_g_mbus_config() re-instated
+>  - max9286_get_frame_desc() is not bus/csi aware
+>  - max9286_{get,set}_routing() removed
+> 
+> v3:
+>  - Initialise notifier with v4l2_async_notifier_init
+>  - Update for new mbus csi2 format V4L2_MBUS_CSI2_DPHY
+> 
+> v4: - Re-introduce required code to function with the VC series.
+> 
+>  - Implement max9286_get_routing, max9286_set_routing
+>  - Remove max9286_g_mbus_config
+> 
+> v5: (internal release)
+>  - Fix printk formatting for hex value
+>  - max9286->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE (add |)
+>  - MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER -> MEDIA_ENT_F_VID_IF_BRIDGE
+>  - Remove 'device is bound' workaround
+> 
+> v6:
+>  - v4l2_subdev_krouting instead of v4l2_subdev_routing separated
+>    to allow integration without the VC/V4L2-Mux series.
+>  - convert sd_to_max9286 to inline function
+>  - rename max9286_device to max9286_priv
+>  - Cleanup the v4l2_async_notifier
+>  - Extend MODULE_AUTHOR
+>  - Replace of_graph_get_endpoint_by_regs with fwnode_graph_get_endpoint_by_id
+>  - Pass default bus type when parsing fwnode endpoint (Manivannan Sadhasivam)
+>  - Use new YAML file reference in MAINTAINERS
+>  - Parse new i2c-mux node in max9286_get_i2c_by_id
+>    (This could/should be refactored to parse these separately first)
+>  - Spelling and calculation fixes in the FSYNC_LOCKED check comments
+>  - Identify each enabled i2c-mux channel in a single pass
+>  - max9286: Improve mux-state readbility [v2]
+>  - Fix frame sync lock durations
+>  - Add comment to describe /why/ we must open the mux in s_stream
+>  - use -EXDEV as return code for failed link synchronisation.
+>  - Fix reference counting of the dt nodeS
+>  - Convert to probe_new for I2C
+>  - Remove redundant max9286_i2c_mux_state
+>  - Provide optional enable-gpio (max9286-pwdn)
+> 
+> v7:
+>  [Kieran]
+>  - Ensure powerdown lines are optional
+>  - Add a 4ms power-up delay
+>  - Add max9286_check_config_link() to core
+>  - Add GPIO chip controller for GPIO0OUT and GPIO1OUT
+>  - Fix GPIO registration
+>  - max9286: Split out async registration
+>    (fixes regulator -EPROBE_DEFERs failures)
+>  - Collect all V4L2 registrations
+>  - balance v4l2_async refcnting
+>  - Rename max9286_v4l2_async_ => max9286_v4l2_notifier_
+> 
+>  [Jacopo]
+>  - Remove redundanct MAXIM_I2C_SPEED macros
+>  - Move notifiers operations
+>  - Add delay after reverse channel reconfiguration
+>  - Move link setup to completion
+>  - Fix up max9286_check_config_link() implementation
+>  - Remove redundant dual configuration of reverse channel
+> 
+> v8:
+> 
+> [Kieran]
+>  - Update the bound_sources mask on unbind
+>  - Convert probe kzalloc usage to devm_ variant
+>  - Fix up cleanup path from GPIO PowerDown registration
+>  - cleanup GPIO device registration fail path
+>  - Convert to use devm_regulator_get()
+>  - Fit max9286_parse_dt print on one line
+>  - Move multi-device workarounds out of upstream driver
+>  - Remove I2C mod-table
+>  - Lock format changes
+>  - Describe pad index usage
+>  - Remove poc_enabled workaround
+>  - Rename the max9286_gpio to be more explicit on it's actions.
+>  - Move max9286_init_format call
+>  - Rework probe sequence and simplify error paths.
+>  - Simplify i2c comments
+>  - Implement Pixelrate control
+>  - Disable overlap window
+> 
+> [Jacopo]
+>  - Adapt Kconfig to latest upstream changes
+>  - Put of node on error
+>  - Calculate pixel rate
+>  - Simplify overlap window disablement
+> 
+> v9:
+> 
+> [Kieran]
+>  - Kconfig: Depend on OF
+>  - Re-sort addition to Makefile
+> ---
+>  MAINTAINERS                 |   10 +
+>  drivers/media/i2c/Kconfig   |   13 +
+>  drivers/media/i2c/Makefile  |    1 +
+>  drivers/media/i2c/max9286.c | 1332 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 1356 insertions(+)
+>  create mode 100644 drivers/media/i2c/max9286.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index a7bb6e22d5da..99e3bf7760fd 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -10274,6 +10274,16 @@ F:	Documentation/hwmon/max6697.rst
+>  F:	drivers/hwmon/max6697.c
+>  F:	include/linux/platform_data/max6697.h
+>  
+> +MAX9286 QUAD GMSL DESERIALIZER DRIVER
+> +M:	Jacopo Mondi <jacopo+renesas@jmondi.org>
+> +M:	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> +M:	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> +M:	Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> +L:	linux-media@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> +F:	drivers/media/i2c/max9286.c
+> +
+>  MAX9860 MONO AUDIO VOICE CODEC DRIVER
+>  M:	Peter Rosin <peda@axentia.se>
+>  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+> index 3abc80373ec0..2e390f41f6da 100644
+> --- a/drivers/media/i2c/Kconfig
+> +++ b/drivers/media/i2c/Kconfig
+> @@ -464,6 +464,19 @@ config VIDEO_VPX3220
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called vpx3220.
+>  
+> +config VIDEO_MAX9286
+> +	tristate "Maxim MAX9286 GMSL deserializer support"
+> +	depends on I2C && I2C_MUX
+> +	depends on OF
+> +	select V4L2_FWNODE
+> +	select VIDEO_V4L2_SUBDEV_API
+> +	select MEDIA_CONTROLLER
+> +	help
+> +	  This driver supports the Maxim MAX9286 GMSL deserializer.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called max9286.
+> +
+>  comment "Video and audio decoders"
+>  
+>  config VIDEO_SAA717X
+> diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
+> index 77bf7d0b691f..f0b001ee4b05 100644
+> --- a/drivers/media/i2c/Makefile
+> +++ b/drivers/media/i2c/Makefile
+> @@ -117,6 +117,7 @@ obj-$(CONFIG_VIDEO_IMX274)	+= imx274.o
+>  obj-$(CONFIG_VIDEO_IMX290)	+= imx290.o
+>  obj-$(CONFIG_VIDEO_IMX319)	+= imx319.o
+>  obj-$(CONFIG_VIDEO_IMX355)	+= imx355.o
+> +obj-$(CONFIG_VIDEO_MAX9286)	+= max9286.o
+>  obj-$(CONFIG_VIDEO_ST_MIPID02) += st-mipid02.o
+>  
+>  obj-$(CONFIG_SDR_MAX2175) += max2175.o
+> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> new file mode 100644
+> index 000000000000..481d65f2b51d
+> --- /dev/null
+> +++ b/drivers/media/i2c/max9286.c
+> @@ -0,0 +1,1332 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Maxim MAX9286 GMSL Deserializer Driver
+> + *
+> + * Copyright (C) 2017-2019 Jacopo Mondi
+> + * Copyright (C) 2017-2019 Kieran Bingham
+> + * Copyright (C) 2017-2019 Laurent Pinchart
+> + * Copyright (C) 2017-2019 Niklas Söderlund
+> + * Copyright (C) 2016 Renesas Electronics Corporation
+> + * Copyright (C) 2015 Cogent Embedded, Inc.
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/fwnode.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/gpio/driver.h>
+> +#include <linux/i2c.h>
+> +#include <linux/i2c-mux.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/of_graph.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/slab.h>
+> +
+> +#include <media/v4l2-async.h>
+> +#include <media/v4l2-ctrls.h>
+> +#include <media/v4l2-device.h>
+> +#include <media/v4l2-fwnode.h>
+> +#include <media/v4l2-subdev.h>
+> +
+> +/* Register 0x00 */
+> +#define MAX9286_MSTLINKSEL_AUTO		(7 << 5)
+> +#define MAX9286_MSTLINKSEL(n)		((n) << 5)
+> +#define MAX9286_EN_VS_GEN		BIT(4)
+> +#define MAX9286_LINKEN(n)		(1 << (n))
+> +/* Register 0x01 */
+> +#define MAX9286_FSYNCMODE_ECU		(3 << 6)
+> +#define MAX9286_FSYNCMODE_EXT		(2 << 6)
+> +#define MAX9286_FSYNCMODE_INT_OUT	(1 << 6)
+> +#define MAX9286_FSYNCMODE_INT_HIZ	(0 << 6)
+> +#define MAX9286_GPIEN			BIT(5)
+> +#define MAX9286_ENLMO_RSTFSYNC		BIT(2)
+> +#define MAX9286_FSYNCMETH_AUTO		(2 << 0)
+> +#define MAX9286_FSYNCMETH_SEMI_AUTO	(1 << 0)
+> +#define MAX9286_FSYNCMETH_MANUAL	(0 << 0)
+> +#define MAX9286_REG_FSYNC_PERIOD_L	0x06
+> +#define MAX9286_REG_FSYNC_PERIOD_M	0x07
+> +#define MAX9286_REG_FSYNC_PERIOD_H	0x08
+> +/* Register 0x0a */
+> +#define MAX9286_FWDCCEN(n)		(1 << ((n) + 4))
+> +#define MAX9286_REVCCEN(n)		(1 << (n))
+> +/* Register 0x0c */
+> +#define MAX9286_HVEN			BIT(7)
+> +#define MAX9286_EDC_6BIT_HAMMING	(2 << 5)
+> +#define MAX9286_EDC_6BIT_CRC		(1 << 5)
+> +#define MAX9286_EDC_1BIT_PARITY		(0 << 5)
+> +#define MAX9286_DESEL			BIT(4)
+> +#define MAX9286_INVVS			BIT(3)
+> +#define MAX9286_INVHS			BIT(2)
+> +#define MAX9286_HVSRC_D0		(2 << 0)
+> +#define MAX9286_HVSRC_D14		(1 << 0)
+> +#define MAX9286_HVSRC_D18		(0 << 0)
+> +/* Register 0x0f */
+> +#define MAX9286_0X0F_RESERVED		BIT(3)
+> +/* Register 0x12 */
+> +#define MAX9286_CSILANECNT(n)		(((n) - 1) << 6)
+> +#define MAX9286_CSIDBL			BIT(5)
+> +#define MAX9286_DBL			BIT(4)
+> +#define MAX9286_DATATYPE_USER_8BIT	(11 << 0)
+> +#define MAX9286_DATATYPE_USER_YUV_12BIT	(10 << 0)
+> +#define MAX9286_DATATYPE_USER_24BIT	(9 << 0)
+> +#define MAX9286_DATATYPE_RAW14		(8 << 0)
+> +#define MAX9286_DATATYPE_RAW11		(7 << 0)
+> +#define MAX9286_DATATYPE_RAW10		(6 << 0)
+> +#define MAX9286_DATATYPE_RAW8		(5 << 0)
+> +#define MAX9286_DATATYPE_YUV422_10BIT	(4 << 0)
+> +#define MAX9286_DATATYPE_YUV422_8BIT	(3 << 0)
+> +#define MAX9286_DATATYPE_RGB555		(2 << 0)
+> +#define MAX9286_DATATYPE_RGB565		(1 << 0)
+> +#define MAX9286_DATATYPE_RGB888		(0 << 0)
+> +/* Register 0x15 */
+> +#define MAX9286_VC(n)			((n) << 5)
+> +#define MAX9286_VCTYPE			BIT(4)
+> +#define MAX9286_CSIOUTEN		BIT(3)
+> +#define MAX9286_0X15_RESV		(3 << 0)
+> +/* Register 0x1b */
+> +#define MAX9286_SWITCHIN(n)		(1 << ((n) + 4))
+> +#define MAX9286_ENEQ(n)			(1 << (n))
+> +/* Register 0x27 */
+> +#define MAX9286_LOCKED			BIT(7)
+> +/* Register 0x31 */
+> +#define MAX9286_FSYNC_LOCKED		BIT(6)
+> +/* Register 0x34 */
+> +#define MAX9286_I2CLOCACK		BIT(7)
+> +#define MAX9286_I2CSLVSH_1046NS_469NS	(3 << 5)
+> +#define MAX9286_I2CSLVSH_938NS_352NS	(2 << 5)
+> +#define MAX9286_I2CSLVSH_469NS_234NS	(1 << 5)
+> +#define MAX9286_I2CSLVSH_352NS_117NS	(0 << 5)
+> +#define MAX9286_I2CMSTBT_837KBPS	(7 << 2)
+> +#define MAX9286_I2CMSTBT_533KBPS	(6 << 2)
+> +#define MAX9286_I2CMSTBT_339KBPS	(5 << 2)
+> +#define MAX9286_I2CMSTBT_173KBPS	(4 << 2)
+> +#define MAX9286_I2CMSTBT_105KBPS	(3 << 2)
+> +#define MAX9286_I2CMSTBT_84KBPS		(2 << 2)
+> +#define MAX9286_I2CMSTBT_28KBPS		(1 << 2)
+> +#define MAX9286_I2CMSTBT_8KBPS		(0 << 2)
+> +#define MAX9286_I2CSLVTO_NONE		(3 << 0)
+> +#define MAX9286_I2CSLVTO_1024US		(2 << 0)
+> +#define MAX9286_I2CSLVTO_256US		(1 << 0)
+> +#define MAX9286_I2CSLVTO_64US		(0 << 0)
+> +/* Register 0x3b */
+> +#define MAX9286_REV_TRF(n)		((n) << 4)
+> +#define MAX9286_REV_AMP(n)		((((n) - 30) / 10) << 1) /* in mV */
+> +#define MAX9286_REV_AMP_X		BIT(0)
+> +/* Register 0x3f */
+> +#define MAX9286_EN_REV_CFG		BIT(6)
+> +#define MAX9286_REV_FLEN(n)		((n) - 20)
+> +/* Register 0x49 */
+> +#define MAX9286_VIDEO_DETECT_MASK	0x0f
+> +/* Register 0x69 */
+> +#define MAX9286_LFLTBMONMASKED		BIT(7)
+> +#define MAX9286_LOCKMONMASKED		BIT(6)
+> +#define MAX9286_AUTOCOMBACKEN		BIT(5)
+> +#define MAX9286_AUTOMASKEN		BIT(4)
+> +#define MAX9286_MASKLINK(n)		((n) << 0)
+> +
+> +/*
+> + * The sink and source pads are created to match the OF graph port numbers so
+> + * that their indexes can be used interchangeably.
+> + */
+> +#define MAX9286_NUM_GMSL		4
+> +#define MAX9286_N_SINKS			4
+> +#define MAX9286_N_PADS			5
+> +#define MAX9286_SRC_PAD			4
+> +
+> +struct max9286_source {
+> +	struct v4l2_async_subdev asd;
+> +	struct v4l2_subdev *sd;
+> +	struct fwnode_handle *fwnode;
+> +};
+> +
+> +#define asd_to_max9286_source(_asd) \
+> +	container_of(_asd, struct max9286_source, asd)
+> +
+> +struct max9286_priv {
+> +	struct i2c_client *client;
+> +	struct gpio_desc *gpiod_pwdn;
+> +	struct v4l2_subdev sd;
+> +	struct media_pad pads[MAX9286_N_PADS];
+> +	struct regulator *regulator;
+> +
+> +	struct gpio_chip gpio;
+> +	u8 gpio_state;
+> +
+> +	struct i2c_mux_core *mux;
+> +	unsigned int mux_channel;
+> +	bool mux_open;
+> +
+> +	struct v4l2_ctrl_handler ctrls;
+> +	struct v4l2_ctrl *pixelrate;
+> +
+> +	struct v4l2_mbus_framefmt fmt[MAX9286_N_SINKS];
+> +
+> +	/* Protects controls and fmt structures */
+> +	struct mutex mutex;
+> +
+> +	unsigned int nsources;
+> +	unsigned int source_mask;
+> +	unsigned int route_mask;
+> +	unsigned int bound_sources;
+> +	unsigned int csi2_data_lanes;
+> +	struct max9286_source sources[MAX9286_NUM_GMSL];
+> +	struct v4l2_async_notifier notifier;
+> +};
+> +
 
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
----
-v7: no changes
-v6: no changes
-v5: no changes
-v4: no changes
-v3: Address Stephen Boyd's comments
-v2: update to use clk_parent_data
----
- drivers/clk/Makefile                |   3 +-
- drivers/clk/socfpga/Makefile        |   2 +
- drivers/clk/socfpga/clk-agilex.c    | 454 ++++++++++++++++++++++++++++
- drivers/clk/socfpga/clk-pll-s10.c   |  68 +++++
- drivers/clk/socfpga/stratix10-clk.h |   2 +
- 5 files changed, 528 insertions(+), 1 deletion(-)
- create mode 100644 drivers/clk/socfpga/clk-agilex.c
+[...]
 
-diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-index f4169cc2fd31..a178e4b6001f 100644
---- a/drivers/clk/Makefile
-+++ b/drivers/clk/Makefile
-@@ -104,10 +104,11 @@ obj-$(CONFIG_COMMON_CLK_SAMSUNG)	+= samsung/
- obj-$(CONFIG_CLK_SIFIVE)		+= sifive/
- obj-$(CONFIG_ARCH_SIRF)			+= sirf/
- obj-$(CONFIG_ARCH_SOCFPGA)		+= socfpga/
-+obj-$(CONFIG_ARCH_AGILEX)		+= socfpga/
-+obj-$(CONFIG_ARCH_STRATIX10)		+= socfpga/
- obj-$(CONFIG_PLAT_SPEAR)		+= spear/
- obj-$(CONFIG_ARCH_SPRD)			+= sprd/
- obj-$(CONFIG_ARCH_STI)			+= st/
--obj-$(CONFIG_ARCH_STRATIX10)		+= socfpga/
- obj-$(CONFIG_ARCH_SUNXI)		+= sunxi/
- obj-$(CONFIG_SUNXI_CCU)			+= sunxi-ng/
- obj-$(CONFIG_ARCH_TEGRA)		+= tegra/
-diff --git a/drivers/clk/socfpga/Makefile b/drivers/clk/socfpga/Makefile
-index ce5aa7802eb8..bf736f8d201a 100644
---- a/drivers/clk/socfpga/Makefile
-+++ b/drivers/clk/socfpga/Makefile
-@@ -3,3 +3,5 @@ obj-$(CONFIG_ARCH_SOCFPGA) += clk.o clk-gate.o clk-pll.o clk-periph.o
- obj-$(CONFIG_ARCH_SOCFPGA) += clk-pll-a10.o clk-periph-a10.o clk-gate-a10.o
- obj-$(CONFIG_ARCH_STRATIX10) += clk-s10.o
- obj-$(CONFIG_ARCH_STRATIX10) += clk-pll-s10.o clk-periph-s10.o clk-gate-s10.o
-+obj-$(CONFIG_ARCH_AGILEX) += clk-agilex.o
-+obj-$(CONFIG_ARCH_AGILEX) += clk-pll-s10.o clk-periph-s10.o clk-gate-s10.o
-diff --git a/drivers/clk/socfpga/clk-agilex.c b/drivers/clk/socfpga/clk-agilex.c
-new file mode 100644
-index 000000000000..699527f7e764
---- /dev/null
-+++ b/drivers/clk/socfpga/clk-agilex.c
-@@ -0,0 +1,454 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2019, Intel Corporation
-+ */
-+#include <linux/slab.h>
-+#include <linux/clk-provider.h>
-+#include <linux/of_device.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
-+
-+#include <dt-bindings/clock/agilex-clock.h>
-+
-+#include "stratix10-clk.h"
-+
-+static const struct clk_parent_data pll_mux[] = {
-+	{ .fw_name = "osc1",
-+	  .name = "osc1", },
-+	{ .fw_name = "cb-intosc-hs-div2-clk",
-+	  .name = "cb-intosc-hs-div2-clk", },
-+	{ .fw_name = "f2s-free-clk",
-+	  .name = "f2s-free-clk", },
-+};
-+
-+static const struct clk_parent_data cntr_mux[] = {
-+	{ .fw_name = "main_pll",
-+	  .name = "main_pll", },
-+	{ .fw_name = "periph_pll",
-+	  .name = "periph_pll", },
-+	{ .fw_name = "osc1",
-+	  .name = "osc1", },
-+	{ .fw_name = "cb-intosc-hs-div2-clk",
-+	  .name = "cb-intosc-hs-div2-clk", },
-+	{ .fw_name = "f2s-free-clk",
-+	  .name = "f2s-free-clk", },
-+};
-+
-+static const struct clk_parent_data boot_mux[] = {
-+	{ .fw_name = "osc1",
-+	  .name = "osc1", },
-+	{ .fw_name = "cb-intosc-hs-div2-clk",
-+	  .name = "cb-intosc-hs-div2-clk", },
-+};
-+
-+static const struct clk_parent_data mpu_free_mux[] = {
-+	{ .fw_name = "main_pll_c0",
-+	  .name = "main_pll_c0", },
-+	{ .fw_name = "peri_pll_c0",
-+	  .name = "peri_pll_c0", },
-+	{ .fw_name = "osc1",
-+	  .name = "osc1", },
-+	{ .fw_name = "cb-intosc-hs-div2-clk",
-+	  .name = "cb-intosc-hs-div2-clk", },
-+	{ .fw_name = "f2s-free-clk",
-+	  .name = "f2s-free-clk", },
-+};
-+
-+static const struct clk_parent_data noc_free_mux[] = {
-+	{ .fw_name = "main_pll_c1",
-+	  .name = "main_pll_c1", },
-+	{ .fw_name = "peri_pll_c1",
-+	  .name = "peri_pll_c1", },
-+	{ .fw_name = "osc1",
-+	  .name = "osc1", },
-+	{ .fw_name = "cb-intosc-hs-div2-clk",
-+	  .name = "cb-intosc-hs-div2-clk", },
-+	{ .fw_name = "f2s-free-clk",
-+	  .name = "f2s-free-clk", },
-+};
-+
-+static const struct clk_parent_data emaca_free_mux[] = {
-+	{ .fw_name = "main_pll_c2",
-+	  .name = "main_pll_c2", },
-+	{ .fw_name = "peri_pll_c2",
-+	  .name = "peri_pll_c2", },
-+	{ .fw_name = "osc1",
-+	  .name = "osc1", },
-+	{ .fw_name = "cb-intosc-hs-div2-clk",
-+	  .name = "cb-intosc-hs-div2-clk", },
-+	{ .fw_name = "f2s-free-clk",
-+	  .name = "f2s-free-clk", },
-+};
-+
-+static const struct clk_parent_data emacb_free_mux[] = {
-+	{ .fw_name = "main_pll_c3",
-+	  .name = "main_pll_c3", },
-+	{ .fw_name = "peri_pll_c3",
-+	  .name = "peri_pll_c3", },
-+	{ .fw_name = "osc1",
-+	  .name = "osc1", },
-+	{ .fw_name = "cb-intosc-hs-div2-clk",
-+	  .name = "cb-intosc-hs-div2-clk", },
-+	{ .fw_name = "f2s-free-clk",
-+	  .name = "f2s-free-clk", },
-+};
-+
-+static const struct clk_parent_data emac_ptp_free_mux[] = {
-+	{ .fw_name = "main_pll_c3",
-+	  .name = "main_pll_c3", },
-+	{ .fw_name = "peri_pll_c3",
-+	  .name = "peri_pll_c3", },
-+	{ .fw_name = "osc1",
-+	  .name = "osc1", },
-+	{ .fw_name = "cb-intosc-hs-div2-clk",
-+	  .name = "cb-intosc-hs-div2-clk", },
-+	{ .fw_name = "f2s-free-clk",
-+	  .name = "f2s-free-clk", },
-+};
-+
-+static const struct clk_parent_data gpio_db_free_mux[] = {
-+	{ .fw_name = "main_pll_c3",
-+	  .name = "main_pll_c3", },
-+	{ .fw_name = "peri_pll_c3",
-+	  .name = "peri_pll_c3", },
-+	{ .fw_name = "osc1",
-+	  .name = "osc1", },
-+	{ .fw_name = "cb-intosc-hs-div2-clk",
-+	  .name = "cb-intosc-hs-div2-clk", },
-+	{ .fw_name = "f2s-free-clk",
-+	  .name = "f2s-free-clk", },
-+};
-+
-+static const struct clk_parent_data psi_ref_free_mux[] = {
-+	{ .fw_name = "main_pll_c3",
-+	  .name = "main_pll_c3", },
-+	{ .fw_name = "peri_pll_c3",
-+	  .name = "peri_pll_c3", },
-+	{ .fw_name = "osc1",
-+	  .name = "osc1", },
-+	{ .fw_name = "cb-intosc-hs-div2-clk",
-+	  .name = "cb-intosc-hs-div2-clk", },
-+	{ .fw_name = "f2s-free-clk",
-+	  .name = "f2s-free-clk", },
-+};
-+
-+static const struct clk_parent_data sdmmc_free_mux[] = {
-+	{ .fw_name = "main_pll_c3",
-+	  .name = "main_pll_c3", },
-+	{ .fw_name = "peri_pll_c3",
-+	  .name = "peri_pll_c3", },
-+	{ .fw_name = "osc1",
-+	  .name = "osc1", },
-+	{ .fw_name = "cb-intosc-hs-div2-clk",
-+	  .name = "cb-intosc-hs-div2-clk", },
-+	{ .fw_name = "f2s-free-clk",
-+	  .name = "f2s-free-clk", },
-+};
-+
-+static const struct clk_parent_data s2f_usr0_free_mux[] = {
-+	{ .fw_name = "main_pll_c2",
-+	  .name = "main_pll_c2", },
-+	{ .fw_name = "peri_pll_c2",
-+	  .name = "peri_pll_c2", },
-+	{ .fw_name = "osc1",
-+	  .name = "osc1", },
-+	{ .fw_name = "cb-intosc-hs-div2-clk",
-+	  .name = "cb-intosc-hs-div2-clk", },
-+	{ .fw_name = "f2s-free-clk",
-+	  .name = "f2s-free-clk", },
-+};
-+
-+static const struct clk_parent_data s2f_usr1_free_mux[] = {
-+	{ .fw_name = "main_pll_c2",
-+	  .name = "main_pll_c2", },
-+	{ .fw_name = "peri_pll_c2",
-+	  .name = "peri_pll_c2", },
-+	{ .fw_name = "osc1",
-+	  .name = "osc1", },
-+	{ .fw_name = "cb-intosc-hs-div2-clk",
-+	  .name = "cb-intosc-hs-div2-clk", },
-+	{ .fw_name = "f2s-free-clk",
-+	  .name = "f2s-free-clk", },
-+};
-+
-+static const struct clk_parent_data mpu_mux[] = {
-+	{ .fw_name = "mpu_free_clk",
-+	  .name = "mpu_free_clk", },
-+	{ .fw_name = "boot_clk",
-+	  .name = "boot_clk", },
-+};
-+
-+static const struct clk_parent_data s2f_usr0_mux[] = {
-+	{ .fw_name = "f2s-free-clk",
-+	  .name = "f2s-free-clk", },
-+	{ .fw_name = "boot_clk",
-+	  .name = "boot_clk", },
-+};
-+
-+static const struct clk_parent_data emac_mux[] = {
-+	{ .fw_name = "emaca_free_clk",
-+	  .name = "emaca_free_clk", },
-+	{ .fw_name = "emacb_free_clk",
-+	  .name = "emacb_free_clk", },
-+};
-+
-+static const struct clk_parent_data noc_mux[] = {
-+	{ .fw_name = "noc_free_clk",
-+	  .name = "noc_free_clk", },
-+	{ .fw_name = "boot_clk",
-+	  .name = "boot_clk", },
-+};
-+
-+/* clocks in AO (always on) controller */
-+static const struct stratix10_pll_clock agilex_pll_clks[] = {
-+	{ AGILEX_BOOT_CLK, "boot_clk", boot_mux, ARRAY_SIZE(boot_mux), 0,
-+	  0x0},
-+	{ AGILEX_MAIN_PLL_CLK, "main_pll", pll_mux, ARRAY_SIZE(pll_mux),
-+	  0, 0x48},
-+	{ AGILEX_PERIPH_PLL_CLK, "periph_pll", pll_mux, ARRAY_SIZE(pll_mux),
-+	  0, 0x9c},
-+};
-+
-+static const struct stratix10_perip_c_clock agilex_main_perip_c_clks[] = {
-+	{ AGILEX_MAIN_PLL_C0_CLK, "main_pll_c0", "main_pll", NULL, 1, 0, 0x58},
-+	{ AGILEX_MAIN_PLL_C1_CLK, "main_pll_c1", "main_pll", NULL, 1, 0, 0x5C},
-+	{ AGILEX_MAIN_PLL_C2_CLK, "main_pll_c2", "main_pll", NULL, 1, 0, 0x64},
-+	{ AGILEX_MAIN_PLL_C3_CLK, "main_pll_c3", "main_pll", NULL, 1, 0, 0x68},
-+	{ AGILEX_PERIPH_PLL_C0_CLK, "peri_pll_c0", "periph_pll", NULL, 1, 0, 0xAC},
-+	{ AGILEX_PERIPH_PLL_C1_CLK, "peri_pll_c1", "periph_pll", NULL, 1, 0, 0xB0},
-+	{ AGILEX_PERIPH_PLL_C2_CLK, "peri_pll_c2", "periph_pll", NULL, 1, 0, 0xB8},
-+	{ AGILEX_PERIPH_PLL_C3_CLK, "peri_pll_c3", "periph_pll", NULL, 1, 0, 0xBC},
-+};
-+
-+static const struct stratix10_perip_cnt_clock agilex_main_perip_cnt_clks[] = {
-+	{ AGILEX_MPU_FREE_CLK, "mpu_free_clk", NULL, mpu_free_mux, ARRAY_SIZE(mpu_free_mux),
-+	   0, 0x3C, 0, 0, 0},
-+	{ AGILEX_NOC_FREE_CLK, "noc_free_clk", NULL, noc_free_mux, ARRAY_SIZE(noc_free_mux),
-+	  0, 0x40, 0, 0, 1},
-+	{ AGILEX_L4_SYS_FREE_CLK, "l4_sys_free_clk", "noc_free_clk", NULL, 1, 0,
-+	  0, 4, 0, 0},
-+	{ AGILEX_NOC_CLK, "noc_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux),
-+	  0, 0, 0, 0x30, 1},
-+	{ AGILEX_EMAC_A_FREE_CLK, "emaca_free_clk", NULL, emaca_free_mux, ARRAY_SIZE(emaca_free_mux),
-+	  0, 0xD4, 0, 0x88, 0},
-+	{ AGILEX_EMAC_B_FREE_CLK, "emacb_free_clk", NULL, emacb_free_mux, ARRAY_SIZE(emacb_free_mux),
-+	  0, 0xD8, 0, 0x88, 1},
-+	{ AGILEX_EMAC_PTP_FREE_CLK, "emac_ptp_free_clk", NULL, emac_ptp_free_mux,
-+	  ARRAY_SIZE(emac_ptp_free_mux), 0, 0xDC, 0, 0x88, 2},
-+	{ AGILEX_GPIO_DB_FREE_CLK, "gpio_db_free_clk", NULL, gpio_db_free_mux,
-+	  ARRAY_SIZE(gpio_db_free_mux), 0, 0xE0, 0, 0x88, 3},
-+	{ AGILEX_SDMMC_FREE_CLK, "sdmmc_free_clk", NULL, sdmmc_free_mux,
-+	  ARRAY_SIZE(sdmmc_free_mux), 0, 0xE4, 0, 0x88, 4},
-+	{ AGILEX_S2F_USER0_FREE_CLK, "s2f_user0_free_clk", NULL, s2f_usr0_free_mux,
-+	  ARRAY_SIZE(s2f_usr0_free_mux), 0, 0xE8, 0, 0, 0},
-+	{ AGILEX_S2F_USER1_FREE_CLK, "s2f_user1_free_clk", NULL, s2f_usr1_free_mux,
-+	  ARRAY_SIZE(s2f_usr1_free_mux), 0, 0xEC, 0, 0x88, 5},
-+	{ AGILEX_PSI_REF_FREE_CLK, "psi_ref_free_clk", NULL, psi_ref_free_mux,
-+	  ARRAY_SIZE(psi_ref_free_mux), 0, 0xF0, 0, 0x88, 6},
-+};
-+
-+static const struct stratix10_gate_clock agilex_gate_clks[] = {
-+	{ AGILEX_MPU_CLK, "mpu_clk", NULL, mpu_mux, ARRAY_SIZE(mpu_mux), 0, 0x24,
-+	  0, 0, 0, 0, 0x30, 0, 0},
-+	{ AGILEX_MPU_PERIPH_CLK, "mpu_periph_clk", "mpu_clk", NULL, 1, 0, 0x24,
-+	  0, 0, 0, 0, 0, 0, 4},
-+	{ AGILEX_MPU_L2RAM_CLK, "mpu_l2ram_clk", "mpu_clk", NULL, 1, 0, 0x24,
-+	  0, 0, 0, 0, 0, 0, 2},
-+	{ AGILEX_L4_MAIN_CLK, "l4_main_clk", "noc_clk", NULL, 1, 0, 0x24,
-+	  1, 0x44, 0, 2, 0, 0, 0},
-+	{ AGILEX_L4_MP_CLK, "l4_mp_clk", "noc_clk", NULL, 1, 0, 0x24,
-+	  2, 0x44, 8, 2, 0, 0, 0},
-+	/*
-+	 * The l4_sp_clk feeds a 100 MHz clock to various peripherals, one of them
-+	 * being the SP timers, thus cannot get gated.
-+	 */
-+	{ AGILEX_L4_SP_CLK, "l4_sp_clk", "noc_clk", NULL, 1, CLK_IS_CRITICAL, 0x24,
-+	  3, 0x44, 16, 2, 0, 0, 0},
-+	{ AGILEX_CS_AT_CLK, "cs_at_clk", "noc_clk", NULL, 1, 0, 0x24,
-+	  4, 0x44, 24, 2, 0, 0, 0},
-+	{ AGILEX_CS_TRACE_CLK, "cs_trace_clk", "noc_clk", NULL, 1, 0, 0x24,
-+	  4, 0x44, 26, 2, 0, 0, 0},
-+	{ AGILEX_CS_PDBG_CLK, "cs_pdbg_clk", "cs_at_clk", NULL, 1, 0, 0x24,
-+	  4, 0x44, 28, 1, 0, 0, 0},
-+	{ AGILEX_CS_TIMER_CLK, "cs_timer_clk", "noc_clk", NULL, 1, 0, 0x24,
-+	  5, 0, 0, 0, 0, 0, 0},
-+	{ AGILEX_S2F_USER0_CLK, "s2f_user0_clk", NULL, s2f_usr0_mux, ARRAY_SIZE(s2f_usr0_mux), 0, 0x24,
-+	  6, 0, 0, 0, 0, 0, 0},
-+	{ AGILEX_EMAC0_CLK, "emac0_clk", NULL, emac_mux, ARRAY_SIZE(emac_mux), 0, 0x7C,
-+	  0, 0, 0, 0, 0x94, 26, 0},
-+	{ AGILEX_EMAC1_CLK, "emac1_clk", NULL, emac_mux, ARRAY_SIZE(emac_mux), 0, 0x7C,
-+	  1, 0, 0, 0, 0x94, 27, 0},
-+	{ AGILEX_EMAC2_CLK, "emac2_clk", NULL, emac_mux, ARRAY_SIZE(emac_mux), 0, 0x7C,
-+	  2, 0, 0, 0, 0x94, 28, 0},
-+	{ AGILEX_EMAC_PTP_CLK, "emac_ptp_clk", "emac_ptp_free_clk", NULL, 1, 0, 0x7C,
-+	  3, 0, 0, 0, 0, 0, 0},
-+	{ AGILEX_GPIO_DB_CLK, "gpio_db_clk", "gpio_db_free_clk", NULL, 1, 0, 0x7C,
-+	  4, 0x98, 0, 16, 0, 0, 0},
-+	{ AGILEX_SDMMC_CLK, "sdmmc_clk", "sdmmc_free_clk", NULL, 1, 0, 0x7C,
-+	  5, 0, 0, 0, 0, 0, 4},
-+	{ AGILEX_S2F_USER1_CLK, "s2f_user1_clk", "s2f_user1_free_clk", NULL, 1, 0, 0x7C,
-+	  6, 0, 0, 0, 0, 0, 0},
-+	{ AGILEX_PSI_REF_CLK, "psi_ref_clk", "psi_ref_free_clk", NULL, 1, 0, 0x7C,
-+	  7, 0, 0, 0, 0, 0, 0},
-+	{ AGILEX_USB_CLK, "usb_clk", "l4_mp_clk", NULL, 1, 0, 0x7C,
-+	  8, 0, 0, 0, 0, 0, 0},
-+	{ AGILEX_SPI_M_CLK, "spi_m_clk", "l4_mp_clk", NULL, 1, 0, 0x7C,
-+	  9, 0, 0, 0, 0, 0, 0},
-+	{ AGILEX_NAND_CLK, "nand_clk", "l4_main_clk", NULL, 1, 0, 0x7C,
-+	  10, 0, 0, 0, 0, 0, 0},
-+};
-+
-+static int agilex_clk_register_c_perip(const struct stratix10_perip_c_clock *clks,
-+				       int nums, struct stratix10_clock_data *data)
-+{
-+	struct clk *clk;
-+	void __iomem *base = data->base;
-+	int i;
-+
-+	for (i = 0; i < nums; i++) {
-+		clk = s10_register_periph(&clks[i], base);
-+		if (IS_ERR(clk)) {
-+			pr_err("%s: failed to register clock %s\n",
-+			       __func__, clks[i].name);
-+			continue;
-+		}
-+		data->clk_data.clks[clks[i].id] = clk;
-+	}
-+	return 0;
-+}
-+
-+static int agilex_clk_register_cnt_perip(const struct stratix10_perip_cnt_clock *clks,
-+					 int nums, struct stratix10_clock_data *data)
-+{
-+	struct clk *clk;
-+	void __iomem *base = data->base;
-+	int i;
-+
-+	for (i = 0; i < nums; i++) {
-+		clk = s10_register_cnt_periph(&clks[i], base);
-+		if (IS_ERR(clk)) {
-+			pr_err("%s: failed to register clock %s\n",
-+			       __func__, clks[i].name);
-+			continue;
-+		}
-+		data->clk_data.clks[clks[i].id] = clk;
-+	}
-+
-+	return 0;
-+}
-+
-+static int agilex_clk_register_gate(const struct stratix10_gate_clock *clks,					    int nums, struct stratix10_clock_data *data)
-+{
-+	struct clk *clk;
-+	void __iomem *base = data->base;
-+	int i;
-+
-+	for (i = 0; i < nums; i++) {
-+		clk = s10_register_gate(&clks[i], base);
-+		if (IS_ERR(clk)) {
-+			pr_err("%s: failed to register clock %s\n",
-+			       __func__, clks[i].name);
-+			continue;
-+		}
-+		data->clk_data.clks[clks[i].id] = clk;
-+	}
-+
-+	return 0;
-+}
-+
-+static int agilex_clk_register_pll(const struct stratix10_pll_clock *clks,
-+				 int nums, struct stratix10_clock_data *data)
-+{
-+	struct clk *clk;
-+	void __iomem *base = data->base;
-+	int i;
-+
-+	for (i = 0; i < nums; i++) {
-+		clk = agilex_register_pll(&clks[i], base);
-+		if (IS_ERR(clk)) {
-+			pr_err("%s: failed to register clock %s\n",
-+			       __func__, clks[i].name);
-+			continue;
-+		}
-+		data->clk_data.clks[clks[i].id] = clk;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct stratix10_clock_data *__socfpga_agilex_clk_init(struct platform_device *pdev,
-+						    int nr_clks)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device *dev = &pdev->dev;
-+	struct stratix10_clock_data *clk_data;
-+	struct clk **clk_table;
-+	struct resource *res;
-+	void __iomem *base;
-+	int ret;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(base))
-+		return ERR_CAST(base);
-+
-+	clk_data = devm_kzalloc(dev, sizeof(*clk_data), GFP_KERNEL);
-+	if (!clk_data)
-+		return ERR_PTR(-ENOMEM);
-+
-+	clk_data->base = base;
-+	clk_table = devm_kcalloc(dev, nr_clks, sizeof(*clk_table), GFP_KERNEL);
-+	if (!clk_table)
-+		return ERR_PTR(-ENOMEM);
-+
-+	clk_data->clk_data.clks = clk_table;
-+	clk_data->clk_data.clk_num = nr_clks;
-+	ret = of_clk_add_provider(np, of_clk_src_onecell_get, &clk_data->clk_data);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	return clk_data;
-+}
-+
-+static int agilex_clkmgr_probe(struct platform_device *pdev)
-+{
-+	struct stratix10_clock_data *clk_data;
-+
-+	clk_data = __socfpga_agilex_clk_init(pdev, AGILEX_NUM_CLKS);
-+	if (IS_ERR(clk_data))
-+		return PTR_ERR(clk_data);
-+
-+	agilex_clk_register_pll(agilex_pll_clks, ARRAY_SIZE(agilex_pll_clks), clk_data);
-+
-+	agilex_clk_register_c_perip(agilex_main_perip_c_clks,
-+				 ARRAY_SIZE(agilex_main_perip_c_clks), clk_data);
-+
-+	agilex_clk_register_cnt_perip(agilex_main_perip_cnt_clks,
-+				   ARRAY_SIZE(agilex_main_perip_cnt_clks),
-+				   clk_data);
-+
-+	agilex_clk_register_gate(agilex_gate_clks, ARRAY_SIZE(agilex_gate_clks),
-+			      clk_data);
-+	return 0;
-+}
-+
-+static const struct of_device_id agilex_clkmgr_match_table[] = {
-+	{ .compatible = "intel,agilex-clkmgr",
-+	  .data = agilex_clkmgr_probe },
-+	{ }
-+};
-+
-+static struct platform_driver agilex_clkmgr_driver = {
-+	.probe		= agilex_clkmgr_probe,
-+	.driver		= {
-+		.name	= "agilex-clkmgr",
-+		.suppress_bind_attrs = true,
-+		.of_match_table = agilex_clkmgr_match_table,
-+	},
-+};
-+
-+static int __init agilex_clk_init(void)
-+{
-+	return platform_driver_register(&agilex_clkmgr_driver);
-+}
-+core_initcall(agilex_clk_init);
-diff --git a/drivers/clk/socfpga/clk-pll-s10.c b/drivers/clk/socfpga/clk-pll-s10.c
-index 5c3e1ee44f6b..4e268953b7da 100644
---- a/drivers/clk/socfpga/clk-pll-s10.c
-+++ b/drivers/clk/socfpga/clk-pll-s10.c
-@@ -18,8 +18,12 @@
- #define SOCFPGA_PLL_RESET_MASK		0x2
- #define SOCFPGA_PLL_REFDIV_MASK		0x00003F00
- #define SOCFPGA_PLL_REFDIV_SHIFT	8
-+#define SOCFPGA_PLL_AREFDIV_MASK	0x00000F00
-+#define SOCFPGA_PLL_DREFDIV_MASK	0x00003000
-+#define SOCFPGA_PLL_DREFDIV_SHIFT	12
- #define SOCFPGA_PLL_MDIV_MASK		0xFF000000
- #define SOCFPGA_PLL_MDIV_SHIFT		24
-+#define SOCFPGA_AGILEX_PLL_MDIV_MASK	0x000003FF
- #define SWCTRLBTCLKSEL_MASK		0x200
- #define SWCTRLBTCLKSEL_SHIFT		9
- 
-@@ -27,6 +31,27 @@
- 
- #define to_socfpga_clk(p) container_of(p, struct socfpga_pll, hw.hw)
- 
-+static unsigned long agilex_clk_pll_recalc_rate(struct clk_hw *hwclk,
-+						unsigned long parent_rate)
-+{
-+	struct socfpga_pll *socfpgaclk = to_socfpga_clk(hwclk);
-+	unsigned long arefdiv, reg, mdiv;
-+	unsigned long long vco_freq;
-+
-+	/* read VCO1 reg for numerator and denominator */
-+	reg = readl(socfpgaclk->hw.reg);
-+	arefdiv = (reg & SOCFPGA_PLL_AREFDIV_MASK) >> SOCFPGA_PLL_REFDIV_SHIFT;
-+
-+	vco_freq = (unsigned long long)parent_rate / arefdiv;
-+
-+	/* Read mdiv and fdiv from the fdbck register */
-+	reg = readl(socfpgaclk->hw.reg + 0x24);
-+	mdiv = reg & SOCFPGA_AGILEX_PLL_MDIV_MASK;
-+
-+	vco_freq = (unsigned long long)vco_freq * mdiv;
-+	return (unsigned long)vco_freq;
-+}
-+
- static unsigned long clk_pll_recalc_rate(struct clk_hw *hwclk,
- 					 unsigned long parent_rate)
- {
-@@ -98,6 +123,12 @@ static int clk_pll_prepare(struct clk_hw *hwclk)
- 	return 0;
- }
- 
-+static const struct clk_ops agilex_clk_pll_ops = {
-+	.recalc_rate = agilex_clk_pll_recalc_rate,
-+	.get_parent = clk_pll_get_parent,
-+	.prepare = clk_pll_prepare,
-+};
-+
- static const struct clk_ops clk_pll_ops = {
- 	.recalc_rate = clk_pll_recalc_rate,
- 	.get_parent = clk_pll_get_parent,
-@@ -146,3 +177,40 @@ struct clk *s10_register_pll(const struct stratix10_pll_clock *clks,
- 	}
- 	return clk;
- }
-+
-+struct clk *agilex_register_pll(const struct stratix10_pll_clock *clks,
-+				void __iomem *reg)
-+{
-+	struct clk *clk;
-+	struct socfpga_pll *pll_clk;
-+	struct clk_init_data init;
-+	const char *name = clks->name;
-+
-+	pll_clk = kzalloc(sizeof(*pll_clk), GFP_KERNEL);
-+	if (WARN_ON(!pll_clk))
-+		return NULL;
-+
-+	pll_clk->hw.reg = reg + clks->offset;
-+
-+	if (streq(name, SOCFPGA_BOOT_CLK))
-+		init.ops = &clk_boot_ops;
-+	else
-+		init.ops = &agilex_clk_pll_ops;
-+
-+	init.name = name;
-+	init.flags = clks->flags;
-+
-+	init.num_parents = clks->num_parents;
-+	init.parent_names = NULL;
-+	init.parent_data = clks->parent_data;
-+	pll_clk->hw.hw.init = &init;
-+
-+	pll_clk->hw.bit_idx = SOCFPGA_PLL_POWER;
-+
-+	clk = clk_register(NULL, &pll_clk->hw.hw);
-+	if (WARN_ON(IS_ERR(clk))) {
-+		kfree(pll_clk);
-+		return NULL;
-+	}
-+	return clk;
-+}
-diff --git a/drivers/clk/socfpga/stratix10-clk.h b/drivers/clk/socfpga/stratix10-clk.h
-index ffbd1fb2c8ef..f9d5d724c694 100644
---- a/drivers/clk/socfpga/stratix10-clk.h
-+++ b/drivers/clk/socfpga/stratix10-clk.h
-@@ -62,6 +62,8 @@ struct stratix10_gate_clock {
- 
- struct clk *s10_register_pll(const struct stratix10_pll_clock *,
- 			     void __iomem *);
-+struct clk *agilex_register_pll(const struct stratix10_pll_clock *,
-+				void __iomem *);
- struct clk *s10_register_periph(const struct stratix10_perip_c_clock *,
- 				void __iomem *);
- struct clk *s10_register_cnt_periph(const struct stratix10_perip_cnt_clock *,
--- 
-2.17.1
+> +static int max9286_register_gpio(struct max9286_priv *priv)
+> +{
+> +	struct device *dev = &priv->client->dev;
+> +	struct gpio_chip *gpio = &priv->gpio;
+> +	int ret;
+> +
+> +	static const char * const names[] = {
+> +		"GPIO0OUT",
+> +		"GPIO1OUT",
+> +	};
+> +
+> +	/* Configure the GPIO */
+> +	gpio->label = dev_name(dev);
 
+So if you have more than one MAX9286 in a system, all gpiochips will appear
+with the same name. I'd recommend to append the index to distinguish properly.
+
+> +	gpio->parent = dev;
+> +	gpio->owner = THIS_MODULE;
+> +	gpio->of_node = dev->of_node;
+> +	gpio->ngpio = 2;
+> +	gpio->base = -1;
+> +	gpio->set = max9286_gpio_set;
+> +	gpio->get = max9286_gpio_get;
+> +	gpio->can_sleep = true;
+> +	gpio->names = names;
+> +
+> +	/* GPIO values default to high */
+> +	priv->gpio_state = BIT(0) | BIT(1);
+> +
+> +	ret = devm_gpiochip_add_data(dev, gpio, priv);
+> +	if (ret)
+> +		dev_err(dev, "Unable to create gpio_chip\n");
+> +
+> +	return ret;
+> +}
+> +
+
+[...]
+
+> +static int max9286_parse_dt(struct max9286_priv *priv)
+> +{
+> +	struct device *dev = &priv->client->dev;
+> +	struct device_node *i2c_mux;
+> +	struct device_node *node = NULL;
+> +	unsigned int i2c_mux_mask = 0;
+> +
+> +	of_node_get(dev->of_node);
+
+Why this is needed?
+
+> +	i2c_mux = of_find_node_by_name(dev->of_node, "i2c-mux");
+> +	if (!i2c_mux) {
+> +		dev_err(dev, "Failed to find i2c-mux node\n");
+> +		of_node_put(dev->of_node);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Identify which i2c-mux channels are enabled */
+> +	for_each_child_of_node(i2c_mux, node) {
+> +		u32 id = 0;
+> +
+> +		of_property_read_u32(node, "reg", &id);
+> +		if (id >= MAX9286_NUM_GMSL)
+> +			continue;
+> +
+> +		if (!of_device_is_available(node)) {
+> +			dev_dbg(dev, "Skipping disabled I2C bus port %u\n", id);
+> +			continue;
+> +		}
+> +
+> +		i2c_mux_mask |= BIT(id);
+> +	}
+> +	of_node_put(node);
+> +	of_node_put(i2c_mux);
+> +
+> +	/* Parse the endpoints */
+> +	for_each_endpoint_of_node(dev->of_node, node) {
+> +		struct max9286_source *source;
+> +		struct of_endpoint ep;
+> +
+> +		of_graph_parse_endpoint(node, &ep);
+> +		dev_dbg(dev, "Endpoint %pOF on port %d",
+> +			ep.local_node, ep.port);
+> +
+> +		if (ep.port > MAX9286_NUM_GMSL) {
+> +			dev_err(dev, "Invalid endpoint %s on port %d",
+> +				of_node_full_name(ep.local_node), ep.port);
+> +			continue;
+> +		}
+> +
+> +		/* For the source endpoint just parse the bus configuration. */
+> +		if (ep.port == MAX9286_SRC_PAD) {
+> +			struct v4l2_fwnode_endpoint vep = {
+> +				.bus_type = V4L2_MBUS_CSI2_DPHY
+> +			};
+> +			int ret;
+> +
+> +			ret = v4l2_fwnode_endpoint_parse(
+> +					of_fwnode_handle(node), &vep);
+> +			if (ret) {
+> +				of_node_put(node);
+> +				of_node_put(dev->of_node);
+> +				return ret;
+> +			}
+> +
+> +			if (vep.bus_type != V4L2_MBUS_CSI2_DPHY) {
+> +				dev_err(dev,
+> +					"Media bus %u type not supported\n",
+> +					vep.bus_type);
+> +				v4l2_fwnode_endpoint_free(&vep);
+> +				of_node_put(node);
+> +				of_node_put(dev->of_node);
+> +				return -EINVAL;
+> +			}
+> +
+> +			priv->csi2_data_lanes =
+> +				vep.bus.mipi_csi2.num_data_lanes;
+> +			v4l2_fwnode_endpoint_free(&vep);
+> +
+> +			continue;
+> +		}
+> +
+> +		/* Skip if the corresponding GMSL link is unavailable. */
+> +		if (!(i2c_mux_mask & BIT(ep.port)))
+> +			continue;
+> +
+> +		if (priv->sources[ep.port].fwnode) {
+> +			dev_err(dev,
+> +				"Multiple port endpoints are not supported: %d",
+> +				ep.port);
+> +
+> +			continue;
+> +		}
+> +
+> +		source = &priv->sources[ep.port];
+> +		source->fwnode = fwnode_graph_get_remote_endpoint(
+> +						of_fwnode_handle(node));
+> +		if (!source->fwnode) {
+> +			dev_err(dev,
+> +				"Endpoint %pOF has no remote endpoint connection\n",
+> +				ep.local_node);
+> +
+> +			continue;
+> +		}
+> +
+> +		priv->source_mask |= BIT(ep.port);
+> +		priv->nsources++;
+> +	}
+> +	of_node_put(node);
+> +	of_node_put(dev->of_node);
+> +
+> +	priv->route_mask = priv->source_mask;
+> +
+> +	return 0;
+> +}
+> +
+
+[...]
+
+> +static int max9286_remove(struct i2c_client *client)
+> +{
+> +	struct max9286_priv *priv = i2c_get_clientdata(client);
+> +
+> +	i2c_mux_del_adapters(priv->mux);
+> +
+> +	max9286_v4l2_unregister(priv);
+> +
+> +	regulator_disable(priv->regulator);
+> +
+> +	gpiod_set_value_cansleep(priv->gpiod_pwdn, 0);
+
+Usual power down sequence is to pull the power down gpio low and then turn off
+the regulators. This helps in clearing up the internal state machine properly.
+
+Thanks,
+Mani
+
+> +
+> +	max9286_cleanup_dt(priv);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id max9286_dt_ids[] = {
+> +	{ .compatible = "maxim,max9286" },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, max9286_dt_ids);
+> +
+> +static struct i2c_driver max9286_i2c_driver = {
+> +	.driver	= {
+> +		.name		= "max9286",
+> +		.of_match_table	= of_match_ptr(max9286_dt_ids),
+> +	},
+> +	.probe_new	= max9286_probe,
+> +	.remove		= max9286_remove,
+> +};
+> +
+> +module_i2c_driver(max9286_i2c_driver);
+> +
+> +MODULE_DESCRIPTION("Maxim MAX9286 GMSL Deserializer Driver");
+> +MODULE_AUTHOR("Jacopo Mondi, Kieran Bingham, Laurent Pinchart, Niklas Söderlund, Vladimir Barinov");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.25.1
+> 
