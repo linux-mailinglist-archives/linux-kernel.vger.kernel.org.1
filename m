@@ -2,159 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEF21CF67C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0AF1CF683
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730147AbgELOJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 10:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35014 "EHLO
+        id S1730172AbgELOKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 10:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727859AbgELOJH (ORCPT
+        with ESMTP id S1729570AbgELOKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 10:09:07 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 646EBC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 07:09:07 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id y22so1019711qki.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 07:09:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6/uIsxWQn8xUBY6PuZWN340e2D798d3iUe7b5tSjlu4=;
-        b=jZUEDTd9Pbyxy86CFcIgLT3Xq+vWSzd+naUcc1wuiyzIb19DQ3oPCcriApygsVi/fK
-         zrkvdQQXLd6B5ygxVuuhgIOblr764uGadJG12herxFL/OnZGWAxs3AvytnCp8AYjkLf9
-         AqJY1azQlzlJSaWOHOh83tez8n8MOC1Lhlcr8pfzy4pFO+ZVJgEfNTTF7+NOEnnregS6
-         peS9ohxm1hfKJkiszWpAM9KzYzMWIFOwR7vHD7sgXhvWOSJWTH2ozLigW6NH09vYbwLN
-         SMFUzsAxlvufVKdXZJNvlCMtJBQZRNj+v8sT1B9SkK0Ex2ZfMMvilbOHJg2Xk4NBWnVB
-         Huog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6/uIsxWQn8xUBY6PuZWN340e2D798d3iUe7b5tSjlu4=;
-        b=lghNUfFVKfqkdHwudpcyLH3Yoj9Cj31jrDwfVp3zlCXo3KQQpfdyA8eWZ9f18er3/N
-         mTjGMLhbR1+mxWi8TRtJio5oiKwwr39eMQVKpKSZO4ERP+3CbTvHV24T930evA9LH2Ia
-         SO7D2+yaO+01wi1qJIgzxiOn7C/98zKBwdf+k1SVNDGrN4F9/NkqL/QwT9TYPR8foMGq
-         yT0s1pn7diTNYFZYjCLYcbCMtAbmiX03nA3Y+E9zYTY1UOE9fgOF71ntGJV2zlR1RrAW
-         isfDqFpgRxr1sxWIGTBKpQGVywmgvVn/sX6DXbzPipxVGPzj1Hg3+r2E4KGq1wJatIby
-         pJJg==
-X-Gm-Message-State: AGi0PuboAbUR2S8rSooEDtjkuM241+m4Te5NRLAEx9Q+N+ovtokVaa5d
-        XaLKeWBkrTRyC2C2YOJ66PyfJtfHXJg=
-X-Google-Smtp-Source: APiQypJ8FVdVJ3xWnl/Fd4UGJ/K3PE6MEveItln32QIJw4YM3ctMkuWaD2olNha5f8IyPkoIMDh1lQ==
-X-Received: by 2002:a05:620a:816:: with SMTP id s22mr21389690qks.348.1589292546495;
-        Tue, 12 May 2020 07:09:06 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id c25sm5880872qkm.119.2020.05.12.07.09.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 07:09:06 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D1EB740AFD; Tue, 12 May 2020 11:09:02 -0300 (-03)
-Date:   Tue, 12 May 2020 11:09:02 -0300
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>
-Subject: Re: [PATCH perf/urgent] perf tools: Fix is_bpf_image function logic
-Message-ID: <20200512140902.GK28888@kernel.org>
-References: <20200512122310.3154754-1-jolsa@kernel.org>
- <20200512133223.GI28888@kernel.org>
- <20200512133609.GA3158213@krava>
+        Tue, 12 May 2020 10:10:47 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC448C061A0C;
+        Tue, 12 May 2020 07:10:47 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jYVcH-0005CN-HL; Tue, 12 May 2020 16:10:41 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 1EE261C02FC;
+        Tue, 12 May 2020 16:10:41 +0200 (CEST)
+Date:   Tue, 12 May 2020 14:10:41 -0000
+From:   "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/cpu: Use INVPCID mnemonic in invpcid.h
+Cc:     Uros Bizjak <ubizjak@gmail.com>, Borislav Petkov <bp@suse.de>,
+        "H. Peter Anvin (Intel)" <hpa@zytor.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200508092247.132147-1-ubizjak@gmail.com>
+References: <20200508092247.132147-1-ubizjak@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512133609.GA3158213@krava>
-X-Url:  http://acmel.wordpress.com
+Message-ID: <158929264101.390.18239205970315804831.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, May 12, 2020 at 03:36:09PM +0200, Jiri Olsa escreveu:
-> On Tue, May 12, 2020 at 10:32:23AM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Tue, May 12, 2020 at 02:23:10PM +0200, Jiri Olsa escreveu:
-> > > Adrian reported that is_bpf_image is not working the way it was
-> > > intended - passing on trampolines and dispatcher names. Instead
-> > > it returned true for all the bpf names.
-> > > 
-> > > The reason even this logic worked properly is that all bpf objects,
-> > > even trampolines and dispatcher, were assigned DSO_BINARY_TYPE__BPF_IMAGE
-> > > binary_type.
-> > > 
-> > > The later for bpf_prog objects, the binary_type was fixed in bpf load event
-> > > processing, which is executed after the ksymbol code.
-> > > 
-> > > Fixing the is_bpf_image logic, so it properly recognizes trampoline
-> > > and dispatcher objects.
-> > 
-> > This is not applying on top of torvalds/master, not tip/perf/urgent, and
-> 
-> right.. it's on top of your's perf/core.. I can rebase on perf/urgent
+The following commit has been merged into the x86/cpu branch of tip:
 
-You don't need to, this hasn't hit torvalds/master, it'll be in the next
-merge window, the one for 5.8.
+Commit-ID:     7e32a9dac9926241d56851e1517c9391d39fb48e
+Gitweb:        https://git.kernel.org/tip/7e32a9dac9926241d56851e1517c9391d39fb48e
+Author:        Uros Bizjak <ubizjak@gmail.com>
+AuthorDate:    Fri, 08 May 2020 11:22:47 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 12 May 2020 16:05:30 +02:00
+
+x86/cpu: Use INVPCID mnemonic in invpcid.h
+
+The current minimum required version of binutils is 2.23, which supports
+the INVPCID instruction mnemonic. Replace the byte-wise specification of
+INVPCID with the proper mnemonic.
+
+ [ bp: Add symbolic operand names for increased readability and flip
+   their order like the insn expects them for the AT&T syntax. ]
+
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200508092247.132147-1-ubizjak@gmail.com
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ arch/x86/include/asm/invpcid.h | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/include/asm/invpcid.h b/arch/x86/include/asm/invpcid.h
+index 989cfa8..734482a 100644
+--- a/arch/x86/include/asm/invpcid.h
++++ b/arch/x86/include/asm/invpcid.h
+@@ -12,12 +12,9 @@ static inline void __invpcid(unsigned long pcid, unsigned long addr,
+ 	 * stale TLB entries and, especially if we're flushing global
+ 	 * mappings, we don't want the compiler to reorder any subsequent
+ 	 * memory accesses before the TLB flush.
+-	 *
+-	 * The hex opcode is invpcid (%ecx), %eax in 32-bit mode and
+-	 * invpcid (%rcx), %rax in long mode.
+ 	 */
+-	asm volatile (".byte 0x66, 0x0f, 0x38, 0x82, 0x01"
+-		      : : "m" (desc), "a" (type), "c" (&desc) : "memory");
++	asm volatile("invpcid %[desc], %[type]"
++		     :: [desc] "m" (desc), [type] "r" (type) : "memory");
+ }
  
-> > you forgot to add the Fixes: line, lemme try to find this...
-> 
-> oops, sorry
-> 
->Fixes: 3c29d4483e85 ("perf annotate: Add basic support for bpf_image")
-
-I did it already, and:
-
-[acme@five perf]$ git tag --contains 3c29d4483e85
-perf-core-for-mingo-5.8-20200420
-perf-core-for-mingo-5.8-20200506
-perf-for-bpf-2020-05-06
-[acme@five perf]$
-
-So can't go to perf/urgent at the moment.
-
-- Arnaldo
- 
-> jirka
-> 
-> > 
-> > - Arnaldo
-> >  
-> > > Reported-by: Adrian Hunter <adrian.hunter@intel.com>
-> > > Signed-off-by: Jiri Olsa <jolsa@redhat.com>
-> > > ---
-> > >  tools/perf/util/machine.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> > > index 8ed2135893bb..d5384807372b 100644
-> > > --- a/tools/perf/util/machine.c
-> > > +++ b/tools/perf/util/machine.c
-> > > @@ -738,8 +738,8 @@ int machine__process_switch_event(struct machine *machine __maybe_unused,
-> > >  
-> > >  static int is_bpf_image(const char *name)
-> > >  {
-> > > -	return strncmp(name, "bpf_trampoline_", sizeof("bpf_trampoline_") - 1) ||
-> > > -	       strncmp(name, "bpf_dispatcher_", sizeof("bpf_dispatcher_") - 1);
-> > > +	return strncmp(name, "bpf_trampoline_", sizeof("bpf_trampoline_") - 1) == 0 ||
-> > > +	       strncmp(name, "bpf_dispatcher_", sizeof("bpf_dispatcher_") - 1) == 0;
-> > >  }
-> > >  
-> > >  static int machine__process_ksymbol_register(struct machine *machine,
-> > > -- 
-> > > 2.25.4
-> > > 
-> > 
-> > -- 
-> > 
-> > - Arnaldo
-> > 
-> 
-
--- 
-
-- Arnaldo
+ #define INVPCID_TYPE_INDIV_ADDR		0
