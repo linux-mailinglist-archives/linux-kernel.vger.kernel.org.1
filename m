@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF39D1CF559
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 15:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C7B1CF561
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 15:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730004AbgELNOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 09:14:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728283AbgELNOd (ORCPT
+        id S1730042AbgELNQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 09:16:12 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:49064 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726891AbgELNQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 09:14:33 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B8EC061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 06:14:32 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id k12so21655435wmj.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 06:14:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=ucIamOxWoiikiTT7OyOk1rVSeBavTDD4mVIWBfGQ0Tg=;
-        b=HhvGzsjgUcWS4ZqZpMHWKZ6oPMKgpOt/PCYx6PHdLARn1pl00Negjb8wMAe4LiENqa
-         cvvCgPgIgXvxRAOJUDj7etyWlGa4OaRWWDV3azcbY99r6J2ubJUpENBOJpwniqb2C8wv
-         0T6b/pFIazBufnzGCG7SFiHa4hg9iyktA2jRg/eSZ6txf1VRN9UDdShnlx9ifd7nqnYc
-         ymhZ7gkbtUU4kI8m2cZ0ZfpW7dwvxgFxrXVHMd5aUz2s/IVMQAJpMtz3YeYYGrY3sCFh
-         nAhUHWwBFUJaNOLcLRK1kHGfPj8bp2NROzB3CUiGno1WahODSUDWnWKNz2QwOKGnLnaF
-         I1cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ucIamOxWoiikiTT7OyOk1rVSeBavTDD4mVIWBfGQ0Tg=;
-        b=tiEd889gTFgqqengsWAs3hft57mJ87tKa0Am2WzPG0Gngvf99dWgQPOb0RjVCLOx5J
-         KyyJSGGan3YdpnCbx/lN2VIi487MqgsgGBGHpjjVAiP7zaxIy/EogRKYpHPr9p4mcSxk
-         cAFOM2BmSdi03VaiSOI4qJrhMh9lDusaHX0Ov241kG+NTz+gtu0VWHWY6/H9gULWfb3d
-         HibmvDlLrJECyXrRz8MDWTmi1jnPnJuv/TbAYca2kyPM8Ad22ZltfNe0TSU7jaLks6Om
-         N5bwplqFM+O1UNwdkUAHJmGWJ46LC46OxqFZk0nzZa6FyteAzjUhc8XOWX9/1wKA/8IX
-         5Xpw==
-X-Gm-Message-State: AGi0PuY7526taxO1P14XShOqmlw0DJxWzCff3f8SPv7xoqTxucFL7cTH
-        2zaBh7iVIm9WNK06EMNG42xQUUE7qInHwQ==
-X-Google-Smtp-Source: APiQypJLgHGkWpi4Lcz/tiolMUMUWnpODhX3I8i/kPzrgclwoULRyPhWPJAIGGotuugAy+3zWXhlQQ==
-X-Received: by 2002:a1c:9e51:: with SMTP id h78mr39840046wme.177.1589289271434;
-        Tue, 12 May 2020 06:14:31 -0700 (PDT)
-Received: from lmecxl0524.home (2a01cb058702ff00bc4b798f4f30d41e.ipv6.abo.wanadoo.fr. [2a01:cb05:8702:ff00:bc4b:798f:4f30:d41e])
-        by smtp.gmail.com with ESMTPSA id p9sm16480524wrj.29.2020.05.12.06.14.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 06:14:30 -0700 (PDT)
-From:   Etienne Carriere <etienne.carriere@linaro.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        fabrice.gasnier@st.com, alexandre.torgue@st.com,
-        mcoquelin.stm32@gmail.com, robh+dt@kernel.org,
-        srinivas.kandagatla@linaro.org,
-        Etienne Carriere <etienne.carriere@st.com>
-Subject: [PATCH v2] dt-bindings: nvmem: stm32: new property for data access
-Date:   Tue, 12 May 2020 15:13:34 +0200
-Message-Id: <20200512131334.1750-1-etienne.carriere@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Tue, 12 May 2020 09:16:12 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04CDG2mu091972;
+        Tue, 12 May 2020 08:16:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589289362;
+        bh=h/Hv47WcjhG9VuUQ8uKmgAHJp1wp4aGRTo5I3HJrIVo=;
+        h=From:To:CC:Subject:Date;
+        b=Cmr9KFtr9gbpcES+o4LjfHOKZ7HE24D3uxHUfMUij8hwYhq5eBcf8TUT1YtzmTdWG
+         DDfZ4yEqQKOxYMkahYeuWfoYef0taZUNSjU7SPbi8WSzOx3IetwyJjW5YFYqRfdYJP
+         SWb+P1kwoWOL4bNNj0qg8Pp1Z4mmhDo1W3qGRD8k=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04CDG2UE065346;
+        Tue, 12 May 2020 08:16:02 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 12
+ May 2020 08:16:01 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 12 May 2020 08:16:01 -0500
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04CDFxaa079268;
+        Tue, 12 May 2020 08:15:59 -0500
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/3] ASoC: ti: Add support for audio on J721e EVM
+Date:   Tue, 12 May 2020 16:16:30 +0300
+Message-ID: <20200512131633.32668-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Etienne Carriere <etienne.carriere@st.com>
+Hi,
 
-Introduce boolean property st,non-secure-otp for OTP data located
-in a factory programmed area that only secure firmware can access
-by default and that shall be reachable from the non-secure world.
-
-This change also allows additional properties for NVMEM nodes that
-were forbidden prior this change.
-
-Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
----
 Changes since v1:
-  Change nvmem.yaml to allow additional properties in NVMEM nodes.
+- Fixed DT binding documentation errors
+- Rebased on ASoC head and updated the driver to compile and work
 
-Link to v1:
-  https://lore.kernel.org/patchwork/patch/1239028/
+This series adds support for the analog audio setup on the j721e EVM.
+The audio setup of the EVM is:
+Common Processor Board (CPB): McASP10 <-> pcm3168a
+Infotainment Expansion Board (IVI): McASP0 <-> 2x pcm3168a
 
- .../devicetree/bindings/nvmem/nvmem.yaml        |  2 --
- .../bindings/nvmem/st,stm32-romem.yaml          | 17 +++++++++++++++++
- 2 files changed, 17 insertions(+), 2 deletions(-)
+Both CPB and IVI wired in parallel serializer setup.
 
-diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.yaml b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-index 65980224d550..b459f9dba6c9 100644
---- a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-@@ -67,8 +67,6 @@ patternProperties:
-     required:
-       - reg
- 
--    additionalProperties: false
--
- examples:
-   - |
-       #include <dt-bindings/gpio/gpio.h>
-diff --git a/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml b/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
-index d84deb4774a4..c11c99f085d7 100644
---- a/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
-@@ -24,6 +24,18 @@ properties:
-       - st,stm32f4-otp
-       - st,stm32mp15-bsec
- 
-+patternProperties:
-+  "^.*@[0-9a-f]+$":
-+    type: object
-+
-+    properties:
-+      st,non-secure-otp:
-+        description: |
-+          This property explicits a factory programmed area that both secure
-+          and non-secure worlds can access. It is needed when, by default, the
-+          related area can only be reached by the secure world.
-+        type: boolean
-+
- required:
-   - "#address-cells"
-   - "#size-cells"
-@@ -41,6 +53,11 @@ examples:
-       calib@22c {
-         reg = <0x22c 0x2>;
-       };
-+
-+      mac_addr@e4 {
-+        reg = <0xe4 0x8>;
-+        st,non-secure-otp;
-+      };
-     };
- 
- ...
+The first patch adds the stream_name for McASP driver as it is needed in
+multicodec (and would be needed in DPCM) setup for proper DAPM handling.
+
+The second patch adds two DT schema, one for the cpb and one for the cpb+ivi
+card.
+
+Regards,
+Peter
+---
+Peter Ujfalusi (3):
+  ASoC: ti: davinci-mcasp: Specify stream_name for playback/capture
+  bindings: sound: Add documentation for TI j721e EVM (CPB and IVI)
+  ASoC: ti: Add custom machine driver for j721e EVM (CPB and IVI)
+
+ .../bindings/sound/ti,j721e-cpb-audio.yaml    |  93 ++
+ .../sound/ti,j721e-cpb-ivi-audio.yaml         | 142 +++
+ sound/soc/ti/Kconfig                          |   8 +
+ sound/soc/ti/Makefile                         |   2 +
+ sound/soc/ti/davinci-mcasp.c                  |   3 +
+ sound/soc/ti/j721e-evm.c                      | 867 ++++++++++++++++++
+ 6 files changed, 1115 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
+ create mode 100644 sound/soc/ti/j721e-evm.c
+
 -- 
-2.17.1
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
