@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAAA71D0241
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551A31D0205
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732088AbgELWZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55476 "EHLO
+        id S1731729AbgELWXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 18:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731648AbgELWXJ (ORCPT
+        by vger.kernel.org with ESMTP id S1731369AbgELWXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 18:23:09 -0400
+        Tue, 12 May 2020 18:23:23 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39824C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB23C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:22 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jYdIF-0004iR-OS; Wed, 13 May 2020 00:22:32 +0200
+        id 1jYdIH-0004jL-JN; Wed, 13 May 2020 00:22:34 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id CB971100BC4;
-        Wed, 13 May 2020 00:22:30 +0200 (CEST)
-Message-Id: <20200512213810.411884688@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 15AF91006A1;
+        Wed, 13 May 2020 00:22:32 +0200 (CEST)
+Message-Id: <20200512213810.518709291@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 12 May 2020 23:01:09 +0200
+Date:   Tue, 12 May 2020 23:01:10 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -50,7 +50,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V5 10/38] x86/entry/64: Simplify idtentry_body
+Subject: [patch V5 11/38] rcu: Provide __rcu_is_watching()
 References: <20200512210059.056244513@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -63,25 +63,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All C functions which do not have an error code have been converted to the
-new IDTENTRY interface which does not expect an error code in the
-arguments. Spare the XORL.
+Same as rcu_is_watching() but without the preempt_disable/enable() pair
+inside the function. It is merked noinstr so it ends up in the
+non-instrumentable text section.
+
+This is useful for non-preemptible code especially in the low level entry
+section. Using rcu_is_watching() there results in a call to the
+preempt_schedule_notrace() thunk which triggers noinstr section warnings in
+objtool.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
 ---
- arch/x86/entry/entry_64.S |    2 --
- 1 file changed, 2 deletions(-)
+V5: New patch
+---
+ include/linux/rcutiny.h |    1 +
+ include/linux/rcutree.h |    1 +
+ kernel/rcu/tree.c       |    5 +++++
+ 3 files changed, 7 insertions(+)
 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -532,8 +532,6 @@ SYM_CODE_END(spurious_entries_start)
- 	.if \has_error_code == 1
- 		movq	ORIG_RAX(%rsp), %rsi	/* get error code into 2nd argument*/
- 		movq	$-1, ORIG_RAX(%rsp)	/* no syscall to restart */
--	.else
--		xorl	%esi, %esi		/* Clear the error code */
- 	.endif
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -86,6 +86,7 @@ static inline void rcu_scheduler_startin
+ static inline void rcu_end_inkernel_boot(void) { }
+ static inline bool rcu_inkernel_boot_has_ended(void) { return true; }
+ static inline bool rcu_is_watching(void) { return true; }
++static inline bool __rcu_is_watching(void) { return true; }
+ static inline void rcu_momentary_dyntick_idle(void) { }
+ static inline void kfree_rcu_scheduler_running(void) { }
+ static inline bool rcu_gp_might_be_stalled(void) { return false; }
+--- a/include/linux/rcutree.h
++++ b/include/linux/rcutree.h
+@@ -58,6 +58,7 @@ extern int rcu_scheduler_active __read_m
+ void rcu_end_inkernel_boot(void);
+ bool rcu_inkernel_boot_has_ended(void);
+ bool rcu_is_watching(void);
++bool __rcu_is_watching(void);
+ #ifndef CONFIG_PREEMPTION
+ void rcu_all_qs(void);
+ #endif
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -984,6 +984,11 @@ static void rcu_disable_urgency_upon_qs(
+ 	}
+ }
  
- 	.if \vector == X86_TRAP_PF
++noinstr bool __rcu_is_watching(void)
++{
++	return !rcu_dynticks_curr_cpu_in_eqs();
++}
++
+ /**
+  * rcu_is_watching - see if RCU thinks that the current CPU is not idle
+  *
 
