@@ -2,66 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9FE1CEADD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 04:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DD81CEAF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 04:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728715AbgELCfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 22:35:13 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4394 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727892AbgELCfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 22:35:13 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 3F0AFF321171ACDED613;
-        Tue, 12 May 2020 10:35:11 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 12 May 2020 10:35:05 +0800
-From:   Samuel Zou <zou_wei@huawei.com>
-To:     <khilman@kernel.org>, <tony@atomide.com>, <linux@armlinux.org.uk>
-CC:     <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Samuel Zou <zou_wei@huawei.com>
-Subject: [PATCH -next] ARM: OMAP2+: pm33xx-core: Make am43xx_get_rtc_base_addr static
-Date:   Tue, 12 May 2020 10:41:11 +0800
-Message-ID: <1589251271-106359-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1728498AbgELCsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 22:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727892AbgELCsy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 22:48:54 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C6CC061A0C;
+        Mon, 11 May 2020 19:48:54 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id h26so9904792qtu.8;
+        Mon, 11 May 2020 19:48:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+p2xh30TEJfAR+w5B4LaXMd3KNNJXJtMQbogkWpFPF8=;
+        b=uXTFgedfKAJw/mdH+r2ogZwZQTp/ZTIBRyakuBwLSXaz9PWFl3s45PRztLUO7H5FBP
+         TFYtbn1ZzJ8znyq1exL44gJ+IKnPayj/ne3+XdrgqoDlhm+JXc+fHRnDRZSCC1iZcULu
+         yhJjq9wd8k0JUQ5xuOSqJk7LCa34c2BTbb+fpES1GQHxSzMKez4IXl6KXXc2J0kHCym9
+         ikeiYA+UxdiiLcFWazU/ZZWHH2jqHQh+MyNod6nD4dNcLGcAZqgtnSBzUJkrg0cVhUou
+         AEcbyFUk/TIHzd/EwmZjEKhx+oQIh3IVZ/2yfe+rvjvi/yqZqN2j8s7+DeSsAmIJ2JGc
+         PA2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+p2xh30TEJfAR+w5B4LaXMd3KNNJXJtMQbogkWpFPF8=;
+        b=kKwYBOt97oCcvLN1z9fJF2usKS3O15hsp/c5KyiHxD31J+EB+w9yG513U02Z9xE/A7
+         UoF93Dpg8yUz39arerSvhNkoNn+3JebgYlbEAEkusIgmCP3B87qQQZCMNwG25f7jxEPk
+         drQFX2lxHGwxMG+K0RoSBFkBYZRaWzjvloVfEQw8zIGEidt7Ca2JKbQBOMX0YM6pxTUu
+         Bzm8HBYtXoILhnRqaC4MRlE7n8CNVj3IjcW8IcZPolmN1Wpp/EiqsqI0SlO9/7B2Q7GY
+         O9v5+VvFRR0TAwcRtxEmLQ2abAXUPu3OFbg4Pm54xc5Y7lcUi2+fpDBxI/lPLihsZ6fH
+         3v1g==
+X-Gm-Message-State: AGi0PuYCbs9Vi8AcgCeJc1uRviZUYTbN+U5whuuzVcMHNhVzKidtV+FB
+        ZglQIxboagmncCmkz/HLhkwy5w1ymp7q+z02RAE=
+X-Google-Smtp-Source: APiQypId7oxhT26ItzjC8bMXwsSFBjnYZNmv7Cgv/UndRHY6NfhZPgW4iFgXhDPKhepQCP0rcyNz85IZmAz5rBwh+Hs=
+X-Received: by 2002:ac8:4e2c:: with SMTP id d12mr19665595qtw.204.1589251733739;
+ Mon, 11 May 2020 19:48:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+References: <cover.1588320655.git.shengjiu.wang@nxp.com> <a933bafd2d6a60a69f840d9d4b613337efcf2816.1588320656.git.shengjiu.wang@nxp.com>
+ <20200501102158.GA5276@sirena.org.uk> <CAA+D8ANDHHejFD1rYmFOG24yivpEJa+xO-WpVr=Vzfz9yW9H7g@mail.gmail.com>
+In-Reply-To: <CAA+D8ANDHHejFD1rYmFOG24yivpEJa+xO-WpVr=Vzfz9yW9H7g@mail.gmail.com>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Tue, 12 May 2020 10:48:41 +0800
+Message-ID: <CAA+D8ANK+Sd=nPeDZpd_=fQRFOdLtKgvsCmfQ_fRU3RCjMY+rQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] ASoC: fsl_esai: Add support for imx8qm
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+Hi Mark, Nicolin
 
-arch/arm/mach-omap2/pm33xx-core.c:270:14: warning: symbol 'am43xx_get_rtc_base_addr' was not declared.
+On Wed, May 6, 2020 at 10:33 AM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+>
+> Hi
+>
+> On Fri, May 1, 2020 at 6:23 PM Mark Brown <broonie@kernel.org> wrote:
+> >
+> > On Fri, May 01, 2020 at 04:12:05PM +0800, Shengjiu Wang wrote:
+> > > The difference for esai on imx8qm is that DMA device is EDMA.
+> > >
+> > > EDMA requires the period size to be multiple of maxburst. Otherwise
+> > > the remaining bytes are not transferred and thus noise is produced.
+> >
+> > If this constraint comes from the DMA controller then normally you'd
+> > expect the DMA controller integration to be enforcing this - is there no
+> > information in the DMA API that lets us know that this constraint is
+> > there?
+>
+> No, I can't find one API for this.
+> Do you have a recommendation?
+>
+could you please recommend which DMA API can I use?
 
-The am43xx_get_rtc_base_addr has only call site within pm33xx-core.c
-It should be static
-
-Fixes: 8c5a916f4c88 ("ARM: OMAP2+: sleep33/43xx: Add RTC-Mode support")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Samuel Zou <zou_wei@huawei.com>
----
- arch/arm/mach-omap2/pm33xx-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/mach-omap2/pm33xx-core.c b/arch/arm/mach-omap2/pm33xx-core.c
-index 5455fc9..58236c7 100644
---- a/arch/arm/mach-omap2/pm33xx-core.c
-+++ b/arch/arm/mach-omap2/pm33xx-core.c
-@@ -267,7 +267,7 @@ static struct am33xx_pm_sram_addr *amx3_get_sram_addrs(void)
- 		return NULL;
- }
- 
--void __iomem *am43xx_get_rtc_base_addr(void)
-+static void __iomem *am43xx_get_rtc_base_addr(void)
- {
- 	rtc_oh = omap_hwmod_lookup("rtc");
- 
--- 
-2.6.2
-
+best regards
+wang shengjiu
