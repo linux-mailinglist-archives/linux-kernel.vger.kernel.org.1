@@ -2,110 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A84F1D016F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3861D0178
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731489AbgELWAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
+        id S1731565AbgELWBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 18:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728313AbgELWAV (ORCPT
+        by vger.kernel.org with ESMTP id S1728313AbgELWBI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 18:00:21 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB09C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:00:21 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id b8so5982058plm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:00:21 -0700 (PDT)
+        Tue, 12 May 2020 18:01:08 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA22FC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:01:08 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id k133so19459155oih.12
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:01:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+79i6CNjIBAM9t+ay0r61vFhVwB4nVo6+b6hHSQ4Fro=;
-        b=Z/kjEVE7ijoWI2BF5GmEwAS2TVMlcwmQ3piX8x8xKGksNXYU58li/dNrs7QXxUoz7v
-         WcPUKAYo4D+A3Vjcp2GxS4KQ9NMekKqFlUGG2RHxbDNQhoqZoY/xpwrNADyPpkJA3XMs
-         ldEER+nN+tYegKNCyBNg4B35WbSpqTnd27sU0=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r919tpUIjzuRxoZ5Yps7DZLSIsY9ElfTOSP9gLEZ7kQ=;
+        b=LCFA2dV/bKYR0BKsqQ8kFfzVjfHymn4z2cMpX14C3LKyYdrNCqR9q7ID8oIadZyjED
+         d9/c6yOHMCwnMfLcE0DEZ/1kly4vLn0Le5UU9VdkQm+wdTylJrQTLczJrIxXvS0VQDVJ
+         lCgOKXTJBS/4tf2KVmJ4g6CoiiW0xbo64nuWLUBtMeNeQq/mYNq9+DBuihXzB6UopYV8
+         5WH8B9ZWa44MX9L1CF0YR2CutPo/4Oc1xQ9Df2r29y22uLa23ZooQFfcLy0xbhs1C3t4
+         n8xqR6hYSLaPKUDskvQ5n7ivrRlNUHgtKy4Rd0GkvT0YwdhaE+Ar9fUxzuN5D8S82RSb
+         1hZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+79i6CNjIBAM9t+ay0r61vFhVwB4nVo6+b6hHSQ4Fro=;
-        b=nTypM/v14XvnlZkdNwcYlrA7jq+KXpTsUugqG+So6mcUHU8FJR7TUZAUFwny6U912a
-         itX9hUNcKrPouzBjh6TwZnepZqbEVUI0HQNFuACaKEa4g/kiZ7Cc5AdLsXwBkYiNSV6y
-         +bYKrZ0kNiv2tpGsYDIBcBdb5p/ZekOWGaGFTic2wfLbwdqL4oVr/jzKG6zfXDCyGf0G
-         2Kxh1Kc8uL4IEQ+qHEpbFiIhveHYBzUvb754o3OZqiP7plN91QzLz0v3Q/MsivrWY97U
-         UcUUPsFzkgvabkOFSOVqK0dP2fpPyeXno2vOCXW0bUATQKyWQ61LqubJrZZbQPtAOXFV
-         xUwA==
-X-Gm-Message-State: AGi0PubjnnCNku2rDwhEpiBojJyxup3S5+kP5SANPNOQ1lQu3Dthatnv
-        jV3s9jXl1qDH94sfpvn+fx1ACQ==
-X-Google-Smtp-Source: APiQypKLh7L5M6Z91bm0o0e2Xo3kz9JFIjZHGl9tokP3YDbmJ9kq2VCMFUVZ8H/2dEcftnriFb6DmQ==
-X-Received: by 2002:a17:90a:6343:: with SMTP id v3mr31509425pjs.127.1589320820943;
-        Tue, 12 May 2020 15:00:20 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j2sm13193542pfb.73.2020.05.12.15.00.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 15:00:20 -0700 (PDT)
-Date:   Tue, 12 May 2020 15:00:19 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mickael.salaun@ssi.gouv.fr>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 5/6] doc: Add documentation for the
- fs.open_mayexec_enforce sysctl
-Message-ID: <202005121459.158C3AE75@keescook>
-References: <20200505153156.925111-1-mic@digikod.net>
- <20200505153156.925111-6-mic@digikod.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r919tpUIjzuRxoZ5Yps7DZLSIsY9ElfTOSP9gLEZ7kQ=;
+        b=G1/m1CnrAWp3PA5wPtbkHEIgOOTNm5syo14uS6q3DrkC0fzldAy6Ldd4+YokcVEU34
+         BGt36qr6YlTPITxWzxtZYurE00R68rmlT116rObLHrcu/+6oBcMgF5lsF50zhUZLho7r
+         w1WS4JGfw0oPPdHedSFbJCUDkEciDDAMmrE1amHpdzwU/lmsamLTY5BZMMXlS1/2Aiu2
+         cRA4lirovVvOFhsje2VqDLZngOcohnKPsu6DpN3S4kB2miKH/+tR1vlvsfyCqPWKuxnj
+         gT6SiQ/D4Eo5wEL410Iq3UWDyI746rCnjGiLWjNnStMds+F+CSK0mA1D+EoeurRBTlDl
+         tc3w==
+X-Gm-Message-State: AGi0PuYsN9iHlupxiQv5CIMZ6inYJ5JZCGwai8g7862eflvluDbgWGVV
+        wIQ7/kQx4YPyeiEh9NYC4MaUEucBDQ0gwybiYax+uA==
+X-Google-Smtp-Source: APiQypL2SnQbUeabl9l8uEGMle0NuS3JyDkzveSMnaCxixp1eTsVQhvXkDHCGhBjPfjlT/eizYYajAszV4YKVTrlsII=
+X-Received: by 2002:aca:3254:: with SMTP id y81mr4949358oiy.172.1589320867527;
+ Tue, 12 May 2020 15:01:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200505153156.925111-6-mic@digikod.net>
+References: <20200511204150.27858-1-will@kernel.org> <20200512081826.GE2978@hirez.programming.kicks-ass.net>
+ <CANpmjNNo3rhwqG=xEbpP9JiSd8-Faw8fkoUhYJjesHK5S5_KQQ@mail.gmail.com>
+ <20200512190755.GL2957@hirez.programming.kicks-ass.net> <20200512211450.GA11062@willie-the-truck>
+In-Reply-To: <20200512211450.GA11062@willie-the-truck>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 13 May 2020 00:00:55 +0200
+Message-ID: <CANpmjNM6Q+ucPtoDMYanc_n17DCaZ7mkGCWk+CepBSKQXQsvLQ@mail.gmail.com>
+Subject: Re: [PATCH v5 00/18] Rework READ_ONCE() to improve codegen
+To:     Will Deacon <will@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 05:31:55PM +0200, Mickaël Salaün wrote:
-> This sysctl enables to propagate executable permission to userspace
-> thanks to the O_MAYEXEC flag.
-> 
-> Signed-off-by: Mickaël Salaün <mic@digikod.net>
-> Reviewed-by: Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
-> Cc: Aleksa Sarai <cyphar@cyphar.com>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Kees Cook <keescook@chromium.org>
+On Tue, 12 May 2020 at 23:15, Will Deacon <will@kernel.org> wrote:
+>
+> On Tue, May 12, 2020 at 09:07:55PM +0200, Peter Zijlstra wrote:
+> > On Tue, May 12, 2020 at 07:53:00PM +0200, Marco Elver wrote:
+> > > I just ran a bunch of KCSAN tests. While this series alone would have
+> > > passed the tests, there appears to be a problem with
+> > > __READ_ONCE/__WRITE_ONCE. I think they should already be using
+> > > 'data_race()', as otherwise we will get lots of false positives in
+> > > future.
+> > >
+> > > I noticed this when testing -tip/locking/kcsan, which breaks
+> > > unfortunately, because I see a bunch of spurious data races with
+> > > arch_atomic_{read,set} because "locking/atomics: Flip fallbacks and
+> > > instrumentation" changed them to use __READ_ONCE()/__WRITE_ONCE().
+> > > From what I see, the intent was to not double-instrument,
+> > > unfortunately they are still double-instrumented because
+> > > __READ_ONCE/__WRITE_ONCE doesn't hide the access from KCSAN (nor KASAN
+> > > actually). I don't think we can use __no_sanitize_or_inline for the
+> > > arch_ functions, because we really want them to be __always_inline
+> > > (also to avoid calls to these functions in uaccess regions, which
+> > > objtool would notice).
+> > >
+> > > I think the easiest way to resolve this is to wrap the accesses in
+> > > __*_ONCE with data_race().
+> >
+> > But we can't... because I need arch_atomic_*() and __READ_ONCE() to not
+> > call out to _ANYTHING_.
+> >
+> > Sadly, because the compilers are 'broken' that whole __no_sanitize thing
+> > didn't work, but I'll be moving a whole bunch of code into .c files with
+> > all the sanitizers killed dead. And we'll be validating it'll not be
+> > calling out to anything.
+>
+> Hmm, I may have just run into this problem too. I'm using clang 11.0.1,
+> but even if I do something like:
+>
+> unsigned long __no_sanitize_or_inline foo(unsigned long *p)
+> {
+>         return READ_ONCE_NOCHECK(*p);
+> }
+>
+> then I /still/ get calls to __tcsan_func_{entry,exit} emitted by the
+> compiler. Marco -- how do you turn this thing off?!
 
-I think this should be folded into the patch that adds the sysctl.
+For Clang we have an option ("-mllvm
+-tsan-instrument-func-entry-exit=0"), for GCC, I don't think we have
+the option.
 
--- 
-Kees Cook
+I had hoped we could keep these compiler changes optional for now, to
+not require a very recent compiler. I'll send a patch to enable the
+option, but keep it optional for now. Or do you think we require the
+compiler to support this? Because then we'll only support Clang.
+
+> I'm also not particularly fond of treating __{READ,WRITE}ONCE() as "atomic",
+> since they're allowed to tear and I think callers should probably either be
+> using data_race() explicitly or disabling instrumentation (assuming that's
+> possible).
+
+That point is fair enough. But how do we fix arch_atomic_{read,set} then?
+
+Thanks,
+-- Marco
