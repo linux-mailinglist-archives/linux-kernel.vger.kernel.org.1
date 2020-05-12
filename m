@@ -2,110 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8BB71D0136
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 23:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2830F1D010F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 23:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731586AbgELVsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 17:48:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731171AbgELVsF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 17:48:05 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC32C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 14:48:04 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id i68so12514196qtb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 14:48:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XgpxXurEcy9zZtLcodFISaUMHDUu4yvx13d5eZk7VhE=;
-        b=qQsMGlpxbjrua6TZPluaYWlJ0vC0Gut7ZDPZk+tR7FRTEV1pu6b36VlouDfqdyGdo5
-         pgyqfrupoXbujMOF5KCyMqw2EyNFdaol7rULyQS50DzMxXn8JTJRe8bgVPoIa/jyh0lI
-         5wiOjf3TmDVXGeW34jsFHWYXeccZ2NjASZYNTfNP49fGe/XEdhdSekdIexOQ9RXYV+XW
-         6KzSGY9InBMx/onm3lpFUTEUIjeT14ACLw0gsg7tc76IMOh+rJnu+KJuBDExFO8LR0wG
-         of2M6PRFbpcLx4rMufuHw5+L+HBoBUcrJk5HmCu6h6dYZAKxn5GEvmYnzeYFDhzYaGUC
-         SOMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XgpxXurEcy9zZtLcodFISaUMHDUu4yvx13d5eZk7VhE=;
-        b=HmKVq6qigW9iwnMasoo7uoettgNVLUaSl8UT2VduqQKvw7WpwHRIDvkvJ4U53RQYzM
-         WjvsDuYg5vs/EIcTkAB6D0U1KPTh6p+YBLXk1B1Nl8kkkY//YHsF4czEGseJwk/XbzcW
-         C3YeVrggc7OlBqvTc74WKXL/O+E1G9tig0stES+IT/fY8EWr+n5icYOfsqRYKVR+1t+6
-         2Co1ljgN8Y6DcH7/mVzX68bzWXNsNbTYlKY6RgpJTs8zEp/O5fW5MYn3AXX0Rb0mRjHZ
-         oWHeRDYyzUf2hbV2g83zzhiSHKtCpvKHUxgyS18vztrsL1YDh8TfxmSh4u2GOqyVWnIC
-         3dOw==
-X-Gm-Message-State: AOAM532XDeTdskW2BMbNXgtbnLF7irEJ+xTJ1UBR3NJ/8qeYAcxdIFNI
-        TwLWBaTjp7jp4hcQHGxLj5w=
-X-Google-Smtp-Source: ABdhPJz+pO2glId38WZUN+1XOagFJOgZwVOZnE0/nwZz7kCir7nYtmKwi1rdCbWjp93JNGygefHeQg==
-X-Received: by 2002:ac8:7947:: with SMTP id r7mr1467325qtt.180.1589320084128;
-        Tue, 12 May 2020 14:48:04 -0700 (PDT)
-Received: from LeoBras.aus.stglabs.ibm.com (179-125-143-209.dynamic.desktop.com.br. [179.125.143.209])
-        by smtp.gmail.com with ESMTPSA id d57sm700550qta.51.2020.05.12.14.47.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 14:48:03 -0700 (PDT)
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Enrico Weigelt <info@metux.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/1] powerpc/crash: Use NMI context for printk when starting to crash
-Date:   Tue, 12 May 2020 18:45:35 -0300
-Message-Id: <20200512214533.93878-1-leobras.c@gmail.com>
-X-Mailer: git-send-email 2.25.4
+        id S1731401AbgELVqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 17:46:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731065AbgELVqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 17:46:17 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B883620731;
+        Tue, 12 May 2020 21:46:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589319976;
+        bh=ulLHlolQRXsWXYiTML1BrCYngQd1LDZaMS96rMIfDoI=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=W+OUlqzrI5Ge8FBittf7LcuviYyZbh7RW04rzXj0LXbJmBI7zFX31BvgYAIo1XAQM
+         XL8YFWUp3Nkbad2exsH3fZKlopfu4Zg7IUCUf1Q0UnAw/lmuhbuuVc7STGue7Ix1Pc
+         C1xok6HYkI+k+YIz7N4plBlZmqeamDeYPfz3+OZc=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200512204543.22090-5-robh@kernel.org>
+References: <20200512204543.22090-1-robh@kernel.org> <20200512204543.22090-5-robh@kernel.org>
+Subject: Re: [PATCH 5/5] dt-bindings: Fix incorrect 'reg' property sizes
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Date:   Tue, 12 May 2020 14:46:16 -0700
+Message-ID: <158931997603.215346.13048447179585746005@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, if printk lock (logbuf_lock) is held by other thread during
-crash, there is a chance of deadlocking the crash on next printk, and
-blocking a possibly desired kdump.
+Quoting Rob Herring (2020-05-12 13:45:43)
+> The examples template is a 'simple-bus' with a size of 1 cell for
+> #address-cells and #size-cells. The schema was only checking the entries
+> had between 2 and 4 cells which really only errors on I2C or SPI type
+> devices with a single cell.
+>=20
+> The easiest fix in most cases is to change the 'reg' property to for 1 ce=
+ll
+> address and size. In some cases with child devices having 2 cells, that
+> doesn't make sense so a bus node is needed.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
 
-At the start of default_machine_crash_shutdown, make printk enter
-NMI context, as it will use per-cpu buffers to store the message,
-and avoid locking logbuf_lock.
-
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-
----
-Changes since v1:
-- Added in-code comment explaining the need of context change
-- Function moved to the start of default_machine_crash_shutdown,
-  to avoid locking any printk on crashing routine.
-- Title was 'Use NMI context for printk after crashing other CPUs'
-
----
- arch/powerpc/kexec/crash.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/powerpc/kexec/crash.c b/arch/powerpc/kexec/crash.c
-index d488311efab1..c9a889880214 100644
---- a/arch/powerpc/kexec/crash.c
-+++ b/arch/powerpc/kexec/crash.c
-@@ -311,6 +311,9 @@ void default_machine_crash_shutdown(struct pt_regs *regs)
- 	unsigned int i;
- 	int (*old_handler)(struct pt_regs *regs);
- 
-+	/* Avoid hardlocking with irresponsive CPU holding logbuf_lock */
-+	printk_nmi_enter();
-+
- 	/*
- 	 * This function is only called after the system
- 	 * has panicked or is otherwise in a critical state.
--- 
-2.25.4
-
+Acked-by: Stephen Boyd <sboyd@kernel.org> # clk
