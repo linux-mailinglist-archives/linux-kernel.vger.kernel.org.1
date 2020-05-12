@@ -2,67 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6991CEA90
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 04:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DC91CEAB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 04:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728581AbgELCLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 22:11:24 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4393 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727892AbgELCLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 22:11:23 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 90833A0F04202A38486F;
-        Tue, 12 May 2020 10:11:21 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 12 May 2020 10:11:12 +0800
-From:   Samuel Zou <zou_wei@huawei.com>
-To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <joro@8bytes.org>
-CC:     <linux-arm-msm@vger.kernel.org>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        Samuel Zou <zou_wei@huawei.com>
-Subject: [PATCH -next] iommu/msm: Make msm_iommu_lock static
-Date:   Tue, 12 May 2020 10:17:19 +0800
-Message-ID: <1589249839-105820-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1728636AbgELCSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 22:18:40 -0400
+Received: from mx.socionext.com ([202.248.49.38]:44388 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728301AbgELCSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 22:18:39 -0400
+Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
+  by mx.socionext.com with ESMTP; 12 May 2020 11:18:38 +0900
+Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
+        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id 4E8B9180BB6;
+        Tue, 12 May 2020 11:18:38 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Tue, 12 May 2020 11:18:38 +0900
+Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
+        by kinkan.css.socionext.com (Postfix) with ESMTP id EDACE1A01BB;
+        Tue, 12 May 2020 11:18:37 +0900 (JST)
+Received: from [10.213.31.213] (unknown [10.213.31.213])
+        by yuzu.css.socionext.com (Postfix) with ESMTP id 67C7D120133;
+        Tue, 12 May 2020 11:18:37 +0900 (JST)
+Subject: Re: [PATCH net] dt-bindings: net: Convert UniPhier AVE4 controller to
+ json-schema
+To:     Rob Herring <robh@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1588055482-13012-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <20200512020126.GA22178@bogus>
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Message-ID: <600b83e2-8063-b8ca-5406-7bf854c45ab3@socionext.com>
+Date:   Tue, 12 May 2020 11:18:36 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200512020126.GA22178@bogus>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+Hi Rob,
 
-drivers/iommu/msm_iommu.c:37:1: warning: symbol 'msm_iommu_lock' was not declared.
+On 2020/05/12 11:01, Rob Herring wrote:
+> On Tue, Apr 28, 2020 at 03:31:22PM +0900, Kunihiko Hayashi wrote:
+>> Convert the UniPhier AVE4 controller binding to DT schema format.
+>> This changes phy-handle property to required.
+>>
+>> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+>> ---
 
-The msm_iommu_lock has only call site within msm_iommu.c
-It should be static
+(snip)
 
-Fixes: 0720d1f052dc ("msm: Add MSM IOMMU support")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Samuel Zou <zou_wei@huawei.com>
+>> +  phy-mode:
+>> +    $ref: ethernet-controller.yaml#/properties/phy-mode
+>> +
+>> +  phy-handle:
+>> +    $ref: ethernet-controller.yaml#/properties/phy-handle
+> 
+> No need for these $ref, the 1st reference did this. Just:
+> 
+> phy-mode: true
+
+Okay, "phy-handle" also replaces with "true".
+I'll fix it in v2.
+
+Thank you,
+  
 ---
- drivers/iommu/msm_iommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iommu/msm_iommu.c b/drivers/iommu/msm_iommu.c
-index 10cd4db..3d8a635 100644
---- a/drivers/iommu/msm_iommu.c
-+++ b/drivers/iommu/msm_iommu.c
-@@ -34,7 +34,7 @@ __asm__ __volatile__ (							\
- /* bitmap of the page sizes currently supported */
- #define MSM_IOMMU_PGSIZES	(SZ_4K | SZ_64K | SZ_1M | SZ_16M)
- 
--DEFINE_SPINLOCK(msm_iommu_lock);
-+static DEFINE_SPINLOCK(msm_iommu_lock);
- static LIST_HEAD(qcom_iommu_devices);
- static struct iommu_ops msm_iommu_ops;
- 
--- 
-2.6.2
-
+Best Regards
+Kunihiko Hayashi
