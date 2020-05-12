@@ -2,164 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5CB1CFF65
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 22:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93691CFF4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 22:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731232AbgELUfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 16:35:48 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:42488 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731183AbgELUfo (ORCPT
+        id S1730210AbgELUd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 16:33:58 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:50702 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725950AbgELUd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 16:35:44 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jYbch-0002xz-HY; Tue, 12 May 2020 14:35:31 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jYbcg-0006hZ-NY; Tue, 12 May 2020 14:35:31 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Rob Landley <rob@landley.net>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andy Lutomirski <luto@amacapital.net>
-References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
-        <87sgga6ze4.fsf@x220.int.ebiederm.org>
-        <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
-        <87eerszyim.fsf_-_@x220.int.ebiederm.org>
-        <ee83587b-8a1c-3c4f-cc0f-7bc98afabae1@I-love.SAKURA.ne.jp>
-        <CAHk-=wgQ2ovXMW=5ZHCpowkE1PwPQSL7oV4YXzBxd6eqNRXxnQ@mail.gmail.com>
-        <87sgg6v8we.fsf@x220.int.ebiederm.org>
-        <202005111428.B094E3B76A@keescook>
-        <874kslq9jm.fsf@x220.int.ebiederm.org>
-        <202005121218.ED0B728DA@keescook>
-Date:   Tue, 12 May 2020 15:31:57 -0500
-In-Reply-To: <202005121218.ED0B728DA@keescook> (Kees Cook's message of "Tue,
-        12 May 2020 12:25:24 -0700")
-Message-ID: <87lflwq4hu.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 12 May 2020 16:33:57 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200512203355euoutp02706617157b883cf9c5002f2710f61d99~OYiZVzkDE2274122741euoutp02H
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 20:33:55 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200512203355euoutp02706617157b883cf9c5002f2710f61d99~OYiZVzkDE2274122741euoutp02H
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1589315635;
+        bh=wnAc6t9J+MLeu4DXX/UMTG7FIxfuzBk4sujw+pbXYuI=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=vFcP7z7iNFqcPY/EoZ5ceEWyjH1xwGyPTsFs44xdrk9/usQK/cCqb6wNTikhe/cz3
+         VRuU1QMd4IzJN8gNMfXAO/FSr7WAEwp3UEQA958LHOtJuBsPdJUyXn7cor0p/GkEeY
+         qrecZ9OJZgAZ759EqpgSB1rwj676W+1IKU9G/b1E=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200512203354eucas1p1ccad241d082e172806147e8051ca5cd5~OYiY_s_Nd1765817658eucas1p1P;
+        Tue, 12 May 2020 20:33:54 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 59.BC.60679.2380BBE5; Tue, 12
+        May 2020 21:33:54 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200512203354eucas1p1ec0713551239b5437374232a3558db8e~OYiYXwwvs1766317663eucas1p1P;
+        Tue, 12 May 2020 20:33:54 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200512203354eusmtrp29c5130625112f643794304998f69d654~OYiYXBRxv1599815998eusmtrp2e;
+        Tue, 12 May 2020 20:33:54 +0000 (GMT)
+X-AuditID: cbfec7f4-0cbff7000001ed07-4a-5ebb08320b1c
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id C1.CA.07950.2380BBE5; Tue, 12
+        May 2020 21:33:54 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200512203353eusmtip24e27fc61e27b356e67372df3a9c99d61~OYiXny--L2981929819eusmtip2U;
+        Tue, 12 May 2020 20:33:53 +0000 (GMT)
+Subject: Re: [PATCH v4 38/38] videobuf2: use sgtable-based scatterlist
+ wrappers
+To:     "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Pawel Osciak <pawel@osciak.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        David Airlie <airlied@linux.ie>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <f6242137-82a5-0e33-f1a2-9e73dc679aa9@samsung.com>
+Date:   Tue, 12 May 2020 22:33:54 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jYbcg-0006hZ-NY;;;mid=<87lflwq4hu.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+qsyyfmYubd8DotJ8yuQl163vwuqW1glQ=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: ; sa08 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Kees Cook <keescook@chromium.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 419 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 14 (3.4%), b_tie_ro: 13 (3.0%), parse: 0.80
-        (0.2%), extract_message_metadata: 10 (2.5%), get_uri_detail_list: 1.54
-        (0.4%), tests_pri_-1000: 5 (1.2%), tests_pri_-950: 1.38 (0.3%),
-        tests_pri_-900: 1.22 (0.3%), tests_pri_-90: 98 (23.3%), check_bayes:
-        95 (22.6%), b_tokenize: 8 (1.8%), b_tok_get_all: 11 (2.6%),
-        b_comp_prob: 2.8 (0.7%), b_tok_touch_all: 68 (16.3%), b_finish: 1.21
-        (0.3%), tests_pri_0: 276 (66.0%), check_dkim_signature: 0.73 (0.2%),
-        check_dkim_adsp: 11 (2.6%), poll_dns_idle: 0.59 (0.1%), tests_pri_10:
-        2.1 (0.5%), tests_pri_500: 6 (1.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 3/5] exec: Remove recursion from search_binary_handler
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+In-Reply-To: <14063C7AD467DE4B82DEDB5C278E8663010E210FAC@FMSMSX108.amr.corp.intel.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SfyyUcRzu+773vveSs9fRfCax3cqWLUVt3k2MVdvbVqv80aaNOnmHdYfu
+        TaoxJpOOykjpRpRWuejH3XGclu6K82NJkemHJP4hxjiWH5HzUv57nufzfPY8n+1D4dJpwoOK
+        TzjHqRLkChnpKKptnu3YEUA1RO1qMQUw1zpaMeZF8TOC6Z4eJ5nKJ00Y8+FOn4gpbwxibN0D
+        GKMb7CGYLlMJyeQ9ryGYh7oFjOk0+jI3x2bFjHliiAh1ZqvuViG24uUwxuq0V0nWOPODYPtz
+        rRirf5DOfl0cxNnC3keIbficQbKDc8Mke92gReyUzottm54SH5WccNwbwyniz3OqnSGnHONs
+        83lYUrbnheq+ESwD9burkQMF9B54YnlLqJEjJaUfIzCPvhELxIbgxuRTkUCmEEzO3EZrK9nW
+        biQMHiH4dGUeE8g4glaDHre7XOljMJKlwe0DN7oZg/HK+pUUnK7CYWEhR2x3kbQ/qMfUpB1L
+        6BBo1WZidiyit8FMftZK3iY6Etor9EjwuEDrnaHlUhTlQB+HUutWu4zT3mAcK8EF7A5fhspW
+        GgF9j4Lq0pbV3vvhVV0lLmBXGLEaxAL2hKX6tYXLCAY6qsUCyUPQlVm8uh0E3zrmSHsyTm+H
+        Z6adghwGXbYiZJeBdobeMRehhDMU1N7GBVkCOdlSwe0DGuvTf7Hmzo94PpJp1l2mWXeOZt05
+        mv+55UikRe5cMq+M5fiABC7Fj5cr+eSEWL/TiUodWn7G9kWrrQ6ZFqItiKaQzEmyIc0UJSXk
+        5/mLSgsCCpe5SbLi66Okkhj5xUucKvGkKlnB8Ra0mRLJ3CW77w9HSulY+TnuDMclcaq1KUY5
+        eGSgjepRW2TBUE9RRFqToiLcwdu7SrNvafBgdPCFI301KRNMRHpgoVvw218DE8bG6iUy8efI
+        w67MTB8o2NSGDvncsp5Ujr82O2FlltCfWmNKcUiua07YaPiB1KQ5Zb8uderPluzD/LvK3zFG
+        17NcbmnScAthVrw/Thi8sgK/6zkvmYiPk/v74ipe/hdBiun/iAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnleLIzCtJLcpLzFFi42I5/e/4PV0jjt1xBrtmcFv0njvJZLFxxnpW
+        iytf37NZrFx9lMni4sy7LBYL9ltbfLnykMli0+NrrBaXd81hs+jZsJXVYtmmP0wWF7ZrWUx5
+        +5Pd4uCHJ6wOfB5r5q1h9Fi85yWTx6ZVnWwe2789YPW4332cyWPzknqP2/8eM3tMvrGc0WP3
+        zQY2j8e/XrJ59G1ZxejxeZOcx6mvn9kDeKP0bIryS0tSFTLyi0tslaINLYz0DC0t9IxMLPUM
+        jc1jrYxMlfTtbFJSczLLUov07RL0Mr787mEqaJOpWHv3FVMD433xLkZODgkBE4m241cYuxi5
+        OIQEljJK3NyzmBkiISNxcloDK4QtLPHnWhcbRNFbRomvDZvBioQFAiVetcxiBkmICBxjktjR
+        9owJxGEWWMcs8b3xOTtEC1DmxfufjCAtbAKGEl1vQWZxcvAK2EmcXNXEBGKzCKhKfJvQAlYj
+        KhArsfpaKyNEjaDEyZlPWLoYOTg4BcIk5h5XAQkzC5hJzNv8kBnClpfY/nYOlC0ucevJfKYJ
+        jEKzkHTPQtIyC0nLLCQtCxhZVjGKpJYW56bnFhvpFSfmFpfmpesl5+duYgQmgm3Hfm7Zwdj1
+        LvgQowAHoxIPb0T9rjgh1sSy4srcQ4wSHMxKIrwtmTvjhHhTEiurUovy44tKc1KLDzGaAv02
+        kVlKNDkfmKTySuINTQ3NLSwNzY3Njc0slMR5OwQOxggJpCeWpGanphakFsH0MXFwSjUwNm3l
+        /NjmYWpvPWe3RtE5l5/PXaMSlHe8Phi5QIVHqIbh8jrPgDxGLr6C913Plnx3yQl9VauyYyHj
+        D+bN7+Zt4F0qO1H1z4pGNb22+tTbRpzzV06dp7Zg+96NE668PJztt8Vc6/qyzusMWU97LRbc
+        vf1BI87IPinqQOMTUfld7lxpaddntH+bocRSnJFoqMVcVJwIAH0Po9kaAwAA
+X-CMS-MailID: 20200512203354eucas1p1ec0713551239b5437374232a3558db8e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200512090130eucas1p2eb86c5d34be56bbc81032bc0b6927d1e
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200512090130eucas1p2eb86c5d34be56bbc81032bc0b6927d1e
+References: <20200512085710.14688-1-m.szyprowski@samsung.com>
+        <20200512090058.14910-1-m.szyprowski@samsung.com>
+        <CGME20200512090130eucas1p2eb86c5d34be56bbc81032bc0b6927d1e@eucas1p2.samsung.com>
+        <20200512090058.14910-38-m.szyprowski@samsung.com>
+        <14063C7AD467DE4B82DEDB5C278E8663010E210FAC@FMSMSX108.amr.corp.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
+Hi Michael,
 
-> On Tue, May 12, 2020 at 01:42:53PM -0500, Eric W. Biederman wrote:
->> Kees Cook <keescook@chromium.org> writes:
->> > Should binfmt_misc do the install, or can the consuming binfmt do it?
->> > i.e. when binfmt_elf sees bprm->execfd, does it perform the install
->> > instead?
->> 
->> I am still thinking about this one, but here is where I am at.  At a
->> practical level passing the file descriptor of the script to interpreter
->> seems like something we should encourage in the long term.  It removes
->> races and it is cheaper because then the interpreter does not have to
->> turn around and open the script itself.
+On 12.05.2020 19:52, Ruhl, Michael J wrote:
+>> -----Original Message-----
+>> From: dri-devel <dri-devel-bounces@lists.freedesktop.org> On Behalf Of
+>> Marek Szyprowski
+>> Sent: Tuesday, May 12, 2020 5:01 AM
+>> To: dri-devel@lists.freedesktop.org; iommu@lists.linux-foundation.org;
+>> linaro-mm-sig@lists.linaro.org; linux-kernel@vger.kernel.org
+>> Cc: Pawel Osciak <pawel@osciak.com>; Bartlomiej Zolnierkiewicz
+>> <b.zolnierkie@samsung.com>; David Airlie <airlied@linux.ie>; linux-
+>> media@vger.kernel.org; Hans Verkuil <hverkuil-cisco@xs4all.nl>; Mauro
+>> Carvalho Chehab <mchehab@kernel.org>; Robin Murphy
+>> <robin.murphy@arm.com>; Christoph Hellwig <hch@lst.de>; linux-arm-
+>> kernel@lists.infradead.org; Marek Szyprowski
+>> <m.szyprowski@samsung.com>
+>> Subject: [PATCH v4 38/38] videobuf2: use sgtable-based scatterlist wrappers
+>>
+>> Use recently introduced common wrappers operating directly on the struct
+>> sg_table objects and scatterlist page iterators to make the code a bit
+>> more compact, robust, easier to follow and copy/paste safe.
+>>
+>> No functional change, because the code already properly did all the
+>> scaterlist related calls.
+>>
+>> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>> ---
+>> For more information, see '[PATCH v4 00/38] DRM: fix struct sg_table nents
+>> vs. orig_nents misuse' thread:
+>> https://lore.kernel.org/dri-devel/20200512085710.14688-1-
+>> m.szyprowski@samsung.com/T/
+>> ---
+>> .../media/common/videobuf2/videobuf2-dma-contig.c  | 41 ++++++++++----
+>> --------
+>> drivers/media/common/videobuf2/videobuf2-dma-sg.c  | 32 +++++++--------
+>> --
+>> drivers/media/common/videobuf2/videobuf2-vmalloc.c | 12 +++----
+>> 3 files changed, 34 insertions(+), 51 deletions(-)
+>>
+>> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+>> b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+>> index d3a3ee5..bf31a9d 100644
+>> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+>> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+>> @@ -48,16 +48,15 @@ struct vb2_dc_buf {
+>>
+>> static unsigned long vb2_dc_get_contiguous_size(struct sg_table *sgt)
+>> {
+>> -	struct scatterlist *s;
+>> 	dma_addr_t expected = sg_dma_address(sgt->sgl);
+>> -	unsigned int i;
+>> +	struct sg_dma_page_iter dma_iter;
+>> 	unsigned long size = 0;
+>>
+>> -	for_each_sg(sgt->sgl, s, sgt->nents, i) {
+>> -		if (sg_dma_address(s) != expected)
+>> +	for_each_sgtable_dma_page(sgt, &dma_iter, 0) {
+>> +		if (sg_page_iter_dma_address(&dma_iter) != expected)
+>> 			break;
+>> -		expected = sg_dma_address(s) + sg_dma_len(s);
+>> -		size += sg_dma_len(s);
+>> +		expected += PAGE_SIZE;
+>> +		size += PAGE_SIZE;
+> This code in drm_prime_t_contiguous_size and here.  I seem to remember seeing
+> the same pattern in other drivers.
 >
-> Yeah, this does sounds pretty good, though I have concerns about doing
-> it for a process that isn't expecting it. I've seen a lot of bad code
-> make assumptions about initial fd numbers. :(
-
-Yes.  That is definitely a concern.
-
->> Strictly speaking binfmt_misc should not need to close the file
->> descriptor in binfmt_misc because we have already unshared the files
->> struct and reset_files_struct should handle restoring it.
+> Would it worthwhile to make this a helper as well?
+I think I've identified such patterns in all DRM drivers and replaced 
+with a common helper. So far I have no idea where to put such helper to 
+make it available for media/videobuf2, so those a few lines are indeed 
+duplicated here.
+> Also, isn't the sg_dma_len() the actual length of the chunk we are looking at?
 >
-> If I get what you mean, I agree. The error case is fine.
->
->> Calling fd_install in binfmt_misc still seems wrong, as that exposes
->> the new file descriptor to user space with the old creds.
->
-> I haven't dug into the details here -- is there a real risk here? The
-> old creds are what opened the file originally for the exec. Are you
-> thinking about executable-but-not-readable files?
+> If its I not PAGE_SIZE (ie. dma chunk is 4 * PAGE_SIZE?), does your loop/calculation still work?
 
-I am thinking about looking in proc/<pid>/fd and maybe opening those
-files.  That access is gated by ptrace_may_access which is gated
-by the process credentials. So I know strictly speaking it is wrong.
+scaterlist page iterators (for_each_sg_page/for_each_sg_dma_page and 
+their sgtable variants) always operates on PAGE_SIZE units. They 
+correctly handle larger sg_dma_len().
 
-I think you are correct that it would only allow access to a file that
-could be accessed another way.  Even execveat at a quick glance appears
-to go through the orinary permission checks of open.
 
-The current code is definitely a maintenance pitfall as it install state
-into the process early.
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
->> It is possible although unlikely for userspace to find the file
->> descriptor without consulting AT_EXECFD so just to be conservative I
->> think we should install the file descriptor in begin_new_exec even if
->> the next interpreter does not support AT_EXECFD.
->
-> I think universally installing the fd needs to be a distinct patch --
-> it's going to have a lot of consequences, IMO. We can certainly deal
-> with them, but I don't think it should be part of this clean-up series.
-
-I meant generically installing the fd not universally installing it.
-
->> I am still working on how to handle recursive binfmts but I suspect it
->> is just a matter of having an array of struct files in struct
->> linux_binprm.
->
-> If install is left if binfmt_misc, then the recursive problem goes away,
-> yes?
-
-I don't think leaving the install in binfmt_misc is responsible at this
-point.
-
-Eric
