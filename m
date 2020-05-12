@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA241CEA76
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 04:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BB91CEA78
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 04:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728594AbgELCD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 22:03:28 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:29790 "EHLO
+        id S1728615AbgELCDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 22:03:37 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:41432 "EHLO
         mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728536AbgELCDV (ORCPT
+        by vger.kernel.org with ESMTP id S1728536AbgELCDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 22:03:21 -0400
+        Mon, 11 May 2020 22:03:34 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589249001; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1589249013; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=ubUHGIqluRbZVp5rB1az2CaAVRj7QgCCGuQL32nMMbU=; b=SbK6HaO+SluSjpmnw+vIysFCxQUlvUBOvxBJdLk+QfgfXfrbSHUyeIFiSHusu0GSKoeJEhfb
- UBxwbrycINHlxIVFjfewk6LB+k1qFVjM6KBamdmuyAa7kvnmCOzRzag5XJjwasa1mV3ZkOtv
- VU7GeMFp7tJudqDET6ilAJooTNs=
+ bh=sB4Rjkb7qIuLcCTYtGiQC/L8BR2eEI+tANIskUqLp8U=; b=DD5d1MtlBTi3WeVjx40YvKnw5ydlKsCA1CR41ZbeCWaI0XpqU8Hxb0bNAizVw+BnqWo3rvYw
+ W6rdK8KK8feGa3heR6o0/0P56QhxYRfrsSbX1Iq1v6cRkam7L3jnIoahafwUD07Isxpm15sO
+ UDxrXln5EizdgFW1A0tRIUcDlJM=
 X-Mailgun-Sending-Ip: 104.130.122.27
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eba03e5.7f97719ced50-smtp-out-n01;
- Tue, 12 May 2020 02:03:17 -0000 (UTC)
+ by mxa.mailgun.org with ESMTP id 5eba03e6.7feb2893ea78-smtp-out-n02;
+ Tue, 12 May 2020 02:03:18 -0000 (UTC)
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AB08DC4478F; Tue, 12 May 2020 02:03:17 +0000 (UTC)
+        id 451D6C433F2; Tue, 12 May 2020 02:03:18 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -34,9 +34,9 @@ Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 07648C433BA;
-        Tue, 12 May 2020 02:03:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 07648C433BA
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6D521C432C2;
+        Tue, 12 May 2020 02:03:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6D521C432C2
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=hemantk@codeaurora.org
 From:   Hemant Kumar <hemantk@codeaurora.org>
@@ -44,9 +44,9 @@ To:     manivannan.sadhasivam@linaro.org
 Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         jhugo@codeaurora.org, bbhatt@codeaurora.org,
         Hemant Kumar <hemantk@codeaurora.org>
-Subject: [PATCH v1 2/5] bus: mhi: core: Handle disable transitions in state worker
-Date:   Mon, 11 May 2020 19:03:06 -0700
-Message-Id: <1589248989-23824-3-git-send-email-hemantk@codeaurora.org>
+Subject: [PATCH v1 3/5] bus: mhi: core: Skip handling BHI irq if MHI reg access is not allowed
+Date:   Mon, 11 May 2020 19:03:07 -0700
+Message-Id: <1589248989-23824-4-git-send-email-hemantk@codeaurora.org>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1589248989-23824-1-git-send-email-hemantk@codeaurora.org>
 References: <1589248989-23824-1-git-send-email-hemantk@codeaurora.org>
@@ -55,75 +55,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mission mode transition is handled by state worker thread but
-power off is not. There is a possibility while mission mode
-transition is in progress which calls MHI client driver probe,
-power off is issued by MHI controller. This results into client
-driver probe and remove running in parallel and causes use after
-free situation. By queuing disable transition work when mission
-mode is in progress prevents the race condition.
+Driver continues handling of BHI interrupt even if MHI register access
+is not allowed. By doing so it calls the status call back and performs
+early notification for the MHI client. This is not needed when MHI
+register access is not allowed. Hence skip the handling in this case and
+return. Also add debug log to print device state, local EE and device EE
+when reg access is valid.
 
 Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
 Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
 ---
- drivers/bus/mhi/core/init.c     |  1 +
- drivers/bus/mhi/core/internal.h |  1 +
- drivers/bus/mhi/core/pm.c       | 11 ++++++++++-
- 3 files changed, 12 insertions(+), 1 deletion(-)
+ drivers/bus/mhi/core/main.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index 3a853c5..12207cc 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -35,6 +35,7 @@
- 	[DEV_ST_TRANSITION_SBL] = "SBL",
- 	[DEV_ST_TRANSITION_MISSION_MODE] = "MISSION_MODE",
- 	[DEV_ST_TRANSITION_SYS_ERR] = "SYS_ERR",
-+	[DEV_ST_TRANSITION_DISABLE] = "DISABLE",
- };
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index 9ec9b36..467c0ba 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -369,22 +369,29 @@ irqreturn_t mhi_irq_handler(int irq_number, void *dev)
+ 	return IRQ_HANDLED;
+ }
  
- const char * const mhi_state_str[MHI_STATE_MAX] = {
-diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-index f01283b..b1f640b 100644
---- a/drivers/bus/mhi/core/internal.h
-+++ b/drivers/bus/mhi/core/internal.h
-@@ -387,6 +387,7 @@ enum dev_st_transition {
- 	DEV_ST_TRANSITION_SBL,
- 	DEV_ST_TRANSITION_MISSION_MODE,
- 	DEV_ST_TRANSITION_SYS_ERR,
-+	DEV_ST_TRANSITION_DISABLE,
- 	DEV_ST_TRANSITION_MAX,
- };
+-irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *dev)
++irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
+ {
+-	struct mhi_controller *mhi_cntrl = dev;
++	struct mhi_controller *mhi_cntrl = priv;
++	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+ 	enum mhi_state state = MHI_STATE_MAX;
+ 	enum mhi_pm_state pm_state = 0;
+ 	enum mhi_ee_type ee = 0;
  
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index d9964d4..345f197 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -657,6 +657,10 @@ void mhi_pm_st_worker(struct work_struct *work)
- 			mhi_pm_disable_transition
- 				(mhi_cntrl, MHI_PM_SYS_ERR_PROCESS);
- 			break;
-+		case DEV_ST_TRANSITION_DISABLE:
-+			mhi_pm_disable_transition
-+				(mhi_cntrl, MHI_PM_SHUTDOWN_PROCESS);
-+			break;
- 		default:
- 			break;
- 		}
-@@ -1011,7 +1015,12 @@ void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
- 				to_mhi_pm_state_str(MHI_PM_LD_ERR_FATAL_DETECT),
- 				to_mhi_pm_state_str(mhi_cntrl->pm_state));
+ 	write_lock_irq(&mhi_cntrl->pm_lock);
+-	if (MHI_REG_ACCESS_VALID(mhi_cntrl->pm_state)) {
+-		state = mhi_get_mhi_state(mhi_cntrl);
+-		ee = mhi_cntrl->ee;
+-		mhi_cntrl->ee = mhi_get_exec_env(mhi_cntrl);
++	if (!MHI_REG_ACCESS_VALID(mhi_cntrl->pm_state)) {
++		write_unlock_irq(&mhi_cntrl->pm_lock);
++		goto exit_intvec;
  	}
--	mhi_pm_disable_transition(mhi_cntrl, MHI_PM_SHUTDOWN_PROCESS);
-+
-+	mhi_queue_state_transition(mhi_cntrl, DEV_ST_TRANSITION_DISABLE);
-+
-+	/* Wait for shutdown to complete */
-+	flush_work(&mhi_cntrl->st_worker);
-+
- 	mhi_deinit_free_irq(mhi_cntrl);
  
- 	if (!mhi_cntrl->pre_init) {
++	state = mhi_get_mhi_state(mhi_cntrl);
++	ee = mhi_cntrl->ee;
++	mhi_cntrl->ee = mhi_get_exec_env(mhi_cntrl);
++	dev_dbg(dev, "local ee:%s device ee:%s dev_state:%s\n",
++		TO_MHI_EXEC_STR(mhi_cntrl->ee), TO_MHI_EXEC_STR(ee),
++		TO_MHI_STATE_STR(state));
++
+ 	if (state == MHI_STATE_SYS_ERR) {
+-		dev_dbg(&mhi_cntrl->mhi_dev->dev, "System error detected\n");
++		dev_dbg(dev, "System error detected\n");
+ 		pm_state = mhi_tryset_pm_state(mhi_cntrl,
+ 					       MHI_PM_SYS_ERR_DETECT);
+ 	}
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
