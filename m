@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8D41CF4B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 14:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DADE21CF4AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 14:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729869AbgELMrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 08:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50460 "EHLO
+        id S1729904AbgELMr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 08:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729229AbgELMrX (ORCPT
+        by vger.kernel.org with ESMTP id S1729851AbgELMrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 08:47:23 -0400
+        Tue, 12 May 2020 08:47:24 -0400
 Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB568C061A0C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B38A9C061A0F
         for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 05:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=ngZs8drZ7QXRvmUeJGP4y1pSY454qouM1a6376s95vs=; b=ZXKExd2ZH/XmhPLQHFbAQkMSxn
-        dtYYboA1nY3FF0+yBsWq4FobSf6GFGhLCUnrmPQKSwpiQXmIV3cV2L6rZcbI9u2qE3py6oq7zbcbs
-        hk1tIwy76YSm8bbl/m3NhC+y3YCZNGRA/jO6FkHQ18bXcaNMQNxCkd2EDNP0UwD/tgvsXZEbcAs0B
-        CXp1eX2wUz3BoeuMCPyAcyKmqoSNwbfC6FXLY6/zsfjiD3Y3IzSFTf2DixAOYpO/QPt8EVYqB93h8
-        kKe1Y0411ra2oOuYlKZR5XuqE3bLWJIkCZL7Go7oBqH84dQmlS85SxJMUpI/kgZwb1+0CdRMW+dRK
-        IxNP2Jow==;
+        bh=CYYpiqrbBLgooKXOpvi8wy4NrFYsaxk2WuAfbe/cgCE=; b=W6os7/RwiqUdE+aykxc8eGzgyH
+        fS7bISumtHbFPFrf4M7xtKFo5FeqDVH6JQa4Xq6qSDNjl2frm/JUmDi97d1mL3x0l8u4NpOaFnKW3
+        gx9+Pii5OQt83bS5JqZXK567UF1kC1lE2NVZudxzeS5r41/T5dV77e3KLsEfImeS0gkKs9a735SpY
+        C5xF7Yk/YgDkA2IxcKBxDOqSYS3XQjmAAWLYr5X7OWnoNvggJxTIy+E/eZdz38Yofpf0WjbWT5Qdj
+        SNwkmL2X79pGemtlg7hfMaUy6cW4S8JZDXl9TNeckLoQ/C+9sS1wyvLcOgzSYu85nlycGfTJPkA1j
+        dVv7v0uQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jYUJF-0003GZ-ID; Tue, 12 May 2020 12:46:57 +0000
+        id 1jYUJF-0003Ga-Hf; Tue, 12 May 2020 12:46:57 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 44CCC304DB2;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 476FC3062BA;
         Tue, 12 May 2020 14:46:53 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 2DA2820962E55; Tue, 12 May 2020 14:46:53 +0200 (CEST)
-Message-ID: <20200512124450.903534446@infradead.org>
+        id 3408D20962E57; Tue, 12 May 2020 14:46:53 +0200 (CEST)
+Message-ID: <20200512124450.981890259@infradead.org>
 User-Agent: quilt/0.66
-Date:   Tue, 12 May 2020 14:41:01 +0200
+Date:   Tue, 12 May 2020 14:41:02 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -49,7 +49,7 @@ Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         daniel.lezcano@linaro.org, tglx@linutronix.de,
         sboyd@codeaurora.org, john.stultz@linaro.org,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 3/5] arm64: perf: Only advertise cap_user_time for arch_timer
+Subject: [PATCH 4/5] perf: Add perf_event_mmap_page::cap_user_time_short ABI
 References: <20200512124058.833263033@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,58 +58,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When sched_clock is running on anything other than arch_timer, don't
-advertise cap_user_time*.
+In order to support short clock counters, provide an ABI extention.
 
-Requested-by: Will Deacon <will@kernel.org>
+As a whole:
+
+    u64 time, delta, cyc = read_cycle_counter();
+
++   if (cap_user_time_short)
++	cyc = time_cycle + ((cyc - time_cycle) & time_mask);
+
+    delta = mul_u64_u32_shr(cyc, time_mult, time_shift);
+
+    if (cap_user_time_zero)
+	time = time_zero + delta;
+
+    delta += time_offset;
+
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/arm64/kernel/perf_event.c |   19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ include/uapi/linux/perf_event.h |   23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -13,6 +13,8 @@
- #include <asm/sysreg.h>
- #include <asm/virt.h>
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -532,9 +532,10 @@ struct perf_event_mmap_page {
+ 				cap_bit0_is_deprecated	: 1, /* Always 1, signals that bit 0 is zero */
  
-+#include <clocksource/arm_arch_timer.h>
+ 				cap_user_rdpmc		: 1, /* The RDPMC instruction can be used to read counts */
+-				cap_user_time		: 1, /* The time_* fields are used */
++				cap_user_time		: 1, /* The time_{shift,mult,offset} fields are used */
+ 				cap_user_time_zero	: 1, /* The time_zero field is used */
+-				cap_____res		: 59;
++				cap_user_time_short	: 1, /* the time_{cycle,mask} fields are used */
++				cap_____res		: 58;
+ 		};
+ 	};
+ 
+@@ -593,13 +594,29 @@ struct perf_event_mmap_page {
+ 	 *               ((rem * time_mult) >> time_shift);
+ 	 */
+ 	__u64	time_zero;
 +
- #include <linux/acpi.h>
- #include <linux/clocksource.h>
- #include <linux/kvm_host.h>
-@@ -1169,16 +1171,15 @@ void arch_perf_update_userpage(struct pe
- 	struct clock_read_data *rd;
- 	unsigned int seq;
- 
--	/*
--	 * Internal timekeeping for enabled/running/stopped times
--	 * is always computed with the sched_clock.
--	 */
--	userpg->cap_user_time = 1;
--	userpg->cap_user_time_zero = 1;
-+	userpg->cap_user_time = 0;
-+	userpg->cap_user_time_zero = 0;
- 
- 	do {
- 		rd = sched_clock_read_begin(&seq);
- 
-+		if (rd->read_sched_clock != arch_timer_read_counter)
-+			return;
+ 	__u32	size;			/* Header size up to __reserved[] fields. */
++	__u32	__reserved_1;
 +
- 		userpg->time_mult = rd->mult;
- 		userpg->time_shift = rd->shift;
- 		userpg->time_zero = rd->epoch_ns;
-@@ -1207,4 +1208,10 @@ void arch_perf_update_userpage(struct pe
- 		userpg->time_mult >>= 1;
- 	}
- 
 +	/*
-+	 * Internal timekeeping for enabled/running/stopped times
-+	 * is always computed with the sched_clock.
++	 * If cap_usr_time_short, the hardware clock is less than 64bit wide
++	 * and we must compute the 'cyc' value, as used by cap_usr_time, as:
++	 *
++	 *   cyc = time_cycles + ((cyc - time_cycles) & time_mask)
++	 *
++	 * NOTE: this form is explicitly chosen such that cap_usr_time_short
++	 *       is a correction on top of cap_usr_time, and code that doesn't
++	 *       know about cap_usr_time_short still works under the assumption
++	 *       the counter doesn't wrap.
 +	 */
-+	userpg->cap_user_time = 1;
-+	userpg->cap_user_time_zero = 1;
- }
++	__u64	time_cycles;
++	__u64	time_mask;
+ 
+ 		/*
+ 		 * Hole for extension of the self monitor capabilities
+ 		 */
+ 
+-	__u8	__reserved[118*8+4];	/* align to 1k. */
++	__u8	__reserved[116*8];	/* align to 1k. */
+ 
+ 	/*
+ 	 * Control data for the mmap() data buffer.
 
 
