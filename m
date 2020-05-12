@@ -2,131 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034811CF868
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D631CF895
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730762AbgELPFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 11:05:07 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([146.101.78.151]:31854 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730711AbgELPFD (ORCPT
+        id S1730498AbgELPHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 11:07:05 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:59786 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726610AbgELPHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 11:05:03 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-235-3_3uKYXgN5ic-4pEJ9Zv4Q-1; Tue, 12 May 2020 16:04:59 +0100
-X-MC-Unique: 3_3uKYXgN5ic-4pEJ9Zv4Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 12 May 2020 16:04:58 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 12 May 2020 16:04:58 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'psmith@gnu.org'" <psmith@gnu.org>,
-        'Linus Torvalds' <torvalds@linux-foundation.org>
-CC:     'Arnd Bergmann' <arnd@arndb.de>,
-        'Masahiro Yamada' <yamada.masahiro@socionext.com>,
-        'Linux Kernel Mailing List' <linux-kernel@vger.kernel.org>
-Subject: RE: I disabled more compiler warnings..
-Thread-Topic: I disabled more compiler warnings..
-Thread-Index: AQHWJwHjj7O/Wk29GEyLgXD8YJ1BI6iigEwggACtZraAADOL0IAAtVzQgABf64CAABO1kA==
-Date:   Tue, 12 May 2020 15:04:58 +0000
-Message-ID: <464ab7c2d9e144718e4a3135a41f3056@AcuMS.aculab.com>
-References: <CAHk-=wjah-fkfzMdmCNN8v7uriJsGeYjHh18wkXDZa2sxuAXzA@mail.gmail.com>
-         <8320f29ca61146fc985083621685ac95@AcuMS.aculab.com>
-         <CAHk-=whLY8dXE6qMuPNE+Tjc6uXy+W2jACyWLxtRUH6GU2=PAA@mail.gmail.com>
-         <0ff4860b4202a6ef3bb3b29912d083d471e1cc1d.camel@gnu.org>
-         <90909f30775744b89d1a0c40265779d9@AcuMS.aculab.com>
-         <5564c992dfeb40adbc3e6f6a29e43d2e@AcuMS.aculab.com>
- <73dace5aca21bee09ce12aa8dcfd50daa2cd6051.camel@gnu.org>
-In-Reply-To: <73dace5aca21bee09ce12aa8dcfd50daa2cd6051.camel@gnu.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 12 May 2020 11:07:02 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04CF1em8023749;
+        Tue, 12 May 2020 10:06:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=D95AZ6qA+hhDwF46fVfOwPe7tq0kH/15sfSGGHy9jgU=;
+ b=ccmZgk3pRYxdkno8BKHE8OcQdAoymYQY3W6ZE7F/fujlj20yQPrwh4pP2dtjiJkXcutE
+ x+GxD06zsgc6CaVgBMTIOvF/Z6/XxdenPHp/+kRBpi6AO33AokRqx2+LpmiIvr6QOXYy
+ XBB2m8pf6cYvpRCP0W9crGdAHax63YcmEK+YB4huDNu+PXAc91G22eljg2qrEAbUS3Q+
+ NksC13mFuPm+kHLn6A6FQw71M7XKBvVZ2FsPiM/+vA0tfR1Vo/vY3cp1/x0bS+1zD3o6
+ F812NA1qNYa4cERbBZqJ1cDHMwgm236TKA1n4VQCYvE1Ghzc6tM9C/rErlJRKhJ+5gs5 Yw== 
+Authentication-Results: ppops.net;
+        spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 30wrxq5009-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 12 May 2020 10:06:37 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 12 May
+ 2020 16:06:36 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Tue, 12 May 2020 16:06:36 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 73E972C6;
+        Tue, 12 May 2020 15:06:36 +0000 (UTC)
+Date:   Tue, 12 May 2020 15:06:36 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <lee.jones@linaro.org>, <broonie@kernel.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>, <jdelvare@suse.com>,
+        <linux@roeck-us.net>, <linus.walleij@linaro.org>,
+        <lgirdwood@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <patches@opensource.cirrus.com>
+Subject: Re: [PATCH v2 5/5] mfd: lochnagar: Move binding over to dtschema
+Message-ID: <20200512150636.GD71940@ediswmail.ad.cirrus.com>
+References: <20200504154757.17519-1-ckeepax@opensource.cirrus.com>
+ <20200504154757.17519-5-ckeepax@opensource.cirrus.com>
+ <20200512134949.GA14057@bogus>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200512134949.GA14057@bogus>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com include:spf.protection.outlook.com
+ ip4:5.172.152.52 -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ bulkscore=0 priorityscore=1501 suspectscore=0 spamscore=0 clxscore=1015
+ malwarescore=0 mlxscore=0 mlxlogscore=986 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005120114
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogUGF1bCBTbWl0aA0KPiBTZW50OiAxMiBNYXkgMjAyMCAxNTozNg0KPiBPbiBUdWUsIDIw
-MjAtMDUtMTIgYXQgMDc6NTUgKzAwMDAsIERhdmlkIExhaWdodCB3cm90ZToNCj4gPiA+IE9uZSBw
-cm9ibGVtIGlzIGVuc3VyaW5nIHRoYXQgYWxsIHRoZSByZWN1cnNpdmUgbWFrZXMgYWN0dWFsbHkN
-Cj4gPiA+IHVzZSB0aGUgc2FtZSB0b2tlbiBxdWV1ZS4NCj4gPiA+IFRoZSBMaW51eCBrZXJuZWwg
-YnVpbGQgYWN0cyBhcyB0aG91Z2ggdGhlIHN1Yi1tYWtlcyBoYXZlIHRoZWlyDQo+ID4gPiBvd24g
-cXVldWUgLSBJIGNlcnRhaW5seSBoYWQgdG8gZml4IHRoYXQgYXMgd2VsbC4NCj4gDQo+IEkgZG9u
-J3QgdW5kZXJzdGFuZCB0aGlzLi4uIEkgZ3Vlc3MgSSdtIG5vdCBmYW1pbGlhciBlbm91Z2ggd2l0
-aCB0aGUNCj4ga2VybmVsIGJ1aWxkIHN5c3RlbS4NCg0KRG9uJ3Qgd29ycnkuIEknbSByYXRoZXIg
-Z3Vlc3NpbmcgaG93IGdtYWtlIGFuZCB0aGUga2VybmVsIG1ha2VmaWxlDQppbnRlcmFjdCBiYXNl
-ZCBvbiBjaGFuZ2VzIEkgbWFkZSB0byBOZXRCU0QncyBtYWtlIGFuZCBtYWtlZmlsZXMNCmFsbW9z
-dCAyMCB5ZWFycyBhZ28uDQoNCkkgdGhpbmsgdGhlcmUgd2VyZSBzb21lIHN1Yi1tYWtlcyB0aGF0
-IHdlcmUgc3RhcnRlZCB3aXRoIG1ha2UNCmluc3RlYWQgb2YgJChNQUtFKSBzbyBlbmRlZCB1cCBj
-cmVhdGluZyBhIG5ldyBqb2IgcGlwZS4NCihUaGUgcGlwZSBmZHMgd2VyZSBhZGRlZCB0byBhcmd2
-W10gYnkgJChNQUtFKSkNCg0KPiA+IEkgdGhpbmsgSSd2ZSByZW1lbWJlcmVkIHRoZSBvYnZpb3Vz
-IHRoaW5nIHRoYXQgbWFkZSBpdCB3b3JrIGJldHRlci4NCj4gPg0KPiA+IFdoZW4gYSBqb2IgZW5k
-cyBpdCBpcyBpbXBvcnRhbnQgdG8gZ2V0IGEgbmV3IHRva2VuIGZyb20gdGhlIGpvYnNlcnZlcg0K
-PiA+IHJhdGhlciB0aGFuIHJldXNpbmcgdGhlIG9uZSB0byBoYW5kLg0KPiA+IE90aGVyd2lzZSB5
-b3UgZG9uJ3Qgc2VlbiB0aGUgJ2Fib3J0JyBtYXJrZXIgZm9yIGFnZXMuDQo+IA0KPiBJZiBHTlUg
-bWFrZSByZXRyaWV2ZWQgYSB0b2tlbiB0aGVuIGl0IHdpbGwgYWx3YXlzIHB1dCB0aGF0IHRva2Vu
-IGJhY2sNCj4gaW50byB0aGUgam9ic2VydmVyIHBpcGUgd2hlbiB0aGUgam9iIGVuZHMsIGFuZCBn
-ZXQgYW5vdGhlciBvbmUgd2hlbiB0aGUNCj4gbmV4dCBqb2IgaXMgdG8gc3RhcnQuICBUbyBkbyBv
-dGhlcndpc2Ugd291bGQgbWVhbiB0aGF0IHNvbWUgbWFrZXMgY291bGQNCj4gaG9hcmQgdG9rZW5z
-Lg0KPiANCj4gSG93ZXZlciwgdGhlIGpvYnNlcnZlciBpcyBpbXBsZW1lbnRlZCBzdWNoIHRoYXQg
-bWFrZSBpdHNlbGYgaXMgbm90DQo+IGNvbnNpZGVyZWQgYSBqb2IsIGV2ZW4gYSBzdWItbWFrZS4g
-IFRoZSB3YXkgaXQgd29ya3MgaXMgdGhhdCB3aGVuIHlvdQ0KPiBpbnZva2UgYSByZWN1cnNpdmUg
-bWFrZSB0aGUgcGFyZW50IG1ha2Ugd2lsbCBvYnRhaW4gYSBqb2JzZXJ2ZXIgdG9rZW4NCj4gZm9y
-IHRoYXQgcmVjdXJzaXZlIGludm9jYXRpb24gKGxpa2UgaXQgZG9lcyBmb3IgZXZlcnkgam9iKSwg
-dGhlbiB0aGF0DQo+IHN1Yi1tYWtlIGNhbiAicGFzcyBvbiIgdGhhdCB0b2tlbjogaW4gb3RoZXIg
-d29yZHMsIHRoZSBzdWItbWFrZSBoYXMgYQ0KPiBmcmVlIHRva2VuIHRoYXQgaXQgY2FuIGFsd2F5
-cyB1c2Ugd2l0aG91dCBxdWVyeWluZyB0aGUgam9ic2VydmVyLg0KPiANCj4gVGhpcyB3YXkgZXZl
-cnkgaW52b2NhdGlvbiBvZiByZWN1cnNpdmUgbWFrZSBjYW4gYWx3YXlzIG1ha2UgcHJvZ3Jlc3Ms
-DQo+IGF0IGxlYXN0IHNlcmlhbGx5Lg0KPiANCj4gSSBjYW4gc2VlIHRoYXQgaW4gdGhlICJmYXN0
-IGZhaWwiIG1vZGVsIHRoaXMgY291bGQgYmUgcHJvYmxlbWF0aWMsIGJ1dA0KPiBpdCBzaG91bGQg
-b25seSBldmVyIGJlIGFuIGlzc3VlIGluIHNpdHVhdGlvbnMgd2hlcmUgYSBzdWItbWFrZSB3YXMN
-Cj4gcnVubmluZyBzZXJpYWxseSBmb3Igc29tZSByZWFzb246IGVpdGhlciB0aGUgc3RydWN0dXJl
-IG9mIHRoZQ0KPiBwcmVyZXF1aXNpdGVzIG1lYW5zIGl0J3MgbmF0dXJhbGx5IHNlcmlhbCwgb3Ig
-ZWxzZSBzb21lb25lIGFkZGVkDQo+IC5OT1RQQVJBTExFTCB0byB0aGUgbWFrZWZpbGUgb3Igc29t
-ZXRoaW5nLiAgQXMgc29vbiBhcyBtYWtlIHdhbnRzIHRvDQo+IHJ1biBhIHNlY29uZCBqb2IgaW4g
-cGFyYWxsZWwgaXQgd2lsbCBnbyB0byB0aGUgam9ic2VydmVyIGFuZCBkaXNjb3Zlcg0KPiB0aGUg
-ImZhaWx1cmUiIHRva2VuLg0KPiANCj4gQ2hhbmdpbmcgdGhpcyB3aWxsIHJlcXVpcmUgdGhvdWdo
-dC4gIFdlIGNhbid0IGp1c3Qgc2tpcCB0aGUgZnJlZSB0b2tlbg0KPiBvdGhlcndpc2UgeW91IGNh
-biBnZXQgaW50byBhIHN0YXRlIHdoZXJlIGFsbCB5b3VyIHRva2VucyBhcmUgdXNlZCBieQ0KPiBy
-ZWN1cnNpdmUgbWFrZXMgYW5kIG5vIG1ha2UgY2FuIGdldCBhIG5ldyB0b2tlbiB0byBydW4gYSBq
-b2IuDQo+IA0KPiBJIGNhbiBzZWUgdHdvIHBvc3NpYmxlIHNvbHV0aW9uczoNCj4gDQo+IEZpcnN0
-LCB3aGVuIGEgc3ViLW1ha2Ugc3RhcnRzIGl0IGNvdWxkIHB1dCBiYWNrIG9uZSB0b2tlbiBpbnRv
-IHRoZQ0KPiBqb2JzZXJ2ZXIsIHJlcHJlc2VudGluZyB0aGUgdG9rZW4gdGhlIHBhcmVudCBtYWtl
-IG9idGFpbmVkIGZvciBpdCwgdGhlbg0KPiBwcm9jZWVkIHRvIGFsd2F5cyBnZXQgYSB0b2tlbiBi
-ZWZvcmUgZXZlcnkgam9iIChubyBmcmVlIHRva2VuKS4gIFRoaXMNCj4gbWVhbnMgdGhhdCBzb21l
-dGltZXMgYSBzdWItbWFrZSB3b24ndCBiZSBhYmxlIHRvIHJ1biBhbnkgam9icyBhdCBhbGw6DQo+
-IGl0IGNhbiBnZXQgbG9ja2VkIG91dCB3YWl0aW5nIGZvciBhIHRva2VuLiAgTWF5YmUgdGhhdCdz
-IG5vdCBhIHByb2JsZW0uDQo+IA0KPiBUaGUgb3RoZXIgaWRlYSBpcyB0byBrZWVwIHRoZSBmcmVl
-IHRva2VuIGJ1dCBtYWtlIGl0IGEgbGFzdCByZXNvcnQNCj4gcmF0aGVyIHRoYW4gYSBmaXJzdCBy
-ZXNvcnQuICBUaGlzIGhhcyB0aGUgbmljZSBwcm9wZXJ0aWVzIHRoYXQgKGEpDQo+IHdlJ2xsIHNl
-ZSBmYWlsdXJlcyBmYXN0IGFuZCAoYikgd2Ugc3RpbGwgaGF2ZSBhIGZyZWUgdG9rZW4sIGJ1dCB0
-aGUNCj4gY29kZSBpcyBtb3JlIGNvbXBsZXg6IGJhc2ljYWxseSB3ZSdkIG5lZWQgdG8gcGVyZm9y
-bSBhIG5vbi1ibG9ja2luZw0KPiByZWFkIG9uIHRoZSBqb2JzZXJ2ZXIgRkQgYW5kIGlmIHdlIGRp
-ZG4ndCBnZXQgYW55dGhpbmcgYmFjaywgd2UnZCB1c2UNCj4gb3VyIGZyZWUgdG9rZW4gaWYgaXQn
-cyBzdGlsbCBhdmFpbGFibGU6IGlmIG5vdCB3ZSdkIGRvIGEgYmxvY2tpbmcgcmVhZA0KPiBvbiB0
-aGUgam9ic2VydmVyIEZEIHRvIHdhaXQgZm9yIGEgbmV3IHRva2VuLg0KDQpEb2Vzbid0IGl0IGRv
-IGJsb2NraW5nIHJlYWRzIHdpdGggU0lHQ0hMRCBlbmFibGVkPw0KKG9yIGhvcGVmdWxseSBwcG9s
-bCgpIHRvIGF2b2lkIHRoZSByYWNlKQ0KDQpBbm90aGVyIG9wdGlvbiBpcyBmb3IgdGhlICdwYXJl
-bnQnIG1ha2UgdG8gcmV0dXJuIChvciBub3QgYWNxdWlyZSkNCmEgam9iIHRva2VuIGZvciAkKE1B
-S0UpIGNvbW1hbmRzLg0KVGhlbiB0aGUgc3ViLW1ha2UgaGF2ZSB0byBhY3F1aXJlIGEgdG9rZW4g
-Zm9yIGV2ZXJ5IGNvbW1hbmQuDQptYWtlIGhhcyB0byBrbm93IGFib3V0ICQoTUFLRSkgYmVjYXVz
-ZSB0aGV5IGFyZSBzcGVjaWFsIGluIGFsbCBzb3J0cw0Kb2Ygd2F5cy4NCkJ1dCB0aGF0IHdvbid0
-IHdvcmsgd2VsbCBpZiB0aGUgb2xkIGFuZCBuZXcgdmVyc2lvbnMgZXZlciBpbnRlcmFjdC4NCg0K
-T3IsIHJlcXVpcmUgdGhlIHN1Yi1tYWtlIGFjcXVpcmUgYSB0b2tlbiBpbiBvcmRlciB0byBleGl0
-Lg0KVGhlbiBpdCBjYW4gZnJlZSB0aGUgdG9rZW4gd2hlbiBldmVyeSBqb2IgdGVybWluYXRlcy4N
-Cg0KSSBjYW4ndCByZW1lbWJlciB3aGF0IEkgZGlkIHRvIG5ldGJzZCdzIG1ha2UuDQoNCglEYXZp
-ZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQg
-RmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4
-NiAoV2FsZXMpDQo=
+On Tue, May 12, 2020 at 08:49:49AM -0500, Rob Herring wrote:
+> On Mon, May 04, 2020 at 04:47:57PM +0100, Charles Keepax wrote:
+> > Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> > ---
+> > 
+> > Changes since v1:
+> >  - Removed contains on the compatible
+> >  - Moved all sub-nodes into here directly only using $ref for properties
+> >  - As the regulator binding only contained subnodes that file is now deleted
+> >  - Removed some pointless descriptions
+> > 
+> > A little nervous about the amount of clock and regulator stuff this
+> > pulls into the MFD file, any comments on that welcome? Would it be worth
+> > looking into something along the lines of the definitions stuff to keep
+> > some of that out in the clock and regulator bindings?
+> 
+> It's fine like this. Other than my comments on patch 3, looks fine. 
+> Respin and I'll apply.
+> 
 
+Groovy thanks for the reviews.
+
+Thanks,
+Charles
