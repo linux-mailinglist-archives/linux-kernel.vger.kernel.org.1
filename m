@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5541CFDF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 21:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 237121CFDFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 21:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728152AbgELTIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 15:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgELTID (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 15:08:03 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C91C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 12:08:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RVdj44/VzSen6iR6rQOWCntv4FGd6/Yn4+ie5a9/Rko=; b=qKZiXMSgcjdtQ6CmvZLKE2h6sw
-        HHpe7Vgsdlq9c+mtnM9CFRMqxVnqgdOeWNVOwPVnF503dAs5Nag1VCtPV9NKrgnWlC0/3GoEXcdOd
-        WnDUmVQrHJ+01SxntoNQBTRcY26ZbJWiKcLFCP2v8+najyvWAzjUeEkisNB1QpBnUtcyq5OgQH+HA
-        nd7sY86AuC2JcsxzEANyGeJKmZHogaWD8kcu1hNHjX/uB7Gv30BUKfqTtZhm8FfMYlV3uLacmkXoR
-        7kDJI2LMLrq9sI8nvfHXBk58E0wnnnVHfsaRxLyk+zCxlsBOT1kOUzaBPLMUhCxrUwNm2B5exkFnO
-        9tnLKakg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jYaFx-00013o-Pq; Tue, 12 May 2020 19:07:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4EFD8305EEF;
-        Tue, 12 May 2020 21:07:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3A13628B27272; Tue, 12 May 2020 21:07:55 +0200 (CEST)
-Date:   Tue, 12 May 2020 21:07:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Will Deacon <will@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v5 00/18] Rework READ_ONCE() to improve codegen
-Message-ID: <20200512190755.GL2957@hirez.programming.kicks-ass.net>
-References: <20200511204150.27858-1-will@kernel.org>
- <20200512081826.GE2978@hirez.programming.kicks-ass.net>
- <CANpmjNNo3rhwqG=xEbpP9JiSd8-Faw8fkoUhYJjesHK5S5_KQQ@mail.gmail.com>
+        id S1730912AbgELTI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 15:08:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34620 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730610AbgELTI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 15:08:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 6683FAF9F;
+        Tue, 12 May 2020 19:08:59 +0000 (UTC)
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+        id E7954604F3; Tue, 12 May 2020 21:08:55 +0200 (CEST)
+Date:   Tue, 12 May 2020 21:08:55 +0200
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     netdev@vger.kernel.org
+Cc:     Doug Berger <opendmb@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/4] net: ethernet: validate pause autoneg
+ setting
+Message-ID: <20200512190855.GB9071@lion.mk-sys.cz>
+References: <1589243050-18217-1-git-send-email-opendmb@gmail.com>
+ <1589243050-18217-2-git-send-email-opendmb@gmail.com>
+ <20200512004714.GD409897@lunn.ch>
+ <ae63b295-b6e3-6c34-c69d-9e3e33bf7119@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANpmjNNo3rhwqG=xEbpP9JiSd8-Faw8fkoUhYJjesHK5S5_KQQ@mail.gmail.com>
+In-Reply-To: <ae63b295-b6e3-6c34-c69d-9e3e33bf7119@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 07:53:00PM +0200, Marco Elver wrote:
-> I just ran a bunch of KCSAN tests. While this series alone would have
-> passed the tests, there appears to be a problem with
-> __READ_ONCE/__WRITE_ONCE. I think they should already be using
-> 'data_race()', as otherwise we will get lots of false positives in
-> future.
+On Tue, May 12, 2020 at 11:31:39AM -0700, Doug Berger wrote:
+> On 5/11/2020 5:47 PM, Andrew Lunn wrote:
+> > On Mon, May 11, 2020 at 05:24:07PM -0700, Doug Berger wrote:
+> >> A comment in uapi/linux/ethtool.h states "Drivers should reject a
+> >> non-zero setting of @autoneg when autoneogotiation is disabled (or
+> >> not supported) for the link".
+> >>
+> >> That check should be added to phy_validate_pause() to consolidate
+> >> the code where possible.
+> >>
+> >> Fixes: 22b7d29926b5 ("net: ethernet: Add helper to determine if pause configuration is supported")
+> > 
+> > Hi Doug
+> > 
+> > If this is a real fix, please submit this to net, not net-next.
+> > 
+> >    Andrew
+> > 
+> This was intended as a fix, but I thought it would be better to keep it
+> as part of this set for context and since net-next is currently open.
 > 
-> I noticed this when testing -tip/locking/kcsan, which breaks
-> unfortunately, because I see a bunch of spurious data races with
-> arch_atomic_{read,set} because "locking/atomics: Flip fallbacks and
-> instrumentation" changed them to use __READ_ONCE()/__WRITE_ONCE().
-> From what I see, the intent was to not double-instrument,
-> unfortunately they are still double-instrumented because
-> __READ_ONCE/__WRITE_ONCE doesn't hide the access from KCSAN (nor KASAN
-> actually). I don't think we can use __no_sanitize_or_inline for the
-> arch_ functions, because we really want them to be __always_inline
-> (also to avoid calls to these functions in uaccess regions, which
-> objtool would notice).
+> The context is trying to improve the phylib support for offloading
+> ethtool pause configuration and this is something that could be checked
+> in a single location rather than by individual drivers.
 > 
-> I think the easiest way to resolve this is to wrap the accesses in
-> __*_ONCE with data_race().
+> I included it here to get feedback about its appropriateness as a common
+> behavior. I should have been more explicit about that.
+> 
+> Personally, I'm actually not that fond of this change since it can
+> easily be a source of confusion with the ethtool interface because the
+> link autonegotiation and the pause autonegotiation are controlled by
+> different commands.
+> 
+> Since the ethtool -A command performs a read/modify/write of pause
+> parameters, you can get strange results like these:
+> # ethtool -s eth0 speed 100 duplex full autoneg off
+> # ethtool -A eth0 tx off
+> Cannot set device pause parameters: Invalid argument
+> #
+> Because, the get read pause autoneg as enabled and only the tx_pause
+> member of the structure was updated.
 
-But we can't... because I need arch_atomic_*() and __READ_ONCE() to not
-call out to _ANYTHING_.
+This would be indeed unfortunate. We could use extack to make the error
+message easier to understand but the real problem IMHO is that
+ethtool_ops::get_pauseparam() returns value which is rejected by
+ethtool_ops::set_pauseparam(). This is something we should avoid.
 
-Sadly, because the compilers are 'broken' that whole __no_sanitize thing
-didn't work, but I'll be moving a whole bunch of code into .c files with
-all the sanitizers killed dead. And we'll be validating it'll not be
-calling out to anything.
+If we really wanted to reject ethtool_pauseparam::autoneg on when
+general autonegotiation is off, we would have to disable pause
+autonegotiation whenever general autonegotiation is disabled. I don't
+like that idea, however, as that would mean that
 
-data_race() will include active calls to kcsan_{dis,en}able_current(),
-and this must not happen.
+  ethtool -s dev autoneg off ...
+  ethtool -s dev autoneg on ...
+
+would reset the setting of pause autonegotiation.
+
+Therefore I believe the comment should be rather replaced by a warning
+that even if ethtool_pauseparam::autoneg is enabled, pause
+autonegotiation is only active if general autonegotiation is also
+enabled.
+
+Michal
