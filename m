@@ -2,445 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224FA1CF99F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9801CF9A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730575AbgELPun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 11:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgELPum (ORCPT
+        id S1730688AbgELPvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 11:51:01 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:40239 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730671AbgELPvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 11:50:42 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D33FC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:50:41 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id x8so11360127qtr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:50:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wmUMrMaXpoGwv4V+OcG/B7h2WwTQxeAX+4f0Nvr18ts=;
-        b=Nev2YbxklNBE51klxJF2s4eD/xGFPvcwshLbJYhr9VX4yIs9dHih+pKeoTvnWGZaVT
-         AIbqrt76ND/nFQ5nWPPSL2UXpNdY+ZFA/pMmVA2N0m1Bzhfr6iFOjISoXxxAhu4SpVHN
-         HV7or3kkg+FDnfNSNAZy9IaJ/hqDDE49gX65r3utsLIpqq0JDKhCc2kmKILuTfS9QZ6P
-         L+U+Xp48FuMbFb5Xfxwwuh/St5hnUOHYqZkyUO9hGNBmfiVYzNUoYaOVgmm3yN5YoGcb
-         syOIrBMkvr6DN15cg91jBIHKlb5k4vF8hLq1lgSNgOnpkUHLjwTQeyuYnX8dhbsilnag
-         qtMA==
+        Tue, 12 May 2020 11:51:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589298658;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7gi6kZYZ50egtzLQVzSUEDOzwts0OWq/gx0o859o0Q4=;
+        b=cl5x0SwgTEI2SDeVnpLeWITv4zyIeuF9kHjIjPBnF4ffGVz7zehpLcA5TzEPQCAEEAG3IM
+        nKmeSN6Dlh/K/PnA//jhv4ICUpGG/vCjE0nmtiZha+vnWRnNMze+w3AECGSndUuIDmLpGG
+        84H1CNkXvUOWSHJ50WH1UjxbAby/63U=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-470-9xkFJo_tOICy_dbWF6UhAw-1; Tue, 12 May 2020 11:50:57 -0400
+X-MC-Unique: 9xkFJo_tOICy_dbWF6UhAw-1
+Received: by mail-wr1-f70.google.com with SMTP id z5so7083012wrt.17
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:50:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wmUMrMaXpoGwv4V+OcG/B7h2WwTQxeAX+4f0Nvr18ts=;
-        b=h6xyx6zgaqzhJhrBD80h3YHgvTMZita4S2oUVtZat4z4YLg4plW+scmuZhKL8m1559
-         MFFh5KtQB7JM814lTGLWg8yzfahekewwpo+OCu6e1sciQF1TQsqSvoAvXbJqNhUMmUFE
-         zI7b5QLhHW6b/tPKtK9/CxqG12KWsjRuqNwlfXy2TW11FlvsL+giObemaGSkazmRDFFk
-         lFW+b31f6oavRO2xF5M+O0/IbqWJgwSMxp6HdI018yQ9t2LVzIowjp4UMZye+94+kacQ
-         BPbquofkir65zP9QbudL2/m3Wn6bJhcChttQHcEkEnlu6TYFTZesFZfnBjPuT+gypGj2
-         xfnA==
-X-Gm-Message-State: AGi0PuZWLCEijbVso2m01z2LjtlfhC5+WCk+HkBKrfbpFDljSsv/m/R7
-        uQjyYg+8RmpgQgtoeesgBCLUXXBYhAKaEzQYqZtg/g==
-X-Google-Smtp-Source: APiQypKGETcyOxmG3U7mqy6g5xclX+UzISVcrwKa/re6M2X2oD6JEmh1qYwxKg+kOVTF790RboAR38zoqB0kWZYUTwU=
-X-Received: by 2002:ac8:6642:: with SMTP id j2mr22582071qtp.158.1589298640056;
- Tue, 12 May 2020 08:50:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=7gi6kZYZ50egtzLQVzSUEDOzwts0OWq/gx0o859o0Q4=;
+        b=r4seCRZ+gOufgLRjjz+ErTYc2jXopGIL0OmGrvx/KX2wWqeD8Vz+VYvvxUhnrTIHbW
+         MfXN1iwqWUxaecNzZ/t+bawlHSdnaZDanojaVWXF+U9mLuSbHlA7Eb3UFZBG4L6DFw9D
+         m62uvz+SlFeCLhdIvRcM7tQ67VJbtsGJnSfzR96YSy381AQxu41w3dcoc7V5vzchhEz1
+         JGyA8CrC9qL/myi2f2gahbkmgNsIBDIXmp1cKasqe7wHMpzXWG4CcIYD2BX1G/PFNgmZ
+         DYpB/qojclV97bFt5W8Engt7ybrmqcaT6dDcNcoPdfsKtKOubNdcwK9XTdlpyPdryzq2
+         df5g==
+X-Gm-Message-State: AGi0PuZ5Iv7xUS08Akm4wN5pycFJeeIsbKNzKpBYcNR7zCTzmZQGCX5h
+        v1p9bJLW3gQltraF4eo4MSJx6sTuFrdYp54Xs6ll/N00tSsLTvlj+SRYIGGrjzyTfTBs6bAQDjk
+        CcwJn4OA8GIy7DnysNVwrlYgC
+X-Received: by 2002:a05:600c:295a:: with SMTP id n26mr41423857wmd.16.1589298655631;
+        Tue, 12 May 2020 08:50:55 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIhzwxU3CV/9sraEUzM4doFL8eHcxeWmlWToHs5tCU62DHAcBRhJ5AeY7spSDkw2c2/FqGH8w==
+X-Received: by 2002:a05:600c:295a:: with SMTP id n26mr41423819wmd.16.1589298655232;
+        Tue, 12 May 2020 08:50:55 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id b23sm29453744wmb.26.2020.05.12.08.50.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 08:50:54 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] KVM: x86: interrupt based APF page-ready event delivery
+In-Reply-To: <20200512142411.GA138129@redhat.com>
+References: <20200511164752.2158645-1-vkuznets@redhat.com> <20200511164752.2158645-5-vkuznets@redhat.com> <20200512142411.GA138129@redhat.com>
+Date:   Tue, 12 May 2020 17:50:53 +0200
+Message-ID: <87lflxm9sy.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20200511023111.15310-1-walter-zh.wu@mediatek.com>
- <20200511180527.GZ2869@paulmck-ThinkPad-P72> <1589250993.19238.22.camel@mtksdccf07>
- <CACT4Y+b6ZfmZG3YYC_TkoeGaAQjSEKvF4dZ9vHzTx5iokD4zTQ@mail.gmail.com> <20200512142541.GD2869@paulmck-ThinkPad-P72>
-In-Reply-To: <20200512142541.GD2869@paulmck-ThinkPad-P72>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 12 May 2020 17:50:28 +0200
-Message-ID: <CACT4Y+ZfzLhcG2Wy_iEMB=hJ5k=ib+X-m29jDG2Jcs7S-TPX=w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] rcu/kasan: record and print call_rcu() call stack
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Walter Wu <walter-zh.wu@mediatek.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 4:25 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Tue, May 12, 2020 at 03:56:17PM +0200, Dmitry Vyukov wrote:
-> > On Tue, May 12, 2020 at 4:36 AM Walter Wu <walter-zh.wu@mediatek.com> wrote:
-> > >
-> > > On Mon, 2020-05-11 at 11:05 -0700, Paul E. McKenney wrote:
-> > > > On Mon, May 11, 2020 at 10:31:11AM +0800, Walter Wu wrote:
-> > > > > This feature will record first and last call_rcu() call stack and
-> > > > > print two call_rcu() call stack in KASAN report.
-> > > >
-> > > > Suppose that a given rcu_head structure is passed to call_rcu(), then
-> > > > the grace period elapses, the callback is invoked, and the enclosing
-> > > > data structure is freed.  But then that same region of memory is
-> > > > immediately reallocated as the same type of structure and again
-> > > > passed to call_rcu(), and that this cycle repeats several times.
-> > > >
-> > > > Would the first call stack forever be associated with the first
-> > > > call_rcu() in this series?  If so, wouldn't the last two usually
-> > > > be the most useful?  Or am I unclear on the use case?
-> >
-> > 2 points here:
-> >
-> > 1. With KASAN the object won't be immediately reallocated. KASAN has
-> > 'quarantine' to delay reuse of heap objects. It is assumed that the
-> > object is still in quarantine when we detect a use-after-free. In such
-> > a case we will have proper call_rcu stacks as well.
-> > It is possible that the object is not in quarantine already and was
-> > reused several times (quarantine is not infinite), but then KASAN will
-> > report non-sense stacks for allocation/free as well. So wrong call_rcu
-> > stacks are less of a problem in such cases.
-> >
-> > 2. We would like to memorize 2 last call_rcu stacks regardless, but we
-> > just don't have a good place for the index (bit which of the 2 is the
-> > one to overwrite). Probably could shove it into some existing field,
-> > but then will require atomic operations, etc.
-> >
-> > Nobody knows how well/bad it will work. I think we need to get the
-> > first version in, deploy on syzbot, accumulate some base of example
-> > reports and iterate from there.
->
-> If I understood the stack-index point below, why not just move the
-> previous stackm index to clobber the previous-to-previous stack index,
-> then put the current stack index into the spot thus opened up?
+Vivek Goyal <vgoyal@redhat.com> writes:
 
-We don't have any index in this change (don't have memory for such index).
-The pseudo code is"
+> On Mon, May 11, 2020 at 06:47:48PM +0200, Vitaly Kuznetsov wrote:
+>> Concerns were expressed around APF delivery via synthetic #PF exception as
+>> in some cases such delivery may collide with real page fault. For type 2
+>> (page ready) notifications we can easily switch to using an interrupt
+>> instead. Introduce new MSR_KVM_ASYNC_PF_INT mechanism and deprecate the
+>> legacy one.
+>> 
+>> One notable difference between the two mechanisms is that interrupt may not
+>> get handled immediately so whenever we would like to deliver next event
+>> (regardless of its type) we must be sure the guest had read and cleared
+>> previous event in the slot.
+>> 
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  Documentation/virt/kvm/msr.rst       | 91 +++++++++++++++++---------
+>>  arch/x86/include/asm/kvm_host.h      |  4 +-
+>>  arch/x86/include/uapi/asm/kvm_para.h |  6 ++
+>>  arch/x86/kvm/x86.c                   | 95 ++++++++++++++++++++--------
+>>  4 files changed, 140 insertions(+), 56 deletions(-)
+>> 
+>> diff --git a/Documentation/virt/kvm/msr.rst b/Documentation/virt/kvm/msr.rst
+>> index 33892036672d..f988a36f226a 100644
+>> --- a/Documentation/virt/kvm/msr.rst
+>> +++ b/Documentation/virt/kvm/msr.rst
+>> @@ -190,35 +190,54 @@ MSR_KVM_ASYNC_PF_EN:
+>>  	0x4b564d02
+>>  
+>>  data:
+>> -	Bits 63-6 hold 64-byte aligned physical address of a
+>> -	64 byte memory area which must be in guest RAM and must be
+>> -	zeroed. Bits 5-3 are reserved and should be zero. Bit 0 is 1
+>> -	when asynchronous page faults are enabled on the vcpu 0 when
+>> -	disabled. Bit 1 is 1 if asynchronous page faults can be injected
+>> -	when vcpu is in cpl == 0. Bit 2 is 1 if asynchronous page faults
+>> -	are delivered to L1 as #PF vmexits.  Bit 2 can be set only if
+>> -	KVM_FEATURE_ASYNC_PF_VMEXIT is present in CPUID.
+>> -
+>> -	First 4 byte of 64 byte memory location will be written to by
+>> -	the hypervisor at the time of asynchronous page fault (APF)
+>> -	injection to indicate type of asynchronous page fault. Value
+>> -	of 1 means that the page referred to by the page fault is not
+>> -	present. Value 2 means that the page is now available. Disabling
+>> -	interrupt inhibits APFs. Guest must not enable interrupt
+>> -	before the reason is read, or it may be overwritten by another
+>> -	APF. Since APF uses the same exception vector as regular page
+>> -	fault guest must reset the reason to 0 before it does
+>> -	something that can generate normal page fault.  If during page
+>> -	fault APF reason is 0 it means that this is regular page
+>> -	fault.
+>> -
+>> -	During delivery of type 1 APF cr2 contains a token that will
+>> -	be used to notify a guest when missing page becomes
+>> -	available. When page becomes available type 2 APF is sent with
+>> -	cr2 set to the token associated with the page. There is special
+>> -	kind of token 0xffffffff which tells vcpu that it should wake
+>> -	up all processes waiting for APFs and no individual type 2 APFs
+>> -	will be sent.
+>> +	Asynchronous page fault (APF) control MSR.
+>> +
+>> +	Bits 63-6 hold 64-byte aligned physical address of a 64 byte memory area
+>> +	which must be in guest RAM and must be zeroed. This memory is expected
+>> +	to hold a copy of the following structure::
+>> +
+>> +	  struct kvm_vcpu_pv_apf_data {
+>> +		__u32 reason;
+>> +		__u32 pageready_token;
+>> +		__u8 pad[56];
+>> +		__u32 enabled;
+>> +	  };
+>> +
+>> +	Bits 5-4 of the MSR are reserved and should be zero. Bit 0 is set to 1
+>> +	when asynchronous page faults are enabled on the vcpu, 0 when disabled.
+>> +	Bit 1 is 1 if asynchronous page faults can be injected when vcpu is in
+>> +	cpl == 0. Bit 2 is 1 if asynchronous page faults are delivered to L1 as
+>> +	#PF vmexits.  Bit 2 can be set only if KVM_FEATURE_ASYNC_PF_VMEXIT is
+>> +	present in CPUID. Bit 3 enables interrupt based delivery of type 2
+>> +	(page present) events.
+>
+> Hi Vitaly,
+>
+> "Bit 3 enables interrupt based delivery of type 2 events". So one has to
+> opt in to enable it. If this bit is 0, we will continue to deliver
+> page ready events using #PF? This probably will be needed to ensure
+> backward compatibility also.
+>
 
-u32 aux_stacks[2]; // = {0,0}
+No, as Paolo suggested we don't enable the mechanism at all if bit3 is
+0. Legacy (unaware) guests will think that they've enabled the mechanism
+but it won't work, they won't see any APF notifications.
 
-if (aux_stacks[0] != 0)
-    aux_stacks[0] = stack;
-else
-   aux_stacks[1] = stack;
+>> +
+>> +	First 4 byte of 64 byte memory location ('reason') will be written to
+>> +	by the hypervisor at the time APF type 1 (page not present) injection.
+>> +	The only possible values are '0' and '1'.
+>
+> What do "reason" values "0" and "1" signify?
+>
+> Previously this value could be 1 for PAGE_NOT_PRESENT and 2 for
+> PAGE_READY. So looks like we took away reason "PAGE_READY" because it will
+> be delivered using interrupts.
+>
+> But that seems like an opt in. If that's the case, then we should still
+> retain PAGE_READY reason. If we are getting rid of page_ready using
+> #PF, then interrupt based deliver should not be optional. What am I
+> missing.
 
+It is not optional now :-)
 
-> > > The first call stack doesn't forever associate with first call_rcu(),
-> > > if someone object freed and reallocated, then the first call stack will
-> > > replace with new object.
-> > >
-> > > > > When call_rcu() is called, we store the call_rcu() call stack into
-> > > > > slub alloc meta-data, so that KASAN report can print rcu stack.
-> > > > >
-> > > > > It doesn't increase the cost of memory consumption. Because we don't
-> > > > > enlarge struct kasan_alloc_meta size.
-> > > > > - add two call_rcu() call stack into kasan_alloc_meta, size is 8 bytes.
-> > > > > - remove free track from kasan_alloc_meta, size is 8 bytes.
-> > > > >
-> > > > > [1]https://bugzilla.kernel.org/show_bug.cgi?id=198437
-> > > > > [2]https://groups.google.com/forum/#!searchin/kasan-dev/better$20stack$20traces$20for$20rcu%7Csort:date/kasan-dev/KQsjT_88hDE/7rNUZprRBgAJ
-> > > > >
-> > > > > Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
-> > > > > Suggested-by: Dmitry Vyukov <dvyukov@google.com>
-> > > > > Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> > > > > Cc: Dmitry Vyukov <dvyukov@google.com>
-> > > > > Cc: Alexander Potapenko <glider@google.com>
-> > > > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > > > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > > > > Cc: Josh Triplett <josh@joshtriplett.org>
-> > > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > > > > Cc: Joel Fernandes <joel@joelfernandes.org>
-> > > > > ---
-> > > > >  include/linux/kasan.h |  2 ++
-> > > > >  kernel/rcu/tree.c     |  3 +++
-> > > > >  lib/Kconfig.kasan     |  2 ++
-> > > > >  mm/kasan/common.c     |  4 ++--
-> > > > >  mm/kasan/generic.c    | 29 +++++++++++++++++++++++++++++
-> > > > >  mm/kasan/kasan.h      | 19 +++++++++++++++++++
-> > > > >  mm/kasan/report.c     | 21 +++++++++++++++++----
-> > > > >  7 files changed, 74 insertions(+), 6 deletions(-)
-> > > > >
-> > > > > diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> > > > > index 31314ca7c635..23b7ee00572d 100644
-> > > > > --- a/include/linux/kasan.h
-> > > > > +++ b/include/linux/kasan.h
-> > > > > @@ -174,11 +174,13 @@ static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
-> > > > >
-> > > > >  void kasan_cache_shrink(struct kmem_cache *cache);
-> > > > >  void kasan_cache_shutdown(struct kmem_cache *cache);
-> > > > > +void kasan_record_aux_stack(void *ptr);
-> > > > >
-> > > > >  #else /* CONFIG_KASAN_GENERIC */
-> > > > >
-> > > > >  static inline void kasan_cache_shrink(struct kmem_cache *cache) {}
-> > > > >  static inline void kasan_cache_shutdown(struct kmem_cache *cache) {}
-> > > > > +static inline void kasan_record_aux_stack(void *ptr) {}
-> > > > >
-> > > > >  #endif /* CONFIG_KASAN_GENERIC */
-> > > > >
-> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > index 06548e2ebb72..de872b6cc261 100644
-> > > > > --- a/kernel/rcu/tree.c
-> > > > > +++ b/kernel/rcu/tree.c
-> > > > > @@ -57,6 +57,7 @@
-> > > > >  #include <linux/slab.h>
-> > > > >  #include <linux/sched/isolation.h>
-> > > > >  #include <linux/sched/clock.h>
-> > > > > +#include <linux/kasan.h>
-> > > > >  #include "../time/tick-internal.h"
-> > > > >
-> > > > >  #include "tree.h"
-> > > > > @@ -2694,6 +2695,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > > > >             trace_rcu_callback(rcu_state.name, head,
-> > > > >                                rcu_segcblist_n_cbs(&rdp->cblist));
-> > > > >
-> > > > > +   kasan_record_aux_stack(head);
-> > > >
-> > > > Just for the record, at this point we have not yet queued the callback.
-> > > > We have also not yet disabled interrupts.  Which might be OK, but I
-> > > > figured I should call out the possibility of moving this down a few
-> > > > lines to follow the local_irq_save().
-> > > >
-> > >
-> > > We will intend to do it.
-> >
-> > I will sleep better if we move it up :)
-> > It qualifies a "debug check", which are generally done on entrance to
-> > the function. Or are these all debug checks up to this point?
-> > But if the callback did not leak anywhere up to this point and we will
-> > maintain it that way, then formally it is fine.
 >
-> There are debug checks, then initialization of presumed private
-> structures, disabling of interrupts, more check that are now safe given
-> that we are pinned to a specific CPU, and so on.
+> Also previous text had following line.
 >
-> I am OK with it being at the beginning of the function.
+> "Guest must not enable interrupt before the reason is read, or it may be
+>  overwritten by another APF".
 >
-> > > > If someone incorrectly invokes concurrently invokes call_rcu() on this
-> > > > same region of memory, possibly from an interrupt handler, we are OK
-> > > > corrupting the stack traces, right?
-> > > >
-> > >
-> > > Yes, and the wrong invoking call_rcu should be recorded.
-> > >
-> > > > But what happens if a given structure has more than one rcu_head
-> > > > structure?  In that case, RCU would be just fine with it being
-> > > > concurrently passed to different call_rcu() invocations as long as the
-> > > > two invocations didn't both use the same rcu_head structure.  (In that
-> > > > case, they had best not be both freeing the object, and if even one of
-> > > > them is freeing the object, coordination is necessary.)
-> > > >
-> > > > If this is a problem, one approach would be to move the
-> > > > kasan_record_aux_stack(head) call to kfree_rcu().  After all, it is
-> > > > definitely illegal to pass the same memory to a pair of kfree_rcu()
-> > > > invocations!  ;-)
-> > > >
-> > >
-> > > The function of kasan_record_aux_stack(head) is simple, it is only to
-> > > record call stack by the 'head' object.
-> >
-> > I would say "corrupting" stacks on some races is fine-ish. In the end
-> > we are just storing an u32 stack id.
-> > On syzbot we generally have multiple samples of the same crash, so
-> > even if one is "corrupted" there may be others that are not corrupted.
-> > Just protecting from this looks too complex and expensive. And in the
-> > end there is not much we can do anyway.
-> >
-> > Recording all call_rcu stacks (not just kfree_rcu) is intentional.  I
-> > think it may be useful to even extend to recording workqueue and timer
-> > stacks as well.
+> So this is not a requirement anymore?
 >
-> Given the u32 nature of the stack ID, I agree that there is no point
-> in excluding call_rcu().  At least until such time as we start getting
-> false positives due to multiple rcu_head structures in the same structure.
+
+It still stands for type 1 (page not present) events.
+
+>> Type 1 events are currently
+>> +	always delivered as synthetic #PF exception. During delivery of type 1
+>> +	APF CR2 register contains a token that will be used to notify the guest
+>> +	when missing page becomes available. Guest is supposed to write '0' to
+>> +	the location when it is done handling type 1 event so the next one can
+>> +	be delivered.
+>> +
+>> +	Note, since APF type 1 uses the same exception vector as regular page
+>> +	fault, guest must reset the reason to '0' before it does something that
+>> +	can generate normal page fault. If during a page fault APF reason is '0'
+>> +	it means that this is regular page fault.
+>> +
+>> +	Bytes 5-7 of 64 byte memory location ('pageready_token') will be written
+>> +	to by the hypervisor at the time of type 2 (page ready) event injection.
+>> +	The content of these bytes is a token which was previously delivered as
+>> +	type 1 event. The event indicates the page in now available. Guest is
+>> +	supposed to write '0' to the location when it is done handling type 2
+>> +	event so the next one can be delivered. MSR_KVM_ASYNC_PF_INT MSR
+>> +	specifying the interrupt vector for type 2 APF delivery needs to be
+>> +	written to before enabling APF mechanism in MSR_KVM_ASYNC_PF_EN.
 >
->                                                       Thanx, Paul
+> What is supposed to be value of "reason" field for type2 events. I
+> had liked previous values "KVM_PV_REASON_PAGE_READY" and
+> "KVM_PV_REASON_PAGE_NOT_PRESENT". Name itself made it plenty clear, what
+> it means. Also it allowed for easy extension where this protocol could
+> be extended to deliver other "reasons", like error.
 >
-> > > > > +
-> > > > >     /* Go handle any RCU core processing required. */
-> > > > >     if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
-> > > > >         unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
-> > > > > diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-> > > > > index 81f5464ea9e1..56a89291f1cc 100644
-> > > > > --- a/lib/Kconfig.kasan
-> > > > > +++ b/lib/Kconfig.kasan
-> > > > > @@ -58,6 +58,8 @@ config KASAN_GENERIC
-> > > > >       For better error detection enable CONFIG_STACKTRACE.
-> > > > >       Currently CONFIG_KASAN_GENERIC doesn't work with CONFIG_DEBUG_SLAB
-> > > > >       (the resulting kernel does not boot).
-> > > > > +     Currently CONFIG_KASAN_GENERIC will print first and last call_rcu()
-> > > > > +     call stack. It doesn't increase the cost of memory consumption.
-> > > > >
-> > > > >  config KASAN_SW_TAGS
-> > > > >     bool "Software tag-based mode"
-> > > > > diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> > > > > index 2906358e42f0..8bc618289bb1 100644
-> > > > > --- a/mm/kasan/common.c
-> > > > > +++ b/mm/kasan/common.c
-> > > > > @@ -41,7 +41,7 @@
-> > > > >  #include "kasan.h"
-> > > > >  #include "../slab.h"
-> > > > >
-> > > > > -static inline depot_stack_handle_t save_stack(gfp_t flags)
-> > > > > +depot_stack_handle_t kasan_save_stack(gfp_t flags)
-> > > > >  {
-> > > > >     unsigned long entries[KASAN_STACK_DEPTH];
-> > > > >     unsigned int nr_entries;
-> > > > > @@ -54,7 +54,7 @@ static inline depot_stack_handle_t save_stack(gfp_t flags)
-> > > > >  static inline void set_track(struct kasan_track *track, gfp_t flags)
-> > > > >  {
-> > > > >     track->pid = current->pid;
-> > > > > -   track->stack = save_stack(flags);
-> > > > > +   track->stack = kasan_save_stack(flags);
-> > > > >  }
-> > > > >
-> > > > >  void kasan_enable_current(void)
-> > > > > diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-> > > > > index 56ff8885fe2e..b86880c338e2 100644
-> > > > > --- a/mm/kasan/generic.c
-> > > > > +++ b/mm/kasan/generic.c
-> > > > > @@ -325,3 +325,32 @@ DEFINE_ASAN_SET_SHADOW(f2);
-> > > > >  DEFINE_ASAN_SET_SHADOW(f3);
-> > > > >  DEFINE_ASAN_SET_SHADOW(f5);
-> > > > >  DEFINE_ASAN_SET_SHADOW(f8);
-> > > > > +
-> > > > > +void kasan_record_aux_stack(void *addr)
-> > > > > +{
-> > > > > +   struct page *page = kasan_addr_to_page(addr);
-> > > > > +   struct kmem_cache *cache;
-> > > > > +   struct kasan_alloc_meta *alloc_info;
-> > > > > +   void *object;
-> > > > > +
-> > > > > +   if (!(page && PageSlab(page)))
-> > > > > +           return;
-> > > > > +
-> > > > > +   cache = page->slab_cache;
-> > > > > +   object = nearest_obj(cache, page, addr);
-> > > > > +   alloc_info = get_alloc_info(cache, object);
-> > > > > +
-> > > > > +   if (!alloc_info->rcu_stack[0])
-> > > > > +           /* record first call_rcu() call stack */
-> > > > > +           alloc_info->rcu_stack[0] = kasan_save_stack(GFP_NOWAIT);
-> > > > > +   else
-> > > > > +           /* record last call_rcu() call stack */
-> > > > > +           alloc_info->rcu_stack[1] = kasan_save_stack(GFP_NOWAIT);
-> > > > > +}
-> > > > > +
-> > > > > +struct kasan_track *kasan_get_aux_stack(struct kasan_alloc_meta *alloc_info,
-> > > > > +                                           u8 idx)
-> > > > > +{
-> > > > > +   return container_of(&alloc_info->rcu_stack[idx],
-> > > > > +                                           struct kasan_track, stack);
-> > > > > +}
-> > > > > diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> > > > > index e8f37199d885..1cc1fb7b0de3 100644
-> > > > > --- a/mm/kasan/kasan.h
-> > > > > +++ b/mm/kasan/kasan.h
-> > > > > @@ -96,15 +96,28 @@ struct kasan_track {
-> > > > >     depot_stack_handle_t stack;
-> > > > >  };
-> > > > >
-> > > > > +#ifdef CONFIG_KASAN_GENERIC
-> > > > > +#define SIZEOF_PTR sizeof(void *)
-> > > > > +#define KASAN_NR_RCU_CALL_STACKS 2
-> > > > > +#else /* CONFIG_KASAN_GENERIC */
-> > > > >  #ifdef CONFIG_KASAN_SW_TAGS_IDENTIFY
-> > > > >  #define KASAN_NR_FREE_STACKS 5
-> > > > >  #else
-> > > > >  #define KASAN_NR_FREE_STACKS 1
-> > > > >  #endif
-> > > > > +#endif /* CONFIG_KASAN_GENERIC */
-> > > > >
-> > > > >  struct kasan_alloc_meta {
-> > > > >     struct kasan_track alloc_track;
-> > > > > +#ifdef CONFIG_KASAN_GENERIC
-> > > > > +   /*
-> > > > > +    * call_rcu() call stack is stored into struct kasan_alloc_meta.
-> > > > > +    * The free stack is stored into freed object.
-> > > > > +    */
-> > > > > +   depot_stack_handle_t rcu_stack[KASAN_NR_RCU_CALL_STACKS];
-> > > > > +#else
-> > > > >     struct kasan_track free_track[KASAN_NR_FREE_STACKS];
-> > > > > +#endif
-> > > > >  #ifdef CONFIG_KASAN_SW_TAGS_IDENTIFY
-> > > > >     u8 free_pointer_tag[KASAN_NR_FREE_STACKS];
-> > > > >     u8 free_track_idx;
-> > > > > @@ -159,16 +172,22 @@ void kasan_report_invalid_free(void *object, unsigned long ip);
-> > > > >
-> > > > >  struct page *kasan_addr_to_page(const void *addr);
-> > > > >
-> > > > > +depot_stack_handle_t kasan_save_stack(gfp_t flags);
-> > > > > +
-> > > > >  #if defined(CONFIG_KASAN_GENERIC) && \
-> > > > >     (defined(CONFIG_SLAB) || defined(CONFIG_SLUB))
-> > > > >  void quarantine_put(struct kasan_free_meta *info, struct kmem_cache *cache);
-> > > > >  void quarantine_reduce(void);
-> > > > >  void quarantine_remove_cache(struct kmem_cache *cache);
-> > > > > +struct kasan_track *kasan_get_aux_stack(struct kasan_alloc_meta *alloc_info,
-> > > > > +                   u8 idx);
-> > > > >  #else
-> > > > >  static inline void quarantine_put(struct kasan_free_meta *info,
-> > > > >                             struct kmem_cache *cache) { }
-> > > > >  static inline void quarantine_reduce(void) { }
-> > > > >  static inline void quarantine_remove_cache(struct kmem_cache *cache) { }
-> > > > > +static inline struct kasan_track *kasan_get_aux_stack(
-> > > > > +                   struct kasan_alloc_meta *alloc_info, u8 idx) { return NULL; }
-> > > > >  #endif
-> > > > >
-> > > > >  #ifdef CONFIG_KASAN_SW_TAGS
-> > > > > diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> > > > > index 80f23c9da6b0..f16a1a210815 100644
-> > > > > --- a/mm/kasan/report.c
-> > > > > +++ b/mm/kasan/report.c
-> > > > > @@ -105,9 +105,13 @@ static void end_report(unsigned long *flags)
-> > > > >     kasan_enable_current();
-> > > > >  }
-> > > > >
-> > > > > -static void print_track(struct kasan_track *track, const char *prefix)
-> > > > > +static void print_track(struct kasan_track *track, const char *prefix,
-> > > > > +                                           bool is_callrcu)
-> > > > >  {
-> > > > > -   pr_err("%s by task %u:\n", prefix, track->pid);
-> > > > > +   if (is_callrcu)
-> > > > > +           pr_err("%s:\n", prefix);
-> > > > > +   else
-> > > > > +           pr_err("%s by task %u:\n", prefix, track->pid);
-> > > > >     if (track->stack) {
-> > > > >             unsigned long *entries;
-> > > > >             unsigned int nr_entries;
-> > > > > @@ -187,11 +191,20 @@ static void describe_object(struct kmem_cache *cache, void *object,
-> > > > >     if (cache->flags & SLAB_KASAN) {
-> > > > >             struct kasan_track *free_track;
-> > > > >
-> > > > > -           print_track(&alloc_info->alloc_track, "Allocated");
-> > > > > +           print_track(&alloc_info->alloc_track, "Allocated", false);
-> > > > >             pr_err("\n");
-> > > > >             free_track = kasan_get_free_track(cache, object, tag);
-> > > > > -           print_track(free_track, "Freed");
-> > > > > +           print_track(free_track, "Freed", false);
-> > > > >             pr_err("\n");
-> > > > > +
-> > > > > +           if (IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-> > > > > +                   free_track = kasan_get_aux_stack(alloc_info, 0);
-> > > > > +                   print_track(free_track, "First call_rcu() call stack", true);
-> > > > > +                   pr_err("\n");
-> > > > > +                   free_track = kasan_get_aux_stack(alloc_info, 1);
-> > > > > +                   print_track(free_track, "Last call_rcu() call stack", true);
-> > > > > +                   pr_err("\n");
-> > > > > +           }
-> > > > >     }
-> > > > >
-> > > > >     describe_object_addr(cache, object, addr);
-> > > > > --
-> > > > I> 2.18.0
-> > >
-> > > --
-> > > You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> > > To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> > > To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/1589250993.19238.22.camel%40mtksdccf07.
+> So if we are using a common structure "kvm_vcpu_pv_apf_data" to deliver
+> type1 and type2 events, to me it makes sense to retain existing
+> KVM_PV_REASON_PAGE_READY and KVM_PV_REASON_PAGE_NOT_PRESENT. Just that
+> in new scheme of things, KVM_PV_REASON_PAGE_NOT_PRESENT will be delivered
+> using #PF (and later possibly using #VE) and KVM_PV_REASON_PAGE_READY
+> will be delivered using interrupt.
+
+We use different fields for page-not-present and page-ready events so
+there is no intersection. If we start setting KVM_PV_REASON_PAGE_READY
+to 'reason' we may accidentally destroy a 'page-not-present' event.
+
+With this patchset we have two completely separate channels:
+1) Page-not-present goes through #PF and 'reason' in struct
+kvm_vcpu_pv_apf_data.
+2) Page-ready goes through interrupt and 'pageready_token' in the same
+kvm_vcpu_pv_apf_data.
+
+>
+>> +
+>> +	Note, previously, type 2 (page present) events were delivered via the
+>> +	same #PF exception as type 1 (page not present) events but this is
+>> +	now deprecated.
+>
+>> If bit 3 (interrupt based delivery) is not set APF events are not delivered.
+>
+> So all the old guests which were getting async pf will suddenly find
+> that async pf does not work anymore (after hypervisor update). And
+> some of them might report it as performance issue (if there were any
+> performance benefits to be had with async pf).
+
+We still do APF_HALT but generally yes, there might be some performance
+implications. My RFC was preserving #PF path but the suggestion was to
+retire it completely. (and I kinda like it because it makes a lot of
+code go away)
+
+>
+> [..]
+>>  
+>>  bool kvm_arch_can_inject_async_page_present(struct kvm_vcpu *vcpu)
+>>  {
+>> -	if (!(vcpu->arch.apf.msr_val & KVM_ASYNC_PF_ENABLED))
+>> +	if (!kvm_pv_async_pf_enabled(vcpu))
+>>  		return true;
+>
+> What does above mean. If async pf is not enabled, then it returns true,
+> implying one can inject async page present. But if async pf is not
+> enabled, there is no need to inject these events.
+
+AFAIU this is a protection agains guest suddenly disabling APF
+mechanism. What do we do with all the 'page ready' events after, we
+can't deliver them anymore. So we just eat them (hoping guest will
+unfreeze all processes on its own before disabling the mechanism).
+
+It is the existing logic, my patch doesn't change it.
+
+Thanks for the review!
+
+-- 
+Vitaly
+
