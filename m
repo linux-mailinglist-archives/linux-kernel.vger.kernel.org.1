@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BD21D26F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 08:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0FF1CEBBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 06:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725967AbgENGEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 02:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725794AbgENGEW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 02:04:22 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BD3C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 23:04:22 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id mq3so12109199pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 23:04:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=jIhLxFkEstOsX75pumvf5hU2eBHJHovEbl4Iz1TB1jM=;
-        b=L0W/K1xnR7MMQITjCNmLpKOXf7FvtySaQ3VbWxyy+zvlzITfyanCbXc9KlwTBBhvLw
-         t51+JQFvtipVmwE6S+b+MUn1JG1Kwlq+MEXyoDr5aMDnHjrVIzqGGdnC4hcRNs3bYxkT
-         60jUs75foj5zcp36N8W5Pw/Dr9XIjcNtcCgEoflNRTVNo6+yjeeeuuCsvxkRmUMbQor8
-         q2PZOaBLV5ovzv1btAdtbkLPA4MD8/hNc2n8XvNgJ0M2seZJ4YcTxPrNJME0AG/dVEka
-         TyU7HXt66Vxa70HfCFlsSs12EEdFV/y7hZGQzLQf33gB4v9gJpMAh5DB6CcDjecCoL5G
-         PGlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=jIhLxFkEstOsX75pumvf5hU2eBHJHovEbl4Iz1TB1jM=;
-        b=EPZEtu62iw0++fdctR4Qt2YBYJpqBFdjPOGLRKRMhZoGK7WbJyFfW+rW87CVN7BXLs
-         PKwuS1cVF0BA32JvTaDu7R7rOIhsbtQ+wPo+pg8vpUEeGvcUPQ8R7ogTKWhc1wMr7C2n
-         KjILFFJjBp4lWp9CR95op1Y4CEUz8rhOjWq9eTT5xg/7KMBpbFAlXqLmVJLW9q2nqKJm
-         EmPbIDXyyUXNAB6uVzreggvwA96cJ1Xvjyi9YvWDk5kWHArXbCFArVejSXWr4kS8c+vE
-         KaEZzzI3vvafjPhImyf4z84FEidvUFPUAuSmFHYcnYPKP5Xt2q510dOuFBRoMr7KNont
-         ZLPw==
-X-Gm-Message-State: AGi0PuZJkYrtEUpeAzsz6mKjgdsa7fWTU2cUF/7WNyykMc023aPciyK0
-        C7pPbO/J9ljEgDqhhl0WHqM=
-X-Google-Smtp-Source: APiQypIbm5vJB/18u0FHVukAqq/pAqHrSF7OX5evfSOxMv2SwznRLQtf/p9XqjdQHR8VtGHuxbTxFQ==
-X-Received: by 2002:a17:90a:104f:: with SMTP id y15mr40049008pjd.191.1589436261882;
-        Wed, 13 May 2020 23:04:21 -0700 (PDT)
-Received: from localhost.localdomain.localdomain ([124.156.176.138])
-        by smtp.gmail.com with ESMTPSA id m6sm17087974pjo.5.2020.05.13.23.04.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 May 2020 23:04:21 -0700 (PDT)
-From:   Qingjie Xing <xqjcool@gmail.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org
-Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, linux-kernel@vger.kernel.org,
-        Qingjie Xing <xqjcool@gmail.com>
-Subject: [PATCH] kernel/sched/wait.c: set timeout to 0 when kthread should stop
-Date:   Mon, 11 May 2020 23:50:21 -0400
-Message-Id: <1589255421-28264-1-git-send-email-xqjcool@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1725898AbgELEFl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 May 2020 00:05:41 -0400
+Received: from mail.itasa.com.ar ([190.124.15.130]:55492 "EHLO envases.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725776AbgELEFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 00:05:41 -0400
+X-Greylist: delayed 902 seconds by postgrey-1.27 at vger.kernel.org; Tue, 12 May 2020 00:05:40 EDT
+Received: from 21cn.com (192.254.72.18) by ITA-SV004.ita.local (192.168.0.31)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1531.3; Tue, 12
+ May 2020 00:48:11 -0300
+Reply-To: <robturner-purchase@exporttogroup.co>
+From:   exporttogroup <nvega@itasa.com.ar>
+To:     <linux-kernel@vger.kernel.org>
+Subject: Quotation request  to linux-kernel@vger.kernel.org
+Date:   Mon, 11 May 2020 20:50:35 -0700
+Message-ID: <20200511205034.50956CAA7F395FF8@itasa.com.ar>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+X-ClientProxiedBy: ITA-SV004.ita.local (192.168.0.31) To ITA-SV004.ita.local
+ (192.168.0.31)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using kthread_stop() to terminate a thread causes tcp_recvmsg()
-to enter a dead loop when the kernel thread uses tcp_recvmsg()
-to receive a message.
+Hello Sir/Madame
 
-tcp_recvmsg()-->sk_wait_data()-->sk_wait_event()-->wait_woken().
-
-wait_woken() will directly return unchanged timeout value rather
-than be executed as normally.
-
-tcp_recvmsg () will continues to execute sk_wait_data(). So finally
-this situation will creat an endless loop that cannot be exited.
-
-Signed-off-by: Qingjie Xing <xqjcool@gmail.com>
----
- kernel/sched/wait.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/kernel/sched/wait.c b/kernel/sched/wait.c
-index ba059fb..a27bbbd 100644
---- a/kernel/sched/wait.c
-+++ b/kernel/sched/wait.c
-@@ -431,6 +431,8 @@ long wait_woken(struct wait_queue_entry *wq_entry, unsigned mode, long timeout)
- 	set_current_state(mode); /* A */
- 	if (!(wq_entry->flags & WQ_FLAG_WOKEN) && !is_kthread_should_stop())
- 		timeout = schedule_timeout(timeout);
-+	if (is_kthread_should_stop())
-+		timeout = 0;
- 	__set_current_state(TASK_RUNNING);
+Good day.
+I am Rob Turner, Head of Procurement. Our marketing unit 
+requested your  products Models after coming across your Trade 
+fair catalog last year and Webpage on registered trade site,
  
- 	/*
--- 
-1.8.3.1
+we are interested to Purchase your products and its accessories 
+as requested by our customers here in UK Market and Europe, 
+Please send us your Updated product catalog.
+
+Please if you know your company will be able to handle extra 
+purchase this year as we have good business experience.
+ 
+Once we confirm your competitive Price List of your product and 
+company Terms, we will place Market order immediately with our 
+company certificate and experience in business.
+
+Send your reply to robturner-purchase@exporttogroup.co for us to 
+be able to treat with care and urgent.
+
+Regards
+  Rob Turner
+ Head of Procurement Operations
+ robturner-purchase@exporttogroup.co
+
+ www.exporttogroup.co
+
+REGISTERED OFFICE 171 VICTORIA STREET, LONDON SW1E 5NN
+COMPANY REGISTRATION NUMBER 233462 VAT NO. GB232457280
+
+
+This e-mail may contain confidential and/or privileged 
+information.If you are not the intended recipient (or have 
+received this e-mail in error) please notify the sender 
+immediately and destroy this e-mail. Any unauthorised copying, 
+disclosure or distribution of the material in this e-mail is 
+strictly forbidden
+Este e-mail pode conter informações confidenciais e / ou 
+privilegiadas. Se você não for o destinatário pretendido (ou 
+tiver recebido este e-mail por engano), notifique o remetente 
+imediatamente e destrua este e-mail. Qualquer cópia, divulgação 
+ou distribuição não autorizada do material neste e-mail é 
+estritamente proibida.
+ Before printing think about your responsibility for the  
+ENVIRONMENT
+
+
+
+
 
