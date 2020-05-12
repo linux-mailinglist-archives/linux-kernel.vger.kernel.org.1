@@ -2,74 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF6A1CF684
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B238C1CF6AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgELOKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 10:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729637AbgELOKx (ORCPT
+        id S1730323AbgELONf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 10:13:35 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:2330 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730282AbgELONY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 10:10:53 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D03C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 07:10:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NO+sRIrtcWsU8pzSoEXB29WcYJfcotevuQ/7ctpOgOc=; b=UACElRPkuH49mAtmVFRanStviN
-        Rd5L8NoVCXQcyxMBOcoHv8PcdmLteBLXj+l+DxhgNyyDF+l8P3mj10gF/AfZBvnyaF2HQ2o4+gyDX
-        EGF3aQs9FQG3tC6jmnJbAbMDRACqURJhcLPOaVi8MREykLrnqAdGuc+J7IKdU3FWWw8RFH66AMV3x
-        8r1ZZS8gq5ohw/XQsffeqWu/hIf+zsuILWBlW49/WGErOW7Ncyd/ypOOprLL3oqffsikTS+SRgtmP
-        OW+Fs54cOBSXrrz57HegSIWE9j/1OaanNoqAzV98nplM/RjXLmZ9d943MEiR1WqUq+KXN2XoLtDvw
-        oBor4lSg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jYVcQ-0006mx-7h; Tue, 12 May 2020 14:10:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8D342305EEF;
-        Tue, 12 May 2020 16:10:48 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 73EA320962E33; Tue, 12 May 2020 16:10:48 +0200 (CEST)
-Date:   Tue, 12 May 2020 16:10:48 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
-        vincent.guittot@linaro.org, juri.lelli@redhat.com,
-        zohooouoto@zoho.com.cn, dietmar.eggemann@arm.com
-Subject: Re: [PATCH v3] sched/fair: Fix enqueue_task_fair warning some more
-Message-ID: <20200512141048.GL2978@hirez.programming.kicks-ass.net>
-References: <20200506141821.GA9773@lorien.usersys.redhat.com>
- <20200512135222.GC2201@lorien.usersys.redhat.com>
+        Tue, 12 May 2020 10:13:24 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04CEC6Nl020352;
+        Tue, 12 May 2020 16:12:06 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=/cK62abs1ZOEPd483Fs6vDPdjcVo6tdi3F8yjd7dwk0=;
+ b=KTiDZr5bXPQ1ht4Sn0aTqssoSiATVAB6OvUCqHuvtHDJWH/2ga4oo/VQn6vj/L8sIbUx
+ E4Honl7oWMa8wczDu+Httq4wd6aiUXW7acBRNFc/ZyyeVwlpmfo5QSrhvhRfgkXr1zHD
+ GPJow8LcS3EWe4JrFtdfwI/9xYuQaRtPnnTT2NFLqVyuaYs7VnSf/0Je0tDOsEEae20l
+ WI0TLo0dqictsY16T419hWRkJRqiRWswe8q/B0z3GBUVLpmaBbmd0MbeCbNY/l1dxwo/
+ lQYob5ZuDSCPkUQsCIMW2lfNetp0Lqy3//gfqPgIYZXveiFUb7HBjo7hSBvWvRNn2NvC 3A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30whn9gw5a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 May 2020 16:12:06 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4D5E810002A;
+        Tue, 12 May 2020 16:11:56 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag6node1.st.com [10.75.127.16])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F2EB22AA608;
+        Tue, 12 May 2020 16:11:55 +0200 (CEST)
+Received: from localhost (10.75.127.47) by SFHDAG6NODE1.st.com (10.75.127.16)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 12 May 2020 16:11:55
+ +0200
+From:   Nicolas Toromanoff <nicolas.toromanoff@st.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     Nicolas Toromanoff <nicolas.toromanoff@st.com>,
+        <linux-crypto@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/5] STM32 CRC update
+Date:   Tue, 12 May 2020 16:11:08 +0200
+Message-ID: <20200512141113.18972-1-nicolas.toromanoff@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512135222.GC2201@lorien.usersys.redhat.com>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG8NODE2.st.com (10.75.127.23) To SFHDAG6NODE1.st.com
+ (10.75.127.16)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-12_04:2020-05-11,2020-05-12 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 09:52:22AM -0400, Phil Auld wrote:
-> sched/fair: Fix enqueue_task_fair warning some more
-> 
-> The recent patch, fe61468b2cb (sched/fair: Fix enqueue_task_fair warning)
-> did not fully resolve the issues with the rq->tmp_alone_branch !=
-> &rq->leaf_cfs_rq_list warning in enqueue_task_fair. There is a case where
-> the first for_each_sched_entity loop exits due to on_rq, having incompletely
-> updated the list.  In this case the second for_each_sched_entity loop can
-> further modify se. The later code to fix up the list management fails to do
-> what is needed because se does not point to the sched_entity which broke out
-> of the first loop. The list is not fixed up because the throttled parent was
-> already added back to the list by a task enqueue in a parallel child hierarchy.
-> 
-> Address this by calling list_add_leaf_cfs_rq if there are throttled parents
-> while doing the second for_each_sched_entity loop.
-> 
-> v3: clean up commit message and add fixes and review tags.
+This set of patches update the STM32 CRC driver.
+It contains bug fix.
 
-Excellent, ignore what I just sent, I now have this one.
+First fixes issue if we enable STM32 CRC32 hardware accelerator with
+ext4 (with metadata-chksum enable) and other fs that use same direct
+access to update crc32 API without previous init.
+Second fixes some issues raise by the extra self-test.
+Third fixes wrong hw usage if there is multiple IP on the SOC.
+Forth fixes "sleep while atomic" in tcrypt test, and some other places
+(ext4)
+Last fixes concurrent accesses. As state is saved in the hardware cell
+and not in stack as other CRC32 drivers, we need to create atomic
+section to protect concurrent CRC32 calculus.
+
+This patch series applies to cryptodev/master.
+
+Nicolas Toromanoff (5):
+  crypto: stm32/crc: fix ext4 chksum BUG_ON()
+  crypto: stm32/crc: fix run-time self test issue.
+  crypto: stm32/crc: fix multi-instance
+  crypto: stm32/crc: don't sleep in runtime pm
+  crypto: stm32/crc: protect from concurrent accesses
+
+ drivers/crypto/stm32/stm32-crc32.c | 230 ++++++++++++++++++++---------
+ 1 file changed, 161 insertions(+), 69 deletions(-)
+
+-- 
+2.17.1
+
