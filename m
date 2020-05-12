@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E6E1CFDE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 20:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5541CFDF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 21:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730881AbgELS7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 14:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51956 "EHLO
+        id S1728152AbgELTIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 15:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730210AbgELS7X (ORCPT
+        with ESMTP id S1725554AbgELTID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 14:59:23 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70389C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 11:59:19 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a5so9983101pjh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 11:59:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fDIsqd1W5C0dkw2svve5ve4Uf/NEAiUJGuSmZ1myBmg=;
-        b=cfSAULIQe4ogt83IWA/fd82JGGfdkBQhEzAcXSkzAJr+Bowvr0xZbLQ69aERTd8Eoy
-         W2wQC4aH4xMAIy/Il2e10ZSfc5/ISPajE9v3IdiQshDIYPv2sZ8NdPedUgrf+tJg3stp
-         D6P/StPh2UCG55oBT9/MgJ9X+y3ThGCZ0Zcis=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fDIsqd1W5C0dkw2svve5ve4Uf/NEAiUJGuSmZ1myBmg=;
-        b=F0Xk9Y8HTVrDHsGfImI1SA6RibBvV21yJhFvQr/vtkBtcVqThgSLl91qCTSS0ya3RI
-         0uo1xfbP9fXoMaVd6AGgpWBNHOILVTXP2ZJ9+jcJ/TrboDrA3wHM3nXu9pJKX/auncnU
-         wWODlPUcXbwHjyRxTUwo8jIxQPrREMpFNOT/jJ8VT9S3tSA6DVMDgCoL+emAro11sdB2
-         mu9ggJi+xvXEWV1A35vqy2wH9Gzo2aKPSc9Doubxf9vk7cQ3yJUNgWlYWTIZ3Z6c3wym
-         8OsdzMqsz8yzao1O4/kAuXllxsKEGbCKmYmiZTPRmwRgHLWbQUItBpfnuYlYlTS6/Nur
-         iuag==
-X-Gm-Message-State: AGi0PuaDez6HYH+ofO9BMuPkFTjM+w1jBOWh2akQdCApSBxKMHHTcyJT
-        gqpqGdxuI7HJ4xZsZsvmQ6T9Qw==
-X-Google-Smtp-Source: APiQypJuqp9YQ/jW2xEhizt7Cs2btUZ3ImTKqkgDx2XKEmyn3+SwI4Jh3zhQ1EdTfiEQ7gUZM7PEUQ==
-X-Received: by 2002:a17:90a:6403:: with SMTP id g3mr27190069pjj.99.1589309957865;
-        Tue, 12 May 2020 11:59:17 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 128sm11891176pfd.114.2020.05.12.11.59.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 11:59:17 -0700 (PDT)
-Date:   Tue, 12 May 2020 11:59:16 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        WeiXiong Liao <liaoweixiong@allwinnertech.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] pstore/zone: fix dereference of pointer before it
- has been null checked
-Message-ID: <202005121159.711F246@keescook>
-References: <20200512171932.222102-1-colin.king@canonical.com>
+        Tue, 12 May 2020 15:08:03 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C91C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 12:08:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RVdj44/VzSen6iR6rQOWCntv4FGd6/Yn4+ie5a9/Rko=; b=qKZiXMSgcjdtQ6CmvZLKE2h6sw
+        HHpe7Vgsdlq9c+mtnM9CFRMqxVnqgdOeWNVOwPVnF503dAs5Nag1VCtPV9NKrgnWlC0/3GoEXcdOd
+        WnDUmVQrHJ+01SxntoNQBTRcY26ZbJWiKcLFCP2v8+najyvWAzjUeEkisNB1QpBnUtcyq5OgQH+HA
+        nd7sY86AuC2JcsxzEANyGeJKmZHogaWD8kcu1hNHjX/uB7Gv30BUKfqTtZhm8FfMYlV3uLacmkXoR
+        7kDJI2LMLrq9sI8nvfHXBk58E0wnnnVHfsaRxLyk+zCxlsBOT1kOUzaBPLMUhCxrUwNm2B5exkFnO
+        9tnLKakg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jYaFx-00013o-Pq; Tue, 12 May 2020 19:07:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4EFD8305EEF;
+        Tue, 12 May 2020 21:07:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3A13628B27272; Tue, 12 May 2020 21:07:55 +0200 (CEST)
+Date:   Tue, 12 May 2020 21:07:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Will Deacon <will@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v5 00/18] Rework READ_ONCE() to improve codegen
+Message-ID: <20200512190755.GL2957@hirez.programming.kicks-ass.net>
+References: <20200511204150.27858-1-will@kernel.org>
+ <20200512081826.GE2978@hirez.programming.kicks-ass.net>
+ <CANpmjNNo3rhwqG=xEbpP9JiSd8-Faw8fkoUhYJjesHK5S5_KQQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200512171932.222102-1-colin.king@canonical.com>
+In-Reply-To: <CANpmjNNo3rhwqG=xEbpP9JiSd8-Faw8fkoUhYJjesHK5S5_KQQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 06:19:32PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Tue, May 12, 2020 at 07:53:00PM +0200, Marco Elver wrote:
+> I just ran a bunch of KCSAN tests. While this series alone would have
+> passed the tests, there appears to be a problem with
+> __READ_ONCE/__WRITE_ONCE. I think they should already be using
+> 'data_race()', as otherwise we will get lots of false positives in
+> future.
 > 
-> Currently the assignment of cnt dereferences pointer 'record' before
-> the pointer has been null checked. Fix this by only making this
-> dereference after it has been null checked close to the point cnt
-> is to be used.
+> I noticed this when testing -tip/locking/kcsan, which breaks
+> unfortunately, because I see a bunch of spurious data races with
+> arch_atomic_{read,set} because "locking/atomics: Flip fallbacks and
+> instrumentation" changed them to use __READ_ONCE()/__WRITE_ONCE().
+> From what I see, the intent was to not double-instrument,
+> unfortunately they are still double-instrumented because
+> __READ_ONCE/__WRITE_ONCE doesn't hide the access from KCSAN (nor KASAN
+> actually). I don't think we can use __no_sanitize_or_inline for the
+> arch_ functions, because we really want them to be __always_inline
+> (also to avoid calls to these functions in uaccess regions, which
+> objtool would notice).
 > 
-> Addresses-Coverity: ("Dereference before null check")
-> Fixes: 637ce64e7f57 ("pstore/zone,blk: Add support for pmsg frontend")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  fs/pstore/zone.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/pstore/zone.c b/fs/pstore/zone.c
-> index c5bf3b9f644f..3cf7d6762c76 100644
-> --- a/fs/pstore/zone.c
-> +++ b/fs/pstore/zone.c
-> @@ -825,7 +825,7 @@ static int notrace psz_record_write(struct pstore_zone *zone,
->  		struct pstore_record *record)
->  {
->  	size_t start, rem;
-> -	int cnt = record->size;
-> +	int cnt;
->  	bool is_full_data = false;
->  	char *buf = record->buf;
+> I think the easiest way to resolve this is to wrap the accesses in
+> __*_ONCE with data_race().
 
-Also here. I'll fix both. Thanks!
+But we can't... because I need arch_atomic_*() and __READ_ONCE() to not
+call out to _ANYTHING_.
 
--Kees
+Sadly, because the compilers are 'broken' that whole __no_sanitize thing
+didn't work, but I'll be moving a whole bunch of code into .c files with
+all the sanitizers killed dead. And we'll be validating it'll not be
+calling out to anything.
 
->  
-> @@ -835,6 +835,7 @@ static int notrace psz_record_write(struct pstore_zone *zone,
->  	if (atomic_read(&zone->buffer->datalen) >= zone->buffer_size)
->  		is_full_data = true;
->  
-> +	cnt = record->size;
->  	if (unlikely(cnt > zone->buffer_size)) {
->  		buf += cnt - zone->buffer_size;
->  		cnt = zone->buffer_size;
-> -- 
-> 2.25.1
-> 
-
--- 
-Kees Cook
+data_race() will include active calls to kcsan_{dis,en}able_current(),
+and this must not happen.
