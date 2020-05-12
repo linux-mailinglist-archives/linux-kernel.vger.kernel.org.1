@@ -2,110 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04B01CEE0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 09:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003A91CEE12
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 09:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728958AbgELHdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 03:33:06 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:31885 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728416AbgELHdF (ORCPT
+        id S1729006AbgELHdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 03:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727859AbgELHdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 03:33:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589268785; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=PV0ffuseEJPvIxcDvTKmfLCk6MMv4KR9on4py3/Gz28=;
- b=NhzuZATNf1+jd6McW8VOhVVl+s8NeWKwMuxd92inxertaj5PB4BBGtZ4pIOR8ohJo5KLiO0v
- +LVQyFywLFE4ejqsWEDp2uvVXiZrntAmTcKiHvOMyoLBU5458RPc9wbWRNg0mzFS6kHyz5KS
- LXJG173Fg1uqUDflEZAHBDnDLxk=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eba5118.7fecd11f1fb8-smtp-out-n03;
- Tue, 12 May 2020 07:32:40 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 349C9C44788; Tue, 12 May 2020 07:32:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DB041C433CB;
-        Tue, 12 May 2020 07:32:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DB041C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Tue, 12 May 2020 03:33:36 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4222BC061A0C;
+        Tue, 12 May 2020 00:33:36 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id l18so14011474wrn.6;
+        Tue, 12 May 2020 00:33:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=2h4884sQ1T4p7Y1kwQszHkwyBYLx3tAh+LvfZpaf3HA=;
+        b=hj/t/bZrtKe6lucKS7eLxk781GNPG4OAwZMgiwqSb4m+80VHsBvJ2uhamejAGXeZ7r
+         q5IHXTdDoR6EbasRYLMtwfmGdCZ+JkpqaIGoqizE4+YyjlCbNAFY6zKIFSzVsUWnESIk
+         yo6FGZgqQb6kTxXPKhZ/n1whbyQhEZGjSVb6+v9iFqhmo/rC7mU/Lt37DWJOGFCNKa2x
+         +zEmCbnrjQLfkLv3XzC2sOy7Tt+9YUMTOPXi7UyvRNGpnosSkp66Gg9cVEpMJ0QE7Pio
+         OJ1xjLMLWq9cWmVfXLOzZwz8Ngn/Fh6n6Uj15s1m8J7DLsnEkzrlwx0AVM6Fp7nOPazs
+         +YzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=2h4884sQ1T4p7Y1kwQszHkwyBYLx3tAh+LvfZpaf3HA=;
+        b=eNMTiyLT7AtnpBkaAHRAOSx49WIqofxzgIYbPlaqYl0sPkW9HpGdczklVJ9hR62R/H
+         OPWW3yvPWPLVa8LFiRf5oBd8DsVpn6LHdwc6MChIrKpWw+qZxm2R9oZWbfELuwrGVgie
+         NOkqLPGZ2f02JAd92UbA5vZwQnoLIZRGJGSELgMnAJT33fHdfAvMmzKrBuP3AQq4dcrr
+         RG7TUaDlYy3bUy6xB2ZRbm88Af2TRXm9uRKt6Wdps1tuv+tfVDvAHCY4ypUBgiQoC0Uf
+         hoiv/eObp4liLiZtmFO0E+fHon++dmMaCCrUVjpAw7a4LdvGhbDOH20f7kILZfLDJ0Wd
+         dzWg==
+X-Gm-Message-State: AGi0PubZlwjy8+VGxkGLebdt+WX2prQetkDEWd/iIU+9MA5M3YfGfGjK
+        AK/qEYLLK2GHyXTbYp5iBHE=
+X-Google-Smtp-Source: APiQypJg8hk4LeUiyc13Z6+SkueRhsAG3TusMR8RvPF7r54iGrokpgamTGkrM3NiCt+K/Id90NJKtA==
+X-Received: by 2002:adf:b786:: with SMTP id s6mr22880078wre.287.1589268812747;
+        Tue, 12 May 2020 00:33:32 -0700 (PDT)
+Received: from skynet.lan (198.red-83-49-57.dynamicip.rima-tde.net. [83.49.57.198])
+        by smtp.gmail.com with ESMTPSA id d9sm5961197wmd.10.2020.05.12.00.33.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 00:33:32 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     computersforpeace@gmail.com, kdasu.kdev@gmail.com,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sumit.semwal@linaro.org, linux-mtd@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH v2 0/5] mtd: rawnand: brcmnand: support v2.1-v2.2 controllers
+Date:   Tue, 12 May 2020 09:33:24 +0200
+Message-Id: <20200512073329.742893-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200510151406.2527856-1-noltari@gmail.com>
+References: <20200510151406.2527856-1-noltari@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] carl9170: Replace zero-length array with flexible-array
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200507151921.GA5083@embeddedor>
-References: <20200507151921.GA5083@embeddedor>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Christian Lamparter <chunkeey@googlemail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200512073240.349C9C44788@smtp.codeaurora.org>
-Date:   Tue, 12 May 2020 07:32:40 +0000 (UTC)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+Add support for v2.1 and v2.2 NAND controllers.
 
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> sizeof(flexible-array-member) triggers a warning because flexible array
-> members have incomplete type[1]. There are some instances of code in
-> which the sizeof operator is being incorrectly/erroneously applied to
-> zero-length arrays and the result is zero. Such instances may be hiding
-> some bugs. So, this work (flexible-array member conversions) will also
-> help to get completely rid of those sorts of issues.
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+v2: introduce changes suggested by Miquèl.
 
-Patch applied to ath-next branch of ath.git, thanks.
+Álvaro Fernández Rojas (5):
+  mtd: rawnand: brcmnand: rename v4 registers
+  mtd: rawnand: brcmnand: fix CS0 layout
+  mtd: rawnand: brcmnand: rename page sizes
+  dt: bindings: brcmnand: add v2.1 and v2.2 support
+  nand: brcmnand: support v2.1-v2.2 controllers
 
-103dc3dab295 carl9170: Replace zero-length array with flexible-array
+ .../devicetree/bindings/mtd/brcm,brcmnand.txt |  2 +
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c      | 89 +++++++++++++++----
+ 2 files changed, 76 insertions(+), 15 deletions(-)
 
 -- 
-https://patchwork.kernel.org/patch/11534317/
+2.26.2
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
