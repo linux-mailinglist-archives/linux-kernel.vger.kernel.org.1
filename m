@@ -2,120 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883491CFA25
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 18:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B841CFA52
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 18:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbgELQIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 12:08:40 -0400
-Received: from mga18.intel.com ([134.134.136.126]:26264 "EHLO mga18.intel.com"
+        id S1728270AbgELQOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 12:14:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59296 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725987AbgELQIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 12:08:39 -0400
-IronPort-SDR: U+iNjUbmpDCp9F9k2UfTFphu4TAsibtjWIiKHTEiYdAW8kw3jEKC0u3s1vxHdZOB9tXfrOHfZt
- MlvuekVncwtg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 09:08:39 -0700
-IronPort-SDR: nbIPwbVM1FtOkmdF1YvWu67mvfPrzxseWx7VxXKXCiGVUa0QnxqzBkn/Wf3aF1q6kFrtsGuiva
- AjQFJRAdYRgQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,384,1583222400"; 
-   d="scan'208";a="409352761"
-Received: from bmtannen-mobl.amr.corp.intel.com (HELO [10.255.228.231]) ([10.255.228.231])
-  by orsmga004.jf.intel.com with ESMTP; 12 May 2020 09:08:37 -0700
-Subject: Re: [PATCH 3/3] soundwire: bus_type: add sdw_master_device support
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        broonie@kernel.org, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, mengdong.lin@intel.com,
-        slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20200429185145.12891-1-yung-chuan.liao@linux.intel.com>
- <20200429185145.12891-4-yung-chuan.liao@linux.intel.com>
- <20200511063227.GS1375924@vkoul-mobl>
- <e214d308-1b92-a7a5-3c76-da05dca99cc5@linux.intel.com>
- <20200512033035.GV1375924@vkoul-mobl>
- <84f09843-3245-5fa4-530f-c915b28e9bc5@linux.intel.com>
- <20200512155927.GA4297@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <79ee2b4a-c2e3-aba7-8b67-b1a01922d089@linux.intel.com>
-Date:   Tue, 12 May 2020 11:08:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728164AbgELQOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 12:14:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 50689ABBD;
+        Tue, 12 May 2020 16:14:42 +0000 (UTC)
+Date:   Tue, 12 May 2020 09:09:15 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     akpm@linux-foundation.org, peterz@infradead.org,
+        paulmck@kernel.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH 1/2] kernel/sys: only rely on rcu for getpriority(2)
+Message-ID: <20200512160915.n3plwrwwrlpfqyrs@linux-p48b>
+References: <20200512000353.23653-1-dave@stgolabs.net>
+ <20200512000353.23653-2-dave@stgolabs.net>
+ <20200512150936.GA28621@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200512155927.GA4297@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200512150936.GA28621@redhat.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 12 May 2020, Oleg Nesterov wrote:
 
-
-On 5/12/20 10:59 AM, Vinod Koul wrote:
-> On 12-05-20, 09:36, Pierre-Louis Bossart wrote:
->> On 5/11/20 10:30 PM, Vinod Koul wrote:
->>> On 11-05-20, 14:00, Pierre-Louis Bossart wrote:
->>>>>> +	md = &bus->md;
->>>>>> +	md->dev.bus = &sdw_bus_type;
->>>>>> +	md->dev.type = &sdw_master_type;
->>>>>> +	md->dev.parent = parent;
->>>>>> +	md->dev.of_node = parent->of_node;
->>>>>> +	md->dev.fwnode = fwnode;
->>>>>> +	md->dev.dma_mask = parent->dma_mask;
->>>>>> +
->>>>>> +	dev_set_name(&md->dev, "sdw-master-%d", bus->link_id);
->>>>>
->>>>> This give nice sdw-master-0. In DT this comes from reg property. I dont
->>>>> seem to recall if the ACPI/Disco spec treats link_id as unique across
->>>>> the system, can you check that please, if not we would need to update
->>>>> this.
->>>> Table 3 in the Disco for Soundwire 1.0 spec: "all LinkID values are relative
->>>> to the immediate parent Device."
->>>>
->>>> There isn't any known implementation with more than one controller.
->>>
->>> But then it can come in "future" right. So lets try to make it future
->>> proof by not using the link_id (we can expose that as a sysfs if people
->>> want to know). So a global unique id needs to allocated (hint: idr or
->>> equivalent) and used as master_id
+>On 05/11, Davidlohr Bueso wrote:
 >>
->> Can you clarify if you are asking for a global ID for Intel/ACPI platforms,
->> or for DT as well? I can't figure out from the soundwire-controller.yaml
->> definitions if there is already a notion of unique ID.
-> 
-> If ACPI was unique, then I was planning to update the definition below
-> to include that. Given that it is not the case, let's make it agnostic to
-> underlying firmware.
+>> Currently the tasklist_lock is shared mainly in order to observe
+>> the list atomically for the PRIO_PGRP and PRIO_USER cases, as
+>> the actual lookups are already rcu-safe,
+>
+>not really...
+>
+>do_each_pid_task(PIDTYPE_PGID) can race with change_pid(PIDTYPE_PGID)
+>which moves the task from one hlist to another. Yes, it is safe in
+>that task_struct can't go away. But still this is not right because
+>do_each_pid_task() can scan the wrong (2nd) hlist.
 
-I am not sure I understand how this would be done.
+Hmm I didn't think about this case, I guess this is also busted in
+ioprio_get(2) then.
 
-The call sequence is
+>
+>> (ii) exit (deletion), this window is small but if a task is
+>> deleted with the highest nice and it is not observed this would
+>> cause a change in return semantics. To further reduce the window
+>> we ignore any tasks that are PF_EXITING in the 'old' version of
+>> the list.
+>
+>can't understand...
+>
+>could you explain in details why do you think this PF_EXITING check
+>makes any sense?
 
-sdw_bus_master_add(bus)
-     sdw_master_device_add(bus, parent, fw_node)
+My logic was that if the task with the highest prio exited while we
+were iterating the list, it would not be necessarily seen with rcu
+and the syscall would return the highest prio of a task that exited;
+and checking against PF_EXITING was a way to ignore such scenarios
+as we were going to race with it anyway.
 
-At the bus level, we don't have any information on which controller the 
-bus is related to.
+At this point it seems that we can just remove the lock for the
+PRIO_PROCESS case.
 
-We'd need to add an argument to sdw_bus_master_add() and have the 
-controller unique ID be allocated outside of the SoundWire core, hence 
-my question on whether the DT definition should not be extended.
-
-> 
->>
->> properties:
->>    $nodename:
->>      pattern: "^soundwire(@.*)?$"
->>
->>     soundwire@c2d0000 {
->>          #address-cells = <2>;
->>          #size-cells = <0>;
->>          reg = <0x0c2d0000 0x2000>;
-> 
+Thanks,
+Davidlohr
