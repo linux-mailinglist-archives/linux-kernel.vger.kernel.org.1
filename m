@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CC41CF698
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD761CF6AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730262AbgELONB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 10:13:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728283AbgELONA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 10:13:00 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E41C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 07:13:00 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id q24so9453378pjd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 07:13:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Ci7zKqD3gUAa4Ry13dacSM6dlpd7qZR1mlqQSLUNRDM=;
-        b=O/qLDBHjTmJNZ4W1E9Qf7I7qcg6eamfI+POItL7/mej0hX6DhjCfNdMtun9tUeSSL5
-         3uEIkG+olE6RavA7Nz6gumINI0osXMpGfmZrF7Gi3IpxFqn7Fw4dAjRCi9HFxVoMkh0s
-         WW74dtEp/Xndy66Sv0QFQVHgnWj8v9lY6LMdjDuz3qftrnH2zIE5CPU270kQ2uTCRX+E
-         TJHyVDv+EQNnGK9lX1K0yW+sxwyYPbL1DvuYShy+ufo09thN1vq59owk018ZJp0wC/5T
-         gX5sU79An1C83AYAqkLxM8me/QqZMV9bcCKGoV6CF38FfIl/iXAXND6KrmrxHiFjV2YQ
-         A14A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ci7zKqD3gUAa4Ry13dacSM6dlpd7qZR1mlqQSLUNRDM=;
-        b=SrkKnXJ35tNFuTEBkcTAYQDxAlvRB2dL3D+v6+OuwEOpPmmAK8S2A0/Ot7AmhmwSEn
-         tajeqbQRYrVtfLm3hXq4URzHG/VoSqf9e/uQ0+Z9wrNajn3sZjIiGDGiR22szccrjer1
-         eRA2DnLvQyFbqOxA6QRDR6qbkqYVtsJV0THEk6RKysFH1YFyf9kqdd3pvtugcfunkdD5
-         b1w+osapUrFR3O7rGpgPFFziRS3ZQhrRYqcjByog9Hnv/X2EOf3jKAxhtHWtuM684bgN
-         2Dk0jW5AbUGIQZeHZnHf3UUU4o8UILITObS+upH09puUUgVIF8pzmU9PWK3mcAtO1AoU
-         XkzQ==
-X-Gm-Message-State: AGi0PuY3rCNW8a3xq5RsdKsBy0cpgGpTOmEJahhDfRZVoLixLKLjzUQQ
-        sAb5NfdLncytLazZ5tzBSPgR
-X-Google-Smtp-Source: APiQypJezn/TnyFOdcX7SBPrI3c2aWKI1uXvAlkdhblYFd0FY2muiujKh7MlqChB350C0ASDPTLqiA==
-X-Received: by 2002:a17:90b:34c:: with SMTP id fh12mr26385247pjb.134.1589292779836;
-        Tue, 12 May 2020 07:12:59 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:6007:2f23:5151:5dd:ea86:4678])
-        by smtp.gmail.com with ESMTPSA id 141sm12422236pfz.171.2020.05.12.07.12.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 12 May 2020 07:12:59 -0700 (PDT)
-Date:   Tue, 12 May 2020 19:42:35 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     matthias.bgg@gmail.com, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        adamboardman@gmail.com
-Subject: Re: [PATCH 0/4] Add I2C controller support for MT6797 SoC
-Message-ID: <20200512141235.GG5526@Mani-XPS-13-9360>
-References: <20200222162444.11590-1-manivannan.sadhasivam@linaro.org>
+        id S1730334AbgELOOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 10:14:17 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:60201 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729756AbgELOOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 10:14:16 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49M0D64dCtz9sSg;
+        Wed, 13 May 2020 00:14:14 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1589292854;
+        bh=1cWnbL5AnU1SFC0c6TK6Gmn0CFWs8l55Kduttq/IPBc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=H6BELK16xMJ2pPpr+UvXaiBbKGmOhUn7bxK76Gg57Dkar9kEWyLwnyW/P1b2MQAqh
+         yNkxrWhpzf3ryB5QqKNp0h3xLHb0PT9A1xbi79LQ6HQCjJ04doU9MZH/dyrTx7v729
+         FOJsspgpTqgCvUud/mLNhM0leHidjocdVxqTrssRI4ERTOVlYi+0lf3nJbE+TPt72w
+         /VEVe+wgNKvMDeHJ020KnVEOtDX+uMu7hxmm5h5UhyHZh6D2G8Z4nLBhDdYVvmGnyw
+         kOOkvLnF9QJiOwym262pZMHjGHCH1SXjaejvx2Q4Zd8j0DdU1ZDnhk2VapNsF0V0uA
+         rudi+ySeklhZQ==
+Date:   Wed, 13 May 2020 00:14:12 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the fsinfo tree
+Message-ID: <20200513001412.12598111@canb.auug.org.au>
+In-Reply-To: <CAK7LNAQ-=A0nDZK0FTzgJ6oJ-VbV33F1rVjvBAWgybSsUXaPVA@mail.gmail.com>
+References: <20200512195712.690f02bb@canb.auug.org.au>
+        <CAK7LNAQ-=A0nDZK0FTzgJ6oJ-VbV33F1rVjvBAWgybSsUXaPVA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200222162444.11590-1-manivannan.sadhasivam@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/_l.XWYgKS2wyJTKroYQkitq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+--Sig_/_l.XWYgKS2wyJTKroYQkitq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 22, 2020 at 09:54:40PM +0530, Manivannan Sadhasivam wrote:
-> Hello,
-> 
-> This patchset adds I2C controller support for Mediatek MT6797 SoC. There
-> are a total of 8 I2C controllers in this SoC (2 being shared) and they are
-> same as the controllers present in MT6577 SoC. Hence, the driver support is
-> added with DT fallback method.
-> 
-> As per the datasheet, there are controllers with _imm prefix like i2c2_imm
-> and i2c3_imm. These appears to be in different memory regions but sharing
-> the same pins with i2c2 and i2c3 respectively. Since there is no clear
-> evidence of what they really are, I've adapted the numbering/naming scheme
-> from the downstream code by Mediatek.
-> 
-> This patchset has been tested on 96Boards X20 development board.
-> 
+Hi Masahiro,
 
-Looks like this series has slipped through the cracks...
+On Tue, 12 May 2020 23:00:13 +0900 Masahiro Yamada <masahiroy@kernel.org> w=
+rote:
+>
+> I also failed to build it, but the error message
+> was different.
+>=20
+> The following worked for me at least.
+> (Ubuntu 20.04).
+>=20
+> diff --git a/samples/vfs/Makefile b/samples/vfs/Makefile
+> index 97e54c8be358..539fb3a56af3 100644
+> --- a/samples/vfs/Makefile
+> +++ b/samples/vfs/Makefile
+> @@ -1,7 +1,8 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -userprogs :=3D test-fsmount test-mntinfo test-statx
+> +userprogs :=3D test-fsinfo test-fsmount test-mntinfo test-statx
+>  always-y :=3D $(userprogs)
+>=20
+>  userccflags +=3D -I usr/include
+>=20
+> -test-fsinfo-userldflags +=3D -static -lm
+> +test-fsinfo-userldflags :=3D -static
+> +test-fsinfo-userldlibs :=3D -lm
 
-Thanks,
-Mani
+Thanks, I will change the merge resolution to that.
+--=20
+Cheers,
+Stephen Rothwell
 
-> Thanks,
-> Mani
-> 
-> Manivannan Sadhasivam (4):
->   dt-bindings: i2c: Document I2C controller binding for MT6797 SoC
->   arm64: dts: mediatek: Add I2C support for MT6797 SoC
->   arm64: dts: mediatek: Enable I2C support for 96Boards X20 Development
->     board
->   arm64: dts: mediatek: Switch to SPDX license identifier for MT6797 SoC
-> 
->  .../devicetree/bindings/i2c/i2c-mt65xx.txt    |   1 +
->  .../boot/dts/mediatek/mt6797-x20-dev.dts      |  49 ++++
->  arch/arm64/boot/dts/mediatek/mt6797.dtsi      | 229 +++++++++++++++++-
->  3 files changed, 271 insertions(+), 8 deletions(-)
-> 
-> -- 
-> 2.17.1
-> 
+--Sig_/_l.XWYgKS2wyJTKroYQkitq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl66rzQACgkQAVBC80lX
+0GzpAwf8CjORtl+idsPwU7zqDqXLTgf4EKM4io4mY2wFnrtp3L7Xvg8ZqI5K2HkK
+J3WUhxRvEwWHnSjBf1UW5rM45oNBsBzA848Ju8Ei0kv/GM1jWtsYrAvK0vPh8gI9
+zo6M/ACAq+rDvyb8ZCSherYUkbtgwV9jBhNp2xb3iTNQkto1WiEc3NcOPI9ojysd
+a+01MC2QeYLhmVbcMQwXC98D9iGgtwWEjJtCGSAKR9+I/iIFJvoORlG77azABIZv
+EHWtgosIsp4OhmWujsFlpJHm+cd9TL0A+imgu+wazPpLrdNIBUuAes5141LOXKbd
+aZAwLQk+kQtExSy8z1dkfi50hDoDHg==
+=5fez
+-----END PGP SIGNATURE-----
+
+--Sig_/_l.XWYgKS2wyJTKroYQkitq--
