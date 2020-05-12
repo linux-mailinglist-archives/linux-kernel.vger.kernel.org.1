@@ -2,334 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 848F81CED1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 08:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D751CED1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 08:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728871AbgELGiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 02:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725536AbgELGiP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 02:38:15 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59226C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 23:38:15 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id w65so5896776pfc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 23:38:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QVp/H5vK1lwJMxz1Tuv0jzbRm/AB7w7GAQub55XuNrw=;
-        b=F643G+sjdAIO+h9mo6OtW2S6CZd1iA+QN5WBdXV9zGRi5tcZGajhOCcQQVRcmJ5li5
-         Upg9aNEunWw0GJvdpqPombkvyK6QZKAZ+55GNGPnati7XhCn23EoHJjiXyAlNCf974BB
-         OZPjBzImZIerq+3dZ+PeS1GzDJDWZdazz9E1Rp2cXQAu39Cfsn4UywyA6SMK8Ex8NwcW
-         ZPJ5NiRyVfmS2ySSijsFByBkwLRUHvxSHIh7VmgEnd4uaJJBECx2BVHYRmcv7A+5CgRC
-         pW+UEFGCePiJtArRz2vfLGLjQeYY6mVDne5HYIgP7MkM5jU9S8tXEDieG3gToLYBkO7n
-         0CJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QVp/H5vK1lwJMxz1Tuv0jzbRm/AB7w7GAQub55XuNrw=;
-        b=ZHfobsroySHgc61NrNbhl4DqO1Fpc5CplqsKv987aWRilhjL5IPCMMZ7JszLORbA49
-         8PcGzUmDfiIBwSoUVXrAImlxd0HhjhqfNiCBxZQRHmYRE4nJTI1kvXmUbs3Y1SRXfVXK
-         ioMUImF9ZzkwuCJB34yfd7pG3T8bUUW4D0epnBowN6ilt8QvVdnCoBsEOlZFyBH3J0eD
-         4GFIzU9W+YxhtzRz8LuKQmi7auG+3MCa5Qa4QFYn1aSEIThCUf1unrqy3omPUyR9zeQL
-         y2lHKm3hmN0InKBtRw5GskfewLXAO71FbSqjJb3sez8yowMcEPRSQueU+CniAUnd6iKG
-         OKpA==
-X-Gm-Message-State: AGi0PuZToZEA+0DxU14t6t0/pNHQGRU90LedVVy4EemJPoK0S1dBzstt
-        nN36YfuXkmBFstikapJUV0db0A==
-X-Google-Smtp-Source: APiQypLBuU+nD5LrMumbJLMS2ysqhuVlJ2lIgqjQzMgV49TwuzjyR/HNPSYuk0vSKvzrb8DhgKEhUQ==
-X-Received: by 2002:a63:5250:: with SMTP id s16mr12868185pgl.115.1589265494672;
-        Mon, 11 May 2020 23:38:14 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id v127sm10885941pfv.77.2020.05.11.23.38.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 11 May 2020 23:38:13 -0700 (PDT)
-Date:   Tue, 12 May 2020 14:38:12 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Enrico Weigelt <info@metux.net>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/3] arm64: perf_event: Fix time offset prior to epoch
-Message-ID: <20200512063812.GA20352@leoy-ThinkPad-X240s>
-References: <20200505135544.6003-1-leo.yan@linaro.org>
- <20200511092200.GF2957@hirez.programming.kicks-ass.net>
- <20200511092519.GA3001@hirez.programming.kicks-ass.net>
+        id S1728907AbgELGjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 02:39:06 -0400
+Received: from mout.web.de ([217.72.192.78]:45575 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727783AbgELGjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 02:39:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1589265532;
+        bh=w1Yj9AltlGe368GUTzZ7ijrqNOUbDEF3Qjva24Q6WJI=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=nz+AJo7gANfqQ31J3jz/XWNo62z7Fu+oc/qanZwCX12oqeuBgYWNdWz3SqD2yo8Rg
+         1k7cmO65A8QUBkwsqVZdXOv2A0S8JnnRgwkfLbJLbh6t7Lx/sCA/hHygILEtNgYzpL
+         jCaPoWagxPIQU9YFmkeAq69TWPG8oOgMGs+1/DKA=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([2.244.36.232]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MmQcl-1iqqXF1ymP-00iUr7; Tue, 12
+ May 2020 08:38:52 +0200
+Subject: Re: net/sonic: Fix some resource leaks in error handling paths
+To:     Finn Thain <fthain@telegraphics.com.au>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christophe Jaillet <christophe.jaillet@wanadoo.fr>
+References: <b7651b26-ac1e-6281-efb2-7eff0018b158@web.de>
+ <alpine.LNX.2.22.394.2005100922240.11@nippy.intranet>
+ <9d279f21-6172-5318-4e29-061277e82157@web.de>
+ <alpine.LNX.2.22.394.2005101738510.11@nippy.intranet>
+ <bc70e24c-dd31-75b7-6ece-2ad31982641e@web.de>
+ <alpine.LNX.2.22.394.2005110845060.8@nippy.intranet>
+ <9994a7de-0399-fb34-237a-a3c71b3cf568@web.de>
+ <alpine.LNX.2.22.394.2005120905410.8@nippy.intranet>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <3fabce05-7da9-7daa-d92c-411369f35b4a@web.de>
+Date:   Tue, 12 May 2020 08:38:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200511092519.GA3001@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <alpine.LNX.2.22.394.2005120905410.8@nippy.intranet>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:pCeNe6/ZfsXNuMeFLgFd8XMcEZxSQcMx/mz2KypmT/daBYHf1hP
+ o7A+Bx1cIU4rOkWNctL8K9CsQvVtxwp1irXzPV5+/82p/Kif/ZZ4Ubpii1fmAlfc3g72cbr
+ MWH7WpQ8Zhp+TVwx2aoLCCI99RTZ8PTg80pSFfecn26EWqAekzxDmaktaogRMndR+qmAkw8
+ LDvUk2SP/VhdzLfaAC02Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:J6PMyRMGBcA=:WWk3NSSMfuC5VNaFQndOFG
+ NDkxHqV4ZDRvfS6e0ILqoSMqlGEDXod0UVyztw4ywHLOwrf5x1jiQDMMpylvtxgGuvgdC6CQb
+ MtJQGXnjKgiJHVeiO8VJIA6UPtEHVsJ9TOknfEASGjjVLnUNEUb8JHfFFPY1yxtxjNqFbOb25
+ 8qb4ZL6G11cprR954SEp44LBuzZosLBiMBk94PXWtIIH+7l53lvGILP6HpfQ8RVqdX59+Lron
+ +/euH9v2VAlhDY34SSUn7JA9q+YgFTyQQVP9rCVC/PH1cVL9HeJrwsZpuJIe/g+TnzlmnNoH/
+ dGGKqeuGXjXHkC93jMeQiXk+Hl6KDJPPvENt3JxydXVOs34ZYb1UoJB7Ex7sWTjVy4vyp0Ylz
+ OP+nA0dzFK2059Opuh+0BYomACc3TG7zrPG/mLuAlEHKjh3yXcus+Wpgvm2MMFQ+NKT1oqAbM
+ SKqB7JfvOsrRXFeGhYlmgtnNg8I7juDoliwQmdDXEzXjeaB6DlcvAyu763Omv4Jjiim8GlYA4
+ 1wjfPWf48HFdF93WZ85BAMyW1nVdq5eTMkvW0wgivuEben3YfRvrdl86z7ETQZfqKd/o5jXv+
+ k4vnxFnae7Cad+0onzTUF29X9vvFIJl7iIjzpSIQw/UNBli47+WAI7/cSk2WQIbt9KSeVuDbn
+ fyGjmD7utooUo7Pt1GIQ3z2Vkmm971o1r4/27Ak3Gzszo0dn704Z+QG8xLdf/18+LRtbraJQx
+ C6NE0fpxfdScNF1U9PHlyXnc/p9m4uRPcT37AWDR3zlxSTGogHTL91Y7HvuVtwsZd38dFfMI8
+ fJlH6rMIaVsg3lrR8xWSK9FDnlFf5z3eVX4Er6IGCqFcmeOt9VVdDFtJu3xfmkJkOKqof/hqh
+ NLfFKyP94Itfvasy0XGq5DbunMYLxKYru9XF/f5yVRv3u11DJhMqGMz0DX4Ld1HJcAMAGONUD
+ ApSsIOy06EKhs31/2gJu4qXPFy2ariXfYq+1DkAObdvmchR+pe5+PuZAZLOlEm/43clLD9Fuy
+ NzmdVx7l/4vzbHxeORCdCRrWOwyBIBYRReIzpG8pKdtP7STPs0Iy6e2CZbcI5hMM43zsz9YJU
+ oJbiCGbrrsBv8760MgqEb6BAMKRq4ojeR3LdmiSk/sXJE2bN/EZFGCQCZMBwvBJ6UAN3c1iKG
+ ilcq6LfjVgCzOR8+qEhIJ82qfAADwirTincqgHcQ4tBLZ3aoMaq+UHIiLeHleePG0UJ9T10eJ
+ HZrGqwlmQiOviqODh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+> Markus, if you were to write a patch to improve upon coding-style.rst,
+> who should review it?
 
-On Mon, May 11, 2020 at 11:25:19AM +0200, Peter Zijlstra wrote:
-> On Mon, May 11, 2020 at 11:22:00AM +0200, Peter Zijlstra wrote:
-> 
-> > (_completely_ untested)
-> > 
-> > ---
-> >  arch/arm64/kernel/perf_event.c | 27 ++++++++++++++++++---------
-> >  include/linux/sched_clock.h    | 28 ++++++++++++++++++++++++++++
-> >  kernel/time/sched_clock.c      | 41 +++++++++++++----------------------------
-> >  3 files changed, 59 insertions(+), 37 deletions(-)
-> > 
-> > diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-> > index 4d7879484cec..81a49a916660 100644
-> > --- a/arch/arm64/kernel/perf_event.c
-> > +++ b/arch/arm64/kernel/perf_event.c
-> > @@ -1165,28 +1165,37 @@ device_initcall(armv8_pmu_driver_init)
-> >  void arch_perf_update_userpage(struct perf_event *event,
-> >  			       struct perf_event_mmap_page *userpg, u64 now)
-> >  {
-> > -	u32 freq;
-> > -	u32 shift;
-> > +	struct clock_read_data *rd;
-> > +	unsigned int seq;
-> >  
-> >  	/*
-> >  	 * Internal timekeeping for enabled/running/stopped times
-> >  	 * is always computed with the sched_clock.
-> >  	 */
-> > -	freq = arch_timer_get_rate();
-> >  	userpg->cap_user_time = 1;
-> > +	userpg->cap_user_time_zero = 1;
-> > +
-> > +	do {
-> > +		rd = sched_clock_read_begin(&seq);
-> > +
-> > +		userpg->time_mult = rd->mult;
-> > +		userpg->time_shift = rd->shift;
-> > +		userpg->time_offset = rd->epoch_ns;
-> 
-> 			^^^^^^^ wants to be time_zero
-> 
-> > +
-> > +		userpg->time_zero -= (rd->epoch_cyc * rd->shift) >> rd->shift;
-> > +
-> > +	} while (sched_clock_read_retry(seq));
-> > +
-> > +	userpg->time_offset = userpf->time_zero - now;
-> >  
-> > -	clocks_calc_mult_shift(&userpg->time_mult, &shift, freq,
-> > -			NSEC_PER_SEC, 0);
-> 
-> And that ^^^ was complete crap.
-> 
-> >  	/*
-> >  	 * time_shift is not expected to be greater than 31 due to
-> >  	 * the original published conversion algorithm shifting a
-> >  	 * 32-bit value (now specifies a 64-bit value) - refer
-> >  	 * perf_event_mmap_page documentation in perf_event.h.
-> >  	 */
-> > -	if (shift == 32) {
-> > -		shift = 31;
-> > +	if (userpg->time_shift == 32) {
-> > +		userpg->time_shift = 31;
-> >  		userpg->time_mult >>= 1;
-> >  	}
-> > -	userpg->time_shift = (u16)shift;
-> > -	userpg->time_offset = -now;
-> >  }
+All involved contributors have got chances to provide constructive comment=
+s.
+I would be curious who will actually dare to contribute further ideas for =
+this area.
 
-I have verified this change, it works as expected on my Arm64 board.
-Also paste the updated code which makes building success with minor
-fixing.
 
-I am not sure how to proceed, will you merge this?  Or you want me to
-send out formal patches (or only for the Arm64 part)?
+> If you are unable to write or review such a patch, how can you hope to
+> adjudicate compliance?
 
-P.s. it's shame I still missed you guys suggestion in prvious thread
-even though you have provide enough ifno, and thank you for the helping!
+I can also try to achieve more improvements here to see how the available
+software documentation will evolve.
 
----8<---
-
-diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index 4d7879484cec..5a34e9264c5b 100644
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -19,6 +19,7 @@
- #include <linux/of.h>
- #include <linux/perf/arm_pmu.h>
- #include <linux/platform_device.h>
-+#include <linux/sched_clock.h>
- #include <linux/smp.h>
- 
- /* ARMv8 Cortex-A53 specific event types. */
-@@ -1165,28 +1166,26 @@ device_initcall(armv8_pmu_driver_init)
- void arch_perf_update_userpage(struct perf_event *event,
- 			       struct perf_event_mmap_page *userpg, u64 now)
- {
--	u32 freq;
--	u32 shift;
-+	struct clock_read_data *rd;
-+	unsigned int seq;
- 
- 	/*
- 	 * Internal timekeeping for enabled/running/stopped times
- 	 * is always computed with the sched_clock.
- 	 */
--	freq = arch_timer_get_rate();
- 	userpg->cap_user_time = 1;
-+	userpg->cap_user_time_zero = 1;
- 
--	clocks_calc_mult_shift(&userpg->time_mult, &shift, freq,
--			NSEC_PER_SEC, 0);
--	/*
--	 * time_shift is not expected to be greater than 31 due to
--	 * the original published conversion algorithm shifting a
--	 * 32-bit value (now specifies a 64-bit value) - refer
--	 * perf_event_mmap_page documentation in perf_event.h.
--	 */
--	if (shift == 32) {
--		shift = 31;
--		userpg->time_mult >>= 1;
--	}
--	userpg->time_shift = (u16)shift;
--	userpg->time_offset = -now;
-+	do {
-+		rd = sched_clock_read_begin(&seq);
-+
-+		userpg->time_mult = rd->mult;
-+		userpg->time_shift = rd->shift;
-+		userpg->time_zero = rd->epoch_ns;
-+
-+		userpg->time_zero -= (rd->epoch_cyc * rd->mult) >> rd->shift;
-+
-+	} while (sched_clock_read_retry(seq));
-+
-+	userpg->time_offset = userpg->time_zero - now;
- }
-diff --git a/include/linux/sched_clock.h b/include/linux/sched_clock.h
-index 0bb04a96a6d4..528718e4ed52 100644
---- a/include/linux/sched_clock.h
-+++ b/include/linux/sched_clock.h
-@@ -6,6 +6,34 @@
- #define LINUX_SCHED_CLOCK
- 
- #ifdef CONFIG_GENERIC_SCHED_CLOCK
-+/**
-+ * struct clock_read_data - data required to read from sched_clock()
-+ *
-+ * @epoch_ns:		sched_clock() value at last update
-+ * @epoch_cyc:		Clock cycle value at last update.
-+ * @sched_clock_mask:   Bitmask for two's complement subtraction of non 64bit
-+ *			clocks.
-+ * @read_sched_clock:	Current clock source (or dummy source when suspended).
-+ * @mult:		Multipler for scaled math conversion.
-+ * @shift:		Shift value for scaled math conversion.
-+ *
-+ * Care must be taken when updating this structure; it is read by
-+ * some very hot code paths. It occupies <=40 bytes and, when combined
-+ * with the seqcount used to synchronize access, comfortably fits into
-+ * a 64 byte cache line.
-+ */
-+struct clock_read_data {
-+	u64 epoch_ns;
-+	u64 epoch_cyc;
-+	u64 sched_clock_mask;
-+	u64 (*read_sched_clock)(void);
-+	u32 mult;
-+	u32 shift;
-+};
-+
-+extern struct clock_read_data *sched_clock_read_begin(unsigned int *seq);
-+extern int sched_clock_read_retry(unsigned int seq);
-+
- extern void generic_sched_clock_init(void);
- 
- extern void sched_clock_register(u64 (*read)(void), int bits,
-diff --git a/kernel/time/sched_clock.c b/kernel/time/sched_clock.c
-index fa3f800d7d76..0acaadc3156c 100644
---- a/kernel/time/sched_clock.c
-+++ b/kernel/time/sched_clock.c
-@@ -19,31 +19,6 @@
- 
- #include "timekeeping.h"
- 
--/**
-- * struct clock_read_data - data required to read from sched_clock()
-- *
-- * @epoch_ns:		sched_clock() value at last update
-- * @epoch_cyc:		Clock cycle value at last update.
-- * @sched_clock_mask:   Bitmask for two's complement subtraction of non 64bit
-- *			clocks.
-- * @read_sched_clock:	Current clock source (or dummy source when suspended).
-- * @mult:		Multipler for scaled math conversion.
-- * @shift:		Shift value for scaled math conversion.
-- *
-- * Care must be taken when updating this structure; it is read by
-- * some very hot code paths. It occupies <=40 bytes and, when combined
-- * with the seqcount used to synchronize access, comfortably fits into
-- * a 64 byte cache line.
-- */
--struct clock_read_data {
--	u64 epoch_ns;
--	u64 epoch_cyc;
--	u64 sched_clock_mask;
--	u64 (*read_sched_clock)(void);
--	u32 mult;
--	u32 shift;
--};
--
- /**
-  * struct clock_data - all data needed for sched_clock() (including
-  *                     registration of a new clock source)
-@@ -93,6 +68,17 @@ static inline u64 notrace cyc_to_ns(u64 cyc, u32 mult, u32 shift)
- 	return (cyc * mult) >> shift;
- }
- 
-+struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
-+{
-+	*seq = raw_read_seqcount(&cd.seq);
-+	return cd.read_data + (*seq & 1);
-+}
-+
-+int sched_clock_read_retry(unsigned int seq)
-+{
-+	return read_seqcount_retry(&cd.seq, seq);
-+}
-+
- unsigned long long notrace sched_clock(void)
- {
- 	u64 cyc, res;
-@@ -100,13 +86,12 @@ unsigned long long notrace sched_clock(void)
- 	struct clock_read_data *rd;
- 
- 	do {
--		seq = raw_read_seqcount(&cd.seq);
--		rd = cd.read_data + (seq & 1);
-+		rd = sched_clock_read_begin(&seq);
- 
- 		cyc = (rd->read_sched_clock() - rd->epoch_cyc) &
- 		      rd->sched_clock_mask;
- 		res = rd->epoch_ns + cyc_to_ns(cyc, rd->mult, rd->shift);
--	} while (read_seqcount_retry(&cd.seq, seq));
-+	} while (sched_clock_read_retry(seq));
- 
- 	return res;
- }
+Regards,
+Markus
