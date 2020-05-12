@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BEB1D0200
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 966131D01FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731661AbgELWXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55470 "EHLO
+        id S1731456AbgELWXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 18:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725938AbgELWXH (ORCPT
+        by vger.kernel.org with ESMTP id S1731281AbgELWXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 18:23:07 -0400
+        Tue, 12 May 2020 18:23:05 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083F9C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B379AC061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:05 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jYdI9-0004c2-33; Wed, 13 May 2020 00:22:26 +0200
+        id 1jYdIA-0004ef-Df; Wed, 13 May 2020 00:22:27 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 87F34100605;
-        Wed, 13 May 2020 00:22:24 +0200 (CEST)
-Message-Id: <20200512213809.889850244@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id C4E071006A1;
+        Wed, 13 May 2020 00:22:25 +0200 (CEST)
+Message-Id: <20200512213809.997307469@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 12 May 2020 23:01:04 +0200
+Date:   Tue, 12 May 2020 23:01:05 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -50,7 +50,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V5 05/38] genirq: Provide irq_enter/exit_rcu()
+Subject: [patch V5 06/38] x86/entry: Provide helpers for execute on irqstack
 References: <20200512210059.056244513@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -63,114 +63,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-irq_enter()/exit() include the RCU handling. To properly separate the RCU
-handling provide variants which contain only the non-RCU related
-functionality.
+Device interrupt handlers and system vector handlers are executed on the
+interrupt stack. The stack switch happens in the low level assembly entry
+code. This conflicts with the efforts to consolidate the exit code in C to
+ensure correctness vs. RCU and tracing.
+
+As there is no way to move #DB away from IST due to the MOV SS issue, the
+requirements vs. #DB and NMI for switching to the interrupt stack do not
+exist anymore. The only requirement is that interrupts are disabled.
+
+That allows to move the stack switching to C code which simplifies the
+entry/exit handling further because it allows to switch stacks after
+handling the entry and on exit before handling RCU, return to usermode and
+kernel preemption in the same way as for regular exceptions.
+
+The initial attempt of having the stack switching in inline ASM caused too
+much headache vs. objtool and the unwinder. After analysing the use cases
+it was agreed on that having the stack switch in ASM for the price of an
+indirect call is acceptable as the main users are indirect call heavy
+anyway and the few system vectors which are empty shells (scheduler IPI and
+KVM posted interrupt vectors) can run from the regular stack.
+
+Provide helper functions to check whether the interrupt stack is already
+active and whether stack switching is required.
+
+64 bit only for now. 32 bit has a variant of that already. Once this is
+cleaned up the two implementations might be consolidated as a cleanup on
+top.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20200507161020.783541450@infradead.org
 ---
- include/linux/hardirq.h |   13 +++++++++++--
- kernel/softirq.c        |   35 +++++++++++++++++++++++++++--------
- 2 files changed, 38 insertions(+), 10 deletions(-)
+V5: Moved the actual switch to ASM code
+---
+ arch/x86/entry/entry_64.S        |   39 ++++++++++++++++++++++++++++++++++++++
+ arch/x86/include/asm/irq_stack.h |   40 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 79 insertions(+)
 
---- a/include/linux/hardirq.h
-+++ b/include/linux/hardirq.h
-@@ -43,7 +43,11 @@ extern void rcu_nmi_exit(void);
- /*
-  * Enter irq context (on NO_HZ, update jiffies):
-  */
--extern void irq_enter(void);
-+void irq_enter(void);
-+/*
-+ * Like irq_enter(), but RCU is already watching.
-+ */
-+void irq_enter_rcu(void);
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -1106,6 +1106,45 @@ SYM_CODE_START_LOCAL_NOALIGN(.Lbad_gs)
+ SYM_CODE_END(.Lbad_gs)
+ 	.previous
  
- /*
-  * Exit irq context without processing softirqs:
-@@ -58,7 +62,12 @@ extern void irq_enter(void);
- /*
-  * Exit irq context and process softirqs if needed:
-  */
--extern void irq_exit(void);
-+void irq_exit(void);
++/*
++ * rdi: New stack pointer points to the top word of the stack
++ * rsi: Function pointer
++ * rdx: Function argument (can be NULL if none)
++ */
++SYM_FUNC_START(asm_call_on_stack)
++	/*
++	 * Save the frame pointer unconditionally. This allows the ORC
++	 * unwinder to handle the stack switch.
++	 */
++	pushq		%rbp
++	mov		%rsp, %rbp
 +
-+/*
-+ * Like irq_exit(), but return with RCU watching.
-+ */
-+void irq_exit_rcu(void);
- 
- #ifndef arch_nmi_enter
- #define arch_nmi_enter()	do { } while (0)
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -339,12 +339,11 @@ asmlinkage __visible void do_softirq(voi
- 	local_irq_restore(flags);
- }
- 
--/*
-- * Enter an interrupt context.
-+/**
-+ * irq_enter_rcu - Enter an interrupt context with RCU watching
-  */
--void irq_enter(void)
-+void irq_enter_rcu(void)
- {
--	rcu_irq_enter();
- 	if (is_idle_task(current) && !in_interrupt()) {
- 		/*
- 		 * Prevent raise_softirq from needlessly waking up ksoftirqd
-@@ -354,10 +353,18 @@ void irq_enter(void)
- 		tick_irq_enter();
- 		_local_bh_enable();
- 	}
--
- 	__irq_enter();
- }
- 
-+/**
-+ * irq_enter - Enter an interrupt context including RCU update
-+ */
-+void irq_enter(void)
++	/*
++	 * The unwinder relies on the word at the top of the new stack
++	 * page linking back to the previous RSP.
++	 */
++	mov		%rsp, (%rdi)
++	mov		%rdi, %rsp
++	/* Move the argument to the right place */
++	mov		%rdx, %rdi
++
++1:
++	.pushsection .discard.instr_begin
++	.long 1b - .
++	.popsection
++
++	CALL_NOSPEC	rsi
++
++2:
++	.pushsection .discard.instr_end
++	.long 2b - .
++	.popsection
++
++	/* Restore the previous stack pointer from RBP. */
++	leaveq
++	ret
++SYM_FUNC_END(asm_call_on_stack)
++
+ /* Call softirq on interrupt stack. Interrupts are off. */
+ .pushsection .text, "ax"
+ SYM_FUNC_START(do_softirq_own_stack)
+--- /dev/null
++++ b/arch/x86/include/asm/irq_stack.h
+@@ -0,0 +1,40 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_X86_IRQ_STACK_H
++#define _ASM_X86_IRQ_STACK_H
++
++#include <linux/ptrace.h>
++
++#include <asm/processor.h>
++
++#ifdef CONFIG_X86_64
++static __always_inline bool irqstack_active(void)
 +{
-+	rcu_irq_enter();
-+	irq_enter_rcu();
++	return __this_cpu_read(irq_count) != -1;
 +}
 +
- static inline void invoke_softirq(void)
- {
- 	if (ksoftirqd_running(local_softirq_pending()))
-@@ -397,10 +404,12 @@ static inline void tick_irq_exit(void)
- #endif
- }
- 
--/*
-- * Exit an interrupt context. Process softirqs if needed and possible:
-+/**
-+ * irq_exit_rcu() - Exit an interrupt context without updating RCU
-+ *
-+ * Also processes softirqs if needed and possible.
-  */
--void irq_exit(void)
-+void irq_exit_rcu(void)
- {
- #ifndef __ARCH_IRQ_EXIT_IRQS_DISABLED
- 	local_irq_disable();
-@@ -413,6 +422,16 @@ void irq_exit(void)
- 		invoke_softirq();
- 
- 	tick_irq_exit();
++void asm_call_on_stack(void *sp, void *func, void *arg);
++
++static __always_inline void run_on_irqstack(void *func, void *arg)
++{
++	void *tos = __this_cpu_read(hardirq_stack_ptr);
++
++	lockdep_assert_irqs_disabled();
++
++	__this_cpu_add(irq_count, 1);
++	asm_call_on_stack(tos - 8, func, arg);
++	__this_cpu_sub(irq_count, 1);
 +}
 +
-+/**
-+ * irq_exit - Exit an interrupt context, update RCU and lockdep
-+ *
-+ * Also processes softirqs if needed and possible.
-+ */
-+void irq_exit(void)
++#else /* CONFIG_X86_64 */
++static inline bool irqstack_active(void) { return false; }
++static inline void run_on_irqstack(void *func, void *arg) { }
++#endif /* !CONFIG_X86_64 */
++
++static __always_inline bool irq_needs_irq_stack(struct pt_regs *regs)
 +{
-+	irq_exit_rcu();
- 	rcu_irq_exit();
- 	 /* must be last! */
- 	lockdep_hardirq_exit();
++	if (IS_ENABLED(CONFIG_X86_32))
++		return false;
++	return !user_mode(regs) && !irqstack_active();
++}
++
++#endif
 
