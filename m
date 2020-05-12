@@ -2,147 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE83F1CF983
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FEED1CF987
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730014AbgELPoe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 May 2020 11:44:34 -0400
-Received: from muru.com ([72.249.23.125]:54086 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726388AbgELPoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 11:44:34 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 667CC8047;
-        Tue, 12 May 2020 15:45:22 +0000 (UTC)
-Date:   Tue, 12 May 2020 08:44:30 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: Re: Bug with omap3-isp - 30 seconds delay for probe success
-Message-ID: <20200512154430.GL37466@atomide.com>
-References: <FC4C8A15-077F-46BA-9C69-947BC820EE9D@goldelico.com>
+        id S1727970AbgELPpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 11:45:21 -0400
+Received: from mail-dm6nam12on2086.outbound.protection.outlook.com ([40.107.243.86]:52833
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726465AbgELPpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 11:45:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nWdTI+c39W7VBIvPzLEXtHT6DE6CunTsB3myduoAd9Bl4jnf2xBXlEYPJtHcz7zA+V3pishKmsK62atIv0UMvnrtx52tnPqQ5sNOf/jnvJ00AKC4jvL4CA6d9ggRchmv+uA7V/8i72tGD68adGATFvuSHc/nC20kKen2brfmTJNSF7Mq76B3hm9vZWaLEwuXuOFZQTAJEn0LIbXyGMC6LmQTREZ2/rKEv5Tj/q1D4UADCKsDXNprsPkL0cyPY8ZaGqounEv/ropp38g28SsR73VPyW7XA6FefiMpuszhAEq25tDPzSTJ+LyCf4WmohvoVvLQDCDiL27B80CkxNOkxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NcSef509fKbyFUVk59pAIdfbEmfGiVhViUBhVFwPUOs=;
+ b=dakpq8oIC1JfXMOgktDTxL774yxexNePE8p9u3icQGp9DFpeQaAqAy2fiKClZlhEWknncBMImZLjNxoE+xNuNzLeG1GB0iRYoWqJC0lBy0zBh7AzCA6cENianTweaJrJuD79y2cKiIpjYZUK8wu9HhzcxvUZW/tpG67pQY2i/ARuk97EsTJ/OBKhaa7X54R+8GySz3nxAvz4rghXJNXE7pPcejg2pSwYFWwNJMqlroZn/mNonJrUq7XBR1mlr5T6RwOxhoWuA/XSykFOCyqiNlO+T3pYoEn9rjlout8ZO2BPqVCpHgv26BsvzpNoVq19BWYn2mqo4UbmJ4chAhJviA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NcSef509fKbyFUVk59pAIdfbEmfGiVhViUBhVFwPUOs=;
+ b=4NKot90jXlpx+r87Q4mVY7fpKmSBXPCPib4RKbEMRwVW3IuZZt93wMQuIB4fL7oOCpDZO4jg5mzEKveQLPyK3bT6T/5bwZ045e/Ek/Cl5ycfvuzqFYHZ37NLNIM1jf2g8onxXp4dJhYgu+x7UVvRtZz8AvisUZ5eWZneLStKFX4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
+ by SN1PR12MB2576.namprd12.prod.outlook.com (2603:10b6:802:22::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.33; Tue, 12 May
+ 2020 15:45:17 +0000
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::c0f:2938:784f:ed8d]) by SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::c0f:2938:784f:ed8d%7]) with mapi id 15.20.2979.033; Tue, 12 May 2020
+ 15:45:17 +0000
+Subject: Re: [PATCH v3 1/3] arch/x86: Rename config
+ X86_INTEL_MEMORY_PROTECTION_KEYS to generic x86
+To:     Dave Hansen <dave.hansen@intel.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        pbonzini@redhat.com, sean.j.christopherson@intel.com
+Cc:     x86@kernel.org, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, dave.hansen@linux.intel.com,
+        luto@kernel.org, peterz@infradead.org, mchehab+samsung@kernel.org,
+        changbin.du@intel.com, namit@vmware.com, bigeasy@linutronix.de,
+        yang.shi@linux.alibaba.com, asteinhauser@google.com,
+        anshuman.khandual@arm.com, jan.kiszka@siemens.com,
+        akpm@linux-foundation.org, steven.price@arm.com,
+        rppt@linux.vnet.ibm.com, peterx@redhat.com,
+        dan.j.williams@intel.com, arjunroy@google.com, logang@deltatee.com,
+        thellstrom@vmware.com, aarcange@redhat.com, justin.he@arm.com,
+        robin.murphy@arm.com, ira.weiny@intel.com, keescook@chromium.org,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        pawan.kumar.gupta@linux.intel.com, fenghua.yu@intel.com,
+        vineela.tummalapalli@intel.com, yamada.masahiro@socionext.com,
+        sam@ravnborg.org, acme@redhat.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <158923982830.20128.14580309786525588408.stgit@naples-babu.amd.com>
+ <158923997443.20128.16545619590919566266.stgit@naples-babu.amd.com>
+ <a92f3247-4b1e-0ff2-c1c7-68c149c0142c@intel.com>
+ <4984c0af-c20b-7084-9bca-5cb6bf385180@amd.com>
+ <1f4fa674-5709-ad88-c7ae-1bf5584a5b82@intel.com>
+From:   Babu Moger <babu.moger@amd.com>
+Message-ID: <a77cbb76-8a68-59a6-942b-08b27f86fc04@amd.com>
+Date:   Tue, 12 May 2020 10:45:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+In-Reply-To: <1f4fa674-5709-ad88-c7ae-1bf5584a5b82@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN1PR12CA0046.namprd12.prod.outlook.com
+ (2603:10b6:802:20::17) To SN1PR12MB2560.namprd12.prod.outlook.com
+ (2603:10b6:802:26::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <FC4C8A15-077F-46BA-9C69-947BC820EE9D@goldelico.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.30.87] (165.204.77.1) by SN1PR12CA0046.namprd12.prod.outlook.com (2603:10b6:802:20::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27 via Frontend Transport; Tue, 12 May 2020 15:45:15 +0000
+X-Originating-IP: [165.204.77.1]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 89347c56-43f3-4b08-f22c-08d7f68b77c9
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2576:
+X-Microsoft-Antispam-PRVS: <SN1PR12MB25761F487C9F75B7A12F902F95BE0@SN1PR12MB2576.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Forefront-PRVS: 0401647B7F
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fqzZMoQVuac/TQKNQCBgflzcbZ5rIlTZrnxraf4Yx61o28AaeJkcd3QRh4Tecr5dQvUUvhX9zSK2U4xMhY+KvELISr96LWd4LrYvqcgpF0n5+g5Qk/FjmzbmntmqUj7EBocEzI+X9XOJTAEwgPOM5ZRshxqvD83rB02X+tME6ydnGLjh6vjgP+xc7udfi+yuXxk7dqndybOdNhe9iGTErWGdKqI/IBdTOrrLmJwXrzIoUvTq9hPYl07IfAB3vbX3RIQCRmtqHir3AEpOMwnvcK+HJpMn5OqLhUAAuOkwPeJfkg+xmcJoY5x5mVwF2SjCmVy4xB38EI+avhNqnwU02agxsuOnQBg0muSyzr1Alfp3jjTBi8aM122jngddkvDA4QogvTXO/kGo4iU2AUN+dqCqI85b8zE4VPnCUUr5RphoJ3S9JdpdHE8CtONquxFePZswyda/Y0KWlCllyNOXUzEF76rSs0g/q2sjyCtHByBpQpH87jg+5A9p5gefG7lXVlledatQSpLSsWHz+WvX2BZD4yu7JgcYW+o1yGp0F3rxqI8c9aZ8kimID0Kz3qEmoVzM8A7pmfK/XQnP01YwiA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(136003)(396003)(39860400002)(376002)(346002)(33430700001)(7416002)(16576012)(8936002)(2616005)(956004)(4326008)(2906002)(31696002)(52116002)(86362001)(26005)(316002)(66476007)(44832011)(16526019)(8676002)(66556008)(5660300002)(66946007)(6486002)(31686004)(36756003)(478600001)(33440700001)(7406005)(53546011)(186003)(41533002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: wM/uGjswwTSvaNZVX7IuITWBd5SVXOzXGzDBg2+q3Oo1SmzLBDJmTvu8eNBfbwk0IeN7vQ4U2RpF/znHuVDyqdUvnzYzwAvf0s6UeuJQlmGLdCdLbBrztuGvRq/LGZtj9JjLglBpvBK8B1D1B1q4spZojChjPoHvz9yGFTwxlArTAN2M4r85Qp5wLzy63Vas9KbeDYLTT7Co98ZMhpNZgq001qgpv7kbSOSRy9VHfx1wbDzt/Oh1aUTxwhnpEEOb4jEqVhPfl7OR6IjCBwVAXvr3v41LsEytcS9AQQMdQYKxdEnG2J0OtLnYkV/NFiguTPvRQyiRI+rPFpZqWvSBxpMrQe3Q1CkSh8+Koki+O9hDd+hROnBoJi0HIiZnpD2hnK5m0VFVat8+atpTxfUiZowNguXl/e6rPCuq9bc0OUGC2H8fqvwXjkQAvaTflP1/9YjMEshPCgeMJ2MKO5PauO3IoVcQiV+pE3bC1Ck9yAM=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 89347c56-43f3-4b08-f22c-08d7f68b77c9
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2020 15:45:16.9983
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qvfcxAxnlB4nGCi3dLfrXYqBWQ4QooAOG3t86wt521XmFPu08QRb7GJe7cWcCHUr
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2576
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-* H. Nikolaus Schaller <hns@goldelico.com> [200509 12:12]:
-> resend from correct mail address
-> ---
-> 
-> Hi Tony,
-> I am observing an issue with omap3-isp for a while. It seems
-> to have started with v5.6 but I have preferred to invest some
-> time into analysis of the problem instead of trying a bisect.
-> 
-> The problem is that there is a
-> 
-> [   32.483703] WARNING: CPU: 0 PID: 2052 at drivers/base/dd.c:270 driver_deferred_probe_check_state+0x44/0x5c
-> [   32.498809] omap3isp 480bc000.isp: deferred probe timeout, ignoring dependency
-> 
-> from the driver, just after exactly 30 seconds. This is when
-> driver_deferred_probe_timeout had timed out (chaning driver_deferred_probe_timeout makes
-> it take more or less time).
-> 
-> So something is requested for by the omap3-isp driver which never becomes
-> available.
-> 
-> Some analysis shows that the omap3-isp is the only device calling of_iommu_xlate()
-> with a NULL opp table which ends up in driver_deferred_probe_check_state() to return
-> -EPROBE_DEFER until 30 seconds have passed.
-> 
-> Well, it seems to be resonable that there are no ops returned by iommu_ops_from_fwnode()
-> since there is no firmware for the ISP. But there should be no timeout.
-> 
-> This of_iommu_xlate() is called from of_iommu_configure() in the loop to handle
-> all "iommus" references. There is one for omap34xx and omap36xx.dtsi and the mmu_isp
-> is defined in omap3.dtsi. They refer to compatible = "ti,omap2-iommu"; and
-> ti,hwmods = "mmu_isp";
-> 
-> Are there any ideas what in the iommu or hwmods or firmware loading for the mmu_isp
-> may have changed recently?
-
-Sorry no idea what might have changed there. Adding Sakari to Cc,
-maybe he has some ideas. In any case, nowadays we should be able to
-boot the isp with dts data only with ti-sysc and that way use reset
-drivers and genpd if needed to configure things properly.
-
-Regards,
-
-Tony
 
 
-> Anyways the omap3-isp seems to be initialized after this 30 seconds timeout and
-> responds to media-ctl.
+On 5/12/20 10:19 AM, Dave Hansen wrote:
+> On 5/12/20 7:57 AM, Babu Moger wrote:
+>>> I was hoping to see at least *some* justification in this changelog.  Do
+>>> you think having "INTEL_" will confuse users?  Is there some technical
+>>> merit to this change?
+>>>
+>>> The naming churn is an obviously bad, not technically necessary change.
+>> Yes. Technically not necessary. But can cause some confusion on non-intel
+>> platforms.
 > 
-> A more complete log attached.
+> Seriously, guys, this is buried deep in kernel code.  Who is this confusing?
 > 
-> BR,
-> Nikolaus
+> To me, this is like anything else we rename in the kernel.  It causes
+> churn, which makes patches harder to backport for instance.  That's why
+> we don't rename things willy-nilly when we just don't like the names.
 > 
+> The naming has to cause some practical, real-world problem that we *FIX*
+> with the rename.
 > 
-> [   32.478759] ------------[ cut here ]------------
-> [   32.483703] WARNING: CPU: 0 PID: 2052 at drivers/base/dd.c:270 driver_deferred_probe_check_state+0x44/0x5c
-> [   32.498809] omap3isp 480bc000.isp: deferred probe timeout, ignoring dependency
-> [   32.498840] Modules linked in: omapdrm libertas_sdio libertas cfg80211 panel_tpo_td028ttec1 snd_soc_simple_card snd_soc_simple_card_utils snd_soc_omap_twl4030 simple_bridge wwan_on_off pvrsrvkm_omap3630_sgx530_125 snd_soc_gtm601 pwm_omap_dmtimer omap_aes_driver crypto_engine omap_crypto omap_sham omap3_isp videobuf2_dma_contig videobuf2_memops videobuf2_v4l2 videobuf2_common bq27xxx_battery_hdq bq27xxx_battery omap_hdq omap2430 bmp280_spi bmp280_i2c itg3200 bmp280 at24 tsc2007 leds_tca6507 bma180 phy_twl4030_usb musb_hdrc twl4030_pwrbutton hci_uart snd_soc_twl4030 twl4030_vibra btbcm ov9655 twl4030_madc v4l2_fwnode twl4030_charger videodev hmc5843_i2c bluetooth hmc5843_core gnss_sirf industrialio_triggered_buffer mc kfifo_buf ecdh_generic snd_soc_si47xx ecc gnss snd_soc_omap_mcbsp snd_soc_ti_sdma ehci_omap omapdss omapdss_base drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec display_connector generic_adc_battery drm industrialio drm_panel_orientation_quirks input_polldev
-> [   32.509704]  pwm_bl ip_tables x_tables ipv6 nf_defrag_ipv6 autofs4
-> [   32.612792] CPU: 0 PID: 2052 Comm: kworker/0:5 Not tainted 5.7.0-rc4-letux+ #2570
-> [   32.620758] Hardware name: Generic OMAP36xx (Flattened Device Tree)
-> [   32.627471] Workqueue: events deferred_probe_work_func
-> [   32.632995] [<c010f1f4>] (unwind_backtrace) from [<c010a7c8>] (show_stack+0x10/0x14)
-> [   32.641235] [<c010a7c8>] (show_stack) from [<c047d3c4>] (dump_stack+0x88/0xa8)
-> [   32.648925] [<c047d3c4>] (dump_stack) from [<c01304f0>] (__warn+0xc8/0xf4)
-> [   32.656249] [<c01304f0>] (__warn) from [<c013058c>] (warn_slowpath_fmt+0x70/0x9c)
-> [   32.664215] [<c013058c>] (warn_slowpath_fmt) from [<c056fa44>] (driver_deferred_probe_check_state+0x44/0x5c)
-> [   32.674652] [<c056fa44>] (driver_deferred_probe_check_state) from [<c05641d4>] (of_iommu_configure+0x98/0x1b4)
-> [   32.685302] [<c05641d4>] (of_iommu_configure) from [<c06dd6cc>] (of_dma_configure+0x1d8/0x234)
-> [   32.694458] [<c06dd6cc>] (of_dma_configure) from [<c056fc6c>] (really_probe+0x104/0x324)
-> [   32.703063] [<c056fc6c>] (really_probe) from [<c05700dc>] (driver_probe_device+0x10c/0x154)
-> [   32.711944] [<c05700dc>] (driver_probe_device) from [<c056e3a8>] (bus_for_each_drv+0x90/0xb8)
-> [   32.721008] [<c056e3a8>] (bus_for_each_drv) from [<c056ff1c>] (__device_attach+0x90/0x120)
-> [   32.729797] [<c056ff1c>] (__device_attach) from [<c056efdc>] (bus_probe_device+0x28/0x80)
-> [   32.738494] [<c056efdc>] (bus_probe_device) from [<c056f464>] (deferred_probe_work_func+0x5c/0x80)
-> [   32.748016] [<c056f464>] (deferred_probe_work_func) from [<c014986c>] (process_one_work+0x1e4/0x394)
-> [   32.757720] [<c014986c>] (process_one_work) from [<c0149a44>] (process_scheduled_works+0x28/0x30)
-> [   32.767150] [<c0149a44>] (process_scheduled_works) from [<c0149f38>] (worker_thread+0x210/0x2d8)
-> [   32.776489] [<c0149f38>] (worker_thread) from [<c014e7cc>] (kthread+0x138/0x148)
-> [   32.784362] [<c014e7cc>] (kthread) from [<c0100148>] (ret_from_fork+0x14/0x2c)
-> [   32.792022] Exception stack(0xda649fb0 to 0xda649ff8)
-> [   32.797393] 9fa0:                                     00000000 00000000 00000000 00000000
-> [   32.806091] 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> [   32.814788] 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-> [   32.842346] omap3isp 480bc000.isp: supply vdd-csiphy1 not found, using dummy regulator
-> [   32.855133] omap3isp 480bc000.isp: supply vdd-csiphy2 not found, using dummy regulator
-> [   32.864746] omap3isp 480bc000.isp: Revision 15.0 found
-> [   32.870971] omap-iommu 480bd400.mmu: 480bd400.mmu: version 1.1
-> [   32.879913] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP CCP2 was not initialized!
-> [   32.897247] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP CSI2a was not initialized!
-> [   32.917999] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP CCDC was not initialized!
-> [   32.938446] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP preview was not initialized!
-> [   32.966888] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP resizer was not initialized!
-> [   32.987548] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP AEWB was not initialized!
-> [   33.010803] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP AF was not initialized!
-> [   33.026519] omap3isp 480bc000.isp: Entity type for entity OMAP3 ISP histogram was not initialized!
-> [   33.052062] ov9655 1-0030: ov9655_probe
-> [   33.064910] ov9655 1-0030: supply dvdd not found, using dummy regulator
-> [   33.075714] ov9655 1-0030: supply dovdd not found, using dummy regulator
-> [   33.097900] ov9655 1-0030: __ov9655_set_power on=1
-> [   33.206787] ov9655 1-0030: OV9655 read register 1c : 7f
-> [   33.212707] ov9655 1-0030: OV9655 read register 1d : a2
-> [   33.220336] ov9655 1-0030: OV9655 read register 0a : 96
-> [   33.226104] ov9655 1-0030: OV9655 read register 0b : 57
-> [   33.231872] ov9655 1-0030: __ov9655_set_power on=0
-> [   33.238586] ov9655 1-0030: OV9655 REV5 detected at address 0x30
-> [   33.258605] platform sound_bluetooth: deferred probe pending
-> [   35.915588] omap-iommu 480bd400.mmu: 480bd400.mmu: version 1.1
-> [   36.040069] ov9655 1-0030: ov9655_open
+> I'm just asking for a concrete, practical problem statement in the
+> changelog.  If there isn't one, then please don't do the rename.  The
+> Kconfig magic is still fine since it fixes a practical problem for end
+> users.
+> 
+
+Alright. Alright. I will just keep Kconfig magic and update the
+documentation(protection-keys.rst). Thanks
