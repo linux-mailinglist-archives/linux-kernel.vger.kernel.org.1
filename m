@@ -2,134 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD7C1CFB6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 18:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8111CFB8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 19:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbgELQ6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 12:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgELQ6b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 12:58:31 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CA3C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 09:58:31 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id k6so14784035iob.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 09:58:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mi+7tCnacK5Jy7mKSoTkTKMPF4P1Yw/xhRvgr46sMlM=;
-        b=jIfCDoTCAH5GwV1mXMIJOCVzQltbxfLSL2kwDM+VFo2O6YeTQGFH2BU78YfEwjsvrb
-         4rxQt2D+glH318nmIpf+5vcd2zwN545v0cLgOLi6VS0b/3fdjse1e1eetBOUlNitFvMg
-         6/33/8kPY0dpWTHlZDuto+NTZ+fBEp6yUvMImxkedmb163IhZUQyiQU34uGx/nKMtLFb
-         siNc0lCKAih382PVnwaTZQ2vQs3wx2ZpMxm0dAwZ3mY5WOraEYSw5IeNRpBV4dsChUef
-         lhJIz+VzlU/sapXsBVC1xkcTCaWjXf7bvNqFkP9mCToh5p+GVUeJMlyOE8huIHTdGXIy
-         Gzhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mi+7tCnacK5Jy7mKSoTkTKMPF4P1Yw/xhRvgr46sMlM=;
-        b=JSsflIP7n0isyL064kwubn79bi/RFU8EonHQ1mOzSQ4Y8COuPl6dLJOaZ3oDisbO3F
-         HxIV5rlCo3ln9GAnZs/uJOsc4kg00Ek8ADv0Z0iUdeuBspgq7RsQacDAkQHy6SAWB0qD
-         kdpjgwlsE0rRNughdhEK9bU2QwiIn0l4DEvpe5S6LFruX4GK4bCM4UWyDCG9Tx06YFms
-         8hvb0PNOydf5m+ofgkvDjtNp6NqIfQHp0osD9KrWdyOH+T9VYBWKjeagF9jxULg+I/U7
-         skcqE7nmPjZtxr4OCbTRsWTNH0c2XG9WICFZk1mXjju6s8AKv1jEePV3hgbt4ix+TBW0
-         BBUw==
-X-Gm-Message-State: AGi0PuYXk4CBE65UPOrnMu//muzkjB2DlMuZq9CXj/9PwPqBSEZhS4FB
-        WEVi6jwnNJ68/1qZcH/8kSN9qnBXGthHlxci+I7PwA==
-X-Google-Smtp-Source: APiQypKx5qJnwBpmI84ld8f5gXdVE2PTGwixpadOnUEFMdACgzu6Lq+nVSrPX/5KZQX86XCMmGCR6S8ABb1ycIYUz6A=
-X-Received: by 2002:a02:a60f:: with SMTP id c15mr11263022jam.24.1589302710267;
- Tue, 12 May 2020 09:58:30 -0700 (PDT)
+        id S1728102AbgELRDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 13:03:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48286 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726031AbgELRDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 13:03:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id B0C0BAC4D;
+        Tue, 12 May 2020 17:03:50 +0000 (UTC)
+Date:   Tue, 12 May 2020 09:58:24 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     akpm@linux-foundation.org, peterz@infradead.org,
+        paulmck@kernel.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH 1/2] kernel/sys: only rely on rcu for getpriority(2)
+Message-ID: <20200512165824.t6ktwllqlvkiingv@linux-p48b>
+References: <20200512000353.23653-1-dave@stgolabs.net>
+ <20200512000353.23653-2-dave@stgolabs.net>
+ <20200512150936.GA28621@redhat.com>
+ <20200512160915.n3plwrwwrlpfqyrs@linux-p48b>
+ <20200512164130.GC28621@redhat.com>
 MIME-Version: 1.0
-References: <158923982830.20128.14580309786525588408.stgit@naples-babu.amd.com>
- <158923999440.20128.4859351750654993810.stgit@naples-babu.amd.com>
- <CALMp9eTs4hYpDK+KzXEzaAptcfor+9f7cM9Yd9kvd5v27sdFRw@mail.gmail.com> <2fb5fd86-5202-f61b-fd55-b3554c5826da@amd.com>
-In-Reply-To: <2fb5fd86-5202-f61b-fd55-b3554c5826da@amd.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 12 May 2020 09:58:19 -0700
-Message-ID: <CALMp9eRT69LWGE8dZVuLv2mxgc_R3W1SnPswHkhS8K0ZUX_B-Q@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] KVM: x86: Move MPK feature detection to common code
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        mchehab+samsung@kernel.org, changbin.du@intel.com,
-        Nadav Amit <namit@vmware.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        yang.shi@linux.alibaba.com,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        anshuman.khandual@arm.com, Jan Kiszka <jan.kiszka@siemens.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        steven.price@arm.com, rppt@linux.vnet.ibm.com, peterx@redhat.com,
-        Dan Williams <dan.j.williams@intel.com>,
-        Arjun Roy <arjunroy@google.com>, logang@deltatee.com,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>, justin.he@arm.com,
-        robin.murphy@arm.com, ira.weiny@intel.com,
-        Kees Cook <keescook@chromium.org>,
-        Juergen Gross <jgross@suse.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        pawan.kumar.gupta@linux.intel.com,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        vineela.tummalapalli@intel.com, yamada.masahiro@socionext.com,
-        sam@ravnborg.org, acme@redhat.com, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200512164130.GC28621@redhat.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 8:12 AM Babu Moger <babu.moger@amd.com> wrote:
->
->
->
-> On 5/11/20 6:51 PM, Jim Mattson wrote:
-> > On Mon, May 11, 2020 at 4:33 PM Babu Moger <babu.moger@amd.com> wrote:
-> >>
-> >> Both Intel and AMD support (MPK) Memory Protection Key feature.
-> >> Move the feature detection from VMX to the common code. It should
-> >> work for both the platforms now.
-> >>
-> >> Signed-off-by: Babu Moger <babu.moger@amd.com>
-> >> ---
-> >>  arch/x86/kvm/cpuid.c   |    4 +++-
-> >>  arch/x86/kvm/vmx/vmx.c |    4 ----
-> >>  2 files changed, 3 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> >> index 901cd1fdecd9..3da7d6ea7574 100644
-> >> --- a/arch/x86/kvm/cpuid.c
-> >> +++ b/arch/x86/kvm/cpuid.c
-> >> @@ -278,6 +278,8 @@ void kvm_set_cpu_caps(void)
-> >>  #ifdef CONFIG_X86_64
-> >>         unsigned int f_gbpages = F(GBPAGES);
-> >>         unsigned int f_lm = F(LM);
-> >> +       /* PKU is not yet implemented for shadow paging. */
-> >> +       unsigned int f_pku = tdp_enabled ? F(PKU) : 0;
-> >
-> > I think we still want to require that OSPKE be set on the host before
-> > exposing PKU to the guest.
-> >
->
-> Ok I can add this check.
->
-> +       unsigned int f_pku = tdp_enabled && F(OSPKE)? F(PKU) : 0;
+On Tue, 12 May 2020, Oleg Nesterov wrote:
 
-That doesn't do what you think it does. F(OSPKE) is a non-zero
-constant, so that conjunct is always true.
+>On 05/12, Davidlohr Bueso wrote:
+>>
+>> On Tue, 12 May 2020, Oleg Nesterov wrote:
+>>
+>> >do_each_pid_task(PIDTYPE_PGID) can race with change_pid(PIDTYPE_PGID)
+>> >which moves the task from one hlist to another. Yes, it is safe in
+>> >that task_struct can't go away. But still this is not right because
+>> >do_each_pid_task() can scan the wrong (2nd) hlist.
+>>
+>> Hmm I didn't think about this case, I guess this is also busted in
+>> ioprio_get(2) then.
+>
+>agreed...
+>
+>> >
+>> >could you explain in details why do you think this PF_EXITING check
+>> >makes any sense?
+>>
+>> My logic was that if the task with the highest prio exited while we
+>> were iterating the list, it would not be necessarily seen with rcu
+>> and the syscall would return the highest prio of a task that exited;
+>> and checking against PF_EXITING was a way to ignore such scenarios
+>> as we were going to race with it anyway.
+>
+>Sorry, still can't understand. The PF_EXITING flag is not protected by
+>tasklist_lock or rcu_lock.
+
+Sorry for not making my idea clear, perhaps it's complete garbage.
+
+Right, but setting the flag is an indication that the tasklist_lock
+will be taken and removed from the list, and therefore we could
+optimistically avoid considering that task altogether instead of
+relying on the old copy of the list. It's not perfect, but it does
+reduce the window in which getpriority() can return a stale value(?).
+
+At least this is how I justify it. Otoh this also opens a window in
+where the lockless version can ignore highest prio task when the locked
+version would otherwise consider it. So it might not be worth it.
+
+>
+>OK, if nothing else. Suppose that a prgp has a single process P, this
+>proces has already exited but its parent didn't do wait().
+>
+>Currently getpriority() returns task_nice(P). With the PF_EXITING check
+>it will return -ESRCH. Hmm?
+
+Yes, that would need fixing but you don't seem to be buying the idea
+in the first place.
+
+Thanks,
+Davidlohr
