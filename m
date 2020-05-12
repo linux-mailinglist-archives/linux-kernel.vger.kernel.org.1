@@ -2,85 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA001D0163
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 23:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A84F1D016F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731532AbgELV7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 17:59:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728313AbgELV7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 17:59:20 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2180206B7;
-        Tue, 12 May 2020 21:59:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589320760;
-        bh=umeyPfzMnWUsI5DYYCbU0pSKl5SS197xscOjTElhVOU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Orwq489TX5Fd2s66luzYbKVVgduIHMk5HY1Z5C2/g255CTs0S+aNNxq/hJsS/Y41o
-         W8r0qfRHsg71g6f6Rxqm6CQwuwh6IBrjpO2gNOLIXo4fj0upk24RpESOk6UItCHhiL
-         YVKL1XGaqCNX3GK3lmfbBhf5Q01Dnb+hT43e1oCQ=
-Date:   Tue, 12 May 2020 14:59:17 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Amol Grover <frextrite@gmail.com>
-Cc:     Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        sfr@canb.auug.org.au, "David S . Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH net 2/2 RESEND] ipmr: Add lockdep expression to
- ipmr_for_each_table macro
-Message-ID: <20200512145917.729db7bd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200512171710.GA3200@workstation-portable>
-References: <20200509072243.3141-1-frextrite@gmail.com>
-        <20200509072243.3141-2-frextrite@gmail.com>
-        <20200509141938.028fa959@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20200512051705.GB9585@madhuparna-HP-Notebook>
-        <20200512171710.GA3200@workstation-portable>
+        id S1731489AbgELWAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 18:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728313AbgELWAV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 18:00:21 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB09C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:00:21 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id b8so5982058plm.11
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:00:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+79i6CNjIBAM9t+ay0r61vFhVwB4nVo6+b6hHSQ4Fro=;
+        b=Z/kjEVE7ijoWI2BF5GmEwAS2TVMlcwmQ3piX8x8xKGksNXYU58li/dNrs7QXxUoz7v
+         WcPUKAYo4D+A3Vjcp2GxS4KQ9NMekKqFlUGG2RHxbDNQhoqZoY/xpwrNADyPpkJA3XMs
+         ldEER+nN+tYegKNCyBNg4B35WbSpqTnd27sU0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+79i6CNjIBAM9t+ay0r61vFhVwB4nVo6+b6hHSQ4Fro=;
+        b=nTypM/v14XvnlZkdNwcYlrA7jq+KXpTsUugqG+So6mcUHU8FJR7TUZAUFwny6U912a
+         itX9hUNcKrPouzBjh6TwZnepZqbEVUI0HQNFuACaKEa4g/kiZ7Cc5AdLsXwBkYiNSV6y
+         +bYKrZ0kNiv2tpGsYDIBcBdb5p/ZekOWGaGFTic2wfLbwdqL4oVr/jzKG6zfXDCyGf0G
+         2Kxh1Kc8uL4IEQ+qHEpbFiIhveHYBzUvb754o3OZqiP7plN91QzLz0v3Q/MsivrWY97U
+         UcUUPsFzkgvabkOFSOVqK0dP2fpPyeXno2vOCXW0bUATQKyWQ61LqubJrZZbQPtAOXFV
+         xUwA==
+X-Gm-Message-State: AGi0PubjnnCNku2rDwhEpiBojJyxup3S5+kP5SANPNOQ1lQu3Dthatnv
+        jV3s9jXl1qDH94sfpvn+fx1ACQ==
+X-Google-Smtp-Source: APiQypKLh7L5M6Z91bm0o0e2Xo3kz9JFIjZHGl9tokP3YDbmJ9kq2VCMFUVZ8H/2dEcftnriFb6DmQ==
+X-Received: by 2002:a17:90a:6343:: with SMTP id v3mr31509425pjs.127.1589320820943;
+        Tue, 12 May 2020 15:00:20 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j2sm13193542pfb.73.2020.05.12.15.00.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 15:00:20 -0700 (PDT)
+Date:   Tue, 12 May 2020 15:00:19 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mickael.salaun@ssi.gouv.fr>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 5/6] doc: Add documentation for the
+ fs.open_mayexec_enforce sysctl
+Message-ID: <202005121459.158C3AE75@keescook>
+References: <20200505153156.925111-1-mic@digikod.net>
+ <20200505153156.925111-6-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200505153156.925111-6-mic@digikod.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 May 2020 22:47:10 +0530 Amol Grover wrote:
-> > > This is a strange condition, IMHO. How can we be fine with either
-> > > lock.. This is supposed to be the writer side lock, one can't have 
-> > > two writer side locks..
-> > > 
-> > > I think what is happening is this:
-> > > 
-> > > ipmr_net_init() -> ipmr_rules_init() -> ipmr_new_table()
-> > > 
-> > > ipmr_new_table() returns an existing table if there is one, but
-> > > obviously none can exist at init.  So a better fix would be:
-> > > 
-> > > #define ipmr_for_each_table(mrt, net)					\
-> > > 	list_for_each_entry_rcu(mrt, &net->ipv4.mr_tables, list,	\
-> > > 				lockdep_rtnl_is_held() ||		\
-> > > 				list_empty(&net->ipv4.mr_tables))
-> > >  
+On Tue, May 05, 2020 at 05:31:55PM +0200, Mickaël Salaün wrote:
+> This sysctl enables to propagate executable permission to userspace
+> thanks to the O_MAYEXEC flag.
 > 
-> Jakub, I agree, this condition looks better (and correct) than the one I
-> proposed. I'll do the changes as necessary. Also, do you want me to add
-> the full trace to the git commit body as well? I omitted it on purpose
-> to not make it messy.
+> Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> Reviewed-by: Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
+> Cc: Aleksa Sarai <cyphar@cyphar.com>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Kees Cook <keescook@chromium.org>
 
-In this case we can leave it at the depth of IPMR code + the caller, so:
+I think this should be folded into the patch that adds the sysctl.
 
-[    1.534758]  ? ipmr_get_table+0x3c/0x70
-[    1.535430]  ? ipmr_new_table+0x1c/0x60
-[    1.536173]  ? ipmr_net_init+0x7b/0x170
-[    1.536923]  ? register_pernet_subsys+0xd/0x30
-
-This makes it clear that the problem happens at net namespace init.
-
-Thanks!
+-- 
+Kees Cook
