@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864561CF8D4
+	by mail.lfdr.de (Postfix) with ESMTP id 004521CF8D5
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730229AbgELPTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 11:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45982 "EHLO
+        id S1730236AbgELPTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 11:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726055AbgELPTC (ORCPT
+        with ESMTP id S1726055AbgELPTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 11:19:02 -0400
+        Tue, 12 May 2020 11:19:03 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B15C061A0E;
-        Tue, 12 May 2020 08:19:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0F4C061A0E;
+        Tue, 12 May 2020 08:19:03 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jYWgN-0007Da-11; Tue, 12 May 2020 17:18:59 +0200
+        id 1jYWgN-0007EM-Og; Tue, 12 May 2020 17:18:59 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 8CA8D1C0475;
-        Tue, 12 May 2020 17:18:58 +0200 (CEST)
-Date:   Tue, 12 May 2020 15:18:58 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 57A471C0475;
+        Tue, 12 May 2020 17:18:59 +0200 (CEST)
+Date:   Tue, 12 May 2020 15:18:59 -0000
 From:   "tip-bot2 for Masami Hiramatsu" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/kprobes] kprobes: Support NOKPROBE_SYMBOL() in modules
+Subject: [tip: core/kprobes] kprobes: Lock kprobe_mutex while showing kprobe_blacklist
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
         Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200505134059.771170126@linutronix.de>
-References: <20200505134059.771170126@linutronix.de>
+In-Reply-To: <20200505134059.571125195@linutronix.de>
+References: <20200505134059.571125195@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <158929673850.390.3433747204484607858.tip-bot2@tip-bot2>
+Message-ID: <158929673928.390.10899451832905837154.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -52,96 +52,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/kprobes branch of tip:
 
-Commit-ID:     16db6264c93d2d7df9eb8be5d9eb717ab30105fe
-Gitweb:        https://git.kernel.org/tip/16db6264c93d2d7df9eb8be5d9eb717ab30105fe
+Commit-ID:     4fdd88877e5259dcc5e504dca449acc0324d71b9
+Gitweb:        https://git.kernel.org/tip/4fdd88877e5259dcc5e504dca449acc0324d71b9
 Author:        Masami Hiramatsu <mhiramat@kernel.org>
-AuthorDate:    Thu, 26 Mar 2020 23:50:00 +09:00
+AuthorDate:    Thu, 26 Mar 2020 23:49:36 +09:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 12 May 2020 17:15:32 +02:00
+CommitterDate: Tue, 12 May 2020 17:15:31 +02:00
 
-kprobes: Support NOKPROBE_SYMBOL() in modules
+kprobes: Lock kprobe_mutex while showing kprobe_blacklist
 
-Support NOKPROBE_SYMBOL() in modules. NOKPROBE_SYMBOL() records only symbol
-address in "_kprobe_blacklist" section in the module.
+Lock kprobe_mutex while showing kprobe_blacklist to prevent updating the
+kprobe_blacklist.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Acked-by: Peter Zijlstra <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200505134059.771170126@linutronix.de
+Link: https://lkml.kernel.org/r/20200505134059.571125195@linutronix.de
 
 ---
- include/linux/module.h |  2 ++
- kernel/kprobes.c       | 17 +++++++++++++++++
- kernel/module.c        |  3 +++
- 3 files changed, 22 insertions(+)
+ kernel/kprobes.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 369c354..1192097 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -492,6 +492,8 @@ struct module {
- #ifdef CONFIG_KPROBES
- 	void *kprobes_text_start;
- 	unsigned int kprobes_text_size;
-+	unsigned long *kprobe_blacklist;
-+	unsigned int num_kprobe_blacklist;
- #endif
- 
- #ifdef CONFIG_LIVEPATCH
 diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index b754999..9eb5acf 100644
+index 2625c24..570d608 100644
 --- a/kernel/kprobes.c
 +++ b/kernel/kprobes.c
-@@ -2192,6 +2192,11 @@ static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
- 	}
+@@ -2420,6 +2420,7 @@ static const struct file_operations debugfs_kprobes_operations = {
+ /* kprobes/blacklist -- shows which functions can not be probed */
+ static void *kprobe_blacklist_seq_start(struct seq_file *m, loff_t *pos)
+ {
++	mutex_lock(&kprobe_mutex);
+ 	return seq_list_start(&kprobe_blacklist, *pos);
  }
  
-+static void kprobe_remove_ksym_blacklist(unsigned long entry)
+@@ -2446,10 +2447,15 @@ static int kprobe_blacklist_seq_show(struct seq_file *m, void *v)
+ 	return 0;
+ }
+ 
++static void kprobe_blacklist_seq_stop(struct seq_file *f, void *v)
 +{
-+	kprobe_remove_area_blacklist(entry, entry + 1);
++	mutex_unlock(&kprobe_mutex);
 +}
 +
- int __init __weak arch_populate_kprobe_blacklist(void)
- {
- 	return 0;
-@@ -2231,6 +2236,12 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
- static void add_module_kprobe_blacklist(struct module *mod)
- {
- 	unsigned long start, end;
-+	int i;
-+
-+	if (mod->kprobe_blacklist) {
-+		for (i = 0; i < mod->num_kprobe_blacklist; i++)
-+			kprobe_add_ksym_blacklist(mod->kprobe_blacklist[i]);
-+	}
+ static const struct seq_operations kprobe_blacklist_seq_ops = {
+ 	.start = kprobe_blacklist_seq_start,
+ 	.next  = kprobe_blacklist_seq_next,
+-	.stop  = kprobe_seq_stop,	/* Reuse void function */
++	.stop  = kprobe_blacklist_seq_stop,
+ 	.show  = kprobe_blacklist_seq_show,
+ };
  
- 	start = (unsigned long)mod->kprobes_text_start;
- 	if (start) {
-@@ -2242,6 +2253,12 @@ static void add_module_kprobe_blacklist(struct module *mod)
- static void remove_module_kprobe_blacklist(struct module *mod)
- {
- 	unsigned long start, end;
-+	int i;
-+
-+	if (mod->kprobe_blacklist) {
-+		for (i = 0; i < mod->num_kprobe_blacklist; i++)
-+			kprobe_remove_ksym_blacklist(mod->kprobe_blacklist[i]);
-+	}
- 
- 	start = (unsigned long)mod->kprobes_text_start;
- 	if (start) {
-diff --git a/kernel/module.c b/kernel/module.c
-index 978f3fa..faf7337 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -3197,6 +3197,9 @@ static int find_module_sections(struct module *mod, struct load_info *info)
- #ifdef CONFIG_KPROBES
- 	mod->kprobes_text_start = section_objs(info, ".kprobes.text", 1,
- 						&mod->kprobes_text_size);
-+	mod->kprobe_blacklist = section_objs(info, "_kprobe_blacklist",
-+						sizeof(unsigned long),
-+						&mod->num_kprobe_blacklist);
- #endif
- 	mod->extable = section_objs(info, "__ex_table",
- 				    sizeof(*mod->extable), &mod->num_exentries);
