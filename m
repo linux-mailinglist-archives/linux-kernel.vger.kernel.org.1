@@ -2,78 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420EC1CEB73
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 05:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881781CEB75
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 05:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728774AbgELDan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 23:30:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51836 "EHLO mail.kernel.org"
+        id S1728855AbgELDa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 23:30:57 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:33765 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728115AbgELDam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 23:30:42 -0400
-Received: from localhost (unknown [171.76.78.167])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728708AbgELDa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 23:30:57 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88FDD206B9;
-        Tue, 12 May 2020 03:30:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589254241;
-        bh=QNWc4mCSUQkWmfV/BNuwNh/r3Nw7d08P4k2wYg5jrDo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DXljxuItkt/Ukfz/eJPpHgaVnfEHwiP5bCPwjke9teJ8Hob+gJ3hupnjt2b1996UX
-         leH+KWNPvkvy0IFqe3koseuEWo8D7y9XlJOL6lqXlOo4JOJjM4PRBL2WpFxKPzEt+V
-         WYcVWKB2KW0zGtvRBbH5De9dgkRJKGfSYUO9N2Ts=
-Date:   Tue, 12 May 2020 09:00:35 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, tiwai@suse.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        broonie@kernel.org, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, mengdong.lin@intel.com,
-        slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-Subject: Re: [PATCH 3/3] soundwire: bus_type: add sdw_master_device support
-Message-ID: <20200512033035.GV1375924@vkoul-mobl>
-References: <20200429185145.12891-1-yung-chuan.liao@linux.intel.com>
- <20200429185145.12891-4-yung-chuan.liao@linux.intel.com>
- <20200511063227.GS1375924@vkoul-mobl>
- <e214d308-1b92-a7a5-3c76-da05dca99cc5@linux.intel.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Ljxn2RTMz9sSr;
+        Tue, 12 May 2020 13:30:52 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1589254254;
+        bh=FphsOl3KgUXiT3QcYA5xL+rsNqjxWWtwhaXiLT+4PTM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=M/8EZGHnX4NjCx2RZE+LjXi4DfcJ70425RYXyichnh+rApAkZ5gO8HLzfEKmkVW44
+         KAam3iTvT7TVIBSw7zG/CRQ3cVFzAIXsl2fuJhcATC7xhWIsL5LTCz+4IftGrmFC0k
+         BIUdgbrHQEaYv2uDuWWo0z+afBqnp0BpTTjOCQkcvFLfjfJvvj3adi/I07VqkdwjBB
+         /OHSv1w18mwY+3mEulLE07J2WJoxS5VlSa8++ckAi4oZWkpxzzaazqEfmjIeXt50RQ
+         hQXUw4hX3cijerTYcSpLocLWQLdIcYiG8g5+WHzutdCJbNMLSGzkyQSmeEolOxZpBh
+         ncYdPFRNYKFMg==
+Date:   Tue, 12 May 2020 13:30:51 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luo bin <luobin9@huawei.com>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20200512133051.7d740613@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e214d308-1b92-a7a5-3c76-da05dca99cc5@linux.intel.com>
+Content-Type: multipart/signed; boundary="Sig_/T=S4n1j5VzSFQ5DwcovfOOZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-05-20, 14:00, Pierre-Louis Bossart wrote:
-> > > +	md = &bus->md;
-> > > +	md->dev.bus = &sdw_bus_type;
-> > > +	md->dev.type = &sdw_master_type;
-> > > +	md->dev.parent = parent;
-> > > +	md->dev.of_node = parent->of_node;
-> > > +	md->dev.fwnode = fwnode;
-> > > +	md->dev.dma_mask = parent->dma_mask;
-> > > +
-> > > +	dev_set_name(&md->dev, "sdw-master-%d", bus->link_id);
-> > 
-> > This give nice sdw-master-0. In DT this comes from reg property. I dont
-> > seem to recall if the ACPI/Disco spec treats link_id as unique across
-> > the system, can you check that please, if not we would need to update
-> > this.
-> Table 3 in the Disco for Soundwire 1.0 spec: "all LinkID values are relative
-> to the immediate parent Device."
-> 
-> There isn't any known implementation with more than one controller.
+--Sig_/T=S4n1j5VzSFQ5DwcovfOOZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-But then it can come in "future" right. So lets try to make it future
-proof by not using the link_id (we can expose that as a sysfs if people
-want to know). So a global unique id needs to allocated (hint: idr or
-equivalent) and used as master_id
+Hi all,
 
-Thanks
--- 
-~Vinod
+Today's linux-next merge of the net-next tree got conflicts in:
+
+  drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
+  drivers/net/ethernet/huawei/hinic/hinic_main.c
+
+between commit:
+
+  e8a1b0efd632 ("hinic: fix a bug of ndo_stop")
+
+from the net tree and commit:
+
+  7dd29ee12865 ("hinic: add sriov feature support")
+
+from the net-next tree.
+
+I fixed it up (I think, see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
+index 992908e6eebf,eef855f11a01..000000000000
+--- a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
+@@@ -358,12 -353,13 +358,16 @@@ int hinic_msg_to_mgmt(struct hinic_pf_t
+  		return -EINVAL;
+  	}
+ =20
+ +	if (cmd =3D=3D HINIC_PORT_CMD_SET_FUNC_STATE)
+ +		timeout =3D SET_FUNC_PORT_MGMT_TIMEOUT;
+ +
+- 	return msg_to_mgmt_sync(pf_to_mgmt, mod, cmd, buf_in, in_size,
++ 	if (HINIC_IS_VF(hwif))
++ 		return hinic_mbox_to_pf(pf_to_mgmt->hwdev, mod, cmd, buf_in,
++ 					in_size, buf_out, out_size, 0);
++ 	else
++ 		return msg_to_mgmt_sync(pf_to_mgmt, mod, cmd, buf_in, in_size,
+  				buf_out, out_size, MGMT_DIRECT_SEND,
+ -				MSG_NOT_RESP);
+ +				MSG_NOT_RESP, timeout);
+  }
+ =20
+  /**
+diff --cc drivers/net/ethernet/huawei/hinic/hinic_main.c
+index 63b92f6cc856,3d6569d7bac8..000000000000
+--- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
+@@@ -496,9 -501,23 +500,12 @@@ static int hinic_close(struct net_devic
+ =20
+  	up(&nic_dev->mgmt_lock);
+ =20
++ 	if (!HINIC_IS_VF(nic_dev->hwdev->hwif))
++ 		hinic_notify_all_vfs_link_changed(nic_dev->hwdev, 0);
++=20
+ -	err =3D hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
+ -	if (err) {
+ -		netif_err(nic_dev, drv, netdev,
+ -			  "Failed to set func port state\n");
+ -		nic_dev->flags |=3D (flags & HINIC_INTF_UP);
+ -		return err;
+ -	}
+ +	hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
+ =20
+ -	err =3D hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
+ -	if (err) {
+ -		netif_err(nic_dev, drv, netdev, "Failed to set port state\n");
+ -		nic_dev->flags |=3D (flags & HINIC_INTF_UP);
+ -		return err;
+ -	}
+ +	hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
+ =20
+  	if (nic_dev->flags & HINIC_RSS_ENABLE) {
+  		hinic_rss_deinit(nic_dev);
+
+--Sig_/T=S4n1j5VzSFQ5DwcovfOOZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl66GGsACgkQAVBC80lX
+0GzUqgf9H210eMf2pTEcnhuuNCdOcz21Jmkbxx328d6TL4M1B2TKjy5hS5395pvd
+cZufyzhAsGUMproWW5Zl1rPwVZWBfZ17RXV5/jorpztwwLNBwOUwUduNr9EiKVKc
+/ubchtpGaPHrX1RfUEKL8qgpiZTVLMuwfLjEjUpWTdJoqCMD7/YrOKWFoeh0biAt
+M6NJ2FU2CfXCWbqTE7Kn/Rj0C/wqG5pOF/143ejziCT5poqIc6yhBgj1SGieFOxz
+3nRkw/whTlg1OPKJJt73r3oyU/8fSDvP2Rl6FadUjgRvSvFePVg+NbpViDXfBiOT
+orTC2vrS0VcIud3ihZFGa7gS/MBaQQ==
+=+OCm
+-----END PGP SIGNATURE-----
+
+--Sig_/T=S4n1j5VzSFQ5DwcovfOOZ--
