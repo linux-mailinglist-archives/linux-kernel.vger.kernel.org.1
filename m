@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1057C1D01FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BEB1D0200
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 00:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731460AbgELWXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 18:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55460 "EHLO
+        id S1731661AbgELWXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 18:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727971AbgELWXF (ORCPT
+        by vger.kernel.org with ESMTP id S1725938AbgELWXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 18:23:05 -0400
+        Tue, 12 May 2020 18:23:07 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1659CC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083F9C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 15:23:07 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jYdI7-0004c1-P6; Wed, 13 May 2020 00:22:24 +0200
+        id 1jYdI9-0004c2-33; Wed, 13 May 2020 00:22:26 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 4A9F91001FC;
-        Wed, 13 May 2020 00:22:23 +0200 (CEST)
-Message-Id: <20200512213809.784331304@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 87F34100605;
+        Wed, 13 May 2020 00:22:24 +0200 (CEST)
+Message-Id: <20200512213809.889850244@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 12 May 2020 23:01:03 +0200
+Date:   Tue, 12 May 2020 23:01:04 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -50,7 +50,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V5 04/38] x86: Make hardware latency tracing explicit
+Subject: [patch V5 05/38] genirq: Provide irq_enter/exit_rcu()
 References: <20200512210059.056244513@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -63,130 +63,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hardware latency tracer calls into trace_sched_clock and ends up in
-various instrumentable functions which is problemeatic vs. the kprobe
-handling especially the text poke machinery. It's invoked from
-nmi_enter/exit(), i.e. non-instrumentable code.
-
-Use nmi_enter/exit_notrace() instead. These variants do not invoke the
-hardware latency tracer which avoids chasing down complex callchains to
-make them non-instrumentable.
-
-The real interesting measurement is the actual NMI handler. Add an explicit
-invocation for the hardware latency tracer to it.
-
-#DB and #BP are uninteresting as they really should not be in use when
-analzying hardware induced latencies.
-
-If #DF hits, hardware latency is definitely not interesting anymore and in
-case of a machine check the hardware latency is not the most troublesome
-issue either.
+irq_enter()/exit() include the RCU handling. To properly separate the RCU
+handling provide variants which contain only the non-RCU related
+functionality.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V5: New patch
----
- arch/x86/kernel/cpu/mce/core.c |    4 ++--
- arch/x86/kernel/nmi.c          |    6 ++++--
- arch/x86/kernel/traps.c        |   10 +++++-----
- 3 files changed, 11 insertions(+), 9 deletions(-)
+ include/linux/hardirq.h |   13 +++++++++++--
+ kernel/softirq.c        |   35 +++++++++++++++++++++++++++--------
+ 2 files changed, 38 insertions(+), 10 deletions(-)
 
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1916,7 +1916,7 @@ static __always_inline void exc_machine_
- 	    mce_check_crashing_cpu())
- 		return;
+--- a/include/linux/hardirq.h
++++ b/include/linux/hardirq.h
+@@ -43,7 +43,11 @@ extern void rcu_nmi_exit(void);
+ /*
+  * Enter irq context (on NO_HZ, update jiffies):
+  */
+-extern void irq_enter(void);
++void irq_enter(void);
++/*
++ * Like irq_enter(), but RCU is already watching.
++ */
++void irq_enter_rcu(void);
  
--	nmi_enter();
-+	nmi_enter_notrace();
- 	/*
- 	 * The call targets are marked noinstr, but objtool can't figure
- 	 * that out because it's an indirect call. Annotate it.
-@@ -1924,7 +1924,7 @@ static __always_inline void exc_machine_
- 	instrumentation_begin();
- 	machine_check_vector(regs);
- 	instrumentation_end();
--	nmi_exit();
-+	nmi_exit_notrace();
+ /*
+  * Exit irq context without processing softirqs:
+@@ -58,7 +62,12 @@ extern void irq_enter(void);
+ /*
+  * Exit irq context and process softirqs if needed:
+  */
+-extern void irq_exit(void);
++void irq_exit(void);
++
++/*
++ * Like irq_exit(), but return with RCU watching.
++ */
++void irq_exit_rcu(void);
+ 
+ #ifndef arch_nmi_enter
+ #define arch_nmi_enter()	do { } while (0)
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -339,12 +339,11 @@ asmlinkage __visible void do_softirq(voi
+ 	local_irq_restore(flags);
  }
  
- static __always_inline void exc_machine_check_user(struct pt_regs *regs)
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -334,6 +334,7 @@ static noinstr void default_do_nmi(struc
- 	__this_cpu_write(last_nmi_rip, regs->ip);
- 
- 	instrumentation_begin();
-+	ftrace_nmi_enter();
- 
- 	handled = nmi_handle(NMI_LOCAL, regs);
- 	__this_cpu_add(nmi_stats.normal, handled);
-@@ -420,6 +421,7 @@ static noinstr void default_do_nmi(struc
- 		unknown_nmi_error(reason, regs);
- 
- out:
-+	ftrace_nmi_exit();
- 	instrumentation_end();
- }
- 
-@@ -536,14 +538,14 @@ DEFINE_IDTENTRY_NMI(exc_nmi)
- 	}
- #endif
- 
--	nmi_enter();
-+	nmi_enter_notrace();
- 
- 	inc_irq_stat(__nmi_count);
- 
- 	if (!ignore_nmis)
- 		default_do_nmi(regs);
- 
--	nmi_exit();
-+	nmi_exit_notrace();
- 
- #ifdef CONFIG_X86_64
- 	if (unlikely(this_cpu_read(update_debug_stack))) {
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -378,7 +378,7 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
- 	}
- #endif
- 
--	nmi_enter();
-+	nmi_enter_notrace();
- 	instrumentation_begin();
- 	notify_die(DIE_TRAP, str, regs, error_code, X86_TRAP_DF, SIGSEGV);
- 
-@@ -624,11 +624,11 @@ DEFINE_IDTENTRY_RAW(exc_int3)
- 		instrumentation_end();
- 		idtentry_exit(regs);
- 	} else {
--		nmi_enter();
-+		nmi_enter_notrace();
- 		instrumentation_begin();
- 		do_int3(regs);
- 		instrumentation_end();
--		nmi_exit();
-+		nmi_exit_notrace();
- 	}
- }
- 
-@@ -827,7 +827,7 @@ static void noinstr handle_debug(struct
- static __always_inline void exc_debug_kernel(struct pt_regs *regs,
- 					     unsigned long dr6)
+-/*
+- * Enter an interrupt context.
++/**
++ * irq_enter_rcu - Enter an interrupt context with RCU watching
+  */
+-void irq_enter(void)
++void irq_enter_rcu(void)
  {
--	nmi_enter();
-+	nmi_enter_notrace();
- 	/*
- 	 * The SDM says "The processor clears the BTF flag when it
- 	 * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
-@@ -849,7 +849,7 @@ static __always_inline void exc_debug_ke
- 	if (dr6)
- 		handle_debug(regs, dr6, false);
- 
--	nmi_exit();
-+	nmi_exit_notrace();
+-	rcu_irq_enter();
+ 	if (is_idle_task(current) && !in_interrupt()) {
+ 		/*
+ 		 * Prevent raise_softirq from needlessly waking up ksoftirqd
+@@ -354,10 +353,18 @@ void irq_enter(void)
+ 		tick_irq_enter();
+ 		_local_bh_enable();
+ 	}
+-
+ 	__irq_enter();
  }
  
- static __always_inline void exc_debug_user(struct pt_regs *regs,
++/**
++ * irq_enter - Enter an interrupt context including RCU update
++ */
++void irq_enter(void)
++{
++	rcu_irq_enter();
++	irq_enter_rcu();
++}
++
+ static inline void invoke_softirq(void)
+ {
+ 	if (ksoftirqd_running(local_softirq_pending()))
+@@ -397,10 +404,12 @@ static inline void tick_irq_exit(void)
+ #endif
+ }
+ 
+-/*
+- * Exit an interrupt context. Process softirqs if needed and possible:
++/**
++ * irq_exit_rcu() - Exit an interrupt context without updating RCU
++ *
++ * Also processes softirqs if needed and possible.
+  */
+-void irq_exit(void)
++void irq_exit_rcu(void)
+ {
+ #ifndef __ARCH_IRQ_EXIT_IRQS_DISABLED
+ 	local_irq_disable();
+@@ -413,6 +422,16 @@ void irq_exit(void)
+ 		invoke_softirq();
+ 
+ 	tick_irq_exit();
++}
++
++/**
++ * irq_exit - Exit an interrupt context, update RCU and lockdep
++ *
++ * Also processes softirqs if needed and possible.
++ */
++void irq_exit(void)
++{
++	irq_exit_rcu();
+ 	rcu_irq_exit();
+ 	 /* must be last! */
+ 	lockdep_hardirq_exit();
 
