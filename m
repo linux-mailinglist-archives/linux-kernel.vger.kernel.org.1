@@ -2,89 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A221CF904
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2387E1CF90B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 17:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730658AbgELPXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 11:23:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730458AbgELPXR (ORCPT
+        id S1730689AbgELPY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 11:24:26 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:21244 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730490AbgELPYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 11:23:17 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16E3C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:23:17 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id b12so3599627plz.13
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 08:23:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fFn786ckclf11ZqTIBAoInIjwBQqbd8MwV+cKheEzRE=;
-        b=uHCRc/sy6vAOmm/Cb+pG5sR3VtlZ262mP0Q+ByXLW+Aj7lFi5PZ7+VoJxOxhQBYjPX
-         pVMmWbwvzGrg2Jfevnj0fPpTdTJb1KGY1snedEARScfJUtgUTUZhb6Ta5O1IKq/ywZCW
-         NdZGbv8AlOJMB8WH55zajqudiqUnqyZdQBQAkAifKoovLldg/9Vk7T8u7oZ+H15AGWPW
-         SfqPlVopLrQNvC2rvUoUHLJCo11jT8Ip1gzfQqoLjb4LF9xatAAgxnB9Zc9iDN2u7ewR
-         vkQo/oqLpoQUX/ENFaMUMt4Sna9n2JP6+z3kXsvYIQ03FPpss9VMdLYsmOCmXGlicejh
-         CPow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fFn786ckclf11ZqTIBAoInIjwBQqbd8MwV+cKheEzRE=;
-        b=AAPriaXPNjSnLeY0OTAAxIeN0197dqyO5rVDEhPTiObJ2Qr+A4ZHOEy6nd48rJKFR9
-         MSA++KQFxuLHDW0Em1XHg1xO8+WRDU2KfBr7T3T4BWUwUyHKgVArCE13xJV3MleV8scO
-         vVd8w5lp3zStwkZ0jzGKKKTPPnrbTe95gGBbxCUU0Biz0gadWbUuHdlJWGmBjZIEOiW0
-         gTJdm1fFk9fhn2prOxpdNWMLTTYC2wuq+/8MUlhqW1r5bG7nOoYgkAO/nk7okgcWcxq6
-         P8iXAVQhTLGn66Uukn0fUYfw+pZcTQbK+YQcYi3wcnjKeB6wsJxbIohU99lTYBzl98N9
-         e8Ng==
-X-Gm-Message-State: AGi0PuZwOJ2rndrsRCNPhANRINm6XBoPA4wWTvEb9m3A+dSD/IfpPfgR
-        HkW+M8hv4Xykd0Ho4jBU7Rgpidh/8g8=
-X-Google-Smtp-Source: APiQypLMxpN/ejpzECijxeMhwFMuwwftp7qOtM75MBg/d5B5Yj2vOUXRR8q3mkq7RcXCxsYZNrXMPg==
-X-Received: by 2002:a17:90b:438b:: with SMTP id in11mr29225287pjb.139.1589296996810;
-        Tue, 12 May 2020 08:23:16 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:25cc:e52:aad5:83c2? ([2605:e000:100e:8c61:25cc:e52:aad5:83c2])
-        by smtp.gmail.com with ESMTPSA id mu17sm2498860pjb.53.2020.05.12.08.23.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 May 2020 08:23:16 -0700 (PDT)
-Subject: Re: [GIT PULL] Floppy cleanups for next
-To:     Denis Efremov <efremov@linux.com>
-Cc:     linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <8d8cb63b-e1ff-ddef-a6e9-8f7adb21be60@linux.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <51b29c15-39ea-b39e-55d8-ffb578661c44@kernel.dk>
-Date:   Tue, 12 May 2020 09:23:14 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 12 May 2020 11:24:24 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04CFIae6000767;
+        Tue, 12 May 2020 10:24:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type;
+ s=PODMain02222019; bh=bkgjsNmkiBbiZiJR0ssbt/x+we0l9n828C2NvUEpA48=;
+ b=hdviXVlcm3vxwSK0+gbi/yTRW3YmHyw0LFoU3qRDa/hV9AvKdGrGpazhqQhwMHJc/Plg
+ yBU7FaadO9bzUFUAPgjPjWMpMyIHrTiPVd75Q6zlUo+h7jJ8oIyHkhm4SR1eb/nj1svu
+ fqXNYOg/jN0kSGA4MEVIGiCuHox5N737JrWg88we8dbwJmPUxPBexvFtoBsAY9rsNSvE
+ puOCgCPX807/oTip14DCIrnHj9BPVfTZsjtdQCqgYvjok+dNVBbHHXf0Eo08C1il2L84
+ 5Gjr/VeXdbggU7AzkyepCSPL8n3EX8bu8BVMLUjBsZyX0I3EIaEOpag2OyTURMdOOY9a Xw== 
+Authentication-Results: ppops.net;
+        spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 30wsx3msj8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 12 May 2020 10:24:01 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 12 May
+ 2020 16:23:59 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Tue, 12 May 2020 16:23:59 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1F0B62C5;
+        Tue, 12 May 2020 15:23:59 +0000 (UTC)
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     <robh+dt@kernel.org>, <lee.jones@linaro.org>, <broonie@kernel.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>, <jdelvare@suse.com>,
+        <linux@roeck-us.net>, <linus.walleij@linaro.org>
+CC:     <lgirdwood@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <patches@opensource.cirrus.com>
+Subject: [PATCH v3 1/5] hwmon: lochnagar: Move binding over to dtschema
+Date:   Tue, 12 May 2020 16:23:54 +0100
+Message-ID: <20200512152359.11839-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-In-Reply-To: <8d8cb63b-e1ff-ddef-a6e9-8f7adb21be60@linux.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com include:spf.protection.outlook.com
+ ip4:5.172.152.52 -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ mlxscore=0 adultscore=0 priorityscore=1501 suspectscore=0 phishscore=0
+ mlxlogscore=999 malwarescore=0 spamscore=0 clxscore=1015 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005120116
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/20 8:28 AM, Denis Efremov wrote:
-> Hi Jens,
-> 
-> The following changes since commit 2ef96a5bb12be62ef75b5828c0aab838ebb29cb8:
-> 
->   Linux 5.7-rc5 (2020-05-10 15:16:58 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://github.com/evdenis/linux-floppy tags/floppy-for-5.8
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
 
-Denis, can you rebase on my for-5.8/drivers branch? If I pull this,
-I'm going to get a lot of unrelated changes as well. Alternatively,
-I can pull and spit out the patches, and apply those. Either way
-works for me.
+No changes since v2.
 
+Thanks,
+Charles
+
+ .../devicetree/bindings/hwmon/cirrus,lochnagar.txt | 26 ----------------
+ .../bindings/hwmon/cirrus,lochnagar.yaml           | 35 ++++++++++++++++++++++
+ 2 files changed, 35 insertions(+), 26 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/hwmon/cirrus,lochnagar.txt
+ create mode 100644 Documentation/devicetree/bindings/hwmon/cirrus,lochnagar.yaml
+
+diff --git a/Documentation/devicetree/bindings/hwmon/cirrus,lochnagar.txt b/Documentation/devicetree/bindings/hwmon/cirrus,lochnagar.txt
+deleted file mode 100644
+index ffb79ccf51ee3..0000000000000
+--- a/Documentation/devicetree/bindings/hwmon/cirrus,lochnagar.txt
++++ /dev/null
+@@ -1,26 +0,0 @@
+-Cirrus Logic Lochnagar Audio Development Board
+-
+-Lochnagar is an evaluation and development board for Cirrus Logic
+-Smart CODEC and Amp devices. It allows the connection of most Cirrus
+-Logic devices on mini-cards, as well as allowing connection of
+-various application processor systems to provide a full evaluation
+-platform.  Audio system topology, clocking and power can all be
+-controlled through the Lochnagar, allowing the device under test
+-to be used in a variety of possible use cases.
+-
+-This binding document describes the binding for the hardware monitor
+-portion of the driver.
+-
+-This binding must be part of the Lochnagar MFD binding:
+-  [4] ../mfd/cirrus,lochnagar.txt
+-
+-Required properties:
+-
+-  - compatible : One of the following strings:
+-                 "cirrus,lochnagar2-hwmon"
+-
+-Example:
+-
+-lochnagar-hwmon {
+-	compatible = "cirrus,lochnagar2-hwmon";
+-};
+diff --git a/Documentation/devicetree/bindings/hwmon/cirrus,lochnagar.yaml b/Documentation/devicetree/bindings/hwmon/cirrus,lochnagar.yaml
+new file mode 100644
+index 0000000000000..cc00b97a7dace
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/cirrus,lochnagar.yaml
+@@ -0,0 +1,35 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/hwmon/cirrus,lochnagar.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Cirrus Logic Lochnagar Audio Development Board
++
++maintainers:
++  - patches@opensource.cirrus.com
++
++description: |
++  Lochnagar is an evaluation and development board for Cirrus Logic
++  Smart CODEC and Amp devices. It allows the connection of most Cirrus
++  Logic devices on mini-cards, as well as allowing connection of various
++  application processor systems to provide a full evaluation platform.
++  Audio system topology, clocking and power can all be controlled through
++  the Lochnagar, allowing the device under test to be used in a variety of
++  possible use cases.
++
++  This binding document describes the binding for the hardware monitor
++  portion of the driver.
++
++  This binding must be part of the Lochnagar MFD binding:
++    [1] ../mfd/cirrus,lochnagar.yaml
++
++properties:
++  compatible:
++    enum:
++      - cirrus,lochnagar2-hwmon
++
++required:
++  - compatible
++
++additionalProperties: false
 -- 
-Jens Axboe
+2.11.0
 
