@@ -2,122 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E3A1CFC80
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 19:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947D91CFC8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 19:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730482AbgELRpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 13:45:19 -0400
-Received: from mga02.intel.com ([134.134.136.20]:41257 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726055AbgELRpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 13:45:19 -0400
-IronPort-SDR: qA1Jv8jYcvGEp1hBeXqTjNlv+OvYh4ckPNZesE0+KcEesXP6HidUjPqQPKa8XPigVFl9DbFN/T
- oWE9Df7K3AqA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 10:45:18 -0700
-IronPort-SDR: 5fGKP4ScgH0ZaydzkzTq4x+7gr0ScXwyhfPcgOXDyqoSp+SkFW6iF63D6PH4XD8zH4YR7v61RZ
- 8FJxoBc0aK6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,384,1583222400"; 
-   d="scan'208";a="265583727"
-Received: from vmrsic-mobl.amr.corp.intel.com (HELO [10.255.229.212]) ([10.255.229.212])
-  by orsmga006.jf.intel.com with ESMTP; 12 May 2020 10:45:18 -0700
-Subject: Re: [RFC v4][PATCH part-1 0/7] ASI - Part I (ASI Infrastructure and
- PTI)
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>,
-        rkrcmar@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
-        luto@kernel.org, peterz@infradead.org, x86@kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     pbonzini@redhat.com, konrad.wilk@oracle.com,
-        jan.setjeeilers@oracle.com, liran.alon@oracle.com,
-        junaids@google.com, graf@amazon.de, rppt@linux.vnet.ibm.com,
-        kuzuno@gmail.com, mgross@linux.intel.com
-References: <20200504144939.11318-1-alexandre.chartre@oracle.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <a65d6cbf-41de-3001-6792-21a4233d8467@intel.com>
-Date:   Tue, 12 May 2020 10:45:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1730646AbgELRqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 13:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727902AbgELRqV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 13:46:21 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A67FC05BD09
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 10:46:21 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id g1so8762636ljk.7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 10:46:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eM3d9+X8qc+maq3xHLG+4/ZyWmIqPWOHJVw4bbgd4dI=;
+        b=mPOOtwFsulK5G0i5RhYFqAvNWhC/T6DJA759xEXJmp6KsVEltE0McGlfDhQI1R4YnY
+         Lo5T1uWodooEUROwHaLWm4O/Dtm+LpYRa6mEBrWolZf7mpH/Ad0jmANc73rBrXzqI0Ab
+         s6U6KZ/xMU5wFGlBgJHXOjdbaQs77y+qi/NAAcFhgStVAF8KFxcOdmP3mS0F+hoZKKXq
+         QwY1MD6aiDLWqnvnIRHObpmkIxS17sVypqOAVnc7rtcgX3JehYDY7ecmM8uDvezv3wum
+         YplRhA0GEtbN2+uM3or7sJBpIHH5fNyCcQd0GlIRlwUQhKRc4IrAM5OJ3/zV2Y54XzKP
+         VqCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eM3d9+X8qc+maq3xHLG+4/ZyWmIqPWOHJVw4bbgd4dI=;
+        b=czohtafUZnCtpAe7/tZm0XykBOG3nO/k0nILksSWPiJQRaHFK1VTCpDyn93CZmBkKX
+         5sZIOeR+5s4KKnVA4iWQTnv05aFGrX2A+n+eBvxxzKfgM1nxX5YN1kUYLKFPFd8Ge1tw
+         QTMR7CLrSdi/yx+qdZv0lpzkrsM3LWO+AczRpzAaAqIL7OVJZhdZMGsz99VL6yqL+XUZ
+         0h1CWz1uz438hCnSfRtagRPIckUIJ52LvvjZf4QB1zfQMIQamYRK91R4sPIoo7Unnrkx
+         KCNoNGUef5+XPi/KTXHzelJVrgBb++TWZA5ZEKOtOMxbiytThFss4be6RSJXktg8GmnE
+         6mtQ==
+X-Gm-Message-State: AOAM5302xUrGqUyKS3ouVC+7MMDbr7a6/Hie5ZNQS7esamtSbAsAZgOx
+        oaja7TTWMKlvebKjGNtqDx5P4Q==
+X-Google-Smtp-Source: ABdhPJxe6zvUEPFFz0dqINaJgmeuMHAEr7mJ+7IgakKU3xZk6kThk3wqIJvV4ddNyR33OAYNHPPERQ==
+X-Received: by 2002:a2e:87d0:: with SMTP id v16mr13791192ljj.137.1589305579480;
+        Tue, 12 May 2020 10:46:19 -0700 (PDT)
+Received: from localhost (c-8c28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.140])
+        by smtp.gmail.com with ESMTPSA id 5sm17972lju.87.2020.05.12.10.46.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 10:46:18 -0700 (PDT)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     ast@kernel.org, daniel@iogearbox.net
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] security: fix the default value of secid_to_secctx hook
+Date:   Tue, 12 May 2020 19:46:07 +0200
+Message-Id: <20200512174607.9630-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200504144939.11318-1-alexandre.chartre@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/4/20 7:49 AM, Alexandre Chartre wrote:
-> This version 4 of the kernel Address Space Isolation (ASI) RFC. I have
-> broken it down into three distinct parts:
-> 
->  - Part I: ASI Infrastructure and PTI (this part)
->  - Part II: Decorated Page-Table
->  - Part III: ASI Test Driver and CLI
-> 
-> Part I is similar to RFCv3 [3] with some small bug fixes. Parts II and III
-> extend the initial patchset: part II introduces decorated page-table in
-> order to provide convenient page-table management functions, and part III
-> provides a driver and CLI for testing ASI (using parts I and II).
+security_secid_to_secctx is called by the bpf_lsm hook and a successful
+return value (i.e 0) implies that the parameter will be consumed by the
+LSM framework. The current behaviour return success when the pointer
+isn't initialized when CONFIG_BPF_LSM is enabled, with the default
+return from kernel/bpf/bpf_lsm.c.
 
-These look interesting.  I haven't found any holes in your methods,
-although the interrupt depth tracking worries me a bit.  I tried and
-failed to do a similar thing with PTI in the NMI path, but you might
-have just bested me there. :)
+This is the internal error:
 
-It's very interesting that you've been able to implement PTI underneath
-all of this, and the "test driver" is really entertaining!
+[ 1229.341488][ T2659] usercopy: Kernel memory exposure attempt detected from null address (offset 0, size 280)!
+[ 1229.374977][ T2659] ------------[ cut here ]------------
+[ 1229.376813][ T2659] kernel BUG at mm/usercopy.c:99!
+[ 1229.378398][ T2659] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+[ 1229.380348][ T2659] Modules linked in:
+[ 1229.381654][ T2659] CPU: 0 PID: 2659 Comm: systemd-journal Tainted: G    B   W         5.7.0-rc5-next-20200511-00019-g864e0c6319b8-dirty #13
+[ 1229.385429][ T2659] Hardware name: linux,dummy-virt (DT)
+[ 1229.387143][ T2659] pstate: 80400005 (Nzcv daif +PAN -UAO BTYPE=--)
+[ 1229.389165][ T2659] pc : usercopy_abort+0xc8/0xcc
+[ 1229.390705][ T2659] lr : usercopy_abort+0xc8/0xcc
+[ 1229.392225][ T2659] sp : ffff000064247450
+[ 1229.393533][ T2659] x29: ffff000064247460 x28: 0000000000000000
+[ 1229.395449][ T2659] x27: 0000000000000118 x26: 0000000000000000
+[ 1229.397384][ T2659] x25: ffffa000127049e0 x24: ffffa000127049e0
+[ 1229.399306][ T2659] x23: ffffa000127048e0 x22: ffffa000127048a0
+[ 1229.401241][ T2659] x21: ffffa00012704b80 x20: ffffa000127049e0
+[ 1229.403163][ T2659] x19: ffffa00012704820 x18: 0000000000000000
+[ 1229.405094][ T2659] x17: 0000000000000000 x16: 0000000000000000
+[ 1229.407008][ T2659] x15: 0000000000000000 x14: 003d090000000000
+[ 1229.408942][ T2659] x13: ffff80000d5b25b2 x12: 1fffe0000d5b25b1
+[ 1229.410859][ T2659] x11: 1fffe0000d5b25b1 x10: ffff80000d5b25b1
+[ 1229.412791][ T2659] x9 : ffffa0001034bee0 x8 : ffff00006ad92d8f
+[ 1229.414707][ T2659] x7 : 0000000000000000 x6 : ffffa00015eacb20
+[ 1229.416642][ T2659] x5 : ffff0000693c8040 x4 : 0000000000000000
+[ 1229.418558][ T2659] x3 : ffffa0001034befc x2 : d57a7483a01c6300
+[ 1229.420610][ T2659] x1 : 0000000000000000 x0 : 0000000000000059
+[ 1229.422526][ T2659] Call trace:
+[ 1229.423631][ T2659]  usercopy_abort+0xc8/0xcc
+[ 1229.425091][ T2659]  __check_object_size+0xdc/0x7d4
+[ 1229.426729][ T2659]  put_cmsg+0xa30/0xa90
+[ 1229.428132][ T2659]  unix_dgram_recvmsg+0x80c/0x930
+[ 1229.429731][ T2659]  sock_recvmsg+0x9c/0xc0
+[ 1229.431123][ T2659]  ____sys_recvmsg+0x1cc/0x5f8
+[ 1229.432663][ T2659]  ___sys_recvmsg+0x100/0x160
+[ 1229.434151][ T2659]  __sys_recvmsg+0x110/0x1a8
+[ 1229.435623][ T2659]  __arm64_sys_recvmsg+0x58/0x70
+[ 1229.437218][ T2659]  el0_svc_common.constprop.1+0x29c/0x340
+[ 1229.438994][ T2659]  do_el0_svc+0xe8/0x108
+[ 1229.440587][ T2659]  el0_svc+0x74/0x88
+[ 1229.441917][ T2659]  el0_sync_handler+0xe4/0x8b4
+[ 1229.443464][ T2659]  el0_sync+0x17c/0x180
+[ 1229.444920][ T2659] Code: aa1703e2 aa1603e1 910a8260 97ecc860 (d4210000)
+[ 1229.447070][ T2659] ---[ end trace 400497d91baeaf51 ]---
+[ 1229.448791][ T2659] Kernel panic - not syncing: Fatal exception
+[ 1229.450692][ T2659] Kernel Offset: disabled
+[ 1229.452061][ T2659] CPU features: 0x240002,20002004
+[ 1229.453647][ T2659] Memory Limit: none
+[ 1229.455015][ T2659] ---[ end Kernel panic - not syncing: Fatal exception ]---
 
-That said, this is working in some of the nastiest corners of the x86
-code and this is going to take quite an investment to get reviewed.  I'm
-not *quite* sure it's all worth it.
+Rework the so the default return value is -EOPNOTSUPP.
 
-So, this isn't being ignored, I'm just not quite sure what to do with
-it, yet.
+There are likely other callbacks such as security_inode_getsecctx() that
+may have the same problem, and that someone that understand the code
+better needs to audit them.
+
+Thank you Arnd for helping me figure out what went wrong.
+
+CC: Arnd Bergmann <arnd@arndb.de>
+Fixes: 98e828a0650f ("security: Refactor declaration of LSM hooks")
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ include/linux/lsm_hook_defs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index b9e73d736e13..31eb3381e54b 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -243,7 +243,7 @@ LSM_HOOK(int, -EINVAL, getprocattr, struct task_struct *p, char *name,
+ 	 char **value)
+ LSM_HOOK(int, -EINVAL, setprocattr, const char *name, void *value, size_t size)
+ LSM_HOOK(int, 0, ismaclabel, const char *name)
+-LSM_HOOK(int, 0, secid_to_secctx, u32 secid, char **secdata,
++LSM_HOOK(int, -EOPNOTSUPP, secid_to_secctx, u32 secid, char **secdata,
+ 	 u32 *seclen)
+ LSM_HOOK(int, 0, secctx_to_secid, const char *secdata, u32 seclen, u32 *secid)
+ LSM_HOOK(void, LSM_RET_VOID, release_secctx, char *secdata, u32 seclen)
+-- 
+2.20.1
+
