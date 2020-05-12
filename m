@@ -2,340 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9961CFC01
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 19:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF291CFC15
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 19:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730873AbgELRVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 13:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730819AbgELRVD (ORCPT
+        id S1729328AbgELRYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 13:24:17 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:44992 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgELRYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 13:21:03 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8845DC061A0C;
-        Tue, 12 May 2020 10:21:03 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id n5so9499553wmd.0;
-        Tue, 12 May 2020 10:21:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=3dJ3kw3lIwiObAdYMTIM/7GK3/zwAmfuzVqCDS8cJ9w=;
-        b=nGqAJ8cuJQbZQMEQQkpGBz0oLzlMgBruT89QlcoI2gEf2nra4gaZMVk+0XeeFTl7Zx
-         cxTscl3lUzK72WEh0bigFd7PdwEwevAQhCN61amb/ZVjiI04tnEjYL26uhcZZsumJHka
-         wOO+TnH+c2Xggu5ZvS6ji4lvhKbTB3PfO9yMJxzxOgA7hyerxrdfqy5nJceQlZ+vxdip
-         SEe1ZVbHTYWAJS35iYFl0SHtsIkKuxtG2LUiDah77pIQPgoG+NHKy75U69VmQgBZGjoZ
-         3VBg0+F5miNVU5GV60KO+P4R+45MjDcZROXLIx6BBOiVZugbErNWt/qJG94FonOq+tn7
-         29EA==
+        Tue, 12 May 2020 13:24:17 -0400
+Received: by mail-pg1-f193.google.com with SMTP id b8so6427431pgi.11;
+        Tue, 12 May 2020 10:24:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=3dJ3kw3lIwiObAdYMTIM/7GK3/zwAmfuzVqCDS8cJ9w=;
-        b=O0rqgR9afZMQ2OxWMYg6rfU//YUMQxZoF4Yfu7ZMPLdyO9hh9zHmZ0+4bmG/gfJHwv
-         Lw6woqvo7LOFIpHCQ7W6XmPquk+wTNjMA9Pdijcjpsp8XY8gPGbkk7nZDXIpwFPWBd4w
-         /4YjcpMlKfRP3B+a1c9rCJ86gCgydcDEqS0Qtqt4HozcC0kxN29hbBQMhFyXc5NCve6x
-         z0MHOvdwszQyDSjzfzltfjjF+Gak6d7aoeUhhAXLZzs+9THZLWQVWKcOzeE2bYQRpvdh
-         beh0p7GWXIBTWMH+q93Qiu7lW6zLny/4fd33YgpwY/pLldjJ9nWOcxwo5Y4aAq8MBHGN
-         f4kQ==
-X-Gm-Message-State: AGi0PuaCHWZXUxPFsT0X56jpEnvFSez+5Av3RROGH25DNFzrjuGNhdxM
-        5cKI6R+Voxkay8hiRH7y4+4=
-X-Google-Smtp-Source: APiQypLpxGJXOWpItUiR+7FGMYnNCnR8hQ+rqb5r8KwEJ0VI+MQ5thSrfEDXIp8jJ9NXqVz/0gkXsA==
-X-Received: by 2002:a1c:808c:: with SMTP id b134mr40228880wmd.131.1589304062092;
-        Tue, 12 May 2020 10:21:02 -0700 (PDT)
-Received: from localhost.localdomain ([86.121.118.29])
-        by smtp.gmail.com with ESMTPSA id a15sm23999743wrw.56.2020.05.12.10.21.00
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dcdkn+8Y5yBPrArGp86XHP6unAj0YxcB3Hd+tWo8Yjg=;
+        b=IyjfHZy6iytVpBvgLxBu072vH0d1L/jvIlljXyM5J2Fnrns208X/aD7S0olWEo0nFR
+         8HV9UoseOb1WqV5J0TwRWzz5k3WN58yLoWWGpclpaplpWgyKgeyK04FC7JJAsFSKOdPT
+         FdJbCCXLD9DBj0p3YxniN3n16sFflv11BPh2ljXx9741gH+JYmGjDpsQ3cfdqrBQf571
+         tVV7j+syG9lcJuSMG8VS8k9Xh8UPv7PpPSH+3JbdkPvFqJ8XR9TrHd1s8gAgwjibg5Ta
+         13Fh2xcmY6IzxB6drxQ6nG6TzjdAmg7ydb86Y5nlGSGI5WaW6WggEaEYFJA+kgfauKq0
+         2uuQ==
+X-Gm-Message-State: AGi0PuYols8eOL4d7mdvAvjrQkXL1l//+t6uD5TzTuBtgAXFyBDS684C
+        x45rwd/+0GWNYh9m7434frg=
+X-Google-Smtp-Source: APiQypJnFxLzvcTaWa+2Y6oDWm5iEONX7kM4uSNpvwOfnQtK9cQpf+fXrVwOMIbTchbliL/bJ9uDGw==
+X-Received: by 2002:a63:d501:: with SMTP id c1mr19999745pgg.186.1589304255599;
+        Tue, 12 May 2020 10:24:15 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id p9sm3871513pgb.19.2020.05.12.10.24.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 10:21:01 -0700 (PDT)
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     andrew@lunn.ch, f.fainelli@gmail.com, vivien.didelot@gmail.com
-Cc:     davem@davemloft.net, kuba@kernel.org, jiri@mellanox.com,
-        idosch@idosch.org, rmk+kernel@armlinux.org.uk,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 net-next 15/15] docs: net: dsa: sja1105: document the best_effort_vlan_filtering option
-Date:   Tue, 12 May 2020 20:20:39 +0300
-Message-Id: <20200512172039.14136-16-olteanv@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200512172039.14136-1-olteanv@gmail.com>
-References: <20200512172039.14136-1-olteanv@gmail.com>
+        Tue, 12 May 2020 10:24:14 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 7A68B4063E; Tue, 12 May 2020 17:24:13 +0000 (UTC)
+Date:   Tue, 12 May 2020 17:24:13 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Xiaoming Ni <nixiaoming@huawei.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Helge Deller <deller@gmx.de>,
+        Parisc List <linux-parisc@vger.kernel.org>, yzaikin@google.com,
+        linux-fsdevel@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: linux-next: manual merge of the vfs tree with the parisc-hd tree
+Message-ID: <20200512172413.GC11244@42.do-not-panic.com>
+References: <20200511111123.68ccbaa3@canb.auug.org.au>
+ <99095805-8cbe-d140-e2f1-0c5a3e84d7e7@huawei.com>
+ <20200512003305.GX11244@42.do-not-panic.com>
+ <87y2pxs73w.fsf@x220.int.ebiederm.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y2pxs73w.fsf@x220.int.ebiederm.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+On Tue, May 12, 2020 at 06:52:35AM -0500, Eric W. Biederman wrote:
+> Luis Chamberlain <mcgrof@kernel.org> writes:
+> 
+> > On Mon, May 11, 2020 at 09:55:16AM +0800, Xiaoming Ni wrote:
+> >> On 2020/5/11 9:11, Stephen Rothwell wrote:
+> >> > Hi all,
+> >> > 
+> >> > Today's linux-next merge of the vfs tree got a conflict in:
+> >> > 
+> >> >    kernel/sysctl.c
+> >> > 
+> >> > between commit:
+> >> > 
+> >> >    b6522fa409cf ("parisc: add sysctl file interface panic_on_stackoverflow")
+> >> > 
+> >> > from the parisc-hd tree and commit:
+> >> > 
+> >> >    f461d2dcd511 ("sysctl: avoid forward declarations")
+> >> > 
+> >> > from the vfs tree.
+> >> > 
+> >> > I fixed it up (see below) and can carry the fix as necessary. This
+> >> > is now fixed as far as linux-next is concerned, but any non trivial
+> >> > conflicts should be mentioned to your upstream maintainer when your tree
+> >> > is submitted for merging.  You may also want to consider cooperating
+> >> > with the maintainer of the conflicting tree to minimise any particularly
+> >> > complex conflicts.
+> >> > 
+> >> 
+> >> 
+> >> Kernel/sysctl.c contains more than 190 interface files, and there are a
+> >> large number of config macro controls. When modifying the sysctl interface
+> >> directly in kernel/sysctl.c , conflicts are very easy to occur.
+> >> 
+> >> At the same time, the register_sysctl_table() provided by the system can
+> >> easily add the sysctl interface, and there is no conflict of kernel/sysctl.c
+> >> .
+> >> 
+> >> Should we add instructions in the patch guide (coding-style.rst
+> >> submitting-patches.rst):
+> >> Preferentially use register_sysctl_table() to add a new sysctl interface,
+> >> centralize feature codes, and avoid directly modifying kernel/sysctl.c ?
+> >
+> > Yes, however I don't think folks know how to do this well. So I think we
+> > just have to do at least start ourselves, and then reflect some of this
+> > in the docs.  The reason that this can be not easy is that we need to
+> > ensure that at an init level we haven't busted dependencies on setting
+> > this. We also just don't have docs on how to do this well.
+> >
+> >> In addition, is it necessary to transfer the architecture-related sysctl
+> >> interface to arch/xxx/kernel/sysctl.c ?
+> 
+> 
+> >
+> > Well here's an initial attempt to start with fs stuff in a very
+> > conservative way. What do folks think?
+> 
+> I don't see how any of that deals with the current conflict in -next.
 
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Changes in v3:
-None.
+The point is to cleanup the kitchen sink full of knobs everyone from
+different subsystem has put in place for random things so to reduce
+the amount of edits on the file, so to then avoid the possibility
+of merge conflicts.
 
-Changes in v2:
-None.
+> You are putting the fs sysctls in the wrong place.  The should live
+> in fs/ not in fs/proc/.
 
- .../networking/devlink-params-sja1105.txt     |  27 +++
- Documentation/networking/dsa/sja1105.rst      | 211 +++++++++++++++---
- 2 files changed, 212 insertions(+), 26 deletions(-)
- create mode 100644 Documentation/networking/devlink-params-sja1105.txt
+That's an easy fix, sure, I'll do that.
 
-diff --git a/Documentation/networking/devlink-params-sja1105.txt b/Documentation/networking/devlink-params-sja1105.txt
-new file mode 100644
-index 000000000000..1d71742e270a
---- /dev/null
-+++ b/Documentation/networking/devlink-params-sja1105.txt
-@@ -0,0 +1,27 @@
-+best_effort_vlan_filtering
-+			[DEVICE, DRIVER-SPECIFIC]
-+			Allow plain ETH_P_8021Q headers to be used as DSA tags.
-+			Benefits:
-+			- Can terminate untagged traffic over switch net
-+			  devices even when enslaved to a bridge with
-+			  vlan_filtering=1.
-+			- Can terminate VLAN-tagged traffic over switch net
-+			  devices even when enslaved to a bridge with
-+			  vlan_filtering=1, with some constraints (no more than
-+			  7 non-pvid VLANs per user port).
-+			- Can do QoS based on VLAN PCP and VLAN membership
-+			  admission control for autonomously forwarded frames
-+			  (regardless of whether they can be terminated on the
-+			  CPU or not).
-+			Drawbacks:
-+			- User cannot use VLANs in range 1024-3071. If the
-+			  switch receives frames with such VIDs, it will
-+			  misinterpret them as DSA tags.
-+			- Switch uses Shared VLAN Learning (FDB lookup uses
-+			  only DMAC as key).
-+			- When VLANs span cross-chip topologies, the total
-+			  number of permitted VLANs may be less than 7 per
-+			  port, due to a maximum number of 32 VLAN retagging
-+			  rules per switch.
-+			Configuration mode: runtime
-+			Type: bool.
-diff --git a/Documentation/networking/dsa/sja1105.rst b/Documentation/networking/dsa/sja1105.rst
-index 34581629dd3f..b6bbc17814fb 100644
---- a/Documentation/networking/dsa/sja1105.rst
-+++ b/Documentation/networking/dsa/sja1105.rst
-@@ -66,34 +66,193 @@ reprogrammed with the updated static configuration.
- Traffic support
- ===============
- 
--The switches do not support switch tagging in hardware. But they do support
--customizing the TPID by which VLAN traffic is identified as such. The switch
--driver is leveraging ``CONFIG_NET_DSA_TAG_8021Q`` by requesting that special
--VLANs (with a custom TPID of ``ETH_P_EDSA`` instead of ``ETH_P_8021Q``) are
--installed on its ports when not in ``vlan_filtering`` mode. This does not
--interfere with the reception and transmission of real 802.1Q-tagged traffic,
--because the switch does no longer parse those packets as VLAN after the TPID
--change.
--The TPID is restored when ``vlan_filtering`` is requested by the user through
--the bridge layer, and general IP termination becomes no longer possible through
--the switch netdevices in this mode.
--
--The switches have two programmable filters for link-local destination MACs.
-+The switches do not have hardware support for DSA tags, except for "slow
-+protocols" for switch control as STP and PTP. For these, the switches have two
-+programmable filters for link-local destination MACs.
- These are used to trap BPDUs and PTP traffic to the master netdevice, and are
- further used to support STP and 1588 ordinary clock/boundary clock
--functionality.
--
--The following traffic modes are supported over the switch netdevices:
--
--+--------------------+------------+------------------+------------------+
--|                    | Standalone | Bridged with     | Bridged with     |
--|                    | ports      | vlan_filtering 0 | vlan_filtering 1 |
--+====================+============+==================+==================+
--| Regular traffic    |     Yes    |       Yes        |  No (use master) |
--+--------------------+------------+------------------+------------------+
--| Management traffic |     Yes    |       Yes        |       Yes        |
--| (BPDU, PTP)        |            |                  |                  |
--+--------------------+------------+------------------+------------------+
-+functionality. For frames trapped to the CPU, source port and switch ID
-+information is encoded by the hardware into the frames.
-+
-+But by leveraging ``CONFIG_NET_DSA_TAG_8021Q`` (a software-defined DSA tagging
-+format based on VLANs), general-purpose traffic termination through the network
-+stack can be supported under certain circumstances.
-+
-+Depending on VLAN awareness state, the following operating modes are possible
-+with the switch:
-+
-+- Mode 1 (VLAN-unaware): a port is in this mode when it is used as a standalone
-+  net device, or when it is enslaved to a bridge with ``vlan_filtering=0``.
-+- Mode 2 (fully VLAN-aware): a port is in this mode when it is enslaved to a
-+  bridge with ``vlan_filtering=1``. Access to the entire VLAN range is given to
-+  the user through ``bridge vlan`` commands, but general-purpose (anything
-+  other than STP, PTP etc) traffic termination is not possible through the
-+  switch net devices. The other packets can be still by user space processed
-+  through the DSA master interface (similar to ``DSA_TAG_PROTO_NONE``).
-+- Mode 3 (best-effort VLAN-aware): a port is in this mode when enslaved to a
-+  bridge with ``vlan_filtering=1``, and the devlink property of its parent
-+  switch named ``best_effort_vlan_filtering`` is set to ``true``. When
-+  configured like this, the range of usable VIDs is reduced (0 to 1023 and 3072
-+  to 4094), so is the number of usable VIDs (maximum of 7 non-pvid VLANs per
-+  port*), and shared VLAN learning is performed (FDB lookup is done only by
-+  DMAC, not also by VID).
-+
-+To summarize, in each mode, the following types of traffic are supported over
-+the switch net devices:
-+
-++-------------+-----------+--------------+------------+
-+|             |   Mode 1  |    Mode 2    |   Mode 3   |
-++=============+===========+==============+============+
-+|   Regular   |    Yes    |      No      |     Yes    |
-+|   traffic   |           | (use master) |            |
-++-------------+-----------+--------------+------------+
-+| Management  |    Yes    |     Yes      |     Yes    |
-+|   traffic   |           |              |            |
-+| (BPDU, PTP) |           |              |            |
-++-------------+-----------+--------------+------------+
-+
-+To configure the switch to operate in Mode 3, the following steps can be
-+followed::
-+
-+  ip link add dev br0 type bridge
-+  # swp2 operates in Mode 1 now
-+  ip link set dev swp2 master br0
-+  # swp2 temporarily moves to Mode 2
-+  ip link set dev br0 type bridge vlan_filtering 1
-+  [   61.204770] sja1105 spi0.1: Reset switch and programmed static config. Reason: VLAN filtering
-+  [   61.239944] sja1105 spi0.1: Disabled switch tagging
-+  # swp3 now operates in Mode 3
-+  devlink dev param set spi/spi0.1 name best_effort_vlan_filtering value true cmode runtime
-+  [   64.682927] sja1105 spi0.1: Reset switch and programmed static config. Reason: VLAN filtering
-+  [   64.711925] sja1105 spi0.1: Enabled switch tagging
-+  # Cannot use VLANs in range 1024-3071 while in Mode 3.
-+  bridge vlan add dev swp2 vid 1025 untagged pvid
-+  RTNETLINK answers: Operation not permitted
-+  bridge vlan add dev swp2 vid 100
-+  bridge vlan add dev swp2 vid 101 untagged
-+  bridge vlan
-+  port    vlan ids
-+  swp5     1 PVID Egress Untagged
-+
-+  swp2     1 PVID Egress Untagged
-+           100
-+           101 Egress Untagged
-+
-+  swp3     1 PVID Egress Untagged
-+
-+  swp4     1 PVID Egress Untagged
-+
-+  br0      1 PVID Egress Untagged
-+  bridge vlan add dev swp2 vid 102
-+  bridge vlan add dev swp2 vid 103
-+  bridge vlan add dev swp2 vid 104
-+  bridge vlan add dev swp2 vid 105
-+  bridge vlan add dev swp2 vid 106
-+  bridge vlan add dev swp2 vid 107
-+  # Cannot use mode than 7 VLANs per port while in Mode 3.
-+  [ 3885.216832] sja1105 spi0.1: No more free subvlans
-+
-+\* "maximum of 7 non-pvid VLANs per port": Decoding VLAN-tagged packets on the
-+CPU in mode 3 is possible through VLAN retagging of packets that go from the
-+switch to the CPU. In cross-chip topologies, the port that goes to the CPU
-+might also go to other switches. In that case, those other switches will see
-+only a retagged packet (which only has meaning for the CPU). So if they are
-+interested in this VLAN, they need to apply retagging in the reverse direction,
-+to recover the original value from it. This consumes extra hardware resources
-+for this switch. There is a maximum of 32 entries in the Retagging Table of
-+each switch device.
-+
-+As an example, consider this cross-chip topology::
-+
-+  +-------------------------------------------------+
-+  | Host SoC                                        |
-+  |           +-------------------------+           |
-+  |           | DSA master for embedded |           |
-+  |           |   switch (non-sja1105)  |           |
-+  |  +--------+-------------------------+--------+  |
-+  |  |   embedded L2 switch                      |  |
-+  |  |                                           |  |
-+  |  |   +--------------+     +--------------+   |  |
-+  |  |   |DSA master for|     |DSA master for|   |  |
-+  |  |   |  SJA1105 1   |     |  SJA1105 2   |   |  |
-+  +--+---+--------------+-----+--------------+---+--+
-+
-+  +-----------------------+ +-----------------------+
-+  |   SJA1105 switch 1    | |   SJA1105 switch 2    |
-+  +-----+-----+-----+-----+ +-----+-----+-----+-----+
-+  |sw1p0|sw1p1|sw1p2|sw1p3| |sw2p0|sw2p1|sw2p2|sw2p3|
-+  +-----+-----+-----+-----+ +-----+-----+-----+-----+
-+
-+To reach the CPU, SJA1105 switch 1 (spi/spi2.1) uses the same port as is uses
-+to reach SJA1105 switch 2 (spi/spi2.2), which would be port 4 (not drawn).
-+Similarly for SJA1105 switch 2.
-+
-+Also consider the following commands, that add VLAN 100 to every sja1105 user
-+port::
-+
-+  devlink dev param set spi/spi2.1 name best_effort_vlan_filtering value true cmode runtime
-+  devlink dev param set spi/spi2.2 name best_effort_vlan_filtering value true cmode runtime
-+  ip link add dev br0 type bridge
-+  for port in sw1p0 sw1p1 sw1p2 sw1p3 \
-+              sw2p0 sw2p1 sw2p2 sw2p3; do
-+      ip link set dev $port master br0
-+  done
-+  ip link set dev br0 type bridge vlan_filtering 1
-+  for port in sw1p0 sw1p1 sw1p2 sw1p3 \
-+              sw2p0 sw2p1 sw2p2; do
-+      bridge vlan add dev $port vid 100
-+  done
-+  ip link add link br0 name br0.100 type vlan id 100 && ip link set dev br0.100 up
-+  ip addr add 192.168.100.3/24 dev br0.100
-+  bridge vlan add dev br0 vid 100 self
-+
-+  bridge vlan
-+  port    vlan ids
-+  sw1p0    1 PVID Egress Untagged
-+           100
-+
-+  sw1p1    1 PVID Egress Untagged
-+           100
-+
-+  sw1p2    1 PVID Egress Untagged
-+           100
-+
-+  sw1p3    1 PVID Egress Untagged
-+           100
-+
-+  sw2p0    1 PVID Egress Untagged
-+           100
-+
-+  sw2p1    1 PVID Egress Untagged
-+           100
-+
-+  sw2p2    1 PVID Egress Untagged
-+           100
-+
-+  sw2p3    1 PVID Egress Untagged
-+
-+  br0      1 PVID Egress Untagged
-+           100
-+
-+SJA1105 switch 1 consumes 1 retagging entry for each VLAN on each user port
-+towards the CPU. It also consumes 1 retagging entry for each non-pvid VLAN that
-+it is also interested in, which is configured on any port of any neighbor
-+switch.
-+
-+In this case, SJA1105 switch 1 consumes a total of 11 retagging entries, as
-+follows:
-+- 8 retagging entries for VLANs 1 and 100 installed on its user ports
-+  (``sw1p0`` - ``sw1p3``)
-+- 3 retagging entries for VLAN 100 installed on the user ports of SJA1105
-+  switch 2 (``sw2p0`` - ``sw2p2``), because it also has ports that are
-+  interested in it. The VLAN 1 is a pvid on SJA1105 switch 2 and does not need
-+  reverse retagging.
-+
-+SJA1105 switch 2 also consumes 11 retagging entries, but organized as follows:
-+- 7 retagging entries for the bridge VLANs on its user ports (``sw2p0`` -
-+  ``sw2p3``).
-+- 4 retagging entries for VLAN 100 installed on the user ports of SJA1105
-+  switch 1 (``sw1p0`` - ``sw1p3``).
- 
- Switching features
- ==================
--- 
-2.17.1
+> Otherwise you are pretty much repeating
+> the problem the problem of poorly located code in another location.
 
+Sure, alright, well I'll chug on with trying to clean up the kitchen
+sink. We can decide where we put items during review.
+
+> >  fs/proc/Makefile          |  1 +
+> >  fs/proc/fs_sysctl_table.c | 97 +++++++++++++++++++++++++++++++++++++++
+> >  kernel/sysctl.c           | 48 -------------------
+> >  3 files changed, 98 insertions(+), 48 deletions(-)
+> >  create mode 100644 fs/proc/fs_sysctl_table.c
+> >
+> > diff --git a/fs/proc/Makefile b/fs/proc/Makefile
+> > index bd08616ed8ba..8bf419b2ac7d 100644
+> > --- a/fs/proc/Makefile
+> > +++ b/fs/proc/Makefile
+> > @@ -28,6 +28,7 @@ proc-y	+= namespaces.o
+> >  proc-y	+= self.o
+> >  proc-y	+= thread_self.o
+> >  proc-$(CONFIG_PROC_SYSCTL)	+= proc_sysctl.o
+> > +proc-$(CONFIG_SYSCTL)		+= fs_sysctl_table.o
+> >  proc-$(CONFIG_NET)		+= proc_net.o
+> >  proc-$(CONFIG_PROC_KCORE)	+= kcore.o
+> >  proc-$(CONFIG_PROC_VMCORE)	+= vmcore.o
+> > diff --git a/fs/proc/fs_sysctl_table.c b/fs/proc/fs_sysctl_table.c
+> > new file mode 100644
+> > index 000000000000..f56a49989872
+> > --- /dev/null
+> > +++ b/fs/proc/fs_sysctl_table.c
+> > @@ -0,0 +1,97 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * /proc/sys/fs sysctl table
+> > + */
+> > +#include <linux/init.h>
+> > +#include <linux/sysctl.h>
+> > +#include <linux/poll.h>
+> > +#include <linux/proc_fs.h>
+> > +#include <linux/printk.h>
+> > +#include <linux/security.h>
+> > +#include <linux/sched.h>
+> > +#include <linux/cred.h>
+> > +#include <linux/namei.h>
+> > +#include <linux/mm.h>
+> > +#include <linux/module.h>
+> > +#include <linux/bpf-cgroup.h>
+> > +#include <linux/mount.h>
+> > +#include <linux/dnotify.h>
+> > +#include <linux/pipe_fs_i.h>
+> > +#include <linux/aio.h>
+> > +#include <linux/inotify.h>
+> > +#include <linux/kmemleak.h>
+> > +#include <linux/binfmts.h>
+> > +
+> > +static unsigned long zero_ul;
+> > +static unsigned long long_max = LONG_MAX;
+> > +
+> > +static struct ctl_table fs_table[] = {
+> > +	{
+> > +		.procname	= "inode-nr",
+> > +		.data		= &inodes_stat,
+> > +		.maxlen		= 2*sizeof(long),
+> > +		.mode		= 0444,
+> > +		.proc_handler	= proc_nr_inodes,
+> > +	},
+> > +	{
+> > +		.procname	= "inode-state",
+> > +		.data		= &inodes_stat,
+> > +		.maxlen		= 7*sizeof(long),
+> > +		.mode		= 0444,
+> > +		.proc_handler	= proc_nr_inodes,
+> > +	},
+> > +	{
+> > +		.procname	= "file-nr",
+> > +		.data		= &files_stat,
+> > +		.maxlen		= sizeof(files_stat),
+> > +		.mode		= 0444,
+> > +		.proc_handler	= proc_nr_files,
+> > +	},
+> > +	{
+> > +		.procname	= "file-max",
+> > +		.data		= &files_stat.max_files,
+> > +		.maxlen		= sizeof(files_stat.max_files),
+> > +		.mode		= 0644,
+> > +		.proc_handler	= proc_doulongvec_minmax,
+> > +		.extra1		= &zero_ul,
+> > +		.extra2		= &long_max,
+> > +	},
+> > +	{
+> > +		.procname	= "nr_open",
+> > +		.data		= &sysctl_nr_open,
+> > +		.maxlen		= sizeof(unsigned int),
+> > +		.mode		= 0644,
+> > +		.proc_handler	= proc_dointvec_minmax,
+> > +		.extra1		= &sysctl_nr_open_min,
+> > +		.extra2		= &sysctl_nr_open_max,
+> > +	},
+> > +	{
+> > +		.procname	= "dentry-state",
+> > +		.data		= &dentry_stat,
+> > +		.maxlen		= 6*sizeof(long),
+> > +		.mode		= 0444,
+> > +		.proc_handler	= proc_nr_dentry,
+> > +	},
+> > +	{ }
+> > +};
+> > +
+> > +static struct ctl_table fs_base_table[] = {
+> > +	{
+> > +		.procname	= "fs",
+> > +		.mode		= 0555,
+> > +		.child		= fs_table,
+> > +	},
+> > +	{ }
+> > +};
+>   ^^^^^^^^^^^^^^^^^^^^^^^^ You don't need this at all.
+> > > +static int __init fs_procsys_init(void)
+> > +{
+> > +	struct ctl_table_header *hdr;
+> > +
+> > +	hdr = register_sysctl_table(fs_base_table);
+>               ^^^^^^^^^^^^^^^^^^^^^ Please use register_sysctl instead.
+> 	AKA
+>         hdr = register_sysctl("fs", fs_table);
+
+Ah, much cleaner thanks!
+
+  Luis
