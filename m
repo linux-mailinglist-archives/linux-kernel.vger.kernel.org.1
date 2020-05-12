@@ -2,105 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB411D010D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 23:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BB71D0136
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 23:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731364AbgELVpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 17:45:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49644 "EHLO
+        id S1731586AbgELVsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 17:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731065AbgELVpo (ORCPT
+        by vger.kernel.org with ESMTP id S1731171AbgELVsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 17:45:44 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EF8C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 14:45:42 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id z25so11772467otq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 14:45:42 -0700 (PDT)
+        Tue, 12 May 2020 17:48:05 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC32C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 14:48:04 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id i68so12514196qtb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 14:48:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=IYUiXiaNBsBZM0iKcHk24e5/fD/U7T1sgmMQxqdI2oM=;
-        b=FZ0l+rzzvY68A2zj75Zjc2uCZNGx9Nm07CgzXCbuOsN/VmdEp2Dy7665CJhIXVxlR1
-         S1e/6FqwhzlVKp4mcXpSi+RUjuwE2QeKtSa96x6C6Xa5RA2spGApisbeSwSHRlrtNEx9
-         gIesQySCWLjNXrG9kKvN5zTpqB7nAwuQ+3We5EBukRSq/RQMCl4Hf7n2cu5KFrYJUI+n
-         1vSBExC5Q5jO5seY64Ep8G3xT4qLaSWhb0O99RtEfHtnKef8CHWOKMGHWQcYlR64twd1
-         oolDvFrzeEXZX8hFjBrkAZgn98X3tvpg7EUpoqMKOi2D8qzJOx0Fe2PbOmL6ckX7kbDC
-         cttw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XgpxXurEcy9zZtLcodFISaUMHDUu4yvx13d5eZk7VhE=;
+        b=qQsMGlpxbjrua6TZPluaYWlJ0vC0Gut7ZDPZk+tR7FRTEV1pu6b36VlouDfqdyGdo5
+         pgyqfrupoXbujMOF5KCyMqw2EyNFdaol7rULyQS50DzMxXn8JTJRe8bgVPoIa/jyh0lI
+         5wiOjf3TmDVXGeW34jsFHWYXeccZ2NjASZYNTfNP49fGe/XEdhdSekdIexOQ9RXYV+XW
+         6KzSGY9InBMx/onm3lpFUTEUIjeT14ACLw0gsg7tc76IMOh+rJnu+KJuBDExFO8LR0wG
+         of2M6PRFbpcLx4rMufuHw5+L+HBoBUcrJk5HmCu6h6dYZAKxn5GEvmYnzeYFDhzYaGUC
+         SOMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references;
-        bh=IYUiXiaNBsBZM0iKcHk24e5/fD/U7T1sgmMQxqdI2oM=;
-        b=OEesOzvy1tDiIWXCXCoG6zsWXbFTB9rCebbSP48nHLyMDzaL1xtJhNLo6KBQdmky32
-         Y+353YDODQ99oo9G9KH4R0Rvd4niIaCR/Qj8o72HDv+O2hS7HB7yzUDqLEeNzA/nWQh2
-         DvL95EXhj8RdOMBglI4hRTBuJXlRs1y0n2p/7UOdeFzNjWwQUwh3+L71IqDWm8XDGnjL
-         u07E5i8yhoz3mBUiho8tNLZajND8ukUtqXSbatt6xT2385QNo1kSMkLvFFbs75Hq7zBd
-         dFoeMZuRM2edvvI2uRq53n/8Q3e9aSQMjsULdxSKU9ex2ZdT/Efh4q2EJnAris9fmEeb
-         o/fw==
-X-Gm-Message-State: AGi0PuZX4g52Ow/5DucvRlmkZdem8k3DeuQ645sSLe768jOJzBe6DTMq
-        d8Ojp+YUw03sl8Sg/iUlqw==
-X-Google-Smtp-Source: APiQypIZndupecq/vOBzka0g47mBSQ6VZVYzrX+GcUnwFEwKBIoSzgu/MiKU8yydf78/zT7X/JUETg==
-X-Received: by 2002:a9d:6d19:: with SMTP id o25mr17945553otp.294.1589319942164;
-        Tue, 12 May 2020 14:45:42 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.149.130])
-        by smtp.gmail.com with ESMTPSA id r11sm5547491oib.47.2020.05.12.14.45.40
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XgpxXurEcy9zZtLcodFISaUMHDUu4yvx13d5eZk7VhE=;
+        b=HmKVq6qigW9iwnMasoo7uoettgNVLUaSl8UT2VduqQKvw7WpwHRIDvkvJ4U53RQYzM
+         WjvsDuYg5vs/EIcTkAB6D0U1KPTh6p+YBLXk1B1Nl8kkkY//YHsF4czEGseJwk/XbzcW
+         C3YeVrggc7OlBqvTc74WKXL/O+E1G9tig0stES+IT/fY8EWr+n5icYOfsqRYKVR+1t+6
+         2Co1ljgN8Y6DcH7/mVzX68bzWXNsNbTYlKY6RgpJTs8zEp/O5fW5MYn3AXX0Rb0mRjHZ
+         oWHeRDYyzUf2hbV2g83zzhiSHKtCpvKHUxgyS18vztrsL1YDh8TfxmSh4u2GOqyVWnIC
+         3dOw==
+X-Gm-Message-State: AOAM532XDeTdskW2BMbNXgtbnLF7irEJ+xTJ1UBR3NJ/8qeYAcxdIFNI
+        TwLWBaTjp7jp4hcQHGxLj5w=
+X-Google-Smtp-Source: ABdhPJz+pO2glId38WZUN+1XOagFJOgZwVOZnE0/nwZz7kCir7nYtmKwi1rdCbWjp93JNGygefHeQg==
+X-Received: by 2002:ac8:7947:: with SMTP id r7mr1467325qtt.180.1589320084128;
+        Tue, 12 May 2020 14:48:04 -0700 (PDT)
+Received: from LeoBras.aus.stglabs.ibm.com (179-125-143-209.dynamic.desktop.com.br. [179.125.143.209])
+        by smtp.gmail.com with ESMTPSA id d57sm700550qta.51.2020.05.12.14.47.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 14:45:41 -0700 (PDT)
-Received: from t560.minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:c3f3:f502:5c4e])
-        by serve.minyard.net (Postfix) with ESMTPA id F3794180051;
-        Tue, 12 May 2020 21:45:39 +0000 (UTC)
-From:   minyard@acm.org
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Tue, 12 May 2020 14:48:03 -0700 (PDT)
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Enrico Weigelt <info@metux.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Corey Minyard <cminyard@mvista.com>
-Subject: [PATCH] char: ipmi: convert to use i2c_new_client_device()
-Date:   Tue, 12 May 2020 16:45:32 -0500
-Message-Id: <20200512214532.14117-1-minyard@acm.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200326210958.13051-2-wsa+renesas@sang-engineering.com>
-References: <20200326210958.13051-2-wsa+renesas@sang-engineering.com>
+        Leonardo Bras <leobras.c@gmail.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/1] powerpc/crash: Use NMI context for printk when starting to crash
+Date:   Tue, 12 May 2020 18:45:35 -0300
+Message-Id: <20200512214533.93878-1-leobras.c@gmail.com>
+X-Mailer: git-send-email 2.25.4
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Currently, if printk lock (logbuf_lock) is held by other thread during
+crash, there is a chance of deadlocking the crash on next printk, and
+blocking a possibly desired kdump.
 
-Move away from the deprecated API.
+At the start of default_machine_crash_shutdown, make printk enter
+NMI context, as it will use per-cpu buffers to store the message,
+and avoid locking logbuf_lock.
 
-Based on a patch by Wolfram Sang <wsa+renesas@sang-engineering.com>.
+Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
 
-Signed-off-by: Corey Minyard <cminyard@mvista.com>
 ---
-I think this works.
+Changes since v1:
+- Added in-code comment explaining the need of context change
+- Function moved to the start of default_machine_crash_shutdown,
+  to avoid locking any printk on crashing routine.
+- Title was 'Use NMI context for printk after crashing other CPUs'
 
- drivers/char/ipmi/ipmi_ssif.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+---
+ arch/powerpc/kexec/crash.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/char/ipmi/ipmi_ssif.c b/drivers/char/ipmi/ipmi_ssif.c
-index b7145f370d3b..65563e5e5731 100644
---- a/drivers/char/ipmi/ipmi_ssif.c
-+++ b/drivers/char/ipmi/ipmi_ssif.c
-@@ -1943,12 +1943,14 @@ static int ssif_probe(struct i2c_client *client, const struct i2c_device_id *id)
- static int ssif_adapter_handler(struct device *adev, void *opaque)
- {
- 	struct ssif_addr_info *addr_info = opaque;
-+	struct i2c_client *cl;
+diff --git a/arch/powerpc/kexec/crash.c b/arch/powerpc/kexec/crash.c
+index d488311efab1..c9a889880214 100644
+--- a/arch/powerpc/kexec/crash.c
++++ b/arch/powerpc/kexec/crash.c
+@@ -311,6 +311,9 @@ void default_machine_crash_shutdown(struct pt_regs *regs)
+ 	unsigned int i;
+ 	int (*old_handler)(struct pt_regs *regs);
  
- 	if (adev->type != &i2c_adapter_type)
- 		return 0;
- 
--	addr_info->added_client = i2c_new_device(to_i2c_adapter(adev),
--						 &addr_info->binfo);
-+	cl = i2c_new_client_device(to_i2c_adapter(adev), &addr_info->binfo);
-+	if (!IS_ERR(cl))
-+		addr_info->added_client = cl;
- 
- 	if (!addr_info->adapter_name)
- 		return 1; /* Only try the first I2C adapter by default. */
++	/* Avoid hardlocking with irresponsive CPU holding logbuf_lock */
++	printk_nmi_enter();
++
+ 	/*
+ 	 * This function is only called after the system
+ 	 * has panicked or is otherwise in a critical state.
 -- 
-2.17.1
+2.25.4
 
