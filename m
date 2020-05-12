@@ -2,76 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA091CF36F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 13:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D98A1CF376
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 13:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729581AbgELLgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 07:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729541AbgELLgO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 07:36:14 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E396FC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 04:36:13 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id c21so5651374lfb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 04:36:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oXz/yNpIRm2hDyqmY4LrwoICA7tFRRtqLeIZr1n4hgQ=;
-        b=fM1y7ppAF8YttAacroZbaXlkzyGSPLl+OgOaC5PI80aAlq//szCR6WCR+YmEseJHeM
-         RCovVooARtxTCuzJxE78pnLkF+rxy+KN66YghG//4UH7qw/lwT+jw8WAD+e1AWN9zLH3
-         4/QAM4K0LeAubfe6R6CvOYaR6KEh2FpZyZa/bSvfNA1T0j6wB4RR9mhr/yPym1VeLjaB
-         h29YNU2KunEbvBtnCIPwL62rA5gAq4lVMz3dQ5RwApP2OP5utjmpcGTqCxIFo6DRc3sV
-         qiqUsFfo4/dl+0q7sToUqEE+EPzz7qT1/LCzAY9MjPRlmZCzc3FN8v+PG4RQAy1phDxU
-         9N+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oXz/yNpIRm2hDyqmY4LrwoICA7tFRRtqLeIZr1n4hgQ=;
-        b=GlF9ouGvM6sNKWdOz6c87rMGx54zyxFWjavTcIGnunlPzbBCBZN34Fu4KJoPPuDeCk
-         VeP4+IrTHSyc6+rYM5lids28mX+gVGde84bjmTni/zKKc4YnrLjCFkGYwBW8cZOtXSgw
-         dP+T9AfPQbolRBkSBYE7Or51aqIyG8FjbPOObo0LOr+9K4bipdVYS3k2jJ7ipDb3/XaW
-         P2TE1uph3f30aVL+tvhv8dPjxV/MFi5Q8GhtLn6134wIJox5eoOUY5hlCXjoKZJDR+SI
-         1errC0wcrOy/jVQTkasg+QqPeJsIh9QOOgERPQcVmHykQ+A8smSanTEktSiDtcLI5VHB
-         vjLw==
-X-Gm-Message-State: AOAM533LgfXfzGIK3MJoEFyc/8ymM8TVOCOCIzVon2esq+OKlwoqumM5
-        Q7y04ABgnHH/tQ2ETY4gVCpe+tmHtoyUx6vjm8dgQw==
-X-Google-Smtp-Source: ABdhPJzU/NpqzyTWWkbOeLhtKKqfDcF5gMlrXxanCv0l4ELQ+8+totfdERv7xwcOZhjDKhUfZqv4J22pNOhf8IEToTg=
-X-Received: by 2002:ac2:5588:: with SMTP id v8mr13910730lfg.217.1589283372423;
- Tue, 12 May 2020 04:36:12 -0700 (PDT)
+        id S1729562AbgELLix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 07:38:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:53022 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728085AbgELLix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 07:38:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D48E30E;
+        Tue, 12 May 2020 04:38:52 -0700 (PDT)
+Received: from [10.37.12.83] (unknown [10.37.12.83])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D9103F71E;
+        Tue, 12 May 2020 04:38:42 -0700 (PDT)
+Subject: Re: [PATCH v7 04/15] PM / EM: add support for other devices than CPUs
+ in Energy Model
+To:     Quentin Perret <qperret@google.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-imx@nxp.com, Dietmar.Eggemann@arm.com, cw00.choi@samsung.com,
+        b.zolnierkie@samsung.com, rjw@rjwysocki.net, sudeep.holla@arm.com,
+        viresh.kumar@linaro.org, nm@ti.com, sboyd@kernel.org,
+        rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        daniel.lezcano@linaro.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        kernel@pengutronix.de, khilman@kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh@kernel.org,
+        matthias.bgg@gmail.com, steven.price@arm.com,
+        tomeu.vizoso@collabora.com, alyssa.rosenzweig@collabora.com,
+        airlied@linux.ie, daniel@ffwll.ch, liviu.dudau@arm.com,
+        lorenzo.pieralisi@arm.com, patrick.bellasi@matbug.net,
+        orjan.eide@arm.com, rdunlap@infradead.org, mka@chromium.org
+References: <20200511111912.3001-1-lukasz.luba@arm.com>
+ <20200511111912.3001-5-lukasz.luba@arm.com>
+ <20200511134319.GA29112@google.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <270f3e37-8de8-2841-dca3-8d70089f7317@arm.com>
+Date:   Tue, 12 May 2020 12:38:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20200425203813.6442-1-rikard.falkeborn@gmail.com>
-In-Reply-To: <20200425203813.6442-1-rikard.falkeborn@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 12 May 2020 13:36:01 +0200
-Message-ID: <CACRpkdY0D7sfOW-pvkH1ZeF1O06+TERyO45cc=vrYAN-=kTR1A@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: rk805: Constify rk805_gpio_cfgs
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Jianhong Chen <chenjh@rock-chips.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200511134319.GA29112@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 25, 2020 at 10:38 PM Rikard Falkeborn
-<rikard.falkeborn@gmail.com> wrote:
 
-> Mark pin_cfg as const, allowing the compiler to put the struct in
-> .rodata instead of .data.
->
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-Patch applied.
+On 5/11/20 2:43 PM, Quentin Perret wrote:
+> Hey Lukasz,
+> 
+> On Monday 11 May 2020 at 12:19:01 (+0100), Lukasz Luba wrote:
+> <snip>
+>> @@ -27,12 +29,15 @@ struct em_perf_state {
+>>    * em_perf_domain - Performance domain
+>>    * @table:		List of performance states, in ascending order
+>>    * @nr_perf_states:	Number of performance states
+>> - * @cpus:		Cpumask covering the CPUs of the domain
+>> + * @cpus:		Cpumask covering the CPUs of the domain. It's here
+>> + *			for performance reasons to avoid potential cache
+>> + *			misses during energy calculations in the scheduler
+> 
+> And because that saves a pointer, and simplifies allocating/freeing that
+> memory region :)
 
-Yours,
-Linus Walleij
+True, I will add this also:
+'and simplifies allocating/freeing that memory region'
+
+> 
+> <snip>
+>> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+>> index 5b8a1566526a..9cc7f2973600 100644
+>> --- a/kernel/power/energy_model.c
+>> +++ b/kernel/power/energy_model.c
+>> @@ -2,8 +2,9 @@
+>>   /*
+>>    * Energy Model of CPUs
+> 
+> Should this comment change too?
+
+Yes, indeed. I will adjust it.
+
+> 
+> <snip>
+>> -static void em_debug_create_pd(struct em_perf_domain *pd, int cpu)
+>> +static void em_debug_create_pd(struct device *dev)
+>>   {
+>>   	struct dentry *d;
+>> -	char name[8];
+>>   	int i;
+>>   
+>> -	snprintf(name, sizeof(name), "pd%d", cpu);
+>> -
+>>   	/* Create the directory of the performance domain */
+>> -	d = debugfs_create_dir(name, rootdir);
+>> +	d = debugfs_create_dir(dev_name(dev), rootdir);
+> 
+> So what will be the name for the perf domain of CPUs now? cpuX?
+
+yeap, it will be 'cpu0', 'cpu4', etc...
+
+> 
+> <snip>
+>> @@ -142,8 +149,8 @@ em_create_pd(struct device *dev, int nr_states, struct em_data_callback *cb,
+>>   		 */
+>>   		opp_eff = freq / power;
+>>   		if (opp_eff >= prev_opp_eff)
+>> -			pr_warn("pd%d: hertz/watts ratio non-monotonically decreasing: em_perf_state %d >= em_perf_state%d\n",
+>> -					cpu, i, i - 1);
+>> +			dev_dbg(dev, "EM: hertz/watts ratio non-monotonically decreasing: em_perf_state %d >= em_perf_state%d\n",
+>> +					i, i - 1);
+> 
+> It feels like changing from warn to debug doesn't really belong to this
+> patch no?
+
+I thought that these prints are not worth to introduce another patch.
+This warning is a bit tricky, because we (SW eng) basically are not able
+to tweak OPPs, we can only remove them to calm down this warning.
+
+There are platforms, with dozen of OPPs, seeing this. Warnings triggers 
+the automated tests scripts, which are sensitive to dmesg log level and
+cause developers to spent time and investigate the issue.
+
+Then, what if these OPPs are needed because the thermal was tested OK
+with some OPPs which unfortunately are triggering also this warning.
+They cannot remove these OPPS, but the warning would stay. We might see
+this also for GPUs.
+
+I decided to change it into dbg, due to the reason above.
+
+> 
+> <snip>
+>> @@ -216,47 +274,50 @@ int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
+>>   	 */
+>>   	mutex_lock(&em_pd_mutex);
+>>   
+>> -	for_each_cpu(cpu, span) {
+>> -		/* Make sure we don't register again an existing domain. */
+>> -		if (READ_ONCE(per_cpu(em_data, cpu))) {
+>> -			ret = -EEXIST;
+>> -			goto unlock;
+>> -		}
+>> +	if (dev->em_pd) {
+>> +		ret = -EEXIST;
+>> +		goto unlock;
+>> +	}
+>>   
+>> -		/*
+>> -		 * All CPUs of a domain must have the same micro-architecture
+>> -		 * since they all share the same table.
+>> -		 */
+>> -		cap = arch_scale_cpu_capacity(cpu);
+>> -		if (prev_cap && prev_cap != cap) {
+>> -			pr_err("CPUs of %*pbl must have the same capacity\n",
+>> -							cpumask_pr_args(span));
+>> +	if (_is_cpu_device(dev)) {
+> 
+> Something like
+> 
+> 	if (!_is_cpu_device(dev))
+> 		goto device;
+> 
+> would limit the diff a bit, but that may just be personal taste.
+
+Possible
+
+> 
+> But appart from these nits, the patch LGTM.
+
+Thank you for the review.
+
+I will wait for Daniel's (because he suggested the em_pd inside
+device struct) comments and if there is no other issues I will just
+resend the patch with adjusted comment fields in response.
+
+Regards,
+Lukasz
+
+> 
+> Thanks,
+> Quentin
+> 
