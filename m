@@ -2,177 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4EBB1CF7BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C102D1CF7D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 16:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730183AbgELOsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 10:48:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725929AbgELOsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 10:48:38 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727973AbgELOtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 10:49:18 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:30192 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727100AbgELOtR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 10:49:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589294956;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jx+puuCmllp6pyXQNaubWo+qtrpR0nODcwxMTtKrcSI=;
+        b=TEP/hivcoxT+LrYt8ru6wCChWSNSqJu8gNtaf3R1foIQH/lDp156xulyk3FYI/Qj3Gz8mK
+        gkDyAKQr7G6WCBrpmFC1yzK6tIfEdZLHFX+aF1wPLW9jiVAR2KZqsMM+Lo7Y0byx4Ds8O7
+        OZjsTEHe2OQtzqe2/T+IXoa5FWoWN8s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-4-Mfu0zy3TOOmWSoFOm3Tffw-1; Tue, 12 May 2020 10:49:12 -0400
+X-MC-Unique: Mfu0zy3TOOmWSoFOm3Tffw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B1F6206A3;
-        Tue, 12 May 2020 14:48:37 +0000 (UTC)
-Date:   Tue, 12 May 2020 10:48:35 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] tracing: Fixes for v5.7 from previous fixes
-Message-ID: <20200512104835.7a39586b@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4FEAC100A614;
+        Tue, 12 May 2020 14:49:11 +0000 (UTC)
+Received: from optiplex-lnx (unknown [10.3.128.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 99BB462A28;
+        Tue, 12 May 2020 14:49:09 +0000 (UTC)
+Date:   Tue, 12 May 2020 10:49:06 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Tso Ted <tytso@mit.edu>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, keescook@chromium.org,
+        yzaikin@google.com
+Subject: Re: [PATCH] kernel: sysctl: ignore invalid taint bits introduced via
+ kernel.tainted and taint the kernel with TAINT_USER on writes
+Message-ID: <20200512144906.GG367616@optiplex-lnx>
+References: <20200511215904.719257-1-aquini@redhat.com>
+ <20200511231045.GV11244@42.do-not-panic.com>
+ <20200511235914.GF367616@optiplex-lnx>
+ <20200512001702.GW11244@42.do-not-panic.com>
+ <20200512010313.GA725253@optiplex-lnx>
+ <20200512050405.GY11244@42.do-not-panic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200512050405.GY11244@42.do-not-panic.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 12, 2020 at 05:04:05AM +0000, Luis Chamberlain wrote:
+> On Mon, May 11, 2020 at 09:03:13PM -0400, Rafael Aquini wrote:
+> > On Tue, May 12, 2020 at 12:17:03AM +0000, Luis Chamberlain wrote:
+> > > On Mon, May 11, 2020 at 07:59:14PM -0400, Rafael Aquini wrote:
+> > > > On Mon, May 11, 2020 at 11:10:45PM +0000, Luis Chamberlain wrote:
+> > > > > On Mon, May 11, 2020 at 05:59:04PM -0400, Rafael Aquini wrote:
+> > > > > > diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> > > > > > index 8a176d8727a3..f0a4fb38ac62 100644
+> > > > > > --- a/kernel/sysctl.c
+> > > > > > +++ b/kernel/sysctl.c
+> > > > > > @@ -2623,17 +2623,32 @@ static int proc_taint(struct ctl_table *table, int write,
+> > > > > >  		return err;
+> > > > > >  
+> > > > > >  	if (write) {
+> > > > > > +		int i;
+> > > > > > +
+> > > > > > +		/*
+> > > > > > +		 * Ignore user input that would make us committing
+> > > > > > +		 * arbitrary invalid TAINT flags in the loop below.
+> > > > > > +		 */
+> > > > > > +		tmptaint &= (1UL << TAINT_FLAGS_COUNT) - 1;
+> > > > > 
+> > > > > This looks good but we don't pr_warn() of information lost on intention.
+> > > > >
+> > > > 
+> > > > Are you thinking in sth like:
+> > > > 
+> > > > +               if (tmptaint > TAINT_FLAGS_MAX) {
+> > > > +                       tmptaint &= TAINT_FLAGS_MAX;
+> > > > +                       pr_warn("proc_taint: out-of-range invalid input ignored"
+> > > > +                               " tainted_mask adjusted to 0x%x\n", tmptaint);
+> > > > +               }
+> > > > ?
+> > > 
+> > > Sure that would clarify this.
+> > > 
+> > > > > > +
+> > > > > >  		/*
+> > > > > >  		 * Poor man's atomic or. Not worth adding a primitive
+> > > > > >  		 * to everyone's atomic.h for this
+> > > > > >  		 */
+> > > > > > -		int i;
+> > > > > >  		for (i = 0; i < BITS_PER_LONG && tmptaint >> i; i++) {
+> > > > > >  			if ((tmptaint >> i) & 1)
+> > > > > >  				add_taint(i, LOCKDEP_STILL_OK);
+> > > > > >  		}
+> > > > > > +
+> > > > > > +		/*
+> > > > > > +		 * Users with SYS_ADMIN capability can include any arbitrary
+> > > > > > +		 * taint flag by writing to this interface. If that's the case,
+> > > > > > +		 * we also need to mark the kernel "tainted by user".
+> > > > > > +		 */
+> > > > > > +		add_taint(TAINT_USER, LOCKDEP_STILL_OK);
+> > > > > 
+> > > > > I'm in favor of this however I'd like to hear from Ted on if it meets
+> > > > > the original intention. I would think he had a good reason not to add
+> > > > > it here.
+> > > > >
+> > > > 
+> > > > Fair enough. The impression I got by reading Ted's original commit
+> > > > message is that the intent was to have TAINT_USER as the flag set 
+> > > > via this interface, even though the code was allowing for any 
+> > > > arbitrary value.
+> > > 
+> > > That wasn't my reading, it was that the user did something very odd
+> > > with user input which we don't like as kernel developers, and it gives
+> > > us a way to prove: hey you did something stupid, sorry but I cannot
+> > > support your kernel panic.
+> > > 
+> > > > I think it's OK to let the user fiddle with
+> > > > the flags, as it's been allowed since the introduction of
+> > > > this interface, but we need to reflect that fact in the
+> > > > tainting itself. Since TAINT_USER is not used anywhere,
+> > > 
+> > > I see users of TAINT_USER sprinkled around
+> > >
+> > 
+> > I meant in the original commit that introduced it
+> > (commit 34f5a39899f3f3e815da64f48ddb72942d86c366). Sorry I
+> > miscomunicated that.
+> > 
+> > In its current usage, it seems that the other places adding TAINT_USER
+> > match with what is being proposed here: To signal when we have user 
+> > fiddling with kernel / module parameters.
+> 
+> drivers/base/regmap/regmap-debugfs.c requires *manual* code changes
+> to compile / enable some knob. i915 complains about unsafe module
+> params such as module_param_cb_unsafe() core_param_unsafe(). Then
+> drivers/soundwire/cadence_master.c is for when a debugfs dangerous
+> param was used.
+> 
+> This still doesn't rule out the use of proc_taint() for testing taint,
+> and that adding it may break some tests. So even though this would
+> only affect some tests scripts, I can't say that adding this taint won't
+> cause some headaches to someone. I wouldn't encourage its use on
+> proc_taint() from what I can see so far.
+>
 
-Linus,
+OK, I´ll repost without the hunk forcing the taint. If we eventually
+come to the conclusion that tainting in proc_taint() is the right thing
+to do, we can do that part of the change later.
 
-Tracing fixes to previous fixes:
+Do you think we should use printk_ratelimited() in the ignore message,
+instead? 
 
-Unfortunately, the last set of fixes introduced some minor bugs:
+Cheers,
+-- Rafael
 
- - The bootconfig apply_xbc() leak fix caused the application to return
-   a positive number on success, when it should have returned zero.
-
- - The preempt_irq_delay_thread fix to make the creation code
-   wait for the kthread to finish to prevent it from executing after
-   module unload, can now cause the kthread to exit before it even
-   executes (preventing it to run its tests).
-
- - The fix to the bootconfig that fixed the initrd to remove the
-   bootconfig from causing the kernel to panic, now prints a warning
-   that the bootconfig is not found, even when bootconfig is not
-   on the command line.
-
-
-Please pull the latest trace-v5.7-rc4 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.7-rc4
-
-Tag SHA1: f20be960e5a570d22edb8b4b092fb79bb095710c
-Head SHA1: 611d0a95d46b0977a530b4d538948c69d447b001
-
-
-Masami Hiramatsu (1):
-      bootconfig: Fix to prevent warning message if no bootconfig option
-
-Steven Rostedt (VMware) (2):
-      tools/bootconfig: Fix apply_xbc() to return zero on success
-      tracing: Wait for preempt irq delay thread to execute
-
-----
- init/main.c                          | 10 ++++++----
- kernel/trace/preemptirq_delay_test.c | 12 ++++++++++--
- tools/bootconfig/main.c              |  1 +
- 3 files changed, 17 insertions(+), 6 deletions(-)
----------------------------
-diff --git a/init/main.c b/init/main.c
-index 1a5da2c2660c..5803ecb411ab 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -400,9 +400,8 @@ static void __init setup_boot_config(const char *cmdline)
- 	char *data, *copy;
- 	int ret;
- 
-+	/* Cut out the bootconfig data even if we have no bootconfig option */
- 	data = get_boot_config_from_initrd(&size, &csum);
--	if (!data)
--		goto not_found;
- 
- 	strlcpy(tmp_cmdline, boot_command_line, COMMAND_LINE_SIZE);
- 	parse_args("bootconfig", tmp_cmdline, NULL, 0, 0, 0, NULL,
-@@ -411,6 +410,11 @@ static void __init setup_boot_config(const char *cmdline)
- 	if (!bootconfig_found)
- 		return;
- 
-+	if (!data) {
-+		pr_err("'bootconfig' found on command line, but no bootconfig found\n");
-+		return;
-+	}
-+
- 	if (size >= XBC_DATA_MAX) {
- 		pr_err("bootconfig size %d greater than max size %d\n",
- 			size, XBC_DATA_MAX);
-@@ -446,8 +450,6 @@ static void __init setup_boot_config(const char *cmdline)
- 		extra_init_args = xbc_make_cmdline("init");
- 	}
- 	return;
--not_found:
--	pr_err("'bootconfig' found on command line, but no bootconfig found\n");
- }
- 
- #else
-diff --git a/kernel/trace/preemptirq_delay_test.c b/kernel/trace/preemptirq_delay_test.c
-index c4c86de63cf9..312d1a0ca3b6 100644
---- a/kernel/trace/preemptirq_delay_test.c
-+++ b/kernel/trace/preemptirq_delay_test.c
-@@ -16,6 +16,7 @@
- #include <linux/printk.h>
- #include <linux/string.h>
- #include <linux/sysfs.h>
-+#include <linux/completion.h>
- 
- static ulong delay = 100;
- static char test_mode[12] = "irq";
-@@ -28,6 +29,8 @@ MODULE_PARM_DESC(delay, "Period in microseconds (100 us default)");
- MODULE_PARM_DESC(test_mode, "Mode of the test such as preempt, irq, or alternate (default irq)");
- MODULE_PARM_DESC(burst_size, "The size of a burst (default 1)");
- 
-+static struct completion done;
-+
- #define MIN(x, y) ((x) < (y) ? (x) : (y))
- 
- static void busy_wait(ulong time)
-@@ -114,6 +117,8 @@ static int preemptirq_delay_run(void *data)
- 	for (i = 0; i < s; i++)
- 		(testfuncs[i])(i);
- 
-+	complete(&done);
-+
- 	set_current_state(TASK_INTERRUPTIBLE);
- 	while (!kthread_should_stop()) {
- 		schedule();
-@@ -128,15 +133,18 @@ static int preemptirq_delay_run(void *data)
- static int preemptirq_run_test(void)
- {
- 	struct task_struct *task;
--
- 	char task_name[50];
- 
-+	init_completion(&done);
-+
- 	snprintf(task_name, sizeof(task_name), "%s_test", test_mode);
- 	task =  kthread_run(preemptirq_delay_run, NULL, task_name);
- 	if (IS_ERR(task))
- 		return PTR_ERR(task);
--	if (task)
-+	if (task) {
-+		wait_for_completion(&done);
- 		kthread_stop(task);
-+	}
- 	return 0;
- }
- 
-diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
-index 001076c51712..0efaf45f7367 100644
---- a/tools/bootconfig/main.c
-+++ b/tools/bootconfig/main.c
-@@ -337,6 +337,7 @@ int apply_xbc(const char *path, const char *xbc_path)
- 		pr_err("Failed to apply a boot config magic: %d\n", ret);
- 		goto out;
- 	}
-+	ret = 0;
- out:
- 	close(fd);
- 	free(data);
