@@ -2,75 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DC91D00DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 23:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C00D1D0034
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 23:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731294AbgELV0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 17:26:55 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:55108 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728313AbgELV0y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 17:26:54 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 2AEE9803080B;
-        Tue, 12 May 2020 21:26:52 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 91xGUihf2XO6; Wed, 13 May 2020 00:26:51 +0300 (MSK)
-Date:   Wed, 13 May 2020 00:26:50 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Allison Randal <allison@lohutok.net>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 04/17] spi: dw: Cleanup generic DW DMA code namings
-Message-ID: <20200512212650.bmq5i3mrl5mydcvz@mobilestation>
-References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
- <20200508132943.9826-5-Sergey.Semin@baikalelectronics.ru>
- <20200508194324.GA185537@smile.fi.intel.com>
+        id S1731282AbgELVK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 17:10:57 -0400
+Received: from mga06.intel.com ([134.134.136.31]:20082 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726324AbgELVK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 17:10:56 -0400
+IronPort-SDR: NHbNQOOfFI1+ZAAMXkKHcu+SKYa6zi+v8/xL97dpvg8QnA7uPcGhWROU5BNNiFIG35PjtGGJ82
+ F6Ft2Wv2pbUw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 14:10:55 -0700
+IronPort-SDR: ryy41q/cCF/rB0wFlMvt1vQzwChTsIBW/914zRGtLtlHuciZwNOl2FivjyGGl28QDa8o5hWmuW
+ 93zjV74AbCEw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,385,1583222400"; 
+   d="scan'208";a="437241109"
+Received: from marshy.an.intel.com (HELO [10.122.105.159]) ([10.122.105.159])
+  by orsmga005.jf.intel.com with ESMTP; 12 May 2020 14:10:54 -0700
+Subject: Re: [PATCHv1] fpga: stratix10-soc: remove the pre-set reconfiguration
+ condition
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dinguyen@kernel.org, Richard Gong <richard.gong@intel.com>
+References: <1589290051-30246-1-git-send-email-richard.gong@linux.intel.com>
+ <20200512153514.GA125665@epycbox.lan>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <5c23279d-17be-f33c-469c-461219027465@linux.intel.com>
+Date:   Tue, 12 May 2020 16:27:02 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200508194324.GA185537@smile.fi.intel.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20200512153514.GA125665@epycbox.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 10:43:24PM +0300, Andy Shevchenko wrote:
-> On Fri, May 08, 2020 at 04:29:29PM +0300, Serge Semin wrote:
-> > Since from now the former Intel MID platform layer will be used
-> > as a generic DW SPI DMA module, lets alter the internal methods
-> > naming to be DMA-related instead of having the "mid_" prefix. In
-> > addition the DW PCI-DMA specific methods and structures should
-> > be named with pci-suffexes, since we'll implement the DW MMIO DMA
-> > specific functions and objects soon.
-> 
-> I think we rather leave Intel Medfield things alone.  And I think I did this already in spi/for-next in less invasive way.
+Hi Moritz,
 
-The naming is horrible in that module. Since it's going to be a generic DMA
-driver the prefixes should be correspondingly fixed. Currently they are a bit
-random.
-
--Sergey
-
+On 5/12/20 10:35 AM, Moritz Fischer wrote:
+> Hi Richard,
 > 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+> On Tue, May 12, 2020 at 08:27:31AM -0500, richard.gong@linux.intel.com wrote:
+>> From: Richard Gong <richard.gong@intel.com>
+>>
+>> The reconfiguration mode is pre-set by driver as the full reconfiguration.
+>> As a result, user have to change code and recompile the drivers if he or
+>> she wants to perform a partial reconfiguration. Removing the pre-set
+>> reconfiguration condition so that user can select full or partial
+>> reconfiguration via overlay device tree without recompiling the drivers.
+>>
+>> Also add an error message if the configuration request is failure.
+>>
+>> Signed-off-by: Richard Gong <richard.gong@intel.com>
+>> ---
+>>   drivers/fpga/stratix10-soc.c | 5 +++--
+>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
+>> index 44b7c56..2da8a40 100644
+>> --- a/drivers/fpga/stratix10-soc.c
+>> +++ b/drivers/fpga/stratix10-soc.c
+>> @@ -182,12 +182,12 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
+>>   	uint i;
+>>   	int ret;
+>>   
+>> -	ctype.flags = 0;
+>>   	if (info->flags & FPGA_MGR_PARTIAL_RECONFIG) {
+>>   		dev_dbg(dev, "Requesting partial reconfiguration.\n");
+>> -		ctype.flags |= BIT(COMMAND_RECONFIG_FLAG_PARTIAL);
+>> +		ctype.flags = 1;
+> Have you considered:
 > 
+> ctype.flags = BIT(COMMAND_RECONFIG_FLAG_PARTIAL);
+> 
+> instead (assuming 1, lines up with BIT(COMMAND_RECONFIG_FLAG_PARTIAL)?
+> 
+> If not: Can you define a constant?
+
+How about change below?
+
++#define RECONFIG_FLAG_FULL             0
++#define RECONFIG_FLAG_PARTIAL          1
++
+  /*
+   * struct s10_svc_buf
+   * buf:  virtual address of buf provided by service layer
+@@ -184,10 +187,10 @@ static int s10_ops_write_init(struct fpga_manager 
+*mgr,
+
+         if (info->flags & FPGA_MGR_PARTIAL_RECONFIG) {
+                 dev_dbg(dev, "Requesting partial reconfiguration.\n");
+-               ctype.flags = 1;
++               ctype.flags = RECONFIG_FLAG_PARTIAL;
+         } else {
+                 dev_dbg(dev, "Requesting full reconfiguration.\n");
+-               ctype.flags = 0;
++               ctype.flags = RECONFIG_FLAG_FULL;
+         }
+
+The protocol between kernel driver and the firmware:
+The reconfiguration flag for full or partial configuration. 0 is for 
+full (default mode) and 1 for partial reconfiguration.
+
+I will submit a new version.
+
+Regards,
+Richard
+
+>>   	} else {
+>>   		dev_dbg(dev, "Requesting full reconfiguration.\n");
+>> +		ctype.flags = 0;
+>>   	}
+>>   
+>>   	reinit_completion(&priv->status_return_completion);
+>> @@ -210,6 +210,7 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
+>>   
+>>   	ret = 0;
+>>   	if (!test_and_clear_bit(SVC_STATUS_OK, &priv->status)) {
+>> +		dev_err(dev, "RECONFIG_REQUEST failed\n");
+>>   		ret = -ETIMEDOUT;
+>>   		goto init_done;
+>>   	}
+>> -- 
+>> 2.7.4
+>>
+> 
+> Cheers,
+> Moritz
 > 
