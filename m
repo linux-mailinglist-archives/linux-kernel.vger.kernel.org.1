@@ -2,132 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C53F1CFDD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 20:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D33421CFDF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 21:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728324AbgELSxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 14:53:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726324AbgELSxp (ORCPT
+        id S1730827AbgELTEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 15:04:01 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:36144 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgELTEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 14:53:45 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82EDC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 11:53:44 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x77so6804318pfc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 11:53:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=10CAtnJPyt3YsHXJ+2Wwl/Z5XTY3/zgL7Nq5MQ1jRF0=;
-        b=heaGQ23gQS+0fqlyfYmHBx+MAlnUe0fojiixaSjG46yoB8ra2O5SPA0QiOOPoMwZfq
-         JipEIaffmFm0n+zhSY/POjSl6DvPBF+KOFv4UNyKeWK4OJyKNacYo1bK69MEr/vqJHs5
-         aSZ2U41dwR3fnQORRVGv0bFwdCEUvVXRuO9rk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=10CAtnJPyt3YsHXJ+2Wwl/Z5XTY3/zgL7Nq5MQ1jRF0=;
-        b=Nynm7/rzyiRtOpCI4WAsyHBSNttq4dWS58ciBV1ruBItzBKmlBEUTCyAhhX0Vi2Pyp
-         NCF2beOIk2JFBjEIBzRImxqAGoVca0ucR1SIllZa4sICLPv7ndfLpYhGzx3P7oTywDBt
-         cDBpKpsZlwJE5aEYgGis3vPspDZNfLwDhOofNmaMhmElKNehVK4dcre4krURXD3R0VVj
-         uRY0rUsVz0DgpVNsmrUuQqihGak2L8VB7G+pFiu94jGTuCE2Qx9zH6C1TpVv6Q4/VcBJ
-         p9QIUQ3Ps7kFz1l5jhjTuERSRBK6I1vpidDXHxDUfr2+ASYN3sqHT6NYx/evv1zdfyYZ
-         wZ3A==
-X-Gm-Message-State: AOAM530YoplDyBEMMcgEXlYHO2HHOOLLuLDDFHzlxko3uIDkn6BkKQLa
-        4SqRSPyyw7yItYpUyaLpIco03A==
-X-Google-Smtp-Source: ABdhPJzXPMZiCC2kuNmM2zIsvtc0DroVVWaVG/lLtZUDXw0W8UTadX12hTFMgAIvscCnjlE9FYDLXA==
-X-Received: by 2002:a63:3c8:: with SMTP id 191mr1850816pgd.320.1589309624226;
-        Tue, 12 May 2020 11:53:44 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a196sm12690995pfd.184.2020.05.12.11.53.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 11:53:43 -0700 (PDT)
-Date:   Tue, 12 May 2020 11:53:42 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     Petr Mladek <pmladek@suse.com>, Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        James Morris <jmorris@namei.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 0/6] allow ramoops to collect all kmesg_dump events
-Message-ID: <202005121146.3B3C1FE0D@keescook>
-References: <20200506211523.15077-1-keescook@chromium.org>
- <20200512131655.GE17734@linux-b0ei>
- <CA+CK2bBMUxxuTBicQ7ihKpN3jK94mMjcNCXhnAXUaODce09Wmw@mail.gmail.com>
- <20200512155207.GF17734@linux-b0ei>
- <CA+CK2bC0argMNHzynedpwN6ekOg8yypN03JvmAKGWQ5Aegxh+Q@mail.gmail.com>
+        Tue, 12 May 2020 15:04:00 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04CJ3spL029060;
+        Tue, 12 May 2020 14:03:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589310234;
+        bh=qcbTpSQDtrJd8P3InK+kcQIpK4vn56pKJLFbaxEiX4U=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Qz3xobuHHP6zDA9LTYeq/ZP8Y6f3ZXsAm20QyrtRrbisC1Ph0xI/vPamOQXcmwnF7
+         TRsc9kqoo/bd1Hre7i8MR0AqkBeKIttPipNggrADjcXeMgM9laLw3rTo2A1fXOqRfD
+         RhDwkyDO7XCTsYIQwsKFAqwvENsXIm0P+WgzrfeQ=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04CJ3snl125256
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 May 2020 14:03:54 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 12
+ May 2020 14:03:54 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 12 May 2020 14:03:54 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04CJ3sNs008199;
+        Tue, 12 May 2020 14:03:54 -0500
+Subject: Re: [PATCH v25 00/16] Multicolor Framework v25
+To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200504211344.13221-1-dmurphy@ti.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <eccbd882-b4f2-abc8-dddb-6c242d8ef0c0@ti.com>
+Date:   Tue, 12 May 2020 13:54:30 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bC0argMNHzynedpwN6ekOg8yypN03JvmAKGWQ5Aegxh+Q@mail.gmail.com>
+In-Reply-To: <20200504211344.13221-1-dmurphy@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 12:49:10PM -0400, Pavel Tatashin wrote:
-> On Tue, May 12, 2020 at 11:52 AM Petr Mladek <pmladek@suse.com> wrote:
-> > I wonder if anyone is actually using the ramoops.dump_oops parameter
-> > in reality. I would personally make it deprecated and change the
-> > default behavior to work according to printk.always_kmsg_dump parameter.
-> 
-> This sounds alright to me with one slight problem. I am doing this
-> work for an embedded arm64 SoC, so controlling everything via device
-> tree is preferable compared to having some settings via device tree
-> and others via kernel parameters, especially because the kernel
-> parameters are hardcoded by firmware that we try not to update too
-> often for uptime reasons.
+Pavel
 
-I'm entirely convinced that this area of pstore needs to be cleaned up
-and I want to have the pstore backends be able to declare their kmsg
-dump reason filters in a configurable fashion. So at least on the pstore
-end, I intend to have some way to do this.
+On 5/4/20 4:13 PM, Dan Murphy wrote:
+> Hello
+>
+> This is the multi color LED framework.   This framework presents clustered
+> colored LEDs into an array and allows the user space to adjust the brightness
+> of the cluster using a single file write.  The individual colored LEDs
+> intensities are controlled via a single file that is an array of LEDs
 
-> > IMHO, ramoops.dump_oops just increases complexity and should not have
-> > been introduced at all. I would try hard to avoid introducing even bigger
-> > complecity and mess.
-> 
-> I agree, amoops.dump_oops should be depricated with or without
-> max_reason change.
+Please let me know if there are any issues with pulling this series in now
 
-Yup. dump_oops will be deprecated in favor of whatever we settle on here.
+Dan
 
-> > I know that there is the "do not break existing userspace" rule. The
-> > question is if there is any user and if it is worth it.
-> >
-> > > I agree, the reasons in kmsg_dump_reason do not order well  (I
-> > > actually want to add another reason for kexec type reboots, and where
-> > > do I put it?), so how about if we change the ordering list to
-> > > bitfield/flags, and instead of max_reason provide: "reasons" bitset?
-> >
-> > It looks too complicated. I would really try hard to avoid the
-> > parameter at all.
-> 
-> OK. Should we remove max_reason from struct kmsg_dumper and also
-> remove the misleading comment about kmsg_dump_reason ordering?
-
-I'm also fine with this. I can have pstore infrastructure doing the
-filtering if kmsg dump doesn't want to. Given the existence of
-printk.always_kmsg_dump, though, it seemed like it was better to have
-kmsg dump do this filtering instead.
-
-At this point my preference is to switch to a bit field -- I don't see a
-reason for ordering. The only cases that remain "special" appear to be
-PANIC and EMERG (which, again, aren't ordered adjacent).
-
--Kees
-
--- 
-Kees Cook
