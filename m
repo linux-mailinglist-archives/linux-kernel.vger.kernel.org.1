@@ -2,112 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DD71D22C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743641D22DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732461AbgEMXJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 19:09:33 -0400
-Received: from mga18.intel.com ([134.134.136.126]:49358 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732151AbgEMXJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 19:09:33 -0400
-IronPort-SDR: ChnACrQ/nlAlRRpEz6OigGc4nO25Ll1gBxiDxOwFPd5igRnaWW62co8hNJ7FMnhyUWgnV1SY8c
- bKxppW4l9Esw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 16:09:32 -0700
-IronPort-SDR: FpN+OY1K71+x9lmhQ/R4t4qwERrf/qTusZ1FBnThNG4M39goM1tFnsuO/WDX+bOXeczqIJ0DEx
- wqKjm7T9eLzQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,389,1583222400"; 
-   d="scan'208";a="372053949"
-Received: from rthurerx-mobl.ger.corp.intel.com ([10.249.36.107])
-  by fmsmga001.fm.intel.com with ESMTP; 13 May 2020 16:09:25 -0700
-Message-ID: <ba92f60e41cee1be11b30e8383268b1e1ce896b1.camel@linux.intel.com>
-Subject: Re: [PATCH v29 00/20] Intel SGX foundations
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Jordan Hand <jorhand@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-sgx@vger.kernel.org
-Cc:     akpm@linux-foundation.org, dave.hansen@intel.com,
-        sean.j.christopherson@intel.com, nhorman@redhat.com,
-        npmccallum@redhat.com, haitao.huang@intel.com,
-        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
-        kai.svahn@intel.com, bp@alien8.de, josh@joshtriplett.org,
-        luto@kernel.org, kai.huang@intel.com, rientjes@google.com,
-        cedric.xing@intel.com, puiterwijk@redhat.com
-Date:   Thu, 14 May 2020 02:09:19 +0300
-In-Reply-To: <e50f4c00-12e6-19e6-ead3-f180074bceea@linux.microsoft.com>
-References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
-         <e50f4c00-12e6-19e6-ead3-f180074bceea@linux.microsoft.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.1-2 
+        id S1732557AbgEMXSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 19:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732161AbgEMXSf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 19:18:35 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48DB3C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:18:35 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id y25so424578pfn.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NzQVGwBy98yyKuXlmBNvWD4o+eLGqCxtgVxPgKw63Do=;
+        b=d91N+o6UMzxTsz1St1Hu66m8IAaS2jE1/WCro4T3FXi2sc/4AHW4ODcGwfEnvDzHjj
+         /PKKX5txh+2AdFLEuJtnkNNG0IRWzECKUG3SGfFwrIcEdqW19nhO2jFicMOUMvz6T+C1
+         tNR/mldiveHPbJerAbyvqheERVBHSeb8Q1lg0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NzQVGwBy98yyKuXlmBNvWD4o+eLGqCxtgVxPgKw63Do=;
+        b=uKAL6G61MLn3QigHDWqXdG4FealbNGlsN/YKgyBiRVy+BbwX+xLaihvJztlPq1GanU
+         xwJ8Pr41HA4E3KkfolxBYtct2r5FLYfFd+aJmdW007f2DJ8qf44Th/sYZOvtCXv1irQY
+         CpZtmw8bVYcE0Q8irc3v8GaI7nnjozfdDxVt9jWBvXaTy2Rp8uicFCGRrjIdn0hU+LSf
+         K3MCsKif1Hv2elUU4Ic0cINxnQMTS0CUPhKn2UVuCsXUldal+sj5B6BI5FpK8dh1+hK2
+         URPM/V7ArOgWAgpqhTaTW2WOIsssLGLfFvmenL4Jz7BSFnX3mTWCf8h6akqb5cWJ7ASO
+         wflA==
+X-Gm-Message-State: AOAM530ysIkeWqmAd/MgV3Ou5VJCLljCCturqaoZNDxx0L+ORLstA7mE
+        MdNqOc37PhlJvjtYGERPhKmAnnJI500=
+X-Google-Smtp-Source: ABdhPJweDQubJLBs+PMMLtJakY5abNknkhRWNuRw1HhjYTGgbGdJjpzsMWRJEnyCFTWFX0XQTbTGVg==
+X-Received: by 2002:aa7:83c8:: with SMTP id j8mr1556371pfn.272.1589411914316;
+        Wed, 13 May 2020 16:18:34 -0700 (PDT)
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com. [209.85.215.174])
+        by smtp.gmail.com with ESMTPSA id x10sm635840pgq.79.2020.05.13.16.18.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 May 2020 16:18:34 -0700 (PDT)
+Received: by mail-pg1-f174.google.com with SMTP id t11so431466pgg.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:18:34 -0700 (PDT)
+X-Received: by 2002:a67:bd07:: with SMTP id y7mr1357400vsq.109.1589411542393;
+ Wed, 13 May 2020 16:12:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200507200850.60646-1-dianders@chromium.org> <20200507130644.v4.5.I22067ad43e77ddfd4b64c2d49030628480f9e8d9@changeid>
+In-Reply-To: <20200507130644.v4.5.I22067ad43e77ddfd4b64c2d49030628480f9e8d9@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 13 May 2020 16:12:11 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Wq1bnaMnUa09GZzQq5rZeQHUM9WAmxED3foc_Rjdsg2A@mail.gmail.com>
+Message-ID: <CAD=FV=Wq1bnaMnUa09GZzQq5rZeQHUM9WAmxED3foc_Rjdsg2A@mail.gmail.com>
+Subject: Re: [PATCH v4 05/12] arm64: Add call_break_hook() to early_brk64()
+ for early kgdb
+To:     Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-serial@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Slaby <jslaby@suse.com>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>, bp@alien8.de,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Allison Randal <allison@lohutok.net>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Enrico Weigelt <info@metux.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        James Morse <james.morse@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        jinho lim <jordan.lim@samsung.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-05-06 at 09:39 -0700, Jordan Hand wrote:
-> On 4/21/20 2:52 PM, Jarkko Sakkinen wrote:
-> > Intel(R) SGX is a set of CPU instructions that can be used by applications
-> > to set aside private regions of code and data. The code outside the enclave
-> > is disallowed to access the memory inside the enclave by the CPU access
-> > control.
-> > 
-> > There is a new hardware unit in the processor called Memory Encryption
-> > Engine (MEE) starting from the Skylake microacrhitecture. BIOS can define
-> > one or many MEE regions that can hold enclave data by configuring them with
-> > PRMRR registers.
-> > 
-> > The MEE automatically encrypts the data leaving the processor package to
-> > the MEE regions. The data is encrypted using a random key whose life-time
-> > is exactly one power cycle.
-> > 
-> > The current implementation requires that the firmware sets
-> > IA32_SGXLEPUBKEYHASH* MSRs as writable so that ultimately the kernel can
-> > decide what enclaves it wants run. The implementation does not create
-> > any bottlenecks to support read-only MSRs later on.
-> > 
-> > You can tell if your CPU supports SGX by looking into /proc/cpuinfo:
-> > 
-> > 	cat /proc/cpuinfo  | grep sgx
-> > 
-> > v29:
-> > * The selftest has been moved to selftests/sgx. Because SGX is an execution
-> >    environment of its own, it really isn't a great fit with more "standard"
-> >    x86 tests.
-> > 
-> >    The RSA key is now generated on fly and the whole signing process has
-> >    been made as part of the enclave loader instead of signing the enclave
-> >    during the compilation time.
-> > 
-> >    Finally, the enclave loader loads now the test enclave directly from its
-> >    ELF file, which means that ELF file does not need to be coverted as raw
-> >    binary during the build process.
-> > * Version the mm_list instead of using on synchronize_mm() when adding new
-> >    entries. We hold the write lock for the mm_struct, and dup_mm() can thus
-> >    deadlock with the page reclaimer, which could hold the lock for the old
-> >    mm_struct.
-> > * Disallow mmap(PROT_NONE) from /dev/sgx. Any mapping (e.g. anonymous) can
-> >    be used to reserve the address range. Now /dev/sgx supports only opaque
-> >    mappings to the (initialized) enclave data.
-> > * Make the vDSO callable directly from C by preserving RBX and taking leaf
-> >    from RCX.
-> > 
-> 
-> Tested with the Open Enclave SDK on top of Intel PSW. Specifically built 
-> the Intel PSW with changes to support /dev/sgx mapping[1] new in v29.
-> 
-> Tested-by: Jordan Hand <jorhand@linux.microsoft.com>
-> 
-> [1] https://github.com/intel/linux-sgx/pull/530
+Hi,
 
-Thank you!
+On Thu, May 7, 2020 at 1:09 PM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> In order to make early kgdb work properly we need early_brk64() to be
+> able to call into it.  This is as easy as adding a call into
+> call_break_hook() just like we do later in the normal brk_handler().
+>
+> Once we do this we can let kgdb know that it can break into the
+> debugger a little earlier (specifically when parsing early_param's).
+>
+> NOTE: without this patch it turns out that arm64 can't do breakpoints
+> even at dbg_late_init(), so if we decide something about this patch is
+> wrong we might need to move dbg_late_init() a little later.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> ---
+>
+> Changes in v4:
+> - Add "if KGDB" to "select ARCH_HAS_EARLY_DEBUG" in Kconfig.
+>
+> Changes in v3:
+> - Change boolean weak function to KConfig.
+>
+> Changes in v2: None
+>
+>  arch/arm64/Kconfig                      | 1 +
+>  arch/arm64/include/asm/debug-monitors.h | 2 ++
+>  arch/arm64/kernel/debug-monitors.c      | 2 +-
+>  arch/arm64/kernel/traps.c               | 3 +++
+>  4 files changed, 7 insertions(+), 1 deletion(-)
 
-/Jarkko
+As discussed in the replies to the v3 version of this patch [1], I
+have posted a replacement patch for this one [2].  After the cut in
+the replacement patch I talk about different ways it could land.
+Hopefully that's not too confusing.  I can also re-spam everyone with
+a v5 of the whole series if that makes it clearer.
 
+[1] https://lore.kernel.org/r/20200428141218.v3.5.I22067ad43e77ddfd4b64c2d49030628480f9e8d9@changeid
+[2] https://lore.kernel.org/r/20200513160501.1.I0b5edf030cc6ebef6ab4829f8867cdaea42485d8@changeid
 
+-Doug
