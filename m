@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7044E1D1090
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B61351D1086
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732649AbgEMLEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 07:04:35 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:57397 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728784AbgEMLEd (ORCPT
+        id S1730570AbgEMLEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 07:04:12 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:57410 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729893AbgEMLEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 07:04:33 -0400
-Received: from fsav108.sakura.ne.jp (fsav108.sakura.ne.jp [27.133.134.235])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 04DB3rMs016231;
-        Wed, 13 May 2020 20:03:53 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav108.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp);
- Wed, 13 May 2020 20:03:53 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 04DB3qtu016227
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Wed, 13 May 2020 20:03:53 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-References: <20200427062117.GC486@jagdpanzerIV.localdomain>
- <4dae86af-1d9a-f5a8-cff6-aa91ec038a79@i-love.sakura.ne.jp>
- <20200428121828.GP28637@dhcp22.suse.cz>
- <b4d74234-8009-9ffd-011f-bd5d1a4b85f6@i-love.sakura.ne.jp>
- <20200428154532.GU28637@dhcp22.suse.cz>
- <b1d507b1-dae7-f526-c74a-d465ddecea6a@i-love.sakura.ne.jp>
- <20200429142106.GG28637@dhcp22.suse.cz>
- <a59271f1-b3fc-26d1-f0a2-5ec351d0095e@i-love.sakura.ne.jp>
- <20200513062652.GM413@jagdpanzerIV.localdomain>
- <a75d6560-ad99-5b02-3648-247c27c3a398@i-love.sakura.ne.jp>
- <20200513100413.GH17734@linux-b0ei>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <20564555-7b84-f716-5dcd-978f76ad459a@i-love.sakura.ne.jp>
-Date:   Wed, 13 May 2020 20:03:53 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 13 May 2020 07:04:12 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 64084803087C;
+        Wed, 13 May 2020 11:04:09 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id O1ivolSjJlIp; Wed, 13 May 2020 14:04:08 +0300 (MSK)
+Date:   Wed, 13 May 2020 14:04:07 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Allison Randal <allison@lohutok.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Gareth Williams <gareth.williams.jx@renesas.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/17] spi: dw: Add generic DW DMA controller support
+Message-ID: <20200513110407.uaosfxebsgnllsf4@mobilestation>
+References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
+ <20200508133336.GK4820@sirena.org.uk>
+ <20200512200733.bdbbhkjkwjd5yzqq@mobilestation>
+ <20200513102324.GB4803@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20200513100413.GH17734@linux-b0ei>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200513102324.GB4803@sirena.org.uk>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/05/13 19:04, Petr Mladek wrote:
->> What is wrong with adding NO_CONSOLES ?
+On Wed, May 13, 2020 at 11:23:24AM +0100, Mark Brown wrote:
+> On Tue, May 12, 2020 at 11:07:33PM +0300, Serge Semin wrote:
+> > On Fri, May 08, 2020 at 02:33:36PM +0100, Mark Brown wrote:
 > 
-> How does it differ from KERN_DEBUG? The debug messages:
+> > > Please don't make new feature development dependent on conversion to the
+> > > new schema format, there's quite a backlog of reviews of schema
+> > > conversions so it can slow things down.  It's good to do the conversions
+> > > but please do them after adding any new stuff to the binding rather than
+> > > before.
 > 
->   + can be disabled via sysfs
->   + might reach console when this loglevel is enabled
+> > So by saying this do you want me to revert an order of the first two patches
+> > in the series, right? So the series would first add the DMA properties support
+> > to the binding, then would convert the binding file to DT schema.
+> 
+> The conversion to YAML format should be the very last thing in the patch
+> series,
 
-KERN_NO_CONSOLES is different from KERN_DEBUG in that KERN_NO_CONSOLES
-itself does not affect userspace daemon's judgement (whether to filter
-KERN_$LOGLEVEL messages).
+Hm, haven't heard about this requirement. Could you point me out to a doc or
+some discussion concerning this for future reference? It's not a first DT
+conversion patch I've submitted and non of them were addressed with such
+request. I do understand that the order of DT concerning patches can be
+important and agree to fix it by updating the original legacy binding first,
+then perform a conversion. But placing the conversion in a tail of the series
+just seems unnecessary. The patch can be dropped from any place of the series
+if for some reason Rob would be late with review.
 
-> What is so special about  OOM dump task so that it would deserve such
-> complications?
+Personally I prefer placing all DT changes in the head of the series, so Rob
+wouldn't need to search through the whole patchset looking for the DT-related
+patches.
 
-OOM dump task is special in that it can generate thousands of KERN_INFO
-messages. If such messages are printed to consoles, it defers solving OOM
-situation.
+-Sergey
 
-But setting /proc/sys/vm/oom_dump_tasks to 0 causes such messages being
-not delivered to userspace daemon for later analysis. Therefore, we can not
-set /proc/sys/vm/oom_dump_tasks to 0 if we want to save such messages for
-later analysis.
+> and as Andy says there's another patch in flight also doing this
+> conversion which you should coordinate with.
 
-Changing console loglevel (e.g. setting "quiet" kernel command line option)
-in order to hide such messages also prevents all other KERN_INFO messages from
-being printed to consoles. Since some KERN_INFO messages are worth printing to
-consoles while other KERN_INFO messages are worth printing to consoles,
-controlling with
-
->   + loglevel assigned to each message
-
-is inevitable.
-
-I think that basically only oops (e.g. WARN()/BUG()/panic()) messages worth
-printing to consoles and the rest messages do not worth printing to consoles.
-Existing KERN_$LOGLEVEL is too rough-grained.
 
