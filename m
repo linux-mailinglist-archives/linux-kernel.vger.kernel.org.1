@@ -2,128 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41571D1BEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 19:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52991D1BF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 19:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389859AbgEMRIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 13:08:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33042 "EHLO
+        id S2389812AbgEMRLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 13:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728068AbgEMRIJ (ORCPT
+        with ESMTP id S1727120AbgEMRLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 13:08:09 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9B8C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 10:08:08 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id o14so415357ljp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 10:08:08 -0700 (PDT)
+        Wed, 13 May 2020 13:11:44 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C276C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 10:11:44 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id x7so21166524oic.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 10:11:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ct92GoQxmjkrJFsjfbiJncWVHhbFDJqrFKHkKPJTo14=;
-        b=Tl5Rbiyng5LgHx5Gg6sJfh0nYM5fQaO5R9FbQ+FxIU77QOtG1peH+rYIp9YdGC0Ki+
-         WMXudb69z9CbqDUAkmJ3uZ+faKYl1Afni3nUwNKCKi/+a1HCy7m0BUJxuCLN/QaJaXC+
-         PdNYd1Dh5DYxj84YQrMpUC8Zm0+T5H/JPUxd1oW787D9a/0TLAHR9oDiFXTD7MWyUNo4
-         qRy6awADaPbdSVWfF+K7VbVR8QXWfuQEN6/5D1EnO0K1dC14g/EkK/vbB2U5oLD7vdWu
-         L4SEzlMjFeNtqCBrEZGIyJkYetgwgmZzYWL5R+Ve1HRbh+gpXwa2AYqY2ccWB6P+Aj9w
-         zADQ==
+        bh=Zx5r0dg+9gENiu3i1Xh7rfCawplygnstBg3FPTyi3Sk=;
+        b=UXoZaFZdX2TT3nLrLhYDdmaNN8vjLgCHo8JHLOwrjkbc1GTCrMo6A7rbcUaPPONgln
+         x0dvuAzxvxY8D6FNJEfHjF+D3ciBT/0FhqsA0y4NVBeNHhVM2P86Zwg99VkSivLzUZ7/
+         vnUSMx6M473Qfr/eNFk0M6qVMqfwWfhIMK7kmIjKeI/MJyrcIPsJbU3NZM4ngZM6OnYF
+         vg5Iw7vcbIPwM1xcv7A7lgANqAwzStIdQ2iV0B2yIqJp2y0NqvdZDnbuWZ1izLGHpmyY
+         evWFxaW/g20nnV3j+vgPw9rsgu5J1kEBHAQ+3cGV2D5lqElCZ6fE+WII2flwgkzpL46R
+         UNbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ct92GoQxmjkrJFsjfbiJncWVHhbFDJqrFKHkKPJTo14=;
-        b=EmNF68fgH68hEJZ8eAY1gtdqjFE6bAa7Dnv5ks3OOSAo5f0DxdoJQhXgWYLDiOhWId
-         DQZOsCOkEThtkQsg8RtyymetmCS1wFXtCbXC+NQSWBxwQR0FQBr4ePOaFSvT33vkrZOy
-         jVrRHx3+O/v9orIfeDKNWeMco6/NwktSugiW1UT/nL73w1Beo68mKfsQyafzSC3fq+ba
-         RPGBsXPIFlOMIm+DTO6mESxtdq+OZUp7JCXmojTdM84LPf4yywp/+aBip4eTGtyOi4FF
-         hlR/rxOWDaM2y+inml3gggQlMlDt169PsyjI6t/Z00ECBiAazT50d/PGf4QCsRLPeqzE
-         WggQ==
-X-Gm-Message-State: AOAM531iGsbrn62cR+Xxd/hP/Zh0t4Rt6SyyiVHF/FBiOvDNZ493//mg
-        TxX73dkhKDk9DouqueLwzrveP7caQ25/7qmciY0=
-X-Google-Smtp-Source: ABdhPJztZOzynU5omXWIWITm6a2uO+5uiPsUQ2mpbi7pLnKEITDKvJ/cWebb6gPS7BsFK4UO0pNiyNMAI5b0QypN0sM=
-X-Received: by 2002:a2e:9b50:: with SMTP id o16mr75061ljj.164.1589389687029;
- Wed, 13 May 2020 10:08:07 -0700 (PDT)
+        bh=Zx5r0dg+9gENiu3i1Xh7rfCawplygnstBg3FPTyi3Sk=;
+        b=brQvxEtTkQYZ4LtJiTw6s3r9YiQMxdJiwouk6zgGMUyQPpHTg8k80t9MstPUYeOuxb
+         igSoe1TTjZY/DFoBBIdCW/nKU4rPZklrQelbC95/xl9wTMeut5QwItmCriWNl/abwacw
+         cdkLhufCWd60aS8iV0SelD2dQpiYKxsVrb2JgwU4UQuMVfj5JCPD9NyUN2Rhy7XQqyx4
+         z6vro/kULnSzJzEdzi2vuUFHv0OwSUGZ3OdP7u+JgcAcsB6sjQQmX4HIyOUWsBefeYRK
+         QYVGlEmCdPlABdPRA1IETF4Rkoq5TZ4kQw7jVStytWyq3XrAEbh3h+/qjMNErxv2406w
+         pZJA==
+X-Gm-Message-State: AGi0PubErcARcDLHkbA+AQj+aetFPVVmiezzRdFeK4/WshDl/hmopaah
+        00fO9KttwdPy4nURbLom41Xh1YuLoHlbUz95gqEAxw==
+X-Google-Smtp-Source: APiQypIsEUlbBa2C4gshx4JKVoP5BcPSZgJHh8a2H2MHWh44738uBJEq5ushyYE1n3ceM2YTugst3ULETLaGkws09Rg=
+X-Received: by 2002:aca:48d7:: with SMTP id v206mr12374568oia.97.1589389903668;
+ Wed, 13 May 2020 10:11:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200513150007.1315395-1-lkundrak@v3.sk> <20200513150007.1315395-3-lkundrak@v3.sk>
-In-Reply-To: <20200513150007.1315395-3-lkundrak@v3.sk>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 13 May 2020 14:09:21 -0300
-Message-ID: <CAOMZO5B582=tZ_YBCyVYFtGh=z5hZKFxP7XoUHEmH3jZsk2uYQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] drm/etnaviv: Don't ignore errors on getting clocks
-To:     Lubomir Rintel <lkundrak@v3.sk>
-Cc:     Lucas Stach <l.stach@pengutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Russell King <linux+etnaviv@armlinux.org.uk>
+References: <20190923130531.GA27774@asgard.redhat.com> <87y2pxvsbr.fsf@osv.gnss.ru>
+ <20200512223103.GC1016@asgard.redhat.com> <CALAqxLUGr=+UjYhQSN34fUMCqj1Ya85tbFKu685cN+XTWYfgXg@mail.gmail.com>
+ <8736845ha6.fsf@osv.gnss.ru>
+In-Reply-To: <8736845ha6.fsf@osv.gnss.ru>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Wed, 13 May 2020 10:11:32 -0700
+Message-ID: <CALAqxLWkQmiFOCY=YhQLCJHwGHCO9kfZzysCEDLzJFTvgapUwA@mail.gmail.com>
+Subject: Re: [PATCH v2] uapi, posix-timers: provide clockid-related macros and
+ functions to UAPI
+To:     Sergey Organov <sorganov@gmail.com>
+Cc:     Eugene Syromiatnikov <esyr@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 12:08 PM Lubomir Rintel <lkundrak@v3.sk> wrote:
+On Wed, May 13, 2020 at 2:13 AM Sergey Organov <sorganov@gmail.com> wrote:
 >
-> There might be good reasons why the getting a clock failed. To treat the
-> clocks as optional we're specifically only interested in ignoring -ENOENT,
-> and devm_clk_get_optional() does just that.
+> John Stultz <john.stultz@linaro.org> writes:
 >
-> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-> ---
->  drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+> > On Tue, May 12, 2020 at 3:31 PM Eugene Syromiatnikov <esyr@redhat.com> wrote:
+> >> On Tue, May 12, 2020 at 10:58:16PM +0300, Sergey Organov wrote:
+> >> > Eugene Syromiatnikov <esyr@redhat.com> writes:
+> >> >
+> >> > > As of now, there is no interface exposed for converting pid/fd into
+> >> > > clockid and vice versa; linuxptp, for example, has been carrying these
+> >> > > definitions in missing.h header for quite some time[1].
+> >> > >
+> >> > > [1] https://sourceforge.net/p/linuxptp/code/ci/af380e86/tree/missing.h
+> >> > >
+> >> > > Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
+> >> > > ---
+> >> > > Changes since v1[1]:
+> >> > >  * Actually tried to build with the patch and fixed the build error
+> >> > >    reported by kbuild test robot[2].
+> >> > >
+> >> > > [1] https://lkml.org/lkml/2019/9/20/698
+> >> > > [2] https://lkml.org/lkml/2019/9/22/13
+> >> > > ---
+> >> > >  include/linux/posix-timers.h | 47 +------------------------------------------
+> >> > >  include/uapi/linux/time.h    | 48 ++++++++++++++++++++++++++++++++++++++++++++
+> >> > >  2 files changed, 49 insertions(+), 46 deletions(-)
+> >> >
+> >> > Was this patch applied, rejected, lost?
+> >> >
+> >> > I can't find it in the current master.
+> >>
+> >> IIRC, it was ignored.
+> >
+> > Overlooked. :)  Not intentionally ignored.
+> >
+> > I don't have any major objection with adding helpers, though I feel
+> > like you're exporting a lot more to the uapi then applications likely
+> > need.
+> >
+> > Would it be better to add just the bits from the missing.h header you
+> > pointed to:
+> > #define CLOCKFD 3
+> > #define FD_TO_CLOCKID(fd) ((~(clockid_t) (fd) << 3) | CLOCKFD)
+> > #define CLOCKID_TO_FD(clk) ((unsigned int) ~((clk) >> 3))
+> >
+> >  to the uapi header?
 >
-> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-> index c6dacfe3d321..e7dbb924f576 100644
-> --- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-> @@ -1786,26 +1786,26 @@ static int etnaviv_gpu_platform_probe(struct platform_device *pdev)
->         }
+> Please, no:
 >
->         /* Get Clocks: */
-> -       gpu->clk_reg = devm_clk_get(&pdev->dev, "reg");
-> +       gpu->clk_reg = devm_clk_get_optional(&pdev->dev, "reg");
->         DBG("clk_reg: %p", gpu->clk_reg);
->         if (IS_ERR(gpu->clk_reg))
-> -               gpu->clk_reg = NULL;
-> +               return err;
+> 1. These macros were copied almost verbatim from the kernel code long
+> ago, and since then kernel has changed them to inline functions, so
+> getting back to these obsolete macros is pointless.
 >
-> -       gpu->clk_bus = devm_clk_get(&pdev->dev, "bus");
-> +       gpu->clk_bus = devm_clk_get_optional(&pdev->dev, "bus");
+> 2. If we do need to export macroses, then kernel inline functions are
+> better to be re-implemented in terms of these macros, not to have 2
+> different points of implementation.
+>
+> Overall, I'd vote for the current approach of the patch, provided
+> exporting inline functions to user-space is allowed.
 
-The binding doc Documentation/devicetree/bindings/gpu/vivante,gc.yaml
-says that only the 'reg' clock could be optional, the others are
-required.
+Sure, I just want to make sure we're only exporting the minimal
+necessary amount of details to userland. The current patch is
+exporting a bit more than that.
 
-
->         DBG("clk_bus: %p", gpu->clk_bus);
->         if (IS_ERR(gpu->clk_bus))
-> -               gpu->clk_bus = NULL;
-> +               return err;
->
-> -       gpu->clk_core = devm_clk_get(&pdev->dev, "core");
-> +       gpu->clk_core = devm_clk_get_optional(&pdev->dev, "core");
->         DBG("clk_core: %p", gpu->clk_core);
->         if (IS_ERR(gpu->clk_core))
-> -               gpu->clk_core = NULL;
-> +               return err;
->         gpu->base_rate_core = clk_get_rate(gpu->clk_core);
->
-> -       gpu->clk_shader = devm_clk_get(&pdev->dev, "shader");
-> +       gpu->clk_shader = devm_clk_get_optional(&pdev->dev, "shader");
->         DBG("clk_shader: %p", gpu->clk_shader);
->         if (IS_ERR(gpu->clk_shader))
-> -               gpu->clk_shader = NULL;
-> +               return err;
->         gpu->base_rate_shader = clk_get_rate(gpu->clk_shader);
->
->         /* TODO: figure out max mapped size */
-> --
-> 2.26.2
->
-> _______________________________________________
-> etnaviv mailing list
-> etnaviv@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/etnaviv
+thanks
+-john
