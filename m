@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51F81D1E50
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 20:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035A81D1E1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 20:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390326AbgEMS5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 14:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390395AbgEMS4g (ORCPT
+        id S2390330AbgEMS4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 14:56:13 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:48235 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732218AbgEMS4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 14:56:36 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D747AC05BD0A;
-        Wed, 13 May 2020 11:56:35 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 8CCAA2A29D1
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 844EA480109; Wed, 13 May 2020 20:56:29 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        Wed, 13 May 2020 14:56:13 -0400
+Received: from [192.168.1.123] (cm-84.210.220.251.getinternet.no [84.210.220.251])
+        (Authenticated sender: fredrik@strupe.net)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 67E2C240005;
+        Wed, 13 May 2020 18:56:09 +0000 (UTC)
+Subject: Re: [RFC PATCH] arm: Don't trap conditional UDF instructions
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        Richard Fontana <rfontana@redhat.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCHv1 11/19] power: supply: sbs-battery: add POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT/VOLTAGE_MAX support
-Date:   Wed, 13 May 2020 20:56:07 +0200
-Message-Id: <20200513185615.508236-12-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513185615.508236-1-sebastian.reichel@collabora.com>
-References: <20200513185615.508236-1-sebastian.reichel@collabora.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Enrico Weigelt <info@metux.net>
+References: <b2042f19-9477-272c-0989-d6cab1572cca@strupe.net>
+ <20200513181209.GM1551@shell.armlinux.org.uk>
+From:   Fredrik Strupe <fredrik@strupe.net>
+Message-ID: <9fba4d17-d826-6a3a-86fc-60977aa6cc9e@strupe.net>
+Date:   Wed, 13 May 2020 20:56:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200513181209.GM1551@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Expose maximum charge current/voltage information requested
-by the battery.
+On 13.05.2020 20:12, Russell King - ARM Linux admin wrote:
+> On Wed, May 13, 2020 at 05:41:58PM +0200, Fredrik Strupe wrote:
+>> Hi,
+>>
+>> This is more of a question than a patch, but I hope the attached patch makes
+>> the issue a bit clearer.
+>>
+>> The arm port of Linux supports hooking/trapping of undefined instructions. Some
+>> parts of the code use this to trap UDF instructions with certain immediates in
+>> order to use them for other purposes, like 'UDF #16' which is equivalent to a
+>> BKPT instruction in A32.
+>>
+>> Moreover, most of the undef hooks on UDF instructions assume that UDF is
+>> conditional and mask out the condition prefix during matching. The attached
+>> patch shows the locations where this happens. However, the Arm architecture
+>> reference manual explicitly states that UDF is *not* conditional, making
+>> any instruction encoding with a condition prefix other than 0xe (always
+>> execute) unallocated.
+>
+> The latest version of the ARM architecture reference manual may say
+> that, but earlier versions say different things. The latest reference
+> manual does not apply to earlier architectures, so if you're writing
+> code to cover multiple different architectures, you must have an
+> understanding of each of those architectures.
+>
+> So, from the code:
+>
+> 	ARM:   xxxx 0111 1111 xxxx xxxx xxxx 1111 xxxx
+>
+> From DDI0100E:
+>
+> 3.13.1 Undefined instruction space
+>        Instructions with the following opcodes are undefined
+>        instruction space:
+>
+>        opcode[27:25] = 0b011
+>        opcode[4] = 1
+>
+>        31 28 27 26 25 24                                     5 4 3     0
+>        cond  0  1  1  x  x x x x x x x x x x x x x x x x x x x 1 x x x x
+>
+> So, in this version of the architecture, undefined instructions may
+> be conditional - and indeed that used to be the case.  The condition
+> code was always respected, and cond=1111 meant "never" (NV).
+>
+> Hence, trapping them if the condition code is not 1110 (AL) is
+> entirely reasonable, legal and safe.  If an ARM CPU defines an
+> instruction coding that matches the above, then it won't take the
+> undefined instruction trap, and we'll never see it.
+>
+> Now, as for UDF usage in the kernel, it may be quite correct that we
+> always use the AL condition code for them, but it would be very odd
+> for there to be an instruction implemented with a different (non-NV)
+> condition code that can't also have it's AL condition code encoding.
+> You could never execute such an instruction unconditionally.
+>
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- drivers/power/supply/sbs-battery.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+That makes sense. Thank you very much for a great answer!
 
-diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sbs-battery.c
-index b697a42d9ccf..e6f61baa9bed 100644
---- a/drivers/power/supply/sbs-battery.c
-+++ b/drivers/power/supply/sbs-battery.c
-@@ -46,6 +46,8 @@ enum {
- 	REG_CHEMISTRY,
- 	REG_MANUFACTURER,
- 	REG_MODEL_NAME,
-+	REG_CHARGE_CURRENT,
-+	REG_CHARGE_VOLTAGE,
- };
- 
- #define REG_ADDR_SPEC_INFO		0x1A
-@@ -114,6 +116,10 @@ static const struct chip_data {
- 		SBS_DATA(POWER_SUPPLY_PROP_TIME_TO_EMPTY_AVG, 0x12, 0, 65535),
- 	[REG_TIME_TO_FULL] =
- 		SBS_DATA(POWER_SUPPLY_PROP_TIME_TO_FULL_AVG, 0x13, 0, 65535),
-+	[REG_CHARGE_CURRENT] =
-+		SBS_DATA(POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX, 0x14, 0, 65535),
-+	[REG_CHARGE_VOLTAGE] =
-+		SBS_DATA(POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX, 0x15, 0, 65535),
- 	[REG_STATUS] =
- 		SBS_DATA(POWER_SUPPLY_PROP_STATUS, 0x16, 0, 65535),
- 	[REG_CAPACITY_LEVEL] =
-@@ -163,6 +169,8 @@ static enum power_supply_property sbs_properties[] = {
- 	POWER_SUPPLY_PROP_CHARGE_NOW,
- 	POWER_SUPPLY_PROP_CHARGE_FULL,
- 	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
-+	POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX,
-+	POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX,
- 	/* Properties of type `const char *' */
- 	POWER_SUPPLY_PROP_MANUFACTURER,
- 	POWER_SUPPLY_PROP_MODEL_NAME
-@@ -531,6 +539,8 @@ static void  sbs_unit_adjustment(struct i2c_client *client,
- 	case POWER_SUPPLY_PROP_CURRENT_NOW:
- 	case POWER_SUPPLY_PROP_CURRENT_AVG:
- 	case POWER_SUPPLY_PROP_CHARGE_NOW:
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
- 	case POWER_SUPPLY_PROP_CHARGE_FULL:
- 	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
- 		val->intval *= BASE_UNIT_CONVERSION;
-@@ -749,6 +759,8 @@ static int sbs_get_property(struct power_supply *psy,
- 	case POWER_SUPPLY_PROP_TIME_TO_FULL_AVG:
- 	case POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN:
- 	case POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN:
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
- 	case POWER_SUPPLY_PROP_CAPACITY:
- 	case POWER_SUPPLY_PROP_CAPACITY_ERROR_MARGIN:
- 		ret = sbs_get_property_index(client, psp);
--- 
-2.26.2
+Fredrik
 
