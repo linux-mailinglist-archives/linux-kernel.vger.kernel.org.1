@@ -2,89 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BBE1D1EBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 21:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9AEF1D1EF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 21:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390499AbgEMTOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 15:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52768 "EHLO
+        id S2390560AbgEMTXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 15:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387469AbgEMTOH (ORCPT
+        by vger.kernel.org with ESMTP id S1732218AbgEMTXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 15:14:07 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E374C061A0C;
-        Wed, 13 May 2020 12:14:06 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id r22so156331pga.12;
-        Wed, 13 May 2020 12:14:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=c4MBhFXOZtr5piYHjKdaYmafG5GWt17HP85GQ80yZ6A=;
-        b=jfWQvgy9ENnwG5CcetrHoZhWpOg0qxn9CCtOg7/r5BIUuHmE9sjz1OGtTvOBNhVT82
-         f61YDuBaA+0tSxjOGTT5lQWaGu6Gqmvn41AKPHBTUVi3Pr93LuVOy254Uk0cLfetbZ9W
-         t6bQFlh/BSDg2G9rRW1qdDV3/0HI+hQO9vLyfoWfZhYPoeXNpuEz2SxqwmH83rr32gjL
-         UjeESdgKhtOuhMtyDhkq0GKsGo0wMBNBA0CpW8wrVqatmhwWCYOSwkFBEyyC7037WiEv
-         8Bd3PT1XiH+UhWaKzq1FfhGnocGZHQC49TIGtYAKZZn3qQR5cQvlDg4p+JSL+thHAc6t
-         cW7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=c4MBhFXOZtr5piYHjKdaYmafG5GWt17HP85GQ80yZ6A=;
-        b=j2Q3WtowwajRMGjenxzF/lSMUmKcLe9U5f2ZfF6sFTLaya3Y3zIIagnn3wGAGriNYx
-         6SOsD4qVhZdQdkAw3EjtlJaCqOjiyLgMQbo2ZtMtCMd5CqcXIRAh3NqW1uwAp09mEwj6
-         bxPjBgVNz/fZNa2VHFLhHbpcnRyE/eoUV2fv2yhhw2SjeqeikohSJwBM7lIgsBPPchAJ
-         mTKN6GPsPgOkj/VbNaxapn9OLAf8tYe/sT71KlJpkDbLyBDXsPaUo/qgx0m1kz3+/cYt
-         tbjXfgonKEyLZUmqbC68I7Gc01tR/1q9jxGh7CLaJnzdiWG3zg60IBhhXp0j+5dCmc5P
-         nVdQ==
-X-Gm-Message-State: AOAM532VIl5oylgd5VU8lIV7BDji+3rEzhjN66nm+JdN8gXn/urgfQ1s
-        CD6jwDWbkkPzz1p499LOPmX9O3D0
-X-Google-Smtp-Source: ABdhPJxNEH6+i12BxVCz0Pgw2eTsEWUsYCIJFOLPQE4CLdonkT30/A05utKJZBsJG12RKdExCn+XqQ==
-X-Received: by 2002:a63:c306:: with SMTP id c6mr729118pgd.311.1589397245758;
-        Wed, 13 May 2020 12:14:05 -0700 (PDT)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.167.196.79])
-        by smtp.gmail.com with ESMTPSA id b16sm277986pfp.89.2020.05.13.12.14.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 May 2020 12:14:04 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     hao.wu@intel.com, mdf@kernel.org
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Subject: [PATCH] fpga: dfl: afu: Corrected error handling levels
-Date:   Thu, 14 May 2020 00:52:05 +0530
-Message-Id: <1589397725-29697-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Wed, 13 May 2020 15:23:40 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0BCC061A0C;
+        Wed, 13 May 2020 12:23:40 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 124F2127E5AC1;
+        Wed, 13 May 2020 12:23:39 -0700 (PDT)
+Date:   Wed, 13 May 2020 12:23:38 -0700 (PDT)
+Message-Id: <20200513.122338.1849377923675371554.davem@davemloft.net>
+To:     martin.blumenstingl@googlemail.com
+Cc:     robh+dt@kernel.org, andrew@lunn.ch, f.fainelli@gmail.com,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        jianxin.pan@amlogic.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 0/8] dwmac-meson8b Ethernet RX delay configuration
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200512211103.530674-1-martin.blumenstingl@googlemail.com>
+References: <20200512211103.530674-1-martin.blumenstingl@googlemail.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 13 May 2020 12:23:39 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Corrected error handling goto sequnece. Level put_pages should
-be called when pinned pages >= 0 && pinned != npages. Level
-free_pages should be called when pinned pages < 0.
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Tue, 12 May 2020 23:10:55 +0200
 
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
----
- drivers/fpga/dfl-afu-dma-region.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> The Ethernet TX performance has been historically bad on Meson8b and
+> Meson8m2 SoCs because high packet loss was seen. I found out that this
+> was related (yet again) to the RGMII TX delay configuration.
+> In the process of discussing the big picture (and not just a single
+> patch) [0] with Andrew I discovered that the IP block behind the
+> dwmac-meson8b driver actually seems to support the configuration of the
+> RGMII RX delay (at least on the Meson8b SoC generation).
+> 
+> Since I sent the first RFC I got additional documentation from Jianxin
+> (many thanks!). Also I have discovered some more interesting details:
+> - Meson8b Odroid-C1 requires an RX delay (by either the PHY or the MAC)
+>   Based on the vendor u-boot code (not upstream) I assume that it will
+>   be the same for all Meson8b and Meson8m2 boards
+> - Khadas VIM2 seems to have the RX delay built into the PCB trace
+>   length. When I enable the RX delay on the PHY or MAC I can't get any
+>   data through. I expect that we will have the same situation on all
+>   GXBB, GXM, AXG, G12A, G12B and SM1 boards. Further clarification is
+>   needed here though (since I can't visually see these lengthened
+>   traces on the PCB). This will be done before sending patches for
+>   these boards.
+ ...
 
-diff --git a/drivers/fpga/dfl-afu-dma-region.c b/drivers/fpga/dfl-afu-dma-region.c
-index 62f9244..5942343 100644
---- a/drivers/fpga/dfl-afu-dma-region.c
-+++ b/drivers/fpga/dfl-afu-dma-region.c
-@@ -61,10 +61,10 @@ static int afu_dma_pin_pages(struct dfl_feature_platform_data *pdata,
- 				     region->pages);
- 	if (pinned < 0) {
- 		ret = pinned;
--		goto put_pages;
-+		goto free_pages;
- 	} else if (pinned != npages) {
- 		ret = -EFAULT;
--		goto free_pages;
-+		goto put_pages;
- 	}
- 
- 	dev_dbg(dev, "%d pages pinned\n", pinned);
--- 
-1.9.1
-
+Series applied to net-next, thanks Martin.
