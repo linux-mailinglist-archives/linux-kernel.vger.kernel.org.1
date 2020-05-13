@@ -2,106 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6A81D093A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 08:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 784651D095B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 08:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730920AbgEMG5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 02:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729765AbgEMG5i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 02:57:38 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E78BC061A0C;
-        Tue, 12 May 2020 23:57:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=5X3G8p2gpeq1mWhpOrbRnLoYssjgaGtuSsqN+ape3Fw=; b=XLxg3FNB06sgO+Mvcd5lDJKwjP
-        uoOZRG3bBXqQEfGfwdp3+GQhc7kJU+L1VQSJS73w0gINeO6zpXApIRVV0EWbU1LQloOBZnar/MIZi
-        7tWFQRfv7B2u6FBn6KjDeRtWL+y/cbliY7OwW2zuLl7wiEZyHy1y7rcoI79Kc5s6xSwYdF7wP3lih
-        KU9xne6mBOLIL0J7wvzvvLy2hs+ddTZKuTlgUnx0d2fUBK/ejvI0cov4NL/m0+nKPm7rceaYr1fKU
-        gTrfuSsmtdZLvSnMAUjZxbvyqDyQ113YAC7ee+WrNvftN0BuM5imo+ZBsl4pw6nK4ooBvoG9mD8Y1
-        y8rQkVdw==;
-Received: from [2001:4bb8:180:9d3f:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jYlKh-0003ch-MB; Wed, 13 May 2020 06:57:36 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Ian Kent <raven@themaw.net>, David Howells <dhowells@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: [PATCH 14/14] fs: don't change the address limit for ->read_iter in __kernel_read
-Date:   Wed, 13 May 2020 08:56:56 +0200
-Message-Id: <20200513065656.2110441-15-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513065656.2110441-1-hch@lst.de>
-References: <20200513065656.2110441-1-hch@lst.de>
+        id S1729940AbgEMG7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 02:59:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726020AbgEMG7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 02:59:41 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 92652206F5;
+        Wed, 13 May 2020 06:59:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589353181;
+        bh=zxZDltAXJe3Nap9miVFjgcOT4pDcGn1grjxSUVSlpg4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PBjTTdWKQVrfNIV+c0F9sgcgf79yhfKAzQO4hmoCvqL06wln2BSXnCTIvxcv40Z4V
+         VguYJQGq7+CsZRExhkO54WRMzt4UDl51+NLrUCc3S8NFpeY7/3jGVC5Omax3KQXs54
+         rLZYR7PYD69y+dfyLAppoLZntOd4ZU5zeTl85lSA=
+Date:   Wed, 13 May 2020 08:59:38 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     sagar.kadam@sifive.com, linux-serial@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, Atish Patra <Atish.Patra@wdc.com>,
+        Anup Patel <Anup.Patel@wdc.com>
+Subject: Re: [PATCH v1 1/1] tty: serial: add missing spin_lock_init for
+ SiFive serial console
+Message-ID: <20200513065938.GA764901@kroah.com>
+References: <1589019852-21505-2-git-send-email-sagar.kadam@sifive.com>
+ <mhng-b2e9c16c-ee06-4c78-800d-a7725d6c74a3@palmerdabbelt-glaptop1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <mhng-b2e9c16c-ee06-4c78-800d-a7725d6c74a3@palmerdabbelt-glaptop1>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we read to a file that implements ->read_iter there is no need
-to change the address limit if we send a kvec down.  Implement that
-case, and prefer it over using plain ->read with a changed address
-limit if available.
+On Tue, May 12, 2020 at 04:00:23PM -0700, Palmer Dabbelt wrote:
+> On Sat, 09 May 2020 03:24:12 PDT (-0700), sagar.kadam@sifive.com wrote:
+> > An uninitialised spin lock for sifive serial console raises a bad
+> > magic spin_lock error as reported and discussed here [1].
+> > Initialising the spin lock resolves the issue.
+> > 
+> > The fix is tested on HiFive Unleashed A00 board with Linux 5.7-rc4
+> > and OpenSBI v0.7
+> > 
+> > [1] https://lore.kernel.org/linux-riscv/b9fe49483a903f404e7acc15a6efbef756db28ae.camel@wdc.com
+> > 
+> > Fixes: 45c054d0815b ("tty: serial: add driver for the SiFive UART")
+> > Reported-by: Atish Patra <Atish.Patra@wdc.com>
+> > Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+> > ---
+> >  drivers/tty/serial/sifive.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/tty/serial/sifive.c b/drivers/tty/serial/sifive.c
+> > index 13eadcb..0b5110d 100644
+> > --- a/drivers/tty/serial/sifive.c
+> > +++ b/drivers/tty/serial/sifive.c
+> > @@ -883,6 +883,7 @@ console_initcall(sifive_console_init);
+> > 
+> >  static void __ssp_add_console_port(struct sifive_serial_port *ssp)
+> >  {
+> > +	spin_lock_init(&ssp->port.lock);
+> >  	sifive_serial_console_ports[ssp->port.line] = ssp;
+> >  }
+> 
+> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> 
+> I'm assuming it's going in through Greg's tree.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/read_write.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+Sure, I'll be glad to take it.
 
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 46ddfce17e839..c93acbd8bf5a3 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -421,7 +421,6 @@ static ssize_t new_sync_read(struct file *filp, char __user *buf, size_t len, lo
- 
- ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
- {
--	mm_segment_t old_fs = get_fs();
- 	ssize_t ret;
- 
- 	if (!(file->f_mode & FMODE_CAN_READ))
-@@ -429,14 +428,25 @@ ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
- 
- 	if (count > MAX_RW_COUNT)
- 		count =  MAX_RW_COUNT;
--	set_fs(KERNEL_DS);
--	if (file->f_op->read)
-+	if (file->f_op->read_iter) {
-+		struct kvec iov = { .iov_base = buf, .iov_len = count };
-+		struct kiocb kiocb;
-+		struct iov_iter iter;
-+
-+		init_sync_kiocb(&kiocb, file);
-+		kiocb.ki_pos = *pos;
-+		iov_iter_kvec(&iter, READ, &iov, 1, count);
-+		ret = file->f_op->read_iter(&kiocb, &iter);
-+		*pos = kiocb.ki_pos;
-+	} else if (file->f_op->read) {
-+		mm_segment_t old_fs = get_fs();
-+
-+		set_fs(KERNEL_DS);
- 		ret = file->f_op->read(file, (void __user *)buf, count, pos);
--	else if (file->f_op->read_iter)
--		ret = new_sync_read(file, (void __user *)buf, count, pos);
--	else
-+		set_fs(old_fs);
-+	} else {
- 		ret = -EINVAL;
--	set_fs(old_fs);
-+	}
- 	if (ret > 0) {
- 		fsnotify_access(file);
- 		add_rchar(current, ret);
--- 
-2.26.2
-
+greg k-h
