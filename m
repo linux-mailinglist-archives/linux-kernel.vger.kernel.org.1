@@ -2,355 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D0D1D20ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CB61D2104
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729026AbgEMVZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728918AbgEMVY5 (ORCPT
+        id S1729014AbgEMV2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 17:28:32 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:35939 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728712AbgEMV2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:24:57 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C55DC061A0C;
-        Wed, 13 May 2020 14:24:57 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id n5so15270868wmd.0;
-        Wed, 13 May 2020 14:24:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=d6P+Cjr36ecQrVNruhQZmd3+uPVy9fawrvtE71Un+ac=;
-        b=kB0inrOiWKDBpxgiLHKkpkTmXonFSkN9LVyshW/PCtyiYDS1r8bhcw9yJccSBSPffY
-         CarPIH+dfpXTPkWY+AmFKKZHAtBI9ffL+Jb9+jAe8vuPblSRJrOAtYKwBPqSLQTslxwd
-         mWKHQWGG76Nk8pnlnq9PsoRYPjFz6MuP7uAk3IUr1jmDYjWao/vVWn96Hj5cpO9cKtB7
-         A7UyMN5mAXGt9wBbZJ3uBpl6Ahwfpas2+AeIzA2jiB3Z87rqEo9QAZ7T2HgSbOGNq5U9
-         51RI3iiTgrq+tk8PSaTMamzhP17DhIGDB4u8iYYZNZL1xFOSNDcHXqnmyxNbALbdOwH4
-         m6lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=d6P+Cjr36ecQrVNruhQZmd3+uPVy9fawrvtE71Un+ac=;
-        b=gCxBuBdbBpGq1eQdTfYTuBXMWd0u+SQe9Ohy2yWc/QvlRzwKhtD1yQiLlM05puaT/N
-         dgTO39am1L7AaqYGs0xWwWdjxiI5cQ8sP31UFAQOYsgh5zKBzwC+OddZeznomyRjwhDn
-         z55gWG8Me1gMomHNS73rBs0qFrK+Xq7lChlpYQYuGxhIaYYQfHiPMugMwFBd9bOO+hqL
-         bD2i5Xj/dXb129NR4qlr0mLJNszur0CpPhi04hYbsfX+webMT1PGwMIafaUnug7YnjVH
-         XPQ/BfyfZdbUniVgU3qmA52gWbEemmn1uOKttQ+HkBZMeeK+1zZjGp2J84MQWkiDWQEv
-         jbSg==
-X-Gm-Message-State: AOAM531nFwicl7uLKMNbe3Nalnv1Koxmpvy7fOZDbqCOciVSo7IP3ZpC
-        e3C3HTqRwM0SeQg3+UtbowXlW+8T
-X-Google-Smtp-Source: ABdhPJxi+6ZbaJsPZ+nTOHtYuuj+aaOdu07J7hnWbL8PzMpIMmj2qePU+VF5T/nwHLKRBnTw6J1KGA==
-X-Received: by 2002:a1c:46c1:: with SMTP id t184mr1903890wma.185.1589405094370;
-        Wed, 13 May 2020 14:24:54 -0700 (PDT)
-Received: from [10.230.191.242] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id v11sm1033523wrv.53.2020.05.13.14.24.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2020 14:24:53 -0700 (PDT)
-Subject: Re: [PATCH net-next 1/4] net: ethernet: validate pause autoneg
- setting
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1589243050-18217-1-git-send-email-opendmb@gmail.com>
- <1589243050-18217-2-git-send-email-opendmb@gmail.com>
- <20200512004714.GD409897@lunn.ch>
- <ae63b295-b6e3-6c34-c69d-9e3e33bf7119@gmail.com>
- <20200512185503.GD1551@shell.armlinux.org.uk>
- <0cf740ed-bd13-89d5-0f36-1e5305210e97@gmail.com>
- <20200513053405.GE1551@shell.armlinux.org.uk>
-From:   Doug Berger <opendmb@gmail.com>
-Message-ID: <d6160202-8bce-fdd0-da41-a706733441eb@gmail.com>
-Date:   Wed, 13 May 2020 14:27:41 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 13 May 2020 17:28:32 -0400
+Received: from mail-qv1-f54.google.com ([209.85.219.54]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MMWgb-1jqEOX29sV-00JWx3; Wed, 13 May 2020 23:28:30 +0200
+Received: by mail-qv1-f54.google.com with SMTP id 59so656025qva.13;
+        Wed, 13 May 2020 14:28:30 -0700 (PDT)
+X-Gm-Message-State: AOAM5321b145Phh9puDFsBznN+7pvPBxOMVh5XNoamWvqvWqunj0h+ko
+        e5haRB20ai1ygPXcBA+1DbJZ1QBfZUR6CX1dhOw=
+X-Google-Smtp-Source: ABdhPJw7Fuac+m5sULJtNIM3p5+cE34HdS8OeJClx/EYM0gmCRJdMFhQEEraDemX8yXHOSVi36C8UGZrQu6eSzpx+A0=
+X-Received: by 2002:a05:6214:1392:: with SMTP id g18mr1590361qvz.210.1589405305824;
+ Wed, 13 May 2020 14:28:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200513053405.GE1551@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200509120707.188595-1-arnd@arndb.de> <20200509120707.188595-2-arnd@arndb.de>
+ <87v9l24qz6.fsf@kamboji.qca.qualcomm.com> <87r1vq4qev.fsf@kamboji.qca.qualcomm.com>
+ <87d078tjl0.fsf_-_@kamboji.qca.qualcomm.com> <20200513154847.GA158356@rani.riverdale.lan>
+In-Reply-To: <20200513154847.GA158356@rani.riverdale.lan>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 13 May 2020 23:28:09 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3KpM91+jv6+7KSKFRpwLqf38Lz1wbGhkFFyfDb9oahgA@mail.gmail.com>
+Message-ID: <CAK8P3a3KpM91+jv6+7KSKFRpwLqf38Lz1wbGhkFFyfDb9oahgA@mail.gmail.com>
+Subject: Re: gcc-10: kernel stack is corrupted and fails to boot
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Borislav Petkov <bp@suse.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:pkOP+/jQ/sNrzZEtohi05sbnFfLH2DPLUwNFPATJkbEXqE2G5l8
+ F95mM/bwaHv2MdggK0o/efvEabe+h7yVeaOQGwgLxtzZxIDK1wICTDKFX2qIDmvCuBC2EbZ
+ +/fucECA3N9MIs7uajeskFytmKi2yzWtnGbqO/ybhO3RdT9dF5eWOECmBUsYJTGE/7x5Wze
+ G8uVPKOG7XA+wSbcT2LRA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UpZ1x5f9cYE=:8WsnjyT0kgPzQ7tz/iEYWL
+ tfETaL9rjy/vLoqEYHIUqfbFVorzRQ2f+smRnu1WBRXItleYfuXMxhrGNASgv+ZpeQwQgTu+e
+ HE4s2x3OkanORZOLuapZoZavPUxCoxhhwJ02K55c56fw3qhZ9wLCu3hxv1KJ3iEyOk3sFvx/x
+ mTvQSnQjmBw0xpwaELZ1vl8fiUyg4H/1CSxwF8Im1x050nFalU6j6dqFWp2wfy54Xdtom8CV5
+ bA8mXHWNNk7wCYsXyNXy8kqf/c1FLGx3pPXgelpI7UmXIBARxw7CE15urxJ79ZI3mBSlbjidf
+ F8iWTHMTCx6d2FJNql4SA2ofbbeczaHZ3bAEAmveHHoTHs8T7bAqkegML6YYcMdyRobtjdqBW
+ WDi36Ch2/TFo/wudRJlPqZnVcVXTZn08IPZF6l9uDDQ4/k1G+Cy6WOkgHcGahHmgxoYN8hGOP
+ TXhQ1HF5ivpBzAFRZLt+oiB3Bxs6WBerAiMPQDijKj9b/ld71kv+4O7F5cIKf1UYrDYxW9JLz
+ xZFoqhlrXzOaoUDr5dM1MUm8aNfX5d10xX4rvFAxNeKoG7PKy2dkHoTOYM6ZuuQVth0k3eXKn
+ +L+ADA98AukjCltKZdNo/khQPvVWdZcscSKaUsZBdsL3tIBtqyefTnH1m8kQHvZJIYVU/mON4
+ KxkciFv30wxKXjO0xVRTHlAcLI5XKX42i9LkNr8jTq032iRYsOo8mtAlifFVgB+E5sNnqZfUK
+ DlzaBwwgKsSlOxuGfkoxvvUipbUaOvdRGJHf9Jb3soC9MhM9cpenU7tu1jeAzMZVmj8v/Qf3M
+ Vm2s2ZNBY2+f8XF/Rs5+zCjLSIW79nT1fOpkBpP7gdZnqC8igE=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/2020 10:34 PM, Russell King - ARM Linux admin wrote:
-> On Tue, May 12, 2020 at 08:48:22PM -0700, Doug Berger wrote:
->> On 5/12/2020 11:55 AM, Russell King - ARM Linux admin wrote:
->>> On Tue, May 12, 2020 at 11:31:39AM -0700, Doug Berger wrote:
->>>> This was intended as a fix, but I thought it would be better to keep it
->>>> as part of this set for context and since net-next is currently open.
->>>>
->>>> The context is trying to improve the phylib support for offloading
->>>> ethtool pause configuration and this is something that could be checked
->>>> in a single location rather than by individual drivers.
->>>>
->>>> I included it here to get feedback about its appropriateness as a common
->>>> behavior. I should have been more explicit about that.
->>>>
->>>> Personally, I'm actually not that fond of this change since it can
->>>> easily be a source of confusion with the ethtool interface because the
->>>> link autonegotiation and the pause autonegotiation are controlled by
->>>> different commands.
->>>>
->>>> Since the ethtool -A command performs a read/modify/write of pause
->>>> parameters, you can get strange results like these:
->>>> # ethtool -s eth0 speed 100 duplex full autoneg off
->>>> # ethtool -A eth0 tx off
->>>> Cannot set device pause parameters: Invalid argument
->>>> #
->>>> Because, the get read pause autoneg as enabled and only the tx_pause
->>>> member of the structure was updated.
->>>
->>> This looks like the same argument I've been having with Heiner over
->>> the EEE interface, except there's a difference here.
->>>
->>> # ethtool -A eth0 autoneg on
->>> # ethtool -s eth0 autoneg off speed 100 duplex full
->>>
->>> After those two commands, what is the state of pause mode?  The answer
->>> is, it's disabled.
->>>
->>> # ethtool -A eth0 autoneg off rx on tx on
->>>
->>> is perfectly acceptable, as we are forcing pause modes at the local
->>> end of the link.
->>>
->>> # ethtool -A eth0 autoneg on
->>>
->>> Now, the question is whether that should be allowed or not - but this
->>> is merely restoring the "pause" settings that were in effect prior
->>> to the previous command.  It does not enable pause negotiation,
->>> because autoneg as a whole is disabled, but it _allows_ pause
->>> negotiation to occur when autoneg is enabled at some point in the
->>> future.
->>>
->>> Also, allowing "ethtool -A eth0 autoneg on" when "ethtool -s eth0
->>> autoneg off" means you can configure the negotiation parameters
->>> _before_ triggering a negotiation cycle on the link.  In other words,
->>> it would avoid:
->>>
->>> # ethtool -s eth0 autoneg on
->>> # # Link renegotiates
->>> # ethtool -A eth0 autoneg on
->>> # # Link renegotiates a second time
->>>
->>> and it also means that if stuff has already been scripted to avoid
->>> this, nothing breaks.
->>>
->>> If we start rejecting ethtool -A because autoneg is disabled, then
->>> things get difficult to configure - we would need ethtool documentation
->>> to state that autoneg must be enabled before configuration of pause
->>> and EEE can be done.  IMHO, that hurts usability, and adds confusion.
->>>
->> Thanks for your input and I agree with what you have said here. I will
->> remove this commit from the set when I resubmit and I assume that, like
->> Michal, you would like to see the comment in ethtool.h revised.
->>
->> I think the crux of the matter is that the meaning of the autoneg pause
->> parameter is not well specified, and that is fundamentally what I am
->> trying to clarify in a common implementation that might help unify a
->> consistent behavior across network drivers.
->>
->> My interpretation is that the link autonegotiation and the pause
->> autonegotiation can be meaningfully set independently from each other
->> and that the interplay between the two has easily overlooked subtleties.
->>
->> My opinion (which is at least in part drawn from my interpretation of
->> your opinion) is as follows with regard to pause behaviors:
->>
->> The link autonegotiation parameter concerns itself with whether the
->> Pause capabilities are advertised as part of autonegotiation of link
->> parameters.
->>
->> The pause autonegotiation parameter concerns itself with whether the
->> local node is willing to accept the advertised capabilities of its peer
->> as input into its pause configuration.
->>
->> The Tx_Pause and Rx_Pause parameters indicate in which directions pause
->> frames should be supported.
-> 
-> This is where the ethtool interface breaks down - they are unable
-> to sanely define which should be supported, as what you end up with
-> could be wildly different from what you thought.  See the
-> documentation against linkmode_set_pause() where I detail the issues
-> in this API.
-> 
-> For example, if you specify Tx_Pause = 0, Rx_Pause = 1, you can end
-> up with the pause negotiating transmit and receive pause.
-> 
-> If you specify Tx_Pause = 1, Rx_Pause = 1, and the far end supports
-> only AsymPause, then you end up with pause disabled, despite the
-> link actually being able to support receive pause at the local end.
-> Whereas if you specified Tx_Pause = 0, Rx_Pause=1 in this scenario,
-> you would get receive pause.  That's very counter intuitive.
-Yes, your documentation of these deficiencies in the current
-implementation are very helpful.
+On Wed, May 13, 2020 at 5:48 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> On Wed, May 13, 2020 at 09:50:03AM +0300, Kalle Valo wrote:
 
->> If the pause autonegotiation is off, the MAC is allowed to act
->> exclusively according to the Tx_Pause and Rx_Pause parameters. If
->> Tx_Pause is on the MAC should send pause control frames whenever it
->> needs to assert back pressure to ease the load on its receiver. If
->> Tx_Pause is off the MAC should not transmit any pause control frames. If
->> Rx_Pause is on the MAC should delay its transmissions in response to any
->> pause control frames it receives. If Rx_Pause is off received pause
->> control frames should be ignored. If link autonegotiation is on the
->> Tx_Pause and Rx_Pause values should be advertised in the PHY Pause and
->> AsymPause bits for informational purposes according to the following
->> mapping:
->>     tx rx  Pause AsymPause
->>     0  0   0     0
->>     0  1   1     1
->>     1  0   0     1
->>     1  1   1     0
-> 
-> That is what is presently implemented by the helpers, and leads to
-> the above counter intuitive behaviour.
-Exactly, and that is by intent. I have retained this to allow backward
-compatibility for existing drivers that wish to retain the current
-behavior. I believe this mapping is not compliant with the IEEE 802.3
-standard because of the deficiencies you have documented. However, I
-have tried to make an argument in patch 2 of this set for why it might
-make sense to advertise this way for a local node that is unwilling to
-negotiate its pause capabilities and doesn't care about standard compliance.
+> > And now I have a problem :) I first noticed that my x86 testbox is not
+> > booting when I compile the kernel with GCC 10.1.0 from crosstool. I
+> > didn't get any error messages so I just downgraded the compiler and the
+> > kernel was booting fine again. Next I decided to try GCC 10.1 with my
+> > x86 laptop and it also failed to boot, but this time I got kernel logs
+> > and saw this:
+> >
+> > Kernel panic - not syncing: stack-protector: Kernel stack is corrupted in: start_secodary+0x178/0x180
+> >
+>
+> See https://lore.kernel.org/lkml/20200423161126.GD26021@zn.tnic/
 
->> If the pause autonegotiation is on, and the link autonegotiation is also
->> on then the Tx_Pause and Rx_Pause values should be advertised in the PHY
->> Pause and AsymPause bits according to the IEEE 802.3 spec according to
->> the following mapping:
->>     tx rx  Pause AsymPause
->>     0  0   0     0
->>     0  1   1     1
->>     1  0   0     1
->>     1  1   1     1
-> 
-> That would be an API change - and note that in the case of 'tx=0
-> rx=1' and the result of negotiation being used, you can still end
-> up with transmit and receive pause being enabled.
-Yes, that is the API change in patch 2 of this set.
+Thanks!
 
-> Basically, trying to define the pause advertisment in terms of
-> desired TX and RX pause enablement is *very* problematical - they
-> really do not mean anything as we can see if we work through the
-> various settings and results.
-Yes, there is conflation of meaning between these parameters.
+I see the patch in linux-next but not in mainline. I suppose we want it in v5.7
+and backported to stable kernels so they can boot when built with gcc-10?
 
-> You're much better using the raw advertisment mask to set the
-> pause and asym pause bits manually.
-Perhaps, but because advertisement is handled by a different ethtool
-command and it is very easy to get wrong it would be nice to have a
-better default behavior.
+I suppose the only reason that the other architectures don't run into the
+problem is that they don't call boot_init_stack_canary() in start_secondary()
+though they probably should?
 
->> If link autonegotiation succeeds the peer's advertised Pause and
->> AsymPause bits should be used in combination with the local Pause and
->> Pause Asym bits to determine in which directions pause frames are
->> supported. However, regardless of the negotiated result, if the Tx_Pause
->> is off no pause frames should be sent and if the Rx_Pause is off
->> received pause frames should be ignored. If Tx_Pause is on and the
->> negotiated result allows pause frames to be sent then pause frames may
->> be sent by the local node to apply back pressure to reduce the load on
->> its receive path. If Rx_Pause is on and the negotiated result allows
->> pause frames to be received then the local node should delay its
->> transmission in response to received pause frames. In this way the local
->> settings can only override the negotiated settings to disable the use of
->> pause frames.
->>
->> If the pause autonegotiation is on, and the link autonegotiation is off
->> then the values of the peer's Pause and AsymPause bits are forced to 0
->> (because they can't be exchanged without link autonegotiation) which
->> always produces the negotiated result of pause frame use being disabled
->> in both directions. Since the local Tx_Pause and Rx_Pause parameters can
->> only override the negotiation when they are off, pause frames should not
->> be sent or received.
->>
->> This is the behavior I have attempted to implement by this patch set for
->> the bcmgenet driver, but I see now that I made an error in this last
->> case since I made the negotiation also dependent on the link
->> autonegotiation being enabled. I will correct that in a re-submission.
->>
->> I would appreciate if you can confirm that you agree that this is a good
->> general behavior for all network devices before I resubmit, or please
->> help me understand what could be done better.
-> 
-> It's gratifying that someone else has run into the same issue I did a
-> while back, has put thought into it, and come up with a similar idea
-> that I did.  You'll find your idea already spelt out in the comments
-> in phylink_ethtool_set_pauseparam().
-Yes, I did find it there and actually included it verbatim in the cover
-letter to this set.
-
-> However, as I say, it's an API change.
-> 
-> I've long considered the ethtool APIs to be very deficient in its
-> pause handling in many ways.  Another example is:
-> 
->         Supported pause frame use: Symmetric Receive-only
-> 
-> which leads to the obvious observation: the link can negotiate that
-> this end should transmit only, but the terminology used here does
-> not seem to permit it (there's no "Transmit-only" indicated.) In
-> reality, one shold read "Asymmetric" for "Receive-only" in this
-> output, because that is exactly what the bit that controls that
-> indication is.
-Absolutely.
-
-The Pause and AsymPause bits as defined by the IEEE 802.3 standard are
-for the purpose of advertising a capability. While the Tx_Pause and
-Rx_Pause parameters of ethtool allow a user to indicate whether the
-feature should be used on a link that is capable of the feature.
-
-When pause autonegotiation is enabled the local and peer Pause and
-AsymPause bits should be used to negotiate the CAPABILITY of using the
-pause feature for each direction. This is not the same as enabling pause
-in those directions.
-
-So for the problematic cases:
-
-If you specify Tx_Pause = 0, Rx_Pause = 1 you advertise that the link is
-capable of both Symmetric PAUSE and Asymmetric PAUSE toward local device
-according to Table 37-2 in IEEE Std 802.3-2018. If the result of link
-autonegotiation indicates that both directions are capable of supporting
-pause control frames you choose not to send pause control frames because
-the user asked you not to by setting Tx_Pause = 0.
-
-If you specify Tx_Pause = 1, Rx_Pause = 1 you advertise that the link is
-capable of both Symmetric PAUSE and Asymmetric PAUSE toward local device
-according to Table 37-2 in IEEE Std 802.3-2018. If the far end supports
-only AsymPause, then the link autonegotiation will indicate that only
-the receive direction is capable of supporting the pause feature and you
-should not send pause control frames to the peer even though the user
-has set Tx_Pause = 1.
-
-If link autonegotiation is disabled, then the capability of the link to
-support pause frames cannot be negotiated and therefore pause control
-frames should not be used.
-
-When pause autonegotiation is disabled the local peer does not care what
-its peer is capable of and it can choose to send and process pause
-control frames based entirely, on the users requested Tx_Pause and
-Rx_Pause parameters. However, if link autonegotiation is enabled it
-might as well not be rude and should advertise its intended usage.
-Admittedly, Tx_Pause = 1 and Rx_Pause = 1 setting Pause and clearing
-AsymPause is still "weird" behavior, but I'm really only retaining it
-for backward compatibility. I don't really know why someone thought that
-would be a good mapping and why its use has propagated, but I am not
-willing to implement that behavior in the bcmgenet driver.
-
-I was considering including a patch in this set to modify the phylink
-behavior to use this more rational interpretation as suggested by your
-comment there, but it wouldn't allow users to opt-in to the new behavior
-so I stopped short of that.
-
-My secret hope was that you would be inspired by this implementation to
-champion such an effort in the phylink. :)
-
-I still would like to see support for this standard compliant mapping in
-the phylib, but I can localize the changes to a custom implementation in
-the bcmgenet driver if necessary.
-
+      Arnd
