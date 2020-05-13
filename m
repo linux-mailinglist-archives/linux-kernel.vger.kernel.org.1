@@ -2,187 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DD31D16CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7941D16E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388853AbgEMOBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 10:01:10 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:15563 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388833AbgEMOBG (ORCPT
+        id S2388884AbgEMODQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 10:03:16 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:59642 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388877AbgEMODO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 10:01:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1589378465; x=1620914465;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=qbdBED/Z1XBg7VaaZopGpjjuifZRtcbEWF/Y+VJziDk=;
-  b=b5pLGcc1qujrwxlC55PvCaWRuL5zswhhiBAf+L+dHdxqIhZKuepIQQon
-   ghd7B6UTHM3zBCqLt69uaWcWg1/2R+A4dFeaJdzjP5YlEb7o4DM/DRRjE
-   IxTQIAqf2evYaTDvD5CP0AEktWWKtTMTLhYoroXlGOry8mUEUx2BdICpG
-   6/hnm/JUWM4sx8iDVpl+nTKV8/kMNue1nUYlJZ4epDbdnJfVDVoF9l48n
-   21bt1j08xhQG5Hw1ORmsIFWe3/PP1GqY70PiDH+kDbX4hrqSX/Fx9njyT
-   Ju+Jm5WpkVJF0BBVEYQlAG70bjcPLjUnlm/bXk6cI6/FLE9T+FOfaPYk7
-   g==;
-IronPort-SDR: rBaFInmH5yPjnLhHZPsGcVpQf3K3KQUwci3AexoHvTqPZS4NkY7U3sK6ytEIGM7w75OuAT4Eqy
- ZSK1oGXC27mpC5lAw4/hIHehQtrDENUuytYqxhmjhWcX1vRlwnXc1K3YuylCJrBEa6YkV8ifF3
- 1mEm1G3X3EDAbC+Xn3Tk3u0smVYs2gxFQ2TwPpDwUjgzNgOP6b929wHjQC46PQ92BHNMBTJl+B
- AFoxVP/K+qGNjfQXqM+ukVULGETaj9Kc55CGQ9+ZkFNEk9bt6ggf9BXZQHrX2kZwNom+nLE31k
- dog=
-X-IronPort-AV: E=Sophos;i="5.73,388,1583218800"; 
-   d="scan'208";a="73314086"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 May 2020 07:01:04 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 13 May 2020 07:01:04 -0700
-Received: from soft-dev15.microsemi.net (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Wed, 13 May 2020 07:01:02 -0700
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Mark Brown <broonie@kernel.org>, SoC Team <soc@kernel.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH 10/10] arm64: dts: sparx5: Add spi-nand devices
-Date:   Wed, 13 May 2020 16:00:31 +0200
-Message-ID: <20200513140031.25633-11-lars.povlsen@microchip.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513140031.25633-1-lars.povlsen@microchip.com>
-References: <20200513140031.25633-1-lars.povlsen@microchip.com>
+        Wed, 13 May 2020 10:03:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589378592;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H0VwXgXDRwfKbDIjTqIx4tI86RnceSX/HZFFQNPbyc4=;
+        b=DpgyaJRgY74CZEXTQ72PI46AT7Tk3lWAGK3OfPrM1+DdJ/iyF6sEBIsVkuhSRonj3lpXx/
+        vcVZTY1Yt9TeiIcc9ulFD9F4+Hiopuz2fqYe4MPLGC0kpichf5/4oDrjLbfImFULPbgJMe
+        1pCLZl6lRm4NJiFKdzBJsgtFC1a12NA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-225-yczyfFHANK6jOKMPiiiAvQ-1; Wed, 13 May 2020 10:03:08 -0400
+X-MC-Unique: yczyfFHANK6jOKMPiiiAvQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 773221841925;
+        Wed, 13 May 2020 14:03:06 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-115-240.rdu2.redhat.com [10.10.115.240])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 287EA12A4D;
+        Wed, 13 May 2020 14:03:05 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id A9553220206; Wed, 13 May 2020 10:03:04 -0400 (EDT)
+Date:   Wed, 13 May 2020 10:03:04 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] KVM: x86: interrupt based APF page-ready event
+ delivery
+Message-ID: <20200513140304.GC173965@redhat.com>
+References: <20200511164752.2158645-1-vkuznets@redhat.com>
+ <20200511164752.2158645-5-vkuznets@redhat.com>
+ <20200512142411.GA138129@redhat.com>
+ <87lflxm9sy.fsf@vitty.brq.redhat.com>
+ <20200512180704.GE138129@redhat.com>
+ <877dxgmcjv.fsf@vitty.brq.redhat.com>
+ <20200513135350.GB173965@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200513135350.GB173965@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add spi-nand DT nodes to the applicable Sparx5 boards.
+On Wed, May 13, 2020 at 09:53:50AM -0400, Vivek Goyal wrote:
 
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi     | 20 ++++++++++++++++
- .../boot/dts/microchip/sparx5_pcb125.dts      |  7 ++++++
- .../boot/dts/microchip/sparx5_pcb134.dts      | 22 ++++++++++++++++++
- .../boot/dts/microchip/sparx5_pcb135.dts      | 23 +++++++++++++++++++
- 4 files changed, 72 insertions(+)
+[..]
+> > > And this notion of same structure being shared across multiple events
+> > > at the same time is just going to create more confusion, IMHO. If we
+> > > can decouple it by serializing it, that definitely feels simpler to
+> > > understand.
+> > 
+> > What if we just add sub-structures to the structure, e.g. 
+> > 
+> > struct kvm_vcpu_pv_apf_data {
+> >         struct {
+> >             __u32 apf_flag;
+> >         } legacy_apf_data;
+> >         struct {
+> >             __u32 token;
+> >         } apf_interrupt_data;
+> >         ....
+> >         __u8 pad[56];                                                                                  |
+> >         __u32 enabled;                                                                                 |
+> > };    
+> > 
+> > would it make it more obvious?
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 330fd8b096d4c..60629861a5157 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -193,6 +193,26 @@ gpio: pinctrl@6110101e0 {
- 			interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
+On a second thought, given we are not planning to use
+this structure for synchrous events anymore, I think defining
+struct might be overkill. May be a simple comment will do.
 
-+			cs1_pins: cs1-pins {
-+				pins = "GPIO_16";
-+				function = "si";
-+			};
-+
-+			cs2_pins: cs2-pins {
-+				pins = "GPIO_17";
-+				function = "si";
-+			};
-+
-+			cs3_pins: cs3-pins {
-+				pins = "GPIO_18";
-+				function = "si";
-+			};
-+
-+			si2_pins: si2-pins {
-+				pins = "GPIO_39", "GPIO_40", "GPIO_41";
-+				function = "si2";
-+			};
-+
- 			uart_pins: uart-pins {
- 				pins = "GPIO_10", "GPIO_11";
- 				function = "uart";
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-index d8b5d23abfab0..94c4c3fd5a786 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-@@ -46,6 +46,13 @@ spi-flash@0 {
- 		spi-max-frequency = <8000000>; /* input clock */
- 		reg = <0>; /* CS0 */
- 	};
-+	spi-flash@1 {
-+		compatible = "spi-nand";
-+		pinctrl-0 = <&cs1_pins>;
-+		pinctrl-names = "default";
-+		spi-max-frequency = <8000000>;
-+		reg = <1>; /* CS1 */
-+	};
- };
+struct kvm_vcpu_pv_apf_data {
+	/* Used by page fault based page not present notifications. Soon
+	 * it will be legacy
+	 */
+	__u32 apf_flag;
+	/* Used for interrupt based page ready notifications */
+	__u32 token;
+	...
+	...
+}
 
- &i2c1 {
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb134.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb134.dts
-index feee4e99ff57c..9e8dc725a954a 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb134.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb134.dts
-@@ -15,3 +15,25 @@ memory@0 {
- 		reg = <0x00000000 0x00000000 0x10000000>;
- 	};
- };
-+
-+&gpio {
-+	cs14_pins: cs14-pins {
-+		pins = "GPIO_44";
-+		function = "si";
-+	};
-+};
-+
-+&spi0 {
-+	pinctrl-0 = <&si2_pins>;
-+	pinctrl-names = "default";
-+	interface-mapping-mask = <0x4000>;	/* NAND CS14 = SPI2 */
-+	spi-rx-delay-us = <500>;		/* Tune for speed */
-+	/* Dedicated SPI2 interface */
-+	spi-flash@e {
-+		compatible = "spi-nand";
-+		pinctrl-0 = <&cs14_pins>;
-+		pinctrl-names = "default";
-+		spi-max-frequency = <42000000>;
-+		reg = <14>;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb135.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb135.dts
-index 20e409a9be196..a31e10911dbaf 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb135.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb135.dts
-@@ -15,3 +15,26 @@ memory@0 {
- 		reg = <0x00000000 0x00000000 0x10000000>;
- 	};
- };
-+
-+&gpio {
-+	cs14_pins: cs14-pins {
-+		pins = "GPIO_44";
-+		function = "si";
-+	};
-+};
-+
-+&spi0 {
-+	status = "okay";
-+	pinctrl-0 = <&si2_pins>;
-+	pinctrl-names = "default";
-+	interface-mapping-mask = <0x4000>;	/* NAND CS14 = SPI2 */
-+	spi-rx-delay-us = <500>;		/* Tune for speed */
-+	/* Dedicated SPI2 interface */
-+	spi-flash@e {
-+		compatible = "spi-nand";
-+		pinctrl-0 = <&cs14_pins>;
-+		pinctrl-names = "default";
-+		spi-max-frequency = <42000000>;
-+		reg = <14>;
-+	};
-+};
---
-2.26.2
+Thanks
+Vivek
+
