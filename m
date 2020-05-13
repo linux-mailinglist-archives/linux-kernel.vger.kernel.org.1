@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18FE1D0AC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 10:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882781D0ABE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 10:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732194AbgEMIWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 04:22:35 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:52342 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726092AbgEMIWf (ORCPT
+        id S1732097AbgEMIV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 04:21:57 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:36679 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726092AbgEMIV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 04:22:35 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04D8G4hp007414;
-        Wed, 13 May 2020 03:21:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=SN0lZANT/vbXKgnyWwzZnLfQTVL/ShY4GaSPpGpVBkA=;
- b=SiMG6Ja9eXiMz6KeoWCSkLcdZXiCb+S/pnWR9tGUM38jdOksN8I8YnnZehotk5woAzrY
- 0NN4hSkhrWxXMWUF0xbxXKXVuMUiABognHDvtwk/+nh3HzLC3/C6MplbY/LiVyUxM8FF
- zHbnoS/u91w1HtYF8aHoyeEaS8BQF0n6CQhtVACjL/vkAKJgI8cWHCAMo88IzGSK82o1
- B8lQ72rx+ij/0zrht1oUXJli5kaHcofTF+rAIK6R6GdN3MJAnX2EEZH1553pLFBFBzvi
- sys7s8FxoQ5qsC6G77iSPYfA2I8F9cYUbgvTQVIYWQf6nhp5z0Ta3sPGZAQpcJXyZxNB ZA== 
-Authentication-Results: ppops.net;
-        spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3100xes1ge-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 13 May 2020 03:21:38 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 13 May
- 2020 09:21:35 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Wed, 13 May 2020 09:21:35 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6CA562C5;
-        Wed, 13 May 2020 08:21:35 +0000 (UTC)
-Date:   Wed, 13 May 2020 08:21:35 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <tglx@linutronix.de>, <allison@lohutok.net>,
-        <info@metux.net>, <patches@opensource.cirrus.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ASoC: wm8962: Use force clear for WM8962_SYSCLK_ENA
- after reset
-Message-ID: <20200513082135.GF71940@ediswmail.ad.cirrus.com>
-References: <1589347835-20554-1-git-send-email-shengjiu.wang@nxp.com>
+        Wed, 13 May 2020 04:21:56 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-38-2tm9l_oWOAq3FsGnStpWBw-1; Wed, 13 May 2020 09:21:53 +0100
+X-MC-Unique: 2tm9l_oWOAq3FsGnStpWBw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 13 May 2020 09:21:52 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 13 May 2020 09:21:52 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'psmith@gnu.org'" <psmith@gnu.org>,
+        'Linus Torvalds' <torvalds@linux-foundation.org>
+CC:     'Arnd Bergmann' <arnd@arndb.de>,
+        'Masahiro Yamada' <yamada.masahiro@socionext.com>,
+        'Linux Kernel Mailing List' <linux-kernel@vger.kernel.org>
+Subject: RE: I disabled more compiler warnings..
+Thread-Topic: I disabled more compiler warnings..
+Thread-Index: AQHWJwHjj7O/Wk29GEyLgXD8YJ1BI6iigEwggACtZraAADOL0IAAtVzQgABf64CAABO1kIAAEzuAgAEQxaA=
+Date:   Wed, 13 May 2020 08:21:52 +0000
+Message-ID: <4a540a5d341c468bae131934b413e4ce@AcuMS.aculab.com>
+References: <CAHk-=wjah-fkfzMdmCNN8v7uriJsGeYjHh18wkXDZa2sxuAXzA@mail.gmail.com>
+         <8320f29ca61146fc985083621685ac95@AcuMS.aculab.com>
+         <CAHk-=whLY8dXE6qMuPNE+Tjc6uXy+W2jACyWLxtRUH6GU2=PAA@mail.gmail.com>
+         <0ff4860b4202a6ef3bb3b29912d083d471e1cc1d.camel@gnu.org>
+         <90909f30775744b89d1a0c40265779d9@AcuMS.aculab.com>
+         <5564c992dfeb40adbc3e6f6a29e43d2e@AcuMS.aculab.com>
+         <73dace5aca21bee09ce12aa8dcfd50daa2cd6051.camel@gnu.org>
+         <464ab7c2d9e144718e4a3135a41f3056@AcuMS.aculab.com>
+ <d743bd7bec25c939d7419a3512239b43b990af5a.camel@gnu.org>
+In-Reply-To: <d743bd7bec25c939d7419a3512239b43b990af5a.camel@gnu.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1589347835-20554-1-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-SPF-Result: fail
-X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com include:spf.protection.outlook.com
- ip4:5.172.152.52 -all
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=581
- bulkscore=0 spamscore=0 clxscore=1015 cotscore=-2147483648 suspectscore=0
- lowpriorityscore=0 phishscore=0 priorityscore=1501 mlxscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005130076
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 01:30:35PM +0800, Shengjiu Wang wrote:
-> When CLOCKING2 is non-volatile register, we need force clear
-> the WM8962_SYSCLK_ENA bit after reset, for the value in cache
-> maybe 0 but in hardware it is 1. Otherwise there will issue
-> as below statement in driver.
-> 
-> /* SYSCLK defaults to on; make sure it is off so we can safely
->  * write to registers if the device is declocked.
-> 
-> Fixes: c38b608504aa ("ASoC: wm8962: set CLOCKING2 as non-volatile register")
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
+RnJvbTogUGF1bCBTbWl0aA0KPiBTZW50OiAxMiBNYXkgMjAyMCAxNzo1NQ0KPiBPbiBUdWUsIDIw
+MjAtMDUtMTIgYXQgMTU6MDQgKzAwMDAsIERhdmlkIExhaWdodCB3cm90ZToNCj4gPiBJIHRoaW5r
+IHRoZXJlIHdlcmUgc29tZSBzdWItbWFrZXMgdGhhdCB3ZXJlIHN0YXJ0ZWQgd2l0aCBtYWtlDQo+
+ID4gaW5zdGVhZCBvZiAkKE1BS0UpIHNvIGVuZGVkIHVwIGNyZWF0aW5nIGEgbmV3IGpvYiBwaXBl
+Lg0KPiANCj4gT2gsIHllcywgdGhhdCB3aWxsIGRvIGl0Lg0KPiANCj4gPiBEb2Vzbid0IGl0IGRv
+IGJsb2NraW5nIHJlYWRzIHdpdGggU0lHQ0hMRCBlbmFibGVkPw0KPiANCj4gTm8sIGJlY2F1c2Ug
+aXQncyByYWN5IChieSBpdHNlbGYpLg0KPiANCj4gPiAob3IgaG9wZWZ1bGx5IHBwb2xsKCkgdG8g
+YXZvaWQgdGhlIHJhY2UpDQo+IA0KPiBHTlUgbWFrZSB1c2VzIHBzZWxlY3QoKSwgb24gc3lzdGVt
+cyB0aGF0IHN1cHBvcnQgaXQuICBPbiBzeXN0ZW1zIHRoYXQNCj4gZG9uJ3Qgc3VwcG9ydCBwc2Vs
+ZWN0KCkgaXQgdXNlcyBhIHRyaWNrIEkgZGVzY3JpYmVkIGluIGFub3RoZXIgZW1haWw6DQo+IHdl
+IGR1cCgpIHRoZSBGRCwgcmVhZCgpIG9uIHRoZSBkdXAsIHRoZW4gaW4gdGhlIFNJR0NITEQgaGFu
+ZGxlciB3ZQ0KPiBjbG9zZSgpIHRoZSBkdXAuDQoNCkRvZXMgdGhhdCBldmVuIHdvcmsgLSBzZWVt
+cyBsaWtlIGl0IHJlcXVpcmVzIGNsb3NlKCkgdG8gYWJvcnQgcG9sbCgpLg0KQmV0dGVyIGlzIHRv
+IGp1c3QgaGF2ZSB0aGUgU0lHQ0hMRCBoYW5kbGVyIHdyaXRlIGEgYnl0ZSBpbnRvIGEgcGlwZS4N
+Cg0KPiA+IEFub3RoZXIgb3B0aW9uIGlzIGZvciB0aGUgJ3BhcmVudCcgbWFrZSB0byByZXR1cm4g
+KG9yIG5vdCBhY3F1aXJlKQ0KPiA+IGEgam9iIHRva2VuIGZvciAkKE1BS0UpIGNvbW1hbmRzLg0K
+PiANCj4gSXQganVzdCBmZWVscyBjbGVhbmVyIHRvIG1lIHRvIGhhdmUgdGhlIHBhcmVudCBzaW1w
+bHkgYWx3YXlzIHRha2UgdGhlDQo+IHRva2VuLCBhbmQgbGVhdmUgaXQgdXAgdG8gdGhlIGNoaWxk
+IHRvIHB1dCBpdCBiYWNrIGlmIGFwcHJvcHJpYXRlLA0KPiByYXRoZXIgdGhhbiB0aGUgcGFyZW50
+IHB1dHRpbmcgaXQgYmFjay4NCj4gDQo+IEhhdmluZyB0aGUgcGFyZW50IG5vdCBhY3F1aXJlIGEg
+dG9rZW4gYXQgYWxsIHdvbid0IHdvcms7IHdpdGhvdXQNCj4gbGltaXRpbmcgc3ViLW1ha2VzIGl0
+IG1lYW5zIHlvdSBtaWdodCBoYXZlIDEwMCdzIG9mIHRoZW0gcnVubmluZyBhdCB0aGUNCj4gc2Ft
+ZSB0aW1lLCBldmVuIHdpdGggLWoyIG9yIHdoYXRldmVyLg0KDQpIbW1tLi4uIA0KVGhhdCBtZWFu
+cyB0aGUgc3ViLW1ha2UgbXVzdCBhbHdheXMgaG9sZCBvbmUgdG9rZW4uDQpPdGhlcndpc2UgdGhl
+IHBhcmVudC1tYWtlIGNvdWxkIHVzZSBpdCB0byBjcmVhdGUgYSBuZXcgc3ViLW1ha2UuDQoNCkFj
+dHVhbGx5IHRoZSB0b2tlbiBwaXBlIGNhbiBiZSBvcGVuZWQgTk9OX0JMT0NLIGJlY2F1c2UgcG9s
+bCgpDQpjYW4vd2lsbCBiZSB1c2VkIHRvIHdhaXQgZm9yIGEgdG9rZW4uDQoNClNvIHlvdSBhbHdh
+eXMgdHJ5IHRvIHJlYWQgYSB0b2tlbiAtIGV2ZW4gd2hlbiB5b3UgaGF2ZSBvbmUgJ2luIHlvdXIg
+aGFuZCcNCihlaXRoZXIgZW50cnkgb3IgYmVjYXVzZSBhIGpvYiBqdXN0IGZpbmlzaGVkKS4NCklm
+IGl0IGlzbid0IHRoZSAnYWJvcnQnIG9uZSwgcHV0IGl0IGJhY2suDQpBIGJpdCBvZiBmYWZmaW5n
+IG9uIHRoZSB0b2tlbiBwaXBlIGlzbid0IGdvaW5nIHRvIGFmZmVjdCB0aGUgcGVyZm9ybWFuY2UN
+CndoZW4gaXQgaXMgYWJvdXQgdG8gZG8gZm9yaytleGVjLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0
+ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBL
+ZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Thanks,
-Charles
