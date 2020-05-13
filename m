@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27111D2169
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1521D215C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729913AbgEMVqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48572 "EHLO
+        id S1729853AbgEMVqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 17:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729793AbgEMVqo (ORCPT
+        by vger.kernel.org with ESMTP id S1729752AbgEMVqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 May 2020 17:46:44 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0294FC061A0C;
-        Wed, 13 May 2020 14:46:43 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id g14so12828072wme.1;
-        Wed, 13 May 2020 14:46:42 -0700 (PDT)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128AEC061A0E;
+        Wed, 13 May 2020 14:46:44 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id z72so20605923wmc.2;
+        Wed, 13 May 2020 14:46:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1ZhpfY5SsXwRMXVq8oG2SQckFQ1KlcXnx8okrJoqKCA=;
-        b=J9f+VXD35N9xl7mX+0T+f83yVVR/BgYM8RMEZCYaz1RSjI+MkVij2f44TNmQ9iGE86
-         6etFqrZUffKYP1M1wze/ps4CpisiMrwWTnMSr2L2m5nhNa5DdRhGtiWzYXGCcH4SCHOR
-         6bCmg4p+pF7wkc1n7vujJNPXgs88iP/adct8b8CQYCOEt+lQFy8tdVg3kvLTiy1MZ6jP
-         f3tO1rfpK8afd0A1SGtKTrY4qsre9OxjLK3sQ7TXtxEP9Sff2EyVlkXtvXZteu5nRCWR
-         lo+fGAss0/qYhP8AefeSr+vcsIXkj77mG7qPVT6Roqq2qA6M+07ju8yV/+hXTmOmBSQa
-         zFnQ==
+        bh=SsGLhvtzNNE3Um+kD27FrquNqhBmiHi5qwlCc1MeclU=;
+        b=XiuECaHuWlZtqmf2V9RziiPXPESy1M5JPlu5ULkY1Lq+ut+oFJhcdMTgwL8RtzNBUV
+         slYA65/n18tW4XScYRxcfofPeB0hkM1niA79FfTflHA8206jGnBB1em5BozDhCCKIs5s
+         Of+LQcm2e4gZIPPxSt6hpTQ+oD0f7H7qjnnguQvB+7bPo4Q+A8tiYIewQkjcGa0TY4M6
+         2Vwfm8RIAaGCX8i19Ue/tSbRgXnuE5ME8dI8KYqGdr0JO95Bg3t63kP+vDCfdTvdEM34
+         GZ8DDZzy9jiM9k8AUC6DMts6GkZaNtSXkx+Jg041oD4WxMaElsC9zd2m1/qTAbUZulrg
+         N39w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1ZhpfY5SsXwRMXVq8oG2SQckFQ1KlcXnx8okrJoqKCA=;
-        b=iwlpSnesA003heahe3TXNA8WHJ+5hef3ZvDERHXgeW78TVsvwW3uitjTfIc+Dt1vbg
-         P270oCZKA18rV5W0UAFNpgZrUWAu5XtwRYASj+O4AOVjkKeNtRndA+wJpx0Ldes4g/D7
-         WL3Ucylb6368LOMI09UifLKnBFjRWcR0s7ljLX9uhc9ZxV8aul5eZGr8W7Rier4J2Itv
-         P4Q7gHabLQkGDy9vNwQYb5ufrzHvefTQA/18bbcEDR6UgjiIX7waX/XI7ukixuG/aydF
-         4NQqn4x521tKaVqJLqVnE1o1NGEdxcAc9gPKia/19/+8twazSYjuuDKnl+zPvgM7UNlm
-         qdrg==
-X-Gm-Message-State: AGi0PubGby046EE7y0YbCDUJasz82FRdQtFgHTX2D9WLeyU/DHxV/pZu
-        6o8OahCeuJnfPMy57oIeV54=
-X-Google-Smtp-Source: APiQypIZ4r5SZkRDB6NXjJjmJhzn7tVrsiIl9AH/93M3gz7vnmZP+aNiDzxAEY/+SIIWvDX/w43OYQ==
-X-Received: by 2002:a1c:f012:: with SMTP id a18mr43223777wmb.116.1589406401788;
-        Wed, 13 May 2020 14:46:41 -0700 (PDT)
+        bh=SsGLhvtzNNE3Um+kD27FrquNqhBmiHi5qwlCc1MeclU=;
+        b=M7dvT4grnK0RYqsrGLH+jeXMJq+ItYuiu+WGmMYMLYT66E2o937WDiC4X6m4Ng/Zvt
+         PgvPL6JMciGW/0X3vm1ogcBCy9KDyDJGcyoc6gozORc3t1EIVP1IQuthMj8eYrUSWUPR
+         ilcppBjZlfGDT/7B9Omo7JDDXQ5l1JIHe0F68qMlKyl4D6TgIjNzHA27A4mMlY6PE58T
+         sDVpnudtYh5bjmi57OalFTs/Oo4Gd3HFWDJa4Gwmsgch00kEHX9eNihTIxmiBfR7vmW8
+         GlHFZfpVPX68AXU84KQx5KXAWBWd3W77EO1xBKRRAxRSk149wElD/Cm4cj/k9OMkSMzs
+         Q9XQ==
+X-Gm-Message-State: AGi0PuaF7fgsUmmbgscKTSe8yBO3zMDXSgh82u4hKekTdLDwv7Fhe8/7
+        esK4lJ7CY2KMtF1o3hInWsw=
+X-Google-Smtp-Source: APiQypIjDv9j1WGGbsrXKzuvn+8PI0doRo0I/EblRla78tb2gcpayV63BaEBdC9Tkx4qISmrxAydUQ==
+X-Received: by 2002:a1c:25c4:: with SMTP id l187mr42071872wml.89.1589406402802;
+        Wed, 13 May 2020 14:46:42 -0700 (PDT)
 Received: from localhost.localdomain (cpc91192-cmbg18-2-0-cust374.5-4.cable.virginm.net. [80.6.113.119])
-        by smtp.gmail.com with ESMTPSA id m23sm1699734wmg.45.2020.05.13.14.46.40
+        by smtp.gmail.com with ESMTPSA id m23sm1699734wmg.45.2020.05.13.14.46.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 14:46:41 -0700 (PDT)
+        Wed, 13 May 2020 14:46:42 -0700 (PDT)
 From:   Emil Velikov <emil.l.velikov@gmail.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     emil.l.velikov@gmail.com,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jslaby@suse.com>, linux-kernel@vger.kernel.org,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-Subject: [PATCH 04/11] alpha: constify sysrq_key_op
-Date:   Wed, 13 May 2020 22:43:44 +0100
-Message-Id: <20200513214351.2138580-4-emil.l.velikov@gmail.com>
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Subject: [PATCH 05/11] MIPS: constify sysrq_key_op
+Date:   Wed, 13 May 2020 22:43:45 +0100
+Message-Id: <20200513214351.2138580-5-emil.l.velikov@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200513214351.2138580-1-emil.l.velikov@gmail.com>
 References: <20200513214351.2138580-1-emil.l.velikov@gmail.com>
@@ -75,32 +74,30 @@ sysrq_key_op. As such we can add the notation.
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Jiri Slaby <jslaby@suse.com>
 Cc: linux-kernel@vger.kernel.org
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: linux-alpha@vger.kernel.org
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
 Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
 ---
 Please keep me in the CC list, as I'm not subscribed to the list.
 
-IMHO it would be better if this gets merged this via the tty tree.
+IMHO it would be better it this gets merged this via the tty tree.
 ---
- arch/alpha/kernel/setup.c | 2 +-
+ arch/mips/kernel/sysrq.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
-index dd7f770f23cf..6fa802c495b4 100644
---- a/arch/alpha/kernel/setup.c
-+++ b/arch/alpha/kernel/setup.c
-@@ -431,7 +431,7 @@ register_cpus(void)
- arch_initcall(register_cpus);
+diff --git a/arch/mips/kernel/sysrq.c b/arch/mips/kernel/sysrq.c
+index e5a2a6ab71ac..9c1a2019113b 100644
+--- a/arch/mips/kernel/sysrq.c
++++ b/arch/mips/kernel/sysrq.c
+@@ -52,7 +52,7 @@ static void sysrq_handle_tlbdump(int key)
+ #endif
+ }
  
- #ifdef CONFIG_MAGIC_SYSRQ
--static struct sysrq_key_op srm_sysrq_reboot_op = {
-+static const struct sysrq_key_op srm_sysrq_reboot_op = {
- 	.handler	= machine_halt,
- 	.help_msg       = "reboot(b)",
- 	.action_msg     = "Resetting",
+-static struct sysrq_key_op sysrq_tlbdump_op = {
++static const struct sysrq_key_op sysrq_tlbdump_op = {
+ 	.handler        = sysrq_handle_tlbdump,
+ 	.help_msg       = "show-tlbs(x)",
+ 	.action_msg     = "Show TLB entries",
 -- 
 2.25.1
 
