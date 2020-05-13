@@ -2,155 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55281D1901
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE821D1904
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388888AbgEMPUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 11:20:39 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:44092 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728692AbgEMPUi (ORCPT
+        id S2389145AbgEMPUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 11:20:50 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54694 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2389124AbgEMPUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 11:20:38 -0400
-Received: by mail-ot1-f65.google.com with SMTP id j4so13679288otr.11
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 08:20:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=klA7kjCRgTh7w4ABQm1XG/GGzZPWDtCKKvZ6hhZvn0M=;
-        b=YK0ioO+YfCbNiaGbOoSJRicx6qImHVCju1HKhrbmZ+nAvS238PNTwdF2e8T7HZbTWW
-         7ThBzh6Ypt0tU6ddGckPvCTonNrN4FoCIqedhj+9V+5vCMXnmB/0xEG+6on6grUvLVA1
-         VekEw4jRwmH9LhGweKlmEf2kYFzp95crlrIx1XbtVWFlBHMsk8HcWDE21dgo4LZLahYD
-         kvPW0O4nqLEbuZFOOVSO1tuvvUwdwKhfemGivyz+YRyMLqJL0y1y8S1LFYsNgF6Bdk06
-         6RRGLEOvoLZkcOiVM5t6/9PhBlHaSWyyr5BlmaT7vqUb7dgX6ZItMD0U6+qH6b2J3dUc
-         0gEg==
-X-Gm-Message-State: AGi0PuboOSvRofnPZ4xXwz6ZOHnFXuYuqxcfjfU9bpEGD2IXkchCO0vu
-        mE7iQJA+jvj9Bnlwd+eIYaaXVWSLPJxqDk3aTBY=
-X-Google-Smtp-Source: APiQypI8Aw7GHNMbnvdlatUvOMGOBY4JkzTqMYMucj6SftC0csp2x2kbkUIA3PLWBYRoCQ3rzTxqhilz4ZlCHrhcefQ=
-X-Received: by 2002:a05:6830:10ce:: with SMTP id z14mr20242588oto.118.1589383237714;
- Wed, 13 May 2020 08:20:37 -0700 (PDT)
+        Wed, 13 May 2020 11:20:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589383248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jBoXYA5jC+1FdSc82MyGNu1Sk0AIstPxsVbxIsZVhsA=;
+        b=bPQXgMTMqsKvo740A8vO1fTHQEDf11vAVFNExnWwgxT+M/WhPv1PBT9FOr1Vr6w6765lQt
+        uLBrvi1mC53l1saCxEAhK0n6kTo17DMqFvVK3jj+LTdmHV5azbM7Mi/FJBGcW5JoZ0Dso5
+        0MpWUarCptvF7AQRVXRojjra+A8ikec=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-397-VuQquIe_OPSVs8fjvjQzFA-1; Wed, 13 May 2020 11:20:44 -0400
+X-MC-Unique: VuQquIe_OPSVs8fjvjQzFA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A84583DA41;
+        Wed, 13 May 2020 15:20:43 +0000 (UTC)
+Received: from [10.72.12.111] (ovpn-12-111.pek2.redhat.com [10.72.12.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 264A260F8D;
+        Wed, 13 May 2020 15:20:39 +0000 (UTC)
+To:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Patrick Donnelly <pdonnell@redhat.com>
+From:   Xiubo Li <xiubli@redhat.com>
+Subject: netfilter: does the API break or something else ?
+Message-ID: <cf0d02b2-b1db-7ef6-41b8-7c345b7d53d5@redhat.com>
+Date:   Wed, 13 May 2020 23:20:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200513151840.36400-1-heikki.krogerus@linux.intel.com>
-In-Reply-To: <20200513151840.36400-1-heikki.krogerus@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 13 May 2020 17:20:26 +0200
-Message-ID: <CAJZ5v0gJ0jCEVX=3zJfkRJdeoAot0nKFUOAoMSi9e_hdi8peqw@mail.gmail.com>
-Subject: Re: [PATCH] kobject: Make sure the parent does not get released
- before its children
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 5:18 PM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> In the function kobject_cleanup(), kobject_del(kobj) is
-> called before the kobj->release(). That makes it possible to
-> release the parent of the kobject before the kobject itself.
->
-> To fix that, adding function __kboject_del() that does
-> everything that kobject_del() does except release the parent
-> reference. kobject_cleanup() then calls __kobject_del()
-> instead of kobject_del(), and separately decrements the
-> reference count of the parent kobject after kobj->release()
-> has been called.
->
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> Fixes: 7589238a8cf3 ("Revert "software node: Simplify software_node_release() function"")
-> Cc: Brendan Higgins <brendanhiggins@google.com>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Suggested-by: "Rafael J. Wysocki" <rafael@kernel.org>
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Hi Experts，
 
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Recently I hit one netfilter issue, it seems the API breaks or something 
+else.
 
-> ---
->  lib/kobject.c | 30 ++++++++++++++++++++----------
->  1 file changed, 20 insertions(+), 10 deletions(-)
->
-> diff --git a/lib/kobject.c b/lib/kobject.c
-> index 65fa7bf70c57..32432036bef8 100644
-> --- a/lib/kobject.c
-> +++ b/lib/kobject.c
-> @@ -599,14 +599,7 @@ int kobject_move(struct kobject *kobj, struct kobject *new_parent)
->  }
->  EXPORT_SYMBOL_GPL(kobject_move);
->
-> -/**
-> - * kobject_del() - Unlink kobject from hierarchy.
-> - * @kobj: object.
-> - *
-> - * This is the function that should be called to delete an object
-> - * successfully added via kobject_add().
-> - */
-> -void kobject_del(struct kobject *kobj)
-> +static void __kobject_del(struct kobject *kobj)
->  {
->         struct kernfs_node *sd;
->         const struct kobj_type *ktype;
-> @@ -625,9 +618,23 @@ void kobject_del(struct kobject *kobj)
->
->         kobj->state_in_sysfs = 0;
->         kobj_kset_leave(kobj);
-> -       kobject_put(kobj->parent);
->         kobj->parent = NULL;
->  }
-> +
-> +/**
-> + * kobject_del() - Unlink kobject from hierarchy.
-> + * @kobj: object.
-> + *
-> + * This is the function that should be called to delete an object
-> + * successfully added via kobject_add().
-> + */
-> +void kobject_del(struct kobject *kobj)
-> +{
-> +       struct kobject *parent = kobj->parent;
-> +
-> +       __kobject_del(kobj);
-> +       kobject_put(parent);
-> +}
->  EXPORT_SYMBOL(kobject_del);
->
->  /**
-> @@ -663,6 +670,7 @@ EXPORT_SYMBOL(kobject_get_unless_zero);
->   */
->  static void kobject_cleanup(struct kobject *kobj)
->  {
-> +       struct kobject *parent = kobj->parent;
->         struct kobj_type *t = get_ktype(kobj);
->         const char *name = kobj->name;
->
-> @@ -684,7 +692,7 @@ static void kobject_cleanup(struct kobject *kobj)
->         if (kobj->state_in_sysfs) {
->                 pr_debug("kobject: '%s' (%p): auto cleanup kobject_del\n",
->                          kobject_name(kobj), kobj);
-> -               kobject_del(kobj);
-> +               __kobject_del(kobj);
->         }
->
->         if (t && t->release) {
-> @@ -698,6 +706,8 @@ static void kobject_cleanup(struct kobject *kobj)
->                 pr_debug("kobject: '%s': free name\n", name);
->                 kfree_const(name);
->         }
-> +
-> +       kobject_put(parent);
->  }
->
->  #ifdef CONFIG_DEBUG_KOBJECT_RELEASE
-> --
-> 2.26.2
->
+On CentOS8.1 with the recent upstream kernel built from source, such as 
+5.6.0-rc6/5.7.0-rc4. When running the following command:
+$ sudo bash -c 'iptables -A FORWARD -o enp3s0f1 -i ceph-brx -j ACCEPT'
+iptables v1.8.2 (nf_tables): CHAIN_ADD failed (Operation not supported): 
+chain INPUT
+
+With the nftables command:
+
+$ sudo nft add chain ip filter INPUT { type filter hook input priority 0\; }
+Error: Could not process rule: Operation not supported
+add chain ip filter INPUT { type filter hook input priority 0; }
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+$  sudo nft add chain ip filter FORWARD { type filter hook forward 
+priority 0\; }
+Error: Could not process rule: Operation not supported
+add chain ip filter FORWARD { type filter hook forward priority 0; }
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+$  sudo nft add chain ip filter OUTPUT { type filter hook output 
+priority 0\; }
+Error: Could not process rule: Operation not supported
+add chain ip filter OUTPUT { type filter hook output priority 0; }
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+While tried them with downstream kernel 4.18.0-147.8.1.el8_1.x86_64, 
+they all could work well.
+
+The nftables/libnftnl packages are:
+
+$ rpm -qa|grep nft
+nftables-0.9.0-14.el8.x86_64
+libnftnl-1.1.1-4.el8.x86_64
+
+And we have tried v5.7.0-rc4+ with f31 userspace, they all could work 
+well too.
+
+ From above I just suspect the API should break. Could someone kindly 
+point out which and where ?
+Thanks
+BRs
+Xiubo
+
