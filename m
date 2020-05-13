@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2F31D14E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4155C1D14EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387531AbgEMNa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:30:57 -0400
-Received: from sonic308-17.consmr.mail.ir2.yahoo.com ([77.238.178.145]:42222
-        "EHLO sonic308-17.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726001AbgEMNa4 (ORCPT
+        id S2387859AbgEMNbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:31:37 -0400
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:59452 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387730AbgEMNbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:30:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1589376654; bh=vUjtVOr1LCIoQU4EvLR2F9kwRcMR3abpMUhjHVo2tTA=; h=Date:From:Reply-To:Subject:References:From:Subject; b=FGGmONDx76mNxfADH9DBtz4UAkSwj/ONF4jAte7Mel+yNNf5QR93a0GoteTfjrrhqQExb3YmvpT8TZAzFqPIb7Pet/3VxPJVRMvpcVyZspaetzRRXY3RYvGSEYFw4Gu55lBvp05+D3bk7Ui/cOMH4V/yoHLNEg2CEyYlhgidC/RfarQPAGsbC0yx+/0H62uUHg5xZk2fJtjvnjaBP22QEulex7NT1uC+BwupsFRQui6s5DQBDSki4/ek3hP30krACfQKtY2Nfvgh+gYhBSw1UR4a93CrVcqYxMUuM7HXEAzSclsZsAiMy+6sj5h2zGVNjlJmIwYY0rN/XH2/1vaNGw==
-X-YMail-OSG: cDj.AyQVM1n3hMI6orekWNmD6bdnL3vf4r_.mjlSVu_gLzRqG5__C.cBBYKaR64
- fkyCM8whSuK5SrXSc9WsYSdERC2zPZ_WhbD_0cEUy8_oh55x8O0R7xax9cFJiZnyC1EKofNuoeVs
- KAOMGNCaLrZJEyLzN_62LWDQ2va_6dOZWHOS95_FpUcPIXOLhCvRXZZMNgSukPcFcr4DYMwjDuev
- pQZxWVBwBeB0bFH4lyUrfApP09Wyk8EBn9HQKpb3Az2OiLxu0plGOMPSN8Jt._YHXskkWoLLll74
- 5LlAlIhiFpk80qI6mjERArHnXm30lmg7fANqzSNW174Y0cD5VfejJa41rzs4l0d98eaKWiqXViNs
- 2Ku0vx4z4IlwIKmYb0HD218tdPhV9.4VY8XnPQ4noGjCSIubWE6nS5o5XmzdgJZ45vDCz9ga2GJk
- zG_SU76RBQh2KTQVnF5SK6_OGF6V2XWrbToSmOGVKMytKZuzWk6cZaytPJSXmDPtBJfI9G7_5U7E
- m0Xds_rjd4RyBPMY8wDfdn8jXm9m8i7XWKedSTIx97d.EbojMYUqyAZyvzF3uVnKq8RCELby7.JD
- YI6Vxb71XsGA8z7MmAhEmPYXL2eSI3.fszDhYBxKdTuoLJ1Od5KX6Y8Kqj5._wMrtFK77bmilL17
- k9FaTEZHZnPeMHeIWHOC6SjFpdxeIDgVo8BBu6.F3.NeQmOkbn3Xn4KyPEFm9s9p1Af_Mkh4RS.Q
- SaA8WNLLEZjcSmLPJHpQiSuAwFbmIaPOh2.l4TXp01jqZaD5ghuYphWqxTIewzIk9iWki0NXaypd
- tOArBhUPKDuiHHoSDE9vROUs0D2KbEc14Hj_eISkTg4NXqzANJZHnMhKLyYgDPAVYhtslZgZegAu
- 7P3ZK_ENfMKn_w7Ugyu2bH1HGWTgWsXYhZJejDqrL9WmWPLgnC05JtqqGyJodVJoggVyb1HT.fI6
- qBhi4q.QxQDDuO.Hdpx0XJftV_xHOckju4Oohuo0k_W6Ve6gwc3tuD3XVYr3dMiG7E1ALQ8JhVj9
- eLD6NWDs2ViJeBELDnP26e1mT21CC32zq_bbY9PzNtec_TWTn7AaDP5YKiv0UAxA0yj98ESpSV7P
- zyw.haoIsIT2YKuyfikf7pru9n0JkVY1rt8eDV78c3_DFuTxFDH14gNK3lO.viDieA0x4zOsLcq4
- XqHGt97vYBRWHH7JVXtFfiEkSXVTJ03AasakPnI0_JNluSRueDq.DGzBPTLiLhWOe9qEPh5mwo3F
- jxu8u5Mb5NPvvBmBAsevWNXQIP6ID4lw.T3jiemPLCxj557IO453cZ426WttxtqSgmnFLGljl
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ir2.yahoo.com with HTTP; Wed, 13 May 2020 13:30:54 +0000
-Date:   Wed, 13 May 2020 13:30:49 +0000 (UTC)
-From:   REJOY <mrsrajoysmrsrajoyshassain@gmail.com>
-Reply-To: rejoyhassain02@gmail.com
-Message-ID: <254311865.766555.1589376649770@mail.yahoo.com>
-Subject: Thank you for your anticipated co-operation.
+        Wed, 13 May 2020 09:31:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1589376696; x=1620912696;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=t4aCbU2kHB3bhhe/yGQIKD1b0a2xuEV7ZDV6usSs6jg=;
+  b=scf8V5lnIxQqpR5p4kT4/gU8Gxowx9AZ5/Gg7LYsYqwHoJwzbQ68gerR
+   Npw6dHkIzDaPfuaCHbLsnyEgenbqE23oi28es23WnYZ6uxdPCMg+frDKe
+   eIh7Di8HCJRZmNWHohArH3HffBOlvNo1iKIRRWzThbAn0begCOI7AHKd3
+   n1krZ1DZAuVUyagXeXvpUVnZ+LeI1Uzhpvy594A3eh9z+C7EddIb+Di4U
+   7QTvOXdLQiWRV/NTR8is9iGZ6WUf6ue4pthe/oNzuIcpNZ/+3aqgwr6w9
+   02vnlVGLlgrr7rdRQ3N+3C57g4D8Am5XcI3rt60y/nJlQWKF4kDle8omD
+   Q==;
+IronPort-SDR: bUWPzFdWKX2/k51R9GST6UyKSuQiwjQpNUP4sqAL0kaIvI/PVupWW5wInfBl3DCG/OalO0JfXs
+ xplVwZwEwkQsQKeqND3sE0Gzq9C8M6o2QgCm4wNj36JW/bDwvDJLifefNkpBRrnszpXEtmrS53
+ upstPfDAcPqWqFlxCHwC2ma66TRhknZvnmdzHQOQvw1YTFywC8rFsOri6R/cUs+ghKQSXUduVU
+ MrrUW+Qd2MO1823QRxdvuzSfpo4IgMuQSGtFcV4RImTP3doQjndbb5j0ZcI6WTH6ZQtehDatRs
+ evg=
+X-IronPort-AV: E=Sophos;i="5.73,387,1583218800"; 
+   d="scan'208";a="75770577"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 May 2020 06:31:34 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 13 May 2020 06:31:35 -0700
+Received: from soft-dev15.microsemi.net (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1713.5 via Frontend Transport; Wed, 13 May 2020 06:31:33 -0700
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        SoC Team <soc@kernel.org>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/3] mmc: Adding support for Microchip Sparx5 SoC
+Date:   Wed, 13 May 2020 15:31:19 +0200
+Message-ID: <20200513133122.25121-1-lars.povlsen@microchip.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <254311865.766555.1589376649770.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15904 YMailNodin Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an add-on series to the main SoC Sparx5 series
+(Message-ID: <20200513125532.24585-1-lars.povlsen@microchip.com>).
 
+It adds eMMC support for Sparx5, by adding a driver for the SoC SDHCI
+controller, DT configuration and DT binding documentation.
 
-DEAR FRIEND.
+Lars Povlsen (3):
+  dt-bindings: mmc: Add Sparx5 SDHCI controller bindings
+  sdhci: sparx5: Add Sparx5 SoC eMMC driver
+  arm64: dts: sparx5: Add Sparx5 eMMC support
 
-YOU MAY BE WONDERING WHYI CONTACT YOU BUT SOMEONE LUCKY HAS TO BE CHOSEN WHICH IS YOU. I WANT YOU TO HANDLE THIS BUSINESS TRASACTION WITH ME IF CHANCE YOU TO DO INTERNATION BUSINESS I GO YOUR CONTACT FROM A RELIABLE WEB DIRECTORY.
+ .../mmc/microchip,dw-sparx5-sdhci.yaml        |  57 +++
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |  24 ++
+ .../boot/dts/microchip/sparx5_pcb125.dts      |  23 ++
+ .../boot/dts/microchip/sparx5_pcb134_emmc.dts |  23 ++
+ .../boot/dts/microchip/sparx5_pcb135_emmc.dts |  23 ++
+ drivers/mmc/host/Kconfig                      |  13 +
+ drivers/mmc/host/Makefile                     |   1 +
+ drivers/mmc/host/sdhci-of-sparx5.c            | 348 ++++++++++++++++++
+ 8 files changed, 512 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
+ create mode 100644 drivers/mmc/host/sdhci-of-sparx5.c
 
-I RECEIVE YOUR CONTENT OF YOUR EMAIL FROM THIS DHL MASTER CARD OFFICES FUND OF $10.5 USD MILLION AFTER THE BOARD OF DIRECTORS MEETINGS, THE UNITED NATIONS GOVERNMENT HAVE DECIDED TO ISSUE YOU YOUR (ATM) VALUED AT 10.5 MILLION UNITED STATES DOLLAR.THIS IS TO BRING TO YOUR NOTICE THAT YOUR VALUED SUM OF 10.5 MILLION DOLLAR HAS BEING TODAY CREDITED INTO (ATM) MASTER CARD AND HAS BEEN HANDLE TO THE FOREIGN REMITTANCE DEPARTMENT TO SEND IT TO YOU TODAY IN YOUR FAVOR.
-
-WITH YOUR (ATM) YOU WILL HAVE ACCESS TO MAKE DAILY WITHDRAWALS OF $5000,00 UNITED STATE DOLLARS DAILIES AS ALREADY PROGRAMMED UNTIL YOU WITHDRAW YOUR TOTAL SUM IN YOUR (ATM) CARD WHICH HAS REGISTERED IN OUR SYSTEM FOR PAYMENT RECORD, AS SOON AS WE RECEIVE YOUR INFORMATIONS AND YOUR HOME ADDRESS OF YOUR COUNTRY AS ALREADY PROGRAMMED, WE WILL SEND YOUR (ATM) CARD THROUGH DHL COURIER SERVICE, WE HAVE RECEIVED A SIGNAL FROM THE SWISS WORLD BANK TO INFECT YOUR TRANSFER TO YOU WITHIN ONE WEEK,
-
-WE HAVE JUST FINISHED OUR ANNUAL GENERAL MEETING WITH THE CENTRAL BANK OF AMERICA (BOA). AT THE END OF THE BOARD OF DIRECTORS MEETING TODAY, WE HAVE CONCLUDED TO IMMEDIATELY ISSUE YOU AS SOON AS POSSIBLE,
-
-AND YOUR VALUE SUM HAS BEEN CREDITED INTO YOUR (ATM) VISA CARD
-ACCOUNT. WHICH YOU WILL USE TO WITHDRAW YOUR FUND IN ANY PART OF THE WORLD, WE HAVE ISSUED AND CREDITED YOUR (ATM) CARD IN YOUR NAME TODAY,
-
-YOUR (ATM) WILL BE INSURE BY THE INSURANCE COMPANY AND SEND TO YOU
-THROUGH ANY AVAILABLE COURIER COMPANY OF OUR CHOICE.
-
-ONCE AGAIN CONGRATULATIONS TO YOU,
-
-DIRECTOR DHL SERVICE,
-THANKS,
-SINCERELY.
+--
+2.26.2
