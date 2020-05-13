@@ -2,89 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F3F1D0632
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 07:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 270A21D063A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 07:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728787AbgEMFIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 01:08:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726092AbgEMFIO (ORCPT
+        id S1728833AbgEMFKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 01:10:30 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:21111 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726035AbgEMFK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 01:08:14 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5667DC061A0E;
-        Tue, 12 May 2020 22:08:14 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id w65so7469997pfc.12;
-        Tue, 12 May 2020 22:08:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gD48qUgTpY5H3y7E/mQ9fNLXyKbI1TMIzyH0EZQrjYY=;
-        b=sQGCPXd4N3EjbMUbGnma6DqfPv0qGLNzCrmuPLoJvPHOQktCBX5jb8CJ4pAAz4KVX8
-         b8E6XYY6AcJldhyadQuzByieYDB9IdoZGx2Yck8FQo23N7vfP0a8auUC/7h16tYqe6Rg
-         sz/Qvk8hV9EhXtBD60xvcLg8DL86wPqLYlY80xoZavrLtfFaTF8jPMfYiocMwh7f2Psr
-         Z9WpHrOo/eVNLJ8jg4QnkEO+gqCZchLtx7/Nnj36dLJViqTZvZCqgSxY+J4Gb2QnbZkO
-         kt2ZWxmNghdiJbOsR41Mbm0NYMcnrWgi1o0zhZ2O9QNp1Y59XKpxU/nsQjqQnApagr99
-         uhIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gD48qUgTpY5H3y7E/mQ9fNLXyKbI1TMIzyH0EZQrjYY=;
-        b=Q4UXLy/IzoErAvh93yE5e8V0JvKUdlDWbGnGchT1bHVHVu2vCzAZMc7kMGScoCktdH
-         clM5nm4dq5oDtFeY/kRBVGy9YQUAUnm7c+29kFyYVrFbnRfIXOJCLjfO/JoEumdZ/i1R
-         ANOeb5Ody0d5F2/DEEql8LF1kM3Q4xHXvmgaLlGdHxFTKF3Gnp/2YgFJfVxRFJ848A/i
-         l4/Vn2kr1CRZMQ21pxC64HAZKh4LLqJCd2y3vxASkBzitgbDGVOyOUdu2DV4bCn/OGhQ
-         YiTEhLmJBvC4r8c1NoWljge879krWFcDL81SwAVa4BS+w76sEODQPSTG+5KCK3FsnPND
-         CvuQ==
-X-Gm-Message-State: AOAM532l5g52QMsSd6naJ0+n4vGnqBwTMpQQ0Tw+4UHXHZmFrgJPixI/
-        uvaU/7GDojFdElg6hdZtryo=
-X-Google-Smtp-Source: ABdhPJzzP9klR6bWe3ODCdQtf+NWu5xzVOFpNL1jg2fE1q08uaY9K0pcZkmzTtuVxVp2glcG/Xq8BQ==
-X-Received: by 2002:a62:e117:: with SMTP id q23mr3213182pfh.188.1589346493760;
-        Tue, 12 May 2020 22:08:13 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id x66sm13642770pfb.173.2020.05.12.22.08.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 22:08:12 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date:   Wed, 13 May 2020 14:08:12 +0900
-To:     Kees Cook <keescook@chromium.org>
-Cc:     WeiXiong Liao <liaoweixiong@allwinnertech.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Rob Herring <robh@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v7 07/18] printk: Introduce kmsg_dump_reason_str()
-Message-ID: <20200513050812.GK413@jagdpanzerIV.localdomain>
-References: <20200510202436.63222-1-keescook@chromium.org>
- <20200510202436.63222-8-keescook@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200510202436.63222-8-keescook@chromium.org>
+        Wed, 13 May 2020 01:10:28 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589346628; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=DZQibOhxYLyG5G1VX6UfWA5/4+MXrMRUnbCNt7bbHJk=; b=moFWeo0B2nL97ecFDRa3ZihmQSwKhF9E/UBzpV2V8tJY0GFMlbaRt+n6W1OwuLoDbkZ1QQ+i
+ 3IC2Q2WVLgjcXCni9LGgYsW90DuHXbVVymg42GFO1GFe9bQF2ll1pIhxADTAdQ6NZabTVopt
+ lN4HVYt2uRTAZ2rfcZr4f1K17IM=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ebb813e.7f33deb01420-smtp-out-n02;
+ Wed, 13 May 2020 05:10:22 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 80F38C432C2; Wed, 13 May 2020 05:10:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from aneelaka-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: aneela)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AEC7EC433CB;
+        Wed, 13 May 2020 05:10:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AEC7EC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=aneela@codeaurora.org
+From:   Arun Kumar Neelakantam <aneela@codeaurora.org>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org, clew@codeaurora.org,
+        sricharan@codeaurora.org
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arun Kumar Neelakantam <aneela@codeaurora.org>
+Subject: [PATCH V5 0/5] Add chrdev and name query support for GLINK
+Date:   Wed, 13 May 2020 10:40:01 +0530
+Message-Id: <1589346606-15046-1-git-send-email-aneela@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/05/10 13:24), Kees Cook wrote:
-> The pstore subsystem already had a private version of this function.
-> With the coming addition of the pstore/zone driver, this needs to be
-> shared. As it really should live with printk, move it there instead.
+Add support for the GLINK rpmsg transport to register a rpmsg chrdev.
+This will create the rpmsg_ctrl nodes for userspace clients to open 
+rpmsg epts. The rpmsg chrdev allocation is done by allocating a local
+channel which also allocates an ept. We need to add some guards against
+edge cases for this chrdev because it will never fully open.
 
-Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Changes since v4:
+- Resending by removing approved patches
 
-	-ss
+Changes since v3:
+- Change to device_add_group for rpmsg name attr
+- Add patch to unregister the rpmsg device
+- Add patch to support compat ioctl for rpmsg char driver
+
+Changes since v2:
+- Revert change to make glink attribute table const
+
+Changes since v1:
+- Add explanation to dt-bindings commit message
+- Add patch complete_all the open_req/ack variables
+- Add patch to prevent null pointer dereference in chrdev channel release
+- Change chrdev allocation to use glink channel allocation
+- Change glink attr struct to const
+
+
+Arun Kumar Neelakantam (1):
+  rpmsg: glink: unregister rpmsg device during endpoint destroy
+
+Chris Lew (4):
+  rpmsg: glink: Use complete_all for open states
+  rpmsg: Guard against null endpoint ops in destroy
+  rpmsg: glink: Add support for rpmsg glink chrdev
+  rpmsg: glink: Expose rpmsg name attr for glink
+
+ drivers/rpmsg/qcom_glink_native.c | 79 +++++++++++++++++++++++++++++++++++++--
+ drivers/rpmsg/rpmsg_core.c        |  2 +-
+ 2 files changed, 77 insertions(+), 4 deletions(-)
+
+-- 
+2.7.4
