@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127EF1D110B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 409441D112D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732648AbgEMLSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 07:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732494AbgEMLSm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 07:18:42 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0B0C061A0C;
-        Wed, 13 May 2020 04:18:42 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id m18so13061939otq.9;
-        Wed, 13 May 2020 04:18:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oE5WugBSvo3pc9Klj8s/jpRZAtxSj2G+F/MbpaTNg1E=;
-        b=qIQ/roFGWT0wnElL1u/7xlOD30VWRxKL/kWfMOz9XSiybqFmJCFHj46GoL6JzY1SSz
-         Ibd6SFS30RtGUlGxPgwcRyrBR2Y6MHwj9XGjxJwW2xKpE/aR+DaApklL/FdAfzpLQQk0
-         0vwFCa+qkbqkzbtM4az9cxsD349mVx63BIJ1xdMWPqqtCsH0/lPJrlDQjeLSLxPa7obg
-         hyzXCloM5NaJnAteJMRGODZ0/CPD5Bhfg0Pc5vFX6da30d9FV2X+x6BKJDnUaIC+2AKo
-         BRbrnDIX65+B9ScKBqE7TkYUXBYn2ocirCo0PbkOWKYBtq0w0+zXS0KZDJxCYxSGPBRs
-         Ugag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to
-         :user-agent;
-        bh=oE5WugBSvo3pc9Klj8s/jpRZAtxSj2G+F/MbpaTNg1E=;
-        b=mqg28o5JFk4r7W4xZT45DPIuX/uEdUypUwPsCfNXDSoAY0QdxI+02kUwisYEteOntH
-         QvPdmfdSvOjB1XbtrABo0cUc1ySZs7rtVsljFFe8cH1VVrWZ5is8CKpsUtmqb6BYdCbC
-         /I0rQeef8dLEG0YeFZRLGnzSfw+V95lLT11Y7G6TbatxLZupJzd9z6Gsq7H5enELAUPL
-         dD6G1jCBnJx1oCKwRs0GIDr8XjNFxyKboysHAl9eJF/cEIlPQAxH2SqRSZUrQuVkMGMm
-         D2gzpOVCpJGT51lE40JBvm524fUJu1DUZzXH0Bn6wLfT3uQ4M6Diiomx8QzxNzWmijTO
-         uswA==
-X-Gm-Message-State: AGi0PuZqZ1FomE83IriiVdKQncAOXcC17H7fljIKtyL7gmaWukmAk46p
-        KbZUJaxTNXnmodmROTmEUrkwQHo=
-X-Google-Smtp-Source: APiQypJNI+0DqoZkxv+pvtTS/nokl0RUPsTqcsL74LIkxNq+hbftSmgsNFZGnInQahLn73kLueZ4Gg==
-X-Received: by 2002:a05:6830:3148:: with SMTP id c8mr19784748ots.138.1589368721635;
-        Wed, 13 May 2020 04:18:41 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.149.130])
-        by smtp.gmail.com with ESMTPSA id v9sm5952456oib.56.2020.05.13.04.18.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 04:18:41 -0700 (PDT)
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:c3f3:f502:5c4e])
-        by serve.minyard.net (Postfix) with ESMTPSA id 59923180042;
-        Wed, 13 May 2020 11:18:40 +0000 (UTC)
-Date:   Wed, 13 May 2020 06:18:39 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Corey Minyard <cminyard@mvista.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Subject: Re: linux-next: Signed-off-by missing for commit in the ipmi tree
-Message-ID: <20200513111839.GS9902@minyard.net>
-Reply-To: minyard@acm.org
-References: <20200513103034.4de3c630@canb.auug.org.au>
+        id S1732879AbgEMLV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 07:21:27 -0400
+Received: from elvis.franken.de ([193.175.24.41]:52007 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732841AbgEMLVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 07:21:25 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jYpRu-000588-01; Wed, 13 May 2020 13:21:18 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 67175C0482; Wed, 13 May 2020 13:19:07 +0200 (CEST)
+Date:   Wed, 13 May 2020 13:19:07 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Hauke Mehrtens <hauke@hauke-m.de>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        "Maciej W. Rozycki" <macro@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        John Crispin <john@phrozen.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Keguang Zhang <keguang.zhang@gmail.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        James Hartley <james.hartley@sondrel.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] MIPS: Only include the platform file needed
+Message-ID: <20200513111907.GB7151@alpha.franken.de>
+References: <20200509230150.24466-1-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200513103034.4de3c630@canb.auug.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200509230150.24466-1-tsbogend@alpha.franken.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 10:30:34AM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Sun, May 10, 2020 at 01:01:47AM +0200, Thomas Bogendoerfer wrote:
+> Instead of including all Platform files, we simply include the
+> needed one and avoid clashes with makefile variables.
 > 
-> Commit
-> 
->   73d0824e48eb ("char: ipmi: convert to use i2c_new_client_device()")
-> 
-> is missing a Signed-off-by from its author.
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> ---
+>  arch/mips/Kbuild.platforms       | 73 +++++++++++++++++++++-------------------
+>  arch/mips/alchemy/Platform       |  3 --
+>  arch/mips/ar7/Platform           |  1 -
+>  arch/mips/ath25/Platform         |  1 -
+>  arch/mips/ath79/Platform         |  1 -
+>  arch/mips/bcm47xx/Platform       |  1 -
+>  arch/mips/bcm63xx/Platform       |  1 -
+>  arch/mips/bmips/Platform         |  1 -
+>  arch/mips/cavium-octeon/Platform |  1 -
+>  arch/mips/cobalt/Platform        |  1 -
+>  arch/mips/dec/Platform           |  1 -
+>  arch/mips/generic/Platform       |  1 -
+>  arch/mips/jazz/Platform          |  1 -
+>  arch/mips/jz4740/Platform        |  1 -
+>  arch/mips/lantiq/Platform        |  1 -
+>  arch/mips/loongson2ef/Platform   |  1 -
+>  arch/mips/loongson32/Platform    |  1 -
+>  arch/mips/loongson64/Platform    |  1 -
+>  arch/mips/mti-malta/Platform     |  1 -
+>  arch/mips/netlogic/Platform      |  1 -
+>  arch/mips/paravirt/Platform      |  1 -
+>  arch/mips/pic32/Platform         |  1 -
+>  arch/mips/pistachio/Platform     |  1 -
+>  arch/mips/pnx833x/Platform       |  1 -
+>  arch/mips/rb532/Platform         |  1 -
+>  arch/mips/sgi-ip22/Platform      |  2 --
+>  arch/mips/sgi-ip27/Platform      |  3 --
+>  arch/mips/sgi-ip30/Platform      |  3 --
+>  arch/mips/sgi-ip32/Platform      |  1 -
+>  arch/mips/sibyte/Platform        |  4 ---
+>  arch/mips/sni/Platform           |  1 -
+>  arch/mips/txx9/Platform          |  3 --
+>  32 files changed, 39 insertions(+), 77 deletions(-)
 
-Fixed, thanks.
+applied to mips-next.
 
--corey
+Thomas.
 
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
