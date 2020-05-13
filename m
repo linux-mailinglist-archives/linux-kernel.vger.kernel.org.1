@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0516D1D0CA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A6A1D0D35
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732662AbgEMJqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:46:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43920 "EHLO mail.kernel.org"
+        id S2387626AbgEMJvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:51:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732622AbgEMJq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:46:29 -0400
+        id S2387611AbgEMJvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:51:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F0E12492C;
-        Wed, 13 May 2020 09:46:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75AFE23127;
+        Wed, 13 May 2020 09:51:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363188;
-        bh=4MFURn699aH2rSYMG6kW1QgGR/t00LzkOG1i+nuVH1o=;
+        s=default; t=1589363469;
+        bh=IflCjPG2xi5TTNJDFZpm013QD6WriFjIurebSx5OlPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GuejD/ehuDlgRJ428/aZTOGDnEYSVGma18alKNEIEd6YAkzV+YXlln8BJq3BEVrJ/
-         ZcQo8VDBf2eImpEov2h+/G1n46zQFyLYCpBbkFTHRN9KsAUaT+wKaI42WsZ3AC1xiX
-         rDwpJ39Wxz+ez/Kazq8ozuCla4POlas+7WtALBPw=
+        b=PGR8w8gGCv/nICGbPiGmFw3O4FqYKrPBx/rCnd8g9s3T47U1U1n2u8NDxuqNM/4ye
+         ebuIpi+Yp8PouCMMyOE2LOQxSDNYJ67Dg9Q78YWpYwn8bKFLZWJl4HXrJcJ0a8bl9/
+         KblESoDdDoJUyl7xf8lkW5IKp2IW4i5RDfV0Lb88=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 08/48] net_sched: sch_skbprio: add message validation to skbprio_change()
+        stable@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: [PATCH 5.4 38/90] net/mlx5: Fix command entry leak in Internal Error State
 Date:   Wed, 13 May 2020 11:44:34 +0200
-Message-Id: <20200513094354.050443366@linuxfoundation.org>
+Message-Id: <20200513094412.612953424@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
-References: <20200513094351.100352960@linuxfoundation.org>
+In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
+References: <20200513094408.810028856@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,32 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Moshe Shemesh <moshe@mellanox.com>
 
-[ Upstream commit 2761121af87de45951989a0adada917837d8fa82 ]
+[ Upstream commit cece6f432cca9f18900463ed01b97a152a03600a ]
 
-Do not assume the attribute has the right size.
+Processing commands by cmd_work_handler() while already in Internal
+Error State will result in entry leak, since the handler process force
+completion without doorbell. Forced completion doesn't release the entry
+and event completion will never arrive, so entry should be released.
 
-Fixes: aea5f654e6b7 ("net/sched: add skbprio scheduler")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 73dd3a4839c1 ("net/mlx5: Avoid using pending command interface slots")
+Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sched/sch_skbprio.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/net/sched/sch_skbprio.c
-+++ b/net/sched/sch_skbprio.c
-@@ -173,6 +173,9 @@ static int skbprio_change(struct Qdisc *
- {
- 	struct tc_skbprio_qopt *ctl = nla_data(opt);
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -922,6 +922,10 @@ static void cmd_work_handler(struct work
+ 		MLX5_SET(mbox_out, ent->out, syndrome, drv_synd);
  
-+	if (opt->nla_len != nla_attr_size(sizeof(*ctl)))
-+		return -EINVAL;
-+
- 	sch->limit = ctl->limit;
- 	return 0;
- }
+ 		mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
++		/* no doorbell, no need to keep the entry */
++		free_ent(cmd, ent->idx);
++		if (ent->callback)
++			free_cmd(ent);
+ 		return;
+ 	}
+ 
 
 
