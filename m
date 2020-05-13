@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4239D1D04CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8882F1D04C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729360AbgEMCUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 22:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35824 "EHLO
+        id S1728591AbgEMCTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 22:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728461AbgEMCTe (ORCPT
+        with ESMTP id S1728533AbgEMCTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 22:19:34 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E37BC061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 19:19:34 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id j21so7080303pgb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 19:19:34 -0700 (PDT)
+        Tue, 12 May 2020 22:19:35 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31218C05BD0A
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 19:19:35 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id d184so7328168pfd.4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 19:19:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5Y23e1WcGS/7zRXLgOmzbHP/L0sZSiIPexTD/XzyCks=;
-        b=iN7ylJiSjv8PKHyMFgypEVb1YjwQJf4wJFiDlQmJ5ICYyYFJv+60LNuEIWETpl3Cf4
-         SHLjln9qymrA0qTvUIjYOERc3AA3mBSynP4xEN/rfnrwa0ccI5rkkb2EUP9KRZ/sugPs
-         /Vz7pMmyPVQwtwGTaI50MI1Xtcjpf3gTttGwk=
+        bh=JyYHudIiC7MnJBODonJVqQ91dxHR5J0pzH8SU9f0bj8=;
+        b=J94rDlgf2ETWeHBGBa6Mzk/RjSmWqelmJGWWTOOLyacPauLkYP16nyLlRaTiog1bnq
+         SVDHh5riQdQBhsvMFtJvhhQi7/3kAT/0Gac5K++SCQ3ecyoiJ53KwvMMiqcyAq9sDbH6
+         m2pN/ioRUueIVVP8/hoeuL4whI76fKZ5ihu8Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5Y23e1WcGS/7zRXLgOmzbHP/L0sZSiIPexTD/XzyCks=;
-        b=PMwuJmHRQa3GZHClI+ogBAsMvYTJuHwJF/3l4ybZx7fjSeFJs2rIKA4pfqAIVKQipt
-         G3pNePUZOA+PnAUfO+0pa2SvcRquE4Y6yfz66NHp1+CWVOTy+ZodNzcXykw6Nb/RbjRF
-         /xg3w0tHptFifLhmE5i/71hdRyqghWHU+r0+Z2azXhDrhxBJ+n7SqS/qjHIGJ2ubacMU
-         5ZoLqchZUqMx5pyTBVnyVnPF1++1PVRIXSzkeS/69DfP0mRpzcVQOLBwi+vnqOHFbVQV
-         tPflMu+0b/hLk7ZnCFHEL+TRiAVAeIcHg+oH5R/666M/7TaifgKyWaJrcfPy0jx3Y+oB
-         Tb5Q==
-X-Gm-Message-State: AGi0PuZJPFtweajWQmdjHHN9ekIqi8mzeNhaGuMxuDm6jEFgf+ynDrNN
-        ViJHl5rVoBj/h1TgsFPseil/y6TpFsY=
-X-Google-Smtp-Source: APiQypIGZMF+bReUAlPyPZkyGkptCxIQx2Cnc6lQHTEj/Z5UeI4rP7JeXxIExcBcUOvRRF7LXyNaDw==
-X-Received: by 2002:a63:d24a:: with SMTP id t10mr22052326pgi.326.1589336373592;
-        Tue, 12 May 2020 19:19:33 -0700 (PDT)
+        bh=JyYHudIiC7MnJBODonJVqQ91dxHR5J0pzH8SU9f0bj8=;
+        b=blmtCMk3GzQi9GP1FW007QV+zVBeYy9XuRRyb0wTOnVHxemajAsdBF2KP0DiRI4x97
+         F2gj40atOSvb8kYedXOdtxt42vnvohE2yyCtBLSBpSU5m7kLdbHg7Bwl2E1zrYc1jTsd
+         Om2V7HfS3n41W+4agt2utGk/53dsrQp+9/HOrtlB5n33we0U/fQogJhsYqEPJrWOdToJ
+         /V7UVK1Q2VfDdI+zh8PS8FbZF14Kiqs14kMX/XEmz/ZRrydFA2kfhESYtJnbgzBLgA+p
+         2lBCIZFT6KofCK8PdkhJaMMZfDl8bjbGDFnNFl73X6GvNJ76qO+8iiqBg6vOvevc9hmJ
+         G85g==
+X-Gm-Message-State: AGi0PuY9w3J9ib15zaIBq7Ipy5X4uCoEIdUok9ndlTCF2JaHxGPqkH/x
+        Sn11H5MzGJpAV7h2YqhOzOzVJw==
+X-Google-Smtp-Source: APiQypJBjsPJieEQPi1eVDayvEQaLzZJy5jHtU+4a/YMAjymTrhR0x3e3m7eU/ylj51tZWl4SyEXQQ==
+X-Received: by 2002:aa7:810a:: with SMTP id b10mr22621635pfi.22.1589336374733;
+        Tue, 12 May 2020 19:19:34 -0700 (PDT)
 Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:e09a:8d06:a338:aafb])
-        by smtp.gmail.com with ESMTPSA id w2sm14170600pja.53.2020.05.12.19.19.32
+        by smtp.gmail.com with ESMTPSA id w2sm14170600pja.53.2020.05.12.19.19.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 19:19:33 -0700 (PDT)
+        Tue, 12 May 2020 19:19:34 -0700 (PDT)
 From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
 To:     marcel@holtmann.org, linux-bluetooth@vger.kernel.org
 Cc:     chromeos-bluetooth-upstreaming@chromium.org,
@@ -54,9 +54,9 @@ Cc:     chromeos-bluetooth-upstreaming@chromium.org,
         Johan Hedberg <johan.hedberg@gmail.com>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 1/3] Bluetooth: Rename BT_SUSPEND_COMPLETE
-Date:   Tue, 12 May 2020 19:19:25 -0700
-Message-Id: <20200512191838.1.I14aad9cc7f34b095b49d17e8ff2688707d23ffae@changeid>
+Subject: [PATCH 2/3] Bluetooth: Add hook for driver to prevent wake from suspend
+Date:   Tue, 12 May 2020 19:19:26 -0700
+Message-Id: <20200512191838.2.I797e2588abe0319e571fd440ba1a75d786e69c1b@changeid>
 X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
 In-Reply-To: <20200513021927.115700-1-abhishekpandit@chromium.org>
 References: <20200513021927.115700-1-abhishekpandit@chromium.org>
@@ -67,57 +67,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Renamed BT_SUSPEND_COMPLETE to BT_SUSPEND_CONFIGURE_WAKE since it sets
-up the event filter and whitelist for wake-up.
+Let drivers have a hook to disable configuring scanning during suspend.
+Drivers should use the device_may_wakeup function call to determine
+whether hci should be configured for wakeup.
+
+For example, an implementation for btusb may look like the following:
+
+  bool btusb_prevent_wake(struct hci_dev *hdev)
+  {
+        struct btusb_data *data = hci_get_drvdata(hdev);
+        return !device_may_wakeup(&data->udev->dev);
+  }
 
 Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
 Reviewed-by: Alain Michaud <alainm@chromium.org>
 ---
 
- include/net/bluetooth/hci_core.h | 2 +-
- net/bluetooth/hci_core.c         | 2 +-
- net/bluetooth/hci_request.c      | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ include/net/bluetooth/hci_core.h | 1 +
+ net/bluetooth/hci_core.c         | 6 ++++--
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index 0c7f3ad766652..869ee2b30a4c1 100644
+index 869ee2b30a4c1..5dcf85f186c6c 100644
 --- a/include/net/bluetooth/hci_core.h
 +++ b/include/net/bluetooth/hci_core.h
-@@ -110,7 +110,7 @@ enum suspend_tasks {
- enum suspended_state {
- 	BT_RUNNING = 0,
- 	BT_SUSPEND_DISCONNECT,
--	BT_SUSPEND_COMPLETE,
-+	BT_SUSPEND_CONFIGURE_WAKE,
+@@ -503,6 +503,7 @@ struct hci_dev {
+ 	int (*set_diag)(struct hci_dev *hdev, bool enable);
+ 	int (*set_bdaddr)(struct hci_dev *hdev, const bdaddr_t *bdaddr);
+ 	void (*cmd_timeout)(struct hci_dev *hdev);
++	bool (*prevent_wake)(struct hci_dev *hdev);
  };
  
- struct hci_conn_hash {
+ #define HCI_PHY_HANDLE(handle)	(handle & 0xff)
 diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 51d3992732762..de1f4e72ec065 100644
+index de1f4e72ec065..dbe2d79f233fb 100644
 --- a/net/bluetooth/hci_core.c
 +++ b/net/bluetooth/hci_core.c
-@@ -3353,7 +3353,7 @@ static int hci_suspend_notifier(struct notifier_block *nb, unsigned long action,
- 		/* Only configure whitelist if disconnect succeeded */
- 		if (!ret)
+@@ -3350,8 +3350,10 @@ static int hci_suspend_notifier(struct notifier_block *nb, unsigned long action,
+ 		 */
+ 		ret = hci_change_suspend_state(hdev, BT_SUSPEND_DISCONNECT);
+ 
+-		/* Only configure whitelist if disconnect succeeded */
+-		if (!ret)
++		/* Only configure whitelist if disconnect succeeded and wake
++		 * isn't being prevented.
++		 */
++		if (!ret && !(hdev->prevent_wake && hdev->prevent_wake(hdev)))
  			ret = hci_change_suspend_state(hdev,
--						       BT_SUSPEND_COMPLETE);
-+						BT_SUSPEND_CONFIGURE_WAKE);
+ 						BT_SUSPEND_CONFIGURE_WAKE);
  	} else if (action == PM_POST_SUSPEND) {
- 		ret = hci_change_suspend_state(hdev, BT_RUNNING);
- 	}
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 3f470f0e432c7..88941a2131c4d 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -1090,7 +1090,7 @@ void hci_req_prepare_suspend(struct hci_dev *hdev, enum suspended_state next)
- 				   disconnect_counter);
- 			set_bit(SUSPEND_DISCONNECTING, hdev->suspend_tasks);
- 		}
--	} else if (next == BT_SUSPEND_COMPLETE) {
-+	} else if (next == BT_SUSPEND_CONFIGURE_WAKE) {
- 		/* Unpause to take care of updating scanning params */
- 		hdev->scanning_paused = false;
- 		/* Enable event filter for paired devices */
 -- 
 2.26.2.645.ge9eca65c58-goog
 
