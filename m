@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1912A1D227B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 00:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721141D2282
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 00:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732214AbgEMW51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 18:57:27 -0400
-Received: from mail.efficios.com ([167.114.26.124]:50248 "EHLO
+        id S1731975AbgEMW7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 18:59:00 -0400
+Received: from mail.efficios.com ([167.114.26.124]:50980 "EHLO
         mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731686AbgEMW51 (ORCPT
+        with ESMTP id S1731815AbgEMW7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 18:57:27 -0400
+        Wed, 13 May 2020 18:59:00 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 377A42BF609;
-        Wed, 13 May 2020 18:57:26 -0400 (EDT)
+        by mail.efficios.com (Postfix) with ESMTP id C61132BF350;
+        Wed, 13 May 2020 18:58:58 -0400 (EDT)
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id TuwXLXH0gSnV; Wed, 13 May 2020 18:57:25 -0400 (EDT)
+        with ESMTP id 23sC-RYK1Vet; Wed, 13 May 2020 18:58:58 -0400 (EDT)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id BD98B2BF608;
-        Wed, 13 May 2020 18:57:25 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com BD98B2BF608
+        by mail.efficios.com (Postfix) with ESMTP id 899FE2BF60C;
+        Wed, 13 May 2020 18:58:58 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 899FE2BF60C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1589410645;
-        bh=Cluae6xS+NJacs2cfgSwtFkKlrinLEd02WsEcRPO9vc=;
+        s=default; t=1589410738;
+        bh=lYnUYdKASWttmtbCjT9VqHa4gyix8hxv8nRsU5Wu5gE=;
         h=Date:From:To:Message-ID:MIME-Version;
-        b=bs2NtbfhsXD5nwysRoERi6YdqNtvryQ3SDXeUAZUaiuRTxxIloorpB3fsu2uWnboC
-         wpBiU65p6Hq458XNtPoE0AbkBSwfRe31w2UxmkIDv/qP/3vCqqDbPWyJ6svcXD4Tlf
-         MRyJeDXAcC+9lP64xFUV75aif3PbLuD43QoSua53vlqyAFMAe5S58iuWbbea/z90bf
-         lAN0zgasYbWvKprImw2T2V1HIkralNiLjTAPNAiBwwadrb8eznRZxX6PoR+aZIRKJR
-         bc1JEcgWr54fj0T7v/gtzjgUVbMeFYlqxZWX26va18iwaDu0xres4cyrdWMgcXlHl1
-         oJtGoV9slyxUQ==
+        b=GX02xB3HxyKSXRhKWa2s/3qQBKhKzieJNA2FH26dITNc4QL925cjsWjjUw8ykfxSF
+         dlWt8uUDyeYg0aAJDzbf82K95bt+BYFlQkGmK1Y2oxmoThBk682wQnxIFAy7xcvdw8
+         FurKQFlaG4Jfw/VSbEaw3g48+9RilGJxz0f0X08fQEwxnQwUHjz4LVozBF0r/cypEx
+         eRnXCKuvz1ze21Kb/dcLI+702mHeBRZ4J7y9qQeZEOb5PbfgrbEQeR1BO1SvtTHfbJ
+         HPrEIxPj24IjoBcfVaLBe2fSNMfn0C+0EU1lQtucdDRaa5ESJHcKPEEbqxD+z8J6/k
+         BkZP/i7QuVh1g==
 X-Virus-Scanned: amavisd-new at efficios.com
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id o2CgufNFSekh; Wed, 13 May 2020 18:57:25 -0400 (EDT)
+        with ESMTP id iZCEUSHzl246; Wed, 13 May 2020 18:58:58 -0400 (EDT)
 Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id ABC1A2BF279;
-        Wed, 13 May 2020 18:57:25 -0400 (EDT)
-Date:   Wed, 13 May 2020 18:57:25 -0400 (EDT)
+        by mail.efficios.com (Postfix) with ESMTP id 78FB62BF34D;
+        Wed, 13 May 2020 18:58:58 -0400 (EDT)
+Date:   Wed, 13 May 2020 18:58:58 -0400 (EDT)
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
+To:     Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>
 Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
         paulmck <paulmck@kernel.org>, Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
@@ -55,124 +55,74 @@ Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
         Juergen Gross <jgross@suse.com>,
         Brian Gerst <brgerst@gmail.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Message-ID: <1777514130.20137.1589410645669.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200505134059.462640294@linutronix.de>
-References: <20200505131602.633487962@linutronix.de> <20200505134059.462640294@linutronix.de>
-Subject: Re: [patch V4 part 1 14/36] x86/entry: Get rid of
- ist_begin/end_non_atomic()
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Message-ID: <1733222250.20139.1589410738477.JavaMail.zimbra@efficios.com>
+In-Reply-To: <a5d3866a-af7f-bf0a-4864-16db9965e39f@oracle.com>
+References: <20200505131602.633487962@linutronix.de> <20200505134059.970057117@linutronix.de> <a5d3866a-af7f-bf0a-4864-16db9965e39f@oracle.com>
+Subject: Re: [patch V4 part 1 19/36] x86/entry: Exclude low level entry code
+ from sanitizing
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [167.114.26.124]
 X-Mailer: Zimbra 8.8.15_GA_3928 (ZimbraWebClient - FF76 (Linux)/8.8.15_GA_3928)
-Thread-Topic: x86/entry: Get rid of ist_begin/end_non_atomic()
-Thread-Index: emYf3uO7ok2UHht9lN2XyjVuj2zs5Q==
+Thread-Topic: x86/entry: Exclude low level entry code from sanitizing
+Thread-Index: YtHVr8cJ2M9gb3Xiem2xs44SVIpxLQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On May 5, 2020, at 9:16 AM, Thomas Gleixner tglx@linutronix.de wrote:
+----- On May 6, 2020, at 12:03 PM, Alexandre Chartre alexandre.chartre@oracle.com wrote:
 
-> This is completely overengineered and definitely not an interface which
-> should be made available to anything else than this particular MCE case.
+> On 5/5/20 3:16 PM, Thomas Gleixner wrote:
+>> The sanitizers are not really applicable to the fragile low level entry
+>> code. code. Entry code needs to carefully setup a normal 'runtime'
+> 
+> typo: code. code.
 
-This patch introduces a significant change under the radar (not explained
-in the changelog): it turns preempt_enable_no_resched() into preempt_enable().
-
-Why, and why was it a no_resched() in the first place ? Was it for performance
-or correctness reasons ?
+Looking at updated tree, the reviewed-by is there, but there is still
+way too much "code". ;)
 
 Thanks,
 
 Mathieu
 
 > 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
-> arch/x86/include/asm/traps.h   |    2 --
-> arch/x86/kernel/cpu/mce/core.c |    6 ++++--
-> arch/x86/kernel/traps.c        |   37 -------------------------------------
-> 3 files changed, 4 insertions(+), 41 deletions(-)
+> Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 > 
-> --- a/arch/x86/include/asm/traps.h
-> +++ b/arch/x86/include/asm/traps.h
-> @@ -120,8 +120,6 @@ asmlinkage void smp_irq_move_cleanup_int
+> alex.
 > 
-> extern void ist_enter(struct pt_regs *regs);
-> extern void ist_exit(struct pt_regs *regs);
-> -extern void ist_begin_non_atomic(struct pt_regs *regs);
-> -extern void ist_end_non_atomic(void);
 > 
-> #ifdef CONFIG_VMAP_STACK
-> void __noreturn handle_stack_overflow(const char *message,
-> --- a/arch/x86/kernel/cpu/mce/core.c
-> +++ b/arch/x86/kernel/cpu/mce/core.c
-> @@ -1352,13 +1352,15 @@ void notrace do_machine_check(struct pt_
-> 
-> 	/* Fault was in user mode and we need to take some action */
-> 	if ((m.cs & 3) == 3) {
-> -		ist_begin_non_atomic(regs);
-> +		/* If this triggers there is no way to recover. Die hard. */
-> +		BUG_ON(!on_thread_stack() || !user_mode(regs));
-> 		local_irq_enable();
-> +		preempt_enable();
-> 
-> 		if (kill_it || do_memory_failure(&m))
-> 			force_sig(SIGBUS);
-> +		preempt_disable();
-> 		local_irq_disable();
-> -		ist_end_non_atomic();
-> 	} else {
-> 		if (!fixup_exception(regs, X86_TRAP_MC, error_code, 0))
-> 			mce_panic("Failed kernel mode recovery", &m, msg);
-> --- a/arch/x86/kernel/traps.c
-> +++ b/arch/x86/kernel/traps.c
-> @@ -117,43 +117,6 @@ void ist_exit(struct pt_regs *regs)
-> 		rcu_nmi_exit();
-> }
-> 
-> -/**
-> - * ist_begin_non_atomic() - begin a non-atomic section in an IST exception
-> - * @regs:	regs passed to the IST exception handler
-> - *
-> - * IST exception handlers normally cannot schedule.  As a special
-> - * exception, if the exception interrupted userspace code (i.e.
-> - * user_mode(regs) would return true) and the exception was not
-> - * a double fault, it can be safe to schedule.  ist_begin_non_atomic()
-> - * begins a non-atomic section within an ist_enter()/ist_exit() region.
-> - * Callers are responsible for enabling interrupts themselves inside
-> - * the non-atomic section, and callers must call ist_end_non_atomic()
-> - * before ist_exit().
-> - */
-> -void ist_begin_non_atomic(struct pt_regs *regs)
-> -{
-> -	BUG_ON(!user_mode(regs));
-> -
-> -	/*
-> -	 * Sanity check: we need to be on the normal thread stack.  This
-> -	 * will catch asm bugs and any attempt to use ist_preempt_enable
-> -	 * from double_fault.
-> -	 */
-> -	BUG_ON(!on_thread_stack());
-> -
-> -	preempt_enable_no_resched();
-> -}
-> -
-> -/**
-> - * ist_end_non_atomic() - begin a non-atomic section in an IST exception
-> - *
-> - * Ends a non-atomic section started with ist_begin_non_atomic().
-> - */
-> -void ist_end_non_atomic(void)
-> -{
-> -	preempt_disable();
-> -}
-> -
-> int is_valid_bugaddr(unsigned long addr)
-> {
->  	unsigned short ud;
+>> environment.
+>> 
+>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>> ---
+>>   arch/x86/entry/Makefile |    8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>> 
+>> --- a/arch/x86/entry/Makefile
+>> +++ b/arch/x86/entry/Makefile
+>> @@ -3,6 +3,14 @@
+>>   # Makefile for the x86 low level entry code
+>>   #
+>>   
+>> +KASAN_SANITIZE := n
+>> +UBSAN_SANITIZE := n
+>> +KCOV_INSTRUMENT := n
+>> +
+>> +CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE) -fstack-protector
+>> -fstack-protector-strong
+>> +CFLAGS_REMOVE_syscall_32.o = $(CC_FLAGS_FTRACE) -fstack-protector
+>> -fstack-protector-strong
+>> +CFLAGS_REMOVE_syscall_64.o = $(CC_FLAGS_FTRACE) -fstack-protector
+>> -fstack-protector-strong
+>> +
+>>   OBJECT_FILES_NON_STANDARD_entry_64_compat.o := y
+>>   
+>>   CFLAGS_syscall_64.o		+= $(call cc-option,-Wno-override-init,)
 
 -- 
 Mathieu Desnoyers
