@@ -2,126 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2871B1D1FED
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 22:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8521D201B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 22:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390866AbgEMUPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 16:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34258 "EHLO
+        id S2390853AbgEMUSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 16:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390352AbgEMUPd (ORCPT
+        by vger.kernel.org with ESMTP id S1732650AbgEMUSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 16:15:33 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DF5C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 13:15:32 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id z15so2150098pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 13:15:32 -0700 (PDT)
+        Wed, 13 May 2020 16:18:50 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3334AC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 13:18:50 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id j13so1470102pjm.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 13:18:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gcu03BapccXbGC0ugrF7HAKsX8s/rikPdyRfZ2v+7/A=;
-        b=nMo2mfTPsCwPQuL3Wy/MlcZIMWxFkdw9LhCDLY5nhwMM21OCJKIkBr/jaFfSBwIN1Y
-         akIlzTecdhLNLgKpEWYDBQ0mN/XX7L2NRzU4azhQL5vDsth352qYFB19f+vz5xYZdL9J
-         F/FtSTYPzv3A5YmLLP2aadn9GW2+VRNqnIS0I=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NFhpUl8J5nQNcbuIqqWOyLKJFuf8vP/sTwp9lphBqIg=;
+        b=OVOopRhHDJPSVt582OWv1n2bHvL2RJ4Ej1usaI3YQLjZfCdK5RRj5bkjRcOW0/tyr8
+         SkhLd0zgDwlz64rxPOTE7BwwGl5aeGThK9Y+BL9roibAfYro/ahbloBkaGKJeHgWaIMT
+         tHuqGbOt+suQHKd76FwG9a4krZjPc92s2L+l4AiS8MgX6FUiLAzWasqjYUCzdyE8VKHx
+         4q7pIWkp7OS7sNMDmT0EuL7LNc8eEVX69ujKM1vOTQQWSsfgRFQQ1DfzbUwPBblRxQhw
+         CuB9fl6jZXfzLQ/q/9xkkJnVNnEhXJqZRMrScETEkHIBjDtkSIUcufuRJ6oo86NlekIZ
+         Jfyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gcu03BapccXbGC0ugrF7HAKsX8s/rikPdyRfZ2v+7/A=;
-        b=YXPNQ+4DKsChP6TOv1s5KV1CU7C6F4fR7cu4h1O6noa8D0l3xggXjgWjfAMTf8d6oE
-         7NKxlOyfVwNMJSDrPsJ1KcbhtuX3p+Y1qQGgBSyu971lvNn4EukFP+/ap7zUor+p4GKU
-         7bRBmBBR2HudyVyNlQWRktFrKbCPkmGou3K5Xnj5dZbQQ25HRuMjsfIALJuSM8b0/61c
-         WurZUIkEKdihU69iJnD8+9RZnaObTe/OgIwon2ADW5nEEzR0SdOyrVkaXFmarymPd5vp
-         rjc7gyTzKTVNuM6oKfD/FLUgv1fhw5Tc1APa9PTkHHL2OpGWBJ+eqeyZODdBhB2p2AcW
-         Zu0w==
-X-Gm-Message-State: AGi0Pub7a8gHNs20H+OdTdzSyLr0inkTrVSgFiAl8zZftcZR8kjFDLTQ
-        mX8l1qpfxLhTORGEw12yHsSqJQ==
-X-Google-Smtp-Source: APiQypLWtkrar0+R60VQFnxu1If/r6w1THO5SU46GXyv2coXCgkwRIlLIk7e/Jx6iO/X9WDaTCI0SQ==
-X-Received: by 2002:a17:90a:cb86:: with SMTP id a6mr37392232pju.127.1589400932263;
-        Wed, 13 May 2020 13:15:32 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y16sm355662pfp.45.2020.05.13.13.15.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 13:15:30 -0700 (PDT)
-Date:   Wed, 13 May 2020 13:15:29 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     Petr Mladek <pmladek@suse.com>, Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        James Morris <jmorris@namei.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 0/6] allow ramoops to collect all kmesg_dump events
-Message-ID: <202005131315.5CEA90C@keescook>
-References: <20200506211523.15077-1-keescook@chromium.org>
- <20200512131655.GE17734@linux-b0ei>
- <CA+CK2bBMUxxuTBicQ7ihKpN3jK94mMjcNCXhnAXUaODce09Wmw@mail.gmail.com>
- <20200512155207.GF17734@linux-b0ei>
- <202005121111.6BECC45@keescook>
- <20200513073448.GG7340@linux-b0ei>
- <202005130045.EF013D12E@keescook>
- <CA+CK2bAPv5u1ih5y9t5FUnTyximtFCtDYXJCpuyjOyHNOkRdqw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NFhpUl8J5nQNcbuIqqWOyLKJFuf8vP/sTwp9lphBqIg=;
+        b=nXtSJyj2O1eGEr9mlTTah4NrdpuscYqUkCbNR8tukGXJK0y2yuSR1F5228umIzNJVc
+         ZMyIX68EkuquNbw7ddSgHcZpo64f7AfcNphXpRYkZnJW3nBfLzdfLAkC2kgdmtfn9ypM
+         vz+4JXm3xb+RfhvoRYKeIPi29J3q49itqvyPH+Vl7uUy/UE9K5jxYjSYEMb9YF5MMQq5
+         kEWc8Iu1cMOgIRkwIjDj7WQ0zH99uoLvnQ5Q3rRJ4+H9tTiEB8Ss7fjIyxWP90rYXR1Y
+         qJGbkOcR1WPVuHelscAbNX3gkX7HV+5HqXSvYoKoJFEB2B57zc4pAr8k+Y4nvvS+0tNQ
+         8y1A==
+X-Gm-Message-State: AGi0Pub8SMZr24Po5+/NuOMzzHn6sw82rhIQEKXWJmB3eZ6aj7yXI4Vn
+        YCX7tkigY8Ir1bo2ahy54HXbTv3+bj4JP+l7pxzZ7A==
+X-Google-Smtp-Source: APiQypL5qdvL27yQKnl1AbUHtAzXV73gwoxo3Zlu4/03cZATWKqFrDYk4v09riH3sBZr3ki1nShdVY7CkbDGaHWUlD0=
+X-Received: by 2002:a17:90a:17ed:: with SMTP id q100mr33102641pja.80.1589401129515;
+ Wed, 13 May 2020 13:18:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bAPv5u1ih5y9t5FUnTyximtFCtDYXJCpuyjOyHNOkRdqw@mail.gmail.com>
+References: <20200513151840.36400-1-heikki.krogerus@linux.intel.com>
+In-Reply-To: <20200513151840.36400-1-heikki.krogerus@linux.intel.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Wed, 13 May 2020 13:18:38 -0700
+Message-ID: <CAFd5g46npUaVOu9+xvLqw=DhCccuzOLpFLn1+8Qc8Un0AALThg@mail.gmail.com>
+Subject: Re: [PATCH] kobject: Make sure the parent does not get released
+ before its children
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 10:35:16AM -0400, Pavel Tatashin wrote:
-> > >   + reason: panic, oops, emergency, shutdown    (ordered by severity)
-> > >   + handling: restart, halt, poweroff
-> > >
-> > > Or we might just replace KMSG_DUMP_RESTART, KMSG_DUMP_HALT,
-> > > KMSG_DUMP_POWEROFF with a single KMSG_DUMP_SHUTDOWN.
-> > >
-> > > Then the max reason variable would make sense.
-> >
-> > That would work for me, yeah. Pavel, is that enough granularity for you?
-> >
-> 
-> Yes, I like the second approach: where we combine all shutdown type
-> events into a single type.
-> max_reason will have 4 levels:
-> 
->    KMSG_DUMP_PANIC,
->    KMSG_DUMP_OOPS,
->    KMSG_DUMP_EMERG,
->    KMSG_DUMP_SHUTDOWN,
-> 
-> If needed it is possible to determine from dmesg logs what kind of
-> shutdown was taken, because there is a message logged right before
-> every kmsg_dump() for these events:
-> 
-> 249   if (!cmd)
-> 250   pr_emerg("Restarting system\n");
-> 251   else
-> 252   pr_emerg("Restarting system with command '%s'\n", cmd);
-> 253   kmsg_dump(KMSG_DUMP_RESTART);
-> 
-> 276   pr_emerg("System halted\n");
-> 277   kmsg_dump(KMSG_DUMP_HALT);
-> 
-> 294   pr_emerg("Power down\n");
-> 295   kmsg_dump(KMSG_DUMP_POWEROFF);
-> 
-> Kees, I will submit a new series with these changes soon.
+On Wed, May 13, 2020 at 8:18 AM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> In the function kobject_cleanup(), kobject_del(kobj) is
+> called before the kobj->release(). That makes it possible to
+> release the parent of the kobject before the kobject itself.
+>
+> To fix that, adding function __kboject_del() that does
+> everything that kobject_del() does except release the parent
+> reference. kobject_cleanup() then calls __kobject_del()
+> instead of kobject_del(), and separately decrements the
+> reference count of the parent kobject after kobj->release()
+> has been called.
 
-Great; thanks!
+I was starting to wonder if anything else needed to happen with this. :-)
 
--Kees
+Thanks for taking care of this!
 
--- 
-Kees Cook
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> Fixes: 7589238a8cf3 ("Revert "software node: Simplify software_node_release() function"")
+> Cc: Brendan Higgins <brendanhiggins@google.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Suggested-by: "Rafael J. Wysocki" <rafael@kernel.org>
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+Didn't I and someone else test this?
+
+Either way, I will test this out in a little bit.
+
+Thanks!
