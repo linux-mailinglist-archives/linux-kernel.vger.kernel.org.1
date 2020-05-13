@@ -2,151 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F341D19AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBB81D19BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730089AbgEMPmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 11:42:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729539AbgEMPmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 11:42:32 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 200DE20690;
-        Wed, 13 May 2020 15:42:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589384551;
-        bh=c2THWjPXmYT+eNkLtJ/K4xjf95VTRhhuKD9WCsZoTzs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X2q2P4hFX1QwA3UvtIli2RaL+P5gZ6EAywEiGaPU1DW6cXmwIgcS3c8YCJp5Vdoam
-         2oU9Z9T1rlmiDNJFt3D0DXVGp7MdWEZH9JseV7nhUsQkxRc8xU9GnXu3fpq9uEVboQ
-         eeRvZ/V21A9seJSgI9O/eaLhy7T2/PmJ5/dySkCw=
-Date:   Wed, 13 May 2020 17:42:28 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH] kobject: Make sure the parent does not get released
- before its children
-Message-ID: <20200513154228.GC1360420@kroah.com>
-References: <20200513151840.36400-1-heikki.krogerus@linux.intel.com>
+        id S1730972AbgEMPpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 11:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726138AbgEMPpN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 11:45:13 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D936C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 08:45:12 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id 19so21808371oiy.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 08:45:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mei1LatTmGdj+EOMqNvHhmuC380OhE62eU0mPCj4HIU=;
+        b=TIT8H80mk+o//K+Djr3m9ymdXjqeJJh7T1O0QGR3OB+cw9gH6v6k/2XsLqv7s+oaGI
+         UWDF28wRCnpwGYavm+XRQfy+8o2ez7RJBPSI+LHD5tVHIt5p1Sr7uwpr2rlisGEov6IA
+         64dCFZ8mHEj3yDnfE1IkxFdtbSA94SYqY5inY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mei1LatTmGdj+EOMqNvHhmuC380OhE62eU0mPCj4HIU=;
+        b=g4IG+BXIEwni6FoVSKScfw8JnnPwc30Ma+/4nikMLbl3sPeHJBTketCcHEEZgyZYN5
+         s3h5XeOMChuRdOtCzkaqnhcWG7sGJrsPws2aiXXWGpfeBokZgR8N/J5GFtzwFc6+g8qq
+         DBnnHHmvEiU2aPxTdPtm/+E/8O24bhDpUS8MHZF4gMfGD5LUIoFO+C/6p6tjHJ8p8xlv
+         ygsNewA/F84R/vzxLOTMzq+6bxcfIobdupAL5jzkND24Xzmntd0nHPiSO3QkGRyK/J7F
+         9j8rIYUBgJ/4COkUFjgDBSud9sQtLsTCu7TZyzWtoTyDovzYKswtKeNzj4RHH/vSjOnH
+         VZ9g==
+X-Gm-Message-State: AGi0Puazn8fMZh+PWf7e2m8k5dfxZJG4Kz4ldThHhbRmjJy3laH42ey0
+        Pb/ivCLObuzxwelRYzCOPUt4yu+Zsk6Zzv9CSDRb9w==
+X-Google-Smtp-Source: APiQypI5v/GPcuUPKMBM3NTNqytmPwdux2KcE1khhFrjveIV/zK1dS2UemFwYRgCFispMAUfUJhE2vXjRmumZEBkQZg=
+X-Received: by 2002:aca:3b41:: with SMTP id i62mr9169611oia.101.1589384711122;
+ Wed, 13 May 2020 08:45:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513151840.36400-1-heikki.krogerus@linux.intel.com>
+References: <20200311112004.47138-1-stevensd@chromium.org> <20200311112004.47138-2-stevensd@chromium.org>
+In-Reply-To: <20200311112004.47138-2-stevensd@chromium.org>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 13 May 2020 17:45:00 +0200
+Message-ID: <CAKMK7uHFgiHLe9oiFBr-VR-6rU9-hLTpBTEVNh0ezyj54u70jw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] dma-buf: add support for virtio exported objects
+To:     David Stevens <stevensd@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>, David Airlie <airlied@linux.ie>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:VIRTIO CORE, NET..." 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, virtio-dev@lists.oasis-open.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 06:18:40PM +0300, Heikki Krogerus wrote:
-> In the function kobject_cleanup(), kobject_del(kobj) is
-> called before the kobj->release(). That makes it possible to
-> release the parent of the kobject before the kobject itself.
-> 
-> To fix that, adding function __kboject_del() that does
-> everything that kobject_del() does except release the parent
-> reference. kobject_cleanup() then calls __kobject_del()
-> instead of kobject_del(), and separately decrements the
-> reference count of the parent kobject after kobj->release()
-> has been called.
-> 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> Fixes: 7589238a8cf3 ("Revert "software node: Simplify software_node_release() function"")
-> Cc: Brendan Higgins <brendanhiggins@google.com>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Suggested-by: "Rafael J. Wysocki" <rafael@kernel.org>
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+On Wed, Mar 11, 2020 at 12:20 PM David Stevens <stevensd@chromium.org> wrote:
+>
+> This change adds a new dma-buf operation that allows dma-bufs to be used
+> by virtio drivers to share exported objects. The new operation allows
+> the importing driver to query the exporting driver for the UUID which
+> identifies the underlying exported object.
+>
+> Signed-off-by: David Stevens <stevensd@chromium.org>
+
+Adding Tomasz Figa, I've discussed this with him at elce last year I
+think. Just to make sure.
+
+Bunch of things:
+- obviously we need the users of this in a few drivers, can't really
+review anything stand-alone
+- adding very specific ops to the generic interface is rather awkward,
+eventually everyone wants that and we end up in a mess. I think the
+best solution here would be if we create a struct virtio_dma_buf which
+subclasses dma-buf, add a (hopefully safe) runtime upcasting
+functions, and then a virtio_dma_buf_get_uuid() function. Just storing
+the uuid should be doable (assuming this doesn't change during the
+lifetime of the buffer), so no need for a callback.
+- for the runtime upcasting the usual approach is to check the ->ops
+pointer. Which means that would need to be the same for all virtio
+dma_bufs, which might get a bit awkward. But I'd really prefer we not
+add allocator specific stuff like this to dma-buf.
+-Daniel
+
 > ---
->  lib/kobject.c | 30 ++++++++++++++++++++----------
->  1 file changed, 20 insertions(+), 10 deletions(-)
-> 
-> diff --git a/lib/kobject.c b/lib/kobject.c
-> index 65fa7bf70c57..32432036bef8 100644
-> --- a/lib/kobject.c
-> +++ b/lib/kobject.c
-> @@ -599,14 +599,7 @@ int kobject_move(struct kobject *kobj, struct kobject *new_parent)
+>  drivers/dma-buf/dma-buf.c | 12 ++++++++++++
+>  include/linux/dma-buf.h   | 18 ++++++++++++++++++
+>  2 files changed, 30 insertions(+)
+>
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index d4097856c86b..fa5210ba6aaa 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -1158,6 +1158,18 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, void *vaddr)
 >  }
->  EXPORT_SYMBOL_GPL(kobject_move);
->  
-> -/**
-> - * kobject_del() - Unlink kobject from hierarchy.
-> - * @kobj: object.
-> - *
-> - * This is the function that should be called to delete an object
-> - * successfully added via kobject_add().
-> - */
-> -void kobject_del(struct kobject *kobj)
-> +static void __kobject_del(struct kobject *kobj)
->  {
->  	struct kernfs_node *sd;
->  	const struct kobj_type *ktype;
-> @@ -625,9 +618,23 @@ void kobject_del(struct kobject *kobj)
->  
->  	kobj->state_in_sysfs = 0;
->  	kobj_kset_leave(kobj);
-> -	kobject_put(kobj->parent);
->  	kobj->parent = NULL;
->  }
-> +
-> +/**
-> + * kobject_del() - Unlink kobject from hierarchy.
-> + * @kobj: object.
-> + *
-> + * This is the function that should be called to delete an object
-> + * successfully added via kobject_add().
-> + */
-> +void kobject_del(struct kobject *kobj)
+>  EXPORT_SYMBOL_GPL(dma_buf_vunmap);
+>
+> +int dma_buf_get_uuid(struct dma_buf *dmabuf, uuid_t *uuid)
 > +{
-> +	struct kobject *parent = kobj->parent;
+> +       if (WARN_ON(!dmabuf) || !uuid)
+> +               return -EINVAL;
 > +
-> +	__kobject_del(kobj);
-> +	kobject_put(parent);
+> +       if (!dmabuf->ops->get_uuid)
+> +               return -ENODEV;
+> +
+> +       return dmabuf->ops->get_uuid(dmabuf, uuid);
 > +}
->  EXPORT_SYMBOL(kobject_del);
->  
->  /**
-> @@ -663,6 +670,7 @@ EXPORT_SYMBOL(kobject_get_unless_zero);
->   */
->  static void kobject_cleanup(struct kobject *kobj)
->  {
-> +	struct kobject *parent = kobj->parent;
->  	struct kobj_type *t = get_ktype(kobj);
->  	const char *name = kobj->name;
->  
-> @@ -684,7 +692,7 @@ static void kobject_cleanup(struct kobject *kobj)
->  	if (kobj->state_in_sysfs) {
->  		pr_debug("kobject: '%s' (%p): auto cleanup kobject_del\n",
->  			 kobject_name(kobj), kobj);
-> -		kobject_del(kobj);
-> +		__kobject_del(kobj);
->  	}
->  
->  	if (t && t->release) {
-> @@ -698,6 +706,8 @@ static void kobject_cleanup(struct kobject *kobj)
->  		pr_debug("kobject: '%s': free name\n", name);
->  		kfree_const(name);
->  	}
+> +EXPORT_SYMBOL_GPL(dma_buf_get_uuid);
 > +
-> +	kobject_put(parent);
->  }
->  
->  #ifdef CONFIG_DEBUG_KOBJECT_RELEASE
-> -- 
-> 2.26.2
-> 
+>  #ifdef CONFIG_DEBUG_FS
+>  static int dma_buf_debug_show(struct seq_file *s, void *unused)
+>  {
+> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+> index abf5459a5b9d..00758523597d 100644
+> --- a/include/linux/dma-buf.h
+> +++ b/include/linux/dma-buf.h
+> @@ -251,6 +251,21 @@ struct dma_buf_ops {
+>
+>         void *(*vmap)(struct dma_buf *);
+>         void (*vunmap)(struct dma_buf *, void *vaddr);
+> +
+> +       /**
+> +        * @get_uuid
+> +        *
+> +        * This is called by dma_buf_get_uuid to get the UUID which identifies
+> +        * the buffer to virtio devices.
+> +        *
+> +        * This callback is optional.
+> +        *
+> +        * Returns:
+> +        *
+> +        * 0 on success or a negative error code on failure. On success uuid
+> +        * will be populated with the buffer's UUID.
+> +        */
+> +       int (*get_uuid)(struct dma_buf *dmabuf, uuid_t *uuid);
+>  };
+>
+>  /**
+> @@ -444,4 +459,7 @@ int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
+>                  unsigned long);
+>  void *dma_buf_vmap(struct dma_buf *);
+>  void dma_buf_vunmap(struct dma_buf *, void *vaddr);
+> +
+> +int dma_buf_get_uuid(struct dma_buf *dmabuf, uuid_t *uuid);
+> +
+>  #endif /* __DMA_BUF_H__ */
+> --
+> 2.25.1.481.gfbce0eb801-goog
+>
 
-Is this the older patch we talked about before, or something else?
 
-I can't remember how we left that thread...
-
-thanks,
-
-greg k-h
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
