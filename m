@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1598B1D0D8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32941D0D32
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388030AbgEMJxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:53:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56002 "EHLO mail.kernel.org"
+        id S1733025AbgEMJvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:51:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388017AbgEMJxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:53:52 -0400
+        id S1732965AbgEMJvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:51:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27E08205ED;
-        Wed, 13 May 2020 09:53:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AEEE20575;
+        Wed, 13 May 2020 09:51:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363631;
+        s=default; t=1589363462;
         bh=6bqyuSi7qqW5PiXT3G0qoFdiCIsMTRNnGfoFN53ZoS4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eqw34YZyF3N7XFl4BrHasG5n+xKji6x+q0ZOqQbVbo6JNXill8ucQerVxKEUuZX6+
-         mF7Z0SMtMlE/QuJ9RQYKevwpHr1Tb6xTy8CKDvBZh8WyWdWpfWuxnPFuCQ3+tBFPqR
-         njvQbcjsQT1kMUpZnZWkfppV3hKCtG7iwrvYzSVo=
+        b=t2WyIWkpi4iSobvzdgMwOTwU6DWbLy40paz5TZMFhN2vGdFSA2C8Z1F1Hmw+R86d7
+         Pu90hnvIUgPFUE5wBg+JrGruOuANByrQTpqTvOORTYkUQ1IiyMIGuHVzH3DFLxCTli
+         +8EfEph8w/ISw8D72acskT5JDq1NcqXmUFFc6p4M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Jason Gerecke <jason.gerecke@wacom.com>,
         Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 5.6 061/118] HID: wacom: Report 2nd-gen Intuos Pro S center button status over BT
-Date:   Wed, 13 May 2020 11:44:40 +0200
-Message-Id: <20200513094422.338397479@linuxfoundation.org>
+Subject: [PATCH 5.4 45/90] HID: wacom: Report 2nd-gen Intuos Pro S center button status over BT
+Date:   Wed, 13 May 2020 11:44:41 +0200
+Message-Id: <20200513094413.579703873@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
-References: <20200513094417.618129545@linuxfoundation.org>
+In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
+References: <20200513094408.810028856@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
