@@ -2,91 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A181D04C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989C21D04CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728627AbgEMCTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 22:19:40 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:39141 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727792AbgEMCTe (ORCPT
+        id S1729534AbgEMCUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 22:20:12 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:55744 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728461AbgEMCUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 22:19:34 -0400
-Received: by mail-oi1-f195.google.com with SMTP id b18so20132823oic.6;
-        Tue, 12 May 2020 19:19:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hVIvDXLUWV7kCm1sjwCAhS0B4yNvu2YKfopgdqGQAZM=;
-        b=DNz9MLmAEAmyEayY0k9/L8yyDhKkZmSuIK7e/2cO4AhxMI71EBeAiS/xtdgZEDC/xs
-         39OGn5AAtG3ToF3BEZCIqYykLAkyAgaIyNdYnhctyS3EjWt/HSyxJWvrvCvTLzXc+7y8
-         u7HKuUjsoz2dlc3rL0WPKYNcw9WD1RWuIEnv4EzWAL7ufcsVKdfuUDYVkA+lVOrp0+89
-         wVJjpqP4OLc5avLuCBJEeSMKKAjrY5JS2hIt0QHs/gPzZVsZjdzF88v8S8Lvl4hnkQTV
-         teA81iEmHMUY/pNeBYV5KZcvL5BS7atPu03YUtLDrDdoPRubGGlVCa4IKaci82qp4+PS
-         BIWA==
-X-Gm-Message-State: AGi0PuaSmxxSoPMXOYonUMVC7OulY5kJfDAH0n9QIkRHQDyEiFeGayp6
-        qQR5cDZfUhs4JUd4QL4W9A==
-X-Google-Smtp-Source: APiQypJpNb4ewDOcjTfOthSaYZtYSP9GLgvpWY9I43vl5aq8csUZu6D+yKwBUHo5BLkimepu0pqGvw==
-X-Received: by 2002:a05:6808:24e:: with SMTP id m14mr24102696oie.116.1589336373601;
-        Tue, 12 May 2020 19:19:33 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h24sm3910147otj.25.2020.05.12.19.19.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 19:19:33 -0700 (PDT)
-Received: (nullmailer pid 15333 invoked by uid 1000);
-        Wed, 13 May 2020 02:19:32 -0000
-Date:   Tue, 12 May 2020 21:19:32 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Alain Volmat <alain.volmat@st.com>
-Cc:     wsa@kernel.org, mark.rutland@arm.com, pierre-yves.mordret@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        fabrice.gasnier@st.com
-Subject: Re: [PATCH 3/4] dt-bindings: i2c-stm32: add SMBus Alert bindings
-Message-ID: <20200513021932.GA9172@bogus>
-References: <1588657871-14747-1-git-send-email-alain.volmat@st.com>
- <1588657871-14747-4-git-send-email-alain.volmat@st.com>
+        Tue, 12 May 2020 22:20:12 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04D2K6vR088175;
+        Tue, 12 May 2020 21:20:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589336406;
+        bh=Sdc3TdTbuYOPOfJZXuUSuJdF1dRZ85M5NGFRxv0KYEk=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=NZBwK9URSFM2QpTLdbw/qAwfCHCiHkp+We2btpd4owNMx0ycWyE73reY0jCPR9MzA
+         K/CUgBv5Mf8sFW5R+/kvyqbaIu/r2AaAD5Bs5S5zN8klrob4EPTaJ6LvZnlnut6gyC
+         WNZRaN4Bo0ndwJE/lT1aNQoJyKT5V3COTIH2/BnI=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04D2K6Hw094961;
+        Tue, 12 May 2020 21:20:06 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 12
+ May 2020 21:20:05 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 12 May 2020 21:20:05 -0500
+Received: from [10.250.233.85] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04D2K3Fn012306;
+        Tue, 12 May 2020 21:20:03 -0500
+Subject: Re: [PATCH] phy: samsung: s5pv210-usb2: Add delay after reset
+To:     Jonathan Bakker <xc-racer2@live.ca>,
+        <linux-kernel@vger.kernel.org>, <s.nawrocki@samsung.com>,
+        <kamil@wypas.org>, <krzk@kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>
+References: <BN6PR04MB06605D52502816E500683553A3D10@BN6PR04MB0660.namprd04.prod.outlook.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <bf13f752-8665-1d6a-00b9-085adc2c3881@ti.com>
+Date:   Wed, 13 May 2020 07:50:02 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588657871-14747-4-git-send-email-alain.volmat@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <BN6PR04MB06605D52502816E500683553A3D10@BN6PR04MB0660.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 07:51:10AM +0200, Alain Volmat wrote:
-> Add a new binding of the i2c-stm32f7 driver to enable the handling
-> of the SMBUS-Alert
+
+
+On 4/25/2020 11:06 PM, Jonathan Bakker wrote:
+> The USB phy takes some time to reset, so make sure we give it to it. The
+> delay length was taken from the 4x12 phy driver.
 > 
-> Signed-off-by: Alain Volmat <alain.volmat@st.com>
+> This manifested in issues with the DWC2 driver since commit fe369e1826b3
+> ("usb: dwc2: Make dwc2_readl/writel functions endianness-agnostic.")
+> where the endianness check would read the DWC ID as 0 due to the phy still
+> resetting, resulting in the wrong endian mode being chosen.
+> 
+> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
+
+merged, thanks!
+
+-Kishon
 > ---
->  Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml | 4 ++++
+>  drivers/phy/samsung/phy-s5pv210-usb2.c | 4 ++++
 >  1 file changed, 4 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
-> index b50a2f420b36..04c0882c3661 100644
-> --- a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
-> +++ b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
-> @@ -36,6 +36,10 @@ allOf:
->                  minItems: 3
->                  maxItems: 3
->  
-> +        st,smbus-alert:
-> +          description: Enable the SMBus Alert feature
-> +          $ref: /schemas/types.yaml#/definitions/flag
-> +
-
-We already have smbus_alert interrupt. Can't you just check for this in 
-the slave nodes and enable if found?
-
->    - if:
->        properties:
->          compatible:
-> -- 
-> 2.17.1
+> diff --git a/drivers/phy/samsung/phy-s5pv210-usb2.c b/drivers/phy/samsung/phy-s5pv210-usb2.c
+> index 56a5083fe6f9..32be62e49804 100644
+> --- a/drivers/phy/samsung/phy-s5pv210-usb2.c
+> +++ b/drivers/phy/samsung/phy-s5pv210-usb2.c
+> @@ -139,6 +139,10 @@ static void s5pv210_phy_pwr(struct samsung_usb2_phy_instance *inst, bool on)
+>  		udelay(10);
+>  		rst &= ~rstbits;
+>  		writel(rst, drv->reg_phy + S5PV210_UPHYRST);
+> +		/* The following delay is necessary for the reset sequence to be
+> +		 * completed
+> +		 */
+> +		udelay(80);
+>  	} else {
+>  		pwr = readl(drv->reg_phy + S5PV210_UPHYPWR);
+>  		pwr |= phypwr;
 > 
