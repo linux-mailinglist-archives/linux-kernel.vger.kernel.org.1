@@ -2,88 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7351D20F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D921D20F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729129AbgEMVZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:25:10 -0400
-Received: from vps.xff.cz ([195.181.215.36]:33876 "EHLO vps.xff.cz"
+        id S1729201AbgEMVZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 17:25:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728691AbgEMVY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:24:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1589405097; bh=dAtOpoYajZP7C0pqSSKpj9PSQkj8wPGyufOsCnWHi+I=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=jwel8EOthc8Nk5hqZACkDug6Vh+fBrG5B+CM1pAJr5awcf+Vv60s7JQN/muNtC2p5
-         m4pgb1D2FllBTyO06nOCgwzfm9odoyqlaNMVbCK9rrnKV2Of0UHjRlXasxmjdrxgMZ
-         TSW+cChDYyqg/omHwxLV0dVwvNR++GbkrxTGpu6o=
-From:   Ondrej Jirman <megous@megous.com>
-To:     linux-sunxi@googlegroups.com,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Icenowy Zheng <icenowy@aosc.io>
-Cc:     Ondrej Jirman <megous@megous.com>, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Samuel Holland <samuel@sholland.org>,
-        Martijn Braam <martijn@brixit.nl>, Luca Weiss <luca@z3ntu.xyz>,
-        Bhushan Shah <bshah@kde.org>
-Subject: [PATCH v3 5/5] arm64: dts: sun50i-a64-pinephone: Add touchscreen support
-Date:   Wed, 13 May 2020 23:24:51 +0200
-Message-Id: <20200513212451.1919013-6-megous@megous.com>
-In-Reply-To: <20200513212451.1919013-1-megous@megous.com>
-References: <20200513212451.1919013-1-megous@megous.com>
+        id S1728341AbgEMVZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 17:25:26 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7035E204EF;
+        Wed, 13 May 2020 21:25:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589405125;
+        bh=p+DtAyykbmsDurp1X8w3ClCu6UejbGI3qCjwbRbb8gw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Bga7kRO2Eff+WJhrRlXfx2JTqeQNS8myjiDUu2qRz4HzI6d2rGK2ZogsivCu26OId
+         d5ve47R83uxe30uHEWiuNoaZfj+C/jkRVfbi9KUl1GxIduXGddHzLGmrvWkPEr/OD0
+         IHn1gGKp1FEuOreqeKQyOHltSAcqI0abgovjviyg=
+Date:   Wed, 13 May 2020 22:25:21 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH v5 00/18] Rework READ_ONCE() to improve codegen
+Message-ID: <20200513212520.GC28594@willie-the-truck>
+References: <CANpmjNNeSnrAgfkskE5Y0NNu3-DS6hk+SwjkBunrr8FRxwwT-Q@mail.gmail.com>
+ <20200513111057.GN2957@hirez.programming.kicks-ass.net>
+ <CANpmjNMariz3-keqwUsLHVrpk2r7ThLSKtkhHxTDa3SEGeznhA@mail.gmail.com>
+ <20200513123243.GO2957@hirez.programming.kicks-ass.net>
+ <20200513124021.GB20278@willie-the-truck>
+ <CANpmjNM5XW+ufJ6Mw2Tn7aShRCZaUPGcH=u=4Sk5kqLKyf3v5A@mail.gmail.com>
+ <20200513165008.GA24836@willie-the-truck>
+ <CANpmjNN=n59ue06s0MfmRFvKX=WB2NgLgbP6kG_MYCGy2R6PHg@mail.gmail.com>
+ <20200513174747.GB24836@willie-the-truck>
+ <CANpmjNNOpJk0tprXKB_deiNAv_UmmORf1-2uajLhnLWQQ1hvoA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNNOpJk0tprXKB_deiNAv_UmmORf1-2uajLhnLWQQ1hvoA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pinephone has a Goodix GT917S capacitive touchscreen controller on
-I2C0 bus. Add support for it.
+On Wed, May 13, 2020 at 08:54:03PM +0200, Marco Elver wrote:
+> On Wed, 13 May 2020 at 19:47, Will Deacon <will@kernel.org> wrote:
+> > On Wed, May 13, 2020 at 07:32:58PM +0200, Marco Elver wrote:
+> > > - We do *not* want the call to __read_once_word_nocheck if we have
+> > > __no_sanitize_or_inline. AFAIK that's the main problem -- this applies
+> > > to both KASAN and KCSAN.
+> >
+> > Sorry, I should've been more explicit. The code above, with KASAN enabled,
+> > compiles to:
+> >
+> > ffffffff810a2d50 <foo>:
+> > ffffffff810a2d50:       48 8b 07                mov    (%rdi),%rax
+> > ffffffff810a2d53:       c3                      retq
+> >
+> > but with KCSAN enabled, compiles to:
+> >
+> > ffffffff8109ecd0 <foo>:
+> > ffffffff8109ecd0:       53                      push   %rbx
+> > ffffffff8109ecd1:       48 89 fb                mov    %rdi,%rbx
+> > ffffffff8109ecd4:       48 8b 7c 24 08          mov    0x8(%rsp),%rdi
+> > ffffffff8109ecd9:       e8 52 9c 1a 00          callq  ffffffff81248930 <__tsan_func_entry>
+> > ffffffff8109ecde:       48 89 df                mov    %rbx,%rdi
+> > ffffffff8109ece1:       e8 1a 00 00 00          callq  ffffffff8109ed00 <__read_once_word_nocheck>
+> > ffffffff8109ece6:       48 89 c3                mov    %rax,%rbx
+> > ffffffff8109ece9:       e8 52 9c 1a 00          callq  ffffffff81248940 <__tsan_func_exit>
+> > ffffffff8109ecee:       48 89 d8                mov    %rbx,%rax
+> > ffffffff8109ecf1:       5b                      pop    %rbx
+> > ffffffff8109ecf2:       c3                      retq
+> >
+> > Is that expected? There don't appear to be any more annotations to throw
+> > at it.
+> 
+> Right, so this is expected.
 
-Signed-off-by: Ondrej Jirman <megous@megous.com>
----
- .../dts/allwinner/sun50i-a64-pinephone.dtsi   | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+Fair enough, I just found it weird since it's different to the usual
+"disable instrumentation/trace" function annotations.
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-index e60b57f8ac14..6b2ff431cddb 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-@@ -123,6 +123,25 @@ &ehci1 {
- 	status = "okay";
- };
- 
-+&i2c0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c0_pins>;
-+	status = "okay";
-+
-+	touchscreen@5d {
-+		compatible = "goodix,gt917s", "goodix,gt911";
-+		reg = <0x5d>;
-+		interrupt-parent = <&pio>;
-+		interrupts = <7 4 IRQ_TYPE_LEVEL_HIGH>; /* PH4 */
-+		irq-gpios = <&pio 7 4 GPIO_ACTIVE_HIGH>; /* PH4 */
-+		reset-gpios = <&pio 7 11 GPIO_ACTIVE_HIGH>; /* PH11 */
-+		AVDD28-supply = <&reg_ldo_io0>;
-+		VDDIO-supply = <&reg_ldo_io0>;
-+		touchscreen-size-x = <720>;
-+		touchscreen-size-y = <1440>;
-+	};
-+};
-+
- &i2c1 {
- 	status = "okay";
- 
--- 
-2.26.2
+> We can definitely make __tsan_func_entry/exit disappear with Clang, with
+> GCC it's going to be a while if we want to fix it.
+> 
+> If we remove 'noinline' from __no_kcsan_or_inline, we no longer get
+> the call to __read_once_word_nocheck above! But...
+> 
+> For KCSAN we force 'noinline' because older compilers still inline and
+> then instrument small functions even if we just have the no_sanitize
+> attribute (without inline mentioned). The same is actually true for
+> KASAN, so KASAN's READ_ONCE_NOCHECK might be broken in a few places,
+> but nobody seems to have noticed [1]. KASAN's __no_kasan_or_inline
+> should also have a 'noinline' I think. I just tested
+> __no_kcsan_or_inline without 'noinline', and yes, GCC 9 still decided
+> to inline a small function and then instrument the accesses.
+> 
+> [1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=59600
+> 
+> The good news is that Clang does the right thing when removing
+> 'noinline' from __no_kcsan_or_inline:
+> 1. doesn't inline into functions that are instrumented, and
+> 2. your above example doesn't do the call to __read_once_word_nocheck.
+> 
+> The obvious solution to this is: restrict which compiler we want to support?
 
+I would be in favour of that, but I defer to the x86 folks since this
+affects them much more than it does me. On the arm64 side, we've got patches
+queued for 5.8 that require GCC 10.0.1 or later, and that thing is only a
+week old. I think it's reasonable to require a recent toolchain for optional
+features like this that inherently rely on compiler support.
+
+> > > From what I gather, we want to just compile the function as if the
+> > > sanitizer was never enabled. One reason for why this doesn't quite
+> > > work is because of the preprocessor.
+> > >
+> > > Note that the sanitizers won't complain about these accesses, which
+> > > unfortunately is all these attributes ever were documented to do. So
+> > > the attributes aren't completely useless. Why doesn't
+> > > K[AC]SAN_SANITIZE := n work?
+> >
+> > I just don't get the point in having a function annotation if you then have to
+> > pass flags at the per-object level. That also then necessitates either weird
+> > refactoring and grouping of code into "noinstrument.c" type files, or blanket
+> > disabling of instrumentation for things like arch/x86/
+> 
+> If you want a solution now, here is one way to get us closer to where
+> we want to be:
+> 
+> 1. Peter's patch to add data_race around __READ_ONCE/__WRITE_ONCE.
+> 2. Patch to make __tsan_func_entry/exit disappear with Clang.
+> 3. Remove 'noinline' from __no_kcsan_or_inline.
+> 4. Patch to warn users that KCSAN may have problems with GCC and
+> should use Clang >= 7.
+> 
+> But this is probably only half a solution.
+
+At this point, I think that if READ_ONCE_NOCHECK() works as expected, and
+calling __{READ,WRITE}_ONCE from functions tagged with __no_sanitize doesn't
+result in instrumentation, then we're good.
+
+Will
