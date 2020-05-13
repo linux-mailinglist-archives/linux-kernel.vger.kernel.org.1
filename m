@@ -2,112 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7761D19C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B314D1D19CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732323AbgEMPp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 11:45:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728490AbgEMPpz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 11:45:55 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBDEBC061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 08:45:54 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jYtZs-0004Pr-MC; Wed, 13 May 2020 17:45:48 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jYtZo-0002Hv-5S; Wed, 13 May 2020 17:45:44 +0200
-Date:   Wed, 13 May 2020 17:45:44 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] net: phy: at803x: add cable test support
-Message-ID: <20200513154544.gwcccvbicpvrj6vm@pengutronix.de>
-References: <20200513120648.14415-1-o.rempel@pengutronix.de>
- <0c80397b-58b8-0807-0b98-695db8068e25@gmail.com>
+        id S2389198AbgEMPrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 11:47:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729604AbgEMPrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 11:47:00 -0400
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A718B20659
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 15:47:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589384820;
+        bh=nzgdwqBNsrP+73eJCjx0UH7nQXREgSbxf60tXOz/1mA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uTYkcqcoqoyksVZUKhSa9PcQZ7U0QNWOs1Pb5AAKeEs6RhzLiVRCQ3Qpw8+nTE929
+         dcX1cFwFqWckgbCKSoP/FhIojh8qUM1IBjDwUFkLg5JvwihgMuOsf/OjJ3hVXx56J1
+         SC7asO2sZ0gMpAwWAQ2cRb6o8vQIppMko+5EBOf8=
+Received: by mail-wm1-f46.google.com with SMTP id w19so14302103wmc.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 08:47:00 -0700 (PDT)
+X-Gm-Message-State: AGi0PuavGKMsvOXnZabloNZCMytXFNNx/0n4NdcTGsNKs/NLVqbAlZcY
+        NEulQOGHlF+5lI8L0PNIuf8D+5wd+M8XqGt6aBg+iw==
+X-Google-Smtp-Source: APiQypKuUOoHroqVE1Q2xSEZ5CJAKVmZYRRug6GQ131e/OlvUQIzVUtZ4lvV/wUI+iagtz1aPdU6tH9xKFo/pnQ17qg=
+X-Received: by 2002:a05:600c:2299:: with SMTP id 25mr22837779wmf.138.1589384818895;
+ Wed, 13 May 2020 08:46:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="l4mc43ul3f7nhocp"
-Content-Disposition: inline
-In-Reply-To: <0c80397b-58b8-0807-0b98-695db8068e25@gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 17:35:33 up 180 days,  6:54, 192 users,  load average: 0.06, 0.06,
- 0.02
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20200513152137.32426-1-joro@8bytes.org> <20200513152137.32426-8-joro@8bytes.org>
+In-Reply-To: <20200513152137.32426-8-joro@8bytes.org>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 13 May 2020 08:46:47 -0700
+X-Gmail-Original-Message-ID: <CALCETrUq=-huvWXJpVLvPRNwTiniQg8DP6R__J33gE8iSoEGAg@mail.gmail.com>
+Message-ID: <CALCETrUq=-huvWXJpVLvPRNwTiniQg8DP6R__J33gE8iSoEGAg@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] x86/mm: Remove vmalloc faulting
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 13, 2020 at 8:21 AM Joerg Roedel <joro@8bytes.org> wrote:
+>
+> From: Joerg Roedel <jroedel@suse.de>
+>
+> Remove fault handling on vmalloc areas, as the vmalloc code now takes
+> care of synchronizing changes to all page-tables in the system.
 
---l4mc43ul3f7nhocp
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, May 13, 2020 at 08:23:42AM -0700, Florian Fainelli wrote:
->=20
->=20
-> On 5/13/2020 5:06 AM, Oleksij Rempel wrote:
-> > The cable test seems to be support by all of currently support Atherso
-> > PHYs, so add support for all of them. This patch was tested only on
-> > AR9331 PHY with following results:
-> > - No cable is detected as short
-> > - A 15m long cable connected only on one side is detected as 9m open.
-> > - A cable test with active link partner will provide no usable results.
->=20
-> How does this relate to Michael's recent work here:
->=20
-> https://www.spinics.net/lists/kernel/msg3509304.html
-
-Uff.. i missed this. Then I'll need only to add some changes on top of
-his patch.
-
-Regards,
-Oleksij
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---l4mc43ul3f7nhocp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEERBNZvwSgvmcMY/T74omh9DUaUbMFAl68FiQACgkQ4omh9DUa
-UbMiXxAAiOrCPbzXrEYAuGypWvsoxkF++QGU8vdMlA8GnrJqzvwiDc/IG4KoyILF
-Yu40ODr7ySGS3m1BLfg+xwz/SZiZCS9j13s1e/pmGKeMVEBanVZ9V3KVRdZnCv86
-+PYenNjsIIY4TojKGpdTqXVpYnLypWVyFQeJVraf7TEYpN/7iFXW8cAnqla0z3xO
-D+OjhxiyEG0ULZU4BhxQi/vYvyZuXqp7io9U6IxPNV7KayW8f56TAvq1Ev0RSClT
-ctknHooaYvvqQpMYR+5RGfICd1GNIxLxCzJzr6EdxJBndOYil7kokkuZxMoOzAOq
-N15sY8D2AAXGEjiKABXw43cU2bQUGUfqbKSFteIbgxO3hFebSq9kqGGdguIgNuZS
-0YLh6T4W3xpUgSPTM+emGHNoEDweIH5nUvEGlE4EjTmNBo87wNzT9ZI7kfkrL13X
-DTDcU4ebPhh7JA/7WcdgX7hriUwxKOdt+4vb+nwu8ir7v6U77DJDNeheh8HfOHzh
-OHkR2fKKt6lUr69eaI6Ki0Jk5CsSbxuh8wu8gDmiBMeV+X0JPr9k1WbEjHgm5Zmw
-ul0SRCa5yE5DudHFGniT7Fv2AKr/eqVuGabuZNXFr2FVcz3Usl8uT3rDCtgJLJff
-YX6rqvDW2kVcZ+hWKk5QSovbLV0jh1RHwBOgDnkus5gMITcKfMc=
-=dJ9z
------END PGP SIGNATURE-----
-
---l4mc43ul3f7nhocp--
+You should also remove sync_current_stack_to_mm().
