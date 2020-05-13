@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E841D20BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46C61D20B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728139AbgEMVOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728245AbgEMVOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 13 May 2020 17:14:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgEMVOp (ORCPT
+        with ESMTP id S1726145AbgEMVOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 May 2020 17:14:45 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E099C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:14:44 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id x15so303454pfa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:14:44 -0700 (PDT)
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87265C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:14:45 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id w65so279360pfc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:14:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=fQPXZp+IVSxbapxw+qChW71ug0twA5FFI0kmAhQ2wws=;
-        b=IyJE95cx6fUjoUOtxi6G5B/lxWB5ibznMc114jMJGxspQQTGQMUcGMrMk2WtlJjWo0
-         PkRMLu26n1UYSg4ZJQzWfqJ7zaU37jmlYr/pp1WY9YN3N2QmTNX47nlFsvKEEE/wBay8
-         E6TU1Q/GiETUSfOG/ZfMVMaD6Dvu9KtwGVkG1DCZYtv3pZqp5HvJoZSzp8JP5RlNJdb2
-         bXsgJwh1TPDAOXoNLeaq4xzFVxEPgO0msB9kSO5M7GB4uS6DMJfG0V0yZvUnApB37FMx
-         gxZHaUdedYhJVo8ph2WaPlX+DJveMWvERWXTuEIBk/MtuSJSF2JAupOFOBmsFoTOB6H/
-         q0Uw==
+        bh=4+xSC9bsrPwFy66uuVLgjjuRRD6A290/AIOo8xDaczg=;
+        b=y8cC9UPVb/LpnhQcVv3DQFfsyP9xOVUr34YZ+rgvlk99pXbXiAUjEcmTk8rR7JecUn
+         M7rvujyKfX417pYnhlyjtXXOldBKCB1N556dFyZCrzVWE+xZryoMCpZJn1E8hIcK7fdD
+         Au/+nFpMUwtAcdhITxyFuxMMICq4X61/OfFY/U8vH9KpeCoRXvpbNKYQkjqSKI/FlrLU
+         aUmMUM7QiDsqi37mnJpRcRHI0mbPEED0leDzLP+YI3vRpHfa7K2UAG29jR6fuvl7uqLm
+         6MppLl25kjw42fDXTZxcaABI24Sx+SBO9/JwehhR8v0438+XHgHtlQ0FNi3xjuCRCoDW
+         Jbvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=fQPXZp+IVSxbapxw+qChW71ug0twA5FFI0kmAhQ2wws=;
-        b=UC1B8RRiro2yobOvENVSHl3F2xGYbaF53VVhq3DVkVK3zksFj7i71q6tVEzp1/eZKM
-         9wBoYXYef00FaQhgPul+8fHe/sT3xWsce4btWRfvqmfrtarHO/g6oxqLDApoOnnPCFnD
-         931v6GrgnLw1G5Vj7C+Uj91Qv7bejh8X77AAVjx/8tQVCKSCPxSOz2Dq7wYPWD6EmnkV
-         04ebwq2AiTlMmk5a4LrQjD1G2jNbL2+zYZoclvewYWUiixlzUcPjCP9PuJLvb1sKVzkZ
-         KMa6GQqNAVhDwp/Ia7Zt5vjCbP1pdIYC+DkdWubPM/PY6G6KDhwFMlY0gT6sT6am86Vh
-         fV6Q==
-X-Gm-Message-State: AOAM530e6vHO3n3gfSAUHV+ZZrodZ4BVJE1ApoEpHFKzMut6BRCzuifO
-        jIwIywcpsWP/8G06KVmm/75oav01bEQ=
-X-Google-Smtp-Source: ABdhPJzdTa0U9kp2niBnjnx175RKaHvwsebr/DnTI6hq6UVnAjjZVxFFrmMdl9SIIYoqxiJIPtOgJg==
-X-Received: by 2002:a62:1d48:: with SMTP id d69mr1161543pfd.102.1589404483317;
-        Wed, 13 May 2020 14:14:43 -0700 (PDT)
+        bh=4+xSC9bsrPwFy66uuVLgjjuRRD6A290/AIOo8xDaczg=;
+        b=Zz6Lj4FovaCePAKYfsuMlf96ORusgJkCVgDOXMr58q10viCI8LRtProlLR5nFJALPK
+         mHMikMqtxddBXb909F0QinySITcAB7yAGmX5qtb/VjD27db3UMyT50gElm2aUgLoASRx
+         xBzDIdMnt9ztBl2lWtb3xmoqK9OUh3ZYwSekmJ9RLvEcHiG/AH3P49IvQZ6d1ZlLmEK7
+         rjex86P8KSBzK7BTMpDaHQVS9kwO48+OMd+Klfec4MFdRant3koCuJnKs4aId6pSWv55
+         1sfcHyg9Zq/JESOc1KZwTyG6MZr0dR9GLeM0tCPCAlogxPf1RBUqA0NjmLT9dffUO/Oa
+         wsZQ==
+X-Gm-Message-State: AOAM5320V5VJYxqaucdSMOw8HcsgT3DH0hCNBkVslHWmpGxQ6gnXwYDx
+        +Njy8TEk2VTB9pZV/vxTFhC9bg==
+X-Google-Smtp-Source: ABdhPJyl/k6oTH3iTiwWC8Vrw7cGObT1MXaEUnLbNBG6QRWSf0056vKV/N4CX2dWIylHpqdUNJcyXw==
+X-Received: by 2002:a63:e602:: with SMTP id g2mr1138569pgh.380.1589404484887;
+        Wed, 13 May 2020 14:14:44 -0700 (PDT)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id q134sm407114pfc.143.2020.05.13.14.14.42
+        by smtp.gmail.com with ESMTPSA id w73sm408511pfd.113.2020.05.13.14.14.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 14:14:42 -0700 (PDT)
-Date:   Wed, 13 May 2020 14:14:42 -0700 (PDT)
-X-Google-Original-Date: Tue, 12 May 2020 16:33:48 PDT (-0700)
-Subject:     Re: [PATCH 01/10] riscv: Fix unmet direct dependencies built based on SOC_VIRT
-In-Reply-To: <20200511022001.179767-2-wangkefeng.wang@huawei.com>
+        Wed, 13 May 2020 14:14:44 -0700 (PDT)
+Date:   Wed, 13 May 2020 14:14:44 -0700 (PDT)
+X-Google-Original-Date: Tue, 12 May 2020 17:21:48 PDT (-0700)
+Subject:     Re: [PATCH 05/10] riscv: Disable ARCH_HAS_DEBUG_WX if NOMMU
+In-Reply-To: <20200511022001.179767-6-wangkefeng.wang@huawei.com>
 CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         wangkefeng.wang@huawei.com, hulkci@huawei.com
 From:   Palmer Dabbelt <palmer@dabbelt.com>
 To:     wangkefeng.wang@huawei.com
-Message-ID: <mhng-a9830a3c-320d-4a7a-8792-85d436b32182@palmerdabbelt-glaptop1>
+Message-ID: <mhng-f65a8b91-0836-4927-a39f-8167cd3ec67f@palmerdabbelt-glaptop1>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -66,61 +66,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 May 2020 19:19:52 PDT (-0700), wangkefeng.wang@huawei.com wrote:
-> Fix unmet direct dependencies Warning and fix Kconfig indent.
->
-> WARNING: unmet direct dependencies detected for POWER_RESET_SYSCON
->   Depends on [n]: POWER_RESET [=n] && OF [=y] && HAS_IOMEM [=y]
->   Selected by [y]:
->   - SOC_VIRT [=y]
->
-> WARNING: unmet direct dependencies detected for POWER_RESET_SYSCON_POWEROFF
->   Depends on [n]: POWER_RESET [=n] && OF [=y] && HAS_IOMEM [=y]
->   Selected by [y]:
->   - SOC_VIRT [=y]
->
-> WARNING: unmet direct dependencies detected for RTC_DRV_GOLDFISH
->   Depends on [n]: RTC_CLASS [=n] && OF [=y] && HAS_IOMEM [=y] && (GOLDFISH [=y] || COMPILE_TEST [=n])
->   Selected by [y]:
->   - SOC_VIRT [=y]
+On Sun, 10 May 2020 19:19:56 PDT (-0700), wangkefeng.wang@huawei.com wrote:
+> DEBUG_WX is only useful when MMU enabled, diable it if nommu
+> and fix the build error.
 >
 > Reported-by: Hulk Robot <hulkci@huawei.com>
 > Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 > ---
->  arch/riscv/Kconfig.socs | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
+>  arch/riscv/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-> index 4b2303ca20b9..6c88148f1b9b 100644
-> --- a/arch/riscv/Kconfig.socs
-> +++ b/arch/riscv/Kconfig.socs
-> @@ -11,14 +11,15 @@ config SOC_SIFIVE
->  	  This enables support for SiFive SoC platform hardware.
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 78f30f2fdd51..7da0a36a8df0 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -69,7 +69,7 @@ config RISCV
+>  	select HAVE_ARCH_KASAN if MMU && 64BIT
+>  	select HAVE_ARCH_KGDB
+>  	select HAVE_ARCH_KGDB_QXFER_PKT
+> -	select ARCH_HAS_DEBUG_WX
+> +	select ARCH_HAS_DEBUG_WX if MMU
 >
->  config SOC_VIRT
-> -       bool "QEMU Virt Machine"
-> -       select POWER_RESET_SYSCON
-> -       select POWER_RESET_SYSCON_POWEROFF
-> -       select GOLDFISH
-> -       select RTC_DRV_GOLDFISH
-> -       select SIFIVE_PLIC
-> -       help
-> -         This enables support for QEMU Virt Machine.
-> +	bool "QEMU Virt Machine"
-> +	select POWER_RESET
-> +	select POWER_RESET_SYSCON
-> +	select POWER_RESET_SYSCON_POWEROFF
-> +	select GOLDFISH
-> +	select RTC_DRV_GOLDFISH if RTC_CLASS
-> +	select SIFIVE_PLIC
-> +	help
-> +	  This enables support for QEMU Virt Machine.
->
->  config SOC_KENDRYTE
->  	bool "Kendryte K210 SoC"
+>  config ARCH_MMAP_RND_BITS_MIN
+>  	default 18 if 64BIT
 
-This is another area we need to clean up (maybe converting from select to
-imply?), but given this fixes likely build errors I'm going to take it onto
-fixes.
-
-Thanks!
+Looks like this depends on something that isn't in any of my trees yet.
