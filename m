@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38871D0EB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C5B1D0DAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388535AbgEMKB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 06:01:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50466 "EHLO mail.kernel.org"
+        id S2388193AbgEMJy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:54:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387512AbgEMJue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:50:34 -0400
+        id S2388181AbgEMJyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:54:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 865B6206D6;
-        Wed, 13 May 2020 09:50:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C78E205ED;
+        Wed, 13 May 2020 09:54:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363434;
-        bh=r2L2lTJ3pWLrHqNqd30/GlDtH7cuSZvM9VRmV+dxfpY=;
+        s=default; t=1589363695;
+        bh=/ignZR7GNcTHAuBeR3m6gniiTyCHIeXYnBm8RqmIW5A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zLXnzWPsxSShfv+D4ib4B/hq6zaPY4E8fU0xTpRjNt9WaR4dotZ2EI2P2TzjH9iuw
-         5GqpLEfy296Wi6+cQm4S5go603bk3iqHcQ+ZrVDXbuMRmKEkKjJwy45Kew+rXlouwx
-         G0QrCuDFE7cdmGGUjuhAhaPDYVoxe1aBqAJIeJ5E=
+        b=wPYZRRIbILR9OrZ+clz6nYMZrKi66jvbikYw27buBqaEMKue5KeRmFjFgVQez1aio
+         OaK1QojFlok3q0xQP4MOukGrQ5GHKtK2hs4tcURRSOB4wyvI0P3bjHoCFWOP0ZI7NL
+         p27FDKWww7+IjdYvggrd7k/LJB/0RYWo8Gren320=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>
-Subject: [PATCH 5.4 71/90] batman-adv: Fix refcnt leak in batadv_v_ogm_process
+        stable@vger.kernel.org, Oscar Carter <oscar.carter@gmx.com>,
+        Richard Yeh <rcy@google.com>
+Subject: [PATCH 5.6 088/118] staging: gasket: Check the return value of gasket_get_bar_index()
 Date:   Wed, 13 May 2020 11:45:07 +0200
-Message-Id: <20200513094416.725338655@linuxfoundation.org>
+Message-Id: <20200513094425.078185623@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
-References: <20200513094408.810028856@linuxfoundation.org>
+In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
+References: <20200513094417.618129545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Oscar Carter <oscar.carter@gmx.com>
 
-commit 6f91a3f7af4186099dd10fa530dd7e0d9c29747d upstream.
+commit 769acc3656d93aaacada814939743361d284fd87 upstream.
 
-batadv_v_ogm_process() invokes batadv_hardif_neigh_get(), which returns
-a reference of the neighbor object to "hardif_neigh" with increased
-refcount.
+Check the return value of gasket_get_bar_index function as it can return
+a negative one (-EINVAL). If this happens, a negative index is used in
+the "gasket_dev->bar_data" array.
 
-When batadv_v_ogm_process() returns, "hardif_neigh" becomes invalid, so
-the refcount should be decreased to keep refcount balanced.
-
-The reference counting issue happens in one exception handling paths of
-batadv_v_ogm_process(). When batadv_v_ogm_orig_get() fails to get the
-orig node and returns NULL, the refcnt increased by
-batadv_hardif_neigh_get() is not decreased, causing a refcnt leak.
-
-Fix this issue by jumping to "out" label when batadv_v_ogm_orig_get()
-fails to get the orig node.
-
-Fixes: 9323158ef9f4 ("batman-adv: OGMv2 - implement originators logic")
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+Addresses-Coverity-ID: 1438542 ("Negative array index read")
+Fixes: 9a69f5087ccc2 ("drivers/staging: Gasket driver framework + Apex driver")
+Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
+Cc: stable <stable@vger.kernel.org>
+Reviewed-by: Richard Yeh <rcy@google.com>
+Link: https://lore.kernel.org/r/20200501155118.13380-1-oscar.carter@gmx.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/batman-adv/bat_v_ogm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/gasket/gasket_core.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/net/batman-adv/bat_v_ogm.c
-+++ b/net/batman-adv/bat_v_ogm.c
-@@ -897,7 +897,7 @@ static void batadv_v_ogm_process(const s
- 
- 	orig_node = batadv_v_ogm_orig_get(bat_priv, ogm_packet->orig);
- 	if (!orig_node)
--		return;
-+		goto out;
- 
- 	neigh_node = batadv_neigh_node_get_or_create(orig_node, if_incoming,
- 						     ethhdr->h_source);
+--- a/drivers/staging/gasket/gasket_core.c
++++ b/drivers/staging/gasket/gasket_core.c
+@@ -926,6 +926,10 @@ do_map_region(const struct gasket_dev *g
+ 		gasket_get_bar_index(gasket_dev,
+ 				     (vma->vm_pgoff << PAGE_SHIFT) +
+ 				     driver_desc->legacy_mmap_address_offset);
++
++	if (bar_index < 0)
++		return DO_MAP_REGION_INVALID;
++
+ 	phys_base = gasket_dev->bar_data[bar_index].phys_base + phys_offset;
+ 	while (mapped_bytes < map_length) {
+ 		/*
 
 
