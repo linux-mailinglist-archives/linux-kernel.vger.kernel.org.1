@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1494E1D0F0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE7E1D0F20
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387430AbgEMKEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 06:04:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53480 "EHLO mx2.suse.de"
+        id S2388710AbgEMKEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 06:04:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733245AbgEMKET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 06:04:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 4C8B3B1EF;
-        Wed, 13 May 2020 10:04:19 +0000 (UTC)
-Date:   Wed, 13 May 2020 12:04:13 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
-Message-ID: <20200513100413.GH17734@linux-b0ei>
-References: <20200427062117.GC486@jagdpanzerIV.localdomain>
- <4dae86af-1d9a-f5a8-cff6-aa91ec038a79@i-love.sakura.ne.jp>
- <20200428121828.GP28637@dhcp22.suse.cz>
- <b4d74234-8009-9ffd-011f-bd5d1a4b85f6@i-love.sakura.ne.jp>
- <20200428154532.GU28637@dhcp22.suse.cz>
- <b1d507b1-dae7-f526-c74a-d465ddecea6a@i-love.sakura.ne.jp>
- <20200429142106.GG28637@dhcp22.suse.cz>
- <a59271f1-b3fc-26d1-f0a2-5ec351d0095e@i-love.sakura.ne.jp>
- <20200513062652.GM413@jagdpanzerIV.localdomain>
- <a75d6560-ad99-5b02-3648-247c27c3a398@i-love.sakura.ne.jp>
+        id S1732876AbgEMKEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 06:04:49 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E505A206B8;
+        Wed, 13 May 2020 10:04:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589364288;
+        bh=BkUzNAvRjDhZ5sh9KsFgyFVKv9jNomu1O2R+MD3pou8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PV5yqOxp7v0teWZ5crR2ehluwOXrr3DcmlDcWZhM/f7bVtRBh3J3jGfx5jnfBhP2B
+         176rRIBdxukTGVFgS0qqR0iPcOSHajdIJXAg4RNUMFJJLU3l1lzt9L6CKaKl6WEa5S
+         EoNHAQIZWgoUsUYUmjrmADoa3W7ZzdcmSboXjA8g=
+Date:   Wed, 13 May 2020 12:04:46 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     "Ravich, Leonid" <Leonid.Ravich@dell.com>
+Cc:     "Idgar, Or" <Or.Idgar@dell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: CMA enhancement - non-default areas in x86
+Message-ID: <20200513100446.GB868852@kroah.com>
+References: <CH2PR19MB3767236EDC9BE964FC3AB91BFEBF0@CH2PR19MB3767.namprd19.prod.outlook.com>
+ <20200513064755.GA763968@kroah.com>
+ <CH2PR19MB376794E120B9B02856DC87C3FEBF0@CH2PR19MB3767.namprd19.prod.outlook.com>
+ <20200513071413.GB766804@kroah.com>
+ <DM6PR19MB26827EFC4DDC6CB9DD5C52D098BF0@DM6PR19MB2682.namprd19.prod.outlook.com>
+ <20200513083343.GA772573@kroah.com>
+ <DM6PR19MB268231FBFEA47D7C4CEAF29098BF0@DM6PR19MB2682.namprd19.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a75d6560-ad99-5b02-3648-247c27c3a398@i-love.sakura.ne.jp>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <DM6PR19MB268231FBFEA47D7C4CEAF29098BF0@DM6PR19MB2682.namprd19.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2020-05-13 16:58:48, Tetsuo Handa wrote:
-> On 2020/05/13 15:26, Sergey Senozhatsky wrote:
-> > Yes, but this looks like it's the consumer of the messages who
-> > decides what to filter and what not to. rsyslog, dmesg, etc.
-> > will have different filtering policies. It's not like the kernel
-> > decides what to hide and what to show. If would compare this to
-> > NO_CONSOLES, then NO_CONSOLES does a different thing after all.
+On Wed, May 13, 2020 at 09:43:45AM +0000, Ravich, Leonid wrote:
+> > On Wed, May 13, 2020 at 08:29:16AM +0000, Ravich, Leonid wrote:
+> > > PCIe NTB
+> > > Documentation/driver-api/ntb.rst
+> > 
+> > > 1) Basically PCI bridge between to root complex / PCI switches
+> > > 2) using out of OS memory is one solution but then this memory is
+> > > Limited for usage by other stack, ex: get_user_pages on this memory
+> > > will fail, Therefore attempting to use it for block layer with (o_direct) will
+> > fail.
+> > >
+> > > Acutely any generic stack which attempts to "pin" this memory will fail.
+> > 
+> > So why isn't the BIOS/UEFI properly reserving this from the general operating
+> > system's pages so that the driver knows to use them instead?
+> > 
+> > Is UEFI wrong here about these being valid memory ranges for general use?
+> > If so, why not fix that?  If not, how in the world is the OS supposed to know
+> > these memory ranges are _not_ for general use?  I feel like there is
+> > something missing here...
+> >
+> Maybe I am miss understanding something here , but if BIOS/UEFI will reserve this pages 
+> They will be "out of kernel" which will work for propriety driver but this memory will not 
+> be useable for generic driver which will attempt to pin this memory with get_user_pages() .
+> so we can go and try to fix that  (not sure this is the right way) .
+
+What do you mean by "propriety" driver vs. "generic" driver?
+
+Shouldn't there be some "generic" way that UEFI tells any driver where
+these memory locations are that can not be used as general memory?  If
+not, try fixing up UEFI for that.
+
+> another option here is to use some kernel infrastructure  which  from one side reserve the memory from general use
+> on the other hand kernel will be aware of this pages so get_user_pages()  will work on this memory .
 > 
-> I just showed an example that changing dump_tasks() messages from
-> KERN_INFO to KERN_DEBUG is not an option. If dump_tasks() were using
-> KERN_DEBUG, the consumer of the messages will have to receive all
-> KERN_DEBUG messages, which needlessly contains uninterested messages.
-> If dump_tasks() allows use of NO_CONSOLES (via e.g. sysctl switch),
-> the consumer does not need to receive KERN_DEBUG messages.
-> 
-> What is wrong with adding NO_CONSOLES ?
+> from what we saw CMA infrastructure can support  such requirements.
 
-How does it differ from KERN_DEBUG? The debug messages:
+CMA needs to be told where to reserve the memory at boot time.  If you
+want to use that, great, but something has to tell it, so perhaps just
+get that info from UEFI as that is the "equilivant" to a device tree,
+right?
 
-  + can be disabled via sysfs
-  + might reach console when this loglevel is enabled
+Try it all out and see, all of this is pointless without real patches,
+which is why we almost never have these kinds of discussions without
+working code.
 
+thanks,
 
-The console loglevel handling is already very complicated. The
-behavior is affected by:
-
-  + four values in console_printk array:
-      + console_loglevel
-      + default_message_loglevel
-      + minimum_console_loglevel
-      + default_console_loglevel
-
-  + ignore_loglevel variable
-
-  + loglevel assigned to each message
-
-
-I really do not see a reason for another loglevel, another sysfs
-interface, and another special handling. It would just make it even
-more complicated for both developers and users.
-
-What is so special about  OOM dump task so that it would deserve such
-complications?
-
-The dump might already be enabled or disabled. If is not important
-enough to reach the console then the messages should be printed
-with a lower loglevel.
-
-Best Regards,
-Petr
+greg k-h
