@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E731D0E48
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888DB1D0D2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388340AbgEMJ7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:59:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55868 "EHLO mail.kernel.org"
+        id S1732990AbgEMJu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:50:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732603AbgEMJxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:53:44 -0400
+        id S1732965AbgEMJuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:50:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED2FF20575;
-        Wed, 13 May 2020 09:53:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D96D22312A;
+        Wed, 13 May 2020 09:50:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363624;
+        s=default; t=1589363450;
         bh=pGMOmfgZYD4hG2YOmoxa8HOQPBwC8mhC3RTXFJgBhFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xdjm2uVTZaZKfKnt6/9aZItU0RkMVQLaxv+9CZwnEipq45U0o16VJCq/FIiHc/dEs
-         M8UP9StKQlVccDAgyBUn6hnyYypAvFHOKc+cn4Yl0KgwZyUUbY1MuKBNis1pz3qAN/
-         +XMcNP4gdUG+dsAZzYXBoA+Wy9v5E5XN78MolyfA=
+        b=JZbnAGnjujml0isSLvdXj5WRpG9+uyT+Piy9f9m4llYcWR7s68ihs490/uR5QTCJG
+         kRPsm0iBwDajAqVmvYEnDC0Iz4Ve8facstS7cnWejPEEIwFqfQjc1L7vfbeDAkFBnW
+         F1L7JDqN7zrAevTv2QI8Tm9mxN5v+pDisq8zjXjg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,12 +31,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 5.6 058/118] sctp: Fix bundling of SHUTDOWN with COOKIE-ACK
-Date:   Wed, 13 May 2020 11:44:37 +0200
-Message-Id: <20200513094422.085722067@linuxfoundation.org>
+Subject: [PATCH 5.4 42/90] sctp: Fix bundling of SHUTDOWN with COOKIE-ACK
+Date:   Wed, 13 May 2020 11:44:38 +0200
+Message-Id: <20200513094413.208427698@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
-References: <20200513094417.618129545@linuxfoundation.org>
+In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
+References: <20200513094408.810028856@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
