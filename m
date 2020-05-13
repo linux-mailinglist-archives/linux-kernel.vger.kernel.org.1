@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A9F1D0D08
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 834BF1D0D74
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733260AbgEMJte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:49:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48400 "EHLO mail.kernel.org"
+        id S2387907AbgEMJxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:53:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733215AbgEMJt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:49:26 -0400
+        id S2387896AbgEMJxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:53:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C084D23128;
-        Wed, 13 May 2020 09:49:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E54123127;
+        Wed, 13 May 2020 09:53:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363365;
-        bh=2tnEjWCrgLT4v3MbFXgu5mRRqi54UgmsgKVou0IVCRk=;
+        s=default; t=1589363584;
+        bh=OZF5ZwFXj4P8n0iGxnlNhVhwzR/yGMlCOIbRSfvbciQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UAWnRMK2zmFYr8oFqS4Ir5LSaHflM00pN6DNNme/ZdbWMUUC0/IoITkjESZHgYRne
-         Ugbh+wBs/OTKcU+xND7bW1Tf8El6q6Ns+FOyYHvuoEkcX0ejGCUXGsfc74SwnysiGt
-         tzc2M2ExEz9wfgNHux+LJ2KiPPPD3T8QQikL63eE=
+        b=wWkogbHo1tIYDYoRL2rLLe2FicWYrdrXdEQWeYQ7LsI4rasIfMw8H9RCwn88zuT8n
+         zjNEq7ZhKN45e6BdyTg02vYdVkVDn9kCkAU01CCXJpF1myHGgikwXeIriv+Y6aVMTp
+         kuQE9roxS1cyDH8qU/t56aoK2T9qg0kR2T3RBqY0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 09/90] tty: xilinx_uartps: Fix missing id assignment to the console
+        stable@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 026/118] net/mlx4_core: Fix use of ENOSPC around mlx4_counter_alloc()
 Date:   Wed, 13 May 2020 11:44:05 +0200
-Message-Id: <20200513094410.133435073@linuxfoundation.org>
+Message-Id: <20200513094419.932663267@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
-References: <20200513094408.810028856@linuxfoundation.org>
+In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
+References: <20200513094417.618129545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,44 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+From: Tariq Toukan <tariqt@mellanox.com>
 
-[ Upstream commit 2ae11c46d5fdc46cb396e35911c713d271056d35 ]
+[ Upstream commit 40e473071dbad04316ddc3613c3a3d1c75458299 ]
 
-When serial console has been assigned to ttyPS1 (which is serial1 alias)
-console index is not updated property and pointing to index -1 (statically
-initialized) which ends up in situation where nothing has been printed on
-the port.
+When ENOSPC is set the idx is still valid and gets set to the global
+MLX4_SINK_COUNTER_INDEX.  However gcc's static analysis cannot tell that
+ENOSPC is impossible from mlx4_cmd_imm() and gives this warning:
 
-The commit 18cc7ac8a28e ("Revert "serial: uartps: Register own uart console
-and driver structures"") didn't contain this line which was removed by
-accident.
+drivers/net/ethernet/mellanox/mlx4/main.c:2552:28: warning: 'idx' may be
+used uninitialized in this function [-Wmaybe-uninitialized]
+ 2552 |    priv->def_counter[port] = idx;
 
-Fixes: 18cc7ac8a28e ("Revert "serial: uartps: Register own uart console and driver structures"")
-Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-Link: https://lore.kernel.org/r/ed3111533ef5bd342ee5ec504812240b870f0853.1588602446.git.michal.simek@xilinx.com
+Also, when ENOSPC is returned mlx4_allocate_default_counters should not
+fail.
+
+Fixes: 6de5f7f6a1fa ("net/mlx4_core: Allocate default counter per port")
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Tariq Toukan <tariqt@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/xilinx_uartps.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/mellanox/mlx4/main.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
-index fe098cf14e6a2..3cb9aacfe0b2a 100644
---- a/drivers/tty/serial/xilinx_uartps.c
-+++ b/drivers/tty/serial/xilinx_uartps.c
-@@ -1445,6 +1445,7 @@ static int cdns_uart_probe(struct platform_device *pdev)
- 		cdns_uart_uart_driver.nr = CDNS_UART_NR_PORTS;
- #ifdef CONFIG_SERIAL_XILINX_PS_UART_CONSOLE
- 		cdns_uart_uart_driver.cons = &cdns_uart_console;
-+		cdns_uart_console.index = id;
- #endif
+--- a/drivers/net/ethernet/mellanox/mlx4/main.c
++++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+@@ -2550,6 +2550,7 @@ static int mlx4_allocate_default_counter
  
- 		rc = uart_register_driver(&cdns_uart_uart_driver);
--- 
-2.20.1
-
+ 		if (!err || err == -ENOSPC) {
+ 			priv->def_counter[port] = idx;
++			err = 0;
+ 		} else if (err == -ENOENT) {
+ 			err = 0;
+ 			continue;
+@@ -2600,7 +2601,8 @@ int mlx4_counter_alloc(struct mlx4_dev *
+ 				   MLX4_CMD_TIME_CLASS_A, MLX4_CMD_WRAPPED);
+ 		if (!err)
+ 			*idx = get_param_l(&out_param);
+-
++		if (WARN_ON(err == -ENOSPC))
++			err = -EINVAL;
+ 		return err;
+ 	}
+ 	return __mlx4_counter_alloc(dev, idx);
 
 
