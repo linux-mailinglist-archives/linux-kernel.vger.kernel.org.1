@@ -2,243 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052271CFCBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 May 2020 20:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1181D0487
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 03:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730620AbgELSBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 14:01:36 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:56132 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725938AbgELSBg (ORCPT
+        id S1731955AbgEMBte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 21:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728228AbgEMBte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 14:01:36 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Tue, 12 May 2020 11:00:53 -0700
-Received: from localhost.localdomain (ashwinh-vm-1.vmware.com [10.110.19.225])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 9B7624051F;
-        Tue, 12 May 2020 11:00:52 -0700 (PDT)
-From:   ashwin-h <ashwinh@vmware.com>
-To:     <x86@kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>
-CC:     <linux-kernel@vger.kernel.org>, <stable@kernel.org>,
-        <srivatsab@vmware.com>, <srivatsa@csail.mit.edu>,
-        <rostedt@goodmis.org>, <srostedt@vmware.com>,
-        <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ashwin H <ashwinh@vmware.com>
-Subject: [PATCH v4.19.x] make 'user_access_begin()' do 'access_ok()'
-Date:   Wed, 13 May 2020 07:19:21 +0530
-Message-ID: <d29f87f3f3abb4e496866253bd170faad976f687.1589305630.git.ashwinh@vmware.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 12 May 2020 21:49:34 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6F9C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 18:49:33 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id g11so2955869plp.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 18:49:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=U2hp63rB3CAsIMl65Ej4coylrrRKqe2rh9YYq0s3+D4=;
+        b=fjo2f4jjwjlGrZLW0umi8KQVQ/SpOTRvxPCxg7/SXNWvLZ8NY0bQjILkLvMijENLAL
+         DaYjYVCogiZ8Mzq9wc4I6XvuoU8bwwJCm9lP2cm7idra2RkODAuxrLQ+BybX+BSfJFcj
+         1WGHR86kiV0W51KHc8dOh31+3kiii6qmc4nQo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=U2hp63rB3CAsIMl65Ej4coylrrRKqe2rh9YYq0s3+D4=;
+        b=D9PdizY4ZIVbBHVagoEphUUQry2g0ci8yLwdgWb54fuqdbgsEWRDWeIeXc8w5FbKAn
+         53YuaVlRKdaWsktxWBtF57UnFHEEQ/82JQvUi0U0fhVp8K8dM/3xeQOYubVvGh9XYBGR
+         mzUMOdq0koNAqRMonmpzjls0kroZDGsTD0U7S4J0JYbdfMtDrcJ8dV1NiOzhKK95FE2N
+         SIh+L63CnNhC244s6hvB6CAqbYQwr5bq8FbgZLdNYPZbRrMzSWbRZrinNO8xK6ZQD2ER
+         Nq1Pnd35D72zlsf5f7Om9hQlpmN6hsJPo6Jhq4SwugcyI8MKj35Q+J26/S/PCJoo+OWW
+         urGg==
+X-Gm-Message-State: AOAM530Tt6K3i0Vn3BQx8qXxA+64YKDK/PW3KgmK/Ru9wqVrMXi0mDMM
+        dg3ss4Znf/8Tf/Bzt/7u3Fd6CA==
+X-Google-Smtp-Source: ABdhPJyTgU82y5UQvggP1k+g6dpTekcpClcW+m31+DiTuU/jeT9Hw0cvKUFxkM4ZDZI8daX7aleqAg==
+X-Received: by 2002:a17:90b:357:: with SMTP id fh23mr7538321pjb.225.1589334572331;
+        Tue, 12 May 2020 18:49:32 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id f136sm12739777pfa.59.2020.05.12.18.49.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 18:49:31 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: ashwinh@vmware.com does not
- designate permitted sender hosts)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAJ9a7VjAoUmMG9pLEzE_rMSpOjwVOi-ZCinF87n9H0JgfMDsiQ@mail.gmail.com>
+References: <20200426143725.18116-1-saiprakash.ranjan@codeaurora.org> <b8c1cc35846d425a1677c73fddf5874d@codeaurora.org> <eee1b9a90266eed9a9c75401f0679777@codeaurora.org> <CAJ9a7Vjd0XG+rAvHptAAjGtE6xRhYsPaOSC_Bf9B-w-FZFu_Qw@mail.gmail.com> <47f6d51bfad0a0bf1553e101e6a2c8c9@codeaurora.org> <37b3749e-2363-0877-c318-9c334a5d1881@arm.com> <d47271ee6a2a6f0f30da7e140b6f196c@codeaurora.org> <CAJ9a7Vg95tcgMXgQKLAZc=TpV6FnPZ7wdF=Kwbuy7d2kRCjYQw@mail.gmail.com> <364049a30dc9d242ec611bf27a16a6c9@codeaurora.org> <CAJ9a7VjAoUmMG9pLEzE_rMSpOjwVOi-ZCinF87n9H0JgfMDsiQ@mail.gmail.com>
+Subject: Re: [PATCH] coresight: dynamic-replicator: Fix handling of multiple connections
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Russell King <linux@armlinux.org.uk>
+To:     Mike Leach <mike.leach@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Date:   Tue, 12 May 2020 18:49:30 -0700
+Message-ID: <158933457051.215346.13515171569230202840@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+Quoting Mike Leach (2020-05-12 14:52:33)
+> HI Sai,
+>=20
+> On Tue, 12 May 2020 at 18:46, Sai Prakash Ranjan
+> <saiprakash.ranjan@codeaurora.org> wrote:
+> >
+> > Hi Mike,
+> >
+> > On 2020-05-12 17:19, Mike Leach wrote:
+> > [...]
+> >
+> > >> >>
+> > >> >> Sorry for hurrying up and sending the patch -
+> > >> >> https://lore.kernel.org/patchwork/patch/1239923/.
+> > >> >> I will send v2 based on further feedbacks here or there.
+> > >> >>
+> > >> >>>
+> > >> >>> 1) does this replicator part have a unique ID that differs from =
+the
+> > >> >>> standard ARM designed replicators?
+> > >> >>> If so perhaps link the modification into this. (even if the part=
+ no
+> > >> >>> in
+> > >> >>> PIDR0/1 is the same the UCI should be different for a different
+> > >> >>> implementation)
+> > >> >>>
+> > > I have reviewed the replicator driver, and compared to all the other =
+CS
+> > > drivers.
+> > > This driver appears to be the only one that sets hardware values in
+> > > probe() and expects them to remain in place on enable, and uses that
+> > > state for programming decisions later, despite telling the PM
+> > > infrastructure that it is clear to suspend the device.
+> > >
+> > > Now we have a system where the replicator hardware is behaving
+> > > differently under the driver, but is it behaving unreasonably?
+> >
+> > Thanks for taking your time to review this. For new replicator behaving
+> > unreasonably, I think the assumption that the context is not lost on
+> > disabling clock is flawed since its implementation defined. Is such
+> > assumption documented in any TRM?
+> >
+>=20
+> Looking at the AMBA driver there is a comment there that AMBA does not
+> lose state when clocks are removed. This is consistent with the AMBA
+> protocol spec which states that AMBA slaves can only be accessed /
+> read / write on various strobe signals,  or state reset on PRESET
+> signal, all timed by the rising edge of the bus clock. state changes
+> are not permitted on clock events alone. Given this static nature of
+> AMBA slaves then removing the clock should not have any effect.
 
-commit 594cc251fdd0d231d342d88b2fdff4bc42fb0690 upstream.
+I believe the "clock" that is being used here is actually a software
+message to the power manager hardware that the debug subsystem isn't
+being used anymore. When nothing is requesting that it be enabled the
+power manager turns off the power to the debug subsystem and then the
+register context is lost. It shouldn't be a clock in the clk subsystem.
+It should be a power domain and be attached to the amba devices in the
+usual ways. Then the normal runtime PM semantics would follow. If amba
+devices require a clk then we'll have to provide a dummy one that
+doesn't do anything on this platform.
 
-Originally, the rule used to be that you'd have to do access_ok()
-separately, and then user_access_begin() before actually doing the
-direct (optimized) user access.
+>=20
+> The AMBA driver only /drivers/amba/bus.c  gives permission to
+> remove/restore the clocks from the devices (pm_suspend pm_resume
+> callbacks) - this reduces the power consumption of these devices if
+> the clock is not running, but state must be retained.
+>=20
 
-But experience has shown that people then decide not to do access_ok()
-at all, and instead rely on it being implied by other operations or
-similar.  Which makes it very hard to verify that the access has
-actually been range-checked.
-
-If you use the unsafe direct user accesses, hardware features (either
-SMAP - Supervisor Mode Access Protection - on x86, or PAN - Privileged
-Access Never - on ARM) do force you to use user_access_begin().  But
-nothing really forces the range check.
-
-By putting the range check into user_access_begin(), we actually force
-people to do the right thing (tm), and the range check vill be visible
-near the actual accesses.  We have way too long a history of people
-trying to avoid them.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Ashwin H <ashwinh@vmware.com>
----
- arch/x86/include/asm/uaccess.h             | 11 ++++++++++-
- drivers/gpu/drm/i915/i915_gem_execbuffer.c | 15 +++++++++++++--
- include/linux/uaccess.h                    |  2 +-
- kernel/compat.c                            |  6 ++----
- kernel/exit.c                              |  6 ++----
- lib/strncpy_from_user.c                    |  9 +++++----
- lib/strnlen_user.c                         |  9 +++++----
- 7 files changed, 38 insertions(+), 20 deletions(-)
-
-diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-index 9718303..82cd874 100644
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -711,7 +711,16 @@ extern struct movsl_mask {
-  * checking before using them, but you have to surround them with the
-  * user_access_begin/end() pair.
-  */
--#define user_access_begin()	__uaccess_begin()
-+static __must_check inline bool user_access_begin(const bool type,
-+                                                  const void __user *ptr,
-+                                                  size_t len)
-+{
-+	if (unlikely(!access_ok(type, ptr, len)))
-+		return 0;
-+	__uaccess_begin();
-+	return 1;
-+}
-+#define user_access_begin(t, a, b) user_access_begin(t, a, b)
- #define user_access_end()	__uaccess_end()
- 
- #define unsafe_put_user(x, ptr, err_label)					\
-diff --git a/drivers/gpu/drm/i915/i915_gem_execbuffer.c b/drivers/gpu/drm/i915/i915_gem_execbuffer.c
-index f08c547..7110e8f 100644
---- a/drivers/gpu/drm/i915/i915_gem_execbuffer.c
-+++ b/drivers/gpu/drm/i915/i915_gem_execbuffer.c
-@@ -1604,7 +1604,9 @@ static int eb_copy_relocations(const struct i915_execbuffer *eb)
- 		 * happened we would make the mistake of assuming that the
- 		 * relocations were valid.
- 		 */
--		user_access_begin();
-+		if (!user_access_begin(VERIFY_WRITE, urelocs, size))
-+			goto end_user;
-+
- 		for (copied = 0; copied < nreloc; copied++)
- 			unsafe_put_user(-1,
- 					&urelocs[copied].presumed_offset,
-@@ -2649,7 +2651,16 @@ i915_gem_execbuffer2_ioctl(struct drm_device *dev, void *data,
- 		unsigned int i;
- 
- 		/* Copy the new buffer offsets back to the user's exec list. */
--		user_access_begin();
-+		/*
-+		 * Note: count * sizeof(*user_exec_list) does not overflow,
-+		 * because we checked 'count' in check_buffer_count().
-+		 *
-+		 * And this range already got effectively checked earlier
-+		 * when we did the "copy_from_user()" above.
-+		 */
-+		if (!user_access_begin(VERIFY_WRITE, user_exec_list, count * sizeof(*user_exec_list)))
-+			goto end_user;
-+
- 		for (i = 0; i < args->buffer_count; i++) {
- 			if (!(exec2_list[i].offset & UPDATE))
- 				continue;
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index efe79c1..d55b68b 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -267,7 +267,7 @@ extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
- 	probe_kernel_read(&retval, addr, sizeof(retval))
- 
- #ifndef user_access_begin
--#define user_access_begin() do { } while (0)
-+#define user_access_begin(type, ptr, len) access_ok(type, ptr, len)
- #define user_access_end() do { } while (0)
- #define unsafe_get_user(x, ptr, err) do { if (unlikely(__get_user(x, ptr))) goto err; } while (0)
- #define unsafe_put_user(x, ptr, err) do { if (unlikely(__put_user(x, ptr))) goto err; } while (0)
-diff --git a/kernel/compat.c b/kernel/compat.c
-index 8e40efc..e4548a9 100644
---- a/kernel/compat.c
-+++ b/kernel/compat.c
-@@ -354,10 +354,9 @@ long compat_get_bitmap(unsigned long *mask, const compat_ulong_t __user *umask,
- 	bitmap_size = ALIGN(bitmap_size, BITS_PER_COMPAT_LONG);
- 	nr_compat_longs = BITS_TO_COMPAT_LONGS(bitmap_size);
- 
--	if (!access_ok(VERIFY_READ, umask, bitmap_size / 8))
-+	if (!user_access_begin(VERIFY_READ, umask, bitmap_size / 8))
- 		return -EFAULT;
- 
--	user_access_begin();
- 	while (nr_compat_longs > 1) {
- 		compat_ulong_t l1, l2;
- 		unsafe_get_user(l1, umask++, Efault);
-@@ -384,10 +383,9 @@ long compat_put_bitmap(compat_ulong_t __user *umask, unsigned long *mask,
- 	bitmap_size = ALIGN(bitmap_size, BITS_PER_COMPAT_LONG);
- 	nr_compat_longs = BITS_TO_COMPAT_LONGS(bitmap_size);
- 
--	if (!access_ok(VERIFY_WRITE, umask, bitmap_size / 8))
-+	if (!user_access_begin(VERIFY_WRITE, umask, bitmap_size / 8))
- 		return -EFAULT;
- 
--	user_access_begin();
- 	while (nr_compat_longs > 1) {
- 		unsigned long m = *mask++;
- 		unsafe_put_user((compat_ulong_t)m, umask++, Efault);
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 54c3269..894fca5 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -1617,10 +1617,9 @@ SYSCALL_DEFINE5(waitid, int, which, pid_t, upid, struct siginfo __user *,
- 	if (!infop)
- 		return err;
- 
--	if (!access_ok(VERIFY_WRITE, infop, sizeof(*infop)))
-+	if (!user_access_begin(VERIFY_WRITE, infop, sizeof(*infop)))
- 		return -EFAULT;
- 
--	user_access_begin();
- 	unsafe_put_user(signo, &infop->si_signo, Efault);
- 	unsafe_put_user(0, &infop->si_errno, Efault);
- 	unsafe_put_user(info.cause, &infop->si_code, Efault);
-@@ -1745,10 +1744,9 @@ COMPAT_SYSCALL_DEFINE5(waitid,
- 	if (!infop)
- 		return err;
- 
--	if (!access_ok(VERIFY_WRITE, infop, sizeof(*infop)))
-+	if (!user_access_begin(VERIFY_WRITE, infop, sizeof(*infop)))
- 		return -EFAULT;
- 
--	user_access_begin();
- 	unsafe_put_user(signo, &infop->si_signo, Efault);
- 	unsafe_put_user(0, &infop->si_errno, Efault);
- 	unsafe_put_user(info.cause, &infop->si_code, Efault);
-diff --git a/lib/strncpy_from_user.c b/lib/strncpy_from_user.c
-index e304b54..b8570a1 100644
---- a/lib/strncpy_from_user.c
-+++ b/lib/strncpy_from_user.c
-@@ -115,10 +115,11 @@ long strncpy_from_user(char *dst, const char __user *src, long count)
- 
- 		kasan_check_write(dst, count);
- 		check_object_size(dst, count, false);
--		user_access_begin();
--		retval = do_strncpy_from_user(dst, src, count, max);
--		user_access_end();
--		return retval;
-+		if (user_access_begin(VERIFY_READ, src, max)) {
-+			retval = do_strncpy_from_user(dst, src, count, max);
-+			user_access_end();
-+			return retval;
-+		}
- 	}
- 	return -EFAULT;
- }
-diff --git a/lib/strnlen_user.c b/lib/strnlen_user.c
-index 184f80f..f5fa5b2 100644
---- a/lib/strnlen_user.c
-+++ b/lib/strnlen_user.c
-@@ -114,10 +114,11 @@ long strnlen_user(const char __user *str, long count)
- 		unsigned long max = max_addr - src_addr;
- 		long retval;
- 
--		user_access_begin();
--		retval = do_strnlen_user(str, count, max);
--		user_access_end();
--		return retval;
-+		if (user_access_begin(VERIFY_READ, str, max)) {
-+			retval = do_strnlen_user(str, count, max);
-+			user_access_end();
-+			return retval;
-+		}
- 	}
- 	return 0;
- }
--- 
-2.7.4
-
+Ideally the drivers can have enough knowledge about this situation to do
+the proper save/restore steps so that if the coresight hardware isn't
+being used we don't keep it powered forever and so that across system
+wide suspend/resume we can properly power it off.
