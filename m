@@ -2,149 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4521D04B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F661D04C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728511AbgEMCST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 22:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35610 "EHLO
+        id S1728715AbgEMCTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 22:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727805AbgEMCSS (ORCPT
+        with ESMTP id S1728515AbgEMCTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 22:18:18 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F42C061A0C;
-        Tue, 12 May 2020 19:18:16 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id u35so4089007pgk.6;
-        Tue, 12 May 2020 19:18:16 -0700 (PDT)
+        Tue, 12 May 2020 22:19:34 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CAAAC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 19:19:33 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id u10so6216324pls.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 19:19:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=3SZkl24U1zyxN0dY+jw5wv6XOSvaz/jqzsK44k876lU=;
-        b=dSYqea+RsMoNmdpXlYMJBUcCpBaMeZVIZYnbdXRGW8xw9ETtqGS/n5ixVxJktTx+IA
-         dl1CgXwBIBqrnr9GfpE7EcUA/ca92hILSRksA0DCRMEWQFJpDafqynAh57pnPnBnlKAH
-         JP4xhfebf2Fm5Wk9LLm+tL0pZrj6SBv0nxMDQkoCUig3Uo4kKSons8nqg+KVUtYbBEzX
-         uzf8tjz/DoG5aUBu6DG6FDQqZrvgO2xxXrqNEhpNG3y6eb0myHPUa+fdKmNtu3VCzxvf
-         fohxeV9VIYwhrgN5I+yzDvTO6BJ3VQ0s0dPjFRBDaX4kAG0g1qOpbQJiAHgyIFmEi3JO
-         MV5A==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lkqIDoib68FB2JDTnUdkS+sJ6c0KSJCfPM4XCGL9+wo=;
+        b=i4oyZDhasB3BK4N58xBJKFV7wb9fn+1SGRZKwR34UdXB63m/A0ctudRtq27LnDuPzX
+         TLoqbyusguNq5jwMxryJrk5tkyJWysGVxhcZ+27xGGZmOdC3T+RzhjNVrpG1o6ewhF9f
+         MtCITc7U9pKFK3h0/jGDni3RSnjduO3gFObFI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=3SZkl24U1zyxN0dY+jw5wv6XOSvaz/jqzsK44k876lU=;
-        b=IEBlb1sU1nWcpcacDKYKpt688LltJtKkFS2cYs6o9wctkAJpnq6jUyfnPhk0u6Ye/k
-         P3eJfc6r4BpkHa9PZxkmBMOpz0zFKHdWPvI/RoCdPJn4oav09RRCfNikTZJfa6x2M5zY
-         AvXW55nkvzOewiD4T4GC77F6DkTCfz8B/1qrAeP81G+SdiQUQEpRORyzaPlK57anolWX
-         MRAzuz9/ReMIIdHfkpkFkjAKzBg3nOVwnpVov5LEi52kBx5+xn6N8uvMqBKFvAyPqFzY
-         PcmIGfQF8raMRNJD5R4HjFbzEy8cs4nUlieQaHIBy8J5i0DoPYadpQh5tajeNjtetG3q
-         tZDg==
-X-Gm-Message-State: AGi0PuZiDDrrdgyqVX5l+KgeTkKnWpZDCAM6aKzcfRD8jGGTpWyFYEup
-        fGUxtnoSUwvDs0e4kML2SSemuTic114=
-X-Google-Smtp-Source: APiQypJAjdVQs0QXqD9Aasoh7WoCpwROgyY31XaiPH9rcFru+B1s4/OsENSB6x9A41W8ZJODyCZTSg==
-X-Received: by 2002:a63:ed50:: with SMTP id m16mr23442985pgk.271.1589336295981;
-        Tue, 12 May 2020 19:18:15 -0700 (PDT)
-Received: from [166.111.139.104] ([166.111.139.104])
-        by smtp.gmail.com with ESMTPSA id x10sm1363942pgr.65.2020.05.12.19.18.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 May 2020 19:18:15 -0700 (PDT)
-Subject: Re: [PATCH 4/4] fs: btrfs: fix a data race in
- btrfs_block_rsv_release()
-To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200509053431.3860-1-baijiaju1990@gmail.com>
- <20200512221820.GF18421@twin.jikos.cz>
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Message-ID: <58d23322-d23a-0f08-b19d-fce0710823a6@gmail.com>
-Date:   Wed, 13 May 2020 10:18:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lkqIDoib68FB2JDTnUdkS+sJ6c0KSJCfPM4XCGL9+wo=;
+        b=Q38ScrYHZbBvDa6pQycJurdaK2XXG+ItT760HKR8BzPlYK74TVlrZiPnNWSXwXYXrK
+         CVBqZygPIATK7xMc1xciUCj9wTA6M/1Uj+4KAbc1gRwYXM1Uem6QbnDnqB+dK09VcZX4
+         itr7rQMyD3b5F0igaamm4cD0oOTqvaL+sBWJWswayNdW5S5YISFLly3QPipeD9Yu7xqF
+         RraXREUZERXCeUMpuyy9q0KnCfoanA6qwOcvkYZbhizIdCgwxgNAsMdCL3hIeg/S1Es0
+         oZlaOeSVDpuXbOSBbFWbFBgg9RAvz84hVYhoMKlUKEehi2ytinikhzCBF9rZVH81TEQM
+         2SRQ==
+X-Gm-Message-State: AOAM531TcbQD2UPn3DPmqWvvkd/nzmKiFQfCgARKZOPAb3lUhRgMKY8w
+        TvJzc8pwn6T50teVrxbKQvodpA==
+X-Google-Smtp-Source: ABdhPJy1z/U/SgoeHL7kpt3JfXpLpI+JwdlQqILbEJfVHiYHPh4Qblisl0P/YTYl50n/NcdWbdpM8Q==
+X-Received: by 2002:a17:902:fe8d:: with SMTP id x13mr1122508plm.198.1589336372539;
+        Tue, 12 May 2020 19:19:32 -0700 (PDT)
+Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:e09a:8d06:a338:aafb])
+        by smtp.gmail.com with ESMTPSA id w2sm14170600pja.53.2020.05.12.19.19.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 19:19:32 -0700 (PDT)
+From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+To:     marcel@holtmann.org, linux-bluetooth@vger.kernel.org
+Cc:     chromeos-bluetooth-upstreaming@chromium.org,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 0/3] Bluetooth: Prevent scanning when device is not configured for wakeup
+Date:   Tue, 12 May 2020 19:19:24 -0700
+Message-Id: <20200513021927.115700-1-abhishekpandit@chromium.org>
+X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
 MIME-Version: 1.0
-In-Reply-To: <20200512221820.GF18421@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Hi linux-bluetooth,
 
-On 2020/5/13 6:18, David Sterba wrote:
-> On Sat, May 09, 2020 at 01:34:31PM +0800, Jia-Ju Bai wrote:
->> The functions btrfs_block_rsv_release() and
->> btrfs_update_delayed_refs_rsv() are concurrently executed at runtime in
->> the following call contexts:
->>
->> Thread 1:
->>    btrfs_file_write_iter()
->>      btrfs_buffered_write()
->>        btrfs_delalloc_release_extents()
->>          btrfs_inode_rsv_release()
->>            __btrfs_block_rsv_release()
->>
->> Thread 2:
->>    finish_ordered_fn()
->>      btrfs_finish_ordered_io()
->>        insert_reserved_file_extent()
->>          __btrfs_drop_extents()
->>            btrfs_free_extent()
->>              btrfs_add_delayed_data_ref()
->>                btrfs_update_delayed_refs_rsv()
->>
->> In __btrfs_block_rsv_release():
->>    else if (... && !delayed_rsv->full)
->>
->> In btrfs_update_delayed_refs_rsv():
->>    spin_lock(&delayed_rsv->lock);
->>    delayed_rsv->size += num_bytes;
->>    delayed_rsv->full = 0;
->>    spin_unlock(&delayed_rsv->lock);
->>
->> Thus a data race for delayed_rsv->full can occur.
->> This race was found and actually reproduced by our conccurency fuzzer.
->>
->> To fix this race, the spinlock delayed_rsv->lock is used to
->> protect the access to delayed_rsv->full in btrfs_block_rsv_release().
->>
->> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
->> ---
->>   fs/btrfs/block-rsv.c | 7 ++++++-
->>   1 file changed, 6 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
->> index 27efec8f7c5b..89c53a7137b4 100644
->> --- a/fs/btrfs/block-rsv.c
->> +++ b/fs/btrfs/block-rsv.c
->> @@ -277,6 +277,11 @@ u64 btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
->>   	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
->>   	struct btrfs_block_rsv *delayed_rsv = &fs_info->delayed_refs_rsv;
->>   	struct btrfs_block_rsv *target = NULL;
->> +	unsigned short full = 0;
->> +
->> +	spin_lock(&delayed_rsv->lock);
->> +	full = delayed_rsv->full;
->> +	spin_unlock(&delayed_rsv->lock);
->>   
->>   	/*
->>   	 * If we are the delayed_rsv then push to the global rsv, otherwise dump
->> @@ -284,7 +289,7 @@ u64 btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
->>   	 */
->>   	if (block_rsv == delayed_rsv)
->>   		target = global_rsv;
->> -	else if (block_rsv != global_rsv && !delayed_rsv->full)
->> +	else if (block_rsv != global_rsv && !full)
-> This has been reported as suspicous
-> https://lore.kernel.org/linux-btrfs/CAAwBoOJDjei5Hnem155N_cJwiEkVwJYvgN-tQrwWbZQGhFU=cA@mail.gmail.com/
->
-> and there's an answer that this is racy but does not cause any
-> unexpected behaviour.
+This patch series adds a hook to prevent Bluetooth from scanning during
+suspend if it is not configured to wake up. It's not always clear who
+the wakeup owner is from looking at hdev->dev so we need the driver to
+inform us whether to set up scanning.
 
-Okay, thanks :)
+By default, when no `prevent_wake` hook is implemented, we always
+configure scanning for wake-up.
+
+Thanks
+Abhishek
 
 
-Best wishes,
-Jia-Ju Bai
+
+Abhishek Pandit-Subedi (3):
+  Bluetooth: Rename BT_SUSPEND_COMPLETE
+  Bluetooth: Add hook for driver to prevent wake from suspend
+  Bluetooth: btusb: Implement hdev->prevent_wake
+
+ drivers/bluetooth/btusb.c        | 8 ++++++++
+ include/net/bluetooth/hci_core.h | 3 ++-
+ net/bluetooth/hci_core.c         | 8 +++++---
+ net/bluetooth/hci_request.c      | 2 +-
+ 4 files changed, 16 insertions(+), 5 deletions(-)
+
+-- 
+2.26.2.645.ge9eca65c58-goog
+
