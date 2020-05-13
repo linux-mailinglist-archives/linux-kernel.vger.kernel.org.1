@@ -2,70 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2CA1D22C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D741D22D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732486AbgEMXJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 19:09:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732151AbgEMXJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 19:09:41 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 961762054F;
-        Wed, 13 May 2020 23:09:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589411381;
-        bh=MDKKhxS3qnWK4BCrQ1PaiGfthIWnaDdy/Elx3PLfxkk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vxxgJDwVu3ejPYUlWha5J3HdCxu1uNF6+1tzoc0keVPog+ccKulCDqnX0bKh9CCf4
-         goBt6UPCK6LGM9Yu17EJznVJqD3FEgEeY7C1Wf/qn/nEpimeMT2k27ycRqxONiI1I3
-         FTbcaYC3kbXd3voWoeI84psE+sh1BbAVXRBhDLY0=
-Date:   Wed, 13 May 2020 18:14:16 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH RESEND] tpm: eventlog: Replace zero-length array with
- flexible-array member
-Message-ID: <20200513231416.GQ4897@embeddedor>
-References: <20200507040912.GA31382@embeddedor>
- <20200513213905.GB31974@linux.intel.com>
+        id S1732491AbgEMXPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 19:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732136AbgEMXO7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 19:14:59 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92684C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:14:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=1u6OWA9P/4XPQPpiocvHMbun/hKoPpnrqvp3gSVmyQ8=; b=lmxJ9UtvvRhaPMiY5oI60od3Il
+        agMkxNGSf/0e7YDbWjFlHRdz//eqTQ2atagWoatRcj+52mH0229nIqqHqPILt6qyZdswC+MQ+UKuT
+        UxXz7Bs50+yERbPRG2eC7wwbRvdYdKafnvR3Sph6cKsHMSywWA7UBxw68AhhgDcqOGBQzkjXSMFRt
+        PtZGare2LMM97J+IWdx/BxrBpYGGc1x9Us5pmeBndpqiQIKKrGBQbyRDdPYPIzoJ0flzzOmXOp2nv
+        +1niObXYaSQgmQGc857lEeadXRnFtDAszd2i04yJJVLe6Uts58k/JVgAApexu5u69o5vsZTVzbRET
+        +stzlDnw==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jZ0aT-0002V0-6v; Wed, 13 May 2020 23:14:53 +0000
+Subject: Re: [PATCH] kobject: Make sure the parent does not get released
+ before its children
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        kernel test robot <rong.a.chen@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+References: <20200513151840.36400-1-heikki.krogerus@linux.intel.com>
+ <CAFd5g44d+VCSimjboPkf-NF1eCdbq6Uy+pabNftB8p5Lj2yc1A@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e51d4ce4-42ba-8c89-21b4-082c7158a9a9@infradead.org>
+Date:   Wed, 13 May 2020 16:14:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513213905.GB31974@linux.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAFd5g44d+VCSimjboPkf-NF1eCdbq6Uy+pabNftB8p5Lj2yc1A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 12:39:05AM +0300, Jarkko Sakkinen wrote:
-> > 
-> > [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> > [2] https://github.com/KSPP/linux/issues/21
-> > [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> > [4] https://github.com/KSPP/linux/issues/43
-> > 
-> > Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+On 5/13/20 2:30 PM, Brendan Higgins wrote:
+> On Wed, May 13, 2020 at 8:18 AM Heikki Krogerus
+> <heikki.krogerus@linux.intel.com> wrote:
+>>
+>> In the function kobject_cleanup(), kobject_del(kobj) is
+>> called before the kobj->release(). That makes it possible to
+>> release the parent of the kobject before the kobject itself.
+>>
+>> To fix that, adding function __kboject_del() that does
+>> everything that kobject_del() does except release the parent
+>> reference. kobject_cleanup() then calls __kobject_del()
+>> instead of kobject_del(), and separately decrements the
+>> reference count of the parent kobject after kobj->release()
+>> has been called.
+>>
+>> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+>> Reported-by: kernel test robot <rong.a.chen@intel.com>
+>> Fixes: 7589238a8cf3 ("Revert "software node: Simplify software_node_release() function"")
+>> Cc: Brendan Higgins <brendanhiggins@google.com>
+>> Cc: Randy Dunlap <rdunlap@infradead.org>
+>> Suggested-by: "Rafael J. Wysocki" <rafael@kernel.org>
+>> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 > 
-> Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> Tested-by: Brendan Higgins <brendanhiggins@google.com>
 > 
 
-Hi Jarkko,
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
 
-Thanks for your RB.
-
-There is a v2 of this patch:
-
-https://lore.kernel.org/lkml/20200508163826.GA768@embeddedor/
-
-Thanks
---
-Gustavo
+Thanks.
+-- 
+~Randy
