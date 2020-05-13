@@ -2,96 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC461D17F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08AD41D1805
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389065AbgEMOxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 10:53:49 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:43789 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388806AbgEMOxt (ORCPT
+        id S2389095AbgEMO40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 10:56:26 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:40854 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728568AbgEMO40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 10:53:49 -0400
-Received: by mail-lf1-f65.google.com with SMTP id 188so13859487lfa.10;
-        Wed, 13 May 2020 07:53:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dMfZtgSmJt2YeZH8HP+NYczXoMyMD+NpZTNn0Kwfj9M=;
-        b=duXayi+ajaLOcWtdBQ9lT98L/HZAt9I0dwTmcCqNT8FBrGkXSeg22kfzI+kmAsWx1Q
-         0x9lM9MdWfZWHT3HIjxlg7ZaP0IWAvuEGgzwxDrkQwAkhZDcAdAIYnRELOZJy8Xsp71F
-         lVA1+D6fRC5LDPJsIz3p9IpZl61Q06tnOQ8JJAWG3n4g6SGyfcN6hjxLYKdDbkTycx8u
-         ozCQmsJyJNb3MPNbHYdL4ScCnrgd7Oa3D20dA38csyX9eNJJojyjCkfwb0JmAS1ZM1DY
-         hG+E/SN+pJVQ8R7SR7I0xS3CWpF8bMdpPtxZwjUT0CXezQQGU4wu4bzzja775z19bUhf
-         z2/g==
-X-Gm-Message-State: AOAM531xR0qyVQVX9aJSjtHFQSiNJ/bnFfmsczUjVKaTQW/6IW6WPz1e
-        H2TooDuIJ+GAxqsiZB7UR/Q=
-X-Google-Smtp-Source: ABdhPJzLV4IdUL3+WTqLFvq/5fTkyBAl7VAlYYB9kNzGqjzzImQNNj5w/VBFFsEZf6kOUF2pIK16xA==
-X-Received: by 2002:ac2:5290:: with SMTP id q16mr18122420lfm.108.1589381626330;
-        Wed, 13 May 2020 07:53:46 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id k24sm1673815ljg.92.2020.05.13.07.53.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 07:53:45 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.92.3)
-        (envelope-from <johan@kernel.org>)
-        id 1jYslX-0001q6-H5; Wed, 13 May 2020 16:53:47 +0200
-Date:   Wed, 13 May 2020 16:53:47 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next] gnss: sirf: fix error return code in sirf_probe()
-Message-ID: <20200513145347.GX25962@localhost>
-References: <20200507094252.13914-1-weiyongjun1@huawei.com>
+        Wed, 13 May 2020 10:56:26 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04DEtnKA048125;
+        Wed, 13 May 2020 09:55:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589381749;
+        bh=0p70bdl/DS8LJV46/WfQvFGJxPDm65T9Js3GVTop9dg=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=zWu3kFMzU/DCSvMnR/s0IFIFNhAMtMgw9sMCpqszjl/l80veVM8pdSI2BsRVDxW3p
+         9oUklYXB7G0nz7t6hJjkPdVVsQoQmor7Kh8z/6SbMP/8rRFdqyW7jDtl2l8Jt9N1ie
+         hT3z1YD+4MkcqqRqKn8doeP0AdWESkd/86B9ng2U=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04DEtnZh116739
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 May 2020 09:55:49 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 13
+ May 2020 09:55:48 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 13 May 2020 09:55:48 -0500
+Received: from [10.250.74.234] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04DEtloQ101784;
+        Wed, 13 May 2020 09:55:47 -0500
+Subject: Re: [EXT] Re: [v1,net-next, 1/2] ethtool: add setting frame
+ preemption of traffic classes
+From:   Murali Karicheri <m-karicheri2@ti.com>
+To:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Po Liu <po.liu@nxp.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "hauke.mehrtens@intel.com" <hauke.mehrtens@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "allison@lohutok.net" <allison@lohutok.net>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "saeedm@mellanox.com" <saeedm@mellanox.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "alexandru.ardelean@analog.com" <alexandru.ardelean@analog.com>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "ayal@mellanox.com" <ayal@mellanox.com>,
+        "pablo@netfilter.org" <pablo@netfilter.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     "simon.horman@netronome.com" <simon.horman@netronome.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Alexandru Marginean <alexandru.marginean@nxp.com>,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        Roy Zang <roy.zang@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>,
+        Jerry Huang <jerry.huang@nxp.com>, Leo Li <leoyang.li@nxp.com>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+References: <20191127094517.6255-1-Po.Liu@nxp.com>
+ <87a75br4ze.fsf@linux.intel.com>
+ <VE1PR04MB64968E2DE71D1BCE48C6E17192EE0@VE1PR04MB6496.eurprd04.prod.outlook.com>
+ <87a74lgnad.fsf@linux.intel.com>
+ <1c06e30e-8999-2c40-e631-1d67b3d9ce39@ti.com>
+Message-ID: <968be6d0-813e-c820-1fec-0ac85c838e7f@ti.com>
+Date:   Wed, 13 May 2020 10:55:47 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507094252.13914-1-weiyongjun1@huawei.com>
+In-Reply-To: <1c06e30e-8999-2c40-e631-1d67b3d9ce39@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 09:42:52AM +0000, Wei Yongjun wrote:
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
-> 
-> Fixes: d2efbbd18b1e ("gnss: add driver for sirfstar-based receivers")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
->  drivers/gnss/sirf.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gnss/sirf.c b/drivers/gnss/sirf.c
-> index effed3a8d398..2ecb1d3e8eeb 100644
-> --- a/drivers/gnss/sirf.c
-> +++ b/drivers/gnss/sirf.c
-> @@ -439,14 +439,18 @@ static int sirf_probe(struct serdev_device *serdev)
->  
->  	data->on_off = devm_gpiod_get_optional(dev, "sirf,onoff",
->  			GPIOD_OUT_LOW);
-> -	if (IS_ERR(data->on_off))
-> +	if (IS_ERR(data->on_off)) {
-> +		ret = PTR_ERR(data->on_off);
->  		goto err_put_device;
-> +	}
->  
->  	if (data->on_off) {
->  		data->wakeup = devm_gpiod_get_optional(dev, "sirf,wakeup",
->  				GPIOD_IN);
-> -		if (IS_ERR(data->wakeup))
-> +		if (IS_ERR(data->wakeup)) {
-> +			ret = PTR_ERR(data->wakeup);
->  			goto err_put_device;
-> +		}
->  
->  		ret = regulator_enable(data->vcc);
->  		if (ret)
+Hi Vinicius,
 
-Good catch! Now applied with a stable tag as this would lead to a
-use-after-free on driver unbind.
+On 3/18/20 10:07 AM, Murali Karicheri wrote:
+> Hi Vinicius,
+> 
+> On 03/12/2020 07:34 PM, Vinicius Costa Gomes wrote:
+>> Hi,
+>>
+>> Po Liu <po.liu@nxp.com> writes:
+>>
+>>> Hi Vinicius,
+>>>
+>>>
+>>> Br,
+>>> Po Liu
+>>>
+>>>> -----Original Message-----
+>>>> From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+>>>> Sent: 2020年2月22日 5:44
+>>>> To: Po Liu <po.liu@nxp.com>; davem@davemloft.net;
+>>>> hauke.mehrtens@intel.com; gregkh@linuxfoundation.org; 
+>>>> allison@lohutok.net;
+>>>> tglx@linutronix.de; hkallweit1@gmail.com; saeedm@mellanox.com;
+>>>> andrew@lunn.ch; f.fainelli@gmail.com; alexandru.ardelean@analog.com;
+>>>> jiri@mellanox.com; ayal@mellanox.com; pablo@netfilter.org; linux-
+>>>> kernel@vger.kernel.org; netdev@vger.kernel.org
+>>>> Cc: simon.horman@netronome.com; Claudiu Manoil
+>>>> <claudiu.manoil@nxp.com>; Vladimir Oltean <vladimir.oltean@nxp.com>;
+>>>> Alexandru Marginean <alexandru.marginean@nxp.com>; Xiaoliang Yang
+>>>> <xiaoliang.yang_1@nxp.com>; Roy Zang <roy.zang@nxp.com>; Mingkai Hu
+>>>> <mingkai.hu@nxp.com>; Jerry Huang <jerry.huang@nxp.com>; Leo Li
+>>>> <leoyang.li@nxp.com>; Po Liu <po.liu@nxp.com>
+>>>> Subject: [EXT] Re: [v1,net-next, 1/2] ethtool: add setting frame 
+>>>> preemption of
+>>>> traffic classes
+>>>>
+>>>> Caution: EXT Email
+>>>>
+>>>> Hi,
+>>>>
+>>>> Po Liu <po.liu@nxp.com> writes:
+>>>>
+>>>>> IEEE Std 802.1Qbu standard defined the frame preemption of port
+>>>>> traffic classes. This patch introduce a method to set traffic classes
+>>>>> preemption. Add a parameter 'preemption' in struct
+>>>>> ethtool_link_settings. The value will be translated to a binary, each
+>>>>> bit represent a traffic class. Bit "1" means preemptable traffic
+>>>>> class. Bit "0" means express traffic class.  MSB represent high number
+>>>>> traffic class.
+>>>>>
+>>>>> If hardware support the frame preemption, driver could set the
+>>>>> ethernet device with hw_features and features with NETIF_F_PREEMPTION
+>>>>> when initializing the port driver.
+>>>>>
+>>>>> User can check the feature 'tx-preemption' by command 'ethtool -k
+>>>>> devname'. If hareware set preemption feature. The property would be a
+>>>>> fixed value 'on' if hardware support the frame preemption.
+>>>>> Feature would show a fixed value 'off' if hardware don't support the
+>>>>> frame preemption.
+>>>>>
+>>>>> Command 'ethtool devname' and 'ethtool -s devname preemption N'
+>>>>> would show/set which traffic classes are frame preemptable.
+>>>>>
+>>>>> Port driver would implement the frame preemption in the function
+>>>>> get_link_ksettings() and set_link_ksettings() in the struct 
+>>>>> ethtool_ops.
+>>>>>
+>>>>
+>>>> Any updates on this series? If you think that there's something that 
+>>>> I could help,
+>>>> just tell.
+>>>
+>>> Sorry for the long time not involve the discussion. I am focus on 
+>>> other tsn code for tc flower.
+>>> If you can take more about this preemption serial, that would be good.
+>>>
+>>> I summary some suggestions from Marali Karicheri and Ivan Khornonzhuk 
+>>> and by you and also others:
+>>> - Add config the fragment size, hold advance, release advance and flags;
+>>>      My comments about the fragment size is in the Qbu spec limit the 
+>>> fragment size " the minimum non-final fragment size is 64,
+>>> 128, 192, or 256 octets " this setting would affect the guardband 
+>>> setting for Qbv. But the ethtool setting could not involve this 
+>>> issues but by the taprio side.
+>>> - " Furthermore, this setting could be extend for a serial setting 
+>>> for mac and traffic class."  "Better not to using the traffic class 
+>>> concept."
+>>>     Could adding a serial setting by "ethtool --preemption xxx" or 
+>>> other name. I don' t think it is good to involve in the queue control 
+>>> since queues number may bigger than the TC number.
+>>> - The ethtool is the better choice to configure the preemption
+>>>    I agree.
+>>
+>> Just a quick update. I was able to dedicate some time to this, and have
+>> something aproaching RFC-quality, but it needs more testing.
+>>
+> Great! I have got my frame preemption working on my SoC. Currently I am
+> using some defaults. I test it by using statistics provided by the
+> SoC. I will be able to integrate and test your patch using my internal
+> version and will include it in my patch to upstream once I am ready.
+> 
+Any progress on your side for a patch for the support?
 
-Johan
+I have posted my EST offload series for AM65x CPSW to netdev list today
+at
+
+https://marc.info/?l=linux-netdev&m=158937640015582&w=2
+https://marc.info/?l=linux-netdev&m=158937639515579&w=2
+https://marc.info/?l=linux-netdev&m=158937638315573&w=2
+
+Next on my list of things to do is the IET FPE support for which I need
+to have ethtool interface to allow configuring the express/preemptible
+queues and feature enable/disable. Currently I am using a ethtool
+priv-flags and some defaults. If you can post a patch, I will be able
+to integrate and test it on AM65x CPSW driver and provide my comments/
+Tested-by:
+
+Regards,
+
+Murali
+
+> Regards,
+> 
+> Murali
+>> So, question, what were you using for testing this? Anything special?
+>>
+>> And btw, thanks for the summary of the discussion.
+>>
+>>>
+>>> Thanks！
+>>>>
+>>>>
+>>>> Cheers,
+>>>> -- 
+>>>> Vinicius
+>>
+>>
+> 
+
+-- 
+Murali Karicheri
+Texas Instruments
