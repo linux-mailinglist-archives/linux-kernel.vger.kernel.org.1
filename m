@@ -2,88 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299681D21D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 00:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E431D21E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 00:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730979AbgEMWQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 18:16:19 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:53186 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730276AbgEMWQT (ORCPT
+        id S1731202AbgEMWVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 18:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730064AbgEMWU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 18:16:19 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id A221C2A285C
-Subject: Re: next/master bisection: baseline.login on jetson-tk1
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
-References: <5eb9fab4.1c69fb81.a1f1c.0e95@mx.google.com>
- <a868fa70-9039-f72a-39c6-5464a9d06db2@collabora.com>
- <20200512151600.GD8135@suse.de>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <c9745450-a6d0-1944-a9af-ef9ce18fed12@collabora.com>
-Date:   Wed, 13 May 2020 23:16:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 13 May 2020 18:20:59 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDAA3C061A0C;
+        Wed, 13 May 2020 15:20:58 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id z1so772387vsn.11;
+        Wed, 13 May 2020 15:20:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Febjjj5+WWTqUCbI65lFaOFBjwVkcmzD8E9a3lP4Uv4=;
+        b=MdNrrrwcMt5bs37DshmUmoyIMjjh7CB+k9Wk9SQHhdVkyuYOcacp3SASS2JGHQkFZW
+         6P6GOR6UyQqrQRzKsmKoQSVSn7Da1sS+IwByJS+VlE4ZThLUdat3cJX4oYY+x1vwVDhw
+         NmSmxRfrdXNGNnbQoAWb8hoQ2cIcKtJQ1wkp7+KFnJyqi23qBsaYS/ixGdP3ELSYcwwX
+         s3ql3bAdCqGCUM/QoI9AMgSpIlwTlRO9nzyXflHlPNHCw0QL3jewdGahAjnXxpi6JuVJ
+         r1cotSeMPSwWva2uv4VGiN7NKdQlUDyGwkvenaCmnDDpOr3mIi1vo8nCILZTJWYz4Zy8
+         b4qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Febjjj5+WWTqUCbI65lFaOFBjwVkcmzD8E9a3lP4Uv4=;
+        b=ZSJJa2Wxr2YUUC3seEXJRfWgApKBKO2GjUOcS3DzLAGDfoHa3t7VD1cwemQ/aoVuDl
+         MgNJIMcQ7w+vJPbJcxcRxIJmXs1Lv01Cf8Z9mgUxt/euyKy/ekVtbBE5HQFwY5kskO3a
+         +SrE0stTLGmDxRyWuArxst80z4foz06qYas/kyR6NqwafI8USv+Mq1NJqyBh4/L5DMzO
+         2OrTmfQxuXv77OEFsWwza5Do750Et/syU+59MZn1dDkZmcS301b8/bx49Xvp670JKGJb
+         89bb1/UtFd+Ws2l0XpZs/X6hmhBZvYo5jp0lU7PwsA8muwe3TYH3qiiVD7Tx3+8VrPmg
+         jl4g==
+X-Gm-Message-State: AOAM532E593tGVK3t4vv5Z2RXvuQAnp7hLVws5T2Z0AFwcanDSXtJLQX
+        enCrZKAQ32ot6MnWoj3/MzsR4TRfgr14xoA8YoM=
+X-Google-Smtp-Source: ABdhPJxo9EuLqhoKWxflAPUvXZF3mOIP4Fla676O86ZIxPbhYie0qT8N7NxiarKZvsbsx8aJvfTXSAykTIcU6rJym2E=
+X-Received: by 2002:a67:c482:: with SMTP id d2mr1227981vsk.37.1589408457816;
+ Wed, 13 May 2020 15:20:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200512151600.GD8135@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20190731124349.4474-1-gregkh@linuxfoundation.org>
+ <20190731131045.GB147138@dtor-ws> <20190802104633.GA14823@kroah.com>
+In-Reply-To: <20190802104633.GA14823@kroah.com>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Wed, 13 May 2020 23:18:15 +0100
+Message-ID: <CACvgo52+Uqx4GJFwadJoFzzt5EMc69HcW-+K9uxv9t25TtSDBg@mail.gmail.com>
+Subject: Re: [PATCH v2 00/10] drivers, provide a way to add sysfs groups easily
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>, x86@kernel.org,
+        linux-input@vger.kernel.org,
+        linux-fbdev <linux-fbdev@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        platform-driver-x86@vger.kernel.org,
+        Tony Prisk <linux@prisktech.co.nz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Richard Gong <richard.gong@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        LAKML <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/05/2020 16:16, Joerg Roedel wrote:
-> Hi Guillaume,
-> 
-> thanks for the report!
-> 
-> On Tue, May 12, 2020 at 07:05:13AM +0100, Guillaume Tucker wrote:
->>> Summary:
->>>   Start:      4b20e7462caa6 Add linux-next specific files for 20200511
->>>   Plain log:  https://storage.kernelci.org/next/master/next-20200511/arm/tegra_defconfig/gcc-8/lab-collabora/baseline-tegra124-jetson-tk1.txt
->>>   HTML log:   https://storage.kernelci.org/next/master/next-20200511/arm/tegra_defconfig/gcc-8/lab-collabora/baseline-tegra124-jetson-tk1.html
->>>   Result:     3eeeb45c6d044 iommu: Remove add_device()/remove_device() code-paths
-> 
-> Okay, so it faults at
-> 
-> 	PC is at __iommu_probe_device+0x20/0x1b8
-> 
-> Can you translate that for me into a code-line, please? That would help
-> finding the issue.
+Hi Greg,
 
-Sure, sorry for the delay.  I've built my own image as vmlinux is
-not stored by kernelci and reproduced the problem:
+On Fri, 2 Aug 2019 at 11:46, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 
-  https://lava.collabora.co.uk/scheduler/job/2403076#L544
+>
+> I have now done this with patch 1/10.  Here's the pull info if any
+> subsystem maintainer wants to suck this into their tree to provide the
+> ability for drivers to add/remove attribute groups easily.
+>
+> This is part of my driver-core tree now, and will go to Linus for
+> 5.4-rc1, along with a few platform drivers that have been acked by their
+> various subsystem maintainers that convert them to use this new
+> functionality.
+>
+> If anyone has any questions about this, please let me know.
+>
+> thanks,
+>
+> greg k-h
+>
+> -------------------
+>
+> The following changes since commit 5f9e832c137075045d15cd6899ab0505cfb2ca4b:
+>
+>   Linus 5.3-rc1 (2019-07-21 14:05:38 -0700)
+>
+> are available in the Git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/dev_groups_all_drivers
+>
+> for you to fetch changes up to 23b6904442d08b7dbed7622ed33b236d41a3aa8b:
+>
+>   driver core: add dev_groups to all drivers (2019-08-02 12:37:53 +0200)
+>
+> ----------------------------------------------------------------
+> dev_groups added to struct driver
+>
+> Persistent tag for others to pull this branch from
+>
+> This is the first patch in a longer series that adds the ability for the
+> driver core to create and remove a list of attribute groups
+> automatically when the device is bound/unbound from a specific driver.
+>
+> See:
+>         https://lore.kernel.org/r/20190731124349.4474-2-gregkh@linuxfoundation.org
+> for details on this patch, and examples of how to use it in other
+> drivers.
+>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> ----------------------------------------------------------------
+> Dmitry Torokhov (1):
+>       driver core: add dev_groups to all drivers
+>
+>  drivers/base/dd.c      | 14 ++++++++++++++
+>  include/linux/device.h |  3 +++
+>  2 files changed, 17 insertions(+)
+> _______________________________________________
 
-which this time gave me:
+Was planning to re-spin DRM a series which uses .dev_groups, although
+I cannot see the core patch.
+Did the it get reverted or simply fell though the cracks?
 
-<4>[    2.540558] PC is at iommu_probe_device+0x1c/0x15c
-<4>[    2.545606] LR is at of_iommu_configure+0x15c/0x1c4
-<4>[    2.550736] pc : [<c092e0e4>]    lr : [<c0932c0c>]    psr: a0000013
-
-which in turn brings us to:
-
-(gdb) l *0xc092e0e4
-0xc092e0e4 is in iommu_probe_device (drivers/iommu/iommu.c:232).
-227		int ret;
-228	
-229		if (!dev_iommu_get(dev))
-230			return -ENOMEM;
-231	
-232		if (!try_module_get(ops->owner)) {
-233			ret = -EINVAL;
-234			goto err_out;
-235		}
-236	
-
-
-Hope this helps.
-
-Guillaume
+-Emil
