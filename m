@@ -2,37 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C1A1D0DFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EEF11D0DDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388456AbgEMJ5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:57:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58988 "EHLO mail.kernel.org"
+        id S2388434AbgEMJ4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:56:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388289AbgEMJzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:55:42 -0400
+        id S2388426AbgEMJ42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:56:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15321206D6;
-        Wed, 13 May 2020 09:55:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F0202176D;
+        Wed, 13 May 2020 09:56:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363741;
-        bh=KdalOttMtsBE8uYrABJNSSiaNAf56Ov/U4l6ehMvrgc=;
+        s=default; t=1589363788;
+        bh=KIbshgR2Hr2P0QjIcLIWNF8IE/9xpGbzNGoIKxojQxE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=izpNnQu4m3wxKgSBF3FZJ4X2IIcDD4TzkrJjqI6kJxq5pBSsv+Hmada9bdtrxBC0T
-         dYT85xkyqhv5O3EOb8jgIrKttlrXxr+GTwdT+iTm8E0Un3vpjYCmkXLdHZikrI9Ydp
-         RKBNKbKHcrKMvoqJbKo2ph43QjkD+53k+XD4IH28=
+        b=aEZVpwgmKsipiE+PGtZ7OQB4LTUYSaHGK4xq/8OFo4aeoNVARjer1oa6CF9VDw9ME
+         tjL8vlJk9zoCpLycUXqvwJoG3ly9ZPqQanlwjjeiSx84T8N9gvZctyhKdCeeINYvcX
+         GqUrmm8MZkGhn9ULfs5W/3rQ+Hf7NcnCL+I+DJ/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Graf <graf@amazon.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.6 105/118] KVM: x86: Fixes posted interrupt check for IRQs delivery modes
-Date:   Wed, 13 May 2020 11:45:24 +0200
-Message-Id: <20200513094426.736622542@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Janakarajan Natarajan <Janakarajan.Natarajan@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.6 106/118] arch/x86/kvm/svm/sev.c: change flag passed to GUP fast in sev_pin_memory()
+Date:   Wed, 13 May 2020 11:45:25 +0200
+Message-Id: <20200513094427.166204184@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
 References: <20200513094417.618129545@linuxfoundation.org>
@@ -45,41 +57,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+From: Janakarajan Natarajan <Janakarajan.Natarajan@amd.com>
 
-commit 637543a8d61c6afe4e9be64bfb43c78701a83375 upstream.
+commit 996ed22c7a5251d76dcdfe5026ef8230e90066d9 upstream.
 
-Current logic incorrectly uses the enum ioapic_irq_destination_types
-to check the posted interrupt destination types. However, the value was
-set using APIC_DM_XXX macros, which are left-shifted by 8 bits.
+When trying to lock read-only pages, sev_pin_memory() fails because
+FOLL_WRITE is used as the flag for get_user_pages_fast().
 
-Fixes by using the APIC_DM_FIXED and APIC_DM_LOWEST instead.
+Commit 73b0140bf0fe ("mm/gup: change GUP fast to use flags rather than a
+write 'bool'") updated the get_user_pages_fast() call sites to use
+flags, but incorrectly updated the call in sev_pin_memory().  As the
+original coding of this call was correct, revert the change made by that
+commit.
 
-Fixes: (fdcf75621375 'KVM: x86: Disable posted interrupts for non-standard IRQs delivery modes')
-Cc: Alexander Graf <graf@amazon.com>
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Message-Id: <1586239989-58305-1-git-send-email-suravee.suthikulpanit@amd.com>
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: 73b0140bf0fe ("mm/gup: change GUP fast to use flags rather than a write 'bool'")
+Signed-off-by: Janakarajan Natarajan <Janakarajan.Natarajan@amd.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <sean.j.christopherson@intel.com>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Wanpeng Li <wanpengli@tencent.com>
+Cc: Jim Mattson <jmattson@google.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H . Peter Anvin" <hpa@zytor.com>
+Cc: Mike Marshall <hubcap@omnibond.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Link: http://lkml.kernel.org/r/20200423152419.87202-1-Janakarajan.Natarajan@amd.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/include/asm/kvm_host.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kvm/svm.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1664,8 +1664,8 @@ void kvm_set_msi_irq(struct kvm *kvm, st
- static inline bool kvm_irq_is_postable(struct kvm_lapic_irq *irq)
- {
- 	/* We can only post Fixed and LowPrio IRQs */
--	return (irq->delivery_mode == dest_Fixed ||
--		irq->delivery_mode == dest_LowestPrio);
-+	return (irq->delivery_mode == APIC_DM_FIXED ||
-+		irq->delivery_mode == APIC_DM_LOWEST);
- }
+--- a/arch/x86/kvm/svm.c
++++ b/arch/x86/kvm/svm.c
+@@ -1886,7 +1886,7 @@ static struct page **sev_pin_memory(stru
+ 		return NULL;
  
- static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu)
+ 	/* Pin the user virtual address. */
+-	npinned = get_user_pages_fast(uaddr, npages, FOLL_WRITE, pages);
++	npinned = get_user_pages_fast(uaddr, npages, write ? FOLL_WRITE : 0, pages);
+ 	if (npinned != npages) {
+ 		pr_err("SEV: Failure locking %lu pages.\n", npages);
+ 		goto err;
 
 
