@@ -2,134 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B01D1D17C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898AE1D17A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389028AbgEMOiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 10:38:21 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:48776 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728345AbgEMOiU (ORCPT
+        id S2389003AbgEMOcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 10:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728345AbgEMOcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 10:38:20 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04DEbZsx007038;
-        Wed, 13 May 2020 09:37:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589380655;
-        bh=y/YaegT2DGD/8Lmf/IfgyqvQ89iKHw+Iptrkg/MbCp8=;
-        h=From:To:CC:Subject:Date;
-        b=U14KrHHUWdqyXt9cQFRAWWnBCTwWA3fq1gBPyh6YvsRL/TQ8LZHwL39ZpFxTepJ2x
-         mQRD+DuxYXLhuWxqp3cvq6KkUKbw5Tp/DmZV5c4k+G5O58YdpMHd4BAw+cPU6oefGn
-         CdqyoXHULLcn46pyVoZx12+YCgkMesPkjM+PO3DI=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04DEbYoG129497
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 May 2020 09:37:34 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 13
- May 2020 09:37:34 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 13 May 2020 09:37:34 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04DEbYNx077984;
-        Wed, 13 May 2020 09:37:34 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH] ASoC: tlv320adcx140: Fix bias config values
-Date:   Wed, 13 May 2020 09:28:07 -0500
-Message-ID: <20200513142807.11802-1-dmurphy@ti.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Wed, 13 May 2020 10:32:12 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6B2C061A0C;
+        Wed, 13 May 2020 07:32:12 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id l11so15250501wru.0;
+        Wed, 13 May 2020 07:32:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=e5l1ivHxvrs1cxo8s+YGVNADN8Rkef6bb/X9HBvnEUo=;
+        b=jYfhdyXMvfikdAmp4t94kn7Oqc+gcUglu6kotXtK7pCKoEZcxVf+D/gfJXZgnlA3tY
+         VcjpeS5YBLgOvzR5lH8nd8xcxAdRH5J/1H+Rx0YuTlUz/0uGIY6A8YBpL08huizZsKAk
+         pQTiCU//78OYtJbklytYh8aNf58msaMeP+CHrBi+IMPVFrxmNPRXvWfqUONnqkYrCTX6
+         gvaFx+iNa4Fpv9gfJJ9qbT4HuW1APNIdtSjeNhLXuUCQ+UFiSiHNQBRrDklcXRcQBRGJ
+         /WFHn0p2Cbgl8iZvetZyCwySHcma/dxORA0r5kTxv83q873p1+IsAj4VwSbTtPefwDf3
+         YB4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=e5l1ivHxvrs1cxo8s+YGVNADN8Rkef6bb/X9HBvnEUo=;
+        b=NSmjupiqijJ80+6a8Ea4qMLwQbBq7WYzG9Dz5oqKAq+4LKyq/rsM2+AOP0XMRbMTqF
+         Rz/LCrQGpLIzqpAFnf4JlR0F06F20T4IshIzSpbsZuaiECZJJz+I2qXWwIfEZshNusWh
+         1DR9+G/UpomfwnByFoMX8vZOWbVQpputrV28JiSiSlS+35/dDR/KFHsSgIgKrxQzgWC+
+         FQf0NHO2IYb/lpZNN5+Zt+xWxxvp5t/PjP1xuta881AVuLZdXYP9nL+yEreXzLQkk8EY
+         YBGL4I+FKxFSwwEBbn5EhT3kNUhw6hYO7ZC8y6Bmm3jKPUj5BqySmmdsh0ZaOLpoW97D
+         IQcA==
+X-Gm-Message-State: AGi0PuYRzq65n0Ttg6JigwUqsEu9fUV+4BmZZDlVz0Y6QfBO4xoqoPDO
+        AsU8gVwaRWS4nugXo/VimeI=
+X-Google-Smtp-Source: APiQypLALuA0r2EITrx0jgdNwC0QL/EE50fO/i1b1frjQJxz76h8l1YXSRVhSmv9cyqfKw97a8V3XQ==
+X-Received: by 2002:adf:ee03:: with SMTP id y3mr29782517wrn.190.1589380330471;
+        Wed, 13 May 2020 07:32:10 -0700 (PDT)
+Received: from localhost (ipv6-fd0e7292a9d5c758.ost.clients.hamburg.freifunk.net. [2a03:2267:4:0:fd0e:7292:a9d5:c758])
+        by smtp.gmail.com with ESMTPSA id b2sm25212812wrm.30.2020.05.13.07.32.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 13 May 2020 07:32:09 -0700 (PDT)
+From:   Oliver Graute <oliver.graute@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     dan.carpenter@oracle.com, oliver.graute@gmail.com,
+        Oliver Graute <oliver.graute@kococonnector.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] staging: fbtft: fb_st7789v: Initialize the Display
+Date:   Wed, 13 May 2020 16:30:46 +0200
+Message-Id: <1589380299-21871-1-git-send-email-oliver.graute@gmail.com>
+X-Mailer: git-send-email 2.7.4
+X-Patchwork-Bot: notify
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device tree binding declares the ti,mic-bias-source and the
-ti,vref-source properties as u32.  The code reads them as u8 which is
-incorrect.  Since the device tree binding indicates them as u32 the
-conde needs to be updated to read u32.
+From: Oliver Graute <oliver.graute@kococonnector.com>
 
-In addition the bias source needs to be shifted 4 bits to
-correctly write the register.
+Set Gamma Values and Register Values for the HSD20_IPS Panel
 
-Fixes: 37bde5acf040 ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec
-driver family")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Signed-off-by: Oliver Graute <oliver.graute@kococonnector.com>
 ---
- sound/soc/codecs/tlv320adcx140.c | 13 +++++++------
- sound/soc/codecs/tlv320adcx140.h |  1 +
- 2 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
-index 0f713efde046..1d7d7b34a46e 100644
---- a/sound/soc/codecs/tlv320adcx140.c
-+++ b/sound/soc/codecs/tlv320adcx140.c
-@@ -739,11 +739,12 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- {
- 	struct adcx140_priv *adcx140 = snd_soc_component_get_drvdata(component);
- 	int sleep_cfg_val = ADCX140_WAKE_DEV;
--	u8 bias_source;
--	u8 vref_source;
-+	u32 bias_source;
-+	u32 vref_source;
-+	u8 bias_cfg;
- 	int ret;
+need information howto set HSD20_IPS Panel at run time and not at compile time
+
+Changes for v2:
+ - added define for HSD20_IPS_GAMMA values
+ - check for HSD20_IPS define
+ - enabled MIPI_DCS_ENTER_INVERT_MODE
+
+ drivers/staging/fbtft/fb_st7789v.c | 32 +++++++++++++++++++++++++-----
+ 1 file changed, 27 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/staging/fbtft/fb_st7789v.c b/drivers/staging/fbtft/fb_st7789v.c
+index 3c3f387936e8..ebc17e05ecd0 100644
+--- a/drivers/staging/fbtft/fb_st7789v.c
++++ b/drivers/staging/fbtft/fb_st7789v.c
+@@ -20,6 +20,12 @@
+ 	"70 2C 2E 15 10 09 48 33 53 0B 19 18 20 25\n" \
+ 	"70 2C 2E 15 10 09 48 33 53 0B 19 18 20 25"
  
--	ret = device_property_read_u8(adcx140->dev, "ti,mic-bias-source",
-+	ret = device_property_read_u32(adcx140->dev, "ti,mic-bias-source",
- 				      &bias_source);
- 	if (ret)
- 		bias_source = ADCX140_MIC_BIAS_VAL_VREF;
-@@ -754,7 +755,7 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- 		return -EINVAL;
- 	}
++#define HSD20_IPS_GAMMA \
++	"D0 05 0A 09 08 05 2E 44 45 0F 17 16 2B 33\n" \
++	"D0 05 0A 09 08 05 2E 43 45 0F 16 16 2B 33"
++
++#define HSD20_IPS "true"
++
+ /**
+  * enum st7789v_command - ST7789V display controller commands
+  *
+@@ -82,14 +88,20 @@ static int init_display(struct fbtft_par *par)
  
--	ret = device_property_read_u8(adcx140->dev, "ti,vref-source",
-+	ret = device_property_read_u32(adcx140->dev, "ti,vref-source",
- 				      &vref_source);
- 	if (ret)
- 		vref_source = ADCX140_MIC_BIAS_VREF_275V;
-@@ -765,7 +766,7 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- 		return -EINVAL;
- 	}
+ 	/* set pixel format to RGB-565 */
+ 	write_reg(par, MIPI_DCS_SET_PIXEL_FORMAT, MIPI_DCS_PIXEL_FMT_16BIT);
++	if (HSD20_IPS)
++		write_reg(par, PORCTRL, 0x05, 0x05, 0x00, 0x33, 0x33);
  
--	bias_source |= vref_source;
-+	bias_cfg = bias_source << ADCX140_MIC_BIAS_SHIFT | vref_source;
+-	write_reg(par, PORCTRL, 0x08, 0x08, 0x00, 0x22, 0x22);
++	else
++		write_reg(par, PORCTRL, 0x08, 0x08, 0x00, 0x22, 0x22);
  
- 	ret = adcx140_reset(adcx140);
- 	if (ret)
-@@ -785,7 +786,7 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
+ 	/*
+ 	 * VGH = 13.26V
+ 	 * VGL = -10.43V
+ 	 */
+-	write_reg(par, GCTRL, 0x35);
++	if (HSD20_IPS)
++		write_reg(par, GCTRL, 0x75);
++	else
++		write_reg(par, GCTRL, 0x35);
  
- 	ret = regmap_update_bits(adcx140->regmap, ADCX140_BIAS_CFG,
- 				ADCX140_MIC_BIAS_VAL_MSK |
--				ADCX140_MIC_BIAS_VREF_MSK, bias_source);
-+				ADCX140_MIC_BIAS_VREF_MSK, bias_cfg);
- 	if (ret)
- 		dev_err(adcx140->dev, "setting MIC bias failed %d\n", ret);
- out:
-diff --git a/sound/soc/codecs/tlv320adcx140.h b/sound/soc/codecs/tlv320adcx140.h
-index 6d055e55909e..69de52d473f4 100644
---- a/sound/soc/codecs/tlv320adcx140.h
-+++ b/sound/soc/codecs/tlv320adcx140.h
-@@ -116,6 +116,7 @@
- #define ADCX140_MIC_BIAS_VAL_VREF_1096	1
- #define ADCX140_MIC_BIAS_VAL_AVDD	6
- #define ADCX140_MIC_BIAS_VAL_MSK GENMASK(6, 4)
-+#define ADCX140_MIC_BIAS_SHIFT		4
+ 	/*
+ 	 * VDV and VRH register values come from command write
+@@ -101,13 +113,19 @@ static int init_display(struct fbtft_par *par)
+ 	 * VAP =  4.1V + (VCOM + VCOM offset + 0.5 * VDV)
+ 	 * VAN = -4.1V + (VCOM + VCOM offset + 0.5 * VDV)
+ 	 */
+-	write_reg(par, VRHS, 0x0B);
++	if (HSD20_IPS)
++		write_reg(par, VRHS, 0x13);
++	else
++		write_reg(par, VRHS, 0x0B);
  
- #define ADCX140_MIC_BIAS_VREF_275V	0
- #define ADCX140_MIC_BIAS_VREF_25V	1
+ 	/* VDV = 0V */
+ 	write_reg(par, VDVS, 0x20);
+ 
+ 	/* VCOM = 0.9V */
+-	write_reg(par, VCOMS, 0x20);
++	if (HSD20_IPS)
++		write_reg(par, VCOMS, 0x22);
++	else
++		write_reg(par, VCOMS, 0x20);
+ 
+ 	/* VCOM offset = 0V */
+ 	write_reg(par, VCMOFSET, 0x20);
+@@ -120,6 +138,10 @@ static int init_display(struct fbtft_par *par)
+ 	write_reg(par, PWCTRL1, 0xA4, 0xA1);
+ 
+ 	write_reg(par, MIPI_DCS_SET_DISPLAY_ON);
++
++	if (HSD20_IPS)
++		write_reg(par, MIPI_DCS_ENTER_INVERT_MODE);
++
+ 	return 0;
+ }
+ 
+@@ -234,7 +256,7 @@ static struct fbtft_display display = {
+ 	.height = 320,
+ 	.gamma_num = 2,
+ 	.gamma_len = 14,
+-	.gamma = DEFAULT_GAMMA,
++	.gamma = HSD20_IPS_GAMMA,
+ 	.fbtftops = {
+ 		.init_display = init_display,
+ 		.set_var = set_var,
 -- 
-2.26.2
+2.17.1
 
