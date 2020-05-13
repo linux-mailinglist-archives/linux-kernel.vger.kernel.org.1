@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 413121D0D85
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 470151D0CA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387996AbgEMJxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:53:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55768 "EHLO mail.kernel.org"
+        id S1732671AbgEMJqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:46:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732603AbgEMJxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:53:39 -0400
+        id S1732649AbgEMJqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:46:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C896820575;
-        Wed, 13 May 2020 09:53:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1D6423128;
+        Wed, 13 May 2020 09:46:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363619;
-        bh=9Id/3gUvE69ng67jci/Ipgi+B0JOa0NZwiI0Aii5NOI=;
+        s=default; t=1589363191;
+        bh=I0TmloKQ6w6s4+E/SMRj3wAX70TDF9lXgtII0GZLDBo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2QHmKl3qoPjwyAzTFQ4SI5rdK8277nhYvaNw6iQ2l+WQAc5PqmFdztZZSVxBT6iQU
-         mYqbAqwziYN60fgPBviZNT4LAmwEH1ZgmxuyP3rIDpoASZMdNGsuWVDO5Ir7CgvUaW
-         odLPjMsNUixIzn3gv4vHpDqfBT5/NVXMFTsD3dxQ=
+        b=WQ2sbRWP0G0AErFv+p39HDJvNwyB7cVDMLXTslrdfRIDOj1frBKWkEQhzLOLfImp0
+         8m7KCGlejxRaFuB6laii/aundtSXWLJXCT6uZR7XyYEyyeQZpmKuDwYb3cFzajXKDL
+         mxTBSyVjej+oChJKd6fpA1OXuhPhLbYVUARa8ErM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sultan Alsawaf <sultan@kerneltoast.com>,
-        Wang Jian <larkwang@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        stable@vger.kernel.org, Matt Jolly <Kangie@footclan.ninja>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 056/118] wireguard: send/receive: cond_resched() when processing worker ringbuffers
+Subject: [PATCH 4.19 09/48] net: usb: qmi_wwan: add support for DW5816e
 Date:   Wed, 13 May 2020 11:44:35 +0200
-Message-Id: <20200513094421.948432116@linuxfoundation.org>
+Message-Id: <20200513094354.213038007@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
-References: <20200513094417.618129545@linuxfoundation.org>
+In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
+References: <20200513094351.100352960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +44,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+From: Matt Jolly <Kangie@footclan.ninja>
 
-[ Upstream commit 4005f5c3c9d006157ba716594e0d70c88a235c5e ]
+[ Upstream commit 57c7f2bd758eed867295c81d3527fff4fab1ed74 ]
 
-Users with pathological hardware reported CPU stalls on CONFIG_
-PREEMPT_VOLUNTARY=y, because the ringbuffers would stay full, meaning
-these workers would never terminate. That turned out not to be okay on
-systems without forced preemption, which Sultan observed. This commit
-adds a cond_resched() to the bottom of each loop iteration, so that
-these workers don't hog the core. Note that we don't need this on the
-napi poll worker, since that terminates after its budget is expended.
+Add support for Dell Wireless 5816e to drivers/net/usb/qmi_wwan.c
 
-Suggested-by: Sultan Alsawaf <sultan@kerneltoast.com>
-Reported-by: Wang Jian <larkwang@gmail.com>
-Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Signed-off-by: Matt Jolly <Kangie@footclan.ninja>
+Acked-by: Bjørn Mork <bjorn@mork.no>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireguard/receive.c |    2 ++
- drivers/net/wireguard/send.c    |    4 ++++
- 2 files changed, 6 insertions(+)
+ drivers/net/usb/qmi_wwan.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/wireguard/receive.c
-+++ b/drivers/net/wireguard/receive.c
-@@ -516,6 +516,8 @@ void wg_packet_decrypt_worker(struct wor
- 				&PACKET_CB(skb)->keypair->receiving)) ?
- 				PACKET_STATE_CRYPTED : PACKET_STATE_DEAD;
- 		wg_queue_enqueue_per_peer_napi(skb, state);
-+		if (need_resched())
-+			cond_resched();
- 	}
- }
- 
---- a/drivers/net/wireguard/send.c
-+++ b/drivers/net/wireguard/send.c
-@@ -281,6 +281,8 @@ void wg_packet_tx_worker(struct work_str
- 
- 		wg_noise_keypair_put(keypair, false);
- 		wg_peer_put(peer);
-+		if (need_resched())
-+			cond_resched();
- 	}
- }
- 
-@@ -305,6 +307,8 @@ void wg_packet_encrypt_worker(struct wor
- 		wg_queue_enqueue_per_peer(&PACKET_PEER(first)->tx_queue, first,
- 					  state);
- 
-+		if (need_resched())
-+			cond_resched();
- 	}
- }
- 
+--- a/drivers/net/usb/qmi_wwan.c
++++ b/drivers/net/usb/qmi_wwan.c
+@@ -1294,6 +1294,7 @@ static const struct usb_device_id produc
+ 	{QMI_FIXED_INTF(0x413c, 0x81b3, 8)},	/* Dell Wireless 5809e Gobi(TM) 4G LTE Mobile Broadband Card (rev3) */
+ 	{QMI_FIXED_INTF(0x413c, 0x81b6, 8)},	/* Dell Wireless 5811e */
+ 	{QMI_FIXED_INTF(0x413c, 0x81b6, 10)},	/* Dell Wireless 5811e */
++	{QMI_FIXED_INTF(0x413c, 0x81cc, 8)},	/* Dell Wireless 5816e */
+ 	{QMI_FIXED_INTF(0x413c, 0x81d7, 0)},	/* Dell Wireless 5821e */
+ 	{QMI_FIXED_INTF(0x413c, 0x81d7, 1)},	/* Dell Wireless 5821e preproduction config */
+ 	{QMI_FIXED_INTF(0x413c, 0x81e0, 0)},	/* Dell Wireless 5821e with eSIM support*/
 
 
