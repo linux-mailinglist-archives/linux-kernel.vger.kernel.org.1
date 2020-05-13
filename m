@@ -2,262 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D7F1D1A83
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC851D1A8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389511AbgEMQDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 12:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51228 "EHLO
+        id S2389514AbgEMQEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 12:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733083AbgEMQDo (ORCPT
+        with ESMTP id S1730984AbgEMQEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 12:03:44 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADAF1C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 09:03:44 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id d26so2548577otc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 09:03:44 -0700 (PDT)
+        Wed, 13 May 2020 12:04:42 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631CFC061A0C;
+        Wed, 13 May 2020 09:04:42 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id b71so157479ilg.8;
+        Wed, 13 May 2020 09:04:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=2yckO2TkP2k0AsxRF9e+7sqUhdk1Os8wsLi84bIyRJ0=;
-        b=mofTovKHvxwnI+GKQwHvnLaXIL4eYMo+R2LtuVCJStB4NLUB7+Wjp7CxSEGZo3816C
-         oT8rmxV857SpKbWgvvpwhq4EuBHih/TMWHH9XLDfKAkE//OHVPQxQMtosUbNbu8fk551
-         JEpzgjIfM2SFsaiufkUeLyqCZQUHJlwflKmbrTBvGf1sYDnbTeNzIByfEHjc/p/EIwZJ
-         7CoZdQCwl1fzS2ZU1rAiHorpQ8UUlHMgb+pdl+RKXUPS5477Dclwd5QF+/SuPL+Sgh6l
-         W2/Juy9R/8mXb/DsSnAj+wk+K+0/lscNKUySY830h/WB3Uf2EhrbaO9TxYZwPMyQKm/j
-         MHSQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5dJUi9PgEBsOz4xL67nAyi1nzj6ZF74cK2F6Xdr8zwQ=;
+        b=BK15qGDzi16VRLNLARlzHmUK4+d0bzfFvecJV9tgKyj06LBPHWIM/o1Ux9ns6H+h+q
+         xX+0LrFzuAyc7DMWKq4CodjEui3P8n3JKEWjnFUlMIWiYGS9XR2v0ibw/E3XldNNzBeX
+         Kzkb17TC+wQGWIOLLqLSyklHlSzEVOfm/DyEtLqTvpwrNnvFyI8Gl3KFdIV4aFJZ13Eh
+         hqyK25W71N840NMUoHsH6/TArhNtkNo4k3TryhEm6ljRmPuqR/Rg19CPWuB4exnmjNV8
+         zHD8PmFsWWa9oxM5+fpPLVdlGbnkVsxOu12i5W65YuSmo06Lq3w1oK2UN2zb2E2xCfd/
+         EgDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=2yckO2TkP2k0AsxRF9e+7sqUhdk1Os8wsLi84bIyRJ0=;
-        b=Zj11mpmmaAzOr2OUXYQA0bQH3AF+7hxYEymJnfV4gBguWCZwK1MXxev25shDTjF1JK
-         zLkvuMY7pxHrlncv/EisNYnewiA7q77Gn4hHXax3vkCMQH500oxNeH6duXUFEKwwybo3
-         RzluHGrMr/qFo8oOTqga+kYhkHnxpJo5Ap8VcUbhdULUnYEGQfizy4likVrrPU27KLDA
-         c7oNV7x3EkLfckr5rBcpezNJNhr58NpSIsAxPjZVAaKagkwKmMMj2gweA4Vo7A5SavVu
-         cYTm+mVsw004KFqgMJeLCe2muxWCuj3ZoGLSUp+1oZWBDiW+jtMf3djP0O3AMiCRJAr1
-         Bkdw==
-X-Gm-Message-State: AOAM533js19MHsl5s+MsBCzBVjULrdwJjrGzBHJ+BPceXCn+uQK9tWnt
-        W9PWQ+sKuF8NvMN5j5HyK0UqCuhonmChyroMcdTkQQ==
-X-Google-Smtp-Source: ABdhPJxCBFTkjVqW1LM0Wlimll2ubVx4f7hGBjqApdkLnMDvbC1oTcaby0cSdclRlkBrm7wgjVnnw91Nql3yNw1IYu4=
-X-Received: by 2002:a9d:e93:: with SMTP id 19mr82527otj.371.1589385823847;
- Wed, 13 May 2020 09:03:43 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=5dJUi9PgEBsOz4xL67nAyi1nzj6ZF74cK2F6Xdr8zwQ=;
+        b=LjmEgYsXIsu6vnZRI5EQQO1BkBGbg00Z0uJPgO1r3UQ4WVSinSD3Fkf8XpKMFm4+lT
+         Z7eVLVZ34DXN/AYt9Zc83DqC8uiV+UvendRjwMs1kNVFzhV5LlwRHk9pW0EzjTa0KDIZ
+         HrQ+CrvY8MxjvLG2mmSiK6EugoxoUcU5fSEYLJLqtGeKII5E8G3dhCQFT4/SBZlN58zD
+         R/nQrlVinrAcUymfrHwplx6exV2r16K3jkYKaRx3+V3pW7zaEVZZVve7PqYfiiHbAxO9
+         vgfVFligRxC975X8Iozq7x01a3iOa/BQwLtgWu/Lxqtdwvufr8fz6VqmDaYu4WAh/M9p
+         eYyQ==
+X-Gm-Message-State: AOAM533B3bbYORHnb4UcOAtZtiIyK0+XbyhW6+uEV4spUp+yfC/mbtkz
+        kO59SG8rbA5QCKy/c4qq5jTUOcC6f1RJnrKxqYBBkw==
+X-Google-Smtp-Source: ABdhPJzzsVWP7L+v1ttBMz+ZQMxwjSjNaKQ0a/eS3DhFV+V9Q2UTV9XgvQ4lJBO/cu+G2QvqP9XT9Q9acrfKczceegs=
+X-Received: by 2002:a05:6e02:68e:: with SMTP id o14mr140943ils.33.1589385881800;
+ Wed, 13 May 2020 09:04:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <1588920063-17624-1-git-send-email-charante@codeaurora.org>
- <20200512085221.GB3557007@kroah.com> <a3cbf675-becc-1713-bcdc-664ddfe4a544@codeaurora.org>
- <20200513125112.GC1083139@kroah.com> <20200513154653.GK206103@phenom.ffwll.local>
-In-Reply-To: <20200513154653.GK206103@phenom.ffwll.local>
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Wed, 13 May 2020 21:33:32 +0530
-Message-ID: <CAO_48GF0GMDJH1Wx4p5pfS4t57bh_BJO2=CmOpj_XCBnF0CbCQ@mail.gmail.com>
-Subject: Re: [PATCH v2] dma-buf: fix use-after-free in dmabuffs_dname
-To:     Greg KH <greg@kroah.com>,
-        Charan Teja Kalla <charante@codeaurora.org>,
-        Chenbo Feng <fengc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        Linaro MM SIG <linaro-mm-sig@lists.linaro.org>,
-        vinmenon@codeaurora.org, Greg Hackmann <ghackmann@google.com>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
+References: <20200513154718.17401-1-michael.srba@seznam.cz>
+In-Reply-To: <20200513154718.17401-1-michael.srba@seznam.cz>
+From:   Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Date:   Wed, 13 May 2020 10:04:30 -0600
+Message-ID: <CAOCk7No3bJMpZNjXaNv-OScaLXPKbdj3d_n20ss3MyciPO=e3g@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: disable the new cti nodes on devices
+ with broken coresight
+To:     michael.srba@seznam.cz
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 May 2020 at 21:16, Daniel Vetter <daniel@ffwll.ch> wrote:
+On Wed, May 13, 2020 at 9:53 AM <michael.srba@seznam.cz> wrote:
 >
-> On Wed, May 13, 2020 at 02:51:12PM +0200, Greg KH wrote:
-> > On Wed, May 13, 2020 at 05:40:26PM +0530, Charan Teja Kalla wrote:
-> > >
-> > > Thank you Greg for the comments.
-> > > On 5/12/2020 2:22 PM, Greg KH wrote:
-> > > > On Fri, May 08, 2020 at 12:11:03PM +0530, Charan Teja Reddy wrote:
-> > > >> The following race occurs while accessing the dmabuf object exported as
-> > > >> file:
-> > > >> P1                               P2
-> > > >> dma_buf_release()          dmabuffs_dname()
-> > > >>                     [say lsof reading /proc/<P1 pid>/fd/<num>]
-> > > >>
-> > > >>                     read dmabuf stored in dentry->d_fsdata
-> > > >> Free the dmabuf object
-> > > >>                     Start accessing the dmabuf structure
-> > > >>
-> > > >> In the above description, the dmabuf object freed in P1 is being
-> > > >> accessed from P2 which is resulting into the use-after-free. Below is
-> > > >> the dump stack reported.
-> > > >>
-> > > >> We are reading the dmabuf object stored in the dentry->d_fsdata but
-> > > >> there is no binding between the dentry and the dmabuf which means that
-> > > >> the dmabuf can be freed while it is being read from ->d_fsdata and
-> > > >> inuse. Reviews on the patch V1 says that protecting the dmabuf inuse
-> > > >> with an extra refcount is not a viable solution as the exported dmabuf
-> > > >> is already under file's refcount and keeping the multiple refcounts on
-> > > >> the same object coordinated is not possible.
-> > > >>
-> > > >> As we are reading the dmabuf in ->d_fsdata just to get the user passed
-> > > >> name, we can directly store the name in d_fsdata thus can avoid the
-> > > >> reading of dmabuf altogether.
-> > > >>
-> > > >> Call Trace:
-> > > >>  kasan_report+0x12/0x20
-> > > >>  __asan_report_load8_noabort+0x14/0x20
-> > > >>  dmabuffs_dname+0x4f4/0x560
-> > > >>  tomoyo_realpath_from_path+0x165/0x660
-> > > >>  tomoyo_get_realpath
-> > > >>  tomoyo_check_open_permission+0x2a3/0x3e0
-> > > >>  tomoyo_file_open
-> > > >>  tomoyo_file_open+0xa9/0xd0
-> > > >>  security_file_open+0x71/0x300
-> > > >>  do_dentry_open+0x37a/0x1380
-> > > >>  vfs_open+0xa0/0xd0
-> > > >>  path_openat+0x12ee/0x3490
-> > > >>  do_filp_open+0x192/0x260
-> > > >>  do_sys_openat2+0x5eb/0x7e0
-> > > >>  do_sys_open+0xf2/0x180
-> > > >>
-> > > >> Fixes: bb2bb9030425 ("dma-buf: add DMA_BUF_SET_NAME ioctls")
-> > > >> Reported-by: syzbot+3643a18836bce555bff6@syzkaller.appspotmail.com
-> > > >> Cc: <stable@vger.kernel.org> [5.3+]
-> > > >> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-> > > >> ---
-> > > >>
-> > > >> Changes in v2:
-> > > >>
-> > > >> - Pass the user passed name in ->d_fsdata instead of dmabuf
-> > > >> - Improve the commit message
-> > > >>
-> > > >> Changes in v1: (https://patchwork.kernel.org/patch/11514063/)
-> > > >>
-> > > >>  drivers/dma-buf/dma-buf.c | 17 ++++++++++-------
-> > > >>  1 file changed, 10 insertions(+), 7 deletions(-)
-> > > >>
-> > > >> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> > > >> index 01ce125..0071f7d 100644
-> > > >> --- a/drivers/dma-buf/dma-buf.c
-> > > >> +++ b/drivers/dma-buf/dma-buf.c
-> > > >> @@ -25,6 +25,7 @@
-> > > >>  #include <linux/mm.h>
-> > > >>  #include <linux/mount.h>
-> > > >>  #include <linux/pseudo_fs.h>
-> > > >> +#include <linux/dcache.h>
-> > > >>
-> > > >>  #include <uapi/linux/dma-buf.h>
-> > > >>  #include <uapi/linux/magic.h>
-> > > >> @@ -40,15 +41,13 @@ struct dma_buf_list {
-> > > >>
-> > > >>  static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
-> > > >>  {
-> > > >> -        struct dma_buf *dmabuf;
-> > > >>          char name[DMA_BUF_NAME_LEN];
-> > > >>          size_t ret = 0;
-> > > >>
-> > > >> -        dmabuf = dentry->d_fsdata;
-> > > >> -        dma_resv_lock(dmabuf->resv, NULL);
-> > > >> -        if (dmabuf->name)
-> > > >> -                ret = strlcpy(name, dmabuf->name, DMA_BUF_NAME_LEN);
-> > > >> -        dma_resv_unlock(dmabuf->resv);
-> > > >> +        spin_lock(&dentry->d_lock);
-> > > >
-> > > > Are you sure this lock always protects d_fsdata?
-> > >
-> > > I think yes. In the dma-buf.c, I have to make sure that d_fsdata should
-> > > always be under d_lock thus it will be protected. (In this posted patch
-> > > there is one place(in dma_buf_set_name) that is missed, will update this
-> > > in V3).
-> > >
-> > > >
-> > > >> +        if (dentry->d_fsdata)
-> > > >> +                ret = strlcpy(name, dentry->d_fsdata, DMA_BUF_NAME_LEN);
-> > > >> +        spin_unlock(&dentry->d_lock);
-> > > >>
-> > > >>          return dynamic_dname(dentry, buffer, buflen, "/%s:%s",
-> > > >>                               dentry->d_name.name, ret > 0 ? name : "");
-> > > >
-> > > > If the above check fails the name will be what?  How could d_name.name
-> > > > be valid but d_fsdata not be valid?
-> > >
-> > > In case of check fails, empty string "" is appended to the name by the
-> > > code, ret > 0 ? name : "", ret is initialized to zero. Thus the name
-> > > string will be like "/dmabuf:".
-> >
-> > So multiple objects can have the same "name" if this happens to multiple
-> > ones at once?
-> >
-> > > Regarding the validity of d_fsdata, we are setting the dmabuf's
-> > > dentry->d_fsdata to NULL in the dma_buf_release() thus can go invalid if
-> > > that dmabuf is in the free path.
-> >
-> > Why are we allowing the name to be set if the dmabuf is on the free path
-> > at all?  Shouldn't that be the real fix here?
-> >
-> > > >> @@ -80,12 +79,16 @@ static int dma_buf_fs_init_context(struct fs_context *fc)
-> > > >>  static int dma_buf_release(struct inode *inode, struct file *file)
-> > > >>  {
-> > > >>          struct dma_buf *dmabuf;
-> > > >> +        struct dentry *dentry = file->f_path.dentry;
-> > > >>
-> > > >>          if (!is_dma_buf_file(file))
-> > > >>                  return -EINVAL;
-> > > >>
-> > > >>          dmabuf = file->private_data;
-> > > >>
-> > > >> +        spin_lock(&dentry->d_lock);
-> > > >> +        dentry->d_fsdata = NULL;
-> > > >> +        spin_unlock(&dentry->d_lock);
-> > > >>          BUG_ON(dmabuf->vmapping_counter);
-> > > >>
-> > > >>          /*
-> > > >> @@ -343,6 +346,7 @@ static long dma_buf_set_name(struct dma_buf *dmabuf, const char __user *buf)
-> > > >>          }
-> > > >>          kfree(dmabuf->name);
-> > > >>          dmabuf->name = name;
-> > > >> +        dmabuf->file->f_path.dentry->d_fsdata = name;
-> > > >
-> > > > You are just changing the use of d_fsdata from being a pointer to the
-> > > > dmabuf to being a pointer to the name string?  What's to keep that name
-> > > > string around and not have the same reference counting issues that the
-> > > > dmabuf structure itself has?  Who frees that string memory?
-> > > >
-> > >
-> > > Yes, I am just storing the name string in the d_fsdata in place of
-> > > dmabuf and this helps to get rid of any extra refcount requirement.
-> > > Because the user passed name carried in the d_fsdata is copied to the
-> > > local buffer in dmabuffs_dname under spin_lock(d_lock) and the same
-> > > d_fsdata is set to NULL(under the d_lock only) when that dmabuf is in
-> > > the release path. So, when d_fsdata is NULL, name string is not accessed
-> > > from the dmabuffs_dname thus extra count is not required.
-> > >
-> > > String memory, stored in the dmabuf->name, is released from the
-> > > dma_buf_release(). Flow will be like, It fist sets d_fsdata=NULL and
-> > > then free the dmabuf->name.
-> > >
-> > > However from your comments I have realized that there is a race in this
-> > > patch when using the name string between dma_buf_set_name() and
-> > > dmabuffs_dname(). But, If the idea of passing the name string inplace of
-> > > dmabuf in d_fsdata looks fine, I can update this next patch.
-> >
-> > I'll leave that to the dmabuf authors/maintainers, but it feels odd to
-> > me...
+> From: Michael Srba <michael.srba@seznam.cz>
 >
-> I have zero clue about fs internals. This all scares me, that's all. I
-> know enough about lifetime bugs that if you don't deeply understand a
-> subsystem, all that's guaranteed is that you will get it wrong.
+> Attempting to enable these devices causes a "synchronous
+> external abort". Suspected cause is that the debug power
+> domain is not enabled by default on this device.
+> Disable these devices for now to avoid the crash.
+>
+> See: https://lore.kernel.org/linux-arm-msm/20190618202623.GA53651@gerhold.net/
+>
+> Fixes: b1fcc5702a41 ("arm64: dts: qcom: msm8916: Add CTI options")
+> Signed-off-by: Michael Srba <michael.srba@seznam.cz>
+>
+> ---
+>  arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts       | 6 ++++++
+>  arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi | 6 ++++++
+>  2 files changed, 12 insertions(+)
 
-Likewise, and that made me realise that the 'fix' may not be as
-innocuous or quick.
+Why are we disabling these in board specific files?  Seems like these
+should be disabled in the base msm8916.dtsi.  Otherwise, the next
+board that gets brought up is probably going to hit this same exact
+issue.
 
-I will try to check with some folks more experienced than me in the fs
-domain and see what is the logical way to handle it.
-
->
-> /me out
->
-> Cheers, Daniel
->
-
-Best,
-Sumit.
+This also follows the solution that msm8998 did for the same issue.
