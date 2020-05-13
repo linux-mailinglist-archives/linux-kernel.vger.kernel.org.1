@@ -2,153 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A461D045B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 03:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32EE1D0473
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 03:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732044AbgEMBeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 21:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728313AbgEMBeY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 21:34:24 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3416C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 18:34:22 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id i62so17918387ybc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 18:34:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=u2R6uh0TUyIu2nWEYyjL6Nl0urUWpNEVjVf1H4GcML0=;
-        b=okP+8glWZ24cEbndDhuAl3Tuv+Jt/bb2AhNhMJoZ75GxX+l7+KjGZHf2vslB7bIsal
-         Xx7zy08TTvc1CuKSZFmygbuhiQTqASiNK1dz3ARREXqPu+f5RajQQcNkwR267BSdBsk5
-         vFrALBlWsngapC7A593EE1sTx3W6sGmu0OKJhPg2a5PE3ASYLXAqcGIkQLLjUfoK1wKg
-         amoiCFy5hzzuBaxaBTwJOHkPbI6cOPU4e+gh/xvX35gtakzTMthmmqRqB8NMkx/HYhIP
-         bMJwOYeXAVor5ofeJO3eqEfVnK5MX4X8WYZWEDh6NpKi8+e+XMt3aRsMEYVxLB3D3Bln
-         ONgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=u2R6uh0TUyIu2nWEYyjL6Nl0urUWpNEVjVf1H4GcML0=;
-        b=WcvkqWbQmmBIW1JLBTGHqUVyjGMzaEx3AdxOWB+9D1hgzX6WLqqvI19jX3igif4pII
-         UhEhP/gD7Di+p9rI/ZY7lnhSbAWiyLuKvUZ0gcSzEMRvb/z8x++Yi+wOHZuJ1HyCwusa
-         29LX4eJ/hFvzNbqjRSJW87TycpLf/EIwaecaT4I9t4Sn6w4k7fQU3PDYAej4ZvLn96Z8
-         SpsAVgBrXFpdvGqNmtRT0Xv1nxTowhFQ22/iEp514a24N5p7ZClrMaHQCu17V+6ZtHTY
-         UFfErlUR9z8IfhnH8DnY99l2Jk2YduR9TkhibMZZwszTpeDrnl5SR+uhvOZjfZKKAJwX
-         +LVg==
-X-Gm-Message-State: AGi0PuaNXS/npA+MsYyMeRcP+WB7VFuXkmIdnRIxnbFuadnKQA+xoaLe
-        P+HRLvc4Z3Yvk9YOlYoKqCBc8cHexVGF9uk=
-X-Google-Smtp-Source: APiQypIlrERinGpziyimv7ST/mRamxZl/nRYvZaUdKBqsaRDjKaHUnpV2q/7vt/f/aSbV3nSAWo8kRuXKFW0288=
-X-Received: by 2002:a25:37c8:: with SMTP id e191mr40492234yba.388.1589333662255;
- Tue, 12 May 2020 18:34:22 -0700 (PDT)
-Date:   Tue, 12 May 2020 18:34:15 -0700
-Message-Id: <20200513013415.148858-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
-Subject: [PATCH v1] driver core: Add state_synced sysfs file for devices that
- support it
-From:   Saravana Kannan <saravanak@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Saravana Kannan <saravanak@google.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1731915AbgEMBmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 21:42:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728313AbgEMBmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 21:42:42 -0400
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55F3C206B7;
+        Wed, 13 May 2020 01:42:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589334162;
+        bh=UUe8Ow1eaBCAZdT0NORukKFKzcce3xKtVcZKNHDEJfc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=H5DlGW5P9dgx82cPu99375mFApJpuS5528wGS/tB7C+vkQ8+pgq8bPeAPY09/HAIZ
+         YTzDr3ALvEdj15f0kAZAkSpioDGRurgHdsJu/ktrQzXkzsZvImPTnAdi3RbAUDYdeA
+         VHCtBvid7Bzc8WYg+62O5X1W7f/9kRhpDLF24UZ0=
+Subject: Re: [PATCH -next] cpupower: Remove unneeded semicolon
+To:     Samuel Zou <zou_wei@huawei.com>, trenn@suse.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shuah <shuah@kernel.org>
+References: <1588066995-71840-1-git-send-email-zou_wei@huawei.com>
+ <a51e2f2b-3381-bd5d-9599-0f291520b272@kernel.org>
+ <1d1333ae-6d7f-a456-567b-34852270000b@huawei.com>
+ <932d9e24-43d3-4c31-1401-ffa930d96582@kernel.org>
+From:   shuah <shuah@kernel.org>
+Message-ID: <10644e99-9ac4-b7e6-334e-417a8d14c7f9@kernel.org>
+Date:   Tue, 12 May 2020 19:42:21 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <932d9e24-43d3-4c31-1401-ffa930d96582@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This can be used to check if a device supports sync_state() callbacks
-and therefore keeps resources left on by the bootloader enabled till all
-its consumers have probed.
+On 5/6/20 10:09 AM, shuah wrote:
+> On 5/5/20 6:52 PM, Samuel Zou wrote:
+>> Hi Shuah,
+>>
+>> I run with the below command, and get the output report.
+>>
+>> [local-host linux-next]# make coccicheck MODE=report 
+>> M=tools/power/cpupower/utils
+>>
+> 
+> Yes this is the command I am using as well. I don't see the errors
+> you are seeing. What is the difference?
+> 
 
-This can also be used to check if sync_state() has been called for a
-device or whether it is still trying to keep resources enabled because
-they were left enabled by the bootloader and all its consumers haven't
-probed yet.
+I figured out what's going on. The coccinelle package from the distro
+was the problem. I ended up installing coccinelle_1.0.8.deb-2_amd64.deb
+from https://packages.debian.org/sid/amd64/coccinelle/download
 
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- .../ABI/testing/sysfs-devices-state_synced    | 24 +++++++++++++++++++
- drivers/base/dd.c                             | 16 +++++++++++++
- 2 files changed, 40 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-devices-state_synced
+After fixing that problem, it all works now.
 
-diff --git a/Documentation/ABI/testing/sysfs-devices-state_synced b/Documentation/ABI/testing/sysfs-devices-state_synced
-new file mode 100644
-index 000000000000..0c922d7d02fc
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-devices-state_synced
-@@ -0,0 +1,24 @@
-+What:		/sys/devices/.../state_synced
-+Date:		May 2020
-+Contact:	Saravana Kannan <saravanak@google.com>
-+Description:
-+		The /sys/devices/.../state_synced attribute is only present for
-+		devices whose bus types or driver provides the .sync_state()
-+		callback. The number read from it (0 or 1) reflects the value
-+		of the device's 'state_synced' field. A value of 0 means the
-+		.sync_state() callback hasn't been called yet. A value of 1
-+		means the .sync_state() callback has been called.
-+
-+		Generally, if a device has sync_state() support and has some of
-+		the resources it provides enabled at the time the kernel starts
-+		(Eg: enabled by hardware reset or bootloader or anything that
-+		run before the kernel starts), then it'll keep those resources
-+		enabled and in a state that's compatible with the state they
-+		were in at the start of the kernel. The device will stop doing
-+		this only when the sync_state() callback has been called --
-+		which happens only when all its consumer devices are registered
-+		and have probed successfully. Resources that were left disabled
-+		at the time the kernel starts are not affected or limited in
-+		any way by sync_state() callbacks.
-+
-+
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index 48ca81cb8ebc..72599436ae84 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -458,6 +458,13 @@ static void driver_deferred_probe_add_trigger(struct device *dev,
- 		driver_deferred_probe_trigger();
- }
- 
-+static ssize_t state_synced_show(struct device *dev,
-+				 struct device_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%u\n", dev->state_synced);
-+}
-+static DEVICE_ATTR_RO(state_synced);
-+
- static int really_probe(struct device *dev, struct device_driver *drv)
- {
- 	int ret = -EPROBE_DEFER;
-@@ -531,9 +538,16 @@ static int really_probe(struct device *dev, struct device_driver *drv)
- 		goto dev_groups_failed;
- 	}
- 
-+	if (dev_has_sync_state(dev) &&
-+	    device_create_file(dev, &dev_attr_state_synced)) {
-+		dev_err(dev, "state_synced sysfs add failed\n");
-+		goto dev_sysfs_state_synced_failed;
-+	}
-+
- 	if (test_remove) {
- 		test_remove = false;
- 
-+		device_remove_file(dev, &dev_attr_state_synced);
- 		device_remove_groups(dev, drv->dev_groups);
- 
- 		if (dev->bus->remove)
-@@ -563,6 +577,8 @@ static int really_probe(struct device *dev, struct device_driver *drv)
- 		 drv->bus->name, __func__, dev_name(dev), drv->name);
- 	goto done;
- 
-+dev_sysfs_state_synced_failed:
-+	device_remove_groups(dev, drv->dev_groups);
- dev_groups_failed:
- 	if (dev->bus->remove)
- 		dev->bus->remove(dev);
--- 
-2.26.2.645.ge9eca65c58-goog
+I see the same errors you are seeing.
 
+thanks,
+-- Shuah
