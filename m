@@ -2,104 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6161D16F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C1B1D16FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388828AbgEMOEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 10:04:04 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:55136 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388325AbgEMOED (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 10:04:03 -0400
-Received: from fsav302.sakura.ne.jp (fsav302.sakura.ne.jp [153.120.85.133])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 04DE3MOo098927;
-        Wed, 13 May 2020 23:03:22 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav302.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav302.sakura.ne.jp);
- Wed, 13 May 2020 23:03:22 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav302.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 04DE3LDg098920
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Wed, 13 May 2020 23:03:21 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
-        Dmitry Safonov <dima@arista.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-References: <20200427062117.GC486@jagdpanzerIV.localdomain>
- <4dae86af-1d9a-f5a8-cff6-aa91ec038a79@i-love.sakura.ne.jp>
- <20200428121828.GP28637@dhcp22.suse.cz>
- <b4d74234-8009-9ffd-011f-bd5d1a4b85f6@i-love.sakura.ne.jp>
- <20200428154532.GU28637@dhcp22.suse.cz>
- <b1d507b1-dae7-f526-c74a-d465ddecea6a@i-love.sakura.ne.jp>
- <20200429142106.GG28637@dhcp22.suse.cz>
- <a59271f1-b3fc-26d1-f0a2-5ec351d0095e@i-love.sakura.ne.jp>
- <20200513062652.GM413@jagdpanzerIV.localdomain>
- <a75d6560-ad99-5b02-3648-247c27c3a398@i-love.sakura.ne.jp>
- <20200513100413.GH17734@linux-b0ei>
- <20564555-7b84-f716-5dcd-978f76ad459a@i-love.sakura.ne.jp>
- <20200513094642.56bf50f7@gandalf.local.home>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <355d1700-4d33-4604-4187-27fd994bf473@i-love.sakura.ne.jp>
-Date:   Wed, 13 May 2020 23:03:19 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2388870AbgEMOFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 10:05:17 -0400
+Received: from mga05.intel.com ([192.55.52.43]:11955 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388325AbgEMOFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 10:05:17 -0400
+IronPort-SDR: m2f3H+AKghJAV6vzjVJhpjV8xKIsS4SCsdL5QIRi3FgTgvsg9C8fU/F9ig1NUJoE4UK7Ag9M42
+ 7E+bRS5fzp4w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 07:04:58 -0700
+IronPort-SDR: lQOMhYCNEN5EtjiPCFHMQ65qf8SY1cqAwpRPe86DEW3lanjbEDd2BWx+e9xgd4ukWyJoTX+IC5
+ ljY7P+gWQtkQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,388,1583222400"; 
+   d="scan'208";a="371916009"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 13 May 2020 07:04:55 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 13 May 2020 17:04:54 +0300
+Date:   Wed, 13 May 2020 17:04:54 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        Nikolaus Voss <nikolaus.voss@loewensteinmedical.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Gustavo A . R . Silva" <garsilva@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] usb: typec: tps6598x: Add USB role switching logic
+Message-ID: <20200513140454.GE2085641@kuha.fi.intel.com>
+References: <20200511231930.2825183-1-bryan.odonoghue@linaro.org>
+ <20200511231930.2825183-2-bryan.odonoghue@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20200513094642.56bf50f7@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200511231930.2825183-2-bryan.odonoghue@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/05/13 22:46, Steven Rostedt wrote:
-> On Wed, 13 May 2020 20:03:53 +0900
-> Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> wrote:
+On Tue, May 12, 2020 at 12:19:30AM +0100, Bryan O'Donoghue wrote:
+> This patch adds USB role switch support to the tps6598x.
 > 
->> I think that basically only oops (e.g. WARN()/BUG()/panic()) messages worth
->> printing to consoles and the rest messages do not worth printing to consoles.
->> Existing KERN_$LOGLEVEL is too rough-grained.
+> The setup to initiate or accept a data-role switch is both assumed and
+> currently required to be baked-into the firmware as described in TI's
+> document here.
 > 
-> And this statement is exactly why I believe you are wrong.
+> Link: https://www.ti.com/lit/an/slva843a/slva843a.pdf
 > 
-> Because *I* think messages to the console is more important than messages
-> to the logs. Several of my servers are only monitored by the console. I
-> seldom look at the logs on those machines.
+> With this change its possible to use the USB role-switch API to detect and
+> notify role-switches to downstream consumers.
+> 
+> Tested with a ChipIdea controller on a Qualcomm MSM8939.
+> 
+> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Nikolaus Voss <nikolaus.voss@loewensteinmedical.de>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Gustavo A. R. Silva <garsilva@embeddedor.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: linux-usb@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-As a technical staff at a support center, I can never monitor the consoles of
-customer's servers. I can examine only syslog messages saved as /var/log/messages .
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
+> ---
+>  drivers/usb/typec/tps6598x.c | 57 +++++++++++++++++++++++++++++++-----
+>  1 file changed, 50 insertions(+), 7 deletions(-)
 > 
-> This is a policy decision, and must be made by user space. Your use case is
-> not applicable to everyone else's use case. And should not be set in stone
-> by the kernel.
+> diff --git a/drivers/usb/typec/tps6598x.c b/drivers/usb/typec/tps6598x.c
+> index defa651282b0..b7c9fe5caabe 100644
+> --- a/drivers/usb/typec/tps6598x.c
+> +++ b/drivers/usb/typec/tps6598x.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/regmap.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/usb/typec.h>
+> +#include <linux/usb/role.h>
+>  
+>  /* Register offsets */
+>  #define TPS_REG_VID			0x00
+> @@ -94,6 +95,7 @@ struct tps6598x {
+>  	struct typec_port *port;
+>  	struct typec_partner *partner;
+>  	struct usb_pd_identity partner_identity;
+> +	struct usb_role_switch *role_sw;
+>  };
+>  
+>  /*
+> @@ -190,6 +192,23 @@ static int tps6598x_read_partner_identity(struct tps6598x *tps)
+>  	return 0;
+>  }
+>  
+> +static void tps6598x_set_data_role(struct tps6598x *tps,
+> +				   enum typec_data_role role, bool connected)
+> +{
+> +	enum usb_role role_val;
+> +
+> +	if (role == TYPEC_HOST)
+> +		role_val = USB_ROLE_HOST;
+> +	else
+> +		role_val = USB_ROLE_DEVICE;
+> +
+> +	if (!connected)
+> +		role_val = USB_ROLE_NONE;
+> +
+> +	usb_role_switch_set_role(tps->role_sw, role_val);
+> +	typec_set_data_role(tps->port, role);
+> +}
+> +
+>  static int tps6598x_connect(struct tps6598x *tps, u32 status)
+>  {
+>  	struct typec_partner_desc desc;
+> @@ -220,7 +239,7 @@ static int tps6598x_connect(struct tps6598x *tps, u32 status)
+>  	typec_set_pwr_opmode(tps->port, mode);
+>  	typec_set_pwr_role(tps->port, TPS_STATUS_PORTROLE(status));
+>  	typec_set_vconn_role(tps->port, TPS_STATUS_VCONN(status));
+> -	typec_set_data_role(tps->port, TPS_STATUS_DATAROLE(status));
+> +	tps6598x_set_data_role(tps, TPS_STATUS_DATAROLE(status), true);
+>  
+>  	tps->partner = typec_register_partner(tps->port, &desc);
+>  	if (IS_ERR(tps->partner))
+> @@ -240,7 +259,7 @@ static void tps6598x_disconnect(struct tps6598x *tps, u32 status)
+>  	typec_set_pwr_opmode(tps->port, TYPEC_PWR_MODE_USB);
+>  	typec_set_pwr_role(tps->port, TPS_STATUS_PORTROLE(status));
+>  	typec_set_vconn_role(tps->port, TPS_STATUS_VCONN(status));
+> -	typec_set_data_role(tps->port, TPS_STATUS_DATAROLE(status));
+> +	tps6598x_set_data_role(tps, TPS_STATUS_DATAROLE(status), false);
+>  }
+>  
+>  static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
+> @@ -328,7 +347,7 @@ static int tps6598x_dr_set(struct typec_port *port, enum typec_data_role role)
+>  		goto out_unlock;
+>  	}
+>  
+> -	typec_set_data_role(tps->port, role);
+> +	tps6598x_set_data_role(tps, role, true);
+>  
+>  out_unlock:
+>  	mutex_unlock(&tps->lock);
+> @@ -452,6 +471,7 @@ static int tps6598x_probe(struct i2c_client *client)
+>  {
+>  	struct typec_capability typec_cap = { };
+>  	struct tps6598x *tps;
+> +	struct fwnode_handle *fwnode;
+>  	u32 status;
+>  	u32 conf;
+>  	u32 vid;
+> @@ -495,11 +515,22 @@ static int tps6598x_probe(struct i2c_client *client)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	fwnode = device_get_named_child_node(&client->dev, "connector");
+> +	if (IS_ERR(fwnode))
+> +		return PTR_ERR(fwnode);
+> +
+> +	tps->role_sw = fwnode_usb_role_switch_get(fwnode);
+> +	if (IS_ERR(tps->role_sw)) {
+> +		ret = PTR_ERR(tps->role_sw);
+> +		goto err_fwnode_put;
+> +	}
+> +
+>  	typec_cap.revision = USB_TYPEC_REV_1_2;
+>  	typec_cap.pd_revision = 0x200;
+>  	typec_cap.prefer_role = TYPEC_NO_PREFERRED_ROLE;
+>  	typec_cap.driver_data = tps;
+>  	typec_cap.ops = &tps6598x_ops;
+> +	typec_cap.fwnode = fwnode;
+>  
+>  	switch (TPS_SYSCONF_PORTINFO(conf)) {
+>  	case TPS_PORTINFO_SINK_ACCESSORY:
+> @@ -525,12 +556,16 @@ static int tps6598x_probe(struct i2c_client *client)
+>  		typec_cap.data = TYPEC_PORT_DFP;
+>  		break;
+>  	default:
+> -		return -ENODEV;
+> +		ret = -ENODEV;
+> +		goto err_role_put;
+>  	}
+>  
+>  	tps->port = typec_register_port(&client->dev, &typec_cap);
+> -	if (IS_ERR(tps->port))
+> -		return PTR_ERR(tps->port);
+> +	if (IS_ERR(tps->port)) {
+> +		ret = PTR_ERR(tps->port);
+> +		goto err_role_put;
+> +	}
+> +	fwnode_handle_put(fwnode);
+>  
+>  	if (status & TPS_STATUS_PLUG_PRESENT) {
+>  		ret = tps6598x_connect(tps, status);
+> @@ -545,12 +580,19 @@ static int tps6598x_probe(struct i2c_client *client)
+>  	if (ret) {
+>  		tps6598x_disconnect(tps, 0);
+>  		typec_unregister_port(tps->port);
+> -		return ret;
+> +		goto err_role_put;
+>  	}
+>  
+>  	i2c_set_clientdata(client, tps);
+>  
+>  	return 0;
+> +
+> +err_role_put:
+> +	usb_role_switch_put(tps->role_sw);
+> +err_fwnode_put:
+> +	fwnode_handle_put(fwnode);
+> +
+> +	return ret;
+>  }
+>  
+>  static int tps6598x_remove(struct i2c_client *client)
+> @@ -559,6 +601,7 @@ static int tps6598x_remove(struct i2c_client *client)
+>  
+>  	tps6598x_disconnect(tps, 0);
+>  	typec_unregister_port(tps->port);
+> +	usb_role_switch_put(tps->role_sw);
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.25.1
 
-My proposal does not set in stone by the kernel.
-My proposal is gives users a chance to control whether to print to consoles.
+thanks,
 
-On 2020/05/13 22:55, Steven Rostedt wrote:
-> On Wed, 13 May 2020 20:03:53 +0900
-> Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> wrote:
-> 
->> I think that basically only oops (e.g. WARN()/BUG()/panic()) messages worth
->> printing to consoles and the rest messages do not worth printing to consoles.
->> Existing KERN_$LOGLEVEL is too rough-grained.
-> 
-> Why don't you look into having a "noconsole" command line option that will
-> not print anything to the consoles but oops messages.
-
-I can't force customers to use "noconsole" command line option. That's a
-too rough-grained boolean.
-
-> 
-> Sounds more like what you would like, and something that perhaps would be
-> acceptable by the larger community.
+-- 
+heikki
