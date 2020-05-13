@@ -2,171 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DAF71D218B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE701D21AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 00:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730161AbgEMV5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729487AbgEMV5w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:57:52 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095EBC061A0C;
-        Wed, 13 May 2020 14:57:52 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id w7so1295912wre.13;
-        Wed, 13 May 2020 14:57:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YOoUa0xAi/KzpbI4jik8wbTI9P2HHu1hymEJr5NBiDI=;
-        b=kZup2xPqnPYYj0DMmM740Z74B7fF4Pf1Za+zzpgAweieCVuGcB5kXLEGHFDOmiN+TE
-         zDlhzY9loA7sx1eq9lEKBva6cajes3Fo0LGr6liJE+FgTwWqoNbD6tooEoW6UnUcR7TC
-         tBNSVRNVxU7sJl4TK3kXCzxVB2uH6i/AgUPxdSEEsugJ269DAxWqoTmv0EseupNam2Ge
-         MsE8g3wD+qrwEa/ZP6hW8pk0dqfd+6+RX9dMnt3ISmHeyA3hwqGiwPIRVH1XtvfhPnJU
-         jDkvqPMpHtxUQTdWZbKiLm/CoZotn6d+5sf4F9duWpsffw68GdI64lT2CFgsL2WEB/ZA
-         7efQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YOoUa0xAi/KzpbI4jik8wbTI9P2HHu1hymEJr5NBiDI=;
-        b=fSX8qDZhvyvmmDGEH+ZG/9E/unXvhp91AfkFeUhDiKfqlyFKoYV3oaAjOQnhb9wNTh
-         qYy0sYxYmnmlTm8P4Xmr+iAq/P1BkEC2g0QnQrBgaSB7UuXmML3mfxHu0Kv4+Mgr2koM
-         WbnFMjFTSYtdf4Kja/vHP29S3/GVhawmaFhWrqV0zgSMvPVmJEkDivJDdVjt7/Z/RR3I
-         icy/QdzvdiUUzYONvo6w7IlnyUZQnJDFZrjKXwf8p2gQH5cpQxO+WSvFnEs4FYYRPgml
-         kLF1jNN3XpaDQJzFiKQWCflcrmp0piEBkQmz1t9Vj+KTfJdNEhTKVFC7jE22sTvEK1mY
-         d67g==
-X-Gm-Message-State: AOAM533/lkM6a0fPP9yvs83THJCV6IsKCyJeSBh33C0g1LMIiFTztHqU
-        ryLYzMPE+6niEFLpwVg0OJlDsOUZ
-X-Google-Smtp-Source: ABdhPJzmq8mG3pfPm8JG5Ssb32Qxn/CxK37tCMNpOXfIetBXnFWjfooqp+E41Vh0lE4z0sY6eGuT9g==
-X-Received: by 2002:a5d:6705:: with SMTP id o5mr1632637wru.426.1589407070514;
-        Wed, 13 May 2020 14:57:50 -0700 (PDT)
-Received: from [10.230.191.242] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id c19sm1144370wrb.89.2020.05.13.14.57.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2020 14:57:50 -0700 (PDT)
-Subject: Re: [PATCH net-next 4/4] net: bcmgenet: add support for ethtool flow
- control
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1589243050-18217-1-git-send-email-opendmb@gmail.com>
- <1589243050-18217-5-git-send-email-opendmb@gmail.com>
- <20200513095246.GH1551@shell.armlinux.org.uk>
-From:   Doug Berger <opendmb@gmail.com>
-Message-ID: <ce0c0cd6-3532-be90-1307-5ccd8e3b02a4@gmail.com>
-Date:   Wed, 13 May 2020 15:00:37 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1730170AbgEMWCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 18:02:44 -0400
+Received: from v6.sk ([167.172.42.174]:54296 "EHLO v6.sk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729775AbgEMWCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 18:02:43 -0400
+Received: from localhost (v6.sk [IPv6:::1])
+        by v6.sk (Postfix) with ESMTP id 66010610A5;
+        Wed, 13 May 2020 22:02:10 +0000 (UTC)
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>
+Subject: [PATCH] drm/etnaviv: Fix the pm_domain lookup
+Date:   Thu, 14 May 2020 00:02:04 +0200
+Message-Id: <20200513220204.1366296-1-lkundrak@v3.sk>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200513095246.GH1551@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/2020 2:52 AM, Russell King - ARM Linux admin wrote:
-> On Mon, May 11, 2020 at 05:24:10PM -0700, Doug Berger wrote:
->> diff --git a/drivers/net/ethernet/broadcom/genet/bcmmii.c b/drivers/net/ethernet/broadcom/genet/bcmmii.c
->> index 511d553a4d11..788da1ecea0c 100644
->> --- a/drivers/net/ethernet/broadcom/genet/bcmmii.c
->> +++ b/drivers/net/ethernet/broadcom/genet/bcmmii.c
->> @@ -25,6 +25,21 @@
->>  
->>  #include "bcmgenet.h"
->>  
->> +static u32 _flow_control_autoneg(struct phy_device *phydev)
->> +{
->> +	bool tx_pause, rx_pause;
->> +	u32 cmd_bits = 0;
->> +
->> +	phy_get_pause(phydev, &tx_pause, &rx_pause);
->> +
->> +	if (!tx_pause)
->> +		cmd_bits |= CMD_TX_PAUSE_IGNORE;
->> +	if (!rx_pause)
->> +		cmd_bits |= CMD_RX_PAUSE_IGNORE;
->> +
->> +	return cmd_bits;
->> +}
->> +
->>  /* setup netdev link state when PHY link status change and
->>   * update UMAC and RGMII block when link up
->>   */
->> @@ -71,12 +86,20 @@ void bcmgenet_mii_setup(struct net_device *dev)
->>  		cmd_bits <<= CMD_SPEED_SHIFT;
->>  
->>  		/* duplex */
->> -		if (phydev->duplex != DUPLEX_FULL)
->> -			cmd_bits |= CMD_HD_EN;
->> -
->> -		/* pause capability */
->> -		if (!phydev->pause)
->> -			cmd_bits |= CMD_RX_PAUSE_IGNORE | CMD_TX_PAUSE_IGNORE;
->> +		if (phydev->duplex != DUPLEX_FULL) {
->> +			cmd_bits |= CMD_HD_EN |
->> +				CMD_RX_PAUSE_IGNORE | CMD_TX_PAUSE_IGNORE;
-> 
-> phy_get_pause() already takes account of whether the PHY is in half
-> duplex mode.  So:
-> 
-> 		bool tx_pause, rx_pause;
-> 
-> 		if (phydev->autoneg && priv->autoneg_pause) {
-> 			phy_get_pause(phydev, &tx_pause, &rx_pause);
-> 		} else if (phydev->duplex == DUPLEX_FULL) {
-> 			tx_pause = priv->tx_pause;
-> 			rx_pause = priv->rx_pause;
-> 		} else {
-> 			tx_pause = false;
-> 			rx_pause = false;
-> 		}
-> 
-> 		if (!tx_pause)
-> 			cmd_bits |= CMD_TX_PAUSE_IGNORE;
-> 		if (!rx_pause)
-> 			cmd_bits |= CMD_RX_PAUSE_IGNORE;
-> 
-> would be entirely sufficient here.
-I need to check the duplex to configure the HD bit in the same register
-with the pause controls so I am covering both with one compare.
+On a GC860 (both 3D and 2D capable) GPU, kmscube crashes:
 
-This also includes a bug here that I mentioned in one of my responses to
-the first patch of the set. The call to phy_get_pause() should only be
-conditioned on phydev->autoneg_pause here.
+  # strace -f ~lkundrak/src/kmscube/build/kmscube
+  ...
+  ioctl(6, DRM_IOCTL_ETNAVIV_PM_QUERY_DOM, 0xbe92b720) = 0
+  ioctl(6, DRM_IOCTL_ETNAVIV_PM_QUERY_SIG <unfinished ...>) = ?
+  +++ killed by SIGSEGV +++
+  Segmentation fault (core dumped)
 
-The idea is that both directions of pause default to on, but if
-autoneg_pause is on then phy_get_pause() has an opportunity to disable
-any direction if the capability can't be negotiated for that direction.
-Finally, the pause feature can be explicitly disabled by the tx_pause
-and rx_pause parameters.
-> I wonder whether your implementation (which mine follows) is really
-> correct though.  Consider this:
-> 
-> # ethtool -A eth0 autoneg on tx on rx on
-> # ethtool -s eth0 autoneg off speed 1000 duplex full
-> 
-> At this point, what do you expect the resulting pause state to be?  It
-> may not be what you actually think it should be - it will be tx and rx
-> pause enabled (it's easier to see why that happens with my rewritten
-> version of your implementation, which is functionally identical.)
-> 
-> If we take the view that if link autoneg is disabled, and therefore the
-> link partner's advertisement is zero, shouldn't it result in tx and rx
-> pause being disabled?
-So with the bug fixed as described above, after these commands
-autoneg_pause would be on and autoneg would be off. The logic would call
-phy_get_pause() which should return tx_pause = rx_pause = false turning
-pause off in both directions.
+And triggers an oops:
+
+  8<--- cut here ---
+  Unable to handle kernel NULL pointer dereference at virtual address 00000000
+  pgd = 40e2c0f7
+  [00000000] *pgd=0df6d831, *pte=00000000, *ppte=00000000
+  Internal error: Oops: 17 [#1] PREEMPT SMP ARM
+  Modules linked in:
+  CPU: 0 PID: 346 Comm: kmscube Not tainted 5.7.0-rc4+ #792
+  Hardware name: Marvell MMP2 (Device Tree Support)
+  PC is at strncpy+0x14/0x30
+  LR is at etnaviv_pm_query_sig+0xd0/0x104
+  pc : [<c04f35f4>]    lr : [<c05dd878>]    psr: 20010013
+  sp : c85f5e00  ip : c85f5eb5  fp : beb58748
+  r10: 0000004c  r9 : ca6f9100  r8 : c85f5e6c
+  r7 : 00000050  r6 : c85f5e6c  r5 : 00000001  r4 : c0b69ae8
+  r3 : c85f5e75  r2 : 0000003f  r1 : 00000000  r0 : c85f5e76
+  Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+  Control: 10c5387d  Table: 0df70019  DAC: 00000051
+  Process kmscube (pid: 346, stack limit = 0x816fba31)
+  Stack: (0xc85f5e00 to 0xc85f6000)
+  5e00: 00000000 d90e6000 00000020 c05d5b2c c85f5e6c c059ce90 00000000 c1003f88
+  5e20: c04c644b 0000004c c0b69610 c04c644b c85f5e6c 0000004b ca6f9100 c059d0bc
+  5e40: 00000001 c0d53ee8 c85f5f18 00000001 c85f5f50 c85f5e6c 0000004c c8454240
+  5e60: c05d5b2c 00000051 00000000 00000000 00000001 00000000 00000000 00000000
+  5e80: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+  5ea0: 00000000 00000000 00000000 00000000 00000000 00000000 00000274 c011c3fc
+  5ec0: 00000100 c0290434 5ebc5632 30e03501 5ebc5632 c8526600 00000274 00100cca
+  5ee0: 00000831 b64c5000 cdf72d90 c1003f88 00000000 c04c644b c8454240 beb58748
+  5f00: c8454240 00000006 c85f4000 d90ecad8 001c01a0 c02d49ac b64c52cc 80000007
+  5f20: da9d6dc0 d9aa4000 d9aa4040 00000000 00000274 c011818c 00000005 0e200080
+  5f40: 00000000 000003e5 00000000 00000100 00000000 00000000 00000000 cc78ac40
+  5f60: 00000006 00000007 c1009a98 b64c52cc c85f5fb0 c0118080 00000080 c1003f88
+  5f80: 00000000 00000001 beb58748 c04c644b 00000036 c0100288 c85f4000 00000036
+  5fa0: 001c01a0 c0100060 00000001 beb58748 00000006 c04c644b beb58748 0000004c
+  5fc0: 00000001 beb58748 c04c644b 00000036 beb58748 001bd688 beb58700 001c01a0
+  5fe0: b6f41f08 beb586d4 b6f2784c b6e16cec 80010010 00000006 00000000 00000000
+  [<c04f35f4>] (strncpy) from [<c05dd878>] (etnaviv_pm_query_sig+0xd0/0x104)
+  [<c05dd878>] (etnaviv_pm_query_sig) from [<c059ce90>] (drm_ioctl_kernel+0xb4/0xf8)
+  [<c059ce90>] (drm_ioctl_kernel) from [<c059d0bc>] (drm_ioctl+0x1e8/0x3b8)
+  [<c059d0bc>] (drm_ioctl) from [<c02d49ac>] (ksys_ioctl+0xe0/0xaf0)
+  [<c02d49ac>] (ksys_ioctl) from [<c0100060>] (ret_fast_syscall+0x0/0x54)
+  Exception stack(0xc85f5fa8 to 0xc85f5ff0)
+  5fa0:                   00000001 beb58748 00000006 c04c644b beb58748 0000004c
+  5fc0: 00000001 beb58748 c04c644b 00000036 beb58748 001bd688 beb58700 001c01a0
+  5fe0: b6f41f08 beb586d4 b6f2784c b6e16cec
+  Code: 012fff1e e2422001 e2403001 e080c002 (e5d12000)
+  ---[ end trace 387aad33cd9c15ea ]---
+
+Turns out that it's because pm_domain() returns a pointer outside any
+any of the etnaviv_pm_domains. Unless I'm mistaken, the algorithm in
+pm_domain() is entirely botched when GPU's features match more than one
+domain. This tries to remedy it.
+
+Tested with kmscube with mesa 20 on ome machine with GC860 and another
+with GC2000 + GC300 pair.
+
+Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+---
+ drivers/gpu/drm/etnaviv/etnaviv_perfmon.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
+index e6795bafcbb9..9dc1bb4d4582 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
+@@ -444,7 +444,6 @@ static unsigned int num_pm_domains(const struct etnaviv_gpu *gpu)
+ static const struct etnaviv_pm_domain *pm_domain(const struct etnaviv_gpu *gpu,
+ 	unsigned int index)
+ {
+-	const struct etnaviv_pm_domain *domain = NULL;
+ 	unsigned int offset = 0, i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(doms_meta); i++) {
+@@ -453,15 +452,15 @@ static const struct etnaviv_pm_domain *pm_domain(const struct etnaviv_gpu *gpu,
+ 		if (!(gpu->identity.features & meta->feature))
+ 			continue;
+ 
+-		if (meta->nr_domains < (index - offset)) {
++		if (meta->nr_domains <= (index - offset)) {
+ 			offset += meta->nr_domains;
+ 			continue;
+ 		}
+ 
+-		domain = meta->domains + (index - offset);
++		return meta->domains + (index - offset);
+ 	}
+ 
+-	return domain;
++	return NULL;
+ }
+ 
+ int etnaviv_pm_query_dom(struct etnaviv_gpu *gpu,
+-- 
+2.26.2
 
