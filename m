@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 320361D0D0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 170191D0CB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732665AbgEMJti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:49:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48666 "EHLO mail.kernel.org"
+        id S1732789AbgEMJrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:47:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733257AbgEMJtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:49:33 -0400
+        id S1732773AbgEMJrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:47:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E99D2493D;
-        Wed, 13 May 2020 09:49:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAC5F20753;
+        Wed, 13 May 2020 09:47:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363373;
-        bh=FhvBPJNLASY6lwiZHMtDLrA+Rzd1BcGIVp+X4GlC4p0=;
+        s=default; t=1589363223;
+        bh=FswPGtNokP1twHi/b4irODojKXk9W7QfAlV/zClpSR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QzLpNXU++sYv/c6nMThx5zsFZVGns2UId/JfwbJTINgJAQEVWqLykAwQHNNNg6FPt
-         78rri4ATXW92XpQLNqaQWCNNurBMdL1NF5q+0wgosM5YFJ4oc68yXVWPir3rX5xDwP
-         5g94uZt1KH+g53o0m3OzdBZqGKsUqRwITXmQLE8I=
+        b=HYD/054uLLKMN51Bl1cdDw2H0ItZhk3xbBcUfCpHtTAmrcPGnsqL50Glxupc4AjAE
+         asTtRdYDflUbFg/N6ywf7JZL8siUXMD6wiDondmVvoSZp7LfSMlQ6U/GbA2GHtsXKD
+         YWvk/huRjx37t5Dlt6+fK05ZLnkNcpFVSAy0SHuU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
-        Johan Hovold <johan@kernel.org>,
-        syzbot+d29e9263e13ce0b9f4fd@syzkaller.appspotmail.com
-Subject: [PATCH 5.4 48/90] USB: serial: garmin_gps: add sanity checking for data length
+        stable@vger.kernel.org, syzbot <syzkaller@googlegroups.com>,
+        Willem de Bruijn <willemb@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 18/48] net: stricter validation of untrusted gso packets
 Date:   Wed, 13 May 2020 11:44:44 +0200
-Message-Id: <20200513094413.913962011@linuxfoundation.org>
+Message-Id: <20200513094355.651615237@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
-References: <20200513094408.810028856@linuxfoundation.org>
+In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
+References: <20200513094351.100352960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +44,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Willem de Bruijn <willemb@google.com>
 
-commit e9b3c610a05c1cdf8e959a6d89c38807ff758ee6 upstream.
+[ Upstream commit 9274124f023b5c56dc4326637d4f787968b03607 ]
 
-We must not process packets shorter than a packet ID
+Syzkaller again found a path to a kernel crash through bad gso input:
+a packet with transport header extending beyond skb_headlen(skb).
 
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Reported-and-tested-by: syzbot+d29e9263e13ce0b9f4fd@syzkaller.appspotmail.com
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Tighten validation at kernel entry:
+
+- Verify that the transport header lies within the linear section.
+
+    To avoid pulling linux/tcp.h, verify just sizeof tcphdr.
+    tcp_gso_segment will call pskb_may_pull (th->doff * 4) before use.
+
+- Match the gso_type against the ip_proto found by the flow dissector.
+
+Fixes: bfd5f4a3d605 ("packet: Add GSO/csum offload support.")
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/serial/garmin_gps.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/virtio_net.h |   26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/serial/garmin_gps.c
-+++ b/drivers/usb/serial/garmin_gps.c
-@@ -1138,8 +1138,8 @@ static void garmin_read_process(struct g
- 		   send it directly to the tty port */
- 		if (garmin_data_p->flags & FLAGS_QUEUING) {
- 			pkt_add(garmin_data_p, data, data_length);
--		} else if (bulk_data ||
--			   getLayerId(data) == GARMIN_LAYERID_APPL) {
-+		} else if (bulk_data || (data_length >= sizeof(u32) &&
-+				getLayerId(data) == GARMIN_LAYERID_APPL)) {
+--- a/include/linux/virtio_net.h
++++ b/include/linux/virtio_net.h
+@@ -3,6 +3,8 @@
+ #define _LINUX_VIRTIO_NET_H
  
- 			spin_lock_irqsave(&garmin_data_p->lock, flags);
- 			garmin_data_p->flags |= APP_RESP_SEEN;
+ #include <linux/if_vlan.h>
++#include <uapi/linux/tcp.h>
++#include <uapi/linux/udp.h>
+ #include <uapi/linux/virtio_net.h>
+ 
+ static inline int virtio_net_hdr_set_proto(struct sk_buff *skb,
+@@ -28,17 +30,25 @@ static inline int virtio_net_hdr_to_skb(
+ 					bool little_endian)
+ {
+ 	unsigned int gso_type = 0;
++	unsigned int thlen = 0;
++	unsigned int ip_proto;
+ 
+ 	if (hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE) {
+ 		switch (hdr->gso_type & ~VIRTIO_NET_HDR_GSO_ECN) {
+ 		case VIRTIO_NET_HDR_GSO_TCPV4:
+ 			gso_type = SKB_GSO_TCPV4;
++			ip_proto = IPPROTO_TCP;
++			thlen = sizeof(struct tcphdr);
+ 			break;
+ 		case VIRTIO_NET_HDR_GSO_TCPV6:
+ 			gso_type = SKB_GSO_TCPV6;
++			ip_proto = IPPROTO_TCP;
++			thlen = sizeof(struct tcphdr);
+ 			break;
+ 		case VIRTIO_NET_HDR_GSO_UDP:
+ 			gso_type = SKB_GSO_UDP;
++			ip_proto = IPPROTO_UDP;
++			thlen = sizeof(struct udphdr);
+ 			break;
+ 		default:
+ 			return -EINVAL;
+@@ -57,16 +67,22 @@ static inline int virtio_net_hdr_to_skb(
+ 
+ 		if (!skb_partial_csum_set(skb, start, off))
+ 			return -EINVAL;
++
++		if (skb_transport_offset(skb) + thlen > skb_headlen(skb))
++			return -EINVAL;
+ 	} else {
+ 		/* gso packets without NEEDS_CSUM do not set transport_offset.
+ 		 * probe and drop if does not match one of the above types.
+ 		 */
+ 		if (gso_type && skb->network_header) {
++			struct flow_keys_basic keys;
++
+ 			if (!skb->protocol)
+ 				virtio_net_hdr_set_proto(skb, hdr);
+ retry:
+-			skb_probe_transport_header(skb, -1);
+-			if (!skb_transport_header_was_set(skb)) {
++			if (!skb_flow_dissect_flow_keys_basic(skb, &keys,
++							      NULL, 0, 0, 0,
++							      0)) {
+ 				/* UFO does not specify ipv4 or 6: try both */
+ 				if (gso_type & SKB_GSO_UDP &&
+ 				    skb->protocol == htons(ETH_P_IP)) {
+@@ -75,6 +91,12 @@ retry:
+ 				}
+ 				return -EINVAL;
+ 			}
++
++			if (keys.control.thoff + thlen > skb_headlen(skb) ||
++			    keys.basic.ip_proto != ip_proto)
++				return -EINVAL;
++
++			skb_set_transport_header(skb, keys.control.thoff);
+ 		}
+ 	}
+ 
 
 
