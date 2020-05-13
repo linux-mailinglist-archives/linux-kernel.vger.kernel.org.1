@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995E11D0CAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78071D0D12
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732699AbgEMJqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:46:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44152 "EHLO mail.kernel.org"
+        id S2387413AbgEMJt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:49:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732678AbgEMJqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:46:39 -0400
+        id S1733282AbgEMJtw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:49:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52346206F5;
-        Wed, 13 May 2020 09:46:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BE4B206D6;
+        Wed, 13 May 2020 09:49:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363198;
-        bh=2cKhX3xfB6ZFEbpbrR4NOu89GxoweIZyJxrTXHQ9D+U=;
+        s=default; t=1589363392;
+        bh=EmhaWnMJs2rNLcaSpb9zLJURxrpzqCuRzKcepAnQlmM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FKK3l31inBJru0o5NKo+RLwxQgmoNCncuFrpTtDBiyjTbf4Y6+1olP81YDJggZsKr
-         iAvU2ugrr6d8L0GJmGxm921w1gdQgmH4QlJcG0oRCGOQjLX1N85sT5yjnH0qkEFJdJ
-         kGbWYEQh/v2OduBH7fCWue933Qg7Mjr/1dj7pFBE=
+        b=eFsvQbXNy3K8aUDfh80QXZwLfLcAGMPXO9w3KHPGLzLOvrvjND0nCquDGlkG21OPp
+         rYIfMAoNfTDSVZSeOJBMsdlbInUHrG2DIKWefPvoMDWMtoQ4xKwYfprf7NFIiZ11sn
+         ZDuQI3ol9wWqaudmdhJeb4kOBIU5KEzdRerUd8hA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 4.19 26/48] KVM: arm64: Fix 32bit PC wrap-around
+        stable@vger.kernel.org, "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 5.4 56/90] drm: ingenic-drm: add MODULE_DEVICE_TABLE
 Date:   Wed, 13 May 2020 11:44:52 +0200
-Message-Id: <20200513094357.501897308@linuxfoundation.org>
+Message-Id: <20200513094415.324244497@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
-References: <20200513094351.100352960@linuxfoundation.org>
+In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
+References: <20200513094408.810028856@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,72 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: H. Nikolaus Schaller <hns@goldelico.com>
 
-commit 0225fd5e0a6a32af7af0aefac45c8ebf19dc5183 upstream.
+commit c59359a02d14a7256cd508a4886b7d2012df2363 upstream.
 
-In the unlikely event that a 32bit vcpu traps into the hypervisor
-on an instruction that is located right at the end of the 32bit
-range, the emulation of that instruction is going to increment
-PC past the 32bit range. This isn't great, as userspace can then
-observe this value and get a bit confused.
+so that the driver can load by matching the device tree
+if compiled as module.
 
-Conversly, userspace can do things like (in the context of a 64bit
-guest that is capable of 32bit EL0) setting PSTATE to AArch64-EL0,
-set PC to a 64bit value, change PSTATE to AArch32-USR, and observe
-that PC hasn't been truncated. More confusion.
-
-Fix both by:
-- truncating PC increments for 32bit guests
-- sanitizing all 32bit regs every time a core reg is changed by
-  userspace, and that PSTATE indicates a 32bit mode.
-
-Cc: stable@vger.kernel.org
-Acked-by: Will Deacon <will@kernel.org>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+Cc: stable@vger.kernel.org # v5.3+
+Fixes: 90b86fcc47b4 ("DRM: Add KMS driver for the Ingenic JZ47xx SoCs")
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Link: https://patchwork.freedesktop.org/patch/msgid/1694a29b7a3449b6b662cec33d1b33f2ee0b174a.1588574111.git.hns@goldelico.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/kvm/guest.c     |    7 +++++++
- virt/kvm/arm/hyp/aarch32.c |    8 ++++++--
- 2 files changed, 13 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/ingenic/ingenic-drm.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm64/kvm/guest.c
-+++ b/arch/arm64/kvm/guest.c
-@@ -179,6 +179,13 @@ static int set_core_reg(struct kvm_vcpu
- 	}
+--- a/drivers/gpu/drm/ingenic/ingenic-drm.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm.c
+@@ -824,6 +824,7 @@ static const struct of_device_id ingenic
+ 	{ .compatible = "ingenic,jz4725b-lcd", .data = &jz4725b_soc_info },
+ 	{ /* sentinel */ },
+ };
++MODULE_DEVICE_TABLE(of, ingenic_drm_of_match);
  
- 	memcpy((u32 *)regs + off, valp, KVM_REG_SIZE(reg->id));
-+
-+	if (*vcpu_cpsr(vcpu) & PSR_MODE32_BIT) {
-+		int i;
-+
-+		for (i = 0; i < 16; i++)
-+			*vcpu_reg32(vcpu, i) = (u32)*vcpu_reg32(vcpu, i);
-+	}
- out:
- 	return err;
- }
---- a/virt/kvm/arm/hyp/aarch32.c
-+++ b/virt/kvm/arm/hyp/aarch32.c
-@@ -125,12 +125,16 @@ static void __hyp_text kvm_adjust_itstat
-  */
- void __hyp_text kvm_skip_instr32(struct kvm_vcpu *vcpu, bool is_wide_instr)
- {
-+	u32 pc = *vcpu_pc(vcpu);
- 	bool is_thumb;
- 
- 	is_thumb = !!(*vcpu_cpsr(vcpu) & PSR_AA32_T_BIT);
- 	if (is_thumb && !is_wide_instr)
--		*vcpu_pc(vcpu) += 2;
-+		pc += 2;
- 	else
--		*vcpu_pc(vcpu) += 4;
-+		pc += 4;
-+
-+	*vcpu_pc(vcpu) = pc;
-+
- 	kvm_adjust_itstate(vcpu);
- }
+ static struct platform_driver ingenic_drm_driver = {
+ 	.driver = {
 
 
