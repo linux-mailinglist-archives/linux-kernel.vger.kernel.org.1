@@ -2,244 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C141D185C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B12A1D184C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389276AbgEMPBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 11:01:00 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:39792 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389266AbgEMPA6 (ORCPT
+        id S2389256AbgEMPAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 11:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389244AbgEMPAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 11:00:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589382056;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=88pSHN33sppXtXEbTxXU7CggUoXb2hES/xW1jKJdfIQ=;
-        b=VfhHYaO+LdPdcczFY/eH9PrCpn8Xbw8aXmCOgWFEb/GsaOEzYnrMOI+Ud0kJDS2V8J/+8p
-        e0NQSF3yamExxxwUigwzT7BcLc0+EXpwXX0VCchLPOXOfE//sZqfwWrhUjmfciwDCrA3OP
-        LWBQWj6o8XUy2VQ4kZ65zFRsyiJkLQg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-71-A8OxrijmPzWm-UCvp3rvdw-1; Wed, 13 May 2020 11:00:52 -0400
-X-MC-Unique: A8OxrijmPzWm-UCvp3rvdw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4469A102C849;
-        Wed, 13 May 2020 15:00:40 +0000 (UTC)
-Received: from optiplex-lnx.redhat.com (unknown [10.3.128.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CE15584648;
-        Wed, 13 May 2020 15:00:33 +0000 (UTC)
-From:   Rafael Aquini <aquini@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org, kexec@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, dyoung@redhat.com, bhe@redhat.com,
-        corbet@lwn.net, mcgrof@kernel.org, keescook@chromium.org,
-        akpm@linux-foundation.org, cai@lca.pw, rdunlap@infradead.org,
-        tytso@mit.edu, bunk@kernel.org, torvalds@linux-foundation.org,
-        gregkh@linuxfoundation.org, labbott@redhat.com, jeffm@suse.com,
-        jikos@kernel.org, jeyu@suse.de, tiwai@suse.de, AnDavis@suse.com,
-        rpalethorpe@suse.de
-Subject: [PATCH v4] kernel: add panic_on_taint
-Date:   Wed, 13 May 2020 11:00:26 -0400
-Message-Id: <20200513150026.1039987-1-aquini@redhat.com>
+        Wed, 13 May 2020 11:00:41 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25701C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 08:00:41 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id b71so9378709ilg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 08:00:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=batbytes-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=+rPg11J9VlvVDeV8znfbO+l0Zmgl15XOXAgw8ZhUwkI=;
+        b=LQW8kDGiT9n4vRSn4+zIJqiC+H9EC4J5xm++TGKc4H95qo+Bwx5zxGUUlg/0Yw1ZLa
+         qaFof47jhHBozx1Ekv6eJ2M4l8S/rGIEuiX22F65CF13dqXSfnSiK5JbLipu5IlG5JPh
+         SkTNr4IGQDc8p0QrsPgLIUUw9drXJDaXtwdwjSFV2cCWqIdyRyXLK8DXEcZ+r1eImUaY
+         rkUDzKHQ88TXrpK+U0t/t5EstVRHh6JJgnJI9MJ5ZZobKAny09T+TVCaU5XBcQHqylnV
+         0jyrMlcUVfIviPLPmLC9oIc5JfuxSrzif7/xbPSIgweiZdVGrKJAc4mes/oiF7qQsPRF
+         Uhww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=+rPg11J9VlvVDeV8znfbO+l0Zmgl15XOXAgw8ZhUwkI=;
+        b=V9egPToF0H59yNiYq3hi7B1LXONxbpotJa1WOkUa191kCTurHlV+VRbaUu6EFSj3cb
+         74MOQDLg5rhGU8J0kaCyvuVPGVA6svcceDVFQp3vP+9HhevIZnCWRl9tb9SicG2zQurU
+         2DpIX2bMT2hS98MeWG36NfY9a9Hr/euxUgd9nQftmPCVo0JO8AjWTZnxflLuupAueCbN
+         JxBygaCSLzIgYJHFAo6/gn7n4gdrnMUaBiTn2ufh9A+3as5SGXdnvfMu+K5jlKotn0cL
+         11qaHpq0JeInwvZBrP4pzdkf09dq77TdoNCP7Dzm+A+m83+SITVBvU6a6/AxomTr09LH
+         8dFw==
+X-Gm-Message-State: AGi0Puba3Ly/Eow3FJFryS6P5X1wY8cSco99/VogzVBF3DOz54zPbhqM
+        ANq0HzfzjjS4MIb4NwWfcRyjKaTk0QxQ0Jz9OtZR5SJ7okM=
+X-Google-Smtp-Source: APiQypLBR/G4xZV9sFHLT56RfUzH/+GXiuKifvTb4r+7q/Sdj1l0SvIoEeSNXGtIoeRf0XtqGCJdWSrOvYD/talPO2g=
+X-Received: by 2002:a05:6e02:f81:: with SMTP id v1mr16264384ilo.246.1589382040025;
+ Wed, 13 May 2020 08:00:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+From:   Patrick Donnelly <batrick@batbytes.com>
+Date:   Wed, 13 May 2020 08:00:28 -0700
+Message-ID: <CACh33FpkBrHpTNfZN6EiyaVPVb6bvJqHO8dJkiHzWPOF0+pKAQ@mail.gmail.com>
+Subject: file system permissions regression affecting root
+To:     open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Analogously to the introduction of panic_on_warn, this patch
-introduces a kernel option named panic_on_taint in order to
-provide a simple and generic way to stop execution and catch
-a coredump when the kernel gets tainted by any given taint flag.
+In newer kernels (at least 5.6), it appears root is not able to write
+to files owned by other users in a sticky directory:
 
-This is useful for debugging sessions as it avoids rebuilding
-the kernel to explicitly add calls to panic() or BUG() into
-code sites that introduce the taint flags of interest.
-For instance, if one is interested in following up with
-a post mortem analysis at the point a code path is hitting
-a bad page (i.e. unaccount_page_cache_page(), or slab_bug()),
-a crashdump could be collected by rebooting the kernel with
-'panic_on_taint=0x20' amended to the command line string.
+$ uname -r
+5.6.11-arch1-1
+$ stat -f /tmp
+  File: "/tmp"
+    ID: 0        Namelen: 255     Type: tmpfs
+Block size: 4096       Fundamental block size: 4096
+Blocks: Total: 2005160    Free: 2005092    Available: 2005092
+Inodes: Total: 2005160    Free: 2005112
+$ stat /tmp
+  File: /tmp
+  Size: 440             Blocks: 0          IO Block: 4096   directory
+Device: 2fh/47d Inode: 21533       Links: 20
+Access: (1777/drwxrwxrwt)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2020-05-11 11:50:52.780667565 -0700
+Modify: 2020-05-13 07:40:19.617941285 -0700
+Change: 2020-05-13 07:40:19.617941285 -0700
+ Birth: -
+$ touch /tmp/foo
+$ stat /tmp/foo
+  File: /tmp/foo
+  Size: 0               Blocks: 0          IO Block: 4096   regular empty file
+Device: 2fh/47d Inode: 3441684     Links: 1
+Access: (0640/-rw-r-----)  Uid: ( 1000/pdonnell)   Gid: (  985/   users)
+Access: 2020-05-13 07:40:29.218026785 -0700
+Modify: 2020-05-13 07:40:29.218026785 -0700
+Change: 2020-05-13 07:40:29.218026785 -0700
+ Birth: -
+$ sudo /bin/sh -c 'echo 1 > /tmp/foo'
+/bin/sh: /tmp/foo: Permission denied
+$ sudo strace -f -- /bin/sh -c 'echo 1 > /tmp/foo' |& grep foo
+execve("/bin/sh", ["/bin/sh", "-c", "echo 1 > /tmp/foo"],
+0x7fff92dec300 /* 15 vars */) = 0
+openat(AT_FDCWD, "/tmp/foo", O_WRONLY|O_CREAT|O_TRUNC, 0666) = -1
+EACCES (Permission denied)
+write(2, "/bin/sh: /tmp/foo: Permission de"..., 37/bin/sh: /tmp/foo:
+Permission denied
 
-Another, perhaps less frequent, use for this option would be
-as a mean for assuring a security policy case where only a
-subset of taints, or no single taint (in paranoid mode),
-is allowed for the running system.
-The optional switch 'nousertaint' is handy in this particular
-scenario as it will avoid userspace induced crashes by writes
-to /proc/sys/kernel/tainted causing false positive hits for
-such policies.
 
-Suggested-by: Qian Cai <cai@lca.pw>
-Signed-off-by: Rafael Aquini <aquini@redhat.com>
----
-Changelog:
-* v2: get rid of unnecessary/misguided compiler hints		(Luis)
-      enhance documentation text for the new kernel parameter	(Randy)
-* v3: drop sysctl interface, keep it only as a kernel parameter (Luis)
-* v4: change panic_on_taint input from alphabetical taint flags
-      to hexadecimal bitmasks, for clarity and extendability	(Luis)
+Compare to Linux 4.18:
 
- Documentation/admin-guide/kdump/kdump.rst     |  7 ++++
- .../admin-guide/kernel-parameters.txt         | 13 +++++++
- include/linux/kernel.h                        |  4 +++
- kernel/panic.c                                | 34 +++++++++++++++++++
- kernel/sysctl.c                               | 11 +++++-
- 5 files changed, 68 insertions(+), 1 deletion(-)
+$ uname -r
+4.18.0-147.3.1.el8_1.x86_64
+$ stat /dev/shm
+  File: /dev/shm
+  Size: 100             Blocks: 0          IO Block: 4096   directory
+Device: 16h/22d Inode: 15466       Links: 2
+Access: (1777/drwxrwxrwt)  Uid: (    0/    root)   Gid: (    0/    root)
+Context: system_u:object_r:tmpfs_t:s0
+Access: 2020-05-12 17:37:07.029131257 +0000
+Modify: 2020-05-13 14:35:44.161036943 +0000
+Change: 2020-05-13 14:35:44.161036943 +0000
+ Birth: -
+$ stat -f /dev/shm
+  File: "/dev/shm"
+    ID: 0        Namelen: 255     Type: tmpfs
+Block size: 4096       Fundamental block size: 4096
+Blocks: Total: 9243647    Free: 9243604    Available: 9243604
+Inodes: Total: 9243647    Free: 9243643
+$ touch /dev/shm/foo
+$ stat /dev/shm/foo
+  File: /dev/shm/foo
+  Size: 0               Blocks: 0          IO Block: 4096   regular empty file
+Device: 16h/22d Inode: 5616861     Links: 1
+Access: (0640/-rw-r-----)  Uid: ( 1156/pdonnell)   Gid: ( 1156/pdonnell)
+Context: unconfined_u:object_r:user_tmp_t:s0
+Access: 2020-05-13 14:44:55.121908033 +0000
+Modify: 2020-05-13 14:44:55.121908033 +0000
+Change: 2020-05-13 14:44:55.121908033 +0000
+ Birth: -
+$ sudo -- /bin/sh -c 'echo 1 > /dev/shm/foo'
+$
 
-diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-index ac7e131d2935..2707de840fd3 100644
---- a/Documentation/admin-guide/kdump/kdump.rst
-+++ b/Documentation/admin-guide/kdump/kdump.rst
-@@ -521,6 +521,13 @@ will cause a kdump to occur at the panic() call.  In cases where a user wants
- to specify this during runtime, /proc/sys/kernel/panic_on_warn can be set to 1
- to achieve the same behaviour.
- 
-+Trigger Kdump on add_taint()
-+============================
-+
-+The kernel parameter panic_on_taint facilitates calling panic() from within
-+add_taint() whenever the value set in this bitmask matches with the bit flag
-+being set by add_taint(). This will cause a kdump to occur at the panic() call.
-+
- Contact
- =======
- 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 7bc83f3d9bdf..ce17fdbec7d1 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3401,6 +3401,19 @@
- 			bit 4: print ftrace buffer
- 			bit 5: print all printk messages in buffer
- 
-+	panic_on_taint=	Bitmask for conditionally call panic() in add_taint()
-+			Format: <hex>[,nousertaint]
-+			Hexadecimal bitmask representing the set of TAINT flags
-+			that will cause the kernel to panic when add_taint() is
-+			called with any of the flags in this set.
-+			The optional switch "nousertaint" can be utilized to
-+			prevent userland forced crashes by writing to sysctl
-+			/proc/sys/kernel/tainted any flagset matching with the
-+			bitmask set on panic_on_taint.
-+			See Documentation/admin-guide/tainted-kernels.rst for
-+			extra details on the taint flags that users can pick
-+			to compose the bitmask to assign to panic_on_taint.
-+
- 	panic_on_warn	panic() instead of WARN().  Useful to cause kdump
- 			on a WARN().
- 
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 9b7a8d74a9d6..70712944dffc 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -528,6 +528,8 @@ extern int panic_on_oops;
- extern int panic_on_unrecovered_nmi;
- extern int panic_on_io_nmi;
- extern int panic_on_warn;
-+extern unsigned long panic_on_taint;
-+extern bool panic_on_taint_nousertaint;
- extern int sysctl_panic_on_rcu_stall;
- extern int sysctl_panic_on_stackoverflow;
- 
-@@ -597,6 +599,8 @@ extern enum system_states {
- #define TAINT_RANDSTRUCT		17
- #define TAINT_FLAGS_COUNT		18
- 
-+#define TAINT_FLAGS_MAX			((1UL << TAINT_FLAGS_COUNT) - 1)
-+
- struct taint_flag {
- 	char c_true;	/* character printed when tainted */
- 	char c_false;	/* character printed when not tainted */
-diff --git a/kernel/panic.c b/kernel/panic.c
-index b69ee9e76cb2..94b5c973770c 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -44,6 +44,8 @@ static int pause_on_oops_flag;
- static DEFINE_SPINLOCK(pause_on_oops_lock);
- bool crash_kexec_post_notifiers;
- int panic_on_warn __read_mostly;
-+unsigned long panic_on_taint;
-+bool panic_on_taint_nousertaint = false;
- 
- int panic_timeout = CONFIG_PANIC_TIMEOUT;
- EXPORT_SYMBOL_GPL(panic_timeout);
-@@ -434,6 +436,11 @@ void add_taint(unsigned flag, enum lockdep_ok lockdep_ok)
- 		pr_warn("Disabling lock debugging due to kernel taint\n");
- 
- 	set_bit(flag, &tainted_mask);
-+
-+	if (tainted_mask & panic_on_taint) {
-+		panic_on_taint = 0;
-+		panic("panic_on_taint set ...");
-+	}
- }
- EXPORT_SYMBOL(add_taint);
- 
-@@ -686,3 +693,30 @@ static int __init oops_setup(char *s)
- 	return 0;
- }
- early_param("oops", oops_setup);
-+
-+static int __init panic_on_taint_setup(char *s)
-+{
-+	char *taint_str;
-+
-+	if (!s)
-+		return -EINVAL;
-+
-+	taint_str = strsep(&s, ",");
-+	if (kstrtoul(taint_str, 16, &panic_on_taint))
-+		return -EINVAL;
-+
-+	/* make sure panic_on_taint doesn't hold out-of-range TAINT flags */
-+	panic_on_taint &= TAINT_FLAGS_MAX;
-+
-+	if (!panic_on_taint)
-+		return -EINVAL;
-+
-+	if (s && !strcmp(s, "nousertaint"))
-+		panic_on_taint_nousertaint = true;
-+
-+	pr_info("panic_on_taint: bitmask=0x%lx nousertaint_mode=%sabled\n",
-+		panic_on_taint, panic_on_taint_nousertaint ? "en" : "dis");
-+
-+	return 0;
-+}
-+early_param("panic_on_taint", panic_on_taint_setup);
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 8a176d8727a3..e257c965683a 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -2623,11 +2623,20 @@ static int proc_taint(struct ctl_table *table, int write,
- 		return err;
- 
- 	if (write) {
-+		int i;
-+
-+		/*
-+		 * If we are relying on panic_on_taint not producing
-+		 * false positives due to userland input, bail out
-+		 * before setting the requested taint flags.
-+		 */
-+		if (panic_on_taint_nousertaint && (tmptaint & panic_on_taint))
-+			return -EINVAL;
-+
- 		/*
- 		 * Poor man's atomic or. Not worth adding a primitive
- 		 * to everyone's atomic.h for this
- 		 */
--		int i;
- 		for (i = 0; i < BITS_PER_LONG && tmptaint >> i; i++) {
- 			if ((tmptaint >> i) & 1)
- 				add_taint(i, LOCKDEP_STILL_OK);
+This seems to be related to the directory being owned by root; it does
+not happen when the directory is owned by the user:
+
+$ uname -r
+5.6.11-arch1-1
+$ sudo chown pdonnell:users gtmp
+$ stat gtmp
+  File: gtmp
+  Size: 4096            Blocks: 8          IO Block: 4096   directory
+Device: fe04h/65028d    Inode: 2819062     Links: 2
+Access: (1777/drwxrwxrwt)  Uid: ( 1000/pdonnell)   Gid: (  985/   users)
+Access: 2020-05-13 07:47:06.344892575 -0700
+Modify: 2020-05-13 07:50:24.709987998 -0700
+Change: 2020-05-13 07:52:52.137963637 -0700
+ Birth: 2020-05-13 07:34:09.937974845 -0700
+$ stat -f gtmp
+  File: "gtmp"
+    ID: f24a3528a175df48 Namelen: 255     Type: ext2/ext3
+Block size: 4096       Fundamental block size: 4096
+Blocks: Total: 36495867   Free: 8991668    Available: 7120360
+Inodes: Total: 9338880    Free: 8147228
+$ touch gtmp/foo
+$ stat gtmp/foo
+  File: gtmp/foo
+  Size: 0               Blocks: 0          IO Block: 4096   regular empty file
+Device: fe04h/65028d    Inode: 2754033     Links: 1
+Access: (0640/-rw-r-----)  Uid: ( 1000/pdonnell)   Gid: (  985/   users)
+Access: 2020-05-13 07:53:10.218124141 -0700
+Modify: 2020-05-13 07:53:10.218124141 -0700
+Change: 2020-05-13 07:53:10.218124141 -0700
+ Birth: 2020-05-13 07:53:10.218124141 -0700
+$ sudo strace -f -- /bin/sh -c 'echo 1 > gtmp/foo' |& grep foo
+execve("/bin/sh", ["/bin/sh", "-c", "echo 1 > gtmp/foo"],
+0x7ffe03362430 /* 15 vars */) = 0
+openat(AT_FDCWD, "gtmp/foo", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+$ rm gtmp/foo
+$ sudo chown root:root gtmp
+$ touch gtmp/foo
+# stat gtmp/foo
+  File: gtmp/foo
+  Size: 0               Blocks: 0          IO Block: 4096   regular empty file
+Device: fe04h/65028d    Inode: 2754033     Links: 1
+Access: (0640/-rw-r-----)  Uid: ( 1000/pdonnell)   Gid: (  985/   users)
+Access: 2020-05-13 07:55:18.892599600 -0700
+Modify: 2020-05-13 07:55:18.892599600 -0700
+Change: 2020-05-13 07:55:18.892599600 -0700
+ Birth: 2020-05-13 07:55:18.892599600 -0700
+$ sudo strace -f -- /bin/sh -c 'echo 1 > gtmp/foo' |& grep foo
+execve("/bin/sh", ["/bin/sh", "-c", "echo 1 > gtmp/foo"],
+0x7fff588732f0 /* 15 vars */) = 0
+openat(AT_FDCWD, "gtmp/foo", O_WRONLY|O_CREAT|O_TRUNC, 0666) = -1
+EACCES (Permission denied)
+write(2, "/bin/sh: gtmp/foo: Permission de"..., 37/bin/sh: gtmp/foo:
+Permission denied
+
+
 -- 
-2.25.4
-
+Patrick Donnelly
