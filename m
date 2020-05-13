@@ -2,164 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674BC1D1B50
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA941D1B76
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389296AbgEMQlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 12:41:25 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:43270 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728354AbgEMQlZ (ORCPT
+        id S2389576AbgEMQpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 12:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728068AbgEMQpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 12:41:25 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04DGXB6H169943;
-        Wed, 13 May 2020 16:41:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=z3WykGLnspcKA18JV+DbvKUDOIknyu+oP3oUZLL37xI=;
- b=lKiD3NVRXwj4fJSlHkC4mW320iTUs+xAowm4QlP4fyv9YQl2p1NktJrlbI74c9ZxFRfL
- lPWG/OLyV0JyEQeWwMejo6yLBHclVwXZQtDgdOFrtJoxnTVYjEJOvidtcp+YPBTVCejJ
- QBIBWk/SGuW1wJcGr5wBGY/MLrgi7A1NOeX8S5ti+IA5tuPQWAulrBjKJpO89JreuujO
- KdC1C4u9Ujcm5Hez9GCpNKEviF7ohrf7sm4J2tpCaQ4UiKQMkGiIqWNIxwgVpBO3ElPi
- /1gWY0N0k297bVCiSQ39mc3hTMi+uDZRCgCX1r6uwYDdwdlwGiDi3IbH7WaZ1E4gBIXP ww== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 3100xwnbas-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 May 2020 16:41:22 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04DGbuVK185648;
-        Wed, 13 May 2020 16:41:22 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 3100yavft7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 May 2020 16:41:22 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04DGfLaL032724;
-        Wed, 13 May 2020 16:41:21 GMT
-Received: from localhost (/10.159.244.214)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 13 May 2020 09:41:20 -0700
-Date:   Wed, 13 May 2020 09:41:19 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     "Xu, Yanfei" <yanfei.xu@windriver.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-block@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: BUG:loop:blk_update_request: I/O error, dev loop6, sector 49674
- op 0x9:(WRITE_ZEROES)
-Message-ID: <20200513164119.GD1984748@magnolia>
-References: <dac81506-0065-ee64-fcd1-c9f1d002b4fb@windriver.com>
- <c51460e0-1abb-799d-9ee9-de9c39315eda@windriver.com>
- <8f3eeb22-2e85-aa3f-6287-b3c467d39a8e@kernel.dk>
+        Wed, 13 May 2020 12:45:51 -0400
+X-Greylist: delayed 164 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 May 2020 09:45:50 PDT
+Received: from mxa1.seznam.cz (mxa1.seznam.cz [IPv6:2a02:598:a::78:90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB57C061A0C;
+        Wed, 13 May 2020 09:45:50 -0700 (PDT)
+Received: from email.seznam.cz
+        by email-smtpc25a.ko.seznam.cz (email-smtpc25a.ko.seznam.cz [10.53.18.34])
+        id 01f9a2ac5af7f6c500506ef2;
+        Wed, 13 May 2020 18:45:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seznam.cz; s=beta;
+        t=1589388343; bh=HOw/beXCV8NM3f8Zz2gwYM60zg/PgILleFcF555HlSQ=;
+        h=Received:Subject:To:Cc:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=Fkzu73s01g06qdTZvb350vh0/bI6/0G0gU8ztoOxL7T14AE3ruvRU20ZaYLxs6Tm9
+         JALoIPdqd6Zh4mh+xYPHlGb3BxSnv4wXvLZv2ELiYVO+r0/Q3zG0fdIE78NxdzcYzJ
+         bSLDxFRPE42aF68Eoax34bKz2YLh1swagx5vRHa4=
+Received: from [192.168.1.167] (212.69.128.228 [212.69.128.228])
+        by email-relay2.ko.seznam.cz (Seznam SMTPD 1.3.114) with ESMTP;
+        Wed, 13 May 2020 18:42:49 +0200 (CEST)  
+Subject: Re: [PATCH] arm64: dts: qcom: disable the new cti nodes on devices
+ with broken coresight
+To:     Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+References: <20200513154718.17401-1-michael.srba@seznam.cz>
+ <CAOCk7No3bJMpZNjXaNv-OScaLXPKbdj3d_n20ss3MyciPO=e3g@mail.gmail.com>
+From:   Michael Srba <Michael.Srba@seznam.cz>
+Message-ID: <af456130-e54c-28ff-b71e-f2da43331a8f@seznam.cz>
+Date:   Wed, 13 May 2020 18:42:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8f3eeb22-2e85-aa3f-6287-b3c467d39a8e@kernel.dk>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9620 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 phishscore=0
- adultscore=0 suspectscore=1 mlxscore=0 mlxlogscore=999 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005130145
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9620 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 cotscore=-2147483648 bulkscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 lowpriorityscore=0
- impostorscore=0 spamscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
- suspectscore=1 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005130144
+In-Reply-To: <CAOCk7No3bJMpZNjXaNv-OScaLXPKbdj3d_n20ss3MyciPO=e3g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[add fsdevel to cc]
+On 13. 05. 20 18:04, Jeffrey Hugo wrote:
+> On Wed, May 13, 2020 at 9:53 AM <michael.srba@seznam.cz> wrote:
+>> From: Michael Srba <michael.srba@seznam.cz>
+>>
+>> Attempting to enable these devices causes a "synchronous
+>> external abort". Suspected cause is that the debug power
+>> domain is not enabled by default on this device.
+>> Disable these devices for now to avoid the crash.
+>>
+>> See: https://lore.kernel.org/linux-arm-msm/20190618202623.GA53651@gerhold.net/
+>>
+>> Fixes: b1fcc5702a41 ("arm64: dts: qcom: msm8916: Add CTI options")
+>> Signed-off-by: Michael Srba <michael.srba@seznam.cz>
+>>
+>> ---
+>>  arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts       | 6 ++++++
+>>  arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi | 6 ++++++
+>>  2 files changed, 12 insertions(+)
+> Why are we disabling these in board specific files?  Seems like these
+> should be disabled in the base msm8916.dtsi.  Otherwise, the next
+> board that gets brought up is probably going to hit this same exact
+> issue.
+>
+> This also follows the solution that msm8998 did for the same issue.
 
-On Tue, May 12, 2020 at 08:22:08PM -0600, Jens Axboe wrote:
-> On 5/12/20 8:14 PM, Xu, Yanfei wrote:
-> > Hi,
-> > 
-> > After operating the /dev/loop which losetup with an image placed in**tmpfs,
-> > 
-> > I got the following ERROR messages:
-> > 
-> > ----------------[cut here]---------------------
-> > 
-> > [  183.110770] blk_update_request: I/O error, dev loop6, sector 524160 op 0x9:(WRITE_ZEROES) flags 0x1000800 phys_seg 0 prio class 0
-> > [  183.123949] blk_update_request: I/O error, dev loop6, sector 522 op 0x9:(WRITE_ZEROES) flags 0x1000800 phys_seg 0 prio class 0
-> > [  183.137123] blk_update_request: I/O error, dev loop6, sector 16906 op 0x9:(WRITE_ZEROES) flags 0x1000800 phys_seg 0 prio class 0
-> > [  183.150314] blk_update_request: I/O error, dev loop6, sector 32774 op 0x9:(WRITE_ZEROES) flags 0x1000800 phys_seg 0 prio class 0
-> > [  183.163551] blk_update_request: I/O error, dev loop6, sector 49674 op 0x9:(WRITE_ZEROES) flags 0x1000800 phys_seg 0 prio class 0
-> > [  183.176824] blk_update_request: I/O error, dev loop6, sector 65542 op 0x9:(WRITE_ZEROES) flags 0x1000800 phys_seg 0 prio class 0
-> > [  183.190029] blk_update_request: I/O error, dev loop6, sector 82442 op 0x9:(WRITE_ZEROES) flags 0x1000800 phys_seg 0 prio class 0
-> > [  183.203281] blk_update_request: I/O error, dev loop6, sector 98310 op 0x9:(WRITE_ZEROES) flags 0x1000800 phys_seg 0 prio class 0
-> > [  183.216531] blk_update_request: I/O error, dev loop6, sector 115210 op 0x9:(WRITE_ZEROES) flags 0x1000800 phys_seg 0 prio class 0
-> > [  183.229914] blk_update_request: I/O error, dev loop6, sector 131078 op 0x9:(WRITE_ZEROES) flags 0x1000800 phys_seg 0 prio class 0
-> > 
-> > 
-> > I have found the commit which introduce this issue by git bisect :
-> > 
-> >     commit :efcfec57[loop: fix no-unmap write-zeroes request behavior]
-> 
-> Please CC the author of that commit too. Leaving the rest quoted below.
-> 
-> > Kernrel version: Linux version 5.6.0
-> > 
-> > Frequency: everytime
-> > 
-> > steps to reproduce:
-> > 
-> >   1.git clone mainline kernel
-> > 
-> >   2.compile kernel with ARCH=x86_64, and then boot the system with it
-> > 
-> >     (seems other arch also can reproduce it )
-> > 
-> >   3.make an image by "dd of=/tmp/image if=/dev/zero bs=1M count=256"
-> > 
-> >   *4.**place the image in tmpfs directory*
-> > 
-> >   5.losetup /dev/loop6 /PATH/TO/image
-> > 
-> >   6.mkfs.ext2 /dev/loop6
-> > 
-> > 
-> > Any comments will be appreciated.
+I would also advocate for having them disabled by default. I *think* it was
+brought up initially, but that would be before the msm8998 change.
 
-Hm, you got IO failures here because shmem_fallocate doesn't support
-FL_ZERO_RANGE range.  That might not be too hard to add, but there's a
-broader problem of detecting fallocate support--
-
-The loop driver assumes that if the file has an fallocate method then
-it's safe to set max_discard_sectors (and now max_write_zeroes_sectors)
-to UINT_MAX>>9.  There's currently no good way to detect which modes are
-supported by a filesystem's ->fallocate function, or to discover the
-required granularity.
-
-Right now we tell application developers that the way to discover the
-conditions under which fallocate will work is to try it and see if they
-get EOPNOTSUPP.
-
-One way to "fix" this would be to fix lo_fallocate to set RQF_QUIET if
-the filesystem returns EOPNOTSUPP, which gets rid of the log messages.
-We probably ought to zero out the appropriate max_*_sectors if we get
-EOPNOTSUPP.
-
---D
-
-> > 
-> > 
-> > Thanks,
-> > 
-> > Yanfei
-> > 
-> > 
-> > 
-> > 
-> > 
-> 
-> 
-> -- 
-> Jens Axboe
-> 
