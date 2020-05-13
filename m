@@ -2,101 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D2D1D2330
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C94F1D2322
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732752AbgEMXju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 19:39:50 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:54528 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732523AbgEMXju (ORCPT
+        id S1732734AbgEMXeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 19:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732727AbgEMXeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 19:39:50 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04DNaPAg065703;
-        Wed, 13 May 2020 23:39:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2020-01-29;
- bh=WUtDE1uvxFfqtxiGlboxCs/AC9GkRjxAc7zArX6xztU=;
- b=C5wiUZj9WYB1aqt+jnVi12+YGGDEW0nQ8LtsgPIZBkEAcyoj8ADZC37Pgb8kxnOh26fc
- V0Wu+Tja6vN9+8fzF34W6WSFaJS3MWmSIhSwRQ+vnzrXGROUojOCUVlARX/lOQqEVVD7
- k//V+rJYO0LxrgNN4BiAAEXcfnMofRusW62WfQTf32LIqb1LvXaCAnvddFb0CX/vEPEH
- qie2e4zIR7bYHTGuf5jjxqg3eXk0w/iK+w9w+TgtQyM8WtJWZnLsX5s8aApmUa+ZlGgS
- D+8jO2AAKohWG+jzWyQJEO5TVobD6JCTcyU2TMVMpq9Zi8e1UrPMM5Q7wQkbOseCgff5 qQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 3100yfydwe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 May 2020 23:39:42 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04DNc3Fk100680;
-        Wed, 13 May 2020 23:39:42 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 3100yfk17f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 May 2020 23:39:42 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04DNde5Y017022;
-        Wed, 13 May 2020 23:39:40 GMT
-Received: from localhost.localdomain (/10.211.9.80)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 13 May 2020 16:39:40 -0700
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, joe.jin@oracle.com, rose.wang@oracle.com
-Subject: [PATCH 1/1] xen/manage: enable C_A_D to force reboot
-Date:   Wed, 13 May 2020 16:34:10 -0700
-Message-Id: <20200513233410.18120-1-dongli.zhang@oracle.com>
-X-Mailer: git-send-email 2.17.1
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9620 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
- phishscore=0 suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005130203
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9620 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- cotscore=-2147483648 mlxscore=0 suspectscore=0 spamscore=0 impostorscore=0
- mlxlogscore=999 malwarescore=0 clxscore=1011 phishscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005130203
+        Wed, 13 May 2020 19:34:18 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09242C05BD0A
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:34:17 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id f4so51378pjm.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:34:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=9+kHGmySmNxox5wuBQoQwck1bLpTOuP5gTxm3+9miDE=;
+        b=a5bkxw4lZ5KtU/7XSy6vFoZNzxoQzbwCg8Ve+eRR31EJupSDG7nd9WLXO+x/fuH+oD
+         T1iajkovrL+KE9IJDAnGZnwmEOeil6jnqMj0ZttdnSHvAjbD2Xl9s8EUwYBVXUeQAo9q
+         t1ZXN1sRSkY/OXB5O/18TcHvWPlpTqquHyqAw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=9+kHGmySmNxox5wuBQoQwck1bLpTOuP5gTxm3+9miDE=;
+        b=oEi9ZlAM1EFH1t6IcQHvfZHoR68kuU7+qCjKeDTC8EEG/+ypp7fs/iR0M/AurNy2c2
+         ZTmkc2xv3fK6s1OxxwN7kOJZ0rq50wu5jFRGIRPVqdfha4O/tjdkyQsMPYBdUewQETPy
+         DAYrZ+P41tuf4VX23N+WBI47YQA+WjACvmLUItseQqyBCDKfgCJSQKE6EYDl34zJtRxR
+         JGjmVUfKWEnDuY3jRrjf/CgV3A616Z5p/AWwNw0XfyZ8n6pejLAYu69tSwgjIlLgjJb8
+         KJjbO6gQwvQe63ij3c15vPEQP7+f9tVPplNzMJubGg5u1ZsYb06GFiXfVEFx4BS0Edte
+         egaw==
+X-Gm-Message-State: AOAM530XfvV/sWm+xXrWdmf5RxsX696tLE9woBkl4OQ2WKYFg/Q5DoKY
+        PX7pqnlQvVQTxPMTnN97TEBQig==
+X-Google-Smtp-Source: ABdhPJx1Ph3/b2uAHkh09Mf7p8FRkdK0oKGy1ttISPQpTjgvGcQqjdCtv4Wgy2sxJ8WWEUMPB5YOOA==
+X-Received: by 2002:a17:90b:1994:: with SMTP id mv20mr863273pjb.41.1589412856445;
+        Wed, 13 May 2020 16:34:16 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k2sm568374pfd.108.2020.05.13.16.34.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 16:34:15 -0700 (PDT)
+Date:   Wed, 13 May 2020 16:34:14 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Mimi Zohar <zohar@kernel.org>
+Cc:     Scott Branden <scott.branden@broadcom.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        David Brown <david.brown@linaro.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Olof Johansson <olof@lixom.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>
+Subject: Re: [PATCH v5 1/7] fs: introduce kernel_pread_file* support
+Message-ID: <202005131630.8B1ECE0@keescook>
+References: <0e6b5f65-8c61-b02e-7d35-b4ae52aebcf3@broadcom.com>
+ <1589396593.5098.166.camel@kernel.org>
+ <e1b92047-7003-0615-3d58-1388ec27c78a@broadcom.com>
+ <1589398747.5098.178.camel@kernel.org>
+ <a228ae0f-d551-e0e8-446e-5ae63462c520@broadcom.com>
+ <1589404814.5098.185.camel@kernel.org>
+ <20200513212847.GT11244@42.do-not-panic.com>
+ <1589407924.5098.208.camel@kernel.org>
+ <f8de785c-60df-3fec-c2c6-b1dd2c77db17@broadcom.com>
+ <1589410843.5098.220.camel@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1589410843.5098.220.camel@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The systemd may be configured to mask ctrl-alt-del via "systemctl mask
-ctrl-alt-del.target". As a result, the pv reboot would not work as signal
-is ignored.
+On Wed, May 13, 2020 at 07:00:43PM -0400, Mimi Zohar wrote:
+> On Wed, 2020-05-13 at 15:48 -0700, Scott Branden wrote:
+> > 
+> > On 2020-05-13 3:12 p.m., Mimi Zohar wrote:
+> > > On Wed, 2020-05-13 at 21:28 +0000, Luis Chamberlain wrote:
+> > >> On Wed, May 13, 2020 at 05:20:14PM -0400, Mimi Zohar wrote:
+> > >>> On Wed, 2020-05-13 at 12:41 -0700, Scott Branden wrote:
+> > >>>> On 2020-05-13 12:39 p.m., Mimi Zohar wrote:
+> > >>>>> On Wed, 2020-05-13 at 12:18 -0700, Scott Branden wrote:
+> > >>>>>> On 2020-05-13 12:03 p.m., Mimi Zohar wrote:
+> > >>>>>>> On Wed, 2020-05-13 at 11:53 -0700, Scott Branden wrote:
+> > >>>>>> Even if the kernel successfully verified the firmware file signature it
+> > >>>>>> would just be wasting its time.  The kernel in these use cases is not always
+> > >>>>>> trusted.  The device needs to authenticate the firmware image itself.
+> > >>>>> There are also environments where the kernel is trusted and limits the
+> > >>>>> firmware being provided to the device to one which they signed.
+> > >>>>>
+> > >>>>>>> The device firmware is being downloaded piecemeal from somewhere and
+> > >>>>>>> won't be measured?
+> > >>>>>> It doesn't need to be measured for current driver needs.
+> > >>>>> Sure the device doesn't need the kernel measuring the firmware, but
+> > >>>>> hardened environments do measure firmware.
+> > >>>>>
+> > >>>>>> If someone has such need the infrastructure could be added to the kernel
+> > >>>>>> at a later date.  Existing functionality is not broken in any way by
+> > >>>>>> this patch series.
+> > >>>>> Wow!  You're saying that your patch set takes precedence over the
+> > >>>>> existing expectations and can break them.
+> > >>>> Huh? I said existing functionality is NOT broken by this patch series.
+> > >>> Assuming a system is configured to measure and appraise firmware
+> > >>> (rules below), with this change the firmware file will not be properly
+> > >>> measured and will fail signature verification.
+> > So no existing functionality has been broken.
+> > >>>
+> > >>> Sample IMA policy rules:
+> > >>> measure func=FIRMWARE_CHECK
+> > >>> appraise func=FIRMWARE_CHECK appraise_type=imasig
+> > >> Would a pre and post lsm hook for pread do it?
+> > > IMA currently measures and verifies the firmware file signature on the
+> > > post hook.  The file is read once into a buffer.  With this change,
+> > > IMA would need to be on the pre hook, to read the entire file,
+> > > calculating the file hash and verifying the file signature.  Basically
+> > > the firmware would be read once for IMA and again for the device.
+> > The entire file may not fit into available memory to measure and 
+> > verify.  Hence the reason for a partial read.
+> 
+> Previously, IMA pre-read the file in page size chunks in order to
+> calculate the file hash.  To avoid reading the file twice, the file is
+> now read into a buffer.
 
-This patch always enables C_A_D before the call of ctrl_alt_del() in order
-to force the reboot.
+Can the VFS be locked in some way and then using the partial reads would
+trigger the "read twice" mode? I.e. something like:
 
-Reported-by: Rose Wang <rose.wang@oracle.com>
-Cc: Joe Jin <joe.jin@oracle.com>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
----
- drivers/xen/manage.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+open
+first partial read:
+	lock file contents (?)
+	perform full page-at-a-time-read-and-measure
+	rewind, read partial
+other partial reads
+final partial read
+	unlock
 
-diff --git a/drivers/xen/manage.c b/drivers/xen/manage.c
-index cd046684e0d1..3190d0ecb52e 100644
---- a/drivers/xen/manage.c
-+++ b/drivers/xen/manage.c
-@@ -204,6 +204,13 @@ static void do_poweroff(void)
- static void do_reboot(void)
- {
- 	shutting_down = SHUTDOWN_POWEROFF; /* ? */
-+	/*
-+	 * The systemd may be configured to mask ctrl-alt-del via
-+	 * "systemctl mask ctrl-alt-del.target". As a result, the pv reboot
-+	 * would not work. To enable C_A_D would force the reboot.
-+	 */
-+	C_A_D = 1;
-+
- 	ctrl_alt_del();
- }
- 
 -- 
-2.17.1
-
+Kees Cook
