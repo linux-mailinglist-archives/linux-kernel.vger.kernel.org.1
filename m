@@ -2,89 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7BA1D209E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131481D20AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728113AbgEMVF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725952AbgEMVF1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:05:27 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86076C061A0C;
-        Wed, 13 May 2020 14:05:27 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id x73so753975lfa.2;
-        Wed, 13 May 2020 14:05:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3mkbakP9mk6/OGVAN+zcqRwZ0mw26o2wBBxnAQMPvC8=;
-        b=ctjlYoCI2PVddAGODZeP/vCogq7hOe4qIy3ofe+sfcwAMob4gdIAaRmpXt71KXM5s0
-         elyxHk041/Ys/mtWBq743Pp3GBEijMkoEW78fXv8PSayqdtHKwTbfq5CiTzj/aX8npHq
-         nIpW0oNQefD4dLK5VkjPkyi99u89TAPjjYi2e5x6CIc1InG8WJydkkXHex9K9yLUMplm
-         ibmtJybyeiNo8Txyyh7I5F7ya12JGjK0GVwxu7OL7h1aYhPxR3uIyeoZeXqdlRZc7GQI
-         3bo80UUTP1mCHiX5NGzgD34STLlRkUqgfksgPKZFqZjDDXbntcwq7+mxNlqXS/yIYQxa
-         mq2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3mkbakP9mk6/OGVAN+zcqRwZ0mw26o2wBBxnAQMPvC8=;
-        b=n3Tpa1Q86j8TYV/bW1INe1at+kyzz9pmSgfD1bDimVui/KBKwAYSrXdZBX87ABqmMT
-         4s1+0IM7YV3d1cEAKKSGIiNRmUIWuD5wP6i/HJzgM1Sw18eqzW8ENHTbzb6TTTnI7V4K
-         HqNth89R04baCISN3oNKsf4WI6GYAJ/i4K3p8Ew4KQD8JpTOigxwVR42DjJ8GfkjhHe3
-         YaI+j/tcLmYoduRhJCEaqnANjMq2baOtQyD4K/Etdp78BWSvsFr2e/DVPuS8WR9UejWW
-         8nDnOYTXND5HdKVQf3c1vmff6XtE8YBePO1fWdsfRYp7lcRhRsOh1SBTM77zItO0Pdso
-         Fi5Q==
-X-Gm-Message-State: AOAM531aL3cjAlMiCwmJoA5J58Y0vhnC3gQ3viu9GODSyMtpm3Q0zsxo
-        E4BqVcxMOpZqFDWQGv33SMyCOgRFSGEdkpkTISQ=
-X-Google-Smtp-Source: ABdhPJylbChycIFwjIQ3xfqgQamy65iiEOk/6igXAS9L36vE1hhqtoddFFY7wG+Xod768Zt281P3JghBCeiQaKBQCYg=
-X-Received: by 2002:a19:4b4f:: with SMTP id y76mr62320lfa.7.1589403925952;
- Wed, 13 May 2020 14:05:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <1589218356-17475-1-git-send-email-yibin.gong@nxp.com> <1589218356-17475-14-git-send-email-yibin.gong@nxp.com>
-In-Reply-To: <1589218356-17475-14-git-send-email-yibin.gong@nxp.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 13 May 2020 18:06:40 -0300
-Message-ID: <CAOMZO5BB-bnKF6fQtw+1iGmojrmNHVQqeN3Fu8tHa_09ayjCgg@mail.gmail.com>
-Subject: Re: [PATCH v7 RESEND 13/13] dmaengine: imx-sdma: add uart rom script
-To:     Robin Gong <yibin.gong@nxp.com>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>, Vinod <vkoul@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
+        id S1726287AbgEMVKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 17:10:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725943AbgEMVKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 17:10:50 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 007AF20575;
+        Wed, 13 May 2020 21:10:48 +0000 (UTC)
+Date:   Wed, 13 May 2020 17:10:47 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        dmaengine@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        x86 <x86@kernel.org>, paulmck <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [patch V4 part 1 05/36] x86/entry: Flip _TIF_SIGPENDING and
+ _TIF_NOTIFY_RESUME handling
+Message-ID: <20200513171047.04c2c10e@gandalf.local.home>
+In-Reply-To: <1970736614.19996.1589403401588.JavaMail.zimbra@efficios.com>
+References: <20200505131602.633487962@linutronix.de>
+        <20200505134058.560059744@linutronix.de>
+        <1970736614.19996.1589403401588.JavaMail.zimbra@efficios.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
+On Wed, 13 May 2020 16:56:41 -0400 (EDT)
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-On Mon, May 11, 2020 at 6:33 AM Robin Gong <yibin.gong@nxp.com> wrote:
+> ----- On May 5, 2020, at 9:16 AM, Thomas Gleixner tglx@linutronix.de wrote:
+> 
+> > Make sure task_work runs before any kind of userspace -- very much
+> > including signals -- is invoked.  
+> 
+> What is missing from this patch description is: _why_ is this deemed
+> useful ?
+> 
+> Also, color me confused: is "do_signal()" actually running any user-space,
+> or just setting up the user-space stack for eventual return to signal handler ?
+> 
+> Also, it might be OK, but we're changing the order of two things which
+> have effects on each other: restartable sequences abort fixup for preemption
+> and do_signal(), which also have effects on rseq abort.
+> 
+> Because those two will cause the abort to trigger, I suspect changing
+> the order might be OK, but we really need to think this through.
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+> > 
+> > Suggested-by: Andy Lutomirski <luto@kernel.org>
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> > ---
+> > arch/x86/entry/common.c |    8 ++++----
+> > 1 file changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > --- a/arch/x86/entry/common.c
+> > +++ b/arch/x86/entry/common.c
+> > @@ -156,16 +156,16 @@ static void exit_to_usermode_loop(struct
+> > 		if (cached_flags & _TIF_PATCH_PENDING)
+> > 			klp_update_patch_state(current);
+> > 
+> > -		/* deal with pending signal delivery */
+> > -		if (cached_flags & _TIF_SIGPENDING)
+> > -			do_signal(regs);
+> > -
+> > 		if (cached_flags & _TIF_NOTIFY_RESUME) {
+> > 			clear_thread_flag(TIF_NOTIFY_RESUME);
+> > 			tracehook_notify_resume(regs);
+> > 			rseq_handle_notify_resume(NULL, regs);
+> > 		}
+> > 
+> > +		/* deal with pending signal delivery */
+> > +		if (cached_flags & _TIF_SIGPENDING)
+> > +			do_signal(regs);
 
-> Please get latest sdma firmware from the below and put them into the path
-> (/lib/firmware/imx/sdma/):
-> https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
-> /tree/imx/sdma
+Looking deeper into this, it appears that do_signal() can freeze or kill the
+task.
 
-"latest sdma firmware" is too vague. Better specify the commit ID of
-the firmware where this is valid.
+That is, it wont go back to user space here, but simply schedule out (being
+traced) or even exit (killed).
+
+Before the resume hooks would never be called in such cases, and now they
+are.
+
+-- Steve
+
+
+> > +
+> > 		if (cached_flags & _TIF_USER_RETURN_NOTIFY)
+> >  			fire_user_return_notifiers();  
+> 
+
