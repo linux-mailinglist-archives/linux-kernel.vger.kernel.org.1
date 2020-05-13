@@ -2,184 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668391D1C35
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 19:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7ED81D1C44
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 19:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389902AbgEMR0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 13:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732731AbgEMR0f (ORCPT
+        id S2389937AbgEMR3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 13:29:14 -0400
+Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:52900 "EHLO
+        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732731AbgEMR3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 13:26:35 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FF2C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 10:26:35 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id h26so193426lfg.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 10:26:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JrvD+8j/uwSBmYwMcyxeX3ZIu+LCzAyC5RzQ6LSBn7c=;
-        b=kbjMBxqjonqink1/71GmGuP7tnUvhCqcIK5erePGVlxWe27IWnum6DKco8MnqLJgvw
-         fKfwmHJ6R0Q9J+mZ5zUYkLbXsJWtdodicm0awm5z3ctdYihV5Q9xJBHAZd4/4BX45fQH
-         C8Iqc7maRH9Vrkx2KZj8ODn7pM/575gMNvnZFahN5vqQgbOTiiMdUS9esH2tMYc+Tmng
-         r8zu0dXbuDq5jrIKiEwA+3fXicL2vl8WEA2r+OTjZAWNyMQ06d+o5++nfYZtx2GHHxQP
-         vqfWQ9hIAA472gY7QEhp/THXnemAkgnLWHcvIhQOfKta7YR2qRP5b9/3WXg6R9/jT/RG
-         WhJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JrvD+8j/uwSBmYwMcyxeX3ZIu+LCzAyC5RzQ6LSBn7c=;
-        b=OzHmqwoezCrYT0Ftr0ohHxr/yWO3tCRa1W6mPNX+Qb05Yv/nU4qK9rpZCo1ZPxPbPJ
-         Imt5ze+jwr6iWChldS7EMGF85ChTUANZ0XAEVz4Qppne2Nshu1cUsUHkc5GLBZtts6kL
-         CC0l0Lh63JLqzf5k3DUhn+eRRJfv1aFMZXSXuyhVLg+I5+IJAA7DG0WbpB3Om3ClSKvw
-         P0CZ/JJ+0J//dNN4UgVcz++SvyoGG735wl7mQcFE79y3xheAEDoAaJQnpNCbIy7a1Iy2
-         dWLLQIXfJeyqmGR7/GdIAu8yLgtITC6qv1TV3j1htJNrNCGzUkvgkw0vz8x05c4IF+aP
-         INaA==
-X-Gm-Message-State: AOAM532b7JFUKxIX26yX3wRleacbgW9PvrLbCtXT8Y4I3xv6VcVNVRZU
-        IL95XdCZ+Og00psXAP6Huj8EHryVhmPB3KDZSxkhUw==
-X-Google-Smtp-Source: ABdhPJxhIMfik6aSCpK61qb4yefzvhrSwHwUeXQvdWLkvwIwnQYMKhHRI0L/jZkUY30VVGvBiZG9ckQR/Dah5rFSVHU=
-X-Received: by 2002:a19:40d2:: with SMTP id n201mr391372lfa.82.1589390793882;
- Wed, 13 May 2020 10:26:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200513094417.618129545@linuxfoundation.org>
-In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 13 May 2020 22:56:21 +0530
-Message-ID: <CA+G9fYvjbFmT2xjp3cDL9p9q4oT9+7jn4nX-DP6HHe42WBifhQ@mail.gmail.com>
-Subject: Re: [PATCH 5.6 000/118] 5.6.13-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 13 May 2020 13:29:14 -0400
+Received: from pps.filterd (m0170393.ppops.net [127.0.0.1])
+        by mx0a-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04DHRtbd028625;
+        Wed, 13 May 2020 13:29:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=smtpout1;
+ bh=GX5YiRg/XzPDU36/WqAG9JH8yimm4qRaDdHGa1EX1y0=;
+ b=o+5DqX7y+WkUX3gieAA24OwhbiHhy1PqLHE5iMh+b0sTE75tMpLJ0UtdbihBBSt0mHi5
+ kEHQ11QD4M3QEN25etBKcluC+1GFCO2WelL7SLXYAcH0EGTbqFj3VrNdVyfzQy1Mz6DN
+ +2IXrDeMnfLmYPNp9zC6N2mq+2+eplFAHwou/NnNQSzA/Bck2y/KOkW+T44RZ6GvpuFN
+ L1i0zDbi4A9vrVkGsq0chCEpzErGiZrdbLca8mjzV4cLD8rzBTiMbQiQOwEtrQgFM5ps
+ ry+EZqHpAuLaYp6H/NoMMB9OiIQKyhPesv2WCRyq7S7kR+VH0nXqK4TDObLm5rT17p19 DQ== 
+Received: from mx0b-00154901.pphosted.com (mx0b-00154901.pphosted.com [67.231.157.37])
+        by mx0a-00154904.pphosted.com with ESMTP id 3100ydbbad-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 May 2020 13:29:13 -0400
+Received: from pps.filterd (m0144102.ppops.net [127.0.0.1])
+        by mx0b-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04DHINi8141306;
+        Wed, 13 May 2020 13:29:12 -0400
+Received: from ausxippc101.us.dell.com (ausxippc101.us.dell.com [143.166.85.207])
+        by mx0b-00154901.pphosted.com with ESMTP id 310g2ywqrh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 May 2020 13:29:12 -0400
+X-LoopCount0: from 10.166.132.132
+X-PREM-Routing: D-Outbound
+X-IronPort-AV: E=Sophos;i="5.60,346,1549951200"; 
+   d="scan'208";a="1387297546"
+From:   <Mario.Limonciello@dell.com>
+To:     <hdegoede@redhat.com>, <dvhart@infradead.org>,
+        <andy@infradead.org>, <pali@kernel.org>, <mjg59@srcf.ucam.org>
+CC:     <platform-driver-x86@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] platform/x86: dell-wmi: Ignore keyboard attached /
+ detached events
+Thread-Topic: [PATCH] platform/x86: dell-wmi: Ignore keyboard attached /
+ detached events
+Thread-Index: AQHWKSdAVCuB+c4MP0SyuKY4d5/aeaimNMyA
+Date:   Wed, 13 May 2020 17:29:11 +0000
+Message-ID: <5242ea25f5c94a06beda838dba8c06ef@AUSX13MPC105.AMER.DELL.COM>
+References: <20200513130544.90243-1-hdegoede@redhat.com>
+In-Reply-To: <20200513130544.90243-1-hdegoede@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-05-13T16:29:25.4413278Z;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=5ae63eab-315c-4547-ba7e-203ae6867181;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [143.166.24.60]
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-13_08:2020-05-13,2020-05-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 clxscore=1015 cotscore=-2147483648 impostorscore=0
+ mlxscore=0 phishscore=0 spamscore=0 priorityscore=1501 suspectscore=0
+ bulkscore=0 adultscore=0 mlxlogscore=999 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005130150
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0 spamscore=0
+ bulkscore=0 adultscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ phishscore=0 suspectscore=0 cotscore=-2147483648 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005130151
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 May 2020 at 15:22, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.6.13 release.
-> There are 118 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 15 May 2020 09:41:20 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.6.13-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> -----Original Message-----
+> From: Hans de Goede <hdegoede@redhat.com>
+> Sent: Wednesday, May 13, 2020 8:06 AM
+> To: Darren Hart; Andy Shevchenko; Pali Roh=E1r; Matthew Garrett
+> Cc: Hans de Goede; Limonciello, Mario; platform-driver-x86@vger.kernel.or=
+g;
+> linux-kernel@vger.kernel.org
+> Subject: [PATCH] platform/x86: dell-wmi: Ignore keyboard attached / detac=
+hed
+> events
+>=20
+>=20
+> [EXTERNAL EMAIL]
+>=20
+> Ignore events with a type of 0x0011 and a code of 0xfff2 / 0xfff3,
+> this silences the following messages being logged when the keyboard is
+> detached / attached on a Dell Venue 11 Pro 7130:
+>=20
+> [   63.621953] dell_wmi: Unknown key with type 0x0011 and code 0xfff2 pre=
+ssed
+> [   70.240558] dell_wmi: Unknown key with type 0x0011 and code 0xfff3 pre=
+ssed
+>=20
+> Note SW_TABLET_MODE is already reported through the intel_vbtn driver on
+> this and other Dell devices, so dell_wmi should not report this too,
+> to avoid duplicate events.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+If they didn't also come through on intel-vbtn I would have proposed that w=
+e
+should have a separate tablet mode switch coming from dell-wmi too.
 
-Summary
-------------------------------------------------------------------------
+As a general note the reason for these is that the WMI architecture on Wind=
+ows
+differs in that applications typically directly receive the events and do t=
+hings
+with them.
 
-kernel: 5.6.13-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.6.y
-git commit: f1d28d1c7608478dd10b7a36c40f2375bcc1648e
-git describe: v5.6.12-119-gf1d28d1c7608
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.6-oe/bui=
-ld/v5.6.12-119-gf1d28d1c7608
+>=20
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  drivers/platform/x86/dell-wmi.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>=20
+> diff --git a/drivers/platform/x86/dell-wmi.c b/drivers/platform/x86/dell-=
+wmi.c
+> index 86e8dd6a8b33..c25a4286d766 100644
+> --- a/drivers/platform/x86/dell-wmi.c
+> +++ b/drivers/platform/x86/dell-wmi.c
+> @@ -310,6 +310,16 @@ static const struct key_entry dell_wmi_keymap_type_0=
+011[]
+> =3D {
+>  	/* Battery inserted */
+>  	{ KE_IGNORE, 0xfff1, { KEY_RESERVED } },
+>=20
+> +	/*
+> +	 * Detachable keyboard detached / undocked
+> +	 * Note SW_TABLET_MODE is already reported through the intel_vbtn
+> +	 * driver for this, so we ignore it.
+> +	 */
+> +	{ KE_IGNORE, 0xfff2, { KEY_RESERVED } },
+> +
+> +	/* Detachable keyboard attached / docked */
+> +	{ KE_IGNORE, 0xfff3, { KEY_RESERVED } },
+> +
+>  	/* Keyboard backlight level changed */
+>  	{ KE_IGNORE, KBD_LED_OFF_TOKEN,      { KEY_RESERVED } },
+>  	{ KE_IGNORE, KBD_LED_ON_TOKEN,       { KEY_RESERVED } },
+> --
+> 2.26.0
 
-No regressions (compared to build v5.6.12)
-
-No fixes (compared to build v5.6.12)
-
-Ran 35302 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* install-android-platform-tools-r2800
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* libgpiod
-* linux-log-parser
-* ltp-containers-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-ipc-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* perf
-* ltp-commands-tests
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* network-basic-tests
-* kselftest/net
-* kselftest/networking
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* ltp-open-posix-tests
-* v4l2-compliance
-* kvm-unit-tests
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-native/drivers
-* kselftest-vsyscall-mode-native/filesystems
-* kselftest-vsyscall-mode-native/net
-* kselftest-vsyscall-mode-native/networking
-* kselftest-vsyscall-mode-none
-* kselftest-vsyscall-mode-none/drivers
-* kselftest-vsyscall-mode-none/filesystems
-* kselftest-vsyscall-mode-none/net
-* kselftest-vsyscall-mode-none/networking
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+Reviewed-by: Mario Limonciello <Mario.limonciello@dell.com>
