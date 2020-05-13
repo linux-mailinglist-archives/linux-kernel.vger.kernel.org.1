@@ -2,131 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535FB1D04EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3131D04DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgEMCaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 22:30:19 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:41266 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728685AbgEMCaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 22:30:17 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A12DD1A12EB;
-        Wed, 13 May 2020 04:30:15 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 06EE21A1329;
-        Wed, 13 May 2020 04:30:06 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7BF09402BE;
-        Wed, 13 May 2020 10:29:53 +0800 (SGT)
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     xiaoliang.yang_1@nxp.com, po.liu@nxp.com, claudiu.manoil@nxp.com,
-        alexandru.marginean@nxp.com, vladimir.oltean@nxp.com,
-        leoyang.li@nxp.com, mingkai.hu@nxp.com, andrew@lunn.ch,
-        f.fainelli@gmail.com, vivien.didelot@gmail.com,
-        davem@davemloft.net, jiri@resnulli.us, idosch@idosch.org,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, horatiu.vultur@microchip.com,
-        alexandre.belloni@bootlin.com, allan.nielsen@microchip.com,
-        joergen.andreasen@microchip.com, UNGLinuxDriver@microchip.com,
-        vinicius.gomes@intel.com, nikolay@cumulusnetworks.com,
-        roopa@cumulusnetworks.com, linux-devel@linux.nxdi.nxp.com
-Subject: [PATCH v2 net-next 3/3] net: dsa: felix: add support Credit Based Shaper(CBS) for hardware offload
-Date:   Wed, 13 May 2020 10:25:10 +0800
-Message-Id: <20200513022510.18457-4-xiaoliang.yang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200513022510.18457-1-xiaoliang.yang_1@nxp.com>
-References: <20200513022510.18457-1-xiaoliang.yang_1@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728172AbgEMC3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 22:29:01 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:38394 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727082AbgEMC3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 22:29:00 -0400
+Received: from localhost.localdomain (unknown [159.226.5.100])
+        by APP-03 (Coremail) with SMTP id rQCowABHmEpZW7teqs9zAQ--.28316S3;
+        Wed, 13 May 2020 10:28:42 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, amhyung@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] kernel: events: use offset_in_page macro
+Date:   Wed, 13 May 2020 02:28:39 +0000
+Message-Id: <1589336919-1706-1-git-send-email-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: rQCowABHmEpZW7teqs9zAQ--.28316S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Wr1ftr4rKryxuFy3uF4DArb_yoW8JrW3pF
+        45Ja45tw4fK3WUK347Jrykuw15Jw1kGrW8ta42k3yF9rn7Ww15A3WxWr42qFWFqrZ2gr4U
+        ta1UWFyqva1kZ3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyvb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l
+        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
+        AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
+        cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
+        8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
+        wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8fwIDUUUUU==
+X-Originating-IP: [159.226.5.100]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiDAMPA1z4i9-2vgAAs7
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VSC9959 hardware support the Credit Based Shaper(CBS) which part
-of the IEEE-802.1Qav. This patch support sch_cbs set for VSC9959.
+Use offset_in_page macro instead of (addr & ~PAGE_MASK).
 
-Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 ---
- drivers/net/dsa/ocelot/felix_vsc9959.c | 50 +++++++++++++++++++++++++-
- 1 file changed, 49 insertions(+), 1 deletion(-)
+ kernel/events/uprobes.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
-index efdcc547e0c9..df4498c0e864 100644
---- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-+++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-@@ -207,7 +207,7 @@ static const u32 vsc9959_qsys_regmap[] = {
- 	REG(QSYS_QMAXSDU_CFG_6,			0x00f62c),
- 	REG(QSYS_QMAXSDU_CFG_7,			0x00f648),
- 	REG(QSYS_PREEMPTION_CFG,		0x00f664),
--	REG_RESERVED(QSYS_CIR_CFG),
-+	REG(QSYS_CIR_CFG,			0x000000),
- 	REG(QSYS_EIR_CFG,			0x000004),
- 	REG(QSYS_SE_CFG,			0x000008),
- 	REG(QSYS_SE_DWRR_CFG,			0x00000c),
-@@ -1332,6 +1332,52 @@ static int vsc9959_qos_port_tas_set(struct ocelot *ocelot, int port,
- 	return ret;
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index ece7e13..1552ef1 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -250,14 +250,14 @@ bool __weak is_trap_insn(uprobe_opcode_t *insn)
+ static void copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len)
+ {
+ 	void *kaddr = kmap_atomic(page);
+-	memcpy(dst, kaddr + (vaddr & ~PAGE_MASK), len);
++	memcpy(dst, kaddr + offset_in_page(vaddr), len);
+ 	kunmap_atomic(kaddr);
  }
  
-+static int vsc9959_qos_port_cbs_set(struct dsa_switch *ds, int port,
-+				    struct tc_cbs_qopt_offload *cbs_qopt)
-+{
-+	struct ocelot *ocelot = ds->priv;
-+	int port_ix = port * 8 + cbs_qopt->queue;
-+	u32 rate, burst;
-+
-+	if (cbs_qopt->queue >= ds->num_tx_queues)
-+		return -EINVAL;
-+
-+	if (!cbs_qopt->enable) {
-+		ocelot_write_gix(ocelot, QSYS_CIR_CFG_CIR_RATE(0) |
-+				 QSYS_CIR_CFG_CIR_BURST(0),
-+				 QSYS_CIR_CFG, port_ix);
-+
-+		ocelot_rmw_gix(ocelot, 0, QSYS_SE_CFG_SE_AVB_ENA,
-+			       QSYS_SE_CFG, port_ix);
-+
-+		return 0;
-+	}
-+
-+	/* Rate unit is 100 kbps */
-+	rate = DIV_ROUND_UP(cbs_qopt->idleslope, 100);
-+	/* Avoid using zero rate */
-+	rate = clamp_t(u32, rate, 1, GENMASK(14, 0));
-+	/* Burst unit is 4kB */
-+	burst = DIV_ROUND_UP(cbs_qopt->hicredit, 4096);
-+	/* Avoid using zero burst size */
-+	burst = clamp_t(u32, rate, 1, GENMASK(5, 0));
-+	ocelot_write_gix(ocelot,
-+			 QSYS_CIR_CFG_CIR_RATE(rate) |
-+			 QSYS_CIR_CFG_CIR_BURST(burst),
-+			 QSYS_CIR_CFG,
-+			 port_ix);
-+
-+	ocelot_rmw_gix(ocelot,
-+		       QSYS_SE_CFG_SE_FRM_MODE(0) |
-+		       QSYS_SE_CFG_SE_AVB_ENA,
-+		       QSYS_SE_CFG_SE_AVB_ENA |
-+		       QSYS_SE_CFG_SE_FRM_MODE_M,
-+		       QSYS_SE_CFG,
-+		       port_ix);
-+
-+	return 0;
-+}
-+
- static int vsc9959_port_setup_tc(struct dsa_switch *ds, int port,
- 				 enum tc_setup_type type,
- 				 void *type_data)
-@@ -1341,6 +1387,8 @@ static int vsc9959_port_setup_tc(struct dsa_switch *ds, int port,
- 	switch (type) {
- 	case TC_SETUP_QDISC_TAPRIO:
- 		return vsc9959_qos_port_tas_set(ocelot, port, type_data);
-+	case TC_SETUP_QDISC_CBS:
-+		return vsc9959_qos_port_cbs_set(ds, port, type_data);
- 	default:
- 		return -EOPNOTSUPP;
+ static void copy_to_page(struct page *page, unsigned long vaddr, const void *src, int len)
+ {
+ 	void *kaddr = kmap_atomic(page);
+-	memcpy(kaddr + (vaddr & ~PAGE_MASK), src, len);
++	memcpy(kaddr + offset_in_page(vaddr), src, len);
+ 	kunmap_atomic(kaddr);
+ }
+ 
+@@ -393,7 +393,7 @@ __update_ref_ctr(struct mm_struct *mm, unsigned long vaddr, short d)
  	}
+ 
+ 	kaddr = kmap_atomic(page);
+-	ptr = kaddr + (vaddr & ~PAGE_MASK);
++	ptr = kaddr + offset_in_page(vaddr);
+ 
+ 	if (unlikely(*ptr + d < 0)) {
+ 		pr_warn("ref_ctr going negative. vaddr: 0x%lx, "
 -- 
-2.17.1
+2.7.4
 
