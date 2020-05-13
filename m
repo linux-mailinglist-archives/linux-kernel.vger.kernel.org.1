@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14F01D0E66
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63B51D0ECA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388419AbgEMJ7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:59:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:41918 "EHLO foss.arm.com"
+        id S2388643AbgEMKCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 06:02:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388392AbgEMJ7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:59:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83E941FB;
-        Wed, 13 May 2020 02:59:48 -0700 (PDT)
-Received: from gaia (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C2F03F305;
-        Wed, 13 May 2020 02:59:46 -0700 (PDT)
-Date:   Wed, 13 May 2020 10:59:40 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: Kmemleak infrastructure improvement for task_struct leaks and
- call_rcu()
-Message-ID: <20200513095939.GA2719@gaia>
-References: <20200512141535.GA14943@gaia>
- <E812E94D-B8B7-4934-965A-3038F56FD980@lca.pw>
+        id S2387474AbgEMKCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 06:02:16 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7271E206B8;
+        Wed, 13 May 2020 10:02:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589364135;
+        bh=4teFK8yAPQaudrvOkMtxHTK4dS9GB4B0H+iGbpSKcXE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jFr2qo1yZ16htVmXSelC+yVYkaYSuZGpz2WvaV0I1WIqo2vLRXY0NIN69zSxbgCsY
+         m/OG5MeRhHsU6xUhe1+UCHt7S1Wtpt0bXwueF+Kc+j6iClm8Ab/jY6w/KXMeO4pXfT
+         ABUKgSTqKWPwHMSSJ9d9NIJf1cXL3NFa109Vn960=
+Date:   Wed, 13 May 2020 12:02:13 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        "Luis R. Rodriguez" <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Todd Kjos <tkjos@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>
+Subject: Re: [PATCH 00/14] Modularize schedutil
+Message-ID: <20200513100213.GA868852@kroah.com>
+References: <CAJZ5v0jKMgFsR0dXDt4si5hT9QF2evaoMS-13y-Qde8UpcaARg@mail.gmail.com>
+ <20200512092102.GA16151@google.com>
+ <CAJZ5v0hm3Tv2yZKLzM9a+kJuB1V5_eFOEKT-uM318dzeKV3_Qw@mail.gmail.com>
+ <20200512135813.GA101124@google.com>
+ <CAJZ5v0hN708uvurZ-3oo90qUJFw3=Eg0OmtTaOKXQgNPXhCkFg@mail.gmail.com>
+ <20200512151120.GB101124@google.com>
+ <CAJZ5v0inoge=nWQtv-rU_ReQUMZA5w-PZXuSpHHj1UHn-S7aSA@mail.gmail.com>
+ <20200512162630.GC101124@google.com>
+ <CAJZ5v0ges4=e2HkHpVk4E1yF1VsBm9H5noqMz-MxX9DK_kt6Xg@mail.gmail.com>
+ <20200513094117.GB225140@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <E812E94D-B8B7-4934-965A-3038F56FD980@lca.pw>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200513094117.GB225140@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 02:09:30PM -0400, Qian Cai wrote:
+On Wed, May 13, 2020 at 10:41:17AM +0100, Quentin Perret wrote:
+> Hi Rafael,
 > 
+> On Tuesday 12 May 2020 at 19:30:52 (+0200), Rafael J. Wysocki wrote:
+> > I don't see any technical reason for making schedutil modular in the
+> > context of GKI other than to make the GKI image smaller, but I don't
+> > expect that to be significant enough.
 > 
-> > On May 12, 2020, at 10:15 AM, Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > 
-> > In this case it uses kref_get() to increment the refcount. We could add
-> > a kmemleak_add_trace() which allocates a new array and stores the stack
-> > trace, linked to the original object. Similarly for kref_put().
-> > 
-> > If we do this for each inc/dec call, I'd leave it off as default and
-> > only enable it explicitly by cmdline argument or
-> > /sys/kerne/debug/kmemleak when needed. In most cases you'd hope there is
-> > no leak, so no point in tracking additional metadata. But if you do hit
-> > a problem, just enable the additional tracking to help with the
-> > debugging.
+> The fact that we can make the image smaller, and we give vendors one
+> less reason to not-want GKI _is_ desirable IMO.
 > 
-> Well, we would like those testing bots to report kmemleak (I knew
-> there would be many false positives) with those additional information
-> of refcount leaks in case they found ones, albeit never saw one from
-> those bots at all yet.
+>   $ size vmlinux.*
+>      text	   data	    bss	    dec	    hex	filename
+>   19225963	9601976	 491084	29319023	1bf5f6f	vmlinux.after
+>   19230599	9603236	 491084	29324919	1bf7677	vmlinux.before
+> 
+> ^ that's with the series applied. 'before' means sugov is =y, and
+> 'after' is sugov =m. So modularizing saves just over 4K on text, and a
+> bit of data too. Is it significant? Maybe not. But it's quite likely
+> that those who don't use schedutil will find any unnecessary byte to be
+> one too many.
 
-I know the syzkaller guys tried to run the fuzzer with kmemleak enabled
-and there were false positives that required human intervention. IIRC
-they disabled it eventually. The proposal was for a new feature to
-kmemleak to run the scanning under stop_machine() so that no other CPU
-messes with linked lists etc. That would make kmemleak more reliable
-under heavy load. Another option was to let the system cool down before
-running the scanning.
+It's not significant at all, just always build it in, no one will notice
+it, it's just a page or two.  Serial port drivers are way bigger :)
 
-> Since some of those bots will run fuzzers, so it would be difficult to
-> reproduce. Thus, the option has to be enabled by default somehow.
-> Otherwise, they could easily miss it in the first place. I’ll look
-> into the see if we could make it fairly low overhead.
+thanks,
 
-I guess we don't need the full stack trace. About 4 function calls to
-the refcount modification should be sufficient to get an idea.
-
--- 
-Catalin
+greg k-h
