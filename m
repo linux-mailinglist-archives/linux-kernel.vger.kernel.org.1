@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C688B1D06E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 08:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292F81D06B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 07:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729370AbgEMGG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 02:06:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728784AbgEMGGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 02:06:55 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCE1820718;
-        Wed, 13 May 2020 06:06:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589350015;
-        bh=6qZpYcXUD5MiwOqEO1ZY0mCSOUXAEishXLv58UbUkb4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PlsesW/IxxtIRgOd2lQP0dqWv9yKqYmK7I0Pdb0PncShDHGqXe38IMwt5hHuJ+kOf
-         dIxqCKtzwJuew0r94G4irCnmejKg94wHhnPbr+UD0EdFji1E6dp9EyMJNp0YL2HMWW
-         Y2dzCbQdg/J8zQuX2IzJRvUBD4JBDdopZsCztJog=
-Date:   Wed, 13 May 2020 07:55:48 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     ashwin-h <ashwinh@vmware.com>
-Cc:     x86@kernel.org, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        stable@kernel.org, srivatsab@vmware.com, srivatsa@csail.mit.edu,
-        rostedt@goodmis.org, srostedt@vmware.com,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v4.19.x] make 'user_access_begin()' do 'access_ok()'
-Message-ID: <20200513055548.GA743118@kroah.com>
-References: <d29f87f3f3abb4e496866253bd170faad976f687.1589305630.git.ashwinh@vmware.com>
+        id S1729049AbgEMF5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 01:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728803AbgEMF53 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 01:57:29 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331E8C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 22:57:29 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id f4so302811pgi.10
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 22:57:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kcyyNciXuByQ3loktJkU4jCSR6CJ8Ob9Xjb+xzFsaeI=;
+        b=uSuhoH0eMm36ZmB2Fj4UvKsgN/+ZX1g/k1KEpzJIpbdClvv6EyyLOo7Xhggv5m5whY
+         fumXDtsw61PgVLyJv2XjsNuuuTuZjCZvWyabAK+NvvkfNV0tCUa+gHZc9WhLMPFjreoK
+         EwT4KhQzxnMfDwSNS8mbvvmwljx32IjcWYMh8pjl7UzEBBJsTevzdSozStSlvgQrPAfe
+         nQeawgeQN9j+hQquwiMcT19uaLzEMQbVmFFzglN9Bj16ZuEP8iVNoH0pQQSyQpLuNYVg
+         EJWC67O81VXreR59gfK39BQ4XBVYSaoFfjGBH7ASGAuHeCSgqkbavrNhxciR6oNvCDl5
+         +LpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kcyyNciXuByQ3loktJkU4jCSR6CJ8Ob9Xjb+xzFsaeI=;
+        b=F+szP/3PRLvRc4IwUcnUd2AGX7T5olilsLq5rWhD54Oek9vHV4TMjeJbJWkB/NG69D
+         WCLaMkxrvsGV7bcXQN9gJzlMu/s67ex6wd5gdHFgIauRtANOmPlMsNEy7eJcrIrqXZmm
+         HHDDcvxDM8RfEQGS/R7t11q7p29uyxULEVyuZQOPZvgejnhBqJ9BAWZ8PUVSbdw6+VvH
+         QDSOtYSdOqPfIg5j1ee8M/HU9383WoNcJ8M63HQ0Y1RaKtR56a64fiqv/LmDM1kDZDoE
+         cRsLZVYgffknTYa3cxGmyBVekkEeWPqqJsYXH1i6+qRo2HgnblaOfripAhVhB6qGL7i3
+         KqSw==
+X-Gm-Message-State: AGi0PubsY62cRQD7+RkiV1LtYkBiLWz6mVuVIfS3te2UNRxpHY66eOvv
+        nkoGJ0duSQhWwY5SiV+3ihQ3FA==
+X-Google-Smtp-Source: APiQypL7n3HR1/A2BsmbmDuES13Hpi9E5nO3B4RrCgr0yhFV1nEZmheX1W1DXxDuIqkSRWwoDZ7KGg==
+X-Received: by 2002:a63:f610:: with SMTP id m16mr22384313pgh.174.1589349448543;
+        Tue, 12 May 2020 22:57:28 -0700 (PDT)
+Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id w192sm14131161pff.126.2020.05.12.22.57.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 22:57:27 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/5] remoteproc: qcom: PIL info support
+Date:   Tue, 12 May 2020 22:56:36 -0700
+Message-Id: <20200513055641.1413100-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d29f87f3f3abb4e496866253bd170faad976f687.1589305630.git.ashwinh@vmware.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 07:19:21AM +0530, ashwin-h wrote:
-> From: Linus Torvalds <torvalds@linux-foundation.org>
-> 
-> commit 594cc251fdd0d231d342d88b2fdff4bc42fb0690 upstream.
-> 
-> Originally, the rule used to be that you'd have to do access_ok()
-> separately, and then user_access_begin() before actually doing the
-> direct (optimized) user access.
-> 
-> But experience has shown that people then decide not to do access_ok()
-> at all, and instead rely on it being implied by other operations or
-> similar.  Which makes it very hard to verify that the access has
-> actually been range-checked.
-> 
-> If you use the unsafe direct user accesses, hardware features (either
-> SMAP - Supervisor Mode Access Protection - on x86, or PAN - Privileged
-> Access Never - on ARM) do force you to use user_access_begin().  But
-> nothing really forces the range check.
-> 
-> By putting the range check into user_access_begin(), we actually force
-> people to do the right thing (tm), and the range check vill be visible
-> near the actual accesses.  We have way too long a history of people
-> trying to avoid them.
-> 
-> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Ashwin H <ashwinh@vmware.com>
-> ---
->  arch/x86/include/asm/uaccess.h             | 11 ++++++++++-
->  drivers/gpu/drm/i915/i915_gem_execbuffer.c | 15 +++++++++++++--
->  include/linux/uaccess.h                    |  2 +-
->  kernel/compat.c                            |  6 ++----
->  kernel/exit.c                              |  6 ++----
->  lib/strncpy_from_user.c                    |  9 +++++----
->  lib/strnlen_user.c                         |  9 +++++----
->  7 files changed, 38 insertions(+), 20 deletions(-)
+Introduce support for filling out the relocation information in IMEM, to aid
+post mortem debug tools to locate the various remoteprocs.
 
-Are you wanting this merged to a specific stable kernel tree?  If so, why?
+Bjorn Andersson (5):
+  dt-bindings: remoteproc: Add Qualcomm PIL info binding
+  remoteproc: qcom: Introduce helper to store pil info in IMEM
+  remoteproc: qcom: Update PIL relocation info on load
+  arm64: dts: qcom: qcs404: Add IMEM and PIL info region
+  arm64: dts: qcom: sdm845: Add IMEM and PIL info region
 
-thanks,
+ .../bindings/remoteproc/qcom,pil-info.yaml    |  44 +++++++
+ arch/arm64/boot/dts/qcom/qcs404.dtsi          |  15 +++
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          |  15 +++
+ drivers/remoteproc/Kconfig                    |   6 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/qcom_pil_info.c            | 124 ++++++++++++++++++
+ drivers/remoteproc/qcom_pil_info.h            |   7 +
+ drivers/remoteproc/qcom_q6v5_adsp.c           |  16 ++-
+ drivers/remoteproc/qcom_q6v5_mss.c            |   3 +
+ drivers/remoteproc/qcom_q6v5_pas.c            |  15 ++-
+ drivers/remoteproc/qcom_q6v5_wcss.c           |  14 +-
+ drivers/remoteproc/qcom_wcnss.c               |  14 +-
+ 12 files changed, 262 insertions(+), 12 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,pil-info.yaml
+ create mode 100644 drivers/remoteproc/qcom_pil_info.c
+ create mode 100644 drivers/remoteproc/qcom_pil_info.h
 
-greg k-h
+-- 
+2.26.2
+
