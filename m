@@ -2,117 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B58F1D1907
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3D01D190D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389167AbgEMPVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 11:21:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729153AbgEMPVI (ORCPT
+        id S2389216AbgEMPVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 11:21:18 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:35644 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389170AbgEMPVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 11:21:08 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CFEC061A0C;
-        Wed, 13 May 2020 08:21:06 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id k19so6942739pll.9;
-        Wed, 13 May 2020 08:21:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=cWFKfC62+6x0cIYD7JbR18PKDXXbx8nGB7XYfgqUvF4=;
-        b=UcXf/LwO0ebFP2l74juHCGTii8BlrEnCisLBwXU9iBrGdE0F4Dh7tM35PLhI1CelSf
-         D90sKcDWwfUNJetU6bOWntnUxER3HDl68AuV/oGIyRrWbs/2NbS3MSX///qA7+VarM+k
-         PcS1MvIzZSP9pZSmEj0R6HkNph8/wo0Wf8VPT7UkhrgyTTT6IFLdg+XCGklDhTCvZVOR
-         ZVVA/oU6jvXNcFb7sLyG5JVaaJ9gQAnmld2vsUzrCEEPAP8FQE+aYvi5wjMQjKvJvaum
-         AUDZuh3gI5JiRriLLUkDc6ZUl6z4MQW7kMwiDI9RaSErrKDVCIS3S5PggLrat3ZdetqO
-         UWNw==
+        Wed, 13 May 2020 11:21:15 -0400
+Received: by mail-pf1-f195.google.com with SMTP id n18so645016pfa.2;
+        Wed, 13 May 2020 08:21:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:user-agent;
-        bh=cWFKfC62+6x0cIYD7JbR18PKDXXbx8nGB7XYfgqUvF4=;
-        b=heaqZvKfa0qJZVl3zb7kPVZO70Al7OuWGRYn6l8xObvRaowh64m2alsS2GOuL1kDEb
-         6GwyzD66kaw5dHXgKOknsOlCFpLNlTfhVIyKFGDVuIlHOX+gDYfkLrPu8Dvj0uJEFXyu
-         WOJGH2bAgxo+4Rls0Yonci/hvWS6aOoXfqX3hQKHd5vRai6Ub2OQdDPYWlk2idutmJ3D
-         ApCTpY84aRr6zg1t0AO5DKvKn0fR4B5YZJE2kYvFLzA1V4ehSmC/xB3Qbr7WSs+EL/z3
-         58s9tBoPaCP1RQX+MoBVJ8krIh3kaBjuj3PLNLZStjjgC61N2pRzo4cNONU8CkeDYqP2
-         3ldQ==
-X-Gm-Message-State: AGi0PuY3+tTdSnm4WGaKt1deIo9Tu4qDPxRj3kWiL/W1Og9rHWut3O1A
-        azxksq/rqv49y2wgnOwZSyU=
-X-Google-Smtp-Source: APiQypIG3VnLUc5o3LGxO1a1f/FF6vP3C9zhpMSozv2JhiVOu26f8gI33aGjcezrncxrxG7y6GoXDQ==
-X-Received: by 2002:a17:90a:ba84:: with SMTP id t4mr32154756pjr.81.1589383266524;
-        Wed, 13 May 2020 08:21:06 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 82sm14944156pfv.214.2020.05.13.08.21.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 May 2020 08:21:05 -0700 (PDT)
-Date:   Wed, 13 May 2020 08:21:05 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Amy.Shih@advantech.com.tw
-Cc:     she90122@gmail.com, Jean Delvare <jdelvare@suse.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        oakley.ding@advantech.com.tw, jia.sui@advantech.com.cn,
-        yuechao.zhao@advantech.com.cn, Hy.Lee@advantech.com.tw
-Subject: Re: [v1,1/1] hwmon: (nct7904) Add to read all of the SMI status
- registers in probe function.
-Message-ID: <20200513152104.GA125097@roeck-us.net>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=L2EmjNUNQ4Z5jimRhohvy5E6UFn8J7/n3AurcqTssfc=;
+        b=pKjK5/uLwvB1l4zaIfTdJJfWUmJTFDpuGrtJJT9esp2duuPlmJHlIB+eh+as55fii3
+         hOi9By7XgiF6KLzjMvn4WxVV/J1fOo6sXLVpN5q//IH3Fmv/ctS88Zbc5s3j3B7iFnkn
+         vgj4SJ3pdB2g8nEOXbLDjGw+ZYhGwsgZo46SEk31JbOgq9r4Uk99oq6LK97B8UZ6ABNE
+         qImx4R2WBKdMwV8VLDbMmbftbdfsHv9VkLGbW+ZDZ+oAIQs6hvDAz0UWXicdGfk3ZjrF
+         tbZE2KgusOnxRYswn9tmEi1uLgNqPw7SnusG0rpXVyK3W1Fr6ttvPPKkK/OP18E+amuU
+         BHJQ==
+X-Gm-Message-State: AGi0PuaeTKJyhXUfDAy2HW3Hf0hZ5lRqSaLOSMRgHj3HdicUT0yDZjXt
+        JO0pmqF04pzZUpNm/7Qdpp0=
+X-Google-Smtp-Source: APiQypLjceC/PEfdNROkTqxbFVK4lToQw5U4tMxxK9Fb2TK7BTD2Imz/M+WiRtr+fq6JB7P+q54wFA==
+X-Received: by 2002:a63:1361:: with SMTP id 33mr23946447pgt.265.1589383274907;
+        Wed, 13 May 2020 08:21:14 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id j2sm15315389pfb.73.2020.05.13.08.21.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 08:21:12 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 4BEB0418C0; Wed, 13 May 2020 15:21:12 +0000 (UTC)
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
+        rafael@kernel.org, ebiederm@xmission.com, jeyu@kernel.org,
+        jmorris@namei.org, keescook@chromium.org, paul@paul-moore.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        nayna@linux.ibm.com, zohar@linux.ibm.com
+Cc:     scott.branden@broadcom.com, dan.carpenter@oracle.com,
+        skhan@linuxfoundation.org, geert@linux-m68k.org,
+        tglx@linutronix.de, bauerman@linux.ibm.com, dhowells@redhat.com,
+        linux-integrity@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        kexec@lists.infradead.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 1/3] fs: unexport kernel_read_file()
+Date:   Wed, 13 May 2020 15:21:06 +0000
+Message-Id: <20200513152108.25669-2-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.23.0.rc1
+In-Reply-To: <20200513152108.25669-1-mcgrof@kernel.org>
+References: <20200513152108.25669-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 02:25:23AM +0000, Amy.Shih@advantech.com.tw wrote:
-> From: Amy Shih <amy.shih@advantech.com.tw>
-> 
-> When nct7904 power up, it compares current sensor readings within the
-> default threshold immediately, thus some of SMI status registers would
-> get non zero values cause the false alarms on first reading. Add to
-> read all of the SMI status registers in probe function to clear the
-> alarms.
-> 
-> Signed-off-by: Amy Shih <amy.shih@advantech.com.tw>
+There are no modular uses of kernel_read_file(), so just unexport it.
 
-Applied.
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ fs/exec.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks,
-Guenter
+diff --git a/fs/exec.c b/fs/exec.c
+index 23dc2b45d590..9791b9eef9ce 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -988,7 +988,6 @@ int kernel_read_file(struct file *file, void **buf, loff_t *size,
+ 	allow_write_access(file);
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(kernel_read_file);
+ 
+ int kernel_read_file_from_path(const char *path, void **buf, loff_t *size,
+ 			       loff_t max_size, enum kernel_read_file_id id)
+-- 
+2.26.2
 
-> ---
->  drivers/hwmon/nct7904.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/hwmon/nct7904.c b/drivers/hwmon/nct7904.c
-> index 571a649..6fb06f7 100644
-> --- a/drivers/hwmon/nct7904.c
-> +++ b/drivers/hwmon/nct7904.c
-> @@ -45,6 +45,7 @@
->  #define FANCTL_MAX		4	/* Counted from 1 */
->  #define TCPU_MAX		8	/* Counted from 1 */
->  #define TEMP_MAX		4	/* Counted from 1 */
-> +#define SMI_STS_MAX		10	/* Counted from 1 */
->  
->  #define VT_ADC_CTRL0_REG	0x20	/* Bank 0 */
->  #define VT_ADC_CTRL1_REG	0x21	/* Bank 0 */
-> @@ -1126,6 +1127,13 @@ static int nct7904_probe(struct i2c_client *client,
->  		data->fan_mode[i] = ret;
->  	}
->  
-> +	/* Read all of SMI status register to clear alarms */
-> +	for (i = 0; i < SMI_STS_MAX; i++) {
-> +		ret = nct7904_read_reg(data, BANK_0, SMI_STS1_REG + i);
-> +		if (ret < 0)
-> +			return ret;
-> +	}
-> +
->  	hwmon_dev =
->  		devm_hwmon_device_register_with_info(dev, client->name, data,
->  						     &nct7904_chip_info, NULL);
-> -- 
-> 1.8.3.1
-> 
