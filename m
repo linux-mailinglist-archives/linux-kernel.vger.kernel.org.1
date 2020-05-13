@@ -2,207 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAEA11D17AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1991D17BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389007AbgEMOf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 10:35:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55680 "EHLO mx2.suse.de"
+        id S2389020AbgEMOiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 10:38:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56598 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388800AbgEMOf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 10:35:29 -0400
+        id S1728345AbgEMOiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 10:38:01 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id EBB36AEE2;
-        Wed, 13 May 2020 14:35:29 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 4E99B1E12AE; Wed, 13 May 2020 16:35:26 +0200 (CEST)
-Date:   Wed, 13 May 2020 16:35:26 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 7/9] fs/ext4: Make DAX mount option a tri-state
-Message-ID: <20200513143526.GG27709@quack2.suse.cz>
-References: <20200513054324.2138483-1-ira.weiny@intel.com>
- <20200513054324.2138483-8-ira.weiny@intel.com>
+        by mx2.suse.de (Postfix) with ESMTP id 0F268ADF8;
+        Wed, 13 May 2020 14:38:01 +0000 (UTC)
+Date:   Wed, 13 May 2020 16:37:55 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Alper Nebi Yasak <alpernebiyasak@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-serial@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Biggers <ebiggers@google.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Grzegorz Halat <ghalat@redhat.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [RFC PATCH v2 0/3] Prefer working VT console over SPCR and
+ device-tree chosen stdout-path
+Message-ID: <20200513143755.GM17734@linux-b0ei>
+References: <20200430161438.17640-1-alpernebiyasak@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200513054324.2138483-8-ira.weiny@intel.com>
+In-Reply-To: <20200430161438.17640-1-alpernebiyasak@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 12-05-20 22:43:22, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+On Thu 2020-04-30 19:14:34, Alper Nebi Yasak wrote:
+> I recently experienced some trouble with setting up an encrypted-root
+> system, my Chromebook Plus (rk3399-gru-kevin, ARM64) would appear to
+> hang where it should have asked for an encryption passphrase; and I
+> eventually figured out that the kernel preferred the serial port
+> (inaccessible to me) over the built-in working display/keyboard and was
+> probably asking there.
 > 
-> We add 'always', 'never', and 'inode' (default).  '-o dax' continue to
-> operate the same.
+> Running plymouth in the initramfs solves that specific problem, but
+> both the documentation and tty-related kconfig descriptions imply that
+> /dev/console should be tty0 if graphics are working, CONFIG_VT_CONSOLE
+> is enabled and no explicit console argument is given in the kernel
+> commandline.
 > 
-> Specifically we introduce a 2nd DAX mount flag EXT4_MOUNT2_DAX_NEVER and set
-> it and EXT4_MOUNT_DAX_ALWAYS appropriately.
-> 
-> We also force EXT4_MOUNT2_DAX_NEVER if !CONFIG_FS_DAX.
-> 
-> https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> ---
-> Changes from RFC:
-> 	Combine remount check for DAX_NEVER with DAX_ALWAYS
-> 	Update ext4_should_enable_dax()
-> ---
->  fs/ext4/ext4.h  |  1 +
->  fs/ext4/inode.c |  2 ++
->  fs/ext4/super.c | 43 +++++++++++++++++++++++++++++++++++++------
->  3 files changed, 40 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 86a0994332ce..01d1de838896 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1168,6 +1168,7 @@ struct ext4_inode_info {
->  						      blocks */
->  #define EXT4_MOUNT2_HURD_COMPAT		0x00000004 /* Support HURD-castrated
->  						      file systems */
-> +#define EXT4_MOUNT2_DAX_NEVER		0x00000008 /* Do not allow Direct Access */
->  
->  #define EXT4_MOUNT2_EXPLICIT_JOURNAL_CHECKSUM	0x00000008 /* User explicitly
->  						specified journal checksum */
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 23e42a223235..140b1930e2f4 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -4400,6 +4400,8 @@ int ext4_get_inode_loc(struct inode *inode, struct ext4_iloc *iloc)
->  
->  static bool ext4_should_enable_dax(struct inode *inode)
->  {
-> +	if (test_opt2(inode->i_sb, DAX_NEVER))
-> +		return false;
->  	if (!S_ISREG(inode->i_mode))
->  		return false;
->  	if (ext4_should_journal_data(inode))
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 5ec900fdf73c..e01a040a58a9 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1505,6 +1505,7 @@ enum {
->  	Opt_jqfmt_vfsold, Opt_jqfmt_vfsv0, Opt_jqfmt_vfsv1, Opt_quota,
->  	Opt_noquota, Opt_barrier, Opt_nobarrier, Opt_err,
->  	Opt_usrquota, Opt_grpquota, Opt_prjquota, Opt_i_version, Opt_dax,
-> +	Opt_dax_str,
->  	Opt_stripe, Opt_delalloc, Opt_nodelalloc, Opt_warn_on_error,
->  	Opt_nowarn_on_error, Opt_mblk_io_submit,
->  	Opt_lazytime, Opt_nolazytime, Opt_debug_want_extra_isize,
-> @@ -1570,6 +1571,7 @@ static const match_table_t tokens = {
->  	{Opt_barrier, "barrier"},
->  	{Opt_nobarrier, "nobarrier"},
->  	{Opt_i_version, "i_version"},
-> +	{Opt_dax_str, "dax=%s"},
+> However, I'm seeing different behaviour on systems with SPCR (as in QEMU
+> aarch64 virtual machines) and/or a device-tree chosen stdout-path node
+> (as in most arm/arm64 devices). On these machines, depending on the
+> console argument, the contents of the /proc/consoles file are:
 
-Hum, maybe it would be easier to handle this like we do with e.g. 'data='
-mount option? I.e. like:
+I dug many times into the history of the console registration code.
+The following table mostly confirms my expectations.
 
-	{Opt_dax_always, "dax=always"},
-	{Opt_dax_never, "dax=never"},
-	{Opt_dax_inode, "dax=inode"),
 
-and then handle these three tokens... Not that it would be a big difference
-but that's why we usually handle mount options with small "enums" in ext4.
+>                     |     "console=tty0"    |    (no console arg)   |
+>   ------------------+-----------------------+-----------------------+
+>   QEMU VM           | tty0     -WU (EC p  ) | ttyAMA0  -W- (EC   a) |
+>   (w/ SPCR)         | ttyAMA0  -W- (E    a) |
+>   |
 
-								Honza
+The SPCR handling is inconsistent over architectures, see
+https://lkml.kernel.org/r/20180830123849.26163-1-prarit@redhat.com
 
->  	{Opt_dax, "dax"},
->  	{Opt_stripe, "stripe=%u"},
->  	{Opt_delalloc, "delalloc"},
-> @@ -1767,6 +1769,7 @@ static const struct mount_opts {
->  	{Opt_min_batch_time, 0, MOPT_GTE0},
->  	{Opt_inode_readahead_blks, 0, MOPT_GTE0},
->  	{Opt_init_itable, 0, MOPT_GTE0},
-> +	{Opt_dax_str, 0, MOPT_STRING},
->  	{Opt_dax, EXT4_MOUNT_DAX_ALWAYS, MOPT_SET},
->  	{Opt_stripe, 0, MOPT_GTE0},
->  	{Opt_resuid, 0, MOPT_GTE0},
-> @@ -2076,13 +2079,32 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
->  		}
->  		sbi->s_jquota_fmt = m->mount_opt;
->  #endif
-> -	} else if (token == Opt_dax) {
-> +	} else if (token == Opt_dax || token == Opt_dax_str) {
->  #ifdef CONFIG_FS_DAX
-> -		ext4_msg(sb, KERN_WARNING,
-> -		"DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
-> -		sbi->s_mount_opt |= m->mount_opt;
-> +		char *tmp = match_strdup(&args[0]);
-> +
-> +		if (!tmp || !strcmp(tmp, "always")) {
-> +			ext4_msg(sb, KERN_WARNING,
-> +				"DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
-> +			sbi->s_mount_opt |= EXT4_MOUNT_DAX_ALWAYS;
-> +			sbi->s_mount_opt2 &= ~EXT4_MOUNT2_DAX_NEVER;
-> +		} else if (!strcmp(tmp, "never")) {
-> +			sbi->s_mount_opt2 |= EXT4_MOUNT2_DAX_NEVER;
-> +			sbi->s_mount_opt &= ~EXT4_MOUNT_DAX_ALWAYS;
-> +		} else if (!strcmp(tmp, "inode")) {
-> +			sbi->s_mount_opt &= ~EXT4_MOUNT_DAX_ALWAYS;
-> +			sbi->s_mount_opt2 &= ~EXT4_MOUNT2_DAX_NEVER;
-> +		} else {
-> +			ext4_msg(sb, KERN_WARNING, "DAX invalid option.");
-> +			kfree(tmp);
-> +			return -1;
-> +		}
-> +
-> +		kfree(tmp);
->  #else
->  		ext4_msg(sb, KERN_INFO, "dax option not supported");
-> +		sbi->s_mount_opt2 |= EXT4_MOUNT2_DAX_NEVER;
-> +		sbi->s_mount_opt &= ~EXT4_MOUNT_DAX_ALWAYS;
->  		return -1;
->  #endif
->  	} else if (token == Opt_data_err_abort) {
-> @@ -2306,6 +2328,13 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
->  	if (DUMMY_ENCRYPTION_ENABLED(sbi))
->  		SEQ_OPTS_PUTS("test_dummy_encryption");
->  
-> +	if (test_opt2(sb, DAX_NEVER))
-> +		SEQ_OPTS_PUTS("dax=never");
-> +	else if (test_opt(sb, DAX_ALWAYS))
-> +		SEQ_OPTS_PUTS("dax=always");
-> +	else
-> +		SEQ_OPTS_PUTS("dax=inode");
-> +
->  	ext4_show_quota_options(seq, sb);
->  	return 0;
->  }
-> @@ -5425,10 +5454,12 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
->  		goto restore_opts;
->  	}
->  
-> -	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & EXT4_MOUNT_DAX_ALWAYS) {
-> +	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & EXT4_MOUNT_DAX_ALWAYS ||
-> +	    (sbi->s_mount_opt2 ^ old_opts.s_mount_opt2) & EXT4_MOUNT2_DAX_NEVER) {
->  		ext4_msg(sb, KERN_WARNING, "warning: refusing change of "
-> -			"dax flag with busy inodes while remounting");
-> +			"dax mount option with busy inodes while remounting");
->  		sbi->s_mount_opt ^= EXT4_MOUNT_DAX_ALWAYS;
-> +		sbi->s_mount_opt2 ^= EXT4_MOUNT2_DAX_NEVER;
->  	}
->  
->  	if (sbi->s_mount_flags & EXT4_MF_FS_ABORTED)
-> -- 
-> 2.25.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+IMHO, arm developers decided that consoles defined by SPCR are always
+enabled when existing.
+
+In 1st column: tty0 is the preferred console because it is defined
+on the commandline.
+
+In 2nd column: tty0 is not enabled at all because another console was
+defined by SPCR. Note that ttySX and ttyX consoles are registered only
+as a fallback when there is no other console defined.
+
+The following code is responsible for the fallback, see register_console()
+
+	/*
+	 *	See if we want to use this console driver. If we
+	 *	didn't select a console we take the first one
+	 *	that registers here.
+	 */
+	if (!has_preferred) {
+		if (newcon->index < 0)
+			newcon->index = 0;
+		if (newcon->setup == NULL ||
+		    newcon->setup(newcon, NULL) == 0) {
+			newcon->flags |= CON_ENABLED;
+			if (newcon->device) {
+				newcon->flags |= CON_CONSDEV;
+				has_preferred = true;
+			}
+		}
+	}
+
+
+>   ------------------+-----------------------+-----------------------+
+>   Chromebook Plus   | tty0     -WU (EC p  ) | ttyS2    -W- (EC p a) |
+>   (w/ stdout-path)  |                       | tty0     -WU (E     ) |
+
+Hmm, of_console_check() explicitly ignores the console defined by
+stdout-path when there is a console on the commandline. This explains
+1st column.
+
+I am not sure about 2nd column. My guess is that ttyX consoles are
+tried first. tty0 is registered as a fallback because there is no
+other console at the moment. ttyS2 is tried later and it is
+registered because it is in stdout-patch and there is no console
+in the command line. It is somehow consistent with  CONFIG_VT_CONSOLE
+description.
+
+Sadly, it is different logic than with SPCR :-(
+
+
+>   ------------------+-----------------------+-----------------------+
+>   Chromebook Plus   | tty0     -WU (EC p  ) | tty0     -WU (EC p  ) |
+>   (w/o either)      |                       |                       |
+>   ------------------+-----------------------+-----------------------+
+
+This variant is easy and everyone would probably expect this.
+
+
+Regarding the description of CONFIG_VT_CONSOLE option. I am afraid
+that it was created and true only before SPCR and device tree support
+was introduced.
+
+
+Now, it is really sad that SPCR and device tree have different
+behavior even across architectures. But I am afraid that we could
+not change it without breaking many setups.
+
+The only common rules are:
+
+   + The last console on the command line should always be the
+     preferred one when defined.
+
+   + Consoles defined by the device (SPCR, device tree) are used
+     when there is no commandline.
+
+   + ttyX or ttySX are used as a fallback when nothing else is defined.
+
+
+My suggestion is:
+
+   + Fix SPCR setting or device tree of your device when the defaults
+     are not as expected.
+
+   + Use command line to force your value when the defaults are not
+     as expected and you could not change them.
+
+
+I am afraid that we could not fix your problem on the kernel side. It
+would broke other setups that depend on the existing behavior.
+
+Best Regards,
+Petr
