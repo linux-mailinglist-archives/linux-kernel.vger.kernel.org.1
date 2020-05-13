@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3781F1D2334
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765E81D2339
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732775AbgEMXmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 19:42:19 -0400
-Received: from mail.efficios.com ([167.114.26.124]:44240 "EHLO
+        id S1732767AbgEMXql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 19:46:41 -0400
+Received: from mail.efficios.com ([167.114.26.124]:46456 "EHLO
         mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732456AbgEMXmS (ORCPT
+        with ESMTP id S1732456AbgEMXql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 19:42:18 -0400
+        Wed, 13 May 2020 19:46:41 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 8EA6C2BFAFD;
-        Wed, 13 May 2020 19:42:17 -0400 (EDT)
+        by mail.efficios.com (Postfix) with ESMTP id 25E232BFCD6;
+        Wed, 13 May 2020 19:46:40 -0400 (EDT)
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id HE5reDYQ7HtZ; Wed, 13 May 2020 19:42:17 -0400 (EDT)
+        with ESMTP id zdyYnyxu1i5k; Wed, 13 May 2020 19:46:39 -0400 (EDT)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 374D02BFE99;
-        Wed, 13 May 2020 19:42:17 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 374D02BFE99
+        by mail.efficios.com (Postfix) with ESMTP id CF8D62BFF55;
+        Wed, 13 May 2020 19:46:39 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com CF8D62BFF55
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1589413337;
-        bh=gZP/CrJgMswY4fKTD3gwvtjS/7Z/7asD+PSqyElTKh8=;
+        s=default; t=1589413599;
+        bh=hYcJuwIbx5ygOgCVc4s7f4GT06EL6D/GrL5te5eHrR4=;
         h=Date:From:To:Message-ID:MIME-Version;
-        b=lr4OqABLsSp0aAaqyT2bm+99FbSmkH7Uto45Qvqz1GGv8zNdq+LIeyRA/2bMn9Sw1
-         vGHg7UHNoazfOzSalNFkQJO4HKcBX2zPcQmFN3GtrlVmNKqmhatW+0uKUJ3Uv5ZLOY
-         VyuXxaDvvJrYUH8w7jHLWbA7GQe+d/Wq4sWuyQr8/aedzs7Quil/t8lLs5P/DkiK1+
-         gBRVXqmewBhmlLxaaE4s5Vuyatx9Chasy0z0GtJL3zn123nZ+R9GX8vNC6fTS4Fd1J
-         Ifsit3yLO5uNHoqVZewzZx7oMmiLGyCwetthiI4MW3HOSLwxMMF22eZ4JL/BzB8nvr
-         Bi5VCd9Hj5n3Q==
+        b=QpyHdQtqi4lW/p9NpFAY6WR5+Zzk3BsHT6s4s8XncXqwsLApkuBgsat64EeHiKpuS
+         Y8/bHOaq6OTeNVq2ULfXc0pn5SDujrvYBsblYX2Myi235K5bPGsYgToqPVprjCnX5W
+         xZJFTpWUhp90ohMI0srTHoM5MsqHe+bGpko/6zp4sxsg0gqysmyLVEhNzOmIMrN7MX
+         getvc0RnuRM9ZjPlW9qNAsVV0o7bdpLbF8cvIZHN8LXKukt6O9LfZZ2ZH+VPp4Uchn
+         LmZuObFe5D4UKp5SE0ZSNTGTnw8wAtqII7ImOZBPiFZvkd4AGcRyvIU40P/b5oeHq6
+         SxH1wnNuouoJg==
 X-Virus-Scanned: amavisd-new at efficios.com
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id MHSL4MiIFPVP; Wed, 13 May 2020 19:42:17 -0400 (EDT)
+        with ESMTP id aONHcFiVDbEL; Wed, 13 May 2020 19:46:39 -0400 (EDT)
 Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 24C4F2BFE20;
-        Wed, 13 May 2020 19:42:17 -0400 (EDT)
-Date:   Wed, 13 May 2020 19:42:17 -0400 (EDT)
+        by mail.efficios.com (Postfix) with ESMTP id BBD342BFE29;
+        Wed, 13 May 2020 19:46:39 -0400 (EDT)
+Date:   Wed, 13 May 2020 19:46:39 -0400 (EDT)
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
@@ -57,44 +57,87 @@ Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>
-Message-ID: <409359846.20366.1589413337072.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200505134100.957390899@linutronix.de>
-References: <20200505131602.633487962@linutronix.de> <20200505134100.957390899@linutronix.de>
-Subject: Re: [patch V4 part 1 29/36] x86/mce: Send #MC singal from task work
+Message-ID: <365632030.20393.1589413599743.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200505134101.048523500@linutronix.de>
+References: <20200505131602.633487962@linutronix.de> <20200505134101.048523500@linutronix.de>
+Subject: Re: [patch V4 part 1 30/36] lockdep: Always inline
+ lockdep_{off,on}()
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [167.114.26.124]
 X-Mailer: Zimbra 8.8.15_GA_3928 (ZimbraWebClient - FF76 (Linux)/8.8.15_GA_3928)
-Thread-Topic: x86/mce: Send #MC singal from task work
-Thread-Index: q+R/MvvYlgGjd3KZ3y/QG7hHPokAjQ==
+Thread-Topic: lockdep: Always inline lockdep_{off,on}()
+Thread-Index: v1XMf2ohSUFR6Yptr41TJyRdxIX6Cg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 ----- On May 5, 2020, at 9:16 AM, Thomas Gleixner tglx@linutronix.de wrote:
+[...]
+> + * Split the recrursion counter in two to readily detect 'off' vs recursion.
 
-> From: Peter Zijlstra <peterz@infradead.org>
-> 
+recrursion -> recursion
 
-Patch title: singal -> signal.
+> + */
+> +#define LOCKDEP_RECURSION_BITS	16
+> +#define LOCKDEP_OFF		(1U << LOCKDEP_RECURSION_BITS)
+> +#define LOCKDEP_RECURSION_MASK	(LOCKDEP_OFF - 1)
+> +
+> +/*
+> + * lockdep_{off,on}() are macros to avoid tracing and kprobes; not inlines due
+> + * to header dependencies.
+> + */
+> +
+> +#define lockdep_off()					\
+> +do {							\
+> +	current->lockdep_recursion += LOCKDEP_OFF;	\
+> +} while (0)
+> +
+> +#define lockdep_on()					\
+> +do {							\
+> +	current->lockdep_recursion -= LOCKDEP_OFF;	\
+> +} while (0)
 
-> Convert #MC over to using task_work_add(); it will run the same code
-> slightly later, on the return to user path of the same exception.
-
-So I suspect that switching the order between tracehook_notify_resume()
-(which ends up calling task_work_run()) and do_signal() done by an
-earlier patch in this series intends to ensure the information about the
-instruction pointer causing the #MC is not overwritten by do_signal()
-(but I'm just guessing).
-
-If it's the case, I think it should be clearly stated as the intent of the
-earlier patch.
+Now that those on/off are macros rather than functions, I wonder if
+adding compiler barriers would be relevant ?
 
 Thanks,
 
 Mathieu
+
+> 
+> extern void lockdep_register_key(struct lock_class_key *key);
+> extern void lockdep_unregister_key(struct lock_class_key *key);
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -393,25 +393,6 @@ void lockdep_init_task(struct task_struc
+> 	task->lockdep_recursion = 0;
+> }
+> 
+> -/*
+> - * Split the recrursion counter in two to readily detect 'off' vs recursion.
+> - */
+> -#define LOCKDEP_RECURSION_BITS	16
+> -#define LOCKDEP_OFF		(1U << LOCKDEP_RECURSION_BITS)
+> -#define LOCKDEP_RECURSION_MASK	(LOCKDEP_OFF - 1)
+> -
+> -void lockdep_off(void)
+> -{
+> -	current->lockdep_recursion += LOCKDEP_OFF;
+> -}
+> -EXPORT_SYMBOL(lockdep_off);
+> -
+> -void lockdep_on(void)
+> -{
+> -	current->lockdep_recursion -= LOCKDEP_OFF;
+> -}
+> -EXPORT_SYMBOL(lockdep_on);
+> -
+> static inline void lockdep_recursion_finish(void)
+> {
+>  	if (WARN_ON_ONCE(--current->lockdep_recursion))
 
 -- 
 Mathieu Desnoyers
