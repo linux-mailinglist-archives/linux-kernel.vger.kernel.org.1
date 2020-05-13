@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166D61D0EDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505AB1D0EE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733202AbgEMJtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:49:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47940 "EHLO mail.kernel.org"
+        id S2388559AbgEMKDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 06:03:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733167AbgEMJtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:49:08 -0400
+        id S1733189AbgEMJtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:49:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2F9A20575;
-        Wed, 13 May 2020 09:49:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58D8720740;
+        Wed, 13 May 2020 09:49:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363348;
-        bh=1CMv9hFWmICCdrJOEUu6oBzHCYSfNEa4RMkguyk+ykY=;
+        s=default; t=1589363350;
+        bh=x6W/Pxf4cTQTlMo1ktdLzg2nMjER+L4G8RuHBtd4C3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jHNSp2kW1XxrE59WSN+jl/siRlInjgrn8KXgaqDX+0O1HAxRh8wgg0l+PqPAob4UT
-         5XxefDpFyI4Q2FFdlAbAhUsP+pKuLB5RqPvRmSjII+gAi6Im/OQjoCCIw43WnkX/Hu
-         yOYoF9ynwUR2ZHJcstJy+ZB7EIhm1INXat6vKN74=
+        b=r84pG1olKwpQTJw8MQWKLQovAx3enYVMYtZrP22LIybvMFhgtuv5BHvOGkZbZNjcz
+         1ghXjwm9CJcfYrPSK8/gu/Fzs6bU/Q51HDFuZ+eqb1M6XhfTYaMDEIE2Or/75XkuZg
+         SPT41yBJJ92leD767uswHIA3pvZ7XbFq7ngU41pA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Erez Shitrit <erezsh@mellanox.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Alex Vesker <valex@mellanox.com>,
+        stable@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
         Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH 5.4 36/90] net/mlx5: DR, On creation set CQs arm_db member to right value
-Date:   Wed, 13 May 2020 11:44:32 +0200
-Message-Id: <20200513094412.377136556@linuxfoundation.org>
+Subject: [PATCH 5.4 37/90] net/mlx5: Fix forced completion access non initialized command entry
+Date:   Wed, 13 May 2020 11:44:33 +0200
+Message-Id: <20200513094412.490041589@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
 References: <20200513094408.810028856@linuxfoundation.org>
@@ -45,62 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Erez Shitrit <erezsh@mellanox.com>
+From: Moshe Shemesh <moshe@mellanox.com>
 
-[ Upstream commit 8075411d93b6efe143d9f606f6531077795b7fbf ]
+[ Upstream commit f3cb3cebe26ed4c8036adbd9448b372129d3c371 ]
 
-In polling mode, set arm_db member to a value that will avoid CQ
-event recovery by the HW.
-Otherwise we might get event without completion function.
-In addition,empty completion function to was added to protect from
-unexpected events.
+mlx5_cmd_flush() will trigger forced completions to all valid command
+entries. Triggered by an asynch event such as fast teardown it can
+happen at any stage of the command, including command initialization.
+It will trigger forced completion and that can lead to completion on an
+uninitialized command entry.
 
-Fixes: 297cccebdc5a ("net/mlx5: DR, Expose an internal API to issue RDMA operations")
-Signed-off-by: Erez Shitrit <erezsh@mellanox.com>
-Reviewed-by: Tariq Toukan <tariqt@mellanox.com>
-Reviewed-by: Alex Vesker <valex@mellanox.com>
+Setting MLX5_CMD_ENT_STATE_PENDING_COMP only after command entry is
+initialized will ensure force completion is treated only if command
+entry is initialized.
+
+Fixes: 73dd3a4839c1 ("net/mlx5: Avoid using pending command interface slots")
+Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
 Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c |   14 ++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
-@@ -689,6 +689,12 @@ static void dr_cq_event(struct mlx5_core
- 	pr_info("CQ event %u on CQ #%u\n", event, mcq->cqn);
- }
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -888,7 +888,6 @@ static void cmd_work_handler(struct work
+ 	}
  
-+static void dr_cq_complete(struct mlx5_core_cq *mcq,
-+			   struct mlx5_eqe *eqe)
-+{
-+	pr_err("CQ completion CQ: #%u\n", mcq->cqn);
-+}
-+
- static struct mlx5dr_cq *dr_create_cq(struct mlx5_core_dev *mdev,
- 				      struct mlx5_uars_page *uar,
- 				      size_t ncqe)
-@@ -750,6 +756,7 @@ static struct mlx5dr_cq *dr_create_cq(st
- 	mlx5_fill_page_frag_array(&cq->wq_ctrl.buf, pas);
+ 	cmd->ent_arr[ent->idx] = ent;
+-	set_bit(MLX5_CMD_ENT_STATE_PENDING_COMP, &ent->state);
+ 	lay = get_inst(cmd, ent->idx);
+ 	ent->lay = lay;
+ 	memset(lay, 0, sizeof(*lay));
+@@ -910,6 +909,7 @@ static void cmd_work_handler(struct work
  
- 	cq->mcq.event = dr_cq_event;
-+	cq->mcq.comp  = dr_cq_complete;
+ 	if (ent->callback)
+ 		schedule_delayed_work(&ent->cb_timeout_work, cb_timeout);
++	set_bit(MLX5_CMD_ENT_STATE_PENDING_COMP, &ent->state);
  
- 	err = mlx5_core_create_cq(mdev, &cq->mcq, in, inlen, out, sizeof(out));
- 	kvfree(in);
-@@ -761,7 +768,12 @@ static struct mlx5dr_cq *dr_create_cq(st
- 	cq->mcq.set_ci_db = cq->wq_ctrl.db.db;
- 	cq->mcq.arm_db = cq->wq_ctrl.db.db + 1;
- 	*cq->mcq.set_ci_db = 0;
--	*cq->mcq.arm_db = 0;
-+
-+	/* set no-zero value, in order to avoid the HW to run db-recovery on
-+	 * CQ that used in polling mode.
-+	 */
-+	*cq->mcq.arm_db = cpu_to_be32(2 << 28);
-+
- 	cq->mcq.vector = 0;
- 	cq->mcq.irqn = irqn;
- 	cq->mcq.uar = uar;
+ 	/* Skip sending command to fw if internal error */
+ 	if (pci_channel_offline(dev->pdev) ||
 
 
