@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0542B1D195B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AB21D1962
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389267AbgEMP0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 11:26:15 -0400
-Received: from mga12.intel.com ([192.55.52.136]:5095 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732300AbgEMP0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 11:26:14 -0400
-IronPort-SDR: 10LHBv/gr9H30UxboA5GwFTYwIqF34ZvabE/C6gG9gfW9qgmxwbqU1P0l2gY63YOpHOmqpyB4/
- dutQpTq9ip4Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 08:26:13 -0700
-IronPort-SDR: lpwA1behfMK+YoTYrewJdqYqqwJnbTOvkihSrV8etO4S7L7OrLHQ5L8WJd8nkhoMvqurgnnLd8
- ugv8/0/nSPbQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,388,1583222400"; 
-   d="scan'208";a="253223172"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008.fm.intel.com with ESMTP; 13 May 2020 08:26:11 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1jYtGv-006Rs4-KZ; Wed, 13 May 2020 18:26:13 +0300
-Date:   Wed, 13 May 2020 18:26:13 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-usb@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Subject: Re: [PATCH v10 1/5] usb: xhci: Change the XHCI link order in the
- Makefile
-Message-ID: <20200513152613.GR185537@smile.fi.intel.com>
-References: <20200512150019.25903-1-alcooperx@gmail.com>
- <20200512150019.25903-2-alcooperx@gmail.com>
- <20200513122613.GA1023594@kroah.com>
- <7acc2a4c-caab-11e7-7b3f-4176f19c58cf@gmail.com>
+        id S1732124AbgEMP2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 11:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729257AbgEMP2G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 11:28:06 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD42C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 08:28:06 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jYtIX-0007C3-Pu; Wed, 13 May 2020 17:27:53 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 3D63D100605; Wed, 13 May 2020 17:27:53 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Balbir Singh <sblbir@amazon.com>, linux-kernel@vger.kernel.org
+Cc:     jpoimboe@redhat.com, tony.luck@intel.com, keescook@chromium.org,
+        benh@kernel.crashing.org, x86@kernel.org, dave.hansen@intel.com,
+        thomas.lendacky@amd.com, Balbir Singh <sblbir@amazon.com>
+Subject: Re: [PATCH v6 5/6] Optionally flush L1D on context switch
+In-Reply-To: <20200510014803.12190-6-sblbir@amazon.com>
+References: <20200510014803.12190-1-sblbir@amazon.com> <20200510014803.12190-6-sblbir@amazon.com>
+Date:   Wed, 13 May 2020 17:27:53 +0200
+Message-ID: <878shv3ldy.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7acc2a4c-caab-11e7-7b3f-4176f19c58cf@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 08:08:07AM -0700, Florian Fainelli wrote:
-> On 5/13/2020 5:26 AM, Greg Kroah-Hartman wrote:
-> > On Tue, May 12, 2020 at 11:00:15AM -0400, Al Cooper wrote:
-> >> Some BRCMSTB USB chips have an XHCI, EHCI and OHCI controller
-> >> on the same port where XHCI handles 3.0 devices, EHCI handles 2.0
-> >> devices and OHCI handles <2.0 devices. Currently the Makefile
-> >> has XHCI linking at the bottom which will result in the XHIC driver
-> >> initalizing after the EHCI and OHCI drivers and any installed 3.0
-> >> device will be seen as a 2.0 device. Moving the XHCI linking
-> >> above the EHCI and OHCI linking fixes the issue.
-> > 
-> > What happens if all of these are modules and they are loaded in a
-> > different order?  This makefile change will not help with that, you need
-> > to have logic in the code in order to properly coordinate this type of
-> > mess, sorry.
-> 
-> I believe we should be using module soft dependencies to instruct the
-> module loaders to load the modules in the correct order, so something
-> like this would do (not tested) for xhci-plat-hcd.c:
-> 
-> MODULE_SOFTDEP("post: ehci-hcd ohci-hcd");
-> 
-> and I am not sure whether we need to add the opposite for ehci-hcd and
-> ohci-hcd:
-> 
-> MODULE_SOFTDEP("pre: xhci-plat-hcd");
+Balbir Singh <sblbir@amazon.com> writes:
 
-JFYI: not all user space support this (alas, but that's current state of
-affairs), OTOH I don't really care about those which do not support it
-(Busybox).
+> Implement a mechanism to selectively flush the L1D cache. The goal is to
+> allow tasks that are paranoid due to the recent snoop assisted data sampling
+> vulnerabilites, to flush their L1D on being switched out.  This protects
+> their data from being snooped or leaked via side channels after the task
+> has context switched out.
+>
+> There are two scenarios we might want to protect against, a task leaving
+> the CPU with data still in L1D (which is the main concern of this patch),
+> the second scenario is a malicious task coming in (not so well trusted)
+> for which we want to clean up the cache before it starts. Only the case
+> for the former is addressed.
+>
+> A new thread_info flag TIF_SPEC_FLUSH_L1D is added to track tasks which
+> opt-into L1D flushing. cpu_tlbstate.last_user_mm_spec is used to convert
+> the TIF flags into mm state (per cpu via last_user_mm_spec) in
+> cond_mitigation(), which then used to do decide when to call flush_l1d().
+>
+> Add prctl()'s to opt-in to the L1D cache on context switch out, the
+> existing mechanisms of tracking prev_mm via cpu_tlbstate is
+> reused to track state of the tasks and to flush the L1D cache.
+> The prctl interface is generic and can be ported over to other
+> architectures.
+>
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Balbir Singh <sblbir@amazon.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> ---
+>  arch/x86/include/asm/thread_info.h |  7 ++++-
+>  arch/x86/mm/tlb.c                  | 44 ++++++++++++++++++++++++++++--
+>  include/uapi/linux/prctl.h         |  4 +++
+>  kernel/sys.c                       | 20 ++++++++++++++
+>  4 files changed, 72 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
+> index 8de8ceccb8bc..67de693d9ba1 100644
+> --- a/arch/x86/include/asm/thread_info.h
+> +++ b/arch/x86/include/asm/thread_info.h
+> @@ -84,7 +84,7 @@ struct thread_info {
+>  #define TIF_SYSCALL_AUDIT	7	/* syscall auditing active */
+>  #define TIF_SECCOMP		8	/* secure computing */
+>  #define TIF_SPEC_IB		9	/* Indirect branch speculation mitigation */
+> -#define TIF_SPEC_FORCE_UPDATE	10	/* Force speculation MSR update in context switch */
+> +#define TIF_SPEC_FLUSH_L1D	10	/* Flush L1D on mm switches (processes) */
+>  #define TIF_USER_RETURN_NOTIFY	11	/* notify kernel of userspace return */
+>  #define TIF_UPROBE		12	/* breakpointed or singlestepping */
+>  #define TIF_PATCH_PENDING	13	/* pending live patching update */
+> @@ -96,6 +96,7 @@ struct thread_info {
+>  #define TIF_MEMDIE		20	/* is terminating due to OOM killer */
+>  #define TIF_POLLING_NRFLAG	21	/* idle is polling for TIF_NEED_RESCHED */
+>  #define TIF_IO_BITMAP		22	/* uses I/O bitmap */
+> +#define TIF_SPEC_FORCE_UPDATE	23	/* Force speculation MSR update in context switch */
+>  #define TIF_FORCED_TF		24	/* true if TF in eflags artificially */
+>  #define TIF_BLOCKSTEP		25	/* set when we want DEBUGCTLMSR_BTF */
+>  #define TIF_LAZY_MMU_UPDATES	27	/* task is updating the mmu lazily */
+> @@ -132,6 +133,7 @@ struct thread_info {
+>  #define _TIF_ADDR32		(1 << TIF_ADDR32)
+>  #define _TIF_X32		(1 << TIF_X32)
+>  #define _TIF_FSCHECK		(1 << TIF_FSCHECK)
+> +#define _TIF_SPEC_FLUSH_L1D	(1 << TIF_SPEC_FLUSH_L1D)
 
--- 
-With Best Regards,
-Andy Shevchenko
+Bah. These defines are ordered in the same way as the TIF defines....
 
+>  /*
+> - * Bits to mangle the TIF_SPEC_IB state into the mm pointer which is
+> + * Bits to mangle the TIF_SPEC_* state into the mm pointer which is
+>   * stored in cpu_tlb_state.last_user_mm_spec.
+>   */
+>  #define LAST_USER_MM_IBPB	0x1UL
+> -#define LAST_USER_MM_SPEC_MASK	(LAST_USER_MM_IBPB)
+> +#define LAST_USER_MM_L1D_FLUSH	0x2UL
+> +#define LAST_USER_MM_SPEC_MASK	(LAST_USER_MM_IBPB | LAST_USER_MM_L1D_FLUSH)
 
+You lost
+
++       BUILD_BUG_ON(TIF_SPEC_FLUSH_L1D != TIF_SPEC_IB + 1);
+
+from patch I gave you.
