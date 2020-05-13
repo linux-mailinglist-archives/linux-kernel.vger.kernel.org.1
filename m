@@ -2,155 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B002A1D219D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B781D21AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 00:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730455AbgEMV72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:59:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730405AbgEMV70 (ORCPT
+        id S1730358AbgEMWDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 18:03:17 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:51938 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729775AbgEMWDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:59:26 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF277C05BD0F
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:59:25 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x15so350413pfa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:59:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uWnq+06g1H9soD1qxhwQLI1N3tT7e79PiCY3gi5c9aM=;
-        b=fe3R6CAU9akKfw4dtfUNsRdKf7Ag7zoIYxBqVogXiRrGwPU0QUp/9tNbaEemvZzD1L
-         /T7Z5yqdRUT6l2ksQP+kuFuuu/B8IBMAdp9GYoKzOr+E1yoOhBqUT0eiCGWp5KMK0zvw
-         Dc6KMgYU8E6iLb2l9O0cf5rGVtAkeLViaDji4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uWnq+06g1H9soD1qxhwQLI1N3tT7e79PiCY3gi5c9aM=;
-        b=nRecRbUTGmvfXgPe8XRZBD18zEpi9FV3Ffa25PpvQc8usIE1VkZZ7mX8eBpShqtAjn
-         AfGtRB2htHhp8r1A6FVj7//mxq7+miLa6TyXEgDgkn0CyL0me2vS2NyArUcBJAuNMUlR
-         AqHrP4FnvWodS7Se0cZWZiNAyv6BolxSfyGBkRrkOhSwmotXOoxtJEEb0dIALFcaz+PU
-         gdlBRX6WzjJEQHxSi/5fFvFrzLYxuinrNFOgSXnMjbVn+xEy032yfSpKOEcyNYBdwUpv
-         ENnsw0KWfi3GHyIYeYim3404bSr91m42aEr9M1aIMte77TufjIGdehuwffpbD5MZsgjA
-         7oWQ==
-X-Gm-Message-State: AOAM5320SdYmfPaZA8Og4zvnHhOq2XrXyssb884wyKYf5D8FR6zBH7oN
-        MoHkCwIXz2FYO0TQQHX+uqR5tg==
-X-Google-Smtp-Source: ABdhPJzkZax8TyAVILaCvSJkjfp8FipP70nrl3ZYFbtA5yfhvakjUWoYp2finzJP9lX++dBHXGJ1rg==
-X-Received: by 2002:a62:1d48:: with SMTP id d69mr1299026pfd.102.1589407165323;
-        Wed, 13 May 2020 14:59:25 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id k27sm547169pgb.30.2020.05.13.14.59.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 14:59:24 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
-        narmstrong@baylibre.com, a.hajda@samsung.com,
-        Laurent.pinchart@ideasonboard.com, spanda@codeaurora.org
-Cc:     bjorn.andersson@linaro.org, dri-devel@lists.freedesktop.org,
-        swboyd@chromium.org, devicetree@vger.kernel.org,
-        jeffrey.l.hugo@gmail.com, jernej.skrabec@siol.net,
-        linux-arm-msm@vger.kernel.org, robdclark@chromium.org,
-        jonas@kwiboo.se, linux-gpio@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 3/3] dt-bindings: drm/bridge: ti-sn65dsi86: Document no-hpd
-Date:   Wed, 13 May 2020 14:59:02 -0700
-Message-Id: <20200513145807.v6.3.I72892d485088e57378a4748c86bc0f6c2494d807@changeid>
-X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
-In-Reply-To: <20200513215902.261547-1-dianders@chromium.org>
-References: <20200513215902.261547-1-dianders@chromium.org>
+        Wed, 13 May 2020 18:03:16 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jYzT4-00009V-MU; Wed, 13 May 2020 16:03:10 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jYzT3-0004MR-Ko; Wed, 13 May 2020 16:03:10 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Rob Landley <rob@landley.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>, dalias@libc.org
+References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
+        <87sgga6ze4.fsf@x220.int.ebiederm.org>
+        <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
+        <87eerszyim.fsf_-_@x220.int.ebiederm.org>
+        <ee83587b-8a1c-3c4f-cc0f-7bc98afabae1@I-love.SAKURA.ne.jp>
+        <CAHk-=wgQ2ovXMW=5ZHCpowkE1PwPQSL7oV4YXzBxd6eqNRXxnQ@mail.gmail.com>
+        <87sgg6v8we.fsf@x220.int.ebiederm.org>
+        <f33135b7-caa2-94f3-7563-fab6a1f5da0f@landley.net>
+Date:   Wed, 13 May 2020 16:59:35 -0500
+In-Reply-To: <f33135b7-caa2-94f3-7563-fab6a1f5da0f@landley.net> (Rob Landley's
+        message of "Mon, 11 May 2020 14:10:23 -0500")
+Message-ID: <87ftc3lcmw.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1jYzT3-0004MR-Ko;;;mid=<87ftc3lcmw.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/bb/zy/n+ThDhzZ1lqWLBaPDs3XJ/oeMk=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
+        XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Rob Landley <rob@landley.net>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 419 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 11 (2.7%), b_tie_ro: 10 (2.4%), parse: 0.99
+        (0.2%), extract_message_metadata: 13 (3.2%), get_uri_detail_list: 1.48
+        (0.4%), tests_pri_-1000: 7 (1.7%), tests_pri_-950: 1.54 (0.4%),
+        tests_pri_-900: 1.25 (0.3%), tests_pri_-90: 65 (15.5%), check_bayes:
+        63 (15.0%), b_tokenize: 9 (2.1%), b_tok_get_all: 9 (2.1%),
+        b_comp_prob: 2.9 (0.7%), b_tok_touch_all: 38 (9.1%), b_finish: 1.18
+        (0.3%), tests_pri_0: 305 (72.8%), check_dkim_signature: 1.07 (0.3%),
+        check_dkim_adsp: 2.5 (0.6%), poll_dns_idle: 0.76 (0.2%), tests_pri_10:
+        2.1 (0.5%), tests_pri_500: 7 (1.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 3/5] exec: Remove recursion from search_binary_handler
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ti-sn65dsi86 MIPI DSI to eDP bridge chip has a dedicated hardware
-HPD (Hot Plug Detect) pin on it, but it's mostly useless for eDP
-because of excessive debouncing in hardware.  Specifically there is no
-way to disable the debouncing and for eDP debouncing hurts you because
-HPD is just used for knowing when the panel is ready, not for
-detecting physical plug events.
+Rob Landley <rob@landley.net> writes:
 
-Currently the driver in Linux just assumes that nobody has HPD hooked
-up.  It relies on folks setting the "no-hpd" property in the panel
-node to specify that HPD isn't hooked up and then the panel driver
-using this to add some worst case delays when turning on the panel.
+> On 5/11/20 9:33 AM, Eric W. Biederman wrote:
+>> What I do see is that interp_data is just a parameter that is smuggled
+>> into the call of search binary handler.  And the next binary handler
+>> needs to be binfmt_elf for it to make much sense, as only binfmt_elf
+>> (and binfmt_elf_fdpic) deals with BINPRM_FLAGS_EXECFD.
+>
+> The binfmt_elf_fdpic driver is separate from binfmt_elf for the same reason
+> ext2/ext3/ext4 used to have 3 drivers: fdpic is really just binfmt_elf with the
+> 4 main sections (text, data, bss, rodata) able to move independently of each
+> other (each tracked with its own base pointer).
+>
+> It's kind of -fPIE on steroids, and various security people have sniffed at it
+> over the years to give ASLR more degrees of freedom on with-MMU systems. Many
+> moons ago Rich Felker proposed teaching the fdpic loader how to load normal ELF
+> binaries so there's just the one loader (there's a flag in the ELF header to say
+> whether the sections are independent or not).
 
-Apparently it's also useful to specify "no-hpd" in the bridge node so
-that the bridge driver can make sure it's doing the right thing
-without peeking into the panel [1].  This would be used if anyone ever
-found it useful to implement support for the HW HPD pin on the bridge.
-Let's add this property to the bindings.
+Careful with your terminology.  ELF sections are for .o's For
+executables ELF have segments.  And reading through the code it is the
+program segments that are independently relocatable.
 
-NOTES:
-- This is somewhat of a backward-incompatible change.  All current
-  known users of ti-sn65dsi86 didn't have "no-hpd" specified in the
-  bridge node yet none of them had HPD hooked up.  This worked because
-  the current Linux driver just assumed that HPD was never hooked up.
-  We could make it less incompatible by saying that for this bridge
-  it's assumed HPD isn't hooked up _unless_ a property is defined, but
-  "no-hpd" is much more standard and it's unlikely to matter unless
-  someone quickly goes and implements HPD in the driver.
-- It is sensible to specify "no-hpd" at the bridge chip level and
-  specify "hpd-gpios" at the panel level.  That would mean HPD is
-  hooked up to some other GPIO in the system, just not the hardware
-  HPD pin on the bridge chip.
+There is a flag but it is defined per architecture and I don't think one
+of the architectures define it.
 
-[1] https://lore.kernel.org/r/20200417180819.GE5861@pendragon.ideasonboard.com
+I looked at ARM and apparently with an MMU ARM turns fdpic binaries into
+PIE executables.  I am not certain why.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
----
+The registers passed to the entry point are also different for both
+cases.
 
-Changes in v6: None
-Changes in v5: None
-Changes in v4:
-- Tacked on "or is otherwise unusable." to description.
+I think it would have been nice if the fdpic support had used a
+different ELF type, instead of a different depending on using a
+different architecture.
 
-Changes in v3:
-- useful implement => useful to implement
+All that aside the core dumping code looks to be essentially the same
+between binfmt_elf.c and binfmt_elf_fdpic.c.  Do you think people would
+be interested in refactoring binfmt_elf.c and binfmt_elf_fdpic.c so that
+they could share the same core dumping code?
 
-Changes in v2:
-- ("dt-bindings: drm/bridge: ti-sn65dsi86: Document no-hpd") new for v2.
-
- .../devicetree/bindings/display/bridge/ti,sn65dsi86.yaml  | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-index 07d26121afca..be10e8cf31e1 100644
---- a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-+++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-@@ -28,6 +28,12 @@ properties:
-     maxItems: 1
-     description: GPIO specifier for GPIO1 pin on bridge (active low).
- 
-+  no-hpd:
-+    type: boolean
-+    description:
-+      Set if the HPD line on the bridge isn't hooked up to anything or is
-+      otherwise unusable.
-+
-   vccio-supply:
-     description: A 1.8V supply that powers the digital IOs.
- 
-@@ -213,6 +219,8 @@ examples:
-         clocks = <&rpmhcc RPMH_LN_BB_CLK2>;
-         clock-names = "refclk";
- 
-+        no-hpd;
-+
-         ports {
-           #address-cells = <1>;
-           #size-cells = <0>;
--- 
-2.26.2.645.ge9eca65c58-goog
-
+Eric
