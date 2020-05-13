@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A881D0E54
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD76B1D0EE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388393AbgEMJ73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:59:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55344 "EHLO mail.kernel.org"
+        id S1733166AbgEMJtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:49:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387450AbgEMJxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:53:22 -0400
+        id S1730822AbgEMJtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:49:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9277923127;
-        Wed, 13 May 2020 09:53:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27EEE20575;
+        Wed, 13 May 2020 09:49:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363602;
-        bh=TlT7PaR9dkyX6jd4ZuvSgQwZhY1dVip0Q7ChdmokFDE=;
+        s=default; t=1589363340;
+        bh=r+JP3xxzpaAOKW2E6JRFN18/pSj2M/sFLWWmAZPHAkE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WMzAAb287QCrpPc4QoVdeez7Vc0fL82y/PdUWCW9pdK+e3xv/NyKKX9ynr99O/6f7
-         5chpdq8lKEW3jcmYyKdXYCudMIZi045nokIlzS7EdxMD3W2e9662trCa6I/B8v0OSj
-         jNbCM58YmOFkQ2xEGn4ihi6nrcLq8co94voR4Dyk=
+        b=Hv8oO4Eop+5/yl4WoxJPUiVcy2VnxwaQljU4fbTAyvmAlBTZfXR3+YoYQPnNLbz0n
+         RsIuHlt5bMGcCAllpOCtwCJJOcZ/5hU1gTpi52mgYYbbrrhV5xBZ/UTl7Xc4cpEbuN
+         IUjlRqRt+CpkAGDOrHY6kLuvKDm6UDO2JhXh1754=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org, Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 050/118] net: mvpp2: prevent buffer overflow in mvpp22_rss_ctx()
+Subject: [PATCH 5.4 33/90] bnxt_en: Improve AER slot reset.
 Date:   Wed, 13 May 2020 11:44:29 +0200
-Message-Id: <20200513094421.545373030@linuxfoundation.org>
+Message-Id: <20200513094412.011192060@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
-References: <20200513094417.618129545@linuxfoundation.org>
+In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
+References: <20200513094408.810028856@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Michael Chan <michael.chan@broadcom.com>
 
-[ Upstream commit 39bd16df7c31bb8cf5dfd0c88e42abd5ae10029d ]
+[ Upstream commit bae361c54fb6ac6eba3b4762f49ce14beb73ef13 ]
 
-The "rss_context" variable comes from the user via  ethtool_get_rxfh().
-It can be any u32 value except zero.  Eventually it gets passed to
-mvpp22_rss_ctx() and if it is over MVPP22_N_RSS_TABLES (8) then it
-results in an array overflow.
+Improve the slot reset sequence by disabling the device to prevent bad
+DMAs if slot reset fails.  Return the proper result instead of always
+PCI_ERS_RESULT_RECOVERED to the caller.
 
-Fixes: 895586d5dc32 ("net: mvpp2: cls: Use RSS contexts to handle RSS tables")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 6316ea6db93d ("bnxt_en: Enable AER support.")
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -4325,6 +4325,8 @@ static int mvpp2_ethtool_get_rxfh_contex
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -12066,12 +12066,15 @@ static pci_ers_result_t bnxt_io_slot_res
+ 		}
+ 	}
  
- 	if (!mvpp22_rss_is_supported())
- 		return -EOPNOTSUPP;
-+	if (rss_context >= MVPP22_N_RSS_TABLES)
-+		return -EINVAL;
+-	if (result != PCI_ERS_RESULT_RECOVERED && netif_running(netdev))
+-		dev_close(netdev);
++	if (result != PCI_ERS_RESULT_RECOVERED) {
++		if (netif_running(netdev))
++			dev_close(netdev);
++		pci_disable_device(pdev);
++	}
  
- 	if (hfunc)
- 		*hfunc = ETH_RSS_HASH_CRC32;
+ 	rtnl_unlock();
+ 
+-	return PCI_ERS_RESULT_RECOVERED;
++	return result;
+ }
+ 
+ /**
 
 
