@@ -2,84 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBAF91D1DED
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 20:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E331D1DD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 20:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390331AbgEMSrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 14:47:17 -0400
-Received: from out28-2.mail.aliyun.com ([115.124.28.2]:54780 "EHLO
-        out28-2.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390318AbgEMSrI (ORCPT
+        id S2390216AbgEMSqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 14:46:49 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:40584 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732218AbgEMSqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 14:47:08 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2469164|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00914966-0.00051073-0.99034;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03268;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=19;RT=19;SR=0;TI=SMTPD_---.HY8LAU0_1589395602;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.HY8LAU0_1589395602)
-          by smtp.aliyun-inc.com(10.147.44.118);
-          Thu, 14 May 2020 02:47:03 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        tsbogend@alpha.franken.de, paulburton@kernel.org,
-        jiaxun.yang@flygoat.com, chenhc@lemote.com, tglx@linutronix.de,
-        robh+dt@kernel.org, daniel.lezcano@linaro.org,
-        keescook@chromium.org, paul@crapouillou.net, krzk@kernel.org,
-        hns@goldelico.com, ebiederm@xmission.com,
-        dongsheng.qiu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH v7 6/6] MIPS: CI20: Update defconfig to support SMP.
-Date:   Thu, 14 May 2020 02:46:17 +0800
-Message-Id: <1589395578-87441-8-git-send-email-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589395578-87441-1-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1589395578-87441-1-git-send-email-zhouyanjie@wanyeetech.com>
+        Wed, 13 May 2020 14:46:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589395607;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kmVswhhUfzJrVfazGuns3TDSU4rliVl1t7Fe7MJ2Xjk=;
+        b=QNUHh62X6Hxqex+YARrTp8r+Ig6ceH3+SubSKZvACJ18Wg/J9nIfDxNP6pGYO6Q5e5CN23
+        +4W+soCAzrbMY0coGS+gpm6JDX1/iBYWEHtK+YL6xLp0lRgWfJkzPhvdBGme6rUEq0XaDY
+        sx313dtW/8NhG7jEVxl6zGuLipsDjn0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-176-3FG-WDhRPhC2M-vzl3GMaQ-1; Wed, 13 May 2020 14:46:45 -0400
+X-MC-Unique: 3FG-WDhRPhC2M-vzl3GMaQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4480F474;
+        Wed, 13 May 2020 18:46:43 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-115-240.rdu2.redhat.com [10.10.115.240])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5DC75196AE;
+        Wed, 13 May 2020 18:46:41 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 79601220206; Wed, 13 May 2020 14:46:41 -0400 (EDT)
+Date:   Wed, 13 May 2020 14:46:41 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] KVM: x86: interrupt based APF page-ready event
+ delivery
+Message-ID: <20200513184641.GF173965@redhat.com>
+References: <20200511164752.2158645-1-vkuznets@redhat.com>
+ <20200511164752.2158645-5-vkuznets@redhat.com>
+ <20200512142411.GA138129@redhat.com>
+ <87lflxm9sy.fsf@vitty.brq.redhat.com>
+ <20200512180704.GE138129@redhat.com>
+ <877dxgmcjv.fsf@vitty.brq.redhat.com>
+ <20200513135350.GB173965@redhat.com>
+ <87ftc3lxqc.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ftc3lxqc.fsf@vitty.brq.redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "CONFIG_SMP=y" and "CONFIG_NR_CPUS=2" to support SMP.
+On Wed, May 13, 2020 at 04:23:55PM +0200, Vitaly Kuznetsov wrote:
 
-Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
-Tested-by: Paul Boddie <paul@boddie.org.uk>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
+[..]
+> >> Also,
+> >> kdump kernel may not even support APF so it will get very confused when
+> >> APF events get delivered.
+> >
+> > New kernel can just ignore these events if it does not support async
+> > pf? 
+> >
+> > This is somewhat similar to devices still doing interrupts in new
+> > kernel. And solution for that seemed to be doing a "reset" of devices
+> > in new kernel. We probably need similar logic where in new kernel
+> > we simply disable "async pf" so that we don't get new notifications.
+> 
+> Right and that's what we're doing - just disabling new notifications.
 
-Notes:
-    v1->v2:
-    No change.
-    
-    v2->v3:
-    No change.
-    
-    v3->v4:
-    Rebase on top of kernel 5.6-rc1.
-    
-    v4->v5:
-    No change.
-    
-    v5->v6:
-    No change.
-    
-    v6->v7:
-    No change.
+Nice.
 
- arch/mips/configs/ci20_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+So why there is a need to deliver "page ready" notifications
+to guest after guest has disabled async pf. Atleast kdump does not
+seem to need it. It will boot into second kernel anyway, irrespective
+of the fact whether it receives page ready or not.
 
-diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
-index 0db0088..c8dd136 100644
---- a/arch/mips/configs/ci20_defconfig
-+++ b/arch/mips/configs/ci20_defconfig
-@@ -1,3 +1,5 @@
-+CONFIG_SMP=y
-+CONFIG_NR_CPUS=2
- # CONFIG_LOCALVERSION_AUTO is not set
- CONFIG_MODULES=y
- CONFIG_KERNEL_XZ=y
--- 
-2.7.4
+Thanks
+Vivek
 
