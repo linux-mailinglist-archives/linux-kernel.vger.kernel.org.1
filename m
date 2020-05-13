@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7FD1D1637
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B451D1643
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388564AbgEMNof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:44:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387791AbgEMNoe (ORCPT
+        id S2388246AbgEMNpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:45:54 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:35911 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727792AbgEMNpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:44:34 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2DCFC061A0C;
-        Wed, 13 May 2020 06:44:34 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id u22so6824839plq.12;
-        Wed, 13 May 2020 06:44:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hsyJheNWdxA6aOfUxXnKVZCW8RsEIJEDZ9+V5bjVfXU=;
-        b=qE8NAmG4SDddeXEG8Ni34+LyjW+TU7yalPvz2/F/iDDFJfn38xk6OuSChV2Sv1hgO0
-         EAqkJZF7B4WNoGDPvHu+AFq45WO3+5dSqiMC25WYZxpMmS+JHdArNiYG0HG7mRrq0s8C
-         EWHIlpwqdnKGiHIjteyOsK5shyC8ztrCljAFC82r1ZdY0sVDJM8NsO9GxeJp6jsSLd6Y
-         gNGYs2XpyLBVEZmWnQnjDMSKHmA2epBAg8EPV0hsCNf4Q/aTHVsiYYSLF857q6uO3qOQ
-         IlZsrXbuLr+4ezlknqVMoOpGK2NfgbwoWJ2ZpooxhFIBTh+mFeJXoGlUZsDL2HX5sFGf
-         nUFg==
+        Wed, 13 May 2020 09:45:53 -0400
+Received: by mail-oi1-f194.google.com with SMTP id x7so20539831oic.3;
+        Wed, 13 May 2020 06:45:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hsyJheNWdxA6aOfUxXnKVZCW8RsEIJEDZ9+V5bjVfXU=;
-        b=XOeHuh0T++S8ndMGkSnQZIVzz3sfCaa0d9+9/Ppk+JLFL9S/4z3UEhhuZpM15JY/kU
-         0+wh34AFitXJkvCGWi9mX9dGOlQPrS7oq4OV5ACRFVljSari//eRhwoIEVr8YwS14t0z
-         B1CoiQRAZuf5dO+PykAGowtMS7vhZiR2Z7L7s3koCDWiYpmwxRzKEzyJNiUi5xBZ3NtW
-         rRbuLrWcVhFrE6Ou/ipAZjZHpucTZnqOOhMMAFiKmGi0FHtIpRBzek5J91qBqN0hBWn4
-         kf7a6eBsxLQB1MuM5fpJnmT4yNEYz6qKpPoqOK5icapHZv7TQnEJHWjD7RWtEPQEbLo0
-         UaPw==
-X-Gm-Message-State: AGi0PuaXfnVb/dkmmbpZ/zCIZhzts40YvTFFVLuHw61/9TOhlVxtdMH0
-        YRSv3K0ml3TTy0LY7H6oNemxrNTq0Cpsew==
-X-Google-Smtp-Source: APiQypKMdPeiGgF2UsuarbB3Dq2j7ShHAJsiOc982OlQc55Vj2S1FEvU0PPyJDjpO6jKGd+ipFyq4A==
-X-Received: by 2002:a17:902:522:: with SMTP id 31mr24894858plf.68.1589377473881;
-        Wed, 13 May 2020 06:44:33 -0700 (PDT)
-Received: from [0.0.0.0] (36-239-123-146.dynamic-ip.hinet.net. [36.239.123.146])
-        by smtp.gmail.com with ESMTPSA id m63sm15157796pfb.101.2020.05.13.06.44.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2020 06:44:33 -0700 (PDT)
-Subject: Re: [PATCH] of/fdt: Remove redundant kbasename function call
-To:     robh+dt@kernel.org, frowand.list@gmail.com, robh@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200512154909.279788-1-arch0.zheng@gmail.com>
-From:   Qi Zheng <arch0.zheng@gmail.com>
-Message-ID: <c8c29efe-a79f-10e6-bb4d-a65f592eb33b@gmail.com>
-Date:   Wed, 13 May 2020 21:44:25 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xp2IqGP2Mbz3cUUpa596hqcAdNywAgOxy/wkkTIouTg=;
+        b=LiIltCoq47JiOnxD0ShmFYyGPstSVWGVyLqihPYSAVlw62Dh1hvyuIemKqxFwU+rhw
+         P7uy6biHyKTeFI9hpVJAmYkBIeWC56dnbF74YsQVKMfbHRnOMKWH0hjWYpaWA54a1Kzm
+         zYutM6y9JBcgoly+aYTlPS2vIqBWEX0d6F747laMPKpcog+9XARdNZLeO0oPJn7lubva
+         A0h3L5fCojpR/AJz/Oyu2T3rrDfqJhSNeCk9OmXgxqp0C42ynx79adjPNC8HCB3zy3h1
+         aaCgr5OMze2frVJUp8oHeW4/sI1UjTTqXSqkAJDAGxmCMdWSdW5YiUkQqg8Bwm1j9IZh
+         Npfg==
+X-Gm-Message-State: AGi0PuY6gTFdCVPlBuxtxLTvcdk6QqihiTIlebb33l6zsMArlsnXI2bu
+        8mBX768KZ9Y2ndxfMlh8ikA1Cv26X5DkEHDFVSE=
+X-Google-Smtp-Source: APiQypIkVm7LXX8qk0ws4kqaeeBcVvSSkhrRjsfESas1+/iQAxJtbMOedEgPmzmOblcvF9BI9+5orflFlvsnP8NbL+g=
+X-Received: by 2002:aca:cd93:: with SMTP id d141mr4645429oig.148.1589377552343;
+ Wed, 13 May 2020 06:45:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200512154909.279788-1-arch0.zheng@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1589370694-14327-1-git-send-email-alencar.fmce@imbel.gov.br>
+In-Reply-To: <1589370694-14327-1-git-send-email-alencar.fmce@imbel.gov.br>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 13 May 2020 15:45:41 +0200
+Message-ID: <CAMuHMdX5-cYdK0UrNYj+wRuUu3whADaq607OuBjALnnKWi5FCQ@mail.gmail.com>
+Subject: Re: [PATCH] video: fbdev: ssd1307fb: Added support to Column offset
+To:     Rodrigo Rolim Mendes de Alencar <455.rodrigo.alencar@gmail.com>
+Cc:     Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        alencar.fmce@imbel.gov.br,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/5/12 下午11:49, Qi Zheng wrote:
-> For version 1 to 3 of the device tree, this is the node full
-> path as a zero terminated string, starting with "/". The
-> following equation will not hold, since the node name has
-> been processed in the fdt_get_name().
-> 
-> 	*pathp == '/'
-> 
-> For version 16 and later, this is the node unit name only
-> (or an empty string for the root node). So the above
-> equation will still not hold.
-> 
-> So the kbasename() is redundant, just remove it.
-> 
-> Signed-off-by: Qi Zheng <arch0.zheng@gmail.com>
-> ---
->   drivers/of/fdt.c | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> index 8a8e07a8f03d..ea31b2ae8474 100644
-> --- a/drivers/of/fdt.c
-> +++ b/drivers/of/fdt.c
-> @@ -643,8 +643,6 @@ int __init of_scan_flat_dt(int (*it)(unsigned long node,
->   	     offset = fdt_next_node(blob, offset, &depth)) {
->   
->   		pathp = fdt_get_name(blob, offset, NULL);
-> -		if (*pathp == '/')
-> -			pathp = kbasename(pathp);
->   		rc = it(offset, pathp, depth, data);
->   	}
->   	return rc;
-> 
+CC dt
 
-add Rob Herring <robh@kernel.org>.
+On Wed, May 13, 2020 at 1:52 PM Rodrigo Rolim Mendes de Alencar
+<455.rodrigo.alencar@gmail.com> wrote:
+> This patch provides support for displays like VGM128064B0W10,
+> which requires a column offset of 2, i.e., its segments starts
+> in SEG2 and ends in SEG129.
+>
+> Signed-off-by: Rodrigo Alencar <455.rodrigo.alencar@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/display/ssd1307fb.txt | 1 +
+>  drivers/video/fbdev/ssd1307fb.c                         | 8 ++++++--
+>  2 files changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/display/ssd1307fb.txt b/Documentation/devicetree/bindings/display/ssd1307fb.txt
+> index 27333b9551b3..a9b51fd724a9 100644
+> --- a/Documentation/devicetree/bindings/display/ssd1307fb.txt
+> +++ b/Documentation/devicetree/bindings/display/ssd1307fb.txt
+> @@ -19,6 +19,7 @@ Optional properties:
+>    - vbat-supply: The supply for VBAT
+>    - solomon,segment-no-remap: Display needs normal (non-inverted) data column
+>                                to segment mapping
+> +  - solomon,col-offset: Offset of columns (SEG) that the screen is mapped to.
+>    - solomon,com-seq: Display uses sequential COM pin configuration
+>    - solomon,com-lrremap: Display uses left-right COM pin remap
+>    - solomon,com-invdir: Display uses inverted COM pin scan direction
+> diff --git a/drivers/video/fbdev/ssd1307fb.c b/drivers/video/fbdev/ssd1307fb.c
+> index 8e06ba912d60..0241585bfbcc 100644
+> --- a/drivers/video/fbdev/ssd1307fb.c
+> +++ b/drivers/video/fbdev/ssd1307fb.c
+> @@ -74,6 +74,7 @@ struct ssd1307fb_par {
+>         struct fb_info *info;
+>         u8 lookup_table[4];
+>         u32 page_offset;
+> +       u32 col_offset;
+>         u32 prechargep1;
+>         u32 prechargep2;
+>         struct pwm_device *pwm;
+> @@ -458,11 +459,11 @@ static int ssd1307fb_init(struct ssd1307fb_par *par)
+>         if (ret < 0)
+>                 return ret;
+>
+> -       ret = ssd1307fb_write_cmd(par->client, 0x0);
+> +       ret = ssd1307fb_write_cmd(par->client, par->col_offset);
+>         if (ret < 0)
+>                 return ret;
+>
+> -       ret = ssd1307fb_write_cmd(par->client, par->width - 1);
+> +       ret = ssd1307fb_write_cmd(par->client, par->col_offset + par->width - 1);
+>         if (ret < 0)
+>                 return ret;
+>
+> @@ -626,6 +627,9 @@ static int ssd1307fb_probe(struct i2c_client *client)
+>         if (device_property_read_u32(dev, "solomon,page-offset", &par->page_offset))
+>                 par->page_offset = 1;
+>
+> +       if (of_property_read_u32(node, "solomon,col-offset", &par->col_offset))
+> +               par->col_offset = 0;
+> +
+>         if (device_property_read_u32(dev, "solomon,com-offset", &par->com_offset))
+>                 par->com_offset = 0;
