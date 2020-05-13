@@ -2,107 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052061D1DAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 20:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA0A1D1DA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 20:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390238AbgEMSka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 14:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47404 "EHLO
+        id S2390207AbgEMSjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 14:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733166AbgEMSka (ORCPT
+        by vger.kernel.org with ESMTP id S2389581AbgEMSjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 14:40:30 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E722C061A0C;
-        Wed, 13 May 2020 11:40:30 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id 72so252855otu.1;
-        Wed, 13 May 2020 11:40:30 -0700 (PDT)
+        Wed, 13 May 2020 14:39:39 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7ECFC061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 11:39:38 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id j5so739961wrq.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 11:39:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:from:date:subject;
-        bh=UxFgBfxYrtbfoSRrOJwSR/jyUGAcjc3AvR5Q5DZlML4=;
-        b=WWSgjyrCoTbyAWUxcuhfmVBWMnDa/jr0mgszsCK06LeZ7T6hNUulr/inWZhSUl/Ezi
-         DyDQ6QCTwZSd2IpimRKqvKKFRPnlUgjbqcNI0f9vOZYB2S5HIud7LUGgnEKUT5QsZzT5
-         mpWRflLfR3jn7FdB6vKWgvRxda7/Yc0+H6U6cB/MRB2mm7ejQbWWRRaCBVSql9L6NhnK
-         PFn4eIV1VPXGbSj8l/qx4K47ZMOLNo1zRwgCa2n0C1CSqZao4YENbHVPdWaPT4MbQUpx
-         wek+nx01r+715FsDqJwkbCmrTXufoYYn2J2iBsxLDtZFsU/Z7Wg8l+AFOJxNXqRCDPMU
-         z0bg==
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=QevyPaB54vabz1NgQweuhMZ/4PP5dMX078Hx9aqjxfc=;
+        b=ewIInpz3Jv/IrkCkWkGiBC6UAat93L2zYEJfVB/67p9YtVYuw3NEVn0LJQPhSBnoBR
+         pZUumCJ55i5Nmpq7zEeDDK+k0WKMCo5B9vDp02gV9BZTg4fT1dN/flqFNi79peEEs67R
+         mFiPZ7/V5n0/0I8UIXjKTwwVnG1krpdxHa9WI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:date:subject;
-        bh=UxFgBfxYrtbfoSRrOJwSR/jyUGAcjc3AvR5Q5DZlML4=;
-        b=fryzC6BZw+ZEjKGDHgh+72sm8YU0f38zTsAUH76lEmV+kCirRQ5YcYemrSqNSKXfQl
-         awF2c7uwF1K1e6HC4xsr19vyl2WIgbuSfFW+dAkj3MfzTOz24YlAcHl5E9JvTCiCLXjm
-         PfHEMAcudYc/2vBEu0SuPjmsKQf4pYfifAghOwbaZnQkkuXdFxSo06ITDWOmgwl5UkHV
-         TnfFhmn82tGjoGpEHc6xzuHJpmEct8vfFc4x4hETk3fmwsaVmMVYhIKex1r+9Sd9/8zj
-         AF2CVOgYWbj7ZK2S8Cc6hNWFWUM9qDYb1zQ56oRhMTZChcWPHV+Tqx+sBRmwNkQjO0uW
-         vbfA==
-X-Gm-Message-State: AOAM533SD2cbFWPdNmNIH3o1J+nSzvdeH/aVfmaHi0YlSY53xBfWNj3b
-        JWQlmuYWIRepYF4p2x+wp+E=
-X-Google-Smtp-Source: ABdhPJzYMTolrbvJsxED0OyBKcnX7Ev6/+qqUrrtWH2tXqca0oe0DZLCUoeSbkoWWuokmgUcd9LVjw==
-X-Received: by 2002:a9d:4b18:: with SMTP id q24mr597103otf.31.1589395229593;
-        Wed, 13 May 2020 11:40:29 -0700 (PDT)
-Received: from localhost (cpe-70-112-70-240.austin.res.rr.com. [70.112.70.240])
-        by smtp.gmail.com with ESMTPSA id v17sm6222113oif.51.2020.05.13.11.39.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 11:40:28 -0700 (PDT)
-Message-ID: <5ebc3f1c.1c69fb81.772f9.7003@mx.google.com>
-From:   scott.shumate@gmail.com
-Date:   Wed, 13 May 2020 13:39:26 -0500
-Subject: [PATCH] HID: sony: Fix for broken buttons on DS3 USB dongles
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=QevyPaB54vabz1NgQweuhMZ/4PP5dMX078Hx9aqjxfc=;
+        b=jgFJSCbZ2ZUuUAhp5SFUohPks8zj+oWfboyvCEN94jYXQ7mtfJMpP+1PbzyI9wSlM+
+         6qg6NZ0Dyxs0qUGJKzz6rsgejfDlfF0jS1J9QRyeUlljldPveFtEqGiGUd1hb8oXc5c1
+         bzcBhWDG/yp6hXojd8Hxbo14mRqxSmzQQdA9BywiRL9TUdBIxHTUcGCE4zPmZAVsxJHK
+         9K/PNABArH7bdPenoCXbcPuJ6ucrbpJEZ66qxZa/zdc6EZCIpkRKWO75tX1L6eqEpsKx
+         Yt1qhGieavfuoW/E1HFSr2Fw0+QPynrd+nodWG+reSVo8Ph19Q4WfCPj+6TqIj8mBMdi
+         oSLg==
+X-Gm-Message-State: AOAM532LRd3fTl9b9xpk//y11Xa19zJMDol0fsYxloxxB323iu7DUyZ4
+        5uVOfsaGjkvSFpxq67QBt6Hlyg==
+X-Google-Smtp-Source: ABdhPJzhf+mYsAycvYoLOXU1WHfMH8XPnenYApwbY7dPsUsGlZ8N8UGzdao3+8+YZVroo8SME6sfvg==
+X-Received: by 2002:adf:e38b:: with SMTP id e11mr706640wrm.343.1589395177524;
+        Wed, 13 May 2020 11:39:37 -0700 (PDT)
+Received: from [10.136.13.65] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id x24sm501774wrd.51.2020.05.13.11.39.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 May 2020 11:39:36 -0700 (PDT)
+Subject: Re: [PATCH v5 6/7] misc: bcm-vk: add Broadcom VK driver
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     David Brown <david.brown@linaro.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Olof Johansson <olof@lixom.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Desmond Yan <desmond.yan@broadcom.com>,
+        James Hu <james.hu@broadcom.com>
+References: <20200508002739.19360-1-scott.branden@broadcom.com>
+ <20200508002739.19360-7-scott.branden@broadcom.com>
+ <20200513003830.GJ11244@42.do-not-panic.com>
+ <60372b2f-c03d-6384-43a7-8b97413b6672@broadcom.com>
+ <20200513065046.GA764247@kroah.com>
+ <20200513123033.GL11244@42.do-not-panic.com>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <2eaa3047-4833-8d1c-d8c7-fc602468eae3@broadcom.com>
+Date:   Wed, 13 May 2020 11:39:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200513123033.GL11244@42.do-not-panic.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix for non-working buttons on knock-off USB dongles for Sony
-controllers. These USB dongles are used to connect older Sony DA/DS1/DS2
-controllers via USB and are common on Amazon, AliExpress, etc.  Without
-the patch, the square, X, and circle buttons do not function.  These
-dongles used to work prior to kernel 4.10 but removing the global DS3
-report fixup in this commit exposed the problem:
+Thanks for link.
 
-commit e19a267b9987 Author: Roderick Colenbrander
- <roderick.colenbrander@sony.com>
-Date:   Tue Mar 7 15:45:08 2017 -0800
+On 2020-05-13 5:30 a.m., Luis Chamberlain wrote:
+> On Wed, May 13, 2020 at 08:50:46AM +0200, Greg Kroah-Hartman wrote:
+>> On Tue, May 12, 2020 at 11:31:28PM -0700, Scott Branden wrote:
+>>
+>> That's not how kernel drivers in the tree work, sorry.  They do not
+>> contain "older kernel support" in them, they work as a whole with the
+>> rest of the kernel they ship with only.
+>>
+>> Otherwise all drivers would be a total mess over time, can you imagine
+>> doing this for the next 20+ years?  Not maintainable.
+> Scott, now imagine the amount of cleanup you'd need to do to your driver
+> to get it to a state where it doesn't depend on any old kernel. That's
+> the exact shape of the driver we want.
+>
+> To backport, you can look into the backports project which strives to
+> backport drivers automatically [0] to older kernels.
+>
+> [0] https://backports.wiki.kernel.org/index.php/Main_Page
+>
+>    Luis
+Will drop legacy support from patch and look closer at this.
 
-    HID: sony: DS3 comply to Linux gamepad spec
-
-Many people reported the problem on the Ubuntu forums and are working
-around the problem by falling back to the 4.9 hid-sony driver.
-
-The problem stems from these dongles incorrectly reporting their button
-count as 13 instead of 16.  This patch fixes up the report descriptor by
-changing the button report count to 16 and removing 3 padding bits.
-
-Signed-off-by: Scott Shumate <scott.shumate@gmail.com>
----
-diff --git a/drivers/hid/hid-sony.c b/drivers/hid/hid-sony.c
-index 4c6ed6ef31f1..2f073f536070 100644
---- a/drivers/hid/hid-sony.c
-+++ b/drivers/hid/hid-sony.c
-@@ -867,6 +867,23 @@ static u8 *sony_report_fixup(struct hid_device *hdev, u8 *rdesc,
- 	if (sc->quirks & PS3REMOTE)
- 		return ps3remote_fixup(hdev, rdesc, rsize);
- 
-+	/*
-+	 * Some knock-off USB dongles incorrectly report their button count
-+	 * as 13 instead of 16 causing three non-functional buttons.
-+	 */
-+	if ((sc->quirks & SIXAXIS_CONTROLLER_USB) && *rsize >= 45 &&
-+		/* Report Count (13) */
-+		rdesc[23] == 0x95 && rdesc[24] == 0x0D &&
-+		/* Usage Maximum (13) */
-+		rdesc[37] == 0x29 && rdesc[38] == 0x0D &&
-+		/* Report Count (3) */
-+		rdesc[43] == 0x95 && rdesc[44] == 0x03) {
-+		hid_info(hdev, "Fixing up USB dongle report descriptor\n");
-+		rdesc[24] = 0x10;
-+		rdesc[38] = 0x10;
-+		rdesc[44] = 0x00;
-+	}
-+
- 	return rdesc;
- }
- 
+Thanks,
+  Scott
