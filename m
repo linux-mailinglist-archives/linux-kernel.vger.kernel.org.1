@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD76B1D0EE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608EF1D0CA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733166AbgEMJtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:49:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47736 "EHLO mail.kernel.org"
+        id S1732624AbgEMJqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:46:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730822AbgEMJtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:49:01 -0400
+        id S1732608AbgEMJqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:46:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27EEE20575;
-        Wed, 13 May 2020 09:49:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69C7720769;
+        Wed, 13 May 2020 09:46:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363340;
-        bh=r+JP3xxzpaAOKW2E6JRFN18/pSj2M/sFLWWmAZPHAkE=;
+        s=default; t=1589363178;
+        bh=HokuufDRAM7oWalWhPRiWqAim20UNg+s0sNa4Ozzl/I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hv8oO4Eop+5/yl4WoxJPUiVcy2VnxwaQljU4fbTAyvmAlBTZfXR3+YoYQPnNLbz0n
-         RsIuHlt5bMGcCAllpOCtwCJJOcZ/5hU1gTpi52mgYYbbrrhV5xBZ/UTl7Xc4cpEbuN
-         IUjlRqRt+CpkAGDOrHY6kLuvKDm6UDO2JhXh1754=
+        b=PvGnNgTT8XTcPaNcYGc03HXhaiWsPJi6AjWXxk1fWySbSUPCLbYgKjbPt+y23sixl
+         NYncQCJRTzTkTBkMTOAqQylsqugO4bpX6vKrWMDCmdCNojtjAADNVxf6aauJeMWtiR
+         GiKDi6UGpNhyhYArXoHIOHFKMoJlWK7wVMnaDG1c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Chan <michael.chan@broadcom.com>,
+        stable@vger.kernel.org, Julia Lawall <Julia.Lawall@inria.fr>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 33/90] bnxt_en: Improve AER slot reset.
-Date:   Wed, 13 May 2020 11:44:29 +0200
-Message-Id: <20200513094412.011192060@linuxfoundation.org>
+Subject: [PATCH 4.19 04/48] dp83640: reverse arguments to list_add_tail
+Date:   Wed, 13 May 2020 11:44:30 +0200
+Message-Id: <20200513094352.744242697@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
-References: <20200513094408.810028856@linuxfoundation.org>
+In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
+References: <20200513094351.100352960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: Julia Lawall <Julia.Lawall@inria.fr>
 
-[ Upstream commit bae361c54fb6ac6eba3b4762f49ce14beb73ef13 ]
+[ Upstream commit 865308373ed49c9fb05720d14cbf1315349b32a9 ]
 
-Improve the slot reset sequence by disabling the device to prevent bad
-DMAs if slot reset fails.  Return the proper result instead of always
-PCI_ERS_RESULT_RECOVERED to the caller.
+In this code, it appears that phyter_clocks is a list head, based on
+the previous list_for_each, and that clock->list is intended to be a
+list element, given that it has just been initialized in
+dp83640_clock_init.  Accordingly, switch the arguments to
+list_add_tail, which takes the list head as the second argument.
 
-Fixes: 6316ea6db93d ("bnxt_en: Enable AER support.")
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Fixes: cb646e2b02b27 ("ptp: Added a clock driver for the National Semiconductor PHYTER.")
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/phy/dp83640.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -12066,12 +12066,15 @@ static pci_ers_result_t bnxt_io_slot_res
- 		}
+--- a/drivers/net/phy/dp83640.c
++++ b/drivers/net/phy/dp83640.c
+@@ -1114,7 +1114,7 @@ static struct dp83640_clock *dp83640_clo
+ 		goto out;
  	}
+ 	dp83640_clock_init(clock, bus);
+-	list_add_tail(&phyter_clocks, &clock->list);
++	list_add_tail(&clock->list, &phyter_clocks);
+ out:
+ 	mutex_unlock(&phyter_clocks_lock);
  
--	if (result != PCI_ERS_RESULT_RECOVERED && netif_running(netdev))
--		dev_close(netdev);
-+	if (result != PCI_ERS_RESULT_RECOVERED) {
-+		if (netif_running(netdev))
-+			dev_close(netdev);
-+		pci_disable_device(pdev);
-+	}
- 
- 	rtnl_unlock();
- 
--	return PCI_ERS_RESULT_RECOVERED;
-+	return result;
- }
- 
- /**
 
 
