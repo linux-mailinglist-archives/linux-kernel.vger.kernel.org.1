@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77151D1B8E
+	by mail.lfdr.de (Postfix) with ESMTP id 6089C1D1B8D
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389794AbgEMQrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 12:47:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53670 "EHLO mail.kernel.org"
+        id S2389786AbgEMQrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 12:47:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389771AbgEMQrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 12:47:37 -0400
+        id S2389779AbgEMQrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 12:47:39 -0400
 Received: from lenoir.home (lfbn-ncy-1-985-231.w90-101.abo.wanadoo.fr [90.101.63.231])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0650207D8;
-        Wed, 13 May 2020 16:47:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9535E207CD;
+        Wed, 13 May 2020 16:47:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589388457;
-        bh=XdTU1QCu9wvEeudPrv5d5VVXBttCnEKZypaCKnPJKU4=;
+        s=default; t=1589388459;
+        bh=9uD5GGq95GEOrIdgKq0RsYH4vkz3D0lu7+MGs0mk+O0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jtSLr2i3TNN/6yMMyqC61pPjQTM08T08C7zTe8V2jYq4/uV4RrYxFEB7drnIF5xM4
-         YI5vL0HBSmeB8NvpCAFZDp3W0E2NybF3Rb33drdQnlgl7zv8o1l158RRdtMmdAC8ER
-         7vL9mJlK3tdmlxjMJWlRJbIzDLta55PL+8hqjKQ8=
+        b=SUGbaMdjR5Z5CqcYfNBX7cNUuwTss6vdSqc+h2r8BujPUbl6j+QZZc/7GgvQiZp5y
+         TLq1308vIJXHtls1LekIvn2qUbVE7YbqzzQHFaGq/qdnsSNUgzZTWusMy7juX71II/
+         +YmnbXMqw43mDNPtEE5wvEhBDCtP/KWXryb5wEN0=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -32,9 +32,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>
-Subject: [PATCH 09/10] rcu: Allow to re-offload a CPU that used to be nocb
-Date:   Wed, 13 May 2020 18:47:13 +0200
-Message-Id: <20200513164714.22557-10-frederic@kernel.org>
+Subject: [PATCH 10/10] rcu: Nocb (de)activate through sysfs
+Date:   Wed, 13 May 2020 18:47:14 +0200
+Message-Id: <20200513164714.22557-11-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200513164714.22557-1-frederic@kernel.org>
 References: <20200513164714.22557-1-frederic@kernel.org>
@@ -45,12 +45,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is essentially the reverse operation of de-offloading. For now it's
-only supported on CPUs that used to be offloaded and therefore still have
-the relevant nocb_cb/nocb_gp kthreads around.
+Not for merge.
 
-Inspired-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Make nocb toggable for a given CPU using:
+	/sys/devices/system/cpu/cpu*/hotplug/nocb
+
+This is only intended for those who want to test this patchset. The real
+interfaces will be cpuset/isolation and rcutorture.
+
+Not-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Paul E. McKenney <paulmck@kernel.org>
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>
@@ -58,81 +61,47 @@ Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: Joel Fernandes <joel@joelfernandes.org>
 ---
- include/linux/rcupdate.h |  2 ++
- kernel/rcu/tree_plugin.h | 44 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 46 insertions(+)
+ kernel/cpu.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 1d3a4c37c3c1..ee95e49d675f 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -96,9 +96,11 @@ static inline void rcu_user_exit(void) { }
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 2371292f30b0..ac6283dcb897 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -2208,10 +2208,33 @@ static ssize_t show_cpuhp_fail(struct device *dev,
  
- #ifdef CONFIG_RCU_NOCB_CPU
- void rcu_init_nohz(void);
-+void rcu_nocb_cpu_offload(int cpu);
- void rcu_nocb_cpu_deoffload(int cpu);
- #else /* #ifdef CONFIG_RCU_NOCB_CPU */
- static inline void rcu_init_nohz(void) { }
-+static inline void rcu_nocb_cpu_offload(int cpu) { }
- static inline void rcu_nocb_cpu_deoffload(int cpu) { }
- #endif /* #else #ifdef CONFIG_RCU_NOCB_CPU */
+ static DEVICE_ATTR(fail, 0644, show_cpuhp_fail, write_cpuhp_fail);
  
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index c74a4df8d5f2..ae4b5e9f2fc5 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2224,6 +2224,50 @@ void rcu_nocb_cpu_deoffload(int cpu)
- 	mutex_unlock(&rcu_state.barrier_mutex);
- }
- 
-+static void __rcu_nocb_rdp_offload(struct rcu_data *rdp)
++static ssize_t write_nocb(struct device *dev,
++			  struct device_attribute *attr,
++			  const char *buf, size_t count)
 +{
-+	unsigned long flags;
-+	struct rcu_node *rnp = rdp->mynode;
++	int val, ret;
 +
-+	printk("Offloading %d\n", rdp->cpu);
++	ret = kstrtoint(buf, 10, &val);
++	if (ret)
++		return ret;
 +
-+	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
-+	raw_spin_lock_rcu_node(rnp);
-+	rcu_segcblist_offload(&rdp->cblist, true);
-+	raw_spin_unlock_rcu_node(rnp);
-+	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
++	if (val == 0)
++		rcu_nocb_cpu_deoffload(dev->id);
++	else if (val == 1)
++		rcu_nocb_cpu_offload(dev->id);
++	else
++		return -EINVAL;
 +
-+	kthread_unpark(rdp->nocb_cb_kthread);
++	return count;
 +}
 +
-+static long rcu_nocb_rdp_offload(void *arg)
-+{
-+	struct rcu_data *rdp = arg;
++static DEVICE_ATTR(nocb, 0644, NULL, write_nocb);
 +
-+	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
-+	__rcu_nocb_rdp_offload(rdp);
-+
-+	return 0;
-+}
-+
-+void rcu_nocb_cpu_offload(int cpu)
-+{
-+	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-+
-+	mutex_lock(&rcu_state.barrier_mutex);
-+	cpus_read_lock();
-+	if (!rcu_segcblist_is_offloaded(&rdp->cblist) && rdp->nocb_cb_kthread) {
-+		if (cpu_online(cpu)) {
-+			work_on_cpu(cpu, rcu_nocb_rdp_offload, rdp);
-+		} else {
-+			__rcu_nocb_rdp_offload(rdp);
-+		}
-+		cpumask_set_cpu(cpu, rcu_nocb_mask);
-+	}
-+	cpus_read_unlock();
-+	mutex_unlock(&rcu_state.barrier_mutex);
-+}
-+
- void __init rcu_init_nohz(void)
- {
- 	int cpu;
+ static struct attribute *cpuhp_cpu_attrs[] = {
+ 	&dev_attr_state.attr,
+ 	&dev_attr_target.attr,
+ 	&dev_attr_fail.attr,
++	&dev_attr_nocb.attr,
+ 	NULL
+ };
+ 
 -- 
 2.25.0
 
