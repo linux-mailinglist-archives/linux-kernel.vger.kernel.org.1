@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1665A1D2271
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 00:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EDC1D2278
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 00:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731889AbgEMWzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 18:55:45 -0400
+        id S1732175AbgEMW4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 18:56:10 -0400
 Received: from mga17.intel.com ([192.55.52.151]:27069 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731276AbgEMWzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 18:55:44 -0400
-IronPort-SDR: 96LJ6UT+KAad2p4YST9IB/JwpAKN+p6pHkt6HWcFyItbjO72836FPuimanSemlAY1c1X/WZHgl
- anHcPibq3Hew==
+        id S1731774AbgEMWzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 18:55:45 -0400
+IronPort-SDR: 0hjvJz8ZoCUx3jZYb98ehi1w0P/eGGQYeP/fDtP0OvnpTXMz2w+YxYf1I1SwFnEI6f1E2JgMHy
+ AkvKiOtWYdfg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 15:55:40 -0700
-IronPort-SDR: gdf27HiroKhh8id9gEHCIMp4NPFHbAHmSAJVM10805B/VwJ6ZGJw2L1YZxqt3tXkho7slIY8aZ
- ke5s7kg9Tvcg==
+IronPort-SDR: F+5mvljTMyFtlJCEam/VuP6Xui/nKONDHmb1a6rkMvQx7wzA5KHUp1xsmSLSSHfrdmkt0fHtRx
+ 4xfDcn4RarwA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,389,1583222400"; 
-   d="scan'208";a="437682645"
+   d="scan'208";a="437682648"
 Received: from jacob-builder.jf.intel.com ([10.7.199.155])
-  by orsmga005.jf.intel.com with ESMTP; 13 May 2020 15:55:39 -0700
+  by orsmga005.jf.intel.com with ESMTP; 13 May 2020 15:55:40 -0700
 From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
 To:     "Lu Baolu" <baolu.lu@linux.intel.com>,
         iommu@lists.linux-foundation.org,
@@ -38,197 +38,61 @@ Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
         "Christoph Hellwig" <hch@infradead.org>,
         Jonathan Cameron <jic23@kernel.org>,
         Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v13 0/8] Nested Shared Virtual Address (SVA) VT-d support
-Date:   Wed, 13 May 2020 16:01:41 -0700
-Message-Id: <1589410909-38925-1-git-send-email-jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v13 1/8] iommu/vt-d: Move domain helper to header
+Date:   Wed, 13 May 2020 16:01:42 -0700
+Message-Id: <1589410909-38925-2-git-send-email-jacob.jun.pan@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1589410909-38925-1-git-send-email-jacob.jun.pan@linux.intel.com>
+References: <1589410909-38925-1-git-send-email-jacob.jun.pan@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shared virtual address (SVA), a.k.a, Shared virtual memory (SVM) on Intel
-platforms allow address space sharing between device DMA and applications.
-SVA can reduce programming complexity and enhance security.
-This series is intended to enable SVA virtualization, i.e. enable use of SVA
-within a guest user application.
+Move domain helper to header to be used by SVA code.
 
-This is the remaining portion of the original patchset that is based on
-Joerg's x86/vt-d branch. The preparatory and cleanup patches are merged here.
-(git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git)
+Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+---
+ drivers/iommu/intel-iommu.c | 6 ------
+ include/linux/intel-iommu.h | 6 ++++++
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-Only IOMMU portion of the changes are included in this series. Additional
-support is needed in VFIO and QEMU (will be submitted separately) to complete
-this functionality.
-
-To make incremental changes and reduce the size of each patchset. This series
-does not inlcude support for page request services.
-
-In VT-d implementation, PASID table is per device and maintained in the host.
-Guest PASID table is shadowed in VMM where virtual IOMMU is emulated.
-
-    .-------------.  .---------------------------.
-    |   vIOMMU    |  | Guest process CR3, FL only|
-    |             |  '---------------------------'
-    .----------------/
-    | PASID Entry |--- PASID cache flush -
-    '-------------'                       |
-    |             |                       V
-    |             |                CR3 in GPA
-    '-------------'
-Guest
-------| Shadow |--------------------------|--------
-      v        v                          v
-Host
-    .-------------.  .----------------------.
-    |   pIOMMU    |  | Bind FL for GVA-GPA  |
-    |             |  '----------------------'
-    .----------------/  |
-    | PASID Entry |     V (Nested xlate)
-    '----------------\.------------------------------.
-    |             |   |SL for GPA-HPA, default domain|
-    |             |   '------------------------------'
-    '-------------'
-Where:
- - FL = First level/stage one page tables
- - SL = Second level/stage two page tables
-
-This is the remaining VT-d only portion of V5 since the uAPIs and IOASID common
-code have been applied to Joerg's IOMMU core branch.
-(https://lkml.org/lkml/2019/10/2/833)
-
-The complete set with VFIO patches are here:
-https://github.com/jacobpan/linux.git:siov_sva
-
-The complete nested SVA upstream patches are divided into three phases:
-    1. Common APIs and PCI device direct assignment
-    2. Page Request Services (PRS) support
-    3. Mediated device assignment
-
-With this set and the accompanied VFIO code, we will achieve phase #1.
-
-Thanks,
-
-Jacob
-
-ChangeLog:
-	- v13
-	  - Dropped memory type support (MTS) in guest PASID bind
-	  - Do not support multiple bind gpasid if device has no aux domain
-	  - Removed extra error msgs in pasid_setup_bind_data()
-	  - Replaced SVM device list free function with combined out label
-
-	- v12
-	  - Fixed IA64 cross compile error
-	  - Squashed two patches that add macros with its users
-	  - Use ratelimited prints for all user called APIs
-	  - Check domain nesting attr for vSVA APIs.
-	  - Misc style improvements
-
-	- v11 Misc fixes and improvements based on review by Kevin & Eric
-	  - Fixed devTLB granularity conversion
-	  - Simplified VT-d granulairy lookup by replacing 2D map array
-	    with invalid entries.
-	  - Fixed locking in bind guest PASID
-	  - Added nesting domain attr check
-	  - Squashed agaw checking patch with user
-	  - Use rate limitted error message for all user originated calls
+diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+index ef0a5246700e..60c31db9ee93 100644
+--- a/drivers/iommu/intel-iommu.c
++++ b/drivers/iommu/intel-iommu.c
+@@ -446,12 +446,6 @@ static void init_translation_status(struct intel_iommu *iommu)
+ 		iommu->flags |= VTD_FLAG_TRANS_PRE_ENABLED;
+ }
  
-	- v10
-	  - Addressed Eric's review in v7 and v9. Most fixes are in 3/10 and
-	    6/10. Extra condition checks and consolidation of duplicated codes.
-
-	- v9
-	  - Addressed Baolu's comments for v8 for IOTLB flush consolidation,
-	    bug fixes
-	  - Removed IOASID notifier code which will be submitted separately
-	    to address PASID life cycle management with multiple users.
-
-	- v8
-	  - Extracted cleanup patches from V7 and accepted into maintainer's
-	    tree (https://lkml.org/lkml/2019/12/2/514).
-	  - Added IOASID notifier and VT-d handler for termination of PASID
-	    IOMMU context upon free. This will ensure success of VFIO IOASID
-	    free API regardless PASID is in use.
-	    (https://lore.kernel.org/linux-iommu/1571919983-3231-1-git-send-email-yi.l.liu@intel.com/)
-
-	- V7
-	  - Respect vIOMMU PASID range in virtual command PASID/IOASID allocator
-	  - Caching virtual command capabilities to avoid runtime checks that
-	    could cause vmexits.
-
-	- V6
-	  - Rebased on top of Joerg's core branch
-	  (git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git core)
-	  - Adapt to new uAPIs and IOASID allocators
-
-	- V5
-	  Rebased on v5.3-rc4 which has some of the IOMMU fault APIs merged.
- 	  Addressed v4 review comments from Eric Auger, Baolu Lu, and
-	    Jonathan Cameron. Specific changes are as follows:
-	  - Refined custom IOASID allocator to support multiple vIOMMU, hotplug
-	    cases.
-	  - Extracted vendor data from IOMMU guest PASID bind data, for VT-d
-	    will support all necessary guest PASID entry fields for PASID
-	    bind.
-	  - Support non-identity host-guest PASID mapping
-	  - Exception handling in various cases
-
-	- V4
-	  - Redesigned IOASID allocator such that it can support custom
-	  allocators with shared helper functions. Use separate XArray
-	  to store IOASIDs per allocator. Took advice from Eric Auger to
-	  have default allocator use the generic allocator structure.
-	  Combined into one patch in that the default allocator is just
-	  "another" allocator now. Can be built as a module in case of
-	  driver use without IOMMU.
-	  - Extended bind guest PASID data to support SMMU and non-identity
-	  guest to host PASID mapping https://lkml.org/lkml/2019/5/21/802
-	  - Rebased on Jean's sva/api common tree, new patches starts with
-	   [PATCH v4 10/22]
-
-	- V3
-	  - Addressed thorough review comments from Eric Auger (Thank you!)
-	  - Moved IOASID allocator from driver core to IOMMU code per
-	    suggestion by Christoph Hellwig
-	    (https://lkml.org/lkml/2019/4/26/462)
-	  - Rebased on top of Jean's SVA API branch and Eric's v7[1]
-	    (git://linux-arm.org/linux-jpb.git sva/api)
-	  - All IOMMU APIs are unmodified (except the new bind guest PASID
-	    call in patch 9/16)
-
-	- V2
-	  - Rebased on Joerg's IOMMU x86/vt-d branch v5.1-rc4
-	  - Integrated with Eric Auger's new v7 series for common APIs
-	  (https://github.com/eauger/linux/tree/v5.1-rc3-2stage-v7)
-	  - Addressed review comments from Andy Shevchenko and Alex Williamson on
-	    IOASID custom allocator.
-	  - Support multiple custom IOASID allocators (vIOMMUs) and dynamic
-	    registration.
-
-
-Jacob Pan (7):
-  iommu/vt-d: Move domain helper to header
-  iommu/vt-d: Use a helper function to skip agaw for SL
-  iommu/vt-d: Add nested translation helper function
-  iommu/vt-d: Add bind guest PASID support
-  iommu/vt-d: Support flushing more translation cache types
-  iommu/vt-d: Add svm/sva invalidate function
-  iommu/vt-d: Add custom allocator for IOASID
-
-Lu Baolu (1):
-  iommu/vt-d: Enlightened PASID allocation
-
- drivers/iommu/dmar.c        |  40 ++++++
- drivers/iommu/intel-iommu.c | 291 +++++++++++++++++++++++++++++++++++++++-----
- drivers/iommu/intel-pasid.c | 266 +++++++++++++++++++++++++++++++++++++---
- drivers/iommu/intel-pasid.h |  23 +++-
- drivers/iommu/intel-svm.c   | 203 ++++++++++++++++++++++++++++++
- include/linux/intel-iommu.h |  69 ++++++++++-
- include/linux/intel-svm.h   |  12 ++
- include/uapi/linux/iommu.h  |   5 +
- 8 files changed, 858 insertions(+), 51 deletions(-)
-
+-/* Convert generic 'struct iommu_domain to private struct dmar_domain */
+-static struct dmar_domain *to_dmar_domain(struct iommu_domain *dom)
+-{
+-	return container_of(dom, struct dmar_domain, domain);
+-}
+-
+ static int __init intel_iommu_setup(char *str)
+ {
+ 	if (!str)
+diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+index 980234ae0312..ed7171d2ae1f 100644
+--- a/include/linux/intel-iommu.h
++++ b/include/linux/intel-iommu.h
+@@ -595,6 +595,12 @@ static inline void __iommu_flush_cache(
+ 		clflush_cache_range(addr, size);
+ }
+ 
++/* Convert generic struct iommu_domain to private struct dmar_domain */
++static inline struct dmar_domain *to_dmar_domain(struct iommu_domain *dom)
++{
++	return container_of(dom, struct dmar_domain, domain);
++}
++
+ /*
+  * 0: readable
+  * 1: writable
 -- 
 2.7.4
 
