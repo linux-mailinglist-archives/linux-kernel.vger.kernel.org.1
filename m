@@ -2,137 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743641D22DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8591D22C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732557AbgEMXSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 19:18:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732161AbgEMXSf (ORCPT
+        id S1732259AbgEMXMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 19:12:20 -0400
+Received: from mail.efficios.com ([167.114.26.124]:57662 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728315AbgEMXMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 19:18:35 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48DB3C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:18:35 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id y25so424578pfn.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NzQVGwBy98yyKuXlmBNvWD4o+eLGqCxtgVxPgKw63Do=;
-        b=d91N+o6UMzxTsz1St1Hu66m8IAaS2jE1/WCro4T3FXi2sc/4AHW4ODcGwfEnvDzHjj
-         /PKKX5txh+2AdFLEuJtnkNNG0IRWzECKUG3SGfFwrIcEdqW19nhO2jFicMOUMvz6T+C1
-         tNR/mldiveHPbJerAbyvqheERVBHSeb8Q1lg0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NzQVGwBy98yyKuXlmBNvWD4o+eLGqCxtgVxPgKw63Do=;
-        b=uKAL6G61MLn3QigHDWqXdG4FealbNGlsN/YKgyBiRVy+BbwX+xLaihvJztlPq1GanU
-         xwJ8Pr41HA4E3KkfolxBYtct2r5FLYfFd+aJmdW007f2DJ8qf44Th/sYZOvtCXv1irQY
-         CpZtmw8bVYcE0Q8irc3v8GaI7nnjozfdDxVt9jWBvXaTy2Rp8uicFCGRrjIdn0hU+LSf
-         K3MCsKif1Hv2elUU4Ic0cINxnQMTS0CUPhKn2UVuCsXUldal+sj5B6BI5FpK8dh1+hK2
-         URPM/V7ArOgWAgpqhTaTW2WOIsssLGLfFvmenL4Jz7BSFnX3mTWCf8h6akqb5cWJ7ASO
-         wflA==
-X-Gm-Message-State: AOAM530ysIkeWqmAd/MgV3Ou5VJCLljCCturqaoZNDxx0L+ORLstA7mE
-        MdNqOc37PhlJvjtYGERPhKmAnnJI500=
-X-Google-Smtp-Source: ABdhPJweDQubJLBs+PMMLtJakY5abNknkhRWNuRw1HhjYTGgbGdJjpzsMWRJEnyCFTWFX0XQTbTGVg==
-X-Received: by 2002:aa7:83c8:: with SMTP id j8mr1556371pfn.272.1589411914316;
-        Wed, 13 May 2020 16:18:34 -0700 (PDT)
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com. [209.85.215.174])
-        by smtp.gmail.com with ESMTPSA id x10sm635840pgq.79.2020.05.13.16.18.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2020 16:18:34 -0700 (PDT)
-Received: by mail-pg1-f174.google.com with SMTP id t11so431466pgg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:18:34 -0700 (PDT)
-X-Received: by 2002:a67:bd07:: with SMTP id y7mr1357400vsq.109.1589411542393;
- Wed, 13 May 2020 16:12:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200507200850.60646-1-dianders@chromium.org> <20200507130644.v4.5.I22067ad43e77ddfd4b64c2d49030628480f9e8d9@changeid>
-In-Reply-To: <20200507130644.v4.5.I22067ad43e77ddfd4b64c2d49030628480f9e8d9@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 13 May 2020 16:12:11 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Wq1bnaMnUa09GZzQq5rZeQHUM9WAmxED3foc_Rjdsg2A@mail.gmail.com>
-Message-ID: <CAD=FV=Wq1bnaMnUa09GZzQq5rZeQHUM9WAmxED3foc_Rjdsg2A@mail.gmail.com>
-Subject: Re: [PATCH v4 05/12] arm64: Add call_break_hook() to early_brk64()
- for early kgdb
-To:     Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-serial@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Slaby <jslaby@suse.com>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>, bp@alien8.de,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Allison Randal <allison@lohutok.net>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Enrico Weigelt <info@metux.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        James Morse <james.morse@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
+        Wed, 13 May 2020 19:12:18 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 753182BF375;
+        Wed, 13 May 2020 19:12:17 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id UiHRjGkxNO5V; Wed, 13 May 2020 19:12:17 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 05F232BF374;
+        Wed, 13 May 2020 19:12:17 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 05F232BF374
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1589411537;
+        bh=vT+BKs1PsOs1DwnO35m9CtzYZM/crhc3i3CUt4TuVIg=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=Jb8rfLuMigDJ/hlp8JnP9hGrf6As+5OrL0P7keRxLVPunppX8uwNLVUt3CZ+UUt0S
+         1/oknTWyiXpXRS8HJIkg06pkNyBikhpFFsLeS665/BmdVEJc3KIzeBj3enr6QLbkv3
+         iAPD3iQKW0prygVqTJhFsNanxtb1eAa9/LXRAvdc9cN5N58cY9PYUnHy4LZ1EfVxkn
+         Inm6/jla2utARwzJS1YctB+lqIXCH9780UYCkVICJz8dH/OpmMdhDqUJ1vCXimDV0B
+         6yLw/vUYEg9btfndeIQ/DkxTy8kJPUZXJyo1dPwL5uvurNxuMiYk5GFBo6iXGNe4jg
+         FJ2twfzLy3aBA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 1Z4VmZZL1zJO; Wed, 13 May 2020 19:12:16 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id E7E912BF5D1;
+        Wed, 13 May 2020 19:12:16 -0400 (EDT)
+Date:   Wed, 13 May 2020 19:12:16 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
+        paulmck <paulmck@kernel.org>, Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        jinho lim <jordan.lim@samsung.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Petr Mladek <pmladek@suse.com>, rostedt <rostedt@goodmis.org>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Message-ID: <2135402885.20156.1589411536924.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200505134100.376598577@linutronix.de>
+References: <20200505131602.633487962@linutronix.de> <20200505134100.376598577@linutronix.de>
+Subject: Re: [patch V4 part 1 23/36] bug: Annotate WARN/BUG/stackfail as
+ noinstr safe
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3928 (ZimbraWebClient - FF76 (Linux)/8.8.15_GA_3928)
+Thread-Topic: Annotate WARN/BUG/stackfail as noinstr safe
+Thread-Index: VxeXEf8ul4BHrsH8C9lKALhiviNJKA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+----- On May 5, 2020, at 9:16 AM, Thomas Gleixner tglx@linutronix.de wrote:
 
-On Thu, May 7, 2020 at 1:09 PM Douglas Anderson <dianders@chromium.org> wrote:
->
-> In order to make early kgdb work properly we need early_brk64() to be
-> able to call into it.  This is as easy as adding a call into
-> call_break_hook() just like we do later in the normal brk_handler().
->
-> Once we do this we can let kgdb know that it can break into the
-> debugger a little earlier (specifically when parsing early_param's).
->
-> NOTE: without this patch it turns out that arm64 can't do breakpoints
-> even at dbg_late_init(), so if we decide something about this patch is
-> wrong we might need to move dbg_late_init() a little later.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> Warnings, bugs and stack protection fails from noinstr sections, e.g. low
+> level and early entry code, are likely to be fatal.
+> 
+> Mark them as "safe" to be invoked from noinstr protected code to avoid
+> annotating all usage sites. Getting the information out is important.
+
+Why instrument at the x86 level (and miss other architectures) when this
+could perhaps be done directly in the macro WARN_ON_ONCE(condition) in
+generic code ?
+
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 > ---
->
-> Changes in v4:
-> - Add "if KGDB" to "select ARCH_HAS_EARLY_DEBUG" in Kconfig.
->
-> Changes in v3:
-> - Change boolean weak function to KConfig.
->
-> Changes in v2: None
->
->  arch/arm64/Kconfig                      | 1 +
->  arch/arm64/include/asm/debug-monitors.h | 2 ++
->  arch/arm64/kernel/debug-monitors.c      | 2 +-
->  arch/arm64/kernel/traps.c               | 3 +++
->  4 files changed, 7 insertions(+), 1 deletion(-)
+> arch/x86/include/asm/bug.h |    3 +++
+> include/asm-generic/bug.h  |    9 +++++++--
+> kernel/panic.c             |    4 +++-
+> 3 files changed, 13 insertions(+), 3 deletions(-)
+> 
+> --- a/arch/x86/include/asm/bug.h
+> +++ b/arch/x86/include/asm/bug.h
+> @@ -70,13 +70,16 @@ do {									\
+> #define HAVE_ARCH_BUG
+> #define BUG()							\
+> do {								\
+> +	instr_begin();						\
+> 	_BUG_FLAGS(ASM_UD2, 0);					\
+> 	unreachable();						\
+> } while (0)
+> 
+> #define __WARN_FLAGS(flags)					\
+> do {								\
+> +	instr_begin();						\
+> 	_BUG_FLAGS(ASM_UD2, BUGFLAG_WARNING|(flags));		\
+> +	instr_end();						\
+> 	annotate_reachable();					\
+> } while (0)
 
-As discussed in the replies to the v3 version of this patch [1], I
-have posted a replacement patch for this one [2].  After the cut in
-the replacement patch I talk about different ways it could land.
-Hopefully that's not too confusing.  I can also re-spam everyone with
-a v5 of the whole series if that makes it clearer.
+riscv, arm64, s390, powerpc, parisc and sh also have __WARN_FLAGS.
 
-[1] https://lore.kernel.org/r/20200428141218.v3.5.I22067ad43e77ddfd4b64c2d49030628480f9e8d9@changeid
-[2] https://lore.kernel.org/r/20200513160501.1.I0b5edf030cc6ebef6ab4829f8867cdaea42485d8@changeid
+> 
+> --- a/include/asm-generic/bug.h
+> +++ b/include/asm-generic/bug.h
+> @@ -83,14 +83,19 @@ extern __printf(4, 5)
+> void warn_slowpath_fmt(const char *file, const int line, unsigned taint,
+> 		       const char *fmt, ...);
+> #define __WARN()		__WARN_printf(TAINT_WARN, NULL)
+> -#define __WARN_printf(taint, arg...)					\
+> -	warn_slowpath_fmt(__FILE__, __LINE__, taint, arg)
+> +#define __WARN_printf(taint, arg...) do {				\
+> +		instr_begin();						\
+> +		warn_slowpath_fmt(__FILE__, __LINE__, taint, arg);	\
+> +		instr_end();						\
+> +	} while (0)
+> #else
+> extern __printf(1, 2) void __warn_printk(const char *fmt, ...);
+> #define __WARN()		__WARN_FLAGS(BUGFLAG_TAINT(TAINT_WARN))
+> #define __WARN_printf(taint, arg...) do {				\
+> +		instr_begin();						\
+> 		__warn_printk(arg);					\
+> 		__WARN_FLAGS(BUGFLAG_NO_CUT_HERE | BUGFLAG_TAINT(taint));\
+> +		instr_end();						\
+> 	} while (0)
+> #define WARN_ON_ONCE(condition) ({				\
 
--Doug
+Moving the instr_begin/end here should fix it ?
+
+Thanks,
+
+Mathieu
+
+> 	int __ret_warn_on = !!(condition);			\
+> --- a/kernel/panic.c
+> +++ b/kernel/panic.c
+> @@ -662,10 +662,12 @@ device_initcall(register_warn_debugfs);
+>  * Called when gcc's -fstack-protector feature is used, and
+>  * gcc detects corruption of the on-stack canary value
+>  */
+> -__visible void __stack_chk_fail(void)
+> +__visible noinstr void __stack_chk_fail(void)
+> {
+> +	instr_begin();
+> 	panic("stack-protector: Kernel stack is corrupted in: %pB",
+> 		__builtin_return_address(0));
+> +	instr_end();
+> }
+>  EXPORT_SYMBOL(__stack_chk_fail);
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
