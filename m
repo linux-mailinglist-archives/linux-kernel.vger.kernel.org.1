@@ -2,128 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF271D0ABF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 10:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309031D0AC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 10:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732184AbgEMIWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 04:22:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726092AbgEMIWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 04:22:12 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22360205C9;
-        Wed, 13 May 2020 08:22:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589358131;
-        bh=Y6RN6s3W5uU8DDXTwJozRpTFSVs0kM3pNSPxAB90TRw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AWwUT4o2KXyNrkLLTid53u+t+0+lb3OrXDVJUGZtld+En4CDedo2q1EJhOWdNHeWY
-         UXfwunDxy/LESnewb0g+PjF7XEAX3mDpl6aM7jXP5snsS6l+fN8H5T0AIq5QRo+Gqc
-         ztn/VCNR3kpzE3ofUVe6fyKroYL+h1RavSx/bL74=
-Date:   Wed, 13 May 2020 10:22:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] driver core: Add state_synced sysfs file for devices
- that support it
-Message-ID: <20200513082209.GB770255@kroah.com>
-References: <20200513013415.148858-1-saravanak@google.com>
+        id S1732172AbgEMIYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 04:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729189AbgEMIYM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 04:24:12 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38BDFC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 01:24:12 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id a9so12857251lfb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 01:24:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BCnyp8DCf8CZS+zvYVx3/wo57tr3YdAZ4e/hQh/qGcs=;
+        b=NSaX/vRORpmKcgHTGXqFERaoMDjDF+QKGnIBBeEfxXLunp5oOjByaFxkxCqB1bOLUz
+         ziDPzYeWjw2LzzZX6LTgXFF5VT7C8rxeEN4zYz+2Ngv+DLz76YD9hLjgHhinTWdYKfEc
+         8huLU09Xc0QYvyfmeAGvAuSz938gw+pGIfOMX9wM7fZlKkDjylhLiYNxnaQud5fkpA0i
+         tK+dqg+vB/UGtEfAAJg8NBBqwI72H8aet+FTUlR+TpOTg8fMvMxL0W8VC1HVy+19pcii
+         uUKV+RFm40CJ8/QBotiXF5XThr/zaUoE0njy5JKsDnJry+4kF8vfoOVa4wHBNf3xRBU8
+         Lppw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BCnyp8DCf8CZS+zvYVx3/wo57tr3YdAZ4e/hQh/qGcs=;
+        b=FoKYh3T1LQTh82zNGvPdctGVBgfjW1if6/o6QGt/J0FN1Nb0SY/gnTlvO46POOhoAB
+         pDoaGUVb1wSPkLx6RcVSlw6zf2HGQFl/p8jKHxvBhPjpXBdWpjUxp0i5yZLDoaslPo5h
+         IEUPJRP7+kcVMxY/6iBWsPhbb6Tr+N0tS4kd/yPfw9HJjELBiOa5RH4SjrKBnyQ+/f56
+         0c08RxKErFLO3yS0UtQOZFR7hj/oKRtMmYC4MVQWmfvapTXKu2KTy2oWfSkcnJ3qSIcF
+         YczywU3hNrkNVn6MXtpL63o8RNWX3ORBtBxOg3I6DsZot3nYlbb2H8aPE4Ztd4U9ovrQ
+         k6fw==
+X-Gm-Message-State: AOAM5310UDrK5XgVSDDgUONLWxOo/7qEo2ofEUvQzePO8vJkNmU8wU+4
+        b4rUT8OwYOBZD0hdputolcThhGE7qDZT0dxb3LU1n8bJ8UU=
+X-Google-Smtp-Source: ABdhPJyhtD47Sp6q4yJaOB3jGxHH1xzgbhIpHzYkUjSKYlDknt3/k2WCjTsNXvKZmwZXOyX8XFpGN8/geq/9HNk9HJU=
+X-Received: by 2002:ac2:4945:: with SMTP id o5mr17202258lfi.21.1589358250625;
+ Wed, 13 May 2020 01:24:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513013415.148858-1-saravanak@google.com>
+References: <20200513003430.651232-1-vlad.babchuk@gmail.com>
+ <20200513003625.651340-1-vlad.babchuk@gmail.com> <CAHUa44E968nR1toCGn0_k6ABw_By7Z8EqB2rGSgiTmseo8oL-Q@mail.gmail.com>
+In-Reply-To: <CAHUa44E968nR1toCGn0_k6ABw_By7Z8EqB2rGSgiTmseo8oL-Q@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 13 May 2020 13:53:59 +0530
+Message-ID: <CAFA6WYNOAwSaaaCCf0qoQ=gGBEsCkbdrWUzabkn3XnM7hndsow@mail.gmail.com>
+Subject: Re: [PATCH] optee: don't fail on unsuccessful device enumeration
+To:     Volodymyr Babchuk <vlad.babchuk@gmail.com>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
+        Jerome Forissier <jerome@forissier.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 06:34:15PM -0700, Saravana Kannan wrote:
-> This can be used to check if a device supports sync_state() callbacks
-> and therefore keeps resources left on by the bootloader enabled till all
-> its consumers have probed.
-> 
-> This can also be used to check if sync_state() has been called for a
-> device or whether it is still trying to keep resources enabled because
-> they were left enabled by the bootloader and all its consumers haven't
-> probed yet.
-> 
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
->  .../ABI/testing/sysfs-devices-state_synced    | 24 +++++++++++++++++++
->  drivers/base/dd.c                             | 16 +++++++++++++
->  2 files changed, 40 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-devices-state_synced
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-devices-state_synced b/Documentation/ABI/testing/sysfs-devices-state_synced
-> new file mode 100644
-> index 000000000000..0c922d7d02fc
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-devices-state_synced
-> @@ -0,0 +1,24 @@
-> +What:		/sys/devices/.../state_synced
-> +Date:		May 2020
-> +Contact:	Saravana Kannan <saravanak@google.com>
-> +Description:
-> +		The /sys/devices/.../state_synced attribute is only present for
-> +		devices whose bus types or driver provides the .sync_state()
-> +		callback. The number read from it (0 or 1) reflects the value
-> +		of the device's 'state_synced' field. A value of 0 means the
-> +		.sync_state() callback hasn't been called yet. A value of 1
-> +		means the .sync_state() callback has been called.
-> +
-> +		Generally, if a device has sync_state() support and has some of
-> +		the resources it provides enabled at the time the kernel starts
-> +		(Eg: enabled by hardware reset or bootloader or anything that
-> +		run before the kernel starts), then it'll keep those resources
-> +		enabled and in a state that's compatible with the state they
-> +		were in at the start of the kernel. The device will stop doing
-> +		this only when the sync_state() callback has been called --
-> +		which happens only when all its consumer devices are registered
-> +		and have probed successfully. Resources that were left disabled
-> +		at the time the kernel starts are not affected or limited in
-> +		any way by sync_state() callbacks.
-> +
-> +
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 48ca81cb8ebc..72599436ae84 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -458,6 +458,13 @@ static void driver_deferred_probe_add_trigger(struct device *dev,
->  		driver_deferred_probe_trigger();
->  }
->  
-> +static ssize_t state_synced_show(struct device *dev,
-> +				 struct device_attribute *attr, char *buf)
-> +{
-> +	return sprintf(buf, "%u\n", dev->state_synced);
-> +}
-> +static DEVICE_ATTR_RO(state_synced);
-> +
->  static int really_probe(struct device *dev, struct device_driver *drv)
->  {
->  	int ret = -EPROBE_DEFER;
-> @@ -531,9 +538,16 @@ static int really_probe(struct device *dev, struct device_driver *drv)
->  		goto dev_groups_failed;
->  	}
->  
-> +	if (dev_has_sync_state(dev) &&
-> +	    device_create_file(dev, &dev_attr_state_synced)) {
-> +		dev_err(dev, "state_synced sysfs add failed\n");
-> +		goto dev_sysfs_state_synced_failed;
-> +	}
+Hi Volodymyr,
 
-Why not add this to the groups above this and only enable it if needed
-at runtime?
+On Wed, 13 May 2020 at 13:30, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+>
+> Hi Volodymyr,
+>
+> On Wed, May 13, 2020 at 2:36 AM Volodymyr Babchuk
+> <vlad.babchuk@gmail.com> wrote:
+> >
+> > optee_enumerate_devices() can fail for multiple of reasons. For
+> > example, I encountered issue when Xen OP-TEE mediator NACKed
+> > PTA_CMD_GET_DEVICES call.
 
-The is_visible() callback should be what you need to use here.  That
-will save you lots of housekeeping as well as properly remove the
-attribute when the device is removed from the system (which you didn't
-explicitly do in this patch...)
+Could you share a detailed description of the issue which you are
+facing? optee_enumerate_devices() is a simple invocation of pseudo TA
+and cases where OP-TEE doesn't provide corresponding pseudo TA are
+handled very well.
 
-thanks,
+> > This should not result in driver
+> > initialization error because this is an optional feature.
 
-greg k-h
+I wouldn't call it an optional feature as there might be real kernel
+drivers dependent on this enumeration. Also, it is a simple example to
+self test OP-TEE functionality too. So I am not sure how much
+functional OP-TEE would be if this basic TA invocation fails.
+
+-Sumit
+
+> >
+> > Thus, it is better to print warning, instead of termination driver
+> > initialization.
+> >
+> > Signed-off-by: Volodymyr Babchuk <vlad.babchuk@gmail.com>
+> > ---
+>
+> Looks good. Didn't apply directly at latest, but the conflict was easy
+> enough to resolve.
+>
+> I'll pick up this in a day unless someone objects.
+>
+> I'll add a
+>     Fixes: c3fa24af9244 ("tee: optee: add TEE bus device enumeration support")
+> Line.
+>
+> Thanks,
+> Jens
+>
+> >
+> > resend: fixed email in s-o-b tag. Sorry for the noise
+> >
+> > drivers/tee/optee/core.c | 6 ++----
+> >  1 file changed, 2 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> > index 34409c916882..a053930032f2 100644
+> > --- a/drivers/tee/optee/core.c
+> > +++ b/drivers/tee/optee/core.c
+> > @@ -728,10 +728,8 @@ static int __init optee_driver_init(void)
+> >                 return PTR_ERR(optee);
+> >
+> >         rc = optee_enumerate_devices();
+> > -       if (rc) {
+> > -               optee_remove(optee);
+> > -               return rc;
+> > -       }
+> > +       if (rc)
+> > +               pr_warn("can't enumerate optee devices: %d\n", rc);
+> >
+> >         pr_info("initialized driver\n");
+> >
+> > --
+> > 2.26.2
+> >
