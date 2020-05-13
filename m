@@ -2,68 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2C51D0A78
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 10:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628C41D0A6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 10:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730363AbgEMIEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 04:04:55 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:39658 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbgEMIEz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 04:04:55 -0400
-Received: from [192.168.1.91] (p4FEFC5A7.dip0.t-ipconnect.de [79.239.197.167])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 07F8ECED09;
-        Wed, 13 May 2020 10:14:34 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH v1] Bluetooth: L2CAP: add support for waiting
- disconnection resp
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200414160758.v1.1.Idab9dcdc7da549ed1fd5c66341fb8baffaee8d10@changeid>
-Date:   Wed, 13 May 2020 10:04:21 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Archie Pusaka <apusaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+        id S1729796AbgEMIE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 04:04:29 -0400
+Received: from mga12.intel.com ([192.55.52.136]:36955 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726092AbgEMIE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 04:04:29 -0400
+IronPort-SDR: rzNmS4yBbc0OB0qugDU3l6drX7lfMDjXsdSHJXUHn4nYeqMNsrzUkEBfFFVjkzOWnUaVS8OzyU
+ x+IrNt9Hl+bg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 01:04:29 -0700
+IronPort-SDR: hvfmiW9n/dexrwztqT/5I5mS1V6ijzXjhh41vo0KbnBPK7m+JfGf1zzjs6OwR1n5vzONKWeoT4
+ GpTjzuNT0z7g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,387,1583222400"; 
+   d="scan'208";a="463844698"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga005.fm.intel.com with ESMTP; 13 May 2020 01:04:29 -0700
+Received: from [10.249.229.18] (abudanko-mobl.ccr.corp.intel.com [10.249.229.18])
+        by linux.intel.com (Postfix) with ESMTP id 1198F5804B6;
+        Wed, 13 May 2020 01:04:26 -0700 (PDT)
+Subject: [PATCH v3 8/9] perf record: implement control commands handling
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <eb38e9e5-754f-d410-1d9b-e26b702d51b7@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <25f98682-5ef2-4257-f302-93b29da707a9@linux.intel.com>
+Date:   Wed, 13 May 2020 11:04:25 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <eb38e9e5-754f-d410-1d9b-e26b702d51b7@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Message-Id: <0B6777C3-DF32-40C0-86DF-127F93D1A7DA@holtmann.org>
-References: <20200414160758.v1.1.Idab9dcdc7da549ed1fd5c66341fb8baffaee8d10@changeid>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
 
-> Whenever we disconnect a L2CAP connection, we would immediately
-> report a disconnection event (EPOLLHUP) to the upper layer, without
-> waiting for the response of the other device.
-> 
-> This patch offers an option to wait until we receive a disconnection
-> response before reporting disconnection event, by using the "how"
-> parameter in l2cap_sock_shutdown(). Therefore, upper layer can opt
-> to wait for disconnection response by shutdown(sock, SHUT_WR).
-> 
-> This can be used to enforce proper disconnection order in HID,
-> where the disconnection of the interrupt channel must be complete
-> before attempting to disconnect the control channel.
-> 
-> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> ---
-> 
-> net/bluetooth/l2cap_sock.c | 30 +++++++++++++++++++++++-------
-> 1 file changed, 23 insertions(+), 7 deletions(-)
+Implement handling of 'enable' and 'disable' control commands
+coming from control file descriptor.
 
-patch has been applied to bluetooth-next tree.
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+---
+ tools/perf/builtin-record.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-Regards
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 50dc2fe626e5..72f388623364 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -1505,6 +1505,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	bool disabled = false, draining = false;
+ 	int fd;
+ 	float ratio = 0;
++	enum evlist_ctl_cmd cmd = EVLIST_CTL_CMD_UNSUPPORTED;
+ 
+ 	atexit(record__sig_exit);
+ 	signal(SIGCHLD, sig_handler);
+@@ -1802,8 +1803,23 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 			 * Propagate error, only if there's any. Ignore positive
+ 			 * number of returned events and interrupt error.
+ 			 */
+-			if (err > 0 || (err < 0 && errno == EINTR))
++			if (err > 0 || (err < 0 && errno == EINTR)) {
+ 				err = 0;
++				if (evlist__ctlfd_process(rec->evlist, &cmd) > 0) {
++					switch (cmd) {
++					case EVLIST_CTL_CMD_ENABLE:
++						pr_info(EVLIST_ENABLED_MSG);
++						break;
++					case EVLIST_CTL_CMD_DISABLE:
++						pr_info(EVLIST_DISABLED_MSG);
++						break;
++					case EVLIST_CTL_CMD_ACK:
++					case EVLIST_CTL_CMD_UNSUPPORTED:
++					default:
++						break;
++					}
++				}
++			}
+ 			waking++;
+ 
+ 			if (evlist__filter_pollfd(rec->evlist, POLLERR | POLLHUP) == 0)
+-- 
+2.24.1
 
-Marcel
 
