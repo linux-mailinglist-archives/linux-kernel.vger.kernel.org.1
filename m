@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE7B1D0CE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF13A1D0CE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732488AbgEMJsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:48:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46574 "EHLO mail.kernel.org"
+        id S1733046AbgEMJsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:48:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733032AbgEMJsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:48:17 -0400
+        id S1732551AbgEMJsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:48:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F70020753;
-        Wed, 13 May 2020 09:48:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC8A920769;
+        Wed, 13 May 2020 09:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363296;
-        bh=cFAc/IDSVmen1vlXx4gXPx148PrTuQYtAWHIc1Ke8Nc=;
+        s=default; t=1589363298;
+        bh=zbwmqmbafc7t7/TiP/H/lC/ZbOKv4wTPOv7v8lKIcRI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OJ0d6gSDjMk83z5X9zRh6vQ6P+dVzo1P0IL9DVm8gOU4yUYNbZdHM0hQFpcRrQ6kD
-         XWnqR3afxR/a/McZ1tmwy2qari/ctHzdkair0UmaceJVXE/lXb4YpY4ArbPY/YoIfc
-         EbWboVsHb/5dhs+hDc4sH1EdQb0IC2Yz14wEhsj8=
+        b=WVHLSKKvWHLzdFGg7EbpTyHBojN0eQGODqKng2bL2+aFJTC1ebd2BhNVjtRnGu5TK
+         Ka8qkf6iq39i4nl2TXmpb1WfWrJxJIjuCXXrE/gF/Si0YcIsRgCVD2+AWuPwUGYpSP
+         WPHQFI4B5Pq39UHF8gqq9vHTLv14dqDmgiEqzNOc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Yash Shah <yash.shah@sifive.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Dejin Zheng <zhengdejin5@gmail.com>,
+        stable@vger.kernel.org, Scott Dial <scott@scottdial.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 17/90] net: macb: fix an issue about leak related system resources
-Date:   Wed, 13 May 2020 11:44:13 +0200
-Message-Id: <20200513094410.642137919@linuxfoundation.org>
+Subject: [PATCH 5.4 18/90] net: macsec: preserve ingress frame ordering
+Date:   Wed, 13 May 2020 11:44:14 +0200
+Message-Id: <20200513094410.708885324@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
 References: <20200513094408.810028856@linuxfoundation.org>
@@ -47,48 +43,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dejin Zheng <zhengdejin5@gmail.com>
+From: Scott Dial <scott@scottdial.com>
 
-[ Upstream commit b959c77dac09348955f344104c6a921ebe104753 ]
+[ Upstream commit ab046a5d4be4c90a3952a0eae75617b49c0cb01b ]
 
-A call of the function macb_init() can fail in the function
-fu540_c000_init. The related system resources were not released
-then. use devm_platform_ioremap_resource() to replace ioremap()
-to fix it.
+MACsec decryption always occurs in a softirq context. Since
+the FPU may not be usable in the softirq context, the call to
+decrypt may be scheduled on the cryptd work queue. The cryptd
+work queue does not provide ordering guarantees. Therefore,
+preserving order requires masking out ASYNC implementations
+of gcm(aes).
 
-Fixes: c218ad559020ff9 ("macb: Add support for SiFive FU540-C000")
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Yash Shah <yash.shah@sifive.com>
-Suggested-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+For instance, an Intel CPU with AES-NI makes available the
+generic-gcm-aesni driver from the aesni_intel module to
+implement gcm(aes). However, this implementation requires
+the FPU, so it is not always available to use from a softirq
+context, and will fallback to the cryptd work queue, which
+does not preserve frame ordering. With this change, such a
+system would select gcm_base(ctr(aes-aesni),ghash-generic).
+While the aes-aesni implementation prefers to use the FPU, it
+will fallback to the aes-asm implementation if unavailable.
+
+By using a synchronous version of gcm(aes), the decryption
+will complete before returning from crypto_aead_decrypt().
+Therefore, the macsec_decrypt_done() callback will be called
+before returning from macsec_decrypt(). Thus, the order of
+calls to macsec_post_decrypt() for the frames is preserved.
+
+While it's presumable that the pure AES-NI version of gcm(aes)
+is more performant, the hybrid solution is capable of gigabit
+speeds on modest hardware. Regardless, preserving the order
+of frames is paramount for many network protocols (e.g.,
+triggering TCP retries). Within the MACsec driver itself, the
+replay protection is tripped by the out-of-order frames, and
+can cause frames to be dropped.
+
+This bug has been present in this code since it was added in
+v4.6, however it may not have been noticed since not all CPUs
+have FPU offload available. Additionally, the bug manifests
+as occasional out-of-order packets that are easily
+misattributed to other network phenomena.
+
+When this code was added in v4.6, the crypto/gcm.c code did
+not restrict selection of the ghash function based on the
+ASYNC flag. For instance, x86 CPUs with PCLMULQDQ would
+select the ghash-clmulni driver instead of ghash-generic,
+which submits to the cryptd work queue if the FPU is busy.
+However, this bug was was corrected in v4.8 by commit
+b30bdfa86431afbafe15284a3ad5ac19b49b88e3, and was backported
+all the way back to the v3.14 stable branch, so this patch
+should be applicable back to the v4.6 stable branch.
+
+Signed-off-by: Scott Dial <scott@scottdial.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/cadence/macb_main.c |   12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/net/macsec.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -4054,15 +4054,9 @@ static int fu540_c000_clk_init(struct pl
+--- a/drivers/net/macsec.c
++++ b/drivers/net/macsec.c
+@@ -1309,7 +1309,8 @@ static struct crypto_aead *macsec_alloc_
+ 	struct crypto_aead *tfm;
+ 	int ret;
  
- static int fu540_c000_init(struct platform_device *pdev)
- {
--	struct resource *res;
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
--	if (!res)
--		return -ENODEV;
--
--	mgmt->reg = ioremap(res->start, resource_size(res));
--	if (!mgmt->reg)
--		return -ENOMEM;
-+	mgmt->reg = devm_platform_ioremap_resource(pdev, 1);
-+	if (IS_ERR(mgmt->reg))
-+		return PTR_ERR(mgmt->reg);
+-	tfm = crypto_alloc_aead("gcm(aes)", 0, 0);
++	/* Pick a sync gcm(aes) cipher to ensure order is preserved. */
++	tfm = crypto_alloc_aead("gcm(aes)", 0, CRYPTO_ALG_ASYNC);
  
- 	return macb_init(pdev);
- }
+ 	if (IS_ERR(tfm))
+ 		return tfm;
 
 
