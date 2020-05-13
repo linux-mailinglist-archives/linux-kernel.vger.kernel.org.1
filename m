@@ -2,99 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8121D1947
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 534661D194B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729904AbgEMPYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 11:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729327AbgEMPYx (ORCPT
+        id S1731645AbgEMPZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 11:25:16 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:41606 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729781AbgEMPZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 11:24:53 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07118C061A0C;
-        Wed, 13 May 2020 08:24:52 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id f23so7258252pgj.4;
-        Wed, 13 May 2020 08:24:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=6pqylq2mJRRnJ3OtxMfBq/4+9IHb3bQWs5VJmb4jLzY=;
-        b=LUpFchK32Wa2yszb+R5OWeNH8gD9nXMD7q9arCOmbctL5fddILmYhw+QDmubHFnDB8
-         f4kH4c3tdymhUtid6EZvyKn1K5gQoGI1v7isgXokRN2S0SenPFpsANSdVG/SSuhV7k5U
-         vs/LEhgPaDXkvvbRhpL8EGuKlMv2f3yBu0ehdrrOHh7nAKDR8vR3YrLG/BPwjPuZDGHl
-         ndDoLrcBtyjlpT+76rddkAGnGak45h6QaAXbJK455zOMAxQ7Kc6xGVH1zTwdl2goe7V9
-         kpxN2LSUnW5d1KmZJoDw92vgrzmYwTvskkd0TD4oF43Nnk+PKLxW63Y7FLviM+36byyA
-         4k0Q==
+        Wed, 13 May 2020 11:25:15 -0400
+Received: by mail-il1-f198.google.com with SMTP id f65so134634ilh.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 08:25:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:user-agent;
-        bh=6pqylq2mJRRnJ3OtxMfBq/4+9IHb3bQWs5VJmb4jLzY=;
-        b=HwWdB9lV1m09UZ4VNrzmgbKCuP+sNqBn4qfueVpLtKBi8yd8Rc8CmXmPzR5uzP0mWm
-         fvgy/jAhTcxrPgR7FfGBkumyH9LWSgFawPwR0/J8qGMiB0rC4cBtuheyHDB0Udvddb5j
-         Zlc3xJz79CkLYlEgU5Q0G/Wjsp0MdTLqoUtl6TSKrsIv26mIMtV8lGce0R7UjnaHukbo
-         xf+rARcPhhF2Z5oeOhhuCdNA+DV3vE7BSs1ajEd1E0K/lEZl//FTRSwhNkRp+OBjRwRo
-         vDywU4G33IjzrMVyyK0DKihWOXh1h7OsSo4COSB7W3DKePyZINrVWXr/7aUtWEmQoh/9
-         063w==
-X-Gm-Message-State: AOAM530aH1Y/sSLrmL0k5UsV0zqi10sxD4mWS9dDse1WlMg7DKda/cuY
-        jL7Eivfj9D4H/9zgdQ6l1Ig=
-X-Google-Smtp-Source: ABdhPJydcRkZCD7kK2hsZCNxScAagHKMAeqZ7bDH7QsAVgAHqQc2ZgcR17gnP7KU0nG1QdYVuEWadA==
-X-Received: by 2002:a65:6790:: with SMTP id e16mr6762655pgr.145.1589383491661;
-        Wed, 13 May 2020 08:24:51 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j5sm16256111pjf.0.2020.05.13.08.24.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 May 2020 08:24:51 -0700 (PDT)
-Date:   Wed, 13 May 2020 08:24:50 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     yuechao.zhao@advantech.com.cn
-Cc:     345351830@qq.com, amy.shih@advantech.com.tw,
-        oakley.ding@advantech.com.tw, jia.sui@advantech.com.cn,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [v1,1/1] watchdog: (nct7904) Fix enable watchdog incorrectly
-Message-ID: <20200513152450.GA180616@roeck-us.net>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=HQbfDTdKiSPCgrvQsxot82m8/3AaMqneTDzkJfOay20=;
+        b=pfjOwiHOG0crlnGqKLoCLgx0hiCOKE1QYYBBaTKgs0kmL5nHP5a8DzGRq27q74ZsFi
+         jDRxMEBBnBs8u17l2Z7JDqI4CVO4OSsxe3TPlufjAnGfFG+wSadYD8fcNeeHnXr7/1lP
+         Eewg9fban8lTnQWU49t5+bTlMLVxIuOIJGj8AL0fYh34UXgKgVVhn6Nq8668f+hBJZnh
+         IemQS/jGtKOMb76MEfBF6BZqbqaLNiO6Sevy9I1wCkrzT5lInxpYgkOSA0FnR4vs2FL1
+         bMuvMh/MaOC4dSbKs4OxnpcY+QmyfM0dkBy8fE/OonfG2e8aPccSa2PkJu+/m8QG6EiW
+         lHQg==
+X-Gm-Message-State: AGi0PubUhsyB2eLp2D9bEScw9hw20DS41kSW+PyvlE5C1sJAfYORbIar
+        ODJ3+8C/36aEN1opqkIiyXdhNnr6fR2n3fIN+EfhELVAH0wf
+X-Google-Smtp-Source: APiQypLU5vUPTbAOHhe91/1U+t3W74M0qYA7vJWwe9VQur73W2UxFc+n6+Kl+GizfALqgiT8eQIc8UbFnPC5JfrfH0nktom3BzK+
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Received: by 2002:a6b:8b51:: with SMTP id n78mr8625443iod.147.1589383514268;
+ Wed, 13 May 2020 08:25:14 -0700 (PDT)
+Date:   Wed, 13 May 2020 08:25:14 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c7a98805a5892ff2@google.com>
+Subject: KMSAN: uninit-value in hash_ip6_test
+From:   syzbot <syzbot+e66172c53a40c795a780@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        glider@google.com, gregkh@linuxfoundation.org, info@metux.net,
+        jeremy@azazel.net, kadlec@netfilter.org,
+        kstewart@linuxfoundation.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 11:00:15AM +0000, yuechao.zhao@advantech.com.cn wrote:
-> From: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
-> 
-> Use incorrect register to enable watchdog in nct7904_wdt_ping()
-> 
-> Signed-off-by: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
+Hello,
 
-I merged this patch into the patch introducing watchdog support.
+syzbot found the following crash on:
 
-Thanks,
-Guenter
+HEAD commit:    14bcee29 DO-NOT-SUBMIT: kmsan: block: nullb: handle read r..
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=14f266a4100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6f048d804e1a47a0
+dashboard link: https://syzkaller.appspot.com/bug?extid=e66172c53a40c795a780
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 
-> ---
->  drivers/hwmon/nct7904.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwmon/nct7904.c b/drivers/hwmon/nct7904.c
-> index 04f2a8e..18c95be 100644
-> --- a/drivers/hwmon/nct7904.c
-> +++ b/drivers/hwmon/nct7904.c
-> @@ -979,7 +979,7 @@ static int nct7904_wdt_ping(struct watchdog_device *wdt)
->  		return ret;
->  
->  	/* Enable soft watchdog timer */
-> -	return nct7904_write_reg(data, BANK_0, WDT_TIMER_REG, WDT_SOFT_EN);
-> +	return nct7904_write_reg(data, BANK_0, WDT_LOCK_REG, WDT_SOFT_EN);
->  }
->  
->  static unsigned int nct7904_wdt_get_timeleft(struct watchdog_device *wdt)
-> -- 
-> 1.8.3.1
-> 
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+e66172c53a40c795a780@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in __read_once_size include/linux/compiler.h:206 [inline]
+BUG: KMSAN: uninit-value in hash_ip6_test+0x763/0x7e0 net/netfilter/ipset/ip_set_hash_gen.h:1253
+CPU: 0 PID: 18186 Comm: syz-executor.1 Not tainted 5.7.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1c9/0x220 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+ __read_once_size include/linux/compiler.h:206 [inline]
+ hash_ip6_test+0x763/0x7e0 net/netfilter/ipset/ip_set_hash_gen.h:1253
+ hash_ip6_uadt+0x8e6/0xad0 net/netfilter/ipset/ip_set_hash_ip.c:267
+ ip_set_utest+0x657/0x820 net/netfilter/ipset/ip_set_core.c:1884
+ nfnetlink_rcv_msg+0xb86/0xcf0 net/netfilter/nfnetlink.c:229
+ netlink_rcv_skb+0x451/0x650 net/netlink/af_netlink.c:2469
+ nfnetlink_rcv+0x3b5/0x3ab0 net/netfilter/nfnetlink.c:563
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0xf9e/0x1100 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x1246/0x14d0 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x12b6/0x1350 net/socket.c:2362
+ ___sys_sendmsg net/socket.c:2416 [inline]
+ __sys_sendmsg+0x623/0x750 net/socket.c:2449
+ __do_sys_sendmsg net/socket.c:2458 [inline]
+ __se_sys_sendmsg+0x97/0xb0 net/socket.c:2456
+ __x64_sys_sendmsg+0x4a/0x70 net/socket.c:2456
+ do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:297
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45c829
+Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f55a0374c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004fd960 RCX: 000000000045c829
+RDX: 0000000000000000 RSI: 0000000020000300 RDI: 0000000000000003
+RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 0000000000000936 R14: 00000000004cbda5 R15: 00007f55a03756d4
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
+ __msan_chain_origin+0x50/0x90 mm/kmsan/kmsan_instr.c:165
+ ip6_netmask include/linux/netfilter/ipset/pfxlen.h:49 [inline]
+ hash_ip6_netmask net/netfilter/ipset/ip_set_hash_ip.c:185 [inline]
+ hash_ip6_uadt+0x9df/0xad0 net/netfilter/ipset/ip_set_hash_ip.c:263
+ ip_set_utest+0x657/0x820 net/netfilter/ipset/ip_set_core.c:1884
+ nfnetlink_rcv_msg+0xb86/0xcf0 net/netfilter/nfnetlink.c:229
+ netlink_rcv_skb+0x451/0x650 net/netlink/af_netlink.c:2469
+ nfnetlink_rcv+0x3b5/0x3ab0 net/netfilter/nfnetlink.c:563
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0xf9e/0x1100 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x1246/0x14d0 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x12b6/0x1350 net/socket.c:2362
+ ___sys_sendmsg net/socket.c:2416 [inline]
+ __sys_sendmsg+0x623/0x750 net/socket.c:2449
+ __do_sys_sendmsg net/socket.c:2458 [inline]
+ __se_sys_sendmsg+0x97/0xb0 net/socket.c:2456
+ __x64_sys_sendmsg+0x4a/0x70 net/socket.c:2456
+ do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:297
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
+ kmsan_memcpy_memmove_metadata+0x272/0x2e0 mm/kmsan/kmsan.c:247
+ kmsan_memcpy_metadata+0xb/0x10 mm/kmsan/kmsan.c:267
+ __msan_memcpy+0x43/0x50 mm/kmsan/kmsan_instr.c:116
+ ip_set_get_ipaddr6+0x26a/0x300 net/netfilter/ipset/ip_set_core.c:325
+ hash_ip6_uadt+0x450/0xad0 net/netfilter/ipset/ip_set_hash_ip.c:255
+ ip_set_utest+0x657/0x820 net/netfilter/ipset/ip_set_core.c:1884
+ nfnetlink_rcv_msg+0xb86/0xcf0 net/netfilter/nfnetlink.c:229
+ netlink_rcv_skb+0x451/0x650 net/netlink/af_netlink.c:2469
+ nfnetlink_rcv+0x3b5/0x3ab0 net/netfilter/nfnetlink.c:563
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0xf9e/0x1100 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x1246/0x14d0 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x12b6/0x1350 net/socket.c:2362
+ ___sys_sendmsg net/socket.c:2416 [inline]
+ __sys_sendmsg+0x623/0x750 net/socket.c:2449
+ __do_sys_sendmsg net/socket.c:2458 [inline]
+ __se_sys_sendmsg+0x97/0xb0 net/socket.c:2456
+ __x64_sys_sendmsg+0x4a/0x70 net/socket.c:2456
+ do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:297
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:127
+ kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
+ slab_alloc_node mm/slub.c:2802 [inline]
+ __kmalloc_node_track_caller+0xb40/0x1200 mm/slub.c:4436
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0x2fd/0xac0 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1083 [inline]
+ netlink_alloc_large_skb net/netlink/af_netlink.c:1175 [inline]
+ netlink_sendmsg+0x7d3/0x14d0 net/netlink/af_netlink.c:1893
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x12b6/0x1350 net/socket.c:2362
+ ___sys_sendmsg net/socket.c:2416 [inline]
+ __sys_sendmsg+0x623/0x750 net/socket.c:2449
+ __do_sys_sendmsg net/socket.c:2458 [inline]
+ __se_sys_sendmsg+0x97/0xb0 net/socket.c:2456
+ __x64_sys_sendmsg+0x4a/0x70 net/socket.c:2456
+ do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:297
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+=====================================================
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
