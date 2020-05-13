@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B463C1D0D29
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19CD1D0EA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387568AbgEMJuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:50:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50810 "EHLO mail.kernel.org"
+        id S2387681AbgEMKBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 06:01:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387540AbgEMJuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:50:44 -0400
+        id S1732886AbgEMJuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:50:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB94D24927;
-        Wed, 13 May 2020 09:50:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12F1720740;
+        Wed, 13 May 2020 09:50:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363443;
-        bh=WSo/3rDLENVTpb3Y9jGDv+tK+Xnbk3u8YdyUOSXIpDU=;
+        s=default; t=1589363445;
+        bh=wN63/d8bY6lKcZMrGG0Tt2Sxn2DQckb0HCInWH1OSmo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e0BSHqoHI+WrGAUvVVc4KOCmYKt7tVPYax2Qzv3Tdgvikr1oqQtUZ1PrE4TvLiaQd
-         9ojQj2f/rQqaSB1kI0R8ZW8Eco7HJKDPU0V8k6j7rIjp5sy9TtO4gjbGqppbr+PbFh
-         7k4NRRQ+UkwzlhJ5bAH+jtUDBWG3DbhCRnM1T7Eg=
+        b=EjSc9uCPvWl4LDsYp0jUYPP50WVoG+jNDSKjknhCIlxJIR0sehaq6V9Gnd/R/0j1g
+         PeY2LTKQcc+1WI2Smy0W/KAk2V6Ypey/zAlxoyIRKnOf0HJZ5EdZOCwt6ntwN5j2tU
+         xYt3tMs2SLSWj6TcLOd2hXJoIsjM8AkIMuUopEmg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -34,9 +34,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vince Weaver <vincent.weaver@maine.edu>
-Subject: [PATCH 5.4 75/90] x86/unwind/orc: Dont skip the first frame for inactive tasks
-Date:   Wed, 13 May 2020 11:45:11 +0200
-Message-Id: <20200513094417.113737977@linuxfoundation.org>
+Subject: [PATCH 5.4 76/90] x86/unwind/orc: Prevent unwinding before ORC initialization
+Date:   Wed, 13 May 2020 11:45:12 +0200
+Message-Id: <20200513094417.204174530@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
 References: <20200513094408.810028856@linuxfoundation.org>
@@ -49,23 +49,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miroslav Benes <mbenes@suse.cz>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-commit f1d9a2abff66aa8156fbc1493abed468db63ea48 upstream.
+commit 98d0c8ebf77e0ba7c54a9ae05ea588f0e9e3f46e upstream.
 
-When unwinding an inactive task, the ORC unwinder skips the first frame
-by default.  If both the 'regs' and 'first_frame' parameters of
-unwind_start() are NULL, 'state->sp' and 'first_frame' are later
-initialized to the same value for an inactive task.  Given there is a
-"less than or equal to" comparison used at the end of __unwind_start()
-for skipping stack frames, the first frame is skipped.
+If the unwinder is called before the ORC data has been initialized,
+orc_find() returns NULL, and it tries to fall back to using frame
+pointers.  This can cause some unexpected warnings during boot.
 
-Drop the equal part of the comparison and make the behavior equivalent
-to the frame pointer unwinder.
+Move the 'orc_init' check from orc_find() to __unwind_init(), so that it
+doesn't even try to unwind from an uninitialized state.
 
 Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Signed-off-by: Miroslav Benes <mbenes@suse.cz>
 Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Cc: Andy Lutomirski <luto@kernel.org>
@@ -74,23 +70,34 @@ Cc: Jann Horn <jannh@google.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Vince Weaver <vincent.weaver@maine.edu>
-Link: https://lore.kernel.org/r/7f08db872ab59e807016910acdbe82f744de7065.1587808742.git.jpoimboe@redhat.com
+Link: https://lore.kernel.org/r/069d1499ad606d85532eb32ce39b2441679667d5.1587808742.git.jpoimboe@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/unwind_orc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/unwind_orc.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 --- a/arch/x86/kernel/unwind_orc.c
 +++ b/arch/x86/kernel/unwind_orc.c
-@@ -648,7 +648,7 @@ void __unwind_start(struct unwind_state
- 	/* Otherwise, skip ahead to the user-specified starting frame: */
- 	while (!unwind_done(state) &&
- 	       (!on_stack(&state->stack_info, first_frame, sizeof(long)) ||
--			state->sp <= (unsigned long)first_frame))
-+			state->sp < (unsigned long)first_frame))
- 		unwind_next_frame(state);
+@@ -142,9 +142,6 @@ static struct orc_entry *orc_find(unsign
+ {
+ 	static struct orc_entry *orc;
  
- 	return;
+-	if (!orc_init)
+-		return NULL;
+-
+ 	if (ip == 0)
+ 		return &null_orc_entry;
+ 
+@@ -582,6 +579,9 @@ EXPORT_SYMBOL_GPL(unwind_next_frame);
+ void __unwind_start(struct unwind_state *state, struct task_struct *task,
+ 		    struct pt_regs *regs, unsigned long *first_frame)
+ {
++	if (!orc_init)
++		goto done;
++
+ 	memset(state, 0, sizeof(*state));
+ 	state->task = task;
+ 
 
 
