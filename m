@@ -2,129 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AECB41D1A40
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1DF1D1A88
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389563AbgEMQBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 12:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389537AbgEMQBY (ORCPT
+        id S2389491AbgEMQEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 12:04:12 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:60410 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733083AbgEMQEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 12:01:24 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EE8C061A0C;
-        Wed, 13 May 2020 09:01:23 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id j2so187312qtr.12;
-        Wed, 13 May 2020 09:01:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gDEGyQnYOplCe+b2bduCD1NxRiNW5Fcu+RuIWNa1OVw=;
-        b=IXyjPELcQyD5gdttArcdwU7+1LQqG6/ZBgarATcp7ASUXUIw60bmvRmFlawI8eROc1
-         ID95lZbsfppvCnFJ/whBX/fUV21HjSdb1ffl38pin+rX6Aov45DhRq8DOBOdsEF425p2
-         ms5vUVofiC4bJtuWMTsRQC08fCTxEqTbBUbRR+W84QKvtxP2FMy1Fl0Rqmvf0Pc2YKlC
-         eK5y8Jcj4r969++jesYOjSfDN85ruV/9pFPQZvJs9ipGmpMwyy9jHdIC61Krod6zu/jK
-         pTmZMSYV8hvUfD44+cCKIpIWpV7aMeF3wtNjbGfPHqbV5fgT5AX+TnSSsa/81Si0JulZ
-         lmuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gDEGyQnYOplCe+b2bduCD1NxRiNW5Fcu+RuIWNa1OVw=;
-        b=uLag9w6XijBequS5JTfk3gf/cIxZQhqr9qLXPJE4PvuwZE/aY/LUieE6K9KgGh6Q/F
-         rbs57APFvqIG5kRwY8Ht9rws3NlXQ6+NRSoGGV+FweLhE++pV4J2+Ezeb4VkQF3qKa+Y
-         Dv68x9KtJU3T/XHxeSJf0TYMdzjMXu8w75BjAo2tKoFZNmxW/D/XGbTe7uQpC62oz8BY
-         gTqT22THvEI2PbwvwtK0Rg1c/Sp//IYz/xZbZ4BWZlCkRO7P2bf8D2MU2ibas/iFBCZR
-         D+NQCD/V6GXevEpCIiFMXdQdfTrE45W/BQM+RYddfHVjIIeWZ/pxlDy73pxkW/gw+Mzb
-         wTkQ==
-X-Gm-Message-State: AGi0PubG4hYv8qz6p/7aqXYmQ3MDX41PP3e5MxmH7hXrzb9k5MhQCoDQ
-        lZx0JzlyA142RxiNE+A5rGQ=
-X-Google-Smtp-Source: APiQypLEa5DbO43gtfzf8xyX7id6nt1AixGK016BmPhbJ+nK7lrYw/rkTIrTyRfLg1cXu5uVimMK0w==
-X-Received: by 2002:ac8:5311:: with SMTP id t17mr16856713qtn.42.1589385682534;
-        Wed, 13 May 2020 09:01:22 -0700 (PDT)
-Received: from localhost.localdomain ([2001:1284:f013:f4e9:6bc3:5a0:7baf:1a14])
-        by smtp.gmail.com with ESMTPSA id y140sm156177qkb.127.2020.05.13.09.01.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 09:01:21 -0700 (PDT)
-Received: by localhost.localdomain (Postfix, from userid 1000)
-        id 6E656C08DA; Wed, 13 May 2020 13:01:16 -0300 (-03)
-Date:   Wed, 13 May 2020 13:01:16 -0300
-From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-To:     Jonas Falkevik <jonas.falkevik@gmail.com>
-Cc:     Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-sctp@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xin Long <lucien.xin@gmail.com>
-Subject: Re: [PATCH] sctp: check assoc before SCTP_ADDR_{MADE_PRIM,ADDED}
- event
-Message-ID: <20200513160116.GA2491@localhost.localdomain>
-References: <CABUN9aCXZBTdYHSK5oSVX-HAA1wTWmyBW_ked_ydsCjsV-Ckaw@mail.gmail.com>
+        Wed, 13 May 2020 12:04:11 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04DFuRXE043960;
+        Wed, 13 May 2020 16:03:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=myg+Pbi0jJplfSlrmx3sySw86RPCsqGwGq4ZrHDz5L0=;
+ b=fjVxr5HI7zXUI0LF6GL3MO8dtw0OIp8XNAfuJnSPT1e6RjSzX8OnH1TZOgVcJTQFVaXF
+ MENnYnwJ9g3IFqbh2IdRSkCMDOWJ0E5s3gsZdcsDMwEQzeZgZETPv+OzvKQF/QeVyWmc
+ CY/thpaN4Q9pDCfd1snkvUFBH7nB9oAx0dQcpYDNMS4BURCb573QC19MWFKHww7GmXeQ
+ 1+NkecJ2ul+mqzUFEPCyCpqGXXpPcRTur4dYY4pY624Ug54YcEyy0IYphNKlR8QsFoiR
+ dKuv4yIz1occf3VIe0h25a5TGOJJnycmcckouoOun+Ppg8tyICA0Wk5aR926Sxz49gLa Wg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 3100yfw4j7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 May 2020 16:03:59 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04DFw4EH102865;
+        Wed, 13 May 2020 16:01:58 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3100yeubfv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 May 2020 16:01:58 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04DG1uH0002783;
+        Wed, 13 May 2020 16:01:56 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 13 May 2020 09:01:56 -0700
+Date:   Wed, 13 May 2020 09:01:53 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Cc:     ira.weiny@intel.com, Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: [ANNOUNCE] xfs-linux: vfs-for-next updated to 2c567af418e3
+Message-ID: <20200513160153.GA2079101@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABUN9aCXZBTdYHSK5oSVX-HAA1wTWmyBW_ked_ydsCjsV-Ckaw@mail.gmail.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9620 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
+ phishscore=0 suspectscore=2 adultscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005130139
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9620 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ cotscore=-2147483648 mlxscore=0 suspectscore=2 spamscore=0 impostorscore=0
+ mlxlogscore=999 malwarescore=0 clxscore=1015 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005130139
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 04:52:16PM +0200, Jonas Falkevik wrote:
-> Do not generate SCTP_ADDR_{MADE_PRIM,ADDED} events for SCTP_FUTURE_ASSOC assocs.
+Hi folks,
 
-How did you get them?
+The vfs-for-next branch of the xfs-linux repository at:
 
-I'm thinking you're fixing a side-effect of another issue here. For
-example, in sctp_assoc_update(), it first calls sctp_assoc_add_peer()
-to only then call sctp_assoc_set_id(), which would generate the event
-you might have seen. In this case, it should be allocating IDR before,
-so that the event can be sent with the right assoc_id already.
+	git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
 
-> 
-> These events are described in rfc6458#section-6.1
-> SCTP_PEER_ADDR_CHANGE:
-> This tag indicates that an address that is
-> part of an existing association has experienced a change of
-> state (e.g., a failure or return to service of the reachability
-> of an endpoint via a specific transport address).
-> 
-> Signed-off-by: Jonas Falkevik <jonas.falkevik@gmail.com>
-> ---
->  net/sctp/associola.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/net/sctp/associola.c b/net/sctp/associola.c
-> index 437079a4883d..0c5dd295f9b8 100644
-> --- a/net/sctp/associola.c
-> +++ b/net/sctp/associola.c
-> @@ -432,8 +432,10 @@ void sctp_assoc_set_primary(struct sctp_association *asoc,
->          changeover = 1 ;
-> 
->      asoc->peer.primary_path = transport;
-> -    sctp_ulpevent_nofity_peer_addr_change(transport,
-> -                          SCTP_ADDR_MADE_PRIM, 0);
-> +    if (sctp_assoc2id(asoc) != SCTP_FUTURE_ASSOC)
-> +        sctp_ulpevent_nofity_peer_addr_change(transport,
-> +                              SCTP_ADDR_MADE_PRIM,
-> +                              0);
-> 
->      /* Set a default msg_name for events. */
->      memcpy(&asoc->peer.primary_addr, &transport->ipaddr,
-> @@ -714,7 +716,10 @@ struct sctp_transport *sctp_assoc_add_peer(struct
-> sctp_association *asoc,
->      list_add_tail_rcu(&peer->transports, &asoc->peer.transport_addr_list);
->      asoc->peer.transport_count++;
-> 
-> -    sctp_ulpevent_nofity_peer_addr_change(peer, SCTP_ADDR_ADDED, 0);
-> +    if (sctp_assoc2id(asoc) != SCTP_FUTURE_ASSOC)
-> +        sctp_ulpevent_nofity_peer_addr_change(peer,
-> +                              SCTP_ADDR_ADDED,
-> +                              0);
-> 
->      /* If we do not yet have a primary path, set one.  */
->      if (!asoc->peer.primary_path) {
-> --
-> 2.25.3
+has just been updated.
+
+Patches often get missed, so please check if your outstanding patches
+were in this update. If they have not been in this update, please
+resubmit them to linux-xfs@vger.kernel.org so they can be picked up in
+the next update.
+
+The new head of the vfs-for-next branch is commit:
+
+2c567af418e3 fs: Introduce DCACHE_DONTCACHE
+
+New Commits:
+
+Ira Weiny (5):
+      [efbe3c2493d2] fs: Remove unneeded IS_DAX() check in io_is_direct()
+      [712b2698e4c0] fs/stat: Define DAX statx attribute
+      [83d9088659e8] Documentation/dax: Update Usage section
+      [dae2f8ed7992] fs: Lift XFS_IDONTCACHE to the VFS layer
+      [2c567af418e3] fs: Introduce DCACHE_DONTCACHE
+
+
+Code Diffstat:
+
+ Documentation/filesystems/dax.txt | 142 +++++++++++++++++++++++++++++++++++++-
+ drivers/block/loop.c              |   6 +-
+ fs/dcache.c                       |  19 +++++
+ fs/stat.c                         |   3 +
+ fs/xfs/xfs_icache.c               |   4 +-
+ fs/xfs/xfs_inode.h                |   3 +-
+ fs/xfs/xfs_super.c                |   2 +-
+ include/linux/dcache.h            |   2 +
+ include/linux/fs.h                |  14 ++--
+ include/uapi/linux/stat.h         |   1 +
+ 10 files changed, 178 insertions(+), 18 deletions(-)
