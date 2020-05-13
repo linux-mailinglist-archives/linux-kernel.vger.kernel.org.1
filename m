@@ -2,67 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 773141D129B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8651D12A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731741AbgEMM0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 08:26:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726020AbgEMM0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 08:26:17 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 845F623126;
-        Wed, 13 May 2020 12:26:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589372776;
-        bh=2nPOeFMik9ZQ6xUKx8jufYdpBAmDTPfySWDo5YjI/wo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cjGFtJREmNTq4FgZ+a7ie6IwGzteTC/KDPnz6U8iBRnMyIZgw8KSg+tkkQY2K/XN5
-         SbFGEpjin9G6axFoke7d3ZIox+x7r8pKNnv4obxEEdO+/ok8me1Pgjq5D8AxYPwfYF
-         Mjbp5BdabWGT9x5mF/k7xzDCFd3CIHIs2V1YXgCY=
-Date:   Wed, 13 May 2020 14:26:13 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Al Cooper <alcooperx@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-usb@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v10 1/5] usb: xhci: Change the XHCI link order in the
- Makefile
-Message-ID: <20200513122613.GA1023594@kroah.com>
-References: <20200512150019.25903-1-alcooperx@gmail.com>
- <20200512150019.25903-2-alcooperx@gmail.com>
+        id S1731744AbgEMM1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 08:27:36 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:33584 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726020AbgEMM1f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 08:27:35 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04DCRWkU103423;
+        Wed, 13 May 2020 07:27:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589372852;
+        bh=2ig5tIOWD6nykKQyzTlz+iNpTfFh1kkyICxOu/c7i8k=;
+        h=Subject:From:To:References:Date:In-Reply-To;
+        b=pHOShA8XrlH0z9VnTsMMhG0TCxGqUaQQZh5EkqdK3zAw6FrJhR8WSGezRos4wXMZ+
+         7drCae5t971PI+VTkrDGW3OEhh1qNYgzPIQDA7YRW+Fr1HflCmdYolVywYs/zSKhVv
+         rF7xPVrJEHF3WrKPl/qbkFcCO7SRpvxtOrWuQrE0=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04DCRWdc077159
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 May 2020 07:27:32 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 13
+ May 2020 07:27:31 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 13 May 2020 07:27:31 -0500
+Received: from [10.250.74.234] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04DCRVs0131026;
+        Wed, 13 May 2020 07:27:31 -0500
+Subject: Re: [net-next RFC PATCH 00/13] net: hsr: Add PRP driver
+From:   Murali Karicheri <m-karicheri2@ti.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
+        <nsekhar@ti.com>, <grygorii.strashko@ti.com>
+References: <20200506163033.3843-1-m-karicheri2@ti.com>
+Message-ID: <a947b604-4016-ff02-380f-f3788eea4ed9@ti.com>
+Date:   Wed, 13 May 2020 08:27:31 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512150019.25903-2-alcooperx@gmail.com>
+In-Reply-To: <20200506163033.3843-1-m-karicheri2@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 11:00:15AM -0400, Al Cooper wrote:
-> Some BRCMSTB USB chips have an XHCI, EHCI and OHCI controller
-> on the same port where XHCI handles 3.0 devices, EHCI handles 2.0
-> devices and OHCI handles <2.0 devices. Currently the Makefile
-> has XHCI linking at the bottom which will result in the XHIC driver
-> initalizing after the EHCI and OHCI drivers and any installed 3.0
-> device will be seen as a 2.0 device. Moving the XHCI linking
-> above the EHCI and OHCI linking fixes the issue.
+Hello netdev experts,
 
-What happens if all of these are modules and they are loaded in a
-different order?  This makefile change will not help with that, you need
-to have logic in the code in order to properly coordinate this type of
-mess, sorry.
+On 5/6/20 12:30 PM, Murali Karicheri wrote:
+> This RFC series add support for Parallel Redundancy Protocol (PRP)
+> as defined in IEC-62439-3 in the kernel networking subsystem. PRP
+> Uses a Redundancy Control Trailer (RCT) the format of which is
+> similar to HSR Tag. This is used for implementing redundancy.
+> RCT consists of 6 bytes similar to HSR tag and contain following
+> fields:-
+> 
+> - 16-bit sequence number (SeqNr);
+> - 4-bit LAN identifier (LanId);
+> - 12 bit frame size (LSDUsize);
+> - 16-bit suffix (PRPsuffix).
+> 
+> The PRPsuffix identifies PRP frames and distinguishes PRP frames
+> from other protocols that also append a trailer to their useful
+> data. The LSDUsize field allows the receiver to distinguish PRP
+> frames from random, nonredundant frames as an additional check.
+> LSDUsize is the size of the Ethernet payload inclusive of the
+> RCT. Sequence number along with LanId is used for duplicate
+> detection and discard.
+> 
+> PRP node is also known as Dual Attached Node (DAN-P) since it
+> is typically attached to two different LAN for redundancy.
+> DAN-P duplicates each of L2 frames and send it over the two
+> Ethernet links. Each outgoing frame is appended with RCT.
+> Unlike HSR, these are added to the end of L2 frame and may be
+> treated as padding by bridges and therefore would be work with
+> traditional bridges or switches, where as HSR wouldn't as Tag
+> is prefixed to the Ethenet frame. At the remote end, these are
+> received and the duplicate frame is discarded before the stripped
+> frame is send up the networking stack. Like HSR, PRP also sends
+> periodic Supervision frames to the network. These frames are
+> received and MAC address from the SV frames are populated in a
+> database called Node Table. The above functions are grouped into
+> a block called Link Redundancy Entity (LRE) in the IEC spec.
+> 
+> As there are many similarities between HSR and PRP protocols,
+> this patch re-use the code from HSR driver to implement PRP
+> driver. As many part of the code can be re-used, this patch
+> introduces a new common API definitions for both protocols and
+> propose to obsolete the existing HSR defines in
+> include/uapi/linux/if_link.h. New definitions are prefixed
+> with a HSR_PRP prefix. Similarly include/uapi/linux/hsr_netlink.h
+> is proposed to be replaced with include/uapi/linux/hsr_prp_netlink.h
+> which also uses the HSR_PRP prefix. The netlink socket interface
+> code is migrated (as well as the iproute2 being sent as a follow up
+> patch) to use the new API definitions. To re-use the code,
+> following are done as a preparatory patch before adding the PRP
+> functionality:-
+> 
+>    - prefix all common code with hsr_prp
+>    - net/hsr -> renamed to net/hsr-prp
+>    - All common struct types, constants, functions renamed with
+>      hsr{HSR}_prp{PRP} prefix.
+> 
+> Please review this and provide me feedback so that I can work to
+> incorporate them and send a formal patch series for this. As this
+> series impacts user space, I am not sure if this is the right
+> approach to introduce a new definitions and obsolete the old
+> API definitions for HSR. The current approach is choosen
+> to avoid redundant code in iproute2 and in the netlink driver
+> code (hsr_netlink.c). Other approach we discussed internally was
+> to Keep the HSR prefix in the user space and kernel code, but
+> live with the redundant code in the iproute2 and hsr netlink
+> code. Would like to hear from you what is the best way to add
+> this feature to networking core. If there is any other
+> alternative approach possible, I would like to hear about the
+> same.
+> 
+> The patch was tested using two TI AM57x IDK boards which are
+> connected back to back over two CPSW ports.
+> 
+> Script used for creating the hsr/prp interface is given below
+> and uses the ip link command. Also provided logs from the tests
+> I have executed for your reference.
+> 
+> iproute2 related patches will follow soon....
+Could someone please review this and provide some feedback to take
+this forward?
 
-thanks,
+Thanks and regards,
+> 
+> Murali Karicheri
+> Texas Instruments
 
-greg k-h
+
+-Cut-------------------------
