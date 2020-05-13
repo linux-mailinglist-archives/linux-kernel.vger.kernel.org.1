@@ -2,139 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AABAD1D22BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 928BE1D22C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732390AbgEMXIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 19:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33076 "EHLO
+        id S1732433AbgEMXId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 19:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731815AbgEMXIK (ORCPT
+        by vger.kernel.org with ESMTP id S1732392AbgEMXIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 19:08:10 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A066C061A0C;
-        Wed, 13 May 2020 16:08:10 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id z22so995973lfd.0;
-        Wed, 13 May 2020 16:08:10 -0700 (PDT)
+        Wed, 13 May 2020 19:08:30 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E7A2C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:08:29 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t7so427278plr.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:08:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=RNbuJHQ2FyMpxkHjtWoncecO6OPO6CjKMW+uX9gNJuQ=;
-        b=E3f+UENdQ+llqDktR8oL/X0mOcgxPl6XbzV5tFLaI/nTPWhDA2VjiutLqRr4Gr2FnX
-         00wJ8JO8WMM6MBChTqTWfE9HLK2+N+RuNAVO0oq1nS3XBhFi8RlNmtkDxar0IxTKrVB4
-         ztVuXFUMCVH2CIVVU2Cm8JyINivplXWk18yURJaCGUR5X3+XSJU4DXzT8Q6AGciXzVAZ
-         xBB1+YLGz7ZWc4ZQoVr//c05cXlVbv0ePt+jilX54a3FDpy+bq9YeKF019uwtF3Wsm45
-         aVaParymfJI9xz+Hu7rcYArTFQ8us08jvY4IcMuH/D68ENkg9NJjHSn3HL/owL+lmYFO
-         bIFw==
+        bh=qrc+zALKhm7UR0okg2VxygijLhPHdyDYt6UnXc1+qEk=;
+        b=Qh7lvFu7Q7FSluMhlA+8KOS62pXg1rxQC1Ogk+ACNtMIaCyE9ShN6VB9f9gGDvteW4
+         gypT5Ev3vDl69jha5hOD76TZn8yRrjhUMxAWk1zqNUDl4SXtliMPJmL50nvFC0c/bC3V
+         lRIsq85AmTyx2GxwUTqokmeiKV/xXeYZWSBXw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RNbuJHQ2FyMpxkHjtWoncecO6OPO6CjKMW+uX9gNJuQ=;
-        b=hFi4HdJ3SQT5yI+MGhjc182ymQ2hJEkPYCDH6ZOAgJPJQv0iESFOWXrXdP/VIzIGm9
-         AKhOsDN3/GjolMSapNMxsGxLKnutME2iL8vY26NxxgluwcoEcunLzdTrlP+Ep4Jy+q64
-         48yPtZMh04Nh4lIAOldTM+2KRzGxqBoK3zS+frUR60lKVWcAGg5QFmlzAXnSsQgFS5Kv
-         szB4bKKLkjvivJo4ejqAs8EiUiyiStlXPYvr6QzSL/0KWvw+jEKgTjNPMpzEkxErxbuq
-         pPpRWWCYYOhSscPk/LFmwCQOYwqh7nvfy+74rFnbZfDTEcccekzl/9Lf7t33jOSGVqMu
-         Hj+Q==
-X-Gm-Message-State: AOAM533oWTbFr2d/Aa093YOsHVCPGq6GIcFzmENw/7A0luYkyi9gsDaf
-        rADm5khoC2XMK/yze6ISBjx/HNHfjMLghQA6vkg=
-X-Google-Smtp-Source: ABdhPJxOj/yNtDM4jllZ+Qm0VoLlQbd+IYNXmhoTbj6xmFms5ShIIy5gKzrb6laWPJ6tbihcce9QXElpMpGV2RwJmpc=
-X-Received: by 2002:ac2:58d7:: with SMTP id u23mr1081920lfo.119.1589411288282;
- Wed, 13 May 2020 16:08:08 -0700 (PDT)
+        bh=qrc+zALKhm7UR0okg2VxygijLhPHdyDYt6UnXc1+qEk=;
+        b=UFQqW5EaG4YW3Iman+edOJsbRC6CYooj4LZfIEe+1W9IASjkBtbqF8yc8zpbZ17uDp
+         J1vPZLHQFnq07yi1H4yh2xC9+vyRQVZW2P9+fv9PVvgmwPakZ7mYh3Ck7bUxoQGQyMzx
+         HAzEZa1k1mnTPEdlsfH6uMj5mvzT3JSJ3CGjlAVDj+aUVKe6K5I2JVr3UnvAC3FF6pHc
+         tFzZiP8BbwVw94Nsjz2rySoQMUabwsS7maSgUYNTHA4h9hTMNBw6/kIoLgQE3/BO9iln
+         h4/nvdRilozYgtmSNshADBrmFvsKgR26cxnMzvQAzSGGqX8z2U6e+iU/0VCesxOwBaYz
+         VxTQ==
+X-Gm-Message-State: AGi0PuZuc/KWhL1lFOrw5sPVtxvaX2Tl6WhI2DkpaZH9sfAEWeOXbR3F
+        99xwIGypwdWe0fEb3w1Gkqqw6mktlY0=
+X-Google-Smtp-Source: APiQypIC95WO6zapnYJu+clR5WAb4BkJ+bKNL8ecWaB8HKs1F+M+TwF+Wpg9tsvdBFehI4qaz05YSQ==
+X-Received: by 2002:a17:90a:ba18:: with SMTP id s24mr39292689pjr.192.1589411308676;
+        Wed, 13 May 2020 16:08:28 -0700 (PDT)
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com. [209.85.216.43])
+        by smtp.gmail.com with ESMTPSA id q62sm17136421pjh.57.2020.05.13.16.08.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 May 2020 16:08:28 -0700 (PDT)
+Received: by mail-pj1-f43.google.com with SMTP id a5so11731147pjh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:08:27 -0700 (PDT)
+X-Received: by 2002:a1f:9605:: with SMTP id y5mr1422470vkd.75.1589411305040;
+ Wed, 13 May 2020 16:08:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <1589263005-7887-1-git-send-email-alan.maguire@oracle.com>
- <1589263005-7887-5-git-send-email-alan.maguire@oracle.com> <1b63a6b193073674b6e0f9f95c62ce2af1b977cc.camel@perches.com>
-In-Reply-To: <1b63a6b193073674b6e0f9f95c62ce2af1b977cc.camel@perches.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 13 May 2020 16:07:56 -0700
-Message-ID: <CAADnVQK8osy9W8-u-K=ucqe5q-+Uik41fBw6d-SfG-m6rgVwDQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 4/7] printk: add type-printing %pT format
- specifier which uses BTF
-To:     Joe Perches <joe@perches.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
+References: <20200428211351.85055-1-dianders@chromium.org> <20200428141218.v3.5.I22067ad43e77ddfd4b64c2d49030628480f9e8d9@changeid>
+ <20200511145908.GA22040@willie-the-truck> <CAD=FV=W1F-B7SUwxebhhH2HS+fN4sYv4RHvvKud5a+00J0T=SA@mail.gmail.com>
+ <20200512073552.GA1538@willie-the-truck> <CAD=FV=WuKS7c4WNiLKm+bjRF8Rd7wM1y7THWzJhVhUyExNiiVg@mail.gmail.com>
+ <20200513061745.GB17433@willie-the-truck>
+In-Reply-To: <20200513061745.GB17433@willie-the-truck>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 13 May 2020 16:08:13 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=U+JiK1_Lka1PB9DWTsKOowhL+Q+i1yK7=T-4E+zue36g@mail.gmail.com>
+Message-ID: <CAD=FV=U+JiK1_Lka1PB9DWTsKOowhL+Q+i1yK7=T-4E+zue36g@mail.gmail.com>
+Subject: Re: [PATCH v3 05/11] arm64: Add call_break_hook() to early_brk64()
+ for early kgdb
+To:     Will Deacon <will@kernel.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-serial@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frank Rowand <frowand.list@gmail.com>, bp@alien8.de,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Allison Randal <allison@lohutok.net>,
+        Dave Martin <Dave.Martin@arm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        James Morse <james.morse@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        jinho lim <jordan.lim@samsung.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 4:05 PM Joe Perches <joe@perches.com> wrote:
->
-> On Tue, 2020-05-12 at 06:56 +0100, Alan Maguire wrote:
-> > printk supports multiple pointer object type specifiers (printing
-> > netdev features etc).  Extend this support using BTF to cover
-> > arbitrary types.  "%pT" specifies the typed format, and the pointer
-> > argument is a "struct btf_ptr *" where struct btf_ptr is as follows:
-> >
-> > struct btf_ptr {
-> >       void *ptr;
-> >       const char *type;
-> >       u32 id;
-> > };
-> >
-> > Either the "type" string ("struct sk_buff") or the BTF "id" can be
-> > used to identify the type to use in displaying the associated "ptr"
-> > value.  A convenience function to create and point at the struct
-> > is provided:
-> >
-> >       printk(KERN_INFO "%pT", BTF_PTR_TYPE(skb, struct sk_buff));
-> >
-> > When invoked, BTF information is used to traverse the sk_buff *
-> > and display it.  Support is present for structs, unions, enums,
-> > typedefs and core types (though in the latter case there's not
-> > much value in using this feature of course).
-> >
-> > Default output is indented, but compact output can be specified
-> > via the 'c' option.  Type names/member values can be suppressed
-> > using the 'N' option.  Zero values are not displayed by default
-> > but can be using the '0' option.  Pointer values are obfuscated
-> > unless the 'x' option is specified.  As an example:
-> >
-> >   struct sk_buff *skb = alloc_skb(64, GFP_KERNEL);
-> >   pr_info("%pT", BTF_PTR_TYPE(skb, struct sk_buff));
-> >
-> > ...gives us:
-> >
-> > (struct sk_buff){
-> >  .transport_header = (__u16)65535,
-> >        .mac_header = (__u16)65535,
-> >  .end = (sk_buff_data_t)192,
-> >  .head = (unsigned char *)000000006b71155a,
-> >  .data = (unsigned char *)000000006b71155a,
-> >  .truesize = (unsigned int)768,
-> >  .users = (refcount_t){
-> >   .refs = (atomic_t){
-> >    .counter = (int)1,
->
-> Given
->
->   #define BTF_INT_ENCODING(VAL)   (((VAL) & 0x0f000000) >> 24)
->
-> Maybe
->
->   #define BTF_INT_SIGNED  (1 << 0)
->   #define BTF_INT_CHAR    (1 << 1)
->   #define BTF_INT_BOOL    (1 << 2)
->
-> could be extended to include
->
->   #define BTF_INT_HEX     (1 << 3)
->
-> So hex values can be appropriately pretty-printed.
+Hi,
 
-Nack to that.
+On Tue, May 12, 2020 at 11:17 PM Will Deacon <will@kernel.org> wrote:
+>
+> Hey Doug,
+>
+> On Tue, May 12, 2020 at 08:27:50AM -0700, Doug Anderson wrote:
+> > On Tue, May 12, 2020 at 12:36 AM Will Deacon <will@kernel.org> wrote:
+> > > On Mon, May 11, 2020 at 03:45:02PM -0700, Doug Anderson wrote:
+> > > > On Mon, May 11, 2020 at 7:59 AM Will Deacon <will@kernel.org> wrote:
+> > > > > On Tue, Apr 28, 2020 at 02:13:45PM -0700, Douglas Anderson wrote:
+> > > > > > diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+> > > > > > index cf402be5c573..a8173f0c1774 100644
+> > > > > > --- a/arch/arm64/kernel/traps.c
+> > > > > > +++ b/arch/arm64/kernel/traps.c
+> > > > > > @@ -1044,6 +1044,9 @@ int __init early_brk64(unsigned long addr, unsigned int esr,
+> > > > > >       if ((comment & ~KASAN_BRK_MASK) == KASAN_BRK_IMM)
+> > > > > >               return kasan_handler(regs, esr) != DBG_HOOK_HANDLED;
+> > > > > >  #endif
+> > > > > > +     if (call_break_hook(regs, esr) == DBG_HOOK_HANDLED)
+> > > > > > +             return 0;
+> > > > >
+> > > > > I think this just means we're not running debug_traps_init() early enough,
+> > > > > and actually the KASAN early handler is unnecessary too.
+> > > > >
+> > > > > If we call debug_traps_init() directly from setup_arch() and drop the
+> > > > > arch_initcall(), can we then drop early_brk64 entirely?
+> > > >
+> > > > It seems to work in my testing.  ...but the worry I have is the
+> > > > comment right before trap_init().  It says:
+> > > >
+> > > > /* This registration must happen early, before debug_traps_init(). */
+> > >
+> > > I /think/ the reason for this is because debug_traps_init() replaces the
+> > > BRK vector, so if that runs before the break hooks have been registered
+> > > for e.g. BUG() then BUG() won't work during that window. Hmm, so dropping
+> > > early_brk64 is problematic after all. Damn.
+> > >
+> > > Is trap_init() early enough for you? If so, we could call debug_traps_init()
+> > > from traps_init() after registering the break hooks.
+> >
+> > "Early enough" is a subjective term, of course.  The earlier we can
+> > init, the earlier we can drop into the debugger.  ...but, of course,
+> > everyone thinks their feature is the most important and should be
+> > first, so let's see...
+> >
+> > Certainly if we waited until trap_init() it wouldn't be early enough
+> > to set "ARCH_HAS_EARLY_DEBUG".  Setting that means that debugging is
+> > ready when early params are parsed and those happen at the start of
+> > setup_arch().  The call to trap_init() happens a bit later.
+> >
+> > If we decide that we just don't care about getting
+> > "ARCH_HAS_EARLY_DEBUG" to work then the earliest we'll be able to
+> > break into the debugger (via kgdbwait) is dbg_late_init().  That
+> > _does_ happen after trap_init() so your solution would work.
+> >
+> > As a person who spends most of his time in driver land, it wouldn't be
+> > the end of the world to wait for dbg_late_init().  That's still much
+> > earlier than most code I'd ever debug.  ...and, bonus points is that
+> > if we hit a crash any time after earlyparams we _will_ still drop into
+> > the debugger.  It's only breakpoints that won't be available until
+> > dbg_late_init().
+> >
+> >
+> > tl;dr:
+> >
+> > * If we care about "kgdbwait" and breakpoints working as early as
+> > possible then we need my patch.
+> >
+> > * If we are OK w/ a slightly later "kgdbwait" then I think we can move
+> > debug_traps_init() to trap_init() and get rid of the early version.
+> >
+> >
+> > Please let me know which way you'd like to proceed.
+>
+> Let's go with the trap_init() approach for now, and we can revisit it later
+> if somebody has a compelling reason to initialise things earlier. However,
+> I don't think you can remove early_brk64(), as it's needed for BUG() to
+> work correctly.
+
+Posted at:
+
+https://lore.kernel.org/r/20200513160501.1.I0b5edf030cc6ebef6ab4829f8867cdaea42485d8@changeid
+
+I'll also reply to the v4 version of this patch to point at it.
+
+-Doug
