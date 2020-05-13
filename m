@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA7F1D0CCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2521D0DB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732940AbgEMJru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:47:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45568 "EHLO mail.kernel.org"
+        id S2388247AbgEMJzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:55:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732838AbgEMJrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:47:35 -0400
+        id S2387681AbgEMJzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:55:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02584206F5;
-        Wed, 13 May 2020 09:47:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1DD7220753;
+        Wed, 13 May 2020 09:55:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363254;
-        bh=uJqOvzrQ2AZit/0w/6I9IAewZMfoYrywEgn8eRWxL+Y=;
+        s=default; t=1589363712;
+        bh=t+dAG2ciSY11/anwEimjtMYFr2ia36uqkw+4TtFXdvI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VICwhuW+MC3oMUdfbqt2m8wa8Wsduzo8d0JAW6cVYrjXlcxEiNwdm8nODEI4uhgWX
-         oUqsZL8D9zQrr2Dw1IGV4K3C6sgb8GmtR3dWz5TrYdKhaqLvMHpFCaqDngP401xdee
-         u+lACVJ2cSQo3KXr79VeaRI7aH3gt3QcZIyhyeaI=
+        b=AkugV0PKxlvssvh82iagRhIuq165x/oeDh/Pvd6jkIir2EIyPrpm/T24RPm5F8IHW
+         IP8Dg1moZGeNLHk/m4X6unfrWz9l6W+MOY22kR33Jacvq/wkxZnZrKLuV2AaoFjB6L
+         osBU0V1a/9FGSSbYyQtapRN5TJjmAS8kO/i5CloE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ivan Delalande <colona@arista.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 47/48] scripts/decodecode: fix trapping instruction formatting
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Sven Eckelmann <sven@narfation.org>,
+        Simon Wunderlich <sw@simonwunderlich.de>
+Subject: [PATCH 5.6 094/118] batman-adv: Fix refcnt leak in batadv_store_throughput_override
 Date:   Wed, 13 May 2020 11:45:13 +0200
-Message-Id: <20200513094404.831387763@linuxfoundation.org>
+Message-Id: <20200513094425.545848374@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
-References: <20200513094351.100352960@linuxfoundation.org>
+In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
+References: <20200513094417.618129545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ivan Delalande <colona@arista.com>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-commit e08df079b23e2e982df15aa340bfbaf50f297504 upstream.
+commit 6107c5da0fca8b50b4d3215e94d619d38cc4a18c upstream.
 
-If the trapping instruction contains a ':', for a memory access through
-segment registers for example, the sed substitution will insert the '*'
-marker in the middle of the instruction instead of the line address:
+batadv_show_throughput_override() invokes batadv_hardif_get_by_netdev(),
+which gets a batadv_hard_iface object from net_dev with increased refcnt
+and its reference is assigned to a local pointer 'hard_iface'.
 
-	2b:   65 48 0f c7 0f          cmpxchg16b %gs:*(%rdi)          <-- trapping instruction
+When batadv_store_throughput_override() returns, "hard_iface" becomes
+invalid, so the refcount should be decreased to keep refcount balanced.
 
-I started to think I had forgotten some quirk of the assembly syntax
-before noticing that it was actually coming from the script.  Fix it to
-add the address marker at the right place for these instructions:
+The issue happens in one error path of
+batadv_store_throughput_override(). When batadv_parse_throughput()
+returns NULL, the refcnt increased by batadv_hardif_get_by_netdev() is
+not decreased, causing a refcnt leak.
 
-	28:   49 8b 06                mov    (%r14),%rax
-	2b:*  65 48 0f c7 0f          cmpxchg16b %gs:(%rdi)           <-- trapping instruction
-	30:   0f 94 c0                sete   %al
+Fix this issue by jumping to "out" label when batadv_parse_throughput()
+returns NULL.
 
-Fixes: 18ff44b189e2 ("scripts/decodecode: make faulting insn ptr more robust")
-Signed-off-by: Ivan Delalande <colona@arista.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Borislav Petkov <bp@suse.de>
-Link: http://lkml.kernel.org/r/20200419223653.GA31248@visor
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 0b5ecc6811bd ("batman-adv: add throughput override attribute to hard_ifaces")
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- scripts/decodecode |    2 +-
+ net/batman-adv/sysfs.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/scripts/decodecode
-+++ b/scripts/decodecode
-@@ -119,7 +119,7 @@ faultlinenum=$(( $(wc -l $T.oo  | cut -d
- faultline=`cat $T.dis | head -1 | cut -d":" -f2-`
- faultline=`echo "$faultline" | sed -e 's/\[/\\\[/g; s/\]/\\\]/g'`
+--- a/net/batman-adv/sysfs.c
++++ b/net/batman-adv/sysfs.c
+@@ -1150,7 +1150,7 @@ static ssize_t batadv_store_throughput_o
+ 	ret = batadv_parse_throughput(net_dev, buff, "throughput_override",
+ 				      &tp_override);
+ 	if (!ret)
+-		return count;
++		goto out;
  
--cat $T.oo | sed -e "${faultlinenum}s/^\(.*:\)\(.*\)/\1\*\2\t\t<-- trapping instruction/"
-+cat $T.oo | sed -e "${faultlinenum}s/^\([^:]*:\)\(.*\)/\1\*\2\t\t<-- trapping instruction/"
- echo
- cat $T.aa
- cleanup
+ 	old_tp_override = atomic_read(&hard_iface->bat_v.throughput_override);
+ 	if (old_tp_override == tp_override)
 
 
