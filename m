@@ -2,209 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6BD1D14B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2F01D14C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387714AbgEMNZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727792AbgEMNZo (ORCPT
+        id S2387752AbgEMN0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:26:20 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:40714 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727792AbgEMN0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:25:44 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B502EC061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 06:25:43 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id g1so11855743ljk.7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 06:25:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ctNRDk9XGc9CHMoQDqvFHi5vxID2gsh5buG4nKb35qU=;
-        b=bUhpZbiZX2ExbTaWxKBu12anjLM5QsTRXZlxtQ3J8phy61HMAdwQtD/ciJ+RZjbB4l
-         TPiNYZ65LO4eOpef3IRXMgDqW9ncENwhQD1JgamCKjDODuXK56Uu4R1w8hyMfiCDsAo2
-         VPg4XaBBY0T7VQYirgFnBafM3HyKbdlg6geDLIBI5fLzWoyp7j+lNuetuCdW/TwIpFac
-         0y92eoZJ7VyFwMDiMpSCqsh6xgcCE21azzNivuZED4bgxqPL/9aJTikReB2bz2qrJYYl
-         qllIyroLbq3nA7NUh5FsKfkowUcdK8FUA7DTLHdzanutUgrwV3jEpKZG/xFDwi4/+hv2
-         6OTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ctNRDk9XGc9CHMoQDqvFHi5vxID2gsh5buG4nKb35qU=;
-        b=dGKkjH6lu3hwTN7thG77qhPvau0fFGqI0HBKmi6iGoVUMwZDTI+eaFA8V5mcyfPC7L
-         Ajk6aeIoyGyf8lCT5RByjTNHeSbfjBtQG9fzaQnWupCFHP9w6gP5RBFXMQ6NiUDQcjAc
-         QdvDC2RdayNlw2LxoRmekyokZxGlBHapRxw9ztLYRDrcU2kL5ApY+z7KH6cKEWLfb7UE
-         nYDmvaLzyOLG7rpXjfSaWXcYvjij+1lsBenD1AFL6apP3mgGc4lU9Im8RwQ1Tb2wWOla
-         ThuxGrPTJS9yGVkGbNgvJ0c+W8BNqfMk8kS02Mvhn6nbLOzzU8Qu1UbPApcvtxGEfCao
-         eqPQ==
-X-Gm-Message-State: AOAM532+72XtAG5xuqA9dtkyIWPA/B6rg2pG/eWvXuYVlBZK7Th86yJE
-        XO58pcXjhFzSoqLBpgVYpmrx4feAb5qnjzxCZbJJaQ==
-X-Google-Smtp-Source: ABdhPJyqozVvtlkhNQ2kjPBoNrEpitOUatm0N2iEFAYkKpZxPDAQF/b9Bz5PZ5Dn8DuGzBpGrEQBjOxYYNoQxFqzAmk=
-X-Received: by 2002:a2e:3209:: with SMTP id y9mr16226819ljy.154.1589376341852;
- Wed, 13 May 2020 06:25:41 -0700 (PDT)
+        Wed, 13 May 2020 09:26:19 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04DDQG0i118996;
+        Wed, 13 May 2020 08:26:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589376376;
+        bh=+e0mbSlpXXz27VKNTKjsJZwfHqlIfU65rOvu1CND0/8=;
+        h=From:To:Subject:Date;
+        b=o809UpepJP1zcTHnd3Xlt3a0t8lmasZ4Fgd8AZFEVkx7vPqRnmggOB/77HXhT3c6Q
+         AwTfZL4pw16iYI57t5sF5AFFS8rr322ToKdujLnguZcLbLwISaLebanmOO/Ea+GI8X
+         si8tK6XB3X+FADz8HMfBNkesDNoxAnFkNJvsahqk=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04DDQGGC096817;
+        Wed, 13 May 2020 08:26:16 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 13
+ May 2020 08:26:15 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 13 May 2020 08:26:16 -0500
+Received: from uda0868495.fios-router.home (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04DDQF4H074601;
+        Wed, 13 May 2020 08:26:15 -0500
+From:   Murali Karicheri <m-karicheri2@ti.com>
+To:     <davem@davemloft.net>, <grygorii.strashko@ti.com>,
+        <ilias.apalodimas@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <nsekhar@ti.com>
+Subject: [PATCH net-next 0/2] am65-cpsw: add taprio/EST offload support
+Date:   Wed, 13 May 2020 09:26:13 -0400
+Message-ID: <20200513132615.16299-1-m-karicheri2@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200513123335.28122-1-vincent.guittot@linaro.org>
- <20200513124540.GB12425@lorien.usersys.redhat.com> <CAKfTPtBFP5eAV-u02x42U2cQnWA56RP+wbj78rWpzj560OS+-g@mail.gmail.com>
- <20200513131337.GF12425@lorien.usersys.redhat.com> <CAKfTPtDYmi9wz3r1G8baG2cM3wh6004CDT11HaAu8L7-wWv=Gw@mail.gmail.com>
- <20200513131808.GG12425@lorien.usersys.redhat.com>
-In-Reply-To: <20200513131808.GG12425@lorien.usersys.redhat.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 13 May 2020 15:25:29 +0200
-Message-ID: <CAKfTPtBpYWDz=ZeKKa1BGOVZ+PqM=kbbgSBQpn7msxMV_5v5uA@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/fair: enqueue_task_fair optimization
-To:     Phil Auld <pauld@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Tao Zhou <ouwen210@hotmail.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 May 2020 at 15:18, Phil Auld <pauld@redhat.com> wrote:
->
-> On Wed, May 13, 2020 at 03:15:53PM +0200 Vincent Guittot wrote:
-> > On Wed, 13 May 2020 at 15:13, Phil Auld <pauld@redhat.com> wrote:
-> > >
-> > > On Wed, May 13, 2020 at 03:10:28PM +0200 Vincent Guittot wrote:
-> > > > On Wed, 13 May 2020 at 14:45, Phil Auld <pauld@redhat.com> wrote:
-> > > > >
-> > > > > Hi Vincent,
-> > > > >
-> > > > > On Wed, May 13, 2020 at 02:33:35PM +0200 Vincent Guittot wrote:
-> > > > > > enqueue_task_fair jumps to enqueue_throttle label when cfs_rq_of(se) is
-> > > > > > throttled which means that se can't be NULL and we can skip the test.
-> > > > > >
-> > > > >
-> > > > > s/be NULL/be non-NULL/
-> > > > >
-> > > > > I think.
-> > > >
-> > > > This sentence refers to the move of enqueue_throttle and the fact that
-> > > > se can't be null when goto enqueue_throttle and we can jump directly
-> > > > after the if statement, which is now removed in v2 because se is
-> > > > always NULL if we don't use goto enqueue_throttle.
-> > > >
-> > > > I haven't change the commit message for the remove of if statement
-> > > >
-> > >
-> > > Fair enough, it just seems backwards from the intent of the patch now.
-> > >
-> > > There is also an extra }  after the update_overutilized_status.
-> >
-> > don't know what I did but it's crap.  sorry about that
-> >
->
-> No worries. I didn't see it when I read it either. The compiler told me :)
+AM65 CPSW h/w supports Enhanced Scheduled Traffic (EST – defined
+in P802.1Qbv/D2.2 that later got included in IEEE 802.1Q-2018)
+configuration. EST allows express queue traffic to be scheduled
+(placed) on the wire at specific repeatable time intervals. In
+Linux kernel, EST configuration is done through tc command and
+the taprio scheduler in the net core implements a software only
+scheduler (SCH_TAPRIO). If the NIC is capable of EST configuration,
+user indicate "flag 2" in the command which is then parsed by
+taprio scheduler in net core and indicate that the command is to
+be offloaded to h/w. taprio then offloads the command to the
+driver by calling ndo_setup_tc() ndo ops. This patch implements
+ndo_setup_tc() as well as other changes required to offload EST
+configuration to CPSW h/w
 
-Yeah, but i thought that i compiled it which is obviously not true
+For more details please refer patch 2/2.
 
->
->
-> > Let me prepare a v3
-> >
-> > >
-> > >
-> > > Cheers,
-> > > Phil
-> > >
-> > >
-> > >
-> > > > >
-> > > > > It's more like if it doesn't jump to the label then se must be NULL for
-> > > > > the loop to terminate.  The final loop is a NOP if se is NULL. The check
-> > > > > wasn't protecting that.
-> > > > >
-> > > > > Otherwise still
-> > > > >
-> > > > > > Reviewed-by: Phil Auld <pauld@redhat.com>
-> > > > >
-> > > > > Cheers,
-> > > > > Phil
-> > > > >
-> > > > >
-> > > > > > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> > > > > > ---
-> > > > > >
-> > > > > > v2 changes:
-> > > > > > - Remove useless if statement
-> > > > > >
-> > > > > >  kernel/sched/fair.c | 39 ++++++++++++++++++++-------------------
-> > > > > >  1 file changed, 20 insertions(+), 19 deletions(-)
-> > > > > >
-> > > > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > > > > index a0c690d57430..b51b12d63c39 100644
-> > > > > > --- a/kernel/sched/fair.c
-> > > > > > +++ b/kernel/sched/fair.c
-> > > > > > @@ -5513,28 +5513,29 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
-> > > > > >                         list_add_leaf_cfs_rq(cfs_rq);
-> > > > > >       }
-> > > > > >
-> > > > > > -enqueue_throttle:
-> > > > > > -     if (!se) {
-> > > > > > -             add_nr_running(rq, 1);
-> > > > > > -             /*
-> > > > > > -              * Since new tasks are assigned an initial util_avg equal to
-> > > > > > -              * half of the spare capacity of their CPU, tiny tasks have the
-> > > > > > -              * ability to cross the overutilized threshold, which will
-> > > > > > -              * result in the load balancer ruining all the task placement
-> > > > > > -              * done by EAS. As a way to mitigate that effect, do not account
-> > > > > > -              * for the first enqueue operation of new tasks during the
-> > > > > > -              * overutilized flag detection.
-> > > > > > -              *
-> > > > > > -              * A better way of solving this problem would be to wait for
-> > > > > > -              * the PELT signals of tasks to converge before taking them
-> > > > > > -              * into account, but that is not straightforward to implement,
-> > > > > > -              * and the following generally works well enough in practice.
-> > > > > > -              */
-> > > > > > -             if (flags & ENQUEUE_WAKEUP)
-> > > > > > -                     update_overutilized_status(rq);
-> > > > > > +     /* At this point se is NULL and we are at root level*/
-> > > > > > +     add_nr_running(rq, 1);
-> > > > > > +
-> > > > > > +     /*
-> > > > > > +      * Since new tasks are assigned an initial util_avg equal to
-> > > > > > +      * half of the spare capacity of their CPU, tiny tasks have the
-> > > > > > +      * ability to cross the overutilized threshold, which will
-> > > > > > +      * result in the load balancer ruining all the task placement
-> > > > > > +      * done by EAS. As a way to mitigate that effect, do not account
-> > > > > > +      * for the first enqueue operation of new tasks during the
-> > > > > > +      * overutilized flag detection.
-> > > > > > +      *
-> > > > > > +      * A better way of solving this problem would be to wait for
-> > > > > > +      * the PELT signals of tasks to converge before taking them
-> > > > > > +      * into account, but that is not straightforward to implement,
-> > > > > > +      * and the following generally works well enough in practice.
-> > > > > > +      */
-> > > > > > +     if (flags & ENQUEUE_WAKEUP)
-> > > > > > +             update_overutilized_status(rq);
-> > > > > >
-> > > > > >       }
-> > > > > >
-> > > > > > +enqueue_throttle:
-> > > > > >       if (cfs_bandwidth_used()) {
-> > > > > >               /*
-> > > > > >                * When bandwidth control is enabled; the cfs_rq_throttled()
-> > > > > > --
-> > > > > > 2.17.1
-> > > > > >
-> > > > >
-> > > > > --
-> > > > >
-> > > >
-> > >
-> > > --
-> > >
-> >
->
-> --
->
+This series is based on original work done by Ivan Khoronzhuk
+<ivan.khoronzhuk@linaro.org> to add taprio offload support to
+AM65 CPSW 2G. 
+
+1. Example configuration 3 Gates
+
+ifconfig eth0 down
+ethtool -L eth0 tx 3
+
+#disable rrobin
+ethtool --set-priv-flags eth0 p0-rx-ptype-rrobin off
+
+ifconfig eth0 192.168.2.20
+
+tc qdisc replace dev eth0 parent root handle 100 taprio \
+    num_tc 3 \
+    map 0 0 1 2 0 0 0 0 0 0 0 0 0 0 0 0 \
+    queues 1@0 1@1 1@2 \
+    base-time 0000 \
+    sched-entry S 4 125000 \
+    sched-entry S 2 125000 \
+    sched-entry S 1 250000 \
+    flags 2
+
+2. Example configuration 8 Gates 
+
+ifconfig eth0 down
+ethtool -L eth0 tx 8
+
+#disable rrobin
+ethtool --set-priv-flags eth0 p0-rx-ptype-rrobin off
+
+ifconfig eth0 192.168.2.20
+
+tc qdisc replace dev eth0 parent root handle 100 taprio \
+    num_tc 8 \
+    map 0 1 2 3 4 5 6 7 0 0 0 0 0 0 0 0 \
+    queues 1@0 1@1 1@2 1@3 1@4 1@5 1@6 1@7 \
+    base-time 0000 \
+    sched-entry S 80 125000 \
+    sched-entry S 40 125000 \
+    sched-entry S 20 125000 \
+    sched-entry S 10 125000 \
+    sched-entry S 08 125000 \
+    sched-entry S 04 125000 \
+    sched-entry S 02 125000 \
+    sched-entry S 01 125000 \
+    flags 2
+
+
+Classify frames to particular priority using skbedit so that they land at
+a specific queue in cpsw h/w which is Gated by the EST gate which opens based
+on the sched-entry. 
+
+tc qdisc add dev eth0 clsact
+
+In the below for example an iperf3 session with destination port 5007
+will go through Q7.
+
+# Assume case 1: 8 TCs as per the second tc command listed above
+# Assign packet prio 7 for port 5007 -> hw_prio 7
+tc filter add dev eth0 egress protocol ip prio 1 u32 match ip dport 5007 0xffff action skbedit priority 7
+
+# Similarly, assign packet prio 6 for port 5006 -> hw_prio 6 and so forth
+tc filter add dev eth0 egress protocol ip prio 1 u32 match ip dport 5006 0xffff action skbedit priority 6
+tc filter add dev eth0 egress protocol ip prio 1 u32 match ip dport 5005 0xffff action skbedit priority 5
+tc filter add dev eth0 egress protocol ip prio 1 u32 match ip dport 5004 0xffff action skbedit priority 4
+tc filter add dev eth0 egress protocol ip prio 1 u32 match ip dport 5003 0xffff action skbedit priority 3
+tc filter add dev eth0 egress protocol ip prio 1 u32 match ip dport 5002 0xffff action skbedit priority 2
+tc filter add dev eth0 egress protocol ip prio 1 u32 match ip dport 5001 0xffff action skbedit priority 1
+
+#send iperf3 udp traffic for port 5007 with iperf3 server running at
+#a PC connected to the eth0 port
+
+iperf3 -c 192.168.2.10 -u -l1470 -b32M -t1 -p 5007
+
+Testing was done by capturing frames at the PC using wireshark and checking for
+the bust interval or cycle time of UDP frames with a specific port number. 
+Verified that the distance between first frame of a burst (cycle-time) is 1
+milli second and burst duration is within 125 usec based on the received packet
+timestamp shown in wireshark packet display. 
+
+Ivan Khoronzhuk (2):
+  ethernet: ti: am65-cpts: add routines to support taprio offload
+  ethernet: ti: am65-cpsw-qos: add TAPRIO offload support
+
+ drivers/net/ethernet/ti/Kconfig             |   9 +
+ drivers/net/ethernet/ti/Makefile            |   2 +-
+ drivers/net/ethernet/ti/am65-cpsw-ethtool.c |  12 +-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c    |   9 +
+ drivers/net/ethernet/ti/am65-cpsw-nuss.h    |   5 +
+ drivers/net/ethernet/ti/am65-cpsw-qos.c     | 626 ++++++++++++++++++++
+ drivers/net/ethernet/ti/am65-cpsw-qos.h     |  29 +
+ drivers/net/ethernet/ti/am65-cpts.c         |  48 ++
+ drivers/net/ethernet/ti/am65-cpts.h         |  24 +
+ 9 files changed, 761 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/net/ethernet/ti/am65-cpsw-qos.c
+ create mode 100644 drivers/net/ethernet/ti/am65-cpsw-qos.h
+
+-- 
+2.17.1
+
