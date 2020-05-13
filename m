@@ -2,106 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4049F1D1BED
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 19:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A41571D1BEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 19:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389870AbgEMRJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 13:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
+        id S2389859AbgEMRIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 13:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728068AbgEMRJN (ORCPT
+        with ESMTP id S1728068AbgEMRIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 13:09:13 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3107C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 10:09:12 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id l20so369858ilj.10
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 10:09:12 -0700 (PDT)
+        Wed, 13 May 2020 13:08:09 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9B8C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 10:08:08 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id o14so415357ljp.4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 10:08:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:from:cc:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=OTwSFldhDgwfKavCOIqhkMtsv6Uf6dH3DgyIcps1eeU=;
-        b=UoFwJ9P6t9qDrTAAi/bsDKZIYtkB3BOvVi3IZm4PBCwU9m/CWIgvpZHwAtNVrcsuBY
-         VzkhnJUppqGiGUb8UBnF+yGIIn7MJ2nBDzvTtFkDQbXqqzQZMaodIo5rIcfIcQ9ZPwJI
-         TrXHmQSzYqCHcF9yf7jkXjt9piz+fao1PBF9A=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ct92GoQxmjkrJFsjfbiJncWVHhbFDJqrFKHkKPJTo14=;
+        b=Tl5Rbiyng5LgHx5Gg6sJfh0nYM5fQaO5R9FbQ+FxIU77QOtG1peH+rYIp9YdGC0Ki+
+         WMXudb69z9CbqDUAkmJ3uZ+faKYl1Afni3nUwNKCKi/+a1HCy7m0BUJxuCLN/QaJaXC+
+         PdNYd1Dh5DYxj84YQrMpUC8Zm0+T5H/JPUxd1oW787D9a/0TLAHR9oDiFXTD7MWyUNo4
+         qRy6awADaPbdSVWfF+K7VbVR8QXWfuQEN6/5D1EnO0K1dC14g/EkK/vbB2U5oLD7vdWu
+         L4SEzlMjFeNtqCBrEZGIyJkYetgwgmZzYWL5R+Ve1HRbh+gpXwa2AYqY2ccWB6P+Aj9w
+         zADQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:cc:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=OTwSFldhDgwfKavCOIqhkMtsv6Uf6dH3DgyIcps1eeU=;
-        b=SM/y+ySoLoGcapb9eQg/qvpE0xjvWlXBKKgspjbAstLqgMHagYIsP8ZhGL9tbusFc2
-         Q9QihCh9mkcTO4PAEglmUGy3GPKDsQmOpuACj6EpBqUjbqOaTT4VrgJy/cFpyLWyJQT7
-         pnd/KdNT+Ywi9RZoeR8Gv4ELqRwPdHjoB/Ds3sqZ6kteC2JmBDSdd54llWzXvd+XP9NN
-         QFMdr+15npL4b2yfxjH3Y6Wmt9x0PBvE5wYFkRkhPRCtSCZet432Sl8sssYsjA3do/0J
-         ifBJZt0L/E347y1EOMEnub6JCa2NN1C8YuTqArW6cPIZboalJWmm4SrkSwOF8TUm9T+C
-         accw==
-X-Gm-Message-State: AOAM532fd7QrVk+1ME+rtIZxBu1QwhcoXZHoVVP2mC6UnuyMFYplhGF5
-        d4Yr7Nlxz3vQnv4SV1RPqM2WSA==
-X-Google-Smtp-Source: ABdhPJynHhzvyR2M0NLPpd7dWtvx0skkR3CAGs3ixp/82ITq2HUgE8/zq9IrmNdukPRZ1FYPD56CLA==
-X-Received: by 2002:a92:6c11:: with SMTP id h17mr487372ilc.178.1589389752280;
-        Wed, 13 May 2020 10:09:12 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id k11sm97413iom.43.2020.05.13.10.09.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2020 10:09:11 -0700 (PDT)
-To:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        jukka.kaartinen@unikie.com
-Subject: [ANN] linux-arts v2.0 update
-Message-ID: <0c3bb5e9-d372-782b-2499-41ee61080c11@linuxfoundation.org>
-Date:   Wed, 13 May 2020 11:09:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ct92GoQxmjkrJFsjfbiJncWVHhbFDJqrFKHkKPJTo14=;
+        b=EmNF68fgH68hEJZ8eAY1gtdqjFE6bAa7Dnv5ks3OOSAo5f0DxdoJQhXgWYLDiOhWId
+         DQZOsCOkEThtkQsg8RtyymetmCS1wFXtCbXC+NQSWBxwQR0FQBr4ePOaFSvT33vkrZOy
+         jVrRHx3+O/v9orIfeDKNWeMco6/NwktSugiW1UT/nL73w1Beo68mKfsQyafzSC3fq+ba
+         RPGBsXPIFlOMIm+DTO6mESxtdq+OZUp7JCXmojTdM84LPf4yywp/+aBip4eTGtyOi4FF
+         hlR/rxOWDaM2y+inml3gggQlMlDt169PsyjI6t/Z00ECBiAazT50d/PGf4QCsRLPeqzE
+         WggQ==
+X-Gm-Message-State: AOAM531iGsbrn62cR+Xxd/hP/Zh0t4Rt6SyyiVHF/FBiOvDNZ493//mg
+        TxX73dkhKDk9DouqueLwzrveP7caQ25/7qmciY0=
+X-Google-Smtp-Source: ABdhPJztZOzynU5omXWIWITm6a2uO+5uiPsUQ2mpbi7pLnKEITDKvJ/cWebb6gPS7BsFK4UO0pNiyNMAI5b0QypN0sM=
+X-Received: by 2002:a2e:9b50:: with SMTP id o16mr75061ljj.164.1589389687029;
+ Wed, 13 May 2020 10:08:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200513150007.1315395-1-lkundrak@v3.sk> <20200513150007.1315395-3-lkundrak@v3.sk>
+In-Reply-To: <20200513150007.1315395-3-lkundrak@v3.sk>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 13 May 2020 14:09:21 -0300
+Message-ID: <CAOMZO5B582=tZ_YBCyVYFtGh=z5hZKFxP7XoUHEmH3jZsk2uYQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] drm/etnaviv: Don't ignore errors on getting clocks
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Lucas Stach <l.stach@pengutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        The etnaviv authors <etnaviv@lists.freedesktop.org>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Russell King <linux+etnaviv@armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-linux-arts git has been updated with the new reproducers from
-https://github.com/dvyukov/syzkaller-repros.git
+On Wed, May 13, 2020 at 12:08 PM Lubomir Rintel <lkundrak@v3.sk> wrote:
+>
+> There might be good reasons why the getting a clock failed. To treat the
+> clocks as optional we're specifically only interested in ignoring -ENOENT,
+> and devm_clk_get_optional() does just that.
+>
+> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+> ---
+>  drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+> index c6dacfe3d321..e7dbb924f576 100644
+> --- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+> @@ -1786,26 +1786,26 @@ static int etnaviv_gpu_platform_probe(struct platform_device *pdev)
+>         }
+>
+>         /* Get Clocks: */
+> -       gpu->clk_reg = devm_clk_get(&pdev->dev, "reg");
+> +       gpu->clk_reg = devm_clk_get_optional(&pdev->dev, "reg");
+>         DBG("clk_reg: %p", gpu->clk_reg);
+>         if (IS_ERR(gpu->clk_reg))
+> -               gpu->clk_reg = NULL;
+> +               return err;
+>
+> -       gpu->clk_bus = devm_clk_get(&pdev->dev, "bus");
+> +       gpu->clk_bus = devm_clk_get_optional(&pdev->dev, "bus");
 
-- a total of 1138 new linux reproducers
-- new script to collect reprogs from file system
-- updates to README.md
-- Updates to README on how linux-arts is synced with
-   syzkaller-repros.git
+The binding doc Documentation/devicetree/bindings/gpu/vivante,gc.yaml
+says that only the 'reg' clock could be optional, the others are
+required.
 
-This update can be found at:
-     git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-arts.git
 
-thanks,
--- Shuah
-
------------------------------------------------------
-
-Author: Shuah Khan <skhan@linuxfoundation.org
-     linux-arts: Update README with process information
-
-Author: Dmitry Vyukov <dvyukov@google.com
-     linux: add 170 new repros from syzbot
-
-Author: Dmitry Vyukov <dvyukov@google.com>
-     linux: add 270 new local repros
-
-Author: Jukka Kaartinen <jukka.kaartinen@unikie.com>
-     Add reproducers from local builds
-
-Author: Jukka Kaartinen <jukka.kaartinen@unikie.com>
-     Add script to collect reprogs from file system
-
-Author: Dmitry Vyukov <dvyukov@google.com>
-     Update README.md
-
-Author: Dmitry Vyukov <dvyukov@google.com>
-     update linux reproducers
-
------------------------------------------------------
+>         DBG("clk_bus: %p", gpu->clk_bus);
+>         if (IS_ERR(gpu->clk_bus))
+> -               gpu->clk_bus = NULL;
+> +               return err;
+>
+> -       gpu->clk_core = devm_clk_get(&pdev->dev, "core");
+> +       gpu->clk_core = devm_clk_get_optional(&pdev->dev, "core");
+>         DBG("clk_core: %p", gpu->clk_core);
+>         if (IS_ERR(gpu->clk_core))
+> -               gpu->clk_core = NULL;
+> +               return err;
+>         gpu->base_rate_core = clk_get_rate(gpu->clk_core);
+>
+> -       gpu->clk_shader = devm_clk_get(&pdev->dev, "shader");
+> +       gpu->clk_shader = devm_clk_get_optional(&pdev->dev, "shader");
+>         DBG("clk_shader: %p", gpu->clk_shader);
+>         if (IS_ERR(gpu->clk_shader))
+> -               gpu->clk_shader = NULL;
+> +               return err;
+>         gpu->base_rate_shader = clk_get_rate(gpu->clk_shader);
+>
+>         /* TODO: figure out max mapped size */
+> --
+> 2.26.2
+>
+> _______________________________________________
+> etnaviv mailing list
+> etnaviv@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/etnaviv
