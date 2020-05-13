@@ -2,144 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75181D10D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9D71D10D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730987AbgEMLNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 07:13:46 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:54730 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730914AbgEMLNp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 07:13:45 -0400
-Received: from zn.tnic (p200300ec2f0ac30080c108a4f2a14d75.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:c300:80c1:8a4:f2a1:4d75])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5F1231EC0330;
-        Wed, 13 May 2020 13:13:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1589368423;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=5DShX4VU/NjBWaapSRN6k1YnbaJnNyw9V9LW9QgRqyo=;
-        b=aMIw5BMzlTRYeeZXGKDnswten8IxM5kB72e5LQNSHKB8n9TKQgxYCiOaukgz4TjDNwHYqd
-        VB77nQc8kaI/me57e0ilGdxFrJg73P5Yv8efy35fj+KJLA815R2nxO+FoBLDGs6L1E4zlC
-        f7It7iW/cILUxz3zZgJ3EpqUE3V8VSQ=
-Date:   Wed, 13 May 2020 13:13:40 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v3 24/75] x86/boot/compressed/64: Unmap GHCB page before
- booting the kernel
-Message-ID: <20200513111340.GD4025@zn.tnic>
-References: <20200428151725.31091-1-joro@8bytes.org>
- <20200428151725.31091-25-joro@8bytes.org>
+        id S1731056AbgEMLNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 07:13:53 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:12201 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730991AbgEMLNt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 07:13:49 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app11-12011 (RichMail) with SMTP id 2eeb5ebbd658ecd-cf4c5; Wed, 13 May 2020 19:13:28 +0800 (CST)
+X-RM-TRANSID: 2eeb5ebbd658ecd-cf4c5
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.25.154.146])
+        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee65ebbd655ed9-e0e21;
+        Wed, 13 May 2020 19:13:28 +0800 (CST)
+X-RM-TRANSID: 2ee65ebbd655ed9-e0e21
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     broonie@kernel.org, timur@kernel.org, nicoleotsuka@gmail.com,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.com,
+        perex@perex.cz
+Cc:     alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: [PATCH] ASoC: fsl: imx-audmix: Fix unused assignment to variable 'ret'
+Date:   Wed, 13 May 2020 19:14:08 +0800
+Message-Id: <20200513111408.11452-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200428151725.31091-25-joro@8bytes.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 05:16:34PM +0200, Joerg Roedel wrote:
-> @@ -302,9 +313,13 @@ void do_boot_page_fault(struct pt_regs *regs, unsigned long error_code)
->  	 *	- User faults
->  	 *	- Reserved bits set
->  	 */
-> -	if (error_code & (X86_PF_PROT | X86_PF_USER | X86_PF_RSVD)) {
-> +	if (ghcb_fault ||
-> +	    error_code & (X86_PF_PROT | X86_PF_USER | X86_PF_RSVD)) {
->  		/* Print some information for debugging */
-> -		error_putstr("Unexpected page-fault:");
-> +		if (ghcb_fault)
-> +			error_putstr("Page-fault on GHCB page:");
-> +		else
-> +			error_putstr("Unexpected page-fault:");
+Omit unused initialized value, because 'ret' will be assigined
+by the function snd_soc_component_read().
 
-You could carve out the info dumping into a separate function to
-unclutter this if-statement (diff ontop):
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ sound/soc/fsl/fsl_audmix.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
-index d3771d455249..c1979fc0f853 100644
---- a/arch/x86/boot/compressed/ident_map_64.c
-+++ b/arch/x86/boot/compressed/ident_map_64.c
-@@ -296,6 +296,22 @@ int set_page_non_present(unsigned long address)
- 	return set_clr_page_flags(&mapping_info, address, 0, _PAGE_PRESENT);
- }
+diff --git a/sound/soc/fsl/fsl_audmix.c b/sound/soc/fsl/fsl_audmix.c
+index 5faecbeb5..8b9027f76 100644
+--- a/sound/soc/fsl/fsl_audmix.c
++++ b/sound/soc/fsl/fsl_audmix.c
+@@ -116,7 +116,7 @@ static int fsl_audmix_put_mix_clk_src(struct snd_kcontrol *kcontrol,
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+ 	unsigned int *item = ucontrol->value.enumerated.item;
+ 	unsigned int reg_val, val, mix_clk;
+-	int ret = 0;
++	int ret;
  
-+static void do_pf_error(const char *msg, unsigned long error_code,
-+			unsigned long address, unsigned long ip)
-+{
-+	error_putstr(msg);
-+
-+	error_putstr("\nError Code: ");
-+	error_puthex(error_code);
-+	error_putstr("\nCR2: 0x");
-+	error_puthex(address);
-+	error_putstr("\nRIP relative to _head: 0x");
-+	error_puthex(ip - (unsigned long)_head);
-+	error_putstr("\n");
-+
-+	error("Stopping.\n");
-+}
-+
- void do_boot_page_fault(struct pt_regs *regs, unsigned long error_code)
- {
- 	unsigned long address = native_read_cr2();
-@@ -309,27 +325,15 @@ void do_boot_page_fault(struct pt_regs *regs, unsigned long error_code)
+ 	/* Get current state */
+ 	ret = snd_soc_component_read(comp, FSL_AUDMIX_CTR, &reg_val);
+@@ -159,7 +159,7 @@ static int fsl_audmix_put_out_src(struct snd_kcontrol *kcontrol,
+ 	unsigned int *item = ucontrol->value.enumerated.item;
+ 	u32 out_src, mix_clk;
+ 	unsigned int reg_val, val, mask = 0, ctr = 0;
+-	int ret = 0;
++	int ret;
  
- 	/*
- 	 * Check for unexpected error codes. Unexpected are:
-+	 *	- Faults on the GHCB page due to unexpected #VCs
- 	 *	- Faults on present pages
- 	 *	- User faults
- 	 *	- Reserved bits set
- 	 */
--	if (ghcb_fault ||
--	    error_code & (X86_PF_PROT | X86_PF_USER | X86_PF_RSVD)) {
--		/* Print some information for debugging */
--		if (ghcb_fault)
--			error_putstr("Page-fault on GHCB page:");
--		else
--			error_putstr("Unexpected page-fault:");
--		error_putstr("\nError Code: ");
--		error_puthex(error_code);
--		error_putstr("\nCR2: 0x");
--		error_puthex(address);
--		error_putstr("\nRIP relative to _head: 0x");
--		error_puthex(regs->ip - (unsigned long)_head);
--		error_putstr("\n");
--
--		error("Stopping.\n");
--	}
-+	if (ghcb_fault)
-+		do_pf_error("Page-fault on GHCB page:", error_code, address, regs->ip);
-+	else if (error_code & (X86_PF_PROT | X86_PF_USER | X86_PF_RSVD))
-+		do_pf_error("Unexpected page-fault:", error_code, address, regs->ip);
- 
- 	/*
- 	 * Error code is sane - now identity map the 2M region around
-
+ 	/* Get current state */
+ 	ret = snd_soc_component_read(comp, FSL_AUDMIX_CTR, &reg_val);
 -- 
-Regards/Gruss,
-    Boris.
+2.20.1.windows.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
+
