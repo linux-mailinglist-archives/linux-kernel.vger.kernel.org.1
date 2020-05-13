@@ -2,95 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEBB1D04E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F104A1D04EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728575AbgEMCaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 22:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37460 "EHLO
+        id S1728861AbgEMCaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 22:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728498AbgEMCaE (ORCPT
+        with ESMTP id S1728571AbgEMCad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 22:30:04 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36234C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 19:30:03 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id a4so7103737pgc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 19:30:03 -0700 (PDT)
+        Tue, 12 May 2020 22:30:33 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA245C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 19:30:32 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id x5so7342756ioh.6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 19:30:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dRl4YBE3TMl0SsiV0tZC4Iqnfxs3bO+Y25NzUvxt45A=;
-        b=Xr8CCr30EpIbBzcUFmUdyJWqPcgRkkyRgJ8EuNa0FB0nt4+zA1favzlpTbLpHBYluj
-         0/tj98qvnGqD/m6l/2oGIJwAffNk9yJA2BSCxn5LEmEWplcJ+dgJlXrpxRH8DRfcpcYA
-         wS4eohtPzs81f4zWnLjkt0emvJ/qDc7ig6TaFCP3NwmZ7/3sZaN8dgm1FezAXzmmOjQI
-         ApPtLtHQ7JZgaLDQnQwvgal1A8fGW8ejl+PqS9hpr5JUOw/pc/EWAF1PvYOmacb5uWWR
-         pjZ8957+0ACJvt8MyHypjm/HHd0BEubrKizI9BTOATq0bJLhD7Zfgzd13UKC2FouaNPT
-         B5eg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mpKvcF6cYRPs0VzgIvpbSSok+xEKbZDD7B97t881690=;
+        b=sqMPCg3QfMXcQFjaw5y++wf6akTbJosdSGIyVaJm9w71VV8Hc95x4E+S5im0s5FIm9
+         mQMVfAMXxucEo5Qy2klvk5FWU469JLCzitibrEuW48AAyNgw8C9TvXd2ZGb7bFTXxDXC
+         vmxUIwnPjAufC9vq8KFfDJDtAQUGaAB8PYUAi5xmchF2Ax/PLc9hmATwDz6uiFeK5dSf
+         uxtcncnqHgcQp6MmBZNktKYrFwfVz+cuRl7rVuovioS7eDtOerqssnXLyBt7jUHYDw9a
+         1fWxnT/bqc/ulzP9cHhGYMCYdPHfGP6ZaAzMqmaBurU9D2zwWwu+Ny3RrA07xaeP7Bjw
+         77XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dRl4YBE3TMl0SsiV0tZC4Iqnfxs3bO+Y25NzUvxt45A=;
-        b=CNumOuoXQKukMVDsOh1W+73dmxi76nmG75MAVLas0TkrYyjvf/joAWFMxWt7EpTF77
-         FhzpgTPdWrYLMHzKgxSeQuAUnlkUp7/t1qnE0UQ//eidA+IuANoZa5BY16iiJu6zcJ4o
-         P9TKYcaEAhCRHbF+BkCTztv+8Lo2NkLAjYUolhLSh9Br3NaJyKBaMucxiiqxnZZA+4P5
-         G7iJs4T0SH6RnDAeL7NbpbiAewnw8vTQLgPLaSQ9Sq/+hxw9uWFQfPECIngX6ro0SDSS
-         o93bm/PeNanFqgZk5scOUi8SozkDZXw++r7phM9WjrYqGJrh2sUJVRjDe2eq6JuSdtzo
-         x2Tw==
-X-Gm-Message-State: AOAM532FMBw16X8Sd6LslfKhuCs0qaZA+OlAbhsqNDaXLrLDtdbRKH8v
-        LVXLuIhPrbUpUNbUto81MXB2fZV8614=
-X-Google-Smtp-Source: ABdhPJwgw+y9MRoDkNWNDGa5d1jKOUxGsSXi+rxOaTsYZXTBVkbDWUxv6H3GSNMHgnPDg+ecwsEaOQ==
-X-Received: by 2002:aa7:8c0a:: with SMTP id c10mr13866827pfd.177.1589337002687;
-        Tue, 12 May 2020 19:30:02 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:1d8:eb9:1d84:211c? ([2605:e000:100e:8c61:1d8:eb9:1d84:211c])
-        by smtp.gmail.com with ESMTPSA id g17sm2797521pgg.43.2020.05.12.19.30.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 May 2020 19:30:02 -0700 (PDT)
-Subject: Re: [PATCH v4 10/10] loop: Add LOOP_CONFIGURE ioctl
-To:     Martijn Coenen <maco@android.com>
-Cc:     Narayan Kamath <narayan@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>, kernel-team@android.com,
-        Martijn Coenen <maco@google.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>
-References: <20200429140341.13294-1-maco@android.com>
- <20200429140341.13294-11-maco@android.com>
- <CAB0TPYHwor85-fWKu+OMT-1ys2L7OSqVoReJRzNOMAE0xK+yzg@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <1f3064a9-105f-02bb-6a1a-eb9875d292e3@kernel.dk>
-Date:   Tue, 12 May 2020 20:29:59 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mpKvcF6cYRPs0VzgIvpbSSok+xEKbZDD7B97t881690=;
+        b=uJXJ0MFkxmZtdyC2iPPUODftV0vLbmQl0G+yVOjwHTYjMUSoGaqsT2FKWhMBSNXDS7
+         Y95WgkhgzkhoO3EsxJuZ3ZS7ROV/K8dkNrX/EC3tH886Mi7YYwu556VFmicg/r7ZDtLS
+         VEFeHUdGWCQcrxoy3JJdNPsxnfNwSXeXMP33LVZHbZ7/PZshFMmaohvQekvrZCmk1PaG
+         mxHg9vKmg4JKu8dddEPuAIVBSXZ++REGZKqxm3gx8m3J7f86L7pN2vUFuzZ4ZSOMij+5
+         fD6RdYhgiAjQ29XzWeKuo3/YWzuGpnrk2JOaau7q5q1xI/UrEJKdb7JGy0RU4aHP8Ib+
+         VtUQ==
+X-Gm-Message-State: AGi0PuablMSKt4gZJ8Z/ffBsPOSaVpE05y6ljll3BGNYvUrtop6/505i
+        jKJoHhDgsdY9tTy/1gQ7PIrSgrht+PWDoiO157la9Q==
+X-Google-Smtp-Source: APiQypISzJTNbOMQ+9SG0JmlbXCmMrEOYqOyMAOztDRhjIKcfsUC9WeehbbbAXBTBdPWoVzy6rY8muPb2tvf9asRWTw=
+X-Received: by 2002:a6b:ea11:: with SMTP id m17mr17257024ioc.149.1589337031931;
+ Tue, 12 May 2020 19:30:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAB0TPYHwor85-fWKu+OMT-1ys2L7OSqVoReJRzNOMAE0xK+yzg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200508145624.1.I4d7421c6bbb1f83ea58419082481082e19097841@changeid>
+ <20200512145930.1.I4d7421c6bbb1f83ea58419082481082e19097841@changeid>
+ <20200512121232.GB3150977@krava> <20200512141221.GL28888@kernel.org>
+In-Reply-To: <20200512141221.GL28888@kernel.org>
+From:   "Anand K. Mistry" <amistry@google.com>
+Date:   Wed, 13 May 2020 12:30:20 +1000
+Message-ID: <CAATStaOL7ZNnfMb0skgUvgpTFuTczZv6CKNxw9MGMKQGDkxfEA@mail.gmail.com>
+Subject: Re: [PATCH] perf record: Use an eventfd to wakeup when done
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, linux-perf-users@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/20 12:46 AM, Martijn Coenen wrote:
-> Hi Jens,
-> 
-> What do you think of this series?
+On Wed, 13 May 2020 at 00:12, Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
+>
+> Em Tue, May 12, 2020 at 02:12:32PM +0200, Jiri Olsa escreveu:
+> > On Tue, May 12, 2020 at 02:59:36PM +1000, Anand K Mistry wrote:
+> >
+> > SNIP
+> >
+> > > diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> > > index 1ab349abe90469..099ecaa66732a2 100644
+> > > --- a/tools/perf/builtin-record.c
+> > > +++ b/tools/perf/builtin-record.c
+> > > @@ -53,6 +53,7 @@
+> > >  #include <unistd.h>
+> > >  #include <sched.h>
+> > >  #include <signal.h>
+> > > +#include <sys/eventfd.h>
+> > >  #include <sys/mman.h>
+> > >  #include <sys/wait.h>
+> > >  #include <sys/types.h>
+> > > @@ -518,15 +519,28 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
+> > >
+> > >  static volatile int signr = -1;
+> > >  static volatile int child_finished;
+> > > +static int done_fd = -1;
+> > >
+> > >  static void sig_handler(int sig)
+> > >  {
+> > > +   u64 tmp = 1;
+> > >     if (sig == SIGCHLD)
+> > >             child_finished = 1;
+> > >     else
+> > >             signr = sig;
+> > >
+> > >     done = 1;
+> > > +
+> > > +   /*
+> > > +    * It is possible for this signal handler to run after done is checked
+> > > +    * in the main loop, but before the perf counter fds are polled. If this
+> > > +    * happens, the poll() will continue to wait even though done is set,
+> > > +    * and will only break out if either another signal is received, or the
+> > > +    * counters are ready for read. To ensure the poll() doesn't sleep when
+> > > +    * done is set, use an eventfd (done_fd) to wake up the poll().
+> > > +    */
+> > > +   if (write(done_fd, &tmp, sizeof(tmp)) < 0)
+> > > +           pr_err("failed to signal wakeup fd\n");
+> > >  }
+> > >
+> > >  static void sigsegv_handler(int sig)
+> > > @@ -1424,6 +1438,17 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+> > >     int fd;
+> > >     float ratio = 0;
+> > >
+> > > +   done_fd = eventfd(0, EFD_NONBLOCK);
+> > > +   if (done_fd < 0) {
+> > > +           pr_err("Failed to create wakeup eventfd, error: %m\n");
+> > > +           return -1;
+> > > +   }
+> > > +   err = evlist__add_pollfd(rec->evlist, done_fd);
+> > > +   if (err < 0) {
+> > > +           pr_err("Failed to add wakeup eventfd to poll list\n");
+> > > +           return -1;
+> > > +   }
+> >
+> > sorry I did not notice before, but I think we also
+> > need to close done_fd descriptor on the exit path
+> >
+> > also please change subject to PATCHv3 for the next version
 
-Looks acceptable to me, but I'm getting a failure applying it to
-for-5.8/drivers on this patch:
+Apologies. I'm still getting the hang of this.
 
-Applying: loop: Refactor loop_set_status() size calculation
+>
+> Yeah, and, and don't take this as a requirement for this patch to be
+> processed, this can be made as a follow up patch by you or someone else
+> (me, maybe :)), that maybe tools/perf/builtin-top.c and
+> tools/perf/builtin-trace.c have the same issue?
+>
+> Could you please take a look there as well?
 
-So you'll probably want to respin on the right branch.
+I looked at 'top', 'trace', and 'kvm'. kvm doesn't really have this
+issue because
+the poll() has a 100ms timeout. Even though it's technically affected,
+the timeout
+will make it unnoticeable (just delaying the exit for 100ms). top is
+in the same boat
+(uses a timeout).
+
+trace is the affected one because it has the following code:
+int timeout = done ? 100 : -1;
+if (!draining && evlist__poll(evlist, timeout) > 0) {
+
+Different logic, but still a gap and an indefinite timeout.
+
+>
+> - Arnaldo
+>
+> > thanks,
+> > jirka
+> >
+> > > +
+> > >     atexit(record__sig_exit);
+> > >     signal(SIGCHLD, sig_handler);
+> > >     signal(SIGINT, sig_handler);
+> > > --
+> > > 2.26.2.645.ge9eca65c58-goog
+> > >
+> >
+>
+> --
+>
+> - Arnaldo
+
+
 
 -- 
-Jens Axboe
-
+Anand K. Mistry
+Software Engineer
+Google Australia
