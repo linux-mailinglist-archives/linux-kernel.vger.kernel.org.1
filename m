@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99DAE1D2114
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CEFC1D20D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729296AbgEMVaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:30:07 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34746 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728718AbgEMVaH (ORCPT
+        id S1728703AbgEMVWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 17:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728421AbgEMVWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:30:07 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04DLTwxY105606;
-        Wed, 13 May 2020 16:29:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589405398;
-        bh=vcbFgmT3TN+BiEX3L7ygJ+nCexSav6b9m490239DnXM=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=UpYjjIAsWnRrMfzaoMrZjg1Tieg9gnCR9eYKoPDAnfr9xneKiwvmVfy1vOJgEISd8
-         52eO8MowSK7nBtarM7M6Wlbh119cwHLrh7nGTPt2Di6+GmAop7KbjnowNFDnndbrYL
-         GEL0LAfWtlpAp4BHMrZ8mDbTJC/BZ0kG0ttSZplg=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04DLTwUD105576;
-        Wed, 13 May 2020 16:29:58 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 13
- May 2020 16:29:57 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 13 May 2020 16:29:57 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04DLTvI6019290;
-        Wed, 13 May 2020 16:29:57 -0500
-Subject: Re: linux-next: Fixes tag needs some work in the sound-asoc-fixes
- tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wed, 13 May 2020 17:22:08 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 895D0C05BD09
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:22:08 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id k18so184801ion.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:22:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=tGOgO3DH7KY7eGZj+l93dH69/CZG3Xhtwrztz8Xi5EY=;
+        b=hOZtlEBO2LKyP8bHzFDDLBLE+AyP3GW51R2Bgu0+e70rfUZ9rIiczo3pB8s/u3VM70
+         K0T9RD7NVB7brgPgne9G7Y9DKSqMwc34kmUSNaN1+tKmQKMyi7b2a/DSMwe/zY5/KEhq
+         fQSq0XIBJbkr+PAekXcISSvdYkIgp1CyKT8+VJYoZrJ8KYzz0lTZCE6/MFJ87T2KQroR
+         EtSZS930x4uhhtysV1nP2Ob/eQgc7gMe8HsNnHtxeeVeS/yekgc2kD61tz8HifWs7qcn
+         aDv4sBzqEuxANANls7LL4SbixAH4tEKQkZN+1IFCsDhaPLM0Ftld10Il4H8V74Y2oTRm
+         cjMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=tGOgO3DH7KY7eGZj+l93dH69/CZG3Xhtwrztz8Xi5EY=;
+        b=Qwa02XasLOSoXTOnTRsPdGUs3L1wvBWkZOlh/dp0QWo1ow3ZQDS78d2yNuSsA2GZyg
+         AuoTT2CBLpw3stDTulO4W8o4EEl1tweN0SRz4O1+gVdrfhmujdpt4gdiuGgxbcSWTSXX
+         i/eZNMwMDDh8er+ZKBAG2zg+o9ViCZXyR5XthEpqRZvWhxRe7Zyyg1hl+5iptTE5i1Bh
+         +1EhzXKUYgnNsB1nBIEVefQljvmrrQPE2nkrsCo0uft7v6dZUg2zbNRMg8GFMuvB/exV
+         wJX/brph31fwCZeIJ9RW1ahuSL9M8BUqaJQGsdrbFl9/ddk/PuOivYpaUTa7Npy7v5xO
+         m+gQ==
+X-Gm-Message-State: AGi0PuaI5O4cvLT0yDRU5ec0OQVdcGBH2SZHQFwNbdTaLjSeyrmQhwTO
+        zYDsqsJpsACdgB4oepYGVchJPQ==
+X-Google-Smtp-Source: ABdhPJxZH8ktcsDq2DKyrfz9mzAZuFt485i9jtYbwe1JvROnYtyNj3dkM5M5qWN962L5ecYak/nF8Q==
+X-Received: by 2002:a05:6638:277:: with SMTP id x23mr1463557jaq.122.1589404927597;
+        Wed, 13 May 2020 14:22:07 -0700 (PDT)
+Received: from localhost ([2601:8c4:0:32f::7b7])
+        by smtp.gmail.com with ESMTPSA id j90sm272733ilg.70.2020.05.13.14.22.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 14:22:06 -0700 (PDT)
+Date:   Wed, 13 May 2020 14:22:01 -0700 (PDT)
+From:   Paul Walmsley <paul.walmsley@sifive.com>
+X-X-Sender: paulw@viisi.sifive.com
+To:     Rob Herring <robh@kernel.org>
+cc:     devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-CC:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200514071257.5b1582ca@canb.auug.org.au>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <f828c953-07b2-6a6b-881a-bf10f20a719d@ti.com>
-Date:   Wed, 13 May 2020 16:20:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 1/5] spi: dt-bindings: sifive: Add missing 2nd register
+ region
+In-Reply-To: <20200512204543.22090-1-robh@kernel.org>
+Message-ID: <alpine.DEB.2.21.9999.2005131421010.18879@viisi.sifive.com>
+References: <20200512204543.22090-1-robh@kernel.org>
+User-Agent: Alpine 2.21.9999 (DEB 301 2018-08-15)
 MIME-Version: 1.0
-In-Reply-To: <20200514071257.5b1582ca@canb.auug.org.au>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen
+On Tue, 12 May 2020, Rob Herring wrote:
 
-On 5/13/20 4:12 PM, Stephen Rothwell wrote:
-> Hi all,
->
-> In commit
->
->    0e36f32f6b6c ("ASoC: tlv320adcx140: Fix bias config values")
->
-> Fixes tag
->
->    Fixes: 37bde5acf040 ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec
->
-> has these problem(s):
->
->    - Target SHA1 does not exist
->
-> Mabe you meant
->
-> Fixes: 689c7655b50c ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec driver family")
+> The 'reg' description and example have a 2nd register region for memory
+> mapped flash, but the schema says there is only 1 region. Fix this.
+> 
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: linux-spi@vger.kernel.org
+> Cc: linux-riscv@lists.infradead.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> Please ack, dependency for patch 5.
 
-Yes this is what it is supposed to be
-
-Mark
-
-Did you want me to re-submit the patch with the corrected commit or are 
-you going to update it?
-
-I also noticed code was spelled wrong in the commit message
-
-s/conde/code
-
-Dan
+Acked-by: Paul Walmsley <paul.walmsley@sifive.com> 
 
 
-> Also, it looks like the Fixes tag had been split over more than one line
-> (and then the latter part moved above the rest).
->
+- Paul
