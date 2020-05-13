@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F88D1D0969
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 09:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315461D0984
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 09:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730142AbgEMHCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 03:02:39 -0400
-Received: from mga17.intel.com ([192.55.52.151]:53674 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726020AbgEMHCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 03:02:38 -0400
-IronPort-SDR: GO/M7kVewLrxISMq/AE5tX6aHvLnk03CzHOZJBU9An70JyUxwNrp4Z52gQLNbPXHE46XgYaCY1
- OGjRLOLcSqBg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 00:02:38 -0700
-IronPort-SDR: 97Mz8ZV6xPDWvCrpeSLuYcIbh85ttnDw6+1GKURocbPBpEWvkT7Ty1nIPN1qSg6/y9A/YRJp2x
- KvAQHRb8kC3g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,386,1583222400"; 
-   d="scan'208";a="371814032"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by fmsmga001.fm.intel.com with ESMTP; 13 May 2020 00:02:35 -0700
-Subject: Re: [PATCH v8 4/4] USB: pci-quirks: Add Raspberry Pi 4 quirk
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Mathias Nyman <mathias.nyman@intel.com>
-Cc:     f.fainelli@gmail.com, gregkh@linuxfoundation.org, wahrenst@gmx.net,
-        helgaas@kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, tim.gover@raspberrypi.org,
-        linux-pci@vger.kernel.org
-References: <20200505161318.26200-1-nsaenzjulienne@suse.de>
- <20200505161318.26200-5-nsaenzjulienne@suse.de>
- <20200511142514.GB27249@e121166-lin.cambridge.arm.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
- 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 fiD/
-Message-ID: <40515fe7-029b-e391-53f9-f87f95097adb@linux.intel.com>
-Date:   Wed, 13 May 2020 10:05:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1730055AbgEMHH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 03:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729189AbgEMHH4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 03:07:56 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5037C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 00:07:55 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id x73so12695978lfa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 00:07:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mW8RDOfapkDaoa0Hb9EShwMwCn8vakzjoyWs3SU+BGc=;
+        b=J9qIkN4GOdr3b0TDdPyfF5iwQMxySZVVwyEt4C2nQgvCPYow2lWfeAh6Hp3j2u3g+0
+         CpAXZ6pgAlgu0Ac73YY7tSAw8K/WpZwe+TL3PY2N7q4H3UgoHoR4E6LAZb8BH8Uz5BA9
+         CxtS+rvDyaC4WK604GPAD+E7pJgAu0if/r4q3rMZ3gPPEPNWMJSBVkCxXcTwQEl/+Yp9
+         nFBEKSpOH3hes9GiSy/N6Wuq+8s6+uIG3u9MDIxDbNkwklUr38268FXRPsFgWahImOOK
+         8sbQIU05WISkLCPgzq+D6VBy9LU2GtYEyPW9tSD+GlaCyHxbY5VsYmBhcZuLsS+9bE7Z
+         tHug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mW8RDOfapkDaoa0Hb9EShwMwCn8vakzjoyWs3SU+BGc=;
+        b=HN1Y6JEzshULK/t4ePw3H7g45vsmsvXEWKikQwlhs48FjDaPPIeR7o9n1BC05DSnxr
+         N+VFHGYxZzWuRD/pCMQAmDzEFS+h4DzFwV+sHnpZHUHtHvQB9SyjS7EGUursopXvfVLF
+         4DF5jfSYz9mbm4rgbnyC/kmSkuxc0A9vDbjr3P+RJNEW0g0VmUqRNk2FvusFphRBa2Xd
+         NNKo4Zup6nuQS3IPjwQ8+I4dwlV5MmIg2TUA4peWAlQPGYOMcqrz/qmYER3wVP+crszd
+         SRZdaZaYSPvp4Jgu3v4dh9pBrTEEsOubB5EliQ92bzpnQIAR1c9H19mx9t9B25KyEhdg
+         WqiA==
+X-Gm-Message-State: AOAM530oYPHWyTxxlJ1siZLYAb4j87tiWkp9HQHqreiECUIf9xhJ18H1
+        GO/JY4yWNHNxIypFCPL5YQCufffJ+nq9FHGAsM3WUg==
+X-Google-Smtp-Source: ABdhPJzDwBLW0Ng55ay6pVZ/lv4nKFNfw9bBAXMfoDctZFD/KSd0XtGRMmmuj+JMpqtM15bEUnfuAGGNF+u0G5wmXU4=
+X-Received: by 2002:a19:ec7:: with SMTP id 190mr17595542lfo.203.1589353674058;
+ Wed, 13 May 2020 00:07:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200511142514.GB27249@e121166-lin.cambridge.arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200429140341.13294-1-maco@android.com> <20200429140341.13294-11-maco@android.com>
+ <CAB0TPYHwor85-fWKu+OMT-1ys2L7OSqVoReJRzNOMAE0xK+yzg@mail.gmail.com>
+ <1f3064a9-105f-02bb-6a1a-eb9875d292e3@kernel.dk> <4416f60a-6050-5067-6881-0ee9ef944669@kernel.dk>
+In-Reply-To: <4416f60a-6050-5067-6881-0ee9ef944669@kernel.dk>
+From:   Martijn Coenen <maco@android.com>
+Date:   Wed, 13 May 2020 09:07:43 +0200
+Message-ID: <CAB0TPYHikHc3tTTQcUOOZsYZmqNxGtthpkPX_z6dKgy+V8kovg@mail.gmail.com>
+Subject: Re: [PATCH v4 10/10] loop: Add LOOP_CONFIGURE ioctl
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Narayan Kamath <narayan@google.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>, kernel-team@android.com,
+        Martijn Coenen <maco@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.5.2020 17.25, Lorenzo Pieralisi wrote:
-> On Tue, May 05, 2020 at 06:13:17PM +0200, Nicolas Saenz Julienne wrote:
->> On the Raspberry Pi 4, after a PCI reset, VL805's firmware may either be
->> loaded directly from an EEPROM or, if not present, by the SoC's
->> VideoCore. Inform VideoCore that VL805 was just reset.
->>
->> Also, as this creates a dependency between USB_PCI and VideoCore's
->> firmware interface, and since USB_PCI can't be set as a module neither
->> this can. Reflect that on the firmware interface Kconfg.
->>
->> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
->> ---
->>
->> Changes since v5:
->>  - Fix Kconfig issue with allmodconfig
->>
->> Changes since v4:
->>  - Do not split up error message
->>
->> Changes since v3:
->>  - Add more complete error message
->>
->> Changes since v1:
->>  - Make RASPBERRYPI_FIRMWARE dependent on this quirk to make sure it
->>    gets compiled when needed.
->>
->>  drivers/firmware/Kconfig      |  3 ++-
->>  drivers/usb/host/pci-quirks.c | 16 ++++++++++++++++
->>  2 files changed, 18 insertions(+), 1 deletion(-)
-> 
-> Hi Mathias,
-> 
-> I would need your ACK to merge this series, thanks.
-> 
-> Lorenzo
+On Wed, May 13, 2020 at 4:30 AM Jens Axboe <axboe@kernel.dk> wrote:
+> > Looks acceptable to me, but I'm getting a failure applying it to
+> > for-5.8/drivers on this patch:
+> >
+> > Applying: loop: Refactor loop_set_status() size calculation
+> >
+> > So you'll probably want to respin on the right branch.
 
-Ah, yes, of course
+This series depends on a separate bugfix I sent to LKML earlier - see
+https://lkml.org/lkml/2020/3/31/755 . I mentioned it in [00/10] of
+this series, but perhaps I should have just included that patch.
 
-Acked-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+I just verified that patch + this series still applies cleanly on your
+for-5.8/drivers tree, but if you prefer I send a v5 with that patch
+going first let me know.
 
+Thanks,
+Martijn
+
+
+
+>
+> Then you can also drop patch #1.
+>
+> --
+> Jens Axboe
+>
