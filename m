@@ -2,63 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292F81D06B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 07:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D271D06B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 07:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729049AbgEMF5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 01:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
+        id S1729065AbgEMF5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 01:57:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728803AbgEMF53 (ORCPT
+        by vger.kernel.org with ESMTP id S1729081AbgEMF5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 01:57:29 -0400
+        Wed, 13 May 2020 01:57:30 -0400
 Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331E8C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 22:57:29 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id f4so302811pgi.10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 22:57:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E33FC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 22:57:30 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id f23so6633814pgj.4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 22:57:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kcyyNciXuByQ3loktJkU4jCSR6CJ8Ob9Xjb+xzFsaeI=;
-        b=uSuhoH0eMm36ZmB2Fj4UvKsgN/+ZX1g/k1KEpzJIpbdClvv6EyyLOo7Xhggv5m5whY
-         fumXDtsw61PgVLyJv2XjsNuuuTuZjCZvWyabAK+NvvkfNV0tCUa+gHZc9WhLMPFjreoK
-         EwT4KhQzxnMfDwSNS8mbvvmwljx32IjcWYMh8pjl7UzEBBJsTevzdSozStSlvgQrPAfe
-         nQeawgeQN9j+hQquwiMcT19uaLzEMQbVmFFzglN9Bj16ZuEP8iVNoH0pQQSyQpLuNYVg
-         EJWC67O81VXreR59gfK39BQ4XBVYSaoFfjGBH7ASGAuHeCSgqkbavrNhxciR6oNvCDl5
-         +LpA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=O6DiGQprIc29jGTRSS3LZaN5JVFAfBWIOn/MrmstepU=;
+        b=Fb2COTTw/N3aD5LFq740uqcf3QSh77Yy6iPOdAeFB4E4qUXDDK+SYDileYM1YFcqLl
+         zMxq/AxeRh7l3p/pWa6CQ+3Vw2ae7TZQNvWoLomxvCdh8C/7xzFaACTHK74Qwg05dJXV
+         UUTezkhlz5DdGS7TFBpBnhR12FUen2C6GHxT14TDeCTgm/9Pjhi4fjodWTcQZVzT38/m
+         s/K8AgbVLfKlQT4z9BL0UQnp+MbGS7QIhXE8UYuj1illNa+kt+QBTQ6jZ9nNCpAa5BRW
+         KHJUQWh/0n/aJT6bsh+Dzs071uS+POhBPxnNOiyWTl7vCwB4ED0XtV5hPrOp+7u8WouW
+         ZIlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kcyyNciXuByQ3loktJkU4jCSR6CJ8Ob9Xjb+xzFsaeI=;
-        b=F+szP/3PRLvRc4IwUcnUd2AGX7T5olilsLq5rWhD54Oek9vHV4TMjeJbJWkB/NG69D
-         WCLaMkxrvsGV7bcXQN9gJzlMu/s67ex6wd5gdHFgIauRtANOmPlMsNEy7eJcrIrqXZmm
-         HHDDcvxDM8RfEQGS/R7t11q7p29uyxULEVyuZQOPZvgejnhBqJ9BAWZ8PUVSbdw6+VvH
-         QDSOtYSdOqPfIg5j1ee8M/HU9383WoNcJ8M63HQ0Y1RaKtR56a64fiqv/LmDM1kDZDoE
-         cRsLZVYgffknTYa3cxGmyBVekkEeWPqqJsYXH1i6+qRo2HgnblaOfripAhVhB6qGL7i3
-         KqSw==
-X-Gm-Message-State: AGi0PubsY62cRQD7+RkiV1LtYkBiLWz6mVuVIfS3te2UNRxpHY66eOvv
-        nkoGJ0duSQhWwY5SiV+3ihQ3FA==
-X-Google-Smtp-Source: APiQypL7n3HR1/A2BsmbmDuES13Hpi9E5nO3B4RrCgr0yhFV1nEZmheX1W1DXxDuIqkSRWwoDZ7KGg==
-X-Received: by 2002:a63:f610:: with SMTP id m16mr22384313pgh.174.1589349448543;
-        Tue, 12 May 2020 22:57:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=O6DiGQprIc29jGTRSS3LZaN5JVFAfBWIOn/MrmstepU=;
+        b=VyLstPApBBrBTFqkVYw32Cpe8dkXHex0//Cze8PTRjWBOekaTQTPK7xNHVfmNduU9O
+         QJ9mZPNSOkJ3xRwEOP5Ffm0HwT9fLAxECYdAK+8Hfk09azFKQpJ1i+bWHvsh2jTY2foa
+         XFgKKoeIcjzx12DC7hH1EUxL04IuyRnEYXM8jlArwJZ6Cf4zhGlXXlU+ZGgM9bv8T+Ns
+         bCmQFR0FIpXXK6wUNYlsXwTaCtOBB4XyuTkn1GPt6LtPTvP5QUR2zBTiwj+ONiECKWHQ
+         NlqlVB2Zu4jtjUQ7F2pn8Aw+UFlZguiefD9yR9SddQbYIHOdTGo8k/+2C1UwXTdZ9xmv
+         KjtA==
+X-Gm-Message-State: AGi0PuaLA3zbLPoeJD5vPhtWC9Pp0EUmCNlE74p6Lray1f4sUa01vBDa
+        BKhNiRNlyOHsUAtugx45ppKWQguZbtw=
+X-Google-Smtp-Source: APiQypI84evXisIIfEqnC8EO9qzc3IB9Ueo00kGZo3+v1H5V2zsyU8JHw0t4FsBkkGqyEde+HF8bsg==
+X-Received: by 2002:a05:6a00:c8:: with SMTP id e8mr24250228pfj.206.1589349449862;
+        Tue, 12 May 2020 22:57:29 -0700 (PDT)
 Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id w192sm14131161pff.126.2020.05.12.22.57.27
+        by smtp.gmail.com with ESMTPSA id w192sm14131161pff.126.2020.05.12.22.57.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 22:57:27 -0700 (PDT)
+        Tue, 12 May 2020 22:57:29 -0700 (PDT)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Ohad Ben-Cohen <ohad@wizery.com>,
         Rob Herring <robh+dt@kernel.org>
 Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 0/5] remoteproc: qcom: PIL info support
-Date:   Tue, 12 May 2020 22:56:36 -0700
-Message-Id: <20200513055641.1413100-1-bjorn.andersson@linaro.org>
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Boyd <swboyd@chromium.org>
+Subject: [PATCH v5 1/5] dt-bindings: remoteproc: Add Qualcomm PIL info binding
+Date:   Tue, 12 May 2020 22:56:37 -0700
+Message-Id: <20200513055641.1413100-2-bjorn.andersson@linaro.org>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200513055641.1413100-1-bjorn.andersson@linaro.org>
+References: <20200513055641.1413100-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,33 +69,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce support for filling out the relocation information in IMEM, to aid
-post mortem debug tools to locate the various remoteprocs.
+Add a devicetree binding for the Qualcomm peripheral image loader
+relocation information region found in the IMEM.
 
-Bjorn Andersson (5):
-  dt-bindings: remoteproc: Add Qualcomm PIL info binding
-  remoteproc: qcom: Introduce helper to store pil info in IMEM
-  remoteproc: qcom: Update PIL relocation info on load
-  arm64: dts: qcom: qcs404: Add IMEM and PIL info region
-  arm64: dts: qcom: sdm845: Add IMEM and PIL info region
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
 
- .../bindings/remoteproc/qcom,pil-info.yaml    |  44 +++++++
- arch/arm64/boot/dts/qcom/qcs404.dtsi          |  15 +++
- arch/arm64/boot/dts/qcom/sdm845.dtsi          |  15 +++
- drivers/remoteproc/Kconfig                    |   6 +
- drivers/remoteproc/Makefile                   |   1 +
- drivers/remoteproc/qcom_pil_info.c            | 124 ++++++++++++++++++
- drivers/remoteproc/qcom_pil_info.h            |   7 +
- drivers/remoteproc/qcom_q6v5_adsp.c           |  16 ++-
- drivers/remoteproc/qcom_q6v5_mss.c            |   3 +
- drivers/remoteproc/qcom_q6v5_pas.c            |  15 ++-
- drivers/remoteproc/qcom_q6v5_wcss.c           |  14 +-
- drivers/remoteproc/qcom_wcnss.c               |  14 +-
- 12 files changed, 262 insertions(+), 12 deletions(-)
+Changes since v4:
+- Fixed reg in example to make it compile
+
+ .../bindings/remoteproc/qcom,pil-info.yaml    | 44 +++++++++++++++++++
+ 1 file changed, 44 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,pil-info.yaml
- create mode 100644 drivers/remoteproc/qcom_pil_info.c
- create mode 100644 drivers/remoteproc/qcom_pil_info.h
 
+diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,pil-info.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,pil-info.yaml
+new file mode 100644
+index 000000000000..87c52316ddbd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/remoteproc/qcom,pil-info.yaml
+@@ -0,0 +1,44 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/remoteproc/qcom,pil-info.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm peripheral image loader relocation info binding
++
++maintainers:
++  - Bjorn Andersson <bjorn.andersson@linaro.org>
++
++description:
++  The Qualcomm peripheral image loader relocation memory region, in IMEM, is
++  used for communicating remoteproc relocation information to post mortem
++  debugging tools.
++
++properties:
++  compatible:
++    const: qcom,pil-reloc-info
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++examples:
++  - |
++    imem@146bf000 {
++      compatible = "syscon", "simple-mfd";
++      reg = <0x146bf000 0x1000>;
++
++      #address-cells = <1>;
++      #size-cells = <1>;
++
++      ranges = <0 0x146bf000 0x1000>;
++
++      pil-reloc@94c {
++        compatible = "qcom,pil-reloc-info";
++        reg = <0x94c 0xc8>;
++      };
++    };
++...
 -- 
 2.26.2
 
