@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2171D0E9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D43FF1D0DF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388607AbgEMKBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 06:01:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51822 "EHLO mail.kernel.org"
+        id S2388455AbgEMJ4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:56:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387624AbgEMJvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:51:15 -0400
+        id S1732964AbgEMJ4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:56:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A5EA20740;
-        Wed, 13 May 2020 09:51:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01625205ED;
+        Wed, 13 May 2020 09:56:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363474;
-        bh=iiOvWsJz9xiC3AmULUmzoArSo4nHTVHWNQqV589ZIEI=;
+        s=default; t=1589363768;
+        bh=rKeULQkRxUhRHLjybAHWdbegXlR743VjXvWhU6otZ+0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sS5etvhv3B8NJ4LhfMxrvmCt6c8Idoak1L+tdwwIoqZO8FBS5jOmb/wke2cGmh3vJ
-         JrdOk9mYwm4lFOaPVHkBe2MCnc7+NirmDadwMYp5vGsleB57VJUbEBcTRV6czdMXZT
-         RiK7Os2myGTx5268N7gWS+vspYct/NpYhq6cJkfI=
+        b=OLX7GabJALJe2h+/QeI9rC4H8T48BDQFbGqJUenLsvjSe6sVHqWh/gapmDi8C3Owd
+         4sI6etYKQnh53calmDUcBB8XnIqd3f3fddVWh0bwS4GtO7TGwFTh0x/avLfqM229gj
+         7384kdaRBtHtaGJwC3NHdE/LAiFoFBjT67ID3NuI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 90/90] fanotify: merge duplicate events on parent and child
-Date:   Wed, 13 May 2020 11:45:26 +0200
-Message-Id: <20200513094418.515684247@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.6 108/118] netfilter: nf_osf: avoid passing pointer to local var
+Date:   Wed, 13 May 2020 11:45:27 +0200
+Message-Id: <20200513094427.531893899@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
-References: <20200513094408.810028856@linuxfoundation.org>
+In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
+References: <20200513094417.618129545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +44,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amir Goldstein <amir73il@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit f367a62a7cad2447d835a9f14fc63997a9137246 ]
+commit c165d57b552aaca607fa5daf3fb524a6efe3c5a3 upstream.
 
-With inotify, when a watch is set on a directory and on its child, an
-event on the child is reported twice, once with wd of the parent watch
-and once with wd of the child watch without the filename.
+gcc-10 points out that a code path exists where a pointer to a stack
+variable may be passed back to the caller:
 
-With fanotify, when a watch is set on a directory and on its child, an
-event on the child is reported twice, but it has the exact same
-information - either an open file descriptor of the child or an encoded
-fid of the child.
+net/netfilter/nfnetlink_osf.c: In function 'nf_osf_hdr_ctx_init':
+cc1: warning: function may return address of local variable [-Wreturn-local-addr]
+net/netfilter/nfnetlink_osf.c:171:16: note: declared here
+  171 |  struct tcphdr _tcph;
+      |                ^~~~~
 
-The reason that the two identical events are not merged is because the
-object id used for merging events in the queue is the child inode in one
-event and parent inode in the other.
+I am not sure whether this can happen in practice, but moving the
+variable declaration into the callers avoids the problem.
 
-For events with path or dentry data, use the victim inode instead of the
-watched inode as the object id for event merging, so that the event
-reported on parent will be merged with the event reported on the child.
+Fixes: 31a9c29210e2 ("netfilter: nf_osf: add struct nf_osf_hdr_ctx")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Link: https://lore.kernel.org/r/20200319151022.31456-9-amir73il@gmail.com
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/notify/fanotify/fanotify.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ net/netfilter/nfnetlink_osf.c |   12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
-index 14d0ac4664595..f5d30573f4a99 100644
---- a/fs/notify/fanotify/fanotify.c
-+++ b/fs/notify/fanotify/fanotify.c
-@@ -314,7 +314,12 @@ struct fanotify_event *fanotify_alloc_event(struct fsnotify_group *group,
- 	if (!event)
- 		goto out;
- init: __maybe_unused
--	fsnotify_init_event(&event->fse, (unsigned long)inode);
-+	/*
-+	 * Use the victim inode instead of the watching inode as the id for
-+	 * event queue, so event reported on parent is merged with event
-+	 * reported on child when both directory and child watches exist.
-+	 */
-+	fsnotify_init_event(&event->fse, (unsigned long)id);
- 	event->mask = mask;
- 	if (FAN_GROUP_FLAG(group, FAN_REPORT_TID))
- 		event->pid = get_pid(task_pid(current));
--- 
-2.20.1
-
+--- a/net/netfilter/nfnetlink_osf.c
++++ b/net/netfilter/nfnetlink_osf.c
+@@ -165,12 +165,12 @@ static bool nf_osf_match_one(const struc
+ static const struct tcphdr *nf_osf_hdr_ctx_init(struct nf_osf_hdr_ctx *ctx,
+ 						const struct sk_buff *skb,
+ 						const struct iphdr *ip,
+-						unsigned char *opts)
++						unsigned char *opts,
++						struct tcphdr *_tcph)
+ {
+ 	const struct tcphdr *tcp;
+-	struct tcphdr _tcph;
+ 
+-	tcp = skb_header_pointer(skb, ip_hdrlen(skb), sizeof(struct tcphdr), &_tcph);
++	tcp = skb_header_pointer(skb, ip_hdrlen(skb), sizeof(struct tcphdr), _tcph);
+ 	if (!tcp)
+ 		return NULL;
+ 
+@@ -205,10 +205,11 @@ nf_osf_match(const struct sk_buff *skb,
+ 	int fmatch = FMATCH_WRONG;
+ 	struct nf_osf_hdr_ctx ctx;
+ 	const struct tcphdr *tcp;
++	struct tcphdr _tcph;
+ 
+ 	memset(&ctx, 0, sizeof(ctx));
+ 
+-	tcp = nf_osf_hdr_ctx_init(&ctx, skb, ip, opts);
++	tcp = nf_osf_hdr_ctx_init(&ctx, skb, ip, opts, &_tcph);
+ 	if (!tcp)
+ 		return false;
+ 
+@@ -265,10 +266,11 @@ bool nf_osf_find(const struct sk_buff *s
+ 	const struct nf_osf_finger *kf;
+ 	struct nf_osf_hdr_ctx ctx;
+ 	const struct tcphdr *tcp;
++	struct tcphdr _tcph;
+ 
+ 	memset(&ctx, 0, sizeof(ctx));
+ 
+-	tcp = nf_osf_hdr_ctx_init(&ctx, skb, ip, opts);
++	tcp = nf_osf_hdr_ctx_init(&ctx, skb, ip, opts, &_tcph);
+ 	if (!tcp)
+ 		return false;
+ 
 
 
