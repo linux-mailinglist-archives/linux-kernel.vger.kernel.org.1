@@ -2,71 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94981D10BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7221D10CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729967AbgEMLLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 07:11:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726645AbgEMLLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 07:11:42 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730785AbgEMLNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 07:13:39 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:37978 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730262AbgEMLNf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 07:13:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589368414; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=7JQj42KLWkBUvJ6lLnf28O7CBykUtHmQbZfw6Tv0ZY0=; b=Vq8Qo16NHOhfHI2QtvKTQfdloZoQ5p+7IYUSuhgRWYz/HAh3gfRVW2Z3/YnW8vZ7VaH/6MJl
+ quh7aP53y5LpvylpFELTZWZKi548drV5wOu1gkCIQy0CWOLEh6rpyCTZSZA1YhFfAALsDVGj
+ Qvc/ZkujP4hmn/CL+jDbrj0rIgE=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ebbd658.7f1e29bb1378-smtp-out-n04;
+ Wed, 13 May 2020 11:13:28 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E8A75C433D2; Wed, 13 May 2020 11:13:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E84FC20740;
-        Wed, 13 May 2020 11:11:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589368302;
-        bh=kB4BWkMLJvEVQMf12Y4rt6Z8k9k+beZBrh8w5LEeOC0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ggdEz4sDEWOID0Yd2ORMuaDmi+wBlTPXxdrWv1CfvfWn9EoFyHlUFA6XCYWaOw4al
-         sfZ9l/kfuNgnJhAzEre6uD3f074n2DLVKJ7RtEPL9itu5zQI9GxV8QVIj+BVumI2Nz
-         +Wi8CVrAl1eVAqy7dePYH8qzLn9xO6Fq39ZjbEXc=
-Date:   Wed, 13 May 2020 13:11:40 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        linux-ide@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ata: sata_rcar: Fix DMA boundary mask
-Message-ID: <20200513111140.GA874221@kroah.com>
-References: <20200513110426.22472-1-geert+renesas@glider.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513110426.22472-1-geert+renesas@glider.be>
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C5428C433F2;
+        Wed, 13 May 2020 11:13:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C5428C433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        bjorn.andersson@linaro.org, agross@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH v5 0/6] DVFS for IO devices on sdm845 and sc7180
+Date:   Wed, 13 May 2020 16:42:56 +0530
+Message-Id: <1589368382-19607-1-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 01:04:26PM +0200, Geert Uytterhoeven wrote:
-> Before commit 9495b7e92f716ab2 ("driver core: platform: Initialize
-> dma_parms for platform devices"), the R-Car SATA device didn't have DMA
-> parameters.  Hence the DMA boundary mask supplied by its driver was
-> silently ignored, as __scsi_init_queue() doesn't check the return value
-> of dma_set_seg_boundary(), and the default value of 0xffffffff was used.
-> 
-> Now the device has gained DMA parameters, the driver-supplied value is
-> used, and the following warning is printed on Salvator-XS:
-> 
->     DMA-API: sata_rcar ee300000.sata: mapping sg segment across boundary [start=0x00000000ffffe000] [end=0x00000000ffffefff] [boundary=0x000000001ffffffe]
->     WARNING: CPU: 5 PID: 38 at kernel/dma/debug.c:1233 debug_dma_map_sg+0x298/0x300
-> 
-> (the range of start/end values depend on whether IOMMU support is
->  enabled or not)
-> 
-> The issue here is that SATA_RCAR_DMA_BOUNDARY doesn't have bit 0 set, so
-> any typical end value, which is odd, will trigger the check.
-> 
-> Fix this by increasing the DMA boundary value by 1.
-> 
-> Fixes: 8bfbeed58665dbbf ("sata_rcar: correct 'sata_rcar_sht'")
-> Fixes: 9495b7e92f716ab2 ("driver core: platform: Initialize dma_parms for platform devices")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Changes in v5:
+1. Opp cleanup path fixed up across drivers
 
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Changes in v4:
+1. Fixed all review feedback on v3
+2. Dropped the dts patches, will post as a seperate series once
+driver changes are reviewed and merged.
+The driver changes without DT updates to include OPP tables will
+have zero functional change.
+3. Dropped the mmc/sdhc patch, which is a standalone patch. will
+repost if needed seperately.
+
+Changes in v3:
+1. Added better error handling for dev_pm_opp_of_add_table()
+2. Some minor changes and fixes in 'PATCH 12/17' as compared to v2
+3. Dropped the mmc patch picked up by Ulf [2]
+
+Changes in v2:
+1. Added error handling for dev_pm_opp_set_clkname()
+and dev_pm_opp_of_add_table()
+2. Used dev_pm_opp_put_clkname() in the cleanup path
+3. Dropped the OPP patch pulled in by Viresh [1]
+4. Dropped the UFS patches since they had some major rework
+needed because of changes that were merged in the merge window
+and I don't have a UFS device currently to validate the changes.
+
+We have had support added in the OPP core for a while now to support
+DVFS for IO devices, and this series uses that infrastructure to
+add DVFS support for various IO devices in sdm845 and sc7180 SoCs.
+
+[1] https://lkml.org/lkml/2020/4/14/98
+[2] https://lore.kernel.org/patchwork/patch/1226381/
+
+Rajendra Nayak (6):
+  tty: serial: qcom_geni_serial: Use OPP API to set clk/perf state
+  spi: spi-geni-qcom: Use OPP API to set clk/perf state
+  drm/msm/dpu: Use OPP API to set clk/perf state
+  drm/msm: dsi: Use OPP API to set clk/perf state
+  media: venus: core: Add support for opp tables/perf voting
+  spi: spi-qcom-qspi: Use OPP API to set clk/perf state
+
+ drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c  |  3 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c        | 26 +++++++++++-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h        |  4 ++
+ drivers/gpu/drm/msm/dsi/dsi.h                  |  2 +
+ drivers/gpu/drm/msm/dsi/dsi_cfg.c              |  4 +-
+ drivers/gpu/drm/msm/dsi/dsi_host.c             | 58 ++++++++++++++++++++++++++
+ drivers/media/platform/qcom/venus/core.c       | 45 ++++++++++++++++----
+ drivers/media/platform/qcom/venus/core.h       |  5 +++
+ drivers/media/platform/qcom/venus/pm_helpers.c | 54 ++++++++++++++++++++++--
+ drivers/spi/spi-geni-qcom.c                    | 26 ++++++++++--
+ drivers/spi/spi-qcom-qspi.c                    | 29 ++++++++++++-
+ drivers/tty/serial/qcom_geni_serial.c          | 34 ++++++++++++---
+ include/linux/qcom-geni-se.h                   |  4 ++
+ 13 files changed, 270 insertions(+), 24 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
