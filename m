@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028001D1ED3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 21:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D90D1D1EDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 21:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390588AbgEMTP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 15:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
+        id S2390634AbgEMTQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 15:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390442AbgEMTP5 (ORCPT
+        by vger.kernel.org with ESMTP id S2390443AbgEMTQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 15:15:57 -0400
-Received: from mail.kocurkovo.cz (unknown [IPv6:2a02:2b88:2:1::5b29:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D921AC061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 12:15:56 -0700 (PDT)
-Received: by mail.kocurkovo.cz (Postfix, from userid 1000)
-        id A73B81D44; Wed, 13 May 2020 21:15:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.kocurkovo.cz A73B81D44
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kocurkovo.cz;
-        s=mail; t=1589397354;
-        bh=QJApaYVVjDV2ZABMuLXN+EsQlfEtvul5TQM0jLYTCcs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pjix9LRIvZi9HTHKf4BWi2D2O3Qt7Q8Q0+9yhAsAflKrmPGL+gXemnPV75KJ31oUb
-         cE1Wu42Uh1FJHT818WNb+qxYkzJ/QxgVlYNZc6gmz1scpViY1jObCM/PCj2EWvOdBm
-         EPC93Ugxaynw7oZa/BX97BRvzsOc8i31TmMWgbVw=
-From:   Matej Dujava <mdujava@kocurkovo.cz>
-To:     Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org
-Cc:     Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
-        linux-kernel@vger.kernel.org, Matej Dujava <mdujava@kocurkovo.cz>
-Subject: [PATCH v3 2/2] staging: vt6655: vt6656: change order of makefile variable definitions
-Date:   Wed, 13 May 2020 21:15:51 +0200
-Message-Id: <1589397351-24655-3-git-send-email-mdujava@kocurkovo.cz>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1589397351-24655-1-git-send-email-mdujava@kocurkovo.cz>
-References: <1589397351-24655-1-git-send-email-mdujava@kocurkovo.cz>
+        Wed, 13 May 2020 15:16:25 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF9BC061A0C;
+        Wed, 13 May 2020 12:16:24 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jYwrc-0002yz-5v; Wed, 13 May 2020 21:16:20 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id B8D601C0244;
+        Wed, 13 May 2020 21:16:19 +0200 (CEST)
+Date:   Wed, 13 May 2020 19:16:19 -0000
+From:   "tip-bot2 for Vitaly Kuznetsov" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/entry] x86/idt: Keep spurious entries unset in system_vectors
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200428093824.1451532-4-vkuznets@redhat.com>
+References: <20200428093824.1451532-4-vkuznets@redhat.com>
+MIME-Version: 1.0
+Message-ID: <158939737963.390.665754907969971935.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch will add indentation to multiline variable and put
-obj-$(CONFIG_X) at the beginning of the file. This order of variables is
-used in other drives, so this will make vt665x Makefiles fit into the
-pattern.
+The following commit has been merged into the x86/entry branch of tip:
 
-Indentation is fixed in vt6655/Makefile.
+Commit-ID:     82ff351052bcc4bf49dc966960f563d25f54d22b
+Gitweb:        https://git.kernel.org/tip/82ff351052bcc4bf49dc966960f563d25f54d22b
+Author:        Vitaly Kuznetsov <vkuznets@redhat.com>
+AuthorDate:    Tue, 28 Apr 2020 11:38:24 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 13 May 2020 21:13:55 +02:00
 
-Order of variable declaration is changed in vt6656/Makefile.
+x86/idt: Keep spurious entries unset in system_vectors
 
-Signed-off-by: Matej Dujava <mdujava@kocurkovo.cz>
+With commit dc20b2d52653 ("x86/idt: Move interrupt gate initialization to
+IDT code") non assigned system vectors are also marked as used in
+'used_vectors' (now 'system_vectors') bitmap. This makes checks in
+arch_show_interrupts() whether a particular system vector is allocated to
+always pass and e.g. 'Hyper-V reenlightenment interrupts' entry always
+shows up in /proc/interrupts.
+
+Another side effect of having all unassigned system vectors marked as used
+is that irq_matrix_debug_show() will wrongly count them among 'System'
+vectors.
+
+As it is now ensured that alloc_intr_gate() is not called after init, it is
+possible to leave unused entries in 'system_vectors' unset to fix these
+issues.
+
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/20200428093824.1451532-4-vkuznets@redhat.com
+
 ---
-v1: Initial patch
-v2: This patch was split from original bigger patch
-v3: Added more info about what and why it's removed
+ arch/x86/kernel/idt.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
- drivers/staging/vt6655/Makefile | 24 ++++++++++++------------
- drivers/staging/vt6656/Makefile |  4 ++--
- 2 files changed, 14 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/staging/vt6655/Makefile b/drivers/staging/vt6655/Makefile
-index e70357ec0af8..eda08a1516ab 100644
---- a/drivers/staging/vt6655/Makefile
-+++ b/drivers/staging/vt6655/Makefile
-@@ -1,15 +1,15 @@
- # SPDX-License-Identifier: GPL-2.0
+diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
+index 0e92051..36fef90 100644
+--- a/arch/x86/kernel/idt.c
++++ b/arch/x86/kernel/idt.c
+@@ -321,7 +321,11 @@ void __init idt_setup_apic_and_irq_gates(void)
  
--vt6655_stage-y +=	device_main.o \
--	card.o \
--	channel.o \
--	mac.o \
--	baseband.o \
--	rxtx.o \
--	dpc.o \
--	power.o \
--	srom.o \
--	key.o \
--	rf.o
--
- obj-$(CONFIG_VT6655) +=	vt6655_stage.o
-+
-+vt6655_stage-y +=	device_main.o \
-+			card.o \
-+			channel.o \
-+			mac.o \
-+			baseband.o \
-+			rxtx.o \
-+			dpc.o \
-+			power.o \
-+			srom.o \
-+			key.o \
-+			rf.o
-diff --git a/drivers/staging/vt6656/Makefile b/drivers/staging/vt6656/Makefile
-index f696a9d7a143..aac323d6a684 100644
---- a/drivers/staging/vt6656/Makefile
-+++ b/drivers/staging/vt6656/Makefile
-@@ -1,5 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- 
-+obj-$(CONFIG_VT6656) +=	vt6656_stage.o
-+
- vt6656_stage-y +=	main_usb.o \
- 			card.o  \
- 			mac.o   \
-@@ -11,5 +13,3 @@ vt6656_stage-y +=	main_usb.o \
- 			rf.o \
- 			usbpipe.o \
- 			channel.o
--
--obj-$(CONFIG_VT6656) +=	vt6656_stage.o
--- 
-2.26.2
-
+ #ifdef CONFIG_X86_LOCAL_APIC
+ 	for_each_clear_bit_from(i, system_vectors, NR_VECTORS) {
+-		set_bit(i, system_vectors);
++		/*
++		 * Don't set the non assigned system vectors in the
++		 * system_vectors bitmap. Otherwise they show up in
++		 * /proc/interrupts.
++		 */
+ 		entry = spurious_entries_start + 8 * (i - FIRST_SYSTEM_VECTOR);
+ 		set_intr_gate(i, entry);
+ 	}
