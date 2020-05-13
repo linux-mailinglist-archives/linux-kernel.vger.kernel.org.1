@@ -2,130 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029461D0855
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 08:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81AC1D072D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 08:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732318AbgEMG3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 02:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
+        id S1729242AbgEMG0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 02:26:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732175AbgEMG3F (ORCPT
+        with ESMTP id S1728498AbgEMG0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 02:29:05 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3618AC061A0C;
-        Tue, 12 May 2020 23:29:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=sYCeJWkvwiDcLO4azUz4Lghn771ZTzcCvIj3ODxfKA4=; b=L0xgcDwWBew/hUDnMRVxjAFIu0
-        nr3l2q6XF2Vl5FSu5iuND7L/B2s0+8lrY924YcHINLJjs2142Hvi/lu17oLe8a5J7XrMXSQn1vZ+s
-        KBdAEHb6c/nnwY5To5NpuwJe8USThbqwt/dx1BNtU4i0rsfEG1zyWAvoQtPe4Fn6tBCQ6dafGi6ti
-        sSF+YmLo/T0y5dtSly4MHmSA1G3UtgRy+xGkAB7nKDU2CUQp6V12yTilYZ/C2KcbvR3q/BB0ButgR
-        Tw5mexnLFPfVVKybEa3N1yFk0d6sUieQD9fw+qvEadIByagJTSJpz2Mw0hAKD9fkVdDYSQR4fa2Q+
-        MTpTE7mQ==;
-Received: from [2001:4bb8:180:9d3f:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jYksb-0005Jo-4P; Wed, 13 May 2020 06:28:33 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
-        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-cifs@vger.kernel.org, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, netdev@vger.kernel.org,
-        linux-sctp@vger.kernel.org, ceph-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-nfs@vger.kernel.org
-Subject: [PATCH 33/33] net: remove kernel_getsockopt
-Date:   Wed, 13 May 2020 08:26:48 +0200
-Message-Id: <20200513062649.2100053-34-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513062649.2100053-1-hch@lst.de>
-References: <20200513062649.2100053-1-hch@lst.de>
+        Wed, 13 May 2020 02:26:55 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491BBC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 23:26:55 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id j13so522150pjm.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 23:26:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MHbG9BId/8xaDiuaIj5eCQ0ALRHt+CW859scLNFLk0Y=;
+        b=H0S4Cz3j/CRc40ufAknbRnu9vDXjyD2iwgXd0vXXMFJTmx05XW8kTKB2XfZJaJfO93
+         EJXdpDdjdTNXsWypExRBl5hV4iDEngG7RVgglDbdkyrP0AkQ9OtsWNUGA84Da3M8S0tj
+         pWEaJNFuYW2rgXjVkgmjCx+C23jNT4S5wEieJnqlZtr587WYSGUDOR2uw9LB3463v5AL
+         ULne286iTVCGNDnCVTMTb3zbHej4UsA2XWSJKD5T+HnPdpy68tOhs+NFG6/727uxWluB
+         Zlj7o5EGd33+uXiTyg79Y7igjgGGbuYsL//6+B8ukaQmsHmNNEvJCugZ3XZYKaCWB/S7
+         rt6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MHbG9BId/8xaDiuaIj5eCQ0ALRHt+CW859scLNFLk0Y=;
+        b=T9FxtOUYGcl87DxxPIsQKvqrQPpgFAxNBqf5hqPoHm4WkSRTjmH6zmnRg9i5pBaIh9
+         ew1X0xXl+8RPI9dmitFNhQQY3SBxyBwcSyOjFChu7NCixiAtiQzF6fzHcDhhErxDT0qb
+         0UcNvZ62ceDAeSz1YktEvY7+XO89GgQ5uYUEeGnpui+Snkhp00SykpB77LcKJCAz1GbQ
+         dZXS4I4JjnsyARgkKLjSXlafck1ndqecZgkPwAi3qtxRmuQXraHzXIE9z3HUCiYoKAxm
+         LrdLjEbT/YpgOxnTRj3uGJ/8vL03eoVtsfOJJ6seZHjUk75HeUDvZA0rQdwVjlHMSYCq
+         1faQ==
+X-Gm-Message-State: AGi0PuaodUXD4UxoZr/6KlGi+4+AcbIeiRI7pRO+eHiL+mttxux/nvAz
+        j9TSbaMmSVVGg7w9x+GIK2guqQuD
+X-Google-Smtp-Source: APiQypJ6y2snWVtXsj7E87CtinRJxyOKbkx9EzBFzVNqytFAFM7fgza51F45hg6Eh5svq2w6WvdT6Q==
+X-Received: by 2002:a17:902:e905:: with SMTP id k5mr23781224pld.232.1589351214642;
+        Tue, 12 May 2020 23:26:54 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id w11sm12176338pgj.4.2020.05.12.23.26.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 23:26:53 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Date:   Wed, 13 May 2020 15:26:52 +0900
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
+Message-ID: <20200513062652.GM413@jagdpanzerIV.localdomain>
+References: <20200425004609.GE8982@jagdpanzerIV.localdomain>
+ <842ff40b-a232-6098-4333-996a3033b30a@i-love.sakura.ne.jp>
+ <20200427062117.GC486@jagdpanzerIV.localdomain>
+ <4dae86af-1d9a-f5a8-cff6-aa91ec038a79@i-love.sakura.ne.jp>
+ <20200428121828.GP28637@dhcp22.suse.cz>
+ <b4d74234-8009-9ffd-011f-bd5d1a4b85f6@i-love.sakura.ne.jp>
+ <20200428154532.GU28637@dhcp22.suse.cz>
+ <b1d507b1-dae7-f526-c74a-d465ddecea6a@i-love.sakura.ne.jp>
+ <20200429142106.GG28637@dhcp22.suse.cz>
+ <a59271f1-b3fc-26d1-f0a2-5ec351d0095e@i-love.sakura.ne.jp>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a59271f1-b3fc-26d1-f0a2-5ec351d0095e@i-love.sakura.ne.jp>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No users left.
+On (20/04/30 01:35), Tetsuo Handa wrote:
+> Below is the default rules for rsyslog-8.24.0-52.el7 (userspace syslog daemon).
+> Of course administrators can modify as needed, but notice that KERN_INFO is saved
+> to /var/log/messages but KERN_DEBUG is saved to nowhere.
+> 
+> ----------
+> # Log all kernel messages to the console.
+> # Logging much else clutters up the screen.
+> #kern.*                                                 /dev/console
+> 
+> # Log anything (except mail) of level info or higher.
+> # Don't log private authentication messages!
+> *.info;mail.none;authpriv.none;cron.none                /var/log/messages
+> 
+> # The authpriv file has restricted access.
+> authpriv.*                                              /var/log/secure
+> 
+> # Log all the mail messages in one place.
+> mail.*                                                  -/var/log/maillog
+> 
+> 
+> # Log cron stuff
+> cron.*                                                  /var/log/cron
+> 
+> # Everybody gets emergency messages
+> *.emerg                                                 :omusrmsg:*
+> 
+> # Save news errors of level crit and higher in a special file.
+> uucp,news.crit                                          /var/log/spooler
+> 
+> # Save boot messages also to boot.log
+> local7.*                                                /var/log/boot.log
+> ----------
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/net.h |  2 --
- net/socket.c        | 34 ----------------------------------
- 2 files changed, 36 deletions(-)
+Yes, but this looks like it's the consumer of the messages who
+decides what to filter and what not to. rsyslog, dmesg, etc.
+will have different filtering policies. It's not like the kernel
+decides what to hide and what to show. If would compare this to
+NO_CONSOLES, then NO_CONSOLES does a different thing after all.
 
-diff --git a/include/linux/net.h b/include/linux/net.h
-index ece7513326293..e10f378194a59 100644
---- a/include/linux/net.h
-+++ b/include/linux/net.h
-@@ -303,8 +303,6 @@ int kernel_connect(struct socket *sock, struct sockaddr *addr, int addrlen,
- 		   int flags);
- int kernel_getsockname(struct socket *sock, struct sockaddr *addr);
- int kernel_getpeername(struct socket *sock, struct sockaddr *addr);
--int kernel_getsockopt(struct socket *sock, int level, int optname, char *optval,
--		      int *optlen);
- int kernel_sendpage(struct socket *sock, struct page *page, int offset,
- 		    size_t size, int flags);
- int kernel_sendpage_locked(struct sock *sk, struct page *page, int offset,
-diff --git a/net/socket.c b/net/socket.c
-index f37c3ef508691..49000f0d87f71 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -3715,40 +3715,6 @@ int kernel_getpeername(struct socket *sock, struct sockaddr *addr)
- }
- EXPORT_SYMBOL(kernel_getpeername);
- 
--/**
-- *	kernel_getsockopt - get a socket option (kernel space)
-- *	@sock: socket
-- *	@level: API level (SOL_SOCKET, ...)
-- *	@optname: option tag
-- *	@optval: option value
-- *	@optlen: option length
-- *
-- *	Assigns the option length to @optlen.
-- *	Returns 0 or an error.
-- */
--
--int kernel_getsockopt(struct socket *sock, int level, int optname,
--			char *optval, int *optlen)
--{
--	mm_segment_t oldfs = get_fs();
--	char __user *uoptval;
--	int __user *uoptlen;
--	int err;
--
--	uoptval = (char __user __force *) optval;
--	uoptlen = (int __user __force *) optlen;
--
--	set_fs(KERNEL_DS);
--	if (level == SOL_SOCKET)
--		err = sock_getsockopt(sock, level, optname, uoptval, uoptlen);
--	else
--		err = sock->ops->getsockopt(sock, level, optname, uoptval,
--					    uoptlen);
--	set_fs(oldfs);
--	return err;
--}
--EXPORT_SYMBOL(kernel_getsockopt);
--
- /**
-  *	kernel_sendpage - send a &page through a socket (kernel space)
-  *	@sock: socket
--- 
-2.26.2
-
+	-ss
