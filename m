@@ -2,76 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25AB01D22C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DD71D22C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732448AbgEMXId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 19:08:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40262 "EHLO mail.kernel.org"
+        id S1732461AbgEMXJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 19:09:33 -0400
+Received: from mga18.intel.com ([134.134.136.126]:49358 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732404AbgEMXIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 19:08:31 -0400
-Received: from localhost (lfbn-ncy-1-985-231.w90-101.abo.wanadoo.fr [90.101.63.231])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D02F42054F;
-        Wed, 13 May 2020 23:08:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589411311;
-        bh=McI+T2hmy1wwsLIjP6KHQL0XtS4SuVPV85zl2tKT4R0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FykKUVt2XXJz9k5bULOrNTaBEImxREfbnLQ89y6LYJmgLYhxSoCOYimRQhDZAsBUG
-         kvfisUu5mlMWAA//YJlD6+QsxMRyoZxQbIO/9TCPJFzn/5N1ivzQPzMdnqG9JDGPVj
-         lYDQv+UxYs33lGoTs3o2hqYpksBXGCva+7Qx11OY=
-Date:   Thu, 14 May 2020 01:08:28 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [PATCH 07/10] rcu: Temporarily assume that nohz full CPUs might
- not be NOCB
-Message-ID: <20200513230827.GC18303@lenoir>
-References: <20200513164714.22557-1-frederic@kernel.org>
- <20200513164714.22557-8-frederic@kernel.org>
- <20200513182527.GU2869@paulmck-ThinkPad-P72>
+        id S1732151AbgEMXJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 19:09:33 -0400
+IronPort-SDR: ChnACrQ/nlAlRRpEz6OigGc4nO25Ll1gBxiDxOwFPd5igRnaWW62co8hNJ7FMnhyUWgnV1SY8c
+ bKxppW4l9Esw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 16:09:32 -0700
+IronPort-SDR: FpN+OY1K71+x9lmhQ/R4t4qwERrf/qTusZ1FBnThNG4M39goM1tFnsuO/WDX+bOXeczqIJ0DEx
+ wqKjm7T9eLzQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,389,1583222400"; 
+   d="scan'208";a="372053949"
+Received: from rthurerx-mobl.ger.corp.intel.com ([10.249.36.107])
+  by fmsmga001.fm.intel.com with ESMTP; 13 May 2020 16:09:25 -0700
+Message-ID: <ba92f60e41cee1be11b30e8383268b1e1ce896b1.camel@linux.intel.com>
+Subject: Re: [PATCH v29 00/20] Intel SGX foundations
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Jordan Hand <jorhand@linux.microsoft.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org
+Cc:     akpm@linux-foundation.org, dave.hansen@intel.com,
+        sean.j.christopherson@intel.com, nhorman@redhat.com,
+        npmccallum@redhat.com, haitao.huang@intel.com,
+        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
+        kai.svahn@intel.com, bp@alien8.de, josh@joshtriplett.org,
+        luto@kernel.org, kai.huang@intel.com, rientjes@google.com,
+        cedric.xing@intel.com, puiterwijk@redhat.com
+Date:   Thu, 14 May 2020 02:09:19 +0300
+In-Reply-To: <e50f4c00-12e6-19e6-ead3-f180074bceea@linux.microsoft.com>
+References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
+         <e50f4c00-12e6-19e6-ead3-f180074bceea@linux.microsoft.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513182527.GU2869@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 11:25:27AM -0700, Paul E. McKenney wrote:
-> On Wed, May 13, 2020 at 06:47:11PM +0200, Frederic Weisbecker wrote:
-> > So far nohz_full CPUs had to be nocb. This requirement may change
-> > temporarily as we are working on preparing RCU to be able to toggle the
-> > nocb state of a CPU. Once that is done and nohz_full can be toggled as
-> > well dynamically, we'll restore that initial requirement.
+On Wed, 2020-05-06 at 09:39 -0700, Jordan Hand wrote:
+> On 4/21/20 2:52 PM, Jarkko Sakkinen wrote:
+> > Intel(R) SGX is a set of CPU instructions that can be used by applications
+> > to set aside private regions of code and data. The code outside the enclave
+> > is disallowed to access the memory inside the enclave by the CPU access
+> > control.
+> > 
+> > There is a new hardware unit in the processor called Memory Encryption
+> > Engine (MEE) starting from the Skylake microacrhitecture. BIOS can define
+> > one or many MEE regions that can hold enclave data by configuring them with
+> > PRMRR registers.
+> > 
+> > The MEE automatically encrypts the data leaving the processor package to
+> > the MEE regions. The data is encrypted using a random key whose life-time
+> > is exactly one power cycle.
+> > 
+> > The current implementation requires that the firmware sets
+> > IA32_SGXLEPUBKEYHASH* MSRs as writable so that ultimately the kernel can
+> > decide what enclaves it wants run. The implementation does not create
+> > any bottlenecks to support read-only MSRs later on.
+> > 
+> > You can tell if your CPU supports SGX by looking into /proc/cpuinfo:
+> > 
+> > 	cat /proc/cpuinfo  | grep sgx
+> > 
+> > v29:
+> > * The selftest has been moved to selftests/sgx. Because SGX is an execution
+> >    environment of its own, it really isn't a great fit with more "standard"
+> >    x86 tests.
+> > 
+> >    The RSA key is now generated on fly and the whole signing process has
+> >    been made as part of the enclave loader instead of signing the enclave
+> >    during the compilation time.
+> > 
+> >    Finally, the enclave loader loads now the test enclave directly from its
+> >    ELF file, which means that ELF file does not need to be coverted as raw
+> >    binary during the build process.
+> > * Version the mm_list instead of using on synchronize_mm() when adding new
+> >    entries. We hold the write lock for the mm_struct, and dup_mm() can thus
+> >    deadlock with the page reclaimer, which could hold the lock for the old
+> >    mm_struct.
+> > * Disallow mmap(PROT_NONE) from /dev/sgx. Any mapping (e.g. anonymous) can
+> >    be used to reserve the address range. Now /dev/sgx supports only opaque
+> >    mappings to the (initialized) enclave data.
+> > * Make the vDSO callable directly from C by preserving RBX and taking leaf
+> >    from RCX.
+> > 
 > 
-> Would it simplify anything to make the CPU exit nohz_full first and
-> then exit rcu_nocb and vice versa in the other direction?  That way the
-> assumption about nohz_full CPUs always being rcu_nocb could remain while
-> still allowing runtime changes to both states.
+> Tested with the Open Enclave SDK on top of Intel PSW. Specifically built 
+> the Intel PSW with changes to support /dev/sgx mapping[1] new in v29.
+> 
+> Tested-by: Jordan Hand <jorhand@linux.microsoft.com>
+> 
+> [1] https://github.com/intel/linux-sgx/pull/530
 
-That's the future plan but for now nohz_full can't even be exited yet.
-RCU is unlucky enough to be chosen as the starting point of this whole work :-)
+Thank you!
 
-> Of course, given that setup, it would not be possible to cause a CPU to
-> exit rcu_nocb state if it was still in nohz_full state.
+/Jarkko
 
-Right.
 
-> My fear is that allowing a CPU to be in nohz_full state without also
-> being in rcu_nocb state will cause needless confusion and bug reports.
-
-Well, it should only be visible to those who work on it since there
-won't be a proper interface before we achieve the whole.
-
-Thanks.
