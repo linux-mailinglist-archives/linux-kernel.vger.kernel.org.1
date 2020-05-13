@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 597631D1AE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0593E1D1AEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389425AbgEMQVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 12:21:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54086 "EHLO
+        id S2389408AbgEMQXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 12:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732296AbgEMQVw (ORCPT
+        with ESMTP id S1728354AbgEMQXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 12:21:52 -0400
+        Wed, 13 May 2020 12:23:08 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED88C061A0C;
-        Wed, 13 May 2020 09:21:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02247C061A0C;
+        Wed, 13 May 2020 09:23:08 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jYu8a-0000Aq-B5; Wed, 13 May 2020 18:21:40 +0200
+        id 1jYu9r-0000D7-Ds; Wed, 13 May 2020 18:22:59 +0200
 Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id BFC37100605; Wed, 13 May 2020 18:21:39 +0200 (CEST)
+        id B0730100605; Wed, 13 May 2020 18:22:58 +0200 (CEST)
 From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        syzbot <syzbot+353be47c9ce21b68b7ed@syzkaller.appspotmail.com>,
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     syzbot <syzbot+353be47c9ce21b68b7ed@syzkaller.appspotmail.com>,
         bp@alien8.de, dave.hansen@linux.intel.com,
         dmitry.torokhov@gmail.com, ebiederm@xmission.com, hpa@zytor.com,
         jeremy.linton@arm.com, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        x86@kernel.org
+        peterz@infradead.org, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com, x86@kernel.org
 Subject: Re: WARNING in memtype_reserve
-In-Reply-To: <Pine.LNX.4.44L0.2005090939210.4307-100000@netrider.rowland.org>
-References: <Pine.LNX.4.44L0.2005090939210.4307-100000@netrider.rowland.org>
-Date:   Wed, 13 May 2020 18:21:39 +0200
-Message-ID: <8736833iwc.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20200513124445.GA1082735@kroah.com>
+References: <000000000000f0d8d205a531f1a3@google.com> <20200509074507.GC1831917@kroah.com> <87wo5l4ecm.fsf@nanos.tec.linutronix.de> <20200513124445.GA1082735@kroah.com>
+Date:   Wed, 13 May 2020 18:22:58 +0200
+Message-ID: <87zhab249p.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Linutronix-Spam-Score: -1.0
@@ -47,9 +46,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alan Stern <stern@rowland.harvard.edu> writes:
-> On Sat, 9 May 2020, Thomas Gleixner wrote:
->
+Greg KH <gregkh@linuxfoundation.org> writes:
+> On Sat, May 09, 2020 at 12:00:57PM +0200, Thomas Gleixner wrote:
 >> Greg KH <gregkh@linuxfoundation.org> writes:
 >> > On Sat, May 09, 2020 at 12:20:14AM -0700, syzbot wrote:
 >> >> memtype_reserve failed: [mem 0xffffffffff000-0x00008fff], req write-back
@@ -69,9 +67,20 @@ Alan Stern <stern@rowland.harvard.edu> writes:
 >> The real question is which part of the call chain is responsible for
 >> this. That needs to be fixed.
 >
-> What about all the other ways in which a reservation request could be
-> invalid?  The MM core already checks for these; what point is there in
-> duplicating these checks in many places higher up the call chain?
+> This is caused by 2bef9aed6f0e ("usb: usbfs: correct kernel->user page
+> attribute mismatch") which changed a call to remap_pfn_range() to
+> dma_mmap_coherent().  Looks like the error checking in remap_pfn_range()
+> handled the invalid options better than dma_mma_coherent() when odd
+> values are passed in.
+>
+> We can add the check to dma_mmap_coherent(), again, but really, this
+> type of check should probably only be needed in one place to ensure we
+> always get it correct, right?
 
-Defensive programming rule #1: Check crap early but have the check which
-ultimatively catches it at the last possible place as well.
+That might be correct for this particular call chain, but this check
+really is the last defense before stuff goes down the drain. None of the
+last line functions should ever be reached with crappy arguments.
+
+Thanks,
+
+        tglx
