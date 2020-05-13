@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933DB1D0D72
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2681D0D76
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387898AbgEMJxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:53:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54762 "EHLO mail.kernel.org"
+        id S2387922AbgEMJxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:53:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387889AbgEMJxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:53:02 -0400
+        id S2387900AbgEMJxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:53:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3F2020575;
-        Wed, 13 May 2020 09:53:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD18C23128;
+        Wed, 13 May 2020 09:53:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363582;
-        bh=ZW/YsyCLq2WywkRXD65KdBn4deEsO02bkk6I1bnGvWQ=;
+        s=default; t=1589363587;
+        bh=pM95nrK/ZvH2xPCEa2KhKYz52Uj9sIGd6V9yKNOB8TM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S0YNA9kZZVpSqwPmpWkxy4glXa9rMFoqDp8r6ndBJpHWGX2wlakAiF61xTbCVNxQx
-         hNVcOZ6IH1Dbmg4yv6f0iTB0cw58SoEYDgFcPLwciO3NRjUt4x1a9qLeqacyhN4WtJ
-         gQSl6Zb7XLqDXe/phWROpKeI9K5fKNyuW3ltQt3I=
+        b=DBiS0J71Pw/0aAoodOaVXkh2xZgTxy8jdLwasDLPRvyc6hxU5EGWItcc8gmtgnDr7
+         cyH/PUoAZg2ZPIUl4e2225Hky50ex3Jo0gu1uoyy805a/ASkbx6LagD+3W4WZJLuq9
+         CH32xvVRj2M1Ss0ZjasVbtxuZ25GdiuTSajfnmj4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 043/118] bnxt_en: Improve AER slot reset.
-Date:   Wed, 13 May 2020 11:44:22 +0200
-Message-Id: <20200513094421.080353924@linuxfoundation.org>
+Subject: [PATCH 5.6 044/118] bnxt_en: Return error when allocating zero size context memory.
+Date:   Wed, 13 May 2020 11:44:23 +0200
+Message-Id: <20200513094421.147790032@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
 References: <20200513094417.618129545@linuxfoundation.org>
@@ -45,40 +45,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Michael Chan <michael.chan@broadcom.com>
 
-[ Upstream commit bae361c54fb6ac6eba3b4762f49ce14beb73ef13 ]
+[ Upstream commit bbf211b1ecb891c7e0cc7888834504183fc8b534 ]
 
-Improve the slot reset sequence by disabling the device to prevent bad
-DMAs if slot reset fails.  Return the proper result instead of always
-PCI_ERS_RESULT_RECOVERED to the caller.
+bnxt_alloc_ctx_pg_tbls() should return error when the memory size of the
+context memory to set up is zero.  By returning success (0), the caller
+may proceed normally and may crash later when it tries to set up the
+memory.
 
-Fixes: 6316ea6db93d ("bnxt_en: Enable AER support.")
+Fixes: 08fe9d181606 ("bnxt_en: Add Level 2 context memory paging support.")
 Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
 +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -12173,12 +12173,15 @@ static pci_ers_result_t bnxt_io_slot_res
- 		bnxt_ulp_start(bp, err);
- 	}
+@@ -6662,7 +6662,7 @@ static int bnxt_alloc_ctx_pg_tbls(struct
+ 	int rc;
  
--	if (result != PCI_ERS_RESULT_RECOVERED && netif_running(netdev))
--		dev_close(netdev);
-+	if (result != PCI_ERS_RESULT_RECOVERED) {
-+		if (netif_running(netdev))
-+			dev_close(netdev);
-+		pci_disable_device(pdev);
-+	}
+ 	if (!mem_size)
+-		return 0;
++		return -EINVAL;
  
- 	rtnl_unlock();
- 
--	return PCI_ERS_RESULT_RECOVERED;
-+	return result;
- }
- 
- /**
+ 	ctx_pg->nr_pages = DIV_ROUND_UP(mem_size, BNXT_PAGE_SIZE);
+ 	if (ctx_pg->nr_pages > MAX_CTX_TOTAL_PAGES) {
 
 
