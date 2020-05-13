@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5711D1D0E3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632781D0F01
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388550AbgEMJ6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:58:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56498 "EHLO mail.kernel.org"
+        id S2388658AbgEMKDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 06:03:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388062AbgEMJyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:54:11 -0400
+        id S1732472AbgEMJsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:48:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D352E206D6;
-        Wed, 13 May 2020 09:54:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F27A20753;
+        Wed, 13 May 2020 09:48:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363651;
-        bh=LUb+bO3zK4qWq5zgFW0JLezZ7BG2T63AmtuwtwMe7NM=;
+        s=default; t=1589363293;
+        bh=bHdmZDYvm4sZsTCmDc+bJ2o87qNAxyOF5X9rKGj+pcM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IdomalNqb0aTbnBlsz31946PjLsSGzZ0gn3MC1TZBM6LITTqbbnORRPFEnJV/hWHx
-         EofQ80MJlwJkYOWTc218WTLpnQQnVGlaeZEWf0XnOgBvnT7e1Eapy22tF7PgG95Ybs
-         4Gmgzd9BDZPiPS0ACr5FHn4SqwMUCFMOX8El4pFg=
+        b=0ZzTLut20IrjBGC9kJ+Ffz1PticEHaEPa2XzMJmeZHzXRzyPIBDt9UVdTACr3Kss7
+         mpHROFebF/htqBn7pJg/nOj1ruAyQ8pYjt6upx5ntYMJBLwDNgeV46e880+7+Aitao
+         ECLW+CxMrmbSsQiNnv/BKds+Pe8xvAcEIACsJO9I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matt Jolly <Kangie@footclan.ninja>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        stable@vger.kernel.org, Allen Pais <allen.pais@oracle.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 033/118] net: usb: qmi_wwan: add support for DW5816e
+Subject: [PATCH 5.4 16/90] net: dsa: Do not leave DSA master with NULL netdev_ops
 Date:   Wed, 13 May 2020 11:44:12 +0200
-Message-Id: <20200513094420.401985620@linuxfoundation.org>
+Message-Id: <20200513094410.583502170@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
-References: <20200513094417.618129545@linuxfoundation.org>
+In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
+References: <20200513094408.810028856@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,29 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matt Jolly <Kangie@footclan.ninja>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit 57c7f2bd758eed867295c81d3527fff4fab1ed74 ]
+[ Upstream commit 050569fc8384c8056bacefcc246bcb2dfe574936 ]
 
-Add support for Dell Wireless 5816e to drivers/net/usb/qmi_wwan.c
+When ndo_get_phys_port_name() for the CPU port was added we introduced
+an early check for when the DSA master network device in
+dsa_master_ndo_setup() already implements ndo_get_phys_port_name(). When
+we perform the teardown operation in dsa_master_ndo_teardown() we would
+not be checking that cpu_dp->orig_ndo_ops was successfully allocated and
+non-NULL initialized.
 
-Signed-off-by: Matt Jolly <Kangie@footclan.ninja>
-Acked-by: Bjørn Mork <bjorn@mork.no>
+With network device drivers such as virtio_net, this leads to a NPD as
+soon as the DSA switch hanging off of it gets torn down because we are
+now assigning the virtio_net device's netdev_ops a NULL pointer.
+
+Fixes: da7b9e9b00d4 ("net: dsa: Add ndo_get_phys_port_name() for CPU port")
+Reported-by: Allen Pais <allen.pais@oracle.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Tested-by: Allen Pais <allen.pais@oracle.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/qmi_wwan.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/dsa/master.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -1359,6 +1359,7 @@ static const struct usb_device_id produc
- 	{QMI_FIXED_INTF(0x413c, 0x81b3, 8)},	/* Dell Wireless 5809e Gobi(TM) 4G LTE Mobile Broadband Card (rev3) */
- 	{QMI_FIXED_INTF(0x413c, 0x81b6, 8)},	/* Dell Wireless 5811e */
- 	{QMI_FIXED_INTF(0x413c, 0x81b6, 10)},	/* Dell Wireless 5811e */
-+	{QMI_FIXED_INTF(0x413c, 0x81cc, 8)},	/* Dell Wireless 5816e */
- 	{QMI_FIXED_INTF(0x413c, 0x81d7, 0)},	/* Dell Wireless 5821e */
- 	{QMI_FIXED_INTF(0x413c, 0x81d7, 1)},	/* Dell Wireless 5821e preproduction config */
- 	{QMI_FIXED_INTF(0x413c, 0x81e0, 0)},	/* Dell Wireless 5821e with eSIM support*/
+--- a/net/dsa/master.c
++++ b/net/dsa/master.c
+@@ -259,7 +259,8 @@ static void dsa_master_ndo_teardown(stru
+ {
+ 	struct dsa_port *cpu_dp = dev->dsa_ptr;
+ 
+-	dev->netdev_ops = cpu_dp->orig_ndo_ops;
++	if (cpu_dp->orig_ndo_ops)
++		dev->netdev_ops = cpu_dp->orig_ndo_ops;
+ 	cpu_dp->orig_ndo_ops = NULL;
+ }
+ 
 
 
