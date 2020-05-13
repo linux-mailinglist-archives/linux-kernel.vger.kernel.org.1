@@ -2,99 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BC71D0BD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0665E1D0BE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbgEMJUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728068AbgEMJUt (ORCPT
+        id S1730063AbgEMJVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:21:16 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:59802 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726492AbgEMJVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:20:49 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09777C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 02:20:49 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1jYnZ9-0005Uj-6g; Wed, 13 May 2020 11:20:39 +0200
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1jYnZ8-00072r-Or; Wed, 13 May 2020 11:20:38 +0200
-Date:   Wed, 13 May 2020 11:20:38 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Robin Gong <yibin.gong@nxp.com>
-Cc:     "vkoul@kernel.org" <vkoul@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will.deacon@arm.com" <will.deacon@arm.com>,
-        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
-        "martin.fuzzey@flowbird.group" <martin.fuzzey@flowbird.group>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v7 RESEND 07/13] spi: imx: fix ERR009165
-Message-ID: <20200513092038.GR5877@pengutronix.de>
-References: <1589218356-17475-1-git-send-email-yibin.gong@nxp.com>
- <1589218356-17475-8-git-send-email-yibin.gong@nxp.com>
- <20200513072132.GL5877@pengutronix.de>
- <VE1PR04MB6638F5096376BA0AF204C64189BF0@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <20200513084815.GP5877@pengutronix.de>
- <VE1PR04MB6638857DD94A05DC7252E69589BF0@VE1PR04MB6638.eurprd04.prod.outlook.com>
+        Wed, 13 May 2020 05:21:16 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04D9Kixe120808;
+        Wed, 13 May 2020 04:20:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589361644;
+        bh=IlqvhSvX7dm7U6fNCP86Eh1rVu3aygJpNYeXEiRbTwk=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=N4WBlCpAf/TS9QYfLJ7UD/CdMegYlurlnTJmuVycuArXL4cpSl05bQcj3R8odRjcZ
+         OjufQOaNPKqfqP+HrrXFGan1Nxk/Cru82bInTbI4tod0Kmca/FlOUZhePsvc2KxT44
+         3KqUdSpbmjK5KWn0q7xSu8c4/ED8QDEjD4TK5YZs=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04D9KiNK027980
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 May 2020 04:20:44 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 13
+ May 2020 04:20:43 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 13 May 2020 04:20:43 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04D9KeXT046041;
+        Wed, 13 May 2020 04:20:41 -0500
+Subject: Re: mmotm 2020-05-11-15-43 uploaded (ethernet/ti/ti_cpsw)
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <broonie@kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-next@vger.kernel.org>, <mhocko@suse.cz>,
+        <mm-commits@vger.kernel.org>, <sfr@canb.auug.org.au>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>
+References: <20200511224430.HDJjRC68z%akpm@linux-foundation.org>
+ <9ba4bac8-d4ec-c2d2-373f-3a631523cb2f@infradead.org>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <a6e2a4ff-1ec5-4d86-4d00-ce62fbf1813f@ti.com>
+Date:   Wed, 13 May 2020 12:20:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <VE1PR04MB6638857DD94A05DC7252E69589BF0@VE1PR04MB6638.eurprd04.prod.outlook.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:20:29 up 83 days, 16:50, 119 users,  load average: 0.32, 0.19,
- 0.17
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <9ba4bac8-d4ec-c2d2-373f-3a631523cb2f@infradead.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 08:52:39AM +0000, Robin Gong wrote:
-> On 2020/05/13 16:48 Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> > On Wed, May 13, 2020 at 08:38:26AM +0000, Robin Gong wrote:
-> > > On 2020/05/13 Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> > > > This patch is the one bisecting will end up with when somebody uses
-> > > > an older SDMA firmware or the ROM scripts. It should have a better
-> > > > description what happens and what should be done about it.
-> > > Emm..That's true. Timeout will be caught in such case, hence, maybe we can
-> > fall back it to pio always.
-> > 
-> > With my patch applied sdma_load_context() will fail. I don't know how exactly
-> > this hits into the SPI driver, but it won't be a timeout.
-> Thanks for your quick test, assume you use ROM firmware, right?
 
-Yes.
 
-Sascha
+On 12/05/2020 05:12, Randy Dunlap wrote:
+> On 5/11/20 3:44 PM, Andrew Morton wrote:
+>> The mm-of-the-moment snapshot 2020-05-11-15-43 has been uploaded to
+>>
+>>     http://www.ozlabs.org/~akpm/mmotm/
+>>
+>> mmotm-readme.txt says
+>>
+>> README for mm-of-the-moment:
+>>
+>> http://www.ozlabs.org/~akpm/mmotm/
+>>
+>> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+>> more than once a week.
+>>
+>> You will need quilt to apply these patches to the latest Linus release (5.x
+>> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+>> http://ozlabs.org/~akpm/mmotm/series
+>>
+>> The file broken-out.tar.gz contains two datestamp files: .DATE and
+>> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+>> followed by the base kernel version against which this patch series is to
+>> be applied.
+>>
+>> This tree is partially included in linux-next.  To see which patches are
+>> included in linux-next, consult the `series' file.  Only the patches
+>> within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
+>> linux-next.
+>>
+>>
+>> A full copy of the full kernel tree with the linux-next and mmotm patches
+>> already applied is available through git within an hour of the mmotm
+>> release.  Individual mmotm releases are tagged.  The master branch always
+>> points to the latest release, so it's constantly rebasing.
+>>
+>> 	https://github.com/hnaz/linux-mm
+>>
+>> The directory http://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
+>> contains daily snapshots of the -mm tree.  It is updated more frequently
+>> than mmotm, and is untested.
+>>
+>> A git copy of this tree is also available at
+>>
+>> 	https://github.com/hnaz/linux-mm
+> 
+> on i386:
+> 
+> ERROR: modpost: "cpts_register" [drivers/net/ethernet/ti/ti_cpsw_new.ko] undefined!
+> ERROR: modpost: "cpts_unregister" [drivers/net/ethernet/ti/ti_cpsw_new.ko] undefined!
+> ERROR: modpost: "cpts_tx_timestamp" [drivers/net/ethernet/ti/ti_cpsw_new.ko] undefined!
+> ERROR: modpost: "cpts_create" [drivers/net/ethernet/ti/ti_cpsw_new.ko] undefined!
+> ERROR: modpost: "cpts_misc_interrupt" [drivers/net/ethernet/ti/ti_cpsw_new.ko] undefined!
+> ERROR: modpost: "cpts_release" [drivers/net/ethernet/ti/ti_cpsw_new.ko] undefined!
+> ERROR: modpost: "cpts_tx_timestamp" [drivers/net/ethernet/ti/ti_cpsw.ko] undefined!
+> ERROR: modpost: "cpts_create" [drivers/net/ethernet/ti/ti_cpsw.ko] undefined!
+> ERROR: modpost: "cpts_misc_interrupt" [drivers/net/ethernet/ti/ti_cpsw.ko] undefined!
+> ERROR: modpost: "cpts_release" [drivers/net/ethernet/ti/ti_cpsw.ko] undefined!
+> 
+> 
+> Full randconfig file is attached.
+> 
 
+It's expected to be fixed by
+https://lkml.org/lkml/2020/5/12/333
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Best regards,
+grygorii
