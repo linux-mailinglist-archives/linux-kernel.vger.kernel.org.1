@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FDB1D0D3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3221D0DBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387639AbgEMJvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:51:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51924 "EHLO mail.kernel.org"
+        id S2388279AbgEMJze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:55:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387632AbgEMJvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:51:17 -0400
+        id S1732751AbgEMJz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:55:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C58C5206D6;
-        Wed, 13 May 2020 09:51:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85E5F20575;
+        Wed, 13 May 2020 09:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363477;
-        bh=rKeULQkRxUhRHLjybAHWdbegXlR743VjXvWhU6otZ+0=;
+        s=default; t=1589363727;
+        bh=pTsPT0/Rii83beR5sXWzu5H1gLJIm9w/rvIAt5mngLk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ojPkNe9DiP142Q6K5U3F+eIn5DEmLPbQ1gFdvZWjzpEg4OZkeo6TJHOutDdJP5LKI
-         V2jLQZi+6/U/nt2aSMhULf/hmRnksRr8fPPvaUSw5/i4csh8KwEqKn+jTYKXnf/d/y
-         eEl0ShHYjB/LLRIlKTfel2marRM3NuoSUO5fhimc=
+        b=KoRlnj6XnOAACl4ZDm/61WwbNFenjEsKRNRCrnDrFcVEIEWDAvHXKnI3bkYjsCRYM
+         vIV6HXLOk0pwHWReNysWBu/duCd7t+DPHWVYU5OQcnZz3d68IkIAx6Tdnec4+Ic6hk
+         OUm7jSc27Io2NSCFiEuSo0LnUzqH6yLb4QXY3KFQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.4 82/90] netfilter: nf_osf: avoid passing pointer to local var
-Date:   Wed, 13 May 2020 11:45:18 +0200
-Message-Id: <20200513094417.731713866@linuxfoundation.org>
+        stable@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
+        Jann Horn <jannh@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>, Dave Jones <dsj@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vince Weaver <vincent.weaver@maine.edu>
+Subject: [PATCH 5.6 100/118] x86/entry/64: Fix unwind hints in rewind_stack_do_exit()
+Date:   Wed, 13 May 2020 11:45:19 +0200
+Message-Id: <20200513094426.032004613@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
-References: <20200513094408.810028856@linuxfoundation.org>
+In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
+References: <20200513094417.618129545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,75 +49,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Jann Horn <jannh@google.com>
 
-commit c165d57b552aaca607fa5daf3fb524a6efe3c5a3 upstream.
+commit f977df7b7ca45a4ac4b66d30a8931d0434c394b1 upstream.
 
-gcc-10 points out that a code path exists where a pointer to a stack
-variable may be passed back to the caller:
+The LEAQ instruction in rewind_stack_do_exit() moves the stack pointer
+directly below the pt_regs at the top of the task stack before calling
+do_exit(). Tell the unwinder to expect pt_regs.
 
-net/netfilter/nfnetlink_osf.c: In function 'nf_osf_hdr_ctx_init':
-cc1: warning: function may return address of local variable [-Wreturn-local-addr]
-net/netfilter/nfnetlink_osf.c:171:16: note: declared here
-  171 |  struct tcphdr _tcph;
-      |                ^~~~~
-
-I am not sure whether this can happen in practice, but moving the
-variable declaration into the callers avoids the problem.
-
-Fixes: 31a9c29210e2 ("netfilter: nf_osf: add struct nf_osf_hdr_ctx")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 8c1f75587a18 ("x86/entry/64: Add unwind hint annotations")
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Signed-off-by: Jann Horn <jannh@google.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Dave Jones <dsj@fb.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vince Weaver <vincent.weaver@maine.edu>
+Link: https://lore.kernel.org/r/68c33e17ae5963854916a46f522624f8e1d264f2.1587808742.git.jpoimboe@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/netfilter/nfnetlink_osf.c |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ arch/x86/entry/entry_64.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/netfilter/nfnetlink_osf.c
-+++ b/net/netfilter/nfnetlink_osf.c
-@@ -165,12 +165,12 @@ static bool nf_osf_match_one(const struc
- static const struct tcphdr *nf_osf_hdr_ctx_init(struct nf_osf_hdr_ctx *ctx,
- 						const struct sk_buff *skb,
- 						const struct iphdr *ip,
--						unsigned char *opts)
-+						unsigned char *opts,
-+						struct tcphdr *_tcph)
- {
- 	const struct tcphdr *tcp;
--	struct tcphdr _tcph;
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -1739,7 +1739,7 @@ SYM_CODE_START(rewind_stack_do_exit)
  
--	tcp = skb_header_pointer(skb, ip_hdrlen(skb), sizeof(struct tcphdr), &_tcph);
-+	tcp = skb_header_pointer(skb, ip_hdrlen(skb), sizeof(struct tcphdr), _tcph);
- 	if (!tcp)
- 		return NULL;
+ 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rax
+ 	leaq	-PTREGS_SIZE(%rax), %rsp
+-	UNWIND_HINT_FUNC sp_offset=PTREGS_SIZE
++	UNWIND_HINT_REGS
  
-@@ -205,10 +205,11 @@ nf_osf_match(const struct sk_buff *skb,
- 	int fmatch = FMATCH_WRONG;
- 	struct nf_osf_hdr_ctx ctx;
- 	const struct tcphdr *tcp;
-+	struct tcphdr _tcph;
- 
- 	memset(&ctx, 0, sizeof(ctx));
- 
--	tcp = nf_osf_hdr_ctx_init(&ctx, skb, ip, opts);
-+	tcp = nf_osf_hdr_ctx_init(&ctx, skb, ip, opts, &_tcph);
- 	if (!tcp)
- 		return false;
- 
-@@ -265,10 +266,11 @@ bool nf_osf_find(const struct sk_buff *s
- 	const struct nf_osf_finger *kf;
- 	struct nf_osf_hdr_ctx ctx;
- 	const struct tcphdr *tcp;
-+	struct tcphdr _tcph;
- 
- 	memset(&ctx, 0, sizeof(ctx));
- 
--	tcp = nf_osf_hdr_ctx_init(&ctx, skb, ip, opts);
-+	tcp = nf_osf_hdr_ctx_init(&ctx, skb, ip, opts, &_tcph);
- 	if (!tcp)
- 		return false;
- 
+ 	call	do_exit
+ SYM_CODE_END(rewind_stack_do_exit)
 
 
