@@ -2,101 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08681D20CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DAE1D2114
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728620AbgEMVUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:20:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726550AbgEMVUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:20:18 -0400
-Received: from localhost.localdomain (pool-96-246-152-186.nycmny.fios.verizon.net [96.246.152.186])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38336205ED;
-        Wed, 13 May 2020 21:20:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589404817;
-        bh=xWHjq8JYrcnKLKaLhAt/3Qu+CGeCVNq+g1GySEuPYRc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=PwJfPtEX6tp0QTHNEjB9QjrHmEOqN4ySwN4pxgVhjjg3ETeUb0TY4DXaxevUnby8+
-         EokyG0p+/y45QWzXzEKs2sgYFqd+tkFTTlPWzX0xov+GrSpiQ9A29xKfyJOHTMmiL3
-         i/n7KTWK2eIQJQSIq4Y9w8AfkxzotlkTFt2FmPX8=
-Message-ID: <1589404814.5098.185.camel@kernel.org>
-Subject: Re: [PATCH v5 1/7] fs: introduce kernel_pread_file* support
-From:   Mimi Zohar <zohar@kernel.org>
-To:     Scott Branden <scott.branden@broadcom.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>
-Date:   Wed, 13 May 2020 17:20:14 -0400
-In-Reply-To: <a228ae0f-d551-e0e8-446e-5ae63462c520@broadcom.com>
-References: <20200508002739.19360-1-scott.branden@broadcom.com>
-         <20200508002739.19360-2-scott.branden@broadcom.com>
-         <1589395153.5098.158.camel@kernel.org>
-         <0e6b5f65-8c61-b02e-7d35-b4ae52aebcf3@broadcom.com>
-         <1589396593.5098.166.camel@kernel.org>
-         <e1b92047-7003-0615-3d58-1388ec27c78a@broadcom.com>
-         <1589398747.5098.178.camel@kernel.org>
-         <a228ae0f-d551-e0e8-446e-5ae63462c520@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1729296AbgEMVaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 17:30:07 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34746 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728718AbgEMVaH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 17:30:07 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04DLTwxY105606;
+        Wed, 13 May 2020 16:29:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589405398;
+        bh=vcbFgmT3TN+BiEX3L7ygJ+nCexSav6b9m490239DnXM=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=UpYjjIAsWnRrMfzaoMrZjg1Tieg9gnCR9eYKoPDAnfr9xneKiwvmVfy1vOJgEISd8
+         52eO8MowSK7nBtarM7M6Wlbh119cwHLrh7nGTPt2Di6+GmAop7KbjnowNFDnndbrYL
+         GEL0LAfWtlpAp4BHMrZ8mDbTJC/BZ0kG0ttSZplg=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04DLTwUD105576;
+        Wed, 13 May 2020 16:29:58 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 13
+ May 2020 16:29:57 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 13 May 2020 16:29:57 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04DLTvI6019290;
+        Wed, 13 May 2020 16:29:57 -0500
+Subject: Re: linux-next: Fixes tag needs some work in the sound-asoc-fixes
+ tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+CC:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200514071257.5b1582ca@canb.auug.org.au>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <f828c953-07b2-6a6b-881a-bf10f20a719d@ti.com>
+Date:   Wed, 13 May 2020 16:20:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200514071257.5b1582ca@canb.auug.org.au>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-05-13 at 12:41 -0700, Scott Branden wrote:
-> 
-> On 2020-05-13 12:39 p.m., Mimi Zohar wrote:
-> > On Wed, 2020-05-13 at 12:18 -0700, Scott Branden wrote:
-> >> On 2020-05-13 12:03 p.m., Mimi Zohar wrote:
-> >>> On Wed, 2020-05-13 at 11:53 -0700, Scott Branden wrote:
-> >> Even if the kernel successfully verified the firmware file signature it
-> >> would just be wasting its time.  The kernel in these use cases is not always
-> >> trusted.  The device needs to authenticate the firmware image itself.
-> > There are also environments where the kernel is trusted and limits the
-> > firmware being provided to the device to one which they signed.
-> >
-> >>> The device firmware is being downloaded piecemeal from somewhere and
-> >>> won't be measured?
-> >> It doesn't need to be measured for current driver needs.
-> > Sure the device doesn't need the kernel measuring the firmware, but
-> > hardened environments do measure firmware.
-> >
-> >> If someone has such need the infrastructure could be added to the kernel
-> >> at a later date.  Existing functionality is not broken in any way by
-> >> this patch series.
-> > Wow!  You're saying that your patch set takes precedence over the
-> > existing expectations and can break them.
-> Huh? I said existing functionality is NOT broken by this patch series.
+Stephen
 
-Assuming a system is configured to measure and appraise firmware
-(rules below), with this change the firmware file will not be properly
-measured and will fail signature verification.
+On 5/13/20 4:12 PM, Stephen Rothwell wrote:
+> Hi all,
+>
+> In commit
+>
+>    0e36f32f6b6c ("ASoC: tlv320adcx140: Fix bias config values")
+>
+> Fixes tag
+>
+>    Fixes: 37bde5acf040 ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec
+>
+> has these problem(s):
+>
+>    - Target SHA1 does not exist
+>
+> Mabe you meant
+>
+> Fixes: 689c7655b50c ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec driver family")
 
-Sample IMA policy rules:
-measure func=FIRMWARE_CHECK
-appraise func=FIRMWARE_CHECK appraise_type=imasig
+Yes this is what it is supposed to be
 
-Mimi
+Mark
+
+Did you want me to re-submit the patch with the corrected commit or are 
+you going to update it?
+
+I also noticed code was spelled wrong in the commit message
+
+s/conde/code
+
+Dan
+
+
+> Also, it looks like the Fixes tag had been split over more than one line
+> (and then the latter part moved above the rest).
+>
