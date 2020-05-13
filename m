@@ -2,97 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE7E1D0F20
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116181D0F40
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388710AbgEMKEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 06:04:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39914 "EHLO mail.kernel.org"
+        id S2388019AbgEMKGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 06:06:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732876AbgEMKEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 06:04:49 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1732551AbgEMKF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 06:05:59 -0400
+Received: from localhost.localdomain (unknown [106.200.233.149])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E505A206B8;
-        Wed, 13 May 2020 10:04:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0045F20575;
+        Wed, 13 May 2020 10:05:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589364288;
-        bh=BkUzNAvRjDhZ5sh9KsFgyFVKv9jNomu1O2R+MD3pou8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PV5yqOxp7v0teWZ5crR2ehluwOXrr3DcmlDcWZhM/f7bVtRBh3J3jGfx5jnfBhP2B
-         176rRIBdxukTGVFgS0qqR0iPcOSHajdIJXAg4RNUMFJJLU3l1lzt9L6CKaKl6WEa5S
-         EoNHAQIZWgoUsUYUmjrmADoa3W7ZzdcmSboXjA8g=
-Date:   Wed, 13 May 2020 12:04:46 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     "Ravich, Leonid" <Leonid.Ravich@dell.com>
-Cc:     "Idgar, Or" <Or.Idgar@dell.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: CMA enhancement - non-default areas in x86
-Message-ID: <20200513100446.GB868852@kroah.com>
-References: <CH2PR19MB3767236EDC9BE964FC3AB91BFEBF0@CH2PR19MB3767.namprd19.prod.outlook.com>
- <20200513064755.GA763968@kroah.com>
- <CH2PR19MB376794E120B9B02856DC87C3FEBF0@CH2PR19MB3767.namprd19.prod.outlook.com>
- <20200513071413.GB766804@kroah.com>
- <DM6PR19MB26827EFC4DDC6CB9DD5C52D098BF0@DM6PR19MB2682.namprd19.prod.outlook.com>
- <20200513083343.GA772573@kroah.com>
- <DM6PR19MB268231FBFEA47D7C4CEAF29098BF0@DM6PR19MB2682.namprd19.prod.outlook.com>
+        s=default; t=1589364359;
+        bh=WjRy4bGb2XBE4e+1YGSH0DDmJTpK19nx1tzKdrx5qeQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=xJ51Bv2swDWPGJNoHbrEJBLashQwC/Xq44TcCpIoBvgmvk+w/yhWKGLTIXXpWuwQW
+         m2rhP13GblVTwezQLIRo4n+13HW669cQaegtfkBSq3CX7DQP1CtM9Ug7DSqG9wA5vP
+         RLiGzalHteJJIN0xsTBcoVDLLgfRdecFoh5XDehw=
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH 0/3] Add LT9611 DSI to HDMI bridge
+Date:   Wed, 13 May 2020 15:35:30 +0530
+Message-Id: <20200513100533.42996-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR19MB268231FBFEA47D7C4CEAF29098BF0@DM6PR19MB2682.namprd19.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 09:43:45AM +0000, Ravich, Leonid wrote:
-> > On Wed, May 13, 2020 at 08:29:16AM +0000, Ravich, Leonid wrote:
-> > > PCIe NTB
-> > > Documentation/driver-api/ntb.rst
-> > 
-> > > 1) Basically PCI bridge between to root complex / PCI switches
-> > > 2) using out of OS memory is one solution but then this memory is
-> > > Limited for usage by other stack, ex: get_user_pages on this memory
-> > > will fail, Therefore attempting to use it for block layer with (o_direct) will
-> > fail.
-> > >
-> > > Acutely any generic stack which attempts to "pin" this memory will fail.
-> > 
-> > So why isn't the BIOS/UEFI properly reserving this from the general operating
-> > system's pages so that the driver knows to use them instead?
-> > 
-> > Is UEFI wrong here about these being valid memory ranges for general use?
-> > If so, why not fix that?  If not, how in the world is the OS supposed to know
-> > these memory ranges are _not_ for general use?  I feel like there is
-> > something missing here...
-> >
-> Maybe I am miss understanding something here , but if BIOS/UEFI will reserve this pages 
-> They will be "out of kernel" which will work for propriety driver but this memory will not 
-> be useable for generic driver which will attempt to pin this memory with get_user_pages() .
-> so we can go and try to fix that  (not sure this is the right way) .
+Hi,
 
-What do you mean by "propriety" driver vs. "generic" driver?
+This series adds driver and bindings for Lontium LT9611 bridge chip which
+takes MIPI DSI as input and HDMI as output.
 
-Shouldn't there be some "generic" way that UEFI tells any driver where
-these memory locations are that can not be used as general memory?  If
-not, try fixing up UEFI for that.
+This chip can be found in 96boards RB3 platform [1] commonly called DB845c.
 
-> another option here is to use some kernel infrastructure  which  from one side reserve the memory from general use
-> on the other hand kernel will be aware of this pages so get_user_pages()  will work on this memory .
-> 
-> from what we saw CMA infrastructure can support  such requirements.
+[1]: https://www.96boards.org/product/rb3-platform/
 
-CMA needs to be told where to reserve the memory at boot time.  If you
-want to use that, great, but something has to tell it, so perhaps just
-get that info from UEFI as that is the "equilivant" to a device tree,
-right?
+Vinod Koul (3):
+  dt-bindings: vendor-prefixes: Add Lontium vendor prefix
+  dt-bindings: display: bridge: Add documentation for LT9611
+  drm/bridge: Introduce LT9611 DSI to HDMI bridge
 
-Try it all out and see, all of this is pointless without real patches,
-which is why we almost never have these kinds of discussions without
-working code.
+ .../display/bridge/lontium,lt9611.yaml        |  178 +++
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ drivers/gpu/drm/bridge/Kconfig                |   13 +
+ drivers/gpu/drm/bridge/Makefile               |    1 +
+ drivers/gpu/drm/bridge/lt9611.c               | 1113 +++++++++++++++++
+ 5 files changed, 1307 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml
+ create mode 100644 drivers/gpu/drm/bridge/lt9611.c
 
-thanks,
+-- 
+2.25.4
 
-greg k-h
