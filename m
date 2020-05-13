@@ -2,110 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED60B1D066F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 07:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F27861D067A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 07:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728939AbgEMFfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 01:35:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725977AbgEMFfc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 01:35:32 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33193C061A0C;
-        Tue, 12 May 2020 22:35:32 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id b190so1750890pfg.6;
-        Tue, 12 May 2020 22:35:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=N6F6FfdsbXnl/SVK+3lEcJ6QSNPZpV7bb51snrOs/po=;
-        b=txZr0XeHuO7k5BX0CUgXyG6VP+PiWZiHNGupxtphY/hX0tcBvm1GfmNP/og2vyHwOv
-         00Jwu6eowQehKsMOEiAPV4i9Vi5NAE2moFkGfslHOj3x05Tdu9JQJDxth4vfV4mf/kn+
-         KJvAsVzXd50wZPI1Gn3PtnYQhTMzDplkzXUja26WzfwUbj8IP0XbaXT7ZJzw/kbBqxPe
-         Hm1tw3kNPsV9/iC/4vsOiL/mfbhn0I1ofsTUcua2lOGO1OgkRRSvWR6IYrl2qxVq3Opp
-         6Qh5w/cHLZc1GgIQcizNm38dCKEq8WzKQVg0OUePgccFTt8XZyn+vCSYfnI44YihTSBb
-         yWZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N6F6FfdsbXnl/SVK+3lEcJ6QSNPZpV7bb51snrOs/po=;
-        b=XkRXzRG8BGcP0XcP+yuGxoG81gRiQVDE1HrRCRiJq+KzHRt8bLJn6S0U9X7LFb2FeK
-         GuZKiLIA92tSge0utBjcdjxmBFCEB84OUSTbXpyE1wzCvQ8AytLWVw7qRWQP/KVpKaxr
-         Yh0NyRbkFQ8crQ5CIYt2Bz6Oirow/EbCF+U+T/+wufZxPbp/urIhPAdCqjDhXsnRPhtV
-         yYEK42sZKFP6IJIA0tvEjrQflyoPmufdZUHyBSLl8yzVRlMKV37nm2XF1RUz7YtSgER3
-         KljMfWAV1vVumx0tfDHL+QQTJTubBWhw/sf4QDoRZcshYsBPYEK6nlxFTzO67CiaJAXy
-         mh0Q==
-X-Gm-Message-State: AGi0PuYUzt0zT7JY0wiehaZEOR+X6ns87u2C6lvPo8DApGYETGPd0hdf
-        yWyS5Pb9GaUx2aR015Uz8cY=
-X-Google-Smtp-Source: APiQypKbmkqhqS7o4ermQSolZR+cfuqa+pjV4dqn2sJsZ4yPaDy9SgV2EtYA1EalVbPrFoB3VL2yMQ==
-X-Received: by 2002:a62:2bcb:: with SMTP id r194mr24565356pfr.26.1589348131658;
-        Tue, 12 May 2020 22:35:31 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id q16sm3263402pgm.91.2020.05.12.22.35.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 22:35:30 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date:   Wed, 13 May 2020 14:35:29 +0900
-To:     Alper Nebi Yasak <alpernebiyasak@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-serial@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        id S1728954AbgEMFm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 01:42:56 -0400
+Received: from mx.socionext.com ([202.248.49.38]:59168 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728097AbgEMFm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 01:42:56 -0400
+Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
+  by mx.socionext.com with ESMTP; 13 May 2020 14:42:53 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id 218601800CF;
+        Wed, 13 May 2020 14:42:54 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Wed, 13 May 2020 14:42:54 +0900
+Received: from plum.e01.socionext.com (unknown [10.213.132.32])
+        by kinkan.css.socionext.com (Postfix) with ESMTP id AB2C11A12AD;
+        Wed, 13 May 2020 14:42:53 +0900 (JST)
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Keiji Hayashibara <hayashibara.keiji@socionext.com>
+Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Feng Tang <feng.tang@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: Re: [RFC PATCH v2 1/3] printk: Add function to set console to
- preferred console's driver
-Message-ID: <20200513053529.GL413@jagdpanzerIV.localdomain>
-References: <20200430161438.17640-1-alpernebiyasak@gmail.com>
- <20200430161438.17640-2-alpernebiyasak@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430161438.17640-2-alpernebiyasak@gmail.com>
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: [PATCH] dt-bindings: watchdog: Convert UniPhier watchdog timer to json-schema
+Date:   Wed, 13 May 2020 14:42:25 +0900
+Message-Id: <1589348545-22244-1-git-send-email-hayashi.kunihiko@socionext.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/04/30 19:14), Alper Nebi Yasak wrote:
-[..]
-> +int update_console_to_preferred(void)
-> +{
-> +	struct console_cmdline *c = NULL;
-> +	struct console *con = NULL;
-> +	struct console *tmp = NULL;
-> +
-> +	if (preferred_console >= 0)
-> +		c = &console_cmdline[preferred_console];
-> +
-> +	if (!c || !c->name[0])
-> +		return 0;
-> +
-> +	for_each_console(con) {
-> +		if (!con->next || !(con->next->flags & CON_ENABLED))
-> +			continue;
-> +		if (strcmp(c->name, con->next->name) != 0)
-> +			continue;
+Convert UniPhier watchdog timer binding to DT schema format.
 
-This matches the consoles by exact name. Consoles can have aliases,
-but matching by alias is rather complex and it has some side effects.
+Cc: Keiji Hayashibara <hayashibara.keiji@socionext.com>
+Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+---
+ .../bindings/watchdog/socionext,uniphier-wdt.yaml  | 36 ++++++++++++++++++++++
+ .../devicetree/bindings/watchdog/uniphier-wdt.txt  | 20 ------------
+ 2 files changed, 36 insertions(+), 20 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/watchdog/socionext,uniphier-wdt.yaml
+ delete mode 100644 Documentation/devicetree/bindings/watchdog/uniphier-wdt.txt
 
-Let me Cc more people on this. VT has a console takeover logic,
-I wonder if we can extend the takeover code somehow.
+diff --git a/Documentation/devicetree/bindings/watchdog/socionext,uniphier-wdt.yaml b/Documentation/devicetree/bindings/watchdog/socionext,uniphier-wdt.yaml
+new file mode 100644
+index 0000000..a059d16
+--- /dev/null
++++ b/Documentation/devicetree/bindings/watchdog/socionext,uniphier-wdt.yaml
+@@ -0,0 +1,36 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/watchdog/socionext,uniphier-wdt.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Socionext UniPhier watchdog timer
++
++maintainers:
++  - Keiji Hayashibara <hayashibara.keiji@socionext.com>
++
++allOf:
++  - $ref: "watchdog.yaml#"
++
++properties:
++  compatible:
++    const: socionext,uniphier-wdt
++
++required:
++  - compatible
++
++additionalProperties: false
++
++examples:
++  - |
++    // The UniPhier watchdog should be a subnode of a "syscon" compatible node.
++
++    sysctrl@61840000 {
++        compatible = "socionext,uniphier-ld11-sysctrl",
++                     "simple-mfd", "syscon";
++        reg = <0x61840000 0x10000>;
++
++        watchdog {
++            compatible = "socionext,uniphier-wdt";
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/watchdog/uniphier-wdt.txt b/Documentation/devicetree/bindings/watchdog/uniphier-wdt.txt
+deleted file mode 100644
+index bf63375..0000000
+--- a/Documentation/devicetree/bindings/watchdog/uniphier-wdt.txt
++++ /dev/null
+@@ -1,20 +0,0 @@
+-UniPhier watchdog timer controller
+-
+-This UniPhier watchdog timer controller must be under sysctrl node.
+-
+-Required properties:
+-- compatible: should be "socionext,uniphier-wdt"
+-
+-Example:
+-
+-	sysctrl@61840000 {
+-		compatible = "socionext,uniphier-ld11-sysctrl",
+-			     "simple-mfd", "syscon";
+-		reg = <0x61840000 0x4000>;
+-
+-		watchdog {
+-			compatible = "socionext,uniphier-wdt";
+-		}
+-
+-		other nodes ...
+-	};
+-- 
+2.7.4
 
-Daniel, any thoughts?
-
-https://lore.kernel.org/lkml/20200430161438.17640-1-alpernebiyasak@gmail.com
-
-	-ss
