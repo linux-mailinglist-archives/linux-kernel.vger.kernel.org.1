@@ -2,220 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8551D0537
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 05:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63491D054F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 05:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728566AbgEMDE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 23:04:28 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2503 "EHLO huawei.com"
+        id S1727796AbgEMDQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 23:16:39 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4400 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725898AbgEMDE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 23:04:28 -0400
-Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.55])
-        by Forcepoint Email with ESMTP id 3805D5D8613628C86A89;
-        Wed, 13 May 2020 11:04:22 +0800 (CST)
-Received: from dggeme760-chm.china.huawei.com (10.3.19.106) by
- DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Wed, 13 May 2020 11:04:21 +0800
-Received: from [127.0.0.1] (10.57.37.248) by dggeme760-chm.china.huawei.com
- (10.3.19.106) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1913.5; Wed, 13
- May 2020 11:04:21 +0800
-Subject: Re: [question] net: phy: rtl8211f: link speed shows 1000Mb/s but
- actual link speed in phy is 100Mb/s
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, Salil Mehta <salil.mehta@huawei.com>
-References: <478f871a-583d-01f1-9cc5-2eea56d8c2a7@huawei.com>
- <20200512140017.GK409897@lunn.ch>
- <ef25a0a2-e13f-def1-5e91-ceae1bfaf333@huawei.com>
- <20200513015944.GA501603@lunn.ch>
-From:   Yonglong Liu <liuyonglong@huawei.com>
-Message-ID: <3f996ac2-7920-008e-3b83-b8b82cc89b31@huawei.com>
-Date:   Wed, 13 May 2020 11:04:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        id S1725898AbgEMDQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 23:16:38 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 2437A48CDD2EC4FFADEA;
+        Wed, 13 May 2020 11:16:36 +0800 (CST)
+Received: from [127.0.0.1] (10.166.213.93) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Wed, 13 May 2020
+ 11:16:34 +0800
+Subject: Re: [PATCH v2] ACPI/IORT: Fix PMCG node always look for a single ID
+ mapping.
+To:     Tuan Phan <tuanphan@os.amperecomputing.com>
+CC:     <patches@amperecomputing.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1589327760-5464-1-git-send-email-tuanphan@os.amperecomputing.com>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <6f9996d3-18f1-0432-0e59-adc2cf086c9c@huawei.com>
+Date:   Wed, 13 May 2020 11:16:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200513015944.GA501603@lunn.ch>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <1589327760-5464-1-git-send-email-tuanphan@os.amperecomputing.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.57.37.248]
-X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
- dggeme760-chm.china.huawei.com (10.3.19.106)
+X-Originating-IP: [10.166.213.93]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/5/13 9:59, Andrew Lunn wrote:
-> On Wed, May 13, 2020 at 09:34:13AM +0800, Yonglong Liu wrote:
->> Hi, Andrew:
->> 	Thanks for your reply!
->>
->> On 2020/5/12 22:00, Andrew Lunn wrote:
->>> On Tue, May 12, 2020 at 08:48:21PM +0800, Yonglong Liu wrote:
->>>> I use two devices, both support 1000M speed, they are directly connected
->>>> with a network cable. Two devices enable autoneg, and then do the following
->>>> test repeatedly:
->>>> 	ifconfig eth5 down
->>>> 	ifconfig eth5 up
->>>> 	sleep $((RANDOM%6))
->>>> 	ifconfig eth5 down
->>>> 	ifconfig eth5 up
->>>> 	sleep 10
->>>>
->>>> With low probability, one device A link up with 100Mb/s, the other B link up with
->>>> 1000Mb/s(the actual link speed read from phy is 100Mb/s), and the network can
->>>> not work.
->>>>
->>>> device A:
->>>> Settings for eth5:
->>>>         Supported ports: [ TP ]
->>>>         Supported link modes:   10baseT/Half 10baseT/Full
->>>>                                 100baseT/Half 100baseT/Full
->>>>                                 1000baseT/Full
->>>>         Supported pause frame use: Symmetric Receive-only
->>>>         Supports auto-negotiation: Yes
->>>>         Supported FEC modes: Not reported
->>>>         Advertised link modes:  10baseT/Half 10baseT/Full
->>>>                                 100baseT/Half 100baseT/Full
->>>>                                 1000baseT/Full
->>>>         Advertised pause frame use: Symmetric
->>>>         Advertised auto-negotiation: Yes
->>>>         Advertised FEC modes: Not reported
->>>>         Link partner advertised link modes:  10baseT/Half 10baseT/Full
->>>>                                              100baseT/Half 100baseT/Full
->>>>         Link partner advertised pause frame use: Symmetric
->>>>         Link partner advertised auto-negotiation: Yes
->>>>         Link partner advertised FEC modes: Not reported
->>>>         Speed: 100Mb/s
->>>>         Duplex: Full
->>>>         Port: MII
->>>>         PHYAD: 3
->>>>         Transceiver: internal
->>>>         Auto-negotiation: on
->>>>         Current message level: 0x00000036 (54)
->>>>                                probe link ifdown ifup
->>>>         Link detected: yes
->>>>
->>>> The regs value read from mdio are:
->>>> reg 9 = 0x200
->>>> reg a = 0
->>>>
->>>> device B:
->>>> Settings for eth5:
->>>>         Supported ports: [ TP ]
->>>>         Supported link modes:   10baseT/Half 10baseT/Full
->>>>                                 100baseT/Half 100baseT/Full
->>>>                                 1000baseT/Full
->>>>         Supported pause frame use: Symmetric Receive-only
->>>>         Supports auto-negotiation: Yes
->>>>         Supported FEC modes: Not reported
->>>>         Advertised link modes:  10baseT/Half 10baseT/Full
->>>>                                 100baseT/Half 100baseT/Full
->>>>                                 1000baseT/Full
->>>>         Advertised pause frame use: Symmetric
->>>>         Advertised auto-negotiation: Yes
->>>>         Advertised FEC modes: Not reported
->>>>         Link partner advertised link modes:  10baseT/Half 10baseT/Full
->>>>                                              100baseT/Half 100baseT/Full
->>>>                                              1000baseT/Full
->>>>         Link partner advertised pause frame use: Symmetric
->>>>         Link partner advertised auto-negotiation: Yes
->>>>         Link partner advertised FEC modes: Not reported
->>>>         Speed: 1000Mb/s
->>>>         Duplex: Full
->>>>         Port: MII
->>>>         PHYAD: 3
->>>>         Transceiver: internal
->>>>         Auto-negotiation: on
->>>>         Current message level: 0x00000036 (54)
->>>>                                probe link ifdown ifup
->>>>         Link detected: yes
->>>>
->>>> The regs value read from mdio are:
->>>> reg 9 = 0
->>>> reg a = 0x800
->>>>
->>>> I had talk to the FAE of rtl8211f, they said if negotiation failed with 1000Mb/s,
->>>> rtl8211f will change reg 9 to 0, than try to negotiation with 100Mb/s.
->>>>
->>>> The problem happened as:
->>>> ifconfig eth5 up -> phy_start -> phy_start_aneg -> phy_modify_changed(MII_CTRL1000)
->>>> (this time both A and B, reg 9 = 0x200) -> wait for link up -> (B: reg 9 changed to 0)
->>>> -> link up.
->>>
->>> This sounds like downshift, but not correctly working. 1Gbps requires
->>> that 4 pairs in the cable work. If a 1Gbps link is negotiated, but
->>> then does not establish because one of the pairs is broken, some PHYs
->>> will try to 'downshift'. They drop down to 100Mbps, which only
->>> requires two pairs of the cable to work. To do this, the PHY should
->>> change what it is advertising, to no longer advertise 1G, just 100M
->>> and 10M. The link partner should then try to use 100Mbps and
->>> hopefully, a link is established.
->>>
->>> Looking at the ethtool, you can see device A is reporting device B is
->>> only advertising upto 100Mbps. Yet it is locally using 1G. That is
->>> broken. So i would say device A has the problem. Are both PHYs
->>> rtl8211f?
->>
->> Both PHY is rtl8211f. I think Device B is broken. Device B advertising
->> it supported 1G, but actually, in phy, downshift to 100M, so Device B
->> link up with 1G in driver side, but actually 100M in phy.
+On 2020/5/13 7:56, Tuan Phan wrote:
+> PMCG node can have zero ID mapping if its overflow interrupt
+> is wire based. The code to parse PMCG node can not assume it will
+> have a single ID mapping.
 > 
-> You have to be careful with the output of ethtool. Downshift is not
-> part of 802.3. There i no standard register to indicate it has
-> happened. Sometimes there is a vendor register. You should check the
-> datasheet, and look at what other PHY drivers do for this, and
-> phy_check_downshift().
-> 
->>> Are you 100% sure your cable and board layout is good? Is it
->>> trying downshift because something is broken? Fix the
->>> cable/connector and the
-> 
->> Will check the layout with hardware engineer. This happened with a low
->> probability. When this happened, another down/up operation or restart
->> autoneg will solved.
->  
->>> reason to downshift goes away. But it does not solve the problem if a
->>> customer has a broken cable. So you might want to deliberately cut a
->>> pair in the cable so it becomes 100% reproducable and try to debug it
->>> further. See if you can find out why auto-neg is not working
->>> correctly.
->>
->> So, your opinion is, maybe we should checkout whether the hardware layout
->> or cable have problem?
-> 
-> Well, there are a couple of issues here.
-> 
-> It could be a hardware problem. Best case, it is the cable. But if you
-> can reproduce it with other boards, it is a board design issue, which
-> you might want to get fixed. If it happens for you in the lab, it will
-> probably happen out in the field.
-> 
-> You should also consider what you want to happen with a cable that
-> really is broken. It would be nice if downshift worked. Slower
-> networking is better than no networking. Unless you have a requirement
-> that 100Mbps is too slow for your use case. So you might want to debug
-> what is going wrong when downshift happens.
-> 
->> By the way, do we have some mechanism to solve this downshift in software
->> side? If the PHY advertising downshift to 100M, but software still have
->> advertising with 1G(just like Device B), it will always have a broken network.
-> 
-> You might get some ideas from phy_check_downshift(). A lot will
-> depended on what information you can get from the PHY.
-> 
-> 	 Andrew
-> 
+> Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
 
-Hi, Andrew:
-	Thanks very much! That's so helpfull!
+It's better to add
 
-> .
+Fixes: 24e516049360 ("ACPI/IORT: Add support for PMCG")
+
+> ---
+> Changes in v2:
+> - Used pmcg node to detect wired base overflow interrupt.
+>   
+>   drivers/acpi/arm64/iort.c | 5 +++++
+>   1 file changed, 5 insertions(+)
 > 
+> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+> index ed3d2d1..11a4e8e 100644
+> --- a/drivers/acpi/arm64/iort.c
+> +++ b/drivers/acpi/arm64/iort.c
+> @@ -414,6 +414,7 @@ static struct acpi_iort_node *iort_node_get_id(struct acpi_iort_node *node,
+>   static int iort_get_id_mapping_index(struct acpi_iort_node *node)
+>   {
+>   	struct acpi_iort_smmu_v3 *smmu;
+> +	struct acpi_iort_pmcg *pmcg;
+>   
+>   	switch (node->type) {
+>   	case ACPI_IORT_NODE_SMMU_V3:
+> @@ -441,6 +442,10 @@ static int iort_get_id_mapping_index(struct acpi_iort_node *node)
+>   
+>   		return smmu->id_mapping_index;
+>   	case ACPI_IORT_NODE_PMCG:
+> +		pmcg = (struct acpi_iort_pmcg *)node->node_data;
+> +		if (pmcg->overflow_gsiv)
+> +			return -EINVAL;
+> +
+>   		return 0;
+>   	default:
+>   		return -EINVAL;
+
+With my comments addressed,
+
+Reviewed-by: Hanjun Guo <guoahanjun@huawei.com>
 
