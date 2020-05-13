@@ -2,209 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D542F1D0EE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC2C1D0D14
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388445AbgEMKDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 06:03:15 -0400
-Received: from verein.lst.de ([213.95.11.211]:45385 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733187AbgEMJtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:49:12 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C02CF68C65; Wed, 13 May 2020 11:49:08 +0200 (CEST)
-Date:   Wed, 13 May 2020 11:49:08 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] net/scm: cleanup scm_detach_fds
-Message-ID: <20200513094908.GA31756@lst.de>
-References: <20200511115913.1420836-1-hch@lst.de> <20200511115913.1420836-3-hch@lst.de> <20200513092918.GA596863@splinter>
+        id S2387434AbgEMJuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:50:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387418AbgEMJt6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:49:58 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B76C061A0C;
+        Wed, 13 May 2020 02:49:58 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id u10so6618558pls.8;
+        Wed, 13 May 2020 02:49:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vI1HSpo7JSbwTRD9lhLBPGbReloovre1TONkkWI4K8s=;
+        b=cI5NR0Fmf0b3v4RmzfC93mlJjUuGrnz+wojY6kn0wMKI0CqhzbAaR68zlAPTfc8dlv
+         nEo440GlsOwFtHLvmIwgjuS3b21nqoISVskSnOTWHvxRLJrdNWFj6QMTmLmtSrHcvII1
+         f21gkgvPL17ChZSaMzaeZarWmyda5FX9Kr5ukmdzmNBgSSse2lehTc0Ks5vhNtVA0/mE
+         9rpVuAwhTwRu4icbbs7byMez/Yo1v+A11a88VyXl7uI1WJZAZarE356ybl82sEjjXRZ5
+         8G2lnX/haRNYHv8EmMYC+JvmoyXtaKWUhedE/OBMwOR4zYnDyClehHQNyZI5AqEinVaV
+         sbng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vI1HSpo7JSbwTRD9lhLBPGbReloovre1TONkkWI4K8s=;
+        b=abcJAl2ciZe1+rQEyAm0KavHP1h120wmdnahsKjDU0VQBCwljrm1YKMih15GGmO2+a
+         c7R0Kf83OWxOinsJ9d5XKvy6Lk71Q0gh/vkFn0l/AAgCoGuBBBQaYzmwEwUq35jyEkX+
+         A/K1hqw9CYUdf/qzC6qyb99FzXbUoZOcUI/S+7YDqJc9OlPO0r5VBZa5qAohxE0C/4zq
+         siNy7fNGlXCV97TBLUy8p78m7QX34FXVn1LcepyvpF2iyiONLIOJE2U8267SUxooOyQ3
+         N49vO+Cobfgxc/h+36PZ1m3IiNhsmxXtjS8A5mPmRyZNkqA6ToillKlRjzmIwLeFJSv2
+         Dicw==
+X-Gm-Message-State: AGi0PuY445Iqi3v54nG6GlPWwD83cdT77UbY982OxGpObje+WDxxM48Z
+        +rFP3uvnUOvmTtc1Kf6fZRg292nUgMyxPkTWFAo=
+X-Google-Smtp-Source: APiQypKJ0EhcKN4EMwA2AMwX12EH/qNwRgFeDBPkHlJLKVpoAB7ilzcQdSoNb7EilT7ycg/niDjp4WWhY8w/d/sAxM4=
+X-Received: by 2002:a17:90b:3717:: with SMTP id mg23mr34645016pjb.129.1589363398238;
+ Wed, 13 May 2020 02:49:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513092918.GA596863@splinter>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <1589361736-816-1-git-send-email-jprakash@codeaurora.org> <1589361736-816-5-git-send-email-jprakash@codeaurora.org>
+In-Reply-To: <1589361736-816-5-git-send-email-jprakash@codeaurora.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 13 May 2020 12:49:51 +0300
+Message-ID: <CAHp75Vex+hm2pVat_VVH5gAqPDbm-VQMes56wC=RUcQeM=z7vA@mail.gmail.com>
+Subject: Re: [PATCH V4 4/5] iio: adc: Update error checks and debug prints
+To:     Jishnu Prakash <jprakash@codeaurora.org>
+Cc:     agross@kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        smohanad@codeaurora.org, kgunda@codeaurora.org,
+        aghayal@codeaurora.org, Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-arm-msm@vger.kernel.org,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-arm-msm-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 12:29:18PM +0300, Ido Schimmel wrote:
-> On Mon, May 11, 2020 at 01:59:12PM +0200, Christoph Hellwig wrote:
-> > Factor out two helpes to keep the code tidy.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> 
-> Christoph,
-> 
-> After installing net-next (fb9f2e92864f) on a Fedora 32 machine I cannot
-> ssh to it. Bisected it to this commit [1].
-> 
-> When trying to connect I see these error messages in journal:
-> 
-> sshd[1029]: error: mm_receive_fd: no message header
-> sshd[1029]: fatal: mm_pty_allocate: receive fds failed
-> sshd[1029]: fatal: mm_request_receive_expect: buffer error: incomplete message
-> sshd[1018]: fatal: mm_request_receive: read: Connection reset by peer
-> 
-> Please let me know if more info is required. I can easily test a patch
-> if you need me to try something.
+On Wed, May 13, 2020 at 12:23 PM Jishnu Prakash <jprakash@codeaurora.org> wrote:
+>
+> Change pr_err/pr_debug statements to dev_err/dev_dbg for
+> increased clarity. Also clean up some return value checks.
 
-To start we can try reverting just this commit, which requires a
-little manual work.  Patch below:
+'Also' on the commit message == 'split this to two'.
+But here is a ping pong style of patches (you introduce a problem in
+one patch and fix it in the following).
 
----
-From fe4f53219b42aeded3c1464dbe2bbc9365f6a853 Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Wed, 13 May 2020 11:48:33 +0200
-Subject: Revert "net/scm: cleanup scm_detach_fds"
-
-This reverts commit 2618d530dd8b7ac0fdcb83f4c95b88f7b0d37ce6.
----
- net/core/scm.c | 94 +++++++++++++++++++++++---------------------------
- 1 file changed, 43 insertions(+), 51 deletions(-)
-
-diff --git a/net/core/scm.c b/net/core/scm.c
-index a75cd637a71ff..2d9aa5682bed2 100644
---- a/net/core/scm.c
-+++ b/net/core/scm.c
-@@ -280,53 +280,18 @@ void put_cmsg_scm_timestamping(struct msghdr *msg, struct scm_timestamping_inter
- }
- EXPORT_SYMBOL(put_cmsg_scm_timestamping);
- 
--static int __scm_install_fd(struct file *file, int __user *ufd, int o_flags)
--{
--	struct socket *sock;
--	int new_fd;
--	int error;
--
--	error = security_file_receive(file);
--	if (error)
--		return error;
--
--	new_fd = get_unused_fd_flags(o_flags);
--	if (new_fd < 0)
--		return new_fd;
--
--	error = put_user(new_fd, ufd);
--	if (error) {
--		put_unused_fd(new_fd);
--		return error;
--	}
--
--	/* Bump the usage count and install the file. */
--	sock = sock_from_file(file, &error);
--	if (sock) {
--		sock_update_netprioidx(&sock->sk->sk_cgrp_data);
--		sock_update_classid(&sock->sk->sk_cgrp_data);
--	}
--	fd_install(new_fd, get_file(file));
--	return error;
--}
--
--static int scm_max_fds(struct msghdr *msg)
--{
--	if (msg->msg_controllen <= sizeof(struct cmsghdr))
--		return 0;
--	return (msg->msg_controllen - sizeof(struct cmsghdr)) / sizeof(int);
--}
--
- void scm_detach_fds(struct msghdr *msg, struct scm_cookie *scm)
- {
- 	struct cmsghdr __user *cm
- 		= (__force struct cmsghdr __user*)msg->msg_control;
--	int o_flags = (msg->msg_flags & MSG_CMSG_CLOEXEC) ? O_CLOEXEC : 0;
--	int fdmax = min_t(int, scm_max_fds(msg), scm->fp->count);
--	int __user *cmsg_data = CMSG_USER_DATA(cm);
-+
-+	int fdmax = 0;
-+	int fdnum = scm->fp->count;
-+	struct file **fp = scm->fp->fp;
-+	int __user *cmfptr;
- 	int err = 0, i;
- 
--	if (msg->msg_flags & MSG_CMSG_COMPAT) {
-+	if (MSG_CMSG_COMPAT & msg->msg_flags) {
- 		scm_detach_fds_compat(msg, scm);
- 		return;
- 	}
-@@ -335,35 +300,62 @@ void scm_detach_fds(struct msghdr *msg, struct scm_cookie *scm)
- 	if (WARN_ON_ONCE(!msg->msg_control_is_user))
- 		return;
- 
--	for (i = 0; i < fdmax; i++) {
--		err = __scm_install_fd(scm->fp->fp[i], cmsg_data + i, o_flags);
-+	if (msg->msg_controllen > sizeof(struct cmsghdr))
-+		fdmax = ((msg->msg_controllen - sizeof(struct cmsghdr))
-+			 / sizeof(int));
-+
-+	if (fdnum < fdmax)
-+		fdmax = fdnum;
-+
-+	for (i=0, cmfptr =(int __user *)CMSG_USER_DATA(cm); i<fdmax;
-+	     i++, cmfptr++)
-+	{
-+		struct socket *sock;
-+		int new_fd;
-+		err = security_file_receive(fp[i]);
- 		if (err)
- 			break;
-+		err = get_unused_fd_flags(MSG_CMSG_CLOEXEC & msg->msg_flags
-+					  ? O_CLOEXEC : 0);
-+		if (err < 0)
-+			break;
-+		new_fd = err;
-+		err = put_user(new_fd, cmfptr);
-+		if (err) {
-+			put_unused_fd(new_fd);
-+			break;
-+		}
-+		/* Bump the usage count and install the file. */
-+		sock = sock_from_file(fp[i], &err);
-+		if (sock) {
-+			sock_update_netprioidx(&sock->sk->sk_cgrp_data);
-+			sock_update_classid(&sock->sk->sk_cgrp_data);
-+		}
-+		fd_install(new_fd, get_file(fp[i]));
- 	}
- 
--	if (i > 0)  {
--		int cmlen = CMSG_LEN(i * sizeof(int));
--
-+	if (i > 0)
-+	{
-+		int cmlen = CMSG_LEN(i*sizeof(int));
- 		err = put_user(SOL_SOCKET, &cm->cmsg_level);
- 		if (!err)
- 			err = put_user(SCM_RIGHTS, &cm->cmsg_type);
- 		if (!err)
- 			err = put_user(cmlen, &cm->cmsg_len);
- 		if (!err) {
--			cmlen = CMSG_SPACE(i * sizeof(int));
-+			cmlen = CMSG_SPACE(i*sizeof(int));
- 			if (msg->msg_controllen < cmlen)
- 				cmlen = msg->msg_controllen;
- 			msg->msg_control += cmlen;
- 			msg->msg_controllen -= cmlen;
- 		}
- 	}
--
--	if (i < scm->fp->count || (scm->fp->count && fdmax <= 0))
-+	if (i < fdnum || (fdnum && fdmax <= 0))
- 		msg->msg_flags |= MSG_CTRUNC;
- 
- 	/*
--	 * All of the files that fit in the message have had their usage counts
--	 * incremented, so we just free the list.
-+	 * All of the files that fit in the message have had their
-+	 * usage counts incremented, so we just free the list.
- 	 */
- 	__scm_destroy(scm);
- }
 -- 
-2.26.2
-
+With Best Regards,
+Andy Shevchenko
