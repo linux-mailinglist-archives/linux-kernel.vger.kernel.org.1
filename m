@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F921D216C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B43E1D216D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730055AbgEMVqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
+        id S1730107AbgEMVq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 17:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729994AbgEMVqv (ORCPT
+        by vger.kernel.org with ESMTP id S1729988AbgEMVqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:46:51 -0400
+        Wed, 13 May 2020 17:46:50 -0400
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBFCC061A0E;
-        Wed, 13 May 2020 14:46:49 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id l18so1319283wrn.6;
-        Wed, 13 May 2020 14:46:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836E6C061A0F;
+        Wed, 13 May 2020 14:46:50 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id w7so1269087wre.13;
+        Wed, 13 May 2020 14:46:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GJdGXsHD0zUd2QbzbW/I0cKeP4IeBGCB2rpC+2MAeZI=;
-        b=bdantqXwbJZtRf8K1mYSwY3s0rsnkVOn4KOdiGMmYTUs2SRGH3Jv8v3lfKjmVpKb0D
-         dq+FPq86JI3gIcoKzUP72wPP275IDQqCyyRzzT29Cg8g61hXhvCo+Wu3kAFP2fv5wWre
-         V7KVHZzm1R9X4+9eZLkyH86XAgi+HzvJ8nf1b050sHdvLfNZWcBZw96lLSpiVhW7MLae
-         ts42GPrel78Xz6ct/586YopmRohDVkg+pQlWMfmWz067xJv8WxBGOk66DgtySkRuUEga
-         xxjCqmxTf59JQK+NYgzHnegqg+aUHIA/7WfBrp9NoHOfdUKH8hsydlFTyWhHiZOIEdEg
-         DoXg==
+        bh=x7qfOFMEOKghZEcX71PCTwgo1XxvppOm/912/nC3M4w=;
+        b=LekmvqEeT7CWFd+FwUdPd3q2gBtje/kStARbBm7frB7NS5yaQgKFNy0IuuNIi1dHwF
+         fDT+7xUPTKJZmIl9+2vMGLDZzxr5d9ypWVGYxAawanTdP9ZCXyX7pFmC346kIeaEAQjT
+         KUQLfeFLNppUox+V3SUxoSbwEdxMATcBrwkYYdl7zu9GMqjASU3UMgsNns3iNLosPpKa
+         eJRMpqF/Xjv28Tjb9tsJTm4uwZIdcJxZcOgofgUpZTfDsbpF+t/WqyDygWYb4J9o/Psk
+         zvynEB97S09SHpKTT/zHMCyblgAqNOp9a4kBVw9Mqk7Vnvu/tnVTVw1Y1e4mSwHDZPTk
+         OI3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GJdGXsHD0zUd2QbzbW/I0cKeP4IeBGCB2rpC+2MAeZI=;
-        b=fxLFN0DdUcUXyauGVIU6z58qU4Tuvgkyv7jiXhNDHevhqjiWMEHK7lUyO2Vbqvfy+Z
-         l3r2BE4jxMWD6iOLpINFaAm3HARBhVHubtVAtjadWbPfx4rYhpKSAafXv/2bMtdC7bO4
-         WgVsYZ98lNKUqRjhHxRcKvJKg2WFJlQwN2Lw5yig95UN9CIjWF0YMWi+KA49C9WKn93X
-         xwq/rH1wPFgYa/GcFuar2yUUPfHLbBXeefsg/UPyNkOGRyYrSku2x27BGsIBsHMBg3rO
-         BU4H2DUjTA32658W55FITgaCntCAU2oynm4wnSq7FeDSzO+RXLBexVSkBHeDaChUSG/T
-         kTwQ==
-X-Gm-Message-State: AOAM533w2fjaibEcFhWRAG21y9D2qgSfuuyF0d7gz3DG9KjZmw40jjyP
-        uPE7viWd17M50MTt7zr3ijc=
-X-Google-Smtp-Source: ABdhPJwOW0a96inUowDYevyxA5bBc6FGdx6sWbOmF82NP31eWee/F6lJtgBgJewXU8AVUAr+23bjgg==
-X-Received: by 2002:a5d:684f:: with SMTP id o15mr1481873wrw.89.1589406408323;
-        Wed, 13 May 2020 14:46:48 -0700 (PDT)
+        bh=x7qfOFMEOKghZEcX71PCTwgo1XxvppOm/912/nC3M4w=;
+        b=NC4TRKrDaRbY1jSTvfvo6JdGDzCXIspIIWhc+JE+rA1YXDXYVe2Ok63WHlQ2QWzsTz
+         fs+8k+RtVpmc8jl5s7Vewsd0fnQHAqg9NJXU6V5cTWJrVYpM2e5I/GHxm1hRwDhq2YjA
+         cdYxkt3a3iDCaNlym88Pq9FRHe4Wsx02F+jIebdC/Ms9AfPeuaiA4mIVWirrhZWPPsCi
+         wHorli0lxo6OHBZRJSBfC+gUid6Nl6+3OTIPpEerkqVfN3W3gF1Q5w2KTvf3cOvG03MB
+         ebn0ETcqxCgNOjTsUpNkFNjkF/IBZ7jfGZ3CVWx9OCk2j0iOj6zsAJaHvgwjEgD1tOY4
+         EGNg==
+X-Gm-Message-State: AOAM530gU0rVUjybJ9XzLYj1XRWCC8sj9jJ7fhzXLEtO3usjI2m9ald+
+        m63+RdlEA6RyeaxNKwfNP/Q=
+X-Google-Smtp-Source: ABdhPJyhzyhCGx2Cl8Yj4V9mytYwksNLzoK7ZBRAORJJ7ctb+CQVFtZJueuqBS6HuhgT0C1BnCwuNw==
+X-Received: by 2002:a05:6000:128b:: with SMTP id f11mr1518962wrx.227.1589406409289;
+        Wed, 13 May 2020 14:46:49 -0700 (PDT)
 Received: from localhost.localdomain (cpc91192-cmbg18-2-0-cust374.5-4.cable.virginm.net. [80.6.113.119])
-        by smtp.gmail.com with ESMTPSA id m23sm1699734wmg.45.2020.05.13.14.46.47
+        by smtp.gmail.com with ESMTPSA id m23sm1699734wmg.45.2020.05.13.14.46.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 14:46:47 -0700 (PDT)
+        Wed, 13 May 2020 14:46:48 -0700 (PDT)
 From:   Emil Velikov <emil.l.velikov@gmail.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     emil.l.velikov@gmail.com,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jslaby@suse.com>, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, linux-pm@vger.kernel.org
-Subject: [PATCH 10/11] kernel/power: constify sysrq_key_op
-Date:   Wed, 13 May 2020 22:43:50 +0100
-Message-Id: <20200513214351.2138580-10-emil.l.velikov@gmail.com>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
+Subject: [PATCH 11/11] rcu: constify sysrq_key_op
+Date:   Wed, 13 May 2020 22:43:51 +0100
+Message-Id: <20200513214351.2138580-11-emil.l.velikov@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200513214351.2138580-1-emil.l.velikov@gmail.com>
 References: <20200513214351.2138580-1-emil.l.velikov@gmail.com>
@@ -74,31 +74,31 @@ sysrq_key_op. As such we can add the notation.
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Jiri Slaby <jslaby@suse.com>
 Cc: linux-kernel@vger.kernel.org
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Len Brown <len.brown@intel.com>
-Cc: linux-pm@vger.kernel.org
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: rcu@vger.kernel.org
 Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
 ---
 Please keep me in the CC list, as I'm not subscribed to the list.
 
 IMHO it would be better if this gets merged this via the tty tree.
 ---
- kernel/power/poweroff.c | 2 +-
+ kernel/rcu/tree_stall.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/power/poweroff.c b/kernel/power/poweroff.c
-index 6d475281c730..562aa0e450ed 100644
---- a/kernel/power/poweroff.c
-+++ b/kernel/power/poweroff.c
-@@ -29,7 +29,7 @@ static void handle_poweroff(int key)
- 	schedule_work_on(cpumask_first(cpu_online_mask), &poweroff_work);
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 119ed6afd20f..4e6ed7b91f59 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -729,7 +729,7 @@ static void sysrq_show_rcu(int key)
+ 	show_rcu_gp_kthreads();
  }
  
--static struct sysrq_key_op	sysrq_poweroff_op = {
-+static const struct sysrq_key_op	sysrq_poweroff_op = {
- 	.handler        = handle_poweroff,
- 	.help_msg       = "poweroff(o)",
- 	.action_msg     = "Power Off",
+-static struct sysrq_key_op sysrq_rcudump_op = {
++static const struct sysrq_key_op sysrq_rcudump_op = {
+ 	.handler = sysrq_show_rcu,
+ 	.help_msg = "show-rcu(y)",
+ 	.action_msg = "Show RCU tree",
 -- 
 2.25.1
 
