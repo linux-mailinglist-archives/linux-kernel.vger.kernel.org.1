@@ -2,53 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8AB1D1165
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225B01D116C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730983AbgEMLc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 07:32:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59518 "EHLO mail.kernel.org"
+        id S1731083AbgEMLdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 07:33:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:43920 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730057AbgEMLc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 07:32:27 -0400
-Received: from localhost (unknown [106.200.233.149])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38048206D6;
-        Wed, 13 May 2020 11:32:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589369547;
-        bh=yt2oTtk3DAQ2TBz+mJVtLGeNnrAuw0cG11zANkU/Q38=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jRgjKmMS/bGTaOQ30XwWSSgGjWKO/LPqih6o7hC8Ju8ziLbHInawgo5iszTrZIZK+
-         ZgOOr+hmNPk1+bctnBho+Loo0EAH8F5cmE6mZzU8Kg8eLzb+uiWu5cd2fGLKAwNJl8
-         lgfIA8krFpRhMCWrbhiIu6Y5ENltBBUgDDIXikVQ=
-Date:   Wed, 13 May 2020 17:02:23 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     okaya@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
-        dan.j.williams@intel.com, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dmaengine: qcom_hidma: use true,false for bool variable
-Message-ID: <20200513113223.GF14092@vkoul-mobl>
-References: <20200504113406.41530-1-yanaijie@huawei.com>
+        id S1728049AbgEMLdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 07:33:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D986630E;
+        Wed, 13 May 2020 04:33:18 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE64B3F71E;
+        Wed, 13 May 2020 04:33:16 -0700 (PDT)
+Date:   Wed, 13 May 2020 12:33:14 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        thomas.petazzoni@bootlin.com
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Remi Pommarel <repk@triplefau.lt>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Xogium <contact@xogium.me>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v4 00/12] PCI: aardvark: Fix support for Turris MOX and
+ Compex wifi cards
+Message-ID: <20200513113314.GB32365@e121166-lin.cambridge.arm.com>
+References: <20200430080625.26070-1-pali@kernel.org>
+ <20200513111651.q62dqauatryh6xd6@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200504113406.41530-1-yanaijie@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200513111651.q62dqauatryh6xd6@pali>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-05-20, 19:34, Jason Yan wrote:
-> Fix the following coccicheck warning:
+On Wed, May 13, 2020 at 01:16:51PM +0200, Pali Rohár wrote:
+> On Thursday 30 April 2020 10:06:13 Pali Rohár wrote:
+> > Hello,
+> > 
+> > this is the fourth version of the patch series for Armada 3720 PCIe
+> > controller (aardvark). It's main purpose is to fix some bugs regarding
+> > buggy ath10k cards, but we also found out some suspicious stuff about
+> > the driver and the SOC itself, which we try to address.
+> > 
+> > Patches are available also in my git branch pci-aardvark:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/pali/linux.git/log/?h=pci-aardvark
 > 
-> drivers/dma/qcom/hidma.c:553:1-17: WARNING: Assignment of 0/1 to bool
-> variable
+> Hello! Thanks everybody for review and testing of this patch series.
+> 
+> I would like to ask, is there something needed to fix / modify in this
+> patch series? If everything is OK, would you Bjorn or Lorenzo take this
+> patch series into your tree?
 
-Applied, thanks
+We need Thomas' ACK on the series. We don't have this HW and
+we comment on the generic code, Thomas owns it and must check that
+what you are changing is sound.
 
--- 
-~Vinod
+On patch 5 I share Rob's concerns - it does not make much sense
+to have something driver specific there, need to look further.
+
+Lorenzo
