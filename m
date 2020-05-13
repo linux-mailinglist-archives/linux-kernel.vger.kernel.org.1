@@ -2,67 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A936B1D10B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7044E1D1090
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728244AbgEMLKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 07:10:47 -0400
-Received: from [58.211.163.100] ([58.211.163.100]:50440 "EHLO
-        mail.advantech.com.cn" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726645AbgEMLKq (ORCPT
+        id S1732649AbgEMLEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 07:04:35 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:57397 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728784AbgEMLEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 07:10:46 -0400
-X-Greylist: delayed 609 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 May 2020 07:10:46 EDT
-Received: from ACNMB2.ACN.ADVANTECH.CORP (unverified [172.21.128.148]) by ACN-SWEEPER01.ACN.ADVANTECH.CORP
- (Clearswift SMTPRS 5.6.0) with ESMTP id <Tdf1bcf8784ac158030ecc@ACN-SWEEPER01.ACN.ADVANTECH.CORP>;
- Wed, 13 May 2020 18:58:12 +0800
-Received: from ADVANTECH.CORP (172.17.10.144) by ACNMB2.ACN.ADVANTECH.CORP
- (172.21.128.148) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Wed, 13 May
- 2020 19:00:27 +0800
-From:   <yuechao.zhao@advantech.com.cn>
-To:     <345351830@qq.com>
-CC:     <amy.shih@advantech.com.tw>, <oakley.ding@advantech.com.tw>,
-        <jia.sui@advantech.com.cn>,
-        Yuechao Zhao <yuechao.zhao@advantech.com.cn>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [v1,1/1] watchdog: (nct7904) Fix enable watchdog incorrectly
-Date:   Wed, 13 May 2020 11:00:15 +0000
-Message-ID: <1589367615-4442-1-git-send-email-yuechao.zhao@advantech.com.cn>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 13 May 2020 07:04:33 -0400
+Received: from fsav108.sakura.ne.jp (fsav108.sakura.ne.jp [27.133.134.235])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 04DB3rMs016231;
+        Wed, 13 May 2020 20:03:53 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav108.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp);
+ Wed, 13 May 2020 20:03:53 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 04DB3qtu016227
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Wed, 13 May 2020 20:03:53 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <20200427062117.GC486@jagdpanzerIV.localdomain>
+ <4dae86af-1d9a-f5a8-cff6-aa91ec038a79@i-love.sakura.ne.jp>
+ <20200428121828.GP28637@dhcp22.suse.cz>
+ <b4d74234-8009-9ffd-011f-bd5d1a4b85f6@i-love.sakura.ne.jp>
+ <20200428154532.GU28637@dhcp22.suse.cz>
+ <b1d507b1-dae7-f526-c74a-d465ddecea6a@i-love.sakura.ne.jp>
+ <20200429142106.GG28637@dhcp22.suse.cz>
+ <a59271f1-b3fc-26d1-f0a2-5ec351d0095e@i-love.sakura.ne.jp>
+ <20200513062652.GM413@jagdpanzerIV.localdomain>
+ <a75d6560-ad99-5b02-3648-247c27c3a398@i-love.sakura.ne.jp>
+ <20200513100413.GH17734@linux-b0ei>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <20564555-7b84-f716-5dcd-978f76ad459a@i-love.sakura.ne.jp>
+Date:   Wed, 13 May 2020 20:03:53 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.17.10.144]
-X-ClientProxiedBy: ACLDAG.ADVANTECH.CORP (172.20.2.88) To
- ACNMB2.ACN.ADVANTECH.CORP (172.21.128.148)
+In-Reply-To: <20200513100413.GH17734@linux-b0ei>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
+On 2020/05/13 19:04, Petr Mladek wrote:
+>> What is wrong with adding NO_CONSOLES ?
+> 
+> How does it differ from KERN_DEBUG? The debug messages:
+> 
+>   + can be disabled via sysfs
+>   + might reach console when this loglevel is enabled
 
-Use incorrect register to enable watchdog in nct7904_wdt_ping()
+KERN_NO_CONSOLES is different from KERN_DEBUG in that KERN_NO_CONSOLES
+itself does not affect userspace daemon's judgement (whether to filter
+KERN_$LOGLEVEL messages).
 
-Signed-off-by: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
----
- drivers/hwmon/nct7904.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> What is so special about  OOM dump task so that it would deserve such
+> complications?
 
-diff --git a/drivers/hwmon/nct7904.c b/drivers/hwmon/nct7904.c
-index 04f2a8e..18c95be 100644
---- a/drivers/hwmon/nct7904.c
-+++ b/drivers/hwmon/nct7904.c
-@@ -979,7 +979,7 @@ static int nct7904_wdt_ping(struct watchdog_device *wdt)
- 		return ret;
- 
- 	/* Enable soft watchdog timer */
--	return nct7904_write_reg(data, BANK_0, WDT_TIMER_REG, WDT_SOFT_EN);
-+	return nct7904_write_reg(data, BANK_0, WDT_LOCK_REG, WDT_SOFT_EN);
- }
- 
- static unsigned int nct7904_wdt_get_timeleft(struct watchdog_device *wdt)
--- 
-1.8.3.1
+OOM dump task is special in that it can generate thousands of KERN_INFO
+messages. If such messages are printed to consoles, it defers solving OOM
+situation.
+
+But setting /proc/sys/vm/oom_dump_tasks to 0 causes such messages being
+not delivered to userspace daemon for later analysis. Therefore, we can not
+set /proc/sys/vm/oom_dump_tasks to 0 if we want to save such messages for
+later analysis.
+
+Changing console loglevel (e.g. setting "quiet" kernel command line option)
+in order to hide such messages also prevents all other KERN_INFO messages from
+being printed to consoles. Since some KERN_INFO messages are worth printing to
+consoles while other KERN_INFO messages are worth printing to consoles,
+controlling with
+
+>   + loglevel assigned to each message
+
+is inevitable.
+
+I think that basically only oops (e.g. WARN()/BUG()/panic()) messages worth
+printing to consoles and the rest messages do not worth printing to consoles.
+Existing KERN_$LOGLEVEL is too rough-grained.
 
