@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0232B1D0357
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 01:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9851D0361
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 02:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731847AbgELX7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 19:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731718AbgELX7X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 19:59:23 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86963C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 16:59:23 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id d19so15311514qkj.21
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 16:59:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=2GqDmhX9YlwDryUmBk9kB8vRTZY2wKrfJUobuEy5dec=;
-        b=TvLZcsgrbK465iqLR68FzyqGGKfGy61Aj5tpf2Lko49QcopBuPmIkCKwK6DHwolICX
-         PyoiprfjQgg/M2KmJdhT98PanCbE+eGndefT24ddn7vGDwt3IoIJH+n4Q39v62G6NeBj
-         t2nMFDGHss9tXKFOnfrzeeSli6+xDMJZ1iVrOBLJRuD+1J4QkRIzMHli+zFejh61+q5k
-         0j8lAgzUpe/+Z47BFgsqSKqUlcKu0DRpQ1+J7ywXNofJu5bER+JN21gDo8HYUxE8neJI
-         VfWxQkk+PpZTXekgxnzWSvnIBAPi7MSMhKlj0u7y4LIYrC91Zq61SsMJ3lQqsnXqbVfi
-         FvNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=2GqDmhX9YlwDryUmBk9kB8vRTZY2wKrfJUobuEy5dec=;
-        b=fx70ssyxqkwowWNOcsYimbV0lJp7emzri6/hJp2fD43qpH6WQouRCiv5x3UMu3hkpq
-         In19aIJhINV1J3o1WnW+e9pG8GY0Km/41kJm5J59Z4gGWkrhocGuKCLsesrDnw0g6SZt
-         iltFqQnQO8MjkDHBZtW7m/+BnsMLbWxLMSO6+TSoO4K7ZZCIP2U7ogEdOTyJjaMlQI8O
-         oWeZGjnU0Odv9qjHZjjDD+dPh22hVyP1XCL2Dgvq3ojTdEtyQraIlTafOThKIx7jssuS
-         lq1SgIMVPRnKD9kR5NHqKZSD7TH0YC7ewEJy5/NpHbQyGLnxtW1y+wquNuQ4ZjJh/ddA
-         F89g==
-X-Gm-Message-State: AGi0PuZIzn6CireZBqKyEB3RwA4e57eDq+5GYKLrv6dXUECwsrouuQfl
-        xJwtICQuv9FIIqbYoTHD7xEIzQwbgyfV
-X-Google-Smtp-Source: APiQypIqwsqlQgaFDQ7OBgifsBKayD3dwzktGfh4/s7RLkqB9FhBs6v3rxAbeSMUE1YfTv5HmHnogdus1R8j
-X-Received: by 2002:a0c:f791:: with SMTP id s17mr23443305qvn.36.1589327962662;
- Tue, 12 May 2020 16:59:22 -0700 (PDT)
-Date:   Tue, 12 May 2020 16:59:18 -0700
-Message-Id: <20200512235918.10732-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
-Subject: [PATCH] perf evsel: Fix 2 memory leaks
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1731723AbgEMACk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 20:02:40 -0400
+Received: from mga11.intel.com ([192.55.52.93]:37006 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726031AbgEMACk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 20:02:40 -0400
+IronPort-SDR: NITnP8lm0JFkjVCJrRc58QtT+7qUkwJiI9oigjWTIL1aBDdLHN/h0UPMNZmMBZ7sSNVo/uGQYm
+ HXW4T0k2/c+Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 17:02:39 -0700
+IronPort-SDR: DZMLCHPObSPyG/QW5dCr+LNTU4Z5RDAgklvTgIqQ51bXLc1mduBy6gLVxgKvrpMfDt347/S3Ek
+ EeXDg1DaatAg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,385,1583222400"; 
+   d="scan'208";a="262292657"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 12 May 2020 17:02:36 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jYer6-000DQ0-44; Wed, 13 May 2020 08:02:36 +0800
+Date:   Wed, 13 May 2020 08:02:30 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Vladimir Oltean <olteanv@gmail.com>, andrew@lunn.ch,
+        f.fainelli@gmail.com, vivien.didelot@gmail.com
+Cc:     kbuild-all@lists.01.org, davem@davemloft.net, kuba@kernel.org,
+        jiri@mellanox.com, idosch@idosch.org, rmk+kernel@armlinux.org.uk,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 net-next 08/15] net: dsa: sja1105: prepare tagger for
+ handling DSA tags and VLAN simultaneously
+Message-ID: <202005130724.KFjVH0Y9%lkp@intel.com>
+References: <20200512172039.14136-9-olteanv@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200512172039.14136-9-olteanv@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If allocated, perf_pkg_mask and metric_events need freeing.
+Hi Vladimir,
 
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Ian Rogers <irogers@google.com>
+I love your patch! Perhaps something to improve:
+
+[auto build test WARNING on net-next/master]
+[also build test WARNING on next-20200512]
+[cannot apply to linus/master v5.7-rc5]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+
+url:    https://github.com/0day-ci/linux/commits/Vladimir-Oltean/Traffic-support-for-dsa_8021q-in-vlan_filtering-1-mode/20200513-012422
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git 3242956bd610af40e884b530b6c6f76f5bf85f3b
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-191-gc51a0382-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> net/dsa/tag_sja1105.c:76:34: sparse: sparse: cast to restricted __be16
+>> net/dsa/tag_sja1105.c:76:34: sparse: sparse: cast to restricted __be16
+>> net/dsa/tag_sja1105.c:76:34: sparse: sparse: cast to restricted __be16
+>> net/dsa/tag_sja1105.c:76:34: sparse: sparse: cast to restricted __be16
+>> net/dsa/tag_sja1105.c:76:16: sparse: sparse: restricted __be16 degrades to integer
+   net/dsa/tag_sja1105.c:79:34: sparse: sparse: cast to restricted __be16
+   net/dsa/tag_sja1105.c:79:34: sparse: sparse: cast to restricted __be16
+   net/dsa/tag_sja1105.c:79:34: sparse: sparse: cast to restricted __be16
+   net/dsa/tag_sja1105.c:79:34: sparse: sparse: cast to restricted __be16
+   net/dsa/tag_sja1105.c:79:16: sparse: sparse: restricted __be16 degrades to integer
+
+vim +76 net/dsa/tag_sja1105.c
+
+    71	
+    72	static bool sja1105_can_use_vlan_as_tags(const struct sk_buff *skb)
+    73	{
+    74		struct vlan_ethhdr *hdr = vlan_eth_hdr(skb);
+    75	
+  > 76		if (hdr->h_vlan_proto == ntohs(ETH_P_SJA1105))
+    77			return true;
+    78	
+    79		if (hdr->h_vlan_proto != ntohs(ETH_P_8021Q))
+    80			return false;
+    81	
+    82		return vid_is_dsa_8021q(ntohs(hdr->h_vlan_TCI) & VLAN_VID_MASK);
+    83	}
+    84	
+
 ---
- tools/perf/util/evsel.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index a2397ca4d57a..654b79c1f4ac 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1266,6 +1266,8 @@ void evsel__exit(struct evsel *evsel)
- 	zfree(&evsel->group_name);
- 	zfree(&evsel->name);
- 	zfree(&evsel->pmu_name);
-+	zfree(&evsel->per_pkg_mask);
-+	zfree(&evsel->metric_events);
- 	perf_evsel__object.fini(evsel);
- }
- 
--- 
-2.26.2.645.ge9eca65c58-goog
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
