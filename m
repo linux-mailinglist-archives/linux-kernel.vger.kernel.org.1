@@ -2,110 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A06D1D19A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 759221D19B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730485AbgEMPjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 11:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728678AbgEMPjv (ORCPT
+        id S1730292AbgEMPo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 11:44:27 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:51988 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729483AbgEMPoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 11:39:51 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA8FCC061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 08:39:50 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id s1so1134303qkf.9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 08:39:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DNYx3kfVXhYG38/RgP2TZnldis+8ELqa7KUKPjStpDc=;
-        b=Wy3VWtqoX3BvnNmBm2x1fM8mFtt819ps8ys9e3vS9HzCGe21jsTF0OAFwKVSXXWTwO
-         lP2ta7fxs31wAaTdClfM+KhlqKtAo4Y6Q7dfFmqf4xiIMS5Fo6Wxsy6h+HvDWMQVwb85
-         x1iYymRrPo2Q38/iIiOsLtylroo1XFd/h8osqMIQJ8SwJh/k2e6L5hPTQBIq+vNrnII4
-         yuGZk0KFcH6NCdmL1fG5cJW2+HuqSdQqgc8hWfR3/Cfl+YUCmtVshcOnqn9W+KcR8q52
-         LWiraLx061TeZxMW3pUI059FUq9IFie8+NS2VREy0/u4umWRTO414N6AZYuuHhzl8PXy
-         pvsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DNYx3kfVXhYG38/RgP2TZnldis+8ELqa7KUKPjStpDc=;
-        b=aEPIwSOZZEeZ5rLTeezlsXD7j3k6QlvaZoGCIQt+XWRUUwLPqYWtkf0hlWnWIYbWnD
-         iX+CH4Ta4xGcHFMGs0LqfCEgw59Bm6KmPkIEp8cSUCdiFROM07xMZ5z/bAlyEqWo9+Op
-         jaFM13c40rkdv5t+yih8bqA9Uyby8byw+5WZkrvGBrss8j3oKAFCIFB/BS0yfigC8Q1U
-         EeW8mck6ss4sKchDZrwnHkkGzal5rsB2EeABQ5LwiH8Gz1sPsqAW1woX8D5YEO9Q7Hjs
-         f8ILeJW1tudC2Aoa/swyo7558rWiqoiAtiSzFEEm7xc9YBVbbtHeJWafLfzUufEdi+bX
-         NCFw==
-X-Gm-Message-State: AOAM530f8Qj/5G0AA1qvYSTq18K4cpSiPluvNPt1NrHycDQxPomSR6d3
-        UB+Nr4/F5rndkgMi31RWdmA=
-X-Google-Smtp-Source: ABdhPJzFixWyvI4pabGlhzFTZNoCuvN77J3j2qoGZzoyGiUS5vzuR+595LLS8AW7kxyaiRr9k4iTSQ==
-X-Received: by 2002:a05:620a:1432:: with SMTP id k18mr247566qkj.71.1589384390157;
-        Wed, 13 May 2020 08:39:50 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id d207sm128357qkc.49.2020.05.13.08.39.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 08:39:49 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BC53340AFD; Wed, 13 May 2020 12:39:47 -0300 (-03)
-Date:   Wed, 13 May 2020 12:39:47 -0300
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Paul Clarke <pc@us.ibm.com>, linux-kernel@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 1/2] perf expr: Test parsing of floating point numbers
-Message-ID: <20200513153947.GI5583@kernel.org>
-References: <20200513062752.3681-1-irogers@google.com>
+        Wed, 13 May 2020 11:44:25 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jYtYF-0002PP-RZ; Wed, 13 May 2020 09:44:07 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jYtYE-0000QY-AN; Wed, 13 May 2020 09:44:07 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
+        rafael@kernel.org, jeyu@kernel.org, jmorris@namei.org,
+        keescook@chromium.org, paul@paul-moore.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        nayna@linux.ibm.com, zohar@linux.ibm.com,
+        scott.branden@broadcom.com, dan.carpenter@oracle.com,
+        skhan@linuxfoundation.org, geert@linux-m68k.org,
+        tglx@linutronix.de, bauerman@linux.ibm.com, dhowells@redhat.com,
+        linux-integrity@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        kexec@lists.infradead.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200513152108.25669-1-mcgrof@kernel.org>
+        <20200513152108.25669-3-mcgrof@kernel.org>
+Date:   Wed, 13 May 2020 10:40:31 -0500
+In-Reply-To: <20200513152108.25669-3-mcgrof@kernel.org> (Luis Chamberlain's
+        message of "Wed, 13 May 2020 15:21:07 +0000")
+Message-ID: <87k11fonbk.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513062752.3681-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
+X-XM-SPF: eid=1jYtYE-0000QY-AN;;;mid=<87k11fonbk.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18UC1Rfu06BcwNif7UO1o/2p3AxKZc4ZvA=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: ***
+X-Spam-Status: No, score=3.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG,XMNoVowels,
+        XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4965]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.7 XMSubLong Long Subject
+        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ***;Luis Chamberlain <mcgrof@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 964 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 12 (1.2%), b_tie_ro: 10 (1.1%), parse: 1.04
+        (0.1%), extract_message_metadata: 4.3 (0.4%), get_uri_detail_list: 2.2
+        (0.2%), tests_pri_-1000: 4.2 (0.4%), tests_pri_-950: 1.34 (0.1%),
+        tests_pri_-900: 1.09 (0.1%), tests_pri_-90: 281 (29.2%), check_bayes:
+        277 (28.8%), b_tokenize: 31 (3.2%), b_tok_get_all: 13 (1.3%),
+        b_comp_prob: 5.0 (0.5%), b_tok_touch_all: 222 (23.0%), b_finish: 2.6
+        (0.3%), tests_pri_0: 637 (66.1%), check_dkim_signature: 0.86 (0.1%),
+        check_dkim_adsp: 3.0 (0.3%), poll_dns_idle: 0.44 (0.0%), tests_pri_10:
+        2.2 (0.2%), tests_pri_500: 11 (1.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 2/3] security: add symbol namespace for reading file data
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, May 12, 2020 at 11:27:51PM -0700, Ian Rogers escreveu:
-> Add test for fix in:
-> commit 5741da3dee4c ("perf expr: Parse numbers as doubles")
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Luis Chamberlain <mcgrof@kernel.org> writes:
+
+> Certain symbols are not meant to be used by everybody, the security
+> helpers for reading files directly is one such case. Use a symbol
+> namespace for them.
+>
+> This will prevent abuse of use of these symbols in places they were
+> not inteded to be used, and provides an easy way to audit where these
+> types of operations happen as a whole.
+
+Why not just remove the ability for the firmware loader to be a module?
+
+Is there some important use case that requires the firmware loader
+to be a module?
+
+We already compile the code in by default.  So it is probably just
+easier to remove the modular support all together.  Which would allow
+the export of the security hooks to be removed as well.
+
+Eric
+
+
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 > ---
->  tools/perf/tests/expr.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
-> index f9e8e5628836..3f742612776a 100644
-> --- a/tools/perf/tests/expr.c
-> +++ b/tools/perf/tests/expr.c
-> @@ -39,6 +39,7 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
->  	ret |= test(&ctx, "min(1,2) + 1", 2);
->  	ret |= test(&ctx, "max(1,2) + 1", 3);
->  	ret |= test(&ctx, "1+1 if 3*4 else 0", 2);
-> +	ret |= test(&ctx, "1.1 + 2.1", 3.2);
+>  drivers/base/firmware_loader/fallback.c | 1 +
+>  fs/exec.c                               | 2 ++
+>  kernel/kexec.c                          | 2 ++
+>  kernel/module.c                         | 2 ++
+>  security/security.c                     | 6 +++---
+>  5 files changed, 10 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
+> index d9ac7296205e..b088886dafda 100644
+> --- a/drivers/base/firmware_loader/fallback.c
+> +++ b/drivers/base/firmware_loader/fallback.c
+> @@ -19,6 +19,7 @@
+>   */
 >  
->  	if (ret)
+>  MODULE_IMPORT_NS(FIRMWARE_LOADER_PRIVATE);
+> +MODULE_IMPORT_NS(SECURITY_READ);
+>  
+>  extern struct firmware_fallback_config fw_fallback_config;
+>  
+> diff --git a/fs/exec.c b/fs/exec.c
+> index 9791b9eef9ce..30bd800ab1d6 100644
+> --- a/fs/exec.c
+> +++ b/fs/exec.c
+> @@ -72,6 +72,8 @@
+>  
+>  #include <trace/events/sched.h>
+>  
+> +MODULE_IMPORT_NS(SECURITY_READ);
+> +
+>  int suid_dumpable = 0;
+>  
+>  static LIST_HEAD(formats);
+> diff --git a/kernel/kexec.c b/kernel/kexec.c
+> index f977786fe498..8d572b41a157 100644
+> --- a/kernel/kexec.c
+> +++ b/kernel/kexec.c
+> @@ -19,6 +19,8 @@
+>  
+>  #include "kexec_internal.h"
+>  
+> +MODULE_IMPORT_NS(SECURITY_READ);
+> +
+>  static int copy_user_segment_list(struct kimage *image,
+>  				  unsigned long nr_segments,
+>  				  struct kexec_segment __user *segments)
+> diff --git a/kernel/module.c b/kernel/module.c
+> index 80faaf2116dd..8973a463712e 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -59,6 +59,8 @@
+>  #include <uapi/linux/module.h>
+>  #include "module-internal.h"
+>  
+> +MODULE_IMPORT_NS(SECURITY_READ);
+> +
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/module.h>
+>  
+> diff --git a/security/security.c b/security/security.c
+> index 8ae66e4c370f..bdbd1fc5105a 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -1654,7 +1654,7 @@ int security_kernel_read_file(struct file *file, enum kernel_read_file_id id)
 >  		return ret;
-> -- 
-> 2.26.2.645.ge9eca65c58-goog
-
-Applied.
-
-- Arnaldo
+>  	return ima_read_file(file, id);
+>  }
+> -EXPORT_SYMBOL_GPL(security_kernel_read_file);
+> +EXPORT_SYMBOL_NS_GPL(security_kernel_read_file, SECURITY_READ);
+>  
+>  int security_kernel_post_read_file(struct file *file, char *buf, loff_t size,
+>  				   enum kernel_read_file_id id)
+> @@ -1666,7 +1666,7 @@ int security_kernel_post_read_file(struct file *file, char *buf, loff_t size,
+>  		return ret;
+>  	return ima_post_read_file(file, buf, size, id);
+>  }
+> -EXPORT_SYMBOL_GPL(security_kernel_post_read_file);
+> +EXPORT_SYMBOL_NS_GPL(security_kernel_post_read_file, SECURITY_READ);
+>  
+>  int security_kernel_load_data(enum kernel_load_data_id id)
+>  {
+> @@ -1677,7 +1677,7 @@ int security_kernel_load_data(enum kernel_load_data_id id)
+>  		return ret;
+>  	return ima_load_data(id);
+>  }
+> -EXPORT_SYMBOL_GPL(security_kernel_load_data);
+> +EXPORT_SYMBOL_NS_GPL(security_kernel_load_data, SECURITY_READ);
+>  
+>  int security_task_fix_setuid(struct cred *new, const struct cred *old,
+>  			     int flags)
