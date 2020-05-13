@@ -2,69 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982B21D1E75
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 21:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2B71D1E78
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 21:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390394AbgEMTCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 15:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50906 "EHLO
+        id S2390413AbgEMTDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 15:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390253AbgEMTCc (ORCPT
+        by vger.kernel.org with ESMTP id S2390021AbgEMTDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 15:02:32 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A84C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 12:02:32 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jYwe9-0002kw-GE; Wed, 13 May 2020 21:02:25 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id D2E86100605; Wed, 13 May 2020 21:02:24 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, x86@kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: Re: [PATCH v2 0/3] x86/idt: Minor alloc_intr_gate() sanitization
-In-Reply-To: <87imh0kn5t.fsf@vitty.brq.redhat.com>
-References: <20200428093824.1451532-1-vkuznets@redhat.com> <87imh0kn5t.fsf@vitty.brq.redhat.com>
-Date:   Wed, 13 May 2020 21:02:24 +0200
-Message-ID: <87imgz1wvz.fsf@nanos.tec.linutronix.de>
+        Wed, 13 May 2020 15:03:05 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EFDC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 12:03:05 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id b6so827872ljj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 12:03:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Chzp3tbyXEmpa9DZODCBT8j/RcyA+WHDHn8SKIYvqlo=;
+        b=JugjIFo8e41xcj1mBh50Kv4JJdwWswQdosSkw2SGo25NkR8diJgzxmSmAimUoPFy0g
+         UqtufzWVyYpztDyGgk4HCi22Aw09xlnezrYm4PHhCJi+H8Ei8/tmkqX+byilYh/qSlsZ
+         kQ2oFBqHEcL+58tiDWHOiXYpFBIpD7JYaeHj8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Chzp3tbyXEmpa9DZODCBT8j/RcyA+WHDHn8SKIYvqlo=;
+        b=P7gfDAqBgwFaW1EiX1FVMQawX7+FOzjjs3IMtdXcxw17cV/3baYE7P7A2rOzy1NqyH
+         usnSGUxsZAErk48Xk5lL4pnQPyH3RR4+e4BnmRApBKcxM+xL6gxkMkzLHnoCxXraAcAS
+         IwrkwmmMYdpDfydl1wWcZxoH7XqcGlM5dnt20Z1rraXyG6dJdv6nCBQRHPGiVzkzMIEH
+         mwV1UlthmXDKUVcxtkl1xpMGPrussdKH1bzgZ0sUGzmkW+yDx1viYsByvLPiL5Al9lZb
+         1wrcYTMkG5Mo3xEJAIwRrU0ZSvSvOdtJXW9F1kJ8pCqP7rN+LYsyH11ZKpDTX4Chv6+O
+         dlgw==
+X-Gm-Message-State: AOAM531mHTScR1f8QoELtQ6CSQ6USINhI0l4QWTRPxPdmc5wxHWtsatQ
+        79oiOlNA7wmOg+UZmFUkxnrFJxv+5DY=
+X-Google-Smtp-Source: ABdhPJwSn7Z+wOXHS1X/l2EkN8eKWZyb41AW45qTfOsh7+x63uI2QFzd45On74DQrMgw+imY5cS4bg==
+X-Received: by 2002:a2e:9984:: with SMTP id w4mr320713lji.286.1589396583222;
+        Wed, 13 May 2020 12:03:03 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id g3sm221578ljk.27.2020.05.13.12.03.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 May 2020 12:03:00 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id u4so445004lfm.7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 12:03:00 -0700 (PDT)
+X-Received: by 2002:a19:ccce:: with SMTP id c197mr619201lfg.59.1589396579890;
+ Wed, 13 May 2020 12:02:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <20190906185931.19288-1-navid.emamdoost@gmail.com>
+ <CA+ASDXMnp-GTkrT7B5O+dtopJUmGBay=Tn=-nf1LW1MtaVOr+w@mail.gmail.com> <878shwtiw3.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <878shwtiw3.fsf@kamboji.qca.qualcomm.com>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Wed, 13 May 2020 12:02:48 -0700
+X-Gmail-Original-Message-ID: <CA+ASDXOgechejxzN4-xPcuTW-Ra7z9Z6EeiQ4wMrEowZc-p+uA@mail.gmail.com>
+Message-ID: <CA+ASDXOgechejxzN4-xPcuTW-Ra7z9Z6EeiQ4wMrEowZc-p+uA@mail.gmail.com>
+Subject: Re: [PATCH] ath9k: release allocated buffer if timed out
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Navid Emamdoost <emamd001@umn.edu>,
+        Stephen McCamant <smccaman@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
+        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vitaly Kuznetsov <vkuznets@redhat.com> writes:
-> Vitaly Kuznetsov <vkuznets@redhat.com> writes:
+On Wed, May 13, 2020 at 12:05 AM Kalle Valo <kvalo@codeaurora.org> wrote:
+> Actually it's already reverted in -next, nobody just realised that it's
+> a regression from commit 728c1e2a05e4:
 >
->> This series is a successor of "[PATCH] x86/idt: Keep spurious entries unset
->> in system_vectors".
->>
->> The original issue I tried to address was that /proc/interrupts output
->> was always containing all possible system vectors, including non allocated
->> ones (e.g. 'Hypervisor callback interrupts' on bare metal). Thomas
->> suggested to expand this cosmetic change to making alloc_intr_gate()
->> __init.
->>
->> Vitaly Kuznetsov (3):
->>   x86/xen: Split HVM vector callback setup and interrupt gate allocation
->>   x86/idt: Annotate alloc_intr_gate() with __init
->>   x86/idt: Keep spurious entries unset in system_vectors
->>
->
-> Ping?
+> ced21a4c726b ath9k: Fix use-after-free Read in htc_connect_service
 
-It's in my pile and I just did not come around to merge it.
+Nice.
 
-Thanks,
+> v5.8-rc1 should be the first release having the fix.
 
-        tglx
+So I guess we have to wait until 5.8-rc1 (when this lands in mainline)
+to send this manually to stable@vger.kernel.org?
+
+Brian
