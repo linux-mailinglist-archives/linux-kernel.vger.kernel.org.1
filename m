@@ -2,87 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BC11D048C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 03:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F4C1D048E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 03:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732084AbgEMBvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 21:51:42 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:36068 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726028AbgEMBvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 21:51:41 -0400
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.55])
-        by Forcepoint Email with ESMTP id D2758F3EE58754A4C876;
-        Wed, 13 May 2020 09:51:39 +0800 (CST)
-Received: from dggeme758-chm.china.huawei.com (10.3.19.104) by
- DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Wed, 13 May 2020 09:51:39 +0800
-Received: from [10.173.219.71] (10.173.219.71) by
- dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 13 May 2020 09:51:39 +0800
-Subject: Re: linux-next: manual merge of the net-next tree with the net tree
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-References: <20200512133051.7d740613@canb.auug.org.au>
- <20200512094731.346c0d8f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   "luobin (L)" <luobin9@huawei.com>
-Message-ID: <c49a4d39-9f83-a68a-fa0d-ef5fd3bc4acc@huawei.com>
-Date:   Wed, 13 May 2020 09:51:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        id S1728299AbgEMBxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 21:53:06 -0400
+Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:51251 "EHLO
+        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726028AbgEMBxG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 21:53:06 -0400
+X-Greylist: delayed 1209 seconds by postgrey-1.27 at vger.kernel.org; Tue, 12 May 2020 21:53:04 EDT
+Received: from dread.disaster.area (pa49-195-157-175.pa.nsw.optusnet.com.au [49.195.157.175])
+        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 79961D79337;
+        Wed, 13 May 2020 11:52:59 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jYgZs-0001dG-SQ; Wed, 13 May 2020 11:52:56 +1000
+Date:   Wed, 13 May 2020 11:52:56 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH RFC 2/8] selftests: add stress testing tool for dcache
+Message-ID: <20200513015256.GN2005@dread.disaster.area>
+References: <158893941613.200862.4094521350329937435.stgit@buzz>
+ <158894059714.200862.11121403612367981747.stgit@buzz>
 MIME-Version: 1.0
-In-Reply-To: <20200512094731.346c0d8f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.173.219.71]
-X-ClientProxiedBy: dggeme719-chm.china.huawei.com (10.1.199.115) To
- dggeme758-chm.china.huawei.com (10.3.19.104)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <158894059714.200862.11121403612367981747.stgit@buzz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
+        a=ONQRW0k9raierNYdzxQi9Q==:117 a=ONQRW0k9raierNYdzxQi9Q==:17
+        a=kj9zAlcOel0A:10 a=sTwFKg_x9MkA:10 a=6R7veym_AAAA:8 a=7-415B0cAAAA:8
+        a=nNFfUkKyeu1yzWEg-EsA:9 a=CjuIK1q_8ugA:10 a=ILCOIF4F_8SzUMnO7jNM:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/5/13 0:47, Jakub Kicinski wrote:
+On Fri, May 08, 2020 at 03:23:17PM +0300, Konstantin Khlebnikov wrote:
+> This tool fills dcache with negative dentries. Between iterations it prints
+> statistics and measures time of inotify operation which might degrade.
+> 
+> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+> ---
+>  tools/testing/selftests/filesystems/Makefile       |    1 
+>  .../testing/selftests/filesystems/dcache_stress.c  |  210 ++++++++++++++++++++
 
-> On Tue, 12 May 2020 13:30:51 +1000 Stephen Rothwell wrote:
->> Hi all,
->>
->> Today's linux-next merge of the net-next tree got conflicts in:
->>
->>    drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
->>    drivers/net/ethernet/huawei/hinic/hinic_main.c
->>
->> between commit:
->>
->>    e8a1b0efd632 ("hinic: fix a bug of ndo_stop")
->>
->> from the net tree and commit:
->>
->>    7dd29ee12865 ("hinic: add sriov feature support")
->>
->> from the net-next tree.
->>
->> I fixed it up (I think, see below) and can carry the fix as necessary. This
->> is now fixed as far as linux-next is concerned, but any non trivial
->> conflicts should be mentioned to your upstream maintainer when your tree
->> is submitted for merging.  You may also want to consider cooperating
->> with the maintainer of the conflicting tree to minimise any particularly
->> complex conflicts.
-> I had a feeling this was gonna happen :(
->
-> Resolution looks correct, thank you!
->
-> Luo bin, if you want to adjust the timeouts (you had slightly different
-> ones depending on the command in the first version of the fix) - you can
-> follow up with a patch to net-next once Dave merges net into net-next
-> (usually happens every two weeks).
+This sort of thing should go into fstests along with test scripts
+that use it to exercise the dentry cache. We already have tools like
+this in fstests (dirstress, metaperf, etc) for exercising name-based
+operations like this, so it would fit right in.
 
-> OK. Thanks.
-> .
+That way it would get run by just about every filesystem developer
+and distro QE department automatically and extremely frequently...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
