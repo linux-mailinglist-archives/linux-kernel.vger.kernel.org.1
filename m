@@ -2,235 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6551D13EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9251D13F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728663AbgEMND3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:03:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725967AbgEMND2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:03:28 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A85820740;
-        Wed, 13 May 2020 13:03:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589375007;
-        bh=szWqYxtKsvdJgMX90FBlkx8khHIvVoN5IrqfH1MnRbY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HWjRsmS0nuALZgacqZuc4kHFQpszXoai58lfWA+ZgqpgIzLOYOuoNoYUS0m0gyQfs
-         RPulxRDot8El3jDCQ6tUwLSv2fjDGuXuFu0G+MdaKIexsSOq+JX8u+2SXh8h5TE8RL
-         f2v5epJOzGW+GNyViko4gswVRAOYSEtD45wAJyH8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8ED18352343E; Wed, 13 May 2020 06:03:26 -0700 (PDT)
-Date:   Wed, 13 May 2020 06:03:26 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, viro@zeniv.linux.org.uk
-Subject: Re: [PATCH RFC tip/core/rcu] Add shrinker to shift to
- fast/inefficient GP mode
-Message-ID: <20200513130326.GQ2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200507170903.GR2869@paulmck-ThinkPad-P72>
- <20200507183102.GB155220@cmpxchg.org>
- <20200507190905.GX2869@paulmck-ThinkPad-P72>
- <6d93affb-6505-1bf3-58a0-c67c34a18a9e@yandex-team.ru>
- <20200508144638.GF2869@paulmck-ThinkPad-P72>
- <8671cc58-11e0-b9f0-74b1-264fea58b23c@yandex-team.ru>
- <20200509160900.GM2869@paulmck-ThinkPad-P72>
- <20200513013238.GM2005@dread.disaster.area>
- <20200513031826.GN2869@paulmck-ThinkPad-P72>
- <20200513050726.GP2005@dread.disaster.area>
+        id S1729492AbgEMNGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725967AbgEMNGQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 09:06:16 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D2FC061A0C;
+        Wed, 13 May 2020 06:06:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=XRZP4coENPaEASSZzra9te94FAUGfjbaaParyYkAyXQ=; b=GbyxsXPvGLFQdWaSkIykDFNq+
+        AOCEtd+CfIfUyXZojobQ0zAcq/Kll3RZTqtp0oiYwJF8ZmnBjEQ2XfZC6PqXOoioyPa9b/1uTqAge
+        Yey49kjiUtD/0lpqpUc2yL+WFGKeJGhhIFQ1CPFBWj+lh/POB2uDKbGvsz3Y1qWn8PE/mGFgAcDxN
+        +WAsh4Hpd+hvANtZ4QTGyGVL/Y/Gv0BYwTtMXDP9NOdQwYTt3kIHYOem1w1LTtRamfiGkH9Uf/wAm
+        En2KUP9S4+fBwIkmGze60p24+YjDZg5HqSizJ34a7jcVxavGywWXBPzQrhR9bTLG1E7OzTCA6aNMi
+        3EgpnDaGQ==;
+Received: from shell.armlinux.org.uk ([2002:4e20:1eda:1:5054:ff:fe00:4ec]:57492)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jYr54-0004ZU-SY; Wed, 13 May 2020 14:05:51 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jYr4q-0007nH-QV; Wed, 13 May 2020 14:05:36 +0100
+Date:   Wed, 13 May 2020 14:05:36 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     nicolas.ferre@microchip.com
+Cc:     linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        harini.katakam@xilinx.com,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        f.fainelli@gmail.com, antoine.tenart@bootlin.com,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v4 3/5] net: macb: fix macb_get/set_wol() when moving to
+ phylink
+Message-ID: <20200513130536.GI1551@shell.armlinux.org.uk>
+References: <cover.1588763703.git.nicolas.ferre@microchip.com>
+ <4aeebe901fde6db70a5ca12b10e793dd2ee6ce60.1588763703.git.nicolas.ferre@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200513050726.GP2005@dread.disaster.area>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <4aeebe901fde6db70a5ca12b10e793dd2ee6ce60.1588763703.git.nicolas.ferre@microchip.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 03:07:26PM +1000, Dave Chinner wrote:
-> On Tue, May 12, 2020 at 08:18:26PM -0700, Paul E. McKenney wrote:
-> > On Wed, May 13, 2020 at 11:32:38AM +1000, Dave Chinner wrote:
-> > > On Sat, May 09, 2020 at 09:09:00AM -0700, Paul E. McKenney wrote:
-> > > > On Sat, May 09, 2020 at 11:54:40AM +0300, Konstantin Khlebnikov wrote:
-> > > > > On 08/05/2020 17.46, Paul E. McKenney wrote:
-> > > > > > Easy for me to provide "start fast and inefficient mode" and "stop fast
-> > > > > > and inefficient mode" APIs for MM to call!
-> > > > > > 
-> > > > > > How about rcu_mempressure_start() and rcu_mempressure_end()?  I would
-> > > > > > expect them not to nest (as in if you need them to nest, please let
-> > > > > > me know).  I would not expect these to be invoked all that often (as in
-> > > > > > if you do need them to be fast and scalable, please let me know). >
-> > > > > > RCU would then be in fast/inefficient mode if either MM told it to be
-> > > > > > or if RCU had detected callback overload on at least one CPU.
-> > > > > > 
-> > > > > > Seem reasonable?
-> > > > > 
-> > > > > Not exactly nested calls, but kswapd threads are per numa node.
-> > > > > So, at some level nodes under pressure must be counted.
-> > > > 
-> > > > Easy enough, especially given that RCU already "counts" CPUs having
-> > > > excessive numbers of callbacks.  But assuming that the transitions to/from
-> > > > OOM are rare, I would start by just counting them with a global counter.
-> > > > If the counter is non-zero, RCU is in fast and inefficient mode.
-> > > > 
-> > > > > Also forcing rcu calls only for cpus in one numa node might be useful.
-> > > > 
-> > > > Interesting.  RCU currently evaluates a given CPU by comparing the
-> > > > number of callbacks against a fixed cutoff that can be set at boot using
-> > > > rcutree.qhimark, which defaults to 10,000.  When this cutoff is exceeded,
-> > > > RCU becomes more aggressive about invoking callbacks on that CPU, for
-> > > > example, by sacrificing some degree of real-time response.  I believe
-> > > > that this heuristic would also serve the OOM use case well.
-> > > 
-> > > So one of the things that I'm not sure people have connected here is
-> > > that memory reclaim done by shrinkers is one of the things that
-> > > drives huge numbers of call_rcu() callbacks to free memory via rcu.
-> > > If we are reclaiming dentries and inodes, then we can be pushing
-> > > thousands to hundreds of thousands of objects into kfree_rcu()
-> > > and/or direct call_rcu() calls to free these objects in a single
-> > > reclaim pass. 
-> > 
-> > Good point!
-> > 
-> > > Hence the trigger for RCU going into "excessive callback" mode
-> > > might, in fact, be kswapd running a pass over the shrinkers. i.e.
-> > > memory reclaim itself can be responsible for pushing RCU into this "OOM
-> > > pressure" situation.
-> > > 
-> > > So perhaps we've missed a trick here by not having the memory
-> > > reclaim routines trigger RCU callbacks at the end of a priority
-> > > scan. The shrinkers have queued the objects for freeing, but they
-> > > haven't actually been freed yet and so things like slab pages
-> > > haven't actually been returned to the free pool even though the
-> > > shrinkers have said "freed this many objects"...
-> > > 
-> > > i.e. perhaps the right solution here is a "rcu_run_callbacks()"
-> > > function that memory reclaim calls before backing off and/or winding
-> > > up reclaim priority.
-> > 
-> > It would not be hard to make something that put RCU into fast/inefficient
-> > mode for a couple of grace periods.  I will also look into the possibility
-> > of speeding up callback invocation.
-> > 
-> > It might also make sense to put RCU grace periods into fast mode while
-> > running the shrinkers that are freeing dentries and inodes.  However,
-> > kbuild test robot reports ugly regressions when putting RCU into
-> > fast/inefficient mode to quickly and too often.  As in 78.5% degradation
-> > on one of the benchmarks.
+On Wed, May 06, 2020 at 01:37:39PM +0200, nicolas.ferre@microchip.com wrote:
+> From: Nicolas Ferre <nicolas.ferre@microchip.com>
 > 
-> I don't think it should be dependent on what specific shrinkers
-> free. There are other objects that may be RCU freed by shrinkers,
-> so it really shouldn't be applied just to specific shrinker
-> instances.
-
-Plus a call_rcu() might be freeing a linked structure, so counting the
-size of the argument to call_rcu() would be understating the total amount
-of memory being freed.
-
-> > > > > I wonder if direct-reclaim should at some stage simply wait for RCU QS.
-> > > > > I.e. call rcu_barrier() or similar somewhere before invoking OOM.
-> > > > 
-> > > > The rcu_oom_count() function in the patch starting this thread returns the
-> > > > total number of outstanding callbacks queued on all CPUs.  So one approach
-> > > > would be to invoke this function, and if the return value was truly
-> > > > huge (taking size of memory and who knows that all else into account),
-> > > > do the rcu_barrier() to wait for RCU to clear its current backlog.
-> > > 
-> > > The shrinker scan control structure has a node mask in it to
-> > > indicate what node (and hence CPUs) it should be reclaiming from.
-> > > This information comes from the main reclaim scan routine, so it
-> > > would be trivial to feed straight into the RCU code to have it
-> > > act on just the CPUs/node that we are reclaiming memory from...
-> > 
-> > For the callbacks, RCU can operate on CPUs, in theory anyway.  The
-> > grace period itself, however, is inherently global.
+> Keep previous function goals and integrate phylink actions to them.
 > 
-> *nod*
+> phylink_ethtool_get_wol() is not enough to figure out if Ethernet driver
+> supports Wake-on-Lan.
+> Initialization of "supported" and "wolopts" members is done in phylink
+> function, no need to keep them in calling function.
 > 
-> The memory reclaim backoffs tend to be in the order of 50-100
-> milliseconds, though, so we are talking multiple grace periods here,
-> right? In which case, triggering a grace period expiry before a
-> backoff takes place might make a lot sense...
-
-Usually, yes, I would expect several grace periods to elapse during
-a backoff.
-
-> > > > On the NUMA point, it would be dead easy for me to supply a function
-> > > > that returned the number of callbacks on a given CPU, which would allow
-> > > > you to similarly evaluate a NUMA node, a cgroup, or whatever.
-> > > 
-> > > I'd think it runs the other way around - we optimisitically call the
-> > > RCU layer to do cleanup, and the RCU layer decides if there's enough
-> > > queued callbacks on the cpus/node to run callbacks immediately. It
-> > > would even be provided with the scan priority to indicate the level
-> > > of desperation memory reclaim is under....
-> > 
-> > Easy for RCU to count the number of callbacks.  That said, it has no
-> > idea which callbacks are which.  Perhaps kfree_rcu() could gather that
-> > information from the slab allocator, though.
-> > 
-> > > > > All GFP_NOFAIL users should allow direct-reclaim, thus this loop
-> > > > > in page_alloc shouldn't block RCU and doesn't need special care.
-> > > > 
-> > > > I must defer to you guys on this.  The main caution is the duration of
-> > > > direct reclaim.  After all, if it is too long, the kfree_rcu() instance
-> > > > would have been better of just invoking synchronize_rcu().
-> > > 
-> > > Individual callers of kfree_rcu() have no idea of the load on RCU,
-> > > nor how long direct reclaim is taking. Calling synchronize_rcu()
-> > > incorrectly has pretty major downsides to it, so nobody should be
-> > > trying to expedite kfree_rcu() unless there is a good reason to do
-> > > so (e.g. at unmount to ensure everything allocated by a filesystem
-> > > has actually been freed). Hence I'd much prefer the decision to
-> > > expedite callbacks is made by the RCU subsystem based on it's known
-> > > callback load and some indication of how close memory reclaim is to
-> > > declaring OOM...
-> > 
-> > Sorry, I was unclear.  There is a new single-argument kfree_rcu() under
-> > way that does not require an rcu_head in the structure being freed.
-> > However, in this case, kfree_rcu() might either allocate the memory
-> > that is needed to track the memory to be freed on the one hand or just
-> > invoke synchronize_rcu() on the other.  So this decision would be taken
-> > inside kfree_rcu(), and not be visible to either core RCU or the caller
-> > of kfree_rcu().
+> phylink_ethtool_set_wol() return value is not enough to determine
+> if WoL is enabled for the calling Ethernet driver. Call it first
+> but don't rely on its return value as most of simple PHY drivers
+> don't implement a set_wol() function.
 > 
-> Ah. The need to allocate memory to free memory, and with that comes
-> the requirement of a forwards progress guarantee. It's mempools all
-> over again :P
+> Fixes: 7897b071ac3b ("net: macb: convert to phylink")
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
+> Cc: Harini Katakam <harini.katakam@xilinx.com>
+> Cc: Antoine Tenart <antoine.tenart@bootlin.com>
+> ---
+>  drivers/net/ethernet/cadence/macb_main.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
 > 
-> Personally, though, designing functionality that specifically
-> requires memory allocation to free memory seems like an incredibly
-> fragile thing to be doing. I don't know the use case here, though,
-> but jsut the general description of what you are trying to do rings
-> alarm bells in my head...
+> diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+> index 53e81ab048ae..24c044dc7fa0 100644
+> --- a/drivers/net/ethernet/cadence/macb_main.c
+> +++ b/drivers/net/ethernet/cadence/macb_main.c
+> @@ -2817,21 +2817,23 @@ static void macb_get_wol(struct net_device *netdev, struct ethtool_wolinfo *wol)
+>  {
+>  	struct macb *bp = netdev_priv(netdev);
+>  
+> -	wol->supported = 0;
+> -	wol->wolopts = 0;
+> -
+> -	if (bp->wol & MACB_WOL_HAS_MAGIC_PACKET)
+> +	if (bp->wol & MACB_WOL_HAS_MAGIC_PACKET) {
+>  		phylink_ethtool_get_wol(bp->phylink, wol);
+> +		wol->supported |= WAKE_MAGIC;
+> +
+> +		if (bp->wol & MACB_WOL_ENABLED)
+> +			wol->wolopts |= WAKE_MAGIC;
+> +	}
+>  }
+>  
+>  static int macb_set_wol(struct net_device *netdev, struct ethtool_wolinfo *wol)
+>  {
+>  	struct macb *bp = netdev_priv(netdev);
+> -	int ret;
+>  
+> -	ret = phylink_ethtool_set_wol(bp->phylink, wol);
+> -	if (!ret)
+> -		return 0;
+> +	/* Pass the order to phylink layer.
+> +	 * Don't test return value as set_wol() is often not supported.
+> +	 */
+> +	phylink_ethtool_set_wol(bp->phylink, wol);
 
-And mine as well.  Hence my earlier insistence that kfree_rcu() never
-block waiting for memory, but instead just invoke synchronize_rcu() and
-then immediately free the memory.  Others have since convinced me that
-there are combinations of GFP flags that allow only limited sleeping so
-as to avoid the OOM deadlocks that I fear.
+If this returns an error, does that mean WOL works or does it not?
 
-> > This decision is made based on whether or not the allocator provides
-> > kfree_rcu() the memory needed.  The tradeoff is what GFP flags are
-> > supplied.
-> 
-> So there's a reclaim recursion problem here, too?
+Note that if set_wol() is not supported, this will return -EOPNOTSUPP.
+What about other errors?
 
-There was an earlier discussion as to what was safe, with one
-recommendation being __GFP_NORETRY.
+If you want to just ignore the case where it's not supported, then
+this looks like a sledge hammer to crack a nut.
 
-							Thanx, Paul
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
