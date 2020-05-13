@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231F91D136B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A8D1D13A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733138AbgEMM4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 08:56:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33650 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733110AbgEMM4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 08:56:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id EB7FAAD08;
-        Wed, 13 May 2020 12:56:31 +0000 (UTC)
-Message-ID: <87d71fa371739486a19f17a6b3ca72d2315220d2.camel@suse.de>
-Subject: Re: [PATCH v3 0/2] usb: xhci: Load Raspberry Pi 4 VL805's firmware
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     mbrugger@suse.com, u-boot@lists.denx.de, bmeng.cn@gmail.com,
-        marex@denx.de, linux-kernel@vger.kernel.org
-Cc:     sjg@chromium.org, m.szyprowski@samsung.com, s.nawrocki@samsung.com,
-        mark.kettenis@xs4all.nl
-Date:   Wed, 13 May 2020 14:56:27 +0200
-In-Reply-To: <20200505162607.334-1-nsaenzjulienne@suse.de>
-References: <20200505162607.334-1-nsaenzjulienne@suse.de>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-zJ6m1nQczXy6DejoCnBn"
-User-Agent: Evolution 3.36.2 
+        id S2387424AbgEMM5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 08:57:41 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:43292 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729345AbgEMM5k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 08:57:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589374659;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ob2GqH7qD296iB6P/14HKQmOuD3tUq1NGI9wvJ7eHUw=;
+        b=jKyKLt7hZAaHFtuHp89QWNMAlDoHb9+Kd//6qpgmMmotlBGyXO52IK2fB1gArKWXBsF0pe
+        xcwQ7J9JC9G9753SAXH1Vb978zLCqZKWODYvb3XDIgwbLxMz4U8u6nZ80k92cVhD4FrIsf
+        j+AjYhdgYQjK2IN2sg849KftK4jEkEA=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-292-AXkP3UecMxq15pCZf32bTQ-1; Wed, 13 May 2020 08:57:38 -0400
+X-MC-Unique: AXkP3UecMxq15pCZf32bTQ-1
+Received: by mail-wm1-f71.google.com with SMTP id a206so4701194wmh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 05:57:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=ob2GqH7qD296iB6P/14HKQmOuD3tUq1NGI9wvJ7eHUw=;
+        b=HJt7gC/J9VbxwwCMw2GrJm5Uq+G0c2nsbj+q3xJYz14U8xChIi6qX2QQ1IdwzQN7kU
+         /EU1fNOp7Nb72klIWcoFvpm1EmVdd+TdOS2u19/4cZ0CkN4Zk0EvVk91FKbx2jbEIqkK
+         euzaoL+NpTKefVtRVwcWlN02YBfG4n2I7X6cDG0yYdC2hMv6HxhXxXiFRNJU/3biCxP5
+         xrIxO7NoGCFmPx8qDTVqr33pMvMIXuv/G86yFOhpT4cbRS7hUlSVkL2Dj52EuobknphT
+         8AwLjoAj2yv6J86rrgMfGdQ5ix5uwMx0JVQHjrMV9nu8GgP5+jOngyHUxzIq0I/JhMkJ
+         7hFw==
+X-Gm-Message-State: AGi0PuY38eSj1Jync8gcGbV1qlX8HwsQuDef8MgWzoYi8WarGGCycQ9s
+        8txgN1kAkuw8JYZmIcnzbq7WExgbvAQWl4O77JZec4H3gRymSpVoKTaDaPwOQn3qNM68X/N1In+
+        scvbPk047OKKXzrG9e8TF2eQU
+X-Received: by 2002:adf:ea09:: with SMTP id q9mr31683730wrm.399.1589374656918;
+        Wed, 13 May 2020 05:57:36 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJENo1pNxT4cb92OnEACsibSpJCPfFYJKeXmxUB+ec9RrJ6uO1biLurikfbbxKtZB3cjIAnAg==
+X-Received: by 2002:adf:ea09:: with SMTP id q9mr31683712wrm.399.1589374656760;
+        Wed, 13 May 2020 05:57:36 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id 7sm29948323wra.50.2020.05.13.05.57.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 05:57:35 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     x86@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Subject: Re: [PATCH v2 0/3] x86/idt: Minor alloc_intr_gate() sanitization
+In-Reply-To: <20200428093824.1451532-1-vkuznets@redhat.com>
+References: <20200428093824.1451532-1-vkuznets@redhat.com>
+Date:   Wed, 13 May 2020 14:57:34 +0200
+Message-ID: <87imh0kn5t.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Vitaly Kuznetsov <vkuznets@redhat.com> writes:
 
---=-zJ6m1nQczXy6DejoCnBn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> This series is a successor of "[PATCH] x86/idt: Keep spurious entries unset
+> in system_vectors".
+>
+> The original issue I tried to address was that /proc/interrupts output
+> was always containing all possible system vectors, including non allocated
+> ones (e.g. 'Hypervisor callback interrupts' on bare metal). Thomas
+> suggested to expand this cosmetic change to making alloc_intr_gate()
+> __init.
+>
+> Vitaly Kuznetsov (3):
+>   x86/xen: Split HVM vector callback setup and interrupt gate allocation
+>   x86/idt: Annotate alloc_intr_gate() with __init
+>   x86/idt: Keep spurious entries unset in system_vectors
+>
 
-On Tue, 2020-05-05 at 18:26 +0200, Nicolas Saenz Julienne wrote:
-> Newer revisions of the RPi4 need their xHCI chip, VL805, firmware to be
-> loaded explicitly. Earlier versions didn't need that as they where using
-> an EEPROM for that purpose. This series takes care of setting up the
-> relevant infrastructure and run the firmware loading routine at the
-> right moment.
->=20
-> Note that this builds on top of Sylwester Nawrocki's "USB host support
-> for Raspberry Pi 4 board" series.
->=20
-> ---
+Ping?
 
-Just for the record, here's the version of this in the Linux Kernel:
-https://patchwork.kernel.org/cover/11529585/
-
-Regards,
-Nicolas
-
-
---=-zJ6m1nQczXy6DejoCnBn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl677nsACgkQlfZmHno8
-x/4lwgf/az8ddaA++TvpX2NQkZGoTV4ECgURLlQzVVNgRpdiDSad2Dq0OMhJoUIS
-DSUgQOnYDBQGMkOPlhEMV/vsNtno+RvAenDdkBrFr5Y5rUtd5cFkcOkaUagw4+jP
-gFQluOKw3MyAhFlgQRZhlSTS9fihdmxlLZEosnS33gcyuS1SJnmyL2YL0NiP9aHG
-9VdyqXirGnrwPJXnBkEoAyHKchhriGj7hvfUZI2Yxp3Z1xEwSttz+KZy5VCFx+nr
-TaFhC35xIxEpkTY8mIxb+UcQfESD+Q1lDDcEiztuOH+PZJLuOO8jFymrTS7BsW6+
-fzTkDmCMuoKPZf1m9rddp1pO+VcMww==
-=1fCZ
------END PGP SIGNATURE-----
-
---=-zJ6m1nQczXy6DejoCnBn--
+-- 
+Vitaly
 
