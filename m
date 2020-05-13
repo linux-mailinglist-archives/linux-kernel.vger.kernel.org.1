@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EAB01D1943
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8121D1947
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389140AbgEMPYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 11:24:18 -0400
-Received: from mga02.intel.com ([134.134.136.20]:63313 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729153AbgEMPYQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 11:24:16 -0400
-IronPort-SDR: ihX3aOfMkDRyoSI3BXeQDwlHzLsfm4qh59ktvA7M5GXsYGPFaezzB8OsiqZVJvnynpYmFxFOP5
- jqhfsr+xUh1w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 08:24:15 -0700
-IronPort-SDR: LEYmL0D8h4/MJPzQww7+nG6ZMTyIUMdrpW620uivs8d1RMOvGn0hsKExHGUYjZoUgEhe4Gmdup
- YKNkAXzriOTw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,388,1583222400"; 
-   d="scan'208";a="251288456"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga007.jf.intel.com with ESMTP; 13 May 2020 08:24:10 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jYtEz-006Rr3-Pi; Wed, 13 May 2020 18:24:13 +0300
-Date:   Wed, 13 May 2020 18:24:13 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Tali Perry <tali.perry1@gmail.com>
-Cc:     ofery@google.com, Brendan Higgins <brendanhiggins@google.com>,
-        avifishman70@gmail.com, Tomer Maimon <tmaimon77@gmail.com>,
-        kfting@nuvoton.com, Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v10 2/3] i2c: npcm7xx: Add Nuvoton NPCM I2C controller
- driver
-Message-ID: <20200513152413.GQ185537@smile.fi.intel.com>
-References: <20200510102330.66715-1-tali.perry1@gmail.com>
- <20200510102330.66715-3-tali.perry1@gmail.com>
- <20200511091759.GE185537@smile.fi.intel.com>
- <CAHb3i=tERsM+gwmQN1+vjnML9o5NxRK=uBokEUsd-Ljyje4s3A@mail.gmail.com>
+        id S1729904AbgEMPYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 11:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729327AbgEMPYx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 11:24:53 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07118C061A0C;
+        Wed, 13 May 2020 08:24:52 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id f23so7258252pgj.4;
+        Wed, 13 May 2020 08:24:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=6pqylq2mJRRnJ3OtxMfBq/4+9IHb3bQWs5VJmb4jLzY=;
+        b=LUpFchK32Wa2yszb+R5OWeNH8gD9nXMD7q9arCOmbctL5fddILmYhw+QDmubHFnDB8
+         f4kH4c3tdymhUtid6EZvyKn1K5gQoGI1v7isgXokRN2S0SenPFpsANSdVG/SSuhV7k5U
+         vs/LEhgPaDXkvvbRhpL8EGuKlMv2f3yBu0ehdrrOHh7nAKDR8vR3YrLG/BPwjPuZDGHl
+         ndDoLrcBtyjlpT+76rddkAGnGak45h6QaAXbJK455zOMAxQ7Kc6xGVH1zTwdl2goe7V9
+         kpxN2LSUnW5d1KmZJoDw92vgrzmYwTvskkd0TD4oF43Nnk+PKLxW63Y7FLviM+36byyA
+         4k0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:user-agent;
+        bh=6pqylq2mJRRnJ3OtxMfBq/4+9IHb3bQWs5VJmb4jLzY=;
+        b=HwWdB9lV1m09UZ4VNrzmgbKCuP+sNqBn4qfueVpLtKBi8yd8Rc8CmXmPzR5uzP0mWm
+         fvgy/jAhTcxrPgR7FfGBkumyH9LWSgFawPwR0/J8qGMiB0rC4cBtuheyHDB0Udvddb5j
+         Zlc3xJz79CkLYlEgU5Q0G/Wjsp0MdTLqoUtl6TSKrsIv26mIMtV8lGce0R7UjnaHukbo
+         xf+rARcPhhF2Z5oeOhhuCdNA+DV3vE7BSs1ajEd1E0K/lEZl//FTRSwhNkRp+OBjRwRo
+         vDywU4G33IjzrMVyyK0DKihWOXh1h7OsSo4COSB7W3DKePyZINrVWXr/7aUtWEmQoh/9
+         063w==
+X-Gm-Message-State: AOAM530aH1Y/sSLrmL0k5UsV0zqi10sxD4mWS9dDse1WlMg7DKda/cuY
+        jL7Eivfj9D4H/9zgdQ6l1Ig=
+X-Google-Smtp-Source: ABdhPJydcRkZCD7kK2hsZCNxScAagHKMAeqZ7bDH7QsAVgAHqQc2ZgcR17gnP7KU0nG1QdYVuEWadA==
+X-Received: by 2002:a65:6790:: with SMTP id e16mr6762655pgr.145.1589383491661;
+        Wed, 13 May 2020 08:24:51 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j5sm16256111pjf.0.2020.05.13.08.24.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 13 May 2020 08:24:51 -0700 (PDT)
+Date:   Wed, 13 May 2020 08:24:50 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     yuechao.zhao@advantech.com.cn
+Cc:     345351830@qq.com, amy.shih@advantech.com.tw,
+        oakley.ding@advantech.com.tw, jia.sui@advantech.com.cn,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [v1,1/1] watchdog: (nct7904) Fix enable watchdog incorrectly
+Message-ID: <20200513152450.GA180616@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHb3i=tERsM+gwmQN1+vjnML9o5NxRK=uBokEUsd-Ljyje4s3A@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 02:28:50PM +0300, Tali Perry wrote:
-> On Mon, May 11, 2020 at 12:18 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Sun, May 10, 2020 at 01:23:29PM +0300, Tali Perry wrote:
-
-...
-
-> > > +#if IS_ENABLED(CONFIG_DEBUG_FS)
-> >
-> > Why?
+On Wed, May 13, 2020 at 11:00:15AM +0000, yuechao.zhao@advantech.com.cn wrote:
+> From: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
 > 
-> We wanted to add an optional feature to track i2c slave status.
-> the NPCM has 16 channels handling multiple devices each. Some of the devices
-> are polled periodically, and might power down.
-> The user wanted to implement a health monitoring option
-> to occasionally check the status of the buses (how many timeouts, recovery etc.)
-> This feature is optional and depends on CONFIG_DEBUG_FS The counters are exposed
-> to user through the file system.
-
-What I meant is why do you need an #ifdef?
-
-
-...
-
-> > > +#define I2C_NUM_OF_ADDR 10
-> >
-> > Is it 10-bit address support or what?
-> >
+> Use incorrect register to enable watchdog in nct7904_wdt_ping()
 > 
-> No, the NPCM has an option to respond to multiple slave addresses
-> (10 own slave addresses)
+> Signed-off-by: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
 
-Perhaps more descriptive name then?
+I merged this patch into the patch introducing watchdog support.
 
-...
+Thanks,
+Guenter
 
-> > > +     // Repeat the following sequence until SDA is released
-> > > +     do {
-> > > +             // Issue a single SCL toggle
-> > > +             iowrite8(NPCM_I2CCST_TGSCL, bus->reg + NPCM_I2CCST);
-> > > +             udelay(20);
-> > > +             // If SDA line is inactive (high), stop
-> > > +             if (npcm_i2c_get_SDA(_adap)) {
-> > > +                     done = true;
-> > > +                     status = 0;
-> > > +             }
-> > > +     } while (!done && iter--);
-> >
-> > readx_poll_timeout() ?
+> ---
+>  drivers/hwmon/nct7904.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Not exactly, readx_poll_timeout includes only a read operation, here there is a
-> write in the middle. (iowrite8)
-
-Ah, indeed. Perhaps time to add writex_poll_timeout() ?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> diff --git a/drivers/hwmon/nct7904.c b/drivers/hwmon/nct7904.c
+> index 04f2a8e..18c95be 100644
+> --- a/drivers/hwmon/nct7904.c
+> +++ b/drivers/hwmon/nct7904.c
+> @@ -979,7 +979,7 @@ static int nct7904_wdt_ping(struct watchdog_device *wdt)
+>  		return ret;
+>  
+>  	/* Enable soft watchdog timer */
+> -	return nct7904_write_reg(data, BANK_0, WDT_TIMER_REG, WDT_SOFT_EN);
+> +	return nct7904_write_reg(data, BANK_0, WDT_LOCK_REG, WDT_SOFT_EN);
+>  }
+>  
+>  static unsigned int nct7904_wdt_get_timeleft(struct watchdog_device *wdt)
+> -- 
+> 1.8.3.1
+> 
