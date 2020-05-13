@@ -2,148 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36E51D159A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0582A1D15A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388641AbgEMNfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
+        id S2387970AbgEMNgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387927AbgEMNfb (ORCPT
+        with ESMTP id S1727792AbgEMNgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:35:31 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B6CC061A0C;
-        Wed, 13 May 2020 06:35:30 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id u10so6830376pls.8;
-        Wed, 13 May 2020 06:35:30 -0700 (PDT)
+        Wed, 13 May 2020 09:36:32 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16646C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 06:36:31 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id i5so1076660qkl.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 06:36:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0BGOGNqih27OV/hxwThO6MefRy8fXlj0Bh5UXUHoSvM=;
-        b=RDEBDtHUoB1XiuAgWSyUddc44FRdseR2E78Z2zPCqCd8Z18kCEdZEGX8U2vpI0yzzA
-         u2yPqNpHUZtsoZpZmOjFllF1DBlsIz5XDxmvPXLVmQVKCvvwifTfdv2vhxD1NgzQMmnz
-         N1T/Czl/NCNGfDgTC4rx1m6afLlOJBLwgGkiPiQdaV0BM/6IUr7WpfXp65yBUaCwb2ET
-         dx8UCWSsBCyEVu7hIoYFsdvu7x+zpnp3t7U8kws9RKec49ogUfYr6QiV1kaS9G+CSQjS
-         Ao0jU/DLcKfDuCB9R7JGFBPoV5YU98EC03q4FXf01dcm6m24eDSmLsg95KzXWHPIeGJm
-         jwcg==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lmITFjsR21MwwfP3n1tM0be86PHBqAQG1lx6vKEzNCI=;
+        b=Sp6r62/unXkVQ9RdT5jPUQ+DFrt+Lpdl8ytL1qU87fZyFpuwY7NrUkvLth9ivA3yi8
+         VTZF2nmLrpct0i52FeFjbs/g0Y9AzejFF/Pbwy42opFeRn6kpxpkklapKCqERcCiUbar
+         6xt8op2ImJjoFWh4BjxELxK4h4y3hzUYd4evurYjAv6uOvRG8v9BA8/obYJw0BRzdQic
+         J+PNpGbOzIEo7mRthy9pcdGiNaZlPC9IZI6zmnZ2YUF8CaCJPSUnzBLgrxeVnjH1Aopt
+         mSlAHY70Uf3jgXfHIUwSadkgQJergXLfp4pIq5v0KNcRXgckmz8q6USUdso+DV1ohDkw
+         U0yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0BGOGNqih27OV/hxwThO6MefRy8fXlj0Bh5UXUHoSvM=;
-        b=IZBC0RCc0eim7ct/DWqhTa4twr5i6pWQheMKg7J/e4fgs1WK9Ws86VrqY3TugHMQA3
-         U+D7PrkbDnKc6emwCRAL3XVYBQhNLEw8x5ikjfKqEZdWcS1+NOLET2g38+Jf3TmpDt40
-         gOVvcFqfEtdWSuu+ggdI4IFXva8qO2uUiyjwEvb9879aOArPO1RkwQODeXcCjxfzHgM7
-         Tnhv+l79grrHGDi1GNQg9CXdn3TVSsgo4g8H0P35EOyKgmLcbHTCHfeNJ2b6gXVcw5aG
-         2/8U5aW7guZyY+0msxXYSr3Yom58uG6i4T6kVzTtWy7nhZy8UpSGwsFybjdDMND+E8kA
-         fHoQ==
-X-Gm-Message-State: AOAM531HWIVdkRcNth2Ab/UZj8ryNo9SxiqR5m+GjQ0FzXZSN3/tiBND
-        i2RfEfqwaeSbAUJXJLnglT8=
-X-Google-Smtp-Source: ABdhPJxHvVgkgDedkqYMSZJj59AIFKH74OH/HffWU0Oj7KNku+s6st0bccLkx8cK0rvdzp2DPZN+dw==
-X-Received: by 2002:a17:90a:7ace:: with SMTP id b14mr2252495pjl.116.1589376930438;
-        Wed, 13 May 2020 06:35:30 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:6:8000::a31c? ([2404:f801:9000:18:efed::a31c])
-        by smtp.gmail.com with ESMTPSA id g9sm13207294pgj.89.2020.05.13.06.35.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2020 06:35:30 -0700 (PDT)
-Subject: Re: [PATCH] x86/hyperv: Properly suspend/resume reenlightenment
- notifications
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-hyperv@vger.kernel.org
-Cc:     Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Michael Kelley <mikelley@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>
-References: <20200512160153.134467-1-vkuznets@redhat.com>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <3507d1b3-8d90-8d0e-c20f-a75f9f280230@gmail.com>
-Date:   Wed, 13 May 2020 21:35:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lmITFjsR21MwwfP3n1tM0be86PHBqAQG1lx6vKEzNCI=;
+        b=CKkeiIMx319FIHJR7JpqSt2OFIMyek7wcf6sP6cwfqVga/3oyTx1dCvEugdnmDazqf
+         aNz42ru8LAtMVeg25/Qwr5ydS3iXIhe80+UnB5sNPEbsZbjQ8anvsHfRLytprysIp1pK
+         milwxmDX1/X7i6iMSAxpXaVbfoKCeX4WLk6OcRSmaLlSZQMBD+/2zp1dawx5eMKSgM3m
+         saCzYRmP4OYTBoz/L956wm7Bc7cP6FHukrF9bSVq9QKQ11Me1sbhtYfm5YhfnbfPTq7v
+         HNdKLwDLm6Oevcn4Gf8umSbxAL0bPgZuGzZGcqq6q1eZzlS2I0R4VflSN82e9yCicce0
+         gE7A==
+X-Gm-Message-State: AGi0PuY3z/8d08iLE0Yh39hOwk7pk5TKLLfuN0PeyZA+gQTXltvEOdmc
+        B5pVzyAJKB4Y7HczYvVXiJw=
+X-Google-Smtp-Source: APiQypLH7NxZ1IbbN8SdlyfV46MwB7Ry3KDpa/bScPo9CnLGdlrpLdg+21+wFFFZbyJFde/5Gc/kEQ==
+X-Received: by 2002:ae9:ebd2:: with SMTP id b201mr26017288qkg.80.1589376990262;
+        Wed, 13 May 2020 06:36:30 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id a1sm15121254qtj.65.2020.05.13.06.36.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 06:36:29 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2B8A2410F5; Wed, 13 May 2020 10:36:27 -0300 (-03)
+Date:   Wed, 13 May 2020 10:36:27 -0300
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf evsel: Fix 2 memory leaks
+Message-ID: <20200513133627.GC5583@kernel.org>
+References: <20200512235918.10732-1-irogers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200512160153.134467-1-vkuznets@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200512235918.10732-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/2020 12:01 AM, Vitaly Kuznetsov wrote:
-> Errors during hibernation with reenlightenment notifications enabled were
-> reported:
-> 
->   [   51.730435] PM: hibernation entry
->   [   51.737435] PM: Syncing filesystems ...
->   ...
->   [   54.102216] Disabling non-boot CPUs ...
->   [   54.106633] smpboot: CPU 1 is now offline
->   [   54.110006] unchecked MSR access error: WRMSR to 0x40000106 (tried to
->       write 0x47c72780000100ee) at rIP: 0xffffffff90062f24
->       native_write_msr+0x4/0x20)
->   [   54.110006] Call Trace:
->   [   54.110006]  hv_cpu_die+0xd9/0xf0
->   ...
-> 
-> Normally, hv_cpu_die() just reassigns reenlightenment notifications to some
-> other CPU when the CPU receiving them goes offline. Upon hibernation, there
-> is no other CPU which is still online so cpumask_any_but(cpu_online_mask)
-> returns >= nr_cpu_ids and using it as hv_vp_index index is incorrect.
-> Disable the feature when cpumask_any_but() fails.
-> 
-> Also, as we now disable reenlightenment notifications upon hibernation we
-> need to restore them on resume. Check if hv_reenlightenment_cb was
-> previously set and restore from hv_resume().
-> 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Em Tue, May 12, 2020 at 04:59:18PM -0700, Ian Rogers escreveu:
+> If allocated, perf_pkg_mask and metric_events need freeing.
+
+Applied, were those found with some tool? Or just by visual inspection?
+
+Also I noticed that evsel->metric_events is correctly initialized to
+NULL in evsel__init(), but evsel->per_pkg_mask isn't, and while
+evsel__new() uses zalloc() it is possible, IIRC, for evsels associated
+with hists to be part of a larger struct, so I think the safest way is
+to initialize evsel->per_pkg_mask to NULL in evsel__init(), will do it
+in a follow up patch.
+
+- Arnaldo
+ 
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
->   arch/x86/hyperv/hv_init.c | 19 +++++++++++++++++--
->   1 file changed, 17 insertions(+), 2 deletions(-)
+>  tools/perf/util/evsel.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index fd51bac11b46..acf76b466db6 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -226,10 +226,18 @@ static int hv_cpu_die(unsigned int cpu)
->   
->   	rdmsrl(HV_X64_MSR_REENLIGHTENMENT_CONTROL, *((u64 *)&re_ctrl));
->   	if (re_ctrl.target_vp == hv_vp_index[cpu]) {
-> -		/* Reassign to some other online CPU */
-> +		/*
-> +		 * Reassign reenlightenment notifications to some other online
-> +		 * CPU or just disable the feature if there are no online CPUs
-> +		 * left (happens on hibernation).
-> +		 */
->   		new_cpu = cpumask_any_but(cpu_online_mask, cpu);
->   
-> -		re_ctrl.target_vp = hv_vp_index[new_cpu];
-> +		if (new_cpu < nr_cpu_ids)
-> +			re_ctrl.target_vp = hv_vp_index[new_cpu];
-> +		else
-> +			re_ctrl.enabled = 0;
-> +
->   		wrmsrl(HV_X64_MSR_REENLIGHTENMENT_CONTROL, *((u64 *)&re_ctrl));
->   	}
->   
-> @@ -293,6 +301,13 @@ static void hv_resume(void)
->   
->   	hv_hypercall_pg = hv_hypercall_pg_saved;
->   	hv_hypercall_pg_saved = NULL;
-> +
-> +	/*
-> +	 * Reenlightenment notifications are disabled by hv_cpu_die(0),
-> +	 * reenable them here if hv_reenlightenment_cb was previously set.
-> +	 */
-> +	if (hv_reenlightenment_cb)
-> +		set_hv_tscchange_cb(hv_reenlightenment_cb);
->   }
->   
->   /* Note: when the ops are called, only CPU0 is online and IRQs are disabled. */
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index a2397ca4d57a..654b79c1f4ac 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -1266,6 +1266,8 @@ void evsel__exit(struct evsel *evsel)
+>  	zfree(&evsel->group_name);
+>  	zfree(&evsel->name);
+>  	zfree(&evsel->pmu_name);
+> +	zfree(&evsel->per_pkg_mask);
+> +	zfree(&evsel->metric_events);
+>  	perf_evsel__object.fini(evsel);
+>  }
+>  
+> -- 
+> 2.26.2.645.ge9eca65c58-goog
 > 
 
-Reviewed-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+-- 
+
+- Arnaldo
