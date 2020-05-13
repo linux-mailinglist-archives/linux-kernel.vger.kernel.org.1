@@ -2,99 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F11C1D1DA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 20:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052061D1DAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 20:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390193AbgEMSjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 14:39:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389392AbgEMSjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 14:39:16 -0400
-Received: from localhost.localdomain (pool-96-246-152-186.nycmny.fios.verizon.net [96.246.152.186])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1F77205CB;
-        Wed, 13 May 2020 18:39:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589395156;
-        bh=Y72i32UeQj+BsN6BKrnODAZOyq4SZCE3vWjHFMJMOD4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=TP2TVJqWDchujAXs3H+unY5RWOz7Ssm4Qu5ScHyxOZ24eRyGNg3WN/x4DcUVwDm/m
-         hEc4/xWzV4YyI4bdRua4fnknB3rz9+nyzRGnNqHGC6NKmeq8r+3HqLzYRfjceAUxXt
-         5XequixI4+crdC+u0oFCs+Q3fz7YnIBnGQQYf36A=
-Message-ID: <1589395153.5098.158.camel@kernel.org>
-Subject: Re: [PATCH v5 1/7] fs: introduce kernel_pread_file* support
-From:   Mimi Zohar <zohar@kernel.org>
-To:     Scott Branden <scott.branden@broadcom.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>
-Date:   Wed, 13 May 2020 14:39:13 -0400
-In-Reply-To: <20200508002739.19360-2-scott.branden@broadcom.com>
-References: <20200508002739.19360-1-scott.branden@broadcom.com>
-         <20200508002739.19360-2-scott.branden@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S2390238AbgEMSka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 14:40:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1733166AbgEMSka (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 14:40:30 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E722C061A0C;
+        Wed, 13 May 2020 11:40:30 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 72so252855otu.1;
+        Wed, 13 May 2020 11:40:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:from:date:subject;
+        bh=UxFgBfxYrtbfoSRrOJwSR/jyUGAcjc3AvR5Q5DZlML4=;
+        b=WWSgjyrCoTbyAWUxcuhfmVBWMnDa/jr0mgszsCK06LeZ7T6hNUulr/inWZhSUl/Ezi
+         DyDQ6QCTwZSd2IpimRKqvKKFRPnlUgjbqcNI0f9vOZYB2S5HIud7LUGgnEKUT5QsZzT5
+         mpWRflLfR3jn7FdB6vKWgvRxda7/Yc0+H6U6cB/MRB2mm7ejQbWWRRaCBVSql9L6NhnK
+         PFn4eIV1VPXGbSj8l/qx4K47ZMOLNo1zRwgCa2n0C1CSqZao4YENbHVPdWaPT4MbQUpx
+         wek+nx01r+715FsDqJwkbCmrTXufoYYn2J2iBsxLDtZFsU/Z7Wg8l+AFOJxNXqRCDPMU
+         z0bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:from:date:subject;
+        bh=UxFgBfxYrtbfoSRrOJwSR/jyUGAcjc3AvR5Q5DZlML4=;
+        b=fryzC6BZw+ZEjKGDHgh+72sm8YU0f38zTsAUH76lEmV+kCirRQ5YcYemrSqNSKXfQl
+         awF2c7uwF1K1e6HC4xsr19vyl2WIgbuSfFW+dAkj3MfzTOz24YlAcHl5E9JvTCiCLXjm
+         PfHEMAcudYc/2vBEu0SuPjmsKQf4pYfifAghOwbaZnQkkuXdFxSo06ITDWOmgwl5UkHV
+         TnfFhmn82tGjoGpEHc6xzuHJpmEct8vfFc4x4hETk3fmwsaVmMVYhIKex1r+9Sd9/8zj
+         AF2CVOgYWbj7ZK2S8Cc6hNWFWUM9qDYb1zQ56oRhMTZChcWPHV+Tqx+sBRmwNkQjO0uW
+         vbfA==
+X-Gm-Message-State: AOAM533SD2cbFWPdNmNIH3o1J+nSzvdeH/aVfmaHi0YlSY53xBfWNj3b
+        JWQlmuYWIRepYF4p2x+wp+E=
+X-Google-Smtp-Source: ABdhPJzYMTolrbvJsxED0OyBKcnX7Ev6/+qqUrrtWH2tXqca0oe0DZLCUoeSbkoWWuokmgUcd9LVjw==
+X-Received: by 2002:a9d:4b18:: with SMTP id q24mr597103otf.31.1589395229593;
+        Wed, 13 May 2020 11:40:29 -0700 (PDT)
+Received: from localhost (cpe-70-112-70-240.austin.res.rr.com. [70.112.70.240])
+        by smtp.gmail.com with ESMTPSA id v17sm6222113oif.51.2020.05.13.11.39.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 11:40:28 -0700 (PDT)
+Message-ID: <5ebc3f1c.1c69fb81.772f9.7003@mx.google.com>
+From:   scott.shumate@gmail.com
+Date:   Wed, 13 May 2020 13:39:26 -0500
+Subject: [PATCH] HID: sony: Fix for broken buttons on DS3 USB dongles
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc'ing linux-security-module, linux-integrity]
+Fix for non-working buttons on knock-off USB dongles for Sony
+controllers. These USB dongles are used to connect older Sony DA/DS1/DS2
+controllers via USB and are common on Amazon, AliExpress, etc.  Without
+the patch, the square, X, and circle buttons do not function.  These
+dongles used to work prior to kernel 4.10 but removing the global DS3
+report fixup in this commit exposed the problem:
 
-On Thu, 2020-05-07 at 17:27 -0700, Scott Branden wrote:
-> Add kernel_pread_file* support to kernel to allow for partial read
-> of files with an offset into the file.  Existing kernel_read_file
-> functions call new kernel_pread_file functions with offset=0 and
-> flags=KERNEL_PREAD_FLAG_WHOLE.
-> 
-> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
-> ---
+commit e19a267b9987 Author: Roderick Colenbrander
+ <roderick.colenbrander@sony.com>
+Date:   Tue Mar 7 15:45:08 2017 -0800
 
-<snip>
+    HID: sony: DS3 comply to Linux gamepad spec
 
-> @@ -941,14 +955,16 @@ int kernel_read_file(struct file *file, void **buf, loff_t *size,
->  
->  		if (bytes == 0)
->  			break;
-> +
-> +		buf_pos += bytes;
->  	}
->  
-> -	if (pos != i_size) {
-> +	if (pos != read_end) {
->  		ret = -EIO;
->  		goto out_free;
->  	}
->  
-> -	ret = security_kernel_post_read_file(file, *buf, i_size, id);
-> +	ret = security_kernel_post_read_file(file, *buf, alloc_size, id);
->  	if (!ret)
->  		*size = pos;
+Many people reported the problem on the Ubuntu forums and are working
+around the problem by falling back to the 4.9 hid-sony driver.
 
-Prior to the patch set that introduced this security hook, firmware
-would be read twice, once for measuring/appraising the firmware and
-again reading the file contents into memory.  Partial reads will break
-both IMA's measuring the file and appraising the file signatures.
+The problem stems from these dongles incorrectly reporting their button
+count as 13 instead of 16.  This patch fixes up the report descriptor by
+changing the button report count to 16 and removing 3 padding bits.
 
-Mimi
+Signed-off-by: Scott Shumate <scott.shumate@gmail.com>
+---
+diff --git a/drivers/hid/hid-sony.c b/drivers/hid/hid-sony.c
+index 4c6ed6ef31f1..2f073f536070 100644
+--- a/drivers/hid/hid-sony.c
++++ b/drivers/hid/hid-sony.c
+@@ -867,6 +867,23 @@ static u8 *sony_report_fixup(struct hid_device *hdev, u8 *rdesc,
+ 	if (sc->quirks & PS3REMOTE)
+ 		return ps3remote_fixup(hdev, rdesc, rsize);
+ 
++	/*
++	 * Some knock-off USB dongles incorrectly report their button count
++	 * as 13 instead of 16 causing three non-functional buttons.
++	 */
++	if ((sc->quirks & SIXAXIS_CONTROLLER_USB) && *rsize >= 45 &&
++		/* Report Count (13) */
++		rdesc[23] == 0x95 && rdesc[24] == 0x0D &&
++		/* Usage Maximum (13) */
++		rdesc[37] == 0x29 && rdesc[38] == 0x0D &&
++		/* Report Count (3) */
++		rdesc[43] == 0x95 && rdesc[44] == 0x03) {
++		hid_info(hdev, "Fixing up USB dongle report descriptor\n");
++		rdesc[24] = 0x10;
++		rdesc[38] = 0x10;
++		rdesc[44] = 0x00;
++	}
++
+ 	return rdesc;
+ }
+ 
