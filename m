@@ -2,106 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6089C1D1B8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960791D1B92
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389786AbgEMQrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 12:47:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53734 "EHLO mail.kernel.org"
+        id S2389232AbgEMQuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 12:50:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389779AbgEMQrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 12:47:39 -0400
-Received: from lenoir.home (lfbn-ncy-1-985-231.w90-101.abo.wanadoo.fr [90.101.63.231])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1732510AbgEMQuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 12:50:15 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9535E207CD;
-        Wed, 13 May 2020 16:47:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 79231205CB;
+        Wed, 13 May 2020 16:50:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589388459;
-        bh=9uD5GGq95GEOrIdgKq0RsYH4vkz3D0lu7+MGs0mk+O0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SUGbaMdjR5Z5CqcYfNBX7cNUuwTss6vdSqc+h2r8BujPUbl6j+QZZc/7GgvQiZp5y
-         TLq1308vIJXHtls1LekIvn2qUbVE7YbqzzQHFaGq/qdnsSNUgzZTWusMy7juX71II/
-         +YmnbXMqw43mDNPtEE5wvEhBDCtP/KWXryb5wEN0=
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: [PATCH 10/10] rcu: Nocb (de)activate through sysfs
-Date:   Wed, 13 May 2020 18:47:14 +0200
-Message-Id: <20200513164714.22557-11-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200513164714.22557-1-frederic@kernel.org>
-References: <20200513164714.22557-1-frederic@kernel.org>
+        s=default; t=1589388614;
+        bh=YGRvVL8aAyOn6idLHv0UO1R432FmpUQvKhCBlb8e6zI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m/oWxrwQaLK49Zdv9sE0aBOZ65sZ+5m7zbqJa0vdt8+i0lbkmzcqxOFt76M/16ixm
+         vsDmPApPer85k11OXQf+/yaoVHTKe4wWlCwntYEZikvMvStJIcCn3hK2mcJseOxmPX
+         l0oeDl9mnU4SSLpRjIJCW223sTpOW1uK5qw7aQeE=
+Date:   Wed, 13 May 2020 17:50:09 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH v5 00/18] Rework READ_ONCE() to improve codegen
+Message-ID: <20200513165008.GA24836@willie-the-truck>
+References: <20200511204150.27858-1-will@kernel.org>
+ <20200512081826.GE2978@hirez.programming.kicks-ass.net>
+ <CANpmjNNo3rhwqG=xEbpP9JiSd8-Faw8fkoUhYJjesHK5S5_KQQ@mail.gmail.com>
+ <20200512190755.GL2957@hirez.programming.kicks-ass.net>
+ <CANpmjNNeSnrAgfkskE5Y0NNu3-DS6hk+SwjkBunrr8FRxwwT-Q@mail.gmail.com>
+ <20200513111057.GN2957@hirez.programming.kicks-ass.net>
+ <CANpmjNMariz3-keqwUsLHVrpk2r7ThLSKtkhHxTDa3SEGeznhA@mail.gmail.com>
+ <20200513123243.GO2957@hirez.programming.kicks-ass.net>
+ <20200513124021.GB20278@willie-the-truck>
+ <CANpmjNM5XW+ufJ6Mw2Tn7aShRCZaUPGcH=u=4Sk5kqLKyf3v5A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNM5XW+ufJ6Mw2Tn7aShRCZaUPGcH=u=4Sk5kqLKyf3v5A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not for merge.
+On Wed, May 13, 2020 at 03:15:55PM +0200, Marco Elver wrote:
+> On Wed, 13 May 2020 at 14:40, Will Deacon <will@kernel.org> wrote:
+> >
+> > On Wed, May 13, 2020 at 02:32:43PM +0200, Peter Zijlstra wrote:
+> > > On Wed, May 13, 2020 at 01:48:41PM +0200, Marco Elver wrote:
+> > >
+> > > > Disabling most instrumentation for arch/x86 is reasonable. Also fine
+> > > > with the __READ_ONCE/__WRITE_ONCE changes (your improved
+> > > > compiler-friendlier version).
+> > > >
+> > > > We likely can't have both: still instrument __READ_ONCE/__WRITE_ONCE
+> > > > (as Will suggested) *and* avoid double-instrumentation in arch_atomic.
+> > > > If most use-cases of __READ_ONCE/__WRITE_ONCE are likely to use
+> > > > data_race() or KCSAN_SANITIZE := n anyway, I'd say it's reasonable for
+> > > > now.
+> >
+> > I agree that Peter's patch is the right thing to do for now. I was hoping we
+> > could instrument __{READ,WRITE}_ONCE(), but that we before I realised that
+> > __no_sanitize_or_inline doesn't seem to do anything.
+> >
+> > > Right, if/when people want sanitize crud enabled for x86 I need
+> > > something that:
+> > >
+> > >  - can mark a function 'no_sanitize' and all code that gets inlined into
+> > >    that function must automagically also not get sanitized. ie. make
+> > >    inline work like macros (again).
+> > >
+> > > And optionally:
+> > >
+> > >  - can mark a function explicitly 'sanitize', and only when an explicit
+> > >    sanitize and no_sanitize mix in inlining give the current
+> > >    incompatible attribute splat.
+> > >
+> > > That way we can have the noinstr function attribute imply no_sanitize
+> > > and frob the DEFINE_IDTENTRY*() macros to use (a new) sanitize_or_inline
+> > > helper instead of __always_inline for __##func().
+> >
+> > Sounds like a good plan to me, assuming the compiler folks are onboard.
+> > In the meantime, can we kill __no_sanitize_or_inline and put it back to
+> > the old __no_kasan_or_inline, which I think simplifies compiler.h and
+> > doesn't mislead people into using the function annotation to avoid KCSAN?
+> >
+> > READ_ONCE_NOCHECK should also probably be READ_ONCE_NOKASAN, but I
+> > appreciate that's a noisier change.
+> 
+> So far so good, except: both __no_sanitize_or_inline and
+> __no_kcsan_or_inline *do* avoid KCSAN instrumenting plain accesses, it
+> just doesn't avoid explicit kcsan_check calls, like those in
+> READ/WRITE_ONCE if KCSAN is enabled for the compilation unit. That's
+> just because macros won't be redefined just for __no_sanitize
+> functions. Similarly, READ_ONCE_NOCHECK does work as expected, and its
+> access is unchecked.
+> 
+> This will have the expected result:
+> __no_sanitize_or_inline void foo(void) { x++; } // no data races reported
+> 
+> This will not work as expected:
+> __no_sanitize_or_inline void foo(void) { READ_ONCE(x); }  // data
+> races are reported
 
-Make nocb toggable for a given CPU using:
-	/sys/devices/system/cpu/cpu*/hotplug/nocb
+But the problem is that *this* does not work as expected:
 
-This is only intended for those who want to test this patchset. The real
-interfaces will be cpuset/isolation and rcutorture.
+unsigned long __no_sanitize_or_inline foo(unsigned long *ptr)
+{
+	return READ_ONCE_NOCHECK(*ptr);
+}
 
-Not-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
----
- kernel/cpu.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+which I think means that the function annotation is practically useless.
 
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 2371292f30b0..ac6283dcb897 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -2208,10 +2208,33 @@ static ssize_t show_cpuhp_fail(struct device *dev,
- 
- static DEVICE_ATTR(fail, 0644, show_cpuhp_fail, write_cpuhp_fail);
- 
-+static ssize_t write_nocb(struct device *dev,
-+			  struct device_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	int val, ret;
-+
-+	ret = kstrtoint(buf, 10, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (val == 0)
-+		rcu_nocb_cpu_deoffload(dev->id);
-+	else if (val == 1)
-+		rcu_nocb_cpu_offload(dev->id);
-+	else
-+		return -EINVAL;
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR(nocb, 0644, NULL, write_nocb);
-+
- static struct attribute *cpuhp_cpu_attrs[] = {
- 	&dev_attr_state.attr,
- 	&dev_attr_target.attr,
- 	&dev_attr_fail.attr,
-+	&dev_attr_nocb.attr,
- 	NULL
- };
- 
--- 
-2.25.0
-
+Will
