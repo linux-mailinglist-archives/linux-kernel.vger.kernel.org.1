@@ -2,195 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011681D212B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A061D2140
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729524AbgEMVgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729411AbgEMVgd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:36:33 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA02C061A0C;
-        Wed, 13 May 2020 14:36:33 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id t11so328782pgg.2;
-        Wed, 13 May 2020 14:36:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VpoOJn6i4aDVNgvde4W3X1iXzGR+JdKQ0KKW5fvKRLM=;
-        b=NbjpkCzzP0ogAOfWyMX34L9+J9RSyWacyH0Bru23JzuNUIbJNWckgPEZb8vjM2easr
-         AyNN/1V4LJLm2rdw3Qdd4skiAG/dBF5dZaaG7c6W0zulNcnm5uRd4b+/aDc+hsaRPo6F
-         c/nVTvuGyeq1IbtkDv10e17DA9sTnJKC3rv050qzxO7xvpH1XlIlsbMZ4PNPZHM0IryU
-         NRuZDzcfsigT2VPoIis8KHg5Khi+woQN3fSqXwMUzEofEHiXW+QsKmvxq3UpDzWi0qwB
-         zvH8fzAL4PB3KLh/UOAAksU268sXIEt3JlsiRDOft4kpJoE3C28Xr9fTT9hAW2cngA/n
-         jpsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VpoOJn6i4aDVNgvde4W3X1iXzGR+JdKQ0KKW5fvKRLM=;
-        b=AH8R3NYOiXVf9KodpceSWMvYBhfgLWDxzvlmVjVZbWncORjRL0g+LQOZpAux/83ZNM
-         B8mQBJKLglFE+Gcy8Bbd1MOPRSnR1iiM3JmalB5qamq3ieFM0snNryQW68d0BSD5RpvO
-         iNsjMH7mkH3V6wMGesqNbe1EJnZgKlVA5FkperVY0jBI+TJHcNg2BZParSZLa1g6slbC
-         jRKKGebQbdt3XDTIFuQ8SxX4qJ40V+RkfmtLHyqCHRj0Rtp8n0josxpvTv/lWX8YxXXF
-         HrIW5AVHbXi/k98zIiMtwPWZV8Z6YYp7sMQ00KTKoPksPhz7Mrg/0deZ5N0rSQw+mbPE
-         aFxA==
-X-Gm-Message-State: AOAM532Ctk2RrJbpe8nwsfBQO2iSQ3pmkQBbixtiV+ByygRWAoX1jadd
-        j1O2/u87YeQiXGurGyPf1K+WIoyj
-X-Google-Smtp-Source: ABdhPJywhvQAU47EyT10Pm5UNvQu0HhjDddVgU8TUwiNxfEQ9l6J2cgIB01RpFPiWGUQ3gGmRdOKiA==
-X-Received: by 2002:a63:c34a:: with SMTP id e10mr1231638pgd.132.1589405792528;
-        Wed, 13 May 2020 14:36:32 -0700 (PDT)
-Received: from [10.230.191.242] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 62sm420679pfu.181.2020.05.13.14.36.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2020 14:36:32 -0700 (PDT)
-Subject: Re: [PATCH net-next 3/4] net: ethernet: introduce phy_set_pause
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1589243050-18217-1-git-send-email-opendmb@gmail.com>
- <1589243050-18217-4-git-send-email-opendmb@gmail.com>
- <20200513094239.GG1551@shell.armlinux.org.uk>
-From:   Doug Berger <opendmb@gmail.com>
-Message-ID: <7cd0e092-0896-4dc5-66a9-7213e92b3060@gmail.com>
-Date:   Wed, 13 May 2020 14:39:21 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729539AbgEMVlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 17:41:09 -0400
+Received: from mga14.intel.com ([192.55.52.115]:26954 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729196AbgEMVlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 17:41:09 -0400
+IronPort-SDR: C5qoFjMAOBoJlznbhAyz9uCQly+/8s2aTYXkcFHstfEWUCzUpxRMrOp/awP4JYc2HmCR0Xx/g1
+ KTRMm6XNSX8g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 14:41:08 -0700
+IronPort-SDR: QDfsqhQI1vfkk52vEz67aeItZEtMsGebv+9WKFWpon6YL437ddc2q7JwZVC//VgPX6bh6DXwe5
+ DwWUGDG7bR0Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,389,1583222400"; 
+   d="scan'208";a="251892299"
+Received: from rthurerx-mobl.ger.corp.intel.com (HELO localhost) ([10.249.36.107])
+  by fmsmga007.fm.intel.com with ESMTP; 13 May 2020 14:41:01 -0700
+Date:   Thu, 14 May 2020 00:40:59 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org, akpm@linux-foundation.org,
+        dave.hansen@intel.com, nhorman@redhat.com, npmccallum@redhat.com,
+        haitao.huang@intel.com, andriy.shevchenko@linux.intel.com,
+        tglx@linutronix.de, kai.svahn@intel.com, bp@alien8.de,
+        josh@joshtriplett.org, luto@kernel.org, kai.huang@intel.com,
+        rientjes@google.com, cedric.xing@intel.com, puiterwijk@redhat.com
+Subject: Re: [PATCH v29 14/20] x86/sgx: ptrace() support for the SGX driver
+Message-ID: <20200513214059.GC31974@linux.intel.com>
+References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
+ <20200421215316.56503-15-jarkko.sakkinen@linux.intel.com>
+ <20200506215048.GJ3329@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200513094239.GG1551@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506215048.GJ3329@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/2020 2:42 AM, Russell King - ARM Linux admin wrote:
-> On Mon, May 11, 2020 at 05:24:09PM -0700, Doug Berger wrote:
->> This commit introduces the phy_set_pause function to the phylib as
->> a helper to support the set_pauseparam ethtool method.
->>
->> It is hoped that the new behavior introduced by this function will
->> be widely embraced and the phy_set_sym_pause and phy_set_asym_pause
->> functions can be deprecated. Those functions are retained for all
->> existing users and for any desenting opinions on my interpretation
->> of the functionality.
->>
->> Signed-off-by: Doug Berger <opendmb@gmail.com>
->> ---
->>  drivers/net/phy/phy_device.c | 31 +++++++++++++++++++++++++++++++
->>  include/linux/phy.h          |  1 +
->>  2 files changed, 32 insertions(+)
->>
->> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
->> index 48ab9efa0166..e6dafb3c3e5f 100644
->> --- a/drivers/net/phy/phy_device.c
->> +++ b/drivers/net/phy/phy_device.c
->> @@ -2614,6 +2614,37 @@ void phy_set_asym_pause(struct phy_device *phydev, bool rx, bool tx)
->>  EXPORT_SYMBOL(phy_set_asym_pause);
->>  
->>  /**
->> + * phy_set_pause - Configure Pause and Asym Pause with autoneg
->> + * @phydev: target phy_device struct
->> + * @rx: Receiver Pause is supported
->> + * @tx: Transmit Pause is supported
->> + * @autoneg: Auto neg should be used
->> + *
->> + * Description: Configure advertised Pause support depending on if
->> + * receiver pause and pause auto neg is supported. Generally called
->> + * from the set_pauseparam ethtool_ops.
->> + *
->> + * Note: Since pause is really a MAC level function it should be
->> + * notified via adjust_link to update its pause functions.
->> + */
->> +void phy_set_pause(struct phy_device *phydev, bool rx, bool tx, bool autoneg)
->> +{
->> +	linkmode_set_pause(phydev->advertising, tx, rx, autoneg);
->> +
->> +	/* Reset the state of an already running link to force a new
->> +	 * link up event when advertising doesn't change or when PHY
->> +	 * autoneg is disabled.
->> +	 */
->> +	mutex_lock(&phydev->lock);
->> +	if (phydev->state == PHY_RUNNING)
->> +		phydev->state = PHY_UP;
->> +	mutex_unlock(&phydev->lock);
+On Wed, May 06, 2020 at 02:50:48PM -0700, Sean Christopherson wrote:
+> On Wed, Apr 22, 2020 at 12:53:10AM +0300, Jarkko Sakkinen wrote:
+> > Add VMA callbacks for ptrace() that can be used with debug enclaves.
+> > With debug enclaves data can be read and write the memory word at a time
+> > by using ENCLS(EDBGRD) and ENCLS(EDBGWR) leaf instructions.
+> > 
+> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > ---
+> >  arch/x86/kernel/cpu/sgx/encl.c | 88 ++++++++++++++++++++++++++++++++++
+> >  1 file changed, 88 insertions(+)
+> > 
+> > diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+> > index fe7dbca40bb4..0c5ea2968868 100644
+> > --- a/arch/x86/kernel/cpu/sgx/encl.c
+> > +++ b/arch/x86/kernel/cpu/sgx/encl.c
+> > @@ -326,6 +326,7 @@ int sgx_encl_may_map(struct sgx_encl *encl, unsigned long start,
+> >  	return 0;
+> >  }
+> >  
+> > +
 > 
-> I wonder about this - will drivers cope with having two link-up events
-> via adjust_link without a corresponding link-down event?  What if they
-> touch registers that are only supposed to be touched while the link is
-> down?  Obviously, drivers have to opt-in to this interface, so it may
-> be okay provided we don't get wholesale changes.
-I too wonder about this. That's why I brought it up in the cover letter
-to this set. I would prefer a cleaner service interface for this kind of
-behavior for the reasons described in the cover letter, but thought this
-might be acceptable.
+> Unnecessary whitespace change.
 
->> +
->> +	phy_start_aneg(phydev);
-> 
-> Should we be making that conditional on something changing and autoneg
-> being enabled, like phy_set_asym_pause() does?  There is no point
-> interrupting an established link if the advertisement didn't change.
-Again this is described in the cover letter but repeated here:
-"The third introduces the phy_set_pause() function based on the existing
-phy_set_asym_pause() implementation. One aberration here is the direct
-manipulation of the phy state machine to allow a new link up event to
-notify the MAC that the pause parameters may have changed. This is a
-convenience to simplify the MAC driver by allowing one implementation
-of the pause configuration logic to be located in its adjust_link
-callback. Otherwise, the MAC driver would need to handle configuring
-the pause parameters for an already active PHY link which would likely
-require additional synchronization logic to protect the logic from
-asynchronous changes in the PHY state.
+Would not update series just for this. If something else, will fix this
+one.
 
-The logic in phy_set_asym_pause() that looks for a change in
-advertising is not particularly helpful here since now a change from
-tx=1 rx=1 to tx=0 rx=1 no longer changes the advertising if autoneg is
-enabled so phy_start_aneg() would not be called. I took the alternate
-approach of unconditionally calling phy_start_aneg() since it
-accommodates both manual and autoneg configured links. The "aberrant"
-logic allows manually configured and autonegotiated links that don't
-change their advertised parameters to receive an adjust_link call to
-act on pause parameters that have no effect on the PHY layer.
-
-It seemed excessive to bring the PHY down and back up when nogotiation
-is not necessary, but that could be an alternative approach. I am
-certainly open to any suggestions on how to improve that portion of
-the code if it is controversial and a consensus can be reached."
-
->> +}
->> +EXPORT_SYMBOL(phy_set_pause);
->> +
->> +/**
->>   * phy_validate_pause - Test if the PHY/MAC support the pause configuration
->>   * @phydev: phy_device struct
->>   * @pp: requested pause configuration
->> diff --git a/include/linux/phy.h b/include/linux/phy.h
->> index 5d8ff5428010..71e484424e68 100644
->> --- a/include/linux/phy.h
->> +++ b/include/linux/phy.h
->> @@ -1403,6 +1403,7 @@ void phy_support_asym_pause(struct phy_device *phydev);
->>  void phy_set_sym_pause(struct phy_device *phydev, bool rx, bool tx,
->>  		       bool autoneg);
->>  void phy_set_asym_pause(struct phy_device *phydev, bool rx, bool tx);
->> +void phy_set_pause(struct phy_device *phydev, bool rx, bool tx, bool autoneg);
->>  bool phy_validate_pause(struct phy_device *phydev,
->>  			struct ethtool_pauseparam *pp);
->>  void phy_get_pause(struct phy_device *phydev, bool *tx_pause, bool *rx_pause);
->> -- 
->> 2.7.4
->>
->>
-> 
-
+/Jarkko
