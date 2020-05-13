@@ -2,351 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE771D2767
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 08:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB541D222B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 00:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726022AbgENGUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 02:20:11 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4783 "EHLO huawei.com"
+        id S1731380AbgEMWjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 18:39:21 -0400
+Received: from mail-bn8nam11on2053.outbound.protection.outlook.com ([40.107.236.53]:6245
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725806AbgENGUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 02:20:11 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 7A5E82F506009A4B19BA;
-        Thu, 14 May 2020 14:20:05 +0800 (CST)
-Received: from localhost.localdomain (10.175.118.36) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 14 May 2020 14:19:58 +0800
-From:   Luo bin <luobin9@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <luoxianjun@huawei.com>, <luobin9@huawei.com>,
-        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
-Subject: [PATCH net-next] hinic: add set_ringparam ethtool_ops support
-Date:   Wed, 13 May 2020 22:37:33 +0000
-Message-ID: <20200513223733.6854-1-luobin9@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726383AbgEMWjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 18:39:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jh9mi38oWdT4qaNoM7t/TDW819utlCnX/S9DiWm9rX4ke3JC9AJ7jsJ8tvp+KLypdXFEQap+/6LnG+k9drkC3Qqb8xwrzx1iv/YMWwPLOggesiA1vf/UJGvlKoDbkM1qNNc4Gb25Nofy2Pa2p1ixQUpN0kGAJ3bo70iGbgvNyTBWTvKZxrjVbqZd2cxKdAcgB4wMa4LIAHHDlDnCS5uEVC2mUlIivM92eD2oucFM8DqXMgsb9Mlo0hkgK6Rp3GrAY7QkPtnBUpPvIrefKYrhryhLkAfPTl/zn+6fFycIvaARepG0JsKQvsJ6ygvYwT0z2+Pf3JWCj6uuc/AXMUIfAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KOKQEhjUABWFW0n7d4Bj/cCmFjo0RfDzIO2VOYgMYJg=;
+ b=nzxFJg34BJ6qjMv8YrQqyVusGM+mOi/Oi8XLZxJ+QFGGxqDUHKDWIlyzDdoEk3OFiK8+w6GqShwW6XtiPmFsoAmE9qrGJ1648T1q2XjI41G0v512hGpGoWN3H3tfpngsrfPjM6naa7T0UvNGQX6AdHB3VhbZlAQHYc3PCeEqgj/S3ZZmTdDlZvQyRjlxAA9QkhrkUNZRxMIqveYWMG7oI0URY2k9aBb5el1bUFpwRX/lVzWjjPvoQUkHMJZSILDFvbbOFIRJaWaSxOKZekMnmaFthSg97YftMXy/7pbqFPOzxpbk2yS36zm1O0E2RMioQEPdxSJCSFOF4f6PyDtfoQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KOKQEhjUABWFW0n7d4Bj/cCmFjo0RfDzIO2VOYgMYJg=;
+ b=UGAI+dBGjqv72x7I1RgKJBi8kcnvqcH8qVNMMr/M8GQn8Memf6LFoFcY3lL+4VDO0NZqq8nCk3j9nibHDozNhB61CjIOtAngsd8uhO+5zlk0ppO6emQTV6z7FXLLDeiouZK4Wk1fWBccrE49SNru/n0rcIHcwOcvacPDDz2sknw=
+Authentication-Results: tencent.com; dkim=none (message not signed)
+ header.d=none;tencent.com; dmarc=none action=none header.from=amd.com;
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
+ by SN1PR12MB2446.namprd12.prod.outlook.com (2603:10b6:802:26::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.33; Wed, 13 May
+ 2020 22:39:15 +0000
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::c0f:2938:784f:ed8d]) by SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::c0f:2938:784f:ed8d%7]) with mapi id 15.20.3000.022; Wed, 13 May 2020
+ 22:39:15 +0000
+Subject: [PATCH v5] arch/x86: Update config and kernel doc for MPK feature
+ on AMD
+From:   Babu Moger <babu.moger@amd.com>
+To:     corbet@lwn.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        hpa@zytor.com, pbonzini@redhat.com, sean.j.christopherson@intel.com
+Cc:     x86@kernel.org, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, dave.hansen@linux.intel.com,
+        luto@kernel.org, peterz@infradead.org, mchehab+samsung@kernel.org,
+        babu.moger@amd.com, changbin.du@intel.com, namit@vmware.com,
+        bigeasy@linutronix.de, yang.shi@linux.alibaba.com,
+        asteinhauser@google.com, anshuman.khandual@arm.com,
+        jan.kiszka@siemens.com, akpm@linux-foundation.org,
+        steven.price@arm.com, rppt@linux.vnet.ibm.com, peterx@redhat.com,
+        dan.j.williams@intel.com, arjunroy@google.com, logang@deltatee.com,
+        thellstrom@vmware.com, aarcange@redhat.com, justin.he@arm.com,
+        robin.murphy@arm.com, ira.weiny@intel.com, keescook@chromium.org,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        pawan.kumar.gupta@linux.intel.com, fenghua.yu@intel.com,
+        vineela.tummalapalli@intel.com, yamada.masahiro@socionext.com,
+        sam@ravnborg.org, acme@redhat.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Date:   Wed, 13 May 2020 17:39:12 -0500
+Message-ID: <158940940570.47998.17107695356894054769.stgit@naples-babu.amd.com>
+User-Agent: StGit/unknown-version
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR16CA0065.namprd16.prod.outlook.com
+ (2603:10b6:805:ca::42) To SN1PR12MB2560.namprd12.prod.outlook.com
+ (2603:10b6:802:26::19)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.118.36]
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from naples-babu.amd.com (165.204.78.2) by SN6PR16CA0065.namprd16.prod.outlook.com (2603:10b6:805:ca::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25 via Frontend Transport; Wed, 13 May 2020 22:39:13 +0000
+X-Originating-IP: [165.204.78.2]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 2c6196de-9975-44e1-3326-08d7f78e76fa
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2446:|SN1PR12MB2446:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB244660428B3C6562C0B2B51495BF0@SN1PR12MB2446.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0402872DA1
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eqOKuYx8zrboFNiWL/Jq4C0N4bswDZk9pOyqZrue/JtGBLiJjCHzTwnNFeZW+RyqRJCs9aJf0cprJi+bpZEbGgrS9Wz8PGS3Szd/JCc1ZAG56mZT16sr25gmmW6Aj8SHMZGNtiwhdYeh0ikd0iE7ht6ObFQ2p5EwJp1k/K8wuQrQdkKBlOFtkH8KXxtD00XRBWDwDNtfubuEODddJK3ewLcpIwzY9dZ5eZB14i5KHKmhrNoi7lSls164XyvUrWjsFsYU83loqzv7TomZHoRdQzwxJA3ECRG7jC9R6qHwQ5DAIr/uJuE1F6jptF2dG9KbfXKTy+ga+/nAuILFmpDUTAjxvgPQydETL303heoLt44znbY45lGXSj5jJcjgQbsgFHroqlHKiTjsurWnbvPrj6+H0UmTyQv701kOS4MDofP+gzi8iDhMyPQotGamWelcafeJaI444eh9DERxrQo3uwxtdtT2YxpbwCxrAHnESj5QBMK0j/xoT8NVkSDEAPbPBtqh5eV0BeGHapqwwVTur+uUTVQJtksiDjSkmOPAmQz+MGJy48N/671gmozFtogiK7gPFe4rwfgDAd3inMv49ia1lfUR9AmiCuixql3SYYo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(376002)(396003)(346002)(136003)(33430700002)(86362001)(956004)(4326008)(66946007)(66476007)(316002)(15650500001)(478600001)(966005)(7406005)(5660300002)(55016002)(44832011)(103116003)(16526019)(2906002)(66556008)(33440700001)(7416002)(52116002)(186003)(26005)(8676002)(8936002)(7696005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Te2c0w/UONxt+i/vwCA+gx9uoCZ4HHZnUeR8OobVhuTLbGSvU64u/gASYGPdM5iM29bNipVIhsPTL9lg/lxWVvM7RBrIRUvSCi4FP/3dUDDRq4XCVfIeR0upin7XtFayYVKcTjWr6D5B50FaCWLHm5+fBmHdzhZosUTXTs63yYddE3+zMwQaEU3HWPcxmlLH4AhLXI8jiJRJPyfOw2ANidt2Oqgy+MWnYipkM5Sj1Db++ZB4GnHKg8/P9EOL9Uj7wPSrz4Cml9uHmYC3Kx+nd2mpjEz31nY13erYRZTOE7tGi1H1cTUwHii12KurJ4vW214I9AIkyI1w92E3UGQmAQ/NS/oCl8w9w3B/3eRbe+8rKKgPg8o6X9ELK/2mmkWr6I7y36SfN5lYQLecuE1C/2ENmO6fkUB6nIxmAUkQDT0fvbqvkZdDfVeunLlSo/r0bSPRIQv37rxk8hdSl/0MbXF/ycB/VtNaoP1gR2b0QXQ=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c6196de-9975-44e1-3326-08d7f78e76fa
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2020 22:39:15.2488
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +jcWV/2sScrmsSCKzStOuzo+vmY/EDf8oMCu1U53TQe1v9gbmXh19eWR1xMxTiXu
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2446
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-support to change TX/RX queue depth with ethtool -G
+AMD's next generation of EPYC processors support the MPK (Memory
+Protection Keys) feature.
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
+Add a generic X86_MEMORY_PROTECTION_KEYS config shadowing
+X86_INTEL_MEMORY_PROTECTION_KEYS and update the kernel
+documentation.
+
+No functional changes.
+
+Signed-off-by: Babu Moger <babu.moger@amd.com>
 ---
- drivers/net/ethernet/huawei/hinic/hinic_dev.h |  2 +
- .../net/ethernet/huawei/hinic/hinic_ethtool.c | 78 ++++++++++++++++++-
- .../net/ethernet/huawei/hinic/hinic_hw_dev.c  | 11 ++-
- .../net/ethernet/huawei/hinic/hinic_hw_dev.h  |  2 +-
- .../net/ethernet/huawei/hinic/hinic_hw_io.c   |  4 +-
- .../net/ethernet/huawei/hinic/hinic_hw_io.h   |  3 +
- .../net/ethernet/huawei/hinic/hinic_hw_qp.c   |  1 +
- .../net/ethernet/huawei/hinic/hinic_hw_qp.h   |  3 +
- .../net/ethernet/huawei/hinic/hinic_main.c    |  9 ++-
- .../net/ethernet/huawei/hinic/hinic_port.c    |  2 +-
- .../net/ethernet/huawei/hinic/hinic_port.h    |  4 +
- 11 files changed, 104 insertions(+), 15 deletions(-)
+v5:
+ - Just submiting the first config update patch. Paulo said he already queued
+   patch 2 & 3.
+ - This patch addresses the few text changes suggested by Dave Hansen.
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_dev.h b/drivers/net/ethernet/huawei/hinic/hinic_dev.h
-index a621ebbf7610..48b40be3e84d 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_dev.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_dev.h
-@@ -69,6 +69,8 @@ struct hinic_dev {
+v4:
+https://lore.kernel.org/lkml/158932780954.44260.4292038705292213548.stgit@naples-babu.amd.com/
+- Removed all the source changes related to config parameter.
+    Just kept the doc cahnges and add new config parameter
+    X86_MEMORY_PROTECTION_KEYS which shadows X86_INTEL_MEMORY_PROTECTION_KEYS.
+ - Minor change in feature detection in kvm/cpuid.c 
+
+v3:
+  https://lore.kernel.org/lkml/158923982830.20128.14580309786525588408.stgit@naples-babu.amd.com/#r
+  - Fixed the problem Jim Mattson pointed out which can cause pkru
+    resources to get corrupted during host and guest switches. 
+  - Moved the PKU feature detection code from VMX.c to common code.
+  
+v2:
+  https://lore.kernel.org/lkml/158897190718.22378.3974700869904223395.stgit@naples-babu.amd.com/
+  - Introduced intermediate config option X86_MEMORY_PROTECTION_KEYS to
+    avoid user propmpts. Kept X86_INTEL_MEMORY_PROTECTION_KEYS as is.
+    Eventually, we will be moving to X86_MEMORY_PROTECTION_KEYS after
+    couple of kernel revisions. 
+  - Moved pkru data structures to kvm_vcpu_arch. Moved save/restore pkru
+    to kvm_load_host_xsave_state/kvm_load_guest_xsave_state.
+
+v1:
+  https://lore.kernel.org/lkml/158880240546.11615.2219410169137148044.stgit@naples-babu.amd.com/
+
+
+ Documentation/core-api/protection-keys.rst |    5 +++--
+ arch/x86/Kconfig                           |   11 +++++++++--
+ 2 files changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/core-api/protection-keys.rst b/Documentation/core-api/protection-keys.rst
+index 49d9833af871..ec575e72d0b2 100644
+--- a/Documentation/core-api/protection-keys.rst
++++ b/Documentation/core-api/protection-keys.rst
+@@ -5,8 +5,9 @@ Memory Protection Keys
+ ======================
  
- 	struct hinic_txq                *txqs;
- 	struct hinic_rxq                *rxqs;
-+	u16				sq_depth;
-+	u16				rq_depth;
+ Memory Protection Keys for Userspace (PKU aka PKEYs) is a feature
+-which is found on Intel's Skylake "Scalable Processor" Server CPUs.
+-It will be avalable in future non-server parts.
++which is found on Intel's Skylake (and later) "Scalable Processor"
++Server CPUs. It will be available in future non-server Intel parts
++and future AMD processors.
  
- 	struct hinic_txq_stats          tx_stats;
- 	struct hinic_rxq_stats          rx_stats;
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-index b426eeced069..ace18d258049 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-@@ -538,12 +538,81 @@ static void hinic_get_drvinfo(struct net_device *netdev,
- static void hinic_get_ringparam(struct net_device *netdev,
- 				struct ethtool_ringparam *ring)
- {
--	ring->rx_max_pending = HINIC_RQ_DEPTH;
--	ring->tx_max_pending = HINIC_SQ_DEPTH;
--	ring->rx_pending = HINIC_RQ_DEPTH;
--	ring->tx_pending = HINIC_SQ_DEPTH;
-+	struct hinic_dev *nic_dev = netdev_priv(netdev);
+ For anyone wishing to test or use this feature, it is available in
+ Amazon's EC2 C5 instances and is known to work there using an Ubuntu
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 1197b5596d5a..6b7303ccc1dd 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1887,10 +1887,10 @@ config X86_UMIP
+ 	  results are dummy.
+ 
+ config X86_INTEL_MEMORY_PROTECTION_KEYS
+-	prompt "Intel Memory Protection Keys"
++	prompt "Memory Protection Keys"
+ 	def_bool y
+ 	# Note: only available in 64-bit mode
+-	depends on CPU_SUP_INTEL && X86_64
++	depends on X86_64 && (CPU_SUP_INTEL || CPU_SUP_AMD)
+ 	select ARCH_USES_HIGH_VMA_FLAGS
+ 	select ARCH_HAS_PKEYS
+ 	---help---
+@@ -1902,6 +1902,13 @@ config X86_INTEL_MEMORY_PROTECTION_KEYS
+ 
+ 	  If unsure, say y.
+ 
++config X86_MEMORY_PROTECTION_KEYS
++	# Set the "INTEL_"-free option whenever the "INTEL_" one is set.
++	# The "INTEL_" one should be removed and replaced by this option
++	# after 5.10. This avoids exposing most 'oldconfig' users to this
++	# churn.
++	def_bool X86_INTEL_MEMORY_PROTECTION_KEYS
 +
-+	ring->rx_max_pending = HINIC_MAX_QUEUE_DEPTH;
-+	ring->tx_max_pending = HINIC_MAX_QUEUE_DEPTH;
-+	ring->rx_pending = nic_dev->rq_depth;
-+	ring->tx_pending = nic_dev->sq_depth;
- }
- 
-+static int check_ringparam_valid(struct hinic_dev *nic_dev,
-+				 struct ethtool_ringparam *ring)
-+{
-+	if (ring->rx_jumbo_pending || ring->rx_mini_pending) {
-+		netif_err(nic_dev, drv, nic_dev->netdev,
-+			  "Unsupported rx_jumbo_pending/rx_mini_pending\n");
-+		return -EINVAL;
-+	}
-+
-+	if (ring->tx_pending > HINIC_MAX_QUEUE_DEPTH ||
-+	    ring->tx_pending < HINIC_MIN_QUEUE_DEPTH ||
-+	    ring->rx_pending > HINIC_MAX_QUEUE_DEPTH ||
-+	    ring->rx_pending < HINIC_MIN_QUEUE_DEPTH) {
-+		netif_err(nic_dev, drv, nic_dev->netdev,
-+			  "Queue depth out of range [%d-%d]\n",
-+			  HINIC_MIN_QUEUE_DEPTH, HINIC_MAX_QUEUE_DEPTH);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int hinic_set_ringparam(struct net_device *netdev,
-+			       struct ethtool_ringparam *ring)
-+{
-+	struct hinic_dev *nic_dev = netdev_priv(netdev);
-+	u16 new_sq_depth, new_rq_depth;
-+	int err;
-+
-+	err = check_ringparam_valid(nic_dev, ring);
-+	if (err)
-+		return err;
-+
-+	new_sq_depth = (u16)(1U << (u16)ilog2(ring->tx_pending));
-+	new_rq_depth = (u16)(1U << (u16)ilog2(ring->rx_pending));
-+
-+	if (new_sq_depth == nic_dev->sq_depth &&
-+	    new_rq_depth == nic_dev->rq_depth)
-+		return 0;
-+
-+	netif_info(nic_dev, drv, netdev,
-+		   "Change Tx/Rx ring depth from %d/%d to %d/%d\n",
-+		   nic_dev->sq_depth, nic_dev->rq_depth,
-+		   new_sq_depth, new_rq_depth);
-+
-+	nic_dev->sq_depth = new_sq_depth;
-+	nic_dev->rq_depth = new_rq_depth;
-+
-+	if (netif_running(netdev)) {
-+		netif_info(nic_dev, drv, netdev, "Restarting netdev\n");
-+		err = hinic_close(netdev);
-+		if (err) {
-+			netif_err(nic_dev, drv, netdev,
-+				  "Failed to close netdev\n");
-+			return -EFAULT;
-+		}
-+
-+		err = hinic_open(netdev);
-+		if (err) {
-+			netif_err(nic_dev, drv, netdev,
-+				  "Failed to open netdev\n");
-+			return -EFAULT;
-+		}
-+	}
-+
-+	return 0;
-+}
- static void hinic_get_channels(struct net_device *netdev,
- 			       struct ethtool_channels *channels)
- {
-@@ -1148,6 +1217,7 @@ static const struct ethtool_ops hinic_ethtool_ops = {
- 	.get_drvinfo = hinic_get_drvinfo,
- 	.get_link = ethtool_op_get_link,
- 	.get_ringparam = hinic_get_ringparam,
-+	.set_ringparam = hinic_set_ringparam,
- 	.get_channels = hinic_get_channels,
- 	.get_rxnfc = hinic_get_rxnfc,
- 	.set_rxnfc = hinic_set_rxnfc,
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c
-index 2879b0445eba..0245da02efbb 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c
-@@ -269,8 +269,8 @@ static int init_fw_ctxt(struct hinic_hwdev *hwdev)
-  *
-  * Return 0 - Success, negative - Failure
-  **/
--static int set_hw_ioctxt(struct hinic_hwdev *hwdev, unsigned int rq_depth,
--			 unsigned int sq_depth)
-+static int set_hw_ioctxt(struct hinic_hwdev *hwdev, unsigned int sq_depth,
-+			 unsigned int rq_depth)
- {
- 	struct hinic_hwif *hwif = hwdev->hwif;
- 	struct hinic_cmd_hw_ioctxt hw_ioctxt;
-@@ -435,7 +435,7 @@ static int get_base_qpn(struct hinic_hwdev *hwdev, u16 *base_qpn)
-  *
-  * Return 0 - Success, negative - Failure
-  **/
--int hinic_hwdev_ifup(struct hinic_hwdev *hwdev)
-+int hinic_hwdev_ifup(struct hinic_hwdev *hwdev, u16 sq_depth, u16 rq_depth)
- {
- 	struct hinic_func_to_io *func_to_io = &hwdev->func_to_io;
- 	struct hinic_cap *nic_cap = &hwdev->nic_cap;
-@@ -458,6 +458,9 @@ int hinic_hwdev_ifup(struct hinic_hwdev *hwdev)
- 
- 	ceq_msix_entries = &hwdev->msix_entries[num_aeqs];
- 	func_to_io->hwdev = hwdev;
-+	func_to_io->sq_depth = sq_depth;
-+	func_to_io->rq_depth = rq_depth;
-+
- 	err = hinic_io_init(func_to_io, hwif, nic_cap->max_qps, num_ceqs,
- 			    ceq_msix_entries);
- 	if (err) {
-@@ -482,7 +485,7 @@ int hinic_hwdev_ifup(struct hinic_hwdev *hwdev)
- 		hinic_db_state_set(hwif, HINIC_DB_ENABLE);
- 	}
- 
--	err = set_hw_ioctxt(hwdev, HINIC_SQ_DEPTH, HINIC_RQ_DEPTH);
-+	err = set_hw_ioctxt(hwdev, sq_depth, rq_depth);
- 	if (err) {
- 		dev_err(&pdev->dev, "Failed to set HW IO ctxt\n");
- 		goto err_hw_ioctxt;
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h
-index ce57914bef72..71ea7e46dbbc 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h
-@@ -347,7 +347,7 @@ int hinic_hilink_msg_cmd(struct hinic_hwdev *hwdev, enum hinic_hilink_cmd cmd,
- 			 void *buf_in, u16 in_size, void *buf_out,
- 			 u16 *out_size);
- 
--int hinic_hwdev_ifup(struct hinic_hwdev *hwdev);
-+int hinic_hwdev_ifup(struct hinic_hwdev *hwdev, u16 sq_depth, u16 rq_depth);
- 
- void hinic_hwdev_ifdown(struct hinic_hwdev *hwdev);
- 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_io.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_io.c
-index a4581c988a63..3e3fa742e476 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_io.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_io.c
-@@ -282,7 +282,7 @@ static int init_qp(struct hinic_func_to_io *func_to_io,
- 
- 	err = hinic_wq_allocate(&func_to_io->wqs, &func_to_io->sq_wq[q_id],
- 				HINIC_SQ_WQEBB_SIZE, HINIC_SQ_PAGE_SIZE,
--				HINIC_SQ_DEPTH, HINIC_SQ_WQE_MAX_SIZE);
-+				func_to_io->sq_depth, HINIC_SQ_WQE_MAX_SIZE);
- 	if (err) {
- 		dev_err(&pdev->dev, "Failed to allocate WQ for SQ\n");
- 		return err;
-@@ -290,7 +290,7 @@ static int init_qp(struct hinic_func_to_io *func_to_io,
- 
- 	err = hinic_wq_allocate(&func_to_io->wqs, &func_to_io->rq_wq[q_id],
- 				HINIC_RQ_WQEBB_SIZE, HINIC_RQ_PAGE_SIZE,
--				HINIC_RQ_DEPTH, HINIC_RQ_WQE_SIZE);
-+				func_to_io->rq_depth, HINIC_RQ_WQE_SIZE);
- 	if (err) {
- 		dev_err(&pdev->dev, "Failed to allocate WQ for RQ\n");
- 		goto err_rq_alloc;
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_io.h b/drivers/net/ethernet/huawei/hinic/hinic_hw_io.h
-index 28c0594f636d..214f162f7579 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_io.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_io.h
-@@ -60,6 +60,9 @@ struct hinic_func_to_io {
- 	struct hinic_qp         *qps;
- 	u16                     max_qps;
- 
-+	u16			sq_depth;
-+	u16			rq_depth;
-+
- 	void __iomem            **sq_db;
- 	void __iomem            *db_base;
- 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_qp.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_qp.c
-index 20c5c8ea452e..fcf7bfe4aa47 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_qp.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_qp.c
-@@ -643,6 +643,7 @@ void hinic_sq_write_db(struct hinic_sq *sq, u16 prod_idx, unsigned int wqe_size,
- 
- 	/* increment prod_idx to the next */
- 	prod_idx += ALIGN(wqe_size, wq->wqebb_size) / wq->wqebb_size;
-+	prod_idx = SQ_MASKED_IDX(sq, prod_idx);
- 
- 	wmb();  /* Write all before the doorbell */
- 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_qp.h b/drivers/net/ethernet/huawei/hinic/hinic_hw_qp.h
-index c30d092e48d5..ca3e2d060284 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_qp.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_qp.h
-@@ -44,6 +44,9 @@
- #define HINIC_SQ_DEPTH                          SZ_4K
- #define HINIC_RQ_DEPTH                          SZ_4K
- 
-+#define HINIC_MAX_QUEUE_DEPTH			SZ_4K
-+#define HINIC_MIN_QUEUE_DEPTH			128
-+
- /* In any change to HINIC_RX_BUF_SZ, HINIC_RX_BUF_SZ_IDX must be changed */
- #define HINIC_RX_BUF_SZ                         2048
- #define HINIC_RX_BUF_SZ_IDX			HINIC_RX_BUF_SZ_2048_IDX
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_main.c b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-index 3d6569d7bac8..e3ff119fe341 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-@@ -372,14 +372,15 @@ static void hinic_enable_rss(struct hinic_dev *nic_dev)
- 		netif_err(nic_dev, drv, netdev, "Failed to init rss\n");
- }
- 
--static int hinic_open(struct net_device *netdev)
-+int hinic_open(struct net_device *netdev)
- {
- 	struct hinic_dev *nic_dev = netdev_priv(netdev);
- 	enum hinic_port_link_state link_state;
- 	int err, ret;
- 
- 	if (!(nic_dev->flags & HINIC_INTF_UP)) {
--		err = hinic_hwdev_ifup(nic_dev->hwdev);
-+		err = hinic_hwdev_ifup(nic_dev->hwdev, nic_dev->sq_depth,
-+				       nic_dev->rq_depth);
- 		if (err) {
- 			netif_err(nic_dev, drv, netdev,
- 				  "Failed - HW interface up\n");
-@@ -483,7 +484,7 @@ static int hinic_open(struct net_device *netdev)
- 	return err;
- }
- 
--static int hinic_close(struct net_device *netdev)
-+int hinic_close(struct net_device *netdev)
- {
- 	struct hinic_dev *nic_dev = netdev_priv(netdev);
- 	unsigned int flags;
-@@ -1038,6 +1039,8 @@ static int nic_dev_init(struct pci_dev *pdev)
- 	nic_dev->rxqs = NULL;
- 	nic_dev->tx_weight = tx_weight;
- 	nic_dev->rx_weight = rx_weight;
-+	nic_dev->sq_depth = HINIC_SQ_DEPTH;
-+	nic_dev->rq_depth = HINIC_RQ_DEPTH;
- 	nic_dev->sriov_info.hwdev = hwdev;
- 	nic_dev->sriov_info.pdev = pdev;
- 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.c b/drivers/net/ethernet/huawei/hinic/hinic_port.c
-index 2edb6127f9fb..175c0ee00038 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_port.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_port.c
-@@ -473,7 +473,7 @@ int hinic_set_max_qnum(struct hinic_dev *nic_dev, u8 num_rqs)
- 
- 	rq_num.func_id = HINIC_HWIF_FUNC_IDX(hwif);
- 	rq_num.num_rqs = num_rqs;
--	rq_num.rq_depth = ilog2(HINIC_SQ_DEPTH);
-+	rq_num.rq_depth = ilog2(nic_dev->rq_depth);
- 
- 	err = hinic_port_msg_cmd(hwdev, HINIC_PORT_CMD_SET_RQ_IQ_MAP,
- 				 &rq_num, sizeof(rq_num),
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.h b/drivers/net/ethernet/huawei/hinic/hinic_port.h
-index 5f34308abd2b..661c6322dc15 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_port.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_port.h
-@@ -736,4 +736,8 @@ int hinic_get_hw_pause_info(struct hinic_hwdev *hwdev,
- int hinic_set_hw_pause_info(struct hinic_hwdev *hwdev,
- 			    struct hinic_pause_config *pause_info);
- 
-+int hinic_open(struct net_device *netdev);
-+
-+int hinic_close(struct net_device *netdev);
-+
- #endif
--- 
-2.17.1
+ choice
+ 	prompt "TSX enable mode"
+ 	depends on CPU_SUP_INTEL
 
