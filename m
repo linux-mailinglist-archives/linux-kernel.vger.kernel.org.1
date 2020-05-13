@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0891D0E30
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB8E1D0CB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387660AbgEMJyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:54:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56996 "EHLO mail.kernel.org"
+        id S1732760AbgEMJq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:46:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388105AbgEMJyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:54:31 -0400
+        id S1732730AbgEMJq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:46:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D2A7205ED;
-        Wed, 13 May 2020 09:54:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3215420740;
+        Wed, 13 May 2020 09:46:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363670;
-        bh=Gfi63/hHDSs12PkUQ2zqadY7CKv2HaQWnYt1yzmH+sI=;
+        s=default; t=1589363215;
+        bh=7+ERR58qtP0Taf+nilPY80hBVVqMfzujDkJgWpGVnnk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i0LIkoXGcj7hceyei4r60UElT2jennMNnmU82Lk0UG3oxbwQq2rBGxW1USv6hgxxR
-         z+TCTtAoHmcFVnfXK4ro0B4xs92CyVJjNocytTmbVK2HtbvCJsZWBfYxYKajSSepHK
-         UcmoMe4OHTF37k1y37VkM3s3TsyiIckR9VB/77M4=
+        b=DsITpYvqnbVYe6fpqAvx3VeXkyMJuLMtrfz8CDTNDSgeZQlc1sbxmrgCbdP3BKqXU
+         NTC5hbuMSnWl93FKYgxmHNNx0GmjYLUI4y1dgfoPP9tDaJkfCX4o8SDDYXRzGGGhAD
+         7xcgbLALrzG9yLi+ifPBZzo5Syebp1En7Z04Rwjs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 5.6 079/118] drm: ingenic-drm: add MODULE_DEVICE_TABLE
-Date:   Wed, 13 May 2020 11:44:58 +0200
-Message-Id: <20200513094424.471966317@linuxfoundation.org>
+        stable@vger.kernel.org, George Spelvin <lkml@sdf.org>,
+        Sven Eckelmann <sven@narfation.org>,
+        Simon Wunderlich <sw@simonwunderlich.de>
+Subject: [PATCH 4.19 33/48] batman-adv: fix batadv_nc_random_weight_tq
+Date:   Wed, 13 May 2020 11:44:59 +0200
+Message-Id: <20200513094400.031666955@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
-References: <20200513094417.618129545@linuxfoundation.org>
+In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
+References: <20200513094351.100352960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: H. Nikolaus Schaller <hns@goldelico.com>
+From: George Spelvin <lkml@sdf.org>
 
-commit c59359a02d14a7256cd508a4886b7d2012df2363 upstream.
+commit fd0c42c4dea54335967c5a86f15fc064235a2797 upstream.
 
-so that the driver can load by matching the device tree
-if compiled as module.
+and change to pseudorandom numbers, as this is a traffic dithering
+operation that doesn't need crypto-grade.
 
-Cc: stable@vger.kernel.org # v5.3+
-Fixes: 90b86fcc47b4 ("DRM: Add KMS driver for the Ingenic JZ47xx SoCs")
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Link: https://patchwork.freedesktop.org/patch/msgid/1694a29b7a3449b6b662cec33d1b33f2ee0b174a.1588574111.git.hns@goldelico.com
+The previous code operated in 4 steps:
+
+1. Generate a random byte 0 <= rand_tq <= 255
+2. Multiply it by BATADV_TQ_MAX_VALUE - tq
+3. Divide by 255 (= BATADV_TQ_MAX_VALUE)
+4. Return BATADV_TQ_MAX_VALUE - rand_tq
+
+This would apperar to scale (BATADV_TQ_MAX_VALUE - tq) by a random
+value between 0/255 and 255/255.
+
+But!  The intermediate value between steps 3 and 4 is stored in a u8
+variable.  So it's truncated, and most of the time, is less than 255, after
+which the division produces 0.  Specifically, if tq is odd, the product is
+always even, and can never be 255.  If tq is even, there's exactly one
+random byte value that will produce a product byte of 255.
+
+Thus, the return value is 255 (511/512 of the time) or 254 (1/512
+of the time).
+
+If we assume that the truncation is a bug, and the code is meant to scale
+the input, a simpler way of looking at it is that it's returning a random
+value between tq and BATADV_TQ_MAX_VALUE, inclusive.
+
+Well, we have an optimized function for doing just that.
+
+Fixes: 3c12de9a5c75 ("batman-adv: network coding - code and transmit packets if possible")
+Signed-off-by: George Spelvin <lkml@sdf.org>
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/ingenic/ingenic-drm.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/batman-adv/network-coding.c |    9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
---- a/drivers/gpu/drm/ingenic/ingenic-drm.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm.c
-@@ -843,6 +843,7 @@ static const struct of_device_id ingenic
- 	{ .compatible = "ingenic,jz4770-lcd", .data = &jz4770_soc_info },
- 	{ /* sentinel */ },
- };
-+MODULE_DEVICE_TABLE(of, ingenic_drm_of_match);
+--- a/net/batman-adv/network-coding.c
++++ b/net/batman-adv/network-coding.c
+@@ -1021,15 +1021,8 @@ static struct batadv_nc_path *batadv_nc_
+  */
+ static u8 batadv_nc_random_weight_tq(u8 tq)
+ {
+-	u8 rand_val, rand_tq;
+-
+-	get_random_bytes(&rand_val, sizeof(rand_val));
+-
+ 	/* randomize the estimated packet loss (max TQ - estimated TQ) */
+-	rand_tq = rand_val * (BATADV_TQ_MAX_VALUE - tq);
+-
+-	/* normalize the randomized packet loss */
+-	rand_tq /= BATADV_TQ_MAX_VALUE;
++	u8 rand_tq = prandom_u32_max(BATADV_TQ_MAX_VALUE + 1 - tq);
  
- static struct platform_driver ingenic_drm_driver = {
- 	.driver = {
+ 	/* convert to (randomized) estimated tq again */
+ 	return BATADV_TQ_MAX_VALUE - rand_tq;
 
 
