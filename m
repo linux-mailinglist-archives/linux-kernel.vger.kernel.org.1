@@ -2,105 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035A81D1E1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 20:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C051D1E44
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 20:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390330AbgEMS4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 14:56:13 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:48235 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732218AbgEMS4N (ORCPT
+        id S2390500AbgEMS5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 14:57:11 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:51934 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390388AbgEMS4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 14:56:13 -0400
-Received: from [192.168.1.123] (cm-84.210.220.251.getinternet.no [84.210.220.251])
-        (Authenticated sender: fredrik@strupe.net)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 67E2C240005;
-        Wed, 13 May 2020 18:56:09 +0000 (UTC)
-Subject: Re: [RFC PATCH] arm: Don't trap conditional UDF instructions
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        Richard Fontana <rfontana@redhat.com>,
+        Wed, 13 May 2020 14:56:36 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id A65292A25D4
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id 869D048010A; Wed, 13 May 2020 20:56:29 +0200 (CEST)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Enrico Weigelt <info@metux.net>
-References: <b2042f19-9477-272c-0989-d6cab1572cca@strupe.net>
- <20200513181209.GM1551@shell.armlinux.org.uk>
-From:   Fredrik Strupe <fredrik@strupe.net>
-Message-ID: <9fba4d17-d826-6a3a-86fc-60977aa6cc9e@strupe.net>
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: [PATCHv1 12/19] power: supply: sbs-battery: add MANUFACTURE_DATE support
 Date:   Wed, 13 May 2020 20:56:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+Message-Id: <20200513185615.508236-13-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200513185615.508236-1-sebastian.reichel@collabora.com>
+References: <20200513185615.508236-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
-In-Reply-To: <20200513181209.GM1551@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.05.2020 20:12, Russell King - ARM Linux admin wrote:
-> On Wed, May 13, 2020 at 05:41:58PM +0200, Fredrik Strupe wrote:
->> Hi,
->>
->> This is more of a question than a patch, but I hope the attached patch makes
->> the issue a bit clearer.
->>
->> The arm port of Linux supports hooking/trapping of undefined instructions. Some
->> parts of the code use this to trap UDF instructions with certain immediates in
->> order to use them for other purposes, like 'UDF #16' which is equivalent to a
->> BKPT instruction in A32.
->>
->> Moreover, most of the undef hooks on UDF instructions assume that UDF is
->> conditional and mask out the condition prefix during matching. The attached
->> patch shows the locations where this happens. However, the Arm architecture
->> reference manual explicitly states that UDF is *not* conditional, making
->> any instruction encoding with a condition prefix other than 0xe (always
->> execute) unallocated.
->
-> The latest version of the ARM architecture reference manual may say
-> that, but earlier versions say different things. The latest reference
-> manual does not apply to earlier architectures, so if you're writing
-> code to cover multiple different architectures, you must have an
-> understanding of each of those architectures.
->
-> So, from the code:
->
-> 	ARM:   xxxx 0111 1111 xxxx xxxx xxxx 1111 xxxx
->
-> From DDI0100E:
->
-> 3.13.1 Undefined instruction space
->        Instructions with the following opcodes are undefined
->        instruction space:
->
->        opcode[27:25] = 0b011
->        opcode[4] = 1
->
->        31 28 27 26 25 24                                     5 4 3     0
->        cond  0  1  1  x  x x x x x x x x x x x x x x x x x x x 1 x x x x
->
-> So, in this version of the architecture, undefined instructions may
-> be conditional - and indeed that used to be the case.  The condition
-> code was always respected, and cond=1111 meant "never" (NV).
->
-> Hence, trapping them if the condition code is not 1110 (AL) is
-> entirely reasonable, legal and safe.  If an ARM CPU defines an
-> instruction coding that matches the above, then it won't take the
-> undefined instruction trap, and we'll never see it.
->
-> Now, as for UDF usage in the kernel, it may be quite correct that we
-> always use the AL condition code for them, but it would be very odd
-> for there to be an instruction implemented with a different (non-NV)
-> condition code that can't also have it's AL condition code encoding.
-> You could never execute such an instruction unconditionally.
->
+Expose the battery's manufacture date to userspace.
 
-That makes sense. Thank you very much for a great answer!
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+---
+ drivers/power/supply/sbs-battery.c | 43 ++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-Fredrik
+diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sbs-battery.c
+index e6f61baa9bed..4fa553d61db2 100644
+--- a/drivers/power/supply/sbs-battery.c
++++ b/drivers/power/supply/sbs-battery.c
+@@ -58,6 +58,8 @@ enum {
+ #define SBS_VERSION_1_1			2
+ #define SBS_VERSION_1_1_WITH_PEC	3
+ 
++#define REG_ADDR_MANUFACTURE_DATE	0x1B
++
+ /* Battery Mode defines */
+ #define BATTERY_MODE_OFFSET		0x03
+ #define BATTERY_MODE_CAPACITY_MASK	BIT(15)
+@@ -171,6 +173,9 @@ static enum power_supply_property sbs_properties[] = {
+ 	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
+ 	POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX,
+ 	POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX,
++	POWER_SUPPLY_PROP_MANUFACTURE_YEAR,
++	POWER_SUPPLY_PROP_MANUFACTURE_MONTH,
++	POWER_SUPPLY_PROP_MANUFACTURE_DAY,
+ 	/* Properties of type `const char *' */
+ 	POWER_SUPPLY_PROP_MANUFACTURER,
+ 	POWER_SUPPLY_PROP_MODEL_NAME
+@@ -682,6 +687,38 @@ static int sbs_get_chemistry(struct i2c_client *client,
+ 	return 0;
+ }
+ 
++static int sbs_get_battery_manufacture_date(struct i2c_client *client,
++	enum power_supply_property psp,
++	union power_supply_propval *val)
++{
++	int ret;
++	u16 day, month, year;
++
++	ret = sbs_read_word_data(client, REG_ADDR_MANUFACTURE_DATE);
++	if (ret < 0)
++		return ret;
++
++	day   = ret   & GENMASK(4,  0);
++	month = (ret  & GENMASK(8,  5)) >> 5;
++	year  = ((ret & GENMASK(15, 9)) >> 9) + 1980;
++
++	switch (psp) {
++	case POWER_SUPPLY_PROP_MANUFACTURE_YEAR:
++		val->intval = year;
++		break;
++	case POWER_SUPPLY_PROP_MANUFACTURE_MONTH:
++		val->intval = month;
++		break;
++	case POWER_SUPPLY_PROP_MANUFACTURE_DAY:
++		val->intval = day;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int sbs_get_property(struct power_supply *psy,
+ 	enum power_supply_property psp,
+ 	union power_supply_propval *val)
+@@ -790,6 +827,12 @@ static int sbs_get_property(struct power_supply *psy,
+ 		val->strval = manufacturer;
+ 		break;
+ 
++	case POWER_SUPPLY_PROP_MANUFACTURE_YEAR:
++	case POWER_SUPPLY_PROP_MANUFACTURE_MONTH:
++	case POWER_SUPPLY_PROP_MANUFACTURE_DAY:
++		ret = sbs_get_battery_manufacture_date(client, psp, val);
++		break;
++
+ 	default:
+ 		dev_err(&client->dev,
+ 			"%s: INVALID property\n", __func__);
+-- 
+2.26.2
 
