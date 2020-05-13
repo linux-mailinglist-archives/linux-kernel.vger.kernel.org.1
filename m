@@ -2,153 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EDC1D2186
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8ABF1D218D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730035AbgEMV4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
+        id S1730214AbgEMV6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 17:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729487AbgEMV4O (ORCPT
+        by vger.kernel.org with ESMTP id S1729487AbgEMV6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:56:14 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35F4C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:56:12 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id s69so3378962pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:56:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=URXKt/CtJiUnLhAXRhzn7WHXaaovZqdso8oMCz+GR2c=;
-        b=zgg3uSPYjx1Fq9SF/NJZDBOu6PaZKWswvNlnYpfhfyOpMHs9QgxJblQ9SHH8w4SVTm
-         U/j8SreK901TGCI8VLZe+cGqfFACPgDBgsFNopQ6IwqhF0IGJlDwWt28aZCXIRLHhV2x
-         vGCe2fw3s0+OSJ931/VrF+xGe/D1G4Mu+Q3175i9r/udCjesuDuaEWCHLlw4srYQ47+p
-         wQodfH6T46WwVYrSeeva9WEM7EAc8UE64FUDcZ5lurlWEXPtrB5JiLHgSI1uOj7xhpoR
-         zZalj0FxzE0WLn62TQJhBirmicHXekBH1wLvNpHuHHRl8xSfazqCZmDTTVBbex0zdZlN
-         pr+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=URXKt/CtJiUnLhAXRhzn7WHXaaovZqdso8oMCz+GR2c=;
-        b=ip8LcuEmunovghHgJ7VxhT8QKu8kgh3qRt0YAEky7uuNDfa/hIWXr+kiMqlcpmwdrf
-         FiQnArnxK6UIrPZAO6N0b9VaV0nFB72eQb4+aeaMLgF+g/8qb9pvpmucLxFGFEFTjST6
-         GUGGyb+60LQiTsQMN7/vjlOReCOZmESJIikWRrLYcZM4G78VmXjcQ4ltIRp5qt4XHuKW
-         X+yA2LJSyq6ejNqxPXcqvrrNaHY8f9bbzusEONX9+jC09AjGr2W/ModJa8WOdkHl8U/r
-         ZlId+vh0ktCXpy5ZPEdsLs3oKZxIkL58RZZ3Hktp43VVGnog9xNcrsxgwZSkVlSVm0wa
-         WDkg==
-X-Gm-Message-State: AGi0Pua+HjgRZ1o623YA/HcN9tUIJfw0HD43cEEDAkJ/uQ8TsEZZJJkw
-        EurZNjJtjnren/bvjZpkjMIdzA==
-X-Google-Smtp-Source: APiQypLfZxmnarSDfauVRkIFplhL7r6EsFhDlKlDgtFu9R1IGXvtHs2lg5ugQzGaB0VBgM7OJ3kYkg==
-X-Received: by 2002:a17:90a:d3cc:: with SMTP id d12mr37699942pjw.158.1589406972131;
-        Wed, 13 May 2020 14:56:12 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id b24sm475244pfi.4.2020.05.13.14.56.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 14:56:11 -0700 (PDT)
-Date:   Wed, 13 May 2020 15:56:09 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arun Kumar Neelakantam <aneela@codeaurora.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, clew@codeaurora.org,
-        sricharan@codeaurora.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>
-Subject: Re: [PATCH V5 3/5] rpmsg: glink: Add support for rpmsg glink chrdev
-Message-ID: <20200513215609.GB8328@xps15>
-References: <1589346606-15046-1-git-send-email-aneela@codeaurora.org>
- <1589346606-15046-4-git-send-email-aneela@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1589346606-15046-4-git-send-email-aneela@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Wed, 13 May 2020 17:58:24 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FEA1C061A0C;
+        Wed, 13 May 2020 14:58:24 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 2503D12118547;
+        Wed, 13 May 2020 14:58:23 -0700 (PDT)
+Date:   Wed, 13 May 2020 14:58:20 -0700 (PDT)
+Message-Id: <20200513.145820.686713273456115128.davem@davemloft.net>
+To:     emil.l.velikov@gmail.com
+Cc:     dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
+        jslaby@suse.com, linux-kernel@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Subject: Re: [PATCH 07/11] sparc64: constify sysrq_key_op
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200513214351.2138580-7-emil.l.velikov@gmail.com>
+References: <20200513214351.2138580-1-emil.l.velikov@gmail.com>
+        <20200513214351.2138580-7-emil.l.velikov@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 13 May 2020 14:58:23 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 10:40:04AM +0530, Arun Kumar Neelakantam wrote:
-> From: Chris Lew <clew@codeaurora.org>
-> 
-> RPMSG provides a char device interface to userspace. Probe the rpmsg
-> chrdev channel to enable the rpmsg_ctrl device creation on glink
-> transports.
-> 
-> Signed-off-by: Chris Lew <clew@codeaurora.org>
-> Signed-off-by: Arun Kumar Neelakantam <aneela@codeaurora.org>
-> ---
->  drivers/rpmsg/qcom_glink_native.c | 40 ++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 39 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
-> index 604f11f..3a7f87c 100644
-> --- a/drivers/rpmsg/qcom_glink_native.c
-> +++ b/drivers/rpmsg/qcom_glink_native.c
-> @@ -1178,7 +1178,7 @@ static int qcom_glink_announce_create(struct rpmsg_device *rpdev)
->  	__be32 *val = defaults;
->  	int size;
->  
-> -	if (glink->intentless)
-> +	if (glink->intentless || !completion_done(&channel->open_ack))
+From: Emil Velikov <emil.l.velikov@gmail.com>
+Date: Wed, 13 May 2020 22:43:47 +0100
 
-Please move this to patch 01.
+> With earlier commits, the API no longer discards the const-ness of the
+> sysrq_key_op. As such we can add the notation.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Jiri Slaby <jslaby@suse.com>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: sparclinux@vger.kernel.org
+> Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
 
->  		return 0;
->  
->  	prop = of_find_property(np, "qcom,intents", NULL);
-> @@ -1574,6 +1574,40 @@ static void qcom_glink_cancel_rx_work(struct qcom_glink *glink)
->  		kfree(dcmd);
->  }
->  
-> +static void qcom_glink_device_release(struct device *dev)
-> +{
-> +	struct rpmsg_device *rpdev = to_rpmsg_device(dev);
-> +	struct glink_channel *channel = to_glink_channel(rpdev->ept);
-> +
-> +	/* Release qcom_glink_alloc_channel() reference */
-> +	kref_put(&channel->refcount, qcom_glink_channel_release);
-> +	kfree(rpdev);
-> +}
-> +
-> +static int qcom_glink_create_chrdev(struct qcom_glink *glink)
-> +{
-> +	struct rpmsg_device *rpdev;
-> +	struct glink_channel *channel;
-> +
-> +	rpdev = kzalloc(sizeof(*rpdev), GFP_KERNEL);
-> +	if (!rpdev)
-> +		return -ENOMEM;
-> +
-> +	channel = qcom_glink_alloc_channel(glink, "rpmsg_chrdev");
-> +	if (IS_ERR(channel)) {
-> +		kfree(rpdev);
-> +		return PTR_ERR(channel);
-> +	}
-> +	channel->rpdev = rpdev;
-> +
-> +	rpdev->ept = &channel->ept;
-> +	rpdev->ops = &glink_device_ops;
-> +	rpdev->dev.parent = glink->dev;
-> +	rpdev->dev.release = qcom_glink_device_release;
-> +
-> +	return rpmsg_chrdev_register_device(rpdev);
-> +}
-> +
->  struct qcom_glink *qcom_glink_native_probe(struct device *dev,
->  					   unsigned long features,
->  					   struct qcom_glink_pipe *rx,
-> @@ -1633,6 +1667,10 @@ struct qcom_glink *qcom_glink_native_probe(struct device *dev,
->  	if (ret)
->  		return ERR_PTR(ret);
->  
-> +	ret = qcom_glink_create_chrdev(glink);
-> +	if (ret)
-> +		dev_err(glink->dev, "failed to register chrdev\n");
-> +
->  	return glink;
->  }
->  EXPORT_SYMBOL_GPL(qcom_glink_native_probe);
-> -- 
-> 2.7.4
+Acked-by: David S. Miller <davem@davemloft.net>
