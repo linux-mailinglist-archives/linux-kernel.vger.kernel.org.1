@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEB11D1AD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C19A01D1AD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389534AbgEMQQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 12:16:25 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:42344 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730063AbgEMQQZ (ORCPT
+        id S2389565AbgEMQRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 12:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730731AbgEMQRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 12:16:25 -0400
-Received: by mail-pl1-f196.google.com with SMTP id k19so22176pll.9;
-        Wed, 13 May 2020 09:16:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MR3hivTTbv7WsNknULGT8vpeXwpVVOP1nEJHvXl4q6Q=;
-        b=CGXlki91Z2AbkgMsh7IlOWcTNbnmSz+EJS9v9wrqLzHQJ48nzZ6IMVeeZ30THNgvBo
-         +uyhrOfa4h/rA73eunJA29vtgNtIBqZNAzp1fpIEDnBBWPwHTjhUUosvYpu5JS+ZOBRC
-         AhYk0Y9uOt4qdQoSPMCChWPRKPPKUV0ip3lTEmPSXX8Yo3EQXlB4EsIu14MRTAsYmUuL
-         +ujxDfoP4Y01jEdRwBMpJ9Q9ppkj10i4yywDMbfensA7oJUZ0zGsyQNh1oTy4BFCJBX1
-         D2sT++pbbU5y65x0r+H5/VfaOC54oK61WsCr+nqnYNPms1vhoYKWkZi11qggGDJuYRNz
-         euDA==
-X-Gm-Message-State: AGi0PubaRUfos4UQAprK/z+HuztdMu3AjvgJS+JjrLwbVgUnGOWQ//FL
-        RUJpK6OnkpIw9NnazSZR980=
-X-Google-Smtp-Source: APiQypKPVhDd5eVJvoALh7b71wk5lXOmnq50MN3QI/KJHyjv/UYQSNnqyFg2fSxJ63d2CJSyRyXsXg==
-X-Received: by 2002:a17:902:ba95:: with SMTP id k21mr24684399pls.160.1589386584264;
-        Wed, 13 May 2020 09:16:24 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id b15sm21492pfd.139.2020.05.13.09.16.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 09:16:23 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 452DA4063E; Wed, 13 May 2020 16:16:22 +0000 (UTC)
-Date:   Wed, 13 May 2020 16:16:22 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Josh Triplett <josh@joshtriplett.org>
-Cc:     viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
-        rafael@kernel.org, jeyu@kernel.org, jmorris@namei.org,
-        keescook@chromium.org, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        nayna@linux.ibm.com, zohar@linux.ibm.com,
-        scott.branden@broadcom.com, dan.carpenter@oracle.com,
-        skhan@linuxfoundation.org, geert@linux-m68k.org,
-        tglx@linutronix.de, bauerman@linux.ibm.com, dhowells@redhat.com,
-        linux-integrity@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kexec@lists.infradead.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] security: add symbol namespace for reading file data
-Message-ID: <20200513161622.GS11244@42.do-not-panic.com>
-References: <20200513152108.25669-1-mcgrof@kernel.org>
- <20200513152108.25669-3-mcgrof@kernel.org>
- <87k11fonbk.fsf@x220.int.ebiederm.org>
+        Wed, 13 May 2020 12:17:10 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 847E0C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 09:17:10 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jYu42-000053-0g; Wed, 13 May 2020 18:16:58 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 832EC100605; Wed, 13 May 2020 18:16:56 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Balbir Singh <sblbir@amazon.com>, linux-kernel@vger.kernel.org
+Cc:     jpoimboe@redhat.com, tony.luck@intel.com, keescook@chromium.org,
+        benh@kernel.crashing.org, x86@kernel.org, dave.hansen@intel.com,
+        thomas.lendacky@amd.com, Balbir Singh <sblbir@amazon.com>
+Subject: Re: [PATCH v6 5/6] Optionally flush L1D on context switch
+In-Reply-To: <20200510014803.12190-6-sblbir@amazon.com>
+References: <20200510014803.12190-1-sblbir@amazon.com> <20200510014803.12190-6-sblbir@amazon.com>
+Date:   Wed, 13 May 2020 18:16:56 +0200
+Message-ID: <875zcz3j47.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87k11fonbk.fsf@x220.int.ebiederm.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 10:40:31AM -0500, Eric W. Biederman wrote:
-> Luis Chamberlain <mcgrof@kernel.org> writes:
-> 
-> > Certain symbols are not meant to be used by everybody, the security
-> > helpers for reading files directly is one such case. Use a symbol
-> > namespace for them.
-> >
-> > This will prevent abuse of use of these symbols in places they were
-> > not inteded to be used, and provides an easy way to audit where these
-> > types of operations happen as a whole.
-> 
-> Why not just remove the ability for the firmware loader to be a module?
-> 
-> Is there some important use case that requires the firmware loader
-> to be a module?
-> 
-> We already compile the code in by default.  So it is probably just
-> easier to remove the modular support all together.  Which would allow
-> the export of the security hooks to be removed as well.
+Balbir Singh <sblbir@amazon.com> writes:
 
-Yeah, that's a better solution. The only constaint I am aware of is
-we *cannot* change the name of the module from firmware_class since the
-old fallback sysfs loader depends on the module name. So, so long as we
-take care with that on built-in and document this very well, I think
-we should be good.
+This part:
 
-I checked the commit logs and this was tristate since the code was added
-upstream, so I cannot see any good reason it was enabled as modular.
+> --- a/include/uapi/linux/prctl.h
+> +++ b/include/uapi/linux/prctl.h
+> @@ -238,4 +238,8 @@ struct prctl_mm_map {
+>  #define PR_SET_IO_FLUSHER		57
+>  #define PR_GET_IO_FLUSHER		58
+>  
+> +/* Flush L1D on context switch (mm) */
+> +#define PR_SET_L1D_FLUSH		59
+> +#define PR_GET_L1D_FLUSH		60
 
-Speaking with a *backports experience* hat on, we did have a use case
-to use a module for it in case a new feature was added upstream which
-was not present on older kernels. However I think that using a separate
-symbol prefix would help with that.
+...
 
-Would any Android stakeholders / small / embedded folks whave any issue
-with this?
+> @@ -2514,6 +2524,16 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+>  
+>  		error = (current->flags & PR_IO_FLUSHER) == PR_IO_FLUSHER;
+>  		break;
+> +	case PR_SET_L1D_FLUSH:
+> +		if (arg3 || arg4 || arg5)
+> +			return -EINVAL;
+> +		error = arch_prctl_l1d_flush_set(me, arg2);
+> +		break;
+> +	case PR_GET_L1D_FLUSH:
+> +		if (arg2 || arg3 || arg4 || arg5)
+> +			return -EINVAL;
+> +		error = arch_prctl_l1d_flush_get(me);
+> +		break;
+>  	default:
+>  		error = -EINVAL;
+>  		break;
 
-  Luis
+wants to be split into a separate patch, really. Then we get a proper
+subject lines with proper subsystem prefixes. This part also lacks a
+description in Documentation/userspace-api/ and function prototypes for
+the arch_prctl* functions.
+
+But looking at this deeper (yes I should have noticed earlier):
+
+    Why do we need yet another PRCTL?
+
+We already have PR_SET_SPECULATION_CTRL/PR_GET_SPECULATION_CTRL. That
+L1D flush thingy fits into this category, right?
+
+This makes even more sense if you think about the second use case for
+L1D flush, i.e. the flush when a untrusted task comes in. If we ever
+want to support that case then this will be imposed by seccomp and then
+we'd need yet another interface there.
+
+And for this reason we should also name that current opt-in thingy:
+L1D_FLUSH_OUT in the prctl and also for the TIF bits.
+
+Hmm? Kees?
+
+I've applied the first 4 patches to:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/mm
+
+so the polishing I did gets preserved and you don't have to resend the
+whole pile.
+
+Thanks,
+
+        tglx
