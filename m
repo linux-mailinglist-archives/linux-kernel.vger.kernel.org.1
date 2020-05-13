@@ -2,96 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08771D20B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E841D20BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727832AbgEMVND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
+        id S1728139AbgEMVOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 17:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgEMVND (ORCPT
+        with ESMTP id S1725943AbgEMVOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:13:03 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3A4C061A0C;
-        Wed, 13 May 2020 14:13:02 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49MnSq1P8pz9sPF;
-        Thu, 14 May 2020 07:12:59 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1589404379;
-        bh=MENIddwpkco4KNLi9ujSul+fqmhfNKZHVurKbRzWGeI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=l+3MKSCv7N1fyiMaQb97iG7s8ZBBHOybm5RJ456o+rNyMwDI1lw8Z0KHpx9y3prKx
-         Ee8pnOHZBOF/QYYNAVj3op211Lu7sPJ6wM+9tX/wRd0X56X3qW3l5M4eCeN72CtMHQ
-         oXSLnCsnG2R9MKWjy7L2ng7GzztgyVzgdyFukpCttndTZjrTXJF3W4xddnRGPlH/4V
-         sEVXUI35JqOGUp1Czvc3rBu/gv3CbnovstMlRMNUXWZOrbo/YjAMYHFJJT4jFm4Ui+
-         p/XYM+T6G8i/9bjZT+nULnA13IZX3O3xiM7ubFbfJz+dNDvHA1xGEe51idu7GBVX3l
-         EUalvF/ytzIoQ==
-Date:   Thu, 14 May 2020 07:12:57 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>
-Subject: linux-next: Fixes tag needs some work in the sound-asoc-fixes tree
-Message-ID: <20200514071257.5b1582ca@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/UvmppJlvnmiOmCWEeNGvZhA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Wed, 13 May 2020 17:14:45 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E099C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:14:44 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x15so303454pfa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fQPXZp+IVSxbapxw+qChW71ug0twA5FFI0kmAhQ2wws=;
+        b=IyJE95cx6fUjoUOtxi6G5B/lxWB5ibznMc114jMJGxspQQTGQMUcGMrMk2WtlJjWo0
+         PkRMLu26n1UYSg4ZJQzWfqJ7zaU37jmlYr/pp1WY9YN3N2QmTNX47nlFsvKEEE/wBay8
+         E6TU1Q/GiETUSfOG/ZfMVMaD6Dvu9KtwGVkG1DCZYtv3pZqp5HvJoZSzp8JP5RlNJdb2
+         bXsgJwh1TPDAOXoNLeaq4xzFVxEPgO0msB9kSO5M7GB4uS6DMJfG0V0yZvUnApB37FMx
+         gxZHaUdedYhJVo8ph2WaPlX+DJveMWvERWXTuEIBk/MtuSJSF2JAupOFOBmsFoTOB6H/
+         q0Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=fQPXZp+IVSxbapxw+qChW71ug0twA5FFI0kmAhQ2wws=;
+        b=UC1B8RRiro2yobOvENVSHl3F2xGYbaF53VVhq3DVkVK3zksFj7i71q6tVEzp1/eZKM
+         9wBoYXYef00FaQhgPul+8fHe/sT3xWsce4btWRfvqmfrtarHO/g6oxqLDApoOnnPCFnD
+         931v6GrgnLw1G5Vj7C+Uj91Qv7bejh8X77AAVjx/8tQVCKSCPxSOz2Dq7wYPWD6EmnkV
+         04ebwq2AiTlMmk5a4LrQjD1G2jNbL2+zYZoclvewYWUiixlzUcPjCP9PuJLvb1sKVzkZ
+         KMa6GQqNAVhDwp/Ia7Zt5vjCbP1pdIYC+DkdWubPM/PY6G6KDhwFMlY0gT6sT6am86Vh
+         fV6Q==
+X-Gm-Message-State: AOAM530e6vHO3n3gfSAUHV+ZZrodZ4BVJE1ApoEpHFKzMut6BRCzuifO
+        jIwIywcpsWP/8G06KVmm/75oav01bEQ=
+X-Google-Smtp-Source: ABdhPJzdTa0U9kp2niBnjnx175RKaHvwsebr/DnTI6hq6UVnAjjZVxFFrmMdl9SIIYoqxiJIPtOgJg==
+X-Received: by 2002:a62:1d48:: with SMTP id d69mr1161543pfd.102.1589404483317;
+        Wed, 13 May 2020 14:14:43 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id q134sm407114pfc.143.2020.05.13.14.14.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 14:14:42 -0700 (PDT)
+Date:   Wed, 13 May 2020 14:14:42 -0700 (PDT)
+X-Google-Original-Date: Tue, 12 May 2020 16:33:48 PDT (-0700)
+Subject:     Re: [PATCH 01/10] riscv: Fix unmet direct dependencies built based on SOC_VIRT
+In-Reply-To: <20200511022001.179767-2-wangkefeng.wang@huawei.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        wangkefeng.wang@huawei.com, hulkci@huawei.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     wangkefeng.wang@huawei.com
+Message-ID: <mhng-a9830a3c-320d-4a7a-8792-85d436b32182@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/UvmppJlvnmiOmCWEeNGvZhA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, 10 May 2020 19:19:52 PDT (-0700), wangkefeng.wang@huawei.com wrote:
+> Fix unmet direct dependencies Warning and fix Kconfig indent.
+>
+> WARNING: unmet direct dependencies detected for POWER_RESET_SYSCON
+>   Depends on [n]: POWER_RESET [=n] && OF [=y] && HAS_IOMEM [=y]
+>   Selected by [y]:
+>   - SOC_VIRT [=y]
+>
+> WARNING: unmet direct dependencies detected for POWER_RESET_SYSCON_POWEROFF
+>   Depends on [n]: POWER_RESET [=n] && OF [=y] && HAS_IOMEM [=y]
+>   Selected by [y]:
+>   - SOC_VIRT [=y]
+>
+> WARNING: unmet direct dependencies detected for RTC_DRV_GOLDFISH
+>   Depends on [n]: RTC_CLASS [=n] && OF [=y] && HAS_IOMEM [=y] && (GOLDFISH [=y] || COMPILE_TEST [=n])
+>   Selected by [y]:
+>   - SOC_VIRT [=y]
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  arch/riscv/Kconfig.socs | 17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+> index 4b2303ca20b9..6c88148f1b9b 100644
+> --- a/arch/riscv/Kconfig.socs
+> +++ b/arch/riscv/Kconfig.socs
+> @@ -11,14 +11,15 @@ config SOC_SIFIVE
+>  	  This enables support for SiFive SoC platform hardware.
+>
+>  config SOC_VIRT
+> -       bool "QEMU Virt Machine"
+> -       select POWER_RESET_SYSCON
+> -       select POWER_RESET_SYSCON_POWEROFF
+> -       select GOLDFISH
+> -       select RTC_DRV_GOLDFISH
+> -       select SIFIVE_PLIC
+> -       help
+> -         This enables support for QEMU Virt Machine.
+> +	bool "QEMU Virt Machine"
+> +	select POWER_RESET
+> +	select POWER_RESET_SYSCON
+> +	select POWER_RESET_SYSCON_POWEROFF
+> +	select GOLDFISH
+> +	select RTC_DRV_GOLDFISH if RTC_CLASS
+> +	select SIFIVE_PLIC
+> +	help
+> +	  This enables support for QEMU Virt Machine.
+>
+>  config SOC_KENDRYTE
+>  	bool "Kendryte K210 SoC"
 
-Hi all,
+This is another area we need to clean up (maybe converting from select to
+imply?), but given this fixes likely build errors I'm going to take it onto
+fixes.
 
-In commit
-
-  0e36f32f6b6c ("ASoC: tlv320adcx140: Fix bias config values")
-
-Fixes tag
-
-  Fixes: 37bde5acf040 ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Mabe you meant
-
-Fixes: 689c7655b50c ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec driv=
-er family")
-
-Also, it looks like the Fixes tag had been split over more than one line
-(and then the latter part moved above the rest).
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/UvmppJlvnmiOmCWEeNGvZhA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl68YtkACgkQAVBC80lX
-0GxBkggAn1ckEem3QzkPI+kLEPOqTyFksksL1MFYf4CUIVw9sKce88wVf3uQ3mJR
-GZIIqhFcAEVC54p9sdGUE5501+w/sBls2CUohh4UtE9rww3wyyAy3SC+13BmeQx3
-9ZSMv4KY9vUf8GuHtfB33guyN+A3u35QNm5NuDkgz3QM/k72h74w6jkEcoMWf/dh
-J93SIafFl4AwVRo4D9iNwdrwe705hwHlAdHH8cF9kLv+3pc7asMlT5VVaKI2JWzc
-bmwpvt5JCAQsr2tviFX5lkZF97OAFosuAWuHyZZTJS20PCFqbsoDgmrL1fMSjwJs
-3TxMccnunqQQfYUjnUFgiRsDaWbb4A==
-=Es6e
------END PGP SIGNATURE-----
-
---Sig_/UvmppJlvnmiOmCWEeNGvZhA--
+Thanks!
