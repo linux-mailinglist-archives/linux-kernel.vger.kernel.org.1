@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CF31D0D98
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FAF1D0D04
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388080AbgEMJyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:54:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56548 "EHLO mail.kernel.org"
+        id S1733236AbgEMJtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:49:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387419AbgEMJyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:54:14 -0400
+        id S1733215AbgEMJtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:49:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4425720575;
-        Wed, 13 May 2020 09:54:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECCCD2492D;
+        Wed, 13 May 2020 09:49:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363653;
-        bh=TROMNritinLe8dzAlxtqwygDZ6dgPrhrcQC19NPq7Ng=;
+        s=default; t=1589363360;
+        bh=Akg9xLHTZHHWY/epxL7GMjYFLSg63eUOf9Ut5sYs75s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s1GBZDIb/555dttbuZRzGTTJ8iWsYQ3CGz+tkXKePcEyGESucCxqfNA5m08z0SJjE
-         mGo1jSZZIyoMD+ghJbrhaxqAPNPu0gnkGG8p7rsjeYo9mVN72/TY81qUHI6GTG1CXE
-         c8YCrY0YMxhozRDZNAkmTL/B7g2hdXrP/1Vv9UKo=
+        b=Kpl1pzDvcAQnbeMURLT2g3A5d4VBf6zyIEC13eRKXZp7r8OtLy9CRJFYnLoY+NUC6
+         bVtdBLG5W5FhLtnoEvGKuDNAM0byhd23ZDuFZ15tO6lwoXty/5iWQyAFaIovzGHEVq
+         ukfZmOqdiYgBa0b4B0zygNknOVyHG3lzSOKNTi4E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Yash Shah <yash.shah@sifive.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Dejin Zheng <zhengdejin5@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 024/118] net: macb: fix an issue about leak related system resources
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 07/90] drm/amdgpu: drop redundant cg/pg ungate on runpm enter
 Date:   Wed, 13 May 2020 11:44:03 +0200
-Message-Id: <20200513094419.792889814@linuxfoundation.org>
+Message-Id: <20200513094409.822993461@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
-References: <20200513094417.618129545@linuxfoundation.org>
+In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
+References: <20200513094408.810028856@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,48 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dejin Zheng <zhengdejin5@gmail.com>
+From: Evan Quan <evan.quan@amd.com>
 
-[ Upstream commit b959c77dac09348955f344104c6a921ebe104753 ]
+[ Upstream commit f7b52890daba570bc8162d43c96b5583bbdd4edd ]
 
-A call of the function macb_init() can fail in the function
-fu540_c000_init. The related system resources were not released
-then. use devm_platform_ioremap_resource() to replace ioremap()
-to fix it.
+CG/PG ungate is already performed in ip_suspend_phase1. Otherwise,
+the CG/PG ungate will be performed twice. That will cause gfxoff
+disablement is performed twice also on runpm enter while gfxoff
+enablemnt once on rump exit. That will put gfxoff into disabled
+state.
 
-Fixes: c218ad559020ff9 ("macb: Add support for SiFive FU540-C000")
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Yash Shah <yash.shah@sifive.com>
-Suggested-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: b2a7e9735ab286 ("drm/amdgpu: fix the hw hang during perform system reboot and reset")
+Signed-off-by: Evan Quan <evan.quan@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cadence/macb_main.c |   12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -4165,15 +4165,9 @@ static int fu540_c000_clk_init(struct pl
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index ca2a0770aad2e..5e1dce4241547 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -3070,9 +3070,6 @@ int amdgpu_device_suspend(struct drm_device *dev, bool suspend, bool fbcon)
+ 		}
+ 	}
  
- static int fu540_c000_init(struct platform_device *pdev)
- {
--	struct resource *res;
+-	amdgpu_device_set_pg_state(adev, AMD_PG_STATE_UNGATE);
+-	amdgpu_device_set_cg_state(adev, AMD_CG_STATE_UNGATE);
 -
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
--	if (!res)
--		return -ENODEV;
--
--	mgmt->reg = ioremap(res->start, resource_size(res));
--	if (!mgmt->reg)
--		return -ENOMEM;
-+	mgmt->reg = devm_platform_ioremap_resource(pdev, 1);
-+	if (IS_ERR(mgmt->reg))
-+		return PTR_ERR(mgmt->reg);
+ 	amdgpu_ras_suspend(adev);
  
- 	return macb_init(pdev);
- }
+ 	r = amdgpu_device_ip_suspend_phase1(adev);
+-- 
+2.20.1
+
 
 
