@@ -2,276 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78DEF1D1609
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C25E1D164E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388216AbgEMNl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:41:57 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:34801 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727792AbgEMNl4 (ORCPT
+        id S2388698AbgEMNqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:46:11 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:49832 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387751AbgEMNqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:41:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1589377315; x=1620913315;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=lw1dDpuogFHf2FXc0xqaRt0YHXMCAsmOeJxn562Quvk=;
-  b=jXs7M1Rgn2fmcuNFTr4KSh5Yu1EFdexNS16vELgi/+8WXHNZTl6d6DvP
-   8LCfB61PwBZvwv1VJMes5VGD1o6HcKSHbrPQnI16ktPPVhidyDvyrELkT
-   ERBHpu7g+HCAaPTZweh9TlS+EdKcs9ZO7IgZJwdIllvQZiM6jf4kH37K/
-   OqNCSe4voGqJSaCVjfDvlAyWG0nAU95UZm3zHgnblk2nrHnsHg4MRvSD7
-   zqrhByEs5OWAbdPo3THB7s5WV7c5M9Wtwcq6UOF6CJ9sBG4Db53ZAyb4h
-   hg9CKfp93TCviSei55eI5HYnQXA+DD4MyvI1Ru2jVFNDbGpjy+gmdYTPJ
-   w==;
-IronPort-SDR: yV4k+9QFy+k3Ts5oaxqE0ZeJXVWPqYeCqITv4qiO/sKLQjDV8C8FekeimAIb7pq/UgsNARE/+w
- jAj/8HpzRQeQgEfCD4QPCzOu7xodxTNBWCIfvahTdonlIEUqlLVpE+diJcTwsWVLqrmEMnREWi
- 0yxD4+DXHLSeN7elWznfDOYzmv8arizYyTYgOcTd2fo7NDebHYoFO6WAB/LFD6kKaYfFSM4siS
- iECgI32e8fN7RoDQ1dnfW3ZZajEEZ96J1bpvRmt/qTraaumP41LpgLST9ci9zPJUYB8ufOCAvi
- oFo=
-X-IronPort-AV: E=Sophos;i="5.73,387,1583218800"; 
-   d="scan'208";a="76504510"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 May 2020 06:41:55 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 13 May 2020 06:41:55 -0700
-Received: from soft-dev15.microsemi.net (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Wed, 13 May 2020 06:41:55 -0700
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Guenter Roeck <linux@roeck-us.net>, SoC Team <soc@kernel.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH 3/3] hwmon: sparx5: Add Sparx5 SoC temperature driver
-Date:   Wed, 13 May 2020 15:41:40 +0200
-Message-ID: <20200513134140.25357-4-lars.povlsen@microchip.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513134140.25357-1-lars.povlsen@microchip.com>
-References: <20200513134140.25357-1-lars.povlsen@microchip.com>
+        Wed, 13 May 2020 09:46:08 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jYri1-0007Yh-74; Wed, 13 May 2020 07:46:05 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jYri0-0006Pz-3e; Wed, 13 May 2020 07:46:05 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Xiaoming Ni <nixiaoming@huawei.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Helge Deller <deller@gmx.de>,
+        Parisc List <linux-parisc@vger.kernel.org>, yzaikin@google.com,
+        linux-fsdevel@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+References: <20200511111123.68ccbaa3@canb.auug.org.au>
+        <99095805-8cbe-d140-e2f1-0c5a3e84d7e7@huawei.com>
+        <20200512003305.GX11244@42.do-not-panic.com>
+        <87y2pxs73w.fsf@x220.int.ebiederm.org>
+        <20200512172413.GC11244@42.do-not-panic.com>
+        <87k11hrqzc.fsf@x220.int.ebiederm.org>
+        <20200512220341.GE11244@42.do-not-panic.com>
+Date:   Wed, 13 May 2020 08:42:30 -0500
+In-Reply-To: <20200512220341.GE11244@42.do-not-panic.com> (Luis Chamberlain's
+        message of "Tue, 12 May 2020 22:03:41 +0000")
+Message-ID: <87d078oss9.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-XM-SPF: eid=1jYri0-0006Pz-3e;;;mid=<87d078oss9.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18vmS02bGQubPKIl5qUYavG96RWvX+2dVI=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XMSubMetaSx_00
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Luis Chamberlain <mcgrof@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 682 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 11 (1.6%), b_tie_ro: 9 (1.4%), parse: 1.26 (0.2%),
+         extract_message_metadata: 4.5 (0.7%), get_uri_detail_list: 1.90
+        (0.3%), tests_pri_-1000: 6 (0.8%), tests_pri_-950: 1.72 (0.3%),
+        tests_pri_-900: 1.38 (0.2%), tests_pri_-90: 328 (48.1%), check_bayes:
+        326 (47.8%), b_tokenize: 11 (1.7%), b_tok_get_all: 8 (1.1%),
+        b_comp_prob: 3.5 (0.5%), b_tok_touch_all: 300 (43.9%), b_finish: 1.03
+        (0.2%), tests_pri_0: 298 (43.7%), check_dkim_signature: 0.90 (0.1%),
+        check_dkim_adsp: 2.7 (0.4%), poll_dns_idle: 0.60 (0.1%), tests_pri_10:
+        3.2 (0.5%), tests_pri_500: 16 (2.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: linux-next: manual merge of the vfs tree with the parisc-hd tree
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a temperature sensor driver to the Sparx5 SoC.
+Luis Chamberlain <mcgrof@kernel.org> writes:
 
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
----
- drivers/hwmon/Kconfig       |  10 +++
- drivers/hwmon/Makefile      |   2 +-
- drivers/hwmon/sparx5-temp.c | 154 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 165 insertions(+), 1 deletion(-)
- create mode 100644 drivers/hwmon/sparx5-temp.c
+> On Tue, May 12, 2020 at 12:40:55PM -0500, Eric W. Biederman wrote:
+>> Luis Chamberlain <mcgrof@kernel.org> writes:
+>> 
+>> > On Tue, May 12, 2020 at 06:52:35AM -0500, Eric W. Biederman wrote:
+>> >> Luis Chamberlain <mcgrof@kernel.org> writes:
+>> >> 
+>> >> > +static struct ctl_table fs_base_table[] = {
+>> >> > +	{
+>> >> > +		.procname	= "fs",
+>> >> > +		.mode		= 0555,
+>> >> > +		.child		= fs_table,
+>> >> > +	},
+>> >> > +	{ }
+>> >> > +};
+>> >>   ^^^^^^^^^^^^^^^^^^^^^^^^ You don't need this at all.
+>> >> > > +static int __init fs_procsys_init(void)
+>> >> > +{
+>> >> > +	struct ctl_table_header *hdr;
+>> >> > +
+>> >> > +	hdr = register_sysctl_table(fs_base_table);
+>> >>               ^^^^^^^^^^^^^^^^^^^^^ Please use register_sysctl instead.
+>> >> 	AKA
+>> >>         hdr = register_sysctl("fs", fs_table);
+>> >
+>> > Ah, much cleaner thanks!
+>> 
+>> It is my hope you we can get rid of register_sysctl_table one of these
+>> days.  It was the original interface but today it is just a
+>> compatibility wrapper.
+>> 
+>> I unfortunately ran out of steam last time before I finished converting
+>> everything over.
+>
+> Let's give it one more go. I'll start with the fs stuff.
 
-diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index 4c62f900bf7e8..130cb1f1748ff 100644
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -480,6 +480,16 @@ config SENSORS_I5K_AMB
- 	  This driver can also be built as a module. If so, the module
- 	  will be called i5k_amb.
+Just to be clear moving the tables out of kernel/sysctl.c is a related
+but slightly different problem.
 
-+config SENSORS_SPARX5
-+	tristate "Sparx5 SoC temperature sensor"
-+	depends on ARCH_SPARX5
-+	help
-+	  If you say yes here you get support for temperature monitoring
-+	  with the Microchip Sparx5 SoC.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called sparx5-temp.
-+
- config SENSORS_F71805F
- 	tristate "Fintek F71805F/FG, F71806F/FG and F71872F/FG"
- 	depends on !PPC
-diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-index b0b9c8e571762..28a09986b7a62 100644
---- a/drivers/hwmon/Makefile
-+++ b/drivers/hwmon/Makefile
-@@ -64,6 +64,7 @@ obj-$(CONFIG_SENSORS_DS1621)	+= ds1621.o
- obj-$(CONFIG_SENSORS_EMC1403)	+= emc1403.o
- obj-$(CONFIG_SENSORS_EMC2103)	+= emc2103.o
- obj-$(CONFIG_SENSORS_EMC6W201)	+= emc6w201.o
-+obj-$(CONFIG_SENSORS_SPARX5)	+= sparx5-temp.o
- obj-$(CONFIG_SENSORS_F71805F)	+= f71805f.o
- obj-$(CONFIG_SENSORS_F71882FG)	+= f71882fg.o
- obj-$(CONFIG_SENSORS_F75375S)	+= f75375s.o
-@@ -190,4 +191,3 @@ obj-$(CONFIG_SENSORS_OCC)	+= occ/
- obj-$(CONFIG_PMBUS)		+= pmbus/
+Today it looks like there are 35 calls of register_sysctl_table
+and 9 calls of register_sysctl_paths.
 
- ccflags-$(CONFIG_HWMON_DEBUG_CHIP) := -DDEBUG
--
-diff --git a/drivers/hwmon/sparx5-temp.c b/drivers/hwmon/sparx5-temp.c
-new file mode 100644
-index 0000000000000..bf9dd102a9825
---- /dev/null
-+++ b/drivers/hwmon/sparx5-temp.c
-@@ -0,0 +1,154 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/* Sparx5 SoC temperature sensor driver
-+ *
-+ * Copyright (C) 2020 Lars Povlsen <lars.povlsen@microchip.com>
-+ */
-+
-+#include <linux/bitops.h>
-+#include <linux/hwmon.h>
-+#include <linux/hwmon-sysfs.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+
-+#define TEMP_CTRL		0
-+#define TEMP_CFG		4
-+#define  TEMP_CFG_CYCLES	GENMASK(24, 15)
-+#define  TEMP_CFG_CYCLES_OFF	15
-+#define  TEMP_CFG_ENA		BIT(0)
-+#define TEMP_STAT		8
-+#define  TEMP_STAT_VALID	BIT(12)
-+#define  TEMP_STAT_TEMP		GENMASK(11, 0)
-+
-+struct s5_hwmon {
-+	void __iomem *base;
-+};
-+
-+static void s5_temp_enable(struct s5_hwmon *hwmon)
-+{
-+	u32 val = readl(hwmon->base + TEMP_CFG);
-+	u32 clk = 250;
-+
-+	val &= ~TEMP_CFG_CYCLES;
-+	val |= (clk << TEMP_CFG_CYCLES_OFF);
-+	val |= TEMP_CFG_ENA;
-+
-+	writel(val, hwmon->base + TEMP_CFG);
-+}
-+
-+static void s5_temp_disable(void *data)
-+{
-+	struct s5_hwmon *hwmon = data;
-+	u32 val = readl(hwmon->base + TEMP_CFG);
-+
-+	val &= ~TEMP_CFG_ENA;
-+
-+	writel(val, hwmon->base + TEMP_CFG);
-+}
-+
-+static int s5_read(struct device *dev, enum hwmon_sensor_types type,
-+		   u32 attr, int channel, long *temp)
-+{
-+	struct s5_hwmon *hwmon = dev_get_drvdata(dev);
-+	int rc = 0, value;
-+	u32 stat;
-+
-+	switch (attr) {
-+	case hwmon_temp_input:
-+		stat = readl_relaxed(hwmon->base + TEMP_STAT);
-+		if (stat & TEMP_STAT_VALID) {
-+			value = (stat & TEMP_STAT_TEMP);
-+			value = DIV_ROUND_CLOSEST(value * 3522, 4096) - 1094;
-+			value *= 100;
-+			*temp = value;
-+		} else
-+			rc = -EINVAL;
-+		break;
-+	default:
-+		rc = -EOPNOTSUPP;
-+	}
-+
-+	return rc;
-+}
-+
-+static umode_t s5_is_visible(const void *_data, enum hwmon_sensor_types type,
-+			     u32 attr, int channel)
-+{
-+	if (type != hwmon_temp)
-+		return 0;
-+
-+	switch (attr) {
-+	case hwmon_temp_input:
-+		return 0444;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static const struct hwmon_channel_info *s5_info[] = {
-+	HWMON_CHANNEL_INFO(chip,
-+			   HWMON_C_REGISTER_TZ),
-+	HWMON_CHANNEL_INFO(temp,
-+			   HWMON_T_INPUT),
-+	NULL
-+};
-+
-+static const struct hwmon_ops s5_hwmon_ops = {
-+	.is_visible = s5_is_visible,
-+	.read = s5_read,
-+};
-+
-+static const struct hwmon_chip_info s5_chip_info = {
-+	.ops = &s5_hwmon_ops,
-+	.info = s5_info,
-+};
-+
-+static int s5_temp_probe(struct platform_device *pdev)
-+{
-+	struct device *hwmon_dev;
-+	struct s5_hwmon *hwmon;
-+	int err = 0;
-+
-+	hwmon = devm_kzalloc(&pdev->dev, sizeof(*hwmon), GFP_KERNEL);
-+	if (!hwmon)
-+		return -ENOMEM;
-+
-+	hwmon->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(hwmon->base))
-+		return PTR_ERR(hwmon->base);
-+
-+	err = devm_add_action(&pdev->dev, s5_temp_disable, hwmon);
-+	if (err)
-+		return err;
-+
-+	s5_temp_enable(hwmon);
-+
-+	hwmon_dev = devm_hwmon_device_register_with_info(&pdev->dev,
-+							 "s5_temp",
-+							 hwmon,
-+							 &s5_chip_info,
-+							 NULL);
-+
-+	return PTR_ERR_OR_ZERO(hwmon_dev);
-+}
-+
-+const struct of_device_id s5_temp_match[] = {
-+	{ .compatible = "microchip,sparx5-temp" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, s5_temp_match);
-+
-+static struct platform_driver s5_temp_driver = {
-+	.probe = s5_temp_probe,
-+	.driver = {
-+		.name = "sparx5-temp",
-+		.of_match_table = s5_temp_match,
-+	},
-+};
-+
-+module_platform_driver(s5_temp_driver);
-+
-+MODULE_AUTHOR("Lars Povlsen <lars.povlsen@microchip.com>");
-+MODULE_DESCRIPTION("Sparx5 SoC temperature sensor driver");
-+MODULE_LICENSE("GPL");
---
-2.26.2
+Among them is lib/sysctl_test.c and check-sysctl-docs.
+
+Meanwhile I can only find 5 calls to register_sysctl in the tree
+so it looks like I didn't get very far converting things over.
+
+Eric
+
