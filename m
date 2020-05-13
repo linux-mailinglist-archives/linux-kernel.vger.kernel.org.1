@@ -2,168 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1506F1D14FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DB31D159C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387939AbgEMNcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:32:14 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:57834 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733281AbgEMNcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:32:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=HyO1+4PL1ry4EHRvApM2dkFGIw/Z4bh+/HXu49Gei1w=; b=lJ2nSg+2amnjt4bLbGibfEWJG1
-        UGeYTelQhtqRIMYYa8byavoe0uLrrqmfQ+b4N90hQ7fQk4TWwKO7DArZP78dxfnNveugSdqgI0PQM
-        gkPovlywJ/Qv0Gom9Sxn7enQJWVfxgruXaOwnJVbDgCQrv7cv008a2XCPd3kVL3DDR8g=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jYrUX-002AEv-Qj; Wed, 13 May 2020 15:32:09 +0200
+        id S2388651AbgEMNfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:35:47 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:58595 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387604AbgEMNdB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 09:33:01 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200513133258euoutp01dff5e095483b37ae972093c9709285c4~OmcJDFA0l2140621406euoutp017
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 13:32:58 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200513133258euoutp01dff5e095483b37ae972093c9709285c4~OmcJDFA0l2140621406euoutp017
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1589376778;
+        bh=rEuOT0GkB4NH8z/2RQ3JmrQOctEyWUqngf17Z20yogU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WMvhvwzNLVynKgBTBSLuwINUnXtn5tT+6fQycDVV3dYXnLZKm+/LJTYKwq3zPeH7R
+         OIiTu235Nl+A+GMeevjqdxdF9Tz/Eo1Jad5Beqo8LU0vsdSBy+TGUT7jSgDv5cjXYf
+         +GSKKXNKGSfvh+qYzKv17yzkL+imZlh6OMRj1cBY=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200513133257eucas1p15b3d637e0f28f52bdec5bc4159d4c17d~OmcIwD4Lv2351423514eucas1p1q;
+        Wed, 13 May 2020 13:32:57 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 8D.F0.60679.907FBBE5; Wed, 13
+        May 2020 14:32:57 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200513133257eucas1p1613a28a71a6c328c406397f7094534d1~OmcIe02ww2350623506eucas1p1r;
+        Wed, 13 May 2020 13:32:57 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200513133257eusmtrp12c74a145da6bba144d7eaed5acf30040~OmcIckxwT0994509945eusmtrp1Y;
+        Wed, 13 May 2020 13:32:57 +0000 (GMT)
+X-AuditID: cbfec7f4-0e5ff7000001ed07-1b-5ebbf7099305
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 98.0A.08375.907FBBE5; Wed, 13
+        May 2020 14:32:57 +0100 (BST)
+Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200513133256eusmtip19a0d0eff579afc1683a73c3191405caa~OmcH36lW33222032220eusmtip1y;
+        Wed, 13 May 2020 13:32:56 +0000 (GMT)
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-arm-kernel@lists.infradead.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: [PATCH v5 02/38] scatterlist: add generic wrappers for iterating
+ over sgtable objects
 Date:   Wed, 13 May 2020 15:32:09 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH v1] net: phy: at803x: add cable test support
-Message-ID: <20200513133209.GC499265@lunn.ch>
-References: <20200513120648.14415-1-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513120648.14415-1-o.rempel@pengutronix.de>
+Message-Id: <20200513133245.6408-2-m.szyprowski@samsung.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200513133245.6408-1-m.szyprowski@samsung.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrGKsWRmVeSWpSXmKPExsWy7djP87qc33fHGRzZrG/Re+4kk8XGGetZ
+        Lf5vm8hsceXrezaLlauPMlks2G9t8eXKQyaLTY+vsVpc3jWHzWLtkbvsFgc/PGF14PZYM28N
+        o8febwtYPLZ/e8Dqcb/7OJPH5iX1Hrf/PWb2mHxjOaPH7psNbB59W1YxenzeJBfAFcVlk5Ka
+        k1mWWqRvl8CV0dH1l7Xgj2rFrDUfmRoYL8t1MXJySAiYSLxe1sbaxcjFISSwglHi7L/JbBDO
+        F0aJxpWf2SGcz4wSNy/vYYJpWblpElRiOaPE61m7WOBaHj2YyQJSxSZgKNH1tosNxBYRaGWU
+        ONHLA2IzC8xgkjj6uhTEFhZIkOib+wWonoODRUBV4swrdZAwr4CNxMdL+9khlslLrN5wgBnE
+        5hSwlXh1Zz8LRHwTu8SDvQoQtovE2XU3oI4Tlnh1fAtUr4zE6ck9YLdJCDQzSjw8t5Ydwulh
+        lLjcNIMRospa4s65X2wgRzALaEqs36UPEXaUuLnkOthtEgJ8EjfeCkKczycxadt0Zogwr0RH
+        mxBEtZrErOPr4NYevHCJGcL2kHj45hw0eA8zSlx79oNxAqP8LIRlCxgZVzGKp5YW56anFhvl
+        pZbrFSfmFpfmpesl5+duYgSmntP/jn/ZwbjrT9IhRgEORiUeXotbu+OEWBPLiitzDzFKcDAr
+        ifD6rQcK8aYkVlalFuXHF5XmpBYfYpTmYFES5zVe9DJWSCA9sSQ1OzW1ILUIJsvEwSnVwBjt
+        t9Nva7zbt/9aZ7KmnupT/ML24tRiv/RHOa1xDFoqvn+Oy3/TW2p1tL1/zcKPgczam0v+ztn/
+        4FOt6q2T5sZP1P68T3AIv/r6/bHck3M+5XTuUmR6xfc/bePNghV/T9zpjf9ZICDMuURUvE/k
+        81s2bg+/S+F7n96Q38D/3if0P4Nm46F7e6OVWIozEg21mIuKEwGJ9dDgOQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupkkeLIzCtJLcpLzFFi42I5/e/4XV3O77vjDHY9lrboPXeSyWLjjPWs
+        Fv+3TWS2uPL1PZvFytVHmSwW7Le2+HLlIZPFpsfXWC0u75rDZrH2yF12i4MfnrA6cHusmbeG
+        0WPvtwUsHtu/PWD1uN99nMlj85J6j9v/HjN7TL6xnNFj980GNo++LasYPT5vkgvgitKzKcov
+        LUlVyMgvLrFVija0MNIztLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3S9DL6Oj6y1rwR7Vi
+        1pqPTA2Ml+W6GDk5JARMJFZumsTexcjFISSwlFHi5tP/zBAJGYmT0xpYIWxhiT/Xutggij4x
+        Srx62soIkmATMJToeguREBHoZJSY1v0RbBSzwDwmiUUPD7GDVAkLxEnserUGqIODg0VAVeLM
+        K3WQMK+AjcTHS/vZITbIS6zecABsM6eArcSrO/tZQGwhgXyJvYv3sU1g5FvAyLCKUSS1tDg3
+        PbfYUK84Mbe4NC9dLzk/dxMjMBq2Hfu5eQfjpY3BhxgFOBiVeHgtbu2OE2JNLCuuzD3EKMHB
+        rCTC67ceKMSbklhZlVqUH19UmpNafIjRFOimicxSosn5wEjNK4k3NDU0t7A0NDc2NzazUBLn
+        7RA4GCMkkJ5YkpqdmlqQWgTTx8TBKdXAyDo178LD+0yFXZ1Hy9ZG9PvmW133DO9VKmEvYe/9
+        MP/bwpZ//w99TvSevlQ0e+fhnfHNPALFChJ/nH0iJHzu7T9a3t08qfCY3/22vlJFk9T+CRPj
+        Jokmaz5nu7I2Q2ECD+8H+0BmjZLFIl1R57haXoi9fRcTcurX4+XRMuqxy2qE5NyVgiuUWIoz
+        Eg21mIuKEwGN63+5nAIAAA==
+X-CMS-MailID: 20200513133257eucas1p1613a28a71a6c328c406397f7094534d1
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200513133257eucas1p1613a28a71a6c328c406397f7094534d1
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200513133257eucas1p1613a28a71a6c328c406397f7094534d1
+References: <20200513132114.6046-1-m.szyprowski@samsung.com>
+        <20200513133245.6408-1-m.szyprowski@samsung.com>
+        <CGME20200513133257eucas1p1613a28a71a6c328c406397f7094534d1@eucas1p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 02:06:48PM +0200, Oleksij Rempel wrote:
-> The cable test seems to be support by all of currently support Atherso
-> PHYs, so add support for all of them. This patch was tested only on
-> AR9331 PHY with following results:
-> - No cable is detected as short
-> - A 15m long cable connected only on one side is detected as 9m open.
+struct sg_table is a common structure used for describing a memory
+buffer. It consists of a scatterlist with memory pages and DMA addresses
+(sgl entry), as well as the number of scatterlist entries: CPU pages
+(orig_nents entry) and DMA mapped pages (nents entry).
 
-That sounds wrong. What about a shorted 15m cable? Is it also 9m?  Do
-you have any other long cables you can test with? Is it always 1/2 the
-cable length?
+It turned out that it was a common mistake to misuse nents and orig_nents
+entries, calling the scatterlist iterating functions with a wrong number
+of the entries.
 
-> - A cable test with active link partner will provide no usable results.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  drivers/net/phy/at803x.c | 141 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 141 insertions(+)
-> 
-> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-> index f4fec5f644e91..03ec500defb34 100644
-> --- a/drivers/net/phy/at803x.c
-> +++ b/drivers/net/phy/at803x.c
-> @@ -7,11 +7,13 @@
->   * Author: Matus Ujhelyi <ujhelyi.m@gmail.com>
->   */
->  
-> +#include <linux/bitfield.h>
->  #include <linux/phy.h>
->  #include <linux/module.h>
->  #include <linux/string.h>
->  #include <linux/netdevice.h>
->  #include <linux/etherdevice.h>
-> +#include <linux/ethtool_netlink.h>
->  #include <linux/of_gpio.h>
->  #include <linux/bitfield.h>
->  #include <linux/gpio/consumer.h>
-> @@ -48,6 +50,20 @@
->  #define AT803X_SMART_SPEED_BYPASS_TIMER		BIT(1)
->  #define AT803X_LED_CONTROL			0x18
->  
-> +/* Cable Tester Contol Register */
-> +#define AT803X_CABLE_DIAG_CTRL			0x16
-> +#define AT803X_CABLE_DIAG_MDI_PAIR		GENMASK(9, 8)
-> +#define AT803X_CABLE_DIAG_EN			BIT(0)
-> +
-> +/* Cable Tester Status Register */
-> +#define AT803X_CABLE_DIAG_STATUS		0x1c
-> +#define AT803X_CABLE_DIAG_RESULT		GENMASK(9, 8)
-> +#define AT803X_CABLE_DIAG_RESULT_OK		0
-> +#define AT803X_CABLE_DIAG_RESULT_SHORT		1
-> +#define AT803X_CABLE_DIAG_RESULT_OPEN		2
-> +#define AT803X_CABLE_DIAG_RESULT_FAIL		3
-> +#define AT803X_CABLE_DIAG_DTIME			GENMASK(7, 0)
-> +
->  #define AT803X_DEVICE_ADDR			0x03
->  #define AT803X_LOC_MAC_ADDR_0_15_OFFSET		0x804C
->  #define AT803X_LOC_MAC_ADDR_16_31_OFFSET	0x804B
-> @@ -122,6 +138,7 @@ MODULE_AUTHOR("Matus Ujhelyi");
->  MODULE_LICENSE("GPL");
->  
->  struct at803x_priv {
-> +	struct phy_device *phydev;
->  	int flags;
->  #define AT803X_KEEP_PLL_ENABLED	BIT(0)	/* don't turn off internal PLL */
->  	u16 clk_25m_reg;
-> @@ -129,6 +146,9 @@ struct at803x_priv {
->  	struct regulator_dev *vddio_rdev;
->  	struct regulator_dev *vddh_rdev;
->  	struct regulator *vddio;
-> +	struct work_struct cable_test_work;
-> +	bool cable_test_finished;
-> +	int cable_test_ret;
->  };
->  
->  struct at803x_context {
-> @@ -168,6 +188,113 @@ static int at803x_debug_reg_mask(struct phy_device *phydev, u16 reg,
->  	return phy_write(phydev, AT803X_DEBUG_DATA, val);
->  }
-  
-> +static void at803x_cable_test_work(struct work_struct *work)
-> +{
-> +	struct at803x_priv *priv = container_of(work, struct at803x_priv,
-> +						cable_test_work);
-> +	struct phy_device *phydev = priv->phydev;
-> +	int i, ret = 0, pairs = 4;
-> +
-> +	if (phydev->phy_id == ATH9331_PHY_ID)
-> +		pairs = 2;
-> +
-> +	for (i = 0; i < pairs; i++) {
-> +		ret = at803x_cable_test_pair(phydev, i);
-> +		if (ret)
-> +			break;
-> +	}
-> +
-> +	priv->cable_test_ret = ret;
-> +	priv->cable_test_finished = true;
-> +
-> +	phy_queue_state_machine(phydev, 0);
-> +}
-> +
-> +static int at803x_cable_test_start(struct phy_device *phydev)
-> +{
-> +	struct at803x_priv *priv = phydev->priv;
-> +
-> +	if (!priv->cable_test_finished) {
-> +		phydev_err(phydev, "cable test is already running\n");
-> +		return -EIO;
-> +	}
-> +
-> +	priv->cable_test_finished = false;
-> +	schedule_work(&priv->cable_test_work);
+To avoid such issues, lets introduce a common wrappers operating directly
+on the struct sg_table objects, which take care of the proper use of
+the nents and orig_nents entries.
 
-You don't need the work queue. You cannot spend a long time in
-at803x_cable_test_start(), but you can in
-at803x_cable_test_get_status(). So start the first the measurement of
-the first pair in at803x_cable_test_start(), and do the rest in
-of the work in at803x_cable_test_get_status().
+While touching this, lets clarify some ambiguities in the comments for
+the existing for_each helpers.
 
-If we see there is a common pattern of wanting
-at803x_cable_test_get_status() to run immediately, not one second
-later, we can change to core to support that.
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Robin Murphy <robin.murphy@arm.com> 
+---
+For more information, see '[PATCH v5 00/38] DRM: fix struct sg_table nents
+vs. orig_nents misuse' thread:
+https://lore.kernel.org/linux-iommu/20200513132114.6046-1-m.szyprowski@samsung.com/T/
+---
+ include/linux/scatterlist.h | 50 ++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 47 insertions(+), 3 deletions(-)
 
-       Andrew
+diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
+index 6eec50f..4f922af 100644
+--- a/include/linux/scatterlist.h
++++ b/include/linux/scatterlist.h
+@@ -151,6 +151,20 @@ static inline void sg_set_buf(struct scatterlist *sg, const void *buf,
+ #define for_each_sg(sglist, sg, nr, __i)	\
+ 	for (__i = 0, sg = (sglist); __i < (nr); __i++, sg = sg_next(sg))
+ 
++/*
++ * Loop over each sg element in the given sg_table object.
++ */
++#define for_each_sgtable_sg(sgt, sg, i)		\
++	for_each_sg(sgt->sgl, sg, sgt->orig_nents, i)
++
++/*
++ * Loop over each sg element in the given *DMA mapped* sg_table object.
++ * Please use sg_dma_address(sg) and sg_dma_len(sg) to extract DMA addresses
++ * of the each element.
++ */
++#define for_each_sgtable_dma_sg(sgt, sg, i)	\
++	for_each_sg(sgt->sgl, sg, sgt->nents, i)
++
+ /**
+  * sg_chain - Chain two sglists together
+  * @prv:	First scatterlist
+@@ -401,9 +415,10 @@ static inline struct page *sg_page_iter_page(struct sg_page_iter *piter)
+  * @sglist:	sglist to iterate over
+  * @piter:	page iterator to hold current page, sg, sg_pgoffset
+  * @nents:	maximum number of sg entries to iterate over
+- * @pgoffset:	starting page offset
++ * @pgoffset:	starting page offset (in pages)
+  *
+  * Callers may use sg_page_iter_page() to get each page pointer.
++ * In each loop it operates on PAGE_SIZE unit.
+  */
+ #define for_each_sg_page(sglist, piter, nents, pgoffset)		   \
+ 	for (__sg_page_iter_start((piter), (sglist), (nents), (pgoffset)); \
+@@ -412,18 +427,47 @@ static inline struct page *sg_page_iter_page(struct sg_page_iter *piter)
+ /**
+  * for_each_sg_dma_page - iterate over the pages of the given sg list
+  * @sglist:	sglist to iterate over
+- * @dma_iter:	page iterator to hold current page
++ * @dma_iter:	DMA page iterator to hold current page
+  * @dma_nents:	maximum number of sg entries to iterate over, this is the value
+  *              returned from dma_map_sg
+- * @pgoffset:	starting page offset
++ * @pgoffset:	starting page offset (in pages)
+  *
+  * Callers may use sg_page_iter_dma_address() to get each page's DMA address.
++ * In each loop it operates on PAGE_SIZE unit.
+  */
+ #define for_each_sg_dma_page(sglist, dma_iter, dma_nents, pgoffset)            \
+ 	for (__sg_page_iter_start(&(dma_iter)->base, sglist, dma_nents,        \
+ 				  pgoffset);                                   \
+ 	     __sg_page_iter_dma_next(dma_iter);)
+ 
++/**
++ * for_each_sgtable_page - iterate over all pages in the sg_table object
++ * @sgt:	sg_table object to iterate over
++ * @piter:	page iterator to hold current page
++ * @pgoffset:	starting page offset (in pages)
++ *
++ * Iterates over the all memory pages in the buffer described by
++ * a scatterlist stored in the given sg_table object.
++ * See also for_each_sg_page(). In each loop it operates on PAGE_SIZE unit.
++ */
++#define for_each_sgtable_page(sgt, piter, pgoffset)	\
++	for_each_sg_page(sgt->sgl, piter, sgt->orig_nents, pgoffset)
++
++/**
++ * for_each_sgtable_dma_page - iterate over the DMA mapped sg_table object
++ * @sgt:	sg_table object to iterate over
++ * @dma_iter:	DMA page iterator to hold current page
++ * @pgoffset:	starting page offset (in pages)
++ *
++ * Iterates over the all DMA mapped pages in the buffer described by
++ * a scatterlist stored in the given sg_table object.
++ * See also for_each_sg_dma_page(). In each loop it operates on PAGE_SIZE
++ * unit.
++ */
++#define for_each_sgtable_dma_page(sgt, dma_iter, pgoffset)	\
++	for_each_sg_dma_page(sgt->sgl, dma_iter, sgt->nents, pgoffset)
++
++
+ /*
+  * Mapping sg iterator
+  *
+-- 
+1.9.1
+
