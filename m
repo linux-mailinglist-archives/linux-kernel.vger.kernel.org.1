@@ -2,151 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE0C1D12CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B962F1D12CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729084AbgEMMe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 08:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46674 "EHLO
+        id S1732721AbgEMMfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 08:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728726AbgEMMe2 (ORCPT
+        with ESMTP id S1728726AbgEMMe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 08:34:28 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28FCC061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 05:34:27 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id y24so28329329wma.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 05:34:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=Uq9qKVIIPRYpr+ZQGu650yVuCDvwMsaOv+GcVNz90vE=;
-        b=Qd2IYNlukTFWmwSZruZbofPgqNrcrOGxY8Cyjg7avgLFsvHQbTXXbphDYj2nNEEEkU
-         bCaBVOGqK0DBq4pbDZXrmoDiKPFvfsqeUVWNX8wiFmAgJDsMZf9dHSoU6/hDcSIH3EFN
-         qVvsb1EfFhiclSEYlwzR+orrCg0DfiPa+n0hrr4Smrw5cZhLrdGxyIBDr8bDOWQvLHd+
-         zbgdSc1sYYzP0Jq7fbuJuT0FbhbFP0W3IFcYHWHHE9H3p8expaX9YqM0aly+SPjixeiI
-         c4NBAW7AIYkPC1NWW3JReGqMLQVHC/8+HUgKG2eRuARe3/StauupQhMdyK+ZGbzPUvah
-         GUUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Uq9qKVIIPRYpr+ZQGu650yVuCDvwMsaOv+GcVNz90vE=;
-        b=VybI5lVVN1A7DCCDkhnrU70X6Zm6vMkYc/NDXV3ZO5qyNapvIdlUg0Kcx0xxv3fUhi
-         t/QCFu/+4BuQGuExE2jtgAPz6q790UPD+kc7vuGTLkv09nuvpkOoUOt9rjUuEn+B5zPl
-         OgTuRyvBuJo/PWbTMxGXpO1xGD/YAn73c9+des2q2tDbOYWcS1Jqvs7XYnsyKZafQJJx
-         WXrADDXarvzt37S2/SGT96NSG6Pr0YKB+b9n7GsEZDEjwFG/uRDW+fng7fP8gCuZUIsS
-         aahMbzs/nRDfWLe2X1mbqZP9F+KFM9uHmC5VWyYdXEzj1Qe0BT1T6aGbHDa66bac137f
-         4oJA==
-X-Gm-Message-State: AGi0PuYBydUnO1s9px07TYEkzyNDDeFr6G/T4n1HnkmCcK56q6hCRBu5
-        dwsVHLoIfdqBdOscr/0xzy/Qww==
-X-Google-Smtp-Source: APiQypKFoZv4Q26EIKFT7igUjecCo6aufRUX6mUQ50Zt7X4aP03lMS11ETsM++gsF0NLwCW06DvaZA==
-X-Received: by 2002:a7b:c253:: with SMTP id b19mr22468669wmj.110.1589373266511;
-        Wed, 13 May 2020 05:34:26 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:f:6020:e00f:4685:acf1:ea5e])
-        by smtp.gmail.com with ESMTPSA id r14sm11742080wmb.2.2020.05.13.05.34.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 05:34:25 -0700 (PDT)
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, linux-kernel@vger.kernel.org
-Cc:     pauld@redhat.com, ouwen210@hotmail.com, pkondeti@codeaurora.org,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH v2] sched/fair: fix unthrottle_cfs_rq for leaf_cfs_rq list
-Date:   Wed, 13 May 2020 14:34:22 +0200
-Message-Id: <20200513123422.28299-1-vincent.guittot@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Wed, 13 May 2020 08:34:59 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13080C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 05:34:59 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jYqb2-000383-OV; Wed, 13 May 2020 14:34:48 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jYqb1-0000wt-HO; Wed, 13 May 2020 14:34:47 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Marek Vasut <marex@denx.de>, David Jander <david@protonic.nl>,
+        devicetree@vger.kernel.org
+Subject: [PATCH net-next v1] net: phy: tja11xx: add cable-test support
+Date:   Wed, 13 May 2020 14:34:40 +0200
+Message-Id: <20200513123440.19580-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although not exactly identical, unthrottle_cfs_rq() and enqueue_task_fair()
-are quite close and follow the same sequence for enqueuing an entity in the
-cfs hierarchy. Modify unthrottle_cfs_rq() to use the same pattern as
-enqueue_task_fair(). This fixes a problem already faced with the latter and
-add an optimization in the last for_each_sched_entity loop.
+Add initial cable testing support.
+This PHY needs only 100usec for this test and it is recommended to run it
+before the link is up. For now, provide at least ethtool support, so it
+can be tested by more developers.
 
-Reported-by Tao Zhou <zohooouoto@zoho.com.cn>
-Reviewed-by: Phil Auld <pauld@redhat.com>
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+This patch was tested with TJA1102 PHY with following results:
+- No cable, is detected as open
+- 1m cable, with no connected other end and detected as open
+- a 40m cable (out of spec, max lenght should be 15m) is detected as OK.
+
+Current patch do not provide polarity test support. This test would
+indicate not proper wire connection, where "+" wire of main phy is
+connected to the "-" wire of the link partner.
+
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
+ drivers/net/phy/nxp-tja11xx.c | 106 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 105 insertions(+), 1 deletion(-)
 
-v2 changes:
-- Remove useless if statement
-
- kernel/sched/fair.c | 41 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 11 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 4e12ba882663..a0c690d57430 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4816,26 +4816,44 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
- 	idle_task_delta = cfs_rq->idle_h_nr_running;
- 	for_each_sched_entity(se) {
- 		if (se->on_rq)
--			enqueue = 0;
-+			break;
-+		cfs_rq = cfs_rq_of(se);
-+		enqueue_entity(cfs_rq, se, ENQUEUE_WAKEUP);
+diff --git a/drivers/net/phy/nxp-tja11xx.c b/drivers/net/phy/nxp-tja11xx.c
+index ca5f9d4dc57ed..8b743d25002b9 100644
+--- a/drivers/net/phy/nxp-tja11xx.c
++++ b/drivers/net/phy/nxp-tja11xx.c
+@@ -5,6 +5,7 @@
+  */
+ #include <linux/delay.h>
+ #include <linux/ethtool.h>
++#include <linux/ethtool_netlink.h>
+ #include <linux/kernel.h>
+ #include <linux/mdio.h>
+ #include <linux/mii.h>
+@@ -26,6 +27,7 @@
+ #define MII_ECTRL_POWER_MODE_NO_CHANGE	(0x0 << 11)
+ #define MII_ECTRL_POWER_MODE_NORMAL	(0x3 << 11)
+ #define MII_ECTRL_POWER_MODE_STANDBY	(0xc << 11)
++#define MII_ECTRL_CABLE_TEST		BIT(5)
+ #define MII_ECTRL_CONFIG_EN		BIT(2)
+ #define MII_ECTRL_WAKE_REQUEST		BIT(0)
  
-+		cfs_rq->h_nr_running += task_delta;
-+		cfs_rq->idle_h_nr_running += idle_task_delta;
+@@ -55,6 +57,11 @@
+ #define MII_GENSTAT			24
+ #define MII_GENSTAT_PLL_LOCKED		BIT(14)
+ 
++#define MII_EXTSTAT			25
++#define MII_EXTSTAT_SHORT_DETECT	BIT(8)
++#define MII_EXTSTAT_OPEN_DETECT		BIT(7)
++#define MII_EXTSTAT_POLARITY_DETECT	BIT(6)
 +
-+		/* end evaluation on encountering a throttled cfs_rq */
-+		if (cfs_rq_throttled(cfs_rq))
-+			goto unthrottle_throttle;
+ #define MII_COMMCFG			27
+ #define MII_COMMCFG_AUTO_OP		BIT(15)
+ 
+@@ -111,6 +118,11 @@ static int tja11xx_enable_link_control(struct phy_device *phydev)
+ 	return phy_set_bits(phydev, MII_ECTRL, MII_ECTRL_LINK_CONTROL);
+ }
+ 
++static int tja11xx_disable_link_control(struct phy_device *phydev)
++{
++	return phy_clear_bits(phydev, MII_ECTRL, MII_ECTRL_LINK_CONTROL);
++}
++
+ static int tja11xx_wakeup(struct phy_device *phydev)
+ {
+ 	int ret;
+@@ -536,6 +548,93 @@ static int tja11xx_config_intr(struct phy_device *phydev)
+ 	return phy_write(phydev, MII_INTEN, value);
+ }
+ 
++static int tja11xx_cable_test_start(struct phy_device *phydev)
++{
++	int ret;
++
++	ret = phy_clear_bits(phydev, MII_COMMCFG, MII_COMMCFG_AUTO_OP);
++	if (ret)
++		return ret;
++
++	ret = tja11xx_wakeup(phydev);
++	if (ret < 0)
++		return ret;
++
++	ret = tja11xx_disable_link_control(phydev);
++	if (ret < 0)
++		return ret;
++
++	return phy_set_bits(phydev, MII_ECTRL, MII_ECTRL_CABLE_TEST);
++}
++
++/*
++ * | BI_DA+           | BI_DA-                 | Result
++ * | open             | open                   | open
++ * | + short to -     | - short to +           | short
++ * | short to Vdd     | open                   | open
++ * | open             | shot to Vdd            | open
++ * | short to Vdd     | short to Vdd           | short
++ * | shot to GND      | open                   | open
++ * | open             | shot to GND            | open
++ * | short to GND     | shot to GND            | short
++ * | connected to active link partner (master) | shot and open
++ */
++static int tja11xx_cable_test_report_trans(u32 result)
++{
++	u32 mask = MII_EXTSTAT_SHORT_DETECT | MII_EXTSTAT_OPEN_DETECT;
++
++	if ((result & mask) == mask) {
++		/* connected to active link partner (master) */
++		return ETHTOOL_A_CABLE_RESULT_CODE_UNSPEC;
++	} else if ((result & mask) == 0) {
++		return ETHTOOL_A_CABLE_RESULT_CODE_OK;
++	} else if (result & MII_EXTSTAT_SHORT_DETECT) {
++		return ETHTOOL_A_CABLE_RESULT_CODE_SAME_SHORT;
++	} else if (result & MII_EXTSTAT_OPEN_DETECT) {
++		return ETHTOOL_A_CABLE_RESULT_CODE_OPEN;
++	} else {
++		return ETHTOOL_A_CABLE_RESULT_CODE_UNSPEC;
++	}
++}
++
++static int tja11xx_cable_test_report(struct phy_device *phydev)
++{
++	int ret;
++
++	ret = phy_read(phydev, MII_EXTSTAT);
++	if (ret < 0)
++		return ret;
++
++	ethnl_cable_test_result(phydev, ETHTOOL_A_CABLE_PAIR_A,
++				tja11xx_cable_test_report_trans(ret));
++
++	return 0;
++}
++
++static int tja11xx_cable_test_get_status(struct phy_device *phydev,
++					 bool *finished)
++{
++	int ret;
++
++	*finished = false;
++
++	ret = phy_read(phydev, MII_ECTRL);
++	if (ret < 0)
++		return ret;
++
++	if (!(ret & MII_ECTRL_CABLE_TEST)) {
++		*finished = true;
++
++		ret = phy_set_bits(phydev, MII_COMMCFG, MII_COMMCFG_AUTO_OP);
++		if (ret)
++			return ret;
++
++		return tja11xx_cable_test_report(phydev);
 +	}
 +
-+	for_each_sched_entity(se) {
- 		cfs_rq = cfs_rq_of(se);
--		if (enqueue) {
--			enqueue_entity(cfs_rq, se, ENQUEUE_WAKEUP);
--		} else {
--			update_load_avg(cfs_rq, se, 0);
--			se_update_runnable(se);
--		}
++	return 0;
++}
 +
-+		update_load_avg(cfs_rq, se, UPDATE_TG);
-+		se_update_runnable(se);
- 
- 		cfs_rq->h_nr_running += task_delta;
- 		cfs_rq->idle_h_nr_running += idle_task_delta;
- 
-+
-+		/* end evaluation on encountering a throttled cfs_rq */
- 		if (cfs_rq_throttled(cfs_rq))
--			break;
-+			goto unthrottle_throttle;
-+
-+		/*
-+		 * One parent has been throttled and cfs_rq removed from the
-+		 * list. Add it back to not break the leaf list.
-+		 */
-+		if (throttled_hierarchy(cfs_rq))
-+			list_add_leaf_cfs_rq(cfs_rq);
+ static struct phy_driver tja11xx_driver[] = {
+ 	{
+ 		PHY_ID_MATCH_MODEL(PHY_ID_TJA1100),
+@@ -572,6 +671,7 @@ static struct phy_driver tja11xx_driver[] = {
+ 	}, {
+ 		.name		= "NXP TJA1102 Port 0",
+ 		.features       = PHY_BASIC_T1_FEATURES,
++		.flags          = PHY_POLL_CABLE_TEST,
+ 		.probe		= tja1102_p0_probe,
+ 		.soft_reset	= tja11xx_soft_reset,
+ 		.config_aneg	= tja11xx_config_aneg,
+@@ -587,10 +687,12 @@ static struct phy_driver tja11xx_driver[] = {
+ 		.get_stats	= tja11xx_get_stats,
+ 		.ack_interrupt	= tja11xx_ack_interrupt,
+ 		.config_intr	= tja11xx_config_intr,
+-
++		.cable_test_start = tja11xx_cable_test_start,
++		.cable_test_get_status = tja11xx_cable_test_get_status,
+ 	}, {
+ 		.name		= "NXP TJA1102 Port 1",
+ 		.features       = PHY_BASIC_T1_FEATURES,
++		.flags          = PHY_POLL_CABLE_TEST,
+ 		/* currently no probe for Port 1 is need */
+ 		.soft_reset	= tja11xx_soft_reset,
+ 		.config_aneg	= tja11xx_config_aneg,
+@@ -606,6 +708,8 @@ static struct phy_driver tja11xx_driver[] = {
+ 		.get_stats	= tja11xx_get_stats,
+ 		.ack_interrupt	= tja11xx_ack_interrupt,
+ 		.config_intr	= tja11xx_config_intr,
++		.cable_test_start = tja11xx_cable_test_start,
++		.cable_test_get_status = tja11xx_cable_test_get_status,
  	}
+ };
  
--	if (!se)
--		add_nr_running(rq, task_delta);
-+	/* At this point se is NULL and we are at root level*/
-+	add_nr_running(rq, task_delta);
- 
-+unthrottle_throttle:
- 	/*
- 	 * The cfs_rq_throttled() breaks in the above iteration can result in
- 	 * incomplete leaf list maintenance, resulting in triggering the
-@@ -4844,7 +4862,8 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
- 	for_each_sched_entity(se) {
- 		cfs_rq = cfs_rq_of(se);
- 
--		list_add_leaf_cfs_rq(cfs_rq);
-+		if (list_add_leaf_cfs_rq(cfs_rq))
-+			break;
- 	}
- 
- 	assert_list_leaf_cfs_rq(rq);
 -- 
-2.17.1
+2.26.2
 
