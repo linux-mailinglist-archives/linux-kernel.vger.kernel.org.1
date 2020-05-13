@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111271D0CAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87ECB1D0E33
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732708AbgEMJqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:46:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44206 "EHLO mail.kernel.org"
+        id S2388244AbgEMJ6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:58:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732689AbgEMJqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:46:42 -0400
+        id S2387594AbgEMJyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:54:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B88A6206F5;
-        Wed, 13 May 2020 09:46:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C171205ED;
+        Wed, 13 May 2020 09:54:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363201;
-        bh=lwCmYmBStc/B78iyH0w3hnthD4nOlcxlZPGhE6PV29M=;
+        s=default; t=1589363661;
+        bh=T7mwNA+BukZCmqrM9ItDpviYepoJkudAyU7T2jHsWvU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r9sI0pdemDWCjtkS2+2JxaoFTWYaxcy/OxdZcsRXkaoXKo8dJPgzE47Z87XMIS0eZ
-         o/ioV/hjARwY/eTKWdKfZm7obq68dpmIrebe06V6/oMAWBmQ8Xb9QT5Gam+aNiS9R9
-         rJebHlIphu/kpTzByIpUPGJObC5OxoC8RFS23QXY=
+        b=FqXnel3UlCEJrREz9bIauTo2l4w7Zxg8gRBv4C/+gAFHMB8poVONFVXQe8+uw11ZE
+         C0K+7rIYe/F7oYaUXl0WG18VcGYD0pkvkxet8qYvQlLbdOSSYRvKM8AsN20P3DR5ZJ
+         1r8/BdqeBi+YHb7NyTi+xT5+sD1UxlBbusiExJ/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Kyrill Tkachov <kyrylo.tkachov@arm.com>,
         Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 4.19 27/48] arm64: hugetlb: avoid potential NULL dereference
-Date:   Wed, 13 May 2020 11:44:53 +0200
-Message-Id: <20200513094357.770767423@linuxfoundation.org>
+Subject: [PATCH 5.6 075/118] arm64: hugetlb: avoid potential NULL dereference
+Date:   Wed, 13 May 2020 11:44:54 +0200
+Message-Id: <20200513094424.216202240@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
-References: <20200513094351.100352960@linuxfoundation.org>
+In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
+References: <20200513094417.618129545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -84,9 +84,9 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/arch/arm64/mm/hugetlbpage.c
 +++ b/arch/arm64/mm/hugetlbpage.c
-@@ -218,6 +218,8 @@ pte_t *huge_pte_alloc(struct mm_struct *
+@@ -230,6 +230,8 @@ pte_t *huge_pte_alloc(struct mm_struct *
  		ptep = (pte_t *)pudp;
- 	} else if (sz == (PAGE_SIZE * CONT_PTES)) {
+ 	} else if (sz == (CONT_PTE_SIZE)) {
  		pmdp = pmd_alloc(mm, pudp, addr);
 +		if (!pmdp)
 +			return NULL;
