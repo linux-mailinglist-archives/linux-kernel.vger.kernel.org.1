@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD4B1D1B85
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3331D1B8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389703AbgEMQrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 12:47:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53128 "EHLO mail.kernel.org"
+        id S2389741AbgEMQr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 12:47:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729328AbgEMQrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 12:47:21 -0400
+        id S2389599AbgEMQrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 12:47:24 -0400
 Received: from lenoir.home (lfbn-ncy-1-985-231.w90-101.abo.wanadoo.fr [90.101.63.231])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87ACB20690;
-        Wed, 13 May 2020 16:47:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B794206F5;
+        Wed, 13 May 2020 16:47:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589388442;
-        bh=7E/fIz7wM1U/2tw53VAP5TR7b5+Gc4cizUa5GyslGks=;
+        s=default; t=1589388443;
+        bh=SIiRDjQEoO42UM7Rv3/azXOu3Z3Dd7mT4qygfIL3pws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IPW/zq5mJ5MxavWnwbZp1e9Oo7o6aQh6c+7Ql2wOsSUCW12kSSo7TLbzSQTOWt9WB
-         HCHyIndOdvRzDyRkOeXBdYuY8KCglWt1j1IwM3kuM6Bo3xw6rVmqmZs4QPM0+2FOak
-         HSU9G9Gi2tIYkmE8TCXnkgzNn510LrE0PhMs4bzI=
+        b=Tqi90BhBYrU6De9n8eLrXS6ISdR8eVdy8Na64tfRb7rmTrfxnA5B0cnvBYwujiLWm
+         mPt7UvWqLLkoMTmyJxtdZXUgvyWAmwFZJHfx+fRPGAYjhGWdtJw7+Xui0ICTqItzYF
+         EMddMH9LWYFWIwKob+h0q5J/VdRZT0lMHHygQC+k=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -32,9 +32,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>
-Subject: [PATCH 01/10] rcu: Directly lock rdp->nocb_lock on nocb code entrypoints
-Date:   Wed, 13 May 2020 18:47:05 +0200
-Message-Id: <20200513164714.22557-2-frederic@kernel.org>
+Subject: [PATCH 02/10] rcu: Use direct rdp->nocb_lock operations on local calls
+Date:   Wed, 13 May 2020 18:47:06 +0200
+Message-Id: <20200513164714.22557-3-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200513164714.22557-1-frederic@kernel.org>
 References: <20200513164714.22557-1-frederic@kernel.org>
@@ -45,14 +45,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pure NOCB code entrypoints (nocb_cb kthread, nocb_gp kthread, nocb
-timers) can unconditionally lock rdp->nocb_lock as they always execute
-in the context of an offloaded rdp.
+Unconditionally lock rdp->nocb_lock on nocb code that is called after
+we verified that the rdp is offloaded:
 
-This also prepare for toggling CPUs to/from callback's offloaded mode
-where the offloaded state will possibly change when rdp->nocb_lock
-isn't taken. We'll still want the entrypoints to lock the rdp in any
-case.
+This clarify the locking rules and expectations.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Paul E. McKenney <paulmck@kernel.org>
@@ -62,76 +58,112 @@ Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: Joel Fernandes <joel@joelfernandes.org>
 ---
- kernel/rcu/tree_plugin.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ kernel/rcu/tree_plugin.h | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 097635c41135..523570469864 100644
+index 523570469864..1d22b16c03e0 100644
 --- a/kernel/rcu/tree_plugin.h
 +++ b/kernel/rcu/tree_plugin.h
-@@ -1909,7 +1909,7 @@ static void do_nocb_bypass_wakeup_timer(struct timer_list *t)
- 	struct rcu_data *rdp = from_timer(rdp, t, nocb_bypass_timer);
- 
- 	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Timer"));
--	rcu_nocb_lock_irqsave(rdp, flags);
-+	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
- 	smp_mb__after_spinlock(); /* Timer expire before wakeup. */
- 	__call_rcu_nocb_wake(rdp, true, flags);
- }
-@@ -1942,7 +1942,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 	 */
- 	for (rdp = my_rdp; rdp; rdp = rdp->nocb_next_cb_rdp) {
- 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
--		rcu_nocb_lock_irqsave(rdp, flags);
-+		raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
- 		bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
- 		if (bypass_ncbs &&
- 		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + 1) ||
-@@ -1951,7 +1951,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 			(void)rcu_nocb_try_flush_bypass(rdp, j);
- 			bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
- 		} else if (!bypass_ncbs && rcu_segcblist_empty(&rdp->cblist)) {
--			rcu_nocb_unlock_irqrestore(rdp, flags);
-+			raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
- 			continue; /* No callbacks here, try next. */
- 		}
- 		if (bypass_ncbs) {
-@@ -1996,7 +1996,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 		} else {
- 			needwake = false;
- 		}
+@@ -1628,11 +1628,11 @@ static void wake_nocb_gp(struct rcu_data *rdp, bool force,
+ 	if (!READ_ONCE(rdp_gp->nocb_gp_kthread)) {
+ 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+ 				    TPS("AlreadyAwake"));
 -		rcu_nocb_unlock_irqrestore(rdp, flags);
 +		raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
- 		if (needwake) {
- 			swake_up_one(&rdp->nocb_cb_wq);
- 			gotcbs = true;
-@@ -2084,7 +2084,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
- 	rcu_do_batch(rdp);
- 	local_bh_enable();
- 	lockdep_assert_irqs_enabled();
--	rcu_nocb_lock_irqsave(rdp, flags);
-+	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
- 	if (rcu_segcblist_nextgp(&rdp->cblist, &cur_gp_seq) &&
- 	    rcu_seq_done(&rnp->gp_seq, cur_gp_seq) &&
- 	    raw_spin_trylock_rcu_node(rnp)) { /* irqs already disabled. */
-@@ -2092,7 +2092,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
- 		raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
- 	}
- 	if (rcu_segcblist_ready_cbs(&rdp->cblist)) {
--		rcu_nocb_unlock_irqrestore(rdp, flags);
-+		raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
- 		if (needwake_gp)
- 			rcu_gp_kthread_wake();
  		return;
-@@ -2100,7 +2100,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
- 
- 	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("CBSleep"));
- 	WRITE_ONCE(rdp->nocb_cb_sleep, true);
+ 	}
+ 	del_timer(&rdp->nocb_timer);
 -	rcu_nocb_unlock_irqrestore(rdp, flags);
 +	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
- 	if (needwake_gp)
- 		rcu_gp_kthread_wake();
- 	swait_event_interruptible_exclusive(rdp->nocb_cb_wq,
+ 	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
+ 	if (force || READ_ONCE(rdp_gp->nocb_gp_sleep)) {
+ 		WRITE_ONCE(rdp_gp->nocb_gp_sleep, false);
+@@ -1753,7 +1753,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 
+ 	// Don't use ->nocb_bypass during early boot.
+ 	if (rcu_scheduler_active != RCU_SCHEDULER_RUNNING) {
+-		rcu_nocb_lock(rdp);
++		raw_spin_lock(&rdp->nocb_lock);
+ 		WARN_ON_ONCE(rcu_cblist_n_cbs(&rdp->nocb_bypass));
+ 		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
+ 		return false;
+@@ -1778,7 +1778,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 	// this jiffy, tell the caller to enqueue onto ->cblist.  But flush
+ 	// ->nocb_bypass first.
+ 	if (rdp->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy) {
+-		rcu_nocb_lock(rdp);
++		raw_spin_lock(&rdp->nocb_lock);
+ 		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
+ 		if (*was_alldone)
+ 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+@@ -1792,7 +1792,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 	// flush ->nocb_bypass to ->cblist.
+ 	if ((ncbs && j != READ_ONCE(rdp->nocb_bypass_first)) ||
+ 	    ncbs >= qhimark) {
+-		rcu_nocb_lock(rdp);
++		raw_spin_lock(&rdp->nocb_lock);
+ 		if (!rcu_nocb_flush_bypass(rdp, rhp, j)) {
+ 			*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
+ 			if (*was_alldone)
+@@ -1807,7 +1807,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 			rcu_advance_cbs_nowake(rdp->mynode, rdp);
+ 			rdp->nocb_gp_adv_time = j;
+ 		}
+-		rcu_nocb_unlock_irqrestore(rdp, flags);
++		raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+ 		return true; // Callback already enqueued.
+ 	}
+ 
+@@ -1827,7 +1827,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 		local_irq_restore(flags);
+ 	} else {
+ 		// No-CBs GP kthread might be indefinitely asleep, if so, wake.
+-		rcu_nocb_lock(rdp); // Rare during call_rcu() flood.
++		raw_spin_lock(&rdp->nocb_lock); // Rare during call_rcu() flood.
+ 		if (!rcu_segcblist_pend_cbs(&rdp->cblist)) {
+ 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+ 					    TPS("FirstBQwake"));
+@@ -1835,7 +1835,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 		} else {
+ 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+ 					    TPS("FirstBQnoWake"));
+-			rcu_nocb_unlock_irqrestore(rdp, flags);
++			raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+ 		}
+ 	}
+ 	return true; // Callback already enqueued.
+@@ -1861,7 +1861,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+ 	if (rcu_nocb_poll || !t) {
+ 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+ 				    TPS("WakeNotPoll"));
+-		rcu_nocb_unlock_irqrestore(rdp, flags);
++		raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+ 		return;
+ 	}
+ 	// Need to actually to a wakeup.
+@@ -1876,7 +1876,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+ 		} else {
+ 			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE,
+ 					   TPS("WakeEmptyIsDeferred"));
+-			rcu_nocb_unlock_irqrestore(rdp, flags);
++			raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+ 		}
+ 	} else if (len > rdp->qlen_last_fqs_check + qhimark) {
+ 		/* ... or if many callbacks queued. */
+@@ -1894,10 +1894,10 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+ 		    !timer_pending(&rdp->nocb_bypass_timer))
+ 			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_FORCE,
+ 					   TPS("WakeOvfIsDeferred"));
+-		rcu_nocb_unlock_irqrestore(rdp, flags);
++		raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+ 	} else {
+ 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("WakeNot"));
+-		rcu_nocb_unlock_irqrestore(rdp, flags);
++		raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+ 	}
+ 	return;
+ }
 -- 
 2.25.0
 
