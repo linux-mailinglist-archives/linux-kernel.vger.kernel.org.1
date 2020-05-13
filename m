@@ -2,146 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA78E1D1308
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 544851D130F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731873AbgEMMpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 08:45:51 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:31866 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728379AbgEMMpv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 08:45:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589373949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FjjfCoKK48jzgXm67hbDCH1DJsihwHwCzqUHDeAkssg=;
-        b=hSEbV3Gc012nJgv3eMzXzt7m4smiiH9vOC581qbKLt/GNagQx0rYme8ch5MMkXwSWymCW/
-        xB4/z8q5yhqoQi/dGXjFeTyXo1hoxDni+gMB2M2UKJ3rf3tqf2Yf2KNup5l6K3Q9gKuh6W
-        MAf1aZuzsHAyh/v6Xca/fEmPLLBk2QQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-25-AZdOkNvpPAix6SYjViarcA-1; Wed, 13 May 2020 08:45:47 -0400
-X-MC-Unique: AZdOkNvpPAix6SYjViarcA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1732974AbgEMMqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 08:46:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728547AbgEMMp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 08:45:57 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37F86107ACCD;
-        Wed, 13 May 2020 12:45:46 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (ovpn-113-165.phx2.redhat.com [10.3.113.165])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6B6DB62B1E;
-        Wed, 13 May 2020 12:45:42 +0000 (UTC)
-Date:   Wed, 13 May 2020 08:45:40 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, linux-kernel@vger.kernel.org,
-        ouwen210@hotmail.com, pkondeti@codeaurora.org
-Subject: Re: [PATCH v2] sched/fair: enqueue_task_fair optimization
-Message-ID: <20200513124540.GB12425@lorien.usersys.redhat.com>
-References: <20200513123335.28122-1-vincent.guittot@linaro.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 73F7D20659;
+        Wed, 13 May 2020 12:45:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589373956;
+        bh=sk6047XT6X0SHxwSg7uWkaiZItlOEgHsYjkCMM6vFnc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m5w/tJOE5gNJFaF2gW0Ahk648XGhN+W9Ttl5IkViOG9E/oQfNL96pbNlDEQdXUFJI
+         p7cU7saq+S6QDR9MultHEj3steJD3ta3R0va761iRDxQ6pf0N9dqySKqfytbZ/oUIi
+         SlqWIptN4tWvOpTcG23wf6WIipom3qj9hhjw3H4g=
+Date:   Wed, 13 May 2020 14:45:54 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andreas =?iso-8859-1?Q?B=F6hler?= <dev@aboehler.at>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v13 5/5] usb: xhci: provide a debugfs hook for erasing rom
+Message-ID: <20200513124554.GA1083139@kroah.com>
+References: <20200506060025.1535960-1-vkoul@kernel.org>
+ <20200506060025.1535960-6-vkoul@kernel.org>
+ <caa2c5f4-a858-d699-27af-7b0c22b4dc40@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200513123335.28122-1-vincent.guittot@linaro.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <caa2c5f4-a858-d699-27af-7b0c22b4dc40@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
-
-On Wed, May 13, 2020 at 02:33:35PM +0200 Vincent Guittot wrote:
-> enqueue_task_fair jumps to enqueue_throttle label when cfs_rq_of(se) is
-> throttled which means that se can't be NULL and we can skip the test.
->
-
-s/be NULL/be non-NULL/
-
-I think.
-
-It's more like if it doesn't jump to the label then se must be NULL for
-the loop to terminate.  The final loop is a NOP if se is NULL. The check
-wasn't protecting that.
-
-Otherwise still
-
-> Reviewed-by: Phil Auld <pauld@redhat.com>
-
-Cheers,
-Phil
-
-
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
+On Wed, May 13, 2020 at 03:36:19PM +0300, Mathias Nyman wrote:
+> On 6.5.2020 9.00, Vinod Koul wrote:
+> > run "echo 1 > /sys/kernel/debug/renesas-usb/rom_erase" to erase
+> > firmware when driver is loaded.
+> > 
+> > Subsequent init of driver shall reload the firmware
+> > 
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > ---
+> >  drivers/usb/host/xhci-pci-renesas.c | 33 +++++++++++++++++++++++++++++
+> >  1 file changed, 33 insertions(+)
+> > 
+> > diff --git a/drivers/usb/host/xhci-pci-renesas.c b/drivers/usb/host/xhci-pci-renesas.c
+> > index f7d2445d30ec..fa32ec352dc8 100644
+> > --- a/drivers/usb/host/xhci-pci-renesas.c
+> > +++ b/drivers/usb/host/xhci-pci-renesas.c
+> > @@ -2,6 +2,7 @@
+> >  /* Copyright (C) 2019-2020 Linaro Limited */
+> >  
+> >  #include <linux/acpi.h>
+> > +#include <linux/debugfs.h>
+> >  #include <linux/firmware.h>
+> >  #include <linux/module.h>
+> >  #include <linux/pci.h>
+> > @@ -170,6 +171,8 @@ static int renesas_fw_verify(const void *fw_data,
+> >  	return 0;
+> >  }
+> >  
+> > +static void debugfs_init(struct pci_dev *pdev);
+> > +
+> >  static bool renesas_check_rom(struct pci_dev *pdev)
+> >  {
+> >  	u16 rom_status;
+> > @@ -183,6 +186,7 @@ static bool renesas_check_rom(struct pci_dev *pdev)
+> >  	rom_status &= RENESAS_ROM_STATUS_ROM_EXISTS;
+> >  	if (rom_status) {
+> >  		dev_dbg(&pdev->dev, "External ROM exists\n");
+> > +		debugfs_init(pdev);
+> >  		return true; /* External ROM exists */
+> >  	}
+> >  
+> > @@ -449,6 +453,34 @@ static void renesas_rom_erase(struct pci_dev *pdev)
+> >  	dev_dbg(&pdev->dev, "ROM Erase... Done success\n");
+> >  }
+> >  
+> > +static int debugfs_rom_erase(void *data, u64 value)
+> > +{
+> > +	struct pci_dev *pdev = data;
+> > +
+> > +	if (value == 1) {
+> > +		dev_dbg(&pdev->dev, "Userspace requested ROM erase\n");
+> > +		renesas_rom_erase(pdev);
+> > +		return 0;
+> > +	}
+> > +	return -EINVAL;
+> > +}
+> > +DEFINE_DEBUGFS_ATTRIBUTE(rom_erase_ops, NULL, debugfs_rom_erase, "%llu\n");
+> > +
+> > +static struct dentry *debugfs_root;
+> > +
+> > +static void debugfs_init(struct pci_dev *pdev)
+> > +{
+> > +	debugfs_root = debugfs_create_dir("renesas_usb", NULL);
 > 
-> v2 changes:
-> - Remove useless if statement
-> 
->  kernel/sched/fair.c | 39 ++++++++++++++++++++-------------------
->  1 file changed, 20 insertions(+), 19 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index a0c690d57430..b51b12d63c39 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -5513,28 +5513,29 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->                         list_add_leaf_cfs_rq(cfs_rq);
->  	}
->  
-> -enqueue_throttle:
-> -	if (!se) {
-> -		add_nr_running(rq, 1);
-> -		/*
-> -		 * Since new tasks are assigned an initial util_avg equal to
-> -		 * half of the spare capacity of their CPU, tiny tasks have the
-> -		 * ability to cross the overutilized threshold, which will
-> -		 * result in the load balancer ruining all the task placement
-> -		 * done by EAS. As a way to mitigate that effect, do not account
-> -		 * for the first enqueue operation of new tasks during the
-> -		 * overutilized flag detection.
-> -		 *
-> -		 * A better way of solving this problem would be to wait for
-> -		 * the PELT signals of tasks to converge before taking them
-> -		 * into account, but that is not straightforward to implement,
-> -		 * and the following generally works well enough in practice.
-> -		 */
-> -		if (flags & ENQUEUE_WAKEUP)
-> -			update_overutilized_status(rq);
-> +	/* At this point se is NULL and we are at root level*/
-> +	add_nr_running(rq, 1);
-> +
-> +	/*
-> +	 * Since new tasks are assigned an initial util_avg equal to
-> +	 * half of the spare capacity of their CPU, tiny tasks have the
-> +	 * ability to cross the overutilized threshold, which will
-> +	 * result in the load balancer ruining all the task placement
-> +	 * done by EAS. As a way to mitigate that effect, do not account
-> +	 * for the first enqueue operation of new tasks during the
-> +	 * overutilized flag detection.
-> +	 *
-> +	 * A better way of solving this problem would be to wait for
-> +	 * the PELT signals of tasks to converge before taking them
-> +	 * into account, but that is not straightforward to implement,
-> +	 * and the following generally works well enough in practice.
-> +	 */
-> +	if (flags & ENQUEUE_WAKEUP)
-> +		update_overutilized_status(rq);
->  
->  	}
->  
-> +enqueue_throttle:
->  	if (cfs_bandwidth_used()) {
->  		/*
->  		 * When bandwidth control is enabled; the cfs_rq_throttled()
-> -- 
-> 2.17.1
-> 
+> This will create a renesas_usb directory right under debugfs root.
+> xhci has its own struct dentry xhci_debugfs_root; 
+> Use that as parent instead
 
--- 
+Ah, I misssed that, a follow-on patch can do this, right?
 
+> Also note that debugs_create_dir() can fail, for example if debugfs isn't supported.    
+
+Doesn't matter, never check the result, just move on and all is fine :)
+
+This logic is correct, no need for it to be changed.
+
+thanks,
+
+greg k-h
