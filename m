@@ -2,275 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0291D0B6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B264D1D0B75
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732380AbgEMJD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:03:58 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23899 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727970AbgEMJD6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:03:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589360635;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2H7WTlkx93S1M3vHX7Cpl36mA7bQH8EpHtVWoXoomnY=;
-        b=bgNMLKko6MAohCdLUBQQvmJvY5uY0ZnPT3VM92ptZTMbJeZw/JICeyQUENkZoZ/CiCuVog
-        vBex0aTWtT5/Zr9869VISculT9h5z2Kq3L6WtX7ATi4ljH/X+I2imi0NzIk70oS4FHdujt
-        glMr9Q/csIHhxi+Lrnc+wDLzyYWiJaE=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-216-AIEQGUwqPGitip91e9Y2lw-1; Wed, 13 May 2020 05:03:53 -0400
-X-MC-Unique: AIEQGUwqPGitip91e9Y2lw-1
-Received: by mail-wr1-f70.google.com with SMTP id y7so8319954wrd.12
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 02:03:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=2H7WTlkx93S1M3vHX7Cpl36mA7bQH8EpHtVWoXoomnY=;
-        b=chTzEmAvlE77VZFy7j90Tpil3uQCdzfaqbgWcRUiQuMR0VLQKLsPGVb9afKDpTaaKu
-         YUnPqrOw13kmzFpQ2xmyJtfekllmkpxG/Psm0kW8eorJygcjgf6IY0iBR/PK6iz1t5C0
-         ZE/3n4w2CvE2sw7OV1/LtYRTClm1rQNs0Rcjoeq/iUvejMaZIGgcEZuxClDZLmaWQTSj
-         9WEsz8HjJliyU3fq+7ZFXrvGSXWmu5YiPScwA3BlMv0wVrAbMm5EYQt+oNTtVMCPT3Vi
-         QbG+LqluOHow1BNJyRIGefdUlLY1/DvhcMBGdtU7uP6lAfhIhMQHII/382E2PyGNcDrI
-         eI1g==
-X-Gm-Message-State: AGi0PuaONoYajeLlzimyr0vxOASe5Uxap4IHX7jW2C/wCi5+kILhY7nB
-        RHCKNgXDKGEUWY3sEDkNP88+4EvfXXct731omKpw28Eh0+zi7hDA3v3VSeFKT9T0xvZt/XWZSfb
-        zEwXuHAOzjp9p9cCBwX5UhL0O
-X-Received: by 2002:a7b:c253:: with SMTP id b19mr21502943wmj.110.1589360632276;
-        Wed, 13 May 2020 02:03:52 -0700 (PDT)
-X-Google-Smtp-Source: APiQypK9eAP8N2DheEgz7iF2kF+kLwS0RnxeO8TnBCVfkzTsjDHkVXtFjuqkdphNM0gkNbd4ZgS3DQ==
-X-Received: by 2002:a7b:c253:: with SMTP id b19mr21502904wmj.110.1589360631936;
-        Wed, 13 May 2020 02:03:51 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id k131sm2544603wma.2.2020.05.13.02.03.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 02:03:50 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/8] KVM: x86: interrupt based APF page-ready event delivery
-In-Reply-To: <20200512180704.GE138129@redhat.com>
-References: <20200511164752.2158645-1-vkuznets@redhat.com> <20200511164752.2158645-5-vkuznets@redhat.com> <20200512142411.GA138129@redhat.com> <87lflxm9sy.fsf@vitty.brq.redhat.com> <20200512180704.GE138129@redhat.com>
-Date:   Wed, 13 May 2020 11:03:48 +0200
-Message-ID: <877dxgmcjv.fsf@vitty.brq.redhat.com>
+        id S1732438AbgEMJFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:05:40 -0400
+Received: from mail-db8eur05on2054.outbound.protection.outlook.com ([40.107.20.54]:6088
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730603AbgEMJFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:05:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NcBFV6WhewY/tbU3Is0Tnxu/jNoWLuNdR3wQw7dcrg0/v0nCln+AsxPA8Im7I7aWWh75pdRkahpfE7zXTaQpu30SFeE2HEcXBkQeOQK4Rhol0hhOdU9phlB17OZyiCpZb3Q5oGCGWZgjtYyoNtKz7zLHd1jWd737jdAjLhAw/1rsrs/cKqXpxAKeg3UPrG8WXtZypTdHq16AMPOUi5caRWW18qtN4hC6DVnJ3JAdC8w6/HQycmt84KJatIAdQyV/7tgtyppEfb90Wkc1pcEm/nUUzodgFJ6CDsshwkxCprK9KW0QpyME/HNsv5ZAVXkKVkH9+TLKlCR6uh5nnIl0AQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DSMlPGs/O07F0OqGvYGDcXIQRqOJK2nkRDayIya42rw=;
+ b=hIvCnzdM7iN7NTPad0dDXXHKvdhPNQUNhORymOPFIxh0dorzzeI46UqQqw7L1/rUP3gDm2je0Q5Ii6m6IloxttMl6f1NqNQ222mDtoKXUuyQZSJiIJK4jIZguIvJiYwqz80qaUXfTeB9VONWotK9kPL9NYmpsn8rSyq1/3nZqdA27mH0jBZxEoVuYKRyNINfqtc0mensHlIRxWySNd9JLPSAk7+S3a22WBmIiqk6+lnZ4Y+TuYt1vT76wbsFeWrVlDVDEc7G06Obj7PnhuYcuvZTNg33vqGtbBlvMfojiqwgCQtpRxEZSiuz2RFv9R6GSdOBwvCrThSDdH5MQjkbcg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DSMlPGs/O07F0OqGvYGDcXIQRqOJK2nkRDayIya42rw=;
+ b=EFJ3em0OndJKN+e1QuCaWFocclPL4MAPjtZkRYVMu7L9hE+kR4SkoAev9FFCBPIEwZmb3zwU4fuHbi8RsY2QxKpn6c0SDHn50t3Q/y23N4g0b3WDaAVNtImdB4iKYIDaMSA4lCjENbNmdKY8bmXTYAZ0IJIpX3e78gKOamHEKak=
+Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
+ by VE1PR04MB6765.eurprd04.prod.outlook.com (2603:10a6:803:126::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.34; Wed, 13 May
+ 2020 09:05:33 +0000
+Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
+ ([fe80::d5f0:c948:6ab0:c2aa]) by VE1PR04MB6638.eurprd04.prod.outlook.com
+ ([fe80::d5f0:c948:6ab0:c2aa%4]) with mapi id 15.20.3000.016; Wed, 13 May 2020
+ 09:05:33 +0000
+From:   Robin Gong <yibin.gong@nxp.com>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+CC:     "vkoul@kernel.org" <vkoul@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will.deacon@arm.com" <will.deacon@arm.com>,
+        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
+        "martin.fuzzey@flowbird.group" <martin.fuzzey@flowbird.group>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: RE: [PATCH v7 RESEND 07/13] spi: imx: fix ERR009165
+Thread-Topic: [PATCH v7 RESEND 07/13] spi: imx: fix ERR009165
+Thread-Index: AQHWJ3cnZ0DWmxBZKkqSbDLRijv4Zqilos2AgAASCaA=
+Date:   Wed, 13 May 2020 09:05:33 +0000
+Message-ID: <VE1PR04MB6638DE9AB1E51213DACCCA0F89BF0@VE1PR04MB6638.eurprd04.prod.outlook.com>
+References: <1589218356-17475-1-git-send-email-yibin.gong@nxp.com>
+ <1589218356-17475-8-git-send-email-yibin.gong@nxp.com>
+ <20200513073359.GM5877@pengutronix.de>
+In-Reply-To: <20200513073359.GM5877@pengutronix.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.66]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c8d3405c-33ce-4a6a-56f6-08d7f71ccb35
+x-ms-traffictypediagnostic: VE1PR04MB6765:|VE1PR04MB6765:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VE1PR04MB6765B5A59C96EAEC55D259DE89BF0@VE1PR04MB6765.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0402872DA1
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: khb+cMHEQCLWxbQ9giKB4nbXqtoM61CzbHjK1GRHQ74TBMDsQwqBuRRdemfr7CjAGQJzeiZMjnjfcmpTNM36RWj/JGZMUGt1aWTZApmWPZkjU7mUaQtgoKIzL9bup7v7iwrvtgovczs2hPhJMyNu/ndRnTeUKo/xZR2p+TR3lcaK4Xy2MWMnG9HQ74nZ09hj5nGePCbIyFJZG9OI85IqeEe4QpfwwxVsTzGJTM0YkHcFudHHlg3wH2u3mliEPvl1gcKqDUB8Rz2gMUxSoj9gBRfv7phpAu4vyY19nEJBta0jnOsEDvAV16kr8g1msSDrjcGA1pOOZ0r3L24r6iOSa0eTxFq7k/2AeNqrEcttD05CkYfmsWDKKj48iPz8+pMcSNji/AHt//VqoLaXmpfJULIUM+7tAX5WA+rnQIFbPQ/1A33hC+bodSzyxVtvgGjNhiHdXtnL9zuBzU7efQZ2o+nQveKxekpEyS/QCoROO9lUFULTloT+fGf8AQclmWGaiUep4uxa6BrLwdjdOz0Phw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(396003)(366004)(39860400002)(346002)(376002)(33430700001)(6916009)(33656002)(66446008)(55016002)(64756008)(86362001)(54906003)(8676002)(66556008)(76116006)(5660300002)(66946007)(66476007)(6506007)(316002)(478600001)(186003)(7416002)(52536014)(4326008)(8936002)(26005)(9686003)(2906002)(71200400001)(33440700001)(7696005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: rHbyuqL68E1ypyT1+2giYjmAVja/+KJSDDGTIusFxYXXFhtVc893rnIb4KT1oGjnhr8AKXOTigT9wyJr+oSP+mVyQWZAxeC30isQT6MWWvKePeUONUO0sNJ1tIIusLc7KHCBJKEircoHob9Hi0PZLldPSsBL93+kLiznCozKR6urWuQoiCdlFRN5qJVQwLS5J9FgSepguVUTnMpZk0D8/AzuGysOj4VWU74CG3kkjeTjC2FlZvICFjBdR1qhd3TYRfOD5q7JQsjnZn+p4VxLOuXTKAHFX9mr4EPP/5Ce/0XI9xDaDN1113hyZmwFxu81vBfBMc0JPu+W76/Ww8M/HrLuh+aDCIoHMero7em1h1vxwOFisFlanO4pJz6IKOhkMm3i+fFK9rTV5pnMCZ4ey68Ndt2YI69XOvPzexBurB97y777h4NgSs+bKrTIZ7CZ/9z/WKelnh8fXEOnQIzsAEm9vsDY2RAyBgShzHnVCts=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8d3405c-33ce-4a6a-56f6-08d7f71ccb35
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2020 09:05:33.5410
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Vfz5EV79WnHnTPTa0tXoQoJ9djZbxIGq1VhwL/onmcVqdwIBJP8NsKsj+1vqFiDXV5tuHCVhM5JN2/CHryEUtA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6765
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vivek Goyal <vgoyal@redhat.com> writes:
-
-> On Tue, May 12, 2020 at 05:50:53PM +0200, Vitaly Kuznetsov wrote:
->> Vivek Goyal <vgoyal@redhat.com> writes:
->> 
->> >
->> > So if we are using a common structure "kvm_vcpu_pv_apf_data" to deliver
->> > type1 and type2 events, to me it makes sense to retain existing
->> > KVM_PV_REASON_PAGE_READY and KVM_PV_REASON_PAGE_NOT_PRESENT. Just that
->> > in new scheme of things, KVM_PV_REASON_PAGE_NOT_PRESENT will be delivered
->> > using #PF (and later possibly using #VE) and KVM_PV_REASON_PAGE_READY
->> > will be delivered using interrupt.
->> 
->> We use different fields for page-not-present and page-ready events so
->> there is no intersection. If we start setting KVM_PV_REASON_PAGE_READY
->> to 'reason' we may accidentally destroy a 'page-not-present' event.
->
-> This is confusing. So you mean at one point of time we might be using
-> same shared data structure for two events.
->
-> - ->reason will be set to 1 and you will inject page_not_present
->   execption.
->
-> - If some page gets ready, you will now set ->token and queue 
->   page ready exception. 
->
-> Its very confusing. Can't we serialize the delivery of these events. So
-> that only one is in progress so that this structure is used by one event
-> at a time.
-
-This is not how the mechanism (currently) works:
-- A process accesses a page which is swapped out
-
-- We deliver synchronious APF (#PF) to the guest, it freezes the process
-and switches to another one.
-
-- Another process accesses a swapped out page, APF is delivered and it
-also got frozen
-
-...
-
-- At some point one of the previously unavailable pages become available
-(not necessarily the last or the first one) and we deliver this info via
-asynchronous APF (now interrupt).
-
-- Note, after we deliver the interrupt and before it is actually
-consumed we may have another synchronous APF (#PF) event.
-
-So we really need to separate memory locations for synchronous (type-1,
-#PF,...) and asynchronous (type-2, interrupt, ...) data.
-
-The naming is unfortunate and misleading, I agree. What is currently
-named 'reason' should be something like 'apf_flag_for_pf' and it just
-means to distinguish real #PF from APF. This is going away in the
-future, we won't be abusing #PF anymore so I'd keep it as it is now,
-maybe add another comment somewhere. The other location is
-'pageready_token' and it actually contains the token. This is to stay
-long term so any suggestions for better naming are welcome.
-
-We could've separated these two memory locations completely and
-e.g. used the remaining 56 bits of MSR_KVM_ASYNC_PF_INT as the new
-location information. Maybe we should do that just to avoid the
-confusion.
-
->
-> Also how do I extend it now to do error delivery. Please keep that in
-> mind. We don't want to be redesigning this stuff again. Its already
-> very complicated.
->
-> I really need ->reason field to be usable in both the paths so that
-> error can be delivered.
-
-If we want to use 'reason' for both we'll get into a weird scenario when
-exception is blocking interrupt and, what's more confusing, vice
-versa. I'd like to avoid this complexity in KVM code. My suggestion
-would be to rename 'reason' to something like 'pf_abuse_flag' so it
-doesn't cause the confusion and add new 'reason' after 'token'.
-
->
-> And this notion of same structure being shared across multiple events
-> at the same time is just going to create more confusion, IMHO. If we
-> can decouple it by serializing it, that definitely feels simpler to
-> understand.
-
-What if we just add sub-structures to the structure, e.g. 
-
-struct kvm_vcpu_pv_apf_data {
-        struct {
-            __u32 apf_flag;
-        } legacy_apf_data;
-        struct {
-            __u32 token;
-        } apf_interrupt_data;
-        ....
-        __u8 pad[56];                                                                                  |
-        __u32 enabled;                                                                                 |
-};    
-
-would it make it more obvious?
-
->
->> 
->> With this patchset we have two completely separate channels:
->> 1) Page-not-present goes through #PF and 'reason' in struct
->> kvm_vcpu_pv_apf_data.
->> 2) Page-ready goes through interrupt and 'pageready_token' in the same
->> kvm_vcpu_pv_apf_data.
->> 
->> >
->> >> +
->> >> +	Note, previously, type 2 (page present) events were delivered via the
->> >> +	same #PF exception as type 1 (page not present) events but this is
->> >> +	now deprecated.
->> >
->> >> If bit 3 (interrupt based delivery) is not set APF events are not delivered.
->> >
->> > So all the old guests which were getting async pf will suddenly find
->> > that async pf does not work anymore (after hypervisor update). And
->> > some of them might report it as performance issue (if there were any
->> > performance benefits to be had with async pf).
->> 
->> We still do APF_HALT but generally yes, there might be some performance
->> implications. My RFC was preserving #PF path but the suggestion was to
->> retire it completely. (and I kinda like it because it makes a lot of
->> code go away)
->
-> Ok. I don't have strong opinion here. If paolo likes it this way, so be
-> it. :-)
-
-APF is a slowpath for overcommited scenarios and when we switch to
-APF_HALT we allow the host to run some other guest while PF is
-processed. This is not the same from guest's perspective but from host's
-we're fine as we're not wasting cycles.
-
->
->> 
->> >
->> > [..]
->> >>  
->> >>  bool kvm_arch_can_inject_async_page_present(struct kvm_vcpu *vcpu)
->> >>  {
->> >> -	if (!(vcpu->arch.apf.msr_val & KVM_ASYNC_PF_ENABLED))
->> >> +	if (!kvm_pv_async_pf_enabled(vcpu))
->> >>  		return true;
->> >
->> > What does above mean. If async pf is not enabled, then it returns true,
->> > implying one can inject async page present. But if async pf is not
->> > enabled, there is no need to inject these events.
->> 
->> AFAIU this is a protection agains guest suddenly disabling APF
->> mechanism.
->
-> Can we provide that protection in MSR implementation. That is once APF
-> is enabled, it can't be disabled. Or it is a feature that we allow
-> guest to disable APF and want it that way?
-
-We need to allow to disable the feature. E.g. think about kdump
-scenario, for example. Before we switch to kdump kernel we need to make
-sure there's no more 'magic' memory which can suggenly change. Also,
-kdump kernel may not even support APF so it will get very confused when
-APF events get delivered.
-
->
->> What do we do with all the 'page ready' events after, we
->> can't deliver them anymore. So we just eat them (hoping guest will
->> unfreeze all processes on its own before disabling the mechanism).
->> 
->> It is the existing logic, my patch doesn't change it.
->
-> I see its existing logic. Just it is very confusing and will be good
-> if we can atleast explain it with some comments.
->
-> I don't know what to make out of this.
->
-> bool kvm_arch_can_inject_async_page_present(struct kvm_vcpu *vcpu)
-> {
->         if (!(vcpu->arch.apf.msr_val & KVM_ASYNC_PF_ENABLED))
->                 return true;
->         else
->                 return kvm_can_do_async_pf(vcpu);
-> }
->
-> If feature is disabled, then do inject async pf page present. If feature
-> is enabled and check whether we can inject async pf right now or not.
->
-> It probably will help if this check if feature being enabled/disabled
-> is outside kvm_arch_can_inject_async_page_present() at the callsite
-> of kvm_arch_can_inject_async_page_present() and there we explain that
-> why it is important to inject page ready events despite the fact
-> that feature is disabled.
-
-This code would definitely love some comments added, will do in the next
-version. And I'll also think how to improve the readability, thanks for
-the feedback!
-
--- 
-Vitaly
-
+On 2020/05/13 Sascha Hauer <s.hauer@pengutronix.de> wrote:d
+> >  drivers/spi/spi-imx.c | 16 ++++++++--------
+> >  1 file changed, 8 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c index
+> > f4f28a4..70df8e6 100644
+> > --- a/drivers/spi/spi-imx.c
+> > +++ b/drivers/spi/spi-imx.c
+> > @@ -585,8 +585,8 @@ static int mx51_ecspi_prepare_transfer(struct
+> spi_imx_data *spi_imx,
+> >  	ctrl |=3D mx51_ecspi_clkdiv(spi_imx, t->speed_hz, &clk);
+> >  	spi_imx->spi_bus_clk =3D clk;
+> >
+> > -	if (spi_imx->usedma)
+> > -		ctrl |=3D MX51_ECSPI_CTRL_SMC;
+> > +	/* ERR009165: work in XHC mode as PIO */
+> > +	ctrl &=3D ~MX51_ECSPI_CTRL_SMC;
+> >
+> >  	writel(ctrl, spi_imx->base + MX51_ECSPI_CTRL);
+> >
+> > @@ -617,7 +617,7 @@ static void mx51_setup_wml(struct spi_imx_data
+> *spi_imx)
+> >  	 * and enable DMA request.
+> >  	 */
+> >  	writel(MX51_ECSPI_DMA_RX_WML(spi_imx->wml - 1) |
+> > -		MX51_ECSPI_DMA_TX_WML(spi_imx->wml) |
+> > +		MX51_ECSPI_DMA_TX_WML(0) |
+> >  		MX51_ECSPI_DMA_RXT_WML(spi_imx->wml) |
+> >  		MX51_ECSPI_DMA_TEDEN | MX51_ECSPI_DMA_RXDEN |
+> >  		MX51_ECSPI_DMA_RXTDEN, spi_imx->base + MX51_ECSPI_DMA);
+> @@ -1171,7
+> > +1171,11 @@ static int spi_imx_dma_configure(struct spi_master *master)
+> >  	tx.direction =3D DMA_MEM_TO_DEV;
+> >  	tx.dst_addr =3D spi_imx->base_phys + MXC_CSPITXDATA;
+> >  	tx.dst_addr_width =3D buswidth;
+> > -	tx.dst_maxburst =3D spi_imx->wml;
+> > +	/*
+> > +	 * For ERR009165 with tx_wml =3D 0 could enlarge burst size to fifo s=
+ize
+> > +	 * to speed up fifo filling as possible.
+> > +	 */
+> > +	tx.dst_maxburst =3D spi_imx->devtype_data->fifo_size;
+>=20
+> In the next patch this is changed again to:
+>=20
+> +       if (spi_imx->devtype_data->tx_glitch_fixed)
+> +               tx.dst_maxburst =3D spi_imx->wml;
+> +       else
+> +               tx.dst_maxburst =3D spi_imx->devtype_data->fifo_size;
+>=20
+> So with tx_glitch_fixed we end up with tx.dst_maxburst being the same as =
+two
+> patches before which is rather confusing. Better introduce tx_glitch_fixe=
+d in
+> this patch, or maybe even merge this patch and the next one.
+Sorry confused you, I should repleace 'tx_wml=3D0' in the above comments wi=
+th ' TX_THRESHOLD=3D0', which means tx transfer dma have to wait all the tx=
+ data in tx fifo transferred with ERR009165 rather than generically 'tx_wml=
+' (for example --half fifo size used as TX_THRESHOLD). Obviously TX_THRESHO=
+LD=3D0 would down performance, so enlarge dst_maxburst to fifo size as PIO =
+with ERR009165. After ERR009165 fixed at HW level. TX_THRESHOLD could be us=
+ed as common 'spi_imx->wml' so change it back. Will add more detail informa=
+tion in v8.
