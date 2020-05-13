@@ -2,177 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C781D1E2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 20:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0661D1E1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 20:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390468AbgEMS4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 14:56:51 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:51982 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390411AbgEMS4i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 14:56:38 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id A6BB12A2A71
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 9BA0048012E; Wed, 13 May 2020 20:56:29 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCHv1 19/19] dt-bindings: power: sbs-battery: Convert to yaml
-Date:   Wed, 13 May 2020 20:56:15 +0200
-Message-Id: <20200513185615.508236-20-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513185615.508236-1-sebastian.reichel@collabora.com>
-References: <20200513185615.508236-1-sebastian.reichel@collabora.com>
+        id S2390359AbgEMS4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 14:56:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:52144 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732218AbgEMS4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 14:56:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1820531B;
+        Wed, 13 May 2020 11:56:22 -0700 (PDT)
+Received: from e119603-lin.cambridge.arm.com (unknown [10.57.41.193])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 020403F305;
+        Wed, 13 May 2020 11:56:20 -0700 (PDT)
+Date:   Wed, 13 May 2020 19:56:18 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     Jonathan.Cameron@Huawei.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, james.quinlan@broadcom.com,
+        sudeep.holla@arm.com, lukasz.luba@arm.com
+Subject: Re: [PATCH v7 1/9] firmware: arm_scmi: Add notification
+ protocol-registration
+Message-ID: <20200513185618.GD17648@e119603-lin.cambridge.arm.com>
+References: <20200504163855.54548-1-cristian.marussi@arm.com>
+ <20200504163855.54548-2-cristian.marussi@arm.com>
+ <20200506152550.GA21779@arm.com>
+ <20200511220403.GB17648@e119603-lin.cambridge.arm.com>
+ <20200513164612.GV21779@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200513164612.GV21779@arm.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert sbs-battery bindings to YAML.
+On Wed, May 13, 2020 at 05:46:13PM +0100, Dave Martin wrote:
+> On Mon, May 11, 2020 at 11:04:03PM +0100, Cristian Marussi wrote:
+> > Hi Dave
+> > 
+> > thanks for the review first of all.
+> > 
+[snip]
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- .../power/supply/sbs,sbs-battery.yaml         | 83 +++++++++++++++++++
- .../bindings/power/supply/sbs_sbs-battery.txt | 30 -------
- 2 files changed, 83 insertions(+), 30 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/power/supply/sbs,sbs-battery.yaml
- delete mode 100644 Documentation/devicetree/bindings/power/supply/sbs_sbs-battery.txt
+> > 
+> > First of all the enabled flag does not probably belong to this commit properly;
+> > here is initialized but it is really fully used only in subsequent patches
+> > (...so makes apparently little sense here... my bad...)
+> > 
+> > Anyway, in general SCMI protocols (beside notifications stuff) are initialized
+> > as depicted above, BUT they are never deinitialized explicitly (there's no
+> > equivalent scmi_protocol_deinit()) and also proto devices are never destroyed:
+> > so there's no scmi_protocol_deregister_events() neither in this series, because
+> > it would have been tricky to properly invoke it and would have not been consistent
+> > with the original SCMI design.
+> > 
+> > On the other side since in protocol driver _remove() some general protos resources
+> > are in fact freed anyway, for consistency I decided to free the devm notification
+> > resources allocated with the above init() in scmi_notification_exit(): this should
+> > happen only at system shutdown in fact when notification are no more of a concern.
+> > 
+> > So given there's no explicit deregister I had to ensure somehow that the wanna-be-freed
+> > notif devm resources were safe to be released.
+> > 
+> > In this context the 'enabled' atomic flag is set to 0 @_exit to stop the dispatch of the
+> > events (possibly still coming from the fw) from the ISR into the kfifo queues: once such
+> > pkts flow is stopped I destroy_sync() (in a subsequent patch @_exit too) all the workqueues
+> > fetching the events from the kfifos: this way I can be sure that all the notif resources
+> > are no more used at all when I free all of them with devm_release() at the end.
+> > 
+> > All of this is an additional precaution against buggy fw not stopping sending events
+> > even when asked to do so (by drivers when deregistering notif callbacks in their shutdown)
+> > 
+> > Give the above scenario on shutdown (which I never observed to tell the truth), and the fact
+> > I'm freeing all devm res (including ni) at shutdown, it's now apparent ALSO that I cannot use
+> > 'enabled' to keep stopped the flow in a safe way after its enclosing struct ni has been freed !
+> > 
+> > So I'll remove the 'enable' atomic_t too and rely equally on the bare !ni check to determine
+> > if the notification are enabled and should be dispatched. So that in 
+> > 
+> > scmi_notify_init() {
+> > 
+> > 	if (unlikely(!ni))
+> > 		return 0;     /// Stop notification dispatching from ISR
+> > }
+> > 
+> > So ni and !ni will signify (initialized && enabled) or not.
+> 
+> Can this still race?
 
-diff --git a/Documentation/devicetree/bindings/power/supply/sbs,sbs-battery.yaml b/Documentation/devicetree/bindings/power/supply/sbs,sbs-battery.yaml
-new file mode 100644
-index 000000000000..205bc826bd20
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/supply/sbs,sbs-battery.yaml
-@@ -0,0 +1,83 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/power/supply/sbs,sbs-battery.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: SBS compliant battery
-+
-+maintainers:
-+  - Sebastian Reichel <sre@kernel.org>
-+
-+description: |
-+  Battery compatible with the smart battery system specifications
-+
-+properties:
-+
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - ti,bq20z65
-+              - ti,bq20z75
-+          - enum:
-+              - sbs,sbs-battery
-+      - items:
-+          - const: sbs,sbs-battery
-+
-+  reg:
-+    maxItems: 1
-+
-+  sbs,i2c-retry-count:
-+    description:
-+      The number of times to retry I2C transactions on I2C IO failure.
-+    default: 0
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/uint32
-+
-+  sbs,poll-retry-count:
-+    description:
-+      The number of times to try looking for new status after an external
-+      change notification.
-+    default: 0
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/uint32
-+
-+  sbs,battery-detect-gpios:
-+    description:
-+      GPIO which signals battery detection. If this is not supplied, the bus
-+      needs to be polled to detect the battery.
-+    maxItems: 1
-+
-+  sbs,disable-charger-broadcasts:
-+    description:
-+      SBS batteries by default send broadcast messages to SBS compliant chargers to
-+      configure max. charge current/voltage. If your hardware does not have an SBS
-+      compliant charger it should be disabled via this property to avoid blocking
-+      the bus. Also some SBS battery fuel gauges are known to have a buggy multi-
-+      master implementation.
-+    type: boolean
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        battery@b {
-+            compatible = "ti,bq20z75", "sbs,sbs-battery";
-+            reg = <0xb>;
-+            sbs,i2c-retry-count = <2>;
-+            sbs,poll-retry-count = <10>;
-+            sbs,battery-detect-gpios = <&gpio 122 GPIO_ACTIVE_HIGH>;
-+            sbs,disable-charger-broadcasts;
-+       };
-+    };
-diff --git a/Documentation/devicetree/bindings/power/supply/sbs_sbs-battery.txt b/Documentation/devicetree/bindings/power/supply/sbs_sbs-battery.txt
-deleted file mode 100644
-index a5093ccef5c5..000000000000
---- a/Documentation/devicetree/bindings/power/supply/sbs_sbs-battery.txt
-+++ /dev/null
-@@ -1,30 +0,0 @@
--SBS sbs-battery
--~~~~~~~~~~
--
--Required properties :
-- - compatible: "<vendor>,<part-number>", "sbs,sbs-battery" as fallback. The
--     part number compatible string might be used in order to take care of
--     vendor specific registers.
--     Known <vendor>,<part-number>:
--       ti,bq20z65
--       ti,bq20z75
--
--Optional properties :
-- - sbs,i2c-retry-count : The number of times to retry i2c transactions on i2c
--   IO failure.
-- - sbs,poll-retry-count : The number of times to try looking for new status
--   after an external change notification.
-- - sbs,battery-detect-gpios : The gpio which signals battery detection and
--   a flag specifying its polarity.
-- - sbs,disable-charger-broadcasts: for systems without sbs compliant chargers
--
--Example:
--
--	battery@b {
--		compatible = "ti,bq20z75", "sbs,sbs-battery";
--		reg = <0xb>;
--		sbs,i2c-retry-count = <2>;
--		sbs,poll-retry-count = <10>;
--		sbs,battery-detect-gpios = <&gpio-controller 122 1>;
--		sbs,disable-charger-broadcasts;
--	}
--- 
-2.26.2
+It should not race now with a few barriers...V8 is not posted still (and it's a
+bit different from the above broken snippet of mine :D)
 
+> 
+> If teardown is impossible or useless, perhaps it would make sense not to
+> have the code for it (?)
+> 
+
+Well yes in fact I was doubtful from the start if this rarely used code was
+needed at all...I added just for consistency since some cleanup happens
+elsewhere in SCMI...but...
+
+> Do we expect SCMI related drivers to be buildable as modules?
+> 
+
+... talking with Sudeep these days around the content of this thread, it seems that
+we should be able anyway to modularize cleanly most of the SCMI core due to the
+Android GKI thing....so I'm going to review the whole SCMI core and notification
+shutdown/cleanup process soon....still I'm not convinced if I'll do anything different
+here for notif at that point...as of now I fixed as above the current series foro v8
+following your feedback then we'll see if I'll change it more drastically....
+
+> > Not really a short explanation...sorry
+> 
+> Sounds like it's not simple :)
+> 
+> What you've said sounds plausible -- I haven't found much time to think
+> about it this week I'm afraid!
+>
+
+Thanks you for the feedback !
+
+Cheers,
+
+Cristian
+ 
+> Cheers
+> ---Dave
