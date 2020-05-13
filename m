@@ -2,112 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8599E1D18B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA56F1D18D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387500AbgEMPIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 11:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727778AbgEMPIN (ORCPT
+        id S1730236AbgEMPLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 11:11:20 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:43318 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727778AbgEMPLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 11:08:13 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B522C061A0C;
-        Wed, 13 May 2020 08:08:13 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id h17so12427376wrc.8;
-        Wed, 13 May 2020 08:08:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VWRAGlUE58pZzy9cngU2gBHWI6hRPV4qJAq7Js3hLQM=;
-        b=fxyVei8o92xYp2W45MEq20WpAtKItN0ZVI7QCX5zuer5dPU9RXHubrZZy5Sqpbg0RA
-         SWodfxZ6paK8plPL7t0ef8pbtVKpGxKuJKI3oZEPbYmWWQkgxszW7o/lwSxBDqbu4chh
-         5HciRUbHnUs8+x8jkF02JjdKMU7cE+A4OLw9b5cEp3SnhFGZ3RcyzmVKlNRhEHIEB3Hq
-         aRzanvuLRkllUfK1HVQrm+lhdOFvi+VXzAKdanzgfbmuIWlE2qjV3D/cwXMHk90B9N69
-         QmL+s5rlN6oNJzPqR8bDCB8fY4FsYP0j3RS9hLA57cP/SGmF7aGJ7VjwAc32wtt22tt1
-         yrmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VWRAGlUE58pZzy9cngU2gBHWI6hRPV4qJAq7Js3hLQM=;
-        b=TLy18P05UJbQ1/JoGYJPil4YolWG+2MDhXXU+OiFEsYtbDHkMuSxbD5/rOfNW6Fyas
-         GMuRkesmw+vvP/eSVlNtmf1MndQ3gKvST/JQmoiC5M0cEm7ueyeW2GAlcX+YarGbs+wh
-         qmOqm0+R6pHJJ+lGPgladUa/KizaUvsjPnOp1GVlLgENyvzixHyb056U1lWY0lCqXQGL
-         EqzkfiPQ/tiSLMUCRMpoRzmtqSCU+nd42BfgudAJXukzYFHnlVRzM3MR6vAkYKs/Pkdr
-         +iKM93Vd1R4skHnJyqD0CIFhabyVvd5zmpOJCVBa+BKG8kvBciAMFe6vyrnmXW1QwSpS
-         8mhw==
-X-Gm-Message-State: AGi0PuYf0XzdfVyyQFjacGNWZx7FZFt16UlEQd3NtP2PPcF0H2p97hbO
-        ACExQyR8OmHywDea0cUNUQs=
-X-Google-Smtp-Source: APiQypLXg8ASZd+iA6265bHQHLtl29lOt/lFKSif4O+rOT+hi1gYBRKHdy6OxMxG+9OmQlKS1XYZtw==
-X-Received: by 2002:adf:b301:: with SMTP id j1mr30897749wrd.221.1589382491668;
-        Wed, 13 May 2020 08:08:11 -0700 (PDT)
-Received: from [10.230.188.43] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id r9sm19085526wmg.47.2020.05.13.08.08.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2020 08:08:10 -0700 (PDT)
-Subject: Re: [PATCH v10 1/5] usb: xhci: Change the XHCI link order in the
- Makefile
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Cooper <alcooperx@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-usb@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20200512150019.25903-1-alcooperx@gmail.com>
- <20200512150019.25903-2-alcooperx@gmail.com>
- <20200513122613.GA1023594@kroah.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <7acc2a4c-caab-11e7-7b3f-4176f19c58cf@gmail.com>
-Date:   Wed, 13 May 2020 08:08:07 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.8.0
+        Wed, 13 May 2020 11:11:20 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04DF7DEC014596;
+        Wed, 13 May 2020 15:11:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=M7tgw7hQmZDZ9d1ChBVFlk09jVIDx3jqCjHhRB1m9TI=;
+ b=EvBKpFq8qD5mFfdo2m2ZU2l0N/Odm/zYRYiOXvH4Mi68c0/r77mgxYyfigdqTaqrnOK2
+ 5kcFD6WBlr2MAeP9KYE1U+DFV/FftUk2yCGAM8StyV2iuaXaSMgfkdQERhXDPsRFU+rc
+ O4Pwssz8GVW507lJDxLJvb95eyBlvPMGSXfIvtyzC15CqWX4Eg5FTohF0NC6CbUwkkO4
+ 82LCIhMJFmOwKh0TFzRn56LqPyg9BdEcUgclS/k5ueFuUGgpb3vhoH2qhla9000xEWab
+ XXqFw40B2sy6aqc1CGLP7iBdyQmZrpxarfPsZHDeiR0OMK99BSRQC7qIPrqq3Pkcc9yl nA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 3100xwct6b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 May 2020 15:11:07 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04DF8afw009989;
+        Wed, 13 May 2020 15:09:06 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 3100ym8m3h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 May 2020 15:09:06 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04DF938P005780;
+        Wed, 13 May 2020 15:09:04 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 13 May 2020 08:09:03 -0700
+Date:   Wed, 13 May 2020 18:08:55 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>
+Cc:     linux-unionfs@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH v3] ovl: potential crash in ovl_fid_to_fh()
+Message-ID: <20200513150855.GD3041@kadam>
 MIME-Version: 1.0
-In-Reply-To: <20200513122613.GA1023594@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200513102346.6c04d912@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9620 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005130136
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9620 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=999 clxscore=1011 cotscore=-2147483648
+ mlxscore=0 phishscore=0 adultscore=0 impostorscore=0 bulkscore=0
+ malwarescore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005130136
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The "buflen" value comes from the user and there is a potential that it
+could be zero.  In do_handle_to_path() we know that "handle->handle_bytes"
+is non-zero and we do:
 
+	handle_dwords = handle->handle_bytes >> 2;
 
-On 5/13/2020 5:26 AM, Greg Kroah-Hartman wrote:
-> On Tue, May 12, 2020 at 11:00:15AM -0400, Al Cooper wrote:
->> Some BRCMSTB USB chips have an XHCI, EHCI and OHCI controller
->> on the same port where XHCI handles 3.0 devices, EHCI handles 2.0
->> devices and OHCI handles <2.0 devices. Currently the Makefile
->> has XHCI linking at the bottom which will result in the XHIC driver
->> initalizing after the EHCI and OHCI drivers and any installed 3.0
->> device will be seen as a 2.0 device. Moving the XHCI linking
->> above the EHCI and OHCI linking fixes the issue.
-> 
-> What happens if all of these are modules and they are loaded in a
-> different order?  This makefile change will not help with that, you need
-> to have logic in the code in order to properly coordinate this type of
-> mess, sorry.
+So values 1-3 become zero.  Then in ovl_fh_to_dentry() we do:
 
-I believe we should be using module soft dependencies to instruct the
-module loaders to load the modules in the correct order, so something
-like this would do (not tested) for xhci-plat-hcd.c:
+	int len = fh_len << 2;
 
-MODULE_SOFTDEP("post: ehci-hcd ohci-hcd");
+So now len is in the "0,4-128" range and a multiple of 4.  But if
+"buflen" is zero it will try to copy negative bytes when we do the
+memcpy in ovl_fid_to_fh().
 
-and I am not sure whether we need to add the opposite for ehci-hcd and
-ohci-hcd:
+	memcpy(&fh->fb, fid, buflen - OVL_FH_WIRE_OFFSET);
 
-MODULE_SOFTDEP("pre: xhci-plat-hcd");
+And that will lead to a crash.  Thanks to Amir Goldstein for his help
+with this patch.
 
-Al, do you want to test that?
+Fixes: cbe7fba8edfc ("ovl: make sure that real fid is 32bit aligned in memory")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+---
+v2: Move the check after the other checks
+v3: Fix Fixes tag
+
+ fs/overlayfs/export.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs/overlayfs/export.c b/fs/overlayfs/export.c
+index 475c61f53f0fe..ed5c1078919cc 100644
+--- a/fs/overlayfs/export.c
++++ b/fs/overlayfs/export.c
+@@ -783,6 +783,9 @@ static struct ovl_fh *ovl_fid_to_fh(struct fid *fid, int buflen, int fh_type)
+ 	if (fh_type != OVL_FILEID_V0)
+ 		return ERR_PTR(-EINVAL);
+ 
++	if (buflen <= OVL_FH_WIRE_OFFSET)
++		return ERR_PTR(-EINVAL);
++
+ 	fh = kzalloc(buflen, GFP_KERNEL);
+ 	if (!fh)
+ 		return ERR_PTR(-ENOMEM);
 -- 
-Florian
+2.26.2
