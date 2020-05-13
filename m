@@ -2,156 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C94F1D2322
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE67A1D2335
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732734AbgEMXeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 19:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732727AbgEMXeS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 19:34:18 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09242C05BD0A
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:34:17 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id f4so51378pjm.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:34:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=9+kHGmySmNxox5wuBQoQwck1bLpTOuP5gTxm3+9miDE=;
-        b=a5bkxw4lZ5KtU/7XSy6vFoZNzxoQzbwCg8Ve+eRR31EJupSDG7nd9WLXO+x/fuH+oD
-         T1iajkovrL+KE9IJDAnGZnwmEOeil6jnqMj0ZttdnSHvAjbD2Xl9s8EUwYBVXUeQAo9q
-         t1ZXN1sRSkY/OXB5O/18TcHvWPlpTqquHyqAw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9+kHGmySmNxox5wuBQoQwck1bLpTOuP5gTxm3+9miDE=;
-        b=oEi9ZlAM1EFH1t6IcQHvfZHoR68kuU7+qCjKeDTC8EEG/+ypp7fs/iR0M/AurNy2c2
-         ZTmkc2xv3fK6s1OxxwN7kOJZ0rq50wu5jFRGIRPVqdfha4O/tjdkyQsMPYBdUewQETPy
-         DAYrZ+P41tuf4VX23N+WBI47YQA+WjACvmLUItseQqyBCDKfgCJSQKE6EYDl34zJtRxR
-         JGjmVUfKWEnDuY3jRrjf/CgV3A616Z5p/AWwNw0XfyZ8n6pejLAYu69tSwgjIlLgjJb8
-         KJjbO6gQwvQe63ij3c15vPEQP7+f9tVPplNzMJubGg5u1ZsYb06GFiXfVEFx4BS0Edte
-         egaw==
-X-Gm-Message-State: AOAM530XfvV/sWm+xXrWdmf5RxsX696tLE9woBkl4OQ2WKYFg/Q5DoKY
-        PX7pqnlQvVQTxPMTnN97TEBQig==
-X-Google-Smtp-Source: ABdhPJx1Ph3/b2uAHkh09Mf7p8FRkdK0oKGy1ttISPQpTjgvGcQqjdCtv4Wgy2sxJ8WWEUMPB5YOOA==
-X-Received: by 2002:a17:90b:1994:: with SMTP id mv20mr863273pjb.41.1589412856445;
-        Wed, 13 May 2020 16:34:16 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k2sm568374pfd.108.2020.05.13.16.34.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 16:34:15 -0700 (PDT)
-Date:   Wed, 13 May 2020 16:34:14 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Mimi Zohar <zohar@kernel.org>
-Cc:     Scott Branden <scott.branden@broadcom.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>
-Subject: Re: [PATCH v5 1/7] fs: introduce kernel_pread_file* support
-Message-ID: <202005131630.8B1ECE0@keescook>
-References: <0e6b5f65-8c61-b02e-7d35-b4ae52aebcf3@broadcom.com>
- <1589396593.5098.166.camel@kernel.org>
- <e1b92047-7003-0615-3d58-1388ec27c78a@broadcom.com>
- <1589398747.5098.178.camel@kernel.org>
- <a228ae0f-d551-e0e8-446e-5ae63462c520@broadcom.com>
- <1589404814.5098.185.camel@kernel.org>
- <20200513212847.GT11244@42.do-not-panic.com>
- <1589407924.5098.208.camel@kernel.org>
- <f8de785c-60df-3fec-c2c6-b1dd2c77db17@broadcom.com>
- <1589410843.5098.220.camel@kernel.org>
+        id S1732793AbgEMXmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 19:42:45 -0400
+Received: from smtp.giganet.hu ([193.138.125.46]:56508 "EHLO smtp.giganet.hu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732456AbgEMXmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 19:42:45 -0400
+X-Greylist: delayed 506 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 May 2020 19:42:44 EDT
+Received: from localhost (unknown [127.0.0.1])
+        by smtp.giganet.hu (Postfix) with ESMTP id 3CF831369;
+        Wed, 13 May 2020 23:34:16 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at smtp.giganet.hu
+X-Spam-Flag: NO
+X-Spam-Score: 5.937
+X-Spam-Level: *****
+X-Spam-Status: No, score=5.937 tagged_above=-1 required=6
+        tests=[ADVANCE_FEE_5_NEW=2.699, ALL_TRUSTED=-1, BAYES_00=-1.9,
+        DEAR_FRIEND=2.577, FREEMAIL_FORGED_REPLYTO=2.095,
+        HK_NAME_MR_MRS=0.965, HK_SCAM=0.001, SUBJ_ALL_CAPS=0.5]
+        autolearn=no autolearn_force=no
+Received: from smtp.giganet.hu ([127.0.0.1])
+        by localhost (smtp.giganet.hu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Hfkl5nlwXZv3; Thu, 14 May 2020 01:34:15 +0200 (CEST)
+Received: from giganet-webmail (unknown [192.168.200.105])
+        by smtp.giganet.hu (Postfix) with ESMTP id 64609134F;
+        Thu, 14 May 2020 01:34:15 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1589410843.5098.220.camel@kernel.org>
+Date:   Wed, 13 May 2020 16:34:15 -0700
+From:   "Mr. Ted Sheppe" <info@tusbrotesverdes.com>
+To:     undisclosed-recipients:;
+Subject: PLEASE WORK WITH ME.
+Reply-To: sheppeted@gmail.com
+Mail-Reply-To: sheppeted@gmail.com
+Message-ID: <4d4029c9db1b495a11a4390ce1ea1cb3@tusbrotesverdes.com>
+X-Sender: info@tusbrotesverdes.com
+User-Agent: Roundcube Webmail/1.3.11
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 07:00:43PM -0400, Mimi Zohar wrote:
-> On Wed, 2020-05-13 at 15:48 -0700, Scott Branden wrote:
-> > 
-> > On 2020-05-13 3:12 p.m., Mimi Zohar wrote:
-> > > On Wed, 2020-05-13 at 21:28 +0000, Luis Chamberlain wrote:
-> > >> On Wed, May 13, 2020 at 05:20:14PM -0400, Mimi Zohar wrote:
-> > >>> On Wed, 2020-05-13 at 12:41 -0700, Scott Branden wrote:
-> > >>>> On 2020-05-13 12:39 p.m., Mimi Zohar wrote:
-> > >>>>> On Wed, 2020-05-13 at 12:18 -0700, Scott Branden wrote:
-> > >>>>>> On 2020-05-13 12:03 p.m., Mimi Zohar wrote:
-> > >>>>>>> On Wed, 2020-05-13 at 11:53 -0700, Scott Branden wrote:
-> > >>>>>> Even if the kernel successfully verified the firmware file signature it
-> > >>>>>> would just be wasting its time.  The kernel in these use cases is not always
-> > >>>>>> trusted.  The device needs to authenticate the firmware image itself.
-> > >>>>> There are also environments where the kernel is trusted and limits the
-> > >>>>> firmware being provided to the device to one which they signed.
-> > >>>>>
-> > >>>>>>> The device firmware is being downloaded piecemeal from somewhere and
-> > >>>>>>> won't be measured?
-> > >>>>>> It doesn't need to be measured for current driver needs.
-> > >>>>> Sure the device doesn't need the kernel measuring the firmware, but
-> > >>>>> hardened environments do measure firmware.
-> > >>>>>
-> > >>>>>> If someone has such need the infrastructure could be added to the kernel
-> > >>>>>> at a later date.  Existing functionality is not broken in any way by
-> > >>>>>> this patch series.
-> > >>>>> Wow!  You're saying that your patch set takes precedence over the
-> > >>>>> existing expectations and can break them.
-> > >>>> Huh? I said existing functionality is NOT broken by this patch series.
-> > >>> Assuming a system is configured to measure and appraise firmware
-> > >>> (rules below), with this change the firmware file will not be properly
-> > >>> measured and will fail signature verification.
-> > So no existing functionality has been broken.
-> > >>>
-> > >>> Sample IMA policy rules:
-> > >>> measure func=FIRMWARE_CHECK
-> > >>> appraise func=FIRMWARE_CHECK appraise_type=imasig
-> > >> Would a pre and post lsm hook for pread do it?
-> > > IMA currently measures and verifies the firmware file signature on the
-> > > post hook.  The file is read once into a buffer.  With this change,
-> > > IMA would need to be on the pre hook, to read the entire file,
-> > > calculating the file hash and verifying the file signature.  Basically
-> > > the firmware would be read once for IMA and again for the device.
-> > The entire file may not fit into available memory to measure and 
-> > verify.  Hence the reason for a partial read.
-> 
-> Previously, IMA pre-read the file in page size chunks in order to
-> calculate the file hash.  To avoid reading the file twice, the file is
-> now read into a buffer.
+Dear friend,
 
-Can the VFS be locked in some way and then using the partial reads would
-trigger the "read twice" mode? I.e. something like:
 
-open
-first partial read:
-	lock file contents (?)
-	perform full page-at-a-time-read-and-measure
-	rewind, read partial
-other partial reads
-final partial read
-	unlock
+Please kindly work with me in this transaction for you will not regret 
+it at all.
 
--- 
-Kees Cook
+First of all, I contacted you for us to work in this transaction because 
+you are bearing the same last name identity with a deceased customer of 
+our bank, therefore I
+can present you as the true next of kin to his inheritance fund in our 
+bank since myself as his account manager and his personal attorney has 
+all his files in our disposal.
+
+
+I therefore reckoned that you could receive these funds as you are 
+qualified by your name identity. All the legal papers will be processed 
+and perfected to your name as the deceased true next of kin.
+
+Please kindly get back to me for further details if you are interested 
+to work with in this beneficial transaction.
+
+Mr. Ted Sheppe
+Commercial Banking
