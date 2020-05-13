@@ -2,138 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456661D1A32
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10FD51D1A69
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389442AbgEMQBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 12:01:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389421AbgEMQBB (ORCPT
+        id S2389275AbgEMQAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 12:00:50 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:48945 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389213AbgEMQAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 12:01:01 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA474C061A0C;
-        Wed, 13 May 2020 09:01:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=0L0rTQCcUIlCTiHGYedEh7jbn2ztwQOg3YgqFDESyfw=; b=PINH5DOoKkQ8a5kk1OdBkDZQ9/
-        24WforPCoxSLUhXnmGL0M0/hdIfAQqem02tCkKGiSunieuj6e0uVjZsMOpByZH55szFvLzH3CBl8C
-        6CG3kcCTe1NKZR6/qSK12Eg3ZbfUMateSLyowO5zpr0luyd+ivhodTiZs8W/H+RHVL4T4Zs6e3RXy
-        RQbMWPZV83eWLuzlU+MO0MECxzKc2rCwRhe1w62HSZ6r7J0wo6X3lWpnxUH3+u3MwCpbrBJIs4x7U
-        bNJ+l+bBQ6yLVaD/DYLQka5+I7tZ/52I9HEVG4zlXRCDMNJ8E7SAuNLpivBOjvVziSdRebCKl8f9H
-        AuNxH4iw==;
-Received: from [2001:4bb8:180:9d3f:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jYtoY-0004o4-Rm; Wed, 13 May 2020 16:00:59 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 07/18] maccess: rename strncpy_from_unsafe_strict to strncpy_from_kernel_nofault
-Date:   Wed, 13 May 2020 18:00:27 +0200
-Message-Id: <20200513160038.2482415-8-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513160038.2482415-1-hch@lst.de>
-References: <20200513160038.2482415-1-hch@lst.de>
+        Wed, 13 May 2020 12:00:47 -0400
+Received: from mail-qk1-f177.google.com ([209.85.222.177]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1Mz9lL-1jDuow2pff-00wETk; Wed, 13 May 2020 18:00:45 +0200
+Received: by mail-qk1-f177.google.com with SMTP id y22so5235973qki.3;
+        Wed, 13 May 2020 09:00:45 -0700 (PDT)
+X-Gm-Message-State: AOAM530TWWgtQd3MWuR/mWzg/tWNLb2ym9vJ15jV23+wkGRtcbLyKf+P
+        BIjZwKh9b/Q9L4lhQ6Er8xmM8gyU06CCoDkqI0Q=
+X-Google-Smtp-Source: ABdhPJyKpZv03jMaYhNeTLejY16uvPcQQJcVwZSNjzCLBox/lZ1uZ2BacyGU3669//YQxo34VT7WHEyTtCXmXt0P9SQ=
+X-Received: by 2002:a37:aa82:: with SMTP id t124mr336651qke.3.1589385644498;
+ Wed, 13 May 2020 09:00:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200509120707.188595-1-arnd@arndb.de> <20200509120707.188595-2-arnd@arndb.de>
+ <87v9l24qz6.fsf@kamboji.qca.qualcomm.com> <87r1vq4qev.fsf@kamboji.qca.qualcomm.com>
+ <87d078tjl0.fsf_-_@kamboji.qca.qualcomm.com> <CAK8P3a1dxJAHCZ19=sPUkDi5wLWeJ6KKtD09Wmjqkz27TQN6Xw@mail.gmail.com>
+ <87zhacrokl.fsf@kamboji.qca.qualcomm.com> <CAK8P3a1mMcpVE5kLv-krjL_ZjqfRXDK4e3fChzuom_QFRtTJqw@mail.gmail.com>
+ <87v9kzsvg8.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87v9kzsvg8.fsf@kamboji.qca.qualcomm.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 13 May 2020 18:00:28 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2eKoOL0KF4CmyEtk-3309f2_D+daQbe=Bj5vCkvD_khA@mail.gmail.com>
+Message-ID: <CAK8P3a2eKoOL0KF4CmyEtk-3309f2_D+daQbe=Bj5vCkvD_khA@mail.gmail.com>
+Subject: Re: gcc-10: kernel stack is corrupted and fails to boot
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:+VE9yS/pAW+yc+VzMjlxwbU4QPNhvwBr7uzsjKiP4jHozKXQQ8e
+ vosSuGKW2rXE97XSAORxJoimUmj9iqGNWFhUqeKb5H4cBs9A7yx+giq4ln1Vc7YAYnewQFh
+ DwCFBMomOPZcDFamRC6mL8Vm+aBmya3+6MtcnFCWnmfinWN2sqcog7rK8vXAZ2MRrh/D8jn
+ bTQ6B8cQ5/S4lf0aCeviQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:PMJX7kXZ+GU=:bgMye9IGk2BuNpgPRc9KfH
+ K0FITDaUwXfW2GvURva76cgqIUvnc6VC5YzT3cotryl4iPUzS4HVmv24caKQUHolDTmwsnwdu
+ tAieTtIRV31nwvcABvUZHogcASu2yif6m8sUB3h2LsIf0uvnHrYe2aYyt959UpnsfdqsxNbBf
+ 4lBPed+CjqjhWHisgPZC2EkRDDNRkDXA4znqUtd6rBmXFJj7TLuwp1/M6VwNkqsx6knOmSwwu
+ Bq0VvctT7Uom/ZLls76W+ATCYvV3AYgzRc7bec2M+MILFRUi1Tm8JbVd/QvRNzgLSfctXmIIL
+ zWzYtI43BclOSR1coIuKkJKGKuGfgCXIZza3tr1UEjkY6j1Jc06Y8c3UbggPkcHQxQXa8Xy/L
+ wI0Cl4cRRVnsX9AhHjaC8n3m7lS6I4gj/+o8KCUURJ/Mgs/4ViQyV9jYjLLWynJlm1DsLFzjI
+ QE+lg/2zUMAeutoYARP8/G4PAeRCKFLCDTEaexWiYO7arQJXcLa0y3n0uut7+iWsu6CzwkFiQ
+ HyWBBgrRt5kPWApA69oq93L4pm8s4JexyaC8CMhEDD4F4JjAExncau5N6cXue7i1GDVnWv4EC
+ GUIl7rsvtmpXX4BU4ESXpilQ0qkXXRRfqoWvhBfJU/dvUD7KNF5ff+yPpnraYR4MRvSUQRf/Z
+ wt2/uI8xikt3u0biJcwqYDzwHZAwhdMXZuzmM2sIpPR4FUskOJqcuTYmkZgW8TsYP++JsPlVk
+ Ek7XS3DUhhLPTBSHOtO2z5uAOdWMpZGjCWYZl/YgApqzbyyS8VX7jBzWQZWQ2wk4mdxb1UVwS
+ 5p09Hm36l0neidSNpVi9H6yKTSL63drBaZv+beswf9X2fcRs7o=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This matches the naming of strncpy_from_user_nofault, and also makes it
-more clear what the function is supposed to do.
+On Wed, May 13, 2020 at 5:31 PM Kalle Valo <kvalo@codeaurora.org> wrote:
+> Arnd Bergmann <arnd@arndb.de> writes:
+> > On Wed, May 13, 2020 at 2:57 PM Kalle Valo <kvalo@codeaurora.org> wrote:
+> >>
+> >> Arnd Bergmann <arnd@arndb.de> writes:
+> >>
+> >> > If you share your .config, I can try reproducing with that as well.
+> >> > Once there is a reproducer in qemu, it should be trivial to step
+> >> > through it using gdb.
+> >>
+> >> I have attached the .config I used with GCC 10.1. If you are able to
+> >> test it please do let me know how it went.
+> >
+> > Yes, I see the same problem now, but have not investigated
+> > any further.
+>
+> Great, so it's not a problem due to my setup.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/x86/mm/maccess.c    | 2 +-
- include/linux/uaccess.h  | 4 ++--
- kernel/trace/bpf_trace.c | 2 +-
- mm/maccess.c             | 6 +++---
- 4 files changed, 7 insertions(+), 7 deletions(-)
+I investigated a little more: This does happen with 'defconfig'
+after all, in my first try I must have missed the '-smp 2' argument
+to qemu, and it ended up working correctly with just one CPU
+but fails now.
 
-diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
-index f5b85bdc0535c..62c4017a2473d 100644
---- a/arch/x86/mm/maccess.c
-+++ b/arch/x86/mm/maccess.c
-@@ -34,7 +34,7 @@ long probe_kernel_read_strict(void *dst, const void *src, size_t size)
- 	return __probe_kernel_read(dst, src, size);
- }
- 
--long strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr, long count)
-+long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- {
- 	if (unlikely(invalid_probe_range((unsigned long)unsafe_addr)))
- 		return -EFAULT;
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index b983cb1c1216a..134ff9c1c151b 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -310,8 +310,8 @@ extern long notrace probe_kernel_write(void *dst, const void *src, size_t size);
- extern long notrace probe_user_write(void __user *dst, const void *src, size_t size);
- 
- extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
--extern long strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
--				       long count);
-+long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr,
-+		long count);
- extern long __strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
- long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
- 		long count);
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index fcbc11040d956..3dd4763c195bb 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -240,7 +240,7 @@ bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr,
- 	 * is returned that can be used for bpf_perf_event_output() et al.
- 	 */
- 	ret = compat ? strncpy_from_unsafe(dst, unsafe_ptr, size) :
--	      strncpy_from_unsafe_strict(dst, unsafe_ptr, size);
-+	      strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
- 	if (unlikely(ret < 0))
- out:
- 		memset(dst, 0, size);
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 457d8f9bf714f..c8748c2809096 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -159,7 +159,7 @@ long probe_user_write(void __user *dst, const void *src, size_t size)
-  * If @count is smaller than the length of the string, copies @count-1 bytes,
-  * sets the last byte of @dst buffer to NUL and returns @count.
-  *
-- * Same as strncpy_from_unsafe_strict() except that for architectures with
-+ * Same as strncpy_from_kernel_nofault() except that for architectures with
-  * not fully separated user and kernel address spaces this function also works
-  * for user address tanges.
-  *
-@@ -170,7 +170,7 @@ long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
-     __attribute__((alias("__strncpy_from_unsafe")));
- 
- /**
-- * strncpy_from_unsafe_strict: - Copy a NUL terminated string from unsafe
-+ * strncpy_from_kernel_nofault: - Copy a NUL terminated string from unsafe
-  *				 address.
-  * @dst:   Destination address, in kernel space.  This buffer must be at
-  *         least @count bytes long.
-@@ -187,7 +187,7 @@ long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
-  * If @count is smaller than the length of the string, copies @count-1 bytes,
-  * sets the last byte of @dst buffer to NUL and returns @count.
-  */
--long __weak strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
-+long __weak strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr,
- 				       long count)
-     __attribute__((alias("__strncpy_from_unsafe")));
- 
--- 
-2.26.2
+Stepping through the boot process, I see where it crashes
+in start_secondary:
 
+|        /* to prevent fake stack check failure in clock setup */
+|        boot_init_stack_canary();
+|
+|        x86_cpuinit.setup_percpu_clockev();
+|
+|        wmb();
+|        cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
+
+The call to cpu_startup_entry() does not succeed, instead
+it jumps to __stack_chk_fail() from there.
+
+      Arnd
