@@ -2,75 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8691E1D048A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 03:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10BC11D048C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 03:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731873AbgEMBvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 21:51:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726028AbgEMBvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 21:51:12 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6406D206F5;
-        Wed, 13 May 2020 01:51:10 +0000 (UTC)
-Date:   Tue, 12 May 2020 21:51:08 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [patch V4 part 3 01/29] x86/traps: Mark fixup_bad_iret()
- noinstr
-Message-ID: <20200512215108.5ea110b7@oasis.local.home>
-In-Reply-To: <CALCETrW1pZ0NiN3F4g3=S+KpM79T9PbaYVC3Zr5p6P2rvk4v0A@mail.gmail.com>
-References: <20200505134354.774943181@linutronix.de>
-        <20200505134903.346741553@linutronix.de>
-        <CALCETrW1pZ0NiN3F4g3=S+KpM79T9PbaYVC3Zr5p6P2rvk4v0A@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1732084AbgEMBvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 21:51:42 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:36068 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726028AbgEMBvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 21:51:41 -0400
+Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.55])
+        by Forcepoint Email with ESMTP id D2758F3EE58754A4C876;
+        Wed, 13 May 2020 09:51:39 +0800 (CST)
+Received: from dggeme758-chm.china.huawei.com (10.3.19.104) by
+ DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Wed, 13 May 2020 09:51:39 +0800
+Received: from [10.173.219.71] (10.173.219.71) by
+ dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Wed, 13 May 2020 09:51:39 +0800
+Subject: Re: linux-next: manual merge of the net-next tree with the net tree
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+References: <20200512133051.7d740613@canb.auug.org.au>
+ <20200512094731.346c0d8f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   "luobin (L)" <luobin9@huawei.com>
+Message-ID: <c49a4d39-9f83-a68a-fa0d-ef5fd3bc4acc@huawei.com>
+Date:   Wed, 13 May 2020 09:51:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200512094731.346c0d8f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.173.219.71]
+X-ClientProxiedBy: dggeme719-chm.china.huawei.com (10.1.199.115) To
+ dggeme758-chm.china.huawei.com (10.3.19.104)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 May 2020 17:39:00 -0700
-Andy Lutomirski <luto@kernel.org> wrote:
+On 2020/5/13 0:47, Jakub Kicinski wrote:
 
-> On Tue, May 5, 2020 at 7:15 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >
-> > This is called from deep entry ASM in a situation where instrumentation
-> > will cause more harm than providing useful information.
-> >  
-> 
-> Acked-by: Andy Lutomirski <luto@kernel.org>
-> 
-> Maybe add to changelog:
-> 
-> Switch from memmove() to memcpy() because memmove() can't be called
-> from noinstr code.
+> On Tue, 12 May 2020 13:30:51 +1000 Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> Today's linux-next merge of the net-next tree got conflicts in:
+>>
+>>    drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
+>>    drivers/net/ethernet/huawei/hinic/hinic_main.c
+>>
+>> between commit:
+>>
+>>    e8a1b0efd632 ("hinic: fix a bug of ndo_stop")
+>>
+>> from the net tree and commit:
+>>
+>>    7dd29ee12865 ("hinic: add sriov feature support")
+>>
+>> from the net-next tree.
+>>
+>> I fixed it up (I think, see below) and can carry the fix as necessary. This
+>> is now fixed as far as linux-next is concerned, but any non trivial
+>> conflicts should be mentioned to your upstream maintainer when your tree
+>> is submitted for merging.  You may also want to consider cooperating
+>> with the maintainer of the conflicting tree to minimise any particularly
+>> complex conflicts.
+> I had a feeling this was gonna happen :(
+>
+> Resolution looks correct, thank you!
+>
+> Luo bin, if you want to adjust the timeouts (you had slightly different
+> ones depending on the command in the first version of the fix) - you can
+> follow up with a patch to net-next once Dave merges net into net-next
+> (usually happens every two weeks).
 
-Yes please, because I was about to say that there was changes that
-didn't seem to fit the change log.
-
-I would also add a comment in the code saying that we need the temp
-variable to use memcpy as memmove can't be used in noinstr code.
-
--- Steve
+> OK. Thanks.
+> .
