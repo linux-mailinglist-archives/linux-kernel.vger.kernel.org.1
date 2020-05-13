@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3940F1D0DA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 015651D0D1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388135AbgEMJyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:54:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57148 "EHLO mail.kernel.org"
+        id S2387481AbgEMJuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:50:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387655AbgEMJyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:54:36 -0400
+        id S2387470AbgEMJuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:50:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5657E205ED;
-        Wed, 13 May 2020 09:54:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D030206D6;
+        Wed, 13 May 2020 09:50:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363675;
-        bh=1OeNgr0kGUcv+fOFi8Ga8SfHYKNOSW7hX+7O3AjZnV8=;
+        s=default; t=1589363417;
+        bh=XqLpaBs6gOV3NeFStYNmFciupOw+sZY4klD0tUH5OUE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zW77SC+1XsHAOY2Mztvm0pEOOSCCAk6hf8PuJsZXtcXa2MYO1GqZEKvnJSU04176R
-         /OjmYD8FdQO9T00wJK97HgEb1mlFTyO3HV748VDFx8pa1YmWlpYiChOd5xBG3c5dqP
-         IRsLjU5rZHZcyVbOP7lfzV7Z3zTmFfz5/Z+Axcqc=
+        b=TLeG7iGrWCwv2HHyKwXPeFLTUTwl1hrzmYn5Dla0RigJE8ZDwAjdb5vbFohod4Snc
+         V2LjirIeFqq7CGuzSPky5Ou7ttu6PP+Eb1YyBHs2c/6gjVOTA8cbt3f2U2o9E1uEkU
+         ohFAFgNUQoTEdsOQyprVUcTwJ+xl7160HHcbO9EE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yoji <yoji.fujihar.min@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Manfred Spraul <manfred@colorfullife.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Markus Elfring <elfring@users.sourceforge.net>, 1vier1@web.de,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.6 081/118] ipc/mqueue.c: change __do_notify() to bypass check_kill_permission()
-Date:   Wed, 13 May 2020 11:45:00 +0200
-Message-Id: <20200513094424.603765372@linuxfoundation.org>
+        stable@vger.kernel.org, Tony Vroon <chainsaw@gentoo.org>,
+        Sergey Kvachonok <ravenexp@gmail.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 5.4 65/90] coredump: fix crash when umh is disabled
+Date:   Wed, 13 May 2020 11:45:01 +0200
+Message-Id: <20200513094416.284461688@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
-References: <20200513094417.618129545@linuxfoundation.org>
+In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
+References: <20200513094408.810028856@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,149 +45,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleg Nesterov <oleg@redhat.com>
+From: Luis Chamberlain <mcgrof@kernel.org>
 
-commit b5f2006144c6ae941726037120fa1001ddede784 upstream.
+commit 3740d93e37902b31159a82da2d5c8812ed825404 upstream.
 
-Commit cc731525f26a ("signal: Remove kernel interal si_code magic")
-changed the value of SI_FROMUSER(SI_MESGQ), this means that mq_notify() no
-longer works if the sender doesn't have rights to send a signal.
+Commit 64e90a8acb859 ("Introduce STATIC_USERMODEHELPER to mediate
+call_usermodehelper()") added the optiont to disable all
+call_usermodehelper() calls by setting STATIC_USERMODEHELPER_PATH to
+an empty string. When this is done, and crashdump is triggered, it
+will crash on null pointer dereference, since we make assumptions
+over what call_usermodehelper_exec() did.
 
-Change __do_notify() to use do_send_sig_info() instead of kill_pid_info()
-to avoid check_kill_permission().
+This has been reported by Sergey when one triggers a a coredump
+with the following configuration:
 
-This needs the additional notify.sigev_signo != 0 check, shouldn't we
-change do_mq_notify() to deny sigev_signo == 0 ?
+```
+CONFIG_STATIC_USERMODEHELPER=y
+CONFIG_STATIC_USERMODEHELPER_PATH=""
+kernel.core_pattern = |/usr/lib/systemd/systemd-coredump %P %u %g %s %t %c %h %e
+```
 
-Test-case:
+The way disabling the umh was designed was that call_usermodehelper_exec()
+would just return early, without an error. But coredump assumes
+certain variables are set up for us when this happens, and calls
+ile_start_write(cprm.file) with a NULL file.
 
-	#include <signal.h>
-	#include <mqueue.h>
-	#include <unistd.h>
-	#include <sys/wait.h>
-	#include <assert.h>
+[    2.819676] BUG: kernel NULL pointer dereference, address: 0000000000000020
+[    2.819859] #PF: supervisor read access in kernel mode
+[    2.820035] #PF: error_code(0x0000) - not-present page
+[    2.820188] PGD 0 P4D 0
+[    2.820305] Oops: 0000 [#1] SMP PTI
+[    2.820436] CPU: 2 PID: 89 Comm: a Not tainted 5.7.0-rc1+ #7
+[    2.820680] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190711_202441-buildvm-armv7-10.arm.fedoraproject.org-2.fc31 04/01/2014
+[    2.821150] RIP: 0010:do_coredump+0xd80/0x1060
+[    2.821385] Code: e8 95 11 ed ff 48 c7 c6 cc a7 b4 81 48 8d bd 28 ff
+ff ff 89 c2 e8 70 f1 ff ff 41 89 c2 85 c0 0f 84 72 f7 ff ff e9 b4 fe ff
+ff <48> 8b 57 20 0f b7 02 66 25 00 f0 66 3d 00 8
+0 0f 84 9c 01 00 00 44
+[    2.822014] RSP: 0000:ffffc9000029bcb8 EFLAGS: 00010246
+[    2.822339] RAX: 0000000000000000 RBX: ffff88803f860000 RCX: 000000000000000a
+[    2.822746] RDX: 0000000000000009 RSI: 0000000000000282 RDI: 0000000000000000
+[    2.823141] RBP: ffffc9000029bde8 R08: 0000000000000000 R09: ffffc9000029bc00
+[    2.823508] R10: 0000000000000001 R11: ffff88803dec90be R12: ffffffff81c39da0
+[    2.823902] R13: ffff88803de84400 R14: 0000000000000000 R15: 0000000000000000
+[    2.824285] FS:  00007fee08183540(0000) GS:ffff88803e480000(0000) knlGS:0000000000000000
+[    2.824767] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    2.825111] CR2: 0000000000000020 CR3: 000000003f856005 CR4: 0000000000060ea0
+[    2.825479] Call Trace:
+[    2.825790]  get_signal+0x11e/0x720
+[    2.826087]  do_signal+0x1d/0x670
+[    2.826361]  ? force_sig_info_to_task+0xc1/0xf0
+[    2.826691]  ? force_sig_fault+0x3c/0x40
+[    2.826996]  ? do_trap+0xc9/0x100
+[    2.827179]  exit_to_usermode_loop+0x49/0x90
+[    2.827359]  prepare_exit_to_usermode+0x77/0xb0
+[    2.827559]  ? invalid_op+0xa/0x30
+[    2.827747]  ret_from_intr+0x20/0x20
+[    2.827921] RIP: 0033:0x55e2c76d2129
+[    2.828107] Code: 2d ff ff ff e8 68 ff ff ff 5d c6 05 18 2f 00 00 01
+c3 0f 1f 80 00 00 00 00 c3 0f 1f 80 00 00 00 00 e9 7b ff ff ff 55 48 89
+e5 <0f> 0b b8 00 00 00 00 5d c3 66 2e 0f 1f 84 0
+0 00 00 00 00 0f 1f 40
+[    2.828603] RSP: 002b:00007fffeba5e080 EFLAGS: 00010246
+[    2.828801] RAX: 000055e2c76d2125 RBX: 0000000000000000 RCX: 00007fee0817c718
+[    2.829034] RDX: 00007fffeba5e188 RSI: 00007fffeba5e178 RDI: 0000000000000001
+[    2.829257] RBP: 00007fffeba5e080 R08: 0000000000000000 R09: 00007fee08193c00
+[    2.829482] R10: 0000000000000009 R11: 0000000000000000 R12: 000055e2c76d2040
+[    2.829727] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+[    2.829964] CR2: 0000000000000020
+[    2.830149] ---[ end trace ceed83d8c68a1bf1 ]---
+```
 
-	static int notified;
-
-	static void sigh(int sig)
-	{
-		notified = 1;
-	}
-
-	int main(void)
-	{
-		signal(SIGIO, sigh);
-
-		int fd = mq_open("/mq", O_RDWR|O_CREAT, 0666, NULL);
-		assert(fd >= 0);
-
-		struct sigevent se = {
-			.sigev_notify	= SIGEV_SIGNAL,
-			.sigev_signo	= SIGIO,
-		};
-		assert(mq_notify(fd, &se) == 0);
-
-		if (!fork()) {
-			assert(setuid(1) == 0);
-			mq_send(fd, "",1,0);
-			return 0;
-		}
-
-		wait(NULL);
-		mq_unlink("/mq");
-		assert(notified);
-		return 0;
-	}
-
-[manfred@colorfullife.com: 1) Add self_exec_id evaluation so that the implementation matches do_notify_parent 2) use PIDTYPE_TGID everywhere]
-Fixes: cc731525f26a ("signal: Remove kernel interal si_code magic")
-Reported-by: Yoji <yoji.fujihar.min@gmail.com>
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: Davidlohr Bueso <dave@stgolabs.net>
-Cc: Markus Elfring <elfring@users.sourceforge.net>
-Cc: <1vier1@web.de>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/e2a782e4-eab9-4f5c-c749-c07a8f7a4e66@colorfullife.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: <stable@vger.kernel.org> # v4.11+
+Fixes: 64e90a8acb85 ("Introduce STATIC_USERMODEHELPER to mediate call_usermodehelper()")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=199795
+Reported-by: Tony Vroon <chainsaw@gentoo.org>
+Reported-by: Sergey Kvachonok <ravenexp@gmail.com>
+Tested-by: Sergei Trofimovich <slyfox@gentoo.org>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Link: https://lore.kernel.org/r/20200416162859.26518-1-mcgrof@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- ipc/mqueue.c |   34 ++++++++++++++++++++++++++--------
- 1 file changed, 26 insertions(+), 8 deletions(-)
+ fs/coredump.c |    8 ++++++++
+ kernel/umh.c  |    5 +++++
+ 2 files changed, 13 insertions(+)
 
---- a/ipc/mqueue.c
-+++ b/ipc/mqueue.c
-@@ -142,6 +142,7 @@ struct mqueue_inode_info {
- 
- 	struct sigevent notify;
- 	struct pid *notify_owner;
-+	u32 notify_self_exec_id;
- 	struct user_namespace *notify_user_ns;
- 	struct user_struct *user;	/* user who created, for accounting */
- 	struct sock *notify_sock;
-@@ -774,28 +775,44 @@ static void __do_notify(struct mqueue_in
- 	 * synchronously. */
- 	if (info->notify_owner &&
- 	    info->attr.mq_curmsgs == 1) {
--		struct kernel_siginfo sig_i;
- 		switch (info->notify.sigev_notify) {
- 		case SIGEV_NONE:
- 			break;
--		case SIGEV_SIGNAL:
--			/* sends signal */
-+		case SIGEV_SIGNAL: {
-+			struct kernel_siginfo sig_i;
-+			struct task_struct *task;
-+
-+			/* do_mq_notify() accepts sigev_signo == 0, why?? */
-+			if (!info->notify.sigev_signo)
-+				break;
- 
- 			clear_siginfo(&sig_i);
- 			sig_i.si_signo = info->notify.sigev_signo;
- 			sig_i.si_errno = 0;
- 			sig_i.si_code = SI_MESGQ;
- 			sig_i.si_value = info->notify.sigev_value;
--			/* map current pid/uid into info->owner's namespaces */
- 			rcu_read_lock();
-+			/* map current pid/uid into info->owner's namespaces */
- 			sig_i.si_pid = task_tgid_nr_ns(current,
- 						ns_of_pid(info->notify_owner));
--			sig_i.si_uid = from_kuid_munged(info->notify_user_ns, current_uid());
-+			sig_i.si_uid = from_kuid_munged(info->notify_user_ns,
-+						current_uid());
-+			/*
-+			 * We can't use kill_pid_info(), this signal should
-+			 * bypass check_kill_permission(). It is from kernel
-+			 * but si_fromuser() can't know this.
-+			 * We do check the self_exec_id, to avoid sending
-+			 * signals to programs that don't expect them.
-+			 */
-+			task = pid_task(info->notify_owner, PIDTYPE_TGID);
-+			if (task && task->self_exec_id ==
-+						info->notify_self_exec_id) {
-+				do_send_sig_info(info->notify.sigev_signo,
-+						&sig_i, task, PIDTYPE_TGID);
-+			}
- 			rcu_read_unlock();
--
--			kill_pid_info(info->notify.sigev_signo,
--				      &sig_i, info->notify_owner);
- 			break;
+--- a/fs/coredump.c
++++ b/fs/coredump.c
+@@ -788,6 +788,14 @@ void do_coredump(const kernel_siginfo_t
+ 	if (displaced)
+ 		put_files_struct(displaced);
+ 	if (!dump_interrupted()) {
++		/*
++		 * umh disabled with CONFIG_STATIC_USERMODEHELPER_PATH="" would
++		 * have this set to NULL.
++		 */
++		if (!cprm.file) {
++			pr_info("Core dump to |%s disabled\n", cn.corename);
++			goto close_fail;
 +		}
- 		case SIGEV_THREAD:
- 			set_cookie(info->notify_cookie, NOTIFY_WOKENUP);
- 			netlink_sendskb(info->notify_sock, info->notify_cookie);
-@@ -1384,6 +1401,7 @@ retry:
- 			info->notify.sigev_signo = notification->sigev_signo;
- 			info->notify.sigev_value = notification->sigev_value;
- 			info->notify.sigev_notify = SIGEV_SIGNAL;
-+			info->notify_self_exec_id = current->self_exec_id;
- 			break;
- 		}
- 
+ 		file_start_write(cprm.file);
+ 		core_dumped = binfmt->core_dump(&cprm);
+ 		file_end_write(cprm.file);
+--- a/kernel/umh.c
++++ b/kernel/umh.c
+@@ -544,6 +544,11 @@ EXPORT_SYMBOL_GPL(fork_usermode_blob);
+  * Runs a user-space application.  The application is started
+  * asynchronously if wait is not set, and runs as a child of system workqueues.
+  * (ie. it runs with full root capabilities and optimized affinity).
++ *
++ * Note: successful return value does not guarantee the helper was called at
++ * all. You can't rely on sub_info->{init,cleanup} being called even for
++ * UMH_WAIT_* wait modes as STATIC_USERMODEHELPER_PATH="" turns all helpers
++ * into a successful no-op.
+  */
+ int call_usermodehelper_exec(struct subprocess_info *sub_info, int wait)
+ {
 
 
