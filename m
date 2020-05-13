@@ -2,75 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4ED1D112A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2221D1109
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732856AbgEMLVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 07:21:23 -0400
-Received: from elvis.franken.de ([193.175.24.41]:51993 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732803AbgEMLVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 07:21:21 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jYpRu-000588-00; Wed, 13 May 2020 13:21:18 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id C38E9C047A; Wed, 13 May 2020 13:18:06 +0200 (CEST)
-Date:   Wed, 13 May 2020 13:18:06 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-kbuild@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: Re: [PATCH v5 0/5] Allow ld.lld to link the MIPS VDSO
-Message-ID: <20200513111806.GA7151@alpha.franken.de>
-References: <20200423171807.29713-1-natechancellor@gmail.com>
- <20200428221419.2530697-1-natechancellor@gmail.com>
- <20200512080509.GA9433@alpha.franken.de>
- <20200512082843.GA3815743@ubuntu-s3-xlarge-x86>
+        id S1732530AbgEMLSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 07:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732494AbgEMLSa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 07:18:30 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E8BC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 04:18:28 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id r66so21080085oie.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 04:18:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mvista-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BrYzLniezoDD4jCcvGE9yS2QzVsTTMBnOOwvkU8zNzA=;
+        b=YsA9fgHHa2e5ncH25Q88XbMFzpKGXlpGE3QR/2LaNziM/owblmqmFkQB/x4emIWvbj
+         1Brwjz/mJUDeFzqFPpqG5VvWRW9uAzeieKEfSxXQyrrTp3NCxfN9s+ZlHxHiUeObisgx
+         UVMbHGSyyoJXb17zhfVHTD1AjcxSJLYV46fV9fNKjBDABuaJu79wuUHsx1FT59O6ncb9
+         r/L0ALdZMYv/ugvzo902/viYrPobOlW9gMNZuPFbBN7HlPswY/JO8zU24u3+sD3vgn+7
+         AyejM9N5+E5dJud5xcC4jVcdazBm2RXtAW3ilJ6nS+SuGZKxV6R148L3yA8G2vdGl0jJ
+         m+9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BrYzLniezoDD4jCcvGE9yS2QzVsTTMBnOOwvkU8zNzA=;
+        b=JyfZhCejCxceqE/XbqlKZ/dQ0aP+AEs61qlGTYxBi7jLSBc7QePzy7k9Kt+CLLqvcO
+         Znxg7mnua8DNgm47D6ieQdCXtYnLfae6zkuIRnmprs8KeaBogI8qahTnuvkpfxkMD8lv
+         V2kbf24OFF2iFTwgICvRKA8sV49N4L3jWzMN9Q2NBHzgWdfgnQt/AAR90XzoA3UZ+ymr
+         k8DWxEA1O9PLzVyBU67+md2mWm9807RBJ5mJIL3OAe94E1LkkrFjBcxaXNiXUBzbBdam
+         K5qyI5Fp3mL/BZDPekbUVS/LvtYfyYpAqboMwgshsAS0U6sNbfkwUU+gJ79VLuOnyhzI
+         2pvQ==
+X-Gm-Message-State: AGi0PuZsX1ah6IqV6CfGGZVaWUELRBRijuVFr7cHWgSggpBod2IcCR+b
+        tRw7asQJId677pSQ/6XRHCqvVGlCFbg=
+X-Google-Smtp-Source: APiQypLuNe12ugFwb8BiDgFQhZs6T49t8p9NJ0NCnmSifXnS4d7Rz9x8ZD84j5T6gRTZK6XeTAMC9A==
+X-Received: by 2002:aca:ed4d:: with SMTP id l74mr25612399oih.104.1589368707413;
+        Wed, 13 May 2020 04:18:27 -0700 (PDT)
+Received: from minyard.net ([2001:470:b8f6:1b:8b39:c3f3:f502:5c4e])
+        by smtp.gmail.com with ESMTPSA id n11sm5941751oij.21.2020.05.13.04.18.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 13 May 2020 04:18:26 -0700 (PDT)
+Date:   Wed, 13 May 2020 06:18:25 -0500
+From:   Corey Minyard <cminyard@mvista.com>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     minyard@acm.org, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] char: ipmi: convert to use i2c_new_client_device()
+Message-ID: <20200513111825.GB9928@minyard.net>
+Reply-To: cminyard@mvista.com
+References: <20200326210958.13051-2-wsa+renesas@sang-engineering.com>
+ <20200512214532.14117-1-minyard@acm.org>
+ <20200513083745.GC1043@ninjato>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200512082843.GA3815743@ubuntu-s3-xlarge-x86>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200513083745.GC1043@ninjato>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 01:28:43AM -0700, Nathan Chancellor wrote:
-> On Tue, May 12, 2020 at 10:05:09AM +0200, Thomas Bogendoerfer wrote:
-> > On Tue, Apr 28, 2020 at 03:14:14PM -0700, Nathan Chancellor wrote:
-> > > [..]
-> > > Please let me know if there are any issues!
+On Wed, May 13, 2020 at 10:37:46AM +0200, Wolfram Sang wrote:
+> On Tue, May 12, 2020 at 04:45:32PM -0500, minyard@acm.org wrote:
+> > From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 > > 
-> > I found no issues in my tests. Is this the final state ? If yes, I'm
-> > going to apply it to mips-next.
+> > Move away from the deprecated API.
 > > 
-> > Thomas.
+> > Based on a patch by Wolfram Sang <wsa+renesas@sang-engineering.com>.
 > > 
-> > -- 
-> > Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-> > good idea.                                                [ RFC1925, 2.3 ]
+> > Signed-off-by: Corey Minyard <cminyard@mvista.com>
+> > ---
+> > I think this works.
 > 
-> Maciej seemed to have some issue with the way I worded the commit
-> message of patch 4 but I have not heard anything back about my
-> suggestion and Fangrui commented that --eh-frame-hdr might not be
-> necessary but if everything works fine for you with this version, I
-> am not inclined to touch it.
+> Yes, we can do it like this (despite the question from earlier if it is
+> really needed). I fixed other drivers using this pattern, too.
+
+I was wondering whether this is really needed, too, but I'm not 100%
+sure it can be removed in all cases.  This is the safer route.
+
 > 
-> If you feel this is good to go, I am happy to let it go in. Thanks for
-> accepting it!
+> As Stephen Rothwell pointed out, you either need to remove my "From:" or
+> add my SoB. I am fine with both.
 
-applied to mips-next.
+It was enough of a rewrite that you as the author didn't seem right.
+I've fixed the From line, sorry about that.
 
-Thomas.
+-corey
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> 
+> Thanks,
+> 
+>    Wolfram
+> 
+
+
