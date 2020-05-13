@@ -2,154 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA64E1D0D4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A861D0E84
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387719AbgEMJvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
+        id S2388002AbgEMKAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 06:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387706AbgEMJvu (ORCPT
+        with ESMTP id S2387696AbgEMJvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:51:50 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBAEC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 02:51:49 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id e25so17054651ljg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 02:51:49 -0700 (PDT)
+        Wed, 13 May 2020 05:51:44 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833F4C061A0C;
+        Wed, 13 May 2020 02:51:44 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x2so7775815pfx.7;
+        Wed, 13 May 2020 02:51:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=v/hRPGSq+bxa+Q+TzEJUb+dUDnWb/ydhRiXMT/AcNOI=;
-        b=ZPMM/B9P+Bpf5SVLNYqfokquDQ91Z7N0GqGGNtacBG9sboiJf5EK1RcrQE2zjI7jMx
-         wAbbBABXF7d/MAcwwu2p5n0O1KFSKu2TdZMhHdlbsFXJhgxtuZQeOk5Ofs3OQqpxwbwp
-         Q517krnAmo2upraZVyViwfCCFBfKiZw/7ZE0UEb/KnKzg7dFfF1XD7AfI+YHOIJbgAI7
-         kCXZhKxrtcBakCjmL7OX6bfy3vhqtPUrArDdxNMsyQ9+W/6JbZ72/UaulNkVltCsvUWq
-         E6jverH4zidhLMbGVvkwXyt17tYVmG8bO4TEaYxfleqjXe8e8FJYAZ/l4giHMpoP1r1L
-         ixww==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hjiKJ7FJyTyiMTQabLbMdyXHxAd5Y5rApctKC8YRsHE=;
+        b=p7i6gqiUSXTtK8sEqLVDaHCAQ4YPJvlMltihgkLN7PhyQ+GkAQ13GNyAEymKYACWAF
+         Z8VAhvK8B1LJYKmMS2KF1M/TV8DHztjkQco/ZFyFDXNzKiaIx4RZz7xBWFDR16ITIdCx
+         jHEg/QgmnkBftkMGLGoPfM0qxMz1CpHKozcnhaKuOi2jeiARYIRZPQByw9cY8tbS/AAk
+         hC1GDea4nZlaXy0tn6iJbsACuFTdha5CqiXFVYBskwh9+LslZOdOnNMFMqY7kJ7Opqbs
+         yTRB1F1Q/nICpbSz/IUXIDs8pDHgXq//6RETRj7c91UGb18dnxDJt9uZo1YSTMW8mSq8
+         4WWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=v/hRPGSq+bxa+Q+TzEJUb+dUDnWb/ydhRiXMT/AcNOI=;
-        b=dkQjA6xWWUrpgBxdKUJ6f7PgpWHjLiKCeEQpQr2LvW7c1MI6lYDMlJ9w37ePfjLYTg
-         40hl5H8+XGXDcUni33wzNRABsSKskVUUJdwUoqhSvrtG3CRl5Gn/d3joIGVrDSQ6K7VE
-         5gsy904ovE2X6aTNNzfII7n+DzYhaKbcaMRqSP4FX4H6GxCECnb8J9wK2rKXU42MT6X2
-         lWrSiICc8vryxmE5ZXaQHcA3a1vxgJuesLcqOz8zGjwB/NQgGS7m3Dygedyt6lJHNGkL
-         CnM+T0ABkRBFqOZu033KILzaJZlE3nwEzvZactGtLsUqFxUbE5Q3cQkuCHrJ7sIcsq2e
-         wDpQ==
-X-Gm-Message-State: AOAM530sZTcs3uP5p+1zfNZC6KfHuBCquhVdcoflshA85zOiVY301fhS
-        rlqy2s1Jj9CwFk+Kpjy23wHEOQeqRjU+2oF+t3pnuw==
-X-Google-Smtp-Source: ABdhPJy2iGPRarsjL/HWpQUuP4ZZnl1ZwwZeQCzlZes0Yw/u3lUrW7PCZlQvehA7Blx4fUiTqNbnTAZsAJ6m62s8rLQ=
-X-Received: by 2002:a05:651c:1a5:: with SMTP id c5mr5504337ljn.217.1589363507341;
- Wed, 13 May 2020 02:51:47 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hjiKJ7FJyTyiMTQabLbMdyXHxAd5Y5rApctKC8YRsHE=;
+        b=LYQZCWjglxnBoqWh97RtefJXqLeJE4Nx6JnWUgs/mmwkBOSRvz7QMmo5T1mkK38pVo
+         kiU0S8Pmxxi4ebGYCCUttfEhnXBKiUC3KUl6CuKCr0wB2a6lX8hbfhLnnPDSwgf6exS/
+         sm5GUe9faNTQJP8gOphIg+LqpXYewSqEZAj0T0LZ6VCA6NcBfSTOSTLu8HwO5Z5MSP6K
+         JiYFkBlEL0tJR6YIQGbX+wwhIq5YoNwBoZV0vLLiRavuwoc4iA7Itk7OHROULeCe3tZt
+         +vXmSE/QFIymMPCYit3rrU3MZj/s0ilq9RUEUl8o8jGOUdIcqRHQPf3XceeRyWtB86Ee
+         Viuw==
+X-Gm-Message-State: AGi0PubInIQmkABs6348LPCQKrUzly6g1CCNxkd9iMR0Ma3wvDSuixSm
+        Sj+rfdJq7Wo67LSDmWS749eX9AxF4OY7QsIq3O4=
+X-Google-Smtp-Source: APiQypIgIamK3+3CJqNCYmJC4K3blTlFkyzYGSrlGUS2dxYhc98NURSl+FWvlL20we5SAXLj5NrJHWb6PfApdwXRfzI=
+X-Received: by 2002:a62:7f11:: with SMTP id a17mr24262558pfd.36.1589363503255;
+ Wed, 13 May 2020 02:51:43 -0700 (PDT)
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 13 May 2020 15:21:35 +0530
-Message-ID: <CA+G9fYuXFdWc_dm1iLvS1zkCQS216xgL7oY7D=9QXwQxVefHNw@mail.gmail.com>
-Subject: stable-rc 4.14.181-rc1/ad4fc99d1989: no regressions found in project
- stable v4.14.y
-To:     linux- stable <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     lkft-triage@lists.linaro.org,
-        open list <linux-kernel@vger.kernel.org>
+References: <1589361736-816-1-git-send-email-jprakash@codeaurora.org> <1589361736-816-6-git-send-email-jprakash@codeaurora.org>
+In-Reply-To: <1589361736-816-6-git-send-email-jprakash@codeaurora.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 13 May 2020 12:51:36 +0300
+Message-ID: <CAHp75Vf-bFfrZ7uCOnXuzT+p+itkcmkE61=ezZzN8yDFQHABdw@mail.gmail.com>
+Subject: Re: [PATCH V4 5/5] iio: adc: Clean up ADC code common to PMIC5 and PMIC7
+To:     Jishnu Prakash <jprakash@codeaurora.org>
+Cc:     agross@kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        smohanad@codeaurora.org, kgunda@codeaurora.org,
+        aghayal@codeaurora.org, Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-arm-msm@vger.kernel.org,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-arm-msm-owner@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+On Wed, May 13, 2020 at 12:24 PM Jishnu Prakash <jprakash@codeaurora.org> wrote:
+>
+> This commit includes the following changes:
+> Add a common function used for read_raw callback for
+> both PMIC5 and PMIC7 ADCs.
+> Add exit function for ADC.
+> Add info_property under adc_data to more efficiently
+> distinguish PMIC5 and PMIC7 ADCs.
 
-Summary
-------------------------------------------------------------------------
+Something happened to the editor settings. We have lines up to 72
+(recommended) characters.
 
-kernel: 4.14.181-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: ad4fc99d19898b966c3fa74c7adaaee8d12da3a9
-git describe: v4.14.180-37-gad4fc99d1989
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.14-oe/bu=
-ild/v4.14.180-37-gad4fc99d1989
+...
 
-No regressions (compared to build v4.14.180)
+> @@ -512,6 +518,7 @@ static int adc5_read_raw(struct iio_dev *indio_dev,
+>                         &adc5_prescale_ratios[prop->prescale],
+>                         adc->data,
+>                         adc_code_volt, val);
+> +
+>                 if (ret)
+>                         return ret;
+>
 
-No fixes (compared to build v4.14.180)
+Unrelated.
 
-Ran 30937 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* install-android-platform-tools-r2800
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* kselftest/net
-* kselftest/networking
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* v4l2-compliance
-* kvm-unit-tests
-* network-basic-tests
-* ltp-open-posix-tests
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-native/drivers
-* kselftest-vsyscall-mode-native/filesystems
-* kselftest-vsyscall-mode-native/net
-* kselftest-vsyscall-mode-native/networking
-* kselftest-vsyscall-mode-none
-* kselftest-vsyscall-mode-none/drivers
-* kselftest-vsyscall-mode-none/filesystems
-* kselftest-vsyscall-mode-none/net
-* kselftest-vsyscall-mode-none/networking
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+With Best Regards,
+Andy Shevchenko
