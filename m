@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D3C1D0DC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104481D0F0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388312AbgEMJzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:55:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59044 "EHLO mail.kernel.org"
+        id S2388681AbgEMKE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 06:04:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388299AbgEMJzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:55:45 -0400
+        id S1732914AbgEMJro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:47:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7270A20753;
-        Wed, 13 May 2020 09:55:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC79E2312A;
+        Wed, 13 May 2020 09:47:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363743;
-        bh=jBWitMYFdNu0214x8a7VCY4Sq+QrJC98y5VwtH5igU4=;
+        s=default; t=1589363264;
+        bh=Ez+HzjOW/kVjeb7BJUsCWE4kuKqi8dg53pjN7LeiX/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SHQ5rOCEqXBs0maeZWtTCY8XTo0vf20aLgNKyD6fnHAz+0/jP8t1dOay80InMws2i
-         TXOGzOluB/eXPyG03fBKjL1NizzR/XaQ26dMRMrnDANG3tXjglRFKHZYdTIQ9nq6Zx
-         ozfrxu2XqtsDGEyy04L5TAjmf4BOL3qoRDA7Pn7g=
+        b=RAMDiv9Qae7Kp9O88w2VjMT+iklxBvbfeMwVpjpbl2o/c8GjbaMei3QXTYwG+6UwI
+         Zwjuew3BsAqBx9XGOfLYm7vMCvIzye8J4o+azh4YCQck7K0yx8J7Iyl+uc5C+xfmvr
+         Ces8E2UAc6xVLkvmz8eBLwzWKWU1yIEyA3ebJdBM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.6 069/118] crypto: arch/nhpoly1305 - process in explicit 4k chunks
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        =?UTF-8?q?Julian=20Gro=C3=9F?= <julian.g@posteo.de>
+Subject: [PATCH 4.19 22/48] USB: uas: add quirk for LaCie 2Big Quadra
 Date:   Wed, 13 May 2020 11:44:48 +0200
-Message-Id: <20200513094423.857357935@linuxfoundation.org>
+Message-Id: <20200513094356.501425369@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
-References: <20200513094417.618129545@linuxfoundation.org>
+In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
+References: <20200513094351.100352960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,75 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason A. Donenfeld <Jason@zx2c4.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-commit a9a8ba90fa5857c2c8a0e32eef2159cec717da11 upstream.
+commit 9f04db234af691007bb785342a06abab5fb34474 upstream.
 
-Rather than chunking via PAGE_SIZE, this commit changes the arch
-implementations to chunk in explicit 4k parts, so that calculations on
-maximum acceptable latency don't suddenly become invalid on platforms
-where PAGE_SIZE isn't 4k, such as arm64.
+This device needs US_FL_NO_REPORT_OPCODES to avoid going
+through prolonged error handling on enumeration.
 
-Fixes: 0f961f9f670e ("crypto: x86/nhpoly1305 - add AVX2 accelerated NHPoly1305")
-Fixes: 012c82388c03 ("crypto: x86/nhpoly1305 - add SSE2 accelerated NHPoly1305")
-Fixes: a00fa0c88774 ("crypto: arm64/nhpoly1305 - add NEON-accelerated NHPoly1305")
-Fixes: 16aae3595a9d ("crypto: arm/nhpoly1305 - add NEON-accelerated NHPoly1305")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Reported-by: Julian Groß <julian.g@posteo.de>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200429155218.7308-1-oneukum@suse.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/crypto/nhpoly1305-neon-glue.c   |    2 +-
- arch/arm64/crypto/nhpoly1305-neon-glue.c |    2 +-
- arch/x86/crypto/nhpoly1305-avx2-glue.c   |    2 +-
- arch/x86/crypto/nhpoly1305-sse2-glue.c   |    2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/usb/storage/unusual_uas.h |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/arch/arm/crypto/nhpoly1305-neon-glue.c
-+++ b/arch/arm/crypto/nhpoly1305-neon-glue.c
-@@ -30,7 +30,7 @@ static int nhpoly1305_neon_update(struct
- 		return crypto_nhpoly1305_update(desc, src, srclen);
+--- a/drivers/usb/storage/unusual_uas.h
++++ b/drivers/usb/storage/unusual_uas.h
+@@ -28,6 +28,13 @@
+  * and don't forget to CC: the USB development list <linux-usb@vger.kernel.org>
+  */
  
- 	do {
--		unsigned int n = min_t(unsigned int, srclen, PAGE_SIZE);
-+		unsigned int n = min_t(unsigned int, srclen, SZ_4K);
- 
- 		kernel_neon_begin();
- 		crypto_nhpoly1305_update_helper(desc, src, n, _nh_neon);
---- a/arch/arm64/crypto/nhpoly1305-neon-glue.c
-+++ b/arch/arm64/crypto/nhpoly1305-neon-glue.c
-@@ -30,7 +30,7 @@ static int nhpoly1305_neon_update(struct
- 		return crypto_nhpoly1305_update(desc, src, srclen);
- 
- 	do {
--		unsigned int n = min_t(unsigned int, srclen, PAGE_SIZE);
-+		unsigned int n = min_t(unsigned int, srclen, SZ_4K);
- 
- 		kernel_neon_begin();
- 		crypto_nhpoly1305_update_helper(desc, src, n, _nh_neon);
---- a/arch/x86/crypto/nhpoly1305-avx2-glue.c
-+++ b/arch/x86/crypto/nhpoly1305-avx2-glue.c
-@@ -29,7 +29,7 @@ static int nhpoly1305_avx2_update(struct
- 		return crypto_nhpoly1305_update(desc, src, srclen);
- 
- 	do {
--		unsigned int n = min_t(unsigned int, srclen, PAGE_SIZE);
-+		unsigned int n = min_t(unsigned int, srclen, SZ_4K);
- 
- 		kernel_fpu_begin();
- 		crypto_nhpoly1305_update_helper(desc, src, n, _nh_avx2);
---- a/arch/x86/crypto/nhpoly1305-sse2-glue.c
-+++ b/arch/x86/crypto/nhpoly1305-sse2-glue.c
-@@ -29,7 +29,7 @@ static int nhpoly1305_sse2_update(struct
- 		return crypto_nhpoly1305_update(desc, src, srclen);
- 
- 	do {
--		unsigned int n = min_t(unsigned int, srclen, PAGE_SIZE);
-+		unsigned int n = min_t(unsigned int, srclen, SZ_4K);
- 
- 		kernel_fpu_begin();
- 		crypto_nhpoly1305_update_helper(desc, src, n, _nh_sse2);
++/* Reported-by: Julian Groß <julian.g@posteo.de> */
++UNUSUAL_DEV(0x059f, 0x105f, 0x0000, 0x9999,
++		"LaCie",
++		"2Big Quadra USB3",
++		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
++		US_FL_NO_REPORT_OPCODES),
++
+ /*
+  * Apricorn USB3 dongle sometimes returns "USBSUSBSUSBS" in response to SCSI
+  * commands in UAS mode.  Observed with the 1.28 firmware; are there others?
 
 
