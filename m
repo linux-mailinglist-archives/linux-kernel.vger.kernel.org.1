@@ -2,63 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD191D14E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2F31D14E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387775AbgEMN3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:29:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729309AbgEMN3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:29:25 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C87D20657;
-        Wed, 13 May 2020 13:29:23 +0000 (UTC)
-Date:   Wed, 13 May 2020 09:29:22 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-Subject: Re: [tracing] 06e0a548ba:
- WARNING:at_kernel/trace/ring_buffer.c:#ring_buffer_iter_peek
-Message-ID: <20200513092922.6d79f6ee@gandalf.local.home>
-In-Reply-To: <20200513091906.GA12720@tuxmaker.boeblingen.de.ibm.com>
-References: <20200429090508.GG5770@shao2-debian>
-        <20200513091906.GA12720@tuxmaker.boeblingen.de.ibm.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2387531AbgEMNa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:30:57 -0400
+Received: from sonic308-17.consmr.mail.ir2.yahoo.com ([77.238.178.145]:42222
+        "EHLO sonic308-17.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726001AbgEMNa4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 09:30:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1589376654; bh=vUjtVOr1LCIoQU4EvLR2F9kwRcMR3abpMUhjHVo2tTA=; h=Date:From:Reply-To:Subject:References:From:Subject; b=FGGmONDx76mNxfADH9DBtz4UAkSwj/ONF4jAte7Mel+yNNf5QR93a0GoteTfjrrhqQExb3YmvpT8TZAzFqPIb7Pet/3VxPJVRMvpcVyZspaetzRRXY3RYvGSEYFw4Gu55lBvp05+D3bk7Ui/cOMH4V/yoHLNEg2CEyYlhgidC/RfarQPAGsbC0yx+/0H62uUHg5xZk2fJtjvnjaBP22QEulex7NT1uC+BwupsFRQui6s5DQBDSki4/ek3hP30krACfQKtY2Nfvgh+gYhBSw1UR4a93CrVcqYxMUuM7HXEAzSclsZsAiMy+6sj5h2zGVNjlJmIwYY0rN/XH2/1vaNGw==
+X-YMail-OSG: cDj.AyQVM1n3hMI6orekWNmD6bdnL3vf4r_.mjlSVu_gLzRqG5__C.cBBYKaR64
+ fkyCM8whSuK5SrXSc9WsYSdERC2zPZ_WhbD_0cEUy8_oh55x8O0R7xax9cFJiZnyC1EKofNuoeVs
+ KAOMGNCaLrZJEyLzN_62LWDQ2va_6dOZWHOS95_FpUcPIXOLhCvRXZZMNgSukPcFcr4DYMwjDuev
+ pQZxWVBwBeB0bFH4lyUrfApP09Wyk8EBn9HQKpb3Az2OiLxu0plGOMPSN8Jt._YHXskkWoLLll74
+ 5LlAlIhiFpk80qI6mjERArHnXm30lmg7fANqzSNW174Y0cD5VfejJa41rzs4l0d98eaKWiqXViNs
+ 2Ku0vx4z4IlwIKmYb0HD218tdPhV9.4VY8XnPQ4noGjCSIubWE6nS5o5XmzdgJZ45vDCz9ga2GJk
+ zG_SU76RBQh2KTQVnF5SK6_OGF6V2XWrbToSmOGVKMytKZuzWk6cZaytPJSXmDPtBJfI9G7_5U7E
+ m0Xds_rjd4RyBPMY8wDfdn8jXm9m8i7XWKedSTIx97d.EbojMYUqyAZyvzF3uVnKq8RCELby7.JD
+ YI6Vxb71XsGA8z7MmAhEmPYXL2eSI3.fszDhYBxKdTuoLJ1Od5KX6Y8Kqj5._wMrtFK77bmilL17
+ k9FaTEZHZnPeMHeIWHOC6SjFpdxeIDgVo8BBu6.F3.NeQmOkbn3Xn4KyPEFm9s9p1Af_Mkh4RS.Q
+ SaA8WNLLEZjcSmLPJHpQiSuAwFbmIaPOh2.l4TXp01jqZaD5ghuYphWqxTIewzIk9iWki0NXaypd
+ tOArBhUPKDuiHHoSDE9vROUs0D2KbEc14Hj_eISkTg4NXqzANJZHnMhKLyYgDPAVYhtslZgZegAu
+ 7P3ZK_ENfMKn_w7Ugyu2bH1HGWTgWsXYhZJejDqrL9WmWPLgnC05JtqqGyJodVJoggVyb1HT.fI6
+ qBhi4q.QxQDDuO.Hdpx0XJftV_xHOckju4Oohuo0k_W6Ve6gwc3tuD3XVYr3dMiG7E1ALQ8JhVj9
+ eLD6NWDs2ViJeBELDnP26e1mT21CC32zq_bbY9PzNtec_TWTn7AaDP5YKiv0UAxA0yj98ESpSV7P
+ zyw.haoIsIT2YKuyfikf7pru9n0JkVY1rt8eDV78c3_DFuTxFDH14gNK3lO.viDieA0x4zOsLcq4
+ XqHGt97vYBRWHH7JVXtFfiEkSXVTJ03AasakPnI0_JNluSRueDq.DGzBPTLiLhWOe9qEPh5mwo3F
+ jxu8u5Mb5NPvvBmBAsevWNXQIP6ID4lw.T3jiemPLCxj557IO453cZ426WttxtqSgmnFLGljl
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ir2.yahoo.com with HTTP; Wed, 13 May 2020 13:30:54 +0000
+Date:   Wed, 13 May 2020 13:30:49 +0000 (UTC)
+From:   REJOY <mrsrajoysmrsrajoyshassain@gmail.com>
+Reply-To: rejoyhassain02@gmail.com
+Message-ID: <254311865.766555.1589376649770@mail.yahoo.com>
+Subject: Thank you for your anticipated co-operation.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+References: <254311865.766555.1589376649770.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15904 YMailNodin Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 May 2020 11:19:06 +0200
-Sven Schnelle <svens@linux.ibm.com> wrote:
 
-> Did you had a chance to look into this? I can easily reproduce this both on x86
-> and s390 by doing:
-> 
-> cd /sys/kernel/tracing
-> cat /dev/zero >/dev/null & # generate some load
-> echo function >current_tracer
-> # wait a few seconds to fill the buffer
-> cat trace
-> 
-> Usually it will print the warn after a few seconds.
-> 
-> I haven't digged through all the ring buffer code yet, so i thought i might ask
-> whether you have an idea what's going on.
 
-Can you send me the config for where you can reproduce it on x86?
+DEAR FRIEND.
 
-The iterator now doesn't stop the ring buffer when it iterates, and is
-doing so over a live buffer (but should be able to handle it). It's
-triggering something I thought wasn't suppose to happen (which must be
-happening).
+YOU MAY BE WONDERING WHYI CONTACT YOU BUT SOMEONE LUCKY HAS TO BE CHOSEN WHICH IS YOU. I WANT YOU TO HANDLE THIS BUSINESS TRASACTION WITH ME IF CHANCE YOU TO DO INTERNATION BUSINESS I GO YOUR CONTACT FROM A RELIABLE WEB DIRECTORY.
 
-Perhaps with your config I'd be able to reproduce it.
+I RECEIVE YOUR CONTENT OF YOUR EMAIL FROM THIS DHL MASTER CARD OFFICES FUND OF $10.5 USD MILLION AFTER THE BOARD OF DIRECTORS MEETINGS, THE UNITED NATIONS GOVERNMENT HAVE DECIDED TO ISSUE YOU YOUR (ATM) VALUED AT 10.5 MILLION UNITED STATES DOLLAR.THIS IS TO BRING TO YOUR NOTICE THAT YOUR VALUED SUM OF 10.5 MILLION DOLLAR HAS BEING TODAY CREDITED INTO (ATM) MASTER CARD AND HAS BEEN HANDLE TO THE FOREIGN REMITTANCE DEPARTMENT TO SEND IT TO YOU TODAY IN YOUR FAVOR.
 
--- Steve
+WITH YOUR (ATM) YOU WILL HAVE ACCESS TO MAKE DAILY WITHDRAWALS OF $5000,00 UNITED STATE DOLLARS DAILIES AS ALREADY PROGRAMMED UNTIL YOU WITHDRAW YOUR TOTAL SUM IN YOUR (ATM) CARD WHICH HAS REGISTERED IN OUR SYSTEM FOR PAYMENT RECORD, AS SOON AS WE RECEIVE YOUR INFORMATIONS AND YOUR HOME ADDRESS OF YOUR COUNTRY AS ALREADY PROGRAMMED, WE WILL SEND YOUR (ATM) CARD THROUGH DHL COURIER SERVICE, WE HAVE RECEIVED A SIGNAL FROM THE SWISS WORLD BANK TO INFECT YOUR TRANSFER TO YOU WITHIN ONE WEEK,
+
+WE HAVE JUST FINISHED OUR ANNUAL GENERAL MEETING WITH THE CENTRAL BANK OF AMERICA (BOA). AT THE END OF THE BOARD OF DIRECTORS MEETING TODAY, WE HAVE CONCLUDED TO IMMEDIATELY ISSUE YOU AS SOON AS POSSIBLE,
+
+AND YOUR VALUE SUM HAS BEEN CREDITED INTO YOUR (ATM) VISA CARD
+ACCOUNT. WHICH YOU WILL USE TO WITHDRAW YOUR FUND IN ANY PART OF THE WORLD, WE HAVE ISSUED AND CREDITED YOUR (ATM) CARD IN YOUR NAME TODAY,
+
+YOUR (ATM) WILL BE INSURE BY THE INSURANCE COMPANY AND SEND TO YOU
+THROUGH ANY AVAILABLE COURIER COMPANY OF OUR CHOICE.
+
+ONCE AGAIN CONGRATULATIONS TO YOU,
+
+DIRECTOR DHL SERVICE,
+THANKS,
+SINCERELY.
