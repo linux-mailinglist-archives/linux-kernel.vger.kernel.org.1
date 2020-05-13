@@ -2,85 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2C61D0B68
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FD41D0B6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732328AbgEMJDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:03:23 -0400
-Received: from 8bytes.org ([81.169.241.247]:42288 "EHLO theia.8bytes.org"
+        id S1732413AbgEMJEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:04:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:40692 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730634AbgEMJDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:03:23 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 63BBB46A; Wed, 13 May 2020 11:03:22 +0200 (CEST)
-Date:   Wed, 13 May 2020 11:03:21 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v4 03/38] iommu: add generic helper for mapping sgtable
- objects
-Message-ID: <20200513090320.GH9820@8bytes.org>
-References: <20200512085710.14688-1-m.szyprowski@samsung.com>
- <20200512090058.14910-1-m.szyprowski@samsung.com>
- <CGME20200512090108eucas1p2168167ab5e1de09df0d5def83f64dbfe@eucas1p2.samsung.com>
- <20200512090058.14910-3-m.szyprowski@samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512090058.14910-3-m.szyprowski@samsung.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1730617AbgEMJEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:04:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57D351FB;
+        Wed, 13 May 2020 02:04:41 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.73.129])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B7BE93F305;
+        Wed, 13 May 2020 02:04:37 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     mark.rutland@arm.com,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+Subject: [PATCH V2] arm64/cpufeature: Drop open encodings while extracting parange
+Date:   Wed, 13 May 2020 14:33:34 +0530
+Message-Id: <1589360614-1164-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek,
+Currently there are multiple instances of parange feature width mask open
+encodings while fetching it's value. Even the width mask value (0x7) itself
+is not accurate. It should be (0xf) per ID_AA64MMFR0_EL1.PARange[3:0] as in
+ARM ARM (0487F.a). Replace them with cpuid_feature_extract_unsigned_field()
+which can extract given standard feature (4 bits width i.e 0xf mask) field.
 
-On Tue, May 12, 2020 at 11:00:23AM +0200, Marek Szyprowski wrote:
-> ---
->  include/linux/iommu.h | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: kvmarm@lists.cs.columbia.edu
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 
-Some nits below, with those fixed:
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+Changes in V2:
 
-	Acked-by: Joerg Roedel <jroedel@suse.de>
+- Used cpuid_feature_extract_unsigned_field() per Mark
 
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index 7cfd2dd..ba662ba 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -478,6 +478,22 @@ extern size_t iommu_map_sg_atomic(struct iommu_domain *domain,
->  extern void iommu_set_fault_handler(struct iommu_domain *domain,
->  			iommu_fault_handler_t handler, void *token);
->  
-> +/**
-> + * iommu_map_sgtable - Map the given buffer to the IOMMU domain
-> + * @domain:	The IOMMU domain to perfor
-                                    ^^^^^^ Truncated comment?
-> + * @iova:	The start addrees to map the buffer
-                          ^^^^^^^ Typo
+Changes in V1: (https://patchwork.kernel.org/patch/11541913/)
 
-> + * @sgt:	The sg_table object describing the buffer
-> + * @prot:	IOMMU protection bits
-> + *
-> + * Create a mapping at @iova for the buffer described by a scatterlist
-> + * stored in the given sg_table object in the provided IOMMU domain.
-> + */
-> +static inline size_t iommu_map_sgtable(struct iommu_domain *domain,
-> +			unsigned long iova, struct sg_table *sgt, int prot)
-> +{
-> +	return iommu_map_sg(domain, iova, sgt->sgl, sgt->orig_nents, prot);
-> +}
-> +
->  extern void iommu_get_resv_regions(struct device *dev, struct list_head *list);
->  extern void iommu_put_resv_regions(struct device *dev, struct list_head *list);
->  extern void generic_iommu_put_resv_regions(struct device *dev,
-> -- 
-> 1.9.1
+ arch/arm64/kernel/cpufeature.c |  3 ++-
+ arch/arm64/kvm/reset.c         | 11 ++++++++---
+ 2 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 30917fe7942a..958a96947c2c 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -2201,7 +2201,8 @@ void verify_hyp_capabilities(void)
+ 	}
+ 
+ 	/* Verify IPA range */
+-	parange = mmfr0 & 0x7;
++	parange = cpuid_feature_extract_unsigned_field(mmfr0,
++				ID_AA64MMFR0_PARANGE_SHIFT);
+ 	ipa_max = id_aa64mmfr0_parange_to_phys_shift(parange);
+ 	if (ipa_max < get_kvm_ipa_limit()) {
+ 		pr_crit("CPU%d: IPA range mismatch\n", smp_processor_id());
+diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+index 841b492ff334..bd9f66a81e1e 100644
+--- a/arch/arm64/kvm/reset.c
++++ b/arch/arm64/kvm/reset.c
+@@ -348,8 +348,11 @@ u32 get_kvm_ipa_limit(void)
+ void kvm_set_ipa_limit(void)
+ {
+ 	unsigned int ipa_max, pa_max, va_max, parange;
++	u64 mmfr0;
+ 
+-	parange = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1) & 0x7;
++	mmfr0 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1);
++	parange = cpuid_feature_extract_unsigned_field(mmfr0,
++				ID_AA64MMFR0_PARANGE_SHIFT);
+ 	pa_max = id_aa64mmfr0_parange_to_phys_shift(parange);
+ 
+ 	/* Clamp the IPA limit to the PA size supported by the kernel */
+@@ -395,7 +398,7 @@ void kvm_set_ipa_limit(void)
+  */
+ int kvm_arm_setup_stage2(struct kvm *kvm, unsigned long type)
+ {
+-	u64 vtcr = VTCR_EL2_FLAGS;
++	u64 vtcr = VTCR_EL2_FLAGS, mmfr0;
+ 	u32 parange, phys_shift;
+ 	u8 lvls;
+ 
+@@ -411,7 +414,9 @@ int kvm_arm_setup_stage2(struct kvm *kvm, unsigned long type)
+ 		phys_shift = KVM_PHYS_SHIFT;
+ 	}
+ 
+-	parange = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1) & 7;
++	mmfr0 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1);
++	parange = cpuid_feature_extract_unsigned_field(mmfr0,
++				ID_AA64MMFR0_PARANGE_SHIFT);
+ 	if (parange > ID_AA64MMFR0_PARANGE_MAX)
+ 		parange = ID_AA64MMFR0_PARANGE_MAX;
+ 	vtcr |= parange << VTCR_EL2_PS_SHIFT;
+-- 
+2.20.1
+
