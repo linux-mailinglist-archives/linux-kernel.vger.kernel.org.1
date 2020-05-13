@@ -2,156 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFD81D0F21
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2AC1D0CC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388715AbgEMKFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 06:05:01 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:15134 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732794AbgEMJrO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:47:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589363233; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=2ym0u7X5Osc4xDJAmwudyg1fVc6L2CkIAndFTTBUaJY=; b=ekdaiBxLIn+3knPeZldLX1TCfs+v9TmsmihdDGEk85NO/PpNEZ438qU2Elh62KoxP8syqOaX
- VyS05N9uZ9upo/2bggVaI8CwFnQDcqYUI8dqXLyEbMjPm6mD1dZwET9P2u/JMmoylkXF0FuW
- 9gxZQ5i0Up6E4WlPq8l5o+oUxmI=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ebbc214.7fa93407ea78-smtp-out-n02;
- Wed, 13 May 2020 09:47:00 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8D8A8C433BA; Wed, 13 May 2020 09:46:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.102] (unknown [183.83.139.238])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3ABCEC432C2;
-        Wed, 13 May 2020 09:46:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3ABCEC432C2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=charante@codeaurora.org
-Subject: Re: [PATCH] mm, page_alloc: reset the zone->watermark_boost early
-From:   Charan Teja Kalla <charante@codeaurora.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        vinmenon@codeaurora.org
-References: <1589204408-5152-1-git-send-email-charante@codeaurora.org>
- <20200511131155.0b40ee443c3367e8f748b16f@linux-foundation.org>
- <1cf5e778-eae1-fc71-aed4-d84d664d79dd@codeaurora.org>
-Message-ID: <ea46cdfd-526c-5109-2c09-263effb676dd@codeaurora.org>
-Date:   Wed, 13 May 2020 15:16:53 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <1cf5e778-eae1-fc71-aed4-d84d664d79dd@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S1732880AbgEMJrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:47:33 -0400
+Received: from mail-dm6nam11on2071.outbound.protection.outlook.com ([40.107.223.71]:63410
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732838AbgEMJrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:47:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L+LmGRdZOlWFl+oTIkE0edEeJrAS6yFOuMR+ZYsA+qPWH9at6GAiI2pS9tB6vkNKY/0iedUIhvBW+11xmhMtaAvWYzER70c9b3y2SL9VztTT0kJ48HtEQQP7El0kyZUX5DSGdpVL8Yf1LSbeZkx9U0VFklDKDDHcKePg+ytF0a3GmeQckDFG18MeQxcZggSHOgBlYl9NTfw6BGcwYuIqQN4JdPHPiY3L5yA4KhEQaoSvZgZdNoUW4eX67YAWlejy2rqzxengxnsNrMeti0a8XlnlzvOs5mrq6+Sk55LXaiJ1zuylwK0LG58uRG4V6OeIJJ3TkRmfW/usyR48tzPGeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L2qJ3gmIeDXse/6D+15+kFY18wxftv82JxJZT/2E+JQ=;
+ b=ex9eizHh1RsEvUwQvPs87mK8DIDupfzVQySQG5M/URmsNqvcXRuwoABYrYCm+rutX6h/jT5JCeFexFg35K8QzNB4gCWfwwIEfqcKr6J3PulxAYXxzFZ8JSZ7uaU28/VV1hr2k37NkjDXk0A4oLmcQA+ZRiwsyrMPrLTzh+aaEMAsQEfFQqsQxKYGbFDTZb0CjUZO0SOoDA//O41twMjQJd8wxvwVmAxbD8xUQff3N0kyjsaxMI4+VpBZbCe58XrSiwYY7AYUnYyhSPAlUmEE/adt0Kk1qnBdaKSfxmdj4zY41vFAPoenKGhiUuJh4PuzfRWtVlmIN8MvmZypRViiOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L2qJ3gmIeDXse/6D+15+kFY18wxftv82JxJZT/2E+JQ=;
+ b=Earu827Lf0q3MLaQ0oq4+6yHdo6XNqhfJyyaVfAWIMWv30GoQhMuzAbSifEMemLvtRGz51jQPdeRanLgRE5SD7rDGNOasDgcUpgeUSafGQdCtwPjVpAZT8/MzNld5D+nfFSQ8OFSwXRT8+l4D3wp6HPfv69+QeMpbFEjQCLu/V4=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=synaptics.com;
+Received: from BYAPR03MB3573.namprd03.prod.outlook.com (2603:10b6:a02:ae::15)
+ by BYAPR03MB3703.namprd03.prod.outlook.com (2603:10b6:a02:ad::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.33; Wed, 13 May
+ 2020 09:47:19 +0000
+Received: from BYAPR03MB3573.namprd03.prod.outlook.com
+ ([fe80::d8fb:de22:43b7:fcb7]) by BYAPR03MB3573.namprd03.prod.outlook.com
+ ([fe80::d8fb:de22:43b7:fcb7%7]) with mapi id 15.20.2979.033; Wed, 13 May 2020
+ 09:47:19 +0000
+Date:   Wed, 13 May 2020 17:47:06 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Revert "mmc: sdhci-xenon: add runtime pm support and
+ reimplement standby"
+Message-ID: <20200513174706.3eeddb2b@xhacker.debian>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TYCPR01CA0041.jpnprd01.prod.outlook.com
+ (2603:1096:405:1::29) To BYAPR03MB3573.namprd03.prod.outlook.com
+ (2603:10b6:a02:ae::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (124.74.246.114) by TYCPR01CA0041.jpnprd01.prod.outlook.com (2603:1096:405:1::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.29 via Frontend Transport; Wed, 13 May 2020 09:47:18 +0000
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+X-Originating-IP: [124.74.246.114]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 40412952-eb90-4582-9c77-08d7f722a098
+X-MS-TrafficTypeDiagnostic: BYAPR03MB3703:
+X-Microsoft-Antispam-PRVS: <BYAPR03MB37036641B96E1A09F889F0C2EDBF0@BYAPR03MB3703.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:785;
+X-Forefront-PRVS: 0402872DA1
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yRIVHu+FG7eWxd8lmlAE93+kqTyaotZyht0hl2t+uZO9p7osLYiDShczpJVidz/iWjnkFW/0O1YbGTpL0XOcoS9UqlOK2CUTqzwGbLoun/aX44jWrCNUlLvKeHBRWWIKN/smkio1BuqeMi+DmCvt3eHzhyZ2awgJz8Tk3XntbqAo4bpZQsZvofxiNetRQ2z7a3EV2gLnT9MFXW1WAVJiyN2ZvIgz5Dc1b48HwJ0PLO6mHcCNnrfyqe1zZ8JvcZbPAvbbI0ogMZ98NXhCeRcXq5Rb1PnK6irMq8YWOo76vijc75z5veb5eAG3GDEp3u0HV54sH1SN/UoUUljFBy06kzuAGcIAxqtrbRVJi2Ap9/6cEeR61dVYFhdJu2Nmf2DqRqUU24jCGcfRWiAIYMq8yoDpLLKTCgZAIdpZSVZ4RnIqr7ltPCTDY713A8dAf/WyBuIEufiHRJik0UGakbBaoV2wARRsIpgpTksZxhQycSuCgXwoB8wk4+iT1cRb/8PfnA69gAHqt+mPvCVM2EYtAg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3573.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(376002)(346002)(396003)(366004)(39850400004)(33430700001)(7696005)(1076003)(16526019)(26005)(956004)(186003)(6666004)(6506007)(2906002)(9686003)(5660300002)(52116002)(55016002)(478600001)(8676002)(4326008)(66556008)(8936002)(110136005)(316002)(66476007)(66946007)(33440700001)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: VMyrdi0eai0pVJoDJJGnwQORtcxJXWhh8IavLDGQoFnDwzWY/fqVgU2XYU05Gi0PXL0D9qRyE5IYbbpyJn74wXSPiya3oNwJyVmF50JsNNsCqjGIxn0oZinm6DtAl/H0eREErvkGC6CJAs5UY9nEWlT6nrwDODj1torJk9X5cgTNAHYm/a5RoxeW1L8dtUvcLoZ7bfi8JbvwCLxHZQzWrOd+iRORhGK/5z6jIyTjjFCy8Zfh0N44S371traIMx48TpXsLyuQlip5q2wkh028DdUvMIOlsc2CM1KwkhbNDObhWyntjvjchsb2cdZgtuPW+yphNs1sh4ZE9t8be5Ossie1xkINUqCDqgkzUMWprK/lpXxWJgEsT8yKOqytL792eMQlfKBh81uM7LgPGxTC8gmiMO6N3A2Ep1D9KozK0QqTGctQ0iYg2OOVXjwUGdM1BKYT58E+Qm1TvrgLsInH4OqymISy6WEE9DBSpb9k4mlpsM9t98/nKLNr/n2vUJiz
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40412952-eb90-4582-9c77-08d7f722a098
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2020 09:47:19.3818
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5QcPO5XL6OknrXkzILP8UXH/MRpKEV4b58or7gxG4QHQreyUguSLgzjnk4raU/ytMQDR2+TfYjsogpE1Eg4DVw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB3703
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This reverts commit a027b2c5fed78851e69fab395b02d127a7759fc7.
 
+The HW supports auto clock gating, so it's useless to do runtime pm
+in software.
 
-On 5/12/2020 7:01 PM, Charan Teja Kalla wrote:
-> 
-> Thank you Andrew for the reply.
-> 
-> On 5/12/2020 1:41 AM, Andrew Morton wrote:
->> On Mon, 11 May 2020 19:10:08 +0530 Charan Teja Reddy <charante@codeaurora.org> wrote:
->>
->>> Updating the zone watermarks by any means, like extra_free_kbytes,
->>> min_free_kbytes, water_mark_scale_factor e.t.c, when watermark_boost is
->>> set will result into the higher low and high watermarks than the user
->>> asks. This can be avoided by resetting the zone->watermark_boost to zero
->>> early.
->>
->> Does this solve some problem which has been observed in testing?
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+ drivers/mmc/host/sdhci-xenon.c | 87 +++++++---------------------------
+ drivers/mmc/host/sdhci-xenon.h |  1 -
+ 2 files changed, 16 insertions(+), 72 deletions(-)
 
-Sorry that I misunderstood your question. Yes it has solved problem of higher
-water marks seen in the zone than what I set through min_free_kbytes.
-
-Below are the steps I pursued to reproduce the problem
-1) My system setup of Android kernel running on snapdragon hardware have the 
-   below settings as default:
-   #cat /proc/sys/vm/min_free_kbytes = 5162
-   #cat /proc/zoneinfo | grep -e boost -e low -e "high " -e min -e Node
-	Node 0, zone   Normal
-        	min      797
-	        low      8340
-        	high     8539
-        	boost    0 // This is the extra print I have added to check the boosting
-2) Now I just try to change the zone watermark when the ->watermark_boost
-   is greater than zero. I just write the same value of min_free_kbytes in 
-   which case we should have seen the watermarks same as default(I mean of step 1)
-
-   #echo 5162 > /proc/sys/vm/min_free_kbytes
-
-   But I have seen very high values of watermarks in the system,
-  # cat /proc/zoneinfo | grep -e boost -e low -e "high " -e min -e Node
-	Node 0, zone   Normal
-      	  min      797
-      	  low      21148
-      	  high     21347
-      	  boost   0
-
-So, yes, this problem is got fixed with the changes made in this patch.
-
-> 
-> Sorry, what are those issues observed in testing? It would be helpful
-> If you post them here. 
-> 
->>
->>> ...
->>>
->>> --- a/mm/page_alloc.c
->>> +++ b/mm/page_alloc.c
->>> @@ -7746,9 +7746,9 @@ static void __setup_per_zone_wmarks(void)
->>>  			    mult_frac(zone_managed_pages(zone),
->>>  				      watermark_scale_factor, 10000));
->>>  
->>> +		zone->watermark_boost = 0;
->>>  		zone->_watermark[WMARK_LOW]  = min_wmark_pages(zone) + tmp;
->>>  		zone->_watermark[WMARK_HIGH] = min_wmark_pages(zone) + tmp * 2;
->>> -		zone->watermark_boost = 0;
->>>  
->>>  		spin_unlock_irqrestore(&zone->lock, flags);
->>>  	}
->>
->> This could only be a problem if code is accessing these things without
->> holding zone->lock.  Is that ever the case?
->>
-> 
-> This is a problem even when accessing these things with zone->lock
-> held because we are directly using the macro min_wmark_pages(zone)
-> which leads to the issue. Pasting macro here for reference.
-> 
-> #define min_wmark_pages(z) (z->_watermark[WMARK_MIN] + z->watermark_boost)
-> 
-> Steps that lead to the issue is like below:
-> 1) On the extfrag event, we try to boost the watermark by storing the
->    value in ->watermark_boost.
-> 
-> 2) User changes the value of extra|min_free_kbytes or watermark_scale_factor.
->   
->    In __setup_perzone_wmarks, we directly store the user asked
->    watermarks in the zones structure. In this step, the value
->    is always offsets by ->watermark_boost as we use the min_wmark_pages() macro.
-> 
-> 3) Later, when kswapd woke up, it resets the zone's watermark_boost to zero. 
-> 
-> Step 2 from the above is what resulting into the issue.
-> 
-
+diff --git a/drivers/mmc/host/sdhci-xenon.c b/drivers/mmc/host/sdhci-xenon.c
+index 4703cd540c7f..85414e13e7ea 100644
+--- a/drivers/mmc/host/sdhci-xenon.c
++++ b/drivers/mmc/host/sdhci-xenon.c
+@@ -15,8 +15,6 @@
+ #include <linux/ktime.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/pm.h>
+-#include <linux/pm_runtime.h>
+ 
+ #include "sdhci-pltfm.h"
+ #include "sdhci-xenon.h"
+@@ -539,24 +537,13 @@ static int xenon_probe(struct platform_device *pdev)
+ 	if (err)
+ 		goto err_clk_axi;
+ 
+-	pm_runtime_get_noresume(&pdev->dev);
+-	pm_runtime_set_active(&pdev->dev);
+-	pm_runtime_set_autosuspend_delay(&pdev->dev, 50);
+-	pm_runtime_use_autosuspend(&pdev->dev);
+-	pm_runtime_enable(&pdev->dev);
+-	pm_suspend_ignore_children(&pdev->dev, 1);
+-
+ 	err = sdhci_add_host(host);
+ 	if (err)
+ 		goto remove_sdhc;
+ 
+-	pm_runtime_put_autosuspend(&pdev->dev);
+-
+ 	return 0;
+ 
+ remove_sdhc:
+-	pm_runtime_disable(&pdev->dev);
+-	pm_runtime_put_noidle(&pdev->dev);
+ 	xenon_sdhc_unprepare(host);
+ err_clk_axi:
+ 	clk_disable_unprepare(priv->axi_clk);
+@@ -573,10 +560,6 @@ static int xenon_remove(struct platform_device *pdev)
+ 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+ 	struct xenon_priv *priv = sdhci_pltfm_priv(pltfm_host);
+ 
+-	pm_runtime_get_sync(&pdev->dev);
+-	pm_runtime_disable(&pdev->dev);
+-	pm_runtime_put_noidle(&pdev->dev);
+-
+ 	sdhci_remove_host(host, 0);
+ 
+ 	xenon_sdhc_unprepare(host);
+@@ -593,78 +576,40 @@ static int xenon_suspend(struct device *dev)
+ {
+ 	struct sdhci_host *host = dev_get_drvdata(dev);
+ 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+-	struct xenon_priv *priv = sdhci_pltfm_priv(pltfm_host);
+ 	int ret;
+ 
+-	ret = pm_runtime_force_suspend(dev);
++	ret = sdhci_suspend_host(host);
++	if (ret)
++		return ret;
+ 
+-	priv->restore_needed = true;
++	clk_disable_unprepare(pltfm_host->clk);
+ 	return ret;
+ }
+-#endif
+ 
+-#ifdef CONFIG_PM
+-static int xenon_runtime_suspend(struct device *dev)
++static int xenon_resume(struct device *dev)
+ {
+ 	struct sdhci_host *host = dev_get_drvdata(dev);
+ 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+-	struct xenon_priv *priv = sdhci_pltfm_priv(pltfm_host);
+ 	int ret;
+ 
+-	ret = sdhci_runtime_suspend_host(host);
++	ret = clk_prepare_enable(pltfm_host->clk);
+ 	if (ret)
+ 		return ret;
+ 
+-	if (host->tuning_mode != SDHCI_TUNING_MODE_3)
+-		mmc_retune_needed(host->mmc);
+-
+-	clk_disable_unprepare(pltfm_host->clk);
+ 	/*
+-	 * Need to update the priv->clock here, or when runtime resume
+-	 * back, phy don't aware the clock change and won't adjust phy
+-	 * which will cause cmd err
++	 * If SoCs power off the entire Xenon, registers setting will
++	 * be lost.
++	 * Re-configure Xenon specific register to enable current SDHC
+ 	 */
+-	priv->clock = 0;
+-	return 0;
+-}
+-
+-static int xenon_runtime_resume(struct device *dev)
+-{
+-	struct sdhci_host *host = dev_get_drvdata(dev);
+-	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+-	struct xenon_priv *priv = sdhci_pltfm_priv(pltfm_host);
+-	int ret;
+-
+-	ret = clk_prepare_enable(pltfm_host->clk);
+-	if (ret) {
+-		dev_err(dev, "can't enable mainck\n");
++	ret = xenon_sdhc_prepare(host);
++	if (ret)
+ 		return ret;
+-	}
+-
+-	if (priv->restore_needed) {
+-		ret = xenon_sdhc_prepare(host);
+-		if (ret)
+-			goto out;
+-		priv->restore_needed = false;
+-	}
+ 
+-	ret = sdhci_runtime_resume_host(host, 0);
+-	if (ret)
+-		goto out;
+-	return 0;
+-out:
+-	clk_disable_unprepare(pltfm_host->clk);
+-	return ret;
++	return sdhci_resume_host(host);
+ }
+-#endif /* CONFIG_PM */
+-
+-static const struct dev_pm_ops sdhci_xenon_dev_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(xenon_suspend,
+-				pm_runtime_force_resume)
+-	SET_RUNTIME_PM_OPS(xenon_runtime_suspend,
+-			   xenon_runtime_resume,
+-			   NULL)
+-};
++#endif
++
++static SIMPLE_DEV_PM_OPS(xenon_pmops, xenon_suspend, xenon_resume);
+ 
+ static const struct of_device_id sdhci_xenon_dt_ids[] = {
+ 	{ .compatible = "marvell,armada-ap806-sdhci",},
+@@ -678,7 +623,7 @@ static struct platform_driver sdhci_xenon_driver = {
+ 	.driver	= {
+ 		.name	= "xenon-sdhci",
+ 		.of_match_table = sdhci_xenon_dt_ids,
+-		.pm = &sdhci_xenon_dev_pm_ops,
++		.pm = &xenon_pmops,
+ 	},
+ 	.probe	= xenon_probe,
+ 	.remove	= xenon_remove,
+diff --git a/drivers/mmc/host/sdhci-xenon.h b/drivers/mmc/host/sdhci-xenon.h
+index 593b82d7b68a..2b9b96e51261 100644
+--- a/drivers/mmc/host/sdhci-xenon.h
++++ b/drivers/mmc/host/sdhci-xenon.h
+@@ -89,7 +89,6 @@ struct xenon_priv {
+ 	 */
+ 	void		*phy_params;
+ 	struct xenon_emmc_phy_regs *emmc_phy_regs;
+-	bool restore_needed;
+ };
+ 
+ int xenon_phy_adj(struct sdhci_host *host, struct mmc_ios *ios);
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+2.26.2
+
