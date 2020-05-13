@@ -2,90 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB451D20E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771E41D20EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728786AbgEMVXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:23:18 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:24195 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728772AbgEMVXQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:23:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589404995; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=kO0IqobLOJP7uxcQjGF7XV6F4ee3pL/rl3JY9Zx3Zis=;
- b=vuEIiszIh41BJR5H1GTP0l4hu25GwtX1wc7Y9O7plCrrWVfZtHdZxawXekAlFuyfUBvBFV8x
- UIBsxcAbrGP/Q2o2QRVaXHBEsV04oMcIFBBPmNHaKJcRxippUK9T1shr2JkO1A20aKW1HwMw
- pIH9v4R1Wx/xfsMy/n7WWWNpw8o=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ebc6532.7fecceed9e30-smtp-out-n03;
- Wed, 13 May 2020 21:22:58 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7BD67C432C2; Wed, 13 May 2020 21:22:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rmanohar)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 102F0C433F2;
-        Wed, 13 May 2020 21:22:58 +0000 (UTC)
+        id S1729057AbgEMVZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 17:25:06 -0400
+Received: from vps.xff.cz ([195.181.215.36]:33716 "EHLO vps.xff.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728519AbgEMVY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 17:24:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
+        t=1589405095; bh=vP1dm4GPwt9nOrSXUHYZrlnzV+QSD/t/nvTNldUmjRI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=AGAtow/+Ns2CtpuJASys9AiJwXRyXtcsBjbwnwXu4bag20du1XxyFuFHDrpYchGlo
+         NiC7NU6/u9eN7M+v2qu6Bz1jd4pU4R44lCUgURa6vC8Vuzo0KD7k4xgwHXncLQOgGX
+         t4b4TbkM6HRmS9Jm72MKnKTw/OkLwGm9ILrmaHrE=
+From:   Ondrej Jirman <megous@megous.com>
+To:     linux-sunxi@googlegroups.com,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Icenowy Zheng <icenowy@aosc.io>
+Cc:     Ondrej Jirman <megous@megous.com>, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Samuel Holland <samuel@sholland.org>,
+        Martijn Braam <martijn@brixit.nl>, Luca Weiss <luca@z3ntu.xyz>,
+        Bhushan Shah <bshah@kde.org>
+Subject: [PATCH v3 0/5] Add support for PinePhone LCD panel
+Date:   Wed, 13 May 2020 23:24:46 +0200
+Message-Id: <20200513212451.1919013-1-megous@megous.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 13 May 2020 14:22:58 -0700
-From:   Rajkumar Manoharan <rmanohar@codeaurora.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     kvalo@codeaurora.org, davem@davemloft.net, pradeepc@codeaurora.org,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        linux-wireless-owner@vger.kernel.org
-Subject: Re: [PATCH] ath11k: Fix some resource leaks in error path in
- 'ath11k_thermal_register()'
-In-Reply-To: <20200513201454.258111-1-christophe.jaillet@wanadoo.fr>
-References: <20200513201454.258111-1-christophe.jaillet@wanadoo.fr>
-Message-ID: <8ee716c797a547165132c179c1909404@codeaurora.org>
-X-Sender: rmanohar@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-13 13:14, Christophe JAILLET wrote:
-> If 'thermal_cooling_device_register()' fails, we must undo what has 
-> been
-> allocated so far. So we must go to 'err_thermal_destroy' instead of
-> returning directly
-> 
-> In case of error in 'ath11k_thermal_register()', the previous
-> 'thermal_cooling_device_register()' call must also be undone. Move the
-> 'ar->thermal.cdev = cdev' a few lines above in order for this to be 
-> done
-> in 'ath11k_thermal_unregister()' which is called in the error handling
-> path.
-> 
-> Fixes: 2a63bbca06b2 ("ath11k: add thermal cooling device support")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> I'm not 100% confident with this patch.
-> 
-> - When calling 'ath11k_thermal_unregister()', we try to release some
->   resources that have not been allocated yet. I don't know if it can be 
-> an
->   issue or not.
-> - I think that we should propagate the error code, instead of forcing
->   -EINVAL.
-> 
-Good catch.
+This patchset adds support for the LCD panel of PinePhone.
 
--Rajkumar
+The first 3 patches are for the panel itself, and the last 2 patches are
+for enabling it on PinePhone.
+
+I've tested this on PinePhone 1.0 and 1.2.
+
+Please take a look.
+
+thank you and regards,
+  Ondrej Jirman
+
+
+Changes in v3:
+- Panel driver renamed to the name of the LCD controller
+- Re-organize the driver slightly to more easily support more panels
+  based on the same controller.
+- Add patch to enable the touchscreen to complete the LCD support
+  on PinePhone.
+- Dropped the "DSI fix" patch (the driver seems to work for me without it)
+- Improved brightness levels handling:
+  - PinePhone 1.0 uses default levels generated by the driver
+  - On PinePhone 1.1 duty cycles < 20% lead to black screen, so
+    default levels can't be used. Martijn Braam came up with a
+    list of duty cycle values that lead to perception of linear
+    brigtness level <-> light intensity on PinePhone 1.1
+- There was some feedback on v2 about this being similar to st7701.
+  It's only similar in name. Most of the "user commands" are different,
+  so I opted to keep this in a new driver instead of creating st770x.
+  
+  Anyone who likes to check the differences, here are datasheets:
+
+  - https://megous.com/dl/tmp/ST7703_DS_v01_20160128.pdf
+  - https://megous.com/dl/tmp/ST7701.pdf
+
+Changes in v2:
+- DT Example fix.
+- DT Format fix.
+- Raised copyright info to 2020.
+- Sort panel operation functions.
+- Sort inclusion.
+
+
+-- For phone owners: --
+
+There's an open question on how to set the backlight brightness values
+on post 1.0 revision phone, since lower duty cycles (< 10-20%) lead
+to backlight being black. It would be nice if more people can test
+the various backlight levels on 1.1 and 1.2 revision with this change
+in dts:
+
+       brightness-levels = <0 1000>;
+       num-interpolated-steps = <1000>;
+
+and report at what brightness level the backlight turns on. So far it
+seems this has a wide range. Lowest useable duty cycle for me is ~7%
+on 1.2 and for Martijn ~20% on 1.1.
+
+Icenowy Zheng (4):
+  dt-bindings: vendor-prefixes: Add Xingbangda
+  dt-bindings: panel: Add binding for Xingbangda XBD599 panel
+  drm: panel: Add Xingbangda XBD599 panel (ST7703 controller)
+  arm64: dts: sun50i-a64-pinephone: Enable LCD support on PinePhone
+
+Ondrej Jirman (1):
+  arm64: dts: sun50i-a64-pinephone: Add touchscreen support
+
+ .../display/panel/sitronix,st7703.yaml        |  63 +++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ .../allwinner/sun50i-a64-pinephone-1.1.dts    |  19 +
+ .../dts/allwinner/sun50i-a64-pinephone.dtsi   |  54 +++
+ drivers/gpu/drm/panel/Kconfig                 |  10 +
+ drivers/gpu/drm/panel/Makefile                |   1 +
+ drivers/gpu/drm/panel/panel-sitronix-st7703.c | 386 ++++++++++++++++++
+ 7 files changed, 535 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/sitronix,st7703.yaml
+ create mode 100644 drivers/gpu/drm/panel/panel-sitronix-st7703.c
+
+-- 
+2.26.2
+
