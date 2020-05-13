@@ -2,88 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7310D1D1BE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 19:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EAF11D1BEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 19:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389841AbgEMRHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 13:07:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728068AbgEMRHq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 13:07:46 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E01C061A0C;
-        Wed, 13 May 2020 10:07:46 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ms17so11268697pjb.0;
-        Wed, 13 May 2020 10:07:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=FcmXxK86kTJFAcnJVbE6hTrg4cHLii76Z4EJaZMFyF0=;
-        b=XPZqdlG+jXdc0xRKpRpm5SuCk2GC0gvCYwpxp+/KHPUViQ0KQcBFZeZ0CZgrcpoC+D
-         N5FPEZMyNxNmb3eYLP9/LNAE+bm9qFoMHYc5WPMwRpKFlrfitCLdLfo8EDiV8pfUTtqO
-         /eQ4FD4Rxd3afcNPpr0WoGa4RFIuXdPL/Q9I0BFXlCTKK7s+ZmuZNF9yi6fMjLC3GhAk
-         rdzL6czJQdYow/8oRUzm2xADf8e8loaem7JcF1jEONNBwNMVEUddsWNcd6l8FG4LcS2H
-         QxbfJPlSQLNqJl0I8msNeoit0w+AHT7AmHam3vkzYEuWId+I1NaPNU73b1ZJSYIOj070
-         Dwhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:user-agent;
-        bh=FcmXxK86kTJFAcnJVbE6hTrg4cHLii76Z4EJaZMFyF0=;
-        b=URl+vM9CnYtJzMIwBvpZT7HCXIJ9+9+zMjVVcCsxXaZ4JXOsV3kGDSS0FDAwVISArn
-         OzXRe3RtoUpnNfe8XkzKmqu2ADur5HCPy2E0k3hhmfU3E8aPu6yLnyR4CD5rUpUFOBKl
-         2iHBrpJqBYmpiY/eVilS7tTCSk9qdiehTNiORquHWrUakE4LPgVnLGMBardl8sA1nlgw
-         RvIvfG8QRDPFmLxik3/lHusFYQdMpvgUuyLftquS67Ab03qaWqau07nMe9o60/z1DdWp
-         REXOpGMAsHbyu18I7C8Ng7jYkXdTjtPe2XFcHPWPHUQ2JviqrFuEv69WL/SgN5Q8agWz
-         zHvg==
-X-Gm-Message-State: AGi0PuYBIr/ZPoj7llE9Gvpe1RouvgssAiUEs2W0tHXwsX2bjdAhkzhZ
-        r4bGNZimV5Xehn0EVwrhzhE=
-X-Google-Smtp-Source: APiQypI5IZ0L3TUkg2Kyk7PbcZDvwZN+kapDMqMBvoOB/IXlhHZW+VT47jzilgDYTIeywoODGKCHPA==
-X-Received: by 2002:a17:90a:2526:: with SMTP id j35mr34866160pje.98.1589389666359;
-        Wed, 13 May 2020 10:07:46 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j13sm16291571pje.1.2020.05.13.10.07.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 May 2020 10:07:45 -0700 (PDT)
-Date:   Wed, 13 May 2020 10:07:44 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Support Opensource <support.opensource@diasemi.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Samu Nuutamo <samu.nuutamo@vincit.fi>
-Subject: Re: [PATCH] hwmon: da9052: Synchronize access with mfd
-Message-ID: <20200513170744.GA133638@roeck-us.net>
+        id S2389867AbgEMRIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 13:08:23 -0400
+Received: from mail-dm6nam11on2066.outbound.protection.outlook.com ([40.107.223.66]:19760
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728068AbgEMRIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 13:08:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LBlHbuh9b9GZLzHFrfPZVNRYUkOP3yF815g2vbLzBEbuJISbz4HBtMzG0ijiLRcFB+Ek3ECAjvn1tNuW7vKoPnBwmXXaDk71LrkqohhwNhdHCq5vjU534fPLcWVseZjTU2JQHvEMfMAXmwz8BDK4jFCKZIba6AR/MnuL3yUmiiF8MEb5MS7hnaeDwir4gIeLlZXzwT5K1ZNv1shFlf3MAvkurcqwj2JbjYm4rdZlKaghEmlWiSiiY6IjQgW2kq+BRII4hSyxr8EM6MlK8w4ETZUtsdgX9UiqsxeddPYrRs3X4M+8wQKFQQ97TSJTjJcO6KJLxnZ2ayEH/hgxgcmsLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3mDzF84INkLzGBoMqqGPl8inMEBznIIn9ux4foP7EM8=;
+ b=azUVBBtZX+hbtTOIvjIYx9gF+oaN6XW/8ikvBBlT6sAbW9F+/feyyVEnP9wQjHe02Pe2K7I8aHcY7Mo8a4p9DITxVW/ke1gYsAAaOrEeKKiEB6Af4NgZqqe16hm3xFHU9MuCcPWbe7n7Tx8TauvT57xB64J94N00qTXwMQQ+s03/AoBHsLc248ay1zvgK3gwZ1mVVknFsjw3E8siTbtVATaAKa75o2l4XLr0t2XCJfs0SARZOuqoki7O9iYjpfRQoYAp/QzrpC1vRaB0q+BDG5HP7+pewisyn4rvQe9MTI08QDVJCuLZdXnfRm3QyiftLeen5V6wgSm+8zF+DaSZ8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3mDzF84INkLzGBoMqqGPl8inMEBznIIn9ux4foP7EM8=;
+ b=aD7TB2J4jXYqXAx/WdkXXKJqTySbQ12ysNT+ZLCKKzyGfZoAQRjwDz9iOAq+gxVujY0mhwOh6axO4Zg510PLdCSZBCVpuxLSmIQA/z36VTB3wID6L8Cq9nBsDZrDUJTPtTifc2Q32SFCNebzQe2rqicMrAxbAAIdtlbPuDkqbhc=
+Received: from MN2PR05MB6381.namprd05.prod.outlook.com (2603:10b6:208:d6::24)
+ by MN2PR05MB6653.namprd05.prod.outlook.com (2603:10b6:208:dd::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.15; Wed, 13 May
+ 2020 17:08:19 +0000
+Received: from MN2PR05MB6381.namprd05.prod.outlook.com
+ ([fe80::7803:13e7:2e4d:58ff]) by MN2PR05MB6381.namprd05.prod.outlook.com
+ ([fe80::7803:13e7:2e4d:58ff%3]) with mapi id 15.20.3000.016; Wed, 13 May 2020
+ 17:08:19 +0000
+From:   Ashwin H <ashwinh@vmware.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@kernel.org" <stable@kernel.org>,
+        Srivatsa Bhat <srivatsab@vmware.com>,
+        "srivatsa@csail.mit.edu" <srivatsa@csail.mit.edu>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        Steven Rostedt <srostedt@vmware.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: RE: [PATCH v4.19.x] make 'user_access_begin()' do 'access_ok()'
+Thread-Topic: [PATCH v4.19.x] make 'user_access_begin()' do 'access_ok()'
+Thread-Index: AQHWKIdKPHhk+fo7OUe7+WKkK8SJkqilhT4AgABhFAD//6nZgIAAsMCg
+Date:   Wed, 13 May 2020 17:08:19 +0000
+Message-ID: <MN2PR05MB63814CDAAF6828285929736ACDBF0@MN2PR05MB6381.namprd05.prod.outlook.com>
+References: <d29f87f3f3abb4e496866253bd170faad976f687.1589305630.git.ashwinh@vmware.com>
+ <20200513055548.GA743118@kroah.com>
+ <89DE19F6-4CB0-4324-A630-C8574C8D591C@vmware.com>
+ <20200513063455.GA752913@kroah.com>
+In-Reply-To: <20200513063455.GA752913@kroah.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=vmware.com;
+x-originating-ip: [49.206.7.228]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e3d4df3c-d6e5-410a-efe5-08d7f7603c52
+x-ms-traffictypediagnostic: MN2PR05MB6653:
+x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR05MB6653AB30C7778494E5B6DC73CDBF0@MN2PR05MB6653.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2089;
+x-forefront-prvs: 0402872DA1
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2Gb16DfpxVeX6lxIOH7XtA7VcpmMQ1WsW4NB3PKPRNHGFL0/giu/KmvS/2YsbFEdfk5nBE/ZFF14Hddz2kIsX+rPBZe/voBZIcmAiRWsQscW1kuS6YpfXfYf8v13OOh0cPO1Qon1H5HythxcuJkyQRHYnlJc5jD7DILmsJCAKGReeOOp3prUlIu15p14MYbsubbV5ap2tfvfm6S/KSL0ldYWjSVLIt3QNKL14hqu3JBX1RGpWqZ9PI+cDp4iBXZZwjBsmP+XVdIFFIXcZ8/oodwe0tIKT2EndIeIP6LQ0i6KMK3Fn7L9z4gMWuaLCr+IzvJxD0F/dXC8bwJ8+XKl+xDrtaMyw2vtE3WAFxbMxwmgDhuVfsy5kWdXwK0lSd8DTgTNoGycshN+eJB/nAVWI9rSLlYfEv+PUKrXo2pqFvqfqshvKcDZ2U3NuuRhu4VcKbBUodeRBdESIaWqa/C2DAkKNHoSVB2UNSpF2QmtS4BncA2BS3nUMOAIPMoiclDVgs9tbbBXzmK86cxHQ10YBg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR05MB6381.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(346002)(39860400002)(376002)(136003)(33430700001)(6506007)(316002)(55236004)(54906003)(66476007)(33440700001)(7696005)(76116006)(66946007)(64756008)(66556008)(66446008)(52536014)(86362001)(2906002)(55016002)(5660300002)(478600001)(9686003)(26005)(186003)(4326008)(71200400001)(8676002)(6916009)(33656002)(8936002)(4744005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: K8HSN7VVCnDxDnSR/qiPLQkGlTON2DeltziLp9hkNflU5fnqNEJRYSEZm3Jk1JY0A32EQZyLdA+KGYUuhUwKtLLDgIL/diMzUnff8JiZBij7ywCDyjsff3fQsyowiC5Jqqc5GU5sErC9GKsIpCe3Vie3QcK7bKz8mIPe9gXiUCv1XIGZbDxsGpmbQoqxsTBaiSgeDyuJjb03kMed6ouMBjcrMDlnslIXIMjtIERXZN0+DFBlsTI4QHky8TDvc66f/Xu+iB95NjUVV3r3n6OMKhBRVNNyq85rNyqRpFDClIidrF5LdINosJ2uZvAmgQ5qBFbjPMk5KFpy+nY7iBm642Qg7VQgPtYRnJeYQEyPWV6k+mFskiSyn+KdGkuKFdauLN4WXMQAz5St9hvBizaRjezx1EL6qhfQHGcjfQsQF/7CHnA1qh3zKR3tRl0Vh4Wc4rLDGuH9N/A7rYb5gkCDzSiwHvLII0OeYNzieLfX9zM=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e3d4df3c-d6e5-410a-efe5-08d7f7603c52
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2020 17:08:19.6114
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Q5mFC8wLOAMenw1UXT6WW/zLPbO+NhiaeeoYK+nHYBA6hkuNOuz54re56hHIlLSOPgsiJh16CKVmGrOfUU2ULQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR05MB6653
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 01:02:19PM +0200, Sebastian Reichel wrote:
-> From: Samu Nuutamo <samu.nuutamo@vincit.fi>
-> 
-> When tsi-as-adc is configured it is possible for in7[0123]_input read to
-> return an incorrect value if a concurrent read to in[456]_input is
-> performed. This is caused by a concurrent manipulation of the mux
-> channel without proper locking as hwmon and mfd use different locks for
-> synchronization.
-> 
-> Switch hwmon to use the same lock as mfd when accessing the TSI channel.
-> 
-> Fixes: 4f16cab19a3d5 ("hwmon: da9052: Add support for TSI channel")
-> Signed-off-by: Samu Nuutamo <samu.nuutamo@vincit.fi>
-> [rebase to current master, reword commit message slightly]
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Ok, but what does that mean for us?
+>=20
+> You need to say why you are sending a patch, otherwise we will guess wron=
+g.
 
-Applied.
+In drivers/gpu/drm/i915/i915_gem_execbuffer.c, ioctl functions does user_ac=
+cess_begin() without doing access_ok(Checks if a user space pointer is vali=
+d)  first.
+A local attacker can craft a malicious ioctl function call to overwrite arb=
+itrary kernel memory, resulting in a Denial of Service or privilege escalat=
+ion (CVE-2018-20669)
+
+This patch makes sure that user_access_begin always does access_ok.=20
+user_access_begin has been modified to do access_ok internally.
 
 Thanks,
-Guenter
+Ashwin
