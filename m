@@ -2,141 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334451D064E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 07:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABCF1D0652
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 07:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729072AbgEMFLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 01:11:41 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:17353 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729041AbgEMFLk (ORCPT
+        id S1728568AbgEMFRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 01:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726092AbgEMFRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 01:11:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589346700; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=RrFa8SIaRDpfrCkihQPsly+PYJ66MhgVAcKDnFz+fGg=; b=YA+hX0yX6On+HulXUW85FCC+wCvBk+ZG/PYdO6hjkhZ7gQpISkzocFHBKBNXXF4Z1KmNyrFM
- lov/476twgnwuz1VHm1Rn6lBxUYZGxileGO+yOoLyUWzTm99GnIqHBQKQbzH/4aFZYXjtHlq
- WI4FTO4x2XHtHTsm1cQus81lqFM=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ebb818b.7f3cb3a84ae8-smtp-out-n05;
- Wed, 13 May 2020 05:11:39 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A3513C433CB; Wed, 13 May 2020 05:11:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from aneelaka-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: aneela)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B2615C43637;
-        Wed, 13 May 2020 05:11:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B2615C43637
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=aneela@codeaurora.org
-From:   Arun Kumar Neelakantam <aneela@codeaurora.org>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org, clew@codeaurora.org,
-        sricharan@codeaurora.org
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arun Kumar Neelakantam <aneela@codeaurora.org>
-Subject: [PATCH V4 4/4] rpmsg: char: Add signal callback and POLLPRI support
-Date:   Wed, 13 May 2020 10:41:11 +0530
-Message-Id: <1589346671-15226-5-git-send-email-aneela@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589346671-15226-1-git-send-email-aneela@codeaurora.org>
-References: <1589346671-15226-1-git-send-email-aneela@codeaurora.org>
+        Wed, 13 May 2020 01:17:12 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899C7C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 22:17:12 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id z80so10652823qka.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 22:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=kuNAvbqiOq9VWIGuyjkC9WGSpZO1oJmYNzCCBwUSpwk=;
+        b=gFpn58/zD4GPNaUUWwT8ECKmCRTGvN+48akn7IqlEJsbO9P9acoKe60CZdlE5BOJSH
+         UPFkmNqajJwfcr94aXrzanMfeQiaCRf67Cn/jAWhsviyRsPMQmRQ4Se1NYDsYldwCNdx
+         SRtDNGrCWzQgX2EMPinCEG7uPhzJ7lnSOJqiuZxn5xdfU8mjAmcxLYYIvcBTnQewvmJr
+         H8jBV7OTYFpJD0UZnKp00al4aM+NXxzdT64XbPQR5VxKUIehikETK325PNgvFyG3hgIt
+         yD16uh1Ic23W9w/6uQ0C6LMQyQsZAP+7juubWkATRhDe06tGbuXT9aFo+91o4eKlX5y9
+         BrtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=kuNAvbqiOq9VWIGuyjkC9WGSpZO1oJmYNzCCBwUSpwk=;
+        b=sA1xbZaPrcmWRy0W60O+9rzjWr9ogG3R5q8e/3hbfwBGNsKN+pdpUeHgtr7f6eop/r
+         luKdXVGzj94szJwOq0PdLRLudoKJdj+inNUtwsXd5ZTv4WU0/a9MSOjuZ12F2hbELS8O
+         P5vMQRykSuoMQf4adgXP3BdsE3bd+Amn/9zAnOVGtwGf6qBd/9n/nRyva+HuL9mQ7HWU
+         4EYvbjtp77kxQh218enZd3nYVA6jclV6ivWMLWNYQGtC0DnQE1MfZ3czzEURkyPC/Mmx
+         faxQB02nK4S38ezOBnaYRLZwtUWKXLw4XS0793EG8M9Pv9RCEWmkQwXd3eA+/u8N4rr7
+         DEfQ==
+X-Gm-Message-State: AGi0Pubzjg0yHsmqH537YDY1xfGruzXLW5fLIR9hiSqybGSafNHd4DdN
+        i7xxxc6y0DSSRBRSPcvBt44=
+X-Google-Smtp-Source: APiQypKDv7ceqF305L4FOrbWAafwKOMG/xyyQf0plZG6F6kRUgAbBfuOsLBF2qrXfqiCQbobXqsLKQ==
+X-Received: by 2002:a37:6506:: with SMTP id z6mr24966820qkb.246.1589347031619;
+        Tue, 12 May 2020 22:17:11 -0700 (PDT)
+Received: from LeoBras (179-125-143-209.dynamic.desktop.com.br. [179.125.143.209])
+        by smtp.gmail.com with ESMTPSA id 10sm15859166qtp.4.2020.05.12.22.17.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 22:17:10 -0700 (PDT)
+Message-ID: <fdf3ad3282febe0451cb52c960d954988e87d531.camel@gmail.com>
+Subject: Re: [PATCH v2 1/1] powerpc/crash: Use NMI context for printk when
+ starting to crash
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Enrico Weigelt <info@metux.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed, 13 May 2020 02:16:58 -0300
+In-Reply-To: <1589344247.2akwhmzwhg.astroid@bobo.none>
+References: <20200512214533.93878-1-leobras.c@gmail.com>
+         <1589344247.2akwhmzwhg.astroid@bobo.none>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register a callback to get the signal notifications from rpmsg and
-send POLLPRI mask to indicate the signal change in POLL system call.
+Hello Nick, thanks for your feedback.
+Comments inline:
 
-Signed-off-by: Arun Kumar Neelakantam <aneela@codeaurora.org>
----
- drivers/rpmsg/rpmsg_char.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+On Wed, 2020-05-13 at 14:36 +1000, Nicholas Piggin wrote:
+> Excerpts from Leonardo Bras's message of May 13, 2020 7:45 am:
+> > Currently, if printk lock (logbuf_lock) is held by other thread during
+> > crash, there is a chance of deadlocking the crash on next printk, and
+> > blocking a possibly desired kdump.
+> > 
+> > At the start of default_machine_crash_shutdown, make printk enter
+> > NMI context, as it will use per-cpu buffers to store the message,
+> > and avoid locking logbuf_lock.
+> 
+> printk_nmi_enter is used in one other place outside nmi_enter.
+> 
+> Is there a different/better way to handle this? What do other 
+> architectures do?
 
-diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-index e2f92f3..ae15d4f 100644
---- a/drivers/rpmsg/rpmsg_char.c
-+++ b/drivers/rpmsg/rpmsg_char.c
-@@ -64,6 +64,7 @@ struct rpmsg_ctrldev {
-  * @queue_lock:	synchronization of @queue operations
-  * @queue:	incoming message queue
-  * @readq:	wait object for incoming queue
-+ * @sig_pending:state of signal notification
-  */
- struct rpmsg_eptdev {
- 	struct device dev;
-@@ -78,6 +79,8 @@ struct rpmsg_eptdev {
- 	spinlock_t queue_lock;
- 	struct sk_buff_head queue;
- 	wait_queue_head_t readq;
-+
-+	bool sig_pending;
- };
- 
- static int rpmsg_eptdev_destroy(struct device *dev, void *data)
-@@ -122,6 +125,19 @@ static int rpmsg_ept_cb(struct rpmsg_device *rpdev, void *buf, int len,
- 	return 0;
- }
- 
-+static int rpmsg_sigs_cb(struct rpmsg_device *rpdev, void *priv,
-+			 u32 old, u32 new)
-+{
-+	struct rpmsg_eptdev *eptdev = priv;
-+
-+	eptdev->sig_pending = true;
-+
-+	/* wake up any blocking processes, waiting for signal notification */
-+	wake_up_interruptible(&eptdev->readq);
-+	return 0;
-+}
-+
-+
- static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
- {
- 	struct rpmsg_eptdev *eptdev = cdev_to_eptdev(inode->i_cdev);
-@@ -138,6 +154,7 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
- 		return -EINVAL;
- 	}
- 
-+	ept->sig_cb = rpmsg_sigs_cb;
- 	eptdev->ept = ept;
- 	filp->private_data = eptdev;
- 
-@@ -156,6 +173,7 @@ static int rpmsg_eptdev_release(struct inode *inode, struct file *filp)
- 		eptdev->ept = NULL;
- 	}
- 	mutex_unlock(&eptdev->ept_lock);
-+	eptdev->sig_pending = false;
- 
- 	/* Discard all SKBs */
- 	skb_queue_purge(&eptdev->queue);
-@@ -266,6 +284,9 @@ static __poll_t rpmsg_eptdev_poll(struct file *filp, poll_table *wait)
- 	if (!skb_queue_empty(&eptdev->queue))
- 		mask |= EPOLLIN | EPOLLRDNORM;
- 
-+	if (eptdev->sig_pending)
-+		mask |= POLLPRI;
-+
- 	mask |= rpmsg_poll(eptdev->ept, filp, wait);
- 
- 	return mask;
-@@ -309,6 +330,7 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
- 
- 	switch (cmd) {
- 	case TIOCMGET:
-+		eptdev->sig_pending = false;
- 		ret = rpmsg_get_signals(eptdev->ept);
- 		if (ret >= 0)
- 			ret = put_user(ret, (int __user *)arg);
--- 
-2.7.4
+To be honest, I was unaware of nmi_enter() and I have yet to study what
+other architectures do here.
+
+> Other subsystems get put into an nmi-mode when we call nmi_enter
+> (lockdep, ftrace, rcu etc). It seems like those would be useful for 
+> similar reasons, so at least explaining why that is not used in a 
+> comment would be good.
+
+My reasoning for using printk_nmi_enter() here was only to keep it from
+using printk regular buffer (and locking logbuf_lock) at this point of
+the crash.
+
+I have yet to see how nmi_enter() extra functions would happen to
+interfere with the crash at this point. 
+
+(In a quick look at x86, (native_machine_crash_shutdown) I could not
+see it using any printk, so it may not be necessary).
+
+> Aside from that, I welcome any effort to make our crashes more reliable
+> so thanks for working on this stuff.
+> 
+> Thanks,
+> Nick
+
+Thank you, it means a lot.
+
+Leonardo Bras
+
