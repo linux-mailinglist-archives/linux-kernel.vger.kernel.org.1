@@ -2,96 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93491D117A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9040F1D1180
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730737AbgEMLhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 07:37:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34060 "EHLO mail.kernel.org"
+        id S1731022AbgEMLhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 07:37:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727794AbgEMLhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 07:37:00 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1726743AbgEMLhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 07:37:45 -0400
+Received: from localhost (unknown [106.200.233.149])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3022206D6;
-        Wed, 13 May 2020 11:36:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33EF7206D6;
+        Wed, 13 May 2020 11:37:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589369819;
-        bh=esvSPlYfmiYgql73vEjD2+5RucmuA0PgDXZlvBGj+VE=;
+        s=default; t=1589369865;
+        bh=Amv7ClRMH2P+UI3l2B5270/ACCIOxjyfdce/BpqOoTg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EXEPmp4wRscmSOpgSsbkHiRIaecmZa09WJ0Kb2AvQ9nCRPGsSR3zseVQTSCYNqsYs
-         nkOmpc+jTnaPWyQN/+5rGzQDmrfd+jpCWT/xDkp6bn1eVhnAXSoSK+2TW3/oixy8gP
-         w0ifH6+8WJHCTVMQr4Me1LppjfLlROKy01S7ymhs=
-Date:   Wed, 13 May 2020 12:36:56 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Allison Randal <allison@lohutok.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "wuxu.wu" <wuxu.wu@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/17] spi: dw: Add Tx/Rx finish wait methods to DMA
-Message-ID: <20200513113656.GF4803@sirena.org.uk>
-References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
- <20200508132943.9826-8-Sergey.Semin@baikalelectronics.ru>
- <20200508173023.GO4820@sirena.org.uk>
- <20200513113555.mjivjk374giopnea@mobilestation>
+        b=Mfre/YeCy6QGwcr1Joz5kiu6wC7c9bN0saDvow8+/oqfy5oYhM7+lYCakrlu0p6f+
+         GuEIUYwThHzDzmwTRdutNYrqWaRKyn5f4Go1mLbAheINq1UyThfjbnheN+l+s+Uo0i
+         0CWuIQde9tkxBvs2iFZw3a44LaQecEgQcrbOX1VU=
+Date:   Wed, 13 May 2020 17:07:41 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     green.wan@sifive.com, dan.j.williams@intel.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: sf-pdma: Simplify the error handling path in
+ 'sf_pdma_probe()'
+Message-ID: <20200513113741.GG14092@vkoul-mobl>
+References: <20200501100824.126534-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="O98KdSgI27dgYlM5"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200513113555.mjivjk374giopnea@mobilestation>
-X-Cookie: Long life is in store for you.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200501100824.126534-1-christophe.jaillet@wanadoo.fr>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 01-05-20, 12:08, Christophe JAILLET wrote:
+> There is no need to explicitly free memory that have been 'devm_kzalloc'ed.
+> Simplify the probe function accordingly.
 
---O98KdSgI27dgYlM5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied, thanks
 
-On Wed, May 13, 2020 at 02:35:55PM +0300, Serge Semin wrote:
-> On Fri, May 08, 2020 at 06:30:23PM +0100, Mark Brown wrote:
-
-> > > +	while (dw_spi_dma_tx_busy(dws) && retry--)
-> > > +		ndelay(ns);
-
-> > How deep can the FIFO be with this IP - could we end up ndelay()ing for
-> > non-trivial amounts of time?
-
-> According to the DW APB SSI db it can be up to 256 transfer words. So the delay
-> should be trivial.
-
-Yes, that should be fine.
-
---O98KdSgI27dgYlM5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6729gACgkQJNaLcl1U
-h9AzxQf/bsWYDjXldUBZJ1fmI7RZ7yZW9/NawHY0tDiB5aidn0Qz1+0tYxPDmbhJ
-bUrIy7i5rEDV45LCvSLqXmOFAPs7+ic+SqlmIJFT+oHXR57351MKFSdPzc4WIbUT
-ZtCF2sUfQZXrk6O++CHGNwaiXkvkPxvdSw3R8AwsjUslTNHhqUH83efqIpCfu0mw
-Ttg/Ub0mSxEoALKiJN1T3NEH2B8qYS/J1dHGqoky8/ETQnXGR9NPTxIksgNVr42w
-HzXRM9gaXiBGtLAKfQqCwlRHUKqXckccJYfXN1edvFujhaXrfirs85hkEe+5CmMS
-OllgnBoTThVcCIvQZ+OAqp1c5UYtmw==
-=myKX
------END PGP SIGNATURE-----
-
---O98KdSgI27dgYlM5--
+-- 
+~Vinod
