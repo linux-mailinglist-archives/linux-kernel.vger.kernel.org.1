@@ -2,133 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8A51D0516
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0C11D04FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgEMCi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 22:38:59 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:42682 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725898AbgEMCi6 (ORCPT
+        id S1728546AbgEMCcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 22:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727082AbgEMCct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 22:38:58 -0400
-Received: by mail-oi1-f193.google.com with SMTP id i13so20161213oie.9;
-        Tue, 12 May 2020 19:38:58 -0700 (PDT)
+        Tue, 12 May 2020 22:32:49 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E19EC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 19:32:49 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id p127so666141oia.13
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 19:32:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w05U4Ty4fjXvusSYkJgWcKh14hiK/1j5qmU3u7mm4Gk=;
+        b=zro3iuWtE97dmQ2yHOnvFSySz6cnEaOXpjCj7UrvI6HN1BoVBQATbBys+y8DGiKzn8
+         4e6gLMlpVYQR4pf6Sd/w32BfJdggxxqXNsZhm02yjJkagHlLAHfiKdHcve3uHOH6m4f1
+         QJB7XnkShMgbga+ToPaDQ7SoC0ox+6cG4W8sXyO4YkgFLoyu2SLqtgwOwoGjJc0SNBvx
+         m0fyuQ265Gx9qXMmG/6jCzVx6SjOJvkL2vpE0aZWoJ1fUl0NV3i53l9+SjWzeWiwOfvz
+         ahm888waBPeeJ5ZLoVKa6U7TJFqjxlUKCgdF2YMnqpAg3dBmWVdgKm6CIfZ6HweoHeQZ
+         pyTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mB48QmwP9BiyH2LbdU0ZoxXeDi5pgn5seQ5bqpzznwg=;
-        b=D4JJlQDUaJd6f5n/AImjGpiK0Z/iR3yI0tUia87kuUaqkuEc2m7rlndasXIcb9V8S3
-         1RSVrTMQ+TABEJj1HByOXhcUUB9EWXrCioh6EojeAJclVt061esLikInvf5eqQ+ISGUb
-         N3M1DWUIZDVGTLch4y4kugA8qnG22/2GNDth0JDtfwVNx4rMWsVdbDwo3sb3fOMWNYzu
-         3BCvS7jdCcOV8KajVHnZYUP3NziMd9j++lXVxapQ+3bBQF+WZKMdgl1tHYQBPmJtcnHf
-         /zoDu/uMq/H2HeRFZgK/2ms/FJ5btUECd2bpc5oxOi3L7kmxYccY0iYcm8wyNK2lVPPt
-         /tXg==
-X-Gm-Message-State: AGi0Pua7/GGyRQjlkxa9GeQyafQQUkuUklpFVoao/FgeXP06/JQDaI0i
-        Q3cBRAuKAX7gVd6mBoCI2g==
-X-Google-Smtp-Source: APiQypI/fAJkeunIrrooBsca9jm5OufxdvNcX6Hy9olT8g0z8O/+ezwT5ubQzkvo5BteCx+UsEg1kA==
-X-Received: by 2002:a05:6808:a93:: with SMTP id q19mr26255041oij.6.1589337537668;
-        Tue, 12 May 2020 19:38:57 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y22sm5733356oih.57.2020.05.12.19.38.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 19:38:56 -0700 (PDT)
-Received: (nullmailer pid 29317 invoked by uid 1000);
-        Wed, 13 May 2020 02:38:55 -0000
-Date:   Tue, 12 May 2020 21:38:55 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Felix Fietkau <nbd@openwrt.org>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Fabien Parent <fparent@baylibre.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH 01/11] dt-bindings: add a binding document for MediaTek
- PERICFG controller
-Message-ID: <20200513023855.GA23714@bogus>
-References: <20200505140231.16600-1-brgl@bgdev.pl>
- <20200505140231.16600-2-brgl@bgdev.pl>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w05U4Ty4fjXvusSYkJgWcKh14hiK/1j5qmU3u7mm4Gk=;
+        b=hEqIdeF9zddXodoDEtB2FjYEW67fEhf/BkXbjter0TmtQPAnrJVyU2wc9h4J6AIeo+
+         Gnz6oJPyajANBxF5sx22J7q+MbebItUxkjbDnnz3d8rXpamGdPH7cNiW4XiUXVNVSsjX
+         nm2trciUdVkHoO2aHt6mkNYKj6Ctid67FSd+a3OCY3Vgwa3pgNmIaaBMA2/Ii4MeX5xa
+         S2SJh7ryRR3RtOpahtORZcPp37aJiEZYYs2yTs/tlnKyXnwJ0dzukMsvtZyKSWn63Cni
+         fXD4OV52gkO9HSPFXr9xtTRhWAaPspji5y0ZAlFCYt2SFrTQN2T5DRo+5sh8yE7BX3IB
+         SeBg==
+X-Gm-Message-State: AGi0PuZ5ivEBX3sXU3SSM3q8dgC1rdoSDcsNQ279U71U921VQ0QihmKv
+        WODr/Qnz7exfHuGcnOJc9kNimw==
+X-Google-Smtp-Source: APiQypKejIA0kmvj/Qz9PYOoadZzdtDminPHwnrVp5To0Q93DoZzo/+2d+BBBnoTnejQtKo4vIlOMw==
+X-Received: by 2002:aca:1007:: with SMTP id 7mr26354929oiq.139.1589337168640;
+        Tue, 12 May 2020 19:32:48 -0700 (PDT)
+Received: from [192.168.86.21] ([136.62.4.88])
+        by smtp.gmail.com with ESMTPSA id m189sm5841682oig.12.2020.05.12.19.32.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 May 2020 19:32:47 -0700 (PDT)
+Subject: Re: [PATCH 3/5] exec: Remove recursion from search_binary_handler
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>
+References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
+ <87sgga6ze4.fsf@x220.int.ebiederm.org>
+ <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
+ <87eerszyim.fsf_-_@x220.int.ebiederm.org>
+ <ee83587b-8a1c-3c4f-cc0f-7bc98afabae1@I-love.SAKURA.ne.jp>
+ <CAHk-=wgQ2ovXMW=5ZHCpowkE1PwPQSL7oV4YXzBxd6eqNRXxnQ@mail.gmail.com>
+ <87sgg6v8we.fsf@x220.int.ebiederm.org> <202005111428.B094E3B76A@keescook>
+ <874kslq9jm.fsf@x220.int.ebiederm.org>
+ <CAHk-=wjhmoGLcMgcDB0rT-n6waC+rdnjU3FRKAwSTMSG=gaK9Q@mail.gmail.com>
+From:   Rob Landley <rob@landley.net>
+Message-ID: <6f282d0a-b448-14e9-cd4f-92cce99cc36f@landley.net>
+Date:   Tue, 12 May 2020 21:39:29 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505140231.16600-2-brgl@bgdev.pl>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAHk-=wjhmoGLcMgcDB0rT-n6waC+rdnjU3FRKAwSTMSG=gaK9Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 04:02:21PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+
+
+On 5/12/20 7:20 PM, Linus Torvalds wrote:
+> On Tue, May 12, 2020 at 11:46 AM Eric W. Biederman
+> <ebiederm@xmission.com> wrote:
+>>
+>> I am still thinking about this one, but here is where I am at.  At a
+>> practical level passing the file descriptor of the script to interpreter
+>> seems like something we should encourage in the long term.  It removes
+>> races and it is cheaper because then the interpreter does not have to
+>> turn around and open the script itself.
 > 
-> This adds a binding document for the PERICFG controller present on
-> MediaTek SoCs. For now the only variant supported is 'mt8516-pericfg'.
+> Yeah, I think we should continue to support it, because I think it's
+> the right thing to do (and we might just end up having compatibility
+> issues if we don't).
+...
+>> It is possible although unlikely for userspace to find the file
+>> descriptor without consulting AT_EXECFD so just to be conservative I
+>> think we should install the file descriptor in begin_new_exec even if
+>> the next interpreter does not support AT_EXECFD.
 > 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> ---
->  .../arm/mediatek/mediatek,pericfg.yaml        | 34 +++++++++++++++++++
->  1 file changed, 34 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml
-> new file mode 100644
-> index 000000000000..74b2a6173ffb
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml
-> @@ -0,0 +1,34 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/arm/mediatek/mediatek,pericfg.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: MediaTek Peripheral Configuration Controller
-> +
-> +maintainers:
-> +  - Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
+> Ack. I think the AT_EXECFD thing is a sign that this isn't internal to
+> binfmt_misc, but it also shouldn't be gating this issue. In reality,
+> ELF is the only real binary format that matters - the script/misc
+> binfmts are just indirection entries - and it supports AT_EXECFD, so
+> let's just ignore the theoretical case of "maybe nobody exposes it".
 
-Don't need oneOf.
+Would this potentially make the re-exec-yourself case easier to do at some
+point? (Which nommu needs to do, and /proc/self/exe isn't always available.)
 
-> +      - items:
-> +        - enum:
-> +          - mediatek,pericfg
+Here's the first time I asked about that:
 
-PERICFG is exactly the same register set and functions on all Mediatek 
-SoCs? Needs to be more specific.
+https://lore.kernel.org/lkml/200612261823.07927.rob@landley.net/
 
-> +        - const: syscon
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    pericfg: pericfg@10003050 {
-> +        compatible = "mediatek,mt8516-pericfg", "syscon";
-> +        reg = <0 0x10003050 0 0x1000>;
+Here's the most recent:
 
-Default for examples is 1 cell for addr and size.
+https://lkml.org/lkml/2017/9/5/246
 
-> +    };
-> -- 
-> 2.25.0
-> 
+Here's someone else asking and being basically told "chroot isn't a thing":
+
+http://lkml.iu.edu/hypermail/linux/kernel/0906.3/00584.html
+
+(See also "CVE-2019-5736" and the workarounds thereto.)
+
+Rob
+
+P.S. Yes I'm aware it would only work properly with static binaries. Not the
+first thing that's true for.
