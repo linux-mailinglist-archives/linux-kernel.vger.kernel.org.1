@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C311D0DAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5541D0ED6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388167AbgEMJyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:54:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57334 "EHLO mail.kernel.org"
+        id S2388654AbgEMKC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 06:02:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388145AbgEMJyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:54:43 -0400
+        id S1733265AbgEMJtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:49:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5AE120575;
-        Wed, 13 May 2020 09:54:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6F1C20740;
+        Wed, 13 May 2020 09:49:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363683;
-        bh=D/OHGjWG5iBia2GQ7cUm3S82dMNWM303D0Udw57Ir4M=;
+        s=default; t=1589363375;
+        bh=eYBhrqBBMHguvSuJAyZXGOMVPTy3KnSYq6ZPfIEPdAw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d6YqttVILTRXLUyb5dpvpaCjLwJ/yD4k+EieWIZNjMs+XSesZhorg8z0PhqqaSr4v
-         wFvOid1zvfbJdQElbyOIePZmr0Qo6KSsf0A+NUds/A3CSz5suMFlq6+V+NhYStO4Vr
-         bgmf8bJCjNSpNCjKpgzf1aXEjRPOhjrpbkBuuXL8=
+        b=QpTIlMD3FtjEH4OkQ1kZux9ftC/+167RsI9k76Vl98cPn8kc4UmAFddtuyGpr3xIi
+         z1FZPMrs9vwpVYU8Q1lNEjYQb7I1jOcKkt+Lz6yUuK5twgwlGIeZqQusdzLYqNgq7v
+         k7bpi3FJzHQLXv1qPAQn+v122RGzTb7a+HvPlq74=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        stable@vger.kernel.org,
+        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
+        Joerg Roedel <jroedel@suse.de>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.6 066/118] tracing/kprobes: Reject new event if loc is NULL
+Subject: [PATCH 5.4 49/90] tracing: Add a vmalloc_sync_mappings() for safe measure
 Date:   Wed, 13 May 2020 11:44:45 +0200
-Message-Id: <20200513094423.696834738@linuxfoundation.org>
+Message-Id: <20200513094414.002896061@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
-References: <20200513094417.618129545@linuxfoundation.org>
+In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
+References: <20200513094408.810028856@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,48 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 5b4dcd2d201a395ad4054067bfae4a07554fbd65 upstream.
+commit 11f5efc3ab66284f7aaacc926e9351d658e2577b upstream.
 
-Reject the new event which has NULL location for kprobes.
-For kprobes, user must specify at least the location.
+x86_64 lazily maps in the vmalloc pages, and the way this works with per_cpu
+areas can be complex, to say the least. Mappings may happen at boot up, and
+if nothing synchronizes the page tables, those page mappings may not be
+synced till they are used. This causes issues for anything that might touch
+one of those mappings in the path of the page fault handler. When one of
+those unmapped mappings is touched in the page fault handler, it will cause
+another page fault, which in turn will cause a page fault, and leave us in
+a loop of page faults.
 
-Link: http://lkml.kernel.org/r/158779376597.6082.1411212055469099461.stgit@devnote2
+Commit 763802b53a42 ("x86/mm: split vmalloc_sync_all()") split
+vmalloc_sync_all() into vmalloc_sync_unmappings() and
+vmalloc_sync_mappings(), as on system exit, it did not need to do a full
+sync on x86_64 (although it still needed to be done on x86_32). By chance,
+the vmalloc_sync_all() would synchronize the page mappings done at boot up
+and prevent the per cpu area from being a problem for tracing in the page
+fault handler. But when that synchronization in the exit of a task became a
+nop, it caused the problem to appear.
 
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20200429054857.66e8e333@oasis.local.home
+
 Cc: stable@vger.kernel.org
-Fixes: 2a588dd1d5d6 ("tracing: Add kprobe event command generation functions")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Fixes: 737223fbca3b1 ("tracing: Consolidate buffer allocation code")
+Reported-by: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Suggested-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/trace/trace_kprobe.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/trace/trace.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -940,6 +940,9 @@ EXPORT_SYMBOL_GPL(kprobe_event_cmd_init)
-  * complete command or only the first part of it; in the latter case,
-  * kprobe_event_add_fields() can be used to add more fields following this.
-  *
-+ * Unlikely the synth_event_gen_cmd_start(), @loc must be specified. This
-+ * returns -EINVAL if @loc == NULL.
-+ *
-  * Return: 0 if successful, error otherwise.
-  */
- int __kprobe_event_gen_cmd_start(struct dynevent_cmd *cmd, bool kretprobe,
-@@ -953,6 +956,9 @@ int __kprobe_event_gen_cmd_start(struct
- 	if (cmd->type != DYNEVENT_TYPE_KPROBE)
- 		return -EINVAL;
- 
-+	if (!loc)
-+		return -EINVAL;
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -8318,6 +8318,19 @@ static int allocate_trace_buffers(struct
+ 	 */
+ 	allocate_snapshot = false;
+ #endif
 +
- 	if (kretprobe)
- 		snprintf(buf, MAX_EVENT_NAME_LEN, "r:kprobes/%s", name);
- 	else
++	/*
++	 * Because of some magic with the way alloc_percpu() works on
++	 * x86_64, we need to synchronize the pgd of all the tables,
++	 * otherwise the trace events that happen in x86_64 page fault
++	 * handlers can't cope with accessing the chance that a
++	 * alloc_percpu()'d memory might be touched in the page fault trace
++	 * event. Oh, and we need to audit all other alloc_percpu() and vmalloc()
++	 * calls in tracing, because something might get triggered within a
++	 * page fault trace event!
++	 */
++	vmalloc_sync_mappings();
++
+ 	return 0;
+ }
+ 
 
 
