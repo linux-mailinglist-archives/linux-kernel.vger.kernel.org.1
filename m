@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7781D1ED2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 21:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028001D1ED3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 21:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390610AbgEMTP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2390588AbgEMTP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 13 May 2020 15:15:58 -0400
-Received: from mail.kocurkovo.cz ([185.8.236.170]:54582 "EHLO
-        mail.kocurkovo.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732218AbgEMTP5 (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2390442AbgEMTP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 May 2020 15:15:57 -0400
+Received: from mail.kocurkovo.cz (unknown [IPv6:2a02:2b88:2:1::5b29:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D921AC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 12:15:56 -0700 (PDT)
 Received: by mail.kocurkovo.cz (Postfix, from userid 1000)
-        id D87FB18CA; Wed, 13 May 2020 21:15:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.kocurkovo.cz D87FB18CA
+        id A73B81D44; Wed, 13 May 2020 21:15:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.kocurkovo.cz A73B81D44
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kocurkovo.cz;
-        s=mail; t=1589397353;
-        bh=lauLfYuhKgqMV/K/CT1WEOxuKL5htIQBOBQSFXp9cGo=;
+        s=mail; t=1589397354;
+        bh=QJApaYVVjDV2ZABMuLXN+EsQlfEtvul5TQM0jLYTCcs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KQtAzF8lmAuT+aZCguzTnfUX6RuMPzoNDLsLPpTrZRfTjEJ2SXh0Y8trOFK3JxiVX
-         cteu7NRv3Sn39SBa7aHd3MAS5UPP/TZA7AK3xJDn0oQgxP0nfyfeChrfWJmIe9ffQs
-         U72xBlSFIsI1Mm3Yw/abKOy6539K0cdQO1bDFZmQ=
+        b=pjix9LRIvZi9HTHKf4BWi2D2O3Qt7Q8Q0+9yhAsAflKrmPGL+gXemnPV75KJ31oUb
+         cE1Wu42Uh1FJHT818WNb+qxYkzJ/QxgVlYNZc6gmz1scpViY1jObCM/PCj2EWvOdBm
+         EPC93Ugxaynw7oZa/BX97BRvzsOc8i31TmMWgbVw=
 From:   Matej Dujava <mdujava@kocurkovo.cz>
 To:     Forest Bond <forest@alittletooquiet.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         devel@driverdev.osuosl.org
 Cc:     Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
         linux-kernel@vger.kernel.org, Matej Dujava <mdujava@kocurkovo.cz>
-Subject: [PATCH v3 1/2] staging: vt6656: vt6655: removing unused macros definition Makefiles
-Date:   Wed, 13 May 2020 21:15:50 +0200
-Message-Id: <1589397351-24655-2-git-send-email-mdujava@kocurkovo.cz>
+Subject: [PATCH v3 2/2] staging: vt6655: vt6656: change order of makefile variable definitions
+Date:   Wed, 13 May 2020 21:15:51 +0200
+Message-Id: <1589397351-24655-3-git-send-email-mdujava@kocurkovo.cz>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1589397351-24655-1-git-send-email-mdujava@kocurkovo.cz>
 References: <1589397351-24655-1-git-send-email-mdujava@kocurkovo.cz>
@@ -39,12 +42,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is removing definition of CFLAGS in Makefile of vt6656 and
-vt6655, as those are defining macros that are not used. This will remove
-undef of one macro from vt6655/device_main.c, as it is only undef and it is
-not used anywhere else, so it is safe to remove it.
+This patch will add indentation to multiline variable and put
+obj-$(CONFIG_X) at the beginning of the file. This order of variables is
+used in other drives, so this will make vt665x Makefiles fit into the
+pattern.
 
-Macros are removed from vt665x/Makefile and vt6655/device_main.c.
+Indentation is fixed in vt6655/Makefile.
+
+Order of variable declaration is changed in vt6656/Makefile.
 
 Signed-off-by: Matej Dujava <mdujava@kocurkovo.cz>
 ---
@@ -52,47 +57,60 @@ v1: Initial patch
 v2: This patch was split from original bigger patch
 v3: Added more info about what and why it's removed
 
- drivers/staging/vt6655/Makefile      | 3 ---
- drivers/staging/vt6655/device_main.c | 1 -
- drivers/staging/vt6656/Makefile      | 3 ---
- 3 files changed, 7 deletions(-)
+ drivers/staging/vt6655/Makefile | 24 ++++++++++++------------
+ drivers/staging/vt6656/Makefile |  4 ++--
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/staging/vt6655/Makefile b/drivers/staging/vt6655/Makefile
-index a151f30fc46f..e70357ec0af8 100644
+index e70357ec0af8..eda08a1516ab 100644
 --- a/drivers/staging/vt6655/Makefile
 +++ b/drivers/staging/vt6655/Makefile
-@@ -1,7 +1,4 @@
+@@ -1,15 +1,15 @@
  # SPDX-License-Identifier: GPL-2.0
--# TODO: all of these should be removed
--ccflags-y := -DLINUX -D__KERNEL__ -D__NO_VERSION__
--ccflags-y += -DHOSTAP
  
- vt6655_stage-y +=	device_main.o \
- 	card.o \
-diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
-index 5889023d19c4..41cbec4134b0 100644
---- a/drivers/staging/vt6655/device_main.c
-+++ b/drivers/staging/vt6655/device_main.c
-@@ -32,7 +32,6 @@
-  *
-  * Revision History:
-  */
--#undef __NO_VERSION__
- 
- #include <linux/file.h>
- #include "device.h"
+-vt6655_stage-y +=	device_main.o \
+-	card.o \
+-	channel.o \
+-	mac.o \
+-	baseband.o \
+-	rxtx.o \
+-	dpc.o \
+-	power.o \
+-	srom.o \
+-	key.o \
+-	rf.o
+-
+ obj-$(CONFIG_VT6655) +=	vt6655_stage.o
++
++vt6655_stage-y +=	device_main.o \
++			card.o \
++			channel.o \
++			mac.o \
++			baseband.o \
++			rxtx.o \
++			dpc.o \
++			power.o \
++			srom.o \
++			key.o \
++			rf.o
 diff --git a/drivers/staging/vt6656/Makefile b/drivers/staging/vt6656/Makefile
-index a0f3862dea75..f696a9d7a143 100644
+index f696a9d7a143..aac323d6a684 100644
 --- a/drivers/staging/vt6656/Makefile
 +++ b/drivers/staging/vt6656/Makefile
-@@ -1,7 +1,4 @@
+@@ -1,5 +1,7 @@
  # SPDX-License-Identifier: GPL-2.0
--# TODO: all of these should be removed
--ccflags-y := -DLINUX -D__KERNEL__ -DEXPORT_SYMTAB -D__NO_VERSION__
--ccflags-y += -DHOSTAP
  
++obj-$(CONFIG_VT6656) +=	vt6656_stage.o
++
  vt6656_stage-y +=	main_usb.o \
  			card.o  \
+ 			mac.o   \
+@@ -11,5 +13,3 @@ vt6656_stage-y +=	main_usb.o \
+ 			rf.o \
+ 			usbpipe.o \
+ 			channel.o
+-
+-obj-$(CONFIG_VT6656) +=	vt6656_stage.o
 -- 
 2.26.2
 
