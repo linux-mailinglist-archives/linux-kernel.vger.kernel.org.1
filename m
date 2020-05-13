@@ -2,157 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 281311D0499
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF44A1D04E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728432AbgEMCFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 22:05:34 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4399 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726885AbgEMCFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 22:05:34 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 704C4BFD677722C6A282;
-        Wed, 13 May 2020 10:05:26 +0800 (CST)
-Received: from huawei.com (10.175.101.78) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Wed, 13 May 2020
- 10:05:16 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <b.zolnierkie@samsung.com>, <yangyingliang@huawei.com>
-Subject: [PATCH -next] vgacon: Fix an out-of-bounds in vgacon_scrollback_update()
-Date:   Wed, 13 May 2020 10:28:52 +0800
-Message-ID: <1589336932-35508-1-git-send-email-yangyingliang@huawei.com>
-X-Mailer: git-send-email 1.8.3
+        id S1728481AbgEMCaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 22:30:03 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:22550 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728245AbgEMCaC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 May 2020 22:30:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589337000;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iT2hW+HYXkczOFTWfJmASn4ajF5YSjXsGJSRKP6B8QY=;
+        b=CVOy29ssTBBUdBgXdE6VGpH7W+32DF86LhZcriuK6XUqjTXm0lLcpqLBfKGRGVxanBDBAP
+        M5xKKo6ucy8eMs3JiMePsGcmTRrOSBGCn9EY1prNu/9QwebPIFPE4I8JLIGRmWp0sC8DnO
+        AQGFIpIvZSkhqW9DlvuDICG8SwBEf8g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-281-EmZXlPFvPpqAhwBszIdqLA-1; Tue, 12 May 2020 22:29:56 -0400
+X-MC-Unique: EmZXlPFvPpqAhwBszIdqLA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 18B981005510;
+        Wed, 13 May 2020 02:29:53 +0000 (UTC)
+Received: from [10.72.13.188] (ovpn-13-188.pek2.redhat.com [10.72.13.188])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 189CC60BF1;
+        Wed, 13 May 2020 02:29:32 +0000 (UTC)
+Subject: Re: [PATCH RFC 00/15] Add VFIO mediated device support and IMS
+ support for the idxd driver.
+To:     Jason Gunthorpe <jgg@mellanox.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "megha.dey@linux.intel.com" <megha.dey@linux.intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Lin, Jing" <jing.lin@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+References: <AADFC41AFE54684AB9EE6CBC0274A5D19D8C5486@SHSMSX104.ccr.corp.intel.com>
+ <20200426191357.GB13640@mellanox.com> <20200426214355.29e19d33@x1.home>
+ <20200427115818.GE13640@mellanox.com> <20200427071939.06aa300e@x1.home>
+ <20200427132218.GG13640@mellanox.com>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D8E34AA@SHSMSX104.ccr.corp.intel.com>
+ <20200508204710.GA78778@otc-nc-03> <20200508231610.GO19158@mellanox.com>
+ <20200509000909.GA79981@otc-nc-03> <20200509122113.GP19158@mellanox.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <196b23b9-12f7-2fc2-5efb-22e0642c456a@redhat.com>
+Date:   Wed, 13 May 2020 10:29:31 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.78]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200509122113.GP19158@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got a slab-out-of-bounds report when I doing fuzz test.
 
-[  334.989515] ==================================================================
-[  334.989577] BUG: KASAN: slab-out-of-bounds in vgacon_scroll+0x57a/0x8ed
-[  334.989588] Write of size 1766 at addr ffff8883de69ff3e by task test/2658
-[  334.989593]
-[  334.989608] CPU: 3 PID: 2658 Comm: test Not tainted 5.7.0-rc5-00005-g152036d1379f #789
-[  334.989617] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
-[  334.989624] Call Trace:
-[  334.989646]  dump_stack+0xe4/0x14e
-[  334.989676]  print_address_description.constprop.5+0x3f/0x60
-[  334.989699]  ? vgacon_scroll+0x57a/0x8ed
-[  334.989710]  __kasan_report.cold.8+0x92/0xaf
-[  334.989735]  ? vgacon_scroll+0x57a/0x8ed
-[  334.989761]  kasan_report+0x37/0x50
-[  334.989789]  check_memory_region+0x1c1/0x1e0
-[  334.989806]  memcpy+0x38/0x60
-[  334.989824]  vgacon_scroll+0x57a/0x8ed
-[  334.989876]  con_scroll+0x4ef/0x5e0
-[  334.989904]  ? lockdep_hardirqs_on+0x5e0/0x5e0
-[  334.989934]  lf+0x24f/0x2a0
-[  334.989951]  ? con_scroll+0x5e0/0x5e0
-[  334.989975]  ? find_held_lock+0x33/0x1c0
-[  334.990005]  do_con_trol+0x313/0x5ff0
-[  334.990027]  ? lock_downgrade+0x730/0x730
-[  334.990045]  ? reset_palette+0x440/0x440
-[  334.990070]  ? _raw_spin_unlock_irqrestore+0x4b/0x60
-[  334.990095]  ? notifier_call_chain+0x120/0x170
-[  334.990132]  ? __atomic_notifier_call_chain+0xf0/0x180
-[  334.990160]  do_con_write.part.16+0xb2b/0x1b20
-[  334.990238]  ? do_con_trol+0x5ff0/0x5ff0
-[  334.990258]  ? mutex_lock_io_nested+0x1280/0x1280
-[  334.990269]  ? rcu_read_unlock+0x50/0x50
-[  334.990315]  ? __mutex_unlock_slowpath+0xd9/0x670
-[  334.990340]  ? lockdep_hardirqs_on+0x3a2/0x5e0
-[  334.990368]  con_write+0x36/0xc0
-[  334.990389]  do_output_char+0x561/0x780
-[  334.990414]  n_tty_write+0x58e/0xd30
-[  334.990478]  ? n_tty_read+0x1800/0x1800
-[  334.990500]  ? prepare_to_wait_exclusive+0x300/0x300
-[  334.990525]  ? __might_fault+0x17a/0x1c0
-[  334.990557]  tty_write+0x430/0x960
-[  334.990568]  ? n_tty_read+0x1800/0x1800
-[  334.990600]  ? tty_release+0x1280/0x1280
-[  334.990622]  __vfs_write+0x81/0x100
-[  334.990648]  vfs_write+0x1ce/0x510
-[  334.990676]  ksys_write+0x104/0x200
-[  334.990691]  ? __ia32_sys_read+0xb0/0xb0
-[  334.990708]  ? trace_hardirqs_on_thunk+0x1a/0x1c
-[  334.990725]  ? trace_hardirqs_off_caller+0x40/0x1a0
-[  334.990744]  ? do_syscall_64+0x3b/0x5e0
-[  334.990775]  do_syscall_64+0xc8/0x5e0
-[  334.990798]  entry_SYSCALL_64_after_hwframe+0x49/0xb3
-[  334.990811] RIP: 0033:0x44f369
-[  334.990827] Code: 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-[  334.990834] RSP: 002b:00007ffe9ace0968 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-[  334.990848] RAX: ffffffffffffffda RBX: 0000000000400418 RCX: 000000000044f369
-[  334.990856] RDX: 0000000000000381 RSI: 0000000020003500 RDI: 0000000000000003
-[  334.990865] RBP: 00007ffe9ace0980 R08: 0000000020003530 R09: 00007ffe9ace0980
-[  334.990873] R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000402110
-[  334.990881] R13: 0000000000000000 R14: 00000000006bf018 R15: 0000000000000000
-[  334.990937]
-[  334.990943] The buggy address belongs to the page:
-[  334.990962] page:ffffea000f79a400 refcount:1 mapcount:0 mapping:000000002bff47b3 index:0x0 head:ffffea000f79a400 order:4 compound_mapcount:0 compound_pincount:0
-[  334.990973] flags: 0x2fffff80010000(head)
-[  334.990992] raw: 002fffff80010000 dead000000000100 dead000000000122 0000000000000000
-[  334.991006] raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
-[  334.991013] page dumped because: kasan: bad access detected
-[  334.991017]
-[  334.991023] Memory state around the buggy address:
-[  334.991034]  ffff8883de6a0000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  334.991044]  ffff8883de6a0080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  334.991054] >ffff8883de6a0100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 fc fc
-[  334.991061]                                                              ^
-[  334.991071]  ffff8883de6a0180: fc fc fc fc fc fc 00 00 00 00 00 00 00 00 00 00
-[  334.991082]  ffff8883de6a0200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  334.991088] ==================================================================
+On 2020/5/9 下午8:21, Jason Gunthorpe wrote:
+> On Fri, May 08, 2020 at 05:09:09PM -0700, Raj, Ashok wrote:
+>> Hi Jason
+>>
+>> On Fri, May 08, 2020 at 08:16:10PM -0300, Jason Gunthorpe wrote:
+>>> On Fri, May 08, 2020 at 01:47:10PM -0700, Raj, Ashok wrote:
+>>>
+>>>> Even when uaccel was under development, one of the options
+>>>> was to use VFIO as the transport, goal was the same i.e to keep
+>>>> the user space have one interface.
+>>> I feel a bit out of the loop here, uaccel isn't in today's kernel is
+>>> it? I've heard about it for a while, it sounds very similar to RDMA,
+>>> so I hope they took some of my advice...
+>> I think since 5.7 maybe? drivers/misc/uacce. I don't think this is like
+>> RDMA, its just a plain accelerator. There is no connection management,
+>> memory registration or other things.. IB was my first job at Intel,
+>> but saying that i would be giving my age away:)
+> rdma was the first thing to do kernel bypass, all this stuff is like
+> rdma at some level.. I see this looks like the 'warp driver' stuff
+> redone
+>
+> Wow, lots wrong here. Oh well.
+>
+>>> putting emulation code back into them, except in a more dangerous
+>>> kernel location. This does not seem like a net win to me.
+>> Its not a whole lot of emulation right? mdev are soft partitioned. There is
+>> just a single PF, but we can create a separate partition for the guest using
+>> PASID along with the normal BDF (RID). And exposing a consistent PCI like
+>> interface to user space you get everything else for free.
+>>
+>> Yes, its not SRIOV, but giving that interface to user space via VFIO, we get
+>> all of that functionality without having to reinvent a different way to do it.
+>>
+>> vDPA went the other way, IRC, they went and put a HW implementation of what
+>> virtio is in hardware. So they sort of fit the model. Here the instance
+>> looks and feels like real hardware for the setup and control aspect.
+> VDPA and this are very similar, of course it depends on the exact HW
+> implementation.
+>
+> Jason
 
-Because vgacon_scrollback_cur->tail plus memcpy size is greater than
-vgacon_scrollback_cur->size. Fix this by checking the memcpy size.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/video/console/vgacon.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+Actually this is not a must. Technically we can do ring/descriptor 
+translation in the vDPA driver as what zerocopy AF_XDP did.
 
-diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
-index 998b0de1812f..b51ffb9a208d 100644
---- a/drivers/video/console/vgacon.c
-+++ b/drivers/video/console/vgacon.c
-@@ -243,6 +243,7 @@ static void vgacon_scrollback_startup(void)
- static void vgacon_scrollback_update(struct vc_data *c, int t, int count)
- {
- 	void *p;
-+	int size;
- 
- 	if (!vgacon_scrollback_cur->data || !vgacon_scrollback_cur->size ||
- 	    c->vc_num != fg_console)
-@@ -251,13 +252,17 @@ static void vgacon_scrollback_update(struct vc_data *c, int t, int count)
- 	p = (void *) (c->vc_origin + t * c->vc_size_row);
- 
- 	while (count--) {
-+		size = vgacon_scrollback_cur->size - vgacon_scrollback_cur->tail;
-+		if (size > c->vc_size_row)
-+			size = c->vc_size_row;
-+
- 		scr_memcpyw(vgacon_scrollback_cur->data +
- 			    vgacon_scrollback_cur->tail,
--			    p, c->vc_size_row);
-+			    p, size);
- 
- 		vgacon_scrollback_cur->cnt++;
--		p += c->vc_size_row;
--		vgacon_scrollback_cur->tail += c->vc_size_row;
-+		p += size;
-+		vgacon_scrollback_cur->tail += size;
- 
- 		if (vgacon_scrollback_cur->tail >= vgacon_scrollback_cur->size)
- 			vgacon_scrollback_cur->tail = 0;
--- 
-2.17.1
+Thanks
+
+
+>
 
