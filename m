@@ -2,159 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E001D1367
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1ADE1D1361
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733084AbgEMM4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 08:56:21 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38522 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1733058AbgEMM4S (ORCPT
+        id S1733012AbgEMM4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 08:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728413AbgEMM4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 08:56:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589374576;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rg6JkW5pd+D3Jw1ike2ImD0WSry7w4HYlBO089Hj5fo=;
-        b=beYiwgydbZMA0AdjWKt6NwgSpHan2RIwTJiPK4lmXuGaNjbrlJyeldpelSjprOEEF2S7Ys
-        CBHTaaw9+QSnS7jA2bfXqMliVNL9+z+bk/j0o9riaCao4BqWw1cN52N9wRvN4+4jcFNudC
-        GSutHiECzbgZ9KO2A08PdN7qTMyFo6w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-294-IKGYLsVMMAyDhyUHlrG70w-1; Wed, 13 May 2020 08:56:13 -0400
-X-MC-Unique: IKGYLsVMMAyDhyUHlrG70w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6BE4F108BD0B;
-        Wed, 13 May 2020 12:56:11 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (ovpn-113-165.phx2.redhat.com [10.3.113.165])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 52B9C2E033;
-        Wed, 13 May 2020 12:56:02 +0000 (UTC)
-Date:   Wed, 13 May 2020 08:56:00 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, linux-kernel@vger.kernel.org,
-        ouwen210@hotmail.com, pkondeti@codeaurora.org
-Subject: Re: [PATCH v2] sched/fair: fix unthrottle_cfs_rq for leaf_cfs_rq list
-Message-ID: <20200513125600.GC12425@lorien.usersys.redhat.com>
-References: <20200513123422.28299-1-vincent.guittot@linaro.org>
+        Wed, 13 May 2020 08:56:08 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608D6C061A0C;
+        Wed, 13 May 2020 05:56:08 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id v12so20721753wrp.12;
+        Wed, 13 May 2020 05:56:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:content-language
+         :thread-index;
+        bh=ZvYSZy3tRiVgGxrommSRZgzj0zZx86esquo5YSSVJlY=;
+        b=LjeYk2vBbDldv/l0KEP5R9hh4MAw6ge/KdKd8X0nOXljYjeod0jstszKttwSCs0GNI
+         RbGxIV3nrqL/lTXMpPgoyBbT+GWmzCCnGjE9h6atSQDwdgnUU0uzd3nvnE3A/B9ndH2V
+         6KdsApABnSxKLH9gVNi3GVRIu29vbSd47LO8c1xLSFytwEvBF6RW6vFu4lTnc0Nqf81m
+         oKk0whIebq60H5qwEa4CMrVtT5pNiFEBC8/QUPMz6O+0BQpVhFaSTsN7hu6vDlXIim62
+         qgB//W9iEtH/PZLSOVBkAxZcSOmYPz4H3sruJdc11TXpd5yyw/UeA8MFmf4BzkFOpo5V
+         qRcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
+         :message-id:mime-version:content-transfer-encoding:content-language
+         :thread-index;
+        bh=ZvYSZy3tRiVgGxrommSRZgzj0zZx86esquo5YSSVJlY=;
+        b=YuurCNbZvgWIUre/xLr88FauMGlQtCYUFZwiKd5NNRAre3gYS6RqOFxmtA51VQQJUx
+         9J0fIWhNe5RTZMy/pXsoZTWfuyJP7rwFzYtnQEVnXH+eEEoQfxS2MrMwzI1NWBffpexJ
+         Y1c5/GsW2ddNzlZHbMdjW+oNmcWcPe9KGY+208rEQQvS5JsHVIaxaxtF60sBW7cz8vY/
+         hxTucXEZq2y4KGAjR8kNYc9Sy9sX/SMdzeuYGyyHDhjtDV6rve7qQ4NA8SJelPKdWD46
+         pgVoYgntFGUDsJUSSqH9vj/rUqJrNUIP4BmU5MBMWqs69WM5uyA7NriSTCVDfxM1J/3u
+         NVdA==
+X-Gm-Message-State: AGi0PuZyRFp+UcW03c3aNTp9zMQFsLXd84fFNltVE9u935pSqgUpoY38
+        YEhPCV4ITZNuKms5bXD07fQ=
+X-Google-Smtp-Source: APiQypJY2NANe8ct5IeGA83GoQ+oOMnFGXo9dSTJfF15HLlU84+nNZU2dVYmm3RJ3HYsgtQf2PxiYQ==
+X-Received: by 2002:adf:93a3:: with SMTP id 32mr19914479wrp.124.1589374566990;
+        Wed, 13 May 2020 05:56:06 -0700 (PDT)
+Received: from AnsuelXPS (host122-89-dynamic.247-95-r.retail.telecomitalia.it. [95.247.89.122])
+        by smtp.gmail.com with ESMTPSA id e5sm24239142wro.3.2020.05.13.05.56.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 13 May 2020 05:56:06 -0700 (PDT)
+From:   <ansuelsmth@gmail.com>
+To:     "'Stanimir Varbanov'" <svarbanov@mm-sol.com>,
+        "'Rob Herring'" <robh@kernel.org>
+Cc:     "'Bjorn Andersson'" <bjorn.andersson@linaro.org>,
+        "'Andy Gross'" <agross@kernel.org>,
+        "'Bjorn Helgaas'" <bhelgaas@google.com>,
+        "'Mark Rutland'" <mark.rutland@arm.com>,
+        "'Lorenzo Pieralisi'" <lorenzo.pieralisi@arm.com>,
+        "'Andrew Murray'" <amurray@thegoodpenguin.co.uk>,
+        "'Philipp Zabel'" <p.zabel@pengutronix.de>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200430220619.3169-1-ansuelsmth@gmail.com> <20200430220619.3169-9-ansuelsmth@gmail.com> <20200507181044.GA15159@bogus> <062301d624a6$8be610d0$a3b23270$@gmail.com> <20200512154544.GA823@bogus> <99f42001-0f41-5e63-f6ad-2e744ec86d36@mm-sol.com>
+In-Reply-To: <99f42001-0f41-5e63-f6ad-2e744ec86d36@mm-sol.com>
+Subject: R: R: [PATCH v3 08/11] devicetree: bindings: pci: document PARF params bindings
+Date:   Wed, 13 May 2020 14:56:03 +0200
+Message-ID: <02e001d62925$dca9e9a0$95fdbce0$@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513123422.28299-1-vincent.guittot@linaro.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain;
+        charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: it
+Thread-Index: AQH0plL6ngkayUAAEEU7BifA9vEwhgIhhTlHAlRDbrkC9wKkJgJCaswEAWN8iguoEGkfMA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
-
-On Wed, May 13, 2020 at 02:34:22PM +0200 Vincent Guittot wrote:
-> Although not exactly identical, unthrottle_cfs_rq() and enqueue_task_fair()
-> are quite close and follow the same sequence for enqueuing an entity in the
-> cfs hierarchy. Modify unthrottle_cfs_rq() to use the same pattern as
-> enqueue_task_fair(). This fixes a problem already faced with the latter and
-> add an optimization in the last for_each_sched_entity loop.
+> On 5/12/20 6:45 PM, Rob Herring wrote:
+> > On Thu, May 07, 2020 at 09:34:35PM +0200, ansuelsmth@gmail.com
+> wrote:
+> >>> On Fri, May 01, 2020 at 12:06:15AM +0200, Ansuel Smith wrote:
+> >>>> It is now supported the editing of Tx De-Emphasis, Tx Swing and
+> >>>> Rx equalization params on ipq8064. Document this new optional
+> params.
+> >>>>
+> >>>> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> >>>> ---
+> >>>>  .../devicetree/bindings/pci/qcom,pcie.txt     | 36
+> +++++++++++++++++++
+> >>>>  1 file changed, 36 insertions(+)
+> >>>>
+> >>>> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.txt
+> >>> b/Documentation/devicetree/bindings/pci/qcom,pcie.txt
+> >>>> index 6efcef040741..8cc5aea8a1da 100644
+> >>>> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.txt
+> >>>> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.txt
+> >>>> @@ -254,6 +254,42 @@
+> >>>>  			- "perst-gpios"	PCIe endpoint reset signal line
+> >>>>  			- "wake-gpios"	PCIe endpoint wake signal line
+> >>>>
+> >>>> +- qcom,tx-deemph-gen1:
+> >>>> +	Usage: optional (available for ipq/apq8064)
+> >>>> +	Value type: <u32>
+> >>>> +	Definition: Gen1 De-emphasis value.
+> >>>> +		    For ipq806x should be set to 24.
+> >>>
+> >>> Unless these need to be tuned per board, then the compatible string
+> for
+> >>> ipq806x should imply all these settings.
+> >>>
+> >>
+> >> It was requested by v2 to make this settings tunable. These don't change
+> are
+> >> all the same for every ipq806x SoC. The original implementation had this
+> >> value hardcoded for ipq806x. Should I restore this and drop this patch?
+> >
+> > Yes, please.
 > 
-> Reported-by Tao Zhou <zohooouoto@zoho.com.cn>
-> Reviewed-by: Phil Auld <pauld@redhat.com>
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
+> I still think that the values for tx deemph and tx swing should be
+> tunable. But I can live with them in the driver if they not break
+> support for apq8064.
 > 
-> v2 changes:
-> - Remove useless if statement
+> The default values in the registers for apq8064 and ipq806x are:
 > 
->  kernel/sched/fair.c | 41 ++++++++++++++++++++++++++++++-----------
->  1 file changed, 30 insertions(+), 11 deletions(-)
+> 			default		your change
+> TX_DEEMPH_GEN1		21		24
+> TX_DEEMPH_GEN2_3_5DB	21		24
+> TX_DEEMPH_GEN2_6DB	32		34
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 4e12ba882663..a0c690d57430 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4816,26 +4816,44 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
->  	idle_task_delta = cfs_rq->idle_h_nr_running;
->  	for_each_sched_entity(se) {
->  		if (se->on_rq)
-> -			enqueue = 0;
-
-Can probably drop the now-unused enqueue variable too.
-
-
-Cheers,
-Phil
-
-
-
-> +			break;
-> +		cfs_rq = cfs_rq_of(se);
-> +		enqueue_entity(cfs_rq, se, ENQUEUE_WAKEUP);
->  
-> +		cfs_rq->h_nr_running += task_delta;
-> +		cfs_rq->idle_h_nr_running += idle_task_delta;
-> +
-> +		/* end evaluation on encountering a throttled cfs_rq */
-> +		if (cfs_rq_throttled(cfs_rq))
-> +			goto unthrottle_throttle;
-> +	}
-> +
-> +	for_each_sched_entity(se) {
->  		cfs_rq = cfs_rq_of(se);
-> -		if (enqueue) {
-> -			enqueue_entity(cfs_rq, se, ENQUEUE_WAKEUP);
-> -		} else {
-> -			update_load_avg(cfs_rq, se, 0);
-> -			se_update_runnable(se);
-> -		}
-> +
-> +		update_load_avg(cfs_rq, se, UPDATE_TG);
-> +		se_update_runnable(se);
->  
->  		cfs_rq->h_nr_running += task_delta;
->  		cfs_rq->idle_h_nr_running += idle_task_delta;
->  
-> +
-> +		/* end evaluation on encountering a throttled cfs_rq */
->  		if (cfs_rq_throttled(cfs_rq))
-> -			break;
-> +			goto unthrottle_throttle;
-> +
-> +		/*
-> +		 * One parent has been throttled and cfs_rq removed from the
-> +		 * list. Add it back to not break the leaf list.
-> +		 */
-> +		if (throttled_hierarchy(cfs_rq))
-> +			list_add_leaf_cfs_rq(cfs_rq);
->  	}
->  
-> -	if (!se)
-> -		add_nr_running(rq, task_delta);
-> +	/* At this point se is NULL and we are at root level*/
-> +	add_nr_running(rq, task_delta);
->  
-> +unthrottle_throttle:
->  	/*
->  	 * The cfs_rq_throttled() breaks in the above iteration can result in
->  	 * incomplete leaf list maintenance, resulting in triggering the
-> @@ -4844,7 +4862,8 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
->  	for_each_sched_entity(se) {
->  		cfs_rq = cfs_rq_of(se);
->  
-> -		list_add_leaf_cfs_rq(cfs_rq);
-> +		if (list_add_leaf_cfs_rq(cfs_rq))
-> +			break;
->  	}
->  
->  	assert_list_leaf_cfs_rq(rq);
-> -- 
-> 2.17.1
+> TX_SWING_FULL		121		120
+> TX_SWING_LOW		121		120
+> 
+> So until now (without your change) apq8064 worked with default values.
 > 
 
--- 
+I will limit this to ipq8064(-v2) if this could be a problem.
+
+> >
+> > Rob
+> >
+> 
+> --
+> regards,
+> Stan
 
