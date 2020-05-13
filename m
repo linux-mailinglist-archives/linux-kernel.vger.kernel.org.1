@@ -2,115 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1358B1D20F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CBB1D2115
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729229AbgEMVZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:25:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728341AbgEMVZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:25:32 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02A9120693;
-        Wed, 13 May 2020 21:25:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589405132;
-        bh=jycA+VHeU/fcuDEk+08oeZlp+rfDD0wO1CCwDXKTgCs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yv/nqBozvT81+uOIvowsGAwB+C6wCVSZzE4RTQtDOelNwytDn4S/SQWGWL5s6BrkI
-         ovIVQffFNazxGnZ3QpY/GRGX5WpzTAyAQgCThRB7hqmVR6JD+iyPaYoJveEGL0RY92
-         Emy/E5oAhSGM0G3PRYSeNnGCZvkdRDHF+UIrIJYo=
-Date:   Wed, 13 May 2020 16:30:07 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Melo <arnaldo.melo@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH] perf tools: Replace zero-length array with flexible-array
-Message-ID: <20200513213007.GP4897@embeddedor>
-References: <20200511195643.GA9850@embeddedor>
- <0C076F02-CEB7-4DBC-8337-CCEBC0870E44@gmail.com>
- <20200512000404.GA4897@embeddedor>
- <20200512080607.GD2978@hirez.programming.kicks-ass.net>
- <20200512180352.GB4897@embeddedor>
- <CAP-5=fWOhnKe1-c39Pg9M14Yet7U1jRvPpKxa7N2A6JSXLRe=Q@mail.gmail.com>
+        id S1728991AbgEMVbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 17:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728718AbgEMVbC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 17:31:02 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22803C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:31:02 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id b6so1256713ljj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:31:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a9uxH9jWM4mVXVshrpkeyF8BGnOgX348uy7Ps74S7eg=;
+        b=aRWb+5j2c0aj7XE/Ves+oxeniLbg9iIlAhIISgisDu4/eSB4ZqiQChimWhZ3HGmpXc
+         WURsi4vQsfpLvwdxw48T+IKK3N3RHlcICKOh0WF+PdpzfdqqwZRnpP58vzupTR6G/YQE
+         +W2WNCd8Q2g8DzMsJfTHYCusqlCnF6z7F6xI08HQcPxEArZKRpsln8LhTN4/Y+arbix4
+         FG1Zzq6Pt/0WAkmITpHuJNS0uzYebUiOObQU2AvZmOlMDGv7wLn9fdA/myV38leDpvRh
+         RgCBVn6nTg4EncSiLHEB3dt1Zw2fDc+C2feriU/z5QgP8e0hzNCLZvfX0iCSt+a8bKWP
+         7fwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a9uxH9jWM4mVXVshrpkeyF8BGnOgX348uy7Ps74S7eg=;
+        b=bjEPZBO6NufxKFE7V+t/FZdeF3e4jznN989qTJF+Mv8ZXuuUq0ZFsLri9Jrt1r+TrG
+         HyGlEBrpnAvEh8792SZjZux3SKmabebJpp4l8ClKjzv77PI7zFqlQvGvIoHZj2Ty3HZk
+         awLOSF6OQiJNFQBJCvT0TCqQgTwSV+Sxl5yTLPE1EDcNmvnlfnz9te6uKhIV6pXA+bNw
+         2d2U2jOVaKdJ2ByVgSzkTSjzraw6w+fTeQ2/i/jgNroQ5oI76MVfEjlenKPBzzOqfzjN
+         IkSmg8j5KhIFdCfdPQDumwzB3qUbRBzpQsIWmkoR1Ft4Xo7iTOjNPs86bDHG9tm0uKDH
+         rrcw==
+X-Gm-Message-State: AOAM531YZPITCfa4KkBM2ndEZ1REcdv0xv80DAbWBhl7KMIpGArU8+9O
+        k3swMj/7A0lczHzL5xP2sn9W1zo0i7ruvyjwUA2O9A==
+X-Google-Smtp-Source: ABdhPJw4IyIFesqGpLpxuKkqi5G3Abd0+9YLqr/XEd7oHtLUyW3ygmOr1Oo0CkhpszrDBkrmRzqTZ4cXhjM85UjglsA=
+X-Received: by 2002:a2e:9b45:: with SMTP id o5mr646235ljj.33.1589405460384;
+ Wed, 13 May 2020 14:31:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fWOhnKe1-c39Pg9M14Yet7U1jRvPpKxa7N2A6JSXLRe=Q@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200513151840.36400-1-heikki.krogerus@linux.intel.com>
+In-Reply-To: <20200513151840.36400-1-heikki.krogerus@linux.intel.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Wed, 13 May 2020 14:30:49 -0700
+Message-ID: <CAFd5g44d+VCSimjboPkf-NF1eCdbq6Uy+pabNftB8p5Lj2yc1A@mail.gmail.com>
+Subject: Re: [PATCH] kobject: Make sure the parent does not get released
+ before its children
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 02:03:56PM -0700, Ian Rogers wrote:
-> On Tue, May 12, 2020 at 10:59 AM Gustavo A. R. Silva
-> <gustavoars@kernel.org> wrote:
-> >
-> > On Tue, May 12, 2020 at 10:06:07AM +0200, Peter Zijlstra wrote:
-> > > On Mon, May 11, 2020 at 07:04:04PM -0500, Gustavo A. R. Silva wrote:
-> > > > On Mon, May 11, 2020 at 05:20:08PM -0300, Arnaldo Melo wrote:
-> > > > >
-> > > > > Thanks, applied
-> > > > >
-> > > >
-> > > > Thanks, Arnaldo.
-> > > >
-> > > > I wonder if could also take the other two:
-> > > >
-> > > > https://lore.kernel.org/lkml/20200511200911.GA13149@embeddedor/
-> > > > https://lore.kernel.org/lkml/20200511201227.GA14041@embeddedor/
-> > >
-> > > I think I have those, but let me make sure.
-> >
-> > Great. :)
-> 
-> 
-> Thanks for the cleanup! It has yielded a clang compiler warning/error
-> for me in kernel/git/acme/linux.git branch perf/core:
-> 
-> util/intel-pt.c:1802:24: error: field 'br_stack' with variable sized
-> type 'struct branch_stack' not
-> at the end of a struct or class is a GNU extension
-> [-Werror,-Wgnu-variable-sized-type-not-at-end]
->                        struct branch_stack br_stack;
-> 
-> I think this can be resolved by reordering the members of the struct,
-> and may have been a latent bug exposed by this change. It's
-> unfortunate it has broken this build.
-> 
+On Wed, May 13, 2020 at 8:18 AM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> In the function kobject_cleanup(), kobject_del(kobj) is
+> called before the kobj->release(). That makes it possible to
+> release the parent of the kobject before the kobject itself.
+>
+> To fix that, adding function __kboject_del() that does
+> everything that kobject_del() does except release the parent
+> reference. kobject_cleanup() then calls __kobject_del()
+> instead of kobject_del(), and separately decrements the
+> reference count of the parent kobject after kobj->release()
+> has been called.
+>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> Fixes: 7589238a8cf3 ("Revert "software node: Simplify software_node_release() function"")
+> Cc: Brendan Higgins <brendanhiggins@google.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Suggested-by: "Rafael J. Wysocki" <rafael@kernel.org>
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Yep. The following should resolve the issue:
-
-diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-index f17b1e769ae4..b34179e3926f 100644
---- a/tools/perf/util/intel-pt.c
-+++ b/tools/perf/util/intel-pt.c
-@@ -1799,8 +1799,8 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
-
-        if (sample_type & PERF_SAMPLE_BRANCH_STACK) {
-                struct {
--                       struct branch_stack br_stack;
-                        struct branch_entry entries[LBRS_MAX];
-+                       struct branch_stack br_stack;
-                } br;
-
-                if (items->mask[INTEL_PT_LBR_0_POS] ||
-
-I'll send a proper patch.
-
-Thanks for the report!
---
-Gustavo
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
