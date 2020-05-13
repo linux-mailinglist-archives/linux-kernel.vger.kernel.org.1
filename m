@@ -2,165 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898AE1D17A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932E31D17B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389003AbgEMOcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 10:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37012 "EHLO
+        id S2389014AbgEMOfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 10:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728345AbgEMOcM (ORCPT
+        with ESMTP id S2388857AbgEMOfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 10:32:12 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6B2C061A0C;
-        Wed, 13 May 2020 07:32:12 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id l11so15250501wru.0;
-        Wed, 13 May 2020 07:32:12 -0700 (PDT)
+        Wed, 13 May 2020 10:35:54 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FD2C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 07:35:54 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id n17so14388054ejh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 07:35:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=e5l1ivHxvrs1cxo8s+YGVNADN8Rkef6bb/X9HBvnEUo=;
-        b=jYfhdyXMvfikdAmp4t94kn7Oqc+gcUglu6kotXtK7pCKoEZcxVf+D/gfJXZgnlA3tY
-         VcjpeS5YBLgOvzR5lH8nd8xcxAdRH5J/1H+Rx0YuTlUz/0uGIY6A8YBpL08huizZsKAk
-         pQTiCU//78OYtJbklytYh8aNf58msaMeP+CHrBi+IMPVFrxmNPRXvWfqUONnqkYrCTX6
-         gvaFx+iNa4Fpv9gfJJ9qbT4HuW1APNIdtSjeNhLXuUCQ+UFiSiHNQBRrDklcXRcQBRGJ
-         /WFHn0p2Cbgl8iZvetZyCwySHcma/dxORA0r5kTxv83q873p1+IsAj4VwSbTtPefwDf3
-         YB4g==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AlqVC8u4P9PNkoT8l8vMpZfu06Dmj3nts225WoeRAJA=;
+        b=ZLQrV0nneosBHj+7xCc5egcsUtP65O31+mSG+ARmurEXovdMccDV3mFX15VNW2ByBl
+         QO4llNH+5o4bhlXHKGm0KbtQIJ3+Z1GRZSWSE/M5qV65RflL1tf78xgJe7A4rE8M2qJW
+         ntHk1Z/Jd+55anPZ9E0wqcCyq8rnGIdyrGqTGORajq8YkayNJ1XuO7h7NgQSoAkFP2kL
+         53h0HrwXoZrsg4DB33/bqlCSIQpB1aGOnaVpTfwGrZn5FWoDCoYsCyy0fvL07HZwXNkI
+         zWPvp6MiCgszDsuRdhpk8HEMAcRwTIKiMTPgV4iJvA0Jsw7VqEDejipUKNQjiekb3m9P
+         cGrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=e5l1ivHxvrs1cxo8s+YGVNADN8Rkef6bb/X9HBvnEUo=;
-        b=NSmjupiqijJ80+6a8Ea4qMLwQbBq7WYzG9Dz5oqKAq+4LKyq/rsM2+AOP0XMRbMTqF
-         Rz/LCrQGpLIzqpAFnf4JlR0F06F20T4IshIzSpbsZuaiECZJJz+I2qXWwIfEZshNusWh
-         1DR9+G/UpomfwnByFoMX8vZOWbVQpputrV28JiSiSlS+35/dDR/KFHsSgIgKrxQzgWC+
-         FQf0NHO2IYb/lpZNN5+Zt+xWxxvp5t/PjP1xuta881AVuLZdXYP9nL+yEreXzLQkk8EY
-         YBGL4I+FKxFSwwEBbn5EhT3kNUhw6hYO7ZC8y6Bmm3jKPUj5BqySmmdsh0ZaOLpoW97D
-         IQcA==
-X-Gm-Message-State: AGi0PuYRzq65n0Ttg6JigwUqsEu9fUV+4BmZZDlVz0Y6QfBO4xoqoPDO
-        AsU8gVwaRWS4nugXo/VimeI=
-X-Google-Smtp-Source: APiQypLALuA0r2EITrx0jgdNwC0QL/EE50fO/i1b1frjQJxz76h8l1YXSRVhSmv9cyqfKw97a8V3XQ==
-X-Received: by 2002:adf:ee03:: with SMTP id y3mr29782517wrn.190.1589380330471;
-        Wed, 13 May 2020 07:32:10 -0700 (PDT)
-Received: from localhost (ipv6-fd0e7292a9d5c758.ost.clients.hamburg.freifunk.net. [2a03:2267:4:0:fd0e:7292:a9d5:c758])
-        by smtp.gmail.com with ESMTPSA id b2sm25212812wrm.30.2020.05.13.07.32.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 May 2020 07:32:09 -0700 (PDT)
-From:   Oliver Graute <oliver.graute@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, oliver.graute@gmail.com,
-        Oliver Graute <oliver.graute@kococonnector.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] staging: fbtft: fb_st7789v: Initialize the Display
-Date:   Wed, 13 May 2020 16:30:46 +0200
-Message-Id: <1589380299-21871-1-git-send-email-oliver.graute@gmail.com>
-X-Mailer: git-send-email 2.7.4
-X-Patchwork-Bot: notify
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AlqVC8u4P9PNkoT8l8vMpZfu06Dmj3nts225WoeRAJA=;
+        b=eQ3889xW7kKR+HbGzmR6XDBXHK48kyRXVcARgAgfpLbtMta2NNVpKZa3WhWjsp9LxF
+         L2Z1q3i/AT2aXe4pCbcelG+djVm/y25VhU99439a0jOuu8umpfH8D3bg0B3vxGPCzAu/
+         px3h69ZSSVs6GKadEzxmfOkoCcFVxrdbDEHKZCyYiGxerX57AB9F9PyhA+oW4f6PsQ1e
+         cUrnotZfRg0UOC5r1+ZGm2ntjXhjrN+TCW2oMgn7EZrxKaqM4TsOOLk0ghNNgvm08F9a
+         eR9B3M0Aobxjyci8nfsBxJCFQSh7XDc3Z2pQuyzT3g1wP12vA6ZzTi9X3EGWXiBm1HRm
+         y/Vw==
+X-Gm-Message-State: AGi0Pua/KAsAukF754IA2+dXCOGGmR+91W8caYHocPTJvO4ioD1XzlL7
+        2yX0rqaynrWpcD2oPQeDE38TIPvd1isUPQGlBeDU1w==
+X-Google-Smtp-Source: APiQypKK6WVF7jNOMbzOYGstLdxFuP03Og914DSw6UgaUl3VURf6RhYpE2KLwj09JfmwrN8oLKW+BCRRSdYt8gBuuKw=
+X-Received: by 2002:a17:906:404d:: with SMTP id y13mr23435201ejj.43.1589380552850;
+ Wed, 13 May 2020 07:35:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200506211523.15077-1-keescook@chromium.org> <20200512131655.GE17734@linux-b0ei>
+ <CA+CK2bBMUxxuTBicQ7ihKpN3jK94mMjcNCXhnAXUaODce09Wmw@mail.gmail.com>
+ <20200512155207.GF17734@linux-b0ei> <202005121111.6BECC45@keescook>
+ <20200513073448.GG7340@linux-b0ei> <202005130045.EF013D12E@keescook>
+In-Reply-To: <202005130045.EF013D12E@keescook>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 13 May 2020 10:35:16 -0400
+Message-ID: <CA+CK2bAPv5u1ih5y9t5FUnTyximtFCtDYXJCpuyjOyHNOkRdqw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/6] allow ramoops to collect all kmesg_dump events
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Petr Mladek <pmladek@suse.com>, Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        James Morris <jmorris@namei.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Graute <oliver.graute@kococonnector.com>
+> >   + reason: panic, oops, emergency, shutdown    (ordered by severity)
+> >   + handling: restart, halt, poweroff
+> >
+> > Or we might just replace KMSG_DUMP_RESTART, KMSG_DUMP_HALT,
+> > KMSG_DUMP_POWEROFF with a single KMSG_DUMP_SHUTDOWN.
+> >
+> > Then the max reason variable would make sense.
+>
+> That would work for me, yeah. Pavel, is that enough granularity for you?
+>
 
-Set Gamma Values and Register Values for the HSD20_IPS Panel
+Yes, I like the second approach: where we combine all shutdown type
+events into a single type.
+max_reason will have 4 levels:
 
-Signed-off-by: Oliver Graute <oliver.graute@kococonnector.com>
----
+   KMSG_DUMP_PANIC,
+   KMSG_DUMP_OOPS,
+   KMSG_DUMP_EMERG,
+   KMSG_DUMP_SHUTDOWN,
 
-need information howto set HSD20_IPS Panel at run time and not at compile time
+If needed it is possible to determine from dmesg logs what kind of
+shutdown was taken, because there is a message logged right before
+every kmsg_dump() for these events:
 
-Changes for v2:
- - added define for HSD20_IPS_GAMMA values
- - check for HSD20_IPS define
- - enabled MIPI_DCS_ENTER_INVERT_MODE
+249   if (!cmd)
+250   pr_emerg("Restarting system\n");
+251   else
+252   pr_emerg("Restarting system with command '%s'\n", cmd);
+253   kmsg_dump(KMSG_DUMP_RESTART);
 
- drivers/staging/fbtft/fb_st7789v.c | 32 +++++++++++++++++++++++++-----
- 1 file changed, 27 insertions(+), 5 deletions(-)
+276   pr_emerg("System halted\n");
+277   kmsg_dump(KMSG_DUMP_HALT);
 
-diff --git a/drivers/staging/fbtft/fb_st7789v.c b/drivers/staging/fbtft/fb_st7789v.c
-index 3c3f387936e8..ebc17e05ecd0 100644
---- a/drivers/staging/fbtft/fb_st7789v.c
-+++ b/drivers/staging/fbtft/fb_st7789v.c
-@@ -20,6 +20,12 @@
- 	"70 2C 2E 15 10 09 48 33 53 0B 19 18 20 25\n" \
- 	"70 2C 2E 15 10 09 48 33 53 0B 19 18 20 25"
- 
-+#define HSD20_IPS_GAMMA \
-+	"D0 05 0A 09 08 05 2E 44 45 0F 17 16 2B 33\n" \
-+	"D0 05 0A 09 08 05 2E 43 45 0F 16 16 2B 33"
-+
-+#define HSD20_IPS "true"
-+
- /**
-  * enum st7789v_command - ST7789V display controller commands
-  *
-@@ -82,14 +88,20 @@ static int init_display(struct fbtft_par *par)
- 
- 	/* set pixel format to RGB-565 */
- 	write_reg(par, MIPI_DCS_SET_PIXEL_FORMAT, MIPI_DCS_PIXEL_FMT_16BIT);
-+	if (HSD20_IPS)
-+		write_reg(par, PORCTRL, 0x05, 0x05, 0x00, 0x33, 0x33);
- 
--	write_reg(par, PORCTRL, 0x08, 0x08, 0x00, 0x22, 0x22);
-+	else
-+		write_reg(par, PORCTRL, 0x08, 0x08, 0x00, 0x22, 0x22);
- 
- 	/*
- 	 * VGH = 13.26V
- 	 * VGL = -10.43V
- 	 */
--	write_reg(par, GCTRL, 0x35);
-+	if (HSD20_IPS)
-+		write_reg(par, GCTRL, 0x75);
-+	else
-+		write_reg(par, GCTRL, 0x35);
- 
- 	/*
- 	 * VDV and VRH register values come from command write
-@@ -101,13 +113,19 @@ static int init_display(struct fbtft_par *par)
- 	 * VAP =  4.1V + (VCOM + VCOM offset + 0.5 * VDV)
- 	 * VAN = -4.1V + (VCOM + VCOM offset + 0.5 * VDV)
- 	 */
--	write_reg(par, VRHS, 0x0B);
-+	if (HSD20_IPS)
-+		write_reg(par, VRHS, 0x13);
-+	else
-+		write_reg(par, VRHS, 0x0B);
- 
- 	/* VDV = 0V */
- 	write_reg(par, VDVS, 0x20);
- 
- 	/* VCOM = 0.9V */
--	write_reg(par, VCOMS, 0x20);
-+	if (HSD20_IPS)
-+		write_reg(par, VCOMS, 0x22);
-+	else
-+		write_reg(par, VCOMS, 0x20);
- 
- 	/* VCOM offset = 0V */
- 	write_reg(par, VCMOFSET, 0x20);
-@@ -120,6 +138,10 @@ static int init_display(struct fbtft_par *par)
- 	write_reg(par, PWCTRL1, 0xA4, 0xA1);
- 
- 	write_reg(par, MIPI_DCS_SET_DISPLAY_ON);
-+
-+	if (HSD20_IPS)
-+		write_reg(par, MIPI_DCS_ENTER_INVERT_MODE);
-+
- 	return 0;
- }
- 
-@@ -234,7 +256,7 @@ static struct fbtft_display display = {
- 	.height = 320,
- 	.gamma_num = 2,
- 	.gamma_len = 14,
--	.gamma = DEFAULT_GAMMA,
-+	.gamma = HSD20_IPS_GAMMA,
- 	.fbtftops = {
- 		.init_display = init_display,
- 		.set_var = set_var,
--- 
-2.17.1
+294   pr_emerg("Power down\n");
+295   kmsg_dump(KMSG_DUMP_POWEROFF);
 
+Kees, I will submit a new series with these changes soon.
+
+Thank you,
+Pasha
