@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 409441D112D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2EF1D1110
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732879AbgEMLV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 07:21:27 -0400
-Received: from elvis.franken.de ([193.175.24.41]:52007 "EHLO elvis.franken.de"
+        id S1732718AbgEMLTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 07:19:36 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:49857 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732841AbgEMLVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 07:21:25 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jYpRu-000588-01; Wed, 13 May 2020 13:21:18 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 67175C0482; Wed, 13 May 2020 13:19:07 +0200 (CEST)
-Date:   Wed, 13 May 2020 13:19:07 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Hauke Mehrtens <hauke@hauke-m.de>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        "Maciej W. Rozycki" <macro@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        John Crispin <john@phrozen.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Keguang Zhang <keguang.zhang@gmail.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        James Hartley <james.hartley@sondrel.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] MIPS: Only include the platform file needed
-Message-ID: <20200513111907.GB7151@alpha.franken.de>
-References: <20200509230150.24466-1-tsbogend@alpha.franken.de>
+        id S1732494AbgEMLTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 07:19:35 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49MXJ53164z9sRY;
+        Wed, 13 May 2020 21:19:33 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1589368773;
+        bh=eWXDkhnWVrgQrvJzbOKavg/ZXftnGTRT+CHjp0w9y4c=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PwsWXKh2Oq3KES5JPiZrO3cQSmcC78JU1uINFKOnmDpTNiiS24cn/WRPaQwu969Mj
+         yeSkTeW/HZDaHUvmsMxp+5Gs8cmS6tf/G5IzCRCNLAwMYCa5VtwQVTXpKWHdGPAyDq
+         ZI9Lv3hlRcSio3G7XalLEaCeXteee1f0KiaG63ZWWo99d8qJoS+XE1Hbp0vov+3It3
+         RNYn5BPCuYIMBEdBkKsYOijbUErVfzwJvlV+o+OKeWp55PswZ6SbHZ5GKl2Nxr6HEm
+         UHSyev95XwkF5BrnqhLXhZGAz/mfF4xmCtt6kuokG3p4od/3eTqLKnxImVBHihDrhV
+         pZ9CR1Ne9RxBg==
+Date:   Wed, 13 May 2020 21:19:25 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the risc-v-fixes
+ tree
+Message-ID: <20200513211925.030deeec@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200509230150.24466-1-tsbogend@alpha.franken.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: multipart/signed; boundary="Sig_/lke1ECv8QHlbEL7MyVShD6S";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 10, 2020 at 01:01:47AM +0200, Thomas Bogendoerfer wrote:
-> Instead of including all Platform files, we simply include the
-> needed one and avoid clashes with makefile variables.
-> 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
->  arch/mips/Kbuild.platforms       | 73 +++++++++++++++++++++-------------------
->  arch/mips/alchemy/Platform       |  3 --
->  arch/mips/ar7/Platform           |  1 -
->  arch/mips/ath25/Platform         |  1 -
->  arch/mips/ath79/Platform         |  1 -
->  arch/mips/bcm47xx/Platform       |  1 -
->  arch/mips/bcm63xx/Platform       |  1 -
->  arch/mips/bmips/Platform         |  1 -
->  arch/mips/cavium-octeon/Platform |  1 -
->  arch/mips/cobalt/Platform        |  1 -
->  arch/mips/dec/Platform           |  1 -
->  arch/mips/generic/Platform       |  1 -
->  arch/mips/jazz/Platform          |  1 -
->  arch/mips/jz4740/Platform        |  1 -
->  arch/mips/lantiq/Platform        |  1 -
->  arch/mips/loongson2ef/Platform   |  1 -
->  arch/mips/loongson32/Platform    |  1 -
->  arch/mips/loongson64/Platform    |  1 -
->  arch/mips/mti-malta/Platform     |  1 -
->  arch/mips/netlogic/Platform      |  1 -
->  arch/mips/paravirt/Platform      |  1 -
->  arch/mips/pic32/Platform         |  1 -
->  arch/mips/pistachio/Platform     |  1 -
->  arch/mips/pnx833x/Platform       |  1 -
->  arch/mips/rb532/Platform         |  1 -
->  arch/mips/sgi-ip22/Platform      |  2 --
->  arch/mips/sgi-ip27/Platform      |  3 --
->  arch/mips/sgi-ip30/Platform      |  3 --
->  arch/mips/sgi-ip32/Platform      |  1 -
->  arch/mips/sibyte/Platform        |  4 ---
->  arch/mips/sni/Platform           |  1 -
->  arch/mips/txx9/Platform          |  3 --
->  32 files changed, 39 insertions(+), 77 deletions(-)
+--Sig_/lke1ECv8QHlbEL7MyVShD6S
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-applied to mips-next.
+Hi all,
 
-Thomas.
+Commit
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+  e2d8d84b18c3 ("riscv: pgtable: Fix __kernel_map_pages build error if NOMM=
+U")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/lke1ECv8QHlbEL7MyVShD6S
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl67170ACgkQAVBC80lX
+0GwsxQgAiWwyPXyiCqVGv2q0S4mfSM86oQKC6zZDvQV0WFRe1Hpsfbjc/GzQgN0n
+R1Q6cImOgO1PQ2qEcNb1IR5Z1xNgKkrhRwIt/UG2BQ1sEVp9fcpxXMzYdgtCclqG
+ilgyrk1tn8RyAUTYA5vmM9rAhB6fk/8Wm/hQM2YphKfFrYuHejdpxwfpVLPhs7zF
+2jKQhtN95xp0VuUqzWMnyUieDBWQjICfofoYu2GVIw/VYJg9XrHlPZmMEY1l03cZ
+QTpAxkuF6SxWaTghEEk/llAhfF0zO/ibDcc4b6PeEwg0tCrzglvh3VeFqDbAjjR2
+k3BzS61g4o0Gd1sKwUF+ObauuTfOhg==
+=B34t
+-----END PGP SIGNATURE-----
+
+--Sig_/lke1ECv8QHlbEL7MyVShD6S--
