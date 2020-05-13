@@ -2,86 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC2C1D0D14
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E00E1D0D24
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387434AbgEMJuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:50:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387418AbgEMJt6 (ORCPT
+        id S2387525AbgEMJuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:50:37 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:35056 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732803AbgEMJue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:49:58 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B76C061A0C;
-        Wed, 13 May 2020 02:49:58 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id u10so6618558pls.8;
-        Wed, 13 May 2020 02:49:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vI1HSpo7JSbwTRD9lhLBPGbReloovre1TONkkWI4K8s=;
-        b=cI5NR0Fmf0b3v4RmzfC93mlJjUuGrnz+wojY6kn0wMKI0CqhzbAaR68zlAPTfc8dlv
-         nEo440GlsOwFtHLvmIwgjuS3b21nqoISVskSnOTWHvxRLJrdNWFj6QMTmLmtSrHcvII1
-         f21gkgvPL17ChZSaMzaeZarWmyda5FX9Kr5ukmdzmNBgSSse2lehTc0Ks5vhNtVA0/mE
-         9rpVuAwhTwRu4icbbs7byMez/Yo1v+A11a88VyXl7uI1WJZAZarE356ybl82sEjjXRZ5
-         8G2lnX/haRNYHv8EmMYC+JvmoyXtaKWUhedE/OBMwOR4zYnDyClehHQNyZI5AqEinVaV
-         sbng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vI1HSpo7JSbwTRD9lhLBPGbReloovre1TONkkWI4K8s=;
-        b=abcJAl2ciZe1+rQEyAm0KavHP1h120wmdnahsKjDU0VQBCwljrm1YKMih15GGmO2+a
-         c7R0Kf83OWxOinsJ9d5XKvy6Lk71Q0gh/vkFn0l/AAgCoGuBBBQaYzmwEwUq35jyEkX+
-         A/K1hqw9CYUdf/qzC6qyb99FzXbUoZOcUI/S+7YDqJc9OlPO0r5VBZa5qAohxE0C/4zq
-         siNy7fNGlXCV97TBLUy8p78m7QX34FXVn1LcepyvpF2iyiONLIOJE2U8267SUxooOyQ3
-         N49vO+Cobfgxc/h+36PZ1m3IiNhsmxXtjS8A5mPmRyZNkqA6ToillKlRjzmIwLeFJSv2
-         Dicw==
-X-Gm-Message-State: AGi0PuY445Iqi3v54nG6GlPWwD83cdT77UbY982OxGpObje+WDxxM48Z
-        +rFP3uvnUOvmTtc1Kf6fZRg292nUgMyxPkTWFAo=
-X-Google-Smtp-Source: APiQypKJ0EhcKN4EMwA2AMwX12EH/qNwRgFeDBPkHlJLKVpoAB7ilzcQdSoNb7EilT7ycg/niDjp4WWhY8w/d/sAxM4=
-X-Received: by 2002:a17:90b:3717:: with SMTP id mg23mr34645016pjb.129.1589363398238;
- Wed, 13 May 2020 02:49:58 -0700 (PDT)
+        Wed, 13 May 2020 05:50:34 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04D9oLng128304;
+        Wed, 13 May 2020 04:50:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589363421;
+        bh=hYJrqFqxOZldiuTXDyZ85es/GhABW0MVidKFOlcmr6o=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=mEvy7ECNG8Vto3uFzSjltSPQwZieKkX2ecTXo/WCk7kzwlC64gITO7ZaPeitZIiDV
+         cnvzXHsEHZpSt11Sa7Xw0yz3uYsznCt4QtrN2EwrWsvOD7RH8U+ZI9ZiR3VAa8av3G
+         sOrBGDx8ybCNH79VqojtM+VMdOuTQ5T6uHk4+sYw=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04D9oLWW072378
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 May 2020 04:50:21 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 13
+ May 2020 04:50:21 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 13 May 2020 04:50:21 -0500
+Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04D9oHsn096634;
+        Wed, 13 May 2020 04:50:19 -0500
+Subject: Re: [PATCH v3 0/2] Misc. rproc fixes around fixed memory region
+ support
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Suman Anna <s-anna@ti.com>
+CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Loic Pallardy <loic.pallardy@st.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200420160600.10467-1-s-anna@ti.com>
+ <181b6c56-420c-f306-f2cf-53380ad1f37b@ti.com>
+ <0a2aa179-9a97-003d-d682-283a8c354ea7@ti.com>
+ <20200512231022.GC16107@builder.lan>
+From:   Tero Kristo <t-kristo@ti.com>
+Message-ID: <cb6f76cb-1188-75e1-5986-718d7609ed7c@ti.com>
+Date:   Wed, 13 May 2020 12:50:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <1589361736-816-1-git-send-email-jprakash@codeaurora.org> <1589361736-816-5-git-send-email-jprakash@codeaurora.org>
-In-Reply-To: <1589361736-816-5-git-send-email-jprakash@codeaurora.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 13 May 2020 12:49:51 +0300
-Message-ID: <CAHp75Vex+hm2pVat_VVH5gAqPDbm-VQMes56wC=RUcQeM=z7vA@mail.gmail.com>
-Subject: Re: [PATCH V4 4/5] iio: adc: Update error checks and debug prints
-To:     Jishnu Prakash <jprakash@codeaurora.org>
-Cc:     agross@kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        smohanad@codeaurora.org, kgunda@codeaurora.org,
-        aghayal@codeaurora.org, Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-arm-msm@vger.kernel.org,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-arm-msm-owner@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200512231022.GC16107@builder.lan>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 12:23 PM Jishnu Prakash <jprakash@codeaurora.org> wrote:
->
-> Change pr_err/pr_debug statements to dev_err/dev_dbg for
-> increased clarity. Also clean up some return value checks.
+On 13/05/2020 02:10, Bjorn Andersson wrote:
+> On Fri 08 May 08:14 PDT 2020, Suman Anna wrote:
+> 
+>> Hi Bjorn,
+>>
+>> On 5/2/20 1:29 PM, Suman Anna wrote:
+>>> Hi Bjorn,
+>>>
+>>> On 4/20/20 11:05 AM, Suman Anna wrote:
+>>>> Hi Bjorn,
+>>>>
+>>>> This is another minor revision of the fixes around fixed memory region
+>>>> support [1] series. Patch 1 is revised to go back to the logic used in v1
+>>>> after a long discussion on the v2 version [2]. The other suggestions can
+>>>> be future improvments as they would require corresponding platform driver
+>>>> changes. Please look through the discussion there and let us know your
+>>>> preference. Patches are based on v5.7-rc1.
+>>>>
+>>>> I really appreciate it if you can target the series for the current
+>>>> 5.7 -rc's.
+>>>> The fixes would apply for all 5.1+ kernels.
+>>>
+>>> Ping on these.
+>>
+>> The patches have been reviewed and/or acked by both Mathieu and Arnaud.
+> 
+> Thanks for the reviews!
+> 
+>> Can you please get these into the current -rc's?
+>>
+> 
+> The offending patch appeared in 5.1, so I have a hard time claiming that
+> this is a regression in 5.7-rc. I've added Cc: stable and picked the two
+> patches for 5.8.
 
-'Also' on the commit message == 'split this to two'.
-But here is a ping pong style of patches (you introduce a problem in
-one patch and fix it in the following).
+Thanks Bjorn,
 
--- 
-With Best Regards,
-Andy Shevchenko
+I believe 5.8 should be fine, we can backport this internally if needed.
+
+-Tero
+
+> 
+> Thanks,
+> Bjorn
+> 
+>> Thanks,
+>> Suman
+>>
+>>>
+>>> regards
+>>> Suman
+>>>
+>>>>
+>>>> Please see the v1 cover-letter [1] for the details on the issues.
+>>>>
+>>>> regards
+>>>> Suman
+>>>>
+>>>> [1] https://patchwork.kernel.org/cover/11422723/
+>>>> [2] https://patchwork.kernel.org/comment/23274389/
+>>>>
+>>>> Suman Anna (1):
+>>>>     remoteproc: Fix and restore the parenting hierarchy for vdev
+>>>>
+>>>> Tero Kristo (1):
+>>>>     remoteproc: Fall back to using parent memory pool if no dedicated
+>>>>       available
+>>>>
+>>>>    drivers/remoteproc/remoteproc_core.c   |  2 +-
+>>>>    drivers/remoteproc/remoteproc_virtio.c | 12 ++++++++++++
+>>>>    2 files changed, 13 insertions(+), 1 deletion(-)
+>>>>
+>>>
+>>
+
+--
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
