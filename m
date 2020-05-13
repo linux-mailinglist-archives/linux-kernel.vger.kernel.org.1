@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9F31D0F03
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E94271D0EFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388665AbgEMKEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 06:04:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46406 "EHLO mail.kernel.org"
+        id S1732435AbgEMJsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:48:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733006AbgEMJsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:48:09 -0400
+        id S1733017AbgEMJsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:48:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 218C620740;
-        Wed, 13 May 2020 09:48:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FC9E20769;
+        Wed, 13 May 2020 09:48:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363288;
-        bh=IDIvI+1772k1Od1sxCmC/aHtQx79JKNpyEUnrjOlVXI=;
+        s=default; t=1589363291;
+        bh=1zvD0OnGxIN8keCRL0TYLwEP8jE3c9haru81x4zAZxA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0WARAdSQ2lATN6aYv7FEby3Hu4PMinMsQgftIkwJgv8k1xVbDLwA2j2wXuQFDNZKe
-         HGRfuccdNyEdK8WgkIpC1nfuA4JoJ22H51+EV1aSGgrtm994/fruqQTppyxrdR7Egz
-         FF22kDMqu/ItzpQKo3qPwd3DDL8MbGNq2wxNNLJs=
+        b=qNrKnejjC2E0zLe97zeV3UcH2Gvpr3Blb6xF0sFJiE+u8QQsWCtXSDf3PmCFEQnW8
+         wI7BvNjfw1auwMWI2F2atmmu1OPzv9/hsJe684373Euy+vTwDX7qNAcmJPzisDt1MV
+         EfGFNubfab42qf6+HnEyg6+M/KcYHFQ+hshNi36k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Pirko <jiri@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
+        stable@vger.kernel.org, David Ahern <dsahern@gmail.com>,
+        Roman Mashak <mrv@mojatatu.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 14/90] mlxsw: spectrum_acl_tcam: Position vchunk in a vregion list properly
-Date:   Wed, 13 May 2020 11:44:10 +0200
-Message-Id: <20200513094410.465523372@linuxfoundation.org>
+Subject: [PATCH 5.4 15/90] neigh: send protocol value in neighbor create notification
+Date:   Wed, 13 May 2020 11:44:11 +0200
+Message-Id: <20200513094410.529071389@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
 References: <20200513094408.810028856@linuxfoundation.org>
@@ -44,53 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Pirko <jiri@mellanox.com>
+From: Roman Mashak <mrv@mojatatu.com>
 
-[ Upstream commit 6ef4889fc0b3aa6ab928e7565935ac6f762cee6e ]
+[ Upstream commit 38212bb31fe923d0a2c6299bd2adfbb84cddef2a ]
 
-Vregion helpers to get min and max priority depend on the correct
-ordering of vchunks in the vregion list. However, the current code
-always adds new chunk to the end of the list, no matter what the
-priority is. Fix this by finding the correct place in the list and put
-vchunk there.
+When a new neighbor entry has been added, event is generated but it does not
+include protocol, because its value is assigned after the event notification
+routine has run, so move protocol assignment code earlier.
 
-Fixes: 22a677661f56 ("mlxsw: spectrum: Introduce ACL core with simple TCAM implementation")
-Signed-off-by: Jiri Pirko <jiri@mellanox.com>
-Signed-off-by: Ido Schimmel <idosch@mellanox.com>
+Fixes: df9b0e30d44c ("neighbor: Add protocol attribute")
+Cc: David Ahern <dsahern@gmail.com>
+Signed-off-by: Roman Mashak <mrv@mojatatu.com>
+Reviewed-by: David Ahern <dsahern@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c |   12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ net/core/neighbour.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
-@@ -986,8 +986,9 @@ mlxsw_sp_acl_tcam_vchunk_create(struct m
- 				unsigned int priority,
- 				struct mlxsw_afk_element_usage *elusage)
- {
-+	struct mlxsw_sp_acl_tcam_vchunk *vchunk, *vchunk2;
- 	struct mlxsw_sp_acl_tcam_vregion *vregion;
--	struct mlxsw_sp_acl_tcam_vchunk *vchunk;
-+	struct list_head *pos;
- 	int err;
- 
- 	if (priority == MLXSW_SP_ACL_TCAM_CATCHALL_PRIO)
-@@ -1025,7 +1026,14 @@ mlxsw_sp_acl_tcam_vchunk_create(struct m
+--- a/net/core/neighbour.c
++++ b/net/core/neighbour.c
+@@ -1954,6 +1954,9 @@ static int neigh_add(struct sk_buff *skb
+ 				   NEIGH_UPDATE_F_OVERRIDE_ISROUTER);
  	}
  
- 	mlxsw_sp_acl_tcam_rehash_ctx_vregion_changed(vregion);
--	list_add_tail(&vchunk->list, &vregion->vchunk_list);
++	if (protocol)
++		neigh->protocol = protocol;
 +
-+	/* Position the vchunk inside the list according to priority */
-+	list_for_each(pos, &vregion->vchunk_list) {
-+		vchunk2 = list_entry(pos, typeof(*vchunk2), list);
-+		if (vchunk2->priority > priority)
-+			break;
-+	}
-+	list_add_tail(&vchunk->list, pos);
- 	mutex_unlock(&vregion->lock);
+ 	if (ndm->ndm_flags & NTF_EXT_LEARNED)
+ 		flags |= NEIGH_UPDATE_F_EXT_LEARNED;
  
- 	return vchunk;
+@@ -1967,9 +1970,6 @@ static int neigh_add(struct sk_buff *skb
+ 		err = __neigh_update(neigh, lladdr, ndm->ndm_state, flags,
+ 				     NETLINK_CB(skb).portid, extack);
+ 
+-	if (protocol)
+-		neigh->protocol = protocol;
+-
+ 	neigh_release(neigh);
+ 
+ out:
 
 
