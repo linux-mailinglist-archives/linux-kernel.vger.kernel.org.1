@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F181D0D88
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EB81D0C98
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388012AbgEMJxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:53:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55898 "EHLO mail.kernel.org"
+        id S1732574AbgEMJqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:46:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733061AbgEMJxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:53:47 -0400
+        id S1726492AbgEMJqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:46:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58056205ED;
-        Wed, 13 May 2020 09:53:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6691720753;
+        Wed, 13 May 2020 09:46:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363626;
-        bh=+feFlMH+aRpu3ZqDbPLETijhIkIBmj5Z97hvv1TLdeA=;
+        s=default; t=1589363163;
+        bh=0QOzYPBYJcT+FoFtXF0SFF7Km3E2Ug+EeUE4jgl4fLw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eVLP1ueKtIC3HEtMi+Hj3VH61h/VdZ/qpX5PRcWvj8GJQbwlE9A8yGH0egnuDC6An
-         AQnZAxxlSyQmo0l5HLCapfXuNPpWDN/kp0kY+EKQS+omlTU+Eu3pE/phJ9J+beTnau
-         lJXmvMfOgkwhoE5Vc0uzFjHpkRffC97X5nSExA6A=
+        b=m8NlDofhX9a4NDlaXYknC2a51JNMtX/lqXG5xr2BeIZXPgWlt3ukk0WKoMOc/EEhH
+         pQx6sroy4IGTLnQQuOY3ylZxzuOY+4F4Hnfl1UhZNyyN3Cv8XhaDeuwc66E5LcnEA2
+         LC2fsBNWRfIqaNUjm+lhwdxifVgTK+PpMBtzOU0I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gerecke <jason.gerecke@wacom.com>,
-        Aaron Armstrong Skomra <aaron.skomra@wacom.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 5.6 059/118] Revert "HID: wacom: generic: read the number of expected touches on a per collection basis"
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>,
+        Tuong Lien <tuong.t.lien@dektech.com.au>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 12/48] tipc: fix partial topology connection closure
 Date:   Wed, 13 May 2020 11:44:38 +0200
-Message-Id: <20200513094422.171935594@linuxfoundation.org>
+Message-Id: <20200513094354.704448534@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
-References: <20200513094417.618129545@linuxfoundation.org>
+In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
+References: <20200513094351.100352960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,172 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gerecke <killertofu@gmail.com>
+From: Tuong Lien <tuong.t.lien@dektech.com.au>
 
-commit b43f977dd281945960c26b3ef67bba0fa07d39d9 upstream.
+[ Upstream commit 980d69276f3048af43a045be2925dacfb898a7be ]
 
-This reverts commit 15893fa40109f5e7c67eeb8da62267d0fdf0be9d.
+When an application connects to the TIPC topology server and subscribes
+to some services, a new connection is created along with some objects -
+'tipc_subscription' to store related data correspondingly...
+However, there is one omission in the connection handling that when the
+connection or application is orderly shutdown (e.g. via SIGQUIT, etc.),
+the connection is not closed in kernel, the 'tipc_subscription' objects
+are not freed too.
+This results in:
+- The maximum number of subscriptions (65535) will be reached soon, new
+subscriptions will be rejected;
+- TIPC module cannot be removed (unless the objects  are somehow forced
+to release first);
 
-The referenced commit broke pen and touch input for a variety of devices
-such as the Cintiq Pro 32. Affected devices may appear to work normally
-for a short amount of time, but eventually loose track of actual touch
-state and can leave touch arbitration enabled which prevents the pen
-from working. The commit is not itself required for any currently-available
-Bluetooth device, and so we revert it to correct the behavior of broken
-devices.
+The commit fixes the issue by closing the connection if the 'recvmsg()'
+returns '0' i.e. when the peer is shutdown gracefully. It also includes
+the other unexpected cases.
 
-This breakage occurs due to a mismatch between the order of collections
-and the order of usages on some devices. This commit tries to read the
-contact count before processing events, but will fail if the contact
-count does not occur prior to the first logical finger collection. This
-is the case for devices like the Cintiq Pro 32 which place the contact
-count at the very end of the report.
-
-Without the contact count set, touches will only be partially processed.
-The `wacom_wac_finger_slot` function will not open any slots since the
-number of contacts seen is greater than the expectation of 0, but we will
-still end up calling `input_mt_sync_frame` for each finger anyway. This
-can cause problems for userspace separate from the issue currently taking
-place in the kernel. Only once all of the individual finger collections
-have been processed do we finally get to the enclosing collection which
-contains the contact count. The value ends up being used for the *next*
-report, however.
-
-This delayed use of the contact count can cause the driver to loose track
-of the actual touch state and believe that there are contacts down when
-there aren't. This leaves touch arbitration enabled and prevents the pen
-from working. It can also cause userspace to incorrectly treat single-
-finger input as gestures.
-
-Link: https://github.com/linuxwacom/input-wacom/issues/146
-Signed-off-by: Jason Gerecke <jason.gerecke@wacom.com>
-Reviewed-by: Aaron Armstrong Skomra <aaron.skomra@wacom.com>
-Fixes: 15893fa40109 ("HID: wacom: generic: read the number of expected touches on a per collection basis")
-Cc: stable@vger.kernel.org # 5.3+
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Acked-by: Ying Xue <ying.xue@windriver.com>
+Signed-off-by: Tuong Lien <tuong.t.lien@dektech.com.au>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/hid/wacom_wac.c |   79 +++++++++---------------------------------------
- 1 file changed, 16 insertions(+), 63 deletions(-)
+ net/tipc/topsrv.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/hid/wacom_wac.c
-+++ b/drivers/hid/wacom_wac.c
-@@ -2637,9 +2637,25 @@ static void wacom_wac_finger_pre_report(
- 			case HID_DG_TIPSWITCH:
- 				hid_data->last_slot_field = equivalent_usage;
- 				break;
-+			case HID_DG_CONTACTCOUNT:
-+				hid_data->cc_report = report->id;
-+				hid_data->cc_index = i;
-+				hid_data->cc_value_index = j;
-+				break;
- 			}
- 		}
+--- a/net/tipc/topsrv.c
++++ b/net/tipc/topsrv.c
+@@ -409,10 +409,11 @@ static int tipc_conn_rcv_from_sock(struc
+ 		read_lock_bh(&sk->sk_callback_lock);
+ 		ret = tipc_conn_rcv_sub(srv, con, &s);
+ 		read_unlock_bh(&sk->sk_callback_lock);
++		if (!ret)
++			return 0;
  	}
-+
-+	if (hid_data->cc_report != 0 &&
-+	    hid_data->cc_index >= 0) {
-+		struct hid_field *field = report->field[hid_data->cc_index];
-+		int value = field->value[hid_data->cc_value_index];
-+		if (value)
-+			hid_data->num_expected = value;
-+	}
-+	else {
-+		hid_data->num_expected = wacom_wac->features.touch_max;
-+	}
+-	if (ret < 0)
+-		tipc_conn_close(con);
+ 
++	tipc_conn_close(con);
+ 	return ret;
  }
  
- static void wacom_wac_finger_report(struct hid_device *hdev,
-@@ -2649,7 +2665,6 @@ static void wacom_wac_finger_report(stru
- 	struct wacom_wac *wacom_wac = &wacom->wacom_wac;
- 	struct input_dev *input = wacom_wac->touch_input;
- 	unsigned touch_max = wacom_wac->features.touch_max;
--	struct hid_data *hid_data = &wacom_wac->hid_data;
- 
- 	/* If more packets of data are expected, give us a chance to
- 	 * process them rather than immediately syncing a partial
-@@ -2663,7 +2678,6 @@ static void wacom_wac_finger_report(stru
- 
- 	input_sync(input);
- 	wacom_wac->hid_data.num_received = 0;
--	hid_data->num_expected = 0;
- 
- 	/* keep touch state for pen event */
- 	wacom_wac->shared->touch_down = wacom_wac_finger_count_touches(wacom_wac);
-@@ -2738,73 +2752,12 @@ static void wacom_report_events(struct h
- 	}
- }
- 
--static void wacom_set_num_expected(struct hid_device *hdev,
--				   struct hid_report *report,
--				   int collection_index,
--				   struct hid_field *field,
--				   int field_index)
--{
--	struct wacom *wacom = hid_get_drvdata(hdev);
--	struct wacom_wac *wacom_wac = &wacom->wacom_wac;
--	struct hid_data *hid_data = &wacom_wac->hid_data;
--	unsigned int original_collection_level =
--		hdev->collection[collection_index].level;
--	bool end_collection = false;
--	int i;
--
--	if (hid_data->num_expected)
--		return;
--
--	// find the contact count value for this segment
--	for (i = field_index; i < report->maxfield && !end_collection; i++) {
--		struct hid_field *field = report->field[i];
--		unsigned int field_level =
--			hdev->collection[field->usage[0].collection_index].level;
--		unsigned int j;
--
--		if (field_level != original_collection_level)
--			continue;
--
--		for (j = 0; j < field->maxusage; j++) {
--			struct hid_usage *usage = &field->usage[j];
--
--			if (usage->collection_index != collection_index) {
--				end_collection = true;
--				break;
--			}
--			if (wacom_equivalent_usage(usage->hid) == HID_DG_CONTACTCOUNT) {
--				hid_data->cc_report = report->id;
--				hid_data->cc_index = i;
--				hid_data->cc_value_index = j;
--
--				if (hid_data->cc_report != 0 &&
--				    hid_data->cc_index >= 0) {
--
--					struct hid_field *field =
--						report->field[hid_data->cc_index];
--					int value =
--						field->value[hid_data->cc_value_index];
--
--					if (value)
--						hid_data->num_expected = value;
--				}
--			}
--		}
--	}
--
--	if (hid_data->cc_report == 0 || hid_data->cc_index < 0)
--		hid_data->num_expected = wacom_wac->features.touch_max;
--}
--
- static int wacom_wac_collection(struct hid_device *hdev, struct hid_report *report,
- 			 int collection_index, struct hid_field *field,
- 			 int field_index)
- {
- 	struct wacom *wacom = hid_get_drvdata(hdev);
- 
--	if (WACOM_FINGER_FIELD(field))
--		wacom_set_num_expected(hdev, report, collection_index, field,
--				       field_index);
- 	wacom_report_events(hdev, report, collection_index, field_index);
- 
- 	/*
 
 
