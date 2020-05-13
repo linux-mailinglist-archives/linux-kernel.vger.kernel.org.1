@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632781D0F01
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 645F21D0D67
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388658AbgEMKDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 06:03:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46534 "EHLO mail.kernel.org"
+        id S2387840AbgEMJwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:52:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732472AbgEMJsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:48:13 -0400
+        id S2387822AbgEMJwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:52:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F27A20753;
-        Wed, 13 May 2020 09:48:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A9FE206D6;
+        Wed, 13 May 2020 09:52:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363293;
-        bh=bHdmZDYvm4sZsTCmDc+bJ2o87qNAxyOF5X9rKGj+pcM=;
+        s=default; t=1589363560;
+        bh=2zFgR8b1GyApn0bsSolKNyvqPISgYbhDCtDqlgNZqcY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0ZzTLut20IrjBGC9kJ+Ffz1PticEHaEPa2XzMJmeZHzXRzyPIBDt9UVdTACr3Kss7
-         mpHROFebF/htqBn7pJg/nOj1ruAyQ8pYjt6upx5ntYMJBLwDNgeV46e880+7+Aitao
-         ECLW+CxMrmbSsQiNnv/BKds+Pe8xvAcEIACsJO9I=
+        b=YvnFgPe9P5leh2BfFV/9XNwjEsbHl2ssL9rKCI4tldpVqn9cMRk7y7G8CdO5Y1uSS
+         Ac5CxLfW1c7fwfVJpwqcSuJRXp0k5aU1CqDCVkDegbsxCwqTdsNnxcZu03gWsnGdVH
+         vC+60OsqVNA968441Eh1uEzxzMUWHFHSZ941PTX0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Allen Pais <allen.pais@oracle.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Jakub Kicinski <kuba@kernel.org>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 16/90] net: dsa: Do not leave DSA master with NULL netdev_ops
-Date:   Wed, 13 May 2020 11:44:12 +0200
-Message-Id: <20200513094410.583502170@linuxfoundation.org>
+Subject: [PATCH 5.6 034/118] nfp: abm: fix a memory leak bug
+Date:   Wed, 13 May 2020 11:44:13 +0200
+Message-Id: <20200513094420.468071956@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
-References: <20200513094408.810028856@linuxfoundation.org>
+In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
+References: <20200513094417.618129545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit 050569fc8384c8056bacefcc246bcb2dfe574936 ]
+[ Upstream commit bd4af432cc71b5fbfe4833510359a6ad3ada250d ]
 
-When ndo_get_phys_port_name() for the CPU port was added we introduced
-an early check for when the DSA master network device in
-dsa_master_ndo_setup() already implements ndo_get_phys_port_name(). When
-we perform the teardown operation in dsa_master_ndo_teardown() we would
-not be checking that cpu_dp->orig_ndo_ops was successfully allocated and
-non-NULL initialized.
+In function nfp_abm_vnic_set_mac, pointer nsp is allocated by nfp_nsp_open.
+But when nfp_nsp_has_hwinfo_lookup fail, the pointer is not released,
+which can lead to a memory leak bug. Fix this issue by adding
+nfp_nsp_close(nsp) in the error path.
 
-With network device drivers such as virtio_net, this leads to a NPD as
-soon as the DSA switch hanging off of it gets torn down because we are
-now assigning the virtio_net device's netdev_ops a NULL pointer.
-
-Fixes: da7b9e9b00d4 ("net: dsa: Add ndo_get_phys_port_name() for CPU port")
-Reported-by: Allen Pais <allen.pais@oracle.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Tested-by: Allen Pais <allen.pais@oracle.com>
+Fixes: f6e71efdf9fb1 ("nfp: abm: look up MAC addresses via management FW")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Acked-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/dsa/master.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/netronome/nfp/abm/main.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/dsa/master.c
-+++ b/net/dsa/master.c
-@@ -259,7 +259,8 @@ static void dsa_master_ndo_teardown(stru
- {
- 	struct dsa_port *cpu_dp = dev->dsa_ptr;
- 
--	dev->netdev_ops = cpu_dp->orig_ndo_ops;
-+	if (cpu_dp->orig_ndo_ops)
-+		dev->netdev_ops = cpu_dp->orig_ndo_ops;
- 	cpu_dp->orig_ndo_ops = NULL;
- }
+--- a/drivers/net/ethernet/netronome/nfp/abm/main.c
++++ b/drivers/net/ethernet/netronome/nfp/abm/main.c
+@@ -283,6 +283,7 @@ nfp_abm_vnic_set_mac(struct nfp_pf *pf,
+ 	if (!nfp_nsp_has_hwinfo_lookup(nsp)) {
+ 		nfp_warn(pf->cpp, "NSP doesn't support PF MAC generation\n");
+ 		eth_hw_addr_random(nn->dp.netdev);
++		nfp_nsp_close(nsp);
+ 		return;
+ 	}
  
 
 
