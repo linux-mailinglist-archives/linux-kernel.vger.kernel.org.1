@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AE31D11F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0141D11FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731509AbgEML4w convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 May 2020 07:56:52 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:46375 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728165AbgEML4v (ORCPT
+        id S1732052AbgEML5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 07:57:02 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:57762 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728165AbgEML5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 07:56:51 -0400
-X-Originating-IP: 86.210.146.109
-Received: from windsurf.home (lfbn-tou-1-915-109.w86-210.abo.wanadoo.fr [86.210.146.109])
-        (Authenticated sender: thomas.petazzoni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 8655FFF810;
-        Wed, 13 May 2020 11:56:44 +0000 (UTC)
-Date:   Wed, 13 May 2020 13:56:43 +0200
-From:   Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Marek =?UTF-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Xogium <contact@xogium.me>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v4 00/12] PCI: aardvark: Fix support for Turris MOX and
- Compex wifi cards
-Message-ID: <20200513135643.478ffbda@windsurf.home>
-In-Reply-To: <20200430080625.26070-1-pali@kernel.org>
-References: <20200430080625.26070-1-pali@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 13 May 2020 07:57:02 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id CCC60803087C;
+        Wed, 13 May 2020 11:56:56 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 7N8KV2RDK2yq; Wed, 13 May 2020 14:56:56 +0300 (MSK)
+Date:   Wed, 13 May 2020 14:56:55 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Allison Randal <allison@lohutok.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Gareth Williams <gareth.williams.jx@renesas.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 08/17] spi: dw: Clear DMAC register when done or stopped
+Message-ID: <20200513115655.s2i65tfy5m4skl35@mobilestation>
+References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
+ <20200508132943.9826-9-Sergey.Semin@baikalelectronics.ru>
+ <20200508173134.GP4820@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200508173134.GP4820@sirena.org.uk>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Thu, 30 Apr 2020 10:06:13 +0200
-Pali Rohár <pali@kernel.org> wrote:
-
-> Marek Behún (5):
->   PCI: aardvark: Improve link training
->   PCI: aardvark: Add PHY support
->   dt-bindings: PCI: aardvark: Describe new properties
->   arm64: dts: marvell: armada-37xx: Set pcie_reset_pin to gpio function
->   arm64: dts: marvell: armada-37xx: Move PCIe comphy handle property
+On Fri, May 08, 2020 at 06:31:34PM +0100, Mark Brown wrote:
+> On Fri, May 08, 2020 at 04:29:33PM +0300, Serge Semin wrote:
+> > If DMAC register is left uncleared any further DMAless transfers
+> > may cause the DMAC hardware handshaking interface getting activated.
+> > So the next DMA-based Rx/Tx transaction will be started right
+> > after the dma_async_issue_pending() method is invoked even if no
+> > DMATDLR/DMARDLR conditions are met. This at the same time may cause
+> > the Tx/Rx FIFO buffers underrun/overrun. In order to fix this we
+> > must clear DMAC register after a current DMA-based transaction is
+> > finished.
 > 
-> Pali Rohár (7):
->   PCI: aardvark: Train link immediately after enabling training
->   PCI: aardvark: Don't blindly enable ASPM L0s and don't write to
->     read-only register
->   PCI: of: Zero max-link-speed value is invalid
->   PCI: aardvark: Issue PERST via GPIO
->   PCI: aardvark: Add FIXME comment for PCIE_CORE_CMD_STATUS_REG access
->   PCI: aardvark: Replace custom macros by standard linux/pci_regs.h
->     macros
->   arm64: dts: marvell: armada-37xx: Move PCIe max-link-speed property
+> This also looks like a bugfix so should be pulled forwards to the start
+> of the series if possible.
 
-Thanks a lot for this work. For a number of reasons, I'm less involved
-in Marvell platform support in Linux, but I reviewed your series and
-followed the discussions around it, and I'm happy to give my:
+Ok.
 
-Acked-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-
-for the whole series. The changes all seem sensible, and have been
-tested by several folks.
-
-Thanks!
-
-Thomas
--- 
-Thomas Petazzoni, CTO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+-Sergey
