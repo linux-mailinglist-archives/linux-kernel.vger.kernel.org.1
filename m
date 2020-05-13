@@ -2,176 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6331D11ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AE31D11F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731892AbgEML4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 07:56:18 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48100 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728286AbgEML4R (ORCPT
+        id S1731509AbgEML4w convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 May 2020 07:56:52 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:46375 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728165AbgEML4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 07:56:17 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id D313D2A28AB
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 718004800EB; Wed, 13 May 2020 13:56:13 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCHv1 2/2] dt-bindings: power: supply: gpio-charger: convert to yaml
-Date:   Wed, 13 May 2020 13:56:01 +0200
-Message-Id: <20200513115601.360642-2-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513115601.360642-1-sebastian.reichel@collabora.com>
-References: <20200513115601.360642-1-sebastian.reichel@collabora.com>
+        Wed, 13 May 2020 07:56:51 -0400
+X-Originating-IP: 86.210.146.109
+Received: from windsurf.home (lfbn-tou-1-915-109.w86-210.abo.wanadoo.fr [86.210.146.109])
+        (Authenticated sender: thomas.petazzoni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 8655FFF810;
+        Wed, 13 May 2020 11:56:44 +0000 (UTC)
+Date:   Wed, 13 May 2020 13:56:43 +0200
+From:   Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Remi Pommarel <repk@triplefau.lt>,
+        Marek =?UTF-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Xogium <contact@xogium.me>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v4 00/12] PCI: aardvark: Fix support for Turris MOX and
+ Compex wifi cards
+Message-ID: <20200513135643.478ffbda@windsurf.home>
+In-Reply-To: <20200430080625.26070-1-pali@kernel.org>
+References: <20200430080625.26070-1-pali@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the gpio-charger bindings from text format to
-new YAML based representation.
+Hello,
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- .../bindings/power/supply/gpio-charger.txt    | 38 ----------
- .../bindings/power/supply/gpio-charger.yaml   | 75 +++++++++++++++++++
- 2 files changed, 75 insertions(+), 38 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/power/supply/gpio-charger.txt
- create mode 100644 Documentation/devicetree/bindings/power/supply/gpio-charger.yaml
+On Thu, 30 Apr 2020 10:06:13 +0200
+Pali Rohár <pali@kernel.org> wrote:
 
-diff --git a/Documentation/devicetree/bindings/power/supply/gpio-charger.txt b/Documentation/devicetree/bindings/power/supply/gpio-charger.txt
-deleted file mode 100644
-index dbfd29029f69..000000000000
---- a/Documentation/devicetree/bindings/power/supply/gpio-charger.txt
-+++ /dev/null
-@@ -1,38 +0,0 @@
--gpio-charger
--
--Required properties :
-- - compatible : "gpio-charger"
-- - charger-type : power supply type, one of
--     unknown
--     battery
--     ups
--     mains
--     usb-sdp (USB standard downstream port)
--     usb-dcp (USB dedicated charging port)
--     usb-cdp (USB charging downstream port)
--     usb-aca (USB accessory charger adapter)
--
--Optional properties:
-- - gpios : GPIO indicating the charger presence.
--   See GPIO binding in bindings/gpio/gpio.txt .
-- - charge-status-gpios: GPIO indicating whether a battery is charging.
-- - charge-current-limit-gpios: Output GPIOs specifiers for limiting the charge current
-- - charge-current-limit-mapping: List of touples with current in uA and a GPIO bitmap (in this order).
--                                The GPIOs are encoded in the same order as specified in charge-current-limit-gpios.
--				The touples must be provided in descending order of the current limit.
--
--Example:
--
--	usb_charger: charger {
--		compatible = "gpio-charger";
--		charger-type = "usb-sdp";
--		gpios = <&gpd 28 GPIO_ACTIVE_LOW>;
--		charge-status-gpios = <&gpc 27 GPIO_ACTIVE_LOW>;
--
--		charge-current-limit-gpios = <&gpioA 11 GPIO_ACTIVE_HIGH>, <&gpioA 12 GPIO_ACTIVE_HIGH>;
--		charge-current-limit-mapping = <2500000 0x00>, <700000 0x01>, <0 0x02>;
--	};
--
--	battery {
--		power-supplies = <&usb_charger>;
--	};
-diff --git a/Documentation/devicetree/bindings/power/supply/gpio-charger.yaml b/Documentation/devicetree/bindings/power/supply/gpio-charger.yaml
-new file mode 100644
-index 000000000000..14fb3e54f861
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/supply/gpio-charger.yaml
-@@ -0,0 +1,75 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/power/supply/gpio-charger.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: simple battery chargers only communicating through GPIOs
-+
-+maintainers:
-+  - Sebastian Reichel <sre@kernel.org>
-+
-+description: |
-+  This binding is for all chargers, which are working more
-+  or less autonomously, only providing some status GPIOs
-+  and possibly some GPIOs for limited control over the
-+  charging process.
-+
-+properties:
-+  compatible:
-+    const: gpio-charger
-+
-+  charger-type:
-+    oneOf:
-+      - const: unknown
-+      - const: battery
-+      - const: ups
-+      - const: mains
-+      - const: usb-sdp                   # USB standard downstream port
-+      - const: usb-dcp                   # USB dedicated charging port
-+      - const: usb-cdp                   # USB charging downstream port
-+      - const: usb-aca                   # USB accessory charger adapter
-+
-+  gpios:
-+    maxItems: 1
-+    description: GPIO indicating the charger presence
-+
-+  charge-status-gpios:
-+    maxItems: 1
-+    description: GPIO indicating the charging status
-+
-+  charge-current-limit-gpios:
-+    minItems: 1
-+    maxItems: 32
-+    description: GPIOs used for current limiting
-+
-+  charge-current-limit-mapping:
-+    description: List of touples with current in uA and a GPIO bitmap (in
-+      this order). The GPIOs are encoded in the same order as specified in
-+      charge-current-limit-gpios. The touples must be provided in descending
-+      order of the current limit.
-+    $ref: "/meta-schemas/cell.yaml#array"
-+
-+required:
-+  - compatible
-+additionalProperties: false
-+
-+dependencies:
-+  charge-current-limit-gpios: [ charge-current-limit-mapping ]
-+  charge-current-limit-mapping: [ charge-current-limit-gpios ]
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    charger {
-+      compatible = "gpio-charger";
-+      charger-type = "usb-sdp";
-+
-+      gpios = <&gpd 28 GPIO_ACTIVE_LOW>;
-+      charge-status-gpios = <&gpc 27 GPIO_ACTIVE_LOW>;
-+
-+      charge-current-limit-gpios = <&gpioA 11 GPIO_ACTIVE_HIGH>,
-+                                   <&gpioA 12 GPIO_ACTIVE_HIGH>;
-+      charge-current-limit-mapping = <2500000 0x00>, <700000 0x01>, <0 0x02>;
-+    };
+> Marek Behún (5):
+>   PCI: aardvark: Improve link training
+>   PCI: aardvark: Add PHY support
+>   dt-bindings: PCI: aardvark: Describe new properties
+>   arm64: dts: marvell: armada-37xx: Set pcie_reset_pin to gpio function
+>   arm64: dts: marvell: armada-37xx: Move PCIe comphy handle property
+> 
+> Pali Rohár (7):
+>   PCI: aardvark: Train link immediately after enabling training
+>   PCI: aardvark: Don't blindly enable ASPM L0s and don't write to
+>     read-only register
+>   PCI: of: Zero max-link-speed value is invalid
+>   PCI: aardvark: Issue PERST via GPIO
+>   PCI: aardvark: Add FIXME comment for PCIE_CORE_CMD_STATUS_REG access
+>   PCI: aardvark: Replace custom macros by standard linux/pci_regs.h
+>     macros
+>   arm64: dts: marvell: armada-37xx: Move PCIe max-link-speed property
+
+Thanks a lot for this work. For a number of reasons, I'm less involved
+in Marvell platform support in Linux, but I reviewed your series and
+followed the discussions around it, and I'm happy to give my:
+
+Acked-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+
+for the whole series. The changes all seem sensible, and have been
+tested by several folks.
+
+Thanks!
+
+Thomas
 -- 
-2.26.2
-
+Thomas Petazzoni, CTO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
