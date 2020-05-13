@@ -2,214 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485DA1D14EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652421D14EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387868AbgEMNbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:31:39 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39432 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2387829AbgEMNbh (ORCPT
+        id S2387823AbgEMNbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387730AbgEMNbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:31:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589376694;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eZm3j4cM3ViQTwIqnNSsjauUBzU3+xmEzMM4OgJCltU=;
-        b=NFdoO387kmf04kdOicuUsdS2EJl7LDKE0FWELrz86cZSrrwqJMJAnZVdwc957JPn826Bji
-        JQTXvFRTJ2cUkPqxAk5vFqSKsG5UIgixNdhvq/DdF6UCDQHMtQ1OjkYHUG9Tg+cTrBF0Ww
-        tEa/QspKfluTC5lj6+W1f7LwoFVfBAs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-96-1A4XTUNvPQado3UrmqFbNw-1; Wed, 13 May 2020 09:31:30 -0400
-X-MC-Unique: 1A4XTUNvPQado3UrmqFbNw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E7D85107ACCA;
-        Wed, 13 May 2020 13:31:28 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (ovpn-113-165.phx2.redhat.com [10.3.113.165])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AF8475C1D2;
-        Wed, 13 May 2020 13:31:24 +0000 (UTC)
-Date:   Wed, 13 May 2020 09:31:22 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Tao Zhou <ouwen210@hotmail.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>
-Subject: Re: [PATCH v2] sched/fair: enqueue_task_fair optimization
-Message-ID: <20200513133122.GH12425@lorien.usersys.redhat.com>
-References: <20200513123335.28122-1-vincent.guittot@linaro.org>
- <20200513124540.GB12425@lorien.usersys.redhat.com>
- <CAKfTPtBFP5eAV-u02x42U2cQnWA56RP+wbj78rWpzj560OS+-g@mail.gmail.com>
- <20200513131337.GF12425@lorien.usersys.redhat.com>
- <CAKfTPtDYmi9wz3r1G8baG2cM3wh6004CDT11HaAu8L7-wWv=Gw@mail.gmail.com>
- <20200513131808.GG12425@lorien.usersys.redhat.com>
- <CAKfTPtBpYWDz=ZeKKa1BGOVZ+PqM=kbbgSBQpn7msxMV_5v5uA@mail.gmail.com>
+        Wed, 13 May 2020 09:31:33 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3D7C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 06:31:33 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id 4so14114773qtb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 06:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MWcY+GP/WKb+ETVVUrnnZlQhn2LXumL/iGbkm4arfKM=;
+        b=pVrUINpH6ZYiGOCBXCzWiNFh3kP/zymHTCvkAR8MWUdPZNHuysSUFqKE8lFNoh2ENJ
+         JC2VfugeHRog6VR/6LMRXOjnD6Z1pDLEClYQBuRiT1pPGYEGKi0N5L3LPKrybPAzP0sO
+         NUdXF9QxsBqStg48t14yPUorsYdmQGHD5lms7EuiM+Dzpo5wGClKmora0KIXVlhuwMp4
+         qTfzsOrXsGP9ta4H6xNyKcY5ycd/vW+ed3Bydy0XLFoftGvRoCp70nTHv8X8JNGHQ5rT
+         K8EnIUJ3PPTGHGt71svZEdTtgKFFbEUlVMr+cbCjkzRrO764sL5ZvPTwIXWZbNiD6nDW
+         u72g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MWcY+GP/WKb+ETVVUrnnZlQhn2LXumL/iGbkm4arfKM=;
+        b=hOeadxI7uQdJA99ySlNymGa8kK2HYcszKjj4lYiYj5sc3s8Trr2mb4omkye5rYmG6e
+         arfphZFjhomS9C6AGPVXtxdozxKZ0BPBWpkqRAEcsSQF4hU5PrUxkW2M3r4fSrUU3Qk/
+         Bjc97DXb8sTlS3Kw81GT9IMdi+nM5R7j/KebItiZfhJeArsMIpnjSCwwssclWWbFDv61
+         5roVq8urjcb4xgz6wv5l1XwsA1hGFje+xYbuB6NH6y0ZTufFOGisZOHUb1yJDs+iZzRO
+         mCxFDcpPda6jFfb8mK6xL9LADHY4jnhP3EKu9Uo4LN1L9cGjjyA3wUlM0uIO5PQCDobz
+         mZ/Q==
+X-Gm-Message-State: AGi0PubL48MlAso89IQIw2JuKnCNgECk0eFmXQJLJa0mxXNlAt8T48W1
+        6ZvqOEK+bbT092glxdAcuGM=
+X-Google-Smtp-Source: APiQypIrQxyTUWSPlVm1bJ7fx4NOmIWKtvTPcsyMQB3lKlSUJUd4qpNwdqFXOCTVJJdhOASEqRkf6Q==
+X-Received: by 2002:aed:2ce6:: with SMTP id g93mr17679767qtd.264.1589376691404;
+        Wed, 13 May 2020 06:31:31 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id n206sm13767812qke.20.2020.05.13.06.31.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 06:31:30 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id AE282410F5; Wed, 13 May 2020 10:31:28 -0300 (-03)
+Date:   Wed, 13 May 2020 10:31:28 -0300
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        linux-kernel@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf parse-events: Avoid free on non malloc-ed memory
+Message-ID: <20200513133128.GB5583@kernel.org>
+References: <20200512235202.7619-1-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtBpYWDz=ZeKKa1BGOVZ+PqM=kbbgSBQpn7msxMV_5v5uA@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20200512235202.7619-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 03:25:29PM +0200 Vincent Guittot wrote:
-> On Wed, 13 May 2020 at 15:18, Phil Auld <pauld@redhat.com> wrote:
-> >
-> > On Wed, May 13, 2020 at 03:15:53PM +0200 Vincent Guittot wrote:
-> > > On Wed, 13 May 2020 at 15:13, Phil Auld <pauld@redhat.com> wrote:
-> > > >
-> > > > On Wed, May 13, 2020 at 03:10:28PM +0200 Vincent Guittot wrote:
-> > > > > On Wed, 13 May 2020 at 14:45, Phil Auld <pauld@redhat.com> wrote:
-> > > > > >
-> > > > > > Hi Vincent,
-> > > > > >
-> > > > > > On Wed, May 13, 2020 at 02:33:35PM +0200 Vincent Guittot wrote:
-> > > > > > > enqueue_task_fair jumps to enqueue_throttle label when cfs_rq_of(se) is
-> > > > > > > throttled which means that se can't be NULL and we can skip the test.
-> > > > > > >
-> > > > > >
-> > > > > > s/be NULL/be non-NULL/
-> > > > > >
-> > > > > > I think.
-> > > > >
-> > > > > This sentence refers to the move of enqueue_throttle and the fact that
-> > > > > se can't be null when goto enqueue_throttle and we can jump directly
-> > > > > after the if statement, which is now removed in v2 because se is
-> > > > > always NULL if we don't use goto enqueue_throttle.
-> > > > >
-> > > > > I haven't change the commit message for the remove of if statement
-> > > > >
-> > > >
-> > > > Fair enough, it just seems backwards from the intent of the patch now.
-> > > >
-> > > > There is also an extra }  after the update_overutilized_status.
-> > >
-> > > don't know what I did but it's crap.  sorry about that
-> > >
-> >
-> > No worries. I didn't see it when I read it either. The compiler told me :)
+Em Tue, May 12, 2020 at 04:52:02PM -0700, Ian Rogers escreveu:
+> Caught by libfuzzer, there is a segfault with:
+> $ perf stat -e i/bs,tsc,L2/o sleep 1
+> As a config_term is added that isn't a string.
+
+Yeah, I've just applied a similar patch after looking at your private
+report, added the same fixes, used your reproducer,
+
+Thanks,
+
+- Arnaldo
+ 
+> Fixes: e8dfb81838b1 (perf parse-events: Fix memory leaks found on parse_events)
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/parse-events.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> Yeah, but i thought that i compiled it which is obviously not true
->
-
-It's that "obviously" correct stuff that bites you every time ;)
-
-
-
-> >
-> >
-> > > Let me prepare a v3
-> > >
-> > > >
-> > > >
-> > > > Cheers,
-> > > > Phil
-> > > >
-> > > >
-> > > >
-> > > > > >
-> > > > > > It's more like if it doesn't jump to the label then se must be NULL for
-> > > > > > the loop to terminate.  The final loop is a NOP if se is NULL. The check
-> > > > > > wasn't protecting that.
-> > > > > >
-> > > > > > Otherwise still
-> > > > > >
-> > > > > > > Reviewed-by: Phil Auld <pauld@redhat.com>
-> > > > > >
-> > > > > > Cheers,
-> > > > > > Phil
-> > > > > >
-> > > > > >
-> > > > > > > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> > > > > > > ---
-> > > > > > >
-> > > > > > > v2 changes:
-> > > > > > > - Remove useless if statement
-> > > > > > >
-> > > > > > >  kernel/sched/fair.c | 39 ++++++++++++++++++++-------------------
-> > > > > > >  1 file changed, 20 insertions(+), 19 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > > > > > index a0c690d57430..b51b12d63c39 100644
-> > > > > > > --- a/kernel/sched/fair.c
-> > > > > > > +++ b/kernel/sched/fair.c
-> > > > > > > @@ -5513,28 +5513,29 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
-> > > > > > >                         list_add_leaf_cfs_rq(cfs_rq);
-> > > > > > >       }
-> > > > > > >
-> > > > > > > -enqueue_throttle:
-> > > > > > > -     if (!se) {
-> > > > > > > -             add_nr_running(rq, 1);
-> > > > > > > -             /*
-> > > > > > > -              * Since new tasks are assigned an initial util_avg equal to
-> > > > > > > -              * half of the spare capacity of their CPU, tiny tasks have the
-> > > > > > > -              * ability to cross the overutilized threshold, which will
-> > > > > > > -              * result in the load balancer ruining all the task placement
-> > > > > > > -              * done by EAS. As a way to mitigate that effect, do not account
-> > > > > > > -              * for the first enqueue operation of new tasks during the
-> > > > > > > -              * overutilized flag detection.
-> > > > > > > -              *
-> > > > > > > -              * A better way of solving this problem would be to wait for
-> > > > > > > -              * the PELT signals of tasks to converge before taking them
-> > > > > > > -              * into account, but that is not straightforward to implement,
-> > > > > > > -              * and the following generally works well enough in practice.
-> > > > > > > -              */
-> > > > > > > -             if (flags & ENQUEUE_WAKEUP)
-> > > > > > > -                     update_overutilized_status(rq);
-> > > > > > > +     /* At this point se is NULL and we are at root level*/
-> > > > > > > +     add_nr_running(rq, 1);
-> > > > > > > +
-> > > > > > > +     /*
-> > > > > > > +      * Since new tasks are assigned an initial util_avg equal to
-> > > > > > > +      * half of the spare capacity of their CPU, tiny tasks have the
-> > > > > > > +      * ability to cross the overutilized threshold, which will
-> > > > > > > +      * result in the load balancer ruining all the task placement
-> > > > > > > +      * done by EAS. As a way to mitigate that effect, do not account
-> > > > > > > +      * for the first enqueue operation of new tasks during the
-> > > > > > > +      * overutilized flag detection.
-> > > > > > > +      *
-> > > > > > > +      * A better way of solving this problem would be to wait for
-> > > > > > > +      * the PELT signals of tasks to converge before taking them
-> > > > > > > +      * into account, but that is not straightforward to implement,
-> > > > > > > +      * and the following generally works well enough in practice.
-> > > > > > > +      */
-> > > > > > > +     if (flags & ENQUEUE_WAKEUP)
-> > > > > > > +             update_overutilized_status(rq);
-> > > > > > >
-> > > > > > >       }
-> > > > > > >
-> > > > > > > +enqueue_throttle:
-> > > > > > >       if (cfs_bandwidth_used()) {
-> > > > > > >               /*
-> > > > > > >                * When bandwidth control is enabled; the cfs_rq_throttled()
-> > > > > > > --
-> > > > > > > 2.17.1
-> > > > > > >
-> > > > > >
-> > > > > > --
-> > > > > >
-> > > > >
-> > > >
-> > > > --
-> > > >
-> > >
-> >
-> > --
-> >
+> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> index e9464b04f149..e37a6a3e6217 100644
+> --- a/tools/perf/util/parse-events.c
+> +++ b/tools/perf/util/parse-events.c
+> @@ -1480,7 +1480,8 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
+>  
+>  		list_for_each_entry_safe(pos, tmp, &config_terms, list) {
+>  			list_del_init(&pos->list);
+> -			zfree(&pos->val.str);
+> +			if (pos->free_str)
+> +				zfree(&pos->val.str);
+>  			free(pos);
+>  		}
+>  		return -EINVAL;
+> -- 
+> 2.26.2.645.ge9eca65c58-goog
 > 
 
 -- 
 
+- Arnaldo
