@@ -2,155 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4A01D194A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6791D195D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389187AbgEMPZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 11:25:16 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:52790 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729327AbgEMPZP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 11:25:15 -0400
-Received: by mail-il1-f200.google.com with SMTP id e12so106770ilr.19
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 08:25:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=FT3APWDHqwvaHL7ZFg7HtZts/18iRU9zbEsBrZ6b5QQ=;
-        b=GiE7Ommy1c1o+5w54vCJfMMnBrROvJ2sM2y53/gPg40O04qzPNK3ePlz90qz6Y0VyX
-         E6c6Or+7dNpC1y2InLtKa7LTecir3qqfKrcuzuU5/ArR9f9dy9/hCa/oToON+OFe5QfH
-         BxYYw9bD7l5iGO/4TibljMb9OGp+yDPooQV43N0bPcb89cvOVvhW468yn8bl9up/HXkK
-         sILidcpEs2nfD45byxj7d4XqMqddUjrjgUOzGMYktO4a0vv0g2npJsf9dxfzUYVTojpj
-         CS+AD2Banf2WfSktNw/uLznI+1NcaKcIhPlLBHd6UdBcoQnR6ihQeQ/8oR37mEJGcrCm
-         EfYQ==
-X-Gm-Message-State: AOAM530eKVyox5+KjfU5KeO3SVbQlFokeOgj72PF8vV7EydW6lnLiwZI
-        ky1eGAZjzCZdueaeyYhe25A2Dq4SmVSfKFnPgc7yqTUh9Y3B
-X-Google-Smtp-Source: ABdhPJzjcYq8bKswc2ZjZl7o0Tylotf2/nbTABzfslYvwzPbgzrpENY8i0xXvb4cIzOhKd6lMPOHNe+zzRF9SnhZy3TNgNq28vxv
+        id S2389270AbgEMP0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 11:26:38 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2205 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731638AbgEMP0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 11:26:37 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 9CF1E36D2772B07885EB;
+        Wed, 13 May 2020 16:26:35 +0100 (IST)
+Received: from [127.0.0.1] (10.210.165.35) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Wed, 13 May
+ 2020 16:26:33 +0100
+Subject: Re: [PATCH 2/2] perf test: Improve pmu event metric testing
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Paul Clarke <pc@us.ibm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Stephane Eranian <eranian@google.com>
+References: <20200513062236.854-1-irogers@google.com>
+ <20200513062236.854-2-irogers@google.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <ac88604a-56c2-b632-57c2-3bee316dcea7@huawei.com>
+Date:   Wed, 13 May 2020 16:25:39 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-X-Received: by 2002:a92:8d49:: with SMTP id s70mr10231ild.54.1589383514058;
- Wed, 13 May 2020 08:25:14 -0700 (PDT)
-Date:   Wed, 13 May 2020 08:25:14 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c4796705a5892f6a@google.com>
-Subject: KMSAN: kernel-infoleak in _copy_to_iter (5)
-From:   syzbot <syzbot+50ee810676e6a089487b@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, edumazet@google.com, glider@google.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com, sd@queasysnail.net,
-        syzkaller-bugs@googlegroups.com, willemb@google.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200513062236.854-2-irogers@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.165.35]
+X-ClientProxiedBy: lhreml701-chm.china.huawei.com (10.201.108.50) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 13/05/2020 07:22, Ian Rogers wrote:
+> Break pmu-events test into 2 and add a test to verify that all pmu metric
+> expressions simply parse. Try to parse all metric ids/events, failing if
+> metrics for the current architecture fail to parse.
+> 
+> Tested on power9, skylakex, haswell, broadwell, westmere, sandybridge and
+> ivybridge with the patch set in place.
+> May fail on other architectures if metrics are invalid. In particular s390
+> is untested, but its expressions are trivial. The event encodings could
+> be wrong. The other untested architectures with expressions are power8,
+> cascadelakex, tremontx, skylake, jaketown, ivytown and variants of
+> haswell and broadwell. For these the expression encoding is valid but
+> the event encodings may not be.
+> 
 
-syzbot found the following crash on:
+Out of interest, if we could move the validation of metrics to jevents, 
+how much functionality would we still have here?
 
-HEAD commit:    14bcee29 DO-NOT-SUBMIT: kmsan: block: nullb: handle read r..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1752af7c100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6f048d804e1a47a0
-dashboard link: https://syzkaller.appspot.com/bug?extid=50ee810676e6a089487b
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10c69b42100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f72658100000
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>   tools/perf/tests/builtin-test.c |   5 +
+>   tools/perf/tests/pmu-events.c   | 158 ++++++++++++++++++++++++++++++--
+>   tools/perf/tests/tests.h        |   2 +
+>   3 files changed, 159 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> index 3471ec52ea11..8147c17c71ab 100644
+> --- a/tools/perf/tests/builtin-test.c
+> +++ b/tools/perf/tests/builtin-test.c
+> @@ -75,6 +75,11 @@ static struct test generic_tests[] = {
+>   	{
+>   		.desc = "PMU events",
+>   		.func = test__pmu_events,
+> +		.subtest = {
+> +			.get_nr		= test__pmu_events_subtest_get_nr,
+> +			.get_desc	= test__pmu_events_subtest_get_desc,
+> +		},
+> +
+>   	},
+>   	{
+>   		.desc = "DSO data read",
+> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+> index d64261da8bf7..c18b9ce8cace 100644
+> --- a/tools/perf/tests/pmu-events.c
+> +++ b/tools/perf/tests/pmu-events.c
+> @@ -8,6 +8,10 @@
+>   #include <linux/zalloc.h>
+>   #include "debug.h"
+>   #include "../pmu-events/pmu-events.h"
+> +#include "util/evlist.h"
+> +#include "util/expr.h"
+> +#include "util/parse-events.h"
+> +#include <ctype.h>
+>   
+>   struct perf_pmu_test_event {
+>   	struct pmu_event event;
+> @@ -144,7 +148,7 @@ static struct pmu_events_map *__test_pmu_get_events_map(void)
+>   }
+>   
+>   /* Verify generated events from pmu-events.c is as expected */
+> -static int __test_pmu_event_table(void)
+> +static int test_pmu_event_table(void)
+>   {
+>   	struct pmu_events_map *map = __test_pmu_get_events_map();
+>   	struct pmu_event *table;
+> @@ -347,14 +351,11 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
+>   	return res;
+>   }
+>   
+> -int test__pmu_events(struct test *test __maybe_unused,
+> -		     int subtest __maybe_unused)
+> +
+> +static int test_aliases(void)
+>   {
+>   	struct perf_pmu *pmu = NULL;
+>   
+> -	if (__test_pmu_event_table())
+> -		return -1;
+> -
+>   	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
+>   		int count = 0;
+>   
+> @@ -377,3 +378,148 @@ int test__pmu_events(struct test *test __maybe_unused,
+>   
+>   	return 0;
+>   }
+> +
+> +static bool is_number(const char *str)
+> +{
+> +	size_t i;
+> +
+> +	for (i = 0; i < strlen(str); i++) {
+> +		if (!isdigit(str[i]) && str[i] != '.')
+> +			return false;
+> +	}
+> +	return true;
+> +}
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+50ee810676e6a089487b@syzkaller.appspotmail.com
+if there is no helper already for this, is this really the best place to 
+put it? Maybe others will need it in future.
 
-=====================================================
-BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x81/0x90 mm/kmsan/kmsan_hooks.c:251
-CPU: 0 PID: 9041 Comm: syz-executor493 Not tainted 5.7.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1c9/0x220 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
- kmsan_internal_check_memory+0x238/0x3d0 mm/kmsan/kmsan.c:423
- kmsan_copy_to_user+0x81/0x90 mm/kmsan/kmsan_hooks.c:251
- copyout lib/iov_iter.c:145 [inline]
- _copy_to_iter+0x44f/0x2770 lib/iov_iter.c:633
- copy_to_iter include/linux/uio.h:138 [inline]
- simple_copy_to_iter net/core/datagram.c:519 [inline]
- __skb_datagram_iter+0x2bb/0x1220 net/core/datagram.c:425
- skb_copy_datagram_iter+0x292/0x2b0 net/core/datagram.c:533
- skb_copy_datagram_msg include/linux/skbuff.h:3537 [inline]
- packet_recvmsg+0x630/0x1c40 net/packet/af_packet.c:3378
- ____sys_recvmsg+0xf58/0x1020 net/socket.c:886
- ___sys_recvmsg net/socket.c:2627 [inline]
- do_recvmmsg+0x990/0x1e00 net/socket.c:2725
- __sys_recvmmsg net/socket.c:2804 [inline]
- __do_sys_recvmmsg net/socket.c:2827 [inline]
- __se_sys_recvmmsg+0x1d1/0x350 net/socket.c:2820
- __x64_sys_recvmmsg+0x62/0x80 net/socket.c:2820
- do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:297
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x443ca9
-Code: e8 8c 07 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 3b 0a fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffcf6171b28 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000443ca9
-RDX: 0000000000000002 RSI: 0000000020000a80 RDI: 0000000000000003
-RBP: 00007ffcf6171b30 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000000142fb
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> +
+> +static int check_parse_id(const char *id, bool same_cpu, struct pmu_event *pe)
+> +{
+> +	struct parse_events_error error;
+> +	struct evlist *evlist;
+> +	int ret;
+> +
+> +	/* Numbers are always valid. */
+> +	if (is_number(id))
+> +		return 0;
+> +
+> +	evlist = evlist__new();
+> +	memset(&error, 0, sizeof(error));
+> +	ret = parse_events(evlist, id, &error);
+> +	if (ret && same_cpu) {
+> +		fprintf(stderr,
+> +			"\nWARNING: Parse event failed metric '%s' id '%s' expr '%s'\n",
+> +			pe->metric_name, id, pe->metric_expr);
+> +		fprintf(stderr, "Error string '%s' help '%s'\n",
+> +			error.str, error.help);
 
-Uninit was stored to memory at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
- kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
- kmsan_memcpy_memmove_metadata+0x272/0x2e0 mm/kmsan/kmsan.c:247
- kmsan_memcpy_metadata+0xb/0x10 mm/kmsan/kmsan.c:267
- __msan_memcpy+0x43/0x50 mm/kmsan/kmsan_instr.c:116
- pskb_expand_head+0x38b/0x1b00 net/core/skbuff.c:1636
- __skb_cow include/linux/skbuff.h:3171 [inline]
- skb_cow_head include/linux/skbuff.h:3205 [inline]
- batadv_skb_head_push+0x234/0x350 net/batman-adv/soft-interface.c:74
- batadv_send_skb_packet+0x1a7/0x8c0 net/batman-adv/send.c:86
- batadv_send_broadcast_skb+0x76/0x90 net/batman-adv/send.c:127
- batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:393 [inline]
- batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:419 [inline]
- batadv_iv_send_outstanding_bat_ogm_packet+0x97e/0xd50 net/batman-adv/bat_iv_ogm.c:1710
- process_one_work+0x1555/0x1f40 kernel/workqueue.c:2268
- worker_thread+0xef6/0x2450 kernel/workqueue.c:2414
- kthread+0x4b5/0x4f0 kernel/kthread.c:269
- ret_from_fork+0x35/0x40 arch/x86/entry/entry_64.S:353
+do you really need to spill lines like this?
 
-Uninit was created at:
- kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:144
- kmsan_internal_alloc_meta_for_pages mm/kmsan/kmsan_shadow.c:280 [inline]
- kmsan_alloc_page+0xb9/0x180 mm/kmsan/kmsan_shadow.c:304
- __alloc_pages_nodemask+0x56a2/0x5dc0 mm/page_alloc.c:4848
- __alloc_pages include/linux/gfp.h:504 [inline]
- __alloc_pages_node include/linux/gfp.h:517 [inline]
- alloc_pages_node include/linux/gfp.h:531 [inline]
- __page_frag_cache_refill mm/page_alloc.c:4923 [inline]
- page_frag_alloc+0x3ae/0x910 mm/page_alloc.c:4953
- __napi_alloc_skb+0x193/0xa60 net/core/skbuff.c:519
- napi_alloc_skb include/linux/skbuff.h:2876 [inline]
- page_to_skb+0x1a2/0x1390 drivers/net/virtio_net.c:384
- receive_mergeable drivers/net/virtio_net.c:935 [inline]
- receive_buf+0xed6/0x8d50 drivers/net/virtio_net.c:1045
- virtnet_receive drivers/net/virtio_net.c:1335 [inline]
- virtnet_poll+0x64b/0x19f0 drivers/net/virtio_net.c:1440
- napi_poll net/core/dev.c:6572 [inline]
- net_rx_action+0x786/0x1aa0 net/core/dev.c:6640
- __do_softirq+0x311/0x83d kernel/softirq.c:293
+> +	} else if (ret) {
+> +		pr_debug3("Parse event failed, but for an event that may not be supported by this CPU.\nid '%s' metric '%s' expr '%s'\n",
+> +			id, pe->metric_name, pe->metric_expr);
+> +	}
+> +	evlist__delete(evlist);
+> +	free(error.str);
+> +	free(error.help);
+> +	free(error.first_str);
+> +	free(error.first_help);
+> +	/* TODO: too many metrics are broken to fail on this test currently. */
+> +	return 0;
+> +}
+> +
+> +static int test_parsing(void)
+> +{
+> +	struct pmu_events_map *cpus_map = perf_pmu__find_map(NULL);
+> +	struct pmu_events_map *map;
+> +	struct pmu_event *pe;
+> +	int i, j, k;
+> +	const char **ids;
+> +	int idnum;
+> +	int ret = 0;
+> +	struct expr_parse_ctx ctx;
+> +	double result;
+> +
+> +	i = 0;
+> +	for (;;) {
+> +		map = &pmu_events_map[i++];
+> +		if (!map->table) {
+> +			map = NULL;
+> +			break;
+> +		}
+> +		j = 0;
+> +		for (;;) {
+> +			pe = &map->table[j++];
+> +			if (!pe->name && !pe->metric_group && !pe->metric_name)
+> +				break;
+> +			if (!pe->metric_expr)
+> +				continue;
 
-Bytes 52-53 of 146 are uninitialized
-Memory access of size 146 starts at ffff898139239040
-Data copied to user address 0000000020000980
-=====================================================
+we could probably make a for_each_metric_helper(), as this code seems 
+duplicated a few times (like metricgroup__add_netric())
 
+> +			if (expr__find_other(pe->metric_expr, NULL,
+> +						&ids, &idnum, 0) < 0) {
+> +				pr_debug("Parse other failed for map %s %s %s\n",
+> +					map->cpuid, map->version, map->type);
+> +				pr_debug("On metric %s\n", pe->metric_name);
+> +				pr_debug("On expression %s\n", pe->metric_expr);
+> +				ret++;
+> +				continue;
+> +			}
+> +			expr__ctx_init(&ctx);
+> +
+> +			/*
+> +			 * Add all ids with a made up value. The value may
+> +			 * trigger divide by zero when subtracted and so try to
+> +			 * make them unique.
+> +			 */
+> +			for (k = 0; k < idnum; k++)
+> +				expr__add_id(&ctx, ids[k], k + 1);
+> +
+> +			for (k = 0; k < idnum; k++) {
+> +				if (check_parse_id(ids[k], map == cpus_map, pe))
+> +					ret++;
+> +			}
+> +
+> +			if (expr__parse(&result, &ctx, pe->metric_expr, 0)) {
+> +				pr_debug("Parse failed for map %s %s %s\n",
+> +					map->cpuid, map->version, map->type);
+> +				pr_debug("On metric %s\n", pe->metric_name);
+> +				pr_debug("On expression %s\n", pe->metric_expr);
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+this code could be factored out a lot, see about 20 lines above
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> +				ret++;
+> +			}
+> +			for (k = 0; k < idnum; k++)
+> +				zfree(&ids[k]);
+> +			free(ids);
+> +		}
+> +	}
+> +	return ret;
+> +}
+> +
+> +static const struct {
+> +	int (*func)(void);
+> +	const char *desc;
+> +} pmu_events_testcase_table[] = {
+> +	{
+> +		.func = test_pmu_event_table,
+> +		.desc = "PMU event table sanity",
+> +	},
+> +	{
+> +		.func = test_aliases,
+> +		.desc = "PMU event map aliases",
+> +	},
+> +	{
+> +		.func = test_parsing,
+> +		.desc = "Parsing of PMU event table metrics",
+> +	},
+> +};
+
+I assume "perf test 10" will run all testcases, right?
+
+> +
+> +const char *test__pmu_events_subtest_get_desc(int i)
+> +{
+> +	if (i < 0 || i >= (int)ARRAY_SIZE(pmu_events_testcase_table))
+> +		return NULL;
+> +	return pmu_events_testcase_table[i].desc;
+> +}
+> +
+> +int test__pmu_events_subtest_get_nr(void)
+> +{
+> +	return (int)ARRAY_SIZE(pmu_events_testcase_table);
+> +}
+> +
+> +int test__pmu_events(struct test *test __maybe_unused, int i)
+> +{
+> +	if (i < 0 || i >= (int)ARRAY_SIZE(pmu_events_testcase_table))
+> +		return TEST_FAIL;
+> +	return pmu_events_testcase_table[i].func();
+> +}
+> diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+> index d6d4ac34eeb7..8e316c30ed3c 100644
+> --- a/tools/perf/tests/tests.h
+> +++ b/tools/perf/tests/tests.h
+> @@ -50,6 +50,8 @@ int test__perf_evsel__tp_sched_test(struct test *test, int subtest);
+>   int test__syscall_openat_tp_fields(struct test *test, int subtest);
+>   int test__pmu(struct test *test, int subtest);
+>   int test__pmu_events(struct test *test, int subtest);
+> +const char *test__pmu_events_subtest_get_desc(int subtest);
+> +int test__pmu_events_subtest_get_nr(void);
+>   int test__attr(struct test *test, int subtest);
+>   int test__dso_data(struct test *test, int subtest);
+>   int test__dso_data_cache(struct test *test, int subtest);
+> 
+
