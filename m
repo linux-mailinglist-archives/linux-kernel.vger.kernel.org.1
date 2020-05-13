@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8871D17E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0A71D17EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389050AbgEMOuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 10:50:01 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:35778 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728345AbgEMOuA (ORCPT
+        id S2389063AbgEMOwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 10:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728345AbgEMOw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 10:50:00 -0400
-Received: by mail-ot1-f52.google.com with SMTP id k110so13605973otc.2;
-        Wed, 13 May 2020 07:49:59 -0700 (PDT)
+        Wed, 13 May 2020 10:52:29 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46882C061A0C;
+        Wed, 13 May 2020 07:52:28 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id x18so8957868ybq.8;
+        Wed, 13 May 2020 07:52:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Ag7d1R4oU70+Y1dGMwgHYVRH8OdiIM2rnBAshx67Csg=;
+        b=NM/ixUgQ77MwmVFv32i2dIj/4IHwxgmq5ZhM4IPdxDPNFw/Xyrqmhv/4AiPJMIVHri
+         bHd4lqQWVL2Fd+P9oILIYjifQsnNF5G1cce5p06vNKHKHg0qFCEw7oxP2E7Ev+BgkNpa
+         onpn6Fj5kHqGbvJwXRhoHESFqrO0b21QLDOXSHIL6Q92VBuJUDMm7ciuumQyG56c+BEr
+         ndmkEJ5YwHkwRg9W3x8Rtq67T+l9DEVjv5Zn6lojDZ70dhluhGwDFiPTrqBNgqsS6+bo
+         dbPkeiCmQOy0Qax0+QaRnOqWevOHbh5P8NlXTv/VgguH21TdLBNf5enXG+Fc2rcD1Xmr
+         D4kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SAbLyrX15xBugrHqLh1DzP9lO+IcFmGTTH9e2AAiAfE=;
-        b=jYcXQOoF0Cu8lVuybGoomKrhrgs0ZOHM/5Myyw9zJJ6hitYZq0aVOl20BIlr0+i3s2
-         3yxMrjUo2CT8eHBgKuJmCkEpSGAXCYx4YDX+2haWOxOeKJjMRsKU37XWrS2zf6zl8v83
-         HC3QzHZemdenyoXz92xeMkMu1h+djoetJmvSlciV0kLg9/yPZA8WmYIk/UNwzL4HCk3v
-         OGdY8VIeRmETlkF+ZqnHcvsnQt6cK9ps9lp1/0yh0KiclAXCWC2P1+nArNRf0YqErn9U
-         AFiFyydpctPfP6Motq7O0fMRYhMru8wXXfGHOuA0k8xNazcciYS1qaoC2S0CeiJiToHv
-         XXeA==
-X-Gm-Message-State: AGi0PuZzGgMIF2KMJvOoY1fMKWkiIY6RbamobSNRZXUNCUzMfOIqeLFM
-        pWEumSpxRLleR+cRS+UK9Oy9/wGI/Ftwup8gPOw=
-X-Google-Smtp-Source: APiQypIg69c+IYHdIw/Uc0QagYnFp6R8j/4nzfZYarcmyaJHslCGTtx87TUZUMxDQftmuuwo+jaB7ub6AVOc9N1QV4A=
-X-Received: by 2002:a9d:6356:: with SMTP id y22mr7737375otk.167.1589381398522;
- Wed, 13 May 2020 07:49:58 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Ag7d1R4oU70+Y1dGMwgHYVRH8OdiIM2rnBAshx67Csg=;
+        b=Vy0+CoQwsbYzLBmY763cvyp8ICWL3u28aZgmvLL+glZok4OqS9sfUOAAtn/pwxQn9J
+         z8NZCkMx9PtonXIq/P1xpqfOFL8xLS3T3hqOjIdlYI5VzlICxE/i0U8qEgWpy6YPDGGB
+         Jb3ZtY/VcTvONhjMikLM39IQtCfaex66rqoyj3ty9/0ygHpA0TLV5HOOymSKVeKDfEQY
+         TYzry055zMlyKVrKWUolX81uhp8j0adGUlGv9Ykcf+f4i0bHavZ25hfk6FDGs2YpdpoV
+         1qPqWFAL+1TpHCFB+lg4UV6lLRX7nip9oWWEumqqt8/oW610vu9ALHM3dCIxQxoKC/98
+         ShhA==
+X-Gm-Message-State: AOAM530xMKOxVdK4GNaxaszkZBGPoXsqf9H/4eW8VmZf4MYeK6JOy99R
+        7t3tgugpLeogqxtHrJMxLBQRqLyPnJEojfVyaMc=
+X-Google-Smtp-Source: ABdhPJw1+ODS777zhwKBpaQ1DEPQH6Wiw1QS2RVxWHIW4/0lA/gYWBoN1piY+NdIWjdtMZAD/7nDVNuZ6f/ZvjCCAVY=
+X-Received: by 2002:a25:2e50:: with SMTP id b16mr19372364ybn.346.1589381547494;
+ Wed, 13 May 2020 07:52:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200511141055.43029-1-psampat@linux.ibm.com> <20200511141055.43029-2-psampat@linux.ibm.com>
- <20200512173722.GM2978@hirez.programming.kicks-ass.net> <09b8bf40-e371-e1eb-d77e-6c676f22dd29@linux.ibm.com>
-In-Reply-To: <09b8bf40-e371-e1eb-d77e-6c676f22dd29@linux.ibm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 13 May 2020 16:49:47 +0200
-Message-ID: <CAJZ5v0jOGRQv1EUEhkba30OKuS8aupdoGConKJH9C=R6DxptFA@mail.gmail.com>
-Subject: Re: [RFC 1/1] Weighted approach to gather and use history in TEO governor
-To:     Pratik Sampat <psampat@linux.ibm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Doug Smythies <dsmythies@telus.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
-        pratik.sampat@in.ibm.com, pratik.r.sampat@gmail.com
+From:   Jonas Falkevik <jonas.falkevik@gmail.com>
+Date:   Wed, 13 May 2020 16:52:16 +0200
+Message-ID: <CABUN9aCXZBTdYHSK5oSVX-HAA1wTWmyBW_ked_ydsCjsV-Ckaw@mail.gmail.com>
+Subject: [PATCH] sctp: check assoc before SCTP_ADDR_{MADE_PRIM,ADDED} event
+To:     Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-sctp@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Xin Long <lucien.xin@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 7:31 AM Pratik Sampat <psampat@linux.ibm.com> wrote:
->
-> Thanks for your comment.
->
->
-> On 12/05/20 11:07 pm, Peter Zijlstra wrote:
-> > Just a quick note..
-> >
-> > On Mon, May 11, 2020 at 07:40:55PM +0530, Pratik Rajesh Sampat wrote:
-> >
-> >> +    /*
-> >> +     * Rearrange the weight distribution of the state, increase the weight
-> >> +     * by the LEARNING RATE % for the idle state that was supposed to be
-> >> +     * chosen and reduce by the same amount for rest of the states
-> >> +     *
-> >> +     * If the weights are greater than (100 - LEARNING_RATE) % or lesser
-> >> +     * than LEARNING_RATE %, do not increase or decrease the confidence
-> >> +     * respectively
-> >> +     */
-> >> +    for (i = 0; i < drv->state_count; i++) {
-> >> +            unsigned int delta;
-> >> +
-> >> +            if (idx == -1)
-> >> +                    break;
-> >> +            if (i ==  idx) {
-> >> +                    delta = (LEARNING_RATE * cpu_data->state_mat[last_idx][i]) / 100;
-> > 100 is a crap number to divide by as a computer. We bio-puddings happend
-> > to have 10 digits, so 100 makes sense to us, but it does not to our
-> > binary friends.
-> >
-> >
-> Absolutely! I just wrote the code exactly the way I did the Math on paper,
-> definitely need to figure out an optimal way of doing things.
+Do not generate SCTP_ADDR_{MADE_PRIM,ADDED} events for SCTP_FUTURE_ASSOC assocs.
 
-There is no particular reason to use percent in computations at all.
-You may as well use 1/1024 parts instead (and then use shifts instead
-of divisions).
+These events are described in rfc6458#section-6.1
+SCTP_PEER_ADDR_CHANGE:
+This tag indicates that an address that is
+part of an existing association has experienced a change of
+state (e.g., a failure or return to service of the reachability
+of an endpoint via a specific transport address).
+
+Signed-off-by: Jonas Falkevik <jonas.falkevik@gmail.com>
+---
+ net/sctp/associola.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/net/sctp/associola.c b/net/sctp/associola.c
+index 437079a4883d..0c5dd295f9b8 100644
+--- a/net/sctp/associola.c
++++ b/net/sctp/associola.c
+@@ -432,8 +432,10 @@ void sctp_assoc_set_primary(struct sctp_association *asoc,
+         changeover = 1 ;
+
+     asoc->peer.primary_path = transport;
+-    sctp_ulpevent_nofity_peer_addr_change(transport,
+-                          SCTP_ADDR_MADE_PRIM, 0);
++    if (sctp_assoc2id(asoc) != SCTP_FUTURE_ASSOC)
++        sctp_ulpevent_nofity_peer_addr_change(transport,
++                              SCTP_ADDR_MADE_PRIM,
++                              0);
+
+     /* Set a default msg_name for events. */
+     memcpy(&asoc->peer.primary_addr, &transport->ipaddr,
+@@ -714,7 +716,10 @@ struct sctp_transport *sctp_assoc_add_peer(struct
+sctp_association *asoc,
+     list_add_tail_rcu(&peer->transports, &asoc->peer.transport_addr_list);
+     asoc->peer.transport_count++;
+
+-    sctp_ulpevent_nofity_peer_addr_change(peer, SCTP_ADDR_ADDED, 0);
++    if (sctp_assoc2id(asoc) != SCTP_FUTURE_ASSOC)
++        sctp_ulpevent_nofity_peer_addr_change(peer,
++                              SCTP_ADDR_ADDED,
++                              0);
+
+     /* If we do not yet have a primary path, set one.  */
+     if (!asoc->peer.primary_path) {
+--
+2.25.3
