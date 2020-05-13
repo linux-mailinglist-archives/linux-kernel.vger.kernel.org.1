@@ -2,79 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2C21D0A74
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 10:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7FF1D0AB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 10:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgEMIEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 04:04:41 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4402 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726092AbgEMIEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 04:04:40 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 74CA9CF991E077D90F12;
-        Wed, 13 May 2020 16:04:37 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Wed, 13 May 2020
- 16:04:30 +0800
-From:   Wu Bo <wubo40@huawei.com>
-To:     <kbusch@kernel.org>, <axboe@fb.com>, <hch@lst.de>,
-        <sagi@grimberg.me>
-CC:     <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <liuzhiqiang26@huawei.com>, <linfeilong@huawei.com>,
-        <wubo40@huawei.com>
-Subject: [RESENT PATCH V2] nvme/core:disable streams when get stream params failed
-Date:   Wed, 13 May 2020 16:18:13 +0800
-Message-ID: <1589357893-551688-1-git-send-email-wubo40@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1732054AbgEMIUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 04:20:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726092AbgEMIUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 04:20:18 -0400
+Received: from dragon (unknown [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 79D86205C9;
+        Wed, 13 May 2020 08:20:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589358018;
+        bh=emeq7Bm92V31yWuvxP5ydSOqrwXbpkdJSdTQeptas74=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wwJ0rauTL/sQKAj4as1KlCFju4oGiD025lSgoQ5hojWoxIovSjVfQRlN5stFSKP/m
+         jt68zokZJ7oVDIjOLwIDlgR4UHJKdnachvTl3jpzDj3cWX99EldhfYav/Z7oivgWAl
+         wWOUtYjJ8GSAe5Y+48fj3MhMUBfOS7qzsPc/wFSw=
+Date:   Wed, 13 May 2020 16:20:03 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        rui.zhang@intel.com, daniel.lezcano@linaro.org,
+        amit.kucheria@verdurent.com, robh+dt@kernel.org,
+        leonard.crestez@nxp.com, linux@rempel-privat.de, peng.fan@nxp.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, Linux-imx@nxp.com
+Subject: Re: [PATCH V5 1/2] dt-bindings: firmware: imx: Move system control
+ into dt-binding headfile
+Message-ID: <20200513082003.GD26997@dragon>
+References: <1587888704-7158-1-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1587888704-7158-1-git-send-email-Anson.Huang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After enable nvme streams, then if get stream params failed, 
-We should disable streams before return error in 
-nvme_configure_directives() function.
+On Sun, Apr 26, 2020 at 04:11:43PM +0800, Anson Huang wrote:
+> From: Dong Aisheng <aisheng.dong@nxp.com>
+> 
+> i.MX8 SoCs DTS file needs system control macro definitions, so move them
+> into dt-binding headfile, then include/linux/firmware/imx/types.h can be
+> removed and those drivers using it should be changed accordingly.
+> 
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> Signed-off-by: Jacky Bai <ping.bai@nxp.com>
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 
-Signed-off-by: Wu Bo <wubo40@huawei.com>
----
- drivers/nvme/host/core.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index f3c037f..29bef53 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -553,19 +553,22 @@ static int nvme_configure_directives(struct nvme_ctrl *ctrl)
- 
- 	ret = nvme_get_stream_params(ctrl, &s, NVME_NSID_ALL);
- 	if (ret)
--		return ret;
-+		goto out_disable_stream;
- 
- 	ctrl->nssa = le16_to_cpu(s.nssa);
- 	if (ctrl->nssa < BLK_MAX_WRITE_HINTS - 1) {
- 		dev_info(ctrl->device, "too few streams (%u) available\n",
- 					ctrl->nssa);
--		nvme_disable_streams(ctrl);
--		return 0;
-+		goto out_disable_stream;
- 	}
- 
- 	ctrl->nr_streams = min_t(unsigned, ctrl->nssa, BLK_MAX_WRITE_HINTS - 1);
- 	dev_info(ctrl->device, "Using %u streams\n", ctrl->nr_streams);
- 	return 0;
-+
-+out_disable_stream:
-+	nvme_disable_streams(ctrl);
-+	return ret;
- }
- 
- /*
--- 
-1.8.3.1
-
+Applied both, thanks.
