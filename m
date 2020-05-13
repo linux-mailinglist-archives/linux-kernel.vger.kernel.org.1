@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3961D099C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 09:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBC81D099D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 09:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730875AbgEMHLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 03:11:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58192 "EHLO mx2.suse.de"
+        id S1731646AbgEMHML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 03:12:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58540 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726020AbgEMHLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 03:11:44 -0400
+        id S1726020AbgEMHMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 03:12:10 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id B847BAC90;
-        Wed, 13 May 2020 07:11:44 +0000 (UTC)
-Subject: Re: [patch V5 01/38] x86/kvm/svm: Use uninstrumented wrmsrl() to
- restore GS
+        by mx2.suse.de (Postfix) with ESMTP id 25A31ACED;
+        Wed, 13 May 2020 07:12:11 +0000 (UTC)
+Subject: Re: [patch V5 02/38] x86/entry/64: Use native swapgs in
+ asm_native_load_gs_index()
 To:     Thomas Gleixner <tglx@linutronix.de>,
         LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -41,14 +41,14 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
 References: <20200512210059.056244513@linutronix.de>
- <20200512213809.492016025@linutronix.de>
+ <20200512213809.583980272@linutronix.de>
 From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <00ceab91-c86e-be17-0ac9-e4a45d8e7b25@suse.com>
-Date:   Wed, 13 May 2020 09:11:39 +0200
+Message-ID: <c266d480-b53e-a469-428a-eb3e3aa8a7e9@suse.com>
+Date:   Wed, 13 May 2020 09:12:07 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200512213809.492016025@linutronix.de>
+In-Reply-To: <20200512213809.583980272@linutronix.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -58,33 +58,13 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 12.05.20 23:01, Thomas Gleixner wrote:
-> On guest exit MSR_GS_BASE contains whatever the guest wrote to it and the
-> first action after returning from the ASM code is to set it to the host
-> kernel value. This uses wrmsrl() which is interesting at least.
+> When PARAVIRT_XXL is in use, then load_gs_index() uses
+> xen_load_gs_index() and (asm_))native_load_gs_index() is unused.
 > 
-> wrmsrl() is either using native_write_msr() or the paravirt variant. The
-> XEN_PV code is uninteresting as nested SVM in a XEN_PV guest does not work.
-> 
-> But native_write_msr() can be placed out of line by the compiler especially
-> when paravirtualization is enabled in the kernel configuration. The
-> function is marked notrace, but still can be probed if
-> CONFIG_KPROBE_EVENTS_ON_NOTRACE is enabled.
-> 
-> That would be a fatal problem as kprobe events use per-CPU variables which
-> are GS based and would be accessed with the guest GS. Depending on the GS
-> value this would either explode in colorful ways or lead to completely
-> undebugable data corruption.
-> 
-> Aside of that native_write_msr() contains a tracepoint which objtool
-> complains about as it is invoked from the noinstr section.
-> 
-> As this cannot run inside a XEN_PV guest there is no point in using
-> wrmsrl(). Use native_wrmsrl() instead which is just a plain native WRMSR
-> without tracing or anything else attached.
+> It's therefore pointless to use the paravirtualized SWAPGS implementation
+> in asm_native_load_gs_index(). Switch it to a plain swapgs.
 > 
 > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
 > Cc: Juergen Gross <jgross@suse.com>
 
 Acked-by: Juergen Gross <jgross@suse.com>
