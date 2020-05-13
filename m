@@ -2,186 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C3E1D16FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC841D16A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388840AbgEMOFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 10:05:11 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4838 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388325AbgEMOFL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 10:05:11 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id D722EC9559855ECE06E3;
-        Wed, 13 May 2020 22:05:00 +0800 (CST)
-Received: from host-suse12sp4.huawei.com (10.67.133.23) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 13 May 2020 22:04:50 +0800
-From:   Shijie Hu <hushijie3@huawei.com>
-To:     <mike.kravetz@oracle.com>
-CC:     <will@kernel.org>, <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <nixiaoming@huawei.com>, <wangxu72@huawei.com>,
-        <wangkefeng.wang@huawei.com>, <yangerkun@huawei.com>,
-        <wangle6@huawei.com>, <cg.chen@huawei.com>, <chenjie6@huawei.com>,
-        <alex.huangjianhui@huawei.com>
-Subject: [PATCH v4] hugetlbfs: Get unmapped area below TASK_UNMAPPED_BASE for hugetlbfs
-Date:   Wed, 13 May 2020 21:57:42 +0800
-Message-ID: <20200513135742.102064-1-hushijie3@huawei.com>
-X-Mailer: git-send-email 2.12.3
+        id S2388736AbgEMN6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387608AbgEMN6n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 09:58:43 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173CEC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 06:58:43 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id k110so13461017otc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 06:58:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XKVsm8+o6TWBeM8ddWuZqPxPRMMfRRMfxWfMoYOLd8o=;
+        b=Bh9kVRB6kF/GhfSyWtETid4E9wHv43XaApaVooXoGG3KtCGBncXa2KTeXQxRzEMFUk
+         ptqPaMh1EpA/UWNxL1LyDqrrJ+BXO13jqKYg9Jp0nU14JMEa1A1NiPDLnrZnWrrxKEnI
+         hGnJaFnOtgz6c6nKKiGTNUwxgDRr8pcvOtCOkFDQEy4R0QE/ED6dsnF7QRdDyFUEj9aR
+         S6iTcIVlwdRj6/0VyStHMyGb3IVfh89mKgjYS3h0l0zc+se7SR6rXjAzEWBmrp1fNCOi
+         vcdNsW1S01fV8KhME4yRPw6Vh3U2rTAViLFjDsa/HjopVg1lFmZ4gQ+vk/npuPG+q2Bx
+         qtcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XKVsm8+o6TWBeM8ddWuZqPxPRMMfRRMfxWfMoYOLd8o=;
+        b=Pi5epyqQpfgZOjoV7ZHBFMdjLavu3IaPVy3HbUvQGuwFFCILDV7hzIDjUoTgroMWd1
+         uDdiQp+6ZXGbJLdo21tjL6/3oI6aYRMhNuy7bNsUA8p5hyEzeDfgQOjzaIJfCX1EsZGV
+         dnE8qpayNgvtw2yCM29C5fBeqRHYouSSStYpsETb/jcpdWjdYxx851UQfP3J4+aVKe0t
+         v4lOzuyvkZsYnOrMoy0CmTNB+Lb8c1tcbDDW7Yqh8oTmkrGQUi3Izg6XxyWycp4QJP+1
+         kVamDpmID2p1FClJOSL+ewTVzBMr4HM7uId2/8QhCBtlEfi4A9PinTkj1gyjnpEoDtMr
+         u2YQ==
+X-Gm-Message-State: AGi0PubTwa58f6e7o2B6suZlejExOj98Ejoun70RUib5oO0E+gpotsxk
+        I2RkvhIZoJ9l/GciJogIZSfQax6EU9uxxVXfCgn8kA==
+X-Google-Smtp-Source: APiQypJAvYzkcjz+e408MEhqolljbG/GLTKVI77GJ4T6SVKnGE64i5TZXzLt6xTpoB/TB68drudQ4zRKJi6Q8Uv57FY=
+X-Received: by 2002:a9d:68c5:: with SMTP id i5mr19281082oto.251.1589378322170;
+ Wed, 13 May 2020 06:58:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.133.23]
-X-CFilter-Loop: Reflected
+References: <20200511204150.27858-1-will@kernel.org> <20200512081826.GE2978@hirez.programming.kicks-ass.net>
+ <CANpmjNNo3rhwqG=xEbpP9JiSd8-Faw8fkoUhYJjesHK5S5_KQQ@mail.gmail.com>
+ <20200512190755.GL2957@hirez.programming.kicks-ass.net> <CANpmjNNeSnrAgfkskE5Y0NNu3-DS6hk+SwjkBunrr8FRxwwT-Q@mail.gmail.com>
+ <20200513111057.GN2957@hirez.programming.kicks-ass.net> <CANpmjNMariz3-keqwUsLHVrpk2r7ThLSKtkhHxTDa3SEGeznhA@mail.gmail.com>
+ <20200513123243.GO2957@hirez.programming.kicks-ass.net> <20200513124021.GB20278@willie-the-truck>
+ <CANpmjNM5XW+ufJ6Mw2Tn7aShRCZaUPGcH=u=4Sk5kqLKyf3v5A@mail.gmail.com> <20200513132440.GN2978@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200513132440.GN2978@hirez.programming.kicks-ass.net>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 13 May 2020 15:58:30 +0200
+Message-ID: <CANpmjNM5dD1VH0hoQwsZYEL=mhWunKwAEJMQgASzHSN019OCnw@mail.gmail.com>
+Subject: Re: [PATCH v5 00/18] Rework READ_ONCE() to improve codegen
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Will Deacon <will@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here is a final patch to solve that hugetlb_get_unmapped_area() can't
-get unmapped area below mmap base for huge pages based on a few previous
-discussions and patches from me.
+On Wed, 13 May 2020 at 15:24, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, May 13, 2020 at 03:15:55PM +0200, Marco Elver wrote:
+> > So far so good, except: both __no_sanitize_or_inline and
+> > __no_kcsan_or_inline *do* avoid KCSAN instrumenting plain accesses, it
+> > just doesn't avoid explicit kcsan_check calls, like those in
+> > READ/WRITE_ONCE if KCSAN is enabled for the compilation unit. That's
+> > just because macros won't be redefined just for __no_sanitize
+> > functions. Similarly, READ_ONCE_NOCHECK does work as expected, and its
+> > access is unchecked.
+> >
+> > This will have the expected result:
+> > __no_sanitize_or_inline void foo(void) { x++; } // no data races reported
+> >
+> > This will not work as expected:
+> > __no_sanitize_or_inline void foo(void) { READ_ONCE(x); }  // data
+> > races are reported
+> >
+> > All this could be fixed if GCC devs would finally take my patch to
+> > make -fsanitize=thread distinguish volatile [1], but then we have to
+> > wait ~years for the new compilers to reach us. So please don't hold
+> > your breath for this one any time soon.
+> > [1] https://gcc.gnu.org/pipermail/gcc-patches/2020-April/544452.html
+>
+> Right, but that does not address the much larger issue of the attribute
+> vs inline tranwreck :/
 
-I'm so sorry. When sending v2 and v3 patches, I forget to cc:
-linux-mm@kvack.org and linux-kernel@vger.kernel.org. No records of these
-two patches found on the https://lkml.org/lkml/.
+Could you check if Clang is equally broken for you? I think GCC and
+Clang have differing behaviour on this. No idea what it takes to fix
+GCC though.
 
-Patch V1: https://lkml.org/lkml/2020/4/27/440
+> Also, could not this compiler instrumentation live as a kernel specific
+> GCC-plugin instead of being part of GCC proper? Because in that case,
+> we'd have much better control over it.
 
-Changes in V2:
-* Follow Mike's suggestions, move hugetlb_get_unmapped_area() routines
-from "fs/hugetlbfs/inode.c" to "arch/arm64/mm/hugetlbpage.c", without
-changing core code.
-* Add mmap_is_legacy() function, and only fall back to the bottom-up
-function on no-legacy mode.
+I'd like it if we could make it a GCC-plugin for GCC, but how? I don't
+see a way to affect TSAN instrumentation. FWIW Clang already has
+distinguish-volatile support (unreleased Clang 11).
 
-Changes in V3:
-* Add *bottomup() and *topdown() two function, and check if
-mm->get_unmapped_area is equal to arch_get_unmapped_area() instead of
-checking mmap_is_legacy() to determine which function should be used.
-
-Changes in V4:
-* Follow the suggestions of Will and Mike, move back this patch to core
-code.
-
-------
-
-In a 32-bit program, running on arm64 architecture. When the address
-space below mmap base is completely exhausted, shmat() for huge pages
-will return ENOMEM, but shmat() for normal pages can still success on
-no-legacy mode. This seems not fair.
-
-For normal pages, get_unmapped_area() calling flows are:
-    => mm->get_unmapped_area()
-	if on legacy mode,
-	    => arch_get_unmapped_area()
-			=> vm_unmapped_area()
-	if on no-legacy mode,
-	    => arch_get_unmapped_area_topdown()
-			=> vm_unmapped_area()
-
-For huge pages, get_unmapped_area() calling flows are:
-    => file->f_op->get_unmapped_area()
-		=> hugetlb_get_unmapped_area()
-			=> vm_unmapped_area()
-
-To solve this issue, we only need to make hugetlb_get_unmapped_area() take
-the same way as mm->get_unmapped_area(). Add *bottomup() and *topdown()
-two functions, and check current mm->get_unmapped_area() to decide which 
-one to use. If mm->get_unmapped_area is equal to arch_get_unmapped_area(),
-hugetlb_get_unmapped_area() calls bottomup routine, otherwise calls topdown
-routine.
-
-Signed-off-by: Shijie Hu <hushijie3@huawei.com>
----
- fs/hugetlbfs/inode.c | 61 +++++++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 53 insertions(+), 8 deletions(-)
-
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 991c60c7ffe0..bbee893e88da 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -191,13 +191,60 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 
- #ifndef HAVE_ARCH_HUGETLB_UNMAPPED_AREA
- static unsigned long
-+hugetlb_get_unmapped_area_bottomup(struct file *file, unsigned long addr,
-+		unsigned long len, unsigned long pgoff, unsigned long flags)
-+{
-+	struct hstate *h = hstate_file(file);
-+	struct vm_unmapped_area_info info;
-+
-+	info.flags = 0;
-+	info.length = len;
-+	info.low_limit = current->mm->mmap_base;
-+	info.high_limit = TASK_SIZE;
-+	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
-+	info.align_offset = 0;
-+	return vm_unmapped_area(&info);
-+}
-+
-+static unsigned long
-+hugetlb_get_unmapped_area_topdown(struct file *file, unsigned long addr,
-+		unsigned long len, unsigned long pgoff, unsigned long flags)
-+{
-+	struct hstate *h = hstate_file(file);
-+	struct vm_unmapped_area_info info;
-+
-+	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
-+	info.length = len;
-+	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
-+	info.high_limit = current->mm->mmap_base;
-+	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
-+	info.align_offset = 0;
-+	addr = vm_unmapped_area(&info);
-+
-+	/*
-+	 * A failed mmap() very likely causes application failure,
-+	 * so fall back to the bottom-up function here. This scenario
-+	 * can happen with large stack limits and large mmap()
-+	 * allocations.
-+	 */
-+	if (unlikely(offset_in_page(addr))) {
-+		VM_BUG_ON(addr != -ENOMEM);
-+		info.flags = 0;
-+		info.low_limit = current->mm->mmap_base;
-+		info.high_limit = TASK_SIZE;
-+		addr = vm_unmapped_area(&info);
-+	}
-+
-+	return addr;
-+}
-+
-+static unsigned long
- hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
- 		unsigned long len, unsigned long pgoff, unsigned long flags)
- {
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
- 	struct hstate *h = hstate_file(file);
--	struct vm_unmapped_area_info info;
- 
- 	if (len & ~huge_page_mask(h))
- 		return -EINVAL;
-@@ -218,13 +265,11 @@ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
- 			return addr;
- 	}
- 
--	info.flags = 0;
--	info.length = len;
--	info.low_limit = TASK_UNMAPPED_BASE;
--	info.high_limit = TASK_SIZE;
--	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
--	info.align_offset = 0;
--	return vm_unmapped_area(&info);
-+	if (mm->get_unmapped_area == arch_get_unmapped_area)
-+		return hugetlb_get_unmapped_area_bottomup(file, addr, len,
-+				pgoff, flags);
-+	return hugetlb_get_unmapped_area_topdown(file, addr, len,
-+			pgoff, flags);
- }
- #endif
- 
--- 
-2.12.3
-
+Thanks,
+-- Marco
