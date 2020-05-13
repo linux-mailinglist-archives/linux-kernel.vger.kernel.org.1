@@ -2,106 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777151D04C6
+	by mail.lfdr.de (Postfix) with ESMTP id 00A181D04C5
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 04:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728656AbgEMCTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 22:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728571AbgEMCTh (ORCPT
+        id S1728627AbgEMCTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 22:19:40 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:39141 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727792AbgEMCTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 May 2020 22:19:37 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28AA2C061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 19:19:36 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id u5so4476807pgn.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 19:19:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XY9o4PMaJYaO2R8EhFQqhMvaTSOOlIIvMuAUeMmeUOI=;
-        b=C8Aco4ESAdgnHiLfDM2byt4dDD+oa/T+cWmKnu8BQYbhBo6LRp9U1jMyyluLEMl2cJ
-         sxeleYRnu1D4cNv6opkhro4gi0u/jMF3bwtdRz/kOMwIwaQEBeQVXNq25/YQTHF9VEAW
-         jDUT22MkDElv7Dhtkr+wbPANacbcs1eITwizU=
+        Tue, 12 May 2020 22:19:34 -0400
+Received: by mail-oi1-f195.google.com with SMTP id b18so20132823oic.6;
+        Tue, 12 May 2020 19:19:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XY9o4PMaJYaO2R8EhFQqhMvaTSOOlIIvMuAUeMmeUOI=;
-        b=t1ruAUrPQ4il6X4HrlF65n+3Pwj/u3dG2cRd4fFaAF4FeVlwh3dX8J09YdN3vLv/w1
-         9qxgLIt4OyG6Iz1JjQ6fXWyHpGikD/V/lf67XEfnhdHS9USMQ8tucfkPG5YGL+ertK7P
-         8r+TRKVGPa5g8UDkQMtV5e+3ZH5NX8JV4MZKtvhDdmG5XAwa2T27/50qI9tIgvX6m6Pu
-         77KHLyUNCCYuzGQlW9R5R3sBPzY5Pc8HgyEmh/bGvs3SCBarWo20u2R6hpUVSjoSz1vx
-         1+5tiLMkQC3JFPswcHWnnYGjcemeON27ZMBn0Rz4RAP7NACoBc0Y8Fd//dkSnitK4R51
-         zGLw==
-X-Gm-Message-State: AGi0PuYCz//0rP9r9zZN7aMPOT1WQg4X1rfuVrqSOI3hVdgnl63I6gH+
-        wBxf3iuJ4o+SbfEjZZvoESEUpw==
-X-Google-Smtp-Source: APiQypJfcGRTCMS+eutRkjoY4piQYyahEUu2m7R3wSh9zeupmG5+5vbUl4+CAShJOgLPjgj4uWsz9Q==
-X-Received: by 2002:a63:d60a:: with SMTP id q10mr22951807pgg.37.1589336375736;
-        Tue, 12 May 2020 19:19:35 -0700 (PDT)
-Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:e09a:8d06:a338:aafb])
-        by smtp.gmail.com with ESMTPSA id w2sm14170600pja.53.2020.05.12.19.19.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hVIvDXLUWV7kCm1sjwCAhS0B4yNvu2YKfopgdqGQAZM=;
+        b=DNz9MLmAEAmyEayY0k9/L8yyDhKkZmSuIK7e/2cO4AhxMI71EBeAiS/xtdgZEDC/xs
+         39OGn5AAtG3ToF3BEZCIqYykLAkyAgaIyNdYnhctyS3EjWt/HSyxJWvrvCvTLzXc+7y8
+         u7HKuUjsoz2dlc3rL0WPKYNcw9WD1RWuIEnv4EzWAL7ufcsVKdfuUDYVkA+lVOrp0+89
+         wVJjpqP4OLc5avLuCBJEeSMKKAjrY5JS2hIt0QHs/gPzZVsZjdzF88v8S8Lvl4hnkQTV
+         teA81iEmHMUY/pNeBYV5KZcvL5BS7atPu03YUtLDrDdoPRubGGlVCa4IKaci82qp4+PS
+         BIWA==
+X-Gm-Message-State: AGi0PuaSmxxSoPMXOYonUMVC7OulY5kJfDAH0n9QIkRHQDyEiFeGayp6
+        qQR5cDZfUhs4JUd4QL4W9A==
+X-Google-Smtp-Source: APiQypJpNb4ewDOcjTfOthSaYZtYSP9GLgvpWY9I43vl5aq8csUZu6D+yKwBUHo5BLkimepu0pqGvw==
+X-Received: by 2002:a05:6808:24e:: with SMTP id m14mr24102696oie.116.1589336373601;
+        Tue, 12 May 2020 19:19:33 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h24sm3910147otj.25.2020.05.12.19.19.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 19:19:35 -0700 (PDT)
-From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-To:     marcel@holtmann.org, linux-bluetooth@vger.kernel.org
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] Bluetooth: btusb: Implement hdev->prevent_wake
-Date:   Tue, 12 May 2020 19:19:27 -0700
-Message-Id: <20200512191838.3.Ic08447a6d2fa9668ae0f2f485db5c3c5d1bee39e@changeid>
-X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
-In-Reply-To: <20200513021927.115700-1-abhishekpandit@chromium.org>
-References: <20200513021927.115700-1-abhishekpandit@chromium.org>
+        Tue, 12 May 2020 19:19:33 -0700 (PDT)
+Received: (nullmailer pid 15333 invoked by uid 1000);
+        Wed, 13 May 2020 02:19:32 -0000
+Date:   Tue, 12 May 2020 21:19:32 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Alain Volmat <alain.volmat@st.com>
+Cc:     wsa@kernel.org, mark.rutland@arm.com, pierre-yves.mordret@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        fabrice.gasnier@st.com
+Subject: Re: [PATCH 3/4] dt-bindings: i2c-stm32: add SMBus Alert bindings
+Message-ID: <20200513021932.GA9172@bogus>
+References: <1588657871-14747-1-git-send-email-alain.volmat@st.com>
+ <1588657871-14747-4-git-send-email-alain.volmat@st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1588657871-14747-4-git-send-email-alain.volmat@st.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement the prevent_wake hook by checking device_may_wakeup on the usb
-interface. This prevents the Bluetooth core from enabling scanning when
-the device isn't expected to wake from suspend.
+On Tue, May 05, 2020 at 07:51:10AM +0200, Alain Volmat wrote:
+> Add a new binding of the i2c-stm32f7 driver to enable the handling
+> of the SMBUS-Alert
+> 
+> Signed-off-by: Alain Volmat <alain.volmat@st.com>
+> ---
+>  Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
+> index b50a2f420b36..04c0882c3661 100644
+> --- a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
+> +++ b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
+> @@ -36,6 +36,10 @@ allOf:
+>                  minItems: 3
+>                  maxItems: 3
+>  
+> +        st,smbus-alert:
+> +          description: Enable the SMBus Alert feature
+> +          $ref: /schemas/types.yaml#/definitions/flag
+> +
 
-Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Reviewed-by: Alain Michaud <alainm@chromium.org>
----
+We already have smbus_alert interrupt. Can't you just check for this in 
+the slave nodes and enable if found?
 
- drivers/bluetooth/btusb.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 8ae3ad7a60131..c17359c0e3201 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3698,6 +3698,13 @@ static void btusb_check_needs_reset_resume(struct usb_interface *intf)
- 		interface_to_usbdev(intf)->quirks |= USB_QUIRK_RESET_RESUME;
- }
- 
-+static bool btusb_prevent_wake(struct hci_dev *hdev)
-+{
-+	struct btusb_data *data = hci_get_drvdata(hdev);
-+
-+	return !device_may_wakeup(&data->udev->dev);
-+}
-+
- static int btusb_probe(struct usb_interface *intf,
- 		       const struct usb_device_id *id)
- {
-@@ -3831,6 +3838,7 @@ static int btusb_probe(struct usb_interface *intf,
- 	hdev->flush  = btusb_flush;
- 	hdev->send   = btusb_send_frame;
- 	hdev->notify = btusb_notify;
-+	hdev->prevent_wake = btusb_prevent_wake;
- 
- #ifdef CONFIG_PM
- 	err = btusb_config_oob_wake(hdev);
--- 
-2.26.2.645.ge9eca65c58-goog
-
+>    - if:
+>        properties:
+>          compatible:
+> -- 
+> 2.17.1
+> 
