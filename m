@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FCF1D0CC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9AC51D0F14
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732920AbgEMJrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:47:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45450 "EHLO mail.kernel.org"
+        id S2388687AbgEMKEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 06:04:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732869AbgEMJra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:47:30 -0400
+        id S1732894AbgEMJrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:47:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 51E0423126;
-        Wed, 13 May 2020 09:47:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5B232078C;
+        Wed, 13 May 2020 09:47:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363249;
-        bh=tuNb+NYMQBnQMFewZOaFo7HcYsYxZ9JgcdnhsXbA1VA=;
+        s=default; t=1589363259;
+        bh=twbmB15laeg2s2WH+3sd8ZjdGuGH39wXrzDitwnqjzE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z3QIMh/NjsqnVK5kbCFa+iGDgyordT/FKhW5W/wYgzhH+FJBu6aCiVKQJ9lfRTVtP
-         aCiISXEpA2f+DP0rOS82bGmXBr3gxUuiltTaEWLlzbQBlj+mYYNBLpSV4GdJH0SuHc
-         ShAWsXjV7oC/h3Csfl7zM2Pl691JO8Zc5/Nf9cZc=
+        b=tvG0HgazuGrS19EpKZ2v8LDby7cQaPqeuKvHjtxZkWsDIcC9P3TtAcUB1o/Ms7gKH
+         c5+CA/6CJPDtw/qEv/ppFSU3i44aOBBbM5QscRvIYd3oVX8WR30gwXU4qfn0Z4h9rH
+         +Fy7HJobc3LjECGNgdkabQ+qZYT1giTd4lhv50R4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gerecke <jason.gerecke@wacom.com>,
-        Aaron Armstrong Skomra <aaron.skomra@wacom.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jere=20Lepp=C3=A4nen?= <jere.leppanen@nokia.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.19 19/48] HID: wacom: Read HID_DG_CONTACTMAX directly for non-generic devices
-Date:   Wed, 13 May 2020 11:44:45 +0200
-Message-Id: <20200513094355.775789347@linuxfoundation.org>
+Subject: [PATCH 4.19 20/48] sctp: Fix bundling of SHUTDOWN with COOKIE-ACK
+Date:   Wed, 13 May 2020 11:44:46 +0200
+Message-Id: <20200513094356.037688991@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
 References: <20200513094351.100352960@linuxfoundation.org>
@@ -45,48 +46,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gerecke <jason.gerecke@wacom.com>
+From: Jere Leppänen <jere.leppanen@nokia.com>
 
-commit 778fbf4179991e7652e97d7f1ca1f657ef828422 upstream.
+commit 145cb2f7177d94bc54563ed26027e952ee0ae03c upstream.
 
-We've recently switched from extracting the value of HID_DG_CONTACTMAX
-at a fixed offset (which may not be correct for all tablets) to
-injecting the report into the driver for the generic codepath to handle.
-Unfortunately, this change was made for *all* tablets, even those which
-aren't generic. Because `wacom_wac_report` ignores reports from non-
-generic devices, the contact count never gets initialized. Ultimately
-this results in the touch device itself failing to probe, and thus the
-loss of touch input.
+When we start shutdown in sctp_sf_do_dupcook_a(), we want to bundle
+the SHUTDOWN with the COOKIE-ACK to ensure that the peer receives them
+at the same time and in the correct order. This bundling was broken by
+commit 4ff40b86262b ("sctp: set chunk transport correctly when it's a
+new asoc"), which assigns a transport for the COOKIE-ACK, but not for
+the SHUTDOWN.
 
-This commit adds back the fixed-offset extraction for non-generic devices.
+Fix this by passing a reference to the COOKIE-ACK chunk as an argument
+to sctp_sf_do_9_2_start_shutdown() and onward to
+sctp_make_shutdown(). This way the SHUTDOWN chunk is assigned the same
+transport as the COOKIE-ACK chunk, which allows them to be bundled.
 
-Link: https://github.com/linuxwacom/input-wacom/issues/155
-Fixes: 184eccd40389 ("HID: wacom: generic: read HID_DG_CONTACTMAX from any feature report")
-Signed-off-by: Jason Gerecke <jason.gerecke@wacom.com>
-Reviewed-by: Aaron Armstrong Skomra <aaron.skomra@wacom.com>
-CC: stable@vger.kernel.org # 5.3+
-Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+In sctp_sf_do_9_2_start_shutdown(), the void *arg parameter was
+previously unused. Now that we're taking it into use, it must be a
+valid pointer to a chunk, or NULL. There is only one call site where
+it's not, in sctp_sf_autoclose_timer_expire(). Fix that too.
+
+Fixes: 4ff40b86262b ("sctp: set chunk transport correctly when it's a new asoc")
+Signed-off-by: Jere Leppänen <jere.leppanen@nokia.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/hid/wacom_sys.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/sctp/sm_statefuns.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/hid/wacom_sys.c
-+++ b/drivers/hid/wacom_sys.c
-@@ -290,9 +290,11 @@ static void wacom_feature_mapping(struct
- 			data[0] = field->report->id;
- 			ret = wacom_get_report(hdev, HID_FEATURE_REPORT,
- 					       data, n, WAC_CMD_RETRIES);
--			if (ret == n) {
-+			if (ret == n && features->type == HID_GENERIC) {
- 				ret = hid_report_raw_event(hdev,
- 					HID_FEATURE_REPORT, data, n, 0);
-+			} else if (ret == 2 && features->type != HID_GENERIC) {
-+				features->touch_max = data[1];
- 			} else {
- 				features->touch_max = 16;
- 				hid_warn(hdev, "wacom_feature_mapping: "
+--- a/net/sctp/sm_statefuns.c
++++ b/net/sctp/sm_statefuns.c
+@@ -1880,7 +1880,7 @@ static enum sctp_disposition sctp_sf_do_
+ 		 */
+ 		sctp_add_cmd_sf(commands, SCTP_CMD_REPLY, SCTP_CHUNK(repl));
+ 		return sctp_sf_do_9_2_start_shutdown(net, ep, asoc,
+-						     SCTP_ST_CHUNK(0), NULL,
++						     SCTP_ST_CHUNK(0), repl,
+ 						     commands);
+ 	} else {
+ 		sctp_add_cmd_sf(commands, SCTP_CMD_NEW_STATE,
+@@ -5483,7 +5483,7 @@ enum sctp_disposition sctp_sf_do_9_2_sta
+ 	 * in the Cumulative TSN Ack field the last sequential TSN it
+ 	 * has received from the peer.
+ 	 */
+-	reply = sctp_make_shutdown(asoc, NULL);
++	reply = sctp_make_shutdown(asoc, arg);
+ 	if (!reply)
+ 		goto nomem;
+ 
+@@ -6081,7 +6081,7 @@ enum sctp_disposition sctp_sf_autoclose_
+ 	disposition = SCTP_DISPOSITION_CONSUME;
+ 	if (sctp_outq_is_empty(&asoc->outqueue)) {
+ 		disposition = sctp_sf_do_9_2_start_shutdown(net, ep, asoc, type,
+-							    arg, commands);
++							    NULL, commands);
+ 	}
+ 
+ 	return disposition;
 
 
