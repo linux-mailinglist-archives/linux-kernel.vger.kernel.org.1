@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12271D0D10
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5F51D0F0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733306AbgEMJtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:49:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49036 "EHLO mail.kernel.org"
+        id S2388671AbgEMKET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 06:04:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733282AbgEMJtp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:49:45 -0400
+        id S1732924AbgEMJrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:47:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AFF1B206D6;
-        Wed, 13 May 2020 09:49:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DFE72492D;
+        Wed, 13 May 2020 09:47:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363385;
-        bh=DRnfapKAHniPBH4Zid0FNAbb9Jm5YcXFpjFxVu5RRS0=;
+        s=default; t=1589363266;
+        bh=FhvBPJNLASY6lwiZHMtDLrA+Rzd1BcGIVp+X4GlC4p0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O2AXu/74cl42d1kcA+raWguqEQdD2ABCx/QVfANaLKNC+2eYmEpS3A1oa9lmbBwbY
-         l0OUmQGzFfiQG6qSyRsaag9vuCH5IgrB7MWyda8qajjhQi9zu9AxeL1saSnG67ZiMh
-         /74IFJ/WX00wq4pi7lUgldAcEx8A/IKwUeVMOD9o=
+        b=uyKqZ9oRmCeDj2f2luzYXtopV0qkeRl1ye1gjhwJY7jSi5yPQg73Xq4Z+XHVBObhW
+         xXUO/gBv1/CeFnWA/9NMVKpCu8MoDcKVkxdwjxXbmbZ9AZ8MMkFRQIm2AC9U8oB/dc
+         GYQmg98eRDRtXhoaTbrHQfBNYNYuX+59OpfZ0dWk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Andr=C3=A9=20Przywara?= <andre.przywara@arm.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.4 53/90] KVM: arm: vgic: Fix limit condition when writing to GICD_I[CS]ACTIVER
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        Johan Hovold <johan@kernel.org>,
+        syzbot+d29e9263e13ce0b9f4fd@syzkaller.appspotmail.com
+Subject: [PATCH 4.19 23/48] USB: serial: garmin_gps: add sanity checking for data length
 Date:   Wed, 13 May 2020 11:44:49 +0200
-Message-Id: <20200513094414.397113042@linuxfoundation.org>
+Message-Id: <20200513094356.758557175@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
-References: <20200513094408.810028856@linuxfoundation.org>
+In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
+References: <20200513094351.100352960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Oliver Neukum <oneukum@suse.com>
 
-commit 1c32ca5dc6d00012f0c964e5fdd7042fcc71efb1 upstream.
+commit e9b3c610a05c1cdf8e959a6d89c38807ff758ee6 upstream.
 
-When deciding whether a guest has to be stopped we check whether this
-is a private interrupt or not. Unfortunately, there's an off-by-one bug
-here, and we fail to recognize a whole range of interrupts as being
-global (GICv2 SPIs 32-63).
+We must not process packets shorter than a packet ID
 
-Fix the condition from > to be >=.
-
-Cc: stable@vger.kernel.org
-Fixes: abd7229626b93 ("KVM: arm/arm64: Simplify active_change_prepare and plug race")
-Reported-by: André Przywara <andre.przywara@arm.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Reported-and-tested-by: syzbot+d29e9263e13ce0b9f4fd@syzkaller.appspotmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- virt/kvm/arm/vgic/vgic-mmio.c |    4 ++--
+ drivers/usb/serial/garmin_gps.c |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/virt/kvm/arm/vgic/vgic-mmio.c
-+++ b/virt/kvm/arm/vgic/vgic-mmio.c
-@@ -389,7 +389,7 @@ static void vgic_mmio_change_active(stru
- static void vgic_change_active_prepare(struct kvm_vcpu *vcpu, u32 intid)
- {
- 	if (vcpu->kvm->arch.vgic.vgic_model == KVM_DEV_TYPE_ARM_VGIC_V3 ||
--	    intid > VGIC_NR_PRIVATE_IRQS)
-+	    intid >= VGIC_NR_PRIVATE_IRQS)
- 		kvm_arm_halt_guest(vcpu->kvm);
- }
+--- a/drivers/usb/serial/garmin_gps.c
++++ b/drivers/usb/serial/garmin_gps.c
+@@ -1138,8 +1138,8 @@ static void garmin_read_process(struct g
+ 		   send it directly to the tty port */
+ 		if (garmin_data_p->flags & FLAGS_QUEUING) {
+ 			pkt_add(garmin_data_p, data, data_length);
+-		} else if (bulk_data ||
+-			   getLayerId(data) == GARMIN_LAYERID_APPL) {
++		} else if (bulk_data || (data_length >= sizeof(u32) &&
++				getLayerId(data) == GARMIN_LAYERID_APPL)) {
  
-@@ -397,7 +397,7 @@ static void vgic_change_active_prepare(s
- static void vgic_change_active_finish(struct kvm_vcpu *vcpu, u32 intid)
- {
- 	if (vcpu->kvm->arch.vgic.vgic_model == KVM_DEV_TYPE_ARM_VGIC_V3 ||
--	    intid > VGIC_NR_PRIVATE_IRQS)
-+	    intid >= VGIC_NR_PRIVATE_IRQS)
- 		kvm_arm_resume_guest(vcpu->kvm);
- }
- 
+ 			spin_lock_irqsave(&garmin_data_p->lock, flags);
+ 			garmin_data_p->flags |= APP_RESP_SEEN;
 
 
