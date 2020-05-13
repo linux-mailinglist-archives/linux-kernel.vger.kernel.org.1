@@ -2,106 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F431D08FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 08:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE391D090A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 08:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729788AbgEMGut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 02:50:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729367AbgEMGut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 02:50:49 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 339AE20708;
-        Wed, 13 May 2020 06:50:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589352648;
-        bh=wim/3pCx9DK4B0YG8gKaM83yFjabLaHMvWcVqY4/4HQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ABPoje9RFWk8hFzzmHAuKhl2ETW1ZOzLN1lmp1u6iBwSFTi8c0KiQ6PqL0bW4fFIA
-         oW5IRrwXAdQpO8nZL9Jbm7qRwzkiebxybVvfJzwAs4NoIX8w+gQDegVnPcHezm6Fpl
-         Xn5dSBmjsdYeM5Qsj81AZX1ItVRy8TV3dsF9DIlI=
-Date:   Wed, 13 May 2020 08:50:46 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Desmond Yan <desmond.yan@broadcom.com>,
-        James Hu <james.hu@broadcom.com>
-Subject: Re: [PATCH v5 6/7] misc: bcm-vk: add Broadcom VK driver
-Message-ID: <20200513065046.GA764247@kroah.com>
-References: <20200508002739.19360-1-scott.branden@broadcom.com>
- <20200508002739.19360-7-scott.branden@broadcom.com>
- <20200513003830.GJ11244@42.do-not-panic.com>
- <60372b2f-c03d-6384-43a7-8b97413b6672@broadcom.com>
+        id S1729904AbgEMGvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 02:51:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729367AbgEMGvk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 02:51:40 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83852C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 23:51:40 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id g20so4670070qvb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 23:51:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e6QbSlNOUjKcG/ZMZ3XtXHK+IfmeCzylC8Xkh73q0Aw=;
+        b=MVQ6mRj0yNs3gHcYY1RhK7VD4fpo64JAOOyD3f9QApNHT5ECfY+bzA0iu4QBJTzYGj
+         sA7TY7dhSyq2eZ3vCVhqHAasszCcpxlanbJ4PJmu+fgoh6Jc0ib1eNbQCgx51n87cV1N
+         MOer2/trIkbKluf0nZZ5UsxSJZFCjjGMX3ntmF0SGx2sfsHqQ9Xw7ZdryxDMzlPnJvxi
+         +6Oc1Ex9QvdOZvGWuqY3FBHWZjufRAUNJNetSevZIZO+CkK4J1WPd4yTXRIohwE55qZt
+         nKVakGPU/7m2ky+3FKJ3ne82FeecYwDpaVUs1bWJowijAAVPkaIPhV6imjhEENxutcLW
+         Q3fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e6QbSlNOUjKcG/ZMZ3XtXHK+IfmeCzylC8Xkh73q0Aw=;
+        b=JUDM4yGuUxUDYN4aa6BU8sw4FDeZRIh+SBHjFlDdWsHRissIh81m67mi/snpiUScRH
+         l2fZHz7HOPh0TzkPbcCdQkEVa3Rk3FMFoptmNjVsYxLg4WzvEoVUauOkPCzvfZFupi/G
+         Oz7TmNJfQg9qM+xJUQz+J+e+O2pWHgIfBapOPfPovp8uRTrihUTUTgFmQQmL7P8JynPW
+         VcQSvs3aLvjVopJDM5AdWo8A55+2Br7A+19o1ppP3KybFJ/7DrAnSEEdU1N3fdsomqXk
+         41UePPJBn7oJdjTI7GyWcYQxOt5ij36sA7TqAGxCyHWTvmaK3sgSMj7dNKSXjR2cYBHC
+         +eLw==
+X-Gm-Message-State: AOAM532ThMlw/S5kESIwgPYca8zzvQZM7YcngLhd7UrPBQMVHLBC5Cbj
+        B5Od9gUqHngRmfJ/Hs/dFH1OnTuRgtTBc0QprwVs6w==
+X-Google-Smtp-Source: ABdhPJzBnUTR6RvAjncvdb7vGMZz94R3H7YmuTqlHzue8QlAYuySzcqHBeO3N/Rhg2Akb9/rP06VmQA6b5coJoEpJ4o=
+X-Received: by 2002:a0c:f153:: with SMTP id y19mr909681qvl.22.1589352699379;
+ Tue, 12 May 2020 23:51:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <60372b2f-c03d-6384-43a7-8b97413b6672@broadcom.com>
+References: <20200511023111.15310-1-walter-zh.wu@mediatek.com>
+ <CACT4Y+YWNwTSoheJhc3nMdQi9m719F3PzpGo3TfRY3zAg9EwuQ@mail.gmail.com>
+ <CACT4Y+bO1Zg_jgFHbOWgp7fLAADOQ_-AZmjEHz0WG7=oyOt4Gg@mail.gmail.com>
+ <1589203771.21284.22.camel@mtksdccf07> <CACT4Y+aOkuH6Dn+L+wv1qVOLgXyCY_Ck4hecAMw3DgyBgC9qHw@mail.gmail.com>
+ <1589254720.19238.36.camel@mtksdccf07> <CACT4Y+aibZEBR-3bos3ox5Tuu48TnHC20mDDN0AkWeRUKrT0aw@mail.gmail.com>
+ <1589334472.19238.44.camel@mtksdccf07>
+In-Reply-To: <1589334472.19238.44.camel@mtksdccf07>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 13 May 2020 08:51:27 +0200
+Message-ID: <CACT4Y+Zv3rCZs8z56NHM0hHWMwQr_2AT8nx0vUigzMG2v3Rt8Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] rcu/kasan: record and print call_rcu() call stack
+To:     Walter Wu <walter-zh.wu@mediatek.com>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 11:31:28PM -0700, Scott Branden wrote:
-> Hi Luis,
-> 
-> On 2020-05-12 5:38 p.m., Luis Chamberlain wrote:
-> > On Thu, May 07, 2020 at 05:27:38PM -0700, Scott Branden wrote:
-> > > +#if defined(CONFIG_REQ_FW_INTO_BUF_PRIV)
-> > > +
-> > > +#define KERNEL_PREAD_FLAG_PART	0x0001 /* Allow reading part of file */
-> > > +#define REQUEST_FIRMWARE_INTO_BUF request_firmware_into_buf_priv
-> > > +int request_firmware_into_buf_priv(const struct firmware **firmware_p,
-> > > +				   const char *name, struct device *device,
-> > > +				   void *buf, size_t size,
-> > > +				   size_t offset, unsigned int pread_flags);
-> > > +
-> > > +#else
-> > > +
-> > > +#define REQUEST_FIRMWARE_INTO_BUF request_firmware_into_buf
-> > > +
-> > > +#endif
-> > > +
-> > > +#endif
-> > Please clean this up, the code must reflect only the code upstream. No
-> > config stuff like this should be used on the driver. I had to stop my
-> > review here.
-> The CONFIG_ prefix shouldn't have been there as there is no Kconfig option
-> to select this.
-> Would like to just change it to a normal define without CONFIG_ prefix
-> instead?
-> This code is here to allow a limited version of the driver to run on older
-> kernels which do not have the necessary partial file read support.
-> By having it in the upstream codebase we don't need to maintain an internal
-> version of the driver.  User can take the upstream kernel module and compile
-> it against an old version of the kernel by via the define.
+On Wed, May 13, 2020 at 3:48 AM Walter Wu <walter-zh.wu@mediatek.com> wrote:
+> > > > Are you sure it will increase object size?
+> > > > I think we overlap kasan_free_meta with the object as well. The only
+> > > > case we don't overlap kasan_free_meta with the object are
+> > > > SLAB_TYPESAFE_BY_RCU || cache->ctor. But these are rare and it should
+> > > > only affect small objects with small redzones.
+> > > > And I think now we simply have a bug for these objects, we check
+> > > > KASAN_KMALLOC_FREE and then assume object contains free stack, but for
+> > > > objects with ctor, they still contain live object data, we don't store
+> > > > free stack in them.
+> > > > Such objects can be both free and still contain user data.
+> > > >
+> > >
+> > > Overlay kasan_free_meta. I see. but overlay it only when the object was
+> > > freed. kasan_free_meta will be used until free object.
+> > > 1). When put object into quarantine, it need kasan_free_meta.
+> > > 2). When the object exit from quarantine, it need kasan_free_meta
+> > >
+> > > If we choose to overlay kasan_free_meta, then the free stack will be
+> > > stored very late. It may has no free stack in report.
+> >
+> > Sorry, I don't understand what you mean.
+> >
+> > Why will it be stored too late?
+> > In __kasan_slab_free() putting into quarantine and recording free
+> > stack are literally adjacent lines of code:
+> >
+> > static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+> >       unsigned long ip, bool quarantine)
+> > {
+> >     ...
+> >     kasan_set_free_info(cache, object, tag);
+> >     quarantine_put(get_free_info(cache, object), cache);
+> >
+> >
+> > Just to make sure, what I meant is that we add free_track to kasan_free_meta:
+> >
+> > struct kasan_free_meta {
+> >     struct qlist_node quarantine_link;
+> > +  struct kasan_track free_track;
+> > };
+> >
+>
+> When I see above struct kasan_free_meta, I know why you don't understand
+> my meaning, because I thought you were going to overlay the
+> quarantine_link by free_track, but it seems like to add free_track to
+> kasan_free_meta. Does it enlarge meta-data size?
 
-That's not how kernel drivers in the tree work, sorry.  They do not
-contain "older kernel support" in them, they work as a whole with the
-rest of the kernel they ship with only.
+I would assume it should not increase meta-data size. In both cases we
+store exactly the same information inside of the object: quarantine
+link and free track.
+I see it more as a question of code organization. We already have a
+concept of "this data is placed inside of the freed object", we
+already have a name for it (kasan_free_meta), we already have code to
+choose where to place it, we already have helper functions to access
+it. And your change effectively duplicates all of this to place the
+free track.
 
-Otherwise all drivers would be a total mess over time, can you imagine
-doing this for the next 20+ years?  Not maintainable.
-
-thanks,
-
-greg k-h
+> > And I think its life-time and everything should be exactly what we need.
+> >
+> > Also it should help to fix the problem with ctors: kasan_free_meta is
+> > already allocated on the side for such objects, and that's exactly
+> > what we need for objects with ctor's.
+>
+> I see.
