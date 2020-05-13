@@ -2,198 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759221D19B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 046171D19A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730292AbgEMPo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 11:44:27 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:51988 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729483AbgEMPoZ (ORCPT
+        id S1730704AbgEMPmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 11:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728678AbgEMPmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 11:44:25 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jYtYF-0002PP-RZ; Wed, 13 May 2020 09:44:07 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jYtYE-0000QY-AN; Wed, 13 May 2020 09:44:07 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
-        rafael@kernel.org, jeyu@kernel.org, jmorris@namei.org,
-        keescook@chromium.org, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        nayna@linux.ibm.com, zohar@linux.ibm.com,
-        scott.branden@broadcom.com, dan.carpenter@oracle.com,
-        skhan@linuxfoundation.org, geert@linux-m68k.org,
-        tglx@linutronix.de, bauerman@linux.ibm.com, dhowells@redhat.com,
-        linux-integrity@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kexec@lists.infradead.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200513152108.25669-1-mcgrof@kernel.org>
-        <20200513152108.25669-3-mcgrof@kernel.org>
-Date:   Wed, 13 May 2020 10:40:31 -0500
-In-Reply-To: <20200513152108.25669-3-mcgrof@kernel.org> (Luis Chamberlain's
-        message of "Wed, 13 May 2020 15:21:07 +0000")
-Message-ID: <87k11fonbk.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 13 May 2020 11:42:00 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918EFC061A0C;
+        Wed, 13 May 2020 08:42:00 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id s69so2985294pjb.4;
+        Wed, 13 May 2020 08:42:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iq35YePewEa8ED7IqVR9gS2BMFUT0ig3s9tj0BUPUcQ=;
+        b=ieTRI6FuCux0OifkzpdQlTunNsAYWgMyOtjsNW/ZhRul32jkkIelPY6QeVVV6f7wwD
+         PQ6bcELtieGYN6L/tzcyjbYI+7OlicLN3ReTAk/U2BZWyf1MZ5poue7qbIzKVnV0Ty81
+         QnCT/ArcAzhDp6VqryWWR0whHh2frFqu20mNIh/bslyfPwzcbQ9zShCwLpwbYoLu9hcT
+         jZahI2n5YHrHJmzhPEHL7GBVTAL+EiPlTmVZWPObG4116b4tsESFR9+ZyaB8P0NGU7A3
+         qmct3zccyZHRJL64N2SIZqXL1gASDDUefCvITRKVUs3a/MmV9smpgHghKdxMvq+2PSIi
+         FIgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iq35YePewEa8ED7IqVR9gS2BMFUT0ig3s9tj0BUPUcQ=;
+        b=X/ttQBUp/pG2jtcbkRMmq8QDUGFrPBpS4EqcZG9z0m3gk/WQxb1BEVImHoQbe2mV6D
+         1euh7rqtSveKP6TdOUNGy0u9eFa/IZkmYI0wgqypgifb/5XRu/+B1CRqwtT8L7sAFrF7
+         mli+qMgd1IYtCqxVKKNDZ7TZAGMze8rPsZvm7E4WadEnJwi5FWITWquJF3ZGNJw7JAd1
+         WdKUheYCHQjTgZPD2n/Fq7loycWyVTfcNdsVYEvaeg9bh2IDsP+AC7YJWwICG3RPVVBR
+         sm4bDpSlIpeP7x+lxrXwf9pqJlJTkAKGC88bCQbOTlKxlK92/pFaT4motvDjNHBPDpqR
+         68SQ==
+X-Gm-Message-State: AGi0Pub4aTHuoWN3FWfsauITBcGS2eUUdzBw0JmZhxayMBM8AllDDBg+
+        vpmbVELaon0TbQbr3/9MBEhRXPxk
+X-Google-Smtp-Source: APiQypJtjGAgUxWc18UTekCQxQaol0kuHHTgFFi06kdvAAY6aK6sIZrDAaGezDMWnEKe+7c4s5DsJg==
+X-Received: by 2002:a17:902:47:: with SMTP id 65mr23609024pla.54.1589384519662;
+        Wed, 13 May 2020 08:41:59 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id k24sm14949802pfk.134.2020.05.13.08.41.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 May 2020 08:41:59 -0700 (PDT)
+Subject: Re: [PATCH 3/3] net: cleanly handle kernel vs user buffers for
+ ->msg_control
+To:     Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200511115913.1420836-1-hch@lst.de>
+ <20200511115913.1420836-4-hch@lst.de>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <c88897b9-7afb-a6f6-08f1-5aaa36631a25@gmail.com>
+Date:   Wed, 13 May 2020 08:41:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jYtYE-0000QY-AN;;;mid=<87k11fonbk.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18UC1Rfu06BcwNif7UO1o/2p3AxKZc4ZvA=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG,XMNoVowels,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4965]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;Luis Chamberlain <mcgrof@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 964 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 12 (1.2%), b_tie_ro: 10 (1.1%), parse: 1.04
-        (0.1%), extract_message_metadata: 4.3 (0.4%), get_uri_detail_list: 2.2
-        (0.2%), tests_pri_-1000: 4.2 (0.4%), tests_pri_-950: 1.34 (0.1%),
-        tests_pri_-900: 1.09 (0.1%), tests_pri_-90: 281 (29.2%), check_bayes:
-        277 (28.8%), b_tokenize: 31 (3.2%), b_tok_get_all: 13 (1.3%),
-        b_comp_prob: 5.0 (0.5%), b_tok_touch_all: 222 (23.0%), b_finish: 2.6
-        (0.3%), tests_pri_0: 637 (66.1%), check_dkim_signature: 0.86 (0.1%),
-        check_dkim_adsp: 3.0 (0.3%), poll_dns_idle: 0.44 (0.0%), tests_pri_10:
-        2.2 (0.2%), tests_pri_500: 11 (1.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 2/3] security: add symbol namespace for reading file data
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <20200511115913.1420836-4-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Luis Chamberlain <mcgrof@kernel.org> writes:
-
-> Certain symbols are not meant to be used by everybody, the security
-> helpers for reading files directly is one such case. Use a symbol
-> namespace for them.
->
-> This will prevent abuse of use of these symbols in places they were
-> not inteded to be used, and provides an easy way to audit where these
-> types of operations happen as a whole.
-
-Why not just remove the ability for the firmware loader to be a module?
-
-Is there some important use case that requires the firmware loader
-to be a module?
-
-We already compile the code in by default.  So it is probably just
-easier to remove the modular support all together.  Which would allow
-the export of the security hooks to be removed as well.
-
-Eric
 
 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+On 5/11/20 4:59 AM, Christoph Hellwig wrote:
+> The msg_control field in struct msghdr can either contain a user
+> pointer when used with the recvmsg system call, or a kernel pointer
+> when used with sendmsg.  To complicate things further kernel_recvmsg
+> can stuff a kernel pointer in and then use set_fs to make the uaccess
+> helpers accept it.
+> 
+> Replace it with a union of a kernel pointer msg_control field, and
+> a user pointer msg_control_user one, and allow kernel_recvmsg operate
+> on a proper kernel pointer using a bitfield to override the normal
+> choice of a user pointer for recvmsg.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  drivers/base/firmware_loader/fallback.c | 1 +
->  fs/exec.c                               | 2 ++
->  kernel/kexec.c                          | 2 ++
->  kernel/module.c                         | 2 ++
->  security/security.c                     | 6 +++---
->  5 files changed, 10 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
-> index d9ac7296205e..b088886dafda 100644
-> --- a/drivers/base/firmware_loader/fallback.c
-> +++ b/drivers/base/firmware_loader/fallback.c
-> @@ -19,6 +19,7 @@
->   */
->  
->  MODULE_IMPORT_NS(FIRMWARE_LOADER_PRIVATE);
-> +MODULE_IMPORT_NS(SECURITY_READ);
->  
->  extern struct firmware_fallback_config fw_fallback_config;
->  
-> diff --git a/fs/exec.c b/fs/exec.c
-> index 9791b9eef9ce..30bd800ab1d6 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -72,6 +72,8 @@
->  
->  #include <trace/events/sched.h>
->  
-> +MODULE_IMPORT_NS(SECURITY_READ);
+>  include/linux/socket.h | 12 ++++++++++-
+>  net/compat.c           |  5 +++--
+>  net/core/scm.c         | 49 ++++++++++++++++++++++++------------------
+>  net/ipv4/ip_sockglue.c |  3 ++-
+>  net/socket.c           | 22 ++++++-------------
+>  5 files changed, 50 insertions(+), 41 deletions(-)
+> 
+> diff --git a/include/linux/socket.h b/include/linux/socket.h
+> index 4cc64d611cf49..04d2bc97f497d 100644
+> --- a/include/linux/socket.h
+> +++ b/include/linux/socket.h
+> @@ -50,7 +50,17 @@ struct msghdr {
+>  	void		*msg_name;	/* ptr to socket address structure */
+>  	int		msg_namelen;	/* size of socket address structure */
+>  	struct iov_iter	msg_iter;	/* data */
+> -	void		*msg_control;	/* ancillary data */
 > +
->  int suid_dumpable = 0;
->  
->  static LIST_HEAD(formats);
-> diff --git a/kernel/kexec.c b/kernel/kexec.c
-> index f977786fe498..8d572b41a157 100644
-> --- a/kernel/kexec.c
-> +++ b/kernel/kexec.c
-> @@ -19,6 +19,8 @@
->  
->  #include "kexec_internal.h"
->  
-> +MODULE_IMPORT_NS(SECURITY_READ);
-> +
->  static int copy_user_segment_list(struct kimage *image,
->  				  unsigned long nr_segments,
->  				  struct kexec_segment __user *segments)
-> diff --git a/kernel/module.c b/kernel/module.c
-> index 80faaf2116dd..8973a463712e 100644
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -59,6 +59,8 @@
->  #include <uapi/linux/module.h>
->  #include "module-internal.h"
->  
-> +MODULE_IMPORT_NS(SECURITY_READ);
-> +
->  #define CREATE_TRACE_POINTS
->  #include <trace/events/module.h>
->  
-> diff --git a/security/security.c b/security/security.c
-> index 8ae66e4c370f..bdbd1fc5105a 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -1654,7 +1654,7 @@ int security_kernel_read_file(struct file *file, enum kernel_read_file_id id)
->  		return ret;
->  	return ima_read_file(file, id);
->  }
-> -EXPORT_SYMBOL_GPL(security_kernel_read_file);
-> +EXPORT_SYMBOL_NS_GPL(security_kernel_read_file, SECURITY_READ);
->  
->  int security_kernel_post_read_file(struct file *file, char *buf, loff_t size,
->  				   enum kernel_read_file_id id)
-> @@ -1666,7 +1666,7 @@ int security_kernel_post_read_file(struct file *file, char *buf, loff_t size,
->  		return ret;
->  	return ima_post_read_file(file, buf, size, id);
->  }
-> -EXPORT_SYMBOL_GPL(security_kernel_post_read_file);
-> +EXPORT_SYMBOL_NS_GPL(security_kernel_post_read_file, SECURITY_READ);
->  
->  int security_kernel_load_data(enum kernel_load_data_id id)
->  {
-> @@ -1677,7 +1677,7 @@ int security_kernel_load_data(enum kernel_load_data_id id)
->  		return ret;
->  	return ima_load_data(id);
->  }
-> -EXPORT_SYMBOL_GPL(security_kernel_load_data);
-> +EXPORT_SYMBOL_NS_GPL(security_kernel_load_data, SECURITY_READ);
->  
->  int security_task_fix_setuid(struct cred *new, const struct cred *old,
->  			     int flags)
+> +	/*
+> +	 * Ancillary data. msg_control_user is the user buffer used for the
+> +	 * recv* side when msg_control_is_user is set, msg_control is the kernel
+> +	 * buffer used for all other cases.
+> +	 */
+> +	union {
+> +		void		*msg_control;
+> +		void __user	*msg_control_user;
+> +	};
+> +	bool		msg_control_is_user : 1;
+
+Adding a field in this structure seems dangerous.
+
+Some users of 'struct msghdr '  define their own struct on the stack,
+and are unaware of this new mandatory field.
+
+This bit contains garbage, crashes are likely to happen ?
+
+Look at IPV6_2292PKTOPTIONS for example.
+
+
