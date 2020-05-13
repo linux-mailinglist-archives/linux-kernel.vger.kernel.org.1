@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFE71D10D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792041D10C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731028AbgEMLNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 07:13:48 -0400
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:33659 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730957AbgEMLNq (ORCPT
+        id S1730210AbgEMLNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 07:13:30 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:47620 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726645AbgEMLNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 07:13:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1589368425; x=1620904425;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=CeCU0xN3PPX4jtlITIpADGChyNcptCOI5+8PaEEcfQc=;
-  b=q2NMnLi+xt28ulIx3W1xKr2hNLSOlMstS1CHrdZxs1rVTMHVcS5TVMNI
-   xTzotNmO52WLdH8M4rA/ZBKHv0X6Tf753GbYH4DM3roHuJUiN+Wx2Q2CY
-   cpxF+0PT07guP2R7hBWAW7fSRL9N5EmDbxGnJcShts5hF6uk0QiCnHzWf
-   cs0mDyn6yxLir5GZ7SWGYYmiwMRt8aKknJjKR/G76BhzAEPEA8ddFzZUx
-   5p9/wDBESU4f+n83LWq/HKDsDL0036YhqgnAg4WuVGFwfJT4idowdFZ+v
-   a+lfGjvMhg8cdVHYQAGrK2K300ij/VLWu0DxVYbJ5wmXm7q0Fam5xCTjS
-   A==;
-IronPort-SDR: T7zeETlOhwDeM7bmaZlpb8ZrPAip7XABnfCf3Y4x3pGfxcPk2X6k9+l6uT5F5C5aRLqidYabCD
- ztbx0R9ZVw9IYsiqSPKy8k4KjUp3ezLjPCjTNvd4Z04SC6Ad5C8XPVm7VTe2KUBhlZWfWPM7Vk
- Ael3JSsl98taH6FAfcyn/jgtBmR/HgiTsOk+h9W4V2v60u10uA9ZAL029oflCfDgJo6kkslARE
- lOaPRTqlfImXgxRytGWpPwvznuTafTm2+Jf9CittWQUGCbjcRrJ4O/ErGu9waRAJZfI+tRDxrO
- zqk=
-X-IronPort-AV: E=Sophos;i="5.73,387,1583218800"; 
-   d="scan'208";a="79429653"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 May 2020 04:13:44 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 13 May 2020 04:13:44 -0700
-Received: from rob-ult-m19940.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Wed, 13 May 2020 04:13:43 -0700
-From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To:     <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <ludovic.desroches@microchip.com>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <wsa@kernel.org>,
-        <linus.walleij@linaro.org>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: [PATCH] i2c: at91: Restore pinctrl state if can't get scl/sda gpios
-Date:   Wed, 13 May 2020 14:13:22 +0300
-Message-ID: <20200513111322.111114-1-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 13 May 2020 07:13:30 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id BFAF72711FF
+To:     kernelci@groups.io, kernel-build-reports@lists.linaro.org,
+        automated-testing@lists.yoctoproject.org,
+        linux-next@vger.kernel.org, stable@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>, agross@kernel.org,
+        qcomlt-patches@lists.linaro.org,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>, ulf.hansson@linaro.org,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        kernel@collabora.com, kernelci@baylibre.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Subject: kernelci.org transitioning to functional testing
+Message-ID: <66aae710-1ee9-fb67-1a1b-997eeb70dc04@collabora.com>
+Date:   Wed, 13 May 2020 12:13:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If there is a strict pinmux or if simply the scl/sda gpios are missing,
-the pins will remain in gpio mode, compromizing the I2C bus.
-Change to the default state of the pins before returning the error.
+As kernelci.org is expanding its functional testing
+capabilities, the concept of boot testing is now being
+deprecated.
 
-Fixes: a53acc7ebf27 ("i2c: at91: Fix pinmux after devm_gpiod_get() for bus recovery")
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
- drivers/i2c/busses/i2c-at91-master.c | 1 +
- 1 file changed, 1 insertion(+)
+Next Monday 18th May, the web dashboard on https://kernelci.org
+will be updated to primarily show functional test results
+rather than boot results.  The Boots tab will still be
+available until 5th June to ease the transition.
 
-diff --git a/drivers/i2c/busses/i2c-at91-master.c b/drivers/i2c/busses/i2c-at91-master.c
-index d4a3aef4a594..363d540a8345 100644
---- a/drivers/i2c/busses/i2c-at91-master.c
-+++ b/drivers/i2c/busses/i2c-at91-master.c
-@@ -877,6 +877,7 @@ static int at91_init_twi_recovery_gpio(struct platform_device *pdev,
- 			gpiod_put(rinfo->scl_gpiod);
- 			rinfo->scl_gpiod = NULL;
- 		}
-+		pinctrl_select_state(dev->pinctrl, dev->pinctrl_pins_default);
- 		return -EINVAL;
- 	}
- 
--- 
-2.25.1
+The new equivalent to boot testing is the *baseline* test suite
+which also runs sanity checks using dmesg and bootrr[1].
+
+Boot email reports will eventually be replaced with baseline
+reports.  For those of you already familiar with the test email
+reports, they will be simplified to only show regressions with
+links to the dashboard for all the details.
+
+Some functional tests are already being run by kernelci.org,
+results have only been shared by email so far but they will
+become visible on the web dashboard next week.  In particular:
+v4l2-compliance, i-g-t for DRM/KMS and Panfrost,
+suspend/resume...
+
+And of course, a lot of functional test suites are in the
+process of being added: kselftest, KUnit, LTP, xfstests,
+extended i-g-t coverage and many more.
+
+The detailed schedule is available on a GitHub issue[2].
+
+Please let us know if you have any questions, comments or
+concerns either in this thread, on kernelci@groups.io or IRC
+#kernelci on Freenode.
+
+Stay tuned!
+
+Thanks,
+Guillaume
+
+
+[1] bootrr: https://github.com/kernelci/bootrr
+[2] schedule: https://github.com/kernelci/kernelci-backend/issues/238
 
