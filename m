@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5711D03CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 02:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909A41D03D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 02:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731994AbgEMAkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 May 2020 20:40:16 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:47113 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731840AbgEMAjt (ORCPT
+        id S1732020AbgEMAkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 May 2020 20:40:19 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:62897 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731804AbgEMAjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 May 2020 20:39:49 -0400
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 12 May 2020 17:39:48 -0700
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 12 May 2020 17:39:47 -0700
 Received: from gurus-linux.qualcomm.com ([10.46.162.81])
-  by ironmsg03-sd.qualcomm.com with ESMTP; 12 May 2020 17:39:47 -0700
+  by ironmsg02-sd.qualcomm.com with ESMTP; 12 May 2020 17:39:47 -0700
 Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
-        id 437E94D95; Tue, 12 May 2020 17:39:47 -0700 (PDT)
+        id 5279549C2; Tue, 12 May 2020 17:39:47 -0700 (PDT)
 From:   Guru Das Srinagesh <gurus@codeaurora.org>
 To:     linux-pwm@vger.kernel.org,
         Thierry Reding <thierry.reding@gmail.com>,
@@ -36,9 +36,11 @@ Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
         linux-arm-kernel@lists.infradead.org,
         Guru Das Srinagesh <gurus@codeaurora.org>
 Subject: [RESEND PATCH v14 00/11] Convert PWM period and duty cycle to u64
-Date:   Tue, 12 May 2020 17:39:33 -0700
-Message-Id: <cover.1589330178.git.gurus@codeaurora.org>
+Date:   Tue, 12 May 2020 17:39:34 -0700
+Message-Id: <cover.1588616856.git.gurus@codeaurora.org>
 X-Mailer: git-send-email 1.9.1
+In-Reply-To: <cover.1589330178.git.gurus@codeaurora.org>
+References: <cover.1589330178.git.gurus@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
