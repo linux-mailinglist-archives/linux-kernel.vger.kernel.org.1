@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4228D1D0FA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090001D0FA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733192AbgEMKX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 06:23:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48590 "EHLO mail.kernel.org"
+        id S1730289AbgEMKYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 06:24:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732472AbgEMKX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 06:23:27 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1726889AbgEMKYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 06:24:13 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2ADE205ED;
-        Wed, 13 May 2020 10:23:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47EE2205ED;
+        Wed, 13 May 2020 10:24:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589365406;
-        bh=SgltVphT3mpSTEBHdav7w7v68p4IcFWaePiyBQPkO8w=;
+        s=default; t=1589365452;
+        bh=dLpmF6d7QxXpwRAFqDiz4ZpFBaH2PNsnL51Q3y/XH7A=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NrsN+a3kpBa7OFvfx9JXEBF+1YkN3RgZILtNd4fzcVkmVsRyKxSyx+gt6YXsmbXrz
-         Hx1RfoOlKR1O+niAskCU80lQ2ZSQTI3Q6rmpzlyPMTGKgmrfJJinz9rZfb/cTjDtwl
-         gI0HCGuNKK1ywI5CqXsbEbg51rVPBG0qLm+l4fIg=
-Date:   Wed, 13 May 2020 11:23:24 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
-        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
-        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Allison Randal <allison@lohutok.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/17] spi: dw: Add generic DW DMA controller support
-Message-ID: <20200513102324.GB4803@sirena.org.uk>
-References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
- <20200508133336.GK4820@sirena.org.uk>
- <20200512200733.bdbbhkjkwjd5yzqq@mobilestation>
+        b=TA2BtjKzeoLhTK3E0HY0g2P1WT8AF9G1c8u6qj5P5tTjbk89iHyxpUKW8eqrQUyZ9
+         VVMKHH8xC76Bh09FbeAjodkT4W/elY+VHiRIX67Xao7Imesl6Tz3+PVxvRw5az0rXa
+         FrTx3MpKH2IIDmzR9noSJEGi6TrHbv0C0AQBOgDo=
+Date:   Wed, 13 May 2020 12:24:10 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        "Luis R. Rodriguez" <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Todd Kjos <tkjos@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>
+Subject: Re: [PATCH 00/14] Modularize schedutil
+Message-ID: <20200513102410.GA871114@kroah.com>
+References: <CAJZ5v0hm3Tv2yZKLzM9a+kJuB1V5_eFOEKT-uM318dzeKV3_Qw@mail.gmail.com>
+ <20200512135813.GA101124@google.com>
+ <CAJZ5v0hN708uvurZ-3oo90qUJFw3=Eg0OmtTaOKXQgNPXhCkFg@mail.gmail.com>
+ <20200512151120.GB101124@google.com>
+ <CAJZ5v0inoge=nWQtv-rU_ReQUMZA5w-PZXuSpHHj1UHn-S7aSA@mail.gmail.com>
+ <20200512162630.GC101124@google.com>
+ <CAJZ5v0ges4=e2HkHpVk4E1yF1VsBm9H5noqMz-MxX9DK_kt6Xg@mail.gmail.com>
+ <20200513094117.GB225140@google.com>
+ <20200513100213.GA868852@kroah.com>
+ <20200513100611.GA168476@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="E39vaYmALEf/7YXx"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200512200733.bdbbhkjkwjd5yzqq@mobilestation>
-X-Cookie: Long life is in store for you.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200513100611.GA168476@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 13, 2020 at 11:06:11AM +0100, Quentin Perret wrote:
+> On Wednesday 13 May 2020 at 12:02:13 (+0200), Greg KH wrote:
+> > It's not significant at all, just always build it in, no one will notice
+> > it, it's just a page or two.  Serial port drivers are way bigger :)
+> 
+> Alright, I give up :)
+> 
+> When partners will complain (and I think they will) I'll point them here
+> and say we tried ;)
 
---E39vaYmALEf/7YXx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, May 12, 2020 at 11:07:33PM +0300, Serge Semin wrote:
-> On Fri, May 08, 2020 at 02:33:36PM +0100, Mark Brown wrote:
-
-> > Please don't make new feature development dependent on conversion to the
-> > new schema format, there's quite a backlog of reviews of schema
-> > conversions so it can slow things down.  It's good to do the conversions
-> > but please do them after adding any new stuff to the binding rather than
-> > before.
-
-> So by saying this do you want me to revert an order of the first two patches
-> in the series, right? So the series would first add the DMA properties support
-> to the binding, then would convert the binding file to DT schema.
-
-The conversion to YAML format should be the very last thing in the patch
-series, and as Andy says there's another patch in flight also doing this
-conversion which you should coordinate with.
-
---E39vaYmALEf/7YXx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl67ypsACgkQJNaLcl1U
-h9AodAf/V7hLsdN16eZChRbVtE6dJ5AQUp2c5eX7YNYnMNJwp1c/rBpMUNUA8YL+
-noBZvjVO2gt+2IwQWc1EZhxbHT1r+6tX8UCrddNFQ6yJi8xsTnUZk3GV+2nd0B6w
-neS85VfshHlLkOZxoaBd7k48Z1aDmdYUkzgBZ432BHy5yzR4uE4zU8BZtcqkvBBT
-qs/Cd9VftFV3zv1HUofjURdirNqylzsQoApRaGtJT79eqZyt/0cSi2bWipJAtHTz
-lhVWfqby7g4FI+GGUYSvjY3eo4flsLhWk/hML+wQoZoSZiBvjoz0uoZnsM8FVQ3w
-4X17XlyTkbM6XVYez5I8xYh3U6TyoQ==
-=6nLk
------END PGP SIGNATURE-----
-
---E39vaYmALEf/7YXx--
+No problem, that's what lore.kernel.org archives are for :)
