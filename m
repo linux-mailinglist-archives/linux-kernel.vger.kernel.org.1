@@ -2,90 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E7B1D1FE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 22:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2871B1D1FED
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 22:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390835AbgEMUPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 16:15:12 -0400
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:22779 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388033AbgEMUPK (ORCPT
+        id S2390866AbgEMUPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 16:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2390352AbgEMUPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 16:15:10 -0400
-Received: from localhost.localdomain ([93.22.149.176])
-        by mwinf5d52 with ME
-        id eLEy2200C3obZW503LEzLB; Wed, 13 May 2020 22:15:07 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 13 May 2020 22:15:07 +0200
-X-ME-IP: 93.22.149.176
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     kvalo@codeaurora.org, davem@davemloft.net, pradeepc@codeaurora.org
-Cc:     ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ath11k: Fix some resource leaks in error path in 'ath11k_thermal_register()'
-Date:   Wed, 13 May 2020 22:14:54 +0200
-Message-Id: <20200513201454.258111-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Wed, 13 May 2020 16:15:33 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DF5C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 13:15:32 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id z15so2150098pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 13:15:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gcu03BapccXbGC0ugrF7HAKsX8s/rikPdyRfZ2v+7/A=;
+        b=nMo2mfTPsCwPQuL3Wy/MlcZIMWxFkdw9LhCDLY5nhwMM21OCJKIkBr/jaFfSBwIN1Y
+         akIlzTecdhLNLgKpEWYDBQ0mN/XX7L2NRzU4azhQL5vDsth352qYFB19f+vz5xYZdL9J
+         F/FtSTYPzv3A5YmLLP2aadn9GW2+VRNqnIS0I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gcu03BapccXbGC0ugrF7HAKsX8s/rikPdyRfZ2v+7/A=;
+        b=YXPNQ+4DKsChP6TOv1s5KV1CU7C6F4fR7cu4h1O6noa8D0l3xggXjgWjfAMTf8d6oE
+         7NKxlOyfVwNMJSDrPsJ1KcbhtuX3p+Y1qQGgBSyu971lvNn4EukFP+/ap7zUor+p4GKU
+         7bRBmBBR2HudyVyNlQWRktFrKbCPkmGou3K5Xnj5dZbQQ25HRuMjsfIALJuSM8b0/61c
+         WurZUIkEKdihU69iJnD8+9RZnaObTe/OgIwon2ADW5nEEzR0SdOyrVkaXFmarymPd5vp
+         rjc7gyTzKTVNuM6oKfD/FLUgv1fhw5Tc1APa9PTkHHL2OpGWBJ+eqeyZODdBhB2p2AcW
+         Zu0w==
+X-Gm-Message-State: AGi0Pub7a8gHNs20H+OdTdzSyLr0inkTrVSgFiAl8zZftcZR8kjFDLTQ
+        mX8l1qpfxLhTORGEw12yHsSqJQ==
+X-Google-Smtp-Source: APiQypLWtkrar0+R60VQFnxu1If/r6w1THO5SU46GXyv2coXCgkwRIlLIk7e/Jx6iO/X9WDaTCI0SQ==
+X-Received: by 2002:a17:90a:cb86:: with SMTP id a6mr37392232pju.127.1589400932263;
+        Wed, 13 May 2020 13:15:32 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y16sm355662pfp.45.2020.05.13.13.15.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 13:15:30 -0700 (PDT)
+Date:   Wed, 13 May 2020 13:15:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     Petr Mladek <pmladek@suse.com>, Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        James Morris <jmorris@namei.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 0/6] allow ramoops to collect all kmesg_dump events
+Message-ID: <202005131315.5CEA90C@keescook>
+References: <20200506211523.15077-1-keescook@chromium.org>
+ <20200512131655.GE17734@linux-b0ei>
+ <CA+CK2bBMUxxuTBicQ7ihKpN3jK94mMjcNCXhnAXUaODce09Wmw@mail.gmail.com>
+ <20200512155207.GF17734@linux-b0ei>
+ <202005121111.6BECC45@keescook>
+ <20200513073448.GG7340@linux-b0ei>
+ <202005130045.EF013D12E@keescook>
+ <CA+CK2bAPv5u1ih5y9t5FUnTyximtFCtDYXJCpuyjOyHNOkRdqw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+CK2bAPv5u1ih5y9t5FUnTyximtFCtDYXJCpuyjOyHNOkRdqw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If 'thermal_cooling_device_register()' fails, we must undo what has been
-allocated so far. So we must go to 'err_thermal_destroy' instead of
-returning directly
+On Wed, May 13, 2020 at 10:35:16AM -0400, Pavel Tatashin wrote:
+> > >   + reason: panic, oops, emergency, shutdown    (ordered by severity)
+> > >   + handling: restart, halt, poweroff
+> > >
+> > > Or we might just replace KMSG_DUMP_RESTART, KMSG_DUMP_HALT,
+> > > KMSG_DUMP_POWEROFF with a single KMSG_DUMP_SHUTDOWN.
+> > >
+> > > Then the max reason variable would make sense.
+> >
+> > That would work for me, yeah. Pavel, is that enough granularity for you?
+> >
+> 
+> Yes, I like the second approach: where we combine all shutdown type
+> events into a single type.
+> max_reason will have 4 levels:
+> 
+>    KMSG_DUMP_PANIC,
+>    KMSG_DUMP_OOPS,
+>    KMSG_DUMP_EMERG,
+>    KMSG_DUMP_SHUTDOWN,
+> 
+> If needed it is possible to determine from dmesg logs what kind of
+> shutdown was taken, because there is a message logged right before
+> every kmsg_dump() for these events:
+> 
+> 249   if (!cmd)
+> 250   pr_emerg("Restarting system\n");
+> 251   else
+> 252   pr_emerg("Restarting system with command '%s'\n", cmd);
+> 253   kmsg_dump(KMSG_DUMP_RESTART);
+> 
+> 276   pr_emerg("System halted\n");
+> 277   kmsg_dump(KMSG_DUMP_HALT);
+> 
+> 294   pr_emerg("Power down\n");
+> 295   kmsg_dump(KMSG_DUMP_POWEROFF);
+> 
+> Kees, I will submit a new series with these changes soon.
 
-In case of error in 'ath11k_thermal_register()', the previous
-'thermal_cooling_device_register()' call must also be undone. Move the
-'ar->thermal.cdev = cdev' a few lines above in order for this to be done
-in 'ath11k_thermal_unregister()' which is called in the error handling
-path.
+Great; thanks!
 
-Fixes: 2a63bbca06b2 ("ath11k: add thermal cooling device support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-I'm not 100% confident with this patch.
+-Kees
 
-- When calling 'ath11k_thermal_unregister()', we try to release some
-  resources that have not been allocated yet. I don't know if it can be an
-  issue or not.
-- I think that we should propagate the error code, instead of forcing
-  -EINVAL.
----
- drivers/net/wireless/ath/ath11k/thermal.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath11k/thermal.c b/drivers/net/wireless/ath/ath11k/thermal.c
-index 259dddbda2c7..5a7e150c621b 100644
---- a/drivers/net/wireless/ath/ath11k/thermal.c
-+++ b/drivers/net/wireless/ath/ath11k/thermal.c
-@@ -174,9 +174,12 @@ int ath11k_thermal_register(struct ath11k_base *sc)
- 		if (IS_ERR(cdev)) {
- 			ath11k_err(sc, "failed to setup thermal device result: %ld\n",
- 				   PTR_ERR(cdev));
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto err_thermal_destroy;
- 		}
- 
-+		ar->thermal.cdev = cdev;
-+
- 		ret = sysfs_create_link(&ar->hw->wiphy->dev.kobj, &cdev->device.kobj,
- 					"cooling_device");
- 		if (ret) {
-@@ -184,7 +187,6 @@ int ath11k_thermal_register(struct ath11k_base *sc)
- 			goto err_thermal_destroy;
- 		}
- 
--		ar->thermal.cdev = cdev;
- 		if (!IS_REACHABLE(CONFIG_HWMON))
- 			return 0;
- 
 -- 
-2.25.1
-
+Kees Cook
