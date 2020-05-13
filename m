@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD451D0D84
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 413121D0D85
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387991AbgEMJxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:53:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55696 "EHLO mail.kernel.org"
+        id S2387996AbgEMJxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:53:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387981AbgEMJxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:53:37 -0400
+        id S1732603AbgEMJxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:53:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D40F20575;
-        Wed, 13 May 2020 09:53:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C896820575;
+        Wed, 13 May 2020 09:53:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363616;
-        bh=SGaKQ42/q5MzHFlFc3vcMri57SJXW5qWc7ZdigDy81Q=;
+        s=default; t=1589363619;
+        bh=9Id/3gUvE69ng67jci/Ipgi+B0JOa0NZwiI0Aii5NOI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wJiurDlzXommhqYlmwtjYy+Wj7jD1/Z8o5TRk+7pTFYxpzO0GJkiNJeg7c7HCvFKo
-         C1YCV6UIfkkobJDeul5WWjFNVK5lRFpMov3eeaC1Dfg+9qOLkTDx43gRnBBwbvHN7L
-         c6E9QwacCvotUIhWB0FN1QYQgbDUfeFFNBW+4o3M=
+        b=2QHmKl3qoPjwyAzTFQ4SI5rdK8277nhYvaNw6iQ2l+WQAc5PqmFdztZZSVxBT6iQU
+         mYqbAqwziYN60fgPBviZNT4LAmwEH1ZgmxuyP3rIDpoASZMdNGsuWVDO5Ir7CgvUaW
+         odLPjMsNUixIzn3gv4vHpDqfBT5/NVXMFTsD3dxQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        stable@vger.kernel.org, Sultan Alsawaf <sultan@kerneltoast.com>,
+        Wang Jian <larkwang@gmail.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 055/118] wireguard: socket: remove errant restriction on looping to self
-Date:   Wed, 13 May 2020 11:44:34 +0200
-Message-Id: <20200513094421.879122821@linuxfoundation.org>
+Subject: [PATCH 5.6 056/118] wireguard: send/receive: cond_resched() when processing worker ringbuffers
+Date:   Wed, 13 May 2020 11:44:35 +0200
+Message-Id: <20200513094421.948432116@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
 References: <20200513094417.618129545@linuxfoundation.org>
@@ -45,161 +47,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Jason A. Donenfeld" <Jason@zx2c4.com>
 
-[ Upstream commit b673e24aad36981f327a6570412ffa7754de8911 ]
+[ Upstream commit 4005f5c3c9d006157ba716594e0d70c88a235c5e ]
 
-It's already possible to create two different interfaces and loop
-packets between them. This has always been possible with tunnels in the
-kernel, and isn't specific to wireguard. Therefore, the networking stack
-already needs to deal with that. At the very least, the packet winds up
-exceeding the MTU and is discarded at that point. So, since this is
-already something that happens, there's no need to forbid the not very
-exceptional case of routing a packet back to the same interface; this
-loop is no different than others, and we shouldn't special case it, but
-rather rely on generic handling of loops in general. This also makes it
-easier to do interesting things with wireguard such as onion routing.
+Users with pathological hardware reported CPU stalls on CONFIG_
+PREEMPT_VOLUNTARY=y, because the ringbuffers would stay full, meaning
+these workers would never terminate. That turned out not to be okay on
+systems without forced preemption, which Sultan observed. This commit
+adds a cond_resched() to the bottom of each loop iteration, so that
+these workers don't hog the core. Note that we don't need this on the
+napi poll worker, since that terminates after its budget is expended.
 
-At the same time, we add a selftest for this, ensuring that both onion
-routing works and infinite routing loops do not crash the kernel. We
-also add a test case for wireguard interfaces nesting packets and
-sending traffic between each other, as well as the loop in this case
-too. We make sure to send some throughput-heavy traffic for this use
-case, to stress out any possible recursion issues with the locks around
-workqueues.
-
+Suggested-by: Sultan Alsawaf <sultan@kerneltoast.com>
+Reported-by: Wang Jian <larkwang@gmail.com>
 Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
 Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireguard/socket.c             |   12 ------
- tools/testing/selftests/wireguard/netns.sh |   54 +++++++++++++++++++++++++++--
- 2 files changed, 51 insertions(+), 15 deletions(-)
+ drivers/net/wireguard/receive.c |    2 ++
+ drivers/net/wireguard/send.c    |    4 ++++
+ 2 files changed, 6 insertions(+)
 
---- a/drivers/net/wireguard/socket.c
-+++ b/drivers/net/wireguard/socket.c
-@@ -76,12 +76,6 @@ static int send4(struct wg_device *wg, s
- 			net_dbg_ratelimited("%s: No route to %pISpfsc, error %d\n",
- 					    wg->dev->name, &endpoint->addr, ret);
- 			goto err;
--		} else if (unlikely(rt->dst.dev == skb->dev)) {
--			ip_rt_put(rt);
--			ret = -ELOOP;
--			net_dbg_ratelimited("%s: Avoiding routing loop to %pISpfsc\n",
--					    wg->dev->name, &endpoint->addr);
--			goto err;
- 		}
- 		if (cache)
- 			dst_cache_set_ip4(cache, &rt->dst, fl.saddr);
-@@ -149,12 +143,6 @@ static int send6(struct wg_device *wg, s
- 			net_dbg_ratelimited("%s: No route to %pISpfsc, error %d\n",
- 					    wg->dev->name, &endpoint->addr, ret);
- 			goto err;
--		} else if (unlikely(dst->dev == skb->dev)) {
--			dst_release(dst);
--			ret = -ELOOP;
--			net_dbg_ratelimited("%s: Avoiding routing loop to %pISpfsc\n",
--					    wg->dev->name, &endpoint->addr);
--			goto err;
- 		}
- 		if (cache)
- 			dst_cache_set_ip6(cache, dst, &fl.saddr);
---- a/tools/testing/selftests/wireguard/netns.sh
-+++ b/tools/testing/selftests/wireguard/netns.sh
-@@ -48,8 +48,11 @@ cleanup() {
- 	exec 2>/dev/null
- 	printf "$orig_message_cost" > /proc/sys/net/core/message_cost
- 	ip0 link del dev wg0
-+	ip0 link del dev wg1
- 	ip1 link del dev wg0
-+	ip1 link del dev wg1
- 	ip2 link del dev wg0
-+	ip2 link del dev wg1
- 	local to_kill="$(ip netns pids $netns0) $(ip netns pids $netns1) $(ip netns pids $netns2)"
- 	[[ -n $to_kill ]] && kill $to_kill
- 	pp ip netns del $netns1
-@@ -77,18 +80,20 @@ ip0 link set wg0 netns $netns2
- key1="$(pp wg genkey)"
- key2="$(pp wg genkey)"
- key3="$(pp wg genkey)"
-+key4="$(pp wg genkey)"
- pub1="$(pp wg pubkey <<<"$key1")"
- pub2="$(pp wg pubkey <<<"$key2")"
- pub3="$(pp wg pubkey <<<"$key3")"
-+pub4="$(pp wg pubkey <<<"$key4")"
- psk="$(pp wg genpsk)"
- [[ -n $key1 && -n $key2 && -n $psk ]]
+--- a/drivers/net/wireguard/receive.c
++++ b/drivers/net/wireguard/receive.c
+@@ -516,6 +516,8 @@ void wg_packet_decrypt_worker(struct wor
+ 				&PACKET_CB(skb)->keypair->receiving)) ?
+ 				PACKET_STATE_CRYPTED : PACKET_STATE_DEAD;
+ 		wg_queue_enqueue_per_peer_napi(skb, state);
++		if (need_resched())
++			cond_resched();
+ 	}
+ }
  
- configure_peers() {
- 	ip1 addr add 192.168.241.1/24 dev wg0
--	ip1 addr add fd00::1/24 dev wg0
-+	ip1 addr add fd00::1/112 dev wg0
+--- a/drivers/net/wireguard/send.c
++++ b/drivers/net/wireguard/send.c
+@@ -281,6 +281,8 @@ void wg_packet_tx_worker(struct work_str
  
- 	ip2 addr add 192.168.241.2/24 dev wg0
--	ip2 addr add fd00::2/24 dev wg0
-+	ip2 addr add fd00::2/112 dev wg0
+ 		wg_noise_keypair_put(keypair, false);
+ 		wg_peer_put(peer);
++		if (need_resched())
++			cond_resched();
+ 	}
+ }
  
- 	n1 wg set wg0 \
- 		private-key <(echo "$key1") \
-@@ -230,9 +235,38 @@ n1 ping -W 1 -c 1 192.168.241.2
- n1 wg set wg0 private-key <(echo "$key3")
- n2 wg set wg0 peer "$pub3" preshared-key <(echo "$psk") allowed-ips 192.168.241.1/32 peer "$pub1" remove
- n1 ping -W 1 -c 1 192.168.241.2
-+n2 wg set wg0 peer "$pub3" remove
+@@ -305,6 +307,8 @@ void wg_packet_encrypt_worker(struct wor
+ 		wg_queue_enqueue_per_peer(&PACKET_PEER(first)->tx_queue, first,
+ 					  state);
  
--ip1 link del wg0
-+# Test that we can route wg through wg
-+ip1 addr flush dev wg0
-+ip2 addr flush dev wg0
-+ip1 addr add fd00::5:1/112 dev wg0
-+ip2 addr add fd00::5:2/112 dev wg0
-+n1 wg set wg0 private-key <(echo "$key1") peer "$pub2" preshared-key <(echo "$psk") allowed-ips fd00::5:2/128 endpoint 127.0.0.1:2
-+n2 wg set wg0 private-key <(echo "$key2") listen-port 2 peer "$pub1" preshared-key <(echo "$psk") allowed-ips fd00::5:1/128 endpoint 127.212.121.99:9998
-+ip1 link add wg1 type wireguard
-+ip2 link add wg1 type wireguard
-+ip1 addr add 192.168.241.1/24 dev wg1
-+ip1 addr add fd00::1/112 dev wg1
-+ip2 addr add 192.168.241.2/24 dev wg1
-+ip2 addr add fd00::2/112 dev wg1
-+ip1 link set mtu 1340 up dev wg1
-+ip2 link set mtu 1340 up dev wg1
-+n1 wg set wg1 listen-port 5 private-key <(echo "$key3") peer "$pub4" allowed-ips 192.168.241.2/32,fd00::2/128 endpoint [fd00::5:2]:5
-+n2 wg set wg1 listen-port 5 private-key <(echo "$key4") peer "$pub3" allowed-ips 192.168.241.1/32,fd00::1/128 endpoint [fd00::5:1]:5
-+tests
-+# Try to set up a routing loop between the two namespaces
-+ip1 link set netns $netns0 dev wg1
-+ip0 addr add 192.168.241.1/24 dev wg1
-+ip0 link set up dev wg1
-+n0 ping -W 1 -c 1 192.168.241.2
-+n1 wg set wg0 peer "$pub2" endpoint 192.168.241.2:7
- ip2 link del wg0
-+ip2 link del wg1
-+! n0 ping -W 1 -c 10 -f 192.168.241.2 || false # Should not crash kernel
-+
-+ip0 link del wg1
-+ip1 link del wg0
++		if (need_resched())
++			cond_resched();
+ 	}
+ }
  
- # Test using NAT. We now change the topology to this:
- # ┌────────────────────────────────────────┐    ┌────────────────────────────────────────────────┐     ┌────────────────────────────────────────┐
-@@ -282,6 +316,20 @@ pp sleep 3
- n2 ping -W 1 -c 1 192.168.241.1
- n1 wg set wg0 peer "$pub2" persistent-keepalive 0
- 
-+# Test that onion routing works, even when it loops
-+n1 wg set wg0 peer "$pub3" allowed-ips 192.168.242.2/32 endpoint 192.168.241.2:5
-+ip1 addr add 192.168.242.1/24 dev wg0
-+ip2 link add wg1 type wireguard
-+ip2 addr add 192.168.242.2/24 dev wg1
-+n2 wg set wg1 private-key <(echo "$key3") listen-port 5 peer "$pub1" allowed-ips 192.168.242.1/32
-+ip2 link set wg1 up
-+n1 ping -W 1 -c 1 192.168.242.2
-+ip2 link del wg1
-+n1 wg set wg0 peer "$pub3" endpoint 192.168.242.2:5
-+! n1 ping -W 1 -c 1 192.168.242.2 || false # Should not crash kernel
-+n1 wg set wg0 peer "$pub3" remove
-+ip1 addr del 192.168.242.1/24 dev wg0
-+
- # Do a wg-quick(8)-style policy routing for the default route, making sure vethc has a v6 address to tease out bugs.
- ip1 -6 addr add fc00::9/96 dev vethc
- ip1 -6 route add default via fc00::1
 
 
