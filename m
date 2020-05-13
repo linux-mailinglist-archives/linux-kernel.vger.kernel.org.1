@@ -2,57 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C9E1D1BAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5701D1B9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 18:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389799AbgEMQ6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 12:58:53 -0400
-Received: from verein.lst.de ([213.95.11.211]:47611 "EHLO verein.lst.de"
+        id S2389651AbgEMQzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 12:55:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727120AbgEMQ6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 12:58:53 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A458168B05; Wed, 13 May 2020 18:58:50 +0200 (CEST)
-Date:   Wed, 13 May 2020 18:58:50 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] net: cleanly handle kernel vs user buffers for
- ->msg_control
-Message-ID: <20200513165850.GA26121@lst.de>
-References: <20200511115913.1420836-1-hch@lst.de> <20200511115913.1420836-4-hch@lst.de> <c88897b9-7afb-a6f6-08f1-5aaa36631a25@gmail.com> <20200513160938.GA22381@lst.de> <b9728e02-e317-2aa6-9ed4-723ee3abfb78@gmail.com>
+        id S1727120AbgEMQzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 12:55:09 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8A8E2065D;
+        Wed, 13 May 2020 16:55:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589388910;
+        bh=jK0POYIL9Mor0rbRIC46pg4AavvAIViEOzMWk8fyDCs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gp+daNLgO3qQoIy2aYgOOLbLjNrwPmRNghNcwLpa8+yHA6GND5OcOQA0Xdm+uCHSH
+         Z39la1TKwm8nG00KBWedYFiv92zhb2pFa84BG9q2XeQ0HQNcb7iFF7EigmAGH/4oSM
+         rF4ARwqwohxHMSlQR9RJJ9WGjum15mEKDEWuKjYs=
+Date:   Wed, 13 May 2020 11:59:45 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Bluetooth: Replace zero-length array with flexible-array
+Message-ID: <20200513165945.GO4897@embeddedor>
+References: <20200507185050.GA13953@embeddedor>
+ <1027665B-71AC-4BC1-A3DF-64B1A9475B31@holtmann.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b9728e02-e317-2aa6-9ed4-723ee3abfb78@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <1027665B-71AC-4BC1-A3DF-64B1A9475B31@holtmann.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 09:18:36AM -0700, Eric Dumazet wrote:
-> Please try the following syzbot repro, since it crashes after your patch.
+Hi Marcel,
 
-Doesn't crash here, but I could totally see why it could depending
-in the stack initialization.  Please try the patch below - these
-msghdr intance were something I missed because they weren't using
-any highlevel recvmsg interfaces.  I'll do another round of audits
-to see if there is anything else.
+On Wed, May 13, 2020 at 09:30:03AM +0200, Marcel Holtmann wrote:
+> > ---
+> > include/net/bluetooth/l2cap.h |    6 +++---
+> > include/net/bluetooth/mgmt.h  |   40 ++++++++++++++++++++--------------------
+> > 2 files changed, 23 insertions(+), 23 deletions(-)
+> 
+> the mgmt.h portion we already have in bluetooth-next tree. Can you send a version that just addresses l2cap.h. Thanks.
+> 
+> 
 
+Sure thing. I'll send a patch for that, shortly.
 
-diff --git a/net/ipv6/ipv6_sockglue.c b/net/ipv6/ipv6_sockglue.c
-index 18d05403d3b52..a0e50cc57e545 100644
---- a/net/ipv6/ipv6_sockglue.c
-+++ b/net/ipv6/ipv6_sockglue.c
-@@ -1075,6 +1075,7 @@ static int do_ipv6_getsockopt(struct sock *sk, int level, int optname,
- 		msg.msg_control = optval;
- 		msg.msg_controllen = len;
- 		msg.msg_flags = flags;
-+		msg.msg_control_is_user = true;
- 
- 		lock_sock(sk);
- 		skb = np->pktoptions;
+Thanks
+--
+Gustavo
