@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBEFD1D06AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 07:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C688B1D06E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 08:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729027AbgEMFvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 01:51:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37880 "EHLO mail.kernel.org"
+        id S1729370AbgEMGG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 02:06:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728680AbgEMFvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 01:51:44 -0400
-Received: from localhost (unknown [106.200.233.149])
+        id S1728784AbgEMGGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 02:06:55 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 420BB205C9;
-        Wed, 13 May 2020 05:51:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BCE1820718;
+        Wed, 13 May 2020 06:06:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589349104;
-        bh=JIVkHaAe6zIIWxhNRMgSqeXbtj4d7lTqShCIfC4OdH4=;
+        s=default; t=1589350015;
+        bh=6qZpYcXUD5MiwOqEO1ZY0mCSOUXAEishXLv58UbUkb4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dOCeiQC7fZb1Bsc2EtNeF8a+YfrZFN/vdFkbuJuJul/K2/x9owzSrlDpFYtKu2DAj
-         MPzxKYRCcQobgTGvo/Cq0ZTxy2zdlKmOND3pMvk4txaac3Gw4NQqv8i601rVA9hx/z
-         8GJwA8Sxnqas3HlDBVgfXJmkpbJp0o3PTGsc544Q=
-Date:   Wed, 13 May 2020 11:21:39 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] clk: qcom: gcc: Add missing UFS clocks for SM8150
-Message-ID: <20200513055139.GA14092@vkoul-mobl>
-References: <20200424044311.2155917-1-vkoul@kernel.org>
- <20200424044311.2155917-2-vkoul@kernel.org>
- <158784189516.117437.15588556636278394035@swboyd.mtv.corp.google.com>
- <20200427045534.GB4625@vkoul-mobl.Dlink>
- <158933311835.215346.12980712108351352362@swboyd.mtv.corp.google.com>
+        b=PlsesW/IxxtIRgOd2lQP0dqWv9yKqYmK7I0Pdb0PncShDHGqXe38IMwt5hHuJ+kOf
+         dIxqCKtzwJuew0r94G4irCnmejKg94wHhnPbr+UD0EdFji1E6dp9EyMJNp0YL2HMWW
+         Y2dzCbQdg/J8zQuX2IzJRvUBD4JBDdopZsCztJog=
+Date:   Wed, 13 May 2020 07:55:48 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     ashwin-h <ashwinh@vmware.com>
+Cc:     x86@kernel.org, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        stable@kernel.org, srivatsab@vmware.com, srivatsa@csail.mit.edu,
+        rostedt@goodmis.org, srostedt@vmware.com,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v4.19.x] make 'user_access_begin()' do 'access_ok()'
+Message-ID: <20200513055548.GA743118@kroah.com>
+References: <d29f87f3f3abb4e496866253bd170faad976f687.1589305630.git.ashwinh@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <158933311835.215346.12980712108351352362@swboyd.mtv.corp.google.com>
+In-Reply-To: <d29f87f3f3abb4e496866253bd170faad976f687.1589305630.git.ashwinh@vmware.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-05-20, 18:25, Stephen Boyd wrote:
-> Quoting Vinod Koul (2020-04-26 21:55:34)
-> > On 25-04-20, 12:11, Stephen Boyd wrote:
-> > > Quoting Vinod Koul (2020-04-23 21:43:11)
-> > > > Add the missing ufs card and ufs phy clocks for SM8150. They were missed
-> > > > in earlier addition of clock driver.
-> > > > 
-> > > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > > > ---
-> > > >  drivers/clk/qcom/gcc-sm8150.c | 84 +++++++++++++++++++++++++++++++++++
-> > > >  1 file changed, 84 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/clk/qcom/gcc-sm8150.c b/drivers/clk/qcom/gcc-sm8150.c
-> > > > index 5c3dc34c955e..4354620fa12d 100644
-> > > > --- a/drivers/clk/qcom/gcc-sm8150.c
-> > > > +++ b/drivers/clk/qcom/gcc-sm8150.c
-> > > > @@ -2881,6 +2881,45 @@ static struct clk_branch gcc_ufs_card_phy_aux_hw_ctl_clk = {
-> > > >         },
-> > > >  };
-> > > >  
-> > > > +/* external clocks so add BRANCH_HALT_SKIP */
-> > > > +static struct clk_branch gcc_ufs_card_rx_symbol_0_clk = {
-> > > > +       .halt_check = BRANCH_HALT_SKIP,
-> > > > +       .clkr = {
-> > > > +               .enable_reg = 0x7501c,
-> > > > +               .enable_mask = BIT(0),
-> > > > +               .hw.init = &(struct clk_init_data){
-> > > > +                       .name = "gcc_ufs_card_rx_symbol_0_clk",
-> > > 
-> > > Any reason to not use .fw_name?
-> > 
-> > Did i understand it correct that you would like these to have .fw_name
-> > for parent? Should we start adding these clocks in DT description?
+On Wed, May 13, 2020 at 07:19:21AM +0530, ashwin-h wrote:
+> From: Linus Torvalds <torvalds@linux-foundation.org>
 > 
-> Sorry I misread the patch. This isn't a parent name description so .name
-> is correct here.
+> commit 594cc251fdd0d231d342d88b2fdff4bc42fb0690 upstream.
+> 
+> Originally, the rule used to be that you'd have to do access_ok()
+> separately, and then user_access_begin() before actually doing the
+> direct (optimized) user access.
+> 
+> But experience has shown that people then decide not to do access_ok()
+> at all, and instead rely on it being implied by other operations or
+> similar.  Which makes it very hard to verify that the access has
+> actually been range-checked.
+> 
+> If you use the unsafe direct user accesses, hardware features (either
+> SMAP - Supervisor Mode Access Protection - on x86, or PAN - Privileged
+> Access Never - on ARM) do force you to use user_access_begin().  But
+> nothing really forces the range check.
+> 
+> By putting the range check into user_access_begin(), we actually force
+> people to do the right thing (tm), and the range check vill be visible
+> near the actual accesses.  We have way too long a history of people
+> trying to avoid them.
+> 
+> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Ashwin H <ashwinh@vmware.com>
+> ---
+>  arch/x86/include/asm/uaccess.h             | 11 ++++++++++-
+>  drivers/gpu/drm/i915/i915_gem_execbuffer.c | 15 +++++++++++++--
+>  include/linux/uaccess.h                    |  2 +-
+>  kernel/compat.c                            |  6 ++----
+>  kernel/exit.c                              |  6 ++----
+>  lib/strncpy_from_user.c                    |  9 +++++----
+>  lib/strnlen_user.c                         |  9 +++++----
+>  7 files changed, 38 insertions(+), 20 deletions(-)
 
-No worries, I will add fixes and send the update
+Are you wanting this merged to a specific stable kernel tree?  If so, why?
 
-Thanks
--- 
-~Vinod
+thanks,
+
+greg k-h
