@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 834BF1D0D74
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E49A1D0E52
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387907AbgEMJxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:53:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54842 "EHLO mail.kernel.org"
+        id S2388359AbgEMJ7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:59:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387896AbgEMJxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:53:05 -0400
+        id S2387962AbgEMJxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:53:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E54123127;
-        Wed, 13 May 2020 09:53:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 68EB220769;
+        Wed, 13 May 2020 09:53:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363584;
-        bh=OZF5ZwFXj4P8n0iGxnlNhVhwzR/yGMlCOIbRSfvbciQ=;
+        s=default; t=1589363611;
+        bh=vtTYfenDTiknJybDemWFnKrjtKPZpagDPm/tbPp0Ouk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wWkogbHo1tIYDYoRL2rLLe2FicWYrdrXdEQWeYQ7LsI4rasIfMw8H9RCwn88zuT8n
-         zjNEq7ZhKN45e6BdyTg02vYdVkVDn9kCkAU01CCXJpF1myHGgikwXeIriv+Y6aVMTp
-         kuQE9roxS1cyDH8qU/t56aoK2T9qg0kR2T3RBqY0=
+        b=mJFQYNF7Upan6jqpRCgSyxNrSwBGJ7GXbCaKgkNhFsQztZKMYdTDhjZ7JdoNNUj2v
+         nPkgJsrHBQCY06kxQeaRiQbFGKRv3B4Ly+Q1Iv1rApFEMJq2BOi41tG3Su8WQZfNm/
+         0wDN753ukFXZDz/xQ7xMNmExJbcxDXNhHyywILIg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
+        stable@vger.kernel.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Baruch Siach <baruch@tkos.co.il>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 026/118] net/mlx4_core: Fix use of ENOSPC around mlx4_counter_alloc()
-Date:   Wed, 13 May 2020 11:44:05 +0200
-Message-Id: <20200513094419.932663267@linuxfoundation.org>
+Subject: [PATCH 5.6 027/118] net: phy: marvell10g: fix temperature sensor on 2110
+Date:   Wed, 13 May 2020 11:44:06 +0200
+Message-Id: <20200513094420.000084079@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
 References: <20200513094417.618129545@linuxfoundation.org>
@@ -44,49 +46,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tariq Toukan <tariqt@mellanox.com>
+From: Baruch Siach <baruch@tkos.co.il>
 
-[ Upstream commit 40e473071dbad04316ddc3613c3a3d1c75458299 ]
+[ Upstream commit c3e302edca2457bbd0c958c445a7538fbf6a6ac8 ]
 
-When ENOSPC is set the idx is still valid and gets set to the global
-MLX4_SINK_COUNTER_INDEX.  However gcc's static analysis cannot tell that
-ENOSPC is impossible from mlx4_cmd_imm() and gives this warning:
+Read the temperature sensor register from the correct location for the
+88E2110 PHY. There is no enable/disable bit on 2110, so make
+mv3310_hwmon_config() run on 88X3310 only.
 
-drivers/net/ethernet/mellanox/mlx4/main.c:2552:28: warning: 'idx' may be
-used uninitialized in this function [-Wmaybe-uninitialized]
- 2552 |    priv->def_counter[port] = idx;
-
-Also, when ENOSPC is returned mlx4_allocate_default_counters should not
-fail.
-
-Fixes: 6de5f7f6a1fa ("net/mlx4_core: Allocate default counter per port")
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Tariq Toukan <tariqt@mellanox.com>
+Fixes: 62d01535474b61 ("net: phy: marvell10g: add support for the 88x2110 PHY")
+Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/main.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/phy/marvell10g.c |   27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/mellanox/mlx4/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-@@ -2550,6 +2550,7 @@ static int mlx4_allocate_default_counter
+--- a/drivers/net/phy/marvell10g.c
++++ b/drivers/net/phy/marvell10g.c
+@@ -44,6 +44,9 @@ enum {
+ 	MV_PCS_PAIRSWAP_AB	= 0x0002,
+ 	MV_PCS_PAIRSWAP_NONE	= 0x0003,
  
- 		if (!err || err == -ENOSPC) {
- 			priv->def_counter[port] = idx;
-+			err = 0;
- 		} else if (err == -ENOENT) {
- 			err = 0;
- 			continue;
-@@ -2600,7 +2601,8 @@ int mlx4_counter_alloc(struct mlx4_dev *
- 				   MLX4_CMD_TIME_CLASS_A, MLX4_CMD_WRAPPED);
- 		if (!err)
- 			*idx = get_param_l(&out_param);
--
-+		if (WARN_ON(err == -ENOSPC))
-+			err = -EINVAL;
- 		return err;
++	/* Temperature read register (88E2110 only) */
++	MV_PCS_TEMP		= 0x8042,
++
+ 	/* These registers appear at 0x800X and 0xa00X - the 0xa00X control
+ 	 * registers appear to set themselves to the 0x800X when AN is
+ 	 * restarted, but status registers appear readable from either.
+@@ -54,6 +57,7 @@ enum {
+ 	/* Vendor2 MMD registers */
+ 	MV_V2_PORT_CTRL		= 0xf001,
+ 	MV_V2_PORT_CTRL_PWRDOWN = 0x0800,
++	/* Temperature control/read registers (88X3310 only) */
+ 	MV_V2_TEMP_CTRL		= 0xf08a,
+ 	MV_V2_TEMP_CTRL_MASK	= 0xc000,
+ 	MV_V2_TEMP_CTRL_SAMPLE	= 0x0000,
+@@ -79,6 +83,24 @@ static umode_t mv3310_hwmon_is_visible(c
+ 	return 0;
+ }
+ 
++static int mv3310_hwmon_read_temp_reg(struct phy_device *phydev)
++{
++	return phy_read_mmd(phydev, MDIO_MMD_VEND2, MV_V2_TEMP);
++}
++
++static int mv2110_hwmon_read_temp_reg(struct phy_device *phydev)
++{
++	return phy_read_mmd(phydev, MDIO_MMD_PCS, MV_PCS_TEMP);
++}
++
++static int mv10g_hwmon_read_temp_reg(struct phy_device *phydev)
++{
++	if (phydev->drv->phy_id == MARVELL_PHY_ID_88X3310)
++		return mv3310_hwmon_read_temp_reg(phydev);
++	else /* MARVELL_PHY_ID_88E2110 */
++		return mv2110_hwmon_read_temp_reg(phydev);
++}
++
+ static int mv3310_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
+ 			     u32 attr, int channel, long *value)
+ {
+@@ -91,7 +113,7 @@ static int mv3310_hwmon_read(struct devi
  	}
- 	return __mlx4_counter_alloc(dev, idx);
+ 
+ 	if (type == hwmon_temp && attr == hwmon_temp_input) {
+-		temp = phy_read_mmd(phydev, MDIO_MMD_VEND2, MV_V2_TEMP);
++		temp = mv10g_hwmon_read_temp_reg(phydev);
+ 		if (temp < 0)
+ 			return temp;
+ 
+@@ -144,6 +166,9 @@ static int mv3310_hwmon_config(struct ph
+ 	u16 val;
+ 	int ret;
+ 
++	if (phydev->drv->phy_id != MARVELL_PHY_ID_88X3310)
++		return 0;
++
+ 	ret = phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_V2_TEMP,
+ 			    MV_V2_TEMP_UNKNOWN);
+ 	if (ret < 0)
 
 
