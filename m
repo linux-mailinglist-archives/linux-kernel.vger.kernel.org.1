@@ -2,111 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3BD1D169E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C3E1D16FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388762AbgEMN5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:57:31 -0400
-Received: from mail-mw2nam10on2057.outbound.protection.outlook.com ([40.107.94.57]:6040
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        id S2388840AbgEMOFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 10:05:11 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4838 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727792AbgEMN5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:57:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ciTt8VmYRwdVT/khl6JI/clKWRez2Edqupdp7cXL57fR1TW4xEEvEySn/MwbI/Ni9tqUWRjwXSVpidXqVMGlLJEGvyQc/hYlB6TmPe9n2C839c2qrIhz2C3YnN5eop521EmapUhkuCwjzqnqaMKIoCC4ms3C8hustuem42D6dGjaDe/ubEnTmjln3GoUPKc/HsuEmcJCMOBjXIqqxphsXW+7AzFzoEFz+8TvKrsbyfHR9MnRyIMam8R1oQn9pnB8lG1zlVQjFhKkBl8V2EN4ZdV0hW9nMg52cOgaS/PGoZTjd92Vr9ZF7dIU6nxp3demOiRlTZg0aEE6oQohk2tELA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=60vPmv8RA5MlmBbtLlKW4Y/a5Zxl3G7WVKbBwMntZTk=;
- b=IOHz7ty52YQpZnPd8ap6yCr70TAlf3wuSMySTxnvyUBuLHLrK6E9BKD051RnH/kdM1FJxM69On+vRkvAte3U2xNV3Ahb920RptuInyOAyeK1sPXAelBIQXIKp/cqFfpqjfEnUW7IJuORmBdVPoqJMA2b3PG8okky4rcR7GWTLgqdY1sBU3cNNVXDehnFseZIjjyfh9U2g0bEynN2PE4rWzPG7abr2SWZsHzZ7txRk8SlWpl/ZcUmeV7xbAsKjMTIZmnKVOJxWIujVIbtRgSRNvAZdLq2ggzFZUonPsbXgpJI2C7A0FUoZnNBAVGW7QXJ5SlmuyGFHE1HyLjb69r0uA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=sifive.com; dmarc=pass action=none header.from=sifive.com;
- dkim=pass header.d=sifive.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=60vPmv8RA5MlmBbtLlKW4Y/a5Zxl3G7WVKbBwMntZTk=;
- b=rPQubjxMATSoI5mhfqIP375B8xcjjWalTMPaySPYMAy3gI4VqJhuQZNscr6VKQwScNFWFrr1Uj8OCDczHEb6LqTs/SQUMTqUTgFKk1TyxrFi7XeJPh98nEvJ0WziTwcCiKrM6w63+TLTmzFwtUhdZSLIB240UVbOzBYmSWloupA=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=sifive.com;
-Received: from BYAPR13MB2614.namprd13.prod.outlook.com (2603:10b6:a03:b4::12)
- by BYAPR13MB2792.namprd13.prod.outlook.com (2603:10b6:a03:b0::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.13; Wed, 13 May
- 2020 13:57:28 +0000
-Received: from BYAPR13MB2614.namprd13.prod.outlook.com
- ([fe80::c0fc:30a3:5e5f:c2b6]) by BYAPR13MB2614.namprd13.prod.outlook.com
- ([fe80::c0fc:30a3:5e5f:c2b6%7]) with mapi id 15.20.3000.013; Wed, 13 May 2020
- 13:57:27 +0000
-From:   Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-To:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Cc:     palmer@dabbelt.com, paul.walmsley@sifive.com, atish.patra@wdc.com,
-        Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-Subject: [PATCH v1 3/3] riscv: defconfig: enable gpio support for HiFive Unleashed
-Date:   Wed, 13 May 2020 06:57:01 -0700
-Message-Id: <1589378222-15238-4-git-send-email-sagar.kadam@sifive.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589378222-15238-1-git-send-email-sagar.kadam@sifive.com>
-References: <1589378222-15238-1-git-send-email-sagar.kadam@sifive.com>
-Content-Type: text/plain
-X-ClientProxiedBy: BY5PR16CA0005.namprd16.prod.outlook.com
- (2603:10b6:a03:1a0::18) To BYAPR13MB2614.namprd13.prod.outlook.com
- (2603:10b6:a03:b4::12)
+        id S2388325AbgEMOFL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 10:05:11 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id D722EC9559855ECE06E3;
+        Wed, 13 May 2020 22:05:00 +0800 (CST)
+Received: from host-suse12sp4.huawei.com (10.67.133.23) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 13 May 2020 22:04:50 +0800
+From:   Shijie Hu <hushijie3@huawei.com>
+To:     <mike.kravetz@oracle.com>
+CC:     <will@kernel.org>, <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <nixiaoming@huawei.com>, <wangxu72@huawei.com>,
+        <wangkefeng.wang@huawei.com>, <yangerkun@huawei.com>,
+        <wangle6@huawei.com>, <cg.chen@huawei.com>, <chenjie6@huawei.com>,
+        <alex.huangjianhui@huawei.com>
+Subject: [PATCH v4] hugetlbfs: Get unmapped area below TASK_UNMAPPED_BASE for hugetlbfs
+Date:   Wed, 13 May 2020 21:57:42 +0800
+Message-ID: <20200513135742.102064-1-hushijie3@huawei.com>
+X-Mailer: git-send-email 2.12.3
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from gamma07.internal.sifive.com (64.62.193.194) by BY5PR16CA0005.namprd16.prod.outlook.com (2603:10b6:a03:1a0::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3000.20 via Frontend Transport; Wed, 13 May 2020 13:57:27 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [64.62.193.194]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f6e60311-45f2-4c2d-0508-08d7f7459254
-X-MS-TrafficTypeDiagnostic: BYAPR13MB2792:
-X-LD-Processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR13MB2792691A4C544F6AC01121FD99BF0@BYAPR13MB2792.namprd13.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1332;
-X-Forefront-PRVS: 0402872DA1
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 54BjP+A1LjjzkJnvvSWghphgNC8Ad2Qq4SXF0E5jq/h+PabFglb7sD6QCpshteWMSOUJYOJmBHp5ao29QlXT0VbUugDqO/gQvs29319Ybipujw4HxQ5RB7fJiUg1ccgck6o6dVZjsv+hzi5jARIUHpXn+UXXLEesZnV1VTHkOcKCZ/etlXacveePUg43raWd3yQL45TsFmSwUBdiPZJ4Z9n/Y9qIw8mirjK0jH/tGPp/F1XWfu77bFBzSxV9Ftc1iU5jT26UsN3fazZ+XYAPPQLh19eIT7PduzkkVXv3hCO0N3Y1I56WZQXzh32smy61uhBCKha9mqagGKRQaf2eEmo0uDMQd5SfZ7O4I5B7gYOZDWtWGCU6BWua4guorZ8T33Antgg367rXY1sbYjZtJhXyvmo41oWO8zs5SnZ8x7Ec8/0wtIqtjrryd3gHc8HY6h67tH70GrTmheyDKJDFO0nKf1zgfrP8cV1u+tbdnCiLLQ7/s+7eOokEuzHuLcT+YZ27oHOUo8gGH2a1VUc1sw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR13MB2614.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(6029001)(366004)(396003)(136003)(376002)(39830400003)(346002)(33430700001)(8936002)(8676002)(6486002)(66556008)(2616005)(4744005)(52116002)(956004)(66476007)(478600001)(7696005)(66946007)(2906002)(316002)(6666004)(36756003)(107886003)(186003)(86362001)(4326008)(5660300002)(26005)(16526019)(33440700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: ChUBH7j6jhdUBi31J72zbi0hGDFii6Av1ywTtY427RcQEMGpWptm4V5VWnUYNplKrrKRT8H0On+40kk5Vr7dtaidHfxoqCB4KanLg7yNz5nEckldWlq08aAaFIKPMKkPQUujeVYzPQ3E+W3LK1eLPjrfJMuaNPakfTbYmCaxFX7/moQjfVjYuTIIEiuGSmmq3YtcgN+tGnhCFXyr9ciC2ZaRBF9fm8tD++k3VAhp5uNlHyNRDZvbDIgJLWxqsaAg6Bs7JFddolE8tnLtWuYhpY/80G73aqwJ4ibzis8ka2Hg07MJoO8xN082j8zcCoB0iM0uzowmQCcAycmS3g2/VB4VHWXQhnMXTJKeBcEfjHEHCC5+0qBWcjLMH5/sRqw8zNgqUP7MufbjbiJ8RN4n986Ghw7t7DvSOPm+07akBmmRVW/A0mxC5FfwWwEsWj8bxB0eD+3pRTFuNnudbxFWbujyOei2Bl6Viko2ixtwK38=
-X-OriginatorOrg: sifive.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6e60311-45f2-4c2d-0508-08d7f7459254
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2020 13:57:27.8207
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DL7Lrf3V96M5+SZmPaAUAB1/HRXjS6ATF7DveZ5N2fPk2RQLl28DvYEytA9MTCMl9SiV5hbVxvOvnzJXkAJsQQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR13MB2792
+Content-Type: text/plain
+X-Originating-IP: [10.67.133.23]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ethernet phy VSC8541-01 on HiFive Unleashed has its reset line
-connected to a gpio, so enable GPIO driver's required to reset
-the phy.
+Here is a final patch to solve that hugetlb_get_unmapped_area() can't
+get unmapped area below mmap base for huge pages based on a few previous
+discussions and patches from me.
 
-Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+I'm so sorry. When sending v2 and v3 patches, I forget to cc:
+linux-mm@kvack.org and linux-kernel@vger.kernel.org. No records of these
+two patches found on the https://lkml.org/lkml/.
+
+Patch V1: https://lkml.org/lkml/2020/4/27/440
+
+Changes in V2:
+* Follow Mike's suggestions, move hugetlb_get_unmapped_area() routines
+from "fs/hugetlbfs/inode.c" to "arch/arm64/mm/hugetlbpage.c", without
+changing core code.
+* Add mmap_is_legacy() function, and only fall back to the bottom-up
+function on no-legacy mode.
+
+Changes in V3:
+* Add *bottomup() and *topdown() two function, and check if
+mm->get_unmapped_area is equal to arch_get_unmapped_area() instead of
+checking mmap_is_legacy() to determine which function should be used.
+
+Changes in V4:
+* Follow the suggestions of Will and Mike, move back this patch to core
+code.
+
+------
+
+In a 32-bit program, running on arm64 architecture. When the address
+space below mmap base is completely exhausted, shmat() for huge pages
+will return ENOMEM, but shmat() for normal pages can still success on
+no-legacy mode. This seems not fair.
+
+For normal pages, get_unmapped_area() calling flows are:
+    => mm->get_unmapped_area()
+	if on legacy mode,
+	    => arch_get_unmapped_area()
+			=> vm_unmapped_area()
+	if on no-legacy mode,
+	    => arch_get_unmapped_area_topdown()
+			=> vm_unmapped_area()
+
+For huge pages, get_unmapped_area() calling flows are:
+    => file->f_op->get_unmapped_area()
+		=> hugetlb_get_unmapped_area()
+			=> vm_unmapped_area()
+
+To solve this issue, we only need to make hugetlb_get_unmapped_area() take
+the same way as mm->get_unmapped_area(). Add *bottomup() and *topdown()
+two functions, and check current mm->get_unmapped_area() to decide which 
+one to use. If mm->get_unmapped_area is equal to arch_get_unmapped_area(),
+hugetlb_get_unmapped_area() calls bottomup routine, otherwise calls topdown
+routine.
+
+Signed-off-by: Shijie Hu <hushijie3@huawei.com>
 ---
- arch/riscv/configs/defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/hugetlbfs/inode.c | 61 +++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 53 insertions(+), 8 deletions(-)
 
-diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-index 4da4886..20c38b59 100644
---- a/arch/riscv/configs/defconfig
-+++ b/arch/riscv/configs/defconfig
-@@ -63,6 +63,8 @@ CONFIG_HW_RANDOM=y
- CONFIG_HW_RANDOM_VIRTIO=y
- CONFIG_SPI=y
- CONFIG_SPI_SIFIVE=y
-+CONFIG_GPIOLIB=y
-+CONFIG_GPIO_SIFIVE=y
- # CONFIG_PTP_1588_CLOCK is not set
- CONFIG_POWER_RESET=y
- CONFIG_DRM=y
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index 991c60c7ffe0..bbee893e88da 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -191,13 +191,60 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
+ 
+ #ifndef HAVE_ARCH_HUGETLB_UNMAPPED_AREA
+ static unsigned long
++hugetlb_get_unmapped_area_bottomup(struct file *file, unsigned long addr,
++		unsigned long len, unsigned long pgoff, unsigned long flags)
++{
++	struct hstate *h = hstate_file(file);
++	struct vm_unmapped_area_info info;
++
++	info.flags = 0;
++	info.length = len;
++	info.low_limit = current->mm->mmap_base;
++	info.high_limit = TASK_SIZE;
++	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
++	info.align_offset = 0;
++	return vm_unmapped_area(&info);
++}
++
++static unsigned long
++hugetlb_get_unmapped_area_topdown(struct file *file, unsigned long addr,
++		unsigned long len, unsigned long pgoff, unsigned long flags)
++{
++	struct hstate *h = hstate_file(file);
++	struct vm_unmapped_area_info info;
++
++	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
++	info.length = len;
++	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
++	info.high_limit = current->mm->mmap_base;
++	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
++	info.align_offset = 0;
++	addr = vm_unmapped_area(&info);
++
++	/*
++	 * A failed mmap() very likely causes application failure,
++	 * so fall back to the bottom-up function here. This scenario
++	 * can happen with large stack limits and large mmap()
++	 * allocations.
++	 */
++	if (unlikely(offset_in_page(addr))) {
++		VM_BUG_ON(addr != -ENOMEM);
++		info.flags = 0;
++		info.low_limit = current->mm->mmap_base;
++		info.high_limit = TASK_SIZE;
++		addr = vm_unmapped_area(&info);
++	}
++
++	return addr;
++}
++
++static unsigned long
+ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
+ 		unsigned long len, unsigned long pgoff, unsigned long flags)
+ {
+ 	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma;
+ 	struct hstate *h = hstate_file(file);
+-	struct vm_unmapped_area_info info;
+ 
+ 	if (len & ~huge_page_mask(h))
+ 		return -EINVAL;
+@@ -218,13 +265,11 @@ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
+ 			return addr;
+ 	}
+ 
+-	info.flags = 0;
+-	info.length = len;
+-	info.low_limit = TASK_UNMAPPED_BASE;
+-	info.high_limit = TASK_SIZE;
+-	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
+-	info.align_offset = 0;
+-	return vm_unmapped_area(&info);
++	if (mm->get_unmapped_area == arch_get_unmapped_area)
++		return hugetlb_get_unmapped_area_bottomup(file, addr, len,
++				pgoff, flags);
++	return hugetlb_get_unmapped_area_topdown(file, addr, len,
++			pgoff, flags);
+ }
+ #endif
+ 
 -- 
-2.7.4
+2.12.3
 
