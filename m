@@ -2,96 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E191D1414
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9E41D142B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387412AbgEMNJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:09:09 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:8530 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728815AbgEMNJH (ORCPT
+        id S2387485AbgEMNKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726034AbgEMNKl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:09:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1589375346; x=1620911346;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=e6u3aV1QGFBSQ0eEelvtWAIoeOAC/vgh59tjbGFX/nI=;
-  b=ZuTfzNh9LT3tZw4XmyeNXeo3B0Jm9Y9UMb2M02+3WCl3W54+/U0xGUCf
-   q7F3O69E94jZ+Lr5hKXDsYoX2AXjJ8uLaF8hi7uOIN8Ny6W4Bp+LWd5OB
-   BFS5WoXD3w6sPthg6KKdjQkP5XNx+tQQM0IMIAErndPzAqZaCkS8yxQee
-   sgj3Nbr+egIdRe3CCgJ+GV+momDmfaADtev+XhTlp89DO8v1/qYko1ulv
-   NmYOLqdoK+0tFLBMIVycol/ObT7bbuxkwHzVj5K/2XUKNyd8qHOypJ07G
-   /8HU18o2nmdKr2ibnOALx7OqGjVfQHOU3q9PVSHTN4BDSZoPnpNNzQ0F0
-   g==;
-IronPort-SDR: ImLEDdl7AMnyivYjeyLG78XOm3QyPYMEALDQBIoV+dGm4URpVcSdVUf1Di9smzsXclhJWybcZt
- hyHSlC0YFvP7ByXUfKY3xCO49Kqm4ofDJtsn5FeIE5mgVz4zEiZxHL6GhtE6A2rnI9eT2L+g+F
- A2A9TEE60W4trAvOZYGBRV0hoCzrAcRsY4rnuN9mZMgRsSdM6/8fzl4J7aarXou6YVWs5jNzLS
- wNa027v3HdODTTeZMgL/4aE1iA4fm+RoxOjiHQlLmL7j5SZ8xJzJUDsvZH2HRTNaexnh5cFqVs
- MYs=
-X-IronPort-AV: E=Sophos;i="5.73,387,1583218800"; 
-   d="scan'208";a="75134448"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 May 2020 06:09:06 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 13 May 2020 06:09:06 -0700
-Received: from soft-dev15.microsemi.net (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Wed, 13 May 2020 06:09:04 -0700
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Sebastian Reichel <sre@kernel.org>, SoC Team <soc@kernel.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 5/5] arm64: dts: sparx5: Add reset support
-Date:   Wed, 13 May 2020 15:08:42 +0200
-Message-ID: <20200513130842.24847-6-lars.povlsen@microchip.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513130842.24847-1-lars.povlsen@microchip.com>
-References: <20200513130842.24847-1-lars.povlsen@microchip.com>
+        Wed, 13 May 2020 09:10:41 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7909C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 06:10:40 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id u15so17735865ljd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 06:10:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tnW7scLNjEy1+83Ji/gI9Z51LMzzGDuvXsjQ7oxJByY=;
+        b=n1ZnoC3vZqhM3FzrFaAmzTOkeYAWUZSABvdCTqNV8QKysKgfumpOoF/X2OpzaJBj8I
+         klHWWyxlIEd8ZgSEvnQAx+tWkdV/Y1rnfupyvCoYR1lAe3F+jYlJWQRHrqCT2SOGPADY
+         UjUpAhl4NRo1ne6f/LS3Bk4Q3tSkrP1cAUpfNZQvpIypjo0UJKAtED9TkAogmwI0axj/
+         QBIdYUqXi0ecOsfNsUO3MWJKY/0MBXZ4/cmO5Xz3Y1L10lYF6OMq7zaUQ1GDqGEiVjXZ
+         q0bEjtJuVvlsn5LwOm6ZDz+zTDx8u/NrD5UNnjl6oKRoevOVYD2I8jHHjy9fp2f8G7oO
+         HTPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tnW7scLNjEy1+83Ji/gI9Z51LMzzGDuvXsjQ7oxJByY=;
+        b=VpPtabp/BJczZ9w66x2PKmHKAKoRCNNVH9w1SBhVZJYJdK60Bj0QyZGjjLhYM+xu7m
+         WHMPoJvGK7sQ2yf2rqpKOM6b07kHHa6QIN1ny3k/24Nba19a+sq15Dwhh+Lzu89DtzNS
+         rmZYgSvZZaguaZBoLK+6/QqCR6CTk81+ZFaiimiTalnd3quDoQLzbjSJGyRwzoUtQMrs
+         jq713BlUrP/uaEvfYJ8TajKJf883NCVb/gGra0jXxCfIh3p5XTH8slgVRUz0cZnT7T9p
+         Ak8ekOORX+H6sIjt9LJ0AbgU9nC7j0bqJhsdUBuhzxplJ62I4f0aGUgxReySVYGBlZQ9
+         ySdQ==
+X-Gm-Message-State: AOAM530MQt8BDiWrc0h04TP7vHbIM778sCTjD+UzlYBbRmHI9eguFM7F
+        OmBFN6+ur/1iidr0WPabGkwk1BbCE784Cbs1WLcadQ==
+X-Google-Smtp-Source: ABdhPJzR9hxwbNp+9t4M8tJAqwCpSiqc1ESdRH72ANwI2IWLV+iu8YYPW282DImm1p85iERAtVIPEqhHDItFCmUPDJw=
+X-Received: by 2002:a2e:87d0:: with SMTP id v16mr16409300ljj.137.1589375439209;
+ Wed, 13 May 2020 06:10:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20200513123335.28122-1-vincent.guittot@linaro.org> <20200513124540.GB12425@lorien.usersys.redhat.com>
+In-Reply-To: <20200513124540.GB12425@lorien.usersys.redhat.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 13 May 2020 15:10:28 +0200
+Message-ID: <CAKfTPtBFP5eAV-u02x42U2cQnWA56RP+wbj78rWpzj560OS+-g@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/fair: enqueue_task_fair optimization
+To:     Phil Auld <pauld@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Tao Zhou <ouwen210@hotmail.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds reset support to the Sparx5 SoC
+On Wed, 13 May 2020 at 14:45, Phil Auld <pauld@redhat.com> wrote:
+>
+> Hi Vincent,
+>
+> On Wed, May 13, 2020 at 02:33:35PM +0200 Vincent Guittot wrote:
+> > enqueue_task_fair jumps to enqueue_throttle label when cfs_rq_of(se) is
+> > throttled which means that se can't be NULL and we can skip the test.
+> >
+>
+> s/be NULL/be non-NULL/
+>
+> I think.
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+This sentence refers to the move of enqueue_throttle and the fact that
+se can't be null when goto enqueue_throttle and we can jump directly
+after the if statement, which is now removed in v2 because se is
+always NULL if we don't use goto enqueue_throttle.
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index b5cb3d8dc876b..3e94ac9e7dd51 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -106,6 +106,17 @@ gic: interrupt-controller@600300000 {
- 			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		cpu_ctrl: syscon@600000000 {
-+			compatible = "microchip,sparx5-cpu-syscon", "syscon";
-+			reg = <0x6 0x00000000 0xd0>;
-+		};
-+
-+		reset@611010008 {
-+			compatible = "microchip,sparx5-chip-reset";
-+			reg = <0x6 0x11010008 0x4>;
-+			microchip,reset-switch-core;
-+		};
-+
- 		uart0: serial@600100000 {
- 			pinctrl-0 = <&uart_pins>;
- 			pinctrl-names = "default";
--- 
-2.26.2
+I haven't change the commit message for the remove of if statement
 
+>
+> It's more like if it doesn't jump to the label then se must be NULL for
+> the loop to terminate.  The final loop is a NOP if se is NULL. The check
+> wasn't protecting that.
+>
+> Otherwise still
+>
+> > Reviewed-by: Phil Auld <pauld@redhat.com>
+>
+> Cheers,
+> Phil
+>
+>
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > ---
+> >
+> > v2 changes:
+> > - Remove useless if statement
+> >
+> >  kernel/sched/fair.c | 39 ++++++++++++++++++++-------------------
+> >  1 file changed, 20 insertions(+), 19 deletions(-)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index a0c690d57430..b51b12d63c39 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -5513,28 +5513,29 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+> >                         list_add_leaf_cfs_rq(cfs_rq);
+> >       }
+> >
+> > -enqueue_throttle:
+> > -     if (!se) {
+> > -             add_nr_running(rq, 1);
+> > -             /*
+> > -              * Since new tasks are assigned an initial util_avg equal to
+> > -              * half of the spare capacity of their CPU, tiny tasks have the
+> > -              * ability to cross the overutilized threshold, which will
+> > -              * result in the load balancer ruining all the task placement
+> > -              * done by EAS. As a way to mitigate that effect, do not account
+> > -              * for the first enqueue operation of new tasks during the
+> > -              * overutilized flag detection.
+> > -              *
+> > -              * A better way of solving this problem would be to wait for
+> > -              * the PELT signals of tasks to converge before taking them
+> > -              * into account, but that is not straightforward to implement,
+> > -              * and the following generally works well enough in practice.
+> > -              */
+> > -             if (flags & ENQUEUE_WAKEUP)
+> > -                     update_overutilized_status(rq);
+> > +     /* At this point se is NULL and we are at root level*/
+> > +     add_nr_running(rq, 1);
+> > +
+> > +     /*
+> > +      * Since new tasks are assigned an initial util_avg equal to
+> > +      * half of the spare capacity of their CPU, tiny tasks have the
+> > +      * ability to cross the overutilized threshold, which will
+> > +      * result in the load balancer ruining all the task placement
+> > +      * done by EAS. As a way to mitigate that effect, do not account
+> > +      * for the first enqueue operation of new tasks during the
+> > +      * overutilized flag detection.
+> > +      *
+> > +      * A better way of solving this problem would be to wait for
+> > +      * the PELT signals of tasks to converge before taking them
+> > +      * into account, but that is not straightforward to implement,
+> > +      * and the following generally works well enough in practice.
+> > +      */
+> > +     if (flags & ENQUEUE_WAKEUP)
+> > +             update_overutilized_status(rq);
+> >
+> >       }
+> >
+> > +enqueue_throttle:
+> >       if (cfs_bandwidth_used()) {
+> >               /*
+> >                * When bandwidth control is enabled; the cfs_rq_throttled()
+> > --
+> > 2.17.1
+> >
+>
+> --
+>
