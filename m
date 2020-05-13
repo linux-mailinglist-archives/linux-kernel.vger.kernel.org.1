@@ -2,44 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC891D0CBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4631D0DA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732812AbgEMJrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:47:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44754 "EHLO mail.kernel.org"
+        id S1733295AbgEMJyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:54:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732773AbgEMJrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:47:09 -0400
+        id S1733274AbgEMJyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:54:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA99E20753;
-        Wed, 13 May 2020 09:47:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19BF22176D;
+        Wed, 13 May 2020 09:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363228;
-        bh=efmXkP4nZQuabVonmCLtMzWmGLAsXGPDsTiDa8BZylU=;
+        s=default; t=1589363685;
+        bh=h8SEZHcxjevCrV+7KP1HulgHGIYU8bJnnCg8YvMO62M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HOFsMt33O6kfQhCpSzi7Uoz/Gk7ETeGhmdKnvCoemgGZO/+bRCHGiA5R9tG11Eqp3
-         xoTAQaaGuFgKGLgs2yS35foFwtdRHk+uWmkLzPaOWqh3fSiCLmZrbdV5vsmHvaMOY5
-         gGN3akSzYUP4DzmPpiV5vdxxlXbsRt7Q59sZlKBo=
+        b=ZDxc3J3Ea+O0fLvuKY04N/YwJGB5zzWH/ZrmoH1xUTB/qkoHQQN2h0spiFoAaU4zM
+         ggSJRKL86HsHRsjlHFNhfX+igUsFdWfCtBWdHBnzH9SsZWqVI5ld5KT7kDCVUK18cE
+         8z1TiMGV/bQ3XvDzhAmuOzikcp6O67gd/ixbUgHo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>, Dave Jones <dsj@fb.com>,
-        Jann Horn <jannh@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vince Weaver <vincent.weaver@maine.edu>
-Subject: [PATCH 4.19 37/48] x86/entry/64: Fix unwind hints in register clearing code
+        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Baoquan He <bhe@redhat.com>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.6 084/118] mm/page_alloc: fix watchdog soft lockups during set_zone_contiguous()
 Date:   Wed, 13 May 2020 11:45:03 +0200
-Message-Id: <20200513094401.325580400@linuxfoundation.org>
+Message-Id: <20200513094424.804010952@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
-References: <20200513094351.100352960@linuxfoundation.org>
+In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
+References: <20200513094417.618129545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,110 +54,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: David Hildenbrand <david@redhat.com>
 
-commit 06a9750edcffa808494d56da939085c35904e618 upstream.
+commit e84fe99b68ce353c37ceeecc95dce9696c976556 upstream.
 
-The PUSH_AND_CLEAR_REGS macro zeroes each register immediately after
-pushing it.  If an NMI or exception hits after a register is cleared,
-but before the UNWIND_HINT_REGS annotation, the ORC unwinder will
-wrongly think the previous value of the register was zero.  This can
-confuse the unwinding process and cause it to exit early.
+Without CONFIG_PREEMPT, it can happen that we get soft lockups detected,
+e.g., while booting up.
 
-Because ORC is simpler than DWARF, there are a limited number of unwind
-annotation states, so it's not possible to add an individual unwind hint
-after each push/clear combination.  Instead, the register clearing
-instructions need to be consolidated and moved to after the
-UNWIND_HINT_REGS annotation.
+  watchdog: BUG: soft lockup - CPU#0 stuck for 22s! [swapper/0:1]
+  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.6.0-next-20200331+ #4
+  Hardware name: Red Hat KVM, BIOS 1.11.1-4.module+el8.1.0+4066+0f1aadab 04/01/2014
+  RIP: __pageblock_pfn_to_page+0x134/0x1c0
+  Call Trace:
+   set_zone_contiguous+0x56/0x70
+   page_alloc_init_late+0x166/0x176
+   kernel_init_freeable+0xfa/0x255
+   kernel_init+0xa/0x106
+   ret_from_fork+0x35/0x40
 
-Fixes: 3f01daecd545 ("x86/entry/64: Introduce the PUSH_AND_CLEAN_REGS macro")
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Dave Jones <dsj@fb.com>
-Cc: Jann Horn <jannh@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Vince Weaver <vincent.weaver@maine.edu>
-Link: https://lore.kernel.org/r/68fd3d0bc92ae2d62ff7879d15d3684217d51f08.1587808742.git.jpoimboe@redhat.com
+The issue becomes visible when having a lot of memory (e.g., 4TB)
+assigned to a single NUMA node - a system that can easily be created
+using QEMU.  Inside VMs on a hypervisor with quite some memory
+overcommit, this is fairly easy to trigger.
+
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Reviewed-by: Baoquan He <bhe@redhat.com>
+Reviewed-by: Shile Zhang <shile.zhang@linux.alibaba.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc: Shile Zhang <shile.zhang@linux.alibaba.com>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Alexander Duyck <alexander.duyck@gmail.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200416073417.5003-1-david@redhat.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/entry/calling.h |   40 +++++++++++++++++++++-------------------
- 1 file changed, 21 insertions(+), 19 deletions(-)
+ mm/page_alloc.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/entry/calling.h
-+++ b/arch/x86/entry/calling.h
-@@ -98,13 +98,6 @@ For 32-bit we have the following convent
- #define SIZEOF_PTREGS	21*8
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -1555,6 +1555,7 @@ void set_zone_contiguous(struct zone *zo
+ 		if (!__pageblock_pfn_to_page(block_start_pfn,
+ 					     block_end_pfn, zone))
+ 			return;
++		cond_resched();
+ 	}
  
- .macro PUSH_AND_CLEAR_REGS rdx=%rdx rax=%rax save_ret=0
--	/*
--	 * Push registers and sanitize registers of values that a
--	 * speculation attack might otherwise want to exploit. The
--	 * lower registers are likely clobbered well before they
--	 * could be put to use in a speculative execution gadget.
--	 * Interleave XOR with PUSH for better uop scheduling:
--	 */
- 	.if \save_ret
- 	pushq	%rsi		/* pt_regs->si */
- 	movq	8(%rsp), %rsi	/* temporarily store the return address in %rsi */
-@@ -114,34 +107,43 @@ For 32-bit we have the following convent
- 	pushq   %rsi		/* pt_regs->si */
- 	.endif
- 	pushq	\rdx		/* pt_regs->dx */
--	xorl	%edx, %edx	/* nospec   dx */
- 	pushq   %rcx		/* pt_regs->cx */
--	xorl	%ecx, %ecx	/* nospec   cx */
- 	pushq   \rax		/* pt_regs->ax */
- 	pushq   %r8		/* pt_regs->r8 */
--	xorl	%r8d, %r8d	/* nospec   r8 */
- 	pushq   %r9		/* pt_regs->r9 */
--	xorl	%r9d, %r9d	/* nospec   r9 */
- 	pushq   %r10		/* pt_regs->r10 */
--	xorl	%r10d, %r10d	/* nospec   r10 */
- 	pushq   %r11		/* pt_regs->r11 */
--	xorl	%r11d, %r11d	/* nospec   r11*/
- 	pushq	%rbx		/* pt_regs->rbx */
--	xorl    %ebx, %ebx	/* nospec   rbx*/
- 	pushq	%rbp		/* pt_regs->rbp */
--	xorl    %ebp, %ebp	/* nospec   rbp*/
- 	pushq	%r12		/* pt_regs->r12 */
--	xorl	%r12d, %r12d	/* nospec   r12*/
- 	pushq	%r13		/* pt_regs->r13 */
--	xorl	%r13d, %r13d	/* nospec   r13*/
- 	pushq	%r14		/* pt_regs->r14 */
--	xorl	%r14d, %r14d	/* nospec   r14*/
- 	pushq	%r15		/* pt_regs->r15 */
--	xorl	%r15d, %r15d	/* nospec   r15*/
- 	UNWIND_HINT_REGS
-+
- 	.if \save_ret
- 	pushq	%rsi		/* return address on top of stack */
- 	.endif
-+
-+	/*
-+	 * Sanitize registers of values that a speculation attack might
-+	 * otherwise want to exploit. The lower registers are likely clobbered
-+	 * well before they could be put to use in a speculative execution
-+	 * gadget.
-+	 */
-+	xorl	%edx,  %edx	/* nospec dx  */
-+	xorl	%ecx,  %ecx	/* nospec cx  */
-+	xorl	%r8d,  %r8d	/* nospec r8  */
-+	xorl	%r9d,  %r9d	/* nospec r9  */
-+	xorl	%r10d, %r10d	/* nospec r10 */
-+	xorl	%r11d, %r11d	/* nospec r11 */
-+	xorl	%ebx,  %ebx	/* nospec rbx */
-+	xorl	%ebp,  %ebp	/* nospec rbp */
-+	xorl	%r12d, %r12d	/* nospec r12 */
-+	xorl	%r13d, %r13d	/* nospec r13 */
-+	xorl	%r14d, %r14d	/* nospec r14 */
-+	xorl	%r15d, %r15d	/* nospec r15 */
-+
- .endm
- 
- .macro POP_REGS pop_rdi=1 skip_r11rcx=0
+ 	/* We confirm that there is no hole */
 
 
