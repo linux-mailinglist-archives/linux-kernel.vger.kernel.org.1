@@ -2,206 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ECB61D1466
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0121D1479
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387665AbgEMNRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:17:33 -0400
-Received: from out28-217.mail.aliyun.com ([115.124.28.217]:55864 "EHLO
-        out28-217.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387574AbgEMNRc (ORCPT
+        id S2387737AbgEMNSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:18:02 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:23433 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387714AbgEMNR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:17:32 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07505756|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0215514-0.000641727-0.977807;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16370;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.HY0oTOn_1589375829;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.HY0oTOn_1589375829)
-          by smtp.aliyun-inc.com(10.147.41.120);
-          Wed, 13 May 2020 21:17:24 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     linux-clk@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
-        paul@crapouillou.net, dongsheng.qiu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Subject: [PATCH v8 6/6] clk: X1000: Add FIXDIV for SSI clock of X1000.
-Date:   Wed, 13 May 2020 21:16:44 +0800
-Message-Id: <1589375804-78423-8-git-send-email-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589375804-78423-1-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1589375804-78423-1-git-send-email-zhouyanjie@wanyeetech.com>
+        Wed, 13 May 2020 09:17:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589375877;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uvCkRI/K32PIBqaQ7LcOfghe4diMRxEm5e5JsVQlwss=;
+        b=QSsayEV4hsn+RkiKYSWzBlNSmpl0HhPjcwU69qH2To92aOaEnfKqOmAbQfFPtz0362nk0f
+        c/tr3Z43oCSA9Aw42wwMEZKE3y4UyF2IWuNzvqU/8LKcgmGZh19Q6LeSBFj4ctdttE3gXf
+        JCRArBt5F0gIfjglFgS+mYiuRSfJauM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-133-9T7X1SL4M7u16KqBfljjIQ-1; Wed, 13 May 2020 09:17:52 -0400
+X-MC-Unique: 9T7X1SL4M7u16KqBfljjIQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 53C148014C0;
+        Wed, 13 May 2020 13:17:49 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-59.rdu2.redhat.com [10.10.112.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E8A53610F2;
+        Wed, 13 May 2020 13:17:41 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200513062649.2100053-22-hch@lst.de>
+References: <20200513062649.2100053-22-hch@lst.de> <20200513062649.2100053-1-hch@lst.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     dhowells@redhat.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-nvme@lists.infradead.org, linux-sctp@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        drbd-dev@lists.linbit.com, linux-cifs@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-rdma@vger.kernel.org,
+        cluster-devel@redhat.com, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, Neil Horman <nhorman@tuxdriver.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev@vger.kernel.org, Vlad Yasevich <vyasevich@gmail.com>,
+        linux-kernel@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>, ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH 21/33] ipv4: add ip_sock_set_mtu_discover
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3123897.1589375861.1@warthog.procyon.org.uk>
+Date:   Wed, 13 May 2020 14:17:41 +0100
+Message-ID: <3123898.1589375861@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.The SSI clock of X1000 not like JZ4770 and JZ4780, they are not
-  directly derived from the output of SSIPLL, but from the clock
-  obtained by dividing the frequency by 2. "X1000_CLK_SSIPLL_DIV2"
-  is added for this purpose, and ensure that it initialized before
-  "X1000_CLK_SSIMUX" when initializing the clocks.
-2.Clocks of LCD, OTG, EMC, EFUSE, OST, and gates of CPU, PCLK
-  are also added.
-3.Use "CLK_OF_DECLARE_DRIVER" like the other CGU drivers.
+Christoph Hellwig <hch@lst.de> wrote:
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
+> +		ip_sock_set_mtu_discover(conn->params.local->socket->sk,
+> +				IP_PMTUDISC_DONT);
 
-Notes:
-    v5:
-    New patch.
-    
-    V5->v6:
-    Add missing part of X1000's CGU.
-    
-    v6->v7:
-    Update commit message.
-    
-    v7->v8:
-    No change.
+Um... The socket in question could be an AF_INET6 socket, not an AF_INET4
+socket - I presume it will work in that case.  If so:
 
- drivers/clk/ingenic/x1000-cgu.c | 56 ++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 50 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/clk/ingenic/x1000-cgu.c b/drivers/clk/ingenic/x1000-cgu.c
-index c33934d..39ebd9d 100644
---- a/drivers/clk/ingenic/x1000-cgu.c
-+++ b/drivers/clk/ingenic/x1000-cgu.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-  * X1000 SoC CGU driver
-- * Copyright (c) 2019 Zhou Yanjie <zhouyanjie@zoho.com>
-+ * Copyright (c) 2019 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-  */
- 
- #include <linux/clk-provider.h>
-@@ -20,6 +20,7 @@
- #define CGU_REG_CLKGR		0x20
- #define CGU_REG_OPCR		0x24
- #define CGU_REG_DDRCDR		0x2c
-+#define CGU_REG_USBCDR		0x50
- #define CGU_REG_MACCDR		0x54
- #define CGU_REG_I2SCDR		0x60
- #define CGU_REG_LPCDR		0x64
-@@ -116,9 +117,10 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 	},
- 
- 	[X1000_CLK_CPU] = {
--		"cpu", CGU_CLK_DIV,
-+		"cpu", CGU_CLK_DIV | CGU_CLK_GATE,
- 		.parents = { X1000_CLK_CPUMUX, -1, -1, -1 },
- 		.div = { CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1 },
-+		.gate = { CGU_REG_CLKGR, 30 },
- 	},
- 
- 	[X1000_CLK_L2CACHE] = {
-@@ -147,9 +149,10 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 	},
- 
- 	[X1000_CLK_PCLK] = {
--		"pclk", CGU_CLK_DIV,
-+		"pclk", CGU_CLK_DIV | CGU_CLK_GATE,
- 		.parents = { X1000_CLK_AHB2PMUX, -1, -1, -1 },
- 		.div = { CGU_REG_CPCCR, 16, 1, 4, 20, -1, -1 },
-+		.gate = { CGU_REG_CLKGR, 28 },
- 	},
- 
- 	[X1000_CLK_DDR] = {
-@@ -162,12 +165,20 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_MAC] = {
- 		"mac", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL},
-+		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
- 		.mux = { CGU_REG_MACCDR, 31, 1 },
- 		.div = { CGU_REG_MACCDR, 0, 1, 8, 29, 28, 27 },
- 		.gate = { CGU_REG_CLKGR, 25 },
- 	},
- 
-+	[X1000_CLK_LCD] = {
-+		"lcd", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
-+		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
-+		.mux = { CGU_REG_LPCDR, 31, 1 },
-+		.div = { CGU_REG_LPCDR, 0, 1, 8, 28, 27, 26 },
-+		.gate = { CGU_REG_CLKGR, 23 },
-+	},
-+
- 	[X1000_CLK_MSCMUX] = {
- 		"msc_mux", CGU_CLK_MUX,
- 		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL},
-@@ -188,6 +199,15 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 		.gate = { CGU_REG_CLKGR, 5 },
- 	},
- 
-+	[X1000_CLK_OTG] = {
-+		"otg", CGU_CLK_DIV | CGU_CLK_GATE | CGU_CLK_MUX,
-+		.parents = { X1000_CLK_EXCLK, -1,
-+					 X1000_CLK_APLL, X1000_CLK_MPLL },
-+		.mux = { CGU_REG_USBCDR, 30, 2 },
-+		.div = { CGU_REG_USBCDR, 0, 1, 8, 29, 28, 27 },
-+		.gate = { CGU_REG_CLKGR, 3 },
-+	},
-+
- 	[X1000_CLK_SSIPLL] = {
- 		"ssi_pll", CGU_CLK_MUX | CGU_CLK_DIV,
- 		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
-@@ -195,14 +215,32 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 		.div = { CGU_REG_SSICDR, 0, 1, 8, 29, 28, 27 },
- 	},
- 
-+	[X1000_CLK_SSIPLL_DIV2] = {
-+		"ssi_pll_div2", CGU_CLK_FIXDIV,
-+		.parents = { X1000_CLK_SSIPLL },
-+		.fixdiv = { 2 },
-+	},
-+
- 	[X1000_CLK_SSIMUX] = {
- 		"ssi_mux", CGU_CLK_MUX,
--		.parents = { X1000_CLK_EXCLK, X1000_CLK_SSIPLL, -1, -1 },
-+		.parents = { X1000_CLK_EXCLK, X1000_CLK_SSIPLL_DIV2, -1, -1 },
- 		.mux = { CGU_REG_SSICDR, 30, 1 },
- 	},
- 
- 	/* Gate-only clocks */
- 
-+	[X1000_CLK_EMC] = {
-+		"emc", CGU_CLK_GATE,
-+		.parents = { X1000_CLK_AHB2, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR, 0 },
-+	},
-+
-+	[X1000_CLK_EFUSE] = {
-+		"efuse", CGU_CLK_GATE,
-+		.parents = { X1000_CLK_AHB2, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR, 1 },
-+	},
-+
- 	[X1000_CLK_SFC] = {
- 		"sfc", CGU_CLK_GATE,
- 		.parents = { X1000_CLK_SSIPLL, -1, -1, -1 },
-@@ -251,6 +289,12 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 		.gate = { CGU_REG_CLKGR, 19 },
- 	},
- 
-+	[X1000_CLK_OST] = {
-+		"ost", CGU_CLK_GATE,
-+		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR, 20 },
-+	},
-+
- 	[X1000_CLK_PDMA] = {
- 		"pdma", CGU_CLK_GATE,
- 		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-@@ -277,4 +321,4 @@ static void __init x1000_cgu_init(struct device_node *np)
- 
- 	ingenic_cgu_register_syscore_ops(cgu);
- }
--CLK_OF_DECLARE(x1000_cgu, "ingenic,x1000-cgu", x1000_cgu_init);
-+CLK_OF_DECLARE_DRIVER(x1000_cgu, "ingenic,x1000-cgu", x1000_cgu_init);
--- 
-2.7.4
+Reviewed-by: David Howells <dhowells@redhat.com> [rxrpc bits]
 
