@@ -2,106 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B9C1D17CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14F21D17CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389030AbgEMOlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 10:41:40 -0400
-Received: from mga05.intel.com ([192.55.52.43]:14940 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388395AbgEMOlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 10:41:39 -0400
-IronPort-SDR: fMcQmLgdCp9QN0PT92LMvDpFxtMC1+thL3c5pb7SQx8oWTDIzh0mTiaywaa57clcE/RtjMoEyS
- UT0H8OvFCfLA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 07:41:39 -0700
-IronPort-SDR: z/LwwDOuZhSyS3rvaD9yFkLshHEjGog5cmKgX+mVSZttANYRsDanxeHRqykqKaOzpXjY2HC7j0
- n95DSdK68+Mw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,388,1583222400"; 
-   d="scan'208";a="251271896"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga007.jf.intel.com with ESMTP; 13 May 2020 07:41:33 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jYsZj-006RTr-Aw; Wed, 13 May 2020 17:41:35 +0300
-Date:   Wed, 13 May 2020 17:41:35 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Allison Randal <allison@lohutok.net>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, fengsheng <fengsheng5@huawei.com>,
-        Phil Edworthy <phil.edworthy@renesas.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Aditya Pakki <pakki001@umn.edu>,
-        "wuxu.wu" <wuxu.wu@huawei.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 17/17] spi: dw: Use regset32 DebugFS method to create a
- registers file
-Message-ID: <20200513144135.GO185537@smile.fi.intel.com>
-References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
- <20200508132943.9826-18-Sergey.Semin@baikalelectronics.ru>
- <20200508193027.GW185537@smile.fi.intel.com>
- <20200513124422.z6ctlmvipwer45q4@mobilestation>
+        id S2388928AbgEMOmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 10:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388167AbgEMOmL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 10:42:11 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F246DC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 07:42:09 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id e1so7274363wrt.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 07:42:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IYL8fI7CQMIGkZ0xC9HxhZ1ZIDbZHbcwItjJbx9L/aw=;
+        b=p/IjhOHpVwMOXUBvNr/RpYOLLL941aJmfWkaDL5FFd/ybg9rBGCG7LZGGhxYuEoxBo
+         G2DYb3xsrspolrpUVNZy2TOosp0ouTO9+sx18MC5swupML102RvrzU6H/+PxOxBwp9ix
+         SCPJINKXpVA75iyWYAibrqEjkEw2dlN9LqyU/bBQpxjkh5/ftf+/l0dh3BOxzJysmRHv
+         yNKwo+pz1eRnJDNSVxHZP6tbsSRchhyn6dMzjMvcBCGzZBzXmXas7YaMem+5chbKJgAd
+         fplACozYq9zaz74cGR7dZTpy+CJhxlt+uMcirDcVtiRKPOaBOuoCwDGnG8E2IGPFPMrg
+         1QFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IYL8fI7CQMIGkZ0xC9HxhZ1ZIDbZHbcwItjJbx9L/aw=;
+        b=rmERB4S+TcfwTXt6brFsSIF8hs+DkdYUnCVpjMw78Yew7U/voo3FrlQocbgeFv4QOY
+         QXGOzFqkbwa4iQoGSMAfitZ+TbV/3WZiaPE0HLk6wLlqU097FHzpNbn1ESmQNJ0TUxg6
+         8AaRLdVDWo3LDn1Hb3hItj9nzH3MaXOIzh4lL4uUz/YFe7+YauT26FwDZRv/jXXPD1BV
+         ifoLKKy6MCFYW+dmdlEiWeNDPilmqO28Iykplb+K36tKCM0a0fbgaxiJw+g4+YNgCnIq
+         W9mh3OUutmRUceFiRNh/qZqnuNP87+Y9H/2T7TOil6Kuwj/OWF64ngx29x1zpgc8m8oX
+         fYjQ==
+X-Gm-Message-State: AGi0PuZt2GZSyt17IrNnHO2DI44v60xCbJ4HuKO4V60v3z6cUVfXRceC
+        SkQsf1eUs63VGxhNSTfMtuE=
+X-Google-Smtp-Source: APiQypIGKuBjmOArm0XD6T163TlI+OjkoACu3quQnLZN/g+avrPUs5iZUd5L/g6x25ybP1JuxNbrRA==
+X-Received: by 2002:a5d:6ac1:: with SMTP id u1mr31100897wrw.319.1589380928762;
+        Wed, 13 May 2020 07:42:08 -0700 (PDT)
+Received: from ?IPv6:2a00:23c6:9e09:2900:3d38:90c1:858b:902e? ([2a00:23c6:9e09:2900:3d38:90c1:858b:902e])
+        by smtp.gmail.com with ESMTPSA id n128sm9674675wmb.47.2020.05.13.07.42.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 May 2020 07:42:08 -0700 (PDT)
+Subject: Re: x86/smp: adding new trace points
+To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Cc:     mingo@redhat.com, hpa@zytor.com, x86@kernel.org
+References: <4d54953b-f968-63f5-569f-9e09bc0f361c@gmail.com>
+ <b638ef03-04c2-94bf-f026-a01691888624@gmail.com>
+ <87y2pw2fav.fsf@nanos.tec.linutronix.de>
+From:   Wojciech Kudla <wk.kernel@gmail.com>
+Message-ID: <b3e3c317-17e4-081f-0bb6-3e6f291f8b86@gmail.com>
+Date:   Wed, 13 May 2020 15:42:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513124422.z6ctlmvipwer45q4@mobilestation>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <87y2pw2fav.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 03:44:22PM +0300, Serge Semin wrote:
-> On Fri, May 08, 2020 at 10:30:27PM +0300, Andy Shevchenko wrote:
-> > On Fri, May 08, 2020 at 04:29:42PM +0300, Serge Semin wrote:
-> > > DebugFS kernel interface provides a dedicated method to create the
-> > > registers dump file. Use it instead of creating a generic DebugFS
-> > > file with manually written read callback function.
+On 13/05/2020 13:24, Thomas Gleixner wrote:
 
-> > > +#define DW_SPI_DBGFS_REG(_name, _off)	\
-> > > +{					\
-> > > +	.name = _name,			\
-> > > +	.offset = _off			\
-> > 
-> > Leave comma here.
+> Why would the SMP call function single interrupt go through the
+> PLATFORM_IPI_VECTOR? It goes as the name says through the
+> CALL_FUNCTION_SINGLE_VECTOR.
 > 
-> don't see a point.
 
-It will help in case if this getting extended. Also slightly better to
-distinguish between terminator type of members vs. data structures.
+Wrong vector, my bad.
 
-> > >  }
+However 2) still stands in my opinion. We don't have "ipi raise" trace point for x86.
+RESCHEDULE_VECTOR, CALL_FUNCTION_SINGLE_VECTOR, as well as TLB invalidation vectors are essentially inter-processor-interrupts if I'm not mistaken.
+Would a patch adding such trace point be considered here?
 
-> > > +	struct debugfs_regset32 regset;
-> > 
-> > I'm wondering why we need it here and not simple on the stack?
-> 
-> Please see the way the DebugFS regset work. A prompt: how does the DebugFS
-> core get to know what is a base address of the registers? =)
-
-If they have a member in the struct which passed thru private pointer of inode.
-But I see your point.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Wojtek
