@@ -2,73 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43861D125A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691A31D1267
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731771AbgEMMKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 08:10:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731067AbgEMMKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 08:10:54 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5DA2A2176D;
-        Wed, 13 May 2020 12:10:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589371853;
-        bh=ItqlsvjtJFlnpbgopffGeZnbekcgqwy053JRaa7MfkY=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=NIpeH8JINQ83+XQx9u9ruU//bUY+9ccuGn8MDn4Ge5JtUs7gMSahuq9UWWaAGjNaC
-         nqWoVT7zmFuV5QFv6xYwkd5bsuu+uk2tDO2Wm2cOJ5kKJRUvXQvYLLbmwM+RImUte2
-         8S529gVB5KTREkcygKx584jliyf6ifC7M6GHpctM=
-Date:   Wed, 13 May 2020 13:10:51 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv@lists.infradead.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-spi@vger.kernel.org, linux-clk@vger.kernel.org
-In-Reply-To: <20200512204543.22090-1-robh@kernel.org>
-References: <20200512204543.22090-1-robh@kernel.org>
-Subject: Re: [PATCH 1/5] spi: dt-bindings: sifive: Add missing 2nd register region
-Message-Id: <158937185132.39109.17103954100758193517.b4-ty@kernel.org>
+        id S1731746AbgEMMOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 08:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726020AbgEMMOC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 08:14:02 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5EA0C061A0C;
+        Wed, 13 May 2020 05:14:01 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jYqGo-0001x3-GX; Wed, 13 May 2020 14:13:54 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id BBC0F100605; Wed, 13 May 2020 14:13:53 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, maz@kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Huacai Chen <chenhc@lemote.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] irqchip: Add Loongson PCH MSI controller
+In-Reply-To: <20200428063247.2223499-5-jiaxun.yang@flygoat.com>
+References: <20200422142428.1249684-1-jiaxun.yang@flygoat.com> <20200428063247.2223499-1-jiaxun.yang@flygoat.com> <20200428063247.2223499-5-jiaxun.yang@flygoat.com>
+Date:   Wed, 13 May 2020 14:13:53 +0200
+Message-ID: <874ksk3uda.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 May 2020 15:45:39 -0500, Rob Herring wrote:
-> The 'reg' description and example have a 2nd register region for memory
-> mapped flash, but the schema says there is only 1 region. Fix this.
+Jiaxun Yang <jiaxun.yang@flygoat.com> writes:
+> +
+> +struct pch_msi_data {
+> +	spinlock_t		msi_map_lock;
+> +	phys_addr_t		doorbell;
+> +	u32			irq_first;	/* The vector number that MSIs starts */
+> +	u32			num_irqs;	/* The number of vectors for MSIs */
+> +	unsigned long		*msi_map;
+> +};
+> +
+> +static void pch_msi_mask_msi_irq(struct irq_data *d)
+> +{
+> +	pci_msi_mask_irq(d);
+> +	irq_chip_mask_parent(d);
+> +}
+> +
+> +static void pch_msi_unmask_msi_irq(struct irq_data *d)
+> +{
+> +	pci_msi_unmask_irq(d);
+> +	irq_chip_unmask_parent(d);
 
-Applied to
+The ordering of mask and unmask is assymetric. That does not make sense.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-5.8
+> +static struct msi_domain_info pch_msi_domain_info = {
+> +	.flags		= MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
+> +			  MSI_FLAG_MULTI_PCI_MSI | MSI_FLAG_PCI_MSIX,
+> +	.chip	= &pch_msi_irq_chip,
 
-Thanks!
-
-[1/1] spi: dt-bindings: sifive: Add missing 2nd register region
-      commit: b265b5a0ba15b6e00abce9bf162926e84b4323b4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Please maintain tabular layout.
 
 Thanks,
-Mark
+
+        tglx
