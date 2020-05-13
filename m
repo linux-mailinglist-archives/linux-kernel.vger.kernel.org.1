@@ -2,113 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233701D214C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83AC11D2158
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729731AbgEMVnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:43:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28398 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729196AbgEMVnR (ORCPT
+        id S1729758AbgEMVql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 17:46:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729627AbgEMVqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:43:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589406195;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=14UosuVRXMChRoyaxAqU3xlncdZ3hrjsmYgbi9ygQkw=;
-        b=HJpGEnR8hafWL5fjEG+KV0oWsCF7nWNPRqIcgRlhpR6elV/O0H0vlyw1oavRXyFs/4N57I
-        xZXk50KPFco8ry6YILxbxomJ3IoO152xU60hwdTuNbSTD4Rh21Hui3upY/FqGwBHCugqu2
-        mFAgN05P+NqRmj9u7q6mAzD6PYj8O68=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-249-flou5OPuPb-Z3p6bv_Qvmw-1; Wed, 13 May 2020 17:43:13 -0400
-X-MC-Unique: flou5OPuPb-Z3p6bv_Qvmw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E4E4C18A0768;
-        Wed, 13 May 2020 21:43:05 +0000 (UTC)
-Received: from treble (ovpn-117-14.rdu2.redhat.com [10.10.117.14])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8159510013D9;
-        Wed, 13 May 2020 21:43:02 +0000 (UTC)
-Date:   Wed, 13 May 2020 16:43:00 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [patch V5 06/38] x86/entry: Provide helpers for execute on
- irqstack
-Message-ID: <20200513214300.ruikp7ldnko7t5pi@treble>
-References: <20200512210059.056244513@linutronix.de>
- <20200512213809.997307469@linutronix.de>
+        Wed, 13 May 2020 17:46:40 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD1E3C061A0C;
+        Wed, 13 May 2020 14:46:39 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id h17so1306051wrc.8;
+        Wed, 13 May 2020 14:46:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jW05YIYcf1GNolkjiyr0mICfCVmFkBpfqxOEcp+jfSE=;
+        b=B6ufszp741BrL+8jST20P2NOnKbKE/LNB0r5wtKJFYTRDlckV/y9gXmjPYv7DSytm5
+         N3AMbtHVrYFTCSwCiaDlyXrW9z+p7l1w7/eCeTbBxTMtWGRX/SMolhOP8VQuYczT9DkW
+         CHxeTsCHlwc5lCyzBPRZ+M31ujfjBfGSgHqx/27EQC1XXYkWNnbps5HfIjw+hKDNFXxN
+         vWzEDj7eVxbdYYTapTC0qlRtAKivLG64U/FR6pXzZpuchoBxHQ3c4SiBUSL+C8ypStQB
+         5zCBc5kn2VvrXWVcZpwx3hfjvSfAo0EhObsX7ynqyraCai9yJALEmKdL3D464SExMah7
+         6OvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jW05YIYcf1GNolkjiyr0mICfCVmFkBpfqxOEcp+jfSE=;
+        b=VXudyQwTO717oUQA2hMHTnnlXhYQUlVbF6ELZkoq7wXIZWurbppl5KzzAolA9NuaSm
+         ZAzVnDAAIG/I36xDcW2L2/b46JS/MDdeMgmNSk4fbxOHiu5503ikT7q3vl/9ENiTuTxe
+         Fa0TTIoHM2HVgd8CgWe/aYfTpHpmt9BmqMeSVL+iwT5DmnfYRN6eZduc1i15GYR1Atqf
+         TnMmFVNakAPMGLe5/J78J8YSvMVU5B3LqDfq4/KPgC8Yp4knnxAeVWDs6k+sUeqF2AEH
+         jxbLJOpO7hTpqH3ClpLw2ewA4Dwc4W5xQIuhHVfhV45/jQH/guXGPaixCqU8xvFELBLo
+         HMIw==
+X-Gm-Message-State: AOAM531ptTe78VNcGTl+vGMbq/3kxTOAe2oRbH86lY407vdKHQ4zeKtK
+        RM1WRNqDexvhdzb7UxfCu1c=
+X-Google-Smtp-Source: ABdhPJw3w2J0RzaICCUDrZ+Ja4zE6bbo3lH35G0biusV3jmscCSLw1DMkpvIdJ8Bwau8RbnHiAwd8A==
+X-Received: by 2002:adf:f605:: with SMTP id t5mr1519029wrp.354.1589406398407;
+        Wed, 13 May 2020 14:46:38 -0700 (PDT)
+Received: from localhost.localdomain (cpc91192-cmbg18-2-0-cust374.5-4.cable.virginm.net. [80.6.113.119])
+        by smtp.gmail.com with ESMTPSA id m23sm1699734wmg.45.2020.05.13.14.46.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 14:46:37 -0700 (PDT)
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     emil.l.velikov@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, linux-kernel@vger.kernel.org,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
+Subject: [PATCH 01/11] tty/sysrq: alpha: export and use __sysrq_get_key_op()
+Date:   Wed, 13 May 2020 22:43:41 +0100
+Message-Id: <20200513214351.2138580-1-emil.l.velikov@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200512213809.997307469@linutronix.de>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 11:01:05PM +0200, Thomas Gleixner wrote:
-> Device interrupt handlers and system vector handlers are executed on the
-> interrupt stack. The stack switch happens in the low level assembly entry
-> code. This conflicts with the efforts to consolidate the exit code in C to
-> ensure correctness vs. RCU and tracing.
-> 
-> As there is no way to move #DB away from IST due to the MOV SS issue, the
-> requirements vs. #DB and NMI for switching to the interrupt stack do not
-> exist anymore. The only requirement is that interrupts are disabled.
-> 
-> That allows to move the stack switching to C code which simplifies the
-> entry/exit handling further because it allows to switch stacks after
-> handling the entry and on exit before handling RCU, return to usermode and
-> kernel preemption in the same way as for regular exceptions.
-> 
-> The initial attempt of having the stack switching in inline ASM caused too
-> much headache vs. objtool and the unwinder. After analysing the use cases
-> it was agreed on that having the stack switch in ASM for the price of an
-> indirect call is acceptable as the main users are indirect call heavy
-> anyway and the few system vectors which are empty shells (scheduler IPI and
-> KVM posted interrupt vectors) can run from the regular stack.
-> 
-> Provide helper functions to check whether the interrupt stack is already
-> active and whether stack switching is required.
-> 
-> 64 bit only for now. 32 bit has a variant of that already. Once this is
-> cleaned up the two implementations might be consolidated as a cleanup on
-> top.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Link: https://lore.kernel.org/r/20200507161020.783541450@infradead.org
-> ---
-> V5: Moved the actual switch to ASM code
+Export a pointer to the sysrq_get_key_op(). This way we can cleanly
+unregister it, instead of the current solutions of modifuing it inplace.
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Since __sysrq_get_key_op() is no longer used externally, let's make it
+a static function.
 
+This patch will allow us to limit access to each and every sysrq op and
+constify the sysrq handling.
+
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jslaby@suse.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: Richard Henderson <rth@twiddle.net>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: linux-alpha@vger.kernel.org
+Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
+---
+Please keep me in the CC list, as I'm not subscribed to the list.
+
+IMHO it would be better if this gets merged this via the tty tree.
+---
+ arch/alpha/kernel/setup.c | 13 +++++++++++--
+ drivers/tty/sysrq.c       |  4 +++-
+ include/linux/sysrq.h     |  2 +-
+ 3 files changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
+index f19aa577354b..dd7f770f23cf 100644
+--- a/arch/alpha/kernel/setup.c
++++ b/arch/alpha/kernel/setup.c
+@@ -430,6 +430,15 @@ register_cpus(void)
+ 
+ arch_initcall(register_cpus);
+ 
++#ifdef CONFIG_MAGIC_SYSRQ
++static struct sysrq_key_op srm_sysrq_reboot_op = {
++	.handler	= machine_halt,
++	.help_msg       = "reboot(b)",
++	.action_msg     = "Resetting",
++	.enable_mask    = SYSRQ_ENABLE_BOOT,
++};
++#endif
++
+ void __init
+ setup_arch(char **cmdline_p)
+ {
+@@ -550,8 +559,8 @@ setup_arch(char **cmdline_p)
+ 	/* If we're using SRM, make sysrq-b halt back to the prom,
+ 	   not auto-reboot.  */
+ 	if (alpha_using_srm) {
+-		struct sysrq_key_op *op = __sysrq_get_key_op('b');
+-		op->handler = (void *) machine_halt;
++		unregister_sysrq_key('b', __sysrq_reboot_op);
++		register_sysrq_key('b', &srm_sysrq_reboot_op);
+ 	}
+ #endif
+ 
+diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+index 0dc3878794fd..1741134cabca 100644
+--- a/drivers/tty/sysrq.c
++++ b/drivers/tty/sysrq.c
+@@ -172,6 +172,8 @@ static struct sysrq_key_op sysrq_reboot_op = {
+ 	.enable_mask	= SYSRQ_ENABLE_BOOT,
+ };
+ 
++struct sysrq_key_op *__sysrq_reboot_op = &sysrq_reboot_op;
++
+ static void sysrq_handle_sync(int key)
+ {
+ 	emergency_sync();
+@@ -516,7 +518,7 @@ static int sysrq_key_table_key2index(int key)
+ /*
+  * get and put functions for the table, exposed to modules.
+  */
+-struct sysrq_key_op *__sysrq_get_key_op(int key)
++static struct sysrq_key_op *__sysrq_get_key_op(int key)
+ {
+         struct sysrq_key_op *op_p = NULL;
+         int i;
+diff --git a/include/linux/sysrq.h b/include/linux/sysrq.h
+index 8e159e16850f..9b51f98e5f60 100644
+--- a/include/linux/sysrq.h
++++ b/include/linux/sysrq.h
+@@ -47,7 +47,7 @@ void handle_sysrq(int key);
+ void __handle_sysrq(int key, bool check_mask);
+ int register_sysrq_key(int key, struct sysrq_key_op *op);
+ int unregister_sysrq_key(int key, struct sysrq_key_op *op);
+-struct sysrq_key_op *__sysrq_get_key_op(int key);
++extern struct sysrq_key_op *__sysrq_reboot_op;
+ 
+ int sysrq_toggle_support(int enable_mask);
+ int sysrq_mask(void);
 -- 
-Josh
+2.25.1
 
