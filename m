@@ -2,225 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 303C91D14F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485DA1D14EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387922AbgEMNbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:31:51 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:59452 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387897AbgEMNbp (ORCPT
+        id S2387868AbgEMNbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:31:39 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39432 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2387829AbgEMNbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:31:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1589376706; x=1620912706;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TCs5xQ14bvTR7/FIdlrnC54EzExnsRiTdR5p1t9z2r0=;
-  b=EGO9TAK+Zcr6qllgic/YO9gNO9kOKsNazoHGcDbIwWhBi2mg8Ml3I8lJ
-   VYXo+HF57wmS42FiVhx8CLODpmHR1GvHf4wbjzolgZY9Q2+ScvTVjJfbP
-   qb0X9DfrWU0WpYZlHY42u/fFEJHhF4nvFHKtJIchQIf5VqF9ab9ESN5Fe
-   bnRtbnJ8NvJ2Fdfb6tfk3BC+dx9NePJH9WfOKa9SYYnwDcCbKMIooFAD2
-   OM0a1VqJGIlgzBZoxwfWo0b4jLER2d0DvY5GeuCJnu703+sJ3TYMNOqdX
-   UZ7VAA/kFmSMfZYHanalzda/sWUadPgl9qV79i9KOHemLQS+H7IDoAoxf
-   w==;
-IronPort-SDR: BHbrpwrZHZL1tZv25WFNX/YakRXze4CAn171M37amxdxeMGb569HFFJv4+vzS5AJEXTx4yKU45
- 8FDBBFy6bpxmLaW72f7yd3GAn7KtUP3RXzDv0kkVB6LurlauUcO8gLkM6suxyqMVSqeTKqpztY
- Y7oYTeVyerrcMQCgiqjHwfPADHKmYRjqKcAWkdQ2WVvCLyXWCxYawJdUTRi9JirPk+Q0frrr7U
- yz2iuL38l6KBeSAsAD57PV7fVs9VFxI0bkEm8UniDi4W2jAuA3uG9kg6Gm41XtJR3IJ4rLwVSH
- TD8=
-X-IronPort-AV: E=Sophos;i="5.73,387,1583218800"; 
-   d="scan'208";a="75770681"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 May 2020 06:31:43 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 13 May 2020 06:31:43 -0700
-Received: from soft-dev15.microsemi.net (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Wed, 13 May 2020 06:31:40 -0700
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        SoC Team <soc@kernel.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH 3/3] arm64: dts: sparx5: Add Sparx5 eMMC support
-Date:   Wed, 13 May 2020 15:31:22 +0200
-Message-ID: <20200513133122.25121-4-lars.povlsen@microchip.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513133122.25121-1-lars.povlsen@microchip.com>
-References: <20200513133122.25121-1-lars.povlsen@microchip.com>
+        Wed, 13 May 2020 09:31:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589376694;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eZm3j4cM3ViQTwIqnNSsjauUBzU3+xmEzMM4OgJCltU=;
+        b=NFdoO387kmf04kdOicuUsdS2EJl7LDKE0FWELrz86cZSrrwqJMJAnZVdwc957JPn826Bji
+        JQTXvFRTJ2cUkPqxAk5vFqSKsG5UIgixNdhvq/DdF6UCDQHMtQ1OjkYHUG9Tg+cTrBF0Ww
+        tEa/QspKfluTC5lj6+W1f7LwoFVfBAs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-96-1A4XTUNvPQado3UrmqFbNw-1; Wed, 13 May 2020 09:31:30 -0400
+X-MC-Unique: 1A4XTUNvPQado3UrmqFbNw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E7D85107ACCA;
+        Wed, 13 May 2020 13:31:28 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (ovpn-113-165.phx2.redhat.com [10.3.113.165])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AF8475C1D2;
+        Wed, 13 May 2020 13:31:24 +0000 (UTC)
+Date:   Wed, 13 May 2020 09:31:22 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Tao Zhou <ouwen210@hotmail.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>
+Subject: Re: [PATCH v2] sched/fair: enqueue_task_fair optimization
+Message-ID: <20200513133122.GH12425@lorien.usersys.redhat.com>
+References: <20200513123335.28122-1-vincent.guittot@linaro.org>
+ <20200513124540.GB12425@lorien.usersys.redhat.com>
+ <CAKfTPtBFP5eAV-u02x42U2cQnWA56RP+wbj78rWpzj560OS+-g@mail.gmail.com>
+ <20200513131337.GF12425@lorien.usersys.redhat.com>
+ <CAKfTPtDYmi9wz3r1G8baG2cM3wh6004CDT11HaAu8L7-wWv=Gw@mail.gmail.com>
+ <20200513131808.GG12425@lorien.usersys.redhat.com>
+ <CAKfTPtBpYWDz=ZeKKa1BGOVZ+PqM=kbbgSBQpn7msxMV_5v5uA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtBpYWDz=ZeKKa1BGOVZ+PqM=kbbgSBQpn7msxMV_5v5uA@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds eMMC support to the applicable Sparx5 board configuration
-files.
+On Wed, May 13, 2020 at 03:25:29PM +0200 Vincent Guittot wrote:
+> On Wed, 13 May 2020 at 15:18, Phil Auld <pauld@redhat.com> wrote:
+> >
+> > On Wed, May 13, 2020 at 03:15:53PM +0200 Vincent Guittot wrote:
+> > > On Wed, 13 May 2020 at 15:13, Phil Auld <pauld@redhat.com> wrote:
+> > > >
+> > > > On Wed, May 13, 2020 at 03:10:28PM +0200 Vincent Guittot wrote:
+> > > > > On Wed, 13 May 2020 at 14:45, Phil Auld <pauld@redhat.com> wrote:
+> > > > > >
+> > > > > > Hi Vincent,
+> > > > > >
+> > > > > > On Wed, May 13, 2020 at 02:33:35PM +0200 Vincent Guittot wrote:
+> > > > > > > enqueue_task_fair jumps to enqueue_throttle label when cfs_rq_of(se) is
+> > > > > > > throttled which means that se can't be NULL and we can skip the test.
+> > > > > > >
+> > > > > >
+> > > > > > s/be NULL/be non-NULL/
+> > > > > >
+> > > > > > I think.
+> > > > >
+> > > > > This sentence refers to the move of enqueue_throttle and the fact that
+> > > > > se can't be null when goto enqueue_throttle and we can jump directly
+> > > > > after the if statement, which is now removed in v2 because se is
+> > > > > always NULL if we don't use goto enqueue_throttle.
+> > > > >
+> > > > > I haven't change the commit message for the remove of if statement
+> > > > >
+> > > >
+> > > > Fair enough, it just seems backwards from the intent of the patch now.
+> > > >
+> > > > There is also an extra }  after the update_overutilized_status.
+> > >
+> > > don't know what I did but it's crap.  sorry about that
+> > >
+> >
+> > No worries. I didn't see it when I read it either. The compiler told me :)
+> 
+> Yeah, but i thought that i compiled it which is obviously not true
+>
 
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi     | 24 +++++++++++++++++++
- .../boot/dts/microchip/sparx5_pcb125.dts      | 23 ++++++++++++++++++
- .../boot/dts/microchip/sparx5_pcb134_emmc.dts | 23 ++++++++++++++++++
- .../boot/dts/microchip/sparx5_pcb135_emmc.dts | 23 ++++++++++++++++++
- 4 files changed, 93 insertions(+)
+It's that "obviously" correct stuff that bites you every time ;)
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 3e94ac9e7dd51..f09a49c41ce19 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -5,6 +5,7 @@
 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/clock/microchip,sparx5.h>
 
- / {
- 	compatible = "microchip,sparx5";
-@@ -151,6 +152,20 @@ timer1: timer@600105000 {
- 			interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
- 		};
+> >
+> >
+> > > Let me prepare a v3
+> > >
+> > > >
+> > > >
+> > > > Cheers,
+> > > > Phil
+> > > >
+> > > >
+> > > >
+> > > > > >
+> > > > > > It's more like if it doesn't jump to the label then se must be NULL for
+> > > > > > the loop to terminate.  The final loop is a NOP if se is NULL. The check
+> > > > > > wasn't protecting that.
+> > > > > >
+> > > > > > Otherwise still
+> > > > > >
+> > > > > > > Reviewed-by: Phil Auld <pauld@redhat.com>
+> > > > > >
+> > > > > > Cheers,
+> > > > > > Phil
+> > > > > >
+> > > > > >
+> > > > > > > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > > > > > > ---
+> > > > > > >
+> > > > > > > v2 changes:
+> > > > > > > - Remove useless if statement
+> > > > > > >
+> > > > > > >  kernel/sched/fair.c | 39 ++++++++++++++++++++-------------------
+> > > > > > >  1 file changed, 20 insertions(+), 19 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > > > > > index a0c690d57430..b51b12d63c39 100644
+> > > > > > > --- a/kernel/sched/fair.c
+> > > > > > > +++ b/kernel/sched/fair.c
+> > > > > > > @@ -5513,28 +5513,29 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+> > > > > > >                         list_add_leaf_cfs_rq(cfs_rq);
+> > > > > > >       }
+> > > > > > >
+> > > > > > > -enqueue_throttle:
+> > > > > > > -     if (!se) {
+> > > > > > > -             add_nr_running(rq, 1);
+> > > > > > > -             /*
+> > > > > > > -              * Since new tasks are assigned an initial util_avg equal to
+> > > > > > > -              * half of the spare capacity of their CPU, tiny tasks have the
+> > > > > > > -              * ability to cross the overutilized threshold, which will
+> > > > > > > -              * result in the load balancer ruining all the task placement
+> > > > > > > -              * done by EAS. As a way to mitigate that effect, do not account
+> > > > > > > -              * for the first enqueue operation of new tasks during the
+> > > > > > > -              * overutilized flag detection.
+> > > > > > > -              *
+> > > > > > > -              * A better way of solving this problem would be to wait for
+> > > > > > > -              * the PELT signals of tasks to converge before taking them
+> > > > > > > -              * into account, but that is not straightforward to implement,
+> > > > > > > -              * and the following generally works well enough in practice.
+> > > > > > > -              */
+> > > > > > > -             if (flags & ENQUEUE_WAKEUP)
+> > > > > > > -                     update_overutilized_status(rq);
+> > > > > > > +     /* At this point se is NULL and we are at root level*/
+> > > > > > > +     add_nr_running(rq, 1);
+> > > > > > > +
+> > > > > > > +     /*
+> > > > > > > +      * Since new tasks are assigned an initial util_avg equal to
+> > > > > > > +      * half of the spare capacity of their CPU, tiny tasks have the
+> > > > > > > +      * ability to cross the overutilized threshold, which will
+> > > > > > > +      * result in the load balancer ruining all the task placement
+> > > > > > > +      * done by EAS. As a way to mitigate that effect, do not account
+> > > > > > > +      * for the first enqueue operation of new tasks during the
+> > > > > > > +      * overutilized flag detection.
+> > > > > > > +      *
+> > > > > > > +      * A better way of solving this problem would be to wait for
+> > > > > > > +      * the PELT signals of tasks to converge before taking them
+> > > > > > > +      * into account, but that is not straightforward to implement,
+> > > > > > > +      * and the following generally works well enough in practice.
+> > > > > > > +      */
+> > > > > > > +     if (flags & ENQUEUE_WAKEUP)
+> > > > > > > +             update_overutilized_status(rq);
+> > > > > > >
+> > > > > > >       }
+> > > > > > >
+> > > > > > > +enqueue_throttle:
+> > > > > > >       if (cfs_bandwidth_used()) {
+> > > > > > >               /*
+> > > > > > >                * When bandwidth control is enabled; the cfs_rq_throttled()
+> > > > > > > --
+> > > > > > > 2.17.1
+> > > > > > >
+> > > > > >
+> > > > > > --
+> > > > > >
+> > > > >
+> > > >
+> > > > --
+> > > >
+> > >
+> >
+> > --
+> >
+> 
 
-+		sdhci0: sdhci@600800000 {
-+			compatible = "microchip,dw-sparx5-sdhci";
-+			status = "disabled";
-+			reg = <0x6 0x00800000 0x1000>;
-+			pinctrl-0 = <&emmc_pins>;
-+			pinctrl-names = "default";
-+			clocks = <&clks CLK_ID_AUX1>;
-+			clock-names = "core";
-+			assigned-clocks = <&clks CLK_ID_AUX1>;
-+			assigned-clock-rates = <800000000>;
-+			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
-+			bus-width = <8>;
-+		};
-+
- 		gpio: pinctrl@6110101e0 {
- 			compatible = "microchip,sparx5-pinctrl";
- 			reg = <0x6 0x110101e0 0x90>, <0x6 0x10508010 0x100>;
-@@ -180,6 +195,15 @@ i2c2_pins: i2c2-pins {
- 				pins = "GPIO_28", "GPIO_29";
- 				function = "twi2";
- 			};
-+
-+			emmc_pins: emmc-pins {
-+				pins = "GPIO_34", "GPIO_35", "GPIO_36",
-+					"GPIO_37", "GPIO_38", "GPIO_39",
-+					"GPIO_40", "GPIO_41", "GPIO_42",
-+					"GPIO_43", "GPIO_44", "GPIO_45",
-+					"GPIO_46", "GPIO_47";
-+				function = "emmc";
-+			};
- 		};
+-- 
 
- 		i2c0: i2c@600101000 {
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-index 91ee5b6cfc37a..573309fe45823 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-@@ -16,6 +16,29 @@ memory@0 {
- 	};
- };
-
-+&gpio {
-+	emmc_pins: emmc-pins {
-+		/* NB: No "GPIO_35", "GPIO_36", "GPIO_37"
-+		 * (N/A: CARD_nDETECT, CARD_WP, CARD_LED)
-+		 */
-+		pins = "GPIO_34", "GPIO_38", "GPIO_39",
-+			"GPIO_40", "GPIO_41", "GPIO_42",
-+			"GPIO_43", "GPIO_44", "GPIO_45",
-+			"GPIO_46", "GPIO_47";
-+		drive-strength = <3>;
-+		function = "emmc";
-+	};
-+};
-+
-+&sdhci0 {
-+	status = "okay";
-+	bus-width = <8>;
-+	non-removable;
-+	pinctrl-0 = <&emmc_pins>;
-+	max-frequency = <8000000>;
-+	microchip,clock-delay = <10>;
-+};
-+
- &i2c1 {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb134_emmc.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb134_emmc.dts
-index 10081a66961bb..bbb9852c1f151 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb134_emmc.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb134_emmc.dts
-@@ -15,3 +15,26 @@ memory@0 {
- 		reg = <0x00000000 0x00000000 0x10000000>;
- 	};
- };
-+
-+&gpio {
-+	emmc_pins: emmc-pins {
-+		/* NB: No "GPIO_35", "GPIO_36", "GPIO_37"
-+		 * (N/A: CARD_nDETECT, CARD_WP, CARD_LED)
-+		 */
-+		pins = "GPIO_34", "GPIO_38", "GPIO_39",
-+			"GPIO_40", "GPIO_41", "GPIO_42",
-+			"GPIO_43", "GPIO_44", "GPIO_45",
-+			"GPIO_46", "GPIO_47";
-+		drive-strength = <3>;
-+		function = "emmc";
-+	};
-+};
-+
-+&sdhci0 {
-+	status = "okay";
-+	pinctrl-0 = <&emmc_pins>;
-+	non-removable;
-+	max-frequency = <52000000>;
-+	bus-width = <8>;
-+	microchip,clock-delay = <10>;
-+};
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb135_emmc.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb135_emmc.dts
-index 741f0e12260e5..f82266fe2ad49 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb135_emmc.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb135_emmc.dts
-@@ -15,3 +15,26 @@ memory@0 {
- 		reg = <0x00000000 0x00000000 0x10000000>;
- 	};
- };
-+
-+&gpio {
-+	emmc_pins: emmc-pins {
-+		/* NB: No "GPIO_35", "GPIO_36", "GPIO_37"
-+		 * (N/A: CARD_nDETECT, CARD_WP, CARD_LED)
-+		 */
-+		pins = "GPIO_34", "GPIO_38", "GPIO_39",
-+			"GPIO_40", "GPIO_41", "GPIO_42",
-+			"GPIO_43", "GPIO_44", "GPIO_45",
-+			"GPIO_46", "GPIO_47";
-+		drive-strength = <3>;
-+		function = "emmc";
-+	};
-+};
-+
-+&sdhci0 {
-+	status = "okay";
-+	pinctrl-0 = <&emmc_pins>;
-+	non-removable;
-+	max-frequency = <52000000>;
-+	bus-width = <8>;
-+	microchip,clock-delay = <10>;
-+};
---
-2.26.2
