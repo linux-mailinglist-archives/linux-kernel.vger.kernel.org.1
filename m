@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 836611D0CB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920831D0DA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732801AbgEMJrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:47:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44700 "EHLO mail.kernel.org"
+        id S2388152AbgEMJyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:54:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732784AbgEMJrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:47:06 -0400
+        id S1733274AbgEMJyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:54:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CEFE20769;
-        Wed, 13 May 2020 09:47:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5789223128;
+        Wed, 13 May 2020 09:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363225;
-        bh=8WGXdX0TnAX86/ckTL3jkixuy+9Tp1nesLQ+hXMtkso=;
+        s=default; t=1589363680;
+        bh=VohfBx1B9bKurY+fxdXrTun14QDveKXy5AHETM8G7Mg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nieX7bXyyzfsGK1SHLV1xeOHToVzo98Nt0t7CLkI0XiyZ0a+J5riTGOs/Glr8FAhR
-         SA3j0xykqSy8pd3yW3wFrMDFAjaAvK4DU2x/9hgl08uTLk4nQ4vQPJHlQ+87HtE2eX
-         IM6hDDJ+xkWkmRHscBXM1eZNTySAsWg5+2KVIjkg=
+        b=2nlXhYMdu8zCsCMG4Tgv34B4JbuLYT5tS3xe4+TyTsRZQ5ldo16XcjMaz+vngfbMn
+         lKVZfAOWvG8sAP5wTa633dj+uumefG0aT46oapI717RBX7OCIO3uz110OMPeKY86xH
+         pfCeXCJdfKHi3qFZVB6H5I0KAbZXgj+6SNoiu1S0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>
-Subject: [PATCH 4.19 36/48] batman-adv: Fix refcnt leak in batadv_v_ogm_process
+        stable@vger.kernel.org, Khazhismel Kumykov <khazhy@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Penyaev <rpenyaev@suse.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, Heiher <r@hev.cc>,
+        Jason Baron <jbaron@akamai.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.6 083/118] eventpoll: fix missing wakeup for ovflist in ep_poll_callback
 Date:   Wed, 13 May 2020 11:45:02 +0200
-Message-Id: <20200513094401.060898423@linuxfoundation.org>
+Message-Id: <20200513094424.736469975@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
-References: <20200513094351.100352960@linuxfoundation.org>
+In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
+References: <20200513094417.618129545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +47,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Khazhismel Kumykov <khazhy@google.com>
 
-commit 6f91a3f7af4186099dd10fa530dd7e0d9c29747d upstream.
+commit 0c54a6a44bf3d41e76ce3f583a6ece267618df2e upstream.
 
-batadv_v_ogm_process() invokes batadv_hardif_neigh_get(), which returns
-a reference of the neighbor object to "hardif_neigh" with increased
-refcount.
+In the event that we add to ovflist, before commit 339ddb53d373
+("fs/epoll: remove unnecessary wakeups of nested epoll") we would be
+woken up by ep_scan_ready_list, and did no wakeup in ep_poll_callback.
 
-When batadv_v_ogm_process() returns, "hardif_neigh" becomes invalid, so
-the refcount should be decreased to keep refcount balanced.
+With that wakeup removed, if we add to ovflist here, we may never wake
+up.  Rather than adding back the ep_scan_ready_list wakeup - which was
+resulting in unnecessary wakeups, trigger a wake-up in ep_poll_callback.
 
-The reference counting issue happens in one exception handling paths of
-batadv_v_ogm_process(). When batadv_v_ogm_orig_get() fails to get the
-orig node and returns NULL, the refcnt increased by
-batadv_hardif_neigh_get() is not decreased, causing a refcnt leak.
+We noticed that one of our workloads was missing wakeups starting with
+339ddb53d373 and upon manual inspection, this wakeup seemed missing to me.
+With this patch added, we no longer see missing wakeups.  I haven't yet
+tried to make a small reproducer, but the existing kselftests in
+filesystem/epoll passed for me with this patch.
 
-Fix this issue by jumping to "out" label when batadv_v_ogm_orig_get()
-fails to get the orig node.
-
-Fixes: 9323158ef9f4 ("batman-adv: OGMv2 - implement originators logic")
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+[khazhy@google.com: use if/elif instead of goto + cleanup suggested by Roman]
+  Link: http://lkml.kernel.org/r/20200424190039.192373-1-khazhy@google.com
+Fixes: 339ddb53d373 ("fs/epoll: remove unnecessary wakeups of nested epoll")
+Signed-off-by: Khazhismel Kumykov <khazhy@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Roman Penyaev <rpenyaev@suse.de>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Roman Penyaev <rpenyaev@suse.de>
+Cc: Heiher <r@hev.cc>
+Cc: Jason Baron <jbaron@akamai.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200424025057.118641-1-khazhy@google.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/batman-adv/bat_v_ogm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/eventpoll.c |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
---- a/net/batman-adv/bat_v_ogm.c
-+++ b/net/batman-adv/bat_v_ogm.c
-@@ -735,7 +735,7 @@ static void batadv_v_ogm_process(const s
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -1149,6 +1149,10 @@ static inline bool chain_epi_lockless(st
+ {
+ 	struct eventpoll *ep = epi->ep;
  
- 	orig_node = batadv_v_ogm_orig_get(bat_priv, ogm_packet->orig);
- 	if (!orig_node)
--		return;
-+		goto out;
++	/* Fast preliminary check */
++	if (epi->next != EP_UNACTIVE_PTR)
++		return false;
++
+ 	/* Check that the same epi has not been just chained from another CPU */
+ 	if (cmpxchg(&epi->next, EP_UNACTIVE_PTR, NULL) != EP_UNACTIVE_PTR)
+ 		return false;
+@@ -1215,16 +1219,12 @@ static int ep_poll_callback(wait_queue_e
+ 	 * chained in ep->ovflist and requeued later on.
+ 	 */
+ 	if (READ_ONCE(ep->ovflist) != EP_UNACTIVE_PTR) {
+-		if (epi->next == EP_UNACTIVE_PTR &&
+-		    chain_epi_lockless(epi))
++		if (chain_epi_lockless(epi))
++			ep_pm_stay_awake_rcu(epi);
++	} else if (!ep_is_linked(epi)) {
++		/* In the usual case, add event to ready list. */
++		if (list_add_tail_lockless(&epi->rdllink, &ep->rdllist))
+ 			ep_pm_stay_awake_rcu(epi);
+-		goto out_unlock;
+-	}
+-
+-	/* If this file is already in the ready list we exit soon */
+-	if (!ep_is_linked(epi) &&
+-	    list_add_tail_lockless(&epi->rdllink, &ep->rdllist)) {
+-		ep_pm_stay_awake_rcu(epi);
+ 	}
  
- 	neigh_node = batadv_neigh_node_get_or_create(orig_node, if_incoming,
- 						     ethhdr->h_source);
+ 	/*
 
 
