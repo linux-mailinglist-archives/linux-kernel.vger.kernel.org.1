@@ -2,72 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE67A1D2335
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9EA1D2325
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732793AbgEMXmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 19:42:45 -0400
-Received: from smtp.giganet.hu ([193.138.125.46]:56508 "EHLO smtp.giganet.hu"
+        id S1732738AbgEMXgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 19:36:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36108 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732456AbgEMXmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 19:42:45 -0400
-X-Greylist: delayed 506 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 May 2020 19:42:44 EDT
-Received: from localhost (unknown [127.0.0.1])
-        by smtp.giganet.hu (Postfix) with ESMTP id 3CF831369;
-        Wed, 13 May 2020 23:34:16 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at smtp.giganet.hu
-X-Spam-Flag: NO
-X-Spam-Score: 5.937
-X-Spam-Level: *****
-X-Spam-Status: No, score=5.937 tagged_above=-1 required=6
-        tests=[ADVANCE_FEE_5_NEW=2.699, ALL_TRUSTED=-1, BAYES_00=-1.9,
-        DEAR_FRIEND=2.577, FREEMAIL_FORGED_REPLYTO=2.095,
-        HK_NAME_MR_MRS=0.965, HK_SCAM=0.001, SUBJ_ALL_CAPS=0.5]
-        autolearn=no autolearn_force=no
-Received: from smtp.giganet.hu ([127.0.0.1])
-        by localhost (smtp.giganet.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Hfkl5nlwXZv3; Thu, 14 May 2020 01:34:15 +0200 (CEST)
-Received: from giganet-webmail (unknown [192.168.200.105])
-        by smtp.giganet.hu (Postfix) with ESMTP id 64609134F;
-        Thu, 14 May 2020 01:34:15 +0200 (CEST)
+        id S1732638AbgEMXgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 19:36:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 1BD01AB64;
+        Wed, 13 May 2020 23:36:32 +0000 (UTC)
+Date:   Thu, 14 May 2020 01:36:16 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: gcc-10: kernel stack is corrupted and fails to boot
+Message-ID: <20200513233616.GD6733@zn.tnic>
+References: <20200509120707.188595-2-arnd@arndb.de>
+ <87v9l24qz6.fsf@kamboji.qca.qualcomm.com>
+ <87r1vq4qev.fsf@kamboji.qca.qualcomm.com>
+ <87d078tjl0.fsf_-_@kamboji.qca.qualcomm.com>
+ <20200513154847.GA158356@rani.riverdale.lan>
+ <CAK8P3a3KpM91+jv6+7KSKFRpwLqf38Lz1wbGhkFFyfDb9oahgA@mail.gmail.com>
+ <20200513214128.GB6733@zn.tnic>
+ <CAK8P3a3XPCyNM7s3vbn8JYK6swA3ZpPtTWB+uhmAE3YEX-nmig@mail.gmail.com>
+ <20200513222038.GC6733@zn.tnic>
+ <CAHk-=wgybuOF+Jp2XYWqM7Xn1CW6szWQw_FgVoFh5jx_4YoCVw@mail.gmail.com>
 MIME-Version: 1.0
-Date:   Wed, 13 May 2020 16:34:15 -0700
-From:   "Mr. Ted Sheppe" <info@tusbrotesverdes.com>
-To:     undisclosed-recipients:;
-Subject: PLEASE WORK WITH ME.
-Reply-To: sheppeted@gmail.com
-Mail-Reply-To: sheppeted@gmail.com
-Message-ID: <4d4029c9db1b495a11a4390ce1ea1cb3@tusbrotesverdes.com>
-X-Sender: info@tusbrotesverdes.com
-User-Agent: Roundcube Webmail/1.3.11
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wgybuOF+Jp2XYWqM7Xn1CW6szWQw_FgVoFh5jx_4YoCVw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear friend,
+On Wed, May 13, 2020 at 04:13:53PM -0700, Linus Torvalds wrote:
+> The check itself doesn't seem worth it. If your worry is that an empty
+> asm() can be optimized away, then don't use an empty asm!
 
+gcc guys said we should use that since the first attempt using
 
-Please kindly work with me in this transaction for you will not regret 
-it at all.
+__attribute__((optimize("-fno-stack-protector")))
 
-First of all, I contacted you for us to work in this transaction because 
-you are bearing the same last name identity with a deceased customer of 
-our bank, therefore I
-can present you as the true next of kin to his inheritance fund in our 
-bank since myself as his account manager and his personal attorney has 
-all his files in our disposal.
+didn't work because, well, that attribute turned out to be "not suitable in
+production code". :)
 
+Full thread here:
 
-I therefore reckoned that you could receive these funds as you are 
-qualified by your name identity. All the legal papers will be processed 
-and perfected to your name as the deceased true next of kin.
+https://lore.kernel.org/lkml/20200314164451.346497-1-slyfox@gentoo.org/
 
-Please kindly get back to me for further details if you are interested 
-to work with in this beneficial transaction.
+> In other words, the only reason for that check seems to be a worry
+> that simply isn't worth having.
 
-Mr. Ted Sheppe
-Commercial Banking
+Yes, that was me asking for a way to check whether any future gccs would
+violate that. But if they'd do that, they would break a lot of code
+depending on it.
+
+> In fact, I think the check is wrong anyway, since the main thing I can
+> see that would do a tailcall despite the empty asm is link-time
+> optimizations that that check doesn't even check for!
+> 
+> So everything I see there just screams "the check is bogus" to me. The
+> check doesn't work, and if it were to work it only means that the
+> prevent_tail_call_optimization() thing is too fragile.
+
+So I did test it trivially by removing the asm("") and then it would
+tailcall optimize. But we didn't think about LTO so hm, that would
+probably break it.
+
+> Just put a full memory barrier in there, with an actual "mfence"
+> instruction or whatever, so that you know that the check is pointless,
+> and so that you know that a link-time optimizer can't turn the
+> call+return into a tailcall.
+
+Right, the intention here was to have it arch-agnostic in
+include/linux/compiler.h because powerpc might need it too soon:
+
+arch/powerpc/kernel/smp.c:1296: boot_init_stack_canary();
+
+Looking at them, they do have an mb() too so how about this then
+instead?
+
+#define prevent_tail_call_optimization()	mb()
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
