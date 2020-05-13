@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039E51D0CE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8C01D0D6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733070AbgEMJs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:48:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46836 "EHLO mail.kernel.org"
+        id S2387857AbgEMJwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:52:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733061AbgEMJs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:48:26 -0400
+        id S2387843AbgEMJwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:52:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35D7D20753;
-        Wed, 13 May 2020 09:48:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8625206D6;
+        Wed, 13 May 2020 09:52:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363305;
-        bh=2//70JfgGrfyqpGrlGdGZMeHpKH1PrGxXfJ48VpBiDI=;
+        s=default; t=1589363570;
+        bh=ItZozESPkp2bU8elmQVE2Ece654ClBx1/udtUPGZTdw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oTp0U8KM+Tb2PHgCpN49ivZW4RlE8yM0kmvRh/HhLR9Y5WyYC0/1bQmBvC/WAjJvS
-         DbiW0lmGxrOeScxCvT7VsabUphfYcE2SJrW79QIYhswwK0CxGWq+B0HU8O3IWNHon2
-         abfyGsPhpzNqSfKURazKEC5Gi/lRKRSaeqRILg1Y=
+        b=115V9sNNr9cSWrUbrsXuNl3eFoNArW1+44ElpVYWsfLo0gxe1kgHv8LPSY+FKsYxP
+         yDM+wF6AmT/kBemVtp6YRsf9XgcyUE0fAdruCCxl0Rsl+c6QOgC2+aXi0EDdYriLAF
+         TpPSupvs6bnr6g3NJktUdITnVhZXM/hJrvtXN03E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Arjun Roy <arjunroy@google.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 20/90] net_sched: sch_skbprio: add message validation to skbprio_change()
-Date:   Wed, 13 May 2020 11:44:16 +0200
-Message-Id: <20200513094410.864230402@linuxfoundation.org>
+Subject: [PATCH 5.6 038/118] selftests: net: tcp_mmap: fix SO_RCVLOWAT setting
+Date:   Wed, 13 May 2020 11:44:17 +0200
+Message-Id: <20200513094420.731187269@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
-References: <20200513094408.810028856@linuxfoundation.org>
+In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
+References: <20200513094417.618129545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,30 +47,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 2761121af87de45951989a0adada917837d8fa82 ]
+[ Upstream commit a84724178bd7081cf3bd5b558616dd6a9a4ca63b ]
 
-Do not assume the attribute has the right size.
+Since chunk_size is no longer an integer, we can not
+use it directly as an argument of setsockopt().
 
-Fixes: aea5f654e6b7 ("net/sched: add skbprio scheduler")
+This patch should fix tcp_mmap for Big Endian kernels.
+
+Fixes: 597b01edafac ("selftests: net: avoid ptl lock contention in tcp_mmap")
 Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
+Cc: Soheil Hassas Yeganeh <soheil@google.com>
+Cc: Arjun Roy <arjunroy@google.com>
+Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sched/sch_skbprio.c |    3 +++
- 1 file changed, 3 insertions(+)
+ tools/testing/selftests/net/tcp_mmap.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/sched/sch_skbprio.c
-+++ b/net/sched/sch_skbprio.c
-@@ -169,6 +169,9 @@ static int skbprio_change(struct Qdisc *
+--- a/tools/testing/selftests/net/tcp_mmap.c
++++ b/tools/testing/selftests/net/tcp_mmap.c
+@@ -282,12 +282,14 @@ static void setup_sockaddr(int domain, c
+ static void do_accept(int fdlisten)
  {
- 	struct tc_skbprio_qopt *ctl = nla_data(opt);
+ 	pthread_attr_t attr;
++	int rcvlowat;
  
-+	if (opt->nla_len != nla_attr_size(sizeof(*ctl)))
-+		return -EINVAL;
-+
- 	sch->limit = ctl->limit;
- 	return 0;
- }
+ 	pthread_attr_init(&attr);
+ 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+ 
++	rcvlowat = chunk_size;
+ 	if (setsockopt(fdlisten, SOL_SOCKET, SO_RCVLOWAT,
+-		       &chunk_size, sizeof(chunk_size)) == -1) {
++		       &rcvlowat, sizeof(rcvlowat)) == -1) {
+ 		perror("setsockopt SO_RCVLOWAT");
+ 	}
+ 
 
 
