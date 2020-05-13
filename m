@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51CF1D0CFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC4C1D0D81
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733195AbgEMJtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:49:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47884 "EHLO mail.kernel.org"
+        id S2387975AbgEMJxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:53:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732597AbgEMJtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:49:06 -0400
+        id S2387954AbgEMJxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:53:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 62DCB20575;
-        Wed, 13 May 2020 09:49:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0506C20753;
+        Wed, 13 May 2020 09:53:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363345;
-        bh=itXvDwyjUsWVEwzQ/nVMU6G0336LcaPwTAHQFT1ft0c=;
+        s=default; t=1589363609;
+        bh=iPa4Xr6Ty70rISOHMRVLustJX8yAz3kr/Ge5GvuPdVM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=11sxAr0/jSJGhcDiLHln/0qUbao1NKTG9BiDbymOsFAQAYd2G+ibd5ABlZHPVUXXQ
-         9xvhoul1wM3OUPH8/F22A3PtyiWzO7GSh1rnUlBBx5oQiS7lWtX5MyZlsCq1BtP0oD
-         unECuPeZ+krARpVRZP/I1bi33HaKXuCLvpnXghTk=
+        b=TDKTBiFU8ZcTS7eUhBG27ES/PsKLJM6lKM5niVDiN2ybBAryg8LrvN3dQe4s3sFB4
+         M/nRGnN5ymiusidA5GtntQRUw1ZrJIR0/b8TEURBEwCSqjHEVrr6yHAt2TGyZiscW0
+         AtjcH6L6EKzms7rqMnnnFq7yB+wy05afm+iGl+hc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Chan <michael.chan@broadcom.com>,
+        stable@vger.kernel.org,
+        Olivier Tilmans <olivier.tilmans@nokia-bell-labs.com>,
+        Dave Taht <dave.taht@gmail.com>,
+        "Rodney W. Grimes" <ietf@gndrsh.dnsmgr.net>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 35/90] bnxt_en: Fix VLAN acceleration handling in bnxt_fix_features().
-Date:   Wed, 13 May 2020 11:44:31 +0200
-Message-Id: <20200513094412.253086906@linuxfoundation.org>
+Subject: [PATCH 5.6 053/118] wireguard: receive: use tunnel helpers for decapsulating ECN markings
+Date:   Wed, 13 May 2020 11:44:32 +0200
+Message-Id: <20200513094421.742472747@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
-References: <20200513094408.810028856@linuxfoundation.org>
+In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
+References: <20200513094417.618129545@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +48,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: "Toke Høiland-Jørgensen" <toke@redhat.com>
 
-[ Upstream commit c72cb303aa6c2ae7e4184f0081c6d11bf03fb96b ]
+[ Upstream commit eebabcb26ea1e3295704477c6cd4e772c96a9559 ]
 
-The current logic in bnxt_fix_features() will inadvertently turn on both
-CTAG and STAG VLAN offload if the user tries to disable both.  Fix it
-by checking that the user is trying to enable CTAG or STAG before
-enabling both.  The logic is supposed to enable or disable both CTAG and
-STAG together.
+WireGuard currently only propagates ECN markings on tunnel decap according
+to the old RFC3168 specification. However, the spec has since been updated
+in RFC6040 to recommend slightly different decapsulation semantics. This
+was implemented in the kernel as a set of common helpers for ECN
+decapsulation, so let's just switch over WireGuard to using those, so it
+can benefit from this enhancement and any future tweaks. We do not drop
+packets with invalid ECN marking combinations, because WireGuard is
+frequently used to work around broken ISPs, which could be doing that.
 
-Fixes: 5a9f6b238e59 ("bnxt_en: Enable and disable RX CTAG and RX STAG VLAN acceleration together.")
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
+Reported-by: Olivier Tilmans <olivier.tilmans@nokia-bell-labs.com>
+Cc: Dave Taht <dave.taht@gmail.com>
+Cc: Rodney W. Grimes <ietf@gndrsh.dnsmgr.net>
+Signed-off-by: Toke HÃ¸iland-JÃ¸rgensen <toke@redhat.com>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/wireguard/receive.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -9755,6 +9755,7 @@ static netdev_features_t bnxt_fix_featur
- 					   netdev_features_t features)
- {
- 	struct bnxt *bp = netdev_priv(dev);
-+	netdev_features_t vlan_features;
- 
- 	if ((features & NETIF_F_NTUPLE) && !bnxt_rfs_capable(bp))
- 		features &= ~NETIF_F_NTUPLE;
-@@ -9771,12 +9772,14 @@ static netdev_features_t bnxt_fix_featur
- 	/* Both CTAG and STAG VLAN accelaration on the RX side have to be
- 	 * turned on or off together.
- 	 */
--	if ((features & (NETIF_F_HW_VLAN_CTAG_RX | NETIF_F_HW_VLAN_STAG_RX)) !=
--	    (NETIF_F_HW_VLAN_CTAG_RX | NETIF_F_HW_VLAN_STAG_RX)) {
-+	vlan_features = features & (NETIF_F_HW_VLAN_CTAG_RX |
-+				    NETIF_F_HW_VLAN_STAG_RX);
-+	if (vlan_features != (NETIF_F_HW_VLAN_CTAG_RX |
-+			      NETIF_F_HW_VLAN_STAG_RX)) {
- 		if (dev->features & NETIF_F_HW_VLAN_CTAG_RX)
- 			features &= ~(NETIF_F_HW_VLAN_CTAG_RX |
- 				      NETIF_F_HW_VLAN_STAG_RX);
--		else
-+		else if (vlan_features)
- 			features |= NETIF_F_HW_VLAN_CTAG_RX |
- 				    NETIF_F_HW_VLAN_STAG_RX;
+--- a/drivers/net/wireguard/receive.c
++++ b/drivers/net/wireguard/receive.c
+@@ -393,13 +393,11 @@ static void wg_packet_consume_data_done(
+ 		len = ntohs(ip_hdr(skb)->tot_len);
+ 		if (unlikely(len < sizeof(struct iphdr)))
+ 			goto dishonest_packet_size;
+-		if (INET_ECN_is_ce(PACKET_CB(skb)->ds))
+-			IP_ECN_set_ce(ip_hdr(skb));
++		INET_ECN_decapsulate(skb, PACKET_CB(skb)->ds, ip_hdr(skb)->tos);
+ 	} else if (skb->protocol == htons(ETH_P_IPV6)) {
+ 		len = ntohs(ipv6_hdr(skb)->payload_len) +
+ 		      sizeof(struct ipv6hdr);
+-		if (INET_ECN_is_ce(PACKET_CB(skb)->ds))
+-			IP6_ECN_set_ce(skb, ipv6_hdr(skb));
++		INET_ECN_decapsulate(skb, PACKET_CB(skb)->ds, ipv6_get_dsfield(ipv6_hdr(skb)));
+ 	} else {
+ 		goto dishonest_packet_type;
  	}
 
 
