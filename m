@@ -2,251 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0851D1328
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322311D1314
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731712AbgEMMvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 08:51:20 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:54299 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728172AbgEMMvT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 08:51:19 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id D10997E3;
-        Wed, 13 May 2020 08:51:17 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 13 May 2020 08:51:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=aeqv2tw69Ou73Ks80LeYEsoBf/9
-        Sf5jfqw/n6jWNiu8=; b=SXLj0aP6PySWVLoEkMErwoCIBG+JjYjz58KGTwK1jYV
-        OAXUgL7/JgHQJoS5YT6tYDmeXt6Yah6LLk9d2rJljbTrxYBt/3kIn4miy5E9nbcH
-        C4CYx6MWJIiqMQLEAAgDhWFzEBNNNXts1t+WNOY3Z7Ygs4MFJdMUC3e+UbgZtMR9
-        vpeAffBK9MrrfNtonxB15jRfjOr+Cfc1n4a761+i4QeUUV0vo6FFDe/4MMhzoHI7
-        xILmvnZ/8aH3KSWA+nUMau4amQ6vZiiC3oVu+fppJLTKwjDXS4NTLBji+868lyUp
-        /z9trypv5BEZN1MFDyjzASHqCFlh9AXjdwCNoTY1mdQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=aeqv2t
-        w69Ou73Ks80LeYEsoBf/9Sf5jfqw/n6jWNiu8=; b=VxSOX7XO3Luoc6SGQ8yML1
-        wQm8wqEySAq7L37HSqmMGUUIhGcp2Lx94/389Q/Odx/q5EZao5rKNaAgvn4yIK74
-        pB1Egez1vLGUNTtHOqlG+wvYQs1momAIJ8B+sFhTanqxczznriMIBp6Qeo/oiUpA
-        0KK4cJVk0srCT1zI4ngnr/hEgS4QX0OiRYoN5W50zdJ0W2vIiJhGy/1AQ7L6DdQ8
-        GWlTF6in56wR2dh8qnc7TNZpL+2k6gzaxP7zqMh/TpJmAJUcMLCO4GkjS9frleKK
-        0i+mGRW3C7E3WaIFHSaRHZ22NSKIPpJ1nfLRpgJPGkrdvZw1jZJyJhmFjWs38Uzg
-        ==
-X-ME-Sender: <xms:Re27XuilwUPxPKx6DMenaG_3Vn6lN5yxWRuM9NPQ1AM2CzUMPpVbiA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrleeggdehiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueelledthe
-    ekleethfeludduvdfhffeuvdffudevgeehkeegieffveehgeeftefgnecuffhomhgrihhn
-    pehkvghrnhgvlhdrohhrghenucfkphepkeefrdekiedrkeelrddutdejnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghh
-    rdgtohhm
-X-ME-Proxy: <xmx:Re27XvAvWD7I2NeDu3pksH7bdl1q2JVCN1tTGXKCAF1HgQKmUmkRkA>
-    <xmx:Re27XmFhPg8X-I6bdXiE67fszAM5wOP79uk2EyfIY8mzyJWo7k1eOg>
-    <xmx:Re27XnQIXLEcTicx_crz3QqYk8YsFK0MSidNs1hUNM6pKNBm4t_4JA>
-    <xmx:Re27XilVBJDe2n5T5CpedX62uSXSDqJigAHQCLl3ryn9aKgYPMMC4Q>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id CE6B83066309;
-        Wed, 13 May 2020 08:51:16 -0400 (EDT)
-Date:   Wed, 13 May 2020 14:51:12 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Charan Teja Kalla <charante@codeaurora.org>
-Cc:     sumit.semwal@linaro.org, ghackmann@google.com, fengc@google.com,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, vinmenon@codeaurora.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] dma-buf: fix use-after-free in dmabuffs_dname
-Message-ID: <20200513125112.GC1083139@kroah.com>
-References: <1588920063-17624-1-git-send-email-charante@codeaurora.org>
- <20200512085221.GB3557007@kroah.com>
- <a3cbf675-becc-1713-bcdc-664ddfe4a544@codeaurora.org>
+        id S1731714AbgEMMsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 08:48:40 -0400
+Received: from mga14.intel.com ([192.55.52.115]:43620 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728419AbgEMMsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 08:48:40 -0400
+IronPort-SDR: Xg5TPWBXGZZ8pM8jgdKKsD6k1/+LMVnlPeorTJi21oRzP+Z8xJAEiyNhm+lEAyDcMEMGATkJZv
+ 32leoktdnLzA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 05:48:39 -0700
+IronPort-SDR: /i6OlrM8tpk+GssK205iKcn+W9jhYCIX1KUt4CmaX8fhj21i3bfwkrj1G3xrmT724rq+94y4ma
+ IRwaNSXL6ygw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,387,1583222400"; 
+   d="scan'208";a="298355052"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
+  by orsmga008.jf.intel.com with ESMTP; 13 May 2020 05:48:36 -0700
+Subject: Re: [PATCH v13 0/5] usb: xhci: Add support for Renesas USB
+ controllers
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        =?UTF-8?Q?Andreas_B=c3=b6hler?= <dev@aboehler.at>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200506060025.1535960-1-vkoul@kernel.org>
+ <edb2df23-6193-fdb1-d9f9-ffc33a40c05e@linux.intel.com>
+ <20200513124007.GA1082134@kroah.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
+ mQINBFMB0ccBEADd+nZnZrFDsIjQtclVz6OsqFOQ6k0nQdveiDNeBuwyFYykkBpaGekoHZ6f
+ lH4ogPZzQ+pzoJEMlRGXc881BIggKMCMH86fYJGfZKWdfpg9O6mqSxyEuvBHKe9eZCBKPvoC
+ L2iwygtO8TcXXSCynvXSeZrOwqAlwnxWNRm4J2ikDck5S5R+Qie0ZLJIfaId1hELofWfuhy+
+ tOK0plFR0HgVVp8O7zWYT2ewNcgAzQrRbzidA3LNRfkL7jrzyAxDapuejuK8TMrFQT/wW53e
+ uegnXcRJaibJD84RUJt+mJrn5BvZ0MYfyDSc1yHVO+aZcpNr+71yZBQVgVEI/AuEQ0+p9wpt
+ O9Wt4zO2KT/R5lq2lSz1MYMJrtfFRKkqC6PsDSB4lGSgl91XbibK5poxrIouVO2g9Jabg04T
+ MIPpVUlPme3mkYHLZUsboemRQp5/pxV4HTFR0xNBCmsidBICHOYAepCzNmfLhfo1EW2Uf+t4
+ L8IowAaoURKdgcR2ydUXjhACVEA/Ldtp3ftF4hTQ46Qhba/p4MUFtDAQ5yeA5vQVuspiwsqB
+ BoL/298+V119JzM998d70Z1clqTc8fiGMXyVnFv92QKShDKyXpiisQn2rrJVWeXEIVoldh6+
+ J8M3vTwzetnvIKpoQdSFJ2qxOdQ8iYRtz36WYl7hhT3/hwkHuQARAQABtCdNYXRoaWFzIE55
+ bWFuIDxtYXRoaWFzLm55bWFuQGdtYWlsLmNvbT6JAjsEEwECACUCGwMGCwkIBwMCBhUIAgkK
+ CwQWAgMBAh4BAheABQJTAeo1AhkBAAoJEFiDn/uYk8VJOdIP/jhA+RpIZ7rdUHFIYkHEKzHw
+ tkwrJczGA5TyLgQaI8YTCTPSvdNHU9Rj19mkjhUO/9MKvwfoT2RFYqhkrtk0K92STDaBNXTL
+ JIi4IHBqjXOyJ/dPADU0xiRVtCHWkBgjEgR7Wihr7McSdVpgupsaXhbZjXXgtR/N7PE0Wltz
+ hAL2GAnMuIeJyXhIdIMLb+uyoydPCzKdH6znfu6Ox76XfGWBCqLBbvqPXvk4oH03jcdt+8UG
+ 2nfSeti/To9ANRZIlSKGjddCGMa3xzjtTx9ryf1Xr0MnY5PeyNLexpgHp93sc1BKxKKtYaT0
+ lR6p0QEKeaZ70623oB7Sa2Ts4IytqUVxkQKRkJVWeQiPJ/dZYTK5uo15GaVwufuF8VTwnMkC
+ 4l5X+NUYNAH1U1bpRtlT40aoLEUhWKAyVdowxW4yGCP3nL5E69tZQQgsag+OnxBa6f88j63u
+ wxmOJGNXcwCerkCb+wUPwJzChSifFYmuV5l89LKHgSbv0WHSN9OLkuhJO+I9fsCNvro1Y7dT
+ U/yq4aSVzjaqPT3yrnQkzVDxrYT54FLWO1ssFKAOlcfeWzqrT9QNcHIzHMQYf5c03Kyq3yMI
+ Xi91hkw2uc/GuA2CZ8dUD3BZhUT1dm0igE9NViE1M7F5lHQONEr7MOCg1hcrkngY62V6vh0f
+ RcDeV0ISwlZWuQINBFMB0ccBEACXKmWvojkaG+kh/yipMmqZTrCozsLeGitxJzo5hq9ev31N
+ 2XpPGx4AGhpccbco63SygpVN2bOd0W62fJJoxGohtf/g0uVtRSuK43OTstoBPqyY/35+VnAV
+ oA5cnfvtdx5kQPIL6LRcxmYKgN4/3+A7ejIxbOrjWFmbWCC+SgX6mzHHBrV0OMki8R+NnrNa
+ NkUmMmosi7jBSKdoi9VqDqgQTJF/GftvmaZHqgmVJDWNrCv7UiorhesfIWPt1O/AIk9luxlE
+ dHwkx5zkWa9CGYvV6LfP9BznendEoO3qYZ9IcUlW727Le80Q1oh69QnHoI8pODDBBTJvEq1h
+ bOWcPm/DsNmDD8Rwr/msRmRyIoxjasFi5WkM/K/pzujICKeUcNGNsDsEDJC5TCmRO/TlvCvm
+ 0X+vdfEJRZV6Z+QFBflK1asUz9QHFre5csG8MyVZkwTR9yUiKi3KiqQdaEu+LuDD2CGF5t68
+ xEl66Y6mwfyiISkkm3ETA4E8rVZP1rZQBBm83c5kJEDvs0A4zrhKIPTcI1smK+TWbyVyrZ/a
+ mGYDrZzpF2N8DfuNSqOQkLHIOL3vuOyx3HPzS05lY3p+IIVmnPOEdZhMsNDIGmVorFyRWa4K
+ uYjBP/W3E5p9e6TvDSDzqhLoY1RHfAIadM3I8kEx5wqco67VIgbIHHB9DbRcxQARAQABiQIf
+ BBgBAgAJBQJTAdHHAhsMAAoJEFiDn/uYk8VJb7AQAK56tgX8V1Wa6RmZDmZ8dmBC7W8nsMRz
+ PcKWiDSMIvTJT5bygMy1lf7gbHXm7fqezRtSfXAXr/OJqSA8LB2LWfThLyuuCvrdNsQNrI+3
+ D+hjHJjhW/4185y3EdmwwHcelixPg0X9EF+lHCltV/w29Pv3PiGDkoKxJrnOpnU6jrwiBebz
+ eAYBfpSEvrCm4CR4hf+T6MdCs64UzZnNt0nxL8mLCCAGmq1iks9M4bZk+LG36QjCKGh8PDXz
+ 9OsnJmCggptClgjTa7pO6040OW76pcVrP2rZrkjo/Ld/gvSc7yMO/m9sIYxLIsR2NDxMNpmE
+ q/H7WO+2bRG0vMmsndxpEYS4WnuhKutoTA/goBEhtHu1fg5KC+WYXp9wZyTfeNPrL0L8F3N1
+ BCEYefp2JSZ/a355X6r2ROGSRgIIeYjAiSMgGAZMPEVsdvKsYw6BH17hDRzltNyIj5S0dIhb
+ Gjynb3sXforM/GVbr4mnuxTdLXQYlj2EJ4O4f0tkLlADT7podzKSlSuZsLi2D+ohKxtP3U/r
+ 42i8PBnX2oAV0UIkYk7Oel/3hr0+BP666SnTls9RJuoXc7R5XQVsomqXID6GmjwFQR5Wh/RE
+ IJtkiDAsk37cfZ9d1kZ2gCQryTV9lmflSOB6AFZkOLuEVSC5qW8M/s6IGDfYXN12YJaZPptJ fiD/
+Message-ID: <f15262e7-3f46-5574-59cc-d98488f299fc@linux.intel.com>
+Date:   Wed, 13 May 2020 15:51:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a3cbf675-becc-1713-bcdc-664ddfe4a544@codeaurora.org>
+In-Reply-To: <20200513124007.GA1082134@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 05:40:26PM +0530, Charan Teja Kalla wrote:
+On 13.5.2020 15.40, Greg Kroah-Hartman wrote:
+> On Wed, May 13, 2020 at 03:19:29PM +0300, Mathias Nyman wrote:
+>> On 6.5.2020 9.00, Vinod Koul wrote:
+>>> This series add support for Renesas USB controllers uPD720201 and uPD720202.
+>>> These require firmware to be loaded and in case devices have ROM those can
+>>> also be programmed if empty. If ROM is programmed, it runs from ROM as well.
+>>>
+>>> This includes patches from Christian which supported these controllers w/o
+>>> ROM and later my patches for ROM support and debugfs hook for rom erase and
+>>> export of xhci-pci functions.
+>>>
+>>
+>> First four patches look ok to me, but 5/5 that adds rom erase debugfs support
+>> still needs some work.
+>>
+>> If you prefer I can take the first four, maybe we can get them to 5.8, and then
+>> later add that debugs rom erase support.
+>>
+>> Let me know what you prefer
 > 
-> Thank you Greg for the comments.
-> On 5/12/2020 2:22 PM, Greg KH wrote:
-> > On Fri, May 08, 2020 at 12:11:03PM +0530, Charan Teja Reddy wrote:
-> >> The following race occurs while accessing the dmabuf object exported as
-> >> file:
-> >> P1				P2
-> >> dma_buf_release()          dmabuffs_dname()
-> >> 			   [say lsof reading /proc/<P1 pid>/fd/<num>]
-> >>
-> >> 			   read dmabuf stored in dentry->d_fsdata
-> >> Free the dmabuf object
-> >> 			   Start accessing the dmabuf structure
-> >>
-> >> In the above description, the dmabuf object freed in P1 is being
-> >> accessed from P2 which is resulting into the use-after-free. Below is
-> >> the dump stack reported.
-> >>
-> >> We are reading the dmabuf object stored in the dentry->d_fsdata but
-> >> there is no binding between the dentry and the dmabuf which means that
-> >> the dmabuf can be freed while it is being read from ->d_fsdata and
-> >> inuse. Reviews on the patch V1 says that protecting the dmabuf inuse
-> >> with an extra refcount is not a viable solution as the exported dmabuf
-> >> is already under file's refcount and keeping the multiple refcounts on
-> >> the same object coordinated is not possible.
-> >>
-> >> As we are reading the dmabuf in ->d_fsdata just to get the user passed
-> >> name, we can directly store the name in d_fsdata thus can avoid the
-> >> reading of dmabuf altogether.
-> >>
-> >> Call Trace:
-> >>  kasan_report+0x12/0x20
-> >>  __asan_report_load8_noabort+0x14/0x20
-> >>  dmabuffs_dname+0x4f4/0x560
-> >>  tomoyo_realpath_from_path+0x165/0x660
-> >>  tomoyo_get_realpath
-> >>  tomoyo_check_open_permission+0x2a3/0x3e0
-> >>  tomoyo_file_open
-> >>  tomoyo_file_open+0xa9/0xd0
-> >>  security_file_open+0x71/0x300
-> >>  do_dentry_open+0x37a/0x1380
-> >>  vfs_open+0xa0/0xd0
-> >>  path_openat+0x12ee/0x3490
-> >>  do_filp_open+0x192/0x260
-> >>  do_sys_openat2+0x5eb/0x7e0
-> >>  do_sys_open+0xf2/0x180
-> >>
-> >> Fixes: bb2bb9030425 ("dma-buf: add DMA_BUF_SET_NAME ioctls")
-> >> Reported-by: syzbot+3643a18836bce555bff6@syzkaller.appspotmail.com
-> >> Cc: <stable@vger.kernel.org> [5.3+]
-> >> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-> >> ---
-> >>
-> >> Changes in v2: 
-> >>
-> >> - Pass the user passed name in ->d_fsdata instead of dmabuf
-> >> - Improve the commit message
-> >>
-> >> Changes in v1: (https://patchwork.kernel.org/patch/11514063/)
-> >>
-> >>  drivers/dma-buf/dma-buf.c | 17 ++++++++++-------
-> >>  1 file changed, 10 insertions(+), 7 deletions(-)
-> >>
-> >> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> >> index 01ce125..0071f7d 100644
-> >> --- a/drivers/dma-buf/dma-buf.c
-> >> +++ b/drivers/dma-buf/dma-buf.c
-> >> @@ -25,6 +25,7 @@
-> >>  #include <linux/mm.h>
-> >>  #include <linux/mount.h>
-> >>  #include <linux/pseudo_fs.h>
-> >> +#include <linux/dcache.h>
-> >>  
-> >>  #include <uapi/linux/dma-buf.h>
-> >>  #include <uapi/linux/magic.h>
-> >> @@ -40,15 +41,13 @@ struct dma_buf_list {
-> >>  
-> >>  static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
-> >>  {
-> >> -	struct dma_buf *dmabuf;
-> >>  	char name[DMA_BUF_NAME_LEN];
-> >>  	size_t ret = 0;
-> >>  
-> >> -	dmabuf = dentry->d_fsdata;
-> >> -	dma_resv_lock(dmabuf->resv, NULL);
-> >> -	if (dmabuf->name)
-> >> -		ret = strlcpy(name, dmabuf->name, DMA_BUF_NAME_LEN);
-> >> -	dma_resv_unlock(dmabuf->resv);
-> >> +	spin_lock(&dentry->d_lock);
-> > 
-> > Are you sure this lock always protects d_fsdata?
+> Oops, I just added all of these to my testing tree :)
 > 
-> I think yes. In the dma-buf.c, I have to make sure that d_fsdata should
-> always be under d_lock thus it will be protected. (In this posted patch
-> there is one place(in dma_buf_set_name) that is missed, will update this
-> in V3).
-> 
-> > 
-> >> +	if (dentry->d_fsdata)
-> >> +		ret = strlcpy(name, dentry->d_fsdata, DMA_BUF_NAME_LEN);
-> >> +	spin_unlock(&dentry->d_lock);
-> >>  
-> >>  	return dynamic_dname(dentry, buffer, buflen, "/%s:%s",
-> >>  			     dentry->d_name.name, ret > 0 ? name : "");
-> > 
-> > If the above check fails the name will be what?  How could d_name.name
-> > be valid but d_fsdata not be valid?
-> 
-> In case of check fails, empty string "" is appended to the name by the
-> code, ret > 0 ? name : "", ret is initialized to zero. Thus the name
-> string will be like "/dmabuf:".
+> What's wrong with the debugfs patch?  I can drop it, but it seemed
+> simple enough to me.
 
-So multiple objects can have the same "name" if this happens to multiple
-ones at once?
+Added "usb_renesas" directory under debugfs root when we have easily accessible
+debugfs/usb/xhci directory to use as parent. 
 
-> Regarding the validity of d_fsdata, we are setting the dmabuf's
-> dentry->d_fsdata to NULL in the dma_buf_release() thus can go invalid if
-> that dmabuf is in the free path.
+Also not checking if adding directory failed (if debufs not supported)
+ 
+-Mathias
 
-Why are we allowing the name to be set if the dmabuf is on the free path
-at all?  Shouldn't that be the real fix here?
-
-> >> @@ -80,12 +79,16 @@ static int dma_buf_fs_init_context(struct fs_context *fc)
-> >>  static int dma_buf_release(struct inode *inode, struct file *file)
-> >>  {
-> >>  	struct dma_buf *dmabuf;
-> >> +	struct dentry *dentry = file->f_path.dentry;
-> >>  
-> >>  	if (!is_dma_buf_file(file))
-> >>  		return -EINVAL;
-> >>  
-> >>  	dmabuf = file->private_data;
-> >>  
-> >> +	spin_lock(&dentry->d_lock);
-> >> +	dentry->d_fsdata = NULL;
-> >> +	spin_unlock(&dentry->d_lock);
-> >>  	BUG_ON(dmabuf->vmapping_counter);
-> >>  
-> >>  	/*
-> >> @@ -343,6 +346,7 @@ static long dma_buf_set_name(struct dma_buf *dmabuf, const char __user *buf)
-> >>  	}
-> >>  	kfree(dmabuf->name);
-> >>  	dmabuf->name = name;
-> >> +	dmabuf->file->f_path.dentry->d_fsdata = name;
-> > 
-> > You are just changing the use of d_fsdata from being a pointer to the
-> > dmabuf to being a pointer to the name string?  What's to keep that name
-> > string around and not have the same reference counting issues that the
-> > dmabuf structure itself has?  Who frees that string memory?
-> > 
-> 
-> Yes, I am just storing the name string in the d_fsdata in place of
-> dmabuf and this helps to get rid of any extra refcount requirement.
-> Because the user passed name carried in the d_fsdata is copied to the
-> local buffer in dmabuffs_dname under spin_lock(d_lock) and the same
-> d_fsdata is set to NULL(under the d_lock only) when that dmabuf is in
-> the release path. So, when d_fsdata is NULL, name string is not accessed
-> from the dmabuffs_dname thus extra count is not required.
-> 
-> String memory, stored in the dmabuf->name, is released from the
-> dma_buf_release(). Flow will be like, It fist sets d_fsdata=NULL and
-> then free the dmabuf->name.
-> 
-> However from your comments I have realized that there is a race in this
-> patch when using the name string between dma_buf_set_name() and
-> dmabuffs_dname(). But, If the idea of passing the name string inplace of
-> dmabuf in d_fsdata looks fine, I can update this next patch.
-
-I'll leave that to the dmabuf authors/maintainers, but it feels odd to
-me...
-
-thanks,
-
-greg k-h
