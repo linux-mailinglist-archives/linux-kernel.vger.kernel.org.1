@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60581D06CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 07:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDB31D06C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 07:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729380AbgEMF5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 01:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41168 "EHLO
+        id S1729310AbgEMF5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 01:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729201AbgEMF5e (ORCPT
+        by vger.kernel.org with ESMTP id S1729258AbgEMF5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 01:57:34 -0400
+        Wed, 13 May 2020 01:57:36 -0400
 Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0884C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 22:57:34 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ms17so10500387pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 22:57:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B23C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 22:57:36 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mq3so10631779pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 May 2020 22:57:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=z7kZFy6HCyxrhgKGNSyjSTuXnfPxfj+czQqHRi3u1gM=;
-        b=zJr212c2S4dtMzz93cPqS9vPSi5G7YQyOSztYFxV+YM7YSjz7mTD7iy9LEtY/3XHjB
-         CJQA/o7CJlh3wJ9QmxVCuIUK03DsCHVTURqv0fyFzxSozfeaYXyeDil6GiiH+78ov1JU
-         tOJ+Xxwm0dmYI35dwakztMpzXpDIVHts4iaOBjkYKJNMRv9nmkxqWj3eloPcbKQ+m3rA
-         yYXqdfkFO5SEX/thFBE04tpjnZCmNFdvRUFckCGqklrhnOq+f6v8WCBvXHH4tKwPIHx/
-         bIOq2O2C94ASio9RDUE4fuMlp474f7pQngoq86yC2h1r4uunP5bSc0YyfuGfHwrL25kh
-         eEjA==
+        bh=DcfzpsSQi5daWC7gaUxlctrXi7sUjiovhdgBTIYbCvY=;
+        b=Z9W0BIi72UXdojVMzZWful+VXcfM/7mRwMC0X+0E84c4Aui52O/gq58ODytZaCoEpq
+         lppEFJ0h7Z4GNiBHYRnIDRoFncvLX1S0EvgYazLkYCpxr+ky75g6xiaTCvd6DGe11jfb
+         DZcKTjwZqlCr2Wh76Z1aIPZgIo5NPAOcGmu6gJt+5IRqROpUtzVxoWJ5lyQrNjHPPuQM
+         DPQeGZnpgqSD6DfOCAehh7lBYBYMxO7K1sQTl3tKQlctMrLMkUJ5teaymmG3yFmH0W0K
+         Xu5a3pwpaoK9CEqrxWI2iyKub2dQymK36F/omOttrnx8Z9CkXAzznvIQB1HJWazOIiWT
+         N2GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=z7kZFy6HCyxrhgKGNSyjSTuXnfPxfj+czQqHRi3u1gM=;
-        b=fLR/gK7wPhEnuzdy5d0UHqvw3Yn33cKWiv0NYNuLKlRoUJoUfOpXB92aEVQoVmXfbY
-         DAuqvvYpuBPWnAX/908WBoBReyzHj59qWSHpqILVv1HqNuFdoYukPlQNg13ocbQkw5bp
-         mQJyxHxg4pugSFkhPtqL1r+63/fsXwIrBC8StRtEoqYvzYcAVaMdrwQI4oUGVIQMHjDS
-         X654u0LODLWaAFgI5SMTFB2Q3gqPvb2gOtPzk3HTL5NWE72vG8ij3neoEuk3boFgl6tP
-         OWUuHlPQQu1kdvHqbbcsAUvWDrbq4Av0d06gUwvuEUfdQIwD/NWyWzMYh9L9t4YxVke4
-         P5Iw==
-X-Gm-Message-State: AGi0PuaXyD4ikaZIH0mUpZfo4NGGDAIiJxQhW4Uc9DFC5nHbH23MOsmN
-        fQGGQCvNe0kQ4/UrwIgcv7UaQQ==
-X-Google-Smtp-Source: APiQypLDvyMdeHWS/UIk3epwcBtrBMYdULAF2/nXkMJSwPEnQM79P5r56h8uTsWRBFp718+BnjFXnA==
-X-Received: by 2002:a17:902:8b82:: with SMTP id ay2mr22486312plb.94.1589349454118;
-        Tue, 12 May 2020 22:57:34 -0700 (PDT)
+        bh=DcfzpsSQi5daWC7gaUxlctrXi7sUjiovhdgBTIYbCvY=;
+        b=J5q5iDX7MUKiWNX7fxjLs4Mq3FK7FHgPz06RafrgKSUEcefQvhpl4htik94LCAWkIF
+         QGCarNGN6dWuDvK8cjaqGBMyVbV5YXckJcBbhvBflRBGe65QVALdOQNDun1L1nn5bz2P
+         Z+HMZIHcPOEa2mj/dJN24BAwLrk3zFLUZj9tkw2XI8N5sBsku5djRndDZXG2V+ucQ0aq
+         OisPk+x1VV+QsKCOuBmwkkYnkCJua0oRlSahuZRvm5ygpl0Iw/18NDaspIb4OAg3kAjy
+         A+oWxNFTIYN652Qorp6ba/y6TjoVA4apFOQkU0x3mjuAjIEyCH+oGfMcFrTHCB/VbZvE
+         u37g==
+X-Gm-Message-State: AGi0PuaN3f3I5EdqypAYOJUEJvKxXioWllEPJaczahHSBJJG5Y7NrNtT
+        2K3IlaYuPs4vLFkqCLk5skl2eg==
+X-Google-Smtp-Source: APiQypJHtKHCPhkSK5TO6wa+IvZfdz4WkKAze9q1aB256pHsfLzhf5c01TqMeRxOhNxoI7RQk+FfTg==
+X-Received: by 2002:a17:902:bd81:: with SMTP id q1mr23737306pls.46.1589349455552;
+        Tue, 12 May 2020 22:57:35 -0700 (PDT)
 Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id w192sm14131161pff.126.2020.05.12.22.57.32
+        by smtp.gmail.com with ESMTPSA id w192sm14131161pff.126.2020.05.12.22.57.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 22:57:33 -0700 (PDT)
+        Tue, 12 May 2020 22:57:34 -0700 (PDT)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -56,9 +56,9 @@ To:     Andy Gross <agross@kernel.org>,
 Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Stephen Boyd <swboyd@chromium.org>
-Subject: [PATCH v5 4/5] arm64: dts: qcom: qcs404: Add IMEM and PIL info region
-Date:   Tue, 12 May 2020 22:56:40 -0700
-Message-Id: <20200513055641.1413100-5-bjorn.andersson@linaro.org>
+Subject: [PATCH v5 5/5] arm64: dts: qcom: sdm845: Add IMEM and PIL info region
+Date:   Tue, 12 May 2020 22:56:41 -0700
+Message-Id: <20200513055641.1413100-6-bjorn.andersson@linaro.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200513055641.1413100-1-bjorn.andersson@linaro.org>
 References: <20200513055641.1413100-1-bjorn.andersson@linaro.org>
@@ -69,7 +69,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a simple-mfd representing IMEM on QCS404 and define the PIL
+Add a simple-mfd representing IMEM on SDM845 and define the PIL
 relocation info region, so that post mortem tools will be able to locate
 the loaded remoteprocs.
 
@@ -80,25 +80,25 @@ Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Changes since v4:
 - imem is no longer compatible with "syscon"
 
- arch/arm64/boot/dts/qcom/qcs404.dtsi | 15 +++++++++++++++
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 15 +++++++++++++++
  1 file changed, 15 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-index c685a1664810..b654b802e95c 100644
---- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-@@ -1097,6 +1097,21 @@ blsp2_spi0: spi@7af5000 {
- 			status = "disabled";
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index 7cce6f1b7c9e..1abbbe7a43a0 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -3716,6 +3716,21 @@ spmi_bus: spmi@c440000 {
+ 			cell-index = <0>;
  		};
  
-+		imem@8600000 {
++		imem@146bf000 {
 +			compatible = "simple-mfd";
-+			reg = <0x08600000 0x1000>;
++			reg = <0 0x146bf000 0 0x1000>;
 +
 +			#address-cells = <1>;
 +			#size-cells = <1>;
 +
-+			ranges = <0 0x08600000 0x1000>;
++			ranges = <0 0 0x146bf000 0x1000>;
 +
 +			pil-reloc@94c {
 +				compatible = "qcom,pil-reloc-info";
@@ -106,9 +106,9 @@ index c685a1664810..b654b802e95c 100644
 +			};
 +		};
 +
- 		intc: interrupt-controller@b000000 {
- 			compatible = "qcom,msm-qgic2";
- 			interrupt-controller;
+ 		apps_smmu: iommu@15000000 {
+ 			compatible = "qcom,sdm845-smmu-500", "arm,mmu-500";
+ 			reg = <0 0x15000000 0 0x80000>;
 -- 
 2.26.2
 
