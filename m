@@ -2,125 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171671D0C7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6561D0C89
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732478AbgEMJlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:41:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
+        id S1732503AbgEMJmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726645AbgEMJlY (ORCPT
+        with ESMTP id S1726532AbgEMJmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:41:24 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897ABC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 02:41:23 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id n5so12806260wmd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 02:41:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NJBGaruknTCLtKKJk9/NPgVcIhnHRN5HOgLiTidMfps=;
-        b=nbtBTs6Xx54r3xi5mFEcv4se2zQfkJy0cQh1tbJCIw8IoMzRCEr0oal1hCN8wgjJwG
-         XJfDbD6yCAuuqlDeI7Ry1xErq+ap5T/xl3ude7Kf8KxrPAOkKt0I7tT+gue0xmLf03UW
-         T7e5+LBwZVFtpdt1QkXQGwAyCQ8X7HkI6BligttJ82dncMKxLO6r9/fNTKcYJySDfwIR
-         cRgHstp7X6H5NMznogdlwx1FUvoY9Ns4+KsmIXMTxizqrvkKIOMTkvUTVZDFaCJS2IkP
-         yWiL85KWNcfvxM1s/c5bZSWwd3Y9ECI1Dc8APHKOiNg4ZliFiPwgPuftVHjIxUzlFmWi
-         npSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NJBGaruknTCLtKKJk9/NPgVcIhnHRN5HOgLiTidMfps=;
-        b=nNAYOHJjsuv/9tZMD2GPqnj47F3haauRN3dkHpJZmMMvLdDAK36sjPz/CCGhHXW3NH
-         t95Q52lWXIxEnqped7OoUTygRR1qGP4UqM9QRwuWq4VYCpPWNZGGuWRWlPOdL8ivrvsl
-         FQP1YneYqhXJVOvLQ4wS+x5lHQEc2CQikkFyh4BnZe3ChwAmg9xOoXVIQdN6g7DqOcM+
-         hua5rW+Ke5gIrvGd3MSBUZAxOay1atOUvR2R0ePMkJmLtCdsl69IP8QMx8NGR132hEXU
-         JgFZfzFJen3HEA/uznu4FXiuWwhDdSj5NctU1znwpOqTy1/E52piPf4mYtsCJt/Ai1PC
-         MfMQ==
-X-Gm-Message-State: AOAM530qQQEDWc2gy8xVedKvq+ykUI9YXhmkyaNVDPNJq1SS2Q/jwve/
-        8zJiwFXxrsCvhUqV+VTKogCbhw==
-X-Google-Smtp-Source: ABdhPJxIzSvxktEk0dfkDZAgXrtWIO1vC88KrHWFh9dWQyFJ4zAsOGcxznMe+hx/MAUnWP+KEEw9nQ==
-X-Received: by 2002:a1c:6245:: with SMTP id w66mr7104946wmb.33.1589362881903;
-        Wed, 13 May 2020 02:41:21 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:d6cc:2030:37c1:9964])
-        by smtp.gmail.com with ESMTPSA id x24sm28184249wrd.51.2020.05.13.02.41.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 02:41:20 -0700 (PDT)
-Date:   Wed, 13 May 2020 10:41:17 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        "Luis R. Rodriguez" <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Todd Kjos <tkjos@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>
-Subject: Re: [PATCH 00/14] Modularize schedutil
-Message-ID: <20200513094117.GB225140@google.com>
-References: <20200511090049.GA229633@google.com>
- <CAJZ5v0jKMgFsR0dXDt4si5hT9QF2evaoMS-13y-Qde8UpcaARg@mail.gmail.com>
- <20200512092102.GA16151@google.com>
- <CAJZ5v0hm3Tv2yZKLzM9a+kJuB1V5_eFOEKT-uM318dzeKV3_Qw@mail.gmail.com>
- <20200512135813.GA101124@google.com>
- <CAJZ5v0hN708uvurZ-3oo90qUJFw3=Eg0OmtTaOKXQgNPXhCkFg@mail.gmail.com>
- <20200512151120.GB101124@google.com>
- <CAJZ5v0inoge=nWQtv-rU_ReQUMZA5w-PZXuSpHHj1UHn-S7aSA@mail.gmail.com>
- <20200512162630.GC101124@google.com>
- <CAJZ5v0ges4=e2HkHpVk4E1yF1VsBm9H5noqMz-MxX9DK_kt6Xg@mail.gmail.com>
+        Wed, 13 May 2020 05:42:54 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81A7C061A0C;
+        Wed, 13 May 2020 02:42:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=0TMMWMUrzS1FlukKgXCbkVesqNUS1JqKvgC56uuLBQs=; b=uUuqXjOUXbQYCT40fYfHMeKVp
+        ri3MiqzeJWAY/jIK4/YpZa/oWdqYZssoObY14Hc0Yj6jPiARuTZKWL59evrC/TP+VMMP0CEIxKOrc
+        FA2AWjSXfQNOhAZtOfsgRP3H3j3BIW1ZUztAVG+teCalymQ/Wp92iyHRI4lMO88zCKujCnqhHYs+a
+        IDzAQmm4UfyUGHG7khAIT9TD+eMho+TTs+2RlJVDpUGRBFQK3OgGc96fU+J7U/REhOgCCP3B4DcUh
+        oIYOEydCTFDGI+f7/Za2K1NV5GNmKp7mWabJnVC2UPN7NEFN3g9AARkWHiSDRaoJLkSRRloYM4dv6
+        eFNBjv/CQ==;
+Received: from shell.armlinux.org.uk ([2002:4e20:1eda:1:5054:ff:fe00:4ec]:57428)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jYnuS-00043G-Qa; Wed, 13 May 2020 10:42:40 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jYnuR-0007f7-7k; Wed, 13 May 2020 10:42:39 +0100
+Date:   Wed, 13 May 2020 10:42:39 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Doug Berger <opendmb@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 3/4] net: ethernet: introduce phy_set_pause
+Message-ID: <20200513094239.GG1551@shell.armlinux.org.uk>
+References: <1589243050-18217-1-git-send-email-opendmb@gmail.com>
+ <1589243050-18217-4-git-send-email-opendmb@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0ges4=e2HkHpVk4E1yF1VsBm9H5noqMz-MxX9DK_kt6Xg@mail.gmail.com>
+In-Reply-To: <1589243050-18217-4-git-send-email-opendmb@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+On Mon, May 11, 2020 at 05:24:09PM -0700, Doug Berger wrote:
+> This commit introduces the phy_set_pause function to the phylib as
+> a helper to support the set_pauseparam ethtool method.
+> 
+> It is hoped that the new behavior introduced by this function will
+> be widely embraced and the phy_set_sym_pause and phy_set_asym_pause
+> functions can be deprecated. Those functions are retained for all
+> existing users and for any desenting opinions on my interpretation
+> of the functionality.
+> 
+> Signed-off-by: Doug Berger <opendmb@gmail.com>
+> ---
+>  drivers/net/phy/phy_device.c | 31 +++++++++++++++++++++++++++++++
+>  include/linux/phy.h          |  1 +
+>  2 files changed, 32 insertions(+)
+> 
+> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> index 48ab9efa0166..e6dafb3c3e5f 100644
+> --- a/drivers/net/phy/phy_device.c
+> +++ b/drivers/net/phy/phy_device.c
+> @@ -2614,6 +2614,37 @@ void phy_set_asym_pause(struct phy_device *phydev, bool rx, bool tx)
+>  EXPORT_SYMBOL(phy_set_asym_pause);
+>  
+>  /**
+> + * phy_set_pause - Configure Pause and Asym Pause with autoneg
+> + * @phydev: target phy_device struct
+> + * @rx: Receiver Pause is supported
+> + * @tx: Transmit Pause is supported
+> + * @autoneg: Auto neg should be used
+> + *
+> + * Description: Configure advertised Pause support depending on if
+> + * receiver pause and pause auto neg is supported. Generally called
+> + * from the set_pauseparam ethtool_ops.
+> + *
+> + * Note: Since pause is really a MAC level function it should be
+> + * notified via adjust_link to update its pause functions.
+> + */
+> +void phy_set_pause(struct phy_device *phydev, bool rx, bool tx, bool autoneg)
+> +{
+> +	linkmode_set_pause(phydev->advertising, tx, rx, autoneg);
+> +
+> +	/* Reset the state of an already running link to force a new
+> +	 * link up event when advertising doesn't change or when PHY
+> +	 * autoneg is disabled.
+> +	 */
+> +	mutex_lock(&phydev->lock);
+> +	if (phydev->state == PHY_RUNNING)
+> +		phydev->state = PHY_UP;
+> +	mutex_unlock(&phydev->lock);
 
-On Tuesday 12 May 2020 at 19:30:52 (+0200), Rafael J. Wysocki wrote:
-> I don't see any technical reason for making schedutil modular in the
-> context of GKI other than to make the GKI image smaller, but I don't
-> expect that to be significant enough.
+I wonder about this - will drivers cope with having two link-up events
+via adjust_link without a corresponding link-down event?  What if they
+touch registers that are only supposed to be touched while the link is
+down?  Obviously, drivers have to opt-in to this interface, so it may
+be okay provided we don't get wholesale changes.
 
-The fact that we can make the image smaller, and we give vendors one
-less reason to not-want GKI _is_ desirable IMO.
+> +
+> +	phy_start_aneg(phydev);
 
-  $ size vmlinux.*
-     text	   data	    bss	    dec	    hex	filename
-  19225963	9601976	 491084	29319023	1bf5f6f	vmlinux.after
-  19230599	9603236	 491084	29324919	1bf7677	vmlinux.before
+Should we be making that conditional on something changing and autoneg
+being enabled, like phy_set_asym_pause() does?  There is no point
+interrupting an established link if the advertisement didn't change.
 
-^ that's with the series applied. 'before' means sugov is =y, and
-'after' is sugov =m. So modularizing saves just over 4K on text, and a
-bit of data too. Is it significant? Maybe not. But it's quite likely
-that those who don't use schedutil will find any unnecessary byte to be
-one too many.
+> +}
+> +EXPORT_SYMBOL(phy_set_pause);
+> +
+> +/**
+>   * phy_validate_pause - Test if the PHY/MAC support the pause configuration
+>   * @phydev: phy_device struct
+>   * @pp: requested pause configuration
+> diff --git a/include/linux/phy.h b/include/linux/phy.h
+> index 5d8ff5428010..71e484424e68 100644
+> --- a/include/linux/phy.h
+> +++ b/include/linux/phy.h
+> @@ -1403,6 +1403,7 @@ void phy_support_asym_pause(struct phy_device *phydev);
+>  void phy_set_sym_pause(struct phy_device *phydev, bool rx, bool tx,
+>  		       bool autoneg);
+>  void phy_set_asym_pause(struct phy_device *phydev, bool rx, bool tx);
+> +void phy_set_pause(struct phy_device *phydev, bool rx, bool tx, bool autoneg);
+>  bool phy_validate_pause(struct phy_device *phydev,
+>  			struct ethtool_pauseparam *pp);
+>  void phy_get_pause(struct phy_device *phydev, bool *tx_pause, bool *rx_pause);
+> -- 
+> 2.7.4
+> 
+> 
 
-I just checked the size of modules in the default arm64 defconfig, and
-the median is ~4K of text. The average is a little bigger, but mostly
-because of a small number of really large modules (nouveau being the
-prime the example). So all in all, the sugov module is not particularly
-small by comparison with other things that have been modularized. A lot
-of small things can lead to significant savings at the end.
-
-Thanks,
-Quentin
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
