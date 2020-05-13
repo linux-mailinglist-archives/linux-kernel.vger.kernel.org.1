@@ -2,101 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D11E1D1918
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B58F1D1907
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 17:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389195AbgEMPVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 11:21:16 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:34255 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729153AbgEMPVO (ORCPT
+        id S2389167AbgEMPVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 11:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729153AbgEMPVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 11:21:14 -0400
-Received: by mail-pf1-f193.google.com with SMTP id x15so7550192pfa.1;
-        Wed, 13 May 2020 08:21:14 -0700 (PDT)
+        Wed, 13 May 2020 11:21:08 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CFEC061A0C;
+        Wed, 13 May 2020 08:21:06 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id k19so6942739pll.9;
+        Wed, 13 May 2020 08:21:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=cWFKfC62+6x0cIYD7JbR18PKDXXbx8nGB7XYfgqUvF4=;
+        b=UcXf/LwO0ebFP2l74juHCGTii8BlrEnCisLBwXU9iBrGdE0F4Dh7tM35PLhI1CelSf
+         D90sKcDWwfUNJetU6bOWntnUxER3HDl68AuV/oGIyRrWbs/2NbS3MSX///qA7+VarM+k
+         PcS1MvIzZSP9pZSmEj0R6HkNph8/wo0Wf8VPT7UkhrgyTTT6IFLdg+XCGklDhTCvZVOR
+         ZVVA/oU6jvXNcFb7sLyG5JVaaJ9gQAnmld2vsUzrCEEPAP8FQE+aYvi5wjMQjKvJvaum
+         AUDZuh3gI5JiRriLLUkDc6ZUl6z4MQW7kMwiDI9RaSErrKDVCIS3S5PggLrat3ZdetqO
+         UWNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vd8mN5eu82jR3IAsdSL8KCAElLuY0QvMKLQ4DV4/fDM=;
-        b=oa7V1C/MEjzWRxJ/2JF4W0oUPiHG2ulxUCEGfDQYTB1hP8DEeRYLYF/KEpNrYLNIEm
-         AlRDxsACr+ZrAm5kLxC1bFvATuECgIQYgtDVgHYhLLKOVwePgB2gGorgX3Z/UpFlEoA+
-         TeAKx/9YWYhHWAT43uoe4YbrzETSc+imU6UP3TP0d+wIsgP7X+uOJ9atY1zbrrZ7/Gni
-         GobE91AgpQg3AMpj40PqHrFnuzbEZ7ZiUGOeBT1cMfQVuDnrNA2HBfI4r7b+Vj0Q9BLH
-         oDVjMSrZpMMSb7yquwEqXaHtqqDEXxGlKiZo80R+9yduwacCOsosNxyR7L/Sm6I5p/zG
-         SM6A==
-X-Gm-Message-State: AOAM533rtKtwbp0am2isPGeZ2rPWoKzhuOa/k3jM6dAlkKXXbWJRkbfi
-        sQ0y6Ifqonu2xaFCdgqeOa0=
-X-Google-Smtp-Source: ABdhPJz8JCGMh8sRdwYyCHudRzQBKdwiDqQQhE20Xn802xN18geL+qldVFqyq1i08EE9ulujdjpfQg==
-X-Received: by 2002:a63:a01:: with SMTP id 1mr16798874pgk.428.1589383273914;
-        Wed, 13 May 2020 08:21:13 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id a2sm45859pgh.57.2020.05.13.08.21.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 08:21:12 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 3FC514063E; Wed, 13 May 2020 15:21:12 +0000 (UTC)
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
-        rafael@kernel.org, ebiederm@xmission.com, jeyu@kernel.org,
-        jmorris@namei.org, keescook@chromium.org, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        nayna@linux.ibm.com, zohar@linux.ibm.com
-Cc:     scott.branden@broadcom.com, dan.carpenter@oracle.com,
-        skhan@linuxfoundation.org, geert@linux-m68k.org,
-        tglx@linutronix.de, bauerman@linux.ibm.com, dhowells@redhat.com,
-        linux-integrity@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kexec@lists.infradead.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 0/3] fs: reduce export usage of kerne_read*() calls
-Date:   Wed, 13 May 2020 15:21:05 +0000
-Message-Id: <20200513152108.25669-1-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.23.0.rc1
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:user-agent;
+        bh=cWFKfC62+6x0cIYD7JbR18PKDXXbx8nGB7XYfgqUvF4=;
+        b=heaqZvKfa0qJZVl3zb7kPVZO70Al7OuWGRYn6l8xObvRaowh64m2alsS2GOuL1kDEb
+         6GwyzD66kaw5dHXgKOknsOlCFpLNlTfhVIyKFGDVuIlHOX+gDYfkLrPu8Dvj0uJEFXyu
+         WOJGH2bAgxo+4Rls0Yonci/hvWS6aOoXfqX3hQKHd5vRai6Ub2OQdDPYWlk2idutmJ3D
+         ApCTpY84aRr6zg1t0AO5DKvKn0fR4B5YZJE2kYvFLzA1V4ehSmC/xB3Qbr7WSs+EL/z3
+         58s9tBoPaCP1RQX+MoBVJ8krIh3kaBjuj3PLNLZStjjgC61N2pRzo4cNONU8CkeDYqP2
+         3ldQ==
+X-Gm-Message-State: AGi0PuY3+tTdSnm4WGaKt1deIo9Tu4qDPxRj3kWiL/W1Og9rHWut3O1A
+        azxksq/rqv49y2wgnOwZSyU=
+X-Google-Smtp-Source: APiQypIG3VnLUc5o3LGxO1a1f/FF6vP3C9zhpMSozv2JhiVOu26f8gI33aGjcezrncxrxG7y6GoXDQ==
+X-Received: by 2002:a17:90a:ba84:: with SMTP id t4mr32154756pjr.81.1589383266524;
+        Wed, 13 May 2020 08:21:06 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 82sm14944156pfv.214.2020.05.13.08.21.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 13 May 2020 08:21:05 -0700 (PDT)
+Date:   Wed, 13 May 2020 08:21:05 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Amy.Shih@advantech.com.tw
+Cc:     she90122@gmail.com, Jean Delvare <jdelvare@suse.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        oakley.ding@advantech.com.tw, jia.sui@advantech.com.cn,
+        yuechao.zhao@advantech.com.cn, Hy.Lee@advantech.com.tw
+Subject: Re: [v1,1/1] hwmon: (nct7904) Add to read all of the SMI status
+ registers in probe function.
+Message-ID: <20200513152104.GA125097@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While reviewing Scott Branden's submission of the new Broadcom VK driver
-driver upstream [0], part of which included 4 new pread varaints of the
-existing kernel_read*(), calls I grew shivers of the possibility of drivers
-using these exported symbols loosely. If we're going to grow these, it
-seems best to restrict the symbols to a namespace so drivers and
-subsystem maintainers don't use these carelessly.
+On Tue, May 12, 2020 at 02:25:23AM +0000, Amy.Shih@advantech.com.tw wrote:
+> From: Amy Shih <amy.shih@advantech.com.tw>
+> 
+> When nct7904 power up, it compares current sensor readings within the
+> default threshold immediately, thus some of SMI status registers would
+> get non zero values cause the false alarms on first reading. Add to
+> read all of the SMI status registers in probe function to clear the
+> alarms.
+> 
+> Signed-off-by: Amy Shih <amy.shih@advantech.com.tw>
 
-This should also help with making it easier to audit future locations in
-the kernel such read calls happen by just looking at the imports of the
-namespace.
+Applied.
 
-This goes compile tested with allyesconfig and allmodconfig on x86_64.
-0-day should have a report on build status with other configs later of
-my branch [1].
+Thanks,
+Guenter
 
-[0] https://lkml.kernel.org/r/20200508002739.19360-1-scott.branden@broadcom.com
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20200513-kernel-read-sym
-
-Luis Chamberlain (3):
-  fs: unexport kernel_read_file()
-  security: add symbol namespace for reading file data
-  fs: move kernel_read*() calls to its own symbol namespace
-
- drivers/base/firmware_loader/fallback.c | 1 +
- drivers/base/firmware_loader/main.c     | 1 +
- fs/exec.c                               | 9 +++++----
- kernel/kexec.c                          | 2 ++
- kernel/kexec_file.c                     | 2 ++
- kernel/module.c                         | 3 +++
- security/integrity/digsig.c             | 3 +++
- security/integrity/ima/ima_fs.c         | 3 +++
- security/integrity/ima/ima_main.c       | 2 ++
- security/loadpin/loadpin.c              | 2 ++
- security/security.c                     | 8 +++++---
- security/selinux/hooks.c                | 2 ++
- 12 files changed, 31 insertions(+), 7 deletions(-)
-
--- 
-2.26.2
-
+> ---
+>  drivers/hwmon/nct7904.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/hwmon/nct7904.c b/drivers/hwmon/nct7904.c
+> index 571a649..6fb06f7 100644
+> --- a/drivers/hwmon/nct7904.c
+> +++ b/drivers/hwmon/nct7904.c
+> @@ -45,6 +45,7 @@
+>  #define FANCTL_MAX		4	/* Counted from 1 */
+>  #define TCPU_MAX		8	/* Counted from 1 */
+>  #define TEMP_MAX		4	/* Counted from 1 */
+> +#define SMI_STS_MAX		10	/* Counted from 1 */
+>  
+>  #define VT_ADC_CTRL0_REG	0x20	/* Bank 0 */
+>  #define VT_ADC_CTRL1_REG	0x21	/* Bank 0 */
+> @@ -1126,6 +1127,13 @@ static int nct7904_probe(struct i2c_client *client,
+>  		data->fan_mode[i] = ret;
+>  	}
+>  
+> +	/* Read all of SMI status register to clear alarms */
+> +	for (i = 0; i < SMI_STS_MAX; i++) {
+> +		ret = nct7904_read_reg(data, BANK_0, SMI_STS1_REG + i);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+>  	hwmon_dev =
+>  		devm_hwmon_device_register_with_info(dev, client->name, data,
+>  						     &nct7904_chip_info, NULL);
+> -- 
+> 1.8.3.1
+> 
