@@ -2,148 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8651D12A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC3B1D1295
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731744AbgEMM1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 08:27:36 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:33584 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726020AbgEMM1f (ORCPT
+        id S1731652AbgEMMZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 08:25:09 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:60491 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731489AbgEMMZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 08:27:35 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04DCRWkU103423;
-        Wed, 13 May 2020 07:27:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589372852;
-        bh=2ig5tIOWD6nykKQyzTlz+iNpTfFh1kkyICxOu/c7i8k=;
-        h=Subject:From:To:References:Date:In-Reply-To;
-        b=pHOShA8XrlH0z9VnTsMMhG0TCxGqUaQQZh5EkqdK3zAw6FrJhR8WSGezRos4wXMZ+
-         7drCae5t971PI+VTkrDGW3OEhh1qNYgzPIQDA7YRW+Fr1HflCmdYolVywYs/zSKhVv
-         rF7xPVrJEHF3WrKPl/qbkFcCO7SRpvxtOrWuQrE0=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04DCRWdc077159
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 May 2020 07:27:32 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 13
- May 2020 07:27:31 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 13 May 2020 07:27:31 -0500
-Received: from [10.250.74.234] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04DCRVs0131026;
-        Wed, 13 May 2020 07:27:31 -0500
-Subject: Re: [net-next RFC PATCH 00/13] net: hsr: Add PRP driver
-From:   Murali Karicheri <m-karicheri2@ti.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        <nsekhar@ti.com>, <grygorii.strashko@ti.com>
-References: <20200506163033.3843-1-m-karicheri2@ti.com>
-Message-ID: <a947b604-4016-ff02-380f-f3788eea4ed9@ti.com>
-Date:   Wed, 13 May 2020 08:27:31 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 13 May 2020 08:25:09 -0400
+X-Originating-IP: 2.224.242.101
+Received: from uno.localdomain (2-224-242-101.ip172.fastwebnet.it [2.224.242.101])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 9040920013;
+        Wed, 13 May 2020 12:25:02 +0000 (UTC)
+Date:   Wed, 13 May 2020 14:28:19 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        linux-renesas-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        sakari.ailus@iki.fi, Hans Verkuil <hverkuil@xs4all.nl>,
+        Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+Subject: Re: [PATCH v9 1/4] dt-bindings: media: i2c: Add bindings for Maxim
+ Integrated MAX9286
+Message-ID: <20200513122819.olmg6bqhek6bmjgq@uno.localdomain>
+References: <20200512155105.1068064-1-kieran.bingham+renesas@ideasonboard.com>
+ <20200512155105.1068064-2-kieran.bingham+renesas@ideasonboard.com>
+ <20200512223610.GB23701@bogus>
 MIME-Version: 1.0
-In-Reply-To: <20200506163033.3843-1-m-karicheri2@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200512223610.GB23701@bogus>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello netdev experts,
+Hi Rob,
 
-On 5/6/20 12:30 PM, Murali Karicheri wrote:
-> This RFC series add support for Parallel Redundancy Protocol (PRP)
-> as defined in IEC-62439-3 in the kernel networking subsystem. PRP
-> Uses a Redundancy Control Trailer (RCT) the format of which is
-> similar to HSR Tag. This is used for implementing redundancy.
-> RCT consists of 6 bytes similar to HSR tag and contain following
-> fields:-
-> 
-> - 16-bit sequence number (SeqNr);
-> - 4-bit LAN identifier (LanId);
-> - 12 bit frame size (LSDUsize);
-> - 16-bit suffix (PRPsuffix).
-> 
-> The PRPsuffix identifies PRP frames and distinguishes PRP frames
-> from other protocols that also append a trailer to their useful
-> data. The LSDUsize field allows the receiver to distinguish PRP
-> frames from random, nonredundant frames as an additional check.
-> LSDUsize is the size of the Ethernet payload inclusive of the
-> RCT. Sequence number along with LanId is used for duplicate
-> detection and discard.
-> 
-> PRP node is also known as Dual Attached Node (DAN-P) since it
-> is typically attached to two different LAN for redundancy.
-> DAN-P duplicates each of L2 frames and send it over the two
-> Ethernet links. Each outgoing frame is appended with RCT.
-> Unlike HSR, these are added to the end of L2 frame and may be
-> treated as padding by bridges and therefore would be work with
-> traditional bridges or switches, where as HSR wouldn't as Tag
-> is prefixed to the Ethenet frame. At the remote end, these are
-> received and the duplicate frame is discarded before the stripped
-> frame is send up the networking stack. Like HSR, PRP also sends
-> periodic Supervision frames to the network. These frames are
-> received and MAC address from the SV frames are populated in a
-> database called Node Table. The above functions are grouped into
-> a block called Link Redundancy Entity (LRE) in the IEC spec.
-> 
-> As there are many similarities between HSR and PRP protocols,
-> this patch re-use the code from HSR driver to implement PRP
-> driver. As many part of the code can be re-used, this patch
-> introduces a new common API definitions for both protocols and
-> propose to obsolete the existing HSR defines in
-> include/uapi/linux/if_link.h. New definitions are prefixed
-> with a HSR_PRP prefix. Similarly include/uapi/linux/hsr_netlink.h
-> is proposed to be replaced with include/uapi/linux/hsr_prp_netlink.h
-> which also uses the HSR_PRP prefix. The netlink socket interface
-> code is migrated (as well as the iproute2 being sent as a follow up
-> patch) to use the new API definitions. To re-use the code,
-> following are done as a preparatory patch before adding the PRP
-> functionality:-
-> 
->    - prefix all common code with hsr_prp
->    - net/hsr -> renamed to net/hsr-prp
->    - All common struct types, constants, functions renamed with
->      hsr{HSR}_prp{PRP} prefix.
-> 
-> Please review this and provide me feedback so that I can work to
-> incorporate them and send a formal patch series for this. As this
-> series impacts user space, I am not sure if this is the right
-> approach to introduce a new definitions and obsolete the old
-> API definitions for HSR. The current approach is choosen
-> to avoid redundant code in iproute2 and in the netlink driver
-> code (hsr_netlink.c). Other approach we discussed internally was
-> to Keep the HSR prefix in the user space and kernel code, but
-> live with the redundant code in the iproute2 and hsr netlink
-> code. Would like to hear from you what is the best way to add
-> this feature to networking core. If there is any other
-> alternative approach possible, I would like to hear about the
-> same.
-> 
-> The patch was tested using two TI AM57x IDK boards which are
-> connected back to back over two CPSW ports.
-> 
-> Script used for creating the hsr/prp interface is given below
-> and uses the ip link command. Also provided logs from the tests
-> I have executed for your reference.
-> 
-> iproute2 related patches will follow soon....
-Could someone please review this and provide some feedback to take
-this forward?
+On Tue, May 12, 2020 at 05:36:10PM -0500, Rob Herring wrote:
+> On Tue, May 12, 2020 at 04:51:02PM +0100, Kieran Bingham wrote:
+> > From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> >
+> > The MAX9286 deserializes video data received on up to 4 Gigabit
+> > Multimedia Serial Links (GMSL) and outputs them on a CSI-2 port using up
+> > to 4 data lanes.
+> >
+> > Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> > Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> > Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> >
+> > ---
+> >
+> > v7:
+> >  - Collect Rob's RB tag
+> >  - Remove redundant maxItems from remote-endpoints
+> >  - Fix SPDX licence tag
+> >
+> >  .../bindings/media/i2c/maxim,max9286.yaml     | 287 ++++++++++++++++++
+> >  1 file changed, 287 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> > new file mode 100644
+> > index 000000000000..f9d3e5712c59
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> > @@ -0,0 +1,287 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +# Copyright (C) 2019 Renesas Electronics Corp.
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/media/i2c/maxim,max9286.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Maxim Integrated Quad GMSL Deserializer
+> > +
+> > +maintainers:
+> > +  - Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > +  - Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> > +  - Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> > +  - Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> > +
+> > +description: |
+> > +  The MAX9286 deserializer receives video data on up to 4 Gigabit Multimedia
+> > +  Serial Links (GMSL) and outputs them on a CSI-2 D-PHY port using up to 4 data
+> > +  lanes.
+> > +
+> > +  In addition to video data, the GMSL links carry a bidirectional control
+> > +  channel that encapsulates I2C messages. The MAX9286 forwards all I2C traffic
+> > +  not addressed to itself to the other side of the links, where a GMSL
+> > +  serializer will output it on a local I2C bus. In the other direction all I2C
+> > +  traffic received over GMSL by the MAX9286 is output on the local I2C bus.
+> > +
+> > +properties:
+> > +  '#address-cells':
+> > +    const: 1
+> > +
+> > +  '#size-cells':
+> > +    const: 0
+> > +
+> > +  compatible:
+> > +    const: maxim,max9286
+> > +
+> > +  reg:
+> > +    description: I2C device address
+> > +    maxItems: 1
+> > +
+> > +  poc-supply:
+> > +    description: Regulator providing Power over Coax to the cameras
+> > +    maxItems: 1
+> > +
+> > +  enable-gpios:
+> > +    description: GPIO connected to the \#PWDN pin with inverted polarity
+> > +    maxItems: 1
+> > +
+> > +  ports:
+> > +    type: object
+> > +    description: |
+> > +      The connections to the MAX9286 GMSL and its endpoint nodes are modelled
+> > +      using the OF graph bindings in accordance with the video interface
+> > +      bindings defined in
+> > +      Documentation/devicetree/bindings/media/video-interfaces.txt.
+> > +
+> > +      The following table lists the port number corresponding to each device
+> > +      port.
+> > +
+> > +        Port            Description
+> > +        ----------------------------------------
+> > +        Port 0          GMSL Input 0
+> > +        Port 1          GMSL Input 1
+> > +        Port 2          GMSL Input 2
+> > +        Port 3          GMSL Input 3
+> > +        Port 4          CSI-2 Output
+> > +
+> > +    properties:
+> > +      '#address-cells':
+> > +        const: 1
+> > +
+> > +      '#size-cells':
+> > +        const: 0
+> > +
+> > +      port@[0-3]:
+> > +        type: object
+> > +        properties:
+> > +          reg:
+> > +            enum: [ 0, 1, 2, 3 ]
+> > +
+> > +          endpoint:
+> > +            type: object
+> > +
+> > +            properties:
+> > +              remote-endpoint:
+> > +                description: |
+> > +                 phandle to the remote GMSL source endpoint subnode in the
+> > +                 remote node port.
+> > +
+> > +            required:
+> > +              - remote-endpoint
+> > +
+> > +        required:
+> > +          - reg
+> > +          - endpoint
+> > +
+> > +        additionalProperties: false
+> > +
+> > +      port@4:
+> > +        type: object
+> > +        properties:
+> > +          reg:
+> > +            const: 4
+> > +
+> > +          endpoint:
+> > +            type: object
+> > +
+> > +            properties:
+> > +              remote-endpoint:
+> > +                description: phandle to the remote CSI-2 sink endpoint.
+> > +
+> > +              data-lanes:
+> > +                description: array of physical CSI-2 data lane indexes.
+> > +
+> > +            required:
+> > +              - remote-endpoint
+> > +              - data-lanes
+> > +
+> > +        required:
+> > +          - reg
+> > +          - endpoint
+> > +
+> > +        additionalProperties: false
+> > +
+> > +    required:
+> > +      - port@4
+> > +
+> > +  i2c-mux:
+> > +    type: object
+> > +    description: |
+> > +      Each GMSL link is modelled as a child bus of an i2c bus
+> > +      multiplexer/switch, in accordance with bindings described in
+> > +      Documentation/devicetree/bindings/i2c/i2c-mux.txt. The serializer
+> > +      device on the remote end of the GMSL link shall be modelled as a child
+> > +      node of the corresponding I2C bus.
+> > +
+> > +    properties:
+> > +      '#address-cells':
+> > +        const: 1
+> > +
+> > +      '#size-cells':
+> > +        const: 0
+> > +
+> > +  additionalProperties: false
+>
+> Wrong indentation. Should be 2 more or this is a DT property.
+>
 
-Thanks and regards,
-> 
-> Murali Karicheri
-> Texas Instruments
+Thanks, updating the dt tools helped spotting the error locally as
+well.
 
+This fixes the error reported in the previous email, now I get a
+Documentation/devicetree/bindings/media/i2c/maxim,max9286.example.dt.yaml:
+gmsl-deserializer@2c: i2c-mux: 'i2c@0', 'i2c@1', 'i2c@2', 'i2c@3' do not match any of the regexes: 'pinctrl-[0-9]+'
 
--Cut-------------------------
+which makes me think the i2c-mux child nodes are under-specified in
+this bindings.
+
+I have expanded them and will reply with a fixup to be applied on top
+of this patch to ease review and eventually include in v10.
+
+Thanks
+  j
+
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - ports
+> > +  - i2c-mux
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +
+> > +    i2c@e66d8000 {
+> > +      #address-cells = <1>;
+> > +      #size-cells = <0>;
+> > +
+> > +      reg = <0 0xe66d8000 0 0x40>;
+> > +
+> > +      gmsl-deserializer@2c {
+> > +        compatible = "maxim,max9286";
+> > +        reg = <0x2c>;
+> > +        poc-supply = <&camera_poc_12v>;
+> > +        enable-gpios = <&gpio 13 GPIO_ACTIVE_HIGH>;
+> > +
+> > +        ports {
+> > +          #address-cells = <1>;
+> > +          #size-cells = <0>;
+> > +
+> > +          port@0 {
+> > +            reg = <0>;
+> > +
+> > +            max9286_in0: endpoint {
+> > +              remote-endpoint = <&rdacm20_out0>;
+> > +            };
+> > +          };
+> > +
+> > +          port@1 {
+> > +            reg = <1>;
+> > +
+> > +            max9286_in1: endpoint {
+> > +              remote-endpoint = <&rdacm20_out1>;
+> > +            };
+> > +          };
+> > +
+> > +          port@2 {
+> > +            reg = <2>;
+> > +
+> > +            max9286_in2: endpoint {
+> > +              remote-endpoint = <&rdacm20_out2>;
+> > +            };
+> > +          };
+> > +
+> > +          port@3 {
+> > +            reg = <3>;
+> > +
+> > +            max9286_in3: endpoint {
+> > +              remote-endpoint = <&rdacm20_out3>;
+> > +            };
+> > +          };
+> > +
+> > +          port@4 {
+> > +            reg = <4>;
+> > +
+> > +            max9286_out: endpoint {
+> > +              data-lanes = <1 2 3 4>;
+> > +              remote-endpoint = <&csi40_in>;
+> > +            };
+> > +          };
+> > +        };
+> > +
+> > +        i2c-mux {
+> > +          #address-cells = <1>;
+> > +          #size-cells = <0>;
+> > +
+> > +          i2c@0 {
+> > +            #address-cells = <1>;
+> > +            #size-cells = <0>;
+> > +
+> > +            reg = <0>;
+> > +
+> > +            camera@51 {
+> > +              reg = <0x51>;
+> > +
+> > +              port {
+> > +                rdacm20_out0: endpoint {
+> > +                  remote-endpoint = <&max9286_in0>;
+> > +                };
+> > +              };
+> > +
+> > +            };
+> > +          };
+> > +
+> > +          i2c@1 {
+> > +            #address-cells = <1>;
+> > +            #size-cells = <0>;
+> > +            reg = <1>;
+> > +
+> > +            camera@52 {
+> > +              reg = <0x52>;
+> > +
+> > +              port {
+> > +                rdacm20_out1: endpoint {
+> > +                  remote-endpoint = <&max9286_in1>;
+> > +                };
+> > +              };
+> > +            };
+> > +          };
+> > +
+> > +          i2c@2 {
+> > +            #address-cells = <1>;
+> > +            #size-cells = <0>;
+> > +            reg = <2>;
+> > +
+> > +            camera@53 {
+> > +              reg = <0x53>;
+> > +
+> > +              port {
+> > +                rdacm20_out2: endpoint {
+> > +                  remote-endpoint = <&max9286_in2>;
+> > +                };
+> > +              };
+> > +            };
+> > +          };
+> > +
+> > +          i2c@3 {
+> > +            #address-cells = <1>;
+> > +            #size-cells = <0>;
+> > +            reg = <3>;
+> > +
+> > +            camera@54 {
+> > +              reg = <0x54>;
+> > +
+> > +              port {
+> > +                rdacm20_out3: endpoint {
+> > +                  remote-endpoint = <&max9286_in3>;
+> > +                };
+> > +              };
+> > +            };
+> > +          };
+> > +        };
+> > +      };
+> > +    };
+> > --
+> > 2.25.1
+> >
