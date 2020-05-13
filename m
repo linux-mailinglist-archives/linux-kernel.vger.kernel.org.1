@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A55B1D0E95
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0F31D0C9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387587AbgEMJvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:51:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51276 "EHLO mail.kernel.org"
+        id S1732593AbgEMJqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:46:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732965AbgEMJu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:50:58 -0400
+        id S1726492AbgEMJqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:46:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3153C23126;
-        Wed, 13 May 2020 09:50:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67F8020740;
+        Wed, 13 May 2020 09:46:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363457;
-        bh=+feFlMH+aRpu3ZqDbPLETijhIkIBmj5Z97hvv1TLdeA=;
+        s=default; t=1589363168;
+        bh=jpdaPpHao6OeULRHplp+4KkK02unGY3r6eZUySCwHaM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kr3pCUSLl9YmsOY1vRICl7Wkt5Ltdr0/ZTAUV8Eoktasf7m9TrDlHF3bu0OfXjbT6
-         HJKbvkdWU6KwFddseYgLolIoVNAPfW68hE9ZviHXn5xjijC/lOnnRikn9NkDWfBkns
-         Bg4oeAaEDJDytb4mD9nsac9DUVBeBel3rG7K9EI4=
+        b=WoWofrOCEaxW0E7UULadyUuknM/4CGjZ2nQjMObusz0is/FXaY8Q0VGG/oe0eK3kj
+         u3EUgCmBjI3mtrE9QXrOC7U0WvD+PEjoUiGxO0k+CxyTudgV79fYsE4WI1dwQlC8sr
+         7+fiSXfy9q7GviOhSifCzEa4OSGVuYTqrohcW1m0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gerecke <jason.gerecke@wacom.com>,
-        Aaron Armstrong Skomra <aaron.skomra@wacom.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 5.4 43/90] Revert "HID: wacom: generic: read the number of expected touches on a per collection basis"
-Date:   Wed, 13 May 2020 11:44:39 +0200
-Message-Id: <20200513094413.327648897@linuxfoundation.org>
+        stable@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: [PATCH 4.19 14/48] net/mlx5: Fix forced completion access non initialized command entry
+Date:   Wed, 13 May 2020 11:44:40 +0200
+Message-Id: <20200513094354.999572106@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
-References: <20200513094408.810028856@linuxfoundation.org>
+In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
+References: <20200513094351.100352960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,172 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gerecke <killertofu@gmail.com>
+From: Moshe Shemesh <moshe@mellanox.com>
 
-commit b43f977dd281945960c26b3ef67bba0fa07d39d9 upstream.
+[ Upstream commit f3cb3cebe26ed4c8036adbd9448b372129d3c371 ]
 
-This reverts commit 15893fa40109f5e7c67eeb8da62267d0fdf0be9d.
+mlx5_cmd_flush() will trigger forced completions to all valid command
+entries. Triggered by an asynch event such as fast teardown it can
+happen at any stage of the command, including command initialization.
+It will trigger forced completion and that can lead to completion on an
+uninitialized command entry.
 
-The referenced commit broke pen and touch input for a variety of devices
-such as the Cintiq Pro 32. Affected devices may appear to work normally
-for a short amount of time, but eventually loose track of actual touch
-state and can leave touch arbitration enabled which prevents the pen
-from working. The commit is not itself required for any currently-available
-Bluetooth device, and so we revert it to correct the behavior of broken
-devices.
+Setting MLX5_CMD_ENT_STATE_PENDING_COMP only after command entry is
+initialized will ensure force completion is treated only if command
+entry is initialized.
 
-This breakage occurs due to a mismatch between the order of collections
-and the order of usages on some devices. This commit tries to read the
-contact count before processing events, but will fail if the contact
-count does not occur prior to the first logical finger collection. This
-is the case for devices like the Cintiq Pro 32 which place the contact
-count at the very end of the report.
-
-Without the contact count set, touches will only be partially processed.
-The `wacom_wac_finger_slot` function will not open any slots since the
-number of contacts seen is greater than the expectation of 0, but we will
-still end up calling `input_mt_sync_frame` for each finger anyway. This
-can cause problems for userspace separate from the issue currently taking
-place in the kernel. Only once all of the individual finger collections
-have been processed do we finally get to the enclosing collection which
-contains the contact count. The value ends up being used for the *next*
-report, however.
-
-This delayed use of the contact count can cause the driver to loose track
-of the actual touch state and believe that there are contacts down when
-there aren't. This leaves touch arbitration enabled and prevents the pen
-from working. It can also cause userspace to incorrectly treat single-
-finger input as gestures.
-
-Link: https://github.com/linuxwacom/input-wacom/issues/146
-Signed-off-by: Jason Gerecke <jason.gerecke@wacom.com>
-Reviewed-by: Aaron Armstrong Skomra <aaron.skomra@wacom.com>
-Fixes: 15893fa40109 ("HID: wacom: generic: read the number of expected touches on a per collection basis")
-Cc: stable@vger.kernel.org # 5.3+
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Fixes: 73dd3a4839c1 ("net/mlx5: Avoid using pending command interface slots")
+Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/hid/wacom_wac.c |   79 +++++++++---------------------------------------
- 1 file changed, 16 insertions(+), 63 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/hid/wacom_wac.c
-+++ b/drivers/hid/wacom_wac.c
-@@ -2637,9 +2637,25 @@ static void wacom_wac_finger_pre_report(
- 			case HID_DG_TIPSWITCH:
- 				hid_data->last_slot_field = equivalent_usage;
- 				break;
-+			case HID_DG_CONTACTCOUNT:
-+				hid_data->cc_report = report->id;
-+				hid_data->cc_index = i;
-+				hid_data->cc_value_index = j;
-+				break;
- 			}
- 		}
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -862,7 +862,6 @@ static void cmd_work_handler(struct work
  	}
-+
-+	if (hid_data->cc_report != 0 &&
-+	    hid_data->cc_index >= 0) {
-+		struct hid_field *field = report->field[hid_data->cc_index];
-+		int value = field->value[hid_data->cc_value_index];
-+		if (value)
-+			hid_data->num_expected = value;
-+	}
-+	else {
-+		hid_data->num_expected = wacom_wac->features.touch_max;
-+	}
- }
  
- static void wacom_wac_finger_report(struct hid_device *hdev,
-@@ -2649,7 +2665,6 @@ static void wacom_wac_finger_report(stru
- 	struct wacom_wac *wacom_wac = &wacom->wacom_wac;
- 	struct input_dev *input = wacom_wac->touch_input;
- 	unsigned touch_max = wacom_wac->features.touch_max;
--	struct hid_data *hid_data = &wacom_wac->hid_data;
+ 	cmd->ent_arr[ent->idx] = ent;
+-	set_bit(MLX5_CMD_ENT_STATE_PENDING_COMP, &ent->state);
+ 	lay = get_inst(cmd, ent->idx);
+ 	ent->lay = lay;
+ 	memset(lay, 0, sizeof(*lay));
+@@ -884,6 +883,7 @@ static void cmd_work_handler(struct work
  
- 	/* If more packets of data are expected, give us a chance to
- 	 * process them rather than immediately syncing a partial
-@@ -2663,7 +2678,6 @@ static void wacom_wac_finger_report(stru
+ 	if (ent->callback)
+ 		schedule_delayed_work(&ent->cb_timeout_work, cb_timeout);
++	set_bit(MLX5_CMD_ENT_STATE_PENDING_COMP, &ent->state);
  
- 	input_sync(input);
- 	wacom_wac->hid_data.num_received = 0;
--	hid_data->num_expected = 0;
- 
- 	/* keep touch state for pen event */
- 	wacom_wac->shared->touch_down = wacom_wac_finger_count_touches(wacom_wac);
-@@ -2738,73 +2752,12 @@ static void wacom_report_events(struct h
- 	}
- }
- 
--static void wacom_set_num_expected(struct hid_device *hdev,
--				   struct hid_report *report,
--				   int collection_index,
--				   struct hid_field *field,
--				   int field_index)
--{
--	struct wacom *wacom = hid_get_drvdata(hdev);
--	struct wacom_wac *wacom_wac = &wacom->wacom_wac;
--	struct hid_data *hid_data = &wacom_wac->hid_data;
--	unsigned int original_collection_level =
--		hdev->collection[collection_index].level;
--	bool end_collection = false;
--	int i;
--
--	if (hid_data->num_expected)
--		return;
--
--	// find the contact count value for this segment
--	for (i = field_index; i < report->maxfield && !end_collection; i++) {
--		struct hid_field *field = report->field[i];
--		unsigned int field_level =
--			hdev->collection[field->usage[0].collection_index].level;
--		unsigned int j;
--
--		if (field_level != original_collection_level)
--			continue;
--
--		for (j = 0; j < field->maxusage; j++) {
--			struct hid_usage *usage = &field->usage[j];
--
--			if (usage->collection_index != collection_index) {
--				end_collection = true;
--				break;
--			}
--			if (wacom_equivalent_usage(usage->hid) == HID_DG_CONTACTCOUNT) {
--				hid_data->cc_report = report->id;
--				hid_data->cc_index = i;
--				hid_data->cc_value_index = j;
--
--				if (hid_data->cc_report != 0 &&
--				    hid_data->cc_index >= 0) {
--
--					struct hid_field *field =
--						report->field[hid_data->cc_index];
--					int value =
--						field->value[hid_data->cc_value_index];
--
--					if (value)
--						hid_data->num_expected = value;
--				}
--			}
--		}
--	}
--
--	if (hid_data->cc_report == 0 || hid_data->cc_index < 0)
--		hid_data->num_expected = wacom_wac->features.touch_max;
--}
--
- static int wacom_wac_collection(struct hid_device *hdev, struct hid_report *report,
- 			 int collection_index, struct hid_field *field,
- 			 int field_index)
- {
- 	struct wacom *wacom = hid_get_drvdata(hdev);
- 
--	if (WACOM_FINGER_FIELD(field))
--		wacom_set_num_expected(hdev, report, collection_index, field,
--				       field_index);
- 	wacom_report_events(hdev, report, collection_index, field_index);
- 
- 	/*
+ 	/* Skip sending command to fw if internal error */
+ 	if (pci_channel_offline(dev->pdev) ||
 
 
