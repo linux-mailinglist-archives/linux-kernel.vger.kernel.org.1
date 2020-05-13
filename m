@@ -2,143 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E00E1D0D24
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA64E1D0D4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387525AbgEMJuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:50:37 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:35056 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732803AbgEMJue (ORCPT
+        id S2387719AbgEMJvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:51:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387706AbgEMJvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:50:34 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04D9oLng128304;
-        Wed, 13 May 2020 04:50:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589363421;
-        bh=hYJrqFqxOZldiuTXDyZ85es/GhABW0MVidKFOlcmr6o=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=mEvy7ECNG8Vto3uFzSjltSPQwZieKkX2ecTXo/WCk7kzwlC64gITO7ZaPeitZIiDV
-         cnvzXHsEHZpSt11Sa7Xw0yz3uYsznCt4QtrN2EwrWsvOD7RH8U+ZI9ZiR3VAa8av3G
-         sOrBGDx8ybCNH79VqojtM+VMdOuTQ5T6uHk4+sYw=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04D9oLWW072378
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 May 2020 04:50:21 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 13
- May 2020 04:50:21 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 13 May 2020 04:50:21 -0500
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04D9oHsn096634;
-        Wed, 13 May 2020 04:50:19 -0500
-Subject: Re: [PATCH v3 0/2] Misc. rproc fixes around fixed memory region
- support
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Suman Anna <s-anna@ti.com>
-CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Loic Pallardy <loic.pallardy@st.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200420160600.10467-1-s-anna@ti.com>
- <181b6c56-420c-f306-f2cf-53380ad1f37b@ti.com>
- <0a2aa179-9a97-003d-d682-283a8c354ea7@ti.com>
- <20200512231022.GC16107@builder.lan>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <cb6f76cb-1188-75e1-5986-718d7609ed7c@ti.com>
-Date:   Wed, 13 May 2020 12:50:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Wed, 13 May 2020 05:51:50 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBAEC061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 02:51:49 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id e25so17054651ljg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 02:51:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=v/hRPGSq+bxa+Q+TzEJUb+dUDnWb/ydhRiXMT/AcNOI=;
+        b=ZPMM/B9P+Bpf5SVLNYqfokquDQ91Z7N0GqGGNtacBG9sboiJf5EK1RcrQE2zjI7jMx
+         wAbbBABXF7d/MAcwwu2p5n0O1KFSKu2TdZMhHdlbsFXJhgxtuZQeOk5Ofs3OQqpxwbwp
+         Q517krnAmo2upraZVyViwfCCFBfKiZw/7ZE0UEb/KnKzg7dFfF1XD7AfI+YHOIJbgAI7
+         kCXZhKxrtcBakCjmL7OX6bfy3vhqtPUrArDdxNMsyQ9+W/6JbZ72/UaulNkVltCsvUWq
+         E6jverH4zidhLMbGVvkwXyt17tYVmG8bO4TEaYxfleqjXe8e8FJYAZ/l4giHMpoP1r1L
+         ixww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=v/hRPGSq+bxa+Q+TzEJUb+dUDnWb/ydhRiXMT/AcNOI=;
+        b=dkQjA6xWWUrpgBxdKUJ6f7PgpWHjLiKCeEQpQr2LvW7c1MI6lYDMlJ9w37ePfjLYTg
+         40hl5H8+XGXDcUni33wzNRABsSKskVUUJdwUoqhSvrtG3CRl5Gn/d3joIGVrDSQ6K7VE
+         5gsy904ovE2X6aTNNzfII7n+DzYhaKbcaMRqSP4FX4H6GxCECnb8J9wK2rKXU42MT6X2
+         lWrSiICc8vryxmE5ZXaQHcA3a1vxgJuesLcqOz8zGjwB/NQgGS7m3Dygedyt6lJHNGkL
+         CnM+T0ABkRBFqOZu033KILzaJZlE3nwEzvZactGtLsUqFxUbE5Q3cQkuCHrJ7sIcsq2e
+         wDpQ==
+X-Gm-Message-State: AOAM530sZTcs3uP5p+1zfNZC6KfHuBCquhVdcoflshA85zOiVY301fhS
+        rlqy2s1Jj9CwFk+Kpjy23wHEOQeqRjU+2oF+t3pnuw==
+X-Google-Smtp-Source: ABdhPJy2iGPRarsjL/HWpQUuP4ZZnl1ZwwZeQCzlZes0Yw/u3lUrW7PCZlQvehA7Blx4fUiTqNbnTAZsAJ6m62s8rLQ=
+X-Received: by 2002:a05:651c:1a5:: with SMTP id c5mr5504337ljn.217.1589363507341;
+ Wed, 13 May 2020 02:51:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200512231022.GC16107@builder.lan>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 13 May 2020 15:21:35 +0530
+Message-ID: <CA+G9fYuXFdWc_dm1iLvS1zkCQS216xgL7oY7D=9QXwQxVefHNw@mail.gmail.com>
+Subject: stable-rc 4.14.181-rc1/ad4fc99d1989: no regressions found in project
+ stable v4.14.y
+To:     linux- stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     lkft-triage@lists.linaro.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/05/2020 02:10, Bjorn Andersson wrote:
-> On Fri 08 May 08:14 PDT 2020, Suman Anna wrote:
-> 
->> Hi Bjorn,
->>
->> On 5/2/20 1:29 PM, Suman Anna wrote:
->>> Hi Bjorn,
->>>
->>> On 4/20/20 11:05 AM, Suman Anna wrote:
->>>> Hi Bjorn,
->>>>
->>>> This is another minor revision of the fixes around fixed memory region
->>>> support [1] series. Patch 1 is revised to go back to the logic used in v1
->>>> after a long discussion on the v2 version [2]. The other suggestions can
->>>> be future improvments as they would require corresponding platform driver
->>>> changes. Please look through the discussion there and let us know your
->>>> preference. Patches are based on v5.7-rc1.
->>>>
->>>> I really appreciate it if you can target the series for the current
->>>> 5.7 -rc's.
->>>> The fixes would apply for all 5.1+ kernels.
->>>
->>> Ping on these.
->>
->> The patches have been reviewed and/or acked by both Mathieu and Arnaud.
-> 
-> Thanks for the reviews!
-> 
->> Can you please get these into the current -rc's?
->>
-> 
-> The offending patch appeared in 5.1, so I have a hard time claiming that
-> this is a regression in 5.7-rc. I've added Cc: stable and picked the two
-> patches for 5.8.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Thanks Bjorn,
+Summary
+------------------------------------------------------------------------
 
-I believe 5.8 should be fine, we can backport this internally if needed.
+kernel: 4.14.181-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.14.y
+git commit: ad4fc99d19898b966c3fa74c7adaaee8d12da3a9
+git describe: v4.14.180-37-gad4fc99d1989
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.14-oe/bu=
+ild/v4.14.180-37-gad4fc99d1989
 
--Tero
+No regressions (compared to build v4.14.180)
 
-> 
-> Thanks,
-> Bjorn
-> 
->> Thanks,
->> Suman
->>
->>>
->>> regards
->>> Suman
->>>
->>>>
->>>> Please see the v1 cover-letter [1] for the details on the issues.
->>>>
->>>> regards
->>>> Suman
->>>>
->>>> [1] https://patchwork.kernel.org/cover/11422723/
->>>> [2] https://patchwork.kernel.org/comment/23274389/
->>>>
->>>> Suman Anna (1):
->>>>     remoteproc: Fix and restore the parenting hierarchy for vdev
->>>>
->>>> Tero Kristo (1):
->>>>     remoteproc: Fall back to using parent memory pool if no dedicated
->>>>       available
->>>>
->>>>    drivers/remoteproc/remoteproc_core.c   |  2 +-
->>>>    drivers/remoteproc/remoteproc_virtio.c | 12 ++++++++++++
->>>>    2 files changed, 13 insertions(+), 1 deletion(-)
->>>>
->>>
->>
+No fixes (compared to build v4.14.180)
 
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Ran 30937 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* kselftest/net
+* kselftest/networking
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* v4l2-compliance
+* kvm-unit-tests
+* network-basic-tests
+* ltp-open-posix-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-native/net
+* kselftest-vsyscall-mode-native/networking
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* kselftest-vsyscall-mode-none/net
+* kselftest-vsyscall-mode-none/networking
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
