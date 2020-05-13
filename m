@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E24B31D0D96
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5711D1D0E3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733117AbgEMJyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:54:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56450 "EHLO mail.kernel.org"
+        id S2388550AbgEMJ6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:58:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388053AbgEMJyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:54:09 -0400
+        id S2388062AbgEMJyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:54:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B42B20575;
-        Wed, 13 May 2020 09:54:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D352E206D6;
+        Wed, 13 May 2020 09:54:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363648;
-        bh=wVQB35DVJkUTTN5UUzYKgILYjZl1UWPiepEnvyRw1Ps=;
+        s=default; t=1589363651;
+        bh=LUb+bO3zK4qWq5zgFW0JLezZ7BG2T63AmtuwtwMe7NM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n3j71y3tMs0N/iL0fhkmJLShe1oD06ghvDNSvo91HiAx0LBHXwPZ4h5ijgV6l6UvJ
-         O17n4wHRTDlRA3dnyH946T/UvjB27ks4kyfJY+8h3p46V40N3DUyl6HSQZ6RWP3wtV
-         aaDBH2EJ28lMj5QWn+ALPZYJZHsxSBQ85RfP217Q=
+        b=IdomalNqb0aTbnBlsz31946PjLsSGzZ0gn3MC1TZBM6LITTqbbnORRPFEnJV/hWHx
+         EofQ80MJlwJkYOWTc218WTLpnQQnVGlaeZEWf0XnOgBvnT7e1Eapy22tF7PgG95Ybs
+         4Gmgzd9BDZPiPS0ACr5FHn4SqwMUCFMOX8El4pFg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
+        stable@vger.kernel.org, Matt Jolly <Kangie@footclan.ninja>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 032/118] net/tls: Fix sk_psock refcnt leak when in tls_data_ready()
-Date:   Wed, 13 May 2020 11:44:11 +0200
-Message-Id: <20200513094420.336676639@linuxfoundation.org>
+Subject: [PATCH 5.6 033/118] net: usb: qmi_wwan: add support for DW5816e
+Date:   Wed, 13 May 2020 11:44:12 +0200
+Message-Id: <20200513094420.401985620@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
 References: <20200513094417.618129545@linuxfoundation.org>
@@ -44,45 +44,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Matt Jolly <Kangie@footclan.ninja>
 
-[ Upstream commit 62b4011fa7bef9fa00a6aeec26e69685dc1cc21e ]
+[ Upstream commit 57c7f2bd758eed867295c81d3527fff4fab1ed74 ]
 
-tls_data_ready() invokes sk_psock_get(), which returns a reference of
-the specified sk_psock object to "psock" with increased refcnt.
+Add support for Dell Wireless 5816e to drivers/net/usb/qmi_wwan.c
 
-When tls_data_ready() returns, local variable "psock" becomes invalid,
-so the refcount should be decreased to keep refcount balanced.
-
-The reference counting issue happens in one exception handling path of
-tls_data_ready(). When "psock->ingress_msg" is empty but "psock" is not
-NULL, the function forgets to decrease the refcnt increased by
-sk_psock_get(), causing a refcnt leak.
-
-Fix this issue by calling sk_psock_put() on all paths when "psock" is
-not NULL.
-
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: Matt Jolly <Kangie@footclan.ninja>
+Acked-by: Bjørn Mork <bjorn@mork.no>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tls/tls_sw.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/usb/qmi_wwan.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -2083,8 +2083,9 @@ static void tls_data_ready(struct sock *
- 	strp_data_ready(&ctx->strp);
- 
- 	psock = sk_psock_get(sk);
--	if (psock && !list_empty(&psock->ingress_msg)) {
--		ctx->saved_data_ready(sk);
-+	if (psock) {
-+		if (!list_empty(&psock->ingress_msg))
-+			ctx->saved_data_ready(sk);
- 		sk_psock_put(sk, psock);
- 	}
- }
+--- a/drivers/net/usb/qmi_wwan.c
++++ b/drivers/net/usb/qmi_wwan.c
+@@ -1359,6 +1359,7 @@ static const struct usb_device_id produc
+ 	{QMI_FIXED_INTF(0x413c, 0x81b3, 8)},	/* Dell Wireless 5809e Gobi(TM) 4G LTE Mobile Broadband Card (rev3) */
+ 	{QMI_FIXED_INTF(0x413c, 0x81b6, 8)},	/* Dell Wireless 5811e */
+ 	{QMI_FIXED_INTF(0x413c, 0x81b6, 10)},	/* Dell Wireless 5811e */
++	{QMI_FIXED_INTF(0x413c, 0x81cc, 8)},	/* Dell Wireless 5816e */
+ 	{QMI_FIXED_INTF(0x413c, 0x81d7, 0)},	/* Dell Wireless 5821e */
+ 	{QMI_FIXED_INTF(0x413c, 0x81d7, 1)},	/* Dell Wireless 5821e preproduction config */
+ 	{QMI_FIXED_INTF(0x413c, 0x81e0, 0)},	/* Dell Wireless 5821e with eSIM support*/
 
 
