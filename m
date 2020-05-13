@@ -2,176 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DC01D1813
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66ED31D181B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 16:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389118AbgEMO5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 10:57:33 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40293 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2389056AbgEMO5d (ORCPT
+        id S2387745AbgEMO7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 10:59:07 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:40382 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728692AbgEMO7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 10:57:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589381852;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8Gr9j6Rd61DDfSe1NpMl5Rv79C50cMkRjH7UKQLe0Fs=;
-        b=ehPiQBWvtdBd1lSwSubHduVN77sFvW7+aZHfpnsfX2zlqnZHxZiOsAfI/vKigrcuNJQH9P
-        9GRXtyBB9y3hrrkbzZIq8bIOr0p7wNjhrtfXXk0jBxPkO0B87Cn0zb0zuNic+IAdSg63Re
-        ziDoKEDpDVtAPeSeqTEhSZ4tNISTdvQ=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-JLYHNcDiPDS8VMf9vbFejQ-1; Wed, 13 May 2020 10:57:28 -0400
-X-MC-Unique: JLYHNcDiPDS8VMf9vbFejQ-1
-Received: by mail-ed1-f72.google.com with SMTP id b7so6767781edf.9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 07:57:28 -0700 (PDT)
+        Wed, 13 May 2020 10:59:07 -0400
+Received: by mail-lf1-f66.google.com with SMTP id u4so13886415lfm.7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 07:59:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8Gr9j6Rd61DDfSe1NpMl5Rv79C50cMkRjH7UKQLe0Fs=;
-        b=L41JlW3H31hMs3PnSVpVO9fWHeUHbdBxLAtQ5lRILRLansE6MxqMetAqwJu6/4XN2M
-         AHGGBTD1x0DGhIhfwGwRJakE8fEWM3Ffm7x5gs9Pc7sTsL45EZE3Hov8n7E2v808twZQ
-         oVWjBjWXcWX1CGGR2yWjQbUZc9aq6/tj2Ejd5HvyiZIeN5qRmFWZRDbkKjQjvQKG7PXb
-         Ybta/8GuUtL3p6UhhZ0iv8XE9qS2uKShh77COfPwqkl8cq6QXGhvbKCdE174Zi9ZcqDX
-         EUBI4hF5qJ/DkzBAnFN/hDbFhmUMT21yeiO/Dm9/1maugZ9gmQZNNqEBby0VMJyaWjLX
-         bbEw==
-X-Gm-Message-State: AOAM532mOXRbkNlnoyCtJzzc50dRAUtKrW/T8yB8ftnOopunpdnAFyUO
-        6PLAyL4uis5eulxx0acKCuvvrYF/v54PawKsEcYzt5ixykoeFJOSxxma4v7ZJfJOXx4Vo4+VkEP
-        jmLXr6EtbOQgPWKnZg+VfsOw6eiEsGr0qo2g/7csT
-X-Received: by 2002:a17:906:2f90:: with SMTP id w16mr11170510eji.252.1589381847173;
-        Wed, 13 May 2020 07:57:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxTglE4CrKb8ZManfM1PMEq+rMBztwbrwVNw/RB1WfUL1Cy1K+uw23xc1A9QAIAt6GD21sdM37Sx1+x9kzErwo=
-X-Received: by 2002:a17:906:2f90:: with SMTP id w16mr11170485eji.252.1589381846860;
- Wed, 13 May 2020 07:57:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iL+iME11hO6bGtb3yyMWmbiNkWR3O4AnVvbrhS/BUw8=;
+        b=fEioLHIPSEFCADAcqq+QK8lnbYD2MU91sb54smy2/h4xGn2Wx0GTwAppbh5DcKwFoP
+         2T7YFoNqlq5oaa3w2Vn5fXKCKQoZpwcnO88ea0OHyVQJxIBEcdmQ0HENTznJpDVP2wIv
+         f6oJo8TZdgk5hDImgGDR5+evGuxCFaHRl/z5zxAyhlIFs/7+RuVt/JVMbzhSpgFjQW9R
+         yci7hDxGNUFt3EKQCy5YwcV7fbNFzokn2GB92758JGIfl6M3KGIMwR0d2oL2d0U3hu9Z
+         kFxKxc9E/rEMHNvv7lPJ6a6YgYukZtCdc3DYVWxjpZrUc86hxwxrxg2VBKbzR41BFLJI
+         XDuw==
+X-Gm-Message-State: AOAM530YJRyrDRDwXJq8c2i8wRRMNYebbBAno81G9YU5E2XTLhi6fttc
+        yczM1bxCvEOvmOGwlobilbkVkfpE
+X-Google-Smtp-Source: ABdhPJx+wapqIBPAYXfzXq5MdVRRVcYVn4AZlfytE1OpK8dYd0wsYu0B8eTaYQNIS9mUAE0CFPRuuw==
+X-Received: by 2002:a05:6512:3ea:: with SMTP id n10mr18425363lfq.127.1589381943574;
+        Wed, 13 May 2020 07:59:03 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id t16sm17549985lff.72.2020.05.13.07.59.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 07:59:02 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.92.3)
+        (envelope-from <johan@kernel.org>)
+        id 1jYsqf-0003GH-6N; Wed, 13 May 2020 16:59:05 +0200
+Date:   Wed, 13 May 2020 16:59:05 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] treewide: Replace zero-length array with flexible-array
+Message-ID: <20200513145905.GY25962@localhost>
+References: <20200507185313.GA14373@embeddedor>
 MIME-Version: 1.0
-References: <CAE4VaGD8DUEi6JnKd8vrqUL_8HZXnNyHMoK2D+1-F5wo+5Z53Q@mail.gmail.com>
- <20200312214736.GA3818@techsingularity.net> <CAE4VaGCfDpu0EuvHNHwDGbR-HNBSAHY=yu3DJ33drKgymMTTOw@mail.gmail.com>
- <CAE4VaGC09OfU2zXeq2yp_N0zXMbTku5ETz0KEocGi-RSiKXv-w@mail.gmail.com>
- <20200320152251.GC3818@techsingularity.net> <CAE4VaGBGbTT8dqNyLWAwuiqL8E+3p1_SqP6XTTV71wNZMjc9Zg@mail.gmail.com>
- <20200320163843.GD3818@techsingularity.net> <CAE4VaGCf0P2ht+7nbGFHV8Dd=e4oDEUPNdRUUBokRWgKRxofAA@mail.gmail.com>
- <20200507155422.GD3758@techsingularity.net> <CAE4VaGCDTeE16nNmSS8fGzCBvHsO=qkJAW6yDiORAxgsPi-Ziw@mail.gmail.com>
- <20200508092212.GE3758@techsingularity.net> <CAE4VaGC_v6On-YvqdTwAWu3Mq4ofiV0pLov-QpV+QHr_SJr+Rw@mail.gmail.com>
-In-Reply-To: <CAE4VaGC_v6On-YvqdTwAWu3Mq4ofiV0pLov-QpV+QHr_SJr+Rw@mail.gmail.com>
-From:   Jirka Hladky <jhladky@redhat.com>
-Date:   Wed, 13 May 2020 16:57:15 +0200
-Message-ID: <CAE4VaGDQWPePtmtCZP=ROYW1KPxtPhGDrxqy2QbirHGJdwk4=w@mail.gmail.com>
-Subject: Re: [PATCH 00/13] Reconcile NUMA balancing decisions with the load
- balancer v6
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Hillf Danton <hdanton@sina.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Douglas Shakshober <dshaks@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Joe Mario <jmario@redhat.com>, Bill Gray <bgray@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200507185313.GA14373@embeddedor>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mel,
+On Thu, May 07, 2020 at 01:53:13PM -0500, Gustavo A. R. Silva wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-we have tried the kernel with adjust_numa_imbalance() crippled to just
-return the imbalance it's given.
+Applied for -next, thanks.
 
-It has solved all the performance problems I have reported.
-Performance is the same as with 5.6 kernel (before the patch was
-applied).
-
-* solved the performance drop upto 20%  with single instance
-SPECjbb2005 benchmark on 8 NUMA node servers (particularly on AMD EPYC
-Rome systems) => this performance drop was INCREASING with higher
-threads counts (10% for 16 threads and 20 % for 32 threads)
-* solved the performance drop for low load scenarios (SPECjvm2008 and NAS)
-
-Any suggestions on how to proceed? One approach is to turn
-"imbalance_min" into the kernel tunable. Any other ideas?
-
-https://github.com/torvalds/linux/blob/4f8a3cc1183c442daee6cc65360e3385021131e4/kernel/sched/fair.c#L8914
-
-Thanks a lot!
-Jirka
-
-
-
-
-
-
-On Fri, May 8, 2020 at 12:40 PM Jirka Hladky <jhladky@redhat.com> wrote:
->
-> Hi Mel,
->
-> thanks for hints! We will try it.
->
-> @Phil - could you please prepare a kernel build for me to test?
->
-> Thank you!
-> Jirka
->
-> On Fri, May 8, 2020 at 11:22 AM Mel Gorman <mgorman@techsingularity.net> wrote:
->>
->> On Thu, May 07, 2020 at 06:29:44PM +0200, Jirka Hladky wrote:
->> > Hi Mel,
->> >
->> > we are not targeting just OMP applications. We see the performance
->> > degradation also for other workloads, like SPECjbb2005 and
->> > SPECjvm2008. Even worse, it also affects a higher number of threads.
->> > For example, comparing 5.7.0-0.rc2 against 5.6 kernel, on 4 NUMA
->> > server with 2x AMD 7351 CPU, we see performance degradation 22% for 32
->> > threads (the system has 64 CPUs in total). We observe this degradation
->> > only when we run a single SPECjbb binary. When running 4 SPECjbb
->> > binaries in parallel, there is no change in performance between 5.6
->> > and 5.7.
->> >
->>
->> Minimally I suggest confirming that it's really due to
->> adjust_numa_imbalance() by making the function a no-op and retesting.
->> I have found odd artifacts with it but I'm unsure how to proceed without
->> causing problems elsehwere.
->>
->> For example, netperf on localhost in some cases reported a regression
->> when the client and server were running on the same node. The problem
->> appears to be that netserver completes its work faster when running
->> local and goes idle more regularly. The cost of going idle and waking up
->> builds up and a lower throughput is reported but I'm not sure if gaming
->> an artifact like that is a good idea.
->>
->> > That's why we are asking for the kernel tunable, which we would add to
->> > the tuned profile. We don't expect users to change this frequently but
->> > rather to set the performance profile once based on the purpose of the
->> > server.
->> >
->> > If you could prepare a patch for us, we would be more than happy to
->> > test it extensively. Based on the results, we can then evaluate if
->> > it's the way to go. Thoughts?
->> >
->>
->> I would suggest simply disabling that function first to ensure that is
->> really what is causing problems for you.
->>
->> --
->> Mel Gorman
->> SUSE Labs
->>
->
->
-> --
-> -Jirka
-
-
-
--- 
--Jirka
-
+Johan
