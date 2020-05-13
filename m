@@ -2,124 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8271D1E9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 21:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1172E1D1EA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 21:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390475AbgEMTLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 15:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
+        id S2390523AbgEMTMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 15:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390379AbgEMTLs (ORCPT
+        by vger.kernel.org with ESMTP id S2390379AbgEMTMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 15:11:48 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C60C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 12:11:47 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id j3so798711ljg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 12:11:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DlDe1IobgVm68K0PtFybaGZyKFGHK1OfKry00qMtGtQ=;
-        b=V1UkNiRNfL733X9vr+6V4+xkxNISM7utjyshsT36quvy8jA5IVqpf+k3EDQxjXOIYU
-         JkvVkJQB05ajebE0nuwA1SP0j1/ZNVxXHdyZbBxtTdovrxuSXCzKJOTV20D7eG1vu7ZV
-         OomJViLlEUU/v3q1g+qPNyPfCuDydticNEJPw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DlDe1IobgVm68K0PtFybaGZyKFGHK1OfKry00qMtGtQ=;
-        b=SushdP5Ujgpe88Gu3LTgIS4OnQrobWNITmQa4OCGaKfoveUeoBs4Q2JmHuiR9KN3B6
-         72FfpFxV6AxQZKoXdDlz+sIWJ2MtCs8+5MoK8KcMC+DsM/hGqPLHOkXQmq8HH+qY5TUi
-         lXPvbQpiEj5Q2Ayy0Zny1wtLM6qrCVyEsd/EAZ/UOoBE2zLwqdjJ9JqTc+3UkRjP6Ws/
-         +vcl6n4sx1mQZUrK1B7R5wz80kYvG7UxcT1PUI0oY9grq9KxtIlxCxkz8vY8HNb0NCC7
-         1vb3QTzdYetwgw3/9wPHYsLAAAHwR06m7eo7lVuy1z+c6YO6L0z6UCZ4fIWwDk0mn0ki
-         FKjQ==
-X-Gm-Message-State: AOAM531wg9seXwH4kVHH7LkP56p7GtfYaq496RCfW4InoJfRQfsNcocI
-        zZdMccr3kOacs/mcFopPMePNSIwc/QY=
-X-Google-Smtp-Source: ABdhPJzLL3VMClEvCJMpJcjTOuQ4xuisFWE9jdwMPfIiRGEvrr67Cp9uqCvEVJbsGWFaLUy5puQyQw==
-X-Received: by 2002:a2e:b8c9:: with SMTP id s9mr391229ljp.100.1589397104905;
-        Wed, 13 May 2020 12:11:44 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id v12sm200073ljc.37.2020.05.13.12.11.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2020 12:11:44 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id z22so507343lfd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 12:11:43 -0700 (PDT)
-X-Received: by 2002:a19:ed07:: with SMTP id y7mr627896lfy.31.1589397103373;
- Wed, 13 May 2020 12:11:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200513160038.2482415-1-hch@lst.de> <20200513160038.2482415-12-hch@lst.de>
-In-Reply-To: <20200513160038.2482415-12-hch@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 13 May 2020 12:11:27 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
-Message-ID: <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
-Subject: Re: [PATCH 11/18] maccess: remove strncpy_from_unsafe
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-parisc@vger.kernel.org,
-        linux-um <linux-um@lists.infradead.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 13 May 2020 15:12:13 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925F6C061A0C;
+        Wed, 13 May 2020 12:12:13 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 6900A127DD751;
+        Wed, 13 May 2020 12:12:11 -0700 (PDT)
+Date:   Wed, 13 May 2020 12:12:10 -0700 (PDT)
+Message-Id: <20200513.121210.1508400748648949138.davem@davemloft.net>
+To:     hch@lst.de
+Cc:     kuba@kernel.org, edumazet@google.com, kuznet@ms2.inr.ac.ru,
+        yoshfuji@linux-ipv6.org, vyasevich@gmail.com,
+        nhorman@tuxdriver.com, marcelo.leitner@gmail.com,
+        jmaloy@redhat.com, ying.xue@windriver.com,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nvme@lists.infradead.org, target-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+        cluster-devel@redhat.com, ocfs2-devel@oss.oracle.com,
+        netdev@vger.kernel.org, linux-sctp@vger.kernel.org,
+        ceph-devel@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-nfs@vger.kernel.org
+Subject: Re: remove kernel_setsockopt and kernel_getsockopt
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200513062649.2100053-1-hch@lst.de>
+References: <20200513062649.2100053-1-hch@lst.de>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 13 May 2020 12:12:12 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 9:01 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> +static void bpf_strncpy(char *buf, long unsafe_addr)
-> +{
-> +       buf[0] = 0;
-> +       if (strncpy_from_kernel_nofault(buf, (void *)unsafe_addr,
-> +                       BPF_STRNCPY_LEN))
-> +               strncpy_from_user_nofault(buf, (void __user *)unsafe_addr,
-> +                               BPF_STRNCPY_LEN);
-> +}
+From: Christoph Hellwig <hch@lst.de>
+Date: Wed, 13 May 2020 08:26:15 +0200
 
-This seems buggy when I look at it.
+> Hi Dave,
+> 
+> this series removes the kernel_setsockopt and kernel_getsockopt
+> functions, and instead switches their users to small functions that
+> implement setting (or in one case getting) a sockopt directly using
+> a normal kernel function call with type safety and all the other
+> benefits of not having a function call.
+> 
+> In some cases these functions seem pretty heavy handed as they do
+> a lock_sock even for just setting a single variable, but this mirrors
+> the real setsockopt implementation - counter to that a few kernel
+> drivers just set the fields directly already.
+> 
+> Nevertheless the diffstat looks quite promising:
+> 
+>  42 files changed, 721 insertions(+), 799 deletions(-)
 
-It seems to think that strncpy_from_kernel_nofault() returns an error code.
+Overall I'm fine with these changes, but three things need to happen
+before I can think about applying this:
 
-Not so, unless I missed where you changed the rules.
+1) Address David's feedback about the ip_mtu*() calls that can occur
+   on ipv6 sockets too.
 
-It returns the length of the string for a successful copy. 0 is
-actually an error case (for count being <= 0).
+2) Handle the feedback about dlm now bringing in sctp even if sctp
+   sockets are not even used because of the symbol dependency.
 
-So the test for success seems entirely wrong.
+3) Add the rxrpc documentation requested by David.
 
-Also, I do wonder if we shouldn't gate this on TASK_SIZE, and do the
-user trial first. On architectures where this thing is valid in the
-first place (ie kernel and user addresses are separate), the test for
-address size would allow us to avoid a pointless fault due to an
-invalid kernel access to user space.
-
-So I think this function should look something like
-
-  static void bpf_strncpy(char *buf, long unsafe_addr)
-  {
-          /* Try user address */
-          if (unsafe_addr < TASK_SIZE) {
-                  void __user *ptr = (void __user *)unsafe_addr;
-                  if (strncpy_from_user_nofault(buf, ptr, BPF_STRNCPY_LEN) >= 0)
-                          return;
-          }
-
-          /* .. fall back on trying kernel access */
-          buf[0] = 0;
-          strncpy_from_kernel_nofault(buf, (void *)unsafe_addr,
-BPF_STRNCPY_LEN);
-  }
-
-or similar. No?
-
-                   Linus
+Thank you.
