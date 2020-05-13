@@ -2,149 +2,563 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6561D0C89
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179D41D0E61
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 12:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732503AbgEMJmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726532AbgEMJmy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:42:54 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81A7C061A0C;
-        Wed, 13 May 2020 02:42:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=0TMMWMUrzS1FlukKgXCbkVesqNUS1JqKvgC56uuLBQs=; b=uUuqXjOUXbQYCT40fYfHMeKVp
-        ri3MiqzeJWAY/jIK4/YpZa/oWdqYZssoObY14Hc0Yj6jPiARuTZKWL59evrC/TP+VMMP0CEIxKOrc
-        FA2AWjSXfQNOhAZtOfsgRP3H3j3BIW1ZUztAVG+teCalymQ/Wp92iyHRI4lMO88zCKujCnqhHYs+a
-        IDzAQmm4UfyUGHG7khAIT9TD+eMho+TTs+2RlJVDpUGRBFQK3OgGc96fU+J7U/REhOgCCP3B4DcUh
-        oIYOEydCTFDGI+f7/Za2K1NV5GNmKp7mWabJnVC2UPN7NEFN3g9AARkWHiSDRaoJLkSRRloYM4dv6
-        eFNBjv/CQ==;
-Received: from shell.armlinux.org.uk ([2002:4e20:1eda:1:5054:ff:fe00:4ec]:57428)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jYnuS-00043G-Qa; Wed, 13 May 2020 10:42:40 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jYnuR-0007f7-7k; Wed, 13 May 2020 10:42:39 +0100
-Date:   Wed, 13 May 2020 10:42:39 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Doug Berger <opendmb@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 3/4] net: ethernet: introduce phy_set_pause
-Message-ID: <20200513094239.GG1551@shell.armlinux.org.uk>
-References: <1589243050-18217-1-git-send-email-opendmb@gmail.com>
- <1589243050-18217-4-git-send-email-opendmb@gmail.com>
+        id S2387824AbgEMJwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:52:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733241AbgEMJwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:52:37 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E2B020575;
+        Wed, 13 May 2020 09:52:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589363555;
+        bh=IGnc9NEsJmYtWU+txtlSjnNhxD+3NvcHi5DLgFSY3gw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KyNkbbviCfT4owTYeFcoExKWklAhjVCZK+coQ867kKWd0K0cDMUvV7Elh6SueMdsz
+         RXSRt++rdDuqZYh+QCT361WUxYpWKIqHrwQVXdVBA89AjFmOlGfEFc1TGs3X0JDRfl
+         Vgc6roHRR9Uusc61CFJdZa3pCXNgUGO4d30f7Ql8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: [PATCH 5.6 000/118] 5.6.13-rc1 review
+Date:   Wed, 13 May 2020 11:43:39 +0200
+Message-Id: <20200513094417.618129545@linuxfoundation.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1589243050-18217-4-git-send-email-opendmb@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.6.13-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.6.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.6.13-rc1
+X-KernelTest-Deadline: 2020-05-15T09:44+00:00
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 05:24:09PM -0700, Doug Berger wrote:
-> This commit introduces the phy_set_pause function to the phylib as
-> a helper to support the set_pauseparam ethtool method.
-> 
-> It is hoped that the new behavior introduced by this function will
-> be widely embraced and the phy_set_sym_pause and phy_set_asym_pause
-> functions can be deprecated. Those functions are retained for all
-> existing users and for any desenting opinions on my interpretation
-> of the functionality.
-> 
-> Signed-off-by: Doug Berger <opendmb@gmail.com>
-> ---
->  drivers/net/phy/phy_device.c | 31 +++++++++++++++++++++++++++++++
->  include/linux/phy.h          |  1 +
->  2 files changed, 32 insertions(+)
-> 
-> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> index 48ab9efa0166..e6dafb3c3e5f 100644
-> --- a/drivers/net/phy/phy_device.c
-> +++ b/drivers/net/phy/phy_device.c
-> @@ -2614,6 +2614,37 @@ void phy_set_asym_pause(struct phy_device *phydev, bool rx, bool tx)
->  EXPORT_SYMBOL(phy_set_asym_pause);
->  
->  /**
-> + * phy_set_pause - Configure Pause and Asym Pause with autoneg
-> + * @phydev: target phy_device struct
-> + * @rx: Receiver Pause is supported
-> + * @tx: Transmit Pause is supported
-> + * @autoneg: Auto neg should be used
-> + *
-> + * Description: Configure advertised Pause support depending on if
-> + * receiver pause and pause auto neg is supported. Generally called
-> + * from the set_pauseparam ethtool_ops.
-> + *
-> + * Note: Since pause is really a MAC level function it should be
-> + * notified via adjust_link to update its pause functions.
-> + */
-> +void phy_set_pause(struct phy_device *phydev, bool rx, bool tx, bool autoneg)
-> +{
-> +	linkmode_set_pause(phydev->advertising, tx, rx, autoneg);
-> +
-> +	/* Reset the state of an already running link to force a new
-> +	 * link up event when advertising doesn't change or when PHY
-> +	 * autoneg is disabled.
-> +	 */
-> +	mutex_lock(&phydev->lock);
-> +	if (phydev->state == PHY_RUNNING)
-> +		phydev->state = PHY_UP;
-> +	mutex_unlock(&phydev->lock);
+This is the start of the stable review cycle for the 5.6.13 release.
+There are 118 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-I wonder about this - will drivers cope with having two link-up events
-via adjust_link without a corresponding link-down event?  What if they
-touch registers that are only supposed to be touched while the link is
-down?  Obviously, drivers have to opt-in to this interface, so it may
-be okay provided we don't get wholesale changes.
+Responses should be made by Fri, 15 May 2020 09:41:20 +0000.
+Anything received after that time might be too late.
 
-> +
-> +	phy_start_aneg(phydev);
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.13-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.6.y
+and the diffstat can be found below.
 
-Should we be making that conditional on something changing and autoneg
-being enabled, like phy_set_asym_pause() does?  There is no point
-interrupting an established link if the advertisement didn't change.
+thanks,
 
-> +}
-> +EXPORT_SYMBOL(phy_set_pause);
-> +
-> +/**
->   * phy_validate_pause - Test if the PHY/MAC support the pause configuration
->   * @phydev: phy_device struct
->   * @pp: requested pause configuration
-> diff --git a/include/linux/phy.h b/include/linux/phy.h
-> index 5d8ff5428010..71e484424e68 100644
-> --- a/include/linux/phy.h
-> +++ b/include/linux/phy.h
-> @@ -1403,6 +1403,7 @@ void phy_support_asym_pause(struct phy_device *phydev);
->  void phy_set_sym_pause(struct phy_device *phydev, bool rx, bool tx,
->  		       bool autoneg);
->  void phy_set_asym_pause(struct phy_device *phydev, bool rx, bool tx);
-> +void phy_set_pause(struct phy_device *phydev, bool rx, bool tx, bool autoneg);
->  bool phy_validate_pause(struct phy_device *phydev,
->  			struct ethtool_pauseparam *pp);
->  void phy_get_pause(struct phy_device *phydev, bool *tx_pause, bool *rx_pause);
-> -- 
-> 2.7.4
-> 
-> 
+greg k-h
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.6.13-rc1
+
+Amir Goldstein <amir73il@gmail.com>
+    fanotify: merge duplicate events on parent and child
+
+Amir Goldstein <amir73il@gmail.com>
+    fsnotify: replace inode pointer with an object id
+
+Max Kellermann <mk@cm4all.com>
+    io_uring: don't use 'fd' for openat/openat2/statx
+
+Christoph Hellwig <hch@lst.de>
+    bdi: add a ->dev_name field to struct backing_dev_info
+
+Christoph Hellwig <hch@lst.de>
+    bdi: move bdi_dev_name out of line
+
+Yafang Shao <laoar.shao@gmail.com>
+    mm, memcg: fix error return value of mem_cgroup_css_alloc()
+
+Ivan Delalande <colona@arista.com>
+    scripts/decodecode: fix trapping instruction formatting
+
+Julia Lawall <Julia.Lawall@inria.fr>
+    iommu/virtio: Reverse arguments to list_add
+
+Josh Poimboeuf <jpoimboe@redhat.com>
+    objtool: Fix stack offset tracking for indirect CFAs
+
+Paolo Bonzini <pbonzini@redhat.com>
+    kvm: ioapic: Restrict lazy EOI update to edge-triggered interrupts
+
+Arnd Bergmann <arnd@arndb.de>
+    netfilter: nf_osf: avoid passing pointer to local var
+
+Guillaume Nault <gnault@redhat.com>
+    netfilter: nat: never update the UDP checksum when it's 0
+
+Janakarajan Natarajan <Janakarajan.Natarajan@amd.com>
+    arch/x86/kvm/svm/sev.c: change flag passed to GUP fast in sev_pin_memory()
+
+Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+    KVM: x86: Fixes posted interrupt check for IRQs delivery modes
+
+Josh Poimboeuf <jpoimboe@redhat.com>
+    x86/unwind/orc: Fix premature unwind stoppage due to IRET frames
+
+Josh Poimboeuf <jpoimboe@redhat.com>
+    x86/unwind/orc: Fix error path for bad ORC entry type
+
+Josh Poimboeuf <jpoimboe@redhat.com>
+    x86/unwind/orc: Prevent unwinding before ORC initialization
+
+Miroslav Benes <mbenes@suse.cz>
+    x86/unwind/orc: Don't skip the first frame for inactive tasks
+
+Jann Horn <jannh@google.com>
+    x86/entry/64: Fix unwind hints in rewind_stack_do_exit()
+
+Josh Poimboeuf <jpoimboe@redhat.com>
+    x86/entry/64: Fix unwind hints in __switch_to_asm()
+
+Josh Poimboeuf <jpoimboe@redhat.com>
+    x86/entry/64: Fix unwind hints in kernel exit path
+
+Josh Poimboeuf <jpoimboe@redhat.com>
+    x86/entry/64: Fix unwind hints in register clearing code
+
+Rick Edgecombe <rick.p.edgecombe@intel.com>
+    x86/mm/cpa: Flush direct map alias during cpa
+
+Xiyu Yang <xiyuyang19@fudan.edu.cn>
+    batman-adv: Fix refcnt leak in batadv_v_ogm_process
+
+Xiyu Yang <xiyuyang19@fudan.edu.cn>
+    batman-adv: Fix refcnt leak in batadv_store_throughput_override
+
+Xiyu Yang <xiyuyang19@fudan.edu.cn>
+    batman-adv: Fix refcnt leak in batadv_show_throughput_override
+
+George Spelvin <lkml@sdf.org>
+    batman-adv: fix batadv_nc_random_weight_tq
+
+Tejun Heo <tj@kernel.org>
+    iocost: protect iocg->abs_vdebt with iocg->waitq.lock
+
+Vincent Chen <vincent.chen@sifive.com>
+    riscv: set max_pfn to the PFN of the last page
+
+Luis Chamberlain <mcgrof@kernel.org>
+    coredump: fix crash when umh is disabled
+
+Oscar Carter <oscar.carter@gmx.com>
+    staging: gasket: Check the return value of gasket_get_bar_index()
+
+Luis Henriques <lhenriques@suse.com>
+    ceph: demote quotarealm lookup warning to a debug message
+
+Jeff Layton <jlayton@kernel.org>
+    ceph: fix endianness bug when handling MDS session feature bits
+
+Henry Willard <henry.willard@oracle.com>
+    mm: limit boost_watermark on small zones
+
+David Hildenbrand <david@redhat.com>
+    mm/page_alloc: fix watchdog soft lockups during set_zone_contiguous()
+
+Khazhismel Kumykov <khazhy@google.com>
+    eventpoll: fix missing wakeup for ovflist in ep_poll_callback
+
+Roman Penyaev <rpenyaev@suse.de>
+    epoll: atomically remove wait entry on wake up
+
+Oleg Nesterov <oleg@redhat.com>
+    ipc/mqueue.c: change __do_notify() to bypass check_kill_permission()
+
+Daniel Kolesa <daniel@octaforge.org>
+    drm/amd/display: work around fp code being emitted outside of DC_FP_START/END
+
+H. Nikolaus Schaller <hns@goldelico.com>
+    drm: ingenic-drm: add MODULE_DEVICE_TABLE
+
+Tomas Winkler <tomas.winkler@intel.com>
+    mei: me: disable mei interface on LBG servers.
+
+Ulf Hansson <ulf.hansson@linaro.org>
+    amba: Initialize dma_parms for amba devices
+
+Ulf Hansson <ulf.hansson@linaro.org>
+    driver core: platform: Initialize dma_parms for platform devices
+
+Mark Rutland <mark.rutland@arm.com>
+    arm64: hugetlb: avoid potential NULL dereference
+
+Marc Zyngier <maz@kernel.org>
+    KVM: arm64: Fix 32bit PC wrap-around
+
+Marc Zyngier <maz@kernel.org>
+    KVM: arm: vgic: Fix limit condition when writing to GICD_I[CS]ACTIVER
+
+Sean Christopherson <sean.j.christopherson@intel.com>
+    KVM: VMX: Explicitly clear RFLAGS.CF and RFLAGS.ZF in VM-Exit RSB path
+
+Christian Borntraeger <borntraeger@de.ibm.com>
+    KVM: s390: Remove false WARN_ON_ONCE for the PQAP instruction
+
+Jason A. Donenfeld <Jason@zx2c4.com>
+    crypto: arch/lib - limit simd usage to 4k chunks
+
+Jason A. Donenfeld <Jason@zx2c4.com>
+    crypto: arch/nhpoly1305 - process in explicit 4k chunks
+
+Steven Rostedt (VMware) <rostedt@goodmis.org>
+    tracing: Add a vmalloc_sync_mappings() for safe measure
+
+Steven Rostedt (VMware) <rostedt@goodmis.org>
+    tracing: Wait for preempt irq delay thread to finish
+
+Masami Hiramatsu <mhiramat@kernel.org>
+    tracing/kprobes: Reject new event if loc is NULL
+
+Masami Hiramatsu <mhiramat@kernel.org>
+    tracing/boottime: Fix kprobe event API usage
+
+Oliver Neukum <oneukum@suse.com>
+    USB: serial: garmin_gps: add sanity checking for data length
+
+Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+    usb: chipidea: msm: Ensure proper controller reset using role switch API
+
+Oliver Neukum <oneukum@suse.com>
+    USB: uas: add quirk for LaCie 2Big Quadra
+
+Jason Gerecke <killertofu@gmail.com>
+    HID: wacom: Report 2nd-gen Intuos Pro S center button status over BT
+
+Alan Stern <stern@rowland.harvard.edu>
+    HID: usbhid: Fix race between usbhid_close() and usbhid_stop()
+
+Jason Gerecke <killertofu@gmail.com>
+    Revert "HID: wacom: generic: read the number of expected touches on a per collection basis"
+
+Jere Leppänen <jere.leppanen@nokia.com>
+    sctp: Fix bundling of SHUTDOWN with COOKIE-ACK
+
+Jason Gerecke <jason.gerecke@wacom.com>
+    HID: wacom: Read HID_DG_CONTACTMAX directly for non-generic devices
+
+Jason A. Donenfeld <Jason@zx2c4.com>
+    wireguard: send/receive: cond_resched() when processing worker ringbuffers
+
+Jason A. Donenfeld <Jason@zx2c4.com>
+    wireguard: socket: remove errant restriction on looping to self
+
+Dejin Zheng <zhengdejin5@gmail.com>
+    net: enetc: fix an issue about leak system resources
+
+Toke Høiland-Jørgensen <toke@redhat.com>
+    wireguard: receive: use tunnel helpers for decapsulating ECN markings
+
+Jason A. Donenfeld <Jason@zx2c4.com>
+    wireguard: queueing: cleanup ptr_ring in error path of packet_queue_init
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    net: mvpp2: cls: Prevent buffer overflow in mvpp2_ethtool_cls_rule_del()
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    net: mvpp2: prevent buffer overflow in mvpp22_rss_ctx()
+
+Roi Dayan <roid@mellanox.com>
+    net/mlx5e: Fix q counters on uplink representors
+
+Moshe Shemesh <moshe@mellanox.com>
+    net/mlx5: Fix command entry leak in Internal Error State
+
+Moshe Shemesh <moshe@mellanox.com>
+    net/mlx5: Fix forced completion access non initialized command entry
+
+Erez Shitrit <erezsh@mellanox.com>
+    net/mlx5: DR, On creation set CQ's arm_db member to right value
+
+Michael Chan <michael.chan@broadcom.com>
+    bnxt_en: Fix VLAN acceleration handling in bnxt_fix_features().
+
+Michael Chan <michael.chan@broadcom.com>
+    bnxt_en: Return error when allocating zero size context memory.
+
+Michael Chan <michael.chan@broadcom.com>
+    bnxt_en: Improve AER slot reset.
+
+Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+    bnxt_en: Reduce BNXT_MSIX_VEC_MAX value to supported CQs per PF.
+
+Michael Chan <michael.chan@broadcom.com>
+    bnxt_en: Fix VF anti-spoof filter setup.
+
+Toke Høiland-Jørgensen <toke@redhat.com>
+    tunnel: Propagate ECT(1) when decapsulating as recommended by RFC6040
+
+Tuong Lien <tuong.t.lien@dektech.com.au>
+    tipc: fix partial topology connection closure
+
+Eric Dumazet <edumazet@google.com>
+    selftests: net: tcp_mmap: fix SO_RCVLOWAT setting
+
+Eric Dumazet <edumazet@google.com>
+    selftests: net: tcp_mmap: clear whole tcp_zerocopy_receive struct
+
+Eric Dumazet <edumazet@google.com>
+    sch_sfq: validate silly quantum values
+
+Eric Dumazet <edumazet@google.com>
+    sch_choke: avoid potential panic in choke_reset()
+
+Qiushi Wu <wu000273@umn.edu>
+    nfp: abm: fix a memory leak bug
+
+Matt Jolly <Kangie@footclan.ninja>
+    net: usb: qmi_wwan: add support for DW5816e
+
+Xiyu Yang <xiyuyang19@fudan.edu.cn>
+    net/tls: Fix sk_psock refcnt leak when in tls_data_ready()
+
+Xiyu Yang <xiyuyang19@fudan.edu.cn>
+    net/tls: Fix sk_psock refcnt leak in bpf_exec_tx_verdict()
+
+Anthony Felice <tony.felice@timesys.com>
+    net: tc35815: Fix phydev supported/advertising mask
+
+Willem de Bruijn <willemb@google.com>
+    net: stricter validation of untrusted gso packets
+
+Eric Dumazet <edumazet@google.com>
+    net_sched: sch_skbprio: add message validation to skbprio_change()
+
+Baruch Siach <baruch@tkos.co.il>
+    net: phy: marvell10g: fix temperature sensor on 2110
+
+Tariq Toukan <tariqt@mellanox.com>
+    net/mlx4_core: Fix use of ENOSPC around mlx4_counter_alloc()
+
+Scott Dial <scott@scottdial.com>
+    net: macsec: preserve ingress frame ordering
+
+Dejin Zheng <zhengdejin5@gmail.com>
+    net: macb: fix an issue about leak related system resources
+
+Florian Fainelli <f.fainelli@gmail.com>
+    net: dsa: Do not make user port errors fatal
+
+Florian Fainelli <f.fainelli@gmail.com>
+    net: dsa: Do not leave DSA master with NULL netdev_ops
+
+Ido Schimmel <idosch@mellanox.com>
+    net: bridge: vlan: Add a schedule point during VLAN processing
+
+Roman Mashak <mrv@mojatatu.com>
+    neigh: send protocol value in neighbor create notification
+
+Jiri Pirko <jiri@mellanox.com>
+    mlxsw: spectrum_acl_tcam: Position vchunk in a vregion list properly
+
+David Ahern <dsahern@kernel.org>
+    ipv6: Use global sernum for dst validation with nexthop objects
+
+Eric Dumazet <edumazet@google.com>
+    fq_codel: fix TCA_FQ_CODEL_DROP_BATCH_SIZE sanity checks
+
+Julia Lawall <Julia.Lawall@inria.fr>
+    dp83640: reverse arguments to list_add_tail
+
+Jakub Kicinski <kuba@kernel.org>
+    devlink: fix return value after hitting end in region read
+
+Aya Levin <ayal@mellanox.com>
+    devlink: Fix reporter's recovery condition
+
+Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+    cxgb4: fix EOTID leak when disabling TC-MQPRIO offload
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    net: macb: Fix runtime PM refcounting
+
+Masami Hiramatsu <mhiramat@kernel.org>
+    tracing/kprobes: Fix a double initialization typo
+
+Sagi Grimberg <sagi@grimberg.me>
+    nvme: fix possible hang when ns scanning fails during error recovery
+
+Christoph Hellwig <hch@lst.de>
+    nvme: refactor nvme_identify_ns_descs error handling
+
+Eric Whitney <enwlinux@gmail.com>
+    ext4: disable dioread_nolock whenever delayed allocation is disabled
+
+Ritesh Harjani <riteshh@linux.ibm.com>
+    ext4: don't set dioread_nolock by default for blocksize < pagesize
+
+Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+    tty: xilinx_uartps: Fix missing id assignment to the console
+
+Nicolas Pitre <nico@fluxnic.net>
+    vt: fix unicode console freeing with a common interface
+
+Evan Quan <evan.quan@amd.com>
+    drm/amdgpu: drop redundant cg/pg ungate on runpm enter
+
+Evan Quan <evan.quan@amd.com>
+    drm/amdgpu: move kfd suspend after ip_suspend_phase1
+
+Matt Jolly <Kangie@footclan.ninja>
+    USB: serial: qcserial: Add DW5816e support
+
+Mika Westerberg <mika.westerberg@linux.intel.com>
+    thunderbolt: Check return value of tb_sw_read() in usb4_switch_op()
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |   4 +-
+ arch/arm/crypto/chacha-glue.c                      |  14 ++-
+ arch/arm/crypto/nhpoly1305-neon-glue.c             |   2 +-
+ arch/arm/crypto/poly1305-glue.c                    |  15 ++-
+ arch/arm64/crypto/chacha-neon-glue.c               |  14 ++-
+ arch/arm64/crypto/nhpoly1305-neon-glue.c           |   2 +-
+ arch/arm64/crypto/poly1305-glue.c                  |  15 ++-
+ arch/arm64/kvm/guest.c                             |   7 ++
+ arch/arm64/mm/hugetlbpage.c                        |   2 +
+ arch/riscv/mm/init.c                               |   3 +-
+ arch/s390/kvm/priv.c                               |   4 +-
+ arch/x86/crypto/blake2s-glue.c                     |  10 +-
+ arch/x86/crypto/chacha_glue.c                      |  14 ++-
+ arch/x86/crypto/nhpoly1305-avx2-glue.c             |   2 +-
+ arch/x86/crypto/nhpoly1305-sse2-glue.c             |   2 +-
+ arch/x86/crypto/poly1305_glue.c                    |  13 ++-
+ arch/x86/entry/calling.h                           |  40 +++----
+ arch/x86/entry/entry_64.S                          |  14 +--
+ arch/x86/include/asm/kvm_host.h                    |   4 +-
+ arch/x86/include/asm/unwind.h                      |   2 +-
+ arch/x86/kernel/unwind_orc.c                       |  61 ++++++++---
+ arch/x86/kvm/ioapic.c                              |  10 +-
+ arch/x86/kvm/svm.c                                 |   2 +-
+ arch/x86/kvm/vmx/vmenter.S                         |   3 +
+ arch/x86/mm/pat/set_memory.c                       |  12 ++-
+ block/blk-iocost.c                                 | 117 +++++++++++++--------
+ drivers/amba/bus.c                                 |   1 +
+ drivers/base/platform.c                            |   2 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |   7 +-
+ .../gpu/drm/amd/display/dc/dcn20/dcn20_resource.c  |  31 ++++--
+ drivers/gpu/drm/ingenic/ingenic-drm.c              |   1 +
+ drivers/hid/usbhid/hid-core.c                      |  37 +++++--
+ drivers/hid/usbhid/usbhid.h                        |   1 +
+ drivers/hid/wacom_sys.c                            |   4 +-
+ drivers/hid/wacom_wac.c                            |  88 ++++------------
+ drivers/iommu/virtio-iommu.c                       |   2 +-
+ drivers/misc/mei/hw-me.c                           |   8 ++
+ drivers/misc/mei/hw-me.h                           |   4 +
+ drivers/misc/mei/pci-me.c                          |   2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c          |  20 ++--
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h          |   1 -
+ drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h  |   2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c    |  10 +-
+ drivers/net/ethernet/cadence/macb_main.c           |  24 ++---
+ drivers/net/ethernet/chelsio/cxgb4/sge.c           |  39 ++++++-
+ .../net/ethernet/freescale/enetc/enetc_pci_mdio.c  |   2 +-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.c     |   3 +
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   2 +
+ drivers/net/ethernet/mellanox/mlx4/main.c          |   4 +-
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c      |   6 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_rep.c   |   9 +-
+ .../ethernet/mellanox/mlx5/core/steering/dr_send.c |  14 ++-
+ .../ethernet/mellanox/mlxsw/spectrum_acl_tcam.c    |  12 ++-
+ drivers/net/ethernet/netronome/nfp/abm/main.c      |   1 +
+ drivers/net/ethernet/toshiba/tc35815.c             |   2 +-
+ drivers/net/macsec.c                               |   3 +-
+ drivers/net/phy/dp83640.c                          |   2 +-
+ drivers/net/phy/marvell10g.c                       |  27 ++++-
+ drivers/net/usb/qmi_wwan.c                         |   1 +
+ drivers/net/wireguard/queueing.c                   |   4 +-
+ drivers/net/wireguard/receive.c                    |   8 +-
+ drivers/net/wireguard/send.c                       |   4 +
+ drivers/net/wireguard/socket.c                     |  12 ---
+ drivers/nvme/host/core.c                           |  28 +++--
+ drivers/staging/gasket/gasket_core.c               |   4 +
+ drivers/thunderbolt/usb4.c                         |   3 +
+ drivers/tty/serial/xilinx_uartps.c                 |   1 +
+ drivers/tty/vt/vt.c                                |   9 +-
+ drivers/usb/chipidea/ci_hdrc_msm.c                 |   2 +-
+ drivers/usb/serial/garmin_gps.c                    |   4 +-
+ drivers/usb/serial/qcserial.c                      |   1 +
+ drivers/usb/storage/unusual_uas.h                  |   7 ++
+ fs/ceph/mds_client.c                               |   8 +-
+ fs/ceph/quota.c                                    |   4 +-
+ fs/coredump.c                                      |   8 ++
+ fs/eventpoll.c                                     |  61 ++++++-----
+ fs/ext4/ext4_jbd2.h                                |   3 +
+ fs/ext4/super.c                                    |  13 ++-
+ fs/io_uring.c                                      |   6 --
+ fs/notify/fanotify/fanotify.c                      |   9 +-
+ fs/notify/inotify/inotify_fsnotify.c               |   4 +-
+ fs/notify/inotify/inotify_user.c                   |   2 +-
+ include/linux/amba/bus.h                           |   1 +
+ include/linux/backing-dev-defs.h                   |   1 +
+ include/linux/backing-dev.h                        |   9 +-
+ include/linux/fsnotify_backend.h                   |   7 +-
+ include/linux/platform_device.h                    |   1 +
+ include/linux/virtio_net.h                         |  26 ++++-
+ include/net/inet_ecn.h                             |  57 +++++++++-
+ include/net/ip6_fib.h                              |   4 +
+ include/net/net_namespace.h                        |   7 ++
+ ipc/mqueue.c                                       |  34 ++++--
+ kernel/trace/preemptirq_delay_test.c               |  30 ++++--
+ kernel/trace/trace.c                               |  13 +++
+ kernel/trace/trace_boot.c                          |  20 ++--
+ kernel/trace/trace_kprobe.c                        |   8 +-
+ kernel/umh.c                                       |   5 +
+ mm/backing-dev.c                                   |  13 ++-
+ mm/memcontrol.c                                    |  15 +--
+ mm/page_alloc.c                                    |   9 ++
+ net/batman-adv/bat_v_ogm.c                         |   2 +-
+ net/batman-adv/network-coding.c                    |   9 +-
+ net/batman-adv/sysfs.c                             |   3 +-
+ net/bridge/br_netlink.c                            |   1 +
+ net/core/devlink.c                                 |  12 ++-
+ net/core/neighbour.c                               |   6 +-
+ net/dsa/dsa2.c                                     |   2 +-
+ net/dsa/master.c                                   |   3 +-
+ net/ipv6/route.c                                   |  25 +++++
+ net/netfilter/nf_nat_proto.c                       |   4 +-
+ net/netfilter/nfnetlink_osf.c                      |  12 ++-
+ net/sched/sch_choke.c                              |   3 +-
+ net/sched/sch_fq_codel.c                           |   2 +-
+ net/sched/sch_sfq.c                                |   9 ++
+ net/sched/sch_skbprio.c                            |   3 +
+ net/sctp/sm_statefuns.c                            |   6 +-
+ net/tipc/topsrv.c                                  |   5 +-
+ net/tls/tls_sw.c                                   |   7 +-
+ scripts/decodecode                                 |   2 +-
+ tools/cgroup/iocost_monitor.py                     |   7 +-
+ tools/objtool/check.c                              |   2 +-
+ tools/testing/selftests/net/tcp_mmap.c             |   7 +-
+ tools/testing/selftests/wireguard/netns.sh         |  54 +++++++++-
+ virt/kvm/arm/hyp/aarch32.c                         |   8 +-
+ virt/kvm/arm/vgic/vgic-mmio.c                      |   4 +-
+ 125 files changed, 964 insertions(+), 459 deletions(-)
+
+
