@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66ECB1D145B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5867A1D145F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387582AbgEMNRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:17:24 -0400
-Received: from out28-122.mail.aliyun.com ([115.124.28.122]:45162 "EHLO
-        out28-122.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728456AbgEMNRX (ORCPT
+        id S2387614AbgEMNR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:17:26 -0400
+Received: from out28-101.mail.aliyun.com ([115.124.28.101]:44687 "EHLO
+        out28-101.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729787AbgEMNRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:17:23 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.3909549|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00931302-0.000242601-0.990444;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03301;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.HY0oTOn_1589375829;
+        Wed, 13 May 2020 09:17:25 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07502541|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.345318-0.00103386-0.653648;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03303;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.HY0oTOn_1589375829;
 Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.HY0oTOn_1589375829)
           by smtp.aliyun-inc.com(10.147.41.120);
-          Wed, 13 May 2020 21:17:19 +0800
+          Wed, 13 May 2020 21:17:20 +0800
 From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
         <zhouyanjie@wanyeetech.com>
 To:     linux-clk@vger.kernel.org
@@ -24,9 +24,9 @@ Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         paul@crapouillou.net, dongsheng.qiu@ingenic.com,
         yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
         zhenwenjin@gmail.com
-Subject: [PATCH v8 0/6] Add support for the X1830 and fix bugs for X1000
-Date:   Wed, 13 May 2020 21:16:38 +0800
-Message-Id: <1589375804-78423-2-git-send-email-zhouyanjie@wanyeetech.com>
+Subject: [PATCH v8 1/6] clk: Ingenic: Remove unnecessary spinlock when reading registers.
+Date:   Wed, 13 May 2020 21:16:39 +0800
+Message-Id: <1589375804-78423-3-git-send-email-zhouyanjie@wanyeetech.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1589375804-78423-1-git-send-email-zhouyanjie@wanyeetech.com>
 References: <1589375804-78423-1-git-send-email-zhouyanjie@wanyeetech.com>
@@ -38,35 +38,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v7->v8:
-1.Rebase [3/6] on top of linux-next, because "ingenic,cgu.txt" has
-been converted to "ingenic,cgu.yaml".
+It is not necessary to use spinlock when reading registers,
+so remove it from cgu.c.
 
-周琰杰 (Zhou Yanjie) (6):
-  clk: Ingenic: Remove unnecessary spinlock when reading registers.
-  clk: Ingenic: Adjust cgu code to make it compatible with X1830.
-  dt-bindings: clock: Add X1830 bindings.
-  clk: Ingenic: Add CGU driver for X1830.
-  dt-bindings: clock: Add and reorder ABI for X1000.
-  clk: X1000: Add FIXDIV for SSI clock of X1000.
+Suggested-by: Paul Cercueil <paul@crapouillou.net>
+Suggested-by: Paul Burton <paulburton@kernel.org>
+Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+---
 
- .../devicetree/bindings/clock/ingenic,cgu.yaml     |   2 +
- drivers/clk/ingenic/Kconfig                        |  10 +
- drivers/clk/ingenic/Makefile                       |   1 +
- drivers/clk/ingenic/cgu.c                          |  28 +-
- drivers/clk/ingenic/cgu.h                          |   4 +
- drivers/clk/ingenic/jz4725b-cgu.c                  |   4 +
- drivers/clk/ingenic/jz4740-cgu.c                   |   4 +
- drivers/clk/ingenic/jz4770-cgu.c                   |   8 +-
- drivers/clk/ingenic/jz4780-cgu.c                   |   3 +
- drivers/clk/ingenic/x1000-cgu.c                    |  62 +++-
- drivers/clk/ingenic/x1830-cgu.c                    | 388 +++++++++++++++++++++
- include/dt-bindings/clock/x1000-cgu.h              |  62 ++--
- include/dt-bindings/clock/x1830-cgu.h              |  53 +++
- 13 files changed, 580 insertions(+), 49 deletions(-)
- create mode 100644 drivers/clk/ingenic/x1830-cgu.c
- create mode 100644 include/dt-bindings/clock/x1830-cgu.h
+Notes:
+    v2:
+    New patch.
+    
+    v2->v3:
+    Adjust order from [5/5] in v2 to [1/5] in v3.
+    
+    v3->v4:
+    Remove the spinlock around ingenic_cgu_gate_get().
+    
+    v4->v5:
+    Rebase on top of kernel 5.6-rc1.
+    
+    v5->v6:
+    No change.
+    
+    v6->v7:
+    No change.
+    
+    v7->v8:
+    No change.
 
+ drivers/clk/ingenic/cgu.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
+
+diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
+index 6e96303..ab1302a 100644
+--- a/drivers/clk/ingenic/cgu.c
++++ b/drivers/clk/ingenic/cgu.c
+@@ -76,16 +76,13 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+ 	const struct ingenic_cgu_pll_info *pll_info;
+ 	unsigned m, n, od_enc, od;
+ 	bool bypass;
+-	unsigned long flags;
+ 	u32 ctl;
+ 
+ 	clk_info = &cgu->clock_info[ingenic_clk->idx];
+ 	BUG_ON(clk_info->type != CGU_CLK_PLL);
+ 	pll_info = &clk_info->pll;
+ 
+-	spin_lock_irqsave(&cgu->lock, flags);
+ 	ctl = readl(cgu->base + pll_info->reg);
+-	spin_unlock_irqrestore(&cgu->lock, flags);
+ 
+ 	m = (ctl >> pll_info->m_shift) & GENMASK(pll_info->m_bits - 1, 0);
+ 	m += pll_info->m_offset;
+@@ -259,12 +256,9 @@ static int ingenic_pll_is_enabled(struct clk_hw *hw)
+ 	struct ingenic_cgu *cgu = ingenic_clk->cgu;
+ 	const struct ingenic_cgu_clk_info *clk_info = to_clk_info(ingenic_clk);
+ 	const struct ingenic_cgu_pll_info *pll_info = &clk_info->pll;
+-	unsigned long flags;
+ 	u32 ctl;
+ 
+-	spin_lock_irqsave(&cgu->lock, flags);
+ 	ctl = readl(cgu->base + pll_info->reg);
+-	spin_unlock_irqrestore(&cgu->lock, flags);
+ 
+ 	return !!(ctl & BIT(pll_info->enable_bit));
+ }
+@@ -562,16 +556,12 @@ static int ingenic_clk_is_enabled(struct clk_hw *hw)
+ 	struct ingenic_clk *ingenic_clk = to_ingenic_clk(hw);
+ 	struct ingenic_cgu *cgu = ingenic_clk->cgu;
+ 	const struct ingenic_cgu_clk_info *clk_info;
+-	unsigned long flags;
+ 	int enabled = 1;
+ 
+ 	clk_info = &cgu->clock_info[ingenic_clk->idx];
+ 
+-	if (clk_info->type & CGU_CLK_GATE) {
+-		spin_lock_irqsave(&cgu->lock, flags);
++	if (clk_info->type & CGU_CLK_GATE)
+ 		enabled = !ingenic_cgu_gate_get(cgu, &clk_info->gate);
+-		spin_unlock_irqrestore(&cgu->lock, flags);
+-	}
+ 
+ 	return enabled;
+ }
 -- 
 2.7.4
 
