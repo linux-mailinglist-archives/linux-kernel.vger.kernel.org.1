@@ -2,141 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00641D0E56
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8287F1D0DCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387881AbgEMJxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49718 "EHLO
+        id S2388349AbgEMJz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387861AbgEMJwz (ORCPT
+        with ESMTP id S2388331AbgEMJzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:52:55 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DA9C061A0C;
-        Wed, 13 May 2020 02:52:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=ft535WPrBxMxFYAmdROL29Gd1hqYXPYu/0OGkw3PQ9g=; b=A6zin1hHZANRxscI7PjouY7Fe
-        R/b/ualhzllBnLuTEaV6fw8fz3Rr3xKP1K3veWH3haN0HXeVkSVrLPbGik2SEi1Tr1m3955OS0PvF
-        InTeKaHJNfU/1waUmxyIChWS13dXmXAQlSyBR2vR1HV9ecQFcoEsuZSStr+6fgo3xnQc5+JRCKEy3
-        xXiD9OOVPUyuPeh05a0TQmetdL/tTohXmxWq5c/Eta2tgqq5hIR/bpZaau9At0xvkxXIZZjbxZiSx
-        DdtLbMhjvQpQaE+Vw2Nq5RhK6O6qhc2aqKU9NBq963C1coP8FpmyOpAplXdSz55Avd88x6arkONEy
-        C5hn4P1Fw==;
-Received: from shell.armlinux.org.uk ([2002:4e20:1eda:1:5054:ff:fe00:4ec]:57430)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jYo4F-00043y-DN; Wed, 13 May 2020 10:52:47 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jYo4E-0007fG-Fn; Wed, 13 May 2020 10:52:46 +0100
-Date:   Wed, 13 May 2020 10:52:46 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Doug Berger <opendmb@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 4/4] net: bcmgenet: add support for ethtool flow
- control
-Message-ID: <20200513095246.GH1551@shell.armlinux.org.uk>
-References: <1589243050-18217-1-git-send-email-opendmb@gmail.com>
- <1589243050-18217-5-git-send-email-opendmb@gmail.com>
+        Wed, 13 May 2020 05:55:54 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E336C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 02:55:54 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id c21so8469838lfb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 02:55:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=IDaxDOobVDjFaR+XbUcO1zeYd4szXYR8Tg3ntYn3THQ=;
+        b=QQRyzIWka/20HYMrTmQWhFH1DfWtTrXuxGlAQhDOt0cXDTf9KQ0mYF+tHniAsn1xEt
+         JU0nMrKnJw93m+JkHft40GDLj6p+igYUHR/i9FoFyONn8YOikPCImYkM+zU0OMF0OR8o
+         cFGSuhJiF0w4SymCdyAhPjmo5l/o6XnacAB3qAFGhQuu1G+CEuUiGhcsGvxKqidhM4r9
+         6LNDfHQysewD2YWmKOvyRFutNL1MEbEEih9Ew5RjpxULwqvT0oK3x8r+Ep3KlTTw18yb
+         61GUf+HP9Qhy87hY4X+oxMu2WQWbKq0/3pE9lI9/42QrWEkVQlEKF2zTaE1KATmyfqpS
+         1rzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=IDaxDOobVDjFaR+XbUcO1zeYd4szXYR8Tg3ntYn3THQ=;
+        b=FWbULnHAfBkEkg9Bf8fp8gHpVJc+9M78X0RXF7AM8ZBHRe/DtX6+C1NGNKWnSNEdBC
+         pgiWD5X+KjIH8c09F6GII5Zv6fDr+FHPAekVpdEvgx1jVmed1pZB3GmHZVmrjRl9pMcq
+         Dqn4+a/7lZrlfJh+8thBf4JSQYykPjgPED8Y7PaSwpnt7VoSVzFNu8S5COdCtgFO7bXY
+         eZUQIu3ARDv/gsa4s70OlhzVSVdbftRHaejITBh3ML7iSpsmuDpU4YgPE4uZqH9Ueofj
+         dgACMOZeu2gMJVe+L10jpbfQkIiQmvjIfFih27qQ9y3WyFOATMe/GqvJlo2VubC3TC0j
+         Mm6Q==
+X-Gm-Message-State: AOAM532BpxDq6rMyFuaRBpJqNs+PHKmkMozeTejKdoMfGWm+L1CPd7Uz
+        tnzznxxHYR/QWjrhVZvWmOzRuEs1pbvrHnvNKjjayg==
+X-Google-Smtp-Source: ABdhPJzoZRV8ZtcQ2AxvMArUx6ZSVUb8mXeMCKC6mBurbB8hvbXEt9uo30BgRFMtXrM9/QTlwsYpgaP2jzDkEwZbBVk=
+X-Received: by 2002:a19:4883:: with SMTP id v125mr17261923lfa.95.1589363752383;
+ Wed, 13 May 2020 02:55:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1589243050-18217-5-git-send-email-opendmb@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 13 May 2020 15:25:39 +0530
+Message-ID: <CA+G9fYtC68oypqUoPbsnCA3CKL9=Os68fR+K1eKaWpFn=nj-Ng@mail.gmail.com>
+Subject: stable-rc 4.19.123-rc1/92ba0b6b33ad: no regressions found in project
+ stable v4.19.y
+To:     linux- stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     lkft-triage@lists.linaro.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 05:24:10PM -0700, Doug Berger wrote:
-> diff --git a/drivers/net/ethernet/broadcom/genet/bcmmii.c b/drivers/net/ethernet/broadcom/genet/bcmmii.c
-> index 511d553a4d11..788da1ecea0c 100644
-> --- a/drivers/net/ethernet/broadcom/genet/bcmmii.c
-> +++ b/drivers/net/ethernet/broadcom/genet/bcmmii.c
-> @@ -25,6 +25,21 @@
->  
->  #include "bcmgenet.h"
->  
-> +static u32 _flow_control_autoneg(struct phy_device *phydev)
-> +{
-> +	bool tx_pause, rx_pause;
-> +	u32 cmd_bits = 0;
-> +
-> +	phy_get_pause(phydev, &tx_pause, &rx_pause);
-> +
-> +	if (!tx_pause)
-> +		cmd_bits |= CMD_TX_PAUSE_IGNORE;
-> +	if (!rx_pause)
-> +		cmd_bits |= CMD_RX_PAUSE_IGNORE;
-> +
-> +	return cmd_bits;
-> +}
-> +
->  /* setup netdev link state when PHY link status change and
->   * update UMAC and RGMII block when link up
->   */
-> @@ -71,12 +86,20 @@ void bcmgenet_mii_setup(struct net_device *dev)
->  		cmd_bits <<= CMD_SPEED_SHIFT;
->  
->  		/* duplex */
-> -		if (phydev->duplex != DUPLEX_FULL)
-> -			cmd_bits |= CMD_HD_EN;
-> -
-> -		/* pause capability */
-> -		if (!phydev->pause)
-> -			cmd_bits |= CMD_RX_PAUSE_IGNORE | CMD_TX_PAUSE_IGNORE;
-> +		if (phydev->duplex != DUPLEX_FULL) {
-> +			cmd_bits |= CMD_HD_EN |
-> +				CMD_RX_PAUSE_IGNORE | CMD_TX_PAUSE_IGNORE;
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-phy_get_pause() already takes account of whether the PHY is in half
-duplex mode.  So:
+Summary
+------------------------------------------------------------------------
 
-		bool tx_pause, rx_pause;
+kernel: 4.19.123-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 92ba0b6b33adce776edd773ce07fbf0b6097f9d5
+git describe: v4.19.122-48-g92ba0b6b33ad
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.19-oe/bu=
+ild/v4.19.122-48-g92ba0b6b33ad
 
-		if (phydev->autoneg && priv->autoneg_pause) {
-			phy_get_pause(phydev, &tx_pause, &rx_pause);
-		} else if (phydev->duplex == DUPLEX_FULL) {
-			tx_pause = priv->tx_pause;
-			rx_pause = priv->rx_pause;
-		} else {
-			tx_pause = false;
-			rx_pause = false;
-		}
 
-		if (!tx_pause)
-			cmd_bits |= CMD_TX_PAUSE_IGNORE;
-		if (!rx_pause)
-			cmd_bits |= CMD_RX_PAUSE_IGNORE;
+No regressions (compared to build v4.19.122)
 
-would be entirely sufficient here.
+No fixes (compared to build v4.19.122)
 
-I wonder whether your implementation (which mine follows) is really
-correct though.  Consider this:
+Ran 24159 total tests in the following environments and test suites.
 
-# ethtool -A eth0 autoneg on tx on rx on
-# ethtool -s eth0 autoneg off speed 1000 duplex full
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
 
-At this point, what do you expect the resulting pause state to be?  It
-may not be what you actually think it should be - it will be tx and rx
-pause enabled (it's easier to see why that happens with my rewritten
-version of your implementation, which is functionally identical.)
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2800
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* libhugetlbfs
+* ltp-containers-tests
+* ltp-cve-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* v4l2-compliance
+* ltp-open-posix-tests
+* kvm-unit-tests
 
-If we take the view that if link autoneg is disabled, and therefore the
-link partner's advertisement is zero, shouldn't it result in tx and rx
-pause being disabled?
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
+--=20
+Linaro LKFT
+https://lkft.linaro.org
