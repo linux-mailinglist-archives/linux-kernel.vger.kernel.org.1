@@ -2,71 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010FC1D2296
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892A01D229B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732219AbgEMXCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 19:02:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731815AbgEMXCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 19:02:31 -0400
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45A3B20675;
-        Wed, 13 May 2020 23:02:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589410951;
-        bh=nkq4QibHgdf/84wDz2VcbjymUdMoVUptx7L8aeIN+2c=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=LqlA51UVu0TuMHAIUmJF1cVnfu0OTE+Nte9ev7/OYuwYc6qaOk6QO6w8qPnN/SlXg
-         F8cRi7R0cJoeKREv+ZmxSEbOqi6CMFswiAfVvjtERHkZ9I8acHJ74Y21R/iYInkyFw
-         hoFyDBQF8LWnQ/Bvw+vGUJ9h4YK5bEFb4Fc8zwTk=
-Subject: Re: [PATCH 4.19 00/48] 4.19.123-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, shuah <shuah@kernel.org>
-References: <20200513094351.100352960@linuxfoundation.org>
-From:   shuah <shuah@kernel.org>
-Message-ID: <b7aed527-54db-189c-4d34-cc5834f18bc6@kernel.org>
-Date:   Wed, 13 May 2020 17:02:30 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1732267AbgEMXDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 19:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732236AbgEMXDk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 19:03:40 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D56BC061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:03:40 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 188so925141lfa.10
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:03:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wdZg4gkYTds/C4KUVy9erLK1Ch+WqNN+RvFMTseVuAg=;
+        b=C1TcjV6OtJpa2YRiWAUnGcZZ/u09cBy851Mx94wSMSQa9VrdsWV1jVHW4P1sNrL8Bh
+         F6WpmJ1tQWre2J0ca6Wb2LX04yqV6LxMJpd1Tpa6EPb8PrEYBkkbwpuLaAdO/BjmCZ2G
+         9egVYPaqRVmuIV8Yift2HwrZ/fz1dHM99i9n0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wdZg4gkYTds/C4KUVy9erLK1Ch+WqNN+RvFMTseVuAg=;
+        b=XOYGxrsRsQPdXXeRh+psp9ZT6VcmwnnECj3npfeWZYunS3wonUROAXsEU3B8W7CnLH
+         bL4xsQYjhYXGtjrByhzzCiKiAW3zvS6rjx+L+73EzXNYas8+jMvoAvnOCmEYAr2xgeit
+         4O3Z9vsGkBqAB9nt8j2cHPWI8/G7Rns0Z/bH5T00cbDFxcQWyegmx0z5TQ2J4TCEexrI
+         qVnML6cbBBy8l/0/ZUdlveYwg5CYNF5s0bOeoVFJWGk8JlwAZsEhraYe8a/oyxz4y4Z0
+         uhbDfj/9apY/0jjh0Wf0BrgO2lQvKGEP7BJTHSnGuB5pmLi+tV6bgAfiw3MtDTivqCCy
+         ggiA==
+X-Gm-Message-State: AOAM533bqbT1+W5D+EM5PFsflfLUusk2N89OVkT0RUclh0lBcZO+u8Wr
+        Y/iOseDsAabafCTYSyZYpO29zThowH4=
+X-Google-Smtp-Source: ABdhPJxTtRL5ITTgQ0cJMjxghWCdBpdsl78DTeOSBeBASiVLHvuHSf45z9Rj1Z2y/HonFo/f5JVTuQ==
+X-Received: by 2002:ac2:48b2:: with SMTP id u18mr1104694lfg.122.1589411018016;
+        Wed, 13 May 2020 16:03:38 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id d16sm431144ljj.84.2020.05.13.16.03.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 May 2020 16:03:36 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id v5so906561lfp.13
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 16:03:36 -0700 (PDT)
+X-Received: by 2002:ac2:58c8:: with SMTP id u8mr1177915lfo.142.1589411015919;
+ Wed, 13 May 2020 16:03:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200513160038.2482415-1-hch@lst.de> <20200513160038.2482415-12-hch@lst.de>
+ <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
+ <20200513192804.GA30751@lst.de> <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
+In-Reply-To: <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 13 May 2020 16:03:20 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiivWJ70PotzCK-j7K4Y612NJBA2d+iN6Rz-bfMxCpwjQ@mail.gmail.com>
+Message-ID: <CAHk-=wiivWJ70PotzCK-j7K4Y612NJBA2d+iN6Rz-bfMxCpwjQ@mail.gmail.com>
+Subject: Re: [PATCH 11/18] maccess: remove strncpy_from_unsafe
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-parisc@vger.kernel.org,
+        linux-um <linux-um@lists.infradead.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/20 3:44 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.123 release.
-> There are 48 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 15 May 2020 09:41:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.123-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Wed, May 13, 2020 at 3:36 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> It's used for both.
 
-Compiled and booted on my test system. No dmesg regressions.
+Daniel, BPF real;ly needs to make up its mind about that.
 
-thanks,
--- Shuah
+You *cannot* use ti for both.
+
+Yes, it happens to work on x86 and some other architectures.
+
+But on other architectures, the exact same pointer value can be a
+kernel pointer or a user pointer.
+
+> Given this is enabled on pretty much all program types, my
+> assumption would be that usage is still more often on kernel memory than user one.
+
+You need to pick one.
+
+If you know it is a user pointer, use strncpy_from_user() (possibly
+with disable_pagefault() aka strncpy_from_user_nofault()).
+
+And if you know it is a kernel pointer, use strncpy_from_unsafe() (aka
+strncpy_from_kernel_nofault()).
+
+You really can't pick the "randomly one or the other guess what I mean " option.
+
+                  Linus
