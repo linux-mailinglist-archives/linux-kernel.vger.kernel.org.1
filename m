@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0F31D0C9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757171D0D31
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732593AbgEMJqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:46:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43452 "EHLO mail.kernel.org"
+        id S2387597AbgEMJvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:51:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726492AbgEMJqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:46:09 -0400
+        id S2387582AbgEMJvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:51:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67F8020740;
-        Wed, 13 May 2020 09:46:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC58C20575;
+        Wed, 13 May 2020 09:50:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363168;
-        bh=jpdaPpHao6OeULRHplp+4KkK02unGY3r6eZUySCwHaM=;
+        s=default; t=1589363460;
+        bh=+KCU1v8AF1ldibfn5M/2mbw8+9wD9iUOtgyk2tciFyM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WoWofrOCEaxW0E7UULadyUuknM/4CGjZ2nQjMObusz0is/FXaY8Q0VGG/oe0eK3kj
-         u3EUgCmBjI3mtrE9QXrOC7U0WvD+PEjoUiGxO0k+CxyTudgV79fYsE4WI1dwQlC8sr
-         7+fiSXfy9q7GviOhSifCzEa4OSGVuYTqrohcW1m0=
+        b=nKBIrn2dpt/Cuq02bdy4WLN0WRL1wiqTRND251kfRgLe2G3wCx3ANJ5B9vXsQGCDX
+         XMCwzk5Ei5etrQc78ppQehpIYrvswpyIn+/koYNgZi/izbU3usPuP4RXUPZ+Wa5phF
+         GX/YAL1eehako6gHRIwbWFphoGFyBq72MS85Xygw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH 4.19 14/48] net/mlx5: Fix forced completion access non initialized command entry
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Jiri Kosina <jkosina@suse.cz>,
+        syzbot+7bf5a7b0f0a1f9446f4c@syzkaller.appspotmail.com
+Subject: [PATCH 5.4 44/90] HID: usbhid: Fix race between usbhid_close() and usbhid_stop()
 Date:   Wed, 13 May 2020 11:44:40 +0200
-Message-Id: <20200513094354.999572106@linuxfoundation.org>
+Message-Id: <20200513094413.466529428@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
-References: <20200513094351.100352960@linuxfoundation.org>
+In-Reply-To: <20200513094408.810028856@linuxfoundation.org>
+References: <20200513094408.810028856@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +44,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moshe Shemesh <moshe@mellanox.com>
+From: Alan Stern <stern@rowland.harvard.edu>
 
-[ Upstream commit f3cb3cebe26ed4c8036adbd9448b372129d3c371 ]
+commit 0ed08faded1da03eb3def61502b27f81aef2e615 upstream.
 
-mlx5_cmd_flush() will trigger forced completions to all valid command
-entries. Triggered by an asynch event such as fast teardown it can
-happen at any stage of the command, including command initialization.
-It will trigger forced completion and that can lead to completion on an
-uninitialized command entry.
+The syzbot fuzzer discovered a bad race between in the usbhid driver
+between usbhid_stop() and usbhid_close().  In particular,
+usbhid_stop() does:
 
-Setting MLX5_CMD_ENT_STATE_PENDING_COMP only after command entry is
-initialized will ensure force completion is treated only if command
-entry is initialized.
+	usb_free_urb(usbhid->urbin);
+	...
+	usbhid->urbin = NULL; /* don't mess up next start */
 
-Fixes: 73dd3a4839c1 ("net/mlx5: Avoid using pending command interface slots")
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
-Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+and usbhid_close() does:
+
+	usb_kill_urb(usbhid->urbin);
+
+with no mutual exclusion.  If the two routines happen to run
+concurrently so that usb_kill_urb() is called in between the
+usb_free_urb() and the NULL assignment, it will access the
+deallocated urb structure -- a use-after-free bug.
+
+This patch adds a mutex to the usbhid private structure and uses it to
+enforce mutual exclusion of the usbhid_start(), usbhid_stop(),
+usbhid_open() and usbhid_close() callbacks.
+
+Reported-and-tested-by: syzbot+7bf5a7b0f0a1f9446f4c@syzkaller.appspotmail.com
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+CC: <stable@vger.kernel.org>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/cmd.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-@@ -862,7 +862,6 @@ static void cmd_work_handler(struct work
+---
+ drivers/hid/usbhid/hid-core.c |   37 +++++++++++++++++++++++++++++--------
+ drivers/hid/usbhid/usbhid.h   |    1 +
+ 2 files changed, 30 insertions(+), 8 deletions(-)
+
+--- a/drivers/hid/usbhid/hid-core.c
++++ b/drivers/hid/usbhid/hid-core.c
+@@ -682,16 +682,21 @@ static int usbhid_open(struct hid_device
+ 	struct usbhid_device *usbhid = hid->driver_data;
+ 	int res;
+ 
++	mutex_lock(&usbhid->mutex);
++
+ 	set_bit(HID_OPENED, &usbhid->iofl);
+ 
+-	if (hid->quirks & HID_QUIRK_ALWAYS_POLL)
+-		return 0;
++	if (hid->quirks & HID_QUIRK_ALWAYS_POLL) {
++		res = 0;
++		goto Done;
++	}
+ 
+ 	res = usb_autopm_get_interface(usbhid->intf);
+ 	/* the device must be awake to reliably request remote wakeup */
+ 	if (res < 0) {
+ 		clear_bit(HID_OPENED, &usbhid->iofl);
+-		return -EIO;
++		res = -EIO;
++		goto Done;
  	}
  
- 	cmd->ent_arr[ent->idx] = ent;
--	set_bit(MLX5_CMD_ENT_STATE_PENDING_COMP, &ent->state);
- 	lay = get_inst(cmd, ent->idx);
- 	ent->lay = lay;
- 	memset(lay, 0, sizeof(*lay));
-@@ -884,6 +883,7 @@ static void cmd_work_handler(struct work
+ 	usbhid->intf->needs_remote_wakeup = 1;
+@@ -725,6 +730,9 @@ static int usbhid_open(struct hid_device
+ 		msleep(50);
  
- 	if (ent->callback)
- 		schedule_delayed_work(&ent->cb_timeout_work, cb_timeout);
-+	set_bit(MLX5_CMD_ENT_STATE_PENDING_COMP, &ent->state);
+ 	clear_bit(HID_RESUME_RUNNING, &usbhid->iofl);
++
++ Done:
++	mutex_unlock(&usbhid->mutex);
+ 	return res;
+ }
  
- 	/* Skip sending command to fw if internal error */
- 	if (pci_channel_offline(dev->pdev) ||
+@@ -732,6 +740,8 @@ static void usbhid_close(struct hid_devi
+ {
+ 	struct usbhid_device *usbhid = hid->driver_data;
+ 
++	mutex_lock(&usbhid->mutex);
++
+ 	/*
+ 	 * Make sure we don't restart data acquisition due to
+ 	 * a resumption we no longer care about by avoiding racing
+@@ -743,12 +753,13 @@ static void usbhid_close(struct hid_devi
+ 		clear_bit(HID_IN_POLLING, &usbhid->iofl);
+ 	spin_unlock_irq(&usbhid->lock);
+ 
+-	if (hid->quirks & HID_QUIRK_ALWAYS_POLL)
+-		return;
++	if (!(hid->quirks & HID_QUIRK_ALWAYS_POLL)) {
++		hid_cancel_delayed_stuff(usbhid);
++		usb_kill_urb(usbhid->urbin);
++		usbhid->intf->needs_remote_wakeup = 0;
++	}
+ 
+-	hid_cancel_delayed_stuff(usbhid);
+-	usb_kill_urb(usbhid->urbin);
+-	usbhid->intf->needs_remote_wakeup = 0;
++	mutex_unlock(&usbhid->mutex);
+ }
+ 
+ /*
+@@ -1057,6 +1068,8 @@ static int usbhid_start(struct hid_devic
+ 	unsigned int n, insize = 0;
+ 	int ret;
+ 
++	mutex_lock(&usbhid->mutex);
++
+ 	clear_bit(HID_DISCONNECTED, &usbhid->iofl);
+ 
+ 	usbhid->bufsize = HID_MIN_BUFFER_SIZE;
+@@ -1177,6 +1190,8 @@ static int usbhid_start(struct hid_devic
+ 		usbhid_set_leds(hid);
+ 		device_set_wakeup_enable(&dev->dev, 1);
+ 	}
++
++	mutex_unlock(&usbhid->mutex);
+ 	return 0;
+ 
+ fail:
+@@ -1187,6 +1202,7 @@ fail:
+ 	usbhid->urbout = NULL;
+ 	usbhid->urbctrl = NULL;
+ 	hid_free_buffers(dev, hid);
++	mutex_unlock(&usbhid->mutex);
+ 	return ret;
+ }
+ 
+@@ -1202,6 +1218,8 @@ static void usbhid_stop(struct hid_devic
+ 		usbhid->intf->needs_remote_wakeup = 0;
+ 	}
+ 
++	mutex_lock(&usbhid->mutex);
++
+ 	clear_bit(HID_STARTED, &usbhid->iofl);
+ 	spin_lock_irq(&usbhid->lock);	/* Sync with error and led handlers */
+ 	set_bit(HID_DISCONNECTED, &usbhid->iofl);
+@@ -1222,6 +1240,8 @@ static void usbhid_stop(struct hid_devic
+ 	usbhid->urbout = NULL;
+ 
+ 	hid_free_buffers(hid_to_usb_dev(hid), hid);
++
++	mutex_unlock(&usbhid->mutex);
+ }
+ 
+ static int usbhid_power(struct hid_device *hid, int lvl)
+@@ -1382,6 +1402,7 @@ static int usbhid_probe(struct usb_inter
+ 	INIT_WORK(&usbhid->reset_work, hid_reset);
+ 	timer_setup(&usbhid->io_retry, hid_retry_timeout, 0);
+ 	spin_lock_init(&usbhid->lock);
++	mutex_init(&usbhid->mutex);
+ 
+ 	ret = hid_add_device(hid);
+ 	if (ret) {
+--- a/drivers/hid/usbhid/usbhid.h
++++ b/drivers/hid/usbhid/usbhid.h
+@@ -80,6 +80,7 @@ struct usbhid_device {
+ 	dma_addr_t outbuf_dma;                                          /* Output buffer dma */
+ 	unsigned long last_out;							/* record of last output for timeouts */
+ 
++	struct mutex mutex;						/* start/stop/open/close */
+ 	spinlock_t lock;						/* fifo spinlock */
+ 	unsigned long iofl;                                             /* I/O flags (CTRL_RUNNING, OUT_RUNNING) */
+ 	struct timer_list io_retry;                                     /* Retry timer */
 
 
