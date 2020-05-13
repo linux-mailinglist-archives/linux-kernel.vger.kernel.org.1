@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1A21D15EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDE71D15FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 15:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388710AbgEMNjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 09:39:40 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:57898 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728787AbgEMNjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 09:39:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=hKK0PusahUIxbCyM9tysfdHvsir7N5IvBCEky0jEiNY=; b=yO+lKrESHBVdVl79yB038dn1C0
-        0RBiUREpZ6oVmSLcN/Y3XjsZA8aHMFK9vMWIIYZ0wxHZsjF/+b6rRcN8jPRcKIAn94UDiwQrnC/3k
-        kJoP0jS9KqXGzSml+Im1iUz7oLti+haAV8uVUuu8u9S731vOv78LsOU1fRMu4PRlWobw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jYrbZ-002AKi-MH; Wed, 13 May 2020 15:39:25 +0200
-Date:   Wed, 13 May 2020 15:39:25 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Marek Vasut <marex@denx.de>, David Jander <david@protonic.nl>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v1] net: phy: tja11xx: add cable-test support
-Message-ID: <20200513133925.GD499265@lunn.ch>
-References: <20200513123440.19580-1-o.rempel@pengutronix.de>
+        id S2388077AbgEMNlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 09:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733282AbgEMNk7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 09:40:59 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D43CC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 06:40:59 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id s1so655151qkf.9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 06:40:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fIL0Xa30eWe4pB9L70dZk7zOy9oguvU9qefI9I02W/c=;
+        b=i2BmTeKd6lucjvyoSCAFMWyWiKtK5PqHOl8WxIU7LwH2Vzirg7cKvwtklgHFjs9XYL
+         gKWcWITZYNWJq6Kz3QN810QJuIZMKG2gZAmtnmk/XazYBWLXY588/FsRg4B8e/cTube4
+         XCeidULijY2gMsBEBBArZLUC+YUCtFi+L+loMPlhmVVCwZdUvXPoabDzIgMthLHDRrO8
+         DTCbLPaQOz242IQtcKjGdm8i7E3NiiiuvFXf0NIJ5lH333lM6UrUA+c97oaqewkON1pA
+         6CatSmJ5gSSHFce1ZfZjkyA3EbIvPqJ6uBLSLH6VE5VOJHENMMhoa8EQ/N9XeyEsIhcn
+         oNEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fIL0Xa30eWe4pB9L70dZk7zOy9oguvU9qefI9I02W/c=;
+        b=OiqnY+nvZ7dZz+v73CjPpmdIcGluglKoLLn5zLmfuvnzbOhSd1JxRyq4mwsbCKFMGx
+         Vp3KOZsYJ8P+b/qEpY/pnoPbjCssMG3LUbi+z7BQ9mQcAMW3rncmP1kx5Wf1QDO8bi7R
+         qWGqbAEFaDeO0Ub+IlcmKCscWvi3+MGFBlgl/qT7Hq3BL4oYRcf0hfMjBPNYC7B4gc+B
+         doMFjbP3jmS4PCiuoBORTHrhOeD6o/5tu0G3TU9SQDcGiDPfeWrDjIsFPVbwDfjLHRSx
+         zY5c//ngGm74w6lCn2VyvOeid/FWgeJ30fg5EMgBMEVFDF6od0RskbOthpYjUZ30bbAH
+         7+8g==
+X-Gm-Message-State: AGi0PuaBbZ6V/5EvaxT/c84hoDiJkwfcIYg8ZS24QQOzMsrKRTG2EfKc
+        cX6Tfoym6+WbIIhWgOHPhNhWRQ==
+X-Google-Smtp-Source: APiQypKCVvq9COXXOzbdahy5qMUwb2p2BOsLwmIYeCXGLbETKpuNWBa45a/FrKEP87HhfdxrFYdT4A==
+X-Received: by 2002:a37:7302:: with SMTP id o2mr26009358qkc.474.1589377258319;
+        Wed, 13 May 2020 06:40:58 -0700 (PDT)
+Received: from ovpn-66-156.rdu2.redhat.com (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id q2sm14044106qkn.116.2020.05.13.06.40.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 13 May 2020 06:40:57 -0700 (PDT)
+From:   Qian Cai <cai@lca.pw>
+To:     mpe@ellerman.id.au
+Cc:     paulus@samba.org, benh@kernel.crashing.org,
+        catalin.marinas@arm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Qian Cai <cai@lca.pw>
+Subject: [PATCH] powerpc/xive: silence kmemleak false positives
+Date:   Wed, 13 May 2020 09:40:46 -0400
+Message-Id: <20200513134046.1089-1-cai@lca.pw>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122.2)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513123440.19580-1-o.rempel@pengutronix.de>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 02:34:40PM +0200, Oleksij Rempel wrote:
-> Add initial cable testing support.
-> This PHY needs only 100usec for this test and it is recommended to run it
-> before the link is up. For now, provide at least ethtool support, so it
-> can be tested by more developers.
-> 
-> This patch was tested with TJA1102 PHY with following results:
-> - No cable, is detected as open
-> - 1m cable, with no connected other end and detected as open
-> - a 40m cable (out of spec, max lenght should be 15m) is detected as OK.
-> 
-> Current patch do not provide polarity test support. This test would
-> indicate not proper wire connection, where "+" wire of main phy is
-> connected to the "-" wire of the link partner.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  drivers/net/phy/nxp-tja11xx.c | 106 +++++++++++++++++++++++++++++++++-
->  1 file changed, 105 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/phy/nxp-tja11xx.c b/drivers/net/phy/nxp-tja11xx.c
-> index ca5f9d4dc57ed..8b743d25002b9 100644
-> --- a/drivers/net/phy/nxp-tja11xx.c
-> +++ b/drivers/net/phy/nxp-tja11xx.c
-> @@ -5,6 +5,7 @@
->   */
->  #include <linux/delay.h>
->  #include <linux/ethtool.h>
-> +#include <linux/ethtool_netlink.h>
->  #include <linux/kernel.h>
->  #include <linux/mdio.h>
->  #include <linux/mii.h>
-> @@ -26,6 +27,7 @@
->  #define MII_ECTRL_POWER_MODE_NO_CHANGE	(0x0 << 11)
->  #define MII_ECTRL_POWER_MODE_NORMAL	(0x3 << 11)
->  #define MII_ECTRL_POWER_MODE_STANDBY	(0xc << 11)
-> +#define MII_ECTRL_CABLE_TEST		BIT(5)
->  #define MII_ECTRL_CONFIG_EN		BIT(2)
->  #define MII_ECTRL_WAKE_REQUEST		BIT(0)
->  
-> @@ -55,6 +57,11 @@
->  #define MII_GENSTAT			24
->  #define MII_GENSTAT_PLL_LOCKED		BIT(14)
->  
-> +#define MII_EXTSTAT			25
-> +#define MII_EXTSTAT_SHORT_DETECT	BIT(8)
-> +#define MII_EXTSTAT_OPEN_DETECT		BIT(7)
-> +#define MII_EXTSTAT_POLARITY_DETECT	BIT(6)
-> +
+opal_xive_donate_page() will reference the newly allocated memory using
+__pa(). Since kmemleak is unable to track the physical memory resulting
+in false positives, silence those by using kmemleak_ignore().
 
-Do these registers all conform to the standard? Can we pull this code
-out into a library which all standards conformant PHY drivers can use?
+unreferenced object 0xc000201b53e90000 (size 65536):
+ comm "qemu-kvm", pid 124557, jiffies 4295650285 (age 364.370s)
+ hex dump (first 32 bytes):
+   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+ backtrace:
+   [<00000000acc2fb77>] xive_native_alloc_vp_block+0x168/0x210
+   xive_native_provision_pages at arch/powerpc/sysdev/xive/native.c:645
+   (inlined by) xive_native_alloc_vp_block at arch/powerpc/sysdev/xive/native.c:674
+   [<000000004d5c7964>] kvmppc_xive_compute_vp_id+0x20c/0x3b0 [kvm]
+   [<0000000055317cd2>] kvmppc_xive_connect_vcpu+0xa4/0x4a0 [kvm]
+   [<0000000093dfc014>] kvm_arch_vcpu_ioctl+0x388/0x508 [kvm]
+   [<00000000d25aea0f>] kvm_vcpu_ioctl+0x15c/0x950 [kvm]
+   [<0000000048155cd6>] ksys_ioctl+0xd8/0x130
+   [<0000000041ffeaa7>] sys_ioctl+0x28/0x40
+   [<000000004afc4310>] system_call_exception+0x114/0x1e0
+   [<00000000fb70a873>] system_call_common+0xf0/0x278
 
-The code itself looks O.K.
+Signed-off-by: Qian Cai <cai@lca.pw>
+---
+ arch/powerpc/sysdev/xive/native.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-    Andrew
+diff --git a/arch/powerpc/sysdev/xive/native.c b/arch/powerpc/sysdev/xive/native.c
+index 5218fdc4b29a..2d19f28967a6 100644
+--- a/arch/powerpc/sysdev/xive/native.c
++++ b/arch/powerpc/sysdev/xive/native.c
+@@ -18,6 +18,7 @@
+ #include <linux/delay.h>
+ #include <linux/cpumask.h>
+ #include <linux/mm.h>
++#include <linux/kmemleak.h>
+ 
+ #include <asm/machdep.h>
+ #include <asm/prom.h>
+@@ -647,6 +648,9 @@ static bool xive_native_provision_pages(void)
+ 			pr_err("Failed to allocate provisioning page\n");
+ 			return false;
+ 		}
++		/* Kmemleak is unable to track the physical address. */
++		kmemleak_ignore(p);
++
+ 		opal_xive_donate_page(chip, __pa(p));
+ 	}
+ 	return true;
+-- 
+2.21.0 (Apple Git-122.2)
+
