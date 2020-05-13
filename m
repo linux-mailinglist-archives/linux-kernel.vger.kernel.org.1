@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFE01D2336
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D0E1D2348
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 01:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732804AbgEMXnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 19:43:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732456AbgEMXnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 19:43:02 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C62F32054F;
-        Wed, 13 May 2020 23:43:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589413382;
-        bh=3RSx/iEP5nlClH5EvnkR+0EJgWPf1xG9Ahhhm+mrsXE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=zhn7LvLTsOH6TeWToTx2TYe2IiazB+KyNk03xeHcUhWXlc8V1VcDT8Lq45B52xAO0
-         TdqWwFNBHEAOqAdGhplPMd9kx0Kvc79CSh02v6bWE+aWrhc/RtiEHUEsSWTrCnJq0E
-         8R3yG+MRBuxM600vPiFUSmGlnIB9kFee8iatpvwU=
-Date:   Wed, 13 May 2020 18:47:38 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH perf/core] perf intel-pt: Fix clang build failure in
- intel_pt_synth_pebs_sample
-Message-ID: <20200513234738.GA21211@embeddedor>
+        id S1732827AbgEMX6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 19:58:41 -0400
+Received: from www62.your-server.de ([213.133.104.62]:43796 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732456AbgEMX6k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 19:58:40 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jZ1Gk-0002xZ-PI; Thu, 14 May 2020 01:58:34 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jZ1Gk-000O73-Al; Thu, 14 May 2020 01:58:34 +0200
+Subject: Re: [PATCH 11/18] maccess: remove strncpy_from_unsafe
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-parisc@vger.kernel.org,
+        linux-um <linux-um@lists.infradead.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bgregg@netflix.com
+References: <20200513160038.2482415-1-hch@lst.de>
+ <20200513160038.2482415-12-hch@lst.de>
+ <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
+ <20200513192804.GA30751@lst.de>
+ <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
+ <20200513232816.GZ23230@ZenIV.linux.org.uk>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <866cbe54-a027-04eb-65db-c6423d16b924@iogearbox.net>
+Date:   Thu, 14 May 2020 01:58:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200513232816.GZ23230@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25811/Wed May 13 14:11:53 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following build failure generated with command 
-$ make CC=clang HOSTCC=clang -C tools/ perf:
+On 5/14/20 1:28 AM, Al Viro wrote:
+> On Thu, May 14, 2020 at 12:36:28AM +0200, Daniel Borkmann wrote:
+> 
+>>> So on say s390 TASK_SIZE_USUALLy is (-PAGE_SIZE), which means we'd alway
+>>> try the user copy first, which seems odd.
+>>>
+>>> I'd really like to here from the bpf folks what the expected use case
+>>> is here, and if the typical argument is kernel or user memory.
+>>
+>> It's used for both. Given this is enabled on pretty much all program types, my
+>> assumption would be that usage is still more often on kernel memory than user one.
+> 
+> Then it needs an argument telling it which one to use.  Look at sparc64.
+> Or s390.  Or parisc.  Et sodding cetera.
+> 
+> The underlying model is that the kernel lives in a separate address space.
+> Yes, on x86 it's actually sharing the page tables with userland, but that's
+> not universal.  The same address can be both a valid userland one _and_
+> a valid kernel one.  You need to tell which one do you want.
 
-util/intel-pt.c:1802:24: error: field 'br_stack' with variable sized type 'struct branch_stack' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
-                        struct branch_stack br_stack;
-                                            ^
-1 error generated.
-
-Fix this by reordering the members of struct br.
-
-Clang version 11.0.0 was used.
-
-Fixes: f283f293a60d ("perf tools: Replace zero-length array with flexible-array")
-Reported-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Here to fix what I break. :)
-
- tools/perf/util/intel-pt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-index f17b1e769ae4..b34179e3926f 100644
---- a/tools/perf/util/intel-pt.c
-+++ b/tools/perf/util/intel-pt.c
-@@ -1799,8 +1799,8 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
- 
- 	if (sample_type & PERF_SAMPLE_BRANCH_STACK) {
- 		struct {
--			struct branch_stack br_stack;
- 			struct branch_entry entries[LBRS_MAX];
-+			struct branch_stack br_stack;
- 		} br;
- 
- 		if (items->mask[INTEL_PT_LBR_0_POS] ||
--- 
-2.26.2
-
+Yes, see also 6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_{user,
+kernel}_str helpers"), and my other reply wrt bpf_trace_printk() on how to address
+this. All I'm trying to say is that both bpf_probe_read() and bpf_trace_printk() do
+exist in this form since early [e]bpf days for ~5yrs now and while broken on non-x86
+there are a lot of users on x86 for this in the wild, so they need to have a chance
+to migrate over to the new facilities before they are fully removed.
