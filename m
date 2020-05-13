@@ -2,76 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9D71D10D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B52511D10ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 13:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731056AbgEMLNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 07:13:53 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:12201 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730991AbgEMLNt (ORCPT
+        id S1731258AbgEMLPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 07:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730567AbgEMLPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 07:13:49 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app11-12011 (RichMail) with SMTP id 2eeb5ebbd658ecd-cf4c5; Wed, 13 May 2020 19:13:28 +0800 (CST)
-X-RM-TRANSID: 2eeb5ebbd658ecd-cf4c5
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.25.154.146])
-        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee65ebbd655ed9-e0e21;
-        Wed, 13 May 2020 19:13:28 +0800 (CST)
-X-RM-TRANSID: 2ee65ebbd655ed9-e0e21
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     broonie@kernel.org, timur@kernel.org, nicoleotsuka@gmail.com,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.com,
-        perex@perex.cz
-Cc:     alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] ASoC: fsl: imx-audmix: Fix unused assignment to variable 'ret'
-Date:   Wed, 13 May 2020 19:14:08 +0800
-Message-Id: <20200513111408.11452-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        Wed, 13 May 2020 07:15:10 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4409FC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 04:15:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=q/Wqq3uOvtKbZfYJc48mNiATxJyfIVdSSR1DgfaLH54=; b=b32vjaktLO98mX8LKLQxIPBAJO
+        XfWpic6QU9m6K/Lt9sQ9zp/4xgZLexxa/EyjhsOp/Ns91PCIML33BaxMeP99/SGI3L5U10CGShJwe
+        xBUUnFY8t3UE+ufFh/O7uBBhaeQjUWzxiGlOBysHlgg7+YW8hYkzWA6pY+ehH5gjoPmjtPvuQZeda
+        LQLdtDiLwI2wpg4gss04jlEYbZFwEZIFQeNSXa3L8DiEoxDh6600x12ITYY8EATZ0j7NrNhxbxe+d
+        vAnrbPBg/IPA7YLiWi/b/EaqGGa/OQCQ6L0E81WfI5EFGGOINIwszOCDsSrbXAafrKAaHv/93khGj
+        ulY1MT/g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jYpLd-0004dS-Ir; Wed, 13 May 2020 11:14:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AE5E7301205;
+        Wed, 13 May 2020 13:14:47 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9AF2424C0C643; Wed, 13 May 2020 13:14:47 +0200 (CEST)
+Date:   Wed, 13 May 2020 13:14:47 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Will Deacon <will@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, dvyukov@google.com
+Subject: Re: [PATCH v5 00/18] Rework READ_ONCE() to improve codegen
+Message-ID: <20200513111447.GE3001@hirez.programming.kicks-ass.net>
+References: <20200511204150.27858-1-will@kernel.org>
+ <20200512081826.GE2978@hirez.programming.kicks-ass.net>
+ <CANpmjNNo3rhwqG=xEbpP9JiSd8-Faw8fkoUhYJjesHK5S5_KQQ@mail.gmail.com>
+ <20200512190755.GL2957@hirez.programming.kicks-ass.net>
+ <CANpmjNNeSnrAgfkskE5Y0NNu3-DS6hk+SwjkBunrr8FRxwwT-Q@mail.gmail.com>
+ <20200513111057.GN2957@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200513111057.GN2957@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Omit unused initialized value, because 'ret' will be assigined
-by the function snd_soc_component_read().
+On Wed, May 13, 2020 at 01:10:57PM +0200, Peter Zijlstra wrote:
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> So then I end up with something like the below, and I've validated that
+> does not generate instrumentation... HOWEVER, I now need ~10g of memory
+> and many seconds to compile each file in arch/x86/kernel/.
+
+> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+> index 3bb962959d8b..48f85d1d2db6 100644
+> --- a/include/linux/compiler.h
+> +++ b/include/linux/compiler.h
+> @@ -241,7 +241,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+>   * atomicity or dependency ordering guarantees. Note that this may result
+>   * in tears!
+>   */
+> -#define __READ_ONCE(x)	(*(const volatile __unqual_scalar_typeof(x) *)&(x))
+> +#define __READ_ONCE(x)	data_race((*(const volatile __unqual_scalar_typeof(x) *)&(x)))
+>  
+>  #define __READ_ONCE_SCALAR(x)						\
+>  ({									\
+> @@ -260,7 +260,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+>  
+>  #define __WRITE_ONCE(x, val)						\
+>  do {									\
+> -	*(volatile typeof(x) *)&(x) = (val);				\
+> +	data_race(*(volatile typeof(x) *)&(x) = (val));			\
+>  } while (0)
+>  
+>  #define __WRITE_ONCE_SCALAR(x, val)					\
+
+The above is responsible for that, the below variant is _MUCH_ better
+again. It really doesn't like nested data_race(), as in _REALLY_ doesn't
+like.
+
 ---
- sound/soc/fsl/fsl_audmix.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_audmix.c b/sound/soc/fsl/fsl_audmix.c
-index 5faecbeb5..8b9027f76 100644
---- a/sound/soc/fsl/fsl_audmix.c
-+++ b/sound/soc/fsl/fsl_audmix.c
-@@ -116,7 +116,7 @@ static int fsl_audmix_put_mix_clk_src(struct snd_kcontrol *kcontrol,
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
- 	unsigned int *item = ucontrol->value.enumerated.item;
- 	unsigned int reg_val, val, mix_clk;
--	int ret = 0;
-+	int ret;
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index 3bb962959d8b..2ea532b19e75 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -241,12 +241,12 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+  * atomicity or dependency ordering guarantees. Note that this may result
+  * in tears!
+  */
+-#define __READ_ONCE(x)	(*(const volatile __unqual_scalar_typeof(x) *)&(x))
++#define __READ_ONCE(x)	data_race((*(const volatile __unqual_scalar_typeof(x) *)&(x)))
  
- 	/* Get current state */
- 	ret = snd_soc_component_read(comp, FSL_AUDMIX_CTR, &reg_val);
-@@ -159,7 +159,7 @@ static int fsl_audmix_put_out_src(struct snd_kcontrol *kcontrol,
- 	unsigned int *item = ucontrol->value.enumerated.item;
- 	u32 out_src, mix_clk;
- 	unsigned int reg_val, val, mask = 0, ctr = 0;
--	int ret = 0;
-+	int ret;
+ #define __READ_ONCE_SCALAR(x)						\
+ ({									\
+ 	typeof(x) *__xp = &(x);						\
+-	__unqual_scalar_typeof(x) __x = data_race(__READ_ONCE(*__xp));	\
++	__unqual_scalar_typeof(x) __x = __READ_ONCE(*__xp);		\
+ 	kcsan_check_atomic_read(__xp, sizeof(*__xp));			\
+ 	smp_read_barrier_depends();					\
+ 	(typeof(x))__x;							\
+@@ -260,14 +260,14 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
  
- 	/* Get current state */
- 	ret = snd_soc_component_read(comp, FSL_AUDMIX_CTR, &reg_val);
--- 
-2.20.1.windows.1
-
-
-
+ #define __WRITE_ONCE(x, val)						\
+ do {									\
+-	*(volatile typeof(x) *)&(x) = (val);				\
++	data_race(*(volatile typeof(x) *)&(x) = (val));			\
+ } while (0)
+ 
+ #define __WRITE_ONCE_SCALAR(x, val)					\
+ do {									\
+ 	typeof(x) *__xp = &(x);						\
+ 	kcsan_check_atomic_write(__xp, sizeof(*__xp));			\
+-	data_race(({ __WRITE_ONCE(*__xp, val); 0; }));			\
++	__WRITE_ONCE(*__xp, val);					\
+ } while (0)
+ 
+ #define WRITE_ONCE(x, val)						\
