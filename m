@@ -2,148 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F701D0BEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F2D1D0C09
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730731AbgEMJW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:22:58 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:20198 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727118AbgEMJW6 (ORCPT
+        id S1728068AbgEMJ2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726492AbgEMJ2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:22:58 -0400
-X-UUID: fa62bc129b964dadb0262935d116b170-20200513
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=22zgrRi/oC9kwqIZbeIKNy00cAVePxq0U9heHWhbe+s=;
-        b=IZpjxncNWXK3xwFx41z+SfE4GNDiAZeE5in/eI1Q31Ldj7bL1R3To1A3JJCLQf3m5rWKlhOv5/hJr9e7chLVkHCYzFkMsJKtOZBn4Y2b4AuQNvq9q4uYjnwznEgHxg0ZdBv+83jKm4wWo2bbYudzu0YZNj0/1pkJbfXBduJRFZ4=;
-X-UUID: fa62bc129b964dadb0262935d116b170-20200513
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1650932209; Wed, 13 May 2020 17:22:52 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 13 May 2020 17:22:51 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 13 May 2020 17:22:48 +0800
-Message-ID: <1589361771.15912.3.camel@mtksdccf07>
-Subject: Re: [PATCH v2 1/3] rcu/kasan: record and print call_rcu() call stack
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-CC:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Linux ARM" <linux-arm-kernel@lists.infradead.org>
-Date:   Wed, 13 May 2020 17:22:51 +0800
-In-Reply-To: <CACT4Y+ZycfHeP5xqqkihRHx-aOoBhN9XdhUmzCdTfaYPXTCzAA@mail.gmail.com>
-References: <20200511023111.15310-1-walter-zh.wu@mediatek.com>
-         <CACT4Y+YWNwTSoheJhc3nMdQi9m719F3PzpGo3TfRY3zAg9EwuQ@mail.gmail.com>
-         <CACT4Y+bO1Zg_jgFHbOWgp7fLAADOQ_-AZmjEHz0WG7=oyOt4Gg@mail.gmail.com>
-         <1589203771.21284.22.camel@mtksdccf07>
-         <CACT4Y+aOkuH6Dn+L+wv1qVOLgXyCY_Ck4hecAMw3DgyBgC9qHw@mail.gmail.com>
-         <1589254720.19238.36.camel@mtksdccf07>
-         <CACT4Y+aibZEBR-3bos3ox5Tuu48TnHC20mDDN0AkWeRUKrT0aw@mail.gmail.com>
-         <1589334472.19238.44.camel@mtksdccf07>
-         <CACT4Y+Zv3rCZs8z56NHM0hHWMwQr_2AT8nx0vUigzMG2v3Rt8Q@mail.gmail.com>
-         <1589360744.14554.10.camel@mtksdccf07>
-         <CACT4Y+ZycfHeP5xqqkihRHx-aOoBhN9XdhUmzCdTfaYPXTCzAA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Wed, 13 May 2020 05:28:45 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C24C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 02:28:44 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id l19so17009306lje.10
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 02:28:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=wQxU0jyrHzKEkXou1yOIjNJHHQfsfmWMdJ2AoZ354UQ=;
+        b=D9YifD/SW20ytyogAuVn9VrK0eKC+bwfpvlTRVGFjX4/WlCGcAUK8+6+pcocUtJIWn
+         ZY3rWBAeBgljvsqnfct1Io+mMPT3L2HAseZ5JSaAHdu9NBzNVcZuseHblNApYRDZ2FAI
+         IJT6Xa/ZprsZ838WypM1E6w4WiqkjDebPDwy3b/iAB7wkl9kAXL5YkjIcJ0R3lKDKUUV
+         OTm47/l1qbqJTpQ/nqDAO7Ea/2ko42fRl9mDRTrY5fHzNxRsY9aLGdDq24Gd+Y/eOE17
+         nvVYDr24QN1JkQnxIrfW7Uij3wv0nd7BO99xqhUu5uxQ/5TcBMTyYu0gDO1S5R5zO9bv
+         S/FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=wQxU0jyrHzKEkXou1yOIjNJHHQfsfmWMdJ2AoZ354UQ=;
+        b=UumQTl37vfSqE7VEAZ6itFCVtOgFDSVYl6hCReoBOvW6W2nxH4pliqwaxGBHGC4aQk
+         AEGYE77V/40Td66a4GWBZvxMdqRfkuHGH3QZo4kVNlQd8TQAxk6gtdHxDl2QZAMgczfl
+         NS/wZ7kbB2P7djDE1/77+oF1xTlS0wKiQ16OUMO8FE8YVps92aTOkHaOkQfczrMzpxjM
+         MrsfEMxSrqtILMU0bw+ty2OV6/nPZRNoyyXKBewOst6ulkdIk84Q8KOnl8Co2bRlt5io
+         j9IjXv1CXCgR0Fpwie3PYBUjSQzlgT+BqNCSjkV63p60YfPihH8y2t5Pudw0s5WtMpqx
+         j8AA==
+X-Gm-Message-State: AOAM532EaPOL64u2tOMzGVYlhYnUfqAvb6I+TLhcjkrHEG5tLhgPSc/R
+        PCpY/yxY+8hMWqIx360puyrsCdo6l9grWN8NVySAFw==
+X-Google-Smtp-Source: ABdhPJymCx/vtL0zSaB9nQywQfka98iDN4CnnB2w41wAW/txsjCb6bxprZhxbc18emb5CImBf8voznVttHoAckZeEBk=
+X-Received: by 2002:a2e:8999:: with SMTP id c25mr16869377lji.73.1589362122301;
+ Wed, 13 May 2020 02:28:42 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 13 May 2020 14:58:30 +0530
+Message-ID: <CA+G9fYv=uqK7qHfkE4VrGKwJ3G3E3meYH9vjzZKpS+K4sP-yhw@mail.gmail.com>
+Subject: stable-rc 4.4.224-rc1/e6bc7c5d4464: no regressions found in project
+ stable v4.4.y
+To:     linux- stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     lkft-triage@lists.linaro.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTA1LTEzIGF0IDExOjE2ICswMjAwLCBEbWl0cnkgVnl1a292IHdyb3RlOg0K
-PiBPbiBXZWQsIE1heSAxMywgMjAyMCBhdCAxMTowNSBBTSBXYWx0ZXIgV3UgPHdhbHRlci16aC53
-dUBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gT24gV2VkLCAyMDIwLTA1LTEzIGF0IDA4
-OjUxICswMjAwLCAnRG1pdHJ5IFZ5dWtvdicgdmlhIGthc2FuLWRldiB3cm90ZToNCj4gPiA+IE9u
-IFdlZCwgTWF5IDEzLCAyMDIwIGF0IDM6NDggQU0gV2FsdGVyIFd1IDx3YWx0ZXItemgud3VAbWVk
-aWF0ZWsuY29tPiB3cm90ZToNCj4gPiA+ID4gPiA+ID4gQXJlIHlvdSBzdXJlIGl0IHdpbGwgaW5j
-cmVhc2Ugb2JqZWN0IHNpemU/DQo+ID4gPiA+ID4gPiA+IEkgdGhpbmsgd2Ugb3ZlcmxhcCBrYXNh
-bl9mcmVlX21ldGEgd2l0aCB0aGUgb2JqZWN0IGFzIHdlbGwuIFRoZSBvbmx5DQo+ID4gPiA+ID4g
-PiA+IGNhc2Ugd2UgZG9uJ3Qgb3ZlcmxhcCBrYXNhbl9mcmVlX21ldGEgd2l0aCB0aGUgb2JqZWN0
-IGFyZQ0KPiA+ID4gPiA+ID4gPiBTTEFCX1RZUEVTQUZFX0JZX1JDVSB8fCBjYWNoZS0+Y3Rvci4g
-QnV0IHRoZXNlIGFyZSByYXJlIGFuZCBpdCBzaG91bGQNCj4gPiA+ID4gPiA+ID4gb25seSBhZmZl
-Y3Qgc21hbGwgb2JqZWN0cyB3aXRoIHNtYWxsIHJlZHpvbmVzLg0KPiA+ID4gPiA+ID4gPiBBbmQg
-SSB0aGluayBub3cgd2Ugc2ltcGx5IGhhdmUgYSBidWcgZm9yIHRoZXNlIG9iamVjdHMsIHdlIGNo
-ZWNrDQo+ID4gPiA+ID4gPiA+IEtBU0FOX0tNQUxMT0NfRlJFRSBhbmQgdGhlbiBhc3N1bWUgb2Jq
-ZWN0IGNvbnRhaW5zIGZyZWUgc3RhY2ssIGJ1dCBmb3INCj4gPiA+ID4gPiA+ID4gb2JqZWN0cyB3
-aXRoIGN0b3IsIHRoZXkgc3RpbGwgY29udGFpbiBsaXZlIG9iamVjdCBkYXRhLCB3ZSBkb24ndCBz
-dG9yZQ0KPiA+ID4gPiA+ID4gPiBmcmVlIHN0YWNrIGluIHRoZW0uDQo+ID4gPiA+ID4gPiA+IFN1
-Y2ggb2JqZWN0cyBjYW4gYmUgYm90aCBmcmVlIGFuZCBzdGlsbCBjb250YWluIHVzZXIgZGF0YS4N
-Cj4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBPdmVybGF5IGthc2FuX2Zy
-ZWVfbWV0YS4gSSBzZWUuIGJ1dCBvdmVybGF5IGl0IG9ubHkgd2hlbiB0aGUgb2JqZWN0IHdhcw0K
-PiA+ID4gPiA+ID4gZnJlZWQuIGthc2FuX2ZyZWVfbWV0YSB3aWxsIGJlIHVzZWQgdW50aWwgZnJl
-ZSBvYmplY3QuDQo+ID4gPiA+ID4gPiAxKS4gV2hlbiBwdXQgb2JqZWN0IGludG8gcXVhcmFudGlu
-ZSwgaXQgbmVlZCBrYXNhbl9mcmVlX21ldGEuDQo+ID4gPiA+ID4gPiAyKS4gV2hlbiB0aGUgb2Jq
-ZWN0IGV4aXQgZnJvbSBxdWFyYW50aW5lLCBpdCBuZWVkIGthc2FuX2ZyZWVfbWV0YQ0KPiA+ID4g
-PiA+ID4NCj4gPiA+ID4gPiA+IElmIHdlIGNob29zZSB0byBvdmVybGF5IGthc2FuX2ZyZWVfbWV0
-YSwgdGhlbiB0aGUgZnJlZSBzdGFjayB3aWxsIGJlDQo+ID4gPiA+ID4gPiBzdG9yZWQgdmVyeSBs
-YXRlLiBJdCBtYXkgaGFzIG5vIGZyZWUgc3RhY2sgaW4gcmVwb3J0Lg0KPiA+ID4gPiA+DQo+ID4g
-PiA+ID4gU29ycnksIEkgZG9uJ3QgdW5kZXJzdGFuZCB3aGF0IHlvdSBtZWFuLg0KPiA+ID4gPiA+
-DQo+ID4gPiA+ID4gV2h5IHdpbGwgaXQgYmUgc3RvcmVkIHRvbyBsYXRlPw0KPiA+ID4gPiA+IElu
-IF9fa2FzYW5fc2xhYl9mcmVlKCkgcHV0dGluZyBpbnRvIHF1YXJhbnRpbmUgYW5kIHJlY29yZGlu
-ZyBmcmVlDQo+ID4gPiA+ID4gc3RhY2sgYXJlIGxpdGVyYWxseSBhZGphY2VudCBsaW5lcyBvZiBj
-b2RlOg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gc3RhdGljIGJvb2wgX19rYXNhbl9zbGFiX2ZyZWUo
-c3RydWN0IGttZW1fY2FjaGUgKmNhY2hlLCB2b2lkICpvYmplY3QsDQo+ID4gPiA+ID4gICAgICAg
-dW5zaWduZWQgbG9uZyBpcCwgYm9vbCBxdWFyYW50aW5lKQ0KPiA+ID4gPiA+IHsNCj4gPiA+ID4g
-PiAgICAgLi4uDQo+ID4gPiA+ID4gICAgIGthc2FuX3NldF9mcmVlX2luZm8oY2FjaGUsIG9iamVj
-dCwgdGFnKTsNCj4gPiA+ID4gPiAgICAgcXVhcmFudGluZV9wdXQoZ2V0X2ZyZWVfaW5mbyhjYWNo
-ZSwgb2JqZWN0KSwgY2FjaGUpOw0KPiA+ID4gPiA+DQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBKdXN0
-IHRvIG1ha2Ugc3VyZSwgd2hhdCBJIG1lYW50IGlzIHRoYXQgd2UgYWRkIGZyZWVfdHJhY2sgdG8g
-a2FzYW5fZnJlZV9tZXRhOg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gc3RydWN0IGthc2FuX2ZyZWVf
-bWV0YSB7DQo+ID4gPiA+ID4gICAgIHN0cnVjdCBxbGlzdF9ub2RlIHF1YXJhbnRpbmVfbGluazsN
-Cj4gPiA+ID4gPiArICBzdHJ1Y3Qga2FzYW5fdHJhY2sgZnJlZV90cmFjazsNCj4gPiA+ID4gPiB9
-Ow0KPiA+ID4gPiA+DQo+ID4gPiA+DQo+ID4gPiA+IFdoZW4gSSBzZWUgYWJvdmUgc3RydWN0IGth
-c2FuX2ZyZWVfbWV0YSwgSSBrbm93IHdoeSB5b3UgZG9uJ3QgdW5kZXJzdGFuZA0KPiA+ID4gPiBt
-eSBtZWFuaW5nLCBiZWNhdXNlIEkgdGhvdWdodCB5b3Ugd2VyZSBnb2luZyB0byBvdmVybGF5IHRo
-ZQ0KPiA+ID4gPiBxdWFyYW50aW5lX2xpbmsgYnkgZnJlZV90cmFjaywgYnV0IGl0IHNlZW1zIGxp
-a2UgdG8gYWRkIGZyZWVfdHJhY2sgdG8NCj4gPiA+ID4ga2FzYW5fZnJlZV9tZXRhLiBEb2VzIGl0
-IGVubGFyZ2UgbWV0YS1kYXRhIHNpemU/DQo+ID4gPg0KPiA+ID4gSSB3b3VsZCBhc3N1bWUgaXQg
-c2hvdWxkIG5vdCBpbmNyZWFzZSBtZXRhLWRhdGEgc2l6ZS4gSW4gYm90aCBjYXNlcyB3ZQ0KPiA+
-ID4gc3RvcmUgZXhhY3RseSB0aGUgc2FtZSBpbmZvcm1hdGlvbiBpbnNpZGUgb2YgdGhlIG9iamVj
-dDogcXVhcmFudGluZQ0KPiA+ID4gbGluayBhbmQgZnJlZSB0cmFjay4NCj4gPiA+IEkgc2VlIGl0
-IG1vcmUgYXMgYSBxdWVzdGlvbiBvZiBjb2RlIG9yZ2FuaXphdGlvbi4gV2UgYWxyZWFkeSBoYXZl
-IGENCj4gPiA+IGNvbmNlcHQgb2YgInRoaXMgZGF0YSBpcyBwbGFjZWQgaW5zaWRlIG9mIHRoZSBm
-cmVlZCBvYmplY3QiLCB3ZQ0KPiA+ID4gYWxyZWFkeSBoYXZlIGEgbmFtZSBmb3IgaXQgKGthc2Fu
-X2ZyZWVfbWV0YSksIHdlIGFscmVhZHkgaGF2ZSBjb2RlIHRvDQo+ID4gPiBjaG9vc2Ugd2hlcmUg
-dG8gcGxhY2UgaXQsIHdlIGFscmVhZHkgaGF2ZSBoZWxwZXIgZnVuY3Rpb25zIHRvIGFjY2Vzcw0K
-PiA+ID4gaXQuIEFuZCB5b3VyIGNoYW5nZSBlZmZlY3RpdmVseSBkdXBsaWNhdGVzIGFsbCBvZiB0
-aGlzIHRvIHBsYWNlIHRoZQ0KPiA+ID4gZnJlZSB0cmFjay4NCj4gPiA+DQo+ID4NCj4gPiBJIHdh
-bnQgdG8gbWFrZSBhIHN1bW1hcnkuIFdoaWNoIG9mIHRoZSBmb2xsb3dpbmcgaXMgdGhlIGFwcHJv
-YWNoIHdlDQo+ID4gd2FudD8gb3IgaWYgSSBoYXZlIHNvbWUgbWlzdW5kZXJzdGFuZGluZ3MsIHBs
-ZWFzZSBoZWxwIG1lIHRvIGNvcnJlY3QuDQo+ID4gVGhhbmtzLg0KPiA+DQo+ID4gMSkgRm9yIGRp
-ZmZlcmVudCBvYmplY3QsIHRoZW4gaXQgd2lsbCBoYXMgdHdvIHdheXMuDQo+ID4gMS5hKSBXaGVu
-IG9iamVjdCBhcmUgTEFCX1RZUEVTQUZFX0JZX1JDVSB8fCBjYWNoZS0+Y3RvciwgdGhlbiBzdG9y
-ZSBmcmVlDQo+ID4gc3RhY2sgaW50byBmcmVlIHRyYWNrIG9mIHN0cnVjdCBrYXNhbl9mcmVlX21l
-dGEuDQo+ID4gMi5iKSBFeGNlcHQgMS5hKSwgc3RvcmUgZnJlZSBzdGFjayBpbnRvIGZyZWVkIG9i
-amVjdC4NCj4gPg0KPiA+IG9yDQo+ID4NCj4gPiAyKSBXZSBhbHdheXMgc3RvcmUgZnJlZSBzdGFj
-ayBpbnRvIGZyZWUgdHJhY2sgb2Ygc3RydWN0IGthc2FuX2ZyZWVfbWV0YQ0KPiANCj4gSSBtZWFu
-dCAyKTogV2UgYWx3YXlzIHN0b3JlIGZyZWUgc3RhY2sgaW50byBmcmVlIHRyYWNrIG9mIHN0cnVj
-dA0KPiBrYXNhbl9mcmVlX21ldGEuDQo+IEkgdGhpbmsgaXQgd2lsbCBkbyB0aGUgc2FtZSBhcyBv
-dGhlciBvcHRpb25zIGJ1dCBqdXN0IHdpdGggbGVzcyBjb2RlDQo+IChhbmQgc2ltcGxlciBjb2Rl
-KS4NCj4gDQo+IE1heWJlIEkgYW0gbWlzc2luZyBzb21ldGhpbmcgaGVyZT8NCj4gDQoNCllvdSBh
-cmUgcmlnaHQsIEkgb25seSBtYWtlIGEgZmluYWwgY29uZmlybWF0aW9uIHdpdGggeW91LiBOb3cg
-dGhlcmUNCnNob3VsZCBiZSBubyBwcm9ibGVtcywgSSB3aWxsIHRyeSB0byBpbXBsZW1lbnQgaXQu
-DQoNClRoYW5rIHlvdSBmb3IgeW91ciBnb29kIHN1Z2dlc3Rpb24uDQoNCj4gDQo+IA0KPiANCj4g
-PiA+ID4gPiBBbmQgSSB0aGluayBpdHMgbGlmZS10aW1lIGFuZCBldmVyeXRoaW5nIHNob3VsZCBi
-ZSBleGFjdGx5IHdoYXQgd2UgbmVlZC4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+IEFsc28gaXQgc2hv
-dWxkIGhlbHAgdG8gZml4IHRoZSBwcm9ibGVtIHdpdGggY3RvcnM6IGthc2FuX2ZyZWVfbWV0YSBp
-cw0KPiA+ID4gPiA+IGFscmVhZHkgYWxsb2NhdGVkIG9uIHRoZSBzaWRlIGZvciBzdWNoIG9iamVj
-dHMsIGFuZCB0aGF0J3MgZXhhY3RseQ0KPiA+ID4gPiA+IHdoYXQgd2UgbmVlZCBmb3Igb2JqZWN0
-cyB3aXRoIGN0b3Incy4NCj4gPiA+ID4NCj4gPiA+ID4gSSBzZWUuDQoNCg==
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.224-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: e6bc7c5d44642105766e5b29c57be37c6319c772
+git describe: v4.4.223-17-ge6bc7c5d4464
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.4-oe/bui=
+ld/v4.4.223-17-ge6bc7c5d4464
+
+No regressions (compared to build v4.4.223)
+
+No fixes (compared to build v4.4.223)
+
+Ran 20346 total tests in the following environments and test suites.
+
+Environments
+--------------
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* perf
+* v4l2-compliance
+* kvm-unit-tests
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest/net
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.224-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git branch: 4.4.224-rc1-hikey-20200512-720
+git commit: 55c9d63788c49cf307f7cad2e830681578e6a7f6
+git describe: 4.4.224-rc1-hikey-20200512-720
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.224-rc1-hikey-20200512-720
+
+
+No regressions (compared to build 4.4.223-rc3-hikey-20200509-718)
+
+
+No fixes (compared to build 4.4.223-rc3-hikey-20200509-718)
+
+Ran 1814 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
