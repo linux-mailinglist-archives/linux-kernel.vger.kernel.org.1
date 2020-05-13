@@ -2,83 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A971D13AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E001D1367
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 14:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728115AbgEMM7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 08:59:37 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:50474 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725909AbgEMM7h (ORCPT
+        id S1733084AbgEMM4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 08:56:21 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38522 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1733058AbgEMM4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 08:59:37 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.17]) by rmmx-syy-dmz-app06-12006 (RichMail) with SMTP id 2ee65ebbee2701d-d035b; Wed, 13 May 2020 20:55:09 +0800 (CST)
-X-RM-TRANSID: 2ee65ebbee2701d-d035b
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [192.168.0.101] (unknown[112.1.172.85])
-        by rmsmtp-syy-appsvr09-12009 (RichMail) with SMTP id 2ee95ebbee2b276-49c69;
-        Wed, 13 May 2020 20:55:08 +0800 (CST)
-X-RM-TRANSID: 2ee95ebbee2b276-49c69
-Subject: Re: [PATCH] USB: host: ehci: Add error handling in
- ehci_mxc_drv_probe()
-To:     gregkh@linuxfoundation.org
-Cc:     Alan Stern <stern@rowland.harvard.edu>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-References: <Pine.LNX.4.44L0.2005080950180.19653-100000@netrider.rowland.org>
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <9f88b0fd-28e9-2fa8-2deb-73652eb53fd4@cmss.chinamobile.com>
-Date:   Wed, 13 May 2020 20:55:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 13 May 2020 08:56:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589374576;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rg6JkW5pd+D3Jw1ike2ImD0WSry7w4HYlBO089Hj5fo=;
+        b=beYiwgydbZMA0AdjWKt6NwgSpHan2RIwTJiPK4lmXuGaNjbrlJyeldpelSjprOEEF2S7Ys
+        CBHTaaw9+QSnS7jA2bfXqMliVNL9+z+bk/j0o9riaCao4BqWw1cN52N9wRvN4+4jcFNudC
+        GSutHiECzbgZ9KO2A08PdN7qTMyFo6w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-294-IKGYLsVMMAyDhyUHlrG70w-1; Wed, 13 May 2020 08:56:13 -0400
+X-MC-Unique: IKGYLsVMMAyDhyUHlrG70w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6BE4F108BD0B;
+        Wed, 13 May 2020 12:56:11 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (ovpn-113-165.phx2.redhat.com [10.3.113.165])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 52B9C2E033;
+        Wed, 13 May 2020 12:56:02 +0000 (UTC)
+Date:   Wed, 13 May 2020 08:56:00 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, linux-kernel@vger.kernel.org,
+        ouwen210@hotmail.com, pkondeti@codeaurora.org
+Subject: Re: [PATCH v2] sched/fair: fix unthrottle_cfs_rq for leaf_cfs_rq list
+Message-ID: <20200513125600.GC12425@lorien.usersys.redhat.com>
+References: <20200513123422.28299-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.44L0.2005080950180.19653-100000@netrider.rowland.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200513123422.28299-1-vincent.guittot@linaro.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi gregkh:
+Hi Vincent,
 
-On 2020/5/8 21:51, Alan Stern wrote:
-> On Fri, 8 May 2020, Tang Bin wrote:
->
->> The function ehci_mxc_drv_probe() does not perform sufficient error
->> checking after executing platform_get_irq(), thus fix it.
-> Aside from the "irq <= 0" issue, the Subject: line should say
-> "ehci-mxc", not "ehci".
->
-I know this patch need v2, whether just fix the subject?
+On Wed, May 13, 2020 at 02:34:22PM +0200 Vincent Guittot wrote:
+> Although not exactly identical, unthrottle_cfs_rq() and enqueue_task_fair()
+> are quite close and follow the same sequence for enqueuing an entity in the
+> cfs hierarchy. Modify unthrottle_cfs_rq() to use the same pattern as
+> enqueue_task_fair(). This fixes a problem already faced with the latter and
+> add an optimization in the last for_each_sched_entity loop.
+> 
+> Reported-by Tao Zhou <zohooouoto@zoho.com.cn>
+> Reviewed-by: Phil Auld <pauld@redhat.com>
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> ---
+> 
+> v2 changes:
+> - Remove useless if statement
+> 
+>  kernel/sched/fair.c | 41 ++++++++++++++++++++++++++++++-----------
+>  1 file changed, 30 insertions(+), 11 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 4e12ba882663..a0c690d57430 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4816,26 +4816,44 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+>  	idle_task_delta = cfs_rq->idle_h_nr_running;
+>  	for_each_sched_entity(se) {
+>  		if (se->on_rq)
+> -			enqueue = 0;
 
-Thanks,
+Can probably drop the now-unused enqueue variable too.
 
-Tang Bin
 
->
->> Fixes: 7e8d5cd93fa ("USB: Add EHCI support for MX27 and MX31 based boards")
->> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
->> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
->> ---
->>   drivers/usb/host/ehci-mxc.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/usb/host/ehci-mxc.c b/drivers/usb/host/ehci-mxc.c
->> index a1eb5ee77..a0b42ba59 100644
->> --- a/drivers/usb/host/ehci-mxc.c
->> +++ b/drivers/usb/host/ehci-mxc.c
->> @@ -50,6 +50,8 @@ static int ehci_mxc_drv_probe(struct platform_device *pdev)
->>   	}
->>   
->>   	irq = platform_get_irq(pdev, 0);
->> +	if (irq < 0)
->> +		return irq;
->>   
->>   	hcd = usb_create_hcd(&ehci_mxc_hc_driver, dev, dev_name(dev));
->>   	if (!hcd)
->>
+Cheers,
+Phil
 
+
+
+> +			break;
+> +		cfs_rq = cfs_rq_of(se);
+> +		enqueue_entity(cfs_rq, se, ENQUEUE_WAKEUP);
+>  
+> +		cfs_rq->h_nr_running += task_delta;
+> +		cfs_rq->idle_h_nr_running += idle_task_delta;
+> +
+> +		/* end evaluation on encountering a throttled cfs_rq */
+> +		if (cfs_rq_throttled(cfs_rq))
+> +			goto unthrottle_throttle;
+> +	}
+> +
+> +	for_each_sched_entity(se) {
+>  		cfs_rq = cfs_rq_of(se);
+> -		if (enqueue) {
+> -			enqueue_entity(cfs_rq, se, ENQUEUE_WAKEUP);
+> -		} else {
+> -			update_load_avg(cfs_rq, se, 0);
+> -			se_update_runnable(se);
+> -		}
+> +
+> +		update_load_avg(cfs_rq, se, UPDATE_TG);
+> +		se_update_runnable(se);
+>  
+>  		cfs_rq->h_nr_running += task_delta;
+>  		cfs_rq->idle_h_nr_running += idle_task_delta;
+>  
+> +
+> +		/* end evaluation on encountering a throttled cfs_rq */
+>  		if (cfs_rq_throttled(cfs_rq))
+> -			break;
+> +			goto unthrottle_throttle;
+> +
+> +		/*
+> +		 * One parent has been throttled and cfs_rq removed from the
+> +		 * list. Add it back to not break the leaf list.
+> +		 */
+> +		if (throttled_hierarchy(cfs_rq))
+> +			list_add_leaf_cfs_rq(cfs_rq);
+>  	}
+>  
+> -	if (!se)
+> -		add_nr_running(rq, task_delta);
+> +	/* At this point se is NULL and we are at root level*/
+> +	add_nr_running(rq, task_delta);
+>  
+> +unthrottle_throttle:
+>  	/*
+>  	 * The cfs_rq_throttled() breaks in the above iteration can result in
+>  	 * incomplete leaf list maintenance, resulting in triggering the
+> @@ -4844,7 +4862,8 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+>  	for_each_sched_entity(se) {
+>  		cfs_rq = cfs_rq_of(se);
+>  
+> -		list_add_leaf_cfs_rq(cfs_rq);
+> +		if (list_add_leaf_cfs_rq(cfs_rq))
+> +			break;
+>  	}
+>  
+>  	assert_list_leaf_cfs_rq(rq);
+> -- 
+> 2.17.1
+> 
+
+-- 
 
