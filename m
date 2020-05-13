@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC56D1D0D82
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0516D1D0CA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 11:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387986AbgEMJxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 05:53:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55630 "EHLO mail.kernel.org"
+        id S1732662AbgEMJqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 05:46:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387972AbgEMJxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 05:53:34 -0400
+        id S1732622AbgEMJq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 05:46:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C751C205ED;
-        Wed, 13 May 2020 09:53:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F0E12492C;
+        Wed, 13 May 2020 09:46:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589363614;
-        bh=3RblSuSHb5U89WwAV59h/TSflXzIDVmXUYRrc3Iy2ug=;
+        s=default; t=1589363188;
+        bh=4MFURn699aH2rSYMG6kW1QgGR/t00LzkOG1i+nuVH1o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bwHO9y/kUno75JX5SjIW4gJGjhwOVsZT2Yqwrp3HojWQecxzIAfSXDiiTvMUqVmyS
-         TQ+ZQIDBK7iqy64asIsrHTkwyuNm7g1bzBfdOIGqlUAYpxDlTer7D31d+LgUMmDSWk
-         V1u0G7SQYBMPZu6Ol/ew4lKnKw5IkdAMyfdNbC4U=
+        b=GuejD/ehuDlgRJ428/aZTOGDnEYSVGma18alKNEIEd6YAkzV+YXlln8BJq3BEVrJ/
+         ZcQo8VDBf2eImpEov2h+/G1n46zQFyLYCpBbkFTHRN9KsAUaT+wKaI42WsZ3AC1xiX
+         rDwpJ39Wxz+ez/Kazq8ozuCla4POlas+7WtALBPw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Dejin Zheng <zhengdejin5@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 054/118] net: enetc: fix an issue about leak system resources
-Date:   Wed, 13 May 2020 11:44:33 +0200
-Message-Id: <20200513094421.808935767@linuxfoundation.org>
+Subject: [PATCH 4.19 08/48] net_sched: sch_skbprio: add message validation to skbprio_change()
+Date:   Wed, 13 May 2020 11:44:34 +0200
+Message-Id: <20200513094354.050443366@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513094417.618129545@linuxfoundation.org>
-References: <20200513094417.618129545@linuxfoundation.org>
+In-Reply-To: <20200513094351.100352960@linuxfoundation.org>
+References: <20200513094351.100352960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,35 +44,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dejin Zheng <zhengdejin5@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit d975cb7ea915e64a3ebcfef8a33051f3e6bf22a8 ]
+[ Upstream commit 2761121af87de45951989a0adada917837d8fa82 ]
 
-the related system resources were not released when enetc_hw_alloc()
-return error in the enetc_pci_mdio_probe(), add iounmap() for error
-handling label "err_hw_alloc" to fix it.
+Do not assume the attribute has the right size.
 
-Fixes: 6517798dd3432a ("enetc: Make MDIO accessors more generic and export to include/linux/fsl")
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Fixes: aea5f654e6b7 ("net/sched: add skbprio scheduler")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc_pci_mdio.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/sched/sch_skbprio.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/ethernet/freescale/enetc/enetc_pci_mdio.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_pci_mdio.c
-@@ -74,8 +74,8 @@ err_pci_mem_reg:
- 	pci_disable_device(pdev);
- err_pci_enable:
- err_mdiobus_alloc:
--	iounmap(port_regs);
- err_hw_alloc:
-+	iounmap(port_regs);
- err_ioremap:
- 	return err;
+--- a/net/sched/sch_skbprio.c
++++ b/net/sched/sch_skbprio.c
+@@ -173,6 +173,9 @@ static int skbprio_change(struct Qdisc *
+ {
+ 	struct tc_skbprio_qopt *ctl = nla_data(opt);
+ 
++	if (opt->nla_len != nla_attr_size(sizeof(*ctl)))
++		return -EINVAL;
++
+ 	sch->limit = ctl->limit;
+ 	return 0;
  }
 
 
