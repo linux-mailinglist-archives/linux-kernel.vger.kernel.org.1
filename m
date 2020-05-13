@@ -2,103 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D061D211A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160FD1D211E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 May 2020 23:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729140AbgEMVeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 17:34:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728711AbgEMVeO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 17:34:14 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEECDC061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:34:13 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id u15so341312plm.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 14:34:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LQvZ3cnoxWWWtAQPX/y16TnIryLF7O8ppBXXbOpkfJE=;
-        b=iFgMMOoReZ85Q2Uo0jGImdbsoBegv49w87WiEqZhNYhvoog2bsz4o7CTmTLm4XieeO
-         ftN9bDcc6DdF8g75K7+/B8AxEBdwcSwArR3cx8osqD/HZUKQIL30MKHIyvE4kfLfZv0e
-         WHs5SKUsoKUegLPENvjP/IrrAoV/vZo88hU1ekN0L5yIyZDqBURGPxKqPWHQBxUH5AU8
-         O/q8slAIWWgn4KCx7SlRdflaVne3T6kK9DAH6MJ+jYRcrlWjnvxApbpGt2v0ozBMIoy7
-         kLowFy2v1voohCXt+Xyvm16PrqX4LdZu8yaSd82XbS4SewWsn9iTNMhbX/pZv0X57lK+
-         jh+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=LQvZ3cnoxWWWtAQPX/y16TnIryLF7O8ppBXXbOpkfJE=;
-        b=d0/QDQsHhOOynYU0b86Jep9ccijKOaewISS49iP8gDk7o5dneteKEgjEe0ueo7stBt
-         82Uj/P5qdRV7YpsyOD+wY3t4tQVLy8l13Oqz6KCEDmu4fAg269ocoXbXlEUmoZEEO9wt
-         z7KM9ubN8ZPN3gzHi4zloTfO+rbFYhmYuvYTXOyTehR4C63hmIpjEvdxx84YQ9/ydTJ6
-         34Jotss9+K3v+6aQR+k7cau2VAPKcohbXo6T/lUUUYf6P9K9mzdUavm9eNrhfVqjdHE8
-         Ia0CfPU5xEomQ5rbFUpvmpUmqU+Lw02I4m+tlMpx1d+32+4u65naNx7uU/DdLqGgmiF6
-         GJbQ==
-X-Gm-Message-State: AGi0PubAI8GKV8D+XSM687JWLB6oMrAdrRlar3ExlquPqLTlz26AlojE
-        BjUkcZYMyeBWxa+ZxE8hRoFLyYnxoR4=
-X-Google-Smtp-Source: APiQypJZ5JtNOolKe9h9jvBj34XsfS2ZZKsgyQ9Jm2zRk6dWIknX6wZjxyDaGNCHsu/j+99GbU5+gg==
-X-Received: by 2002:a17:90a:4e5:: with SMTP id g92mr36920442pjg.148.1589405652819;
-        Wed, 13 May 2020 14:34:12 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id r21sm16167599pjo.2.2020.05.13.14.34.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 14:34:12 -0700 (PDT)
-Date:   Wed, 13 May 2020 14:34:12 -0700 (PDT)
-X-Google-Original-Date: Wed, 13 May 2020 14:33:02 PDT (-0700)
-Subject:     Re: [PATCH] irqchip/sifive-plic: Remove incorrect requirement about number of irq contexts
-In-Reply-To: <20200512172636.96299-1-atish.patra@wdc.com>
-CC:     linux-kernel@vger.kernel.org, wesley@sifive.com,
-        Atish Patra <Atish.Patra@wdc.com>, jason@lakedaemon.net,
-        linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Atish Patra <Atish.Patra@wdc.com>, Mark Zyngier <maz@kernel.org>,
-        tglx@linutronix.de
-Message-ID: <mhng-c1cfbecd-9399-4bcd-97d4-c5eb5692d1ed@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1729259AbgEMVfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 17:35:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34796 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728711AbgEMVfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 17:35:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id B85F9AC22;
+        Wed, 13 May 2020 21:35:31 +0000 (UTC)
+Subject: Re: [PATCH] mm/compaction: avoid VM_BUG_ON(PageSlab()) in
+ page_mapcount()
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Minchan Kim <minchan@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+References: <158937872515.474360.5066096871639561424.stgit@buzz>
+ <20200513113256.44ac9ce4c51a7ec1a5c5ba40@linux-foundation.org>
+ <9420f90c-e423-475c-4b79-8287b76149d9@yandex-team.ru>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <88698909-22b8-79fa-c11f-3931c41cb20b@suse.cz>
+Date:   Wed, 13 May 2020 23:35:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <9420f90c-e423-475c-4b79-8287b76149d9@yandex-team.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 May 2020 10:26:36 PDT (-0700), Atish Patra wrote:
-> From: "Wesley W. Terpstra" <wesley@sifive.com>
->
-> A PLIC may not be connected to all the cores. In that case, nr_contexts
-> may be less than num_possible_cpus. This requirement is only valid a single
-> PLIC is the only interrupt controller for the whole system.
->
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> [Atish: Modified the commit text]
-> Signed-off-by: "Wesley W. Terpstra" <wesley@sifive.com>
-> ---
->  drivers/irqchip/irq-sifive-plic.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> index d0a71febdadc..822e074c0600 100644
-> --- a/drivers/irqchip/irq-sifive-plic.c
-> +++ b/drivers/irqchip/irq-sifive-plic.c
-> @@ -301,8 +301,6 @@ static int __init plic_init(struct device_node *node,
->  	nr_contexts = of_irq_count(node);
->  	if (WARN_ON(!nr_contexts))
->  		goto out_iounmap;
-> -	if (WARN_ON(nr_contexts < num_possible_cpus()))
-> -		goto out_iounmap;
->
->  	error = -ENOMEM;
->  	priv->irqdomain = irq_domain_add_linear(node, nr_irqs + 1,
+On 5/13/20 9:28 PM, Konstantin Khlebnikov wrote:
+> On 13/05/2020 21.32, Andrew Morton wrote:
+>> On Wed, 13 May 2020 17:05:25 +0300 Konstantin Khlebnikov <khlebnikov@yandex-team.ru> wrote:
+>> 
+>>> Function isolate_migratepages_block() runs some checks out of lru_lock
+>>> when choose pages for migration. After checking PageLRU() it checks extra
+>>> page references by comparing page_count() and page_mapcount(). Between
+>>> these two checks page could be removed from lru, freed and taken by slab.
+>>>
+>>> As a result this race triggers VM_BUG_ON(PageSlab()) in page_mapcount().
+>>> Race window is tiny. For certain workload this happens around once a year.
+>>>
+>>>
+>>>   page:ffffea0105ca9380 count:1 mapcount:0 mapping:ffff88ff7712c180 index:0x0 compound_mapcount: 0
+>>>   flags: 0x500000000008100(slab|head)
+>>>   raw: 0500000000008100 dead000000000100 dead000000000200 ffff88ff7712c180
+>>>   raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+>>>   page dumped because: VM_BUG_ON_PAGE(PageSlab(page))
+>>>   ------------[ cut here ]------------
+>>>   kernel BUG at ./include/linux/mm.h:628!
+>>>   invalid opcode: 0000 [#1] SMP NOPTI
+>>>   CPU: 77 PID: 504 Comm: kcompactd1 Tainted: G        W         4.19.109-27 #1
+>>>   Hardware name: Yandex T175-N41-Y3N/MY81-EX0-Y3N, BIOS R05 06/20/2019
+>>>   RIP: 0010:isolate_migratepages_block+0x986/0x9b0
+>>>
+>>>
+>>> To fix just opencode page_mapcount() in racy check for 0-order case and
+>>> recheck carefully under lru_lock when page cannot escape from lru.
+>>>
+>>> Also add checking extra references for file pages and swap cache.
+>> 
+>> It sounds like a cc:stable is appropriate?
+> 
+> Yep, but probably I'm missing something.
+> 
+> It seems bug is there for a long time and nobody seen it.
+> Am I the only one using COONFIG_DEBUG_VM=y everywhere? =)
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
-
-I'm assuming this is going through the irqchip tree.
-
-Thanks!
+Unless things changed, Fedora kernels had it enabled, AFAIK
