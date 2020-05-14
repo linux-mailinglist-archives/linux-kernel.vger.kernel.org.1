@@ -2,73 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72EE1D25A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D4B1D25E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725954AbgENEBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 00:01:55 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:47474 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725878AbgENEBz (ORCPT
+        id S1725976AbgENEfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 00:35:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725806AbgENEfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 00:01:55 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-372-aP7_It_xNvmGipQcRGESVw-1; Thu, 14 May 2020 00:01:50 -0400
-X-MC-Unique: aP7_It_xNvmGipQcRGESVw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 14 May 2020 00:35:13 -0400
+X-Greylist: delayed 460 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 May 2020 21:35:13 PDT
+Received: from trent.utfs.org (trent.utfs.org [IPv6:2a03:3680:0:3::67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 617F8C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:35:13 -0700 (PDT)
+Received: from localhost (localhost [IPv6:::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CDEC819200C0;
-        Thu, 14 May 2020 04:01:49 +0000 (UTC)
-Received: from ldigby.remote.csb (vpn2-54-19.bne.redhat.com [10.64.54.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 710CF2E169;
-        Thu, 14 May 2020 04:01:48 +0000 (UTC)
-From:   Lance Digby <lance.digby@gmail.com>
-To:     martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH target] target: Add initiatorname to NON_EXISTENT_LUN error
-Date:   Thu, 14 May 2020 14:01:38 +1000
-Message-Id: <cd119ce943d9ec62ef1bff237ebb49e35a337c3b.1589407872.git.lance.digby@gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: gmail.com
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+        by trent.utfs.org (Postfix) with ESMTPS id 4BDE463A86;
+        Thu, 14 May 2020 06:27:26 +0200 (CEST)
+Date:   Wed, 13 May 2020 21:27:26 -0700 (PDT)
+From:   Christian Kujau <lists@nerdbynature.de>
+To:     kernel test robot <rong.a.chen@intel.com>
+cc:     Jia-Ju Bai <baijiaju1990@gmail.com>, shaggy@kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        lkp@lists.01.org, Markus.Elfring@web.de
+Subject: Re: [Jfs-discussion] [fs] 05c5a0273b: netperf.Throughput_total_tps
+ -71.8% regression
+In-Reply-To: <20200512030929.GA5770@shao2-debian>
+Message-ID: <alpine.DEB.2.22.395.2005132123020.14542@trent.utfs.org>
+References: <20200512030929.GA5770@shao2-debian>
+User-Agent: Alpine 2.22 (DEB 395 2020-01-19)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The NON_EXISTENT_LUN error can be written without an error condition
- on the initiator responsible. Adding the initiatorname to this message
- will reduce the effort required to fix this when many initiators are
-supported by a target.
+On Tue, 12 May 2020, kernel test robot wrote:
+> FYI, we noticed a -71.8% regression of netperf.Throughput_total_tps due to commit:
 
-Signed-off-by: Lance Digby <lance.digby@gmail.com>
----
- drivers/target/target_core_device.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+As noted in this report, netperf is used to "measure various aspect of 
+networking performance". Are we sure the bisect is correct? JFS is a 
+filesystem and is not touching net/ in any way. So, having not attempted 
+to reproduce this, maybe the JFS commit is a red herring?
 
-diff --git a/drivers/target/target_core_device.c b/drivers/target/target_co=
-re_device.c
-index 4cee113..604dea0 100644
---- a/drivers/target/target_core_device.c
-+++ b/drivers/target/target_core_device.c
-@@ -100,9 +100,10 @@
- =09=09 */
- =09=09if (unpacked_lun !=3D 0) {
- =09=09=09pr_err("TARGET_CORE[%s]: Detected NON_EXISTENT_LUN"
--=09=09=09=09" Access for 0x%08llx\n",
-+=09=09=09=09" Access for 0x%08llx from %s\n",
- =09=09=09=09se_cmd->se_tfo->fabric_name,
--=09=09=09=09unpacked_lun);
-+=09=09=09=09unpacked_lun,
-+=09=09=09=09se_sess->se_node_acl->initiatorname);
- =09=09=09return TCM_NON_EXISTENT_LUN;
- =09=09}
-=20
---=20
-1.8.3.1
+C.
+-- 
+BOFH excuse #50:
 
+Change in Earth's rotational speed
