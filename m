@@ -2,222 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9097D1D3BD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 21:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165DA1D3BDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 21:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730143AbgENTFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 15:05:30 -0400
-Received: from mail-bn7nam10on2071.outbound.protection.outlook.com ([40.107.92.71]:29132
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728953AbgENTFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 15:05:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z7vnrZXlXYnHcUwF9PSSa0Yr7Mn0blk/l4UfuzOQTo0gX+pRzQADFCSBUhomtyyPcWfhDWqriMM8KWOiA1LDrGW1JMi2gsLv0PyUGqIHtQelRCJ3mLCtX1UzpR25XVOs7bhwiUNA/xrJBGglpiOQEvZRTP7wbLgo+U+vXphRJWlZMVbL3I37wByUZWYQrMbnbk8sliYibeZwcX0d/4va7hYeQSFyMzxsGtZndpSGfEUFPk528oWiklbLBAt/0JMuSYkSrqgz/68OiwqZUy0pbKPG8eKIm1fX1QbYcIzD83+W8XFcdRDhMMWFb+xnte+eYGTot4R4kR5paSZ8/kw8gg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5QjDFZFHNb0TxSLOGfqkEGjnNHTAmh662GGC/C8cC6s=;
- b=YCbYLc+a96ulqUCp/kOsndI5APLLs3ow048mlBXLhb1YNWAupp2LIdH8RWu5a+WO4IfQXE3QpGsbHRY/TmG40gTHWyvTfYKJrFts+ih1GOLk1SUmV+Ejg9pe73GY6d4Pm3VD2qLL5eDlGH9D8/SgCGKOwL1HuOVr1qZKCOYy7OxoRq6gsBD2I4n7VbHPhmw7kdXD9qG++VO+FLV7K5LdJVjBAG+/0NLmuJNvnnfAFam6SMhghxZ3NeRF2BvGlFdp1CG0jZ4TeC3RqAlJOg1ehs6ZVAX8gpi+ZQrGu8JSjcNByQp9uPkfJIgxrpYQFplQU7XVpO3xRuQyjsBSb8Mdcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1728966AbgENTFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 15:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728661AbgENTFq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 15:05:46 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5C5C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 12:05:46 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id s21so3768602ejd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 12:05:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5QjDFZFHNb0TxSLOGfqkEGjnNHTAmh662GGC/C8cC6s=;
- b=EtPto8qFRonhT+FiltZJq9ANdJxz0fF90w2ieFsRS8h/O2dSJnrcElMKK2Fo5D0OJJrrifKv8jB2L66VmaIFbPknu7Y8EAkUG8ReZahTPkw5LX7qjkVtWCyqq+AD+F5eCIioKL6433OTbIDeN1QuhUTZmvRwLI4Zz/Q1GcWRhMI=
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=amd.com;
-Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
- by SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.24; Thu, 14 May
- 2020 19:05:20 +0000
-Received: from SN1PR12MB2560.namprd12.prod.outlook.com
- ([fe80::c0f:2938:784f:ed8d]) by SN1PR12MB2560.namprd12.prod.outlook.com
- ([fe80::c0f:2938:784f:ed8d%7]) with mapi id 15.20.3000.022; Thu, 14 May 2020
- 19:05:20 +0000
-Subject: RE: [PATCH V3 4/4] x86/resctrl: Use appropriate API for strings
- terminated by newline
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tony.luck@intel.com" <tony.luck@intel.com>
-Cc:     "kuo-lang.tseng@intel.com" <kuo-lang.tseng@intel.com>,
-        "ravi.v.shankar@intel.com" <ravi.v.shankar@intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <cover.1588808537.git.reinette.chatre@intel.com>
- <a99e4de3dc3f0e60281de1274ccb064071200fd9.1588808538.git.reinette.chatre@intel.com>
-From:   Babu Moger <babu.moger@amd.com>
-Message-ID: <9c7a011c-2946-102c-5cdd-9dc5155533ec@amd.com>
-Date:   Thu, 14 May 2020 14:05:17 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-In-Reply-To: <a99e4de3dc3f0e60281de1274ccb064071200fd9.1588808538.git.reinette.chatre@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN6PR2101CA0006.namprd21.prod.outlook.com
- (2603:10b6:805:106::16) To SN1PR12MB2560.namprd12.prod.outlook.com
- (2603:10b6:802:26::19)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3tnon885BClw24KtSQO83UeeP0neoUdjMWWIznWI9/0=;
+        b=mEnsvt67Bs+ijyGbEbYpmFzdKllOnYkYg2wqyJn5b8oZl+W2YcNusKGLRP9+Zv71aD
+         bvnpNRlwm3n+nu/MfpFkeS29wmAqit1EIdY/5xYvN2+YHW5w1w9QzfKUAhu1z//b5FyV
+         k7dGKz/gm2cwJDUdsjcAGnnZvIUs7DSgpSuU6dsJTiO54rNsE0omiR6rvOq+1m4zvUKk
+         N2zTBxT+XyvQS/pazILhd2ryi6MMD4lCcnDv7gM9ufWdCfkhqBBALDBfJo5ZiNRNFLMF
+         xssG0X9eIu48mho9U/h+tzq0gpyyTRyeOIE9nztgGi41aWzm4DOSTjaKMqC54Fvnv3Gb
+         KttA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3tnon885BClw24KtSQO83UeeP0neoUdjMWWIznWI9/0=;
+        b=P955lVx1hdF0l2I7gicVl+l9u2DQAjSNSIf0FxVots2Su74VB+fuG0KNH6bZnimsp9
+         44aLX2ECjXXAcorA/bf/dKnCGspOltaDayguc5wAvBuzhUxX0ZHxlPnDFkA160bb8UTb
+         +BT0JM4Nk/8KwHqy0dIn/9BPSLdFMZn4cFy9MUnusIwVCqEmkhlidLt/qUqQJm4mQwYW
+         BYYpbN2Ubi41zCnxrjc7QU2aNloU1c9Vbah0qBgfIEFxXPESyHl9jxTKK52s+PtYXUiw
+         +Wj/ySyAHagDCRNLmcxA9YT6Atk9TAf2fG0PVcxn+ww1q8Pm+6Ff/NMlEx5SyyJUIu1B
+         Fi8Q==
+X-Gm-Message-State: AOAM533PI1BMU+NDBc2HuhA8kv7QDsjzG6O2DLUohPIeP50M51tLIGrb
+        /MnWIedkdyPRsVoGUXZJmCEPgjarbSvUA7eupQYshtOiwoDMWQ==
+X-Google-Smtp-Source: ABdhPJyXoPpJjnDEyX65MLtuSaVojJUla6uGMFPpeIL9qaCZ9kWwHdMrb4GwEnIrg9s40Ca65adiOCj7stM0y7lKZ6c=
+X-Received: by 2002:a17:906:724b:: with SMTP id n11mr5455125ejk.355.1589483144432;
+ Thu, 14 May 2020 12:05:44 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.87] (165.204.77.1) by SN6PR2101CA0006.namprd21.prod.outlook.com (2603:10b6:805:106::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.2 via Frontend Transport; Thu, 14 May 2020 19:05:19 +0000
-X-Originating-IP: [165.204.77.1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c343a381-3856-4313-d88f-08d7f839bf6f
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2560:
-X-Microsoft-Antispam-PRVS: <SN1PR12MB2560FAC92336AE2BDB0B1E5795BC0@SN1PR12MB2560.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-Forefront-PRVS: 040359335D
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 52Yz8VuW2wZQ8o+a7A76GUy8KKVBU0fjprOT8bf1n5LNksbEdIDvMI5oje4aJzdLiaxbu7r2wFa76nGXxd8lRbKdAbctSuYByyrBdnTJE37xIad93MR4FMU7XgpkX1zo6hrnHXhGb27RfkbXRY8K+Krg+MVFgsoLIjousrH2B3keOKiDxlFuMKJMjlf5yRT967eS5MWPFiRlGUbSL+DsKFTM9NEbw3ev6EIAT2jNRjbPu4toDFFc3plBu7M92RAKCK0GPmaL4uuDkg1L/6VI0g0XaiBnxqDmOyf7QPtSLplCGZDYJfdBbP8ZDcMA8ch1JNUWtD7URhIGyX+H7PhGtnc67Vk+hlWWzoDj6FRpirIFICT+Ky5y5KXclQOifwWwHZSi3C6zubjlgpjSXp2YA8tlI7B67SHOGZKY7CqueKAqwyz92YwIRXKDOcnkmLWPzf+dsURcVzkUpFTSNHABPxOPcRY4blzek6dmv+BdYfCL2YfIbfUqytsRrS/iDts3
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(136003)(396003)(39860400002)(376002)(54906003)(6486002)(16526019)(26005)(186003)(7416002)(53546011)(16576012)(52116002)(956004)(2616005)(4326008)(36756003)(8936002)(110136005)(316002)(66946007)(31696002)(8676002)(66476007)(86362001)(5660300002)(66556008)(478600001)(31686004)(2906002)(44832011)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 859SArr+cNdh6YxaFTE1fBfwLNvJ7BNDpnpXX3cZ76CGhrI+emwalkXGWUMa+5HKaxPR3yWaqdNtcc2hTPV+FR2tk/ClI8IYKBAhGR797CvHDsj/bWmS6I5t/d+08220xgMtjMnRSEHpLdLUIVTbcI8X2XD9hpb5dnZKJMqiEpqzAA+TYmL+QymmgsY6TA3WjiKVQaJjtynC3PlzIjwGwI44H/moRgcMrx2dLx91rxEjlFOYSspgfYLaE1KkiVMQ9frFaN4EzftlvE/ol5U1M6UsErkiOOmAb2BJr5rtWrL3vdUjfZQyKCHes/afSOLAT34n6ukvslW5To6yUcOi8eFxq7T+KiLS8e96QHScvrVq7goENLHvi4dWDMAv/3OzbRTPsAt0WsQXvo+eegG53Wh+9Pb4ZPH7JLtdNWX5EML3TYw23sVyhNVQwdtgKz6yOkk7exowzwvNMvCwJfTWWJT75XEfnxSF+1tjkfX/TPc=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c343a381-3856-4313-d88f-08d7f839bf6f
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2020 19:05:20.6695
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1HWcxTBp9lKlFS6e8aCJ/ebOIHyfT8T+N5z2YUgShBuQbAck0IGsJvMIC5DbkzCE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2560
+References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com> <20200508190813.GP27052@linux.intel.com>
+In-Reply-To: <20200508190813.GP27052@linux.intel.com>
+From:   Seth Moore <sethmo@google.com>
+Date:   Thu, 14 May 2020 12:05:32 -0700
+Message-ID: <CAJsHiNx0jnx_zwCuNecci7opgCkxg-FB8UpYvnmubjWdM3fXZQ@mail.gmail.com>
+Subject: Re: [PATCH v29 00/20] Intel SGX foundations
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org, akpm@linux-foundation.org,
+        dave.hansen@intel.com, nhorman@redhat.com, npmccallum@redhat.com,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
+        kai.svahn@intel.com, bp@alien8.de, josh@joshtriplett.org,
+        luto@kernel.org, kai.huang@intel.com,
+        David Rientjes <rientjes@google.com>, cedric.xing@intel.com,
+        puiterwijk@redhat.com, Anna Sapek <asapek@google.com>,
+        Conrad Parker <conradparker@google.com>,
+        Keith Moyer <kmoy@google.com>,
+        Yaozhang Xu <yaozhangx@google.com>,
+        Chen Chen <chenalexchen@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Carmen Hanish <cyhanish@google.com>,
+        Kevin Yap <ikeviny@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 8, 2020 at 12:08 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> Adding some Google folks to the party.
 
+Thanks, Sean.
 
-> -----Original Message-----
-> From: Reinette Chatre <reinette.chatre@intel.com>
-> Sent: Wednesday, May 6, 2020 6:50 PM
-> To: tglx@linutronix.de; fenghua.yu@intel.com; bp@alien8.de;
-> tony.luck@intel.com
-> Cc: kuo-lang.tseng@intel.com; ravi.v.shankar@intel.com; mingo@redhat.com;
-> Moger, Babu <Babu.Moger@amd.com>; hpa@zytor.com; x86@kernel.org;
-> linux-kernel@vger.kernel.org; Reinette Chatre <reinette.chatre@intel.com>;
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Subject: [PATCH V3 4/4] x86/resctrl: Use appropriate API for strings terminated
-> by newline
-> 
-> The user input to files in the resctrl filesystem are expected to be
-> terminated with a newline. Testing the user input includes a test for
-> the presence of a newline and then replacing the newline with NUL
-> byte followed by comparison using strcmp().
-> 
-> sysfs_streq() exists to test if strings are equal, treating both NUL and
-> newline-then-NUL as equivalent string terminations. Even more,
-> sysfs_match_string() exists to match a given string in an array using
-> sysfs_streq().
-> 
-> Replace existing strcmp() comparisons of strings that are terminated
-> with a newline with more appropriate sysfs_streq() via the
-> sysfs_match_string() API that can perform the match across the different
-> mode strings that are already maintained in an array.
-> 
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
-> ---
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 32 ++++++++++++++------------
->  1 file changed, 17 insertions(+), 15 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index c60a3b307f7d..e70694892c02 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -1408,12 +1408,11 @@ static ssize_t rdtgroup_mode_write(struct
-> kernfs_open_file *of,
->  {
->  	struct rdtgroup *rdtgrp;
->  	enum rdtgrp_mode mode;
-> -	int ret = 0;
-> +	int user_m;
-> +	int ret;
+> On Wed, Apr 22, 2020 at 12:52:56AM +0300, Jarkko Sakkinen wrote:
+> > Intel(R) SGX is a set of CPU instructions that can be used by applications
+> > to set aside private regions of code and data. The code outside the enclave
+> > is disallowed to access the memory inside the enclave by the CPU access
+> > control.
+> >
+> > There is a new hardware unit in the processor called Memory Encryption
+> > Engine (MEE) starting from the Skylake microacrhitecture. BIOS can define
+> > one or many MEE regions that can hold enclave data by configuring them with
+> > PRMRR registers.
+> >
+> > The MEE automatically encrypts the data leaving the processor package to
+> > the MEE regions. The data is encrypted using a random key whose life-time
+> > is exactly one power cycle.
+> >
+> > The current implementation requires that the firmware sets
+> > IA32_SGXLEPUBKEYHASH* MSRs as writable so that ultimately the kernel can
+> > decide what enclaves it wants run. The implementation does not create
+> > any bottlenecks to support read-only MSRs later on.
+> >
+> > You can tell if your CPU supports SGX by looking into /proc/cpuinfo:
+> >
+> >       cat /proc/cpuinfo  | grep sgx
 
-This is bit confusing here. Mode and user_m should have been of same type.
-You can define user_m to user_mode to be very clear.
+We applied the v29 patches to Linux 5.6.0, then tested on Xeon(R) E-2186G
+with Asylo (http://asylo.dev).
 
-You can completely remove "mode" and directly use rdtgrp->mode instead. It
-is left to you.
+Looks good. All Asylo tests pass.
 
-> > -	/* Valid input requires a trailing newline */
-> -	if (nbytes == 0 || buf[nbytes - 1] != '\n')
-> +	if (nbytes == 0)
->  		return -EINVAL;
-> -	buf[nbytes - 1] = '\0';
-> 
->  	rdtgrp = rdtgroup_kn_lock_live(of->kn);
->  	if (!rdtgrp) {
-> @@ -1425,11 +1424,17 @@ static ssize_t rdtgroup_mode_write(struct
-> kernfs_open_file *of,
-> 
->  	mode = rdtgrp->mode;
-> 
-> -	if ((!strcmp(buf, "shareable") && mode == RDT_MODE_SHAREABLE) ||
-> -	    (!strcmp(buf, "exclusive") && mode == RDT_MODE_EXCLUSIVE) ||
-> -	    (!strcmp(buf, "pseudo-locksetup") &&
-> -	     mode == RDT_MODE_PSEUDO_LOCKSETUP) ||
-> -	    (!strcmp(buf, "pseudo-locked") && mode ==
-> RDT_MODE_PSEUDO_LOCKED))
-> +	ret = sysfs_match_string(rdt_mode_str, buf);
-> +	if (ret < 0) {
-> +		rdt_last_cmd_puts("Unknown or unsupported mode\n");
-> +		goto out;
-> +	}
-> +
-> +	user_m = ret;
-> +	ret = 0;
-> +
-> +	/* Do nothing and return success if user asks for current mode */
-> +	if (user_m == mode)
->  		goto out;
-> 
->  	if (mode == RDT_MODE_PSEUDO_LOCKED) {
-> @@ -1438,14 +1443,14 @@ static ssize_t rdtgroup_mode_write(struct
-> kernfs_open_file *of,
->  		goto out;
->  	}
-> 
-> -	if (!strcmp(buf, "shareable")) {
-> +	if (user_m == RDT_MODE_SHAREABLE) {
->  		if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP) {
->  			ret = rdtgroup_locksetup_exit(rdtgrp);
->  			if (ret)
->  				goto out;
->  		}
->  		rdtgrp->mode = RDT_MODE_SHAREABLE;
-> -	} else if (!strcmp(buf, "exclusive")) {
-> +	} else if (user_m == RDT_MODE_EXCLUSIVE) {
->  		if (!rdtgroup_mode_test_exclusive(rdtgrp)) {
->  			ret = -EINVAL;
->  			goto out;
-> @@ -1456,14 +1461,11 @@ static ssize_t rdtgroup_mode_write(struct
-> kernfs_open_file *of,
->  				goto out;
->  		}
->  		rdtgrp->mode = RDT_MODE_EXCLUSIVE;
-> -	} else if (!strcmp(buf, "pseudo-locksetup")) {
-> +	} else if (user_m == RDT_MODE_PSEUDO_LOCKSETUP) {
->  		ret = rdtgroup_locksetup_enter(rdtgrp);
->  		if (ret)
->  			goto out;
->  		rdtgrp->mode = RDT_MODE_PSEUDO_LOCKSETUP;
-> -	} else {
-> -		rdt_last_cmd_puts("Unknown or unsupported mode\n");
-> -		ret = -EINVAL;
->  	}
-> 
->  out:
-> --
-> 2.21.0
-
+Tested-by: Seth Moore <sethmo@google.com>
