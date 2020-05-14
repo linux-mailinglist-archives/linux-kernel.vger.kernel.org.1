@@ -2,72 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13601D2747
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 08:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AB31D2785
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 08:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726034AbgENGLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 02:11:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42248 "EHLO mail.kernel.org"
+        id S1726119AbgENGXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 02:23:00 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:36898 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgENGLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 02:11:24 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73C19206D4;
-        Thu, 14 May 2020 06:11:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589436683;
-        bh=lgAfsk3eTdBS1nBtTAp6vjs9oy84Hv0KqdYyYePcZLQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bZXzY7gyv5zKYElVKKiYQlhweKPTH1RYphccgVbIGHryFOgSy66qS4qWZYxYEeVgN
-         nfCrcU1YKIIy8ya3PoKBNLNvC9DlyNYhJNYoOjPeKLE/9H66SGH6SHGb6A+5+bV5x7
-         2Idtx63UnEOY/hU98tBIMugsUfoiygwZFlFrDQys=
-Date:   Thu, 14 May 2020 08:11:21 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCHv1 01/19] kobject: increase allowed number of uevent
- variables
-Message-ID: <20200514061121.GA1457703@kroah.com>
-References: <20200513185615.508236-1-sebastian.reichel@collabora.com>
- <20200513185615.508236-2-sebastian.reichel@collabora.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513185615.508236-2-sebastian.reichel@collabora.com>
+        id S1726067AbgENGW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 02:22:58 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4BB03201556;
+        Thu, 14 May 2020 08:22:56 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7A5C92014EC;
+        Thu, 14 May 2020 08:22:52 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 1A7EE40245;
+        Thu, 14 May 2020 14:22:47 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        robh+dt@kernel.org, tremyfr@gmail.com, p.bruenn@beckhoff.com,
+        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH 1/2] dt-bindings: rtc: Convert MXC RTC to json-schema
+Date:   Thu, 14 May 2020 14:13:24 +0800
+Message-Id: <1589436805-22923-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 08:55:57PM +0200, Sebastian Reichel wrote:
-> SBS battery driver exposes 32 power supply properties now,
-> which will result in uevent failure on (un)plugging the
-> battery. Other drivers (e.g. bq27xxx) are also coming close
-> to this limit, so increase it.
-> 
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> ---
->  include/linux/kobject.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/kobject.h b/include/linux/kobject.h
-> index e2ca0a292e21..75e822569e39 100644
-> --- a/include/linux/kobject.h
-> +++ b/include/linux/kobject.h
-> @@ -29,7 +29,7 @@
->  #include <linux/uidgid.h>
->  
->  #define UEVENT_HELPER_PATH_LEN		256
-> -#define UEVENT_NUM_ENVP			32	/* number of env pointers */
-> +#define UEVENT_NUM_ENVP			64	/* number of env pointers */
->  #define UEVENT_BUFFER_SIZE		2048	/* buffer for the variables */
->  
->  #ifdef CONFIG_UEVENT_HELPER
+Convert the MXC RTC binding to DT schema format using json-schema.
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ Documentation/devicetree/bindings/rtc/rtc-mxc.txt  | 26 ----------
+ Documentation/devicetree/bindings/rtc/rtc-mxc.yaml | 59 ++++++++++++++++++++++
+ 2 files changed, 59 insertions(+), 26 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/rtc/rtc-mxc.txt
+ create mode 100644 Documentation/devicetree/bindings/rtc/rtc-mxc.yaml
+
+diff --git a/Documentation/devicetree/bindings/rtc/rtc-mxc.txt b/Documentation/devicetree/bindings/rtc/rtc-mxc.txt
+deleted file mode 100644
+index 5bcd31d..0000000
+--- a/Documentation/devicetree/bindings/rtc/rtc-mxc.txt
++++ /dev/null
+@@ -1,26 +0,0 @@
+-* Real Time Clock of the i.MX SoCs
+-
+-RTC controller for the i.MX SoCs
+-
+-Required properties:
+-- compatible: Should be "fsl,imx1-rtc" or "fsl,imx21-rtc".
+-- reg: physical base address of the controller and length of memory mapped
+-  region.
+-- interrupts: IRQ line for the RTC.
+-- clocks: should contain two entries:
+-  * one for the input reference
+-  * one for the the SoC RTC
+-- clock-names: should contain:
+-  * "ref" for the input reference clock
+-  * "ipg" for the SoC RTC clock
+-
+-Example:
+-
+-rtc@10007000 {
+-	compatible = "fsl,imx21-rtc";
+-	reg = <0x10007000 0x1000>;
+-	interrupts = <22>;
+-	clocks = <&clks IMX27_CLK_CKIL>,
+-		 <&clks IMX27_CLK_RTC_IPG_GATE>;
+-	clock-names = "ref", "ipg";
+-};
+diff --git a/Documentation/devicetree/bindings/rtc/rtc-mxc.yaml b/Documentation/devicetree/bindings/rtc/rtc-mxc.yaml
+new file mode 100644
+index 0000000..d5c5ccd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/rtc/rtc-mxc.yaml
+@@ -0,0 +1,59 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/rtc/rtc-mxc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Real Time Clock of the i.MX SoCs
++
++allOf:
++  - $ref: "rtc.yaml#"
++
++maintainers:
++  - Philippe Reynes <tremyfr@gmail.com>
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx1-rtc
++      - fsl,imx21-rtc
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: input reference
++      - description: the SoC RTC clock
++    maxItems: 2
++
++  clock-names:
++    items:
++      - const: ref
++      - const: ipg
++    maxItems: 2
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/imx27-clock.h>
++
++    rtc@10007000 {
++        compatible = "fsl,imx21-rtc";
++        reg = <0x10007000 0x1000>;
++        interrupts = <22>;
++        clocks = <&clks IMX27_CLK_CKIL>,
++                 <&clks IMX27_CLK_RTC_IPG_GATE>;
++        clock-names = "ref", "ipg";
++    };
+-- 
+2.7.4
+
