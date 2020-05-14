@@ -2,182 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77D21D266F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 07:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4964C1D26A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 07:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgENFGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 01:06:41 -0400
-Received: from mga02.intel.com ([134.134.136.20]:8659 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbgENFGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 01:06:41 -0400
-IronPort-SDR: +AzdvcHP3/lP4WJxTIADTmX9mq5GsXxpeTfxrOUhZgZK+y8Y4/9LsfLna1VTwumj5wHai/7SxY
- NmVi7h4jMSTA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 22:06:38 -0700
-IronPort-SDR: Ld+CK9qNKosZQtvOxFuPzaJLTXHIq9sceY/xp801FUfLYHhooPczvWclV/CkbxPUCDSgORoR5H
- NK9w0KYpbfpQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,390,1583222400"; 
-   d="scan'208";a="464192388"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
-  by fmsmga005.fm.intel.com with ESMTP; 13 May 2020 22:06:35 -0700
-Date:   Thu, 14 May 2020 13:16:35 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Yongbo Zhang <giraffesnn123@gmail.com>, broonie@kernel.org,
-        lgirdwood@gmail.com
-Cc:     kbuild-all@lists.01.org, alsa-devel@alsa-project.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yongbo Zhang <giraffesnn123@gmail.com>,
-        Chen Li <licheng0822@thundersoft.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v1] ASoC: rsnd: add interrupt support for SSI BUSIF buffer
-Message-ID: <20200514051635.GA24840@xsang-OptiPlex-9020>
+        id S1725954AbgENFWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 01:22:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725794AbgENFWi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 01:22:38 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBEFC061A0C;
+        Wed, 13 May 2020 22:22:37 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id z80so1917923qka.0;
+        Wed, 13 May 2020 22:22:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=z5uk4NHfluyoyKinmPhsA3PHI6OfQ+bSBmaBzpScwmw=;
+        b=ALjXcdekUDYnKCo9mbwP5NFpsZBLyExdioIUHbsWFR8MvK+SCWzM66peJ68x5i+6NS
+         TOOmRrj2tY83DX/ZtNXk+3bhZU5HSUuOQ0esn6RurOlg0teBADPC7yOfburIc4urfb6n
+         7n4JUkBeyLzl5VU5TiQ+C9scW2ttMORwDnmtP2+RkkBZhynOF49DvkJt2mCxSuY656Hz
+         G4yxgAxZOpC1i11vUkWVYXkRDMqkFtrbD3tDUp/5DopauJdPN7PH2VHfnB654FNKNREa
+         HWij1DcReST74ph02PNPwYOVxAoWSQckdWt159yP8xOOeQ8GdV3mDIHqeqpxDGM/K/yw
+         TJ2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=z5uk4NHfluyoyKinmPhsA3PHI6OfQ+bSBmaBzpScwmw=;
+        b=m2IyCz5IKq4XHaRFM2UK6Mikp0a4IQjMX6vEX+bI7Z7x3876oeIu/R4Pa4RPyfkzP8
+         6xqV2yktp1gXeDpc+Ye3eyyEhDU43xu5iy8/GM23hKCUufMQzvv3d0rGVXh8BA5gvBGq
+         POsf0H8D/9fqOmIpmFIqJWUjqPEDNmbz4vF0N4FgsGkGWGrbCkyaJcZhJNX+hOdRSxX4
+         SgDwszU84DGR9VGd9R2R99QYhZagBeerWWbav9ISBAX0AX4dApzjZA6XhuJXJQpa8cHd
+         mxR0qwHgXzRCe+Ohgptv9K9/fwSbEqxKT8dCG7vAhZHUnYpB+xgd8NseiKAPn3kgv7j4
+         GfIQ==
+X-Gm-Message-State: AOAM531ObIRjK8BM4RyDZBt4hqlfbq8DfkpE3VFOSLmoSYB7gQMPmZlM
+        K5Qa8aLgcu+KlJg+AXOVPmUPGqnfNqY=
+X-Google-Smtp-Source: ABdhPJx3cdcn2+IV1zWsDjnGUc1Ywq5IEr5xgbyPAyNB5MNO81FbwGCmd9L8GBv5+A/27y4N235s7g==
+X-Received: by 2002:ae9:e858:: with SMTP id a85mr3191511qkg.478.1589433756973;
+        Wed, 13 May 2020 22:22:36 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id x19sm1813380qkb.136.2020.05.13.22.22.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 22:22:36 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Thu, 14 May 2020 01:22:34 -0400
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Borislav Petkov <bp@suse.de>, Arnd Bergmann <arnd@arndb.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: gcc-10: kernel stack is corrupted and fails to boot
+Message-ID: <20200514052234.GA1894416@rani.riverdale.lan>
+References: <20200513214128.GB6733@zn.tnic>
+ <CAK8P3a3XPCyNM7s3vbn8JYK6swA3ZpPtTWB+uhmAE3YEX-nmig@mail.gmail.com>
+ <20200513222038.GC6733@zn.tnic>
+ <CAHk-=wgybuOF+Jp2XYWqM7Xn1CW6szWQw_FgVoFh5jx_4YoCVw@mail.gmail.com>
+ <20200513233616.GD6733@zn.tnic>
+ <CAHk-=wjZXFe08MiNRevJFGDvX0O6kcQTiK8GFBS7hwUAzB+LQw@mail.gmail.com>
+ <CAKwvOd=o_wuiVpw5KVzLEt25W-A9Ah9fzftPZLG+yutqJmWbOg@mail.gmail.com>
+ <CAHk-=wg6G+p1RRjR6UZBEuSCDs9=iWBsxrDPTEwqh+y5RayqKA@mail.gmail.com>
+ <CALCETrUYA60fWu+=MviKx0NmW+_ppsOcv-ShUXdbyM4EjyfzHQ@mail.gmail.com>
+ <CAHk-=wgiGxRgJGS-zyer1C_x2MQUVo6iZn0=aJyuFTqJWk-mpA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200511100415.12502-1-giraffesnn123@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wgiGxRgJGS-zyer1C_x2MQUVo6iZn0=aJyuFTqJWk-mpA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yongbo,
+On Wed, May 13, 2020 at 09:52:07PM -0700, Linus Torvalds wrote:
+> On Wed, May 13, 2020, 20:50 Andy Lutomirski <luto@amacapital.net> wrote:
+> 
+> >
+> > LTO isn’t a linker taking regular .o files full of regular machine
+> > code and optimizing it. That’s nuts.
+> >
+> 
+> Yeah, you're right. I wear originally thinking just an optimizing
+> assembler, and then started thinking about link-time optimizations in that
+> sense, but it was wrong to then go from that to LTO which has a very
+> specific meaning.
+> 
+> We do have assemblers that do some optimizations, but they tend to all be
+> at the single instruction level (eg things like turning "add $128" into
+> "sub $-128" which fits in a byte constant).
+> 
+>     Linus
+> 
+> >
 
-Thank you for the patch! Perhaps something to improve:
+The gcc docs [1,2] at least don't inspire much confidence that this will
+continue working with plain asm("") though:
 
-[auto build test WARNING on asoc/for-next]
-[also build test WARNING on v5.7-rc5 next-20200511]
-[if your patch is applied to the wrong git tree, please drop us a note to help
-improve the system. BTW, we also suggest to use '--base' option to specify the
-base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+"Note that GCC’s optimizers can move asm statements relative to other
+code, including across jumps."
+...
+"Note that the compiler can move even volatile asm instructions relative
+to other code, including across jump instructions."
 
-url:    https://github.com/0day-ci/linux/commits/Yongbo-Zhang/ASoC-rsnd-add-interrupt-support-for-SSI-BUSIF-buffer/20200511-184903
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.1-191-gc51a0382-dirty
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
-:::::: branch date: 8 hours ago
-:::::: commit date: 8 hours ago
+Even if we don't include an instruction in it I think it should at least
+have a memory clobber, to stop the compiler from deciding that it can be
+moved before the call so it can do the tail-call optimization.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kbuild test robot <lkp@intel.com>
-
-
-sparse warnings: (new ones prefixed by >>)
-
-   sound/soc/sh/rcar/ssi.c:596:1: sparse: sparse: mixing declarations and code
-   include/sound/pcm_params.h:377:0: sparse: sparse: Expected } at end of function
-   include/sound/pcm_params.h:377:0: sparse: sparse: got end-of-input
->> sound/soc/sh/rcar/ssi.c:798:56: sparse: sparse: not enough arguments for function rsnd_mod_write
-
-# https://github.com/0day-ci/linux/commit/23aaae15fe2b41fd05caf5e0773d41021bc03e27
-git remote add linux-review https://github.com/0day-ci/linux
-git remote update linux-review
-git checkout 23aaae15fe2b41fd05caf5e0773d41021bc03e27
-vim +798 sound/soc/sh/rcar/ssi.c
-
-615fb6c7b13b7f Kuninori Morimoto 2016-02-18  733  
-d8d9b9730cd62c Kuninori Morimoto 2017-12-11  734  static bool rsnd_ssi_pio_interrupt(struct rsnd_mod *mod,
-d8d9b9730cd62c Kuninori Morimoto 2017-12-11  735  				   struct rsnd_dai_stream *io);
-bfc0cfe6b7acb1 Kuninori Morimoto 2015-06-15  736  static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
-bfc0cfe6b7acb1 Kuninori Morimoto 2015-06-15  737  				 struct rsnd_dai_stream *io)
-ae5c322303fff5 Kuninori Morimoto 2013-07-21  738  {
-690602fcd85385 Kuninori Morimoto 2015-01-15  739  	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
-2b62786951ca38 Kuninori Morimoto 2018-02-13  740  	struct device *dev = rsnd_priv_to_dev(priv);
-765ae7c8dda7d0 Kuninori Morimoto 2015-01-15  741  	int is_dma = rsnd_ssi_is_dma_mode(mod);
-02299d9875bab5 Kuninori Morimoto 2015-05-21  742  	u32 status;
-75defee0f1b3fc Kuninori Morimoto 2015-06-15  743  	bool elapsed = false;
-6a25c8da00284f Kuninori Morimoto 2016-01-26  744  	bool stop = false;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  745  	int is_tdm, is_tdm_split;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  746  
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  747  	is_tdm		= rsnd_runtime_is_tdm(io);
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  748  	is_tdm_split	= rsnd_runtime_is_tdm_split(io);
-02299d9875bab5 Kuninori Morimoto 2015-05-21  749  
-02299d9875bab5 Kuninori Morimoto 2015-05-21  750  	spin_lock(&priv->lock);
-ae5c322303fff5 Kuninori Morimoto 2013-07-21  751  
-02299d9875bab5 Kuninori Morimoto 2015-05-21  752  	/* ignore all cases if not working */
-d5bbe7de563ccc Kuninori Morimoto 2015-06-15  753  	if (!rsnd_io_is_working(io))
-02299d9875bab5 Kuninori Morimoto 2015-05-21  754  		goto rsnd_ssi_interrupt_out;
-02299d9875bab5 Kuninori Morimoto 2015-05-21  755  
-6a25c8da00284f Kuninori Morimoto 2016-01-26  756  	status = rsnd_ssi_status_get(mod);
-4e7d606cd52aa8 Kuninori Morimoto 2014-11-27  757  
-4e7d606cd52aa8 Kuninori Morimoto 2014-11-27  758  	/* PIO only */
-d8d9b9730cd62c Kuninori Morimoto 2017-12-11  759  	if (!is_dma && (status & DIRQ))
-d8d9b9730cd62c Kuninori Morimoto 2017-12-11  760  		elapsed = rsnd_ssi_pio_interrupt(mod, io);
-ae5c322303fff5 Kuninori Morimoto 2013-07-21  761  
-12927a8f802642 Kuninori Morimoto 2015-06-15  762  	/* DMA only */
-2b62786951ca38 Kuninori Morimoto 2018-02-13  763  	if (is_dma && (status & (UIRQ | OIRQ))) {
-c0ea089dbad47a Kuninori Morimoto 2018-10-30  764  		rsnd_dbg_irq_status(dev, "%s err status : 0x%08x\n",
-c0ea089dbad47a Kuninori Morimoto 2018-10-30  765  			rsnd_mod_name(mod), status);
-2b62786951ca38 Kuninori Morimoto 2018-02-13  766  
-6a25c8da00284f Kuninori Morimoto 2016-01-26  767  		stop = true;
-2b62786951ca38 Kuninori Morimoto 2018-02-13  768  	}
-69e32a58bde674 Kuninori Morimoto 2015-10-26  769  
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  770  	status = 0;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  771  
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  772  	if (is_tdm || is_tdm_split) {
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  773  		switch (id) {
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  774  		case 0:
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  775  		case 1:
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  776  		case 2:
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  777  		case 3:
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  778  		case 4:
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  779  			for (i = 0; i < 4; i++) {
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  780  				status = rsnd_mod_read(mod,
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  781  						       SSI_SYS_STATUS(i * 2));
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  782  				status &= 0xf << (id * 4);
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  783  
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  784  				if (status) {
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  785  					rsnd_dbg_irq_status(dev,
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  786  						"%s err status : 0x%08x\n",
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  787  						rsnd_mod_name(mod), status);
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  788  					rsnd_mod_write(mod,
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  789  						       SSI_SYS_STATUS(i * 2),
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  790  						       0xf << (id * 4));
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  791  					stop = true;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  792  					break;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  793  				}
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  794  			}
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  795  			break;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  796  		case 9:
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  797  			for (i = 0; i < 4; i++) {
-23aaae15fe2b41 Yongbo Zhang      2020-05-11 @798  				status = rsnd_mod_write(mod,
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  799  						SSI_SYS_STATUS((i * 2) + 1));
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  800  				status &= 0xf << 4;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  801  
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  802  				if (status) {
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  803  					rsnd_dbg_irq_status(dev,
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  804  						"%s err status : 0x%08x\n",
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  805  						rsnd_mod_name(mod), status);
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  806  					rsnd_mod_write(mod,
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  807  						SSI_SYS_STATUS((i * 2) + 1),
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  808  						0xf << 4);
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  809  					stop = true;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  810  					break;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  811  				}
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  812  			}
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  813  			break;
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  814  		}
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  815  	}
-23aaae15fe2b41 Yongbo Zhang      2020-05-11  816  
-5342dff2326393 Kuninori Morimoto 2015-11-26  817  	rsnd_ssi_status_clear(mod);
-02299d9875bab5 Kuninori Morimoto 2015-05-21  818  rsnd_ssi_interrupt_out:
-02299d9875bab5 Kuninori Morimoto 2015-05-21  819  	spin_unlock(&priv->lock);
-02299d9875bab5 Kuninori Morimoto 2015-05-21  820  
-75defee0f1b3fc Kuninori Morimoto 2015-06-15  821  	if (elapsed)
-75defee0f1b3fc Kuninori Morimoto 2015-06-15  822  		rsnd_dai_period_elapsed(io);
-6a25c8da00284f Kuninori Morimoto 2016-01-26  823  
-6a25c8da00284f Kuninori Morimoto 2016-01-26  824  	if (stop)
-6a25c8da00284f Kuninori Morimoto 2016-01-26  825  		snd_pcm_stop_xrun(io->substream);
-6a25c8da00284f Kuninori Morimoto 2016-01-26  826  
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
+[1] https://gcc.gnu.org/onlinedocs/gcc/Basic-Asm.html#Basic-Asm
+[2] https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Volatile
