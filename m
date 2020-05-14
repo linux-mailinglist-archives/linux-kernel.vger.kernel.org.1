@@ -2,53 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2041D3E79
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 22:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4DC1D3EAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 22:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729230AbgENUHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 16:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726035AbgENUHS (ORCPT
+        id S1729424AbgENUIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 16:08:25 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:57554 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728187AbgENUIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 16:07:18 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A901C061A0C;
-        Thu, 14 May 2020 13:07:18 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id E1980128D496C;
-        Thu, 14 May 2020 13:07:17 -0700 (PDT)
-Date:   Thu, 14 May 2020 13:07:17 -0700 (PDT)
-Message-Id: <20200514.130717.1848307407646007455.davem@davemloft.net>
-To:     wenhu.wang@vivo.com
-Cc:     elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@vivo.com
-Subject: Re: [PATCH] drivers: ipa: fix typos for ipa_smp2p structure doc
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200514110222.3402-1-wenhu.wang@vivo.com>
-References: <20200514110222.3402-1-wenhu.wang@vivo.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 14 May 2020 13:07:18 -0700 (PDT)
+        Thu, 14 May 2020 16:08:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589486904; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=4YJ2XzG2JIi+LCwLrdlVxFzG02vS8JkhTTg9UN+mYy4=; b=ClPJZeERQVc4KP0tfj37bhukVwSr/53LYxeNfJp3ro4xMH1yYiGVBstHYUUImLzkKcN23gc5
+ E9hn3o/4iiGk8IaL5538577/hVNHAn+LkVL0h8r2xQCLJX2YNLCKnV0GGgOTg/w6yvDoBkJF
+ 7E9zQbTNQLJFgvsAJ9a+hJpJHFM=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ebda537.7f793e833a08-smtp-out-n03;
+ Thu, 14 May 2020 20:08:23 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B4F95C072B7; Thu, 14 May 2020 20:08:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rishabhb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8AD8EC38561;
+        Thu, 14 May 2020 20:08:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8AD8EC38561
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rishabhb@codeaurora.org
+From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
+To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        tsoni@codeaurora.org, psodagud@codeaurora.org,
+        sidgup@codeaurora.org, Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Subject: [PATCH v3 0/3] Extend coredump functionality
+Date:   Thu, 14 May 2020 13:07:33 -0700
+Message-Id: <1589486856-23440-1-git-send-email-rishabhb@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Wenhu <wenhu.wang@vivo.com>
-Date: Thu, 14 May 2020 04:02:22 -0700
+This patch series moves the coredump functionality to a separate
+file and adds "inline" coredump feature. Inline coredump directly
+copies segments from device memory during coredump to userspace.
+This avoids extra memory usage at the cost of speed. Recovery is
+stalled untill all data is read by userspace.
 
-> Remove the duplicate "mutex", and change "Motex" to "Mutex". Also I
-> recommend it's easier for understanding to make the "ready-interrupt"
-> a bundle for it is a parallel description as "shutdown" which is appended
-> after the slash.
-> 
-> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
-> Cc: Alex Elder <elder@kernel.org>
+Changelog:
 
-Applied, thanks.
+v3 -> v2:
+- Move entire coredump functionality to remoteproc_coredump.c
+- Modify rproc_coredump to perform dump according to conf. set by userspace
+- Move the userspace configuration to debugfs from sysfs.
+- Keep the default coredump implementation as is
+
+v2 -> v1:
+- Introduce new file for coredump.
+- Add userspace sysfs configuration for dump type.
+
+Rishabh Bhatnagar (3):
+  remoteproc: Move coredump functionality to a new file
+  remoteproc: Add inline coredump functionality
+  remoteproc: Add coredump debugfs entry
+
+ drivers/remoteproc/Makefile              |   1 +
+ drivers/remoteproc/remoteproc_core.c     | 191 ------------------
+ drivers/remoteproc/remoteproc_coredump.c | 322 +++++++++++++++++++++++++++++++
+ drivers/remoteproc/remoteproc_debugfs.c  |  86 +++++++++
+ drivers/remoteproc/remoteproc_internal.h |   4 +
+ include/linux/remoteproc.h               |  15 ++
+ 6 files changed, 428 insertions(+), 191 deletions(-)
+ create mode 100644 drivers/remoteproc/remoteproc_coredump.c
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
