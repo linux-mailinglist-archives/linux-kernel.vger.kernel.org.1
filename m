@@ -2,272 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75131D2E1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 13:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFAE1D2E07
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 13:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbgENLTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 07:19:19 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59602 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727910AbgENLTR (ORCPT
+        id S1726199AbgENLR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 07:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbgENLR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 07:19:17 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04EB3MbF113667;
-        Thu, 14 May 2020 07:18:58 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 310tjp1tmr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 May 2020 07:18:58 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04EB3ZaO114774;
-        Thu, 14 May 2020 07:18:57 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 310tjp1tkr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 May 2020 07:18:57 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04EBFwmS015506;
-        Thu, 14 May 2020 11:18:55 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 3100ubbgte-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 May 2020 11:18:55 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04EBIqH638207720
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 May 2020 11:18:52 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 73BAF42042;
-        Thu, 14 May 2020 11:18:52 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 262D942041;
-        Thu, 14 May 2020 11:18:49 +0000 (GMT)
-Received: from bangoria.ibmuc.com (unknown [9.199.59.186])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 14 May 2020 11:18:48 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-To:     mpe@ellerman.id.au, mikey@neuling.org
-Cc:     apopple@linux.ibm.com, paulus@samba.org, npiggin@gmail.com,
-        christophe.leroy@c-s.fr, naveen.n.rao@linux.vnet.ibm.com,
-        peterz@infradead.org, jolsa@kernel.org, oleg@redhat.com,
-        fweisbec@gmail.com, mingo@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        ravi.bangoria@linux.ibm.com
-Subject: [PATCH v6 16/16] powerpc/watchpoint/xmon: Support 2nd DAWR
-Date:   Thu, 14 May 2020 16:47:41 +0530
-Message-Id: <20200514111741.97993-17-ravi.bangoria@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200514111741.97993-1-ravi.bangoria@linux.ibm.com>
-References: <20200514111741.97993-1-ravi.bangoria@linux.ibm.com>
+        Thu, 14 May 2020 07:17:58 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FA8C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:17:58 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id fu13so12314731pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:17:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hknV+GJMZHyHLAY2im/FQF7wHV4s+FSMrkKyD2kNtOw=;
+        b=q1J8WZEFW7zcbs4kfMwHVNcPHEvHzP0sWCL1KDOejr+Oz4wbi66N2QIJHSjF4QRW3Q
+         TEDfEChsLpQbBMWtT6S0V4Je1V3/Kxw2Ii8ipz53soDuZFlMN3tvKjzxQDXY03e0FnAB
+         Jg6FI4bRC175fUnWz3QeCj9PmuQoJoo46BfEbGKM9BRYH3vJtBEeZCq24PuckXMpFn2k
+         VAYNw3kO7blN2xdlp55KlI1JN2CpIU8h97kLDnhSRNEuqNgr6zNVM7IL4CJVtAN7eM1Q
+         cEHqy92xeP6BQn5y4Ncknujhip2GTZvq/Ny62ESqPkpUVlycWaVsNKkF23F46abJzrV/
+         qbVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hknV+GJMZHyHLAY2im/FQF7wHV4s+FSMrkKyD2kNtOw=;
+        b=Xcngq+HsxnWRBEsPR8qD8Yk59Pt1K6o/30F+ab6+S50cteDk4brzkpgiy3LHkiA7N2
+         RSizSzpIvpahhNZVb+MM1K5JwYGKBkjM+4K8QKWV1ReHCSXWuMkc+6r9rvup2ERw+k1m
+         x8r2Oi0LsAthVdTfwIq5YQJ/Ukw+uVw9nZr99QYeV0akHU1u0rPWpAta7xCCDsRufCgs
+         cnVAcPDOHmQLJ8WmopW2v2Aq30pJItvFEQI+XkeGpPTuPyOblO4Gsw4UrXiuzMv0vCx6
+         lX4KF6f8QPybcn+q96gEi3CqE3vIdEiJcrA+GjtKmwON59XkMBlPS3yoa+4EINeZgtgH
+         qeFw==
+X-Gm-Message-State: AGi0PuaTR3L5P7lFTSr0ujXlbx4ozp1Yvcvw+ZTSCLxdaGQ3JCxgZggA
+        mjKoKAIcxqXYvdFp3vY45bI=
+X-Google-Smtp-Source: APiQypLarzhPpMk65VrkKnqffPBenJAa46xewdPlN9VCMxKTNk/8c6C3ICwXE0q0hf7R3DKGKlS54g==
+X-Received: by 2002:a17:90a:cc6:: with SMTP id 6mr39655685pjt.17.1589455078047;
+        Thu, 14 May 2020 04:17:58 -0700 (PDT)
+Received: from localhost ([49.205.220.80])
+        by smtp.gmail.com with ESMTPSA id g10sm2156051pfk.103.2020.05.14.04.17.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 14 May 2020 04:17:57 -0700 (PDT)
+Date:   Thu, 14 May 2020 16:47:55 +0530
+From:   afzal mohammed <afzal.mohd.ma@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: ARM: static kernel in vmalloc space
+Message-ID: <20200514111755.GA4997@afzalpc>
+References: <CAK8P3a0JW9x-Wk9Ec3+zLjPHbWAvPQx8MF-xe-PnWUgEjRAuTg@mail.gmail.com>
+ <20200415135407.GA6553@afzalpc>
+ <20200503145017.GA5074@afzalpc>
+ <CAK8P3a3OC5UO72rTDWi6+XgmExJmkATEjscq8hns8Bng06OpcQ@mail.gmail.com>
+ <20200504091018.GA24897@afzalpc>
+ <CAK8P3a25sZ9B+AE=EJyJZSU91CkBLLR6p2nixw_=UAbczg3RiQ@mail.gmail.com>
+ <20200511142113.GA31707@afzalpc>
+ <CAK8P3a0=+aBJLTvHOskTv=tba_s5b5MzWrYG8mxH3iLNy4hfBw@mail.gmail.com>
+ <20200512104758.GA12980@afzalpc>
+ <CAK8P3a1DQWG1+ab2+vQ2XCAKYxPUjJk5g3W3094j-adDXSQfzQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-14_02:2020-05-14,2020-05-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 mlxlogscore=999 spamscore=0 clxscore=1015
- suspectscore=2 phishscore=0 adultscore=0 priorityscore=1501
- cotscore=-2147483648 malwarescore=0 mlxscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005140100
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1DQWG1+ab2+vQ2XCAKYxPUjJk5g3W3094j-adDXSQfzQ@mail.gmail.com>
+User-Agent: Mutt/1.9.3 (2018-01-21)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for 2nd DAWR in xmon. With this, we can have two
-simultaneous breakpoints from xmon.
+Hi,
 
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Reviewed-by: Michael Neuling <mikey@neuling.org>
----
- arch/powerpc/xmon/xmon.c | 101 ++++++++++++++++++++++++++-------------
- 1 file changed, 69 insertions(+), 32 deletions(-)
+On Tue, May 12, 2020 at 09:49:59PM +0200, Arnd Bergmann wrote:
 
-diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
-index 094bf4715f2c..de585204d1d2 100644
---- a/arch/powerpc/xmon/xmon.c
-+++ b/arch/powerpc/xmon/xmon.c
-@@ -112,7 +112,7 @@ struct bpt {
- #define BP_DABR		4
- 
- static struct bpt bpts[NBPTS];
--static struct bpt dabr;
-+static struct bpt dabr[HBP_NUM_MAX];
- static struct bpt *iabr;
- static unsigned bpinstr = 0x7fe00008;	/* trap */
- 
-@@ -784,10 +784,17 @@ static int xmon_sstep(struct pt_regs *regs)
- 
- static int xmon_break_match(struct pt_regs *regs)
- {
-+	int i;
-+
- 	if ((regs->msr & (MSR_IR|MSR_PR|MSR_64BIT)) != (MSR_IR|MSR_64BIT))
- 		return 0;
--	if (dabr.enabled == 0)
--		return 0;
-+	for (i = 0; i < nr_wp_slots(); i++) {
-+		if (dabr[i].enabled)
-+			goto found;
-+	}
-+	return 0;
-+
-+found:
- 	xmon_core(regs, 0);
- 	return 1;
- }
-@@ -948,13 +955,16 @@ static void insert_bpts(void)
- 
- static void insert_cpu_bpts(void)
- {
-+	int i;
- 	struct arch_hw_breakpoint brk;
- 
--	if (dabr.enabled) {
--		brk.address = dabr.address;
--		brk.type = (dabr.enabled & HW_BRK_TYPE_DABR) | HW_BRK_TYPE_PRIV_ALL;
--		brk.len = DABR_MAX_LEN;
--		__set_breakpoint(0, &brk);
-+	for (i = 0; i < nr_wp_slots(); i++) {
-+		if (dabr[i].enabled) {
-+			brk.address = dabr[i].address;
-+			brk.type = (dabr[i].enabled & HW_BRK_TYPE_DABR) | HW_BRK_TYPE_PRIV_ALL;
-+			brk.len = 8;
-+			__set_breakpoint(i, &brk);
-+		}
- 	}
- 
- 	if (iabr)
-@@ -1366,6 +1376,35 @@ static long check_bp_loc(unsigned long addr)
- 	return 1;
- }
- 
-+static int find_free_data_bpt(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < nr_wp_slots(); i++) {
-+		if (!dabr[i].enabled)
-+			return i;
-+	}
-+	printf("Couldn't find free breakpoint register\n");
-+	return -1;
-+}
-+
-+static void print_data_bpts(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < nr_wp_slots(); i++) {
-+		if (!dabr[i].enabled)
-+			continue;
-+
-+		printf("   data   "REG"  [", dabr[i].address);
-+		if (dabr[i].enabled & 1)
-+			printf("r");
-+		if (dabr[i].enabled & 2)
-+			printf("w");
-+		printf("]\n");
-+	}
-+}
-+
- static char *breakpoint_help_string =
-     "Breakpoint command usage:\n"
-     "b                show breakpoints\n"
-@@ -1399,10 +1438,9 @@ bpt_cmds(void)
- 			printf("Hardware data breakpoint not supported on this cpu\n");
- 			break;
- 		}
--		if (dabr.enabled) {
--			printf("Couldn't find free breakpoint register\n");
-+		i = find_free_data_bpt();
-+		if (i < 0)
- 			break;
--		}
- 		mode = 7;
- 		cmd = inchar();
- 		if (cmd == 'r')
-@@ -1411,15 +1449,15 @@ bpt_cmds(void)
- 			mode = 6;
- 		else
- 			termch = cmd;
--		dabr.address = 0;
--		dabr.enabled = 0;
--		if (scanhex(&dabr.address)) {
--			if (!is_kernel_addr(dabr.address)) {
-+		dabr[i].address = 0;
-+		dabr[i].enabled = 0;
-+		if (scanhex(&dabr[i].address)) {
-+			if (!is_kernel_addr(dabr[i].address)) {
- 				printf(badaddr);
- 				break;
- 			}
--			dabr.address &= ~HW_BRK_TYPE_DABR;
--			dabr.enabled = mode | BP_DABR;
-+			dabr[i].address &= ~HW_BRK_TYPE_DABR;
-+			dabr[i].enabled = mode | BP_DABR;
- 		}
- 
- 		force_enable_xmon();
-@@ -1458,7 +1496,9 @@ bpt_cmds(void)
- 			for (i = 0; i < NBPTS; ++i)
- 				bpts[i].enabled = 0;
- 			iabr = NULL;
--			dabr.enabled = 0;
-+			for (i = 0; i < nr_wp_slots(); i++)
-+				dabr[i].enabled = 0;
-+
- 			printf("All breakpoints cleared\n");
- 			break;
- 		}
-@@ -1492,14 +1532,7 @@ bpt_cmds(void)
- 		if (xmon_is_ro || !scanhex(&a)) {
- 			/* print all breakpoints */
- 			printf("   type            address\n");
--			if (dabr.enabled) {
--				printf("   data   "REG"  [", dabr.address);
--				if (dabr.enabled & 1)
--					printf("r");
--				if (dabr.enabled & 2)
--					printf("w");
--				printf("]\n");
--			}
-+			print_data_bpts();
- 			for (bp = bpts; bp < &bpts[NBPTS]; ++bp) {
- 				if (!bp->enabled)
- 					continue;
-@@ -1959,8 +1992,13 @@ static void dump_207_sprs(void)
- 
- 	printf("hfscr  = %.16lx  dhdes = %.16lx rpr    = %.16lx\n",
- 		mfspr(SPRN_HFSCR), mfspr(SPRN_DHDES), mfspr(SPRN_RPR));
--	printf("dawr   = %.16lx  dawrx = %.16lx ciabr  = %.16lx\n",
--		mfspr(SPRN_DAWR0), mfspr(SPRN_DAWRX0), mfspr(SPRN_CIABR));
-+	printf("dawr0  = %.16lx dawrx0 = %.16lx\n",
-+	       mfspr(SPRN_DAWR0), mfspr(SPRN_DAWRX0));
-+	if (nr_wp_slots() > 1) {
-+		printf("dawr1  = %.16lx dawrx1 = %.16lx\n",
-+		       mfspr(SPRN_DAWR1), mfspr(SPRN_DAWRX1));
-+	}
-+	printf("ciabr  = %.16lx\n", mfspr(SPRN_CIABR));
- #endif
- }
- 
-@@ -3909,10 +3947,9 @@ static void clear_all_bpt(void)
- 		bpts[i].enabled = 0;
- 
- 	/* Clear any data or iabr breakpoints */
--	if (iabr || dabr.enabled) {
--		iabr = NULL;
--		dabr.enabled = 0;
--	}
-+	iabr = NULL;
-+	for (i = 0; i < nr_wp_slots(); i++)
-+		dabr[i].enabled = 0;
- }
- 
- #ifdef CONFIG_DEBUG_FS
--- 
-2.26.2
+> Any idea which bit you want to try next?
 
+My plan has been to next post patches for the static kernel migration
+to vmalloc space (currently the code is rigid, taking easy route
+wherever possible & not of high quality) as that feature has an
+independent existence & adds value by itself.  And then start working
+on other steps towards VMSPLIT_4G_4G.
+
+Now that you mentioned about other things, i will slowly start those
+as well.
+
+> Creating a raw_copy_{from,to}_user()
+> based on get_user_pages()/kmap_atomic()/memcpy() is probably a good
+> next thing to do. I think it can be done one page at a time with only
+> checking for
+> get_fs(), access_ok(), and page permissions, while get_user()/put_user()
+> need to handle a few more corner cases.
+
+Before starting w/ other things, i would like to align on the high
+level design,
+
+My understanding (mostly based on your comments) as follows,
+(i currently do not have a firm grip over these things, hope to have
+it once started w/ the implementation)
+
+1. SoC w/ LPAE 
+2. TTBR1 (top 256MB) for static kernel, modules, io mappings, vmalloc,
+        kmap, fixmap & vectors
+3. TTBR0 (low 3768MB) for user space & lowmem (kernel lowmem to have
+        separate ASID)
+4. for user space to/from copy
+ a. pin user pages
+ b. kmap user page (can't corresponding lowmem be used instead ?)
+ c. copy
+
+Main points are as above, right ?, anything missed ?, or anything more
+you want to add ?, let me know your opinion.
+
+Regards
+afzal
