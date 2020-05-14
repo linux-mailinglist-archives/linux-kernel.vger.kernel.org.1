@@ -2,198 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7691D368B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EEDA1D3690
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726076AbgENQen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 12:34:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbgENQem (ORCPT
+        id S1726161AbgENQfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 12:35:25 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:36512 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725977AbgENQfX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 12:34:42 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0C0C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 09:34:42 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id z15so3114898pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 09:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HWFeoUCCAGrwFNZxgc3//5BRvEIhNROwr+Wf1EbQfmY=;
-        b=UvPlZl0iOaSxRCrz4fSlO6xyQ4m5RIN2qw1rZtiYNuvBFSSNHUv+z6jsScDG2JkoLZ
-         9KPzqq9Yz+Xek9thEBwb1hxG4RE2BMXein7EOEaNp8aruvGk13N+6glTTIgL7iBjci/B
-         OvS5nH3CBDh2XG23YTlRN04vrysWYTmp0OAqk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HWFeoUCCAGrwFNZxgc3//5BRvEIhNROwr+Wf1EbQfmY=;
-        b=ujOvM6Smb4vS8H7sgTgaZM4PxtIXoPlomtLp0CYqDChVLO+Ffm9BT+3GGyVDouRb8K
-         /K01kxVsYFjDZEx5UlwTdjOY6SJma0JH0zkH9DUjztQYPOyqsZt7eqrguKJ04TwUgG4y
-         /QIT1jdGyJS8t4ux1dk8GkLvz25TKeayHUTfzA6Z4LN2Qr7O6yMATswIClA6Rxd/AsHy
-         Ha2WKOF6J8doizL+pxO0skTLFl5hA/zpv7kGHls7o1dHCu0Fbc4dNJJHH8cIrPldat4y
-         efs4QNMQ2pW3yiN5CaodYZq9nDWUwgj5XKADVMwRIKM4bBGxrUHQEvKx5VsZBwo9ECTt
-         s8mQ==
-X-Gm-Message-State: AOAM530+ocrbQBAdKBMi3H95QV7xt9KPblTnnGk6TxBVH3F23Rm+kZxx
-        9Axf6TZktc+8zR0cG4QLlVifQMbVKoQ=
-X-Google-Smtp-Source: ABdhPJwVFKzHVJGEuG9rXFYWF40bT+Jd/+rxTnSc6WXV5v2M9dv+kWK8zDj7bmLRs/XT0TvoevtBhw==
-X-Received: by 2002:a17:902:9042:: with SMTP id w2mr4895277plz.127.1589474081698;
-        Thu, 14 May 2020 09:34:41 -0700 (PDT)
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com. [209.85.215.175])
-        by smtp.gmail.com with ESMTPSA id v7sm2548049pfm.146.2020.05.14.09.34.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 May 2020 09:34:41 -0700 (PDT)
-Received: by mail-pg1-f175.google.com with SMTP id b8so1445049pgi.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 09:34:39 -0700 (PDT)
-X-Received: by 2002:a67:bd07:: with SMTP id y7mr4374233vsq.109.1589474077707;
- Thu, 14 May 2020 09:34:37 -0700 (PDT)
+        Thu, 14 May 2020 12:35:23 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04EGX9LD016146;
+        Thu, 14 May 2020 18:34:53 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=6CWTZEVuPSh18Gx/dEw+pHe2HNLYt2f856wC0oo8ZZs=;
+ b=cIxk/9B0oAGAeKm62YX9t0NG7W/KMHFKjA5dyFQF37+EeX0MB4mo0hNR4z/RS8e0b5vR
+ EdJL3EODjAONumZPR8ECm+MFUHtLVBnomkx0w9QNoSpV2Il2jUWBDGAnKF8O/KghUqBa
+ 45EzhCuopvvmzsYCHsaiqJxy4cFetWdNLv8TP4OZYjOMgMRd28/g/prkc6U3IkGv7SMC
+ wgZbBxMcoIT1SpJcq3EEhwB2mXiiLIewFd0MeSoGcporBlDjWaeFGQti9NpJrSmm7xqB
+ /OfUcZj72DSxJ5ax8frY5vrK9eYTkAEcbbwHn6+LKTMR71MFvsPoDebwVYr8WggjsSeZ 2Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3100vymmu2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 May 2020 18:34:53 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C044A10002A;
+        Thu, 14 May 2020 18:34:51 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AACFD2A7CEA;
+        Thu, 14 May 2020 18:34:51 +0200 (CEST)
+Received: from [10.211.8.23] (10.75.127.45) by SFHDAG6NODE2.st.com
+ (10.75.127.17) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Thu, 14 May
+ 2020 18:34:49 +0200
+Subject: Re: [PATCH v4 06/10] dt-bindings: mtd: update STM32 FMC2 NAND
+ controller documentation
+To:     Rob Herring <robh@kernel.org>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <mark.rutland@arm.com>, <gregkh@linuxfoundation.org>,
+        <boris.brezillon@collabora.com>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <devicetree@vger.kernel.org>, <marex@denx.de>
+References: <1588756279-17289-1-git-send-email-christophe.kerello@st.com>
+ <1588756279-17289-7-git-send-email-christophe.kerello@st.com>
+ <20200514150028.GB28489@bogus>
+From:   Christophe Kerello <christophe.kerello@st.com>
+Message-ID: <9ffc04cf-137f-5ee5-57ff-39a876abfb34@st.com>
+Date:   Thu, 14 May 2020 18:34:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <20200507200850.60646-1-dianders@chromium.org> <20200514162109.6qt5drd27hpilijh@holly.lan>
-In-Reply-To: <20200514162109.6qt5drd27hpilijh@holly.lan>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 14 May 2020 09:34:26 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=X+t_Wg5KadZBTGHMSEXY3c-t6DZAtdaLXys31QJJpGGA@mail.gmail.com>
-Message-ID: <CAD=FV=X+t_Wg5KadZBTGHMSEXY3c-t6DZAtdaLXys31QJJpGGA@mail.gmail.com>
-Subject: Re: [PATCH v4 00/12] kgdb: Support late serial drivers; enable early
- debug w/ boot consoles
-To:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-serial@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Slaby <jslaby@suse.com>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Gross <agross@kernel.org>, bp@alien8.de,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Allison Randal <allison@lohutok.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Enrico Weigelt <info@metux.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        James Morse <james.morse@arm.com>,
-        Juergen Gross <jgross@suse.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        jinho lim <jordan.lim@samsung.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200514150028.GB28489@bogus>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-14_05:2020-05-14,2020-05-14 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Rob,
 
-On Thu, May 14, 2020 at 9:21 AM Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
->
-> On Thu, May 07, 2020 at 01:08:38PM -0700, Douglas Anderson wrote:
-> > <snip>
-> >
-> > My first attempt was to try to get the existing "ekgdboc" to work
-> > earlier.  I tried that for a bit until I realized that it needed to
-> > work at the tty layer and I couldn't find any serial drivers that
-> > managed to register themselves to the tty layer super early at boot.
-> > The only documented use of "ekgdboc" is "ekgdboc=kbd" and that's a bit
-> > of a special snowflake.  Trying to get my serial driver and all its
-> > dependencies to probe normally and register the tty driver super early
-> > at boot seemed like a bad way to go.  In fact, all the complexity
-> > needed to do something like this is why the system already has a
-> > special concept of a "boot console" that lives only long enough to
-> > transition to the normal console.
-> >
-> > <snip>
-> >
-> > The devices I had for testing were:
-> > - arm32: rk3288-veyron-jerry
-> > - arm64: rk3399-gru-kevin
-> > - arm64: qcom-sc7180-trogdor (not mainline yet)
-> >
-> > These are the devices I tested this series on.  I tried to test
-> > various combinations of enabling/disabling various options and I
-> > hopefully caught the corner cases, but I'd appreciate any extra
-> > testing people can do.  Notably I didn't test on x86, but (I think) I
-> > didn't touch much there so I shouldn't have broken anything.
->
-> I have tested a slightly earlier version using qemu and will test this
-> set before it moves forwards.
->
->
-> >  .../admin-guide/kernel-parameters.txt         |  20 ++
-> >  Documentation/dev-tools/kgdb.rst              |  24 ++
-> >  arch/arm64/Kconfig                            |   1 +
-> >  arch/arm64/include/asm/debug-monitors.h       |   2 +
-> >  arch/arm64/kernel/debug-monitors.c            |   2 +-
-> >  arch/arm64/kernel/traps.c                     |   3 +
-> >  arch/x86/Kconfig                              |   1 +
-> >  drivers/tty/serial/8250/8250_early.c          |  23 ++
-> >  drivers/tty/serial/amba-pl011.c               |  32 +++
-> >  drivers/tty/serial/kgdboc.c                   | 268 ++++++++++++++++--
-> >  drivers/tty/serial/qcom_geni_serial.c         |  32 +++
-> >  include/linux/kgdb.h                          |   4 +
-> >  kernel/debug/debug_core.c                     |  52 +++-
-> >  lib/Kconfig.kgdb                              |  18 ++
-> >  14 files changed, 436 insertions(+), 46 deletions(-)
->
-> Any thoughts on how best to land these changes?
->
-> AFAICT the arm64
+On 5/14/20 5:00 PM, Rob Herring wrote:
+> On Wed, May 06, 2020 at 11:11:15AM +0200, Christophe Kerello wrote:
+>> These bindings can be used on SOCs where the FMC2 NAND controller is
+>> in standalone. In case that the FMC2 embeds 2 controllers (an external
+>> bus controller and a raw NAND controller), the register base and the
+>> clock will be defined in the parent node. It is the reason why the
+>> register base address and the clock are now optional.
+>>
+>> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+>> ---
+>>   .../devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml   | 19 ++++++++++---------
+>>   1 file changed, 10 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+>> index b059267..68fac1a 100644
+>> --- a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+>> +++ b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+>> @@ -18,13 +18,15 @@ properties:
+>>   
+>>     reg:
+>>       items:
+>> -      - description: Registers
+>> +      - description: Registers (optional)
+> 
+> The only thing that can be optional are the last entries. You have to do
+> a 'oneOf' with 6 entries and 7 entries.
 
-I was hoping to get an Ack from Will or Catalin for my most recent
-arm64 patch [1] and then it could land in your tree.  However, it
-wouldn't be the end of the world if that landed later.  "kgdbwait"
-would be broken if you used it together with "kgdb_earlycon" but
-overall we'd still be in a better place than we were.
+Ok, so the way to describe the reg property in my case should be:
+        reg:
+          oneOf:
+            - description: FMC2 embeds the NFC controller in standalone.
+              items:
+                - description: Registers
+                - description: Chip select 0 data
+                - description: Chip select 0 command
+                - description: Chip select 0 address space
+                - description: Chip select 1 data
+                - description: Chip select 1 command
+                - description: Chip select 1 address space
 
+            - description: FMC2 embeds the NFC controller and the EBI
+                controller.
+              items:
+                - description: Chip select 0 data
+                - description: Chip select 0 command
+                - description: Chip select 0 address space
+                - description: Chip select 1 data
+                - description: Chip select 1 command
+                - description: Chip select 1 address space
 
-> and 8250/amba-pl011/qcom_geni_serial code
-> could be applied independently of the kgdb changes
+> 
+> And where's your new compatible string for this different h/w?
 
-Right, that would be OK.  Nobody would actually be able to use
-"kgdb_earlycon" until those landed but there would be no problem with
-those two landing separately.
+ From NFC controller point of view, it is the same HW.
+In the case that we have 2 controllers embedded, the register base is 
+shared.
+The NFC driver will check at probe time the compatible string of its 
+parent node.
+In case that it is "st,stm32mp1-fmc2-ebi", then the driver will find the 
+register base in the parent node (EBI node), otherwise it will find it 
+in the NFC node.
+Is it better to have 2 compatible strings (one for each reg description) 
+than checking the parent's compatible string and have only one 
+compatible string?
 
+Regards,
+Christophe Kerello.
 
-> (though we must keep
-> changes to drivers/tty/serial/kgdboc alongside the kgdb changes).
->
-> I can hoover them up but I'd need a solid set of acks and
-> I don't think we've got that yet.
-
-It would be nice for it to be explicit, but "get_maintainer" says that
-Greg KH is the maintainer of serial drivers.  Git log confirms that he
-also has been the one landing changes to these files.  Early-on he
-provided his Reviewed-by for the series as a whole, so he's aware of
-it and maybe would be fine w/ the serial changes landing through the
-kgdb tree?
-
-Greg: is that correct?
-
-
-> I'd also be happy to ack where needed and let someone else pick it up
-> (the other changes queued for kgdb this cycle are pretty small so we
-> shouldn't see much conflict in kernel/debug/ ).
-
-It feels to me that the kgdb tree is the best destination for all
-these patches if possible.
-
-
-[1] https://lore.kernel.org/r/20200513160501.1.I0b5edf030cc6ebef6ab4829f8867cdaea42485d8@changeid
-
--Doug
+> 
+>>         - description: Chip select 0 data
+>>         - description: Chip select 0 command
+>>         - description: Chip select 0 address space
+>>         - description: Chip select 1 data
+>>         - description: Chip select 1 command
+>>         - description: Chip select 1 address space
+>> +    minItems: 6
+>> +    maxItems: 7
+>>   
+>>     interrupts:
+>>       maxItems: 1
+>> @@ -61,7 +63,6 @@ required:
+>>     - compatible
+>>     - reg
+>>     - interrupts
+>> -  - clocks
+>>   
+>>   examples:
+>>     - |
+>> @@ -77,13 +78,13 @@ examples:
+>>               <0x81000000 0x1000>,
+>>               <0x89010000 0x1000>,
+>>               <0x89020000 0x1000>;
+>> -            interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
+>> -            dmas = <&mdma1 20 0x10 0x12000a02 0x0 0x0>,
+>> -                   <&mdma1 20 0x10 0x12000a08 0x0 0x0>,
+>> -                   <&mdma1 21 0x10 0x12000a0a 0x0 0x0>;
+>> -            dma-names = "tx", "rx", "ecc";
+>> -            clocks = <&rcc FMC_K>;
+>> -            resets = <&rcc FMC_R>;
+>> +      interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
+>> +      dmas = <&mdma1 20 0x2 0x12000a02 0x0 0x0>,
+>> +             <&mdma1 20 0x2 0x12000a08 0x0 0x0>,
+>> +             <&mdma1 21 0x2 0x12000a0a 0x0 0x0>;
+>> +      dma-names = "tx", "rx", "ecc";
+>> +      clocks = <&rcc FMC_K>;
+>> +      resets = <&rcc FMC_R>;
+>>         #address-cells = <1>;
+>>         #size-cells = <0>;
+>>   
+>> -- 
+>> 1.9.1
+>>
