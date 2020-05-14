@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C78E1D3F8B
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2891D3F8A
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 23:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728165AbgENVDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 17:03:21 -0400
-Received: from [66.170.99.2] ([66.170.99.2]:28972 "EHLO
+        id S1728149AbgENVDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 17:03:14 -0400
+Received: from [66.170.99.2] ([66.170.99.2]:1733 "EHLO
         sid-build-box.eng.vmware.com" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727976AbgENVDL (ORCPT
+        by vger.kernel.org with ESMTP id S1727998AbgENVDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 May 2020 17:03:11 -0400
 Received: by sid-build-box.eng.vmware.com (Postfix, from userid 1000)
-        id BA2CABA20C8; Fri, 15 May 2020 02:26:07 +0530 (IST)
+        id 4F66DBA20CA; Fri, 15 May 2020 02:26:09 +0530 (IST)
 From:   Siddharth Chandrasekaran <csiddharth@vmware.com>
 To:     gregkh@linuxfoundation.org
 Cc:     srostedt@vmware.com, linux-kernel@vger.kernel.org,
         stable@kernel.org, srivatsab@vmware.com, csiddharth@vmware.com,
         siddharth@embedjournal.com, dchinner@redhat.com,
         darrick.wong@oracle.com
-Subject: [PATCH v4.9] xfs: More robust inode extent count validation
-Date:   Fri, 15 May 2020 02:25:21 +0530
-Message-Id: <bead24486cf51a007202b6b56d307a9a71d098da.1589486724.git.csiddharth@vmware.com>
+Subject: [PATCH v4.4] xfs: validate cached inodes are free when allocated
+Date:   Fri, 15 May 2020 02:25:22 +0530
+Message-Id: <76dad64209a2a477a757d6b235b461d78dadea43.1589486853.git.csiddharth@vmware.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1589486724.git.csiddharth@vmware.com>
 References: <cover.1589486724.git.csiddharth@vmware.com>
@@ -35,171 +35,139 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dave Chinner <dchinner@redhat.com>
 
-commit 23fcb3340d033d9f081e21e6c12c2db7eaa541d3 upstream.
+commit afca6c5b2595fc44383919fba740c194b0b76aff upstream.
 
-When the inode is in extent format, it can't have more extents that
-fit in the inode fork. We don't currenty check this, and so this
-corruption goes unnoticed by the inode verifiers. This can lead to
-crashes operating on invalid in-memory structures.
+A recent fuzzed filesystem image cached random dcache corruption
+when the reproducer was run. This often showed up as panics in
+lookup_slow() on a null inode->i_ops pointer when doing pathwalks.
 
-Attempts to access such a inode will now error out in the verifier
-rather than allowing modification operations to proceed.
+BUG: unable to handle kernel NULL pointer dereference at 0000000000000000
+....
+Call Trace:
+ lookup_slow+0x44/0x60
+ walk_component+0x3dd/0x9f0
+ link_path_walk+0x4a7/0x830
+ path_lookupat+0xc1/0x470
+ filename_lookup+0x129/0x270
+ user_path_at_empty+0x36/0x40
+ path_listxattr+0x98/0x110
+ SyS_listxattr+0x13/0x20
+ do_syscall_64+0xf5/0x280
+ entry_SYSCALL_64_after_hwframe+0x42/0xb7
+
+but had many different failure modes including deadlocks trying to
+lock the inode that was just allocated or KASAN reports of
+use-after-free violations.
+
+The cause of the problem was a corrupt INOBT on a v4 fs where the
+root inode was marked as free in the inobt record. Hence when we
+allocated an inode, it chose the root inode to allocate, found it in
+the cache and re-initialised it.
+
+We recently fixed a similar inode allocation issue caused by inobt
+record corruption problem in xfs_iget_cache_miss() in commit
+ee457001ed6c ("xfs: catch inode allocation state mismatch
+corruption"). This change adds similar checks to the cache-hit path
+to catch it, and turns the reproducer into a corruption shutdown
+situation.
 
 Reported-by: Wen Xu <wen.xu@gatech.edu>
-Signed-off-by: Dave Chinner <dchinner@redhat.com>
+Signed-Off-By: Dave Chinner <dchinner@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
 Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-[darrick: fix a typedef, add some braces and breaks to shut up compiler warnings]
+[darrick: fix typos in comment]
 Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Siddharth Chandrasekaran <csiddharth@vmware.com>
 ---
- fs/xfs/libxfs/xfs_format.h    |   3 ++
- fs/xfs/libxfs/xfs_inode_buf.c | 112 ++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 112 insertions(+), 3 deletions(-)
+ fs/xfs/xfs_icache.c | 57 ++++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 50 insertions(+), 7 deletions(-)
 
-diff --git a/fs/xfs/libxfs/xfs_format.h b/fs/xfs/libxfs/xfs_format.h
-index 6b7579e..9967d30 100644
---- a/fs/xfs/libxfs/xfs_format.h
-+++ b/fs/xfs/libxfs/xfs_format.h
-@@ -979,6 +979,9 @@ typedef enum xfs_dinode_fmt {
- 		XFS_DFORK_DSIZE(dip, mp) : \
- 		XFS_DFORK_ASIZE(dip, mp))
- 
-+#define XFS_DFORK_MAXEXT(dip, mp, w) \
-+	(XFS_DFORK_SIZE(dip, mp, w) / sizeof(struct xfs_bmbt_rec))
-+
- /*
-  * Return pointers to the data or attribute forks.
-  */
-diff --git a/fs/xfs/libxfs/xfs_inode_buf.c b/fs/xfs/libxfs/xfs_inode_buf.c
-index 37ee7f0..ee035a4 100644
---- a/fs/xfs/libxfs/xfs_inode_buf.c
-+++ b/fs/xfs/libxfs/xfs_inode_buf.c
-@@ -381,7 +381,48 @@ xfs_log_dinode_to_disk(
- 	}
+diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
+index adbc1f5..7efeefb 100644
+--- a/fs/xfs/xfs_icache.c
++++ b/fs/xfs/xfs_icache.c
+@@ -135,6 +135,46 @@ xfs_inode_free(
  }
  
--static bool
-+static xfs_failaddr_t
-+xfs_dinode_verify_fork(
-+	struct xfs_dinode	*dip,
-+	struct xfs_mount	*mp,
-+	int			whichfork)
+ /*
++ * If we are allocating a new inode, then check what was returned is
++ * actually a free, empty inode. If we are not allocating an inode,
++ * then check we didn't find a free inode.
++ *
++ * Returns:
++ *	0		if the inode free state matches the lookup context
++ *	-ENOENT		if the inode is free and we are not allocating
++ *	-EFSCORRUPTED	if there is any state mismatch at all
++ */
++static int
++xfs_iget_check_free_state(
++	struct xfs_inode	*ip,
++	int			flags)
 +{
-+	uint32_t		di_nextents = XFS_DFORK_NEXTENTS(dip, whichfork);
++	if (flags & XFS_IGET_CREATE) {
++		/* should be a free inode */
++		if (VFS_I(ip)->i_mode != 0) {
++			xfs_warn(ip->i_mount,
++"Corruption detected! Free inode 0x%llx not marked free! (mode 0x%x)",
++				ip->i_ino, VFS_I(ip)->i_mode);
++			return -EFSCORRUPTED;
++		}
 +
-+	switch (XFS_DFORK_FORMAT(dip, whichfork)) {
-+	case XFS_DINODE_FMT_LOCAL:
-+		/*
-+		 * no local regular files yet
-+		 */
-+		if (whichfork == XFS_DATA_FORK) {
-+			if (S_ISREG(be16_to_cpu(dip->di_mode)))
-+				return __this_address;
-+			if (be64_to_cpu(dip->di_size) >
-+					XFS_DFORK_SIZE(dip, mp, whichfork))
-+				return __this_address;
++		if (ip->i_d.di_nblocks != 0) {
++			xfs_warn(ip->i_mount,
++"Corruption detected! Free inode 0x%llx has blocks allocated!",
++				ip->i_ino);
++			return -EFSCORRUPTED;
 +		}
-+		if (di_nextents)
-+			return __this_address;
-+		break;
-+	case XFS_DINODE_FMT_EXTENTS:
-+		if (di_nextents > XFS_DFORK_MAXEXT(dip, mp, whichfork))
-+			return __this_address;
-+		break;
-+	case XFS_DINODE_FMT_BTREE:
-+		if (whichfork == XFS_ATTR_FORK) {
-+			if (di_nextents > MAXAEXTNUM)
-+				return __this_address;
-+		} else if (di_nextents > MAXEXTNUM) {
-+			return __this_address;
-+		}
-+		break;
-+	default:
-+		return __this_address;
++		return 0;
 +	}
-+	return NULL;
++
++	/* should be an allocated inode */
++	if (VFS_I(ip)->i_mode == 0)
++		return -ENOENT;
++
++	return 0;
 +}
 +
-+xfs_failaddr_t
- xfs_dinode_verify(
- 	struct xfs_mount	*mp,
- 	struct xfs_inode	*ip,
-@@ -403,8 +444,73 @@ xfs_dinode_verify(
- 		return false;
++/*
+  * Check the validity of the inode we just found it the cache
+  */
+ static int
+@@ -183,12 +223,12 @@ xfs_iget_cache_hit(
+ 	}
  
- 	/* No zero-length symlinks/dirs. */
--	if ((S_ISLNK(mode) || S_ISDIR(mode)) && dip->di_size == 0)
--		return false;
-+	if ((S_ISLNK(mode) || S_ISDIR(mode)) && di_size == 0)
-+		return __this_address;
-+
-+	/* Fork checks carried over from xfs_iformat_fork */
-+	if (mode &&
-+	    be32_to_cpu(dip->di_nextents) + be16_to_cpu(dip->di_anextents) >
-+			be64_to_cpu(dip->di_nblocks))
-+		return __this_address;
-+
-+	if (mode && XFS_DFORK_BOFF(dip) > mp->m_sb.sb_inodesize)
-+		return __this_address;
-+
-+	flags = be16_to_cpu(dip->di_flags);
-+
-+	if (mode && (flags & XFS_DIFLAG_REALTIME) && !mp->m_rtdev_targp)
-+		return __this_address;
-+
-+	/* Do we have appropriate data fork formats for the mode? */
-+	switch (mode & S_IFMT) {
-+	case S_IFIFO:
-+	case S_IFCHR:
-+	case S_IFBLK:
-+	case S_IFSOCK:
-+		if (dip->di_format != XFS_DINODE_FMT_DEV)
-+			return __this_address;
-+		break;
-+	case S_IFREG:
-+	case S_IFLNK:
-+	case S_IFDIR:
-+		fa = xfs_dinode_verify_fork(dip, mp, XFS_DATA_FORK);
-+		if (fa)
-+			return fa;
-+		break;
-+	case 0:
-+		/* Uninitialized inode ok. */
-+		break;
-+	default:
-+		return __this_address;
-+	}
-+
-+	if (XFS_DFORK_Q(dip)) {
-+		fa = xfs_dinode_verify_fork(dip, mp, XFS_ATTR_FORK);
-+		if (fa)
-+			return fa;
-+	} else {
-+		/*
-+		 * If there is no fork offset, this may be a freshly-made inode
-+		 * in a new disk cluster, in which case di_aformat is zeroed.
-+		 * Otherwise, such an inode must be in EXTENTS format; this goes
-+		 * for freed inodes as well.
-+		 */
-+		switch (dip->di_aformat) {
-+		case 0:
-+		case XFS_DINODE_FMT_EXTENTS:
-+			break;
-+		default:
-+			return __this_address;
-+		}
-+		if (dip->di_anextents)
-+			return __this_address;
-+	}
-+
-+	/* extent size hint validation */
-+	fa = xfs_inode_validate_extsize(mp, be32_to_cpu(dip->di_extsize),
-+			mode, flags);
-+	if (fa)
-+		return fa;
+ 	/*
+-	 * If lookup is racing with unlink return an error immediately.
++	 * Check the inode free state is valid. This also detects lookup
++	 * racing with unlinks.
+ 	 */
+-	if (ip->i_d.di_mode == 0 && !(flags & XFS_IGET_CREATE)) {
+-		error = -ENOENT;
++	error = xfs_iget_check_free_state(ip, flags);
++	if (error)
+ 		goto out_error;
+-	}
  
- 	/* only version 3 or greater inodes are extensively verified here */
- 	if (dip->di_version < 3)
+ 	/*
+ 	 * If IRECLAIMABLE is set, we've torn down the VFS inode already.
+@@ -298,10 +338,13 @@ xfs_iget_cache_miss(
+ 
+ 	trace_xfs_iget_miss(ip);
+ 
+-	if ((ip->i_d.di_mode == 0) && !(flags & XFS_IGET_CREATE)) {
+-		error = -ENOENT;
++	/*
++	 * Check the inode free state is valid. This also detects lookup
++	 * racing with unlinks.
++	 */
++	error = xfs_iget_check_free_state(ip, flags);
++	if (error)
+ 		goto out_destroy;
+-	}
+ 
+ 	/*
+ 	 * Preload the radix tree so we can insert safely under the
 -- 
 2.7.4
 
