@@ -2,78 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD991D261C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A041F1D2627
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726027AbgENE50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 00:57:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40024 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbgENE50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 00:57:26 -0400
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3CFF20734
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:57:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589432245;
-        bh=Lte4B9W8zW8d5KMicJ/udk+nHQDdtuOAvFltY0KBD08=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=O5Hv25Iey76uaYgemEZ9MYmy4MpRywmODNENvrAcPnWOOrJRPge/Te6sN9Cq5W0QM
-         kuZCpppMj7/rPo1mK502CBWKBpRazvowvPpobQhb9aGPedBBlAnzrJ2v5yGJ99I3NG
-         mtyCw3Y4NRtCJ7JrW4F0mdkLCRbjR56eh2xg4KPU=
-Received: by mail-wm1-f51.google.com with SMTP id u16so30873054wmc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:57:25 -0700 (PDT)
-X-Gm-Message-State: AGi0PubsWLtteJVaW0euEhMC+56RLHkS4AzJygkjEFNe2dBlAlYImYW0
-        8PC3exxQAPqGl8yylYjDjF6o/8xrbi5V+mtrP7k/Hg==
-X-Google-Smtp-Source: APiQypKrIQvWFM7EQquJSqdEwgN5VUXbceYvnW5X+NMjZi66eekOuooPwPJgNozPSGt3hk+XzJQjmP7IJXx9UvGuW2Q=
-X-Received: by 2002:a1c:2bc2:: with SMTP id r185mr22240467wmr.49.1589432244035;
- Wed, 13 May 2020 21:57:24 -0700 (PDT)
+        id S1726067AbgENE64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 00:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725977AbgENE64 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 00:58:56 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E55FC061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:58:56 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id u5so760503pgn.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:58:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XB9iR1Wtni03RNsjVOMYUq9aoFsWINR5LTN8xhVnTBE=;
+        b=wjDd6XVS335MCJz9fDAbV1AJWTNo6NfWf4m+5LBZrK5OZvhYRFS7xdg7rvVKwsStr0
+         0GZKzpEEeDPKMlo6yRynvB1Py/hJpE7BdKPYvhOHlY5iZPRmTLVKPxDGadQrq9288OTD
+         bXmo47fVNu8lfa0j4e6PZ6phtHOTmgKaLvm7kUcLeS3nehSQ3dQXUoRyj+jvBcbrhnAN
+         g7OSwaQxYwqJT54/+bQeyy/xEm0H8osNIoLSNDpPu5bGko684DCE+LjlRJNHZZ3Ydo5X
+         fc4G9VljKI/7ZhlOFs+YM4Zf/bGUyIaMxZlmd0kHF0AdrH2gQKMoDs5ixQv/638Quu5V
+         Eycw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XB9iR1Wtni03RNsjVOMYUq9aoFsWINR5LTN8xhVnTBE=;
+        b=BtKW4DY0VlIUNuD+J5aRuZK1hIEGZJb9qDNSxqKlXQvjEbtDOaEpc0wk+v+MchdDvB
+         DK5zKFAZnGojNsBPnzJr/5a0oVlo/Dg1fGoL0IVMjS/a0FnJzlxo/1onozwn0gHywi2A
+         mBEmiOguV8VRRT+3pZGvswdp6OWzds+twJJU/tpnmbx2rxNpK87uPqHcKdzAeY/gWTfX
+         gHDbW4uSMyBAvRBEosGB/EQPIcd/FHloQXRF/ltrsfUd/xIA+KVHcGOshvCw6lqheT//
+         HWA2CJdduk4dsg2QkXscK1NlvjJk5P3Rt/8qH7KT60ZUmkoK/YV8aJ+yY1AyrDF/w+tC
+         /Mbw==
+X-Gm-Message-State: AOAM532xVgYF18kfeYdr67llkjYlB6QEFbu/oM6Vho+oqeQn396RUEKC
+        eSPhFnx2SAsZ68SdODhMgV2CYg==
+X-Google-Smtp-Source: ABdhPJwtJMENg8lvG2CR/fcdWf8E4zka+8LBZfgW9TaUXTChBfsuSaci4EXXRp2CUpbC+jWVbtUTAg==
+X-Received: by 2002:a63:1557:: with SMTP id 23mr2564283pgv.104.1589432335637;
+        Wed, 13 May 2020 21:58:55 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id d203sm1052337pfd.79.2020.05.13.21.58.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 21:58:55 -0700 (PDT)
+Date:   Wed, 13 May 2020 21:57:24 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, loic.pallardy@st.com,
+        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 02/12] remoteproc: stm32: Request IRQ with platform
+ device
+Message-ID: <20200514045724.GH16107@builder.lan>
+References: <20200424202505.29562-1-mathieu.poirier@linaro.org>
+ <20200424202505.29562-3-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-References: <20200505134926.578885807@linutronix.de> <20200505135313.410702173@linutronix.de>
-In-Reply-To: <20200505135313.410702173@linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 13 May 2020 21:57:12 -0700
-X-Gmail-Original-Message-ID: <CALCETrUYs65iSW5eeNLMtdAWuHFbg_ywE32whSh0kJ9JVZCbVw@mail.gmail.com>
-Message-ID: <CALCETrUYs65iSW5eeNLMtdAWuHFbg_ywE32whSh0kJ9JVZCbVw@mail.gmail.com>
-Subject: Re: [patch V4 part 4 01/24] x86/int3: Ensure that poke_int3_handler()
- is not traced
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424202505.29562-3-mathieu.poirier@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 7:15 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> From: Thomas Gleixner <tglx@linutronix.de>
->
-> In order to ensure poke_int3_handler() is completely self contained -- this
-> is called while modifying other text, imagine the fun of hitting another
-> INT3 -- ensure that everything it uses is not traced.
->
-> The primary means here is to force inlining; bsearch() is notrace because
-> all of lib/ is.
+On Fri 24 Apr 13:24 PDT 2020, Mathieu Poirier wrote:
 
+> Request IRQ with platform device rather than remote proc in order to
+> call stm32_rproc_parse_dt() before rproc_alloc().  That way we can
+> know whether we need to synchronise with the MCU or not.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Reviewed-by: Loic Pallardy <loic.pallardy@st.com>
 
-Acked-by: Andy Lutomirski <luto@kernel.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+> ---
+>  drivers/remoteproc/stm32_rproc.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+> index 91fd59af0ffe..1ac90adba9b1 100644
+> --- a/drivers/remoteproc/stm32_rproc.c
+> +++ b/drivers/remoteproc/stm32_rproc.c
+> @@ -261,7 +261,8 @@ static int stm32_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
+>  
+>  static irqreturn_t stm32_rproc_wdg(int irq, void *data)
+>  {
+> -	struct rproc *rproc = data;
+> +	struct platform_device *pdev = data;
+> +	struct rproc *rproc = platform_get_drvdata(pdev);
+>  
+>  	rproc_report_crash(rproc, RPROC_WATCHDOG);
+>  
+> @@ -553,7 +554,7 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev)
+>  
+>  	if (irq > 0) {
+>  		err = devm_request_irq(dev, irq, stm32_rproc_wdg, 0,
+> -				       dev_name(dev), rproc);
+> +				       dev_name(dev), pdev);
+>  		if (err) {
+>  			dev_err(dev, "failed to request wdg irq\n");
+>  			return err;
+> -- 
+> 2.20.1
+> 
