@@ -2,128 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514971D2ACB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9A91D2ACD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726190AbgENI5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 04:57:47 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:59711 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726087AbgENI5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 04:57:47 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49N560671bz9sV7;
-        Thu, 14 May 2020 18:57:44 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1589446665;
-        bh=f+jbpOYr2BueXAYyks2x++b+r5NDkVQ3+2C6KvwHuEQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=SxFDJft/s9tO2tETt6wEbJd+SnjsIdmEGFey6c12jyhqqV2INDAqHXRx1tvjTwVMH
-         5WHJM9R3ESyou1wGsFjpHJA2nf0nZE732gM/TihvW71OJW2jrJqXBWWE56hXQJUoIL
-         JVOzVmI+Aaft3IBeH91n4dzQft2ElOjzczttHQGfcae4ySKtumiZ45amZSVFSq7RFc
-         BXsiodZUQ1C5an0B5q2j9ulgzvnFC3UKc56uIaT7hb+Ghh+uYZe/2sqKDYEqatkRa4
-         IhSDAV3rLsdpAX+SFjedBHGTNWej++Iv6sgmVSakxmIMSl2hx70ZXpQQwiI9JNBv72
-         eAL74YrQI561Q==
-Date:   Thu, 14 May 2020 18:57:37 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: linux-next: build failure after merge of the block tree
-Message-ID: <20200514185737.701b40dd@canb.auug.org.au>
+        id S1726135AbgENI6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 04:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725878AbgENI6W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 04:58:22 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D68C061A0C;
+        Thu, 14 May 2020 01:58:21 -0700 (PDT)
+Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1jZ9gn-0008HP-U3; Thu, 14 May 2020 10:58:01 +0200
+Date:   Thu, 14 May 2020 10:58:01 +0200
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ia64: enable HAVE_COPY_THREAD_TLS, switch to
+ kernel_clone_args
+Message-ID: <20200514085801.uolf4amd3bd2aw7m@linutronix.de>
+References: <20200513204848.1208864-1-christian.brauner@ubuntu.com>
+ <3908561D78D1C84285E8C5FCA982C28F7F6266E0@ORSMSX115.amr.corp.intel.com>
+ <79e58d9b-5a39-390c-2f0c-0d87b63442b4@physik.fu-berlin.de>
+ <20200514074606.vkc35syhdep23rzh@wittgenstein>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/.ExBTlx8YTB9nd1mswu28VR";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200514074606.vkc35syhdep23rzh@wittgenstein>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/.ExBTlx8YTB9nd1mswu28VR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2020-05-14 09:46:06 [+0200], Christian Brauner wrote:
+> > As for getting a working cross-compiler for ia64 in Debian, this has
+> > been on my TODO list for a while now. Building a cross-compiler for
+> > ia64 is a bit more tricky due to it's dependency on the external
+> > libunwind.
+> 
+> I hit that roadblock as well but yeah, a cross-compiler would be
+> helpful.
 
-Hi all,
+There is
+   https://mirrors.edge.kernel.org/pub/tools/crosstool/
 
-After merging the block tree, today's linux-next build (x86_64
-allnoconfig) failed like this:
+and I used the ia64 compiler from there while compile testing patches
+for ia64.
 
-In file included from include/linux/blk-cgroup.h:23,
-                 from include/linux/writeback.h:14,
-                 from include/linux/memcontrol.h:22,
-                 from include/linux/swap.h:9,
-                 from include/linux/suspend.h:5,
-                 from arch/x86/kernel/asm-offsets.c:13:
-include/linux/blkdev.h: In function 'blk_io_schedule':
-include/linux/blkdev.h:1857:26: error: 'sysctl_hung_task_timeout_secs' unde=
-clared (first use in this function)
- 1857 |  unsigned long timeout =3D sysctl_hung_task_timeout_secs * HZ / 2;
-      |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> Christian
 
-Caused by commit
-
-  e6249cdd46e4 ("block: add blk_io_schedule() for avoiding task hung in syn=
-c dio")
-
-linux/sched/sysctl.h was not included since CONFIG_BLOCK is not defined.
-I have applied the following patch for today.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Thu, 14 May 2020 18:48:32 +1000
-Subject: [PATCH] fix for "block: add blk_io_schedule() for avoiding task hu=
-ng in sync dio"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- include/linux/blkdev.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 5360696d85ff..bf99a723673b 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -4,6 +4,7 @@
-=20
- #include <linux/sched.h>
- #include <linux/sched/clock.h>
-+#include <linux/sched/sysctl.h>
-=20
- #ifdef CONFIG_BLOCK
-=20
-@@ -27,7 +28,6 @@
- #include <linux/percpu-refcount.h>
- #include <linux/scatterlist.h>
- #include <linux/blkzoned.h>
--#include <linux/sched/sysctl.h>
-=20
- struct module;
- struct scsi_ioctl_command;
---=20
-2.26.2
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/.ExBTlx8YTB9nd1mswu28VR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl69CAEACgkQAVBC80lX
-0Gy03ggApI7/YToKbRoFj73vKJWy+xfQg+3/ObkRZyoNfg1qOSEmhlRSpkRtDPDM
-mLM11SFYFbq+L67PacpAJcuaVykmqTZ3zkuw6A9RxgLQ9tqhF2eqAIwcWgv+OLj5
-AJ5SyV7F9e3MqsvJfqob6qw/g1c7k8Qm5u0mGqBbUxG7e6D0SR6H+LKwKwKtVDG1
-pXtgNO53RwkPCid6F+ErviOffWi+cE2/ydegrfJYfZTMUga7CJynFcOtnDiQ/B1K
-mTClnpQH12Q7ScaY12WuWpDFwbLqz+rmJZBHaYHMfx8XGxZcTiOTDnW6hs69ULBm
-eYzMEw1opB1tTxwdWCcinYpmCrQd/Q==
-=vw1D
------END PGP SIGNATURE-----
-
---Sig_/.ExBTlx8YTB9nd1mswu28VR--
+Sebastian
