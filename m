@@ -2,120 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D301D2C82
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2679B1D2C8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726347AbgENKWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 06:22:32 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53303 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726010AbgENKW2 (ORCPT
+        id S1726582AbgENKXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 06:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725974AbgENKXS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 06:22:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589451739;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xdmT6ANXa6NhFjFuIFGimW7zROVm3IZ6tXffgmcMrRw=;
-        b=SL8beS89VTXY/2Xo7ZWoHcFNI73lURdiwbE3U76+SNedpqT4dMSCJjSPlJh+pB7rpJ8Dem
-        OBaDNlqK/uTAmFUinCMSuBnPJJQFXvfYkTBAsXGhdYw1jZ97ZQsbRjVTr7Rdfv0Hk2GY3f
-        Quk1fBn7l24j9PpXjpA2ALRNNnXEpWs=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-M-I0_sIFPf20W1D5ymTfcw-1; Thu, 14 May 2020 06:22:17 -0400
-X-MC-Unique: M-I0_sIFPf20W1D5ymTfcw-1
-Received: by mail-ed1-f70.google.com with SMTP id b7so959209edf.9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 03:22:17 -0700 (PDT)
+        Thu, 14 May 2020 06:23:18 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E47FC061A0C;
+        Thu, 14 May 2020 03:23:17 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id d22so2131667lfm.11;
+        Thu, 14 May 2020 03:23:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=on2D6elu53pZj4wNtYf7fZ0iGgEMC4vnCrij0e0GY3Y=;
+        b=YWwJnh346DomNcO4odW5tj0MMLVzr9cRxcJo6n+Dt9fuMb4qneEfKEKUJHDnEy4yuN
+         9cqWkmlSN93BhIYrTXcpa3kA/EtXoX8ZUxllaYJG2VuYBBbRA9Sab18ErkYrm5p02GXG
+         KuTLvxrKQOAgsQJ7k3ip3Zz2n2cK/aCqUjj+FRR97mP/BhNETq1YUnciIbbHPU2Fclq6
+         P0OJUdtkQMtwoWuV6zDzf6VUTxJlUEXBEwVROI/mQj5BQxuhH/dBkw/PrXszJn+a9ize
+         l0mbAGcNZXhgwGywmoULZ8LhWBH+iz0dxAP2/gXPR4N43j6OYq0flMpdSl4iyCvLetSb
+         wf7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xdmT6ANXa6NhFjFuIFGimW7zROVm3IZ6tXffgmcMrRw=;
-        b=qHZ9L/tyfneXaFWC+pCeMCY92uk3bOSenw8fQN4Rik1YQHDSV2ZjnvnPKZu6RMn2g1
-         YUDwxBP8DHUiG+JfawxKQA1ApKehCVnr191OJXD46RUWg6ga3IIVzeo32cKvTinHxWu8
-         N4OMLXT5GIFs0K3Inl80dhthpQBwov0ke91a/YggaKeGSgAZP2hbZQHiDbfq1bv01zuq
-         Cuc4Z76NY6peg3fsndPgfrA7UmyU1NuXByjrzlZACFrK6nM1egNeuW6+Vs2OqrofCE4X
-         jvTQ5QVH9hzVv+rXv5Uqy9CgRdjn4FsITuLZUnCV4wK2DHTx+rMi2p3cI9eLb/L+5H16
-         COoQ==
-X-Gm-Message-State: AOAM532HrstG7TGleI7PWZMwjWF/8KE+nrBnxXJVClYYLOF6CEZ3TcnU
-        zPXNCyV86s7IFOX5xoo99WbL8nOgOMn0g1lcorWSoB14xILbgafd8bREj4fQMfqMA7C+lRFA1UQ
-        t0vaTmpnhBDyDf8hlwZi4H3eNn9TR/oZxtqLHlnFq
-X-Received: by 2002:a17:906:cd08:: with SMTP id oz8mr951006ejb.90.1589451736312;
-        Thu, 14 May 2020 03:22:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxLm16DHWkAOyXk9ppPSD0F3lVHAw8cm/ZP5ATce5P9UjOR7zkbX73wgtYMc/2xXQCeE71RiQJSDs0cLAvzLaM=
-X-Received: by 2002:a17:906:cd08:: with SMTP id oz8mr950983ejb.90.1589451736069;
- Thu, 14 May 2020 03:22:16 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
+         :date:message-id:mime-version;
+        bh=on2D6elu53pZj4wNtYf7fZ0iGgEMC4vnCrij0e0GY3Y=;
+        b=IBpeCbM+Y8eoDYVlEtWfRBFunBTDS42PRdlal6AUBa1o8FyQ5k8J68o0pnJfSlvrR7
+         pYFmLq4HeT8l29RVCkP4XZEv+CjtEAfQxs6LNK4zyFCOV8bsDWDcUuMQU/cd2v/2suf2
+         NXjhMBDfMj7EsRN11FaP363uvtUjp2ohPI+BpCQa4MOXq+d5301DAYLdwOKmGx4fJfSh
+         1A5ZxMcwsja7KgT2AGtaY/CUw09JiuHThCGtDVq9VWchhQRLNljjW8844eCpmKrl10A4
+         iffuKA5KtuIcL+1QXMihaoawc6Agxw56lXGesbTqETJs/ZLkxsy+89MkNKjTQuc8iYA1
+         298Q==
+X-Gm-Message-State: AOAM533pN5Xz/3wSHSY3FpK04TiQRNiSR3ai069XXbEgygBlCvYbQ9wn
+        vL+uEPPV/A9Bi2qAEPD5W7DXf5ugdOia5Q==
+X-Google-Smtp-Source: ABdhPJz0OX6tX5Djvgz/x/V2SQPdQDpdcaDSPFTtdAjVwURPzcOQ1sZlYNWA8qY/i2cUpwYwILXpBg==
+X-Received: by 2002:a19:e041:: with SMTP id g1mr2742299lfj.70.1589451795238;
+        Thu, 14 May 2020 03:23:15 -0700 (PDT)
+Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
+        by smtp.gmail.com with ESMTPSA id k9sm1231222lja.52.2020.05.14.03.23.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 14 May 2020 03:23:14 -0700 (PDT)
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>, kishon@ti.com,
+        khilman@baylibre.com, martin.blumenstingl@googlemail.com
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/13] usb: dwc3: meson: add OTG support for GXL/GXM
+In-Reply-To: <87369rfo7l.fsf@kernel.org>
+References: <20200324102030.31000-1-narmstrong@baylibre.com> <87369rfo7l.fsf@kernel.org>
+Date:   Thu, 14 May 2020 13:23:09 +0300
+Message-ID: <87r1vm4xyq.fsf@kernel.org>
 MIME-Version: 1.0
-References: <CAE4VaGCf0P2ht+7nbGFHV8Dd=e4oDEUPNdRUUBokRWgKRxofAA@mail.gmail.com>
- <20200507155422.GD3758@techsingularity.net> <CAE4VaGCDTeE16nNmSS8fGzCBvHsO=qkJAW6yDiORAxgsPi-Ziw@mail.gmail.com>
- <20200508092212.GE3758@techsingularity.net> <CAE4VaGC_v6On-YvqdTwAWu3Mq4ofiV0pLov-QpV+QHr_SJr+Rw@mail.gmail.com>
- <CAE4VaGDQWPePtmtCZP=ROYW1KPxtPhGDrxqy2QbirHGJdwk4=w@mail.gmail.com>
- <20200513153023.GF3758@techsingularity.net> <CAE4VaGBq5+ucS4p+0AzFsNP7YDsg7dLZ73dzuhBerHiM4EYP_Q@mail.gmail.com>
- <20200514095055.GG3758@techsingularity.net> <CAE4VaGCGUFOAZ+YHDnmeJ95o4W0j04Yb7EWnf8a43caUQs_WuQ@mail.gmail.com>
- <20200514100814.GH3758@techsingularity.net>
-In-Reply-To: <20200514100814.GH3758@techsingularity.net>
-From:   Jirka Hladky <jhladky@redhat.com>
-Date:   Thu, 14 May 2020 12:22:05 +0200
-Message-ID: <CAE4VaGBwFvduqOyn8pQnN3U4ozuB=4DVx6i1vheAg-2PegvE9Q@mail.gmail.com>
-Subject: Re: [PATCH 00/13] Reconcile NUMA balancing decisions with the load
- balancer v6
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Hillf Danton <hdanton@sina.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Douglas Shakshober <dshaks@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Joe Mario <jmario@redhat.com>, Bill Gray <bgray@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks!
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Do you have a link? I cannot find it on github
-(https://github.com/gormanm/mmtests, searched for
-config-network-netperf-cstate-small-cross-socket)
+Felipe Balbi <balbi@kernel.org> writes:
 
-
-On Thu, May 14, 2020 at 12:08 PM Mel Gorman <mgorman@techsingularity.net> wrote:
+> Neil Armstrong <narmstrong@baylibre.com> writes:
 >
-> On Thu, May 14, 2020 at 11:58:36AM +0200, Jirka Hladky wrote:
-> > Thank you, Mel!
-> >
-> > We are using netperf as well, but AFAIK it's running on two different
-> > hosts. I will check with colleagues, if they can
-> > add network-netperf-unbound run on the localhost.
-> >
-> > Is this the right config?
-> > https://github.com/gormanm/mmtests/blob/345f82bee77cbf09ba57f470a1cfc1ae413c97df/bin/generate-generic-configs
-> > sed -e 's/NETPERF_BUFFER_SIZES=.*/NETPERF_BUFFER_SIZES=64/'
-> > config-network-netperf-unbound > config-network-netperf-unbound-small
-> >
+>> The USB support was initialy done with a set of PHYs and dwc3-of-simple
+>> because the architecture of the USB complex was not understood correctly
+>> at the time (and proper documentation was missing...).
+>>
+>> But with the G12A family, the USB complex was correctly understood and
+>> implemented correctly.
+>> But seems the G12A architecture was derived for the GXL USB architecture,
+>> with minor differences and looks we can share most of the USB DWC3 glue
+>> driver.
+>>
+>> This patchset refactors and adds callbacks to handle the architecture
+>> difference while keeping the main code shared.
+>>
+>> The main difference is that on GXL/GXM the USB2 PHY control registers
+>> are mixed with the PHY registers (we already handle correctly), and
+>> the GLUE registers are allmost (99%) the same as G12A.
+>>
+>> But, the GXL/GXM HW is buggy, here are the quirks :
+>> - for the DWC2 controller to reset correctly, the GLUE mux must be switc=
+hed
+>>   to peripheral when the DWC2 controlle probes. For now it's handled by =
+simply
+>>   switching to device when probing the subnodes, but it may be not enough
+>> - when manually switching from Host to Device when the USB port is not
+>>   populated (should not happen with proper Micro-USB/USB-C OTG switch), =
+it
+>>   makes the DWC3 to crash. The only way to avoid that is to use the Host
+>>   Disconnect bit to disconnect the DWC3 controller from the port, but we=
+ can't
+>>   recover the Host functionnality unless resetting the DWC3 controller.
+>>   This bit is set when only manual switch is done, and a warning is prin=
+ted
+>>   on manual switching.
+>>
+>> The patches 1-8 should be applied first, then either waiting the next re=
+lease
+>> or if the usb maintainer can provide us a stable tag, we can use it to m=
+erge
+>> the DT and bindings.
 >
-> That's one I was using at the moment to have a quick test after
-> the reconciliation series was completed. It has since changed to
-> config-network-netperf-cstate-small-cross-socket to limit cstates, bind
-> the client and server to two local CPUs and using one buffer size. It
-> was necessary to get an ftrace function graph of the wakeup path that
-> was readable and not too noisy due to migrations, cpuidle exit costs etc.
->
-> --
-> Mel Gorman
-> SUSE Labs
->
+> it's unclear to me if this series is ready to be merged. Can someone
+> confirm? If it is, can you resend with all reviewed by tags in place?
 
+Are we getting a v2 for this?
 
--- 
--Jirka
+=2D-=20
+balbi
 
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl69HA4ACgkQzL64meEa
+mQY4DhAAtHTcNLDu5ri1XuAeABlYEcezvODzuPM7Xg0my7l1TAURKXzAe0LV/LSB
+9FU5hFcfAPUD7JSDmyGey9foVoFKo0ZxOvXLTXCW7AFHq5UyphcWAa5dW7kjtrI7
+uqJ9VYc6gdQ6a/lEJXTdEuq8lLBt88hJkU8OPjzedp82in9fGXZg0mmwDePj3yVE
+6KAnwJG+9qKZ/t06kNY2POoQpyFGnjOruj+9K4kG1R/RXGrU1YV1Cq6+GZp/DNoj
+Z81nw30hMBIFmKrxMl9bx+/hXAQUPV0C01txbCkdCGVTtp/L7GB3RXWgEljIyPPw
+KiE2yF12BFeuOB2egjAIWVztPxlzh0W19f/2bAQPEhlHrfcu83SJDAdEfMx/pe+w
+aFVJhdTZz+GeJ7K1Oame/ddtzbuPTyUbZFo4c0qASictw1dXGir88hOBeRrzpjJ0
+d7cmNieizTfV8EoF0/FKN1NuwIie/k/dZiejZ28lukE8pZ2RUXxuBrrncmHk+Hrp
+iHTOjXsXTYJgVU4OxXFk9Q+B0YYgvpiAtrAS3Hpn3UQMX+KYd1RMELFSYtBLUGCG
+TZ9WJPGijn2G7rmvDy0sJtxhLsRoE9tx7tvr6HG5btz2fMdZmTnK6cW1nyIoP8kP
+ijmeyb1OUfQTkFoBIZUIPi5pTkuuqScPtsu7LAF+nP7HjD/+VYk=
+=8p6e
+-----END PGP SIGNATURE-----
+--=-=-=--
