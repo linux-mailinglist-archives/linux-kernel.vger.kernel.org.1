@@ -2,122 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87AE1D3435
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A28D1D3460
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728334AbgENPBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 11:01:37 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:59722 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728316AbgENPBf (ORCPT
+        id S1727822AbgENPEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 11:04:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726232AbgENPEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 11:01:35 -0400
-X-UUID: 8b2e6e53fbb54a698e4f5d71715c7b80-20200514
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=bo0m4IuwC/3AaIjNIjRmx35SXEKkw+0nqdXJxel0Jmo=;
-        b=c31NXb2f/PPtqpSXR00lY03bttsAoNXWidgf+gq1tpejAmuGociOJhwngPfG4w8aFZ9nACraDQpLc0TJjEyrtVaeR9mxngqmAl/P1FGKt7LOqgCUGWeQoNfB65ugrykp6xM+XN2K/XDfZNsBcU6HgVNRFYe3FUA4uMq6gRhpCac=;
-X-UUID: 8b2e6e53fbb54a698e4f5d71715c7b80-20200514
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 156590787; Thu, 14 May 2020 23:01:25 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 14 May 2020 23:01:21 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 14 May 2020 23:01:21 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <asutoshd@codeaurora.org>
-CC:     <beanhuo@micron.com>, <cang@codeaurora.org>,
-        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v2 4/4] scsi: ufs: Fix WriteBooster flush during runtime suspend
-Date:   Thu, 14 May 2020 23:01:22 +0800
-Message-ID: <20200514150122.32110-5-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200514150122.32110-1-stanley.chu@mediatek.com>
-References: <20200514150122.32110-1-stanley.chu@mediatek.com>
+        Thu, 14 May 2020 11:04:53 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F51C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 08:04:51 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id m11so1315383qka.4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 08:04:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kPvUN6mwRUPTAE+t+JNTcXIfbhXwQm1RCEXYfGEreVU=;
+        b=ldWlMyaK32lk9Pkg2z1jFw6apgDEVesNIHNiyNfn3g/e4dgXp7pJ8S2v3JXWu4OAep
+         BdAWTeA2wqiMyVAbVgBS0kza9FI8whdq82itKjommt1PC7Ygw19VU8+pnO5TE/NsehQR
+         n0Gpyh657+t1L3dzF6zNm5ABFLK1lA6G65ASUZ4JvT0hNHm4AHtdMfwLRPc2ZXFnT5v4
+         OLbhxSMVLBXVZhBxRLLmSNHq5WkW1USH40edUwJImzqmDDjaoue+QB4gPlP6jlPW7C5j
+         CaGIxH9tGDY2/9tYtpxCIN+sMb1aQaOz4M5RXTzk3tZGIh540d+mk7hTdByvbx5CynnL
+         xj2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kPvUN6mwRUPTAE+t+JNTcXIfbhXwQm1RCEXYfGEreVU=;
+        b=SLX9RSgcycZ1EH6PY3YrdFA2FrU0818Ih4W1DS7TaEwo9XSDFAQcjNTPiFWQ5GzLFd
+         9Yt+Z9XDDttMwRqEWbHagPCJT1hM+yGLooYk8qurvI886KBGkSiXADjbwGV4Tj7lX4q6
+         Lfwm8RKaIRqhkM1CMeexyIza7jvkAn7WBdw4OY+j/tk/KwlS8haTNRrFEg7NJlCVwyjl
+         pJfB1iCk5i2jk/4THDEHFmu6I4wX5onOwgKUnGdgvsi96rOMlNMn6ffedTZY4LBQLXE+
+         Szbpr7moooE+aO1nmsFIAJ0eYgJm8UJuBsMj82ErPjDfY7W9q4RGDTnZ458dZgdxvzeA
+         TsqA==
+X-Gm-Message-State: AOAM532n1ZKsFYFPW+fPfIVnVF3Vjl/U0bo/DfJTgHdSFB9O5L2Fjqu7
+        ZrV+LqpPXLk/O40I76HiC80=
+X-Google-Smtp-Source: ABdhPJxCKBE7gJ3rAOM/tX4X3r3REkkKeY0vrnf+5VISL8mBGhyjwZrzpBccaBqqwXIiGrqJis7I6A==
+X-Received: by 2002:a37:38e:: with SMTP id 136mr5254374qkd.247.1589468690554;
+        Thu, 14 May 2020 08:04:50 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id 132sm2671178qkj.117.2020.05.14.08.04.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 08:04:49 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2E8D440AFD; Thu, 14 May 2020 12:04:47 -0300 (-03)
+Date:   Thu, 14 May 2020 12:04:47 -0300
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wei Li <liwei391@huawei.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 3/3] tools/perf: build fixes for arch_errno_names.sh
+Message-ID: <20200514150447.GA29968@kernel.org>
+References: <20200306071110.130202-1-irogers@google.com>
+ <20200306071110.130202-4-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200306071110.130202-4-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q3VycmVudGx5IFVGUyBob3N0IGRyaXZlciBwcm9taXNlcyBWQ0Mgc3VwcGx5IGlmIFVGUyBkZXZp
-Y2UNCm5lZWRzIHRvIGRvIFdyaXRlQm9vc3RlciBmbHVzaCBkdXJpbmcgcnVudGltZSBzdXNwZW5k
-Lg0KDQpIb3dldmVyIHRoZSBVRlMgc3BlY2lmaWNhdGlvbiBtZW50aW9ucywNCg0KIldoaWxlIHRo
-ZSBmbHVzaGluZyBvcGVyYXRpb24gaXMgaW4gcHJvZ3Jlc3MsIHRoZSBkZXZpY2UgaXMNCmluIEFj
-dGl2ZSBwb3dlciBtb2RlLiINCg0KVGhlcmVmb3JlIFVGUyBob3N0IGRyaXZlciBuZWVkcyB0byBw
-cm9taXNlIG1vcmU6IEtlZXAgVUZTDQpkZXZpY2UgYXMgIkFjdGl2ZSBwb3dlciBtb2RlIiwgb3Ro
-ZXJ3aXNlIFVGUyBkZXZpY2Ugc2hhbGwgbm90DQpkbyBhbnkgZmx1c2ggaWYgZGV2aWNlIGVudGVy
-cyBTbGVlcCBvciBQb3dlckRvd24gcG93ZXIgbW9kZS4NCg0KRml4IHRoaXMgYnkgbm90IGNoYW5n
-aW5nIGRldmljZSBwb3dlciBtb2RlIGlmIFdyaXRlQm9vc3Rlcg0KZmx1c2ggaXMgcmVxdWlyZWQg
-aW4gdWZzaGNkX3N1c3BlbmQoKS4NCg0KU2lnbmVkLW9mZi1ieTogU3RhbmxleSBDaHUgPHN0YW5s
-ZXkuY2h1QG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGRyaXZlcnMvc2NzaS91ZnMvdWZzLmggICAgfCAg
-MSAtDQogZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYyB8IDQyICsrKysrKysrKysrKysrKysrKysr
-LS0tLS0tLS0tLS0tLS0tLS0tLQ0KIDIgZmlsZXMgY2hhbmdlZCwgMjIgaW5zZXJ0aW9ucygrKSwg
-MjEgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmcy5oIGIv
-ZHJpdmVycy9zY3NpL3Vmcy91ZnMuaA0KaW5kZXggYjMxMzUzNDRhYjNmLi45ZTRiYzJlOTdhZGEg
-MTAwNjQ0DQotLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmcy5oDQorKysgYi9kcml2ZXJzL3Njc2kv
-dWZzL3Vmcy5oDQpAQCAtNTc3LDcgKzU3Nyw2IEBAIHN0cnVjdCB1ZnNfZGV2X2luZm8gew0KIAl1
-MzIgZF9leHRfdWZzX2ZlYXR1cmVfc3VwOw0KIAl1OCBiX3diX2J1ZmZlcl90eXBlOw0KIAl1MzIg
-ZF93Yl9hbGxvY191bml0czsNCi0JYm9vbCBrZWVwX3ZjY19vbjsNCiAJdTggYl9wcmVzcnZfdXNw
-Y19lbjsNCiB9Ow0KIA0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMgYi9k
-cml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQppbmRleCAxNjlhMzM3OWU0NjguLmI5Zjc3NDRjYTJi
-NCAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCisrKyBiL2RyaXZlcnMv
-c2NzaS91ZnMvdWZzaGNkLmMNCkBAIC04MTAxLDggKzgxMDEsNyBAQCBzdGF0aWMgdm9pZCB1ZnNo
-Y2RfdnJlZ19zZXRfbHBtKHN0cnVjdCB1ZnNfaGJhICpoYmEpDQogCSAgICAhaGJhLT5kZXZfaW5m
-by5pc19sdV9wb3dlcl9vbl93cCkgew0KIAkJdWZzaGNkX3NldHVwX3ZyZWcoaGJhLCBmYWxzZSk7
-DQogCX0gZWxzZSBpZiAoIXVmc2hjZF9pc191ZnNfZGV2X2FjdGl2ZShoYmEpKSB7DQotCQlpZiAo
-IWhiYS0+ZGV2X2luZm8ua2VlcF92Y2Nfb24pDQotCQkJdWZzaGNkX3RvZ2dsZV92cmVnKGhiYS0+
-ZGV2LCBoYmEtPnZyZWdfaW5mby52Y2MsIGZhbHNlKTsNCisJCXVmc2hjZF90b2dnbGVfdnJlZyho
-YmEtPmRldiwgaGJhLT52cmVnX2luZm8udmNjLCBmYWxzZSk7DQogCQlpZiAoIXVmc2hjZF9pc19s
-aW5rX2FjdGl2ZShoYmEpKSB7DQogCQkJdWZzaGNkX2NvbmZpZ192cmVnX2xwbShoYmEsIGhiYS0+
-dnJlZ19pbmZvLnZjY3EpOw0KIAkJCXVmc2hjZF9jb25maWdfdnJlZ19scG0oaGJhLCBoYmEtPnZy
-ZWdfaW5mby52Y2NxMik7DQpAQCAtODE3Miw2ICs4MTcxLDcgQEAgc3RhdGljIGludCB1ZnNoY2Rf
-c3VzcGVuZChzdHJ1Y3QgdWZzX2hiYSAqaGJhLCBlbnVtIHVmc19wbV9vcCBwbV9vcCkNCiAJZW51
-bSB1ZnNfcG1fbGV2ZWwgcG1fbHZsOw0KIAllbnVtIHVmc19kZXZfcHdyX21vZGUgcmVxX2Rldl9w
-d3JfbW9kZTsNCiAJZW51bSB1aWNfbGlua19zdGF0ZSByZXFfbGlua19zdGF0ZTsNCisJYm9vbCBr
-ZWVwX2N1cnJfZGV2X3B3cl9tb2RlID0gZmFsc2U7DQogDQogCWhiYS0+cG1fb3BfaW5fcHJvZ3Jl
-c3MgPSAxOw0KIAlpZiAoIXVmc2hjZF9pc19zaHV0ZG93bl9wbShwbV9vcCkpIHsNCkBAIC04MjI3
-LDI3ICs4MjI3LDI5IEBAIHN0YXRpYyBpbnQgdWZzaGNkX3N1c3BlbmQoc3RydWN0IHVmc19oYmEg
-KmhiYSwgZW51bSB1ZnNfcG1fb3AgcG1fb3ApDQogCQkJdWZzaGNkX2Rpc2FibGVfYXV0b19ia29w
-cyhoYmEpOw0KIAkJfQ0KIAkJLyoNCi0JCSAqIFdpdGggd2IgZW5hYmxlZCwgaWYgdGhlIGJrb3Bz
-IGlzIGVuYWJsZWQgb3IgaWYgdGhlDQotCQkgKiBjb25maWd1cmVkIFdCIHR5cGUgaXMgNzAlIGZ1
-bGwsIGtlZXAgdmNjIE9ODQotCQkgKiBmb3IgdGhlIGRldmljZSB0byBmbHVzaCB0aGUgd2IgYnVm
-ZmVyDQorCQkgKiBJZiBkZXZpY2UgbmVlZHMgdG8gZG8gQktPUCBvciBXQiBidWZmZXIgZmx1c2gg
-ZHVyaW5nDQorCQkgKiBIaWJlcm44LCBrZWVwIGRldmljZSBwb3dlciBtb2RlIGFzICJhY3RpdmUg
-cG93ZXIgbW9kZSINCisJCSAqIGFuZCBWQ0Mgc3VwcGx5Lg0KIAkJICovDQotCQlpZiAoKGhiYS0+
-YXV0b19ia29wc19lbmFibGVkICYmIHVmc2hjZF9pc193Yl9hbGxvd2VkKGhiYSkpIHx8DQotCQkg
-ICAgdWZzaGNkX3diX2tlZXBfdmNjX29uKGhiYSkpDQotCQkJaGJhLT5kZXZfaW5mby5rZWVwX3Zj
-Y19vbiA9IHRydWU7DQotCQllbHNlDQotCQkJaGJhLT5kZXZfaW5mby5rZWVwX3ZjY19vbiA9IGZh
-bHNlOw0KLQl9IGVsc2Ugew0KLQkJaGJhLT5kZXZfaW5mby5rZWVwX3ZjY19vbiA9IGZhbHNlOw0K
-KwkJa2VlcF9jdXJyX2Rldl9wd3JfbW9kZSA9IGhiYS0+YXV0b19ia29wc19lbmFibGVkIHx8DQor
-CQkJKCgocmVxX2xpbmtfc3RhdGUgPT0gVUlDX0xJTktfSElCRVJOOF9TVEFURSkgfHwNCisJCQko
-KHJlcV9saW5rX3N0YXRlID09IFVJQ19MSU5LX0FDVElWRV9TVEFURSkgJiYNCisJCQl1ZnNoY2Rf
-aXNfYXV0b19oaWJlcm44X2VuYWJsZWQoaGJhKSkpICYmDQorCQkJdWZzaGNkX3diX2tlZXBfdmNj
-X29uKGhiYSkpOw0KIAl9DQogDQotCWlmICgocmVxX2Rldl9wd3JfbW9kZSAhPSBoYmEtPmN1cnJf
-ZGV2X3B3cl9tb2RlKSAmJg0KLQkgICAgKCh1ZnNoY2RfaXNfcnVudGltZV9wbShwbV9vcCkgJiYg
-IWhiYS0+YXV0b19ia29wc19lbmFibGVkKSB8fA0KLQkgICAgIXVmc2hjZF9pc19ydW50aW1lX3Bt
-KHBtX29wKSkpIHsNCi0JCS8qIGVuc3VyZSB0aGF0IGJrb3BzIGlzIGRpc2FibGVkICovDQotCQl1
-ZnNoY2RfZGlzYWJsZV9hdXRvX2Jrb3BzKGhiYSk7DQotCQlyZXQgPSB1ZnNoY2Rfc2V0X2Rldl9w
-d3JfbW9kZShoYmEsIHJlcV9kZXZfcHdyX21vZGUpOw0KLQkJaWYgKHJldCkNCi0JCQlnb3RvIGVu
-YWJsZV9nYXRpbmc7DQorCWlmIChyZXFfZGV2X3B3cl9tb2RlICE9IGhiYS0+Y3Vycl9kZXZfcHdy
-X21vZGUpIHsNCisJCWlmICgodWZzaGNkX2lzX3J1bnRpbWVfcG0ocG1fb3ApICYmICFoYmEtPmF1
-dG9fYmtvcHNfZW5hYmxlZCkgfHwNCisJCSAgICAhdWZzaGNkX2lzX3J1bnRpbWVfcG0ocG1fb3Ap
-KSB7DQorCQkJLyogZW5zdXJlIHRoYXQgYmtvcHMgaXMgZGlzYWJsZWQgKi8NCisJCQl1ZnNoY2Rf
-ZGlzYWJsZV9hdXRvX2Jrb3BzKGhiYSk7DQorCQl9DQorDQorCQlpZiAoIWtlZXBfY3Vycl9kZXZf
-cHdyX21vZGUpIHsNCisJCQlyZXQgPSB1ZnNoY2Rfc2V0X2Rldl9wd3JfbW9kZShoYmEsIHJlcV9k
-ZXZfcHdyX21vZGUpOw0KKwkJCWlmIChyZXQpDQorCQkJCWdvdG8gZW5hYmxlX2dhdGluZzsNCisJ
-CX0NCiAJfQ0KIA0KIAlmbHVzaF93b3JrKCZoYmEtPmVlaF93b3JrKTsNCi0tIA0KMi4xOC4wDQo=
+Em Thu, Mar 05, 2020 at 11:11:10PM -0800, Ian Rogers escreveu:
+> Allow the CC compiler to accept a CFLAGS environment variable.
+> Make the architecture test directory agree with the code comment.
+> This doesn't change the code generated but makes it easier to integrate
+> running the shell script in build systems like bazel.
 
+I've looked at this and split this part in a separate patch, and applied
+it locally, please take a look, now looking at the other bit of the
+patch.
+
+- Arnaldo
+ 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/trace/beauty/arch_errno_names.sh | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/trace/beauty/arch_errno_names.sh b/tools/perf/trace/beauty/arch_errno_names.sh
+> index 22c9fc900c84..9f9ea45cddc4 100755
+> --- a/tools/perf/trace/beauty/arch_errno_names.sh
+> +++ b/tools/perf/trace/beauty/arch_errno_names.sh
+> @@ -91,7 +91,7 @@ EoHEADER
+>  # in tools/perf/arch
+>  archlist=""
+>  for arch in $(find $toolsdir/arch -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | grep -v x86 | sort); do
+> -	test -d arch/$arch && archlist="$archlist $arch"
+> +	test -d $toolsdir/perf/arch/$arch && archlist="$archlist $arch"
+>  done
+>  
+>  for arch in x86 $archlist generic; do
+> -- 
+commit 1b59e3b7bfc6183d3dc9f119e1875f9607d29d96
+Author: Ian Rogers <irogers@google.com>
+Date:   Thu Mar 5 23:11:10 2020 -0800
+
+    perf trace: Fix the selection for architectures to generate the errno name tables
+    
+    Make the architecture test directory agree with the code comment.
+    
+    Committer notes:
+    
+    This was split from a larger patch.
+    
+    The code was assuming the developer always worked from tools/perf/, so make sure we
+    do the test -d having $toolsdir/perf/arch/$arch, to match the intent expressed in the comment,
+    just above that loop.
+    
+    Signed-off-by: Ian Rogers <irogers@google.com>
+    Cc: Adrian Hunter <adrian.hunter@intel.com>
+    Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+    Cc: Alexios Zavras <alexios.zavras@intel.com>
+    Cc: Andi Kleen <ak@linux.intel.com>
+    Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Cc: Igor Lubashev <ilubashe@akamai.com>
+    Cc: Jiri Olsa <jolsa@redhat.com>
+    Cc: Kan Liang <kan.liang@linux.intel.com>
+    Cc: Mark Rutland <mark.rutland@arm.com>
+    Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+    Cc: Namhyung Kim <namhyung@kernel.org>
+    Cc: Nick Desaulniers <ndesaulniers@google.com>
+    Cc: Peter Zijlstra <peterz@infradead.org>
+    Cc: Stephane Eranian <eranian@google.com>
+    Cc: Thomas Gleixner <tglx@linutronix.de>
+    Cc: Wei Li <liwei391@huawei.com>
+    Link: http://lore.kernel.org/lkml/20200306071110.130202-4-irogers@google.com
+    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+diff --git a/tools/perf/trace/beauty/arch_errno_names.sh b/tools/perf/trace/beauty/arch_errno_names.sh
+index 22c9fc900c84..f8c44a85650b 100755
+--- a/tools/perf/trace/beauty/arch_errno_names.sh
++++ b/tools/perf/trace/beauty/arch_errno_names.sh
+@@ -91,7 +91,7 @@ EoHEADER
+ # in tools/perf/arch
+ archlist=""
+ for arch in $(find $toolsdir/arch -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | grep -v x86 | sort); do
+-	test -d arch/$arch && archlist="$archlist $arch"
++	test -d $toolsdir/perf/arch/$arch && archlist="$archlist $arch"
+ done
+ 
+ for arch in x86 $archlist generic; do
