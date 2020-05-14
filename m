@@ -2,188 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B6D1D3616
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B4D1D29BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727929AbgENQLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 12:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726073AbgENQLi (ORCPT
+        id S1726126AbgENILR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 04:11:17 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:49992 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725965AbgENILQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 12:11:38 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0F6C061A0C;
-        Thu, 14 May 2020 09:11:37 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id b18so1532738ilf.2;
-        Thu, 14 May 2020 09:11:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pWAwL4iY43kHKyzq6JgPam8fDxHVDDtXpG7mRg32aJE=;
-        b=O18fRYkJuCVHLzSDHMiTV/YEvTTqeLQpSzk7AUAl1veaDpHB0AhDrBCf6pG6NOIJ69
-         IVKsNZ3fA75gmbzuDAe9ruH9MEFZd4RjPd5l7XMXsa9JnQglfU6WlqT5lKEfreMB5mpa
-         yLiuZhfm1eIS1G/957nwLkHVLS+MHbLeJ+wOrXDXNXNqjYGERRRjU4frvhsoaaEfctCs
-         TOK4ipsoWjopZW/F3wg+NJ2uwwRe8hgMBHYVXkuqgOqby141+OUTgLvFgNbfg3CODLo9
-         TdoiXHXOZy+3W9snj2LFBt6LX/eRdGwR20ISOpHddhvO3HEKQmYx8gnopiazWe6kaubv
-         UEXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pWAwL4iY43kHKyzq6JgPam8fDxHVDDtXpG7mRg32aJE=;
-        b=CK/IU3wAf7Ml7o/oouS4rFRY3+v0USZnpEHo30+KjSo5UuJbSgq3qwyTd37ReQDCzG
-         BS1+2Lv/UzDrljWE75OekhkJH/sJvFps0z6j95f/Ocj91WdjmFs9tGN2y4Sr0PM1yt58
-         cHraaJeDyriwLePOTXxzKebFYQMkhl+4hutVLqXqm5ZHzUeHq3OdZp1ZDHA2JDqyR+Xp
-         bS8Y+GrIj7a35rqDHLjwyd5hyUL3O4S9BoQz/jaZhEErfx89C5GQ2M1CTiRHbW5FhFXm
-         weIB2fU/sULEJ+m4EmAgp/KzTPSd/KhxidR9gM/nmG1UnUmTY7RvOwtoPZP4OqeFzjCd
-         qJzA==
-X-Gm-Message-State: AOAM530SHhqYJ+IAkVQkGiC542wOYKYcCrfv8m8cXzWcm2ZishK84uwC
-        beqz0OP6KE0RcoThHZba6tiOWqP2/uBDBoN4U73wHDfn/Es=
-X-Google-Smtp-Source: ABdhPJx6Rsp5ROFxXwYlYudzEUx9ly+h8b+Qj8M+Twx/mohFFLUuzJpw12Ch5e3R3mp3ipZq22gY7LfKaKb8NlNe79A=
-X-Received: by 2002:a05:6e02:68e:: with SMTP id o14mr1854794ils.184.1589472696421;
- Thu, 14 May 2020 09:11:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <1589267017-17294-1-git-send-email-dillon.minfei@gmail.com>
- <1589267017-17294-6-git-send-email-dillon.minfei@gmail.com>
- <CACRpkdbZoMDC-D12CByKJUZbu4shqixC=QrKwJUd8x=nyK7seQ@mail.gmail.com>
- <CAL9mu0LVsePqifEC+-FR+NxvuZT3UGpU86KhzaTqb7w_Px0z2g@mail.gmail.com> <CACRpkdbcD7i+kNoJ9YP5XXTtLi12=yzW5OBNzet5oRdwPYz=dA@mail.gmail.com>
-In-Reply-To: <CACRpkdbcD7i+kNoJ9YP5XXTtLi12=yzW5OBNzet5oRdwPYz=dA@mail.gmail.com>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Thu, 14 May 2020 16:11:00 +0800
-Message-ID: <CAL9mu0Kdc4TqcGB7JYDWkOJqwvxX1m_026aB0iprkHTzN4HXoQ@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] drm/panel: Add ilitek ili9341 driver
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Thu, 14 May 2020 04:11:16 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-94-pPKAQ0JRPGmhyT1OD-2rfA-1; Thu, 14 May 2020 09:11:13 +0100
+X-MC-Unique: pPKAQ0JRPGmhyT1OD-2rfA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 14 May 2020 09:11:12 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 14 May 2020 09:11:12 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+CC:     Borislav Petkov <bp@suse.de>, Arnd Bergmann <arnd@arndb.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        the arch/x86 maintainers <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: RE: gcc-10: kernel stack is corrupted and fails to boot
+Thread-Topic: gcc-10: kernel stack is corrupted and fails to boot
+Thread-Index: AQHWKZY6Y215XsBMzU2jywoKX8cjPqinObQQ
+Date:   Thu, 14 May 2020 08:11:12 +0000
+Message-ID: <d907ef9d30bc4169bf1e923fb066f7a1@AcuMS.aculab.com>
+References: <20200509120707.188595-2-arnd@arndb.de>
+ <87v9l24qz6.fsf@kamboji.qca.qualcomm.com>
+ <87r1vq4qev.fsf@kamboji.qca.qualcomm.com>
+ <87d078tjl0.fsf_-_@kamboji.qca.qualcomm.com>
+ <20200513154847.GA158356@rani.riverdale.lan>
+ <CAK8P3a3KpM91+jv6+7KSKFRpwLqf38Lz1wbGhkFFyfDb9oahgA@mail.gmail.com>
+ <20200513214128.GB6733@zn.tnic>
+ <CAK8P3a3XPCyNM7s3vbn8JYK6swA3ZpPtTWB+uhmAE3YEX-nmig@mail.gmail.com>
+ <20200513222038.GC6733@zn.tnic>
+ <CAHk-=wgybuOF+Jp2XYWqM7Xn1CW6szWQw_FgVoFh5jx_4YoCVw@mail.gmail.com>
+ <20200513233616.GD6733@zn.tnic>
+ <CAHk-=wjZXFe08MiNRevJFGDvX0O6kcQTiK8GFBS7hwUAzB+LQw@mail.gmail.com>
+ <CAKwvOd=o_wuiVpw5KVzLEt25W-A9Ah9fzftPZLG+yutqJmWbOg@mail.gmail.com>
+ <CAHk-=wg6G+p1RRjR6UZBEuSCDs9=iWBsxrDPTEwqh+y5RayqKA@mail.gmail.com>
+In-Reply-To: <CAHk-=wg6G+p1RRjR6UZBEuSCDs9=iWBsxrDPTEwqh+y5RayqKA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMTQgTWF5IDIwMjAgMDM6MjANCj4gT24gV2Vk
+LCBNYXkgMTMsIDIwMjAgYXQgNTo1MSBQTSBOaWNrIERlc2F1bG5pZXJzDQo+IDxuZGVzYXVsbmll
+cnNAZ29vZ2xlLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBBcmUgeW91IHN1cmUgTFRPIHRyZWF0cyBl
+bXB0eSBhc20gc3RhdGVtZW50cyBkaWZmZXJlbnRseSB0aGFuIGZ1bGwNCj4gPiBtZW1vcnkgYmFy
+cmllcnMgaW4gcmVnYXJkcyB0byBwcmV2ZW50aW5nIHRhaWwgY2FsbHM/DQo+IA0KPiBJdCBoYWQg
+YmV0dGVyLg0KPiANCj4gQXQgbGluay10aW1lLCB0aGVyZSBpcyBub3RoaW5nIGxlZnQgb2YgYW4g
+ZW1wdHkgYXNtIHN0YXRlbWVudC4gU28gYnkNCj4gdGhlIHRpbWUgdGhlIGxpbmtlciBydW5zLCBp
+dCBvbmx5IHNlZXMNCj4gDQo+ICAgICBjYWxsIHh5eg0KPiAgICAgcmV0DQo+IA0KPiBpbiB0aGUg
+b2JqZWN0IGNvZGUuIEF0IHRoYXQgcG9pbnQsIGl0J3Mgc29tZXdoYXQgcmVhc29uYWJsZSBmb3Ig
+YW55DQo+IGxpbmstdGltZSBvcHRpbWl6ZXIgKG9yIGFuIG9wdGltaXppbmcgYXNzZW1ibGVyLCBm
+b3IgdGhhdCBtYXR0ZXIpIHRvDQo+IHNheSAiSSdsbCBqdXN0IHR1cm4gdGhhdCBzZXF1ZW5jZSBp
+bnRvIGEgc2ltcGxlICdqbXAgeHl6JyBpbnN0ZWFkIi4NCg0KRXhjZXB0IGlzIHNlZXM6DQoJY2Fs
+bCB4eXoNCgljYW5hcnlfY2hlY2tfY29kZQ0KCXJldA0KDQpUaGVyZSdzIGFsc28gYWxtb3N0IGNl
+cnRhaW5seSBzb21lIHN0YWNrIGZyYW1lIHRpZHl1cC4NCldoaWNoIGl0IHdvdWxkIGhhdmUgdG8g
+ZGV0ZWN0IGFuZCBjb252ZXJ0Lg0KQW5kLCBpbiBwcmluY2lwbGUsIHRoZSBmdW5jdGlvbiBpcyBh
+bGxvd2VkIHRvIGFjY2VzcyB0aGUNCnN0YWNrIHNwYWNlIHRoYW4gY29udGFpbnMgdGhlIGNhbmFy
+eS4NCg0KPiBOb3csIGRvbid0IGdldCBtZSB3cm9uZyAtIEknbSBub3QgY29udmluY2VkIGFueSBl
+eGlzdGluZyBMVE8gZG9lcw0KPiB0aGF0LiBCdXQgSSdkIGFsc28gbm90IGJlIHNob2NrZWQgYnkg
+c29tZXRoaW5nIGxpa2UgdGhhdC4NCj4gDQo+IEluIGNvbnRyYXN0LCBpZiBpdCdzIGEgcmVhbCBt
+YigpLCB0aGUgbGlua2VyIHdvbid0IHNlZSBqdXN0IGENCj4gJ2NhbGwrcmV0IiBzZXF1ZW5jZS4g
+SXQgd2lsbCBzZWUgc29tZXRoaW5nIGxpa2UNCj4gDQo+ICAgICBjYWxsIHh5eg0KPiAgICAgbWZl
+bmNlDQo+ICAgICByZXQNCj4gDQo+IChvaywgdGhlIG1mZW5jZSBtYXkgYWN0dWFsbHkgYmUgc29t
+ZXRoaW5nIGVsc2UsIGFuZCB3ZSdsbCBoYXZlIGEgbGFiZWwNCj4gb24gaXQgYW5kIGFuIGFsdGVy
+bmF0aXZlcyB0YWJsZSBwb2ludGluZyB0byBpdCwgYnV0IHRoZSBwb2ludCBpcywNCj4gdW5saWtl
+IGFuIGVtcHR5IGFzbSwgdGhlcmUncyBzb21ldGhpbmcgX3RoZXJlXykuDQoNCk5vdCBpZiB5b3Un
+dmUgYW4gYXJjaGl0ZWN0dXJlIHRoYXQgZG9lc24ndCBoYXZlIGFueSBtZW1vcnkgYmFycmllcnMu
+DQpJbiB0aGF0IGNhc2UgbWIoKSBtYXkgbm90IGV2ZW4gYmUgYXNtKCIiKS4NCihhbHRob3VnaCBp
+dCBtaWdodCBoYXZlIHRvIGJlIGFzbSAoIiI6OjptZW1vcnkpKS4NCg0KCURhdmlkDQoNCi0NClJl
+Z2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0
+b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykN
+Cg==
 
-Linus Walleij <linus.walleij@linaro.org> =E4=BA=8E2020=E5=B9=B45=E6=9C=8814=
-=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=8810:08=E5=86=99=E9=81=93=EF=BC=
-=9A
->
-> On Thu, May 14, 2020 at 12:22 PM dillon min <dillon.minfei@gmail.com> wro=
-te:
->
-> > > > +       /* Gamma */
-> > > > +       mipi_dbi_command(dbi, ILI9341_3GAMMA_EN, 0x00);
-> > > > +       mipi_dbi_command(dbi, MIPI_DCS_SET_GAMMA_CURVE, 0x01);
-> > > > +       mipi_dbi_command(dbi, ILI9341_PGAMMA,
-> > > > +                        0x0f, 0x31, 0x2b, 0x0c, 0x0e, 0x08, 0x4e, =
-0xf1,
-> > > > +                        0x37, 0x07, 0x10, 0x03, 0x0e, 0x09, 0x00);
-> > > > +       mipi_dbi_command(dbi, ILI9341_NGAMMA,
-> > > > +                        0x00, 0x0e, 0x14, 0x03, 0x11, 0x07, 0x31, =
-0xc1,
-> > > > +                        0x48, 0x08, 0x0f, 0x0c, 0x31, 0x36, 0x0f);
-> > >
-> > > It seems to be copies of the stuff above, but why is there a differen=
-t
-> > > gamma if you use DBI?
->
-> > for dbi interface, currently i just copy the code from tiny/ili9341.c.
-> > as so many boards use this driver now, like raspberry pi, etc
-> > i'm afraid it's will not work after modification. so, just leave the
-> > original code there.
->
-> OK if you move it to ili9341_config it will be clear which panels
-> need this gamma and which panels need another gamma.
->
-> I think there should be one ili9341_config for the new st,*
-> variant and one for the old DBI variant.
->
-Okay, it's a good idea to setup two different configs.  ili9341_dbi_config,
-ili9341_dpi_config. first for old dbi variant, second for dpi variant.
-
-> > anther question:
-> > is there any panel driver have dbi & dpi or dpi & dsi supported? which
-> > i mean support
-> > two different panel interface in one driver.
-> > thanks
->
-> Usually you split the driver in three files becuase a driver can
-> only list one initcall, and also it makes it modularized.
->
-> There is nothing in-tree but look at my branch here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git/=
-log/?h=3Dux500-skomer-v5.7-rc1
->
-> You see how I split up the s6e63m0 driver in one SPI part
-> and one DSI part:
-> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git/=
-commit/?h=3Dux500-skomer-v5.7-rc1&id=3D6c0e1fb5df5fa8fa857dee65f6c0f54d06d1=
-58a7
-> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git/=
-commit/?h=3Dux500-skomer-v5.7-rc1&id=3Dcfbf562cc709b53b62f5fbc7fedf176ffa17=
-b088
->
-> The overall idea should work the same with DBI.
->
-> Yours,
-> Linus Walleij
->
-> Yours,
-> Linus Walleij
-
-Thanks for share, but i thinks it's not suitable to my case. the difference=
- is
-for panel s6e63m0
-1 spi only for panel register configuration
-2 dpi for rgb video data transfer (drm_panel_init(..., DRM_MODE_CONNECTOR_D=
-PI);)
-
-my case:
-1 support ili9341 by drm mipi dbi (only spi bus,  "3/4 line serial
-interface", pdf chap 7.6.1), Ie, raspberry pi + ili9341 + spi
-2 support ili9341 by spi & dpi (spi for register set, dpi for rgb
-data, "6/16/18 bit parallel rgb interface", pdf chap 7.6.8)
-   Ie, stm32f429+ili9341+ltdc+spi
-these two communication type has no dependency with each other.
-
-DBI has much more difference than DPI & SPI, or DSI & SPI in drm.
-   drm_mipi_dbi support both panel register configuration and video
-data transfer via spi
-   with or without dc pins.
-   also the registration to drm is difference, for dbi is
-mipi_dbi_dev_init and drm_fbdev_generic_setup
-   for panel driver is drm_panel_init and drm_panel_add
-at soc's view, we can drive ili9341 to work just by drm mipi dbi
-(actually it's dbi -> spi bus) without host's lcd or dsi controller
-but for some panel can't transfer video data by spi, and with dpi or
-dsi interface, must connect to host's lcd or dsi controller.
-
-so, for ilitek-ili9341 , it's use different dts binding drive to
-register different client type (dbi, or dpi & spi) to drm.
-actually, there is a driver tiny/ili9341.c support this panel by spi
-bus only already. but, from Sam's suggestion, should extend this
-driver
-to support dpi & spi interface, this is the background of panel-ilitek-ili9=
-341.c
-
-thanks.
-
-best regards.
-
-dillon
