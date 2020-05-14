@@ -2,138 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F6A1D4077
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 00:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35EC51D4083
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 00:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgENWE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 18:04:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726046AbgENWE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 18:04:57 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 351622065C;
-        Thu, 14 May 2020 22:04:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589493897;
-        bh=wVYlWHo32ix4biFnX8gPYhTJNt94qOjJRYKVMHTxriY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yTzO9JVf0EPIEnb4lkoCCBtbx52fNb3IfBgx8VIupsRA4ajFa3DEORz6Vlgf21HVF
-         Pqt0kPcIxYidQuySiG14cA6GXLkTd6p/0kzOusFFV22H4V1rD+8Ie2sGn4J78/700i
-         xeB6ATQWwWv1dzqhagb6mYc2d/feorzN4rjmbrC8=
-Date:   Thu, 14 May 2020 17:09:34 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S1728280AbgENWKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 18:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726046AbgENWKG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 18:10:06 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF3FEC061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 15:10:04 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id o8so65246ybc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 15:10:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oOm3DK9WIM5J9DcOLPhzcuzOqDqeUVi26MmXmfq63P4=;
+        b=troUd3tCFtu8QDiRQ+3uwf2Fvh+YDzZNwO6gj/h3iPGUchcUKV0AAFJLnQInFERyLp
+         cKh77GmqcZQTiYGDitUTWwqUXbYEJdXIg1nuP3fNx0w1CrS/C7v9jNMwi4mUU//WKpe0
+         sxuTC4kjPBqkiuhQEnI06NpEQM6DVz4ctzo7OkxrHMt4hITkKG2Pp/hmyQW7zRLpytAi
+         I0crXCfCF4B0mrIVuL8fSEV5m3FVfGXv7NpYAOEJH25A34r+Ui4eaxOLOVLKHzuCPZwB
+         skzyb+PZv4uSWNelHVJWWYs2yhEcnnirREELp1NS2ibsRTQztYbfAko5pqztjokAF69T
+         X6BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oOm3DK9WIM5J9DcOLPhzcuzOqDqeUVi26MmXmfq63P4=;
+        b=LGsDtMc/JaKUUzIRB95JgBi9D6eO0zymHv7Le4Cn+H2jzpbLCPjShbMmWrvwdS/tTt
+         ad8g+0ds1qHw51D/9flP+Kbk54mccXxAyN6NhB+Dch07AmgYhAIrV8AgoQev9LQAMRUA
+         T+o0NFZvTKJlCGfaAXmaaJhgxuIPl4301lmq0nOj5bOk6XsErFbiTJTbqELAgNVg99+P
+         7eJkXGSWlKtgJzKnc8eOzXC+pAx5U3kh0d4/Drw58F3cUUZ+uubcEvMZA8Z5reK1Pr4Z
+         oZpj7TZetN6+umKGAySmi+NB/p6nHcFumROfHmpSPgkiUs/WB1IBp6NsKZXTOeZOLVOY
+         VQwQ==
+X-Gm-Message-State: AOAM5302meBVRfUesrgxgS/g3F0mU9tZ0/2lWkuBxGQ4VGKNrjtEYBog
+        4hfdnosA/9A7ucDrYQzYY2285onQNCr080zyt8wL8A==
+X-Google-Smtp-Source: ABdhPJzJpkB9AhsjIuby7m2RKPXELMPrz7/+CxdXR4FAHHa+M/yOOHhje648sVIMvO/TQ0OY00L60t3554gZskTXu0s=
+X-Received: by 2002:a25:d450:: with SMTP id m77mr710876ybf.177.1589494203884;
+ Thu, 14 May 2020 15:10:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200427061520.24905-1-nick.gasson@arm.com> <20200427061520.24905-4-nick.gasson@arm.com>
+In-Reply-To: <20200427061520.24905-4-nick.gasson@arm.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 14 May 2020 15:09:52 -0700
+Message-ID: <CAP-5=fWHc2zP7vy6kALcYH3okAqumDVTZjN2K=dgC9PX6kw3VQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] perf jvmti: Fix demangling Java symbols
+To:     Nick Gasson <nick.gasson@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH perf/core] perf intel-pt: Fix clang build failure in
- intel_pt_synth_pebs_sample
-Message-ID: <20200514220934.GT4897@embeddedor>
-References: <20200513234738.GA21211@embeddedor>
- <20200514131030.GL5583@kernel.org>
- <20200514150601.GS4897@embeddedor>
- <CAP-5=fWTCFx80Hd_97_4AxFV4KsRyYptLbQfw=XVw_j8i-EAyg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fWTCFx80Hd_97_4AxFV4KsRyYptLbQfw=XVw_j8i-EAyg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 12:06:48PM -0700, Ian Rogers wrote:
-> On Thu, May 14, 2020 at 8:01 AM Gustavo A. R. Silva
-> <gustavoars@kernel.org> wrote:
-> >
-> > On Thu, May 14, 2020 at 10:10:30AM -0300, Arnaldo Carvalho de Melo wrote:
-> > > Em Wed, May 13, 2020 at 06:47:38PM -0500, Gustavo A. R. Silva escreveu:
-> > > > Fix the following build failure generated with command
-> > > > $ make CC=clang HOSTCC=clang -C tools/ perf:
-> > > >
-> > > > util/intel-pt.c:1802:24: error: field 'br_stack' with variable sized type 'struct branch_stack' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
-> > > >                         struct branch_stack br_stack;
-> > > >                                             ^
-> > > > 1 error generated.
-> > > >
-> > > > Fix this by reordering the members of struct br.
-> > >
-> > > Yeah, I noticed that as far back as with ubuntu 16.04's clang:
-> > >
-> > > clang version 3.8.0-2ubuntu4 (tags/RELEASE_380/final)
-> > >
-> > > util/intel-pt.c:1802:24: error: field 'br_stack' with variable sized type 'struct branch_stack' not at the end of a struct or class is a GNU
-> > >       extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
-> > >                         struct branch_stack br_stack;
-> > >                                             ^
-> > > 1 error generated.
-> > >
-> > >
-> > > Will fold this with the bug introducing the problem to avoid bisection
-> > > problems.
-> > >
-> >
-> > I agree. Also, the commit hash of the "Fixes" tag only applies to the
-> > perf/core branch and, I guess that might create confusion.
-> 
-> 
-> So while this fixes the warning I believe it breaks the intent of the code.
-> 
-> tools/perf/util/branch.h:
-> struct branch_stack {
->        u64                     nr;
->        u64                     hw_idx;
->        struct branch_entry     entries[];
-> };
-> 
-> tools/perf/util/intel-pt.c:
->                struct {
->                        struct branch_stack br_stack;
->                        struct branch_entry entries[LBRS_MAX];
->                } br;
-> 
-> The array in br is trying to extend branch_stack's entries array. You
-> might have to do something like:
-> 
-> alignas(alignof(branch_stack)) char storage[sizeof(branch_stack) +
-> sizeof(branch_entry) * LBRS_MAX];
-> struct branch_stack *br = &storage;
-> 
-> malloc/free may be nicer on the eyeballs.
-> 
+On Sun, Apr 26, 2020 at 11:16 PM Nick Gasson <nick.gasson@arm.com> wrote:
+>
+> For a Java method signature like:
+>
+>     Ljava/lang/AbstractStringBuilder;appendChars(Ljava/lang/String;II)V
+>
+> The demangler produces:
+>
+>     void class java.lang.AbstractStringBuilder.appendChars(class java.lang., shorttring., int, int)
+>
+> The arguments should be (java.lang.String, int, int) but the demangler
+> interprets the "S" in String as the type code for "short". Correct this
+> and two other minor things:
+>
+> - There is no "bool" type in Java, should be "boolean".
+>
+> - The demangler prepends "class" to every Java class name. This is not
+>   standard Java syntax and it wastes a lot of horizontal space if the
+>   signature is long. Remove this as there isn't any ambiguity between
+>   class names and primitives.
+>
+> Also added a test case.
+>
+> Signed-off-by: Nick Gasson <nick.gasson@arm.com>
 
-Yep, I'd go for zalloc/free. There are a couple of places where dynamic
-memory is being allocated for struct branch_stack:
+Reviewed-by: Ian Rogers <irogers@google.com>
+Tested-by: Ian Rogers <irogers@google.com>
 
-tools/perf/util/cs-etm.c-256-   if (etm->synth_opts.last_branch) {
-tools/perf/util/cs-etm.c:257:           size_t sz = sizeof(struct branch_stack);
-tools/perf/util/cs-etm.c-258-
-tools/perf/util/cs-etm.c-259-           sz += etm->synth_opts.last_branch_sz *
-tools/perf/util/cs-etm.c-260-                 sizeof(struct branch_entry);
-tools/perf/util/cs-etm.c-261-           tidq->last_branch = zalloc(sz);
+Thanks!
+Ian
 
-tools/perf/util/thread-stack.c-148-     if (br_stack_sz) {
-tools/perf/util/thread-stack.c:149:             size_t sz = sizeof(struct branch_stack);
-tools/perf/util/thread-stack.c-150-
-tools/perf/util/thread-stack.c-151-             sz += br_stack_sz * sizeof(struct branch_entry);
-tools/perf/util/thread-stack.c-152-             ts->br_stack_rb = zalloc(sz);
-
-there is even function intel_pt_alloc_br_stack().
-
-Just out of curiosity, why the need of such a hack in this case (the
-on-stack extension of branch_stack's entries array)?
-
-Thanks
---
-Gustavo
-
+> ---
+>  tools/perf/tests/Build                |  1 +
+>  tools/perf/tests/builtin-test.c       |  4 +++
+>  tools/perf/tests/demangle-java-test.c | 42 +++++++++++++++++++++++++++
+>  tools/perf/tests/tests.h              |  1 +
+>  tools/perf/util/demangle-java.c       | 13 +++++----
+>  5 files changed, 55 insertions(+), 6 deletions(-)
+>  create mode 100644 tools/perf/tests/demangle-java-test.c
+>
+> diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
+> index 1692529639b0..2c45ac4a9581 100644
+> --- a/tools/perf/tests/Build
+> +++ b/tools/perf/tests/Build
+> @@ -55,6 +55,7 @@ perf-y += mem2node.o
+>  perf-y += maps.o
+>  perf-y += time-utils-test.o
+>  perf-y += genelf.o
+> +perf-y += demangle-java-test.o
+>
+>  $(OUTPUT)tests/llvm-src-base.c: tests/bpf-script-example.c tests/Build
+>         $(call rule_mkdir)
+> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> index 54d9516c9839..03b362b37f97 100644
+> --- a/tools/perf/tests/builtin-test.c
+> +++ b/tools/perf/tests/builtin-test.c
+> @@ -309,6 +309,10 @@ static struct test generic_tests[] = {
+>                 .desc = "maps__merge_in",
+>                 .func = test__maps__merge_in,
+>         },
+> +       {
+> +               .desc = "Demangle Java",
+> +               .func = test__demangle_java,
+> +       },
+>         {
+>                 .func = NULL,
+>         },
+> diff --git a/tools/perf/tests/demangle-java-test.c b/tools/perf/tests/demangle-java-test.c
+> new file mode 100644
+> index 000000000000..8f3b90832fb0
+> --- /dev/null
+> +++ b/tools/perf/tests/demangle-java-test.c
+> @@ -0,0 +1,42 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <string.h>
+> +#include <stdlib.h>
+> +#include <stdio.h>
+> +#include "tests.h"
+> +#include "session.h"
+> +#include "debug.h"
+> +#include "demangle-java.h"
+> +
+> +int test__demangle_java(struct test *test __maybe_unused, int subtest __maybe_unused)
+> +{
+> +       int ret = TEST_OK;
+> +       char *buf = NULL;
+> +       size_t i;
+> +
+> +       struct {
+> +               const char *mangled, *demangled;
+> +       } test_cases[] = {
+> +               { "Ljava/lang/StringLatin1;equals([B[B)Z",
+> +                 "boolean java.lang.StringLatin1.equals(byte[], byte[])" },
+> +               { "Ljava/util/zip/ZipUtils;CENSIZ([BI)J",
+> +                 "long java.util.zip.ZipUtils.CENSIZ(byte[], int)" },
+> +               { "Ljava/util/regex/Pattern$BmpCharProperty;match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z",
+> +                 "boolean java.util.regex.Pattern$BmpCharProperty.match(java.util.regex.Matcher, int, java.lang.CharSequence)" },
+> +               { "Ljava/lang/AbstractStringBuilder;appendChars(Ljava/lang/String;II)V",
+> +                 "void java.lang.AbstractStringBuilder.appendChars(java.lang.String, int, int)" },
+> +               { "Ljava/lang/Object;<init>()V",
+> +                 "void java.lang.Object<init>()" },
+> +       };
+> +
+> +       for (i = 0; i < sizeof(test_cases) / sizeof(test_cases[0]); i++) {
+> +               buf = java_demangle_sym(test_cases[i].mangled, 0);
+> +               if (strcmp(buf, test_cases[i].demangled)) {
+> +                       pr_debug("FAILED: %s: %s != %s\n", test_cases[i].mangled,
+> +                                buf, test_cases[i].demangled);
+> +                       ret = TEST_FAIL;
+> +               }
+> +               free(buf);
+> +       }
+> +
+> +       return ret;
+> +}
+> diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+> index 9a160fef47c9..49b791d978f6 100644
+> --- a/tools/perf/tests/tests.h
+> +++ b/tools/perf/tests/tests.h
+> @@ -111,6 +111,7 @@ int test__mem2node(struct test *t, int subtest);
+>  int test__maps__merge_in(struct test *t, int subtest);
+>  int test__time_utils(struct test *t, int subtest);
+>  int test__jit_write_elf(struct test *test, int subtest);
+> +int test__demangle_java(struct test *test, int subtest);
+>
+>  bool test__bp_signal_is_supported(void);
+>  bool test__bp_account_is_supported(void);
+> diff --git a/tools/perf/util/demangle-java.c b/tools/perf/util/demangle-java.c
+> index 6fb7f34c0814..39c05200ed65 100644
+> --- a/tools/perf/util/demangle-java.c
+> +++ b/tools/perf/util/demangle-java.c
+> @@ -15,7 +15,7 @@ enum {
+>         MODE_CLASS  = 1,
+>         MODE_FUNC   = 2,
+>         MODE_TYPE   = 3,
+> -       MODE_CTYPE  = 3, /* class arg */
+> +       MODE_CTYPE  = 4, /* class arg */
+>  };
+>
+>  #define BASE_ENT(c, n) [c - 'A']=n
+> @@ -27,7 +27,7 @@ static const char *base_types['Z' - 'A' + 1] = {
+>         BASE_ENT('I', "int" ),
+>         BASE_ENT('J', "long" ),
+>         BASE_ENT('S', "short" ),
+> -       BASE_ENT('Z', "bool" ),
+> +       BASE_ENT('Z', "boolean" ),
+>  };
+>
+>  /*
+> @@ -59,15 +59,16 @@ __demangle_java_sym(const char *str, const char *end, char *buf, int maxlen, int
+>
+>                 switch (*q) {
+>                 case 'L':
+> -                       if (mode == MODE_PREFIX || mode == MODE_CTYPE) {
+> -                               if (mode == MODE_CTYPE) {
+> +                       if (mode == MODE_PREFIX || mode == MODE_TYPE) {
+> +                               if (mode == MODE_TYPE) {
+>                                         if (narg)
+>                                                 rlen += scnprintf(buf + rlen, maxlen - rlen, ", ");
+>                                         narg++;
+>                                 }
+> -                               rlen += scnprintf(buf + rlen, maxlen - rlen, "class ");
+>                                 if (mode == MODE_PREFIX)
+>                                         mode = MODE_CLASS;
+> +                               else
+> +                                       mode = MODE_CTYPE;
+>                         } else
+>                                 buf[rlen++] = *q;
+>                         break;
+> @@ -120,7 +121,7 @@ __demangle_java_sym(const char *str, const char *end, char *buf, int maxlen, int
+>                         if (mode != MODE_CLASS && mode != MODE_CTYPE)
+>                                 goto error;
+>                         /* safe because at least one other char to process */
+> -                       if (isalpha(*(q + 1)))
+> +                       if (isalpha(*(q + 1)) && mode == MODE_CLASS)
+>                                 rlen += scnprintf(buf + rlen, maxlen - rlen, ".");
+>                         if (mode == MODE_CLASS)
+>                                 mode = MODE_FUNC;
+> --
+> 2.26.1
+>
