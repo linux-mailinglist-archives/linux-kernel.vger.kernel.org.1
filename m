@@ -2,82 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB211D2489
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 03:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9561D249B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 03:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726241AbgENBQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 21:16:31 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:30287 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725943AbgENBQb (ORCPT
+        id S1728311AbgENBSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 21:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725952AbgENBSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 21:16:31 -0400
-X-UUID: 1fc01e12372544abbe0a7183ca72fb34-20200514
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=zjMY/FI5QGNWlw3U1ijZ6qtahuUWrj4419TytCRSaxY=;
-        b=KQTYpgkmb5q5ycBXcY0piGxVCS/mYOvsireZQ7MPT+pBstfejaLe1ZJcxMz1u536QdGT0uQgqzhFU2g1VpqtDxPBaL4BJPiQDDrtyffSu9wmdmIxBeqP+uZCh8DmxPR1GN/Z1aYnR9teC0v0wVEardcFJjBuvypwRWbuCjWlmVc=;
-X-UUID: 1fc01e12372544abbe0a7183ca72fb34-20200514
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 66452614; Thu, 14 May 2020 09:16:26 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs07n1.mediatek.inc
- (172.21.101.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 14 May
- 2020 09:16:24 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 14 May 2020 09:16:23 +0800
-Message-ID: <1589418905.25512.10.camel@mhfsdcap03>
-Subject: Re: [PATCH] i2c: mediatek: Add i2c ac-timing adjust support
-From:   Qii Wang <qii.wang@mediatek.com>
-To:     Wolfram Sang <wsa@the-dreams.de>
-CC:     <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Date:   Thu, 14 May 2020 09:15:05 +0800
-In-Reply-To: <20200512133852.GE13516@ninjato>
-References: <1585223676-30809-1-git-send-email-qii.wang@mediatek.com>
-         <20200512133852.GE13516@ninjato>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Wed, 13 May 2020 21:18:46 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE6FC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 18:18:45 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id p5so367447vke.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 18:18:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fVWSL7qvC4yqYlQuiHnpdtaQ5HgS3E6TtV1AkP5YA5s=;
+        b=kdhm0lWyJrwkRF+EbJnyk0Spr3Svf85VUdXEpgxB2D36Q077wId9PkF7MXv3Wch9Xz
+         KoY0I+9+AW/xrNC2fQjUy23bnqw5QmC5wRkCV1FYrxjYGhZ+ufjB7ODUU80sVCmvBqC4
+         dyKEU4BpKAjUYlI0A3M4Qs4DSDrSKWuknqtoZI8NRuX/E50hacqQeRdoii4rgVhSnKVq
+         IF8gAf4sQfts8ti4dRC5unyoHVprBZSJepg8mkWLAn3z8pQAiRMhLVvGwESkMe9eaa0K
+         OLexJ5k6c8Ohza7FJn6X/abQ47D27sq/WG5Ssaz+ZMb5bS59VHHoEA08cAvlAkVO0Y1d
+         KKSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fVWSL7qvC4yqYlQuiHnpdtaQ5HgS3E6TtV1AkP5YA5s=;
+        b=FJFEawodVC+dD6z3PAWujzOZUhbQ12Pu8+ANJ7+LHVfHyRy9hRhk5F6xbTaNrMN/ul
+         QeOQzj+s43eH+qE2Df8Q+Rt2lwGmQgmwsylFAPTlrO7QujoutI3KY9OohhJMX8kKeU2l
+         5SzsaBxVpYnKG0LhcShvvckTqC1B+vhwMb5At0U742OImKRdIuKyyq6dC7kflX7CXEzC
+         3y1IMeNXM32CPOBOp+WP/ccuoHiPJCoirl7Vc/k++nhrSnq8qf2+GbGTjnLzZay/DCaI
+         ICaLX5MaUlkoTsC1xbx/TpSb6ZJA8iZk9IhT36VW2umThdxrVAnU5VXKfiNmxuJCmcoo
+         Km2Q==
+X-Gm-Message-State: AOAM533i441chNyVyzAIPyKgK1ne6N6mXHpcJhDvzswELrWqa9UOqRQo
+        4r/2QRbX64Q/btxK8lY4WyQ+W3rrh7NS2kvPf4s=
+X-Google-Smtp-Source: ABdhPJyTvW8/qCFYpupArSpa7iLScZKZQFjt3a1BIW173qXozLy/9oTCEDvNEmslQgYouqGvvMvU8YaQmRAQUUmbHds=
+X-Received: by 2002:a1f:ac0e:: with SMTP id v14mr1813619vke.28.1589419124254;
+ Wed, 13 May 2020 18:18:44 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20200513003430.651232-1-vlad.babchuk@gmail.com>
+ <20200513003625.651340-1-vlad.babchuk@gmail.com> <CAHUa44E968nR1toCGn0_k6ABw_By7Z8EqB2rGSgiTmseo8oL-Q@mail.gmail.com>
+ <CAFA6WYNOAwSaaaCCf0qoQ=gGBEsCkbdrWUzabkn3XnM7hndsow@mail.gmail.com>
+In-Reply-To: <CAFA6WYNOAwSaaaCCf0qoQ=gGBEsCkbdrWUzabkn3XnM7hndsow@mail.gmail.com>
+From:   Volodymyr Babchuk <vlad.babchuk@gmail.com>
+Date:   Thu, 14 May 2020 04:18:33 +0300
+Message-ID: <CAOcqxo3vbv40QtK_R2m2ROyk8zXk9fJRszA6zG+f5_rse9qBDw@mail.gmail.com>
+Subject: Re: [PATCH] optee: don't fail on unsuccessful device enumeration
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
+        Jerome Forissier <jerome@forissier.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTA1LTEyIGF0IDE1OjM4ICswMjAwLCBXb2xmcmFtIFNhbmcgd3JvdGU6DQo+
-IEhpIFFpaSBXYW5nLA0KPiANCj4gT24gVGh1LCBNYXIgMjYsIDIwMjAgYXQgMDc6NTQ6MzZQTSAr
-MDgwMCwgcWlpLndhbmdAbWVkaWF0ZWsuY29tIHdyb3RlOg0KPiA+IEZyb206IFFpaSBXYW5nIDxx
-aWkud2FuZ0BtZWRpYXRlay5jb20+DQo+ID4gDQo+ID4gVGhpcyBwYXRjaCBhZGRzIGEgYWxnb3Jp
-dGhtIHRvIGNhbGN1bGF0ZSBzb21lIGFjLXRpbWluZyBwYXJhbWV0ZXJzDQo+ID4gd2hpY2ggY2Fu
-IGZ1bGx5IG1lZXQgSTJDIFNwZWMuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogUWlpIFdhbmcg
-PHFpaS53YW5nQG1lZGlhdGVrLmNvbT4NCj4gDQo+IENvdWxkIHlvdSByZWJhc2UgdGhpcyBvbiB0
-b3Agb2YgaTJjL2Zvci1uZXh0IG9yIHY1LjctcmNYPyBCZWNhdXNlIG9mDQo+IGNvbW1pdCA5MDIy
-NGU2NDY4ZTEgKCJpMmM6IGRyaXZlcnM6IFVzZSBnZW5lcmljIGRlZmluaXRpb25zIGZvciBidXMN
-Cj4gZnJlcXVlbmNpZXMiKSB3aGljaCB3YXMgYWRkZWQgdHdvIGRheXMgYmVmb3JlIHlvdXIgcGF0
-Y2ggd2FzIHNlbnQgb3V0Lg0KPiANCj4gT3RoZXJ3aXNlIG1vc3RseSBtaW5vciBuaXRzLg0KPiAN
-Cj4gPiArc3RhdGljIGludCBtdGtfaTJjX21heF9zdGVwX2NudCh1bnNpZ25lZCBpbnQgdGFyZ2V0
-X3NwZWVkKQ0KPiA+ICt7DQo+ID4gKwlpZiAodGFyZ2V0X3NwZWVkID4gTUFYX0ZTX01PREVfU1BF
-RUQpDQo+ID4gKwkJcmV0dXJuIE1BWF9IU19TVEVQX0NOVF9ESVY7DQo+ID4gKwllbHNlDQo+ID4g
-KwkJcmV0dXJuIE1BWF9TVEVQX0NOVF9ESVY7DQo+ID4gK30NCj4gDQo+IE1heWJlIHRlcm5hcnkg
-b3BlcmF0b3IgaGVyZT8gWW91ciBjaG9pY2UuDQo+IA0KDQpVc2UgdGVybmFyeSBvcGVyYXRvciBo
-ZXJlIHdpbGwgb3ZlciA4MCBieXRlcywgYW5kIG5lZWQgYSBsaW5lIGJyZWFrLA0KTWF5YmUgdGhp
-cyBjb2RlIGxvb2tzIHNpbXBsZXIuDQoNCj4gQW5kIG15IGNvZGUgY2hlY2tlcnMgY29tcGxhaW5l
-ZDoNCj4gDQo+ICAgICBDUFBDSEVDSw0KPiBkcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4eC5j
-OjU5MToxMTogd2FybmluZzogUmVkdW5kYW50IGFzc2lnbm1lbnQgb2YgJ3NkYV9tYXgnIHRvIGl0
-c2VsZi4gW3NlbGZBc3NpZ25tZW50XQ0KPiAgIHNkYV9tYXggPSBzZGFfbWF4Ow0KPiAgICAgICAg
-ICAgXg0KPiBkcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4eC5jOjU5NzoxMTogd2FybmluZzog
-UmVkdW5kYW50IGFzc2lnbm1lbnQgb2YgJ3NkYV9taW4nIHRvIGl0c2VsZi4gW3NlbGZBc3NpZ25t
-ZW50XQ0KPiAgIHNkYV9taW4gPSBzZGFfbWluOw0KPiANCm9rLCBJIHdpbGwgbW9kaWZ5IGl0Lg0K
-DQo+IExhc3QgcXVlc3Rpb246IFlvdSBzZWVtIHRvIGJlIHRoZSBvbmUgZG9pbmcgbWFqb3IgdXBk
-YXRlcyB0byB0aGlzDQo+IGRyaXZlci4gVGhhbmtzIGZvciB0aGF0ISBBcmUgeW91IG1heWJlIGlu
-dGVyZXN0ZWQgaW4gYmVjb21pbmcgdGhlDQo+IG1haW50YWluZXIgZm9yIHRoaXMgZHJpdmVyPyBJ
-IHRoaW5rIHRoZXJlIHdvbid0IGJlIG11Y2ggcGF0Y2hlcyB0bw0KPiByZXZpZXcgYW5kIHJlcG9y
-dHMgdG8gaGFuZGxlIGJ1dCBpdCB3aWxsIHNwZWVkIHVwIHByb2Nlc3NpbmcgZm9yIG1lLg0KPiAN
-Cg0KWWVzLCBJdCBpcyBteSBob25vciB0byBiZSB0aGUgbWFpbnRhaW5lciBmb3IgdGhpcyBkcml2
-ZXIuDQoNCj4gQWxsIHRoZSBiZXN0LA0KPiANCj4gICAgV29sZnJhbQ0KPiANCg0K
+Hi Sumit,
 
+On Wed, 13 May 2020 at 11:24, Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> Hi Volodymyr,
+>
+> On Wed, 13 May 2020 at 13:30, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+> >
+> > Hi Volodymyr,
+> >
+> > On Wed, May 13, 2020 at 2:36 AM Volodymyr Babchuk
+> > <vlad.babchuk@gmail.com> wrote:
+> > >
+> > > optee_enumerate_devices() can fail for multiple of reasons. For
+> > > example, I encountered issue when Xen OP-TEE mediator NACKed
+> > > PTA_CMD_GET_DEVICES call.
+>
+> Could you share a detailed description of the issue which you are
+> facing? optee_enumerate_devices() is a simple invocation of pseudo TA
+> and cases where OP-TEE doesn't provide corresponding pseudo TA are
+> handled very well.
+
+Yes, I did some research and looks like issue is broader, than I
+expected.  It is my fault, that I wasn't paying attention to the tee
+client support in the kernel.  Basically, it is incompatible with the
+virtualization feature. You see, the main issue with virtual machines
+is the second stage MMU. Intermediate physical address, that appear to
+be contiguous for the kernel may be not contiguous in the real
+physical memory due to 2nd stage MMU mappings. This is the reason I
+introduced OPTEE_MSG_ATTR_NONCONTIG in the kernel driver.
+
+But, looks like kernel-side optee client does not use this feature. It
+tries to provide SHM buffer as a simple contiguous span of memory. Xen
+blocks calls with OPTEE_MSG_ATTR_TYPE_TMEM_*   but without
+OPTEE_MSG_ATTR_NONCONTIG , because it can't translate IPAs to PAs for
+such buffers. This is why call to  PTA_CMD_GET_DEVICES fails.
+
+Valid fix would be to use OPTEE_MSG_ATTR_NONCONTIG whenever possible.
+
+>
+> > > This should not result in driver
+> > > initialization error because this is an optional feature.
+>
+> I wouldn't call it an optional feature as there might be real kernel
+> drivers dependent on this enumeration. Also, it is a simple example to
+> self test OP-TEE functionality too. So I am not sure how much
+> functional OP-TEE would be if this basic TA invocation fails.
+
+Well, it fixed case when Xen is involved. I think, this is valid
+combination, when platform have the newest OP-TEE, but slightly older
+kernel. So, imagine that OP-TEE provides PTA_CMD_GET_DEVICES, but
+kernel can't use because it uses plain TMEM arguments,which are not
+supported in virtualized environment.
+
+If there are kernel drivers, that depend on this PTA, they would not
+work in any case. But at least userspace clients still be able to use
+OP-TEE. This is why I call this feature "optional".
+
+-- 
+WBR Volodymyr Babchuk aka lorc [+380976646013]
+mailto: vlad.babchuk@gmail.com
