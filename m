@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 468531D2609
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188A71D260A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgENEuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 00:50:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37102 "EHLO mail.kernel.org"
+        id S1726141AbgENEun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 00:50:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbgENEuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 00:50:18 -0400
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+        id S1725794AbgENEum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 00:50:42 -0400
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DAF36206D8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:50:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DEEC820728
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:50:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589431818;
-        bh=SUo3K1/X1O0pqZGotedOINoTOj4rVrBjP2H1Mpj/Qw8=;
+        s=default; t=1589431842;
+        bh=7s71FvC/Ra8fPfWzI1C288e4pFvBrJZ6E6eRlQ3VLbs=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XCmMv3YyuQwjpc3crxqXTUbpOB7M6MeiLJhtSEJ2pMa9au3xqoR40bjHYkxNib3bE
-         cmyoUq1dTUEyAYIVyxSJ9XlTI5O0V0wqi5Di7i1OvCK4fRaTEfSrRsVFHOr85OMWSh
-         2NeBEtt+BosaU3WOFAAbRnPebInHM7FpQea04DM4=
-Received: by mail-wm1-f42.google.com with SMTP id h4so28766972wmb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:50:17 -0700 (PDT)
-X-Gm-Message-State: AGi0PuY0pshthQpOWFKup7CRigHovfCDUq01Ms9nkrH4tfKq3y21RF48
-        GyvocjdrSvCSQ4ey9FG/tJLnwPOnDJ8yW1c5OdRjdg==
-X-Google-Smtp-Source: APiQypJ/X1A0tNZ/iiECCEbLbX9mDuBZira41w4/dSCEflxAkNVdxLo6XD9423hm2Z+OQ3U+/iOZ1hDnf1n8Vbxodg8=
-X-Received: by 2002:a1c:9989:: with SMTP id b131mr45750764wme.176.1589431816323;
- Wed, 13 May 2020 21:50:16 -0700 (PDT)
+        b=ihfFJ/20IXoiKRPpLknrCfv6677LqUQCxOQbm7gGE05UEwb30LP3fUuClIwuVj4xI
+         1xRq515Y46Sa8r4inr3+oT3+7N7qfWFiLJFpH/UTsqqrfc/vOz3k2Zxzx9GNSha3Ci
+         jm0aW1I25n073+VLgWhTm1eS67MB1bN+Yj0ZY/2w=
+Received: by mail-wr1-f51.google.com with SMTP id l17so2133779wrr.4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:50:41 -0700 (PDT)
+X-Gm-Message-State: AOAM5306aR5aCHFWUqPwJLbzjkA+/NDX4WDNqHQfdv/sQlVqMSv9WbWb
+        7JMhgfqbXgSUTT8LOOThEQufF86i4EmOLrCe+u4XSg==
+X-Google-Smtp-Source: ABdhPJxg5jqNf7alvFhE1Ed7nw8T+ylnhEiiNfcE0OZzlqAm6PU50bgDK4l0aR2BhG2oPRxwSAYP9Hanhzt1/g7cS+k=
+X-Received: by 2002:adf:f446:: with SMTP id f6mr3041841wrp.75.1589431840312;
+ Wed, 13 May 2020 21:50:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200505134354.774943181@linutronix.de> <20200505134905.637269946@linutronix.de>
-In-Reply-To: <20200505134905.637269946@linutronix.de>
+References: <20200505134354.774943181@linutronix.de> <20200505134905.928967113@linutronix.de>
+In-Reply-To: <20200505134905.928967113@linutronix.de>
 From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 13 May 2020 21:50:05 -0700
-X-Gmail-Original-Message-ID: <CALCETrXTU_TLQC25SxsGNx3L__COEM9aPEsvjLYThAqNVv803Q@mail.gmail.com>
-Message-ID: <CALCETrXTU_TLQC25SxsGNx3L__COEM9aPEsvjLYThAqNVv803Q@mail.gmail.com>
-Subject: Re: [patch V4 part 3 24/29] x86/entry: Convert General protection
+Date:   Wed, 13 May 2020 21:50:29 -0700
+X-Gmail-Original-Message-ID: <CALCETrVS+GZ05_UER-f3-BAanQMLQ24X=He7w-07LKH6HP0rdQ@mail.gmail.com>
+Message-ID: <CALCETrVS+GZ05_UER-f3-BAanQMLQ24X=He7w-07LKH6HP0rdQ@mail.gmail.com>
+Subject: Re: [patch V4 part 3 27/29] x86/entry: Convert Alignment check
  exception to IDTENTRY
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
@@ -67,7 +67,7 @@ On Tue, May 5, 2020 at 7:15 AM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
 > From: Thomas Gleixner <tglx@linutronix.de>
 >
-> Convert #GP to IDTENTRY_ERRORCODE:
+> Convert #AC to IDTENTRY_ERRORCODE:
 >   - Implement the C entry point with DEFINE_IDTENTRY
 >   - Emit the ASM stub with DECLARE_IDTENTRY
 >   - Remove the ASM idtentry in 64bit
