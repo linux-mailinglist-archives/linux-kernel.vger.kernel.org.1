@@ -2,117 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF03B1D2909
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 09:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CC01D2940
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 09:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726051AbgENHrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 03:47:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47734 "EHLO mail.kernel.org"
+        id S1726197AbgENH5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 03:57:36 -0400
+Received: from elvis.franken.de ([193.175.24.41]:53047 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725974AbgENHrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 03:47:02 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35E34206BE;
-        Thu, 14 May 2020 07:47:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589442421;
-        bh=wN80gGI8V+ylaxhZ0uVEzr/XB82cdY/3/3iPL444rCA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wyV8dKIjLO7rETVBqMxhDcXNwBCiYADAEr93vBBL4ZJl/y577W1fIntacfew8QfRa
-         vt5DU2KMibyPDnZ18TCUQvd8fHYQRg6g/OvM9AAqpcaLisyd/3np0z7HHNyqbuhARI
-         2sNCauNuuF90gzLVvznhjQAUFqDJAkmpKjMrP3jk=
-Date:   Thu, 14 May 2020 09:46:59 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Christoph Hellwig <hch@lst.de>, jeremy.linton@arm.com
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+353be47c9ce21b68b7ed@syzkaller.appspotmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>, jeremy.linton@arm.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, x86@kernel.org
-Subject: Re: Validating dma_mmap_coherent() parameters before calling (was
- Re: WARNING in memtype_reserve)
-Message-ID: <20200514074659.GA1569055@kroah.com>
-References: <000000000000f0d8d205a531f1a3@google.com>
- <20200509074507.GC1831917@kroah.com>
- <87wo5l4ecm.fsf@nanos.tec.linutronix.de>
- <20200513124445.GA1082735@kroah.com>
- <87zhab249p.fsf@nanos.tec.linutronix.de>
- <20200514035458.14760-1-hdanton@sina.com>
- <20200514061417.GA8367@lst.de>
- <20200514062750.GA1488715@kroah.com>
- <20200514063158.GA8780@lst.de>
+        id S1725952AbgENH5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 03:57:10 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jZ8js-0005U5-05; Thu, 14 May 2020 09:57:08 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id C4A2BC0493; Thu, 14 May 2020 09:49:16 +0200 (CEST)
+Date:   Thu, 14 May 2020 09:49:16 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Emil Velikov <emil.l.velikov@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH 05/11] MIPS: constify sysrq_key_op
+Message-ID: <20200514074916.GF5880@alpha.franken.de>
+References: <20200513214351.2138580-1-emil.l.velikov@gmail.com>
+ <20200513214351.2138580-5-emil.l.velikov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200514063158.GA8780@lst.de>
+In-Reply-To: <20200513214351.2138580-5-emil.l.velikov@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 08:31:58AM +0200, Christoph Hellwig wrote:
-> On Thu, May 14, 2020 at 08:27:50AM +0200, Greg KH wrote:
-> > On Thu, May 14, 2020 at 08:14:17AM +0200, Christoph Hellwig wrote:
-> > > Guys, can you please start formal thread on this?  I have no
-> > > idea where this came from and what the rationale is.  Btw, if the
-> > > pfn is crap in dma_direct_mmap then the dma_addr_t passed in is
-> > > crap, as it is derived from that.  What is the caller, and how is
-> > > this triggered?
-> > 
-> > 
-> > Ok, to summarize, commit 2bef9aed6f0e ("usb: usbfs: correct kernel->user
-> > page attribute mismatch") changed a call from remap_pfn_range() to
-> > dma_mmap_coherent() for usb data buffers being sent from userspace.
+On Wed, May 13, 2020 at 10:43:45PM +0100, Emil Velikov wrote:
+> With earlier commits, the API no longer discards the const-ness of the
+> sysrq_key_op. As such we can add the notation.
 > 
-> I only need to look at the commit for 3 seconds to tell you that it is
-> completely buggy.  While using dma_mmap_coherent is fundamentally the
-> right thing and absolutely required for dma_alloc_* allocations, USB
-> also uses it's own local gen pool allocator or plain kmalloc for not
-> DMA capable controller.  This need to use remap_pfn_range.  I'm pretty
-> sure you hit one of those cases.
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Jiri Slaby <jslaby@suse.com>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
+> Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
+> ---
+> Please keep me in the CC list, as I'm not subscribed to the list.
 > 
-> The logic should be something like:
-> 
-> 	if (hcd->localmem_pool || !hcd_uses_dma(hcd))
-> 		remap_pfn_range()
-> 	else
-> 		dma_mmap_coherent()
+> IMHO it would be better it this gets merged this via the tty tree.
+> ---
+>  arch/mips/kernel/sysrq.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ok, that's simple enough, patch is below.
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-Jeremy, any objection to this change?
+Thomas.
 
-thanks,
-
-greg k-h
-
-
-diff --git a/drivers/usb/core/devio.c b/drivers/usb/core/devio.c
-index b9db9812d6c5..d93d94d7ff50 100644
---- a/drivers/usb/core/devio.c
-+++ b/drivers/usb/core/devio.c
-@@ -251,9 +251,19 @@ static int usbdev_mmap(struct file *file, struct vm_area_struct *vma)
- 	usbm->vma_use_count = 1;
- 	INIT_LIST_HEAD(&usbm->memlist);
- 
--	if (dma_mmap_coherent(hcd->self.sysdev, vma, mem, dma_handle, size)) {
--		dec_usb_memory_use_count(usbm, &usbm->vma_use_count);
--		return -EAGAIN;
-+	if (hcd->localmem_pool || !hcd_uses_dma(hcd)) {
-+		if (remap_pfn_range(vma, vma->vm_start,
-+				    virt_to_phys(usbm->mem) >> PAGE_SHIFT,
-+				    size, vma->vm_page_prot) < 0) {
-+			dec_usb_memory_use_count(usbm, &usbm->vma_use_count);
-+			return -EAGAIN;
-+		}
-+	} else {
-+		if (dma_mmap_coherent(hcd->self.sysdev, vma, mem, dma_handle,
-+				      size)) {
-+			dec_usb_memory_use_count(usbm, &usbm->vma_use_count);
-+			return -EAGAIN;
-+		}
- 	}
- 
- 	vma->vm_flags |= VM_IO;
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
