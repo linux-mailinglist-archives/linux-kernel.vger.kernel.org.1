@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EDD1D324D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938A51D325B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgENOL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 10:11:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60800 "EHLO
+        id S1727938AbgENOMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 10:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726087AbgENOL2 (ORCPT
+        with ESMTP id S1727912AbgENOMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 10:11:28 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09ADEC061A0C;
-        Thu, 14 May 2020 07:11:28 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id m7so1213810plt.5;
-        Thu, 14 May 2020 07:11:28 -0700 (PDT)
+        Thu, 14 May 2020 10:12:24 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F9BC05BD43
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:12:24 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id h188so2016633lfd.7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:12:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=9WpGSPoI+CaYLKju7AwRIRk8OIbNYCd/+/YJHSbNpOw=;
-        b=EbR7AVcXsaozLj7tYQCz02xkMCbDe6iWsvhY14V/zIw8mgbtc3fsVigmdPvreyeQQL
-         7OASbEDo3NVeQPLycHuj2fsOYAChdj28ujYw8974+Lb4kRV9Nmqh4U98lK5aVW+q/6xc
-         35+WmG2qmDLJ++bljGsKsWvA4Pv84AVjX+1eHP7gC4s8Qmbb0pgNn7xTE02i8VHGSTY+
-         ZST/3G+DEhEmaYeDYAtjZpIZ5csGr8e5LugkxpoJCZa47s6/PeVmdhSVct6zVD6YPkmX
-         biUm7mdLoEWHfQXzN7gZOWwDVjsHlO6PBR2xdw6j8nojL4A43bzVdWyY/ZDTm7c1yuu6
-         9/zw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DkzKtHfHzDrv9acZGYhRUV9tmRVRbn6arGIc1dXkxBI=;
+        b=XottLg9cQaTSjBHR11pedGRx+Glhzf+8Usg9K//kY6W0jNVJL1plss0LJBLgC3nXhz
+         M7/NBircuUPinVKCHjYMUacfV2lTSjNWOTELV64WKqTIb+VoAHkWrKK+LyXiKxtTc91H
+         EkpxcjLeryrGNDHr3ahfTehONNWh2vDTvJC3KrUAVwr5ekDS6uVYv5S8fYzsZqRMeDcg
+         U9QIPtq8KUiqElnQ2rNtYXfrfX1ML51sOsdTUPKMJPSEfu+9xo31LZcyI4nCectwBKUP
+         tA1N9H4f3nEE3y6yZE9MxWwkMpIknY1ov4rh2crp5UPVHztPX919W+E1wCHPIKL0EBRz
+         aJ9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=9WpGSPoI+CaYLKju7AwRIRk8OIbNYCd/+/YJHSbNpOw=;
-        b=cQ5Gs5mBofAi+qf0GewEKNwqA6q+eJkQrvW6l+ASbzr1BRgVxJVF072U6o7YFoa4Q1
-         AGEoErLOW9LQpvyi+xa4p7LXAbW80P4TEVCtp4qia6mqsiUynU1dLy5X7OEwtmTppSpM
-         GMaALdlHqpH0saalyY3zwZNrXa/3EDHal5CzM2aSdWBSvmTEcF2m+puUycuSIGFtedL1
-         vj53plp9W0OqmY9E95fHGk78OPfUOcEs0UrLXkxtYvt4RqkUaD8Yxxf9LHVkD50nYnYH
-         ilVJd51466mgcWgl2j7BOEmfbIluGEJb3dEjByiU9+RQL2n2+UD42KTlMjjwM+MtN08P
-         9KXQ==
-X-Gm-Message-State: AGi0PuYN3t67aZEJBILjdgnXgi8JofcuJjFFHuwz+gsJoAMb0McupYsc
-        M3IstZiy87JvWDz4I9gvtZAVoOA=
-X-Google-Smtp-Source: APiQypJba4rvPYcZMB5bjHxjCOHP4bQTDy8ndqeOJCD1/oVUci4rZDpgjFymsosidebilO9skNKYAA==
-X-Received: by 2002:a17:90a:d504:: with SMTP id t4mr40533533pju.123.1589465487474;
-        Thu, 14 May 2020 07:11:27 -0700 (PDT)
-Received: from localhost.localdomain ([2402:3a80:13bf:a95e:89fb:f860:f992:54ab])
-        by smtp.gmail.com with ESMTPSA id z21sm613941pfr.77.2020.05.14.07.11.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 07:11:26 -0700 (PDT)
-From:   madhuparnabhowmik10@gmail.com
-To:     davem@davemloft.net, allison@lohutok.net, tglx@linutronix.de,
-        ap420073@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org, paulmck@kernel.org,
-        cai@lca.pw, joel@joelfernandes.org, frextrite@gmail.com,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Subject: [PATCH net] drivers: net: hamradio: Fix suspicious RCU usage warning in bpqether.c
-Date:   Thu, 14 May 2020 19:41:15 +0530
-Message-Id: <20200514141115.16074-1-madhuparnabhowmik10@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DkzKtHfHzDrv9acZGYhRUV9tmRVRbn6arGIc1dXkxBI=;
+        b=LGrT8JyKK26lC1oGg3/WMn13GuCj4yrCTL5II/d1LWLnrnJ3NKsk51P4wD9KvaUICl
+         K6uxHWWcSnOuRsewHe5unF7Ui4t2yEOk7X7xGyS7o9iYp7ThhLsBVwbVk6/S6qLzJ9I5
+         RmzYY6NwLU8nX9cHy/ei3cv9HuRHaqHz9tqEnOmI3rRAUuWZj5+A9Bmb3sisfy4x++Qf
+         FzB1fDHc3FluCUqa3yJ/4vHUds13wf+BuWFFNdNEagvN3JJ5Pgc5u9Wg1DIfDgtEZHjg
+         B1Bcg2FlmJnyTOy4+D21+JEWTjU4I6peNIWgDE2HhNhAb8QtbdqiikK8FT2hHzrGfWXc
+         fS/w==
+X-Gm-Message-State: AOAM532o/C0IgPyiQ/DhukIfp7Qv/TSXX7hsmZ4NEWToBFzAhxqVIvU3
+        01/noOnBmUkYPsbF9hoNTzasYV+k5Wzn95GzN/5zeg==
+X-Google-Smtp-Source: ABdhPJzbFJbGyW1QIZoQeEMNyecliP3FhYfrVVsA0/vlx9bAuXukGyGD9ZMmozQ02I6kOFg4AohML8Hs61aAnqoqEGA=
+X-Received: by 2002:ac2:5e70:: with SMTP id a16mr3507458lfr.77.1589465542377;
+ Thu, 14 May 2020 07:12:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200417061907.1226490-1-bjorn.andersson@linaro.org>
+ <20200417061907.1226490-2-bjorn.andersson@linaro.org> <20200429213453.GA32114@bogus>
+ <20200514060422.GL1302550@yoga>
+In-Reply-To: <20200514060422.GL1302550@yoga>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 14 May 2020 16:12:10 +0200
+Message-ID: <CACRpkdZpfgb0wwt2FUwqPab4XhtLXfDWOvZLdCc+NF-mVJkKYw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom: Add sm8250 pinctrl bindings
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+On Thu, May 14, 2020 at 8:04 AM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+> On Wed 29 Apr 14:34 PDT 2020, Rob Herring wrote:
+> > On Thu, Apr 16, 2020 at 11:19:06PM -0700, Bjorn Andersson wrote:
+> > > diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
+> [..]
+> > > +#PIN CONFIGURATION NODES
+> > > +patternProperties:
+> > > +  '^.*$':
+> > > +    if:
+> > > +      type: object
+> > > +    then:
+> >
+> > Needs a $ref to the standard properties.
+> >
+> > Would be good to show a child node in the example too. (And try having
+> > an error in a standard property type to verify you get an error).
+> >
+>
+> Finally looked into this.
 
-This patch fixes the following warning:
-=============================
-WARNING: suspicious RCU usage
-5.7.0-rc5-next-20200514-syzkaller #0 Not tainted
------------------------------
-drivers/net/hamradio/bpqether.c:149 RCU-list traversed in non-reader section!!
+Can you send an incremental patch because otherwise I have
+to revert the patch that I merged (maybe to trigger happy, mea culpa).
 
-Since rtnl lock is held, pass this cond in list_for_each_entry_rcu().
+(If it's too hard I can just revert it.)
 
-Reported-by: syzbot+bb82cafc737c002d11ca@syzkaller.appspotmail.com
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
----
- drivers/net/hamradio/bpqether.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/hamradio/bpqether.c b/drivers/net/hamradio/bpqether.c
-index fbea6f232819..e2ad3c2e8df5 100644
---- a/drivers/net/hamradio/bpqether.c
-+++ b/drivers/net/hamradio/bpqether.c
-@@ -127,7 +127,8 @@ static inline struct net_device *bpq_get_ax25_dev(struct net_device *dev)
- {
- 	struct bpqdev *bpq;
- 
--	list_for_each_entry_rcu(bpq, &bpq_devices, bpq_list) {
-+	list_for_each_entry_rcu(bpq, &bpq_devices, bpq_list,
-+				lockdep_rtnl_is_held()) {
- 		if (bpq->ethdev == dev)
- 			return bpq->axdev;
- 	}
--- 
-2.17.1
-
+Yours,
+Linus Walleij
