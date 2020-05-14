@@ -2,106 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE581D29FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC0E1D2A06
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726190AbgENIZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 04:25:46 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:39501 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725935AbgENIZp (ORCPT
+        id S1726097AbgENI1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 04:27:32 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:64495 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725935AbgENI1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 04:25:45 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 435655C0221;
-        Thu, 14 May 2020 04:25:44 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 14 May 2020 04:25:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
-        /xysc5mZRRwSPhJfTdSoHNPvt4tx6ue/BYIZHaszruM=; b=vgKyk2WVbBTezi5J
-        KZZxhb5cZm9Y59EZs1jkDIEB3QN/51GbotXc56FPv7Xfcym56gv3O1qR+nljkg5u
-        9idmRjW8ePiEQlecNuBuJQMR4LbrOqBGXTBX0nE1nXFcEUdhaX57FmZCO4ejJA+J
-        Yhd88QhBv40BAsI1Uw7//IWhAdOnxk0Q1hU+xUGjlQRutLzOhGiVppZIn5WlmQyD
-        Wt0ryMujwkZVPejYBHC9M/ajKDJuwtJswUPv/MxVIas0AzIhh+strqXutV3caOqg
-        PBBB+ny9WUpKGb9ebSby/tJeHZOH3yKkcXhC0E4lF/15UEI2E3uNoEZMgFXPOQnU
-        RcxNuw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=/xysc5mZRRwSPhJfTdSoHNPvt4tx6ue/BYIZHaszr
-        uM=; b=vQ2dab9dHMuPMC/E2g2BRHkokaNfzXVMkruZHrf1jsACbLHGamb8VmNqE
-        P5ZMhljttd/zS6DTJl7pPkbGBq5pIdNs6F9L+H9NXWVaZBO/E5ezTCv5r4n8PfTn
-        vd6wIwoC+xrNjrmwgGSL04apsHcNpNL65tRPQsCT+TJUjv4g1hOkyGCcJZtzrS3H
-        GxdexL1hxNOW5HIFBTmpckbYeFUC/rVVBmsvfPKukng83zIWcsShNYxamcdefhnC
-        GOA11+klUWv8VNUT+ToY+DAEhUTixAU0HSzzWg+P0gDoXzDTQZ0lupWKqCnoPlvF
-        QS2xTtr/Z+jSUz7/eNmgrBk3ZPE8w==
-X-ME-Sender: <xms:hwC9Xo-am4RF6LNTv7m07mH48iDckWHKMZFJz4JNxG9SYk4P3qqlIA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrleeigddtudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkuffhvfffjghftggfggfgsehtjeertddtreejnecuhfhrohhmpefkrghnucfm
-    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnhepfe
-    efteetvdeguddvveefveeftedtffduudehueeihfeuvefgveehffeludeggfejnecukfhp
-    peduudekrddvtdekrddukeejrddvhedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomheprhgrvhgvnhesthhhvghmrgifrdhnvght
-X-ME-Proxy: <xmx:hwC9Xgtl5wjK72rTScXd71Y-TFGpnL1_uTrxuWn3nX2w28PKsMdFiw>
-    <xmx:hwC9XuA_0lZdHSpSDYw85PV35YMnEkEQa8qWZUpt-wi_mJk0mXcCFg>
-    <xmx:hwC9XofeS0RrUpnYeV3V6IFkhOLUBIv4FGnrR_tWrcfFjyCZx6PQ4A>
-    <xmx:iAC9XmaibCZ2K5m1rscL-SbvJiOKKfft5rL7AmEL5B5DeSmZEnf0bg>
-Received: from mickey.themaw.net (unknown [118.208.187.250])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BEA023060A88;
-        Thu, 14 May 2020 04:25:40 -0400 (EDT)
-Message-ID: <a98e32eb5ad4486fc58e5ce79700a20abecbd69b.camel@themaw.net>
-Subject: Re: [PATCH 02/14] autofs: switch to kernel_write
-From:   Ian Kent <raven@themaw.net>
-To:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>
-Cc:     David Howells <dhowells@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Date:   Thu, 14 May 2020 16:25:36 +0800
-In-Reply-To: <20200513065656.2110441-3-hch@lst.de>
-References: <20200513065656.2110441-1-hch@lst.de>
-         <20200513065656.2110441-3-hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Thu, 14 May 2020 04:27:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1589444851; x=1620980851;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=7xsqNwaGHpAYSArUjwjrpqw3gf/0fWcjVYiUuC87Wac=;
+  b=Zb+i9c+SOBSAxozk6FMT6KlB0WMHcHJIIN83cfPqV+JggQdzqJUycylK
+   cGcop39RLOuRdVU7Q2CH+WWt94NPDOYc0/87NQepRRfPXgDKuAsrTj3+3
+   us2Bi82xRpz+zY3flZulioNxb6T3kb2MmNHth2rixEgNOeNlagFZg5AYh
+   4=;
+IronPort-SDR: CGCaPNk8qW+Mgkf3uFa9WXwSHSbvMwIEmtwccSknNUvVfNYKeHDP0E1KpXJK5Ops9vEHP4fWsu
+ 45HYRnamFd0w==
+X-IronPort-AV: E=Sophos;i="5.73,390,1583193600"; 
+   d="scan'208";a="43318329"
+Received: from sea32-co-svc-lb4-vlan2.sea.corp.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.47.23.34])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 14 May 2020 08:27:31 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id 451821A0AD7;
+        Thu, 14 May 2020 08:27:30 +0000 (UTC)
+Received: from EX13D01UWB003.ant.amazon.com (10.43.161.94) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 14 May 2020 08:25:39 +0000
+Received: from EX13D01UWB002.ant.amazon.com (10.43.161.136) by
+ EX13d01UWB003.ant.amazon.com (10.43.161.94) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 14 May 2020 08:25:39 +0000
+Received: from EX13D01UWB002.ant.amazon.com ([10.43.161.136]) by
+ EX13d01UWB002.ant.amazon.com ([10.43.161.136]) with mapi id 15.00.1497.006;
+ Thu, 14 May 2020 08:25:39 +0000
+From:   "Singh, Balbir" <sblbir@amazon.com>
+To:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "keescook@chromium.org" <keescook@chromium.org>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>
+Subject: Re:  [PATCH v6 1/6] arch/x86/kvm: Refactor l1d flush lifecycle
+ management
+Thread-Topic: [PATCH v6 1/6] arch/x86/kvm: Refactor l1d flush lifecycle
+ management
+Thread-Index: AQHWKclA0qirAUKPqUm5zPJyF+/GwA==
+Date:   Thu, 14 May 2020 08:25:39 +0000
+Message-ID: <7bafa0a7481ce65748d8179e1bbdf3b50144c497.camel@amazon.com>
+References: <20200510014803.12190-1-sblbir@amazon.com>
+         <20200510014803.12190-2-sblbir@amazon.com>
+         <87k11g2b6w.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87k11g2b6w.fsf@nanos.tec.linutronix.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.162.215]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <46122E1A7883464BAC7AC0CFDDCFACAA@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-05-13 at 08:56 +0200, Christoph Hellwig wrote:
-> While pipes don't really need sb_writers projection, __kernel_write
-> is an
-> interface better kept private, and the additional rw_verify_area does
-> not
-> hurt here.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-Right, should be fine AFAICS.
-Acked-by: Ian Kent <raven@themaw.net>
-
-> ---
->  fs/autofs/waitq.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/autofs/waitq.c b/fs/autofs/waitq.c
-> index b04c528b19d34..74c886f7c51cb 100644
-> --- a/fs/autofs/waitq.c
-> +++ b/fs/autofs/waitq.c
-> @@ -53,7 +53,7 @@ static int autofs_write(struct autofs_sb_info *sbi,
->  
->  	mutex_lock(&sbi->pipe_mutex);
->  	while (bytes) {
-> -		wr = __kernel_write(file, data, bytes, &file->f_pos);
-> +		wr = kernel_write(file, data, bytes, &file->f_pos);
->  		if (wr <= 0)
->  			break;
->  		data += wr;
-
+T24gV2VkLCAyMDIwLTA1LTEzIGF0IDE1OjUzICswMjAwLCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6
+DQo+IA0KPiANCj4gQmFsYmlyIFNpbmdoIDxzYmxiaXJAYW1hem9uLmNvbT4gd3JpdGVzOg0KPiA+
+ICsrKyBiL2FyY2gveDg2L2tlcm5lbC9sMWRfZmx1c2guYw0KPiA+IEBAIC0wLDAgKzEsMzYgQEAN
+Cj4gDQo+IExhY2tzDQo+IA0KPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAt
+b25seQ0KPiANCg0KQWdyZWVkLCBpdCBzaG91bGQgbWF0Y2ggdGhlIGxpY2Vuc2UgaW4gYXJjaC94
+ODYva3ZtL3ZteC92bXguYw0KDQpUaGFua3MsDQpCYWxiaXINCg==
