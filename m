@@ -2,166 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004331D3541
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69ED31D3548
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727838AbgENPiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 11:38:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726056AbgENPiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 11:38:06 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BEA42065D;
-        Thu, 14 May 2020 15:38:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589470685;
-        bh=HADDSEvSYM4zw3vcg0WmzS8cBrkvJ1Cn20fR5PKx28I=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=sxhaAf1C2SZlk1NHPF1Rf1P/CHYE5ge7SrNYxcQWAkpzd6FOv+FB0MBvKJRKCPYkI
-         /6oRf4lvfrf2KnMoZr9TiGnXJge1FevW8SEEAjcsjt01d/jO+TX36bRV4+VYjBuJXo
-         3WNFggHHiHV6qVvQ8E0uAIIm4mmkfUwulqKx9wtw=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 5620435229C5; Thu, 14 May 2020 08:38:05 -0700 (PDT)
-Date:   Thu, 14 May 2020 08:38:05 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH v5 00/18] Rework READ_ONCE() to improve codegen
-Message-ID: <20200514153805.GK2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200513124021.GB20278@willie-the-truck>
- <CANpmjNM5XW+ufJ6Mw2Tn7aShRCZaUPGcH=u=4Sk5kqLKyf3v5A@mail.gmail.com>
- <20200513165008.GA24836@willie-the-truck>
- <CANpmjNN=n59ue06s0MfmRFvKX=WB2NgLgbP6kG_MYCGy2R6PHg@mail.gmail.com>
- <20200513174747.GB24836@willie-the-truck>
- <CANpmjNNOpJk0tprXKB_deiNAv_UmmORf1-2uajLhnLWQQ1hvoA@mail.gmail.com>
- <20200513212520.GC28594@willie-the-truck>
- <CANpmjNOAi2K6knC9OFUGjpMo-rvtLDzKMb==J=vTRkmaWctFaQ@mail.gmail.com>
- <20200514110537.GC4280@willie-the-truck>
- <CANpmjNMTsY_8241bS7=XAfqvZHFLrVEkv_uM4aDUWE_kh3Rvbw@mail.gmail.com>
+        id S1727849AbgENPis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 11:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727939AbgENPiq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 11:38:46 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DEE4C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 08:38:46 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id z5so3174031ejb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 08:38:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ZknNNo1yPUQXqkBjYYW3ZP3hgdYZ/47qtxwkKEwncwc=;
+        b=oKYS87q8OaLmAG4s6jhG3T2ijmIzuJdZzA6wTIMAQ4Do23zMYhAnqLLvSVg+ImXNXb
+         mJyyMl3b/GBjCPOlEkeq5SgayjyIa2/UuSwQCn9WGiDKRVkjzziXCDOHRhvhyFXHAwxw
+         dAll9s+aXmykmzg35/o79i44DLzhXBo+cSbJYnE0xQx3WLo2ZDjYT202GNRYLrKxxAZP
+         KyS7w7S/lVvKiyTLseIemGb4FrNiiPu93c1k7ujyqmaPegExJ6+RMhmqhAlesy1aAAy6
+         LgHnzGlJZ7zJkjsr6f+ZU2iLxsGDP+r1bGxHR0I9UXvvQrnvLZ7Gj+fdTpej1sfIlYho
+         kC+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=ZknNNo1yPUQXqkBjYYW3ZP3hgdYZ/47qtxwkKEwncwc=;
+        b=JoentuwjdZEyn0dASbeasTIUhkpE62xGt5co+rPe/ubihczqBtI+eP2OF7aEkSeR8p
+         HCtM+DHb5Fhs8OioKwMZLm3Q4dxqUOFlOp8pPrVLXcbopODD9WjPG/zeyHdh+eLilflU
+         KmMzAbtI3TCZPacXeB6EletN4q3ac7QdM+D/4r6dc72dugltxLD2EIM3y15BuIULlyzx
+         f5ewDguWgm6dOcUAaDeLhVJqZlJ0mbAllYCfjaeqor42AJn8bodJF1uaxfxfy9irBXfo
+         7cnMOxoV+UGNtmM9K54jVVmQsfeukyH+C9u3wYgpQOhVQVE1x3qw9eDM1raai48vnrB+
+         oH4g==
+X-Gm-Message-State: AOAM532/+cOmnrG/mGAgnxS1UpQDiBmz4wcqhV9TnF6Gm+y1+TyZluVL
+        2oQiWST02v8HXZow6nqe+mkxtXDiISmgoB029w0=
+X-Google-Smtp-Source: ABdhPJwWBjPuJD+WWJXnPqWKuPKsWRYp3VcWsT8/j7QZ+OTqvvlalvLEXfn1f2Xxb4GgIl1TrRJ9RUXNNHubrqFvZx8=
+X-Received: by 2002:a17:906:d8c1:: with SMTP id re1mr4615656ejb.184.1589470725229;
+ Thu, 14 May 2020 08:38:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNMTsY_8241bS7=XAfqvZHFLrVEkv_uM4aDUWE_kh3Rvbw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Reply-To: phisiaka1@gmail.com
+Received: by 2002:aa7:c594:0:0:0:0:0 with HTTP; Thu, 14 May 2020 08:38:44
+ -0700 (PDT)
+From:   Philippe Siaka <phisiaka01@gmail.com>
+Date:   Thu, 14 May 2020 08:38:44 -0700
+X-Google-Sender-Auth: _DIZypUUKLz_v0uwxVIjHR8rEtE
+Message-ID: <CAOQ04QMjwkm0rYAVdjb2TC=qvfQA44=3DWwVxOH9JVK6bSdJcw@mail.gmail.com>
+Subject: CAN YOU HANDLE THIS WITH ME?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 03:35:58PM +0200, Marco Elver wrote:
-> On Thu, 14 May 2020 at 13:05, Will Deacon <will@kernel.org> wrote:
-> >
-> > Hi Marco,
-> >
-> > On Thu, May 14, 2020 at 09:31:49AM +0200, Marco Elver wrote:
-> > > Ouch. With the __{READ,WRITE}_ONCE requirement, we're going to need
-> > > Clang 11 though.
-> > >
-> > > Because without the data_race() around __*_ONCE,
-> > > arch_atomic_{read,set} will be broken for KCSAN, but we can't have
-> > > data_race() because it would still add
-> > > kcsan_{enable,disable}_current() calls to __no_sanitize functions (if
-> > > compilation unit is instrumented). We can't make arch_atomic functions
-> > > __no_sanitize_or_inline, because even in code that we want to
-> > > sanitize, they should remain __always_inline (so they work properly in
-> > > __no_sanitize functions). Therefore, Clang 11 with support for
-> > > distinguishing volatiles will be the compiler that will satisfy all
-> > > the constraints.
-> > >
-> > > If this is what we want, let me prepare a series on top of
-> > > -tip/locking/kcsan with all the things I think we need.
-> >
-> > Stepping back a second, the locking/kcsan branch is at least functional at
-> > the moment by virtue of KCSAN_SANITIZE := n being used liberally in
-> > arch/x86/. However, I still think we want to do better than that because (a)
-> > it would be good to get more x86 coverage and (b) enabling this for arm64,
-> > where objtool is not yet available, will be fragile if we have to whitelist
-> > object files. There's also a fair bit of arm64 low-level code spread around
-> > drivers/, so it feels like we'd end up with a really bad case of whack-a-mole.
-> >
-> > Talking off-list, Clang >= 7 is pretty reasonable wrt inlining decisions
-> > and the behaviour for __always_inline is:
-> >
-> >   * An __always_inline function inlined into a __no_sanitize function is
-> >     not instrumented
-> >   * An __always_inline function inlined into an instrumented function is
-> >     instrumented
-> >   * You can't mark a function as both __always_inline __no_sanitize, because
-> >     __no_sanitize functions are never inlined
-> >
-> > GCC, on the other hand, may still inline __no_sanitize functions and then
-> > subsequently instrument them.
-> >
-> > So if were willing to make KCSAN depend on Clang >= 7, then we could:
-> >
-> >   - Remove the data_race() from __{READ,WRITE}_ONCE()
-> >   - Wrap arch_atomic*() in data_race() when called from the instrumented
-> >     atomic wrappers
-> >
-> > At which point, I *think* everything works as expected. READ_ONCE_NOCHECK()
-> > won't generate any surprises, and Peter can happily use arch_atomic()
-> > from non-instrumented code.
-> >
-> > Thoughts? I don't see the need to support buggy compilers when enabling
-> > a new debug feature.
-> 
-> This is also a reply to
-> https://lkml.kernel.org/r/20200514122038.GH3001@hirez.programming.kicks-ass.net
-> -- the problem with __READ_ONCE would be solved with what Will
-> proposed above.
-> 
-> Let me try to spell out the requirements I see so far (this is for
-> KCSAN only though -- other sanitizers might be similar):
-> 
->   1. __no_kcsan functions should not call anything, not even
-> kcsan_{enable,disable}_current(), when using __{READ,WRITE}_ONCE.
-> [Requires leaving data_race() off of these.]
-> 
->   2. __always_inline functions inlined into __no_sanitize function is
-> not instrumented. [Has always been satisfied by GCC and Clang.]
-> 
->   3. __always_inline functions inlined into instrumented function is
-> instrumented. [Has always been satisfied by GCC and Clang.]
-> 
->   4. __no_kcsan functions should never be spuriously inlined into
-> instrumented functions, causing the accesses of the __no_kcsan
-> function to be instrumented. [Satisfied by Clang >= 7. All GCC
-> versions are broken.]
-> 
->   5. we should not break atomic_{read,set} for KCSAN. [Because of #1,
-> we'd need to add data_race() around the arch-calls in
-> atomic_{read,set}; or rely on Clang 11's -tsan-distinguish-volatile
-> support (GCC 11 might get this as well).]
-> 
->   6. never emit __tsan_func_{entry,exit}. [Clang supports disabling
-> this, GCC doesn't.]
-> 
->   7. kernel is supported by compiler. [Clang >= 9 seems to build -tip
-> for me, anything below complains about lack of asm goto. GCC trivial.]
-> 
-> So, because of #4 & #6 & #7 we're down to Clang >= 9. Because of #5
-> we'll have to make a choice between Clang >= 9 or Clang >= 11
-> (released in ~June). In an ideal world we might even fix GCC in
-> future.
-> 
-> That's not even considering the problems around UBSan and KASAN. But
-> maybe one step at a time?
-> 
-> Any preferences?
+Attention: Dear Friend,
 
-I am already having to choose where I run KCSAN based on what compiler
-is available, so I cannot argue too hard against a dependency on a
-specific compiler.  I reserve the right to ask for help installing it,
-if need be though.  ;-)
+How are you, I am Mr. Philippe Siaka, Director In charge of Auditing
+and accounting department Bank Of Africa, BOA, I hope that you will
+not betray or expose this trust and confident that i am about to
+repose on you for the mutual benefit of our both families.
 
-							Thanx, Paul
+I need your urgent assistance in transferring the sum of FIVE MILLION
+FIVE HUNDRED THOUSAND US DOLLARS ($5,500,000) immediately to your bank
+account, this funds belong to late consumer of our bank; From Syria
+Nationality. who died along with his entire family from the ongoing
+war/crisis in Syria, This is a very highly secret; i will like you to
+please keep this proposal as a top secret or delete it if you are not
+interested, upon receipt of your reply, i will send to you more
+details about this business deal.
+
+I don=E2=80=99t want the fund to go into the bank treasury and some bank
+directors/government executives will take the fund as unclaimed fund
+and use it for selfish and worthless ventures, and as such, lets claim
+the fund now; I am inviting you for a business deal where this money
+can be shared between us in the ratio of 40% for me/40% for you and
+20% will go for charity purposes, to help some less privileged in our
+society If you agree to handle this business with me. Further details
+of the transfer will be forwarded to you as soon as I receive your
+return mail.
+
+Thanks & Best Regards,
+From Philippe Siaka,
