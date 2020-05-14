@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BD81D3037
+	by mail.lfdr.de (Postfix) with ESMTP id A19101D3038
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 14:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbgENMqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 08:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47512 "EHLO
+        id S1726551AbgENMq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 08:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726037AbgENMqZ (ORCPT
+        by vger.kernel.org with ESMTP id S1726087AbgENMqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 May 2020 08:46:25 -0400
 Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F27C061A0C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FDCC061A0E
         for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 05:46:24 -0700 (PDT)
 Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 9035C452; Thu, 14 May 2020 14:46:22 +0200 (CEST)
+        id AD2E5273; Thu, 14 May 2020 14:46:22 +0200 (CEST)
 From:   Joerg Roedel <joro@8bytes.org>
 To:     Maxime Ripard <mripard@kernel.org>
 Cc:     Chen-Yu Tsai <wens@csie.org>, iommu@lists.linux-foundation.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         joro@8bytes.org, jroedel@suse.de, Maxime Ripard <maxime@cerno.tech>
-Subject: [PATCH 1/2] iommu/sun50i: Fix compile warnings
-Date:   Thu, 14 May 2020 14:46:20 +0200
-Message-Id: <20200514124621.25999-1-joro@8bytes.org>
+Subject: [PATCH 2/2] iommu/sun50i: Use __GFP_ZERO instead of memset()
+Date:   Thu, 14 May 2020 14:46:21 +0200
+Message-Id: <20200514124621.25999-2-joro@8bytes.org>
 X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200514124621.25999-1-joro@8bytes.org>
+References: <20200514124621.25999-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -36,58 +35,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Joerg Roedel <jroedel@suse.de>
 
-A few compile warnings show up when building this driver:
-
-  CC      drivers/iommu/sun50i-iommu.o
-drivers/iommu/sun50i-iommu.c: In function ‘sun50i_dte_get_page_table’:
-drivers/iommu/sun50i-iommu.c:486:16: warning: unused variable ‘flags’ [-Wunused-variable]
-  486 |  unsigned long flags;
-      |                ^~~~~
-drivers/iommu/sun50i-iommu.c: In function ‘sun50i_iommu_unmap’:
-drivers/iommu/sun50i-iommu.c:559:23: warning: unused variable ‘iommu’ [-Wunused-variable]
-  559 |  struct sun50i_iommu *iommu = sun50i_domain->iommu;
-      |                       ^~~~~
-drivers/iommu/sun50i-iommu.c: In function ‘sun50i_iommu_probe_device’:
-drivers/iommu/sun50i-iommu.c:749:22: warning: unused variable ‘group’ [-Wunused-variable]
-  749 |  struct iommu_group *group;
-      |                      ^~~~~
-
-Remove the unused variables.
+Allocate zeroed memory so there is no need to memset it to 0 in the
+driver.
 
 Cc: Maxime Ripard <maxime@cerno.tech>
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- drivers/iommu/sun50i-iommu.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/iommu/sun50i-iommu.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/iommu/sun50i-iommu.c b/drivers/iommu/sun50i-iommu.c
-index 989d87aa4426..a52f52eff7c8 100644
+index a52f52eff7c8..9c763d4a8e2a 100644
 --- a/drivers/iommu/sun50i-iommu.c
 +++ b/drivers/iommu/sun50i-iommu.c
-@@ -483,7 +483,6 @@ static u32 *sun50i_dte_get_page_table(struct sun50i_iommu_domain *sun50i_domain,
- 				      dma_addr_t iova, gfp_t gfp)
- {
- 	struct sun50i_iommu *iommu = sun50i_domain->iommu;
--	unsigned long flags;
- 	u32 *page_table;
- 	u32 *dte_addr;
- 	u32 old_dte;
-@@ -556,7 +555,6 @@ static size_t sun50i_iommu_unmap(struct iommu_domain *domain, unsigned long iova
- 				 size_t size, struct iommu_iotlb_gather *gather)
- {
- 	struct sun50i_iommu_domain *sun50i_domain = to_sun50i_domain(domain);
--	struct sun50i_iommu *iommu = sun50i_domain->iommu;
- 	phys_addr_t pt_phys;
- 	dma_addr_t pte_dma;
- 	u32 *pte_addr;
-@@ -746,7 +744,6 @@ static int sun50i_iommu_attach_device(struct iommu_domain *domain,
- static struct iommu_device *sun50i_iommu_probe_device(struct device *dev)
- {
- 	struct sun50i_iommu *iommu;
--	struct iommu_group *group;
+@@ -616,11 +616,10 @@ static struct iommu_domain *sun50i_iommu_domain_alloc(unsigned type)
+ 	    iommu_get_dma_cookie(&sun50i_domain->domain))
+ 		goto err_free_domain;
  
- 	iommu = sun50i_iommu_from_dev(dev);
- 	if (!iommu)
+-	sun50i_domain->dt = (u32 *)__get_free_pages(GFP_KERNEL,
++	sun50i_domain->dt = (u32 *)__get_free_pages(GFP_KERNEL | __GFP_ZERO,
+ 						    get_order(DT_SIZE));
+ 	if (!sun50i_domain->dt)
+ 		goto err_put_cookie;
+-	memset(sun50i_domain->dt, 0, DT_SIZE);
+ 
+ 	refcount_set(&sun50i_domain->refcnt, 1);
+ 
 -- 
 2.17.1
 
