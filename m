@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B321D35CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B871D35ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgENQB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 12:01:58 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:60542 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726117AbgENQB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 12:01:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=msv2kokdkm+/p+wCqKHbElETQKCgYZ1C+ffdv0310YU=; b=GbjxuaBUHyknB++0VHT8Lm+Bng
-        Wy7fICEnkQO49+5ENK6KkZ347Y0H7pNbib+2WiCqB4XgL2N954PF6zn/hzeQv136CqPnNLpV/pEhZ
-        YmKQzpEnDxVgeNONAqQspYUNtsklsNlN6D2e4pStD/wgJhLF0zf2FT9V2EvCxQRXyDKs=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jZGIy-002Iji-K1; Thu, 14 May 2020 18:01:52 +0200
-Date:   Thu, 14 May 2020 18:01:52 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Christian Herber <christian.herber@nxp.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marek Vasut <marex@denx.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [EXT] Re: [PATCH net-next v1] net: phy: tja11xx: add cable-test
- support
-Message-ID: <20200514160152.GU499265@lunn.ch>
-References: <20200513123440.19580-1-o.rempel@pengutronix.de>
- <20200513133925.GD499265@lunn.ch>
- <20200513174011.kl6l767cimeo6dpy@pengutronix.de>
- <20200513180140.GK499265@lunn.ch>
- <20200514120959.b24cszsmkjvfzss6@pengutronix.de>
- <20200514133823.GO527401@lunn.ch>
- <AM0PR04MB704193C938ECC28DE9A1B28E86BC0@AM0PR04MB7041.eurprd04.prod.outlook.com>
+        id S1728194AbgENQDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 12:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726037AbgENQDQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 12:03:16 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A239C061A0C;
+        Thu, 14 May 2020 09:03:16 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id f23so1426082pgj.4;
+        Thu, 14 May 2020 09:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=fjVyJRVWy9ca+3Xi4BztaczxsLydF8GYNLUqCa/Q7hs=;
+        b=YKJgGKYNbMg6yVsep+dH1X3857st5yYb0rdy1NvLH1iHV5OP5fvCD0q28gq/6nuoX6
+         otwLWGOUoa5yTVRc0XUREN2Kt9PEWCbVqX16yoe80fbcSiUH6H71ALLx2FbbJZSnJtvO
+         eWADzJRqoEKN+nmlDLLCo1mqSDxBkHhJR5odORkTEFQqw/bIomxXLG59MXVnLA3I9dIr
+         G2wFrtnOSxoEgbe53dgrT3lvxB9gl/Lfth1r24ZoNmb6A7Qcuf7JD6Yv8NLkR+xUBhPX
+         of6b0HSE53wjBHR2q5L+tn7wnklDT8elocdiabrmchhqjVtA5fcUCZWsLhbHwzX6pDfD
+         yuyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=fjVyJRVWy9ca+3Xi4BztaczxsLydF8GYNLUqCa/Q7hs=;
+        b=YbDksL9PJxVo716+1+X5Z53zEp/Eahs4q+Yqno5WNL5NDZ5whNcNW6NYZGHteNRI3V
+         JqlLzoWyP4g6f71zUNi4smnIPrjstOycg6dlsQLzZ6+XHrkuiSJvkSZykZ/rnKEMIBN8
+         CTIk8tvVgtiWPFwwg6RSul2e/WCx2vk9xyRY2q687+lu2C/8tnR2L7/hnUfTbuPqZQEi
+         IwPqzFZ+vtZb9Mf4Ht8K2TFbAe8RCJtq7rgvMmgyJORgavePIyLS6AYC8I4OHWyLUKOp
+         XB0NQ5Ml9Eu26nhMCp3EihZjcYk7uATFjvztu/kSzrXTZTzzTWjL9Fk5he/mE+eGoG69
+         ddzg==
+X-Gm-Message-State: AOAM531aBD9kpR6/8VvmPhhKnx6PENbFzpYf3D9FjR/eC/ufh2NTSkR1
+        omn1TnM6UD9HwjGCQGart8w=
+X-Google-Smtp-Source: ABdhPJy3JHsTPxCh3oH0qeq7xfzaE+sGfGL7Ga10UrKJgxMNv0Nkkw2Kb01daClTcLOXUA8a/YLSeA==
+X-Received: by 2002:aa7:9690:: with SMTP id f16mr5396316pfk.20.1589472195942;
+        Thu, 14 May 2020 09:03:15 -0700 (PDT)
+Received: from localhost.localdomain ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id y6sm18178691pjw.15.2020.05.14.09.03.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 09:03:15 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Hans Verkuil <hans.verkuil@cisco.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: [PATCH v6 13/14] videobuf2: remove redundant if-statement
+Date:   Fri, 15 May 2020 01:01:52 +0900
+Message-Id: <20200514160153.3646-14-sergey.senozhatsky@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200514160153.3646-1-sergey.senozhatsky@gmail.com>
+References: <20200514160153.3646-1-sergey.senozhatsky@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM0PR04MB704193C938ECC28DE9A1B28E86BC0@AM0PR04MB7041.eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 03:47:16PM +0000, Christian Herber wrote:
-> Hi Andrew,
-> 
-> > On Wed, May 13, 2020 at 03:39:00PM +0200, Andrew Lunn wrote:
-> >> On Thu, May 14, 2020 at 02:09:59PM +0200, Oleksij Rempel wrote:
-> >>  ETHTOOL_A_CABLE_RESULT_CODE_ACTIVE_PARTNER - the link partner is active.
-> >>
-> >>      The TJA1102 is able to detect it if partner link is master.
-> >>
-> > master is not a cable diagnostics issue. This is a configuration
-> > issue.
-> 
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-> Master is very relevant for cable diagnostics, as a cable
-> measurement should not be done with an active link partner on the
-> other end (i.e. a PHY in master mode trying to train the link).
+That if-statement seems to be unneeded.
 
-> So if the measurement detects an active link partner disturbing the
-> measurement, it is important to report this to the user.
+Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+---
+ drivers/media/common/videobuf2/videobuf2-dma-contig.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-So with 'normal' PHYs, we use autoneg to make the link go quiet. But
-you don't have autoneg.
+diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+index 5a3e1c3b556f..6ac0822e1bf0 100644
+--- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
++++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+@@ -152,8 +152,7 @@ static void *vb2_dc_alloc(struct device *dev, unsigned long attrs,
+ 	if (!buf)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	if (attrs)
+-		buf->attrs = attrs;
++	buf->attrs = attrs;
+ 	buf->cookie = dma_alloc_attrs(dev, size, &buf->dma_addr,
+ 					GFP_KERNEL | gfp_flags, buf->attrs);
+ 	if (!buf->cookie) {
+-- 
+2.26.2
 
-If there is no way to force the link quiet, then
-ETHTOOL_A_CABLE_RESULT_CODE_ACTIVE_PARTNER makes sense. But we need to
-keep the meaning generic. I don't want it to mean a T1 PHY with an
-active master peer. It should be usable for any reason the link cannot
-be made to go quiet.
-
-	Andrew
