@@ -2,41 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A6E1D2750
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 08:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C341D276B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 08:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbgENGOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 02:14:21 -0400
-Received: from verein.lst.de ([213.95.11.211]:50138 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbgENGOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 02:14:21 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 65CF468BEB; Thu, 14 May 2020 08:14:17 +0200 (CEST)
-Date:   Thu, 14 May 2020 08:14:17 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     syzbot <syzbot+353be47c9ce21b68b7ed@syzkaller.appspotmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>, jeremy.linton@arm.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, Christoph Hellwig <hch@lst.de>,
-        x86@kernel.org
-Subject: Re: WARNING in memtype_reserve
-Message-ID: <20200514061417.GA8367@lst.de>
-References: <000000000000f0d8d205a531f1a3@google.com> <20200509074507.GC1831917@kroah.com> <87wo5l4ecm.fsf@nanos.tec.linutronix.de> <20200513124445.GA1082735@kroah.com> <87zhab249p.fsf@nanos.tec.linutronix.de> <20200514035458.14760-1-hdanton@sina.com>
+        id S1726055AbgENGVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 02:21:10 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:22108 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725806AbgENGVK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 02:21:10 -0400
+X-UUID: d6e25b18fc1146349bca91208bbcff79-20200514
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=wQyMY1i9PotArkUWD4AtPY8qAbkcQgFz5GnPbTCKrx0=;
+        b=QLK3qWpILB8znUPvpzLmfBL0qE1d6i12/JE621Uxtze6Q78Y8b8QwbYkpMKCC+Y/Volvgx6AhMRvguBiwWXn7o1mInH86YVWFRYNyXb3WKGuGOoU6EqGSZnoa9APeZLIS0AG1H1TyWq+h2Ml1prIlgSvO6phpvfHiM+BSHWXAN4=;
+X-UUID: d6e25b18fc1146349bca91208bbcff79-20200514
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <fengping.yu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 2088078309; Thu, 14 May 2020 14:21:08 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 14 May 2020 14:21:00 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 14 May 2020 14:21:00 +0800
+From:   Fengping Yu <fengping.yu@mediatek.com>
+To:     Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Marco Felsch <m.felsch@pengutronix.de>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v7] Add matrix keypad driver support for Mediatek SoCs  
+Date:   Thu, 14 May 2020 14:17:44 +0800
+Message-ID: <20200514061747.25466-1-fengping.yu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200514035458.14760-1-hdanton@sina.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Guys, can you please start formal thread on this?  I have no
-idea where this came from and what the rationale is.  Btw, if the
-pfn is crap in dma_direct_mmap then the dma_addr_t passed in is
-crap, as it is derived from that.  What is the caller, and how is
-this triggered?
+DQpDaGFuZ2Ugc2luY2UgdjY6DQotIHVwZGF0ZSBrZXlwYWQgZGV2aWNlIHRyZWUgZG9jdW1lbnQg
+c2NoZW1hDQoNCmZlbmdwaW5nLnl1ICgzKToNCiAgZHQtYmluZGluZ3M6IEFkZCBrZXlwYWQgZGV2
+aWNldHJlZSBkb2N1bWVudGF0aW9uDQogIGRyaXZlcnM6IGlucHV0OiBrZXlib2FyZDogQWRkIG10
+ayBrZXlwYWQgZHJpdmVyDQogIGNvbmZpZ3M6IGRlZmNvbmZpZzogQWRkIENPTkZJR19LRVlCT0FS
+RF9NVEtfS1BEPXkNCg0KIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL2lucHV0L210ay1rcGQueWFt
+bCAgICB8IDEwMiArKysrKysrKw0KIGFyY2gvYXJtNjQvY29uZmlncy9kZWZjb25maWcgICAgICAg
+ICAgICAgICAgICB8ICAgMiArDQogZHJpdmVycy9pbnB1dC9rZXlib2FyZC9LY29uZmlnICAgICAg
+ICAgICAgICAgIHwgICA4ICsNCiBkcml2ZXJzL2lucHV0L2tleWJvYXJkL01ha2VmaWxlICAgICAg
+ICAgICAgICAgfCAgIDEgKw0KIGRyaXZlcnMvaW5wdXQva2V5Ym9hcmQvbXRrLWtwZC5jICAgICAg
+ICAgICAgICB8IDIyMyArKysrKysrKysrKysrKysrKysNCiA1IGZpbGVzIGNoYW5nZWQsIDMzNiBp
+bnNlcnRpb25zKCspDQogY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9pbnB1dC9tdGsta3BkLnlhbWwNCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVy
+cy9pbnB1dC9rZXlib2FyZC9tdGsta3BkLmMNCg0KLS0NCjIuMTguMA0KDQo=
+
