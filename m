@@ -2,91 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4BA1D2878
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 09:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E934E1D287C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 09:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbgENHEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 03:04:52 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:44989 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgENHEw (ORCPT
+        id S1726135AbgENHGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 03:06:04 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:33970 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgENHGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 03:04:52 -0400
-Received: by mail-lf1-f66.google.com with SMTP id d22so1647866lfm.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 00:04:50 -0700 (PDT)
+        Thu, 14 May 2020 03:06:03 -0400
+Received: by mail-lf1-f67.google.com with SMTP id s9so1696137lfp.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 00:06:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I9WnzFdmVQbheZ8Ai9Qer5xXiDc1MgImnC5EGlPBIDA=;
-        b=qoqgLgMkbrsTqv/ML9/jQxZ3Nj/LrMXhkEWfwJEMHEFOB6H1YwF93j+g3Xi+cUQJdj
-         +ktzZcIUs3e45Zzjl4LyNFO6QQOURnxU/J7OlEjYZBoyXOjlA/70riyAs8lIR8Fl23Pt
-         7oOIDT1/ENJvp5p9rDQjhZyFpjbtk0w+yCqTS+qwaVEt+Y0wuekQFUurzpTq0imZAW1p
-         umDp23Mqi6SHAvZsA1MoLLwaQPpK4CAYISlFVH5+KahrJ+jPaN5tqn52Tw4h0yVNfxA5
-         QOIlvMwIvqMluaLHyMSXJSU4cggxBy9JKW6F/WFS0uEkjnSmX7ZsYUBdXN51TUPnX37D
-         Uncw==
-X-Gm-Message-State: AOAM532kqBzpj02rKqzorzrwnbd172QHs4oh80Jo1RfElnjehMxZFoMY
-        4fiTCwr7188Sy4f+J76PW9o=
-X-Google-Smtp-Source: ABdhPJzbhRRGhNeIlXT1SpAvrdP+VLu4RYUXW0vcX5PRMC55VImUYwDNmGzuxiMOD5YnC/GXLi5E5A==
-X-Received: by 2002:ac2:5542:: with SMTP id l2mr2220386lfk.113.1589439889686;
-        Thu, 14 May 2020 00:04:49 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AkkqkBerykie1YrDXFBzsGueOMJwtySKBnmKIyb/rqw=;
+        b=WE+klpoKcOXD3a4VUHFmT0tEl2b2PVW8Vr/ynoKAqm7nZcJST5xNNN5GYuJC5klXsa
+         0liRidKyEhe3OcZyBDqucwoq21qPwctSdLtITsP4juf0zwpV3fnm/9uxxnptklXF7kTX
+         aVadQ2d0s/nA0AI8HIw2sSzBqiaRMpmBCUeZkSUedLnBIsd0ZNlbvmkDq2HQShOeIGlA
+         Z3pTEh7RvwsBoOkXPxMPTtdTxdPB4QC/L4re0MTMTwkU0AD3v5UtZ/g2AWZ/rcD/8VX0
+         mCafuBL+eMMqsXJ8wJK9/o8FDWwqUsVQMLbTWLnF6QiW079csTs7LcI2uH54ivofgSzX
+         hPFw==
+X-Gm-Message-State: AOAM531oyE2u55zKIlCagmlVjTvoAnopiUKFApjvyx+RbWFcgiCvLGxr
+        7H1PuKGUNmd+PpIxjcxcR+Q=
+X-Google-Smtp-Source: ABdhPJz8HCH9ZpQl9l+RruScNIJF1fFDO1Ykv1t0+vZomr5Soo9N7qsIOBMEwdNO/Dwx0UEqrebWGQ==
+X-Received: by 2002:a19:ad49:: with SMTP id s9mr2292027lfd.9.1589439961465;
+        Thu, 14 May 2020 00:06:01 -0700 (PDT)
 Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id c20sm937831ljk.59.2020.05.14.00.04.41
+        by smtp.gmail.com with ESMTPSA id k24sm911175ljg.92.2020.05.14.00.06.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 00:04:45 -0700 (PDT)
+        Thu, 14 May 2020 00:06:00 -0700 (PDT)
 Received: from johan by xi.terra with local (Exim 4.92.3)
-        (envelope-from <johan@kernel.org>)
-        id 1jZ7vA-00018d-2b; Thu, 14 May 2020 09:04:44 +0200
-Date:   Thu, 14 May 2020 09:04:44 +0200
+        (envelope-from <johan@xi.terra>)
+        id 1jZ7wQ-0001AB-Ut; Thu, 14 May 2020 09:06:03 +0200
 From:   Johan Hovold <johan@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, David Lin <dtwlin@gmail.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Axel Haslam <ahaslam@baylibre.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org,
-        Greg Kroah-Hartman <gregkh@google.com>,
-        Johan Hovold <johan@hovoldconsulting.com>
-Subject: Re: [greybus-dev] [PATCH] greybus: uart: fix uninitialized flow
- control variable
-Message-ID: <20200514070444.GB25962@localhost>
-References: <20200429190022.12671-1-arnd@arndb.de>
- <7146e1ca-1fc7-61ab-e798-7b017c7c974b@linaro.org>
+To:     David Lin <dtwlin@gmail.com>, Johan Hovold <johan@kernel.org>,
+        Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: greybus: uart: replace driver line-coding struct
+Date:   Thu, 14 May 2020 09:05:48 +0200
+Message-Id: <20200514070548.4423-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7146e1ca-1fc7-61ab-e798-7b017c7c974b@linaro.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 03:00:44PM -0500, Alex Elder wrote:
-> On 4/29/20 2:00 PM, Arnd Bergmann wrote:
-> > gcc-10 points out an uninitialized variable use:
-> 
-> Wow, nice, checking individual uninitialized fields within
-> the structure.
-> 
-> The structure should really be zero-initialized anyway; it's
-> passed as a structure in a message elsewhere.  With your
-> change, all fields in the structure are written, but in
-> theory the structure could change and stack garbage could
-> be sent over the wire.
-> 
-> What do you think of doing this instead?  Or in addition?
-> 
->         struct gb_tty_line_coding newline = { };
-> 
-> (Presumably that would also silence the warning.)
-> 
-> I endorse of your change, either way.
+Drop the driver version of the line-coding request and use the protocol
+definition directly as was originally intended instead.
 
-Looks like Greg ended up applying an identical version of this patch
-that was submitted this week instead.
+This specifically avoids having the two versions of what is supposed to
+be the same struct ever getting out of sync.
 
-Taking a closer look at this code I noticed we have two versions of this
-line-coding struct which are supposed by be identical, but which could
-get out of sync (and have once already it turns out).
+Note that this has in fact already happened once when the protocol
+definition had its implicit padding removed while the driver struct
+wasn't updated. The fact that we used the size of the then larger driver
+struct when memcpying its content to the stack didn't exactly make
+things better. A later addition of a flow-control field incidentally
+made the structures match again.
 
-Johan
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/staging/greybus/uart.c | 19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
+index 55c51143bb09..84de56800a21 100644
+--- a/drivers/staging/greybus/uart.c
++++ b/drivers/staging/greybus/uart.c
+@@ -40,14 +40,6 @@
+ #define GB_UART_FIRMWARE_CREDITS	4096
+ #define GB_UART_CREDIT_WAIT_TIMEOUT_MSEC	10000
+ 
+-struct gb_tty_line_coding {
+-	__le32	rate;
+-	__u8	format;
+-	__u8	parity;
+-	__u8	data_bits;
+-	__u8	flow_control;
+-};
+-
+ struct gb_tty {
+ 	struct gbphy_device *gbphy_dev;
+ 	struct tty_port port;
+@@ -66,7 +58,7 @@ struct gb_tty {
+ 	struct mutex mutex;
+ 	u8 ctrlin;	/* input control lines */
+ 	u8 ctrlout;	/* output control lines */
+-	struct gb_tty_line_coding line_coding;
++	struct gb_uart_set_line_coding_request line_coding;
+ 	struct work_struct tx_work;
+ 	struct kfifo write_fifo;
+ 	bool close_pending;
+@@ -288,12 +280,9 @@ static void  gb_uart_tx_write_work(struct work_struct *work)
+ 
+ static int send_line_coding(struct gb_tty *tty)
+ {
+-	struct gb_uart_set_line_coding_request request;
+-
+-	memcpy(&request, &tty->line_coding,
+-	       sizeof(tty->line_coding));
+ 	return gb_operation_sync(tty->connection, GB_UART_TYPE_SET_LINE_CODING,
+-				 &request, sizeof(request), NULL, 0);
++				 &tty->line_coding, sizeof(tty->line_coding),
++				 NULL, 0);
+ }
+ 
+ static int send_control(struct gb_tty *gb_tty, u8 control)
+@@ -493,9 +482,9 @@ static int gb_tty_break_ctl(struct tty_struct *tty, int state)
+ static void gb_tty_set_termios(struct tty_struct *tty,
+ 			       struct ktermios *termios_old)
+ {
++	struct gb_uart_set_line_coding_request newline;
+ 	struct gb_tty *gb_tty = tty->driver_data;
+ 	struct ktermios *termios = &tty->termios;
+-	struct gb_tty_line_coding newline;
+ 	u8 newctrl = gb_tty->ctrlout;
+ 
+ 	newline.rate = cpu_to_le32(tty_get_baud_rate(tty));
+-- 
+2.26.2
+
