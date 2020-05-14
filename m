@@ -2,92 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5DD1D30A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 15:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34961D30AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 15:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgENNHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 09:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
+        id S1726551AbgENNIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 09:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725955AbgENNHV (ORCPT
+        by vger.kernel.org with ESMTP id S1725955AbgENNIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 09:07:21 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F48C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 06:07:20 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id r25so24452088oij.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 06:07:20 -0700 (PDT)
+        Thu, 14 May 2020 09:08:17 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1112C061A0C;
+        Thu, 14 May 2020 06:08:16 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id o5so1064720iow.8;
+        Thu, 14 May 2020 06:08:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8NV16GFiBJNWCA0OVx7TbffCUg4QNsB+1OOfXXBvkrE=;
-        b=BHM3/sHLyHFtZ7CWU6vrg7iC1dP7OaBu6AlwERvOEbdy+sktUiTjSSoZeflxfx2UPK
-         +DbFveiaLHQVJa6xozL6NSuk0ge7HqIxE6UuvPIuE4P0XfK+9wDjWNTBzAc87Hv8TpGp
-         NW6pgR4YZI+qDuZLhXMc4pNDYTTq2P25kwqDY/4BVCxHsON4MnQXdiFu4KBjt+Db+O5r
-         n8uU0fs7eCyA309jWThGwpxDoXsc0d1s8UkFV1zOkQYvO/1zpdpvGh+pO3+qvvozjJTH
-         c7Qaz8ghzHoqmbUwPlTxxzAxchBzzUbWU/Nzxw9HetUwy8t3g/R1Z/ShncVL7aBr8oVM
-         FC7A==
+        bh=TxjLQAmlgCmIbW66ttakmR+UHsu55ZGYYjiNgQ7pD60=;
+        b=HQy57GttiwVxh24sQLfeiQngcOiErLC6lrc6A6arkVum1pGd0PXCrQaHvOCK4hPNEV
+         b/059ZwlWVA1AS8FK1q2/gCJIeug5/mReyn6myQQGKj7Nqz7CVRv86DNFSRbqqL9jNJu
+         tITMdAKorHxeF7YvlIBXB8sc7+tzC2Jw9Tf81bsZ6FJbcXdDfUt6nlqKXBjb5tQmn5MB
+         gsR5CUzH/zKAUZsVkX976vv3QKAm1v8PnXFZ2eAaurKTEVbK4xwSxyYq0RD28bfWf5Cm
+         c7yPr6SgCzeFtV1ZHtYdDrrDUR4DC+KkcElHzh4hDhUaeG4VHhyQV+JNQPmJwrKZiy5d
+         Dj2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8NV16GFiBJNWCA0OVx7TbffCUg4QNsB+1OOfXXBvkrE=;
-        b=PUZOHtOKZAh61oNZkG+7Mn6tWxHmM4eYttHrnMs9eqs6IsyttDk6OJQ4swhJeeER/o
-         c8B+BDisWLicVPq/T38qx6IMmvNLA+kqU87OnRJC6G2+ezFqYpNCo1A+7z8yX1sttf59
-         us4iG8mLNBwv1vU/07P+3ugUwFr4MhGYKH0EmyFLSiMrDZrz8H7SpAFEjXNsbND/rzzR
-         qHRqX2+z2ztA7iJ1LLCfnG8E7pnqYPL3CFniWBfsrKeUVgRFthLmTJFsGUNzFyWLecSt
-         amX8oKCMJAGuRsDPc2b4ZifbXl0BhN8x4Io5scYbUJFOfckGW229PSnyuYsfb1lFLEbz
-         pJaw==
-X-Gm-Message-State: AGi0PuZkbdu3yW5JpXeBm2D9dqxRYDFiFWqi8fqVeawvBC8PmFykuhJt
-        J+9MmDav/Dmp7JnH1E0lIbv6a4P6EISUs+nsS/nmdQ==
-X-Google-Smtp-Source: APiQypLh3YOlCumYeNfR0wBo1cSOvrScMD4+LC8kqWJLvd4YTjxxwL3dmtu58EkQWEzaq4z0cF3O1J1SolCmY7kZy/U=
-X-Received: by 2002:aca:3254:: with SMTP id y81mr10461078oiy.172.1589461639927;
- Thu, 14 May 2020 06:07:19 -0700 (PDT)
+        bh=TxjLQAmlgCmIbW66ttakmR+UHsu55ZGYYjiNgQ7pD60=;
+        b=uDIITVugJ18J9MzAI1K+7uH1u3m1je5J4rJ+RkFXN/vQGs5ORJGQUAdFRVwL8CvoUo
+         s9W/PI70ZJjjQr+sk9hHXil6NBfoDeOuhRIzULjy5811CxksvyX+qQPt1UI3UffBzwV4
+         JkoyDMsEIy1/isXnh9zp8w70brsnypgRgsR6tmU+hlBpeCGRGS7Cph9lmNAt6t+J3ZQJ
+         0BfH8CDTbQtNf6yaLQP0QJRlDC7NxkgvnL6yMlud9w/f7MQOvtukjSfz5B+lRRte3ycS
+         WgZRFzVvlwfUSyHRGIc4RWHgBLS0WGIP8iJP3HooxRQDYXXv8XU1ea48WK86PWVCJXAq
+         E4vQ==
+X-Gm-Message-State: AOAM533KS1NSUVIvgJ/r7+LxyfLkzvAIGEZ5mnRVXLJv9oYeMQapcr2P
+        jTmstuOgHgN7+KYVy4ztAmw536EefhUULf30/n8=
+X-Google-Smtp-Source: ABdhPJxFXm/snfV7f+PaeEk0/JpSTrHSkPZMuSqd6hBKK/zxQapVp8rf2U8UIu+qvc9Q33J56Hi8hFlnpuvp0XR2Wlk=
+X-Received: by 2002:a5d:8b8e:: with SMTP id p14mr3979084iol.110.1589461696306;
+ Thu, 14 May 2020 06:08:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <CANpmjNNeSnrAgfkskE5Y0NNu3-DS6hk+SwjkBunrr8FRxwwT-Q@mail.gmail.com>
- <20200513111057.GN2957@hirez.programming.kicks-ass.net> <CANpmjNMariz3-keqwUsLHVrpk2r7ThLSKtkhHxTDa3SEGeznhA@mail.gmail.com>
- <20200513123243.GO2957@hirez.programming.kicks-ass.net> <20200513124021.GB20278@willie-the-truck>
- <CANpmjNM5XW+ufJ6Mw2Tn7aShRCZaUPGcH=u=4Sk5kqLKyf3v5A@mail.gmail.com>
- <20200513132440.GN2978@hirez.programming.kicks-ass.net> <CANpmjNM5dD1VH0hoQwsZYEL=mhWunKwAEJMQgASzHSN019OCnw@mail.gmail.com>
- <20200514112142.GV2978@hirez.programming.kicks-ass.net> <20200514120104.GD4280@willie-the-truck>
- <20200514122735.GW2978@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200514122735.GW2978@hirez.programming.kicks-ass.net>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 14 May 2020 15:07:08 +0200
-Message-ID: <CANpmjNPmZv6TBQJ93TRuxCxJCpvJy8+XS5u9+ucOE2eEebEw9Q@mail.gmail.com>
-Subject: Re: [PATCH v5 00/18] Rework READ_ONCE() to improve codegen
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>
+References: <1589267017-17294-1-git-send-email-dillon.minfei@gmail.com>
+ <1589267017-17294-4-git-send-email-dillon.minfei@gmail.com>
+ <CACRpkda5VjjBdbruXTi33QBNb=VU6vK2zDE8yyQXoWw7=NQFeg@mail.gmail.com> <a4ebd7cd-5756-0683-135f-0f96be8a4a7b@st.com>
+In-Reply-To: <a4ebd7cd-5756-0683-135f-0f96be8a4a7b@st.com>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Thu, 14 May 2020 21:07:40 +0800
+Message-ID: <CAL9mu0Jt_xwo5pJfcx6G3grBuOaxLXvakpEjiB4gV3=bkiq2fg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] ARM: dts: stm32: enable ltdc binding with ili9341
+ on stm32429-disco board
+To:     Alexandre Torgue <alexandre.torgue@st.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        linux-clk <linux-clk@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 May 2020 at 14:27, Peter Zijlstra <peterz@infradead.org> wrote:
+Hi Alexandre,
+
+On Thu, May 14, 2020 at 8:53 PM Alexandre Torgue
+<alexandre.torgue@st.com> wrote:
 >
-> On Thu, May 14, 2020 at 01:01:04PM +0100, Will Deacon wrote:
 >
-> > > +#if __has_feature(undefined_sanitizer)
+>
+> On 5/14/20 10:24 AM, Linus Walleij wrote:
+> > On Tue, May 12, 2020 at 9:04 AM <dillon.minfei@gmail.com> wrote:
 > >
-> > Hmm, this might want to be __has_feature(undefined_behavior_sanitizer)
-> > (and damn is that hard for a Brit to type out!)
+> >> From: dillon min <dillon.minfei@gmail.com>
+> >>
+> >> Enable the ltdc & ili9341 on stm32429-disco board.
+> >>
+> >> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> >
+> > This mostly looks good but...
+> >
+> >> +&spi5 {
+> >> +       status = "okay";
+> >> +       pinctrl-0 = <&spi5_pins>;
+> >> +       pinctrl-names = "default";
+> >> +       #address-cells = <1>;
+> >> +       #size-cells = <0>;
+> >> +       cs-gpios = <&gpioc 2 GPIO_ACTIVE_LOW>;
+> >> +       dmas = <&dma2 3 2 0x400 0x0>,
+> >> +              <&dma2 4 2 0x400 0x0>;
+> >> +       dma-names = "rx", "tx";
+> >
+> > These DMA assignments seem to be SoC things and should
+> > rather be in the DTS(I) file where &spi5 is defined, right?
+> > stm32f429.dtsi I suppose?
 >
-> (I know right, it should be behaviour, dammit!)
->
-> I tried without the condition, eg.:
->
-> +#define __no_sanitize_undefined \
-> +               __attribute__((no_sanitize("undefined")))
->
-> and it still generated UBSAN gunk.
+> I agree with Linus, DMA have to be defined in SoC dtsi. And if a board
+> doesn't want to use it, we use the "delete-property".
+Yes, will move to Soc dtsi in next submits.
 
-Which ubsan calls are left? I'm trying to reproduce.
+i'm working on write a v4l2-m2m driver for dma2d of stm32 to support
+pixel conversion
+alpha blending between foreground and background graphics.
 
-Thanks,
--- Marco
+as you know, some soc's engineer trying to add this function to drm system.
+
+do you know st's planning about soc's hardware accelerator driver on stm32mp?
+such as chrom-art, will add to drm subsystem via ioctl to access, or to v4l2,
+
+thanks.
+
+>
+> >
+> > It is likely the same no matter which device is using spi5.
+> >
+> > Yours,
+> > Linus Walleij
+> >
