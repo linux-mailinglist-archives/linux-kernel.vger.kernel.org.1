@@ -2,105 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0161D26B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 07:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A511D26BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 07:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725951AbgENFid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 01:38:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37096 "EHLO
+        id S1726132AbgENFjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 01:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725794AbgENFid (ORCPT
+        by vger.kernel.org with ESMTP id S1726122AbgENFi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 01:38:33 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD617C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 22:38:31 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id y9so741339plk.10
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 22:38:31 -0700 (PDT)
+        Thu, 14 May 2020 01:38:58 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB13AC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 22:38:56 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id 188so1487536lfa.10
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 22:38:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UWDBJl7OFJuTjUSFJdL9o85ywxwdq0PO2qX4ub+w6Dk=;
-        b=bU70OCN5YITDQt7fifRG4Vz6S5uZQ7Y5tRUT81xjWY8+CK7S83RzFuNqoDNprjDZ+x
-         K3VhmrzFcc9/KlzCJe0m8r9N+yYOSZexAYOj2KbSm/CymOdSzFWj7FbEmGcJapfUPuQG
-         p9bk/XTo/W0sQnXezJs4PzaAn3m6qaYWP9jDrX3G/2aG4UOnUfghh8ZbCh6wCVGkP7cv
-         1CDFzC2rRKV286E1SKyBn+N45o/O2/kG8AdFbn3G1oJ8fJaluoEtgwlDs7uSzK4JTl0/
-         ADAG1vAAB54XeaYCebhQpsALnxaiW3RxVWub049VKJnfZ76Ml876S55xrSHI/7zwDnJ6
-         VeKQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cYvOOmKt6CqklOdp6kTHUSl02OGvdRFZjOL384iDoRM=;
+        b=ol61+9LbEU7e8ijqyRqzUAIXynlhyJzhn/SkOgfM4ArdMEfcX7r4ihczbl64mYkMKF
+         vvh85KomqcXA9IeSCihweH7ET/JVCQwEY2fPyCuvakqDemSWoX3wBLhD0EMnZ8xRGr+7
+         RXX/B0DalcH82UeNskfR9FshI39wMZMtVqGfkrvKQGhyJM04gaQpePcqNSiW7lSlTmQ+
+         xrg5vjYXadAv7TA5RBVn449jPcgXVdwXAMkIwPnSfd6SFcb6jmDZP1I4C9BmWIqsa2Wb
+         zqhgD07r2ni5fkODZE/yaWepJs7I2r0YleKbY+vbTaPYzHmzD8Po2oc2rApl0woJZSi+
+         HCfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UWDBJl7OFJuTjUSFJdL9o85ywxwdq0PO2qX4ub+w6Dk=;
-        b=oPYqFAWtaKViqUcc0r6mBEg0owHT9/a34GX6uYzEM8wf/wPMBBaqXayIYbTSVVHUtD
-         8FKGfgedKd0uAMiLWMEUKIaMLjtSIxNJa/6LM/gKPK5isTY4QG7xbDguq9svJ3hPt4XI
-         3ezMQXm4tMjwQbLNomhIdeIgs6Lrp0aTjylE8wnjBVa0ySSAwisxxHWGH2sVNBpqHZK/
-         tsgBy1vkX5TLqDEbYBcLgexpgaSJWxITZQDIHb0gRSb2TBR/S894BNwZjxnH5X/XIOAp
-         lgJjobutB7ttBXfV22n8wZ05S4yMTMuG4RF6SDt+lvsV4nZU42hKbGlByfb0JofHh3Ja
-         QE6A==
-X-Gm-Message-State: AGi0PuYCMBk7NGsr//Hhg50xqWig82zWgPY3EvU0hoPNIdSe0PxtMrYb
-        jBNWL7/KalD2JutKxl6BhBubt8pdn/g=
-X-Google-Smtp-Source: APiQypIyotmo+7Eku6oIgFkqRSJgL2Rbue4SnzSTK71QCh720tyNYACfrRF3ghvHvY4ZxzbO9r6VsQ==
-X-Received: by 2002:a17:90a:8c8e:: with SMTP id b14mr31748893pjo.222.1589434710874;
-        Wed, 13 May 2020 22:38:30 -0700 (PDT)
-Received: from yoga (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id k24sm1167739pfk.134.2020.05.13.22.38.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 22:38:30 -0700 (PDT)
-Date:   Wed, 13 May 2020 22:38:27 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     viresh.kumar@linaro.org, sboyd@kernel.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org, Mark Brown <broonie@kernel.org>,
-        Alok Chauhan <alokc@codeaurora.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH v5 2/6] spi: spi-geni-qcom: Use OPP API to set clk/perf
- state
-Message-ID: <20200514053827.GK1302550@yoga>
-References: <1589368382-19607-1-git-send-email-rnayak@codeaurora.org>
- <1589368382-19607-3-git-send-email-rnayak@codeaurora.org>
- <20200513190752.GS2165@builder.lan>
- <97288c37-66cf-305d-1e62-a0d12b7cba17@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cYvOOmKt6CqklOdp6kTHUSl02OGvdRFZjOL384iDoRM=;
+        b=RTTC8YHSt7yHs01rgIRad3hnqFesqNMVS4gelO4ek/HjhwVyyjQ0bt/dAw6bZ5jMK9
+         MODJ105Vrw5UcqeZ7ONFgVFAtmCwV7AF9UIf+YvSWyajGrjdVH8mwaRi5ktxrAEnvxOs
+         0Q+FuuaHSMIaqd33uRmV1z7lzbvLjlAo+vqgV+cZYWw8pUIFkQ11i55wqhEVp8Hc1K6r
+         r+dBIRxtUbCXWAQgtiOkNyD50sKwdAbePOG5lPkJkwvBBE7MzthD5wWTWKUvWSkMLnVq
+         T4ouTOkuZUoky/EGCVS8flZChcX/rUk2KBMNONHt/fJL38Zfc8iP7rmqvWk6o3klvyrV
+         2ieg==
+X-Gm-Message-State: AOAM532YvNlgejTSlEI+5R8+NKZWRC+/JLJ+5/8eEFsQUmvSYGjvAt0j
+        O6+pHz3P7r5e3vT6tX0jYxGhJaNgE0N39V7xmf1kOA==
+X-Google-Smtp-Source: ABdhPJzQ0Ihn6yDiCu4RIEGUEPXSdGPbZtzgqm4dhKI9p8ZWqfzBmh/Z92mHho/82s4WB423bi6ux6wY0KnLrACsnaY=
+X-Received: by 2002:ac2:4945:: with SMTP id o5mr2000757lfi.21.1589434735336;
+ Wed, 13 May 2020 22:38:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <97288c37-66cf-305d-1e62-a0d12b7cba17@codeaurora.org>
+References: <20200513003430.651232-1-vlad.babchuk@gmail.com>
+ <20200513003625.651340-1-vlad.babchuk@gmail.com> <CAHUa44E968nR1toCGn0_k6ABw_By7Z8EqB2rGSgiTmseo8oL-Q@mail.gmail.com>
+ <CAFA6WYNOAwSaaaCCf0qoQ=gGBEsCkbdrWUzabkn3XnM7hndsow@mail.gmail.com> <CAOcqxo3vbv40QtK_R2m2ROyk8zXk9fJRszA6zG+f5_rse9qBDw@mail.gmail.com>
+In-Reply-To: <CAOcqxo3vbv40QtK_R2m2ROyk8zXk9fJRszA6zG+f5_rse9qBDw@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 14 May 2020 11:08:43 +0530
+Message-ID: <CAFA6WYOzzBx4CjyQQCyHgkPbOdqPMOAw54G9MK6DwhfrCHxLzQ@mail.gmail.com>
+Subject: Re: [PATCH] optee: don't fail on unsuccessful device enumeration
+To:     Volodymyr Babchuk <vlad.babchuk@gmail.com>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
+        Jerome Forissier <jerome@forissier.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 13 May 22:03 PDT 2020, Rajendra Nayak wrote:
+Hi Volodymyr,
 
-> 
-> []..
-> 
-> > >   	spi->bus_num = -1;
-> > >   	spi->dev.of_node = dev->of_node;
-> > > @@ -596,6 +607,9 @@ static int spi_geni_probe(struct platform_device *pdev)
-> > >   spi_geni_probe_runtime_disable:
-> > >   	pm_runtime_disable(dev);
-> > >   	spi_master_put(spi);
-> > > +	if (mas->se.has_opp_table)
-> > 
-> > Why do you need has_opp_table?
-> > 
-> > Afaict if dev_pm_opp_of_add_table() returns -ENODEV there's no attached
-> > opp-table and dev_pm_opp_of_remove_table() is a nop.
-> 
-> Apparently its not. Calling dev_pm_opp_of_remove_table() when dev_pm_opp_of_add_table()
-> failed causes use-count mismatch.
-> You can see https://lkml.org/lkml/2020/4/15/18 for more details.
-> 
+On Thu, 14 May 2020 at 06:48, Volodymyr Babchuk <vlad.babchuk@gmail.com> wrote:
+>
+> Hi Sumit,
+>
+> On Wed, 13 May 2020 at 11:24, Sumit Garg <sumit.garg@linaro.org> wrote:
+> >
+> > Hi Volodymyr,
+> >
+> > On Wed, 13 May 2020 at 13:30, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+> > >
+> > > Hi Volodymyr,
+> > >
+> > > On Wed, May 13, 2020 at 2:36 AM Volodymyr Babchuk
+> > > <vlad.babchuk@gmail.com> wrote:
+> > > >
+> > > > optee_enumerate_devices() can fail for multiple of reasons. For
+> > > > example, I encountered issue when Xen OP-TEE mediator NACKed
+> > > > PTA_CMD_GET_DEVICES call.
+> >
+> > Could you share a detailed description of the issue which you are
+> > facing? optee_enumerate_devices() is a simple invocation of pseudo TA
+> > and cases where OP-TEE doesn't provide corresponding pseudo TA are
+> > handled very well.
+>
+> Yes, I did some research and looks like issue is broader, than I
+> expected.  It is my fault, that I wasn't paying attention to the tee
+> client support in the kernel.  Basically, it is incompatible with the
+> virtualization feature. You see, the main issue with virtual machines
+> is the second stage MMU. Intermediate physical address, that appear to
+> be contiguous for the kernel may be not contiguous in the real
+> physical memory due to 2nd stage MMU mappings. This is the reason I
+> introduced OPTEE_MSG_ATTR_NONCONTIG in the kernel driver.
+>
+> But, looks like kernel-side optee client does not use this feature. It
+> tries to provide SHM buffer as a simple contiguous span of memory. Xen
+> blocks calls with OPTEE_MSG_ATTR_TYPE_TMEM_*   but without
+> OPTEE_MSG_ATTR_NONCONTIG , because it can't translate IPAs to PAs for
+> such buffers. This is why call to  PTA_CMD_GET_DEVICES fails.
+>
+> Valid fix would be to use OPTEE_MSG_ATTR_NONCONTIG whenever possible.
+>
 
-Must have missed that when I glanced at the code, thanks for clarifying.
+Thanks for the detailed analysis. It looks like you are missing the
+following fix patch in your tree which basically fixed broken
+tee_shm_alloc() in case dynamic shared memory is enabled (IIRC
+virtualization only supports dynamic shared memory).
 
-Regards,
-Bjorn
+commit a249dd200d03791cab23e47571f3e13d9c72af6c
+Author: Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri Nov 8 16:57:14 2019 +0530
 
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
+    tee: optee: Fix dynamic shm pool allocations
+
+    In case of dynamic shared memory pool, kernel memory allocated using
+    dmabuf_mgr pool needs to be registered with OP-TEE prior to its usage
+    during optee_open_session() or optee_invoke_func().
+
+    So fix dmabuf_mgr pool allocations via an additional call to
+    optee_shm_register().
+
+    Also, allow kernel pages to be registered as shared memory with OP-TEE.
+
+    Fixes: 9733b072a12a ("optee: allow to work without static shared memory")
+    Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+    Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+
+After this fix, your issue should be resolved as it uses
+OPTEE_MSG_ATTR_NONCONTIG attribute for kernel memory allocated via
+tee_shm_alloc().
+
+> >
+> > > > This should not result in driver
+> > > > initialization error because this is an optional feature.
+> >
+> > I wouldn't call it an optional feature as there might be real kernel
+> > drivers dependent on this enumeration. Also, it is a simple example to
+> > self test OP-TEE functionality too. So I am not sure how much
+> > functional OP-TEE would be if this basic TA invocation fails.
+>
+> Well, it fixed case when Xen is involved. I think, this is valid
+> combination, when platform have the newest OP-TEE, but slightly older
+> kernel. So, imagine that OP-TEE provides PTA_CMD_GET_DEVICES, but
+> kernel can't use because it uses plain TMEM arguments,which are not
+> supported in virtualized environment.
+>
+> If there are kernel drivers, that depend on this PTA, they would not
+> work in any case. But at least userspace clients still be able to use
+> OP-TEE. This is why I call this feature "optional".
+
+As you can see above, tee_shm_alloc() being broken in your case was
+detected via this simple pseudo TA invocation. So IMO, it would be
+better to keep the existing behaviour as it provides a kind of basic
+OP-TEE driver runtime self test too. Also, I think it would be a
+better user experience to have every OP-TEE interface working rather
+than a partially broken interface.
+
+-Sumit
+
+>
+> --
+> WBR Volodymyr Babchuk aka lorc [+380976646013]
+> mailto: vlad.babchuk@gmail.com
