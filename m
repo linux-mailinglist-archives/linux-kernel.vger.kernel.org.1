@@ -2,135 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95651D30B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 15:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA481D30D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 15:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726665AbgENNKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 09:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726037AbgENNKg (ORCPT
+        id S1726948AbgENNOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 09:14:17 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:46805 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726056AbgENNOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 09:10:36 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B21C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 06:10:34 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id 4so2749362qtb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 06:10:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=L3hKHnlsCcttbXQ2Cja7DwdXszoqAGcuUShjDJ8b2a4=;
-        b=AtLYiQNv1DEysHFJjO4AE/VvjKevpPBCypEQwiPFNVjqFQ22w68L43Du/CffnxdPGA
-         jvp/iaLZ/Z3/k1ikBXKLS55XSv06D34pA+FGiKJ4FydjyEIZ5q92iW+aetHq6h5+IWTD
-         r51NM5Ibj7+6xYIkx07083lipNnY5lm310IR5hXy0ew4tZD6bS4aFfEmmG1Jkh6FrnoI
-         JhOhBN7nljXG8KgUePS+fJOlNlvfj/PpiQpWt+vHcERDBBkpuw4Ll2zepwpRZWsnjmfK
-         rrlAR8Fl6A8fDbUComhxxt14Gsy/26TURlGNI8CJvv9Tzp31eQmjm+F8YBOwfxLfhCtb
-         MNpQ==
+        Thu, 14 May 2020 09:14:17 -0400
+Received: by mail-lj1-f193.google.com with SMTP id f18so3415691lja.13;
+        Thu, 14 May 2020 06:14:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L3hKHnlsCcttbXQ2Cja7DwdXszoqAGcuUShjDJ8b2a4=;
-        b=OETUOBLahBolb+2MbfhBl6EWyrLQYltnG5utEhr2uKUBa0ifIDSViQgU8CxjtQ9EUm
-         UWdJx3X5er2rSQglCG5zIMf3pMXZCrnLFwefnQhvEPS69M+fLKsEmwJvDkVlmHvPhMeC
-         IbrfyeqKq8paQTrTOEWt4NG1it8RrEe6OYOZz56Hv7GnjUwnFe7Mq7Exb7sNsZ5FGHNd
-         tkD6K7S2xLVrTF8Gr/E4KZsd2WXp2lIOi52Dadhy4cvQofMWASIuifyfDYunLzchUXdS
-         sWaKWkdAKeGVD/ukfU5P3W/1I8KfppPZRaWiV05S48S0/lS1nmgYYxH2Z5uMslePCdzm
-         Uncw==
-X-Gm-Message-State: AOAM532BaqVuAxUz6m6rtUhNvHKJ9EowWNft085nGMv5TZJvYkEWo7Sy
-        jFItwWaY4QTH01MpeoYKiMc=
-X-Google-Smtp-Source: ABdhPJwjIpiMj4d42nqTKB/DSAcGUqxCsVhuTFEt/CZUO1OA4or0sPqcC+kA1oroEDadbclZMtTAyg==
-X-Received: by 2002:ac8:e8f:: with SMTP id v15mr4174645qti.391.1589461833957;
-        Thu, 14 May 2020 06:10:33 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id k3sm2581889qkb.112.2020.05.14.06.10.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/MXRPkMDcSwRMZ28S3/UK2rpc54+iO94C0XDkvWcitY=;
+        b=ltVsI3iPW/wocH381KApD0TYSt1G5ghlN1J9yMBE2NEc9imnUNs7jfeckBqQ0OaANS
+         8jz7npVAbwfXjMjagjCPGjrBkTIraQ/y/goDdUhwX9nMQfBifgszdeRiiUvh4E2zUUpD
+         9tSFoT3g5USxafjnjMI7lm0yf4h90maJzgVxI7x1iGRftZNXtoYyj8htEUiY0JzjfiZK
+         1qBkliEvwTHdTG1PfWDXUnWT/FTiGbnnVE7vqgW25IQEe9bYAN1QDIetRKyxng6mW26J
+         MxKPsZO772mVe2CiXrkWCkdIM/4oT1XiFGe3Fzha/V4HNPDrJ4NEIH3sMA9vE6xlxjgt
+         X0rw==
+X-Gm-Message-State: AOAM5314EGdfVQDqJL2TDE7r0XXlslqYqM5E1crUtmtTdTR8jp9DDXVF
+        xHGGGjYohY1uY1WErPqylQw=
+X-Google-Smtp-Source: ABdhPJzzy6BpdnYqPVdiWi5QbMy+F42zD96BH5dOe3+1xh/x6lpIsCLn5mWbbhD1iPR/JGF728aSZQ==
+X-Received: by 2002:a05:651c:c8:: with SMTP id 8mr2634923ljr.182.1589462053276;
+        Thu, 14 May 2020 06:14:13 -0700 (PDT)
+Received: from localhost.localdomain ([213.87.130.150])
+        by smtp.googlemail.com with ESMTPSA id q27sm1791609lfn.58.2020.05.14.06.14.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 06:10:33 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id EEFB940AFD; Thu, 14 May 2020 10:10:30 -0300 (-03)
-Date:   Thu, 14 May 2020 10:10:30 -0300
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH perf/core] perf intel-pt: Fix clang build failure in
- intel_pt_synth_pebs_sample
-Message-ID: <20200514131030.GL5583@kernel.org>
-References: <20200513234738.GA21211@embeddedor>
+        Thu, 14 May 2020 06:14:12 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Denis Efremov <efremov@linux.com>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: [RFC PATCH] kbuild: add variables for compression tools
+Date:   Thu, 14 May 2020 16:12:34 +0300
+Message-Id: <20200514131234.380097-1-efremov@linux.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513234738.GA21211@embeddedor>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, May 13, 2020 at 06:47:38PM -0500, Gustavo A. R. Silva escreveu:
-> Fix the following build failure generated with command 
-> $ make CC=clang HOSTCC=clang -C tools/ perf:
-> 
-> util/intel-pt.c:1802:24: error: field 'br_stack' with variable sized type 'struct branch_stack' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
->                         struct branch_stack br_stack;
->                                             ^
-> 1 error generated.
-> 
-> Fix this by reordering the members of struct br.
+Allow user to use alternative implementations of compression tools.
+For example, multi-threaded tools to speed up the build:
+$ make KGZIP=pigz KXZ=pxz
 
-Yeah, I noticed that as far back as with ubuntu 16.04's clang:
+Variable KGZIP is used instead of GZIP because the latter is reserved
+by the tool. Other variables are prefixed with 'K' for consistency.
 
-clang version 3.8.0-2ubuntu4 (tags/RELEASE_380/final)
+The credit goes to @grsecurity.
 
-util/intel-pt.c:1802:24: error: field 'br_stack' with variable sized type 'struct branch_stack' not at the end of a struct or class is a GNU
-      extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
-                        struct branch_stack br_stack;
-                                            ^
-1 error generated.
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Denis Efremov <efremov@linux.com>
+---
+ Makefile                          | 11 +++++++++--
+ arch/arm/boot/deflate_xip_data.sh |  6 +++++-
+ arch/ia64/Makefile                |  2 +-
+ arch/m68k/Makefile                |  4 ++--
+ arch/mips/lasat/image/Makefile    |  2 +-
+ arch/parisc/Makefile              |  2 +-
+ kernel/gen_kheaders.sh            |  6 +++++-
+ scripts/Makefile.lib              | 12 ++++++------
+ scripts/Makefile.package          |  6 +++---
+ scripts/xz_wrap.sh                |  6 +++++-
+ 10 files changed, 38 insertions(+), 19 deletions(-)
 
-
-Will fold this with the bug introducing the problem to avoid bisection
-problems.
-
+diff --git a/Makefile b/Makefile
+index 11fe9b1535de..9af13cfeed7a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -447,6 +447,12 @@ PYTHON		= python
+ PYTHON3		= python3
+ CHECK		= sparse
+ BASH		= bash
++KGZIP		= gzip
++KBZIP2		= bzip2
++KLZMA		= lzma
++KLZOP		= lzop
++KLZ4		= lz4c
++KXZ		= xz
  
-> Clang version 11.0.0 was used.
-> 
-> Fixes: f283f293a60d ("perf tools: Replace zero-length array with flexible-array")
-> Reported-by: Ian Rogers <irogers@google.com>
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
-> Here to fix what I break. :)
-> 
->  tools/perf/util/intel-pt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-> index f17b1e769ae4..b34179e3926f 100644
-> --- a/tools/perf/util/intel-pt.c
-> +++ b/tools/perf/util/intel-pt.c
-> @@ -1799,8 +1799,8 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
->  
->  	if (sample_type & PERF_SAMPLE_BRANCH_STACK) {
->  		struct {
-> -			struct branch_stack br_stack;
->  			struct branch_entry entries[LBRS_MAX];
-> +			struct branch_stack br_stack;
->  		} br;
->  
->  		if (items->mask[INTEL_PT_LBR_0_POS] ||
-> -- 
-> 2.26.2
-> 
-
+ CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
+ 		  -Wbitwise -Wno-return-void -Wno-unknown-attribute $(CF)
+@@ -496,6 +502,7 @@ export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS CROSS_COMPILE LD
+ export CPP AR NM STRIP OBJCOPY OBJDUMP OBJSIZE READELF PAHOLE LEX YACC AWK INSTALLKERNEL
+ export PERL PYTHON PYTHON3 CHECK CHECKFLAGS MAKE UTS_MACHINE HOSTCXX
+ export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS LDFLAGS_MODULE
++export KGZIP KBZIP2 KLZMA KLZOP KLZ4 KXZ
+ 
+ export KBUILD_CPPFLAGS NOSTDINC_FLAGS LINUXINCLUDE OBJCOPYFLAGS KBUILD_LDFLAGS
+ export KBUILD_CFLAGS CFLAGS_KERNEL CFLAGS_MODULE
+@@ -1005,10 +1012,10 @@ export mod_strip_cmd
+ mod_compress_cmd = true
+ ifdef CONFIG_MODULE_COMPRESS
+   ifdef CONFIG_MODULE_COMPRESS_GZIP
+-    mod_compress_cmd = gzip -n -f
++    mod_compress_cmd = $(KGZIP) -n -f
+   endif # CONFIG_MODULE_COMPRESS_GZIP
+   ifdef CONFIG_MODULE_COMPRESS_XZ
+-    mod_compress_cmd = xz -f
++    mod_compress_cmd = $(KXZ) -f
+   endif # CONFIG_MODULE_COMPRESS_XZ
+ endif # CONFIG_MODULE_COMPRESS
+ export mod_compress_cmd
+diff --git a/arch/arm/boot/deflate_xip_data.sh b/arch/arm/boot/deflate_xip_data.sh
+index 40937248cebe..08dd50e08c17 100755
+--- a/arch/arm/boot/deflate_xip_data.sh
++++ b/arch/arm/boot/deflate_xip_data.sh
+@@ -19,6 +19,10 @@ XIPIMAGE="$2"
+ 
+ DD="dd status=none"
+ 
++if [ x$KGZIP = "x" ]; then
++	KGZIP=gzip
++fi
++
+ # Use "make V=1" to debug this script.
+ case "$KBUILD_VERBOSE" in
+ *1*)
+@@ -56,7 +60,7 @@ trap 'rm -f "$XIPIMAGE.tmp"; exit 1' 1 2 3
+ # substitute the data section by a compressed version
+ $DD if="$XIPIMAGE" count=$data_start iflag=count_bytes of="$XIPIMAGE.tmp"
+ $DD if="$XIPIMAGE"  skip=$data_start iflag=skip_bytes |
+-gzip -9 >> "$XIPIMAGE.tmp"
++$KGZIP -9 >> "$XIPIMAGE.tmp"
+ 
+ # replace kernel binary
+ mv -f "$XIPIMAGE.tmp" "$XIPIMAGE"
+diff --git a/arch/ia64/Makefile b/arch/ia64/Makefile
+index 32240000dc0c..2876a7df1b0a 100644
+--- a/arch/ia64/Makefile
++++ b/arch/ia64/Makefile
+@@ -40,7 +40,7 @@ $(error Sorry, you need a newer version of the assember, one that is built from
+ endif
+ 
+ quiet_cmd_gzip = GZIP    $@
+-cmd_gzip = cat $(real-prereqs) | gzip -n -f -9 > $@
++cmd_gzip = cat $(real-prereqs) | $(KGZIP) -n -f -9 > $@
+ 
+ quiet_cmd_objcopy = OBJCOPY $@
+ cmd_objcopy = $(OBJCOPY) $(OBJCOPYFLAGS) $(OBJCOPYFLAGS_$(@F)) $< $@
+diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
+index 5d9288384096..e6c7c92aa72e 100644
+--- a/arch/m68k/Makefile
++++ b/arch/m68k/Makefile
+@@ -148,10 +148,10 @@ vmlinux.bz2: vmlinux
+ ifndef CONFIG_KGDB
+ 	cp vmlinux vmlinux.tmp
+ 	$(STRIP) vmlinux.tmp
+-	bzip2 -1c vmlinux.tmp >vmlinux.bz2
++	$(KBZIP2) -1c vmlinux.tmp >vmlinux.bz2
+ 	rm vmlinux.tmp
+ else
+-	bzip2 -1c vmlinux >vmlinux.bz2
++	$(KBZIP2) -1c vmlinux >vmlinux.bz2
+ endif
+ 
+ archclean:
+diff --git a/arch/mips/lasat/image/Makefile b/arch/mips/lasat/image/Makefile
+index 78ce4cff1012..617ccb1659d5 100644
+--- a/arch/mips/lasat/image/Makefile
++++ b/arch/mips/lasat/image/Makefile
+@@ -44,7 +44,7 @@ $(obj)/%.o: $(obj)/%.gz
+ 	$(LD) -r -o $@ -b binary $<
+ 
+ $(obj)/%.gz: $(obj)/%.bin
+-	gzip -cf -9 $< > $@
++	$(KGZIP) -cf -9 $< > $@
+ 
+ $(obj)/kImage.bin: $(KERNEL_IMAGE)
+ 	$(OBJCOPY) -O binary -S $^ $@
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index 628cd8bb7ad8..412ddec0297d 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -162,7 +162,7 @@ vmlinuz: bzImage
+ 	$(OBJCOPY) $(boot)/bzImage $@
+ else
+ vmlinuz: vmlinux
+-	@gzip -cf -9 $< > $@
++	@$(KGZIP) -cf -9 $< > $@
+ endif
+ 
+ install:
+diff --git a/kernel/gen_kheaders.sh b/kernel/gen_kheaders.sh
+index e13ca842eb7e..f3dfaf9f6647 100755
+--- a/kernel/gen_kheaders.sh
++++ b/kernel/gen_kheaders.sh
+@@ -9,6 +9,10 @@ outdir="$(pwd)"
+ tarfile=$1
+ cpio_dir=$outdir/$tarfile.tmp
+ 
++if [ x$KXZ = "x" ]; then
++	KXZ=xz
++fi
++
+ dir_list="
+ include/
+ arch/$SRCARCH/include/
+@@ -88,7 +92,7 @@ find $cpio_dir -type f -print0 |
+ find $cpio_dir -printf "./%P\n" | LC_ALL=C sort | \
+     tar "${KBUILD_BUILD_TIMESTAMP:+--mtime=$KBUILD_BUILD_TIMESTAMP}" \
+     --owner=0 --group=0 --numeric-owner --no-recursion \
+-    -Jcf $tarfile -C $cpio_dir/ -T - > /dev/null
++    -I $KXZ -cf $tarfile -C $cpio_dir/ -T - > /dev/null
+ 
+ echo $headers_md5 > kernel/kheaders.md5
+ echo "$this_file_md5" >> kernel/kheaders.md5
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 4b799737722c..dd38f5ac8d48 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -241,7 +241,7 @@ cmd_objcopy = $(OBJCOPY) $(OBJCOPYFLAGS) $(OBJCOPYFLAGS_$(@F)) $< $@
+ # ---------------------------------------------------------------------------
+ 
+ quiet_cmd_gzip = GZIP    $@
+-      cmd_gzip = cat $(real-prereqs) | gzip -n -f -9 > $@
++      cmd_gzip = cat $(real-prereqs) | $(KGZIP) -n -f -9 > $@
+ 
+ # DTC
+ # ---------------------------------------------------------------------------
+@@ -334,19 +334,19 @@ printf "%08x\n" $$dec_size |						\
+ )
+ 
+ quiet_cmd_bzip2 = BZIP2   $@
+-      cmd_bzip2 = { cat $(real-prereqs) | bzip2 -9; $(size_append); } > $@
++      cmd_bzip2 = { cat $(real-prereqs) | $(KBZIP2) -9; $(size_append); } > $@
+ 
+ # Lzma
+ # ---------------------------------------------------------------------------
+ 
+ quiet_cmd_lzma = LZMA    $@
+-      cmd_lzma = { cat $(real-prereqs) | lzma -9; $(size_append); } > $@
++      cmd_lzma = { cat $(real-prereqs) | $(KLZMA) -9; $(size_append); } > $@
+ 
+ quiet_cmd_lzo = LZO     $@
+-      cmd_lzo = { cat $(real-prereqs) | lzop -9; $(size_append); } > $@
++      cmd_lzo = { cat $(real-prereqs) | $(KLZOP) -9; $(size_append); } > $@
+ 
+ quiet_cmd_lz4 = LZ4     $@
+-      cmd_lz4 = { cat $(real-prereqs) | lz4c -l -c1 stdin stdout; \
++      cmd_lz4 = { cat $(real-prereqs) | $(KLZ4) -l -c1 stdin stdout; \
+                   $(size_append); } > $@
+ 
+ # U-Boot mkimage
+@@ -393,7 +393,7 @@ quiet_cmd_xzkern = XZKERN  $@
+                      $(size_append); } > $@
+ 
+ quiet_cmd_xzmisc = XZMISC  $@
+-      cmd_xzmisc = cat $(real-prereqs) | xz --check=crc32 --lzma2=dict=1MiB > $@
++      cmd_xzmisc = cat $(real-prereqs) | $(KXZ) --check=crc32 --lzma2=dict=1MiB > $@
+ 
+ # ASM offsets
+ # ---------------------------------------------------------------------------
+diff --git a/scripts/Makefile.package b/scripts/Makefile.package
+index 02135d2671a6..1b91fe1bfcdb 100644
+--- a/scripts/Makefile.package
++++ b/scripts/Makefile.package
+@@ -127,9 +127,9 @@ util/PERF-VERSION-GEN $(CURDIR)/$(perf-tar)/);              \
+ tar rf $(perf-tar).tar $(perf-tar)/HEAD $(perf-tar)/PERF-VERSION-FILE; \
+ rm -r $(perf-tar);                                                  \
+ $(if $(findstring tar-src,$@),,                                     \
+-$(if $(findstring bz2,$@),bzip2,                                    \
+-$(if $(findstring gz,$@),gzip,                                      \
+-$(if $(findstring xz,$@),xz,                                        \
++$(if $(findstring bz2,$@),$(KBZIP2),                                \
++$(if $(findstring gz,$@),$(KGZIP),                                  \
++$(if $(findstring xz,$@),$(KXZ),                                    \
+ $(error unknown target $@))))                                       \
+ 	-f -9 $(perf-tar).tar)
+ 
+diff --git a/scripts/xz_wrap.sh b/scripts/xz_wrap.sh
+index 7a2d372f4885..4922102dbfe7 100755
+--- a/scripts/xz_wrap.sh
++++ b/scripts/xz_wrap.sh
+@@ -9,6 +9,10 @@
+ # You can do whatever you want with this file.
+ #
+ 
++if [ x$KXZ = "x" ]; then
++	KXZ=xz
++fi
++
+ BCJ=
+ LZMA2OPTS=
+ 
+@@ -20,4 +24,4 @@ case $SRCARCH in
+ 	sparc)          BCJ=--sparc ;;
+ esac
+ 
+-exec xz --check=crc32 $BCJ --lzma2=$LZMA2OPTS,dict=32MiB
++exec $KXZ --check=crc32 $BCJ --lzma2=$LZMA2OPTS,dict=32MiB
 -- 
+2.25.4
 
-- Arnaldo
