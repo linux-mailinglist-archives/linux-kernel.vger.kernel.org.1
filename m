@@ -2,114 +2,384 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C972F1D3084
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 15:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5911D308D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 15:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727082AbgENNAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 09:00:33 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38982 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726056AbgENNAc (ORCPT
+        id S1726142AbgENNDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 09:03:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726011AbgENNDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 09:00:32 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jZDTO-0003cZ-4l; Thu, 14 May 2020 13:00:26 +0000
-Date:   Thu, 14 May 2020 15:00:25 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Thu, 14 May 2020 09:03:11 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD21C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 06:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KeSwjN7AQ4hCBh+e7FgC+sDqnOGQJ4GTrovXq5bwJvs=; b=RiJQjM6IreZoIi6Lv4NKF/8De0
+        UaZZ5n3D6SVWi1JPHstL45VKLff7Z70MyJ7xPyD0Xw9NZnC4gnSk5g7dR3VqjjReHclVRTGZ5V2UI
+        IXyp05ec2zNHQcN83b2wMpzBBJ3lq0keBEFIqh5olLBSrOx34QH7zmVrV+Uum8iYOVunbpwGODNjH
+        WWwcYCLLKtIVPjxfXpiSdgUTiMC3cIF0HPQ0JxD+7DoHkNWR5V60laUIInB1blVfBxYHL8vbgivMX
+        NI4EK2KWCSWiC/RRjgk0xVfU27PtOUt6N4eTgNXy9llrQ35nX+r9ptXJq1LJicrvWFWxjentgcXA5
+        UNojGoSw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jZDVk-0006pQ-3m; Thu, 14 May 2020 13:02:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 900D1301205;
+        Thu, 14 May 2020 15:02:48 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 728F1213C8B7A; Thu, 14 May 2020 15:02:48 +0200 (CEST)
+Date:   Thu, 14 May 2020 15:02:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Aaron Lu <aaron.lwe@gmail.com>
+Cc:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
         Ingo Molnar <mingo@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ia64: enable HAVE_COPY_THREAD_TLS, switch to
- kernel_clone_args
-Message-ID: <20200514130025.hsvtcv3rdzwgowvd@wittgenstein>
-References: <20200513204848.1208864-1-christian.brauner@ubuntu.com>
- <3908561D78D1C84285E8C5FCA982C28F7F6266E0@ORSMSX115.amr.corp.intel.com>
- <79e58d9b-5a39-390c-2f0c-0d87b63442b4@physik.fu-berlin.de>
- <20200514074606.vkc35syhdep23rzh@wittgenstein>
- <6b298416-1e64-eee7-0bb4-3b1f7f67adc6@physik.fu-berlin.de>
- <d6c94d4f-a431-9de5-7a0f-661894dbec01@physik.fu-berlin.de>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul Turner <pjt@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Aaron Lu <aaron.lu@linux.alibaba.com>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        =?iso-8859-1?Q?Fr=E9d=E9ric?= Weisbecker <fweisbec@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        "Li, Aubrey" <aubrey.li@linux.intel.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH updated v2] sched/fair: core wide cfs task priority
+ comparison
+Message-ID: <20200514130248.GD2940@hirez.programming.kicks-ass.net>
+References: <CANaguZAXsjD=X-bB7dvQZ3FSqLioiZU=YREHH_7JqiFsZCTxHA@mail.gmail.com>
+ <20200417094045.GA197704@ziqianlu-desktop.localdomain>
+ <20200420080759.GA224731@ziqianlu-desktop.localdomain>
+ <CANaguZDP3nyBdjLeeCZGoUoYk6Lf0HUv19N2Qxo4CpZfrjPZHA@mail.gmail.com>
+ <20200421025131.GA227300@aaronlu-desktop>
+ <20200424142443.GA263207@aaronlu-desktop>
+ <20200506143506.GH5298@hirez.programming.kicks-ass.net>
+ <20200508084419.GA120223@aaronlu-desktop>
+ <20200508090925.GV5298@hirez.programming.kicks-ass.net>
+ <20200508123457.GA122180@aaronlu-desktop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d6c94d4f-a431-9de5-7a0f-661894dbec01@physik.fu-berlin.de>
+In-Reply-To: <20200508123457.GA122180@aaronlu-desktop>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 11:48:31AM +0200, John Paul Adrian Glaubitz wrote:
-> 
-> 
-> On 5/14/20 9:53 AM, John Paul Adrian Glaubitz wrote:
-> > The kernel is currently building, you should get it by the evening (CEST).
-> > 
-> > The machine also serves as a Debian buildd which is why it's a bit more
-> > busy than other servers.
-> I applied the patch against 5.7-rc5, it applied fine and builds fine.
-> 
-> It seems though that systemd crashes but I'm not sure it's related:
-> 
-> [   14.267489] init[1]: General Exception: IA-64 Reserved Register/Field fault (data access) 2199023255600 [1]                     
-> [   14.267489] Modules linked in:                                                                                                  
-> [   14.267489]                                                                                                                     
-> [   14.267489] CPU: 0 PID: 1 Comm: init Not tainted 5.7.0-rc5 #1                                                                   
-> [   14.267489] Hardware name: hp server BL860c                   , BIOS 04.25                                                            07/02/2010                                                                                                                   
-> [   14.267489] psr : 0000121008526030 ifs : 8000000000000510 ip  : [<a00000010000c541>]    Not tainted (5.7.0-rc5)                 
-> [   14.267489] ip is at sys_clone2+0x61/0x80                                                                                       
-> [   14.267489] unat: 0000000000000000 pfs : 0000000000000510 rsc : 0000000000000003                                                
-> [   14.267489] rnat: 0000000000000000 bsps: 0000000000000000 pr  : 000000000001a959                                                
-> [   14.267489] ldrs: 0000000000000000 ccv : 0000000000000002 fpsr: 0009804c8a70033f                                                
-> [   14.267489] csd : 0000000000000000 ssd : 0000000000000000                                                                       
-> [   14.267489] b0  : a00000010000c540 b6  : a0000001000edf80 b7  : a000000100369560                                                
-> [   14.267489] f6  : 1003e000000000000b8a4 f7  : 1003e00000001754e8d69                                                             
-> [   14.267489] f8  : 1003e0000000178311d69 f9  : 100098000000000000000
-> [   14.267489] f10 : 1000eb8a3fffff475c000 f11 : 1003e000000000000b8a4
-> [   14.267489] r1  : a0000001017a6f10 r2  : 0000000000000000 r3  : 0000000000000006
-> [   14.267489] r8  : 0000000000000066 r9  : 0000000000000060 r10 : e0000100800d8e68
-> [   14.267489] r11 : 0000000000000002 r12 : e00001008027fe30 r13 : e000010080278000
-> [   14.267489] r14 : e0000100800d8e04 r15 : e0000100800d8e08 r16 : 0000000000000002
-> [   14.267489] r17 : 0000000000000001 r18 : 0000000000000002 r19 : 0000000000000003
-> [   14.267489] r20 : 0000000000000004 r21 : e00001008027fb98 r22 : e000000001146d02
-> [   14.267489] r23 : 00000000000030c8 r24 : 00000000000030c8 r25 : 00000000000030ca
-> [   14.267489] r26 : 00000000000030ca r27 : 00000000000030ca r28 : e00001008027fb90
-> [   14.267489] r29 : 0000000000000400 r30 : 00000000000002e8 r31 : 0000000000000400
-> [   14.267489] 
-> [   14.267489] Call Trace:
-> [   14.267489]  [<a000000100015090>] show_stack+0x90/0xc0
-> [   14.267489]                                 sp=e00001008027f9f0 bsp=e000010080279288
-> [   14.267489]  [<a000000100015780>] show_regs+0x6c0/0xa20
-> [   14.267489]                                 sp=e00001008027fbc0 bsp=e000010080279218
-> [   14.267489]  [<a000000100029590>] die+0x1b0/0x4a0
-> [   14.267489]                                 sp=e00001008027fbe0 bsp=e0000100802791d0
-> [   14.267489]  [<a00000010100e690>] ia64_fault+0x770/0xd80
-> [   14.267489]                                 sp=e00001008027fbe0 bsp=e000010080279180
-> [   14.267489]  [<a00000010000ce60>] ia64_leave_kernel+0x0/0x270
-> [   14.267489]                                 sp=e00001008027fc60 bsp=e000010080279180
-> [   14.267489]  [<a00000010000c540>] sys_clone2+0x60/0x80
-> [   14.267489]                                 sp=e00001008027fe30 bsp=e000010080279100
-> [   14.267489] Disabling lock debugging due to kernel taint
-> [   14.267489] init[102]: General Exception: IA-64 Reserved Register/Field fault (data access) 4398046511152 [2]
-> [   14.350730] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
->     [1 4 . 31540.733500]7 3-0-]- [- -e-n[d  eKnedr nKeelr npealn pani[c   -  1n4o.t2 6s7y4n8c9i]n g:
-> :Attem [D      1 4 . 2 6 7 4 8 95]. 7C.P0U-:r c15  P#I1D
-> i e1=002x 0C0o0m0m0:0 0ibn i]t- -T-a
->  nted: G      D           5.7.0-rc5 #1
-> 
-> I have to perform more testing. The machine boots fine with a 5.5.x kernel.
+On Fri, May 08, 2020 at 08:34:57PM +0800, Aaron Lu wrote:
+> With this said, I realized a workaround for the issue described above:
+> when the core went from 'compatible mode'(step 1-3) to 'incompatible
+> mode'(step 4), reset all root level sched entities' vruntime to be the
+> same as the core wide min_vruntime. After all, the core is transforming
+> from two runqueue mode to single runqueue mode... I think this can solve
+> the issue to some extent but I may miss other scenarios.
 
-Ok, so the good news is that from our other mail exchange we know that
-it doesn't boot on 5.6 without my patch too.
+A little something like so, this syncs min_vruntime when we switch to
+single queue mode. This is very much SMT2 only, I got my head in twist
+when thikning about more siblings, I'll have to try again later.
 
-Christian
+This very much retains the horrible approximation of S we always do.
+
+Also, it is _completely_ untested...
+
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -102,7 +102,6 @@ static inline int __task_prio(struct tas
+ /* real prio, less is less */
+ static inline bool prio_less(struct task_struct *a, struct task_struct *b)
+ {
+-
+ 	int pa = __task_prio(a), pb = __task_prio(b);
+ 
+ 	if (-pa < -pb)
+@@ -114,19 +113,8 @@ static inline bool prio_less(struct task
+ 	if (pa == -1) /* dl_prio() doesn't work because of stop_class above */
+ 		return !dl_time_before(a->dl.deadline, b->dl.deadline);
+ 
+-	if (pa == MAX_RT_PRIO + MAX_NICE)  { /* fair */
+-		u64 vruntime = b->se.vruntime;
+-
+-		/*
+-		 * Normalize the vruntime if tasks are in different cpus.
+-		 */
+-		if (task_cpu(a) != task_cpu(b)) {
+-			vruntime -= task_cfs_rq(b)->min_vruntime;
+-			vruntime += task_cfs_rq(a)->min_vruntime;
+-		}
+-
+-		return !((s64)(a->se.vruntime - vruntime) <= 0);
+-	}
++	if (pa == MAX_RT_PRIO + MAX_NICE)
++		return cfs_prio_less(a, b);
+ 
+ 	return false;
+ }
+@@ -4293,10 +4281,11 @@ static struct task_struct *
+ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ {
+ 	struct task_struct *next, *max = NULL;
++	int old_active = 0, new_active = 0;
+ 	const struct sched_class *class;
+ 	const struct cpumask *smt_mask;
+-	int i, j, cpu;
+ 	bool need_sync = false;
++	int i, j, cpu;
+ 
+ 	cpu = cpu_of(rq);
+ 	if (cpu_is_offline(cpu))
+@@ -4349,10 +4338,14 @@ pick_next_task(struct rq *rq, struct tas
+ 		rq_i->core_pick = NULL;
+ 
+ 		if (rq_i->core_forceidle) {
++			// XXX is_idle_task(rq_i->curr) && rq_i->nr_running ??
+ 			need_sync = true;
+ 			rq_i->core_forceidle = false;
+ 		}
+ 
++		if (!is_idle_task(rq_i->curr))
++			old_active++;
++
+ 		if (i != cpu)
+ 			update_rq_clock(rq_i);
+ 	}
+@@ -4463,8 +4456,12 @@ next_class:;
+ 
+ 		WARN_ON_ONCE(!rq_i->core_pick);
+ 
+-		if (is_idle_task(rq_i->core_pick) && rq_i->nr_running)
+-			rq_i->core_forceidle = true;
++		if (is_idle_task(rq_i->core_pick)) {
++			if (rq_i->nr_running)
++				rq_i->core_forceidle = true;
++		} else {
++			new_active++;
++		}
+ 
+ 		if (i == cpu)
+ 			continue;
+@@ -4476,6 +4473,16 @@ next_class:;
+ 		WARN_ON_ONCE(!cookie_match(next, rq_i->core_pick));
+ 	}
+ 
++	/* XXX SMT2 only */
++	if (new_active == 1 && old_active > 1) {
++		/*
++		 * We just dropped into single-rq mode, increment the sequence
++		 * count to trigger the vruntime sync.
++		 */
++		rq->core->core_sync_seq++;
++	}
++	rq->core->core_active = new_active;
++
+ done:
+ 	set_next_task(rq, next);
+ 	return next;
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -386,6 +386,12 @@ is_same_group(struct sched_entity *se, s
+ 	return NULL;
+ }
+ 
++static inline bool
++is_same_tg(struct sched_entity *se, struct sched_entity *pse)
++{
++	return se->cfs_rq->tg == pse->cfs_rq->tg;
++}
++
+ static inline struct sched_entity *parent_entity(struct sched_entity *se)
+ {
+ 	return se->parent;
+@@ -394,8 +400,6 @@ static inline struct sched_entity *paren
+ static void
+ find_matching_se(struct sched_entity **se, struct sched_entity **pse)
+ {
+-	int se_depth, pse_depth;
+-
+ 	/*
+ 	 * preemption test can be made between sibling entities who are in the
+ 	 * same cfs_rq i.e who have a common parent. Walk up the hierarchy of
+@@ -403,23 +407,16 @@ find_matching_se(struct sched_entity **s
+ 	 * parent.
+ 	 */
+ 
+-	/* First walk up until both entities are at same depth */
+-	se_depth = (*se)->depth;
+-	pse_depth = (*pse)->depth;
+-
+-	while (se_depth > pse_depth) {
+-		se_depth--;
+-		*se = parent_entity(*se);
+-	}
+-
+-	while (pse_depth > se_depth) {
+-		pse_depth--;
+-		*pse = parent_entity(*pse);
+-	}
++	/* XXX we now have 3 of these loops, C stinks */
+ 
+ 	while (!is_same_group(*se, *pse)) {
+-		*se = parent_entity(*se);
+-		*pse = parent_entity(*pse);
++		int se_depth = (*se)->depth;
++		int pse_depth = (*pse)->depth;
++
++		if (se_depth <= pse_depth)
++			*pse = parent_entity(*pse);
++		if (se_depth >= pse_depth)
++			*se = parent_entity(*se);
+ 	}
+ }
+ 
+@@ -455,6 +452,12 @@ static inline struct sched_entity *paren
+ 	return NULL;
+ }
+ 
++static inline bool
++is_same_tg(struct sched_entity *se, struct sched_entity *pse)
++{
++	return true;
++}
++
+ static inline void
+ find_matching_se(struct sched_entity **se, struct sched_entity **pse)
+ {
+@@ -462,6 +465,31 @@ find_matching_se(struct sched_entity **s
+ 
+ #endif	/* CONFIG_FAIR_GROUP_SCHED */
+ 
++bool cfs_prio_less(struct task_struct *a, struct task_struct *b)
++{
++	struct sched_entity *se_a = &a->se, *se_b = &b->se;
++	struct cfs_rq *cfs_rq_a, *cfa_rq_b;
++	u64 vruntime_a, vruntime_b;
++
++	while (!is_same_tg(se_a, se_b)) {
++		int se_a_depth = se_a->depth;
++		int se_b_depth = se_b->depth;
++
++		if (se_a_depth <= se_b_depth)
++			se_b = parent_entity(se_b);
++		if (se_a_depth >= se_b_depth)
++			se_a = parent_entity(se_a);
++	}
++
++	cfs_rq_a = cfs_rq_of(se_a);
++	cfs_rq_b = cfs_rq_of(se_b);
++
++	vruntime_a = se_a->vruntime - cfs_rq_a->core_vruntime;
++	vruntime_b = se_b->vruntime - cfs_rq_b->core_vruntime;
++
++	return !((s64)(vruntime_a - vruntime_b) <= 0);
++}
++
+ static __always_inline
+ void account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec);
+ 
+@@ -6891,6 +6919,18 @@ static void check_preempt_wakeup(struct
+ 		set_last_buddy(se);
+ }
+ 
++static void core_sync_entity(struct rq *rq, struct cfs_rq *cfs_rq)
++{
++	if (!sched_core_enabled())
++		return;
++
++	if (rq->core->core_sync_seq == cfs_rq->core_sync_seq)
++		return;
++
++	cfs_rq->core_sync_seq = rq->core->core_sync_seq;
++	cfs_rq->core_vruntime = cfs_rq->min_vruntime;
++}
++
+ static struct task_struct *pick_task_fair(struct rq *rq)
+ {
+ 	struct cfs_rq *cfs_rq = &rq->cfs;
+@@ -6902,6 +6942,14 @@ static struct task_struct *pick_task_fai
+ 	do {
+ 		struct sched_entity *curr = cfs_rq->curr;
+ 
++		/*
++		 * Propagate the sync state down to whatever cfs_rq we need,
++		 * the active cfs_rq's will have been done by
++		 * set_next_task_fair(), the rest is inactive and will not have
++		 * changed due to the current running task.
++		 */
++		core_sync_entity(rq, cfs_rq);
++
+ 		se = pick_next_entity(cfs_rq, NULL);
+ 
+ 		if (curr) {
+@@ -10825,7 +10873,8 @@ static void switched_to_fair(struct rq *
+ 	}
+ }
+ 
+-/* Account for a task changing its policy or group.
++/*
++ * Account for a task changing its policy or group.
+  *
+  * This routine is mostly called to set cfs_rq->curr field when a task
+  * migrates between groups/classes.
+@@ -10847,6 +10896,9 @@ static void set_next_task_fair(struct rq
+ 	for_each_sched_entity(se) {
+ 		struct cfs_rq *cfs_rq = cfs_rq_of(se);
+ 
++		/* snapshot vruntime before using it */
++		core_sync_entity(rq, cfs_rq);
++
+ 		set_next_entity(cfs_rq, se);
+ 		/* ensure bandwidth has been allocated on our new cfs_rq */
+ 		account_cfs_rq_runtime(cfs_rq, 0);
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -503,6 +503,10 @@ struct cfs_rq {
+ 	unsigned int		h_nr_running;      /* SCHED_{NORMAL,BATCH,IDLE} */
+ 	unsigned int		idle_h_nr_running; /* SCHED_IDLE */
+ 
++#ifdef CONFIG_SCHED_CORE
++	unsigned int		core_sync_seq;
++	u64			core_vruntime;
++#endif
+ 	u64			exec_clock;
+ 	u64			min_vruntime;
+ #ifndef CONFIG_64BIT
+@@ -1035,12 +1039,15 @@ struct rq {
+ 	unsigned int		core_enabled;
+ 	unsigned int		core_sched_seq;
+ 	struct rb_root		core_tree;
+-	bool			core_forceidle;
++	unsigned int		core_forceidle;
+ 
+ 	/* shared state */
+ 	unsigned int		core_task_seq;
+ 	unsigned int		core_pick_seq;
+ 	unsigned long		core_cookie;
++	unsigned int		core_sync_seq;
++	unsigned int		core_active;
++
+ #endif
+ };
+ 
+@@ -2592,6 +2599,8 @@ static inline bool sched_energy_enabled(
+ 
+ #endif /* CONFIG_ENERGY_MODEL && CONFIG_CPU_FREQ_GOV_SCHEDUTIL */
+ 
++extern bool cfs_prio_less(struct task_struct *a, struct task_struct *b);
++
+ #ifdef CONFIG_MEMBARRIER
+ /*
+  * The scheduler provides memory barriers required by membarrier between:
