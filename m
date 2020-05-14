@@ -2,93 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A96A1D3842
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 19:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C72F01D3850
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 19:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726240AbgENRbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 13:31:50 -0400
-Received: from muru.com ([72.249.23.125]:54564 "EHLO muru.com"
+        id S1726532AbgENRcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 13:32:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726027AbgENRbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 13:31:49 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 1AD9380C0;
-        Thu, 14 May 2020 17:32:37 +0000 (UTC)
-Date:   Thu, 14 May 2020 10:31:44 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>, Rob Herring <robh@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Jiri Slaby <jslaby@suse.cz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Peter Hurley <peter@hurleysoftware.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCHv8 0/6] n_gsm serdev support and GNSS driver for droid4
-Message-ID: <20200514173144.GP37466@atomide.com>
-References: <20200512214713.40501-1-tony@atomide.com>
- <20200513190942.GA2626@duo.ucw.cz>
+        id S1725965AbgENRcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 13:32:32 -0400
+Received: from localhost (unknown [122.182.193.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E7F2206D8;
+        Thu, 14 May 2020 17:32:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589477551;
+        bh=Vq89tzkVrFPsfX5X2TnUxZ2kkQChVcmUNzfx+d4Mw8g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ap7QRQnMNTnMXMSQXmMMVP1DyCOxHCUFWZmPQd7rJEFsYwzi3Ov0iktfqGcaTDUUx
+         ih05SPhm9WzuYCc/BCKHIL42XaK2NnXHx6PjZw2fs/0vLN5uCCcIorqDpU/V7ogWii
+         yypDh3sSMCLTT8wODeKCJEbneOzAJKaMo+PSgWpU=
+Date:   Thu, 14 May 2020 23:02:20 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] hwspinlock: qcom: Allow mmio usage in addition to
+ syscon
+Message-ID: <20200514173220.GH14092@vkoul-mobl>
+References: <20200513005441.1102586-1-bjorn.andersson@linaro.org>
+ <20200513005441.1102586-4-bjorn.andersson@linaro.org>
+ <20200514141523.GW14092@vkoul-mobl>
+ <20200514170013.GX2165@builder.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200513190942.GA2626@duo.ucw.cz>
+In-Reply-To: <20200514170013.GX2165@builder.lan>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Pavel Machek <pavel@denx.de> [200513 19:10]:
-> Hi!
+On 14-05-20, 10:00, Bjorn Andersson wrote:
+> On Thu 14 May 07:15 PDT 2020, Vinod Koul wrote:
 > 
-> > Here's the updated set of these patches fixed up for Johan's and
-> > Pavel's earlier comments.
+> > On 12-05-20, 17:54, Bjorn Andersson wrote:
+> > > In all modern Qualcomm platforms the mutex region of the TCSR is forked
+> > > off into its own block, all with a offset of 0 and stride of 4096. So
+> > > add support for directly memory mapping this register space, to avoid
+> > > the need to represent this block using a syscon.
+> > > 
+> > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > ---
+> > >  drivers/hwspinlock/qcom_hwspinlock.c | 72 +++++++++++++++++++++-------
+> > >  1 file changed, 56 insertions(+), 16 deletions(-)
+> > > 
+> > > diff --git a/drivers/hwspinlock/qcom_hwspinlock.c b/drivers/hwspinlock/qcom_hwspinlock.c
+> > > index f0da544b14d2..d8d4d729816c 100644
+> > > --- a/drivers/hwspinlock/qcom_hwspinlock.c
+> > > +++ b/drivers/hwspinlock/qcom_hwspinlock.c
+> > > @@ -70,41 +70,81 @@ static const struct of_device_id qcom_hwspinlock_of_match[] = {
+> > >  };
+> > >  MODULE_DEVICE_TABLE(of, qcom_hwspinlock_of_match);
+> > >  
+> > > -static int qcom_hwspinlock_probe(struct platform_device *pdev)
+> > > +static struct regmap *qcom_hwspinlock_probe_syscon(struct platform_device *pdev,
+> > > +						   u32 *base, u32 *stride)
+> > >  {
+> > > -	struct hwspinlock_device *bank;
+> > >  	struct device_node *syscon;
+> > > -	struct reg_field field;
+> > >  	struct regmap *regmap;
+> > > -	size_t array_size;
+> > > -	u32 stride;
+> > > -	u32 base;
+> > >  	int ret;
+> > > -	int i;
+> > >  
+> > >  	syscon = of_parse_phandle(pdev->dev.of_node, "syscon", 0);
+> > > -	if (!syscon) {
+> > > -		dev_err(&pdev->dev, "no syscon property\n");
 > > 
-> > This series does the following:
+> > any reason to drop the log?
 > > 
-> > 1. Adds functions to n_gsm.c for serdev-ngsm.c driver to use
+> 
+> Given that we first check for the syscon and then fall back to trying to
+> use the reg, keeping this line would cause this log line to always show
+> up on targets putting this under /soc.
+> 
+> So I think it's better to drop the line and then require the presence of
+> either syscon or reg using the DT schema.
+
+ok
+
+> > > -		return -ENODEV;
+> > > -	}
+> > > +	if (!syscon)
+> > > +		return ERR_PTR(-ENODEV);
+> > >  
+> > >  	regmap = syscon_node_to_regmap(syscon);
+> > >  	of_node_put(syscon);
+> > >  	if (IS_ERR(regmap))
+> > > -		return PTR_ERR(regmap);
+> > > +		return regmap;
+> > >  
+> > > -	ret = of_property_read_u32_index(pdev->dev.of_node, "syscon", 1, &base);
+> > > +	ret = of_property_read_u32_index(pdev->dev.of_node, "syscon", 1, base);
+> > >  	if (ret < 0) {
+> > >  		dev_err(&pdev->dev, "no offset in syscon\n");
+> > > -		return -EINVAL;
+> > > +		return ERR_PTR(-EINVAL);
+> > >  	}
+> > >  
+> > > -	ret = of_property_read_u32_index(pdev->dev.of_node, "syscon", 2, &stride);
+> > > +	ret = of_property_read_u32_index(pdev->dev.of_node, "syscon", 2, stride);
+> > >  	if (ret < 0) {
+> > >  		dev_err(&pdev->dev, "no stride syscon\n");
+> > > -		return -EINVAL;
+> > > +		return ERR_PTR(-EINVAL);
+> > >  	}
+> > >  
+> > > +	return regmap;
+> > > +}
+> > > +
+> > > +static const struct regmap_config tcsr_mutex_config = {
+> > > +	.reg_bits		= 32,
+> > > +	.reg_stride		= 4,
+> > > +	.val_bits		= 32,
+> > > +	.max_register		= 0x40000,
+> > > +	.fast_io		= true,
+> > > +};
+> > > +
+> > > +static struct regmap *qcom_hwspinlock_probe_mmio(struct platform_device *pdev,
+> > > +						 u32 *offset, u32 *stride)
+> > > +{
+> > > +	struct device *dev = &pdev->dev;
+> > > +	struct resource *res;
+> > > +	void __iomem *base;
+> > > +
+> > > +	/* All modern platform has offset 0 and stride of 4k */
+> > > +	*offset = 0;
+> > > +	*stride = 0x1000;
 > > 
-> > 2. Adds a generic serdev-ngsm.c driver that brings up the TS 27.010
-> >    TTY ports configured in devicetree with help of n_gsm.c
+> > Wouldn't it make sense to read this from DT rather than code in kernel?
 > > 
-> > 3. Allows the use of standard Linux device drivers for dedicated
-> >    TS 27.010 channels for devices like GNSS and ALSA found on some
-> >    modems for example
 > 
-> > 4. Adds a gnss-motmdm consumer driver for the GNSS device found on
-> >    the Motorola Mapphone MDM6600 modem on devices like droid4
-> 
-> It does one thing ... it turns Droid 4 into useful phone! 
+> I did consider this as well as platform specific compatibles, but
+> realized that pretty much all 64-bit targets have these values. So given
+> that we still can represent this using the syscon approach I don't think
+> we need to add yet another mechanism to specify these.
 
-Right, a minor detail I forgot :)
+Sounds good.
 
-> Thanks a lot. I believe these are same patches as in
-> droid4-pending-v5.7 branch, so whole series is
-> 
-> Tested-by: Pavel Machek <pavel@ucw.cz>
-> 
-> Getting this into 5.8 would be nice :-).
-> 
-> > Now without the chardev support, the /dev/gsmtty* using apps need
-> > to use "U1234AT+CFUN?" format for the packets. The advantage is
-> > less kernel code, and we keep the existing /dev/gsmtty* interface.
-> > 
-> > If we still really need the custom chardev support, that can now
-> > be added as needed with the channel specific consumer driver(s),
-> > but looks like this won't be needed based on Pavel's ofono work.
-> 
-> These work for me, and I have patched ofono with basic
-> functionality. It is no longer possible to use minicom for debugging,
-> but printf can be used instead, so that's not much of a problem.
-> 
-> I have adjusted ofono code, and moved away from normal AT support
-> code. More API changes would not be welcome :-).
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
 
-There is no need for a new API or API changes as we now use the
-existing n_gsm tty interface for /dev/gsmtty* devices that have
-been around for years.
-
-Regards,
-
-Tony
-
+-- 
+~Vinod
