@@ -2,128 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D9B1D30D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 15:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F761D30E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 15:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726763AbgENNP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 09:15:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726037AbgENNP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 09:15:56 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B327206DA;
-        Thu, 14 May 2020 13:15:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589462156;
-        bh=v6MXwV/gG1H4E+LPHWAerasj/q/Dsnckh5u8rtbYcbI=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=XB6Ugjlx1W02LH3VZWK0fqRmtjYZSNl3xW6tdtxis9HDm4ZOUr75Aq2XAHcOg2XDj
-         EYLZkgbIWPq0x/CprqqaTBIrrj/qGQii0SrkXoVlo6d8P3nz7JPKXPOXRJmQOqTH1i
-         M9Z22+FO6a0yNNOu7fSdROa1ZtoLKX87+Qg9RbSM=
-Message-ID: <4e5bf0e3bf055e53a342b19d168f6cf441781973.camel@kernel.org>
-Subject: Re: [PATCH] ceph: don't return -ESTALE if there's still an open file
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Luis Henriques <lhenriques@suse.com>
-Cc:     Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 14 May 2020 09:15:54 -0400
-In-Reply-To: <20200514124845.GA12559@suse.com>
-References: <20200514111453.GA99187@suse.com>
-         <8497fe9a11ac1837813ee5f14b6ebae8fa6bf707.camel@kernel.org>
-         <20200514124845.GA12559@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+        id S1727123AbgENNRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 09:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726073AbgENNRG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 09:17:06 -0400
+Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B50C061A0C;
+        Thu, 14 May 2020 06:17:06 -0700 (PDT)
+Received: from localhost.localdomain (unknown [142.147.94.151])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id DC1E3204A0;
+        Thu, 14 May 2020 13:17:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1589462224; bh=eJnR5u9wxpZzi1TozIj3O/mYN+6KO3jlz58PZP+YVW4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gXvAIxvLBuHh696jacAGYaWXey/BbIiqdtCmSYadB42UAMhSyLWCMnk2xz+0LMbl7
+         ODin41yuW7vVdp8+oir6nwnlm2nzvxTxZtS8ss6CYFy5zRzfjr6XQ+Queylt/AXK0C
+         GjQ/wbM3diHotnI8KcyQE9mt5Qg3HdhkYOVPZI6re8Krxsp1ao5iS967GBMm7Rt/mz
+         YCysd8z+ztESRmBIvQ8O0iEOqZsgJb/9Hw7sRg1WeAVhJWd7xUFXaL7c3ZNXgkEgxx
+         gb3JA3PNowlHbesLYNcld8YbqyOtR2xTSdaytO7XM9cVmQiYC070eJjCXmGyDgSKJu
+         o0j0c0GZsRRFA==
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-pci@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Paul Burton <paulburton@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH v10 1/5] PCI: Don't disable decoding when mmio_always_on is set
+Date:   Thu, 14 May 2020 21:16:37 +0800
+Message-Id: <20200514131650.3587281-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200427060551.1372591-1-jiaxun.yang@flygoat.com>
+References: <20200427060551.1372591-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-05-14 at 13:48 +0100, Luis Henriques wrote:
-> On Thu, May 14, 2020 at 08:10:09AM -0400, Jeff Layton wrote:
-> > On Thu, 2020-05-14 at 12:14 +0100, Luis Henriques wrote:
-> > > Similarly to commit 03f219041fdb ("ceph: check i_nlink while converting
-> > > a file handle to dentry"), this fixes another corner case with
-> > > name_to_handle_at/open_by_handle_at.  The issue has been detected by
-> > > xfstest generic/467, when doing:
-> > > 
-> > >  - name_to_handle_at("/cephfs/myfile")
-> > >  - open("/cephfs/myfile")
-> > >  - unlink("/cephfs/myfile")
-> > >  - open_by_handle_at()
-> > > 
-> > > The call to open_by_handle_at should not fail because the file still
-> > > exists and we do have a valid handle to it.
-> > > 
-> > > Signed-off-by: Luis Henriques <lhenriques@suse.com>
-> > > ---
-> > >  fs/ceph/export.c | 13 +++++++++++--
-> > >  1 file changed, 11 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/fs/ceph/export.c b/fs/ceph/export.c
-> > > index 79dc06881e78..8556df9d94d0 100644
-> > > --- a/fs/ceph/export.c
-> > > +++ b/fs/ceph/export.c
-> > > @@ -171,12 +171,21 @@ struct inode *ceph_lookup_inode(struct super_block *sb, u64 ino)
-> > >  
-> > >  static struct dentry *__fh_to_dentry(struct super_block *sb, u64 ino)
-> > >  {
-> > > +	struct ceph_inode_info *ci;
-> > >  	struct inode *inode = __lookup_inode(sb, ino);
-> > > +
-> > >  	if (IS_ERR(inode))
-> > >  		return ERR_CAST(inode);
-> > >  	if (inode->i_nlink == 0) {
-> > > -		iput(inode);
-> > > -		return ERR_PTR(-ESTALE);
-> > > +		bool is_open;
-> > > +		ci = ceph_inode(inode);
-> > > +		spin_lock(&ci->i_ceph_lock);
-> > > +		is_open = __ceph_is_file_opened(ci);
-> > > +		spin_unlock(&ci->i_ceph_lock);
-> > > +		if (!is_open) {
-> > > +			iput(inode);
-> > > +			return ERR_PTR(-ESTALE);
-> > > +		}
-> > >  	}
-> > >  	return d_obtain_alias(inode);
-> > >  }
-> > 
-> > Thanks Luis. Out of curiousity, is there any reason we shouldn't ignore
-> > the i_nlink value here? Does anything obviously break if we do?
-> 
-> Yes, the scenario described in commit 03f219041fdb is still valid, which
-> is basically the same but without the extra open(2):
-> 
->   - name_to_handle_at("/cephfs/myfile")
->   - unlink("/cephfs/myfile")
->   - open_by_handle_at()
-> 
+Don't disable MEM/IO decoding when a device have both non_compliant_bars
+and mmio_always_on.
 
-Ok, I guess we end up doing some delayed cleanup, and that allows the
-inode to be found in that situation.
+That would allow us quirk devices with junk in BARs but can't disable
+their decoding.
 
-> The open_by_handle_at man page isn't really clear about these 2 scenarios,
-> but generic/426 will fail if -ESTALE isn't returned.  Want me to add a
-> comment to the code, describing these 2 scenarios?
-> 
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Acked-by: Bjorn Helgaas <helgaas@kernel.org>
+---
+ drivers/pci/probe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-(cc'ing Amir since he added this test)
-
-I don't think there is any hard requirement that open_by_handle_at
-should fail in that situation. It generally does for most filesystems
-due to the way they handle cleaning up unlinked inodes, but I don't
-think it's technically illegal to allow the inode to still be found. If
-the caller cares about whether it has been unlinked it can always test
-i_nlink itself.
-
-Amir, is this required for some reason that I'm not aware of?
-
-Thanks,
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 77b8a145c39b..d9c2c3301a8a 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -1822,7 +1822,7 @@ int pci_setup_device(struct pci_dev *dev)
+ 	/* Device class may be changed after fixup */
+ 	class = dev->class >> 8;
+ 
+-	if (dev->non_compliant_bars) {
++	if (dev->non_compliant_bars && !dev->mmio_always_on) {
+ 		pci_read_config_word(dev, PCI_COMMAND, &cmd);
+ 		if (cmd & (PCI_COMMAND_IO | PCI_COMMAND_MEMORY)) {
+ 			pci_info(dev, "device has non-compliant BARs; disabling IO/MEM decoding\n");
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.26.2
 
