@@ -2,107 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5571D3F5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 22:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28551D3F48
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 22:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbgENUxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 16:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727123AbgENUxP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 16:53:15 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44ADAC061A0C;
-        Thu, 14 May 2020 13:53:15 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 82so2312312lfh.2;
-        Thu, 14 May 2020 13:53:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8ZX5aSRmz5jYRhVNI33JYSnsQRmUFYEKnhmSj7lgJyc=;
-        b=Ev2F/CLB7pA3dHkEJLfIS7zf50ZpNLO1iAl80R2/Mb9S7RrglW/0daTX5jfR9qa2Ss
-         K6GevTqJ7CRO8I4Q7o8Y1HLw+S0jQ6ft0fcXig0YGSrIiGwrs1WFFuDF+cqTc2go+9fY
-         TcVCCn65Ee+CwmfUtxtQzqpdX4/XC+7x6rYBIasvwmO1r5maTMJ9Zy3qlnWbYMob7R0c
-         AIwrgBztPPi9Ve1ypwm7WADLnruDN5yoyb2YUpeUbRTJo20T3n8LOimnq/GnNbcn4NSF
-         PZtUvliwv3n0w22iWpTbIIvOy1fQdEDM+1S3ZUox8EF0gn3hIh3g34eGQODp1nBB/0E9
-         VV/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8ZX5aSRmz5jYRhVNI33JYSnsQRmUFYEKnhmSj7lgJyc=;
-        b=TXPy8ByOfrokzHdTaegMCnfYXSM8lAfHOgJUXNNEETyaCDx0Q7D8wXNSNaHEywPgms
-         AD9RrJqrWzXLYFo0wSYLK6UCcLC+oWSWuIzBcrcRavVHItTUZsG2VCbeo+UFc1puyQJW
-         Tl/CRC26ynRI7oO6WOLvVFGpxxy/wFEuCywM2voC4KzVZcAntd0RpZTk5iLz+XR/a/8H
-         Wkb2vLIUvkI7Vu9s6UivXMZETf/xqnJDnXtWnIeuYjk6qsmCx06OCxVmhSYK45qUK3r2
-         Z9SrwctRbbjH+34tx3GcU6DxgezU5Ujl2jKPLLzrZggE4MHPtczY2PrLKxsPlipHIGD7
-         zknQ==
-X-Gm-Message-State: AOAM5310KD7kBtutsKbdVamo27pq1NDli2sGPkxwMepev1VVY0d6zmvG
-        Epy9+nNscVbUaHPJUSOheYU=
-X-Google-Smtp-Source: ABdhPJwdhEYSKRvj3P/XNm29+bPUFCqmQUpncZwquIfbD0KmklXjKtbyavR9lREmIkPlSXuOsdSiNg==
-X-Received: by 2002:ac2:5199:: with SMTP id u25mr39844lfi.80.1589489593816;
-        Thu, 14 May 2020 13:53:13 -0700 (PDT)
-Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.gmail.com with ESMTPSA id m20sm17612ljb.23.2020.05.14.13.53.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 13:53:13 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Tony Lindgren <tony@atomide.com>, Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Zack Pearsall <zpearsall@yahoo.com>
-Cc:     linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] mfd: tps65910: Correct power-off programming sequence
-Date:   Thu, 14 May 2020 23:50:21 +0300
-Message-Id: <20200514205022.7024-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
+        id S1728317AbgENUuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 16:50:35 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:33048 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727123AbgENUuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 16:50:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=es/CsLq8I+C86pPy2FssTUxIO7+EJSFkoJt71yhuz78=; b=EQUj4mCwaQ2bRT9ABmfNVxTYQa
+        EFyLDyc7U7/E7FASHsAML5wxmmEfKhtLoBaUfkLLQg8J3pL+dEnaRUaYnwfGDY085dMfvroZjwZKq
+        EZQl85VFlsjgaVd8JOKofKGUsoQILOQO3cSX1r8gNGNcIMJ4gA+u6myEr2ot7xoc1X4U=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jZKoG-002KR5-8a; Thu, 14 May 2020 22:50:28 +0200
+Date:   Thu, 14 May 2020 22:50:28 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     f.fainelli@gmail.com, hkallweit1@gmail.com, davem@davemloft.net,
+        robh@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH net-next 1/2] dt-bindings: net: dp83822: Add TI dp83822
+ phy
+Message-ID: <20200514205028.GA499265@lunn.ch>
+References: <20200514173055.15013-1-dmurphy@ti.com>
+ <20200514173055.15013-2-dmurphy@ti.com>
+ <20200514183912.GW499265@lunn.ch>
+ <2f03f066-38d0-a7c7-956d-e14356ca53b3@ti.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <2f03f066-38d0-a7c7-956d-e14356ca53b3@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes system shutdown on a devices that use TPS65910 as a
-system's power controller. In accordance to the TPS65910 datasheet, the
-PMIC's state-machine transitions into the OFF state only when DEV_OFF
-bit of DEVCTRL_REG is set. The ON / SLEEP states also should be cleared,
-otherwise PMIC won't get into a proper state on shutdown. Devices like
-Nexus 7 tablet and Ouya game console are now shutting down properly.
+> > Hi Dan
+> > 
+> > You say 10/100 Mbps Ethernet PHY, but then list RGMII?
+> Copied from the data sheet.
 
-Tested-by: Zack Pearsall <zpearsall@yahoo.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/mfd/tps65910.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+O.K. So maybe it can connect over RGMII, but then only run 100Mbps
+over it, rather than 1G.
 
-diff --git a/drivers/mfd/tps65910.c b/drivers/mfd/tps65910.c
-index 11959021b50a..22116cee411d 100644
---- a/drivers/mfd/tps65910.c
-+++ b/drivers/mfd/tps65910.c
-@@ -440,8 +440,16 @@ static void tps65910_power_off(void)
- 			DEVCTRL_PWR_OFF_MASK) < 0)
- 		return;
- 
--	tps65910_reg_clear_bits(tps65910, TPS65910_DEVCTRL,
--			DEVCTRL_DEV_ON_MASK);
-+	if (tps65910_reg_clear_bits(tps65910, TPS65910_DEVCTRL,
-+			DEVCTRL_DEV_SLP_MASK) < 0)
-+		return;
-+
-+	if (tps65910_reg_clear_bits(tps65910, TPS65910_DEVCTRL,
-+			DEVCTRL_DEV_ON_MASK) < 0)
-+		return;
-+
-+	tps65910_reg_set_bits(tps65910, TPS65910_DEVCTRL,
-+			DEVCTRL_DEV_OFF_MASK);
- }
- 
- static int tps65910_i2c_probe(struct i2c_client *i2c,
--- 
-2.26.0
+> The LED_1 pin can be strapped to be an input to the chip for signal loss
+> detection.  This is an optional feature of the PHY.
+> 
+> This property defines the polarity for the 822 LED_1/GPIO input pin.
+> 
+> The LOS is not required to be connected to the PHY.  If the preferred method
+> is to use the SFP framework and Processor GPIOs then I can remove this from
+> the patch set.
+> 
+> And if a user would like to use the feature then they can add it.
 
+Well, both options are supported by the hardware. So i'm wondering if
+we need to support both. So one property indicating the LOS is
+actually connected to the PHY and a second indicating the polarity?
+
+	 Andrew
