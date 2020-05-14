@@ -2,99 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 498D51D2C58
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF171D2C62
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgENKRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 06:17:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42268 "EHLO mail.kernel.org"
+        id S1726281AbgENKSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 06:18:43 -0400
+Received: from verein.lst.de ([213.95.11.211]:51105 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbgENKRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 06:17:14 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1810F2065D;
-        Thu, 14 May 2020 10:17:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589451433;
-        bh=Hjnqtf6r7/XeH0rPJKhpaCd250LS4mEfzl1RNp4Sfyo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D3zjKHn8NR/8To9fLf0fHyreRT1kzJk58Z3fWsPILa95k5xHi5sL0y9TYFLy/u5Ep
-         h7KFg/LqEovaeVIZR1hHa7K2rles1Q0eg1sKhJzdrbkdn1DjbBFRAGNkLLQwVomqNk
-         LVXINSpYITqJsfUS0gxo9b8dgpaQQUYOItfCEdf8=
-Date:   Thu, 14 May 2020 11:17:11 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Tzung-Bi Shih <tzungbi@google.com>
-Cc:     Steve Lee <steves.lee.maxim@gmail.com>, jack.yu@realtek.com,
-        ALSA development <alsa-devel@alsa-project.org>,
-        ryan.lee.maxim@gmail.com, ckeepax@opensource.cirrus.com,
-        ryans.lee@maximintegrated.com, steves.lee@maximintegrated.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>, nuno.sa@analog.com,
-        geert@linux-m68k.org, dmurphy@ti.com,
-        Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        rf@opensource.wolfsonmicro.com
-Subject: Re: [V3 PATCH 2/2] ASoC: max98390: Added Amplifier Driver
-Message-ID: <20200514101711.GC5127@sirena.org.uk>
-References: <20200513074523.21086-1-steves.lee@maximintegrated.com>
- <20200513105144.GC4803@sirena.org.uk>
- <CA+Px+wU_tjgWgG_xPR6SNBC5oM3nzVnhxjD85mrxfZW+_w6mKQ@mail.gmail.com>
+        id S1725925AbgENKSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 06:18:43 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 3F02D68BEB; Thu, 14 May 2020 12:18:38 +0200 (CEST)
+Date:   Thu, 14 May 2020 12:18:38 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Joe Perches' <joe@perches.com>, Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>,
+        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>
+Subject: Re: remove kernel_setsockopt and kernel_getsockopt
+Message-ID: <20200514101838.GA12548@lst.de>
+References: <20200513062649.2100053-1-hch@lst.de> <ecc165c33962d964d518c80de605af632eee0474.camel@perches.com> <756758e8f0e34e2e97db470609f5fbba@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2/5bycvrmDh4d1IB"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+Px+wU_tjgWgG_xPR6SNBC5oM3nzVnhxjD85mrxfZW+_w6mKQ@mail.gmail.com>
-X-Cookie: I think we're in trouble.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <756758e8f0e34e2e97db470609f5fbba@AcuMS.aculab.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 14, 2020 at 08:29:30AM +0000, David Laight wrote:
+> You need to export functions that do most of the socket options
+> for all protocols.
 
---2/5bycvrmDh4d1IB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, May 13, 2020 at 07:58:12PM +0800, Tzung-Bi Shih wrote:
-> On Wed, May 13, 2020 at 6:53 PM Mark Brown <broonie@kernel.org> wrote:
-> > On Wed, May 13, 2020 at 04:45:23PM +0900, Steve Lee wrote:
-
-> > > Changes since V2:
-> > >       * Removed warn massage in max98390_dsm_calib_get func
-> > >         and add comment.
-
-> > The problem isn't the warning, the problem is that you have an empty
-> > operation.  You should either implement the function (eg, by caching the
-> > value written) or remove it and fix whatever problems you were running
-> > into further up the stack when it's missing.
-
-> The purpose for the mixer control is: to signal max98390 to start to
-> calibrate from userspace.
-> Thus,
-> max98390_dsm_calib_get() -> do nothing.
-> max98390_dsm_calib_put() -> call max98390_dsm_calibrate().
-
-In that case it should probably do something like read back if a
-callibration is currently running.
-
---2/5bycvrmDh4d1IB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl69GqYACgkQJNaLcl1U
-h9DNxQf/QQdNXRHEhFVhciOu10vEivLtB4etHg6e0+9DlP5UaqQzSlo8qhxUVOLg
-vvn1YSiYncGYeehx+d2wpZHDsRTuC7t6l8fmJPgX5dU9U8cuaCfEL6MpLTRxWvtd
-70W0gvdgF06FJsCQQW/vdFxXMYQrnSULSVbsXP+WTSntRA1q0UgT39iVNB4oLLJa
-YfnwI6H8B9V/0BLvGNJeQh0CeboCekKQxF02A1gPld096jo3CA0OYae75LLtgV9A
-4rkEwexhCG14FuzijzZ56w2JSVjqaqgOHQXtZBcv6zMthny2y08q9Y1+iYTOydAY
-O9da5PaWDFoscL0AYaMZemx8ryXTYg==
-=hO61
------END PGP SIGNATURE-----
-
---2/5bycvrmDh4d1IB--
+Only for those were we have users, and all those are covered.
