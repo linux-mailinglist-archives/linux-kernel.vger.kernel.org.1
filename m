@@ -2,200 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8ADA1D3800
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 19:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27F81D380A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 19:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgENRXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 13:23:19 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:46922 "EHLO ale.deltatee.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725975AbgENRXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 13:23:12 -0400
-Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
-        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1jZHZV-00021v-Tz; Thu, 14 May 2020 11:23:12 -0600
-Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1jZHZV-0001hF-4e; Thu, 14 May 2020 11:23:01 -0600
-From:   Logan Gunthorpe <logang@deltatee.com>
-To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org
-Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Stephen Bates <sbates@raithlin.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Date:   Thu, 14 May 2020 11:22:53 -0600
-Message-Id: <20200514172253.6445-10-logang@deltatee.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200514172253.6445-1-logang@deltatee.com>
-References: <20200514172253.6445-1-logang@deltatee.com>
+        id S1726163AbgENRY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 13:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726075AbgENRY5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 13:24:57 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1DEC061A0F
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 10:24:57 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id q9so1050453pjm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 10:24:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LHBsucMd2sTr3HvWbUbdv7RFH1xfljlHMp94He6hhIA=;
+        b=jw3JoqZcR+JkpSIRFVF6bzCezMt2ET2v0lnfG4lEuwXpjsAC//cobs0yPbOlb/wEmD
+         R2247f4DjnI796d5bBmtgO51BUOwEB/UIblYzqfETbfyf5kdcqSwulnO/KoXXQAs9Fht
+         wMuwYjYO/UH8CxTVs5CRx8Hts6qyWazW4DdC6vYV5FqGxK7kG+ingJovqls06Hm9MhCX
+         LXIpu0bhRm0+N7WLxcCPO+9oKzTwKWXNpgub58PgRUEE8z34W4Jp7XBIIdy1ssAb0Fjj
+         unayclz4Cyu6FEkrJw1MTaxnj4IIRpNvBq/NIqtPjjT50QVB3rTiKDSRaKItdfkCDrrg
+         N13A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LHBsucMd2sTr3HvWbUbdv7RFH1xfljlHMp94He6hhIA=;
+        b=jWfa+NmIarF7Yb1QRfdeu4VT+tUkaRscIh1QVnhGDyuoCrNxbWgMLvWJq4QkqZ5Pm/
+         4sVzmaxDGLsFerFL79X5kdKKs97fpfCR2YNK7ni6omd+IWNzRPy7mC3BJjR54mxOn5KM
+         4PfcaTGbYHPZDR57Gk+wGf/+63wJ4nCVHBT7YXNZzLuZrvBqUuA0oXTC0Mvh4dQ8hxrZ
+         0wUOQ1RNJU7BUxCIVD8DlRAMzIx8DdSIWbhnKoEGibBzZoX4IlD6WhZTbvIFh8eFSMKV
+         JRh4eEigBK5K3ppJXAXfgMDGgkaiyNV90W8L/L9KPUSrPvyd45ACn4F44O66TxKfS9CP
+         CSvA==
+X-Gm-Message-State: AGi0PuZYs0isbMPVLJNMtyKb2k5LBNqVxNwD4zyaCjzA1P7r8EEZeWht
+        av8sCtbZP72/pDIhoO0z5DXlUMAlxRs=
+X-Google-Smtp-Source: APiQypJtsZHdqMh3QbEvlnEnAPVD9kLl8H9v3APnId1I2aEM7HIPo4p7CBOJ4YY+WlIh4C4yplr/PQ==
+X-Received: by 2002:a17:90b:888:: with SMTP id bj8mr40059263pjb.91.1589477096443;
+        Thu, 14 May 2020 10:24:56 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id e11sm2753242pfl.85.2020.05.14.10.24.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 10:24:55 -0700 (PDT)
+Date:   Thu, 14 May 2020 10:23:26 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     michael.srba@seznam.cz
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH] arm64: dts: qcom: msm8916-samsung-a3u: add nodes for
+ display panel
+Message-ID: <20200514172326.GC279327@builder.lan>
+References: <20200514170129.10902-1-michael.srba@seznam.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org, hch@lst.de, sagi@grimberg.me, kbusch@kernel.org, axboe@fb.com, Chaitanya.Kulkarni@wdc.com, maxg@mellanox.com, sbates@raithlin.com, logang@deltatee.com
-X-SA-Exim-Mail-From: gunthorp@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        MYRULES_FREE,MYRULES_NO_TEXT,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.2
-Subject: [PATCH v13 9/9] nvmet-configfs: Introduce passthru configfs interface
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200514170129.10902-1-michael.srba@seznam.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_NVME_TARGET_PASSTHRU as 'passthru' directory will
-be added to each subsystem. The directory is similar to a namespace
-and has two attributes: device_path and enable. The user must set the
-path to the nvme controller's char device and write '1' to enable the
-subsystem to use passthru.
+On Thu 14 May 10:01 PDT 2020, michael.srba@seznam.cz wrote:
 
-Any given subsystem is prevented from enabling both a regular namespace
-and the passthru device. If one is enabled, enabling the other will
-produce an error.
+> From: Michael Srba <michael.srba@seznam.cz>
+> 
+> This patch wires up display support on Samsung Galaxy A3 2015.
+> 
+> Signed-off-by: Michael Srba <michael.srba@seznam.cz>
+> 
+> ---
+>  .../qcom/msm8916-samsung-a2015-common.dtsi    | 44 +++++++++++++++
+>  .../boot/dts/qcom/msm8916-samsung-a3u-eur.dts | 54 +++++++++++++++++++
+>  2 files changed, 98 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi b/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
+> index af812f76e8be..2a64aa269f52 100644
+> --- a/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
+> @@ -72,6 +72,24 @@ phy {
+>  			};
+>  		};
+>  
+> +		mdss@1a00000 {
+> +			dsi@1a98000 {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +
+> +				vdda-supply = <&pm8916_l2>;
+> +				vddio-supply = <&pm8916_l6>;
+> +
+> +				pinctrl-names = "default", "sleep";
+> +				pinctrl-0 = <&mdss_default>;
+> +				pinctrl-1 = <&mdss_sleep>;
+> +			};
+> +
+> +			dsi-phy@1a98300 {
+> +				vddio-supply = <&pm8916_l6>;
+> +			};
+> +		};
+> +
+>  		wcnss@a21b000 {
+>  			status = "okay";
+>  		};
+> @@ -172,6 +190,32 @@ pinconf {
+>  			bias-disable;
+>  		};
+>  	};
+> +
+> +	pmx-mdss {
+> +		mdss_default: mdss-default {
+> +			pinmux {
+> +				function = "gpio";
+> +				pins = "gpio25";
+> +			};
+> +			pinconf {
+> +				pins = "gpio25";
+> +				drive-strength = <8>;
+> +				bias-disable;
+> +			};
+> +		};
 
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
----
- drivers/nvme/target/configfs.c | 99 ++++++++++++++++++++++++++++++++++
- drivers/nvme/target/nvmet.h    |  1 +
- 2 files changed, 100 insertions(+)
+Fyi, when you have a state with a single set of properties you don't
+need the pinmux/pinconf level here, you can directly do:
 
-diff --git a/drivers/nvme/target/configfs.c b/drivers/nvme/target/configfs.c
-index e0ce6e5feb3a..59eb52a0d06c 100644
---- a/drivers/nvme/target/configfs.c
-+++ b/drivers/nvme/target/configfs.c
-@@ -613,6 +613,103 @@ static const struct config_item_type nvmet_namespaces_type = {
- 	.ct_owner		= THIS_MODULE,
- };
- 
-+#ifdef CONFIG_NVME_TARGET_PASSTHRU
-+
-+static ssize_t nvmet_passthru_device_path_show(struct config_item *item,
-+		char *page)
-+{
-+	struct nvmet_subsys *subsys = to_subsys(item->ci_parent);
-+
-+	return snprintf(page, PAGE_SIZE, "%s\n", subsys->passthru_ctrl_path);
-+}
-+
-+static ssize_t nvmet_passthru_device_path_store(struct config_item *item,
-+		const char *page, size_t count)
-+{
-+	struct nvmet_subsys *subsys = to_subsys(item->ci_parent);
-+	size_t len;
-+	int ret;
-+
-+	mutex_lock(&subsys->lock);
-+
-+	ret = -EBUSY;
-+	if (subsys->passthru_ctrl)
-+		goto out_unlock;
-+
-+	ret = -EINVAL;
-+	len = strcspn(page, "\n");
-+	if (!len)
-+		goto out_unlock;
-+
-+	kfree(subsys->passthru_ctrl_path);
-+	ret = -ENOMEM;
-+	subsys->passthru_ctrl_path = kstrndup(page, len, GFP_KERNEL);
-+	if (!subsys->passthru_ctrl_path)
-+		goto out_unlock;
-+
-+	mutex_unlock(&subsys->lock);
-+
-+	return count;
-+out_unlock:
-+	mutex_unlock(&subsys->lock);
-+	return ret;
-+}
-+CONFIGFS_ATTR(nvmet_passthru_, device_path);
-+
-+static ssize_t nvmet_passthru_enable_show(struct config_item *item,
-+		char *page)
-+{
-+	struct nvmet_subsys *subsys = to_subsys(item->ci_parent);
-+
-+	return sprintf(page, "%d\n", subsys->passthru_ctrl ? 1 : 0);
-+}
-+
-+static ssize_t nvmet_passthru_enable_store(struct config_item *item,
-+		const char *page, size_t count)
-+{
-+	struct nvmet_subsys *subsys = to_subsys(item->ci_parent);
-+	bool enable;
-+	int ret = 0;
-+
-+	if (strtobool(page, &enable))
-+		return -EINVAL;
-+
-+	if (enable)
-+		ret = nvmet_passthru_ctrl_enable(subsys);
-+	else
-+		nvmet_passthru_ctrl_disable(subsys);
-+
-+	return ret ? ret : count;
-+}
-+CONFIGFS_ATTR(nvmet_passthru_, enable);
-+
-+static struct configfs_attribute *nvmet_passthru_attrs[] = {
-+	&nvmet_passthru_attr_device_path,
-+	&nvmet_passthru_attr_enable,
-+	NULL,
-+};
-+
-+static const struct config_item_type nvmet_passthru_type = {
-+	.ct_attrs		= nvmet_passthru_attrs,
-+	.ct_owner		= THIS_MODULE,
-+};
-+
-+static void nvmet_add_passthru_group(struct nvmet_subsys *subsys)
-+{
-+	config_group_init_type_name(&subsys->passthru_group,
-+				    "passthru", &nvmet_passthru_type);
-+	configfs_add_default_group(&subsys->passthru_group,
-+				   &subsys->group);
-+}
-+
-+#else /* CONFIG_NVME_TARGET_PASSTHRU */
-+
-+static void nvmet_add_passthru_group(struct nvmet_subsys *subsys)
-+{
-+}
-+
-+#endif /* CONFIG_NVME_TARGET_PASSTHRU */
-+
- static int nvmet_port_subsys_allow_link(struct config_item *parent,
- 		struct config_item *target)
- {
-@@ -1047,6 +1144,8 @@ static struct config_group *nvmet_subsys_make(struct config_group *group,
- 	configfs_add_default_group(&subsys->allowed_hosts_group,
- 			&subsys->group);
- 
-+	nvmet_add_passthru_group(subsys);
-+
- 	return &subsys->group;
- }
- 
-diff --git a/drivers/nvme/target/nvmet.h b/drivers/nvme/target/nvmet.h
-index 76c3a7cb9c89..d40452e50212 100644
---- a/drivers/nvme/target/nvmet.h
-+++ b/drivers/nvme/target/nvmet.h
-@@ -243,6 +243,7 @@ struct nvmet_subsys {
- #ifdef CONFIG_NVME_TARGET_PASSTHRU
- 	struct nvme_ctrl	*passthru_ctrl;
- 	char			*passthru_ctrl_path;
-+	struct config_group	passthru_group;
- #endif /* CONFIG_NVME_TARGET_PASSTHRU */
- };
- 
--- 
-2.20.1
+		mdss_default: mdss-default {
+			pins = "gpio25";
+			function = "gpio";
 
+			drive-strength = <8>;
+			bias-disable;
+		};
+
+
+But this looks good, applied towards v5.8.
+
+Regards,
+Bjorn
