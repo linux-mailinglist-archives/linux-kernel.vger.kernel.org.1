@@ -2,304 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358BA1D41DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 01:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892F51D41E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 01:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728034AbgENXwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 19:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
+        id S1728078AbgENX4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 19:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726135AbgENXwX (ORCPT
+        with ESMTP id S1726135AbgENX4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 19:52:23 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A559C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 16:52:23 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id i68so479848qtb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 16:52:23 -0700 (PDT)
+        Thu, 14 May 2020 19:56:18 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5D6C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 16:56:17 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id k7so160818pjs.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 16:56:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=89do7SugXxhhwBLEgU6+afw5EKns2cTOda3U6CAcsLA=;
-        b=bbHQ5zq6y9NHtC5pUQWQJ7nqGU2wvQj8ESwaPOUpviYeX12HvDG6v0GmhQDvh/6qsp
-         Krs/4OHWARan1R8XQ3ThkXlomnMi44RI+W9Aav/XitX2rWw/Z+rPIOaI5LPNUxsOKfia
-         unnJo086nclH1JVtUKunXS4l/lxT3qAaAt0dMMm1GNpb+9LKeFsT8yXI6ykWuqRW2sk5
-         wXfY+x2u4hVeHUNASaHxHoNlFvDgNsHohszXSqNGdohEvUxIap9jQywRDhzFqTr8jsIa
-         QKEHxtK/lAB9l4fIgR61N9Aoy5yTYBV1ZRFDL8/6z3SfG47tWN4sCF6mHDpSrSor0N44
-         /1nA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V7AO4OblGlSBwQug8IWxWej/AMRXHDQKDH+1XWLNVew=;
+        b=hzggQepQrsKGGnBsKsAANMRY17+1T0uMxt3OSRHq07nFJRt3KU5oRuA+Eo5PsWfqs+
+         PFCm8AqB0mGEx18uOYHt+Lq7Ec3Xank+8pNhj4oDSf+u4lUtGp76aHY4RkH+YZphAaRt
+         R/ShiS2/ZyKNvNg3n6iPwASRzJF7ENniMAaps=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=89do7SugXxhhwBLEgU6+afw5EKns2cTOda3U6CAcsLA=;
-        b=e7WIT3cmImLWGtnvNOMl+2Th5ZVbrkFTC2Qa9dXX7cyV3G9JzqknvJa5JIovh74bJy
-         5kbh2QRnmvp97D97lhrutCS7fYkPZvxbiL6Jk/Se8bWXJSl3zgIwdUa2TrM2x7EFwoDe
-         0zBvSYGJhfv/UWcMAMnXza5BEdKAZ+x50d3d0zsUMYtlVTzNQrLrqqt2BE/DxGJeFnaf
-         5HcsNURwwIV0Yu7hASF8ILXpHd0HSiMuGmZrw5bWOJm9KTVsaRowYRfX5Fzm06DztDuX
-         cQMm/0/YMM/1fkAevbjs913YjMnkc7GqpomzeMpRkU9qM3eDZ9Q52X16FdTu+2LCxmOo
-         +tTA==
-X-Gm-Message-State: AOAM531Bd2mzQ7S16mw00GfhprNF/ocBo0MlmYC8mHVgRGM222Ic2NM/
-        3b5ZHlFc2hL5BboZF2iXFOg=
-X-Google-Smtp-Source: ABdhPJzGOhchBa/yAPGfeoA0cTELJjmEUAOOli6A0cHVx29c29gWSx57DdnmElk+NC4Jiob21zEb5w==
-X-Received: by 2002:ac8:27ef:: with SMTP id x44mr742912qtx.233.1589500342240;
-        Thu, 14 May 2020 16:52:22 -0700 (PDT)
-Received: from LeoBras.aus.stglabs.ibm.com (179-125-143-209.dynamic.desktop.com.br. [179.125.143.209])
-        by smtp.gmail.com with ESMTPSA id j45sm644279qtk.14.2020.05.14.16.52.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 16:52:21 -0700 (PDT)
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Nadav Amit <namit@vmware.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] powerpc/rtas: Implement reentrant rtas call
-Date:   Thu, 14 May 2020 20:51:38 -0300
-Message-Id: <20200514235138.150722-3-leobras.c@gmail.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200514235138.150722-1-leobras.c@gmail.com>
-References: <20200514235138.150722-1-leobras.c@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V7AO4OblGlSBwQug8IWxWej/AMRXHDQKDH+1XWLNVew=;
+        b=ZXPWxpB0fmSiNFQUuYQZtVd8p+cUE6Av16pOBupGjSC5U5W/nm2O0XVjF1wmXUzdMD
+         bYK+OqY6XUFcURmlC3qlOCdDdGS9ZZeozGrVFttTFiZXoi7R29CLCnRKaYiYutPKyrP+
+         +YsDQhkU9tOGep6Pu9Jqkjmzbo20Go1DiDNJMmT67cLYeeMCkVvewy5Bp54VUfWcBbFn
+         oU49VCHTC/BgRrXTFC5Mme5VA4/KzSUvjsYwnNPgqF3vDcbwyz7CAQtSbjxRZF9lYMDs
+         5jXpMgJOm//KNufWpFcQ6Ok9IXXfKYFh9HcvJnWoWLXqEwV244mbgFYOeQ5Ykd/XmPRd
+         JwIQ==
+X-Gm-Message-State: AOAM532bbcB9rCpHWdVp3ZhzOF4AdqwUAUX+rfR08Ss2rWX/6zkE61WA
+        e0q1Zxkg1hpjkobbNgfwrw/JpQ==
+X-Google-Smtp-Source: ABdhPJyi+LzUx1kJiRE6ItqiavOmXdW/8OwRjVGekQrbAMGtyQUoyeqnUTlfgO4bMCWn2eddMBgRCQ==
+X-Received: by 2002:a17:902:c487:: with SMTP id n7mr979410plx.316.1589500577438;
+        Thu, 14 May 2020 16:56:17 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
+        by smtp.gmail.com with ESMTPSA id w14sm260208pgo.75.2020.05.14.16.56.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 May 2020 16:56:16 -0700 (PDT)
+Date:   Thu, 14 May 2020 16:56:15 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sharat Masetty <smasetty@codeaurora.org>
+Cc:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jcrouse@codeaurora.org,
+        georgi.djakov@linaro.org
+Subject: Re: [PATCH 0/6] Add support for GPU DDR BW scaling
+Message-ID: <20200514235615.GT4525@google.com>
+References: <1589453659-27581-1-git-send-email-smasetty@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1589453659-27581-1-git-send-email-smasetty@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement rtas_call_reentrant() for reentrant rtas-calls:
-"ibm,int-on", "ibm,int-off",ibm,get-xive" and  "ibm,set-xive".
+On Thu, May 14, 2020 at 04:24:13PM +0530, Sharat Masetty wrote:
 
-On LoPAPR Version 1.1 (March 24, 2016), from 7.3.10.1 to 7.3.10.4,
-items 2 and 3 say:
+> Subject: [PATCH 0/6] Add support for GPU DDR BW scaling
 
-2 - For the PowerPC External Interrupt option: The * call must be
-reentrant to the number of processors on the platform.
-3 - For the PowerPC External Interrupt option: The * argument call
-buffer for each simultaneous call must be physically unique.
+For anything but the first version the subject (for all patches) should
+include the version (i.e. [v2, 0/6], etc for this series).
 
-So, these rtas-calls can be called in a lockless way, if using
-a different buffer for each cpu doing such rtas call.
+> This is a rework of my previous series [1], but this time based on the bindings
+> from Georgi [2] + a few fixes which look to be fixed in v8 of Georgi's series
+> [3]. The work is based on the chromeOS tip.
 
-For this, it was suggested to add the buffer (struct rtas_args)
-in the PACA struct, so each cpu can have it's own buffer.
-
-Reentrant rtas calls are useful to avoid deadlocks in crashing,
-where rtas-calls are needed, but some other thread crashed holding
-the rtas.lock.
-
-This is a backtrace of a deadlock from a kdump testing environment:
-
-  #0 arch_spin_lock
-  #1  lock_rtas ()
-  #2  rtas_call (token=8204, nargs=1, nret=1, outputs=0x0)
-  #3  ics_rtas_mask_real_irq (hw_irq=4100)
-  #4  machine_kexec_mask_interrupts
-  #5  default_machine_crash_shutdown
-  #6  machine_crash_shutdown
-  #7  __crash_kexec
-  #8  crash_kexec
-  #9  oops_end
-
-Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
----
- arch/powerpc/include/asm/paca.h     |  2 ++
- arch/powerpc/include/asm/rtas.h     |  1 +
- arch/powerpc/kernel/rtas.c          | 52 +++++++++++++++++++++++++++++
- arch/powerpc/sysdev/xics/ics-rtas.c | 22 ++++++------
- 4 files changed, 66 insertions(+), 11 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/paca.h b/arch/powerpc/include/asm/paca.h
-index e3cc9eb9204d..5a76ba50b40f 100644
---- a/arch/powerpc/include/asm/paca.h
-+++ b/arch/powerpc/include/asm/paca.h
-@@ -29,6 +29,7 @@
- #include <asm/hmi.h>
- #include <asm/cpuidle.h>
- #include <asm/atomic.h>
-+#include <asm/rtas-types.h>
- 
- #include <asm-generic/mmiowb_types.h>
- 
-@@ -270,6 +271,7 @@ struct paca_struct {
- #ifdef CONFIG_MMIOWB
- 	struct mmiowb_state mmiowb_state;
- #endif
-+	struct rtas_args reentrant_args;
- } ____cacheline_aligned;
- 
- extern void copy_mm_to_paca(struct mm_struct *mm);
-diff --git a/arch/powerpc/include/asm/rtas.h b/arch/powerpc/include/asm/rtas.h
-index c35c5350b7e4..fa7509c85881 100644
---- a/arch/powerpc/include/asm/rtas.h
-+++ b/arch/powerpc/include/asm/rtas.h
-@@ -236,6 +236,7 @@ extern struct rtas_t rtas;
- extern int rtas_token(const char *service);
- extern int rtas_service_present(const char *service);
- extern int rtas_call(int token, int, int, int *, ...);
-+int rtas_call_reentrant(int token, int nargs, int nret, int *outputs, ...);
- void rtas_call_unlocked(struct rtas_args *args, int token, int nargs,
- 			int nret, ...);
- extern void __noreturn rtas_restart(char *cmd);
-diff --git a/arch/powerpc/kernel/rtas.c b/arch/powerpc/kernel/rtas.c
-index c5fa251b8950..31710b358f44 100644
---- a/arch/powerpc/kernel/rtas.c
-+++ b/arch/powerpc/kernel/rtas.c
-@@ -41,6 +41,7 @@
- #include <asm/time.h>
- #include <asm/mmu.h>
- #include <asm/topology.h>
-+#include <asm/paca.h>
- 
- /* This is here deliberately so it's only used in this file */
- void enter_rtas(unsigned long);
-@@ -483,6 +484,57 @@ int rtas_call(int token, int nargs, int nret, int *outputs, ...)
- }
- EXPORT_SYMBOL(rtas_call);
- 
-+/**
-+ * rtas_call_reentrant() - Used for reentrant rtas calls
-+ * @token:	Token for desired reentrant RTAS call
-+ * @nargs:	Number of Input Parameters
-+ * @nret:	Number of Output Parameters
-+ * @outputs:	Array of outputs
-+ * @...:	Inputs for desired RTAS call
-+ *
-+ * According to LoPAR documentation, only "ibm,int-on", "ibm,int-off",
-+ * "ibm,get-xive" and "ibm,set-xive" are currently reentrant.
-+ * Reentrant calls need their own rtas_args buffer, so not using rtas.args, but
-+ * PACA one instead.
-+ *
-+ * Return:	-1 on error,
-+ *		First output value of RTAS call if (nret > 0),
-+ *		0 otherwise,
-+ */
-+
-+int rtas_call_reentrant(int token, int nargs, int nret, int *outputs, ...)
-+{
-+	va_list list;
-+	struct rtas_args *args;
-+	unsigned long flags;
-+	int i, ret = 0;
-+
-+	if (!rtas.entry || token == RTAS_UNKNOWN_SERVICE)
-+		return -1;
-+
-+	local_irq_save(flags);
-+	preempt_disable();
-+
-+	/* We use the per-cpu (PACA) rtas args buffer */
-+	args = &local_paca->reentrant_args;
-+
-+	va_start(list, outputs);
-+	va_rtas_call_unlocked(args, token, nargs, nret, list);
-+	va_end(list);
-+
-+	if (nret > 1 && outputs)
-+		for (i = 0; i < nret - 1; ++i)
-+			outputs[i] = be32_to_cpu(args->rets[i + 1]);
-+
-+	if (nret > 0)
-+		ret = be32_to_cpu(args->rets[0]);
-+
-+	local_irq_restore(flags);
-+	preempt_enable();
-+
-+	return ret;
-+}
-+
- /* For RTAS_BUSY (-2), delay for 1 millisecond.  For an extended busy status
-  * code of 990n, perform the hinted delay of 10^n (last digit) milliseconds.
-  */
-diff --git a/arch/powerpc/sysdev/xics/ics-rtas.c b/arch/powerpc/sysdev/xics/ics-rtas.c
-index 6aabc74688a6..4cf18000f07c 100644
---- a/arch/powerpc/sysdev/xics/ics-rtas.c
-+++ b/arch/powerpc/sysdev/xics/ics-rtas.c
-@@ -50,8 +50,8 @@ static void ics_rtas_unmask_irq(struct irq_data *d)
- 
- 	server = xics_get_irq_server(d->irq, irq_data_get_affinity_mask(d), 0);
- 
--	call_status = rtas_call(ibm_set_xive, 3, 1, NULL, hw_irq, server,
--				DEFAULT_PRIORITY);
-+	call_status = rtas_call_reentrant(ibm_set_xive, 3, 1, NULL, hw_irq,
-+					  server, DEFAULT_PRIORITY);
- 	if (call_status != 0) {
- 		printk(KERN_ERR
- 			"%s: ibm_set_xive irq %u server %x returned %d\n",
-@@ -60,7 +60,7 @@ static void ics_rtas_unmask_irq(struct irq_data *d)
- 	}
- 
- 	/* Now unmask the interrupt (often a no-op) */
--	call_status = rtas_call(ibm_int_on, 1, 1, NULL, hw_irq);
-+	call_status = rtas_call_reentrant(ibm_int_on, 1, 1, NULL, hw_irq);
- 	if (call_status != 0) {
- 		printk(KERN_ERR "%s: ibm_int_on irq=%u returned %d\n",
- 			__func__, hw_irq, call_status);
-@@ -91,7 +91,7 @@ static void ics_rtas_mask_real_irq(unsigned int hw_irq)
- 	if (hw_irq == XICS_IPI)
- 		return;
- 
--	call_status = rtas_call(ibm_int_off, 1, 1, NULL, hw_irq);
-+	call_status = rtas_call_reentrant(ibm_int_off, 1, 1, NULL, hw_irq);
- 	if (call_status != 0) {
- 		printk(KERN_ERR "%s: ibm_int_off irq=%u returned %d\n",
- 			__func__, hw_irq, call_status);
-@@ -99,8 +99,8 @@ static void ics_rtas_mask_real_irq(unsigned int hw_irq)
- 	}
- 
- 	/* Have to set XIVE to 0xff to be able to remove a slot */
--	call_status = rtas_call(ibm_set_xive, 3, 1, NULL, hw_irq,
--				xics_default_server, 0xff);
-+	call_status = rtas_call_reentrant(ibm_set_xive, 3, 1, NULL, hw_irq,
-+					  xics_default_server, 0xff);
- 	if (call_status != 0) {
- 		printk(KERN_ERR "%s: ibm_set_xive(0xff) irq=%u returned %d\n",
- 			__func__, hw_irq, call_status);
-@@ -131,7 +131,7 @@ static int ics_rtas_set_affinity(struct irq_data *d,
- 	if (hw_irq == XICS_IPI || hw_irq == XICS_IRQ_SPURIOUS)
- 		return -1;
- 
--	status = rtas_call(ibm_get_xive, 1, 3, xics_status, hw_irq);
-+	status = rtas_call_reentrant(ibm_get_xive, 1, 3, xics_status, hw_irq);
- 
- 	if (status) {
- 		printk(KERN_ERR "%s: ibm,get-xive irq=%u returns %d\n",
-@@ -146,8 +146,8 @@ static int ics_rtas_set_affinity(struct irq_data *d,
- 		return -1;
- 	}
- 
--	status = rtas_call(ibm_set_xive, 3, 1, NULL,
--			   hw_irq, irq_server, xics_status[1]);
-+	status = rtas_call_reentrant(ibm_set_xive, 3, 1, NULL,
-+				     hw_irq, irq_server, xics_status[1]);
- 
- 	if (status) {
- 		printk(KERN_ERR "%s: ibm,set-xive irq=%u returns %d\n",
-@@ -179,7 +179,7 @@ static int ics_rtas_map(struct ics *ics, unsigned int virq)
- 		return -EINVAL;
- 
- 	/* Check if RTAS knows about this interrupt */
--	rc = rtas_call(ibm_get_xive, 1, 3, status, hw_irq);
-+	rc = rtas_call_reentrant(ibm_get_xive, 1, 3, status, hw_irq);
- 	if (rc)
- 		return -ENXIO;
- 
-@@ -198,7 +198,7 @@ static long ics_rtas_get_server(struct ics *ics, unsigned long vec)
- {
- 	int rc, status[2];
- 
--	rc = rtas_call(ibm_get_xive, 1, 3, status, vec);
-+	rc = rtas_call_reentrant(ibm_get_xive, 1, 3, status, vec);
- 	if (rc)
- 		return -1;
- 	return status[0];
--- 
-2.25.4
-
+Chrome OS is irrelevant here, the series should be based on Linus' or
+one of the relevant maintainer trees (+ the patches it depends on).
+If it is actually based on the Chrome OS kernel tree (v5.4 I imagine)
+there will likely be conflicts which will make maintainers unhappy.
