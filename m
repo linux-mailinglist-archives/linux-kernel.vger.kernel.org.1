@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B4E1D2623
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7070E1D2629
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725952AbgENE6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 00:58:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41070 "EHLO mail.kernel.org"
+        id S1726075AbgENE7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 00:59:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725788AbgENE6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 00:58:45 -0400
+        id S1725838AbgENE7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 00:59:10 -0400
 Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98C41205CB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:58:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1285A20760
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:59:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589432324;
-        bh=1bJl5V9rIa6F/KokSx6T9TyYU8drhQZpBwxhsnGNptA=;
+        s=default; t=1589432350;
+        bh=34F8eGW7N0jNgiN4aSvNc+ES3vB+phlFfIdTqf7K6F0=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vQn/dP/iLKrrTc2XC0HKokLn2gw7p2FQgRjMrt8Vhb5zQaHAITfYtp9YyCtZq8K2E
-         k4D0iTEchW19nbbgb/BkolyE/V1Gx6/T2Pj+XokOwXlQ3KLS6agVpSrBlbdaYlCpra
-         BxWo9ABd6mExWlGvrt7ljJm/dkURGp8OUNM1l3BU=
-Received: by mail-wr1-f50.google.com with SMTP id y16so2154486wrs.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:58:44 -0700 (PDT)
-X-Gm-Message-State: AOAM533C/XH0Kt02ih6JHyq2t3AmBCREoP/VJqO+DYmQeR9EFSdT0BFf
-        PDo/N2FI4ZLgwBgBHFjtFnzqggkWCB9AqggBi16Ybw==
-X-Google-Smtp-Source: ABdhPJwSupgk0tJFS3rmq6v6FMlkcjjT9kwiAmtqx6+k291nr5Bxt+2tOY/v1qQ3jotcVLnQO2vKDcyeqys9J4y/rlc=
-X-Received: by 2002:adf:a389:: with SMTP id l9mr3227189wrb.18.1589432323046;
- Wed, 13 May 2020 21:58:43 -0700 (PDT)
+        b=sAuNhWj+W/vblq6c/VQLrv86iMJSKqlo320TejoRm4rYoSVcolQNTzKR4B9VxzgwW
+         +Y87T7cz0eZ2e6x2VlqPGSALZpgjy98JWKqKDi+DGcSLI4vS4xVgw4nKz5mlgk9t5y
+         +QNZYA/t+sRZxPkCPrs4Z1dziwVB2lKdXVp31i2M=
+Received: by mail-wr1-f50.google.com with SMTP id v12so2088397wrp.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:59:09 -0700 (PDT)
+X-Gm-Message-State: AOAM532en5kXc+ZCoXbKyFFzU5+9ws+zg816AnJYZhTGPnfDAGCvf042
+        Qa17XQLq9pfBdw80G3uUJQlF0s8JDdTwuuZILnCFcw==
+X-Google-Smtp-Source: ABdhPJxfXsiygQMHLXwzsecD4MfW3wLYbQ6qE2bPesDvAj5EdcZGqNL61NZ7Vto10GqHNj2DEhKaqwI6vwoAWY3GIdo=
+X-Received: by 2002:adf:f446:: with SMTP id f6mr3071623wrp.75.1589432348453;
+ Wed, 13 May 2020 21:59:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200505134926.578885807@linutronix.de> <20200505135313.624443814@linutronix.de>
-In-Reply-To: <20200505135313.624443814@linutronix.de>
+References: <20200505134926.578885807@linutronix.de> <20200505135313.731774429@linutronix.de>
+In-Reply-To: <20200505135313.731774429@linutronix.de>
 From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 13 May 2020 21:58:31 -0700
-X-Gmail-Original-Message-ID: <CALCETrUkeDWw6c26GH_AdBr40QUCBdvy6WDtgh0GsZB3VqmNgA@mail.gmail.com>
-Message-ID: <CALCETrUkeDWw6c26GH_AdBr40QUCBdvy6WDtgh0GsZB3VqmNgA@mail.gmail.com>
-Subject: Re: [patch V4 part 4 03/24] lib/bsearch: Provide __always_inline variant
+Date:   Wed, 13 May 2020 21:58:57 -0700
+X-Gmail-Original-Message-ID: <CALCETrUXFme0mMEu9RhnBbwPK2EWXNt7uPFCK5niv_qk2yuyhg@mail.gmail.com>
+Message-ID: <CALCETrUXFme0mMEu9RhnBbwPK2EWXNt7uPFCK5niv_qk2yuyhg@mail.gmail.com>
+Subject: Re: [patch V4 part 4 04/24] x86/int3: Inline bsearch()
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
@@ -67,12 +67,10 @@ On Tue, May 5, 2020 at 7:15 AM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
 > From: Peter Zijlstra <peterz@infradead.org>
 >
-> For code that needs the ultimate performance (it can inline the @cmp
-> function too) or simply needs to avoid calling external functions for
-> whatever reason, provide an __always_inline variant of bsearch().
+> Avoid calling out to bsearch() by inlining it, for normal kernel configs
+> this was the last external call and poke_int3_handler() is now fully self
+> sufficient -- no calls to external code.
+>
 
 
 Acked-by: Andy Lutomirski <luto@kernel.org>
-
-Although maybe a more explicit name (e.g. __inlined_bsearch()) would
-be more clear?
