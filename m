@@ -2,95 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938A51D325B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9EA1D3258
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727938AbgENOMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 10:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727912AbgENOMY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 10:12:24 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F9BC05BD43
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:12:24 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id h188so2016633lfd.7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:12:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DkzKtHfHzDrv9acZGYhRUV9tmRVRbn6arGIc1dXkxBI=;
-        b=XottLg9cQaTSjBHR11pedGRx+Glhzf+8Usg9K//kY6W0jNVJL1plss0LJBLgC3nXhz
-         M7/NBircuUPinVKCHjYMUacfV2lTSjNWOTELV64WKqTIb+VoAHkWrKK+LyXiKxtTc91H
-         EkpxcjLeryrGNDHr3ahfTehONNWh2vDTvJC3KrUAVwr5ekDS6uVYv5S8fYzsZqRMeDcg
-         U9QIPtq8KUiqElnQ2rNtYXfrfX1ML51sOsdTUPKMJPSEfu+9xo31LZcyI4nCectwBKUP
-         tA1N9H4f3nEE3y6yZE9MxWwkMpIknY1ov4rh2crp5UPVHztPX919W+E1wCHPIKL0EBRz
-         aJ9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DkzKtHfHzDrv9acZGYhRUV9tmRVRbn6arGIc1dXkxBI=;
-        b=LGrT8JyKK26lC1oGg3/WMn13GuCj4yrCTL5II/d1LWLnrnJ3NKsk51P4wD9KvaUICl
-         K6uxHWWcSnOuRsewHe5unF7Ui4t2yEOk7X7xGyS7o9iYp7ThhLsBVwbVk6/S6qLzJ9I5
-         RmzYY6NwLU8nX9cHy/ei3cv9HuRHaqHz9tqEnOmI3rRAUuWZj5+A9Bmb3sisfy4x++Qf
-         FzB1fDHc3FluCUqa3yJ/4vHUds13wf+BuWFFNdNEagvN3JJ5Pgc5u9Wg1DIfDgtEZHjg
-         B1Bcg2FlmJnyTOy4+D21+JEWTjU4I6peNIWgDE2HhNhAb8QtbdqiikK8FT2hHzrGfWXc
-         fS/w==
-X-Gm-Message-State: AOAM532o/C0IgPyiQ/DhukIfp7Qv/TSXX7hsmZ4NEWToBFzAhxqVIvU3
-        01/noOnBmUkYPsbF9hoNTzasYV+k5Wzn95GzN/5zeg==
-X-Google-Smtp-Source: ABdhPJzbFJbGyW1QIZoQeEMNyecliP3FhYfrVVsA0/vlx9bAuXukGyGD9ZMmozQ02I6kOFg4AohML8Hs61aAnqoqEGA=
-X-Received: by 2002:ac2:5e70:: with SMTP id a16mr3507458lfr.77.1589465542377;
- Thu, 14 May 2020 07:12:22 -0700 (PDT)
+        id S1727873AbgENOMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 10:12:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgENOMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 10:12:16 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0031820671;
+        Thu, 14 May 2020 14:12:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589465534;
+        bh=2pWfYmuh60ybLPSPHiIHqd8LDGUDwAyckGQXj4IrKsU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nDNs0fajv5NQ+LzJ7Gd8+iuVGp2crcqoqHo/5flRj7Sn9A0Yufzltxzpl4pIqWznO
+         5Fu3gmMFgaOYSzDDULaPz/uUJRrMwuoMZ7cVD3N1Wh6vWPcYBWuP1+6KwPLRV+Ohgm
+         I4RdCm7bDbpOYOIAsA6xJK2UhHmG4VnWaBmwAscE=
+Date:   Thu, 14 May 2020 16:12:11 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     arnd@arndb.de, manivannan.sadhasivam@linaro.org,
+        bjorn.andersson@linaro.org, wufan@codeaurora.org,
+        pratanan@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 3/8] qaic: Create char dev
+Message-ID: <20200514141211.GA2643665@kroah.com>
+References: <1589465266-20056-1-git-send-email-jhugo@codeaurora.org>
+ <1589465266-20056-4-git-send-email-jhugo@codeaurora.org>
 MIME-Version: 1.0
-References: <20200417061907.1226490-1-bjorn.andersson@linaro.org>
- <20200417061907.1226490-2-bjorn.andersson@linaro.org> <20200429213453.GA32114@bogus>
- <20200514060422.GL1302550@yoga>
-In-Reply-To: <20200514060422.GL1302550@yoga>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 14 May 2020 16:12:10 +0200
-Message-ID: <CACRpkdZpfgb0wwt2FUwqPab4XhtLXfDWOvZLdCc+NF-mVJkKYw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom: Add sm8250 pinctrl bindings
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1589465266-20056-4-git-send-email-jhugo@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 8:04 AM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
-> On Wed 29 Apr 14:34 PDT 2020, Rob Herring wrote:
-> > On Thu, Apr 16, 2020 at 11:19:06PM -0700, Bjorn Andersson wrote:
-> > > diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
-> [..]
-> > > +#PIN CONFIGURATION NODES
-> > > +patternProperties:
-> > > +  '^.*$':
-> > > +    if:
-> > > +      type: object
-> > > +    then:
-> >
-> > Needs a $ref to the standard properties.
-> >
-> > Would be good to show a child node in the example too. (And try having
-> > an error in a standard property type to verify you get an error).
-> >
->
-> Finally looked into this.
+On Thu, May 14, 2020 at 08:07:41AM -0600, Jeffrey Hugo wrote:
+>  /* Copyright (c) 2019-2020, The Linux Foundation. All rights reserved. */
+>  
+> +#include <linux/cdev.h>
+> +#include <linux/idr.h>
+> +#include <linux/list.h>
+> +#include <linux/kref.h>
+> +#include <linux/mhi.h>
+>  #include <linux/module.h>
+>  #include <linux/msi.h>
+> +#include <linux/mutex.h>
+>  #include <linux/pci.h>
+>  #include <linux/pci_ids.h>
+>  
+> @@ -13,9 +19,242 @@
+>  #define PCI_DEV_AIC100			0xa100
+>  
+>  #define QAIC_NAME			"Qualcomm Cloud AI 100"
+> +#define QAIC_MAX_MINORS			256
 
-Can you send an incremental patch because otherwise I have
-to revert the patch that I merged (maybe to trigger happy, mea culpa).
+Why have a max?
 
-(If it's too hard I can just revert it.)
+Why not just use a misc device so you make the logic a lot simple, no
+class or chardev logic to mess with at all.
 
-Yours,
-Linus Walleij
+thanks,
+
+greg k-h
