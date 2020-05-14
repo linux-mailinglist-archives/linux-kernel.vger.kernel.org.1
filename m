@@ -2,85 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8849E1D3240
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66201D322A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgENOIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 10:08:55 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:32971 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728003AbgENOIw (ORCPT
+        id S1727838AbgENOIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 10:08:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726707AbgENOIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 10:08:52 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589465332; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=8+Vie2hsxCQbkdc6lWiHV4L35G4vuVJJaMS8++AIXMw=; b=FQhI3XH8vmphZoluqZU4zAzUVPGTnm9YsbIyDvRXDCs1VCWLxyr+rurSJuIOvSQ+LDcv6G0g
- IedxAD9/mdptbD3xjcWKPgCaifLItd0feId7Af0U3sMS8UgJdCLgFe3BEoY6cJS5SwtBTdbU
- iboeFXsErctxKFrnCV0FyK/ANDQ=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ebd50dc.7f730a40a180-smtp-out-n03;
- Thu, 14 May 2020 14:08:28 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E8CD3C433F2; Thu, 14 May 2020 14:08:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from jhugo-perf-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2305AC44BC3;
-        Thu, 14 May 2020 14:08:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2305AC44BC3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     manivannan.sadhasivam@linaro.org, bjorn.andersson@linaro.org,
-        wufan@codeaurora.org, pratanan@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeffrey Hugo <jhugo@codeaurora.org>
-Subject: [RFC PATCH 8/8] MAINTAINERS: Add entry for QAIC driver
-Date:   Thu, 14 May 2020 08:07:46 -0600
-Message-Id: <1589465266-20056-9-git-send-email-jhugo@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1589465266-20056-1-git-send-email-jhugo@codeaurora.org>
-References: <1589465266-20056-1-git-send-email-jhugo@codeaurora.org>
+        Thu, 14 May 2020 10:08:12 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AE8C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:08:12 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id j3so3646980ljg.8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:08:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4tjpLfreP4k0pSGmLfKu7J4qVyl2PfcgR+DBUFuyQfI=;
+        b=Dj7/g773oDlRsTiNUR7xo2qlLm/wu1orsMurVYbTiR6KmugblKgadVSe7mPERK4aCL
+         vEPNEYTpo0FsOvkLTFcAR67KlJyF7Lm0tYMvWEFjNfuewnDqxPfak/mLCAwyBwyRj2ir
+         q0by15fYjqzhJnUNE1ONVJGr3vLUxaVTcB05C/nT5aCMA95AP0XrrQXYs66hWza3MVLf
+         R+msddyOYrqaHHXoL1h2Zg7FvdZ9e0msvkVGT4lgti3NVlNIlsRBi9Wq6iHo7+nPlyp+
+         J4SOOLifvlUKFSIzHAfmGa1qomnjT8z0ZSZ1URkY4VQZLOT1r8zjI6FEv5Gh00Bgxe6d
+         cS2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4tjpLfreP4k0pSGmLfKu7J4qVyl2PfcgR+DBUFuyQfI=;
+        b=WW64coZG4UEYECie2wwd6BeIGwgBGbVEJPVKmzP/y3OYtOTo6k3jcCOg+qm/ND7W1q
+         b3hhMnreEYj10IOJfy7KISbD4vgLZj5ylzIrbstMaPeTuFI/nrBAvcSH6/+jRjS4lvXt
+         1OGq9lh3QRp//TKvWyDiYSPxV9s7HOIpyq1T2QTVwRsq+174TNCszdphEXQ8SVKclRtp
+         Z9AzBKzPtXBAds4I71U2iw7UtBDhRzmA/DnMwXps+7QnoG2An0BzZNx7N0e/0C0XcfvO
+         WFv3XvXlO5vH+lka+czy8cff++O7KgCfrHhnvFokJvE7sRJzQslyPmEcbcC//L3jVDlf
+         O7fQ==
+X-Gm-Message-State: AOAM532jSucC/S1Fg4mFOSbPudkIo+giTtTcVXvlZ2E4LL98iaOjI9wk
+        KqBfAxmGdBaV0Bueji5HbBNkJgBwwQIsz5UWJ56xhg==
+X-Google-Smtp-Source: ABdhPJx5t1yZM5yB0Se02KNKlQ3Kf5olZkwfnoQ7/EcJOQjcx6eZpQDoXhQSKSv4wdy91TSKQPnH1L4MsQ9yfH5F0tc=
+X-Received: by 2002:a2e:531e:: with SMTP id h30mr2030382ljb.168.1589465290360;
+ Thu, 14 May 2020 07:08:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <1589267017-17294-1-git-send-email-dillon.minfei@gmail.com>
+ <1589267017-17294-6-git-send-email-dillon.minfei@gmail.com>
+ <CACRpkdbZoMDC-D12CByKJUZbu4shqixC=QrKwJUd8x=nyK7seQ@mail.gmail.com> <CAL9mu0LVsePqifEC+-FR+NxvuZT3UGpU86KhzaTqb7w_Px0z2g@mail.gmail.com>
+In-Reply-To: <CAL9mu0LVsePqifEC+-FR+NxvuZT3UGpU86KhzaTqb7w_Px0z2g@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 14 May 2020 16:07:57 +0200
+Message-ID: <CACRpkdbcD7i+kNoJ9YP5XXTtLi12=yzW5OBNzet5oRdwPYz=dA@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] drm/panel: Add ilitek ili9341 driver
+To:     dillon min <dillon.minfei@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MAINTAINERS entry for the Qualcomm Cloud AI 100 driver.
+On Thu, May 14, 2020 at 12:22 PM dillon min <dillon.minfei@gmail.com> wrote:
 
-Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+> > > +       /* Gamma */
+> > > +       mipi_dbi_command(dbi, ILI9341_3GAMMA_EN, 0x00);
+> > > +       mipi_dbi_command(dbi, MIPI_DCS_SET_GAMMA_CURVE, 0x01);
+> > > +       mipi_dbi_command(dbi, ILI9341_PGAMMA,
+> > > +                        0x0f, 0x31, 0x2b, 0x0c, 0x0e, 0x08, 0x4e, 0xf1,
+> > > +                        0x37, 0x07, 0x10, 0x03, 0x0e, 0x09, 0x00);
+> > > +       mipi_dbi_command(dbi, ILI9341_NGAMMA,
+> > > +                        0x00, 0x0e, 0x14, 0x03, 0x11, 0x07, 0x31, 0xc1,
+> > > +                        0x48, 0x08, 0x0f, 0x0c, 0x31, 0x36, 0x0f);
+> >
+> > It seems to be copies of the stuff above, but why is there a different
+> > gamma if you use DBI?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b816a45..7822d07 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13962,6 +13962,13 @@ F:	Documentation/devicetree/bindings/media/qcom,camss.txt
- F:	Documentation/media/v4l-drivers/qcom_camss.rst
- F:	drivers/media/platform/qcom/camss/
- 
-+QUALCOMM CLOUD AI 100 (QAIC) DRIVER
-+M:	Jeffrey Hugo <jhugo@codeaurora.org>
-+L:	linux-arm-msm@vger.kernel.org
-+S:	Supported
-+F:	drivers/misc/qaic/
-+F:	include/uapi/misc/qaic.h
-+
- QUALCOMM CORE POWER REDUCTION (CPR) AVS DRIVER
- M:	Niklas Cassel <nks@flawful.org>
- L:	linux-pm@vger.kernel.org
--- 
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+> for dbi interface, currently i just copy the code from tiny/ili9341.c.
+> as so many boards use this driver now, like raspberry pi, etc
+> i'm afraid it's will not work after modification. so, just leave the
+> original code there.
+
+OK if you move it to ili9341_config it will be clear which panels
+need this gamma and which panels need another gamma.
+
+I think there should be one ili9341_config for the new st,*
+variant and one for the old DBI variant.
+
+> anther question:
+> is there any panel driver have dbi & dpi or dpi & dsi supported? which
+> i mean support
+> two different panel interface in one driver.
+> thanks
+
+Usually you split the driver in three files becuase a driver can
+only list one initcall, and also it makes it modularized.
+
+There is nothing in-tree but look at my branch here:
+https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git/log/?h=ux500-skomer-v5.7-rc1
+
+You see how I split up the s6e63m0 driver in one SPI part
+and one DSI part:
+https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git/commit/?h=ux500-skomer-v5.7-rc1&id=6c0e1fb5df5fa8fa857dee65f6c0f54d06d158a7
+https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git/commit/?h=ux500-skomer-v5.7-rc1&id=cfbf562cc709b53b62f5fbc7fedf176ffa17b088
+
+The overall idea should work the same with DBI.
+
+Yours,
+Linus Walleij
+
+Yours,
+Linus Walleij
