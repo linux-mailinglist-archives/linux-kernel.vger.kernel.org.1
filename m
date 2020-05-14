@@ -2,138 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B501D4082
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 00:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F6A1D4077
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 00:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728206AbgENWIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 18:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgENWIv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 18:08:51 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC52EC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 15:08:51 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id i16so69351ybq.9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 15:08:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fg0w/j23WIAOEbTsycZ8vzGnmdBhvdbXaaVn6uIjTKo=;
-        b=ZJRMqzHDGB5OGlIstzoou3nLCpMz9POTSJjkQlG4IWS9fzn3K/KRworTOY5hI5dZuC
-         yYvO53wcuWdA3ecQTMD3Y4rmLm5NL1djcrGFNgkYVAfRyJbEldtDdIwWRhAPK6rcPmwq
-         eDpBJmRNmYrFmDD3ZaNS68jvkcX9BQYiqr9cyevYQCJrA+kZ0mDjUVShPp7ZObt24lCP
-         ADHyQATU7bKw+8S0wCODDM+9pCociwYew/R/6A9VuD+jq1AMKMIxNLKOTQ8KuJ0JUfOY
-         w9k3RuyX0o1ZnmPGhfnx2SelYo/VJjDT1WEXUveWTqqhnsDn4kzyMQD1G80TzL3135eH
-         X+2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fg0w/j23WIAOEbTsycZ8vzGnmdBhvdbXaaVn6uIjTKo=;
-        b=XkVq73+EC1Vu3rToD2UerR8hkdBIq7xSR4QWbhVNugn3QRHLWN04wZLDf1O5vDN6sa
-         QZub3U6G3nAq4drYIijRJH2qLdmSif4qcsGdXzaBs8OOw8/2AKIu1o5hVeMAIfBI8uq0
-         Q6KhcZMO9TaBXROz/jiK740lWmxF7SgKQUPy2bxTcSh5z3ooPNCSwtijV/euEYHYkCLL
-         U+rkirWQH61Z9Ho6fiMxB0wNND/gquyRSm7dl57A/TLiUI+w0UZyTA44k4Z2/d27Gp1K
-         w9gCqHEheOHVrjemQqMAQ974QlH/vMYXb0jzqfr7BNZ7fWXSp08vq+HudnVwt5OR5EQ1
-         xkWQ==
-X-Gm-Message-State: AOAM533vSWKukBudlnTfZsbarQnSXfpLuD6mSgfm2RXO3HeVdjk134pz
-        qMoMOLoV7BxKf6sNrEAm6+dSVUjS/ej81Uq9KZGFEg==
-X-Google-Smtp-Source: ABdhPJwwZBnR2aRuYhnNNGrbGEFAxYKBtWAvvcqUH1GulgvHXh0uBeywVH2CcXXCFkHyrVFBPvomDtxmD+x+HSCNtQw=
-X-Received: by 2002:a25:7cc1:: with SMTP id x184mr668358ybc.403.1589494130784;
- Thu, 14 May 2020 15:08:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200427061520.24905-1-nick.gasson@arm.com> <20200427061520.24905-3-nick.gasson@arm.com>
-In-Reply-To: <20200427061520.24905-3-nick.gasson@arm.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 14 May 2020 15:08:39 -0700
-Message-ID: <CAP-5=fXaKA8P8Osbf-AryprGOU4WivMjkiHsnLmCAXdA=rP5jw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] perf jvmti: Do not report error when missing debug information
-To:     Nick Gasson <nick.gasson@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+        id S1728053AbgENWE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 18:04:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726046AbgENWE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 18:04:57 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 351622065C;
+        Thu, 14 May 2020 22:04:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589493897;
+        bh=wVYlWHo32ix4biFnX8gPYhTJNt94qOjJRYKVMHTxriY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yTzO9JVf0EPIEnb4lkoCCBtbx52fNb3IfBgx8VIupsRA4ajFa3DEORz6Vlgf21HVF
+         Pqt0kPcIxYidQuySiG14cA6GXLkTd6p/0kzOusFFV22H4V1rD+8Ie2sGn4J78/700i
+         xeB6ATQWwWv1dzqhagb6mYc2d/feorzN4rjmbrC8=
+Date:   Thu, 14 May 2020 17:09:34 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        LKML <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH perf/core] perf intel-pt: Fix clang build failure in
+ intel_pt_synth_pebs_sample
+Message-ID: <20200514220934.GT4897@embeddedor>
+References: <20200513234738.GA21211@embeddedor>
+ <20200514131030.GL5583@kernel.org>
+ <20200514150601.GS4897@embeddedor>
+ <CAP-5=fWTCFx80Hd_97_4AxFV4KsRyYptLbQfw=XVw_j8i-EAyg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fWTCFx80Hd_97_4AxFV4KsRyYptLbQfw=XVw_j8i-EAyg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 11:16 PM Nick Gasson <nick.gasson@arm.com> wrote:
->
-> If the Java sources are compiled with -g:none to disable debug
-> information the perf JVMTI plugin reports a lot of errors like:
->
->   java: GetLineNumberTable failed with JVMTI_ERROR_ABSENT_INFORMATION
->   java: GetLineNumberTable failed with JVMTI_ERROR_ABSENT_INFORMATION
->   java: GetLineNumberTable failed with JVMTI_ERROR_ABSENT_INFORMATION
->   java: GetLineNumberTable failed with JVMTI_ERROR_ABSENT_INFORMATION
->   java: GetLineNumberTable failed with JVMTI_ERROR_ABSENT_INFORMATION
->
-> Instead if GetLineNumberTable returns JVMTI_ERROR_ABSENT_INFORMATION
-> simply skip emitting line number information for that method. Unlike the
-> previous patch these errors don't affect the jitdump generation, they
-> just generate a lot of noise.
->
-> Similarly for native methods which also don't have line tables.
->
-> Signed-off-by: Nick Gasson <nick.gasson@arm.com>
+On Thu, May 14, 2020 at 12:06:48PM -0700, Ian Rogers wrote:
+> On Thu, May 14, 2020 at 8:01 AM Gustavo A. R. Silva
+> <gustavoars@kernel.org> wrote:
+> >
+> > On Thu, May 14, 2020 at 10:10:30AM -0300, Arnaldo Carvalho de Melo wrote:
+> > > Em Wed, May 13, 2020 at 06:47:38PM -0500, Gustavo A. R. Silva escreveu:
+> > > > Fix the following build failure generated with command
+> > > > $ make CC=clang HOSTCC=clang -C tools/ perf:
+> > > >
+> > > > util/intel-pt.c:1802:24: error: field 'br_stack' with variable sized type 'struct branch_stack' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+> > > >                         struct branch_stack br_stack;
+> > > >                                             ^
+> > > > 1 error generated.
+> > > >
+> > > > Fix this by reordering the members of struct br.
+> > >
+> > > Yeah, I noticed that as far back as with ubuntu 16.04's clang:
+> > >
+> > > clang version 3.8.0-2ubuntu4 (tags/RELEASE_380/final)
+> > >
+> > > util/intel-pt.c:1802:24: error: field 'br_stack' with variable sized type 'struct branch_stack' not at the end of a struct or class is a GNU
+> > >       extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+> > >                         struct branch_stack br_stack;
+> > >                                             ^
+> > > 1 error generated.
+> > >
+> > >
+> > > Will fold this with the bug introducing the problem to avoid bisection
+> > > problems.
+> > >
+> >
+> > I agree. Also, the commit hash of the "Fixes" tag only applies to the
+> > perf/core branch and, I guess that might create confusion.
+> 
+> 
+> So while this fixes the warning I believe it breaks the intent of the code.
+> 
+> tools/perf/util/branch.h:
+> struct branch_stack {
+>        u64                     nr;
+>        u64                     hw_idx;
+>        struct branch_entry     entries[];
+> };
+> 
+> tools/perf/util/intel-pt.c:
+>                struct {
+>                        struct branch_stack br_stack;
+>                        struct branch_entry entries[LBRS_MAX];
+>                } br;
+> 
+> The array in br is trying to extend branch_stack's entries array. You
+> might have to do something like:
+> 
+> alignas(alignof(branch_stack)) char storage[sizeof(branch_stack) +
+> sizeof(branch_entry) * LBRS_MAX];
+> struct branch_stack *br = &storage;
+> 
+> malloc/free may be nicer on the eyeballs.
+> 
 
-Reviewed-by: Ian Rogers <irogers@google.com>
-Tested-by: Ian Rogers <irogers@google.com>
+Yep, I'd go for zalloc/free. There are a couple of places where dynamic
+memory is being allocated for struct branch_stack:
 
-Thanks!
-Ian
+tools/perf/util/cs-etm.c-256-   if (etm->synth_opts.last_branch) {
+tools/perf/util/cs-etm.c:257:           size_t sz = sizeof(struct branch_stack);
+tools/perf/util/cs-etm.c-258-
+tools/perf/util/cs-etm.c-259-           sz += etm->synth_opts.last_branch_sz *
+tools/perf/util/cs-etm.c-260-                 sizeof(struct branch_entry);
+tools/perf/util/cs-etm.c-261-           tidq->last_branch = zalloc(sz);
 
-> ---
->  tools/perf/jvmti/libjvmti.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/jvmti/libjvmti.c b/tools/perf/jvmti/libjvmti.c
-> index 50ef524b5cd4..a9a056d68416 100644
-> --- a/tools/perf/jvmti/libjvmti.c
-> +++ b/tools/perf/jvmti/libjvmti.c
-> @@ -41,7 +41,11 @@ do_get_line_numbers(jvmtiEnv *jvmti, void *pc, jmethodID m, jint bci,
->         jvmtiError ret;
->
->         ret = (*jvmti)->GetLineNumberTable(jvmti, m, &nr_lines, &loc_tab);
-> -       if (ret != JVMTI_ERROR_NONE) {
-> +       if (ret == JVMTI_ERROR_ABSENT_INFORMATION || ret == JVMTI_ERROR_NATIVE_METHOD) {
-> +               /* No debug information for this method */
-> +               *nr = 0;
-> +               return JVMTI_ERROR_NONE;
-> +       } else if (ret != JVMTI_ERROR_NONE) {
->                 print_error(jvmti, "GetLineNumberTable", ret);
->                 return ret;
->         }
-> @@ -93,6 +97,9 @@ get_line_numbers(jvmtiEnv *jvmti, const void *compile_info, jvmti_line_info_t **
->                                         /* free what was allocated for nothing */
->                                         (*jvmti)->Deallocate(jvmti, (unsigned char *)lne);
->                                         nr_total += (int)nr;
-> +                               } else if (ret == JVMTI_ERROR_ABSENT_INFORMATION
-> +                                          || ret == JVMTI_ERROR_NATIVE_METHOD) {
-> +                                       /* No debug information for this method */
->                                 } else {
->                                         print_error(jvmti, "GetLineNumberTable", ret);
->                                 }
-> @@ -262,7 +269,9 @@ compiled_method_load_cb(jvmtiEnv *jvmti,
->         if (has_line_numbers && map && map_length) {
->                 ret = get_line_numbers(jvmti, compile_info, &line_tab, &nr_lines);
->                 if (ret != JVMTI_ERROR_NONE) {
-> -                       warnx("jvmti: cannot get line table for method");
-> +                       if (ret != JVMTI_ERROR_NOT_FOUND) {
-> +                               warnx("jvmti: cannot get line table for method");
-> +                       }
->                         nr_lines = 0;
->                 } else if (nr_lines > 0) {
->                         line_file_names = malloc(sizeof(char*) * nr_lines);
-> --
-> 2.26.1
->
+tools/perf/util/thread-stack.c-148-     if (br_stack_sz) {
+tools/perf/util/thread-stack.c:149:             size_t sz = sizeof(struct branch_stack);
+tools/perf/util/thread-stack.c-150-
+tools/perf/util/thread-stack.c-151-             sz += br_stack_sz * sizeof(struct branch_entry);
+tools/perf/util/thread-stack.c-152-             ts->br_stack_rb = zalloc(sz);
+
+there is even function intel_pt_alloc_br_stack().
+
+Just out of curiosity, why the need of such a hack in this case (the
+on-stack extension of branch_stack's entries array)?
+
+Thanks
+--
+Gustavo
+
