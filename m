@@ -2,172 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2891D3F8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 23:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB6C1D3F62
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 22:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728149AbgENVDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 17:03:14 -0400
-Received: from [66.170.99.2] ([66.170.99.2]:1733 "EHLO
-        sid-build-box.eng.vmware.com" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727998AbgENVDL (ORCPT
+        id S1727915AbgENUzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 16:55:49 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:47288 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726128AbgENUzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 17:03:11 -0400
-Received: by sid-build-box.eng.vmware.com (Postfix, from userid 1000)
-        id 4F66DBA20CA; Fri, 15 May 2020 02:26:09 +0530 (IST)
-From:   Siddharth Chandrasekaran <csiddharth@vmware.com>
-To:     gregkh@linuxfoundation.org
-Cc:     srostedt@vmware.com, linux-kernel@vger.kernel.org,
-        stable@kernel.org, srivatsab@vmware.com, csiddharth@vmware.com,
-        siddharth@embedjournal.com, dchinner@redhat.com,
-        darrick.wong@oracle.com
-Subject: [PATCH v4.4] xfs: validate cached inodes are free when allocated
-Date:   Fri, 15 May 2020 02:25:22 +0530
-Message-Id: <76dad64209a2a477a757d6b235b461d78dadea43.1589486853.git.csiddharth@vmware.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1589486724.git.csiddharth@vmware.com>
-References: <cover.1589486724.git.csiddharth@vmware.com>
-In-Reply-To: <cover.1589486724.git.csiddharth@vmware.com>
-References: <cover.1589486724.git.csiddharth@vmware.com>
+        Thu, 14 May 2020 16:55:49 -0400
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4ADC626A;
+        Thu, 14 May 2020 22:55:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1589489745;
+        bh=f29cqelK5HHkGqAU0L84jjLxU3fDawEizqrCRSurEdI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P1QCTNzQ/5H4u975GU1Ru/r7SadP8ZL0Iq1SFP9RpeARgWRAF8Z9vfAFjneDmM+88
+         aWK2GQgKb7lheaTULZrinb/L+Z+5BpM/KVdcFoqz9PRJxIv5XVn4jgifBABKRT8j39
+         YUOzvsR02Ih71Rt6++i4PDoRTscbaStUfcmylNBs=
+Date:   Thu, 14 May 2020 23:55:36 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 7/7] drm/mediatek: mtk_dsi: Create connector for
+ bridges
+Message-ID: <20200514205536.GN5955@pendragon.ideasonboard.com>
+References: <20200501152335.1805790-1-enric.balletbo@collabora.com>
+ <20200501152335.1805790-8-enric.balletbo@collabora.com>
+ <CAFqH_53h=3OXzwLnw1XT3rHYkMPOPNFBdQdPeFmNubN9qq_Twg@mail.gmail.com>
+ <CAAOTY_-pOUuM7LQ1jm6gqpg8acMqDWOHxGucY5XOjq0ctGUkzA@mail.gmail.com>
+ <53683f2d-23c7-57ab-2056-520c50795ffe@collabora.com>
+ <CAAOTY__b6V12fS2xTKGjB1fQTfRjX7AQyBqDPXzshfhkjjSkeQ@mail.gmail.com>
+ <37191700-5832-2931-5764-7f7fddd023b9@collabora.com>
+ <e1ac7d75-c46a-445a-5fcf-5253548f2707@collabora.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e1ac7d75-c46a-445a-5fcf-5253548f2707@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Chinner <dchinner@redhat.com>
+Hi Enric,
 
-commit afca6c5b2595fc44383919fba740c194b0b76aff upstream.
+On Thu, May 14, 2020 at 07:35:33PM +0200, Enric Balletbo i Serra wrote:
+> On 14/5/20 19:12, Enric Balletbo i Serra wrote:
+> > On 14/5/20 18:44, Chun-Kuang Hu wrote:
+> >> Enric Balletbo i Serra <enric.balletbo@collabora.com> 於 2020年5月14日 週四 下午11:42寫道：
+> >>> On 14/5/20 16:28, Chun-Kuang Hu wrote:
+> >>>> Enric Balletbo Serra <eballetbo@gmail.com> 於 2020年5月14日 週四 上午12:41寫道：
+> >>>>> Missatge de Enric Balletbo i Serra <enric.balletbo@collabora.com> del
+> >>>>> dia dv., 1 de maig 2020 a les 17:25:
+> >>>>>>
+> >>>>>> Use the drm_bridge_connector helper to create a connector for pipelines
+> >>>>>> that use drm_bridge. This allows splitting connector operations across
+> >>>>>> multiple bridges when necessary, instead of having the last bridge in
+> >>>>>> the chain creating the connector and handling all connector operations
+> >>>>>> internally.
+> >>>>>>
+> >>>>>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> >>>>>> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> >>>>>
+> >>>>> A gentle ping on this, I think that this one is the only one that
+> >>>>> still needs a review in the series.
+> >>>>
+> >>>> This is what I reply in patch v3:
+> >>>
+> >>> Sorry for missing this.
+> >>>
+> >>>> I think the panel is wrapped into next_bridge here,
+> >>>
+> >>> Yes, you can have for example:
+> >>>
+> >>> 1. drm_bridge (mtk_dsi) -> drm_bridge (ps8640 - dsi-to-edp) -> drm_panel_bridge
+> >>> (edp panel)
+> >>>
+> >>> or a
+> >>>
+> >>> 2. drm_bridge (mtk_dsi)-> drm_panel_bridge (dsi panel)
+> >>>
+> >>> The _first_ one is my use case
+> >>>
+> >>>> if (panel) {
+> >>>
+> >>> This handles the second case, where you attach a dsi panel.
+> >>>
+> >>>>     dsi->next_bridge = devm_drm_panel_bridge_add(dev, panel);
+> >>>>
+> >>>> so the next_bridge is a panel_bridge, in its attach function
+> >>>> panel_bridge_attach(),
+> >>>> according to the flag DRM_BRIDGE_ATTACH_NO_CONNECTOR, if not exist,
+> >>>> it would create connector and attach connector to panel.
+> >>>>
+> >>>> I'm not sure this flag would exist or not, but for both case, it's strange.
+> >>>> If exist, you create connector in this patch but no where to attach
+> >>>> connector to panel.
+> >>>
+> >>> Yes, in fact, this is transitional patch needed, as once I converted mtk_dpi,
+> >>> mtk_dsi and mtk_hdmi to the new drm_bridge API the drm_bridge_connector_init()
+> >>> will be done in mtk_drm_drv. We will need to call drm_bridge_connector_init for
+> >>> dpi and dsi pipes and remove that call from mtk_dsi and mtk_dpi drivers. The
+> >>> graphic controller driver should create connectors and CRTCs, as example you can
+> >>> take a look at drivers/gpu/drm/omapdrm/omap_drv.c
+> >>
+> >> I have such question because I've reviewed omap's driver. In omap's
+> >> driver, after it call drm_bridge_connector_init(), it does this:
+> >>
+> >> if (pipe->output->panel) {
+> >> ret = drm_panel_attach(pipe->output->panel,
+> >>       pipe->connector);
+> >> if (ret < 0)
+> >> return ret;
+> >> }
+> >>
+> >> In this patch, you does not do this.
+> >>
+> > 
+> > I see, so yes, I am probably missing call drm_panel_attach in case there is a
+> > direct panel attached. Thanks for pointing it.
+> > 
+> > I'll send a new version adding the drm_panel_attach call.
+> > 
+> 
+> Wait, shouldn't panel be attached on the call of mtk_dsi_bridge_attach as
+> next_bridge points to a bridge or a panel?
+> 
+> static int mtk_dsi_bridge_attach(struct drm_bridge *bridge,
+> 				 enum drm_bridge_attach_flags flags)
+> {
+> 	struct mtk_dsi *dsi = bridge_to_dsi(bridge);
+> 
+> 	/* Attach the panel or bridge to the dsi bridge */
+> 	return drm_bridge_attach(bridge->encoder, dsi->next_bridge,
+> 				 &dsi->bridge, flags);
+> }
+> 
+> Or I am continuing misunderstanding all this?
 
-A recent fuzzed filesystem image cached random dcache corruption
-when the reproducer was run. This often showed up as panics in
-lookup_slow() on a null inode->i_ops pointer when doing pathwalks.
+Panels should always be wrapped in a drm_bridge, so I think you're doing
+right. I believe the call to drm_panel_attach() in omapdrm is a leftover
+that can be removed. I'll have a look at it.
 
-BUG: unable to handle kernel NULL pointer dereference at 0000000000000000
-....
-Call Trace:
- lookup_slow+0x44/0x60
- walk_component+0x3dd/0x9f0
- link_path_walk+0x4a7/0x830
- path_lookupat+0xc1/0x470
- filename_lookup+0x129/0x270
- user_path_at_empty+0x36/0x40
- path_listxattr+0x98/0x110
- SyS_listxattr+0x13/0x20
- do_syscall_64+0xf5/0x280
- entry_SYSCALL_64_after_hwframe+0x42/0xb7
+> >>>> If not exist, the next_brige would create one connector and this brige
+> >>>> would create another connector.
+> >>>>
+> >>>> I think in your case, mtk_dsi does not directly connect to a panel, so
+> >>>
+> >>> Exactly
+> >>>
+> >>>> I need a exact explain. Or someone could test this on a
+> >>>> directly-connect-panel platform.
+> >>>
+> >>> I don't think I am breaking this use case but AFAICS there is no users in
+> >>> mainline that directly connect a panel using the mediatek driver. As I said my
+> >>> use case is the other so I can't really test. Do you know anyone that can test this?
+> >>
+> >> I'm not sure who can test this, but [1], which is sent by YT Shen in a
+> >> series, is a patch to support dsi command mode so dsi could directly
+> >> connect to panel.
+> >>
+> >> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/gpu/drm/mediatek?h=v5.7-rc5&id=21898816831fc60c92dd634ab4316a24da7eb4af
+> >>
+> >> It's better that someone could test this case, but if no one would
+> >> test this, I could also accept a good-look patch.
+> >>
+> >>>>>> Changes in v4: None
+> >>>>>> Changes in v3:
+> >>>>>> - Move the bridge.type line to the patch that adds drm_bridge support. (Laurent Pinchart)
+> >>>>>>
+> >>>>>> Changes in v2: None
+> >>>>>>
+> >>>>>>  drivers/gpu/drm/mediatek/mtk_dsi.c | 13 ++++++++++++-
+> >>>>>>  1 file changed, 12 insertions(+), 1 deletion(-)
+> >>>>>>
+> >>>>>> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> >>>>>> index 4f3bd095c1ee..471fcafdf348 100644
+> >>>>>> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> >>>>>> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> >>>>>> @@ -17,6 +17,7 @@
+> >>>>>>
+> >>>>>>  #include <drm/drm_atomic_helper.h>
+> >>>>>>  #include <drm/drm_bridge.h>
+> >>>>>> +#include <drm/drm_bridge_connector.h>
+> >>>>>>  #include <drm/drm_mipi_dsi.h>
+> >>>>>>  #include <drm/drm_of.h>
+> >>>>>>  #include <drm/drm_panel.h>
+> >>>>>> @@ -183,6 +184,7 @@ struct mtk_dsi {
+> >>>>>>         struct drm_encoder encoder;
+> >>>>>>         struct drm_bridge bridge;
+> >>>>>>         struct drm_bridge *next_bridge;
+> >>>>>> +       struct drm_connector *connector;
+> >>>>>>         struct phy *phy;
+> >>>>>>
+> >>>>>>         void __iomem *regs;
+> >>>>>> @@ -977,10 +979,19 @@ static int mtk_dsi_encoder_init(struct drm_device *drm, struct mtk_dsi *dsi)
+> >>>>>>          */
+> >>>>>>         dsi->encoder.possible_crtcs = 1;
+> >>>>>>
+> >>>>>> -       ret = drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL, 0);
+> >>>>>> +       ret = drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL,
+> >>>>>> +                               DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+> >>>>>>         if (ret)
+> >>>>>>                 goto err_cleanup_encoder;
+> >>>>>>
+> >>>>>> +       dsi->connector = drm_bridge_connector_init(drm, &dsi->encoder);
+> >>>>>> +       if (IS_ERR(dsi->connector)) {
+> >>>>>> +               DRM_ERROR("Unable to create bridge connector\n");
+> >>>>>> +               ret = PTR_ERR(dsi->connector);
+> >>>>>> +               goto err_cleanup_encoder;
+> >>>>>> +       }
+> >>>>>> +       drm_connector_attach_encoder(dsi->connector, &dsi->encoder);
+> >>>>>> +
+> >>>>>>         return 0;
+> >>>>>>
+> >>>>>>  err_cleanup_encoder:
 
-but had many different failure modes including deadlocks trying to
-lock the inode that was just allocated or KASAN reports of
-use-after-free violations.
-
-The cause of the problem was a corrupt INOBT on a v4 fs where the
-root inode was marked as free in the inobt record. Hence when we
-allocated an inode, it chose the root inode to allocate, found it in
-the cache and re-initialised it.
-
-We recently fixed a similar inode allocation issue caused by inobt
-record corruption problem in xfs_iget_cache_miss() in commit
-ee457001ed6c ("xfs: catch inode allocation state mismatch
-corruption"). This change adds similar checks to the cache-hit path
-to catch it, and turns the reproducer into a corruption shutdown
-situation.
-
-Reported-by: Wen Xu <wen.xu@gatech.edu>
-Signed-Off-By: Dave Chinner <dchinner@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-[darrick: fix typos in comment]
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Siddharth Chandrasekaran <csiddharth@vmware.com>
----
- fs/xfs/xfs_icache.c | 57 ++++++++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 50 insertions(+), 7 deletions(-)
-
-diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-index adbc1f5..7efeefb 100644
---- a/fs/xfs/xfs_icache.c
-+++ b/fs/xfs/xfs_icache.c
-@@ -135,6 +135,46 @@ xfs_inode_free(
- }
- 
- /*
-+ * If we are allocating a new inode, then check what was returned is
-+ * actually a free, empty inode. If we are not allocating an inode,
-+ * then check we didn't find a free inode.
-+ *
-+ * Returns:
-+ *	0		if the inode free state matches the lookup context
-+ *	-ENOENT		if the inode is free and we are not allocating
-+ *	-EFSCORRUPTED	if there is any state mismatch at all
-+ */
-+static int
-+xfs_iget_check_free_state(
-+	struct xfs_inode	*ip,
-+	int			flags)
-+{
-+	if (flags & XFS_IGET_CREATE) {
-+		/* should be a free inode */
-+		if (VFS_I(ip)->i_mode != 0) {
-+			xfs_warn(ip->i_mount,
-+"Corruption detected! Free inode 0x%llx not marked free! (mode 0x%x)",
-+				ip->i_ino, VFS_I(ip)->i_mode);
-+			return -EFSCORRUPTED;
-+		}
-+
-+		if (ip->i_d.di_nblocks != 0) {
-+			xfs_warn(ip->i_mount,
-+"Corruption detected! Free inode 0x%llx has blocks allocated!",
-+				ip->i_ino);
-+			return -EFSCORRUPTED;
-+		}
-+		return 0;
-+	}
-+
-+	/* should be an allocated inode */
-+	if (VFS_I(ip)->i_mode == 0)
-+		return -ENOENT;
-+
-+	return 0;
-+}
-+
-+/*
-  * Check the validity of the inode we just found it the cache
-  */
- static int
-@@ -183,12 +223,12 @@ xfs_iget_cache_hit(
- 	}
- 
- 	/*
--	 * If lookup is racing with unlink return an error immediately.
-+	 * Check the inode free state is valid. This also detects lookup
-+	 * racing with unlinks.
- 	 */
--	if (ip->i_d.di_mode == 0 && !(flags & XFS_IGET_CREATE)) {
--		error = -ENOENT;
-+	error = xfs_iget_check_free_state(ip, flags);
-+	if (error)
- 		goto out_error;
--	}
- 
- 	/*
- 	 * If IRECLAIMABLE is set, we've torn down the VFS inode already.
-@@ -298,10 +338,13 @@ xfs_iget_cache_miss(
- 
- 	trace_xfs_iget_miss(ip);
- 
--	if ((ip->i_d.di_mode == 0) && !(flags & XFS_IGET_CREATE)) {
--		error = -ENOENT;
-+	/*
-+	 * Check the inode free state is valid. This also detects lookup
-+	 * racing with unlinks.
-+	 */
-+	error = xfs_iget_check_free_state(ip, flags);
-+	if (error)
- 		goto out_destroy;
--	}
- 
- 	/*
- 	 * Preload the radix tree so we can insert safely under the
 -- 
-2.7.4
+Regards,
 
+Laurent Pinchart
