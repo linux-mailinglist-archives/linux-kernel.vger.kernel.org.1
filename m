@@ -2,136 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD5E1D30D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 15:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 493BB1D30D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 15:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgENNOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 09:14:09 -0400
-Received: from mga02.intel.com ([134.134.136.20]:21288 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726056AbgENNOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 09:14:08 -0400
-IronPort-SDR: Jz4mIg7E3uGqOIsmERcKSH+vIBzwimjYZPNq12yHsEsAshIn9h4txvhrmk70pfHOyPQFfMaQ6k
- fGEe1SxsXekA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2020 06:14:08 -0700
-IronPort-SDR: EmIYT8jKZLaSFbl6v0aHerkzWU9i9q3hYSsjbj8gR9M70OCqmMP5HvJSdZELQYHB8VSc6ykjjp
- 0KAyKwP5erkw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,391,1583222400"; 
-   d="scan'208";a="372266437"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga001.fm.intel.com with SMTP; 14 May 2020 06:14:05 -0700
-Received: by lahna (sSMTP sendmail emulation); Thu, 14 May 2020 16:14:04 +0300
-Date:   Thu, 14 May 2020 16:14:04 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Richard Hughes <hughsient@gmail.com>
-Cc:     ptyser@xes-inc.com, Lee Jones <lee.jones@linaro.org>,
-        tudor.ambarus@microchip.com,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        allison@lohutok.net, tglx@linutronix.de, jethro@fortanix.com,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mfd: Export LPC attributes for the system SPI chip
-Message-ID: <20200514131404.GX2571@lahna.fi.intel.com>
-References: <125a8c31e106dc68e6d3e3395cecc766db7fb897.camel@gmail.com>
- <20200513070847.GM2571@lahna.fi.intel.com>
- <CAD2FfiHsUjLC1K=HvF74LbRaKoc_zz6bOmGLQrQbW4CywWCP9A@mail.gmail.com>
- <20200513091100.GY2571@lahna.fi.intel.com>
- <CAD2FfiGNErUhz=7DH6Z37X573hSkJkzbOEXbb++X+Ey5WLc9=Q@mail.gmail.com>
- <20200513162513.GI2571@lahna.fi.intel.com>
- <c4602e6768377179ff3204ea0c2d5944e6d35844.camel@gmail.com>
- <20200514121536.GS2571@lahna.fi.intel.com>
- <CAD2FfiEEzL0D5uRWgt=Hb6ngD2KY_NrZYJFAYtJi4CmS08zpfA@mail.gmail.com>
+        id S1727119AbgENNOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 09:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726056AbgENNOd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 09:14:33 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF76BC061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 06:14:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=K4yRXfBE6Kumf0RteQ59RKHAoo/xaI0w9/3Qtk/InMg=; b=iZ8lBoHlXLdkxFqPbB/Agxm8ix
+        31/ut5izgfIci1Z70gYmMDgmrpmqo7bvkQdNZaTS+FKx+uN+3eayh5YxRN8tJOGrdm+xCzHCymb2b
+        iWNd5G2YghcIsXBKQnEnd1WF3KiRD6blxpU1RkU+oOU7P4oXp/zA+1ufUCBZPoKeKlLHy169l3Rub
+        j4H6OTw1LGWREw324FnMstFtyTIHx8PuOx+jHEGO1uoFwJNlp6N4Q3Ewj9Xbg3n97c46FEVl17AHJ
+        6L18sdVhZCWMztkJ2SQUakG+kWhZMFsiuR2yJv3Q9MtxpEWHCekEizukILUqkFNkeZJVUaGdY1Bv+
+        I6v+h4sA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jZDgj-0007lq-OX; Thu, 14 May 2020 13:14:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 556163007CD;
+        Thu, 14 May 2020 15:14:12 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3C7E4213C8B61; Thu, 14 May 2020 15:14:12 +0200 (CEST)
+Date:   Thu, 14 May 2020 15:14:12 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Will Deacon <will@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH v5 00/18] Rework READ_ONCE() to improve codegen
+Message-ID: <20200514131412.GP2957@hirez.programming.kicks-ass.net>
+References: <CANpmjNMariz3-keqwUsLHVrpk2r7ThLSKtkhHxTDa3SEGeznhA@mail.gmail.com>
+ <20200513123243.GO2957@hirez.programming.kicks-ass.net>
+ <20200513124021.GB20278@willie-the-truck>
+ <CANpmjNM5XW+ufJ6Mw2Tn7aShRCZaUPGcH=u=4Sk5kqLKyf3v5A@mail.gmail.com>
+ <20200513132440.GN2978@hirez.programming.kicks-ass.net>
+ <CANpmjNM5dD1VH0hoQwsZYEL=mhWunKwAEJMQgASzHSN019OCnw@mail.gmail.com>
+ <20200514112142.GV2978@hirez.programming.kicks-ass.net>
+ <20200514120104.GD4280@willie-the-truck>
+ <20200514122735.GW2978@hirez.programming.kicks-ass.net>
+ <CANpmjNPmZv6TBQJ93TRuxCxJCpvJy8+XS5u9+ucOE2eEebEw9Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD2FfiEEzL0D5uRWgt=Hb6ngD2KY_NrZYJFAYtJi4CmS08zpfA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CANpmjNPmZv6TBQJ93TRuxCxJCpvJy8+XS5u9+ucOE2eEebEw9Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 01:53:23PM +0100, Richard Hughes wrote:
-> On Thu, 14 May 2020 at 13:15, Mika Westerberg
-> <mika.westerberg@linux.intel.com> wrote:
-> > > +What:                /sys/kernel/security/firmware/bioswe
-> > Should this still be "firmware_protections" or similar. Plain "firmware"
-> > sounds again too generic. Maybe its just me..
-> 
-> It's not always going to be protections provided by the firmware; it
-> might also be restrictions put on the firmware. My first choice was
-> /sys/kernel/security/firmware_security/ but having the double
-> 'security' just looked redundant.
-
-OK.
-
-> > > +     LPC_SPT,        /* Sunrise Point */
-> > > +     LPC_KBL,        /* Kaby Lake */
-> > > +     LPC_TGL,        /* Tiger Lake */
+On Thu, May 14, 2020 at 03:07:08PM +0200, Marco Elver wrote:
+> On Thu, 14 May 2020 at 14:27, Peter Zijlstra <peterz@infradead.org> wrote:
 > >
-> > These all have the SPI-NOR controller as separate PCI device (as ICL and
-> > others).
-> 
-> For Sunrise Point I see:
-> 
-> 00:1f.0 ISA bridge [0601]: Intel Corporation CM236 Chipset LPC/eSPI
-> Controller [8086:a150] (rev 31)
-> 00:1f.0 ISA bridge [0601]: Intel Corporation Sunrise Point LPC
-> Controller/eSPI Controller [8086:9d4e] (rev 21)
-> 
-> For Kaby Lake I see:
-> 
-> 00:1f.0 ISA bridge [0601]: Intel Corporation HM175 Chipset LPC/eSPI
-> Controller [8086:a152] (rev 31)",
-
-Yes, both of these have LPC device (1f.0) but the SPI-NOR controller is
-separate PCI device and most likely hidden.
-
-> You're indeed correct about Tiger Lake, my apologies.
-> 
-> > > +     [LPC_SPT] = {
-> > > +             .name = "Sunrise Point",
-> > > +             .spi_type = INTEL_SPI_LPC,
-> > > +     },
+> > On Thu, May 14, 2020 at 01:01:04PM +0100, Will Deacon wrote:
 > >
-> > So all of these have LCP/eSPI controller but the SPI-NOR controller is
-> > not accessible through it - it is a separate PCI device.
-> 
-> I have a Sunrise Point system here -- the lspci is here:
-> https://people.freedesktop.org/~hughsient/temp/lspci.txt
-> 
-> Is the SPI-NOR controller perhaps hidden? If I read the BCR @ 0xdc
-> from the 00:1f.0 ISB bridge I get the expected BIOS_WE, BLE and
-> SMM_BWP results.
-
-OK, I checked datasheet of KBL and indeed the LPC still has the BIOS
-Control (BC) register at 0xdc so that should work. Incidently the same
-register is part of the SPI-NOR controller register set.
-
-> > Like you said, Evolution seems to mangle these.
-> 
-> I'll use git for future patches, thanks.
-> 
-> > > +             pci_read_config_dword(dev, BCR, &bcr);
-> > > +             info->writeable = !!(bcr & BCR_WPD);
-> > > +             break;
-> > > +
-> > > +     case INTEL_SPI_LPC:
+> > > > +#if __has_feature(undefined_sanitizer)
+> > >
+> > > Hmm, this might want to be __has_feature(undefined_behavior_sanitizer)
+> > > (and damn is that hard for a Brit to type out!)
 > >
-> > So instead of this, you can add the security attributes to the existing
-> > entries where we are sure there is SPI-NOR controller behind LPC. Here
-> > it is not the case and further..
+> > (I know right, it should be behaviour, dammit!)
+> >
+> > I tried without the condition, eg.:
+> >
+> > +#define __no_sanitize_undefined \
+> > +               __attribute__((no_sanitize("undefined")))
+> >
+> > and it still generated UBSAN gunk.
 > 
-> Sooo I'd use INTEL_SPI_LPT? On my system RCBA isn't set, and so "if
-> (!res->start)" bails out with  return -ENODEV;"
+> Which ubsan calls are left? I'm trying to reproduce.
 
-I think the INTEL_SPI_LPC is slightly misleading because the SPI is not
-accessible through LPC. Instead what if we read the BIOS control
-register first in lpc_ich_init_spi() and then bail out since .spi_type
-is not set?
+To be more precise, the patches were on top of:
 
-Probably we can rename the function lpc_ich_init_spi() to
-lpc_ich_init_security_and_spi() or something like that.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v5-the-rest
+
+$ grep ubsan poke_int3_handler-clang10.asm
+0074                    74: R_X86_64_PLT32      __ubsan_handle_load_invalid_value-0x4
+0083                    83: R_X86_64_PLT32      __ubsan_handle_load_invalid_value-0x4
+01c5                    1c5: R_X86_64_PLT32     __ubsan_handle_builtin_unreachable-0x4
+
+I think the config was defconfig_x86-64 inspired with KASAN+UBSAN
+enabled.
+
+So I build with:
+
+  touch arch/x86/kernel/alterantive.c;
+  make CC=clang-10 V=1 O=defconfig-build/ arch/x86/kernel/alterantive.o
+
+And then dump the output with:
+
+  ./objdump-func.sh defconfig-build/arch/x86/kernel/alterantive.o poke_int3_handler
+
+$ # cat objdump-func.sh
+#!/bin/bash
+objdump -dr $1 | awk "/^\$/ { P=0; } /$2[^>]*>:\$/ { P=1; O=strtonum(\"0x\" \$1); } { if (P) { o=strtonum(\"0x\" \$1); printf(\"%04x \", o-O); print \$0; } }"
+
+
+Hope that is enough to reproduce.
