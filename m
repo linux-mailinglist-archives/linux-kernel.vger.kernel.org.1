@@ -2,128 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBCF1D34F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CFB1D3513
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727113AbgENPW4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 May 2020 11:22:56 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:56501 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726056AbgENPW4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 11:22:56 -0400
-X-Originating-IP: 90.76.143.236
-Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
-        (Authenticated sender: antoine.tenart@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 24BF41BF20E;
-        Thu, 14 May 2020 15:22:53 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1727067AbgENP2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 11:28:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:38980 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726056AbgENP2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 11:28:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 67FDB1FB;
+        Thu, 14 May 2020 08:28:49 -0700 (PDT)
+Received: from gaia (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 495F93F71E;
+        Thu, 14 May 2020 08:28:47 -0700 (PDT)
+Date:   Thu, 14 May 2020 16:28:40 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Zhenyu Ye <yezhenyu2@huawei.com>
+Cc:     will@kernel.org, suzuki.poulose@arm.com, maz@kernel.org,
+        steven.price@arm.com, guohanjun@huawei.com, olof@lixom.net,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org, arm@kernel.org,
+        xiexiangyou@huawei.com, prime.zeng@hisilicon.com,
+        zhangshaokun@hisilicon.com, kuhn.chenqun@huawei.com
+Subject: Re: [RFC PATCH v3 2/2] arm64: tlb: Use the TLBI RANGE feature in
+ arm64
+Message-ID: <20200514152840.GC1907@gaia>
+References: <20200414112835.1121-1-yezhenyu2@huawei.com>
+ <20200414112835.1121-3-yezhenyu2@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200324104918.29578-1-hhhawa@amazon.com>
-References: <20200324104918.29578-1-hhhawa@amazon.com>
-Cc:     devicetree@vger.kernel.org, benh@amazon.com,
-        linux-kernel@vger.kernel.org, hanochu@amazon.com,
-        dwmw@amazon.co.uk, jonnyc@amazon.com, ronenk@amazon.com,
-        talel@amazon.com, linux-arm-kernel@lists.infradead.org
-From:   Antoine Tenart <antoine.tenart@bootlin.com>
-To:     hhhawa@amazon.com, robh+dt@kernel.org, tsahee@annapurnalabs.com,
-        arm@kernel.org
-Subject: Re: [PATCH v5 0/6] Amazon's Annapurna Labs Alpine v3 device-tree
-Message-ID: <158946977180.3480.12435085393834819053@kwain>
-Date:   Thu, 14 May 2020 17:22:52 +0200
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200414112835.1121-3-yezhenyu2@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Adding arm-soc]
+Hi Zhenyu,
 
-Hi Hanna,
+On Tue, Apr 14, 2020 at 07:28:35PM +0800, Zhenyu Ye wrote:
+> diff --git a/arch/arm64/include/asm/tlb.h b/arch/arm64/include/asm/tlb.h
+> index b76df828e6b7..3a1816770bd1 100644
+> --- a/arch/arm64/include/asm/tlb.h
+> +++ b/arch/arm64/include/asm/tlb.h
+> @@ -38,7 +38,12 @@ static inline void tlb_flush(struct mmu_gather *tlb)
+>  		return;
+>  	}
+>  
+> -	__flush_tlb_range(&vma, tlb->start, tlb->end, stride, last_level);
+> +	if (cpus_have_const_cap(ARM64_HAS_TLBI_RANGE))
+> +		__flush_tlb_range_directly(&vma, tlb->start, tlb->end,
+> +					   stride, last_level);
+> +	else
+> +		__flush_tlb_range(&vma, tlb->start, tlb->end,
+> +				  stride, last_level);
 
-Sorry for the delay, the series was buried in my mails...
+I think you could move such check in __flush_tlb_range() and avoid
+cpus_have_const_cap() in two places. More on this below.
 
-Acked-by: Antoine Tenart <antoine.tenart@bootlin.com>
+> diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
+> index bc3949064725..a482188ea563 100644
+> --- a/arch/arm64/include/asm/tlbflush.h
+> +++ b/arch/arm64/include/asm/tlbflush.h
+> @@ -59,6 +59,44 @@
+>  		__ta;						\
+>  	})
+>  
+> +/*
+> + * This macro creates a properly formatted VA operand for the TLBI RANGE.
+> + * The value bit assignments are:
+> + *
+> + * +----------+------+-------+-------+-------+----------------------+
+> + * |   ASID   |  TG  | SCALE |  NUM  |  TTL  |        BADDR         |
+> + * +-----------------+-------+-------+-------+----------------------+
+> + * |63      48|47  46|45   44|43   39|38   37|36                   0|
+> + *
+> + * The address range is determined by below formula:
+> + * [BADDR, BADDR + (NUM + 1) * 2^(5*SCALE + 1) * PAGESIZE)
+> + *
+> + */
+> +#define __TLBI_VADDR_RANGE(addr, asid, tg, scale, num, ttl)	\
+> +	({							\
+> +		unsigned long __ta = (addr) >> PAGE_SHIFT;	\
+> +		__ta &= GENMASK_ULL(36, 0);			\
+> +		__ta |= (unsigned long)(ttl) << 37;		\
+> +		__ta |= (unsigned long)(num) << 39;		\
+> +		__ta |= (unsigned long)(scale) << 44;		\
+> +		__ta |= (unsigned long)(tg) << 46;		\
+> +		__ta |= (unsigned long)(asid) << 48;		\
+> +		__ta;						\
+> +	})
+> +
+> +#define TLB_RANGE_MASK_SHIFT 5
+> +#define TLB_RANGE_MASK GENMASK_ULL(TLB_RANGE_MASK_SHIFT - 1, 0)
+> +
+> +/*
+> + * __TG defines translation granule of the system, which is defined by
+> + * PAGE_SHIFT.  Used by TTL.
+> + *  - 4KB	: 1
+> + *  - 16KB	: 2
+> + *  - 64KB	: 3
+> + */
+> +#define __TG	((PAGE_SHIFT - 12) / 2 + 1)
 
-Arnd, Olof, could you take this series directly as this will be the only
-Alpine patches for this release (and for a long time)?
+I don't think we need __TLBI_VADDR_RANGE to take a tg argument since
+it's always the same.
 
-Thanks!
-Antoine
+> +
+> +
+>  /*
+>   *	TLB Invalidation
+>   *	================
+> @@ -171,12 +209,83 @@ static inline void flush_tlb_page(struct vm_area_struct *vma,
+>  	dsb(ish);
+>  }
+>  
+> +/* The maximum range size of one TLBI-RANGE instruction */
+> +#define MAX_TLBI_RANGE_SIZE	(1UL << 21)
 
-Quoting Hanna Hawa (2020-03-24 11:49:12)
-> This series organize the Amazon's Annapurna Labs Alpine device tree
-> bindings, device tree folder and adds new device tree for Alpine v3.
-> 
-> Changes since v4:
-> -----------------
-> - Re-order nodes in increasing order.
-> - Add disable to UART nodes.
-> - Add missing UART nodes (1,2,3)
-> - Add comments for GIC/UART
-> - Add io-fabric bus, and move uart nodes into it.
-> - Fix MSIx range according Alpine function spec
-> 
-> Changes since v3:
-> -----------------
-> - rebased and retested for tag Linux 5.6-rc2
-> 
-> Changes since v2:
-> -----------------
-> - Move up a level for DT node without mmio regs.
-> - Drop device_type from serial@fd883000 node.
-> - Minor change name of PCIe node to: pcie@fbd00000
-> 
-> Changes since v1:
-> -----------------
-> - Rename al,alpine DT binding to amazon,alpine
-> - Rename al folder to be amazon
-> - Update maintainers of amazon,alpine DT
-> - Add missing alpine-v2 DT binding
-> - Fix yaml schemas for alpine-v3-evp.dts:
->         - #size-cells:0:0: 0 is not one of [1, 2]
->         - arch-timer: interrupts: [[1, 13, 8, 1, 14, 8, 1, 11, 8, 1, 10,
->         8]] is too short
-> - Change compatible string of alpine-v3-evp to amazon,al
-> 
-> Hanna Hawa (5):
->   dt-bindings: arm: amazon: rename al,alpine DT binding to amazon,al
->   arm64: dts: amazon: rename al folder to be amazon
->   dt-bindings: arm: amazon: update maintainers of amazon,al DT bindings
->   dt-bindings: arm: amazon: add missing alpine-v2 DT binding
->   dt-bindings: arm: amazon: add Amazon Annapurna Labs Alpine V3
-> 
-> Ronen Krupnik (1):
->   arm64: dts: amazon: add Amazon's Annapurna Labs Alpine v3 support
-> 
->  .../devicetree/bindings/arm/al,alpine.yaml    |  21 -
->  .../devicetree/bindings/arm/amazon,al.yaml    |  33 ++
->  MAINTAINERS                                   |   2 +-
->  arch/arm64/boot/dts/Makefile                  |   2 +-
->  arch/arm64/boot/dts/{al => amazon}/Makefile   |   1 +
->  .../boot/dts/{al => amazon}/alpine-v2-evp.dts |   0
->  .../boot/dts/{al => amazon}/alpine-v2.dtsi    |   0
->  arch/arm64/boot/dts/amazon/alpine-v3-evp.dts  |  24 ++
->  arch/arm64/boot/dts/amazon/alpine-v3.dtsi     | 408 ++++++++++++++++++
->  9 files changed, 468 insertions(+), 23 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/al,alpine.yaml
->  create mode 100644 Documentation/devicetree/bindings/arm/amazon,al.yaml
->  rename arch/arm64/boot/dts/{al => amazon}/Makefile (64%)
->  rename arch/arm64/boot/dts/{al => amazon}/alpine-v2-evp.dts (100%)
->  rename arch/arm64/boot/dts/{al => amazon}/alpine-v2.dtsi (100%)
->  create mode 100644 arch/arm64/boot/dts/amazon/alpine-v3-evp.dts
->  create mode 100644 arch/arm64/boot/dts/amazon/alpine-v3.dtsi
-> 
-> -- 
-> 2.17.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Nitpick: call this MAX_TLBI_RANGE_PAGES as that's not an address range.
+
+It may be useful to have a macro for the range here, something like:
+
+#define __TLBI_PAGES(num, scale)	((num + 1) << (5 * scale + 1))
+
+and define MAX_TLBI_RANGE_PAGES in terms of this macro as
+__TLBI_PAGES(31, 3).
+
+> +
+> +/*
+> + * This interface uses the *rvale1is* instruction to flush TLBs
+> + * in [start, end) directly.
+> + * This instruction is supported from ARM v8.4.
+> + */
+> +static inline void __flush_tlb_range_directly(struct vm_area_struct *vma,
+> +				unsigned long start, unsigned long end,
+> +				unsigned long stride, bool last_level)
+> +{
+> +	int num = 0;
+> +	int scale = 0;
+> +	unsigned long asid = ASID(vma->vm_mm);
+> +	unsigned long addr = 0;
+> +	unsigned long range_size;
+> +
+> +	start = round_down(start, stride);
+> +	end = round_up(end, stride);
+> +	range_size = (end - start) >> PAGE_SHIFT;
+> +
+> +	if (range_size > MAX_TLBI_RANGE_SIZE) {
+> +		flush_tlb_mm(vma->vm_mm);
+> +		return;
+> +	}
+> +
+> +	dsb(ishst);
+> +
+> +	/*
+> +	 * The minimum size of TLB RANGE is 2 PAGE;
+> +	 * Use normal TLB instruction to handle odd PAGEs
+
+Nitpick: no need to capitalise PAGE.
+
+> +	 */
+> +	if (range_size % 2 == 1) {
+> +		addr = __TLBI_VADDR(start, asid);
+> +		if (last_level) {
+> +			__tlbi(vale1is, addr);
+> +			__tlbi_user(vale1is, addr);
+> +		} else {
+> +			__tlbi(vae1is, addr);
+> +			__tlbi_user(vae1is, addr);
+> +		}
+> +		start += 1 << PAGE_SHIFT;
+> +		range_size -= 1;
+> +	}
+> +
+> +	range_size >>= 1;
+> +	while (range_size > 0) {
+> +		num = (range_size & TLB_RANGE_MASK) - 1;
+> +		if (num >= 0) {
+> +			addr = __TLBI_VADDR_RANGE(start, asid, __TG,
+> +						  scale, num, 0);
+> +			if (last_level) {
+> +				__tlbi(rvale1is, addr);
+> +				__tlbi_user(rvale1is, addr);
+> +			} else {
+> +				__tlbi(rvae1is, addr);
+> +				__tlbi_user(rvae1is, addr);
+> +			}
+> +			start += (num + 1) << (5 * scale + 1) << PAGE_SHIFT;
+
+You could use the __TLBI_PAGES macro I proposed above.
+
+> +		}
+> +		scale++;
+> +		range_size >>= TLB_RANGE_MASK_SHIFT;
+> +	}
+
+So, you start from scale 0 and increment it until you reach the maximum.
+I think (haven't done the maths on paper) you could also start from the
+top with something like scale = ilog2(range_size) / 5. Not sure it's
+significantly better though, maybe avoiding the loop 3 times if your
+range is 2MB (which happens with huge pages).
+
+Anyway, I think it would be more efficient if we combine the
+__flush_tlb_range() and the _directly one into the same function with a
+single loop for both. For example, if the stride is 2MB already, we can
+handle this with a single classic TLBI without all the calculations for
+the range operation. The hardware may also handle this better since the
+software already told it there can be only one entry in that 2MB range.
+So each loop iteration could figure which operation to use based on
+cpucaps, TLBI range ops, stride and reduce range_size accordingly.
 
 -- 
-Antoine Ténart, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Catalin
