@@ -2,104 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23F51D2AA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9411D2AAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgENIt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 04:49:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58674 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbgENIt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 04:49:58 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C71A7AA4F;
-        Thu, 14 May 2020 08:49:58 +0000 (UTC)
-Date:   Thu, 14 May 2020 10:49:55 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     jmorris@namei.org, sashal@kernel.org, linux-kernel@vger.kernel.org,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        keescook@chromium.org, anton@enomsg.org, ccross@android.com,
-        tony.luck@intel.com, robh+dt@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] printk: honor the max_reason field in kmsg_dumper
-Message-ID: <20200514084954.GP17734@linux-b0ei>
-References: <20200505154510.93506-1-pasha.tatashin@soleen.com>
- <20200505154510.93506-2-pasha.tatashin@soleen.com>
+        id S1726124AbgENIvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 04:51:23 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:13286 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725925AbgENIvW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 04:51:22 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04E8lutC002591;
+        Thu, 14 May 2020 04:50:45 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3100y96grm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 May 2020 04:50:45 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 04E8ohxV063374
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 14 May 2020 04:50:43 -0400
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 14 May 2020 01:50:42 -0700
+Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 14 May 2020 01:50:42 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 04E8obas010241;
+        Thu, 14 May 2020 04:50:37 -0400
+From:   Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH] iio: stm32-dac: Replace indio_dev->mlock with own device lock
+Date:   Thu, 14 May 2020 11:50:12 +0300
+Message-ID: <20200514085018.79948-1-sergiu.cuciurean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505154510.93506-2-pasha.tatashin@soleen.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-14_01:2020-05-13,2020-05-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 spamscore=0 cotscore=-2147483648
+ phishscore=0 priorityscore=1501 adultscore=0 mlxscore=0 malwarescore=0
+ clxscore=1011 impostorscore=0 mlxlogscore=658 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005140079
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2020-05-05 11:45:06, Pavel Tatashin wrote:
-> kmsg_dump() allows to dump kmesg buffer for various system events: oops,
-> panic, reboot, etc. It provides an interface to register a callback call
-> for clients, and in that callback interface there is a field "max_reason"
-> which gets ignored unless always_kmsg_dump is passed as kernel parameter.
-> 
-> Allow clients to decide max_reason, and keep the current behavior when
-> max_reason is not set.
-> 
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> ---
->  include/linux/kmsg_dump.h |  1 +
->  kernel/printk/printk.c    | 15 +++++++++++----
->  2 files changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/kmsg_dump.h b/include/linux/kmsg_dump.h
-> index 2e7a1e032c71..cfc042066be7 100644
-> --- a/include/linux/kmsg_dump.h
-> +++ b/include/linux/kmsg_dump.h
-> @@ -28,6 +28,7 @@ enum kmsg_dump_reason {
->  	KMSG_DUMP_RESTART,
->  	KMSG_DUMP_HALT,
->  	KMSG_DUMP_POWEROFF,
-> +	KMSG_DUMP_MAX
->  };
->  
->  /**
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 9a9b6156270b..1aab69a8a2bf 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -3157,12 +3157,19 @@ void kmsg_dump(enum kmsg_dump_reason reason)
->  	struct kmsg_dumper *dumper;
->  	unsigned long flags;
->  
-> -	if ((reason > KMSG_DUMP_OOPS) && !always_kmsg_dump)
-> -		return;
-> -
->  	rcu_read_lock();
->  	list_for_each_entry_rcu(dumper, &dump_list, list) {
-> -		if (dumper->max_reason && reason > dumper->max_reason)
-> +		enum kmsg_dump_reason cur_reason = dumper->max_reason;
+As part of the general cleanup of indio_dev->mlock, this change replaces
+it with a local lock on the device's state structure.
 
-If this code is still in the next version, please, rename this variable
-to max_reason or so.
+Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+---
+ drivers/iio/dac/stm32-dac.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-"cur" is ambiguous. It might be current dumper or current message
-which confused me later in the code ;-)
+diff --git a/drivers/iio/dac/stm32-dac.c b/drivers/iio/dac/stm32-dac.c
+index f22c1d9129b2..74b9474c8590 100644
+--- a/drivers/iio/dac/stm32-dac.c
++++ b/drivers/iio/dac/stm32-dac.c
+@@ -26,9 +26,11 @@
+ /**
+  * struct stm32_dac - private data of DAC driver
+  * @common:		reference to DAC common data
++ * @lock: lock to protect the data buffer during regmap ops
+  */
+ struct stm32_dac {
+ 	struct stm32_dac_common *common;
++	struct mutex		lock;
+ };
+ 
+ static int stm32_dac_is_enabled(struct iio_dev *indio_dev, int channel)
+@@ -58,10 +60,10 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
+ 	int ret;
+ 
+ 	/* already enabled / disabled ? */
+-	mutex_lock(&indio_dev->mlock);
++	mutex_lock(&dac->lock);
+ 	ret = stm32_dac_is_enabled(indio_dev, ch);
+ 	if (ret < 0 || enable == !!ret) {
+-		mutex_unlock(&indio_dev->mlock);
++		mutex_unlock(&dac->lock);
+ 		return ret < 0 ? ret : 0;
+ 	}
+ 
+@@ -69,13 +71,13 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
+ 		ret = pm_runtime_get_sync(dev);
+ 		if (ret < 0) {
+ 			pm_runtime_put_noidle(dev);
+-			mutex_unlock(&indio_dev->mlock);
++			mutex_unlock(&dac->lock);
+ 			return ret;
+ 		}
+ 	}
+ 
+ 	ret = regmap_update_bits(dac->common->regmap, STM32_DAC_CR, msk, en);
+-	mutex_unlock(&indio_dev->mlock);
++	mutex_unlock(&dac->lock);
+ 	if (ret < 0) {
+ 		dev_err(&indio_dev->dev, "%s failed\n", en ?
+ 			"Enable" : "Disable");
+@@ -328,6 +330,8 @@ static int stm32_dac_probe(struct platform_device *pdev)
+ 	indio_dev->info = &stm32_dac_iio_info;
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+ 
++	mutex_init(&dac->lock);
++
+ 	ret = stm32_dac_chan_of_init(indio_dev);
+ 	if (ret < 0)
+ 		return ret;
+-- 
+2.17.1
 
-Best Regards,
-Petr
-
-> +
-> +		/*
-> +		 * If client has not provided a specific max_reason, default
-> +		 * to KMSG_DUMP_OOPS, unless always_kmsg_dump was set.
-> +		 */
-> +		if (cur_reason == KMSG_DUMP_UNDEF) {
-> +			cur_reason = always_kmsg_dump ? KMSG_DUMP_MAX :
-> +							KMSG_DUMP_OOPS;
-> +		}
-> +		if (reason > cur_reason)
->  			continue;
->  
->  		/* initialize iterator with data about the stored records */
-> -- 
-> 2.25.1
