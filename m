@@ -2,196 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3701D3397
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 796921D33A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbgENOww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 10:52:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726190AbgENOwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 10:52:51 -0400
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9FD6A20657;
-        Thu, 14 May 2020 14:52:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589467970;
-        bh=KyMeowribavtsIbTUR+vWwY63ali5afdWjqtehs4ado=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jO+lD2cCU6q+5tJVkwkyOBKh8wI3TB5mInfIHe4hmQgT8JBiuB9lCqG8j40WAUs2e
-         GBE/X3aXCrtmqPdF7LYRETB7jvg2CCP1UwQonVipOc7Lb97gzY0+t4ax94t/WeNM0h
-         vketF0DJ9519leZRWWEsKTbZZQSFsyacHizFkUxo=
-Received: by mail-oi1-f170.google.com with SMTP id o24so24768110oic.0;
-        Thu, 14 May 2020 07:52:50 -0700 (PDT)
-X-Gm-Message-State: AGi0PubBBLONm6r65UiOs4vWocSk31JKMsHxmNubiQ6Fsv99dZ2WrGBX
-        +/STx0pzUmOYumYn+grT3uHAqejfR+WRMEOxvw==
-X-Google-Smtp-Source: APiQypLD1q0aJ+FQry7uiKJF40s+kUkpHEeLYwhAf8rdZYNoqrECkbbBawOpUYBN2DKPnQ4iPCEQXyF96LsbhjXfFTU=
-X-Received: by 2002:aca:1904:: with SMTP id l4mr31504767oii.106.1589467969912;
- Thu, 14 May 2020 07:52:49 -0700 (PDT)
+        id S1727868AbgENOyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 10:54:55 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:35134 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727099AbgENOyy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 10:54:54 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04EEpneU022552;
+        Thu, 14 May 2020 07:53:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pfpt0818;
+ bh=x8IBUREuUDXo4FtIk04O7Hcn5Vr/q9rC9/eF3dAW9nk=;
+ b=xTZ9ZgYOa+dXgk6XERZ3kqEuKm0pnGxc0SzbyedYihgXLYtLsf9HbU/2MTKDD95ow/up
+ lUrd38xeGDDXOpEBRunttACRYKhuw8X5tDiSwMm3kFr9S0qtLH3hBU5ZJu1wVWxQ6CKf
+ BLi6wfcaHR71sywLaBpu79Ix+bbWXFsmO5Ht0LxRKEwsdMNxqo5Hia41cPB0G8IDPpBp
+ hUFPx8qsMLEGJeEVzBwkKw50QUTT/iDDwZBFI4QOnG9z4CNeh4Y2gXYBWBKzQytO+wzd
+ F/bEQ16VG/6XtNuAnGXEinM+m7YWv1aE11aQNIEaL9JNcZ+Li9bpRjaEkiRjuQJGW2zH yg== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 3100xajx64-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 14 May 2020 07:53:52 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 14 May
+ 2020 07:53:51 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 14 May
+ 2020 07:53:50 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 14 May 2020 07:53:50 -0700
+Received: from [10.193.39.5] (unknown [10.193.39.5])
+        by maili.marvell.com (Postfix) with ESMTP id D79AA3F703F;
+        Thu, 14 May 2020 07:53:42 -0700 (PDT)
+Subject: Re: [EXT] [PATCH 09/15] qed: use new module_firmware_crashed()
+To:     Luis Chamberlain <mcgrof@kernel.org>
+CC:     <jeyu@kernel.org>, <akpm@linux-foundation.org>, <arnd@arndb.de>,
+        <rostedt@goodmis.org>, <mingo@redhat.com>, <aquini@redhat.com>,
+        <cai@lca.pw>, <dyoung@redhat.com>, <bhe@redhat.com>,
+        <peterz@infradead.org>, <tglx@linutronix.de>,
+        <gpiccoli@canonical.com>, <pmladek@suse.com>, <tiwai@suse.de>,
+        <schlad@suse.de>, <andriy.shevchenko@linux.intel.com>,
+        <keescook@chromium.org>, <daniel.vetter@ffwll.ch>,
+        <will@kernel.org>, <mchehab+samsung@kernel.org>,
+        <kvalo@codeaurora.org>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2 <GR-everest-linux-l2@marvell.com>
+References: <20200509043552.8745-1-mcgrof@kernel.org>
+ <20200509043552.8745-10-mcgrof@kernel.org>
+ <2aaddb69-2292-ff3f-94c7-0ab9dbc8e53c@marvell.com>
+ <20200509164229.GJ11244@42.do-not-panic.com>
+ <e10b611e-f925-f12d-bcd2-ba60d86dd8d0@marvell.com>
+ <20200512173431.GD11244@42.do-not-panic.com>
+From:   Igor Russkikh <irusskikh@marvell.com>
+Message-ID: <9badaaa7-ca79-9b6d-aa83-b1c28310ec4d@marvell.com>
+Date:   Thu, 14 May 2020 17:53:41 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101
+ Thunderbird/77.0
 MIME-Version: 1.0
-References: <20200501073949.120396-1-john.stultz@linaro.org>
- <20200501073949.120396-4-john.stultz@linaro.org> <20200501102143.xcckvsfecumbei3c@DESKTOP-E1NTVVP.localdomain>
- <47e7eded-7240-887a-39e1-97c55bf752e7@arm.com> <CALAqxLU6kmvJ+xPCFzc3N+RNMv4g=L9bmzgE0wrOXefiGfPoHg@mail.gmail.com>
- <20200504090628.d2q32dwyg6em5pp7@DESKTOP-E1NTVVP.localdomain>
- <20200512163714.GA22577@bogus> <20200513104401.lhh2m5avlasev6mj@DESKTOP-E1NTVVP.localdomain>
-In-Reply-To: <20200513104401.lhh2m5avlasev6mj@DESKTOP-E1NTVVP.localdomain>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 14 May 2020 09:52:35 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+V-YA9B7i+9U0as3oXNC=HLPHmZ2NrPzNJu5CXpvD3tg@mail.gmail.com>
-Message-ID: <CAL_Jsq+V-YA9B7i+9U0as3oXNC=HLPHmZ2NrPzNJu5CXpvD3tg@mail.gmail.com>
-Subject: Re: [RFC][PATCH 3/4] dma-buf: cma_heap: Extend logic to export CMA
- regions tagged with "linux,cma-heap"
-To:     Brian Starkey <brian.starkey@arm.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "Andrew F. Davis" <afd@ti.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Pratik Patel <pratikp@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Chenbo Feng <fengc@google.com>,
-        Alistair Strachan <astrachan@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-mm <linux-mm@kvack.org>, nd <nd@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200512173431.GD11244@42.do-not-panic.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-14_05:2020-05-14,2020-05-14 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 5:44 AM Brian Starkey <brian.starkey@arm.com> wrote:
->
-> Hi Rob,
->
-> On Tue, May 12, 2020 at 11:37:14AM -0500, Rob Herring wrote:
-> > On Mon, May 04, 2020 at 10:06:28AM +0100, Brian Starkey wrote:
-> > > On Fri, May 01, 2020 at 12:01:40PM -0700, John Stultz wrote:
-> > > > On Fri, May 1, 2020 at 4:08 AM Robin Murphy <robin.murphy@arm.com> wrote:
-> > > > >
-> > > > > On 2020-05-01 11:21 am, Brian Starkey wrote:
-> > > > > > Hi John,
-> > > > > >
-> > > > > > On Fri, May 01, 2020 at 07:39:48AM +0000, John Stultz wrote:
-> > > > > >> This patch reworks the cma_heap initialization so that
-> > > > > >> we expose both the default CMA region and any CMA regions
-> > > > > >> tagged with "linux,cma-heap" in the device-tree.
-> > > > > >>
-> > > > > >> Cc: Rob Herring <robh+dt@kernel.org>
-> > > > > >> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> > > > > >> Cc: "Andrew F. Davis" <afd@ti.com>
-> > > > > >> Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
-> > > > > >> Cc: Liam Mark <lmark@codeaurora.org>
-> > > > > >> Cc: Pratik Patel <pratikp@codeaurora.org>
-> > > > > >> Cc: Laura Abbott <labbott@redhat.com>
-> > > > > >> Cc: Brian Starkey <Brian.Starkey@arm.com>
-> > > > > >> Cc: Chenbo Feng <fengc@google.com>
-> > > > > >> Cc: Alistair Strachan <astrachan@google.com>
-> > > > > >> Cc: Sandeep Patil <sspatil@google.com>
-> > > > > >> Cc: Hridya Valsaraju <hridya@google.com>
-> > > > > >> Cc: Christoph Hellwig <hch@lst.de>
-> > > > > >> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> > > > > >> Cc: Robin Murphy <robin.murphy@arm.com>
-> > > > > >> Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > > > >> Cc: devicetree@vger.kernel.org
-> > > > > >> Cc: dri-devel@lists.freedesktop.org
-> > > > > >> Cc: linux-mm@kvack.org
-> > > > > >> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> > > > > >> ---
-> > > > > >>   drivers/dma-buf/heaps/cma_heap.c | 18 +++++++++---------
-> > > > > >>   1 file changed, 9 insertions(+), 9 deletions(-)
-> > > > > >>
-> > > > > >> diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
-> > > > > >> index 626cf7fd033a..dd154e2db101 100644
-> > > > > >> --- a/drivers/dma-buf/heaps/cma_heap.c
-> > > > > >> +++ b/drivers/dma-buf/heaps/cma_heap.c
-> > > > > >> @@ -141,6 +141,11 @@ static int __add_cma_heap(struct cma *cma, void *data)
-> > > > > >>   {
-> > > > > >>      struct cma_heap *cma_heap;
-> > > > > >>      struct dma_heap_export_info exp_info;
-> > > > > >> +    struct cma *default_cma = dev_get_cma_area(NULL);
-> > > > > >> +
-> > > > > >> +    /* We only add the default heap and explicitly tagged heaps */
-> > > > > >> +    if (cma != default_cma && !cma_dma_heap_enabled(cma))
-> > > > > >> +            return 0;
-> > > > > >
-> > > > > > Thinking about the pl111 thread[1], I'm wondering if we should also
-> > > > > > let drivers call this directly to expose their CMA pools, even if they
-> > > > > > aren't tagged for dma-heaps in DT. But perhaps that's too close to
-> > > > > > policy.
-> > > > >
-> > > > > That sounds much like what my first thoughts were - apologies if I'm
-> > > > > wildly off-base here, but as far as I understand:
-> > > > >
-> > > > > - Device drivers know whether they have their own "memory-region" or not.
-> > > > > - Device drivers already have to do *something* to participate in dma-buf.
-> > > > > - Device drivers know best how they make use of both the above.
-> > > > > - Therefore couldn't it be left to drivers to choose whether to register
-> > > > > their CMA regions as heaps, without having to mess with DT at all?
-> >
-> > +1, but I'm biased toward any solution not using DT. :)
-> >
-> > > > I guess I'm not opposed to this. But I guess I'd like to see some more
-> > > > details? You're thinking the pl111 driver would add the
-> > > > "memory-region" node itself?
-> > > >
-> > > > Assuming that's the case, my only worry is what if that memory-region
-> > > > node isn't a CMA area, but instead something like a carveout? Does the
-> > > > driver need to parse enough of the dt to figure out where to register
-> > > > the region as a heap?
-> > >
-> > > My thinking was more like there would already be a reserved-memory
-> > > node in DT for the chunk of memory, appropriately tagged so that it
-> > > gets added as a CMA region.
-> > >
-> > > The device's node would have "memory-region=<&blah>;" and would use
-> > > of_reserved_mem_device_init() to link up dev->cma_area to the
-> > > corresponding cma region.
-> > >
-> > > So far, that's all in-place already. The bit that's missing is
-> > > exposing that dev->cma_area to userspace as a dma_heap - so we could
-> > > just have "int cma_heap_add(struct cma *cma)" or "int
-> > > cma_heap_dev_add(struct device *dev)" or something exported for
-> > > drivers to expose their device-assigned cma region if they wanted to.
-> > >
-> > > I don't think this runs into the lifetime problems of generalised
-> > > heaps-as-modules either, because the CMA region will never go away
-> > > even if the driver does.
-> > >
-> > > Alongside that, I do think the completely DT-driven approach can be
-> > > useful too - because there may be regions which aren't associated with
-> > > any specific device driver, that we want exported as heaps.
-> >
-> > And they are associated with the hardware description rather than the
-> > userspace environment?
->
-> I'm not sure how to answer that. We already have CMA regions being
-> created from device-tree, so we're only talking about explicitly
-> exposing those to userspace.
+> 
+> So do you mean like the changes below?
+> 
+> diff --git a/drivers/net/ethernet/qlogic/qed/qed_debug.c
+> b/drivers/net/ethernet/qlogic/qed/qed_debug.c
+> index f4eebaabb6d0..95cb7da2542e 100644
+> --- a/drivers/net/ethernet/qlogic/qed/qed_debug.c
+> +++ b/drivers/net/ethernet/qlogic/qed/qed_debug.c
+> @@ -7906,6 +7906,7 @@ int qed_dbg_all_data(struct qed_dev *cdev, void
+> *buffer)
+>  		rc = qed_dbg_grc(cdev, (u8 *)buffer + offset +
+>  				 REGDUMP_HEADER_SIZE, &feature_size);
+>  		if (!rc) {
+> +			module_firmware_crashed();
+>  			*(u32 *)((u8 *)buffer + offset) =
+>  			    qed_calc_regdump_header(cdev, GRC_DUMP,
+>  						    cur_engine,
 
-It's easier to argue that how much CMA memory a system/device needs is
-h/w description as that's more a function of devices and frame sizes.
-But exposing to userspace or not is an OS architecture decision. It's
-not really any different than a kernel vs. userspace driver question.
-What's exposed by UIO or spi-dev is purely a kernel thing.
+Please remove this invocation. Its not a place where FW crash is happening.
 
-> Are you thinking that userspace should be deciding whether they get
-> exposed or not? I don't know how userspace would discover them in
-> order to make that decision.
 
-Or perhaps the kernel should be deciding. Expose to userspace what the
-kernel doesn't need or drivers decide?
+>  		DP_NOTICE(p_hwfn,
+>  			  "The MFW failed to respond to command 0x%08x
+> [param 0x%08x].\n",
+>  			  p_mb_params->cmd, p_mb_params->param);
+> +		module_firmware_crashed();
+>  		qed_mcp_print_cpu_info(p_hwfn, p_ptt);
 
-It's hard to argue against 1 new property. It's death by a 1000 cuts though.
+This one is perfect, thanks!
 
-Rob
+Regards
+  Igor
