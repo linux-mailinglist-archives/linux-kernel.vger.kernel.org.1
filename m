@@ -2,114 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8C51D2AF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 11:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858D11D2B03
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 11:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgENJJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 05:09:25 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4841 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725935AbgENJJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 05:09:24 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 114C065729C54A7EB87F;
-        Thu, 14 May 2020 17:09:21 +0800 (CST)
-Received: from [127.0.0.1] (10.166.212.180) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 14 May 2020
- 17:09:18 +0800
-Subject: Re: [PATCH -next] dmaengine: ti: k3-udma: Use PTR_ERR_OR_ZERO() to
- simplify code
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>, <dan.j.williams@intel.com>,
-        <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1588757146-38858-1-git-send-email-zou_wei@huawei.com>
- <f9ae33c9-5a8a-d10a-5bb3-ecf9ee5d81f5@ti.com>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <ee9877ba-b310-9e6e-12e3-4eb5b09c4e75@huawei.com>
-Date:   Thu, 14 May 2020 17:09:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726149AbgENJLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 05:11:19 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:50480 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725925AbgENJLS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 05:11:18 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04E97nGZ016696;
+        Thu, 14 May 2020 05:11:01 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3100y96jns-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 May 2020 05:11:00 -0400
+Received: from ASHBMBX8.ad.analog.com (ashbmbx8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 04E9AxCM002921
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 14 May 2020 05:10:59 -0400
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 14 May 2020 05:10:58 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 14 May 2020 05:10:58 -0400
+Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 14 May 2020 05:10:58 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 04E9AtGm011684;
+        Thu, 14 May 2020 05:10:56 -0400
+From:   Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        "Stefan Popa" <stefan.popa@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        "Hartmut Knaack" <knaack.h@gmx.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Subject: [PATCH] iio: dac: ad5761: Replace indio_dev->mlock with own device lock
+Date:   Thu, 14 May 2020 12:10:28 +0300
+Message-ID: <20200514091032.80883-1-sergiu.cuciurean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <f9ae33c9-5a8a-d10a-5bb3-ecf9ee5d81f5@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.166.212.180]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-14_01:2020-05-13,2020-05-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 spamscore=0 cotscore=-2147483648
+ phishscore=0 priorityscore=1501 adultscore=0 mlxscore=0 malwarescore=0
+ clxscore=1015 impostorscore=0 mlxlogscore=794 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005140082
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+As part of the general cleanup of indio_dev->mlock, this change replaces
+it with a local lock on the device's state structure.
 
-I'm sorry for my mistake.
-Thanks for your comments and suggestions.
+Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+---
+ drivers/iio/dac/ad5761.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-On 2020/5/14 16:33, Peter Ujfalusi wrote:
-> Hi Samuel,
-> 
-> On 06/05/2020 12.25, Samuel Zou wrote:
->> Fixes coccicheck warnings:
->>
->> drivers/dma/ti/k3-udma.c:1294:1-3: WARNING: PTR_ERR_OR_ZERO can be used
->> drivers/dma/ti/k3-udma.c:1311:1-3: WARNING: PTR_ERR_OR_ZERO can be used
->> drivers/dma/ti/k3-udma.c:1376:1-3: WARNING: PTR_ERR_OR_ZERO can be used
-> 
-> Thanks for the patch, I have missed it as I was not in CC for it.
-> scripts/get_maintainer.pl would have tipped for a wider recipient list..
-> 
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Samuel Zou <zou_wei@huawei.com>
->> ---
->>   drivers/dma/ti/k3-udma.c | 12 +++---------
->>   1 file changed, 3 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
->> index 0a04174..f5775ca 100644
->> --- a/drivers/dma/ti/k3-udma.c
->> +++ b/drivers/dma/ti/k3-udma.c
->> @@ -1291,10 +1291,8 @@ static int udma_get_tchan(struct udma_chan *uc)
->>   	}
->>   
->>   	uc->tchan = __udma_reserve_tchan(ud, uc->config.channel_tpl, -1);
->> -	if (IS_ERR(uc->tchan))
->> -		return PTR_ERR(uc->tchan);
->>   
->> -	return 0;
->> +	return PTR_ERR_OR_ZERO(uc->tchan);
->>   }
->>   
->>   static int udma_get_rchan(struct udma_chan *uc)
->> @@ -1308,10 +1306,8 @@ static int udma_get_rchan(struct udma_chan *uc)
->>   	}
->>   
->>   	uc->rchan = __udma_reserve_rchan(ud, uc->config.channel_tpl, -1);
->> -	if (IS_ERR(uc->rchan))
->> -		return PTR_ERR(uc->rchan);
->>   
->> -	return 0;
->> +	return PTR_ERR_OR_ZERO(uc->rchan);
->>   }
->>   
->>   static int udma_get_chan_pair(struct udma_chan *uc)
->> @@ -1373,10 +1369,8 @@ static int udma_get_rflow(struct udma_chan *uc, int flow_id)
->>   	}
->>   
->>   	uc->rflow = __udma_get_rflow(ud, flow_id);
->> -	if (IS_ERR(uc->rflow))
->> -		return PTR_ERR(uc->rflow);
->>   
->> -	return 0;
->> +	return PTR_ERR_OR_ZERO(uc->rflow);
->>   }
->>   
->>   static void udma_put_rchan(struct udma_chan *uc)
->>
-> 
-> - Péter
-> 
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-> 
+diff --git a/drivers/iio/dac/ad5761.c b/drivers/iio/dac/ad5761.c
+index 4fb42b743f0f..67179944e5c5 100644
+--- a/drivers/iio/dac/ad5761.c
++++ b/drivers/iio/dac/ad5761.c
+@@ -57,11 +57,13 @@ enum ad5761_supported_device_ids {
+  * @use_intref:		true when the internal voltage reference is used
+  * @vref:		actual voltage reference in mVolts
+  * @range:		output range mode used
++ * @lock		lock to protect the data buffer during SPI ops
+  * @data:		cache aligned spi buffer
+  */
+ struct ad5761_state {
+ 	struct spi_device		*spi;
+ 	struct regulator		*vref_reg;
++	struct mutex			lock;
+ 
+ 	bool use_intref;
+ 	int vref;
+@@ -124,9 +126,9 @@ static int ad5761_spi_write(struct iio_dev *indio_dev, u8 addr, u16 val)
+ 	struct ad5761_state *st = iio_priv(indio_dev);
+ 	int ret;
+ 
+-	mutex_lock(&indio_dev->mlock);
++	mutex_lock(&st->lock);
+ 	ret = _ad5761_spi_write(st, addr, val);
+-	mutex_unlock(&indio_dev->mlock);
++	mutex_unlock(&st->lock);
+ 
+ 	return ret;
+ }
+@@ -163,9 +165,9 @@ static int ad5761_spi_read(struct iio_dev *indio_dev, u8 addr, u16 *val)
+ 	struct ad5761_state *st = iio_priv(indio_dev);
+ 	int ret;
+ 
+-	mutex_lock(&indio_dev->mlock);
++	mutex_lock(&st->lock);
+ 	ret = _ad5761_spi_read(st, addr, val);
+-	mutex_unlock(&indio_dev->mlock);
++	mutex_unlock(&st->lock);
+ 
+ 	return ret;
+ }
+@@ -368,6 +370,8 @@ static int ad5761_probe(struct spi_device *spi)
+ 	if (pdata)
+ 		voltage_range = pdata->voltage_range;
+ 
++	mutex_init(&st->lock);
++
+ 	ret = ad5761_spi_set_range(st, voltage_range);
+ 	if (ret)
+ 		goto disable_regulator_err;
+-- 
+2.17.1
 
