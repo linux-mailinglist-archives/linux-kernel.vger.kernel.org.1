@@ -2,67 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED4B1D35C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B301D3597
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727838AbgENQAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 12:00:08 -0400
-Received: from comms.puri.sm ([159.203.221.185]:53030 "EHLO comms.puri.sm"
+        id S1728003AbgENPvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 11:51:36 -0400
+Received: from mga05.intel.com ([192.55.52.43]:40128 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726117AbgENQAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 12:00:05 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 4B237E02F3;
-        Thu, 14 May 2020 08:59:35 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id oxNLxVUVDWpv; Thu, 14 May 2020 08:59:30 -0700 (PDT)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     robh@kernel.org, kernel@puri.sm, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, mchehab@kernel.org, Anson.Huang@nxp.com,
-        agx@sigxcpu.org, angus@akkea.ca
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH 2/2] MAINTAINERS: Add Purism Librem 5 section to the list
-Date:   Thu, 14 May 2020 17:57:37 +0200
-Message-Id: <20200514155737.12160-2-martin.kepplinger@puri.sm>
-In-Reply-To: <20200514155737.12160-1-martin.kepplinger@puri.sm>
-References: <20200514155737.12160-1-martin.kepplinger@puri.sm>
-Content-Transfer-Encoding: 8bit
+        id S1726117AbgENPvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 11:51:36 -0400
+IronPort-SDR: RhybmlFbZieR3VyvLsc+sTKGxFpN+yhNSnfyeHuZDVJkiFBYAiRXkYO8haDm15pxdY5mJqswyW
+ 8nnARNsupCsw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2020 08:51:35 -0700
+IronPort-SDR: I/hGnemAqgDMh5MYOq4b6XxPhMa7ut5i+YI+RWKp5VDKXZoqgRQ5x2ah70x0nhPFf5S+PKF035
+ OJ3tp9gwsjFw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,391,1583222400"; 
+   d="scan'208";a="437953389"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga005.jf.intel.com with ESMTP; 14 May 2020 08:51:34 -0700
+Date:   Thu, 14 May 2020 08:57:45 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v13 4/8] iommu/vt-d: Add bind guest PASID support
+Message-ID: <20200514085745.105af4fb@jacob-builder>
+In-Reply-To: <20200514055930.GD22388@infradead.org>
+References: <1589410909-38925-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1589410909-38925-5-git-send-email-jacob.jun.pan@linux.intel.com>
+        <20200514055930.GD22388@infradead.org>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add development information for the devicetree files for hardware
-by Purism SPC.
+Hi Christoph,
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Thanks a lot for the reviews, comments below.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0abba1aff1ae..176efec31010 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13775,6 +13775,14 @@ T:	git git://linuxtv.org/media_tree.git
- F:	Documentation/admin-guide/media/pulse8-cec.rst
- F:	drivers/media/cec/usb/pulse8/
- 
-+PURISM LIBREM 5
-+M:	Purism Kernel Team <kernel@puri.sm>
-+S:	Supported
-+B:	https://source.puri.sm/Librem5/linux-next/issues
-+T:	https://source.puri.sm/Librem5/linux-next
-+F:	arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-+F:	arch/arm64/boot/dts/freescale/imx8mq-librem5.dts
-+
- PVRUSB2 VIDEO4LINUX DRIVER
- M:	Mike Isely <isely@pobox.com>
- L:	pvrusb2@isely.net	(subscribers-only)
--- 
-2.20.1
+Jacob
+
+On Wed, 13 May 2020 22:59:30 -0700
+Christoph Hellwig <hch@infradead.org> wrote:
+
+> > +	if (dev_is_pci(dev)) {
+> > +		/* VT-d supports devices with full 20 bit PASIDs
+> > only */
+> > +		if (pci_max_pasids(to_pci_dev(dev)) != PASID_MAX)
+> > +			return -EINVAL;
+> > +	} else {
+> > +		return -ENOTSUPP;
+> > +	}  
+> 
+> This looks strange.  Why not:
+> 
+> 	if (!dev_is_pci(dev)) {
+> 		return -ENOTSUPP;
+> 
+> 	/* VT-d supports devices with full 20 bit PASIDs only */
+> 	if (pci_max_pasids(to_pci_dev(dev)) != PASID_MAX)
+> 		return -EINVAL;
+> 
+That is better, will do.
+
+> > +		for_each_svm_dev(sdev, svm, dev) {
+> > +			/*
+> > +			 * For devices with aux domains, we should
+> > allow multiple
+> > +			 * bind calls with the same PASID and pdev.
+> > +			 */
+> > +			if (iommu_dev_feature_enabled(dev,
+> > IOMMU_DEV_FEAT_AUX)) {
+> > +				sdev->users++;
+> > +			} else {
+> > +				dev_warn_ratelimited(dev, "Already
+> > bound with PASID %u\n",
+> > +						svm->pasid);
+> > +				ret = -EBUSY;
+> > +			}
+> > +			goto out;  
+> 
+> Is this intentionally a for loop that jumps out of the loop after
+> the first device?
+> 
+The name is confusing, it is not a loop. I will change it to
+find_svm_dev() and comments like this?
+
+/*
+ * Find the matching device in a given SVM. The bind code ensures that
+ * each device can only be added to the SVM list once.
+ */ 
+#define find_svm_dev(sdev, svm, d)			\
+	list_for_each_entry((sdev), &(svm)->devs, list)	\
+		if ((d) != (sdev)->dev) {} else
+
+> > +	/*
+> > +	 * PASID table is per device for better security.
+> > Therefore, for
+> > +	 * each bind of a new device even with an existing PASID,
+> > we need to
+> > +	 * call the nested mode setup function here.
+> > +	 */
+> > +	spin_lock(&iommu->lock);
+> > +	ret = intel_pasid_setup_nested(iommu,
+> > +				       dev,
+> > +				       (pgd_t *)data->gpgd,
+> > +				       data->hpasid,
+> > +				       &data->vtd,
+> > +				       dmar_domain,
+> > +				       data->addr_width);  
+> 
+> Why not:
+> 
+> 	et = intel_pasid_setup_nested(iommu, dev, (pgd_t *)data->gpgd,
+> 			data->hpasid, &data->vtd, dmar_domain,
+> 			data->addr_width);
+> 
+> ?
+> 
+I thought we want to align the parentheses? Either way is fine.
+Baolu?
+
+> > +	for_each_svm_dev(sdev, svm, dev) {
+> > +		ret = 0;  
+> 
+> 		...
+> 
+> > +		break;
+> > +	}  
+> 
+> Same only looks at the first device style.  Why dos it only care about
+> the first device?  That needs at least a comment, and probably a
+> first_svm_dev or so heper to make it explicit.
+
+Yes, same as above. change to find_svm_dev() since there should be at
+most one matching device in the svm list.
+
 
