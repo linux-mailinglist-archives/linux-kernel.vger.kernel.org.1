@@ -2,126 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375E01D2380
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 02:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2AB1D2389
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 02:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733074AbgENANy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 20:13:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732981AbgENANx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 20:13:53 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D0362065C;
-        Thu, 14 May 2020 00:13:51 +0000 (UTC)
-Date:   Wed, 13 May 2020 20:13:49 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, paulmck <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [patch V4 part 1 14/36] x86/entry: Get rid of
- ist_begin/end_non_atomic()
-Message-ID: <20200513201349.35132f23@oasis.local.home>
-In-Reply-To: <1777514130.20137.1589410645669.JavaMail.zimbra@efficios.com>
-References: <20200505131602.633487962@linutronix.de>
-        <20200505134059.462640294@linutronix.de>
-        <1777514130.20137.1589410645669.JavaMail.zimbra@efficios.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1733014AbgENAV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 20:21:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732847AbgENAV2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 20:21:28 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A0A1C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 17:21:28 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id y13so928252vsk.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 17:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OBLBg/Pi2nLTYpT77RqGN75i0jKE/4YyC2iRVJu8R0U=;
+        b=Ago46R+bOlJOlbr3ydxhX8fE13MVcv+tDV1HihlMB/XR/x+7cAnOdthEYc9oKzfg1q
+         jr1tivPXu8P/UvKgCSv0AP6E6nKMIfRK3Ihr2/2wNCE1DK/w4n3DND0BROpYOs+ayD4X
+         GSr8act4VPC/w9zO19A9XBVjS/13ospHw5fjo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OBLBg/Pi2nLTYpT77RqGN75i0jKE/4YyC2iRVJu8R0U=;
+        b=arltoHc05L4V4iUEC0wzI0PvF/+8ntfl9xaay2jgYva18UwPVvZXaUAbge3kts9Jjc
+         Ye3u4YBvkvBtSsXvpNg0fzp2Plp9j7sjqqAbA35UvQ0dJNeiBIBsVMORqUm5kP5YH9Tz
+         b+9lybginmLtjTUm5vvJ7JfhLbf/nVfuafBa9ApB4JyLXd48fNCq5J+jjqzj7xJmQSYP
+         booO16VgqVdwSrzhltJ5SbSxZw+H0OXyT/tIVHFCvQuFEa32gziN3YAF27xXmqNbC8yx
+         MO8sGXvxR4UL4Q32LmWpNJlydYhohFDnb9/j6MZB9hNr9Xr5Hnemc+gzbe96L5Ijzsk/
+         q9Ag==
+X-Gm-Message-State: AOAM530YxVNcAIQ98BvUQpseaD02JVWcyLePLDqa96yHdCIe/VXOD2fI
+        82+ADLZrcaj737GX2HsQwlbddhGIUzs=
+X-Google-Smtp-Source: ABdhPJzdtlohToywcKzaXEZ9hqqZuZvEnjC6nDqtVNFlVJzXve1GvHu+1D58KQM7n3qBlOS3XaQo0Q==
+X-Received: by 2002:a67:7f0a:: with SMTP id a10mr1491509vsd.147.1589415686574;
+        Wed, 13 May 2020 17:21:26 -0700 (PDT)
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com. [209.85.221.174])
+        by smtp.gmail.com with ESMTPSA id b6sm306395vka.38.2020.05.13.17.21.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 May 2020 17:21:25 -0700 (PDT)
+Received: by mail-vk1-f174.google.com with SMTP id f7so329794vkl.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 17:21:24 -0700 (PDT)
+X-Received: by 2002:a1f:d0c5:: with SMTP id h188mr1639201vkg.0.1589415684421;
+ Wed, 13 May 2020 17:21:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200509214159.19680-1-liwei391@huawei.com> <20200509214159.19680-2-liwei391@huawei.com>
+In-Reply-To: <20200509214159.19680-2-liwei391@huawei.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 13 May 2020 17:21:13 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=U+EGz5nRoPXa_V+85FDwHjnAK6-ubH0zv1gGROKNZhPg@mail.gmail.com>
+Message-ID: <CAD=FV=U+EGz5nRoPXa_V+85FDwHjnAK6-ubH0zv1gGROKNZhPg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] arm64: kgdb: Fix single-step exception handling oops
+To:     Wei Li <liwei391@huawei.com>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, liwei1412@163.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 May 2020 18:57:25 -0400 (EDT)
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+Hi,
 
-> ----- On May 5, 2020, at 9:16 AM, Thomas Gleixner tglx@linutronix.de wrote:
-> 
-> > This is completely overengineered and definitely not an interface which
-> > should be made available to anything else than this particular MCE case.  
-> 
-> This patch introduces a significant change under the radar (not explained
-> in the changelog): it turns preempt_enable_no_resched() into preempt_enable().
-> 
-> Why, and why was it a no_resched() in the first place ? Was it for performance
-> or correctness reasons ?
+On Sat, May 9, 2020 at 6:49 AM Wei Li <liwei391@huawei.com> wrote:
+>
+> After entering kdb due to breakpoint, when we execute 'ss' or 'go' (will
+> delay installing breakpoints, do single-step first), it won't work
+> correctly, and it will enter kdb due to oops.
+>
+> It's because the reason gotten in kdb_stub() is not as expected, and it
+> seems that the ex_vector for single-step should be 0, like what arch
+> powerpc/sh/parisc has implemented.
+>
+> Before the patch:
+> Entering kdb (current=0xffff8000119e2dc0, pid 0) on processor 0 due to Keyboard Entry
+> [0]kdb> bp printk
+> Instruction(i) BP #0 at 0xffff8000101486cc (printk)
+>     is enabled   addr at ffff8000101486cc, hardtype=0 installed=0
+>
+> [0]kdb> g
+>
+> / # echo h > /proc/sysrq-trigger
+>
+> Entering kdb (current=0xffff0000fa878040, pid 266) on processor 3 due to Breakpoint @ 0xffff8000101486cc
+> [3]kdb> ss
+>
+> Entering kdb (current=0xffff0000fa878040, pid 266) on processor 3 Oops: (null)
+> due to oops @ 0xffff800010082ab8
+> CPU: 3 PID: 266 Comm: sh Not tainted 5.7.0-rc4-13839-gf0e5ad491718 #6
+> Hardware name: linux,dummy-virt (DT)
+> pstate: 00000085 (nzcv daIf -PAN -UAO)
+> pc : el1_irq+0x78/0x180
+> lr : __handle_sysrq+0x80/0x190
+> sp : ffff800015003bf0
+> x29: ffff800015003d20 x28: ffff0000fa878040
+> x27: 0000000000000000 x26: ffff80001126b1f0
+> x25: ffff800011b6a0d8 x24: 0000000000000000
+> x23: 0000000080200005 x22: ffff8000101486cc
+> x21: ffff800015003d30 x20: 0000ffffffffffff
+> x19: ffff8000119f2000 x18: 0000000000000000
+> x17: 0000000000000000 x16: 0000000000000000
+> x15: 0000000000000000 x14: 0000000000000000
+> x13: 0000000000000000 x12: 0000000000000000
+> x11: 0000000000000000 x10: 0000000000000000
+> x9 : 0000000000000000 x8 : ffff800015003e50
+> x7 : 0000000000000002 x6 : 00000000380b9990
+> x5 : ffff8000106e99e8 x4 : ffff0000fadd83c0
+> x3 : 0000ffffffffffff x2 : ffff800011b6a0d8
+> x1 : ffff800011b6a000 x0 : ffff80001130c9d8
+> Call trace:
+>  el1_irq+0x78/0x180
+>  printk+0x0/0x84
+>  write_sysrq_trigger+0xb0/0x118
+>  proc_reg_write+0xb4/0xe0
+>  __vfs_write+0x18/0x40
+>  vfs_write+0xb0/0x1b8
+>  ksys_write+0x64/0xf0
+>  __arm64_sys_write+0x14/0x20
+>  el0_svc_common.constprop.2+0xb0/0x168
+>  do_el0_svc+0x20/0x98
+>  el0_sync_handler+0xec/0x1a8
+>  el0_sync+0x140/0x180
+>
+> [3]kdb>
+>
+> After the patch:
+> Entering kdb (current=0xffff8000119e2dc0, pid 0) on processor 0 due to Keyboard Entry
+> [0]kdb> bp printk
+> Instruction(i) BP #0 at 0xffff8000101486cc (printk)
+>     is enabled   addr at ffff8000101486cc, hardtype=0 installed=0
+>
+> [0]kdb> g
+>
+> / # echo h > /proc/sysrq-trigger
+>
+> Entering kdb (current=0xffff0000fa852bc0, pid 268) on processor 0 due to Breakpoint @ 0xffff8000101486cc
+> [0]kdb> g
+>
+> Entering kdb (current=0xffff0000fa852bc0, pid 268) on processor 0 due to Breakpoint @ 0xffff8000101486cc
+> [0]kdb> ss
+>
+> Entering kdb (current=0xffff0000fa852bc0, pid 268) on processor 0 due to SS trap @ 0xffff800010082ab8
+> [0]kdb>
+>
+> Fixes: 44679a4f142b ("arm64: KGDB: Add step debugging support")
+> Signed-off-by: Wei Li <liwei391@huawei.com>
+> ---
+>  arch/arm64/kernel/kgdb.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-I believe the reason for no_resched, is because it was within a
-local_irq_disable() section, which means it couldn't schedule anyway.
+As far as I can tell this looks right.  Specifically in kdb_stub() I
+see that it needs "ks->ex_vector == 0" to get "reason" as
+KDB_REASON_SSTEP.
 
--- Steve
-
-
-> > --- a/arch/x86/kernel/cpu/mce/core.c
-> > +++ b/arch/x86/kernel/cpu/mce/core.c
-> > @@ -1352,13 +1352,15 @@ void notrace do_machine_check(struct pt_
-> > 
-> > 	/* Fault was in user mode and we need to take some action */
-> > 	if ((m.cs & 3) == 3) {
-> > -		ist_begin_non_atomic(regs);
-> > +		/* If this triggers there is no way to recover.
-> > Die hard. */
-> > +		BUG_ON(!on_thread_stack() || !user_mode(regs));
-> > 		local_irq_enable();
-> > +		preempt_enable();
-> > 
-> > 		if (kill_it || do_memory_failure(&m))
-> > 			force_sig(SIGBUS);
-> > +		preempt_disable();
-> > 		local_irq_disable();
-> > -		ist_end_non_atomic();
-> > 	} else {
-> > 		if (!fixup_exception(regs, X86_TRAP_MC, error_code,
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
 
-> > -void ist_begin_non_atomic(struct pt_regs *regs)
-> > -{
-> > -	BUG_ON(!user_mode(regs));
-> > -
-> > -	/*
-> > -	 * Sanity check: we need to be on the normal thread
-> > stack.  This
-> > -	 * will catch asm bugs and any attempt to use
-> > ist_preempt_enable
-> > -	 * from double_fault.
-> > -	 */
-> > -	BUG_ON(!on_thread_stack());
-> > -
-> > -	preempt_enable_no_resched();
-> > -}
-> > -
-> > -/**
-> > - * ist_end_non_atomic() - begin a non-atomic section in an IST
-> > exception
-> > - *
-> > - * Ends a non-atomic section started with ist_begin_non_atomic().
-> > - */
-> > -void ist_end_non_atomic(void)
-> > -{
-> > -	preempt_disable();
-> > -}
-> > -
-> > int is_valid_bugaddr(unsigned long addr)
-> > {
-> >  	unsigned short ud;  
-> 
+I did really basic testing of this series as a whole and things that
+used to be broken for me around stepping / going past breakpoints are
+now fixed.  I'll keep using it more, but it definitely feels like it
+makes things happier.
 
+Tested-by: Douglas Anderson <dianders@chromium.org>
+
+-Doug
