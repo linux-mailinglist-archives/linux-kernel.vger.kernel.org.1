@@ -2,91 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1166B1D2FDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 14:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3671D3021
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 14:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbgENMeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 08:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726050AbgENMeN (ORCPT
+        id S1727868AbgENMnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 08:43:31 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:35546 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726141AbgENMn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 08:34:13 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9F4C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 05:34:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QY51KowpkMziRnri9y8EGkC6ZGoauOqKOpLw1xED51U=; b=JTh0R+tjnlw1FJKXZntBhP8KYM
-        bMufV9JbHuoWaG8dpRrUh5Mxv0x+5SbBNdbogDTSkQLkVCYNbb1hZbYmWEw+P+S5DgSNLomuafJb5
-        b2W6NJe7gB3VYj30ZyFhnAJzFpadmGOztWfUTtn75MmmMuBUbGlivQa7w/br8Mm2q/fIb4AO+hSGD
-        wZ+vxkn745hoTrDjg3BE6nz+Zz6AakwTAjtnhUcm0W4QlWH1/dZ11BjzZn3LHUQpGbgCzyZ7rQMEf
-        Y3T7GyUecpuXdKzuizHZOr5QdYgiTm+GvalZ0Sd4K+R/EBOmMWFvNqq3CwL1RYHT3YBJ6PUa0/JqX
-        VQn6w9vw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZD3O-0006ut-2q; Thu, 14 May 2020 12:33:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2C5EE302753;
-        Thu, 14 May 2020 14:33:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DB57D213C8B5C; Thu, 14 May 2020 14:33:30 +0200 (CEST)
-Date:   Thu, 14 May 2020 14:33:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [patch V4 part 3 13/29] x86/traps: Prepare for using
- DEFINE_IDTENTRY
-Message-ID: <20200514123330.GX2978@hirez.programming.kicks-ass.net>
-References: <20200505134354.774943181@linutronix.de>
- <20200505134904.556327833@linutronix.de>
- <CALCETrUyA5bN2ScrdhwEYZSUpyOhO+MaEu1X3PwX6vHGGCkqCg@mail.gmail.com>
- <87mu6azp7m.fsf@nanos.tec.linutronix.de>
+        Thu, 14 May 2020 08:43:29 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04EChB9A128213;
+        Thu, 14 May 2020 07:43:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589460191;
+        bh=yY/LsSZIBi414qmKI1QeADfQF07kR8esflMsRRh0bLs=;
+        h=From:To:CC:Subject:Date;
+        b=jneSebl7NqXDTM8Jh6ybrZf+/0jIVV7Jpitgb9atH0qfGrZIK2LSlUtDQO66TBc0D
+         rgp9UB8BBi/13H84VM9hrSV3M3ta6YVt736qbI0ljbXC11MdqWm3a6fqPyfYlHV8SY
+         0WwcGbQGA3EWWcur+pdSW5UXM89AhEjiABxkn8d4=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04EChBPE121673
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 14 May 2020 07:43:11 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 14
+ May 2020 07:43:10 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 14 May 2020 07:43:10 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04EChA9a030574;
+        Thu, 14 May 2020 07:43:10 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v3 1/3] ASoC: tlv320adcx140: Add controls for PDM clk
+Date:   Thu, 14 May 2020 07:33:36 -0500
+Message-ID: <20200514123338.20392-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87mu6azp7m.fsf@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 02:16:29PM +0200, Thomas Gleixner wrote:
-> Andy Lutomirski <luto@kernel.org> writes:
+Add ALSA controls to configure the PDM clocks.
+The clocks need to be configurable to accommodate various microphones
+that use clocks for low power/low resolution modes to high power/high
+resolution modes.
 
-> > /*
-> >  * Returns the address from which a user trap originated.  This would be the same as regs->ip,
-> >  * except for frhgnieawfn nvlrkvklsrvs and mfkealwf, and this lets the thingummy pass a
-> >  * modified value to the signal frame, but only for #DE and #UD, because #*!&@&#@.
-> >  */
-> >
-> > except with the blanks filled in.
-> 
-> Hmm. Filling the blanks gives me:
-> 
-> /*
-> **0Returns1the2address3from4which5a6user7trap8originated.90This1would...
-> 
-> That's not really more readable than yours :)
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ sound/soc/codecs/tlv320adcx140.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-ROFL -- You just made me spill my tea!
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 0f713efde046..97634e0ca0ba 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -180,6 +180,17 @@ static const struct snd_kcontrol_new decimation_filter_controls[] = {
+ 	SOC_DAPM_ENUM("Decimation Filter", decimation_filter_enum),
+ };
+ 
++static const char * const pdmclk_text[] = {
++	"2.8224 MHz", "1.4112 MHz", "705.6 kHz", "5.6448 MHz"
++};
++
++static SOC_ENUM_SINGLE_DECL(pdmclk_select_enum, ADCX140_PDMCLK_CFG, 0,
++			    pdmclk_text);
++
++static const struct snd_kcontrol_new pdmclk_div_controls[] = {
++	SOC_DAPM_ENUM("PDM Clk Divider Select", pdmclk_select_enum),
++};
++
+ static const char * const resistor_text[] = {
+ 	"2.5 kOhm", "10 kOhm", "20 kOhm"
+ };
+@@ -416,6 +427,9 @@ static const struct snd_soc_dapm_widget adcx140_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MUX("IN4 Analog Mic Resistor", SND_SOC_NOPM, 0, 0,
+ 			in4_resistor_controls),
+ 
++	SND_SOC_DAPM_MUX("PDM Clk Div Select", SND_SOC_NOPM, 0, 0,
++			pdmclk_div_controls),
++
+ 	SND_SOC_DAPM_MUX("Decimation Filter", SND_SOC_NOPM, 0, 0,
+ 			decimation_filter_controls),
+ };
+@@ -493,6 +507,11 @@ static const struct snd_soc_dapm_route adcx140_audio_map[] = {
+ 	{"IN4 Analog Mic Resistor", "10 kOhm", "MIC4M Input Mux"},
+ 	{"IN4 Analog Mic Resistor", "20 kOhm", "MIC4M Input Mux"},
+ 
++	{"PDM Clk Div Select", "2.8224 MHz", "MIC1P Input Mux"},
++	{"PDM Clk Div Select", "1.4112 MHz", "MIC1P Input Mux"},
++	{"PDM Clk Div Select", "705.6 kHz", "MIC1P Input Mux"},
++	{"PDM Clk Div Select", "5.6448 MHz", "MIC1P Input Mux"},
++
+ 	{"MIC1 Analog Mux", "Line In", "MIC1P"},
+ 	{"MIC2 Analog Mux", "Line In", "MIC2P"},
+ 	{"MIC3 Analog Mux", "Line In", "MIC3P"},
+-- 
+2.26.2
+
