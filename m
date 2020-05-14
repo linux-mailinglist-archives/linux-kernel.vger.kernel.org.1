@@ -2,175 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569931D3EAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 22:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFFB31D3EBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 22:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729443AbgENUI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 16:08:28 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:57804 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728187AbgENUI0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 16:08:26 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589486905; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=4sodTfYBSa80PcaqFm4+5cs7pkyxemTKYG6L44YBdc0=; b=toCA5kU4dSM5SSHcKzXt+O1esL9VMELyu1KxO2Cf46pd/63ldtv5260uv9gly+nebHlw07qz
- YODzNTM4bje7rIfX4Uio/lyE+IF4BVY9odQRUs/oCLadQXHHwll5Re6vWbU1yBcw2mevdwp7
- LIZhnO3xxa8WDKwrL1nbQlk5JEM=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ebda539.7fdb73bc6ab0-smtp-out-n02;
- Thu, 14 May 2020 20:08:25 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 44F29C38561; Thu, 14 May 2020 20:08:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DCC6BC49493;
-        Thu, 14 May 2020 20:08:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DCC6BC49493
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rishabhb@codeaurora.org
-From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
-To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Subject: [PATCH v3 3/3] remoteproc: Add coredump debugfs entry
-Date:   Thu, 14 May 2020 13:07:36 -0700
-Message-Id: <1589486856-23440-4-git-send-email-rishabhb@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1589486856-23440-1-git-send-email-rishabhb@codeaurora.org>
-References: <1589486856-23440-1-git-send-email-rishabhb@codeaurora.org>
+        id S1727876AbgENUMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 16:12:03 -0400
+Received: from mga17.intel.com ([192.55.52.151]:50069 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726128AbgENUMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 16:12:03 -0400
+IronPort-SDR: f6VJMqpyNQnFXOYsA3gpv1ZVmEQWAD2TET9jw1am37ZfxrM/xDL9j/hXwm+a56MinDzRufPVtK
+ z7uKZkWdUuLg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2020 13:12:02 -0700
+IronPort-SDR: 3YwbjKvUIn8yjyXLkPLXwcFHK6Z3y60aShjP7PRQCK2VPMeH32Wif231YQZsmZiPc8e8+k1IzP
+ uORq3w5aSpHA==
+X-IronPort-AV: E=Sophos;i="5.73,392,1583222400"; 
+   d="scan'208";a="280974194"
+Received: from rchatre-mobl.amr.corp.intel.com (HELO [10.254.66.120]) ([10.254.66.120])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2020 13:12:02 -0700
+Subject: Re: [PATCH V3 2/4] x86/resctrl: Enumerate per-thread MBA
+To:     Babu Moger <babu.moger@amd.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tony.luck@intel.com" <tony.luck@intel.com>
+Cc:     "kuo-lang.tseng@intel.com" <kuo-lang.tseng@intel.com>,
+        "ravi.v.shankar@intel.com" <ravi.v.shankar@intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <cover.1588808537.git.reinette.chatre@intel.com>
+ <3a9c21e1b8108094d9132ca0c0271e8c7b93c847.1588808538.git.reinette.chatre@intel.com>
+ <eefd2231-cdbe-1250-3069-bb9204c940c1@amd.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <e8b35231-f94e-ba25-125d-12819478bb24@intel.com>
+Date:   Thu, 14 May 2020 13:12:01 -0700
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <eefd2231-cdbe-1250-3069-bb9204c940c1@amd.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add coredump debugfs entry to configure the type of dump that will
-be collected during recovery. User can select between default or
-inline coredump functionality. Also coredump collection can be
-disabled through this interface.
-This functionality can be configured differently for different
-remote processors.
+Hi Babu,
 
-Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
----
- drivers/remoteproc/remoteproc_debugfs.c | 86 +++++++++++++++++++++++++++++++++
- 1 file changed, 86 insertions(+)
+On 5/14/2020 12:04 PM, Babu Moger wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Reinette Chatre <reinette.chatre@intel.com>
+>> Sent: Wednesday, May 6, 2020 6:50 PM
+>> To: tglx@linutronix.de; fenghua.yu@intel.com; bp@alien8.de;
+>> tony.luck@intel.com
+>> Cc: kuo-lang.tseng@intel.com; ravi.v.shankar@intel.com; mingo@redhat.com;
+>> Moger, Babu <Babu.Moger@amd.com>; hpa@zytor.com; x86@kernel.org;
+>> linux-kernel@vger.kernel.org; Reinette Chatre <reinette.chatre@intel.com>
+>> Subject: [PATCH V3 2/4] x86/resctrl: Enumerate per-thread MBA
+>>
+>> From: Fenghua Yu <fenghua.yu@intel.com>
+>>
 
-diff --git a/drivers/remoteproc/remoteproc_debugfs.c b/drivers/remoteproc/remoteproc_debugfs.c
-index 732770e..2f611de 100644
---- a/drivers/remoteproc/remoteproc_debugfs.c
-+++ b/drivers/remoteproc/remoteproc_debugfs.c
-@@ -28,6 +28,90 @@
- static struct dentry *rproc_dbg;
- 
- /*
-+ * A coredump-configuration-to-string lookup table, for exposing a
-+ * human readable configuration via debugfs. Always keep in sync with
-+ * enum rproc_coredump_mechanism
-+ */
-+static const char * const rproc_coredump_str[] = {
-+	[COREDUMP_DEFAULT]	= "default",
-+	[COREDUMP_INLINE]	= "inline",
-+	[COREDUMP_DISABLED]	= "disabled",
-+};
-+
-+/* Expose the current coredump configuration via debugfs */
-+static ssize_t rproc_coredump_read(struct file *filp, char __user *userbuf,
-+				    size_t count, loff_t *ppos)
-+{
-+	struct rproc *rproc = filp->private_data;
-+	const char *buf = rproc_coredump_str[rproc->dump_conf];
-+
-+	return simple_read_from_buffer(userbuf, count, ppos, buf, strlen(buf));
-+}
-+
-+/*
-+ * By writing to the 'coredump' debugfs entry, we control the behavior of the
-+ * coredump mechanism dynamically. The default value of this entry is "default".
-+ *
-+ * The 'coredump' debugfs entry supports these commands:
-+ *
-+ * default:	This is the default coredump mechanism. When the remoteproc
-+ *		crashes the entire coredump will be copied to a separate buffer
-+ *		and exposed to userspace.
-+ *
-+ * inline:	The coredump will not be copied to a separate buffer and the
-+ *		recovery process will have to wait until data is read by
-+ *		userspace. But this avoid usage of extra memory.
-+ *
-+ * disabled:	This will disable coredump. Recovery will proceed without
-+ *		collecting any dump.
-+ */
-+static ssize_t rproc_coredump_write(struct file *filp,
-+				     const char __user *user_buf, size_t count,
-+				     loff_t *ppos)
-+{
-+	struct rproc *rproc = filp->private_data;
-+	int ret, err = 0;
-+	char buf[20];
-+
-+	if (count > sizeof(buf))
-+		return -EINVAL;
-+
-+	ret = copy_from_user(buf, user_buf, count);
-+	if (ret)
-+		return -EFAULT;
-+
-+	/* remove end of line */
-+	if (buf[count - 1] == '\n')
-+		buf[count - 1] = '\0';
-+
-+	if (rproc->state == RPROC_CRASHED) {
-+		dev_err(&rproc->dev, "can't change coredump configuration\n");
-+		err = -EBUSY;
-+		goto out;
-+	}
-+
-+	if (!strncmp(buf, "disable", count))
-+		rproc->dump_conf = COREDUMP_DISABLED;
-+	else if (!strncmp(buf, "inline", count))
-+		rproc->dump_conf = COREDUMP_INLINE;
-+	else if (!strncmp(buf, "default", count))
-+		rproc->dump_conf = COREDUMP_DEFAULT;
-+	else {
-+		dev_err(&rproc->dev, "Invalid coredump configuration\n");
-+		err = -EINVAL;
-+	}
-+out:
-+	return err ? err : count;
-+}
-+
-+static const struct file_operations rproc_coredump_fops = {
-+	.read = rproc_coredump_read,
-+	.write = rproc_coredump_write,
-+	.open = simple_open,
-+	.llseek = generic_file_llseek,
-+};
-+
-+/*
-  * Some remote processors may support dumping trace logs into a shared
-  * memory buffer. We expose this trace buffer using debugfs, so users
-  * can easily tell what's going on remotely.
-@@ -337,6 +421,8 @@ void rproc_create_debug_dir(struct rproc *rproc)
- 			    rproc, &rproc_rsc_table_fops);
- 	debugfs_create_file("carveout_memories", 0400, rproc->dbg_dir,
- 			    rproc, &rproc_carveouts_fops);
-+	debugfs_create_file("coredump", 0600, rproc->dbg_dir,
-+			    rproc, &rproc_coredump_fops);
- }
- 
- void __init rproc_init_debugfs(void)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+...
+
+>> diff --git a/arch/x86/kernel/cpu/scattered.c b/arch/x86/kernel/cpu/scattered.c
+>> index 62b137c3c97a..bccfc9ff3cc1 100644
+>> --- a/arch/x86/kernel/cpu/scattered.c
+>> +++ b/arch/x86/kernel/cpu/scattered.c
+>> @@ -35,6 +35,7 @@ static const struct cpuid_bit cpuid_bits[] = {
+>>  	{ X86_FEATURE_CDP_L3,		CPUID_ECX,  2, 0x00000010, 1
+>> },
+>>  	{ X86_FEATURE_CDP_L2,		CPUID_ECX,  2, 0x00000010, 2
+>> },
+>>  	{ X86_FEATURE_MBA,		CPUID_EBX,  3, 0x00000010, 0 },
+>> +	{ X86_FEATURE_PER_THREAD_MBA,	CPUID_ECX,  0, 0x00000010, 3
+>> },
+> 
+> This is a CPUID feature. You can actually detect this feature without
+> checking vendor model in patch @1. This patch looks good to me.
+> 
+
+This feature is different from the feature introduced in patch 1.
+
+Reinette
