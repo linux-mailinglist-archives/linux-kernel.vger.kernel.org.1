@@ -2,106 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805E41D2DA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C493C1D2D89
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgENKyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 06:54:55 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:38039 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726908AbgENKyy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 06:54:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589453694; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=IFw+MdK9cB0nOb0XyjKcs2qAJSm5K1ae8zeof47RqpI=; b=Ia2F+SefLbDO0j6E/D+9xX2eq2rER/DKkSoqdRxNy3rMhJ5H+TyGMyPU0deo9ecq6aCZLUa/
- d6828YqKrf6v80/nhmNd9+18RcQr0CdqYD0E8oI1veI58w2L82x/7Zu6jsFWTAqeEoyQZ/2l
- yioVpnwMz2rNBnyDkUIkgpPWjCE=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ebd237d.7f2e20d0c340-smtp-out-n05;
- Thu, 14 May 2020 10:54:53 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B44C1C44792; Thu, 14 May 2020 10:54:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld559.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: smasetty)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2D4B6C44791;
-        Thu, 14 May 2020 10:54:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2D4B6C44791
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=smasetty@codeaurora.org
-From:   Sharat Masetty <smasetty@codeaurora.org>
-To:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jcrouse@codeaurora.org,
-        georgi.djakov@linaro.org, mka@chromium.org,
-        Sharat Masetty <smasetty@codeaurora.org>
-Subject: [PATCH 6/6] dt-bindings: drm/msm/gpu: Document gpu opp table
-Date:   Thu, 14 May 2020 16:24:19 +0530
-Message-Id: <1589453659-27581-7-git-send-email-smasetty@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589453659-27581-1-git-send-email-smasetty@codeaurora.org>
-References: <1589453659-27581-1-git-send-email-smasetty@codeaurora.org>
+        id S1726190AbgENKy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 06:54:26 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:46358 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725925AbgENKyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 06:54:25 -0400
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1jZBVO-0007Im-82; Thu, 14 May 2020 12:54:22 +0200
+Date:   Thu, 14 May 2020 12:54:22 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Xiubo Li <xiubli@redhat.com>
+Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, kernel list <linux-kernel@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Patrick Donnelly <pdonnell@redhat.com>
+Subject: Re: netfilter: does the API break or something else ?
+Message-ID: <20200514105422.GO17795@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>, Xiubo Li <xiubli@redhat.com>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, kernel list <linux-kernel@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Patrick Donnelly <pdonnell@redhat.com>
+References: <cf0d02b2-b1db-7ef6-41b8-7c345b7d53d5@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf0d02b2-b1db-7ef6-41b8-7c345b7d53d5@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update documentation to list the gpu opp table bindings including the
-newly added "opp-peak-kBps" needed for GPU-DDR bandwidth scaling.
+Hi,
 
-Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
----
- .../devicetree/bindings/display/msm/gpu.txt        | 28 ++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+On Wed, May 13, 2020 at 11:20:35PM +0800, Xiubo Li wrote:
+> Recently I hit one netfilter issue, it seems the API breaks or something 
+> else.
 
-diff --git a/Documentation/devicetree/bindings/display/msm/gpu.txt b/Documentation/devicetree/bindings/display/msm/gpu.txt
-index 70025cb..48bd4ab 100644
---- a/Documentation/devicetree/bindings/display/msm/gpu.txt
-+++ b/Documentation/devicetree/bindings/display/msm/gpu.txt
-@@ -79,6 +79,34 @@ Example a6xx (with GMU):
+Just for the record, this was caused by a misconfigured kernel.
 
- 		interconnects = <&rsc_hlos MASTER_GFX3D &rsc_hlos SLAVE_EBI1>;
-
-+		gpu_opp_table: opp-table {
-+			compatible = "operating-points-v2";
-+
-+			opp-430000000 {
-+				opp-hz = /bits/ 64 <430000000>;
-+				opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
-+				opp-peak-kBps = <5412000>;
-+			};
-+
-+			opp-355000000 {
-+				opp-hz = /bits/ 64 <355000000>;
-+				opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
-+				opp-peak-kBps = <3072000>;
-+			};
-+
-+			opp-267000000 {
-+				opp-hz = /bits/ 64 <267000000>;
-+				opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
-+				opp-peak-kBps = <3072000>;
-+			};
-+
-+			opp-180000000 {
-+				opp-hz = /bits/ 64 <180000000>;
-+				opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
-+				opp-peak-kBps = <1804000>;
-+			};
-+		};
-+
- 		qcom,gmu = <&gmu>;
-
- 		zap-shader {
---
-2.7.4
+Cheers, Phil
