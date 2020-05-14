@@ -2,126 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAB91D2F75
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 14:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED2C1D2F31
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 14:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727851AbgENMTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 08:19:45 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:52804 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgENMTp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 08:19:45 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04ECIsMf118638;
-        Thu, 14 May 2020 07:18:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589458735;
-        bh=voTy57HPP7kdBOyeAtwz0qnAjpwohc6zTYtH4JaYx9E=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=PDd3krMHKaSrLQmWOV2qyOX+ULVGjpan6iz7kXWCxMDvtIstcNCpK2CX8pPmPaGJh
-         2hNz9wmVyk4E6SbWEe7/EZYGHddk96NIC3cGGKNT8LIy0rYJ6HAKiyOjutHkgHGLG6
-         CwlDDn5HGo74UXxGbRPxtUIKGgT4AkxsqwqS8SV4=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04ECIsJf127530
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 14 May 2020 07:18:54 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 14
- May 2020 07:18:54 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 14 May 2020 07:18:54 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04ECIspR116786;
-        Thu, 14 May 2020 07:18:54 -0500
-Subject: Re: [PATCH v2 2/3] ASoC: tlv320adcx140: Add device tree property for
- PDM edges
-To:     Ricard Wanderlof <ricardw@axis.com>
-CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>, Rob Herring <robh@kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200513200549.12213-1-dmurphy@ti.com>
- <20200513200549.12213-2-dmurphy@ti.com>
- <alpine.DEB.2.20.2005141006450.30387@lnxricardw1.se.axis.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <27145913-cd16-850b-dcfc-01fcffc72d0e@ti.com>
-Date:   Thu, 14 May 2020 07:09:23 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726891AbgENMJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 08:09:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726050AbgENMJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 08:09:48 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF48C206A5;
+        Thu, 14 May 2020 12:09:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589458187;
+        bh=9TkmUAdX2RQ+u5zgcMGocI9dwuWZ53GZK+S2e9ICxjY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NAQksCZ2qHv+5x3AQC+zmCumpoQNZV3vfkvc+6WxQaygncoy4cPeEar5Lo5WuQDyv
+         s/0rbz9abTxLkyqpTsXi1RD1vgyNp4LdbHTqYhWYBdHW+iJxX4uCquQJlgmwsBaAAP
+         SzDZ5wS1LdvjlZvf6o+6KTkW4YkqBnCAM7N3WDfE=
+Date:   Thu, 14 May 2020 14:09:44 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hillf Danton <hdanton@sina.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        syzbot+353be47c9ce21b68b7ed@syzkaller.appspotmail.com,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH] USB: usbfs: fix mmap dma mismatch
+Message-ID: <20200514120944.GA2005274@kroah.com>
+References: <20200514112711.1858252-1-gregkh@linuxfoundation.org>
+ <20200514115829.GA15995@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.20.2005141006450.30387@lnxricardw1.se.axis.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200514115829.GA15995@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Richard
+On Thu, May 14, 2020 at 01:58:29PM +0200, Christoph Hellwig wrote:
+> On Thu, May 14, 2020 at 01:27:11PM +0200, Greg Kroah-Hartman wrote:
+> > +	if (hcd->localmem_pool || !hcd_uses_dma(hcd)) {
+> > +		if (remap_pfn_range(vma, vma->vm_start,
+> > +				    virt_to_phys(usbm->mem) >> PAGE_SHIFT,
+> > +				    size, vma->vm_page_prot) < 0) {
+> > +			dec_usb_memory_use_count(usbm, &usbm->vma_use_count);
+> > +			return -EAGAIN;
+> > +		}
+> > +	} else {
+> > +		if (dma_mmap_coherent(hcd->self.sysdev, vma, mem, dma_handle,
+> > +				      size)) {
+> > +			dec_usb_memory_use_count(usbm, &usbm->vma_use_count);
+> > +			return -EAGAIN;
+> > +		}
+> 
+> What about a goto label to share the error handling path?
 
-On 5/14/20 3:09 AM, Ricard Wanderlof wrote:
-> On Wed, 13 May 2020, Dan Murphy wrote:
->
->> Add a device tree property to configure the PDM sampling edge for each
->> digital microphone.
->>
->> CC: Rob Herring <robh@kernel.org>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> ---
->>   .../devicetree/bindings/sound/tlv320adcx140.yaml   | 14 ++++++++++++++
->>   1 file changed, 14 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
->> b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
->> index ab2268c0ee67..55668c7d261d 100644
->> --- a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
->> +++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
->> @@ -63,6 +63,19 @@ properties:
->>         - $ref: /schemas/types.yaml#/definitions/uint32
->>         - enum: [0, 1, 2]
->>   
->> +  ti,pdm-edge-select:
->> +    description: |
->> +       Defines the sampling edge configuration for the PDM inputs.  This is
->> an
->> +       array defined as <PDMIN1 PDMIN2 PDMIN3 PDMIN4>. 0 (default) is
->> negative
->> +       sampling edge and 1 is positive sampling edge.
-> A bit of a nitpick, but I would think of the edges as
-> negative-going/positive-going, or rising/falling. Not sure if anyone would
-> misunderstand 'negative edge' in practice though.
+I thought about that, but that's a bit messier than the duplicated lines
+here :)
 
-I will re-write the description to be more descriptive.
+> Otherwise looks good:
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
->> +    allOf:
->> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
->> +      - minItems: 1
->> +        maxItems: 4
->> +        items:
->> +          maximum: 1
->> +        default: [0, 0, 0, 0]
->> +
->>   required:
->>     - compatible
->>     - reg
->> @@ -77,6 +90,7 @@ examples:
->>           compatible = "ti,tlv320adc5140";
->>           reg = <0x4c>;
->>           ti,mic-bias-source = <6>;
->> +        ti,pdm-edge-select = < 0 1 0 1>;
-> Should there really be a space between < and 0 ?
+thanks for the review, and the help with this.
 
-I will remove the space
-
-Dan
-
->
-> /Ricard
+greg k-h
