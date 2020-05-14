@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B719C1D2E93
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 13:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB6E1D2EA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 13:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726582AbgENLnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 07:43:16 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:43313 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbgENLnP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 07:43:15 -0400
-Received: by mail-ot1-f67.google.com with SMTP id a68so2045964otb.10;
-        Thu, 14 May 2020 04:43:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NS81db2WlAKMw750j0Vkkc7VOtrTVlN07aaoyD593YE=;
-        b=iWd8YsJ8gMAsewHv7hUB+1DRvJfDWwQuI79cna1iibz7xp8B2GikaKruJb3hJ3O8tG
-         aIWKimf2Lk0ERlQMDdlgXmLodPgmIo4ObOkwKFfB+/QQ08kD9bg2XXoOonkROWG3pCnR
-         wk6bCUPS7JFPsBERqy59F9ZH3qoYojfe7UVzphz0RYORT+iUrwim6tp7xkJ1kuYExZfy
-         HVH5tXMM9jeXhS9OGRyAyYt5gX9npc/Ek9BdsGFHi5NkkGx+30qd+JfJFY6DkAOgiQT5
-         IuMN+sXqXRu6xOqBQkUzv5mvq/rRDnJ2Bdmq7YiKrL7HU7O6cJNGUNaf1OErDLvR3Nvp
-         Fa+w==
-X-Gm-Message-State: AOAM531KnNgTu1PfAadRPpib31ehDfxaQu4ZTKgmvQe5BVO87t7JXxa9
-        RG3c249K6leefekrXFBXUlTQ8edhepVVpqPVG1Y=
-X-Google-Smtp-Source: ABdhPJyzhN/gdsuRBgS7a7zU2LSl2miiuZORSHSpQIDzx+jZm6FIXM7zz2uaaNZ4WouoFvZQk2blbM2G/amuLKCT0A0=
-X-Received: by 2002:a9d:6356:: with SMTP id y22mr3000318otk.167.1589456594965;
- Thu, 14 May 2020 04:43:14 -0700 (PDT)
+        id S1726389AbgENLqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 07:46:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726094AbgENLqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 07:46:17 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C8CF20671;
+        Thu, 14 May 2020 11:46:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589456776;
+        bh=UtLC4FWAsNQWwvCkA9XvZziuOBZQynG4YRxwXmBREJk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VpUXVPsjb6XXHHj8Jd5OYhOJjs7MFOWwmYR1ninaO5RdEQysSTdrsQnGrzQNlVeOn
+         HG3jBh/tByOyLl2yHY4zpwz8hSKJ7L3p67eKfExi1BX2R/cIjAMxhXPR6RA68UJdBk
+         UQyejP/bee3FZ201AfCKnIhMb6w5i27Gi37Uxq/0=
+Date:   Thu, 14 May 2020 13:46:14 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andreas =?iso-8859-1?Q?B=F6hler?= <dev@aboehler.at>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v13 5/5] usb: xhci: provide a debugfs hook for erasing rom
+Message-ID: <20200514114614.GA1893226@kroah.com>
+References: <20200506060025.1535960-1-vkoul@kernel.org>
+ <20200506060025.1535960-6-vkoul@kernel.org>
+ <caa2c5f4-a858-d699-27af-7b0c22b4dc40@linux.intel.com>
+ <20200513124554.GA1083139@kroah.com>
+ <20200514092458.GA1591384@kroah.com>
+ <20200514112618.GP14092@vkoul-mobl>
 MIME-Version: 1.0
-References: <20200513141854.18451-1-wenhu.wang@vivo.com>
-In-Reply-To: <20200513141854.18451-1-wenhu.wang@vivo.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 14 May 2020 13:43:04 +0200
-Message-ID: <CAJZ5v0jHVMA5=fYkDqSLdpvxFi8iHvxVa-ZkT71cbd4hr1ohDg@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: fix a minor typo for cpufreq_driver doc
-To:     Wang Wenhu <wenhu.wang@vivo.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel@vivo.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200514112618.GP14092@vkoul-mobl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 4:26 PM Wang Wenhu <wenhu.wang@vivo.com> wrote:
->
-> Delete the duplicate "to" possibly double-typed.
->
-> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  include/linux/cpufreq.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-> index f7240251a949..67d5950bd878 100644
-> --- a/include/linux/cpufreq.h
-> +++ b/include/linux/cpufreq.h
-> @@ -330,7 +330,7 @@ struct cpufreq_driver {
->          *
->          * get_intermediate should return a stable intermediate frequency
->          * platform wants to switch to and target_intermediate() should set CPU
-> -        * to to that frequency, before jumping to the frequency corresponding
-> +        * to that frequency, before jumping to the frequency corresponding
->          * to 'index'. Core will take care of sending notifications and driver
->          * doesn't have to handle them in target_intermediate() or
->          * target_index().
-> --
+On Thu, May 14, 2020 at 04:56:18PM +0530, Vinod Koul wrote:
+> On 14-05-20, 11:24, Greg Kroah-Hartman wrote:
+> > On Wed, May 13, 2020 at 02:45:54PM +0200, Greg Kroah-Hartman wrote:
+> 
+> > > Ah, I misssed that, a follow-on patch can do this, right?
+> > 
+> > Actually, a whole new series with this changed is good, I didn't take
+> > these for now, for some reason I thought I had.
+> 
+> Do you mind taking these except this patch (last). I will spin this
+> later
 
-Applied as 5.8 material with some minor subject changes, thanks!
+Can you resend, they are not in my patch queue anymore.
+
+thanks,
+
+greg k-h
