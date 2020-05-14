@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535631D2EDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 13:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B7B81D2EBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 13:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgENLvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 07:51:36 -0400
-Received: from smtprelay0155.hostedemail.com ([216.40.44.155]:44686 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725955AbgENLve (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 07:51:34 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 82BDA2C1F;
-        Thu, 14 May 2020 11:51:31 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3872:3874:4321:5007:6742:6743:10004:10400:10848:11232:11658:11914:12296:12297:12740:12760:12895:13069:13160:13229:13311:13357:13439:14659:21080:21611:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: soup46_cc3a3aa2090a
-X-Filterd-Recvd-Size: 2294
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf01.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 14 May 2020 11:51:27 +0000 (UTC)
-Message-ID: <9992a1fe768a0b1e9bb9470d2728ba25dbe042db.camel@perches.com>
-Subject: Re: [PATCH 20/33] ipv4: add ip_sock_set_recverr
-From:   Joe Perches <joe@perches.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
-        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-cifs@vger.kernel.org, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, netdev@vger.kernel.org,
-        linux-sctp@vger.kernel.org, ceph-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-nfs@vger.kernel.org
-Date:   Thu, 14 May 2020 04:51:26 -0700
-In-Reply-To: <20200514103025.GB12680@lst.de>
-References: <20200513062649.2100053-1-hch@lst.de>
-         <20200513062649.2100053-21-hch@lst.de>
-         <0ee5acfaca4cf32d4efad162046b858981a4dae3.camel@perches.com>
-         <20200514103025.GB12680@lst.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        id S1726345AbgENLuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 07:50:23 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:52476 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726179AbgENLuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 07:50:21 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 13BD5628B3E816D57F4D;
+        Thu, 14 May 2020 19:50:19 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 14 May 2020 19:50:12 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     <alex@ghiti.fr>, Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH v2] riscv: Fix print_vm_layout build error if NOMMU
+Date:   Thu, 14 May 2020 19:53:35 +0800
+Message-ID: <20200514115335.110603-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200511022001.179767-5-wangkefeng.wang@huawei.com>
+References: <20200511022001.179767-5-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-05-14 at 12:30 +0200, Christoph Hellwig wrote:
-> On Wed, May 13, 2020 at 02:00:43PM -0700, Joe Perches wrote:
-> > On Wed, 2020-05-13 at 08:26 +0200, Christoph Hellwig wrote:
-> > > Add a helper to directly set the IP_RECVERR sockopt from kernel space
-> > > without going through a fake uaccess.
-> > 
-> > This seems used only with true as the second arg.
-> > Is there reason to have that argument at all?
-> 
-> Mostly to keep it symmetric with the sockopt.  I could probably remove
-> a few arguments in the series if we want to be strict.
+arch/riscv/mm/init.c: In function ‘print_vm_layout’:
+arch/riscv/mm/init.c:68:37: error: ‘FIXADDR_START’ undeclared (first use in this function);
+arch/riscv/mm/init.c:69:20: error: ‘FIXADDR_TOP’ undeclared
+arch/riscv/mm/init.c:70:37: error: ‘PCI_IO_START’ undeclared
+arch/riscv/mm/init.c:71:20: error: ‘PCI_IO_END’ undeclared
+arch/riscv/mm/init.c:72:38: error: ‘VMEMMAP_START’ undeclared
+arch/riscv/mm/init.c:73:20: error: ‘VMEMMAP_END’ undeclared (first use in this function);
 
-My preference would use strict and add
-arguments only when necessary.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+v2: 
+- Should CONFIG_DEBUG_VM instead of DEBUG_VM
+- Based on riscv fixes branch
 
+ arch/riscv/mm/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 27a334106708..736de6c8739f 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -47,7 +47,7 @@ static void setup_zero_page(void)
+ 	memset((void *)empty_zero_page, 0, PAGE_SIZE);
+ }
+ 
+-#ifdef CONFIG_DEBUG_VM
++#if defined(CONFIG_MMU) && defined(CONFIG_DEBUG_VM)
+ static inline void print_mlk(char *name, unsigned long b, unsigned long t)
+ {
+ 	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld kB)\n", name, b, t,
+-- 
+2.26.2
 
