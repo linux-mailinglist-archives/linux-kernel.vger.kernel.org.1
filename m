@@ -2,165 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AC91D2EBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 13:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054E91D2ECD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 13:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726225AbgENLuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 07:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgENLuU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 07:50:20 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEF1C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:50:18 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id p127so4779830oia.13
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:50:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2rW2p6WUMtKGhozEHKEEts3+I7kg5DxNuGw6wF1CLEM=;
-        b=PgX9XmdRqisszbkjsPpa0Gwr80htE0F274IforjKb38R1tfcW11dwHs2ltBT8O+9fs
-         I8N0ECtStEWmdyk46K3lfbNha7034uGa8mbVnsf+RwbOV0RuiLuAy8e31/Gq2a9erGa2
-         SQOdksP93nrOk3G50CG0Mrdgs6pSta7q97WldtKfqCcvEvZFWcW4mQIbrkPM1S3KXzbe
-         sqmXCiSe5ZBff4+yGsR3k+Y6mlRRjG50mUAN5ndp5ka4bWE4TtaSptw3oawBOqpPUwSX
-         u1RCfDoPEUOVBYzAcjOG0GEJzxnJfxeaEiHxKjU7vMic9oKzxs8rSxrXDSQp0Uo+CU8G
-         Q8Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2rW2p6WUMtKGhozEHKEEts3+I7kg5DxNuGw6wF1CLEM=;
-        b=G/+brfoPrP+LFr2sMcBn1WPXPBE4pON+jVj+5SYBhpU8hEEq9zDjMftvSuZzzFbVlw
-         1SP7t7EHfUhp1XSEIraZbMYzb4crJZlj4M3jhb8fRoQhmiHHhI9iuH0eRiSKpU1Hc9Ya
-         cXyHJwgpybF4CFC5xtrRP7/Ri2s55G5W8aLw13Yv/bzhmg3wtazRTFcyw5bf+UC5HbJG
-         rl7N1ShFJX3GqJ2Lf3KsVSwKF1MkyxVcnM14NMJ3ldce8k0W/hHcR/FhpKC+QTKb0J30
-         DM0LvKNTlUDtIxguuF35hzm3Dm9a14UCx27jsA4p5RQ5AUGLxqk7wmL+n9RGLbo0UAxL
-         qItQ==
-X-Gm-Message-State: AOAM533GFqJ6fTDdyM898d1KJWw1YK4IPdg43zEkOJlYldJng72zS96e
-        qeOctOp3l8hJL56Lndcvt5dB+Gn7pLvXrS5URFMLBQ==
-X-Google-Smtp-Source: ABdhPJx3vey05pA94gTXh3JPwjGoemVRMMAPudVNha65pjDn+PiNcd2tKPQIp9BSWL8i5Zc0gFHuLtVVKToDeJGM0iQ=
-X-Received: by 2002:a05:6808:9ab:: with SMTP id e11mr4680289oig.119.1589457017820;
- Thu, 14 May 2020 04:50:17 -0700 (PDT)
+        id S1727107AbgENLva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 07:51:30 -0400
+Received: from mail-bn8nam11on2060.outbound.protection.outlook.com ([40.107.236.60]:6114
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726190AbgENLv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 07:51:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cwdDURWcfMtJR/S41gP4v/Q4Dti3fTtMXWKSCk9uOoZX9OZoxOr00gFupJV2Ms8X0gs/2PambpppHsK6S9SukpBjrao5+TTeVGuN6HC464gpqvdxu+b0LJwevbv/wwduxGi35HQTJ8ywRe2KhCzd7mFgMAylfjmPXa4/qIlONmlJW0IMUn6T7fxhguGxmCYZoN0rxHA9bAkDZOXwz/z9ZuXICaGZfSwJHUPh47hClqCnV4UBJ2BWpjtCw9dIKHuHfyWe/r7GP7A/D0Q2ZXWolXHCMY1aOUWkA1Co7ht8ZmvL4bZVQo4uNjJG2MwwVrcRqfCI2On9WVWRxY6GPqLolA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ogKgRo1XCrzxS2vzAySQlYxO6v6ZmdLNFqo68ab5OJQ=;
+ b=FAetFtp9mdXeqArmniDfbnyJsirQwC8UWKBXwl2/mN7piNsd4hwSxAp79x0ashQWorE5fsMgas8Nw1arDr/ER38v//YM8V0Tdgb7TvdapyYh/6sThDt/AKEahHM1vvMRdNdDcpQVm31u7BuC6q/wadjZ2zqAhqumKJZTU7DRmFF5TJgdIAHnhyF5L0wzjWjqudVJsGZip7a0/Q2jEaPW9e+IgjPSTK3eYUnmNsUGZSa6hKEbta04V4CPlsTLLIcmThaDeYHr5sYmcMfWYYa5N+uwQKjb0NIrhK6XxaGnl1DxckOhN6J3QMKid0WAzSoZZYJNtZ70zw6pmG0y8l4CkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=sifive.com; dmarc=pass action=none header.from=sifive.com;
+ dkim=pass header.d=sifive.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ogKgRo1XCrzxS2vzAySQlYxO6v6ZmdLNFqo68ab5OJQ=;
+ b=Ke2x+OxHnYthSk5rGwdkTbsA4QJstj+lkl6CahnYvmalC3FmfQRPEAYl0BQf6F6OxW+NIkQ2YuIe2zRFy359D5RKo9dB+gAKH/H0Ha0hAZmn8ix6CIiM2WDNLbp2JaHpdXtdGu3qNuSbN292HNjv+r/Oqz0N76NoON5abuy4Ol0=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=sifive.com;
+Received: from BYAPR13MB2614.namprd13.prod.outlook.com (2603:10b6:a03:b4::12)
+ by BYAPR13MB2469.namprd13.prod.outlook.com (2603:10b6:a02:ca::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.14; Thu, 14 May
+ 2020 11:51:25 +0000
+Received: from BYAPR13MB2614.namprd13.prod.outlook.com
+ ([fe80::c0fc:30a3:5e5f:c2b6]) by BYAPR13MB2614.namprd13.prod.outlook.com
+ ([fe80::c0fc:30a3:5e5f:c2b6%7]) with mapi id 15.20.3000.013; Thu, 14 May 2020
+ 11:51:24 +0000
+From:   Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, tudor.ambarus@microchip.com,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
+Cc:     palmer@dabbelt.com, paul.walmsley@sifive.com,
+        aou@eecs.berkeley.edu, anup.patel@wdc.com,
+        Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+Subject: [PATCH v1 0/2] update is25wp256d page write capabilities  
+Date:   Thu, 14 May 2020 04:50:49 -0700
+Message-Id: <1589457051-5410-1-git-send-email-sagar.kadam@sifive.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR08CA0053.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::30) To BYAPR13MB2614.namprd13.prod.outlook.com
+ (2603:10b6:a03:b4::12)
 MIME-Version: 1.0
-References: <20200508204200.13481-1-sumit.semwal@linaro.org>
- <20200508204200.13481-2-sumit.semwal@linaro.org> <20200512014339.GE57962@builder.lan>
-In-Reply-To: <20200512014339.GE57962@builder.lan>
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Thu, 14 May 2020 17:20:06 +0530
-Message-ID: <CAO_48GHHhP+gRnEfeXeGob5Q4150oQOtWEyx8Fz5rFiUqXYa4A@mail.gmail.com>
-Subject: Re: [v2 1/4] dt-bindings: regulator: Add labibb regulator
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, lgirdwood@gmail.com,
-        Mark Brown <broonie@kernel.org>, robh+dt@kernel.org,
-        Nisha Kumari <nishakumari@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from gamma07.internal.sifive.com (64.62.193.194) by BYAPR08CA0053.namprd08.prod.outlook.com (2603:10b6:a03:117::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3000.25 via Frontend Transport; Thu, 14 May 2020 11:51:24 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [64.62.193.194]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c0bdc88b-2212-414f-b6fa-08d7f7fd20c1
+X-MS-TrafficTypeDiagnostic: BYAPR13MB2469:
+X-LD-Processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR13MB246965214D5440AE398507A399BC0@BYAPR13MB2469.namprd13.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-Forefront-PRVS: 040359335D
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3gaW9zEuA3g246S9Q7WEk1YGGMuFAL3ETeMxfuYLhds9VMjb9K9ztO2S3LNbuN8yoJtFZwm5rSQlk5bPHX0Wkx0vxb9NOgfHHnml6JzlDfMWN3qqlc6fynwGaZbqUl0jAHj7enjpdJtw1tqhNMzb3SVyV+O/kqKn5TZ3GJ71GQQhL1cqrSN+Bv30MSOn1Jvf9Ibr3YR0JDMRz8xjcQNQIi7OjvREXhTyIy2NIF11cRIUDeDSzojDtfMhh6qxQpThmMEHYV2GK4o3+YxNQZMNvEdqZC//s7yy5cXiUvWBKxGDp8lMuFxrYoteoOLsQzeYxMKQBpe1jLQ4djPq82vvwhgnQEl2zS/zK4j7iI2AwOS43eK5jUQvVTd5Al6jo0TLA5pxlUV0OsbmS8zsGLKSZLL5t4MbEWB33lnm40HB9EB/Nc2Uv9pJeHQvjBXEVQhx
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR13MB2614.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(396003)(39850400004)(376002)(346002)(136003)(8936002)(186003)(4326008)(16526019)(4744005)(2906002)(5660300002)(15650500001)(107886003)(26005)(66946007)(8676002)(7416002)(6666004)(478600001)(2616005)(956004)(66476007)(52116002)(7696005)(86362001)(36756003)(66556008)(6486002)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: A5I/wTLpOJSWcoT7l5VSGJ/SKIuAr77R3c7ZAIMRbCkQzd6Ow+2Q5hzOU7nbHhWz1FkAqos/uRpD8I/kAXflApPuQ+vhTEFSuBe1kfqPbDhTODt66LMgr3PpULjoDIVNMEoudHKq02cnhr0ZBfaMbMBY3e+gUY1EBxtRF0DtVtn4ADjm3OkHMOemm1QOBwHjwcVTxSIEcXrneW/YvlQQBzRbtvNcQRkg3vOwkupUkItmRCjMC3tlTI1+4XRExFps0DjuLUVeYRr/7zDFDApZFR/QgexPBZzM+2cCDiJfJM96Y5iGqJJA+8Sq+rdvsHBS/wMHEySSR8qAqRtnfmx6yEYsPOh0EiOLCPl1L3idlPS+8xXA+COGE17j/zyVmIMo1hlWRe5M+RbLOBuZkLlyr3b2lsXVOxdJF0ILAtK3oNBwn3TCxhefAmfJhnyultsf6H/c8XNAiPLfAEyvLlQFy/pBab1PmuNhtKOTmCBwADY=
+X-OriginatorOrg: sifive.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0bdc88b-2212-414f-b6fa-08d7f7fd20c1
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2020 11:51:24.7535
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: smQeG0auJXxFL5wmZuf7b52Fq+xaa5Ar1tf6UGMykWy8JIHxIbIoSaSwJn1M2n1o4ctTGeDARbe1wQ5l2D3Q0g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR13MB2469
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Bjorn,
+HiFive Unleashed A00 board has is25wp256d snor chip. It is observed
+that it gets configured with Serial Input Page program by the end
+of spi_nor_scan. Using the post bfpt fixup hook we prioritize the
+page program settings to use quad input page program (opcode:0x34)
+over serial input page program (opcode: 0x12).
 
-Thanks for the comments!
+The patchset is tested on Linux 5.7.0-rc5.
 
-On Tue, 12 May 2020 at 07:15, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Fri 08 May 13:41 PDT 2020, Sumit Semwal wrote:
->
-> > From: Nisha Kumari <nishakumari@codeaurora.org>
-> >
-> > Adding the devicetree binding for labibb regulator.
-> >
-> > Signed-off-by: Nisha Kumari <nishakumari@codeaurora.org>
-> > Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
->
-> Sorry, I missed this when we talked about it. But please rewrite this in
-> yaml.
-Sure, I will.
+Changelog:
+===============================
+V1:
+-Moved SPI_SIFIVE from defconfig to Kconfig.socs for SOC_SIFIVE.
+ Retained it's configurability using "imply" instead of "select"
 
->
-> >
-> > --
-> > v2: updated for better compatible string and names.
-> > ---
-> >  .../regulator/qcom-labibb-regulator.txt       | 47 +++++++++++++++++++
-> >  1 file changed, 47 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.txt
-> >
-> > diff --git a/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.txt b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.txt
-> > new file mode 100644
-> > index 000000000000..6e639d69f780
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.txt
-> > @@ -0,0 +1,47 @@
-> > +Qualcomm's LAB(LCD AMOLED Boost)/IBB(Inverting Buck Boost) Regulator
-> > +
-> > +LAB can be used as a positive boost power supply and IBB can be used as a negative
-> > +boost power supply for display panels. Currently implemented for pmi8998.
-> > +
-> > +Main node required properties:
-> > +
-> > +- compatible:                        Must be:
-> > +                             "qcom,pmi8998-lab-ibb"
-> > +- #address-cells:            Must be 1
-> > +- #size-cells:                       Must be 0
->
-> But the children doesn't have reg properties...
-Oh, right. Let me correct that.
->
-> > +
-> > +LAB subnode required properties:
-> > +
-> > +- interrupts:                        Specify the interrupts as per the interrupt
-> > +                             encoding.
-> > +- interrupt-names:           Interrupt names to match up 1-to-1 with
-> > +                             the interrupts specified in 'interrupts'
-> > +                             property.
->
-> Do specify the expected string (and given that you already have the
-> lab & ibb subnodes, you don't need to include this in the string).
-Yes, agreed. Keeping it as 'sc-err' makes the code easier too.
->
-> Regards,
-> Bjorn
-Best,
-Sumit.
->
-> > +
-> > +IBB subnode required properties:
-> > +
-> > +- interrupts:                        Specify the interrupts as per the interrupt
-> > +                             encoding.
-> > +- interrupt-names:           Interrupt names to match up 1-to-1 with
-> > +                             the interrupts specified in 'interrupts'
-> > +                             property.
-> > +
-> > +Example:
-> > +     pmi8998_lsid1: pmic@3 {
-> > +             labibb {
-> > +                     compatible = "qcom,pmi8998-lab-ibb";
-> > +                     #address-cells = <1>;
-> > +                     #size-cells = <0>;
-> > +
-> > +                     lab: lab {
-> > +                             interrupts = <0x3 0xde 0x0 IRQ_TYPE_EDGE_RISING>;
-> > +                             interrupt-names = "lab-sc-err";
-> > +                     };
-> > +
-> > +                     ibb: ibb {
-> > +                             interrupts = <0x3 0xdc 0x2 IRQ_TYPE_EDGE_RISING>;
-> > +                             interrupt-names = "ibb-sc-err";
-> > +                     };
-> > +
-> > +             };
-> > +     };
-> > --
-> > 2.26.2
-> >
+V0: Base version patch (Tested on 5.7.0-rc3).
+
+
+
+Sagar Shrikant Kadam (2):
+  riscv: defconfig: enable spi nor on Hifive Unleashed A00 board.
+  spi: nor: update page program settings for is25wp256 using post bfpt
+    fixup
+
+ arch/riscv/Kconfig.socs      |  1 +
+ arch/riscv/configs/defconfig |  3 ++-
+ drivers/mtd/spi-nor/issi.c   | 16 ++++++++++++++++
+ 3 files changed, 19 insertions(+), 1 deletion(-)
+
+-- 
+2.7.4
+
