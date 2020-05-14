@@ -2,122 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2EC1D295C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A05121D2947
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgENIAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 04:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726950AbgENIAb (ORCPT
+        id S1726067AbgENIAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 04:00:04 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41222 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725952AbgENIAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 04:00:31 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2E8C061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:00:30 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id z72so21708564wmc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:00:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nZF4M1Ryr6CWnpRgUMWuRsLTKn/UHmWXZ3+MZTEjA0A=;
-        b=nXmcTgWKai8rBQ2DXas2d5H6t5IBpKKtBOFHUcEyAvlLdEQGxeg/oH6FNz59RFXfP1
-         P7Qkldx/02KKtlnaijnKKo8qjlOii2FQNyb0gmqEdu8VwcCQdYj6QtgMy32fr6gphqMs
-         7RJ1yCfST+TpHaSnZ1uw1gU9H+l+9GEZ4z8cIuXsToR7E6n+IZbRXPy8YZmXzcTpV4j0
-         nKM0IY3O82aZcgwehgScYrbMYMQyyI2Gy90P+Et9IdpErBIOvAYByQc+cW+D49uP72Lm
-         NOIOWdT1Jgd2LiHVVUqA2u2f/rYlHEJc0jXjQ0XYKT7TteUWkZPzMfha+VuT7f4ys2Ky
-         tuOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nZF4M1Ryr6CWnpRgUMWuRsLTKn/UHmWXZ3+MZTEjA0A=;
-        b=aN/e/DBSwENhHFMo3vxtvkcsg/97RB8i+fV+l51sDf9Q7FASg7N8c4FVVyDaQVfPnR
-         ROeFjKf0MOIDVsfSdpZgW+jRtMRlwZOvcqn5H/0EEyqiWd4WzaI0eGHRhCdX+I74YMom
-         MiUBTDc4gxt3MdPpHUdAoPMHumjy3qGJjWO5adw8wmIDK+nhGyVy4ubR9F5DSiglTnR0
-         mytvaQRDLjGl+/aHERltlDEY8Yw6+TodnIE3S9J4Vg4wls1xxRrbMyXFT9dOy5+8EGA3
-         bVmkdl69lxoa14Jtw6HC1a5CKpxjsB4/cwH0CzWjy8foiUaqsltLFHArvV9PaAE36IrC
-         pNTQ==
-X-Gm-Message-State: AGi0PuY5ytLpMT5Bp54xEf6AQyUuBHDRqjjQRts8b7r6+lgQY0eL3j+S
-        /WbLPxe4oXscY4PeQ4oddC3ekQ==
-X-Google-Smtp-Source: APiQypLkHL0DWLpTgfSdy1BAdMqLrKiddZcunwHMW5P3bAckgztG6gV48Xmw/vqS4Ej0EtW7WbyHNQ==
-X-Received: by 2002:a1c:f609:: with SMTP id w9mr46778546wmc.123.1589443229077;
-        Thu, 14 May 2020 01:00:29 -0700 (PDT)
-Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id 81sm23337446wme.16.2020.05.14.01.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 01:00:28 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Jonathan Corbet <corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Fabien Parent <fparent@baylibre.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Edwin Peer <edwin.peer@broadcom.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Stephane Le Provost <stephane.leprovost@mediatek.com>,
-        Pedro Tsai <pedro.tsai@mediatek.com>,
-        Andrew Perepech <andrew.perepech@mediatek.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v3 15/15] ARM64: dts: mediatek: enable ethernet on pumpkin boards
-Date:   Thu, 14 May 2020 09:59:42 +0200
-Message-Id: <20200514075942.10136-16-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200514075942.10136-1-brgl@bgdev.pl>
-References: <20200514075942.10136-1-brgl@bgdev.pl>
+        Thu, 14 May 2020 04:00:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589443203;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e4jjCqMhrz73017AHqU+ojMzDyx024B7mYUCVLrg2XA=;
+        b=EnRhIpz76HdOVmzPhyaDfrZy0InWXAgfZimbjbW6G1H3JSqxry3ShJ+H4mB02mhMMro/O2
+        zRipUrdV6njafFwbcdwaEpkLPr6pyhiLagp4n+O4uJROwT1fPUSujc6l7gCJzQfDA7FA3e
+        jrcg2cDv6w6j4Eu4Fly0o70G23wC4tY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-DblcYXPVPo60onW8Liue0g-1; Thu, 14 May 2020 03:59:59 -0400
+X-MC-Unique: DblcYXPVPo60onW8Liue0g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 80E5180058A;
+        Thu, 14 May 2020 07:59:57 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-115-145.ams2.redhat.com [10.36.115.145])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3CF086A977;
+        Thu, 14 May 2020 07:59:53 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 6FE4417444; Thu, 14 May 2020 09:59:52 +0200 (CEST)
+Date:   Thu, 14 May 2020 09:59:52 +0200
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     David Stevens <stevensd@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:VIRTIO CORE, NET..." 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, virtio-dev@lists.oasis-open.org
+Subject: Re: [PATCH v3 1/4] dma-buf: add support for virtio exported objects
+Message-ID: <20200514075952.zuc3zjtmasaqrw75@sirius.home.kraxel.org>
+References: <20200311112004.47138-1-stevensd@chromium.org>
+ <20200311112004.47138-2-stevensd@chromium.org>
+ <CAKMK7uHFgiHLe9oiFBr-VR-6rU9-hLTpBTEVNh0ezyj54u70jw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uHFgiHLe9oiFBr-VR-6rU9-hLTpBTEVNh0ezyj54u70jw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+  Hi,
 
-Add remaining properties to the ethernet node and enable it.
+> - for the runtime upcasting the usual approach is to check the ->ops
+> pointer. Which means that would need to be the same for all virtio
+> dma_bufs, which might get a bit awkward. But I'd really prefer we not
+> add allocator specific stuff like this to dma-buf.
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- .../boot/dts/mediatek/pumpkin-common.dtsi      | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+This is exactly the problem, it gets messy quickly, also when it comes
+to using the drm_prime.c helpers ...
 
-diff --git a/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi b/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
-index 4b1d5f69aba6..dfceffe6950a 100644
---- a/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
-@@ -167,6 +167,24 @@ &uart0 {
- 	status = "okay";
- };
- 
-+&ethernet {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&ethernet_pins_default>;
-+	phy-handle = <&eth_phy>;
-+	phy-mode = "rmii";
-+	mac-address = [00 00 00 00 00 00];
-+	status = "okay";
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		eth_phy: ethernet-phy@0 {
-+			reg = <0>;
-+		};
-+	};
-+};
-+
- &usb0 {
- 	status = "okay";
- 	dr_mode = "peripheral";
--- 
-2.25.0
+take care,
+  Gerd
 
