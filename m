@@ -2,210 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4161D4072
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 00:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8EFD1D4079
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 00:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbgENWDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 18:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgENWDk (ORCPT
+        id S1728110AbgENWF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 18:05:29 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22979 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726046AbgENWF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 18:03:40 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618D0C061A0C;
-        Thu, 14 May 2020 15:03:39 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ms17so65304pjb.0;
-        Thu, 14 May 2020 15:03:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HmtQhKFdNrlpZsMj2XOzORk3musPwzUfAsf1Y+1YzwU=;
-        b=aCsx/elz0xFYJrJT8FXPE/2q/TDolncdxRulXfnVfwv4g8Cyt/6oJVFavIDFtT+MUz
-         8HJ1goV6cc/+YoUY30opQ1mWlsnhAVF9x2GgR+2GkgqVgJzx01Xoz+xrXlMbLtIGGO1w
-         Tj6ZCnR+RxF11Zd3I3dEWqNYQe4Q42eatMvHZDtqrYhDrD9ZlPDXgXSXQfKiXmCUBtIe
-         6xVQj8Le7LkRe6uJui4MN7XWQF/3nXvTYQRSqDZnyMACdel1rmAXagvMWXlU5+4CBRMr
-         tnVId00YQ7xncXL8hFiGm4qasKJOm5I8CBhASY85Jfl3Fu8pjr8iG5Z/s/ZAKwM9+pHX
-         OMPQ==
+        Thu, 14 May 2020 18:05:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589493926;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WbD5g5bGH+nPMmGQ14q3KYBCwhmBSOIy/E7pqLF8qco=;
+        b=HgmWWKpP7fjRMrxT2DGzUivS9oD8pwkg5U4SezAOD9nbWE06CIFBuxs4WxLvhsueKkSAy/
+        dbxI84PLlLlho7UmJPXPASonF8xC88GeZZsfOpUg3vrhH60fiCLD+B491h6r+37SNu9XWw
+        rvCpliYZ8Duciu3lTimvQ/vJzO3vTIc=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209-8fWapEi4NNaax3ACmlmWDg-1; Thu, 14 May 2020 18:05:24 -0400
+X-MC-Unique: 8fWapEi4NNaax3ACmlmWDg-1
+Received: by mail-qt1-f199.google.com with SMTP id k54so49419qtb.18
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 15:05:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HmtQhKFdNrlpZsMj2XOzORk3musPwzUfAsf1Y+1YzwU=;
-        b=Zxl2StU+wmiKXO/zY2nOlHSNZetvoLBUfmYQIq9isJmPrTxclnZi/m+35oCvvK9PLI
-         JK08fmXeJFLiACY7+5jtyFLT6FhuxBZwHuHXe268Ff2XwNJddzN81cTBeF3F+5jr8buC
-         Es/g6pwFmlD0gCSGvI2ZbDdPyA+TVRhRrApKz7wDeVJ48L7+5o3PFQJer2cI5gNJ7TtX
-         zHPndraVSji9QHA6iDMiGhg4Cc4u4Hquj9km29VvSlQ2xpEMrJ7WzbnQspsCGsax1Cw1
-         UNUYv+zxuoye7COh7o+10jEznOCN1vgC19NTkQHANNKertzY2+0BPyef201i5Rwr++KC
-         oVig==
-X-Gm-Message-State: AOAM531Iufqe/TQDDyMV5z1C3OpXlXkL3lXR3Pw9cPLqi9syxKd/DL1O
-        7sSmP8DLst275UA0kovmE0g=
-X-Google-Smtp-Source: ABdhPJxTstBaCTGSAD8RrbquGtwIOedd1pFEJ3boxmLflSCP4LbenTz0MXDTVQUi8Ligd/rT9a3B4g==
-X-Received: by 2002:a17:90a:a591:: with SMTP id b17mr120725pjq.90.1589493818899;
-        Thu, 14 May 2020 15:03:38 -0700 (PDT)
-Received: from [192.168.11.3] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id nm6sm31968pjb.34.2020.05.14.15.03.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 May 2020 15:03:38 -0700 (PDT)
-Subject: Re: [PATCH RESEND 3/4] Documentation/litmus-tests: Merge atomic's
- README into top-level one
-To:     paulmck@kernel.org, Boqun Feng <boqun.feng@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>
-References: <20200323015735.236279-1-joel@joelfernandes.org>
- <7809dbfa-7a76-8663-799a-908c4ead8d30@gmail.com>
- <21e1ba24-22d0-8083-770c-53d320ba5420@gmail.com>
- <fd7e7c6f-fda1-7f2b-19f3-a09b73b10de8@gmail.com>
- <CAEXW_YSjo2hgvg-FN_MR7FVEcp-7gH17jb0-262k+ydSuuDjuQ@mail.gmail.com>
- <20200512163022.GI2869@paulmck-ThinkPad-P72>
- <09a8f418-0a46-87ea-dbdb-a43efc66476c@gmail.com>
- <6d162e69-5d2f-1fbf-1588-ab19c30e7311@gmail.com>
- <20200514004618.GA94665@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
- <20200514171656.GR2869@paulmck-ThinkPad-P72>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <0ded5099-fe59-914a-d0dd-999cc334ff0a@gmail.com>
-Date:   Fri, 15 May 2020 07:03:33 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WbD5g5bGH+nPMmGQ14q3KYBCwhmBSOIy/E7pqLF8qco=;
+        b=tV/yo9yt0K0AJHfIP4sqJnq8k4Vvr1R7X6PkYrQJXaHfeyKKuP0XXc12v5VtZ3kLv2
+         vugNBP6Mwig/rJNRMBRJQJQVloAGBrwA8Up4QyInjWx/zjyFXT0Gzl7CZd/I1Cs/wYnZ
+         JBX3mNh4LmBoe9nEFm29edVmzVEpJDzNmAPXohYe5tinZKLGzoGuhxL1OSwpiyh0mB01
+         zVsKGGJMLIPQnzEIuIkFZoiJNvlDxRCnJfc6v9hcK+VgJyS9aKLJAEsKOIUXpCjm+Jrx
+         Kqo+C5R5MUt5xRulu/Enx+yC/Tz6OB30unkwXUWZOSlBZJ7be6Vs73Pq+ZDd61qfBzmL
+         M0Rw==
+X-Gm-Message-State: AOAM531pJamxv5eUJj+KfpBnjnKX5ASTQvzZZZc77Y2eQaiW0kczUEc+
+        kMppqx5bmGKDVk2YolHGULzM3CTAeLvXAVSBensbC0FHm0uLoek23nZS4MuRM1OTXFXTqRVeUey
+        vpZljT/BihRZ4d+6dncav/r7A
+X-Received: by 2002:a37:a687:: with SMTP id p129mr551132qke.45.1589493924468;
+        Thu, 14 May 2020 15:05:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwh13mhxrDmHNJ8hptY5k7/JfPCSEmEv15VKAaaUnkUI+iGTOJzFoJ4FomI5IJPGc2XiaiEog==
+X-Received: by 2002:a37:a687:: with SMTP id p129mr551104qke.45.1589493924227;
+        Thu, 14 May 2020 15:05:24 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id y28sm373922qtc.62.2020.05.14.15.05.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 15:05:23 -0700 (PDT)
+Date:   Thu, 14 May 2020 18:05:16 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Tsirkin <mst@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, x86@kernel.org
+Subject: Re: [PATCH RFC 0/5] KVM: x86: KVM_MEM_ALLONES memory
+Message-ID: <20200514220516.GC449815@xz-x1>
+References: <20200514180540.52407-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200514171656.GR2869@paulmck-ThinkPad-P72>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200514180540.52407-1-vkuznets@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 May 2020 10:16:56 -0700, Paul E. McKenney wrote:
-> On Thu, May 14, 2020 at 08:46:18AM +0800, Boqun Feng wrote:
->> On Wed, May 13, 2020 at 06:39:03AM +0900, Akira Yokosawa wrote:
->>> From 96fa6680e3b990633ecbb6d11acf03a161b790bd Mon Sep 17 00:00:00 2001
->>> From: Akira Yokosawa <akiyks@gmail.com>
->>> Date: Sun, 10 May 2020 15:12:57 +0900
->>> Subject: [PATCH RESEND 3/4] Documentation/litmus-tests: Merge atomic's README into top-level one
->>>
->>> Where Documentation/litmus-tests/README lists RCU litmus tests,
->>> Documentation/litmus-tests/atomic/README lists atomic litmus tests.
->>> For symmetry, merge the latter into former, with some context
->>> adjustment in the introduction.
->>>
->>> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
->>> Acked-by: Andrea Parri <parri.andrea@gmail.com>
->>> Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->>
->> Acked-by: Boqun Feng <boqun.feng@gmail.com>
->>
->> Thanks!
+On Thu, May 14, 2020 at 08:05:35PM +0200, Vitaly Kuznetsov wrote:
+> The idea of the patchset was suggested by Michael S. Tsirkin.
 > 
-> Applied, and thank you all!
+> PCIe config space can (depending on the configuration) be quite big but
+> usually is sparsely populated. Guest may scan it by accessing individual
+> device's page which, when device is missing, is supposed to have 'pci
+> holes' semantics: reads return '0xff' and writes get discarded. Currently,
+> userspace has to allocate real memory for these holes and fill them with
+> '0xff'. Moreover, different VMs usually require different memory.
 > 
-> I rebased, cancelling the revert with the original, resulting in an
-> updated lkmm branch on -rcu.  There was one minor conflict, so could
-> one of you please check to make sure that I resolved things appropriately?
-
-One thing I noticed.
-
-Commit b2998782ded4 ("Documentation/litmus-tests: Clarify about the RCU
-pre-initialization test")'s change log says:
-
-    Since this test returned to tools/memory-model/, make sure that it is
-                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    at least referenced from Documentation/litmus-tests/'s README.
-
-Because of the rebase, this needs amendment as well as the title.
-
-Something like
-
-    Documentation/litumus-tests: Cite a relevant litmus test in tools/memory-model
-
-    For ease of finding the RCU related litmus test under
-    tools/memory-model/, add an entry in README.
-
-?
-
-    Thanks, Akira
-
+> The idea behind the feature introduced by this patch is: let's have a
+> single read-only page filled with '0xff' in KVM and map it to all such
+> PCI holes in all VMs. This will free userspace of obligation to allocate
+> real memory and also allow us to speed up access to these holes as we
+> can aggressively map the whole slot upon first fault.
 > 
-> 							Thanx, Paul
+> RFC. I've only tested the feature with the selftest (PATCH5) on Intel/AMD
+> with and wiuthout EPT/NPT. I haven't tested memslot modifications yet.
 > 
->> Regards,
->> Boqun
->>
->>> ---
->>>  Documentation/litmus-tests/README        | 19 +++++++++++++++++++
->>>  Documentation/litmus-tests/atomic/README | 16 ----------------
->>>  2 files changed, 19 insertions(+), 16 deletions(-)
->>>  delete mode 100644 Documentation/litmus-tests/atomic/README
->>>
->>> diff --git a/Documentation/litmus-tests/README b/Documentation/litmus-tests/README
->>> index c4307ea9f996..ac0b270b456c 100644
->>> --- a/Documentation/litmus-tests/README
->>> +++ b/Documentation/litmus-tests/README
->>> @@ -2,6 +2,25 @@
->>>  LITMUS TESTS
->>>  ============
->>>  
->>> +Each subdirectory contains litmus tests that are typical to describe the
->>> +semantics of respective kernel APIs.
->>> +For more information about how to "run" a litmus test or how to generate
->>> +a kernel test module based on a litmus test, please see
->>> +tools/memory-model/README.
->>> +
->>> +
->>> +atomic (/atomic derectory)
->>> +--------------------------
->>> +
->>> +Atomic-RMW+mb__after_atomic-is-stronger-than-acquire.litmus
->>> +    Test that an atomic RMW followed by a smp_mb__after_atomic() is
->>> +    stronger than a normal acquire: both the read and write parts of
->>> +    the RMW are ordered before the subsequential memory accesses.
->>> +
->>> +Atomic-RMW-ops-are-atomic-WRT-atomic_set.litmus
->>> +    Test that atomic_set() cannot break the atomicity of atomic RMWs.
->>> +
->>> +
->>>  RCU (/rcu directory)
->>>  --------------------
->>>  
->>> diff --git a/Documentation/litmus-tests/atomic/README b/Documentation/litmus-tests/atomic/README
->>> deleted file mode 100644
->>> index 714cf93816ea..000000000000
->>> --- a/Documentation/litmus-tests/atomic/README
->>> +++ /dev/null
->>> @@ -1,16 +0,0 @@
->>> -This directory contains litmus tests that are typical to describe the semantics
->>> -of our atomic APIs. For more information about how to "run" a litmus test or
->>> -how to generate a kernel test module based on a litmus test, please see
->>> -tools/memory-model/README.
->>> -
->>> -============
->>> -LITMUS TESTS
->>> -============
->>> -
->>> -Atomic-RMW+mb__after_atomic-is-stronger-than-acquire
->>> -	Test that an atomic RMW followed by a smp_mb__after_atomic() is
->>> -	stronger than a normal acquire: both the read and write parts of
->>> -	the RMW are ordered before the subsequential memory accesses.
->>> -
->>> -Atomic-RMW-ops-are-atomic-WRT-atomic_set.litmus
->>> -	Test that atomic_set() cannot break the atomicity of atomic RMWs.
->>> -- 
->>> 2.17.1
->>>
->>>
+> Patches are against kvm/next.
+
+Hi, Vitaly,
+
+Could this be done in userspace with existing techniques?
+
+E.g., shm_open() with a handle and fill one 0xff page, then remap it to
+anywhere needed in QEMU?
+
+Thanks,
+
+-- 
+Peter Xu
+
