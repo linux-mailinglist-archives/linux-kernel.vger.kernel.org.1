@@ -2,143 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80501D2C7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7351D2C89
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726232AbgENKW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 06:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53250 "EHLO
+        id S1726532AbgENKWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 06:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgENKWA (ORCPT
+        with ESMTP id S1725978AbgENKWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 06:22:00 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF488C061A0C;
-        Thu, 14 May 2020 03:21:59 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id r17so2145099lff.9;
-        Thu, 14 May 2020 03:21:59 -0700 (PDT)
+        Thu, 14 May 2020 06:22:42 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E59C061A0C;
+        Thu, 14 May 2020 03:22:42 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id e18so1795794iog.9;
+        Thu, 14 May 2020 03:22:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=BCPye0pUcJCrk1mGrs7j2KRmFPfxGUAT389d2jmnUgA=;
-        b=YHESanEIwOFx7yqx5nXb7MOmP1hbxGBQl8oiuq/VNYK1KZX1rXsZpHig2eMC5eb2Fx
-         9dKmYw5CM1cjQCVC2AiUG5qPL5Ua1ZWRM9yePwUNevdq2fKcBkYoaH0PDq1FQSR4hNwX
-         ZxRrmYeoZ3bbndjHKMX2HEFQX9K3O704YYKZC6dv+2siHCY0ulkVVh5/SmdUXQfBPsVS
-         DCaTQ7kaLOqDIeL16WawA/z1xFV+CwLUhX3OoT5akSwzDgP1NIv8/vrTLenIbb3VohEf
-         tinYb5hl5eeSEiLAJ7yRY5XB1SGSA3E5th8YBUL+q/sO6L2DchdEtwmkNSjRHd96wuPO
-         XZuw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xf8xZfCQkg2LX+UGX2pErkunT3kzFVgUMzef0Ov7X8U=;
+        b=Ggcu6svRnfvNn9Dsd8MwVKxUpU+EtC/sdV/wX64b84Wf/BolKHyXwvu1WcAgSycmo9
+         g6zPSumtiqkSeg/QcGT+3q4t78VLeVlwl6HKyh0KVqIqjLxX9yHiHiNON3YGciyWSWQd
+         14IfBehKyCyDuRwAhd/VzyyI1AhdUMeVd71fprDrTnkKhlpptgiHQSzWV3FEOHDk8iYI
+         6aYpNBaPF2de9HV+vW7A9rtyXE8KjxOjSMU8ayWbhT6HWBb+T/BQ+rVuMVAEJSEEhQG4
+         fVsFK/jFbOjhOS46sttdZAMR0QWUWFNTxnFd3SlWG7nPg6GPegi8f6EWzz78dCL2i21L
+         KGHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :date:message-id:mime-version;
-        bh=BCPye0pUcJCrk1mGrs7j2KRmFPfxGUAT389d2jmnUgA=;
-        b=OZCOp+Kmn2KqjXCrSe5UPoeyZXS8wn/TTWLj+wgU/GEj0GLI82oL4UPzTB/qpdkn5W
-         t7tjJx9n6LpZnx/ikXznYV43H4HUDEB949gmWh/fHyMJ8kh6Zm7FQb0knAbW+PjlcJ+g
-         aqNf8incK9zUzl75uie3ClfWR5CpyRyk42jp3jrma+Ao7TsqtmTYlyoZ1xGk9ASzl1I+
-         XotYDegh4osq/c1/H9KO82oatMWKP2rUBVtKi1YZncY78XQfZc9/Bawl1aUu2AVwqszz
-         WHNotJu6qFwQtsO6GenSkUxbdPJg07SajHBclcFCKdbvTTTX9SfAraUruT4JWTjd5upi
-         Dt6Q==
-X-Gm-Message-State: AOAM530avmkD31bL9EWG0CLedwM5o1ItbSUeaIyi0Y1OT1Ee/JozsZKb
-        3kmEv/P+vTaYaFiv0dQi6K/F4S1OFoa6nw==
-X-Google-Smtp-Source: ABdhPJwSFr86hBYlDBf0+PbPXxKc+kC7s2B9GDldm15Xqs3P7Se2TIbnDsS5P/MfAEp4LzIbExD5QA==
-X-Received: by 2002:a19:5f04:: with SMTP id t4mr2886505lfb.208.1589451717935;
-        Thu, 14 May 2020 03:21:57 -0700 (PDT)
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
-        by smtp.gmail.com with ESMTPSA id h11sm1554137lfp.22.2020.05.14.03.21.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 14 May 2020 03:21:56 -0700 (PDT)
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Roger Quadros <rogerq@ti.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     robh+dt@kernel.org, vigneshr@ti.com, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] usb: dwc3: keystone: Turn on USB3 PHY before controller
-In-Reply-To: <baaaf89c-4baf-4218-e22e-53cd1a64ec02@ti.com>
-References: <20200513130709.10239-1-rogerq@ti.com> <20200513130709.10239-4-rogerq@ti.com> <1589420265.5899.0.camel@mhfsdcap03> <baaaf89c-4baf-4218-e22e-53cd1a64ec02@ti.com>
-Date:   Thu, 14 May 2020 13:21:52 +0300
-Message-ID: <87tv0i4y0v.fsf@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xf8xZfCQkg2LX+UGX2pErkunT3kzFVgUMzef0Ov7X8U=;
+        b=l1rDUxmnbh90hP600V2i/c098LQ7wX1ODLKWQX0eRA7uU/pKiNNPtJiMY7BC8ave1c
+         3LyCIHRY4EB0rWq1nZnmcp3uDpXqAczHlb0eelwbxIq08TEq/0Jvo6w0FmUomzAF4D5P
+         6G8Z7UYOxj4N43bnHDPtt7u5izmOwOE89LJiKwj6btZM60LY9bPitXRACOzPn7VZDxU5
+         NWhRfQ3I9tMbWjOLuwBMJOXFrMIaT7YGXoWZX0RBBkFfmNBhuFFldJjjCL1RtH26r6Ho
+         bm9w5GTYDxT59ku/6DbhKcdL5RkUss/qmab12LPfmJ1aGGRux1VRFf2xleWq7LqYEyhD
+         VMLg==
+X-Gm-Message-State: AOAM530+9EjcAIpB+1YQPzTSFYt3rsSlFrR74nUXnHz+MtzNXBk+0O1j
+        wzrgvZrgIJu4ZXF237m4jQ/+v5k1x1hKZbLQQcw=
+X-Google-Smtp-Source: ABdhPJzLEl/PjziUjet7dMbd/2CbLJOcw5zJWiYxYZkGfaovRzeKZG7aVXM98VUw+JMNfNfgJzzoNSJMrMDnaE2xHXw=
+X-Received: by 2002:a5e:a80e:: with SMTP id c14mr3426158ioa.3.1589451761445;
+ Thu, 14 May 2020 03:22:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+References: <1589267017-17294-1-git-send-email-dillon.minfei@gmail.com>
+ <1589267017-17294-6-git-send-email-dillon.minfei@gmail.com> <CACRpkdbZoMDC-D12CByKJUZbu4shqixC=QrKwJUd8x=nyK7seQ@mail.gmail.com>
+In-Reply-To: <CACRpkdbZoMDC-D12CByKJUZbu4shqixC=QrKwJUd8x=nyK7seQ@mail.gmail.com>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Thu, 14 May 2020 18:22:03 +0800
+Message-ID: <CAL9mu0LVsePqifEC+-FR+NxvuZT3UGpU86KhzaTqb7w_Px0z2g@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] drm/panel: Add ilitek ili9341 driver
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi Linus,
 
-Roger Quadros <rogerq@ti.com> writes:
+Thanks for reviewing.
 
-> On 14/05/2020 04:37, Chunfeng Yun wrote:
->> On Wed, 2020-05-13 at 16:07 +0300, Roger Quadros wrote:
->>> The Local Power Sleep Controller (LPSC) dependency on AM65
->>> requires SERDES0 to be powered on before USB.
->>>
->>> We need to power up SERDES0 power domain and hold it on
->>> throughout the reset, init, power on sequence.
->>>
->>> Signed-off-by: Roger Quadros <rogerq@ti.com>
->>> ---
->>>   drivers/usb/dwc3/dwc3-keystone.c | 47 +++++++++++++++++++++++++++++++-
->>>   1 file changed, 46 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/usb/dwc3/dwc3-keystone.c b/drivers/usb/dwc3/dwc3-k=
-eystone.c
->>> index 1e14a6f4884b..46d46f3507fc 100644
->>> --- a/drivers/usb/dwc3/dwc3-keystone.c
->>> +++ b/drivers/usb/dwc3/dwc3-keystone.c
->>> @@ -14,6 +14,7 @@
->>>   #include <linux/dma-mapping.h>
->>>   #include <linux/io.h>
->>>   #include <linux/of_platform.h>
->>> +#include <linux/phy/phy.h>
->>>   #include <linux/pm_runtime.h>
->>>=20=20=20
->>>   /* USBSS register offsets */
->>> @@ -34,6 +35,7 @@
->>>   struct dwc3_keystone {
->>>   	struct device			*dev;
->>>   	void __iomem			*usbss;
->>> +	struct phy			*usb3_phy;
->>>   };
->>>=20=20=20
->>>   static inline u32 kdwc3_readl(void __iomem *base, u32 offset)
->>> @@ -95,8 +97,44 @@ static int kdwc3_probe(struct platform_device *pdev)
->>>   	if (IS_ERR(kdwc->usbss))
->>>   		return PTR_ERR(kdwc->usbss);
->>>=20=20=20
->>> -	pm_runtime_enable(kdwc->dev);
->>> +	/* PSC dependency on AM65 needs SERDES0 to be powered before USB0 */
->>> +	kdwc->usb3_phy =3D devm_phy_get(dev, "usb3-phy");
->> Use devm_phy_optional_get() instead?
+On Thu, May 14, 2020 at 4:14 PM Linus Walleij <linus.walleij@linaro.org> wrote:
 >
-> Indeed, it seems better suited.
+> Hi Dillon,
+>
+> thanks for your patch! Overall this looks like a good start.
+>
+> On Tue, May 12, 2020 at 9:04 AM <dillon.minfei@gmail.com> wrote:
+>
+> > #define ILI9341_SLEEP_OUT            0x11   /* Sleep out register */
+>
+> This is not a register, also just use MIPI_DCS_EXIT_SLEEP_MODE
+> in the code.
+>
+Yes, i will try to reuse MIPI_DCS_xxx.
 
-patches 1 and 2 are in testing/next
+> > +#define ILI9341_DFC                  0xb6   /* Display Function Control
+> > +                                            * register
+> > +                                            */
+>
+> This commenting style doesn't work, either just put it after /* the define */
+> and don't care if the line gets a bit long and checkpatch complains,
+> or
+>
+> /*
+>  * Put it above the define like this
+>  */
+> #define FOO 0x00
+>
+Ok, will change this comments.
 
-=2D-=20
-balbi
+> > +/**
+> > + * struct ili9341_config - the system specific ILI9341 configuration
+>
+> Nice with this per-system config, it makes the driver easy to maintain
+> for new users.
+>
+Yes, will try to move more system related configurations to this part,
+instead of hard code.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+> > +static int ili9341_dpi_init(struct ili9341 *ili)
+> > +{
+> > +       ili9341_command(ili, 0xca, 0xc3, 0x08, 0x50);
+>
+> This stuff is a bit hard to understand, don't you think?
+>
+> But given that register 0xCA seems undocumented I don't
+> know if there is anything more you can do, so it is OK
+> I suppose.
+>
+> > +       ili9341_command(ili, ILI9341_POWERB, 0x00, 0xc1, 0x30);
+>
+> This command is described in the manual  page 196.
+> Version: V1.11
+> Document No.: ILI9341_DS_V1.11.pdf
+> https://dflund.se/~triad/ILI9341_v1.11.pdf
+>
+Yes, "ili9341_command(ili, 0xca, 0xc3, 0x08, 0x50);" i ported from st's sdk.
+will use ILI9341_XXX to replace these magic numbers
 
------BEGIN PGP SIGNATURE-----
+> And this goes for all the below commands. Please add some more defines
+> from the datasheet and have less magic numbers in the driver.
+>
+> > +       ili9341_command(ili, ILI9341_POWER_SEQ, 0x64, 0x03, 0x12, 0x81);
+> > +       ili9341_command(ili, ILI9341_DTCA, 0x85, 0x00, 0x78);
+> > +       ili9341_command(ili, ILI9341_POWERA, 0x39, 0x2c, 0x00, 0x34, 0x02);
+> > +       ili9341_command(ili, ILI9341_PRC, 0x20);
+> > +       ili9341_command(ili, ILI9341_DTCB, 0x00, 0x00);
+> > +       ili9341_command(ili, ILI9341_FRC, 0x00, 0x1b);
+> > +       ili9341_command(ili, ILI9341_DFC, 0x0a, 0xa2);
+> > +       ili9341_command(ili, ILI9341_POWER1, 0x10);
+> > +       ili9341_command(ili, ILI9341_POWER2, 0x10);
+> > +       ili9341_command(ili, ILI9341_VCOM1, 0x45, 0x15);
+> > +       ili9341_command(ili, ILI9341_VCOM2, 0x90);
+> > +       ili9341_command(ili, ILI9341_MAC, 0xc8);
+> > +       ili9341_command(ili, ILI9341_3GAMMA_EN, 0x00);
+> > +       ili9341_command(ili, ILI9341_RGB_INTERFACE, 0xc2);
+> > +       ili9341_command(ili, ILI9341_DFC, 0x0a, 0xa7, 0x27, 0x04);
+> > +       ili9341_command(ili, ILI9341_COLUMN_ADDR, 0x00, 0x00, 0x00, 0xef);
+> > +       ili9341_command(ili, ILI9341_PAGE_ADDR, 0x00, 0x00, 0x01, 0x3f);
+> > +       ili9341_command(ili, ILI9341_INTERFACE, 0x01, 0x00, 0x06);
+> > +       if (ili->input == ILI9341_INPUT_PRGB_18_BITS)
+> > +               ili9341_command(ili, ILI9341_PIXEL_FORMAT, 0x66);
+> > +       else
+> > +               ili9341_command(ili, ILI9341_PIXEL_FORMAT, 0x56);
+> > +       ili9341_command(ili, ILI9341_GRAM);
+> > +       msleep(200);
+>
+> I think some of the above should not be hard coded but should instead
+> be stored in fields in struct ili9341_config. I know it can be a bit
+> tedious but it makes things much more clear.
+>
+Ok, will go deeper to find out some register configuration move to
+system config like rgb bus 16/18 bits
 
-iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl69G8AACgkQzL64meEa
-mQa11Q/+LJkpCuNcO49WcpIjbeMQZDjgBgMtNIDOq7wYX2aIP/ZFb3GhrdLLwe/H
-3ZpoOTl5/KcJuF5BjMBt/7t+VdwP0Naw2Z8542e/OKzr/xVANOXmWN9ERujcVZy+
-l50KeoG3eycU5UAoyJN2lAAQV05TNotjTrSl15eClSUbo+FPUYbAyqdu3SZyNrGh
-O8mswueuV3BqznAbMh5dje+Rixdqr0gPYLj2RHnZYSHtWfNFyy5CT2fVikA45RZj
-5dL43DHtbR+Z4MyivdvFtHClS4EvySngRTGhLvtYORLWfP7M8LiBIa1WZ4S0d6iV
-A7lTlwlw3bE4/5uiGYqtM+SS5gDPu3wlyMhofhqKJlJAvV+DvTkaNLb7DI7lmDqU
-CXK8dGcLBtv8D7XyXBHY1FdZ86sXvz4NYrNcoJlldakk+CY7iLrV0c2SYG65Dm0x
-vLBCy2nWFq+tQ0tUYTU8rMGURDkASreb95XvyTh4+Ow6xY3/9MWFoAR16MSBx5r9
-Lz6xXWWVKrQeNTPl6INJuuN9XBXVOwYRNfYhrpbAnB3/bR7WADCY+UNmUGK1RmRK
-AU5zkyqPaamXy5+B6z6gL7KdOx0h5FEMm0J4advv32EFlBRTEi3KQm/lHGsxEnBt
-r7DSou4RpmjBMnx/bDRVPY5l5g31mjEbYRX4wR+EuXbO3jgHv6s=
-=QLsY
------END PGP SIGNATURE-----
---=-=-=--
+> > +       ili9341_command(ili, ILI9341_GAMMA, 0x01);
+> > +       ili9341_command(ili, ILI9341_PGAMMA, 0x0f, 0x29, 0x24, 0x0c, 0x0e,
+> > +                                               0x09, 0x4e, 0x78, 0x3c, 0x09,
+> > +                                               0x13, 0x05, 0x17, 0x11, 0x00);
+> > +       ili9341_command(ili, ILI9341_NGAMMA, 0x00, 0x16, 0x1b, 0x04, 0x11,
+> > +                                               0x07, 0x31, 0x33, 0x42, 0x05,
+> > +                                               0x0c, 0x0a, 0x28, 0x2f, 0x0f);
+>
+> This should definately be in ili9341_config, as it is a screen property.
+>
+> In the long run I would like these panels to support setting gamma
+> from userspace etc but it is a big tedious work to get that right
+> so hard-coding a default per-variant is fine.
+>
+ok, will refer to panel-ilitek-ili9322 and panel-novatek-nt35510 driver.
+
+> You can check in e.g. panel-novatek-nt35510.c how I encoded
+> such sequences in per-variant data.
+>
+> > +static int ili9341_dpi_power_off(struct ili9341 *ili)
+> > +{
+> > +       /* Disable power */
+> > +       if (!IS_ERR(ili->vcc))
+> > +               return regulator_disable(ili->vcc);
+> > +
+> > +       return 0;
+> > +}
+>
+> Usually you should also assert RESET when disabling
+> power.
+>
+ok
+
+> > +/* This is the only mode listed for parallel RGB in the datasheet */
+> > +static const struct drm_display_mode rgb_240x320_mode = {
+> > +       .clock = 6100,
+> > +       .hdisplay = 240,
+> > +       .hsync_start = 240 + 10,
+> > +       .hsync_end = 240 + 10 + 10,
+> > +       .htotal = 240 + 10 + 10 + 20,
+> > +       .vdisplay = 320,
+> > +       .vsync_start = 320 + 4,
+> > +       .vsync_end = 320 + 4 + 2,
+> > +       .vtotal = 320 + 4 + 2 + 2,
+> > +       .vrefresh = 60,
+> > +       .flags = 0,
+> > +       .width_mm = 65,
+> > +       .height_mm = 50,
+>
+> The width and height should certainly be om the ili9341_config
+> as it is a per-panel property. You can just fill in in in
+> the below .get_modes() function. Or assign the whole
+> mode as part of the ili9341_config if that is easier.
+>
+ok, lcd timing part will move to ili9341 config
+
+> > +       return drm_panel_add(&ili->panel);
+> > +}
+> > +
+> > +
+> > +
+>
+> Surplus whitespace here.
+ok, will delete it.
+
+>
+> > +       mipi_dbi_command(dbi, MIPI_DCS_SET_DISPLAY_OFF);
+> > +
+> > +       mipi_dbi_command(dbi, ILI9341_POWERB, 0x00, 0xc1, 0x30);
+> > +       mipi_dbi_command(dbi, ILI9341_POWER_SEQ, 0x64, 0x03, 0x12, 0x81);
+>
+> Some of these are just copies of the above init sequence, so it makes
+> even more sense to just have these settings stored in
+> ili9341_config.
+ok.
+
+>
+> > +       mipi_dbi_command(dbi, ILI9341_DTCA, 0x85, 0x00, 0x78);
+> > +       mipi_dbi_command(dbi, ILI9341_POWERA, 0x39, 0x2c, 0x00, 0x34, 0x02);
+> > +       mipi_dbi_command(dbi, ILI9341_PRC, 0x20);
+> > +       mipi_dbi_command(dbi, ILI9341_DTCB, 0x00, 0x00);
+> > +
+> > +       /* Power Control */
+> > +       mipi_dbi_command(dbi, ILI9341_POWER1, 0x23);
+> > +       mipi_dbi_command(dbi, ILI9341_POWER2, 0x10);
+> > +       /* VCOM */
+> > +       mipi_dbi_command(dbi, ILI9341_VCOM1, 0x3e, 0x28);
+> > +       mipi_dbi_command(dbi, ILI9341_VCOM2, 0x86);
+> > +
+> > +       /* Memory Access Control */
+> > +       mipi_dbi_command(dbi, MIPI_DCS_SET_PIXEL_FORMAT,
+> > +                               MIPI_DCS_PIXEL_FMT_16BIT);
+> > +
+> > +       /* Frame Rate */
+> > +       mipi_dbi_command(dbi, ILI9341_FRC, 0x00, 0x1b);
+> > +
+> > +       /* Gamma */
+> > +       mipi_dbi_command(dbi, ILI9341_3GAMMA_EN, 0x00);
+> > +       mipi_dbi_command(dbi, MIPI_DCS_SET_GAMMA_CURVE, 0x01);
+> > +       mipi_dbi_command(dbi, ILI9341_PGAMMA,
+> > +                        0x0f, 0x31, 0x2b, 0x0c, 0x0e, 0x08, 0x4e, 0xf1,
+> > +                        0x37, 0x07, 0x10, 0x03, 0x0e, 0x09, 0x00);
+> > +       mipi_dbi_command(dbi, ILI9341_NGAMMA,
+> > +                        0x00, 0x0e, 0x14, 0x03, 0x11, 0x07, 0x31, 0xc1,
+> > +                        0x48, 0x08, 0x0f, 0x0c, 0x31, 0x36, 0x0f);
+>
+> It seems to be copies of the stuff above, but why is there a different
+> gamma if you use DBI?
+for dbi interface, currently i just copy the code from tiny/ili9341.c.
+as so many boards use this driver now, like raspberry pi, etc
+i'm afraid it's will not work after modification. so, just leave the
+original code there.
+
+>
+> I suspect only one of them is really needed and it is not even
+> necessary to set if up in two places.
+>
+as i know, dbi interface use spi to transfer video data and register
+set to panel.
+but dpi use rgb bus transfer video data, spi set register, they are
+two different type for drm.
+i can't register two different interface into drm at the same time.
+so, i use two path.
+
+for code management, they have some common part, like register init.
+power on/off process. i will try to reuse most common functions. to make code
+easier to be understand.
+
+anther question:
+is there any panel driver have dbi & dpi or dpi & dsi supported? which
+i mean support
+two different panel interface in one driver.
+thanks
+
+> > +out_enable:
+> > +       switch (dbidev->rotation) {
+> > +       default:
+> > +               addr_mode = ILI9341_MADCTL_MX;
+> > +               break;> +out_enable:
+> > +       switch (dbidev->rotation) {
+> > +       default:
+> > +               addr_mode = ILI9341_MADCTL_MX;
+> > +               break;
+> > +       case 90:
+> > +               addr_mode = ILI9341_MADCTL_MV;
+> > +               break;
+> > +       case 180:
+> > +               addr_mode = ILI9341_MADCTL_MY;
+> > +               break;
+> > +       case 270:
+> > +               addr_mode = ILI9341_MADCTL_MV | ILI9341_MADCTL_MY |
+> > +                           ILI9341_MADCTL_MX;
+> > +               break;
+> > +       }
+> > +       addr_mode |= ILI9341_MADCTL_BGR;
+> > +       mipi_dbi_command(dbi, MIPI_DCS_SET_ADDRESS_MODE, addr_mode);
+> > +       mipi_dbi_enable_flush(dbidev, crtc_state, plane_state);
+> > +       DRM_DEBUG_KMS("initialized display serial interface\n");
+> > +out_exit:
+> > +       drm_dev_exit(idx);
+> > +}
+> > +
+>
+> > +       case 90:
+> > +               addr_mode = ILI9341_MADCTL_MV;
+> > +               break;
+> > +       case 180:
+> > +               addr_mode = ILI9341_MADCTL_MY;
+> > +               break;
+> > +       case 270:
+> > +               addr_mode = ILI9341_MADCTL_MV | ILI9341_MADCTL_MY |
+> > +                           ILI9341_MADCTL_MX;
+> > +               break;
+> > +       }
+> > +       addr_mode |= ILI9341_MADCTL_BGR;
+> > +       mipi_dbi_command(dbi, MIPI_DCS_SET_ADDRESS_MODE, addr_mode);
+>
+> Since you use MIPI_DCS_* define here, check if this applies
+> to more of the commands above so you don't need custom
+> defines for them. e.g.
+> ILI9341_SLEEP_OUT 0x11 = MIPI_DCS_EXIT_SLEEP_MODE
+> and that isn't even a register right, it is just a command?
+> (Noted in the beginning.)
+>
+ok, will try to reuse MIPI_DCS_xxx
+
+> Yours,
+> Linus Walleij
