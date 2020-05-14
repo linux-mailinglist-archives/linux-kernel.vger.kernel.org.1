@@ -2,174 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BF71D3404
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6D71D33B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgENPA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 11:00:29 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:60264 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727991AbgENPA1 (ORCPT
+        id S1726825AbgENO5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 10:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726190AbgENO5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 11:00:27 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jZFLM-0008Eb-OC; Thu, 14 May 2020 09:00:16 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jZFLI-0002l2-0S; Thu, 14 May 2020 09:00:16 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Rob Landley <rob@landley.net>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andy Lutomirski <luto@amacapital.net>
-References: <87eerszyim.fsf_-_@x220.int.ebiederm.org>
-        <ee83587b-8a1c-3c4f-cc0f-7bc98afabae1@I-love.SAKURA.ne.jp>
-        <CAHk-=wgQ2ovXMW=5ZHCpowkE1PwPQSL7oV4YXzBxd6eqNRXxnQ@mail.gmail.com>
-        <87sgg6v8we.fsf@x220.int.ebiederm.org>
-        <202005111428.B094E3B76A@keescook>
-        <874kslq9jm.fsf@x220.int.ebiederm.org>
-        <202005121218.ED0B728DA@keescook>
-        <87lflwq4hu.fsf@x220.int.ebiederm.org>
-        <202005121606.5575978B@keescook> <202005121625.20B35A3@keescook>
-        <202005121649.4ED677068@keescook>
-Date:   Thu, 14 May 2020 09:56:36 -0500
-In-Reply-To: <202005121649.4ED677068@keescook> (Kees Cook's message of "Tue,
-        12 May 2020 16:51:29 -0700")
-Message-ID: <87sgg2ftuj.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 14 May 2020 10:57:06 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA0BC061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:57:06 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b26so2896960lfa.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:57:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4HTVnMXFqn25Or2z9tz1JpDCA867OnT6AzmCxAyNnTA=;
+        b=HkgUt4eWkp2ApKf+Q8p05mUbDzAnPvl/NPEQp2HBG5nnd3tpFK+filWKg9ep0Dfic6
+         LUAPu+HOZ/+1wy2K509QzOP5abxcwXkU7Z5ZeQtdDY+ogtGKmqt7sjHqKAaRDofww6u2
+         4B0uBmngMwrctbwae+ZobEPCtD/jcEuch+BajoIi+2SAlh4xpXrSfNhJkeLTiKP/GIBf
+         JItLNV2MwlHe77/BjSc0m3UW2Y7E8CJRpp3SH/Z5gwzH8qH39BrbCpg4TnOm3FsTPl0i
+         uOdoiyGdWbbe3iKB6uhmJXdWeREj5h7hO4s2BQXAvfL4dUj45BIE/GGgEJ11Ac8oT6V8
+         gHlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4HTVnMXFqn25Or2z9tz1JpDCA867OnT6AzmCxAyNnTA=;
+        b=QFIVFBBhAc7q+x2P61X5AGd7HOaL/XPa43bzsuq+z91HB7ETCjiB5H+ye4hCfMGCPN
+         0YTMTmNt4wjMf14M6T7bm1ji66hQNJhtI48F+hlhjIT7J4TtvKmxkEeYgZ8yyfn7HgTn
+         Cx4yN7D9CU+pCvh5KA3Ezjci8f1eLk/vD1yRey7mI1nphWZWmZe2RWuKdcO172TpSu80
+         awa0f+ek6ITuBwtF6rm7Bpem6ZTxq2MZst3wPKmlOMuEzLOwsZJ/VZmKEO8EMXR2//Hq
+         83qISxXUS+RgQzI4YQiqgd6zr/x80cfcZg2fila3N+WyhW9jD5tIsZlkclofjNmyI17t
+         Yw2w==
+X-Gm-Message-State: AOAM530695WvIUMdYDdJ0NddEZLhyFr2B3MEX2VDh3rw6KUGC7a0Yp19
+        Frb+J3GkAdHsNMe1fiIvuV7inlKEKgcwycffafXJbw==
+X-Google-Smtp-Source: ABdhPJwHqTgIhDJNt4wwVGJjnTipm7hc43f5LFNNT5JulCF6C5kN/TFfsARDd0Vl9CNRBA6h2m+cFhheln5UzkaJCrk=
+X-Received: by 2002:a19:4f1b:: with SMTP id d27mr3626688lfb.81.1589468224785;
+ Thu, 14 May 2020 07:57:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jZFLI-0002l2-0S;;;mid=<87sgg2ftuj.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX184UonXunbqRpJTjGc7cdgy0PX4+YlZfjw=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4995]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa01 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: ; sa01 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Kees Cook <keescook@chromium.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 4318 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.6 (0.1%), b_tie_ro: 2.5 (0.1%), parse: 0.72
-        (0.0%), extract_message_metadata: 10 (0.2%), get_uri_detail_list: 1.37
-        (0.0%), tests_pri_-1000: 4.5 (0.1%), tests_pri_-950: 1.02 (0.0%),
-        tests_pri_-900: 0.87 (0.0%), tests_pri_-90: 262 (6.1%), check_bayes:
-        254 (5.9%), b_tokenize: 7 (0.2%), b_tok_get_all: 9 (0.2%),
-        b_comp_prob: 2.1 (0.0%), b_tok_touch_all: 233 (5.4%), b_finish: 0.71
-        (0.0%), tests_pri_0: 296 (6.8%), check_dkim_signature: 0.39 (0.0%),
-        check_dkim_adsp: 3.1 (0.1%), poll_dns_idle: 3729 (86.4%),
-        tests_pri_10: 1.79 (0.0%), tests_pri_500: 3736 (86.5%), rewrite_mail:
-        0.00 (0.0%)
-Subject: Re: [PATCH 3/5] exec: Remove recursion from search_binary_handler
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <20200514082109.27573-1-etienne.carriere@linaro.org>
+ <20200514082109.27573-2-etienne.carriere@linaro.org> <20200514142442.GB23401@bogus>
+In-Reply-To: <20200514142442.GB23401@bogus>
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+Date:   Thu, 14 May 2020 16:56:53 +0200
+Message-ID: <CAN5uoS9gZ7820Fg-6dmm4BO5GW+Y6D3O5Xt3gUQtYVZGafm_XA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] firmware: psci: support SMCCC v1.2 for SMCCC conduit
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        lorenzo.pieralisi@arm.com, maz@kernel.org,
+        Steven Price <steven.price@arm.com>, alexios.zavras@intel.com,
+        Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
-
-> On Tue, May 12, 2020 at 04:47:14PM -0700, Kees Cook wrote:
->> And now I wonder if qemu actually uses the resulting AT_EXECFD ...
+On Thu, 14 May 2020 at 16:24, Sudeep Holla <sudeep.holla@arm.com> wrote:
 >
-> It does, though I'm not sure if this is to support crossing mount points,
-> dropping privileges, or something else, since it does fall back to just
-> trying to open the file.
+> On Thu, May 14, 2020 at 10:21:09AM +0200, Etienne Carriere wrote:
+> > Update PSCI driver to support SMCCC v1.2 reported by secure firmware
+> > and indirectly make SMCCC conduit properly set when so. TF-A release
+> > v2.3 implements and reports SMCCC v1.2 since commit [1].
+> >
+> > Link: [1] https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/commit/?id=e34cc0cedca6e229847c232fe58d37fad2610ce9
+> > Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
+> > ---
+> >  drivers/firmware/psci/psci.c | 14 ++++++++++----
+> >  include/linux/psci.h         |  1 +
+> >  2 files changed, 11 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
+> > index 2937d44b5df4..80cf73bea4b0 100644
+> > --- a/drivers/firmware/psci/psci.c
+> > +++ b/drivers/firmware/psci/psci.c
+> > @@ -409,11 +409,17 @@ static void __init psci_init_smccc(void)
+> >       feature = psci_features(ARM_SMCCC_VERSION_FUNC_ID);
+> >
+> >       if (feature != PSCI_RET_NOT_SUPPORTED) {
+> > -             u32 ret;
+> > -             ret = invoke_psci_fn(ARM_SMCCC_VERSION_FUNC_ID, 0, 0, 0);
+> > -             if (ret == ARM_SMCCC_VERSION_1_1) {
+> > +             ver = invoke_psci_fn(ARM_SMCCC_VERSION_FUNC_ID, 0, 0, 0);
+> > +
+> > +             switch (ver) {
+> > +             case ARM_SMCCC_VERSION_1_1:
+> >                       psci_ops.smccc_version = SMCCC_VERSION_1_1;
+> > -                     ver = ret;
+> > +                     break;
+> > +             case ARM_SMCCC_VERSION_1_2:
+> > +                     psci_ops.smccc_version = SMCCC_VERSION_1_2;
+> > +                     break;
+> > +             default:
+> > +                     break;
+> >               }
+> >       }
+> >
+> > diff --git a/include/linux/psci.h b/include/linux/psci.h
+> > index a67712b73b6c..c7d99b7f34ed 100644
+> > --- a/include/linux/psci.h
+> > +++ b/include/linux/psci.h
+> > @@ -24,6 +24,7 @@ bool psci_has_osi_support(void);
+> >  enum smccc_version {
+> >       SMCCC_VERSION_1_0,
+> >       SMCCC_VERSION_1_1,
+> > +     SMCCC_VERSION_1_2,
 >
->     execfd = qemu_getauxval(AT_EXECFD);
->     if (execfd == 0) {
->         execfd = open(filename, O_RDONLY);
->         if (execfd < 0) {
->             printf("Error while loading %s: %s\n", filename, strerror(errno));
->             _exit(EXIT_FAILURE);
->         }
->     }
+> I took approach to kill this completely [1] instead of having to keep
+> expanding it for ever.
 
-My hunch is that the fallback exists from a time when the kernel did not
-implement AT_EXECFD, or so that qemu can run on kernels that don't
-implement AT_EXECFD.  It doesn't really matter unless the executable is
-suid, or otherwise changes privileges.
+Yes, I've been pointed to [1]. Discard this change. Sorry for the
+(little) noise.
 
+Etienne
 
-I looked into this a bit to remind myself why exec works the way it
-works, with changing privileges.
-
-The classic attack is pointing a symlink at a #! script that is suid or
-otherwise changes privileges.  The kernel will open the script and set
-the privileges, read the interpreter from the first line, and proceed to
-exec the interpreter.  The interpreter will then open the script using
-the pathname supplied by the kernel.  The name of the symlink.
-Before the interpreter reopens the script the attack would replace
-the symlink with a script that does something else, but gets to run
-with the privileges of the script.
-
-
-Defending against that time of check vs time of use attack is why
-bprm_fill_uid, and cap_bprm_set_creds use the credentials derived from
-the interpreter instead of the credentials derived from the script.
-
-
-The other defense is to replace the pathname of the executable that the
-intepreter will open with /dev/fd/N.
-
-All of this predates Linux entirely.  I do remember this was fixed at
-some point in Linux but I don't remember the details.  I can just read
-the solution that was picked in the code.
-
-
-
-All of this makes me wonder how are the LSMs protected against this
-attack.
-
-Let's see the following LSMS implement brpm_set_creds:
-tomoyo   - Abuses bprm_set_creds to call tomoyo_load_policy [ safe ]
-smack    - Requires CAP_MAC_ADMIN to smack setxattrs        [ vulnerable? ]
-           Uses those xattrs in smack_bprm_set_creds
-apparmor - Everything is based on names so the symlink      [ safe? ]
-           attack won't work as it has the wrong name.
-           As long as the trusted names can't be renamed
-           apparmor appears good.
-selinux  - Appears to let anyone set selinux xattrs         [ safe? ]
-           Requires permission for a sid transfer
-           As the attack appears not to allow anything that
-           would not be allowed anyway it looks like selinux
-           is safe.
-
-LSM folks, especially Casey am I reading this correctly?  Did I
-correctly infer how your LSMs deal with the time of check to time of use
-attack on the script name?
-
-Eric
-
+> --
+> Regards,
+> Sudeep
+>
+> [1] https://lore.kernel.org/linux-arm-kernel/20200506164411.3284-5-sudeep.holla@arm.com/
