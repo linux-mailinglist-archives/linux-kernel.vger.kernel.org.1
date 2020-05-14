@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C82C1D286C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 09:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53451D2875
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 09:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbgENHDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 03:03:54 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:11775 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725925AbgENHDy (ORCPT
+        id S1726143AbgENHEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 03:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbgENHET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 03:03:54 -0400
-X-UUID: fcb38e2b35a447638b004c071c864383-20200514
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=dUbZ4h/pak8n0CVkjJFglNd+gPQf1JMPki21rpI0rB4=;
-        b=n6Sz4IPkrLAZYE/pA3143h6ZlgvdagIG5IWiBhuXBr2jSZQ0o9lfvwDsWcZPlVKmdw5ECq7EKIpCvIQo4zlnPcc7TX1xiZJM1S/sztzUFj9mdZb+Hvs9rHb5kXAVyEqKVr8nIigjGoEfef0duvVSuwaojy+NweWy+8kvQ9esy2c=;
-X-UUID: fcb38e2b35a447638b004c071c864383-20200514
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 1275437998; Thu, 14 May 2020 15:03:42 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N1.mediatek.inc
- (172.27.4.75) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 14 May
- 2020 15:03:41 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 14 May 2020 15:03:41 +0800
-Message-ID: <1589439742.5899.2.camel@mhfsdcap03>
-Subject: Re: [PATCH V3 6/8] phy: tegra: xusb: Add support for charger detect
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Nagarjuna Kristam <nkristam@nvidia.com>
-CC:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <mark.rutland@arm.com>, <robh+dt@kernel.org>, <kishon@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Date:   Thu, 14 May 2020 15:02:22 +0800
-In-Reply-To: <1589437363-16727-7-git-send-email-nkristam@nvidia.com>
-References: <1589437363-16727-1-git-send-email-nkristam@nvidia.com>
-         <1589437363-16727-7-git-send-email-nkristam@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 14 May 2020 03:04:19 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7748FC061A0C;
+        Thu, 14 May 2020 00:04:19 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id r10so875133pgv.8;
+        Thu, 14 May 2020 00:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Hl1HPzb7dFtDLSR9rDmWF+8gIgfdqQC3u8YiNpHMJl0=;
+        b=CtP+bBcSjhGDsnkt8n84+x3WSL1FNSfcdsZ6vPxLKDK3zn9+rUCTxkJr7wUQ4YK2JJ
+         SMS08S3Koj2QBf6eGyWenIyBzBwv4mtMMEmS5oqXGXC1M4GfJG0kpjKXfvKBEHvhT7p+
+         xqp1REo/VOz2c3KwjiA1kXfzPTkSF9SrpU+C29/k/Oj3hfc14Pyhmegc5eQXuGxVXyAI
+         hD+O51R6MAH4PxgrP0RaSJniy/S96KWNN0Y3XKijTRuqewgLAcldvsiLleyS3iYyz1II
+         +QXw9VRwFsBtE88ryWZwx1/S1KJJ7IAT5Up8zq3VcOsWlsC+2+P90fnIk3nK+9uHCINO
+         G3lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Hl1HPzb7dFtDLSR9rDmWF+8gIgfdqQC3u8YiNpHMJl0=;
+        b=GNJ6vbHtCYc0/W0n1tnuyV8EIwCPtFgqLTtG21NmJutLoOF6+VpRwnYDUpsd3pnfRF
+         YuD4IKkAegEQTjFk+X6Y7UEGW9K+luAVovC6j9Mq3M8H+5nSRuXa1HQ2fMamq2aUNPFr
+         9A+cqqOFVcGJ8Su1yMLsgsBFQOvPaKI2tZlKdUvWxV4wRuY1upFdyus1zFylvvmoKw1c
+         4+oulfQxKxceuV7CO4WwPXdAetais93tNBOrx8cge/EGF/+c4GALPNNlZtVAFhn3LaU3
+         tm4CHgLSRLV6M8YDT1JAC+EbZr3gD0s+dc0+jB2dH3oVRp+jIR11NuhcBn8dy21DjY4c
+         RDZw==
+X-Gm-Message-State: AOAM530nWMmBhm+K2qaUjEjTeqrXY+taXtzn6U/FyL2POsjYlrpl55ze
+        IZHCSJIr7T7QiPEZVKsLYg==
+X-Google-Smtp-Source: ABdhPJxAp+3G8cqLmj/q9C3zR40xnwzfs4zf1FH/qUYzUa4+nIL+ilNSJL92YBiNLvm5S8C5JALS1A==
+X-Received: by 2002:a63:e90e:: with SMTP id i14mr2789778pgh.173.1589439859068;
+        Thu, 14 May 2020 00:04:19 -0700 (PDT)
+Received: from madhuparna-HP-Notebook ([2409:4071:5b5:d53:89fb:f860:f992:54ab])
+        by smtp.gmail.com with ESMTPSA id 28sm17439149pjh.43.2020.05.14.00.04.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 14 May 2020 00:04:18 -0700 (PDT)
+From:   Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+X-Google-Original-From: Madhuparna Bhowmik <change_this_user_name@gmail.com>
+Date:   Thu, 14 May 2020 12:34:09 +0530
+To:     David Miller <davem@davemloft.net>
+Cc:     madhuparnabhowmik10@gmail.com, kuznet@ms2.inr.ac.ru,
+        yoshfuji@linux-ipv6.org, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sfr@canb.auug.org.au,
+        frextrite@gmail.com, joel@joelfernandes.org, paulmck@kernel.org,
+        cai@lca.pw
+Subject: Re: [PATCH] Fix suspicious RCU usage warning
+Message-ID: <20200514070409.GA3174@madhuparna-HP-Notebook>
+References: <20200513061610.22313-1-madhuparnabhowmik10@gmail.com>
+ <20200513.120010.124458176293400943.davem@davemloft.net>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 630653DF28017AEEC4A91D6B8F0C31D2D6B4094032B02BF0A5F4434F43D9BF9A2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200513.120010.124458176293400943.davem@davemloft.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTA1LTE0IGF0IDExOjUyICswNTMwLCBOYWdhcmp1bmEgS3Jpc3RhbSB3cm90
-ZToNCj4gUGVyZm9ybSBjaGFyZ2VyLWRldGVjdCBvcGVyYXRpb24gaWYgY29ycmVzcG9uZGluZyBk
-dCBwcm9wZXJ0eSBpcyBlbmFibGVkLg0KPiBVcGRhdGUgdXNiLXBoeSB3aXRoIHRoZSBkZXRlY3Rl
-ZCBjaGFyZ2VyIHN0YXRlIGFuZCBtYXggY3VycmVudCB2YWx1ZXMuDQo+IFJlZ2lzdGVyIGNoYXJn
-ZXItZGV0ZWN0IEFQSSdzIG9mIHVzYi1waHkgdG8gcHJvdmlkZSBuZWVkZWQgZnVuY3Rpb25hbGl0
-aWVzLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogTmFnYXJqdW5hIEtyaXN0YW0gPG5rcmlzdGFtQG52
-aWRpYS5jb20+DQo+IC0tLQ0KPiBWMzoNCj4gIC0gQWxsaWdoZWQgZnVuY3Rpb25zIGFuZCBpdHMg
-YXJndW1lbnRzLg0KPiAgLSByZXBsYWNlZCBzcGFjZWQgYnkgdGFicyBmb3IgTUFDUk8gZGVmaW5p
-dGlvbiBhbGxpZ25tZW50cy4NCj4gIC0gVW5pZmllZCBwcmltYXJ5IGFuZCBzZWNvbmRhcnkgY2hh
-cmdlciBkZXRlY3QgQVBJJ3MuDQo+ICAtIFVzZWQgcmVhZGxfcG9sbF90aW1lb3V0IGluc3RlYWQg
-b2Ygd2hpbGUgbG9vcCBjb25kaXRpb24gY2hlY2sgZm9yIHJlZ2lzdGVyLg0KPiAgLSBGaXhlZCBv
-dGhlciBjb21tZW50cyBhcyBwZXIgaW5wdXRzIGZyb20gVGhpZXJyeS4NCj4gLS0tDQo+IFYyOg0K
-PiAgLSBQYXRjaCByZS1iYXNlZC4NCj4gLS0tDQo+ICBkcml2ZXJzL3BoeS90ZWdyYS9NYWtlZmls
-ZSB8ICAgMiArLQ0KPiAgZHJpdmVycy9waHkvdGVncmEvY2QuYyAgICAgfCAyODMgKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ICBkcml2ZXJzL3BoeS90ZWdy
-YS94dXNiLmMgICB8ICA4MCArKysrKysrKysrKysrDQo+ICBkcml2ZXJzL3BoeS90ZWdyYS94dXNi
-LmggICB8ICAgNyArKw0KPiAgNCBmaWxlcyBjaGFuZ2VkLCAzNzEgaW5zZXJ0aW9ucygrKSwgMSBk
-ZWxldGlvbigtKQ0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvcGh5L3RlZ3JhL2NkLmMN
-Cj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BoeS90ZWdyYS9NYWtlZmlsZSBiL2RyaXZlcnMv
-cGh5L3RlZ3JhL01ha2VmaWxlDQo+IGluZGV4IDg5Yjg0MDYuLmJlZmRmYzQgMTAwNjQ0DQo+IC0t
-LSBhL2RyaXZlcnMvcGh5L3RlZ3JhL01ha2VmaWxlDQo+ICsrKyBiL2RyaXZlcnMvcGh5L3RlZ3Jh
-L01ha2VmaWxlDQo+IEBAIC0xLDcgKzEsNyBAQA0KPiAgIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmll
-cjogR1BMLTIuMC1vbmx5DQo+ICBvYmotJChDT05GSUdfUEhZX1RFR1JBX1hVU0IpICs9IHBoeS10
-ZWdyYS14dXNiLm8NCj4gIA0KPiAtcGh5LXRlZ3JhLXh1c2IteSArPSB4dXNiLm8NCj4gK3BoeS10
-ZWdyYS14dXNiLXkgKz0geHVzYi5vIGNkLm8NCj4gIHBoeS10ZWdyYS14dXNiLSQoQ09ORklHX0FS
-Q0hfVEVHUkFfMTI0X1NPQykgKz0geHVzYi10ZWdyYTEyNC5vDQo+ICBwaHktdGVncmEteHVzYi0k
-KENPTkZJR19BUkNIX1RFR1JBXzEzMl9TT0MpICs9IHh1c2ItdGVncmExMjQubw0KPiAgcGh5LXRl
-Z3JhLXh1c2ItJChDT05GSUdfQVJDSF9URUdSQV8yMTBfU09DKSArPSB4dXNiLXRlZ3JhMjEwLm8N
-Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGh5L3RlZ3JhL2NkLmMgYi9kcml2ZXJzL3BoeS90ZWdy
-YS9jZC5jDQo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+IGluZGV4IDAwMDAwMDAuLmZkZGJlNGMN
-Cj4gLS0tIC9kZXYvbnVsbA0KPiArKysgYi9kcml2ZXJzL3BoeS90ZWdyYS9jZC5jDQo+IEBAIC0w
-LDAgKzEsMjgzIEBADQo+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMA0KPiAr
-LyoNCj4gKyAqIENvcHlyaWdodCAoYykgMjAyMCwgTlZJRElBIENPUlBPUkFUSU9OLiAgQWxsIHJp
-Z2h0cyByZXNlcnZlZC4NCj4gKyAqLw0KPiArDQo+ICsjaW5jbHVkZSA8bGludXgvZGVsYXkuaD4N
-Cj4gKyNpbmNsdWRlIDxsaW51eC9pb3BvbGwuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9tb2R1bGUu
-aD4NCj4gKyNpbmNsdWRlIDxsaW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4NCj4gKyNpbmNsdWRlIDxs
-aW51eC9waHkvcGh5Lmg+DQo+ICsNCj4gKyNpbmNsdWRlICJ4dXNiLmgiDQo+ICsNCj4gKy8qIERh
-dGEgY29udGFjdCBkZXRlY3Rpb24gdGltZW91dCAqLw0KPiArI2RlZmluZSBURENEX1RJTUVPVVRf
-TVMJCQkJNDAwDQo+ICsNCj4gKyNkZWZpbmUgVVNCMl9CQVRURVJZX0NIUkdfT1RHUEFEWF9DVEww
-KHgpCSgweDgwICsgKHgpICogMHg0MCkNCj4gKyNkZWZpbmUgIFBEX0NIRwkJCQkJKDEgPDwgMCkN
-Cj4gKyNkZWZpbmUgIFZEQ0RfREVUX0ZJTFRFUl9FTgkJCSgxIDw8IDQpDQo+ICsjZGVmaW5lICBW
-REFUX0RFVAkJCQkoMSA8PCA1KQ0KPiArI2RlZmluZSAgVkRBVF9ERVRfRklMVEVSX0VOCQkJKDEg
-PDwgOCkNCj4gKyNkZWZpbmUgIE9QX1NJTktfRU4JCQkJKDEgPDwgOSkNCj4gKyNkZWZpbmUgIE9Q
-X1NSQ19FTgkJCQkoMSA8PCAxMCkNCj4gKyNkZWZpbmUgIE9OX1NJTktfRU4JCQkJKDEgPDwgMTEp
-DQo+ICsjZGVmaW5lICBPTl9TUkNfRU4JCQkJKDEgPDwgMTIpDQo+ICsjZGVmaW5lICBPUF9JX1NS
-Q19FTgkJCQkoMSA8PCAxMykNCj4gKyNkZWZpbmUgIFpJUF9GSUxURVJfRU4JCQkJKDEgPDwgMjEp
-DQo+ICsjZGVmaW5lICBaSU5fRklMVEVSX0VOCQkJCSgxIDw8IDI1KQ0KPiArI2RlZmluZSAgRENE
-X0RFVEVDVEVECQkJCSgxIDw8IDI2KQ0KVXNlIEJJVCgpID8NCj4gKw0KPiArI2RlZmluZSBVU0Iy
-X0JBVFRFUllfQ0hSR19PVEdQQURYX0NUTDEoeCkJKDB4ODQgKyAoeCkgKiAweDQwKQ0KPiArI2Rl
-ZmluZSAgUERfVlJFRwkJCQkoMSA8PCA2KQ0KPiArI2RlZmluZSAgVlJFR19MRVYoeCkJCQkJKCgo
-eCkgJiAweDMpIDw8IDcpDQo+ICsjZGVmaW5lICBWUkVHX0RJUih4KQkJCQkoKCh4KSAmIDB4Mykg
-PDwgMTEpDQo+ICsjZGVmaW5lICBWUkVHX0RJUl9JTgkJCQlWUkVHX0RJUigxKQ0KPiArI2RlZmlu
-ZSAgVlJFR19ESVJfT1VUCQkJCVZSRUdfRElSKDIpDQo+ICsjZGVmaW5lICBVU0JPUF9SUERfT1ZS
-RAkJCQkoMSA8PCAxNikNCj4gKyNkZWZpbmUgIFVTQk9QX1JQRF9PVlJEX1ZBTAkJCSgxIDw8IDE3
-KQ0KPiArI2RlZmluZSAgVVNCT1BfUlBVX09WUkQJCQkJKDEgPDwgMTgpDQo+ICsjZGVmaW5lICBV
-U0JPUF9SUFVfT1ZSRF9WQUwJCQkoMSA8PCAxOSkNCj4gKyNkZWZpbmUgIFVTQk9OX1JQRF9PVlJE
-CQkJCSgxIDw8IDIwKQ0KPiArI2RlZmluZSAgVVNCT05fUlBEX09WUkRfVkFMCQkJKDEgPDwgMjEp
-DQo+ICsjZGVmaW5lICBVU0JPTl9SUFVfT1ZSRAkJCQkoMSA8PCAyMikNCj4gKyNkZWZpbmUgIFVT
-Qk9OX1JQVV9PVlJEX1ZBTAkJCSgxIDw8IDIzKQ0KPiArDQo+ICsjZGVmaW5lIFhVU0JfUEFEQ1RM
-X1VTQjJfT1RHX1BBRFhfQ1RMMCh4KQkoMHg4OCArICh4KSAqIDB4NDApDQo+ICsjZGVmaW5lICBV
-U0IyX09UR19QRDIJCQkJKDEgPDwgMjcpDQo+ICsjZGVmaW5lICBVU0IyX09UR19QRDJfT1ZSRF9F
-TgkJCSgxIDw8IDI4KQ0KPiArI2RlZmluZSAgVVNCMl9PVEdfUERfWkkJCQkJKDEgPDwgMjkpDQo+
-ICsNCj4gKyNkZWZpbmUgWFVTQl9QQURDVExfVVNCMl9CQVRURVJZX0NIUkdfVERDRF9EQk5DX1RJ
-TUVSXzAgKDB4MjgwKQ0KPiArI2RlZmluZSAgIFREQ0RfREJOQyh4KQkJCQkoKCh4KSAmIDB4N2Zm
-KSA8PCAwKQ0KPiArDQo+ICtzdGF0aWMgdm9pZA0KPiArdGVncmFfeHVzYl9wYWRjdGxfc2V0X2Rl
-Ym91bmNlX3RpbWUoc3RydWN0IHRlZ3JhX3h1c2JfcGFkY3RsICpwYWRjdGwsDQo+ICsJCQkJICAg
-IHUzMiBkZWJvdW5jZSkNCg0K
+On Wed, May 13, 2020 at 12:00:10PM -0700, David Miller wrote:
+> From: madhuparnabhowmik10@gmail.com
+> Date: Wed, 13 May 2020 11:46:10 +0530
+> 
+> > From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> > 
+> > This patch fixes the following warning:
+> > 
+> > =============================
+> > WARNING: suspicious RCU usage
+> > 5.7.0-rc4-next-20200507-syzkaller #0 Not tainted
+> > -----------------------------
+> > net/ipv6/ip6mr.c:124 RCU-list traversed in non-reader section!!
+> > 
+> > ipmr_new_table() returns an existing table, but there is no table at
+> > init. Therefore the condition: either holding rtnl or the list is empty
+> > is used.
+> > 
+> > Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> > Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> > 
+> > Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> 
+> Please only provide one signoff line.
+> 
+> Please provide a proper Fixes: tag for this bug fix.
+> 
+> And finally, please make your Subject line more appropriate.  It must
+> first state the target tree inside of the "[PATCH]" area, the two choices
+> are "[PATCH net]" and "[PATCH net-next]" and it depends upon which tree
+> this patch is targetting.
+> 
+> Then your Subject line should also be more descriptive about exactly the
+> subsystem and area the change is being made to, for this change for
+> example you could use something like:
+> 
+> 	ipv6: Fix suspicious RCU usage warning in ip6mr.
+> 
+> Also, obviously, there are also syzkaller tags you can add to the
+> commit message as well.
+Sorry for this malformed patch, I have sent a patch with all these
+corrections.
 
+Thank you,
+Madhuparna
