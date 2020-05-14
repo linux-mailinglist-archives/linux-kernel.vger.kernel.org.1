@@ -2,93 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5321D34FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C275F1D3521
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgENPZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 11:25:35 -0400
-Received: from mga06.intel.com ([134.134.136.31]:42920 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726056AbgENPZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 11:25:35 -0400
-IronPort-SDR: /rKbp9lSq4uFDVylUEPvhTK9wfLK1N2G0sik70JIZ7FqtZxi54OuXiU2MQTeENBOZ9x7bBxcm5
- SIFeUsYN5ULA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2020 08:25:34 -0700
-IronPort-SDR: Ng2hBVYJXHRSIZgay8eUBPE0EZoRJvviZ2qMfzj8FYvf8AGmaHPL90x4D+uUNQg0wv84fsgGmS
- hylSshRCqn8g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,391,1583222400"; 
-   d="scan'208";a="298071283"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by fmsmga002.fm.intel.com with ESMTP; 14 May 2020 08:25:33 -0700
-Date:   Thu, 14 May 2020 08:31:43 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v13 3/8] iommu/vt-d: Add nested translation helper
- function
-Message-ID: <20200514083143.6400d813@jacob-builder>
-In-Reply-To: <20200514055424.GC22388@infradead.org>
-References: <1589410909-38925-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1589410909-38925-4-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20200514055424.GC22388@infradead.org>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1727922AbgENPc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 11:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726056AbgENPc1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 11:32:27 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213A9C061A0C;
+        Thu, 14 May 2020 08:32:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=Imjw8/xvmPYYIWqOxAq9Oe4r0JfAc7MY0eytOtHjJBY=; b=ldKCrufxuOjk+yF5HpaPyFyEVs
+        gabqtbSaTGKMiF47Z7FVsw6Zp95wsmXxYBcm9/7c0OpApixYOhkKSJBd16UJwazwS2lM4E7xL9G1V
+        e8Pa8sxoZc7AXpHIWRVMcjdH2WxXT5TCAPv6EccwEuumrnnFpMVjiDX7j11ZszW5a3oPrexUQJczA
+        1wv+kWJhmdMNVyz0/tbRKRl8N2Hf/7vplNyQwNbVmp5oFGQiOy/FtO++mqGbfAXRyt6CoVh0+s2xW
+        TYx+W6ocWBXk3S4nuo+P2JLVMAkYyPfcunYh4pqx+HxTZ/rOTZ3CK+o46qKA2wj5K1OrWu96oDe+G
+        QkBD45PA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jZFqR-0005bQ-T0; Thu, 14 May 2020 15:32:23 +0000
+Subject: Re: mmotm 2020-05-13-20-30 uploaded (objtool warnings)
+To:     Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20200514033104.kRFL_ctMQ%akpm@linux-foundation.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <611fa14d-8d31-796f-b909-686d9ebf84a9@infradead.org>
+Date:   Thu, 14 May 2020 08:32:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200514033104.kRFL_ctMQ%akpm@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 May 2020 22:54:24 -0700
-Christoph Hellwig <hch@infradead.org> wrote:
+On 5/13/20 8:31 PM, Andrew Morton wrote:
+> The mm-of-the-moment snapshot 2020-05-13-20-30 has been uploaded to
+> 
+>    http://www.ozlabs.org/~akpm/mmotm/
+> 
+> mmotm-readme.txt says
+> 
+> README for mm-of-the-moment:
+> 
+> http://www.ozlabs.org/~akpm/mmotm/
+> 
+> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> more than once a week.
+> 
+> You will need quilt to apply these patches to the latest Linus release (5.x
+> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+> http://ozlabs.org/~akpm/mmotm/series
+> 
+> The file broken-out.tar.gz contains two datestamp files: .DATE and
+> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+> followed by the base kernel version against which this patch series is to
+> be applied.
 
-> > +	 * 1. CPU vs. IOMMU
-> > +	 * 2. Guest vs. Host.
-> > +	 */
-> > +	switch (addr_width) {
-> > +#ifdef CONFIG_X86
-> > +	case ADDR_WIDTH_5LEVEL:
-> > +		if (cpu_feature_enabled(X86_FEATURE_LA57) &&
-> > +		    cap_5lp_support(iommu->cap)) {
-> > +			pasid_set_flpm(pte, 1);
-> > +		} else {
-> > +			dev_err_ratelimited(dev, "5-level paging
-> > not supported\n");
-> > +			return -EINVAL;
-> > +		}
-> > +		break;  
-> 
-> The normal style would be to handle the early error return first:
-> 
-> 		if (!cpu_feature_enabled(X86_FEATURE_LA57) ||
-> 		    !cap_5lp_support(iommu->cap)) {
-> 			dev_err_ratelimited(dev,
-> 				"5-level paging not supported\n");
-> 			return -EINVAL;
-> 		}
-> 
-> 		pasid_set_flpm(pte, 1);
-> 		break;
-> 
 
-Sounds good. I was thinking in positive logic.
+on x86_64:
 
-thanks
+arch/x86/lib/csum-wrappers_64.o: warning: objtool: csum_and_copy_from_user()+0x2a4: call to memset() with UACCESS enabled
+arch/x86/lib/csum-wrappers_64.o: warning: objtool: csum_and_copy_to_user()+0x243: return with UACCESS enabled
+
+
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
