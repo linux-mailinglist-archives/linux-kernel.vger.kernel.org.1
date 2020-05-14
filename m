@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D36F41D29E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0801D29F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgENIXs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 May 2020 04:23:48 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:24985 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726121AbgENIXr (ORCPT
+        id S1726090AbgENIYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 04:24:34 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:7167 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725935AbgENIYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 04:23:47 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-160-NR0jAm9dMXGz0XSWuD-CMg-1; Thu, 14 May 2020 09:23:44 +0100
-X-MC-Unique: NR0jAm9dMXGz0XSWuD-CMg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 14 May 2020 09:23:43 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 14 May 2020 09:23:43 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Marcelo Ricardo Leitner' <marcelo.leitner@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>,
-        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>
-Subject: RE: [PATCH 27/33] sctp: export sctp_setsockopt_bindx
-Thread-Topic: [PATCH 27/33] sctp: export sctp_setsockopt_bindx
-Thread-Index: AQHWKVB6yiOODFVfBEqdWGEpseVc56inPsjA
-Date:   Thu, 14 May 2020 08:23:43 +0000
-Message-ID: <f22a26559aa9430ab8549c0624729082@AcuMS.aculab.com>
-References: <20200513062649.2100053-1-hch@lst.de>
- <20200513062649.2100053-28-hch@lst.de>
- <20200513180058.GB2491@localhost.localdomain>
-In-Reply-To: <20200513180058.GB2491@localhost.localdomain>
+        Thu, 14 May 2020 04:24:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1589444671; x=1620980671;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=Y+cXdg9Qo1H96MCRH7eYIOX2wOTvR23creB9YMwHzfU=;
+  b=APoDLN1HHwGrOnYzqKOqTf7X4FeR2JjxaDvsznHQnGSkU0WXUzXeNeB0
+   IkYiTn2hecW//v/22yA2KQ4PVXizu9Y60AS8zNc1E8P6g4EtHBB5bvtO2
+   NTvxwXksf4Iqt5ITpTJ+mU86W4OhDW9J7XpsPQZoj0VG0ylnWgbcJQtaG
+   c=;
+IronPort-SDR: Xu+2oUY3Iw1hkCFXsh+6slLDlFF6J6naMpRbcGMolQd8boxqI+Gh7mDZwCfotKFfD0wJnNH1jQ
+ 8krGVkNqAv2A==
+X-IronPort-AV: E=Sophos;i="5.73,390,1583193600"; 
+   d="scan'208";a="30273858"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 14 May 2020 08:24:17 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id 7D41E1A0BA0;
+        Thu, 14 May 2020 08:24:16 +0000 (UTC)
+Received: from EX13D01UWB003.ant.amazon.com (10.43.161.94) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 14 May 2020 08:23:55 +0000
+Received: from EX13D01UWB002.ant.amazon.com (10.43.161.136) by
+ EX13d01UWB003.ant.amazon.com (10.43.161.94) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 14 May 2020 08:23:55 +0000
+Received: from EX13D01UWB002.ant.amazon.com ([10.43.161.136]) by
+ EX13d01UWB002.ant.amazon.com ([10.43.161.136]) with mapi id 15.00.1497.006;
+ Thu, 14 May 2020 08:23:55 +0000
+From:   "Singh, Balbir" <sblbir@amazon.com>
+To:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "keescook@chromium.org" <keescook@chromium.org>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>
+Subject: Re:  [PATCH v6 1/6] arch/x86/kvm: Refactor l1d flush lifecycle
+ management
+Thread-Topic: [PATCH v6 1/6] arch/x86/kvm: Refactor l1d flush lifecycle
+ management
+Thread-Index: AQHWKckBKZ/YfhdRx0ysPvoF1MaPYw==
+Date:   Thu, 14 May 2020 08:23:54 +0000
+Message-ID: <97582933b9df4cecc460a0d5af21e333f8149173.camel@amazon.com>
+References: <20200510014803.12190-1-sblbir@amazon.com>
+         <20200510014803.12190-2-sblbir@amazon.com>
+         <87o8qs2c10.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87o8qs2c10.fsf@nanos.tec.linutronix.de>
 Accept-Language: en-GB, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
 x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+x-originating-ip: [10.43.162.215]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3B8C10832EE76247BF555B777AF9E72D@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Ricardo Leitner
-> Sent: 13 May 2020 19:01
-> On Wed, May 13, 2020 at 08:26:42AM +0200, Christoph Hellwig wrote:
-> > And call it directly from dlm instead of going through kernel_setsockopt.
-> 
-> The advantage on using kernel_setsockopt here is that sctp module will
-> only be loaded if dlm actually creates a SCTP socket.  With this
-> change, sctp will be loaded on setups that may not be actually using
-> it. It's a quite big module and might expose the system.
-> 
-> I'm okay with the SCTP changes, but I'll defer to DLM folks to whether
-> that's too bad or what for DLM.
-
-I didn't see these sneak through.
-
-There is a big long list of SCTP socket options that are
-needed to make anything work.
-
-They all need exporting.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+T24gV2VkLCAyMDIwLTA1LTEzIGF0IDE1OjM1ICswMjAwLCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6
+DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
+Z2FuaXphdGlvbi4gRG8NCj4gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5s
+ZXNzIHlvdSBjYW4gY29uZmlybSB0aGUgc2VuZGVyDQo+IGFuZCBrbm93IHRoZSBjb250ZW50IGlz
+IHNhZmUuDQo+IA0KPiANCj4gDQo+IEJhbGJpciBTaW5naCA8c2JsYmlyQGFtYXpvbi5jb20+IHdy
+aXRlczoNCj4gDQo+ID4gU3ViamVjdDogW1BBVENIIHY2IDEvNl0gYXJjaC94ODYva3ZtOiBSZWZh
+Y3Rvci4uLi4NCj4gDQo+IGFyY2gveDg2L2t2bTogaXMgcmVhbGx5IG5vdCB0aGUgY29ycmVjdCBz
+dWJzeXN0ZW0gcHJlZml4Li4uDQo+IA0KPiBJJ2xsIGZpeCBpdCB1cCB0aGlzIHRpbWUuDQoNClRo
+YW5rcywgbm90ZWQhDQoNCkJhbGJpciBTaW5naC4NCg==
