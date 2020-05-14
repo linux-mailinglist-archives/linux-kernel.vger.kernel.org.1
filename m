@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA7E1D2FBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 14:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCAAE1D2FCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 14:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726632AbgENMaX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 May 2020 08:30:23 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:35304 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725925AbgENMaW (ORCPT
+        id S1726232AbgENMbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 08:31:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726191AbgENMbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 08:30:22 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-254-IsdhEyj2MaapF7FHDwegSA-1; Thu, 14 May 2020 13:30:18 +0100
-X-MC-Unique: IsdhEyj2MaapF7FHDwegSA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 14 May 2020 13:30:17 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 14 May 2020 13:30:17 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Marcelo Ricardo Leitner' <marcelo.leitner@gmail.com>,
-        'Christoph Hellwig' <hch@lst.de>
-CC:     "'David S. Miller'" <davem@davemloft.net>,
-        'Jakub Kicinski' <kuba@kernel.org>,
-        'Eric Dumazet' <edumazet@google.com>,
-        'Alexey Kuznetsov' <kuznet@ms2.inr.ac.ru>,
-        'Hideaki YOSHIFUJI' <yoshfuji@linux-ipv6.org>,
-        "'Vlad Yasevich'" <vyasevich@gmail.com>,
-        'Neil Horman' <nhorman@tuxdriver.com>,
-        "'Jon Maloy'" <jmaloy@redhat.com>,
-        'Ying Xue' <ying.xue@windriver.com>,
-        "'drbd-dev@lists.linbit.com'" <drbd-dev@lists.linbit.com>,
-        "'linux-block@vger.kernel.org'" <linux-block@vger.kernel.org>,
-        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'linux-rdma@vger.kernel.org'" <linux-rdma@vger.kernel.org>,
-        "'linux-nvme@lists.infradead.org'" <linux-nvme@lists.infradead.org>,
-        "'target-devel@vger.kernel.org'" <target-devel@vger.kernel.org>,
-        "'linux-afs@lists.infradead.org'" <linux-afs@lists.infradead.org>,
-        "'linux-cifs@vger.kernel.org'" <linux-cifs@vger.kernel.org>,
-        "'cluster-devel@redhat.com'" <cluster-devel@redhat.com>,
-        "'ocfs2-devel@oss.oracle.com'" <ocfs2-devel@oss.oracle.com>,
-        "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>,
-        "'linux-sctp@vger.kernel.org'" <linux-sctp@vger.kernel.org>,
-        "'ceph-devel@vger.kernel.org'" <ceph-devel@vger.kernel.org>,
-        "'rds-devel@oss.oracle.com'" <rds-devel@oss.oracle.com>,
-        "'linux-nfs@vger.kernel.org'" <linux-nfs@vger.kernel.org>
-Subject: RE: [PATCH 32/33] sctp: add sctp_sock_get_primary_addr
-Thread-Topic: [PATCH 32/33] sctp: add sctp_sock_get_primary_addr
-Thread-Index: AQHWKVDpRRlTTX4YZEat3HB6AYvqqainVRxwgAAtMyA=
-Date:   Thu, 14 May 2020 12:30:17 +0000
-Message-ID: <c66e0309572345f5b0f32d078701f2d7@AcuMS.aculab.com>
-References: <20200513062649.2100053-1-hch@lst.de>
- <20200513062649.2100053-33-hch@lst.de>
- <20200513180302.GC2491@localhost.localdomain>
- <d112e18bfbdd40dfb219ed2c1f2082d4@AcuMS.aculab.com>
-In-Reply-To: <d112e18bfbdd40dfb219ed2c1f2082d4@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 14 May 2020 08:31:15 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B154C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 05:31:15 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id 50so3789125wrc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 05:31:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5L3ztVTSKOLB244G65ZSGtUQqMEEP8hy+Z9x9uH8zas=;
+        b=XP2/KMs+gTj7Eg8apXs3bcyaa/CJ9Cg2niFlnTGlqvE5RTQdQT7MpwKkBEqB+JQ8aL
+         4UuBD6l5ST1XjJm02s9KnqjR8A0Y1UzmK1O1Om0k1jpP0vfs6D62Kyro76gDWMWI47HK
+         HLOKTGmtd6jGITv2+c5urjo14QMTiHh/Mwycg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=5L3ztVTSKOLB244G65ZSGtUQqMEEP8hy+Z9x9uH8zas=;
+        b=PLb4sR04T5qOTaS+Q2saVBafvXOFO+gscOOT7wvGgD4HrHM05jd0peUCn8EdDgd0PV
+         INyB8q6ZEMNuM5X3BfZB/efR/qSVHojF0bJXNQN4+IgTdsXSMomo8MVDNAhbz8kI1pZh
+         DL32Q5Kt/pkVL2SkYVx6C2kJVwM4BuqkW/VEKhESLEiqhu5NK7nV8vKytuvWXVG1JI2T
+         IhAqJBoNwpRwN5fECTk/qV5K+hx5WHptczZKP2cS2VrVjvspXlLFXECi6P8Kykb+40ln
+         UT+BbFnAfFYLsBXOXN3TWIUQDlu8qDAtKI0C7wavGAKi6gyGs61GicG7AVFyVB4nY5xu
+         VtmQ==
+X-Gm-Message-State: AOAM5302K6J+N9t11ACprgpcnhShtKoswm4dcXPCEHlicfQ+8yyPqZhJ
+        iIjYivGaJPN5tfLvr6hqOMbsyA==
+X-Google-Smtp-Source: ABdhPJzO26HExPt8oSSN1CG6GZWaJbzzOwmK5nuzbTE+eMp+2gFxCEKVNXKRppRj4egecVynUjKUXg==
+X-Received: by 2002:adf:f1c4:: with SMTP id z4mr5670993wro.25.1589459474052;
+        Thu, 14 May 2020 05:31:14 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id o15sm3194658wrw.65.2020.05.14.05.31.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 05:31:13 -0700 (PDT)
+Date:   Thu, 14 May 2020 14:31:11 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Gerd Hoffmann <kraxel@redhat.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        David Stevens <stevensd@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:VIRTIO CORE, NET..." 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, virtio-dev@lists.oasis-open.org
+Subject: Re: [PATCH v3 1/4] dma-buf: add support for virtio exported objects
+Message-ID: <20200514123111.GQ206103@phenom.ffwll.local>
+Mail-Followup-To: Gerd Hoffmann <kraxel@redhat.com>,
+        David Stevens <stevensd@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>, David Airlie <airlied@linux.ie>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:VIRTIO CORE, NET..." <virtualization@lists.linux-foundation.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        virtio-dev@lists.oasis-open.org
+References: <20200311112004.47138-1-stevensd@chromium.org>
+ <20200311112004.47138-2-stevensd@chromium.org>
+ <CAKMK7uHFgiHLe9oiFBr-VR-6rU9-hLTpBTEVNh0ezyj54u70jw@mail.gmail.com>
+ <20200514075952.zuc3zjtmasaqrw75@sirius.home.kraxel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200514075952.zuc3zjtmasaqrw75@sirius.home.kraxel.org>
+X-Operating-System: Linux phenom 5.6.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Laight
-> Sent: 14 May 2020 10:51
-> From: Marcelo Ricardo Leitner
-> > Sent: 13 May 2020 19:03
-> >
-> > On Wed, May 13, 2020 at 08:26:47AM +0200, Christoph Hellwig wrote:
-> > > Add a helper to directly get the SCTP_PRIMARY_ADDR sockopt from kernel
-> > > space without going through a fake uaccess.
-> >
-> > Same comment as on the other dlm/sctp patch.
+On Thu, May 14, 2020 at 09:59:52AM +0200, Gerd Hoffmann wrote:
+>   Hi,
 > 
-> Wouldn't it be best to write sctp_[gs]etsockotp() that
-> use a kernel buffer and then implement the user-space
-> calls using a wrapper that does the copies to an on-stack
-> (or malloced if big) buffer.
+> > - for the runtime upcasting the usual approach is to check the ->ops
+> > pointer. Which means that would need to be the same for all virtio
+> > dma_bufs, which might get a bit awkward. But I'd really prefer we not
+> > add allocator specific stuff like this to dma-buf.
+> 
+> This is exactly the problem, it gets messy quickly, also when it comes
+> to using the drm_prime.c helpers ...
 
-Actually looking at __sys_setsockopt() it calls
-BPF_CGROUP_RUN_PROG_SETSOCKOPT() which (by the look of it)
-can copy the user buffer into malloc()ed memory and
-cause set_fs(KERNEL_DS) be called.
+drm_prime.c helpers (not the core bits) exist becaues nvidia needed
+something that wasnt EXPORT_SYMBOL_GPL.
 
-The only way to get rid of that set_fs() is to always
-have the buffer in kernel memory when the underlying
-setsockopt() code is called.
-
-The comment above __sys_[sg]etsockopt() about not knowing
-the length is just wrong.
-It probably applied to getsockopt() in the dim and distant
-past before it was made read-update.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+I wouldn't shed a big tear if they don't fit anymore, they're kinda not
+great to begin with. Much midlayer, not much of valued added, but at least
+the _GPL is gone.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
