@@ -2,99 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2C81D3F81
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 23:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB21F1D3F88
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 23:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgENVC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 17:02:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726201AbgENVC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 17:02:28 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4298206F1;
-        Thu, 14 May 2020 21:02:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589490148;
-        bh=BpiNhcYdcKddO8cs3Vt8IZUscWTK1/Is8oqrDfZkC6w=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=hyfFgR+GL76NQf566ZtlB+WOryIov5DSxhUL5b5JUGfd+iX0ldBn3aeIuHEmGYr5F
-         EJi9Wz7J28FNtt08VJYBztNyXwTQJ6uHS1pGhU4g7jeCKpOQ1WCr4QwXnoluVb/vcF
-         CFUnP5fIMuLO3vUY90BKaBpUzqs5HHWHXbnfeD0k=
-Content-Type: text/plain; charset="utf-8"
+        id S1728060AbgENVDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 17:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727837AbgENVDK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 17:03:10 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9449C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 14:03:08 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id 50so494605wrc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 14:03:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AzuGSbtk0koOgdKXayRT9aJsHBhz24oQCO02IEFXmXs=;
+        b=BphBmLZG1gvlrzweeCpbYDKzhMZgskFuDOLm+c5qocsGvA3+c5hvgFeaTgw2xK7fY1
+         KSoeOEtBQv37TqIOQbtCr03Nz1MZ78Tqx/dvazy3jErpQq6FR/gnEYCi+sfRdIYXaCMn
+         VbUyz8yn3Q2dmDClslSeOTr4+Jzq/Y/H0ZqgBDiDTbELYeLX97TJX7rUa8bn/KjNnfwU
+         a+/I7BK3Uv/BtWoe4i/xEl2s8Huzp1pQigi7ByhUlXECYnYf3KiaHwYoruaGiEa/Bahd
+         s4loQAfykA0FK6Y1cLczbaWgQDNDjJOhreE3yl2CKBELv00APDPsGtgCZn5uG+/E9mgc
+         ZZXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
+         :message-id:date:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AzuGSbtk0koOgdKXayRT9aJsHBhz24oQCO02IEFXmXs=;
+        b=l6FZSlYQWcrt/Vw6O0ruiTELVluYhc62M8M7Fzuo1h24aVk9iAkaVZjrUDIKLD8PJZ
+         MyQhptUV1njXkVvV6CsHJRAC4Wg02soh+8pyykkVJIhK1YuoLlQIpCfcK7aTiSr/v5v0
+         djbRtkbxf8P67PjO1qNrpPJe3PLXjHh79QAdLpZnnxgX8AvG+MYy4xf3HeS4VVtKSaIm
+         yV8KTcx9opQQ+o/9ivsrnKq6x9DohUW4ewiZ2iD3vmQRQViirn5aREB4+NIK8tzMDFIZ
+         Az03t07pc9S6oaFLq1aHokjGhMC0/oT2VfKrUCIhFQFCesYQpnxojr4XHj5rsHHisCRN
+         pM/A==
+X-Gm-Message-State: AOAM533wd3Z/DYGv3pmjIYumcHxj/vUzzSbx+UBWL2i9KjRFYDuUiblY
+        8I6c/KGTNI5zTL8Q0a8wfkIIkg==
+X-Google-Smtp-Source: ABdhPJywcn+9WFj0CKjxg0AfdYgXxp44m2pHJVUBgaSFNeHQxLFRJwMKl0GTjJH2dN2ipbqdhslxYQ==
+X-Received: by 2002:adf:c381:: with SMTP id p1mr385127wrf.148.1589490187405;
+        Thu, 14 May 2020 14:03:07 -0700 (PDT)
+Received: from [10.44.66.8] ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id n9sm468132wmj.5.2020.05.14.14.03.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 14 May 2020 14:03:06 -0700 (PDT)
+Subject: Re: [PATCH v7 2/4] usb: dwc3: qcom: Add interconnect support in dwc3
+ driver
+To:     Matthias Kaehlcke <mka@chromium.org>,
+        Felipe Balbi <balbi@kernel.org>
+Cc:     Sandeep Maheswaram <sanm@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+References: <1585718145-29537-1-git-send-email-sanm@codeaurora.org>
+ <1585718145-29537-3-git-send-email-sanm@codeaurora.org>
+ <878shu4uwk.fsf@kernel.org> <875zcy4uuj.fsf@kernel.org>
+ <20200514171352.GP4525@google.com>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Openpgp: preference=signencrypt
+Autocrypt: addr=georgi.djakov@linaro.org; prefer-encrypt=mutual; keydata=
+ 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
+ KEmKjLDvB0pePJkdTw==
+Message-ID: <abbc3f8c-c8c9-c189-735e-f8058dab3e40@linaro.org>
+Date:   Fri, 15 May 2020 00:02:59 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1589267017-17294-5-git-send-email-dillon.minfei@gmail.com>
-References: <1589267017-17294-1-git-send-email-dillon.minfei@gmail.com> <1589267017-17294-5-git-send-email-dillon.minfei@gmail.com>
-Subject: Re: [PATCH v3 4/5] clk: stm32: Fix stm32f429 ltdc driver loading hang in clk set rate. keep ltdc clk running after kernel startup
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-clk@vger.kernel.org,
-        dillon.minfei@gmail.com
-To:     airlied@linux.ie, alexandre.torgue@st.com, daniel@ffwll.ch,
-        dillon.minfei@gmail.com, mcoquelin.stm32@gmail.com,
-        mturquette@baylibre.com, robh+dt@kernel.org, sam@ravnborg.org,
-        thierry.reding@gmail.com
-Date:   Thu, 14 May 2020 14:02:27 -0700
-Message-ID: <158949014721.215346.12197373767247910756@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+In-Reply-To: <20200514171352.GP4525@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting dillon.minfei@gmail.com (2020-05-12 00:03:36)
-> From: dillon min <dillon.minfei@gmail.com>
->=20
-> as store stm32f4_rcc_register_pll return to the wrong offset of clks,
+On 5/14/20 20:13, Matthias Kaehlcke wrote:
+> On Thu, May 14, 2020 at 02:30:28PM +0300, Felipe Balbi wrote:
+>> Felipe Balbi <balbi@kernel.org> writes:
+>>
+>>> Hi,
+>>>
+>>> Sandeep Maheswaram <sanm@codeaurora.org> writes:
+>>>> +static int dwc3_qcom_interconnect_init(struct dwc3_qcom *qcom)
+>>>> +{
+>>>> +	struct device *dev = qcom->dev;
+>>>> +	int ret;
+>>>> +
+>>>> +	if (!device_is_bound(&qcom->dwc3->dev))
+>>>> +		return -EPROBE_DEFER;
+>>>
+>>> this breaks allmodconfig. I'm dropping this series from my queue for
+>>> this merge window.
+>>
+>> Sorry, I meant this patch ;-)
+> 
+> I guess that's due to INTERCONNECT being a module. There is currently a
 
-Use () on functions, i.e. stm32f4_rcc_register_pll().
+I believe it's because of this:
+ERROR: modpost: "device_is_bound" [drivers/usb/dwc3/dwc3-qcom.ko] undefined!
 
-> so ltdc gate clk is null. need change clks[PLL_VCO_SAI] to clks[PLL_SAI]
+> discussion about this  with Viresh and Georgi in response to another
+> automated build failure. Viresh suggests changing CONFIG_INTERCONNECT
+> from tristate to bool, which seems sensible to me given that interconnect
+> is a core subsystem.
 
-And quote variables like 'clks[PLL_VCO_SAI]'
+The problem you are talking about would arise when INTERCONNECT=m and
+USB_DWC3_QCOM=y and it definitely exists here and could be triggered with
+randconfig build. So i suggest to squash also the diff below.
 
->=20
-> add CLK_IGNORE_UNUSED for ltdc to make sure clk not be freed by
-> clk_disable_unused
+Thanks,
+Georgi
 
-clk_disable_unused() doesn't free anything. Why does ltdc not need to be
-turned off if it isn't used? Is it critical to system operation? Should
-it be marked with the critical clk flag then? The CLK_IGNORE_UNUSED flag
-is almost always wrong to use.
+---8<---
+diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
+index 206caa0ea1c6..6661788b1a76 100644
+--- a/drivers/usb/dwc3/Kconfig
++++ b/drivers/usb/dwc3/Kconfig
+@@ -129,6 +129,7 @@ config USB_DWC3_QCOM
+ 	tristate "Qualcomm Platform"
+ 	depends on ARCH_QCOM || COMPILE_TEST
+ 	depends on EXTCON || !EXTCON
++	depends on INTERCONNECT || !INTERCONNECT
+ 	depends on (OF || ACPI)
+ 	default USB_DWC3
+ 	help
 
->=20
-> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> ---
->  drivers/clk/clk-stm32f4.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
-> index 18117ce..0ba73de 100644
-> --- a/drivers/clk/clk-stm32f4.c
-> +++ b/drivers/clk/clk-stm32f4.c
-> @@ -129,7 +129,8 @@ static const struct stm32f4_gate_data stm32f429_gates=
-[] __initconst =3D {
->         { STM32F4_RCC_APB2ENR, 20,      "spi5",         "apb2_div" },
->         { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
->         { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
-> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
-> +       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div",
-> +               CLK_IGNORE_UNUSED },
->  };
-> =20
->  static const struct stm32f4_gate_data stm32f469_gates[] __initconst =3D {
-> @@ -1757,7 +1758,7 @@ static void __init stm32f4_rcc_init(struct device_n=
-ode *np)
->         clks[PLL_VCO_I2S] =3D stm32f4_rcc_register_pll("vco_in",
->                         &data->pll_data[1], &stm32f4_clk_lock);
-> =20
-> -       clks[PLL_VCO_SAI] =3D stm32f4_rcc_register_pll("vco_in",
-> +       clks[PLL_SAI] =3D stm32f4_rcc_register_pll("vco_in",
->                         &data->pll_data[2], &stm32f4_clk_lock);
-> =20
->         for (n =3D 0; n < MAX_POST_DIV; n++) {
