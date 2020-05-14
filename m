@@ -2,119 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F321D3BFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 21:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C201D3C0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 21:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730065AbgENTGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 15:06:42 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:39394 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728840AbgENTGg (ORCPT
+        id S1730096AbgENTHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 15:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728779AbgENTHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 15:06:36 -0400
-Received: by mail-oi1-f196.google.com with SMTP id s198so1674769oie.6;
-        Thu, 14 May 2020 12:06:35 -0700 (PDT)
+        Thu, 14 May 2020 15:07:00 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34232C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 12:07:00 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id i16so2081762ybq.9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 12:07:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0qCYNs2CSDyIVi64uoLkz66pQmNK2j6ygGTzZfOYnzI=;
+        b=KojQQwr+FP1sG1Tc9Zn7a0yfdfQdqT35piN3mx9x7vtv69ME8CohxDMY5VSWaQN62S
+         z0KPUD35AbOGZrl6GIBejowH3CqV0VkEqa8Md1HFdUv7Zmx/0POxzLGgeoF+gwr+JeUZ
+         MZ/tL7gB83t+hGTJcYu2EVEJEaNGfj0ne5fboSCOf9O/+Tvi9p7rJFN0cY3kpD9RR+7L
+         eZyKxgghSY7/TcYTKEgImubH6pErnMVYyZOhaTuajQU3eS75EXdY3lnwGn/hY2JQTJAC
+         khuDmr8fz2BX6emMDtkDuSMZsEnfDJL3l5KIeXmXzz6j1TWbTW4IzYn3S6+BgiFu+y/m
+         aFhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DpxmqheKh5hWBkROUkM/LZbskUu+jI9OekkxfEH2TJU=;
-        b=jKy7Tet+7kDtJP9R6aI+d8Svebs+UjREUdZ4tc2TdAvfvztTuKXHjAmyRSN0CBV1Q/
-         dxvG/6SUt6irrsNnl6a0dPCzvcj4TdC5IMnDOtDFVUJadbHI68V2GPc/9f05cZniOtzK
-         r9C+YtaerxaUcO9+HPJlpz4nIAPTWxRRCcG4zaicP583zNnhEq7PXGRURF1C3vEMx4mi
-         hgO0UABInDxKiWNjWhBYll3gpmk/LJv70q5UuGcPnC5tHfGGYPzuu2DR2bI6P1sBxkNt
-         E8YRkhn/S554bIy5Z6oAdajQqlzO3/aGo24ltCKJg7mCc5yBgKMGMa11x9bgNBkD9eth
-         1jIQ==
-X-Gm-Message-State: AGi0PuY1Gl5VTAaxaKzDUO2jOMhYMI2HC5m9TVwbAco1zgpzuVr8zFSy
-        kuocz8Wlg9I/fG8v2+Igug==
-X-Google-Smtp-Source: APiQypIbLInN8eILN1YNFZkdZUWzlrI5ZKISbq/8Sj2LCEhqvwhh/jfweZsVFtDXqGRZI3Q/OW8ccg==
-X-Received: by 2002:aca:3254:: with SMTP id y81mr11673521oiy.172.1589483194829;
-        Thu, 14 May 2020 12:06:34 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 130sm3531979oid.43.2020.05.14.12.06.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 12:06:33 -0700 (PDT)
-Received: (nullmailer pid 10001 invoked by uid 1000);
-        Thu, 14 May 2020 19:06:32 -0000
-Date:   Thu, 14 May 2020 14:06:32 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-rtc@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, Jason Cooper <jason@lakedaemon.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Paul Burton <paulburton@kernel.org>
-Subject: Re: [PATCH v3 3/7] dt-bindings: interrupt-controller: Convert
- mti,gic to DT schema
-Message-ID: <20200514190632.GA9943@bogus>
-References: <20200324174325.14213-1-Sergey.Semin@baikalelectronics.ru>
- <20200506214107.25956-1-Sergey.Semin@baikalelectronics.ru>
- <20200506214107.25956-4-Sergey.Semin@baikalelectronics.ru>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0qCYNs2CSDyIVi64uoLkz66pQmNK2j6ygGTzZfOYnzI=;
+        b=aEwYmOyDCtfKT0+EhUR4tf7BKWGgJYplmrBWfJXbWl2nmw8kUF+gUN/Oqgy06FKWg6
+         fTojr4I/1wFt9yoi4AzbM+84sCODHkCwxZz/Q8JZKXtqRY0dQqNNd/2K54nYTiHo1zs0
+         ZjCcEp6tYmkt1yCfKlmoso389Ki7jAOXNu2M8g9wBV1hJHyFtjtfEvOR8Q0fBJ4PppxM
+         bqy1ZkQDBZxMc6JsxAIAqTuTGvZbLDvQAfeZASCFck1rCI4QYQs0LVo9QWZ1kW1X66y2
+         n8u+odRQqf8zmSl8Fv+9rRBosaipmLKqQ6mMLzf+NANpO03J32KzSZzwOovrx977R4xV
+         sWHA==
+X-Gm-Message-State: AOAM533l+ov64jYU8CuRQjCTD3QrH8LTjrcXb/Th33RsVs3PJNtbGAxY
+        HdcIYnV59Qt1Ut+Mjs66+dTncIFJwruzKq+LlkYQjw==
+X-Google-Smtp-Source: ABdhPJzphKsd+sh3MAeBf6+tjOED4Unl+agXSj1k3Juzx1Uns7DdWmOQm/z2psspAyAsziKhGcLgRFfezAjeqbzeGT8=
+X-Received: by 2002:a25:d450:: with SMTP id m77mr9574174ybf.177.1589483219072;
+ Thu, 14 May 2020 12:06:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506214107.25956-4-Sergey.Semin@baikalelectronics.ru>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200513234738.GA21211@embeddedor> <20200514131030.GL5583@kernel.org>
+ <20200514150601.GS4897@embeddedor>
+In-Reply-To: <20200514150601.GS4897@embeddedor>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 14 May 2020 12:06:48 -0700
+Message-ID: <CAP-5=fWTCFx80Hd_97_4AxFV4KsRyYptLbQfw=XVw_j8i-EAyg@mail.gmail.com>
+Subject: Re: [PATCH perf/core] perf intel-pt: Fix clang build failure in intel_pt_synth_pebs_sample
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 May 2020 00:41:03 +0300, Serge Semin wrote:
-> Modern device tree bindings are supposed to be created as YAML-files
-> in accordance with DT schema. This commit replaces MIPS GIC legacy bare
-> text binding with YAML file. As before the binding file states that the
-> corresponding dts node is supposed to be compatible with MIPS Global
-> Interrupt Controller indicated by the "mti,gic" compatible string and
-> to provide a mandatory interrupt-controller and '#interrupt-cells'
-> properties. There might be optional registers memory range,
-> "mti,reserved-cpu-vectors" and "mti,reserved-ipi-vectors" properties
-> specified.
-> 
-> MIPS GIC also includes a free-running global timer, per-CPU count/compare
-> timers, and a watchdog. Since currently the GIC Timer is only supported the
-> DT schema expects an IRQ and clock-phandler charged timer sub-node with
-> "mti,mips-gic-timer" compatible string.
-> 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Alessandro Zummo <a.zummo@towertech.it>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-rtc@vger.kernel.org
-> 
-> ---
-> 
-> I don't really know who is the corresponding driver maintainer, so I
-> added Paul to the maintainers property since he used to be looking for the
-> MIPS arch and Thomas looking after it now. Any idea what email should be
-> specified there instead?
-> 
-> Changelog v3:
-> - Since timer sub-node has no unit-address, the node shouldn't be named
->   with one. So alter the MIPS GIC bindings to have a pure "timer"
->   sub-node.
-> - Discard allOf: [ $ref: /schemas/interrupt-controller.yaml# ].
-> - Since it's a conversion patch use GPL-2.0-only SPDX header.
-> ---
->  .../interrupt-controller/mips-gic.txt         |  67 --------
->  .../interrupt-controller/mti,gic.yaml         | 148 ++++++++++++++++++
->  2 files changed, 148 insertions(+), 67 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mti,gic.yaml
-> 
+On Thu, May 14, 2020 at 8:01 AM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+>
+> On Thu, May 14, 2020 at 10:10:30AM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Wed, May 13, 2020 at 06:47:38PM -0500, Gustavo A. R. Silva escreveu:
+> > > Fix the following build failure generated with command
+> > > $ make CC=clang HOSTCC=clang -C tools/ perf:
+> > >
+> > > util/intel-pt.c:1802:24: error: field 'br_stack' with variable sized type 'struct branch_stack' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+> > >                         struct branch_stack br_stack;
+> > >                                             ^
+> > > 1 error generated.
+> > >
+> > > Fix this by reordering the members of struct br.
+> >
+> > Yeah, I noticed that as far back as with ubuntu 16.04's clang:
+> >
+> > clang version 3.8.0-2ubuntu4 (tags/RELEASE_380/final)
+> >
+> > util/intel-pt.c:1802:24: error: field 'br_stack' with variable sized type 'struct branch_stack' not at the end of a struct or class is a GNU
+> >       extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+> >                         struct branch_stack br_stack;
+> >                                             ^
+> > 1 error generated.
+> >
+> >
+> > Will fold this with the bug introducing the problem to avoid bisection
+> > problems.
+> >
+>
+> I agree. Also, the commit hash of the "Fixes" tag only applies to the
+> perf/core branch and, I guess that might create confusion.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
+So while this fixes the warning I believe it breaks the intent of the code.
+
+tools/perf/util/branch.h:
+struct branch_stack {
+       u64                     nr;
+       u64                     hw_idx;
+       struct branch_entry     entries[];
+};
+
+tools/perf/util/intel-pt.c:
+               struct {
+                       struct branch_stack br_stack;
+                       struct branch_entry entries[LBRS_MAX];
+               } br;
+
+The array in br is trying to extend branch_stack's entries array. You
+might have to do something like:
+
+alignas(alignof(branch_stack)) char storage[sizeof(branch_stack) +
+sizeof(branch_entry) * LBRS_MAX];
+struct branch_stack *br = &storage;
+
+malloc/free may be nicer on the eyeballs.
+
+Thanks,
+Ian
+
+> Thanks
+> --
+> Gustavo
