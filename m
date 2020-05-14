@@ -2,189 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8E31D2526
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 04:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F290C1D252A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 04:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726010AbgENCg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 22:36:56 -0400
-Received: from mga14.intel.com ([192.55.52.115]:48749 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725895AbgENCg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 22:36:56 -0400
-IronPort-SDR: ddwHQ7jI6Csmyn3h04NfbL20Ja0noSINLfLOyNybVMm3+hce84ILXPEbEEjYHl3OpxgMIFcgJ0
- Eq1MIV8v3n2g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 19:36:55 -0700
-IronPort-SDR: uHaF1o94MY1758wZ6tBXyGzbj+CuUFwHvOqmtiDa8begXcrGK0tYZy6w7p4hPK8Kje0cYa04Di
- X/REmB4w5V1A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,390,1583222400"; 
-   d="scan'208";a="297868968"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 13 May 2020 19:36:54 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jZ3jy-0006KY-5Y; Thu, 14 May 2020 10:36:54 +0800
-Date:   Thu, 14 May 2020 10:36:43 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/kcsan] BUILD SUCCESS
- ffed638b6a2180da8fd002a46632d746af72b299
-Message-ID: <5ebcaebb.CFDhn4QIodngiN1S%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726056AbgENClT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 22:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725895AbgENClT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 22:41:19 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E1FC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 19:41:18 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id t8so1004210qvw.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 19:41:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KLNMURY1HIlbAzrkLrAtdhSWRbezGbA/8tIoq51rm1I=;
+        b=tF/iESutHw2ygT+gJ6RIvMj0G7kzpPqwx14VsBrRv6A2AO486D5Pp7V/n/k2FON4LR
+         CI/6zVQfrJhr/CWJ4z7ImG+0VjgJ1Mi7p8A9ydvaxzSqFx/1bFU18XstWvd0Ezh8UHuw
+         Zije9465zXym8aIpIcrXxj23B79yZEW9FbZVw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KLNMURY1HIlbAzrkLrAtdhSWRbezGbA/8tIoq51rm1I=;
+        b=fPp910+jlOokNvi51cTGwy1LbM2oM9hBxj+Dr0HnRM2Mf807MX9K5DE6GnyGIwiofD
+         7YZYYT5HhUY0cwNzHCyZ+Lm+MsiPj/ZEEQQsdUfHQ2bZEPKd6SJ3i6ly49WvSUALRSOF
+         K063JJkug1iX2+G76zDxXybXDp2STDYCvxT0btSfXtkEz1u+qkkmJC+Ggf3l6KlIPnUY
+         3zVmClNw29S7LxQZzyFy5u1HlKpunTgiGZSKOX/bQHGKhg4owY9shwAU608Y3vhmS8Ud
+         TzAbsIsG1UwZNhrGcR5E3c35t/C9DOIqVikIgWMlwgzQhtyO6onChjdljFReY4FZ5S8K
+         oL7g==
+X-Gm-Message-State: AOAM533u3ypHuGu/676+ikV/ikMCkPGu0kX9r+G/kd3Eux4o3a4flHiQ
+        xRnN4QeAbL1yP3JNME/X5oa0QA==
+X-Google-Smtp-Source: ABdhPJyAGxD54Yg+fb1o5Nxdmhm+S7+56mOursXIuv8jDwEXKiHcvWMY3PMKsHIDKle3OjMFJoSzhA==
+X-Received: by 2002:ad4:53a2:: with SMTP id j2mr2685796qvv.159.1589424077931;
+        Wed, 13 May 2020 19:41:17 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id h22sm1104944qtn.23.2020.05.13.19.41.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 19:41:17 -0700 (PDT)
+Date:   Wed, 13 May 2020 22:41:16 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch V4 part 3 11/29] rcu: Provide rcu_irq_exit_preempt()
+Message-ID: <20200514024116.GA231286@google.com>
+References: <20200505134354.774943181@linutronix.de>
+ <20200505134904.364456424@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200505134904.364456424@linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/kcsan
-branch HEAD: ffed638b6a2180da8fd002a46632d746af72b299  READ_ONCE: Fix comment describing 2x32-bit atomicity
+Hi Thomas,
 
-elapsed time: 853m
+On Tue, May 05, 2020 at 03:44:05PM +0200, Thomas Gleixner wrote:
 
-configs tested: 130
-configs skipped: 11
+Thank you for CC'ing me.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> Interrupts and exceptions invoke rcu_irq_enter() on entry and need to
+> invoke rcu_irq_exit() before they either return to the interrupted code or
+> invoke the scheduler due to preemption.
+> 
+> The general assumption is that RCU idle code has to have preemption
+> disabled so that a return from interrupt cannot schedule. So the return
+> from interrupt code invokes rcu_irq_exit() and preempt_schedule_irq().
+> 
+> If there is any imbalance in the rcu_irq/nmi* invocations or RCU idle code
+> had preemption enabled then this goes unnoticed until the CPU goes idle or
+> some other RCU check is executed.
+> 
+> Provide rcu_irq_exit_preempt() which can be invoked from the
+> interrupt/exception return code in case that preemption is enabled. It
+> invokes rcu_irq_exit() and contains a few sanity checks in case that
+> CONFIG_PROVE_RCU is enabled to catch such issues directly.
 
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-m68k                             allyesconfig
-sparc                            allyesconfig
-mips                          rm200_defconfig
-riscv                    nommu_virt_defconfig
-mips                      pistachio_defconfig
-xtensa                           alldefconfig
-sh                           se7722_defconfig
-arm                        cerfcube_defconfig
-arm                         assabet_defconfig
-openrisc                         alldefconfig
-parisc                              defconfig
-m68k                          amiga_defconfig
-mips                malta_qemu_32r6_defconfig
-i386                              allnoconfig
-s390                       zfcpdump_defconfig
-m68k                       m5249evb_defconfig
-m68k                          sun3x_defconfig
-sh                           se7619_defconfig
-mips                        qi_lb60_defconfig
-arc                        nsim_700_defconfig
-arm                         lubbock_defconfig
-arm                          tango4_defconfig
-sh                            shmin_defconfig
-mips                           mtx1_defconfig
-mips                        nlm_xlr_defconfig
-arm                         s3c2410_defconfig
-sh                ecovec24-romimage_defconfig
-arc                            hsdk_defconfig
-arm                          iop32x_defconfig
-riscv                             allnoconfig
-mips                      pic32mzda_defconfig
-mips                  mips_paravirt_defconfig
-arm                         orion5x_defconfig
-riscv                          rv32_defconfig
-powerpc                      ppc44x_defconfig
-m68k                       m5475evb_defconfig
-sh                   rts7751r2dplus_defconfig
-arm                         shannon_defconfig
-nios2                            alldefconfig
-sh                   secureedge5410_defconfig
-arm                      footbridge_defconfig
-arc                          axs101_defconfig
-mips                     loongson1c_defconfig
-c6x                        evmc6472_defconfig
-um                               alldefconfig
-arm                        clps711x_defconfig
-powerpc                    adder875_defconfig
-parisc                generic-64bit_defconfig
-arm                        vexpress_defconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20200513
-x86_64               randconfig-a003-20200513
-x86_64               randconfig-a006-20200513
-x86_64               randconfig-a004-20200513
-x86_64               randconfig-a001-20200513
-x86_64               randconfig-a002-20200513
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-x86_64                              defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+Could you let me know which patch or part in the multi-part series is using it?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> ---
+>  include/linux/rcutiny.h |    1 +
+>  include/linux/rcutree.h |    1 +
+>  kernel/rcu/tree.c       |   21 +++++++++++++++++++++
+>  3 files changed, 23 insertions(+)
+> 
+> --- a/include/linux/rcutiny.h
+> +++ b/include/linux/rcutiny.h
+> @@ -71,6 +71,7 @@ static inline void rcu_irq_enter(void) {
+>  static inline void rcu_irq_exit_irqson(void) { }
+>  static inline void rcu_irq_enter_irqson(void) { }
+>  static inline void rcu_irq_exit(void) { }
+> +static inline void rcu_irq_exit_preempt(void) { }
+>  static inline void exit_rcu(void) { }
+>  static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+>  {
+> --- a/include/linux/rcutree.h
+> +++ b/include/linux/rcutree.h
+> @@ -46,6 +46,7 @@ void rcu_idle_enter(void);
+>  void rcu_idle_exit(void);
+>  void rcu_irq_enter(void);
+>  void rcu_irq_exit(void);
+> +void rcu_irq_exit_preempt(void);
+>  void rcu_irq_enter_irqson(void);
+>  void rcu_irq_exit_irqson(void);
+>  
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -706,6 +706,27 @@ void noinstr rcu_irq_exit(void)
+>  	rcu_nmi_exit();
+>  }
+>  
+> +/**
+> + * rcu_irq_exit_preempt - Inform RCU that current CPU is exiting irq
+> + *			  towards in kernel preemption
+> + *
+> + * Same as rcu_irq_exit() but has a sanity check that scheduling is safe
+> + * from RCU point of view. Invoked from return from interrupt before kernel
+> + * preemption.
+> + */
+> +void rcu_irq_exit_preempt(void)
+> +{
+> +	lockdep_assert_irqs_disabled();
+> +	rcu_nmi_exit();
+> +
+> +	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) <= 0,
+> +			 "RCU dynticks_nesting counter underflow/zero!");
+
+Makes sense.
+
+> +	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
+> +			 "RCU dynticks_nmi_nesting counter underflow/zero!");
+
+This new function will be called only from the outer-most IRQ that
+interrupted kernel mode (process context). Right? If so, a better (more
+specific) check for the second RCU_LOCKDEP_WARN above is:
+
+RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) != DYNTICK_IRQ_NONIDLE,
+			 "Bad RCU dynticks_nmi_nesting counter\n");
+
+That will make sure, it is only called from outer-most rcu_irq_exit() and
+interrupting kernel mode.
+
+Or, if [1] is merged, then we could just combine the checks into one check.
+	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) != 1,
+			 "Bad RCU dynticks_nmi_nesting counter\n");
+
+> +	RCU_LOCKDEP_WARN(rcu_dynticks_curr_cpu_in_eqs(),
+> +			 "RCU in extended quiescent state!");
+
+Makes sense.
+
+BTW, I wonder if a better place to do this "don't enter scheduler while RCU
+is not watching" is rcu_note_context_switch()...
+
+thanks,
+
+ - Joel
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/commit/?h=rcu-dynticks-may4-rebased&id=b48863c234295d8ec956b50f6cf5ae0a0269f48d
+
+> +}
+> +
+>  /*
+>   * Wrapper for rcu_irq_exit() where interrupts are enabled.
+>   *
+> 
