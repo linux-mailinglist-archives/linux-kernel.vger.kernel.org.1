@@ -2,118 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD31F1D2A36
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 984A51D2A71
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727777AbgENIb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 04:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726332AbgENIb0 (ORCPT
+        id S1726116AbgENIkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 04:40:33 -0400
+Received: from m176149.mail.qiye.163.com ([59.111.176.149]:31346 "EHLO
+        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgENIkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 04:31:26 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2CEC05BD43
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:31:26 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id b6so2589845ljj.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ch5Lo0qUlNLfqqdr8oPDugFIwsbkUAsTV/pjrrFuHLo=;
-        b=xHi/CO+kw7Zb1AKTwwXYOr5rqnL21pX27PIcAoZpAyWED1KbMsgJJ+aHzrEV/Isbwh
-         cCj8ce0L7btUVbF3US3EeioBiXXi2iCdmOyXoxSJCWosyCfLczsKK9alpmOGav2v80w+
-         vuDG2+aAvxzcOE2K3TrrYIvY0mqmBU/BMbT7IEB1scIBSlpp8HiBHlfn8UCnFVtjjBns
-         DbfLyYIf6KoVVieHkBEAcyIGtiD44sr1xCf8Lwsd64ayvLqSzC2AAnY/k71w+wMolPqK
-         JyDlDZKYHbrozYowGa+UzXmNfLBfNgsdCqJb+BahKwZn8S+ATnRlB96BNNSEyPU6wjca
-         s33g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ch5Lo0qUlNLfqqdr8oPDugFIwsbkUAsTV/pjrrFuHLo=;
-        b=KqexBCQOoYWds0gN07RH9tjdKr296Pr9w9XqClBW8NkDydJ5BAsH2cIxvtmJsRpTgo
-         n2iiCtsWOGxQZtQHUsoPHh4rscURLPCJ668MXYnb/ma3dViaGjQlI+s2vyxbZSmmBPMD
-         Afw4oBcDIn1pn6p4l/CNCe3eZI0F6APYAadTQltM/RKz4D7IV4MbcUG+m7a4hV+nyXh2
-         5bsP2WPJpVDb2yUTZQxmIFtEmWd4lbh0LdsJ4vMJh2EUPk0ueTpRe1Op8SHV/J9/2A2d
-         Lc3YqQ8oxEi6WWCkPw/iGNLL7C5IuR+zTOjEauuMIEZF2RgQdNIpAo/Vpe1Vm0gCdyJL
-         JCbw==
-X-Gm-Message-State: AOAM5310GD9Vjt7vLnwukHm9FWwBv4BZ4B5gvHCYNiCYmjaqRjHrYAcY
-        8trByqGsZi1CvZ93YzQ92cUGvO/e41ppXAZAEoJP5Q==
-X-Google-Smtp-Source: ABdhPJxYkw641+rzOfo0jk8kZqtPycWY4TTgsg+FJ176sdZrmEbUxUP61n/P+mU74fyLtp+Q1AgVt3G79WECR07lQH0=
-X-Received: by 2002:a2e:b609:: with SMTP id r9mr1982744ljn.125.1589445084550;
- Thu, 14 May 2020 01:31:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
- <20200508132943.9826-12-Sergey.Semin@baikalelectronics.ru>
- <CACRpkdY=wkgnYPcqSzyzNpS6ckJZs-9kXfTfdwa1E+POzOBQGA@mail.gmail.com> <20200513001347.dyt357erev7vzy3l@mobilestation>
-In-Reply-To: <20200513001347.dyt357erev7vzy3l@mobilestation>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 14 May 2020 10:31:13 +0200
-Message-ID: <CACRpkdZTH1DNHvi4r48nLNWp4rqyYDZTzT12hw0eTNcYmgSr3Q@mail.gmail.com>
-Subject: Re: [PATCH 11/17] spi: dw: Fix native CS being unset
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Allison Randal <allison@lohutok.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Phil Edworthy <phil.edworthy@renesas.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Thor Thayer <thor.thayer@linux.intel.com>,
-        "wuxu.wu" <wuxu.wu@huawei.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        Thu, 14 May 2020 04:40:32 -0400
+X-Greylist: delayed 447 seconds by postgrey-1.27 at vger.kernel.org; Thu, 14 May 2020 04:40:30 EDT
+Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
+        by m176149.mail.qiye.163.com (Hmail) with ESMTP id 28275282644;
+        Thu, 14 May 2020 16:32:59 +0800 (CST)
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <APkAOQB-CI1Ksc35Em0ifKrK.3.1589445179140.Hmail.wenhu.wang@vivo.com>
+To:     Wang Wenhu <wenhu.wang@vivo.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@vivo.com
+Subject: =?UTF-8?B?UmU6W1BBVENIXSBzb2M6IHFtaTogbW92ZSB0bHYtbWljcm9zIHRvIGhlYWRlciBmaWxl?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.251.74.227
+In-Reply-To: <20200413035758.60238-1-wenhu.wang@vivo.com>
+MIME-Version: 1.0
+Received: from wenhu.wang@vivo.com( [58.251.74.227) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 14 May 2020 16:32:59 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
+Date:   Thu, 14 May 2020 16:32:59 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VMSU9CQkJCS09NSElOTFlXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMSkJNT0pMTUxIN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6KxA6NCo5VjgySjAIGEhOPhZLEh0wCTBVSFVKTkNCT09OSkNKSU9MVTMWGhIXVQweFRMOVQwa
+        FRw7DRINFFUYFBZFWVdZEgtZQVlOQ1VJTkpVTE9VSUlMWVdZCAFZQUNPQkg3Bg++
+X-HM-Tid: 0a721250b7269395kuws28275282644
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 2:13 AM Serge Semin
-<Sergey.Semin@baikalelectronics.ru> wrote:
-
-> > This is the correct fix now but I an afraid not correct before
-> > commit 3e5ec1db8bfe.
->
-> Sorry, but that's "enable" flag propagation from basic spi_set_cs() to the HW CS
-> setting callback is a nightmare. In Russia there is a common saying for such
-> cases, which can be translated as "you can't figure it out without a bottle of
-> vodka".)
->
-> Actually the fix is correct no matter whether commit 3e5ec1db8bfe is applied or
-> not. At least I don't see a connection between them.
-
-OK that seems to hold given the resoning below so:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-
-> > What I can't help but asking is: can the native chip select even
-> > handle active high chip select if not backed by a GPIO?
-> > Which register would set that polarity?
->
-> No. DW APB SSI doesn't support active-high mode of the native CS's.
-
-We had some related discussion what to do with this case
-when a controller can support active high CS if and only if
-it is using a GPIO instead of the native CS. We didn't really
-figure it out, I suppose ideally we should use two flags in the
-master but that exercise is for another day.
-
-Yours.
-Linus Walleij
+SGkgYWxsLApBbnkgY29tbWVudHMgaGVyZT8KClJlZ2FyZHMsCldlbmh1Cgo+SXQncyBoaWdobHkg
+aGVscGZ1bCB0byBtb3ZlIHRoZSBkZWZpbml0aW9ucyBvZiBUTFYgcmVsYXRlZCBtaWNyb3MKPmlu
+dG8gaGVhZGVyIGZpbGUgZm9yIHVzZXIgcmVmZXJlbmNlLiBUaGUgT1BUSU9OQUxfVExWX1RZUEVf
+U1RBUlQKPnNob3VsZCBiZSBrbm93biB0byBhbnkgdXNlciB0aGF0IG1pZ2h0IGRlZmluZSBtZXNz
+YWdlcyBjb250YWluaW5nCj5vcHRpb25hbCBmaWVsZHMuIFNJWkUgZmllbGRzIGFyZSB0aGUgc2Ft
+ZSwgZm9yIHVzZXJzIHRvIGNhbGN1bGF0ZQo+bWVzc2FnZSBidWZmZXIgbGVuZ3RoLgo+Cj5XaGls
+ZSBlbmNvZGluZyBtZXNzYWdlcywgVHlwZSBhbHdheXMgb2NjdXJzIHRvZ2V0aGVyIHdpdGggTGVu
+Z3RoLgo+U28gdGhlIGJldHRlciB3YXkgaXMgdG8gdXNlIFRMX1NJWkUsIHJhdGhlciB0aGFuIChU
+X1NJWkUgKyBMX1NJWkUpLgo+Cj5TaWduZWQtb2ZmLWJ5OiBXYW5nIFdlbmh1IDx3ZW5odS53YW5n
+QHZpdm8uY29tPgo+LS0tCj4gZHJpdmVycy9zb2MvcWNvbS9xbWlfZW5jZGVjLmMgfCAyOCArKysr
+KysrKysrKystLS0tLS0tLS0tLS0tLS0tCj4gaW5jbHVkZS9saW51eC9zb2MvcWNvbS9xbWkuaCAg
+fCAgNSArKysrKwo+IDIgZmlsZXMgY2hhbmdlZCwgMTcgaW5zZXJ0aW9ucygrKSwgMTYgZGVsZXRp
+b25zKC0pCj4KPmRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9xY29tL3FtaV9lbmNkZWMuYyBiL2Ry
+aXZlcnMvc29jL3Fjb20vcW1pX2VuY2RlYy5jCj5pbmRleCAzYWFhYjcxZDFiMmMuLmE2NzRjNjhl
+ZmFiMiAxMDA2NDQKPi0tLSBhL2RyaXZlcnMvc29jL3Fjb20vcW1pX2VuY2RlYy5jCj4rKysgYi9k
+cml2ZXJzL3NvYy9xY29tL3FtaV9lbmNkZWMuYwo+QEAgLTUzLDEwICs1Myw2IEBAIGRvIHsgXAo+
+IAlkZWNvZGVkX2J5dGVzICs9IHJjOyBcCj4gfSB3aGlsZSAoMCkKPiAKPi0jZGVmaW5lIFRMVl9M
+RU5fU0laRSBzaXplb2YodTE2KQo+LSNkZWZpbmUgVExWX1RZUEVfU0laRSBzaXplb2YodTgpCj4t
+I2RlZmluZSBPUFRJT05BTF9UTFZfVFlQRV9TVEFSVCAweDEwCj4tCj4gc3RhdGljIGludCBxbWlf
+ZW5jb2RlKHN0cnVjdCBxbWlfZWxlbV9pbmZvICplaV9hcnJheSwgdm9pZCAqb3V0X2J1ZiwKPiAJ
+CSAgICAgIGNvbnN0IHZvaWQgKmluX2Nfc3RydWN0LCB1MzIgb3V0X2J1Zl9sZW4sCj4gCQkgICAg
+ICBpbnQgZW5jX2xldmVsKTsKPkBAIC0xNDIsNyArMTM4LDcgQEAgc3RhdGljIGludCBxbWlfY2Fs
+Y19taW5fbXNnX2xlbihzdHJ1Y3QgcW1pX2VsZW1faW5mbyAqZWlfYXJyYXksCj4gCQkgKiBuZXN0
+ZWQgc3RydWN0dXJlLgo+IAkJICovCj4gCQlpZiAobGV2ZWwgPT0gMSkKPi0JCQltaW5fbXNnX2xl
+biArPSAoVExWX1RZUEVfU0laRSArIFRMVl9MRU5fU0laRSk7Cj4rCQkJbWluX21zZ19sZW4gKz0g
+UU1JX1RMVl9UTF9TSVpFOwo+IAl9Cj4gCj4gCXJldHVybiBtaW5fbXNnX2xlbjsKPkBAIC0yNTMs
+OCArMjQ5LDcgQEAgc3RhdGljIGludCBxbWlfZW5jb2RlX3N0cmluZ19lbGVtKHN0cnVjdCBxbWlf
+ZWxlbV9pbmZvICplaV9hcnJheSwKPiAJfQo+IAo+IAlpZiAoZW5jX2xldmVsID09IDEpIHsKPi0J
+CWlmIChzdHJpbmdfbGVuICsgVExWX0xFTl9TSVpFICsgVExWX1RZUEVfU0laRSA+Cj4tCQkgICAg
+b3V0X2J1Zl9sZW4pIHsKPisJCWlmIChzdHJpbmdfbGVuICsgUU1JX1RMVl9UTF9TSVpFID4gb3V0
+X2J1Zl9sZW4pIHsKPiAJCQlwcl9lcnIoIiVzOiBPdXRwdXQgbGVuICVkID4gT3V0IEJ1ZiBsZW4g
+JWRcbiIsCj4gCQkJICAgICAgIF9fZnVuY19fLCBzdHJpbmdfbGVuLCBvdXRfYnVmX2xlbik7Cj4g
+CQkJcmV0dXJuIC1FVE9PU01BTEw7Cj5AQCAtMzExLDcgKzMwNiw3IEBAIHN0YXRpYyBpbnQgcW1p
+X2VuY29kZShzdHJ1Y3QgcW1pX2VsZW1faW5mbyAqZWlfYXJyYXksIHZvaWQgKm91dF9idWYsCj4g
+CXRsdl9wb2ludGVyID0gYnVmX2RzdDsKPiAJdGx2X2xlbiA9IDA7Cj4gCWlmIChlbmNfbGV2ZWwg
+PT0gMSkKPi0JCWJ1Zl9kc3QgPSBidWZfZHN0ICsgKFRMVl9MRU5fU0laRSArIFRMVl9UWVBFX1NJ
+WkUpOwo+KwkJYnVmX2RzdCA9IGJ1Zl9kc3QgKyBRTUlfVExWX1RMX1NJWkU7Cj4gCj4gCXdoaWxl
+ICh0ZW1wX2VpLT5kYXRhX3R5cGUgIT0gUU1JX0VPVEkpIHsKPiAJCWJ1Zl9zcmMgPSBpbl9jX3N0
+cnVjdCArIHRlbXBfZWktPm9mZnNldDsKPkBAIC0zNDIsOCArMzM3LDggQEAgc3RhdGljIGludCBx
+bWlfZW5jb2RlKHN0cnVjdCBxbWlfZWxlbV9pbmZvICplaV9hcnJheSwgdm9pZCAqb3V0X2J1ZiwK
+PiAJCQlkYXRhX2xlbl9zeiA9IHRlbXBfZWktPmVsZW1fc2l6ZSA9PSBzaXplb2YodTgpID8KPiAJ
+CQkJCXNpemVvZih1OCkgOiBzaXplb2YodTE2KTsKPiAJCQkvKiBDaGVjayB0byBhdm9pZCBvdXQg
+b2YgcmFuZ2UgYnVmZmVyIGFjY2VzcyAqLwo+LQkJCWlmICgoZGF0YV9sZW5fc3ogKyBlbmNvZGVk
+X2J5dGVzICsgVExWX0xFTl9TSVpFICsKPi0JCQkgICAgVExWX1RZUEVfU0laRSkgPiBvdXRfYnVm
+X2xlbikgewo+KwkJCWlmICgoZGF0YV9sZW5fc3ogKyBlbmNvZGVkX2J5dGVzICsgUU1JX1RMVl9U
+TF9TSVpFKSA+Cj4rCQkJICAgIG91dF9idWZfbGVuKSB7Cj4gCQkJCXByX2VycigiJXM6IFRvbyBT
+bWFsbCBCdWZmZXIgQERBVEFfTEVOXG4iLAo+IAkJCQkgICAgICAgX19mdW5jX18pOwo+IAkJCQly
+ZXR1cm4gLUVUT09TTUFMTDsKPkBAIC0zNjcsNyArMzYyLDcgQEAgc3RhdGljIGludCBxbWlfZW5j
+b2RlKHN0cnVjdCBxbWlfZWxlbV9pbmZvICplaV9hcnJheSwgdm9pZCAqb3V0X2J1ZiwKPiAJCWNh
+c2UgUU1JX1NJR05FRF80X0JZVEVfRU5VTToKPiAJCQkvKiBDaGVjayB0byBhdm9pZCBvdXQgb2Yg
+cmFuZ2UgYnVmZmVyIGFjY2VzcyAqLwo+IAkJCWlmICgoKGRhdGFfbGVuX3ZhbHVlICogdGVtcF9l
+aS0+ZWxlbV9zaXplKSArCj4tCQkJICAgIGVuY29kZWRfYnl0ZXMgKyBUTFZfTEVOX1NJWkUgKyBU
+TFZfVFlQRV9TSVpFKSA+Cj4rCQkJICAgIGVuY29kZWRfYnl0ZXMgKyBRTUlfVExWX1RMX1NJWkUp
+ID4KPiAJCQkgICAgb3V0X2J1Zl9sZW4pIHsKPiAJCQkJcHJfZXJyKCIlczogVG9vIFNtYWxsIEJ1
+ZmZlciBAZGF0YV90eXBlOiVkXG4iLAo+IAkJCQkgICAgICAgX19mdW5jX18sIHRlbXBfZWktPmRh
+dGFfdHlwZSk7Cj5AQCAtNDEwLDEwICs0MDUsMTAgQEAgc3RhdGljIGludCBxbWlfZW5jb2RlKHN0
+cnVjdCBxbWlfZWxlbV9pbmZvICplaV9hcnJheSwgdm9pZCAqb3V0X2J1ZiwKPiAKPiAJCWlmIChl
+bmNvZGVfdGx2ICYmIGVuY19sZXZlbCA9PSAxKSB7Cj4gCQkJUU1JX0VOQ0RFQ19FTkNPREVfVExW
+KHRsdl90eXBlLCB0bHZfbGVuLCB0bHZfcG9pbnRlcik7Cj4tCQkJZW5jb2RlZF9ieXRlcyArPSAo
+VExWX1RZUEVfU0laRSArIFRMVl9MRU5fU0laRSk7Cj4rCQkJZW5jb2RlZF9ieXRlcyArPSBRTUlf
+VExWX1RMX1NJWkU7Cj4gCQkJdGx2X3BvaW50ZXIgPSBidWZfZHN0Owo+IAkJCXRsdl9sZW4gPSAw
+Owo+LQkJCWJ1Zl9kc3QgPSBidWZfZHN0ICsgVExWX0xFTl9TSVpFICsgVExWX1RZUEVfU0laRTsK
+PisJCQlidWZfZHN0ID0gYnVmX2RzdCArIFFNSV9UTFZfVExfU0laRTsKPiAJCQllbmNvZGVfdGx2
+ID0gMDsKPiAJCX0KPiAJfQo+QEAgLTYxMywxMCArNjA4LDExIEBAIHN0YXRpYyBpbnQgcW1pX2Rl
+Y29kZShzdHJ1Y3QgcW1pX2VsZW1faW5mbyAqZWlfYXJyYXksIHZvaWQgKm91dF9jX3N0cnVjdCwK
+PiAJCQl0bHZfcG9pbnRlciA9IGJ1Zl9zcmM7Cj4gCQkJUU1JX0VOQ0RFQ19ERUNPREVfVExWKCZ0
+bHZfdHlwZSwKPiAJCQkJCSAgICAgICZ0bHZfbGVuLCB0bHZfcG9pbnRlcik7Cj4tCQkJYnVmX3Ny
+YyArPSAoVExWX1RZUEVfU0laRSArIFRMVl9MRU5fU0laRSk7Cj4tCQkJZGVjb2RlZF9ieXRlcyAr
+PSAoVExWX1RZUEVfU0laRSArIFRMVl9MRU5fU0laRSk7Cj4rCQkJYnVmX3NyYyArPSBRTUlfVExW
+X1RMX1NJWkU7Cj4rCQkJZGVjb2RlZF9ieXRlcyArPSBRTUlfVExWX1RMX1NJWkU7Cj4gCQkJdGVt
+cF9laSA9IGZpbmRfZWkoZWlfYXJyYXksIHRsdl90eXBlKTsKPi0JCQlpZiAoIXRlbXBfZWkgJiYg
+dGx2X3R5cGUgPCBPUFRJT05BTF9UTFZfVFlQRV9TVEFSVCkgewo+KwkJCWlmICghdGVtcF9laSAm
+JiB0bHZfdHlwZSA8Cj4rCQkJICAgIFFNSV9PUFRJT05BTF9UTFZfVFlQRV9TVEFSVCkgewo+IAkJ
+CQlwcl9lcnIoIiVzOiBJbnZhbCBlbGVtZW50IGluZm9cbiIsIF9fZnVuY19fKTsKPiAJCQkJcmV0
+dXJuIC1FSU5WQUw7Cj4gCQkJfSBlbHNlIGlmICghdGVtcF9laSkgewo+ZGlmZiAtLWdpdCBhL2lu
+Y2x1ZGUvbGludXgvc29jL3Fjb20vcW1pLmggYi9pbmNsdWRlL2xpbnV4L3NvYy9xY29tL3FtaS5o
+Cj5pbmRleCBlNzEyZjk0Yjg5ZmMuLmViNTNhZWJkZjQ1ZSAxMDA2NDQKPi0tLSBhL2luY2x1ZGUv
+bGludXgvc29jL3Fjb20vcW1pLmgKPisrKyBiL2luY2x1ZGUvbGludXgvc29jL3Fjb20vcW1pLmgK
+PkBAIC0zNCw2ICszNCwxMSBAQCBzdHJ1Y3QgcW1pX2hlYWRlciB7Cj4gI2RlZmluZSBRTUlfSU5E
+SUNBVElPTgk0Cj4gCj4gI2RlZmluZSBRTUlfQ09NTU9OX1RMVl9UWVBFIDAKPisjZGVmaW5lIFFN
+SV9PUFRJT05BTF9UTFZfVFlQRV9TVEFSVCAweDEwCj4rCj4rI2RlZmluZSBRTUlfVExWX0xFTl9T
+SVpFIHNpemVvZih1MTYpCj4rI2RlZmluZSBRTUlfVExWX1RZUEVfU0laRSBzaXplb2YodTgpCj4r
+I2RlZmluZSBRTUlfVExWX1RMX1NJWkUgKFFNSV9UTFZfTEVOX1NJWkUgKyBRTUlfVExWX1RZUEVf
+U0laRSkKPiAKPiBlbnVtIHFtaV9lbGVtX3R5cGUgewo+IAlRTUlfRU9USSwKPi0tIAo+Mi4xNy4x
+Cj4KDQoNCg==
