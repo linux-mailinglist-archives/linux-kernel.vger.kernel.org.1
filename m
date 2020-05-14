@@ -2,92 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE361D3350
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6A31D3364
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727973AbgENOoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 10:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
+        id S1728163AbgENOqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 10:46:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbgENOoY (ORCPT
+        with ESMTP id S1726066AbgENOpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 10:44:24 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98384C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:44:24 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id x77so1411524pfc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:44:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3517NpCaDBacg/Dwp902mIgUINgvR6pFPGbL/kslfaY=;
-        b=blFSU6/kX50CoVlrbhPDy8DHQmKvZ1iW5M5e060phVc6yrJAI7mhafMTdfQ8a5yg8K
-         kek6m1LiF3MDFjjFB7XMLpcjP1b9fqTCsBplPrLzh4BzDHMECFlXzJ/v6D5aNI58YqSr
-         zdol8qDrATXLReGmRCXdVRXEgxpVJqqJVH0+svDutlfjhKLEGTuwFY3uUpvF8xQU1K++
-         6vnZuE4QNeEhxUt5c7ryXSZcdtH+lGXE2bT3GAl8WnVbDe/ABhm8gAeiGVfLLW9Kf+UD
-         05RdbAQ3f9Hk5nCbXPcQTSu4Ox7vTPoXvCk+Bb+0RHi3LoGRwiFUEMMUPKMRGvu+6UyP
-         6QfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3517NpCaDBacg/Dwp902mIgUINgvR6pFPGbL/kslfaY=;
-        b=dwUdk7JzHsjtjI6kn5DcDiI2EVBXGGTIs59Oy4BA6pNKnipnRwjUXGVtj1U/DkGnne
-         W7WGSFTCfBM5eSviA16B46lv0j8rPZETEf1Oy1WZn/0JajgpwzI/Fla8n9nbNWu+wEDo
-         xrgFuhtCG/TS0gOXLn5Y5OHn0kSS/FlidSVXI4ZHmsImwGsfX72fuWuGa2oDHhBngmZM
-         qBxY6H6JvYTB9YXRUnhjHZhrefZLb+YHo/mRabVvZxzLP9Q3S+fiAKQCwmxckTg8o3WZ
-         SMnhw4UpIF2G6a6OhpbY65eWj147bN3mNpuio1b+C+N/qLOAlKBp0CyX6HrVEuXm3zg7
-         WE3Q==
-X-Gm-Message-State: AOAM530O46+mvxVvNL1FfntksUc+XPedXvlWDFyTHCoWJCbG1cdkZQ7c
-        YlCoMG5sNUGvDUc/gwDGw+o=
-X-Google-Smtp-Source: ABdhPJzTN+o4BlFp6Ad0119sdkLFW5d512QRy4tNm/IM3mh2dtrtu8tX3mFraIaxR60CiEHH6aB7Sg==
-X-Received: by 2002:aa7:8c0a:: with SMTP id c10mr5081607pfd.177.1589467464241;
-        Thu, 14 May 2020 07:44:24 -0700 (PDT)
-Received: from localhost ([49.207.51.148])
-        by smtp.gmail.com with ESMTPSA id o21sm18060707pjr.37.2020.05.14.07.44.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 14 May 2020 07:44:23 -0700 (PDT)
-Date:   Thu, 14 May 2020 20:14:21 +0530
-From:   afzal mohammed <afzal.mohd.ma@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: ARM: static kernel in vmalloc space
-Message-ID: <20200514144421.GA6090@afzalpc>
-References: <CAK8P3a3OC5UO72rTDWi6+XgmExJmkATEjscq8hns8Bng06OpcQ@mail.gmail.com>
- <20200504091018.GA24897@afzalpc>
- <CAK8P3a25sZ9B+AE=EJyJZSU91CkBLLR6p2nixw_=UAbczg3RiQ@mail.gmail.com>
- <20200511142113.GA31707@afzalpc>
- <CAK8P3a0=+aBJLTvHOskTv=tba_s5b5MzWrYG8mxH3iLNy4hfBw@mail.gmail.com>
- <20200512104758.GA12980@afzalpc>
- <CAK8P3a1DQWG1+ab2+vQ2XCAKYxPUjJk5g3W3094j-adDXSQfzQ@mail.gmail.com>
- <20200514111755.GA4997@afzalpc>
- <CAK8P3a2PNZY-9L9+SFDLtrp731ZGo6Nbs-7jY6E2PwWXa0kfKw@mail.gmail.com>
- <20200514133545.GA5020@afzalpc>
+        Thu, 14 May 2020 10:45:49 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B0BC061A0C;
+        Thu, 14 May 2020 07:45:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=C0JBBAGMh2Gx0cshhc8L2hDMgoxO3l9OvKF0uYNu6cU=; b=XPlupVEtP9/4WQjK/Bft2etU2g
+        WHs6jN/HKq3bN/5mcFIKrd23FQAbM8XycA2qeGhe03WZ5Yi3PFblmWtl3xLK2fGMZrjMKix3allNB
+        TR8bhtLoZtGFK/u7lxr6sdZKldbCE7YySuMy5nNdd4+yja3sHng9MRruDiBnQjt59Ap+tqB75xp3N
+        H3fxDQjB/AqZXOw67PU9d2sQG+Ah3Gx9ZNDYbonPF55zqQoODGhkTjAZpoKMTl0hjc/4wqiW4cUuq
+        LCHqPqkMz5yCTEeG8DZLhKJY/2GA1MSDap4JI7aWUHhaW0Rc6yFdS9fmpYMgESWAt9ZYvi6edxbDt
+        BilkmdWw==;
+Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jZF7B-0004cx-8q; Thu, 14 May 2020 14:45:37 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org (open list)
+Subject: move the SIOCDELRT and SIOCADDRT compat_ioctl handlers
+Date:   Thu, 14 May 2020 16:45:31 +0200
+Message-Id: <20200514144535.3000410-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200514133545.GA5020@afzalpc>
-User-Agent: Mutt/1.9.3 (2018-01-21)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Dave,
 
-On Thu, May 14, 2020 at 07:05:45PM +0530, afzal mohammed wrote:
-
-> So if we make VMSPLIT_4G_4G, depends on !HIGH_MEMORY (w/ mention of
-> caveat in Kconfig help that this is meant for platforms w/ <=4GB), then
-> we can do copy_{from,to}_user the same way currently do, and no need to
-> do the user page pinning & kmap, right ?
-
-i think user page pinning is still required, but kmap can be avoided
-by using lowmem corresponding to that page, right ?, or am i
-completely wrong ?
-
-Regards
-afzal
+this series moves the compat_ioctl handlers into the protocol handlers,
+avoiding the need to override the address space limited as in the current
+handler.
