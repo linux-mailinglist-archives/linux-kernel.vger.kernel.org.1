@@ -2,69 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7841D23A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 02:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AE31D23AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 02:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733158AbgENA3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 20:29:32 -0400
-Received: from mga14.intel.com ([192.55.52.115]:39965 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732946AbgENA3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 20:29:31 -0400
-IronPort-SDR: WpYdMIteOihFbps/xWUHNHbaj1qvLGVOYqjK4ETfVO8lqXgHSPETYMBxw5WVZFb1FY6u4lruSs
- xl0VdkrdOc9w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 17:29:30 -0700
-IronPort-SDR: 1EqgBWkrImoRj+D/m16TKUnq1rR2VzIIzr2ST529/xBIm08IR/EQOmm3DnJbofbxTxY17z8CpF
- 1vWhgFaPnyUA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,389,1583222400"; 
-   d="scan'208";a="266058759"
-Received: from gliber-mobl1.ger.corp.intel.com ([10.249.38.41])
-  by orsmga006.jf.intel.com with ESMTP; 13 May 2020 17:29:21 -0700
-Message-ID: <f8d77be225783f428983ef38df026b7cd8724319.camel@linux.intel.com>
-Subject: Re: [PATCH v4 3/4] doc: trusted-encrypted: updates with TEE as a
- new trust source
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sumit Garg <sumit.garg@linaro.org>, zohar@linux.ibm.com,
-        jejb@linux.ibm.com
-Cc:     dhowells@redhat.com, jens.wiklander@linaro.org, corbet@lwn.net,
-        jmorris@namei.org, serge@hallyn.com, casey@schaufler-ca.com,
-        janne.karhunen@gmail.com, daniel.thompson@linaro.org,
-        Markus.Wamser@mixed-mode.de, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org, tee-dev@lists.linaro.org
-Date:   Thu, 14 May 2020 03:29:20 +0300
-In-Reply-To: <1588758017-30426-4-git-send-email-sumit.garg@linaro.org>
-References: <1588758017-30426-1-git-send-email-sumit.garg@linaro.org>
-         <1588758017-30426-4-git-send-email-sumit.garg@linaro.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.1-2 
+        id S1733163AbgENAep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 20:34:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1733132AbgENAep (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 20:34:45 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68F0C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 17:34:43 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id v23so324495vke.13
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 17:34:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1F1bz86BhYtSr1k2hqnfmTpTysaJBy4VwQZQPcWyybc=;
+        b=bTwAhmLs3rFXc4n5b1BzgwPLaY24LOfPDqOowuTtvpOQq3Y4oIurMMd/WiwI4bE74m
+         rDiDiRqykJ6JqDpH4DevmhVdJwF9bkBqDQVXI/6DaJql9SKOpUGr+1G/CjatLRVdDfnT
+         FaHL8eZYeb/OJ6pLil5BJhtNXOydcFtYsrTGs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1F1bz86BhYtSr1k2hqnfmTpTysaJBy4VwQZQPcWyybc=;
+        b=K0aBllV6j9a8+4ukpirqj+vtX+jqwdvlhkGoEOwOvo2Vxq1I0ooLgMkAU6C/27fDIM
+         dbKjlhaG54XIZc5BtkvrGuyBvEBUjViIvXzwOkz5Ln02fhVxT7NM7BKk9a3mgtkSPXi9
+         y7/3gHY5ZtFzdHEi1hUcw7DoevDC8SZzvAs7AXorGkqBsvzqSW5KGPtqWQ5SZzuWD6we
+         k6zhwVbR1XLFC0cycfeJ+wCevA7PVY9GCuIQJIog6rbbyqNxEqVLD2s0c0Ae8aPZALI6
+         wGcj9u3lL+rg5Yvmsr2poy41MtZyhFQ4KfHoSJagyLCgdQOTaoJEdYZGcjB6vR8NOjh6
+         ecCw==
+X-Gm-Message-State: AOAM533PLiWIo2JRqbVBJUPtG0bBQJvRdNhmWx1i57bsTMR4xNPEeZiq
+        WGGaeuG3Lbe3+9OaAcJsVzWTadWJHiQ=
+X-Google-Smtp-Source: ABdhPJwuWT8P1SFR2iPyMDSTBEk7PHDS1Uakl0q2Yx7q+7Hbo2jd2DJ2HEGzOYksg5SQMFr74XbYnQ==
+X-Received: by 2002:a1f:17d7:: with SMTP id 206mr1668133vkx.2.1589416482423;
+        Wed, 13 May 2020 17:34:42 -0700 (PDT)
+Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
+        by smtp.gmail.com with ESMTPSA id k141sm322410vka.23.2020.05.13.17.34.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 May 2020 17:34:40 -0700 (PDT)
+Received: by mail-vs1-f42.google.com with SMTP id l25so956118vso.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 17:34:40 -0700 (PDT)
+X-Received: by 2002:a67:c40c:: with SMTP id c12mr1585682vsk.106.1589416479714;
+ Wed, 13 May 2020 17:34:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200509214159.19680-1-liwei391@huawei.com>
+In-Reply-To: <20200509214159.19680-1-liwei391@huawei.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 13 May 2020 17:34:28 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Xv6xgj_M9tYjHzmW4UZD2RdH2c5=dagNybSkdfBabYZw@mail.gmail.com>
+Message-ID: <CAD=FV=Xv6xgj_M9tYjHzmW4UZD2RdH2c5=dagNybSkdfBabYZw@mail.gmail.com>
+Subject: Re: [PATCH 0/4] arm64: kgdb/kdb: Fix single-step debugging issues
+To:     Wei Li <liwei391@huawei.com>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, liwei1412@163.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-05-06 at 15:10 +0530, Sumit Garg wrote:
-> Update documentation for Trusted and Encrypted Keys with TEE as a new
-> trust source. Following is brief description of updates:
-> 
-> - Add a section to demostrate a list of supported devices along with
->   their security properties/guarantees.
-> - Add a key generation section.
-> - Updates for usage section including differences specific to a trust
->   source.
-> 
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+Hi,
 
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+On Sat, May 9, 2020 at 6:49 AM Wei Li <liwei391@huawei.com> wrote:
+>
+> This patch set is to fix several issues of single-step debugging
+> in kgdb/kdb on arm64.
+>
+> It seems that these issues have been shelved a very long time,
+> but i still hope to solve them, as the single-step debugging
+> is an useful feature.
+>
+> Note:
+> Based on patch "arm64: cacheflush: Fix KGDB trap detection",
+> https://www.spinics.net/lists/arm-kernel/msg803741.html
+>
+> Wei Li (4):
+>   arm64: kgdb: Fix single-step exception handling oops
+>   arm64: Extract kprobes_save_local_irqflag() and
+>     kprobes_restore_local_irqflag()
+>   arm64: kgdb: Fix single-stepping into the irq handler wrongly
+>   arm64: kgdb: Set PSTATE.SS to 1 to reenable single-step
+>
+>  arch/arm64/include/asm/debug-monitors.h |  6 ++++++
+>  arch/arm64/kernel/debug-monitors.c      | 28 ++++++++++++++++++++++++-
+>  arch/arm64/kernel/kgdb.c                | 16 +++++++++++---
+>  arch/arm64/kernel/probes/kprobes.c      | 28 ++-----------------------
+>  4 files changed, 48 insertions(+), 30 deletions(-)
 
-/Jarkko
+Just an overall note that I'm very happy that you posted this patch
+series!  It's always been a thorn in my side that stepping and
+breakpoints were so broken on arm64 and I'm really excited that you're
+fixing them.  Now I'll have to get in the habit of using kgdb for more
+than just debugging crashes and maybe I can use it more for exploring
+how functions work more.  :-)
 
+I'll also note that with your patch series I'm even seeing the "call"
+feature of gdb working now.  That has always been terribly broken for
+me.
+
+-Doug
