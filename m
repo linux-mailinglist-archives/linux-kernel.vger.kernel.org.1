@@ -2,122 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5271D33A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012521D33A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727912AbgENOzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 10:55:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727885AbgENOzG (ORCPT
+        id S1727938AbgENOzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 10:55:16 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:38690 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727918AbgENOzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 10:55:06 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 763FBC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:55:06 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id n18so1420859pfa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:55:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=9HjMnwIKxpe2uw0fQ8jjAuZF11Ao8ED5SVrgc8CsCDU=;
-        b=JJOGiHxd0wdf2wJI5MuPpFjPtxQ7336AKRPSLZeicJkX+D3PP8scBGIsBz7GD3QQvY
-         xiDcWzNAzUxhW5hIUcxoleTzO8oAEVfftJFQNoolwWfsMx2PiEagXOnbpeVhC6GGnS9l
-         rCpsi9hHJ5auXSrHEZxRh3PXFSWNGOSSSXWNEWF9OCfE1HfQFB9QuHvo0E/SlgF2pCZX
-         MZr/D/ye5y3KRfgmGbeVwwineXkE5b65/rb6DPIGi60rhr1wVF5JSJUmpqM7ec8xveV9
-         nqwa8FaksRAXyjj1qSAteUzrVwMtvw6/Dk+GCTMAbo2XbFa0SvjyzQAK6HWKZAdgC+2r
-         c60w==
+        Thu, 14 May 2020 10:55:15 -0400
+Received: by mail-oi1-f195.google.com with SMTP id j145so2937764oib.5;
+        Thu, 14 May 2020 07:55:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=9HjMnwIKxpe2uw0fQ8jjAuZF11Ao8ED5SVrgc8CsCDU=;
-        b=TEfMFj1QteCAZb9dBWe3JqDAWJElw4jtpZwAgn5BLOTOzmFZIBd8Wh+fKoza8hO8ba
-         ZDWfonrCGv+u4wLWJYlPiPSwbDp/OfmdYnK8KoeiUwqTJIZ1vcnnbfT24NHcExqew8lh
-         gHEqUf2ctvNwEEgWO7dL/lIBBhcle+TpJZmZTYxg3qnkg+ac48dhWDykYO14VYksRuEO
-         kuBsKqE9xOMeutfAJEAilNI0s3nMxi+Z6TOmXiy2UIYehXUkcennhvP6s79HHma3eZaU
-         62e72EWj4oqNRNI6Hqp3Qi16uYI+iAq8OZC2BXUiqT9HvPGfgSxhuKCVG/g6bhkR5waU
-         Kgtw==
-X-Gm-Message-State: AOAM5321j0kwWA6jHRx0sdK4Q8JNjoy04zSJcy9EMqo678bZ5hxxKa7w
-        mYFCbiSzHz+yl+5/J2QHqpwyHA==
-X-Google-Smtp-Source: ABdhPJx7+2eXLTKSXrTOBJ/rU5kJS0lPi+SyNjeJFlAisPsQ3+tH/CNhEfooTQvfWFF33wo1bvaJsw==
-X-Received: by 2002:a65:480c:: with SMTP id h12mr4478831pgs.106.1589468105764;
-        Thu, 14 May 2020 07:55:05 -0700 (PDT)
-Received: from ?IPv6:2600:1010:b044:c0a6:fc3e:abd:d4e0:e1e4? ([2600:1010:b044:c0a6:fc3e:abd:d4e0:e1e4])
-        by smtp.gmail.com with ESMTPSA id nm6sm6815276pjb.34.2020.05.14.07.55.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 May 2020 07:55:05 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [patch V4 part 4 02/24] x86/int3: Avoid atomic instrumentation
-Date:   Thu, 14 May 2020 07:55:02 -0700
-Message-Id: <9DBF3103-4D31-41AA-AC02-9A6F1849AA00@amacapital.net>
-References: <20200514131530.GQ2957@hirez.programming.kicks-ass.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <JGross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-In-Reply-To: <20200514131530.GQ2957@hirez.programming.kicks-ass.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-X-Mailer: iPhone Mail (17E262)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6GKTQ1hvayQx5OvCaJHWXeEsZVK5jinIl8AV+xK1lWo=;
+        b=lTcyUiGFFkdMuuqbO77J4nqP46ynWyY76DXx+7ZogbFgicQk1O8HJJtXsVmMUVA3yl
+         rCDqfPIDGm97lJYBseSrNTRrHK5c9vMlyu7vZsdAKITPYQawz688v0QGv9Bw5GZyYrj5
+         WKKTbP+JTezvPFeLTSKg3XohduuPZINxAhTszS7Vj8s6db4SPD/FTRMbazKKwMlc110A
+         ZtXXZw54oZAbwDLNaNIb7Ji+rCXkggw9WtJfkwnQ6evHFE1e+fABzKFX4Sn0QmX3SMWv
+         m69pBih2BYuRwWZ++qRjP8+DaaOF5U8sAlk/nFxDZnDzwqUtqhECQfQ3wCb8Z0co4cbb
+         JAXA==
+X-Gm-Message-State: AOAM532eIFqtA6HyR8+SO3z6aAgTIvbJpcSnpuNlowDSmL900pnj4NiL
+        t+QMooUHxNNSSWreLIQuFEfRbeM=
+X-Google-Smtp-Source: ABdhPJzPExS9+yhGzaOvpYeJu0M9Sj6OuOpDB5AsKxDZI3H8LoAnJ+egHuHqWQI81CVMcYTdbNgB0g==
+X-Received: by 2002:aca:aa91:: with SMTP id t139mr2198536oie.176.1589468114895;
+        Thu, 14 May 2020 07:55:14 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u17sm837801ote.63.2020.05.14.07.55.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 07:55:14 -0700 (PDT)
+Received: (nullmailer pid 28709 invoked by uid 1000);
+        Thu, 14 May 2020 14:55:13 -0000
+Date:   Thu, 14 May 2020 09:55:13 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     khilman@baylibre.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: amlogic: add odroid-c4 bindings
+Message-ID: <20200514145513.GA28489@bogus>
+References: <20200506080702.6645-1-narmstrong@baylibre.com>
+ <20200506080702.6645-2-narmstrong@baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506080702.6645-2-narmstrong@baylibre.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed,  6 May 2020 10:07:01 +0200, Neil Armstrong wrote:
+> Add the board bindings for the Hardkernel Odroid-C4 single board computer.
+> 
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  Documentation/devicetree/bindings/arm/amlogic.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-
-> On May 14, 2020, at 6:15 AM, Peter Zijlstra <peterz@infradead.org> wrote:
->=20
-> =EF=BB=BFOn Thu, May 14, 2020 at 02:51:32PM +0200, Thomas Gleixner wrote:
->> Peter Zijlstra <peterz@infradead.org> writes:
->>> On Wed, May 13, 2020 at 09:57:52PM -0700, Andy Lutomirski wrote:
->>>>> On Tue, May 5, 2020 at 7:15 AM Thomas Gleixner <tglx@linutronix.de> wr=
-ote:
->>>>>>=20
->>>>>> From: Peter Zijlstra <peterz@infradead.org>
->>>>>>=20
->>>>>> Use arch_atomic_*() and READ_ONCE_NOCHECK() to ensure nothing untowar=
-d
->>>>>> creeps in and ruins things.
->>>>>>=20
->>>>>> That is; this is the INT3 text poke handler, strictly limit the code
->>>>>> that runs in it, lest it inadvertenly hits yet another INT3.
->>>>>=20
->>>>>=20
->>>>> Acked-by: Andy Lutomirski <luto@kernel.org>
->>>>>=20
->>>>> Does objtool catch this error?
->>>=20
->>> It does not. I'll put it on the (endless) todo list..
->>=20
->> Well, at least it detects when that code calls out into something which
->> is not in the non-instrumentable section.
->=20
-> True, but the more specific problem is that noinstr code can use
-> jump_label/static_call just fine.
->=20
-> So a more specific test is validating none of that happens in the INT3
-> handler before poke_int3_handler(). Which is what I think Andy was
-> after.
-
-Exactly.  I admit that sleep-deprived Andy was actually thinking =E2=80=9Ctg=
-lx and/or PeterZ found this by inspection, and somewhere it escaped objtool=E2=
-=80=99s notice,=E2=80=9D which is sort of the same thing :)=
+Acked-by: Rob Herring <robh@kernel.org>
