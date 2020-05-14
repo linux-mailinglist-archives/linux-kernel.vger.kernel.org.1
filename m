@@ -2,54 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 167941D293A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 09:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F181D2903
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 09:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726169AbgENH5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 03:57:16 -0400
-Received: from elvis.franken.de ([193.175.24.41]:53043 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725935AbgENH5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 03:57:10 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jZ8js-0005U5-04; Thu, 14 May 2020 09:57:08 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 5C1C5C0493; Thu, 14 May 2020 09:44:14 +0200 (CEST)
-Date:   Thu, 14 May 2020 09:44:14 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] KVM: MIPS/Emulate: Remove unneeded semicolon
-Message-ID: <20200514074414.GE5880@alpha.franken.de>
-References: <1588216776-62161-1-git-send-email-zou_wei@huawei.com>
+        id S1726015AbgENHqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 03:46:13 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:57370 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725952AbgENHqM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 03:46:12 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jZ8ZD-0004BY-FN; Thu, 14 May 2020 07:46:07 +0000
+Date:   Thu, 14 May 2020 09:46:06 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     "Luck, Tony" <tony.luck@intel.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ia64: enable HAVE_COPY_THREAD_TLS, switch to
+ kernel_clone_args
+Message-ID: <20200514074606.vkc35syhdep23rzh@wittgenstein>
+References: <20200513204848.1208864-1-christian.brauner@ubuntu.com>
+ <3908561D78D1C84285E8C5FCA982C28F7F6266E0@ORSMSX115.amr.corp.intel.com>
+ <79e58d9b-5a39-390c-2f0c-0d87b63442b4@physik.fu-berlin.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1588216776-62161-1-git-send-email-zou_wei@huawei.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <79e58d9b-5a39-390c-2f0c-0d87b63442b4@physik.fu-berlin.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 11:19:36AM +0800, Zou Wei wrote:
-> Fixes coccicheck warnings:
+On Wed, May 13, 2020 at 11:26:35PM +0200, John Paul Adrian Glaubitz wrote:
+> Hi Tony!
 > 
-> arch/mips/kvm/emulate.c:1793:3-4: Unneeded semicolon
-> arch/mips/kvm/emulate.c:1968:3-4: Unneeded semicolon
+> On 5/13/20 11:19 PM, Luck, Tony wrote:
+> >> I tried my very best to test this patch including installing Debian 3
+> >> and 4 to try and get my hands on a gcc version that would allow
+> >> cross-compiling for ia64. But no, even that wasn't possible let alone a
+> >> working qemu for ia64. So this is largely untested but hopefully a
+> >> straightforward change. If this breaks something we will hear from
+> >> people if they still care about new kernels on ia64 since they won't be
+> >> able to get any further than trying to start init. :) If this patch
+> >> breaks it, I'll fix it.
+> > 
+> > My last functional ia64 machine no longer powers on. Unclear if it's just
+> > a broken power supply or something more serious. With almost nobody
+> > in offices/labs anymore my search for another machine is proceeding
+> > slowly.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  arch/mips/kvm/emulate.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> I could test it.
 
-applied to mips-next.
+Hey Adrian,
 
-Thomas.
+That would be excellent and much appreciated.
+Do you think you can get it tested soon?
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> 
+> As for getting a working cross-compiler for ia64 in Debian, this has
+> been on my TODO list for a while now. Building a cross-compiler for
+> ia64 is a bit more tricky due to it's dependency on the external
+> libunwind.
+
+I hit that roadblock as well but yeah, a cross-compiler would be
+helpful.
+
+Christian
