@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1431D3520
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5321D34FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgENPcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 11:32:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726056AbgENPcU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 11:32:20 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E1AC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 08:32:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1cSvhK8O6Y1n8UvHPL/hV8GEcpVw1UnNKShoq4OCCMQ=; b=KFcAIY1hLtd1dBLMmGlV3IzO0h
-        5nf4UiioMsA3zEzRwI+WUb0DS+8vT52ZtfXLwPuxezSzd3igi8stoyAmZumxgwXRtYRNjlqrM2DjV
-        jGSavQld2fQ7Y8xy3rLX780lIosG35eG72fa3QTyvJrDI31SfuJRLM8+ipnvvh4atYy2g0m9GBrT6
-        tpWdhbxEM5IMdbsp/2bEMwcAwajjuAKMO9UhhMBWIIhWiWHM5tlByvArQ4gHYx+9p1GmREqjV1ltB
-        wE8D9JZ40lAuFtPOiu4+c85ItdGTvsW2DdmAh3irxtL2eNwN+fDmhnEH5r2Q171wGfUNrgYlCX+L7
-        UXCMIPBQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZFpU-0002t7-Rt; Thu, 14 May 2020 15:31:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 99FBE304DB2;
-        Thu, 14 May 2020 17:31:22 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 859862B87A730; Thu, 14 May 2020 17:31:22 +0200 (CEST)
-Date:   Thu, 14 May 2020 17:31:22 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Jirka Hladky <jhladky@redhat.com>, Phil Auld <pauld@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Hillf Danton <hdanton@sina.com>,
+        id S1726610AbgENPZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 11:25:35 -0400
+Received: from mga06.intel.com ([134.134.136.31]:42920 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726056AbgENPZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 11:25:35 -0400
+IronPort-SDR: /rKbp9lSq4uFDVylUEPvhTK9wfLK1N2G0sik70JIZ7FqtZxi54OuXiU2MQTeENBOZ9x7bBxcm5
+ SIFeUsYN5ULA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2020 08:25:34 -0700
+IronPort-SDR: Ng2hBVYJXHRSIZgay8eUBPE0EZoRJvviZ2qMfzj8FYvf8AGmaHPL90x4D+uUNQg0wv84fsgGmS
+ hylSshRCqn8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,391,1583222400"; 
+   d="scan'208";a="298071283"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by fmsmga002.fm.intel.com with ESMTP; 14 May 2020 08:25:33 -0700
+Date:   Thu, 14 May 2020 08:31:43 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
         LKML <linux-kernel@vger.kernel.org>,
-        Douglas Shakshober <dshaks@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Joe Mario <jmario@redhat.com>, Bill Gray <bgray@redhat.com>
-Subject: Re: [PATCH 00/13] Reconcile NUMA balancing decisions with the load
- balancer v6
-Message-ID: <20200514153122.GE2978@hirez.programming.kicks-ass.net>
-References: <20200320152251.GC3818@techsingularity.net>
- <CAE4VaGBGbTT8dqNyLWAwuiqL8E+3p1_SqP6XTTV71wNZMjc9Zg@mail.gmail.com>
- <20200320163843.GD3818@techsingularity.net>
- <CAE4VaGCf0P2ht+7nbGFHV8Dd=e4oDEUPNdRUUBokRWgKRxofAA@mail.gmail.com>
- <20200507155422.GD3758@techsingularity.net>
- <CAE4VaGCDTeE16nNmSS8fGzCBvHsO=qkJAW6yDiORAxgsPi-Ziw@mail.gmail.com>
- <20200508092212.GE3758@techsingularity.net>
- <CAE4VaGC_v6On-YvqdTwAWu3Mq4ofiV0pLov-QpV+QHr_SJr+Rw@mail.gmail.com>
- <CAE4VaGDQWPePtmtCZP=ROYW1KPxtPhGDrxqy2QbirHGJdwk4=w@mail.gmail.com>
- <20200513153023.GF3758@techsingularity.net>
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v13 3/8] iommu/vt-d: Add nested translation helper
+ function
+Message-ID: <20200514083143.6400d813@jacob-builder>
+In-Reply-To: <20200514055424.GC22388@infradead.org>
+References: <1589410909-38925-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1589410909-38925-4-git-send-email-jacob.jun.pan@linux.intel.com>
+        <20200514055424.GC22388@infradead.org>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513153023.GF3758@techsingularity.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 04:30:23PM +0100, Mel Gorman wrote:
-> Complete shot in the dark but restore adjust_numa_imbalance() and try
-> this
+On Wed, 13 May 2020 22:54:24 -0700
+Christoph Hellwig <hch@infradead.org> wrote:
+
+> > +	 * 1. CPU vs. IOMMU
+> > +	 * 2. Guest vs. Host.
+> > +	 */
+> > +	switch (addr_width) {
+> > +#ifdef CONFIG_X86
+> > +	case ADDR_WIDTH_5LEVEL:
+> > +		if (cpu_feature_enabled(X86_FEATURE_LA57) &&
+> > +		    cap_5lp_support(iommu->cap)) {
+> > +			pasid_set_flpm(pte, 1);
+> > +		} else {
+> > +			dev_err_ratelimited(dev, "5-level paging
+> > not supported\n");
+> > +			return -EINVAL;
+> > +		}
+> > +		break;  
 > 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 1a9983da4408..0b31f4468d5b 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -2393,7 +2393,7 @@ static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
->  	struct rq_flags rf;
->  
->  #if defined(CONFIG_SMP)
-> -	if (sched_feat(TTWU_QUEUE) && !cpus_share_cache(smp_processor_id(), cpu)) {
-> +	if (sched_feat(TTWU_QUEUE)) {
-
-just saying that this has the risk of regressing other workloads, see:
-
-  518cd6234178 ("sched: Only queue remote wakeups when crossing cache boundaries")
-
->  		sched_clock_cpu(cpu); /* Sync clocks across CPUs */
->  		ttwu_queue_remote(p, cpu, wake_flags);
->  		return;
+> The normal style would be to handle the early error return first:
 > 
-> -- 
-> Mel Gorman
-> SUSE Labs
+> 		if (!cpu_feature_enabled(X86_FEATURE_LA57) ||
+> 		    !cap_5lp_support(iommu->cap)) {
+> 			dev_err_ratelimited(dev,
+> 				"5-level paging not supported\n");
+> 			return -EINVAL;
+> 		}
+> 
+> 		pasid_set_flpm(pte, 1);
+> 		break;
+> 
+
+Sounds good. I was thinking in positive logic.
+
+thanks
