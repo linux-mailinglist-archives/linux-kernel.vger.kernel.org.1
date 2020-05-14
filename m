@@ -2,88 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92711D30A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 15:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 613571D30C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 15:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbgENNIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 09:08:05 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:33628 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgENNIE (ORCPT
+        id S1726890AbgENNMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 09:12:40 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:53544 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726037AbgENNMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 09:08:04 -0400
-Received: by mail-oi1-f195.google.com with SMTP id o24so24466565oic.0;
-        Thu, 14 May 2020 06:08:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fbQaej0+IJeKYT0mug72y3TFgNAGh3pGBDCTmds+4Dg=;
-        b=ggKxPgTE5lsEr2Lp9mtxlQaGy9V5W46OIASq8eTGlIKRtUWAQMZ9Rv8Cbf4vTUSHdq
-         kOWfW4N9COBe9b1BLrLqzn4zBgGI3VhMS08Lhj6bb1t05rBHyoTNMdCU/dZKe42lgwIc
-         C/qbdU6/l93p+hl8epFdr6cn7tDZKyh4w5wQO6iP1+SCqwVZnCL9thCiUBflTOKkYpw6
-         KOJrIwyWWnlO8GFElD+dmMjE9eT7Y5X2dFbY0kFgiuJjKayj96XRgbaKT/QIntkQqdd9
-         2A6IrjtgYVMciuIBp55Br5AMKpEF4aGDsacjMqU9W5s7RTA3c2cvXwH6esSSB9BziaSb
-         S09w==
-X-Gm-Message-State: AOAM530LVQtpFYCTazIu0gt7ORlYb/jkwRY14/TQM2bFd1e1qr59tbtX
-        46gAvd9CAC2omOyg+hEZ2w==
-X-Google-Smtp-Source: ABdhPJw9GMygDyZnfEXw9k49JWUj2GYlVgzzt4Ko7/p8rxdjnplLymQ5zNFFIPHAyaQ6bZG1qZsHbQ==
-X-Received: by 2002:aca:af94:: with SMTP id y142mr4549151oie.111.1589461682497;
-        Thu, 14 May 2020 06:08:02 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l89sm757614otc.32.2020.05.14.06.08.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 06:08:01 -0700 (PDT)
-Received: (nullmailer pid 23923 invoked by uid 1000);
-        Thu, 14 May 2020 13:08:01 -0000
-Date:   Thu, 14 May 2020 08:08:01 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     TY Chang <tychang@realtek.com>
-Cc:     robh+dt@kernel.org, afaerber@suse.de, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linus.walleij@linaro.org,
-        linux-realtek-soc@lists.infradead.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH 4/7] dt-bindings: pinctrl: realtek: Add Realtek DHC SoC
- rtd1195 and rtd1295.
-Message-ID: <20200514130801.GA23147@bogus>
-References: <20200514092125.6875-1-tychang@realtek.com>
- <20200514092125.6875-5-tychang@realtek.com>
+        Thu, 14 May 2020 09:12:38 -0400
+X-UUID: f5a8488ffbfc49c2948a5b3d4c07ca61-20200514
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=cuoKK6jhD7pvYpNhFVneYUDj8vLgMGJ953l7rb/BFcs=;
+        b=HjgMEGbvjGpUW/h1Yz5cFynS45sP70gYsnAg2cxOYhynHKFxg55dXuL324N7PEzs75rSL12cw3bYi74IhEC+ypu/GTrl2YT9s8cRDLnng0U4/DpWLW68MEytw2yICs36xl4RbWnOxpLcLui3X4EipiAKsr7r/IKHcpa4+nNiJ/0=;
+X-UUID: f5a8488ffbfc49c2948a5b3d4c07ca61-20200514
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <qii.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 354353475; Thu, 14 May 2020 21:12:35 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 14 May 2020 21:12:30 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 14 May 2020 21:12:29 +0800
+From:   Qii Wang <qii.wang@mediatek.com>
+To:     <wsa@the-dreams.de>
+CC:     <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
+        <qii.wang@mediatek.com>
+Subject: [PATCH v2 0/2] Add i2c ac-timing adjust support
+Date:   Thu, 14 May 2020 21:09:03 +0800
+Message-ID: <1589461844-15614-1-git-send-email-qii.wang@mediatek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200514092125.6875-5-tychang@realtek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 May 2020 17:21:22 +0800, TY Chang wrote:
-> Add compatible string for RTD1195 and RTD1295.
-> 
-> Signed-off-by: TY Chang <tychang@realtek.com>
-> ---
->  .../bindings/pinctrl/realtek,rtd-pinctrl.yaml | 59 +++++++++++++++++++
->  1 file changed, 59 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/realtek,rtd-pinctrl.yaml
-> 
-
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-Error: Documentation/devicetree/bindings/pinctrl/realtek,rtd-pinctrl.example.dts:24.5-6 syntax error
-FATAL ERROR: Unable to parse input tree
-scripts/Makefile.lib:312: recipe for target 'Documentation/devicetree/bindings/pinctrl/realtek,rtd-pinctrl.example.dt.yaml' failed
-make[1]: *** [Documentation/devicetree/bindings/pinctrl/realtek,rtd-pinctrl.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-Makefile:1300: recipe for target 'dt_binding_check' failed
-make: *** [dt_binding_check] Error 2
-
-See https://patchwork.ozlabs.org/patch/1290046
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
+VGhpcyBzZXJpZXMgYXJlIGJhc2VkIG9uIDUuNy1yYzEsIHdlIHByb3ZpZGUgdHdvIHBhdGNoZXMg
+dG8gc3VwcG9ydCBpMmMgYWMtdGltaW5nLg0KDQpNYWluIGNoYW5nZXMgY29tcGFyZWQgdG8gdjE6
+DQotLWFkZCBtYWludGFpbmVyIGZvciBtZWRpYXRlayBpMmMgY29udHJvbGxlciBkcml2ZXINCi0t
+Zml4IHdhcm5pbmcgb2Ygc2VsZi1hc3NpZ25tZW50DQoNClFpaSBXYW5nICgyKToNCiAgTUFJTlRB
+SU5FUlM6IGFkZCBtYWludGFpbmVyIGZvciBtZWRpYXRlayBpMmMgY29udHJvbGxlciBkcml2ZXIN
+CiAgaTJjOiBtZWRpYXRlazogQWRkIGkyYyBhYy10aW1pbmcgYWRqdXN0IHN1cHBvcnQNCg0KIE1B
+SU5UQUlORVJTICAgICAgICAgICAgICAgICAgICAgfCAgIDcgKw0KIGRyaXZlcnMvaTJjL2J1c3Nl
+cy9pMmMtbXQ2NXh4LmMgfCAzMjggKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0t
+LS0tLQ0KIDIgZmlsZXMgY2hhbmdlZCwgMjg0IGluc2VydGlvbnMoKyksIDUxIGRlbGV0aW9ucygt
+KQ0KDQotLQ0KMS45LjENCg0K
 
