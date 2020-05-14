@@ -2,199 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B821D3333
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35F91D32EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgENOi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 10:38:57 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:36850 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726066AbgENOi5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 10:38:57 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 70441A741DB107D56AB1;
-        Thu, 14 May 2020 22:38:50 +0800 (CST)
-Received: from host-suse12sp4.huawei.com (10.67.133.23) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 14 May 2020 22:38:44 +0800
-From:   Shijie Hu <hushijie3@huawei.com>
-To:     <mike.kravetz@oracle.com>
-CC:     <will@kernel.org>, <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <nixiaoming@huawei.com>, <wangxu72@huawei.com>,
-        <wangkefeng.wang@huawei.com>, <yangerkun@huawei.com>,
-        <wangle6@huawei.com>, <cg.chen@huawei.com>, <chenjie6@huawei.com>,
-        <alex.huangjianhui@huawei.com>
-Subject: [PATCH v5] hugetlbfs: Get unmapped area below TASK_UNMAPPED_BASE for hugetlbfs
-Date:   Thu, 14 May 2020 22:31:34 +0800
-Message-ID: <20200514143134.73775-1-hushijie3@huawei.com>
-X-Mailer: git-send-email 2.12.3
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.133.23]
-X-CFilter-Loop: Reflected
+        id S1726322AbgENOcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 10:32:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:37672 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726067AbgENOcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 10:32:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99A701FB;
+        Thu, 14 May 2020 07:32:46 -0700 (PDT)
+Received: from seattle-bionic.arm.com.Home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A8D863F71E;
+        Thu, 14 May 2020 07:32:45 -0700 (PDT)
+From:   Oliver Swede <oli.swede@arm.com>
+To:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 00/13] arm64: Optimise and update memcpy, user copy and string routines
+Date:   Thu, 14 May 2020 14:32:14 +0000
+Message-Id: <20200514143227.605-1-oli.swede@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here is a final patch to solve that hugetlb_get_unmapped_area() can't
-get unmapped area below mmap base for huge pages based on a few previous
-discussions and patches from me.
+Hi, I have been working on a fix for this branch. The initial
+version of this patchset imported new optimizations from Linaro's
+cortex-strings project, and converted the instructions to the
+macro equivalents in the usercopy template, in order to allow
+each of the helper usercopy functions to use expansions that
+insert exception table entries for exclusively the instructions
+that could potentially fault during a copy. 
 
-I'm so sorry. When sending v2 and v3 patches, I forget to cc:
-linux-mm@kvack.org and linux-kernel@vger.kernel.org. No records of these
-two patches found on the https://lkml.org/lkml/.
+The 'cortex-strings' repository has since been renamed to
+'optimized-routines' (this is public on GitHub at
+https://github.com/ARM-software/optimized-routines),
+and has been updated with further optimizations of various
+library functions, and this includes a newer memcpy
+implementation.
 
-Patch V1: https://lkml.org/lkml/2020/4/27/440
-Patch V4: https://lkml.org/lkml/2020/5/13/980
+The address of page faults is exposed to the faulting instructions'
+corresponding fixup code, and in v2 a fixup routine to correspond
+to the previous copy algorithm was also implemented in a way that
+utilized the fault address to try and efficiently calculate the
+number of bytes that failed to copy. It returned the distance
+between the fault and the end of the buffer, however this fixup
+in [PATCH v2 2/14] had some issues due to the out-of-order nature
+of the copy algorithm, and was flagged by the LTP testcase of the
+preadv2() syscall (which makes multiple calls to copy_to_user).
+This was due to preadv2() reporting SUCCESS for an invalid
+destination address, NULL, where it expected EFAULT, because a
+nonzero return value was calculated (indicating that some bytes
+were copied) due to the fault not occurring at the start of the
+buffer.
 
-Changes in V2:
-* Follow Mike's suggestions, move hugetlb_get_unmapped_area() routines
-from "fs/hugetlbfs/inode.c" to "arch/arm64/mm/hugetlbpage.c", without
-changing core code.
-* Add mmap_is_legacy() function, and only fall back to the bottom-up
-function on no-legacy mode.
+In this version I have imported the very latest optimized memcpy
+routine, and re-written the fixup to use multiple routines that
+encapsulate various properties of the algorithm (this is
+explained in more detail in patches 11/13, 12/13, 13/13).
+The aim is to return the exact number of bytes that haven't copied
+when a fault occurs in copy_{to, in, from}_user, and to enable the
+fixups to be modular so that they could be re-written without too
+much trouble in the future if the copy algorithm was to be updated
+again.
 
-Changes in V3:
-* Add *bottomup() and *topdown() two function, and check if
-mm->get_unmapped_area is equal to arch_get_unmapped_area() instead of
-checking mmap_is_legacy() to determine which function should be used.
+Initial testing indicates that the backtracking performed in the
+fixup routines is accurate, and I am working on a separate
+patchset containing more concise selftests that indirectly
+call the usercopy functions via read()/write() - this will help
+to ease the verification of expected behaviour.
 
-Changes in V4:
-* Follow the suggestions of Will and Mike, move back this patch to core
-code.
+I am going to post updated benchmark results, as the ~27% increase
+in speed measured by Sam with the previous 'cortex-strings' memcpy
+is no longer applicable due to the more recent replacement from
+'optimized-routines', which should hopefully be even more efficient
+and improve this further.
 
-Changes in V5:
-* Fix kbuild test error.
+v1: https://lore.kernel.org/linux-arm-kernel/cover.1571073960.git.robin.murphy@arm.com/
+v2: https://lore.kernel.org/linux-arm-kernel/cover.1571421836.git.robin.murphy@arm.com/
 
-------
+Changes since v2:
 
-In a 32-bit program, running on arm64 architecture. When the address
-space below mmap base is completely exhausted, shmat() for huge pages
-will return ENOMEM, but shmat() for normal pages can still success on
-no-legacy mode. This seems not fair.
+* Adds Robin's separate patch that fixes a compilation issue with KProbes fixup [1]
+* Imports the most recent memcpy implementation by updating Sam's patch
+  (and moves this patch to occur after the cortex-strings importing so
+  that it's closer to the patches containing its corresponding fixups)
+* Uses the stack to preserve the initial parameters
+* Replaces the usercopy fixup routine in v2 with multiple longer
+  fixups that each make use of the fault address to return the exact
+  number of bytes that haven't yet copied.
 
-For normal pages, get_unmapped_area() calling flows are:
-    => mm->get_unmapped_area()
-	if on legacy mode,
-	    => arch_get_unmapped_area()
-			=> vm_unmapped_area()
-	if on no-legacy mode,
-	    => arch_get_unmapped_area_topdown()
-			=> vm_unmapped_area()
+[1] https://lore.kernel.org/linux-arm-kernel/e70f7b9de7e601b9e4a6fedad8eaf64d304b1637.1571326276.git.robin.murphy@arm.com/
 
-For huge pages, get_unmapped_area() calling flows are:
-    => file->f_op->get_unmapped_area()
-		=> hugetlb_get_unmapped_area()
-			=> vm_unmapped_area()
+Many thanks,
+Oliver
 
-To solve this issue, we only need to make hugetlb_get_unmapped_area() take
-the same way as mm->get_unmapped_area(). Add *bottomup() and *topdown()
-two functions, and check current mm->get_unmapped_area() to decide which
-one to use. If mm->get_unmapped_area is equal to arch_get_unmapped_area(),
-hugetlb_get_unmapped_area() calls bottomup routine, otherwise calls topdown
-routine.
+Oliver Swede (4):
+  arm64: Store the arguments to copy_*_user on the stack
+  arm64: Use additional memcpy macros and fixups
+  arm64: Add fixup routines for usercopy load exceptions
+  arm64: Add fixup routines for usercopy store exceptions
 
-Signed-off-by: Shijie Hu <hushijie3@huawei.com>
-Reported-by: kbuild test robot <lkp@intel.com>
----
- fs/hugetlbfs/inode.c | 62 +++++++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 54 insertions(+), 8 deletions(-)
+Robin Murphy (2):
+  arm64: Tidy up _asm_extable_faultaddr usage
+  arm64: kprobes: Drop open-coded exception fixup
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 991c60c7ffe0..61418380f492 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -38,6 +38,7 @@
- #include <linux/uio.h>
- 
- #include <linux/uaccess.h>
-+#include <linux/sched/mm.h>
- 
- static const struct super_operations hugetlbfs_ops;
- static const struct address_space_operations hugetlbfs_aops;
-@@ -191,13 +192,60 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 
- #ifndef HAVE_ARCH_HUGETLB_UNMAPPED_AREA
- static unsigned long
-+hugetlb_get_unmapped_area_bottomup(struct file *file, unsigned long addr,
-+		unsigned long len, unsigned long pgoff, unsigned long flags)
-+{
-+	struct hstate *h = hstate_file(file);
-+	struct vm_unmapped_area_info info;
-+
-+	info.flags = 0;
-+	info.length = len;
-+	info.low_limit = current->mm->mmap_base;
-+	info.high_limit = TASK_SIZE;
-+	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
-+	info.align_offset = 0;
-+	return vm_unmapped_area(&info);
-+}
-+
-+static unsigned long
-+hugetlb_get_unmapped_area_topdown(struct file *file, unsigned long addr,
-+		unsigned long len, unsigned long pgoff, unsigned long flags)
-+{
-+	struct hstate *h = hstate_file(file);
-+	struct vm_unmapped_area_info info;
-+
-+	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
-+	info.length = len;
-+	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
-+	info.high_limit = current->mm->mmap_base;
-+	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
-+	info.align_offset = 0;
-+	addr = vm_unmapped_area(&info);
-+
-+	/*
-+	 * A failed mmap() very likely causes application failure,
-+	 * so fall back to the bottom-up function here. This scenario
-+	 * can happen with large stack limits and large mmap()
-+	 * allocations.
-+	 */
-+	if (unlikely(offset_in_page(addr))) {
-+		VM_BUG_ON(addr != -ENOMEM);
-+		info.flags = 0;
-+		info.low_limit = current->mm->mmap_base;
-+		info.high_limit = TASK_SIZE;
-+		addr = vm_unmapped_area(&info);
-+	}
-+
-+	return addr;
-+}
-+
-+static unsigned long
- hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
- 		unsigned long len, unsigned long pgoff, unsigned long flags)
- {
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
- 	struct hstate *h = hstate_file(file);
--	struct vm_unmapped_area_info info;
- 
- 	if (len & ~huge_page_mask(h))
- 		return -EINVAL;
-@@ -218,13 +266,11 @@ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
- 			return addr;
- 	}
- 
--	info.flags = 0;
--	info.length = len;
--	info.low_limit = TASK_UNMAPPED_BASE;
--	info.high_limit = TASK_SIZE;
--	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
--	info.align_offset = 0;
--	return vm_unmapped_area(&info);
-+	if (mm->get_unmapped_area == arch_get_unmapped_area)
-+		return hugetlb_get_unmapped_area_bottomup(file, addr, len,
-+				pgoff, flags);
-+	return hugetlb_get_unmapped_area_topdown(file, addr, len,
-+			pgoff, flags);
- }
- #endif
- 
+Sam Tebbs (7):
+  arm64: Allow passing fault address to fixup handlers
+  arm64: Import latest optimization of memcpy
+  arm64: Import latest version of Cortex Strings' memcmp
+  arm64: Import latest version of Cortex Strings' memmove
+  arm64: Import latest version of Cortex Strings' strcmp
+  arm64: Import latest version of Cortex Strings' strlen
+  arm64: Import latest version of Cortex Strings' strncmp
+
+ arch/arm64/include/asm/alternative.h |  36 ---
+ arch/arm64/include/asm/assembler.h   |  13 +
+ arch/arm64/include/asm/extable.h     |  10 +-
+ arch/arm64/kernel/probes/kprobes.c   |   7 -
+ arch/arm64/lib/copy_from_user.S      | 272 +++++++++++++++++--
+ arch/arm64/lib/copy_in_user.S        | 287 ++++++++++++++++++--
+ arch/arm64/lib/copy_template.S       | 377 +++++++++++++++------------
+ arch/arm64/lib/copy_template_user.S  |  50 ++++
+ arch/arm64/lib/copy_to_user.S        | 273 +++++++++++++++++--
+ arch/arm64/lib/copy_user_fixup.S     | 277 ++++++++++++++++++++
+ arch/arm64/lib/memcmp.S              | 333 +++++++++--------------
+ arch/arm64/lib/memcpy.S              | 128 +++++++--
+ arch/arm64/lib/memmove.S             | 232 ++++++-----------
+ arch/arm64/lib/strcmp.S              | 272 ++++++++-----------
+ arch/arm64/lib/strlen.S              | 247 ++++++++++++------
+ arch/arm64/lib/strncmp.S             | 363 ++++++++++++--------------
+ arch/arm64/mm/extable.c              |  13 +-
+ arch/arm64/mm/fault.c                |   2 +-
+ 18 files changed, 2073 insertions(+), 1119 deletions(-)
+ create mode 100644 arch/arm64/lib/copy_template_user.S
+ create mode 100644 arch/arm64/lib/copy_user_fixup.S
+
 -- 
-2.12.3
+2.17.1
 
