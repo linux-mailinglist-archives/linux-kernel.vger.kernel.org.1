@@ -2,69 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650841D2B09
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 11:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69711D2B15
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 11:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgENJNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 05:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725935AbgENJNU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 05:13:20 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA09DC061A0C;
-        Thu, 14 May 2020 02:13:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=skogtun.org
-        ; s=ds201912; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=KDx+FlTyn73Rfh8BtAIM8TPjZDA+d19GZ+//31gul5Q=; b=EEuQ+q9xcrqkTTt6mSAiraCok3
-        RfFJxZmNILOU0mBOEOhJNcCZkvFQ7K8sDaI/fJPZFA5vd1dy5cjyd7eQAEySc2c1WLXSZ8naKvOzi
-        6CKwwFz+FAltIyejm+jPYqJbKpf5mJs2LxZuwF30+j4MY0XUSGyFokFkKSGctf4Bug/B07kfW4Npb
-        OMmawrtHarbf4zFhBuNDF9h+zcSZLJA00i58RBkCrZrjhEAsSTC+kvzCeSFFlMZdaM5gcYH5pbvxL
-        5U8xLYJAws22X8rKFumnGYHmIzWzMJxhOTZSG8PG0hh1SBokJ0Nqy888RgCGBm+M9Fb/QldiUGrSQ
-        Gk9r6CgQ==;
-Received: from [2a01:79c:cebf:7fb0:d967:6cf9:736f:4613] (port=44740)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <harald@skogtun.org>)
-        id 1jZ9vX-0002gK-KQ; Thu, 14 May 2020 11:13:15 +0200
-Subject: Re: gcc-10: kernel stack is corrupted and fails to boot
-To:     Kalle Valo <kvalo@codeaurora.org>, Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200509120707.188595-1-arnd@arndb.de>
- <20200509120707.188595-2-arnd@arndb.de>
- <87v9l24qz6.fsf@kamboji.qca.qualcomm.com>
- <87r1vq4qev.fsf@kamboji.qca.qualcomm.com>
- <87d078tjl0.fsf_-_@kamboji.qca.qualcomm.com>
- <CAK8P3a1dxJAHCZ19=sPUkDi5wLWeJ6KKtD09Wmjqkz27TQN6Xw@mail.gmail.com>
- <87zhacrokl.fsf@kamboji.qca.qualcomm.com>
- <CAK8P3a1mMcpVE5kLv-krjL_ZjqfRXDK4e3fChzuom_QFRtTJqw@mail.gmail.com>
- <87v9kzsvg8.fsf@kamboji.qca.qualcomm.com>
-From:   Harald Arnesen <harald@skogtun.org>
-Message-ID: <443d4178-f22e-81dd-36ea-d3c7b4b0c933@skogtun.org>
-Date:   Thu, 14 May 2020 11:13:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <87v9kzsvg8.fsf@kamboji.qca.qualcomm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726010AbgENJRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 05:17:10 -0400
+Received: from wind.enjellic.com ([76.10.64.91]:43910 "EHLO wind.enjellic.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725878AbgENJRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 05:17:10 -0400
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 04E9GcQO026356;
+        Thu, 14 May 2020 04:16:38 -0500
+Received: (from greg@localhost)
+        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 04E9Gc1v026355;
+        Thu, 14 May 2020 04:16:38 -0500
+Date:   Thu, 14 May 2020 04:16:37 -0500
+From:   "Dr. Greg" <greg@enjellic.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        akpm@linux-foundation.org, dave.hansen@intel.com,
+        nhorman@redhat.com, npmccallum@redhat.com, haitao.huang@intel.com,
+        andriy.shevchenko@linux.intel.com, kai.svahn@intel.com,
+        bp@alien8.de, josh@joshtriplett.org, luto@kernel.org,
+        kai.huang@intel.com, rientjes@google.com, cedric.xing@intel.com,
+        puiterwijk@redhat.com
+Subject: Re: [PATCH v29 00/20] Intel SGX foundations
+Message-ID: <20200514091637.GA25156@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com> <20200426165753.GA11046@wind.enjellic.com> <87d07gk24l.fsf@nanos.tec.linutronix.de> <20200508190226.GA31465@wind.enjellic.com> <20200508195635.GR27052@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508195635.GR27052@linux.intel.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Thu, 14 May 2020 04:16:39 -0500 (CDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kalle Valo [13.05.2020 17:31]:
+On Fri, May 08, 2020 at 12:56:35PM -0700, Sean Christopherson wrote:
 
-> Great, so it's not a problem due to my setup.
+Good morning, I hope the week is proceeding well for everyone.
 
-I see the same thing on two machines, using a self-compiled gcc 10.1.0.
-Glad to hear it's not just me. Switched back to 9.3.0 for the time being.
--- 
-Hilsen Harald
+> On Fri, May 08, 2020 at 02:02:26PM -0500, Dr. Greg wrote:
+> > On Thu, May 07, 2020 at 02:41:30AM +0200, Thomas Gleixner wrote:
+> > > The diffstat of your patch is irrelevant. What's relevant is the
+> > > fact that it is completely unreviewed and that it creates yet
+> > > another user space visible ABI with a noticable lack of
+> > > documentation.
+> 
+> ...
+> 
+> > As to lack of review, we would certainly welcome technical and API
+> > comments but we cannot force them.
+
+> Thomas' point isn't that your code needs to be reviewed, it's that
+> trying to squeeze it into the initial merge will, not might, _will_
+> push out the acceptance of SGX.  The same is true for other features
+> we have lined up, e.g. KVM and cgroup support.  It's not a slight on
+> your code, it's just reality at this point.
+
+For the record and for whatever it is worth at this point.  The patch
+has been available in its present form and function for around 14
+months.
+
+So there was plenty of time for its consideration and integration into
+what is being prepared as the final merge candidate.
+
+> > In fact, anyone who reviews the patch will see that the current driver
+> > creates a pointer in the ioctl call to pass downward into the hardware
+> > initialization routines.  Our code simply replaces that pointer with
+> > one supplied by userspace.
+
+> Personally, I'm in favor of adding a reserved placeholder for a
+> token so as to avoid adding a second ioctl() in the event that
+> something gets upstreamed that wants the token.  Ditto for a file
+> descriptor for the backing store in sgx_enclave_create.
+
+That would be a very low cost and forward looking addition.
+
+> > At the very least a modular form of the driver should be
+> > considered that would allow alternate implementations.  Sean
+> > indicated that there was a 'kludgy' approach that would allow an
+> > alternate modular implementation alongside the in-kernel driver.
+> > I believe that Andy has already indicated that may not be an
+> > advisable approach.
+
+> Modularizing the the driver does nothing for your use case.  The
+> "driver" is a relatively lightweight wrapper, removing that is akin
+> to making /dev/sgx/enclave inaccessible, i.e. it doesn't make the
+> EPC tracking and core code go away.  Modularizing the whole thing is
+> flat out not an option, as doing so is not compatible with an EPC
+> cgroup and adds unnecessary complexity to KVM enabling, both of
+> which are highly desired features by pretty much everyone that plans
+> on using SGX.
+
+All well taken technical points, but they don't speak directly to the
+issue at hand.  The potential security issue in all of this is access
+to /dev/sgx/enclave, not the EPC tracking and core code.
+
+Here in a nutshell is the paradox the kernel faces:
+
+No one seems to be disputing the fact that the primary focus of this
+driver will be to support the notion of 'runtime encryption' and
+Confidential Computing.  The whole premise of the concept and economic
+predicate of the initiative is that the owner/manager of the platform
+has no visibility into what is being done on the platform.
+
+If the Linux community believes that standard platform security
+controls can make qualitatively good judgements on what enclave based
+execution is doing, it is effectively making the statement that the
+very concept of runtime encryption and by extension Confidential
+Computing is invalid.
+
+If we accept the concept that Confidential Computing is valid then we
+admit the technology provides the opportunity for unsupervised code
+execution and data manipulation.
+
+Our premise in all of this is that one page of code implementing three
+linked lists is a small price to pay to provide platform owners with
+the opportunity to optionally implement what is effectively 2-factor
+authentication over this process.
+
+Going forward, if we are intellectually honest, all of this suggests
+that adding complexity to the driver with LSM controls makes little
+sense technically.  Since, by definition and economic intent, the
+technology provides tools and infrastructure that allows these
+controls to be evaded.
+
+The notion that entities with adversarial intent would not try and
+take advantage of this flies in the face of everything we know about
+security.
+
+> Andy is right to caution against playing games to squish in-kernel
+> things, but the virtualization snafu is a completely different
+> beast.  E.g. SGX doesn't require fiddling with CR4, won't corrupt
+> random memory across kexec(), doesn't block INIT, etc...  And I'm
+> not advocating long-term shenanigans, I just wanted to point out
+> that there are options for running out-of-tree drivers in the short
+> term, e.g. until proper policy controls land upstream.
+
+It appears that the distributions, at least IBM/RHEL, are going to
+compile this driver in and backport it as well.
+
+What we would recommend at this point is that you and Jarkko do the
+Linux community and beyond a favor and wire up a simple kernel
+command-line parameter that controls the ability of the driver to be
+used, ie. enables/disables access to /dev/sgx/enclave.
+
+Distributions or others can set this command-line parameter by default
+to 'disable' and avoid any possibility of the technology being used
+for nefarious purposes.  Since the technology now appears to be
+focused only on the cloud providers they will certainly be capable of
+configuring their implementations to change the default.
+
+In essence, make the kernel's behavior secure by default.
+
+Best wishes for a pleasant weekend to everyone.
+
+Dr. Greg
+
+As always,
+Dr. Greg Wettstein, Ph.D, Worker      Artisans in autonomously
+Enjellic Systems Development, LLC     self-defensive IOT platforms
+4206 N. 19th Ave.                     and edge devices.
+Fargo, ND  58102
+PH: 701-281-1686                      EMAIL: greg@enjellic.com
+------------------------------------------------------------------------------
+"Intellectuals solve problems; geniuses prevent them."
+                                -- Albert Einstein
