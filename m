@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC13B1D3A81
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 20:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3471D3A97
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 20:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729825AbgENS5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 14:57:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729152AbgENS4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 14:56:43 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2123C20823;
-        Thu, 14 May 2020 18:56:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589482602;
-        bh=+yB8NAXvhlYkOZe9oqnQrrDCnWaEgp9K7qrE3bWQmbQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EsgWsdxeB6p5Mt+NVZHNefq9UQuN+qG2E50wWaP4Ag7Ld7lt8ZY+0jRnLOnXVqqoz
-         v390wP+EyLXMN+Tyffxzz0Cxqk/6k6dmj6wvsXlH/pQWddzinf8Yabo8qSYRZNT/E+
-         HupuVrCL6gtzTTMKPGye2HrvlJ3UbRoEXKl+b6wU=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ivan Delalande <colona@arista.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 14/14] scripts/decodecode: fix trapping instruction formatting
-Date:   Thu, 14 May 2020 14:56:25 -0400
-Message-Id: <20200514185625.21753-14-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200514185625.21753-1-sashal@kernel.org>
-References: <20200514185625.21753-1-sashal@kernel.org>
+        id S1729853AbgENS5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 14:57:49 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:35487 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727829AbgENS5m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 14:57:42 -0400
+Received: by mail-ot1-f66.google.com with SMTP id k110so3265756otc.2;
+        Thu, 14 May 2020 11:57:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/8LVtCx28CvxbjaUol4yCcZRY15FgJyZvvF69XKd/M0=;
+        b=dLvm+WCSUlUSXJR/rqNr2Dxk9KK0IJR65mGaI0Tz98XQiQvn973Sd3ih6PMzq8cBv/
+         PUJehRhFpIvqB5IGrT0O3MEmRZuY4ViwQwJdPYfO1o7Wfjm32ALCBp+lFsfMOCvahUNp
+         E1g/ihdbYXzlSOAJaiht+h70NQ9Dg3MlnnKBkEwZ7sGCuXQEkO9nc/nuA1NVPZDg8zop
+         iJZn1aNJvolUnXxyHef1wIXyAQF7R2PSg9Ry8wC/4lRYkfiZUN3/PJaY0MW2CVrca5co
+         G/PC2xCVONPTl04hekwHsfNv4EqpZ8QwMrB5z0WD8yCijSQPgU6byM9IZq8AzqxAsWz3
+         4P+A==
+X-Gm-Message-State: AOAM533QjKBpbmzxoAtF0GM9t8yqnmVz2V5rl5glcjj8dfrNdwz6EzYN
+        P+LvHRrdhofdDoUyEBeiew==
+X-Google-Smtp-Source: ABdhPJw4mI4ppO8Dr25m9miTZxWJsae+emSBHCwQBGETRYpqm7RzS1GGvMUZ3eI0ctgemKfzl+w5Vw==
+X-Received: by 2002:a05:6830:3148:: with SMTP id c8mr4567539ots.138.1589482661322;
+        Thu, 14 May 2020 11:57:41 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t6sm1003881otb.27.2020.05.14.11.57.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 11:57:40 -0700 (PDT)
+Received: (nullmailer pid 29213 invoked by uid 1000);
+        Thu, 14 May 2020 18:57:39 -0000
+Date:   Thu, 14 May 2020 13:57:39 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Marc Zyngier <maz@kernel.org>, linux-mmc@vger.kernel.org,
+        linux-serial@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2 2/9] dt-bindings: irqchip: renesas-irqc: Document
+ r8a7742 bindings
+Message-ID: <20200514185739.GA27521@bogus>
+References: <1588794695-27852-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1588794695-27852-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200514184306.GA8929@bogus>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200514184306.GA8929@bogus>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ivan Delalande <colona@arista.com>
+On Thu, May 14, 2020 at 01:43:06PM -0500, Rob Herring wrote:
+> On Wed,  6 May 2020 20:51:28 +0100, Lad Prabhakar wrote:
+> > Document SoC specific bindings for RZ/G1H (r8a7742) SoC.
+> > 
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > ---
+> > v1->v2:
+> > * No change
+> > ---
+> > 
+> >  .../devicetree/bindings/interrupt-controller/renesas,irqc.yaml   | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
 
-[ Upstream commit e08df079b23e2e982df15aa340bfbaf50f297504 ]
+I'll just apply this with the others that haven't been picked up.
 
-If the trapping instruction contains a ':', for a memory access through
-segment registers for example, the sed substitution will insert the '*'
-marker in the middle of the instruction instead of the line address:
-
-	2b:   65 48 0f c7 0f          cmpxchg16b %gs:*(%rdi)          <-- trapping instruction
-
-I started to think I had forgotten some quirk of the assembly syntax
-before noticing that it was actually coming from the script.  Fix it to
-add the address marker at the right place for these instructions:
-
-	28:   49 8b 06                mov    (%r14),%rax
-	2b:*  65 48 0f c7 0f          cmpxchg16b %gs:(%rdi)           <-- trapping instruction
-	30:   0f 94 c0                sete   %al
-
-Fixes: 18ff44b189e2 ("scripts/decodecode: make faulting insn ptr more robust")
-Signed-off-by: Ivan Delalande <colona@arista.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Borislav Petkov <bp@suse.de>
-Link: http://lkml.kernel.org/r/20200419223653.GA31248@visor
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- scripts/decodecode | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/scripts/decodecode b/scripts/decodecode
-index d8824f37acce9..aae7a035242b2 100755
---- a/scripts/decodecode
-+++ b/scripts/decodecode
-@@ -98,7 +98,7 @@ faultlinenum=$(( $(wc -l $T.oo  | cut -d" " -f1) - \
- faultline=`cat $T.dis | head -1 | cut -d":" -f2-`
- faultline=`echo "$faultline" | sed -e 's/\[/\\\[/g; s/\]/\\\]/g'`
- 
--cat $T.oo | sed -e "${faultlinenum}s/^\(.*:\)\(.*\)/\1\*\2\t\t<-- trapping instruction/"
-+cat $T.oo | sed -e "${faultlinenum}s/^\([^:]*:\)\(.*\)/\1\*\2\t\t<-- trapping instruction/"
- echo
- cat $T.aa
- cleanup
--- 
-2.20.1
+Rob
 
