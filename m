@@ -2,88 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D06351D2D05
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D161D2D12
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726301AbgENKkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 06:40:02 -0400
-Received: from smtp-1908.mail.infomaniak.ch ([185.125.25.8]:35641 "EHLO
-        smtp-1908.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726102AbgENKkB (ORCPT
+        id S1726532AbgENKkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 06:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726010AbgENKkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 06:40:01 -0400
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 49N7N05RDVzlhpy6;
-        Thu, 14 May 2020 12:40:00 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
-        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 49N7Mz3W0czljKBC;
-        Thu, 14 May 2020 12:39:59 +0200 (CEST)
-Subject: Re: [PATCH v17 05/10] fs,landlock: Support filesystem access-control
-To:     James Morris <jmorris@namei.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Cc:     linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org
-References: <20200511192156.1618284-1-mic@digikod.net>
- <20200511192156.1618284-6-mic@digikod.net>
- <alpine.LRH.2.21.2005141335280.30052@namei.org>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <c159d845-6108-4b67-6527-405589fa5382@digikod.net>
-Date:   Thu, 14 May 2020 12:39:58 +0200
-User-Agent: 
+        Thu, 14 May 2020 06:40:45 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEBF1C061A0C;
+        Thu, 14 May 2020 03:40:44 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id u15so2971295ljd.3;
+        Thu, 14 May 2020 03:40:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=ADFIiIM1Fe26/cRjvae/xxSYwcERBybNKGMvOKxuFr4=;
+        b=bcftHwObq2STzO4ObxkD57BKbGME8uRmzC1DIuh1WNyRkLm+RpMqlj3oJPYjCecTdW
+         qeixtywBTxIDWfCvWYfh6os9aQTjruOLHMxBvxna9zosjgHtlR1/HY7bSv6sut/GXHX/
+         pvBhPQC5M7xC+15QOoDF3w/ZH6a+Q5ovj01Yfxu4WBSwXYK/8LH0K0nuDiZBTb1GM2Op
+         kut8C6pqAxf65Gbn1I1gPekBSdzo6C9L843PuLCd0XUjd5VwwJ4mXYVJRxyMNgSNo2xE
+         ft3y4XmwxVLHPMgkYWzu8iztz4kyeJKaUSLTK9qY4Wctvx+DlxXKnwfKcOQXZdBCBvpa
+         3OlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
+         :date:message-id:mime-version;
+        bh=ADFIiIM1Fe26/cRjvae/xxSYwcERBybNKGMvOKxuFr4=;
+        b=b5dEz1obOCW315NuUCYtA6851gEfcQ8HLoRH+VrhMUW/wk0llCMMROD5GusiKViyVR
+         R8M15biqvnh7kj3tCg0QvVU2QGVObfoJmWfxWQi8xiGGgSCk09+dRjr2vzxO3Yrpa3d5
+         W8M5dm7jUMOuu/34gJpX4QlL5OChEbG4gCQ9kWL9nzzw1BmqW8CLFtGSriL2fbCSJAkC
+         Hqi1XvQDeK/A6k9S+wWQUead+kMdg0jx5iASy7UksYMK7SePFAAs5aHmcAmQnZpRoEG5
+         MOgCF+NIaMHpRmJFfGcJg+gWBzYEM9uZUE8SZn0iamIGF1vRSPGN3YyOtRFQsbJuiX/w
+         AR9Q==
+X-Gm-Message-State: AOAM531uffqI4NmcQff2Uzv95UmZXF+AVQFS6zkgVj+XL8Go21PvhFlW
+        cQ1xhs3ajHV9WoacLNnVv8dnZpuHvXPMgg==
+X-Google-Smtp-Source: ABdhPJxSqTSWM74zlVsYXQn6jKwYtKuDk62yq+Z8ixknh/c2vPrcCXyau8zXak4ww5Ml8u8ZzxOlMA==
+X-Received: by 2002:a2e:a417:: with SMTP id p23mr2491094ljn.19.1589452842932;
+        Thu, 14 May 2020 03:40:42 -0700 (PDT)
+Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
+        by smtp.gmail.com with ESMTPSA id f24sm1534475lfc.43.2020.05.14.03.40.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 14 May 2020 03:40:42 -0700 (PDT)
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>,
+        Roger Quadros <rogerq@ti.com>
+Cc:     gregkh@linuxfoundation.org, sergei.shtylyov@cogentembedded.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] usb: dwc3: support continuous runtime PM with dual role
+In-Reply-To: <d1c38262-198c-c128-f2b7-3253bde37e5c@puri.sm>
+References: <20200319100207.19957-1-martin.kepplinger@puri.sm> <cb2db077-0f37-2221-84f6-a7adfd6ed1f1@ti.com> <d1c38262-198c-c128-f2b7-3253bde37e5c@puri.sm>
+Date:   Thu, 14 May 2020 13:40:37 +0300
+Message-ID: <87lflu4x5m.fsf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LRH.2.21.2005141335280.30052@namei.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
-X-Antivirus-Code: 0x100000
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On 14/05/2020 05:37, James Morris wrote:
-> On Mon, 11 May 2020, Mickaël Salaün wrote:
-> 
-> 
->> diff --git a/include/linux/fs.h b/include/linux/fs.h
->> index 45cc10cdf6dd..2276642f8e05 100644
->> --- a/include/linux/fs.h
->> +++ b/include/linux/fs.h
->> @@ -1517,6 +1517,11 @@ struct super_block {
->>  	/* Pending fsnotify inode refs */
->>  	atomic_long_t s_fsnotify_inode_refs;
->>  
->> +#ifdef CONFIG_SECURITY_LANDLOCK
->> +	/* References to Landlock underlying objects */
->> +	atomic_long_t s_landlock_inode_refs;
->> +#endif
->> +
-> 
-> This needs to be converted to the LSM API via superblock blob stacking.
-> 
-> See Casey's old patch: 
-> https://lore.kernel.org/linux-security-module/20190829232935.7099-2-casey@schaufler-ca.com/
+Martin Kepplinger <martin.kepplinger@puri.sm> writes:
 
-s_landlock_inode_refs is quite similar to s_fsnotify_inode_refs, but I
-can do it once the superblock security blob patch is upstream. Is it a
-blocker for now? What is the current status of lbs_superblock?
+> On 24.04.20 09:48, Roger Quadros wrote:
+>>=20
+>>=20
+>> On 19/03/2020 12:02, Martin Kepplinger wrote:
+>>> The DRD module calls dwc3_set_mode() on role switches, i.e. when a
+>>> device is
+>>> being plugged in. In order to support continuous runtime power
+>>> management when
+>>> plugging in / unplugging a cable, we need to call
+>>> pm_runtime_get_sync() in
+>>> this path.
+>>>
+>>> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+>>=20
+>> Reviewed-by: Roger Quadros <rogerq@ti.com>
+>>=20
+>>=20
+>
+> thank you very much Roger. Anything else that is holding this back?
 
-Anyway, we also need to have a call to landlock_release_inodes() in
-generic_shutdown_super(), which does not fit the LSM framework, and I
-think it is not an issue. Landlock handling of inodes is quite similar
-to fsnotify.
+Merge window is holding it back :-) It has been in my tree for weeks:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/balbi/usb.git/commit/?h=3Dt=
+esting/next&id=3Dc2cd3452d5f8b66d49a73138fba5baadd5b489bd
+
+Gotta wait for the next merge window for new features to be merged.
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl69ICUACgkQzL64meEa
+mQZ7VQ/+Mq0/5vRDJKOzvBdxMlyHYA9lUQr02QNKN8h1S0qAap4a0JZ01VhuIf3Y
+XBALfQgHg0ljjY3THqZ6MjDNEjGPDm8ENsdXInXt6jrwlDucrJxBHTKG8ZBq/brC
+WMS5hA/uL1LWywn0ybeNCtuvl8tn3vIV7iNKATt0YtijfZxBt/IP+fd+4rlkEyPk
+tN41d1HZo4uh7RNBiUgFX3L36j1yrdadSdnLv383yRmUQoxpdsmsVs3Jp1PHYalb
+bIPjNTlgJfyQ8vikb+1/OQSOe4ARIIXkViDeQG4MODjzU/cwiy4spipcwXk7HMQG
+VeeBXFXyZyljxddSWGLMHOSmBKl0s5o20ClnjmPGBpDnAsgt96tPqwC6Tb+jb0R4
+hpJDVn0MFRpcAk/4plccqKVE9behUXNWHLzyMGuwKkQ8Js/0oNOIw6KW0oUynMnw
+3rFvADz3+fct78F7M/zr82adrCtSF7l0gw4WvfpCqImu+59PApGg6ivv+F+ALwkZ
+7UDGevdubjw23+8tfZH7muURNJJDMleyl2E0ZDOwHtb/XB5FKVs8DxXSv9zUFEZq
+kUx1qbMjze8hONtM3Mzuy4vnpU68K1/r2OdAOtbPmAGbSRZNw9Gf/TPjHi0TVubg
+wbs8QRbxrd69glmDuH7pnb5uWphtUItieKQ5P9+Xsq0w99kNprM=
+=CQVk
+-----END PGP SIGNATURE-----
+--=-=-=--
