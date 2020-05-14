@@ -2,123 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635DC1D334E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7906E1D334B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727946AbgENOoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 10:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbgENOoF (ORCPT
+        id S1727834AbgENOnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 10:43:39 -0400
+Received: from mail.efficios.com ([167.114.26.124]:42118 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726066AbgENOnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 10:44:05 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87384C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:44:05 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jZF5A-0000sf-Em; Thu, 14 May 2020 16:43:32 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 916191004CE; Thu, 14 May 2020 16:43:31 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
+        Thu, 14 May 2020 10:43:39 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 4D4B42A5B7D;
+        Thu, 14 May 2020 10:43:38 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Waxj-7Zm_nSu; Thu, 14 May 2020 10:43:37 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id D649D2A5B7C;
+        Thu, 14 May 2020 10:43:37 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com D649D2A5B7C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1589467417;
+        bh=6hptfcSKmRUE+zmXMAzHjHOIYDANTwRCBE8XEZLUToM=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=CbNLuemM5szRYd+im9stxtZ2K4ChiyVuhndUneuss2RHpFJpEt3to5BXLCfxc+6p+
+         dUu4n03eppFxjqS8YygnzTD1LI9vbfLW3E8m9zPkuzGBrNbadBGDlMBbRyMRK2iu/p
+         SmcI4VZGW6XAdUr4/18c3R8A+uGr1h64194DsOhYxk7UQqp50+n8tj8hMjT76hmDHG
+         qwRpsvZ6Bdj6baSozUefaGnLskGdXXjZuvSTGIopxRrljhdUPOmXKFKj7UJkoD2YLI
+         x8lkib4wixj45I2eQVQP7NwZAt878tTBJcfXIKroP0R0UdZntnuWC3dNLTpaWAxIGg
+         TLdrQQnZMtC8g==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id cOCJjQ3pcUwU; Thu, 14 May 2020 10:43:37 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id C4B632A5C4E;
+        Thu, 14 May 2020 10:43:37 -0400 (EDT)
+Date:   Thu, 14 May 2020 10:43:37 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, paulmck <paulmck@kernel.org>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        Petr Mladek <pmladek@suse.com>, rostedt <rostedt@goodmis.org>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Juergen Gross <jgross@suse.com>,
         Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: Re: [patch V4 part 3 11/29] rcu: Provide rcu_irq_exit_preempt()
-In-Reply-To: <20200514024116.GA231286@google.com>
-References: <20200505134354.774943181@linutronix.de> <20200505134904.364456424@linutronix.de> <20200514024116.GA231286@google.com>
-Date:   Thu, 14 May 2020 16:43:31 +0200
-Message-ID: <87blmqziek.fsf@nanos.tec.linutronix.de>
+Message-ID: <311451534.21045.1589467417727.JavaMail.zimbra@efficios.com>
+In-Reply-To: <87eermzk1n.fsf@nanos.tec.linutronix.de>
+References: <20200505134354.774943181@linutronix.de> <20200505134904.166735365@linutronix.de> <835459920.20630.1589420674977.JavaMail.zimbra@efficios.com> <CALCETrXFv59dX5K5R_KO6D5uznD9E8DCDR5fQ7_fCwTTGOgS5Q@mail.gmail.com> <1225010168.20900.1589463536204.JavaMail.zimbra@efficios.com> <87eermzk1n.fsf@nanos.tec.linutronix.de>
+Subject: Re: [patch V4 part 3 09/29] x86/entry/32: Provide macro to emit IDT
+ entry stubs
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3928 (zclient/8.8.15_GA_3928)
+Thread-Topic: x86/entry/32: Provide macro to emit IDT entry stubs
+Thread-Index: kQKldAjQdVcOVE13Ds4o+qa9RgzKkA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joel,
 
-Joel Fernandes <joel@joelfernandes.org> writes:
-> On Tue, May 05, 2020 at 03:44:05PM +0200, Thomas Gleixner wrote:
-> Could you let me know which patch or part in the multi-part series is
-> using it?
+----- Thomas Gleixner <tglx@linutronix.de> wrote:
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> writes:
+> > ----- On May 14, 2020, at 12:31 AM, Andy Lutomirski luto@kernel.org wrote:
+> >> On Wed, May 13, 2020 at 6:44 PM Mathieu Desnoyers
+> >> <mathieu.desnoyers@efficios.com> wrote:
+> >> They're needed for all entries except SYSCALL, but they're hidden
+> >> inside helpers in many cases.
+> >
+> > Indeed, on x86-32 the macro SAVE_ALL contains cld. That architecture
+> > appears to be OK.
+> >
+> > What I am concerned about is the idtentry, idtentry_mce_db,
+> > and idtentry_df macros introduced in entry_64.S by this series.
+> > Those are supposed to be technically equivalent to the prior
+> > code, which indeed has the ASM_CLAC but no "cld".
+> >
+> > So maybe the cld happens to be hidden elsewhere, but I'm clearly
+> > missing it ? Or is it not needed for some reason ?
+> 
+> It's needed and it is there where it was forever in error_entry and
+> paranoid_entry.
 
-You found it :)
->> +void rcu_irq_exit_preempt(void)
->> +{
->> +	lockdep_assert_irqs_disabled();
->> +	rcu_nmi_exit();
->> +
->> +	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) <= 0,
->> +			 "RCU dynticks_nesting counter underflow/zero!");
->
-> Makes sense.
->
->> +	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
->> +			 "RCU dynticks_nmi_nesting counter underflow/zero!");
->
-> This new function will be called only from the outer-most IRQ that
-> interrupted kernel mode (process context). Right? If so, a better (more
-> specific) check for the second RCU_LOCKDEP_WARN above is:
->
-> RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) != DYNTICK_IRQ_NONIDLE,
-> 			 "Bad RCU dynticks_nmi_nesting counter\n");
->
-> That will make sure, it is only called from outer-most rcu_irq_exit() and
-> interrupting kernel mode.
+Ok I simply missed it.
 
-Makes sense.
+> 
+> It probably makes sense to stick it right after the CLAC.
 
-> Or, if [1] is merged, then we could just combine the checks into one check.
-> 	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) != 1,
-> 			 "Bad RCU dynticks_nmi_nesting counter\n");
->
->> +	RCU_LOCKDEP_WARN(rcu_dynticks_curr_cpu_in_eqs(),
->> +			 "RCU in extended quiescent state!");
->
-> Makes sense.
->
-> BTW, I wonder if a better place to do this "don't enter scheduler while RCU
-> is not watching" is rcu_note_context_switch()...
+Indeed.
 
-I actually want to catch even the case where we don't schedule, i.e.
+Thanks!
 
-  if (ret_to_kernel) {
-     if (interrupts_on_after_return((regs)) {
-        if (IS_ENABLED(CONFIG_PREEMPTION)) {
-  	   if (!preempt_count()) {
-              /* Preemption is possible ... */
-       	      rcu_irq_exit_preempt();
-                 if (need_resched())
-                    schedule_preempt_irq();
+Mathieu
 
-that catches any exit where preemption is possible and RCU is not
-watching after rcu_irq_exit().
+> 
+> Thanks,
+> 
+>         tglx
+> 
+> 
 
-It does not matter whether need-resched is set here or not. Any
-interrupt/exception could set it.
-
-Yes, I'm paranoid :)
-
-Thanks,
-
-        tglx
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
