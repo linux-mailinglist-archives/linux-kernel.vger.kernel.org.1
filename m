@@ -2,184 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD3C1D3793
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 19:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A971D379F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 19:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726872AbgENRHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 13:07:02 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:33141 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726125AbgENRHC (ORCPT
+        id S1726245AbgENRI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 13:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726062AbgENRI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 13:07:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589476020; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=M/yi92o3kNGCcpoKE1hRJo2YjuLewaLJcQLxkEjatR0=; b=AsEnP/b0Sdeh1hejGlor7r4liLuHtFhRmr9kyWtPAj1CRg8EsqdWMYYciOdtTDjdjWziBMgj
- FNlOhkG3SbF008owsgRnlR67INQHn9HwNrB+zGly8PYb/WNJXl9W8AQ5E9znx58difpLQTAN
- zitwwg7zzgKjLXpenK75pFl7XOU=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5ebd7aabd915e862f6d79b79 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 May 2020 17:06:51
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 441DEC44793; Thu, 14 May 2020 17:06:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.8.150] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D4AD7C432C2;
-        Thu, 14 May 2020 17:06:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D4AD7C432C2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v2 4/4] scsi: ufs: Fix WriteBooster flush during runtime
- suspend
-To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com
-Cc:     beanhuo@micron.com, cang@codeaurora.org, matthias.bgg@gmail.com,
-        bvanassche@acm.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com
-References: <20200514150122.32110-1-stanley.chu@mediatek.com>
- <20200514150122.32110-5-stanley.chu@mediatek.com>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <a41771f3-b82e-9fc4-798a-99b0c6598699@codeaurora.org>
-Date:   Thu, 14 May 2020 10:06:47 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 14 May 2020 13:08:26 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BB6C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 10:08:25 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id d184so1582643pfd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 10:08:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uUcyf9NwOhWDSsoXsAafDnpXglCvcvKACjl1qcHNAFk=;
+        b=m1/voEXyUnijavkOQ2KcCoSjVH54gh9UOXPA7PAvf7E+8JFUn7g+xt6iYEALFHnLnA
+         QF2divI3/3Aldqgbubwmwyp+pXVy9GbeZAOV9LSANKIBjmYqK9sNAYffdkL1GzI0IDqU
+         LKofRS/Sz9SINnKubmGRLNW81UD9AqjrjY3Wm07fSjPTGjjJ77uHHyIQqeY4Itm+sc8e
+         lImgcyfqOZD4/XX1a3LdUnp5EscjmX1ByO20ve6PERtwuIefl5Bmj3qsjLsPdA8U7bZL
+         epydIx60tjNt9FI9WbTRy2EpfwUU92JbmjKT32P2o2JzzW9oAQiY0FS/wUhZYOorfpei
+         Tk2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uUcyf9NwOhWDSsoXsAafDnpXglCvcvKACjl1qcHNAFk=;
+        b=rIB9Lt0w7if3xlwUcouZ7/zm+xJn1ENTAawalphnnw4q+JHUemTnWh5LqzBnJM/f/G
+         JHLzfxfn1ADMYxTjlln66aJXeqMM8ffbAndPoIndyuJPVmabv1DMU1oON8iGDIikMbQ3
+         3YsqyaZ2cQv+wKKot77UHIcTJtjLaiynqAd1YsHH64FCHQrvTzsz8fpQhhnHE/GtBbnW
+         j55AU5TJlCViZ0HQb4KPKcGQ4DYyxUvMQzp+mVIszxQUVhKfIAZP9OmwmtvJ7UbT5/34
+         bhwb6w3U55S6xvJuALZxzave3Dn7ZzCDiahQXR0OPJzAXaQzBXQ7wTlnwo9rmeQ5zQTq
+         6RdQ==
+X-Gm-Message-State: AOAM5324yfu3Bxf90uuUKQcPFKH4jyMZh65DkHMEqLeqQBLUP1jHBnZD
+        jaQTc1SHFyVSsKzHlUJQSSTXZg==
+X-Google-Smtp-Source: ABdhPJzsIEv8c2T+CBe2MehVpzlYUEhQ5SEp4znGfWcviT0qA6+Uh7WohNI59SLjpioEdJ1m5ct7OQ==
+X-Received: by 2002:a65:6703:: with SMTP id u3mr4771334pgf.179.1589476105048;
+        Thu, 14 May 2020 10:08:25 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id j186sm2754328pfb.220.2020.05.14.10.08.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 10:08:24 -0700 (PDT)
+Date:   Thu, 14 May 2020 10:06:54 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Baolin Wang <baolin.wang7@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/4] hwspinlock: qcom: Allow mmio usage in addition to
+ syscon
+Message-ID: <20200514170654.GY2165@builder.lan>
+References: <20200513005441.1102586-1-bjorn.andersson@linaro.org>
+ <20200513005441.1102586-4-bjorn.andersson@linaro.org>
+ <CADBw62oF=o4xxar8yO+xwhLa3h2oD_GD_tWhFo1DDTJGgFnEjg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200514150122.32110-5-stanley.chu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADBw62oF=o4xxar8yO+xwhLa3h2oD_GD_tWhFo1DDTJGgFnEjg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/2020 8:01 AM, Stanley Chu wrote:
-> Currently UFS host driver promises VCC supply if UFS device
-> needs to do WriteBooster flush during runtime suspend.
-> 
-> However the UFS specification mentions,
-> 
-> "While the flushing operation is in progress, the device is
-> in Active power mode."
-> 
-> Therefore UFS host driver needs to promise more: Keep UFS
-> device as "Active power mode", otherwise UFS device shall not
-> do any flush if device enters Sleep or PowerDown power mode.
-> 
-> Fix this by not changing device power mode if WriteBooster
-> flush is required in ufshcd_suspend().
-> 
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-> ---
->   drivers/scsi/ufs/ufs.h    |  1 -
->   drivers/scsi/ufs/ufshcd.c | 42 ++++++++++++++++++++-------------------
->   2 files changed, 22 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-> index b3135344ab3f..9e4bc2e97ada 100644
-> --- a/drivers/scsi/ufs/ufs.h
-> +++ b/drivers/scsi/ufs/ufs.h
-> @@ -577,7 +577,6 @@ struct ufs_dev_info {
->   	u32 d_ext_ufs_feature_sup;
->   	u8 b_wb_buffer_type;
->   	u32 d_wb_alloc_units;
-> -	bool keep_vcc_on;
->   	u8 b_presrv_uspc_en;
->   };
->   
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 169a3379e468..b9f7744ca2b4 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -8101,8 +8101,7 @@ static void ufshcd_vreg_set_lpm(struct ufs_hba *hba)
->   	    !hba->dev_info.is_lu_power_on_wp) {
->   		ufshcd_setup_vreg(hba, false);
->   	} else if (!ufshcd_is_ufs_dev_active(hba)) {
-> -		if (!hba->dev_info.keep_vcc_on)
-> -			ufshcd_toggle_vreg(hba->dev, hba->vreg_info.vcc, false);
-> +		ufshcd_toggle_vreg(hba->dev, hba->vreg_info.vcc, false);
->   		if (!ufshcd_is_link_active(hba)) {
->   			ufshcd_config_vreg_lpm(hba, hba->vreg_info.vccq);
->   			ufshcd_config_vreg_lpm(hba, hba->vreg_info.vccq2);
-> @@ -8172,6 +8171,7 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->   	enum ufs_pm_level pm_lvl;
->   	enum ufs_dev_pwr_mode req_dev_pwr_mode;
->   	enum uic_link_state req_link_state;
-> +	bool keep_curr_dev_pwr_mode = false;
->   
->   	hba->pm_op_in_progress = 1;
->   	if (!ufshcd_is_shutdown_pm(pm_op)) {
-> @@ -8227,27 +8227,29 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->   			ufshcd_disable_auto_bkops(hba);
->   		}
->   		/*
-> -		 * With wb enabled, if the bkops is enabled or if the
-> -		 * configured WB type is 70% full, keep vcc ON
-> -		 * for the device to flush the wb buffer
-> +		 * If device needs to do BKOP or WB buffer flush during
-> +		 * Hibern8, keep device power mode as "active power mode"
-> +		 * and VCC supply.
->   		 */
-> -		if ((hba->auto_bkops_enabled && ufshcd_is_wb_allowed(hba)) ||
-> -		    ufshcd_wb_keep_vcc_on(hba))
-> -			hba->dev_info.keep_vcc_on = true;
-> -		else
-> -			hba->dev_info.keep_vcc_on = false;
-> -	} else {
-> -		hba->dev_info.keep_vcc_on = false;
-> +		keep_curr_dev_pwr_mode = hba->auto_bkops_enabled ||
-> +			(((req_link_state == UIC_LINK_HIBERN8_STATE) ||
-> +			((req_link_state == UIC_LINK_ACTIVE_STATE) &&
-> +			ufshcd_is_auto_hibern8_enabled(hba))) &&
-> +			ufshcd_wb_keep_vcc_on(hba));
->   	}
->   
-This looks fine.
-But I still think the delayed check of flush status should be done to 
-turn-off Vcc when flush is complete.
+On Tue 12 May 20:57 PDT 2020, Baolin Wang wrote:
 
-> -	if ((req_dev_pwr_mode != hba->curr_dev_pwr_mode) &&
-> -	    ((ufshcd_is_runtime_pm(pm_op) && !hba->auto_bkops_enabled) ||
-> -	    !ufshcd_is_runtime_pm(pm_op))) {
-> -		/* ensure that bkops is disabled */
-> -		ufshcd_disable_auto_bkops(hba);
-> -		ret = ufshcd_set_dev_pwr_mode(hba, req_dev_pwr_mode);
-> -		if (ret)
-> -			goto enable_gating;
-> +	if (req_dev_pwr_mode != hba->curr_dev_pwr_mode) {
-> +		if ((ufshcd_is_runtime_pm(pm_op) && !hba->auto_bkops_enabled) ||
-> +		    !ufshcd_is_runtime_pm(pm_op)) {
-> +			/* ensure that bkops is disabled */
-> +			ufshcd_disable_auto_bkops(hba);
-> +		}
-> +
-> +		if (!keep_curr_dev_pwr_mode) {
-> +			ret = ufshcd_set_dev_pwr_mode(hba, req_dev_pwr_mode);
-> +			if (ret)
-> +				goto enable_gating;
-> +		}
->   	}
->   
->   	flush_work(&hba->eeh_work);
+> On Wed, May 13, 2020 at 8:55 AM Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
+> >
+> > In all modern Qualcomm platforms the mutex region of the TCSR is forked
+> > off into its own block, all with a offset of 0 and stride of 4096. So
+> > add support for directly memory mapping this register space, to avoid
+> > the need to represent this block using a syscon.
+> >
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > ---
+> >  drivers/hwspinlock/qcom_hwspinlock.c | 72 +++++++++++++++++++++-------
+> >  1 file changed, 56 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/drivers/hwspinlock/qcom_hwspinlock.c b/drivers/hwspinlock/qcom_hwspinlock.c
+[..]
+> > +static struct regmap *qcom_hwspinlock_probe_mmio(struct platform_device *pdev,
+> > +                                                u32 *offset, u32 *stride)
+> > +{
+> > +       struct device *dev = &pdev->dev;
+> > +       struct resource *res;
+> > +       void __iomem *base;
+> > +
+> > +       /* All modern platform has offset 0 and stride of 4k */
+> > +       *offset = 0;
+> > +       *stride = 0x1000;
+> > +
+> > +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +       base = devm_ioremap_resource(&pdev->dev, res);
+> 
+> I think you can use devm_platform_ioremap_resource(pdev, 0) to
+> simplify your code, otherwise looks good to me.
+
+You're right, I better fix this before someone with Coccinelle get the
+chance ;)
+
+> Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
 > 
 
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+Thanks,
+Bjorn
