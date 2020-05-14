@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69ED31D3548
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FE91D3553
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgENPis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 11:38:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727939AbgENPiq (ORCPT
+        id S1728047AbgENPjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 11:39:23 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:33190 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726610AbgENPjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 11:38:46 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DEE4C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 08:38:46 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id z5so3174031ejb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 08:38:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ZknNNo1yPUQXqkBjYYW3ZP3hgdYZ/47qtxwkKEwncwc=;
-        b=oKYS87q8OaLmAG4s6jhG3T2ijmIzuJdZzA6wTIMAQ4Do23zMYhAnqLLvSVg+ImXNXb
-         mJyyMl3b/GBjCPOlEkeq5SgayjyIa2/UuSwQCn9WGiDKRVkjzziXCDOHRhvhyFXHAwxw
-         dAll9s+aXmykmzg35/o79i44DLzhXBo+cSbJYnE0xQx3WLo2ZDjYT202GNRYLrKxxAZP
-         KyS7w7S/lVvKiyTLseIemGb4FrNiiPu93c1k7ujyqmaPegExJ6+RMhmqhAlesy1aAAy6
-         LgHnzGlJZ7zJkjsr6f+ZU2iLxsGDP+r1bGxHR0I9UXvvQrnvLZ7Gj+fdTpej1sfIlYho
-         kC+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=ZknNNo1yPUQXqkBjYYW3ZP3hgdYZ/47qtxwkKEwncwc=;
-        b=JoentuwjdZEyn0dASbeasTIUhkpE62xGt5co+rPe/ubihczqBtI+eP2OF7aEkSeR8p
-         HCtM+DHb5Fhs8OioKwMZLm3Q4dxqUOFlOp8pPrVLXcbopODD9WjPG/zeyHdh+eLilflU
-         KmMzAbtI3TCZPacXeB6EletN4q3ac7QdM+D/4r6dc72dugltxLD2EIM3y15BuIULlyzx
-         f5ewDguWgm6dOcUAaDeLhVJqZlJ0mbAllYCfjaeqor42AJn8bodJF1uaxfxfy9irBXfo
-         7cnMOxoV+UGNtmM9K54jVVmQsfeukyH+C9u3wYgpQOhVQVE1x3qw9eDM1raai48vnrB+
-         oH4g==
-X-Gm-Message-State: AOAM532/+cOmnrG/mGAgnxS1UpQDiBmz4wcqhV9TnF6Gm+y1+TyZluVL
-        2oQiWST02v8HXZow6nqe+mkxtXDiISmgoB029w0=
-X-Google-Smtp-Source: ABdhPJwWBjPuJD+WWJXnPqWKuPKsWRYp3VcWsT8/j7QZ+OTqvvlalvLEXfn1f2Xxb4GgIl1TrRJ9RUXNNHubrqFvZx8=
-X-Received: by 2002:a17:906:d8c1:: with SMTP id re1mr4615656ejb.184.1589470725229;
- Thu, 14 May 2020 08:38:45 -0700 (PDT)
+        Thu, 14 May 2020 11:39:23 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: nicolas)
+        with ESMTPSA id F13C12A0609
+From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Cc:     stable@vger.kernel.org, kernel@collabora.com,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chen-Yu Tsai <wens@csie.org>, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: cedrus: Propagate OUTPUT resolution to CAPTURE
+Date:   Thu, 14 May 2020 11:39:03 -0400
+Message-Id: <20200514153903.341287-1-nicolas.dufresne@collabora.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Reply-To: phisiaka1@gmail.com
-Received: by 2002:aa7:c594:0:0:0:0:0 with HTTP; Thu, 14 May 2020 08:38:44
- -0700 (PDT)
-From:   Philippe Siaka <phisiaka01@gmail.com>
-Date:   Thu, 14 May 2020 08:38:44 -0700
-X-Google-Sender-Auth: _DIZypUUKLz_v0uwxVIjHR8rEtE
-Message-ID: <CAOQ04QMjwkm0rYAVdjb2TC=qvfQA44=3DWwVxOH9JVK6bSdJcw@mail.gmail.com>
-Subject: CAN YOU HANDLE THIS WITH ME?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attention: Dear Friend,
+As per spec, the CAPTURE resolution should be automatically set based on
+the OTUPUT resolution. This patch properly propagate width/height to the
+capture when the OUTPUT format is set and override the user provided
+width/height with configured OUTPUT resolution when the CAPTURE fmt is
+updated.
 
-How are you, I am Mr. Philippe Siaka, Director In charge of Auditing
-and accounting department Bank Of Africa, BOA, I hope that you will
-not betray or expose this trust and confident that i am about to
-repose on you for the mutual benefit of our both families.
+This also prevents userspace from selecting a CAPTURE resolution that is
+too small, avoiding unwanted page faults.
 
-I need your urgent assistance in transferring the sum of FIVE MILLION
-FIVE HUNDRED THOUSAND US DOLLARS ($5,500,000) immediately to your bank
-account, this funds belong to late consumer of our bank; From Syria
-Nationality. who died along with his entire family from the ongoing
-war/crisis in Syria, This is a very highly secret; i will like you to
-please keep this proposal as a top secret or delete it if you are not
-interested, upon receipt of your reply, i will send to you more
-details about this business deal.
+Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+---
+ drivers/staging/media/sunxi/cedrus/cedrus_video.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-I don=E2=80=99t want the fund to go into the bank treasury and some bank
-directors/government executives will take the fund as unclaimed fund
-and use it for selfish and worthless ventures, and as such, lets claim
-the fund now; I am inviting you for a business deal where this money
-can be shared between us in the ratio of 40% for me/40% for you and
-20% will go for charity purposes, to help some less privileged in our
-society If you agree to handle this business with me. Further details
-of the transfer will be forwarded to you as soon as I receive your
-return mail.
+diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_video.c b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
+index 16d82309e7b6..a6d6b15adc2e 100644
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
+@@ -247,6 +247,8 @@ static int cedrus_try_fmt_vid_cap(struct file *file, void *priv,
+ 		return -EINVAL;
+ 
+ 	pix_fmt->pixelformat = fmt->pixelformat;
++	pix_fmt->width = ctx->src_fmt.width;
++	pix_fmt->height = ctx->src_fmt.height;
+ 	cedrus_prepare_format(pix_fmt);
+ 
+ 	return 0;
+@@ -319,11 +321,14 @@ static int cedrus_s_fmt_vid_out(struct file *file, void *priv,
+ 		break;
+ 	}
+ 
+-	/* Propagate colorspace information to capture. */
++	/* Propagate format information to capture. */
+ 	ctx->dst_fmt.colorspace = f->fmt.pix.colorspace;
+ 	ctx->dst_fmt.xfer_func = f->fmt.pix.xfer_func;
+ 	ctx->dst_fmt.ycbcr_enc = f->fmt.pix.ycbcr_enc;
+ 	ctx->dst_fmt.quantization = f->fmt.pix.quantization;
++	ctx->dst_fmt.width = ctx->src_fmt.width;
++	ctx->dst_fmt.height = ctx->src_fmt.height;
++	cedrus_prepare_format(&ctx->dst_fmt);
+ 
+ 	return 0;
+ }
+-- 
+2.26.2
 
-Thanks & Best Regards,
-From Philippe Siaka,
