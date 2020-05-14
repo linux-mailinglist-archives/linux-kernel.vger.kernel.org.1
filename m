@@ -2,101 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179551D405D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 23:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE631D406F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 00:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbgENVpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 17:45:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726216AbgENVpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 17:45:09 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727890AbgENWD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 18:03:29 -0400
+Received: from smtp1.de.adit-jv.com ([93.241.18.167]:50491 "EHLO
+        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgENWD2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 18:03:28 -0400
+Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
+        by smtp1.de.adit-jv.com (Postfix) with ESMTP id F3A423C04C1;
+        Fri, 15 May 2020 00:03:24 +0200 (CEST)
+Received: from smtp1.de.adit-jv.com ([127.0.0.1])
+        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id o1TOWhpVUiKY; Fri, 15 May 2020 00:03:16 +0200 (CEST)
+Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70B3E20709;
-        Thu, 14 May 2020 21:45:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589492708;
-        bh=SrjBxjuvO2xIOH81KR141yOl4ZrKeyzuGmHkqf9XFGA=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=R1VGab0Nt7+Xgr5r/YG6q2wVuG7JVAdqrEdlDRXs3RvfywgsAc4R6hWti66JDBWHK
-         A19V4brp1JkCbas+v55UFeYRwpl9i0vPpCje/eM/DUk4XMaRxUQ39XqMc0HAXcrccM
-         Bua6aWzIvEf76Sl8QdMsAwp5sOf5I439+y5EojkA=
-Date:   Thu, 14 May 2020 23:45:04 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        live-patching@vger.kernel.org, Joe Perches <joe@perches.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: adjust to livepatch .klp.arch removal
-In-Reply-To: <bfe91b2d-e319-bf12-6a15-4f200d0e8ea4@linux.vnet.ibm.com>
-Message-ID: <nycvar.YFH.7.76.2005142344230.25812@cbobk.fhfr.pm>
-References: <20200509073258.5970-1-lukas.bulwahn@gmail.com> <bfe91b2d-e319-bf12-6a15-4f200d0e8ea4@linux.vnet.ibm.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 9B5E93C04C0;
+        Fri, 15 May 2020 00:03:16 +0200 (CEST)
+Received: from lxhi-065.adit-jv.com (10.72.94.5) by HI2EXCH01.adit-jv.com
+ (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 15 May
+ 2020 00:03:16 +0200
+From:   Eugeniu Rosca <erosca@de.adit-jv.com>
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        <stable@vger.kernel.org>, Hardik Gajjar <hgajjar@de.adit-jv.com>,
+        <linux-renesas-soc@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [PATCH] usb: core: hub: limit HUB_QUIRK_DISABLE_AUTOSUSPEND to USB5534B
+Date:   Fri, 15 May 2020 00:02:46 +0200
+Message-ID: <20200514220246.13290-1-erosca@de.adit-jv.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.72.94.5]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 May 2020, Kamalesh Babulal wrote:
+On Tue, May 12, 2020 at 09:36:07PM +0800, Kai-Heng Feng wrote [1]:
+> This patch prevents my Raven Ridge xHCI from getting runtime suspend.
 
-> > Commit 1d05334d2899 ("livepatch: Remove .klp.arch") removed
-> > arch/x86/kernel/livepatch.c, but missed to adjust the LIVE PATCHING entry
-> > in MAINTAINERS.
-> > 
-> > Since then, ./scripts/get_maintainer.pl --self-test=patterns complains:
-> > 
-> >   warning: no file matches  F:  arch/x86/kernel/livepatch.c
-> > 
-> > So, drop that obsolete file entry in MAINTAINERS.
-> 
-> Patch looks good to me,  you probably want to add following architecture
-> specific livepatching header files to the list:
-> 
-> arch/s390/include/asm/livepatch.h
-> arch/powerpc/include/asm/livepatch.h
+The problem described in v5.6 commit 1208f9e1d758c9 ("USB: hub: Fix the
+broken detection of USB3 device in SMSC hub") applies solely to the
+USB5534B hub [2] present on the Kingfisher Infotainment Carrier Board,
+manufactured by Shimafuji Electric Inc [3].
 
-Good point, thanks for spotting it Kamalesh. I've queued the patch below 
-on top.
+Despite that, the aforementioned commit applied the quirk to _all_ hubs
+carrying vendor ID 0x424 (i.e. SMSC), of which there are more [4] than
+initially expected. Consequently, the quirk is now enabled on platforms
+carrying SMSC/Microchip hub models which potentially don't exhibit the
+original issue.
 
+To avoid reports like [1], further limit the quirk's scope to
+USB5534B [2], by employing both Vendor and Product ID checks.
 
+Tested on H3ULCB + Kingfisher rev. M05.
 
-From: Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH] livepatch: add arch-specific headers to MAINTAINERS
+[1] https://lore.kernel.org/linux-renesas-soc/73933975-6F0E-40F5-9584-D2B8F615C0F3@canonical.com/
+[2] https://www.microchip.com/wwwproducts/en/USB5534B
+[3] http://www.shimafuji.co.jp/wp/wp-content/uploads/2018/08/SBEV-RCAR-KF-M06Board_HWSpecificationEN_Rev130.pdf
+[4] https://devicehunt.com/search/type/usb/vendor/0424/device/any
 
-Add arch-specific livepatch.h for s390 and powerpc to MAINTAINERS
-F: patterns.
-
-Reported-by: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Fixes: 1208f9e1d758c9 ("USB: hub: Fix the broken detection of USB3 device in SMSC hub")
+Cc: stable@vger.kernel.org # v4.14+
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: Hardik Gajjar <hgajjar@de.adit-jv.com>
+Cc: linux-renesas-soc@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Reported-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
 ---
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/core/hub.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7e0827670425..8e14444eb98d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9854,6 +9854,8 @@ S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/livepatching/livepatching.git
- F:	Documentation/ABI/testing/sysfs-kernel-livepatch
- F:	Documentation/livepatch/
-+F:	arch/powerpc/include/asm/livepatch.h
-+F:	arch/s390/include/asm/livepatch.h
- F:	arch/x86/include/asm/livepatch.h
- F:	include/linux/livepatch.h
- F:	kernel/livepatch/
-
-
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index 2b6565c06c23..fc748c731832 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -39,6 +39,7 @@
+ 
+ #define USB_VENDOR_GENESYS_LOGIC		0x05e3
+ #define USB_VENDOR_SMSC				0x0424
++#define USB_PRODUCT_USB5534B			0x5534
+ #define HUB_QUIRK_CHECK_PORT_AUTOSUSPEND	0x01
+ #define HUB_QUIRK_DISABLE_AUTOSUSPEND		0x02
+ 
+@@ -5621,8 +5622,11 @@ static void hub_event(struct work_struct *work)
+ }
+ 
+ static const struct usb_device_id hub_id_table[] = {
+-    { .match_flags = USB_DEVICE_ID_MATCH_VENDOR | USB_DEVICE_ID_MATCH_INT_CLASS,
++    { .match_flags = USB_DEVICE_ID_MATCH_VENDOR
++                   | USB_DEVICE_ID_MATCH_PRODUCT
++                   | USB_DEVICE_ID_MATCH_INT_CLASS,
+       .idVendor = USB_VENDOR_SMSC,
++      .idProduct = USB_PRODUCT_USB5534B,
+       .bInterfaceClass = USB_CLASS_HUB,
+       .driver_info = HUB_QUIRK_DISABLE_AUTOSUSPEND},
+     { .match_flags = USB_DEVICE_ID_MATCH_VENDOR
 -- 
-Jiri Kosina
-SUSE Labs
+2.26.2
 
