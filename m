@@ -2,132 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992691D3666
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B931D3669
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725975AbgENQYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 12:24:50 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:15989 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725951AbgENQYt (ORCPT
+        id S1726112AbgENQZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 12:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725951AbgENQZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 12:24:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589473489; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=nVgMACd1zvIq4WhGfSju+6OvJNb61oG1e/CVzd4fVNc=; b=OAPdlR0aUGdRjmISPK65wTl8D4BQS8fHYbkX86UGFi3G+hOBTeEoLzS0z81GnY/vtGOtnQrJ
- +BroxJduzBXd6T1778xWMa8cbk+B5+aj50yOJYv68fWpRBroSyTo4dkAcjW9JlxTRpLN7Ksp
- yWWRwgVJuLEllIo7eLd4ooE8bxU=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ebd70cf.7f6d1a141ce0-smtp-out-n03;
- Thu, 14 May 2020 16:24:47 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D542FC432C2; Thu, 14 May 2020 16:24:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 982E6C433D2;
-        Thu, 14 May 2020 16:24:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 982E6C433D2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [RFC PATCH 3/8] qaic: Create char dev
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     arnd@arndb.de, manivannan.sadhasivam@linaro.org,
-        bjorn.andersson@linaro.org, wufan@codeaurora.org,
-        pratanan@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1589465266-20056-1-git-send-email-jhugo@codeaurora.org>
- <1589465266-20056-4-git-send-email-jhugo@codeaurora.org>
- <20200514141211.GA2643665@kroah.com>
- <0421a64a-10f3-08df-9ef1-14fdb570db0d@codeaurora.org>
- <20200514155615.GA2963499@kroah.com>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <4be546d3-b571-0659-0140-f34ec88f95ff@codeaurora.org>
-Date:   Thu, 14 May 2020 10:24:44 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 14 May 2020 12:25:54 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1F4C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 09:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=JPLZxXuF7yodRZCXQ3CE5KPziLgfM5ayWE6A7Api2Yw=; b=FlwveDtae04WSkTVrnUsh/Uz2
+        rc+TJuHh3HuX+v4pWvszHH8plZHnisShvsa8yuPOuylYEkV8weNRvI+/A91lVTelbRrfkWFoY6DiZ
+        oor/RfX0HFp5tjonY0rRmqA0fViASjaJoULZguSioBF7jT+yHzoFOtRBtxWWAlac0eKPSsgjj4N+s
+        nJWWJmCWSuzdRzNOoWgRivuptGuWEPIhPB0RcJIVHSvQzgduoQUbK/nyWpXI/ca4uOz4cTkieTywQ
+        j0IoxY5po7/VCqkxtXQ4P8sE6p2MPc1mjspLACxenttU1woKLN8DGr7RfhBnI72XoaGtzy2p4gQrF
+        zDFXA639g==;
+Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:40240)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jZGfw-0000fU-St; Thu, 14 May 2020 17:25:37 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jZGfv-0000hD-S4; Thu, 14 May 2020 17:25:35 +0100
+Date:   Thu, 14 May 2020 17:25:35 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: ARM: static kernel in vmalloc space
+Message-ID: <20200514162535.GP1551@shell.armlinux.org.uk>
+References: <20200503145017.GA5074@afzalpc>
+ <CAK8P3a3OC5UO72rTDWi6+XgmExJmkATEjscq8hns8Bng06OpcQ@mail.gmail.com>
+ <20200504091018.GA24897@afzalpc>
+ <CAK8P3a25sZ9B+AE=EJyJZSU91CkBLLR6p2nixw_=UAbczg3RiQ@mail.gmail.com>
+ <20200511142113.GA31707@afzalpc>
+ <CAK8P3a0=+aBJLTvHOskTv=tba_s5b5MzWrYG8mxH3iLNy4hfBw@mail.gmail.com>
+ <20200512104758.GA12980@afzalpc>
+ <CAK8P3a1DQWG1+ab2+vQ2XCAKYxPUjJk5g3W3094j-adDXSQfzQ@mail.gmail.com>
+ <20200514111755.GA4997@afzalpc>
+ <CAK8P3a2PNZY-9L9+SFDLtrp731ZGo6Nbs-7jY6E2PwWXa0kfKw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200514155615.GA2963499@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2PNZY-9L9+SFDLtrp731ZGo6Nbs-7jY6E2PwWXa0kfKw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/2020 9:56 AM, Greg KH wrote:
-> On Thu, May 14, 2020 at 09:05:30AM -0600, Jeffrey Hugo wrote:
->> Wow, thank you for the near immediate response.  I'm am quite impressed.
->>
->> On 5/14/2020 8:12 AM, Greg KH wrote:
->>> On Thu, May 14, 2020 at 08:07:41AM -0600, Jeffrey Hugo wrote:
->>>>    /* Copyright (c) 2019-2020, The Linux Foundation. All rights reserved. */
->>>> +#include <linux/cdev.h>
->>>> +#include <linux/idr.h>
->>>> +#include <linux/list.h>
->>>> +#include <linux/kref.h>
->>>> +#include <linux/mhi.h>
->>>>    #include <linux/module.h>
->>>>    #include <linux/msi.h>
->>>> +#include <linux/mutex.h>
->>>>    #include <linux/pci.h>
->>>>    #include <linux/pci_ids.h>
->>>> @@ -13,9 +19,242 @@
->>>>    #define PCI_DEV_AIC100			0xa100
->>>>    #define QAIC_NAME			"Qualcomm Cloud AI 100"
->>>> +#define QAIC_MAX_MINORS			256
->>>
->>> Why have a max?
->>>
->>> Why not just use a misc device so you make the logic a lot simple, no
->>> class or chardev logic to mess with at all.
->>
->> It was our understanding that the preference is not to add new misc devices.
+On Thu, May 14, 2020 at 02:41:11PM +0200, Arnd Bergmann wrote:
+> On Thu, May 14, 2020 at 1:18 PM afzal mohammed <afzal.mohd.ma@gmail.com> wrote:
+> > On Tue, May 12, 2020 at 09:49:59PM +0200, Arnd Bergmann wrote:
+> >
+> > > Any idea which bit you want to try next?
+> >
+> > My plan has been to next post patches for the static kernel migration
+> > to vmalloc space (currently the code is rigid, taking easy route
+> > wherever possible & not of high quality) as that feature has an
+> > independent existence & adds value by itself.  And then start working
+> > on other steps towards VMSPLIT_4G_4G.
+> >
+> > Now that you mentioned about other things, i will slowly start those
+> > as well.
 > 
-> Huh, who said that?  Not the char/misc maintainer (i.e. me) :)
+> Sounds good.
 > 
->> As I go and try to find a supporting reference for that, I cannot find one,
->> so I'm not entirely sure where that idea came from.
->>
->> In addition, we see that the Habana Labs driver also uses chardev, and has
->> chosen the same max.  We assumed that since their driver is already
->> accepted, using the same mechanisms where applicable would be the preferred
->> approach.
+> > > Creating a raw_copy_{from,to}_user()
+> > > based on get_user_pages()/kmap_atomic()/memcpy() is probably a good
+> > > next thing to do. I think it can be done one page at a time with only
+> > > checking for
+> > > get_fs(), access_ok(), and page permissions, while get_user()/put_user()
+> > > need to handle a few more corner cases.
+> >
+> > Before starting w/ other things, i would like to align on the high
+> > level design,
+> >
+> > My understanding (mostly based on your comments) as follows,
+> > (i currently do not have a firm grip over these things, hope to have
+> > it once started w/ the implementation)
+> >
+> > 1. SoC w/ LPAE
+> > 2. TTBR1 (top 256MB) for static kernel, modules, io mappings, vmalloc,
+> >         kmap, fixmap & vectors
 > 
-> They had good reasons why not to use a chardev and convinced me of it.
-> If you can't come up with them, then stick with a misc for now please.
+> Right, these kind of go together because pre-LPAE cannot do the
+> same TTBR1 split, and they more frequently have conflicting
+> static mappings.
+> 
+> It's clearly possible to do something very similar for older chips
+> (v6 or v7 without LPAE, possibly even v5), it just gets harder
+> while providing less benefit.
 
-Interesting.  I didn't see any discussion on this.
-
->> Specific to the max, 256 was chosen as being a factor larger than the
->> largest system we have, therefore we figured it wouldn't be hit for a long
->> while even as we try to have a look at what might happen down the road.
->> Looking at the Habana code, it looks like they have the same value for much
->> of the same reasons, although their usecases may vary from ours somewhat.
-> 
-> Max numbers for no good reason are not a good thing to have.
-> 
->> At this time, I don't think we have a strong requirement for a chardev, so
->> we could investigate a switch over to a misc dev if you would prefer that
->> over following the Habana Labs precedent.  All I ask is a confirmation that
->> is the approach you would like to see going forward after reviewing the
->> above.
-> 
-> Please use misc.
-
-Ok, will investigate.
+Forget about doing this for anything without a PIPT cache - or you're
+going to end up having to flush the data cache each time you enter or
+exit the kernel.
 
 -- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
