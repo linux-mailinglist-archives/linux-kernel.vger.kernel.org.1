@@ -2,82 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C27931D2618
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0F71D2621
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725954AbgENE4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 00:56:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbgENE4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 00:56:17 -0400
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8420020760
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:56:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589432176;
-        bh=tS6PKCuuaOVh0/HHtSVgwzL/oCVDFPvX06UPgSGQWhE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=z6yd1RCNAg146bMIZgBYghDRAwc8CNO0E9GDvv6Y22+HXx7bV9FGw1JGbbLffzfNY
-         p5zT5zxdwQdwayO2C+sm7SXURaZ5Y4KAPetm7j9EjgU4lZrcGyImwlMZkC+ag3osPC
-         4KTTWpE4kEmlltBfqGJE+TqKQDPgvwsKxo1KqIls=
-Received: by mail-wr1-f50.google.com with SMTP id l11so2165204wru.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:56:16 -0700 (PDT)
-X-Gm-Message-State: AOAM5303WMVmnGXKR753r7W4fwS758yLEY2b/lrrXOUHPvUN2EaEKktd
-        iGGnIq4o31qZl4aEBptZrHZkfM5WsV/V5w5NeWAP7g==
-X-Google-Smtp-Source: ABdhPJwtUZFFJakPLlCkH6LG/je1q4bEiHwcCHjYcddMslsCKpxPP5mdKFwD8PzXc3D9vYl+MjTL6h4JitBekxFSjuI=
-X-Received: by 2002:adf:fe45:: with SMTP id m5mr3019712wrs.257.1589432174795;
- Wed, 13 May 2020 21:56:14 -0700 (PDT)
+        id S1726060AbgENE6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 00:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725831AbgENE6f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 00:58:35 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25061C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:58:35 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id u35so756048pgk.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:58:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Fy4YBkk4dKPrXz1Sz6in3rq8QZwklEzzdmUHwWz7Vts=;
+        b=q0CuyR167W+2BNBNi9zP/2Uo5HLrTYi02yqX2gsXiURJvGny1sZnBQuNVC6dB+Jenn
+         dZo0jdexaxmCbJxntzQ/rQy2sTYrHnzssTzyjed7H5gwHO623LSN8LsLakEmtj47rYRT
+         i1CDdwGC9jd5kU/aYeV0kVUSns/5vIOUKeo3yf/Bq6od7L5fq+tfAq6AT4tm5+Jc03xG
+         Hlo7QzEcyYCrZbt90ZrcrjBvV9d9kjnD+KPmpTwQpYOioy8QqwnkPf8ZPcuVwlEzw5I6
+         HACuCYW1LIqjhZh2oS5Rw+ibKfvsRuoFElx50bxhm7tFpljDv5VHFZdvXIttrYReFJRN
+         P8Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fy4YBkk4dKPrXz1Sz6in3rq8QZwklEzzdmUHwWz7Vts=;
+        b=rnHOiqwFlDeLPoj0bSG70Wk6b2kZU+Ajh07BxEbZQsRLC4jPicA2EDnpKrJ00bnf1Z
+         4ksifhEuUgrZhQBcIF5ahGcsx4FYFKlqaLPei6Kz7XCqH4lmw8dFm/nDJkztVc8JkCJt
+         W6zQJm1VpZtfiJfiBSHfNkfjxdbWnVuEpPPcWTZ1YjyxjKD4wtcO70Z0hR4NwcdOqlLW
+         gHsZN4pranWuL0dSfbVSEKAPS5KiH420kgBkeNmIfskYJDHkYqjJdHz39J7jz1HbSMbo
+         MRLwA0yrEnMFc9DTzD98HWk5yzef8jmYRrysFLPgpPWbSkVWXt+/ymeiuZGMbquskGzo
+         bu+w==
+X-Gm-Message-State: AOAM533sc5GlN6jv2+mlJIH/zz3Ies0BIYpNAcBk/ahuHyvXkFBGKuyc
+        1uc5ez0tul4gQdPhRZf1vRZrbg==
+X-Google-Smtp-Source: ABdhPJxyjBQaF0IbDv+oDp7VWgasXey2FK6oPgo+5su8LZ7HawcQevb3Y0t9Ukgg2sHbL3dWhdsSNg==
+X-Received: by 2002:a63:7d3:: with SMTP id 202mr2403501pgh.279.1589432314389;
+        Wed, 13 May 2020 21:58:34 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id x12sm1056388pfq.209.2020.05.13.21.58.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 21:58:33 -0700 (PDT)
+Date:   Wed, 13 May 2020 21:57:03 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, loic.pallardy@st.com,
+        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/12] remoteproc: stm32: Decouple rproc from memory
+ translation
+Message-ID: <20200514045703.GG16107@builder.lan>
+References: <20200424202505.29562-1-mathieu.poirier@linaro.org>
+ <20200424202505.29562-2-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-References: <20200505134354.774943181@linutronix.de> <20200505134906.021552202@linutronix.de>
-In-Reply-To: <20200505134906.021552202@linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 13 May 2020 21:56:03 -0700
-X-Gmail-Original-Message-ID: <CALCETrXGjAnyva+xFLjg_ceZxUqWVs9aZju=5R8bYH5iSYQvOA@mail.gmail.com>
-Message-ID: <CALCETrXGjAnyva+xFLjg_ceZxUqWVs9aZju=5R8bYH5iSYQvOA@mail.gmail.com>
-Subject: Re: [patch V4 part 3 28/29] x86/entry: Convert SIMD coprocessor error
- exception to IDTENTRY
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424202505.29562-2-mathieu.poirier@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 7:15 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> From: Thomas Gleixner <tglx@linutronix.de>
->
-> Convert #XF to IDTENTRY_ERRORCODE:
->   - Implement the C entry point with DEFINE_IDTENTRY
->   - Emit the ASM stub with DECLARE_IDTENTRY
->   - Handle INVD_BUG in C
->   - Remove the ASM idtentry in 64bit
->   - Remove the open coded ASM entry code in 32bit
->   - Fixup the XEN/PV code
->   - Remove the old prototyoes
->   - Remove the RCU warning as the new entry macro ensures correctness
->
-> No functional change.
+On Fri 24 Apr 13:24 PDT 2020, Mathieu Poirier wrote:
 
+> Remove the remote processor from the process of parsing the memory
+> ranges since there is no correlation between them.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Reviewed-by: Loic Pallardy <loic.pallardy@st.com>
 
-Acked-by: Andy Lutomirski <luto@kernel.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+> ---
+>  drivers/remoteproc/stm32_rproc.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+> index 0f9d02ca4f5a..91fd59af0ffe 100644
+> --- a/drivers/remoteproc/stm32_rproc.c
+> +++ b/drivers/remoteproc/stm32_rproc.c
+> @@ -127,10 +127,10 @@ static int stm32_rproc_mem_release(struct rproc *rproc,
+>  	return 0;
+>  }
+>  
+> -static int stm32_rproc_of_memory_translations(struct rproc *rproc)
+> +static int stm32_rproc_of_memory_translations(struct platform_device *pdev,
+> +					      struct stm32_rproc *ddata)
+>  {
+> -	struct device *parent, *dev = rproc->dev.parent;
+> -	struct stm32_rproc *ddata = rproc->priv;
+> +	struct device *parent, *dev = &pdev->dev;
+>  	struct device_node *np;
+>  	struct stm32_rproc_mem *p_mems;
+>  	struct stm32_rproc_mem_ranges *mem_range;
+> @@ -606,7 +606,7 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev)
+>  
+>  	rproc->auto_boot = of_property_read_bool(np, "st,auto-boot");
+>  
+> -	return stm32_rproc_of_memory_translations(rproc);
+> +	return stm32_rproc_of_memory_translations(pdev, ddata);
+>  }
+>  
+>  static int stm32_rproc_probe(struct platform_device *pdev)
+> -- 
+> 2.20.1
+> 
