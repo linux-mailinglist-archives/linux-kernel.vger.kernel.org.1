@@ -2,87 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A181D3AB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 20:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B5C1D3AC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 20:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729415AbgENS6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 14:58:24 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:36974 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728372AbgENS6P (ORCPT
+        id S1729919AbgENS65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 14:58:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5158 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729915AbgENS6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 14:58:15 -0400
-Received: by mail-oi1-f195.google.com with SMTP id r25so25486071oij.4;
-        Thu, 14 May 2020 11:58:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qPBikM7djpXPphaJtKg/odrCAnbAw6ex2T7aFaxLRN0=;
-        b=NyckrRCn3X4I2YT8HpmYLliUcaoR5iBch1q5PUMq1DnwxFQaphYgqoEjKpSmGF82Rq
-         lLgrlPyE1RXC5Wthzy8aKDa4TpTPl3SDFXUvrYSE8aSysSSdiNN0WfASomZt17XzNWx3
-         LZAR6vHzvVMa7X7yYvnRR2QAurRW5Rl0jibalLHFZTLqZcyuNr6cc2nVkSfpluivr4q7
-         tq8hIpEDR8eDsaFm81LmhOzwQUNGh/2gGVpbRdv3MsCBUUlIx/oxq18f1LDh9WJXayjc
-         GNQTl8aZT45W1sIIIuX72UUPwQae0yPSjhH9mQKpte2dJA68hr/mt2wh9P1UFaTXmUqb
-         MOSg==
-X-Gm-Message-State: AGi0PuaexsnTDtN+eSOZfvLfBhQ7ECSIdYH634s2GdNYMappBYgg76k1
-        5EOYSnK76/qhE4S/wnJUjQ==
-X-Google-Smtp-Source: APiQypKgzCFNgTvNxHAVJQdyYehxQUJtvZ8t/uMvsKmpAPlvgDUJdRAzuuoxKiBxVvr4aVvNg4uJKw==
-X-Received: by 2002:aca:5588:: with SMTP id j130mr30443516oib.144.1589482694847;
-        Thu, 14 May 2020 11:58:14 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i196sm7095757oib.8.2020.05.14.11.58.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 11:58:14 -0700 (PDT)
-Received: (nullmailer pid 30467 invoked by uid 1000);
-        Thu, 14 May 2020 18:58:13 -0000
-Date:   Thu, 14 May 2020 13:58:13 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     linux-kernel@vger.kernel.org,
+        Thu, 14 May 2020 14:58:54 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04EIdSpF055409;
+        Thu, 14 May 2020 14:58:21 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3101kq446q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 May 2020 14:58:21 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04EImK2Y079555;
+        Thu, 14 May 2020 14:58:21 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3101kq4468-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 May 2020 14:58:21 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04EIonLD013393;
+        Thu, 14 May 2020 18:58:20 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma04wdc.us.ibm.com with ESMTP id 3100ubrvft-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 May 2020 18:58:20 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04EIwJ2Q30409116
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 May 2020 18:58:19 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BDB922805C;
+        Thu, 14 May 2020 18:58:19 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6748E28058;
+        Thu, 14 May 2020 18:58:19 +0000 (GMT)
+Received: from localhost (unknown [9.85.205.196])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 14 May 2020 18:58:19 +0000 (GMT)
+From:   Nathan Lynch <nathanl@linux.ibm.com>
+To:     Leonardo Bras <leobras.c@gmail.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Allison Randal <allison@lohutok.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marc Zyngier <maz@kernel.org>, linux-mmc@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-renesas-soc@vger.kernel.org,
-        Magnus Damm <magnus.damm@gmail.com>,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH v2 6/9] dt-bindings: serial: renesas,hscif: Document
- r8a7742 bindings
-Message-ID: <20200514185813.GA30416@bogus>
-References: <1588794695-27852-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1588794695-27852-7-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Nicholas Piggin <npiggin@gmail.com>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Nadav Amit <namit@vmware.com>
+Subject: Re: [PATCH v3 2/2] powerpc/rtas: Implement reentrant rtas call
+In-Reply-To: <20200514011245.127174-3-leobras.c@gmail.com>
+References: <20200514011245.127174-1-leobras.c@gmail.com> <20200514011245.127174-3-leobras.c@gmail.com>
+Date:   Thu, 14 May 2020 13:58:18 -0500
+Message-ID: <878shu2vjp.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588794695-27852-7-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-14_06:2020-05-14,2020-05-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
+ cotscore=-2147483648 mlxlogscore=999 adultscore=0 clxscore=1011
+ suspectscore=1 spamscore=0 phishscore=0 priorityscore=1501 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005140160
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  6 May 2020 20:51:32 +0100, Lad Prabhakar wrote:
-> RZ/G1H (R8A7742) SoC also has the R-Car gen2 compatible HSCIF ports,
-> so document the SoC specific bindings.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> v1->v2:
-> * No change
-> ---
-> 
->  Documentation/devicetree/bindings/serial/renesas,hscif.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+Hi,
 
-Applied, thanks!
+Leonardo Bras <leobras.c@gmail.com> writes:
+> +/**
+> + * rtas_call_reentrant() - Used for reentrant rtas calls
+> + * @token:	Token for desired reentrant RTAS call
+> + * @nargs:	Number of Input Parameters
+> + * @nret:	Number of Output Parameters
+> + * @outputs:	Array of outputs
+> + * @...:	Inputs for desired RTAS call
+> + *
+> + * According to LoPAR documentation, only "ibm,int-on", "ibm,int-off",
+> + * "ibm,get-xive" and "ibm,set-xive" are currently reentrant.
+> + * Reentrant calls need their own rtas_args buffer, so not using rtas.args, but
+> + * PACA one instead.
+> + *
+> + * Return:	-1 on error,
+> + *		First output value of RTAS call if (nret > 0),
+> + *		0 otherwise,
+> + */
+> +
+> +int rtas_call_reentrant(int token, int nargs, int nret, int *outputs, ...)
+> +{
+> +	va_list list;
+> +	struct rtas_args *args;
+> +	int i;
+> +
+> +	if (!rtas.entry || token == RTAS_UNKNOWN_SERVICE)
+> +		return -1;
+> +
+> +	/* We use the per-cpu (PACA) rtas args buffer */
+> +	args = &local_paca->reentrant_args;
+> +
+> +	va_start(list, outputs);
+> +	va_rtas_call_unlocked(args, token, nargs, nret, list);
+> +	va_end(list);
+> +
+> +	if (nret > 1 && outputs)
+> +		for (i = 0; i < nret - 1; ++i)
+> +			outputs[i] = be32_to_cpu(args->rets[i + 1]);
+
+Doesn't this need to be more careful about preemption and exceptions?
+I.e. the args structure in the paca needs to be protected from
+concurrent use somehow, like any per-cpu data structure.
+
+local_irq_save/restore while accessing local_paca->reentrant_args here
+would be sufficient I think?
