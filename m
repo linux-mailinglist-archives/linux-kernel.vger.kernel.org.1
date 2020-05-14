@@ -2,152 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D1E1D3659
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5F41D3668
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726145AbgENQVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 12:21:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726123AbgENQVN (ORCPT
+        id S1726075AbgENQZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 12:25:51 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:59168 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725951AbgENQZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 12:21:13 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2F5C061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 09:21:13 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id h4so31223448wmb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 09:21:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KV4BSoviEBOfIIyT+7Io9PqJ+AxGL6m4ncG0jX3R3Vg=;
-        b=iiHyiJ4q0+KsNNeDxvvCz9wtZO9sC8IuSU69MkWg6ukuylaAreG2+ufhhS2q0LvI4a
-         9ZFBQEB3gresJbeadDdort7B7CJztVaOzd+imGLK9adisFs8l1EkEXwjPix6DMwXWpjX
-         /bCdQB8gtMafG88ExRQb7sOFOT2TnNJlqCmCoaS8LyHnYhBzplYGqcazpRuc/Byl/kdH
-         h8OE0uxsaWxjlIp/J8ewc/SWJUPpFj3CJfpjNNHOJYP6BbciN+6P7zMR4GQBICDm8oYj
-         m2m8J1vRn9sCMPHm5LZbqiU0px2GbT9jNPn6q/3jziLa6B8kfu211fXDrBPg+K08gUdF
-         P8BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KV4BSoviEBOfIIyT+7Io9PqJ+AxGL6m4ncG0jX3R3Vg=;
-        b=ojolFvycALaZ1NmdlB9oEwt4z978Kpk5/T+e3EN1RnO7Iqhy8NIkDu5y8TXi37176C
-         BLdU+ujViqctVhQ3C/TyI7OAfCg4rPkLuKaMnduyECtKFOVk43A+rjd4UdEQtDpRtmWA
-         POSKZNddlz7D9zcAdLEQqw8LGrbWIa07pJVTD80mXohLZS/7Dkz4PNF4PLU1c2jVrGIg
-         bgxw9krC0WbmyAy5uRMCRX9LSJYL5cPAc9a16tKskQWrucBuhMF52P9v8rL3bDIbUACI
-         bIH3AJHqmi8AZo/GGDGGr6flFYa3+j5i+Sx/tRgURJ4d+jxRBGQtQvc9Pp4c9FcaPXZB
-         /0qw==
-X-Gm-Message-State: AGi0PuaTAfzOK8L+kZwFQmyevi6ivp/njREKUq48nMnDq+qyGLJ8lo2a
-        WeFK6CN7WehxYnHKMkq3xr05oVF+jO6M4w==
-X-Google-Smtp-Source: APiQypKzrysBhAd4T+CnYHlYyQM0grnydFJdjF31clt1OcgBcXllaYep5/9TgtCb41lshr5MEdxP5g==
-X-Received: by 2002:a1c:ed04:: with SMTP id l4mr49969579wmh.93.1589473272074;
-        Thu, 14 May 2020 09:21:12 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id b14sm29577880wmb.18.2020.05.14.09.21.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 09:21:11 -0700 (PDT)
-Date:   Thu, 14 May 2020 17:21:09 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     jason.wessel@windriver.com, gregkh@linuxfoundation.org,
-        corbet@lwn.net, frowand.list@gmail.com, bjorn.andersson@linaro.org,
-        linux-serial@vger.kernel.org, mingo@redhat.com, hpa@zytor.com,
-        jslaby@suse.com, kgdb-bugreport@lists.sourceforge.net,
-        sumit.garg@linaro.org, will@kernel.org, tglx@linutronix.de,
-        agross@kernel.org, catalin.marinas@arm.com, bp@alien8.de,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Allison Randal <allison@lohutok.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Enrico Weigelt <info@metux.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        James Morse <james.morse@arm.com>,
-        Juergen Gross <jgross@suse.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        Thu, 14 May 2020 12:25:51 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04EGHGTq099352;
+        Thu, 14 May 2020 16:24:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=OIC3UnAdwijdLdKIIiP47p0fdrdPOHiEFyvwBUjtzFc=;
+ b=AXyVk7Dv2/mT0Ae8dIcGJQ2/NCqkL4lCyBw6bJqtlb1IdGGglEmAUpap+ilNI9t6ckEI
+ Xw8emWtrcDUK3MhkFaTBemRYo6MYRJ31QFnsrBxS/Br94+6Dileq85zi7CbF+RK5j/xn
+ bxo3i501dg5RpcM1IzuBCYv6qSrn5w9r3cRfwoqo36oQ2roVM9qILmFMIVhurMp9VvgR
+ iuKUXVBnhRZHhtdKwVnovxBne8dBK+ZSkB5OgbEUIAbQ+U3B7KzCa8XHS8kMGBV7ToBz
+ cySKjK9TAdlHZqNKHg+FlwktSuOcQfk5Pj+6LyCQ1WB+k6r8Xt91GnSaOJl1htrp9+fD fg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 3100xwukdg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 14 May 2020 16:24:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04EGO63q105218;
+        Thu, 14 May 2020 16:24:45 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 3100ycysq9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 May 2020 16:24:45 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04EGOfBD017519;
+        Thu, 14 May 2020 16:24:41 GMT
+Received: from [10.39.217.7] (/10.39.217.7)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 14 May 2020 09:24:41 -0700
+Subject: Re: [patch V5 09/38] x86/entry: Switch XEN/PV hypercall entry to
+ IDTENTRY
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        jinho lim <jordan.lim@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 00/12] kgdb: Support late serial drivers; enable early
- debug w/ boot consoles
-Message-ID: <20200514162109.6qt5drd27hpilijh@holly.lan>
-References: <20200507200850.60646-1-dianders@chromium.org>
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+References: <20200512210059.056244513@linutronix.de>
+ <20200512213810.320365524@linutronix.de>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Autocrypt: addr=boris.ostrovsky@oracle.com; keydata=
+ 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
+ Jg6OxFYd01z+a+oL
+Message-ID: <2c4b693f-afd8-302b-99c7-d1f0444cd767@oracle.com>
+Date:   Thu, 14 May 2020 12:24:37 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507200850.60646-1-dianders@chromium.org>
+In-Reply-To: <20200512213810.320365524@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 phishscore=0
+ adultscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005140145
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 cotscore=-2147483648 bulkscore=0
+ phishscore=0 adultscore=0 mlxlogscore=999 lowpriorityscore=0
+ impostorscore=0 spamscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005140144
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 01:08:38PM -0700, Douglas Anderson wrote:
-> <snip>
+On 5/12/20 5:01 PM, Thomas Gleixner wrote:
+> Convert the XEN/PV hypercall to IDTENTRY:
 >
-> My first attempt was to try to get the existing "ekgdboc" to work
-> earlier.  I tried that for a bit until I realized that it needed to
-> work at the tty layer and I couldn't find any serial drivers that
-> managed to register themselves to the tty layer super early at boot.
-> The only documented use of "ekgdboc" is "ekgdboc=kbd" and that's a bit
-> of a special snowflake.  Trying to get my serial driver and all its
-> dependencies to probe normally and register the tty driver super early
-> at boot seemed like a bad way to go.  In fact, all the complexity
-> needed to do something like this is why the system already has a
-> special concept of a "boot console" that lives only long enough to
-> transition to the normal console.
-> 
-> <snip>
-> 
-> The devices I had for testing were:
-> - arm32: rk3288-veyron-jerry
-> - arm64: rk3399-gru-kevin
-> - arm64: qcom-sc7180-trogdor (not mainline yet)
-> 
-> These are the devices I tested this series on.  I tried to test
-> various combinations of enabling/disabling various options and I
-> hopefully caught the corner cases, but I'd appreciate any extra
-> testing people can do.  Notably I didn't test on x86, but (I think) I
-> didn't touch much there so I shouldn't have broken anything.
+>   - Emit the ASM stub with DECLARE_IDTENTRY
+>   - Remove the ASM idtentry in 64bit
+>   - Remove the open coded ASM entry code in 32bit
+>   - Remove the old prototypes
+>
+> The handler stubs need to stay in ASM code as it needs corner case hand=
+ling
+> and adjustment of the stack pointer.
+>
+> Provide a new C function which invokes the entry/exit handling and call=
+s
+> into the XEN handler on the interrupt stack.
+>
+> The exit code is slightly different from the regular idtentry_exit() on=
 
-I have tested a slightly earlier version using qemu and will test this
-set before it moves forwards.
-
-
->  .../admin-guide/kernel-parameters.txt         |  20 ++
->  Documentation/dev-tools/kgdb.rst              |  24 ++
->  arch/arm64/Kconfig                            |   1 +
->  arch/arm64/include/asm/debug-monitors.h       |   2 +
->  arch/arm64/kernel/debug-monitors.c            |   2 +-
->  arch/arm64/kernel/traps.c                     |   3 +
->  arch/x86/Kconfig                              |   1 +
->  drivers/tty/serial/8250/8250_early.c          |  23 ++
->  drivers/tty/serial/amba-pl011.c               |  32 +++
->  drivers/tty/serial/kgdboc.c                   | 268 ++++++++++++++++--
->  drivers/tty/serial/qcom_geni_serial.c         |  32 +++
->  include/linux/kgdb.h                          |   4 +
->  kernel/debug/debug_core.c                     |  52 +++-
->  lib/Kconfig.kgdb                              |  18 ++
->  14 files changed, 436 insertions(+), 46 deletions(-)
-
-Any thoughts on how best to land these changes?
-
-AFAICT the arm64 and 8250/amba-pl011/qcom_geni_serial code
-could be applied independently of the kgdb changes (though we must keep
-changes to drivers/tty/serial/kgdboc alongside the kgdb changes).
-
-I can hoover them up but I'd need a solid set of acks and
-I don't think we've got that yet.
-
-I'd also be happy to ack where needed and let someone else pick it up
-(the other changes queued for kgdb this cycle are pretty small so we
-shouldn't see much conflict in kernel/debug/ ).
+> non-preemptible kernels. If the hypercall is preemptible and need_resch=
+ed()
+> is set then XEN provides a preempt hypercall scheduling function. Add i=
+t as
+> conditional path to __idtentry_exit() so the function can be reused.
+>
+> __idtentry_exit() is forced inlined so on the regular idtentry_exit() p=
+ath
+> the extra condition is optimized out by the compiler.
+>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: Juergen Gross <jgross@suse.com>
+> ---
+> V5: Move DECLARE_PER_CPU(bool, xen_in_preemptible_hcall) out of ifdeffe=
+ry
+>     to avoid #ifdeffery in idtentry_exit().
+>     Convert to the reworked stack switching helper
+>     Fixed up the XEN callback initialization (Boris O.)
+> ---
+>  arch/x86/entry/common.c         |   57 +++++++++++++++++++++++++++++++=
++++++++--
+>  arch/x86/entry/entry_32.S       |   17 ++++++-----
+>  arch/x86/entry/entry_64.S       |   22 ++++-----------
+>  arch/x86/include/asm/idtentry.h |   13 +++++++++
+>  arch/x86/xen/setup.c            |    4 ++
+>  arch/x86/xen/smp_pv.c           |    3 +-
+>  arch/x86/xen/xen-asm_32.S       |   12 ++++----
+>  arch/x86/xen/xen-asm_64.S       |    2 -
+>  arch/x86/xen/xen-ops.h          |    1=20
+>  drivers/xen/preempt.c           |    2 -
+>  include/xen/xen-ops.h           |    7 +++-
+>  11 files changed, 103 insertions(+), 37 deletions(-)
 
 
-Daniel.
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+
+
