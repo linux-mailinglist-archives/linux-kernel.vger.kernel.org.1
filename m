@@ -2,99 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7321D2CAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D951D2CBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726225AbgENK1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 06:27:48 -0400
-Received: from www62.your-server.de ([213.133.104.62]:33820 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbgENK1r (ORCPT
+        id S1726891AbgENK2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 06:28:22 -0400
+Received: from smtp-8faa.mail.infomaniak.ch ([83.166.143.170]:35279 "EHLO
+        smtp-8faa.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726070AbgENK2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 06:27:47 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jZB5c-0007ik-1o; Thu, 14 May 2020 12:27:44 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jZB5b-000K33-L4; Thu, 14 May 2020 12:27:43 +0200
-Subject: Re: [PATCH 11/18] maccess: remove strncpy_from_unsafe
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-parisc@vger.kernel.org,
-        linux-um <linux-um@lists.infradead.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200513160038.2482415-1-hch@lst.de>
- <20200513160038.2482415-12-hch@lst.de>
- <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
- <20200513192804.GA30751@lst.de>
- <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
- <20200514082054.f817721ce196f134e6820644@kernel.org>
- <CAHk-=wjBKGLyf1d53GwfUTZiK_XPdujwh+u2XSpD2HWRV01Afw@mail.gmail.com>
- <20200514100009.a8e6aa001f0ace5553c7904f@kernel.org>
- <CAHk-=wjP8ysEZnNFi_+E1ZEFGpcbAN8kbYHrCnC93TX6XX+jEQ@mail.gmail.com>
- <20200514184419.0fbf548ccf883c097d94573a@kernel.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9c2f90fd-9cac-67c3-4d96-4f873c7649e7@iogearbox.net>
-Date:   Thu, 14 May 2020 12:27:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Thu, 14 May 2020 06:28:21 -0400
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 49N75w45kTzlhj0J;
+        Thu, 14 May 2020 12:27:48 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 49N75t2qqnzljHmw;
+        Thu, 14 May 2020 12:27:46 +0200 (CEST)
+Subject: Re: [PATCH v17 02/10] landlock: Add ruleset and domain management
+To:     James Morris <jmorris@namei.org>
+Cc:     linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org
+References: <20200511192156.1618284-1-mic@digikod.net>
+ <20200511192156.1618284-3-mic@digikod.net>
+ <alpine.LRH.2.21.2005141302330.30052@namei.org>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <f646e1c7-33cf-333f-070c-0a40ad0468cd@digikod.net>
+Date:   Thu, 14 May 2020 12:27:45 +0200
+User-Agent: 
 MIME-Version: 1.0
-In-Reply-To: <20200514184419.0fbf548ccf883c097d94573a@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <alpine.LRH.2.21.2005141302330.30052@namei.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25811/Wed May 13 14:11:53 2020)
+Content-Transfer-Encoding: 8bit
+X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
+X-Antivirus-Code: 0x100000
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/20 11:44 AM, Masami Hiramatsu wrote:
-> On Wed, 13 May 2020 19:43:24 -0700
-> Linus Torvalds <torvalds@linux-foundation.org> wrote:
->> On Wed, May 13, 2020 at 6:00 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->>>
->>>> But we should likely at least disallow it entirely on platforms where
->>>> we really can't - or pick one hardcoded choice. On sparc, you really
->>>> _have_ to specify one or the other.
->>>
->>> OK. BTW, is there any way to detect the kernel/user space overlap on
->>> memory layout statically? If there, I can do it. (I don't like
->>> "if (CONFIG_X86)" thing....)
->>> Or, maybe we need CONFIG_ARCH_OVERLAP_ADDRESS_SPACE?
->>
->> I think it would be better to have a CONFIG variable that
->> architectures can just 'select' to show that they are ok with separate
->> kernel and user addresses.
->>
->> Because I don't think we have any way to say that right now as-is. You
->> can probably come up with hacky ways to approximate it, ie something
->> like
->>
->>      if (TASK_SIZE_MAX > PAGE_OFFSET)
->>          .... they overlap ..
->>
->> which would almost work, but..
+
+On 14/05/2020 05:09, James Morris wrote:
+> On Mon, 11 May 2020, Mickaël Salaün wrote:
 > 
-> It seems TASK_SIZE_MAX is defined only on x86 and s390, what about
-> comparing STACK_TOP_MAX with PAGE_OFFSET ?
-> Anyway, I agree that the best way is introducing a CONFIG.
+>> + * .. warning::
+>> + *
+>> + *   It is currently not possible to restrict some file-related actions
+>> + *   accessible through these syscall families: :manpage:`chdir(2)`,
+>> + *   :manpage:`truncate(2)`, :manpage:`stat(2)`, :manpage:`flock(2)`,
+>> + *   :manpage:`chmod(2)`, :manpage:`chown(2)`, :manpage:`setxattr(2)`,
+>> + *   :manpage:`ioctl(2)`, :manpage:`fcntl(2)`.
+>> + *   Future Landlock evolutions will enable to restrict them.
+> 
+> I have to wonder how useful Landlock will be without more coverage per 
+> the above.
 
-Agree, CONFIG knob that archs can select feels cleanest. Fwiw, I've cooked
-up fixes for bpf side locally here and finishing up testing, will push out
-later today.
+This is the result of previous discussions (on mailing lists and
+conferences) to minimize the code of Landlock to ease review. There is
+also network and other subsystems which are not covered, the same way
+other LSMs may not cover everything. However, Landlock is designed to be
+extensible without breaking user space, so extending this access-control
+will not be a problem. Previous versions of this patch series handled
+much more.
 
-Thanks,
-Daniel
+Moreover, we can compare the current situation with seccomp. Indeed,
+seccomp only enables to restrict system calls according to their number
+and their raw arguments. seccomp is designed to limit the attack surface
+of the kernel but it is also used to remove ways to access kernel
+resources. Application developers willing to sandbox their products are
+already using seccomp but there is limitations (e.g. file access
+control). Landlock addresses such limitations, which improves the
+current situation.
+
+We can also view seccomp as a complementary solution to the current
+limitations of Landlock. Indeed, seccomp filters can block or restrict
+the use of syscall families which may not be currently handled by Landlock.
+
+> 
+> It would be helpful if you could outline a threat model for this initial 
+> version, so people can get an idea of what kind of useful protection may
+> be gained from it.
+
+The main threat model may be seen as protecting from vulnerable (i.e.
+malicious) code. But because Landlock policies are defined by
+application developers, they also define their own threat model.
+
+> 
+> Are there any distros or other major users who are planning on enabling or 
+> at least investigating Landlock?
+
+I think the question should be: is there any distros which are not
+interested to improve the security of their users? :)
+Landlock is mainly designed for application developers, and most Linux
+distros rely on applications which are not developed by themselves.
+
+Some hardened distros such as CLIP OS and Chrome OS are interested to
+extend the security of the whole system with tailored sandboxing (e.g.
+internal and critical services, security brokers). For example, Chrome
+OS folks investigated with a previous version of Landlock:
+https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel-next/+/658517/
+I'm sure there is other tailored distros which will be interested once
+Landlock will be upstream (e.g. Tails, Qubes OS, Subgraph OS, etc.).
+
+> 
+> Do you have any examples of a practical application of this scheme?
+
+We can start with applications with builtin sandboxing, like web
+browsers, web services, email services, SSH, etc. There is also all
+system services handled by an init system which provides security
+features (e.g. systemd). There is also the security sandbox tools (e.g.
+Minijail [1], Firejail [2], nsjail [3], Flatpak [4], etc.). And finally,
+security-oriented APIs such as Sandboxed API [5]. Most of them should
+welcome new Linux sandboxing features provided by Landlock.
+
+[1] https://android.googlesource.com/platform/external/minijail
+[2] https://firejail.wordpress.com/
+[3] https://nsjail.dev/
+[4] https://flatpak.org/
+[5] https://github.com/google/sandboxed-api
