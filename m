@@ -2,173 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD1F1D347F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AEB71D288E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 09:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727954AbgENPIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 11:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726240AbgENPII (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 11:08:08 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72ECDC061A0C;
-        Thu, 14 May 2020 08:08:08 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id 79so3358454iou.2;
-        Thu, 14 May 2020 08:08:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Gbex69XR4ZtBuJoqVeoYUx9nyFHm1kZR6S5jk554FrE=;
-        b=FJPRMdQokqht7U+y1ela4OESMPvwo+hnpZbq+e01yT4sc7YmX6KhRapTLoooJGnaer
-         no8q5/+yTTtmbVYURRxBEfQhhZ9J+LhKOFz0bqgGBx4PJ2Bw2ftahjLfUzXNEEvP8ccI
-         2pAP6Y2aYPKnolxMJQZEZL2TjJA9jwPSwcgeBX6VoDfVfbkeZdHE4f3iGkIRzsuBERI3
-         b0XGSa3ns7gvk1VcwnfVu1eKrphDamt+YQi9Z3l0nVtOAJFrtU66CW6UaoIx+NrhyDWG
-         bpqevwejD/G29RpG/FpMT46mNvKB9gZs0esEtTpKHnxOjUpQp/TrM51cnY7zblKAAa2T
-         Tr+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Gbex69XR4ZtBuJoqVeoYUx9nyFHm1kZR6S5jk554FrE=;
-        b=M3wnIGSuqEf/qElsJ2WUpn2RRaXc3cntoA1CwXzU51tnS1ApY+QV+CVJDqaY0/SbaS
-         UeEGqmvBlTpzPbXxysWj5Xo0HEw5lzkMSDI1BcrkwkWDvWNAgyPp5nAO3lEJKnPBktOz
-         X3bZMiEtf+0RX5LRWSG57/+o9lgeDy+8DT9PPCea2lwKpMZ9CYxJEWEigp5rhVo6HUIO
-         vH1Y3uB76cV/FXU4ymPHjk1VipvTtH+rImpeOOGoddhgNtIwmPOZ8bejzzt5sErQnhld
-         YsIKFi4oJx7x6uIJQ92bNry1nRHlxBoS/8KUkf4oJreeKD8R5QWdpZh9HCilYIzigmHP
-         nozQ==
-X-Gm-Message-State: AOAM5300q5phDhsOdufNkig62F0I6Oz8vysH8qLAPGztnqR8yo7D4Gwf
-        LF8YfkYG3NGflJqKS5rerIUELXd5FAZCMTFLSeo=
-X-Google-Smtp-Source: ABdhPJxG7GXTkoxbTPKumJL1X0BkUdzHfDr7LxNY1mkd2t1RPi+rTYGSq8vStSCW40203NqyVRJ+wEEs4doBgLVXPhg=
-X-Received: by 2002:a5d:8b8e:: with SMTP id p14mr4506860iol.110.1589468887821;
- Thu, 14 May 2020 08:08:07 -0700 (PDT)
+        id S1725970AbgENHNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 03:13:35 -0400
+Received: from mail-db8eur05on2047.outbound.protection.outlook.com ([40.107.20.47]:6083
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725866AbgENHNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 03:13:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XPv5fDv/w83Gy3o15NANiY16NenRlC00twFzJhRZzE6ujGi2e5Pito5X41tIVaMzOnuNpJcdmVbFxzKxNW+ejCJ1VJLU4v6o80O9XKIyiLKlrQiXsBGWwk4HyGZd9m8CKEFQMIXblvrh1E/90WFGQYcoCJKF2hZ8+vdkse7kMZ6LXqD9DhwzozHBnhW7rcQP5QGtBZLexfAkA9V4hx1SL28uarIzBL1JgwbE0mlfBFIbLnWeXR9fBkoJLE3djCqSkCyPeisuneJBVdkY/Iq1x6wDyLDu2gfmx4zSMigaLAyTmtYaBxu4Njs6ysl5/RisBZyxYrLNcpF9OTgv9r0iZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=maY+MjDq7rpXVjrdP94zzFJKMiY0khqwZM/KYj0KhIM=;
+ b=hwtSaD2m5+qwVQ9a73MlVoLW7Yf7JyG7GWSAY8e2wITe5Wp8NiXGnMG8ArkQz0eqbwkSTwNaFXQcT2Tg17zvdTul5bDxAlNX/Bg5HDcR2gdl40UgP2Nv/IMtrWg6nZVKooukbFYCiGWj6zriV8vO6WOHFMSDJwYY7wQYNRFWYbOGE6lZ0AUrv34BR4QVxZcxJFO7kmTca33AX3JcTcIW8O3Z1HDkArWbby1HiOoqR6DpOPTIL+nA1HXoRh5kqS6Ev1m4xK742wu7kRgS5YM7FRuugR7B0iNyYmtF2QuLXJtEewefuasJkhAqtEUlncKSfRRClmYo8ioTdmN9OpcD2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=maY+MjDq7rpXVjrdP94zzFJKMiY0khqwZM/KYj0KhIM=;
+ b=DZ8dOkD2CAvrn+ZMXv2JMcc4FEZcpNi5I4gU3Csh1hle7yK08wqEmGlVWpD3AluA007pa21poRxS63mtaj/Fz+NzK6S9ZhmJtu8D3NG652UH5YJYZvu69gHmKuYR6pdMJSuJJHGHUBt404r7alOt832XUYKMiFc94Phd6K9+7WE=
+Received: from AM0PR04MB7041.eurprd04.prod.outlook.com (2603:10a6:208:19a::13)
+ by AM0PR04MB5876.eurprd04.prod.outlook.com (2603:10a6:208:130::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.26; Thu, 14 May
+ 2020 07:13:30 +0000
+Received: from AM0PR04MB7041.eurprd04.prod.outlook.com
+ ([fe80::1cab:2a78:51cb:2a00]) by AM0PR04MB7041.eurprd04.prod.outlook.com
+ ([fe80::1cab:2a78:51cb:2a00%9]) with mapi id 15.20.2979.033; Thu, 14 May 2020
+ 07:13:30 +0000
+From:   Christian Herber <christian.herber@nxp.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        David Jander <david@protonic.nl>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "mkl@pengutronix.de" <mkl@pengutronix.de>,
+        Marek Vasut <marex@denx.de>
+Subject: RE: [EXT] Re: signal quality and cable diagnostic
+Thread-Topic: [EXT] Re: signal quality and cable diagnostic
+Thread-Index: AQHWJ6ExNilqBbwzZ0ehkAYa7smAYaikHY+AgAMNSsA=
+Date:   Thu, 14 May 2020 07:13:30 +0000
+Message-ID: <AM0PR04MB7041DE18F2966573DB6E078586BC0@AM0PR04MB7041.eurprd04.prod.outlook.com>
+References: <20200511141310.GA2543@pengutronix.de>
+ <20200511143337.GC413878@lunn.ch> <20200512082201.GB16536@pengutronix.de>
+In-Reply-To: <20200512082201.GB16536@pengutronix.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [88.130.52.52]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c8a47c7f-f02f-44b9-7eba-08d7f7d64e6d
+x-ms-traffictypediagnostic: AM0PR04MB5876:
+x-microsoft-antispam-prvs: <AM0PR04MB5876160120A46E3C784DB94C86BC0@AM0PR04MB5876.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 040359335D
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wnIPQOEhJoI7IcWInAc4/jLbMXpiMZWdkzsv5bm60u6wfx0iRQeklTaohA1uGmkUU24xqI5ftfpSDKrErXPGwIq4JwA9ROYl63+BCqQMG5GeV99JhN5rt99M2l1UXNLkLNOiF7ZeV9TOqgMhlCsyIMBweN//AK2NMsfaUb8WEhnkRjVldtPkriqW1jeyGpK4MvP7vRBwFw9jq2Y8D4sMVU3v1AmQnn+OwMfu59VMYEDphx1CL3hHQ9Ujr5pCKcAXAgE1CDyXV+MRP8Yoc3znbm0UIKzftTFIGRv8KTN5J4wlt8yjD5/N4o14ANyPVxgGZXFDqWE5S3kS9RcWOj47yrqb51OVSmVA+Vx1lI7sGB7ZNEV0ABbXnLbv4PPZ8YQ2dxvJ+2ejZgiYfOeeMMOx7FEYYNkflCFC5lIXBmAFRgFFrzrDJ0flnkoguQ3LqHXx
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB7041.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(136003)(39860400002)(376002)(346002)(316002)(86362001)(8936002)(71200400001)(2906002)(9686003)(4326008)(26005)(110136005)(52536014)(54906003)(7696005)(55016002)(5660300002)(66476007)(44832011)(66556008)(66946007)(8676002)(33656002)(66446008)(76116006)(7416002)(64756008)(478600001)(186003)(6506007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: kqSDKHQoCTRcsrSrgEI0Q3wBA9TH5/pa5fxuoMsVBLOCyYQLnxSo46mlSSu0EdSC7/f1yMJGWgW4Q1PO5K8C8Eq83qQzam56tUKPfDp0Gto5JuDUgo1fgDJD41ueEz68+Lu2w1uIfJ9NhqWPfXWytujNJS2GCoRKoPLaoWUqc3Hhp7mC4jHgqIYaMMHiD9laS2fOesdoBedfJKAnh8DSZo+yrNbAFqNBjGFkPs5Oh2im4tHM5Nx7DgPhyMtXbDybrozCvJP4jyQA3cht4iXf3n4hRghFIrvMKtGocq4dmTcV34A8ckQSMI1er+ZGHvLrLHqQeZRojGWNE9wHbyeLBxpfYDkUF4S31r/1rytw8y3l6TWPfScOWF18vFjNNePlVLluO4jJgEFAbjQda2uYJnXrK9lFjjHOMaYgYJ3zrxshpFhH28wWIoTNWm0Bclar/3pp437jWFWhTz2G3saaNR1et6wnWG0HMeFIbx1ld3c=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <1589269010-18472-1-git-send-email-dillon.minfei@gmail.com>
- <1589269010-18472-3-git-send-email-dillon.minfei@gmail.com> <da9fbb80-571d-1217-4028-e413a0c7db84@st.com>
-In-Reply-To: <da9fbb80-571d-1217-4028-e413a0c7db84@st.com>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Thu, 14 May 2020 15:07:32 +0800
-Message-ID: <CAL9mu0KJ0j6Rxf7YjKxVWKz_d+B6vrwqqxJM-fmzG=NonLeDYQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] ARM: dts: stm32: enable l3gd20 on stm32429-disco board
-To:     Alexandre Torgue <alexandre.torgue@st.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Mark Brown <broonie@kernel.org>, p.zabel@pengutronix.de,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Hua Dillon <dillonhua@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8a47c7f-f02f-44b9-7eba-08d7f7d64e6d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 May 2020 07:13:30.5571
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XSnbpQnw1Nojp8OxCHdzlvEUNgbn2v4LJiZc2qjnk/HJmunejyM6XnJEaQwCE2n3hbRAe5Wvgy01UXebK4hIMXxdjc2eNcAwm2X4rB02mTw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB5876
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
-
-Alexandre Torgue <alexandre.torgue@st.com> =E4=BA=8E2020=E5=B9=B45=E6=9C=88=
-14=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=8810:10=E5=86=99=E9=81=93=EF=
-=BC=9A
->
-> Hi Dillon
->
-> On 5/12/20 9:36 AM, dillon.minfei@gmail.com wrote:
-> > From: dillon min <dillon.minfei@gmail.com>
-> >
-> > L3gd20, st mems motion sensor, 3-axis digital output gyroscope,
-> > connect to stm32f429 via spi5
-> >
-> > Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> > ---
-> >
-> > Hi Alexandre,
-> >
-> > V2:
-> >      1, insert blank line at stm32f420-disco.dts line 143
-> >      2, add more description about l3gd20 in commit message
-> >
-> > V1:
-> >      enable l3gd20 dts binding on stm32f429-disco
-> >
-> > thanks.
-> >
-> > dillon,
-> >
-> >   arch/arm/boot/dts/stm32f429-disco.dts | 25 +++++++++++++++++++++++++
-> >   1 file changed, 25 insertions(+)
-> >
-> > diff --git a/arch/arm/boot/dts/stm32f429-disco.dts b/arch/arm/boot/dts/=
-stm32f429-disco.dts
-> > index 30c0f67..1bfb903 100644
-> > --- a/arch/arm/boot/dts/stm32f429-disco.dts
-> > +++ b/arch/arm/boot/dts/stm32f429-disco.dts
-> > @@ -49,6 +49,8 @@
-> >   #include "stm32f429.dtsi"
-> >   #include "stm32f429-pinctrl.dtsi"
-> >   #include <dt-bindings/input/input.h>
-> > +#include <dt-bindings/interrupt-controller/irq.h>
-> > +#include <dt-bindings/gpio/gpio.h>
-> >
-> >   / {
-> >       model =3D "STMicroelectronics STM32F429i-DISCO board";
-> > @@ -127,3 +129,26 @@
-> >       pinctrl-names =3D "default";
-> >       status =3D "okay";
-> >   };
-> > +
-> > +&spi5 {
-> > +     status =3D "okay";
-> > +     pinctrl-0 =3D <&spi5_pins>;
-> > +     pinctrl-names =3D "default";
-> > +     #address-cells =3D <1>;
-> > +     #size-cells =3D <0>;
-> > +     cs-gpios =3D <&gpioc 1 GPIO_ACTIVE_LOW>;
-> > +     dmas =3D <&dma2 3 2 0x400 0x0>,
-> > +            <&dma2 4 2 0x400 0x0>;
-> > +     dma-names =3D "rx", "tx";
-> > +
->
-> You added this spi5 node in this patch but also in the display series. I
-> will have issue to merge. Even if I could fix it easily, as you are
-> going to resend, the good practice could be to have several patches in
-> one series: one patch for spi5 controller, another for gyro and another
-> for display.
->
-> And also same remark than Linus did in display series move DMA to soc
-> dtsi file please.
-
-Sure, how about this patch sequence:
-1 add spi5 dma to soc (stm32f429.dtsi)
-2 add pin map for spi5 (stm32f4-pinctrl.dtsi)
-3 add spi5 controller with gyro (stm32f429-disco.dts)
-4 add spi modification to support gyro (spi-stm32.c)
-
-5 add ltdc pin map for stm32f429-disco board (stm32f4-pinctrl.dtsi)
-6 add ilitek-ili9341 dts bindings for disco (stm32f429-disco.dts,
-depends on above step 3)
-7 add yaml document about ilitek-ili9341 (ilitek,ili9341.yaml)
-8 add clk changes to support ltdc driver (clk-stm32f4.c)
-
-so, i will combine gyro and display two patches to one patchset next
-time. right ?
-
-thanks.
->
->
-> > +     l3gd20: l3gd20@0 {
-> > +             compatible =3D "st,l3gd20-gyro";
-> > +             spi-max-frequency =3D <10000000>;
-> > +             st,drdy-int-pin =3D <2>;
-> > +             interrupt-parent =3D <&gpioa>;
-> > +             interrupts =3D <1 IRQ_TYPE_EDGE_RISING>,
-> > +                             <2 IRQ_TYPE_EDGE_RISING>;
-> > +             reg =3D <0>;
-> > +             status =3D "okay";
-> > +     };
-> > +};
-> >
+T24gVHVlLCBNYXkgMTIsIDIwMjAgYXQgMTA6MjI6MDFBTSArMDIwMCwgT2xla3NpaiBSZW1wZWwg
+d3JvdGU6DQoNCj4gU28gSSB0aGluayB3ZSBzaG91bGQgcGFzcyByYXcgU1FJIHZhbHVlIHRvIHVz
+ZXIgc3BhY2UsIGF0IGxlYXN0IGluIHRoZQ0KPiBmaXJzdCBpbXBsZW1lbnRhdGlvbi4NCg0KPiBX
+aGF0IGRvIHlvdSB0aGluayBhYm91dCB0aGlzPw0KDQpIaSBPbGVrc2lqLA0KDQpJIGhhZCBhIGNo
+ZWNrIGFib3V0IHRoZSBiYWNrZ3JvdW5kIG9mIHRoaXMgU1FJIHRoaW5nLiBUaGUgdGFibGUgeW91
+IHJlZmVyZW5jZSB3aXRoIGNvbmNyZXRlIFNOUiB2YWx1ZXMgaXMgaW5mb3JtYXRpdmUgb25seSBh
+bmQgbm90IGEgcmVxdWlyZW1lbnQuIFRoZSByZXF1aXJlbWVudHMgYXJlIHJhdGhlciBsb29zZS4N
+Cg0KVGhpcyBpcyBmcm9tIE9BOg0KLSBPbmx5IGZvciBTUUk9MCBhIGxpbmsgbG9zcyBzaGFsbCBv
+Y2N1ci4NCi0gVGhlIGluZGljYXRlZCBzaWduYWwgcXVhbGl0eSBzaGFsbCBtb25vdG9uaWMgaW5j
+cmVhc2luZyAvZGVjcmVhc2luZyB3aXRoIG5vaXNlIGxldmVsLg0KLSBJdCBzaGFsbCBiZSBpbmRp
+Y2F0ZWQgaW4gdGhlIGRhdGFzaGVldCBhdCB3aGljaCBsZXZlbCBhIEJFUjwxMF4tMTAgKGJldHRl
+ciB0aGFuIDEwXi0xMCkgaXMgYWNoaWV2ZWQgKGUuZy4gImZyb20gU1FJPTMgdG8gU1FJPTcgdGhl
+IGxpbmsgaGFzIGEgQkVSPDEwXi0xMCAoYmV0dGVyIHRoYW4gMTBeLTEwKSIpDQoNCkkuZS4gU1FJ
+IGRvZXMgbm90IG5lZWQgdG8gaGF2ZSBhIGRpcmVjdCBjb3JyZWxhdGlvbiB3aXRoIFNOUi4gVGhl
+IGZ1bmRhbWVudGFsIHVuZGVybHlpbmcgbWV0cmljIGlzIHRoZSBCRVIuDQpZb3UgY2FuIHJlcG9y
+dCB0aGUgcmF3IFNRSSBsZXZlbCBhbmQgdXNlcnMgd291bGQgaGF2ZSB0byBsb29rIHVwIHdoYXQg
+aXQgbWVhbnMgaW4gdGhlIHJlc3BlY3RpdmUgZGF0YSBzaGVldC4gVGhlcmUgaXMgbm8gZ3VhcmFu
+dGVlZCByZWxhdGlvbiBiZXR3ZWVuIFNRSSBsZXZlbHMgb2YgZGlmZmVyZW50IGRldmljZXMsIGku
+ZS4gU1FJIDUgY2FuIGhhdmUgbG93ZXIgQkVSIHRoYW4gU1FJIDYgb24gYW5vdGhlciBkZXZpY2Uu
+DQpBbHRlcm5hdGl2ZWx5LCB5b3UgY291bGQgcmVwb3J0IEJFUiA8IHggZm9yIHRoZSBkaWZmZXJl
+bnQgU1FJIGxldmVscy4gSG93ZXZlciwgdGhpcyByZXF1aXJlcyB0aGUgaW5mb3JtYXRpb24gdG8g
+YmUgYXZhaWxhYmxlLiBXaGlsZSBJIGNvdWxkIHByb3ZpZGUgdGhlc2UgZm9yIE5YUCwgaXQgbWln
+aHQgbm90IGJlIGVhc2lseSBhdmFpbGFibGUgZm9yIG90aGVyIHZlbmRvcnMuDQpJZiByZXBvcnRp
+bmcgcmF3IFNRSSwgYXQgbGVhc3QgdGhlIFNRSSBsZXZlbCBmb3IgQkVSPDEwXi0xMCBzaG91bGQg
+YmUgcHJlc2VudGVkIHRvIGdpdmUgYW55IG1lYW5pbmcgdG8gdGhlIHZhbHVlLg0KDQpSZWdhcmRz
+LA0KDQpDaHJpc3RpYW4NCg==
