@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BEBF1D261D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B4E1D2623
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726037AbgENE6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 00:58:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40516 "EHLO mail.kernel.org"
+        id S1725952AbgENE6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 00:58:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbgENE6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 00:58:05 -0400
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+        id S1725788AbgENE6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 00:58:45 -0400
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E64F920760
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:58:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98C41205CB
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:58:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589432285;
-        bh=ddUrr9hDxrQIH4knLjpMqEzMT//jpgk9POSIeLe7uys=;
+        s=default; t=1589432324;
+        bh=1bJl5V9rIa6F/KokSx6T9TyYU8drhQZpBwxhsnGNptA=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OPKI7rfrwk0FT5Juh68b6rV1OZT6nLgnH+rIs2CT2ZUmBgp0YzQUh2ds+q07WngyL
-         zwS8GfyXA9XO8SNnZKgbCU4ZzbaNqygj+vNJtHcvua/7l8HOUzq7usoFFheLWtGPi6
-         lrCaHsGpE+f54hjMyKRCmdEdBaD/FbfbGvfKjyZg=
-Received: by mail-wr1-f53.google.com with SMTP id e1so2137496wrt.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:58:04 -0700 (PDT)
-X-Gm-Message-State: AOAM530/q0hOtps4euV0XqiiFHzGSpOLbUJs2v+8/Lb+Cw9fjd25rVyS
-        XoPBRmo07FXoL+ly+onhywTohVayrSjy3wi5/3Wi9g==
-X-Google-Smtp-Source: ABdhPJyzev78VR2eFEzu4QpBQY9fCsckfXycHjuyN1cID5gIUY7DfOPSBvhO6KI9OIPJwYzC51Emw003YwUrtGrNtHI=
-X-Received: by 2002:adf:eccf:: with SMTP id s15mr3073367wro.70.1589432283319;
- Wed, 13 May 2020 21:58:03 -0700 (PDT)
+        b=vQn/dP/iLKrrTc2XC0HKokLn2gw7p2FQgRjMrt8Vhb5zQaHAITfYtp9YyCtZq8K2E
+         k4D0iTEchW19nbbgb/BkolyE/V1Gx6/T2Pj+XokOwXlQ3KLS6agVpSrBlbdaYlCpra
+         BxWo9ABd6mExWlGvrt7ljJm/dkURGp8OUNM1l3BU=
+Received: by mail-wr1-f50.google.com with SMTP id y16so2154486wrs.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:58:44 -0700 (PDT)
+X-Gm-Message-State: AOAM533C/XH0Kt02ih6JHyq2t3AmBCREoP/VJqO+DYmQeR9EFSdT0BFf
+        PDo/N2FI4ZLgwBgBHFjtFnzqggkWCB9AqggBi16Ybw==
+X-Google-Smtp-Source: ABdhPJwSupgk0tJFS3rmq6v6FMlkcjjT9kwiAmtqx6+k291nr5Bxt+2tOY/v1qQ3jotcVLnQO2vKDcyeqys9J4y/rlc=
+X-Received: by 2002:adf:a389:: with SMTP id l9mr3227189wrb.18.1589432323046;
+ Wed, 13 May 2020 21:58:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200505134926.578885807@linutronix.de> <20200505135313.517429268@linutronix.de>
-In-Reply-To: <20200505135313.517429268@linutronix.de>
+References: <20200505134926.578885807@linutronix.de> <20200505135313.624443814@linutronix.de>
+In-Reply-To: <20200505135313.624443814@linutronix.de>
 From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 13 May 2020 21:57:52 -0700
-X-Gmail-Original-Message-ID: <CALCETrXVQsdPafvH56_nF+CKU94wgq-T71=EB6eSBnz70Cd0Rw@mail.gmail.com>
-Message-ID: <CALCETrXVQsdPafvH56_nF+CKU94wgq-T71=EB6eSBnz70Cd0Rw@mail.gmail.com>
-Subject: Re: [patch V4 part 4 02/24] x86/int3: Avoid atomic instrumentation
+Date:   Wed, 13 May 2020 21:58:31 -0700
+X-Gmail-Original-Message-ID: <CALCETrUkeDWw6c26GH_AdBr40QUCBdvy6WDtgh0GsZB3VqmNgA@mail.gmail.com>
+Message-ID: <CALCETrUkeDWw6c26GH_AdBr40QUCBdvy6WDtgh0GsZB3VqmNgA@mail.gmail.com>
+Subject: Re: [patch V4 part 4 03/24] lib/bsearch: Provide __always_inline variant
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
@@ -67,13 +67,12 @@ On Tue, May 5, 2020 at 7:15 AM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
 > From: Peter Zijlstra <peterz@infradead.org>
 >
-> Use arch_atomic_*() and READ_ONCE_NOCHECK() to ensure nothing untoward
-> creeps in and ruins things.
->
-> That is; this is the INT3 text poke handler, strictly limit the code
-> that runs in it, lest it inadvertenly hits yet another INT3.
+> For code that needs the ultimate performance (it can inline the @cmp
+> function too) or simply needs to avoid calling external functions for
+> whatever reason, provide an __always_inline variant of bsearch().
 
 
 Acked-by: Andy Lutomirski <luto@kernel.org>
 
-Does objtool catch this error?
+Although maybe a more explicit name (e.g. __inlined_bsearch()) would
+be more clear?
