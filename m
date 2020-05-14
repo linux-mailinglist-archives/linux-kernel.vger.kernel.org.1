@@ -2,142 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F95D1D3344
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 635DC1D334E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbgENOlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 10:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
+        id S1727946AbgENOoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 10:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726582AbgENOlo (ORCPT
+        with ESMTP id S1726067AbgENOoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 10:41:44 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489D9C05BD09
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:41:44 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id a5so12627755pjh.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:41:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IpKyFs1yszxKs0lfKzxRyfm8sy/4V4zXUkzdtSdkHLU=;
-        b=X+1M/fmbQRViUiNWq5i8Wnhzf2ZxZWa44EfPqXFdhzGNfFrnMMGFlC9RiMxXJ091Ma
-         NG/CNZqhzV1Qho131HIRtHnMmH2dd1a0u/Lnxs7n0oy487ROOuwOgwTDBO2IRRCDsPb3
-         hmLh+/ITWKzvGRhNGI8R89GJSU8kqpyPsfmQQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IpKyFs1yszxKs0lfKzxRyfm8sy/4V4zXUkzdtSdkHLU=;
-        b=j2E+1I7cpo6BceyMZ+3uc9kpE3cZScDhA4zYUOnWjdWEAU+35eeRxyNZiVSMScJtgC
-         AAGua+eZAuZEzIH+BoLQz5DnLg5l2/o3l3CStk2PJyfI9CDdO8uvFnusXN9XPGHPUgem
-         RFXQjnQiQx7BNJvkYFL7Izj0KqBTKpNKFa4CoQmGJbiAHphxa3I374awK/WtctvuCFgz
-         eNYihPPw5814JxCNNutF2g9rvGqwEXK3ae+SxwllyTvR2/gk5t+vsH7Z3l9h10dftady
-         lhIV++hhAdQKR6JPIn/zjZ5u/Xl4e/7a1eSZddX2WRTa4gwAM4A7DOeTRS89o3V5XhMn
-         YgtA==
-X-Gm-Message-State: AOAM532QrAZnh06kbYheh3LfuuaP6+i6rfkVnNaMw6DVr7k4I12F5u3r
-        kz132TdevkHYn/nP5hsuRcuzzw==
-X-Google-Smtp-Source: ABdhPJw803NLliwJdw3Qk5o4x+XH/SQaDwZsQ2JFMZ1iNHIhcyH1GCLb3+bU8sx5k7WA09KC4Ps+iQ==
-X-Received: by 2002:a17:902:b608:: with SMTP id b8mr4282064pls.163.1589467303571;
-        Thu, 14 May 2020 07:41:43 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g10sm2542952pfk.103.2020.05.14.07.41.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 07:41:41 -0700 (PDT)
-Date:   Thu, 14 May 2020 07:41:40 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        Thu, 14 May 2020 10:44:05 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87384C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:44:05 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jZF5A-0000sf-Em; Thu, 14 May 2020 16:43:32 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 916191004CE; Thu, 14 May 2020 16:43:31 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Andy Lutomirski <luto@kernel.org>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mickael.salaun@ssi.gouv.fr>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v5 3/6] fs: Enable to enforce noexec mounts or file exec
- through O_MAYEXEC
-Message-ID: <202005140739.F3A4D8F3@keescook>
-References: <20200505153156.925111-1-mic@digikod.net>
- <20200505153156.925111-4-mic@digikod.net>
- <CAEjxPJ7y2G5hW0WTH0rSrDZrorzcJ7nrQBjfps2OWV5t1BUYHw@mail.gmail.com>
- <202005131525.D08BFB3@keescook>
- <202005132002.91B8B63@keescook>
- <CAEjxPJ7WjeQAz3XSCtgpYiRtH+Jx-UkSTaEcnVyz_jwXKE3dkw@mail.gmail.com>
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch V4 part 3 11/29] rcu: Provide rcu_irq_exit_preempt()
+In-Reply-To: <20200514024116.GA231286@google.com>
+References: <20200505134354.774943181@linutronix.de> <20200505134904.364456424@linutronix.de> <20200514024116.GA231286@google.com>
+Date:   Thu, 14 May 2020 16:43:31 +0200
+Message-ID: <87blmqziek.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEjxPJ7WjeQAz3XSCtgpYiRtH+Jx-UkSTaEcnVyz_jwXKE3dkw@mail.gmail.com>
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 08:22:01AM -0400, Stephen Smalley wrote:
-> On Wed, May 13, 2020 at 11:05 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Wed, May 13, 2020 at 04:27:39PM -0700, Kees Cook wrote:
-> > > Like, couldn't just the entire thing just be:
-> > >
-> > > diff --git a/fs/namei.c b/fs/namei.c
-> > > index a320371899cf..0ab18e19f5da 100644
-> > > --- a/fs/namei.c
-> > > +++ b/fs/namei.c
-> > > @@ -2849,6 +2849,13 @@ static int may_open(const struct path *path, int acc_mode, int flag)
-> > >               break;
-> > >       }
-> > >
-> > > +     if (unlikely(mask & MAY_OPENEXEC)) {
-> > > +             if (sysctl_omayexec_enforce & OMAYEXEC_ENFORCE_MOUNT &&
-> > > +                 path_noexec(path))
-> > > +                     return -EACCES;
-> > > +             if (sysctl_omayexec_enforce & OMAYEXEC_ENFORCE_FILE)
-> > > +                     acc_mode |= MAY_EXEC;
-> > > +     }
-> > >       error = inode_permission(inode, MAY_OPEN | acc_mode);
-> > >       if (error)
-> > >               return error;
-> > >
-> >
-> > FYI, I've confirmed this now. Effectively with patch 2 dropped, patch 3
-> > reduced to this plus the Kconfig and sysctl changes, the self tests
-> > pass.
-> >
-> > I think this makes things much cleaner and correct.
-> 
-> I think that covers inode-based security modules but not path-based
-> ones (they don't implement the inode_permission hook).  For those, I
-> would tentatively guess that we need to make sure FMODE_EXEC is set on
-> the open file and then they need to check for that in their file_open
-> hooks.
+Joel,
 
-Does there need to be an FMODE_OPENEXEC, or is the presence of
-FMODE_OPEN with FMODE_EXEC sufficient?
+Joel Fernandes <joel@joelfernandes.org> writes:
+> On Tue, May 05, 2020 at 03:44:05PM +0200, Thomas Gleixner wrote:
+> Could you let me know which patch or part in the multi-part series is
+> using it?
 
--- 
-Kees Cook
+You found it :)
+>> +void rcu_irq_exit_preempt(void)
+>> +{
+>> +	lockdep_assert_irqs_disabled();
+>> +	rcu_nmi_exit();
+>> +
+>> +	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) <= 0,
+>> +			 "RCU dynticks_nesting counter underflow/zero!");
+>
+> Makes sense.
+>
+>> +	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
+>> +			 "RCU dynticks_nmi_nesting counter underflow/zero!");
+>
+> This new function will be called only from the outer-most IRQ that
+> interrupted kernel mode (process context). Right? If so, a better (more
+> specific) check for the second RCU_LOCKDEP_WARN above is:
+>
+> RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) != DYNTICK_IRQ_NONIDLE,
+> 			 "Bad RCU dynticks_nmi_nesting counter\n");
+>
+> That will make sure, it is only called from outer-most rcu_irq_exit() and
+> interrupting kernel mode.
+
+Makes sense.
+
+> Or, if [1] is merged, then we could just combine the checks into one check.
+> 	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) != 1,
+> 			 "Bad RCU dynticks_nmi_nesting counter\n");
+>
+>> +	RCU_LOCKDEP_WARN(rcu_dynticks_curr_cpu_in_eqs(),
+>> +			 "RCU in extended quiescent state!");
+>
+> Makes sense.
+>
+> BTW, I wonder if a better place to do this "don't enter scheduler while RCU
+> is not watching" is rcu_note_context_switch()...
+
+I actually want to catch even the case where we don't schedule, i.e.
+
+  if (ret_to_kernel) {
+     if (interrupts_on_after_return((regs)) {
+        if (IS_ENABLED(CONFIG_PREEMPTION)) {
+  	   if (!preempt_count()) {
+              /* Preemption is possible ... */
+       	      rcu_irq_exit_preempt();
+                 if (need_resched())
+                    schedule_preempt_irq();
+
+that catches any exit where preemption is possible and RCU is not
+watching after rcu_irq_exit().
+
+It does not matter whether need-resched is set here or not. Any
+interrupt/exception could set it.
+
+Yes, I'm paranoid :)
+
+Thanks,
+
+        tglx
