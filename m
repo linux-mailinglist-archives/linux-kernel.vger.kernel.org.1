@@ -2,75 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7070E1D2629
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109AF1D262F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 07:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726075AbgENE7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 00:59:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgENE7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 00:59:10 -0400
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1285A20760
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:59:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589432350;
-        bh=34F8eGW7N0jNgiN4aSvNc+ES3vB+phlFfIdTqf7K6F0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sAuNhWj+W/vblq6c/VQLrv86iMJSKqlo320TejoRm4rYoSVcolQNTzKR4B9VxzgwW
-         +Y87T7cz0eZ2e6x2VlqPGSALZpgjy98JWKqKDi+DGcSLI4vS4xVgw4nKz5mlgk9t5y
-         +QNZYA/t+sRZxPkCPrs4Z1dziwVB2lKdXVp31i2M=
-Received: by mail-wr1-f50.google.com with SMTP id v12so2088397wrp.12
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:59:09 -0700 (PDT)
-X-Gm-Message-State: AOAM532en5kXc+ZCoXbKyFFzU5+9ws+zg816AnJYZhTGPnfDAGCvf042
-        Qa17XQLq9pfBdw80G3uUJQlF0s8JDdTwuuZILnCFcw==
-X-Google-Smtp-Source: ABdhPJxfXsiygQMHLXwzsecD4MfW3wLYbQ6qE2bPesDvAj5EdcZGqNL61NZ7Vto10GqHNj2DEhKaqwI6vwoAWY3GIdo=
-X-Received: by 2002:adf:f446:: with SMTP id f6mr3071623wrp.75.1589432348453;
- Wed, 13 May 2020 21:59:08 -0700 (PDT)
+        id S1726061AbgENFAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 01:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725831AbgENFAq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 01:00:46 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3898C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 22:00:45 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id j21so758824pgb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 22:00:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gRtb+ye+6N2jERJtNafzHVxmDwBVGiZa6FElJAmpzAg=;
+        b=iTlKFnvLfFYMiRs/m3eZENaimKbVUuQZVgPWtxNuem+VijamM+3tXGhIT/7RFiZ1yb
+         9hr9CA61VbhbBo3+o5Epa9c+28DXOGdsLDBWAuaJ7gYcFqfR9/zqGs47lEqwrE/wSRBZ
+         04NAF0Z75+b+Y73uIRcl7N+gkdIXKuaLQX8PQhWal3RUGW+Ir/um6wqe3NanwiAk9jWA
+         Phosz3081FLvsRMMOsZFP1Ne/gQiHo1dwSrMPAHKRdEK3ZeUdbsx7bPzSa/DoiLASZRa
+         mgm/T2uJijxPTULXV0s3P0weaUSJIbptAliKmiiicCGPxvfM+eqja2dH639Xr9a1N/E6
+         Wq6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gRtb+ye+6N2jERJtNafzHVxmDwBVGiZa6FElJAmpzAg=;
+        b=JN+0GQJw8FcKVXibiFSR/hl7DZiL/wcaoNt0KRt+ux5N7Vn7CBnANjomslaAS0Ut2j
+         slJUucKn8QrWRhLMVQx7XY8+o+mk2zmavkEILTMvL5tNqAof9RVszv/6zRsMhHPeTi/F
+         jYr/EaHM9xNr8eP3rvc4PdhDLmrIhlDTIsHvI1hMW9XtmQbzOcNfKLV/MjtUAJMpOfNc
+         kvKKk55XxmqeSxkZbTQhb92m8FwPL3oxmmgRAoYRpiGggdCa9FnBYNaOwgky68xU28dn
+         VbALHkZhTIaTMLyH0wY78rsoLsIm8ySO7gSB3fVzb/iq5cI5492eNui9w6q0iezVlfcG
+         oXwQ==
+X-Gm-Message-State: AOAM532+LA4L42DqXAXPKFWze7mKAeXkc1ftUUvAb5fOw8ghx2G9JO3V
+        MuFG3i4Jb20cMjthObwrE0sAew==
+X-Google-Smtp-Source: ABdhPJyrnJxz1I6U4kp3zNWz12oevEgN0OyqU9jHUbD2BpMkoM8FG83os68vLDY7dUIJhvaavhyMxA==
+X-Received: by 2002:a65:6799:: with SMTP id e25mr2609901pgr.9.1589432445068;
+        Wed, 13 May 2020 22:00:45 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id a15sm16664612pju.3.2020.05.13.22.00.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 22:00:44 -0700 (PDT)
+Date:   Wed, 13 May 2020 21:59:14 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, loic.pallardy@st.com,
+        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 03/12] remoteproc: stm32: Decouple rproc from DT
+ parsing
+Message-ID: <20200514045914.GI16107@builder.lan>
+References: <20200424202505.29562-1-mathieu.poirier@linaro.org>
+ <20200424202505.29562-4-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-References: <20200505134926.578885807@linutronix.de> <20200505135313.731774429@linutronix.de>
-In-Reply-To: <20200505135313.731774429@linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 13 May 2020 21:58:57 -0700
-X-Gmail-Original-Message-ID: <CALCETrUXFme0mMEu9RhnBbwPK2EWXNt7uPFCK5niv_qk2yuyhg@mail.gmail.com>
-Message-ID: <CALCETrUXFme0mMEu9RhnBbwPK2EWXNt7uPFCK5niv_qk2yuyhg@mail.gmail.com>
-Subject: Re: [patch V4 part 4 04/24] x86/int3: Inline bsearch()
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424202505.29562-4-mathieu.poirier@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 7:15 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> From: Peter Zijlstra <peterz@infradead.org>
->
-> Avoid calling out to bsearch() by inlining it, for normal kernel configs
-> this was the last external call and poke_int3_handler() is now fully self
-> sufficient -- no calls to external code.
->
+On Fri 24 Apr 13:24 PDT 2020, Mathieu Poirier wrote:
 
+> Remove the remote processor from the process of parsing the device tree
+> since (1) there is no correlation between them and (2) to use the
+> information that was gathered to make a decision on whether to
+> synchronise with the M4 or not.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Acked-by: Andy Lutomirski <luto@kernel.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+> ---
+>  drivers/remoteproc/stm32_rproc.c | 25 ++++++++++++++-----------
+>  1 file changed, 14 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+> index 1ac90adba9b1..57a426ea620b 100644
+> --- a/drivers/remoteproc/stm32_rproc.c
+> +++ b/drivers/remoteproc/stm32_rproc.c
+> @@ -538,12 +538,11 @@ static int stm32_rproc_get_syscon(struct device_node *np, const char *prop,
+>  	return err;
+>  }
+>  
+> -static int stm32_rproc_parse_dt(struct platform_device *pdev)
+> +static int stm32_rproc_parse_dt(struct platform_device *pdev,
+> +				struct stm32_rproc *ddata, bool *auto_boot)
+>  {
+>  	struct device *dev = &pdev->dev;
+>  	struct device_node *np = dev->of_node;
+> -	struct rproc *rproc = platform_get_drvdata(pdev);
+> -	struct stm32_rproc *ddata = rproc->priv;
+>  	struct stm32_syscon tz;
+>  	unsigned int tzen;
+>  	int err, irq;
+> @@ -589,7 +588,7 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev)
+>  
+>  	err = regmap_read(tz.map, tz.reg, &tzen);
+>  	if (err) {
+> -		dev_err(&rproc->dev, "failed to read tzen\n");
+> +		dev_err(dev, "failed to read tzen\n");
+>  		return err;
+>  	}
+>  	ddata->secured_soc = tzen & tz.mask;
+> @@ -605,7 +604,7 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev)
+>  	if (err)
+>  		dev_info(dev, "failed to get pdds\n");
+>  
+> -	rproc->auto_boot = of_property_read_bool(np, "st,auto-boot");
+> +	*auto_boot = of_property_read_bool(np, "st,auto-boot");
+>  
+>  	return stm32_rproc_of_memory_translations(pdev, ddata);
+>  }
+> @@ -616,6 +615,7 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+>  	struct stm32_rproc *ddata;
+>  	struct device_node *np = dev->of_node;
+>  	struct rproc *rproc;
+> +	bool auto_boot = false;
+>  	int ret;
+>  
+>  	ret = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(32));
+> @@ -626,9 +626,16 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+>  	if (!rproc)
+>  		return -ENOMEM;
+>  
+> +	ddata = rproc->priv;
+> +
+>  	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
+> +
+> +	ret = stm32_rproc_parse_dt(pdev, ddata, &auto_boot);
+> +	if (ret)
+> +		goto free_rproc;
+> +
+> +	rproc->auto_boot = auto_boot;
+>  	rproc->has_iommu = false;
+> -	ddata = rproc->priv;
+>  	ddata->workqueue = create_workqueue(dev_name(dev));
+>  	if (!ddata->workqueue) {
+>  		dev_err(dev, "cannot create workqueue\n");
+> @@ -638,13 +645,9 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, rproc);
+>  
+> -	ret = stm32_rproc_parse_dt(pdev);
+> -	if (ret)
+> -		goto free_wkq;
+> -
+>  	ret = stm32_rproc_request_mbox(rproc);
+>  	if (ret)
+> -		goto free_rproc;
+> +		goto free_wkq;
+>  
+>  	ret = rproc_add(rproc);
+>  	if (ret)
+> -- 
+> 2.20.1
+> 
