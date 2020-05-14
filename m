@@ -2,65 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23251D2CBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F031D2BB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 11:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726848AbgENK2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 06:28:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726494AbgENK1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 06:27:55 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21BAC20727;
-        Thu, 14 May 2020 10:27:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589452075;
-        bh=UVkexWXSk7D55Q+F3hBDCNoDXQXYDBpoqQ+P+4xna0o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lh6kiO+mhflzQlaTQo3EmyOzwhQFe/513hif+1Oeb7GCApSDtWYYYS/inkXNQHxG1
-         igyKuhbPMFp2s3HkEYitF7o1JT7/S6Zbl1LExgQ0ZOt5pd7yraCXpKqKJjyC9UMHCd
-         0Ta6dzHMGtJePRTb5YsB40mhRz51f8bhYFE/u5Hk=
-Date:   Thu, 14 May 2020 11:46:45 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     David Miller <davem@davemloft.net>
-Cc:     f.fainelli@gmail.com, netdev@vger.kernel.org,
-        stable@vger.kernel.org, andrew@lunn.ch, vivien.didelot@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH stable-5.4.y] net: dsa: Do not make user port errors fatal
-Message-ID: <20200514094645.GA1700086@kroah.com>
-References: <20200513174145.10048-1-f.fainelli@gmail.com>
- <20200513.125546.1487344805837197413.davem@davemloft.net>
+        id S1726116AbgENJom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 05:44:42 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18803 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgENJol (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 05:44:41 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ebd127f0001>; Thu, 14 May 2020 02:42:23 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 14 May 2020 02:44:41 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 14 May 2020 02:44:41 -0700
+Received: from [10.25.73.206] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 14 May
+ 2020 09:44:37 +0000
+Subject: Re: [PATCH V3 0/8] Tegra XUSB charger detect support
+To:     Felipe Balbi <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <mark.rutland@arm.com>, <robh+dt@kernel.org>, <kishon@ti.com>
+CC:     <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1589437363-16727-1-git-send-email-nkristam@nvidia.com>
+ <87wo5e4zzi.fsf@kernel.org>
+X-Nvconfidentiality: public
+From:   Nagarjuna Kristam <nkristam@nvidia.com>
+Message-ID: <de31ad94-6884-cf83-36c4-0a865bc01753@nvidia.com>
+Date:   Thu, 14 May 2020 15:16:48 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513.125546.1487344805837197413.davem@davemloft.net>
+In-Reply-To: <87wo5e4zzi.fsf@kernel.org>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1589449343; bh=IjElWauWpJw92WntPBv2Q9z6+yo5qw4xWM56DjfOXrA=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=UFysw5t4oIzHzmyonRYLlW3RfxdrYITKUAEJOaiNz8TXpelUnGolk8wRFclt2gUsp
+         milukPQu8fyoz+ySK0BJ6vimiRDpWU2QZidyPER2HDyJP8mkaXRjiUdz84u5lB7Crz
+         SDZqkjVEoPM29GeGfEMaA/pVrwn9MPIvqnXeg58cHreZhExEC/JT+ss/Uj9hXwzoPj
+         WXmHMAq2reAs0aJoIf6Gl7y1E9P+yvuT9A/az7+svUa+Cy/90YH+SLVLNlTPythwx3
+         SfN2TehRuXTXPrMrgduBc3RJnRUWIr2CLMp9eMrFQ8IY4/MSlYdwTOo24z0EcvCLR+
+         31RExRP4EVujQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 12:55:46PM -0700, David Miller wrote:
-> From: Florian Fainelli <f.fainelli@gmail.com>
-> Date: Wed, 13 May 2020 10:41:45 -0700
-> 
-> > commit 86f8b1c01a0a537a73d2996615133be63cdf75db upstream
-> > 
-> > Prior to 1d27732f411d ("net: dsa: setup and teardown ports"), we would
-> > not treat failures to set-up an user port as fatal, but after this
-> > commit we would, which is a regression for some systems where interfaces
-> > may be declared in the Device Tree, but the underlying hardware may not
-> > be present (pluggable daughter cards for instance).
-> > 
-> > Fixes: 1d27732f411d ("net: dsa: setup and teardown ports")
-> > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> > Signed-off-by: David S. Miller <davem@davemloft.net>
-> 
-> Greg, please queue this up.
 
-Now queued up, thanks.
 
-greg k-h
+On 14-05-2020 15:09, Felipe Balbi wrote:
+> Nagarjuna Kristam<nkristam@nvidia.com>  writes:
+> 
+>> This patch series adds charger detect support on XUSB hardware used in
+>> Tegra210 and Tegra186 SoCs.
+>>
+>> This patchset is composed with :
+>>   - dt bindings of XUSB Pad Controller
+>>   - Tegra XUSB device mode driver to add vbus_draw support
+>>   - Tegra PHY driver for charger detect support
+>>
+>> Tests done:
+>>   - Connect USB cable from ubuntu host to micro-B port of DUT to detect
+>>     SDP_TYPE charger
+>>   - Connect USB cable from external powered USB hub(which inturn connects
+>>     to ubuntu host) to micro-B port of DUT to detect CDP_TYPE charger.
+>>   - Connect USB cable from USB charger to micro-B port of DUT to detect
+>>     DCP_TYPE charger.
+>> DUT: Jetson-tx1, Jetson tx2.
+>>
+>> V3:
+>>   - Added ACKed-by details for PHY driver and DT changes.
+>>   - Functions and its arguments are aligned.
+>>   - Tabs are used for alignment of MACRO's
+>>   - For vbus_draw USDC callback, usb_phy set_power error is propogated.
+>>   - Fixed various comments given by thierry.
+>> V2:
+>>   - Added ACKed-by details for DT patches.
+>>   - All patches rebased.
+>>
+>> Nagarjuna Kristam (8):
+>>    dt-bindings: phy: tegra-xusb: Add charger-detect property
+>>    usb: gadget: tegra-xudc: Add vbus_draw support
+>>    phy: tegra: xusb: Add support for UTMI pad power control
+>>    phy: tegra: xusb: Add USB2 pad power control support for Tegra210
+>>    phy: tegra: xusb: Add soc ops API to enable UTMI PAD protection
+>>    phy: tegra: xusb: Add support for charger detect
+>>    phy: tegra: xusb: Enable charger detect for Tegra186
+>>    phy: tegra: xusb: Enable charger detect for Tegra210
+> Is there a hard-dependency between gadget and phy patches?
+> 
+> -- balbiNo dependency. They can be merged independently.
+
+- Nagarjuna
