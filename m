@@ -2,95 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970411D2942
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 09:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5AB1D2976
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726199AbgENH6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 03:58:13 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58177 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725952AbgENH6N (ORCPT
+        id S1726140AbgENIAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 04:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725974AbgENIAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 03:58:13 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jZ8kr-000597-H0; Thu, 14 May 2020 07:58:09 +0000
-Date:   Thu, 14 May 2020 09:58:08 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        Thu, 14 May 2020 04:00:08 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88137C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:00:05 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id i15so2565945wrx.10
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:00:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LxiKwe63FtUym2hYC0zoHVQTlvrxg5XLv5yLWaD9fEo=;
+        b=UeCZEBRs20fQXYUJ0r4rTsxGg5GcFmWuh+lzieEtDQHE6NKCFyIP95HcoRaJphptG5
+         74JYw+/BDgF0+IGCJKhnHi2sLi9epciTNrn5bNRabbYKCppawHl9heC30ToTWy8S+k7K
+         bX2hvRdeMZyAwM2HRTSbE7gTewUuiRny5XmWOo+XV3wnsrYxyzDOekfkIC8mT2wEbEzO
+         igxRgI47NryMgg+Oy9pl5skMNrp+Un81sJEPKNc3dUOYJnkSblhpuqBZ3a/jPmmHjshf
+         C9AGxQFsPEl2nOzoQkl7j+thuirCBjnt6vDkFMZ1oNrZL2ANTi+lKoWUYkba21FsTb26
+         ORag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LxiKwe63FtUym2hYC0zoHVQTlvrxg5XLv5yLWaD9fEo=;
+        b=WDcVAGcDkL8Ggu2WxPKTzJKJNmOcY8vpSdsOkDrzBN56MSTU2CTWCPxFLyksUdeIus
+         WgYoQHD4WOS3MOHjY4N8heMHjlKVv84DNZA6buXGT6YxUWoLqc9Mdam0dMXRWPM0PASy
+         ZFYGPDDU09unWPGOY+HuRRkEb5mE4p/Ojtid/mZ63YT6O9sPPrkW5rGVbSfVzGLwbY5z
+         C6e87f9egxRH6VO7YeIAD/EQuU2vO5S2qZPFdUFT8TktkAJqNo/JhEu1UMMnF02a52qY
+         4+iBiTBb+oqu8AAifH78eOoycRRqU+HxgTX7iGSxn5wSE3TAfR4oerxy2nd9Vn5XpiBe
+         Df6Q==
+X-Gm-Message-State: AOAM531i+NjVtzmFBGySHLICf+j3DVduUtX61Z9esjGpEugk6OyhrW8Q
+        xXtjTAyEpOh4fbc8r9vyUg0EqQ==
+X-Google-Smtp-Source: ABdhPJwI5TAiw6JGHe10xqjfyRvp21tN6e/WVtsWSo1V4Qnb8O2x5Ne8GkVd7g59r7PlsF292M6lGw==
+X-Received: by 2002:a05:6000:1083:: with SMTP id y3mr3740674wrw.425.1589443204180;
+        Thu, 14 May 2020 01:00:04 -0700 (PDT)
+Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
+        by smtp.gmail.com with ESMTPSA id 81sm23337446wme.16.2020.05.14.01.00.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 01:00:03 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Jonathan Corbet <corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ia64: enable HAVE_COPY_THREAD_TLS, switch to
- kernel_clone_args
-Message-ID: <20200514075808.krdtypxpag4tfa74@wittgenstein>
-References: <20200513204848.1208864-1-christian.brauner@ubuntu.com>
- <3908561D78D1C84285E8C5FCA982C28F7F6266E0@ORSMSX115.amr.corp.intel.com>
- <79e58d9b-5a39-390c-2f0c-0d87b63442b4@physik.fu-berlin.de>
- <20200514074606.vkc35syhdep23rzh@wittgenstein>
- <6b298416-1e64-eee7-0bb4-3b1f7f67adc6@physik.fu-berlin.de>
+        Fabien Parent <fparent@baylibre.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Edwin Peer <edwin.peer@broadcom.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Stephane Le Provost <stephane.leprovost@mediatek.com>,
+        Pedro Tsai <pedro.tsai@mediatek.com>,
+        Andrew Perepech <andrew.perepech@mediatek.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v3 00/15] mediatek: add support for MediaTek Ethernet MAC
+Date:   Thu, 14 May 2020 09:59:27 +0200
+Message-Id: <20200514075942.10136-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <6b298416-1e64-eee7-0bb4-3b1f7f67adc6@physik.fu-berlin.de>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 09:53:49AM +0200, John Paul Adrian Glaubitz wrote:
-> Hi Christian!
-> 
-> On 5/14/20 9:46 AM, Christian Brauner wrote:
-> >>> My last functional ia64 machine no longer powers on. Unclear if it's just
-> >>> a broken power supply or something more serious. With almost nobody
-> >>> in offices/labs anymore my search for another machine is proceeding
-> >>> slowly.
-> >>
-> >> I could test it.
-> > 
-> > Hey Adrian,
-> > 
-> > That would be excellent and much appreciated.
-> > Do you think you can get it tested soon?
-> 
-> The kernel is currently building, you should get it by the evening (CEST).
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Thank you!
+This adds support for the Ethernet Controller present on MediaTeK SoCs from
+the MT8* family.
 
-> 
-> The machine also serves as a Debian buildd which is why it's a bit more
-> busy than other servers.
+First we convert the existing DT bindings for the PERICFG controller to YAML
+and add a new compatible string for mt8516 variant of it. Then we add the DT
+bindings for the MAC.
 
-Oh? Does it also produce Debian images for ia64 similar to what is done
-for sparc64?
+Next we do some cleanup of the mediatek ethernet drivers directory and update
+the devres documentation with existing networking devres helpers.
 
-> 
-> >> As for getting a working cross-compiler for ia64 in Debian, this has
-> >> been on my TODO list for a while now. Building a cross-compiler for
-> >> ia64 is a bit more tricky due to it's dependency on the external
-> >> libunwind.
-> > 
-> > I hit that roadblock as well but yeah, a cross-compiler would be
-> > helpful.
-> 
-> It's not difficult, it's just a bit of annoying package work including
-> some trial and error testing.
-> 
-> Once the cross-compiler is in Debian, it will be available in Ubuntu as well.
+The following patches introduce a resource managed variant of
+register_netdev() and move all networking devres helpers into a separate .c
+file.
 
-Would that based on a recent gcc? I vaguely remember a post somwhere
-that gcc 10 or 11 was planning to drop support for ia64?
+The largest patch in the series adds the actual new driver.
 
-Thanks for your help!
-Christian
+The rest of the patches add DT fixups for the boards already supported
+upstream.
+
+v1 -> v2:
+- add a generic helper for retrieving the net_device associated with given
+  private data
+- fix several typos in commit messages
+- remove MTK_MAC_VERSION and don't set the driver version
+- use NET_IP_ALIGN instead of a magic number (2) but redefine it as it defaults
+  to 0 on arm64
+- don't manually turn the carrier off in mtk_mac_enable()
+- process TX cleanup in napi poll callback
+- configure pause in the adjust_link callback
+- use regmap_read_poll_timeout() instead of handcoding the polling
+- use devres_find() to verify that struct net_device is managed by devres in
+  devm_register_netdev()
+- add a patch moving all networking devres helpers into net/devres.c
+- tweak the dma barriers: remove where unnecessary and add comments to the
+  remaining barriers
+- don't reset internal counters when enabling the NIC
+- set the net_device's mtu size instead of checking the framesize in
+  ndo_start_xmit() callback
+- fix a race condition in waking up the netif queue
+- don't emit log messages on OOM errors
+- use dma_set_mask_and_coherent()
+- use eth_hw_addr_random()
+- rework the receive callback so that we reuse the previous skb if unmapping
+  fails, like we already do if skb allocation fails
+- rework hash table operations: add proper timeout handling and clear bits when
+  appropriate
+
+v2 -> v3:
+- drop the patch adding priv_to_netdev() and store the netdev pointer in the
+  driver private data
+- add an additional dma_wmb() after reseting the descriptor in
+  mtk_mac_ring_pop_tail()
+- check the return value of dma_set_mask_and_coherent()
+- improve the DT bindings for mtk-eth-mac: make the reg property in the example
+  use single-cell address and size, extend the description of the PERICFG
+  phandle and document the mdio sub-node
+- add a patch converting the old .txt bindings for PERICFG to yaml
+- limit reading the DMA memory by storing the mapped addresses in the driver
+  private structure
+- add a patch documenting the existing networking devres helpers
+
+Bartosz Golaszewski (15):
+  dt-bindings: convert the binding document for mediatek PERICFG to yaml
+  dt-bindings: add new compatible to mediatek,pericfg
+  dt-bindings: net: add a binding document for MediaTek Ethernet MAC
+  net: ethernet: mediatek: rename Kconfig prompt
+  net: ethernet: mediatek: remove unnecessary spaces from Makefile
+  Documentation: devres: add a missing section for networking helpers
+  net: move devres helpers into a separate source file
+  net: devres: define a separate devres structure for
+    devm_alloc_etherdev()
+  net: devres: provide devm_register_netdev()
+  net: ethernet: mtk-eth-mac: new driver
+  ARM64: dts: mediatek: add pericfg syscon to mt8516.dtsi
+  ARM64: dts: mediatek: add the ethernet node to mt8516.dtsi
+  ARM64: dts: mediatek: add an alias for ethernet0 for pumpkin boards
+  ARM64: dts: mediatek: add ethernet pins for pumpkin boards
+  ARM64: dts: mediatek: enable ethernet on pumpkin boards
+
+ .../arm/mediatek/mediatek,pericfg.txt         |   36 -
+ .../arm/mediatek/mediatek,pericfg.yaml        |   64 +
+ .../bindings/net/mediatek,eth-mac.yaml        |   89 +
+ .../driver-api/driver-model/devres.rst        |    5 +
+ arch/arm64/boot/dts/mediatek/mt8516.dtsi      |   17 +
+ .../boot/dts/mediatek/pumpkin-common.dtsi     |   34 +
+ drivers/net/ethernet/mediatek/Kconfig         |    8 +-
+ drivers/net/ethernet/mediatek/Makefile        |    3 +-
+ drivers/net/ethernet/mediatek/mtk_eth_mac.c   | 1578 +++++++++++++++++
+ include/linux/netdevice.h                     |    2 +
+ net/Makefile                                  |    2 +-
+ net/devres.c                                  |   95 +
+ net/ethernet/eth.c                            |   28 -
+ 13 files changed, 1894 insertions(+), 67 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/mediatek,eth-mac.yaml
+ create mode 100644 drivers/net/ethernet/mediatek/mtk_eth_mac.c
+ create mode 100644 net/devres.c
+
+-- 
+2.25.0
+
