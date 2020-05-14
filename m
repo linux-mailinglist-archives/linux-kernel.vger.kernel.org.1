@@ -2,153 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 486711D33F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162A91D3406
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727983AbgENPAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 11:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726146AbgENPAP (ORCPT
+        id S1728079AbgENPAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 11:00:35 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:37341 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726948AbgENPAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 11:00:15 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F18C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 08:00:14 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x2so1416487pfx.7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 08:00:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=LKDhIqkg4dk5I2yUUB4YPd6c5Rk5/qL/3S3piqwGyfk=;
-        b=x2IC35EpcFxlDYphsQmsNFlsVgrnCmW3WwfF+86HN8Vu4f4gIl+8CqbVDxTq2+iNgF
-         UrOjdI5l3xWeXpO0peEVbLIX+a3DLBpGvc6wFqIX93NJp5Wm6R/lnRETx3hH+UVi7ikL
-         3xDZRiYopAj81rMzzpVMBs/hJAcoYsCNns5tLG76h9peIIt22xuQZCVTNN8b3dLuG9Qd
-         7rohVQ/rYeO3qh/P2OEUP0QbQcrix3aedQ2+wE3iVo9MQ2O1ssPKldtwXHv4c3WUGOrW
-         Gjs1CmG3RA1gCwgo3NHMq53Mc8tma1Cel99g15t1bN+so7bVZOWNMeffS2B+tuFlOjwA
-         +wkw==
+        Thu, 14 May 2020 11:00:33 -0400
+Received: by mail-ot1-f65.google.com with SMTP id z17so2577111oto.4;
+        Thu, 14 May 2020 08:00:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=LKDhIqkg4dk5I2yUUB4YPd6c5Rk5/qL/3S3piqwGyfk=;
-        b=pVqXh4WPCJjo1BDJuHOWgLAlG8652aVMFTTOlH7QQ91LTvOnJxyRGwYMyWEPQD8deA
-         Q4e+rTwbOnNwzHIhqHncVNf56IE/H3dM3Hk+T96ETr9XiRkz/pGwRabRnzQ4H86UDKch
-         5Lz1GdvFj3AFaljgP3F/IicfOswDAQPaZbBBFkAFG499sx7d9fkdTLRD7zvkiZTWhMd2
-         1++1zK6rHiNZrxOTKPMQH2cL5ZnC9IwxHgruZaego/KaqrvHC/0qFkSVepqilbhXpadQ
-         IO1Mym8s2HzArvbTf9afgxvm5rgmzrPqlRrUFCN3TiXAcKlNx38f/VAhL8OBflFhaKdw
-         6DTA==
-X-Gm-Message-State: AOAM53117REBAqjuJmMO16cipNnle4MDlovDc82k7jVgdP7aKMbdDl63
-        wkoOxbTKYALkIeZabhlD0jKgZw==
-X-Google-Smtp-Source: ABdhPJyRTSE0r5gMqWqJxmqE4NqOtiMEEKpZVrZdtEsirDOPcCvaAAIa0Y9/QfR2PDuhl2x0DK1r5Q==
-X-Received: by 2002:a65:5287:: with SMTP id y7mr4211486pgp.86.1589468414210;
-        Thu, 14 May 2020 08:00:14 -0700 (PDT)
-Received: from [100.80.46.139] (9.sub-174-194-209.myvzw.com. [174.194.209.9])
-        by smtp.gmail.com with ESMTPSA id h26sm2546754pfk.35.2020.05.14.08.00.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 May 2020 08:00:13 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [patch V4 part 3 17/29] x86/entry: Convert Invalid Opcode exception to IDTENTRY
-Date:   Thu, 14 May 2020 08:00:10 -0700
-Message-Id: <D75719A6-44E5-4F6F-8308-58DD2E74374D@amacapital.net>
-References: <87k11ezog1.fsf@nanos.tec.linutronix.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <JGross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-In-Reply-To: <87k11ezog1.fsf@nanos.tec.linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-X-Mailer: iPhone Mail (17E262)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=b4HeH81d7CC2pFdjz+KIc9E1a6jJhBx25lXQ9gtMpzM=;
+        b=LDr0V/g7lU4mfrKVFlAzBhPfFjpnLKqUWtDGOZTQRWAcVGUaTfareZm8aCHe0TnVBZ
+         KWC6IPzCkma8QwgBjPiTdVrAzP9Dox6Je/5E9sho2a/+0W9ln0I0iXKilExH9l5KlmO5
+         1nxKMt6DZiAdXmQGlguq8fwZ0faOWuLa8xd65yyGJ+nxbkNHzQFQzKKPX5qzA9r7EZ1z
+         sp77BNMjgsH50GHKvTtIUaLhUOkMjLJLR/x1ftHapFIi2L0mBPJbo3AtGmyTDSPcT8bR
+         hq5bIuXhreruOcJQuVxRbHpM012FE0h3Xi7ME+fJhtPIR7gy09G6BRGq0K91lEvw2YFt
+         4e9g==
+X-Gm-Message-State: AOAM5314U7Ti1EA00J3afmsQkn3Sjb6ew76IrG+GXyFbXWJsL2iQG8Fv
+        4diMEDSZ0+M5RwG5FCffkQ==
+X-Google-Smtp-Source: ABdhPJzW85ZeQbTbhD2yMI5gcvb3x7Kv8qJI1H0Pl22tcfxBOiO1jCVwwbhxlPlqaQj6fzuo6pKuzg==
+X-Received: by 2002:a9d:7343:: with SMTP id l3mr3559142otk.276.1589468430559;
+        Thu, 14 May 2020 08:00:30 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u45sm818344ooi.41.2020.05.14.08.00.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 08:00:29 -0700 (PDT)
+Received: (nullmailer pid 8677 invoked by uid 1000);
+        Thu, 14 May 2020 15:00:28 -0000
+Date:   Thu, 14 May 2020 10:00:28 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Christophe Kerello <christophe.kerello@st.com>
+Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        mark.rutland@arm.com, gregkh@linuxfoundation.org,
+        boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        devicetree@vger.kernel.org, marex@denx.de
+Subject: Re: [PATCH v4 06/10] dt-bindings: mtd: update STM32 FMC2 NAND
+ controller documentation
+Message-ID: <20200514150028.GB28489@bogus>
+References: <1588756279-17289-1-git-send-email-christophe.kerello@st.com>
+ <1588756279-17289-7-git-send-email-christophe.kerello@st.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1588756279-17289-7-git-send-email-christophe.kerello@st.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 06, 2020 at 11:11:15AM +0200, Christophe Kerello wrote:
+> These bindings can be used on SOCs where the FMC2 NAND controller is
+> in standalone. In case that the FMC2 embeds 2 controllers (an external
+> bus controller and a raw NAND controller), the register base and the
+> clock will be defined in the parent node. It is the reason why the
+> register base address and the clock are now optional.
+> 
+> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+> ---
+>  .../devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml   | 19 ++++++++++---------
+>  1 file changed, 10 insertions(+), 9 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+> index b059267..68fac1a 100644
+> --- a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+> @@ -18,13 +18,15 @@ properties:
+>  
+>    reg:
+>      items:
+> -      - description: Registers
+> +      - description: Registers (optional)
 
+The only thing that can be optional are the last entries. You have to do 
+a 'oneOf' with 6 entries and 7 entries.
 
-> On May 14, 2020, at 5:33 AM, Thomas Gleixner <tglx@linutronix.de> wrote:
->=20
-> =EF=BB=BFAndy Lutomirski <luto@kernel.org> writes:
->=20
->>> On Tue, May 5, 2020 at 7:15 AM Thomas Gleixner <tglx@linutronix.de> wrot=
-e:
->>>=20
->>> From: Thomas Gleixner <tglx@linutronix.de>
->>>=20
->>> Convert #UD to IDTENTRY:
->>>  - Implement the C entry point with DEFINE_IDTENTRY
->>>  - Emit the ASM stub with DECLARE_IDTENTRY
->>>  - Remove the ASM idtentry in 64bit
->>>  - Remove the open coded ASM entry code in 32bit
->>>  - Fixup the XEN/PV code
->>>  - Fixup the FOOF bug call in fault.c
->>>  - Remove the old prototyoes
->>>=20
->>> No functional change.
->>=20
->> I think there *is* a functional change:
->>=20
->>=20
->>> --- a/arch/x86/mm/fault.c
->>> +++ b/arch/x86/mm/fault.c
->>> @@ -567,7 +567,7 @@ static int is_f00f_bug(struct pt_regs *r
->>>                nr =3D (address - idt_descr.address) >> 3;
->>>=20
->>>                if (nr =3D=3D 6) {
->>> -                       do_invalid_op(regs, 0);
->>> +                       handle_invalid_op(regs);
->>=20
->> I suspect the old code was wrong and no one noticed because no one has
->> a F00F-buggy machine any more.
->=20
-> I don't think so. It's really just the same thing. The old #UD C
-> function was:
->=20
-> void do_invalid_op(struct pt_regs *regs, long error_code)
-> {
->    do_error_trap(regs, error_code, "invalid opcode", X86_TRAP_UD,
->                      SIGILL, ILL_ILLOPN, (void __user *)uprobe_get_trap_ad=
-dr(regs));
-> }
->=20
-> after expanding the DO_ERROR() muck.
->=20
-> The new one does:
->=20
-> void handle_invalid_op(struct pt_regs *regs)
-> {
->    do_error_trap(regs, 0, "invalid opcode", X86_TRAP_UD, SIGILL,
->              ILL_ILLOPN, error_get_trap_addr(regs));
-> }
->=20
-> which is exactly the same except for the error code being hardcoded to
-> zero in handle_invalid_op() because #UD does not have one.
->=20
->> So maybe document that you fixed up the F00F bug, too.  Otherwise:
->=20
-> Not sure what to document :)
+And where's your new compatible string for this different h/w?
 
-Duh, right, never mind.  Here I was thinking the old C handlers did all the e=
-ntry/exit work.
-
->=20
-> Thanks,
->=20
->        tglx
+>        - description: Chip select 0 data
+>        - description: Chip select 0 command
+>        - description: Chip select 0 address space
+>        - description: Chip select 1 data
+>        - description: Chip select 1 command
+>        - description: Chip select 1 address space
+> +    minItems: 6
+> +    maxItems: 7
+>  
+>    interrupts:
+>      maxItems: 1
+> @@ -61,7 +63,6 @@ required:
+>    - compatible
+>    - reg
+>    - interrupts
+> -  - clocks
+>  
+>  examples:
+>    - |
+> @@ -77,13 +78,13 @@ examples:
+>              <0x81000000 0x1000>,
+>              <0x89010000 0x1000>,
+>              <0x89020000 0x1000>;
+> -            interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
+> -            dmas = <&mdma1 20 0x10 0x12000a02 0x0 0x0>,
+> -                   <&mdma1 20 0x10 0x12000a08 0x0 0x0>,
+> -                   <&mdma1 21 0x10 0x12000a0a 0x0 0x0>;
+> -            dma-names = "tx", "rx", "ecc";
+> -            clocks = <&rcc FMC_K>;
+> -            resets = <&rcc FMC_R>;
+> +      interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
+> +      dmas = <&mdma1 20 0x2 0x12000a02 0x0 0x0>,
+> +             <&mdma1 20 0x2 0x12000a08 0x0 0x0>,
+> +             <&mdma1 21 0x2 0x12000a0a 0x0 0x0>;
+> +      dma-names = "tx", "rx", "ecc";
+> +      clocks = <&rcc FMC_K>;
+> +      resets = <&rcc FMC_R>;
+>        #address-cells = <1>;
+>        #size-cells = <0>;
+>  
+> -- 
+> 1.9.1
+> 
