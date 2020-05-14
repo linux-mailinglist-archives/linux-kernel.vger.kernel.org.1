@@ -2,113 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165DA1D3BDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 21:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F321D3BFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 21:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728966AbgENTFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 15:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728661AbgENTFq (ORCPT
+        id S1730065AbgENTGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 15:06:42 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:39394 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728840AbgENTGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 15:05:46 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5C5C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 12:05:46 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id s21so3768602ejd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 12:05:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3tnon885BClw24KtSQO83UeeP0neoUdjMWWIznWI9/0=;
-        b=mEnsvt67Bs+ijyGbEbYpmFzdKllOnYkYg2wqyJn5b8oZl+W2YcNusKGLRP9+Zv71aD
-         bvnpNRlwm3n+nu/MfpFkeS29wmAqit1EIdY/5xYvN2+YHW5w1w9QzfKUAhu1z//b5FyV
-         k7dGKz/gm2cwJDUdsjcAGnnZvIUs7DSgpSuU6dsJTiO54rNsE0omiR6rvOq+1m4zvUKk
-         N2zTBxT+XyvQS/pazILhd2ryi6MMD4lCcnDv7gM9ufWdCfkhqBBALDBfJo5ZiNRNFLMF
-         xssG0X9eIu48mho9U/h+tzq0gpyyTRyeOIE9nztgGi41aWzm4DOSTjaKMqC54Fvnv3Gb
-         KttA==
+        Thu, 14 May 2020 15:06:36 -0400
+Received: by mail-oi1-f196.google.com with SMTP id s198so1674769oie.6;
+        Thu, 14 May 2020 12:06:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3tnon885BClw24KtSQO83UeeP0neoUdjMWWIznWI9/0=;
-        b=P955lVx1hdF0l2I7gicVl+l9u2DQAjSNSIf0FxVots2Su74VB+fuG0KNH6bZnimsp9
-         44aLX2ECjXXAcorA/bf/dKnCGspOltaDayguc5wAvBuzhUxX0ZHxlPnDFkA160bb8UTb
-         +BT0JM4Nk/8KwHqy0dIn/9BPSLdFMZn4cFy9MUnusIwVCqEmkhlidLt/qUqQJm4mQwYW
-         BYYpbN2Ubi41zCnxrjc7QU2aNloU1c9Vbah0qBgfIEFxXPESyHl9jxTKK52s+PtYXUiw
-         +Wj/ySyAHagDCRNLmcxA9YT6Atk9TAf2fG0PVcxn+ww1q8Pm+6Ff/NMlEx5SyyJUIu1B
-         Fi8Q==
-X-Gm-Message-State: AOAM533PI1BMU+NDBc2HuhA8kv7QDsjzG6O2DLUohPIeP50M51tLIGrb
-        /MnWIedkdyPRsVoGUXZJmCEPgjarbSvUA7eupQYshtOiwoDMWQ==
-X-Google-Smtp-Source: ABdhPJyXoPpJjnDEyX65MLtuSaVojJUla6uGMFPpeIL9qaCZ9kWwHdMrb4GwEnIrg9s40Ca65adiOCj7stM0y7lKZ6c=
-X-Received: by 2002:a17:906:724b:: with SMTP id n11mr5455125ejk.355.1589483144432;
- Thu, 14 May 2020 12:05:44 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DpxmqheKh5hWBkROUkM/LZbskUu+jI9OekkxfEH2TJU=;
+        b=jKy7Tet+7kDtJP9R6aI+d8Svebs+UjREUdZ4tc2TdAvfvztTuKXHjAmyRSN0CBV1Q/
+         dxvG/6SUt6irrsNnl6a0dPCzvcj4TdC5IMnDOtDFVUJadbHI68V2GPc/9f05cZniOtzK
+         r9C+YtaerxaUcO9+HPJlpz4nIAPTWxRRCcG4zaicP583zNnhEq7PXGRURF1C3vEMx4mi
+         hgO0UABInDxKiWNjWhBYll3gpmk/LJv70q5UuGcPnC5tHfGGYPzuu2DR2bI6P1sBxkNt
+         E8YRkhn/S554bIy5Z6oAdajQqlzO3/aGo24ltCKJg7mCc5yBgKMGMa11x9bgNBkD9eth
+         1jIQ==
+X-Gm-Message-State: AGi0PuY1Gl5VTAaxaKzDUO2jOMhYMI2HC5m9TVwbAco1zgpzuVr8zFSy
+        kuocz8Wlg9I/fG8v2+Igug==
+X-Google-Smtp-Source: APiQypIbLInN8eILN1YNFZkdZUWzlrI5ZKISbq/8Sj2LCEhqvwhh/jfweZsVFtDXqGRZI3Q/OW8ccg==
+X-Received: by 2002:aca:3254:: with SMTP id y81mr11673521oiy.172.1589483194829;
+        Thu, 14 May 2020 12:06:34 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 130sm3531979oid.43.2020.05.14.12.06.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 12:06:33 -0700 (PDT)
+Received: (nullmailer pid 10001 invoked by uid 1000);
+        Thu, 14 May 2020 19:06:32 -0000
+Date:   Thu, 14 May 2020 14:06:32 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-rtc@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, Jason Cooper <jason@lakedaemon.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Paul Burton <paulburton@kernel.org>
+Subject: Re: [PATCH v3 3/7] dt-bindings: interrupt-controller: Convert
+ mti,gic to DT schema
+Message-ID: <20200514190632.GA9943@bogus>
+References: <20200324174325.14213-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506214107.25956-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506214107.25956-4-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com> <20200508190813.GP27052@linux.intel.com>
-In-Reply-To: <20200508190813.GP27052@linux.intel.com>
-From:   Seth Moore <sethmo@google.com>
-Date:   Thu, 14 May 2020 12:05:32 -0700
-Message-ID: <CAJsHiNx0jnx_zwCuNecci7opgCkxg-FB8UpYvnmubjWdM3fXZQ@mail.gmail.com>
-Subject: Re: [PATCH v29 00/20] Intel SGX foundations
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-sgx@vger.kernel.org, akpm@linux-foundation.org,
-        dave.hansen@intel.com, nhorman@redhat.com, npmccallum@redhat.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
-        kai.svahn@intel.com, bp@alien8.de, josh@joshtriplett.org,
-        luto@kernel.org, kai.huang@intel.com,
-        David Rientjes <rientjes@google.com>, cedric.xing@intel.com,
-        puiterwijk@redhat.com, Anna Sapek <asapek@google.com>,
-        Conrad Parker <conradparker@google.com>,
-        Keith Moyer <kmoy@google.com>,
-        Yaozhang Xu <yaozhangx@google.com>,
-        Chen Chen <chenalexchen@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Carmen Hanish <cyhanish@google.com>,
-        Kevin Yap <ikeviny@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506214107.25956-4-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 8, 2020 at 12:08 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> Adding some Google folks to the party.
+On Thu, 7 May 2020 00:41:03 +0300, Serge Semin wrote:
+> Modern device tree bindings are supposed to be created as YAML-files
+> in accordance with DT schema. This commit replaces MIPS GIC legacy bare
+> text binding with YAML file. As before the binding file states that the
+> corresponding dts node is supposed to be compatible with MIPS Global
+> Interrupt Controller indicated by the "mti,gic" compatible string and
+> to provide a mandatory interrupt-controller and '#interrupt-cells'
+> properties. There might be optional registers memory range,
+> "mti,reserved-cpu-vectors" and "mti,reserved-ipi-vectors" properties
+> specified.
+> 
+> MIPS GIC also includes a free-running global timer, per-CPU count/compare
+> timers, and a watchdog. Since currently the GIC Timer is only supported the
+> DT schema expects an IRQ and clock-phandler charged timer sub-node with
+> "mti,mips-gic-timer" compatible string.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Alessandro Zummo <a.zummo@towertech.it>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-rtc@vger.kernel.org
+> 
+> ---
+> 
+> I don't really know who is the corresponding driver maintainer, so I
+> added Paul to the maintainers property since he used to be looking for the
+> MIPS arch and Thomas looking after it now. Any idea what email should be
+> specified there instead?
+> 
+> Changelog v3:
+> - Since timer sub-node has no unit-address, the node shouldn't be named
+>   with one. So alter the MIPS GIC bindings to have a pure "timer"
+>   sub-node.
+> - Discard allOf: [ $ref: /schemas/interrupt-controller.yaml# ].
+> - Since it's a conversion patch use GPL-2.0-only SPDX header.
+> ---
+>  .../interrupt-controller/mips-gic.txt         |  67 --------
+>  .../interrupt-controller/mti,gic.yaml         | 148 ++++++++++++++++++
+>  2 files changed, 148 insertions(+), 67 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mti,gic.yaml
+> 
 
-Thanks, Sean.
-
-> On Wed, Apr 22, 2020 at 12:52:56AM +0300, Jarkko Sakkinen wrote:
-> > Intel(R) SGX is a set of CPU instructions that can be used by applications
-> > to set aside private regions of code and data. The code outside the enclave
-> > is disallowed to access the memory inside the enclave by the CPU access
-> > control.
-> >
-> > There is a new hardware unit in the processor called Memory Encryption
-> > Engine (MEE) starting from the Skylake microacrhitecture. BIOS can define
-> > one or many MEE regions that can hold enclave data by configuring them with
-> > PRMRR registers.
-> >
-> > The MEE automatically encrypts the data leaving the processor package to
-> > the MEE regions. The data is encrypted using a random key whose life-time
-> > is exactly one power cycle.
-> >
-> > The current implementation requires that the firmware sets
-> > IA32_SGXLEPUBKEYHASH* MSRs as writable so that ultimately the kernel can
-> > decide what enclaves it wants run. The implementation does not create
-> > any bottlenecks to support read-only MSRs later on.
-> >
-> > You can tell if your CPU supports SGX by looking into /proc/cpuinfo:
-> >
-> >       cat /proc/cpuinfo  | grep sgx
-
-We applied the v29 patches to Linux 5.6.0, then tested on Xeon(R) E-2186G
-with Asylo (http://asylo.dev).
-
-Looks good. All Asylo tests pass.
-
-Tested-by: Seth Moore <sethmo@google.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
