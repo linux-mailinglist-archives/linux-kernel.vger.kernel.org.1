@@ -2,140 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51AC1D26A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 07:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362DA1D26B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 07:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726004AbgENFXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 01:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725876AbgENFXM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 01:23:12 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B7DC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 22:23:12 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id b12so719257plz.13
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 22:23:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/9E3MjDhSnLeEr9EWAO9eILQyqFL+6FFvSw8g6uxZN4=;
-        b=KACcbMcyELxmf5M1Fs+/YWbUPDvl2Xf75/e2yVd2JT86mNQgbfhn3D4Ig75idPUpsS
-         pa9a1tZ0ilC0jg+W4WRZ7HkQZc06O1yL39akTek6M3V6HBnHoiEGyANMl53eXmSsnxRi
-         d/O1xTDQ6rXhbcRMKw4cj0/LkhaDv96kpx+7Fw7snyO0u6oqreTsLa2XBounpTJXBWrL
-         K4/v6YBb4Zxurt5i36q1tcQQxZOmjSbTy6/uVRBzea7k4wp8s0mbZ1zNZcDNuexTT9av
-         CZAMA+oIvBCxXHjFcW0b1vtlxXZtXZxbx05vCMbpZNHyY2ksLNjlufChtvj7c2Jy3ZlW
-         E+KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/9E3MjDhSnLeEr9EWAO9eILQyqFL+6FFvSw8g6uxZN4=;
-        b=Bxs7iP3/0DxwFlvv31X5LFquWGcEs758SL8XaH2GVQJ3ELanFmq8LBfBi+WyPzPeFb
-         gd40dVsgnBDoQHfO9UNASdc4LYtYe/bTIcH6ecgB/YgMwHoYKglLMETm0zhuVA6thpaX
-         l/JfX78rljTyjc49/fJOxpdrp5wzeo2LNX2Zs8l49DRR27sIJuaZwXDXQ1NrAfjYYbjN
-         Gr8OfSXpbC737R3h+dRLRB4NT/FwNOjqWOR0BeeVyGSH5WXZ9aSPiavslJi4sxE3rVUq
-         32nd/IIdRjvSbB8My02cZVFX5OQMMtYitbqdkHUOBfDD7PynWkmgWh8GtQTjmawZ+Oze
-         YzAQ==
-X-Gm-Message-State: AOAM531t5oS6euSIqEpaR7F05klw0sUCR3w4ee/7T+LM1uRL2j2In4Wi
-        ub1CEPpSP31k+VsMRESR1sQk
-X-Google-Smtp-Source: ABdhPJx/3pYCS1QwD7RsrwPeLuu2J8iRzjREmibNHcDFwcT4oGeDanK458HNXfu1VMrJMX/Ql0xpvw==
-X-Received: by 2002:a17:90a:154b:: with SMTP id y11mr1889668pja.158.1589433791435;
-        Wed, 13 May 2020 22:23:11 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:406:efde:ac17:556c:1ce3:639f])
-        by smtp.gmail.com with ESMTPSA id o21sm16694785pjr.37.2020.05.13.22.23.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 May 2020 22:23:10 -0700 (PDT)
-Date:   Thu, 14 May 2020 10:53:05 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] bus: mhi: core: Handle syserr during power_up
-Message-ID: <20200514052305.GC2877@Mani-XPS-13-9360>
-References: <1588868371-8365-1-git-send-email-jhugo@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588868371-8365-1-git-send-email-jhugo@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1725999AbgENFim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 01:38:42 -0400
+Received: from mga03.intel.com ([134.134.136.65]:62468 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725794AbgENFim (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 01:38:42 -0400
+IronPort-SDR: E9tEzGN1mFNY4PBpbgZHtrdbqz7u8Ln1JV0GZw9kXJtMowWa46GjH1XsfKd6pYfSF8nR1JUyvD
+ uw1KOO1cnWsw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 22:38:41 -0700
+IronPort-SDR: dvqeWWtSkt5YOZqR2Rd08khtsncRlB5LSf7mdcf0H9o16LDIXYMHuXW4LxQswh7r+u7yUffejh
+ 0EowUYURkDzQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,390,1583222400"; 
+   d="scan'208";a="287289049"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.118])
+  by fmsmga004.fm.intel.com with ESMTP; 13 May 2020 22:38:38 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v5 0/5] perf stat: Support overall statistics for interval mode
+Date:   Thu, 14 May 2020 13:36:33 +0800
+Message-Id: <20200514053638.3736-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 10:19:31AM -0600, Jeffrey Hugo wrote:
-> The MHI device may be in the syserr state when we attempt to init it in
-> power_up().  Since we have no local state, the handling is simple -
-> reset the device and wait for it to transition out of the reset state.
-> 
-> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
+Currently perf-stat supports to print counts at regular interval (-I),
+but it's not very easy for user to get the overall statistics.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+With this patchset, it supports to report the summary at the end of
+interval output.
 
-Will apply this patch to mhi-next and include in the 5.8 series.
+For example,
 
-Thanks,
-Mani
+ root@kbl-ppc:~# perf stat -e cycles -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000412064          2,281,114      cycles
+      2.001383658          2,547,880      cycles
 
-> ---
-> 
-> v4:
-> -Implemented Hemant's suggested solution from v2.  The spec will be amended
-> to indicate the intvec interrupt will be triggered for the reset state change
-> which matches the current implementations and enables Hemant's solution to
-> be used, which is cleaner.
-> 
->  drivers/bus/mhi/core/pm.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
-> 
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index dc83d65..ddef693 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -760,6 +760,7 @@ static void mhi_deassert_dev_wake(struct mhi_controller *mhi_cntrl,
->  
->  int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
->  {
-> +	enum mhi_state state;
->  	enum mhi_ee_type current_ee;
->  	enum dev_st_transition next_state;
->  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> @@ -829,6 +830,32 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
->  		goto error_bhi_offset;
->  	}
->  
-> +	state = mhi_get_mhi_state(mhi_cntrl);
-> +	if (state == MHI_STATE_SYS_ERR) {
-> +		mhi_set_mhi_state(mhi_cntrl, MHI_STATE_RESET);
-> +		ret = wait_event_timeout(mhi_cntrl->state_event,
-> +				MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state) ||
-> +					mhi_read_reg_field(mhi_cntrl,
-> +							   mhi_cntrl->regs,
-> +							   MHICTRL,
-> +							   MHICTRL_RESET_MASK,
-> +							   MHICTRL_RESET_SHIFT,
-> +							   &val) ||
-> +					!val,
-> +				msecs_to_jiffies(mhi_cntrl->timeout_ms));
-> +		if (ret) {
-> +			ret = -EIO;
-> +			dev_info(dev, "Failed to reset MHI due to syserr state\n");
-> +			goto error_bhi_offset;
-> +		}
-> +
-> +		/*
-> +		 * device cleares INTVEC as part of RESET processing,
-> +		 * re-program it
-> +		 */
-> +		mhi_write_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_INTVEC, 0);
-> +	}
-> +
->  	/* Transition to next state */
->  	next_state = MHI_IN_PBL(current_ee) ?
->  		DEV_ST_TRANSITION_PBL : DEV_ST_TRANSITION_READY;
-> -- 
-> Qualcomm Technologies, Inc. is a member of the
-> Code Aurora Forum, a Linux Foundation Collaborative Project.
+  Performance counter stats for 'system wide':
+
+          4,828,994      cycles
+
+        2.002860349 seconds time elapsed
+
+ root@kbl-ppc:~# perf stat -e cycles,instructions -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000389902          1,536,093      cycles
+      1.000389902            420,226      instructions              #    0.27  insn per cycle
+      2.001433453          2,213,952      cycles
+      2.001433453            735,465      instructions              #    0.33  insn per cycle
+
+  Performance counter stats for 'system wide':
+
+          3,750,045      cycles
+          1,155,691      instructions              #    0.31  insn per cycle
+
+        2.003023361 seconds time elapsed
+
+ root@kbl-ppc:~# perf stat -M CPI,IPC -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000435121            905,303      inst_retired.any          #      2.9 CPI
+      1.000435121          2,663,333      cycles
+      1.000435121            914,702      inst_retired.any          #      0.3 IPC
+      1.000435121          2,676,559      cpu_clk_unhalted.thread
+      2.001615941          1,951,092      inst_retired.any          #      1.8 CPI
+      2.001615941          3,551,357      cycles
+      2.001615941          1,950,837      inst_retired.any          #      0.5 IPC
+      2.001615941          3,551,044      cpu_clk_unhalted.thread
+
+  Performance counter stats for 'system wide':
+
+          2,856,395      inst_retired.any          #      2.2 CPI
+          6,214,690      cycles
+          2,865,539      inst_retired.any          #      0.5 IPC
+          6,227,603      cpu_clk_unhalted.thread
+
+        2.003403078 seconds time elapsed
+
+ v5:
+ ---
+ 1. Create new patch "perf stat: Save aggr value to first member
+    of prev_raw_counts".
+
+ 2. Call perf_evlist__save_aggr_prev_raw_counts to save aggr value
+    to first member of prev_raw_counts for AGGR_GLOBAL. Then next,
+    perf_stat_process_counter can create aggr values from per cpu
+    values.
+
+ Following patches are impacted in v5:
+    perf stat: Copy counts from prev_raw_counts to evsel->counts
+    perf stat: Save aggr value to first member of prev_raw_counts
+    perf stat: Report summary for interval mode
+
+ v4:
+ ---
+ 1. Create runtime_stat_reset.
+
+ 2. Zero the aggr in perf_counts__reset and use it to reset
+    prev_raw_counts.
+
+ 3. Move affinity setup and read_counter_cpu to a new function
+    read_affinity_counters. It's only called when stat_config.summary
+    is not set.
+
+ v3:
+ ---
+ 1. 'perf stat: Fix wrong per-thread runtime stat for interval mode'
+    is a new patch which fixes an existing issue found in test.
+
+ 2. We use the prev_raw_counts for summary counts. Drop the summary_counts in v2.
+
+ 3. Fix some issues.
+
+ v2:
+ ---
+ Rebase to perf/core branch
+
+Jin Yao (5):
+  perf stat: Fix wrong per-thread runtime stat for interval mode
+  perf counts: Reset prev_raw_counts counts
+  perf stat: Copy counts from prev_raw_counts to evsel->counts
+  perf stat: Save aggr value to first member of prev_raw_counts
+  perf stat: Report summary for interval mode
+
+ tools/perf/builtin-stat.c | 101 ++++++++++++++++++++++++++------------
+ tools/perf/util/counts.c  |   4 +-
+ tools/perf/util/counts.h  |   1 +
+ tools/perf/util/stat.c    |  43 +++++++++++++---
+ tools/perf/util/stat.h    |   3 ++
+ 5 files changed, 113 insertions(+), 39 deletions(-)
+
+-- 
+2.17.1
+
