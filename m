@@ -2,91 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E531D265B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 07:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 252F71D2690
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 07:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726872AbgENFEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 01:04:09 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:53214 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726119AbgENFEF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 01:04:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589432645; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=+R980JJRad4Bc8DEDwszR3WVoC0lPCn30fDwTzM+pbE=; b=QTldCfKkomrdL5cCtSEJmgVOhf1z77aFTs4J5KGz9ibDOEJ4VrdqIJ0MPlPCM8XMaDepdEws
- 10FEyOBwpRnTcz8nW9vWh65R94s1OGFC1fFV72PhJ97+6w80a+KgHBFEwvw4dfKF3ZPg/UfA
- lSCP7m/cbhQDiPw8CCiUzHgfQ0U=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ebcd139.7f698f6076f8-smtp-out-n03;
- Thu, 14 May 2020 05:03:53 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CAFEEC4478C; Thu, 14 May 2020 05:03:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.79.166.230] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2D756C44791;
-        Thu, 14 May 2020 05:03:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2D756C44791
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH v5 2/6] spi: spi-geni-qcom: Use OPP API to set clk/perf
- state
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     viresh.kumar@linaro.org, sboyd@kernel.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org, Mark Brown <broonie@kernel.org>,
-        Alok Chauhan <alokc@codeaurora.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        linux-spi@vger.kernel.org
-References: <1589368382-19607-1-git-send-email-rnayak@codeaurora.org>
- <1589368382-19607-3-git-send-email-rnayak@codeaurora.org>
- <20200513190752.GS2165@builder.lan>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <97288c37-66cf-305d-1e62-a0d12b7cba17@codeaurora.org>
-Date:   Thu, 14 May 2020 10:33:40 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1725965AbgENFMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 01:12:40 -0400
+Received: from mga01.intel.com ([192.55.52.88]:8386 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725788AbgENFMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 01:12:39 -0400
+IronPort-SDR: x4eLm4s8EycAxukLIjVESMrAwWJmQLlTxEeqyNTFSRTzY0WgV+I0Ms98nB60sr51WL9CWWzGbL
+ t2FUxm3Tjn2g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 22:12:39 -0700
+IronPort-SDR: +AqZpAh+ZgEX+8D7aMBDV9LzVC160bZ2wR+gC48uAOo39K9V47xOvvJiJGvpLpE7ZvgtmTXWYl
+ sfm9U3fu2gtA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,390,1583222400"; 
+   d="scan'208";a="437771590"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.3]) ([10.239.13.3])
+  by orsmga005.jf.intel.com with ESMTP; 13 May 2020 22:12:36 -0700
+Subject: Re: [Jfs-discussion] [fs] 05c5a0273b: netperf.Throughput_total_tps
+ -71.8% regression
+To:     Christian Kujau <lists@nerdbynature.de>
+Cc:     Jia-Ju Bai <baijiaju1990@gmail.com>, shaggy@kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        lkp@lists.01.org, Markus.Elfring@web.de
+References: <20200512030929.GA5770@shao2-debian>
+ <alpine.DEB.2.22.395.2005132123020.14542@trent.utfs.org>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <5d4fbe21-7959-d53f-76c5-ed0299d8db23@intel.com>
+Date:   Thu, 14 May 2020 13:12:18 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20200513190752.GS2165@builder.lan>
+In-Reply-To: <alpine.DEB.2.22.395.2005132123020.14542@trent.utfs.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-[]..
 
->>   
->>   	spi->bus_num = -1;
->>   	spi->dev.of_node = dev->of_node;
->> @@ -596,6 +607,9 @@ static int spi_geni_probe(struct platform_device *pdev)
->>   spi_geni_probe_runtime_disable:
->>   	pm_runtime_disable(dev);
->>   	spi_master_put(spi);
->> +	if (mas->se.has_opp_table)
-> 
-> Why do you need has_opp_table?
-> 
-> Afaict if dev_pm_opp_of_add_table() returns -ENODEV there's no attached
-> opp-table and dev_pm_opp_of_remove_table() is a nop.
+On 5/14/20 12:27 PM, Christian Kujau wrote:
+> On Tue, 12 May 2020, kernel test robot wrote:
+>> FYI, we noticed a -71.8% regression of netperf.Throughput_total_tps due to commit:
+> As noted in this report, netperf is used to "measure various aspect of
+> networking performance". Are we sure the bisect is correct? JFS is a
+> filesystem and is not touching net/ in any way. So, having not attempted
+> to reproduce this, maybe the JFS commit is a red herring?
+>
+> C.
 
-Apparently its not. Calling dev_pm_opp_of_remove_table() when dev_pm_opp_of_add_table()
-failed causes use-count mismatch.
-You can see https://lkml.org/lkml/2020/4/15/18 for more details.
+Hi,
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+The commit also causes -74.6% regression of will-it-scale.per_thread_ops:
+
+in testcase: will-it-scale
+on test machine: 8 threads Intel(R) Core(TM) i7-3770K CPU @ 3.50GHz with 16G memory
+with following parameters:
+
+	nr_task: 100%
+	mode: thread
+	test: unlink2
+	cpufreq_governor: performance
+	ucode: 0x21
+
+I'll send another report for this regression.
+
+Best Regards,
+Rong Chen
+
