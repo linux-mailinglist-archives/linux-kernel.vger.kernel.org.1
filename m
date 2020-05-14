@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E24251D3FE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 23:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E00F1D3FE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 23:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbgENVX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 17:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43884 "EHLO
+        id S1728240AbgENVYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 17:24:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727867AbgENVX4 (ORCPT
+        with ESMTP id S1728043AbgENVX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 17:23:56 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 578C9C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 14:23:56 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id 50so593947wrc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 14:23:56 -0700 (PDT)
+        Thu, 14 May 2020 17:23:58 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDB5C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 14:23:58 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id z72so25361027wmc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 14:23:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=lEf87Wr/V1F+OPpc1tEBH5YE7A4qvblf+IVSWacua8w=;
-        b=Ysospds43Xh0QFZ2lbtrrrAKV1QECg+AWCmc5NsD79uveASjy2zyTD9fq1PSHYHxhN
-         wPata0MzJ2+vVCAriWRYFb86pAxVONPdb5cCJFKRQXsTJHcdYXsW4bpmkJ0sMwT6Fo4g
-         uJYGk8mSt+NWiyqSba+rPRZTXjl6s8irE2X4DOA35ROfe98LZgRurHyg8CSyOG7vTzu6
-         zeqmE0Dmef/EvAiLJ+JX9Z0Vk6+c9lc4FXp1sGTwMQ8k6GZRn6AONq5zbIaZZwcB6HPT
-         ERz8t1ZTS7EWXAF2iLZ1WYrGXUWbGm1qOOLq9NqcgShqtTO5w9r3BOTEFhut0l2WQdbR
-         A6IQ==
+        bh=BgJlONPQ+8Wy/hHv7eukI06o8qynIDksuk6QpOQmekU=;
+        b=Efi7MgMQHoOtsPGdUpr4qirQWBXjvBgRNem3oNBzPIdxnPfEPuIm7oMun+hK+gOlvr
+         ZgEJdLj/vny6ZxXu0uvuEmXG3zHYrxW7p3AjK46C5ChYlMEaxMZfqytY27nAkzewLkQn
+         4MTWk2csoECKbYqIpwQ4Uj16WqPNRAFEbKI95Rpq2ROVUYNYy6cS9POTPlbTgdJbkN2f
+         d9mRHUmnh1VFPb1os5fDvbCeU4ymXEDvPKvrW+PnDX0H9m6Y/2FLJm5+xb/4OEUV9lbt
+         ExuCgejpHOuPrSIwqpbMLweWWCtTS8YJHm/XcUF6fiFulD1Hp27BMrqxC6lNsdyob2qA
+         VYIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=lEf87Wr/V1F+OPpc1tEBH5YE7A4qvblf+IVSWacua8w=;
-        b=MY9LFYW+I33zSubYY36OeccYLBbjVRQa8HLha4GZXabMTDs9j2cEEG+2w7d68fg4Nm
-         biRasY9cVrAbyb2HMlwRDJ4bedhl1GP7wbItmtUToegwdfOegQHG+Lyw7Egq2wtHcOpy
-         WmgU3FGiI/WLrrkQlmv4wJYMyABhy6sqyLr7G/xCGfGLcwPoliCpAvFcikGBV9Oedpoa
-         kD8eUAs5sbWA7Kr2bDAiP6HpmhY8oqxnJTvQm5qHRVjwg4J4+b1Ypawy80+a5KgLWWV3
-         AirXfzseiPigF5XVqdhX7qLbROzBhpHHZ2X2dnWjCTCSloeUm2qxq2f8Mt/HIxIB4k3y
-         ZbSw==
-X-Gm-Message-State: AOAM533Vk1vDQZHZ0izvhoBvi2QUaKtrpH8VGWMzroXe+n5fp7nl5w84
-        0q1AroZyuC8L2+50y7j9IHE=
-X-Google-Smtp-Source: ABdhPJwhEuXRhgtqSfq/CKImJE72MohMis9XhR8MhMsNEujmDHNY6z1wbmdQ3+IVC+6XFalnjsztVg==
-X-Received: by 2002:adf:f386:: with SMTP id m6mr434002wro.88.1589491435071;
-        Thu, 14 May 2020 14:23:55 -0700 (PDT)
+        bh=BgJlONPQ+8Wy/hHv7eukI06o8qynIDksuk6QpOQmekU=;
+        b=Bp+aA77Lsx+bxntjWmR+9fHhSWAnYm+4c1cc8DyM/ZokMlEoOgT9i79ZQCwCfE1l6W
+         Jgto7/gewGKWLsvaudNKsQ/qZygNxWMRbn/Lql28SuPREctykf7CtID2peaGR2p9mEwh
+         c/HZFoRsDr56Lj6Us8mnbVCLHK83DNvX2MIZdvaGDxcnWTFZ/EXD1hHgsQOP1AYizMID
+         GB2E745EMXLz48SC/q4Z+Nb/0v5G7aWz/deegH1JMsA7lhlA79l/xMu4M0t+vA3jXWx2
+         Soy+JeeyeiPRdW+h8Ld2FHYzvzsDSB10e50CijQ/8qShU7489+EgG7ogy2NbGkAMsoI0
+         orxg==
+X-Gm-Message-State: AOAM532TtKw9LJxCgRoZaml0tLLGWlLOedq4GSMBY39d+e1q7NB8bhCG
+        MCiZWTskqGBUyv+9uoxm67I=
+X-Google-Smtp-Source: ABdhPJxb3MMcVKjg7lUD9RN+Jjag/+B/b+9ipQIsMT5BV/RQN2DoVBwXBgnj53O3bOkuQK5PNZROyw==
+X-Received: by 2002:a1c:b354:: with SMTP id c81mr320665wmf.136.1589491436912;
+        Thu, 14 May 2020 14:23:56 -0700 (PDT)
 Received: from localhost.localdomain (ip5f5bfcc8.dynamic.kabel-deutschland.de. [95.91.252.200])
-        by smtp.gmail.com with ESMTPSA id 128sm491210wme.39.2020.05.14.14.23.54
+        by smtp.gmail.com with ESMTPSA id 128sm491210wme.39.2020.05.14.14.23.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 14:23:54 -0700 (PDT)
+        Thu, 14 May 2020 14:23:56 -0700 (PDT)
 From:   huobean@gmail.com
 X-Google-Original-From: beanhuo@micron.com
 To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
@@ -54,9 +54,9 @@ To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
         derosier@gmail.com
 Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
         Bean Huo <beanhuo@micron.com>
-Subject: [PATCH v3 4/5] mtd: rawnand: Introduce a new function nand_check_is_erased_page()
-Date:   Thu, 14 May 2020 23:23:32 +0200
-Message-Id: <20200514212333.28692-5-beanhuo@micron.com>
+Subject: [PATCH v3 5/5] mtd: rawnand: micron: Micron SLC NAND filling block
+Date:   Thu, 14 May 2020 23:23:33 +0200
+Message-Id: <20200514212333.28692-6-beanhuo@micron.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200514212333.28692-1-beanhuo@micron.com>
 References: <20200514212333.28692-1-beanhuo@micron.com>
@@ -67,88 +67,158 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bean Huo <beanhuo@micron.com>
 
-Add a new function nand_check_is_erased_page() in nand_base.c, which is
-used to check whether one programmable page is empty or already programmed
+On some legacy planar 2D Micron NAND devices when a block erase command
+is issued, occasionally even though a block erase operation completes and
+returns a pass status, the flash block may not be completely erased.
+Subsequent operations to this block on very rare cases can result in subtle
+failures or corruption. These extremely rare cases should nevertheless be
+considered. These rare occurrences have been observed on partially written
+blocks.
+
+To avoid this rare occurrence, we should make sure that at least 15 pages
+have been programmed to a block before it is erased. In case we find that
+less than 15 pages have been programmed, we will rewrite first 15 pages of
+block.
 
 Signed-off-by: Bean Huo <beanhuo@micron.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 49 ++++++++++++++++++++++++++++++++
- include/linux/mtd/rawnand.h      |  2 ++
- 2 files changed, 51 insertions(+)
+ drivers/mtd/nand/raw/nand_micron.c | 102 +++++++++++++++++++++++++++++
+ 1 file changed, 102 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index b630f7f6a651..2bc9be745bc1 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -2584,6 +2584,55 @@ int nand_check_erased_ecc_chunk(void *data, int datalen,
+diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+index d30bc944f729..c4fbe1eada18 100644
+--- a/drivers/mtd/nand/raw/nand_micron.c
++++ b/drivers/mtd/nand/raw/nand_micron.c
+@@ -36,6 +36,9 @@
+ #define NAND_ECC_STATUS_1_3_CORRECTED	BIT(4)
+ #define NAND_ECC_STATUS_7_8_CORRECTED	(BIT(4) | BIT(3))
+ 
++#define MICRON_SHALLOW_ERASE_MIN_PAGE 15
++#define MICRON_PAGE_MASK_TRIGGER GENMASK(MICRON_SHALLOW_ERASE_MIN_PAGE, 0)
++
+ struct nand_onfi_vendor_micron {
+ 	u8 two_plane_read;
+ 	u8 read_cache;
+@@ -64,6 +67,7 @@ struct micron_on_die_ecc {
+ 
+ struct micron_nand {
+ 	struct micron_on_die_ecc ecc;
++	u16 *writtenp;
+ };
+ 
+ static int micron_nand_setup_read_retry(struct nand_chip *chip, int retry_mode)
+@@ -429,6 +433,93 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
+ 	return MICRON_ON_DIE_SUPPORTED;
  }
- EXPORT_SYMBOL(nand_check_erased_ecc_chunk);
  
-+/**
-+ * nand_check_is_erased_page - check if this page is a empty page
-+ * @chip: nand chip info structure
-+ * @page_data: data buffer containing the data in the page being checked
-+ * @oob: indicate if chip->oob_poi points to oob date of the page
-+ *
-+ * Returns true if this is an un-programmed page, false otherwise.
-+ */
-+int nand_check_is_erased_page(struct nand_chip *chip, u8 *page_data, bool oob)
++static int micron_nand_pre_erase(struct nand_chip *chip, u32 eraseblock)
 +{
++	struct micron_nand *micron = nand_get_manufacturer_data(chip);
 +	struct mtd_info *mtd = nand_to_mtd(chip);
-+	int ret, i, max_bitflips;
-+	u8 *databuf, *eccbuf = NULL;
-+	struct mtd_oob_region oobregion;
-+	int datasize, eccbytes = 0;
++	u8 last_page = MICRON_SHALLOW_ERASE_MIN_PAGE - 1;
++	u32 page;
++	u8 *data_buf;
++	int ret, i;
 +
-+	databuf = page_data;
-+	datasize = chip->ecc.size;
++	data_buf = nand_get_data_buf(chip);
++	WARN_ON(!data_buf);
 +
-+	if (oob) {
-+		mtd_ooblayout_ecc(mtd, 0, &oobregion);
-+		eccbuf = chip->oob_poi + oobregion.offset;
-+		eccbytes = chip->ecc.bytes;
-+	}
-+	max_bitflips = 0;
++	if (likely(micron->writtenp[eraseblock] & BIT(last_page)))
++		return 0;
 +
-+	for (i = 0; i < chip->ecc.steps; i++) {
-+		ret = nand_check_erased_ecc_chunk(databuf, datasize,
-+						  eccbuf, eccbytes,
-+						  NULL, 0, chip->ecc.strength);
-+		if (ret < 0)
-+			return false;
++	page = eraseblock << (chip->phys_erase_shift - chip->page_shift);
 +
-+		max_bitflips = max(ret, max_bitflips);
-+
-+		databuf += chip->ecc.size;
-+		eccbuf += chip->ecc.bytes;
++	if (unlikely(micron->writtenp[eraseblock] == 0)) {
++		ret = nand_read_page_raw(chip, data_buf, 1, page + last_page);
++		if (ret)
++			return ret; /* Read error */
++		ret = nand_check_is_erased_page(chip, data_buf, true);
++		if (!ret)
++			return 0;
 +	}
 +
-+	/*
-+	 * As for the empty/erased page, bitflips number should be zero or at
-+	 * least less than the bitflip_threshold.
-+	 */
-+	ret =  max_bitflips < mtd->bitflip_threshold;
++	memset(data_buf, 0x00, mtd->writesize);
 +
-+	return ret;
++	for (i = 0; i < MICRON_SHALLOW_ERASE_MIN_PAGE; i++) {
++		ret = nand_write_page_raw(chip, data_buf, false, page + i);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
 +}
-+EXPORT_SYMBOL(nand_check_is_erased_page);
 +
- /**
-  * nand_read_page_raw_notsupp - dummy read raw page function
-  * @chip: nand chip info structure
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index a1bb2acfaf6a..bb97b48859f9 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1322,6 +1322,8 @@ int nand_check_erased_ecc_chunk(void *data, int datalen,
- 				void *extraoob, int extraooblen,
- 				int threshold);
- 
-+int nand_check_is_erased_page(struct nand_chip *chip, u8 *page_data, bool oob);
++static int micron_nand_post_erase(struct nand_chip *chip, u32 eraseblock)
++{
++	struct micron_nand *micron = nand_get_manufacturer_data(chip);
 +
- int nand_ecc_choose_conf(struct nand_chip *chip,
- 			 const struct nand_ecc_caps *caps, int oobavail);
++	if (!micron)
++		return -EINVAL;
++
++	micron->writtenp[eraseblock] = 0;
++
++	return 0;
++}
++
++static int micron_nand_write_oob(struct nand_chip *chip, loff_t to,
++				 struct mtd_oob_ops *ops)
++{
++	struct micron_nand *micron = nand_get_manufacturer_data(chip);
++	u32 eb_sz = nanddev_eraseblock_size(&chip->base);
++	u32 p_sz = nanddev_page_size(&chip->base);
++	u32 ppeb = nanddev_pages_per_eraseblock(&chip->base);
++	u32 nb_p_tot = ops->len / p_sz;
++	u32 first_eb = DIV_ROUND_DOWN_ULL(to, eb_sz);
++	u32 first_p = DIV_ROUND_UP_ULL(to - (first_eb * eb_sz), p_sz);
++	u32 nb_eb = DIV_ROUND_UP_ULL(first_p + nb_p_tot, ppeb);
++	u32 remaining_p, eb, nb_p;
++	int ret;
++
++	ret = nand_write_oob_nand(chip, to, ops);
++
++	if (ret || ops->len != ops->retlen)
++		return ret;
++
++	/* Mark the last pages of the first erase block to write */
++	nb_p = min(nb_p_tot, ppeb - first_p);
++	micron->writtenp[first_eb] |= GENMASK(first_p + nb_p, first_p) &
++					MICRON_PAGE_MASK_TRIGGER;
++	remaining_p = nb_p_tot - nb_p;
++
++	/* Mark all the pages of all "in-the-middle" erase blocks */
++	for (eb = first_eb + 1; eb < first_eb + nb_eb - 1; eb++) {
++		micron->writtenp[eb] |= MICRON_PAGE_MASK_TRIGGER;
++		remaining_p -= ppeb;
++	}
++
++	/* Mark the first pages of the last erase block to write */
++	if (remaining_p)
++		micron->writtenp[eb] |= GENMASK(remaining_p - 1, 0) &
++					MICRON_PAGE_MASK_TRIGGER;
++	return 0;
++}
++
+ static int micron_nand_init(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+@@ -513,6 +604,17 @@ static int micron_nand_init(struct nand_chip *chip)
+ 		}
+ 	}
  
++	if (nand_is_slc(chip)) {
++		micron->writtenp = kcalloc(nanddev_neraseblocks(&chip->base),
++					   sizeof(u16), GFP_KERNEL);
++		if (!micron->writtenp)
++			goto err_free_manuf_data;
++
++		chip->ops.write_oob = micron_nand_write_oob;
++		chip->ops.pre_erase = micron_nand_pre_erase;
++		chip->ops.post_erase = micron_nand_post_erase;
++	}
++
+ 	return 0;
+ 
+ err_free_manuf_data:
 -- 
 2.17.1
 
