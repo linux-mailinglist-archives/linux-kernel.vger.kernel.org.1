@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774FC1D3F6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 23:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2C81D3F81
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 23:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgENVAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 17:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726201AbgENVAE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 17:00:04 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354E8C061A0C;
-        Thu, 14 May 2020 14:00:03 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id l21so139812eji.4;
-        Thu, 14 May 2020 14:00:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oLhuR8HS5ejq1vXdwrdSp2iS9vK3c80XB67HZI/sIAk=;
-        b=JMzyOVelIl+D9VNYc15hQhibmAOQzixQf4tza209c9xFcrofC0aFYUgCqQyVqaWR6y
-         TjIu6J6lcvsg0lSB4aPOWfIcu/1nWI4S881QE5RpIwGZyD1WwAUgq/JLOfa3Y370tYVb
-         ix2giNJIK+fNr9sn7qxiCL3N+7yDSg4TMGHDRxRPAgjHh25J9mCVLgmLftlBonarlQBC
-         ljSonxdNOe1oHwhBPqRIetmmdLO9mzXhEO05PlOFI9RdsXfc9mKQYN8T9pcC+oX/vjgT
-         o5sMS4OZs9sFH4f5qNUH6Dgho8UcEv0jfushG8dzbsIqyU0M3dx7uLJjMYxHDrYXJ0c4
-         lPqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oLhuR8HS5ejq1vXdwrdSp2iS9vK3c80XB67HZI/sIAk=;
-        b=r2L00ODy9SatTvnYhrtDblevwRJLXjN4uNnhkGEqpQrS4CmKf5xn9vKQBKqtshPEjN
-         zYkirOje6zoYUsu7LFRl3KYR1jyxTWPGC9v8HJXTzjFYQtuVKKeljFy3JZWF6seN/B7E
-         1eo7ka1Xdz9JqC4JoEDulcJc4yh+OIt8LGBsxenYIjN+XgxUq7aQOTGS8fRp8X6Hs2Uf
-         +UHWCcXvwiNeKbywfy7PEE6pHsqUog4iySCzmCeEiZlHas7/s8kAzhXAFvUxjxunthol
-         AoVaQPf5zJbojRHJGrlLyZM74Rz59BDK3KAq/x8I9GkvOlJF7e6u300sETRb8j75eE2v
-         9Sgg==
-X-Gm-Message-State: AOAM530Ln88wZjptlg2A+noDEBr8olnfcjNJWMd/utZxfzVwKFhHVY7D
-        WiLkZfRmPiHy9QvUF3D+lMrsk4k3uAt7REIZqCoVNSq8
-X-Google-Smtp-Source: ABdhPJxxoY1f6fVa6YQPSyhvR2jwvZmnKgI9b2jjpnJ9nf4hE4za+JJteHbAUqFch4+Lo2HWdonQM8Ko1nVkTp1pcZA=
-X-Received: by 2002:a17:906:27c2:: with SMTP id k2mr5592477ejc.239.1589490001827;
- Thu, 14 May 2020 14:00:01 -0700 (PDT)
+        id S1727899AbgENVC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 17:02:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726201AbgENVC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 17:02:28 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4298206F1;
+        Thu, 14 May 2020 21:02:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589490148;
+        bh=BpiNhcYdcKddO8cs3Vt8IZUscWTK1/Is8oqrDfZkC6w=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=hyfFgR+GL76NQf566ZtlB+WOryIov5DSxhUL5b5JUGfd+iX0ldBn3aeIuHEmGYr5F
+         EJi9Wz7J28FNtt08VJYBztNyXwTQJ6uHS1pGhU4g7jeCKpOQ1WCr4QwXnoluVb/vcF
+         CFUnP5fIMuLO3vUY90BKaBpUzqs5HHWHXbnfeD0k=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200514183302.16925-1-colin.king@canonical.com>
-In-Reply-To: <20200514183302.16925-1-colin.king@canonical.com>
-From:   Vladimir Oltean <olteanv@gmail.com>
-Date:   Thu, 14 May 2020 23:59:50 +0300
-Message-ID: <CA+h21hpdw5aXLnS0VRnf1XWkseKY83pAoqvUuM09xAFLHyrqWw@mail.gmail.com>
-Subject: Re: [PATCH][next] net: dsa: felix: fix incorrect clamp calculation
- for burst
-To:     Colin King <colin.king@canonical.com>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
-        netdev <netdev@vger.kernel.org>, kernel-janitors@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1589267017-17294-5-git-send-email-dillon.minfei@gmail.com>
+References: <1589267017-17294-1-git-send-email-dillon.minfei@gmail.com> <1589267017-17294-5-git-send-email-dillon.minfei@gmail.com>
+Subject: Re: [PATCH v3 4/5] clk: stm32: Fix stm32f429 ltdc driver loading hang in clk set rate. keep ltdc clk running after kernel startup
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-clk@vger.kernel.org,
+        dillon.minfei@gmail.com
+To:     airlied@linux.ie, alexandre.torgue@st.com, daniel@ffwll.ch,
+        dillon.minfei@gmail.com, mcoquelin.stm32@gmail.com,
+        mturquette@baylibre.com, robh+dt@kernel.org, sam@ravnborg.org,
+        thierry.reding@gmail.com
+Date:   Thu, 14 May 2020 14:02:27 -0700
+Message-ID: <158949014721.215346.12197373767247910756@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Colin,
+Quoting dillon.minfei@gmail.com (2020-05-12 00:03:36)
+> From: dillon min <dillon.minfei@gmail.com>
+>=20
+> as store stm32f4_rcc_register_pll return to the wrong offset of clks,
 
-On Thu, 14 May 2020 at 21:34, Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> Currently burst is clamping on rate and not burst, the assignment
-> of burst from the clamping discards the previous assignment of burst.
-> This looks like a cut-n-paste error from the previous clamping
-> calculation on ramp.  Fix this by replacing ramp with burst.
->
-> Addresses-Coverity: ("Unused value")
-> Fixes: 0fbabf875d18 ("net: dsa: felix: add support Credit Based Shaper(CBS) for hardware offload")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Use () on functions, i.e. stm32f4_rcc_register_pll().
+
+> so ltdc gate clk is null. need change clks[PLL_VCO_SAI] to clks[PLL_SAI]
+
+And quote variables like 'clks[PLL_VCO_SAI]'
+
+>=20
+> add CLK_IGNORE_UNUSED for ltdc to make sure clk not be freed by
+> clk_disable_unused
+
+clk_disable_unused() doesn't free anything. Why does ltdc not need to be
+turned off if it isn't used? Is it critical to system operation? Should
+it be marked with the critical clk flag then? The CLK_IGNORE_UNUSED flag
+is almost always wrong to use.
+
+>=20
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
 > ---
-
-Acked-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-
->  drivers/net/dsa/ocelot/felix_vsc9959.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
-> index df4498c0e864..85e34d85cc51 100644
-> --- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-> +++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-> @@ -1360,7 +1360,7 @@ static int vsc9959_qos_port_cbs_set(struct dsa_switch *ds, int port,
->         /* Burst unit is 4kB */
->         burst = DIV_ROUND_UP(cbs_qopt->hicredit, 4096);
->         /* Avoid using zero burst size */
-> -       burst = clamp_t(u32, rate, 1, GENMASK(5, 0));
-> +       burst = clamp_t(u32, burst, 1, GENMASK(5, 0));
->         ocelot_write_gix(ocelot,
->                          QSYS_CIR_CFG_CIR_RATE(rate) |
->                          QSYS_CIR_CFG_CIR_BURST(burst),
-> --
-> 2.25.1
->
-
-Thanks!
--Vladimir
+>  drivers/clk/clk-stm32f4.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
+> index 18117ce..0ba73de 100644
+> --- a/drivers/clk/clk-stm32f4.c
+> +++ b/drivers/clk/clk-stm32f4.c
+> @@ -129,7 +129,8 @@ static const struct stm32f4_gate_data stm32f429_gates=
+[] __initconst =3D {
+>         { STM32F4_RCC_APB2ENR, 20,      "spi5",         "apb2_div" },
+>         { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+>         { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+> -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
+> +       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div",
+> +               CLK_IGNORE_UNUSED },
+>  };
+> =20
+>  static const struct stm32f4_gate_data stm32f469_gates[] __initconst =3D {
+> @@ -1757,7 +1758,7 @@ static void __init stm32f4_rcc_init(struct device_n=
+ode *np)
+>         clks[PLL_VCO_I2S] =3D stm32f4_rcc_register_pll("vco_in",
+>                         &data->pll_data[1], &stm32f4_clk_lock);
+> =20
+> -       clks[PLL_VCO_SAI] =3D stm32f4_rcc_register_pll("vco_in",
+> +       clks[PLL_SAI] =3D stm32f4_rcc_register_pll("vco_in",
+>                         &data->pll_data[2], &stm32f4_clk_lock);
+> =20
+>         for (n =3D 0; n < MAX_POST_DIV; n++) {
