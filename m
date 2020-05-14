@@ -2,77 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15B11D2529
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 04:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD651D252D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 04:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726022AbgENCkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 22:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37772 "EHLO
+        id S1726076AbgENCnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 22:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725895AbgENCkU (ORCPT
+        by vger.kernel.org with ESMTP id S1725874AbgENCnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 22:40:20 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC01C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 19:40:19 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id s9so1293351lfp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 19:40:19 -0700 (PDT)
+        Wed, 13 May 2020 22:43:45 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A2EC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 19:43:45 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id b6so1843350ljj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 19:43:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=K4cErI3AscpNO2jykaWdRgxSDShuBARQicHYOzOkFX0=;
-        b=B2FcAITDo8OkHtW3DZIV1grkQJEgpVzfrgtp/B4KO+r0+kVVTEKA5QPhZSmo9nYnJE
-         oADABPqGsbNupidK8+8SNhVQoDPHaTV+bo9PpZ5Z4udffLQDL0vO+GBzvy8BVkpiJFmq
-         W4U98ognAFTPWJZOaiTdbiJpgVb6lU6CWvmlbycvoAjNF0/FAk5brvEc6gwxqhZUV4bW
-         pkux2Xu5Wz+C8sipIYZqPLzsGszAVdWrt5EsCwU9slksUIRqa0d/kzXYOL9XAtF6vasB
-         CEaP4R19egNzfMHOEfu+OXnO2Sd19pjXXK5T1/73tpSA9aWJDH7MkzbLCyLBuEIRuywl
-         mjnw==
+        bh=L3In83ZNtvhCqrpK0vVjzsKNvprMyvL+zJ9ohua4z10=;
+        b=RJxI7nc5/+qicT+av7MVnCPyCWQNYqEmo+1I8aEDjYrcgsKm1JO+ximEumc2BGCHG6
+         IRKjgEiRjwQuoza3oL4WOrhIpbRc8zh7pT5r3iUQzrEjc7+dcHsaKetaMFqukCgIbr+Y
+         1swtCFlefWtGVUfsLBR/jTXuJr1SgZ0x45QhE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=K4cErI3AscpNO2jykaWdRgxSDShuBARQicHYOzOkFX0=;
-        b=J9mVFXC1FND6+bCzHXRQ7H2hr/yEVJXZCpKYKOD7NTqY5pdf4HMuQT5oD8VnZ1dOqs
-         6QjWW0YKuU004zuV4KQ8AzKREcTa59h+GUygTp6JfbK8l6Yt/Z3PeiAK+BsujkFz5w6T
-         NUjux08ytv3QDm5zur+qG3ohddWFhF6AaEBs4j6vtYQatvaT8ebre4BmzqZBAB5SzVCk
-         caMab61H2FWb+v+MH31X3oolrxlUNQU6bBDH06AMoVr4kZQTQCP4E5IImTWJJLbFkKRc
-         sdAg2zFlnRpfOwtMV34qbgCKLh5UvIxrAh8FicDFtzb/5caxI8pg0/3P69kV/gbs89h1
-         7iJA==
-X-Gm-Message-State: AOAM530Tip+HKUTWSPH3p6O3cQIEm0slDc21NuidSYw5ddyPScNl2hMT
-        OIWkmxv6S0WdnZSDE9m02zLXgzaV3HdZ3x+/nAA=
-X-Google-Smtp-Source: ABdhPJykFjdGurpWwc8+7/0JB93hVc0BVhXikueHs05N38p4BgNJAr9FiqZ/ZNaYTXcIraPsA0gJlt3IUDxXjvHlfU8=
-X-Received: by 2002:a19:4b57:: with SMTP id y84mr1607420lfa.214.1589424018105;
- Wed, 13 May 2020 19:40:18 -0700 (PDT)
+        bh=L3In83ZNtvhCqrpK0vVjzsKNvprMyvL+zJ9ohua4z10=;
+        b=WazOw1lSKPioK2lPoQAY4LVzSHNd+Dhg6+UAp4hbSXrpBjgqg/40eNfLXCLZ+KawnT
+         JUwquuGhvvviuHPZcTCLWKrVMw3OXVlAc+J1j6PmxrNE7C8HHGa/xhhs06gdPOf6hzd0
+         V5Aa3NKwHDw+IWv+W6CivHom59Xy7rA9ljTSGAREQ3++pBHVTobK+aYg7TvWWnOlt89c
+         b2xh8tJTeFgolUFL/gNSQOnX8E7fC3THWhyFNSIleG0wxIYU2qahsiVQFUxrB+kGc8qr
+         KeQtBZllOcDkE1UMFXF9eKVcKg6kjwaBS9/frphl7b7do43sXiQLqTuZltT5f8lNzQv4
+         6jaw==
+X-Gm-Message-State: AOAM531P6xxqXEFm4d3UCiG3IiB6F9073nPg2GmqIVTQx1K3Uig7nDgL
+        NsROlV4or+wHWCrGuvEN2U3ngQCtzpc=
+X-Google-Smtp-Source: ABdhPJzaOENhdDJCrE1kvuOJHW8TqOb55NqDnPw+NTDyIhSrdrP6veWL7AQRgNTkIOi/V1oFZbRImQ==
+X-Received: by 2002:a2e:5847:: with SMTP id x7mr1201812ljd.61.1589424222614;
+        Wed, 13 May 2020 19:43:42 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id b25sm605236ljp.105.2020.05.13.19.43.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 May 2020 19:43:40 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id r17so1257801lff.9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 19:43:40 -0700 (PDT)
+X-Received: by 2002:a19:6e4e:: with SMTP id q14mr1567307lfk.192.1589424220085;
+ Wed, 13 May 2020 19:43:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200513150007.1315395-1-lkundrak@v3.sk> <20200513150007.1315395-3-lkundrak@v3.sk>
- <CAOMZO5B582=tZ_YBCyVYFtGh=z5hZKFxP7XoUHEmH3jZsk2uYQ@mail.gmail.com>
-In-Reply-To: <CAOMZO5B582=tZ_YBCyVYFtGh=z5hZKFxP7XoUHEmH3jZsk2uYQ@mail.gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 13 May 2020 23:41:31 -0300
-Message-ID: <CAOMZO5BdiXCVXs+8jP7PoRvgKd1sxCu4KhjvJBvL=Qig2WOs4g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] drm/etnaviv: Don't ignore errors on getting clocks
-To:     Lubomir Rintel <lkundrak@v3.sk>
-Cc:     Lucas Stach <l.stach@pengutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Russell King <linux+etnaviv@armlinux.org.uk>
+References: <20200513160038.2482415-1-hch@lst.de> <20200513160038.2482415-12-hch@lst.de>
+ <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
+ <20200513192804.GA30751@lst.de> <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
+ <20200514082054.f817721ce196f134e6820644@kernel.org> <CAHk-=wjBKGLyf1d53GwfUTZiK_XPdujwh+u2XSpD2HWRV01Afw@mail.gmail.com>
+ <20200514100009.a8e6aa001f0ace5553c7904f@kernel.org>
+In-Reply-To: <20200514100009.a8e6aa001f0ace5553c7904f@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 13 May 2020 19:43:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjP8ysEZnNFi_+E1ZEFGpcbAN8kbYHrCnC93TX6XX+jEQ@mail.gmail.com>
+Message-ID: <CAHk-=wjP8ysEZnNFi_+E1ZEFGpcbAN8kbYHrCnC93TX6XX+jEQ@mail.gmail.com>
+Subject: Re: [PATCH 11/18] maccess: remove strncpy_from_unsafe
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Christoph Hellwig <hch@lst.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-parisc@vger.kernel.org,
+        linux-um <linux-um@lists.infradead.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 2:09 PM Fabio Estevam <festevam@gmail.com> wrote:
+On Wed, May 13, 2020 at 6:00 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> > But we should likely at least disallow it entirely on platforms where
+> > we really can't - or pick one hardcoded choice. On sparc, you really
+> > _have_ to specify one or the other.
+>
+> OK. BTW, is there any way to detect the kernel/user space overlap on
+> memory layout statically? If there, I can do it. (I don't like
+> "if (CONFIG_X86)" thing....)
+> Or, maybe we need CONFIG_ARCH_OVERLAP_ADDRESS_SPACE?
 
-> The binding doc Documentation/devicetree/bindings/gpu/vivante,gc.yaml
-> says that only the 'reg' clock could be optional, the others are
-> required.
+I think it would be better to have a CONFIG variable that
+architectures can just 'select' to show that they are ok with separate
+kernel and user addresses.
 
-arch/arm/boot/dts/dove.dtsi only uses the 'core' clock.
-arch/arm/boot/dts/stm32mp157.dtsi uses 'bus' and 'core'
+Because I don't think we have any way to say that right now as-is. You
+can probably come up with hacky ways to approximate it, ie something
+like
 
-Maybe the binding needs to be updated and it seems that using
-devm_clk_get_optional() like you propose is safe.
+    if (TASK_SIZE_MAX > PAGE_OFFSET)
+        .... they overlap ..
+
+which would almost work, but..
+
+                 Linus
