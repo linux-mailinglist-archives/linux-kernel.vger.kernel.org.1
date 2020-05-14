@@ -2,98 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B20E1D391F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 20:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D9D1D3923
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 20:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgENSb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 14:31:56 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:38556 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgENSb4 (ORCPT
+        id S1727043AbgENSdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 14:33:06 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:51617 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726188AbgENSdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 14:31:56 -0400
-Received: by mail-oi1-f196.google.com with SMTP id j145so3583990oib.5;
-        Thu, 14 May 2020 11:31:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/ZdOo8qTYydr7gpNlz9VEjrBle34EZ628Ie0y7qEL/0=;
-        b=ranJhHybyWIi9UvAbpb0MyY6TkhPGXR9JnqhNpFy5UYpe/JfZhv/3cRnFOe4cwiiuq
-         uyhIdQ1yPFzkOyInXsWU2/Zv0axUpMtGMbRiMYBuSddcYtLpwAbZ5mDkq4m6CU0gK16t
-         PZTRwJGdlofBFYwRChqM6brx9Rt2b0G5lv0B5CmQSWZYIP3WyANIhAWgDS0+sGNvD3qa
-         2tPBMr8LvkEjyRplMGWObSr6JS4AOE7uEy7T57dCSAua1Qn6rTLopW8sOFZVGoMJrCLq
-         /ezN1k+ZHr9rrI/Zmol/qHkUJEoZ3i5EDbJG5FtuSchZ1QlAI4xTgICKikvSMMIwWt0V
-         98eA==
-X-Gm-Message-State: AGi0PuYSbvU7PUZRQwwZ10SSQhVNyGzkcbgh3EANXOgTLV6ETwZc1M9h
-        SX08VAelHguj8+OGvfrXaw==
-X-Google-Smtp-Source: APiQypJb/IrkasWWL0KzBECbQGQmU9ovfrPx2nw3JgBo31OcpHjNbpKZH/E7kal8pID5YeWdCQI4Hg==
-X-Received: by 2002:aca:fd12:: with SMTP id b18mr32276044oii.158.1589481112173;
-        Thu, 14 May 2020 11:31:52 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h24sm978584otj.25.2020.05.14.11.31.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 11:31:51 -0700 (PDT)
-Received: (nullmailer pid 24946 invoked by uid 1000);
-        Thu, 14 May 2020 18:31:50 -0000
-Date:   Thu, 14 May 2020 13:31:50 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sergey.Semin@baikalelectronics.ru
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-pm@vger.kernel.org,
-        Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>,
-        Mark Brown <broonie@kernel.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 03/20] dt-bindings: Add vendor prefix for Baikal
- Electronics, JSC
-Message-ID: <20200514183150.GA24713@bogus>
-References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
- <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
- <20200506174238.15385-4-Sergey.Semin@baikalelectronics.ru>
+        Thu, 14 May 2020 14:33:06 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jZIfG-00045Y-Js; Thu, 14 May 2020 18:33:02 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] net: dsa: felix: fix incorrect clamp calculation for burst
+Date:   Thu, 14 May 2020 19:33:02 +0100
+Message-Id: <20200514183302.16925-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506174238.15385-4-Sergey.Semin@baikalelectronics.ru>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 May 2020 20:42:21 +0300,  wrote:
-> From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> 
-> Add "BAIKAL ELECTRONICS, JSC" to the list of devicetree vendor prefixes
-> as "baikal".
-> 
-> Website: http://www.baikalelectronics.com
-> 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> 
-> ---
-> 
-> Changelog v2:
-> - Fix author and SoB emails mismatch.
-> - Add 'baikal' vendor prefix instead of ambiguous 'be'.
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+From: Colin Ian King <colin.king@canonical.com>
 
-Applied, thanks!
+Currently burst is clamping on rate and not burst, the assignment
+of burst from the clamping discards the previous assignment of burst.
+This looks like a cut-n-paste error from the previous clamping
+calculation on ramp.  Fix this by replacing ramp with burst.
+
+Addresses-Coverity: ("Unused value")
+Fixes: 0fbabf875d18 ("net: dsa: felix: add support Credit Based Shaper(CBS) for hardware offload")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/dsa/ocelot/felix_vsc9959.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
+index df4498c0e864..85e34d85cc51 100644
+--- a/drivers/net/dsa/ocelot/felix_vsc9959.c
++++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
+@@ -1360,7 +1360,7 @@ static int vsc9959_qos_port_cbs_set(struct dsa_switch *ds, int port,
+ 	/* Burst unit is 4kB */
+ 	burst = DIV_ROUND_UP(cbs_qopt->hicredit, 4096);
+ 	/* Avoid using zero burst size */
+-	burst = clamp_t(u32, rate, 1, GENMASK(5, 0));
++	burst = clamp_t(u32, burst, 1, GENMASK(5, 0));
+ 	ocelot_write_gix(ocelot,
+ 			 QSYS_CIR_CFG_CIR_RATE(rate) |
+ 			 QSYS_CIR_CFG_CIR_BURST(burst),
+-- 
+2.25.1
+
