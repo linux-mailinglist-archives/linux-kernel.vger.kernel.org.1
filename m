@@ -2,147 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BACFC1D26F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 08:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4126A1D26FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 08:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbgENGDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 02:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
+        id S1725999AbgENGE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 02:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725806AbgENGDH (ORCPT
+        by vger.kernel.org with ESMTP id S1725973AbgENGE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 02:03:07 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB6C6C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 23:03:06 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id y9so763069plk.10
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 23:03:06 -0700 (PDT)
+        Thu, 14 May 2020 02:04:26 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E840C05BD43
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 23:04:26 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id r10so813967pgv.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 23:04:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TPeI8RuAZy8pzAoL6foqpsMRTCi6RDeQb0PfZ8BZJ7U=;
-        b=KZ+QEA3bF0HYQ7RCcHSNf5tGen8Wqfu5/++/v5YjZ6caB3VB6B1Py20Hr2cfeDTv1o
-         6ldf2Eo8zZj56RIyUzjNHIiOWTOqMQRqB8x/LSZsvMQjKc6xAfpag7SDAKP9SMJRL4VK
-         VlnetIW4laPTdmw3XiNz68qsZXWLt4qPBYGYrcv+Zcwn/mtoJ6mKb3Nn/ZXVkbui8bPy
-         NPOkinb4i1Jqz5n0oC2NAbWGfQ555kOt+AYOa1zRP0qFiKnBSUGF3R0N3in+apbBwv2W
-         72XE/cBOw86Zz4GQuJOXdVpja2N26ut/rKp97xJVunWPCg+C11+rb/TG8glVIdOSsIan
-         f7mQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fdmSIWMsCpUW7wJAjQcM04l5EV2d38V1LLlFH56zh/Q=;
+        b=t+81K8xIWHZAb+qZy4b/CyLYaDJEC3buGiFxgEM+vGGtP3OpgN/uRorgVQdklsZolt
+         fUMiHNpNafAs3xthBI978lkA1NzlDyGuLkTuTs++Fwos6trlUHlOCcWOLT51P/tbaPa8
+         EMAX6Xneovwlf0jYO+DSG7ju4bF4ps5Pnu6r04J47Kkq3Jn9Yqr0qHK99/QnLcb9TWOe
+         ELDo+1d9D3l3uzm0ltFq+Gz3mTRDd7+gli5UHpqztRYjkZV+BL79pSaa/x1f/AvQIBqA
+         eMHOSwaYnIjuc0cY0Fbh7YoccJUt6COcV9CoG13JZrx4h1P3lnzkrDoHP+bYr+91ROv4
+         5yDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TPeI8RuAZy8pzAoL6foqpsMRTCi6RDeQb0PfZ8BZJ7U=;
-        b=syzjayFytgUFlGNksXBheoBHhVX+GHmChjFJAMIj6/345EjIsM8kyeH7C7Bugy3cGS
-         Q5itI5Jh/+R0DnkBZGB/SUAzYPCjc85jYJSzOSKze/yahm9u0BK4zGl54t+zmJRH/Onf
-         MQSDbX6wOcrefXPcRWFYKdDL29gXf1HM1kMbUq+MCfd94QKjilZgiW3Y3aeRydBO8hDI
-         s43GZS27TVbxj9BIDBtgnj+kVwBuFuPW43rUSLqwIUdLtDfE7XZ6u987++Sht5KlO8hS
-         SmrucN+UCLflPq4pVA7W2ANRp3M0wMmPOG7gF6zKH91/OarbHNufIi8Yx8ARV0kDJQQx
-         RBWA==
-X-Gm-Message-State: AGi0Pua09qAPYL8Q/0YLiMM3qDJPRnxmIVap9MljD9AEk+se7gMrLfsi
-        fvqQE3d3rTO873+Onfh2leo4EA==
-X-Google-Smtp-Source: APiQypKS0f2mmUEu7BEa8P6mPQkMckB+1UyKwXYrHoeDGxB2hTW6TJ6Z44jhprlTISi2/kMDG00Z5w==
-X-Received: by 2002:a17:90b:30cb:: with SMTP id hi11mr38401195pjb.103.1589436186242;
-        Wed, 13 May 2020 23:03:06 -0700 (PDT)
-Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id d10sm1202671pgo.10.2020.05.13.23.03.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fdmSIWMsCpUW7wJAjQcM04l5EV2d38V1LLlFH56zh/Q=;
+        b=ImTZtaL5/QKY3R3LX4mjKQ5GW8pqkOHCD3v7uHhDGXeiW+PBdIVGr/WhljkXf+rSG3
+         DfxiCB7xjbwjH5ofAHnR7DrYFqVYw/7lK5Dn8EYv6dN6cRdUaAYewB7hZOGWC+lFs1Ej
+         DrNkfn3YZGwIxbxUCtSRj0d/i1987wVjBfiJN92ZL9O3rs50byfrn4wda/U9a1pLIT/6
+         dpw9Qw3GsMyjRD4c5nCUqRV3+C/KbVs0oAu+YHPJYbgt3m4slnLDXCNAaYC4EYJhXDin
+         LKaXxxkIsltwEs2MIFDink61x62ghG88MqZn11QqJOHZD/BvTT+D+7XUb58LXb6ulMm0
+         Hf+Q==
+X-Gm-Message-State: AOAM533OR3ONTKaJNBjLGGKwTZ3q29SnOWgyiGiH+p5y97NVCUJwmhaR
+        sLpwtIw1HDdC1N8d9m7pV8Lj9Q==
+X-Google-Smtp-Source: ABdhPJy8/5JndA1WeHN8nNz8gCYQDDpjdxcICz8QbFZopFUpG6xUKfXZ6hED2rLKq8OOCHvu7Dtn/w==
+X-Received: by 2002:a62:6dc3:: with SMTP id i186mr2697519pfc.273.1589436265605;
+        Wed, 13 May 2020 23:04:25 -0700 (PDT)
+Received: from yoga (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id v189sm1218271pfv.176.2020.05.13.23.04.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 23:03:05 -0700 (PDT)
-From:   Zong Li <zong.li@sifive.com>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        akpm@linux-foundation.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Zong Li <zong.li@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>
-Subject: [PATCH] riscv: perf: fix build error for dependency issue
-Date:   Thu, 14 May 2020 14:02:43 +0800
-Message-Id: <20200514060243.106976-1-zong.li@sifive.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 13 May 2020 23:04:24 -0700 (PDT)
+Date:   Wed, 13 May 2020 23:04:22 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom: Add sm8250 pinctrl
+ bindings
+Message-ID: <20200514060422.GL1302550@yoga>
+References: <20200417061907.1226490-1-bjorn.andersson@linaro.org>
+ <20200417061907.1226490-2-bjorn.andersson@linaro.org>
+ <20200429213453.GA32114@bogus>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200429213453.GA32114@bogus>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CONFIG_RISCV_BASE_PMU can be selected or unselected, but in fact,
-CONFIG_RISCV_BASE_PMU must be always selected when selecting
-CONFIG_PERF_EVENTS on current perf implementation, otherwise, it
-would cause the build error when only selecting CONFIG_PERF_EVENTS.
-The build case is applied randconfig which generated by kbuild test.
+On Wed 29 Apr 14:34 PDT 2020, Rob Herring wrote:
+> On Thu, Apr 16, 2020 at 11:19:06PM -0700, Bjorn Andersson wrote:
+> > diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm8250-pinctrl.yaml
+[..]
+> > +#PIN CONFIGURATION NODES
+> > +patternProperties:
+> > +  '^.*$':
+> > +    if:
+> > +      type: object
+> > +    then:
+> 
+> Needs a $ref to the standard properties.
+> 
+> Would be good to show a child node in the example too. (And try having 
+> an error in a standard property type to verify you get an error).
+> 
 
-This patch removes the unnecessary configuration and implementations.
-Eventually, the number of counters should be determinated at runtime,
-such as DTB, so we don't need to re-build kernel for various platform
-which has got different number of hpmcounters.
+Finally looked into this. By $ref'ing pinmux-node.yaml I can drop pins
+and function from below properties, and by $ref'ing pincfg-node.yaml I
+can drop the pinconf entries listed.
 
-Signed-off-by: Zong Li <zong.li@sifive.com>
-Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
----
- arch/riscv/Kconfig                  | 13 -------------
- arch/riscv/include/asm/perf_event.h | 16 +++-------------
- 2 files changed, 3 insertions(+), 26 deletions(-)
+But how do I $ref both?
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 74f82cf4f781..7d5123576953 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -283,19 +283,6 @@ config RISCV_ISA_C
- 
- 	   If you don't know what to do here, say Y.
- 
--menu "supported PMU type"
--	depends on PERF_EVENTS
--
--config RISCV_BASE_PMU
--	bool "Base Performance Monitoring Unit"
--	def_bool y
--	help
--	  A base PMU that serves as a reference implementation and has limited
--	  feature of perf.  It can run on any RISC-V machines so serves as the
--	  fallback, but this option can also be disable to reduce kernel size.
--
--endmenu
--
- config FPU
- 	bool "FPU support"
- 	default y
-diff --git a/arch/riscv/include/asm/perf_event.h b/arch/riscv/include/asm/perf_event.h
-index 0234048b12bc..8e5b1d81112c 100644
---- a/arch/riscv/include/asm/perf_event.h
-+++ b/arch/riscv/include/asm/perf_event.h
-@@ -16,15 +16,11 @@
- 
- /*
-  * The RISCV_MAX_COUNTERS parameter should be specified.
-+ * Currently, we only support base PMU, so just make
-+ * RISCV_MAX_COUNTERS be equal to RISCV_BASE_COUNTERS.
-  */
- 
--#ifdef CONFIG_RISCV_BASE_PMU
--#define RISCV_MAX_COUNTERS	2
--#endif
--
--#ifndef RISCV_MAX_COUNTERS
--#error "Please provide a valid RISCV_MAX_COUNTERS for the PMU."
--#endif
-+#define RISCV_MAX_COUNTERS RISCV_BASE_COUNTERS
- 
- /*
-  * These are the indexes of bits in counteren register *minus* 1,
-@@ -38,12 +34,6 @@
-  */
- #define RISCV_PMU_CYCLE		0
- #define RISCV_PMU_INSTRET	1
--#define RISCV_PMU_MHPMCOUNTER3	2
--#define RISCV_PMU_MHPMCOUNTER4	3
--#define RISCV_PMU_MHPMCOUNTER5	4
--#define RISCV_PMU_MHPMCOUNTER6	5
--#define RISCV_PMU_MHPMCOUNTER7	6
--#define RISCV_PMU_MHPMCOUNTER8	7
- 
- #define RISCV_OP_UNSUPP		(-EOPNOTSUPP)
- 
--- 
-2.26.2
+What's the appropriate method for amending pins, function and
+drive-strength with the more specific value set? Should I both $ref them
+and list them here?
 
+How do I limit which standard properties are actually supported in this
+binding?
+
+Thanks,
+Bjorn
+
+> > +      properties:
+> > +        pins:
+> > +          description:
+> > +            List of gpio pins affected by the properties specified in this
+> > +            subnode.
+> > +          items:
+> > +            oneOf:
+> > +              - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-7][0-9])$"
+> > +              - enum: [ sdc2_clk, sdc2_cmd, sdc2_data, ufs_reset ]
+> > +          minItems: 1
+> > +          maxItems: 36
+> > +
+> > +        function:
+> > +          description:
+> > +            Specify the alternative function to be configured for the specified
+> > +            pins.
+> > +
+> > +          enum: [ aoss_cti, atest, audio_ref, cam_mclk, cci_async, cci_i2c,
+> > +            cci_timer0, cci_timer1, cci_timer2, cci_timer3, cci_timer4, cri_trng,
+> > +            cri_trng0, cri_trng1, dbg_out, ddr_bist, ddr_pxi0, ddr_pxi1,
+> > +            ddr_pxi2, ddr_pxi3, dp_hot, dp_lcd, gcc_gp1, gcc_gp2, gcc_gp3, gpio,
+> > +            ibi_i3c, jitter_bist, lpass_slimbus, mdp_vsync, mdp_vsync0,
+> > +            mdp_vsync1, mdp_vsync2, mdp_vsync3, mi2s0_data0, mi2s0_data1,
+> > +            mi2s0_sck, mi2s0_ws, mi2s1_data0, mi2s1_data1, mi2s1_sck, mi2s1_ws,
+> > +            mi2s2_data0, mi2s2_data1, mi2s2_sck, mi2s2_ws, pci_e0, pci_e1,
+> > +            pci_e2, phase_flag, pll_bist, pll_bypassnl, pll_clk, pll_reset,
+> > +            pri_mi2s, prng_rosc, qdss_cti, qdss_gpio, qspi0, qspi1, qspi2, qspi3,
+> > +            qspi_clk, qspi_cs, qup0, qup1, qup10, qup11, qup12, qup13, qup14,
+> > +            qup15, qup16, qup17, qup18, qup19, qup2, qup3, qup4, qup5, qup6,
+> > +            qup7, qup8, qup9, qup_l4, qup_l5, qup_l6, sd_write, sdc40, sdc41,
+> > +            sdc42, sdc43, sdc4_clk, sdc4_cmd, sec_mi2s, sp_cmu, tgu_ch0, tgu_ch1,
+> > +            tgu_ch2, tgu_ch3, tsense_pwm1, tsense_pwm2, tsif0_clk, tsif0_data,
+> > +            tsif0_en, tsif0_error, tsif0_sync, tsif1_clk, tsif1_data, tsif1_en,
+> > +            tsif1_error, tsif1_sync, usb2phy_ac, usb_phy, vsense_trigger ]
+> > +
+> > +        drive-strength:
+> > +          enum: [2, 4, 6, 8, 10, 12, 14, 16]
+> > +          default: 2
+> > +          description:
+> > +            Selects the drive strength for the specified pins, in mA.
+> > +
+> > +        bias-pull-down: true
+> > +
+> > +        bias-pull-up: true
+> > +
+> > +        bias-disable: true
+> > +
+> > +        output-high: true
+> > +
+> > +        output-low: true
+> > +
+> > +      required:
+> > +        - pins
+> > +        - function
+> > +
+> > +      additionalProperties: false
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - reg-names
+> > +  - interrupts
+> > +  - interrupt-controller
+> > +  - '#interrupt-cells'
+> > +  - gpio-controller
+> > +  - '#gpio-cells'
+> > +  - gpio-ranges
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +        #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +        pinctrl@1f00000 {
+> > +                compatible = "qcom,sm8250-pinctrl";
+> > +                reg = <0x0f100000 0x300000>,
+> > +                      <0x0f500000 0x300000>,
+> > +                      <0x0f900000 0x300000>;
+> > +                reg-names = "west", "south", "north";
+> > +                interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+> > +                gpio-controller;
+> > +                #gpio-cells = <2>;
+> > +                interrupt-controller;
+> > +                #interrupt-cells = <2>;
+> > +                gpio-ranges = <&tlmm 0 0 180>;
+> > +                wakeup-parent = <&pdc>;
+> > +        };
+> > -- 
+> > 2.24.0
+> > 
