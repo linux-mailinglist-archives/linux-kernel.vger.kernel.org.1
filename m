@@ -2,110 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D621D2C79
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D0E1D2C85
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbgENKV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 06:21:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55098 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725955AbgENKVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 06:21:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E8958B023;
-        Thu, 14 May 2020 10:21:49 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 6F66F1E12A8; Thu, 14 May 2020 12:21:46 +0200 (CEST)
-Date:   Thu, 14 May 2020 12:21:46 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V1 2/9] fs/ext4: Disallow verity if inode is DAX
-Message-ID: <20200514102146.GD9569@quack2.suse.cz>
-References: <20200514065316.2500078-1-ira.weiny@intel.com>
- <20200514065316.2500078-3-ira.weiny@intel.com>
+        id S1726521AbgENKWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 06:22:36 -0400
+Received: from www62.your-server.de ([213.133.104.62]:32966 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726202AbgENKWI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 06:22:08 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jZAzy-0007F0-Dx; Thu, 14 May 2020 12:21:54 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jZAzx-000RXX-Tr; Thu, 14 May 2020 12:21:53 +0200
+Subject: Re: [PATCH 11/18] maccess: remove strncpy_from_unsafe
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        Netdev <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "bgregg@netflix.com" <bgregg@netflix.com>
+References: <20200513160038.2482415-1-hch@lst.de>
+ <20200513160038.2482415-12-hch@lst.de>
+ <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
+ <20200513192804.GA30751@lst.de>
+ <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
+ <20200513232816.GZ23230@ZenIV.linux.org.uk>
+ <866cbe54-a027-04eb-65db-c6423d16b924@iogearbox.net>
+ <6ca8d8499bf644aba0b242d194df5a60@AcuMS.aculab.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2cc83197-3ecc-b8c2-742d-e953c1f7bf8c@iogearbox.net>
+Date:   Thu, 14 May 2020 12:21:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200514065316.2500078-3-ira.weiny@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <6ca8d8499bf644aba0b242d194df5a60@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25811/Wed May 13 14:11:53 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 13-05-20 23:53:08, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+On 5/14/20 12:01 PM, David Laight wrote:
+[...]
+> If it's not a stupid question why is a BPF program allowed to get
+> into a situation where it might have an invalid kernel address.
 > 
-> Verity and DAX are incompatible.  Changing the DAX mode due to a verity
-> flag change is wrong without a corresponding address_space_operations
-> update.
+> It all stinks of a hole that allows all of kernel memory to be read
+> and copied to userspace.
 > 
-> Make the 2 options mutually exclusive by returning an error if DAX was
-> set first.
-> 
-> (Setting DAX is already disabled if Verity is set first.)
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> Now you might want to something special so that BPF programs just
+> abort on OOPS instead of possibly paniking the kernel.
+> But that is different from a copy that expects to be passed garbage.
 
-Makes sence. You can add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-
-> 
-> ---
-> Changes:
-> 	remove WARN_ON_ONCE
-> 	Add documentation for DAX/Verity exclusivity
-> ---
->  Documentation/filesystems/ext4/verity.rst | 7 +++++++
->  fs/ext4/verity.c                          | 3 +++
->  2 files changed, 10 insertions(+)
-> 
-> diff --git a/Documentation/filesystems/ext4/verity.rst b/Documentation/filesystems/ext4/verity.rst
-> index 3e4c0ee0e068..51ab1aa17e59 100644
-> --- a/Documentation/filesystems/ext4/verity.rst
-> +++ b/Documentation/filesystems/ext4/verity.rst
-> @@ -39,3 +39,10 @@ is encrypted as well as the data itself.
->  
->  Verity files cannot have blocks allocated past the end of the verity
->  metadata.
-> +
-> +Verity and DAX
-> +--------------
-> +
-> +Verity and DAX are not compatible and attempts to set both of these flags on a
-> +file will fail.
-> +
-> diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
-> index dc5ec724d889..f05a09fb2ae4 100644
-> --- a/fs/ext4/verity.c
-> +++ b/fs/ext4/verity.c
-> @@ -113,6 +113,9 @@ static int ext4_begin_enable_verity(struct file *filp)
->  	handle_t *handle;
->  	int err;
->  
-> +	if (IS_DAX(inode))
-> +		return -EINVAL;
-> +
->  	if (ext4_verity_in_progress(inode))
->  		return -EBUSY;
->  
-> -- 
-> 2.25.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I suggest you read up on probe_kernel_read() and its uses in tracing in
+general, looks like you haven't done that.
