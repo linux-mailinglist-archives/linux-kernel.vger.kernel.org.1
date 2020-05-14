@@ -2,87 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B451D3873
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 19:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1741D3884
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 19:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726097AbgENRjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 13:39:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36930 "EHLO
+        id S1726247AbgENRll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 13:41:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726032AbgENRjE (ORCPT
+        by vger.kernel.org with ESMTP id S1725975AbgENRll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 13:39:04 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0DEC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 10:39:04 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jZHob-0004fZ-Mj; Thu, 14 May 2020 19:38:37 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 1415C1004CE; Thu, 14 May 2020 19:38:37 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
-        paulmck <paulmck@kernel.org>, Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>, rostedt <rostedt@goodmis.org>,
-        "Joel Fernandes\, Google" <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [patch V4 part 1 29/36] x86/mce: Send #MC singal from task work
-In-Reply-To: <409359846.20366.1589413337072.JavaMail.zimbra@efficios.com>
-References: <20200505131602.633487962@linutronix.de> <20200505134100.957390899@linutronix.de> <409359846.20366.1589413337072.JavaMail.zimbra@efficios.com>
-Date:   Thu, 14 May 2020 19:38:37 +0200
-Message-ID: <87y2puxvqa.fsf@nanos.tec.linutronix.de>
+        Thu, 14 May 2020 13:41:41 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CB4C061A0C;
+        Thu, 14 May 2020 10:41:41 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jZHrP-008NZt-Fd; Thu, 14 May 2020 17:41:31 +0000
+Date:   Thu, 14 May 2020 18:41:31 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 11/20] amifb: get rid of pointless access_ok() calls
+Message-ID: <20200514174131.GD23230@ZenIV.linux.org.uk>
+References: <20200509234124.GM23230@ZenIV.linux.org.uk>
+ <20200509234557.1124086-1-viro@ZenIV.linux.org.uk>
+ <CGME20200509234610eucas1p258be307cde10392b26c322354db78a9b@eucas1p2.samsung.com>
+ <20200509234557.1124086-11-viro@ZenIV.linux.org.uk>
+ <6f89732b-fba9-a947-6c61-5d1680747f3b@samsung.com>
+ <20200514140720.GB23230@ZenIV.linux.org.uk>
+ <f6fcfa46-6271-45ea-37c2-62bcf0a607cb@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f6fcfa46-6271-45ea-37c2-62bcf0a607cb@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> writes:
-> ----- On May 5, 2020, at 9:16 AM, Thomas Gleixner tglx@linutronix.de wrote:
->
->> From: Peter Zijlstra <peterz@infradead.org>
->> 
->
-> Patch title: singal -> signal.
->
->> Convert #MC over to using task_work_add(); it will run the same code
->> slightly later, on the return to user path of the same exception.
->
-> So I suspect that switching the order between tracehook_notify_resume()
-> (which ends up calling task_work_run()) and do_signal() done by an
-> earlier patch in this series intends to ensure the information about the
-> instruction pointer causing the #MC is not overwritten by do_signal()
-> (but I'm just guessing).
+On Thu, May 14, 2020 at 04:25:35PM +0200, Bartlomiej Zolnierkiewicz wrote:
+> Thank you for in-detail explanations, for this patch:
+> 
+> Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> 
+> Could you also please take care of adding missing checks for {get,put}_user()
+> failures later?
 
-No, it does not. See the ordering discussion.
+Umm...  OK; put_user() side is trivial -  the interesting part is what to do
+about get_user() failures halfway through.  Right now it treats them as
+"we'd read zeroes".  On anything else I would say "screw it, memdup_user()
+the damn thing on the way in and copy from there", but... Amiga has how
+much RAM, again?
 
-Aside of that signal never transported any address information. It uses
-force_sig(SIGBUS).
+OTOH, from my reading of that code it does appear to be limited to
+4Kb of data to copy, so it's probably OK...  Hell knows - I'm really
+confused by those #ifdef __mc68000__ in there; the driver *is*
+amiga-only:
+obj-$(CONFIG_FB_AMIGA)            += amifb.o c2p_planar.o
+config FB_AMIGA
+        tristate "Amiga native chipset support"
+        depends on FB && AMIGA
+and AMIGA is defined only in arch/m68k/Kconfig.machine.  So how the
+hell can it *not* be true?  OTOH, it looks like hand-optimized
+asm equivalents of C they have in #else, so that #else might be
+meant to document what's going on...
 
-Even if a different signal would be sent first then the register frame
-of the #MC is still there when the fatal signal is sent later.
-
-But even w/o changing the ordering the taskwork check in do_signal()
-runs the pending work before delivering anything.
-
-Thanks,
-
-        tglx
-
+I've no idea how to test any changes to that thing - the only
+m68k emulator I'm reasonably familiar with is aranym, and
+that's Atari, not Amiga.  Never got around to setting up UAE...
+So I can do a patch more or less blindly (memdup_user() after
+it has checked the limits on height/width, then dereferencing
+from copy instead of get_user()), but I won't be able to test
+it.
