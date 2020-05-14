@@ -2,75 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7B81D2EBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 13:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D859E1D2EF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 13:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbgENLuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 07:50:23 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:52476 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726179AbgENLuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 07:50:21 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 13BD5628B3E816D57F4D;
-        Thu, 14 May 2020 19:50:19 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 14 May 2020 19:50:12 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     <alex@ghiti.fr>, Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH v2] riscv: Fix print_vm_layout build error if NOMMU
-Date:   Thu, 14 May 2020 19:53:35 +0800
-Message-ID: <20200514115335.110603-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200511022001.179767-5-wangkefeng.wang@huawei.com>
-References: <20200511022001.179767-5-wangkefeng.wang@huawei.com>
+        id S1726389AbgENL6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 07:58:33 -0400
+Received: from verein.lst.de ([213.95.11.211]:51537 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726050AbgENL6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 07:58:32 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 7EA8E68BEB; Thu, 14 May 2020 13:58:29 +0200 (CEST)
+Date:   Thu, 14 May 2020 13:58:29 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Hillf Danton <hdanton@sina.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        syzbot+353be47c9ce21b68b7ed@syzkaller.appspotmail.com,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH] USB: usbfs: fix mmap dma mismatch
+Message-ID: <20200514115829.GA15995@lst.de>
+References: <20200514112711.1858252-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200514112711.1858252-1-gregkh@linuxfoundation.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arch/riscv/mm/init.c: In function ‘print_vm_layout’:
-arch/riscv/mm/init.c:68:37: error: ‘FIXADDR_START’ undeclared (first use in this function);
-arch/riscv/mm/init.c:69:20: error: ‘FIXADDR_TOP’ undeclared
-arch/riscv/mm/init.c:70:37: error: ‘PCI_IO_START’ undeclared
-arch/riscv/mm/init.c:71:20: error: ‘PCI_IO_END’ undeclared
-arch/riscv/mm/init.c:72:38: error: ‘VMEMMAP_START’ undeclared
-arch/riscv/mm/init.c:73:20: error: ‘VMEMMAP_END’ undeclared (first use in this function);
+On Thu, May 14, 2020 at 01:27:11PM +0200, Greg Kroah-Hartman wrote:
+> +	if (hcd->localmem_pool || !hcd_uses_dma(hcd)) {
+> +		if (remap_pfn_range(vma, vma->vm_start,
+> +				    virt_to_phys(usbm->mem) >> PAGE_SHIFT,
+> +				    size, vma->vm_page_prot) < 0) {
+> +			dec_usb_memory_use_count(usbm, &usbm->vma_use_count);
+> +			return -EAGAIN;
+> +		}
+> +	} else {
+> +		if (dma_mmap_coherent(hcd->self.sysdev, vma, mem, dma_handle,
+> +				      size)) {
+> +			dec_usb_memory_use_count(usbm, &usbm->vma_use_count);
+> +			return -EAGAIN;
+> +		}
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
-v2: 
-- Should CONFIG_DEBUG_VM instead of DEBUG_VM
-- Based on riscv fixes branch
+What about a goto label to share the error handling path?
 
- arch/riscv/mm/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Otherwise looks good:
 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 27a334106708..736de6c8739f 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -47,7 +47,7 @@ static void setup_zero_page(void)
- 	memset((void *)empty_zero_page, 0, PAGE_SIZE);
- }
- 
--#ifdef CONFIG_DEBUG_VM
-+#if defined(CONFIG_MMU) && defined(CONFIG_DEBUG_VM)
- static inline void print_mlk(char *name, unsigned long b, unsigned long t)
- {
- 	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld kB)\n", name, b, t,
--- 
-2.26.2
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
