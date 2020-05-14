@@ -2,102 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE73C1D2AFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 11:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2D01D2B07
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 11:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbgENJKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 05:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725925AbgENJKn (ORCPT
+        id S1726051AbgENJMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 05:12:48 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:46738 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725935AbgENJMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 05:10:43 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A9FC061A0C;
-        Thu, 14 May 2020 02:10:43 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49N5Nw2w9Pz9sVF;
-        Thu, 14 May 2020 19:10:40 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1589447440;
-        bh=NhjL9VlUyN/XIGusht/E5VqlC4r+pNqaBxOXnG5nP0A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=BtrEL7QPo8BtTvUMRtFQUTiqrZXQxXep/mIX9LMcHEHeURAw7O5k5mcYzSIbPHd2i
-         iVrLjmmRLIK4m1MuoOMru1uPGRKn88SjY8cro0r7CDjvG9RfIwn0u48hUploD+OTgi
-         cEfPYNDuciTPo2Ow56ACba5kLr6str5S9D1uYHdW0cGW/hgRkod+h1ZlhOXmESc2ic
-         VP5VXyVNzLT7MtbJliTWrczoECNyN+q35zNc35zXMNNMFMqjpBkQPj6kQrfkkU4LJW
-         U+YcrAzBoLpNtlb5yx+wFGuwUlCPbpg01vst28PTJs/okoMNw7m2UX42ICQf5yDX9n
-         cO9MLT1x0b0nQ==
-Date:   Thu, 14 May 2020 19:10:36 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build warning after merge of the fsinfo tree
-Message-ID: <20200514191036.0e7bdcc8@canb.auug.org.au>
+        Thu, 14 May 2020 05:12:47 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04E99c4n002908;
+        Thu, 14 May 2020 05:12:30 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3100x5xpkv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 May 2020 05:12:30 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 04E9CTEK003195
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 14 May 2020 05:12:29 -0400
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Thu, 14 May
+ 2020 02:12:27 -0700
+Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 14 May 2020 02:12:27 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 04E9CPuJ011728;
+        Thu, 14 May 2020 05:12:25 -0400
+From:   Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Stefan Popa <stefan.popa@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Subject: [PATCH] iio: dac: ad5764: Replace indio_dev->mlock with own device lock
+Date:   Thu, 14 May 2020 12:12:12 +0300
+Message-ID: <20200514091215.80958-1-sergiu.cuciurean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/RTHD1.WwJ4n/3j_t4bSOot5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-14_01:2020-05-13,2020-05-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ malwarescore=0 suspectscore=0 cotscore=-2147483648 mlxscore=0 spamscore=0
+ lowpriorityscore=0 mlxlogscore=753 phishscore=0 priorityscore=1501
+ clxscore=1015 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005140082
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/RTHD1.WwJ4n/3j_t4bSOot5
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+As part of the general cleanup of indio_dev->mlock, this change replaces
+it with a local lock on the device's state structure.
 
-Hi all,
+Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+---
+ drivers/iio/dac/ad5764.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-After merging the fsinfo tree, today's linux-next build (powerpc
-allyesconfig) produced this warning:
+diff --git a/drivers/iio/dac/ad5764.c b/drivers/iio/dac/ad5764.c
+index f7ab211604a1..5b0f0fe354f6 100644
+--- a/drivers/iio/dac/ad5764.c
++++ b/drivers/iio/dac/ad5764.c
+@@ -46,6 +46,7 @@ struct ad5764_chip_info {
+  * @spi:		spi_device
+  * @chip_info:		chip info
+  * @vref_reg:		vref supply regulators
++ * @lock		lock to protect the data buffer during SPI ops
+  * @data:		spi transfer buffers
+  */
+ 
+@@ -53,6 +54,7 @@ struct ad5764_state {
+ 	struct spi_device		*spi;
+ 	const struct ad5764_chip_info	*chip_info;
+ 	struct regulator_bulk_data	vref_reg[2];
++	struct mutex			lock;
+ 
+ 	/*
+ 	 * DMA (thus cache coherency maintenance) requires the
+@@ -126,11 +128,11 @@ static int ad5764_write(struct iio_dev *indio_dev, unsigned int reg,
+ 	struct ad5764_state *st = iio_priv(indio_dev);
+ 	int ret;
+ 
+-	mutex_lock(&indio_dev->mlock);
++	mutex_lock(&st->lock);
+ 	st->data[0].d32 = cpu_to_be32((reg << 16) | val);
+ 
+ 	ret = spi_write(st->spi, &st->data[0].d8[1], 3);
+-	mutex_unlock(&indio_dev->mlock);
++	mutex_unlock(&st->lock);
+ 
+ 	return ret;
+ }
+@@ -151,7 +153,7 @@ static int ad5764_read(struct iio_dev *indio_dev, unsigned int reg,
+ 		},
+ 	};
+ 
+-	mutex_lock(&indio_dev->mlock);
++	mutex_lock(&st->lock);
+ 
+ 	st->data[0].d32 = cpu_to_be32((1 << 23) | (reg << 16));
+ 
+@@ -159,7 +161,7 @@ static int ad5764_read(struct iio_dev *indio_dev, unsigned int reg,
+ 	if (ret >= 0)
+ 		*val = be32_to_cpu(st->data[1].d32) & 0xffff;
+ 
+-	mutex_unlock(&indio_dev->mlock);
++	mutex_unlock(&st->lock);
+ 
+ 	return ret;
+ }
+@@ -295,6 +297,8 @@ static int ad5764_probe(struct spi_device *spi)
+ 	indio_dev->num_channels = AD5764_NUM_CHANNELS;
+ 	indio_dev->channels = st->chip_info->channels;
+ 
++	mutex_init(&st->lock);
++
+ 	if (st->chip_info->int_vref == 0) {
+ 		st->vref_reg[0].supply = "vrefAB";
+ 		st->vref_reg[1].supply = "vrefCD";
+-- 
+2.17.1
 
-samples/vfs/test-fsinfo.c: In function 'dump_fsinfo_generic_statfs':
-samples/vfs/test-fsinfo.c:135:30: warning: format '%llu' expects argument o=
-f type 'long long unsigned int', but argument 2 has type '__u64' {aka 'long=
- unsigned int'} [-Wformat=3D]
-  135 |  printf("\tbsize        : %llu\n", f->f_bsize);
-      |                           ~~~^     ~~~~~~~~~~
-      |                              |      |
-      |                              |      __u64 {aka long unsigned int}
-      |                              long long unsigned int
-      |                           %lu
-samples/vfs/test-fsinfo.c:136:30: warning: format '%llu' expects argument o=
-f type 'long long unsigned int', but argument 2 has type '__u64' {aka 'long=
- unsigned int'} [-Wformat=3D]
-  136 |  printf("\tfrsize       : %llu\n", f->f_frsize);
-      |                           ~~~^     ~~~~~~~~~~~
-      |                              |      |
-      |                              |      __u64 {aka long unsigned int}
-      |                              long long unsigned int
-      |                           %lu
-
-Introduced by commit
-
-  1b3979fc0f0c ("fsinfo: Add fsinfo() syscall to query filesystem informati=
-on")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/RTHD1.WwJ4n/3j_t4bSOot5
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl69CwwACgkQAVBC80lX
-0GyxJAf/bciRnNmkFu5WWPBUbEc8AmrhTxymcewblXtjCjMWbjvt0pf80yMy+4nJ
-oH/MHojjO94ivY/xLxUJ4f5UZlLS5uKlewHPSDeyGNq7iWprANgZP/sSoJbVMPMY
-Khs8pWKn+Lbpqa6zE23RFtQOrW/y+5Fu1qJhXoN1/e5/kCqUtuBsDP1nRtl318t8
-bLjzcc70cxlrJB3LD9V/U9DDJIBjjHzZcYOJW+x/11Azb0eTKbjQiUTcIvJASlVm
-zhNASvywmYE9ObfTEUwrK1PYlIR9J0f8U7EZEP1XRoYvQy8Hf2JJpO24ODM/CswV
-GzT23JvVWRDtmsEMzvneI7BmKTgNzA==
-=Rh7R
------END PGP SIGNATURE-----
-
---Sig_/RTHD1.WwJ4n/3j_t4bSOot5--
