@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0BB1D2E10
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 13:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE841D2E0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 13:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727117AbgENLSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 07:18:39 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15808 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726948AbgENLSd (ORCPT
+        id S1727050AbgENLSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 07:18:32 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20892 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725925AbgENLSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 07:18:33 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04EB5P4b083463;
-        Thu, 14 May 2020 07:18:07 -0400
+        Thu, 14 May 2020 07:18:31 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04EB4j15024519;
+        Thu, 14 May 2020 07:18:11 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 310v8rpy3g-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 310syx0663-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 May 2020 07:18:07 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04EB65lm086880;
-        Thu, 14 May 2020 07:18:06 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 310v8rpy2n-1
+        Thu, 14 May 2020 07:18:10 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04EB65lC028140;
+        Thu, 14 May 2020 07:18:10 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 310syx065d-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 May 2020 07:18:06 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04EBG80K009946;
-        Thu, 14 May 2020 11:18:04 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 3100uc1dye-1
+        Thu, 14 May 2020 07:18:10 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04EBG1AB019863;
+        Thu, 14 May 2020 11:18:08 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 3100ub3g7m-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 May 2020 11:18:04 +0000
+        Thu, 14 May 2020 11:18:08 +0000
 Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04EBGoOZ64684492
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04EBI5Nq64749608
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 May 2020 11:16:50 GMT
+        Thu, 14 May 2020 11:18:05 GMT
 Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C7B044203F;
-        Thu, 14 May 2020 11:18:01 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 59F6F42047;
+        Thu, 14 May 2020 11:18:05 +0000 (GMT)
 Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9686A42041;
-        Thu, 14 May 2020 11:17:58 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 2534842042;
+        Thu, 14 May 2020 11:18:02 +0000 (GMT)
 Received: from bangoria.ibmuc.com (unknown [9.199.59.186])
         by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 14 May 2020 11:17:58 +0000 (GMT)
+        Thu, 14 May 2020 11:18:01 +0000 (GMT)
 From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 To:     mpe@ellerman.id.au, mikey@neuling.org
 Cc:     apopple@linux.ibm.com, paulus@samba.org, npiggin@gmail.com,
@@ -54,9 +54,9 @@ Cc:     apopple@linux.ibm.com, paulus@samba.org, npiggin@gmail.com,
         fweisbec@gmail.com, mingo@kernel.org,
         linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
         ravi.bangoria@linux.ibm.com
-Subject: [PATCH v6 03/16] powerpc/watchpoint: Introduce function to get nr watchpoints dynamically
-Date:   Thu, 14 May 2020 16:47:28 +0530
-Message-Id: <20200514111741.97993-4-ravi.bangoria@linux.ibm.com>
+Subject: [PATCH v6 04/16] powerpc/watchpoint/ptrace: Return actual num of available watchpoints
+Date:   Thu, 14 May 2020 16:47:29 +0530
+Message-Id: <20200514111741.97993-5-ravi.bangoria@linux.ibm.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200514111741.97993-1-ravi.bangoria@linux.ibm.com>
 References: <20200514111741.97993-1-ravi.bangoria@linux.ibm.com>
@@ -64,92 +64,40 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-14_02:2020-05-14,2020-05-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- spamscore=0 priorityscore=1501 clxscore=1015 impostorscore=0 mlxscore=0
- lowpriorityscore=0 suspectscore=0 bulkscore=0 cotscore=-2147483648
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005140100
+ definitions=2020-05-14_02:2020-05-13,2020-05-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ spamscore=0 bulkscore=0 impostorscore=0 cotscore=-2147483648 phishscore=0
+ lowpriorityscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
+ clxscore=1015 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005140095
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So far we had only one watchpoint, so we have hardcoded HBP_NUM to 1.
-But Power10 is introducing 2nd DAWR and thus kernel should be able to
-dynamically find actual number of watchpoints supported by hw it's
-running on. Introduce function for the same. Also convert HBP_NUM macro
-to HBP_NUM_MAX, which will now represent maximum number of watchpoints
-supported by Powerpc.
+User can ask for num of available watchpoints(dbginfo.num_data_bps)
+using ptrace(PPC_PTRACE_GETHWDBGINFO). Return actual number of
+available watchpoints on the machine rather than hardcoded 1.
 
 Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 Reviewed-by: Michael Neuling <mikey@neuling.org>
 ---
- arch/powerpc/include/asm/cputable.h      | 6 +++++-
- arch/powerpc/include/asm/hw_breakpoint.h | 5 +++++
- arch/powerpc/include/asm/processor.h     | 2 +-
- arch/powerpc/kernel/hw_breakpoint.c      | 2 +-
- 4 files changed, 12 insertions(+), 3 deletions(-)
+ arch/powerpc/kernel/ptrace/ptrace-noadv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
-index 40a4d3c6fd99..c67b94f3334c 100644
---- a/arch/powerpc/include/asm/cputable.h
-+++ b/arch/powerpc/include/asm/cputable.h
-@@ -614,7 +614,11 @@ enum {
- };
- #endif /* __powerpc64__ */
- 
--#define HBP_NUM 1
-+/*
-+ * Maximum number of hw breakpoint supported on powerpc. Number of
-+ * breakpoints supported by actual hw might be less than this.
-+ */
-+#define HBP_NUM_MAX	1
- 
- #endif /* !__ASSEMBLY__ */
- 
-diff --git a/arch/powerpc/include/asm/hw_breakpoint.h b/arch/powerpc/include/asm/hw_breakpoint.h
-index f2f8d8aa8e3b..518b41eef924 100644
---- a/arch/powerpc/include/asm/hw_breakpoint.h
-+++ b/arch/powerpc/include/asm/hw_breakpoint.h
-@@ -43,6 +43,11 @@ struct arch_hw_breakpoint {
- #define DABR_MAX_LEN	8
- #define DAWR_MAX_LEN	512
- 
-+static inline int nr_wp_slots(void)
-+{
-+	return HBP_NUM_MAX;
-+}
-+
- #ifdef CONFIG_HAVE_HW_BREAKPOINT
- #include <linux/kdebug.h>
- #include <asm/reg.h>
-diff --git a/arch/powerpc/include/asm/processor.h b/arch/powerpc/include/asm/processor.h
-index 5ab202055d5a..f209c5703ee2 100644
---- a/arch/powerpc/include/asm/processor.h
-+++ b/arch/powerpc/include/asm/processor.h
-@@ -180,7 +180,7 @@ struct thread_struct {
- 	int		fpexc_mode;	/* floating-point exception mode */
- 	unsigned int	align_ctl;	/* alignment handling control */
- #ifdef CONFIG_HAVE_HW_BREAKPOINT
--	struct perf_event *ptrace_bps[HBP_NUM];
-+	struct perf_event *ptrace_bps[HBP_NUM_MAX];
- 	/*
- 	 * Helps identify source of single-step exception and subsequent
- 	 * hw-breakpoint enablement
-diff --git a/arch/powerpc/kernel/hw_breakpoint.c b/arch/powerpc/kernel/hw_breakpoint.c
-index 423603c92c0f..01f07d91df70 100644
---- a/arch/powerpc/kernel/hw_breakpoint.c
-+++ b/arch/powerpc/kernel/hw_breakpoint.c
-@@ -39,7 +39,7 @@ static DEFINE_PER_CPU(struct perf_event *, bp_per_reg);
- int hw_breakpoint_slots(int type)
- {
- 	if (type == TYPE_DATA)
--		return HBP_NUM;
-+		return nr_wp_slots();
- 	return 0;		/* no instruction breakpoints available */
- }
- 
+diff --git a/arch/powerpc/kernel/ptrace/ptrace-noadv.c b/arch/powerpc/kernel/ptrace/ptrace-noadv.c
+index f87e7c5c3bf3..12962302d6a4 100644
+--- a/arch/powerpc/kernel/ptrace/ptrace-noadv.c
++++ b/arch/powerpc/kernel/ptrace/ptrace-noadv.c
+@@ -44,7 +44,7 @@ void ppc_gethwdinfo(struct ppc_debug_info *dbginfo)
+ 	dbginfo->version = 1;
+ 	dbginfo->num_instruction_bps = 0;
+ 	if (ppc_breakpoint_available())
+-		dbginfo->num_data_bps = 1;
++		dbginfo->num_data_bps = nr_wp_slots();
+ 	else
+ 		dbginfo->num_data_bps = 0;
+ 	dbginfo->num_condition_regs = 0;
 -- 
 2.26.2
 
