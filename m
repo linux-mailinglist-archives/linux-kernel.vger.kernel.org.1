@@ -2,154 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214511D29F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF261D29F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgENIYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 04:24:30 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:41557 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725935AbgENIY3 (ORCPT
+        id S1726179AbgENIYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 04:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725935AbgENIYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 04:24:29 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1jZ9AI-002B5K-GO; Thu, 14 May 2020 10:24:26 +0200
-Received: from p5b13a426.dip0.t-ipconnect.de ([91.19.164.38] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.93)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jZ9AI-002223-9W; Thu, 14 May 2020 10:24:26 +0200
-Subject: Re: [PATCH] ia64: enable HAVE_COPY_THREAD_TLS, switch to
- kernel_clone_args
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200513204848.1208864-1-christian.brauner@ubuntu.com>
- <3908561D78D1C84285E8C5FCA982C28F7F6266E0@ORSMSX115.amr.corp.intel.com>
- <79e58d9b-5a39-390c-2f0c-0d87b63442b4@physik.fu-berlin.de>
- <20200514074606.vkc35syhdep23rzh@wittgenstein>
- <6b298416-1e64-eee7-0bb4-3b1f7f67adc6@physik.fu-berlin.de>
- <20200514075808.krdtypxpag4tfa74@wittgenstein>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- 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
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <917c9b03-cfd0-4bcf-d6a6-6aef7489b27b@physik.fu-berlin.de>
-Date:   Thu, 14 May 2020 10:24:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 14 May 2020 04:24:41 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5F1C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:24:41 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a21so2482186ljj.11
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:24:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jkb8BxKnl71QcTSlAQifB2QDBHTd1utKf7Tuku0XIK4=;
+        b=iIm3W3vxPyvQT8hBr8kR8u+6yVBH0h6bfGPXKdobARfet5qpx6e2NJwbGUoVD4BTiz
+         kvpn1tyKA+LwVUJc8z8fF1ZwXlCreaNrldq4vaEDBNH9cKFjh4tAUHQkvEkgZrv38eDN
+         o2gz3Js+ZsuW3daffpbxtnkSsvbVGjH/1ch+B53s3SDAzYlJpVIgVSGq9BIdUF43U3J3
+         PYEdm9THYdzNqhqnu0YtajA3OhEFK2moz2+zytOAdmmOqgbfZNV8YpRwBfYf+FcYfKP1
+         slXNCbKogiAPZuvMbATklfcba8DSvlZ/NhggKTK4KlzEC8fEhJbI/SNZCFcSB3u8yrD/
+         oIKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jkb8BxKnl71QcTSlAQifB2QDBHTd1utKf7Tuku0XIK4=;
+        b=UQ9reeEHXY1w4DQEW4rkf/HYRPO/a1HS4t5rID6RKgN1FFdpfEo2kAecexUZSZTUzS
+         qQhX1zlafUv8WaGZkbNJysCDVnVqWM6/CmcPbA2jATINCztUROPV/GoPSKuxiDK921DX
+         lUYzdj3z4ox3KO4bGgGzp/YWTAylxnz04wTJ2hxbStsszAa/FdHW4v8aVj5bwVZcTcjn
+         ao0Syx4e9CH4ARSs5sbpUUjE7VdukDwB71DWKC3ZWoYhaWvXUBMDHASXSrMjxdGRa4UH
+         GyDg4kukORu+7xgBnHNEIl+e1Mdfd2tMzUYEcpV8ncrMICPIWmxBm0gUEbSpXW0z94Rp
+         zNYQ==
+X-Gm-Message-State: AOAM532Cwly5v0gLRrvl/h5azsv+DEl4n/736UCuws0fIGKdm2QfLqLR
+        QO28JUFu9TmIYEw4gheHH3GIbZloNBiku/jxcVm68A==
+X-Google-Smtp-Source: ABdhPJzbR0lONsL+LHNQ562bI+zZx3vzCrNYamk5GJI5zjbv9WVScZ7rOiUe3C6sarzGNmAWB4jF6RMUNqx0dbXgSxU=
+X-Received: by 2002:a2e:8805:: with SMTP id x5mr2073815ljh.223.1589444679816;
+ Thu, 14 May 2020 01:24:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200514075808.krdtypxpag4tfa74@wittgenstein>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.164.38
+References: <1589267017-17294-1-git-send-email-dillon.minfei@gmail.com> <1589267017-17294-4-git-send-email-dillon.minfei@gmail.com>
+In-Reply-To: <1589267017-17294-4-git-send-email-dillon.minfei@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 14 May 2020 10:24:28 +0200
+Message-ID: <CACRpkda5VjjBdbruXTi33QBNb=VU6vK2zDE8yyQXoWw7=NQFeg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] ARM: dts: stm32: enable ltdc binding with ili9341
+ on stm32429-disco board
+To:     dillon.minfei@gmail.com
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Tue, May 12, 2020 at 9:04 AM <dillon.minfei@gmail.com> wrote:
 
-On 5/14/20 9:58 AM, Christian Brauner wrote:
->> The machine also serves as a Debian buildd which is why it's a bit more
->> busy than other servers.
-> 
-> Oh? Does it also produce Debian images for ia64 similar to what is done
-> for sparc64?
+> From: dillon min <dillon.minfei@gmail.com>
+>
+> Enable the ltdc & ili9341 on stm32429-disco board.
+>
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
 
-Yes, it's actually the same person who does this - me ;).
+This mostly looks good but...
 
-These images should work just fine:
+> +&spi5 {
+> +       status = "okay";
+> +       pinctrl-0 = <&spi5_pins>;
+> +       pinctrl-names = "default";
+> +       #address-cells = <1>;
+> +       #size-cells = <0>;
+> +       cs-gpios = <&gpioc 2 GPIO_ACTIVE_LOW>;
+> +       dmas = <&dma2 3 2 0x400 0x0>,
+> +              <&dma2 4 2 0x400 0x0>;
+> +       dma-names = "rx", "tx";
 
-> https://cdimage.debian.org/cdimage/ports/2020-04-19/
+These DMA assignments seem to be SoC things and should
+rather be in the DTS(I) file where &spi5 is defined, right?
+stm32f429.dtsi I suppose?
 
-The latest snapshot is currently broken due to a regression in initramfs-tools.
+It is likely the same no matter which device is using spi5.
 
->>>> As for getting a working cross-compiler for ia64 in Debian, this has
->>>> been on my TODO list for a while now. Building a cross-compiler for
->>>> ia64 is a bit more tricky due to it's dependency on the external
->>>> libunwind.
->>>
->>> I hit that roadblock as well but yeah, a cross-compiler would be
->>> helpful.
->>
->> It's not difficult, it's just a bit of annoying package work including
->> some trial and error testing.
->>
->> Once the cross-compiler is in Debian, it will be available in Ubuntu as well.
-> 
-> Would that based on a recent gcc? I vaguely remember a post somwhere
-> that gcc 10 or 11 was planning to drop support for ia64?
-
-Yes, that would be the latest gcc. There are no plans at the moment to
-drop ia64 from gcc as the backend is already ported to MODE_CC.
-
-m68k was on the brink of being removed, but I started a Bountysource campaign
-to convert it from cc0 to MODE_CC and it was eventually saved ;).
-
-> https://www.bountysource.com/issues/80706251-m68k-convert-the-backend-to-mode_cc-so-it-can-be-kept-in-future-releases
-
-Adrian
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Yours,
+Linus Walleij
