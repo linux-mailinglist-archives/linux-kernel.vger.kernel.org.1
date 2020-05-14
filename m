@@ -2,168 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 229FF1D2638
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 07:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3EB51D2664
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 07:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726051AbgENFDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 01:03:11 -0400
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:35441 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbgENFDK (ORCPT
+        id S1727084AbgENFEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 01:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726037AbgENFEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 01:03:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1589432588; x=1620968588;
-  h=from:to:cc:subject:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=TSexiDkQCH7zfebUhamGMaYfEJXG7bLgnyL+idOQP2Q=;
-  b=z52ZZwtyoy9dE49JGM4nF50IAFoW+aO0c52puXDDko7xfJxjWu17Ah6E
-   OKODeLY4w7yyeT+aN7r2xun1Mug2iS4JUvp/iPBwewOnXY/X6P+Ekzf/T
-   PlveJAkoDFUjhliXGDR3dfwRdECPGarlIV1l+af8GhZuCLFXdN7E9vCUc
-   E3OzfRJ27TWjg+a+2xCTOXZuBZVE5b3b7+Sxh6yUeK6QKBX70eeayIpg/
-   z/b+4ySmaPoAn6yp/txfmiqjNY8urcAM3j7vm2F2XLR8nz+vBKpyLPA5g
-   dSsPzJSsOqvtOL75k1VjopCTbcTYFA+qKX6r6yMNNDhLFpFEyYoAcso91
-   w==;
-IronPort-SDR: ARGYZ5UuCMAdqxWFXC08rYZJ4Z1Rh9T+H391IhPoUT5XCg7215wm7NkIabagn4mi12tSg69Zuo
- a7Y81Hm8bfabS+FPHDpe/huLUEo0tPKGp9rudGcCzgVInRMK2j6S/a86B/4+gsHAJyS/lyy1AO
- FBdAomiwCT2EzEXrZ/L0bWBn5hV4znk++/9vWzlGdTDnnLgxYbdbN4qiIeia9KSHwLg5OXmimQ
- IsAhhoMlAwSOwvzis/lp3CLmNAp1dVsPrpYd+6dBE+tpxt/8uK/kt00kRmwJKxD6gc4o0CpIij
- WLw=
-X-IronPort-AV: E=Sophos;i="5.73,390,1583218800"; 
-   d="scan'208";a="79551072"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 May 2020 22:03:08 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 13 May 2020 22:03:07 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 13 May 2020 22:03:07 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SQmojqUmgsI774bXwhH8RT/FNdjxAYX5GloucIRsBjjYQwHg66gDRLEdI2HsKyaj04d4Rh0kjcBRyO30Visr+cf/+0efdbk1i2O/CvlGbudXa6uX+D2sxYdwWeTtQNOrIZlz/UDpXDXW+M2gJgMdS4I+gvtuyotftayVa8lmhNwUUZyBMenuCcqF8L1WILG40uDPLC3zzVWtIdEflro99ArujrI0HPIsZ4i6ubPth4bAbLu22UQ1VJnl+tbtBuxJPFGx9plyUfJFG2rxpCR7P4gXZ9XTveam9Xm+fEqmvKyGJVR914d3H0GNA6JDm0DgdDr5J8JlaDq1S1u5+R07AA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DLu20Zj4HmXk889XYgjlzp+zdbqrOcMBaFgYmvoIgdI=;
- b=OlZJQGKCnRiphb2gUBhGNdnNothbMIZiNZYjOg+5QbJBFS8D/3vdsonA80pufWW6Y12UCAgj5MOiEfeB+j3JrQVdDNzlPgodOwAhD8SHZcARGk+jChG80fAoSq/hrWw1TxTeEQJeQr3h2hfcLBbwZQpmW4fq9VGOrwmf4GGuIismBF6sa+73tLv3oE+TfoD4jeCWRztqsf0oBY0pQCsKSSVxdnISVcGOm5331dAbMk3shrsXCeD9Nt1WD5lQPn7qc/zYoP5l701D594QnskuY5+b3AzcjFm+tb9WQ7lJNQfs5JHaIRUjzbKcyxUwkwjjm8a6urLpAWH9QS8q9I8Ddw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+        Thu, 14 May 2020 01:04:39 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B646AC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 22:04:38 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id r22so749859pga.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 22:04:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DLu20Zj4HmXk889XYgjlzp+zdbqrOcMBaFgYmvoIgdI=;
- b=vo583oKfvzamJJrsUZ+4EpRHNd6Y5zz4nP+Wo7bjPqBwD8IpIgsHHBR0nzPyf3KWzO8gvHLCfA6M1oTsGc24jPiVyI191WZ61m3ino8/AfQmCJE3CvRlfCu1op/fKRfOKr1MNS7pVe8y+3OBHaAshq5PLmJCbS8SL0RJLbP5mVI=
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
- by BY5PR11MB4483.namprd11.prod.outlook.com (2603:10b6:a03:1bc::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.24; Thu, 14 May
- 2020 05:03:06 +0000
-Received: from BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
- ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.3000.022; Thu, 14 May 2020
- 05:03:06 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <alexandre.belloni@bootlin.com>, <Ludovic.Desroches@microchip.com>,
-        <Nicolas.Ferre@microchip.com>
-CC:     <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <Codrin.Ciubotariu@microchip.com>,
-        <Tudor.Ambarus@microchip.com>
-Subject: [PATCH 00/16] ARM: dts: at91: sama5d2: Rework Flexcom definitions
-Thread-Topic: [PATCH 00/16] ARM: dts: at91: sama5d2: Rework Flexcom
- definitions
-Thread-Index: AQHWKaz0lTobzlRRV0ujGkZZNIV0NQ==
-Date:   Thu, 14 May 2020 05:03:06 +0000
-Message-ID: <20200514050301.147442-1-tudor.ambarus@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: bootlin.com; dkim=none (message not signed)
- header.d=none;bootlin.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [94.177.32.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d7005605-d41b-49e4-86c6-08d7f7c416b2
-x-ms-traffictypediagnostic: BY5PR11MB4483:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR11MB44834F74C74D4BB43F43D251F0BC0@BY5PR11MB4483.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 040359335D
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: C9O2m4BIM+PhdGFC9+lAjOGFdyhMRgMIBsIoTjq5m6cUS0iJHf9SiA66qefzd2Xx8WVRaA3w5D768jHSQ/SUorPsoyuUGdeLA0nTTQGIIVUOkrYxtlgXZ1jCrhuCfSJUw2vXe8ALJyaC1qWqzqgPBSUYPaYuAmUOOJdDREHY134mjeQg7hEzi3GMARAHuzUgROjdNnJ1dhJYQ5OlRzt/X3Y4U+wtmCvkg2oyEXRp7KbPEpbChCN/uqnjNss2GMUXDKbzV/MDeyTOde+ldC9gF5l7ca5Dg+sNZb/QYYDcPQDx/OBt2FIGss3ylHUrYSeV8RBDH1XzEGUse/ZK1osYZhh+woFO/NU4XRyAqh4MNOyn16yV+dAAhUYmd4x+b0E/LC4p/UZXrsRK3/SHMdTXaf+evkySbbO0H6io1CJiR7uyLWnJcutLYE/C622Nkwh5
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4419.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(366004)(346002)(396003)(136003)(39860400002)(6506007)(76116006)(6486002)(26005)(66446008)(8676002)(6512007)(86362001)(66946007)(2616005)(64756008)(8936002)(478600001)(66476007)(66556008)(186003)(1076003)(4326008)(2906002)(71200400001)(6636002)(54906003)(316002)(107886003)(5660300002)(36756003)(110136005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: TNR4Iy9CHQ3gO6j06FBCXkDQUi7xzHc7vOWw74KQyyM/finiBsrd21dyQO+xXOPheULXIjGKozTU4FjZWJT2MDALAlChu+TH5ZRTdPaOqZkwuzww3fI3Uc3o0her5sM6s/NKcLaoI7LjifXGFwYH3Y8OaMWW0eAOo/sOTJnoNCVqqIxKzUOfKPKemxz7+dEKyexsdco7HO/usXao3yfcFUxOJ+fpVJCOnZxPPCNJh3cFGrPjbPY+MZnyj7TbAJu+vMi5AMGOs8lgP+JN3GFqxTIMBSLgICXTCamEt7HKUglPMPCTEeeTtqXkjtNM3lj9axSp2a0PhnEarkMAzga6UxzQ5ilLM7ObQjxnSuUMFgRzLdQmNhdaSnqZaAEdcduUsX4pIv6whVDRSXhAJAy4ei+X8hVb4U1cc4cphVLGlOalzrZ6d4Td2UMOWGh/OIWAwJgWQ0/2GB521dKHAtOO7wzJi5HEZ2AgTMnVd46z2fc=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aNdxFa4QrJqUAslQvvR1Ej1cwVVNap3hxsxBpwJX/qw=;
+        b=lqCVdH0DG85s8XFJt9av2MXGj4T0fHmhnth6+GRm+5czdRqg8SzBo2fQ21tg1rxbfq
+         ybLI+gAxenyU/ClGQd8AtxvFhpjbe1tbt6kJAnKL/bd0dS68CmkA7mq5eH9L9TSGDrMR
+         VkkhDRMMe9q7JnDfleItdIjOZct4RM8rkFMF1Vau754MBefsmOgaaL2EC45dM9rMH+DX
+         FQ5s8c6EdI5CuKqkwCjloSg/VfMW1NclEAcN9p/0fE0vK46R7hpg69BrKVKABEoEZbTm
+         wFyI5aqlBVjQ7dxOJu3SullzfZWFlNhN7VvBOR5MZCUZmYap5y2gjqrU88xQDANavc5S
+         ZF4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aNdxFa4QrJqUAslQvvR1Ej1cwVVNap3hxsxBpwJX/qw=;
+        b=DhcSrf0viES+fplmJf2bDky2Ab90UEel+OJDurTL6Tn0F7ROF3t+J634qG+Oi5FTIc
+         h8jXepXtEkcG45I7jBWPcdufiF9lg31JQULDkho8fnZ2bpDbnlG1wYXz8Go6sUCXTRmV
+         Jsjb2ou+4FUIU15xBqMN2OzK7sNMSe608mQKkxnpQce2FP0KlLhyQk8g7+/t9fMuYBF2
+         YNbJCI6q4xE3XEkTS7g5XqMNe5IHBhMrymXxcWkvB0NJOGjs/DLC+SpFdPSxMO+216zI
+         pG3z5lE3yPkSxh69g5/nLFoHafuBm1n+PQALmut/t1C1FjICpo58XBURlfAolfMNLhPW
+         5wLA==
+X-Gm-Message-State: AOAM531RBWwfZNu4/P7Z636L+gkHlVrY/0G4ZPNEwr33GnsI80tyn+gR
+        fWscnJV1pR/AOVy3keUexHrcGQ==
+X-Google-Smtp-Source: ABdhPJwRiy8/1HoO7DTnCtfH18KWXNfvYdwz4V9uPRi2+kFUWIXvo1uANQsWfdxgpLZtpPG2rO77WA==
+X-Received: by 2002:aa7:8658:: with SMTP id a24mr2765320pfo.135.1589432678189;
+        Wed, 13 May 2020 22:04:38 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id v3sm1073113pfv.186.2020.05.13.22.04.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 22:04:37 -0700 (PDT)
+Date:   Wed, 13 May 2020 22:03:07 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, loic.pallardy@st.com,
+        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 04/12] remoteproc: stm32: Remove memory translation
+ from DT parsing
+Message-ID: <20200514050307.GJ16107@builder.lan>
+References: <20200424202505.29562-1-mathieu.poirier@linaro.org>
+ <20200424202505.29562-5-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: d7005605-d41b-49e4-86c6-08d7f7c416b2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 May 2020 05:03:06.1334
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: q3o8UdvVa+T9sV4tCVChpKKPlNB0EZbYynQkO4Oao2MdYBpt3SwCamnTiFXv6ErZaQi/1Jef0zgJsoHyJ6EXBSUnVsxZ2Uvnhot6EPueaek=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4483
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424202505.29562-5-mathieu.poirier@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
+On Fri 24 Apr 13:24 PDT 2020, Mathieu Poirier wrote:
 
-Rework the sama5d2 SoC flexcom definitions. The Flexcom IPs are
-in the SoC. Move all the flexcom nodes together with their function
-definitions in the SoC dtsi. Boards will just fill the pins and enable
-the desired functions. With this we remove the duplication of the
-flexcom definitions across the sama5d2 boards.
+> Other than one has to be done after the other, there is no correlation
+> between memory translation and DT parsing.  As move function
+> stm32_rproc_of_memory_translations() to stm32_rproc_probe() so that
+> stm32_rproc_parse_dt() can be extended to look for synchronisation
+> related binding in a clean way.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Reviewed-by: Loic Pallardy <loic.pallardy@st.com>
 
-Round the flexcom support and add the missing flexcom definitions.
-All the flexcom functions are now defined.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Apart of the aliases and the new flx0 i2c function on sama5d2_xplained,
-the only functional change that this patch set adds, is that it uart5,
-uart6 and uart7 inherit the atmel,fifo-size =3D <32>; optional property.
-These nodes have both the FIFO size described and the DMA enabled.
-uart5 was tested on sama5d27-wlsom1-ek. On uart6 and uart7 a
-Bluetooth module can be connected. Tested BT uart7 on sama5d2-icp.
-
-Tudor Ambarus (16):
-  ARM: dts: at91: sama5d2: Fix the label numbering for flexcom functions
-  ARM: dts: at91: sama5d2: Move flx4 definitions in the SoC dtsi
-  ARM: dts: at91: sama5d2: Move flx3 definitions in the SoC dtsi
-  ARM: dts: at91: sama5d2: Move flx2 definitions in the SoC dtsi
-  ARM: dts: at91: sama5d2: Move flx1 definitions in the SoC dtsi
-  ARM: dts: at91: sama5d2: Move flx0 definitions in the SoC dtsi
-  ARM: dts: at91: sama5d2: Specify the FIFO size for the Flexcom UART
-  ARM: dts: at91: sama5d2: Add DMA bindings for the SPI and UART flx4
-    functions
-  ARM: dts: at91: sama5d2: Add DMA bindings for the flx3 SPI function
-  ARM: dts: at91: sama5d2: Add DMA bindings for the flx1 I2C function
-  ARM: dts: at91: sama5d2: Add DMA bindings for the SPI and I2C flx0
-    functions
-  ARM: dts: at91: sama5d2: Add missing flexcom definitions
-  ARM: dts: at91: sama5d2: Remove i2s and tcb aliases from SoC dtsi
-  ARM: dts: at91: sama5d2_xplained: Add alias for DBGU
-  ARM: dts: at91: sama5d2_xplained: Describe the flx0 I2C function
-  ARM: dts: at91: sama5d2_ptc_ek: Add comments to describe the aliases
-
- arch/arm/boot/dts/at91-kizbox3-hs.dts         |   4 +-
- arch/arm/boot/dts/at91-kizbox3_common.dtsi    |  48 +--
- arch/arm/boot/dts/at91-sama5d27_som1_ek.dts   |  64 +---
- arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi   |  12 -
- arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts |  12 -
- arch/arm/boot/dts/at91-sama5d2_icp.dts        |  42 +--
- arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts     |  14 +-
- arch/arm/boot/dts/at91-sama5d2_xplained.dts   |  42 ++-
- arch/arm/boot/dts/sama5d2.dtsi                | 295 +++++++++++++++++-
- 9 files changed, 347 insertions(+), 186 deletions(-)
-
---=20
-2.23.0
+> ---
+>  drivers/remoteproc/stm32_rproc.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+> index 57a426ea620b..658439d4b00a 100644
+> --- a/drivers/remoteproc/stm32_rproc.c
+> +++ b/drivers/remoteproc/stm32_rproc.c
+> @@ -606,7 +606,7 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev,
+>  
+>  	*auto_boot = of_property_read_bool(np, "st,auto-boot");
+>  
+> -	return stm32_rproc_of_memory_translations(pdev, ddata);
+> +	return 0;
+>  }
+>  
+>  static int stm32_rproc_probe(struct platform_device *pdev)
+> @@ -634,6 +634,10 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto free_rproc;
+>  
+> +	ret = stm32_rproc_of_memory_translations(pdev, ddata);
+> +	if (ret)
+> +		goto free_rproc;
+> +
+>  	rproc->auto_boot = auto_boot;
+>  	rproc->has_iommu = false;
+>  	ddata->workqueue = create_workqueue(dev_name(dev));
+> -- 
+> 2.20.1
+> 
