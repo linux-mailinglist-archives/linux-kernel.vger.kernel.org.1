@@ -2,61 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF171D2C62
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 797971D2C71
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbgENKSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 06:18:43 -0400
-Received: from verein.lst.de ([213.95.11.211]:51105 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbgENKSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 06:18:43 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3F02D68BEB; Thu, 14 May 2020 12:18:38 +0200 (CEST)
-Date:   Thu, 14 May 2020 12:18:38 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Joe Perches' <joe@perches.com>, Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>,
-        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>
-Subject: Re: remove kernel_setsockopt and kernel_getsockopt
-Message-ID: <20200514101838.GA12548@lst.de>
-References: <20200513062649.2100053-1-hch@lst.de> <ecc165c33962d964d518c80de605af632eee0474.camel@perches.com> <756758e8f0e34e2e97db470609f5fbba@AcuMS.aculab.com>
+        id S1726332AbgENKTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 06:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgENKTh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 06:19:37 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD66C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 03:19:36 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id 21so187813vkq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 03:19:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F9G3dflweaHDPQ+DS1CDjH+ihEsjNaelVa9NdojUt1E=;
+        b=a3xqgdqLwtQ2GtV4uxSscMi3XPr4JXvwBDE9qNvMFMDrFxbMEMFHXxxmX2ScvvYnW2
+         mgpfQbZLAERGYpSvOdPbdKx5bWFfrQcTSAbIjLBLFFo8Ck8sw/im0O/73LKOcLecUY0X
+         7VEMA0I3XKJUVkSmUWj3sY36IYpvgkvUZAzgxsM1ipfsnyLHEt881StGmwi8uXBaENG8
+         Qr8Mkv+u+Dje+bWINIQg+P1uQGZPJ9t5SJwa4wuX0+kO2b+fa3/3OT5haesXj2AXxUDD
+         cZEADroHyXXkmQA8yln7dwFDwWbwAIAqovrj9RXf4wUOZREniJ9FTo7JbDwL/ceRUL/q
+         QDRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F9G3dflweaHDPQ+DS1CDjH+ihEsjNaelVa9NdojUt1E=;
+        b=C7XM/csy1kO0UvEY94peuqC6WILYQZ2aQ/koSLMtRHGDAsJQMmJlNFmVfWEBnXQ3N3
+         hg7lzJmAjZ9/im0ZAPX1x2KiHIM5IjOLG3PRUVXyreSSvLPZ+5AKUzSxdEhtayaM76w6
+         BWG6h94DlDtLzbd8ZYgYaDRSE6xH2/Ql8gcZ3H9EQDPR4ARWozFQYBCG5yFehBc+hngN
+         FX7HqEH43HhK+CB0zENYt9PDKTEOKqomqHQ26WyTXgzVuhaJHAIcSizRQRngeUUQrD0O
+         1R7zz+aIq+AmAH3Tsy5gL/QR/TWH89CiN0v1w+zZvpBShiaLxEbctexwViN7UWeIr4ud
+         lajw==
+X-Gm-Message-State: AOAM530bNGGrmJy/UP0XrR4KsGjC1yK9lqN+TlaEqn7yUDtygs6yePgW
+        cgS9EfW+DC1RVmxjj/aHUVTF/ni/pDsqJzv+g7GLFA==
+X-Google-Smtp-Source: ABdhPJw/cbscMUafVNEDWx0LEt3Ufyo0rEx2MYE2HsdQpv4OQkUp3OpkBIOV7zGBHKw2YpLTymVJKWt7oI5hIJIImhs=
+X-Received: by 2002:a1f:25d7:: with SMTP id l206mr2770124vkl.53.1589451575120;
+ Thu, 14 May 2020 03:19:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <756758e8f0e34e2e97db470609f5fbba@AcuMS.aculab.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20200513174706.3eeddb2b@xhacker.debian> <CAPDyKFpE_uqiNQ22Fq9hDfb5pzMBdgmwgUbasEsEdXFkEOmq6A@mail.gmail.com>
+ <20200514134507.54c17936@xhacker.debian>
+In-Reply-To: <20200514134507.54c17936@xhacker.debian>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 14 May 2020 12:18:58 +0200
+Message-ID: <CAPDyKFpUv=HGBAEchH25tdnRdUSAvbCgGGCgN8uuvPCQ92xwZg@mail.gmail.com>
+Subject: Re: [PATCH] Revert "mmc: sdhci-xenon: add runtime pm support and
+ reimplement standby"
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 08:29:30AM +0000, David Laight wrote:
-> You need to export functions that do most of the socket options
-> for all protocols.
+On Thu, 14 May 2020 at 07:45, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+>
+> On Wed, 13 May 2020 14:15:21 +0200 Ulf Hansson wrote:
+>
+> >
+> >
+> > On Wed, 13 May 2020 at 11:47, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+> > >
+> > > This reverts commit a027b2c5fed78851e69fab395b02d127a7759fc7.
+> > >
+> > > The HW supports auto clock gating, so it's useless to do runtime pm
+> > > in software.
+> >
+> > Runtime PM isn't soley about clock gating. Moreover it manages the
+>
+> Per my understanding, current xenon rpm implementation is just clock gating.
+>
+> > "pltfm_host->clk", which means even if the controller supports auto
+> > clock gating, gating/ungating the externally provided clock still
+> > makes sense.
+>
+>        clock -----------  xenon IP
+>       |___ rpm           |__ HW Auto clock gate
+>
+> Per my understanding, with rpm, both clock and IP is clock gated; while with
+> Auto clock gate, the IP is clock gated. So the only difference is clock itself.
+> Considering the gain(suspect we have power consumption gain, see below), the
+> pay -- 56 LoCs and latency doesn't deserve gain.
+>
+> Even if considering from power consumption POV, sdhci_runtime_suspend_host(),
+> sdhci_runtime_resume_host(), and the retune process could be more than the clock
+> itself.
 
-Only for those were we have users, and all those are covered.
+Right.
+
+The re-tune may be costly, yes. However, whether the re-tune is
+*really* needed actually varies depending on the sdhci variant and the
+SoC. Additionally, re-tune isn't done for all types of (e)MMC/SD/SDIO
+cards.
+
+I see a few options that you can explore.
+
+1. There is no requirement to call sdhci_runtime_suspend|resume_host()
+from sdhci-xenon's ->runtime_suspend|resume() callbacks - if that's
+not explicitly needed. The point is, you can do other things there,
+that suits your variant/SoC better.
+
+2. Perhaps for embedded eMMCs, with a non-removable slot, the
+re-tuning is costly. If you want to prevent the device from entering
+runtime suspend for that slot, for example, just do an additional
+pm_runtime_get_noresume() during ->probe().
+
+[...]
+
+Kind regards
+Uffe
