@@ -2,100 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4264C1D29BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B6D1D3616
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726094AbgENIKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 04:10:36 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:24009 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725886AbgENIKg (ORCPT
+        id S1727929AbgENQLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 12:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726073AbgENQLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 04:10:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589443834;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QauBrq1Oc2T93JfbGvTvQs0eWJrFDhKFCSa33hfTtB8=;
-        b=SzRXsrDhGjwV4XTQNlxA/roBy9002Vl9mUCGmL4mKQgKUFkvJOE/CcT9XYISmTaG7DlIqK
-        CHmGb62mxi/leRe0dGul2EgyXKFjrYZi9pN2Vn0TBT0X+QYHRYQUNSthYdvPGNVru6hNJg
-        nkb1RQaSJcR8EzWalG5GZ5GeJwNJXU4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-437-z9G0ftqCPKGHBoJSNFzTMQ-1; Thu, 14 May 2020 04:10:31 -0400
-X-MC-Unique: z9G0ftqCPKGHBoJSNFzTMQ-1
-Received: by mail-wr1-f72.google.com with SMTP id u5so1144810wrt.22
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:10:31 -0700 (PDT)
+        Thu, 14 May 2020 12:11:38 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0F6C061A0C;
+        Thu, 14 May 2020 09:11:37 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id b18so1532738ilf.2;
+        Thu, 14 May 2020 09:11:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=pWAwL4iY43kHKyzq6JgPam8fDxHVDDtXpG7mRg32aJE=;
+        b=O18fRYkJuCVHLzSDHMiTV/YEvTTqeLQpSzk7AUAl1veaDpHB0AhDrBCf6pG6NOIJ69
+         IVKsNZ3fA75gmbzuDAe9ruH9MEFZd4RjPd5l7XMXsa9JnQglfU6WlqT5lKEfreMB5mpa
+         yLiuZhfm1eIS1G/957nwLkHVLS+MHbLeJ+wOrXDXNXNqjYGERRRjU4frvhsoaaEfctCs
+         TOK4ipsoWjopZW/F3wg+NJ2uwwRe8hgMBHYVXkuqgOqby141+OUTgLvFgNbfg3CODLo9
+         TdoiXHXOZy+3W9snj2LFBt6LX/eRdGwR20ISOpHddhvO3HEKQmYx8gnopiazWe6kaubv
+         UEXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=QauBrq1Oc2T93JfbGvTvQs0eWJrFDhKFCSa33hfTtB8=;
-        b=ZCYF+FrYl3vDgAYUfclHipsz7vn2h6ZBisMOtBzlGJQxZZHskVayd+u871hbUSOXTP
-         GycLU2fGRgwXcL5Sh9jweDmR01J8E5w+EXrCKNPIskSYYjfUeV3I5LIQ3oVm62xFUk9x
-         kyIzeRDTF/M5VZFKbXAY+PRyjCCxdsvkzB5/2WYEnq4k4Vxv/dbbOT96ZnxNz2dx/d73
-         Xu1UQc0Ah9xfm0nNZ42bKH7AWJQmkM6biXJASSBD1+5efyU78bimb/p8n78rT+kRoTo7
-         qyzuNsf0pOxjVCuXIiiJ/QDSXHEPnolR50d50zYO9hh2Nf3hoVmRrIaNIim4XL3+9PkK
-         I9eg==
-X-Gm-Message-State: AGi0Pua9rhBEbRikG54+su91Qv2diduQdQ2CaMDjOwrdsazZUcmis1hu
-        9VZqfLgTtZ4rfzwrSR/GESNf7LSgW5UFVpVzXgHQ7Vl/8qe5gwbphNF1ff2A1Vyn13sNVw2tZCF
-        9zlZXSCgX52O8xKo/FDwfkVVB
-X-Received: by 2002:a1c:7d92:: with SMTP id y140mr31881514wmc.10.1589443830807;
-        Thu, 14 May 2020 01:10:30 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJwb1WVmE7Jc2Wey4S0cB1B25rXmq0PGyqTviLPNT4mX4xK+tt4EGXSfkCN81V7zVXLqXxdag==
-X-Received: by 2002:a1c:7d92:: with SMTP id y140mr31881503wmc.10.1589443830591;
-        Thu, 14 May 2020 01:10:30 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id l13sm2818996wrm.55.2020.05.14.01.10.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 01:10:29 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>, x86@kernel.org
-Subject: Re: [PATCH v2 0/3] x86/idt: Minor alloc_intr_gate() sanitization
-In-Reply-To: <87imgz1wvz.fsf@nanos.tec.linutronix.de>
-References: <20200428093824.1451532-1-vkuznets@redhat.com> <87imh0kn5t.fsf@vitty.brq.redhat.com> <87imgz1wvz.fsf@nanos.tec.linutronix.de>
-Date:   Thu, 14 May 2020 10:10:28 +0200
-Message-ID: <87wo5fdjij.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pWAwL4iY43kHKyzq6JgPam8fDxHVDDtXpG7mRg32aJE=;
+        b=CK/IU3wAf7Ml7o/oouS4rFRY3+v0USZnpEHo30+KjSo5UuJbSgq3qwyTd37ReQDCzG
+         BS1+2Lv/UzDrljWE75OekhkJH/sJvFps0z6j95f/Ocj91WdjmFs9tGN2y4Sr0PM1yt58
+         cHraaJeDyriwLePOTXxzKebFYQMkhl+4hutVLqXqm5ZHzUeHq3OdZp1ZDHA2JDqyR+Xp
+         bS8Y+GrIj7a35rqDHLjwyd5hyUL3O4S9BoQz/jaZhEErfx89C5GQ2M1CTiRHbW5FhFXm
+         weIB2fU/sULEJ+m4EmAgp/KzTPSd/KhxidR9gM/nmG1UnUmTY7RvOwtoPZP4OqeFzjCd
+         qJzA==
+X-Gm-Message-State: AOAM530SHhqYJ+IAkVQkGiC542wOYKYcCrfv8m8cXzWcm2ZishK84uwC
+        beqz0OP6KE0RcoThHZba6tiOWqP2/uBDBoN4U73wHDfn/Es=
+X-Google-Smtp-Source: ABdhPJx6Rsp5ROFxXwYlYudzEUx9ly+h8b+Qj8M+Twx/mohFFLUuzJpw12Ch5e3R3mp3ipZq22gY7LfKaKb8NlNe79A=
+X-Received: by 2002:a05:6e02:68e:: with SMTP id o14mr1854794ils.184.1589472696421;
+ Thu, 14 May 2020 09:11:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1589267017-17294-1-git-send-email-dillon.minfei@gmail.com>
+ <1589267017-17294-6-git-send-email-dillon.minfei@gmail.com>
+ <CACRpkdbZoMDC-D12CByKJUZbu4shqixC=QrKwJUd8x=nyK7seQ@mail.gmail.com>
+ <CAL9mu0LVsePqifEC+-FR+NxvuZT3UGpU86KhzaTqb7w_Px0z2g@mail.gmail.com> <CACRpkdbcD7i+kNoJ9YP5XXTtLi12=yzW5OBNzet5oRdwPYz=dA@mail.gmail.com>
+In-Reply-To: <CACRpkdbcD7i+kNoJ9YP5XXTtLi12=yzW5OBNzet5oRdwPYz=dA@mail.gmail.com>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Thu, 14 May 2020 16:11:00 +0800
+Message-ID: <CAL9mu0Kdc4TqcGB7JYDWkOJqwvxX1m_026aB0iprkHTzN4HXoQ@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] drm/panel: Add ilitek ili9341 driver
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Gleixner <tglx@linutronix.de> writes:
+Hi Linus,
 
-> Vitaly Kuznetsov <vkuznets@redhat.com> writes:
->> Vitaly Kuznetsov <vkuznets@redhat.com> writes:
->>
->>> This series is a successor of "[PATCH] x86/idt: Keep spurious entries unset
->>> in system_vectors".
->>>
->>> The original issue I tried to address was that /proc/interrupts output
->>> was always containing all possible system vectors, including non allocated
->>> ones (e.g. 'Hypervisor callback interrupts' on bare metal). Thomas
->>> suggested to expand this cosmetic change to making alloc_intr_gate()
->>> __init.
->>>
->>> Vitaly Kuznetsov (3):
->>>   x86/xen: Split HVM vector callback setup and interrupt gate allocation
->>>   x86/idt: Annotate alloc_intr_gate() with __init
->>>   x86/idt: Keep spurious entries unset in system_vectors
->>>
->>
->> Ping?
+Linus Walleij <linus.walleij@linaro.org> =E4=BA=8E2020=E5=B9=B45=E6=9C=8814=
+=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=8810:08=E5=86=99=E9=81=93=EF=BC=
+=9A
 >
-> It's in my pile and I just did not come around to merge it.
+> On Thu, May 14, 2020 at 12:22 PM dillon min <dillon.minfei@gmail.com> wro=
+te:
 >
+> > > > +       /* Gamma */
+> > > > +       mipi_dbi_command(dbi, ILI9341_3GAMMA_EN, 0x00);
+> > > > +       mipi_dbi_command(dbi, MIPI_DCS_SET_GAMMA_CURVE, 0x01);
+> > > > +       mipi_dbi_command(dbi, ILI9341_PGAMMA,
+> > > > +                        0x0f, 0x31, 0x2b, 0x0c, 0x0e, 0x08, 0x4e, =
+0xf1,
+> > > > +                        0x37, 0x07, 0x10, 0x03, 0x0e, 0x09, 0x00);
+> > > > +       mipi_dbi_command(dbi, ILI9341_NGAMMA,
+> > > > +                        0x00, 0x0e, 0x14, 0x03, 0x11, 0x07, 0x31, =
+0xc1,
+> > > > +                        0x48, 0x08, 0x0f, 0x0c, 0x31, 0x36, 0x0f);
+> > >
+> > > It seems to be copies of the stuff above, but why is there a differen=
+t
+> > > gamma if you use DBI?
+>
+> > for dbi interface, currently i just copy the code from tiny/ili9341.c.
+> > as so many boards use this driver now, like raspberry pi, etc
+> > i'm afraid it's will not work after modification. so, just leave the
+> > original code there.
+>
+> OK if you move it to ili9341_config it will be clear which panels
+> need this gamma and which panels need another gamma.
+>
+> I think there should be one ili9341_config for the new st,*
+> variant and one for the old DBI variant.
+>
+Okay, it's a good idea to setup two different configs.  ili9341_dbi_config,
+ili9341_dpi_config. first for old dbi variant, second for dpi variant.
 
-No problem, just wanted to make sure it didn't slip through the
-cracks. I see tip-bot already queued it, thanks!
+> > anther question:
+> > is there any panel driver have dbi & dpi or dpi & dsi supported? which
+> > i mean support
+> > two different panel interface in one driver.
+> > thanks
+>
+> Usually you split the driver in three files becuase a driver can
+> only list one initcall, and also it makes it modularized.
+>
+> There is nothing in-tree but look at my branch here:
+> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git/=
+log/?h=3Dux500-skomer-v5.7-rc1
+>
+> You see how I split up the s6e63m0 driver in one SPI part
+> and one DSI part:
+> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git/=
+commit/?h=3Dux500-skomer-v5.7-rc1&id=3D6c0e1fb5df5fa8fa857dee65f6c0f54d06d1=
+58a7
+> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git/=
+commit/?h=3Dux500-skomer-v5.7-rc1&id=3Dcfbf562cc709b53b62f5fbc7fedf176ffa17=
+b088
+>
+> The overall idea should work the same with DBI.
+>
+> Yours,
+> Linus Walleij
+>
+> Yours,
+> Linus Walleij
 
--- 
-Vitaly
+Thanks for share, but i thinks it's not suitable to my case. the difference=
+ is
+for panel s6e63m0
+1 spi only for panel register configuration
+2 dpi for rgb video data transfer (drm_panel_init(..., DRM_MODE_CONNECTOR_D=
+PI);)
 
+my case:
+1 support ili9341 by drm mipi dbi (only spi bus,  "3/4 line serial
+interface", pdf chap 7.6.1), Ie, raspberry pi + ili9341 + spi
+2 support ili9341 by spi & dpi (spi for register set, dpi for rgb
+data, "6/16/18 bit parallel rgb interface", pdf chap 7.6.8)
+   Ie, stm32f429+ili9341+ltdc+spi
+these two communication type has no dependency with each other.
+
+DBI has much more difference than DPI & SPI, or DSI & SPI in drm.
+   drm_mipi_dbi support both panel register configuration and video
+data transfer via spi
+   with or without dc pins.
+   also the registration to drm is difference, for dbi is
+mipi_dbi_dev_init and drm_fbdev_generic_setup
+   for panel driver is drm_panel_init and drm_panel_add
+at soc's view, we can drive ili9341 to work just by drm mipi dbi
+(actually it's dbi -> spi bus) without host's lcd or dsi controller
+but for some panel can't transfer video data by spi, and with dpi or
+dsi interface, must connect to host's lcd or dsi controller.
+
+so, for ilitek-ili9341 , it's use different dts binding drive to
+register different client type (dbi, or dpi & spi) to drm.
+actually, there is a driver tiny/ili9341.c support this panel by spi
+bus only already. but, from Sam's suggestion, should extend this
+driver
+to support dpi & spi interface, this is the background of panel-ilitek-ili9=
+341.c
+
+thanks.
+
+best regards.
+
+dillon
