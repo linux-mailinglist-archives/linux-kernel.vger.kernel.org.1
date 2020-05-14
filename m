@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBCF1D41A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 01:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6D71D41A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 01:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgENXZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 19:25:30 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:53061 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726037AbgENXZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 19:25:29 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 3476cbec;
-        Thu, 14 May 2020 23:11:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=4zgiU9dnx9i8w6ld/C+6GY5/mWw=; b=eWAkIm
-        sQ2Wot0vLDjssflFyKihccdVqZEYkMLSdO1EmFcf//zETz74GfbOcxF5nwO3cJ5O
-        4tAtkOEoTnimRMezpqEdAU+MllzPJ6UoHzY/6nLXzF9Yuz03YYb0jFXzkPOEqx7a
-        lP4ZDPbGSgqhHJ3scwAAIbY+OMY3btSaunLerubgqS54oYm8tZPKCMuaCTxBSoEH
-        +yci+mer5HzA4f4iy21xk7bjE+qpYHbpVdrPtxximKncapF+FRcBHbamQESMs9j5
-        mWHRBn1fXyEovPXDrmZ/IMjt3cAaFe41OEJrXz0gehQ73zjd6S6qN8FTH1DspGAS
-        Yp4aNjss40d5u/8w==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 83d998ed (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Thu, 14 May 2020 23:11:39 +0000 (UTC)
-Received: by mail-io1-f53.google.com with SMTP id o5so665732iow.8;
-        Thu, 14 May 2020 16:25:24 -0700 (PDT)
-X-Gm-Message-State: AOAM533DHCba2bqPgkA0K3PhiifKoc8O7ZV9lP4JW66JEPD5bPVsnyVb
-        JVEohcmG/JG3YPfzL7rt+sWzQ9kcMO0XUj8TKJ4=
-X-Google-Smtp-Source: ABdhPJyEhc284v3d39Rbre2XkYfiAqngEPStmsmAOUBAmUVYL/c08WcJVJgiPw89VCSuVSHUKBRTGWcz7w8bztUH93Y=
-X-Received: by 2002:a05:6602:2c45:: with SMTP id x5mr489271iov.80.1589498724137;
- Thu, 14 May 2020 16:25:24 -0700 (PDT)
+        id S1728114AbgENXZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 19:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726582AbgENXZy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 19:25:54 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EEC7C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 16:25:54 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id n18so80296pfa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 16:25:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rQrnCHYLO0Vg5jOwAUNb34HO2tHD8mNTv/oZ6XDZtGw=;
+        b=sUu77TjWviN24ATo8ztZkS6DEzpQ1s9mMpUFWdowgLqzTJcNhQWj2TDf+3EoxYs3kL
+         42+AfMDQ7/kfY0CHdwNZeq99syfjbJn2r/lIsRVsdTl9BCq/WKvNfGChxwsWUqt+nLq0
+         jjQY4zswFCOqoFFc0yMa6mGOiO9SwTOte4EcVduTNcwclk1u1wQbNlgyGL6rzu9sHd/1
+         lEjxK+XbYrAz8TAWOBPKMsMBGdMwCN+BCi3t5m1A13MUjDgl/V8yGOnHmFuAWsOSpYJb
+         nNb0aO1yyaz+2DzzTg6v82spoFHdZ+ddGMds72SomIfSkbbZqGurznmivZtPCVcqIw/G
+         Yogw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rQrnCHYLO0Vg5jOwAUNb34HO2tHD8mNTv/oZ6XDZtGw=;
+        b=G3YJEi1SxSTVNJvxeoe+j+epURcv/kc0QQYc0IL2ePb1XoazXSNdjSRsJIgQANvUHT
+         Jh1H7EOOu1tPA3kNQqp//ealMuH5ZVAA5HIy4l0WATTlSyui83TCVxFoAVZgUPkQTybb
+         mIr8f8T48JuxpH/qZCQcMtrbP8eu6GNcPT3zzCLpC80koAb48kSx6faY+hVsRaCFR6Bj
+         undJw4qAWAvqjffTeBjIJtSHMQUioA2W8vslTanzupUbMfSR7kMhzg/8WqJVLTLvjyiu
+         vlrIlDwSVyTL3vO8PQZTKHpvoKfIe0XVBa/NbsoTJtThSsM/hHKDc+Nv91Tj8tECXkjl
+         ToHg==
+X-Gm-Message-State: AOAM5316IMZON0HkAX0nTGSMrEBmf9YJtBsbIkBgnCCzMiMT7zfWMAx0
+        Eo9p4mqUP6DPaoF7OQf22mdCofSvxFhlkabfB6ykIIY+tkE=
+X-Google-Smtp-Source: ABdhPJzrjVCdyFvdAYHnaYzO3t9QKrcZasLyT+6cHGtriw0SjQnZT96e3FIx7TuiJFq0J5INzxCRbMPOTZv5vrjhvCk=
+X-Received: by 2002:aa7:8c44:: with SMTP id e4mr967827pfd.108.1589498753790;
+ Thu, 14 May 2020 16:25:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200514143055.1f71ba68@canb.auug.org.au> <CAHmME9osYhwzFEyGUELqSSNexgK56NJrOrWTi3vnyDft8tv-hw@mail.gmail.com>
- <3672488.1589458306@warthog.procyon.org.uk> <CAK7LNASMnHJi+42NUABD-FJQ1tTF2y6qaN=vcS9wEr11+7LVTg@mail.gmail.com>
-In-Reply-To: <CAK7LNASMnHJi+42NUABD-FJQ1tTF2y6qaN=vcS9wEr11+7LVTg@mail.gmail.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Thu, 14 May 2020 17:25:13 -0600
-X-Gmail-Original-Message-ID: <CAHmME9rhUJJc7ffG=pYHXSgaRXjUcic9RAvNgVqffuY15YP6Tw@mail.gmail.com>
-Message-ID: <CAHmME9rhUJJc7ffG=pYHXSgaRXjUcic9RAvNgVqffuY15YP6Tw@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the keys tree
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <87imgykunh.fsf@m5Zedd9JOGzJrf0>
+In-Reply-To: <87imgykunh.fsf@m5Zedd9JOGzJrf0>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 14 May 2020 16:25:42 -0700
+Message-ID: <CAKwvOdnJ9p+iGYP31TJcaCLBqk2gOes4=5z=K8Tv_jytn6+RgA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: compile_h: fix compiler version detection with clang
+To:     Yuxuan Shui <yshuiv7@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 6:35 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Thu, May 14, 2020 at 3:43 PM Yuxuan Shui <yshuiv7@gmail.com> wrote:
 >
-> On Thu, May 14, 2020 at 9:11 PM David Howells <dhowells@redhat.com> wrote:
-> >
-> > Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> >
-> > > Your touch might be helpful here. CRYPTO_LIB_CHACHA20POLY1305 is a
-> > > tristate and depends on as well as selects other things that are
-> > > tristates.
-> > >
-> > > Meanwhile BIG_KEYS is a bool, which needs to select
-> > > CRYPTO_LIB_CHACHA20POLY1305. However, it gets antsy if the the symbol
-> > > its selecting has =m items in its hierarchy.
-> > >
-> > > Any suggestions? The ideal thing to happen would be that the select of
-> > > CRYPTO_LIB_CHACHA20POLY1305 in BIG_KEYS causes all of the descendants
-> > > to become =y too.
-> >
-> > I think that select is broken in its behaviour - it doesn't propagate the
-> > selection enforcement up the tree.  You could try changing it to a depends on
-> > or you could put in a select for every dependency.
 >
-> I agree.
-> 'depends on' will be cleaner.
+> In some setup clang will print a line about CUDA version it detects,
+> like this:
+>
+>     Found CUDA installation: /opt/cuda, version 10.1
+>
+> So grepping ' version ' matches 2 lines, and results in a broken string in
+> compiler.h, which doesn't compile.
+>
+> This commit adds a "head -n1" to fix this problem.
+>
+> Signed-off-by: Yuxuan Shui <yshuiv7@gmail.com>
 
-That's fine, but also makes it more annoying for people to select
-big_keys, and I don't know how David feels in that regard.
+Hi Yuxuan, thanks for the patch!
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Seems like it'd be useful to have something that means "select X and
-all the things X needs to not be broken", though satisfiability
-problems like that can get really complicated quite fast.
+Might be worthwhile for Masahiro to add
+
+Cc: stable@vger.kernel.org
+
+if/when picked up?
+
+> ---
+>  scripts/mkcompile_h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/mkcompile_h b/scripts/mkcompile_h
+> index 5b80a4699740..8e6b4fc6fdd9 100755
+> --- a/scripts/mkcompile_h
+> +++ b/scripts/mkcompile_h
+> @@ -62,7 +62,7 @@ UTS_VERSION="$(echo $UTS_VERSION $CONFIG_FLAGS $TIMESTAMP | cut -b -$UTS_LEN)"
+>    printf '#define LINUX_COMPILE_BY "%s"\n' "$LINUX_COMPILE_BY"
+>    echo \#define LINUX_COMPILE_HOST \"$LINUX_COMPILE_HOST\"
+>
+> -  CC_VERSION=$($CC -v 2>&1 | grep ' version ' | sed 's/[[:space:]]*$//')
+> +  CC_VERSION=$($CC -v 2>&1 | grep ' version ' | head -n1 | sed 's/[[:space:]]*$//')
+>    LD_VERSION=$($LD -v | head -n1 | sed 's/(compatible with [^)]*)//' \
+>                       | sed 's/[[:space:]]*$//')
+>    printf '#define LINUX_COMPILER "%s"\n' "$CC_VERSION, $LD_VERSION"
+> --
+> 2.26.2
+
+
+-- 
+Thanks,
+~Nick Desaulniers
