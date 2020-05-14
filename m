@@ -2,165 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D64C1D35BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 17:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6271D3604
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727933AbgENP6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 11:58:12 -0400
-Received: from sonic307-15.consmr.mail.ne1.yahoo.com ([66.163.190.38]:37517
-        "EHLO sonic307-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727822AbgENP6H (ORCPT
+        id S1726885AbgENQIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 12:08:46 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:59114 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgENQIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 11:58:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1589471886; bh=lJfqCN099Mb/d5ojj5Nm59+7L4ICZfqVdceuNiAe6iU=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=AwPGAJS+tjHS43tR0ADM9VPjxCISoS8Qi/iGUfpPobm0/ghSl/5b+i5PhRy6Du/wOcfziASUvrQ3xu6EtjBcdy0H+GYgAedX7fQcjYCcCYQ80YxpGJGMOwH62q166MrTisOgQVtpqAkDXOJlrmcXaE/Np9x3nElSTdOuJ3JxQxxVjcMg6KW4+QHTFnjhKtQYnOFGMk0hEpaokZyEAKgXp4owX79w29KW2tKFYqOl2u6J1e5q4rkXBI8lgdFaF4u8+9mwiu6jjV2fQrvH1dspcaoQ9k3bUWaS/9rv6ciiVgg3zVE9nggo4jvKHo/dpDu+pstGCCaCjsP8rIlZ0W3AFw==
-X-YMail-OSG: TL2Hmq0VM1lCEVKkmqdbc1i.iOnNwL9OyLISaMlPR8GJwJHLJgjAQRGc5elTEU1
- c37wz3Ap7HzZjUq5qOeycqG9Jn.649DteV_VPr8HddjlPUT4h_b8VbAevHTolBnN2IAvV_cTt9kB
- HNEqe7aalAyWZRpv1AiDE.Fcmm6zHZRDcySbPG3cF8fuKURVqBtcvJ4sueNwU2MgTOeyI5b8P83L
- OUZ9WJUcDCXP4B.z2kVNsJA6ax6RayAXbrpoFbL7Uk42S_rlkdsXhKms5JBKtcOruHpbVp6_mWgh
- bp8yROUQkkT3GxuJgHUviOjzulJuR1MW_I6QgKVZtzBj_GHBRArYlTD6t2ymF3XBIWTGveU4uQ1I
- iiNn7YCQPCUUJIo1aAH2zOzwNuySUf21t4IPsGjuwaCDpKOFDeZNQjNADltrVc82yx8gdlttFNdB
- wFh89hEfc5ZEQ2FATYDEshEmKzlPeAQ6VAC0HQ1jdf.O5IUdOGkE8bvMXT48p4s8iGoKKJFvLY5d
- hs2uuCrk9b4.riL.Py0GkcZgNnJ68qH3wXsQRGJH90zAC.JkfCpHlQVtkcjpe1VsExrnjM3Vaz7t
- exWnmXi4JF5BlpYW4chOs9HsAWwWSym4jiXru3tHdMowBR6_L6gjI6XP_Ye_liUXFnYZbYIq9Fed
- sQKREodyjAEw48o3AzOlD2YtDQKWG542ykBov4KUWaiwUvl5zocxqIDZzF29Hf4zEAlWVBDrtsJW
- urUy6X3eJOIFxaunUloXSMsUiT3CHQMkA7Spw809boBmGQorD7Ie9grUOBC.jw_8nwV1KxY4v5Yd
- frQO2OveB0We_p7FMcurUJ.9mHvoF_Phsyt11eYEI5uKcM32nYBWXFosnuYcF.s__q.wbPHws.RE
- hHRK9MJz24bU78JbKIP1Iu1KwdW7nYr1KPOV.tTxnJrazapeyWLre0PA_Lte0uUl24Adt5s9mc0r
- sBb6TSXdBI2bf0wboH1_1OYCNbqKe.XV1GYCIT1IZcExEMHqbaR2YOY7XQRz8U.9F6SAcrakIjLd
- Q6_4fOCv_mN9AEYJJcj_UiLRFDJ8MwhBLPcTM0e5e24d5iUTw70s5hGTIG266lvVWY9g3LCTnMMh
- CGtqsx9aogVT44V..lDngW7CPeQ6VDnIuTkAbUSaS7P4Ztv8ydqAV_Mc5fkCUD16I5fl83iTYN1V
- 43335SA7PQgXiue46A5.g7_bTEClCv8mUrBOAcn_kg7D96mJklMRjdcYZmx9H1N0aJzqk7qKgrxD
- .dnKqDrlW7iDVEcfYBgyilvRBazPyQANEXdrJzMXpD8IgEyf2.ELmImNSNcYCLlNDYVXfmEZgD5V
- h9zsl3tjJQHRJD28XS_XjAiDPlqVEfyCecfoQlLbrUj02TaBTbb5fh.VNrEnhKTI.bo4e63UUpFe
- pYO3hNJTrdvZyw1fOr00uku7uZk5BQoyYK0VWFkGP_RNMiUfw5PLUSd1PXtEPKnah7gJ3vl_yfuD
- VtExuDPw8dyZo20QhPlAZJBRUHmiQ0z2NqCRqyl8W0QPK_rWxWxfuQQQ-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Thu, 14 May 2020 15:58:06 +0000
-Received: by smtp419.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID e3935901ce24bb77d4947cc41492c6c4;
-          Thu, 14 May 2020 15:58:05 +0000 (UTC)
-Subject: Re: [PATCH v17 05/10] fs,landlock: Support filesystem access-control
-To:     =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
-        James Morris <jmorris@namei.org>
-Cc:     linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Arnd Bergmann <arnd@arndb.de>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20200511192156.1618284-1-mic@digikod.net>
- <20200511192156.1618284-6-mic@digikod.net>
- <alpine.LRH.2.21.2005141335280.30052@namei.org>
- <c159d845-6108-4b67-6527-405589fa5382@digikod.net>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Autocrypt: addr=casey@schaufler-ca.com; keydata=
- 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
- abzjfg==
-Message-ID: <bcfa8f74-5bc9-b363-5372-b254ba2e88a7@schaufler-ca.com>
-Date:   Thu, 14 May 2020 08:58:03 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 14 May 2020 12:08:46 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04EG8cRY051077;
+        Thu, 14 May 2020 11:08:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589472518;
+        bh=DWuRI69VJhwA75p0adY2f23XQmUB8NXX6FfYCzE7bCM=;
+        h=From:To:CC:Subject:Date;
+        b=Ztt20Lw38DPeUIV8HkE08ppOj7nK/PvvvemjraFSJR1DRyEA4NBnLbuXaaysF+sPv
+         tTjle5SJUmFXBG8W4vA4aPqa/uyKqdN0Ckj6IHdZPU8r3O/tJXw07Alx+N3d8raQ2G
+         dWxXB6lYPOcZpVB5/9buX/2DJuHENY+ydaimqdYo=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04EG8cNH088896
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 14 May 2020 11:08:38 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 14
+ May 2020 11:08:38 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 14 May 2020 11:08:38 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04EG8bJD003060;
+        Thu, 14 May 2020 11:08:38 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
+        <davem@davemloft.net>
+CC:     <robh@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH net-next] dt-bindings: dp83867: Convert DP83867 to yaml
+Date:   Thu, 14 May 2020 10:59:05 -0500
+Message-ID: <20200514155905.26845-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <c159d845-6108-4b67-6527-405589fa5382@digikod.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Mailer: WebService/1.1.15941 hermes_yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.6)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/2020 3:39 AM, Micka=C3=ABl Sala=C3=BCn wrote:
-> On 14/05/2020 05:37, James Morris wrote:
->> On Mon, 11 May 2020, Micka=C3=ABl Sala=C3=BCn wrote:
->>
->>
->>> diff --git a/include/linux/fs.h b/include/linux/fs.h
->>> index 45cc10cdf6dd..2276642f8e05 100644
->>> --- a/include/linux/fs.h
->>> +++ b/include/linux/fs.h
->>> @@ -1517,6 +1517,11 @@ struct super_block {
->>>  	/* Pending fsnotify inode refs */
->>>  	atomic_long_t s_fsnotify_inode_refs;
->>> =20
->>> +#ifdef CONFIG_SECURITY_LANDLOCK
->>> +	/* References to Landlock underlying objects */
->>> +	atomic_long_t s_landlock_inode_refs;
->>> +#endif
->>> +
->> This needs to be converted to the LSM API via superblock blob stacking=
-=2E
->>
->> See Casey's old patch:=20
->> https://lore.kernel.org/linux-security-module/20190829232935.7099-2-ca=
-sey@schaufler-ca.com/
-> s_landlock_inode_refs is quite similar to s_fsnotify_inode_refs, but I
-> can do it once the superblock security blob patch is upstream. Is it a
-> blocker for now? What is the current status of lbs_superblock?
+Convert the dp83867 binding to yaml.
 
-As no currently stackable modules conflict over the superblock
-(SELinux and Smack are the existing users) there has been no need
-to move its management into the infrastructure. The active push for
-stacking does not (yet) include everything needed for SELinux+Smack.
-It includes what is needed for SELinux+AppArmor and Smack+AppArmor.
-That does not include the superblock blob.
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ .../devicetree/bindings/net/ti,dp83867.txt    |  68 ----------
+ .../devicetree/bindings/net/ti,dp83867.yaml   | 127 ++++++++++++++++++
+ 2 files changed, 127 insertions(+), 68 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/net/ti,dp83867.txt
+ create mode 100644 Documentation/devicetree/bindings/net/ti,dp83867.yaml
 
-You can include a patch in the landlock set that provides infrastructure
-management of the superblock blob. Feel free to glean it from my proposal=
-=2E
-
->
-> Anyway, we also need to have a call to landlock_release_inodes() in
-> generic_shutdown_super(), which does not fit the LSM framework, and I
-> think it is not an issue. Landlock handling of inodes is quite similar
-> to fsnotify.
+diff --git a/Documentation/devicetree/bindings/net/ti,dp83867.txt b/Documentation/devicetree/bindings/net/ti,dp83867.txt
+deleted file mode 100644
+index 44e2a4fab29e..000000000000
+--- a/Documentation/devicetree/bindings/net/ti,dp83867.txt
++++ /dev/null
+@@ -1,68 +0,0 @@
+-* Texas Instruments - dp83867 Giga bit ethernet phy
+-
+-Required properties:
+-	- reg - The ID number for the phy, usually a small integer
+-	- ti,rx-internal-delay - RGMII Receive Clock Delay - see dt-bindings/net/ti-dp83867.h
+-		for applicable values. Required only if interface type is
+-		PHY_INTERFACE_MODE_RGMII_ID or PHY_INTERFACE_MODE_RGMII_RXID
+-	- ti,tx-internal-delay - RGMII Transmit Clock Delay - see dt-bindings/net/ti-dp83867.h
+-		for applicable values. Required only if interface type is
+-		PHY_INTERFACE_MODE_RGMII_ID or PHY_INTERFACE_MODE_RGMII_TXID
+-
+-Note: If the interface type is PHY_INTERFACE_MODE_RGMII the TX/RX clock delays
+-      will be left at their default values, as set by the PHY's pin strapping.
+-      The default strapping will use a delay of 2.00 ns.  Thus
+-      PHY_INTERFACE_MODE_RGMII, by default, does not behave as RGMII with no
+-      internal delay, but as PHY_INTERFACE_MODE_RGMII_ID.  The device tree
+-      should use "rgmii-id" if internal delays are desired as this may be
+-      changed in future to cause "rgmii" mode to disable delays.
+-
+-Optional property:
+-	- ti,min-output-impedance - MAC Interface Impedance control to set
+-				    the programmable output impedance to
+-				    minimum value (35 ohms).
+-	- ti,max-output-impedance - MAC Interface Impedance control to set
+-				    the programmable output impedance to
+-				    maximum value (70 ohms).
+-	- ti,dp83867-rxctrl-strap-quirk - This denotes the fact that the
+-				    board has RX_DV/RX_CTRL pin strapped in
+-				    mode 1 or 2. To ensure PHY operation,
+-				    there are specific actions that
+-				    software needs to take when this pin is
+-				    strapped in these modes. See data manual
+-				    for details.
+-	- ti,clk-output-sel - Muxing option for CLK_OUT pin.  See dt-bindings/net/ti-dp83867.h
+-			      for applicable values.  The CLK_OUT pin can also
+-			      be disabled by this property.  When omitted, the
+-			      PHY's default will be left as is.
+-	- ti,sgmii-ref-clock-output-enable - This denotes which
+-				    SGMII configuration is used (4 or 6-wire modes).
+-				    Some MACs work with differential SGMII clock.
+-				    See data manual for details.
+-
+-	- ti,fifo-depth - Transmitt FIFO depth- see dt-bindings/net/ti-dp83867.h
+-		for applicable values (deprecated)
+-
+-	-tx-fifo-depth - As defined in the ethernet-controller.yaml.  Values for
+-			 the depth can be found in dt-bindings/net/ti-dp83867.h
+-	-rx-fifo-depth - As defined in the ethernet-controller.yaml.  Values for
+-			 the depth can be found in dt-bindings/net/ti-dp83867.h
+-
+-Note: ti,min-output-impedance and ti,max-output-impedance are mutually
+-      exclusive. When both properties are present ti,max-output-impedance
+-      takes precedence.
+-
+-Default child nodes are standard Ethernet PHY device
+-nodes as described in Documentation/devicetree/bindings/net/phy.txt
+-
+-Example:
+-
+-	ethernet-phy@0 {
+-		reg = <0>;
+-		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
+-		ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_75_NS>;
+-		tx-fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+-	};
+-
+-Datasheet can be found:
+-http://www.ti.com/product/DP83867IR/datasheet
+diff --git a/Documentation/devicetree/bindings/net/ti,dp83867.yaml b/Documentation/devicetree/bindings/net/ti,dp83867.yaml
+new file mode 100644
+index 000000000000..554dcd7a40a9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/ti,dp83867.yaml
+@@ -0,0 +1,127 @@
++# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
++# Copyright (C) 2019 Texas Instruments Incorporated
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/net/ti,dp83867.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: TI DP83867 ethernet PHY
++
++allOf:
++  - $ref: "ethernet-controller.yaml#"
++
++maintainers:
++  - Dan Murphy <dmurphy@ti.com>
++
++description: |
++  The DP83867 device is a robust, low power, fully featured Physical Layer
++  transceiver with integrated PMD sublayers to support 10BASE-Te, 100BASE-TX
++  and 1000BASE-T Ethernet protocols.
++
++  The DP83867 is designed for easy implementation of 10/100/1000 Mbps Ethernet
++  LANs. It interfaces directly to twisted pair media via an external
++  transformer. This device interfaces directly to the MAC layer through the
++  IEEE 802.3 Standard Media Independent Interface (MII), the IEEE 802.3 Gigabit
++  Media Independent Interface (GMII) or Reduced GMII (RGMII).
++
++  Specifications about the charger can be found at:
++    https://www.ti.com/lit/gpn/dp83867ir
++
++properties:
++  reg:
++    maxItems: 1
++
++  ti,min-output-impedance:
++    type: boolean
++    description: |
++       MAC Interface Impedance control to set the programmable output impedance
++       to a minimum value (35 ohms).
++
++  ti,max-output-impedance:
++    type: boolean
++    description: |
++      MAC Interface Impedance control to set the programmable output impedance
++      to a maximum value (70 ohms).
++      Note: ti,min-output-impedance and ti,max-output-impedance are mutually
++        exclusive. When both properties are present ti,max-output-impedance
++        takes precedence.
++
++  tx-fifo-depth:
++    $ref: /schemas/types.yaml#definitions/uint32
++    description: |
++       Transmitt FIFO depth see dt-bindings/net/ti-dp83867.h for values
++
++  rx-fifo-depth:
++    $ref: /schemas/types.yaml#definitions/uint32
++    description: |
++       Receive FIFO depth see dt-bindings/net/ti-dp83867.h for values
++
++  ti,clk-output-sel:
++    $ref: /schemas/types.yaml#definitions/uint32
++    description: |
++      Muxing option for CLK_OUT pin.  See dt-bindings/net/ti-dp83867.h
++      for applicable values. The CLK_OUT pin can also be disabled by this
++      property.  When omitted, the PHY's default will be left as is.
++
++  ti,rx-internal-delay:
++    $ref: /schemas/types.yaml#definitions/uint32
++    description: |
++      RGMII Receive Clock Delay - see dt-bindings/net/ti-dp83867.h
++      for applicable values. Required only if interface type is
++      PHY_INTERFACE_MODE_RGMII_ID or PHY_INTERFACE_MODE_RGMII_RXID.
++
++  ti,tx-internal-delay:
++    $ref: /schemas/types.yaml#definitions/uint32
++    description: |
++      RGMII Transmit Clock Delay - see dt-bindings/net/ti-dp83867.h
++      for applicable values. Required only if interface type is
++      PHY_INTERFACE_MODE_RGMII_ID or PHY_INTERFACE_MODE_RGMII_TXID.
++
++        Note: If the interface type is PHY_INTERFACE_MODE_RGMII the TX/RX clock
++          delays will be left at their default values, as set by the PHY's pin
++          strapping. The default strapping will use a delay of 2.00 ns.  Thus
++          PHY_INTERFACE_MODE_RGMII, by default, does not behave as RGMII with no
++          internal delay, but as PHY_INTERFACE_MODE_RGMII_ID.  The device tree
++          should use "rgmii-id" if internal delays are desired as this may be
++          changed in future to cause "rgmii" mode to disable delays.
++
++  ti,dp83867-rxctrl-strap-quirk:
++    type: boolean
++    description: |
++      This denotes the fact that the board has RX_DV/RX_CTRL pin strapped in
++      mode 1 or 2. To ensure PHY operation, there are specific actions that
++      software needs to take when this pin is strapped in these modes.
++      See data manual for details.
++
++  ti,sgmii-ref-clock-output-enable:
++    type: boolean
++    description: |
++      This denotes which SGMII configuration is used (4 or 6-wire modes).
++      Some MACs work with differential SGMII clock. See data manual for details.
++
++  ti,fifo-depth:
++    deprecated: true
++    $ref: /schemas/types.yaml#definitions/uint32
++    description: |
++      Transmitt FIFO depth- see dt-bindings/net/ti-dp83867.h for applicable
++      values.
++
++required:
++  - reg
++
++examples:
++  - |
++    #include <dt-bindings/net/ti-dp83867.h>
++    mdio0 {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      ethphy0: ethernet-phy@0 {
++        reg = <0>;
++        tx-fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
++        rx-fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
++        ti,max-output-impedance;
++        ti,clk-output-sel = <DP83867_CLK_O_SEL_CHN_A_RCLK>;
++        ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
++        ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_75_NS>;
++      };
++    };
+-- 
+2.26.2
 
