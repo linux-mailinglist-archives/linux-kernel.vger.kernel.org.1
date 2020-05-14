@@ -2,249 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B3F1D4044
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 23:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D201D4049
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 23:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgENVi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 17:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728294AbgENViP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 17:38:15 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFAE6C061A0F;
-        Thu, 14 May 2020 14:38:14 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id d22so34118lfm.11;
-        Thu, 14 May 2020 14:38:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9duifyysftuOHq6stxeBoXSaEQaPvw17HHZ03swcqDE=;
-        b=fBau2OD0mzwKU72E/DaiysO+anuWU2UQmlURJvMa/aaK+fTvYaBkdkL4hG3e/Sla62
-         AqPoLaUI4l5hTm+LAFMYieqo1jdPgsf8rylZKmQhy56d/Il9EA4YkjmA8A/N1qLRIHWl
-         sLxAp++sXGxJ7SBZm4WVkmkUS4GoCSQLRuWSlqPYQBxIMolRSfq+Ari1WSjwE0+tfup+
-         mY10MI89vosbz+UT2BXWco6p9nxlz3YcizgU3edrWdDsagQF4FzZzcMQNJBmJeIuoZ26
-         RflEymG9ztc2X7cvbrdywk1IXHBVFLnBm+EDmmUxYwOV8D7AzFY4ji8ILxaWDAfrdZCm
-         Pd+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9duifyysftuOHq6stxeBoXSaEQaPvw17HHZ03swcqDE=;
-        b=UivHKx6sEn1ZMFNtA0ICp+T4H6x4C+zQ9YRjEi9MmjJf+Es7Zy4B7xmszdG9XTJwKB
-         76+wUBL03u2zADBeIVx7BMRlOCLTxlyHIc5xqurnQG3ofpYzVZ3bVz6KwvV53LPr8JPk
-         rStut3dB9OlLOUFMfrq0SCh02521Ekx7e8Ch2iBVXAXPKMONCeKhy7j2kGIF8Yz2T6mn
-         NKBnALvm0gxZSmrvFw7Ecdv1YlV/rCYDXvKMFUsCsTb8TxclQFl3VhcqMPk/glxglKTF
-         dHddM+B2ITfKIQK+DVgWVEfEN/SRYZGhCxEre5yIlGHTXpwTJqb/qCwbwq4eLHV5BQI6
-         hnyg==
-X-Gm-Message-State: AOAM532v0QNXI5TZv3ZvWSMz7ggin1fPL9vGVMhLcSVmmXNIgdqrsS8d
-        vxs2/2vG1RzJG9MpzUCSkWI01qUz
-X-Google-Smtp-Source: ABdhPJy6znsW1ZvASd5RA8laYzzv2xVn9kNqUvPX13KA1J9uRKVFyAAqEtXK8ISPFdbJktsRWuXG4g==
-X-Received: by 2002:a19:d55:: with SMTP id 82mr123265lfn.89.1589492293484;
-        Thu, 14 May 2020 14:38:13 -0700 (PDT)
-Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.gmail.com with ESMTPSA id a12sm63628ljj.64.2020.05.14.14.38.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 14:38:13 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        David Heidelberg <david@ixit.cz>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        =?UTF-8?q?Pedro=20=C3=82ngelo?= <pangelo@void.io>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Zack Pearsall <zpearsall@yahoo.com>
-Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        id S1728223AbgENVj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 17:39:58 -0400
+Received: from mout.gmx.net ([212.227.17.22]:44147 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727851AbgENVj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 17:39:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1589492382;
+        bh=/FZ3cV3VE8e7a6n/84h2tcGA6lWyzBXC2WW7OaIYNCM=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:References:Date:In-Reply-To;
+        b=ExbNf48T/Gpd5RcHHAdJ4jgs2gJSD2xXYVr5tGT/wwgoCcon9utSf339KDJYd83rA
+         HYLkYMUH8lCzXqRwxPbPTrV3K0OXMV64dj5yWEIymjMQR4NOUif9Rlr35XdrtN4rZ9
+         zhFj19l62Q55h+JI7gPrkfWGaSXJVFikY5faNj+8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from strobe-jhalfs ([188.109.158.118]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MXp9Y-1jaSag1VCW-00Y8nT; Thu, 14
+ May 2020 23:39:42 +0200
+From:   Stephen Berman <stephen.berman@gmx.net>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v8 6/6] ARM: tegra_defconfig: Enable options useful for Nexus 7 and Acer A500
-Date:   Fri, 15 May 2020 00:36:54 +0300
-Message-Id: <20200514213654.12834-7-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200514213654.12834-1-digetx@gmail.com>
-References: <20200514213654.12834-1-digetx@gmail.com>
+Subject: Re: power-off delay/hang due to commit 6d25be57 (mainline)
+References: <87bln7ves7.fsf@gmx.net>
+        <20200506215713.qoo4enq32ckcjmz7@linutronix.de>
+        <87v9l65d2y.fsf@gmx.net>
+        <20200513220428.4nksinis2qs5dtmh@linutronix.de>
+Date:   Thu, 14 May 2020 23:39:40 +0200
+In-Reply-To: <20200513220428.4nksinis2qs5dtmh@linutronix.de> (Sebastian
+        Andrzej Siewior's message of "Thu, 14 May 2020 00:04:28 +0200")
+Message-ID: <87mu6aurfn.fsf@gmx.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Provags-ID: V03:K1:9vhhOdjma8C/TBocgEUzfynWpPFVYbfK1QiCa0sypdcWipA/1yH
+ PYRBH0HBeSKuY9m4g60LKI9pmR/szrdPxG+gudoBBAYwk0nPIixS7t5f8z5CgREYDHIzTca
+ P6MB2f6stk1dT8NLoO24RuB42nPmDdyxtIhiFoJmSKTKsKBfJQRharmLtGWKkQ/K0ZqvGr2
+ fe1/MDSGh8vpk7U4yiXzQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nH1nDPcMUFg=:4Qlz2zL3IeYwqsJrOy0fpO
+ AuDV7LhsBxcPRiwgavHKgxqrZiFaSo8Ro4Y+xMC4dU6xH0W6q7VPTEdiIFkfSCw+zuxJiDV6l
+ ivPD/zB3116mE1FPL0alZY7bgWt26do+/4CoGorLi12z4/ulcjfrw1XxUiTi7SwwzLLI6H2xh
+ BFLUTWSgztov9OjYa/UA3298/Bm2b/UaSCr49QJkxs2420hnqrBXDm256/yfyRmshAD16wPM1
+ nyh9rWz9bgbeGShUZJ2qJ/FbZVuD9OgVnymQsah0nTIbyP/alj9A1GfscEtuCNcNnPc19ElIY
+ qVPAT3FxK9yZxFikrHYH6FXja+h1lCOTCNdH8ZGklqq6nwM90i8fmaIAkfN/sqLEfh3ZYL67f
+ W0d10DjbrH8mr+tvRgYF4fFkaNTURho8lb4veO+4vtOLwqjXb056GD1AbgKfLPNXKVZbwnVDL
+ RBmsWZ619T3dhrUrADpsFNujgPIJDHJn0PahnKzpS/Y/p0TqFQKxVfc/Ut7giHlOoYmEZ1jj7
+ BInFJeB43/WvJWYv84jrRlV/XEb4/JrB/UtU/nVPSuGl1kPsE0XlhXqeR02DcetRy+DtDYr1C
+ 0sLF4DBPTbxGIrxQYB9J4qTr0+OOMlPTNOwRqAivrevCHCFg28wH3W/+vJxxMHBYo1NTf4zJR
+ Rf3WK3uMS/EfeNYr+IReSH7Xs4IP5pgsZcz9yCainP1bC7rn1w+lzZp4d6LMlZvm5lNAa+Qsw
+ qIIRodT1vQ81drK7wQRLMix1wI14SgsxFPUUp973+HhSlyq9yGN5ag/ORBa0DNbG6lz4jsTH3
+ TOdw6hip+ibs1CD2pqnUoz0AFKe+zkjGI/zXQg3pshs1TYmlj/SRQ5XiMq4TDg2jNmlQIFfO8
+ VdQSIujdcsh9hv6xPCl6sIf/JkfNmib+EW+1KWNTafGiOsh14sDCLuVnliCtqBs+qFTEr2JxK
+ ucCffX08rVfyk/5DNKJX7czaMUuY0S8QqPvwBHCypYLGGq2uuHDuwtNESa73v0OpggYYvu+62
+ WHy8pD0IJjXxW9cdsmiNmMISxY2Am2J2nBR1jdC8D5YbIKrOOJ3AOhERlWcMVqu8bSJaElSot
+ +q4cZzuFLwOze3+mdXkUTquhk1IKrylfRWtKSI7CdIDE/m0ZnKhZguRAUwB4wYmTW3kkbbamo
+ wVmzrFJqIK1AV1wFbLYDwi0FtMOhc5sia28VQ3hE1nRE+K9IgpiwcmKaMmleLDfnyPp89NjSq
+ SsbbcwuHl/wqVQJAF
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable several very useful options and drivers for hardware that is found
-on Nexus 7 and Acer A500 tablet devices. Please note that some drivers may
-require firmware files extracted from original Android image.
+On Thu, 14 May 2020 00:04:28 +0200 Sebastian Andrzej Siewior <bigeasy@linu=
+tronix.de> wrote:
 
-Link: https://github.com/digetx/linux-firmware
-Link: https://github.com/digetx/alsa-ucm-conf
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/configs/tegra_defconfig | 42 ++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+> On 2020-05-08 23:30:45 [+0200], Stephen Berman wrote:
+>> > Can you log the output on the serial console?
+>>
+>> How do I do that?
+>
+> The spec for your mainboard says "serial port header". You would need to
+> connect a cable there to another computer and log its output.
+> The alternative would be to delay the output on the console and use a
+> camera.
 
-diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
-index 0029259a6bf5..b382f06f835b 100644
---- a/arch/arm/configs/tegra_defconfig
-+++ b/arch/arm/configs/tegra_defconfig
-@@ -10,6 +10,8 @@ CONFIG_RT_GROUP_SCHED=y
- CONFIG_CGROUP_FREEZER=y
- CONFIG_CGROUP_CPUACCT=y
- CONFIG_CGROUP_DEBUG=y
-+CONFIG_NAMESPACES=y
-+CONFIG_USER_NS=y
- CONFIG_BLK_DEV_INITRD=y
- # CONFIG_ELF_CORE is not set
- CONFIG_EMBEDDED=y
-@@ -18,6 +20,7 @@ CONFIG_SLAB=y
- CONFIG_ARCH_TEGRA=y
- CONFIG_SMP=y
- CONFIG_HIGHMEM=y
-+CONFIG_SECCOMP=y
- CONFIG_ZBOOT_ROM_TEXT=0x0
- CONFIG_ZBOOT_ROM_BSS=0x0
- CONFIG_KEXEC=y
-@@ -63,11 +66,17 @@ CONFIG_BT_RFCOMM=y
- CONFIG_BT_BNEP=y
- CONFIG_BT_HIDP=y
- CONFIG_BT_HCIBTUSB=m
-+CONFIG_BT_HCIUART=y
-+CONFIG_BT_HCIUART_BCM=y
- CONFIG_CFG80211=y
- CONFIG_MAC80211=y
- CONFIG_RFKILL=y
- CONFIG_RFKILL_INPUT=y
- CONFIG_RFKILL_GPIO=y
-+CONFIG_NFC=y
-+CONFIG_NFC_HCI=y
-+CONFIG_NFC_SHDLC=y
-+CONFIG_NFC_PN544_I2C=y
- CONFIG_PCI=y
- CONFIG_PCIEPORTBUS=y
- CONFIG_PCI_MSI=y
-@@ -106,20 +115,24 @@ CONFIG_INPUT_JOYDEV=y
- CONFIG_INPUT_EVDEV=y
- CONFIG_KEYBOARD_GPIO=y
- CONFIG_KEYBOARD_TEGRA=y
-+CONFIG_KEYBOARD_CAP11XX=y
- CONFIG_KEYBOARD_CROS_EC=y
- CONFIG_MOUSE_PS2_ELANTECH=y
- CONFIG_INPUT_TOUCHSCREEN=y
- CONFIG_TOUCHSCREEN_ATMEL_MXT=y
-+CONFIG_TOUCHSCREEN_ELAN=y
- CONFIG_TOUCHSCREEN_WM97XX=y
- # CONFIG_TOUCHSCREEN_WM9705 is not set
- # CONFIG_TOUCHSCREEN_WM9713 is not set
- CONFIG_TOUCHSCREEN_STMPE=y
- CONFIG_INPUT_MISC=y
-+CONFIG_INPUT_GPIO_VIBRA=y
- # CONFIG_LEGACY_PTYS is not set
- CONFIG_SERIAL_8250=y
- CONFIG_SERIAL_8250_CONSOLE=y
- CONFIG_SERIAL_OF_PLATFORM=y
- CONFIG_SERIAL_TEGRA=y
-+CONFIG_SERIAL_DEV_BUS=y
- # CONFIG_HW_RANDOM is not set
- # CONFIG_I2C_COMPAT is not set
- CONFIG_I2C_CHARDEV=y
-@@ -131,10 +144,12 @@ CONFIG_SPI_TEGRA114=y
- CONFIG_SPI_TEGRA20_SFLASH=y
- CONFIG_SPI_TEGRA20_SLINK=y
- CONFIG_PINCTRL_AS3722=y
-+CONFIG_PINCTRL_MAX77620=y
- CONFIG_PINCTRL_PALMAS=y
- CONFIG_GPIO_SYSFS=y
- CONFIG_GPIO_PCA953X=y
- CONFIG_GPIO_PCA953X_IRQ=y
-+CONFIG_GPIO_MAX77620=y
- CONFIG_GPIO_PALMAS=y
- CONFIG_GPIO_TPS6586X=y
- CONFIG_GPIO_TPS65910=y
-@@ -142,13 +157,21 @@ CONFIG_POWER_RESET=y
- CONFIG_POWER_RESET_AS3722=y
- CONFIG_POWER_RESET_GPIO=y
- CONFIG_BATTERY_SBS=y
-+CONFIG_BATTERY_BQ27XXX=y
-+CONFIG_CHARGER_GPIO=y
-+CONFIG_CHARGER_SMB347=y
- CONFIG_CHARGER_TPS65090=y
- CONFIG_SENSORS_LM90=y
- CONFIG_SENSORS_LM95245=y
-+CONFIG_THERMAL=y
-+CONFIG_THERMAL_STATISTICS=y
-+CONFIG_CPU_THERMAL=y
- CONFIG_WATCHDOG=y
-+CONFIG_MAX77620_WATCHDOG=y
- CONFIG_TEGRA_WATCHDOG=y
- CONFIG_MFD_AS3722=y
- CONFIG_MFD_CROS_EC=y
-+CONFIG_MFD_MAX77620=y
- CONFIG_MFD_MAX8907=y
- CONFIG_MFD_STMPE=y
- CONFIG_MFD_PALMAS=y
-@@ -159,6 +182,7 @@ CONFIG_REGULATOR=y
- CONFIG_REGULATOR_FIXED_VOLTAGE=y
- CONFIG_REGULATOR_AS3722=y
- CONFIG_REGULATOR_GPIO=y
-+CONFIG_REGULATOR_MAX77620=y
- CONFIG_REGULATOR_MAX8907=y
- CONFIG_REGULATOR_PALMAS=y
- CONFIG_REGULATOR_TPS51632=y
-@@ -174,7 +198,10 @@ CONFIG_USB_GSPCA=y
- CONFIG_DRM=y
- CONFIG_DRM_NOUVEAU=m
- CONFIG_DRM_TEGRA=y
-+CONFIG_DRM_TEGRA_STAGING=y
-+CONFIG_DRM_PANEL_LVDS=y
- CONFIG_DRM_PANEL_SIMPLE=y
-+CONFIG_DRM_LVDS_CODEC=y
- # CONFIG_LCD_CLASS_DEVICE is not set
- CONFIG_BACKLIGHT_CLASS_DEVICE=y
- # CONFIG_BACKLIGHT_GENERIC is not set
-@@ -238,6 +265,7 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_AS3722=y
- CONFIG_RTC_DRV_DS1307=y
- CONFIG_RTC_DRV_MAX8907=y
-+CONFIG_RTC_DRV_MAX77686=y
- CONFIG_RTC_DRV_PALMAS=y
- CONFIG_RTC_DRV_TPS6586X=y
- CONFIG_RTC_DRV_TPS65910=y
-@@ -259,11 +287,18 @@ CONFIG_ARCH_TEGRA_2x_SOC=y
- CONFIG_ARCH_TEGRA_3x_SOC=y
- CONFIG_ARCH_TEGRA_114_SOC=y
- CONFIG_ARCH_TEGRA_124_SOC=y
-+CONFIG_PM_DEVFREQ=y
-+CONFIG_ARM_TEGRA_DEVFREQ=y
-+CONFIG_ARM_TEGRA20_DEVFREQ=y
- CONFIG_MEMORY=y
- CONFIG_IIO=y
-+CONFIG_KXCJK1013=y
- CONFIG_MPU3050_I2C=y
-+CONFIG_INV_MPU6050_I2C=y
-+CONFIG_AL3010=y
- CONFIG_SENSORS_ISL29018=y
- CONFIG_SENSORS_ISL29028=y
-+CONFIG_AK8974=y
- CONFIG_AK8975=y
- CONFIG_PWM=y
- CONFIG_PWM_TEGRA=y
-@@ -283,6 +318,13 @@ CONFIG_TMPFS_POSIX_ACL=y
- CONFIG_SQUASHFS=y
- CONFIG_SQUASHFS_LZO=y
- CONFIG_SQUASHFS_XZ=y
-+CONFIG_PSTORE=y
-+CONFIG_PSTORE_LZO_COMPRESS=y
-+CONFIG_PSTORE_LZ4_COMPRESS=y
-+CONFIG_PSTORE_LZ4HC_COMPRESS=y
-+CONFIG_PSTORE_842_COMPRESS=y
-+CONFIG_PSTORE_CONSOLE=y
-+CONFIG_PSTORE_RAM=y
- CONFIG_NFS_FS=y
- CONFIG_NFS_V4=y
- CONFIG_ROOT_NFS=y
--- 
-2.26.0
+It's easiest for me to take a picture, since there isn't much output and
+in any case the delay happens on it's own ;-).  I'm sending you the
+image (from kernel 5.6.4) off-list since even after reducing it it's 1.2
+MB large.
 
+>> > If the commit you cited is really the problem then it would mean that=
+ a
+>> > worker isn't scheduled for some reason. Could you please enable
+>> > CONFIG_WQ_WATCHDOG to see if workqueue core code notices that a worke=
+r
+>> > isn't making progress?
+
+I enabled that and also CONFIG_SOFTLOCKUP_DETECTOR,
+CONFIG_HARDLOCKUP_DETECTOR and CONFIG_DETECT_HUNG_TASK, which had all
+been unset previously.
+
+>> How will I know if that happens, is there a specific message in the tty=
+?
+>
+> On the tty console where you see the "timing out command, waited"
+> message, there should be something starting with
+> |BUG: workqueue lockup - pool
+>
+> following with the pool information that got stuck. That code checks the
+> workqueues every 30secs by default. So if you waited >=3D 60secs then
+> system is not detecting a stall.
+
+As you can see in the photo, there was no message about a workqueue
+lockup, only "task halt:5320 blocked for more than <XXX> seconds" every
+two minutes.  I suppose that comes from one of the other options I
+enabled.  Does it reveal anything about the problem?
+
+> As far as I can tell, there is nothing special on your system. The CD
+> and disk drives are served by the AHCI controller. There is no special
+> SCSI/SATA/SAS controller.
+> Right now I have no idea how the workqueues fit in the picture. Could
+> you please check if the stall-dector says something?
+
+Is that the message I repeated above or do you mean the workqueue?
+
+> Is it possible to show me output when the timeout message comes? My
+> guess is that the system is going down and before unounting/remount RO
+> the filesystem it flushes its last data. But this is done before issuing
+> the "halt-syscall".
+
+The entire output from `shutdown -h now' is in the picture; after the
+fourth "timing out command" message, I pressed the reset button.
+
+Steve Berman
