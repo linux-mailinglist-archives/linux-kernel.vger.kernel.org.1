@@ -2,176 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AEA81D28F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 09:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE66E1D292F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 09:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726102AbgENHk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 03:40:27 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:45846 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgENHk0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 03:40:26 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04E7eLFN125466;
-        Thu, 14 May 2020 02:40:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589442021;
-        bh=KG3memjsCcwE/u1z7H7YBFsNgxZt+svqBex7nCFVKpE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=CTHytnE2rppXj7kocZdax12mZ/nnkBlHwpK+0Fqn4TYklkDFHYad9/Un2+J18cE6d
-         BQGf7D9/IE6lPc/omfJ/e8XkG3hQNA83W/GxNiwziMRxn4dH4SLsdYq658taMaofSc
-         gm4Cw3bqVaFvq6bOqZfRjEBX91A8F73gETubfTts=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04E7eLso027858;
-        Thu, 14 May 2020 02:40:21 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 14
- May 2020 02:40:21 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 14 May 2020 02:40:21 -0500
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04E7eIsV043167;
-        Thu, 14 May 2020 02:40:19 -0500
-Subject: Re: [PATCH 3/3] usb: dwc3: keystone: Turn on USB3 PHY before
- controller
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-CC:     <balbi@kernel.org>, <robh+dt@kernel.org>, <vigneshr@ti.com>,
-        <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200513130709.10239-1-rogerq@ti.com>
- <20200513130709.10239-4-rogerq@ti.com> <1589420265.5899.0.camel@mhfsdcap03>
-From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <baaaf89c-4baf-4218-e22e-53cd1a64ec02@ti.com>
-Date:   Thu, 14 May 2020 10:40:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726059AbgENH5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 03:57:10 -0400
+Received: from elvis.franken.de ([193.175.24.41]:53041 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725911AbgENH5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 03:57:10 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jZ8js-0005U5-00; Thu, 14 May 2020 09:57:08 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id B31E7C0482; Thu, 14 May 2020 09:41:22 +0200 (CEST)
+Date:   Thu, 14 May 2020 09:41:22 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH] MIPS: dts: mscc: Updated changed name for miim pinctrl
+ function
+Message-ID: <20200514074122.GA5880@alpha.franken.de>
+References: <20200513132347.24975-1-lars.povlsen@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <1589420265.5899.0.camel@mhfsdcap03>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200513132347.24975-1-lars.povlsen@microchip.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 14/05/2020 04:37, Chunfeng Yun wrote:
-> On Wed, 2020-05-13 at 16:07 +0300, Roger Quadros wrote:
->> The Local Power Sleep Controller (LPSC) dependency on AM65
->> requires SERDES0 to be powered on before USB.
->>
->> We need to power up SERDES0 power domain and hold it on
->> throughout the reset, init, power on sequence.
->>
->> Signed-off-by: Roger Quadros <rogerq@ti.com>
->> ---
->>   drivers/usb/dwc3/dwc3-keystone.c | 47 +++++++++++++++++++++++++++++++-
->>   1 file changed, 46 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/usb/dwc3/dwc3-keystone.c b/drivers/usb/dwc3/dwc3-keystone.c
->> index 1e14a6f4884b..46d46f3507fc 100644
->> --- a/drivers/usb/dwc3/dwc3-keystone.c
->> +++ b/drivers/usb/dwc3/dwc3-keystone.c
->> @@ -14,6 +14,7 @@
->>   #include <linux/dma-mapping.h>
->>   #include <linux/io.h>
->>   #include <linux/of_platform.h>
->> +#include <linux/phy/phy.h>
->>   #include <linux/pm_runtime.h>
->>   
->>   /* USBSS register offsets */
->> @@ -34,6 +35,7 @@
->>   struct dwc3_keystone {
->>   	struct device			*dev;
->>   	void __iomem			*usbss;
->> +	struct phy			*usb3_phy;
->>   };
->>   
->>   static inline u32 kdwc3_readl(void __iomem *base, u32 offset)
->> @@ -95,8 +97,44 @@ static int kdwc3_probe(struct platform_device *pdev)
->>   	if (IS_ERR(kdwc->usbss))
->>   		return PTR_ERR(kdwc->usbss);
->>   
->> -	pm_runtime_enable(kdwc->dev);
->> +	/* PSC dependency on AM65 needs SERDES0 to be powered before USB0 */
->> +	kdwc->usb3_phy = devm_phy_get(dev, "usb3-phy");
-> Use devm_phy_optional_get() instead?
-
-Indeed, it seems better suited.
-
-cheers,
--roger
-
+On Wed, May 13, 2020 at 03:23:47PM +0200, Lars Povlsen wrote:
+> This is an add-on patch to the main SoC Sparx5 series
+> (Message-ID: <20200513125532.24585-1-lars.povlsen@microchip.com>).
 > 
->> +	if (IS_ERR(kdwc->usb3_phy)) {
->> +		error = PTR_ERR(kdwc->usb3_phy);
->> +		if (error == -ENOSYS || error == -ENODEV) {
->> +			kdwc->usb3_phy = NULL;
->> +		} else {
->> +			if (error != -EPROBE_DEFER) {
->> +				dev_err(dev, "couldn't get usb3 phy: %d\n",
->> +					error);
->> +			}
->> +
->> +			return error;
->> +		}
->> +	}
->> +
->> +	phy_pm_runtime_get_sync(kdwc->usb3_phy);
->> +
->> +	error = phy_reset(kdwc->usb3_phy);
->> +	if (error < 0) {
->> +		dev_err(dev, "usb3 phy reset failed: %d\n", error);
->> +		return error;
->> +	}
->> +
->> +	error = phy_init(kdwc->usb3_phy);
->> +	if (error < 0) {
->> +		dev_err(dev, "usb3 phy init failed: %d\n", error);
->> +		return error;
->> +	}
->>   
->> +	error = phy_power_on(kdwc->usb3_phy);
->> +	if (error < 0) {
->> +		dev_err(dev, "usb3 phy power on failed: %d\n", error);
->> +		phy_exit(kdwc->usb3_phy);
->> +		return error;
->> +	}
->> +
->> +	pm_runtime_enable(kdwc->dev);
->>   	error = pm_runtime_get_sync(kdwc->dev);
->>   	if (error < 0) {
->>   		dev_err(kdwc->dev, "pm_runtime_get_sync failed, error %d\n",
->> @@ -138,6 +176,9 @@ static int kdwc3_probe(struct platform_device *pdev)
->>   err_irq:
->>   	pm_runtime_put_sync(kdwc->dev);
->>   	pm_runtime_disable(kdwc->dev);
->> +	phy_power_off(kdwc->usb3_phy);
->> +	phy_exit(kdwc->usb3_phy);
->> +	phy_pm_runtime_put_sync(kdwc->usb3_phy);
->>   
->>   	return error;
->>   }
->> @@ -163,6 +204,10 @@ static int kdwc3_remove(struct platform_device *pdev)
->>   	pm_runtime_put_sync(kdwc->dev);
->>   	pm_runtime_disable(kdwc->dev);
->>   
->> +	phy_power_off(kdwc->usb3_phy);
->> +	phy_exit(kdwc->usb3_phy);
->> +	phy_pm_runtime_put_sync(kdwc->usb3_phy);
->> +
->>   	platform_set_drvdata(pdev, NULL);
->>   
->>   	return 0;
+> This changes the miim pinctrl function name from "miim1" to "miim" due
+> to refactoring in the driver, obsoleting the instance number.
 > 
+> The change in the driver was to better fit new platforms, as the
+> instance number is redundant information. Specifically, support for
+> the Microchip Sparx5 SoC is being submitted, where this change became
+> necessary.
+> 
+> Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> ---
+>  arch/mips/boot/dts/mscc/ocelot.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+applied to mips-next.
+
+Thomas.
 
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
