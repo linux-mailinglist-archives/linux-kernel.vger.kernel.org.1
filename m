@@ -2,65 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDFA1D2D11
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E70E1D2D25
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 12:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgENKkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 06:40:46 -0400
-Received: from verein.lst.de ([213.95.11.211]:51250 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725978AbgENKkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 06:40:45 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 8A1C268BEB; Thu, 14 May 2020 12:40:40 +0200 (CEST)
-Date:   Thu, 14 May 2020 12:40:40 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Christine Caulfield <ccaulfie@redhat.com>,
-        David Teigland <teigland@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
-        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-cifs@vger.kernel.org, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, netdev@vger.kernel.org,
-        linux-sctp@vger.kernel.org, ceph-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-nfs@vger.kernel.org
-Subject: is it ok to always pull in sctp for dlm, was: Re: [PATCH 27/33]
- sctp: export sctp_setsockopt_bindx
-Message-ID: <20200514104040.GA12979@lst.de>
-References: <20200513062649.2100053-1-hch@lst.de> <20200513062649.2100053-28-hch@lst.de> <20200513180058.GB2491@localhost.localdomain>
+        id S1726105AbgENKoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 06:44:05 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:45405 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726056AbgENKoE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 06:44:04 -0400
+Received: by mail-il1-f198.google.com with SMTP id t10so2758563ilf.12
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 03:44:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=hoXGVtl4km8jJ8wNjtYih/eDPSljKbLmILj3chomVUg=;
+        b=Gacd2PhcMKcZmWHuTT52knSM5Ipzv/VSeHnZvPVwgR7LPmSAhSmqV9IvsOx8RnOtfY
+         aQQf6w29ZJoMFHNXeNmQXjsYA6h1Cjqx2No5u5QWnL1DrpCn0Pwg/NIukxmljnO6ZtKd
+         zT8OicSsxihYyKCtnErx3APVuooY9XqMT/9QROyy//SXj+c4yJCmhKHP4mN/pf2vKwFH
+         QwzwnHP1RXGpEjtcBWzOeZXgh1gh4OQrfLpM0aPGVUQDeOvHJIERVMKLDIYQmIZHJaIR
+         7bLKFGT2OlWydd0KWnTFGGaYQan9gvFz1ehH8reEioAhDVuSX2wKqiSAE+EabHRu8lf2
+         v/PQ==
+X-Gm-Message-State: AOAM532h4VvVJTsmS/pRcQoCbE7Zvg68Gdn69gwrMzRWlGcUgNr4xhDq
+        J/7ydBY0i3unE0qKCB4QFTWqhRpVOk8h9it9fjlQx38NDkbO
+X-Google-Smtp-Source: ABdhPJzXo+5o8hNjij+UzCHkt9MgIvEAIQE+bNQv2oX8TNmIwCsWtTIm+byzrRQU1GzPoCsb/WkxdGdHVzDOB8z2t/DmzKj+OJKn
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513180058.GB2491@localhost.localdomain>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Received: by 2002:a92:8747:: with SMTP id d7mr3992371ilm.235.1589453044173;
+ Thu, 14 May 2020 03:44:04 -0700 (PDT)
+Date:   Thu, 14 May 2020 03:44:04 -0700
+In-Reply-To: <20200514092004.GA1577276@kroah.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000015d1cd05a5996049@google.com>
+Subject: Re: WARNING in memtype_reserve
+From:   syzbot <syzbot+353be47c9ce21b68b7ed@syzkaller.appspotmail.com>
+To:     bp@alien8.de, dave.hansen@linux.intel.com,
+        dmitry.torokhov@gmail.com, ebiederm@xmission.com,
+        gregkh@linuxfoundation.org, hpa@zytor.com, jeremy.linton@arm.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        luto@kernel.org, mingo@redhat.com, peterz@infradead.org,
+        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 03:00:58PM -0300, Marcelo Ricardo Leitner wrote:
-> On Wed, May 13, 2020 at 08:26:42AM +0200, Christoph Hellwig wrote:
-> > And call it directly from dlm instead of going through kernel_setsockopt.
-> 
-> The advantage on using kernel_setsockopt here is that sctp module will
-> only be loaded if dlm actually creates a SCTP socket.  With this
-> change, sctp will be loaded on setups that may not be actually using
-> it. It's a quite big module and might expose the system.
-> 
-> I'm okay with the SCTP changes, but I'll defer to DLM folks to whether
-> that's too bad or what for DLM.
+Hello,
 
-So for ipv6 I could just move the helpers inline as they were trivial
-and avoid that issue.  But some of the sctp stuff really is way too
-big for that, so the only other option would be to use symbol_get.
+syzbot has tested the proposed patch and the reproducer did not trigger crash:
+
+Reported-and-tested-by: syzbot+353be47c9ce21b68b7ed@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         d5eeab8d Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b0212dbee046bc1f
+dashboard link: https://syzkaller.appspot.com/bug?extid=353be47c9ce21b68b7ed
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=12bd6806100000
+
+Note: testing is done by a robot and is best-effort only.
