@@ -2,128 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9641D312F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 15:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354351D3135
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 15:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgENNXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 09:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726011AbgENNXq (ORCPT
+        id S1727768AbgENNYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 09:24:42 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:36143 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbgENNYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 09:23:46 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7FFC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 06:23:46 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id l1so2782820qtp.6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 06:23:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qnupApv5pkb3p9+KuaT8kkxlkX8ng/B6sPGXw6pdnyA=;
-        b=JdVVIS5BfSM6y5F2HNvLEyXenCiZjo6XkO0YrqO2Xt3LTAy4xjUqhOiEb2UVaWSoru
-         ZE3dGL7lGhNzX4+0abCcjjz7EbrKcmbi+V2AjYWjclfecfJ334Joa3f/aWf788IMN287
-         MslcK1TtTQ2X7msIMQbB6jF8USREdlGBRz62VmwrvgOmc8DQkUzN0JMxxq2Z/V3RE7/c
-         DrP3aODLLqlf/+kZtwkVgk95WJrkbAY6VRTrNWttsHCHApGNd7/4zehrWCvLal7iATLc
-         7IiQv2qnoFRhbPciewdnAb7/3vgFHpSexMyBpqPZXn+oVz23fv9kBIItekG+BdR4lqkc
-         OrKw==
+        Thu, 14 May 2020 09:24:41 -0400
+Received: by mail-oi1-f195.google.com with SMTP id x7so23585945oic.3;
+        Thu, 14 May 2020 06:24:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qnupApv5pkb3p9+KuaT8kkxlkX8ng/B6sPGXw6pdnyA=;
-        b=e8WCxbm5c4kjkpQ8WNflYlHz/+gw1Vgh5DctT/s0qYA7vSS4oNDJwUnomSJCcRtOsZ
-         ZdmQ91wvdRrVyn7O0ga/ShdFBgPT61rIJacyC43AvSlxhNsU7ODoKKi+iCMCfDhUx3K8
-         MTWdMleT+dmsX5JOYCwEqBjGCLMhyWrtKj2ugnXTPuwArK8o3hjQVNOlkfNnCVmTrKhR
-         dJVAGK6S7NJJczK4nEH/9wMaQZtVreEMF8sgMPDP3G8fwA2sGSICJflH6Nl94zhmUwAh
-         6taGVyochGfzWO8D1goZ7weP7EF+nD+IUhZBGSOCvUhTCcR29Bi86efVFCy2vXrUQ7+o
-         IjsQ==
-X-Gm-Message-State: AOAM531lUeKbojzEPK+T9GW+LkmXq7jpn9lxONoagYHlVhipZfHlTuvl
-        cSUdr0G2uNlkTnScFhxBJyU=
-X-Google-Smtp-Source: ABdhPJy4iooFuYpNo5CWVsJR/PkitVytJ3esQ1zEkosFdrjA+XzGCa1s9GCQFoD5USze+uD4g0TYrQ==
-X-Received: by 2002:aed:3c61:: with SMTP id u30mr4332814qte.209.1589462621233;
-        Thu, 14 May 2020 06:23:41 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id d7sm2408711qkk.26.2020.05.14.06.23.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mV1gDXAu3PHj2qz8NxRMN80UJwMB7imwalApGyVK3E0=;
+        b=rDlcZMRT8ZFy0X7uHFdkSZKCNdaDLNy4xKlFadQg8bTr9KP1Y/pRZppJJFHf3UZHB+
+         EefEkFnSRzjkCjP0zJheirTviEGXaOhqNho41j3Dh1xKGW+sYY26D+2hpjt8Z49ghSuy
+         Q79AeKDseVuWDnyy0y8xuqvAiPwFSmqnB4jyRpuM8aIB6180vF9BCxESJv2sXxE2x4l4
+         3SlviqGS7yYxKEqoCkX0EJd7JuwIzq8MZQwjBg6xTSce06n3UXN38DLXahBKUpO5hLMn
+         zf7iybh3381wdNvPflCKLUtc8e8SMEBqhPFhvxIfGzh1buRNxt3AqaZJHArhW7B5pmgv
+         pvPg==
+X-Gm-Message-State: AOAM533bHrwdkXsOuS+EzAlgXw4YuYIYe5DG+Q0Su5qaPDEShdOtWHQF
+        qnhzETBG41zaxdvPve+Jmw==
+X-Google-Smtp-Source: ABdhPJzvIYVfE92YPp93du6vUI1pwaY/vFWHWgAMhu5qICOSPCQPcgESncNedDAP0dRa0QJKVz0y2A==
+X-Received: by 2002:aca:cdc6:: with SMTP id d189mr809229oig.19.1589462680705;
+        Thu, 14 May 2020 06:24:40 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l196sm1634201oih.25.2020.05.14.06.24.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 06:23:40 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 76A5540AFD; Thu, 14 May 2020 10:23:37 -0300 (-03)
-Date:   Thu, 14 May 2020 10:23:37 -0300
-To:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Nick Gasson <nick.gasson@arm.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] perf jvmti: Various fixes to JVMTI agent
-Message-ID: <20200514132337.GM5583@kernel.org>
-References: <20200427061520.24905-1-nick.gasson@arm.com>
- <20200427103505.GA1476763@krava>
- <85lflu7v4o.fsf@arm.com>
+        Thu, 14 May 2020 06:24:39 -0700 (PDT)
+Received: (nullmailer pid 14823 invoked by uid 1000);
+        Thu, 14 May 2020 13:24:39 -0000
+Date:   Thu, 14 May 2020 08:24:39 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     TY Chang <tychang@realtek.com>
+Cc:     linux-realtek-soc@lists.infradead.org, afaerber@suse.de,
+        linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/7] dt-bindings: pinctrl: realtek: Add Realtek DHC SoC
+ rtd1195 and rtd1295.
+Message-ID: <20200514132439.GB23147@bogus>
+References: <20200514092125.6875-1-tychang@realtek.com>
+ <20200514092125.6875-5-tychang@realtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <85lflu7v4o.fsf@arm.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200514092125.6875-5-tychang@realtek.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, May 14, 2020 at 04:56:07PM +0800, Nick Gasson escreveu:
-> On 04/27/20 18:35 pm, Jiri Olsa wrote:
-> >
-> > adding Stephane to the loop
-
-Stephane, Ian, can you guys please take a look at this one and provide a
-Reviewed-by or Acked-by?
-
-Thanks,
-
-- Arnaldo
-
-
-> > jirka
-> >
-> >> 
-> >> These three patches fix a couple of issues I ran into while using the
-> >> jitdump JVMTI agent to profile the SPECjbb benchmark.
-> >> 
+On Thu, May 14, 2020 at 05:21:22PM +0800, TY Chang wrote:
+> Add compatible string for RTD1195 and RTD1295.
 > 
-> Hi, any feedback on these patches?
+> Signed-off-by: TY Chang <tychang@realtek.com>
+> ---
+>  .../bindings/pinctrl/realtek,rtd-pinctrl.yaml | 59 +++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/realtek,rtd-pinctrl.yaml
 > 
-> Thanks,
-> Nick
-> 
-> >> 
-> >> 
-> >> Nick Gasson (3):
-> >>   perf jvmti: Fix jitdump for methods without debug info
-> >>   perf jvmti: Do not report error when missing debug information
-> >>   perf jvmti: Fix demangling Java symbols
-> >> 
-> >>  tools/perf/jvmti/libjvmti.c           | 24 +++++++--------
-> >>  tools/perf/tests/Build                |  1 +
-> >>  tools/perf/tests/builtin-test.c       |  4 +++
-> >>  tools/perf/tests/demangle-java-test.c | 42 +++++++++++++++++++++++++++
-> >>  tools/perf/tests/tests.h              |  1 +
-> >>  tools/perf/util/demangle-java.c       | 13 +++++----
-> >>  6 files changed, 66 insertions(+), 19 deletions(-)
-> >>  create mode 100644 tools/perf/tests/demangle-java-test.c
-> >> 
-> >> -- 
-> >> 2.26.1
-> >> 
-> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/realtek,rtd-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/realtek,rtd-pinctrl.yaml
+> new file mode 100644
+> index 000000000000..5af5fc8fe633
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/realtek,rtd-pinctrl.yaml
+> @@ -0,0 +1,59 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/realtek,rtd-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Realtek DHC pin control
+> +
+> +maintainers:
+> +  - Andreas Farber <afaerber@suse.de>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - realtek,rtd1195-iso-pinctrl
+> +      - realtek,rtd1195-crt-pinctrl
+> +      - realtek,rtd1295-iso-pinctrl
+> +      - realtek,rtd1295-sb2-pinctrl
+> +      - realtek,rtd1295-disp-pinctrl
+> +      - realtek,rtd1295-cr-pinctrl
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    iso_pinctrl: pinctrl@300 {
+> +        compatible = "realtek,rtd1195-iso-pinctrl";
+> +        reg = <0x300 0x14>;
 
--- 
+Aren't there child nodes with pin settings? They need to be documented.
 
-- Arnaldo
+> +    }
+> +  - |
+> +    crt_pinctrl: pinctrl@300 {
+> +        compatible = "realtek,rtd1195-crt-pinctrl";
+> +        reg = <0x300 0x78>;
+> +    }
+> +  - |
+> +    iso_pinctrl: pinctrl@300 {
+> +        compatible = "realtek,rtd1295-iso-pinctrl";
+> +        reg = <0x300 0x24>;
+> +    }
+> +  - |
+> +    sb2_pinctrl: pinctrl@900 {
+> +        compatible = "realtek,rtd1295-sb2-pinctrl";
+> +        reg = <0x900 0x100>;
+> +    }
+> +  - |
+> +    disp_pinctrl: pinctrl@4d000 {
+> +        compatible = "realtek,rtd1295-disp-pinctrl";
+> +        reg = <0x4d000 0x100>;
+> +    };
+> +  - |
+> +    cr_pinctrl: pinctrl@12600 {
+> +        compatible = "realtek,rtd1295-cr-pinctrl";
+> +        reg = <0x12600 0x100>;
+> +    };
+> +
+> -- 
+> 2.26.2
+> 
