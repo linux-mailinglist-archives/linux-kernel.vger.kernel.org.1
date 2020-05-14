@@ -2,141 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F57F1D2AA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 982DA1D2AB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgENIvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 04:51:06 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:53405 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725925AbgENIvF (ORCPT
+        id S1726073AbgENIxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 04:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725977AbgENIxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 04:51:05 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1jZ9a2-002MkY-Ns; Thu, 14 May 2020 10:51:02 +0200
-Received: from p5b13a426.dip0.t-ipconnect.de ([91.19.164.38] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.93)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jZ9a2-002AF6-GY; Thu, 14 May 2020 10:51:02 +0200
-Subject: Re: [PATCH] ia64: enable HAVE_COPY_THREAD_TLS, switch to
- kernel_clone_args
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200513204848.1208864-1-christian.brauner@ubuntu.com>
- <3908561D78D1C84285E8C5FCA982C28F7F6266E0@ORSMSX115.amr.corp.intel.com>
- <79e58d9b-5a39-390c-2f0c-0d87b63442b4@physik.fu-berlin.de>
- <20200514074606.vkc35syhdep23rzh@wittgenstein>
- <6b298416-1e64-eee7-0bb4-3b1f7f67adc6@physik.fu-berlin.de>
- <20200514075808.krdtypxpag4tfa74@wittgenstein>
- <917c9b03-cfd0-4bcf-d6a6-6aef7489b27b@physik.fu-berlin.de>
- <20200514083739.m2idxcxof4jyreck@wittgenstein>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- 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
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <389d6a23-b691-c7d0-e276-f9ba43084d73@physik.fu-berlin.de>
-Date:   Thu, 14 May 2020 10:51:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 14 May 2020 04:53:16 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471A8C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:53:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=fH2E9NMtzf0VD7/i5YL3RPMfzmTBfXtCfHdyTIjPXGs=; b=Nj4+W+i06RdtPAsq+h3thgIle
+        phKRmRH2FqwyCmbYzcnrVbAiWDbYXro0WOV1EyR/E7XvFq2NnpBrC1auIj9HBzFHhVbWtwLAbFeev
+        T97ydik2A3LvCuaNKyiKXp34tdT+/CMSIZdM6SeOstr0/DlpN8A4b6TU+jvsDKDBgqK94qBP8ozhN
+        LcemgBwNh3Yad79Wj8LFPqvzfNheF1Qsfj8m4n6umKOIzJiMhtsXVWjQLyXst2cJXlAeY1xIKYPaR
+        vsF0Dhrbw8XiLfFPDgvk9hyKT2ypPBkGek9SIYKxc90koP9ZeB76Cl9tZq5pKw83jnpoKsUn5433x
+        A06PeO5Xg==;
+Received: from shell.armlinux.org.uk ([2002:4e20:1eda:1:5054:ff:fe00:4ec]:57840)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jZ9c5-0007cM-7b; Thu, 14 May 2020 09:53:09 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jZ9c4-0000RC-3w; Thu, 14 May 2020 09:53:08 +0100
+Date:   Thu, 14 May 2020 09:53:08 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     Fabio Estevam <festevam@gmail.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        The etnaviv authors <etnaviv@lists.freedesktop.org>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>
+Subject: Re: [PATCH 2/3] drm/etnaviv: Don't ignore errors on getting clocks
+Message-ID: <20200514085307.GO1551@shell.armlinux.org.uk>
+References: <20200513150007.1315395-1-lkundrak@v3.sk>
+ <20200513150007.1315395-3-lkundrak@v3.sk>
+ <CAOMZO5B582=tZ_YBCyVYFtGh=z5hZKFxP7XoUHEmH3jZsk2uYQ@mail.gmail.com>
+ <CAOMZO5BdiXCVXs+8jP7PoRvgKd1sxCu4KhjvJBvL=Qig2WOs4g@mail.gmail.com>
+ <1e15be39906034a95b86c026e060ed9866586d94.camel@pengutronix.de>
+ <20200514082755.GN1551@shell.armlinux.org.uk>
+ <ab384507b90474b0030d8ce64fdcfe868b52c3cb.camel@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200514083739.m2idxcxof4jyreck@wittgenstein>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.164.38
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ab384507b90474b0030d8ce64fdcfe868b52c3cb.camel@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/20 10:37 AM, Christian Brauner wrote:
->>> Oh? Does it also produce Debian images for ia64 similar to what is done
->>> for sparc64?
->>
->> Yes, it's actually the same person who does this - me ;).
+On Thu, May 14, 2020 at 10:40:58AM +0200, Lucas Stach wrote:
+> Am Donnerstag, den 14.05.2020, 09:27 +0100 schrieb Russell King - ARM Linux admin:
+> > On Thu, May 14, 2020 at 10:18:02AM +0200, Lucas Stach wrote:
+> > > Am Mittwoch, den 13.05.2020, 23:41 -0300 schrieb Fabio Estevam:
+> > > > On Wed, May 13, 2020 at 2:09 PM Fabio Estevam <festevam@gmail.com> wrote:
+> > > > 
+> > > > > The binding doc Documentation/devicetree/bindings/gpu/vivante,gc.yaml
+> > > > > says that only the 'reg' clock could be optional, the others are
+> > > > > required.
+> > > > 
+> > > > arch/arm/boot/dts/dove.dtsi only uses the 'core' clock.
+> > > > arch/arm/boot/dts/stm32mp157.dtsi uses 'bus' and 'core'
+> > > > 
+> > > > Maybe the binding needs to be updated and it seems that using
+> > > > devm_clk_get_optional() like you propose is safe.
+> > > 
+> > > The binding is correct as-is. We want to require those clocks to be
+> > > present, but the dove DT was added before the binding was finalized, so
+> > > the driver still treats the clocks as optional to not break
+> > > compatibility with old DTs. Maybe this warrants a comment in the
+> > > code...
+> > 
+> > The binding doc in mainline says:
+> > 
+> >   clocks:
+> >     items:
+> >       - description: AXI/master interface clock
+> >       - description: GPU core clock
+> >       - description: Shader clock (only required if GPU has feature PIPE_3D)
+> >       - description: AHB/slave interface clock (only required if GPU can gate slave interface independently)
+> >     minItems: 1
+> >     maxItems: 4
+> > 
+> >   clock-names:
+> >     items:
+> >       enum: [ bus, core, shader, reg ]
+> >     minItems: 1
+> >     maxItems: 4
+> > 
+> > which looks correct to me - and means that Dove is compliant with that.
 > 
-> Well thank you very much. Thanks to this I was able to test my sparc
-> patches in qemu. :)
+> The YAML binding actually did loose something in translation here,
+> which I didn't notice. Previously all those clocks were listed under
+> "Required properties", with the exceptions listed in parenthesis. So
+> the Dove GPU, which is a combined 2D/3D core should have axi, core and
+> shader clocks specified.
 
-I really appreciate it that kernel developers are testing their patches on
-all architectures. Thank you for your work as well!
+That may be your desire, but that is impossible without knowing that
+(a) it has the clocks
+(b) what those clocks are connected to
 
->> These images should work just fine:
->>
->>> https://cdimage.debian.org/cdimage/ports/2020-04-19/
-> 
-> Oh I didn't find these images when searching for them. They would be
-> super helpful but there's no qemu for ia64 anymore that's useable. I had
-> tried building qemu from an old source based on a gsoc project for an
-> ia64 port but that turned out to be more involved than writing ia64
-> assembly itself. :)
+I guess we could "make something up" but as DT is supposed to describe
+hardware, I don't see how we can satisfy that and your requirement.
 
-There is ski but I have never used it:
-
-> http://ski.sourceforge.net/
-
-Adrian
+The only thing that is known from the documentation is that there is
+one clock for the GPU on Dove.
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
