@@ -2,75 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C94D1D3772
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 19:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4291D3781
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 19:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbgENRFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 13:05:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35480 "EHLO mail.kernel.org"
+        id S1726558AbgENRGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 13:06:17 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:60656 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgENRFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 13:05:37 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72C112065F;
-        Thu, 14 May 2020 17:05:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589475937;
-        bh=YW9wuTxuRvYF57tgugoM+Q4D773LEH8szJcXifA1DpU=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=VSFr/FWRfpW8XQKjLi8GnhOj6GcgNR7W+29Dzelr7M0k1jsiDgAk9uIOU4Pkp/Dp3
-         fEYyM1iEqQ7k6I8TTt/jksD5k4X2P079gge+Dgp6Q4MD5NGSyFLZpgWXdwk9FHb5Kt
-         VoLhw+BQcMLEWny2kTBy6kxBuljDquTHDq1RjzJ4=
-Date:   Thu, 14 May 2020 18:05:34 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     tiwai@suse.com, lgirdwood@gmail.com, Dan Murphy <dmurphy@ti.com>,
-        perex@perex.cz
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-In-Reply-To: <20200513200549.12213-1-dmurphy@ti.com>
-References: <20200513200549.12213-1-dmurphy@ti.com>
-Subject: Re: [PATCH v2 1/3] ASoC: tlv320adcx140: Add controls for PDM clk
-Message-Id: <158947592846.11145.4394826289935781391.b4-ty@kernel.org>
+        id S1726038AbgENRGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 13:06:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=I2i8OSobiwsG3jLNtOop/2XBg2yXj5Met80Vd6NpExk=; b=YO9bKux4ywjUTzlbzIa0sVM6Qq
+        HMHmHMGOWCUNIosE5WOPCryq68cs1NnjIydwTJfKwD5SZzOnwcTH5JK8KcqyPLxEpteAv8HB+p2fD
+        I8ngCPS1dcRKNzvGhtgZVpmXD4g0fDMtq41ExbeCoa40MSuoDjvug5/veF47F2RBmulg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jZHJA-002J0N-Bq; Thu, 14 May 2020 19:06:08 +0200
+Date:   Thu, 14 May 2020 19:06:08 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH] net: phy: mdio-moxart: remove unneeded include
+Message-ID: <20200514170608.GV499265@lunn.ch>
+References: <20200514165938.21725-1-brgl@bgdev.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200514165938.21725-1-brgl@bgdev.pl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 May 2020 15:05:47 -0500, Dan Murphy wrote:
-> Add ALSA controls to configure the PDM clocks.
-> The clocks need to be configurable to accommodate various microphones
-> that use clocks for low power/low resolution modes to high power/high
-> resolution modes.
+On Thu, May 14, 2020 at 06:59:38PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> mdio-moxart doesn't use regulators in the driver code. We can remove
+> the regulator include.
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Applied to
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
-
-Thanks!
-
-[1/3] ASoC: tlv320adcx140: Add controls for PDM clk
-      commit: 7cfa610205d95357f9eface292dc70fce7571f65
-[2/3] ASoC: tlv320adcx140: Add device tree property for PDM edges
-      commit: 75b0adbb0806a141b0b5f074cd6bd58bb9870c0d
-[3/3] ASoC: tlv320adcx140: Configure PDM sampling edge
-      commit: 79fc48e41e39d7a98c5f8ae37f613d7ff9953c86
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+    Andrew
