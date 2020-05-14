@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05121D2947
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFCC1D2965
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726067AbgENIAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 04:00:04 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41222 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725952AbgENIAE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 04:00:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589443203;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e4jjCqMhrz73017AHqU+ojMzDyx024B7mYUCVLrg2XA=;
-        b=EnRhIpz76HdOVmzPhyaDfrZy0InWXAgfZimbjbW6G1H3JSqxry3ShJ+H4mB02mhMMro/O2
-        zRipUrdV6njafFwbcdwaEpkLPr6pyhiLagp4n+O4uJROwT1fPUSujc6l7gCJzQfDA7FA3e
-        jrcg2cDv6w6j4Eu4Fly0o70G23wC4tY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-346-DblcYXPVPo60onW8Liue0g-1; Thu, 14 May 2020 03:59:59 -0400
-X-MC-Unique: DblcYXPVPo60onW8Liue0g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 80E5180058A;
-        Thu, 14 May 2020 07:59:57 +0000 (UTC)
-Received: from sirius.home.kraxel.org (ovpn-115-145.ams2.redhat.com [10.36.115.145])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3CF086A977;
-        Thu, 14 May 2020 07:59:53 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id 6FE4417444; Thu, 14 May 2020 09:59:52 +0200 (CEST)
-Date:   Thu, 14 May 2020 09:59:52 +0200
-From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     David Stevens <stevensd@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        David Airlie <airlied@linux.ie>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:VIRTIO CORE, NET..." 
-        <virtualization@lists.linux-foundation.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, virtio-dev@lists.oasis-open.org
-Subject: Re: [PATCH v3 1/4] dma-buf: add support for virtio exported objects
-Message-ID: <20200514075952.zuc3zjtmasaqrw75@sirius.home.kraxel.org>
-References: <20200311112004.47138-1-stevensd@chromium.org>
- <20200311112004.47138-2-stevensd@chromium.org>
- <CAKMK7uHFgiHLe9oiFBr-VR-6rU9-hLTpBTEVNh0ezyj54u70jw@mail.gmail.com>
+        id S1727772AbgENIA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 04:00:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52934 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725978AbgENIA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 04:00:57 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 08393AB91;
+        Thu, 14 May 2020 08:00:57 +0000 (UTC)
+Date:   Thu, 14 May 2020 10:00:53 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
+Message-ID: <20200514080053.GN17734@linux-b0ei>
+References: <b1d507b1-dae7-f526-c74a-d465ddecea6a@i-love.sakura.ne.jp>
+ <20200429142106.GG28637@dhcp22.suse.cz>
+ <a59271f1-b3fc-26d1-f0a2-5ec351d0095e@i-love.sakura.ne.jp>
+ <20200513062652.GM413@jagdpanzerIV.localdomain>
+ <a75d6560-ad99-5b02-3648-247c27c3a398@i-love.sakura.ne.jp>
+ <20200513100413.GH17734@linux-b0ei>
+ <20200513104938.GW29153@dhcp22.suse.cz>
+ <d66c38d9-dd97-072d-e1a7-949e9573b38d@i-love.sakura.ne.jp>
+ <20200513121942.GK17734@linux-b0ei>
+ <2173e3ac-7d5e-24da-0c1e-6472df905767@i-love.sakura.ne.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKMK7uHFgiHLe9oiFBr-VR-6rU9-hLTpBTEVNh0ezyj54u70jw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <2173e3ac-7d5e-24da-0c1e-6472df905767@i-love.sakura.ne.jp>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  Hi,
+On Wed 2020-05-13 21:59:23, Tetsuo Handa wrote:
+> On 2020/05/13 21:19, Petr Mladek wrote:
+> > On Wed 2020-05-13 20:24:24, Tetsuo Handa wrote:
+> >> On 2020/05/13 19:49, Michal Hocko wrote:
+> >>> On Wed 13-05-20 12:04:13, Petr Mladek wrote:
+> >>>> What is so special about  OOM dump task so that it would deserve such
+> >>>> complications?
+> >  
+> >> I don't think dump_tasks() is important information to be printed on consoles.
+> >> But since somebody might think dump_tasks() is important information to be
+> >> printed on consoles, I suggest switching KERN_NO_CONSOLES using e.g. sysctl.
+> > 
+> > You might achieve the same with DEBUG loglevel. Or do I miss anything?
+> 
+> Use of KERN_DEBUG affects userspace syslog daemon. We will have to ask administrators
+> to configure syslog daemon not to filter KERN_DEBUG messages. And administrators will
+> be bothered by needless KERN_DEBUG messages. Also,
 
-> - for the runtime upcasting the usual approach is to check the ->ops
-> pointer. Which means that would need to be the same for all virtio
-> dma_bufs, which might get a bit awkward. But I'd really prefer we not
-> add allocator specific stuff like this to dma-buf.
+What about using KERN_INFO then? Is there still the same problem?
 
-This is exactly the problem, it gets messy quickly, also when it comes
-to using the drm_prime.c helpers ...
+Otherwise this looks like a dead end. The above states that
+administrators will not have to do anything when KERN_NO_CONSOLES
+are introduced. But there are people that will not like the new
+behavior. They will have to do something.
 
-take care,
-  Gerd
 
+> > I know that it is meant as a modifier, like LOGLEVEL_SCHED and
+> > KERN_CONT.
+> 
+> Right. KERN_NO_CONSOLES is a modifier.
+> 
+> >            But this is another reason to avoid it. We already have
+> > huge pain with these two modifiers. They both do not work well.
+> 
+> KERN_NO_CONSOLES can not cause pains like LOGLEVEL_SCHED because
+> KERN_NO_CONSOLES is to say "no need to call console drivers" while
+> LOGLEVEL_SCHED is to say "don't call console drivers now but have
+> to call console drivers later".
+
+The problem with LOGLEVEL_SCHED is that it is not reliable. It must be
+used for all printk() calls in the critical path. But people are not
+aware of this, or they forget, or it gets complicated in shared code.
+
+KERN_NO_CONSOLES will have exactly the same problems.
+
+KERN_CONT is not reliable also from other reasons.
+
+
+> > NO_CONSOLES would mess with this decision. Some messages would suddenly
+> > get hidden on console but appear in userspace.
+> 
+> Wrong. Console loglevel is already hiding some messages.
+
+Exactly and people are aware of it. We should use it when possible
+instead of introducing yet another complexity.
+
+Best Regards,
+Petr
