@@ -2,131 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984A51D2A71
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6611D2A39
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgENIkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 04:40:33 -0400
-Received: from m176149.mail.qiye.163.com ([59.111.176.149]:31346 "EHLO
-        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgENIkc (ORCPT
+        id S1726151AbgENIdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 04:33:03 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:38234 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbgENIdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 04:40:32 -0400
-X-Greylist: delayed 447 seconds by postgrey-1.27 at vger.kernel.org; Thu, 14 May 2020 04:40:30 EDT
-Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
-        by m176149.mail.qiye.163.com (Hmail) with ESMTP id 28275282644;
-        Thu, 14 May 2020 16:32:59 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <APkAOQB-CI1Ksc35Em0ifKrK.3.1589445179140.Hmail.wenhu.wang@vivo.com>
-To:     Wang Wenhu <wenhu.wang@vivo.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@vivo.com
-Subject: =?UTF-8?B?UmU6W1BBVENIXSBzb2M6IHFtaTogbW92ZSB0bHYtbWljcm9zIHRvIGhlYWRlciBmaWxl?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.251.74.227
-In-Reply-To: <20200413035758.60238-1-wenhu.wang@vivo.com>
+        Thu, 14 May 2020 04:33:02 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04E8WnZ3068680;
+        Thu, 14 May 2020 03:32:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589445169;
+        bh=wrWLvX+xcYZYuneU7uYoZ1aOivxAyjgi4GYVUlhf1Q4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=KhKOrURfWnQVdsjIlbR/3PfgYp5We+af2YG6S+gPmL4vi9BJ4PowkNJyZQvRMF2Fc
+         i2rYPeIJIwzt6bOqcaMyUSZhP+maipvFv4KAXMQqwILJzAbbxTsr2W1CANRRIZ/yJe
+         u8DX2sD4Mwr4+x9M5MtTwbEcmIMKnlazx51cY1mk=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04E8Wn0A077981
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 14 May 2020 03:32:49 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 14
+ May 2020 03:32:48 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 14 May 2020 03:32:48 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04E8Wlsi004421;
+        Thu, 14 May 2020 03:32:47 -0500
+Subject: Re: [PATCH -next] dmaengine: ti: k3-udma: Use PTR_ERR_OR_ZERO() to
+ simplify code
+To:     Samuel Zou <zou_wei@huawei.com>, <dan.j.williams@intel.com>,
+        <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1588757146-38858-1-git-send-email-zou_wei@huawei.com>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+X-Pep-Version: 2.0
+Message-ID: <f9ae33c9-5a8a-d10a-5bb3-ecf9ee5d81f5@ti.com>
+Date:   Thu, 14 May 2020 11:33:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Received: from wenhu.wang@vivo.com( [58.251.74.227) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 14 May 2020 16:32:59 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
-Date:   Thu, 14 May 2020 16:32:59 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VMSU9CQkJCS09NSElOTFlXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMSkJNT0pMTUxIN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6KxA6NCo5VjgySjAIGEhOPhZLEh0wCTBVSFVKTkNCT09OSkNKSU9MVTMWGhIXVQweFRMOVQwa
-        FRw7DRINFFUYFBZFWVdZEgtZQVlOQ1VJTkpVTE9VSUlMWVdZCAFZQUNPQkg3Bg++
-X-HM-Tid: 0a721250b7269395kuws28275282644
+In-Reply-To: <1588757146-38858-1-git-send-email-zou_wei@huawei.com>
+Content-Type: multipart/mixed;
+        boundary="------------E105EE2BC1BE5753D91002F5"
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgYWxsLApBbnkgY29tbWVudHMgaGVyZT8KClJlZ2FyZHMsCldlbmh1Cgo+SXQncyBoaWdobHkg
-aGVscGZ1bCB0byBtb3ZlIHRoZSBkZWZpbml0aW9ucyBvZiBUTFYgcmVsYXRlZCBtaWNyb3MKPmlu
-dG8gaGVhZGVyIGZpbGUgZm9yIHVzZXIgcmVmZXJlbmNlLiBUaGUgT1BUSU9OQUxfVExWX1RZUEVf
-U1RBUlQKPnNob3VsZCBiZSBrbm93biB0byBhbnkgdXNlciB0aGF0IG1pZ2h0IGRlZmluZSBtZXNz
-YWdlcyBjb250YWluaW5nCj5vcHRpb25hbCBmaWVsZHMuIFNJWkUgZmllbGRzIGFyZSB0aGUgc2Ft
-ZSwgZm9yIHVzZXJzIHRvIGNhbGN1bGF0ZQo+bWVzc2FnZSBidWZmZXIgbGVuZ3RoLgo+Cj5XaGls
-ZSBlbmNvZGluZyBtZXNzYWdlcywgVHlwZSBhbHdheXMgb2NjdXJzIHRvZ2V0aGVyIHdpdGggTGVu
-Z3RoLgo+U28gdGhlIGJldHRlciB3YXkgaXMgdG8gdXNlIFRMX1NJWkUsIHJhdGhlciB0aGFuIChU
-X1NJWkUgKyBMX1NJWkUpLgo+Cj5TaWduZWQtb2ZmLWJ5OiBXYW5nIFdlbmh1IDx3ZW5odS53YW5n
-QHZpdm8uY29tPgo+LS0tCj4gZHJpdmVycy9zb2MvcWNvbS9xbWlfZW5jZGVjLmMgfCAyOCArKysr
-KysrKysrKystLS0tLS0tLS0tLS0tLS0tCj4gaW5jbHVkZS9saW51eC9zb2MvcWNvbS9xbWkuaCAg
-fCAgNSArKysrKwo+IDIgZmlsZXMgY2hhbmdlZCwgMTcgaW5zZXJ0aW9ucygrKSwgMTYgZGVsZXRp
-b25zKC0pCj4KPmRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9xY29tL3FtaV9lbmNkZWMuYyBiL2Ry
-aXZlcnMvc29jL3Fjb20vcW1pX2VuY2RlYy5jCj5pbmRleCAzYWFhYjcxZDFiMmMuLmE2NzRjNjhl
-ZmFiMiAxMDA2NDQKPi0tLSBhL2RyaXZlcnMvc29jL3Fjb20vcW1pX2VuY2RlYy5jCj4rKysgYi9k
-cml2ZXJzL3NvYy9xY29tL3FtaV9lbmNkZWMuYwo+QEAgLTUzLDEwICs1Myw2IEBAIGRvIHsgXAo+
-IAlkZWNvZGVkX2J5dGVzICs9IHJjOyBcCj4gfSB3aGlsZSAoMCkKPiAKPi0jZGVmaW5lIFRMVl9M
-RU5fU0laRSBzaXplb2YodTE2KQo+LSNkZWZpbmUgVExWX1RZUEVfU0laRSBzaXplb2YodTgpCj4t
-I2RlZmluZSBPUFRJT05BTF9UTFZfVFlQRV9TVEFSVCAweDEwCj4tCj4gc3RhdGljIGludCBxbWlf
-ZW5jb2RlKHN0cnVjdCBxbWlfZWxlbV9pbmZvICplaV9hcnJheSwgdm9pZCAqb3V0X2J1ZiwKPiAJ
-CSAgICAgIGNvbnN0IHZvaWQgKmluX2Nfc3RydWN0LCB1MzIgb3V0X2J1Zl9sZW4sCj4gCQkgICAg
-ICBpbnQgZW5jX2xldmVsKTsKPkBAIC0xNDIsNyArMTM4LDcgQEAgc3RhdGljIGludCBxbWlfY2Fs
-Y19taW5fbXNnX2xlbihzdHJ1Y3QgcW1pX2VsZW1faW5mbyAqZWlfYXJyYXksCj4gCQkgKiBuZXN0
-ZWQgc3RydWN0dXJlLgo+IAkJICovCj4gCQlpZiAobGV2ZWwgPT0gMSkKPi0JCQltaW5fbXNnX2xl
-biArPSAoVExWX1RZUEVfU0laRSArIFRMVl9MRU5fU0laRSk7Cj4rCQkJbWluX21zZ19sZW4gKz0g
-UU1JX1RMVl9UTF9TSVpFOwo+IAl9Cj4gCj4gCXJldHVybiBtaW5fbXNnX2xlbjsKPkBAIC0yNTMs
-OCArMjQ5LDcgQEAgc3RhdGljIGludCBxbWlfZW5jb2RlX3N0cmluZ19lbGVtKHN0cnVjdCBxbWlf
-ZWxlbV9pbmZvICplaV9hcnJheSwKPiAJfQo+IAo+IAlpZiAoZW5jX2xldmVsID09IDEpIHsKPi0J
-CWlmIChzdHJpbmdfbGVuICsgVExWX0xFTl9TSVpFICsgVExWX1RZUEVfU0laRSA+Cj4tCQkgICAg
-b3V0X2J1Zl9sZW4pIHsKPisJCWlmIChzdHJpbmdfbGVuICsgUU1JX1RMVl9UTF9TSVpFID4gb3V0
-X2J1Zl9sZW4pIHsKPiAJCQlwcl9lcnIoIiVzOiBPdXRwdXQgbGVuICVkID4gT3V0IEJ1ZiBsZW4g
-JWRcbiIsCj4gCQkJICAgICAgIF9fZnVuY19fLCBzdHJpbmdfbGVuLCBvdXRfYnVmX2xlbik7Cj4g
-CQkJcmV0dXJuIC1FVE9PU01BTEw7Cj5AQCAtMzExLDcgKzMwNiw3IEBAIHN0YXRpYyBpbnQgcW1p
-X2VuY29kZShzdHJ1Y3QgcW1pX2VsZW1faW5mbyAqZWlfYXJyYXksIHZvaWQgKm91dF9idWYsCj4g
-CXRsdl9wb2ludGVyID0gYnVmX2RzdDsKPiAJdGx2X2xlbiA9IDA7Cj4gCWlmIChlbmNfbGV2ZWwg
-PT0gMSkKPi0JCWJ1Zl9kc3QgPSBidWZfZHN0ICsgKFRMVl9MRU5fU0laRSArIFRMVl9UWVBFX1NJ
-WkUpOwo+KwkJYnVmX2RzdCA9IGJ1Zl9kc3QgKyBRTUlfVExWX1RMX1NJWkU7Cj4gCj4gCXdoaWxl
-ICh0ZW1wX2VpLT5kYXRhX3R5cGUgIT0gUU1JX0VPVEkpIHsKPiAJCWJ1Zl9zcmMgPSBpbl9jX3N0
-cnVjdCArIHRlbXBfZWktPm9mZnNldDsKPkBAIC0zNDIsOCArMzM3LDggQEAgc3RhdGljIGludCBx
-bWlfZW5jb2RlKHN0cnVjdCBxbWlfZWxlbV9pbmZvICplaV9hcnJheSwgdm9pZCAqb3V0X2J1ZiwK
-PiAJCQlkYXRhX2xlbl9zeiA9IHRlbXBfZWktPmVsZW1fc2l6ZSA9PSBzaXplb2YodTgpID8KPiAJ
-CQkJCXNpemVvZih1OCkgOiBzaXplb2YodTE2KTsKPiAJCQkvKiBDaGVjayB0byBhdm9pZCBvdXQg
-b2YgcmFuZ2UgYnVmZmVyIGFjY2VzcyAqLwo+LQkJCWlmICgoZGF0YV9sZW5fc3ogKyBlbmNvZGVk
-X2J5dGVzICsgVExWX0xFTl9TSVpFICsKPi0JCQkgICAgVExWX1RZUEVfU0laRSkgPiBvdXRfYnVm
-X2xlbikgewo+KwkJCWlmICgoZGF0YV9sZW5fc3ogKyBlbmNvZGVkX2J5dGVzICsgUU1JX1RMVl9U
-TF9TSVpFKSA+Cj4rCQkJICAgIG91dF9idWZfbGVuKSB7Cj4gCQkJCXByX2VycigiJXM6IFRvbyBT
-bWFsbCBCdWZmZXIgQERBVEFfTEVOXG4iLAo+IAkJCQkgICAgICAgX19mdW5jX18pOwo+IAkJCQly
-ZXR1cm4gLUVUT09TTUFMTDsKPkBAIC0zNjcsNyArMzYyLDcgQEAgc3RhdGljIGludCBxbWlfZW5j
-b2RlKHN0cnVjdCBxbWlfZWxlbV9pbmZvICplaV9hcnJheSwgdm9pZCAqb3V0X2J1ZiwKPiAJCWNh
-c2UgUU1JX1NJR05FRF80X0JZVEVfRU5VTToKPiAJCQkvKiBDaGVjayB0byBhdm9pZCBvdXQgb2Yg
-cmFuZ2UgYnVmZmVyIGFjY2VzcyAqLwo+IAkJCWlmICgoKGRhdGFfbGVuX3ZhbHVlICogdGVtcF9l
-aS0+ZWxlbV9zaXplKSArCj4tCQkJICAgIGVuY29kZWRfYnl0ZXMgKyBUTFZfTEVOX1NJWkUgKyBU
-TFZfVFlQRV9TSVpFKSA+Cj4rCQkJICAgIGVuY29kZWRfYnl0ZXMgKyBRTUlfVExWX1RMX1NJWkUp
-ID4KPiAJCQkgICAgb3V0X2J1Zl9sZW4pIHsKPiAJCQkJcHJfZXJyKCIlczogVG9vIFNtYWxsIEJ1
-ZmZlciBAZGF0YV90eXBlOiVkXG4iLAo+IAkJCQkgICAgICAgX19mdW5jX18sIHRlbXBfZWktPmRh
-dGFfdHlwZSk7Cj5AQCAtNDEwLDEwICs0MDUsMTAgQEAgc3RhdGljIGludCBxbWlfZW5jb2RlKHN0
-cnVjdCBxbWlfZWxlbV9pbmZvICplaV9hcnJheSwgdm9pZCAqb3V0X2J1ZiwKPiAKPiAJCWlmIChl
-bmNvZGVfdGx2ICYmIGVuY19sZXZlbCA9PSAxKSB7Cj4gCQkJUU1JX0VOQ0RFQ19FTkNPREVfVExW
-KHRsdl90eXBlLCB0bHZfbGVuLCB0bHZfcG9pbnRlcik7Cj4tCQkJZW5jb2RlZF9ieXRlcyArPSAo
-VExWX1RZUEVfU0laRSArIFRMVl9MRU5fU0laRSk7Cj4rCQkJZW5jb2RlZF9ieXRlcyArPSBRTUlf
-VExWX1RMX1NJWkU7Cj4gCQkJdGx2X3BvaW50ZXIgPSBidWZfZHN0Owo+IAkJCXRsdl9sZW4gPSAw
-Owo+LQkJCWJ1Zl9kc3QgPSBidWZfZHN0ICsgVExWX0xFTl9TSVpFICsgVExWX1RZUEVfU0laRTsK
-PisJCQlidWZfZHN0ID0gYnVmX2RzdCArIFFNSV9UTFZfVExfU0laRTsKPiAJCQllbmNvZGVfdGx2
-ID0gMDsKPiAJCX0KPiAJfQo+QEAgLTYxMywxMCArNjA4LDExIEBAIHN0YXRpYyBpbnQgcW1pX2Rl
-Y29kZShzdHJ1Y3QgcW1pX2VsZW1faW5mbyAqZWlfYXJyYXksIHZvaWQgKm91dF9jX3N0cnVjdCwK
-PiAJCQl0bHZfcG9pbnRlciA9IGJ1Zl9zcmM7Cj4gCQkJUU1JX0VOQ0RFQ19ERUNPREVfVExWKCZ0
-bHZfdHlwZSwKPiAJCQkJCSAgICAgICZ0bHZfbGVuLCB0bHZfcG9pbnRlcik7Cj4tCQkJYnVmX3Ny
-YyArPSAoVExWX1RZUEVfU0laRSArIFRMVl9MRU5fU0laRSk7Cj4tCQkJZGVjb2RlZF9ieXRlcyAr
-PSAoVExWX1RZUEVfU0laRSArIFRMVl9MRU5fU0laRSk7Cj4rCQkJYnVmX3NyYyArPSBRTUlfVExW
-X1RMX1NJWkU7Cj4rCQkJZGVjb2RlZF9ieXRlcyArPSBRTUlfVExWX1RMX1NJWkU7Cj4gCQkJdGVt
-cF9laSA9IGZpbmRfZWkoZWlfYXJyYXksIHRsdl90eXBlKTsKPi0JCQlpZiAoIXRlbXBfZWkgJiYg
-dGx2X3R5cGUgPCBPUFRJT05BTF9UTFZfVFlQRV9TVEFSVCkgewo+KwkJCWlmICghdGVtcF9laSAm
-JiB0bHZfdHlwZSA8Cj4rCQkJICAgIFFNSV9PUFRJT05BTF9UTFZfVFlQRV9TVEFSVCkgewo+IAkJ
-CQlwcl9lcnIoIiVzOiBJbnZhbCBlbGVtZW50IGluZm9cbiIsIF9fZnVuY19fKTsKPiAJCQkJcmV0
-dXJuIC1FSU5WQUw7Cj4gCQkJfSBlbHNlIGlmICghdGVtcF9laSkgewo+ZGlmZiAtLWdpdCBhL2lu
-Y2x1ZGUvbGludXgvc29jL3Fjb20vcW1pLmggYi9pbmNsdWRlL2xpbnV4L3NvYy9xY29tL3FtaS5o
-Cj5pbmRleCBlNzEyZjk0Yjg5ZmMuLmViNTNhZWJkZjQ1ZSAxMDA2NDQKPi0tLSBhL2luY2x1ZGUv
-bGludXgvc29jL3Fjb20vcW1pLmgKPisrKyBiL2luY2x1ZGUvbGludXgvc29jL3Fjb20vcW1pLmgK
-PkBAIC0zNCw2ICszNCwxMSBAQCBzdHJ1Y3QgcW1pX2hlYWRlciB7Cj4gI2RlZmluZSBRTUlfSU5E
-SUNBVElPTgk0Cj4gCj4gI2RlZmluZSBRTUlfQ09NTU9OX1RMVl9UWVBFIDAKPisjZGVmaW5lIFFN
-SV9PUFRJT05BTF9UTFZfVFlQRV9TVEFSVCAweDEwCj4rCj4rI2RlZmluZSBRTUlfVExWX0xFTl9T
-SVpFIHNpemVvZih1MTYpCj4rI2RlZmluZSBRTUlfVExWX1RZUEVfU0laRSBzaXplb2YodTgpCj4r
-I2RlZmluZSBRTUlfVExWX1RMX1NJWkUgKFFNSV9UTFZfTEVOX1NJWkUgKyBRTUlfVExWX1RZUEVf
-U0laRSkKPiAKPiBlbnVtIHFtaV9lbGVtX3R5cGUgewo+IAlRTUlfRU9USSwKPi0tIAo+Mi4xNy4x
-Cj4KDQoNCg==
+--------------E105EE2BC1BE5753D91002F5
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Samuel,
+
+On 06/05/2020 12.25, Samuel Zou wrote:
+> Fixes coccicheck warnings:
+>=20
+> drivers/dma/ti/k3-udma.c:1294:1-3: WARNING: PTR_ERR_OR_ZERO can be used=
+
+> drivers/dma/ti/k3-udma.c:1311:1-3: WARNING: PTR_ERR_OR_ZERO can be used=
+
+> drivers/dma/ti/k3-udma.c:1376:1-3: WARNING: PTR_ERR_OR_ZERO can be used=
+
+
+Thanks for the patch, I have missed it as I was not in CC for it.
+scripts/get_maintainer.pl would have tipped for a wider recipient list..
+
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Samuel Zou <zou_wei@huawei.com>
+> ---
+>  drivers/dma/ti/k3-udma.c | 12 +++---------
+>  1 file changed, 3 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+> index 0a04174..f5775ca 100644
+> --- a/drivers/dma/ti/k3-udma.c
+> +++ b/drivers/dma/ti/k3-udma.c
+> @@ -1291,10 +1291,8 @@ static int udma_get_tchan(struct udma_chan *uc)
+>  	}
+> =20
+>  	uc->tchan =3D __udma_reserve_tchan(ud, uc->config.channel_tpl, -1);
+> -	if (IS_ERR(uc->tchan))
+> -		return PTR_ERR(uc->tchan);
+> =20
+> -	return 0;
+> +	return PTR_ERR_OR_ZERO(uc->tchan);
+>  }
+> =20
+>  static int udma_get_rchan(struct udma_chan *uc)
+> @@ -1308,10 +1306,8 @@ static int udma_get_rchan(struct udma_chan *uc)
+>  	}
+> =20
+>  	uc->rchan =3D __udma_reserve_rchan(ud, uc->config.channel_tpl, -1);
+> -	if (IS_ERR(uc->rchan))
+> -		return PTR_ERR(uc->rchan);
+> =20
+> -	return 0;
+> +	return PTR_ERR_OR_ZERO(uc->rchan);
+>  }
+> =20
+>  static int udma_get_chan_pair(struct udma_chan *uc)
+> @@ -1373,10 +1369,8 @@ static int udma_get_rflow(struct udma_chan *uc, =
+int flow_id)
+>  	}
+> =20
+>  	uc->rflow =3D __udma_get_rflow(ud, flow_id);
+> -	if (IS_ERR(uc->rflow))
+> -		return PTR_ERR(uc->rflow);
+> =20
+> -	return 0;
+> +	return PTR_ERR_OR_ZERO(uc->rflow);
+>  }
+> =20
+>  static void udma_put_rchan(struct udma_chan *uc)
+>=20
+
+- P=C3=A9ter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
+--------------E105EE2BC1BE5753D91002F5
+Content-Type: application/pgp-keys; name="pEpkey.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment; filename="pEpkey.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mQENBFki4nsBCAD3BM+Ogt951JlaDloruEjoZk/Z+/37CjP0fY2mqLhBOzkpx95u
+X1Fquf0KfVk+ZzCd25XGOZEtpZNlXfbxRr2iRWPS5RW2FeLYGvg2TTJCpSr+ugKu
+OOec6KECCUotGbGhpYwBrbarJNEwDcAzPK7UJYa1rhWOmkpZJ1hXF1hUghB84q35
+8DmN4sGLcsIbVdRFZ1tWFh4vGBFV9LsoDZIrnnANb6/XMX78s+tr3RG3GZBaFPl8
+jO5IIv0UIGNUKaYlNVFYthjGCzOqtstHchWuK9eQkR7m1+Vc+ezh1qK0VJydIcjn
+OtoMZZL7RAz13LB9vmcJjbQPnI7dJojz/M7zABEBAAG0JlBldGVyIFVqZmFsdXNp
+IDxwZXRlci51amZhbHVzaUB0aS5jb20+iQFOBBMBCAA4FiEE+dBcpRFvJjZw+uta
+LCayis85LN4FAlki4nsCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQLCay
+is85LN4QjggAzxxxXqiWpA3vuj9yrlGLft3BeGKWqF8+RzdeRvshtNdpGeIFf+r5
+AJVR71R1w89Qeb4DGXus7qsKiafdFGG7yxbuhw8a5wUm+ZncBXA+ETn3OyVtl8g8
+r/ZcPX420jClBNTVuL0sSnyqDFDrt5f+uAFOIwsnHdpns174Zu9QhgYxdvdZ+jMh
+Psb745O9EVeNvdfUIRdrVjb4IhJKNIzkb0Tulsz5xeCJReUYpxZU1jzEq3YZqIou
++fi+oS4wlJuSoxKKTmIXtSeEy/weStF1XHMo6vLYqzaK4FyIuclqeuYUYSVy2425
+7TMXugaI+O85AEI6KW8MCcu1NucSfAWUabkBDQRZIuJ7AQgAypKq8iIugpHxWA2c
+Ck6MQdPBT6cOEVK0tjeHaHAVOUPiw9Pq+ssMifdIkDdqXNZ3RLH/X2svYvd8c81C
+egqshfB8nkJ5EKmQc9d7s0EwnYT8OwsoVb3c2WXnsdcKEyu2nHgyeJEUpPpMPyLc
++PWhoREifttab4sOPktepdnUbvrDK/gkjHmiG6+L2owSn637N+Apo3/eQuDajfEu
+kybxK19ReRcp6dbqWSBGSeNB32c/zv1ka37bTMNVUY39Rl+/8lA/utLfrMeACHRO
+FGO1BexMASKUdmlB0v9n4BaJFGrAJYAFJBNHLCDemqkU7gjaiimuHSjwuP0Wk7Ct
+KQJfVQARAQABiQE2BBgBCAAgFiEE+dBcpRFvJjZw+utaLCayis85LN4FAlki4nsC
+GwwACgkQLCayis85LN7kCwgAoy9r3ZQfJNOXO1q/YQfpEELHn0p8LpwliSDUS1xL
+sswyxtZS8LlW8PjlTXuBLu38Vfr0vGav7oyV7TkhnKT3oBOLXanyZqwgyZSKNEGB
+PB4v3Fo7YTzpfSofiwuz03uyfjTxiMGjonxSb+YxM7HBHfzjrOKKlg02fK+lWNZo
+m5lXugeWD7U6JJguNdYfr+U4zYIblelUImcIE+wnR0oLzUEVDIWSpVrl/OqS3Rzo
+mw8wBsHksTHrbgUnKL0SCzYc90BTeKbyjEBnVDr+dlfbxRxkB8h9RMPMdjodvXzS
+Gfsa9V/k4XAsh7iX9EUVBbnmjA61ySxU/w98h96jMuteTg=3D=3D
+=3DeQmw
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------E105EE2BC1BE5753D91002F5--
