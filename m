@@ -2,78 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4251D2ABA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFB71D2AC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726037AbgENI4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 04:56:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:60846 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbgENI4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 04:56:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6DA6731B;
-        Thu, 14 May 2020 01:56:13 -0700 (PDT)
-Received: from nicgas01-03-arm-vm (nicgas01-03-arm-vm.shanghai.arm.com [10.169.138.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8CE43F71E;
-        Thu, 14 May 2020 01:56:10 -0700 (PDT)
-References: <20200427061520.24905-1-nick.gasson@arm.com>
- <20200427103505.GA1476763@krava>
-User-agent: mu4e 1.4.4; emacs 27.0.91
-From:   Nick Gasson <nick.gasson@arm.com>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 0/3] perf jvmti: Various fixes to JVMTI agent
-In-reply-to: <20200427103505.GA1476763@krava>
-Date:   Thu, 14 May 2020 16:56:07 +0800
-Message-ID: <85lflu7v4o.fsf@arm.com>
+        id S1726133AbgENI4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 04:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725925AbgENI4w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 04:56:52 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A772C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:56:52 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1jZ9fR-00068o-FM; Thu, 14 May 2020 10:56:37 +0200
+Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1jZ9fQ-0003uh-F6; Thu, 14 May 2020 10:56:36 +0200
+Date:   Thu, 14 May 2020 10:56:36 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     Fengping Yu <fengping.yu@mediatek.com>
+Cc:     Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 3/3] configs: defconfig: Add CONFIG_KEYBOARD_MTK_KPD=y
+Message-ID: <20200514085636.mmy4mteuskimfymn@pengutronix.de>
+References: <20200514061747.25466-1-fengping.yu@mediatek.com>
+ <20200514061747.25466-4-fengping.yu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200514061747.25466-4-fengping.yu@mediatek.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 10:55:46 up 181 days, 14 min, 196 users,  load average: 0.52, 0.68,
+ 0.38
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/27/20 18:35 pm, Jiri Olsa wrote:
->
-> adding Stephane to the loop
->
-> jirka
->
->> 
->> These three patches fix a couple of issues I ran into while using the
->> jitdump JVMTI agent to profile the SPECjbb benchmark.
->> 
+Hi,
 
-Hi, any feedback on these patches?
+On 20-05-14 14:17, Fengping Yu wrote:
+> From: "fengping.yu" <fengping.yu@mediatek.com>
+> 
+> Add Mediatek matrix keypad support in defconfig.
+> 
+> Signed-off-by: fengping.yu <fengping.yu@mediatek.com>
+> ---
+>  arch/arm64/configs/defconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 24e534d85045..f9f0fb489182 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -349,6 +349,8 @@ CONFIG_KEYBOARD_GPIO=y
+>  CONFIG_KEYBOARD_SNVS_PWRKEY=m
+>  CONFIG_KEYBOARD_IMX_SC_KEY=m
+>  CONFIG_KEYBOARD_CROS_EC=y
+> +CONFIG_KEYBOARD_MTK_KPD=y
 
-Thanks,
-Nick
+Why not as module?
 
->> 
->> 
->> Nick Gasson (3):
->>   perf jvmti: Fix jitdump for methods without debug info
->>   perf jvmti: Do not report error when missing debug information
->>   perf jvmti: Fix demangling Java symbols
->> 
->>  tools/perf/jvmti/libjvmti.c           | 24 +++++++--------
->>  tools/perf/tests/Build                |  1 +
->>  tools/perf/tests/builtin-test.c       |  4 +++
->>  tools/perf/tests/demangle-java-test.c | 42 +++++++++++++++++++++++++++
->>  tools/perf/tests/tests.h              |  1 +
->>  tools/perf/util/demangle-java.c       | 13 +++++----
->>  6 files changed, 66 insertions(+), 19 deletions(-)
->>  create mode 100644 tools/perf/tests/demangle-java-test.c
->> 
->> -- 
->> 2.26.1
->> 
+> +# CONFIG_KEYBOARD_MTK_PMIC is not set
 
+Also this is a unrelated add.
+
+Regards,
+  Marco
+
+>  CONFIG_INPUT_TOUCHSCREEN=y
+>  CONFIG_TOUCHSCREEN_ATMEL_MXT=m
+>  CONFIG_INPUT_MISC=y
+> -- 
+> 2.18.0
