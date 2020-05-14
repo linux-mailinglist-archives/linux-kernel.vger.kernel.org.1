@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2FB1D376E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 19:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C94D1D3772
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 19:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgENRFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 13:05:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35246 "EHLO mail.kernel.org"
+        id S1726341AbgENRFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 13:05:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgENRFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 13:05:31 -0400
+        id S1726119AbgENRFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 13:05:37 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FFBB206D8;
-        Thu, 14 May 2020 17:05:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72C112065F;
+        Thu, 14 May 2020 17:05:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589475931;
-        bh=HwjC0mdEpvRNfNDbCJoWOZLsIFufbVD8D3rudxfe4kU=;
+        s=default; t=1589475937;
+        bh=YW9wuTxuRvYF57tgugoM+Q4D773LEH8szJcXifA1DpU=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=zvXKgrNaAp32PZfFs9VQf/nQ7ByZSBe3Ae03TO+khlKVpIC4iaO9jb5IgyPVu75Nl
-         jkYdPhh7ADAoWxClOF3x29zKbi67UV1NgDUxbscmNnJMkBqiH4+6jplbSUyygnv1vx
-         GgV6nnjdV4AWUnfgBBMPelbjfwak7zi4IfTfXmWg=
-Date:   Thu, 14 May 2020 18:05:28 +0100
+        b=VSFr/FWRfpW8XQKjLi8GnhOj6GcgNR7W+29Dzelr7M0k1jsiDgAk9uIOU4Pkp/Dp3
+         fEYyM1iEqQ7k6I8TTt/jksD5k4X2P079gge+Dgp6Q4MD5NGSyFLZpgWXdwk9FHb5Kt
+         VoLhw+BQcMLEWny2kTBy6kxBuljDquTHDq1RjzJ4=
+Date:   Thu, 14 May 2020 18:05:34 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, tiwai@suse.com, Dan Murphy <dmurphy@ti.com>,
+To:     tiwai@suse.com, lgirdwood@gmail.com, Dan Murphy <dmurphy@ti.com>,
         perex@perex.cz
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-In-Reply-To: <20200514123338.20392-1-dmurphy@ti.com>
-References: <20200514123338.20392-1-dmurphy@ti.com>
-Subject: Re: [PATCH v3 1/3] ASoC: tlv320adcx140: Add controls for PDM clk
-Message-Id: <158947592846.11145.11012655309437023343.b4-ty@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <20200513200549.12213-1-dmurphy@ti.com>
+References: <20200513200549.12213-1-dmurphy@ti.com>
+Subject: Re: [PATCH v2 1/3] ASoC: tlv320adcx140: Add controls for PDM clk
+Message-Id: <158947592846.11145.4394826289935781391.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 May 2020 07:33:36 -0500, Dan Murphy wrote:
+On Wed, 13 May 2020 15:05:47 -0500, Dan Murphy wrote:
 > Add ALSA controls to configure the PDM clocks.
 > The clocks need to be configurable to accommodate various microphones
 > that use clocks for low power/low resolution modes to high power/high
