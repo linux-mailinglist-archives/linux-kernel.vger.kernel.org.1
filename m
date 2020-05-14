@@ -2,80 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7CC1D4156
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 00:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B4A1D415B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 00:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728903AbgENWzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 18:55:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50910 "EHLO mail.kernel.org"
+        id S1728949AbgENW4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 18:56:25 -0400
+Received: from mga06.intel.com ([134.134.136.31]:13422 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728229AbgENWzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 18:55:23 -0400
-Received: from localhost (lfbn-ncy-1-985-231.w90-101.abo.wanadoo.fr [90.101.63.231])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 063692065C;
-        Thu, 14 May 2020 22:55:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589496923;
-        bh=aGeCI+Qv8B6n0K42ZzRxKJ2ucEtQcxVngEp1XIb0pco=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P3AHuFskzTCvg6R7XIzApf7njfTeEYG1yxqd7ZRAYRucvX9TtS+kz6R7nriZmQ8RY
-         cXNEEx+QizC6lb1mbikr5fnClqaXRYOETWjHDJURvrKvq+2c/ttzXd8cAs9WXg0KpJ
-         cmW08QcnWCfgGxU1v++/tvGfVA3mGMbf9PIFh04A=
-Date:   Fri, 15 May 2020 00:55:21 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [PATCH 08/10] rcu: Allow to deactivate nocb on a CPU
-Message-ID: <20200514225520.GC4071@lenoir>
-References: <20200513164714.22557-1-frederic@kernel.org>
- <20200513164714.22557-9-frederic@kernel.org>
- <20200513183831.GV2869@paulmck-ThinkPad-P72>
- <20200513224525.GA18303@lenoir>
- <20200514154707.GL2869@paulmck-ThinkPad-P72>
- <20200514223021.GA4071@lenoir>
- <20200514224735.GA2869@paulmck-ThinkPad-P72>
+        id S1728862AbgENW4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 18:56:25 -0400
+IronPort-SDR: XphbPiXGjZAD186beeRF5JMSXyddNu1UZHFdpvcRyDN59DpTv0jA3QzOToCtS845aFVSY+sPbA
+ W35l45EhAKUA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2020 15:56:24 -0700
+IronPort-SDR: 9IPy1ey2zPzinB0+KceUVPbReTGR4tDznmIBjxl+aauDbvEmBhEfcj2wcRxbH2Wk/GPYgzj9qh
+ su334FQ0+vhQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,392,1583222400"; 
+   d="scan'208";a="438093378"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by orsmga005.jf.intel.com with ESMTP; 14 May 2020 15:56:24 -0700
+Date:   Thu, 14 May 2020 15:56:24 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Michael Tsirkin <mst@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, x86@kernel.org
+Subject: Re: [PATCH RFC 0/5] KVM: x86: KVM_MEM_ALLONES memory
+Message-ID: <20200514225623.GF15847@linux.intel.com>
+References: <20200514180540.52407-1-vkuznets@redhat.com>
+ <20200514220516.GC449815@xz-x1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200514224735.GA2869@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200514220516.GC449815@xz-x1>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 03:47:35PM -0700, Paul E. McKenney wrote:
-> On Fri, May 15, 2020 at 12:30:23AM +0200, Frederic Weisbecker wrote:
-> > On Thu, May 14, 2020 at 08:47:07AM -0700, Paul E. McKenney wrote:
-> > > On Thu, May 14, 2020 at 12:45:26AM +0200, Frederic Weisbecker wrote:
-> > > This last seems best to me.  The transition from CBLIST_NOT_OFFLOADED
-> > > to CBLIST_OFFLOADING of course needs to be on the CPU in question with
-> > > at least bh disabled.  Probably best to be holding rcu_nocb_lock(),
-> > > but that might just be me being overly paranoid.
+On Thu, May 14, 2020 at 06:05:16PM -0400, Peter Xu wrote:
+> On Thu, May 14, 2020 at 08:05:35PM +0200, Vitaly Kuznetsov wrote:
+> > The idea of the patchset was suggested by Michael S. Tsirkin.
 > > 
-> > So that's in the case of offloading, right? Well, I don't think we'd
-> > need to even disable bh nor lock nocb. We just need the current CPU
-> > to see the local update of cblist->offloaded = CBLIST_OFFLOADING
-> > before the kthread is unparked:
+> > PCIe config space can (depending on the configuration) be quite big but
+> > usually is sparsely populated. Guest may scan it by accessing individual
+> > device's page which, when device is missing, is supposed to have 'pci
+> > holes' semantics: reads return '0xff' and writes get discarded. Currently,
+> > userspace has to allocate real memory for these holes and fill them with
+> > '0xff'. Moreover, different VMs usually require different memory.
 > > 
-> >     cblist->offloaded = CBLIST_OFFLOADING;
-> >     /* Make sure subsequent softirq lock nocb */
-> >     barrier();
-> >     kthread_unpark(rdp->nocb_cb_thread);
+> > The idea behind the feature introduced by this patch is: let's have a
+> > single read-only page filled with '0xff' in KVM and map it to all such
+> > PCI holes in all VMs. This will free userspace of obligation to allocate
+> > real memory and also allow us to speed up access to these holes as we
+> > can aggressively map the whole slot upon first fault.
 > > 
-> > Now, although that guarantees that nocb_cb will see CBLIST_OFFLOADING
-> > upon unparking, it's not guaranteed that the nocb_gp will see it on its
-> > next round. Ok so eventually you're right, I should indeed lock nocb...
+> > RFC. I've only tested the feature with the selftest (PATCH5) on Intel/AMD
+> > with and wiuthout EPT/NPT. I haven't tested memslot modifications yet.
+> > 
+> > Patches are against kvm/next.
 > 
-> I suspect that our future selves would hate us much less if we held
-> that lock.  ;-)
+> Hi, Vitaly,
+> 
+> Could this be done in userspace with existing techniques?
+> 
+> E.g., shm_open() with a handle and fill one 0xff page, then remap it to
+> anywhere needed in QEMU?
 
-Also, taking the decision to hold that lock could teach a lesson to our
-past selves. Win-win! Let us become that most welcome time bridge!
+Mapping that 4k page over and over is going to get expensive, e.g. each
+duplicate will need a VMA and a memslot, plus any PTE overhead.  If the
+total sum of the holes is >2mb it'll even overflow the mumber of allowed
+memslots.
