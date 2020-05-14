@@ -2,44 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0491D24BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 03:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EAF81D24C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 03:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728397AbgENBdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 21:33:01 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4840 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725925AbgENBdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 21:33:00 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 21B6A29B7E58DFE8DD60;
-        Thu, 14 May 2020 09:32:58 +0800 (CST)
-Received: from [127.0.0.1] (10.74.149.191) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Thu, 14 May 2020
- 09:32:51 +0800
-Subject: Re: [PATCH net-next] net: phy: realtek: add loopback support for
- RTL8211F
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <davem@davemloft.net>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <kuba@kernel.org>,
-        Yufeng Mo <moyufeng@huawei.com>,
-        Jian Shen <shenjian15@huawei.com>
-References: <1589358344-14009-1-git-send-email-tanhuazhong@huawei.com>
- <20200513131226.GA499265@lunn.ch>
-From:   tanhuazhong <tanhuazhong@huawei.com>
-Message-ID: <e54083ee-ed3a-115f-0856-d943dac579a8@huawei.com>
-Date:   Thu, 14 May 2020 09:32:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
-MIME-Version: 1.0
-In-Reply-To: <20200513131226.GA499265@lunn.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.74.149.191]
-X-CFilter-Loop: Reflected
+        id S1727890AbgENBfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 21:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725943AbgENBfo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 21:35:44 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24443C061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 18:35:44 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id z1so577860pfn.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 18:35:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=ZVHBCjxkrGEodwBNIRUG1uMkUWDGDtQ7oSthSg/nj84=;
+        b=gFupu26vQQOiPv25Ot4ItrGDlOxezLs3bOwwqudCcRfGeHg7wu4uKuHit3iWHWD/HI
+         0TCWOz6YWCbmBHJMLHOnxN82/nDihbWsG1Ev8gYSEliM/fM7R/NBdl7I0qm0LRgRZtpa
+         co17IgdfcqKZVzvcFAlobv/D/cVR+SWsRGIghQeH9/5a4ANO1NA3U4vwbnT+AtSS/Aij
+         xmVG63yqPojOuLlQJIlX0aE+HN0ssiqbsI9lhcCMwkfVYF2P6G3US9ODIlXBXSY1PBzx
+         MWjVzDFvYx5MH5tGYFX8sp5M/dSlRze34CXKJPVbJAJjwW0F9axb6zV42lkhH1HvqVxF
+         S8Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=ZVHBCjxkrGEodwBNIRUG1uMkUWDGDtQ7oSthSg/nj84=;
+        b=Xyue2aRfH0FRB9ZapWDxV/BGGHpdm7mBASxy2h4tlFaWeHqY0XuowbQ/X6TtMUSIm/
+         YrIESzVat42FX5FekTVTYS0WkbZJlOTzs8VsQYxJVg4Mh3mub/ixdecX8G/bJN7xCOOg
+         DV2fKaMAMUdx9bKBOmE2QRilCsV/EgOhTuAOA+hFLB9XjxBb4tnQ0bKbv6hfQNl5jmDH
+         Z7L5laX+X7rK3P9f68EREyoIl14hsLQ0ADoqHEPJlb2OASTjUTiYCocQbjVd3ucA9yK6
+         wYDHtlwxUf6yzZ4RLROGq+QDWfA5oY/jSxRwJ/gvXieF44Gyg5P01cJOmpOOKztxe3lk
+         MIXw==
+X-Gm-Message-State: AOAM532s2XCpFe9VnfRQdP+qi86E/uHdh45Wk7hB+GpplBYptiG4N3YI
+        YoqEzH8xWcqnR+sIMmKK597X3g==
+X-Google-Smtp-Source: ABdhPJyQphWYIWZgkPwZSAJMaE6/v3zVLIw3oTU5iRq7zoKMjGSorWxtl8rlhogqlIhzikUO8V5QhA==
+X-Received: by 2002:a63:f94f:: with SMTP id q15mr1948953pgk.256.1589420143604;
+        Wed, 13 May 2020 18:35:43 -0700 (PDT)
+Received: from ?IPv6:2601:646:c200:1ef2:4dac:bfc1:d4fa:716f? ([2601:646:c200:1ef2:4dac:bfc1:d4fa:716f])
+        by smtp.gmail.com with ESMTPSA id a16sm704383pff.41.2020.05.13.18.35.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 May 2020 18:35:42 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [patch V4 part 3 01/29] x86/traps: Mark fixup_bad_iret() noinstr
+Date:   Wed, 13 May 2020 18:35:40 -0700
+Message-Id: <DBE4DB85-973F-4E16-8574-B93F9E4A51BC@amacapital.net>
+References: <807929267.20601.1589416908153.JavaMail.zimbra@efficios.com>
+Cc:     rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, paulmck <paulmck@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <JGross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+In-Reply-To: <807929267.20601.1589416908153.JavaMail.zimbra@efficios.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+X-Mailer: iPhone Mail (17E262)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -47,53 +83,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2020/5/13 21:12, Andrew Lunn wrote:
-> On Wed, May 13, 2020 at 04:25:44PM +0800, Huazhong Tan wrote:
->> From: Yufeng Mo <moyufeng@huawei.com>
->>
->> PHY loopback is already supported by genphy driver. This patch
->> adds the set_loopback interface to RTL8211F PHY driver, so the PHY
->> selftest can run properly on it.
->>
->> Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
->> Signed-off-by: Jian Shen <shenjian15@huawei.com>
->> Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
-> 
-> It took three people to write a 1 line patch?
+> On May 13, 2020, at 5:41 PM, Mathieu Desnoyers <mathieu.desnoyers@efficios=
+.com> wrote:
+>=20
+> =EF=BB=BF----- On May 12, 2020, at 9:51 PM, rostedt rostedt@goodmis.org wr=
+ote:
+>=20
+>>> On Fri, 8 May 2020 17:39:00 -0700
+>>> Andy Lutomirski <luto@kernel.org> wrote:
+>>>=20
+>>> On Tue, May 5, 2020 at 7:15 AM Thomas Gleixner <tglx@linutronix.de> wrot=
+e:
+>>>>=20
+>>>> This is called from deep entry ASM in a situation where instrumentation=
 
-Yufeng Mo is the author of this patch, since he has not right to send mail
-so I just help him to do than。 If necessary, Jian Shen could be deleted.
+>>>> will cause more harm than providing useful information.
+>>>>=20
+>>>=20
+>>> Acked-by: Andy Lutomirski <luto@kernel.org>
+>>>=20
+>>> Maybe add to changelog:
+>>>=20
+>>> Switch from memmove() to memcpy() because memmove() can't be called
+>>> from noinstr code.
+>>=20
+>> Yes please, because I was about to say that there was changes that
+>> didn't seem to fit the change log.
+>>=20
+>> I would also add a comment in the code saying that we need the temp
+>> variable to use memcpy as memmove can't be used in noinstr code.
+>=20
+> Looking at an updated version of the tree, I see the acked-by from Andy,
+> but not comment about switching from memmove to memcpy.
+>=20
+> Also, I notice a significant undocumented change in this patch: it changes=
 
-> 
->> ---
->>   drivers/net/phy/realtek.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
->> index c7229d0..6c5918c 100644
->> --- a/drivers/net/phy/realtek.c
->> +++ b/drivers/net/phy/realtek.c
->> @@ -615,6 +615,7 @@ static struct phy_driver realtek_drvs[] = {
->>   		.resume		= genphy_resume,
->>   		.read_page	= rtl821x_read_page,
->>   		.write_page	= rtl821x_write_page,
->> +		.set_loopback   = genphy_loopback,
->>   	}, {
->>   		.name		= "Generic FE-GE Realtek PHY",
->>   		.match_phy_device = rtlgen_match_phy_device,
-> 
-> Do you have access to the data sheets? Can you check if the other PHYs
-> supported by this driver also support loopback in the standard way?
-> They probably do.
-> 
-> 	  Andrew
-> 
+> a this_cpu_read() (which presumes preemption is enabled) to a __this_cpu_r=
+ead().
+>=20
+> So the 100$ question: is preemption enabled or not in fixup_bad_iret() ? A=
+nd of
+> course that change should be documented in the commit message.
+>=20
 
-We have checked the data sheet. Since we only have rtl8211f phy on our 
-hand, so only support loopback on this phy.
+IRQs are off, and, if they were on, the lack of a warning from the percpu ac=
+cess would be the least of our concerns here.
 
-Thanks:)
-
-> .
-> 
-
+> Thanks,
+>=20
+> Mathieu
+>=20
+> --=20
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
