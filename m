@@ -2,39 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27A71D375F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 19:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D52A1D376C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 19:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgENREr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 13:04:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgENREq (ORCPT
+        id S1726215AbgENRF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 13:05:28 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49252 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbgENRF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 13:04:46 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91524C061A0E;
-        Thu, 14 May 2020 10:04:46 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 4A6B92A2FA5
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 475BF4800F8; Thu, 14 May 2020 19:04:42 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Robert Beckett <bob.beckett@collabora.com>,
-        stable@vger.kernel.org, Ian Ray <ian.ray@ge.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCHv1] ARM: dts/imx6q-bx50v3: Set display interface clock parents
-Date:   Thu, 14 May 2020 19:02:37 +0200
-Message-Id: <20200514170236.24814-1-sebastian.reichel@collabora.com>
+        Thu, 14 May 2020 13:05:26 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein.fritz.box)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jZHIT-0006It-02; Thu, 14 May 2020 17:05:25 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] thread fixes v5.7-rc5
+Date:   Thu, 14 May 2020 19:04:51 +0200
+Message-Id: <20200514170451.1821723-1-christian.brauner@ubuntu.com>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -43,116 +31,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Beckett <bob.beckett@collabora.com>
+Hey Linus,
 
-Avoid LDB and IPU DI clocks both using the same parent. LDB requires
-pasthrough clock to avoid breaking timing while IPU DI does not.
+/* Summary */
+This contains a single fix for all exported legacy fork helpers to block
+accidental access to clone3() features in the upper 32 bits of their
+respective flags arguments.
 
-Force IPU DI clocks to use IMX6QDL_CLK_PLL2_PFD0_352M as parent
-and LDB to use IMX6QDL_CLK_PLL5_VIDEO_DIV.
+I got Cced on a glibc issue where someone reported consistent failures for
+the legacy clone() syscall on ppc64le when sign extension was performed
+(Since the clone() syscall in glibc exposes the flags argument as an int
+ whereas the kernel uses unsigned long.).
 
-This fixes an issue where attempting atomic modeset while using
-HDMI and display port at the same time causes LDB clock programming
-to destroy the programming of HDMI that was done during the same
-modeset.
+The legacy clone() syscall is odd in a bunch of ways and here two things
+interact. First, legacy clone's flag argument is word-size dependent, i.e.
+it's an unsigned long whereas most system calls with flag arguments use int
+or unsigned int. Second, legacy clone() ignores unknown and deprecated
+flags. The two of them taken together means that users on 64bit systems can
+pass garbage for the upper 32bit of the clone() syscall since forever and
+things would just work fine. The following program compiled on a 64bit
+kernel prior to v5.7-rc1 will succeed and will fail post v5.7-rc1 with
+EBADF:
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
-[Use IMX6QDL_CLK_PLL2_PFD0_352M instead of IMX6QDL_CLK_PLL2_PFD2_396M
- originally chosen by Robert Beckett to avoid affecting eMMC clock
- by DRM atomic updates]
-Signed-off-by: Ian Ray <ian.ray@ge.com>
-[Squash Robert's and Ian's commits for bisectability, update patch
- description and add stable tag]
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- arch/arm/boot/dts/imx6q-b450v3.dts  |  7 -------
- arch/arm/boot/dts/imx6q-b650v3.dts  |  7 -------
- arch/arm/boot/dts/imx6q-b850v3.dts  | 11 -----------
- arch/arm/boot/dts/imx6q-bx50v3.dtsi | 15 +++++++++++++++
- 4 files changed, 15 insertions(+), 25 deletions(-)
+int main(int argc, char *argv[])
+{
+        pid_t pid;
 
-diff --git a/arch/arm/boot/dts/imx6q-b450v3.dts b/arch/arm/boot/dts/imx6q-b450v3.dts
-index 95b8f2d71821..fb0980190aa0 100644
---- a/arch/arm/boot/dts/imx6q-b450v3.dts
-+++ b/arch/arm/boot/dts/imx6q-b450v3.dts
-@@ -65,13 +65,6 @@ panel_in_lvds0: endpoint {
- 	};
- };
- 
--&clks {
--	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
--			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>;
--	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL3_USB_OTG>,
--				 <&clks IMX6QDL_CLK_PLL3_USB_OTG>;
--};
--
- &ldb {
- 	status = "okay";
- 
-diff --git a/arch/arm/boot/dts/imx6q-b650v3.dts b/arch/arm/boot/dts/imx6q-b650v3.dts
-index 611cb7ae7e55..8f762d9c5ae9 100644
---- a/arch/arm/boot/dts/imx6q-b650v3.dts
-+++ b/arch/arm/boot/dts/imx6q-b650v3.dts
-@@ -65,13 +65,6 @@ panel_in_lvds0: endpoint {
- 	};
- };
- 
--&clks {
--	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
--			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>;
--	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL3_USB_OTG>,
--				 <&clks IMX6QDL_CLK_PLL3_USB_OTG>;
--};
--
- &ldb {
- 	status = "okay";
- 
-diff --git a/arch/arm/boot/dts/imx6q-b850v3.dts b/arch/arm/boot/dts/imx6q-b850v3.dts
-index e4cb118f88c6..1ea64ecf4291 100644
---- a/arch/arm/boot/dts/imx6q-b850v3.dts
-+++ b/arch/arm/boot/dts/imx6q-b850v3.dts
-@@ -53,17 +53,6 @@ chosen {
- 	};
- };
- 
--&clks {
--	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
--			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>,
--			  <&clks IMX6QDL_CLK_IPU1_DI0_PRE_SEL>,
--			  <&clks IMX6QDL_CLK_IPU2_DI0_PRE_SEL>;
--	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
--				 <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
--				 <&clks IMX6QDL_CLK_PLL2_PFD2_396M>,
--				 <&clks IMX6QDL_CLK_PLL2_PFD2_396M>;
--};
--
- &ldb {
- 	fsl,dual-channel;
- 	status = "okay";
-diff --git a/arch/arm/boot/dts/imx6q-bx50v3.dtsi b/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-index fa27dcdf06f1..1938b04199c4 100644
---- a/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-+++ b/arch/arm/boot/dts/imx6q-bx50v3.dtsi
-@@ -377,3 +377,18 @@ pci_root: root@0,0 {
- 		#interrupt-cells = <1>;
- 	};
- };
-+
-+&clks {
-+	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
-+			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>,
-+			  <&clks IMX6QDL_CLK_IPU1_DI0_PRE_SEL>,
-+			  <&clks IMX6QDL_CLK_IPU1_DI1_PRE_SEL>,
-+			  <&clks IMX6QDL_CLK_IPU2_DI0_PRE_SEL>,
-+			  <&clks IMX6QDL_CLK_IPU2_DI1_PRE_SEL>;
-+	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
-+				 <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>,
-+				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>,
-+				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>,
-+				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>,
-+				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>;
-+};
--- 
-2.26.2
+        /* Note that legacy clone() has different argument ordering on
+         * different architectures so this won't work everywhere.
+         *
+         * Only set the upper 32 bits.
+         */
+        pid = syscall(__NR_clone, 0xffffffff00000000 | SIGCHLD,
+                      NULL, NULL, NULL, NULL);
+        if (pid < 0)
+                exit(EXIT_FAILURE);
+        if (pid == 0)
+                exit(EXIT_SUCCESS);
+        if (wait(NULL) != pid)
+                exit(EXIT_FAILURE);
 
+        exit(EXIT_SUCCESS);
+}
+
+Since legacy clone() couldn't be extended this was not a problem so far and
+nobody really noticed or cared since nothing in the kernel ever bothered to
+look at the upper 32 bits.
+
+But once we introduced clone3() and expanded the flag argument in struct
+clone_args to 64 bit we opened this can of worms. With the first flag-based
+extension to clone3() making use of the upper 32 bits of the flag argument
+we've effectively made it possible for the legacy clone() syscall to reach
+clone3() only flags on accident. The sign extension scenario is just the odd
+corner-case that we needed to figure this out.
+
+The reason we just realized this now and not already when we introduced
+CLONE_CLEAR_SIGHAND was that CLONE_INTO_CGROUP assumes that a valid cgroup
+file descriptor has been given whereas CLONE_CLEAR_SIGHAND doesn't need to
+verify anything. It just silently resets the signal handlers to SIG_DFL. So
+the sign extension (or the user accidently passing garbage for the upper 32
+bits) caused the CLONE_INTO_CGROUP bit to be raised and the kernel to error
+out when it didn't find a valid cgroup file descriptor.
+
+/* A final note */
+Note, I'm also capping kernel_thread()'s flag argument mainly because none
+of the new features make sense for kernel_thread() and we shouldn't risk
+them being accidently activated however unlikely. If we wanted to, we could
+even make kernel_thread() yell when an unknown flag has been set which it
+doesn't do right now. But it's not worth risking this in a bugfix imho.
+
+/* Testing */
+All patches have seen exposure in linux-next and are based on v5.6-rc5.
+
+/* Conflicts */
+At the time of creating this pr no merge conflicts were reported.
+
+The following changes since commit 0e698dfa282211e414076f9dc7e83c1c288314fd:
+
+  Linux 5.7-rc4 (2020-05-03 14:56:04 -0700)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/for-linus-2020-05-13
+
+for you to fetch changes up to 3f2c788a13143620c5471ac96ac4f033fc9ac3f3:
+
+  fork: prevent accidental access to clone3 features (2020-05-08 17:31:50 +0200)
+
+Please consider pulling these changes from the signed for-linus-2020-05-13 tag.
+
+Thanks!
+Christian
+
+----------------------------------------------------------------
+for-linus-2020-05-13
+
+----------------------------------------------------------------
+Christian Brauner (1):
+      fork: prevent accidental access to clone3 features
+
+ kernel/fork.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
