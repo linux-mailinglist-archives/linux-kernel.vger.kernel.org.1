@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A71B1D25F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 375501D25FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 06:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgENErg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 00:47:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34956 "EHLO mail.kernel.org"
+        id S1726123AbgENEsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 00:48:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbgENErf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 00:47:35 -0400
+        id S1725794AbgENEsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 00:48:07 -0400
 Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CC0B207BB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:47:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4209D206D4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589431655;
-        bh=cUOOvbAlTUvF4yuAaPRuysWH/grNtVq0r18hf4xegog=;
+        s=default; t=1589431686;
+        bh=AvQo2rwJhyXe+91Q6tQoumdX/Eeuz0ZZTa/OV8UAE3A=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PRYtGqAS/RrhCmhn1N30hkrvUDFLCgMrubbbIvdhkTTvo2Uc16nvdKAJLtqsOCbsM
-         lFKUuNZNGZyRRtz/fJrghvNawtdFht16X5CsqMg9Gt+/hY2MsRGXOPST3p/su9i7pr
-         4F449LPKkHH9UUfJbUFaUu0Gk315FDNzDznaZVUE=
-Received: by mail-wr1-f43.google.com with SMTP id h17so2093744wrc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:47:34 -0700 (PDT)
-X-Gm-Message-State: AOAM532KjVKPgAlzwCYUGUGkg1ZpswrG7ehq0lyGgaNHpiR/Mfgc+FF+
-        /+OKASlMg6UUJtrJkKJTGr6XjucnTfWgrPC92hHSQw==
-X-Google-Smtp-Source: ABdhPJwP41B1KzZCRqkq1XDuH9EaW7w1X8ZSf6D4eY6NxBftBo1rhtCM+qTBb7e2bYvEC5YtVT6qYDqDIUABwTqfero=
-X-Received: by 2002:adf:eccf:: with SMTP id s15mr3036758wro.70.1589431653434;
- Wed, 13 May 2020 21:47:33 -0700 (PDT)
+        b=xNspC0YAy+5y1zQ1mCnmdfT5uTINXKVZcc8HIVbHXP4OmBLKYpeRBgv1dhwTUb/1d
+         x4o4Z5SqVfHfpWVfHXCyZg94waZPsL27ih/RaAj4PGcLj0NpiQ580vfCSddRV1LPGu
+         mk0s2gm4CaTCLZs/8qo1AsDjf6UHfpyVSCwzB4gA=
+Received: by mail-wr1-f43.google.com with SMTP id v12so2071525wrp.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 21:48:06 -0700 (PDT)
+X-Gm-Message-State: AOAM530U+qb2t6tBMyZNOgyQGQfSMjfrVIC8Z6KwnaTLraT8fC/lxGY/
+        pBK+KXruJIXf5jAForJtmHkySDslIBn8hfZYI2WQeg==
+X-Google-Smtp-Source: ABdhPJxfTzt+scA3njRTdIhwP3GXv4zNbM2T5h17fzWlvXAajaHBPDY5vVbclhH3zzzl5nkvAi8iRLsi/jvMAZnMc5k=
+X-Received: by 2002:adf:a389:: with SMTP id l9mr3188607wrb.18.1589431684690;
+ Wed, 13 May 2020 21:48:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200505134354.774943181@linutronix.de> <20200505134905.443591450@linutronix.de>
-In-Reply-To: <20200505134905.443591450@linutronix.de>
+References: <20200505134354.774943181@linutronix.de> <20200505134905.728077036@linutronix.de>
+In-Reply-To: <20200505134905.728077036@linutronix.de>
 From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 13 May 2020 21:47:21 -0700
-X-Gmail-Original-Message-ID: <CALCETrXeuNkgfSiK2Z8rEBnCx-_uoSfYwO1xNKaoWwAShx51CA@mail.gmail.com>
-Message-ID: <CALCETrXeuNkgfSiK2Z8rEBnCx-_uoSfYwO1xNKaoWwAShx51CA@mail.gmail.com>
-Subject: Re: [patch V4 part 3 22/29] x86/entry: Convert Segment not present
+Date:   Wed, 13 May 2020 21:47:53 -0700
+X-Gmail-Original-Message-ID: <CALCETrUEQ1=2m0jZCwEZ6swVi7+bcjSdL3ud-qO-mU0cfCPQzg@mail.gmail.com>
+Message-ID: <CALCETrUEQ1=2m0jZCwEZ6swVi7+bcjSdL3ud-qO-mU0cfCPQzg@mail.gmail.com>
+Subject: Re: [patch V4 part 3 25/29] x86/entry: Convert Spurious interrupt bug
  exception to IDTENTRY
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
@@ -67,7 +67,7 @@ On Tue, May 5, 2020 at 7:15 AM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
 > From: Thomas Gleixner <tglx@linutronix.de>
 >
-> Convert #NP to IDTENTRY_ERRORCODE:
+> Convert #SPURIOUS to IDTENTRY_ERRORCODE:
 >   - Implement the C entry point with DEFINE_IDTENTRY
 >   - Emit the ASM stub with DECLARE_IDTENTRY
 >   - Remove the ASM idtentry in 64bit
