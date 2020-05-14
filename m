@@ -2,219 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD8D1D368F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9C71D3698
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726126AbgENQfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 12:35:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53218 "EHLO mail.kernel.org"
+        id S1726171AbgENQgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 12:36:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725975AbgENQfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 12:35:21 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.39.105.78])
+        id S1725999AbgENQgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 12:36:36 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1B512065F;
-        Thu, 14 May 2020 16:35:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB5F220675;
+        Thu, 14 May 2020 16:36:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589474120;
-        bh=D262ofA+sA85Gye4OyaUMNzJ/CqBng2pMKi+BLWs+JM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nEKqa7Gz2xI6MLHamqS+kfzELq09eiN43pEy1STydbKFjT5eWlbSLX/icsHKhGa3W
-         tQYTsToRGXXUjJeSMZPD8ECdFqIJcXMKOLl4URMKZQaP5mRg2zpAD8lC+gUV0oXi8m
-         kzP5pVE8v+hzhObYg5c8utLUgMv3Q+tXDlJCzqMg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B607535229C5; Thu, 14 May 2020 09:35:20 -0700 (PDT)
-Date:   Thu, 14 May 2020 09:35:20 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
+        s=default; t=1589474195;
+        bh=/Oud4+Cb5VEN+0rjyvNjdi0y40dgg0LowyeDFy6iBQM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wlserAR3KAJqd5xHY94MD8nIrVksbeDqOZ15lIrwLhDydAbHRrjPzYK1z2GmIDIff
+         Nty/yTzlxgyCM94tWna6ZmJT4C7xT+pZCPw7JdJoMqK3Cc6RBmnfgu1oiBM+lCS2gj
+         q4TNirepiFdHOwljbHbA7YMdvPzupJFclkt+QGDY=
+Date:   Thu, 14 May 2020 18:36:33 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
         Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [patch V5 00/38] x86/entry: Entry/exception code rework - the
- leftovers
-Message-ID: <20200514163520.GA15870@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200512210059.056244513@linutronix.de>
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-serial@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Slaby <jslaby@suse.com>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Gross <agross@kernel.org>, bp@alien8.de,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Allison Randal <allison@lohutok.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Enrico Weigelt <info@metux.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        James Morse <james.morse@arm.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        jinho lim <jordan.lim@samsung.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        x86@kernel.org
+Subject: Re: [PATCH v4 00/12] kgdb: Support late serial drivers; enable early
+ debug w/ boot consoles
+Message-ID: <20200514163633.GA3154055@kroah.com>
+References: <20200507200850.60646-1-dianders@chromium.org>
+ <20200514162109.6qt5drd27hpilijh@holly.lan>
+ <CAD=FV=X+t_Wg5KadZBTGHMSEXY3c-t6DZAtdaLXys31QJJpGGA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200512210059.056244513@linutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAD=FV=X+t_Wg5KadZBTGHMSEXY3c-t6DZAtdaLXys31QJJpGGA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 11:00:59PM +0200, Thomas Gleixner wrote:
-> Folks!
+On Thu, May 14, 2020 at 09:34:26AM -0700, Doug Anderson wrote:
+> > (though we must keep
+> > changes to drivers/tty/serial/kgdboc alongside the kgdb changes).
+> >
+> > I can hoover them up but I'd need a solid set of acks and
+> > I don't think we've got that yet.
 > 
-> This is V5 of the rework series. V4 can be found here:
+> It would be nice for it to be explicit, but "get_maintainer" says that
+> Greg KH is the maintainer of serial drivers.  Git log confirms that he
+> also has been the one landing changes to these files.  Early-on he
+> provided his Reviewed-by for the series as a whole, so he's aware of
+> it and maybe would be fine w/ the serial changes landing through the
+> kgdb tree?
 > 
->   https://lore.kernel.org/r/20200505135341.730586321@linutronix.de
-> 
-> Some of the non-x86 specific parts from part 1- 4 have been applied to the
-> relevant tip branches and I merged them all together to base the rest on.
-> 
-> I have applied most of the patches from part 1-4 on top after fixing up the
-> small review comments all over the place. The result can be found here:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-base-v5
-> 
-> I dropped:
-> 
->   [patch V4 part 1 33/36] x86,tracing: Robustify ftrace_nmi_enter()
->   [patch V4 part 2 10/18] x86/entry/64: Check IF in __preempt_enable_notrace()
->   [patch V4 part 2 11/18] x86/entry/64: Mark ___preempt_schedule_notrace()
-> 
-> from V4 because Peter's attempt to sanitize ftrace_nmi_enter/exit() and the
-> underlying callchains turned out to be incomplete and cause the whole
-> __preempt_schedule_notrace() hackery which is caused by a gazillion of
-> preempt_disable_notrace() / preempt_enable_notrace() invocations in the
-> full call chain. I found a better way to do that and that's in part 5 now.
-> 
-> The remaining patches are mostly from part 5 of version 4 dealing with the
-> #PF, device interrupts and the system vectors.
-> 
-> The main differences to V4 part 5 are:
-> 
->   - Provide nmi_enter/exit_notrace() which do not contain the
->     ftrace_nmi_enter/exit() calls, use them in x86 and make the ftrace
->     invocation explicit at a safe place.
-> 
->   - A fix for the reworked SVM code
-> 
->   - An optimization of asm_native_load_gs_index() which I found while
->     staring at stuff in more detail
-> 
->   - The removal of the x86 specific irq_regs implementation which was
->     aside of two underscores in the variable name exactly the same thing
->     as the generic variant.
-> 
->   - Overhaul of the IRQ stack switching mechanics to avoid the objtool and
->     unwinder nastiness of doing it in C inline ASM. As discussed here:
-> 
->     https://lore.kernel.org/r/20200507161020.783541450@infradead.org
-> 
->     We agreed on having the actual stack switch still in ASM and utilize it
->     for device interrupts, soft interrupts and system vectors.
-> 
->     This comes for the price of an indirect call, but the device interrupt
->     handling has an indirect call and soft interrupts and most system
->     vectors are indirect call laden already.
-> 
->     There is a lightweight variant for the system vectors which do
->     basically nothing, i.e. reschedule IPI and the KVM posted interrupt
->     vectors. That variant runs on the interrupted stack and avoids the
->     full entry/exit handling overhead by utilizing the conditional RCU
->     variant of idtentry_enter/exit().
-> 
->   - Addressing a few review comments.
-> 
-> The series is also available from git:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v5-the-rest
-> 
-> Running the new objtool checks results in two warning types:
-> 
->   - The MCE code has an issue in the non-instrumentable section which is
->     still under investigation and discussion
-> 
->   - When paravirt is enabled then there are a few complaints about
->     invoking indirect calls (PVOPS) which leave the noinstr sections
->     but they are halfways straight forward to fix.
-> 
-> Thanks,
-> 
-> 	tglx
+> Greg: is that correct?
 
-FWIW, the full set of one-hour rcutorture scenarios completed without
-complaint on entry-v5-the-rest.  Must be some mistake.  ;-)
+I have no objection for all of these to go through any other tree that
+wants to take them :)
 
-This is of course all within qemu/KVM guest OSes, so the next step
-is to try it on bare metal.
+But if you want me to take them in the serial tree, to make it easier
+for you or any other serial driver issues, I will be glad to do that,
+just send them my way.  It's your call.
 
-							Thanx, Paul
+thanks,
 
-> 8<--------------
-> 
->  arch/x86/include/asm/acrn.h                |   11 
->  arch/x86/include/asm/entry_arch.h          |   56 --
->  arch/x86/include/asm/irq_regs.h            |   32 -
->  b/arch/x86/entry/calling.h                 |   25 -
->  b/arch/x86/entry/common.c                  |  216 +++++++++-
->  b/arch/x86/entry/entry_32.S                |  260 +-----------
->  b/arch/x86/entry/entry_64.S                |  581 +++--------------------------
->  b/arch/x86/entry/thunk_64.S                |    9 
->  b/arch/x86/hyperv/hv_init.c                |    9 
->  b/arch/x86/include/asm/apic.h              |   33 -
->  b/arch/x86/include/asm/hw_irq.h            |   22 -
->  b/arch/x86/include/asm/idtentry.h          |  262 ++++++++++++-
->  b/arch/x86/include/asm/irq.h               |    6 
->  b/arch/x86/include/asm/irq_stack.h         |   40 +
->  b/arch/x86/include/asm/irq_work.h          |    1 
->  b/arch/x86/include/asm/irqflags.h          |   10 
->  b/arch/x86/include/asm/mshyperv.h          |   13 
->  b/arch/x86/include/asm/trace/common.h      |    4 
->  b/arch/x86/include/asm/trace/irq_vectors.h |   17 
->  b/arch/x86/include/asm/traps.h             |   21 -
->  b/arch/x86/include/asm/uv/uv_bau.h         |    8 
->  b/arch/x86/kernel/apic/apic.c              |   39 -
->  b/arch/x86/kernel/apic/msi.c               |    3 
->  b/arch/x86/kernel/apic/vector.c            |    5 
->  b/arch/x86/kernel/cpu/acrn.c               |    9 
->  b/arch/x86/kernel/cpu/mce/amd.c            |    5 
->  b/arch/x86/kernel/cpu/mce/core.c           |    4 
->  b/arch/x86/kernel/cpu/mce/therm_throt.c    |    5 
->  b/arch/x86/kernel/cpu/mce/threshold.c      |    5 
->  b/arch/x86/kernel/cpu/mshyperv.c           |   22 -
->  b/arch/x86/kernel/head_64.S                |    7 
->  b/arch/x86/kernel/idt.c                    |   42 +-
->  b/arch/x86/kernel/irq.c                    |   58 --
->  b/arch/x86/kernel/irq_64.c                 |   17 
->  b/arch/x86/kernel/irq_work.c               |    6 
->  b/arch/x86/kernel/kvm.c                    |   14 
->  b/arch/x86/kernel/nmi.c                    |    9 
->  b/arch/x86/kernel/smp.c                    |   37 -
->  b/arch/x86/kernel/tracepoint.c             |   17 
->  b/arch/x86/kernel/traps.c                  |   10 
->  b/arch/x86/kvm/svm/svm.c                   |    2 
->  b/arch/x86/mm/fault.c                      |   69 ++-
->  b/arch/x86/platform/uv/tlb_uv.c            |    2 
->  b/arch/x86/xen/enlighten_hvm.c             |   12 
->  b/arch/x86/xen/enlighten_pv.c              |    2 
->  b/arch/x86/xen/setup.c                     |    4 
->  b/arch/x86/xen/smp_pv.c                    |    3 
->  b/arch/x86/xen/xen-asm_32.S                |   12 
->  b/arch/x86/xen/xen-asm_64.S                |    4 
->  b/arch/x86/xen/xen-ops.h                   |    1 
->  b/drivers/xen/events/events_base.c         |    6 
->  b/drivers/xen/preempt.c                    |    2 
->  b/include/linux/hardirq.h                  |   51 ++
->  b/include/linux/rcutiny.h                  |    1 
->  b/include/linux/rcutree.h                  |    1 
->  b/include/xen/events.h                     |    7 
->  b/include/xen/xen-ops.h                    |    7 
->  b/kernel/rcu/tree.c                        |    5 
->  b/kernel/softirq.c                         |   35 +
->  59 files changed, 906 insertions(+), 1270 deletions(-)
-> 
+greg k-h
