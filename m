@@ -2,87 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620E51D36A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFF11D36A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726199AbgENQhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 12:37:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726035AbgENQhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 12:37:37 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1726112AbgENQjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 12:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725975AbgENQjx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 12:39:53 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17504C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 09:39:53 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0bbd008499a97412b4f89f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:bd00:8499:a974:12b4:f89f])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B16A2206A5;
-        Thu, 14 May 2020 16:37:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589474257;
-        bh=BTxpmf1wFyq3nlMPhORBHOa3A6arfRq46Ns4lVg0b5w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HFXx34midDW0QmV3w7Kh8mgS7t+fEHFQuOF6C01WJ8OYZWb2fEstIpWhem/umEcpz
-         UDtNFocTlu6CyhS2JmNkTJzqynJxm+krhvioon4WFLvlZMGLxoHfwQKMr9rVorB9Zw
-         8bgHB7klMda6W0BE/18YIrc2LKibaCx2Dl37VoyU=
-Date:   Thu, 14 May 2020 18:37:34 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     arnd@arndb.de, manivannan.sadhasivam@linaro.org,
-        bjorn.andersson@linaro.org, wufan@codeaurora.org,
-        pratanan@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 5/8] qaic: Implement data path
-Message-ID: <20200514163734.GB3154055@kroah.com>
-References: <1589465266-20056-1-git-send-email-jhugo@codeaurora.org>
- <1589465266-20056-6-git-send-email-jhugo@codeaurora.org>
- <20200514141403.GB2643665@kroah.com>
- <2e569e9e-2e5f-a99e-384c-1aaf34d9999e@codeaurora.org>
- <20200514155645.GB2963499@kroah.com>
- <d34d726d-7911-824d-82ac-34358874b103@codeaurora.org>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6BA691EC0351;
+        Thu, 14 May 2020 18:39:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1589474391;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=RGov0R+2vKmVwOTCdPFIbjKwSHhb2dT0UH4D5to6ewA=;
+        b=OMlkiStyr3E38Yx7TZBpgEYcVTlKoAIh9/LI4rWAFCKGCJUtqfzRiMuOW9bF2WW9HeSkz2
+        mXyMJZi19uYv3X2jQwCducgit9ZUrMoj023IrpG4KuhkOsm9TtvPaVBPHU9RAr5lFbJJ5W
+        O7SwoDJ6coAAUBCGZcuLjmVyiGHeD3s=
+Date:   Thu, 14 May 2020 18:39:47 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, paulmck <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>, rostedt <rostedt@goodmis.org>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tony Luck <tony.luck@intel.com>
+Subject: Re: [patch V4 part 1 29/36] x86/mce: Send #MC singal from task work
+Message-ID: <20200514163947.GF9266@zn.tnic>
+References: <20200505131602.633487962@linutronix.de>
+ <20200505134100.957390899@linutronix.de>
+ <20200514141703.GD9266@zn.tnic>
+ <1278452779.21179.1589472210183.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d34d726d-7911-824d-82ac-34358874b103@codeaurora.org>
+In-Reply-To: <1278452779.21179.1589472210183.JavaMail.zimbra@efficios.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 10:12:03AM -0600, Jeffrey Hugo wrote:
-> On 5/14/2020 9:56 AM, Greg KH wrote:
-> > On Thu, May 14, 2020 at 09:06:53AM -0600, Jeffrey Hugo wrote:
-> > > On 5/14/2020 8:14 AM, Greg KH wrote:
-> > > > On Thu, May 14, 2020 at 08:07:43AM -0600, Jeffrey Hugo wrote:
-> > > > > +struct qaic_execute {
-> > > > > +	__u16		ver;    /* struct version, must be 1 */
-> > > > 
-> > > > No need for structures to be versioned.  If you change something, then
-> > > > add a new ioctl if you really needed it.
-> > > 
-> > > Huh.  We had thought the botching ioctls document advised having a version,
-> > > but as I double check that document, it infact does not.
-> > > 
-> > > Will remove.
-> > 
-> > Thanks, you can also remove the "reserved" variables as well as those
-> > will not be needed either.
-> 
-> Are you sure?
-> 
-> Documentation/process/botching-up-ioctls.rst
-> Starting at Line 38:
-> 
-> "Pad the entire struct to a multiple of 64-bits if the structure contains
-> 64-bit types - the structure size will otherwise differ on 32-bit versus
-> 64-bit. Having a different structure size hurts when passing arrays of
-> structures to the kernel, or if the kernel checks the structure size, which
-> e.g. the drm core does."
-> 
-> The "reserved" variables seem to be in line with that.
+On Thu, May 14, 2020 at 12:03:30PM -0400, Mathieu Desnoyers wrote:
+> - #MC triggered, queuing task work,
+> - unrelated signal happens to be delivered to task,
+> - exit to usermode loop handles do_signal first,
+> - then it runs task work.
 
-Padding is fine to use, but don't use that as a "I'm reserving this to
-use it for later" type of thing which is how I read the structure
-definitions.  I might be totally wrong, but you should be explicit here.
+How can that even happen?
 
-thanks,
+exit_to_usermode_loop->do_signal->get_signal and that does:
 
-greg k-h
+        if (unlikely(current->task_works))
+                task_work_run();
+
+at the top.
+
+So the task work will always run before the signal handler.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
