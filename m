@@ -2,135 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB771D237C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 02:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EDB1D237F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 02:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732980AbgENAMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 May 2020 20:12:18 -0400
-Received: from mail-bn7nam10on2120.outbound.protection.outlook.com ([40.107.92.120]:65056
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732871AbgENAMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 May 2020 20:12:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HcGoiDRn6oHz62lpOmjwhnFE3fAh+I/gaHXU7iVhYMJ4UuGlE+Jz56B43uJHt2GE458uO51ljAqPHvcwAD88j3bs4gXURvgLemeXMh5RWhdT6oczuZlNI7TTYXheg0M5DAkrFvwvkgNIbt+8vg/hcmCZHHDmF8uWmu/Bmw4oKBByaM0ELp/FPC72bQUuSVskY15+6LPNc4UKdOlio1VeDh9NniwwagESt6Z/flEb4oufIyfbd1xEJuSIgs/E4SCVrcmIO/wJYYHcvuCSHIuqLO3k0qUxWt5vnckZTGhR727fAelDL6gWIK08l7aC2rpCaahl5JpTDPz+pNpoD7Ey8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wx2jdNqVOv0BSQ94JD5tkM39/gGO37pcIhnpr6euQtA=;
- b=X7p8jz5xpaTcpP0QE+hK8LbdZi3nW/ju2v8JEmjcWAWo9t/zJhHhqRWpSFTDyYMcCojgRUOUQUTw3kp6AkvVu/elAg7DE1eIB6sGt6rG/azc8uTeLGtnMWbJIMQG/6ifhXr/sHDPsP+2gdiQN21B97+36TRZbIUgjesKEj0Bei+k6VqEfINaLnrcSLtGH1aROHxhgOVAp9sV7WV31uKCFytdoOf+/TSdxbL0q4RPCb8PPVw0ZwoF4sYWTROjya4HDA2QA6n4Zqc6jyTGYN5g1SvCti87WjGt86N5qmVKKOWQ2P+UbWVpsS/aujJHbJCBS+iUvIDS/ihKD1S7qoi9kw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wx2jdNqVOv0BSQ94JD5tkM39/gGO37pcIhnpr6euQtA=;
- b=vgZM8K823F5ee0xMVTOBCrye9tmhwQAxh3csVrj0WQLUmcgRv9mdgSmJJE1Av7xRmKdM1JRu9yK4Paog/GGyQ2VHEBJEbqw8OhwKftuJSCJUjAkDKIrTFKxiUJ0FS0t5QHQzZk9QpV7rqeS5ylMCkqTtS11X1f+DEyoqlPDVTFk=
-Authentication-Results: amperecomputing.com; dkim=none (message not signed)
- header.d=none;amperecomputing.com; dmarc=none action=none
- header.from=os.amperecomputing.com;
-Received: from BYAPR01MB4598.prod.exchangelabs.com (2603:10b6:a03:8a::18) by
- BYAPR01MB4359.prod.exchangelabs.com (2603:10b6:a03:a1::25) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2979.29; Thu, 14 May 2020 00:12:11 +0000
-Received: from BYAPR01MB4598.prod.exchangelabs.com
- ([fe80::296c:b848:8bf0:6f2c]) by BYAPR01MB4598.prod.exchangelabs.com
- ([fe80::296c:b848:8bf0:6f2c%5]) with mapi id 15.20.2979.033; Thu, 14 May 2020
- 00:12:11 +0000
-From:   Tuan Phan <tuanphan@os.amperecomputing.com>
-Cc:     patches@amperecomputing.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Neil Leeder <nleeder@codeaurora.org>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] ACPI/IORT: Fix PMCG node always look for a single ID mapping.
-Date:   Wed, 13 May 2020 17:12:02 -0700
-Message-Id: <1589415122-5899-1-git-send-email-tuanphan@os.amperecomputing.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR06CA0005.namprd06.prod.outlook.com
- (2603:10b6:a03:d4::18) To BYAPR01MB4598.prod.exchangelabs.com
- (2603:10b6:a03:8a::18)
+        id S1733061AbgENANG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 May 2020 20:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1733001AbgENANG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 May 2020 20:13:06 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E465DC061A0C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 17:13:05 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jZ1U6-0006qT-Th; Thu, 14 May 2020 02:12:23 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 07BFC1004CE; Thu, 14 May 2020 02:12:21 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
+        paulmck <paulmck@kernel.org>, Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        "Joel Fernandes\, Google" <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [patch V4 part 1 05/36] x86/entry: Flip _TIF_SIGPENDING and _TIF_NOTIFY_RESUME handling
+In-Reply-To: <20200513171047.04c2c10e@gandalf.local.home>
+References: <20200505131602.633487962@linutronix.de> <20200505134058.560059744@linutronix.de> <1970736614.19996.1589403401588.JavaMail.zimbra@efficios.com> <20200513171047.04c2c10e@gandalf.local.home>
+Date:   Thu, 14 May 2020 02:12:21 +0200
+Message-ID: <87v9kzz862.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from aptiov-dev-Latitude-E7470.amperecomputing.com (4.28.12.214) by BYAPR06CA0005.namprd06.prod.outlook.com (2603:10b6:a03:d4::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3000.20 via Frontend Transport; Thu, 14 May 2020 00:12:11 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [4.28.12.214]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 377d4864-272d-488a-d57d-08d7f79b72a8
-X-MS-TrafficTypeDiagnostic: BYAPR01MB4359:|BYAPR01MB4359:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR01MB4359C072EF6B9A06EF794F2AE0BC0@BYAPR01MB4359.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-Forefront-PRVS: 040359335D
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: t1PqXy8f5ddNgqN0hQdGrRq3HtfjG4PZt2a6dceg6uIy+2Y1guonlHfNw1rVhqaHqfcEECoCnIdbFgoq2a1HUXxjS2ExnIj4RLmo8ua1Kd4VlIsuLS/RRHGU83oLGxbdgWk/gawAPrUshJSW7dWT2wYa93qz6S+v6RdIG+fz6t5GjJSDPMYKVCV0uAYQ9+HSurrnviZBDkqrNyuuQBH88NtNDjYzv/rBAGDPmW5jzm0asH8DwpUa8v7eQdkSupV1v4xSclCCJrEMzXfkTJsdl7Lf52Tl7vMY1EHOI2be/NtiI6FYpvvlSt5ntZwnGKOyQQhST5LU8SBCgcEmtGr+Z8NzOnO3oxIG6lGMAarsn51tPeK0nVweJafoQNIT6DPnyjB91vOqlcr7C3eQCLIoRZyKBdtqBREf4VHO0t3CTt4Z3qNuIhe4szeTUOKEcOiRoMWhk6GV14N42rCdwTqXY4AoiGA1MiQJcPbslZbzkLg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB4598.prod.exchangelabs.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(136003)(39850400004)(376002)(396003)(316002)(66946007)(8676002)(6512007)(16526019)(2906002)(2616005)(6666004)(186003)(956004)(6486002)(8936002)(54906003)(478600001)(52116002)(4326008)(66556008)(26005)(109986005)(7416002)(66476007)(6506007)(5660300002)(86362001)(266003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: B2IYuX9ryQaWnIy6Ir+f6APpfPT/97FysWgSykQeMW6IKe5scmvnZ5S2IHymuGRrn+ZUvGA/2MzIuSyKLd1Hy1u3bThqM67L0D/NqWPj5nb6M3qLfm71F3ePeTiKC6JzeFEx6sPvY6g5LKmaKt4ARpcnBn4MjfvxU7LAA6hQc899evzv95uui7cB98y738hS1h4GeRdPRVonfPeLQ6J2Zg6k73slA0SjcEAW/eNS95lCu0Rl0cZBPK8O3NpaZfNf5WOILLEN7180IWqLFydXEpyPOlNO0tTyvkdMdTXwYDlc68rAeydg5vOnWhDLFEMRVmMRUddw1tllH3wiaPXPAPH7cSxIpiewlKuZOmLYdqMLZI6Kg8LYDIrh+ME1h/xzn0eE+2mJi//H5oI+TqvpL7QOOaIl/ypg7wgx2orW8oZClCknPWICMtsO8RHG+xfo6+zOZmhrAu3nJun6q0yZKKKpyFBQo70LFJdu3TGTZ+E=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 377d4864-272d-488a-d57d-08d7f79b72a8
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2020 00:12:11.6414
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: W0ib1MDl/qd0hQKmOocKr0dhAA7D4vQDvITkPxd24HQezSDngWvcRHer5vr0QJ47xuiE1aodx/pQnGt833vSS6aoUSqjCh6vhYaJMS4e8AoAd22be9BAt5fYYzrlwHJe
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB4359
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PMCG node can have zero ID mapping if its overflow interrupt
-is wire based. The code to parse PMCG node can not assume it will
-have a single ID mapping.
+Steven, Mathieu
 
-Fixes: 24e516049360 ("ACPI/IORT: Add support for PMCG")
-Reviewed-by: Hanjun Guo <guoahanjun@huawei.com>
-Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
----
-v1 -> v2:
-- Use pmcg node to detect wired base overflow interrupt.
+(combo reply)
 
-v2 -> v3:
-- Address Hanjun and Robin's comments.
+Steven Rostedt <rostedt@goodmis.org> writes:
+> On Wed, 13 May 2020 16:56:41 -0400 (EDT)
+>> > +		/* deal with pending signal delivery */
+>> > +		if (cached_flags & _TIF_SIGPENDING)
+>> > +			do_signal(regs);
+>
+> Looking deeper into this, it appears that do_signal() can freeze or kill the
+> task.
+>
+> That is, it wont go back to user space here, but simply schedule out (being
+> traced) or even exit (killed).
+>
+> Before the resume hooks would never be called in such cases, and now they
+> are.
 
- drivers/acpi/arm64/iort.c | 5 +++++
- 1 file changed, 5 insertions(+)
+It theoretically matters because pending task work might kill the
+task. That's the concern Andy and Peter had. Assume the following:
 
-diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-index ed3d2d1..12bb70e 100644
---- a/drivers/acpi/arm64/iort.c
-+++ b/drivers/acpi/arm64/iort.c
-@@ -414,6 +414,7 @@ static struct acpi_iort_node *iort_node_get_id(struct acpi_iort_node *node,
- static int iort_get_id_mapping_index(struct acpi_iort_node *node)
- {
- 	struct acpi_iort_smmu_v3 *smmu;
-+	struct acpi_iort_pmcg *pmcg;
- 
- 	switch (node->type) {
- 	case ACPI_IORT_NODE_SMMU_V3:
-@@ -441,6 +442,10 @@ static int iort_get_id_mapping_index(struct acpi_iort_node *node)
- 
- 		return smmu->id_mapping_index;
- 	case ACPI_IORT_NODE_PMCG:
-+		pmcg = (struct acpi_iort_pmcg *)node->node_data;
-+		if (pmcg->overflow_gsiv || node->mapping_count == 0)
-+			return -EINVAL;
-+
- 		return 0;
- 	default:
- 		return -EINVAL;
--- 
-2.7.4
+usermode
 
+ -> exception
+    set not fatal signal
+
+    -> exception
+        queue task work to kill task
+    <- return
+
+  <- return
+
+The same could happen when the non fatal signal is set from a remote CPU.
+
+So in theory that would result in:
+
+   handle non fatal signal first
+
+   handle task work which kills task
+
+which would be the wrong order.
+
+But that's just illusion.
+
+>> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+
+>> Also, color me confused: is "do_signal()" actually running any user-space,
+>> or just setting up the user-space stack for eventual return to signal
+>> handler ?
+
+I'm surprised that you can't answer that question yourself. How did you
+ever make rseq work and how did rseq_signal_deliver() end up in
+setup_rt_frame()?
+
+Hint: Tracing might answer that question
+
+And to cut it short:
+
+    Exit to user space happnes only through ONE channel, i.e. leaving
+    prepare_exit_to usermode().
+
+      exit_to_usermode_loop <-prepare_exit_to_usermode
+      do_signal <-exit_to_usermode_loop
+      get_signal <-do_signal
+      setup_sigcontext <-do_signal
+      do_syscall_64 <-entry_SYSCALL_64_after_hwframe
+      syscall_trace_enter <-do_syscall_64
+
+      sys_rt_sigreturn()
+      restore_altstack <-__ia32_sys_rt_sigreturn
+      syscall_slow_exit_work <-do_syscall_64
+      exit_to_usermode_loop <-do_syscall_64
+
+>> Also, it might be OK, but we're changing the order of two things which
+>> have effects on each other: restartable sequences abort fixup for preemption
+>> and do_signal(), which also have effects on rseq abort.
+>> 
+>> Because those two will cause the abort to trigger, I suspect changing
+>> the order might be OK, but we really need to think this through.
+
+That's a purely academic problem. The order is completely
+irrelevant. You have to handle any order anyway:
+
+usermode
+
+  -> exception / syscall
+       sets signal
+
+   <- return
+
+  prepare_exit_to_usemode()
+      cached_flags = READ_ONCE(t->flags);
+      exit_to_user_mode_loop(regs, cached_flags) {
+        while (cached_flags) {
+           local_irq_enable();
+
+           handle(cached_flags & RESCHED);
+           handle(cached_flags & UPROBE);
+           handle(cached_flags & PATCHING);
+           handle(cached_flags & SIGNAL);
+           handle(cached_flags & NOTIFY_RESUME);
+           handle(cached_flags & RETURN_NOTIFY);
+
+           local_irq_disable();
+           
+           cached_flags = READ_ONCE(t->flags);
+         }
+
+cached_flag is a momentary snapshot when attempting to return to user
+space.
+
+But after reenabling interrupts any of the relevant flag bits can be set
+by an exception/interrupt or from remote. If preemption is enabled the
+task can be scheduled out, migrated at any point before disabling
+interrupts again. Even after disabling interrupts and before re-reading
+cached flags there might be a remote change of flags.
+
+That said, even for the case Andy and Peter were looking at (MCE) the
+ordering is completely irrelevant.
+
+I should have thought about this before, so thanks to both of you for
+making me look at it again for the very wrong reasons.
+
+Consider the patch dropped.
+
+Thanks,
+
+        tglx
