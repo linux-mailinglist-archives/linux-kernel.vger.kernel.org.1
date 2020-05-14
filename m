@@ -2,121 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18A41D419E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 01:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FEEC1D41A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 01:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbgENXW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 19:22:56 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:26283 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726050AbgENXW4 (ORCPT
+        id S1728101AbgENXZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 19:25:36 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:50980 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726037AbgENXZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 19:22:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589498575;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U8rBzNXdOzM4Rq4wtVrbgFP4P1r/jFbtiVyjQ6K0+Gs=;
-        b=YNNv85gcCawjDhp3RUkJ+wv/njvaTya4PHjQj7f2C8c2yh753mGDinZqpGgJmG/Nfc5fYp
-        dJAsopC+AZZexJQoCs/i97/YsCKqrCEZE15sW2T7moVV24E6LhmmlGsqMwBJmLWGx6TLxj
-        /mPRDlwNDz/ZWAaJ7n75/G9G8dh2jHo=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-397-Vqf9SS_WNS2Ji4zVuEa66A-1; Thu, 14 May 2020 19:22:53 -0400
-X-MC-Unique: Vqf9SS_WNS2Ji4zVuEa66A-1
-Received: by mail-qv1-f71.google.com with SMTP id l17so694499qvm.12
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 16:22:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U8rBzNXdOzM4Rq4wtVrbgFP4P1r/jFbtiVyjQ6K0+Gs=;
-        b=lBWbK++VaNG13zn2pb5sjdgQ4p3pqVAgFh75BKa+KP7XH3VcIB0qdsNyDfhWuU590q
-         d9IsPOlQwlChlmwWAp0mC9f3Rr1nFFAR03MDEDEEYufsZar2B1AXmyArs93s6hmU0XZc
-         hcG3XLXVU17wZQZrr+NTqurONRrKclCLtWNT04q3skqhRNT5NDbF+yRExH4ffsJ49Gkj
-         NJIKh2d10cRe32YOvE0xFdrz/35Om8eV2c+qo6HbpklF5DR503GTseeqPwflP2h+/V3z
-         j1EPzWjVbZu2KsKbkPkNwUB8q9ZokE0yc0K+UMFvdhAEKTsNELb0wb4ww+aXSmTNf20x
-         WpEg==
-X-Gm-Message-State: AOAM533Zp9fbqAVHyZ2WKuts+yFndRUU7FLmJb/KZi2E8Gh1NL3FeNIv
-        EnEuHvsTzOs1oUaBTVbIiv6RWGJxLAhz7Kg2EwqxlEEYselaLwqtn4gZsGUgez8rOlO64GbJO/n
-        UAbNCDScEyNobU0r8dfoJ+eGz
-X-Received: by 2002:ac8:4e88:: with SMTP id 8mr702024qtp.82.1589498573042;
-        Thu, 14 May 2020 16:22:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxt1M53IY+PZfrK2ms2IkckL0ZxGObiPKv85M0b7abCJWZc6trLjqL/D3PRXRMdZb5PGRr6GA==
-X-Received: by 2002:ac8:4e88:: with SMTP id 8mr702012qtp.82.1589498572740;
-        Thu, 14 May 2020 16:22:52 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id p22sm553284qte.2.2020.05.14.16.22.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 16:22:51 -0700 (PDT)
-Date:   Thu, 14 May 2020 19:22:50 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Michael Tsirkin <mst@redhat.com>,
-        Julia Suvorova <jsuvorov@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, x86@kernel.org
-Subject: Re: [PATCH RFC 0/5] KVM: x86: KVM_MEM_ALLONES memory
-Message-ID: <20200514232250.GA479802@xz-x1>
-References: <20200514180540.52407-1-vkuznets@redhat.com>
- <20200514220516.GC449815@xz-x1>
- <20200514225623.GF15847@linux.intel.com>
+        Thu, 14 May 2020 19:25:35 -0400
+Received: from fsav405.sakura.ne.jp (fsav405.sakura.ne.jp [133.242.250.104])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 04ENOsH2007040;
+        Fri, 15 May 2020 08:24:54 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav405.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp);
+ Fri, 15 May 2020 08:24:54 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 04ENOsEO007035
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Fri, 15 May 2020 08:24:54 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <a59271f1-b3fc-26d1-f0a2-5ec351d0095e@i-love.sakura.ne.jp>
+ <20200513062652.GM413@jagdpanzerIV.localdomain>
+ <a75d6560-ad99-5b02-3648-247c27c3a398@i-love.sakura.ne.jp>
+ <20200513100413.GH17734@linux-b0ei> <20200513104938.GW29153@dhcp22.suse.cz>
+ <d66c38d9-dd97-072d-e1a7-949e9573b38d@i-love.sakura.ne.jp>
+ <20200513121942.GK17734@linux-b0ei>
+ <2173e3ac-7d5e-24da-0c1e-6472df905767@i-love.sakura.ne.jp>
+ <20200514080053.GN17734@linux-b0ei>
+ <7af6fc77-986a-8a6a-ea93-b807db44413c@i-love.sakura.ne.jp>
+ <20200514162612.GR17734@linux-b0ei>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <aa0e661d-684a-c00c-3484-fa80da564380@i-love.sakura.ne.jp>
+Date:   Fri, 15 May 2020 08:24:49 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <20200514162612.GR17734@linux-b0ei>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200514225623.GF15847@linux.intel.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 03:56:24PM -0700, Sean Christopherson wrote:
-> On Thu, May 14, 2020 at 06:05:16PM -0400, Peter Xu wrote:
-> > On Thu, May 14, 2020 at 08:05:35PM +0200, Vitaly Kuznetsov wrote:
-> > > The idea of the patchset was suggested by Michael S. Tsirkin.
-> > > 
-> > > PCIe config space can (depending on the configuration) be quite big but
-> > > usually is sparsely populated. Guest may scan it by accessing individual
-> > > device's page which, when device is missing, is supposed to have 'pci
-> > > holes' semantics: reads return '0xff' and writes get discarded. Currently,
-> > > userspace has to allocate real memory for these holes and fill them with
-> > > '0xff'. Moreover, different VMs usually require different memory.
-> > > 
-> > > The idea behind the feature introduced by this patch is: let's have a
-> > > single read-only page filled with '0xff' in KVM and map it to all such
-> > > PCI holes in all VMs. This will free userspace of obligation to allocate
-> > > real memory and also allow us to speed up access to these holes as we
-> > > can aggressively map the whole slot upon first fault.
-> > > 
-> > > RFC. I've only tested the feature with the selftest (PATCH5) on Intel/AMD
-> > > with and wiuthout EPT/NPT. I haven't tested memslot modifications yet.
-> > > 
-> > > Patches are against kvm/next.
-> > 
-> > Hi, Vitaly,
-> > 
-> > Could this be done in userspace with existing techniques?
-> > 
-> > E.g., shm_open() with a handle and fill one 0xff page, then remap it to
-> > anywhere needed in QEMU?
-> 
-> Mapping that 4k page over and over is going to get expensive, e.g. each
-> duplicate will need a VMA and a memslot, plus any PTE overhead.  If the
-> total sum of the holes is >2mb it'll even overflow the mumber of allowed
-> memslots.
+On 2020/05/15 1:26, Petr Mladek wrote:
+> This does not make much sense to me. KERN_NO_CONSOLES would be another
+> global flag. If you enable/disable its functionality, it would affect
+> all strings with this flag (not only the ones used by OOM killer).
 
-What's the PTE overhead you mentioned?  We need to fill PTEs one by one on
-fault even if the page is allocated in the kernel, am I right?
+Are you assuming that the switch is applied on KERN_$LEVEL setting (e.g.
 
-4K is only an example - we can also use more pages as the template.  However I
-guess the kvm memslot count could be a limit..  Could I ask what's the normal
-size of this 0xff region, and its distribution?
+  /proc/sys/kernel/print_emerg_messages_on_consoles
+  /proc/sys/kernel/print_alert_messages_on_consoles
+  /proc/sys/kernel/print_crit_messages_on_consoles
+  /proc/sys/kernel/print_err_messages_on_consoles
+  /proc/sys/kernel/print_warning_messages_on_consoles
+  /proc/sys/kernel/print_notice_messages_on_consoles
+  /proc/sys/kernel/print_info_messages_on_consoles
+  /proc/sys/kernel/print_debug_messages_on_consoles
 
-Thanks,
+) ? Then, that is not what I'm proposing.
 
--- 
-Peter Xu
+The switch I will propose is applied on individual printk() call (e.g.
 
+  printk("%s[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %s\n",
+         sysctl_oom_dump_tasks == 2 ? KERN_INFO KERN_NO_CONSOLES : KERN_INFO,
+         task->pid, from_kuid(&init_user_ns, task_uid(task)),
+         task->tgid, task->mm->total_vm, get_mm_rss(task->mm),
+         mm_pgtables_bytes(task->mm),
+         get_mm_counter(task->mm, MM_SWAPENTS),
+         task->signal->oom_score_adj, task->comm);
+
+) which is NOT another global flag.
+
+Since Dmitry Safonov is working on adding loglevel argument to show_stack(),
+we will also be able to implement dump_stack_loglvl(const char *loglvl). Thus,
+we will be able to apply KERN_NO_CONSOLES flags to e.g. only dump_stack() /
+show_mem() / dump_tasks() etc. WITHOUT MAKING THE SWITCHES GLOBAL.
+The direction is heading for "+ loglevel assigned to each message".
