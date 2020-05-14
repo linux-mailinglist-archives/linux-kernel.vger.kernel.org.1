@@ -2,133 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C201D3C0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 21:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A0B1D3C8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 21:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730096AbgENTHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 15:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728779AbgENTHA (ORCPT
+        id S1728004AbgENTH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 15:07:57 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:57870 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729580AbgENTHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 15:07:00 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34232C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 12:07:00 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id i16so2081762ybq.9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 12:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0qCYNs2CSDyIVi64uoLkz66pQmNK2j6ygGTzZfOYnzI=;
-        b=KojQQwr+FP1sG1Tc9Zn7a0yfdfQdqT35piN3mx9x7vtv69ME8CohxDMY5VSWaQN62S
-         z0KPUD35AbOGZrl6GIBejowH3CqV0VkEqa8Md1HFdUv7Zmx/0POxzLGgeoF+gwr+JeUZ
-         MZ/tL7gB83t+hGTJcYu2EVEJEaNGfj0ne5fboSCOf9O/+Tvi9p7rJFN0cY3kpD9RR+7L
-         eZyKxgghSY7/TcYTKEgImubH6pErnMVYyZOhaTuajQU3eS75EXdY3lnwGn/hY2JQTJAC
-         khuDmr8fz2BX6emMDtkDuSMZsEnfDJL3l5KIeXmXzz6j1TWbTW4IzYn3S6+BgiFu+y/m
-         aFhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0qCYNs2CSDyIVi64uoLkz66pQmNK2j6ygGTzZfOYnzI=;
-        b=aEwYmOyDCtfKT0+EhUR4tf7BKWGgJYplmrBWfJXbWl2nmw8kUF+gUN/Oqgy06FKWg6
-         fTojr4I/1wFt9yoi4AzbM+84sCODHkCwxZz/Q8JZKXtqRY0dQqNNd/2K54nYTiHo1zs0
-         ZjCcEp6tYmkt1yCfKlmoso389Ki7jAOXNu2M8g9wBV1hJHyFtjtfEvOR8Q0fBJ4PppxM
-         bqy1ZkQDBZxMc6JsxAIAqTuTGvZbLDvQAfeZASCFck1rCI4QYQs0LVo9QWZ1kW1X66y2
-         n8u+odRQqf8zmSl8Fv+9rRBosaipmLKqQ6mMLzf+NANpO03J32KzSZzwOovrx977R4xV
-         sWHA==
-X-Gm-Message-State: AOAM533l+ov64jYU8CuRQjCTD3QrH8LTjrcXb/Th33RsVs3PJNtbGAxY
-        HdcIYnV59Qt1Ut+Mjs66+dTncIFJwruzKq+LlkYQjw==
-X-Google-Smtp-Source: ABdhPJzphKsd+sh3MAeBf6+tjOED4Unl+agXSj1k3Juzx1Uns7DdWmOQm/z2psspAyAsziKhGcLgRFfezAjeqbzeGT8=
-X-Received: by 2002:a25:d450:: with SMTP id m77mr9574174ybf.177.1589483219072;
- Thu, 14 May 2020 12:06:59 -0700 (PDT)
+        Thu, 14 May 2020 15:07:41 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200514190739euoutp01b6baaa51958d6697e5ee400b21e9d2a3~O_ppOrvOQ1435214352euoutp01G
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 19:07:39 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200514190739euoutp01b6baaa51958d6697e5ee400b21e9d2a3~O_ppOrvOQ1435214352euoutp01G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1589483259;
+        bh=CXFOnCSMo4ZePs1sWzgaCbirikPXXnubVCNzMYCfGBA=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=CClJ+FyobMDurEP5yKu624eumo8GvTzP8ChA5fSE9+1wiFgNQuxpmx/E0ST0igXxj
+         tZTQkS+3D2KqSutEbtIgkxiaEehVWkcH1QEBLQOVRoAqu3qC7lpETQ7kQSOil5N3K3
+         auZIU4ZmlvR/Q39YBVCbiXzbOnifgxsOFsJ5Biu4=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200514190737eucas1p266af3c9f52a7fcb960981451ed8a6ed4~O_poBhODy0442904429eucas1p25;
+        Thu, 14 May 2020 19:07:37 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 41.A1.60679.9F69DBE5; Thu, 14
+        May 2020 20:07:37 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200514190737eucas1p18ccdddb185ea7611683a6859e17bc721~O_pniwfV-0234402344eucas1p1o;
+        Thu, 14 May 2020 19:07:37 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200514190737eusmtrp1dfac399447ada06f75e580787e9cef7f~O_pnh-Vnd2577025770eusmtrp1m;
+        Thu, 14 May 2020 19:07:37 +0000 (GMT)
+X-AuditID: cbfec7f4-0cbff7000001ed07-6a-5ebd96f9c12d
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id C8.32.08375.9F69DBE5; Thu, 14
+        May 2020 20:07:37 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200514190737eusmtip2b2b24273eb8b84ed3db9c7ab6359c5ef~O_pnXZPj81371813718eusmtip2A;
+        Thu, 14 May 2020 19:07:37 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Markus Elfring <elfring@users.sourceforge.net>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Stefan Wahren <wahrenst@gmx.net>, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH 0/2] Set the quality value for two HW RNGs
+Date:   Thu, 14 May 2020 21:07:32 +0200
+Message-Id: <20200514190734.32746-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-References: <20200513234738.GA21211@embeddedor> <20200514131030.GL5583@kernel.org>
- <20200514150601.GS4897@embeddedor>
-In-Reply-To: <20200514150601.GS4897@embeddedor>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 14 May 2020 12:06:48 -0700
-Message-ID: <CAP-5=fWTCFx80Hd_97_4AxFV4KsRyYptLbQfw=XVw_j8i-EAyg@mail.gmail.com>
-Subject: Re: [PATCH perf/core] perf intel-pt: Fix clang build failure in intel_pt_synth_pebs_sample
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Content-Type: text/plain; charset="UTF-8"
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRjm81x2sk4dp+DLiqJRQaZmF+OjMhKCTpRd6EdhZK06qeSNHc2K
+        SMtmac2NLVNnkWWheFttNnRpl5WuElslZWEl6TQ0FETJS/d51uXf8z2X93lf+BhC/pNSMPFJ
+        qYI6SZWgpH1JW/O4K2T8YmNMWIMxBH83NMvwrUIzhau1TSR25ZQReGLwkQxnlZppfK5/FtZ1
+        fyawy3VTht86yhG2dL+mcOeHcR/cZr9E40LXXR9cYnRTuMSWh3BPkZXGg5VuhJ2Pc4i1/vzX
+        CQPiTZ2tNF9vei/jSy33aN52fz5vqcih+XuXq2S89XoGn1dbgfi8vpuIN9e+IvlTT89Q/LBl
+        9lY22nf1ASEh/rCgXrxmr29c5UMrlWInj5zucNOZyEnkoikMcMshr671N/Zl5Fw5An1lPZIe
+        Iwh6y796lWEEdz92/Y3UVNd7hTIEo+OnvZFPCCxtLymPi+YiQXfjMeURAjgNBcYhPekRCC4d
+        NB/dkyZ/biU4uzJ9chHDkNx8yOyiPTTLrYKu3Aek1DYHik+2eHk/eFLknuRncEFQdardO3IO
+        ZN0untwIuBsM5A9ZaSm8DrKzc7yD/KHfWSuT8CxoMZ4nPb3AZYDRsELKnkdguzTm9a+Cd88m
+        aI+H4BaC2b5YoiOhorRfJkWnw5sBP2mF6WCwFRASzcLZbLnkngc1ugbvQAVo+8uRhHl4/vkn
+        pUdzTf8dZvrvGNO/3hJEVKBAIU1MjBXEpUlCeqioShTTkmJD9ycnWtDvb9nywzlSh+zf9jkQ
+        xyDlNDYsvzFGTqkOi0cTHQgYQhnAbjbfiZGzB1RHjwnq5D3qtARBdKCZDKkMZJdd69st52JV
+        qcIhQUgR1H9UH2aKIhOdCT/YtzZwYJHik13RsMO4IWvk6vYOw1hwcJrGb5NGGxFVE5ldVnd1
+        q+7LVPbkFs22qJ4m9oquVxsrLjB1VzVst7s7o2G2vr66g2XQkJYuu7MueqnjwkRPY24CET5t
+        fdtOfemLKwX7T4zSuzYebzconLZ9yRFBoe2GQsp6qyVCSYpxqiVBhFpU/QIQF34jkgMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOIsWRmVeSWpSXmKPExsVy+t/xe7o/p+2NM7i8Xsji76Rj7BYbZ6xn
+        tVjbe5TF4nzncmaLX++OsFs0L17PZtH9Ssai//FrZovz5zewW9w8tILRYtPja6wW9+/9ZLK4
+        vGsOm8WM8/uYLBZMfsJqsWBbH6PF05mb2SzerX7CaHH8RCezg7DH71+TGD1m3T/L5rFz1l12
+        j8Wb9rN5bDug6rFpVSebx/65a9g9Ni+p9+jbsorRo+/lBkaP9Vuusng0nWpn9fi8SS6AN0rP
+        pii/tCRVISO/uMRWKdrQwkjP0NJCz8jEUs/Q2DzWyshUSd/OJiU1J7MstUjfLkEvY/XhzawF
+        u1gqWm4/YWtgPM7cxcjJISFgIrFu7U4gm4tDSGApo8TH5WdYuxg5gBJSEivnpkPUCEv8udbF
+        BlHzlFFiyeapYM1sAo4S/UtPsIIkRAQms0q82dPKBJJgFiiXaH34hBXEFhawkjj+qIEJZCiL
+        gKpEwyM2kDCvgLXEo66DLBAL5CVmN56GigtKnJz5hAWknFlAXWL9PCGQML+AlsSapussENPl
+        JZq3zmaewCgwC0nHLISOWUiqFjAyr2IUSS0tzk3PLTbUK07MLS7NS9dLzs/dxAiM9G3Hfm7e
+        wXhpY/AhRgEORiUeXoOpe+OEWBPLiitzDzFKcDArifD6rd8dJ8SbklhZlVqUH19UmpNafIjR
+        FOibicxSosn5wCSUVxJvaGpobmFpaG5sbmxmoSTO2yFwMEZIID2xJDU7NbUgtQimj4mDU6qB
+        ken00bNaRVM4Ft4Rm/W65OIyfjcRm+sbJ9w6m83yz8wpsi8+VXr3bkE1ffZfF+4/7rm5/saz
+        qbZeZbOXzF9/Jk7hi5zztlVbp/aYLVnlPanr386+tsU/73fMfmtV+9D/57bgfPnYeqWo9x/u
+        xXT57DSadqH6YE20V37ilxpfS6/6zl82vNEd3kosxRmJhlrMRcWJAG2FeAMKAwAA
+X-CMS-MailID: 20200514190737eucas1p18ccdddb185ea7611683a6859e17bc721
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200514190737eucas1p18ccdddb185ea7611683a6859e17bc721
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200514190737eucas1p18ccdddb185ea7611683a6859e17bc721
+References: <CGME20200514190737eucas1p18ccdddb185ea7611683a6859e17bc721@eucas1p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 8:01 AM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> On Thu, May 14, 2020 at 10:10:30AM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Wed, May 13, 2020 at 06:47:38PM -0500, Gustavo A. R. Silva escreveu:
-> > > Fix the following build failure generated with command
-> > > $ make CC=clang HOSTCC=clang -C tools/ perf:
-> > >
-> > > util/intel-pt.c:1802:24: error: field 'br_stack' with variable sized type 'struct branch_stack' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
-> > >                         struct branch_stack br_stack;
-> > >                                             ^
-> > > 1 error generated.
-> > >
-> > > Fix this by reordering the members of struct br.
-> >
-> > Yeah, I noticed that as far back as with ubuntu 16.04's clang:
-> >
-> > clang version 3.8.0-2ubuntu4 (tags/RELEASE_380/final)
-> >
-> > util/intel-pt.c:1802:24: error: field 'br_stack' with variable sized type 'struct branch_stack' not at the end of a struct or class is a GNU
-> >       extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
-> >                         struct branch_stack br_stack;
-> >                                             ^
-> > 1 error generated.
-> >
-> >
-> > Will fold this with the bug introducing the problem to avoid bisection
-> > problems.
-> >
->
-> I agree. Also, the commit hash of the "Fixes" tag only applies to the
-> perf/core branch and, I guess that might create confusion.
+The rng structure contains the quality field which tells how many bits
+of entropy can be obtained from 1024 bits read from a device. With the
+quality value set the hw_random framework starts a kernel thread to feed
+the entropy pool in the CRNG, which helps to initialize it quickly
+especially during boot.
 
+Łukasz Stelmach (2):
+  hwrng: iproc-rng200 - Set the quality value
+  hwrng: exynos - Set the quality value
 
-So while this fixes the warning I believe it breaks the intent of the code.
+ drivers/char/hw_random/exynos-trng.c  | 1 +
+ drivers/char/hw_random/iproc-rng200.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-tools/perf/util/branch.h:
-struct branch_stack {
-       u64                     nr;
-       u64                     hw_idx;
-       struct branch_entry     entries[];
-};
+-- 
+2.25.0
 
-tools/perf/util/intel-pt.c:
-               struct {
-                       struct branch_stack br_stack;
-                       struct branch_entry entries[LBRS_MAX];
-               } br;
-
-The array in br is trying to extend branch_stack's entries array. You
-might have to do something like:
-
-alignas(alignof(branch_stack)) char storage[sizeof(branch_stack) +
-sizeof(branch_entry) * LBRS_MAX];
-struct branch_stack *br = &storage;
-
-malloc/free may be nicer on the eyeballs.
-
-Thanks,
-Ian
-
-> Thanks
-> --
-> Gustavo
