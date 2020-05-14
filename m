@@ -2,90 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17D01D29D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CE91D29E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 10:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726038AbgENITw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 04:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34066 "EHLO
+        id S1726098AbgENIWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 04:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725886AbgENITw (ORCPT
+        by vger.kernel.org with ESMTP id S1725925AbgENIWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 04:19:52 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32884C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:19:52 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id i68so2167941qtb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:19:52 -0700 (PDT)
+        Thu, 14 May 2020 04:22:13 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38817C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:22:13 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id y16so2717609wrs.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 01:22:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nV+pjnxNzhUaIVaL0d+Q+czgaVh94PJJNBtyQf89HuA=;
-        b=bwqQu7dsz6fMq5SL+sSD61OzDG6vFt+sG+Dtmn2KHQEXyvruCjQJRVMO0rcUkWbR4U
-         3sBG2XIUE/tDcJxqlcxCKRZwVtTGXiqQqrz1W1j1VCo+pamFrLGrbNEVowY6fZeWz3dF
-         lP8o4i0KqfUWhOHYFoa1pol4Wf7ScVyeR1jFc=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=qdWmA1Euy8ZG30FI7AUlbvFYtFSjIbnys+8nxgEJbhg=;
+        b=PFa9LEYzjwWMWmcWtxzDu0fdq/K+5YMclCSXA64Rlr9wUvrZBZ/9M0Qb4+G+g+R3x2
+         funKlEv/81De8p6hoqZ3C3Mp6mO8xxpd5qSRdl5a/M+eRdY21v25CSDE7E9Od/hZRrd8
+         NBuC3HaS9FIXoFWk4+YW6hfGd8hGWuWGZ25BhmJM9uTsJRmvlYJ0H7q0e9fzq+s1mlq0
+         ovec4GfMY3KggkqZlGxoVqudk53Il3emE9lMn22vHRRGjaDXDoQPKYiIFY62zuo3YRRz
+         yI+/47qBFaVlJqYfu3PgkPwcgU/ZGxs22UbhoIAV/vN03Hn2EJouCZj8xIzPFSFy5FSe
+         ZhzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nV+pjnxNzhUaIVaL0d+Q+czgaVh94PJJNBtyQf89HuA=;
-        b=VaP2IaH2r0Y+A56nKnoRifU+sVUVfnrRPuAqw0KKHXdYt6EzgHB7poD/bFAcdHJceJ
-         U31wftiFR3ejJXRqOu4ahRPJQc0Fv7GF1+kLg7UzdM7m+1u6SVHAmxQNK4k0QOnNUjql
-         S0X+V1HTcUOtuGIYEq+YArY/W7004MVMlkIenhYCSexmwRTU4NcALizoV1eSJNZIOzHS
-         CqwvOF9KMAY23e/vZ84FBnLmRYUcK50ALannaXWxgvEU7A2VMg1weWpbxnNhpTWcgUAp
-         qpW6SdihO2QB/NojEXtsOPqs84P26P6GrTdUrAFpNKFVF2S+0ME8pq1Sq52Quk9frzFt
-         WHrA==
-X-Gm-Message-State: AOAM533yRNAQCu/3IAWvms8ZUZXo0pVqcKZnPyrvOOWRoWuqBBSITz8w
-        W7+g650HBXwSnVCF9X1458nDgkPRRKOarAQKeP/NnQ==
-X-Google-Smtp-Source: ABdhPJy6BMxSQgw3762kK+QUyfrMZlOFJwduKjgq+7fX+Y9LnDP2guRYrUbaIterDx66ZYtt4hHEjjuKFL7NsBC5yw0=
-X-Received: by 2002:aed:24a6:: with SMTP id t35mr3208654qtc.72.1589444391477;
- Thu, 14 May 2020 01:19:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200311112004.47138-1-stevensd@chromium.org> <20200311112004.47138-2-stevensd@chromium.org>
- <CAKMK7uHFgiHLe9oiFBr-VR-6rU9-hLTpBTEVNh0ezyj54u70jw@mail.gmail.com>
-In-Reply-To: <CAKMK7uHFgiHLe9oiFBr-VR-6rU9-hLTpBTEVNh0ezyj54u70jw@mail.gmail.com>
-From:   David Stevens <stevensd@chromium.org>
-Date:   Thu, 14 May 2020 17:19:40 +0900
-Message-ID: <CAD=HUj6k-y1=64zY8ZFOQBZ7WSUWiQfvkiTpXXt10JB_CGqk1A@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] dma-buf: add support for virtio exported objects
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:VIRTIO CORE, NET..." 
-        <virtualization@lists.linux-foundation.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, virtio-dev@lists.oasis-open.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=qdWmA1Euy8ZG30FI7AUlbvFYtFSjIbnys+8nxgEJbhg=;
+        b=SCFvUg7rV2EAhokQMjoFHoRwQW8+MVCI+atXK/DEFrlpvVW3+LynUgk+XbMclEdEmt
+         4sfMHWD38IwewmrVdqM5QhCsBobeOtrlIVLwCpIDQDXy6zTKag62ieTJrNYfFfWoOhS/
+         SW41RMXO+w2bGdkgsfsgPoaqXNtgms15cVLRkkzGYSOIikVM9dA/q4LgIkhUxVvitFXN
+         lsyYf+7ulpjEvDCj1cNclJ3r3cEzSL3lEScQd1MMR5hrYePm1nHt/z2py44wrtc0tJ4g
+         e7q91HQ9HHqevclA5UI+e2kho3M2ixWm3NNg174inILhY7rTiQbxXDl836AXTwKfQwuc
+         SpRA==
+X-Gm-Message-State: AOAM532ebIHrJqvqMuAx+FMcWs2wRflYHxoMaRcruqaBOLwSP8U985nu
+        XVPnmUtPpgTi8gGugoHR3uUw4EnGUgKPkg==
+X-Google-Smtp-Source: ABdhPJx+f1wrdNofwBzUEfjZS+B2S5ZwBh/K69NL9NfijqNi/OpJXubq5S/Uj8dTwz4ehytw0AUy2g==
+X-Received: by 2002:a5d:4dc9:: with SMTP id f9mr3974180wru.407.1589444531787;
+        Thu, 14 May 2020 01:22:11 -0700 (PDT)
+Received: from lmecxl0524.lme.st.com (2a01cb058702ff00bc4b798f4f30d41e.ipv6.abo.wanadoo.fr. [2a01:cb05:8702:ff00:bc4b:798f:4f30:d41e])
+        by smtp.gmail.com with ESMTPSA id l18sm9170002wmj.22.2020.05.14.01.22.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 01:22:11 -0700 (PDT)
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     lorenzo.pieralisi@arm.com, linux-arm-kernel@lists.infradead.org,
+        mark.rutland@arm.com, tglx@linutronix.de, alexios.zavras@intel.com,
+        will@kernel.org, maz@kernel.org, steven.price@arm.com,
+        etienne.carriere@linaro.org
+Subject: [PATCH 1/2] firmware: arm-smccc: define identifier for Arm SMCCC v1.2
+Date:   Thu, 14 May 2020 10:21:08 +0200
+Message-Id: <20200514082109.27573-1-etienne.carriere@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for the duplicate reply, didn't notice this until now.
+Define identifier value reported by secure firmware when its
+supports Arm SMCCC specification v1.2.
 
-> Just storing
-> the uuid should be doable (assuming this doesn't change during the
-> lifetime of the buffer), so no need for a callback.
+Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
+---
+ include/linux/arm-smccc.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Directly storing the uuid doesn't work that well because of
-synchronization issues. The uuid needs to be shared between multiple
-virtio devices with independent command streams, so to prevent races
-between importing and exporting, the exporting driver can't share the
-uuid with other drivers until it knows that the device has finished
-registering the uuid. That requires a round trip to and then back from
-the device. Using a callback allows the latency from that round trip
-registration to be hidden.
+diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
+index 59494df0f55b..1cf221f3f07a 100644
+--- a/include/linux/arm-smccc.h
++++ b/include/linux/arm-smccc.h
+@@ -56,6 +56,7 @@
+ 
+ #define ARM_SMCCC_VERSION_1_0		0x10000
+ #define ARM_SMCCC_VERSION_1_1		0x10001
++#define ARM_SMCCC_VERSION_1_2		0x10002
+ 
+ #define ARM_SMCCC_VERSION_FUNC_ID					\
+ 	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
+-- 
+2.17.1
 
--David
