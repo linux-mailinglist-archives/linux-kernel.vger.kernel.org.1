@@ -2,115 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4451D2E30
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 13:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBD01D2E34
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 13:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726301AbgENLXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 07:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgENLXt (ORCPT
+        id S1726234AbgENLYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 07:24:45 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:60621 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726073AbgENLYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 07:23:49 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62902C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:23:47 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id 82so797690lfh.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 04:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=52Rzrrj4E2al2tTGlHFyR6M/8l4BjJi9pTbsEHvkafw=;
-        b=AQB8AjMyAZSGOL4e97UU90oVl9kAMguV5p4dTDDqcw0/yek+GT5FWuN2tscAVlKFEs
-         EGzg8HjoW6dtHzhFbCevirz+96qH21ZW9fHpy2kzigcrKVJlygWbNXwPaiOUs6uFh063
-         aPAdVZthuA7Y6Oqs1VLm4MDl2Ymqdb56dcWwjCBZ0og7DZpzl8xsqkqa05M1swjos7Gz
-         BvCnthOJZ3OAhbZMPq0iz6CbKdHXINgpBnT6TT6KscyzM/JwxVG6ZXzKdHQmih4z9i43
-         mHHs4GZHjvk6LTACjAngtXARfd2tJBCvG7KpSeW1akMKIkbng2rYc0JDaLTV5N6BoPB4
-         oObw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=52Rzrrj4E2al2tTGlHFyR6M/8l4BjJi9pTbsEHvkafw=;
-        b=RFwgbzpqzr0CMRT9O68WZrpG4PQNavL1JUnbHjKqKZCHK7qM9a68a9l+CSXWulIHCx
-         xJaiGk/BNVO69yY8pU6F8nTKYG12HwTLMjpsQEh/RhIStO0q1InwDkoskdpZprEsrlAD
-         xYpLZwtacVv0b8cFonixQCdJrT1JX03d7zkNq3x+aImAeIcxliWo5c7nIfoA12kqmbiG
-         EArvFVjHjrZ90XequI/ipG1CDqF8vSMvHsb+BSH8weQSAfWtJvc6HZiOpfOuQT0eVg+m
-         0l4YHIdE8RFn7/8eUlr30gEbrXU0WzlM5v7KBjejqN+AV859qapgmaiAfIQNLYT94leU
-         4aVg==
-X-Gm-Message-State: AOAM530T7/LcLSgTeH3lrRCepn98z8GjhnDi6VT4yAu3DfuC6K2ie/L8
-        +HIuWjXFmhg4TAGFaoUwxAMNtdxIKDjXXGj2y/xv1Q==
-X-Google-Smtp-Source: ABdhPJyJHVIeFpsuP6hWyR4T3t3i5l95UvM1ck7qhqVExGI1lWc37GndFTYXCpQQGciey+GLFpqutzOT/FYhOL3syjg=
-X-Received: by 2002:ac2:44bb:: with SMTP id c27mr3095483lfm.40.1589455425658;
- Thu, 14 May 2020 04:23:45 -0700 (PDT)
+        Thu, 14 May 2020 07:24:45 -0400
+Received: from fsav305.sakura.ne.jp (fsav305.sakura.ne.jp [153.120.85.136])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 04EBO3fI019038;
+        Thu, 14 May 2020 20:24:03 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav305.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav305.sakura.ne.jp);
+ Thu, 14 May 2020 20:24:03 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav305.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 04EBNvuV018914
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Thu, 14 May 2020 20:24:03 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <b1d507b1-dae7-f526-c74a-d465ddecea6a@i-love.sakura.ne.jp>
+ <20200429142106.GG28637@dhcp22.suse.cz>
+ <a59271f1-b3fc-26d1-f0a2-5ec351d0095e@i-love.sakura.ne.jp>
+ <20200513062652.GM413@jagdpanzerIV.localdomain>
+ <a75d6560-ad99-5b02-3648-247c27c3a398@i-love.sakura.ne.jp>
+ <20200513100413.GH17734@linux-b0ei> <20200513104938.GW29153@dhcp22.suse.cz>
+ <d66c38d9-dd97-072d-e1a7-949e9573b38d@i-love.sakura.ne.jp>
+ <20200513121942.GK17734@linux-b0ei>
+ <2173e3ac-7d5e-24da-0c1e-6472df905767@i-love.sakura.ne.jp>
+ <20200514080053.GN17734@linux-b0ei>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <7af6fc77-986a-8a6a-ea93-b807db44413c@i-love.sakura.ne.jp>
+Date:   Thu, 14 May 2020 20:23:55 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <1588758017-30426-1-git-send-email-sumit.garg@linaro.org>
- <1588758017-30426-2-git-send-email-sumit.garg@linaro.org> <07bb6080f8be9f6613f460e2d6e19f3d456e219c.camel@linux.intel.com>
-In-Reply-To: <07bb6080f8be9f6613f460e2d6e19f3d456e219c.camel@linux.intel.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Thu, 14 May 2020 16:53:34 +0530
-Message-ID: <CAFA6WYMciZ=qkG3N_9YWzt_DJr2dGwdAy9diMXCJSNjr2o5ONA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] KEYS: trusted: Add generic trusted keys framework
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>, dhowells@redhat.com,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Janne Karhunen <janne.karhunen@gmail.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Markus Wamser <Markus.Wamser@mixed-mode.de>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        op-tee@lists.trustedfirmware.org,
-        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200514080053.GN17734@linux-b0ei>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 May 2020 at 05:55, Jarkko Sakkinen
-<jarkko.sakkinen@linux.intel.com> wrote:
->
-> On Wed, 2020-05-06 at 15:10 +0530, Sumit Garg wrote:
-> > Current trusted keys framework is tightly coupled to use TPM device as
-> > an underlying implementation which makes it difficult for implementations
-> > like Trusted Execution Environment (TEE) etc. to provide trusked keys
-> > support in case platform doesn't posses a TPM device.
-> >
-> > So this patch tries to add generic trusted keys framework where underlying
-> > implemtations like TPM, TEE etc. could be easily plugged-in.
-> >
-> > Suggested-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
->
-> I tend to agree how this is implemented and could merge it as such.
->
-> I'm just thinking if we could refine this patch in a way that instead of
-> copying TRUSTED_DEBUG macro we could just replace pr_info() statements
-> with pr_debug()?
+On 2020/05/14 17:00, Petr Mladek wrote:
+> On Wed 2020-05-13 21:59:23, Tetsuo Handa wrote:
+>> On 2020/05/13 21:19, Petr Mladek wrote:
+>>> On Wed 2020-05-13 20:24:24, Tetsuo Handa wrote:
+>>>> On 2020/05/13 19:49, Michal Hocko wrote:
+>>>>> On Wed 13-05-20 12:04:13, Petr Mladek wrote:
+>>>>>> What is so special about  OOM dump task so that it would deserve such
+>>>>>> complications?
+>>>  
+>>>> I don't think dump_tasks() is important information to be printed on consoles.
+>>>> But since somebody might think dump_tasks() is important information to be
+>>>> printed on consoles, I suggest switching KERN_NO_CONSOLES using e.g. sysctl.
+>>>
+>>> You might achieve the same with DEBUG loglevel. Or do I miss anything?
+>>
+>> Use of KERN_DEBUG affects userspace syslog daemon. We will have to ask administrators
+>> to configure syslog daemon not to filter KERN_DEBUG messages. And administrators will
+>> be bothered by needless KERN_DEBUG messages. Also,
+> 
+> What about using KERN_INFO then? Is there still the same problem?
 
-AFAIU, TRUSTED_DEBUG being a security sensitive operation is only
-meant to be used in development environments and should be strictly
-disabled in production environments. But it may not always be true
-with pr_debug() with CONFIG_DYNAMIC_DEBUG=y which allows the debug
-paths to be compiled into the kernel which can be enabled/disabled at
-runtime.
+dump_tasks() is already using KERN_INFO, and the same problem remains. KERN_INFO cannot
+prevent printk() from printing to consoles unless console loglevel is tuned. And tuning
+console loglevel can prevent all KERN_INFO from printing to consoles. What I want is a
+method for allowing administrators to control whether to print each message to consoles.
+Such method will be by definition controlled via "+ loglevel assigned to each message".
 
-IMO we should keep this TRUSTED_DEBUG macro, so that users are aware
-of its security sensitive nature and need to explicitly enable it to
-debug.
+> 
+> Otherwise this looks like a dead end.
 
--Sumit
+Please please please DON'T IGNORE THE SWITCH.
 
->
-> /Jarkko
->
+>                                       The above states that
+> administrators will not have to do anything when KERN_NO_CONSOLES
+> are introduced. But there are people that will not like the new
+> behavior. They will have to do something.
+
+Exactly. Therefore, we will need a switch which controls whether to add
+KERN_NO_CONSOLES modifier (e.g. extending /proc/sys/vm/oom_dump_tasks if
+KERN_NO_CONSOLES were useful to only dump_tasks()). Practically I would
+propose /proc/sys/vm/print_oom_messages which is a bitmap for which OOM-
+related messages should prevent printk() from being written to consoles.
+
+> 
+> 
+>>> I know that it is meant as a modifier, like LOGLEVEL_SCHED and
+>>> KERN_CONT.
+>>
+>> Right. KERN_NO_CONSOLES is a modifier.
+>>
+>>>            But this is another reason to avoid it. We already have
+>>> huge pain with these two modifiers. They both do not work well.
+>>
+>> KERN_NO_CONSOLES can not cause pains like LOGLEVEL_SCHED because
+>> KERN_NO_CONSOLES is to say "no need to call console drivers" while
+>> LOGLEVEL_SCHED is to say "don't call console drivers now but have
+>> to call console drivers later".
+> 
+> The problem with LOGLEVEL_SCHED is that it is not reliable. It must be
+> used for all printk() calls in the critical path. But people are not
+> aware of this, or they forget, or it gets complicated in shared code.
+
+I was worrying about difficulty in the callee side, but you are worrying
+about difficulty of the caller side. Then, ...
+
+> 
+> KERN_NO_CONSOLES will have exactly the same problems.
+
+No. That is a pointless concern.
+Forgetting to add KERN_NO_CONSOLES is unrelated to the critical path.
+
+> 
+> KERN_CONT is not reliable also from other reasons.
+
+Again, a pointless concern. We can try to eliminate KERN_CONT from printk()
+callers when adding KERN_NO_CONSOLES to printk() callers, provided that
+KERN_CONT could become a concern.
+
+> 
+> 
+>>> NO_CONSOLES would mess with this decision. Some messages would suddenly
+>>> get hidden on console but appear in userspace.
+>>
+>> Wrong. Console loglevel is already hiding some messages.
+> 
+> Exactly and people are aware of it. We should use it when possible
+> instead of introducing yet another complexity.
+
+What I'm saying is:
+
+  Don't count on KERN_$LOGLEVEL. Like you said "developers already have
+  troubles to decide between the existing 8 loglevels.", there are only 8
+  levels which are effectively unchangable/unusable for controlling which
+  messages should be printed to consoles. Therefore, allow developers and
+  administrators to control which messages should not be printed to consoles
+  using SOME SWITCH YOU ARE IGNORING. Majority of kernel messages are not
+  urgent enough to require synchronously writing to consoles. Only oops-
+  related messages (and possibly watchdog-related messages) would worth
+  writing to consoles synchronously. Skip writing non-urgent messages when
+  urgent condition happens will be a concern when asynchronous printk() is
+  added. If KERN_NO_CONSOLES were introduced, we can allow developers and
+  administrators to control which messages are non-urgent messages.
+
+Given that said, if KERN_NO_CONSOLES is not acceptable, I have to again
+battle against Michal Hocko regarding how to offload OOM-related messages,
+like Sergey Senozhatsky estimated
+
+  "I'd say that lockless logbuf probably will land sometime around 5.8+.
+  Async printk() - unknown."
+
+last month.
+
