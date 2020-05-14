@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EE11D4064
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 23:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179551D405D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 23:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727835AbgENVxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 17:53:03 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:59060 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgENVxD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 17:53:03 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04ELqvKs096190;
-        Thu, 14 May 2020 16:52:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589493177;
-        bh=gq1egVzpDSB9B+OD1HzxXbmyNMglkSN4GoPkuCuAoZw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=tVE470XWB6YZ/q4MZMgEKQqGk8Bs3y5T7zDmGrQpAWdSperW386SBKl4uKuOtpUeU
-         CUnOziB5GRQI9kJ1ZJkB0I8bTVUhVaLr96mQnsYtVSYl3L7RdigjQFCT+6lrSxLcXG
-         5B8fhqNusISqVdLe2vlubt9M4B86QPWxCctcuBDI=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04ELqvGJ030194
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 14 May 2020 16:52:57 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 14
- May 2020 16:52:57 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 14 May 2020 16:52:57 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04ELqvEs072265;
-        Thu, 14 May 2020 16:52:57 -0500
-Subject: Re: [PATCH net-next 2/2] net: phy: DP83822: Add ability to advertise
- Fiber connection
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
-        <davem@davemloft.net>, <robh@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20200514173055.15013-1-dmurphy@ti.com>
- <20200514173055.15013-3-dmurphy@ti.com> <20200514185217.GX499265@lunn.ch>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <2ccba0e1-d7f1-86ae-d67c-5e9f4a3b0c4f@ti.com>
-Date:   Thu, 14 May 2020 16:43:25 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727991AbgENVpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 17:45:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726216AbgENVpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 17:45:09 -0400
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70B3E20709;
+        Thu, 14 May 2020 21:45:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589492708;
+        bh=SrjBxjuvO2xIOH81KR141yOl4ZrKeyzuGmHkqf9XFGA=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=R1VGab0Nt7+Xgr5r/YG6q2wVuG7JVAdqrEdlDRXs3RvfywgsAc4R6hWti66JDBWHK
+         A19V4brp1JkCbas+v55UFeYRwpl9i0vPpCje/eM/DUk4XMaRxUQ39XqMc0HAXcrccM
+         Bua6aWzIvEf76Sl8QdMsAwp5sOf5I439+y5EojkA=
+Date:   Thu, 14 May 2020 23:45:04 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
+cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        live-patching@vger.kernel.org, Joe Perches <joe@perches.com>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: adjust to livepatch .klp.arch removal
+In-Reply-To: <bfe91b2d-e319-bf12-6a15-4f200d0e8ea4@linux.vnet.ibm.com>
+Message-ID: <nycvar.YFH.7.76.2005142344230.25812@cbobk.fhfr.pm>
+References: <20200509073258.5970-1-lukas.bulwahn@gmail.com> <bfe91b2d-e319-bf12-6a15-4f200d0e8ea4@linux.vnet.ibm.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20200514185217.GX499265@lunn.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew
+On Sat, 9 May 2020, Kamalesh Babulal wrote:
 
-On 5/14/20 1:52 PM, Andrew Lunn wrote:
->> +static int dp83822_config_init(struct phy_device *phydev)
->> +{
->> +	struct dp83822_private *dp83822 = phydev->priv;
->> +	int err = 0;
->> +
->> +	if (dp83822->fx_enabled) {
->> +		linkmode_set_bit(ETHTOOL_LINK_MODE_FIBRE_BIT,
->> +				 phydev->supported);
->> +		linkmode_set_bit(ETHTOOL_LINK_MODE_FIBRE_BIT,
->> +				 phydev->advertising);
->> +
->> +		/*  Auto negotiation is not available in fiber mode */
->> +		phydev->autoneg = AUTONEG_DISABLE;
->> +		phydev->speed = SPEED_100;
->> +		phydev->duplex = DUPLEX_FULL;
-> Hi Dan
->
-> This is normally determined by reading the ability registers,
-> genphy_read_abilities(). When strapped to fibre mode, does it still
-> indicate all the usual copper capabilities, which it can not actually
-> do?
+> > Commit 1d05334d2899 ("livepatch: Remove .klp.arch") removed
+> > arch/x86/kernel/livepatch.c, but missed to adjust the LIVE PATCHING entry
+> > in MAINTAINERS.
+> > 
+> > Since then, ./scripts/get_maintainer.pl --self-test=patterns complains:
+> > 
+> >   warning: no file matches  F:  arch/x86/kernel/livepatch.c
+> > 
+> > So, drop that obsolete file entry in MAINTAINERS.
+> 
+> Patch looks good to me,  you probably want to add following architecture
+> specific livepatching header files to the list:
+> 
+> arch/s390/include/asm/livepatch.h
+> arch/powerpc/include/asm/livepatch.h
 
-Auto negotiation is not available when in Fiber mode for this PHY.  The 
-Speed is locked at 100Mbps for fiber.
-
-Duplex can be either FULL or HALF so that should be removed.
-
-I am verifying with the PHY team on the BMSR register but I do not see 
-any bits for FX there.
-
-If we remove these settings then I will need to read the PHY_STS 
-register to manage the speed and mode of the fiber.  This register 
-reports the PHY link status regardless of the mode.
-
-Dan
+Good point, thanks for spotting it Kamalesh. I've queued the patch below 
+on top.
 
 
->
-> 	Andrew
+
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH] livepatch: add arch-specific headers to MAINTAINERS
+
+Add arch-specific livepatch.h for s390 and powerpc to MAINTAINERS
+F: patterns.
+
+Reported-by: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+---
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7e0827670425..8e14444eb98d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9854,6 +9854,8 @@ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/livepatching/livepatching.git
+ F:	Documentation/ABI/testing/sysfs-kernel-livepatch
+ F:	Documentation/livepatch/
++F:	arch/powerpc/include/asm/livepatch.h
++F:	arch/s390/include/asm/livepatch.h
+ F:	arch/x86/include/asm/livepatch.h
+ F:	include/linux/livepatch.h
+ F:	kernel/livepatch/
+
+
+-- 
+Jiri Kosina
+SUSE Labs
+
