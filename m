@@ -2,277 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6271D3604
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D624A1D35D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 18:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgENQIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 12:08:46 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:59114 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726140AbgENQIq (ORCPT
+        id S1727922AbgENQCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 12:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726037AbgENQCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 12:08:46 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04EG8cRY051077;
-        Thu, 14 May 2020 11:08:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589472518;
-        bh=DWuRI69VJhwA75p0adY2f23XQmUB8NXX6FfYCzE7bCM=;
-        h=From:To:CC:Subject:Date;
-        b=Ztt20Lw38DPeUIV8HkE08ppOj7nK/PvvvemjraFSJR1DRyEA4NBnLbuXaaysF+sPv
-         tTjle5SJUmFXBG8W4vA4aPqa/uyKqdN0Ckj6IHdZPU8r3O/tJXw07Alx+N3d8raQ2G
-         dWxXB6lYPOcZpVB5/9buX/2DJuHENY+ydaimqdYo=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04EG8cNH088896
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 14 May 2020 11:08:38 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 14
- May 2020 11:08:38 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 14 May 2020 11:08:38 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04EG8bJD003060;
-        Thu, 14 May 2020 11:08:38 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
-        <davem@davemloft.net>
-CC:     <robh@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH net-next] dt-bindings: dp83867: Convert DP83867 to yaml
-Date:   Thu, 14 May 2020 10:59:05 -0500
-Message-ID: <20200514155905.26845-1-dmurphy@ti.com>
+        Thu, 14 May 2020 12:02:06 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F26C061A0E;
+        Thu, 14 May 2020 09:02:05 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id r10so1417388pgv.8;
+        Thu, 14 May 2020 09:02:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ys6uruWLmmajm881cZgrjF9W81hQdSvS46fmomUyzjo=;
+        b=CgWXF/MXwCn2w3TSRNi2r+wFdBkV0K1VgxC817ni5dQmY3U58163CbXnrvQ64GbSMo
+         FZiugkdh4SofkruOZwivkScwqcH+1AwjhXWnuY2EGXDr1C+tl9LlyApxu1BEpn5oqmFe
+         4JAhSnL6O7AOqgJbjbi0SoKNTE5X78u6TmYIRxgmDaQEv2wWTPmgbHtVz5zH1e3b42Mh
+         MGdS9/kL6mZ6nvfsCnFjwQ8Uv0+broFoaVt/B1uLa/9+OnHjAd8pM7WPVCQUtgvEQqoL
+         +ZYtjzzqx5Z/cXeiiiRjHZQLQSUQ8g7wt+WViiGJWeGGynGFElaCOcxLBXM6M4FOQwZm
+         Rd4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ys6uruWLmmajm881cZgrjF9W81hQdSvS46fmomUyzjo=;
+        b=VEOqR09R4LVJ/1XCQiGAJl3Yzm44Aw1f2UgW2JX+qnYuOjb8atUwnBaaMi+YXCXr/k
+         4GQUqfNp+weyOU1i+GfrAKnc9k2lDd6V2DdhrkpYdS/B0h0iK18iALi3CcLwAfKEbxRD
+         lU2FggrhSVPwFjPN+nZ0e2k3VCrLLpZo9b6mn1R3QpBGqY6Dmtf8GT2NMW5C//R45OM4
+         f3kqwqaGOFi3d8eFKL73DHchV2wMuEY6HJGWkmPysypsUezhFmDbqq69XYUO+LfCR6LD
+         r94gYvS2JuVa133HMCOd+9K8iznKoIPji/M+JpN16ehMyGJxfSClVTxDOJJCTSzgJkI6
+         01Qg==
+X-Gm-Message-State: AOAM531Zi6mfLRpuUq5tTmDCYLRZViO1j7u/y44Ghph3h0RPnKHC9mdV
+        mM5Sy6suznrlVK85qUEBFH+O7MeP
+X-Google-Smtp-Source: ABdhPJyza+VXEqoRG2/lL5TjJj3s2szUktetaGac8j7OOrwcoJ9sr5LjmxrR8NTZX9OtppMW7wEzRA==
+X-Received: by 2002:a62:7912:: with SMTP id u18mr4774754pfc.239.1589472124662;
+        Thu, 14 May 2020 09:02:04 -0700 (PDT)
+Received: from localhost.localdomain ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id y6sm18178691pjw.15.2020.05.14.09.02.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 09:02:02 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Hans Verkuil <hans.verkuil@cisco.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: [PATCH v6 00/14] Implement V4L2_BUF_FLAG_NO_CACHE_* flags
+Date:   Fri, 15 May 2020 01:01:39 +0900
+Message-Id: <20200514160153.3646-1-sergey.senozhatsky@gmail.com>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the dp83867 binding to yaml.
+Hello
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- .../devicetree/bindings/net/ti,dp83867.txt    |  68 ----------
- .../devicetree/bindings/net/ti,dp83867.yaml   | 127 ++++++++++++++++++
- 2 files changed, 127 insertions(+), 68 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/net/ti,dp83867.txt
- create mode 100644 Documentation/devicetree/bindings/net/ti,dp83867.yaml
+v6 changes:
+The design has been slightly reworked. The cache-hints capability has
+been renamed to SUPPORTS_MMAP_CACHE_HINTS and is reported for all queues
+that support MMAP and allow cache hints. However, the actual hints and
+memory consistency are ignored unless the queue is used for the MMAP
+streaming I/O. Plus some cleanups, documentation updates, and so on.
 
-diff --git a/Documentation/devicetree/bindings/net/ti,dp83867.txt b/Documentation/devicetree/bindings/net/ti,dp83867.txt
-deleted file mode 100644
-index 44e2a4fab29e..000000000000
---- a/Documentation/devicetree/bindings/net/ti,dp83867.txt
-+++ /dev/null
-@@ -1,68 +0,0 @@
--* Texas Instruments - dp83867 Giga bit ethernet phy
--
--Required properties:
--	- reg - The ID number for the phy, usually a small integer
--	- ti,rx-internal-delay - RGMII Receive Clock Delay - see dt-bindings/net/ti-dp83867.h
--		for applicable values. Required only if interface type is
--		PHY_INTERFACE_MODE_RGMII_ID or PHY_INTERFACE_MODE_RGMII_RXID
--	- ti,tx-internal-delay - RGMII Transmit Clock Delay - see dt-bindings/net/ti-dp83867.h
--		for applicable values. Required only if interface type is
--		PHY_INTERFACE_MODE_RGMII_ID or PHY_INTERFACE_MODE_RGMII_TXID
--
--Note: If the interface type is PHY_INTERFACE_MODE_RGMII the TX/RX clock delays
--      will be left at their default values, as set by the PHY's pin strapping.
--      The default strapping will use a delay of 2.00 ns.  Thus
--      PHY_INTERFACE_MODE_RGMII, by default, does not behave as RGMII with no
--      internal delay, but as PHY_INTERFACE_MODE_RGMII_ID.  The device tree
--      should use "rgmii-id" if internal delays are desired as this may be
--      changed in future to cause "rgmii" mode to disable delays.
--
--Optional property:
--	- ti,min-output-impedance - MAC Interface Impedance control to set
--				    the programmable output impedance to
--				    minimum value (35 ohms).
--	- ti,max-output-impedance - MAC Interface Impedance control to set
--				    the programmable output impedance to
--				    maximum value (70 ohms).
--	- ti,dp83867-rxctrl-strap-quirk - This denotes the fact that the
--				    board has RX_DV/RX_CTRL pin strapped in
--				    mode 1 or 2. To ensure PHY operation,
--				    there are specific actions that
--				    software needs to take when this pin is
--				    strapped in these modes. See data manual
--				    for details.
--	- ti,clk-output-sel - Muxing option for CLK_OUT pin.  See dt-bindings/net/ti-dp83867.h
--			      for applicable values.  The CLK_OUT pin can also
--			      be disabled by this property.  When omitted, the
--			      PHY's default will be left as is.
--	- ti,sgmii-ref-clock-output-enable - This denotes which
--				    SGMII configuration is used (4 or 6-wire modes).
--				    Some MACs work with differential SGMII clock.
--				    See data manual for details.
--
--	- ti,fifo-depth - Transmitt FIFO depth- see dt-bindings/net/ti-dp83867.h
--		for applicable values (deprecated)
--
--	-tx-fifo-depth - As defined in the ethernet-controller.yaml.  Values for
--			 the depth can be found in dt-bindings/net/ti-dp83867.h
--	-rx-fifo-depth - As defined in the ethernet-controller.yaml.  Values for
--			 the depth can be found in dt-bindings/net/ti-dp83867.h
--
--Note: ti,min-output-impedance and ti,max-output-impedance are mutually
--      exclusive. When both properties are present ti,max-output-impedance
--      takes precedence.
--
--Default child nodes are standard Ethernet PHY device
--nodes as described in Documentation/devicetree/bindings/net/phy.txt
--
--Example:
--
--	ethernet-phy@0 {
--		reg = <0>;
--		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
--		ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_75_NS>;
--		tx-fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
--	};
--
--Datasheet can be found:
--http://www.ti.com/product/DP83867IR/datasheet
-diff --git a/Documentation/devicetree/bindings/net/ti,dp83867.yaml b/Documentation/devicetree/bindings/net/ti,dp83867.yaml
-new file mode 100644
-index 000000000000..554dcd7a40a9
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/ti,dp83867.yaml
-@@ -0,0 +1,127 @@
-+# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
-+# Copyright (C) 2019 Texas Instruments Incorporated
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/net/ti,dp83867.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: TI DP83867 ethernet PHY
-+
-+allOf:
-+  - $ref: "ethernet-controller.yaml#"
-+
-+maintainers:
-+  - Dan Murphy <dmurphy@ti.com>
-+
-+description: |
-+  The DP83867 device is a robust, low power, fully featured Physical Layer
-+  transceiver with integrated PMD sublayers to support 10BASE-Te, 100BASE-TX
-+  and 1000BASE-T Ethernet protocols.
-+
-+  The DP83867 is designed for easy implementation of 10/100/1000 Mbps Ethernet
-+  LANs. It interfaces directly to twisted pair media via an external
-+  transformer. This device interfaces directly to the MAC layer through the
-+  IEEE 802.3 Standard Media Independent Interface (MII), the IEEE 802.3 Gigabit
-+  Media Independent Interface (GMII) or Reduced GMII (RGMII).
-+
-+  Specifications about the charger can be found at:
-+    https://www.ti.com/lit/gpn/dp83867ir
-+
-+properties:
-+  reg:
-+    maxItems: 1
-+
-+  ti,min-output-impedance:
-+    type: boolean
-+    description: |
-+       MAC Interface Impedance control to set the programmable output impedance
-+       to a minimum value (35 ohms).
-+
-+  ti,max-output-impedance:
-+    type: boolean
-+    description: |
-+      MAC Interface Impedance control to set the programmable output impedance
-+      to a maximum value (70 ohms).
-+      Note: ti,min-output-impedance and ti,max-output-impedance are mutually
-+        exclusive. When both properties are present ti,max-output-impedance
-+        takes precedence.
-+
-+  tx-fifo-depth:
-+    $ref: /schemas/types.yaml#definitions/uint32
-+    description: |
-+       Transmitt FIFO depth see dt-bindings/net/ti-dp83867.h for values
-+
-+  rx-fifo-depth:
-+    $ref: /schemas/types.yaml#definitions/uint32
-+    description: |
-+       Receive FIFO depth see dt-bindings/net/ti-dp83867.h for values
-+
-+  ti,clk-output-sel:
-+    $ref: /schemas/types.yaml#definitions/uint32
-+    description: |
-+      Muxing option for CLK_OUT pin.  See dt-bindings/net/ti-dp83867.h
-+      for applicable values. The CLK_OUT pin can also be disabled by this
-+      property.  When omitted, the PHY's default will be left as is.
-+
-+  ti,rx-internal-delay:
-+    $ref: /schemas/types.yaml#definitions/uint32
-+    description: |
-+      RGMII Receive Clock Delay - see dt-bindings/net/ti-dp83867.h
-+      for applicable values. Required only if interface type is
-+      PHY_INTERFACE_MODE_RGMII_ID or PHY_INTERFACE_MODE_RGMII_RXID.
-+
-+  ti,tx-internal-delay:
-+    $ref: /schemas/types.yaml#definitions/uint32
-+    description: |
-+      RGMII Transmit Clock Delay - see dt-bindings/net/ti-dp83867.h
-+      for applicable values. Required only if interface type is
-+      PHY_INTERFACE_MODE_RGMII_ID or PHY_INTERFACE_MODE_RGMII_TXID.
-+
-+        Note: If the interface type is PHY_INTERFACE_MODE_RGMII the TX/RX clock
-+          delays will be left at their default values, as set by the PHY's pin
-+          strapping. The default strapping will use a delay of 2.00 ns.  Thus
-+          PHY_INTERFACE_MODE_RGMII, by default, does not behave as RGMII with no
-+          internal delay, but as PHY_INTERFACE_MODE_RGMII_ID.  The device tree
-+          should use "rgmii-id" if internal delays are desired as this may be
-+          changed in future to cause "rgmii" mode to disable delays.
-+
-+  ti,dp83867-rxctrl-strap-quirk:
-+    type: boolean
-+    description: |
-+      This denotes the fact that the board has RX_DV/RX_CTRL pin strapped in
-+      mode 1 or 2. To ensure PHY operation, there are specific actions that
-+      software needs to take when this pin is strapped in these modes.
-+      See data manual for details.
-+
-+  ti,sgmii-ref-clock-output-enable:
-+    type: boolean
-+    description: |
-+      This denotes which SGMII configuration is used (4 or 6-wire modes).
-+      Some MACs work with differential SGMII clock. See data manual for details.
-+
-+  ti,fifo-depth:
-+    deprecated: true
-+    $ref: /schemas/types.yaml#definitions/uint32
-+    description: |
-+      Transmitt FIFO depth- see dt-bindings/net/ti-dp83867.h for applicable
-+      values.
-+
-+required:
-+  - reg
-+
-+examples:
-+  - |
-+    #include <dt-bindings/net/ti-dp83867.h>
-+    mdio0 {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      ethphy0: ethernet-phy@0 {
-+        reg = <0>;
-+        tx-fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+        rx-fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+        ti,max-output-impedance;
-+        ti,clk-output-sel = <DP83867_CLK_O_SEL_CHN_A_RCLK>;
-+        ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
-+        ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_75_NS>;
-+      };
-+    };
+Previous versions:
+v5 link: https://lore.kernel.org/lkml/20200424092920.4801-1-sergey.senozhatsky@gmail.com
+v4 link: https://lore.kernel.org/lkml/20200302041213.27662-1-senozhatsky@chromium.org/
+v3 link: https://lore.kernel.org/lkml/20200226111529.180197-1-senozhatsky@chromium.org
+v2 link: https://lore.kernel.org/lkml/20200204025641.218376-1-senozhatsky@chromium.org/
+v1 link: https://lore.kernel.org/lkml/20191217032034.54897-1-senozhatsky@chromium.org/
+
+Series Intro
+========================================================================
+
+        This is a reworked version of the vb2 cache hints
+(V4L2_BUF_FLAG_NO_CACHE_INVALIDATE / V4L2_BUF_FLAG_NO_CACHE_CLEAN)
+support patch series which previsouly was developed by Sakari and
+Laurent [0].
+
+The patch set attempts to preserve the existing behvaiour - cache
+sync is performed in ->prepare() and ->finish() (unless the buffer
+is DMA exported). User space can request “default behavior” override
+with cache management hints, which are handled on a per-buffer basis
+and should be supplied with v4l2_buffer ->flags during buffer
+preparation. There are two possible hints:
+
+- V4L2_BUF_FLAG_NO_CACHE_INVALIDATE
+        No cache sync on ->finish()
+
+- V4L2_BUF_FLAG_NO_CACHE_CLEAN
+        No cache sync on ->prepare()
+
+In order to keep things on the safe side, we also require driver
+to explicitly state which of its queues (if any) support user space
+cache management hints (such queues should have ->allow_cache_hints
+bit set).
+
+The patch set also (to some extent) simplifies allocators' ->prepare()
+and ->finish() callbacks. Namely, we move cache management decision
+making to the upper - core - layer. For example, if, previously, we
+would have something like this
+
+        vb2_buffer_done()
+          vb2_dc_finish()
+            if (buf->db_attach)
+              return;
+
+where each allocators' ->finish() callback would either bail
+out (DMA exported buffer, for instance) or sync, now that "bail
+out or sync" decision is made before we call into the allocator.
+
+Along with cache management hints, user space is also able to
+adjust queue's memory consistency attributes. Memory consistency
+attribute (dma_attrs) is per-queue, yet it plays its role on the
+allocator level, when we allocate buffers’ private memory (planes).
+For the time being, only one consistency attribute is supported:
+DMA_ATTR_NON_CONSISTENT.
+
+[0] https://www.mail-archive.com/linux-media@vger.kernel.org/msg112459.html
+
+Sergey Senozhatsky (14):
+  videobuf2: use explicit unsigned int in vb2_queue
+  videobuf2: add cache management members
+  videobuf2: handle V4L2 buffer cache flags
+  videobuf2: add V4L2_FLAG_MEMORY_NON_CONSISTENT flag
+  videobuf2: add queue memory consistency parameter
+  videobuf2: handle V4L2_FLAG_MEMORY_NON_CONSISTENT flag
+  videobuf2: factor out planes prepare/finish functions
+  videobuf2: do not sync caches when we are allowed not to
+  videobuf2: check ->synced flag in prepare() and finish()
+  videobuf2: add begin/end cpu_access callbacks to dma-contig
+  videobuf2: add begin/end cpu_access callbacks to dma-sg
+  videobuf2: don't test db_attach in dma-contig prepare and finish
+  videobuf2: remove redundant if-statement
+  media: vivid: add cache_hints module param
+
+ Documentation/admin-guide/media/vivid.rst     |   9 ++
+ .../userspace-api/media/v4l/buffer.rst        |  40 +++++-
+ .../media/v4l/vidioc-create-bufs.rst          |   7 +-
+ .../media/v4l/vidioc-reqbufs.rst              |  21 ++-
+ .../media/common/videobuf2/videobuf2-core.c   | 121 +++++++++++++-----
+ .../common/videobuf2/videobuf2-dma-contig.c   |  44 ++++++-
+ .../media/common/videobuf2/videobuf2-dma-sg.c |  38 ++++--
+ .../media/common/videobuf2/videobuf2-v4l2.c   |  72 ++++++++++-
+ drivers/media/dvb-core/dvb_vb2.c              |   2 +-
+ drivers/media/test-drivers/vivid/vivid-core.c |   9 ++
+ drivers/media/v4l2-core/v4l2-compat-ioctl32.c |  10 +-
+ drivers/media/v4l2-core/v4l2-ioctl.c          |   5 +-
+ include/media/videobuf2-core.h                |  47 +++++--
+ include/uapi/linux/videodev2.h                |  14 +-
+ 14 files changed, 366 insertions(+), 73 deletions(-)
+
 -- 
 2.26.2
 
