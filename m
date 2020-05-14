@@ -2,227 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFFD1D33A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5271D33A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 16:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgENOyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 10:54:36 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:35577 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726051AbgENOyf (ORCPT
+        id S1727912AbgENOzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 10:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727885AbgENOzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 10:54:35 -0400
-Received: by mail-oi1-f195.google.com with SMTP id o7so24782098oif.2;
-        Thu, 14 May 2020 07:54:34 -0700 (PDT)
+        Thu, 14 May 2020 10:55:06 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 763FBC061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:55:06 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id n18so1420859pfa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 07:55:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=9HjMnwIKxpe2uw0fQ8jjAuZF11Ao8ED5SVrgc8CsCDU=;
+        b=JJOGiHxd0wdf2wJI5MuPpFjPtxQ7336AKRPSLZeicJkX+D3PP8scBGIsBz7GD3QQvY
+         xiDcWzNAzUxhW5hIUcxoleTzO8oAEVfftJFQNoolwWfsMx2PiEagXOnbpeVhC6GGnS9l
+         rCpsi9hHJ5auXSrHEZxRh3PXFSWNGOSSSXWNEWF9OCfE1HfQFB9QuHvo0E/SlgF2pCZX
+         MZr/D/ye5y3KRfgmGbeVwwineXkE5b65/rb6DPIGi60rhr1wVF5JSJUmpqM7ec8xveV9
+         nqwa8FaksRAXyjj1qSAteUzrVwMtvw6/Dk+GCTMAbo2XbFa0SvjyzQAK6HWKZAdgC+2r
+         c60w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yB9VTl8KywTt9Ux7iGL6NMMzFHRwNMMveEGo6bB/Nqs=;
-        b=T0LHW//wg1PT5ZhYrD5YNYAJaFyvoLbvaDx5AvdpOhL/xcjcF7bgouQg23E1pzKwrh
-         FTsUfm6uumwnDuAqUBSlF1+UxrAvB5aIroIXdil8bBXDfQ84m917KjJWv4cRhgRbhXkC
-         viQn7d34JJxJYRxuqmDLJ+LSeFCwOA8C7K0pLgGK1w2weV99X/Rxcy6W5pQsRdRrc2hX
-         ok0s3qhjJrCqmgoFd8rfYzn5UbyQF+GsoiMvXUQ4FFARGmUVkn/Oe2qzbfgO/Y+0GjBm
-         m6d898f2rqwKLlRrBc5BuNq1kjQuMvs8/waZnm0qcCwbZx/Eh9ttZLAeITt65MRzHsJe
-         ZUGA==
-X-Gm-Message-State: AGi0PuYxShKp4+FFQ+g/8AwPi3VIdPLOJAPvgBLTTTyo+AFH1qJpORPw
-        XmtKtcAnRsZQzh+AW5K/Bw==
-X-Google-Smtp-Source: APiQypKK3YHethFZkt7Xx5I2o7MWAZ0bYDIOxjjLF2SWgo5qkdd1iKlpLeZMoOaRUFuLjsQuL2Qxeg==
-X-Received: by 2002:a05:6808:a93:: with SMTP id q19mr31602743oij.6.1589468074296;
-        Thu, 14 May 2020 07:54:34 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n9sm819299otl.76.2020.05.14.07.54.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 07:54:33 -0700 (PDT)
-Received: (nullmailer pid 26910 invoked by uid 1000);
-        Thu, 14 May 2020 14:54:32 -0000
-Date:   Thu, 14 May 2020 09:54:32 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Xin Ji <xji@analogixsemi.com>
-Cc:     devicetree@vger.kernel.org, devel@driverdev.osuosl.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Sheng Pan <span@analogixsemi.com>
-Subject: Re: [PATCH v10 1/2] dt-bindings: drm/bridge: anx7625: MIPI to DP
- transmitter binding
-Message-ID: <20200514145432.GA6091@bogus>
-References: <cover.1588747998.git.xji@analogixsemi.com>
- <b720f7d2c5338813d31b7f715f59ca68c367d5a8.1588747998.git.xji@analogixsemi.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b720f7d2c5338813d31b7f715f59ca68c367d5a8.1588747998.git.xji@analogixsemi.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=9HjMnwIKxpe2uw0fQ8jjAuZF11Ao8ED5SVrgc8CsCDU=;
+        b=TEfMFj1QteCAZb9dBWe3JqDAWJElw4jtpZwAgn5BLOTOzmFZIBd8Wh+fKoza8hO8ba
+         ZDWfonrCGv+u4wLWJYlPiPSwbDp/OfmdYnK8KoeiUwqTJIZ1vcnnbfT24NHcExqew8lh
+         gHEqUf2ctvNwEEgWO7dL/lIBBhcle+TpJZmZTYxg3qnkg+ac48dhWDykYO14VYksRuEO
+         kuBsKqE9xOMeutfAJEAilNI0s3nMxi+Z6TOmXiy2UIYehXUkcennhvP6s79HHma3eZaU
+         62e72EWj4oqNRNI6Hqp3Qi16uYI+iAq8OZC2BXUiqT9HvPGfgSxhuKCVG/g6bhkR5waU
+         Kgtw==
+X-Gm-Message-State: AOAM5321j0kwWA6jHRx0sdK4Q8JNjoy04zSJcy9EMqo678bZ5hxxKa7w
+        mYFCbiSzHz+yl+5/J2QHqpwyHA==
+X-Google-Smtp-Source: ABdhPJx7+2eXLTKSXrTOBJ/rU5kJS0lPi+SyNjeJFlAisPsQ3+tH/CNhEfooTQvfWFF33wo1bvaJsw==
+X-Received: by 2002:a65:480c:: with SMTP id h12mr4478831pgs.106.1589468105764;
+        Thu, 14 May 2020 07:55:05 -0700 (PDT)
+Received: from ?IPv6:2600:1010:b044:c0a6:fc3e:abd:d4e0:e1e4? ([2600:1010:b044:c0a6:fc3e:abd:d4e0:e1e4])
+        by smtp.gmail.com with ESMTPSA id nm6sm6815276pjb.34.2020.05.14.07.55.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 May 2020 07:55:05 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [patch V4 part 4 02/24] x86/int3: Avoid atomic instrumentation
+Date:   Thu, 14 May 2020 07:55:02 -0700
+Message-Id: <9DBF3103-4D31-41AA-AC02-9A6F1849AA00@amacapital.net>
+References: <20200514131530.GQ2957@hirez.programming.kicks-ass.net>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <JGross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+In-Reply-To: <20200514131530.GQ2957@hirez.programming.kicks-ass.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+X-Mailer: iPhone Mail (17E262)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 03:04:20PM +0800, Xin Ji wrote:
-> The ANX7625 is an ultra-low power 4K Mobile HD Transmitter designed
-> for portable device. It converts MIPI to DisplayPort 1.3 4K.
-> 
-> You can add support to your board with binding.
 
-We have an example in the binding, no reason to also put in the commit 
-msg.
 
-> 
-> Example:
-> 	anx7625_bridge: encoder@58 {
-> 		compatible = "analogix,anx7625";
-> 		reg = <0x58>;
-> 		status = "okay";
-> 		enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
-> 		reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
-> 
-> 		ports {
-> 			#address-cells = <1>;
-> 			#size-cells = <0>;
-> 
-> 			mipi2dp_bridge_in: port@0 {
-> 				reg = <0>;
-> 				anx7625_in: endpoint {
-> 					remote-endpoint = <&mipi_dsi>;
-> 				};
-> 			};
-> 
-> 			mipi2dp_bridge_out: port@1 {
-> 				reg = <1>;
-> 				anx7625_out: endpoint {
-> 					remote-endpoint = <&panel_in>;
-> 				};
-> 			};
-> 		};
-> 	};
-> 
-> Signed-off-by: Xin Ji <xji@analogixsemi.com>
-> ---
->  .../bindings/display/bridge/analogix,anx7625.yaml  | 98 ++++++++++++++++++++++
->  1 file changed, 98 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> new file mode 100644
-> index 0000000..6e54176
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> @@ -0,0 +1,98 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2019 Analogix Semiconductor, Inc.
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/display/bridge/analogix,anx7625.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Analogix ANX7625 SlimPort (4K Mobile HD Transmitter)
-> +
-> +maintainers:
-> +  - Xin Ji <xji@analogixsemi.com>
-> +
-> +description: |
-> +  The ANX7625 is an ultra-low power 4K Mobile HD Transmitter
-> +  designed for portable devices.
-> +
-> +properties:
-> +  "#address-cells": true
-> +  "#size-cells": true
+> On May 14, 2020, at 6:15 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+>=20
+> =EF=BB=BFOn Thu, May 14, 2020 at 02:51:32PM +0200, Thomas Gleixner wrote:
+>> Peter Zijlstra <peterz@infradead.org> writes:
+>>> On Wed, May 13, 2020 at 09:57:52PM -0700, Andy Lutomirski wrote:
+>>>>> On Tue, May 5, 2020 at 7:15 AM Thomas Gleixner <tglx@linutronix.de> wr=
+ote:
+>>>>>>=20
+>>>>>> From: Peter Zijlstra <peterz@infradead.org>
+>>>>>>=20
+>>>>>> Use arch_atomic_*() and READ_ONCE_NOCHECK() to ensure nothing untowar=
+d
+>>>>>> creeps in and ruins things.
+>>>>>>=20
+>>>>>> That is; this is the INT3 text poke handler, strictly limit the code
+>>>>>> that runs in it, lest it inadvertenly hits yet another INT3.
+>>>>>=20
+>>>>>=20
+>>>>> Acked-by: Andy Lutomirski <luto@kernel.org>
+>>>>>=20
+>>>>> Does objtool catch this error?
+>>>=20
+>>> It does not. I'll put it on the (endless) todo list..
+>>=20
+>> Well, at least it detects when that code calls out into something which
+>> is not in the non-instrumentable section.
+>=20
+> True, but the more specific problem is that noinstr code can use
+> jump_label/static_call just fine.
+>=20
+> So a more specific test is validating none of that happens in the INT3
+> handler before poke_int3_handler(). Which is what I think Andy was
+> after.
 
-These don't belong here.
-
-> +
-> +  compatible:
-> +    items:
-> +      - const: analogix,anx7625
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    description: used for interrupt pin B8.
-> +    maxItems: 1
-> +
-> +  enable-gpios:
-> +    description: used for power on chip control, POWER_EN pin D2.
-> +    maxItems: 1
-> +
-> +  reset-gpios:
-> +    description: used for reset chip control, RESET_N pin B7.
-> +    maxItems: 1
-> +
-> +  ports:
-> +    type: object
-> +
-> +    properties:
-> +      port@0:
-> +        type: object
-> +        description:
-> +          Video port for MIPI DSI input.
-> +
-> +      port@1:
-> +        type: object
-> +        description:
-> +          Video port for panel or connector.
-> +
-> +    required:
-> +        - port@0
-> +        - port@1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - ports
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    i2c0 {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        anx7625_bridge: encoder@58 {
-
-Drop any unused labels.
-
-> +            compatible = "analogix,anx7625";
-> +            reg = <0x58>;
-> +            enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
-> +            reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
-> +
-> +            ports {
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +
-> +                mipi2dp_bridge_in: port@0 {
-> +                    reg = <0>;
-> +                    anx7625_in: endpoint {
-> +                        remote-endpoint = <&mipi_dsi>;
-> +                    };
-> +                };
-> +
-> +                mipi2dp_bridge_out: port@1 {
-> +                    reg = <1>;
-> +                    anx7625_out: endpoint {
-> +                        remote-endpoint = <&panel_in>;
-> +                    };
-> +                };
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.7.4
-> 
+Exactly.  I admit that sleep-deprived Andy was actually thinking =E2=80=9Ctg=
+lx and/or PeterZ found this by inspection, and somewhere it escaped objtool=E2=
+=80=99s notice,=E2=80=9D which is sort of the same thing :)=
