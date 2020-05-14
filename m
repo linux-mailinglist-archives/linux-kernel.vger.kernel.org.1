@@ -2,236 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CDA1D3011
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 14:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAE51D3036
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 14:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbgENMmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 08:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726037AbgENMmU (ORCPT
+        id S1726166AbgENMqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 08:46:19 -0400
+Received: from sonic305-21.consmr.mail.ne1.yahoo.com ([66.163.185.147]:38998
+        "EHLO sonic305-21.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725955AbgENMqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 08:42:20 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E823C061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 05:42:20 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id v12so3828434wrp.12
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 05:42:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to;
-        bh=RYXkSbdkaYS0HD6sD2srwSa0yD5xgdLjeJ3UTD5KQPE=;
-        b=PUej68GvhGXkj5/yl5NyhfK/voCKQpakrN7HKCPzIQjOt6F945DaSylZwXQBMzforn
-         0HE8g5katI4JtKzFYGcB19N5CLjHxMKPC6ESpdN0NCWoyDSttL3NS35kCz+rVLZxe/zX
-         gmC6WepMylg8feXNOv3fwnXjfZEcR3xiqr1kBgAbItxReibivx9UGWT3JIlAw6znfAWo
-         tyeWRk0D/5TGjx1zo4bji2P3f3MYgOHecw5BPrKQOqbhc9XNWMVrk5OixpV+7Mzo7xKY
-         +ZnqfRM/3aI5R9BdmtpwVTDKKlF8G+df4YQL6f36b87HsF41fF5lB+heduLx4ctKyInp
-         pZhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to;
-        bh=RYXkSbdkaYS0HD6sD2srwSa0yD5xgdLjeJ3UTD5KQPE=;
-        b=Fc9krpAAAAnO8Sw4lHKG5dzHbSgYWg/U/yrS8TekmRZnSMaFtRvV9iPGDYGq+Y/97c
-         CZ0T6BqmnUuMiyCxkti58mF9lgqu9GetPG4HzVxD7v4PFBkl/eIn7vGM4U+h4z4jXGSQ
-         uFDbI/bq5sEh5PWDgBFkql55t/PizRdfPosfOVoDIhbLW1+Q/nTIdv/AjDlUpr7imSHt
-         rEjs6ACkbuQrbZgSFZeIpH9gzd0qDu7wol/Pfn4eUfskL6+cW7W3jI4jFXjx0VWshSKX
-         4uqrtOQA6ZTNsxW0fSGtNwo0Rldm1jC+t6CuQNbQoCACChz3+lVLr0B3tXVdKlyIlayh
-         8ImA==
-X-Gm-Message-State: AOAM532zkwYKGvJ4+h8JK0fbvSLlOLWPckN+BAoJjQAcQN9LWo5N4wI8
-        7Hzgh5FmvHnNPWT9eWcGLSjvWekINoAlfw==
-X-Google-Smtp-Source: ABdhPJxm/nuOjCefCUH7msAvIZFA/xeXxhnOVfc7AEdd/jTTxvaLQiILC6+6yq4XGkBlVLEydqkwVw==
-X-Received: by 2002:a5d:6283:: with SMTP id k3mr5257382wru.62.1589460138674;
-        Thu, 14 May 2020 05:42:18 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:4460:3fd3:382:4a71? ([2a01:e35:2ec0:82b0:4460:3fd3:382:4a71])
-        by smtp.gmail.com with ESMTPSA id a7sm38682417wmj.12.2020.05.14.05.42.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 May 2020 05:42:17 -0700 (PDT)
-Subject: Re: [PATCH 00/13] usb: dwc3: meson: add OTG support for GXL/GXM
-To:     Felipe Balbi <balbi@kernel.org>, kishon@ti.com,
-        khilman@baylibre.com, martin.blumenstingl@googlemail.com
-Cc:     linux-amlogic@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20200324102030.31000-1-narmstrong@baylibre.com>
- <87369rfo7l.fsf@kernel.org> <87r1vm4xyq.fsf@kernel.org>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- BSwxi7g3Mu7u5kUByanqHyA=
-Organization: Baylibre
-Message-ID: <8404c7a0-fca7-9e28-b65a-312ed09ecdd3@baylibre.com>
-Date:   Thu, 14 May 2020 14:42:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Thu, 14 May 2020 08:46:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1589460377; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=FGrd93FwKvkMEAfo2ya0gPZpz4EYdjLcl1jxv08SgSFsVCAVQp4gEDczvk//wPeOLcy8A9wltPVg6ItIGb2/OhSFkGVavZo9328oW1TyCv7Tf5ynoLZP741i0Te5yz3SJtgcVFelJ8ESV4cTSx8Grx2PPrmP66HrqDKBuHKKWXPmwnQXMxapJlH0piD6pGJGOoyEoXDMk2B1acITIyaX97NxCsAlJJxzxqIjKOv9x2Ka5mwSQBKSELpqnDuBtrALxVYTaubqFGSeq3ZO+ThbhRayNIHBW3FmMlun/rlwFK/izw4+JL6o61lMVqAcw1qV3r65c6YO6/MGFcaNOdB7rg==
+X-YMail-OSG: NFjme_UVM1ma33R8Jk204u6oTWI2ggTQRkToFfsC8JiBSwQXvFJ9jFnu0eC2bmv
+ 1EXlk_BrDi7qQgGnBWdnuAaNm3IGjjvOXqxB2ntKlGHW39YeQlDx1vyg9gpKFGpcQiXqjSsQVCZz
+ AJSw35oU3IoOyt5B6aFIzL9unx6Oc8oJpCvF85IkLrlNuXOFSPqP_13az4dfjQWqjrq_cs.QC92D
+ 9.r9YO74rN5.czjOncnKsrMgDOfp_bmLGsnhoizBDJgs26UKzmxjpH7JNDaOO_nSQuzk5VKOxswg
+ fbcaDfBgkDDbRuHoXG0KkZUdivnefBjkcqpY0ImK_GRnEbz9d1ljqeYakfBRko1hrwraPocn9mgm
+ GDGtV3alXzmorJBiC7MVrdx07hvBddDCaZ1VlymjEUm.gUXvA7JyoGRZNPDPEtxLn248A8QIIQi6
+ fCc9NW5mKA7ipwISOui2lQhmIKK36Mdrr_ZH6ldnpkoZvChmGFThh0blKP4Egx0RyZk451Eu_OsF
+ fjeQF3tIuxoud.ld8CrSyUwaFzbG_sXL_IFzqhnFU_H2zK8WVrvIfwuTHvWxzwV7D6Flog2VE6gU
+ uIoflECcsWsMj3_oOvzXOsBflaM_4Y3DkEGRFUvzwAR4Jm2yFChEPHiEUsFZes7NC29nMI8Tb6fe
+ RnAl0roYYxx4fVx0NUrjOeku6i8iIRqS1HWBc7FEDw7j0xk5znHWK84GmOqOcL7gPMWftNY2NXma
+ 8i0x82howSVNmn_R4nG82wu.09uhYi686xdwyRa51hapnfeBosUcNotBjvBg8Bs6o13Qfvl2KeMr
+ zcgvYJxY8vj8E6Q8XU_7TBOXInQBBkT0W6oBdAws.ZRyniUC74DvG9oQ0.4O_gUuPwn6vzj7QsRb
+ KI45x0B11SHhMKTPMRWHxgsHbX_RXFDlvBsSNpXG_2R4V8ipNgNulXp7GkDSVgx15Bbe4lNNXM9C
+ Au4fVPrgPpWetp_DFaQmIoU8C3wbB9Vnz9tmwmYFkscRysv0ixMUteMeUsWuJ89DA3FCBqYFtDEm
+ cdsssTCIUIaAdZNi5RdGkXSJRwPtIDzU0wcR.l92BwMMvIniEYWs_BCi0FlX7g4dRAGlXSjvCGSt
+ eon6HO4MkR262ZXYAzIheXQ3TGAZTzhcMObaROVRR66ji.d7dn5vyaTZ5P9R3pHite_bQujBj2hy
+ X0Q1C1YVwMjvSNSFO.77i276vP4a5VqAt1fleD5NiFV009xNVIFpl85ChIvttKjc.WC16ZmcNr98
+ AD55KRhPem6r9xNMeL.khyJOYU9XYMBF_P19.Gp7fY6hHeXxL0R5HrmGAXQNQDooiEAxE_D.oSHi
+ .7Q--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.ne1.yahoo.com with HTTP; Thu, 14 May 2020 12:46:17 +0000
+Date:   Thu, 14 May 2020 12:46:17 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mrs.minaabrunel209@gmail.com>
+Reply-To: mrs.minaabrunel30@gmail.com
+Message-ID: <128063437.104418.1589460377514@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-In-Reply-To: <87r1vm4xyq.fsf@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="K4f1yUDMdsuo8nAqC8e6zqnxTIdRv8BgF"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <128063437.104418.1589460377514.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15941 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---K4f1yUDMdsuo8nAqC8e6zqnxTIdRv8BgF
-Content-Type: multipart/mixed; boundary="3dbdY59dTGe2VUyam33gsuxAHSaa8XozU";
- protected-headers="v1"
-From: Neil Armstrong <narmstrong@baylibre.com>
-To: Felipe Balbi <balbi@kernel.org>, kishon@ti.com, khilman@baylibre.com,
- martin.blumenstingl@googlemail.com
-Cc: linux-amlogic@lists.infradead.org, linux-usb@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Message-ID: <8404c7a0-fca7-9e28-b65a-312ed09ecdd3@baylibre.com>
-Subject: Re: [PATCH 00/13] usb: dwc3: meson: add OTG support for GXL/GXM
-References: <20200324102030.31000-1-narmstrong@baylibre.com>
- <87369rfo7l.fsf@kernel.org> <87r1vm4xyq.fsf@kernel.org>
-In-Reply-To: <87r1vm4xyq.fsf@kernel.org>
-
---3dbdY59dTGe2VUyam33gsuxAHSaa8XozU
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On 14/05/2020 12:23, Felipe Balbi wrote:
-> Felipe Balbi <balbi@kernel.org> writes:
->=20
->> Neil Armstrong <narmstrong@baylibre.com> writes:
->>
->>> The USB support was initialy done with a set of PHYs and dwc3-of-simp=
-le
->>> because the architecture of the USB complex was not understood correc=
-tly
->>> at the time (and proper documentation was missing...).
->>>
->>> But with the G12A family, the USB complex was correctly understood an=
-d
->>> implemented correctly.
->>> But seems the G12A architecture was derived for the GXL USB architect=
-ure,
->>> with minor differences and looks we can share most of the USB DWC3 gl=
-ue
->>> driver.
->>>
->>> This patchset refactors and adds callbacks to handle the architecture=
-
->>> difference while keeping the main code shared.
->>>
->>> The main difference is that on GXL/GXM the USB2 PHY control registers=
-
->>> are mixed with the PHY registers (we already handle correctly), and
->>> the GLUE registers are allmost (99%) the same as G12A.
->>>
->>> But, the GXL/GXM HW is buggy, here are the quirks :
->>> - for the DWC2 controller to reset correctly, the GLUE mux must be sw=
-itched
->>>   to peripheral when the DWC2 controlle probes. For now it's handled =
-by simply
->>>   switching to device when probing the subnodes, but it may be not en=
-ough
->>> - when manually switching from Host to Device when the USB port is no=
-t
->>>   populated (should not happen with proper Micro-USB/USB-C OTG switch=
-), it
->>>   makes the DWC3 to crash. The only way to avoid that is to use the H=
-ost
->>>   Disconnect bit to disconnect the DWC3 controller from the port, but=
- we can't
->>>   recover the Host functionnality unless resetting the DWC3 controlle=
-r.
->>>   This bit is set when only manual switch is done, and a warning is p=
-rinted
->>>   on manual switching.
->>>
->>> The patches 1-8 should be applied first, then either waiting the next=
- release
->>> or if the usb maintainer can provide us a stable tag, we can use it t=
-o merge
->>> the DT and bindings.
->>
->> it's unclear to me if this series is ready to be merged. Can someone
->> confirm? If it is, can you resend with all reviewed by tags in place?
->=20
-> Are we getting a v2 for this?
->=20
-
-Yes, even a v3 with reviews on all patches:
-http://lkml.kernel.org/r/20200416121910.12723-1-narmstrong@baylibre.com
-
-Neil
 
 
---3dbdY59dTGe2VUyam33gsuxAHSaa8XozU--
+My Dear in the lord
 
---K4f1yUDMdsuo8nAqC8e6zqnxTIdRv8BgF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
+gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
+February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
+llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
+ugou the capital city of Burkina Faso in West Africa. The money was from th=
+e sale of his company and death benefits payment and entitlements of my dec=
+eased husband by his company.
 
-iQIzBAEBCgAdFiEEPVPGJshWBf4d9CyLd9zb2sjISdEFAl69PKUACgkQd9zb2sjI
-SdFBQQ/+JLx9FF4UXy50yaEgc7SCijzfX2lBC9YteQ/H5pqPlzfwb7BGxQgbWiIa
-iGRNoZF6EPyL+oAnRuY1gzsBDC/F7N39UPqvBiXTa/Je0DNMKD4YbGdkl/DIC+1M
-nhM7fGW5O+LDyiAZmVjCsRfjyReSZKQY0kDaYV+FFtCaEFednPa8YdJW5lckrQB5
-56sznj1QeuQJ0FYcmh42NVs53Zl2Lot8hVaLiCDgAFUx913kajXeq+BeLRJDjcos
-LQjpeN/SfNqQJmejyQzS9GqEAxvZP7SXM+necPD4maQ7Iep0thH83D7xvoV/TVBy
-0ucTVe2ocyT40w6svz4lSOV+jtRHF9S0VBscf6y9aagTcD3dZQa7QwbFyG+b5hCm
-uEIRJj8i2N/WFzq4HdYyMiXBJSaLFWrPOVAh+MKlcH+CiezKeBGvypfTu9Yb/Kv4
-obWj146nWsxWKlNTNYsrh+Lj2UD+7iUFEbFTnufeutccwJvnk51a5z4gSsBWNYeY
-qMuOvsES0eZKAo5fcdqrVnZZbmjZMNj8T8+tMI5wWTfslyyEJx8O/Es4aemi9kkq
-dS5IVyJOCv1aTZ/BqB8WMW6fjZDLEG7a80OqEHlIFcZPIRsJkBx793GliZrNR0qr
-NIj0IwInjPGU+EC2XlQ1jSymlsMpJS3+akPh2TCpMVXyb39UZOc=
-=eI2c
------END PGP SIGNATURE-----
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
 
---K4f1yUDMdsuo8nAqC8e6zqnxTIdRv8BgF--
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
