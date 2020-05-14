@@ -2,154 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 618AA1D2830
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 08:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D901D2834
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 08:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725946AbgENGxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 02:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725831AbgENGxN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 02:53:13 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E34C061A0C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 23:53:13 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id m18so492620vkk.9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 May 2020 23:53:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=verdurent-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AD73/gyPw537Xp1vDJOYvLHr7JMtBDUrFsijP0WuRks=;
-        b=RdSLSskx2Wvw3alRl86UnDw5dnN1+ZHo+jEuOiDqNYvb3EfRrfuQ1fjHd8pEofVcmx
-         OSOsg5Ki+jgXdahzTq8BYmydYLkEp/D/1CWEiD9WIoLB/oyMT0/XdOe73UgI9Xo/PX8Z
-         vAsKTrb1XOhLWFCweUDfv5clUyY9/Ct0OqoS4jylDHfwnX2dZaBf96hPr9UjJyc9qJ54
-         LfhUMigof8LCnYdiDSe3krEkaZ0cdi5WNh7X76KkQjTeQbosgpRBGY0UM/FYTbyUC8gZ
-         fAmJrAfp1zGCiCU5/M/YWEfBTBFrgSdaXqABtBbjTfwTGLLBBjxmcCGYThD0EubKLklL
-         Y/WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AD73/gyPw537Xp1vDJOYvLHr7JMtBDUrFsijP0WuRks=;
-        b=iYu+o5O8g2KJ5zIWSuOoNwwMrzoyUqHKrIlcOyuZvFceNll2tLytIwHbbHivDzYRWA
-         S2qlegQY+8fsyx6wehgjtoGGLE39xYmgOg4jHLEil/qnp8RITaKFOMToJzyjYDb0QERw
-         m+xrcaW/LXchzoxECSXOy9g+1/jxNTLnEST07WHPKQ+I3k/V9j+Ku9fQyuPQwGiU+ZCp
-         5FxP0n3zWFhSaF3c6lL33EdLJsTB9j5XfOshJJEy4RgiFn6qXUU3oLElV6g9nWlkas/x
-         Y6IZKY4RXBfMhdv1hdDimSxAIwMeuRvypgFmXoyAJuSBJNZAbnfCwLWIsLU/Un4hS+zw
-         ZYYA==
-X-Gm-Message-State: AOAM5315EGvrBkRhh3nv5yLnRSy68VDunyQoGbvIGfCTPjHjpnEOJXCq
-        e9m8RZMZ7OdgTCW6xJFRLqHmaPOieK/gwsFUJCjgkw==
-X-Google-Smtp-Source: ABdhPJwqOdHWX9G/Vc1PEWvZMXQ69dsTzV+tAJwC+UvjMCX5pJg7UnTD2qxWptjx7wEK5anGtRzdU/mrdZoXOnfLCtw=
-X-Received: by 2002:a1f:a786:: with SMTP id q128mr2448341vke.86.1589439192297;
- Wed, 13 May 2020 23:53:12 -0700 (PDT)
+        id S1726062AbgENGxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 02:53:21 -0400
+Received: from mga14.intel.com ([192.55.52.115]:43897 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725911AbgENGxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 02:53:20 -0400
+IronPort-SDR: 0mKsgizaAJBsC+Hh6bnuFMUdXQ5JuvE69941voollJVW8B6lMj2Y4Gu/IlkBT1rm6vvTUuq+FV
+ KKruyyBCgk0w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 23:53:19 -0700
+IronPort-SDR: xQA7GUCRkzw8iPfjj8bl4+ul4+nvOn1axPrDtT4pLTz1uuf5Ocze0gFCculivz2DSNuPh7Aswf
+ ksmXH2yGcmhg==
+X-IronPort-AV: E=Sophos;i="5.73,390,1583222400"; 
+   d="scan'208";a="280757800"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 23:53:18 -0700
+From:   ira.weiny@intel.com
+To:     linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: [PATCH V1 0/9] Enable ext4 support for per-file/directory DAX operations
+Date:   Wed, 13 May 2020 23:53:06 -0700
+Message-Id: <20200514065316.2500078-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200514062836.190194-1-vkoul@kernel.org>
-In-Reply-To: <20200514062836.190194-1-vkoul@kernel.org>
-From:   Amit Kucheria <amit.kucheria@verdurent.com>
-Date:   Thu, 14 May 2020 12:22:33 +0530
-Message-ID: <CAHLCerN_pxkqJojJLL5ztbYCeFZ9Mco6oM-=0mdmh5iSydxrUg@mail.gmail.com>
-Subject: Re: [PATCH] net: stmmac: fix num_por initialization
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        lakml <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rahul Ankushrao Kawadgave <rahulak@qti.qualcomm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 11:59 AM Vinod Koul <vkoul@kernel.org> wrote:
->
-> Driver missed initializing num_por which is por values that driver
+From: Ira Weiny <ira.weiny@intel.com>
 
-Nit: s/is/is one of the/ ?
+Enable the same per file DAX support in ext4 as was done for xfs.  This series
+builds and depends on the V11 series for xfs.[1]
 
-> configures to hardware. In order to get this values, add a new structure
+This passes the same xfstests test as XFS.
 
-Nit: s/this/these
+The only issue is that this modifies the old mount option parsing code rather
+than waiting for the new parsing code to be finalized.
 
-> ethqos_emac_driver_data which holds por and num_por values and populate
-> that in driver probe.
->
-> Fixes: a7c30e62d4b8 ("net: stmmac: Add driver for Qualcomm ethqos")
-> Reported-by: Rahul Ankushrao Kawadgave <rahulak@qti.qualcomm.com>
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+This series starts with 3 fixes which include making Verity and Encrypt truly
+mutually exclusive from DAX.  I think these first 3 patches should be picked up
+for 5.8 regardless of what is decided regarding the mount parsing.
 
-Otherwise,
+[1] https://lore.kernel.org/lkml/20200428002142.404144-1-ira.weiny@intel.com/
 
-Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
+Changes from V0:
+	Collect reviews
+	Fix up setting don't cache in ioctl code
+	Add FS_DAX_FL flag for consistency
 
-> ---
->  .../ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> index e0a5fe83d8e0..bfc4a92f1d92 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> @@ -75,6 +75,11 @@ struct ethqos_emac_por {
->         unsigned int value;
->  };
->
-> +struct ethqos_emac_driver_data {
-> +       const struct ethqos_emac_por *por;
-> +       unsigned int num_por;
-> +};
-> +
->  struct qcom_ethqos {
->         struct platform_device *pdev;
->         void __iomem *rgmii_base;
-> @@ -171,6 +176,11 @@ static const struct ethqos_emac_por emac_v2_3_0_por[] = {
->         { .offset = RGMII_IO_MACRO_CONFIG2,     .value = 0x00002060 },
->  };
->
-> +static const struct ethqos_emac_driver_data emac_v2_3_0_data = {
-> +       .por = emac_v2_3_0_por,
-> +       .num_por = ARRAY_SIZE(emac_v2_3_0_por),
-> +};
-> +
->  static int ethqos_dll_configure(struct qcom_ethqos *ethqos)
->  {
->         unsigned int val;
-> @@ -442,6 +452,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
->         struct device_node *np = pdev->dev.of_node;
->         struct plat_stmmacenet_data *plat_dat;
->         struct stmmac_resources stmmac_res;
-> +       const struct ethqos_emac_driver_data *data;
->         struct qcom_ethqos *ethqos;
->         struct resource *res;
->         int ret;
-> @@ -471,7 +482,9 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
->                 goto err_mem;
->         }
->
-> -       ethqos->por = of_device_get_match_data(&pdev->dev);
-> +       data = of_device_get_match_data(&pdev->dev);
-> +       ethqos->por = data->por;
-> +       ethqos->num_por = data->num_por;
->
->         ethqos->rgmii_clk = devm_clk_get(&pdev->dev, "rgmii");
->         if (IS_ERR(ethqos->rgmii_clk)) {
-> @@ -526,7 +539,7 @@ static int qcom_ethqos_remove(struct platform_device *pdev)
->  }
->
->  static const struct of_device_id qcom_ethqos_match[] = {
-> -       { .compatible = "qcom,qcs404-ethqos", .data = &emac_v2_3_0_por},
-> +       { .compatible = "qcom,qcs404-ethqos", .data = &emac_v2_3_0_data},
->         { }
->  };
->  MODULE_DEVICE_TABLE(of, qcom_ethqos_match);
-> --
-> 2.25.4
->
+
+To: linux-ext4@vger.kernel.org
+To: "Theodore Y. Ts'o" <tytso@mit.edu>
+To: Jan Kara <jack@suse.cz>
+Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-xfs@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+
+
+Ira Weiny (9):
+  fs/ext4: Narrow scope of DAX check in setflags
+  fs/ext4: Disallow verity if inode is DAX
+  fs/ext4: Disallow encryption if inode is DAX
+  fs/ext4: Change EXT4_MOUNT_DAX to EXT4_MOUNT_DAX_ALWAYS
+  fs/ext4: Update ext4_should_use_dax()
+  fs/ext4: Only change S_DAX on inode load
+  fs/ext4: Make DAX mount option a tri-state
+  fs/ext4: Introduce DAX inode flag
+  Documentation/dax: Update DAX enablement for ext4
+
+ Documentation/filesystems/dax.txt         |  6 +-
+ Documentation/filesystems/ext4/verity.rst |  7 +++
+ Documentation/filesystems/fscrypt.rst     |  4 +-
+ fs/ext4/ext4.h                            | 20 ++++---
+ fs/ext4/ialloc.c                          |  2 +-
+ fs/ext4/inode.c                           | 27 +++++++--
+ fs/ext4/ioctl.c                           | 31 +++++++++--
+ fs/ext4/super.c                           | 67 +++++++++++++++--------
+ fs/ext4/verity.c                          |  5 +-
+ include/uapi/linux/fs.h                   |  1 +
+ 10 files changed, 125 insertions(+), 45 deletions(-)
+
+-- 
+2.25.1
+
