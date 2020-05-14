@@ -2,142 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304341D2872
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 09:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D07C61D2856
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 May 2020 08:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgENHD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 03:03:57 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:33332 "EHLO inva021.nxp.com"
+        id S1726005AbgENGz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 02:55:26 -0400
+Received: from mga07.intel.com ([134.134.136.100]:24279 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726010AbgENHDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 03:03:55 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E0DAA2016FC;
-        Thu, 14 May 2020 09:03:52 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A651520178E;
-        Thu, 14 May 2020 09:03:47 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E883B402BB;
-        Thu, 14 May 2020 15:03:40 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, p.zabel@pengutronix.de,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH 2/2] dt-bindings: pwm: Convert imx tpm pwm to json-schema
-Date:   Thu, 14 May 2020 14:54:19 +0800
-Message-Id: <1589439259-28510-2-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589439259-28510-1-git-send-email-Anson.Huang@nxp.com>
-References: <1589439259-28510-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725831AbgENGz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 02:55:26 -0400
+IronPort-SDR: LmGVgLkRdaEFxxRrNnTbG+YU0GlEAgYw34/dzCUlj86jByMeJRw6Vgoc+9xFH6z0bNVLytw6bW
+ tdG0oK4nQqHw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 23:55:25 -0700
+IronPort-SDR: 4EAhcH2eyjRNOzx8+C1/Q5Cp+otOL2Ga0272rzp6JWprrN/Q7Ido8gTOuH7YhUPeM66uO8vav/
+ LKhqViWQUQGA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,390,1583222400"; 
+   d="scan'208";a="464413086"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by fmsmga006.fm.intel.com with ESMTP; 13 May 2020 23:55:25 -0700
+Date:   Wed, 13 May 2020 23:55:25 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 8/9] fs/ext4: Introduce DAX inode flag
+Message-ID: <20200514065524.GC2140786@iweiny-DESK2.sc.intel.com>
+References: <20200513054324.2138483-1-ira.weiny@intel.com>
+ <20200513054324.2138483-9-ira.weiny@intel.com>
+ <20200513144706.GH27709@quack2.suse.cz>
+ <20200513214154.GB2140786@iweiny-DESK2.sc.intel.com>
+ <20200514064335.GB9569@quack2.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200514064335.GB9569@quack2.suse.cz>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the imx tpm pwm binding to DT schema format using json-schema.
+On Thu, May 14, 2020 at 08:43:35AM +0200, Jan Kara wrote:
+> On Wed 13-05-20 14:41:55, Ira Weiny wrote:
+> > On Wed, May 13, 2020 at 04:47:06PM +0200, Jan Kara wrote:
+> > >
+> > > So I think you'll have to check
+> > > whether DAX flag is being changed,
+> > 
+> > ext4_dax_dontcache() does check if the flag is being changed.
+> 
+> Yes, but if you call it after inode flags change, you cannot determine that
+> just from flags and EXT4_I(inode)->i_flags. So that logic needs to change.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- .../devicetree/bindings/pwm/imx-tpm-pwm.txt        | 22 ---------
- .../devicetree/bindings/pwm/imx-tpm-pwm.yaml       | 55 ++++++++++++++++++++++
- 2 files changed, 55 insertions(+), 22 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/pwm/imx-tpm-pwm.txt
- create mode 100644 Documentation/devicetree/bindings/pwm/imx-tpm-pwm.yaml
+I just caught this email... just after sending V1.
 
-diff --git a/Documentation/devicetree/bindings/pwm/imx-tpm-pwm.txt b/Documentation/devicetree/bindings/pwm/imx-tpm-pwm.txt
-deleted file mode 100644
-index 5bf2095..0000000
---- a/Documentation/devicetree/bindings/pwm/imx-tpm-pwm.txt
-+++ /dev/null
-@@ -1,22 +0,0 @@
--Freescale i.MX TPM PWM controller
--
--Required properties:
--- compatible : Should be "fsl,imx7ulp-pwm".
--- reg: Physical base address and length of the controller's registers.
--- #pwm-cells: Should be 3. See pwm.yaml in this directory for a description of the cells format.
--- clocks : The clock provided by the SoC to drive the PWM.
--- interrupts: The interrupt for the PWM controller.
--
--Note: The TPM counter and period counter are shared between multiple channels, so all channels
--should use same period setting.
--
--Example:
--
--tpm4: pwm@40250000 {
--	compatible = "fsl,imx7ulp-pwm";
--	reg = <0x40250000 0x1000>;
--	assigned-clocks = <&pcc2 IMX7ULP_CLK_LPTPM4>;
--	assigned-clock-parents = <&scg1 IMX7ULP_CLK_SOSC_BUS_CLK>;
--	clocks = <&pcc2 IMX7ULP_CLK_LPTPM4>;
--	#pwm-cells = <3>;
--};
-diff --git a/Documentation/devicetree/bindings/pwm/imx-tpm-pwm.yaml b/Documentation/devicetree/bindings/pwm/imx-tpm-pwm.yaml
-new file mode 100644
-index 0000000..fe9ef42
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pwm/imx-tpm-pwm.yaml
-@@ -0,0 +1,55 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pwm/imx-tpm-pwm.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale i.MX TPM PWM controller
-+
-+maintainers:
-+  - Anson Huang <anson.huang@nxp.com>
-+
-+description: |
-+  The TPM counter and period counter are shared between multiple
-+  channels, so all channels should use same period setting.
-+
-+properties:
-+  "#pwm-cells":
-+    const: 3
-+
-+  compatible:
-+    enum:
-+      - fsl,imx7ulp-pwm
-+
-+  reg:
-+    maxItems: 1
-+
-+  assigned-clocks:
-+    maxItems: 1
-+
-+  assigned-clock-parents:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+required:
-+  - "#pwm-cells"
-+  - compatible
-+  - reg
-+  - clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/imx7ulp-clock.h>
-+
-+    pwm@40250000 {
-+        compatible = "fsl,imx7ulp-pwm";
-+        reg = <0x40250000 0x1000>;
-+        assigned-clocks = <&pcc2 IMX7ULP_CLK_LPTPM4>;
-+        assigned-clock-parents = <&scg1 IMX7ULP_CLK_SOSC_BUS_CLK>;
-+        clocks = <&pcc2 IMX7ULP_CLK_LPTPM4>;
-+        #pwm-cells = <3>;
-+    };
--- 
-2.7.4
+I've moved where ext4_dax_dontcache() is called.  I think it is ok now with the
+current check.
 
+LMK if I've messed it up...  :-/
+
+Ira
+
+> 
+> 								Honza
+> 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
