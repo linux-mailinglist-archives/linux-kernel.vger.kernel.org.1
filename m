@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386251D4BE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C79A1D4BE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727012AbgEOK7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 06:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58024 "EHLO
+        id S1726551AbgEOK7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 06:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726632AbgEOK7R (ORCPT
+        with ESMTP id S1726659AbgEOK7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 06:59:17 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4DFC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:59:17 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id l17so3033050wrr.4
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:59:17 -0700 (PDT)
+        Fri, 15 May 2020 06:59:19 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64AEC05BD0A
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:59:18 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id e1so3028390wrt.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:59:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wKY3Sv04y9T25D28x0+yoca4JqoOKU6viRzuCp/o2d8=;
-        b=MYaMiRiz1CtiS090xzgno9gIDJcuB2yEV9pYsHZtfn9MDBV+1Lb61O84bGSxxbGm/3
-         elvcYsu2EMhv9Gis8QZnBIOfyFjmlnBWT0yDiIl16ZEZyh3Qm2DUSWuuWJSyOUeY583g
-         VlLJUs441j/vco+A7dJ+tQTgMJFr8y3hnQBIXgJ8aKdEObgPU12qX43fP37XyYzPrG1l
-         SBK8QAmP9SNb143vdUN+gyCeM1j9SpSGBwNh2pu1WvbRYKCLTVIlN5u/kP3JR6OXkrIu
-         rx5ygMcBqj5CmvNXSxpp7oj3wxNgnG8OattGZ5qDmnj7RZ8ahWDTu8FsKX32glfhzpzs
-         QbpA==
+        bh=qIsoQzx8QXc1ir+dRugWu1fsq9J9q4alaZWOk635tTE=;
+        b=hem7MA7Smzp8TqztYBuB5W3IWuLc4iqDhkp4S4YrnIqEmIZYd5pPdRcokkZiSQCBXL
+         58opF2y7yXszqJ3evDxLwos9xZqkclw8sRQh7P0+fHtLZlqrEbIdYFuY2QzUT/3oNp3+
+         56D/84m33gXnqSp+cu9AJxgtA7yK1RJAbAO0VQpW+NCdV214WKsw960f4Toq0JR2zORt
+         KAesZDc+Dr2ZIqP8yY5XwJ6nLSGu7pB7APkga9EQl8I78PToaK+HwDB54eqVuf/tRtOS
+         pzcnoFrrzdZU3MnypcCryPp2ei+6BLBHpvUaf/5Qk4Uvog7s+owQl8nsBFbR/RUPagH9
+         HC7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wKY3Sv04y9T25D28x0+yoca4JqoOKU6viRzuCp/o2d8=;
-        b=Z007Nu8YSWV24RQJJd4ncTZzKsa7xbfu4y00G4plxNbced7ZuNldH+A081zNVaxpjU
-         9hk449RNgU1j1CFCrD2WPfxsXlkY0FzjF/zbLBp95q+SwJtVD44XRAz2QSg41Wrsw8ka
-         Bc5mhp0/Itzoaw0Y1hF/nmQcP2X9E1tObyRu4OmuEJLkRvjWXV79j6hhfNNyVtEY7ut1
-         EP8r5BXfLPxfu/blTeaEGDa5SuLEq/J+EuZ19uYsK9T61RimPiLlFo5rIjZgAwWRxxqI
-         SjWEfkeuYcqagRyvWdOm3QHOgNPTW9yITftBLzopQ9cExYjlvYbxDjX8BFClFiGmpBF5
-         Sl6A==
-X-Gm-Message-State: AOAM532zqONi+vF2xSh88p7c5qN+EUsUmqPQmYhZuAcGhkicufULBmwP
-        Wn9iacGab1aj+ur6u4UiY44IgQ==
-X-Google-Smtp-Source: ABdhPJxDpM4n30e5iBr2RTiZvdPUETO1aVERF22wXT/LtFQlS2FUwWdRvrja8ivqmLjEU8Yx1VWMvA==
-X-Received: by 2002:a5d:62c7:: with SMTP id o7mr3622526wrv.212.1589540355340;
-        Fri, 15 May 2020 03:59:15 -0700 (PDT)
+        bh=qIsoQzx8QXc1ir+dRugWu1fsq9J9q4alaZWOk635tTE=;
+        b=g6ioICWB3hcgRjIY7IBrrN0ggdvtWCkVkfoXmlAqnFzBtFeIBb50URmFmMTnQmbl2i
+         +6gcBy8ug1xmhJhiwxqA58Qvi9jqSWOKYU3bLTNN1lNdfB99PA9OYZhCUQCCv+ITGNbB
+         C/J58sGwEzh03aORK+2pXyG4QetN71rdCV35fnJK+EqyG47NrJLseYw/Xx2y3MgfbIH5
+         diI7giCE7c5ixeIYSejZn3eq3UUvnrh3684UoQkl/F2X2gkKED6ZTX2iV3OGOkSgJgSB
+         q3HDUj/RDaV+Rc7V+Z+FUi2TPYLVC53FRn2Zrw9M1evveSPoTaNDuEJibAlEwSycc5+j
+         wkQQ==
+X-Gm-Message-State: AOAM5318/hTogNtHTE+d28A7xP6p3MjSWovGv0CGEj+9beXupFFV/e1C
+        S3vnycDABH6SYB/bgVSsZzU5jg==
+X-Google-Smtp-Source: ABdhPJyxwMkIRcpBncYa6eIwpuEAvcR55Rq93vJeaU2e4BAy6oJpiroVdqRq+R0wPBTMFUMxTSk9rw==
+X-Received: by 2002:adf:fa44:: with SMTP id y4mr3731198wrr.135.1589540357099;
+        Fri, 15 May 2020 03:59:17 -0700 (PDT)
 Received: from localhost ([2a01:4b00:8523:2d03:d11b:f847:8002:7411])
-        by smtp.gmail.com with ESMTPSA id l19sm3242185wmj.14.2020.05.15.03.59.14
+        by smtp.gmail.com with ESMTPSA id 128sm3156597wme.39.2020.05.15.03.59.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 May 2020 03:59:14 -0700 (PDT)
+        Fri, 15 May 2020 03:59:16 -0700 (PDT)
 From:   David Brazdil <dbrazdil@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         James Morse <james.morse@arm.com>,
@@ -57,9 +57,9 @@ To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
 Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v2 11/14] arm64: kvm: Compile remaining hyp/ files for both VHE/nVHE
-Date:   Fri, 15 May 2020 11:58:38 +0100
-Message-Id: <20200515105841.73532-12-dbrazdil@google.com>
+Subject: [PATCH v2 12/14] arm64: kvm: Add comments around __kvm_nvhe_ symbol aliases
+Date:   Fri, 15 May 2020 11:58:39 +0100
+Message-Id: <20200515105841.73532-13-dbrazdil@google.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200515105841.73532-1-dbrazdil@google.com>
 References: <20200515105841.73532-1-dbrazdil@google.com>
@@ -73,72 +73,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 This patch is part of a series which builds KVM's non-VHE hyp code separately
 from VHE and the rest of the kernel.
 
-The following files in hyp/ contain only code shared by VHE/nVHE:
-  vgic-v3-sr.c, aarch32.c, vgic-v2-cpuif-proxy.c, entry.S, fpsimd.S
-Compile them under both configurations. Deletions in image-vars.h reflect
-eliminated dependencies of nVHE code on the rest of the kernel.
+With all source files split between VHE/nVHE, add comments around the list of
+symbols where nVHE code still links against kernel proper. Split them into
+groups and explain how each group is currently used.
+
+Some of these dependencies will be removed in the future.
 
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/kernel/image-vars.h   | 19 -------------------
- arch/arm64/kvm/hyp/nvhe/Makefile |  5 +++--
- 2 files changed, 3 insertions(+), 21 deletions(-)
+ arch/arm64/kernel/image-vars.h | 47 ++++++++++++++++++++++------------
+ 1 file changed, 30 insertions(+), 17 deletions(-)
 
 diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-index c16cf4e2cd8b..217e5e5a101d 100644
+index 217e5e5a101d..0b3a3fe07a64 100644
 --- a/arch/arm64/kernel/image-vars.h
 +++ b/arch/arm64/kernel/image-vars.h
-@@ -61,26 +61,8 @@ __efistub__ctype		= _ctype;
+@@ -61,23 +61,36 @@ __efistub__ctype		= _ctype;
   * memory mappings.
   */
  
--__kvm_nvhe___fpsimd_restore_state = __fpsimd_restore_state;
--__kvm_nvhe___fpsimd_save_state = __fpsimd_save_state;
--__kvm_nvhe___guest_enter = __guest_enter;
--__kvm_nvhe___guest_exit = __guest_exit;
- __kvm_nvhe___icache_flags = __icache_flags;
- __kvm_nvhe___kvm_handle_stub_hvc = __kvm_handle_stub_hvc;
--__kvm_nvhe___vgic_v2_perform_cpuif_access = __vgic_v2_perform_cpuif_access;
--__kvm_nvhe___vgic_v3_activate_traps = __vgic_v3_activate_traps;
--__kvm_nvhe___vgic_v3_deactivate_traps = __vgic_v3_deactivate_traps;
--__kvm_nvhe___vgic_v3_get_ich_vtr_el2 = __vgic_v3_get_ich_vtr_el2;
--__kvm_nvhe___vgic_v3_init_lrs = __vgic_v3_init_lrs;
--__kvm_nvhe___vgic_v3_perform_cpuif_access = __vgic_v3_perform_cpuif_access;
--__kvm_nvhe___vgic_v3_read_vmcr = __vgic_v3_read_vmcr;
--__kvm_nvhe___vgic_v3_restore_aprs = __vgic_v3_restore_aprs;
--__kvm_nvhe___vgic_v3_restore_state = __vgic_v3_restore_state;
--__kvm_nvhe___vgic_v3_save_aprs = __vgic_v3_save_aprs;
--__kvm_nvhe___vgic_v3_save_state = __vgic_v3_save_state;
--__kvm_nvhe___vgic_v3_write_vmcr = __vgic_v3_write_vmcr;
--__kvm_nvhe_abort_guest_exit_end = abort_guest_exit_end;
--__kvm_nvhe_abort_guest_exit_start = abort_guest_exit_start;
- __kvm_nvhe_arm64_const_caps_ready = arm64_const_caps_ready;
- __kvm_nvhe_arm64_enable_wa2_handling = arm64_enable_wa2_handling;
- __kvm_nvhe_arm64_ssbd_callback_required = arm64_ssbd_callback_required;
-@@ -89,7 +71,6 @@ __kvm_nvhe_cpu_hwcaps = cpu_hwcaps;
- __kvm_nvhe_kimage_voffset = kimage_voffset;
- __kvm_nvhe_kvm_host_data = kvm_host_data;
- __kvm_nvhe_kvm_patch_vector_branch = kvm_patch_vector_branch;
--__kvm_nvhe_kvm_skip_instr32 = kvm_skip_instr32;
- __kvm_nvhe_kvm_update_va_mask = kvm_update_va_mask;
- __kvm_nvhe_kvm_vgic_global_state = kvm_vgic_global_state;
- __kvm_nvhe_panic = panic;
-diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-index a67958f29fd7..819d5271c49a 100644
---- a/arch/arm64/kvm/hyp/nvhe/Makefile
-+++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-@@ -7,8 +7,9 @@ asflags-y := -D__KVM_NVHE_HYPERVISOR__
- ccflags-y := -D__KVM_NVHE_HYPERVISOR__ -fno-stack-protector \
- 	     -DDISABLE_BRANCH_PROFILING $(DISABLE_STACKLEAK_PLUGIN)
+-__kvm_nvhe___icache_flags = __icache_flags;
+-__kvm_nvhe___kvm_handle_stub_hvc = __kvm_handle_stub_hvc;
+-__kvm_nvhe_arm64_const_caps_ready = arm64_const_caps_ready;
+-__kvm_nvhe_arm64_enable_wa2_handling = arm64_enable_wa2_handling;
+-__kvm_nvhe_arm64_ssbd_callback_required = arm64_ssbd_callback_required;
+-__kvm_nvhe_cpu_hwcap_keys = cpu_hwcap_keys;
+-__kvm_nvhe_cpu_hwcaps = cpu_hwcaps;
+-__kvm_nvhe_kimage_voffset = kimage_voffset;
+-__kvm_nvhe_kvm_host_data = kvm_host_data;
+-__kvm_nvhe_kvm_patch_vector_branch = kvm_patch_vector_branch;
+-__kvm_nvhe_kvm_update_va_mask = kvm_update_va_mask;
+-__kvm_nvhe_kvm_vgic_global_state = kvm_vgic_global_state;
+-__kvm_nvhe_panic = panic;
+-__kvm_nvhe_sve_load_state = sve_load_state;
+-__kvm_nvhe_sve_save_state = sve_save_state;
+-__kvm_nvhe_vgic_v2_cpuif_trap = vgic_v2_cpuif_trap;
+-__kvm_nvhe_vgic_v3_cpuif_trap = vgic_v3_cpuif_trap;
++/* If nVHE code panics, it ERETs into panic() in EL1. */
++__kvm_nvhe_panic			= panic;
++
++/* Stub HVC IDs are routed to a handler in .hyp.idmap.text. Executed in EL2. */
++__kvm_nvhe___kvm_handle_stub_hvc	= __kvm_handle_stub_hvc;
++
++/* Alternative callbacks, referenced in .altinstructions. Executed in EL1. */
++__kvm_nvhe_arm64_enable_wa2_handling	= arm64_enable_wa2_handling;
++__kvm_nvhe_kvm_patch_vector_branch	= kvm_patch_vector_branch;
++__kvm_nvhe_kvm_update_va_mask		= kvm_update_va_mask;
++
++/* Values used to convert between memory mappings, read-only after init. */
++__kvm_nvhe_kimage_voffset		= kimage_voffset;
++
++/* Data shared with the kernel. */
++__kvm_nvhe_cpu_hwcaps			= cpu_hwcaps;
++__kvm_nvhe_cpu_hwcap_keys		= cpu_hwcap_keys;
++__kvm_nvhe___icache_flags		= __icache_flags;
++__kvm_nvhe_kvm_vgic_global_state	= kvm_vgic_global_state;
++__kvm_nvhe_arm64_ssbd_callback_required	= arm64_ssbd_callback_required;
++__kvm_nvhe_kvm_host_data		= kvm_host_data;
++
++/* Static keys shared with the kernel. */
++__kvm_nvhe_arm64_const_caps_ready	= arm64_const_caps_ready;
++__kvm_nvhe_vgic_v2_cpuif_trap		= vgic_v2_cpuif_trap;
++__kvm_nvhe_vgic_v3_cpuif_trap		= vgic_v3_cpuif_trap;
++
++/* SVE support, currently unused by nVHE. */
++__kvm_nvhe_sve_save_state		= sve_save_state;
++__kvm_nvhe_sve_load_state		= sve_load_state;
  
--obj-y := ../timer-sr.o timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o \
--	 ../hyp-entry.o
-+obj-y := ../vgic-v3-sr.o ../timer-sr.o timer-sr.o ../aarch32.o \
-+	 ../vgic-v2-cpuif-proxy.o sysreg-sr.o debug-sr.o ../entry.o switch.o \
-+	 ../fpsimd.o tlb.o ../hyp-entry.o
+ #endif /* CONFIG_KVM */
  
- obj-y := $(patsubst %.o,%.hyp.o,$(obj-y))
- extra-y := $(patsubst %.hyp.o,%.hyp.tmp.o,$(obj-y))
 -- 
 2.26.2
 
