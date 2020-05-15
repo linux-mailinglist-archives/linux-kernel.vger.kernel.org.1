@@ -2,101 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4F51D503C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70B71D5040
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbgEOOSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 10:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726140AbgEOOSX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 10:18:23 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A2AC061A0C;
-        Fri, 15 May 2020 07:18:22 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id m7so936227plt.5;
-        Fri, 15 May 2020 07:18:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4XXkbZJb0W8CP7Lg+be2a0F3GhBQ7+qsR6HQdEwv8y8=;
-        b=rS0ZcSw0dC2H0Yxsp0LaGoGev6AxzL4/6qr3SNtVUIHEtF9ET3KtK9GWnY6bbeko5i
-         qrtu6zbFuFnYa+H52wNA7z7GFUeUaiqApey3cdAurqpB73mZVz/9yjpuUY2mh0XQ4gKH
-         GwhBqSUlLFVsmRy6h/edUT/iLex3CPCXL0nDaLTE/30DIgcNg+jgoVV4j9376HbavSTF
-         4ibaZWVzJ/mUncIvxsZzqwHfKHm36gLy1PaDrKjlO1aKntFKlgRwvPMRVyVo9b28Z+Y9
-         xV3eKPI6hpgALxvkY22SrNPGTH8+NxkJX6YQluglFvjgMgDWHjxH1hFP1NViEHEkV+v0
-         HSpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4XXkbZJb0W8CP7Lg+be2a0F3GhBQ7+qsR6HQdEwv8y8=;
-        b=QDhoI63Rq8G5PMKt4dMIIA2y3XH1qp8OFxdrwQ3KMVfrFDs7z0SOv9GcMCrUj5/r4Q
-         9wJGxLDWW2+5U7Ty6WgtCdfH0YaodksyvAUynvjWzbxcYCY1jcsApIuJfxUjU53rx6LJ
-         Cv3dM6mU91/YdwgU6h/4qn44wNjedW4KkIr4Pp+aaDhZtF2MJoCQP0Gl4QR4U1hkdOuM
-         U6FtwBPIA/a6nHin0+wPDiZUl7ilgsUVtCuj2WEhi7umu6kLSIPu6Q8UyGNfQCmDnRIO
-         x406zg5v7etG2ezVGhpLzsVT+Um6JX57Ifpv6KnSOXbNZB4lLzM26Rl2dDsjodkGoTzs
-         hp0w==
-X-Gm-Message-State: AOAM531TB4513B12aPeQuOHd1K4mBmwtCQtnzNDuiachchqVLn7lQ//W
-        FeiAcdb2NVJEWE0Uv1P6QlEKkPbnfTWd5EoIE5c=
-X-Google-Smtp-Source: ABdhPJwVG2t0IjBDgnQi/UcrLLlYIdFlGzj1+tols8vw2NgjaKGD2LS09KMaEQvEcmheZL66S1lhbUvoOvDkc5mpl7I=
-X-Received: by 2002:a17:90b:3717:: with SMTP id mg23mr3885831pjb.129.1589552302315;
- Fri, 15 May 2020 07:18:22 -0700 (PDT)
+        id S1726219AbgEOOUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 10:20:51 -0400
+Received: from 8bytes.org ([81.169.241.247]:43486 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgEOOUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 10:20:51 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 792053C3; Fri, 15 May 2020 16:20:49 +0200 (CEST)
+Date:   Fri, 15 May 2020 16:20:48 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     iommu@lists.linux-foundation.org, jroedel@suse.de,
+        linux-kernel@vger.kernel.org, Tom Murphy <murphyt7@tcd.ie>
+Subject: Re: [PATCH] iommu: Implement deferred domain attachment
+Message-ID: <20200515142047.GX18353@8bytes.org>
+References: <20200515094519.20338-1-joro@8bytes.org>
+ <8ce93a10-2ce0-e5a0-88a0-5d21d7003c0f@linux.intel.com>
 MIME-Version: 1.0
-References: <20200512204009.4751-1-bernhardu@mailbox.org> <2656984b-3eec-c6d0-f992-8f1f8973fe3e@redhat.com>
- <CAHp75VejzaZL26ztQMFGjAAMC3B8mkSnXSvGhyFeiHUbUUpp=w@mail.gmail.com> <4787d347-b761-6283-7f9d-34c1a11b909f@mailbox.org>
-In-Reply-To: <4787d347-b761-6283-7f9d-34c1a11b909f@mailbox.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 15 May 2020 17:18:15 +0300
-Message-ID: <CAHp75VfAeyMnwoJi8P0d4Gs5dziUQYhPGzS2fmev00UiRZ6vaQ@mail.gmail.com>
-Subject: Re: [PATCH] platform/x86: touchscreen_dmi: Add info for the Trekstor
- Yourbook C11B
-To:     =?UTF-8?Q?Bernhard_=C3=9Cbelacker?= <bernhardu@mailbox.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Otmar Meier <otmarjun.meier@nexgo.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8ce93a10-2ce0-e5a0-88a0-5d21d7003c0f@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 5:08 PM Bernhard =C3=9Cbelacker
-<bernhardu@mailbox.org> wrote:
-> Am 13.05.20 um 19:17 schrieb Andy Shevchenko:
-> > On Tue, May 12, 2020 at 11:44 PM Hans de Goede <hdegoede@redhat.com> wr=
-ote:
-> >> Hi,
-> >> On 5/12/20 10:40 PM, Bernhard =C3=9Cbelacker wrote:
-> >>> Add touchscreen info for the Trekstor Yourbook C11B. It seems to
-> >>> use the same touchscreen as the Primebook C11, so we only add a new D=
-MI
-> >>> match.
-> >>>
-> >>> Cc: Otmar Meier <otmarjun.meier@nexgo.de>
-> >>> Reported-and-tested-by: Otmar Meier <otmarjun.meier@nexgo.de>
-> >>> Signed-off-by: Bernhard =C3=9Cbelacker <bernhardu@mailbox.org>
-> >>
-> >> Thank you, patch looks good to me:
-> >>
-> >> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> >
-> > This doesn't apply to our for-next.
-> > Please, rebase, add Hans' tag and resend, thanks!
+On Fri, May 15, 2020 at 09:51:03PM +0800, Lu Baolu wrote:
+> On 2020/5/15 17:45, Joerg Roedel wrote:
+> >   struct iommu_domain *iommu_get_dma_domain(struct device *dev)
+> >   {
+> > -	return dev->iommu_group->default_domain;
+> > +	struct iommu_domain *domain = dev->iommu_group->default_domain;
+> > +
+> > +	if (__iommu_is_attach_deferred(domain, dev))
+> > +		__iommu_attach_device_no_defer(domain, dev);
+> 
+> It seems that the return value needs to be checked. The default domain
+> is invalid if attach() failed.
 
-> I am not sure against which git tree I should rebase?
+True, I looked at that, the callers can't handle returning NULL here, so
+I kept it this way for now. The outcome is that DMA will fail, but
+otherwise we'd see a NULL-ptr dereference really quickly after returning
+from that function.
 
-Ah, sorry, this one [1] you should use for PDx86.
+Bottom line: This needs to be cleaned up separatly.
 
-[1]: http://git.infradead.org/linux-platform-drivers-x86.git
+Regards,
 
---=20
-With Best Regards,
-Andy Shevchenko
+	Joerg
