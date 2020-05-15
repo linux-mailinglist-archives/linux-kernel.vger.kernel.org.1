@@ -2,79 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10E01D427A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 02:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676D71D4297
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 03:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728470AbgEOAzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 20:55:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726046AbgEOAzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 20:55:32 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6657720748;
-        Fri, 15 May 2020 00:55:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589504131;
-        bh=dyv0R0ie8YtJy95FD9KX/0SzWGEPyzcOwMlclDh+UA4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uJSjrd+xSjB+lMuRVw90RcbqLGFHaXVtOIgqfx07hc1ld5s6DyfDgXH6HgOs4xQ1l
-         J2xXwpDTUJl3aIpJp50BsBsCONoto8RXR7nnKtrJebxML90qwN3NLUj5Wh8ghW9VXj
-         R30NpFNQJmBYlDidtvszjQo65EAGoXaguTwV2S6A=
-Date:   Thu, 14 May 2020 20:55:30 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 4.14 39/39] crypto: xts - simplify error handling
- in ->create()
-Message-ID: <20200515005530.GD29995@sasha-vm>
-References: <20200514185456.21060-1-sashal@kernel.org>
- <20200514185456.21060-39-sashal@kernel.org>
- <20200514190843.GA187179@gmail.com>
+        id S1728611AbgEOBAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 21:00:43 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:57799 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726170AbgEOBAm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 21:00:42 -0400
+Received: from fsav106.sakura.ne.jp (fsav106.sakura.ne.jp [27.133.134.233])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 04F0w5Dv079234;
+        Fri, 15 May 2020 09:58:05 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav106.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp);
+ Fri, 15 May 2020 09:58:05 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 04F0w5cY079230
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Fri, 15 May 2020 09:58:05 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH v5 3/6] fs: Enable to enforce noexec mounts or file exec
+ through O_MAYEXEC
+To:     =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        John Johansen <john.johansen@canonical.com>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+References: <20200505153156.925111-1-mic@digikod.net>
+ <20200505153156.925111-4-mic@digikod.net>
+ <CAEjxPJ7y2G5hW0WTH0rSrDZrorzcJ7nrQBjfps2OWV5t1BUYHw@mail.gmail.com>
+ <202005131525.D08BFB3@keescook> <202005132002.91B8B63@keescook>
+ <CAEjxPJ7WjeQAz3XSCtgpYiRtH+Jx-UkSTaEcnVyz_jwXKE3dkw@mail.gmail.com>
+ <202005140830.2475344F86@keescook>
+ <CAEjxPJ4R_juwvRbKiCg5OGuhAi1ZuVytK4fKCDT_kT6VKc8iRg@mail.gmail.com>
+ <b740d658-a2da-5773-7a10-59a0ca52ac6b@digikod.net>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <5263f2ea-1267-7370-6463-da8c9d9145fd@i-love.sakura.ne.jp>
+Date:   Fri, 15 May 2020 09:58:00 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200514190843.GA187179@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <b740d658-a2da-5773-7a10-59a0ca52ac6b@digikod.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 12:08:43PM -0700, Eric Biggers wrote:
->On Thu, May 14, 2020 at 02:54:56PM -0400, Sasha Levin wrote:
->> From: Eric Biggers <ebiggers@google.com>
->>
->> [ Upstream commit 732e540953477083082e999ff553622c59cffd5f ]
->>
->> Simplify the error handling in the XTS template's ->create() function by
->> taking advantage of crypto_drop_skcipher() now accepting (as a no-op) a
->> spawn that hasn't been grabbed yet.
->>
->> Signed-off-by: Eric Biggers <ebiggers@google.com>
->> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->Please don't backport this patch.  It's a cleanup (not a fix) that depends on
->patches in 5.6, which you don't seem to be backporting.
+On 2020/05/06 0:31, Mickaël Salaün wrote:
+> The goal of this patch series is to enable to control script execution
+> with interpreters help.  A new O_MAYEXEC flag, usable through
+> openat2(2), is added to enable userspace script interpreter to delegate
+> to the kernel (and thus the system security policy) the permission to
+> interpret/execute scripts or other files containing what can be seen as
+> commands.
 
-For 5.6-4.19 I grabbed these to take:
+Since TOMOYO considers that any file (even standard input which is connected
+to keyboard) can provide data which can be interpreted as executable, TOMOYO
+does not check traditional "execute permission". TOMOYO's execute permission
+serves as a gate for replacing current process with a new file using execve()
+syscall. All other calls (e.g. uselib(), open()) are simply treated as
+opening a file for read/write/append etc. Therefore,
 
-	1a263ae60b04 ("gcc-10: avoid shadowing standard library 'free()' in crypto")
+On 14/05/2020 18:10, Stephen Smalley wrote:> Just do both in build_open_flags() and be done with it? Looks like he
+> was already setting FMODE_EXEC in patch 1 so we just need to teach> AppArmor/TOMOYO to check for it and perform file execute checking in> that case if !current->in_execve?
+regarding TOMOYO, I don't think that TOMOYO needs to perform file execute
+checking if !current->in_execve , even if O_MAYEXEC is introduced.
 
-cleanly. I'll drop it as it's mostly to avoid silly gcc10 warnings, but
-I just wanted to let you know the reason they ended up here.
-
->Note, this comment applies to all stable trees as well as all the other
->"simplify error handling in ->create()" patches.
->I hope that I don't have to reply to every individual email.
-
-You don't :)
-
--- 
-Thanks,
-Sasha
