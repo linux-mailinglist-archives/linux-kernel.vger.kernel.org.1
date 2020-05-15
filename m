@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3046C1D556E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14031D555F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgEOQBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 12:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726188AbgEOQBX (ORCPT
+        id S1727012AbgEOP7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 11:59:50 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:42656 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726266AbgEOP7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 12:01:23 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E200C061A0C;
-        Fri, 15 May 2020 09:01:23 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
-        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
-        (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 49NtSJ0n4HzKmbx;
-        Fri, 15 May 2020 18:01:20 +0200 (CEST)
-Authentication-Results: hefe.heinlein-support.de (amavisd-new);
-        dkim=pass (2048-bit key) reason="pass (just generated, assumed good)"
-        header.d=mailbox.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1589558477;
+        Fri, 15 May 2020 11:59:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589558388;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=w+PiomkJZ7jFlkkfl58ZR6NQt9BMVrpVorVvSHDPZaw=;
-        b=sRTS6j6jk30aT41zShAFepRc/3rbvP/wYZahNFeKTxVJ6cklLf9FMD+BBtWNGEhJFfrzsO
-        leps9WG5KF5OEjNZqi3dwSDADYZB0MXhcCTfp8lz9cMckj2sY7NMnCvpu5onuc8vdCmz8X
-        gwx3F37OdcewiaULU8PxrOTj6pMjMU2gemue4K0VXVVbQcxXnihXRk47qrHjTiVpCYuT9i
-        u5ajJraZ62lvJC1USWkKhaMSOcYnAads3ML1Orv5jHW9gOWylXIGdS6JM4HXXHbnKWbsih
-        ofFZ7eDDnOns7v5zmM4cTlagy91IgCTRgsQoLHWp/M0wLA+OcmxSluSDascb6w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :references:in-reply-to:message-id:date:date:subject:subject
-        :from:from:received; s=mail20150812; t=1589558473; bh=HJg1YQnjJH
-        2FjMqqiNGWACpqo0E0oCOo3cQeEbiw2ec=; b=o2itdzwiOSFh8Rnmlpsdpgfbfv
-        Lhq9YyJ9VPIJ15xisCIJzijEfLbWCzUJzcTooy0D0A7JrSW7F9hqmyZWnmipOk6s
-        LWeK2TDm/5Peftg1asRnq6AZMuEFXWs0EfEMr3rJ5DzeBLxZR3Y8H3rJGR2TxvEx
-        zvzHKRQ5B2K0JsIGe5iJOatmqfcPQ2RFqHFXNaB/BSu4HbzsQAEuNIwHG9n+x7OD
-        lx3jxIL1rR1bt27TiEhA95FG/Qy0UGflexboLTRCcYYmofGBXindkLlcbVIF41r5
-        o2328UvWmvnVTsP4FOUugK9R7VFaH9SeuVxkbHC1+4WCkOa2Dc9VU4C4DHSQ==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
-        with ESMTP id kSmbJmCzHMgm; Fri, 15 May 2020 18:01:13 +0200 (CEST)
-From:   =?UTF-8?q?Bernhard=20=C3=9Cbelacker?= <bernhardu@mailbox.org>
-To:     Andy Shevchenko <andy@infradead.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-input@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Bernhard=20=C3=9Cbelacker?= <bernhardu@mailbox.org>,
-        Otmar Meier <otmarjun.meier@nexgo.de>
-Subject: [PATCH v2] platform/x86: touchscreen_dmi: Add info for the Trekstor Yourbook C11B
-Date:   Fri, 15 May 2020 17:59:12 +0200
-Message-Id: <20200515155912.48032-1-bernhardu@mailbox.org>
-In-Reply-To: <CAHp75VfAeyMnwoJi8P0d4Gs5dziUQYhPGzS2fmev00UiRZ6vaQ@mail.gmail.com>
-References: <CAHp75VfAeyMnwoJi8P0d4Gs5dziUQYhPGzS2fmev00UiRZ6vaQ@mail.gmail.com>
+        bh=iGZXFwumSbdNNYAeiggV8U4re8SO4/3betnreXnOP68=;
+        b=Yp2WmewfAw9QVLo5XbPRAbeoiAw66yszHg5nywd18NHEUpk4cAW5opYG16VZPqOxTOSqTM
+        bmuqt0v0y1GMna3N2hUmJKZlBchSEqjYYM/XXc7PST8ZKz1YTylVSVkUutbSromJdHzSF+
+        WJty/5CbViq/YvhSFyNysdpbZZmF33s=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-228-sCq5CGBcOjW0CbXAUOkg2Q-1; Fri, 15 May 2020 11:59:46 -0400
+X-MC-Unique: sCq5CGBcOjW0CbXAUOkg2Q-1
+Received: by mail-wr1-f72.google.com with SMTP id z10so1402159wrs.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 08:59:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iGZXFwumSbdNNYAeiggV8U4re8SO4/3betnreXnOP68=;
+        b=Je0Cbffwr/4jet7B8K5Qa9Kalafkea8jREEK6hESj3mhg4kkqpE8SGbr0J4w1KbJdk
+         3NgUl1wKuvFTT6/OPnLH3bsP8CRpu5mR9hW7v/SrSxQTDObw49Z95lvWjE6/pk+sYtNp
+         wlFQP8Yd9l1dnfSqawqMcy98GBYh7ki9aRrxlC0amzl9ZKWWhOaIDbbqcuCT20PFXg/j
+         b7AkyqE2rdiRm/gL54FfPzSQT6OIcOx5jJ0sBQHn4cWUAaYh+UOoah2f6Z5nNNACypoO
+         GQ5kjcGk6wSVftYnWvTZysbelXupY5Ngg1aTsKGVaPylTSKkMeYk7iQE1ukg3IqguyR6
+         SvQg==
+X-Gm-Message-State: AOAM533Dgf6bTmRSGpY7LRecoYPstD5LYdbdH3DLjZ6lncGG4VAwbuLR
+        YI7tZs93ii8XEYNdsz+MPsjtRj16zxdo9cRlE++qgiYUNj8j+yEOcjrJQUK2EeU/13cFMpucszO
+        EupIPxvoauuCLL0c6ikb1C4Vz
+X-Received: by 2002:adf:d841:: with SMTP id k1mr4873041wrl.129.1589558385458;
+        Fri, 15 May 2020 08:59:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwSnUkPKjiUFYzyVHnxEbwzqPOvyHVqk4g3owBqQZqHtbskp7Ls7B+c3JLBHhLBGtvBBxcDeQ==
+X-Received: by 2002:adf:d841:: with SMTP id k1mr4873013wrl.129.1589558385172;
+        Fri, 15 May 2020 08:59:45 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:60bb:f5bd:83ff:ec47? ([2001:b07:6468:f312:60bb:f5bd:83ff:ec47])
+        by smtp.gmail.com with ESMTPSA id w12sm4196501wmk.12.2020.05.15.08.59.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 May 2020 08:59:44 -0700 (PDT)
+Subject: Re: [PATCH 2/8] KVM: x86: extend struct kvm_vcpu_pv_apf_data with
+ token info
+To:     Vivek Goyal <vgoyal@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+References: <20200511164752.2158645-1-vkuznets@redhat.com>
+ <20200511164752.2158645-3-vkuznets@redhat.com>
+ <20200512152709.GB138129@redhat.com> <87o8qtmaat.fsf@vitty.brq.redhat.com>
+ <20200512155339.GD138129@redhat.com> <20200512175017.GC12100@linux.intel.com>
+ <20200513125241.GA173965@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <0733213c-9514-4b04-6356-cf1087edd9cf@redhat.com>
+Date:   Fri, 15 May 2020 17:59:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: D45021768
-X-Rspamd-Score: -5.40 / 15.00 / 15.00
+In-Reply-To: <20200513125241.GA173965@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add touchscreen info for the Trekstor Yourbook C11B. It seems to
-use the same touchscreen as the Primebook C11, so we only add a new DMI
-match.
+On 13/05/20 14:52, Vivek Goyal wrote:
+>>> Also, type of event should not necessarily be tied to delivery method.
+>>> For example if we end up introducing say, "KVM_PV_REASON_PAGE_ERROR", then
+>>> I would think that event can be injected both using exception (#PF or #VE)
+>>> as well as interrupt (depending on state of system).
+>> Why bother preserving backwards compatibility?
+> New machanism does not have to support old guests but old mechanism
+> should probably continue to work and deprecated slowly, IMHO. Otherwise
+> guests which were receiving async page faults will suddenly stop getting
+> it over hypervisor upgrade and possibly see drop in performance.
 
-Cc: Otmar Meier <otmarjun.meier@nexgo.de>
-Reported-and-tested-by: Otmar Meier <otmarjun.meier@nexgo.de>
-Signed-off-by: Bernhard Übelacker <bernhardu@mailbox.org>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
----
- drivers/platform/x86/touchscreen_dmi.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Unfortunately, the old mechanism was broken enough, and in enough
+different ways, that it's better to just drop it.
 
-diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
-index 87591cea127a..f9d9045cdf40 100644
---- a/drivers/platform/x86/touchscreen_dmi.c
-+++ b/drivers/platform/x86/touchscreen_dmi.c
-@@ -1197,6 +1197,14 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
- 			DMI_MATCH(DMI_BIOS_VERSION, "TREK.G.WI71C.JGBMRBA05"),
- 		},
- 	},
-+	{
-+		/* Trekstor Yourbook C11B (same touchscreen as the Primebook C11) */
-+		.driver_data = (void *)&trekstor_primebook_c11_data,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "TREKSTOR"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "YOURBOOK C11B"),
-+		},
-+	},
- 	{
- 		/* Vinga Twizzle J116 */
- 		.driver_data = (void *)&vinga_twizzle_j116_data,
--- 
-2.26.2
+The new one using #VE is not coming very soon (we need to emulate it for
+<Broadwell and AMD processors, so it's not entirely trivial) so we are
+going to keep "page not ready" delivery using #PF for some time or even
+forever.  However, page ready notification as #PF is going away for good.
+
+That said, type1/type2 is quite bad. :)  Let's change that to page not
+present / page ready.
+
+Thanks,
+
+Paolo
 
