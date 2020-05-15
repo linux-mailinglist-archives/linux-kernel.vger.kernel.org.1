@@ -2,229 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B521D583E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 19:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CC71D5846
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 19:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726212AbgEORtG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 May 2020 13:49:06 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37960 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgEORtG (ORCPT
+        id S1726385AbgEORtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 13:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726219AbgEORtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 13:49:06 -0400
-Received: from mail-pf1-f197.google.com ([209.85.210.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1jZeSF-0000iq-0r
-        for linux-kernel@vger.kernel.org; Fri, 15 May 2020 17:49:03 +0000
-Received: by mail-pf1-f197.google.com with SMTP id a85so2504276pfa.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 10:49:02 -0700 (PDT)
+        Fri, 15 May 2020 13:49:36 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55C4C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 10:49:35 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id a4so2511664lfh.12
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 10:49:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UaYQTSaq9VZj8MAel6SAXsrwR35YF1SYRI2VQ4Ly89w=;
+        b=ByCFc5MixtBs6AIiuvjXgLX8ciepEzcgMdBfkabVnYTEguZvFgct4xZxiY5o28FfEo
+         /PBXJDk4bkppu1q48kIDeQC++nBqpVLtTif9qjyJETTP9M3e+pnxJkYmtcgOTkLsERga
+         AA7gynk9XbG6MPGlazZvj+UUttrdRaeKr36ULZmiDOHwd8AoLTkl1NP4XRtXOPYsJMOz
+         yvHiTJCMMd3aKBelaqHfPXPxzszh5IFHoBWdsGR2ucpZOzNa9FbE/xPsZSySmoAuRw0+
+         UUyYMytNomyz+jTuObIOKbCJwnuQ0PkBPQhWfvtoco6xTPkkLwCx1S4kJ2FTycMc7gFt
+         FaZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=XNrxl7Ei4SzRzAuobvLq0dv0NglXRJzSCfyYrWyMnGQ=;
-        b=UE2h6DziwpNNtzB/2T6xZwuXX15FAeJ729F6w+CC+vJzwcWFC7G7E/f/RKKfeMiWUe
-         PUF49s+eGYU/LACYs2aG6A7FdZJVhbVaXvLEqn/S7X50LsCJ3Be15U+Um4Wm8N6OpeUk
-         c0zx7Gotsj+nK/VJtNbVZIGpTbw41USrI96mpOQhTQTSQUyTV9jL7RjBnD70hwFdbqPZ
-         actrP8EwSF1zQPt82qquxSAQK92mg73/A8tlGTNC6XtQ9IHgU14LFSIgN2vW3lV+m5XL
-         KtnfOmabVrPFQCuBuWArLxPmntlV064PMMe5Q601fF5eN0ZHrmKq+eePHrJOsQBIjlP4
-         +RMw==
-X-Gm-Message-State: AOAM533QG15LD4MaUviun+4gFeRlPMZlSMgUvO57WZrHgeooDLpaeRpC
-        uFbFTnP/2+mh7+jCypg09DGp8VtkDSFeMTfW3148tSNY22bqOmKhkD8rbOuGCYtY92TIZUk8TG0
-        1kWPo9px72KIPP1unm8gbECAmkJ6HPlBBEpOSF7lgWw==
-X-Received: by 2002:a17:90a:1f4b:: with SMTP id y11mr4818641pjy.136.1589564941557;
-        Fri, 15 May 2020 10:49:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzF7OfuYHHgmnr3u2K2khymUzuj1d3YSkFB3LJdHptvsBqWppa7E7h//JX9y1UDJwrEIuNN0Q==
-X-Received: by 2002:a17:90a:1f4b:: with SMTP id y11mr4818546pjy.136.1589564940851;
-        Fri, 15 May 2020 10:49:00 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id o27sm2280110pgd.18.2020.05.15.10.48.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 15 May 2020 10:49:00 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH] libata: Use per port sync for detach
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <555101fd-71bc-fa0b-98c2-69249bb3eda6@huawei.com>
-Date:   Sat, 16 May 2020 01:48:57 +0800
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <15CFC20D-B8CB-43D7-8973-60E82DE6B894@canonical.com>
-References: <20200515110916.11556-1-kai.heng.feng@canonical.com>
- <555101fd-71bc-fa0b-98c2-69249bb3eda6@huawei.com>
-To:     John Garry <john.garry@huawei.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UaYQTSaq9VZj8MAel6SAXsrwR35YF1SYRI2VQ4Ly89w=;
+        b=dRWVa6av1ZYgmb7C0oI8NPzrt/iKAndxV7d3cQFjGRQArSO2bTuQdHnYl/aj5f+z56
+         uW1LW6Q0LthgqtUwBgJ0/ZU2Y1F9r/ff92deGPM6CaP69QJcFp1iOqxn0lpiGYA8K5Cg
+         9tLWMnd6R/4JrFEkfMN86rLVRYVUFswra8q0utBEr3w+0PEztp6Pe5OwoND9XOz2oT17
+         6Pk7ghBQWLqQsoXUwousUg6ZbvxFc19tWM0phXApgdRkEPqoTBEZC2z8ImKoQHVsHYJy
+         m8MwqDrFFylLMvV49Jk+iGrGwkJIeQvoHfEwqHCgKEvI2yjrJvlPsjiVU4rzkDQv95j2
+         0d3A==
+X-Gm-Message-State: AOAM530QsB6jEQLiCIhqeBUFlVsj5qgTM7wBQKFpnf012Pcb/Qmsf2Ub
+        rdbrHYqdqqUL52Am82j03H69Fol0DvBmUvZrzbXJhg==
+X-Google-Smtp-Source: ABdhPJxFY7EwOuokBF16WspLae1APA6Q7qnODWtV/Ot7OuSI12mNYEij3/T9g8jKQkXPrJRRbR3Y270E7KoyMm2RVWA=
+X-Received: by 2002:a19:c85:: with SMTP id 127mr3181989lfm.189.1589564973821;
+ Fri, 15 May 2020 10:49:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200508170630.94406-1-shakeelb@google.com> <20200508214405.GA226164@cmpxchg.org>
+ <CALvZod5VHHUV+_AXs4+5sLOPGyxm709kQ1q=uHMPVxW8pwXZ=g@mail.gmail.com>
+ <20200515082955.GJ29153@dhcp22.suse.cz> <20200515132421.GC591266@cmpxchg.org>
+ <CALvZod7SdgXv0Dmm3q5H=EH4dzg8pXZenMUaDObfoRv5EX-Pkw@mail.gmail.com> <20200515150026.GA94522@carbon.DHCP.thefacebook.com>
+In-Reply-To: <20200515150026.GA94522@carbon.DHCP.thefacebook.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 15 May 2020 10:49:22 -0700
+Message-ID: <CALvZod5EHzK-UzS9WgkzpZ2T+WwA8LottxrTzUi3qFwvUbOk4w@mail.gmail.com>
+Subject: Re: [PATCH] memcg: expose root cgroup's memory.stat
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 15, 2020 at 8:00 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Fri, May 15, 2020 at 06:44:44AM -0700, Shakeel Butt wrote:
+> > On Fri, May 15, 2020 at 6:24 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > >
+> > > On Fri, May 15, 2020 at 10:29:55AM +0200, Michal Hocko wrote:
+> > > > On Sat 09-05-20 07:06:38, Shakeel Butt wrote:
+> > > > > On Fri, May 8, 2020 at 2:44 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > > > > >
+> > > > > > On Fri, May 08, 2020 at 10:06:30AM -0700, Shakeel Butt wrote:
+> > > > > > > One way to measure the efficiency of memory reclaim is to look at the
+> > > > > > > ratio (pgscan+pfrefill)/pgsteal. However at the moment these stats are
+> > > > > > > not updated consistently at the system level and the ratio of these are
+> > > > > > > not very meaningful. The pgsteal and pgscan are updated for only global
+> > > > > > > reclaim while pgrefill gets updated for global as well as cgroup
+> > > > > > > reclaim.
+> > > > > > >
+> > > > > > > Please note that this difference is only for system level vmstats. The
+> > > > > > > cgroup stats returned by memory.stat are actually consistent. The
+> > > > > > > cgroup's pgsteal contains number of reclaimed pages for global as well
+> > > > > > > as cgroup reclaim. So, one way to get the system level stats is to get
+> > > > > > > these stats from root's memory.stat, so, expose memory.stat for the root
+> > > > > > > cgroup.
+> > > > > > >
+> > > > > > >       from Johannes Weiner:
+> > > > > > >       There are subtle differences between /proc/vmstat and
+> > > > > > >       memory.stat, and cgroup-aware code that wants to watch the full
+> > > > > > >       hierarchy currently has to know about these intricacies and
+> > > > > > >       translate semantics back and forth.
+> > > >
+> > > > Can we have those subtle differences documented please?
+> > > >
+> > > > > > >
+> > > > > > >       Generally having the fully recursive memory.stat at the root
+> > > > > > >       level could help a broader range of usecases.
+> > > > > >
+> > > > > > The changelog begs the question why we don't just "fix" the
+> > > > > > system-level stats. It may be useful to include the conclusions from
+> > > > > > that discussion, and why there is value in keeping the stats this way.
+> > > > > >
+> > > > >
+> > > > > Right. Andrew, can you please add the following para to the changelog?
+> > > > >
+> > > > > Why not fix the stats by including both the global and cgroup reclaim
+> > > > > activity instead of exposing root cgroup's memory.stat? The reason is
+> > > > > the benefit of having metrics exposing the activity that happens
+> > > > > purely due to machine capacity rather than localized activity that
+> > > > > happens due to the limits throughout the cgroup tree. Additionally
+> > > > > there are userspace tools like sysstat(sar) which reads these stats to
+> > > > > inform about the system level reclaim activity. So, we should not
+> > > > > break such use-cases.
+> > > > >
+> > > > > > > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > > > > > > Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> > > > > >
+> > > > > > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> > > > >
+> > > > > Thanks a lot.
+> > > >
+> > > > I was quite surprised that the patch is so simple TBH. For some reason
+> > > > I've still had memories that we do not account for root memcg (likely
+> > > > because mem_cgroup_is_root(memcg) bail out in the try_charge. But stats
+> > > > are slightly different here.
+> > >
+> > > Yep, we skip the page_counter for root, but keep in mind that cgroup1
+> > > *does* have a root-level memory.stat, so (for the most part) we've
+> > > been keeping consumer stats for the root level the whole time.
+> > >
+> > > > counters because they are not really all the same. E.g.
+> > > > - mem_cgroup_charge_statistics accounts for each memcg
+> > >
+> > > Yep, that's heritage from cgroup1.
+> > >
+> > > > - memcg_charge_kernel_stack relies on pages being associated with a
+> > > >   memcg and that in turn relies on __memcg_kmem_charge_page which bails
+> > > >   out on root memcg
+> > >
+> > > You're right. It should only bypass the page_counter, but still set
+> > > page->mem_cgroup = root_mem_cgroup, just like user pages.
+>
+> What about kernel threads? We consider them belonging to the root memory
+> cgroup. Should their memory consumption being considered in root-level stats?
+>
+> I'm not sure we really want it, but I guess we need to document how
+> kernel threads are handled.
+>
 
+What will be the cons of updating root-level stats for kthreads?
 
-> On May 15, 2020, at 20:38, John Garry <john.garry@huawei.com> wrote:
-> 
-> On 15/05/2020 12:09, Kai-Heng Feng wrote:
->> Commit 130f4caf145c ("libata: Ensure ata_port probe has completed before
->> detach") may cause system freeze during suspend.
->> Using async_synchronize_full() in PM callbacks is wrong, since async
->> callbacks that are already scheduled may wait for not-yet-scheduled
->> callbacks, causes a circular dependency.
-> 
-> It would be nice to describe this circular dependency a bit more.
-
-Hmm, I think it's quite self-explanatory. Which part do you want me to add? 
-
-> 
->> Instead of using big hammer like async_synchronize_full(), use async
->> cookie to make sure port probe are synced, without affecting other
->> scheduled PM callbacks.
-> 
-> oh, I thought that we could avoid the hassle of per-port cookie management. Sorry.
-> 
-> Did you check if the original issue which I tried to remedy is still suppressed?
-> 
-> I tried your patch, and got this:
-> 
-> [   28.190587] ------------[ cut here ]------------
-> [   28.195194] WARNING: CPU: 79 PID: 1 at drivers/ata/libata-core.c:5888 ata_hos
-> t_detach+0x238/0x248
-> [   28.204025] Modules linked in:
-> [   28.207072] CPU: 79 PID: 1 Comm: swapper/0 Tainted: G        W  5.7.0-
-> rc5-g644cd6f-dirty #84
-> [   28.216076] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS 2280-V2 CS V
-> 3.B220.02 03/27/2020
-> [   28.224906] pstate: 20c00009 (nzCv daif +PAN +UAO)
-> [   28.229677] pc : ata_host_detach+0x238/0x248
-> [   28.233929] lr : ata_host_detach+0x12c/0x248
-> [   28.238181] sp : ffff0026dc74f980
-> [   28.241481] x29: ffff0026dc74f980 x28: 0000000000000000
-> [   28.246769] x27: ffff2026c541c010 x26: 00000000000038e0
-> [   28.252059] x25: 0000000000003590 x24: ffff0026d3a0a018
-> [   28.257350] x23: 0000000000000001 x22: ffff0026d3a0a000
-> [   28.262638] x21: 0000000000013ec0 x20: ffff2026c541c000
-> [   28.267928] x19: ffff2026c541c020 x18: 0000000000000000
-> [   28.273215] x17: 0000000000000000 x16: 0000000000000000
-> [   28.278504] x15: 00000000000006c0 x14: 0000000000000000
-> [   28.283792] x13: 0000000000000000 x12: 1fffe004da744317
-> [   28.289081] x11: ffff8004da744317 x10: dfffa00000000000
-> [   28.294370] x9 : ffff8004da744318 x8 : ffff0026d3a218bc
-> [   28.299657] x7 : 0000000000000001 x6 : ffff8004da744318
-> [   28.304945] x5 : ffff8004da744318 x4 : dfffa00000000000
-> [   28.310233] x3 : ffffa00075ea18b4 x2 : 0000000000000003
-> [   28.315521] x1 : 0000000000000000 x0 : 0000000000400200
-> [   28.320808] Call trace:
-> [   28.323246]  ata_host_detach+0x238/0x248
-> [   28.327153]  ata_pci_remove_one+0x24/0x38
-> [   28.331147]  ahci_remove_one+0x54/0x88
-> [   28.334881]  pci_device_remove+0x70/0x148
-> [   28.338874]  really_probe+0x17c/0x570
-> [   28.342522]  driver_probe_device+0x80/0x150
-> [   28.346690]  device_driver_attach+0x9c/0xa8
-> [   28.350856]  __driver_attach+0xac/0x118
-> [   28.354677]  bus_for_each_dev+0xf0/0x168
-> [   28.358584]  driver_attach+0x34/0x48
-> [   28.362146]  bus_add_driver+0x240/0x300
-> [   28.365966]  driver_register+0xc0/0x1e0
-> [   28.369787]  __pci_register_driver+0xb4/0xd0
-> [   28.374039]  ahci_pci_driver_init+0x24/0x30
-> [   28.378205]  do_one_initcall+0xb8/0x268
-> [   28.382027]  kernel_init_freeable+0x294/0x30c
-> [   28.386366]  kernel_init+0x14/0x120
-> [   28.389841]  ret_from_fork+0x10/0x1c
-> [   28.393400] ---[ end trace 9972785c7052048f ]---
-> [   28.435826] ahci 0000:b4:03.0: SSS flag set, parallel bus scan disabled
-
-Can you please test the following patch:
-
-diff --git a/drivers/ata/libata-eh.c b/drivers/ata/libata-eh.c
-index 474c6c34fe02..51ee0cc4d414 100644
---- a/drivers/ata/libata-eh.c
-+++ b/drivers/ata/libata-eh.c
-@@ -3583,8 +3583,10 @@ int ata_eh_recover(struct ata_port *ap, ata_prereset_fn_t prereset,
-        rc = 0;
- 
-        /* if UNLOADING, finish immediately */
--       if (ap->pflags & ATA_PFLAG_UNLOADING)
-+       if (ap->pflags & ATA_PFLAG_UNLOADING) {
-+               ap->pflags |= ATA_PFLAG_UNLOADED;
-                goto out;
-+       }
-
-It's only compile-tested, many drivers panic with CONFIG_DEBUG_TEST_DRIVER_REMOVE enabled, so the system I have can't even boot properly :(
-
-Probably worth some time to fix them one by one...
-
-Kai-Heng
-
-> 
-> 
-> Thanks,
-> John
-> 
->> Fixes: 130f4caf145c ("libata: Ensure ata_port probe has completed before detach")
->> BugLink: https://bugs.launchpad.net/bugs/1867983
->> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->> ---
->>  drivers/ata/libata-core.c | 6 +++---
->>  include/linux/libata.h    | 3 +++
->>  2 files changed, 6 insertions(+), 3 deletions(-)
->> diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
->> index beca5f91bb4c..4a698f6388cd 100644
->> --- a/drivers/ata/libata-core.c
->> +++ b/drivers/ata/libata-core.c
->> @@ -42,7 +42,6 @@
->>  #include <linux/workqueue.h>
->>  #include <linux/scatterlist.h>
->>  #include <linux/io.h>
->> -#include <linux/async.h>
->>  #include <linux/log2.h>
->>  #include <linux/slab.h>
->>  #include <linux/glob.h>
->> @@ -5778,7 +5777,7 @@ int ata_host_register(struct ata_host *host, struct scsi_host_template *sht)
->>  	/* perform each probe asynchronously */
->>  	for (i = 0; i < host->n_ports; i++) {
->>  		struct ata_port *ap = host->ports[i];
->> -		async_schedule(async_port_probe, ap);
->> +		ap->cookie = async_schedule(async_port_probe, ap);
->>  	}
->>    	return 0;
->> @@ -5921,7 +5920,8 @@ void ata_host_detach(struct ata_host *host)
->>  	int i;
->>    	/* Ensure ata_port probe has completed */
->> -	async_synchronize_full();
->> +	for (i = 0; i < host->n_ports; i++)
->> +		async_synchronize_cookie(host->ports[i]->cookie);
->>    	for (i = 0; i < host->n_ports; i++)
-> 
-> Is it possible to combine these "for" loops?
-> 
->>  		ata_port_detach(host->ports[i]);
->> diff --git a/include/linux/libata.h b/include/linux/libata.h
->> index cffa4714bfa8..ae6dfc107ea8 100644
->> --- a/include/linux/libata.h
->> +++ b/include/linux/libata.h
->> @@ -22,6 +22,7 @@
->>  #include <linux/acpi.h>
->>  #include <linux/cdrom.h>
->>  #include <linux/sched.h>
->> +#include <linux/async.h>
->>  
-> 
-> alphabetic?
-> 
->>  /*
->>   * Define if arch has non-standard setup.  This is a _PCI_ standard
->> @@ -872,6 +873,8 @@ struct ata_port {
->>  	struct timer_list	fastdrain_timer;
->>  	unsigned long		fastdrain_cnt;
->>  +	async_cookie_t		cookie;
->> +
->>  	int			em_message_type;
->>  	void			*private_data;
-
+> > >
+> > > This counter also doesn't get exported on cgroup1, so it would indeed
+> > > be a new bug. It needs to be fixed before this patch here.
+> > >
+> > > > - memcg_charge_slab (NR_SLAB*) skips over root memcg as well
+> > >
+> > > Same thing with these two.
+> >
+> > Yes, we skip page_counter for root but not the stats. I will go over
+> > all the stats and make sure we are not skipping the stats for root.
