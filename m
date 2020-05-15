@@ -2,74 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E2B1D444F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 06:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473421D4447
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 06:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726237AbgEOEPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 00:15:48 -0400
-Received: from mga09.intel.com ([134.134.136.24]:13161 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgEOEPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 00:15:48 -0400
-IronPort-SDR: yvDlW/4+FWbM5MqhgKyFCSgUJDIXvDmyoCRPYkLVEyhwT5jypkSrYlKX5TiUEZhwDwxcHrSotw
- sjfTa+wGgcSQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2020 21:15:47 -0700
-IronPort-SDR: h21gBEuc1WSXsq8NSuif0vOqjl206dBqGYH1UlpT5XC4yIptNdSmDunNfMV8M5pQJWRmKg1I1p
- 4q4+5QVdf89A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,393,1583222400"; 
-   d="scan'208";a="253683839"
-Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
-  by fmsmga008.fm.intel.com with ESMTP; 14 May 2020 21:15:42 -0700
-From:   Brent Lu <brent.lu@intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Baolin Wang <baolin.wang@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Richard Fontana <rfontana@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brent Lu <brent.lu@intel.com>,
-        paulhsia <paulhsia@chromium.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: pcm: fix incorrect hw_base increase
-Date:   Fri, 15 May 2020 12:09:39 +0800
-Message-Id: <1589515779-20987-1-git-send-email-brent.lu@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726238AbgEOEKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 00:10:37 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:54196 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725616AbgEOEKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 00:10:32 -0400
+Received: from kvm-dev1.localdomain (unknown [10.2.5.134])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT98hFr5eHPU0AA--.1S2;
+        Fri, 15 May 2020 12:10:09 +0800 (CST)
+From:   Bibo Mao <maobibo@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Dmitry Korotin <dkorotin@wavecomp.com>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org
+Subject: [PATCH 1/3] MIPS: Do not flush tlb page when updating PTE entry
+Date:   Fri, 15 May 2020 12:10:07 +0800
+Message-Id: <1589515809-32422-1-git-send-email-maobibo@loongson.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AQAAf9DxT98hFr5eHPU0AA--.1S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruw1xtr4DAFW5ZFykCFWxZwb_yoWDWrc_C3
+        WxZanYg3y0grsrCrW7Aws3GryY9a1kG34DXr1xW3s0ya45Ar4kGayvvFsrXr4Y9Fyvkrs5
+        CrZYkw1akFnFqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbs8YjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+        04v7MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43
+        ZEXa7IU8489tUUUUU==
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hw_base will be increased by runtime->buffer_size frames
-unconditionally if the runtime->status->hw_ptr is not updated for over
-half of buffer time. As the hw_base increases, so does the
-runtime->status->hw_ptr which could lead to invalid return value when
-user space program calls snd_pcm_avail() function.
+It is not necessary to flush tlb page on all CPUs if suitable PTE
+entry exists already during page fault handling, just updating
+TLB is fine.
 
-By updating runtime->hw_ptr_jiffies each time the HWSYNC is called,
-the hw_base will keep the same when buffer stall happens, so does the
-hw_ptr.
-
-Signed-off-by: Brent Lu <brent.lu@intel.com>
+Here redefine flush_tlb_fix_spurious_fault as empty on mips system.
 ---
- sound/core/pcm_lib.c | 1 +
- 1 file changed, 1 insertion(+)
+Change in v2:
+- split flush_tlb_fix_spurious_fault and tlb update into two patches
+- comments typo modification
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 872a852..d531e1b 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -433,6 +433,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+---
+ arch/mips/include/asm/pgtable.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
+index aab0ec1..e215542 100644
+--- a/arch/mips/include/asm/pgtable.h
++++ b/arch/mips/include/asm/pgtable.h
+@@ -454,6 +454,8 @@ static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
+ 	return __pgprot(prot);
+ }
  
-  no_delta_check:
- 	if (runtime->status->hw_ptr == new_hw_ptr) {
-+		runtime->hw_ptr_jiffies = curr_jiffies;
- 		update_audio_tstamp(substream, &curr_tstamp, &audio_tstamp);
- 		return 0;
- 	}
++#define flush_tlb_fix_spurious_fault(vma, address) do { } while (0)
++
+ /*
+  * Conversion functions: convert a page and protection to a page entry,
+  * and a page entry and page directory to the page they refer to.
 -- 
-2.7.4
+1.8.3.1
 
