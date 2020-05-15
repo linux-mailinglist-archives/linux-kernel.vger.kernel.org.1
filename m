@@ -2,88 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F531D50C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5EA1D509E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgEOOhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 10:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726665AbgEOOhP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 10:37:15 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2F5C061A0C;
-        Fri, 15 May 2020 07:37:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=nlhENnOEhFNbEFUndyREOb6FGEq18FGbNW1JKWIMMLQ=; b=ZfdEdhqxL8F1YAmWr7WGT1zwU5
-        UFFbJCs6yRahgHZ5y/4/E2IpBQXj51SylAl+ycAKCagb+m6uL/WbNC2uoF0F13HooPuPw/oousTIi
-        2qvWVP1qwgDvr2qdynM1GNd75vRN8p0fg++uU0kVJcNB964LkK3D+eBBAjiqtdVah1NKi/aG3eKcm
-        VO+sLsbkTU2f3Hm6uXrJhsYpGgQkzOviAGuMR2YfmLb+PppAM/wREpQr330jCYXXQTdWXWfAJI9B2
-        LBbSYtf/b3TIIqniyUJ3xHoZoXUG8WYtmGDxrYS/3cCC77rewR9oKsGnRxNg8BWicTknfGemg4Lej
-        oAvopoDw==;
-Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZbSN-0003tD-KK; Fri, 15 May 2020 14:37:00 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Roman Zippel <zippel@linux-m68k.org>
-Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
-        x86@kernel.org, linux-alpha@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH 04/29] unicore32: remove flush_cache_user_range
-Date:   Fri, 15 May 2020 16:36:21 +0200
-Message-Id: <20200515143646.3857579-5-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
-References: <20200515143646.3857579-1-hch@lst.de>
+        id S1726248AbgEOOg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 10:36:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726174AbgEOOgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 10:36:25 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF58D20671;
+        Fri, 15 May 2020 14:36:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589553384;
+        bh=Veoljy1+igqZX3k6pjqIjP7pIUUoD466ftNFEhbs7K4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i4M5dSEzsRnlnNkWak0gZ0CjGJmT1XV9eYjJ+dACkmPvRcFdJczuYVCaYanqpnp0N
+         jHXXUESuWdIn7Jv8PEPRazFU/TnOSGbelYlJ9ZQlFYcagPR8ukPn7eiYF9p2dESAd2
+         W3gU7NVIXTkWv96+3dpFG1h0o0TtYN8Aj7/1I/eo=
+Date:   Fri, 15 May 2020 16:36:22 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Len Brown <lenb@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Ji Luo <ji.luo@nxp.com>
+Subject: Re: [PATCH v1 0/4] Optimize fw_devlink parsing
+Message-ID: <20200515143622.GA2526356@kroah.com>
+References: <20200515053500.215929-1-saravanak@google.com>
+ <CAGETcx-7qnNXug4PGssdXciy0BZrspXP0njJG+GFGFgie_Dwnw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx-7qnNXug4PGssdXciy0BZrspXP0njJG+GFGFgie_Dwnw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-flush_cache_user_range is an ARMism not used by any generic or unicore32
-specific code.
+On Fri, May 15, 2020 at 01:52:37AM -0700, Saravana Kannan wrote:
+> On Thu, May 14, 2020 at 10:35 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > When fw_devlink is enabled on hardware with a large number of device
+> > tree nodes, the initial device addition done in
+> > of_platform_default_populate_init() can be very inefficient. This is
+> > because most devices will fail to find all their suppliers when they are
+> > added and will keep trying to parse their device tree nodes and link to
+> > any newly added devices
+> >
+> > This was an item on my TODO list that I'm finally getting around to. On
+> > hardware I'm testing on, this saved 1.216 _seconds_!
+> 
+> Correction. It went from 1.216 _seconds_ to 61 _milliseconds_! So
+> about 95% reduction in time.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/unicore32/include/asm/cacheflush.h | 8 --------
- 1 file changed, 8 deletions(-)
+Nice speedups!  All now queued up, thanks.
 
-diff --git a/arch/unicore32/include/asm/cacheflush.h b/arch/unicore32/include/asm/cacheflush.h
-index dc8c0b41538f8..9393ca4047e93 100644
---- a/arch/unicore32/include/asm/cacheflush.h
-+++ b/arch/unicore32/include/asm/cacheflush.h
-@@ -132,14 +132,6 @@ extern void flush_cache_page(struct vm_area_struct *vma,
- 
- #define flush_cache_dup_mm(mm) flush_cache_mm(mm)
- 
--/*
-- * flush_cache_user_range is used when we want to ensure that the
-- * Harvard caches are synchronised for the user space address range.
-- * This is used for the UniCore private sys_cacheflush system call.
-- */
--#define flush_cache_user_range(vma, start, end) \
--	__cpuc_coherent_user_range((start) & PAGE_MASK, PAGE_ALIGN(end))
--
- /*
-  * Perform necessary cache operations to ensure that data previously
-  * stored within this range of addresses can be executed by the CPU.
--- 
-2.26.2
-
+greg k-h
