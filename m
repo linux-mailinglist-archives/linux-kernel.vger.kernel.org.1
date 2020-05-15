@@ -2,54 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D674D1D4937
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 127B51D4945
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727933AbgEOJPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 05:15:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51598 "EHLO mail.kernel.org"
+        id S1728047AbgEOJSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 05:18:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:51740 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727837AbgEOJPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 05:15:37 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E71FE2065C;
-        Fri, 15 May 2020 09:15:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589534136;
-        bh=yaqrlmYZ6yjMLlrZvFZybqiLMRW1MJGt/LMSQ8POTcE=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=U0NfGqgxuvI63L89Pc/dnwbXfLiDyCvPZ2PKy6mZEYtuzUtmfiUtLrMacAGgc3q5j
-         GOj6z8DNFzwp39xbTHT3ZKZmWjDTOjZHyQ/dWZrerwFmKl2RuN73KYSlxcgO/a+z4d
-         HEi18x0qvi3XmESC3DMsewKHWjv/mmHtaS5Qh6tk=
-Date:   Fri, 15 May 2020 11:15:33 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Miroslav Benes <mbenes@suse.cz>
-Subject: Re: [PATCH] MAINTAINERS: add lib/livepatch to LIVE PATCHING
-In-Reply-To: <20200515084410.67821-1-kamalesh@linux.vnet.ibm.com>
-Message-ID: <nycvar.YFH.7.76.2005151115130.25812@cbobk.fhfr.pm>
-References: <20200515084410.67821-1-kamalesh@linux.vnet.ibm.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1727116AbgEOJSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 05:18:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9BE5B2F;
+        Fri, 15 May 2020 02:18:20 -0700 (PDT)
+Received: from bogus (unknown [10.37.12.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5222B3F71E;
+        Fri, 15 May 2020 02:18:17 -0700 (PDT)
+Date:   Fri, 15 May 2020 10:16:12 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Etienne Carriere <etienne.carriere@linaro.org>
+Cc:     arnd@arndb.de, catalin.marinas@arm.com, harb@amperecomputing.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, mark.rutland@arm.com,
+        Sudeep Holla <sudeep.holla@arm.com>, steven.price@arm.com,
+        will@kernel.org
+Subject: Re: [PATCH v3 0/7] firmware: smccc: Add basic SMCCC v1.2 +
+ ARCH_SOC_ID support
+Message-ID: <20200515091612.GA23671@bogus>
+References: <20200506164411.3284-1-sudeep.holla@arm.com>
+ <20200515075032.5325-1-etienne.carriere@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515075032.5325-1-etienne.carriere@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 May 2020, Kamalesh Babulal wrote:
-
-> Add lib/livepatch to list of livepatching F: patterns in MAINTAINERS.
+On Fri, May 15, 2020 at 09:50:32AM +0200, Etienne Carriere wrote:
+> > From: Sudeep Holla <sudeep.holla@arm.com>
+> >
+> > Hi,
+> >
+> > This patch series adds support for SMCCCv1.2 ARCH_SOC_ID.
+> > This doesn't add other changes added in SMCCC v1.2 yet. They will
+> > follow these soon along with its first user SPCI/PSA-FF.
+> >
+> > This is tested using upstream TF-A + the patch[2] fixing the original
+> > implementation there.
+> >
+> >
+> > v1[0]->v2[1]:
+> > - Incorporated comments from Steven Price in patch 5/5
+> > - Fixed build for CONFIG_PSCI_FW=n on some arm32 platforms
+> > - Added Steven Price's review tags
+> >
+> > v2[1]->v3:
+> > - Incorporated additional comments from Steven Price in patch 5/5
+> >  and added his review tags
+> > - Refactored SMCCC code from PSCI and moved it under
+> >  drivers/firmware/smccc/smccc.c
+> > - Also moved soc_id.c under drivers/firmware/smccc
+> >
+> > Regards,
+> > Sudeep
 > 
-> Suggested-by: Jiri Kosina <jikos@kernel.org>
-> Signed-off-by: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
+> Hello Sudeep,
+> 
+> In case it helps. I have successfully tested the 7 patches series
+> on some platforms, playing a bit with few configurations.
+> Qemu emulator for arm64/cortex-a57 with TF-A (v2.x) as secure firmware.
+> Qemu emulator for arm/cortex-a15. OP-TEE (v3.x) as secure firmware.
+> A stm32mp15 device (arm/cortex-a7), tested both TF-A (v2.x) and
+> OP-TEE (3.7.0, 3.9.0-rc) as runtime secure firmware.
+> 
+> Helper functions arm_smccc_1_1_get_conduit()/arm_smccc_1_1_invoke() 
+> works as expected AFAICT. No regression seen with older secure
+> firmwares.
+> 
+> For the patches 1 to 6, as I poorly tested [v3,7/7] soc ids,
+> based on tag next-20200505 [1]:
+> Tested-by: Etienne Carriere <etienne.carriere@st.com>
+> Reviewed-by: Etienne Carriere <etienne.carriere@st.com>
+> 
+> For [v3,7/7] firmware: smccc: Add ARCH_SOC_ID support
+> Acked-by: Etienne Carriere <etienne.carriere@st.com>
+> 
+> [1] 7def1ef0f72c ("Add linux-next specific files for 20200505")
+> 
 
-Applied, thanks Kamalesh.
+Thanks for review and testing Etienne. Much appreciated!
 
 -- 
-Jiri Kosina
-SUSE Labs
-
+Regards,
+Sudeep
