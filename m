@@ -2,109 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4567A1D4928
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD8C1D4938
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727989AbgEOJL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 05:11:56 -0400
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:3742 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727869AbgEOJLz (ORCPT
+        id S1727973AbgEOJPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 05:15:47 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:44526 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727837AbgEOJPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 05:11:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1589533914; x=1621069914;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=wmtlMa/ByzxofhuCC0VPeSnxK6BCfzWRYql8RxVBaqc=;
-  b=y7KyQS0mKcN2rFGxAMJaAIlyjPJAAgA/EqNDb45NmLVoJ5vX/5DDw9Iv
-   5jcdFHSx0rb0+y2f0gXb+G8Nn9Bon0BLqecFg5CMOdB8s2JIftAGoutfh
-   FoK8F3/fMZLIf6337zaLKxJI6hgAUMuqxLl90CMsWea4bLbOhnnW7Cqlg
-   phMynerm6SquNAwGZ17jESdVZWf4TUfP69HsUZBjxLFwh69s1jCljQIio
-   L4s9iefzMVLrJGyVxdiqDgyrERV9JWKVI+YLjwbMC62vSteGqAl4xOo7T
-   ZYHaa9OFmrSyCOnUoy3aESAnffn8pHFsG93SEdc/zTtRu9qu7dyxA7ovy
-   w==;
-IronPort-SDR: DiM+U75P+/Md9FzuxnzG9/z0ceXFZvbHHtzFIn11OpL0g9Q1x1Uby3/VZY5m1NeVYWhvUBPmE+
- fgXUBBDmoZtQ367KyOjQZknEXfD5iM3FrLkBAERTap365oNNgrj1v8ezcplKZf610CTi+9QIoE
- o5MSEPl/7koBuzmySNOL7Y4LO3u9rXNzVcL3jJlTliM6j+9gKvuMN9IwP6het51vlvoYSL5FN4
- fOUTEcECWvT0h+Gp2PovBvNtR1UGsmCCQYbZxYGTpCE4WgWkOBOKcEjLw/SxtEbpYrTSxwouNm
- V6c=
-X-IronPort-AV: E=Sophos;i="5.73,394,1583218800"; 
-   d="scan'208";a="79762318"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 May 2020 02:11:52 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 15 May 2020 02:11:52 -0700
-Received: from soft-dev15.microsemi.net.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Fri, 15 May 2020 02:11:49 -0700
-References: <20200513140031.25633-1-lars.povlsen@microchip.com> <20200513140031.25633-2-lars.povlsen@microchip.com> <20200513142050.GH4803@sirena.org.uk> <20200514130407.guyk3r4ltjvszy5s@mobilestation>
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-CC:     Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        SoC Team <soc@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH 01/10] spi: dw: Add support for polled operation via no IRQ specified in DT
-In-Reply-To: <20200514130407.guyk3r4ltjvszy5s@mobilestation>
-Date:   Fri, 15 May 2020 11:11:48 +0200
-Message-ID: <874kshpnor.fsf@soft-dev15.microsemi.net>
+        Fri, 15 May 2020 05:15:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589534145;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/5awcNeBjTNuGjgZ8wQMW9no+F30tdMR8rr0G98WOb4=;
+        b=PUrrnF4FKQSZxSw0csN8FDAqlNzENWf/jryaBSRXrbb5Od1yS9gd7G7+epLY36spfAVlPc
+        d/FccOebp4UJhm+J5qiAyl0bSWgnpVuk4AhqxK5yWJussyyJDgwO78NZZsiZ1Yfk7hCRTt
+        f/QtMO1C/nJCmYEi/2qMw2D70sFwHIo=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-325-t_m2kxuhMVmScts-aFHLug-1; Fri, 15 May 2020 05:15:43 -0400
+X-MC-Unique: t_m2kxuhMVmScts-aFHLug-1
+Received: by mail-qt1-f197.google.com with SMTP id z29so1753293qtj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 02:15:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/5awcNeBjTNuGjgZ8wQMW9no+F30tdMR8rr0G98WOb4=;
+        b=E+7wPj6PWGUHnybzrz/pFHWh2h1EwtFjbbhxE8JTM3DiDSDfKMkjcAovyuwNgoeFn7
+         KtFutBTIfHW+JxSkgkC9P9eEneQ3+v8qmxLkhdNyjnekGNct7TbrVi0fNkMiY43EfniY
+         RbPn+lj1bxaTdTog+6JJrlGpxa7sU7iMGw6VHWyCt/yzmawTyUQ4ZDvkg+QnzP4ufqih
+         NA0nO7W+TGrXzrnEdQntV01yu0RFp6jv2EVNOcUw1GzFf35JJLzKspWv4RoL25L6xQIH
+         s4qWDoyMx3nVPfp0uQCkwqSQAVM65nBesDngxM0cRTkSQIQSrQH1qreLiaXfv3ZTy2qz
+         nHmQ==
+X-Gm-Message-State: AOAM533xzk1DFzBOoxYtGUmR1eHiuNwbw8gKYmQOYg3gAuU1uM8GEkra
+        ROI3WUsc952HZ8S2WVrE080/gcCjEgfFsR5T7Unyo5BKKk6OPY6byvY2pwIvUMi0kCzG+ohbfLa
+        Meqs1Zpi9D1wuAEC2Eu5H2YOmUtPrTbvSC1x5t2H2
+X-Received: by 2002:ac8:380d:: with SMTP id q13mr2372094qtb.200.1589534142852;
+        Fri, 15 May 2020 02:15:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx8nyyO55A3mAp5k/ZtXVWiRwhEwxpHzlb/m+SHwSRPOCkAKQQlYUW1tRALhgZ0tlz8hGPGU5nXJcBAoRq0W1Y=
+X-Received: by 2002:ac8:380d:: with SMTP id q13mr2372075qtb.200.1589534142649;
+ Fri, 15 May 2020 02:15:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1588063937-5744-1-git-send-email-bhsharma@redhat.com>
+ <20200428100745.GA15300@C02TD0UTHF1T.local> <CACi5LpM9_O6gRgMgfAXrmZuaO111xJk3=xtjYXK5rKhTF7Znsg@mail.gmail.com>
+In-Reply-To: <CACi5LpM9_O6gRgMgfAXrmZuaO111xJk3=xtjYXK5rKhTF7Znsg@mail.gmail.com>
+From:   Bhupesh Sharma <bhsharma@redhat.com>
+Date:   Fri, 15 May 2020 14:45:29 +0530
+Message-ID: <CACi5LpPqjm6Tc7vP1oCt4ZFm0UQTMMr3CZuVGhA4Swz-DxjvsA@mail.gmail.com>
+Subject: Re: [PATCH] hw_breakpoint: Remove unused '__register_perf_hw_breakpoint'
+ declaration
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bhupesh SHARMA <bhupesh.linux@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Peter, Frederic, Ingo
 
-Serge Semin writes:
-
-> Hi Mark
+On Thu, Apr 30, 2020 at 9:49 AM Bhupesh Sharma <bhsharma@redhat.com> wrote:
 >
-> On Wed, May 13, 2020 at 03:20:50PM +0100, Mark Brown wrote:
->> On Wed, May 13, 2020 at 04:00:22PM +0200, Lars Povlsen wrote:
->> > With this change a SPI controller can be added without having a IRQ
->> > associated, and causing all transfers to be polled. For SPI controllers
->> > without DMA, this can significantly improve performance by less
->> > interrupt handling overhead.
->>
->> This overlaps substantially with some work that Serge Semin (CCed) has
->> in progress, please coordinate with him.
+> Hi Mark,
 >
-> Thanks for copying me these mails. I haven't been Cc'ed in the series and
-> hasn't been subscribed to the SPI mailing list, so I would have definitely
-> missed that.
+> Thanks for the review.
 >
-> I would like to coordinate my efforts with Lars. I'll have the patchset reviewed
-> soon in addition providing my comments/suggestions of how to make it useful for
-> both mine and Lars solution.
-
-Serge - thanks for taking on this.
-
-Note that my primary concern now is to get Sparx5 upstreamed. The
-mem_ops (or dirmap) and polled mode are both performance enhancements,
-which can be pulled from my series if it creates too much noise. I can
-then add the necessary on top of your work/current kernel at a later
-time.
-
-> One thing I can tell about the mem_ops he implemented, is that they aren't
-> mem_ops, but dirmap (as you remember it's also implemented in my code, but with
-> alignment specific), and the exec_mem_op partly consists of a code, which belong
-> to the supports_op() callback. The rest of my comments will be inlined in the
-> patches.
+> On Tue, Apr 28, 2020 at 3:37 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > Hi Bhupesh,
+> >
+> > On Tue, Apr 28, 2020 at 02:22:17PM +0530, Bhupesh Sharma wrote:
+> > > commit b326e9560a28 ("hw-breakpoints: Use overflow handler instead of
+> > > the event callback") removed '__register_perf_hw_breakpoint' function
+> > > usage and replaced it with 'register_perf_hw_breakpoint' function.
+> > >
+> > > Remove the left-over unused '__register_perf_hw_breakpoint' declaration
+> > > from 'hw_breakpoint.h' as well.
+> > >
+> > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > Cc: Will Deacon <will@kernel.org>
+> > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > Signed-off-by: Bhupesh Sharma <bhsharma@redhat.com>
+> >
+> > This is generic code, so I'm a bit confused as to why you've sent it to
+> > us. I'd expect this to go via the perf core maintainers (cc'd).
 >
-> -Sergey
+> Oops, my bad. Seems my git patch sending script messed up while
+> picking up the perf maintainers (who should have been Cc'ed on the
+> patch) :(
+>
+> Thanks for adding them in the Cc list.
+>
+> Hi Peter, Frederic, Ingo - Kindly help review this patch and help
+> apply the patch (if suitable).
 
--- 
-Lars Povlsen,
-Microchip
+Ping. Any comments on this patch?
+
+Thanks,
+Bhupesh
+
+> > FWIW, this looks sane to me, so:
+> >
+> > Acked-by: Mark Rutland <mark.rutland@arm.com>
+> >
+> > Mark.
+> >
+> > > ---
+> > >  include/linux/hw_breakpoint.h | 3 ---
+> > >  1 file changed, 3 deletions(-)
+> > >
+> > > diff --git a/include/linux/hw_breakpoint.h b/include/linux/hw_breakpoint.h
+> > > index 6058c3844a76..fe1302da8e0f 100644
+> > > --- a/include/linux/hw_breakpoint.h
+> > > +++ b/include/linux/hw_breakpoint.h
+> > > @@ -72,7 +72,6 @@ register_wide_hw_breakpoint(struct perf_event_attr *attr,
+> > >                           void *context);
+> > >
+> > >  extern int register_perf_hw_breakpoint(struct perf_event *bp);
+> > > -extern int __register_perf_hw_breakpoint(struct perf_event *bp);
+> > >  extern void unregister_hw_breakpoint(struct perf_event *bp);
+> > >  extern void unregister_wide_hw_breakpoint(struct perf_event * __percpu *cpu_events);
+> > >
+> > > @@ -115,8 +114,6 @@ register_wide_hw_breakpoint(struct perf_event_attr *attr,
+> > >                           void *context)              { return NULL; }
+> > >  static inline int
+> > >  register_perf_hw_breakpoint(struct perf_event *bp)   { return -ENOSYS; }
+> > > -static inline int
+> > > -__register_perf_hw_breakpoint(struct perf_event *bp)         { return -ENOSYS; }
+> > >  static inline void unregister_hw_breakpoint(struct perf_event *bp)   { }
+> > >  static inline void
+> > >  unregister_wide_hw_breakpoint(struct perf_event * __percpu *cpu_events)      { }
+> > > --
+> > > 2.7.4
+> > >
+> >
+
