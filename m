@@ -2,120 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B041D59D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 21:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344E41D59D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 21:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726302AbgEOTSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 15:18:18 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:42828 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726227AbgEOTSR (ORCPT
+        id S1726460AbgEOTSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 15:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726227AbgEOTSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 15:18:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589570296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CWVjSQ7npbEVbxrWhifmRkThSg5q50pTnOsQ0WvJuZg=;
-        b=GC3ryUYIGADrKHRUr04r1Zvv7JqsNHUC9uIi3NVJFU1QkJ2Deykt3l3HDZNliKR6qkvoV9
-        xVTtIgt7oJOvl06sINGo4eB2XqSenRoyewUzKP+qXq0ag0UWIpeJdTntqEfBxD5UOp/Mip
-        R3mDMv3K5bDIIttJEdMcjRDlM0NYMpM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-50-IVbb-xBuMUSR4mEeNZpfrA-1; Fri, 15 May 2020 15:18:12 -0400
-X-MC-Unique: IVbb-xBuMUSR4mEeNZpfrA-1
-Received: by mail-wr1-f69.google.com with SMTP id 90so1605098wrg.23
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 12:18:11 -0700 (PDT)
+        Fri, 15 May 2020 15:18:23 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EB8C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 12:18:21 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id o134so1685991ybg.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 12:18:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=BmOnRbcR3AFYYV75I99OpKgERiPbjcBnWxKWXN2nC7c=;
+        b=Skg2EB4P+xqChQ+yZLz8eFl0BQuMKb7cIFnQjRedA/4JLPEpYmDFtzydvfju3zSGqC
+         8CSzIuFWaAWvgVPLgmj54r/G/c1gt2fh12Gf1jjJZcbP2F6L5qyN/Xg64b2xR4XOXAPb
+         TLpyVPrNhVkz0U4XXoRGVjTwiN4Y0vyPVjHjVtzP/zdICdsZ2mtwdP1jD8UT8uZWHf+/
+         VugJOOochwEluZzhQjxUndls10g8vSOA5UXR+wVW513NQGG6hL15aK9fi+ejsEFneEnr
+         TEOiISZEb78pFSsJQ+jQ7LzGn3Rd4QubfVaLfiafjKWeeEAOiCvVbFNz8EQwaR20gwvM
+         LPlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CWVjSQ7npbEVbxrWhifmRkThSg5q50pTnOsQ0WvJuZg=;
-        b=bFQojBno+VeOPR0bJfG5UeFSCIymo0hwereWryTWpL5dVSJ1d6i51pnU01Ehytklmm
-         QRe/Fk226xy7on95izzMLyTL4fXZnkk0i9wdxZrsxSGc2h+XY2onwSYzYgFslR6k0oRI
-         rR0FteYdz4vket8r4wkB8J3mrvRXnytc1OChhXq6iPgfpLDHdvOJZm4fFJpP8YACNn5V
-         a1cc5SyehxNKFAkSrrYUVGxTe7GZtHtrjQxXlhz35lh/B43LHhH2Ji9A2FxYoVeiDj3K
-         OdyUcAKzd1D3m3H47+xNDzbjA3UGZujEgMoZfoGf9d0QxCNQ/lSF9I2/5ykSTkUnEmeO
-         dhsQ==
-X-Gm-Message-State: AOAM533bV/iScwGHtleBAl3r+3Q2jRs6IZxDKwzQWVcwnyErSXehu8Mt
-        waHYHGThRxCRQBNSTqEEV8F1KF6r4YGfNntVDVZmP0knj18qcLuxBcj5hjQnB9uFe4pYsrlKWh9
-        cck/rtx6UdBZB4RANQuCnXP0Z
-X-Received: by 2002:adf:db4c:: with SMTP id f12mr5581907wrj.387.1589570290511;
-        Fri, 15 May 2020 12:18:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxDDW2yoWcBeIK7+KjGy8ibUQKD9q7am7akLIVsiO47SDzmrEmzMIHAPe+jdokSH0wcXJItYw==
-X-Received: by 2002:adf:db4c:: with SMTP id f12mr5581873wrj.387.1589570290122;
-        Fri, 15 May 2020 12:18:10 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:7012:d690:7f40:fd4e? ([2001:b07:6468:f312:7012:d690:7f40:fd4e])
-        by smtp.gmail.com with ESMTPSA id 77sm5244034wrc.6.2020.05.15.12.18.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 May 2020 12:18:09 -0700 (PDT)
-Subject: Re: [PATCH 2/8] KVM: x86: extend struct kvm_vcpu_pv_apf_data with
- token info
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vivek Goyal <vgoyal@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-References: <20200511164752.2158645-1-vkuznets@redhat.com>
- <20200511164752.2158645-3-vkuznets@redhat.com>
- <20200512152709.GB138129@redhat.com> <87o8qtmaat.fsf@vitty.brq.redhat.com>
- <20200512155339.GD138129@redhat.com> <20200512175017.GC12100@linux.intel.com>
- <20200513125241.GA173965@redhat.com>
- <0733213c-9514-4b04-6356-cf1087edd9cf@redhat.com>
- <20200515184646.GD17572@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <d84b6436-9630-1474-52e5-ffcc4d2bd70a@redhat.com>
-Date:   Fri, 15 May 2020 21:18:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=BmOnRbcR3AFYYV75I99OpKgERiPbjcBnWxKWXN2nC7c=;
+        b=ud57ZLBRz7VKF2KjggqfOm+ONJM13MZCWxM0girbuWXTuhuNA/TTbG/Mh9OcQg1ONB
+         PuH3+H2NmN794tzLY1U3DlTe/IoxBls/d8xrfhEUw6+097vL+dH3kDTtdbEYHAIly4+S
+         1YyzfAhSy6h+aI6hE0KGCubtGMFQYGpL4H/5ValjEcB4n1C+jeL39GvADzy5+wNI8vkJ
+         RBvcNrOSrm8UUUCFSFQaUUKT7IDjrYz7Pn3DPUZ29XFLALKbVq91nRb5wnQRvZasg9y7
+         ck/8HHzuoRHa6iWgdmnq+S4xVo2YRS60Dkru6163YksH1DkYBfC2lbeUrvx93t5rIW7G
+         09zA==
+X-Gm-Message-State: AOAM530H//kcDoFpMeYTv/B4udQs6LaMMNofnL7L8lv0KWXJWkQb86Y3
+        c6s6BDSyLX7B9oYkecMw63OtSE/D0Jj4FUzRuUs=
+X-Google-Smtp-Source: ABdhPJxXZSblZzudNZnOpBn2DcY0+MJn7LmyDNhiZc5/6BhoN5muDciXwUJxiZIglQjPmVAZnyHM8IugtCyH9zczRbE=
+X-Received: by 2002:a25:7903:: with SMTP id u3mr8452020ybc.251.1589570300838;
+ Fri, 15 May 2020 12:18:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200515184646.GD17572@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Reply-To: daniellal3eloch@gmail.com
+Received: by 2002:a05:6900:2f2:0:0:0:0 with HTTP; Fri, 15 May 2020 12:18:19
+ -0700 (PDT)
+From:   "Mrs.Daniella Leloch" <daniella2leloch@gmail.com>
+Date:   Fri, 15 May 2020 12:18:19 -0700
+X-Google-Sender-Auth: M-vM2MLXBEVe13O_152Ckm-XeJo
+Message-ID: <CAC74ftVTcnuBafZvzL45UawihBaTPZXWpLjS8Nw=CyZxmWCaHw@mail.gmail.com>
+Subject: WU urgent
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/05/20 20:46, Sean Christopherson wrote:
->> The new one using #VE is not coming very soon (we need to emulate it for
->> <Broadwell and AMD processors, so it's not entirely trivial) so we are
->> going to keep "page not ready" delivery using #PF for some time or even
->> forever.  However, page ready notification as #PF is going away for good.
-> 
-> And isn't hardware based EPT Violation #VE going to require a completely
-> different protocol than what is implemented today?  For hardware based #VE,
-> KVM won't intercept the fault, i.e. the guest will need to make an explicit
-> hypercall to request the page.
+WELCOME TO WESTERN UNION MONEY TRANSFER
+THIS MAIL IS ONLY FOR THE OWNER OF THIS E-MAIL ADDRESS:
 
-Yes, but it's a fairly simple hypercall to implement.
+Below is the information of your first payments $5000 Dollars sent to you t=
+oday.
+But unfortunately, the managing Director of this department called us this
+morning and reported that you have not paid the required fee $156 which you=
+ are
+supposed to pay earlier for the purchasing and updating of your transfer fi=
+les
+but we have already sent out the payment out but not yet been putting on yo=
+ur
+name as the receiver. You will be receiving $5000 daily until your total am=
+ount
+of funds $520,000 is fully paid to you.
 
->> That said, type1/type2 is quite bad. :)  Let's change that to page not
->> present / page ready.
-> 
-> Why even bother using 'struct kvm_vcpu_pv_apf_data' for the #PF case?  VMX
-> only requires error_code[31:16]==0 and SVM doesn't vet it at all, i.e. we
-> can (ab)use the error code to indicate an async #PF by setting it to an
-> impossible value, e.g. 0xaaaa (a is for async!).  That partciular error code
-> is even enforced by the SDM, which states:
+Since you are finding it difficult to get the $156 we have decided that you=
+ are
+to go ahead and pay whatever you have out of the total fee $156 required. B=
+ut
+mind you, no amount below $95 will be accepted so we expect you to pay what=
+ever
+amount from $95 and above. You are to pay what ever you have and we will
+activate your mtcn number and direct the transfer to your name as the recei=
+ver.
 
-Possibly, but it's water under the bridge now.  And the #PF mechanism
-also has the problem with NMIs that happen before the error code is read
-and page faults happening in the handler (you may connect some dots now).
+Send it to this information below:
+Name:__________Chintuwa ThankGod chisom
+Address:________Burkina Faso
+Text Question____Transfer?
+Answer_____________Yes
+Please any amount you send let us know but remember, any amount below $95 w=
+ill
+not be accepted. Send us the payment information=E2=80=99s immediately afte=
+r you send
+it.
+HERE IS THE MONEY DETAILS MADE TO YOU!!!
+MTCN: 6839222328
+Sender=E2=80=99s First Name: Kark
+Sender=E2=80=99s Last Name: Heinrich
+Test Question: Color
+Answer: Blue
+Amount: $5000.00
 
-For #VE, the virtualization exception data area is enough to hold all
-the data that is needed.
+Don=E2=80=99t expose this numbers to anybody else. If you need to check the=
+ transfer
+online to see that the money is posted online for you:
+https://wumt.westernunion.com/asp/orderStatus.asp?country=3DBJ
+Note that the money detail given to you does not bear your name as the rece=
+iver
+yet. As soon as we receive the fee from you, we will immediately activate y=
+our
+mtcn# and put your name as the receiver. Please take note; you need to go a=
+long
+with your passport ID or Drivers license when you need to pick up the trans=
+fer
+okay. We look forward hearing from you.
 
-Paolo
-
+REGARDS,
+Mrs Daniella Leloch
+WESTERN UNION BENIN -TRANSFER AGEN
