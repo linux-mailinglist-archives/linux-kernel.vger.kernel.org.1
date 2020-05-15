@@ -2,65 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B9A1D5CA2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 01:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 582221D5CA8
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 01:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbgEOXHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 19:07:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726183AbgEOXHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 19:07:41 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54ACA205CB;
-        Fri, 15 May 2020 23:07:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589584061;
-        bh=vz66ht54cMc3RYpWc41W0EyO97eRJNrUFQiUdZuTX8Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ujca5DMsp5Ik4R1EtDjzKw0mhCv7WrtoYDRjqs8b0TI8lUUM8G7qPe/H4xd4N5O6X
-         96zYkBHO3RrHizOqBG4L9Y1HqKjiW8woLZdB34jcoLQS4XbP2i6JwBmVx4oU3uajml
-         koXsISBbdfq/IR/lpp7X5NoGZQxP5tTjFiiI+p9o=
-Date:   Fri, 15 May 2020 19:07:40 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
-        luto@kernel.org, hpa@zytor.com, dave.hansen@intel.com,
-        tony.luck@intel.com, ravi.v.shankar@intel.com,
-        chang.seok.bae@intel.com
-Subject: Re: [PATCH v12 00/18] Enable FSGSBASE instructions
-Message-ID: <20200515230740.GG29995@sasha-vm>
-References: <20200511045311.4785-1-sashal@kernel.org>
- <0186c22a8a6be1516df0703c421faaa581041774.camel@linux.intel.com>
- <20200515164013.GF29995@sasha-vm>
- <20200515175550.GP3538@tassilo.jf.intel.com>
+        id S1727777AbgEOXKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 19:10:06 -0400
+Received: from www62.your-server.de ([213.133.104.62]:43548 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726231AbgEOXKG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 19:10:06 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jZjSH-0003dR-TU; Sat, 16 May 2020 01:09:25 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jZjSH-0006rZ-3f; Sat, 16 May 2020 01:09:25 +0200
+Subject: Re: [PATCH v2 0/7] Copy hashmap to tools/perf/util, use in perf expr
+To:     arnaldo.melo@gmail.com, Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org
+References: <20200515165007.217120-1-irogers@google.com>
+ <20200515170036.GA10230@kernel.org>
+ <CAEf4BzZ5=_yu1kL77n+Oc0K9oaDi4J=c+7CV8D0AXs2hBxhNbw@mail.gmail.com>
+ <5ebf0748.1c69fb81.f8310.eef3@mx.google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ed5c6584-791a-96e3-7043-19e4d7390289@iogearbox.net>
+Date:   Sat, 16 May 2020 01:09:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200515175550.GP3538@tassilo.jf.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5ebf0748.1c69fb81.f8310.eef3@mx.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25813/Fri May 15 14:16:29 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 10:55:50AM -0700, Andi Kleen wrote:
->> Indeed, we've seen a few hacks that basically just enable FSGSBASE:
+On 5/15/20 11:18 PM, arnaldo.melo@gmail.com wrote:
+[...]
+>>> Andrii/Alexei/Daniel, what do you think about me merging these fixes
+>> in my
+>>> perf-tools-next branch?
 >>
->> - https://github.com/oscarlab/graphene-sgx-driver
->> - https://github.com/occlum/enable_rdfsbase
->>
->> And would very much like to get rid of them...
->
->These are insecure and open root holes without the patches
->used here.
+>> I'm ok with the idea, but it's up to maintainers to coordinate this :)
+> 
+> Good to know, do I'll take all patches except the ones touching libppf, will just make sure the copy is done with the patches applied.
+> 
+> At some point they'll land in libbpf and the warning from check_headers.sh will be resolved.
 
-It's sad that these hacks are being used alongside SGX on "secure"
-systems.
+Works for me, I've just taken in Ian's two libbpf ones into bpf-next.
 
--- 
-Thanks,
-Sasha
+Thanks everyone,
+Daniel
