@@ -2,117 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ADFE1D47D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 10:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C20021D47EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 10:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgEOILw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 04:11:52 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51034 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726714AbgEOILv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 04:11:51 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04F82MB8142346;
-        Fri, 15 May 2020 04:11:35 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 310x56wnxm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 May 2020 04:11:34 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04F82Y7Q148621;
-        Fri, 15 May 2020 04:11:34 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 310x56wnw3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 May 2020 04:11:34 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04F8B6FY010452;
-        Fri, 15 May 2020 08:11:31 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 3100ubd70b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 May 2020 08:11:31 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04F8BTOo26935298
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 May 2020 08:11:29 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8E29A11C052;
-        Fri, 15 May 2020 08:11:29 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 725EB11C050;
-        Fri, 15 May 2020 08:11:27 +0000 (GMT)
-Received: from JAVRIS.in.ibm.com (unknown [9.199.53.165])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 15 May 2020 08:11:27 +0000 (GMT)
-Subject: Re: [PATCH] MAINTAINERS: adjust to livepatch .klp.arch removal
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        live-patching@vger.kernel.org, Joe Perches <joe@perches.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200509073258.5970-1-lukas.bulwahn@gmail.com>
- <bfe91b2d-e319-bf12-6a15-4f200d0e8ea4@linux.vnet.ibm.com>
- <nycvar.YFH.7.76.2005142344230.25812@cbobk.fhfr.pm>
-From:   Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Message-ID: <509c316f-5b34-2859-49aa-e4fe4a407428@linux.vnet.ibm.com>
-Date:   Fri, 15 May 2020 13:41:25 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <nycvar.YFH.7.76.2005142344230.25812@cbobk.fhfr.pm>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-15_02:2020-05-14,2020-05-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- mlxscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=824 impostorscore=0
- adultscore=0 clxscore=1015 cotscore=-2147483648 lowpriorityscore=0
- suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005150066
+        id S1727941AbgEOIPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 04:15:05 -0400
+Received: from mga17.intel.com ([192.55.52.151]:6766 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726855AbgEOIPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 04:15:05 -0400
+IronPort-SDR: N/qCV0fWymPpLRCNBkebxmV/Zzq2cnASp0tTD57ZxlzWTPI5TrDNa4s/v64d4JC4ldapQ3mi1D
+ WEY4kQnUdTVQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 01:15:04 -0700
+IronPort-SDR: QB6RIKzOK+QPwwf9iI1RCSIsgazbCdjmlTcgh4Ycr1LnW8BZZl2IQijYXLCAyDNCWEhcAB/Lcg
+ 3fMcsEzUuiAQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,394,1583222400"; 
+   d="scan'208";a="438231892"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga005.jf.intel.com with ESMTP; 15 May 2020 01:15:01 -0700
+From:   Dilip Kota <eswara.kota@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, kishon@ti.com, vkoul@kernel.org,
+        devicetree@vger.kernel.org
+Cc:     robh@kernel.org, andriy.shevchenko@intel.com,
+        cheol.yong.kim@intel.com, chuanhua.lei@linux.intel.com,
+        qi-ming.wu@intel.com, yixin.zhu@intel.com,
+        Dilip Kota <eswara.kota@linux.intel.com>
+Subject: [RESEND PATCH v8 0/3] Add Intel ComboPhy driver
+Date:   Fri, 15 May 2020 16:13:32 +0800
+Message-Id: <cover.1589530082.git.eswara.kota@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/15/20 3:15 AM, Jiri Kosina wrote:
-> On Sat, 9 May 2020, Kamalesh Babulal wrote:
-> 
->>> Commit 1d05334d2899 ("livepatch: Remove .klp.arch") removed
->>> arch/x86/kernel/livepatch.c, but missed to adjust the LIVE PATCHING entry
->>> in MAINTAINERS.
->>>
->>> Since then, ./scripts/get_maintainer.pl --self-test=patterns complains:
->>>
->>>   warning: no file matches  F:  arch/x86/kernel/livepatch.c
->>>
->>> So, drop that obsolete file entry in MAINTAINERS.
->>
->> Patch looks good to me,  you probably want to add following architecture
->> specific livepatching header files to the list:
->>
->> arch/s390/include/asm/livepatch.h
->> arch/powerpc/include/asm/livepatch.h
-> 
-> Good point, thanks for spotting it Kamalesh. I've queued the patch below 
-> on top.
-> 
-> 
+This patch series adds Intel ComboPhy driver, respective yaml schemas
 
-Thanks, Jiri. I realized later, that the lib/livepatch directory also needs
-to be included in the list of files maintained under livepatch. Earlier, this
-week I had sent a patch to the mailing list that includes both arch
-headers and lib/livepatch to the list of files, the link to the patch is:
+Changes on v8:
+  As per PHY Maintainer's request add description in comments for doing
+  register access through register map framework.
 
-https://lore.kernel.org/live-patching/20200511061014.308675-1-kamalesh@linux.vnet.ibm.com/
+Changes on v7:
+  As per System control driver maintainer's inputs remove
+    fwnode_to_regmap() definition and use device_node_get_regmap()
+    
+Changes on v6:
+  Rebase patches on the latest maintainer's branch
+  https://git.kernel.org/pub/scm/linux/kernel/git/kishon/linux-phy.git/?h=phy-for-5.7
+Dilip Kota (3):
+  dt-bindings: phy: Add PHY_TYPE_XPCS definition
+  dt-bindings: phy: Add YAML schemas for Intel ComboPhy
+  phy: intel: Add driver support for ComboPhy
 
+ .../devicetree/bindings/phy/intel,combo-phy.yaml   | 101 ++++
+ drivers/phy/intel/Kconfig                          |  14 +
+ drivers/phy/intel/Makefile                         |   1 +
+ drivers/phy/intel/phy-intel-combo.c                | 632 +++++++++++++++++++++
+ include/dt-bindings/phy/phy.h                      |   1 +
+ 5 files changed, 749 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/intel,combo-phy.yaml
+ create mode 100644 drivers/phy/intel/phy-intel-combo.c
 
 -- 
-Kamalesh
+2.11.0
+
