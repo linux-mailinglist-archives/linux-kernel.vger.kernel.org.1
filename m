@@ -2,191 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D651D5CDC
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 01:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5B31D5D17
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 02:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgEOXkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 19:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36384 "EHLO
+        id S1727029AbgEPAKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 20:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726223AbgEOXkb (ORCPT
+        by vger.kernel.org with ESMTP id S1726198AbgEPAKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 19:40:31 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F33BC05BD09
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 16:40:30 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id z26so1615858pfk.12
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 16:40:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kJzFvwUo6iwn8/DhNKCJMUEDGhhpSA9N+Qu+KJbXwr8=;
-        b=qVHejHX0vz/9v+B4nZFIfZakrLDKIV9dHq+Own9O52KzZBA6raffF1PWe0K7xm7t8/
-         DoTt32O7hItE3VUMFDIU7ZCEo0FOR+235oUGGtNZeCten6HNw9qw6heNeGMeWHv20iG/
-         1d9tYLqDdjGo4H7TkWoE6HgQQVuwXuzQxpBQw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kJzFvwUo6iwn8/DhNKCJMUEDGhhpSA9N+Qu+KJbXwr8=;
-        b=QYGtM5YZFmuQg2RjZ8QwIyFZsaivYXhCfi7dIx2IPpyfduy7QixoNiqZtrfPGZf4tK
-         EjZjZkZWCJJ0ryP6ZkAUr66B1SDxWX//Jlod2Hhh4YmXmZbwpxmjef5qm+Iz4xEhg3li
-         mKhk1+x68zHplpGYnYp/p8ooICqNGYOWMzUNZTZorD5fZ/U2B5t8T+BUVUryxiijuFbN
-         NFfvdTOfgtjgV3WTlTg0IDWieIIWlMlyT8TjKZ0mByGmdABL+z/3kQ1Sl77gRb8zem8I
-         Mqm2Lb2jbt0dSk2VBAx5f01hB9KsGTGFC1ytrNXK1oWXvhek3vqnPyYbGSBSc3IXMOn8
-         +bQw==
-X-Gm-Message-State: AOAM533Z+3vJUugfYVPDiYRmNh2rgNwI+AfL9BNOakWHCfpJTJm3w6E+
-        g56ZfPhL5IzK2l+O6I7uPnaqO6uFHjibMA==
-X-Google-Smtp-Source: ABdhPJyDbT/37zGxxJ04QtTD4suKPeXcd688xN9h0qJJSHQhZSh5RAyLeHbzDChQBhC95TREq+CLWQ==
-X-Received: by 2002:aa7:9302:: with SMTP id 2mr6304335pfj.256.1589586029248;
-        Fri, 15 May 2020 16:40:29 -0700 (PDT)
-Received: from ubuntu.netflix.com (203.20.25.136.in-addr.arpa. [136.25.20.203])
-        by smtp.gmail.com with ESMTPSA id x20sm1264990pfc.211.2020.05.15.16.40.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 16:40:28 -0700 (PDT)
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     linux-kernel@vger.kernel.org,
-        containers@lists.linux-foundation.org, linux-api@vger.kernel.org
-Cc:     Sargun Dhillon <sargun@sargun.me>, christian.brauner@ubuntu.com,
-        tycho@tycho.ws, keescook@chromium.org, cyphar@cyphar.com
-Subject: [PATCH] seccomp: Add group_leader pid to seccomp_notif
-Date:   Fri, 15 May 2020 16:40:05 -0700
-Message-Id: <20200515234005.32370-1-sargun@sargun.me>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 15 May 2020 20:10:38 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A88C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 17:10:38 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jZkP1-00022C-Dp; Sat, 16 May 2020 02:10:07 +0200
+Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id CBCCDFF834;
+        Sat, 16 May 2020 02:10:06 +0200 (CEST)
+Message-Id: <20200515234547.710474468@linutronix.de>
+User-Agent: quilt/0.65
+Date:   Sat, 16 May 2020 01:45:47 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [patch V6 00/37] x86/entry: Rework leftovers and merge plan
+Content-transfer-encoding: 8-bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This includes the thread group leader ID in the seccomp_notif. This is
-immediately useful for opening up a pidfd for the group leader, as
-pidfds only work on group leaders.
+Folks!
 
-Previously, it was considered to include an actual pidfd in the
-seccomp_notif structure[1], but it was suggested to avoid proliferating
-mechanisms to create pidfds[2].
+This is V6 of the rework series. V5 can be found here:
 
-[1]: https://lkml.org/lkml/2020/1/24/133
-[2]: https://lkml.org/lkml/2020/5/15/481
+  https://lore.kernel.org/r/20200512210059.056244513@linutronix.de
 
-Suggested-by: Christian Brauner <christian.brauner@ubuntu.com>
-Signed-off-by: Sargun Dhillon <sargun@sargun.me>
----
- include/uapi/linux/seccomp.h                  |  2 +
- kernel/seccomp.c                              |  1 +
- tools/testing/selftests/seccomp/seccomp_bpf.c | 50 +++++++++++++++++++
- 3 files changed, 53 insertions(+)
+The V6 leftover series is based on:
 
-diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
-index c1735455bc53..f0c272ef0f1e 100644
---- a/include/uapi/linux/seccomp.h
-+++ b/include/uapi/linux/seccomp.h
-@@ -75,6 +75,8 @@ struct seccomp_notif {
- 	__u32 pid;
- 	__u32 flags;
- 	struct seccomp_data data;
-+	__u32 tgid;
-+	__u8 pad0[4];
- };
- 
- /*
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 55a6184f5990..538bcbbcf4da 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -1061,6 +1061,7 @@ static long seccomp_notify_recv(struct seccomp_filter *filter,
- 
- 	unotif.id = knotif->id;
- 	unotif.pid = task_pid_vnr(knotif->task);
-+	unotif.tgid = task_tgid_vnr(knotif->task);
- 	unotif.data = *(knotif->data);
- 
- 	knotif->state = SECCOMP_NOTIFY_SENT;
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index c0aa46ce14f6..5658c6e95461 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -187,6 +187,8 @@ struct seccomp_notif {
- 	__u32 pid;
- 	__u32 flags;
- 	struct seccomp_data data;
-+	__u32 tgid;
-+	__u8 pad0[4];
- };
- 
- struct seccomp_notif_resp {
-@@ -3226,6 +3228,8 @@ TEST(user_notification_basic)
- 		req.pid = 0;
- 		EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_RECV, &req), 0);
- 	}
-+	EXPECT_EQ(pid, req.pid);
-+	EXPECT_EQ(pid, req.tgid);
- 
- 	pollfd.fd = listener;
- 	pollfd.events = POLLIN | POLLOUT;
-@@ -3453,6 +3457,7 @@ TEST(user_notification_child_pid_ns)
- 
- 	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_RECV, &req), 0);
- 	EXPECT_EQ(req.pid, pid);
-+	EXPECT_EQ(req.tgid, pid);
- 
- 	resp.id = req.id;
- 	resp.error = 0;
-@@ -3686,6 +3691,51 @@ TEST(user_notification_continue)
- 	}
- }
- 
-+void *getppid_thread(void *arg)
-+{
-+	int *tid = arg;
-+
-+	*tid = syscall(__NR_gettid);
-+	if (*tid <= 0)
-+		return (void *)(long)errno;
-+	return NULL;
-+}
-+
-+TEST(user_notification_groupleader)
-+{
-+	struct seccomp_notif_resp resp = {};
-+	struct seccomp_notif req = {};
-+	int ret, listener, tid, pid;
-+	pthread_t thread;
-+	void *status;
-+
-+	pid = getpid();
-+	ASSERT_GT(pid, 0);
-+
-+	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+	ASSERT_EQ(0, ret) {
-+		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
-+	}
-+
-+	listener = user_trap_syscall(__NR_gettid,
-+				     SECCOMP_FILTER_FLAG_NEW_LISTENER);
-+	ASSERT_GE(listener, 0);
-+
-+	ASSERT_EQ(0, pthread_create(&thread, NULL, getppid_thread, &tid));
-+
-+	ASSERT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_RECV, &req), 0);
-+	resp.id = req.id;
-+	resp.flags = SECCOMP_USER_NOTIF_FLAG_CONTINUE;
-+	ASSERT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_SEND, &resp), 0);
-+
-+	ASSERT_EQ(0, pthread_join(thread, &status));
-+	ASSERT_EQ(0, status);
-+
-+	EXPECT_EQ(tid, req.pid);
-+	EXPECT_EQ(pid, req.tgid);
-+}
-+
-+
- /*
-  * TODO:
-  * - add microbenchmarks
--- 
-2.20.1
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-base-v6
+
+which is the reworked base series from part 1-4 of the original 5 part
+series with a few changes which are described in detail below in the merge
+plan section.
+
+V6 has the following changes vs. V5:
+
+    - Rebased on top entry-base-v6
+
+    - Addressed Stevens request to split up the hardware latency detector.
+      This are 3 patches now as I couldn't resist to cleanup the
+      timestamping mess in that code before splitting it up.
+    
+    - Dropped the KVM/SVM change as that is going to be routed
+      differently. See below.
+
+The full series is available from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v6-the-rest
+
+On top of that the kvm changes are applied for completeness and available
+from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v6-full
+
+
+Merge plan:
+-----------
+
+After figuring out that the entry pile and next are not really happy with
+each other, I spent quite some time to come up with a plan.
+
+The goal was to:
+
+    - not let Stephen Rothwell grow more grey hair when trying to resolve
+      the conflicts
+
+    - allow the affected trees (RCU and KVM) to take a small part of the
+      series into their trees while making sure that the x86/entry branch
+      is complete and contains the required RCU and KVM changes as well.
+
+About 10 hours of patch tetris later the solution looks like this:
+
+  I've reshuffled the patches so that they are grouped by subsystem instead
+  of having the cross tree/subsystem patches close to the actual usage site
+  in the x86/entry series.
+
+  This allowed me to tag these subsytem parts and they contain just the
+  minimal subset of changes to be able to build and boot.
+
+The resulting tag list is:
+
+  - noinstr-lds-2020-05-15
+
+    A single commit containing the vmlinux.lds.h change which introduces
+    the noinstr.text section.
+
+  - noinstr-core-2020-05-15
+
+    Based on noinstr-lds-2020-05-15 and contains the core changes
+
+  - noinstr-core-for-kvm-2020-05-15
+
+    Subset of noinstr-core-2020-05-15 which is required to let KVM pull
+    the KVM async pagefault cleanup and base the guest_enter/exit() and
+    noinstr changes on top.
+
+  - noinstr-rcu-nmi-2020-05-15
+
+    Based on the core/rcu branch in the tip tree. It has merged in
+    noinstr-lds-2020-05-15 and contains the nmi_enter/exit() changes along
+    with the noinstr section changes on top.
+
+    This tag is intended to be pulled by Paul into his rcu/next branch so
+    he can sort the conflicts and base further work on top.
+
+  - noinstr-core-2020-05-15
+
+    Based on noinstr-core-for-kvm-2020-05-15 and contains the async page
+    fault cleanup which goes into x86/entry so the IDTENTRY conversion of
+    #PF which also touches the async pagefault code can be applied on top
+
+    This tag is intended to be pulled by Paolo into his next branch so he
+    can work against these changes and the merged result is also target for
+    the rebased version of the KVM guest_enter/exit() changes. These are
+    not part of the entry-v6-base tag. I'm going to post them as a separate
+    series because the original ones are conflicting with work in that area
+    in the KVM tree.
+
+  - noinstr-kcsan-2020-05015, noinstr-kprobes-2020-05-15,
+    noinstr-objtool-2020-05-15
+
+    TIP tree internal tags which I added to reduce the brain-melt.
+
+The x86/entry branch is based on the TIP x86/entry branch and has the
+following branches and tags merged and patches from part 1-4 applied:
+
+    - x86/asm because this has conflicting changes vs. #DF
+
+    - A small set of preparatory changes and fixes which are independent
+      of the noinstr mechanics
+
+    - noinstr-objtool-2020-05-15
+    - noinstr-core-2020-05-15
+    - noinstr-kprobes-2020-05-15
+    - noinstr-rcu-nmi-2020-05-15
+    - noinstr-kcsan-2020-05015
+    - noinstr-x86-kvm-2020-05-15
+    
+    - The part 1-4 patches up to
+
+        51336ff8b658 ("x86/entry: Convert double fault exception to IDTENTRY_DF")
+
+      This is tagged as entry-v6-base
+
+The remaining patches in this leftover series will be applied on top.
+
+If this works for all maintainers involved, then I'm going to pull the tags
+and branches into the tip-tree which makes them immutable.
+
+If not, please tell me ASAP that I should restart the patch tetris session
+after hiding in a brown paperbag for some time to recover from brain melt.
+
+Thanks,
+
+	tglx
+
 
