@@ -2,182 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCCE21D5CA5
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 01:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E090A1D5CB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 01:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgEOXJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 19:09:52 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:59620 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgEOXJw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 19:09:52 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04FN72jo007072;
-        Fri, 15 May 2020 23:09:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=tecV6clB8lrYmlHoyet0oiwXbUPJjtWy4RzwOYWDzXM=;
- b=BbZ8QJtFH3+KphS27u4rCHZOn05PVp9mEi5i5zLdJFVguwc+evd3MqaiFC7RZF40kXnZ
- uh4h5dOu5/j5LnvU6ETI8LJ4p282WE3ebZomfI86aConPSy0Db8IEIM8ZokLvmpQjKXj
- MXFwsfNqzeGBveuyX5OXQEhrdeUT+DUiz71ktMaesBWwXvVnYbjrPPLU8qokWmN2tJYQ
- evDJPzNQqxRxIw66uUB4ytkkhJD+UTYltUwWY9hblrlLoYijDWKJOFzmDPFCnLez26jQ
- Fkt+I45OB7ao+xURFy0J/VdN1S8O81Nhb3VlvC3FzSVjqALT9Ce0yIcjHHDFSm4AnNj+ qA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 3100yge7s7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 15 May 2020 23:09:46 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04FN8laX011481;
-        Fri, 15 May 2020 23:09:45 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 310vjxng1k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 May 2020 23:09:45 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04FN9iaU003274;
-        Fri, 15 May 2020 23:09:44 GMT
-Received: from localhost.localdomain (/10.159.240.167)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 15 May 2020 16:09:44 -0700
-Subject: Re: [PATCH 2/7] KVM: SVM: extract load_nested_vmcb_control
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Cathy Avery <cavery@redhat.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Jim Mattson <jmattson@google.com>
-References: <20200515174144.1727-1-pbonzini@redhat.com>
- <20200515174144.1727-3-pbonzini@redhat.com>
-From:   Krish Sadhukhan <krish.sadhukhan@oracle.com>
-Message-ID: <73188a11-8208-cac6-4d30-4cf67a5d89bc@oracle.com>
-Date:   Fri, 15 May 2020 16:09:43 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726722AbgEOXPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 19:15:48 -0400
+Received: from mail-eopbgr140053.outbound.protection.outlook.com ([40.107.14.53]:19244
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726183AbgEOXPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 19:15:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SK9akejPruwS71Xm4vL+UT2ifJbP5Os6AJZP9LMw//D2rQMR8nPuNx7KiZQSMKgk6KLK3l3tR+cz+ucJiYh+57h56tDCTzNN9CpynV4N8nLHBNKsXUujHc2bE5XIvhJ3JNISJh4KNuJZBQqfEYi+YDsennuOHv5inVupkEjviT6yYhWKE4o8jLTyfbEjTdGuvuiKuyZCGSeuzhn0zd3FRjY+YDem7AYK50LwM2XElCZYvrRSl4zM07Ih37+jKLr7/mWgP+b834p8harcgkpsBGCXz1xPiY9kvb3nAEFxyEC7HLmxNQx48UZ4CteoxGxkvIN1T0I9wRtzNQScAwT0RQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rR+gLqBvIT3+9zxGdtXTiqYrmB+NehR+aYGhMkHESOk=;
+ b=fpBPf3BsbZ1uBIq9B+y7v6R5GCtz6MuVogwXW/EzcY1mweCtIQlJ/2yGGCU0BeiML7ZMwFnwOZooEoX0Yvgze64C845EnIkdJA+7I2fWdBDVBHj1UgQIm9rYI2S6PDSv/6mhJOFQ0bVGLxXmIDAtz0vF3jWBvtJsPnvb43VJLAswqQzsmm54hECGgZX1A+CCb/hAcd40XegLGryKRE81rtuvdk1IwzhGqCgx5Sdijlv3NSnXwTBtX8mS5I3Hx2Z+bD/lSBwlD71wvryOuP0CQVtX+NCYQ2WHv8T9NA8btj/4PURO3DxTwSkNcoG4sgDwSGzGKUvnEDcBfDZN7OtePg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rR+gLqBvIT3+9zxGdtXTiqYrmB+NehR+aYGhMkHESOk=;
+ b=QH28/sC8RC1bAVLHEyR33xmeutRBselzHqrEZzYc5wFSCbtpIUn6sAdpNLDnsOtFVDMnrMPKVQIRkRXRBGuqlWQR3c2YQ2btfqLDeDW7aidwtTb/J6pGLm3MQOEVkFHQoLBrSCSpQlJ4xbnaOo9H9QSOR5fi6IvSwFG+PqsZ37s=
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=mellanox.com;
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
+ by VI1PR05MB5982.eurprd05.prod.outlook.com (2603:10a6:803:e4::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.27; Fri, 15 May
+ 2020 23:15:43 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::848b:fcd0:efe3:189e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::848b:fcd0:efe3:189e%7]) with mapi id 15.20.3000.022; Fri, 15 May 2020
+ 23:15:42 +0000
+Date:   Fri, 15 May 2020 20:15:38 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH] mm/hmm/test: destroy xa_array instead of looping
+Message-ID: <20200515231538.GD24561@mellanox.com>
+References: <20200513214507.30592-1-rcampbell@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200513214507.30592-1-rcampbell@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: MN2PR07CA0021.namprd07.prod.outlook.com
+ (2603:10b6:208:1a0::31) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
 MIME-Version: 1.0
-In-Reply-To: <20200515174144.1727-3-pbonzini@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9622 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 phishscore=0
- spamscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005150195
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9622 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- cotscore=-2147483648 mlxscore=0 suspectscore=0 spamscore=0 impostorscore=0
- mlxlogscore=999 malwarescore=0 clxscore=1011 phishscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005150195
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR07CA0021.namprd07.prod.outlook.com (2603:10b6:208:1a0::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.26 via Frontend Transport; Fri, 15 May 2020 23:15:42 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jZjYI-0001vI-OI; Fri, 15 May 2020 20:15:38 -0300
+X-Originating-IP: [156.34.48.30]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 011a953f-e07f-4830-c823-08d7f925e378
+X-MS-TrafficTypeDiagnostic: VI1PR05MB5982:
+X-Microsoft-Antispam-PRVS: <VI1PR05MB5982984A463DB7CBA89E644ACFBD0@VI1PR05MB5982.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 04041A2886
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /qooYkgnUqVRlS5VB9K7jNRyNqkJQ0bPX4BJgt/NB79FD4YSSnDjbIF5YxDSoi0hPptyAlMrudU5xC/ZjVIslzov5SBlVJaerYtRIwRuQ0yMpXlPcGlcC4OCR0uiijvl3cRo5wY53f4J4CgGuKgytVKfI9OCMqR6caQcEYLnbCIr6aSzTfBqYF1wqxpHv5X/t5fvrGOFxtvO9Oc+rECoGZFHrjEkdFIluD+7qKRjjSUyNn0Tm5CIESaIJYtSlmnRqjGddLmZZ4IwWfrTvAcYT99ow7VfB66gZG+MxrwWvswg12VgCl0YF5JGH3c1BNe2PRj1S/0Dmf4XQa7FlfYJROLNrTVxdcxVwetk+j7JNUCDsDANGrNiagoD58B5qOPthvZeoEf9k0BGK3nIRznU62TLk7gXNa4BMhcb4weW/N/MZYG0yD2rdaYYcMbqGGApOAH3iv7mO6EGr+fJGhtyZheSU24mUifJKUfhOAgWjA0UkAAU4fVrGG91iN1wCjlN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(346002)(396003)(376002)(366004)(5660300002)(7416002)(478600001)(36756003)(33656002)(4326008)(2616005)(316002)(9746002)(9786002)(8676002)(54906003)(52116002)(86362001)(8936002)(66476007)(66946007)(66556008)(6916009)(186003)(26005)(2906002)(1076003)(24400500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: LovFComTvo+EQ0YIeu1gYzMhBPNU+w4Y417w4fXl/bvEPfeGp5mcZqXa1E7ypuXyPHrw29XbuzvuXwSwCiBYWxXCr8dR1XDhWooDB5O0GDCjmobNA8JAmSqETI/+hZb5LwzVJjq3zIlX3cJtYqlZjNzR4jHVFnUrjOYpQh8c7tJXOkNE4CPwx8gM6bFdEZHW9JvuP7aSZj/aVOGD2U3Fh28SNBigGYi5ycwJfhg0jnoBf1XRbYRyDzzT0fo2xAHUXRNTAfg5URgXTieSv30wQgmmFn/Ffn97Mu7v5mNg4pfsTo6hdQj+bMEawpFku+9i9nmQpmi1Qp8w+q6nYp5+WbObksxBg7CVaErgJftiPcyo8HHwosH0qcZrd7kUI/JlJSiUfrDj5lmPv7EDYDeXArTTFZGGgY/vSu1HADq/+TlNdiRuc2trGYQUo1jCWo9f7N7CsZKAo5VZOVol3eXefisBnrXXsunSEC+e0GemmNY=
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 011a953f-e07f-4830-c823-08d7f925e378
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 May 2020 23:15:42.7540
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HQLQ9f5msyGRwirlCO2ep2bRj0FXGcJX2tF5gGgGDSHZ2S3EtvbV8D3zP4D6D4I4FYJ91RNRO8nuh12tu+11vQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5982
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 13, 2020 at 02:45:07PM -0700, Ralph Campbell wrote:
+> The test driver uses an xa_array to store virtual to physical address
+> translations for a simulated hardware device. The MMU notifier
+> invalidation callback is used to keep the table consistent with the CPU
+> page table and is frequently called only for a page or two. However, if
+> the test process exits unexpectedly or is killed, the range can be
+> [0..ULONG_MAX] in which case calling xa_erase() for every possible PFN
+> results in CPU timeouts. Munmap() can result in a large range being
+> invalidated but in that case, the xa_array is likely to contain entries
+> that need to be invalidated.
+> Check for [0..ULONG_MAX] explicitly and just destroy the whole table.
+> 
+> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+> 
+> This patch is based on Jason Gunthorpe's hmm tree and should be folded
+> into the ("mm/hmm/test: add selftest driver for HMM") patch once this
+> patch is reviewed, etc.
+> 
+>  lib/test_hmm.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/lib/test_hmm.c b/lib/test_hmm.c
+> index 8b36c26b717b..b89852ec3c29 100644
+> +++ b/lib/test_hmm.c
+> @@ -201,7 +201,13 @@ static void dmirror_do_update(struct dmirror *dmirror, unsigned long start,
+>  	 * The XArray doesn't hold references to pages since it relies on
+>  	 * the mmu notifier to clear page pointers when they become stale.
+>  	 * Therefore, it is OK to just clear the entry.
+> +	 * However, if the entire address space is being invalidated, it
+> +	 * takes too long to clear them one at a time so destroy the array.
+>  	 */
+> +	if (start == 0 && end == ULONG_MAX) {
+> +		xa_destroy(&dmirror->pt);
+> +		return;
+> +	}
+>  	for (pfn = start >> PAGE_SHIFT; pfn < (end >> PAGE_SHIFT); pfn++)
+>  		xa_erase(&dmirror->pt, pfn);
+>  }
 
-On 5/15/20 10:41 AM, Paolo Bonzini wrote:
-> When restoring SVM nested state, the control state will be stored already
-> in svm->nested by KVM_SET_NESTED_STATE.  We will not need to fish it out of
-> L1's VMCB.  Pull everything into a separate function so that it is
-> documented which fields are needed.
->
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->   arch/x86/kvm/svm/nested.c | 45 ++++++++++++++++++++++-----------------
->   1 file changed, 25 insertions(+), 20 deletions(-)
->
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index 22f75f66084f..e79acc852000 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -225,6 +225,27 @@ static bool nested_vmcb_checks(struct vmcb *vmcb)
->   	return true;
->   }
->   
-> +static void load_nested_vmcb_control(struct vcpu_svm *svm, struct vmcb *nested_vmcb)
+Just use xa_for_each_range() instead of the naive loop, it already
+optimizes against membership and avoids the need for the xa_destroy
+hack
 
-
-This function only separates a subset of the controls. If the purpose of 
-the function is to separate only the controls that are related to 
-migration, should it be called something like 
-load_nested_state_vmcb_control or something like that ?
-
-> +{
-> +	if (kvm_get_rflags(&svm->vcpu) & X86_EFLAGS_IF)
-> +		svm->vcpu.arch.hflags |= HF_HIF_MASK;
-> +	else
-> +		svm->vcpu.arch.hflags &= ~HF_HIF_MASK;
-> +
-> +	svm->nested.nested_cr3 = nested_vmcb->control.nested_cr3;
-> +
-> +	svm->nested.vmcb_msrpm = nested_vmcb->control.msrpm_base_pa & ~0x0fffULL;
-> +	svm->nested.vmcb_iopm  = nested_vmcb->control.iopm_base_pa  & ~0x0fffULL;
-> +
-> +	/* cache intercepts */
-> +	svm->nested.intercept_cr         = nested_vmcb->control.intercept_cr;
-> +	svm->nested.intercept_dr         = nested_vmcb->control.intercept_dr;
-> +	svm->nested.intercept_exceptions = nested_vmcb->control.intercept_exceptions;
-> +	svm->nested.intercept            = nested_vmcb->control.intercept;
-> +
-> +	svm->vcpu.arch.tsc_offset += nested_vmcb->control.tsc_offset;
-> +}
-> +
->   void enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
->   			  struct vmcb *nested_vmcb)
->   {
-> @@ -232,15 +253,11 @@ void enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
->   		is_intercept(svm, INTERCEPT_VINTR) ||
->   		is_intercept(svm, INTERCEPT_IRET);
->   
-> -	if (kvm_get_rflags(&svm->vcpu) & X86_EFLAGS_IF)
-> -		svm->vcpu.arch.hflags |= HF_HIF_MASK;
-> -	else
-> -		svm->vcpu.arch.hflags &= ~HF_HIF_MASK;
-> +	svm->nested.vmcb = vmcb_gpa;
-> +	load_nested_vmcb_control(svm, nested_vmcb);
->   
-> -	if (nested_vmcb->control.nested_ctl & SVM_NESTED_CTL_NP_ENABLE) {
-> -		svm->nested.nested_cr3 = nested_vmcb->control.nested_cr3;
-> +	if (nested_vmcb->control.nested_ctl & SVM_NESTED_CTL_NP_ENABLE)
->   		nested_svm_init_mmu_context(&svm->vcpu);
-> -	}
->   
->   	/* Load the nested guest state */
->   	svm->vmcb->save.es = nested_vmcb->save.es;
-> @@ -275,25 +292,15 @@ void enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
->   	svm->vcpu.arch.dr6  = nested_vmcb->save.dr6;
->   	svm->vmcb->save.cpl = nested_vmcb->save.cpl;
->   
-> -	svm->nested.vmcb_msrpm = nested_vmcb->control.msrpm_base_pa & ~0x0fffULL;
-> -	svm->nested.vmcb_iopm  = nested_vmcb->control.iopm_base_pa  & ~0x0fffULL;
-> -
-> -	/* cache intercepts */
-> -	svm->nested.intercept_cr         = nested_vmcb->control.intercept_cr;
-> -	svm->nested.intercept_dr         = nested_vmcb->control.intercept_dr;
-> -	svm->nested.intercept_exceptions = nested_vmcb->control.intercept_exceptions;
-> -	svm->nested.intercept            = nested_vmcb->control.intercept;
-> -
->   	svm_flush_tlb(&svm->vcpu);
-> -	svm->vmcb->control.int_ctl = nested_vmcb->control.int_ctl | V_INTR_MASKING_MASK;
->   	if (nested_vmcb->control.int_ctl & V_INTR_MASKING_MASK)
->   		svm->vcpu.arch.hflags |= HF_VINTR_MASK;
->   	else
->   		svm->vcpu.arch.hflags &= ~HF_VINTR_MASK;
->   
-> -	svm->vcpu.arch.tsc_offset += nested_vmcb->control.tsc_offset;
->   	svm->vmcb->control.tsc_offset = svm->vcpu.arch.tsc_offset;
->   
-> +	svm->vmcb->control.int_ctl = nested_vmcb->control.int_ctl | V_INTR_MASKING_MASK;
->   	svm->vmcb->control.virt_ext = nested_vmcb->control.virt_ext;
->   	svm->vmcb->control.int_vector = nested_vmcb->control.int_vector;
->   	svm->vmcb->control.int_state = nested_vmcb->control.int_state;
-> @@ -314,8 +321,6 @@ void enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
->   	 */
->   	recalc_intercepts(svm);
->   
-> -	svm->nested.vmcb = vmcb_gpa;
-> -
->   	/*
->   	 * If L1 had a pending IRQ/NMI before executing VMRUN,
->   	 * which wasn't delivered because it was disallowed (e.g.
+Jason
