@@ -2,115 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D6B1D4CF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 13:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB2D1D4CFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 13:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726212AbgEOLsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 07:48:35 -0400
-Received: from mga07.intel.com ([134.134.136.100]:64661 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726046AbgEOLse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 07:48:34 -0400
-IronPort-SDR: SPpr6ie+egOqdFn2h6LFiO4gP85FgcEf2B+jTJwVtblWT4gX2x+4GJkyhZfM7JhSkG4K1GkSMY
- 6O7PPW4Zr1lA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 04:48:33 -0700
-IronPort-SDR: IW+r6LhI9V6GV4u5qgTex4k0wHcQ/NC4Cn1wV9e8y2IAlgwdG4DUc2DWRUPKBm+L7vd4FJM5Sy
- JMKiMpG4ciWA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
-   d="scan'208";a="298415980"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002.fm.intel.com with ESMTP; 15 May 2020 04:48:29 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1jZYpL-006qm5-Iq; Fri, 15 May 2020 14:48:31 +0300
-Date:   Fri, 15 May 2020 14:48:31 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
-        brendanhiggins@google.com, tglx@linutronix.de,
-        boris.brezillon@collabora.com, anders.roxell@linaro.org,
-        masonccyang@mxic.com.tw, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
-        qi-ming.wu@intel.com, cheol.yong.kim@intel.com
-Subject: Re: [PATCH v7 2/2] mtd: rawnand: Add NAND controller support on
- Intel LGM SoC
-Message-ID: <20200515114831.GS185537@smile.fi.intel.com>
-References: <20200515105537.4876-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200515105537.4876-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S1726241AbgEOLsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 07:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726229AbgEOLsp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 07:48:45 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD8DC05BD09
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 04:48:44 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id v5so1532772lfp.13
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 04:48:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zmHQ5oi+w1dpbsygDsoRqF7sOTAFHFbBfzdldzAPp9o=;
+        b=N4PTtziTxHqM1fDkdSXxCv8Jg8FAni3IghpbZsnhKCoXYREBuI/Djyf0QrCyZON2o3
+         uW91HJZeyAEd7QFZvCfGBj6IW72RQH4ooap6ejFY8+n9ddzl+DfpVB1fW64c2Y7UtIoS
+         NbbnTyQ80k6T3D4MKAX59EysQOijXofxIm8nIbEZds5DRzahgX7amx/0KCt+RtHmCn5L
+         ERXm3vPNmV3j/VWceLYoBFbvkr+ueFUofBitvDj88tLWX6oa6wY6NEzcCs1YWpPDIxf9
+         PAG7IjNvBlsuvvnbZXQI6j8FAcN/Q/rkLLQIg+GxAHMsj5J3UhaM8aSZKn8aSS+YMf/6
+         J7BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zmHQ5oi+w1dpbsygDsoRqF7sOTAFHFbBfzdldzAPp9o=;
+        b=PyHsh0serQQFBktq4JR6aTtQ77Xp4La6M+Riy/fzIwbKIG1WNDmfBfEVCQittua5nQ
+         aaWT8B23zE1WWvftLWZpq1+fHYRHIunoR6fxSR+Pc5iijqgS7oBkaRTKfGyPnWayi7QE
+         hiUgcwlRmTP58jEa3czC4CDFotUJqUtsT6N2Rzo0HpiiGdYch+CKPSp1kSZw1GZ2TxzK
+         UyoMmYcCk/zviC3jA77Tr2GdVXQ665nB2SCqS0CIdywK0urb7sJlIr5MLU34V9OsqJga
+         yZ+gH11+n77g4VvhgzRqpr6cBSczmP0//fGcbUB/5JNyerd6c9Xf+5b3owuFaEhoW4E5
+         Jesg==
+X-Gm-Message-State: AOAM530HUnnIfP4wgvBuYbhqoFTzQ2aBnecc/aiy9N3MeoMzFQbNP/Pk
+        R3Nlfp0PvpMb6djhzog/1Yfdss4igw/i3rwqm7WUpQ==
+X-Google-Smtp-Source: ABdhPJwtH+Xe/KX7TAFGDyQmYdkwB+GwNwnhINwGOKf6w5JzQCbvrgv8JDJazPsCnZbWVl7rRbd6+vTir3BwFcJbK04=
+X-Received: by 2002:ac2:4823:: with SMTP id 3mr2156225lft.194.1589543322352;
+ Fri, 15 May 2020 04:48:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515105537.4876-3-vadivel.muruganx.ramuthevar@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200514204901.3199-1-xc-racer2@live.ca> <BN6PR04MB0660C7BA4CE07978AEC884E1A3BC0@BN6PR04MB0660.namprd04.prod.outlook.com>
+In-Reply-To: <BN6PR04MB0660C7BA4CE07978AEC884E1A3BC0@BN6PR04MB0660.namprd04.prod.outlook.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 15 May 2020 13:48:31 +0200
+Message-ID: <CACRpkdbucZ68KODd3shecm0uEkFgTzh4XiN08JdCM_chYApoXA@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] iio: accel: Add bma150/smb380 support to bma180
+To:     Jonathan Bakker <xc-racer2@live.ca>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 06:55:37PM +0800, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> 
-> This patch adds the new IP of Nand Flash Controller(NFC) support
-> on Intel's Lightning Mountain(LGM) SoC.
-> 
-> DMA is used for burst data transfer operation, also DMA HW supports
-> aligned 32bit memory address and aligned data access by default.
-> DMA burst of 8 supported. Data register used to support the read/write
-> operation from/to device.
-> 
-> NAND controller driver implements ->exec_op() to replace legacy hooks,
-> these specific call-back method to execute NAND operations.
+On Thu, May 14, 2020 at 10:49 PM Jonathan Bakker <xc-racer2@live.ca> wrote:
 
-...
+> The bma150/smb380 are very similar to the bma023 but have a temperature
+> channel as well.
+>
+> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
 
-> +	ebu_host->dma_tx = dma_request_chan(dev, "tx");
-> +	if (IS_ERR(ebu_host->dma_tx)) {
-> +		ret = PTR_ERR(ebu_host->dma_tx);
-> +		dev_err(dev, "DMA tx channel request fail!.\n");
-> +		goto err_cleanup_dma;
-> +	}
-> +
-> +	ebu_host->dma_rx = dma_request_chan(dev, "rx");
-> +	if (IS_ERR(ebu_host->dma_rx)) {
-> +		ret = PTR_ERR(ebu_host->dma_rx);
+The temperature channel can be added later, let's go ahead with this!
 
-> +		dev_err(dev, "DMA tx channel request fail!.\n");
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-rx ?
-
-> +		goto err_cleanup_dma;
-> +	}
-
-...
-
-> +static int ebu_nand_remove(struct platform_device *pdev)
-> +{
-> +	struct ebu_nand_controller *ebu_host = platform_get_drvdata(pdev);
-> +
-
-> +	if (ebu_host) {
-
-I dunno why you need this check? Maybe I forgot your answer to my comment?
-
-> +		mtd_device_unregister(nand_to_mtd(&ebu_host->chip));
-> +		nand_cleanup(&ebu_host->chip);
-> +		ebu_nand_disable(&ebu_host->chip);
-> +		ebu_dma_cleanup(ebu_host);
-> +		clk_disable_unprepare(ebu_host->clk);
-> +	}
-> +
-> +	return 0;
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Yours,
+Linus Walleij
