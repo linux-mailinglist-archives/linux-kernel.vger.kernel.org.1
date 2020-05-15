@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5B31D5D17
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 02:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26381D5CF2
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 02:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgEPAKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 20:10:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41036 "EHLO
+        id S1727822AbgEPAKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 20:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726198AbgEPAKi (ORCPT
+        by vger.kernel.org with ESMTP id S1726247AbgEPAKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 May 2020 20:10:38 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A88C061A0C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67965C05BD09
         for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 17:10:38 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jZkP1-00022C-Dp; Sat, 16 May 2020 02:10:07 +0200
+        id 1jZkP2-00022I-Iw; Sat, 16 May 2020 02:10:08 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id CBCCDFF834;
-        Sat, 16 May 2020 02:10:06 +0200 (CEST)
-Message-Id: <20200515234547.710474468@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 13D39100605;
+        Sat, 16 May 2020 02:10:08 +0200 (CEST)
+Message-Id: <20200515235124.466962628@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Sat, 16 May 2020 01:45:47 +0200
+Date:   Sat, 16 May 2020 01:45:48 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -50,7 +50,10 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V6 00/37] x86/entry: Rework leftovers and merge plan
+Subject: [patch V6 01/37] tracing/hwlat: Use ktime_get_mono_fast_ns()
+References: <20200515234547.710474468@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
 X-Linutronix-Spam-Score: -1.0
 X-Linutronix-Spam-Level: -
@@ -60,140 +63,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Folks!
+Timestamping in the hardware latency detector uses sched_clock() underneath
+and depends on CONFIG_GENERIC_SCHED_CLOCK=n because sched clocks from that
+subsystem are not NMI safe.
 
-This is V6 of the rework series. V5 can be found here:
+ktime_get_mono_fast_ns() is NMI safe and available on all architectures.
 
-  https://lore.kernel.org/r/20200512210059.056244513@linutronix.de
+Replace the time getter, get rid of the CONFIG_GENERIC_SCHED_CLOCK=n
+dependency and cleanup the horrible macro maze which encapsulates u64 math
+in u64 macros.
 
-The V6 leftover series is based on:
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ kernel/trace/trace_hwlat.c |   59 +++++++++++++++++++--------------------------
+ 1 file changed, 25 insertions(+), 34 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-base-v6
-
-which is the reworked base series from part 1-4 of the original 5 part
-series with a few changes which are described in detail below in the merge
-plan section.
-
-V6 has the following changes vs. V5:
-
-    - Rebased on top entry-base-v6
-
-    - Addressed Stevens request to split up the hardware latency detector.
-      This are 3 patches now as I couldn't resist to cleanup the
-      timestamping mess in that code before splitting it up.
-    
-    - Dropped the KVM/SVM change as that is going to be routed
-      differently. See below.
-
-The full series is available from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v6-the-rest
-
-On top of that the kvm changes are applied for completeness and available
-from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v6-full
-
-
-Merge plan:
------------
-
-After figuring out that the entry pile and next are not really happy with
-each other, I spent quite some time to come up with a plan.
-
-The goal was to:
-
-    - not let Stephen Rothwell grow more grey hair when trying to resolve
-      the conflicts
-
-    - allow the affected trees (RCU and KVM) to take a small part of the
-      series into their trees while making sure that the x86/entry branch
-      is complete and contains the required RCU and KVM changes as well.
-
-About 10 hours of patch tetris later the solution looks like this:
-
-  I've reshuffled the patches so that they are grouped by subsystem instead
-  of having the cross tree/subsystem patches close to the actual usage site
-  in the x86/entry series.
-
-  This allowed me to tag these subsytem parts and they contain just the
-  minimal subset of changes to be able to build and boot.
-
-The resulting tag list is:
-
-  - noinstr-lds-2020-05-15
-
-    A single commit containing the vmlinux.lds.h change which introduces
-    the noinstr.text section.
-
-  - noinstr-core-2020-05-15
-
-    Based on noinstr-lds-2020-05-15 and contains the core changes
-
-  - noinstr-core-for-kvm-2020-05-15
-
-    Subset of noinstr-core-2020-05-15 which is required to let KVM pull
-    the KVM async pagefault cleanup and base the guest_enter/exit() and
-    noinstr changes on top.
-
-  - noinstr-rcu-nmi-2020-05-15
-
-    Based on the core/rcu branch in the tip tree. It has merged in
-    noinstr-lds-2020-05-15 and contains the nmi_enter/exit() changes along
-    with the noinstr section changes on top.
-
-    This tag is intended to be pulled by Paul into his rcu/next branch so
-    he can sort the conflicts and base further work on top.
-
-  - noinstr-core-2020-05-15
-
-    Based on noinstr-core-for-kvm-2020-05-15 and contains the async page
-    fault cleanup which goes into x86/entry so the IDTENTRY conversion of
-    #PF which also touches the async pagefault code can be applied on top
-
-    This tag is intended to be pulled by Paolo into his next branch so he
-    can work against these changes and the merged result is also target for
-    the rebased version of the KVM guest_enter/exit() changes. These are
-    not part of the entry-v6-base tag. I'm going to post them as a separate
-    series because the original ones are conflicting with work in that area
-    in the KVM tree.
-
-  - noinstr-kcsan-2020-05015, noinstr-kprobes-2020-05-15,
-    noinstr-objtool-2020-05-15
-
-    TIP tree internal tags which I added to reduce the brain-melt.
-
-The x86/entry branch is based on the TIP x86/entry branch and has the
-following branches and tags merged and patches from part 1-4 applied:
-
-    - x86/asm because this has conflicting changes vs. #DF
-
-    - A small set of preparatory changes and fixes which are independent
-      of the noinstr mechanics
-
-    - noinstr-objtool-2020-05-15
-    - noinstr-core-2020-05-15
-    - noinstr-kprobes-2020-05-15
-    - noinstr-rcu-nmi-2020-05-15
-    - noinstr-kcsan-2020-05015
-    - noinstr-x86-kvm-2020-05-15
-    
-    - The part 1-4 patches up to
-
-        51336ff8b658 ("x86/entry: Convert double fault exception to IDTENTRY_DF")
-
-      This is tagged as entry-v6-base
-
-The remaining patches in this leftover series will be applied on top.
-
-If this works for all maintainers involved, then I'm going to pull the tags
-and branches into the tip-tree which makes them immutable.
-
-If not, please tell me ASAP that I should restart the patch tetris session
-after hiding in a brown paperbag for some time to recover from brain melt.
-
-Thanks,
-
-	tglx
-
+--- a/kernel/trace/trace_hwlat.c
++++ b/kernel/trace/trace_hwlat.c
+@@ -131,29 +131,19 @@ static void trace_hwlat_sample(struct hw
+ 		trace_buffer_unlock_commit_nostack(buffer, event);
+ }
+ 
+-/* Macros to encapsulate the time capturing infrastructure */
+-#define time_type	u64
+-#define time_get()	trace_clock_local()
+-#define time_to_us(x)	div_u64(x, 1000)
+-#define time_sub(a, b)	((a) - (b))
+-#define init_time(a, b)	(a = b)
+-#define time_u64(a)	a
+-
++/*
++ * Timestamping uses ktime_get_mono_fast(), the NMI safe access to
++ * CLOCK_MONOTONIC.
++ */
+ void trace_hwlat_callback(bool enter)
+ {
+ 	if (smp_processor_id() != nmi_cpu)
+ 		return;
+ 
+-	/*
+-	 * Currently trace_clock_local() calls sched_clock() and the
+-	 * generic version is not NMI safe.
+-	 */
+-	if (!IS_ENABLED(CONFIG_GENERIC_SCHED_CLOCK)) {
+-		if (enter)
+-			nmi_ts_start = time_get();
+-		else
+-			nmi_total_ts += time_get() - nmi_ts_start;
+-	}
++	if (enter)
++		nmi_ts_start = ktime_get_mono_fast_ns();
++	else
++		nmi_total_ts += ktime_get_mono_fast_ns() - nmi_ts_start;
+ 
+ 	if (enter)
+ 		nmi_count++;
+@@ -165,20 +155,22 @@ void trace_hwlat_callback(bool enter)
+  * Used to repeatedly capture the CPU TSC (or similar), looking for potential
+  * hardware-induced latency. Called with interrupts disabled and with
+  * hwlat_data.lock held.
++ *
++ * Use ktime_get_mono_fast() here as well because it does not wait on the
++ * timekeeping seqcount like ktime_get_mono().
+  */
+ static int get_sample(void)
+ {
+ 	struct trace_array *tr = hwlat_trace;
+ 	struct hwlat_sample s;
+-	time_type start, t1, t2, last_t2;
++	u64 start, t1, t2, last_t2, thresh;
+ 	s64 diff, outer_diff, total, last_total = 0;
+ 	u64 sample = 0;
+-	u64 thresh = tracing_thresh;
+ 	u64 outer_sample = 0;
+ 	int ret = -1;
+ 	unsigned int count = 0;
+ 
+-	do_div(thresh, NSEC_PER_USEC); /* modifies interval value */
++	thresh = div_u64(tracing_thresh, NSEC_PER_USEC);
+ 
+ 	nmi_cpu = smp_processor_id();
+ 	nmi_total_ts = 0;
+@@ -188,18 +180,20 @@ static int get_sample(void)
+ 
+ 	trace_hwlat_callback_enabled = true;
+ 
+-	init_time(last_t2, 0);
+-	start = time_get(); /* start timestamp */
++	/* start timestamp */
++	start = ktime_get_mono_fast_ns();
+ 	outer_diff = 0;
++	last_t2 = 0;
+ 
+ 	do {
+ 
+-		t1 = time_get();	/* we'll look for a discontinuity */
+-		t2 = time_get();
++		/* we'll look for a discontinuity */
++		t1 = ktime_get_mono_fast_ns();
++		t2 = ktime_get_mono_fast_ns();
+ 
+-		if (time_u64(last_t2)) {
++		if (last_t2) {
+ 			/* Check the delta from outer loop (t2 to next t1) */
+-			outer_diff = time_to_us(time_sub(t1, last_t2));
++			outer_diff = div_u64(t1 - last_t2, NSEC_PER_USEC);
+ 			/* This shouldn't happen */
+ 			if (outer_diff < 0) {
+ 				pr_err(BANNER "time running backwards\n");
+@@ -210,7 +204,8 @@ static int get_sample(void)
+ 		}
+ 		last_t2 = t2;
+ 
+-		total = time_to_us(time_sub(t2, start)); /* sample width */
++		/* sample width */
++		total = div_u64(t2 - start, NSEC_PER_USEC);
+ 
+ 		/* Check for possible overflows */
+ 		if (total < last_total) {
+@@ -220,7 +215,7 @@ static int get_sample(void)
+ 		last_total = total;
+ 
+ 		/* This checks the inner loop (t1 to t2) */
+-		diff = time_to_us(time_sub(t2, t1));     /* current diff */
++		diff = div_u64(t2 - t1, NSEC_PER_USEC);
+ 
+ 		if (diff > thresh || outer_diff > thresh) {
+ 			if (!count)
+@@ -251,15 +246,11 @@ static int get_sample(void)
+ 
+ 		ret = 1;
+ 
+-		/* We read in microseconds */
+-		if (nmi_total_ts)
+-			do_div(nmi_total_ts, NSEC_PER_USEC);
+-
+ 		hwlat_data.count++;
+ 		s.seqnum = hwlat_data.count;
+ 		s.duration = sample;
+ 		s.outer_duration = outer_sample;
+-		s.nmi_total_ts = nmi_total_ts;
++		s.nmi_total_ts = div_u64(nmi_total_ts, NSEC_PER_USEC);
+ 		s.nmi_count = nmi_count;
+ 		s.count = count;
+ 		trace_hwlat_sample(&s);
 
