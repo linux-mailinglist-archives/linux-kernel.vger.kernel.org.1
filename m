@@ -2,117 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8481D4A9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B6F1D4AAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728313AbgEOKO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 06:14:26 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:28147 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728292AbgEOKO0 (ORCPT
+        id S1728073AbgEOKOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 06:14:43 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:43398 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728047AbgEOKOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 06:14:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589537665;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lUc3PuOX813Luq3FUqNVTnGhB/o6E0eeOYPacW9Z1Gk=;
-        b=Etbk/Aq/HDlE8LdSj/DGBgE0ypMARfAV9zNCAiCPvt3RZ0WtJN0sKz+iV0zaIZ2YSOALYa
-        sweKMYLiSugGvhrIQHlrnIjEIBu5Va0khCAdOfhua92/sRO430mStfu04ADPtmdAZlDhVo
-        eea14aUxpAdNGr+BzZPZdmVUBEis1x0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-142-t0_WzsGWPv2-7atizBRpXg-1; Fri, 15 May 2020 06:14:23 -0400
-X-MC-Unique: t0_WzsGWPv2-7atizBRpXg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 55031835B44;
-        Fri, 15 May 2020 10:14:21 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-114-77.ams2.redhat.com [10.36.114.77])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BA02360FB9;
-        Fri, 15 May 2020 10:14:12 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, virtio-dev@lists.oasis-open.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        teawater <teawaterz@linux.alibaba.com>
-Subject: [PATCH v4 16/15] virtio-mem: Don't rely on implicit compiler padding for requests
-Date:   Fri, 15 May 2020 12:14:02 +0200
-Message-Id: <20200515101402.16597-1-david@redhat.com>
-In-Reply-To: <20200507140139.17083-1-david@redhat.com>
-References: <20200507140139.17083-1-david@redhat.com>
+        Fri, 15 May 2020 06:14:38 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04FAEKJM120008;
+        Fri, 15 May 2020 05:14:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589537660;
+        bh=5VD+ZVOvXQx3TUmellcch5gik8b6+bYkOX6VNcCUEp0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=CSoxSEe2X9CPHZzR6JUpwFS5KEX2i05Nz07Z8cadYjaS+sdLoEwvxhlMHECWY3X+/
+         Z0l2m2SKD+bt6YVBGD7aaFXan0KhVTBi1gYIwtDK2L6AreFB55huoLLbhCflJq5x98
+         RGq7Gy3LtYqrNRFt8gbLlUjI52f1Q2IdY0qUCgj0=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04FAEK0D114544
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 May 2020 05:14:20 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
+ May 2020 05:14:19 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 15 May 2020 05:14:19 -0500
+Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04FAEFE7038725;
+        Fri, 15 May 2020 05:14:18 -0500
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-am654-main: Update otap-del-sel
+ values
+To:     Faiz Abbas <faiz_abbas@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <robh+dt@kernel.org>, <nm@ti.com>
+References: <20200507181526.12529-1-faiz_abbas@ti.com>
+From:   Tero Kristo <t-kristo@ti.com>
+Message-ID: <c59653d0-2e24-8917-f5b9-8c1044786bc9@ti.com>
+Date:   Fri, 15 May 2020 13:14:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20200507181526.12529-1-faiz_abbas@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The compiler will add padding after the last member, make that explicit.
-The size of a request is always 24 bytes. The size of a response always
-10 bytes. Add compile-time checks.
+On 07/05/2020 21:15, Faiz Abbas wrote:
+> According to the latest AM65x Data Manual[1], a different output tap
+> delay value is optimum for a given speed mode. Update these values.
+> 
+> [1] http://www.ti.com/lit/gpn/am6526
+> 
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+> ---
+> v2: Rebased to the latest mainline kernel
+> 
+>   arch/arm64/boot/dts/ti/k3-am65-main.dtsi | 12 +++++++++++-
+>   1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> index 11887c72f23a..6cd9701e4ead 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> @@ -244,7 +244,17 @@
+>   		interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>;
+>   		mmc-ddr-1_8v;
+>   		mmc-hs200-1_8v;
+> -		ti,otap-del-sel = <0x2>;
+> +		ti,otap-del-sel-legacy = <0x0>;
+> +		ti,otap-del-sel-mmc-hs = <0x0>;
+> +		ti,otap-del-sel-sd-hs = <0x0>;
+> +		ti,otap-del-sel-sdr12 = <0x0>;
+> +		ti,otap-del-sel-sdr25 = <0x0>;
+> +		ti,otap-del-sel-sdr50 = <0x8>;
+> +		ti,otap-del-sel-sdr104 = <0x5>;
 
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Cc: teawater <teawaterz@linux.alibaba.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
+Isn't this wrong? Doc claims the value for sdr104 should be 0x7?
 
-Something I noticed while working on the spec (which proves that writing a
-virtio-spec makes sense :) ).
+-Tero
 
----
- drivers/virtio/virtio_mem.c     | 3 +++
- include/uapi/linux/virtio_mem.h | 3 +++
- 2 files changed, 6 insertions(+)
+> +		ti,otap-del-sel-ddr50 = <0x5>;
+> +		ti,otap-del-sel-ddr52 = <0x5>;
+> +		ti,otap-del-sel-hs200 = <0x5>;
+> +		ti,otap-del-sel-hs400 = <0x0>;
+>   		ti,trm-icp = <0x8>;
+>   		dma-coherent;
+>   	};
+> 
 
-diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-index 9e523db3bee1..f658fe9149be 100644
---- a/drivers/virtio/virtio_mem.c
-+++ b/drivers/virtio/virtio_mem.c
-@@ -1770,6 +1770,9 @@ static int virtio_mem_probe(struct virtio_device *vdev)
- 	struct virtio_mem *vm;
- 	int rc = -EINVAL;
- 
-+	BUILD_BUG_ON(sizeof(struct virtio_mem_req) != 24);
-+	BUILD_BUG_ON(sizeof(struct virtio_mem_resp) != 10);
-+
- 	vdev->priv = vm = kzalloc(sizeof(*vm), GFP_KERNEL);
- 	if (!vm)
- 		return -ENOMEM;
-diff --git a/include/uapi/linux/virtio_mem.h b/include/uapi/linux/virtio_mem.h
-index e0a9dc7397c3..a455c488a995 100644
---- a/include/uapi/linux/virtio_mem.h
-+++ b/include/uapi/linux/virtio_mem.h
-@@ -103,16 +103,19 @@
- struct virtio_mem_req_plug {
- 	__virtio64 addr;
- 	__virtio16 nb_blocks;
-+	__virtio16 padding[3];
- };
- 
- struct virtio_mem_req_unplug {
- 	__virtio64 addr;
- 	__virtio16 nb_blocks;
-+	__virtio16 padding[3];
- };
- 
- struct virtio_mem_req_state {
- 	__virtio64 addr;
- 	__virtio16 nb_blocks;
-+	__virtio16 padding[3];
- };
- 
- struct virtio_mem_req {
--- 
-2.25.4
-
+--
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
