@@ -2,235 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A371D53CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA621D53E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbgEOPLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 11:11:03 -0400
-Received: from mga07.intel.com ([134.134.136.100]:14565 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726504AbgEOPLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 11:11:00 -0400
-IronPort-SDR: yoU+F+CfxkujnYJGYmEod6KxOQYp1Ki05eKikZrzIYHzv4pt5jmw9s/4yYyxH5xzu00EELkX0+
- FUko6Ps5tYjQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 08:11:00 -0700
-IronPort-SDR: qprBBQ4n1jaNuRdgVC2ibo+ekVIFl1EtqI+ZtvszsI6UFL/hj2nylNExKzaU61kUs0WUoBRKpa
- c71LVxyqNTFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
-   d="scan'208";a="307445063"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by FMSMGA003.fm.intel.com with ESMTP; 15 May 2020 08:10:54 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jZbzE-006tYd-BD; Fri, 15 May 2020 18:10:56 +0300
-Date:   Fri, 15 May 2020 18:10:56 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Allison Randal <allison@lohutok.net>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Clement Leger <cleger@kalray.eu>,
-        "wuxu.wu" <wuxu.wu@huawei.com>,
-        Phil Edworthy <phil.edworthy@renesas.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 18/19] spi: dw: Use regset32 DebugFS method to create
- regdump file
-Message-ID: <20200515151056.GQ1634618@smile.fi.intel.com>
-References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
- <20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru>
- <20200515104758.6934-19-Sergey.Semin@baikalelectronics.ru>
+        id S1726715AbgEOPNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 11:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726266AbgEOPNg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 11:13:36 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0723FC05BD09
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 08:13:36 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id f4so1073458pgi.10
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 08:13:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bfBhHYTtohVO95sNvjwzNyBK2wYpRf6EXbUlmqF97hY=;
+        b=xD33G4jCnZyZK/tVplz8bvqfeTRe8c8TYLRHnuCfRcELdIU9IUSSMWdH4cg8VNjBTB
+         XFKndQLtX8nj+DkAz7hT1qCu84OdkLnoxEIHrNIWszFtboQ2VAP05Qz0KdE5f5gSr/Fr
+         EhDnYKdxeQBr0qrekR4PnuQD6V26t4Sb1RMDxwnuiABeZOY2piNE8c/+NVO9+OjysYnz
+         fgqdjcRmmxb01XKczSvP6+Ve5gdeM5ipZ8mI+Wj28HgWDe4sd3PG5FhDQxanwZw6joxz
+         JN9EFqwErcw7YRJ6fQC+5d+v9jcQEqlqsPck3/o763qssedKbJwO/M7sFOEfMaP2fsW7
+         kELg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bfBhHYTtohVO95sNvjwzNyBK2wYpRf6EXbUlmqF97hY=;
+        b=Lme6ieJ2zhM19nBOsCEZArMsWgVAQ7zJwdbXvRM/SKi6Y14DHqnF5rkmFp/kfYC//E
+         yEAA/lPFDFPdxwXhfTOqCQpwWqzKp2SMTSb3zUviE5pSRhOIUsSUBx5sLw1fC093k7GO
+         EiSLmnvwn6s4IVlBwOSdIBswOYpU3lGQCcNXg+n6MkWdDF8bjkmk2yCzs/g3fx7xZVkf
+         BjeRVX1LnZqf6v287ggEUYhvru8TP3HSjN3egAPmZNEFTK3Cd2r93g/y+1Y8NPY+H1HO
+         8R8gDse+oWuzpCtM1wODgl5T+0JOfUBP0doJrymKycFQQWt1HyIVdSgiJyNKHWdVo17P
+         gaXg==
+X-Gm-Message-State: AOAM532XM5ogkp3zDu1A/lb2XMcvoMBdYxq4IGLPEK0OjZuWYsG4tYwf
+        S1pqzjCjaOo0a1qCPvs43s6vQQ==
+X-Google-Smtp-Source: ABdhPJwjkUi4YQauXs6/fEa1OaygsEMg8M7xaZVFabwiAKCRkC0c9/HThyf43z2ib0G01cAbex7X0g==
+X-Received: by 2002:a62:1d4c:: with SMTP id d73mr4244848pfd.226.1589555615469;
+        Fri, 15 May 2020 08:13:35 -0700 (PDT)
+Received: from ?IPv6:2605:e000:100e:8c61:aca2:b1c9:3206:e390? ([2605:e000:100e:8c61:aca2:b1c9:3206:e390])
+        by smtp.gmail.com with ESMTPSA id co16sm823398pjb.55.2020.05.15.08.13.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 May 2020 08:13:34 -0700 (PDT)
+Subject: Re: [PATCH 0/2] io_uring: add a CQ ring flag to enable/disable
+ eventfd notification
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+References: <20200515105414.68683-1-sgarzare@redhat.com>
+ <eaab5cc7-0297-a8f8-f7a9-e00bcf12b678@kernel.dk>
+ <20200515143419.f3uggj7h3nyolfqb@steredhat>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a7ac101d-0f5d-2ab2-b36b-b40607d65878@kernel.dk>
+Date:   Fri, 15 May 2020 09:13:33 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515104758.6934-19-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200515143419.f3uggj7h3nyolfqb@steredhat>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 01:47:57PM +0300, Serge Semin wrote:
-> DebugFS kernel interface provides a dedicated method to create the
-> registers dump file. Use it instead of creating a generic DebugFS
-> file with manually written read callback function.
-
-With below nit addressed,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-> Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Allison Randal <allison@lohutok.net>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Gareth Williams <gareth.williams.jx@renesas.com>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: linux-mips@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> ---
->  drivers/spi/spi-dw.c | 86 ++++++++++++++------------------------------
->  drivers/spi/spi-dw.h |  2 ++
->  2 files changed, 28 insertions(+), 60 deletions(-)
+On 5/15/20 8:34 AM, Stefano Garzarella wrote:
+> On Fri, May 15, 2020 at 08:24:58AM -0600, Jens Axboe wrote:
+>> On 5/15/20 4:54 AM, Stefano Garzarella wrote:
+>>> The first patch adds the new 'cq_flags' field for the CQ ring. It
+>>> should be written by the application and read by the kernel.
+>>>
+>>> The second patch adds a new IORING_CQ_NEED_WAKEUP flag that can be
+>>> used by the application to enable/disable eventfd notifications.
+>>>
+>>> I'm not sure the name is the best one, an alternative could be
+>>> IORING_CQ_NEED_EVENT.
+>>>
+>>> This feature can be useful if the application are using eventfd to be
+>>> notified when requests are completed, but they don't want a notification
+>>> for every request.
+>>> Of course the application can already remove the eventfd from the event
+>>> loop, but as soon as it adds the eventfd again, it will be notified,
+>>> even if it has already handled all the completed requests.
+>>>
+>>> The most important use case is when the registered eventfd is used to
+>>> notify a KVM guest through irqfd and we want a mechanism to
+>>> enable/disable interrupts.
+>>>
+>>> I also extended liburing API and added a test case here:
+>>> https://github.com/stefano-garzarella/liburing/tree/eventfd-disable
+>>
+>> Don't mind the feature, and I think the patches look fine. But the name
+>> is really horrible, I'd have no idea what that flag does without looking
+>> at the code or a man page. Why not call it IORING_CQ_EVENTFD_ENABLED or
+>> something like that? Or maybe IORING_CQ_EVENTFD_DISABLED, and then you
+>> don't have to muck with the default value either. The app would set the
+>> flag to disable eventfd, temporarily, and clear it again when it wants
+>> notifications again.
 > 
-> diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
-> index 31607b40147d..bb470cff40d3 100644
-> --- a/drivers/spi/spi-dw.c
-> +++ b/drivers/spi/spi-dw.c
-> @@ -29,66 +29,29 @@ struct chip_data {
->  };
->  
->  #ifdef CONFIG_DEBUG_FS
-> -#define SPI_REGS_BUFSIZE	1024
-> -static ssize_t dw_spi_show_regs(struct file *file, char __user *user_buf,
-> -		size_t count, loff_t *ppos)
-> -{
-> -	struct dw_spi *dws = file->private_data;
-> -	char *buf;
-> -	u32 len = 0;
-> -	ssize_t ret;
-> -
-> -	buf = kzalloc(SPI_REGS_BUFSIZE, GFP_KERNEL);
-> -	if (!buf)
-> -		return 0;
-> -
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"%s registers:\n", dev_name(&dws->master->dev));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"=================================\n");
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"CTRLR0: \t0x%08x\n", dw_readl(dws, DW_SPI_CTRLR0));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"CTRLR1: \t0x%08x\n", dw_readl(dws, DW_SPI_CTRLR1));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"SSIENR: \t0x%08x\n", dw_readl(dws, DW_SPI_SSIENR));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"SER: \t\t0x%08x\n", dw_readl(dws, DW_SPI_SER));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"BAUDR: \t\t0x%08x\n", dw_readl(dws, DW_SPI_BAUDR));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"TXFTLR: \t0x%08x\n", dw_readl(dws, DW_SPI_TXFTLR));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"RXFTLR: \t0x%08x\n", dw_readl(dws, DW_SPI_RXFTLR));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"TXFLR: \t\t0x%08x\n", dw_readl(dws, DW_SPI_TXFLR));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"RXFLR: \t\t0x%08x\n", dw_readl(dws, DW_SPI_RXFLR));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"SR: \t\t0x%08x\n", dw_readl(dws, DW_SPI_SR));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"IMR: \t\t0x%08x\n", dw_readl(dws, DW_SPI_IMR));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"ISR: \t\t0x%08x\n", dw_readl(dws, DW_SPI_ISR));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"DMACR: \t\t0x%08x\n", dw_readl(dws, DW_SPI_DMACR));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"DMATDLR: \t0x%08x\n", dw_readl(dws, DW_SPI_DMATDLR));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"DMARDLR: \t0x%08x\n", dw_readl(dws, DW_SPI_DMARDLR));
-> -	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
-> -			"=================================\n");
-> -
-> -	ret = simple_read_from_buffer(user_buf, count, ppos, buf, len);
-> -	kfree(buf);
-> -	return ret;
-> +
-> +#define DW_SPI_DBGFS_REG(_name, _off)	\
-> +{					\
-> +	.name = _name,			\
+> You're clearly right! :-) The name was horrible.
 
-> +	.offset = _off			\
+Sometimes you go down that path on naming and just can't think of
+the right one. I think we've all been there.
 
-As previously discussed (did I miss your answer?) the comma at the end leaves
-better pattern for maintenance prospective.
+> I agree that IORING_CQ_EVENTFD_DISABLED should be the best.
+> I'll send a v2 changing the name and removing the default value.
 
->  }
->  
-> -static const struct file_operations dw_spi_regs_ops = {
-> -	.owner		= THIS_MODULE,
-> -	.open		= simple_open,
-> -	.read		= dw_spi_show_regs,
-> -	.llseek		= default_llseek,
-> +static const struct debugfs_reg32 dw_spi_dbgfs_regs[] = {
-> +	DW_SPI_DBGFS_REG("CTRLR0", DW_SPI_CTRLR0),
-> +	DW_SPI_DBGFS_REG("CTRLR1", DW_SPI_CTRLR1),
-> +	DW_SPI_DBGFS_REG("SSIENR", DW_SPI_SSIENR),
-> +	DW_SPI_DBGFS_REG("SER", DW_SPI_SER),
-> +	DW_SPI_DBGFS_REG("BAUDR", DW_SPI_BAUDR),
-> +	DW_SPI_DBGFS_REG("TXFTLR", DW_SPI_TXFTLR),
-> +	DW_SPI_DBGFS_REG("RXFTLR", DW_SPI_RXFTLR),
-> +	DW_SPI_DBGFS_REG("TXFLR", DW_SPI_TXFLR),
-> +	DW_SPI_DBGFS_REG("RXFLR", DW_SPI_RXFLR),
-> +	DW_SPI_DBGFS_REG("SR", DW_SPI_SR),
-> +	DW_SPI_DBGFS_REG("IMR", DW_SPI_IMR),
-> +	DW_SPI_DBGFS_REG("ISR", DW_SPI_ISR),
-> +	DW_SPI_DBGFS_REG("DMACR", DW_SPI_DMACR),
-> +	DW_SPI_DBGFS_REG("DMATDLR", DW_SPI_DMATDLR),
-> +	DW_SPI_DBGFS_REG("DMARDLR", DW_SPI_DMARDLR)
->  };
->  
->  static int dw_spi_debugfs_init(struct dw_spi *dws)
-> @@ -100,8 +63,11 @@ static int dw_spi_debugfs_init(struct dw_spi *dws)
->  	if (!dws->debugfs)
->  		return -ENOMEM;
->  
-> -	debugfs_create_file("registers", S_IFREG | S_IRUGO,
-> -		dws->debugfs, (void *)dws, &dw_spi_regs_ops);
-> +	dws->regset.regs = dw_spi_dbgfs_regs;
-> +	dws->regset.nregs = ARRAY_SIZE(dw_spi_dbgfs_regs);
-> +	dws->regset.base = dws->regs;
-> +	debugfs_create_regset32("registers", 0400, dws->debugfs, &dws->regset);
-> +
->  	return 0;
->  }
->  
-> diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
-> index 24462b0c65cb..4adce6da6013 100644
-> --- a/drivers/spi/spi-dw.h
-> +++ b/drivers/spi/spi-dw.h
-> @@ -2,6 +2,7 @@
->  #ifndef DW_SPI_HEADER_H
->  #define DW_SPI_HEADER_H
->  
-> +#include <linux/debugfs.h>
->  #include <linux/irqreturn.h>
->  #include <linux/io.h>
->  #include <linux/scatterlist.h>
-> @@ -150,6 +151,7 @@ struct dw_spi {
->  
->  #ifdef CONFIG_DEBUG_FS
->  	struct dentry *debugfs;
-> +	struct debugfs_regset32 regset;
->  #endif
->  };
->  
-> -- 
-> 2.25.1
-> 
+Great thanks, and please do queue a pull for the liburing side too.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Jens Axboe
 
