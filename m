@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92D41D4E9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F7B1D4EA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726266AbgEONM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 09:12:27 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:53478 "EHLO honk.sigxcpu.org"
+        id S1726584AbgEONMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 09:12:49 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:53528 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726244AbgEONMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 09:12:24 -0400
+        id S1726246AbgEONM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 09:12:26 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 76D87FB03;
-        Fri, 15 May 2020 15:12:20 +0200 (CEST)
+        by honk.sigxcpu.org (Postfix) with ESMTP id 0CC7DFB05;
+        Fri, 15 May 2020 15:12:24 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
 Received: from honk.sigxcpu.org ([127.0.0.1])
         by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id g8I1dDNq2x7s; Fri, 15 May 2020 15:12:18 +0200 (CEST)
+        with ESMTP id brG_Y9P4LUL8; Fri, 15 May 2020 15:12:20 +0200 (CEST)
 Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 78087445AA; Fri, 15 May 2020 15:12:15 +0200 (CEST)
+        id 86BB7445AB; Fri, 15 May 2020 15:12:15 +0200 (CEST)
 From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
 To:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
         David Airlie <airlied@linux.ie>,
@@ -38,9 +38,9 @@ To:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
         Robert Chiras <robert.chiras@nxp.com>,
         dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [RFC PATCH 3/6] dt-bindings: display/bridge/nwl-dsi: Drop mux handling
-Date:   Fri, 15 May 2020 15:12:12 +0200
-Message-Id: <9884c56219e9bdbeec179c27ea2b734dbb5f1289.1589548223.git.agx@sigxcpu.org>
+Subject: [RFC PATCH 4/6] drm/bridge/nwl-dsi: Drop mux handling
+Date:   Fri, 15 May 2020 15:12:13 +0200
+Message-Id: <951688795f969ebcbf9fb3c38065ccce6f488235.1589548223.git.agx@sigxcpu.org>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <cover.1589548223.git.agx@sigxcpu.org>
 References: <cover.1589548223.git.agx@sigxcpu.org>
@@ -52,45 +52,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need to encode the SoC specifics in the bridge driver. For the
-imx8mq we can use the mux-input-bridge.
+This will be handled via the mux-input-bridge.
 
 Signed-off-by: Guido Günther <agx@sigxcpu.org>
 ---
- .../devicetree/bindings/display/bridge/nwl-dsi.yaml         | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/gpu/drm/bridge/Kconfig   |  1 -
+ drivers/gpu/drm/bridge/nwl-dsi.c | 61 --------------------------------
+ 2 files changed, 62 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml b/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml
-index 8aff2d68fc33..d2c2d4e19a25 100644
---- a/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml
-+++ b/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml
-@@ -46,10 +46,6 @@ properties:
-       - const: phy_ref
-       - const: lcdif
+diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+index 3886c0f41bdd..11444f841e35 100644
+--- a/drivers/gpu/drm/bridge/Kconfig
++++ b/drivers/gpu/drm/bridge/Kconfig
+@@ -78,7 +78,6 @@ config DRM_NWL_MIPI_DSI
+ 	select DRM_PANEL_BRIDGE
+ 	select GENERIC_PHY_MIPI_DPHY
+ 	select MFD_SYSCON
+-	select MULTIPLEXER
+ 	select REGMAP_MMIO
+ 	help
+ 	  This enables the Northwest Logic MIPI DSI Host controller as
+diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nwl-dsi.c
+index b14d725bf609..8839f333f39c 100644
+--- a/drivers/gpu/drm/bridge/nwl-dsi.c
++++ b/drivers/gpu/drm/bridge/nwl-dsi.c
+@@ -12,7 +12,6 @@
+ #include <linux/math64.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+-#include <linux/mux/consumer.h>
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <linux/phy/phy.h>
+@@ -44,9 +43,6 @@ enum transfer_direction {
+ 	DSI_PACKET_RECEIVE,
+ };
  
--  mux-controls:
--    description:
--      mux controller node to use for operating the input mux
+-#define NWL_DSI_ENDPOINT_LCDIF 0
+-#define NWL_DSI_ENDPOINT_DCSS 1
 -
-   phys:
-     maxItems: 1
-     description:
-@@ -151,7 +147,6 @@ required:
-   - clocks
-   - compatible
-   - interrupts
--  - mux-controls
-   - phy-names
-   - phys
-   - ports
-@@ -180,7 +175,6 @@ examples:
-                        <&clk IMX8MQ_CLK_LCDIF_PIXEL>;
-               clock-names = "core", "rx_esc", "tx_esc", "phy_ref", "lcdif";
-               interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
--              mux-controls = <&mux 0>;
-               power-domains = <&pgc_mipi>;
-               resets = <&src IMX8MQ_RESET_MIPI_DSI_RESET_BYTE_N>,
-                        <&src IMX8MQ_RESET_MIPI_DSI_DPI_RESET_N>,
+ struct nwl_dsi_plat_clk_config {
+ 	const char *id;
+ 	struct clk *clk;
+@@ -94,7 +90,6 @@ struct nwl_dsi {
+ 	struct reset_control *rst_esc;
+ 	struct reset_control *rst_dpi;
+ 	struct reset_control *rst_pclk;
+-	struct mux_control *mux;
+ 
+ 	/* DSI clocks */
+ 	struct clk *phy_ref_clk;
+@@ -1018,14 +1013,6 @@ static int nwl_dsi_parse_dt(struct nwl_dsi *dsi)
+ 	}
+ 	dsi->tx_esc_clk = clk;
+ 
+-	dsi->mux = devm_mux_control_get(dsi->dev, NULL);
+-	if (IS_ERR(dsi->mux)) {
+-		ret = PTR_ERR(dsi->mux);
+-		if (ret != -EPROBE_DEFER)
+-			DRM_DEV_ERROR(dsi->dev, "Failed to get mux: %d\n", ret);
+-		return ret;
+-	}
+-
+ 	base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
+@@ -1073,47 +1060,6 @@ static int nwl_dsi_parse_dt(struct nwl_dsi *dsi)
+ 	return 0;
+ }
+ 
+-static int nwl_dsi_select_input(struct nwl_dsi *dsi)
+-{
+-	struct device_node *remote;
+-	u32 use_dcss = 1;
+-	int ret;
+-
+-	remote = of_graph_get_remote_node(dsi->dev->of_node, 0,
+-					  NWL_DSI_ENDPOINT_LCDIF);
+-	if (remote) {
+-		use_dcss = 0;
+-	} else {
+-		remote = of_graph_get_remote_node(dsi->dev->of_node, 0,
+-						  NWL_DSI_ENDPOINT_DCSS);
+-		if (!remote) {
+-			DRM_DEV_ERROR(dsi->dev,
+-				      "No valid input endpoint found\n");
+-			return -EINVAL;
+-		}
+-	}
+-
+-	DRM_DEV_INFO(dsi->dev, "Using %s as input source\n",
+-		     (use_dcss) ? "DCSS" : "LCDIF");
+-	ret = mux_control_try_select(dsi->mux, use_dcss);
+-	if (ret < 0)
+-		DRM_DEV_ERROR(dsi->dev, "Failed to select input: %d\n", ret);
+-
+-	of_node_put(remote);
+-	return ret;
+-}
+-
+-static int nwl_dsi_deselect_input(struct nwl_dsi *dsi)
+-{
+-	int ret;
+-
+-	ret = mux_control_deselect(dsi->mux);
+-	if (ret < 0)
+-		DRM_DEV_ERROR(dsi->dev, "Failed to deselect input: %d\n", ret);
+-
+-	return ret;
+-}
+-
+ static const struct drm_bridge_timings nwl_dsi_timings = {
+ 	.input_bus_flags = DRM_BUS_FLAG_DE_LOW,
+ };
+@@ -1175,12 +1121,6 @@ static int nwl_dsi_probe(struct platform_device *pdev)
+ 	dev_set_drvdata(dev, dsi);
+ 	pm_runtime_enable(dev);
+ 
+-	ret = nwl_dsi_select_input(dsi);
+-	if (ret < 0) {
+-		mipi_dsi_host_unregister(&dsi->dsi_host);
+-		return ret;
+-	}
+-
+ 	drm_bridge_add(&dsi->bridge);
+ 	return 0;
+ }
+@@ -1189,7 +1129,6 @@ static int nwl_dsi_remove(struct platform_device *pdev)
+ {
+ 	struct nwl_dsi *dsi = platform_get_drvdata(pdev);
+ 
+-	nwl_dsi_deselect_input(dsi);
+ 	mipi_dsi_host_unregister(&dsi->dsi_host);
+ 	drm_bridge_remove(&dsi->bridge);
+ 	pm_runtime_disable(&pdev->dev);
 -- 
 2.26.1
 
