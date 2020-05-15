@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2591D5343
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3251D53E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727067AbgEOPJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 11:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726980AbgEOPJd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 11:09:33 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26178C05BD09
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 08:09:33 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id w64so3041545wmg.4
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 08:09:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jx0XKJ2rCIhRcqgOXEUQmg+a5t/C06hEEw2771wCrpc=;
-        b=xRXa6uk7sY5l0kUkxtMtjnnegPJEPXpzWVBtJYypcC978gemlnFTFHOMjBcbc10QpS
-         QaFAcfSa6/+nIfd9VbbJnqFnAkW8Qlg6RpEaymWSUnnoPfhRsL5QVIbMrUgyPfdmVfQx
-         7aIdfDpyCPW3PySPGMbIGfI1c+gV/YhTi0ckAMTrSqt7WO4reax1zYQJuV2YNIKOT+7x
-         Qb4lik5t5kYa2RE/iC77TlPCRge53K4u28Vldd9Eu2XB/1YsNFE3ZzqrOlKisHqs1pf3
-         EOpFnAvbVn0Nmj1veW/0FfkBCBbkbGUmJJZrxbniv9vLXecDqIY/xPw60FnWYa3dD1uU
-         90Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jx0XKJ2rCIhRcqgOXEUQmg+a5t/C06hEEw2771wCrpc=;
-        b=UNMSPmCfToRGOcuadOoEK7rr7eMLQaWuDn7ncxoz9CBYA+XSikdOae6yNgwv5hLzNg
-         CIhRG+apeIflYt+RChLdNRZuhh5+JtjjQGOvK6E+afUR0kZbiilqt00TNLZ/ZWfGSXf6
-         0rnjkeLLlUJMrZoEsFnx6pEYhlqLRrwj4Be0Cu5TNMVIXwCauoX9B+0XlPe3jLBhlBnD
-         Hwi7FX2B2REQbtp4p+Y1qguu4g9LRdV2ceck+VtNesPI0tsBLkhxaXALO9cibVduSxMh
-         mnF2AD9gwvafLiuzERTpnn+ZlHi+7oMGKe0uTJX2MRnsF7reH0p7byy4+4vIUGcMS2Oa
-         Sfrw==
-X-Gm-Message-State: AOAM530g9UIp/tqyPic4zJbYPAHKjL5pb3dDVOT+0QJOj8h2EeMmG87A
-        awP98KxslnPm9s+dGiXraB6RXiIMdpk=
-X-Google-Smtp-Source: ABdhPJzK6NqwmRRnGC5NyaLkwDKbAx4XTdfPDAKUwWKA5Ss6lvRh0R+qSgwZkAw0X/NDc8GIEj5t3w==
-X-Received: by 2002:a05:600c:40d:: with SMTP id q13mr4585592wmb.69.1589555371482;
-        Fri, 15 May 2020 08:09:31 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5450:281:8a7d:dd9a? ([2a01:e34:ed2f:f020:5450:281:8a7d:dd9a])
-        by smtp.googlemail.com with ESMTPSA id b7sm3946043wmj.29.2020.05.15.08.09.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 May 2020 08:09:30 -0700 (PDT)
-Subject: Re: [PATCH 4/4] thermal: core: genetlink support for
- events/cmd/sampling
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        rui.zhang@intel.com
-Cc:     amit.kucheria@verdurent.com, arnd@arndb.de,
-        rkumbako@codeaurora.org, ilina@codeaurora.org,
-        linux-pm@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
-References: <20200515141034.19154-1-daniel.lezcano@linaro.org>
- <20200515141034.19154-4-daniel.lezcano@linaro.org>
- <3b729b2a518d55c973f7daa7dc77547dfaf7b315.camel@linux.intel.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <2369d65a-bd97-a57b-f0d6-5d4aea918bff@linaro.org>
-Date:   Fri, 15 May 2020 17:09:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726257AbgEOPLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 11:11:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726717AbgEOPJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 11:09:37 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 448D1207C3;
+        Fri, 15 May 2020 15:09:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589555376;
+        bh=ys1V8HWNqH20yXhWtg1p2L+pPQ1fwqd8rYNvrPx95UM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lS2YsSuumgPFlql65mzaXT7bI02mBOVqmqPUIPQyGjNbMP5CjS5Yhe8iytrsPHNBA
+         tLSKzTBJMMCHJ6v2uY+1HJrYDJ2cXMayZvliNSfnz/+NIV5gi36XTpsgnxCH9qfbCy
+         cFaTWRXjEkqX+lEvr958G7qHow4nV5GAWGgH7OoI=
+Date:   Fri, 15 May 2020 17:09:34 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     devel@driverdev.osuosl.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 05/19] staging: wfx: fix coherency of hif_scan() prototype
+Message-ID: <20200515150934.GA2573363@kroah.com>
+References: <20200515083325.378539-1-Jerome.Pouiller@silabs.com>
+ <20200515083325.378539-6-Jerome.Pouiller@silabs.com>
+ <20200515135359.GA2162457@kroah.com>
+ <15113296.vvBLmrQuJQ@pc-42>
 MIME-Version: 1.0
-In-Reply-To: <3b729b2a518d55c973f7daa7dc77547dfaf7b315.camel@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <15113296.vvBLmrQuJQ@pc-42>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/05/2020 16:43, Srinivas Pandruvada wrote:
-> On Fri, 2020-05-15 at 16:10 +0200, Daniel Lezcano wrote:
->> Initially the thermal framework had a very simple notification
->> mechanism to send generic netlink messages to the userspace.
->>
->> The notification function was never called from anywhere and the
->> corresponding dead code was removed. It was probably a first attempt
->> to introduce the netlink notification.
->>
->> At LPC2018, the presentation "Linux thermal: User kernel interface",
->> proposed to create the notifications to the userspace via a kfifo.
->>
->> The advantage of the kfifo is the performance. It is usually used
->> from
->> a 1:1 communication channel where a driver captures data and send
->> them
->> as fast as possible to an userspace process.
-> Shall I submit my RFC using KFifo on top of this series? Any
-> objections?
+On Fri, May 15, 2020 at 05:03:40PM +0200, Jérôme Pouiller wrote:
+> On Friday 15 May 2020 15:53:59 CEST Greg Kroah-Hartman wrote:
+> > On Fri, May 15, 2020 at 10:33:11AM +0200, Jerome Pouiller wrote:
+> > > From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> > >
+> > > The function hif_scan() return the timeout for the completion of the
+> > > scan request. It is the only function from hif_tx.c that return another
+> > > thing than just an error code. This behavior is not coherent with the
+> > > rest of file. Worse, if value returned is positive, the caller can't
+> > > make say if it is a timeout or the value returned by the hardware.
+> > >
+> > > Uniformize API with other HIF functions, only return the error code and
+> > > pass timeout with parameters.
+> > >
+> > > Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> > > ---
+> > >  drivers/staging/wfx/hif_tx.c | 6 ++++--
+> > >  drivers/staging/wfx/hif_tx.h | 2 +-
+> > >  drivers/staging/wfx/scan.c   | 6 +++---
+> > >  3 files changed, 8 insertions(+), 6 deletions(-)
+> > 
+> > This patch fails to apply to my branch, so I've stopped here in the
+> > patch series.
+> 
+> Hello Greg,
+> 
+> Did you applied the patch called "staging: wfx: unlock on error path" from
+> Dan?
 
-ATM the notification is not plugged with any thermal core code path. It
-is separated on purpose in order to let your RFC to get some comments.
+I have no idea :)
 
-If you want to base your RFC on top of it, I'm perfectly fine with that.
+> (I wrote that information in the introduction letter, but maybe I would
+> had include the Dan's patch in my PR?)
 
-I'll review your RFC now, I wanted to do that before but got busy with
-another stuff.
+I think you should have, as my queue is empty now.
 
-If you want to compare kfifo and netlink, the userspace test programs
-are at:
+thanks,
 
-https://git.linaro.org/people/daniel.lezcano/thermal-genl.git/
-
-IMO, using the kfifo for the sampling and the notifications/the commands
-via netlink would make more sense.
-
-
--- 
-<http://www.linaro.org/> Linaro.org â”‚ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+greg k-h
