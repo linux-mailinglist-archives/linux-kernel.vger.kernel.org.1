@@ -2,79 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0381D53C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2591D5343
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbgEOPK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 11:10:57 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:10282 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728313AbgEOPKt (ORCPT
+        id S1727067AbgEOPJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 11:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726980AbgEOPJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 11:10:49 -0400
-X-IronPort-AV: E=Sophos;i="5.73,395,1583161200"; 
-   d="scan'208";a="46974932"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 16 May 2020 00:10:47 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 2638640065C1;
-        Sat, 16 May 2020 00:10:42 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 17/17] ARM: dts: r8a7742: Add RWDT node
-Date:   Fri, 15 May 2020 16:08:57 +0100
-Message-Id: <1589555337-5498-18-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589555337-5498-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <1589555337-5498-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Fri, 15 May 2020 11:09:33 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26178C05BD09
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 08:09:33 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id w64so3041545wmg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 08:09:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jx0XKJ2rCIhRcqgOXEUQmg+a5t/C06hEEw2771wCrpc=;
+        b=xRXa6uk7sY5l0kUkxtMtjnnegPJEPXpzWVBtJYypcC978gemlnFTFHOMjBcbc10QpS
+         QaFAcfSa6/+nIfd9VbbJnqFnAkW8Qlg6RpEaymWSUnnoPfhRsL5QVIbMrUgyPfdmVfQx
+         7aIdfDpyCPW3PySPGMbIGfI1c+gV/YhTi0ckAMTrSqt7WO4reax1zYQJuV2YNIKOT+7x
+         Qb4lik5t5kYa2RE/iC77TlPCRge53K4u28Vldd9Eu2XB/1YsNFE3ZzqrOlKisHqs1pf3
+         EOpFnAvbVn0Nmj1veW/0FfkBCBbkbGUmJJZrxbniv9vLXecDqIY/xPw60FnWYa3dD1uU
+         90Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jx0XKJ2rCIhRcqgOXEUQmg+a5t/C06hEEw2771wCrpc=;
+        b=UNMSPmCfToRGOcuadOoEK7rr7eMLQaWuDn7ncxoz9CBYA+XSikdOae6yNgwv5hLzNg
+         CIhRG+apeIflYt+RChLdNRZuhh5+JtjjQGOvK6E+afUR0kZbiilqt00TNLZ/ZWfGSXf6
+         0rnjkeLLlUJMrZoEsFnx6pEYhlqLRrwj4Be0Cu5TNMVIXwCauoX9B+0XlPe3jLBhlBnD
+         Hwi7FX2B2REQbtp4p+Y1qguu4g9LRdV2ceck+VtNesPI0tsBLkhxaXALO9cibVduSxMh
+         mnF2AD9gwvafLiuzERTpnn+ZlHi+7oMGKe0uTJX2MRnsF7reH0p7byy4+4vIUGcMS2Oa
+         Sfrw==
+X-Gm-Message-State: AOAM530g9UIp/tqyPic4zJbYPAHKjL5pb3dDVOT+0QJOj8h2EeMmG87A
+        awP98KxslnPm9s+dGiXraB6RXiIMdpk=
+X-Google-Smtp-Source: ABdhPJzK6NqwmRRnGC5NyaLkwDKbAx4XTdfPDAKUwWKA5Ss6lvRh0R+qSgwZkAw0X/NDc8GIEj5t3w==
+X-Received: by 2002:a05:600c:40d:: with SMTP id q13mr4585592wmb.69.1589555371482;
+        Fri, 15 May 2020 08:09:31 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:5450:281:8a7d:dd9a? ([2a01:e34:ed2f:f020:5450:281:8a7d:dd9a])
+        by smtp.googlemail.com with ESMTPSA id b7sm3946043wmj.29.2020.05.15.08.09.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 May 2020 08:09:30 -0700 (PDT)
+Subject: Re: [PATCH 4/4] thermal: core: genetlink support for
+ events/cmd/sampling
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        rui.zhang@intel.com
+Cc:     amit.kucheria@verdurent.com, arnd@arndb.de,
+        rkumbako@codeaurora.org, ilina@codeaurora.org,
+        linux-pm@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
+References: <20200515141034.19154-1-daniel.lezcano@linaro.org>
+ <20200515141034.19154-4-daniel.lezcano@linaro.org>
+ <3b729b2a518d55c973f7daa7dc77547dfaf7b315.camel@linux.intel.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <2369d65a-bd97-a57b-f0d6-5d4aea918bff@linaro.org>
+Date:   Fri, 15 May 2020 17:09:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <3b729b2a518d55c973f7daa7dc77547dfaf7b315.camel@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a device node for the Watchdog Timer (RWDT) controller on the Renesas
-RZ/G1H (r8a7742) SoC.
+On 15/05/2020 16:43, Srinivas Pandruvada wrote:
+> On Fri, 2020-05-15 at 16:10 +0200, Daniel Lezcano wrote:
+>> Initially the thermal framework had a very simple notification
+>> mechanism to send generic netlink messages to the userspace.
+>>
+>> The notification function was never called from anywhere and the
+>> corresponding dead code was removed. It was probably a first attempt
+>> to introduce the netlink notification.
+>>
+>> At LPC2018, the presentation "Linux thermal: User kernel interface",
+>> proposed to create the notifications to the userspace via a kfifo.
+>>
+>> The advantage of the kfifo is the performance. It is usually used
+>> from
+>> a 1:1 communication channel where a driver captures data and send
+>> them
+>> as fast as possible to an userspace process.
+> Shall I submit my RFC using KFifo on top of this series? Any
+> objections?
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
----
- arch/arm/boot/dts/r8a7742.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ATM the notification is not plugged with any thermal core code path. It
+is separated on purpose in order to let your RFC to get some comments.
 
-diff --git a/arch/arm/boot/dts/r8a7742.dtsi b/arch/arm/boot/dts/r8a7742.dtsi
-index da75767..ea39c20 100644
---- a/arch/arm/boot/dts/r8a7742.dtsi
-+++ b/arch/arm/boot/dts/r8a7742.dtsi
-@@ -201,6 +201,16 @@
- 		#size-cells = <2>;
- 		ranges;
- 
-+		rwdt: watchdog@e6020000 {
-+			compatible = "renesas,r8a7742-wdt",
-+				     "renesas,rcar-gen2-wdt";
-+			reg = <0 0xe6020000 0 0x0c>;
-+			clocks = <&cpg CPG_MOD 402>;
-+			power-domains = <&sysc R8A7742_PD_ALWAYS_ON>;
-+			resets = <&cpg 402>;
-+			status = "disabled";
-+		};
-+
- 		gpio0: gpio@e6050000 {
- 			compatible = "renesas,gpio-r8a7742",
- 				     "renesas,rcar-gen2-gpio";
+If you want to base your RFC on top of it, I'm perfectly fine with that.
+
+I'll review your RFC now, I wanted to do that before but got busy with
+another stuff.
+
+If you want to compare kfifo and netlink, the userspace test programs
+are at:
+
+https://git.linaro.org/people/daniel.lezcano/thermal-genl.git/
+
+IMO, using the kfifo for the sampling and the notifications/the commands
+via netlink would make more sense.
+
+
 -- 
-2.7.4
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
