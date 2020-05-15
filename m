@@ -2,216 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9221D5481
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FC21D5489
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728000AbgEOPYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 11:24:16 -0400
-Received: from mail-mw2nam12on2125.outbound.protection.outlook.com ([40.107.244.125]:36832
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727836AbgEOPYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 11:24:07 -0400
+        id S1726950AbgEOPYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 11:24:38 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:5191 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727918AbgEOPYL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 11:24:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1589556250; x=1621092250;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=3vJ7XfieW4UfMP3x6zCpbmqeUOMzPH6v3zai5Zr+Yyo=;
+  b=2MbE93canImZ88F7vmOpDGu37QE02syueXMdA4mCFV3VegU0UbvBeqEk
+   llHCPp+j51oRJBBdKGQfscNxEJ4SfiFMeICOcWeJkUQcDUDU+arGTjkdi
+   MqpMqHxs7YL+jGM7hy0kQ9Mz9VVeGS+T3ht1LyhhsPv7K1XlPZHiHBtC4
+   8lgENUNIT04gUVjjuj5QnoPvICnUeeiyQgHa3R/OXNaUPz6oZTK/sulyi
+   uMAsPqIqEVSdoG85g5dyM7AhdaMhjxWqKPY0mzIDhU/cCFhk8uGmlZUOW
+   K7HA4PbEtXvOHPgN6pEn4dgofXBC0AMQLxDa5dfwR9NMk1OOra4BlEene
+   Q==;
+IronPort-SDR: 8S/64L1Njfvx2WqZeR9p2h0rwegVsomqlalCTiNjb/RSu78LW9EySXh75Jq37PE3OthKnBMjo1
+ FiyMDUbFsOfikksSN0JIIbVpTsTFNirY8SYDNIEGDiS+drnx0LudPIeZYUAnWtWq80cOoX+RW1
+ JAz8JkYrBRm+RkDjRERRDxqLA7udWreUPmJoJs1941PyEiujDUOfh/7G/uSozmULd/TpDAlJbp
+ ATR059kXKQgLjEuMd3N/a6MblEUEZMm+B/9qpxVRnV9pH17DPJWMzZ7Mzu7zl4a3RTkkHL7ndq
+ 9qg=
+X-IronPort-AV: E=Sophos;i="5.73,395,1583218800"; 
+   d="scan'208";a="76818086"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 May 2020 08:24:09 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 15 May 2020 08:24:09 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Fri, 15 May 2020 08:24:12 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jKWk43z0x/KZF0sywx67657Mk/F8H2nUgKfPToS5d0m6mD3k5QjMX5xh0SDs4kKaTIEzZYCkSCHy8gISxLycUtgNH2bdO0s6+kYrxvjY3eBbKWlZc5MOSVwxiaygZeQHtiT0psOUceCmDENUOaTywAvCf8BO8+UDJH9KR6Akwc1BAhNMTvfDunFePyzMSvjKYYSLC5F8xrA3UOWoBdM4vMY8Jfe0gzOI24JP2dyQID4xvYNZQwrgiTbsK8qMe+JwQoUtwvrWigbuzz+wrDCwAm00IqQVR3VbstEr6VvBK3aQAy+Vf3Xo/3smpjYAdptiaK89lwzLIwoM0U+4kpbzBQ==
+ b=nWXM7092rFm67e539SLKEgDLcJK+mlqpfvLgaz8IRHLbCzORtZq4Pv0I1ggEY3tpPTN1u8vpTWj6Ez3ZTsAuX5EMtElpw1sQSCLgxvDc9cyDBC6ZFV8hd9u7yDDRX+kNqSymw72D1/Rx86bzhhDxN2wDFQ/uOWDzmXmVPIVlgR3IhO1WBk37eixekFve4B6AmSH+s5cjnuXTHw9z/Y1FspAsPrrDyF6YzCxqHTNJOnD+LaodkJ5nmsEx730omzIB3/bZNCU3tvaf8/c1uF64j8VIAWecLaZrPtgOjwZyTaWSqJ+eMGIWO+hiEW3gPYJcTLwmsGgHIUrJO5HU+I94dw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4yYEsRUYimhigxmNAl7hxApckYLbS26D6tFLpPrG/lo=;
- b=l+ouHhsp451FHJBTOLo6AHmJn/Z8ZZ6pB15LJGDN4svF0t4K6WY6Ufv6xfV9bHz+I/Xb/bHKjCrIMOgWFLiXZY6gOtYTm6F/6mlRHaOw3B8cexM955slX/vEgyA6NB3ykzqa9w1WOnb8ZLpREgO1JLJ8O5llyKUvRSjE7LJfMRdNWUjIvjPOZiFSrzQgoG4s42qaGl9qeOCXupjb7EZQTmTnI0l46F3um6rkTjuzPm/26APxIG6CLx0nMllEp97Wmjx9SHHZfRXBdVcsVADTc4vZWzEjgOVxxDxootHkVVCJ5WXUzDtix3SPS/wahF8GG+nvqDEECJb+DCh4qjJdPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 204.77.163.244) smtp.rcpttodomain=zeniv.linux.org.uk
- smtp.mailfrom=garmin.com; dmarc=pass (p=quarantine sp=quarantine pct=100)
- action=none header.from=garmin.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garmin.com;
- s=selector1;
+ bh=3vJ7XfieW4UfMP3x6zCpbmqeUOMzPH6v3zai5Zr+Yyo=;
+ b=PDP1hflQhrtyzq4Y+PmiFehQEX3trTV8IPSn64QPJr0N2HmAOutS+js40NqZpVm2doHFF9h5yK5a7MHbk9jeD4wcMn+N79BzYvevAKOF4+hM4Xg+4GHXH6q31t6o/wXPLCAK8nYIVCcyc9BpRSktW3qv0iQed7R/T9yhckm+UhHBbfiwtWOl3CKRWnmvY87VMYzgOAJU2TxxIpNwZRSCEL+458qNn2ka57Mlm5Js+1+KMm8ybkeH4rwa7s9m5f6mMCiS8A7VRdPsXO4CMJ/U5VxLBRnFxXlXTm4ALW7bf6C/dZYdWlbr/en/O8piBXkaQakH4CJLp1WIdmyHHiaw+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4yYEsRUYimhigxmNAl7hxApckYLbS26D6tFLpPrG/lo=;
- b=I457xqBnoCfDZc1z/TFtT1RPicEoDHm/6daPC0MAomONzYLNPttcgdh1DVSV4dCi5QWkglYuWH2zjeRQLBgIVHo9XVI/Oo1iR1HJ6B2zKcHQJ5e5Pd6/rfHdyuP5a3hA0+IMj6Qf5AHje0lpCg5p6CgNNxm/OGSntK/I/gyiYMbfn24JCi5RKjXtxvj0xJ2W74Mr6OeUW8zjtLGBfNHLBxDfBxVYGxq0ptPhqPKYEOomcc1AOv280AEktZFIDq+CXTYxrVrLstnzPhHDv15fbuzpdM5d8giKRXfxxKDLfSlZf8cdAEfLUpb3Sx5r+Z/nIm/jvgzvk9fYZlYOaQGX+w==
-Received: from DM5PR04CA0059.namprd04.prod.outlook.com (2603:10b6:3:ef::21) by
- BN6PR04MB3714.namprd04.prod.outlook.com (2603:10b6:404:d5::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3000.24; Fri, 15 May 2020 15:24:01 +0000
-Received: from DM6NAM10FT013.eop-nam10.prod.protection.outlook.com
- (2603:10b6:3:ef:cafe::ca) by DM5PR04CA0059.outlook.office365.com
- (2603:10b6:3:ef::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20 via Frontend
- Transport; Fri, 15 May 2020 15:24:01 +0000
-Authentication-Results: spf=pass (sender IP is 204.77.163.244)
- smtp.mailfrom=garmin.com; zeniv.linux.org.uk; dkim=none (message not signed)
- header.d=none;zeniv.linux.org.uk; dmarc=pass action=none
- header.from=garmin.com;
-Received-SPF: Pass (protection.outlook.com: domain of garmin.com designates
- 204.77.163.244 as permitted sender) receiver=protection.outlook.com;
- client-ip=204.77.163.244; helo=edgetransport.garmin.com;
-Received: from edgetransport.garmin.com (204.77.163.244) by
- DM6NAM10FT013.mail.protection.outlook.com (10.13.152.142) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3000.19 via Frontend Transport; Fri, 15 May 2020 15:24:01 +0000
-Received: from OLAWPA-EXMB7.ad.garmin.com (10.5.144.21) by
- olawpa-edge1.garmin.com (10.60.4.227) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1466.3; Fri, 15 May 2020 10:23:59 -0500
-Received: from ola-d01c000-vm.ad.garmin.com (10.5.84.15) by
- OLAWPA-EXMB7.ad.garmin.com (10.5.144.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Fri, 15 May 2020 10:23:59 -0500
-From:   Nate Karstens <nate.karstens@garmin.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Laight <David.Laight@aculab.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-alpha@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
-        <sparclinux@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Changli Gao <xiaosuo@gmail.com>,
-        Nate Karstens <nate.karstens@garmin.com>
-Subject: [PATCH v2 4/4] net: Add SOCK_CLOFORK
-Date:   Fri, 15 May 2020 10:23:21 -0500
-Message-ID: <20200515152321.9280-5-nate.karstens@garmin.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200515152321.9280-1-nate.karstens@garmin.com>
-References: <20200515152321.9280-1-nate.karstens@garmin.com>
+ bh=3vJ7XfieW4UfMP3x6zCpbmqeUOMzPH6v3zai5Zr+Yyo=;
+ b=UODaP4f/UJ/7dRwrsxHj+Wbe/HnxY6jPjyrRmsrIbkj+ywDknhvynrMZ3ozn3WCrSsU8jwgVmXueKzSlm6rA7KSIVjzzR/8BSaLeYZe47BKg3tIQDfOboiOft+rUEiZLlHiM7+xPdZFHV3ufhwItXBmDKGrwsAI3ae4rEV3oHVk=
+Received: from CY4PR11MB1688.namprd11.prod.outlook.com (2603:10b6:903:25::23)
+ by CY4PR11MB1880.namprd11.prod.outlook.com (2603:10b6:903:120::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25; Fri, 15 May
+ 2020 15:24:08 +0000
+Received: from CY4PR11MB1688.namprd11.prod.outlook.com
+ ([fe80::d414:b3d8:74c7:7488]) by CY4PR11MB1688.namprd11.prod.outlook.com
+ ([fe80::d414:b3d8:74c7:7488%9]) with mapi id 15.20.3000.022; Fri, 15 May 2020
+ 15:24:08 +0000
+From:   <Codrin.Ciubotariu@microchip.com>
+To:     <alexandre.belloni@bootlin.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
+        <Nicolas.Ferre@microchip.com>, <Ludovic.Desroches@microchip.com>
+Subject: Re: [PATCH] ARM: dts: at91: Configure I2C SCL gpio as open drain
+Thread-Topic: [PATCH] ARM: dts: at91: Configure I2C SCL gpio as open drain
+Thread-Index: AQHWKsEy8Em+dk2FY0a9pR0JyO0gxqipPSuAgAAHDgA=
+Date:   Fri, 15 May 2020 15:24:08 +0000
+Message-ID: <e99e9473-6dd2-1a27-975e-e49ad5413b02@microchip.com>
+References: <20200515140001.287932-1-codrin.ciubotariu@microchip.com>
+ <20200515145849.GV34497@piout.net>
+In-Reply-To: <20200515145849.GV34497@piout.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+authentication-results: bootlin.com; dkim=none (message not signed)
+ header.d=none;bootlin.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [84.232.220.208]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 31b11705-8939-40be-29a5-08d7f8e402ed
+x-ms-traffictypediagnostic: CY4PR11MB1880:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR11MB188062E3027EDF6149C0574DE7BD0@CY4PR11MB1880.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 04041A2886
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lNjbCu3WVq67mpeZK9yjnFgb+8wCvxo8/D43H3kbdJuefFFuc3NtFtiDpW67enXv64MIAVEob25vEMzxLz5IPvBVdoX/hh1mnO8oKl+S+6KUQGg1gorEC6H8zezEYEIcVZnGnMEZup03UdZlnsR6ajuYPd32r9YqDbHPoGUbYWC6//b2lYVZW1hUXtEgqAaZnklXmvXtZEz0JhsPKOC9uddjC0H5hpqpZIldO4bApdH8/sFxlU9d0LPG0/9Sf3SCH4PQyjviZHglovB4W2o2eTdhrS+HOd1ts78CStcoa9yM3qrPN8fznBceIldz4X8jAhh6yLe/6Dm+GeJvjWy/eqqXwONDp+uEnTfgMEYsIypcOtDDiHvwdSSg2Yn15orG/k8NCegn8wYainpAJgfbIhIpbq2R9NmtxKS4ZrrIuIMjSRlXGVnLRP44GPvs3RiHN1zws1aHJ/eIxSQNDpwpYiwOdySGVnUnahUJpR209ZkS3UAh/4HQsL/iZCrOrwPlVH7ptFwQQkVHMyOiK6gg1RxQoYPsbb8VckIi5pAGjTL9sx4vRwJsKT1SqGSfr8QxLw6Faa+RljZMWXTJYcSdbA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB1688.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(396003)(346002)(366004)(376002)(39860400002)(8676002)(966005)(5660300002)(478600001)(6506007)(8936002)(6916009)(91956017)(66946007)(66476007)(64756008)(186003)(76116006)(54906003)(66556008)(26005)(53546011)(2616005)(66446008)(36756003)(316002)(6512007)(31686004)(107886003)(31696002)(2906002)(86362001)(4326008)(6486002)(71200400001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: PEpaJ+3DhMZlx7VvBg86PRNrIoz3LE5cJr8nCnfkNXVny9DRFODtxkHo6cPAMEyUKY5gqj7t370itYsmqO5acCZRqQ0W6XCHYR8wOsArdDR5+vEWQi4WRZw4sHjKR9Pdg4tWPlCB3xWqvPRE5fBYsVG4CsJ44PgplDhVbta4OPFaWuLWMDk9TTj7yLhuIUJqF7UK4U/0pnwb0TfnRZIbnQCE2P66Jk8HE8aR7Y8M6cO5W5l4qaD84SdY0XxQ3kFYCNjUv0zFGuNW+jT8qrMZh+UwdF93La84Lw1cBP1NO+8iIRBDdyVWJyi7mZo4suWCnN7fzwnVeob0kt76H+5YFat5BZsV5PYb4hNUR9TUH6kuwlK0ILIC7xi55qKK3SIUuB0tg174dbSbF+NTzMtNINhZTo1vBVqeRgnXS7k3dxQVj9UKEA2PCIB0a2i1In5k352r4sxxxvp2wIpnstJeDEHFVmzrJq7XqjebigVtFJWDaU3Zu8cyoMCNgK2cmwO2
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6FA3E4CADE28CC4DBD1294FF2BD1E88B@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: OLAWPA-EXMB3.ad.garmin.com (10.5.144.15) To
- OLAWPA-EXMB7.ad.garmin.com (10.5.144.21)
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1020-25422.000
-X-TM-AS-Result: No-5.988100-8.000000-10
-X-TMASE-MatchedRID: KFRUM/mjxGuSsyjfsjrH/tKhw1CGAxrILoFHmcx3krwAIXlMppp3Xw5a
-        yixA3COc1+Otxunw83huL3ESIrARlyHhSBQfglfsA9lly13c/gHaKQ0GLhRPDxh58BVvx3LmF5J
-        Ui8H1I3XP8poBdrWc73VybJRFpSevgRZdz333xpBJUdgxNDUXWmf6wD367VgtDs0BGU1luwj6p1
-        jlhLAJAsAhMlHsyVwnkA7KM/+6n4wylv9EjaWo1Q97mDMXdNW3fS0Ip2eEHnz3IzXlXlpamPoLR
-        4+zsDTtifGCYEa4Fxczqf0EmDYqY85HeDGrYmKjUdmnIsreROaomPe8FsDc1A==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--5.988100-8.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.5.1020-25422.000
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:204.77.163.244;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:edgetransport.garmin.com;PTR:extedge.garmin.com;CAT:NONE;SFTY:;SFS:(39860400002)(136003)(376002)(396003)(346002)(46966005)(6666004)(47076004)(1076003)(356005)(2906002)(4326008)(82310400002)(54906003)(110136005)(36756003)(7636003)(5660300002)(107886003)(316002)(82740400003)(70206006)(426003)(8676002)(7416002)(336012)(7696005)(8936002)(26005)(186003)(86362001)(44832011)(70586007)(2616005)(478600001)(921003);DIR:OUT;SFP:1102;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4b1dcac2-3342-4c05-6a03-08d7f8e3fec2
-X-MS-TrafficTypeDiagnostic: BN6PR04MB3714:
-X-Microsoft-Antispam-PRVS: <BN6PR04MB37143A63D1E08B5B9D1C4C809CBD0@BN6PR04MB3714.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-Forefront-PRVS: 04041A2886
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: L8EAb2hOELFGUpmq8+gtw26g0bqFwWv6HdRImt5NfSPkxaxbn9e+49dQ88Spz+vequWoudfOinphxbm/wSw4FSPh4j3p9OCmtbTAF7JVxKVecUTSfIwzvsAWcR7IPUHXReftWswk5Mu/xU/2QaLe7Grp5KgLANV3fzuBF9VxKrdzVd5o1rb130542COHjBSHsaVBhhRNukZG2qKh7nuZiFK7EsEv+C6tHfg22h/hHzNm6uLlWEYH6fzaVMVP/pmSau4h2nl2lhlwnX9l7sygvS0bavNtbFk/n46g3cfMCtLVS4Ryoufr9GEuacOfDhbncYK75LrhO6L5gmlnysRHTXPidh2p7GXgL0ANXBPRVkNO6hrSGLHPD18yQj4aX0HUH2uVP2VqRWI3EjTLCA4bS35EasOX2EF8+HNFOkMR3IIcT285W+a/zHEnWeD93FvN1WKkhCDZ/jxIPAwNVUdilbpuXe1jC4ixok6xDRF/zH9KLu8+kAwQLWE7NTU0rM+ly5V9eX/g9XoO9dFjES1Q5Q==
-X-OriginatorOrg: garmin.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 May 2020 15:24:01.0673
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31b11705-8939-40be-29a5-08d7f8e402ed
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 May 2020 15:24:08.0504
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b1dcac2-3342-4c05-6a03-08d7f8e3fec2
-X-MS-Exchange-CrossTenant-Id: 38d0d425-ba52-4c0a-a03e-2a65c8e82e2d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38d0d425-ba52-4c0a-a03e-2a65c8e82e2d;Ip=[204.77.163.244];Helo=[edgetransport.garmin.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR04MB3714
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GSlJG3PKkP9RHrOABsE9giR+kPpP0Pw2bvMMay/ogCIeHMD6LPxVJdYTuL9kp5Uxg+pDJpfC6fBDN7waWO1sYvP4+cBzVPoX7iQMzLsZDiE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1880
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implements a new socket flag that automatically sets the
-close-on-fork flag for sockets created using socket(2),
-socketpair(2), and accept4(2).
-
-Signed-off-by: Nate Karstens <nate.karstens@garmin.com>
----
- include/linux/net.h |  3 ++-
- net/socket.c        | 14 ++++++++------
- 2 files changed, 10 insertions(+), 7 deletions(-)
-
-diff --git a/include/linux/net.h b/include/linux/net.h
-index 6451425e828f..57663c9dc8c4 100644
---- a/include/linux/net.h
-+++ b/include/linux/net.h
-@@ -17,7 +17,7 @@
- #include <linux/stringify.h>
- #include <linux/random.h>
- #include <linux/wait.h>
--#include <linux/fcntl.h>	/* For O_CLOEXEC and O_NONBLOCK */
-+#include <linux/fcntl.h>	/* For O_CLOEXEC, O_CLOFORK, and O_NONBLOCK */
- #include <linux/rcupdate.h>
- #include <linux/once.h>
- #include <linux/fs.h>
-@@ -73,6 +73,7 @@ enum sock_type {
- 
- /* Flags for socket, socketpair, accept4 */
- #define SOCK_CLOEXEC	O_CLOEXEC
-+#define SOCK_CLOFORK	O_CLOFORK
- #ifndef SOCK_NONBLOCK
- #define SOCK_NONBLOCK	O_NONBLOCK
- #endif
-diff --git a/net/socket.c b/net/socket.c
-index 2eecf1517f76..ba6e971c7e78 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -1511,12 +1511,14 @@ int __sys_socket(int family, int type, int protocol)
- 
- 	/* Check the SOCK_* constants for consistency.  */
- 	BUILD_BUG_ON(SOCK_CLOEXEC != O_CLOEXEC);
-+	BUILD_BUG_ON(SOCK_CLOFORK != O_CLOFORK);
- 	BUILD_BUG_ON((SOCK_MAX | SOCK_TYPE_MASK) != SOCK_TYPE_MASK);
- 	BUILD_BUG_ON(SOCK_CLOEXEC & SOCK_TYPE_MASK);
-+	BUILD_BUG_ON(SOCK_CLOFORK & SOCK_TYPE_MASK);
- 	BUILD_BUG_ON(SOCK_NONBLOCK & SOCK_TYPE_MASK);
- 
- 	flags = type & ~SOCK_TYPE_MASK;
--	if (flags & ~(SOCK_CLOEXEC | SOCK_NONBLOCK))
-+	if (flags & ~(SOCK_CLOEXEC | SOCK_CLOFORK | SOCK_NONBLOCK))
- 		return -EINVAL;
- 	type &= SOCK_TYPE_MASK;
- 
-@@ -1527,7 +1529,7 @@ int __sys_socket(int family, int type, int protocol)
- 	if (retval < 0)
- 		return retval;
- 
--	return sock_map_fd(sock, flags & (O_CLOEXEC | O_NONBLOCK));
-+	return sock_map_fd(sock, flags & (O_CLOEXEC | O_CLOFORK | O_NONBLOCK));
- }
- 
- SYSCALL_DEFINE3(socket, int, family, int, type, int, protocol)
-@@ -1547,7 +1549,7 @@ int __sys_socketpair(int family, int type, int protocol, int __user *usockvec)
- 	int flags;
- 
- 	flags = type & ~SOCK_TYPE_MASK;
--	if (flags & ~(SOCK_CLOEXEC | SOCK_NONBLOCK))
-+	if (flags & ~(SOCK_CLOEXEC | SOCK_CLOFORK | SOCK_NONBLOCK))
- 		return -EINVAL;
- 	type &= SOCK_TYPE_MASK;
- 
-@@ -1715,7 +1717,7 @@ int __sys_accept4_file(struct file *file, unsigned file_flags,
- 	int err, len, newfd;
- 	struct sockaddr_storage address;
- 
--	if (flags & ~(SOCK_CLOEXEC | SOCK_NONBLOCK))
-+	if (flags & ~(SOCK_CLOEXEC | SOCK_CLOFORK | SOCK_NONBLOCK))
- 		return -EINVAL;
- 
- 	if (SOCK_NONBLOCK != O_NONBLOCK && (flags & SOCK_NONBLOCK))
-@@ -3628,8 +3630,8 @@ EXPORT_SYMBOL(kernel_listen);
-  *	@newsock: new connected socket
-  *	@flags: flags
-  *
-- *	@flags must be SOCK_CLOEXEC, SOCK_NONBLOCK or 0.
-- *	If it fails, @newsock is guaranteed to be %NULL.
-+ *	@flags must be SOCK_CLOEXEC, SOCK_CLOFORK, SOCK_NONBLOCK,
-+ *	or 0. If it fails, @newsock is guaranteed to be %NULL.
-  *	Returns 0 or an error.
-  */
- 
--- 
-2.26.1
-
+T24gMTUuMDUuMjAyMCAxNzo1OCwgQWxleGFuZHJlIEJlbGxvbmkgd3JvdGU6DQo+IE9uIDE1LzA1
+LzIwMjAgMTc6MDA6MDErMDMwMCwgQ29kcmluIENpdWJvdGFyaXUgd3JvdGU6DQo+PiBUaGUgU0NM
+IGdwaW8gcGluIHVzZWQgYnkgSTJDIGJ1cyBmb3IgcmVjb3ZlcnkgbmVlZHMgdG8gYmUgY29uZmln
+dXJlZCBhcw0KPj4gb3BlbiBkcmFpbi4NCj4+DQo+PiBGaXhlczogNDU1ZmVjOTM4YmJiICgiQVJN
+OiBkdHM6IGF0OTE6IHNhbWE1ZDI6IGFkZCBpMmMgZ3BpbyBwaW5jdHJsIikNCj4+IEZpeGVzOiBh
+NGJkOGRhODkzYTMgKCJBUk06IGR0czogYXQ5MTogc2FtYTVkMzogYWRkIGkyYyBncGlvIHBpbmN0
+cmwiKQ0KPj4gRml4ZXM6IDhmYjgyZjA1MGNmNiAoIkFSTTogZHRzOiBhdDkxOiBzYW1hNWQ0OiBh
+ZGQgaTJjIGdwaW8gcGluY3RybCIpDQo+PiBTaWduZWQtb2ZmLWJ5OiBDb2RyaW4gQ2l1Ym90YXJp
+dSA8Y29kcmluLmNpdWJvdGFyaXVAbWljcm9jaGlwLmNvbT4NCj4+IC0tLQ0KPj4gICBhcmNoL2Fy
+bS9ib290L2R0cy9hdDkxLXNhbWE1ZDJfcHRjX2VrLmR0cyAgIHwgNiArKystLS0NCj4+ICAgYXJj
+aC9hcm0vYm9vdC9kdHMvYXQ5MS1zYW1hNWQyX3hwbGFpbmVkLmR0cyB8IDYgKysrLS0tDQo+PiAg
+IGFyY2gvYXJtL2Jvb3QvZHRzL3NhbWE1ZDMuZHRzaSAgICAgICAgICAgICAgfCA2ICsrKy0tLQ0K
+Pj4gICBhcmNoL2FybS9ib290L2R0cy9zYW1hNWQ0LmR0c2kgICAgICAgICAgICAgIHwgNiArKyst
+LS0NCj4+ICAgNCBmaWxlcyBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCAxMiBkZWxldGlvbnMo
+LSkNCj4+DQo+IA0KPiBBcHBsaWVkLCB0aGFua3MuIFRoZXJlIHdhcyBhIHNtYWxsIGNvbmZsaWN0
+IGluIHRoZSBzYW1hNWQyIGJvYXJkIGR0cywNCj4gcGxlYXNlIGNoZWNrLg0KDQpJdCBpcyBvaywg
+d2l0aCB0aGUgZXhjZXB0aW9uIHRoYXQgaXQgc2hvdWxkIGFsc28gYmUgYWRkZWQgZm9yIHRoZSAN
+CnNjbC1ncGlvcyBwcm9wZXJ0eSBmcm9tIHRoZSBpMmMyIG5vZGUuIEkgYW0gbWFraW5nIGEgcGF0
+Y2guDQoNCj4gDQo+IC0tDQo+IEFsZXhhbmRyZSBCZWxsb25pLCBCb290bGluDQo+IEVtYmVkZGVk
+IExpbnV4IGFuZCBLZXJuZWwgZW5naW5lZXJpbmcNCj4gaHR0cHM6Ly9ib290bGluLmNvbQ0KPiAN
+Cg0K
