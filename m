@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293541D5AD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 22:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B6D1D5AD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 22:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbgEOUnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 16:43:43 -0400
-Received: from mga06.intel.com ([134.134.136.31]:54172 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgEOUnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 16:43:43 -0400
-IronPort-SDR: mNCkszfwk4KQHK2Lz6zEGNhkiVKp+GSUZjs+ja2ronjKAYmgvG47Xs+T8HdUjtLVDRCoDSwdqm
- xhbELYhOGfNg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 13:43:42 -0700
-IronPort-SDR: C/gpw8Hg3aXmhOkQDX7IUHG1v0S+g5qIRBnJsr7Y+/NmNAq9VKvrzCW5T1qa5mt+WqpIHY8BJc
- Q0RPRwBIrFSw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,396,1583222400"; 
-   d="scan'208";a="372798275"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by fmsmga001.fm.intel.com with ESMTP; 15 May 2020 13:43:41 -0700
-Date:   Fri, 15 May 2020 13:43:41 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vivek Goyal <vgoyal@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/8] KVM: x86: extend struct kvm_vcpu_pv_apf_data with
- token info
-Message-ID: <20200515204341.GF17572@linux.intel.com>
-References: <20200511164752.2158645-1-vkuznets@redhat.com>
- <20200511164752.2158645-3-vkuznets@redhat.com>
- <20200512152709.GB138129@redhat.com>
- <87o8qtmaat.fsf@vitty.brq.redhat.com>
- <20200512155339.GD138129@redhat.com>
- <20200512175017.GC12100@linux.intel.com>
- <20200513125241.GA173965@redhat.com>
- <0733213c-9514-4b04-6356-cf1087edd9cf@redhat.com>
- <20200515184646.GD17572@linux.intel.com>
- <d84b6436-9630-1474-52e5-ffcc4d2bd70a@redhat.com>
+        id S1726700AbgEOUoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 16:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726183AbgEOUog (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 16:44:36 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B20C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 13:44:36 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id k6so4201654iob.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 13:44:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=juliacomputing-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZTVysy0/5xwOZqQ9WQNRID/d39HXhyeJhmjEaIIRaN0=;
+        b=EL/0ZmnD4zV1ZPVNKBHoMD1mSHsptMNDFEbmH7JnUu6LaQ4VfgO5knsXEh6MYEQeTP
+         x6WwPmOekh+ZPaXQD8Z+xo3BOmxB1tO9oq7+xNZt4nHq9JzRRo/kB/noGdLRWBT72wr+
+         P1ivq1K9uQcrV08TEjn7FnTOvnTXXcCdBMwtjmWlzmm3YoB2Sh/3c0hh1k1Gm23ytsuc
+         SJIJKF34mbRnjxY5+8yXsBpuiVzmud5klBVFPi4jXlfSxuBwHl/v8Q4opiW2U+9CU6y0
+         nsxRbWhfSRRSqmGxHBA5+ptLqA/e7cg2K57L3Mzg58XskmMH/ra72iuZKIV1KdVbcQ6x
+         sfxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZTVysy0/5xwOZqQ9WQNRID/d39HXhyeJhmjEaIIRaN0=;
+        b=jqAdcx5m1HQ07XjU8p2S1eBuIGg2hZBQR+/QcFVWl/zXjdVbvZsg4PZAhdliv54HJe
+         oQCS5UzY3OjqDWSXxaG6UkXCzNsYfj4iQSZjjrb3ATw2vOM7H2L0I3fJMomWZhhqEeoe
+         E5y4Mwc4sxur/ldwCc9zehUVSy4rl2QYVbHJdb3lPUUmMyq+ALedmzj5d6dkAj9j+kVa
+         kvac54TNtD8YvgTSkRryqwNKZSbRfLJdZRrMPDWEYO93dxpptZbE5znsS55ctBI+btmk
+         WyHTbGFFhDz1oCxfkjZeG4C2co+QVrIKM5EppoGjtwzO5mD1KbMYuDcD/1DdTigR+iBT
+         6ZAw==
+X-Gm-Message-State: AOAM532+A8UceRaEpxbIAU4XaQCVjZo1kk+B3CvNSlpktGON5PQK1OD6
+        mPjp4OB9lBVr3Y+5X7SqyDiWuc1RkcNQsG9E+wKgJCXz
+X-Google-Smtp-Source: ABdhPJxkMGRph1yex/EqbfiAYz3QnSvMLGz7CWyEAilbUvr8xbLyxEr5zonPDuT1C9W5C/VYQ3poNHkI9BP8hLpTbKc=
+X-Received: by 2002:a02:7611:: with SMTP id z17mr4929634jab.143.1589575474548;
+ Fri, 15 May 2020 13:44:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d84b6436-9630-1474-52e5-ffcc4d2bd70a@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <CABV8kRyHrDMK4o=UZZZWJMuQNjPA8Xuoj-JFF-Lsx26fBTR0WA@mail.gmail.com>
+ <20200515121346.GA22919@willie-the-truck>
+In-Reply-To: <20200515121346.GA22919@willie-the-truck>
+From:   Keno Fischer <keno@juliacomputing.com>
+Date:   Fri, 15 May 2020 16:43:58 -0400
+Message-ID: <CABV8kRxD3_zh_WJy0jWVpxxNG_NSwoTJXdLd8Ym9Bm7PbHhftQ@mail.gmail.com>
+Subject: Re: PTRACE_SYSEMU behavior difference on arm64
+To:     Will Deacon <will@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 09:18:07PM +0200, Paolo Bonzini wrote:
-> On 15/05/20 20:46, Sean Christopherson wrote:
-> > Why even bother using 'struct kvm_vcpu_pv_apf_data' for the #PF case?  VMX
-> > only requires error_code[31:16]==0 and SVM doesn't vet it at all, i.e. we
-> > can (ab)use the error code to indicate an async #PF by setting it to an
-> > impossible value, e.g. 0xaaaa (a is for async!).  That partciular error code
-> > is even enforced by the SDM, which states:
-> 
-> Possibly, but it's water under the bridge now.
+On Fri, May 15, 2020 at 8:13 AM Will Deacon <will@kernel.org> wrote:
+> But it also
+> means that nobody is using this on arm64, so we could also consider removing
+> it entirely. Did you spot this because you are trying to use it for
+> something or just by inspection/unit-testing?
 
-Why is that?  I thought we were redoing the entire thing because the current
-ABI is unfixably broken?  In other words, since the guest needs to change,
-why are we keeping any of the current async #PF pieces?  E.g. why keep using
-#PF instead of usurping something like #NP?
+No, I was trying to port a tool from x86 and nothing made sense for
+many hours :). (it was quite a bit of debugging, because the
+syscall that it was supposed to skip installed a seccomp filter,
+which then later veto'd random syscalls making the
+symptoms quite confusing). Having PTRACE_SYSEMU isn't
+critical, but we might as well support it.
+It makes things a bit more efficient and is probably safer
+(if it works correctly ;). The patch is fairly small. Will validate
+and then send it here for review.
 
-> And the #PF mechanism also has the problem with NMIs that happen before the
-> error code is read and page faults happening in the handler.
 
-Hrm, I think there's no unfixable problem except for a pathological
-#PF->NMI->#DB->#PF scenario.  But it is a problem :-(
-
-FWIW, the error code isn't a problem, CR2 is the killer.  The issue Andy
-originally pointed out is
-
-  #PF: async page fault (KVM_PV_REASON_PAGE_NOT_PRESENT)
-     NMI: before CR2 or KVM_PF_REASON_PAGE_NOT_PRESENT
-       #PF: normal page fault (NMI handler accesses user memory, e.g. perf)
-
-With current async #PF, the problem is that CR2 and apf_reason are out of
-sync, not that CR2 or the error code are lost.  E.g. the above could also
-happen with a regular #PF on both ends, and obviously that works just fine.
-
-In other words, the error code doesn't suffer the same problem because it's
-pushed on the stack, not shoved into a static memory location.
-
-CR2 is the real problem, even though it's saved by the NMI handler.  The
-simple case where the NMI handler hits an async #PF before it can save CR2
-is avoidable by KVM not injecting #PF if NMIs are blocked.  The pathological
-case would be if there's a #DB at the beginning of the NMI handler; the IRET
-from the #DB would unblock NMIs and then open up the guest to hitting an
-async #PF on the NMI handler before CR2 is saved by the guest. :-(
+Keno
