@@ -2,175 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C481D490D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 897201D4915
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbgEOJGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 05:06:50 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:37555 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726922AbgEOJGt (ORCPT
+        id S1727989AbgEOJIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 05:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726922AbgEOJIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 05:06:49 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200515090648euoutp02ca23d34b2e28f8de83766f769dbe24fe~PKGURWJye0696006960euoutp02R;
-        Fri, 15 May 2020 09:06:48 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200515090648euoutp02ca23d34b2e28f8de83766f769dbe24fe~PKGURWJye0696006960euoutp02R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1589533608;
-        bh=Rgf0DcSHGDxAPO+e54+qqjmUM1+sR1ls1YqjuvhAlng=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ABtk6hl+oLDnWJ965GufGG8Mo7IDRjRyRS2jQNP3QwKJbZL0VI7ADppDL6usWRadw
-         6rzSLhSZ9UiIjPd3pQSVKFUqrg24s4HC0+MWVtQX6Fu5dnHBcPuEvC6MpJa479hgY5
-         rgLyH1XeDemqZJMq72Vy90nutrPpsddti1LFDvEU=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200515090647eucas1p127b1f85b98f1044df800d7f5878973e6~PKGUAd8Wu1172411724eucas1p1F;
-        Fri, 15 May 2020 09:06:47 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 03.64.60679.7AB5EBE5; Fri, 15
-        May 2020 10:06:47 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200515090647eucas1p21018edfd835730c9a68dcb186349ee74~PKGTqgs6w1476614766eucas1p2W;
-        Fri, 15 May 2020 09:06:47 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200515090647eusmtrp12fd4a9a4f13f1c13c2a06a2843cdfbf6~PKGTpjEep0296002960eusmtrp1q;
-        Fri, 15 May 2020 09:06:47 +0000 (GMT)
-X-AuditID: cbfec7f4-0cbff7000001ed07-24-5ebe5ba7e364
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 52.FD.07950.7AB5EBE5; Fri, 15
-        May 2020 10:06:47 +0100 (BST)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200515090647eusmtip2e03fda35d17045664eaf97456b7f3c36~PKGTdAkmO3032830328eusmtip2o;
-        Fri, 15 May 2020 09:06:47 +0000 (GMT)
-From:   Lukasz Stelmach <l.stelmach@samsung.com>
-To:     Stephan Mueller <smueller@chronox.de>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Markus Elfring <elfring@users.sourceforge.net>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Stefan Wahren <wahrenst@gmx.net>, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH 1/2] hwrng: iproc-rng200 - Set the quality value
-Date:   Fri, 15 May 2020 11:06:46 +0200
-In-Reply-To: <2080864.23lDWg4Bvs@tauon.chronox.de> (Stephan Mueller's
-        message of "Fri, 15 May 2020 10:32:22 +0200")
-Message-ID: <dleftjblmp8t3t.fsf%l.stelmach@samsung.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 15 May 2020 05:08:32 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B734C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 02:08:31 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j5so2658229wrq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 02:08:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dtYTgXYxfIoUCk4loRWbuFk7VuNlmN02rgGRoj7S0Ao=;
+        b=PJ9EvlicG79uzhFJwbIU3UATGIRW97yWLRhLUOn6ud/9ECe8YeepuMRUm8KNJjBo8V
+         NMlf49pTjcPoPtNR8ULE9IjISzwdMYrENJ3mmF2Zg+l/gVhL+4UbwkhRL6efIk1bNgdp
+         CNelvYyJmG62PVcbZsIwqaerZBmgQkW+n1gHOMTDYot6JN8PeGvRMhh57HR0kA0Thpjw
+         1kNt736a28aieaDLp8LrNzLdszmw4EhFa3lNmLZiNSPL7B0xG12d5t09FtJtnbRAlhwA
+         gewV1hsFRMVJRUamG2DhjwvL3cAAbESswSZKhNEgBbYESIlgs8NOYPUddv8oyNaA/AyD
+         mQaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dtYTgXYxfIoUCk4loRWbuFk7VuNlmN02rgGRoj7S0Ao=;
+        b=V8aXXTCQpKVf22RGuGWRXw4MnhCJbtDysAmqDGQCRi/ho3Gy6UEEskuFFpRg1mQnRv
+         /7NGzIqsZhrivFVwB2JL1/EgZKSP+SK2TWExd5iDe3L62Pq9rYkfpcZR2JMmRKtPqFYq
+         kWL1jRJBtAjPvx1G1qqTM5w4IrVfIAGJDe+MrSeBPwSg+zzlRE/ENtSWnD43U2eS7FVF
+         4JdgDf2OV03yBAiGxAoRCdnqa0Ko+nc0i+FQb/nZ77eelJSYArOfIjO9/d1KhG+UWuSM
+         /5WWIpk/nW8ppU7QPNtKW8FqcLxlWiuoy9GH9rK0HFaCPgK0BrlJWrPBusfZRtoQAYaq
+         X3/A==
+X-Gm-Message-State: AOAM532pztG1xVmcTPK6C6jh9G0vqDk2jy8oFB/IthJ8aEYfAvyvTsYA
+        +yVV5JUBJpn+gL/UXGX5kc75sg==
+X-Google-Smtp-Source: ABdhPJzlPFRglVuF6PYzK/e/6mVvcXfBSVM6Eb646F46YSaOH4YpjKFqonvd0bkXEgMGJHzdh6HVSg==
+X-Received: by 2002:a05:6000:1107:: with SMTP id z7mr3029463wrw.93.1589533710197;
+        Fri, 15 May 2020 02:08:30 -0700 (PDT)
+Received: from localhost.localdomain ([37.120.32.219])
+        by smtp.gmail.com with ESMTPSA id z132sm2834240wmc.29.2020.05.15.02.08.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 May 2020 02:08:29 -0700 (PDT)
+From:   Robert Foss <robert.foss@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Nicolas Dechesne <nicolas.dechesne@linaro.org>,
+        Robert Foss <robert.foss@linaro.org>
+Subject: [PATCH v2] arm64: dts: qcom: apq8016-sbc-d3: Add Qualcomm APQ8016 SBC + D3Camera mezzanine
+Date:   Fri, 15 May 2020 11:08:20 +0200
+Message-Id: <20200515090820.1744353-1-robert.foss@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
-        protocol="application/pgp-signature"
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SWUwTURT1daYz08biUDRekahp8EONFXF7rtG4vWhcvowRRauMSKDFtIJL
-        ohCMIggFS1BbMVRRKCi0FKyIIgYX1AaLuMREFBQaFRTEJZGKxJbBxL9zz73n3CWXo5SlTCgX
-        p9sn6HWaBBUjp10P+j3TS6JuR0cU5EzFf0wPWFx51i7F5dn3aezJKKGwr+cei48W2Rl8sisM
-        53R0U9jjcbDY2fFSitve9kvws9oCBp/13JZga16nFFtdRoS95ioG91zpRDjfXU7jxocZ1NIQ
-        8ttnQsTS1sSQb8+fS8gNyxuWFDnrGeK6M5k4yzIYUn/+KkuqLqUQY3UZIsZPDkTs1S9okvY4
-        XUq+OydsDNoiXxQjJMQlC/oZS3bI95w/o9x7OfhAfft1aSqqC8pEMg742dDia6MykZxT8jYE
-        xXVeiRj8QPC52c6IwXcE7/KL0D9JzoCNFRMlCCq6OoaDDwgeOl76JRzH8GooL98cEIzmp8CL
-        9MIhJ4p/IoWBcy1UIBHCr4CWk6ckAUzzk6G1tIwNYBmfBN6vliFewc+DL/aaITyGnw/VH9tY
-        kQ+GR+ZOOoApXgtmz2cUaAB8OweNtipKHHUFFN7zMiIOga7GalbEYeDOy6IDgwKfAnmmuaI2
-        C4Gr4Bct1iyE1ie+Ye0yaLA1sWJ9ELz6Eiz2DQKT6wwl0go4cVwpVodDRc6tYZdQyO6yDR+O
-        QGdeHy3e6hiC5kwvk4smWf5bx/LfOha/LeW/nb12hkhPg+IL3ZSIF0NFRS9tRdIyNFZIMmhj
-        BUOkTtivNmi0hiRdrHpXotaJ/E/rHmz8UYNqB3Y2IJ5DqpGKiPy6aKVUk2w4qG1A4X6n944r
-        zSiU1iXqBNVoxXr7zWilIkZz8JCgT9yuT0oQDA1oPEerxipmXfy0TcnHavYJ8YKwV9D/y0o4
-        WWgqMhb1eguWrg0ejOn3WcPw6q3GdT9XOlxzrp2eIid9LnPCuws3TcUpsjHtb9nswaaJPWml
-        y3fvJgPukrVRkYt6fo/LslhHxKl772bGc0+X5KpSZ8Ufnv1hQtrK1km9yepVVsnhTRfvHF9j
-        zh0V2e1+rdhwo0+/vHJBdsR42SBKn3YkSkUb9mhmTqX0Bs1fgbXITbwDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTYRTHffZedsHZ25z0sKJi1IcuTjdbexYqUiNe+hBBgyJrNutFy11s
-        7yZZRKIfdJPsKuVwubBlOufWsnnDNCm7SE0r/VJpFyXLWlRElBptjqBvP87/dw7nwOFhIjch
-        4R0yWRmLSW+QkgJ86M/98dSm3Nu69MCICM2fG+SiG5f8BPKduoejsL0JQ78jd7mootFPouqP
-        y9DpdzMYCocDXBR8N0agifFfHPSsu55El8K3Och9fpJA7lANQFN1N0kU8U4CVDvkw9H9B3Ys
-        J5me/X0O0M6JxyT97flzDt3lfMWlG4N9JB3qX00HW+wk3edq5dI3r56ka9pbAF3zIQBof/so
-        Tpc/qiTo78HlO5L2yDItZpuVWVloZq1Z0lw5UsjkaiRTbFDL5BmqfZsUSmladuZBxnCohLGk
-        Ze+XFbouioo9i4/2ve4gykBvkgPweZDaAE/PXec6gIAnojwAehu+4g7AiwYS2OwqiDvJcG7M
-        QcadKQAdb8NkzCEpGfT5dsccMbUGjlY2LDgY1U3AF9VjRCxIpjTwafVZToxFlBw2dYWxGOPU
-        aviyuYUbYz5lg8MVATzGQkoFP/s7F/wUSg3bpye48fpi+LBucsHBqCL4w/seOwMo53+R87/I
-        GV0Pi+7k706Ll9fBa1dmsDhnwba2L7gbEC1AzNhYY4GRVchYvZG1mQpkB8zGIIh+RGjwV3sn
-        cER2DgCKB6SJwvTaXp2I0JewpcYBsCo65m3AOwwkuMlsYqRi4XZ/j04kPKgvPcZYzHkWm4Fh
-        B4AyeudZTJJywBz9NZM1T66Uq5BarspQZWxE0iXCKurOXhFVoLcyRQxTzFj+9XF4fEkZOOzR
-        vLIKanb1q34oTpTBia0PZrcotCMVwkFMyaRfSJj+dpXXU+8qn8l0jT4K28uOf29zJQa068fn
-        Q/n6wyunV5Rs25yneXOrQ5jaysEGxdOS/KJQFb8o52fVR0/p1FJtgmpIY+nVCUZHkNaQ8/JZ
-        XfmiI08uf+oHX9NaI8OtUpwt1MvXYhZW/xeIRrh8MwMAAA==
-X-CMS-MailID: 20200515090647eucas1p21018edfd835730c9a68dcb186349ee74
-X-Msg-Generator: CA
-X-RootMTR: 20200515090647eucas1p21018edfd835730c9a68dcb186349ee74
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200515090647eucas1p21018edfd835730c9a68dcb186349ee74
-References: <2080864.23lDWg4Bvs@tauon.chronox.de>
-        <CGME20200515090647eucas1p21018edfd835730c9a68dcb186349ee74@eucas1p2.samsung.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Add device treee support for the Qualcomm APQ8016 SBC, otherwise known as
+the Dragonboard 410c with the D3Camera mezzanine expansion board.
 
-It was <2020-05-15 pi=C4=85 10:32>, when Stephan Mueller wrote:
-> Am Freitag, 15. Mai 2020, 00:18:41 CEST schrieb Lukasz Stelmach:
->
->> I am running tests using SP800-90B tools and the first issue I can see
->> is the warning that samples contain less than 1e6 bytes of data. I know
->> little about maths behind random number generators, but I have noticed
->> that the bigger chunk of data from an RNG I feed into either ent or ea_i=
-id
->> the higher entropy they report. That is why I divided the data into 1024
->> bit chunks in the first place. To get worse results. With ea_iid they
->> get even worse (128 bytes of random data)
->
-> I read that you seem to just take the output data from the RNG. If this i=
-s=20
-> correct, I think we can stop right here. The output of an RNG is usually =
-after=20
-> post-processing commonly provided by a cryptographic function.
->
-> Thus, when processing the output of the RNG all what we measure here is t=
-he=20
-> quality of the cryptographic post-processing and not the entropy that may=
- be=20
-> present in the data.
->
-> What we need is to access the noise source and analyze this with the give=
-n=20
-> tool set. And yes, the analysis may require adjusting the data to a forma=
-t=20
-> that can be consumed and analyzed by the statistical tests.
+The D3Camera mezzanine ships in a kit with a OmniVision 5640 sensor module,
+which is what this DT targets.
 
-I took data from /dev/hwrng which is directly connected to the
-hardware. See rng_dev_read() in drivers/char/hw_random/core.c.
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+---
 
-=2D-=20
-=C5=81ukasz Stelmach
-Samsung R&D Institute Poland
-Samsung Electronics
+Changes since v1:
+ - Vinod: Changed license to GPL+BSD
+ - Vinod: Changed copyright year to 2020
+ - Nico: Changed name of mezzanine to d3camera
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+ arch/arm64/boot/dts/qcom/Makefile             |  1 +
+ .../boot/dts/qcom/apq8016-sbc-d3camera.dts    | 45 +++++++++++++++++++
+ 2 files changed, 46 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/apq8016-sbc-d3camera.dts
 
------BEGIN PGP SIGNATURE-----
+diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+index cc103f7020fd..3f95b522694e 100644
+--- a/arch/arm64/boot/dts/qcom/Makefile
++++ b/arch/arm64/boot/dts/qcom/Makefile
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc.dtb
++dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc-d3camera.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
+ dtb-$(CONFIG_ARCH_QCOM) += apq8096-ifc6640.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= ipq6018-cp01-c1.dtb
+diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc-d3camera.dts b/arch/arm64/boot/dts/qcom/apq8016-sbc-d3camera.dts
+new file mode 100644
+index 000000000000..752e5ec47499
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/apq8016-sbc-d3camera.dts
+@@ -0,0 +1,45 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
++/*
++ * Copyright (c) 2020, The Linux Foundation. All rights reserved.
++ */
++
++/dts-v1/;
++
++#include "apq8016-sbc.dtsi"
++
++/ {
++	model = "Qualcomm Technologies, Inc. APQ 8016 SBC w/ D3Camera Mezzanine";
++	compatible = "qcom,apq8016-sbc", "qcom,apq8016", "qcom,sbc";
++};
++
++&cci_i2c0 {
++	/delete-node/ camera_rear@3b;
++
++	camera_rear@76 {
++		compatible = "ovti,ov5640";
++		reg = <0x76>;
++
++		enable-gpios = <&msmgpio 34 GPIO_ACTIVE_HIGH>;
++		reset-gpios = <&msmgpio 35 GPIO_ACTIVE_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&camera_rear_default>;
++
++		clocks = <&gcc GCC_CAMSS_MCLK0_CLK>;
++		clock-names = "xclk";
++		clock-frequency = <23880000>;
++
++		vdddo-supply = <&camera_vdddo_1v8>;
++		vdda-supply = <&camera_vdda_2v8>;
++		vddd-supply = <&camera_vddd_1v5>;
++
++		status = "ok";
++
++		port {
++			ov5640_ep: endpoint {
++				clock-lanes = <1>;
++				data-lanes = <0 2>;
++				remote-endpoint = <&csiphy0_ep>;
++			};
++		};
++	};
++};
+-- 
+2.25.1
 
-iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl6+W6YACgkQsK4enJil
-gBDM+wgAqKajSG8VdU0jbHzag/4aYJErE1pxTpDqEjsEkF7cMeaMwpOjLskALmDu
-ukYcpFmBPQCN4s0wHx4TTmh+TWPosnYwEgKwlQx8pZ5Y2k/rQ1F6+j5wnjOgISto
-+pVuNtuec1S4mXQaN69EfpNFWKrOPvfLLKx1XWHceJ+Qiwy9Hbf+DX0wUW20c3pN
-A0RSMIHFOuNHsfqeCRLJxm93GNuNnZl+lyI6fPtbGDDubn2wJQ9R5xJUrHAV95sA
-VIFyBVxrq8o9vSBnRic2WA6PHqa5NQQQyOiw8sOcJAhtpQmbEj7m8NwnQAkW27EP
-4IWU/gPKFHmM5jYTvdjkqat66a9ddA==
-=JDyg
------END PGP SIGNATURE-----
---=-=-=--
