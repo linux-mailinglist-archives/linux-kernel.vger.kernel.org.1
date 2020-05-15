@@ -2,72 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2275C1D4F31
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481FA1D4F3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726247AbgEONX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 09:23:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726213AbgEONX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 09:23:56 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C8D12065F;
-        Fri, 15 May 2020 13:23:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589549036;
-        bh=/0i5GAiE3iEWTH++PER3m05MtECmVly6M7AdsDkEHyA=;
-        h=Date:From:To:Subject:From;
-        b=eUxA01FL7MpcaT18FllxBXLQi5y9mqy236JTywcAJTO8U50scr1ovwBvhXnf5rcCd
-         NmB3ZYqF9blLrTuUnzPPACskQWp11Dk+8WHs4VphSMi/paxMa0PyXFdS6S425XRUnm
-         evmmrflY204CAYpsmKTxynPd9YZaGxIGAYTLKk2U=
-Received: by pali.im (Postfix)
-        id BF6F15F0; Fri, 15 May 2020 15:23:53 +0200 (CEST)
-Date:   Fri, 15 May 2020 15:23:53 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: mwifiex: Firmware name for W8997 sdio wifi chip
-Message-ID: <20200515132353.vfor7v4buzoddfmb@pali>
+        id S1726292AbgEON1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 09:27:00 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:43696 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726170AbgEON05 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 09:26:57 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: evelikov)
+        with ESMTPSA id B1F332A2B8B
+Date:   Fri, 15 May 2020 14:24:16 +0100
+From:   Emil Velikov <emil.velikov@collabora.com>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCHv1 1/2] power: supply: gpio-charger: add
+ charge-current-limit feature
+Message-ID: <20200515132416.GA2836808@arch-x1c3>
+References: <20200513115601.360642-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20200513115601.360642-1-sebastian.reichel@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Hi Sebastian,
 
-There is inconsistency in firmware naming for W8997 SDIO wifi chip.
+I've left a few trivial suggestions, although I suspect only one of them
+really matters. Namely - I think as-is the code changes the legacy behaviour
+when OF is missing.
 
-Firmware for this chip is stored in linux-firmware [1] repository under
-filename sdsd8997_combo_v4.bin.
+Mind you, this is my third time skimming through power/supply, so take it with
+a grain of salt.
 
-But mainline linux kernel driver mwifiex_sdio.ko [2] expects and loads
-firmware for this chip from filename sd8997_uapsta.bin.
+On 2020/05/13, Sebastian Reichel wrote:
+> Add new charge-current-limit feature to gpio-charger. This also
+> makes the online status GPIO optional, since hardware might only
+> expose the charge-current-limit feature and there is no good reason
+> to have it mandatory now that different GPIOs are supported.
+> 
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+>  .../bindings/power/supply/gpio-charger.txt    |  11 +-
+>  drivers/power/supply/gpio-charger.c           | 176 ++++++++++++++++--
+>  2 files changed, 174 insertions(+), 13 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/power/supply/gpio-charger.txt b/Documentation/devicetree/bindings/power/supply/gpio-charger.txt
+> index 0fb33b2c62a6..dbfd29029f69 100644
+> --- a/Documentation/devicetree/bindings/power/supply/gpio-charger.txt
+> +++ b/Documentation/devicetree/bindings/power/supply/gpio-charger.txt
+> @@ -2,8 +2,6 @@ gpio-charger
+>  
+>  Required properties :
+>   - compatible : "gpio-charger"
+> - - gpios : GPIO indicating the charger presence.
+> -   See GPIO binding in bindings/gpio/gpio.txt .
+>   - charger-type : power supply type, one of
+>       unknown
+>       battery
+> @@ -15,7 +13,13 @@ Required properties :
+>       usb-aca (USB accessory charger adapter)
+>  
+>  Optional properties:
+> + - gpios : GPIO indicating the charger presence.
+> +   See GPIO binding in bindings/gpio/gpio.txt .
+>   - charge-status-gpios: GPIO indicating whether a battery is charging.
+> + - charge-current-limit-gpios: Output GPIOs specifiers for limiting the charge current
+> + - charge-current-limit-mapping: List of touples with current in uA and a GPIO bitmap (in this order).
+> +                                The GPIOs are encoded in the same order as specified in charge-current-limit-gpios.
+> +				The touples must be provided in descending order of the current limit.
 
-So result is that W8997 SDIO wifi chip does not work out of box and
-people are complaining where to get "sd8997_uapsta.bin" firmware file as
-it does not exist [3]. People suggest to rename it.
+Minor tweaks:
 
-Do you have any opinion how to solve this problem?
+	List of tuples with current in uA and a GPIO bitmap.
+	Tuples must be sorted in descending order of the current limit.
+	GPIOs are encoded in the order as specified in charge-current-limit-gpios.
 
-As Marvell is using sdsd8997_combo_v4.bin name for this firmware I would
-suggest to extend mwifiex_sdio.ko Linux driver to load this firmware
-also from the file sdsd8997_combo_v4.bin.
 
-Also firmware file sdsd8997_combo_v4.bin in linux-firmware git
-repository [1] is in version 16.68.1.p179. But there is already newer
-version available (e.g. 16.68.1.p197) . Are you able to update firmware
-for W8997 SDIO chip in linux-firmware repository to the lasted version?
+> +static int init_charge_current_limit(struct device *dev,
+> +				    struct gpio_charger *gpio_charger)
+> +{
+> +	int i, len;
+> +	u32 cur_limit = U32_MAX;
+> +
+> +	gpio_charger->current_limit_gpios = devm_gpiod_get_array_optional(dev,
+> +		"charge-current-limit", GPIOD_OUT_LOW);
+> +	if (IS_ERR(gpio_charger->current_limit_gpios)) {
+> +		dev_err(dev, "error getting current-limit GPIOs\n");
+> +		return PTR_ERR(gpio_charger->current_limit_gpios);
+> +	}
+> +
+> +	if (!gpio_charger->current_limit_gpios)
+> +		return 0;
+> +
+> +	len = device_property_read_u32_array(dev, "charge-current-limit-mapping",
+> +		NULL, 0);
+> +	if (len < 0)
 
-[1] - https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/mrvl
-[2] - https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/wireless/marvell/mwifiex/sdio.h?h=v5.6#n41
-[3] - https://raspberrypi.stackexchange.com/q/93478
+The properly is optional, although I'm not sure if having an 'empty' properly
+(len == 0) should be considered an error as indicated by -ENOMEM below or not.
+
+Worth documenting that, unless it's covered already.
+
+> +		return len;
+> +
+> +	if (len % 2) {
+> +		dev_err(dev, "invalid charge-current-limit-mapping length\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	gpio_charger->current_limit_map = devm_kmalloc_array(dev,
+> +		len / 2, sizeof(*gpio_charger->current_limit_map), GFP_KERNEL);
+> +	if (!gpio_charger->current_limit_map)
+> +		return -ENOMEM;
+> +
+> +	gpio_charger->current_limit_map_size = len / 2;
+> +
+> +	len = device_property_read_u32_array(dev, "charge-current-limit-mapping",
+> +		(u32*) gpio_charger->current_limit_map, len);
+> +	if (len < 0)
+> +		return len;
+> +
+> +	for (i=0; i < gpio_charger->current_limit_map_size; i++) {
+> +		if (gpio_charger->current_limit_map[i].limit_ua > cur_limit) {
+> +			dev_err(dev, "invalid charge-current-limit-mapping\n");
+Would make sense to use something more descriptive than "invalid". Say "not
+sorted by current descending order"?
+
+
+> @@ -137,18 +270,19 @@ static int gpio_charger_probe(struct platform_device *pdev)
+
+>  	/*
+>  	 * If this fails and we're not using device tree, try the
+>  	 * legacy platform data method.
+>  	 */
+> -	if (IS_ERR(gpio_charger->gpiod) && !dev->of_node) {
+> +	if (!gpio_charger->gpiod && !dev->of_node) {
+The original code will attempt the legacy code for ... (from the doc)
+
+ * ..., -ENOENT if no GPIO has been assigned to the requested function, or
+ * another IS_ERR() code if an error occurred while trying to acquire the GPIO.
+
+While the new code will only consider -ENOENT.
+
+Using IS_ERR_OR_NULL(gpio_charger->gpiod) should preserve the original
+behaviour.
+
+
+>  		/* Non-DT: use legacy GPIO numbers */
+>  		if (!gpio_is_valid(pdata->gpio)) {
+>  			dev_err(dev, "Invalid gpio pin in pdata\n");
+> @@ -173,18 +307,38 @@ static int gpio_charger_probe(struct platform_device *pdev)
+>  		return PTR_ERR(gpio_charger->gpiod);
+>  	}
+>  
+> +	if (gpio_charger->gpiod &&
+> +	    num_props < ARRAY_SIZE(gpio_charger_properties)) {
+> +		gpio_charger_properties[num_props] = POWER_SUPPLY_PROP_ONLINE;
+The ARRAY_SIZE() check here (and below) are always true, albeit not dead code.
+
+IMHO the beefy comment above gpio_charger_properties, plus review process is
+enough to catch these issues, so it can be dropped.
+
+
+>  	charger_desc = &gpio_charger->charger_desc;
+>  	charger_desc->properties = gpio_charger_properties;
+
+Aside: any particular reason why power_supply_desc::properties isn't const?
+
+-Emil
