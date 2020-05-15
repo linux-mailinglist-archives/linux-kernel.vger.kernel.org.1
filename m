@@ -2,72 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C651D4372
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 04:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754121D4379
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 04:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbgEOCP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 22:15:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58594 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726122AbgEOCP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 22:15:56 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728108AbgEOCSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 22:18:03 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:31839 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728018AbgEOCSC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 22:18:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589509081; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=LIkYfJRN7PLEeEi/ulUhazbev/1bwcEkEalsKq0bNh4=; b=MlVPl7tHjjlwUtMCbQe4aK8+UC8a6Ms8/iUKFa9EpvzyK8Gcks1EidASVD9FCraVAFdpZOnd
+ Xwk8YgK/ZdTyRr/9linaPf6YIW7eziA0/XO2We/6zV1qncCiBnkV/kNjfWiLLNeopTLO9wYN
+ rbLhQi3SgzL3u3vmuKKJxyQYhnw=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5ebdfbccaefa5a01cc8977ca (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 May 2020 02:17:48
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 80536C432C2; Fri, 15 May 2020 02:17:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jhugo-perf-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD68D20671;
-        Fri, 15 May 2020 02:15:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589508956;
-        bh=L9+TTBBOKheIWuMPzBAUV5fbpWKbO78Ws7uOfGtM91U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=R4YIhfDdLDZQrkzG86difRUEi0nJs0K06eGeJBj3DCbc12JXuQXcl1LmlYzeyLTG8
-         Xs02DWrNtjheyiub5zZIQ+hhMePNJ8kAdd1lPHF8G77ol0smqi7ZjovaMtlpXEtekz
-         r6WF7wECD7wYI4QiSIsa4wliw/CM3hgSEzyeYJjI=
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH] f2fs: flush dirty meta pages when flushing them
-Date:   Thu, 14 May 2020 19:15:54 -0700
-Message-Id: <20200515021554.226835-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 20700C433D2;
+        Fri, 15 May 2020 02:17:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 20700C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jeffrey Hugo <jhugo@codeaurora.org>
+Subject: [PATCH] bus: mhi: core: Use current ee in intvec handler
+Date:   Thu, 14 May 2020 20:17:29 -0600
+Message-Id: <1589509049-14532-1-git-send-email-jhugo@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's guarantee flusing dirty meta pages to avoid infinite loop.
+The intvec handler stores the caches ee in a local variable for use in
+processing the intvec.  It should instead use the current ee which is
+read at the beginning of the intvec incase that the intvec is related to
+an ee change.  Otherwise, the handler might make the wrong decision
+based on an incorrect ee.
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Fixes: 3000f85b8f47 (bus: mhi: core: Add support for basic PM operations)
+Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
 ---
- fs/f2fs/checkpoint.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/bus/mhi/core/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index 620a386d82c1a..9a7f695d5adb3 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -1266,6 +1266,9 @@ void f2fs_wait_on_all_pages(struct f2fs_sb_info *sbi, int type)
- 		if (unlikely(f2fs_cp_error(sbi)))
- 			break;
- 
-+		if (type == F2FS_DIRTY_META)
-+			f2fs_sync_meta_pages(sbi, META, LONG_MAX,
-+							FS_CP_META_IO);
- 		io_schedule_timeout(DEFAULT_IO_TIMEOUT);
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index 7272a5a..0a41fe5 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -386,8 +386,8 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *dev)
+ 	write_lock_irq(&mhi_cntrl->pm_lock);
+ 	if (MHI_REG_ACCESS_VALID(mhi_cntrl->pm_state)) {
+ 		state = mhi_get_mhi_state(mhi_cntrl);
+-		ee = mhi_cntrl->ee;
+ 		mhi_cntrl->ee = mhi_get_exec_env(mhi_cntrl);
++		ee = mhi_cntrl->ee;
  	}
- 	finish_wait(&sbi->cp_wait, &wait);
-@@ -1493,8 +1496,6 @@ static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
- 	sbi->last_valid_block_count = sbi->total_valid_block_count;
- 	percpu_counter_set(&sbi->alloc_valid_block_count, 0);
  
--	/* Here, we have one bio having CP pack except cp pack 2 page */
--	f2fs_sync_meta_pages(sbi, META, LONG_MAX, FS_CP_META_IO);
- 	/* Wait for all dirty meta pages to be submitted for IO */
- 	f2fs_wait_on_all_pages(sbi, F2FS_DIRTY_META);
- 
+ 	if (state == MHI_STATE_SYS_ERR) {
 -- 
-2.26.2.761.g0e0b3e54be-goog
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
 
