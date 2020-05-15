@@ -2,192 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8E61D4C58
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 13:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F10F81D4C62
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 13:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbgEOLQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 07:16:51 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:19651 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgEOLQs (ORCPT
+        id S1726096AbgEOLSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 07:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725986AbgEOLSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 07:16:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1589541406; x=1621077406;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=bZ2JnU0EXObNl5L5pPijjp9Xg73ORZBTgLZoGKU0TPk=;
-  b=vIs0Yc4y3Tmd4D7Xh8iOXvq8/Evh3/WLQmcIsJOBCrO9cRCp8APw4UuC
-   gmGGCBTmU98C1AVl3kpfjvk0TCI4mEvqsX2hzDvIJpgFLOTA8wiu/jKla
-   uhDr4/V0jcLFSC15IYCu7KoDAES7sS3Qgd8bVN+uX9nEzkNk8JqpxTjLI
-   qWFY6TmKn4+MhMCTyhFmUTd9/JrmsvvKoy3hM6NUQU4SHMShZJIwxcl6A
-   JxQDuudlsjkUDI8gjxp5QJFx9+P13dFu+Lw5KSgs0vfHLzlGbxqPqO6hS
-   esXKSyAAnyAGmvT87dBhAssR42jQHk+64n+ig4phqRUH565vXTpoVCiuV
-   Q==;
-IronPort-SDR: XltXjzs+GU6yt//0omU6PmdLk2jQP5ZYtU64eC6H8VCmkAjLS49NYR8MzOiI46Jnogrfof4qVt
- ehDiHryI2RxBu5y7pXRfpiQPWJBnFDpYRG92vcKXEM5JWrOcnvnC6Z4oDH+2GVYHUXcrSsiJs7
- 6ECz0+hv5J7AG9MVaAUeKLhbYxDbJp7uAhFfwWiWt97uVdFLfVxnTVQmSrNqj/F76fDcOfVVI4
- mPlaJXJY/asv87Ot5dBe+1VwcJPoQn1+vYOmGxAyMTh98NkWYB14wTJ+AmSy78BM1BNP8Y6fBm
- ERY=
-X-IronPort-AV: E=Sophos;i="5.73,395,1583218800"; 
-   d="scan'208";a="73566907"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 May 2020 04:16:46 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 15 May 2020 04:16:45 -0700
-Received: from cristi-P53.lan (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Fri, 15 May 2020 04:16:42 -0700
-From:   <cristian.birsan@microchip.com>
-To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
-        <mark.rutland@arm.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Cristian Birsan <cristian.birsan@microchip.com>
-Subject: [PATCH v2 7/7] ARM: dts: at91: sam9x60ek: enable usb device
-Date:   Fri, 15 May 2020 14:16:31 +0300
-Message-ID: <20200515111631.31210-8-cristian.birsan@microchip.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200515111631.31210-1-cristian.birsan@microchip.com>
-References: <20200515111631.31210-1-cristian.birsan@microchip.com>
+        Fri, 15 May 2020 07:18:12 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD178C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 04:18:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GIdcvyq2kE8gcpK88REzvVaaDlKMW6+iuNTGRrLXlfM=; b=r8XOY0TrePE63Xd3nIt4PCULew
+        TiMaMn+aZbqFsyUdhkgXv5WocqqUPzTm0jc4puEHqt1cT+SXpAtURJZOID/e1UZeqgEdM0LeH6HnD
+        4L7HpYpygIJQgySonfLMjOwUyqlIXJ9SYM2I4FuCNrag8ywztNJf+RarXO0X4tOp4D8Jm0d/K4ezC
+        tz/wPAb9kuiKmh2Gi98yT70fgAksoXvRGwz+ZhvxrLA88ZvN9mHDMpI30ygbBthOONcpNFnt0FV7T
+        xpRx5QXeG5X0bfy+VrRX8ba1SFez2QRy8N7Nrs9BdRndM9f/Yb839yrdU/KuFO8mTkk9lyMThp8Ht
+        4hA4XSMg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jZYLQ-0006J2-15; Fri, 15 May 2020 11:17:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E5F9A3011F0;
+        Fri, 15 May 2020 13:17:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C582620267E65; Fri, 15 May 2020 13:17:32 +0200 (CEST)
+Date:   Fri, 15 May 2020 13:17:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Jirka Hladky <jhladky@redhat.com>, Phil Auld <pauld@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Hillf Danton <hdanton@sina.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Douglas Shakshober <dshaks@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Joe Mario <jmario@redhat.com>, Bill Gray <bgray@redhat.com>
+Subject: Re: [PATCH 00/13] Reconcile NUMA balancing decisions with the load
+ balancer v6
+Message-ID: <20200515111732.GS2957@hirez.programming.kicks-ass.net>
+References: <20200320163843.GD3818@techsingularity.net>
+ <CAE4VaGCf0P2ht+7nbGFHV8Dd=e4oDEUPNdRUUBokRWgKRxofAA@mail.gmail.com>
+ <20200507155422.GD3758@techsingularity.net>
+ <CAE4VaGCDTeE16nNmSS8fGzCBvHsO=qkJAW6yDiORAxgsPi-Ziw@mail.gmail.com>
+ <20200508092212.GE3758@techsingularity.net>
+ <CAE4VaGC_v6On-YvqdTwAWu3Mq4ofiV0pLov-QpV+QHr_SJr+Rw@mail.gmail.com>
+ <CAE4VaGDQWPePtmtCZP=ROYW1KPxtPhGDrxqy2QbirHGJdwk4=w@mail.gmail.com>
+ <20200513153023.GF3758@techsingularity.net>
+ <20200514153122.GE2978@hirez.programming.kicks-ass.net>
+ <20200515084740.GJ3758@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515084740.GJ3758@techsingularity.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Birsan <cristian.birsan@microchip.com>
+On Fri, May 15, 2020 at 09:47:40AM +0100, Mel Gorman wrote:
 
-Enable usb device for sam9x60ek board.
+> However, the wakeups are so rapid that the wakeup
+> happens while the server is descheduling. That forces the waker to spin
+> on smp_cond_load_acquire for longer. In this case, it can be cheaper to
+> add the task to the rq->wake_list even if that potentially requires an IPI.
 
-Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
+Right, I think Rik ran into that as well at some point. He wanted to
+make ->on_cpu do a hand-off, but simply queueing the wakeup on the prev
+cpu (which is currently in the middle of schedule()) should be an easier
+proposition.
+
+Maybe something like this untested thing... could explode most mighty,
+didn't thing too hard.
+
 ---
- arch/arm/boot/dts/at91-sam9x60ek.dts | 13 +++++
- arch/arm/boot/dts/sam9x60.dtsi       | 74 ++++++++++++++++++++++++++++
- 2 files changed, 87 insertions(+)
-
-diff --git a/arch/arm/boot/dts/at91-sam9x60ek.dts b/arch/arm/boot/dts/at91-sam9x60ek.dts
-index b484745bf2d4..325d0fc8674f 100644
---- a/arch/arm/boot/dts/at91-sam9x60ek.dts
-+++ b/arch/arm/boot/dts/at91-sam9x60ek.dts
-@@ -547,6 +547,12 @@
- 			atmel,pins = <AT91_PIOD 18 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
- 		};
- 	};
-+
-+	usb0 {
-+		pinctrl_usba_vbus: usba_vbus {
-+			atmel,pins = <AT91_PIOB 16 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
-+		};
-+	};
- }; /* pinctrl */
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index fa6c19d38e82..c07b92a0ee5d 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2312,7 +2312,7 @@ static void wake_csd_func(void *info)
+ 	sched_ttwu_pending();
+ }
  
- &pmc {
-@@ -634,6 +640,13 @@
- 	};
- };
+-static void ttwu_queue_remote(struct task_struct *p, int cpu, int wake_flags)
++static void __ttwu_queue_remote(struct task_struct *p, int cpu, int wake_flags)
+ {
+ 	struct rq *rq = cpu_rq(cpu);
  
-+&usb0 {
-+	atmel,vbus-gpio = <&pioB 16 GPIO_ACTIVE_HIGH>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usba_vbus>;
-+	status = "okay";
-+};
+@@ -2354,6 +2354,17 @@ bool cpus_share_cache(int this_cpu, int that_cpu)
+ {
+ 	return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
+ }
 +
- &usb1 {
- 	num-ports = <3>;
- 	atmel,vbus-gpio = <0
-diff --git a/arch/arm/boot/dts/sam9x60.dtsi b/arch/arm/boot/dts/sam9x60.dtsi
-index 6763423d64b8..5cd2b9054762 100644
---- a/arch/arm/boot/dts/sam9x60.dtsi
-+++ b/arch/arm/boot/dts/sam9x60.dtsi
-@@ -69,6 +69,80 @@
- 		#size-cells = <1>;
- 		ranges;
++static bool ttwu_queue_remote(struct task_struct *p, int cpu, int wake_flags)
++{
++	if (sched_feat(TTWU_QUEUE) && !cpus_share_cache(smp_processor_id(), cpu)) {
++		sched_clock_cpu(cpu); /* Sync clocks across CPUs */
++		__ttwu_queue_remote(p, cpu, wake_flags);
++		return true;
++	}
++
++	return false;
++}
+ #endif /* CONFIG_SMP */
  
-+		usb0: gadget@500000 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "microchip,sam9x60-udc";
-+			reg = <0x00500000 0x100000
-+				0xf803c000 0x400>;
-+			interrupts = <23 IRQ_TYPE_LEVEL_HIGH 2>;
-+			clocks = <&pmc PMC_TYPE_PERIPHERAL 23>, <&pmc PMC_TYPE_CORE PMC_UTMI>;
-+			clock-names = "pclk", "hclk";
-+			assigned-clocks = <&pmc PMC_TYPE_CORE PMC_UTMI>;
-+			assigned-clock-rates = <480000000>;
-+			status = "disabled";
+ static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
+@@ -2362,11 +2373,8 @@ static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
+ 	struct rq_flags rf;
+ 
+ #if defined(CONFIG_SMP)
+-	if (sched_feat(TTWU_QUEUE) && !cpus_share_cache(smp_processor_id(), cpu)) {
+-		sched_clock_cpu(cpu); /* Sync clocks across CPUs */
+-		ttwu_queue_remote(p, cpu, wake_flags);
++	if (ttwu_queue_remote(p, cpu, wake_flags))
+ 		return;
+-	}
+ #endif
+ 
+ 	rq_lock(rq, &rf);
+@@ -2550,7 +2558,15 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ 	if (p->on_rq && ttwu_remote(p, wake_flags))
+ 		goto unlock;
+ 
++	if (p->in_iowait) {
++		delayacct_blkio_end(p);
++		atomic_dec(&task_rq(p)->nr_iowait);
++	}
 +
-+			ep@0 {
-+				reg = <0>;
-+				atmel,fifo-size = <64>;
-+				atmel,nb-banks = <1>;
-+			};
+ #ifdef CONFIG_SMP
++	p->sched_contributes_to_load = !!task_contributes_to_load(p);
++	p->state = TASK_WAKING;
 +
-+			ep@1 {
-+				reg = <1>;
-+				atmel,fifo-size = <1024>;
-+				atmel,nb-banks = <2>;
-+				atmel,can-dma;
-+			};
-+
-+			ep@2 {
-+				reg = <2>;
-+				atmel,fifo-size = <1024>;
-+				atmel,nb-banks = <2>;
-+				atmel,can-dma;
-+			};
-+
-+			ep@3 {
-+				reg = <3>;
-+				atmel,fifo-size = <1024>;
-+				atmel,nb-banks = <3>;
-+				atmel,can-dma;
-+				atmel,can-isoc;
-+			};
-+
-+			ep@4 {
-+				reg = <4>;
-+				atmel,fifo-size = <1024>;
-+				atmel,nb-banks = <3>;
-+				atmel,can-dma;
-+				atmel,can-isoc;
-+			};
-+
-+			ep@5 {
-+				reg = <5>;
-+				atmel,fifo-size = <1024>;
-+				atmel,nb-banks = <3>;
-+				atmel,can-dma;
-+				atmel,can-isoc;
-+			};
-+
-+			ep@6 {
-+				reg = <6>;
-+				atmel,fifo-size = <1024>;
-+				atmel,nb-banks = <3>;
-+				atmel,can-dma;
-+				atmel,can-isoc;
-+			};
-+
-+			ep@7 {
-+				reg = <7>;
-+				atmel,fifo-size = <1024>;
-+				atmel,nb-banks = <3>;
-+				atmel,can-dma;
-+				atmel,can-isoc;
-+			};
-+		};
-+
- 		usb1: ohci@600000 {
- 			compatible = "atmel,at91rm9200-ohci", "usb-ohci";
- 			reg = <0x00600000 0x100000>;
--- 
-2.17.1
-
+ 	/*
+ 	 * Ensure we load p->on_cpu _after_ p->on_rq, otherwise it would be
+ 	 * possible to, falsely, observe p->on_cpu == 0.
+@@ -2581,15 +2597,10 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ 	 * This ensures that tasks getting woken will be fully ordered against
+ 	 * their previous state and preserve Program Order.
+ 	 */
+-	smp_cond_load_acquire(&p->on_cpu, !VAL);
+-
+-	p->sched_contributes_to_load = !!task_contributes_to_load(p);
+-	p->state = TASK_WAKING;
++	if (READ_ONCE(p->on_cpu) && __ttwu_queue_remote(p, cpu, wake_flags))
++		goto unlock;
+ 
+-	if (p->in_iowait) {
+-		delayacct_blkio_end(p);
+-		atomic_dec(&task_rq(p)->nr_iowait);
+-	}
++	smp_cond_load_acquire(&p->on_cpu, !VAL);
+ 
+ 	cpu = select_task_rq(p, p->wake_cpu, SD_BALANCE_WAKE, wake_flags);
+ 	if (task_cpu(p) != cpu) {
+@@ -2597,14 +2608,6 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ 		psi_ttwu_dequeue(p);
+ 		set_task_cpu(p, cpu);
+ 	}
+-
+-#else /* CONFIG_SMP */
+-
+-	if (p->in_iowait) {
+-		delayacct_blkio_end(p);
+-		atomic_dec(&task_rq(p)->nr_iowait);
+-	}
+-
+ #endif /* CONFIG_SMP */
+ 
+ 	ttwu_queue(p, cpu, wake_flags);
