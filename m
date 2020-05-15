@@ -2,103 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B0E1D593B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADCB1D591F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgEOSlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 14:41:45 -0400
-Received: from 17.mo6.mail-out.ovh.net ([46.105.36.150]:52621 "EHLO
-        17.mo6.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726238AbgEOSlo (ORCPT
+        id S1726297AbgEOSg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 14:36:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726236AbgEOSg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 14:41:44 -0400
-X-Greylist: delayed 323 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 May 2020 14:41:43 EDT
-Received: from player770.ha.ovh.net (unknown [10.110.115.182])
-        by mo6.mail-out.ovh.net (Postfix) with ESMTP id 0798C210447
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 20:36:18 +0200 (CEST)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player770.ha.ovh.net (Postfix) with ESMTPSA id 2FA3F127F3DB2;
-        Fri, 15 May 2020 18:36:08 +0000 (UTC)
-Date:   Fri, 15 May 2020 20:36:01 +0200
-From:   Stephen Kitt <steve@sk2.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: sysctl/kernel: document unaligned controls
-Message-ID: <20200515203601.401a46a9@heffalump.sk2.org>
-In-Reply-To: <20200515112735.67ee1148@lwn.net>
-References: <20200515160406.8649-1-steve@sk2.org>
-        <20200515112735.67ee1148@lwn.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/NfKkTxFuCefmYlDAsI+Q.k4"; protocol="application/pgp-signature"
-X-Ovh-Tracer-Id: 16222528811018177925
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrleekgdduvdegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtsehgtderreertddvnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeejkeffvdfhjeekffdukeehvddtvdfhieehhedvheekteekudefjeffueeuvedvvdenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeejtddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+        Fri, 15 May 2020 14:36:28 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B52C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 11:36:28 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id g185so3594558qke.7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 11:36:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=3jEh/c8X5kAh+mw2s8BlpUXCIYSTIWmWDs3YUbpKhds=;
+        b=PhNfluhoV7c1JGujBvuA9/GYqlD5DjmJIveS+0n2VX3jtO4FvwwtRfMyWghIeo7erW
+         gMMFC8WYCc+v55d5zLp9VxQxVGdz1bMBfcoqLJS08TKH1eNbFPQy20ZBF0jF+mRN3tEf
+         o29q71gxJCJuFN/ej9tEdbM7ZOd5FGdqIg8jESsOjSOoNFLUb8ytzquSOxE3E/fhLXla
+         6CTcAud+uGtcpN+TQONR+B0fKvHarlzXdm8x0LIE/ZpxhUrcFZaYdqxkU/ECHjpN6bZJ
+         e5PMDh9BThuBCEWNZCn0FLkP4l67yImZHXlZq0oEW8XwYe8gzFFJyhnG9Yz3Kc3Beoa4
+         mQnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=3jEh/c8X5kAh+mw2s8BlpUXCIYSTIWmWDs3YUbpKhds=;
+        b=jOtrOG2U4CAQSCSLmwNjHj1izWmvJuHGTzQ/YR2jYqRmNzkz9iphmw7bDwgjzfAPmu
+         lUsCf0wfQZuLNmZ/f4Dph+ujCulJvSWjSQYKJxdY0mUxbqbqkkEMj7mTYOh+kCqdD7vH
+         61nTuoL5gd3yLjC5tXV9nAjJPudmDIIbWvzS9iCRxpOlHlxgkmixmiEvkW+oWBs0By5E
+         63Nsh0QBsts9hFoRSVl1+T4oIIYL2V/37fjojANAzS5M/YOr0nSktLlAnyZTsyJkcmGV
+         sGDv2/j/pIRG/Py4z7T1PJrCwC2jgRBkdFGY3/o5eqfPeQUg30Gy66++X+Mver+gHea+
+         k6Ew==
+X-Gm-Message-State: AOAM53115Z9hOcpi/41B3T5hTumXoqbYbnfbln9RwaO57w4zJgs9QMxP
+        tHG5GCtBLqLBv6RAoYwEdjFl9A==
+X-Google-Smtp-Source: ABdhPJxzDm0p+lh/LmOvXYP48iojGEO/n1SJLLCSOXcwdvKDOtZ2hEon3oDubvx0zGhWM8OmH6bO0Q==
+X-Received: by 2002:a37:5804:: with SMTP id m4mr4655956qkb.109.1589567787258;
+        Fri, 15 May 2020 11:36:27 -0700 (PDT)
+Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id n9sm2165469qkn.10.2020.05.15.11.36.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 May 2020 11:36:26 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+From:   Qian Cai <cai@lca.pw>
+Mime-Version: 1.0 (1.0)
+Subject: Re: Default enable RCU list lockdep debugging with PROVE_RCU
+Date:   Fri, 15 May 2020 14:36:26 -0400
+Message-Id: <CA610F47-290E-4826-B1D9-7CE09D7CEA6D@lca.pw>
+References: <20200514181305.GT2869@paulmck-ThinkPad-P72>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Amol Grover <frextrite@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+In-Reply-To: <20200514181305.GT2869@paulmck-ThinkPad-P72>
+To:     paulmck@kernel.org
+X-Mailer: iPhone Mail (17D50)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/NfKkTxFuCefmYlDAsI+Q.k4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, 15 May 2020 11:27:35 -0600, Jonathan Corbet <corbet@lwn.net> wrote:
-> On Fri, 15 May 2020 18:04:06 +0200
-> Stephen Kitt <steve@sk2.org> wrote:
+
+> On May 14, 2020, at 2:13 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
 >=20
-> > diff --git a/Documentation/index.rst b/Documentation/index.rst
-> > index 9599c0f3eea8..17c38d899572 100644
-> > --- a/Documentation/index.rst
-> > +++ b/Documentation/index.rst
-> > @@ -143,6 +143,7 @@ Architecture-agnostic documentation
-> >     :maxdepth: 2
-> > =20
-> >     asm-annotations
-> > +   unaligned-memory-access
-> > =20
-> >  Architecture-specific documentation
-> >  -----------------------------------
-> > diff --git a/Documentation/unaligned-memory-access.txt
-> > b/Documentation/unaligned-memory-access.rst similarity index 100%
-> > rename from Documentation/unaligned-memory-access.txt
-> > rename to Documentation/unaligned-memory-access.rst =20
->=20
-> Adding this to the toctree is great, but I'd just as soon not leave it in
-> the top-level directory while we do that.  Since you're renaming it
-> anyway, can you move it into process/?  It's not a perfect fit, but that's
-> where that type of material has been going so far.
+> Fair enough!  And yes, the Linux kernel is quite large, so I certainly am
+> not asking you to test the whole thing yourself.
 
-I can indeed. Should it still be listed in the main toctree, or in the
-process toctree?
+Ok, I saw 0day bot also started to report those which is good. For example,
 
-Regards,
+lkml.org/lkml/2020/5/12/1358
 
-Stephen
+which so far is nit blocking 0day on linux-next since it does not use panic_=
+on_warn yet (while syzbot does).
 
---Sig_/NfKkTxFuCefmYlDAsI+Q.k4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl6+4REACgkQgNMC9Yht
-g5w1kRAAkBV4HprjDLUML9+vxm4/2RzhUEp6iN3jvH4NYDsGgHpdMoBUy8Ssa5EO
-3V4KOrLyMcAulHn5/jBt/9fEoOJXHmeR8bR7J/PcMpXeqxMI0fnp7weZebb+xZhV
-5aygqbhIG277DX9Pvnd6ke5nVYjoQVwoDAaOvBx7ZOriE6wSl5v3r0GBYKQ2JOcf
-Jolc6dxkuoiSV+szebdbq8Ucgq1wASxsA5NYeasOl/f1GeH7Yafv7X8zbKQzfz3H
-UYIktCvJFvDX30NGC1Qhx2L2Q45wToWYY7COgdT9pxPpsZJ9ibwh9VLgu59UAzVR
-Hs09rN0sN5cTqYuxGKQl7K+f/y9ipWb2R8KxwSEeXLT8PNu9OdsUsVqjernz1JgR
-ef49rLz2pBByn12m8n21PLPQuOsETKx+N9CN9wn3fyEfUV3UqKC63ADvOBtEN8lr
-3CoXoQZgGkMXnfI1nBQPp+/1F4gVEPAz1aPgG0pTuFprO0uG/4iTBUQt7Au2ZwXn
-tM6effqFDvdex2KEXpISHv/VqHyNXlM4Lc5ypPan5wKpV+smoDbZbkmTagqJ8NSd
-/TY3jngXCy/qBbfzTo6j3jI3EKzYUVZsO0rtLYcJhmxOr4nS3Spdni9cVdeoBQEH
-Bwbh8/F4Pq/uoyhXhRTarzU+EZtK1ebzyjjiJTfaRMGoAQI79qU=
-=GqR/
------END PGP SIGNATURE-----
-
---Sig_/NfKkTxFuCefmYlDAsI+Q.k4--
+Thus, I am more convinced that we should not revert the commit just for syzb=
+ot until someone could also convince 0day to select RCU_EXPERT and then DEBU=
+G_RCU_LIST?=
