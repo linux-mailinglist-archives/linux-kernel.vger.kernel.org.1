@@ -2,111 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9196D1D5004
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1622A1D5012
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726254AbgEOOIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 10:08:05 -0400
-Received: from mout-p-102.mailbox.org ([80.241.56.152]:17500 "EHLO
-        mout-p-102.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726016AbgEOOIE (ORCPT
+        id S1726248AbgEOOLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 10:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726140AbgEOOLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 10:08:04 -0400
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 49NqxY6pWBzKmcq;
-        Fri, 15 May 2020 16:08:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-language:content-type
-        :content-type:in-reply-to:mime-version:date:date:message-id:from
-        :from:references:subject:subject:received; s=mail20150812; t=
-        1589551673; bh=qv1xNIRxXTkvkBNyyMVAn5b8Ba07+r3xwLtiauKCVTs=; b=x
-        7FsSMeRd62wU+YsfopNMCegjFBHtJ7kJ3eNOwzjhpT8yolYlJhLaBTzLvNikJnnc
-        kd4UdHWCocKdVIxTFKxKClv7D3NFs8XcVcSAiX7N11PvFGbpKcdp8gI67aZBbEl4
-        qv/gpK1wCUp/s8MXKZ8rQoCOkFKIzS6J5E5wmyqRpJFWfAA49MJLXBhUbzgHUbh3
-        +KTuxjV6T80Zn/WGPBMKqwmKRLoacEJslXkH78tCcJ+6vkmqJRxLMPU0zNXF2w0B
-        RA/4PnPj258OpnN/D/LlAui3/ehRIpChHKQl62r+sqwkuNmKV+Mp5rFudN7Yq8eJ
-        ezQqzSNG40SlnuEJ6eNBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1589551677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rb+uR4nJRc2QwiNLGPRwPBQIIOQwboa4xHyF3v/J6GE=;
-        b=yXZ59Xkm/AR/Ooe4/n6DdvX+QWTLzpR4RD1cTDWYWA/vY2tDQt7XDEGHJRYROB0KEp5c82
-        shwwhXdcwO5sg7OGwo3WkIoKxjrO6PwgF65Y7jDJDrZOOU7cDZ2RoAXxtmffw5JGVQeqe1
-        5FSLrhsJFuJcpD9srQTmkFHPlbDlNNwNdQO686ZgZnqi77RCFrUpWB3sL0f6pzOBzw2coU
-        A+qTAMa239QWvW8obaamD+/pFR6zxy0fhjM/w1E5LXXLw9AfYjZobN3dqmDzwd9Ghvxypj
-        f73LvVKAXNw7aOxLeNCzzDBXRxPGCoOjO0pXpubcq66VM0D+nALv1O7N03wotg==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
-        with ESMTP id JoIvjFjp25qn; Fri, 15 May 2020 16:07:53 +0200 (CEST)
-Subject: Re: [PATCH] platform/x86: touchscreen_dmi: Add info for the Trekstor
- Yourbook C11B
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Otmar Meier <otmarjun.meier@nexgo.de>
-References: <20200512204009.4751-1-bernhardu@mailbox.org>
- <2656984b-3eec-c6d0-f992-8f1f8973fe3e@redhat.com>
- <CAHp75VejzaZL26ztQMFGjAAMC3B8mkSnXSvGhyFeiHUbUUpp=w@mail.gmail.com>
-From:   =?UTF-8?Q?Bernhard_=c3=9cbelacker?= <bernhardu@mailbox.org>
-Message-ID: <4787d347-b761-6283-7f9d-34c1a11b909f@mailbox.org>
-Date:   Fri, 15 May 2020 16:07:52 +0200
-MIME-Version: 1.0
-In-Reply-To: <CAHp75VejzaZL26ztQMFGjAAMC3B8mkSnXSvGhyFeiHUbUUpp=w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 8BA321778
-X-Rspamd-Score: -4.91 / 15.00 / 15.00
+        Fri, 15 May 2020 10:11:05 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A26C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 07:11:05 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id m12so2486864wmc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 07:11:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=A4+UkWcvLP2WT8CuakkXaohSADBdrjeeNAnbolDDe08=;
+        b=NUjZzrQH7/8UPP7L24eoPhEPg6G8tZ2NntXz0lwP2s0+zSuswWa26LQVNl+OrxXnJo
+         yudmQee/QQ6NO3s4BTkl/KR8DMF4HZ27qvEvCKr3mSJPwhznPRytkZk6IkZDqL+EJl6m
+         cWqf5WDuVjEl6Jm4k1+seLdLsemn5kRPoBbpaTUWwot8wcWQ69n2b8K9k4LUsBKMziay
+         4OZ7V9i574hixJhPtRi+84gxc/mEDA1aCqdpQxSS8LjVP9SoUAiHNIdCYLbi6hveqxgN
+         C08vZZmrigL+fS+teNs/xXJxLoPmRO6GVbb9r/WY377bW5tJ+29fL0cS3gbrP4PcgPFh
+         C5kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=A4+UkWcvLP2WT8CuakkXaohSADBdrjeeNAnbolDDe08=;
+        b=sCykfZXJp0pAzZ+jWge6SX7ExyG7evQvJnc7t3tWxVmHcOgM3AQLe606/rrmUtPto3
+         ysVaymuHmuRYEF/bb/eJyUV5ssxHrGpWNqf5Ky6s1INgMoGSmy17l1+Ee85XfJ/76ZB8
+         WDR8KpJ3YCJ9f2harnbWGpSNdkJOUsE7V1MBnqtfu2iONK0oOCt8D49v3pKWBk4anUyd
+         Ozr3n6bJndcHGL7BZ4/7TRZiA2Elt35cgUbEmAu7tpdp4VSiAEpx/wgARyDgJwFNMkWh
+         KPhuBdRhvStSUFRWEcV06a/CpTv+S0VGMMYj3BKM9Bh1pCIprtCmkjcOK1hIOEDjh0BZ
+         iHAA==
+X-Gm-Message-State: AOAM5333Dsg9sdtS0Zosh/zmkk8ulBt/NYLhhVL318fvDJiMSjNOZzps
+        81TY6aUIHTE1166b97VNGiX+9A==
+X-Google-Smtp-Source: ABdhPJzcMZfZ6NXde6nZJ9Qrvuofbkk+4OFACM9BWBFB//xLPloqviY3hVReBzWCB1pZLgBNCIYCSw==
+X-Received: by 2002:a7b:c413:: with SMTP id k19mr4243265wmi.124.1589551863052;
+        Fri, 15 May 2020 07:11:03 -0700 (PDT)
+Received: from localhost.localdomain (lns-bzn-59-82-252-135-148.adsl.proxad.net. [82.252.135.148])
+        by smtp.gmail.com with ESMTPSA id d6sm4432438wra.63.2020.05.15.07.11.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 May 2020 07:11:02 -0700 (PDT)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     rui.zhang@intel.com
+Cc:     amit.kucheria@verdurent.com, srinivas.pandruvada@linux.intel.com,
+        arnd@arndb.de, rkumbako@codeaurora.org, ilina@codeaurora.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/4] thermal: core: Add helpers to browse the cdev, tz and governor list
+Date:   Fri, 15 May 2020 16:10:30 +0200
+Message-Id: <20200515141034.19154-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The cdev, tz and governor list, as well as their respective locks are
+statically defined in the thermal_core.c file.
 
-Am 13.05.20 um 19:17 schrieb Andy Shevchenko:
-> On Tue, May 12, 2020 at 11:44 PM Hans de Goede <hdegoede@redhat.com> wrote:
->> Hi,
->> On 5/12/20 10:40 PM, Bernhard Übelacker wrote:
->>> Add touchscreen info for the Trekstor Yourbook C11B. It seems to
->>> use the same touchscreen as the Primebook C11, so we only add a new DMI
->>> match.
->>>
->>> Cc: Otmar Meier <otmarjun.meier@nexgo.de>
->>> Reported-and-tested-by: Otmar Meier <otmarjun.meier@nexgo.de>
->>> Signed-off-by: Bernhard Übelacker <bernhardu@mailbox.org>
->>
->> Thank you, patch looks good to me:
->>
->> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> 
-> This doesn't apply to our for-next.
-> Please, rebase, add Hans' tag and resend, thanks!
+In order to give a sane access to these list, like browsing all the
+thermal zones or all the cooling devices, let's define a set of
+helpers where we pass a callback as a parameter to be called for each
+thermal entity.
 
+We keep the self-encapsulation and ensure the locks are correctly
+taken when looking at the list.
 
-Hello Andy,
-I am not sure against which git tree I should rebase?
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+---
+ drivers/thermal/thermal_core.c | 51 ++++++++++++++++++++++++++++++++++
+ drivers/thermal/thermal_core.h |  9 ++++++
+ 2 files changed, 60 insertions(+)
 
-I tried to rebase against the branch for-next in the git tree below.
-And tried to apply the patch saved from my
-thunderbird and got no error.
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index a6b8c0240656..54208b6deb42 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -638,6 +638,57 @@ void thermal_zone_device_rebind_exception(struct thermal_zone_device *tz,
+ 	mutex_unlock(&thermal_list_lock);
+ }
+ 
++int for_each_thermal_governor(int (*cb)(struct thermal_governor *, void *),
++			      void *data)
++{
++	struct thermal_governor *gov;
++	int ret = 0;
++
++	mutex_lock(&thermal_governor_lock);
++	list_for_each_entry(gov, &thermal_governor_list, governor_list) {
++		ret = cb(gov, data);
++		if (ret)
++			break;
++	}
++	mutex_unlock(&thermal_governor_lock);
++
++	return ret;
++}
++
++int for_each_thermal_cooling_device(int (*cb)(struct thermal_cooling_device *,
++					      void *), void *data)
++{
++	struct thermal_cooling_device *cdev;
++	int ret = 0;
++
++	mutex_lock(&thermal_list_lock);
++	list_for_each_entry(cdev, &thermal_cdev_list, node) {
++		ret = cb(cdev, data);
++		if (ret)
++			break;
++	}
++	mutex_unlock(&thermal_list_lock);
++
++	return ret;
++}
++
++int for_each_thermal_zone(int (*cb)(struct thermal_zone_device *, void *),
++			  void *data)
++{
++	struct thermal_zone_device *tz;
++	int ret = 0;
++
++	mutex_lock(&thermal_list_lock);
++	list_for_each_entry(tz, &thermal_tz_list, node) {
++		ret = cb(tz, data);
++		if (ret)
++			break;
++	}
++	mutex_unlock(&thermal_list_lock);
++
++	return ret;
++}
++
+ void thermal_zone_device_unbind_exception(struct thermal_zone_device *tz,
+ 					  const char *cdev_type, size_t size)
+ {
+diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
+index 4e271016b7a9..bb8f8aee79eb 100644
+--- a/drivers/thermal/thermal_core.h
++++ b/drivers/thermal/thermal_core.h
+@@ -41,6 +41,15 @@ extern struct thermal_governor *__governor_thermal_table_end[];
+ 	     __governor < __governor_thermal_table_end;	\
+ 	     __governor++)
+ 
++int for_each_thermal_zone(int (*cb)(struct thermal_zone_device *, void *),
++			  void *);
++
++int for_each_thermal_cooling_device(int (*cb)(struct thermal_cooling_device *,
++					      void *), void *);
++
++int for_each_thermal_governor(int (*cb)(struct thermal_governor *, void *),
++			      void *thermal_governor);
++
+ struct thermal_attr {
+ 	struct device_attribute attr;
+ 	char name[THERMAL_NAME_LENGTH];
+-- 
+2.17.1
 
-Is this the right git tree?
-
-Kind regards,
-Bernhard
-
-
-$ git clone -b for-next --single-branch --depth=10000  git://git.kernel.org/pub/scm/linux/kernel/git/andy/linux-gpio-intel.git
-$ cd linux-gpio-intel
-$ LANG=C git am ../'[PATCH] platform_x86: touchscreen_dmi: Add info for the Trekstor Yourbook C11B.eml'
-Applying: platform/x86: touchscreen_dmi: Add info for the Trekstor Yourbook C11B
