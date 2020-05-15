@@ -2,75 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2C21D555D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3046C1D556E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgEOP7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 11:59:36 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:35329 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727012AbgEOP7f (ORCPT
+        id S1726696AbgEOQBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 12:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726188AbgEOQBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 11:59:35 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Tydbepr_1589558370;
-Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Tydbepr_1589558370)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 15 May 2020 23:59:31 +0800
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Michel Lespinasse <walken@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Rik van Riel <riel@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH V2 2/2] rbtree_latch: don't need to check seq when it found a node
-Date:   Fri, 15 May 2020 15:59:09 +0000
-Message-Id: <20200515155912.1713-2-laijs@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200515155912.1713-1-laijs@linux.alibaba.com>
-References: <20200515150122.GY2957@hirez.programming.kicks-ass.net>
- <20200515155912.1713-1-laijs@linux.alibaba.com>
+        Fri, 15 May 2020 12:01:23 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E200C061A0C;
+        Fri, 15 May 2020 09:01:23 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 49NtSJ0n4HzKmbx;
+        Fri, 15 May 2020 18:01:20 +0200 (CEST)
+Authentication-Results: hefe.heinlein-support.de (amavisd-new);
+        dkim=pass (2048-bit key) reason="pass (just generated, assumed good)"
+        header.d=mailbox.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1589558477;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w+PiomkJZ7jFlkkfl58ZR6NQt9BMVrpVorVvSHDPZaw=;
+        b=sRTS6j6jk30aT41zShAFepRc/3rbvP/wYZahNFeKTxVJ6cklLf9FMD+BBtWNGEhJFfrzsO
+        leps9WG5KF5OEjNZqi3dwSDADYZB0MXhcCTfp8lz9cMckj2sY7NMnCvpu5onuc8vdCmz8X
+        gwx3F37OdcewiaULU8PxrOTj6pMjMU2gemue4K0VXVVbQcxXnihXRk47qrHjTiVpCYuT9i
+        u5ajJraZ62lvJC1USWkKhaMSOcYnAads3ML1Orv5jHW9gOWylXIGdS6JM4HXXHbnKWbsih
+        ofFZ7eDDnOns7v5zmM4cTlagy91IgCTRgsQoLHWp/M0wLA+OcmxSluSDascb6w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :references:in-reply-to:message-id:date:date:subject:subject
+        :from:from:received; s=mail20150812; t=1589558473; bh=HJg1YQnjJH
+        2FjMqqiNGWACpqo0E0oCOo3cQeEbiw2ec=; b=o2itdzwiOSFh8Rnmlpsdpgfbfv
+        Lhq9YyJ9VPIJ15xisCIJzijEfLbWCzUJzcTooy0D0A7JrSW7F9hqmyZWnmipOk6s
+        LWeK2TDm/5Peftg1asRnq6AZMuEFXWs0EfEMr3rJ5DzeBLxZR3Y8H3rJGR2TxvEx
+        zvzHKRQ5B2K0JsIGe5iJOatmqfcPQ2RFqHFXNaB/BSu4HbzsQAEuNIwHG9n+x7OD
+        lx3jxIL1rR1bt27TiEhA95FG/Qy0UGflexboLTRCcYYmofGBXindkLlcbVIF41r5
+        o2328UvWmvnVTsP4FOUugK9R7VFaH9SeuVxkbHC1+4WCkOa2Dc9VU4C4DHSQ==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
+        with ESMTP id kSmbJmCzHMgm; Fri, 15 May 2020 18:01:13 +0200 (CEST)
+From:   =?UTF-8?q?Bernhard=20=C3=9Cbelacker?= <bernhardu@mailbox.org>
+To:     Andy Shevchenko <andy@infradead.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-input@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Bernhard=20=C3=9Cbelacker?= <bernhardu@mailbox.org>,
+        Otmar Meier <otmarjun.meier@nexgo.de>
+Subject: [PATCH v2] platform/x86: touchscreen_dmi: Add info for the Trekstor Yourbook C11B
+Date:   Fri, 15 May 2020 17:59:12 +0200
+Message-Id: <20200515155912.48032-1-bernhardu@mailbox.org>
+In-Reply-To: <CAHp75VfAeyMnwoJi8P0d4Gs5dziUQYhPGzS2fmev00UiRZ6vaQ@mail.gmail.com>
+References: <CAHp75VfAeyMnwoJi8P0d4Gs5dziUQYhPGzS2fmev00UiRZ6vaQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: D45021768
+X-Rspamd-Score: -5.40 / 15.00 / 15.00
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-latch_tree_find() should be protected by caller via RCU or so.
-When it find a node in an attempt, the node must be a valid one
-in RCU's point's of view even the tree is (being) updated with a
-new node with the same key which is entirely subject to timing
-anyway.
+Add touchscreen info for the Trekstor Yourbook C11B. It seems to
+use the same touchscreen as the Primebook C11, so we only add a new DMI
+match.
 
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Michel Lespinasse <walken@google.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Rik van Riel <riel@redhat.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+Cc: Otmar Meier <otmarjun.meier@nexgo.de>
+Reported-and-tested-by: Otmar Meier <otmarjun.meier@nexgo.de>
+Signed-off-by: Bernhard Übelacker <bernhardu@mailbox.org>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 ---
- include/linux/rbtree_latch.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/platform/x86/touchscreen_dmi.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/include/linux/rbtree_latch.h b/include/linux/rbtree_latch.h
-index 638942f53c0a..affc4b026d9b 100644
---- a/include/linux/rbtree_latch.h
-+++ b/include/linux/rbtree_latch.h
-@@ -245,7 +245,7 @@ latch_tree_find(void *key, struct latch_tree_root *root,
- 	do {
- 		seq = raw_read_seqcount_latch(&root->seq);
- 		node = __lt_find(key, root, seq & 1, ops->comp);
--	} while (read_seqcount_retry(&root->seq, seq));
-+	} while (!node && read_seqcount_retry(&root->seq, seq));
- 
- 	return node;
- }
+diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
+index 87591cea127a..f9d9045cdf40 100644
+--- a/drivers/platform/x86/touchscreen_dmi.c
++++ b/drivers/platform/x86/touchscreen_dmi.c
+@@ -1197,6 +1197,14 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
+ 			DMI_MATCH(DMI_BIOS_VERSION, "TREK.G.WI71C.JGBMRBA05"),
+ 		},
+ 	},
++	{
++		/* Trekstor Yourbook C11B (same touchscreen as the Primebook C11) */
++		.driver_data = (void *)&trekstor_primebook_c11_data,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TREKSTOR"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "YOURBOOK C11B"),
++		},
++	},
+ 	{
+ 		/* Vinga Twizzle J116 */
+ 		.driver_data = (void *)&vinga_twizzle_j116_data,
 -- 
-2.20.1
+2.26.2
 
