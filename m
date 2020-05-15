@@ -2,62 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955BE1D4943
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DF91D494A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbgEOJST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 05:18:19 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4848 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727116AbgEOJST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 05:18:19 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 8383EF3AD3429BBE4F04;
-        Fri, 15 May 2020 17:18:16 +0800 (CST)
-Received: from [127.0.0.1] (10.67.102.197) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Fri, 15 May 2020
- 17:17:57 +0800
-Subject: Re: [PATCH 3/4] watchdog: move watchdog sysctl to watchdog.c
-To:     Kees Cook <keescook@chromium.org>
-CC:     <mcgrof@kernel.org>, <yzaikin@google.com>, <adobriyan@gmail.com>,
-        <mingo@kernel.org>, <peterz@infradead.org>,
-        <akpm@linux-foundation.org>, <yamada.masahiro@socionext.com>,
-        <bauerman@linux.ibm.com>, <gregkh@linuxfoundation.org>,
-        <skhan@linuxfoundation.org>, <dvyukov@google.com>,
-        <svens@stackframe.org>, <joel@joelfernandes.org>,
-        <tglx@linutronix.de>, <Jisheng.Zhang@synaptics.com>,
-        <pmladek@suse.com>, <bigeasy@linutronix.de>,
-        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <wangle6@huawei.com>
-References: <1589517224-123928-1-git-send-email-nixiaoming@huawei.com>
- <1589517224-123928-4-git-send-email-nixiaoming@huawei.com>
- <202005150107.DA3ABE3@keescook>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <287d50e9-28b6-0d9f-1aa7-aac5bbeb0807@huawei.com>
-Date:   Fri, 15 May 2020 17:17:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1727936AbgEOJUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 05:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727803AbgEOJUN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 05:20:13 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78720C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 02:20:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PwLPxTgU7MVgOEj1sQDsMs7u6MdEPxf7jvTyirXInfQ=; b=peGeYEPFb/+g6JS0ALE7mDaYs6
+        4yCuDKhjmqdXuGgjsgxBsXSC7aZuzRZpNBmBuHlOlN5g6zRURkvP+nutuJn1i7cepMFMxqb8wxU2y
+        EW2P4lGoWXTB71NFmVasUZ1tedkvj5Li9RHQKS8Y7QXw3jWp6ypN/QWJAwpEG1dVwUNs2AYDzxCdA
+        tazMkyjyqFNkdX9cfix4ffq6ueT4jiXftB0VeWGh7rxXLh+LMrN2XnGLnQwsx7tdrozeZkVartpK/
+        nU+SJoFz+BhgWlBOdVkTjEIAKYlfXu7lrSYSlXvVXn0lyqK70t1lkNPYMdt7zeJoYEEFkIiRuFr4C
+        0Fpo0L0g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jZWVh-0008Bs-SM; Fri, 15 May 2020 09:20:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6DF42300261;
+        Fri, 15 May 2020 11:20:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4C7D020267E66; Fri, 15 May 2020 11:20:03 +0200 (CEST)
+Date:   Fri, 15 May 2020 11:20:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Will Deacon <will@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH v5 00/18] Rework READ_ONCE() to improve codegen
+Message-ID: <20200515092003.GR2957@hirez.programming.kicks-ass.net>
+References: <CANpmjNNeSnrAgfkskE5Y0NNu3-DS6hk+SwjkBunrr8FRxwwT-Q@mail.gmail.com>
+ <20200513111057.GN2957@hirez.programming.kicks-ass.net>
+ <CANpmjNMariz3-keqwUsLHVrpk2r7ThLSKtkhHxTDa3SEGeznhA@mail.gmail.com>
+ <20200513123243.GO2957@hirez.programming.kicks-ass.net>
+ <20200513124021.GB20278@willie-the-truck>
+ <CANpmjNM5XW+ufJ6Mw2Tn7aShRCZaUPGcH=u=4Sk5kqLKyf3v5A@mail.gmail.com>
+ <20200513132440.GN2978@hirez.programming.kicks-ass.net>
+ <CANpmjNM5dD1VH0hoQwsZYEL=mhWunKwAEJMQgASzHSN019OCnw@mail.gmail.com>
+ <20200514141344.GB2978@hirez.programming.kicks-ass.net>
+ <CANpmjNPb0nr+PGRhogySdm1ixdSRTF_Xi5P8pn_8er+mDtt3kQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <202005150107.DA3ABE3@keescook>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNPb0nr+PGRhogySdm1ixdSRTF_Xi5P8pn_8er+mDtt3kQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/5/15 16:09, Kees Cook wrote:
-> On Fri, May 15, 2020 at 12:33:43PM +0800, Xiaoming Ni wrote:
->> +static int sixty = 60;
+On Thu, May 14, 2020 at 04:20:42PM +0200, Marco Elver wrote:
+> On Thu, 14 May 2020 at 16:13, Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Wed, May 13, 2020 at 03:58:30PM +0200, Marco Elver wrote:
+> > > On Wed, 13 May 2020 at 15:24, Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > > > Also, could not this compiler instrumentation live as a kernel specific
+> > > > GCC-plugin instead of being part of GCC proper? Because in that case,
+> > > > we'd have much better control over it.
+> > >
+> > > I'd like it if we could make it a GCC-plugin for GCC, but how? I don't
+> > > see a way to affect TSAN instrumentation. FWIW Clang already has
+> > > distinguish-volatile support (unreleased Clang 11).
+> >
+> > Ah, I figured not use the built-in TSAN at all, do a complete
+> > replacement of the instrumentation with a plugin. AFAIU plugins are able
+> > to emit instrumentation, but this isn't something I know a lot about.
 > 
-> This should be const. (Which will require a cast during extra2
-> assignment.)
-> 
-Sorry, I forgot to append const.
-Thanks for your guidance.
+> Interesting option. But it will likely not solve the no_sanitize and
+> inlining problem, because those are deeply tied to the optimization
+> pipelines.
 
-Thanks
-Xiaoming Ni
+So I'm imagining adding the instrumentation is done at a very late pass,
+after all, all we want is to add instrumentation to any memops. I
+imagine this is done right before doing register allocation and emitting
+asm.
 
+At this point we can look if the current function has a no_sanitize
+attribute, no?
+
+That is, this is done after all the optimization and inlining stages
+anyway; why would we care about that?
+
+Maybe I'm too naive of compiler internals; this really isn't my area :-)
