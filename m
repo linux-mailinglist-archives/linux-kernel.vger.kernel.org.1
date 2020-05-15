@@ -2,124 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD441D4D61
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 14:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F27021D4D6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 14:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbgEOMF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 08:05:57 -0400
-Received: from mga11.intel.com ([192.55.52.93]:4688 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgEOMF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 08:05:56 -0400
-IronPort-SDR: pbNWTpnTexALeOgUTQEJWtgskadJOYSEAPv7RTbh6zLW7pZmxF6YzFs4fyvcWzzFhHOskXad9k
- y1i8qEAfy3dg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 05:05:56 -0700
-IronPort-SDR: ETu/rW6/uFdF7TdKoh27Q9VwNarsKv/Nw6Rqg/wuXAUPeJO4JbkpXTzyU+NuZoqdLKCQMtm7hB
- 56shWPE1OBtQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
-   d="scan'208";a="372670460"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 15 May 2020 05:05:53 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 15 May 2020 15:05:52 +0300
-Date:   Fri, 15 May 2020 15:05:52 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Benson Leung <bleung@chromium.org>,
-        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-acpi@vger.kernel.org,
-        Tim Wawrzynczak <twawrzynczak@chromium.org>
-Subject: Re: [PATCH 2/4] usb: typec: mux: intel_pmc_mux: Support for static
- SBU/HSL orientation
-Message-ID: <20200515120552.GC1511@kuha.fi.intel.com>
-References: <20200507150900.12102-1-heikki.krogerus@linux.intel.com>
- <20200507150900.12102-3-heikki.krogerus@linux.intel.com>
- <20200507224041.GA247416@google.com>
- <20200508111840.GG645261@kuha.fi.intel.com>
- <20200511133202.GA2085641@kuha.fi.intel.com>
- <20200511175719.GA136540@google.com>
- <20200512142251.GD2085641@kuha.fi.intel.com>
- <20200512191910.GD136540@google.com>
- <CACeCKad4BebiBJS_wO=FdWVWypgOD822Dir7HeRBf0uXUuJusA@mail.gmail.com>
+        id S1726216AbgEOMID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 08:08:03 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:56892 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgEOMID (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 08:08:03 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04FC7ncL069619;
+        Fri, 15 May 2020 07:07:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589544469;
+        bh=P2WNi7x0Zj8xqyBPxb8DBbQOS164uI/PXBCVTPhezlo=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=YgpXD3qY4FRwgn8ktmFMnOrKc0z7ACElFFeK/6D1FGNS9fUe0Mmg68P+RVh1L2Vzs
+         V2wbIgg3Hi3Nbsyk34iZ4EyPvLCcpLEbOVafiACntP20Wq8wU+cnjPBDKkUavmGsLr
+         +Ey8hdQ46uK+0bBXKHbSp8Yq0TjN3ArpESP9xrEw=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04FC7ntd052692
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 May 2020 07:07:49 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
+ May 2020 07:07:48 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 15 May 2020 07:07:49 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04FC7ivD003821;
+        Fri, 15 May 2020 07:07:45 -0500
+Subject: Re: [PATCH AUTOSEL 5.6 30/62] net: Make PTP-specific drivers depend
+ on PTP_1588_CLOCK
+To:     Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Clay McClure <clay@daemons.net>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+References: <20200514185147.19716-1-sashal@kernel.org>
+ <20200514185147.19716-30-sashal@kernel.org>
+ <CAK8P3a1Yh-qeh_CCVQZFcT0JMvhoxHx72KUWf3FXYD4yk_ptTw@mail.gmail.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <2b087eec-98b8-dedf-410c-c966d9802c89@ti.com>
+Date:   Fri, 15 May 2020 15:07:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACeCKad4BebiBJS_wO=FdWVWypgOD822Dir7HeRBf0uXUuJusA@mail.gmail.com>
+In-Reply-To: <CAK8P3a1Yh-qeh_CCVQZFcT0JMvhoxHx72KUWf3FXYD4yk_ptTw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prashant,
 
-> I just realized, the issue I initially pointed out would apply to the
-> connect message too, i.e I'm not sure if "normal" orientation setting
-> handles the case where port orientation is reversed correctly.
-> Overall, I am not sure that re-using the typec_orientations[] string
-> list is the best option for this use-case.
-> we're looking for "normal" (i.e follows port->orientation) and "fixed"
-> (i.e is always the same orientation, regardless of what
-> port->orientation is), so it is perhaps better to just define a new
-> array just for this driver.
 
-Sorry, I got sidetracked with that Alternate-Direct Request stuff.
-Let's start over..
-
-The property itself is the indicator that the orientation is fixed for
-those lines, not its value. If the property exists, we know the
-orientation is fixed, and if it doesn't exist, we know we need to use
-the cable plug orientation. So if we only want to use the property as
-a flag, then it does not need to have any value at all. It would be a
-boolean property.
-
-But we would then always leave the ORI-HSL field with value 0 when the
-orientation is fixed, and that would rule out the possibility of
-supporting a platform where we have to use a fixed value of 1 there
-(fixed-reversed). If we ever needed to support configuration like
-that, then we would need to add a new property.
-
-That scenario may not be relevant on this platform, and it may seem
-like an unlikely, or even impossible case now, but experience (and the
-north mux-agent documentation) tells me we should prepare also for
-that. That is why I use the typec_orientation strings as the values
-for these properties. Then the fixed-reversed orientation is also
-covered with the same properties if we ever need to support it.
-
-Maybe this code would be better, or more clear in the driver:
-
-/*
- * Returns the value for the HSL-ORI field.
- */
-static int hsl_orientation(struct pmc_usb_port *port)
-{
-        enum typec_orientation orientation;
-
-        /*
-         * Is the orientation fixed:
-         *   Yes, use the fixed orientation.
-         *   No, use cable plug orientation.
-         */
-        if (port->hsl_orientation)
-                orientation = hsl_orientation;
-        else
-                orientation = port->orientation;
-
-        switch (orientation) {
-        case TYPEC_ORIENTATION_NORMAL:
-                return 0;
-        case TYPEC_ORIENTATION_REVERSE:
-                return 1;
-        }
-
-        return -EINVAL;
-}
-
-thanks,
+On 15/05/2020 00:40, Arnd Bergmann wrote:
+> On Thu, May 14, 2020 at 8:52 PM Sasha Levin <sashal@kernel.org> wrote:
+>>
+>> From: Clay McClure <clay@daemons.net>
+>>
+>> [ Upstream commit b6d49cab44b567b3e0a5544b3d61e516a7355fad ]
+>>
+>> Commit d1cbfd771ce8 ("ptp_clock: Allow for it to be optional") changed
+>> all PTP-capable Ethernet drivers from `select PTP_1588_CLOCK` to `imply
+>> PTP_1588_CLOCK`, "in order to break the hard dependency between the PTP
+>> clock subsystem and ethernet drivers capable of being clock providers."
+> 
+> I don't think this one should be backported unless 3a9dd3ecb207 ("kconfig:
+> make 'imply' obey the direct dependency") is already backported to v5.6
+> (which I don't think it should either).
+> 
+Yes. pls, drop it. It's rather optimization, not a fix.
+And it might introduce build failures.
 
 -- 
-heikki
+Best regards,
+grygorii
