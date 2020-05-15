@@ -2,85 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B332C1D5C68
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 00:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5F81D5C6E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 00:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727082AbgEOW2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 18:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53528 "EHLO
+        id S1726717AbgEOWeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 18:34:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726204AbgEOW2s (ORCPT
+        with ESMTP id S1726204AbgEOWeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 18:28:48 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081A4C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 15:28:48 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id e10so3534522edq.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 15:28:47 -0700 (PDT)
+        Fri, 15 May 2020 18:34:02 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBEA6C061A0C;
+        Fri, 15 May 2020 15:34:01 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id c83so796755oob.6;
+        Fri, 15 May 2020 15:34:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=OiLlyzm7NK6Yyje5dWntghfFt796h17Dq/AsO5doM7Q=;
-        b=c4uy1pfAWz8GA7VA6WB9ny2hsU9d/PUQ3r7Uk45pFf+0OKNK5NCArzfA73EuOglspc
-         /qSBDiaOoe/8SKbTBWc7IBI7FQDMF6pLJenEBpEbSfTExjODVwrR2go3vqKPy1uQPzWE
-         AJMZG6whJWrHNGtKkB5FLWM/JBYsisfBZ1Zmxo/xEt69pPL/rj1gVnBupMX6o5yhFYHg
-         vT1yJz1Uhb4jS2xiGv7D0Tq4CA7LH98LmlUImx9qSB9jHB7XH5YfKRjAZBqeNm27ampE
-         wSlleDsx/tWoeM5L8S0F3DhgaXBiBzH1xFjz9oS/WM6ZqUM54TQGf3yq/W0JT4Zy/lAW
-         EZ9g==
+        bh=vh3ZP2e9/E+V3ueF0Y04DaEaXMiwgawvG0Y7J6ZEOgc=;
+        b=OlSp/NHTK/S4ED5pnIAp0jEUj9HdxRpYf+lOzhDDe7NSuXU8vjhjJpTX3eToWogpNN
+         yEwYR7VricLuXE0Y/M5cfrlGU4pvHSKIEbfIKIZDghYSfbN1njQnsgy4wua/hdF+/6AN
+         rrwBk+xL6eSY0+MgUEtTqrjiMBA780Un/3dIJW4utIzKIcgsMGzlTS5MCqjVg+TRzLxd
+         VTWZwwsw3Ip7d+/oqJLGUUznq4/PJNhSkuUNpKKjdD7T9X5H1bnD4LWL4An2TU0ouNO+
+         zwaQMSceDGh6qj+t9eLhsz9ltjB23DRpLULsAijV087ykaR/+qzcso/rq+VWZyPfHD3a
+         tsKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=OiLlyzm7NK6Yyje5dWntghfFt796h17Dq/AsO5doM7Q=;
-        b=O3d/ZGi0rrGL6WBUcxgzRzn9D/FazGlsAdoVhD5kdvATI/pEctRtBn5imjQLhF0Una
-         te/sqincLyPCqVpvuE+nyLkK5mSILN0N+Ek1upA48qAfTOyuZQD/zKvNP1fCVEJMv0/d
-         C4qpZQDyf+Te4k6v3gWXy1Qz5LDtWnNt3mAek2Wq7nH54jCNgMKS+ZUThvZvVLSozO5d
-         27jKDocL/RWWg7Ptly56QV93xsmV1vY52pgcOOIrykyqgDoUp+S6NWLHi2moR2Kfrl/n
-         OdYIsHEL8BJ8gC9H1ywkqYAycJObejWx0ljun+WtqWtr0xmWEEnqT07xaxXqABTYtME2
-         tsvA==
-X-Gm-Message-State: AOAM533BFq0vNbcEm3k1uObyGzR5XhFqRWjyCtGleq60UF+yibNVFG4N
-        PFVLP3UaJLRiWnOkSmRcYHGGaii5rM/gsB7WfOk=
-X-Google-Smtp-Source: ABdhPJw6qfJFJGU2xaA292Tw7LF3O+NAAZcE87MQPNkhZH89CioA938Nln3rpP6F7sD58XsG+rUvm9WF2YiyBE3uoxY=
-X-Received: by 2002:a05:6402:74b:: with SMTP id p11mr3976491edy.229.1589581726529;
- Fri, 15 May 2020 15:28:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vh3ZP2e9/E+V3ueF0Y04DaEaXMiwgawvG0Y7J6ZEOgc=;
+        b=bKcb+iS/DTrpUtnbdUBGZPUvu17BD6swgO+D4aAMtqLHT2eAdjl9/GKyAy0e6tL7hN
+         xB7ln3n/xf6wiENmIRlUapY2eyE1X1xcrqz/psxM9czIyWpD0oQwbyFTgnp1TAWA1oUS
+         qj0cg+T4DCnKiLntEhkbwyIPO1d/9xqHsd/+HaMPCsD69lPA8Uk98xtY8qT4VYzFf2pl
+         Drc+qEzuscvLHJb6RDfqzE/d61QclM7iLHlKHy2koIBfDt0Ik/ddL0Jds7hVgKHE4D09
+         FVsK45MywdyEWj5L3DH1C0dwftP2vUTlxyznl9I5mNSZ4EE59H3iQYQiTnO9ElRrafOY
+         tnAw==
+X-Gm-Message-State: AOAM5307t1uFl0L27LAk08O/9THZu2DDhvo1ErQ8oEseVYXT3Yb+riWN
+        2rHUbkCgBbrP5DgzAkdRg1E=
+X-Google-Smtp-Source: ABdhPJwIU1ZGu5Bo5WpV9Cfd6ftse9mWcr7TrO9KgFqz7kCeGavMH34rHohA797MFLs9yDcDXz1nTA==
+X-Received: by 2002:a4a:94eb:: with SMTP id l40mr4434211ooi.30.1589582041166;
+        Fri, 15 May 2020 15:34:01 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id g6sm913034otj.6.2020.05.15.15.34.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 May 2020 15:34:00 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] ethernet: ti: am65-cpts: Add missing inline qualifier to stub functions
+Date:   Fri, 15 May 2020 15:33:18 -0700
+Message-Id: <20200515223317.3650378-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Received: by 2002:a05:6402:708:0:0:0:0 with HTTP; Fri, 15 May 2020 15:28:45
- -0700 (PDT)
-Reply-To: sd4955914@gmail.com
-From:   "Mr. Scott Donald" <mea23606@gmail.com>
-Date:   Fri, 15 May 2020 15:28:45 -0700
-Message-ID: <CACFzmP8thTp3i56_LJnQEAeAxV7YgcOJz820SQp9xzQAA2Db-w@mail.gmail.com>
-Subject: Urgent Reply,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
-I'm Mr. Scott Donald a Successful business Man. dealing=C2=A0with
-Exportation, I got your email contact through search=C2=A0to let you know
-my Ugly Situation Am a dying Man here in=C2=A0California Los Angeles
-Hospital Bed in (USA), I Lost my=C2=A0Wife and my only Daughter for Corona
-virus and my Doctor said to me that i don't have enough time to live
-any=C2=A0more, i have a project that am about to handover to you.=C2=A0i ha=
-ve
-already instructed the Barclay Bank of London to=C2=A0transfer my fund sum
-of =C2=A33,7M GBP to you as to enable you=C2=A0give 50% to Charitable Home =
-and
-take 50% and i have=C2=A0already given all i have here in America to
-Charitable=C2=A0home I also ask my Doctor to help me get to you in case=C2=
-=A0you
-did not hear from me again, i want to you see on video very urgent
-here is my Doctor Whatsapp Number for urgent notice +13019692737
+When building with Clang:
 
-Hope To Hear From You. i really want to see you on Video call very
-urgent please.
+In file included from drivers/net/ethernet/ti/am65-cpsw-ethtool.c:15:
+drivers/net/ethernet/ti/am65-cpts.h:58:12: warning: unused function
+'am65_cpts_ns_gettime' [-Wunused-function]
+static s64 am65_cpts_ns_gettime(struct am65_cpts *cpts)
+           ^
+drivers/net/ethernet/ti/am65-cpts.h:63:12: warning: unused function
+'am65_cpts_estf_enable' [-Wunused-function]
+static int am65_cpts_estf_enable(struct am65_cpts *cpts,
+           ^
+drivers/net/ethernet/ti/am65-cpts.h:69:13: warning: unused function
+'am65_cpts_estf_disable' [-Wunused-function]
+static void am65_cpts_estf_disable(struct am65_cpts *cpts, int idx)
+            ^
+3 warnings generated.
 
+These functions need to be marked as inline, which adds __maybe_unused,
+to avoid these warnings, which is the pattern for stub functions.
 
-Regards
+Fixes: ec008fa2a9e5 ("ethernet: ti: am65-cpts: add routines to support taprio offload")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1026
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ drivers/net/ethernet/ti/am65-cpts.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Mr. Scott Donald
+diff --git a/drivers/net/ethernet/ti/am65-cpts.h b/drivers/net/ethernet/ti/am65-cpts.h
+index 98c1960b20b9..cf9fbc28fd03 100644
+--- a/drivers/net/ethernet/ti/am65-cpts.h
++++ b/drivers/net/ethernet/ti/am65-cpts.h
+@@ -55,18 +55,18 @@ static inline void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en)
+ {
+ }
+ 
+-static s64 am65_cpts_ns_gettime(struct am65_cpts *cpts)
++static inline s64 am65_cpts_ns_gettime(struct am65_cpts *cpts)
+ {
+ 	return 0;
+ }
+ 
+-static int am65_cpts_estf_enable(struct am65_cpts *cpts,
+-				 int idx, struct am65_cpts_estf_cfg *cfg)
++static inline int am65_cpts_estf_enable(struct am65_cpts *cpts, int idx,
++					struct am65_cpts_estf_cfg *cfg)
+ {
+ 	return 0;
+ }
+ 
+-static void am65_cpts_estf_disable(struct am65_cpts *cpts, int idx)
++static inline void am65_cpts_estf_disable(struct am65_cpts *cpts, int idx)
+ {
+ }
+ #endif
+
+base-commit: bdecf38f228bcca73b31ada98b5b7ba1215eb9c9
+-- 
+2.26.2
+
