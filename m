@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D298C1D5644
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4E01D563E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbgEOQi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 12:38:27 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:45215 "EHLO
+        id S1726407AbgEOQiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 12:38:16 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34940 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726223AbgEOQiM (ORCPT
+        with ESMTP id S1726302AbgEOQiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 12:38:12 -0400
+        Fri, 15 May 2020 12:38:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589560691;
+        s=mimecast20190719; t=1589560693;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=7Bg7RWFLPly3TX4Y/V49rHB9a190dlTFcmjCSkHrUK0=;
-        b=hKHyoowsetO0bI6QUhSJegZH3xguL7K4oybAIB2tZd8IFHSOqJrsynwchoU9R/bGDdnDpf
-        GNItxYMt03Y2te6qc09hC2w4QJI/GwqetxIT0jRbWh8zqAel4MNIyMuLmvEqWPBOrsUWYU
-        o/ibZsettJ79byymTDa45T7/C41xnsI=
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6gZ5R0zPx7v8Q5QUl+dC4PL1yY2tt7RqoIbj3l8sE74=;
+        b=OVS0BvkZTZX8VAP7WKqCcEsyKi8CcjKryS5eG11F3TGafFb9uKe2aMPgGIG8oXR9on4pYd
+        F6vY+6xDzKHREcgmkNHw1icJMNAA5cDoJSa4QYAIyfmZZwe+hxk/sJNk44/C3OrI5KqQ3x
+        96eTsP9kzdm3ZVG8jc4sdA/CwDNtLmc=
 Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
  [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-328-b4jWKibFP7SJkQ1pfi1WLQ-1; Fri, 15 May 2020 12:38:09 -0400
-X-MC-Unique: b4jWKibFP7SJkQ1pfi1WLQ-1
-Received: by mail-wr1-f72.google.com with SMTP id 90so1424526wrg.23
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 09:38:08 -0700 (PDT)
+ us-mta-159-DoEot4NXOA-wB8tVlTv9RQ-1; Fri, 15 May 2020 12:38:10 -0400
+X-MC-Unique: DoEot4NXOA-wB8tVlTv9RQ-1
+Received: by mail-wr1-f72.google.com with SMTP id y7so1433449wrd.12
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 09:38:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7Bg7RWFLPly3TX4Y/V49rHB9a190dlTFcmjCSkHrUK0=;
-        b=kSi15p/azszw5wtd458sxa7dvreVU6Qnn2uZMO8ssJ4nyX/Orr5iMbYUs1zsTzQmil
-         dyj/gtizPBmSEw0uQ1MjjEv294sp13xZB1jDlla41niIGZwbaBhIjUV/bK6xhZc1P0GT
-         8vLQyR2dTjHb81FADBY8reNcXfW0RYTbHXOQu56uKXeBCfudDLN1yrNT82HMLlasajUa
-         GizlpoM3WnagIu4Mr0BY33wai4wZkEA2/Zb1lMIZsImm/vWGil1x+r0Ec9bXbsQ3RX9r
-         knhuU/NJ1PwV4xkFrUcLhAwBKU1loe0gclGg0k8spoBex0bViZLs+Q9rv5ScNK1QbzGg
-         5FpQ==
-X-Gm-Message-State: AOAM533pxToiRyxNSo/rs1jXgFPQ00gjf/YPiFvuBV2C5LE0esRB7cG7
-        g6O/QMxIw5rB70curbomN7m16YlWjZSW1Hf3CNUPsR+l71kvkPXW+gruaLaOyHymHRCmCbdigHh
-        8EpaBKCHsYkTZ9Xpc3dP9pby3
-X-Received: by 2002:a5d:5449:: with SMTP id w9mr5180360wrv.361.1589560687882;
-        Fri, 15 May 2020 09:38:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwQ0wJAxWl28YCjenrP8G+kE5OMcm3BmJsWA9vMViZXynBcWONdSadJSiu/D24iHJbsAlDgVQ==
-X-Received: by 2002:a5d:5449:: with SMTP id w9mr5180340wrv.361.1589560687584;
-        Fri, 15 May 2020 09:38:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=6gZ5R0zPx7v8Q5QUl+dC4PL1yY2tt7RqoIbj3l8sE74=;
+        b=FRqcRauuMIzBe02CCUzBO4fXakSxISCs2o8/1zLYwZZoVWUqs0a3YenCg6961PplIC
+         s1IFnG5P1GnylDMibquHgQl5dFz2oFAICNXnWFRDEzUQ5MzsejlMkeTs8WK3enWqdsXP
+         KMdpx2C84D6lrODqkzP8sYztZBS5eVAK1yS9KJcaC5++591CXN8WJMKFq+yjo/2fy/kr
+         mQEZucx/c/V42XRkZEAJiv0r2A1Q4c4pbiEnVA/HgTdaFrc7MrF86c0JaT0YATItmclx
+         wpzjzRuzojgdPGmifVDkg0pTGg6Pix8YrXizRiDDiw1lS4dnf1+J1kl5A+Y0aY6RxN+m
+         U03g==
+X-Gm-Message-State: AOAM532PVUttSoOr6M88+orJ/XycogvuAN9S2H3lUyIIpuOJiMndEBmr
+        8isZjhUopKm99qkDcvFY5uH8huhSzcA3WzW8WlMtSAXbzcsYrNl+nED02P4sMHa6EEaYYmFm7fr
+        uufr4LmLHZl/bWgO+BYP9BI0u
+X-Received: by 2002:adf:dc0f:: with SMTP id t15mr5068326wri.165.1589560688995;
+        Fri, 15 May 2020 09:38:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxF+hp4GbO5uog6iIPuueL5jjs4PZEKrB1UaoTN20cj9bx0TDVFE81Yzd2+7qty/BxbZXjrMA==
+X-Received: by 2002:adf:dc0f:: with SMTP id t15mr5068296wri.165.1589560688701;
+        Fri, 15 May 2020 09:38:08 -0700 (PDT)
 Received: from steredhat.redhat.com ([79.49.207.108])
-        by smtp.gmail.com with ESMTPSA id b145sm4680274wme.41.2020.05.15.09.38.06
+        by smtp.gmail.com with ESMTPSA id b145sm4680274wme.41.2020.05.15.09.38.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 09:38:06 -0700 (PDT)
+        Fri, 15 May 2020 09:38:08 -0700 (PDT)
 From:   Stefano Garzarella <sgarzare@redhat.com>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     linux-kernel@vger.kernel.org,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2 0/2] io_uring: add a CQ ring flag to enable/disable eventfd
- notification
-Date:   Fri, 15 May 2020 18:38:03 +0200
-Message-Id: <20200515163805.235098-1-sgarzare@redhat.com>
+Subject: [PATCH v2 1/2] io_uring: add 'cq_flags' field for the CQ ring
+Date:   Fri, 15 May 2020 18:38:04 +0200
+Message-Id: <20200515163805.235098-2-sgarzare@redhat.com>
 X-Mailer: git-send-email 2.25.4
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200515163805.235098-1-sgarzare@redhat.com>
+References: <20200515163805.235098-1-sgarzare@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -68,38 +69,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v1 -> v2:
- - changed the flag name and behaviour from IORING_CQ_NEED_EVENT to
-   IORING_CQ_EVENTFD_DISABLED [Jens]
+This patch adds the new 'cq_flags' field that should be written by
+the application and read by the kernel.
 
-The first patch adds the new 'cq_flags' field for the CQ ring. It
-should be written by the application and read by the kernel.
+This new field is available to the userspace application through
+'cq_off.flags'.
+We are using 4-bytes previously reserved and set to zero. This means
+that if the application finds this field to zero, then the new
+functionality is not supported.
 
-The second patch adds a new IORING_CQ_EVENTFD_DISABLED flag that can be
-used by the application to disable/enable eventfd notifications.
+In the next patch we will introduce the first flag available.
 
-This feature can be useful if the application are using eventfd to be
-notified when requests are completed, but they don't want a notification
-for every request.
-Of course the application can already remove the eventfd from the event
-loop, but as soon as it adds the eventfd again, it will be notified,
-even if it has already handled all the completed requests.
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+---
+ fs/io_uring.c                 | 10 +++++++++-
+ include/uapi/linux/io_uring.h |  4 +++-
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-The most important use case is when the registered eventfd is used to
-notify a KVM guest through irqfd and we want a mechanism to
-enable/disable interrupts.
-
-I also extended liburing API and added a test case here:
-https://github.com/stefano-garzarella/liburing/tree/eventfd-disable
-
-Stefano Garzarella (2):
-  io_uring: add 'cq_flags' field for the CQ ring
-  io_uring: add IORING_CQ_EVENTFD_DISABLED to the CQ ring flags
-
- fs/io_uring.c                 | 12 +++++++++++-
- include/uapi/linux/io_uring.h | 11 ++++++++++-
- 2 files changed, 21 insertions(+), 2 deletions(-)
-
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 979d9f977409..6e8158269f3c 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -142,7 +142,7 @@ struct io_rings {
+ 	 */
+ 	u32			sq_dropped;
+ 	/*
+-	 * Runtime flags
++	 * Runtime SQ flags
+ 	 *
+ 	 * Written by the kernel, shouldn't be modified by the
+ 	 * application.
+@@ -151,6 +151,13 @@ struct io_rings {
+ 	 * for IORING_SQ_NEED_WAKEUP after updating the sq tail.
+ 	 */
+ 	u32			sq_flags;
++	/*
++	 * Runtime CQ flags
++	 *
++	 * Written by the application, shouldn't be modified by the
++	 * kernel.
++	 */
++	u32                     cq_flags;
+ 	/*
+ 	 * Number of completion events lost because the queue was full;
+ 	 * this should be avoided by the application by making sure
+@@ -7834,6 +7841,7 @@ static int io_uring_create(unsigned entries, struct io_uring_params *p,
+ 	p->cq_off.ring_entries = offsetof(struct io_rings, cq_ring_entries);
+ 	p->cq_off.overflow = offsetof(struct io_rings, cq_overflow);
+ 	p->cq_off.cqes = offsetof(struct io_rings, cqes);
++	p->cq_off.flags = offsetof(struct io_rings, cq_flags);
+ 
+ 	p->features = IORING_FEAT_SINGLE_MMAP | IORING_FEAT_NODROP |
+ 			IORING_FEAT_SUBMIT_STABLE | IORING_FEAT_RW_CUR_POS |
+diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
+index e48d746b8e2a..602bb0ece607 100644
+--- a/include/uapi/linux/io_uring.h
++++ b/include/uapi/linux/io_uring.h
+@@ -204,7 +204,9 @@ struct io_cqring_offsets {
+ 	__u32 ring_entries;
+ 	__u32 overflow;
+ 	__u32 cqes;
+-	__u64 resv[2];
++	__u32 flags;
++	__u32 resv1;
++	__u64 resv2;
+ };
+ 
+ /*
 -- 
 2.25.4
 
