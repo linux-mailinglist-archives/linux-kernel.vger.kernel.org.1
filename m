@@ -2,188 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7792F1D4B17
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D55451D4B1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgEOKdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 06:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53910 "EHLO
+        id S1728451AbgEOKdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 06:33:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728048AbgEOKdF (ORCPT
+        with ESMTP id S1728048AbgEOKdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 06:33:05 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66187C061A0C;
-        Fri, 15 May 2020 03:33:05 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id n11so1993795ilj.4;
-        Fri, 15 May 2020 03:33:05 -0700 (PDT)
+        Fri, 15 May 2020 06:33:11 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B397C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:33:11 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id q9so765732pjm.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:33:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uxCT2XVxCtoNmTqiWhqBcEudlvFd9wfrP50N1uK7vP0=;
-        b=CEpylQx8/jmoucaFxOo6aDvRXqpObt3GOf3QrRyhcuqdkgrNf1lSuUtWU6UwC8nV1S
-         K+DOmwilg/Su+oxqQRNpuw5BhEJzEnUgmkfMeb1QnS2dglQiL3VeTsFf360Qb+lPaXbT
-         0nQQnlMc9696yhdUynH2cBEM6k1fMa3/3F3c2l8oJ27Z1IFD5oB4cjLYuvD4v7pLri3G
-         0xv6Bymoqgq33uYlm9zg8EA2fYhDFv34nSO0Th6tb8BoyWAg03s5OSGrP2Dr7GVzGUfS
-         4df6x/6gUqLeiPKccFIeBBtZeqnNF2UOUQ8eXik4yu/qS6URNVCNYGYQcHek958U0tWA
-         pjGg==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+XVj7Vn4q7UWK0rXA2mfb7XaH4le6Oj5JDX0rkTcjv8=;
+        b=QQepBCDYSozWfCOr/eFEkoIrW01LVBw3ONlO+lac/N4lGJUp/URE0OM0R9XXbLQIJ3
+         YYf2/4K2rm8OLRPVubTJZFyO50CLzcAWr8nckIRaOLY+1f/vjSs2lR+Y5Y9bYDVQr+pO
+         Fnas1I2V70MShXTLQFzApJ2ybjosMrusIzmosj5ERNkD0FNvl2r7xEpN3u7aiDcdK0tr
+         JLoFrbFbEqVnmjAqh84lWcO60Bmd564ZmkSBEo0e8Y39SfjqK2Z8OgAUv8FeW0UIIq7Y
+         6HRB59wBCV00RZ4X9L92ig7LTwJGuZxKJZFNvgtQjZp6S88j5dMkuyDY9bSxQbZ/13/F
+         /JTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uxCT2XVxCtoNmTqiWhqBcEudlvFd9wfrP50N1uK7vP0=;
-        b=E43ozhrqq3yLsQP1QL95zYYSTg+dWhwxtUPenZg7HxOBr9zHcqCzrbRF0xvA30Grg3
-         AAGhvQkk/+uzDIk1eztaVjCjtmAVx8iFHUTAVD8QFlvZ5JiuLbETV7ODRrp8i2ZEyG5T
-         Wgs1DgDi9k9b/fCDJBNFmlexhTI9JzFaFedv3201GUnxSdn1fsAT8Oswc5Orwfa92lmd
-         PdMkOcdlYojElL+PnAiRkxWfgmN5MVoWxXTMkqXvfkleDba/2Xy8PIUK9VOB6aE5BPuQ
-         AqqQAzNTX+PpgOuA/pydUXV63hwmUhREcXsTDkO2Jx3OItnFPZscGEUIVJTp8yjykiSr
-         A++A==
-X-Gm-Message-State: AOAM531SbmIOIeIMc4DCbhWhw0BMw9pRQiDrU3S1Zv3sNaUrNvC5BnJd
-        tWfp0RZveL0vam+opF4/LS/FLHedSZM8JJ5vmAY=
-X-Google-Smtp-Source: ABdhPJzaWAkOj9ePr5WQ4WHJ7n0TNGqqxQVutiX22A22NsEmGBBEDDIzhAQZOVUh6ahtJoIJUaUjWwbwXnRetbDtAY0=
-X-Received: by 2002:a92:a1c9:: with SMTP id b70mr2367268ill.184.1589538784758;
- Fri, 15 May 2020 03:33:04 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+XVj7Vn4q7UWK0rXA2mfb7XaH4le6Oj5JDX0rkTcjv8=;
+        b=qpALtZVVHyhnxdR8erxrpZ/GB3XByRrj1qz/TVNuuDPs6wg2fqAHVC7qguqL8GYH0k
+         2wFUQdOy6fgdktEQMbOqu4LAp4PTxEOfZyOcFAtZrSANESzSzJNm3Y+oZiIj6cujpBtX
+         HwmFWFwi12ZirvsZvgGgMg5dRXq1/ZegbpekdfcASEOLRkbHiW1X++P+1vpGVf5W6rKl
+         nSMPw9Gr+doaZOsLTSKZC3D7rrBqlVKMdM5xhAoVDvIqqiMu191tChz/wLcpLhzpwrsl
+         Qvn57TmuYHda4sRP0fjPIMFrnc+cZjadnB/4n1RCqDWdEIH51uMjEj4AjjAJo/bipWIe
+         Vz9w==
+X-Gm-Message-State: AOAM5327nl+9CZHLOMlafkP8Ie3/WM4iJ6ioS4JfYaegLx/RRt4INMd/
+        iaQ+tP77urJ+U5xa0kbJ6/g=
+X-Google-Smtp-Source: ABdhPJweTKamypY9HN33QeOPRzMIehLxFsMWkxcut7xNXPUoTEgrKmllHE13oLf4hSc73mfTruAatA==
+X-Received: by 2002:a17:90a:1aa2:: with SMTP id p31mr2625068pjp.233.1589538791105;
+        Fri, 15 May 2020 03:33:11 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id j23sm1316378pjz.13.2020.05.15.03.33.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 May 2020 03:33:10 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Date:   Fri, 15 May 2020 19:33:08 +0900
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>
+Subject: Re: [PATCH] printk/kdb: Redirect printk messages into kdb in any
+ context
+Message-ID: <20200515103308.GD42471@jagdpanzerIV.localdomain>
+References: <1589273314-12060-1-git-send-email-sumit.garg@linaro.org>
+ <20200512142533.ta4uejwmq5gchtlx@holly.lan>
+ <CAFA6WYOV7oPbYE=9fXueYMacb5wv0r9T6F8tmECt-Eafe-fctw@mail.gmail.com>
+ <20200514084230.GO17734@linux-b0ei>
+ <CAFA6WYPSsgdAB-wJC0e2YkVkW0XsqQsu5wrn4iB4M-cwvS7z2g@mail.gmail.com>
+ <20200515085021.GS17734@linux-b0ei>
 MIME-Version: 1.0
-References: <1589267017-17294-1-git-send-email-dillon.minfei@gmail.com>
- <1589267017-17294-4-git-send-email-dillon.minfei@gmail.com>
- <CACRpkda5VjjBdbruXTi33QBNb=VU6vK2zDE8yyQXoWw7=NQFeg@mail.gmail.com>
- <a4ebd7cd-5756-0683-135f-0f96be8a4a7b@st.com> <CAL9mu0Jt_xwo5pJfcx6G3grBuOaxLXvakpEjiB4gV3=bkiq2fg@mail.gmail.com>
- <818b93b4-4431-8338-cd90-ed125ecac615@st.com> <CAL9mu0L6d2V5qypPfOSeMdhc=DdHkcsaF4GysNG-vfDe5npkhw@mail.gmail.com>
- <2afd2853-e3bc-0c69-a0e5-8d4aa631a634@st.com>
-In-Reply-To: <2afd2853-e3bc-0c69-a0e5-8d4aa631a634@st.com>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Fri, 15 May 2020 18:32:28 +0800
-Message-ID: <CAL9mu0J7s589e7weQ7vyi1iFCwPOmmyFHwqhwWfYwWVqJpN+Dw@mail.gmail.com>
-Subject: Re: [Linux-stm32] [PATCH v3 3/5] ARM: dts: stm32: enable ltdc binding
- with ili9341 on stm32429-disco board
-To:     Benjamin GAIGNARD <benjamin.gaignard@st.com>
-Cc:     Alexandre TORGUE <alexandre.torgue@st.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@linux.ie>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515085021.GS17734@linux-b0ei>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
+On (20/05/15 10:50), Petr Mladek wrote:
+> kdb is able to stop kernel even in NMI context where printk() is redirected
+> to the printk_safe() lockless variant. Move the check and redirect to kdb
+> even in this case.
 
-got it, thanks a lot.
+Can I please have some context what problem does this solve?
+I can see that vkdb_printf() calls into console drivers:
 
-best regards
+	for_each_console(c) {
+		c->write(c, cp, retlen - (cp - kdb_buffer));
+		touch_nmi_watchdog();
+	}
 
-Dillon
+Is this guaranteed that we never execute this path from NMI?
+If so, can this please be added to the commit message? A more
+detailed commit message will help a lot.
 
-On Fri, May 15, 2020 at 5:34 PM Benjamin GAIGNARD
-<benjamin.gaignard@st.com> wrote:
->
->
->
-> On 5/15/20 11:24 AM, dillon min wrote:
-> > Hi Benjamin,
-> >
-> > thanks for reply.
-> >
-> > On Fri, May 15, 2020 at 4:31 PM Benjamin GAIGNARD
-> > <benjamin.gaignard@st.com> wrote:
-> >>
-> >>
-> >> On 5/14/20 3:07 PM, dillon min wrote:
-> >>> Hi Alexandre,
-> >>>
-> >>> On Thu, May 14, 2020 at 8:53 PM Alexandre Torgue
-> >>> <alexandre.torgue@st.com> wrote:
-> >>>>
-> >>>> On 5/14/20 10:24 AM, Linus Walleij wrote:
-> >>>>> On Tue, May 12, 2020 at 9:04 AM <dillon.minfei@gmail.com> wrote:
-> >>>>>
-> >>>>>> From: dillon min <dillon.minfei@gmail.com>
-> >>>>>>
-> >>>>>> Enable the ltdc & ili9341 on stm32429-disco board.
-> >>>>>>
-> >>>>>> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> >>>>> This mostly looks good but...
-> >>>>>
-> >>>>>> +&spi5 {
-> >>>>>> +       status = "okay";
-> >>>>>> +       pinctrl-0 = <&spi5_pins>;
-> >>>>>> +       pinctrl-names = "default";
-> >>>>>> +       #address-cells = <1>;
-> >>>>>> +       #size-cells = <0>;
-> >>>>>> +       cs-gpios = <&gpioc 2 GPIO_ACTIVE_LOW>;
-> >>>>>> +       dmas = <&dma2 3 2 0x400 0x0>,
-> >>>>>> +              <&dma2 4 2 0x400 0x0>;
-> >>>>>> +       dma-names = "rx", "tx";
-> >>>>> These DMA assignments seem to be SoC things and should
-> >>>>> rather be in the DTS(I) file where &spi5 is defined, right?
-> >>>>> stm32f429.dtsi I suppose?
-> >>>> I agree with Linus, DMA have to be defined in SoC dtsi. And if a board
-> >>>> doesn't want to use it, we use the "delete-property".
-> >>> Yes, will move to Soc dtsi in next submits.
-> >>>
-> >>> i'm working on write a v4l2-m2m driver for dma2d of stm32 to support
-> >>> pixel conversion
-> >>> alpha blending between foreground and background graphics.
-> >>>
-> >>> as you know, some soc's engineer trying to add this function to drm system.
-> >>>
-> >>> do you know st's planning about soc's hardware accelerator driver on stm32mp?
-> >>> such as chrom-art, will add to drm subsystem via ioctl to access, or to v4l2,
-> >> On stm32mp we do not plan to use chrom-art in drm or v4l2 because it
-> >> does fit
-> >> with userland way of working. We use the GPU to do conversion, scaling,
-> >> blending
-> >> and composition in only one go.
-> >> As explain here [1] DRM subsytem it isn't a solution and v4l2-m2m isn't
-> >> used in any
-> >> mainline compositors like Weston or android surfaceflinger.
-> >>
-> >> Benjamin
-> >>
-> > After check stm32mp's datasheets, they don't have chrom-art ip inside. sorry for
-> > didn't check it yet.
-> >
-> > for stm32h7 series with chrom-art, jpeg hardware accelerator inside.
-> > does st has plan to
-> > setup a driver to support it ? i prefer v4l2-m2m should be easier to
-> > implement it.
-> > co work with dcmi, fbdev.
-> ST doesn't plan to create a driver for chrom-art because nothing in
-> mainline
-> userland could use it.
->
-> Benjamin
-> >
-> > thanks.
-> >
-> > best regards.
-> >
-> > Dillon
-> >> [1]
-> >> https://www.phoronix.com/scan.php?page=news_item&px=Linux-DRM-No-2D-Accel-API
-> >>> thanks.
-> >>>
-> >>>>> It is likely the same no matter which device is using spi5.
-> >>>>>
-> >>>>> Yours,
-> >>>>> Linus Walleij
-> >>>>>
-> >>> _______________________________________________
-> >>> Linux-stm32 mailing list
-> >>> Linux-stm32@st-md-mailman.stormreply.com
-> >>> https://st-md-mailman.stormreply.com/mailman/listinfo/linux-stm32
+	-ss
