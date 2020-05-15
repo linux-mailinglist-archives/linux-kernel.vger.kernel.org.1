@@ -2,155 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905211D4F32
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57351D4F3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726237AbgEONYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 09:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726141AbgEONYn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 09:24:43 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F89C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 06:24:43 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id b6so2424470qkh.11
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 06:24:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QaWgWrHuxPFWiLAhp4MGw0Ee13FyqS0FhmE2+InAr5c=;
-        b=Y0Zf8seELSKB++cOysfnNke0Q1k76yTJbnwd9rRfJFzYLkxIfL9/nlC1CVvTkXY1r9
-         X237RzZx508nP1DQhXxUfM8ufYAA/sDlD7aXCy1RECkqi3B88KBqXqAgLfXdeea+JOKP
-         sr2HNKzwKT7a/5CHP+mQyk4HPqmfnePuexg9SGO+XsHXBaYAmhb3LohQz8G652U4JNdY
-         435kJdjSIfXUjHSpqzxa2p+WSHdqN33IjL7oO0ZM4yziSaY7z58qoJOvFZhf5gANOz29
-         cJF7y8i/lutV2jpKNQPdSLpWfP9YWiF7zl3araZDTay9TmA9VA9SJMWWSaxODkYdbBr5
-         t/LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QaWgWrHuxPFWiLAhp4MGw0Ee13FyqS0FhmE2+InAr5c=;
-        b=pIxnvasazeDFNcyEX9jH31KtUMJPHX5LeQrCoqyL8E4REu519NazMRRUltd8Q0PVTN
-         I/b/CNmuPGwkgw7/jZhBp4CcSPz8aNYKHzwk1KxZGBdB1Y2MVSqSmI+hWK1T+buvfeEL
-         mGkXoR06reA1CwLO5cAzkCCkIOvawaHgoFKfHF7mP2jJPmB93m8eK8O28jUTvv88ZseH
-         zJXnfOxpSbtEYydYsDsTwoyhgZnz2PSgO4nQQfidcZS7v/W0PERqeGdEl5CShDZ+C6Q9
-         MFE2g7MAVcsVKZN6nWKUeBM/Pgd64UviZBxDLEHduhvoFUxmeSS9iGePjZmak4kkWNMt
-         DCrA==
-X-Gm-Message-State: AOAM533a9DTPeZdHh7dUruaf61egkiQGX59mekoyN/08fPwRu1IQn0HD
-        zpjf12ECKYk+mcEF2THJa1tMnw==
-X-Google-Smtp-Source: ABdhPJyglpfBWXibDDxv4gJRiM6bCFQxrloF93IYOhe1B1YqX0LapZGO/P4tWM2dZqB+l9qK9jPRRQ==
-X-Received: by 2002:a37:9e06:: with SMTP id h6mr3248738qke.400.1589549082491;
-        Fri, 15 May 2020 06:24:42 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:90a4])
-        by smtp.gmail.com with ESMTPSA id t67sm1516787qka.17.2020.05.15.06.24.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 06:24:41 -0700 (PDT)
-Date:   Fri, 15 May 2020 09:24:21 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Shakeel Butt <shakeelb@google.com>, Mel Gorman <mgorman@suse.de>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: expose root cgroup's memory.stat
-Message-ID: <20200515132421.GC591266@cmpxchg.org>
-References: <20200508170630.94406-1-shakeelb@google.com>
- <20200508214405.GA226164@cmpxchg.org>
- <CALvZod5VHHUV+_AXs4+5sLOPGyxm709kQ1q=uHMPVxW8pwXZ=g@mail.gmail.com>
- <20200515082955.GJ29153@dhcp22.suse.cz>
+        id S1726257AbgEON05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 09:26:57 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:34018 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726162AbgEON0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 09:26:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=2lkBHPmlDRseinSfpjV+W/RFt5TcCXmxGmuOEC27plc=; b=XDpFiU172k5RrAaLBNhmTQlUrc
+        jR2OibS4ZxAABJMhFVQlN9XNegRrmH9VQwX4fxx4PIMi8BnrqEwj9NpagBYhS27I/Jyw/drf1nECQ
+        osgRt5q2QnDdGsfK64NrmFvt+ObES17pyWEhNWTDyuFsq8ISQzqmB8xp8pzdhSOhgFts=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jZaMP-002Nfr-PO; Fri, 15 May 2020 15:26:45 +0200
+Date:   Fri, 15 May 2020 15:26:45 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Xulin Sun <xulin.sun@windriver.com>
+Cc:     alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xulinsun@gmail.com
+Subject: Re: [PATCH] net: mscc: ocelot: replace readx_poll_timeout with
+ readx_poll_timeout_atomic
+Message-ID: <20200515132645.GR527401@lunn.ch>
+References: <20200515031813.30283-1-xulin.sun@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200515082955.GJ29153@dhcp22.suse.cz>
+In-Reply-To: <20200515031813.30283-1-xulin.sun@windriver.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 10:29:55AM +0200, Michal Hocko wrote:
-> On Sat 09-05-20 07:06:38, Shakeel Butt wrote:
-> > On Fri, May 8, 2020 at 2:44 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > >
-> > > On Fri, May 08, 2020 at 10:06:30AM -0700, Shakeel Butt wrote:
-> > > > One way to measure the efficiency of memory reclaim is to look at the
-> > > > ratio (pgscan+pfrefill)/pgsteal. However at the moment these stats are
-> > > > not updated consistently at the system level and the ratio of these are
-> > > > not very meaningful. The pgsteal and pgscan are updated for only global
-> > > > reclaim while pgrefill gets updated for global as well as cgroup
-> > > > reclaim.
-> > > >
-> > > > Please note that this difference is only for system level vmstats. The
-> > > > cgroup stats returned by memory.stat are actually consistent. The
-> > > > cgroup's pgsteal contains number of reclaimed pages for global as well
-> > > > as cgroup reclaim. So, one way to get the system level stats is to get
-> > > > these stats from root's memory.stat, so, expose memory.stat for the root
-> > > > cgroup.
-> > > >
-> > > >       from Johannes Weiner:
-> > > >       There are subtle differences between /proc/vmstat and
-> > > >       memory.stat, and cgroup-aware code that wants to watch the full
-> > > >       hierarchy currently has to know about these intricacies and
-> > > >       translate semantics back and forth.
+On Fri, May 15, 2020 at 11:18:13AM +0800, Xulin Sun wrote:
+> This fixes call trace like below to use atomic safe API:
 > 
-> Can we have those subtle differences documented please?
+> BUG: sleeping function called from invalid context at drivers/net/ethernet/mscc/ocelot.c:59
+> in_atomic(): 1, irqs_disabled(): 0, pid: 3778, name: ifconfig
+> INFO: lockdep is turned off.
+> Preemption disabled at:
+> [<ffff2b163c83b78c>] dev_set_rx_mode+0x24/0x40
+> Hardware name: LS1028A RDB Board (DT)
+> Call trace:
+> dump_backtrace+0x0/0x140
+> show_stack+0x24/0x30
+> dump_stack+0xc4/0x10c
+> ___might_sleep+0x194/0x230
+> __might_sleep+0x58/0x90
+> ocelot_mact_forget+0x74/0xf8
+> ocelot_mc_unsync+0x2c/0x38
+> __hw_addr_sync_dev+0x6c/0x130
+> ocelot_set_rx_mode+0x8c/0xa0
+> __dev_set_rx_mode+0x58/0xa0
+> dev_set_rx_mode+0x2c/0x40
+> __dev_open+0x120/0x190
+> __dev_change_flags+0x168/0x1c0
+> dev_change_flags+0x3c/0x78
+> devinet_ioctl+0x6c4/0x7c8
+> inet_ioctl+0x2b8/0x2f8
+> sock_do_ioctl+0x54/0x260
+> sock_ioctl+0x21c/0x4d0
+> do_vfs_ioctl+0x6d4/0x968
+> ksys_ioctl+0x84/0xb8
+> __arm64_sys_ioctl+0x28/0x38
+> el0_svc_common.constprop.0+0x78/0x190
+> el0_svc_handler+0x70/0x90
+> el0_svc+0x8/0xc
 > 
-> > > >
-> > > >       Generally having the fully recursive memory.stat at the root
-> > > >       level could help a broader range of usecases.
-> > >
-> > > The changelog begs the question why we don't just "fix" the
-> > > system-level stats. It may be useful to include the conclusions from
-> > > that discussion, and why there is value in keeping the stats this way.
-> > >
-> > 
-> > Right. Andrew, can you please add the following para to the changelog?
-> > 
-> > Why not fix the stats by including both the global and cgroup reclaim
-> > activity instead of exposing root cgroup's memory.stat? The reason is
-> > the benefit of having metrics exposing the activity that happens
-> > purely due to machine capacity rather than localized activity that
-> > happens due to the limits throughout the cgroup tree. Additionally
-> > there are userspace tools like sysstat(sar) which reads these stats to
-> > inform about the system level reclaim activity. So, we should not
-> > break such use-cases.
-> > 
-> > > > Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> > > > Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> > >
-> > > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> > 
-> > Thanks a lot.
-> 
-> I was quite surprised that the patch is so simple TBH. For some reason
-> I've still had memories that we do not account for root memcg (likely
-> because mem_cgroup_is_root(memcg) bail out in the try_charge. But stats
-> are slightly different here.
+> Signed-off-by: Xulin Sun <xulin.sun@windriver.com>
 
-Yep, we skip the page_counter for root, but keep in mind that cgroup1
-*does* have a root-level memory.stat, so (for the most part) we've
-been keeping consumer stats for the root level the whole time.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-> counters because they are not really all the same. E.g.
-> - mem_cgroup_charge_statistics accounts for each memcg
-
-Yep, that's heritage from cgroup1.
-
-> - memcg_charge_kernel_stack relies on pages being associated with a
->   memcg and that in turn relies on __memcg_kmem_charge_page which bails
->   out on root memcg
-
-You're right. It should only bypass the page_counter, but still set
-page->mem_cgroup = root_mem_cgroup, just like user pages.
-
-This counter also doesn't get exported on cgroup1, so it would indeed
-be a new bug. It needs to be fixed before this patch here.
-
-> - memcg_charge_slab (NR_SLAB*) skips over root memcg as well
-
-Same thing with these two.
+    Andrew
