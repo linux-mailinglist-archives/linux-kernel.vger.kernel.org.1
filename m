@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108AC1D530B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D481D5306
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727785AbgEOPET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 11:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39872 "EHLO
+        id S1726950AbgEOPEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 11:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726813AbgEOPEB (ORCPT
+        by vger.kernel.org with ESMTP id S1726879AbgEOPED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 11:04:01 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB14C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 08:04:00 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id s8so2830767ybj.9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 08:04:00 -0700 (PDT)
+        Fri, 15 May 2020 11:04:03 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554ACC05BD09
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 08:04:03 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id a7so2885171qvl.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 08:04:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=H/UmEzoy3I9ShhHc8I+RGwc8p1HVxWjO5wJlJG19fNM=;
-        b=Z0GnEbiUYQjnZjMykpfqkgnqmaKs3ILC/tjOGl38qOIxYGtp8fanXM43InHR6bYogG
-         00lbcHPseG9bnq/bWQXaczPWj1sXEuOtZA+5mmpYNinLqR9IyX1uOK5JT11KNlij+7Qz
-         11kOUyxwnWgO8b1cc0291gCOeqX8BkLh6/hHhD3lXXu5ci/eMVs4nqDDLQ2DvickYSSN
-         K3/PFi9KwCPK3yi/DElRSg1xL3p5iqGe1zU/5DOIZ6vKXTH89dc/Tz/bZlbiLxdQVNf3
-         Vsj9Lz1bhUIGdUhrDhYQA+2ugM4I4JKVCnah2vsvlQRlVV9KsPsCb8A9pU0iGQRxqYRy
-         AYCw==
+        bh=0j39NvXrsyBh4wsV8IVEExoloRXnW3VKds76JrKCKC0=;
+        b=XabRop8tK1h28an1x7LJCVD4HeSuT2hdXYUuJr3M5Kvpu3co2l97LA7K1hagIIbBZB
+         XOxiJwoRDk8RSV86zobtuQc3rcaptEwWqy8FFh+zZsXBS1GWleUzjDjeec97h4T2zXiB
+         QATYP6GUomRJK7598Y70HX0WNyoUNf9ckf7tKLV3D88RTM1TqLzjSTDLFnKkqleYkmGd
+         uS7NyOfNJUXHzy8+X3hVXQDoycPbxHk4quHccTPIy/KqFkceRDkuSy4zuay79Juo3AA+
+         m13am3WymFIVGSr9h2ZHCUg3NDZwrUpiZscfPrYK9m1Uw3GKHyWq+WSReaFWgiTDn4Pd
+         XL0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=H/UmEzoy3I9ShhHc8I+RGwc8p1HVxWjO5wJlJG19fNM=;
-        b=YvrpCo97YBtIa0TgoaXOG4qy+tEmXPbkUWvwCBIpiNxq5RMRvC57BZtqEBuNApb6sK
-         BRkyd/b8/eLSvktf1uFYGZOwtL4WxZA+ZX757na0xrspiHy4+bpo9Y8dbD//knM8Ihx0
-         4VCXU9wiIUcBCs1bClH2eQEsa9khbrSwOdgP3FZZ/KrsjInE5wemY0LdHN1Mq/1FFkH0
-         g0ct26Rv6DyUyaSLUY/x0jPmuK9h+VuefLGQQvucaZ4mGDKbOljJBy8IYHJu4yjCekll
-         vVLU9+K+ml+o7uHxSXULt9ICtD3DAV+DjCNEV+8hKxD2mmv2CmCEKt/MA45377N1rTDn
-         Q+uQ==
-X-Gm-Message-State: AOAM531Xn0R78E4J1bw4LgIZG1zGxAVy3r7CbkvJFVardE9R1QzNS9XD
-        qhLegDA0gjNQFudfSCwM8F++bnDJ9Q==
-X-Google-Smtp-Source: ABdhPJzuFB4Sp6X31bfLcdYQm5Tf7Ek+lRQp2LzheFKIeEHQNcK49DjK+DRHa7apK/UNOpsVLlE0efdWtw==
-X-Received: by 2002:a25:b10a:: with SMTP id g10mr6214488ybj.220.1589555040007;
- Fri, 15 May 2020 08:04:00 -0700 (PDT)
-Date:   Fri, 15 May 2020 17:03:34 +0200
+        bh=0j39NvXrsyBh4wsV8IVEExoloRXnW3VKds76JrKCKC0=;
+        b=qmQ8PxS9kLPGaeUszkj4YwKTElhT0KTGHCotpEpwl3kYf+2kPEmwWaxjBQtNwqNR41
+         SHgFCT4LhII/UW/6k5e3gI0myvNhBWU6K1JNGLY8/VuOV+WShrPTbpPVE/xIyoMWwawb
+         I75VJxQ4BQ4MUqN8i2UcK9WFbVaInwyY9SBfKpPhlZuuB8FIyABDKV4EwgMkbgUqN2j+
+         yXNVOsAL9wwHSOUwgKYbD9/xZkSmU9J7xrsP+7zMNv1hV5YkwaRuB1THy8hEfNOT1o8n
+         TMsoMY6LG5s+CL1kJuBCLaqAlRAS62fdtoVCPmGtlLWuTCtyMcgcqNAoSgrpAOyWp2ME
+         mN6g==
+X-Gm-Message-State: AOAM531iwMrydVUuNRcHgeLG2AB/ZrnJw2e0CQpLKHENN7ymJPg/EYsd
+        l3xNTQPnqm9gxTGxoYoTIJmn4xwgLw==
+X-Google-Smtp-Source: ABdhPJyBPw4RHtIf0yz3478t+CC7J8CekAFyRt5Q79feW/0GmryL/iqFy8yGlHYiczLcqfHz+8AM0FZh+Q==
+X-Received: by 2002:ad4:5604:: with SMTP id ca4mr3961451qvb.6.1589555042352;
+ Fri, 15 May 2020 08:04:02 -0700 (PDT)
+Date:   Fri, 15 May 2020 17:03:35 +0200
 In-Reply-To: <20200515150338.190344-1-elver@google.com>
-Message-Id: <20200515150338.190344-7-elver@google.com>
+Message-Id: <20200515150338.190344-8-elver@google.com>
 Mime-Version: 1.0
 References: <20200515150338.190344-1-elver@google.com>
 X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH -tip 06/10] kcsan: Restrict supported compilers
+Subject: [PATCH -tip 07/10] kcsan: Update Documentation to change supported compilers
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com
 Cc:     paulmck@kernel.org, dvyukov@google.com, glider@google.com,
@@ -64,72 +64,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first version of Clang that supports -tsan-distinguish-volatile will
-be able to support KCSAN. The first Clang release to do so, will be
-Clang 11. This is due to satisfying all the following requirements:
-
-1. Never emit calls to __tsan_func_{entry,exit}.
-
-2. __no_kcsan functions should not call anything, not even
-   kcsan_{enable,disable}_current(), when using __{READ,WRITE}_ONCE => Requires
-   leaving them plain!
-
-3. Support atomic_{read,set}*() with KCSAN, which rely on
-   arch_atomic_{read,set}*() using __{READ,WRITE}_ONCE() => Because of
-   #2, rely on Clang 11's -tsan-distinguish-volatile support. We will
-   double-instrument atomic_{read,set}*(), but that's reasonable given
-   it's still lower cost than the data_race() variant due to avoiding 2
-   extra calls (kcsan_{en,dis}able_current() calls).
-
-4. __always_inline functions inlined into __no_kcsan functions are never
-   instrumented.
-
-5. __always_inline functions inlined into instrumented functions are
-   instrumented.
-
-6. __no_kcsan_or_inline functions may be inlined into __no_kcsan functions =>
-   Implies leaving 'noinline' off of __no_kcsan_or_inline.
-
-7. Because of #6, __no_kcsan and __no_kcsan_or_inline functions should never be
-   spuriously inlined into instrumented functions, causing the accesses of the
-   __no_kcsan function to be instrumented.
-
-Older versions of Clang do not satisfy #3. The latest GCC currently doesn't
-support at least #1, #3, and #7.
-
-Link: https://lkml.kernel.org/r/CANpmjNMTsY_8241bS7=XAfqvZHFLrVEkv_uM4aDUWE_kh3Rvbw@mail.gmail.com
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- lib/Kconfig.kcsan | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ Documentation/dev-tools/kcsan.rst | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
-index a7276035ca0d..3f3b5bca7a8f 100644
---- a/lib/Kconfig.kcsan
-+++ b/lib/Kconfig.kcsan
-@@ -3,6 +3,12 @@
- config HAVE_ARCH_KCSAN
- 	bool
+diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
+index f4b5766f12cc..ce4bbd918648 100644
+--- a/Documentation/dev-tools/kcsan.rst
++++ b/Documentation/dev-tools/kcsan.rst
+@@ -8,8 +8,7 @@ approach to detect races. KCSAN's primary purpose is to detect `data races`_.
+ Usage
+ -----
  
-+config HAVE_KCSAN_COMPILER
-+	def_bool CC_IS_CLANG && $(cc-option,-fsanitize=thread -mllvm -tsan-distinguish-volatile=1)
-+	help
-+	  For the list of compilers that support KCSAN, please see
-+	  <file:Documentation/dev-tools/kcsan.rst>.
-+
- config KCSAN_KCOV_BROKEN
- 	def_bool KCOV && CC_HAS_SANCOV_TRACE_PC
- 	depends on CC_IS_CLANG
-@@ -15,7 +21,8 @@ config KCSAN_KCOV_BROKEN
+-KCSAN is supported in both GCC and Clang. With GCC it requires version 7.3.0 or
+-later. With Clang it requires version 7.0.0 or later.
++KCSAN requires Clang version 11 or later.
  
- menuconfig KCSAN
- 	bool "KCSAN: dynamic data race detector"
--	depends on HAVE_ARCH_KCSAN && DEBUG_KERNEL && !KASAN
-+	depends on HAVE_ARCH_KCSAN && HAVE_KCSAN_COMPILER
-+	depends on DEBUG_KERNEL && !KASAN
- 	depends on !KCSAN_KCOV_BROKEN
- 	select STACKTRACE
- 	help
+ To enable KCSAN configure the kernel with::
+ 
+@@ -121,12 +120,6 @@ the below options are available:
+     static __no_kcsan_or_inline void foo(void) {
+         ...
+ 
+-  Note: Older compiler versions (GCC < 9) also do not always honor the
+-  ``__no_kcsan`` attribute on regular ``inline`` functions. If false positives
+-  with these compilers cannot be tolerated, for small functions where
+-  ``__always_inline`` would be appropriate, ``__no_kcsan_or_inline`` should be
+-  preferred instead.
+-
+ * To disable data race detection for a particular compilation unit, add to the
+   ``Makefile``::
+ 
 -- 
 2.26.2.761.g0e0b3e54be-goog
 
