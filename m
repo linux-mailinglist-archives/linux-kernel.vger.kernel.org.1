@@ -2,178 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9006F1D443A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 05:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADE01D443F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 06:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728403AbgEOD6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 23:58:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48976 "EHLO
+        id S1726064AbgEOEHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 00:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726665AbgEOD6N (ORCPT
+        by vger.kernel.org with ESMTP id S1725616AbgEOEHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 23:58:13 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649ABC061A0C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 20:58:13 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id r25so1078979oij.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 20:58:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20150623.gappssmtp.com; s=20150623;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language;
-        bh=BIBFbyERYPkI08HE4VPIWbR/OEt3ozO4JwDPfzqYRFI=;
-        b=GOl1+eFsIVIkwHUc6cIRr1nJSc5CkL26YUoMMvdskx5/S7ZArCujqOV0+OsH8wkG37
-         HXCzN/D6EvfdTPsFdBg6dYmdllXxvgJnZUmVu9mzFPQBzIVOJ+u94SNqXJh7Hg7UN282
-         JAO7JaG03LCvYjqewOWdcNayEiUYg+OrQg1E2PFBgH9BnSRjstwE6OQgl9n4hdomSCrI
-         ODw6OZqNdJGHV5W7tzV5i3aQlCbihMS3Ok9k2z2BEfq1DiB2DPAWHDRx/vkRgPh8E0gY
-         dNwN3UuYzlykZHR1sO/gTnkcd+pwlsGJrcoGYmZFRhxlO+mDAP5EFduInXjwew90rIOZ
-         eBpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language;
-        bh=BIBFbyERYPkI08HE4VPIWbR/OEt3ozO4JwDPfzqYRFI=;
-        b=N2IbSlugIb8AattEvpovcqTsKKZzfTzgGWShzq/bjZB3seFk6SPQBP8DE3CbxSu1MY
-         EEN3z5twMNGWXMJN4fr+2xtff+Wcj4QyvNLiSrzG6Fx/ZJOPbROsXT1X33yKPIAylcDS
-         6vzDc/EmghRnRBr73GfLRc4LiWLKXk0+uxgWXzb2+J7papy7l68a/HCnYKI3EO0Jsz16
-         0OUEgU8zO8Msy985Z7i61B2WBYXoCqSkeHlehfzgC8EKwNx9UFIsRWl7dfUloxnpSNh6
-         K9ErfNl37voDLCKVVXXCjFmrafKx1OF0cu87k09Eu0QG/DloctpXUeJpIVDVGnInD0ZY
-         ZnTw==
-X-Gm-Message-State: AOAM530POBpHVx/oBRELnOjbLtVLZIehpsXpvs33k5vbuSCqREGM/mmg
-        +l0YXiW8NxedmjLoTepoupDrGEatGzQ=
-X-Google-Smtp-Source: ABdhPJxlMFF1lrEufYCjmXUsTNXlevUbIDHu5fFdyk0zu597rv3kFmsgctmiIihKvBDysUKvn78UJg==
-X-Received: by 2002:aca:59c4:: with SMTP id n187mr841864oib.1.1589515092625;
-        Thu, 14 May 2020 20:58:12 -0700 (PDT)
-Received: from [192.168.86.21] ([136.62.4.88])
-        by smtp.gmail.com with ESMTPSA id c25sm278102otp.50.2020.05.14.20.58.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 May 2020 20:58:10 -0700 (PDT)
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Rob Landley <rob@landley.net>
-Subject: [PATCH v4] Make initramfs honor CONFIG_DEVTMPFS_MOUNT
-Message-ID: <25e7e777-19f9-6280-b456-6c9c782c7901@landley.net>
-Date:   Thu, 14 May 2020 23:04:54 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 15 May 2020 00:07:06 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C267C061A0C;
+        Thu, 14 May 2020 21:07:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5PwB/9JSdMfY5nBxzWW07ajXI/9xxScbdH3I41S0bUQ=; b=uP0kdW5N0sgVFf0t9LYyPg7+md
+        SebAjT9iphzheJMd77jFgS5a6+kfWSVXR0scfu2ahFIsIDrf8ysSznN/jH6WpEvk21W2p2kNEzkY1
+        D1fvCfaB8yehGnBKN9c46Y96JKkxI8F0KQGtGnit3fYaaeXAuN2PvTr+WUd5Tk/He+gqAr4ypsrV5
+        Oh8GFCWYk6Hfl831KzJU3VBKjavRxxbCEWsfW2pMkN8wAoiI1plB/WYtyVtDinwDJT8T6U78d9cz9
+        aLAyOSxU9vlMhqWOAwnfSz1Hzw36/gUEbutRc11m99ZvOeuQOiKLJ+yc4JAqR0hA/X1Xs2MDVML+/
+        If4Hvqjg==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jZRcV-0008AQ-A6; Fri, 15 May 2020 04:06:47 +0000
+Date:   Thu, 14 May 2020 21:06:47 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>, dm-devel <dm-devel@redhat.com>,
+        Song Liu <song@kernel.org>,
+        linux-raid <linux-raid@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 06/10] mm/swap: use npage_to_sectors() and
+ PAGE_SECTORS to clean up code
+Message-ID: <20200515040647.GC16070@bombadil.infradead.org>
+References: <20200507075100.1779-1-thunder.leizhen@huawei.com>
+ <20200507075100.1779-7-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------BBBC1B60A1217C569003B82E"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200507075100.1779-7-thunder.leizhen@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------BBBC1B60A1217C569003B82E
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+On Thu, May 07, 2020 at 03:50:56PM +0800, Zhen Lei wrote:
+> @@ -266,7 +266,7 @@ int swap_writepage(struct page *page, struct writeback_control *wbc)
+>  
+>  static sector_t swap_page_sector(struct page *page)
+>  {
+> -	return (sector_t)__page_file_index(page) << (PAGE_SHIFT - 9);
+> +	return npage_to_sectors((sector_t)__page_file_index(page));
 
-FYI I dug up my old https://lkml.org/lkml/2017/9/13/651 and ported it to
-current, because I needed it for a thing.
+If you make npage_to_sectors() a proper function instead of a macro,
+you can do the casting inside the function instead of in the callers
+(which is prone to bugs).
 
-From: Rob Landley <rob@landley.net>
+Also, this is a great example of why page_to_sector() was a better name
+than npage_to_sectors().  This function doesn't return a count of sectors,
+it returns a sector number within the swap device.
 
-Make initramfs honor CONFIG_DEVTMPFS_MOUNT, and move
-/dev/console open after devtmpfs mount.
-
-Add workaround for Debian bug that was copied by Ubuntu.
-
-Signed-off-by: Rob Landley <rob@landley.net>
-
---------------BBBC1B60A1217C569003B82E
-Content-Type: text/x-patch; charset=UTF-8;
- name="initramfs-devtmpfs.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="initramfs-devtmpfs.patch"
-
-diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
-index f046d21..97352d4 100644
---- a/drivers/base/Kconfig
-+++ b/drivers/base/Kconfig
-@@ -48,16 +48,10 @@  config DEVTMPFS_MOUNT
- 	bool "Automount devtmpfs at /dev, after the kernel mounted the rootfs"
- 	depends on DEVTMPFS
- 	help
--	  This will instruct the kernel to automatically mount the
--	  devtmpfs filesystem at /dev, directly after the kernel has
--	  mounted the root filesystem. The behavior can be overridden
--	  with the commandline parameter: devtmpfs.mount=0|1.
--	  This option does not affect initramfs based booting, here
--	  the devtmpfs filesystem always needs to be mounted manually
--	  after the rootfs is mounted.
--	  With this option enabled, it allows to bring up a system in
--	  rescue mode with init=/bin/sh, even when the /dev directory
--	  on the rootfs is completely empty.
-+	  Automatically mount devtmpfs at /dev on the root filesystem, which
-+	  lets the system come up in rescue mode with [rd]init=/bin/sh.
-+	  Override with devtmpfs.mount=0 on the commandline. Initramfs can
-+	  create a /dev dir as needed, other rootfs needs the mount point.
- 
- config STANDALONE
- 	bool "Select only drivers that don't need compile-time external firmware"
-diff --git a/fs/namespace.c b/fs/namespace.c
-index f8893dc..06057d7 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -2417,7 +2417,21 @@  static int do_add_mount(struct mount *newmnt, struct path *path, int mnt_flags)
- 	err = -EBUSY;
- 	if (path->mnt->mnt_sb == newmnt->mnt.mnt_sb &&
- 	    path->mnt->mnt_root == path->dentry)
-+	{
-+		if (IS_ENABLED(CONFIG_DEVTMPFS_MOUNT) &&
-+		    !strcmp(path->mnt->mnt_sb->s_type->name, "devtmpfs"))
-+		{
-+			/* Debian's kernel config enables DEVTMPFS_MOUNT, then
-+			   its initramfs setup script tries to mount devtmpfs
-+			   again, and if the second mount-over-itself fails
-+			   the script overmounts a tmpfs on /dev to hide the
-+			   existing contents, then boot fails with empty /dev. */
-+			printk(KERN_WARNING "Debian bug workaround for devtmpfs overmount.");
-+
-+			err = 0;
-+		}
- 		goto unlock;
-+	}
- 
- 	err = -EINVAL;
- 	if (d_is_symlink(newmnt->mnt.mnt_root))
-diff --git a/init/main.c b/init/main.c
-index 0ee9c686..0d8e5ec 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1065,12 +1065,6 @@  static noinline void __init kernel_init_freeable(void)
- 
- 	do_basic_setup();
- 
--	/* Open the /dev/console on the rootfs, this should never fail */
--	if (ksys_open((const char __user *) "/dev/console", O_RDWR, 0) < 0)
--		pr_err("Warning: unable to open an initial console.\n");
--
--	(void) ksys_dup(0);
--	(void) ksys_dup(0);
- 	/*
- 	 * check if there is an early userspace init.  If yes, let it do all
- 	 * the work
-@@ -1082,8 +1076,17 @@  static noinline void __init kernel_init_freeable(void)
- 			ramdisk_execute_command, 0) != 0) {
- 		ramdisk_execute_command = NULL;
- 		prepare_namespace();
-+	} else if (IS_ENABLED(CONFIG_DEVTMPFS_MOUNT)) {
-+		sys_mkdir("/dev", 0755);
-+		devtmpfs_mount("/dev");
- 	}
- 
-+	/* Open the /dev/console on the rootfs, this should never fail */
-+	if (ksys_open((const char __user *) "/dev/console", O_RDWR, 0) < 0)
-+		pr_err("Warning: unable to open an initial console.\n");
-+	(void) ksys_dup(0);
-+	(void) ksys_dup(0);
-+
- 	/*
- 	 * Ok, we have completed the initial bootup, and
- 	 * we're essentially up and running. Get rid of the
-
---------------BBBC1B60A1217C569003B82E--
