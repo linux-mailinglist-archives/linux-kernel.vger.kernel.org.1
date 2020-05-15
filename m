@@ -2,107 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33931D4F86
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C3F1D4FA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbgEONuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 09:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
+        id S1726241AbgEON5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 09:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726170AbgEONuT (ORCPT
+        with ESMTP id S1726144AbgEON5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 09:50:19 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72703C05BD0A
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 06:50:19 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id c20so429335ilk.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 06:50:19 -0700 (PDT)
+        Fri, 15 May 2020 09:57:41 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B55AC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 06:57:40 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id i68so1983680qtb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 06:57:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=8P15B7yVg5zuP9hnNQBrVV9U1ImrShnajp0OKHJjOZY=;
-        b=SUkWT0mm695llKyo6NLENzwjXeynLEiVxiJ+m+eswNLO1VWA22LAXrkZVKlpdgmF/1
-         YTYYp0jgKTMg600up4nUPBqefCiK8oi7xOLzeQHXQ2vyXNu968UtXy1awGRuPTZHqV5+
-         Tktim4OHvrLyFw2uzdHIjlP3xdRAcqrJWgbrpxrpIadxYcG4EYs/PPkaCJhtmsjVs5vN
-         B87p8quSTEAXns2fEJ9dPL4memVQ9E1f+bbdNfkMsiVcDkO29Kk38j1V2Zf99NkH9xGF
-         Ncctbdo3TPej/y/WPJu90R+GaYKZauHmeNvw2gt6sF01ArfEjYcxpp1+f9Bh5YTijYiW
-         PahA==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eKQtd+PExqfwVh7oIUYEDD5YPRlmqgWt+8umPUJubrM=;
+        b=fp47erznnMEnSRf2ZpWDY5rVkCmNtX63Qr45SuD0ezHaCS0EaCwQf/xRKhclBkPwju
+         XblDKh/GPKMz8hxVtY+QZ1cyl3blV1qSRmaYd6Mt30pjuWRWKzXEzdc1+SHWPT3/6rRv
+         IgSDbIN6J4Y4snbySpldHPyLfLtHFc1q401HaY1yUnN64UCxrN/DhGYDT2kJ233XE1Yd
+         +IDOacose6yByNRl0R/zUDmDhfHaHTLSl36ZO/zInemhwwx995VraoWHkBE46xcS8uYe
+         AdyQeZrTIQ5OJLgrf79TbLb+Ais7HAPh9l+u3RYXJN5VxeFUSgmD9oGvTKT5XPeWSJgE
+         4dmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=8P15B7yVg5zuP9hnNQBrVV9U1ImrShnajp0OKHJjOZY=;
-        b=bhgAH07DAFkSnpHbe44pBpJdOHh3VlcYYoxAXDEBlLJIX3ZZr/4UpHI2nNNJ2uTb48
-         Vog/EZf2CrUfPp6gfC1zLsB7Voa6DxTMUOHOQJ4AQ9DeOqHJjvtjLr3BMIDneY6QYuPT
-         OwHOGa/24p54YPpqU39RQ4uk/c+1dvcEMlFOJE3sheMwm7Wmhv7QS3b2yfH/548j3T5l
-         q2PzlcHoMlMKFpzZKlXql/keYs1NdMG5/C8pccR2GoE1elpuqOMobys2o0nySIbugpA7
-         u2YRGnDhJL4c2pt1QOFUvhWL/FCDqNsBCBPfiOYg5mSdDbQprorFdy9DybzeRY1vbP4h
-         tckg==
-X-Gm-Message-State: AOAM531efc4EWrs0xltX6/yBcshZZewa2/sUy3KVO9b0nDCLx2lF8mys
-        8/RhdxYE2SVAP+6O+jSHU20KIw3CA/LpxyM17tw=
-X-Google-Smtp-Source: ABdhPJz0T3L6HwvfM2Y0ah6rdltSUn6A2QjBVYPH3+oZ3sGown1PNVQvcPqpVJ3lUDbEbvmVb9Nao1F3BnGI6ZHbMnk=
-X-Received: by 2002:a92:395c:: with SMTP id g89mr3215722ila.247.1589550617893;
- Fri, 15 May 2020 06:50:17 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eKQtd+PExqfwVh7oIUYEDD5YPRlmqgWt+8umPUJubrM=;
+        b=NTiosD9vK57tgPYoLutthZ+rYUp62E8Sh267atzzchaQFA12cS1J1lJ2Q9pjErb8DX
+         nf30AilZprBIM/8R4PZ02dW8nyNAtcC9oJbZ0+gTWvq+ILTDjdoP1eppMfKXq1zRr8ag
+         KJQFPiTT9Dq0GasiVThIoQc2VrVNYjKrFMR6sisFJsWjj0iO0s7Hq1nRgwNVWiyD/Ne8
+         5ktB4YuHD2cCBYArBBNRh1k2tYY3N6A2+0cfqMlpNlZYGZq50L+7gbtiONLTQeaEf/Wa
+         1c1NjYHaIRd9tITVJMu+hKPD6ZbeRmQuFvktq9agZAygVwglwfP7k6f8JRc/B2wLeyKD
+         gmNw==
+X-Gm-Message-State: AOAM532V8fXbL/0y0bZTkmOTdhK2k9niFHWyz/WxOpALXZMD37H7Eg26
+        qkZOf0z2qYtGQjynd8yiWbA=
+X-Google-Smtp-Source: ABdhPJzyKVGQKPsek1G9LoCLcqc3Y6xfxWn6piK6I4euhZsUD1HhqPKc/tRWDKCPIp1WO9M1cBIAOA==
+X-Received: by 2002:ac8:2dbc:: with SMTP id p57mr3562332qta.280.1589551058631;
+        Fri, 15 May 2020 06:57:38 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id q7sm1612490qki.56.2020.05.15.06.57.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 May 2020 06:57:38 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id AF54640AFD; Fri, 15 May 2020 10:50:36 -0300 (-03)
+Date:   Fri, 15 May 2020 10:50:36 -0300
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wei Li <liwei391@huawei.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 3/3] tools/perf: build fixes for arch_errno_names.sh
+Message-ID: <20200515135036.GR5583@kernel.org>
+References: <20200306071110.130202-1-irogers@google.com>
+ <20200306071110.130202-4-irogers@google.com>
+ <20200514150447.GA29968@kernel.org>
+ <CAP-5=fU+RYa3GF_xfjCPFGRKi5-zNuY7bm+9wqAnrAo2NqJ+oQ@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a6b:e519:0:0:0:0:0 with HTTP; Fri, 15 May 2020 06:50:17
- -0700 (PDT)
-Reply-To: mstheresaheidi@yahoo.com
-From:   Ms Theresa Heidi <engjoeb@gmail.com>
-Date:   Fri, 15 May 2020 08:50:17 -0500
-Message-ID: <CAKyA-1993J9ve5GwKwZj55R_Qi1aX-sEJU_4cXC_Q6ZzaGJspQ@mail.gmail.com>
-Subject: HELP URGENT MATTER!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fU+RYa3GF_xfjCPFGRKi5-zNuY7bm+9wqAnrAo2NqJ+oQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Beloved One,
+Em Thu, May 14, 2020 at 10:54:49AM -0700, Ian Rogers escreveu:
+> On Thu, May 14, 2020 at 8:04 AM Arnaldo Carvalho de Melo
+> <arnaldo.melo@gmail.com> wrote:
+> >
+> > Em Thu, Mar 05, 2020 at 11:11:10PM -0800, Ian Rogers escreveu:
+> > > Allow the CC compiler to accept a CFLAGS environment variable.
+> > > Make the architecture test directory agree with the code comment.
+> > > This doesn't change the code generated but makes it easier to integrate
+> > > running the shell script in build systems like bazel.
+> >
+> > I've looked at this and split this part in a separate patch, and applied
+> > it locally, please take a look, now looking at the other bit of the
+> > patch.
+> 
+> 
+> This bit looks good. The CFLAGS change is something I need to deal
+> with a directory layout change in our build system.
 
-CHARITY DONATION Please read carefully, I know it is true that this
-letter may come to you as a surprise. nevertheless,i humbly ask you to
-give me your attention and hear me, i am writing this mail to you with
-heavy sorrow in my heart,i have chose to reach you through Internet
-because it still remains the fastest medium of communication, after
-going through your profile in search of an honest person.
+I added that one as well, as a separate patch, this one:
 
-My name is Mrs Theresa Heidi i am native France currently hospitalized
-in a private hospital here in Israel as a result of lungs cancer I am
-62 years old and I was diagnosed of lungs cancer for about 4 years
-ago, immediately after the death of my husband, who has left me
-everything he worked for. I'm with my laptop in a hospital here in
-where I have been undergoing treatment for cancer of the lungs
+commit 6e136ceba23c087b1e1b846914e425706d492a3a
+Author: Ian Rogers <irogers@google.com>
+Date:   Thu Mar 5 23:11:10 2020 -0800
 
-Now that is clear that I=E2=80=99m approaching the last-days of my life and=
- i
-don't even need the money again for any thing and because my doctor
-told me that i would not last for the period of one year due to Lungs
-cancer problem.I have some funds inherited from my late husband, the
-sum of $15 Million United State Dollars ( US$15,000,000,00 ),
+    perf beauty: Allow the CC used in the arch errno names script to acccept CFLAGS
+    
+    Allow the CC compiler to accept a CFLAGS environment variable.  This
+    doesn't change the code generated but makes it easier to integrate
+    running the shell script in build systems like bazel.
+    
+    Signed-off-by: Ian Rogers <irogers@google.com>
+    Cc: Adrian Hunter <adrian.hunter@intel.com>
+    Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+    Cc: Alexios Zavras <alexios.zavras@intel.com>
+    Cc: Andi Kleen <ak@linux.intel.com>
+    Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Cc: Igor Lubashev <ilubashe@akamai.com>
+    Cc: Jiri Olsa <jolsa@redhat.com>
+    Cc: Kan Liang <kan.liang@linux.intel.com>
+    Cc: Mark Rutland <mark.rutland@arm.com>
+    Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+    Cc: Namhyung Kim <namhyung@kernel.org>
+    Cc: Nick Desaulniers <ndesaulniers@google.com>
+    Cc: Peter Zijlstra <peterz@infradead.org>
+    Cc: Stephane Eranian <eranian@google.com>
+    Cc: Thomas Gleixner <tglx@linutronix.de>
+    Cc: Wei Li <liwei391@huawei.com>
+    Link: http://lore.kernel.org/lkml/20200306071110.130202-4-irogers@google.com
+    [ split from a larger patch ]
+    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-This money is still with the foreign bank and the management just
-wrote me as the true owner to come forward to receive the money for
-keeping it so long or rather issue a letter of authorization to
-somebody to receive it on my behalf since I can't come over because of
-my illness or they may get it confiscated.
-
-I decided to contact you if you may be willing and interested to
-handle these trust funds in good faith before anything happens to
-me.This is not a stolen money and there are no dangers involved,is
-100% risk free with full legal proof.
-
-I want you to help me withdraw this money from the foreign bank then
-use the funds for Charity works/assistance to less privileged people
-in the society.It is my last wish to see that this money is invested
-to any organization of your choice.
-
-I want you to take 45% of the total money for your personal use while
-55% of the money will go to charity. I will appreciate your utmost
-confidentiality and trust in this matter to accomplish my heart
-desire, as I don't want anything that will jeopardize my last wish.
-
-Yours Beloved Sister.
-Mrs Theresa Heidi
+diff --git a/tools/perf/trace/beauty/arch_errno_names.sh b/tools/perf/trace/beauty/arch_errno_names.sh
+index f8c44a85650b..9f9ea45cddc4 100755
+--- a/tools/perf/trace/beauty/arch_errno_names.sh
++++ b/tools/perf/trace/beauty/arch_errno_names.sh
+@@ -57,7 +57,7 @@ process_arch()
+ 	local arch="$1"
+ 	local asm_errno=$(asm_errno_file "$arch")
+ 
+-	$gcc $include_path -E -dM -x c $asm_errno \
++	$gcc $CFLAGS $include_path -E -dM -x c $asm_errno \
+ 		|grep -hE '^#define[[:blank:]]+(E[^[:blank:]]+)[[:blank:]]+([[:digit:]]+).*' \
+ 		|awk '{ print $2","$3; }' \
+ 		|sort -t, -k2 -nu \
