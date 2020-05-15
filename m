@@ -2,103 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830C01D5B32
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 23:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041341D5B3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 23:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgEOVJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 17:09:12 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:39349 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726238AbgEOVJK (ORCPT
+        id S1727050AbgEOVKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 17:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726945AbgEOVKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 17:09:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589576949; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=tMa0XjTHFu9sNkikzcNxomTk26A/Z3fbNKIPFzqYgHI=; b=Z/39Jpll4mjCqh5OZqUX0Uak4PgDbdyrCFDxkziwR4VwOZV1MVACdBt8jzpMdID2RqF9prQg
- LPqSATHN3kptSrttoOTU1IMCaDcDTex3JWTPFBEq2bsH+Cuq5ObDHAyMlPkluW3kQ9bk/p7x
- K0y8gKo+cljKStnuk6QV/PWbF5c=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ebf04ee.7f628e639538-smtp-out-n02;
- Fri, 15 May 2020 21:09:02 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E2E1FC43636; Fri, 15 May 2020 21:09:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B082CC433F2;
-        Fri, 15 May 2020 21:09:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B082CC433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [RFC PATCH 3/8] qaic: Create char dev
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     arnd@arndb.de, manivannan.sadhasivam@linaro.org,
-        bjorn.andersson@linaro.org, wufan@codeaurora.org,
-        pratanan@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1589465266-20056-1-git-send-email-jhugo@codeaurora.org>
- <1589465266-20056-4-git-send-email-jhugo@codeaurora.org>
- <20200514141211.GA2643665@kroah.com>
- <0421a64a-10f3-08df-9ef1-14fdb570db0d@codeaurora.org>
- <20200514155615.GA2963499@kroah.com>
- <4be546d3-b571-0659-0140-f34ec88f95ff@codeaurora.org>
-Message-ID: <4683046a-c6b5-30a5-ef02-2f610523ae1c@codeaurora.org>
-Date:   Fri, 15 May 2020 15:08:59 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 15 May 2020 17:10:43 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4B0C05BD09
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 14:10:43 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id t40so1543901pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 14:10:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=y1I+UKL+S9RIToBCTfDZkoeewbB2eUT2boKx9t2Bbw4=;
+        b=qfIyYrNnt5F1ERWHO/RjTURyMAmjIDaNeEnqrvy9nNQRINucfLSqSbVlDez082XVMd
+         h1wSiFEzcf9f5/5xvVB+byyPuhMp785Lf7EgE1BVrO2Sipxe0AnTE7N3Oj6HZRdGief0
+         FdMSQdZIopNnwL/8bYHlDPPse2Zmx/xCSb007AV+ouY/9EER+EMjTNlE1UsTQsRkgIuE
+         CDWxj1sC5xNLx7FEWXgkpj/oGf9KCLI9pDfvzyfkn5W/28N++7gt3AlRE/BQ/TFtObTT
+         Mb9j1N+ozbht3bpBUmcCT9drDP+LaBJwG4dq1OKyhTPxRf5c9xzgI9uyMv7TwIlaRJNS
+         SqCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=y1I+UKL+S9RIToBCTfDZkoeewbB2eUT2boKx9t2Bbw4=;
+        b=RFsoatJ9Aw9SnMytsoLcFeuchwC1o3c+cZNfdGvTfL5eR9QM5i6bozMOi6utt+hNBf
+         j5YZr2fMkvu5GFREMMt6vzrNAtHvNh4LcqF4ukW5fgOg4YWQ2iXPMSjXr9UvknIUwEmW
+         LsFvawu7WSu0rbxTMtvq2EM5F43zzhQVl2LslVjK9JeaxHwzjck5uOzELNKx2FKDyEPJ
+         /d8l2ps/cjmSO2NXpixc91bnb5z0hRY5og7+928lKi6s1ngHMk8wkoVLeowIKRykP7l7
+         avg6Xx0bsqBJozPvwXmH7q68tXNa0KIy/HBmIAM0TCypdB9GhODqYzaMCYAfD9gOvAWM
+         zI5Q==
+X-Gm-Message-State: AOAM532hwOAH1/yIzyeBFXmF6VCd9iTQecPJceGPfEmOoPpoYXdh1Un9
+        2BwuF1NAjHvXpV6+Df20ZHtWdQ==
+X-Google-Smtp-Source: ABdhPJxM3uFamD7cT3IoJIFOJUgTBrJbOx0dOs+bvU643+PNKH5jhK1WEf+BioK/CwyCuY3G0/JEMw==
+X-Received: by 2002:a17:902:326:: with SMTP id 35mr4975654pld.188.1589577042796;
+        Fri, 15 May 2020 14:10:42 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id a2sm2646525pfl.12.2020.05.15.14.10.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 May 2020 14:10:42 -0700 (PDT)
+Date:   Fri, 15 May 2020 14:09:14 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, arnaud.pouliquen@st.com, s-anna@ti.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/3] rpmsg: core: Add support for name extension
+Message-ID: <20200515210914.GA408178@builder.lan>
+References: <20200515205642.13529-1-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <4be546d3-b571-0659-0140-f34ec88f95ff@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515205642.13529-1-mathieu.poirier@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/2020 10:24 AM, Jeffrey Hugo wrote:
-> On 5/14/2020 9:56 AM, Greg KH wrote:
->> Please use misc.
+On Fri 15 May 13:56 PDT 2020, Mathieu Poirier wrote:
+
+> This patchset adds the capability to supplement the base definition
+> published by an rpmsg_driver with a postfix description so that it
+> is easy to differentiate entities that use the same name service.
 > 
-> Ok, will investigate.
+> Applies cleanly on rpmsg-next (4f05fc33bebd).
 > 
 
-Misc looks like it'll work, and I'm expecting to have that in the next 
-revision.  However, a few of us looked at misc vs chardev, and didn't 
-see much of a difference.
+Thanks Mathieu, this series does look good.
 
-We were hoping you'd be kind enough to educate us on the considerations 
-between the two, in-case we missed something that ends up being very 
-relevant.  We attempted to find relevant documentation within the 
-kernel, and in Linux Device Drivers 3rd edition, but did not find any 
-besides just reading the misc dev code.  If we missed something, please 
-point us to it.
 
-By going with a misc device, we see two possible limitations -
+But before merging this, can someone show me a real example where this
+is being/would be used? What are some real channel names and extensions?
 
-1. You don't have your own major number, so userspace may have to do a 
-bit more work to identify your device.  However, given that the driver 
-assigns the device name, one would think that the device name would be 
-pretty unique.  So, it seems like this would have a minor impact to udev 
-rules.
+Regards,
+Bjorn
 
-2. There are a limited number of dynamic minor numbers for misc devs 
-(64), so if you are expecting more devices than that, a misc dev is not 
-appropiate.  Also, these minors are shared with other misc dev users, so 
-depending on the system configuration, you might have significantly less 
-than 64 minors available for use.
-
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+> New for V6:
+> - Added example on how to use the new API.
+> 
+> Thanks,
+> Mathieu
+> 
+> 
+> Mathieu Poirier (3):
+>   rpmsg: core: Add wildcard match for name service
+>   rpmsg: core: Add support to retrieve name extension
+>   sample/rpmsg: Print out RPMSG device name extension
+> 
+>  drivers/rpmsg/rpmsg_core.c          | 115 +++++++++++++++++++++++++++-
+>  include/linux/rpmsg.h               |  13 ++++
+>  samples/rpmsg/rpmsg_client_sample.c |   5 ++
+>  3 files changed, 132 insertions(+), 1 deletion(-)
+> 
+> -- 
+> 2.20.1
+> 
