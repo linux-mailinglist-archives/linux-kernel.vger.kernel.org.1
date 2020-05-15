@@ -2,78 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F20C11D5B2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 23:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2141D5B47
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 23:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgEOVG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 17:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726247AbgEOVG2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 17:06:28 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC634C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 14:06:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=rVW8KezM3i3HcZ5WoaIxiJ9RRMgtGJtV0/SuZwNn25U=; b=xVbecPPq9oJGttjPZ+wLz1nfl
-        0Wyv5gVizqqLjk/7dSGcf05+nUTO/+vUG57jxAUcdyZSrAf/NrRiL0dovMKAXqDhv719/HOf50ieD
-        6S3IJTlNoGIlQo+Mhx01Qzlt0bf00oR6z5WDhWcNorOZiSEaxOiUDpqdQNznYVH6XiCNqkvWCVxkx
-        8GNzLn6CrD4aOEW7oJ/KDIxD27cge6AsPgrjclDCAeumWWbdw1+/eKFpgZjEHAMhGI66xeP3wVJ1e
-        1e2YVtALC/wbMPk1YbXxb6GuSheNlok+UT6JvYteYh44uEvUoDakiiNUBEc8rQQ4Oc6e5H6KfR4w2
-        XU2rHKvxQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:60910)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jZhX2-0006kl-Mb; Fri, 15 May 2020 22:06:17 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jZhX1-0001rt-5y; Fri, 15 May 2020 22:06:11 +0100
-Date:   Fri, 15 May 2020 22:06:11 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     ebiederm@xmission.com, kexec@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: kexec: arm: possible overwrite of initrd
-Message-ID: <20200515210611.GS1551@shell.armlinux.org.uk>
-References: <20200515135712.GA5979@Red>
+        id S1726813AbgEOVOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 17:14:09 -0400
+Received: from elvis.franken.de ([193.175.24.41]:54590 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726183AbgEOVOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 17:14:09 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jZheg-000560-00; Fri, 15 May 2020 23:14:06 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 1B051C04A5; Fri, 15 May 2020 23:06:47 +0200 (CEST)
+Date:   Fri, 15 May 2020 23:06:47 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 18/20] mips: csrc-r4k: Decrease r4k-clocksource rating
+ if CPU_FREQ enabled
+Message-ID: <20200515210647.GA22922@alpha.franken.de>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506174238.15385-19-Sergey.Semin@baikalelectronics.ru>
+ <20200508154150.GB22247@alpha.franken.de>
+ <20200511133121.cz5axbwynhmqkx7x@mobilestation>
+ <20200515074827.6p5zx4sb3bmavjih@mobilestation>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200515135712.GA5979@Red>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200515074827.6p5zx4sb3bmavjih@mobilestation>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 03:57:12PM +0200, Corentin Labbe wrote:
-> Hello
-> 
-> Following https://lkml.org/lkml/2020/4/6/96 I was able to boot my Cubieboard4 via kexec reliabily.
+On Fri, May 15, 2020 at 10:48:27AM +0300, Serge Semin wrote:
+> Thomas,
+> Could you take a look at my comment below so I could proceed with the
+> patchset v3 development?
 
-You can try increasing the kernel size that kexec thinks the kernel
-needs, but it should be extremely accurate with modern kexec.
+I can't help, but using r4k clocksource with changing frequency is
+probaly only usefull as a random generator. So IMHO the only two
+options are disabling it or implement what arch/x86/kernel/tsc.c does.
 
---image-size $((0x01dc8154 + 0x10000))
-
-will add 64k on top of what you currently have.  Note where the first
-figure comes from (you'll find it in the debug output, see
-"Resulting kernel space").
-
-The best I can say is try playing around with that - but, kexec's
-calculations should be spot on to stop the booting kernel from
-overwriting the initrd.
-
-The only way to debug that is to get the booted kernel to hexdump the
-initrd so it's possible to see what happened to it.
+Thomas.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
