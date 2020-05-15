@@ -2,160 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB431D5BAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 23:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7A81D5BB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 23:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgEOVdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 17:33:47 -0400
-Received: from mga11.intel.com ([192.55.52.93]:49479 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726301AbgEOVdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 17:33:46 -0400
-IronPort-SDR: rjx1Bjtp71FatJIwHqJg2ZcIKG5tXG0BFAMW9FpOneoRHQRZKhidfZzC66oRgSt17keFIE7WWC
- Ou4NizKCeDJA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 14:33:45 -0700
-IronPort-SDR: gOvKgDGmB5WzruN5yXXKLsAMyljyX+RYXJfeyIzc1yrVpIPo7o0atEfAuJk8N9xLs8ad2pQRhT
- 9yEIkVHRnUcQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,396,1583222400"; 
-   d="scan'208";a="263317095"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga003.jf.intel.com with ESMTP; 15 May 2020 14:33:44 -0700
-Message-ID: <44c055342bda4fb4730703f987ae35195d1d0c38.camel@intel.com>
-Subject: Re: [PATCH v10 01/26] Documentation/x86: Add CET description
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Date:   Fri, 15 May 2020 14:33:49 -0700
-In-Reply-To: <b0581ddc-0d99-cbcf-278e-0be55ba939a0@intel.com>
-References: <20200429220732.31602-1-yu-cheng.yu@intel.com>
-         <20200429220732.31602-2-yu-cheng.yu@intel.com>
-         <b5197a8d-5d8b-e1f7-68d4-58d80261904c@intel.com>
-         <dd5b9bab31ecf247a0b4890e22bfbb486ff52001.camel@intel.com>
-         <5cc163ff9058d1b27778e5f0a016c88a3b1a1598.camel@intel.com>
-         <b0581ddc-0d99-cbcf-278e-0be55ba939a0@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1727076AbgEOVf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 17:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726228AbgEOVf4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 17:35:56 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22E4C05BD0A
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 14:35:55 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id o8so1841702ybc.11
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 14:35:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sVQVIr84sLsAtEf+Ll1fioJb9v8WVaNtHmGOv4kP0R8=;
+        b=NfimAyTC/aIkfOHS2ufqPSllOkeKqp1ZK6kze94gN6kn1ADBKZD3dHs2eXsMiGzBR1
+         15TmsMiq4KlpeHxxUJ5YdLeKyW23BftJ/gMJmVwlsAn9wcJ8hNxPhlPYwpt5prr5Plzx
+         X43QaZjtrMfGtVTJ/ubc6mkEj6Ge5py3FKjasFZ+0KDaHQnCgsGN1GjqHijFAE+tqSUr
+         I0o2HfrLoen8lac1vJSzfPD+hjfINdbvGmnNZ+aYkTJtddLFqxcCrbqe6UPzgZVuVVHV
+         xDLercuanoXp8rDUc6rnzIa3P8yb045tTQv7jF96E3NAAxmFtOEQvwlMc35NBfkuYpr+
+         Seqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sVQVIr84sLsAtEf+Ll1fioJb9v8WVaNtHmGOv4kP0R8=;
+        b=XjxWbISpn+ZkzMhjIuVHSa+N9vHLiwL7kj3JtUQkkGYFfoUIThRYtnVrqriALozZ6v
+         8CZRVU8zUDPQH7uZ5ONBJH5UC5UX4W3ZxRbP7sNB01QIVtYpZYhIPEtpBUqWFFZP3+nr
+         v6vYkmjXaokqgEqGCLbjBWVcY2UvVzNjbfvTJoD0BTG92bDS5QAMt1Xfl1GYaRPiJPsF
+         JuHlPjdU45gv0XNKywr3UV5wlcUlTSREmCBY99Ym2eO+F3rhUvFYpolnOOp/6S8zEeNw
+         D7xx52PxFY/heCZdGSdWvbnjOYMEF4zJiZGl0mITSFIszQuDvPvPgoq6Jem01rCh1xE4
+         dmQQ==
+X-Gm-Message-State: AOAM533hJNMRdn37pcTFI8wAx6cDc/fZhrm5Oz7c+bUKruETzktPSPuZ
+        AjaYdh0fgSPPUEC71e2+aufQ+/ASAaHa3ypwIL/i0Q==
+X-Google-Smtp-Source: ABdhPJzO8Z79WAQPa+P8cIWRu5FYqccxVpUsubtP/BCBp9spOPnwntRjPW/UivBlIqcTjuFF/pHj3glO1AKf2bwUZSU=
+X-Received: by 2002:a25:d450:: with SMTP id m77mr9073716ybf.177.1589578554699;
+ Fri, 15 May 2020 14:35:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200515165007.217120-1-irogers@google.com> <20200515165007.217120-8-irogers@google.com>
+ <20200515194115.GA3577540@krava>
+In-Reply-To: <20200515194115.GA3577540@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 15 May 2020 14:35:43 -0700
+Message-ID: <CAP-5=fUp4ECBntUamWK53LhTbT9W5w5A0frFyOMxoWK0Q2o60A@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] perf expr: Migrate expr ids table to a hashmap
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-05-15 at 11:39 -0700, Dave Hansen wrote:
-> On 5/12/20 4:20 PM, Yu-cheng Yu wrote:
-> > On Wed, 2020-04-29 at 16:02 -0700, Yu-cheng Yu wrote:
-> > > On Wed, 2020-04-29 at 15:53 -0700, Dave Hansen wrote:
-> > > > On 4/29/20 3:07 PM, Yu-cheng Yu wrote:
-> > > > > +Note:
-> > > > > +  There is no CET-enabling arch_prctl function.  By design, CET is enabled
-> > > > > +  automatically if the binary and the system can support it.
-> > > > 
-> > > > I think Andy and I danced around this last time.  Let me try to say it
-> > > > more explicitly.
-> > > > 
-> > > > I want CET kernel enabling to able to be disconnected from the on-disk
-> > > > binary.  I want a binary compiled with CET to be able to disable it, and
-> > > > I want a binary not compiled with CET to be able to enable it.  I want
-> > > > different threads in a process to be able to each have different CET status.
-> > > 
-> > > The kernel patches we have now can be modified to support this model.  If after
-> > > discussion this is favorable, I will modify code accordingly.
-> > 
-> > To turn on/off and to lock CET are application-level decisions.  The kernel does
-> > not prevent any of those.  Should there be a need to provide an arch_prctl() to
-> > turn on CET, it can be added without any conflict to this series.
-> 
-> I spelled out what I wanted pretty clearly.  On your next post, could
-> you please directly address each of the things I asked for?  Please
-> directly answer the following questions in your next post with respect
-> to the code you post:
-> 
-> Can a binary compiled with CET run without CET?
+On Fri, May 15, 2020 at 12:41 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Fri, May 15, 2020 at 09:50:07AM -0700, Ian Rogers wrote:
+>
+> SNIP
+>
+> > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> > index b071df373f8b..37be5a368d6e 100644
+> > --- a/tools/perf/util/metricgroup.c
+> > +++ b/tools/perf/util/metricgroup.c
+> > @@ -85,8 +85,7 @@ static void metricgroup__rblist_init(struct rblist *metric_events)
+> >
+> >  struct egroup {
+> >       struct list_head nd;
+> > -     int idnum;
+> > -     const char **ids;
+> > +     struct expr_parse_ctx pctx;
+> >       const char *metric_name;
+> >       const char *metric_expr;
+> >       const char *metric_unit;
+> > @@ -94,19 +93,21 @@ struct egroup {
+> >  };
+> >
+> >  static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+> > -                                   const char **ids,
+> > -                                   int idnum,
+> > +                                   struct expr_parse_ctx *pctx,
+> >                                     struct evsel **metric_events,
+> >                                     bool *evlist_used)
+> >  {
+> >       struct evsel *ev;
+> > -     int i = 0, j = 0;
+> >       bool leader_found;
+> > +     const size_t idnum = hashmap__size(&pctx->ids);
+> > +     size_t i = 0;
+> > +     int j = 0;
+> > +     double *val_ptr;
+> >
+> >       evlist__for_each_entry (perf_evlist, ev) {
+> >               if (evlist_used[j++])
+> >                       continue;
+> > -             if (!strcmp(ev->name, ids[i])) {
+> > +             if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
+>
+> hum, you sure it's doing the same thing as before?
+>
+> hashmap__find will succede all the time in here, while the
+> previous code was looking for the start of the group ...
+> the logic in here is little convoluted, so maybe I'm
+> missing some point in here ;-)
 
-Yes, but a few details:
+If we have a metric like "A + B" and another like "C / D" then by
+we'll generate a string (the extra_events strbuf in the code) like
+"{A,B}:W,{C,D}:W" from __metricgroup__add_metric. This will turn into
+an evlist in metricgroup__parse_groups of A,B,C,D. The code is trying
+to associate the events A,B with the first metric and C,D with the
+second. The code doesn't support sharing of events and events are
+marked as used and can't be part of other metrics. The evlist order is
+also reflective of the order of metrics, so if there were metrics "A +
+B + C" and "A + B", as the first metric is first in the evlist we
+don't run the risk of C being placed with A and B in a different
+group.
 
-- The shadow stack is transparent to the application.  A CET application does
-not have anything different from a non-CET application.  However, if a CET
-application uses any CET instructions (e.g. INCSSP), it must first check if CET
-is turned on.
-- If an application is compiled for IBT, the compiler inserts ENDBRs at branch
-targets.  These are nops if IBT is not on.
+The old code used the order of events to match within a metric and say
+for metric "A+B+C" we want to match A then B, and so on. The new code
+acts more like a set, so "A + B + C" becomes a set containing A, B and
+C, we check A is in the set then B and then C. For both pieces of code
+they are only working because of the evlist_used "bitmap" and that the
+order in the evlists and metrics matches.
 
-> Can a binary compiled without CET run CET-enabled code?
+The current code could just use ordering to match first n1 events with
+the first metric, the next n2 events with the second and so on. So
+both the find now, and the strcmp before always return true in this
+branch.
 
-Partially yes, but in reality somewhat difficult.
+In the RFC patch set I want to share events and so I do checks related
+to the group leader so that I know when moving from one group to
+another in the evlist. The find/strcmp becomes load bearing as I will
+re-use events as long as they match.
+https://lore.kernel.org/lkml/20200508053629.210324-14-irogers@google.com/
 
-- If a non-CET application does exec() of a CET binary, then CET is enabled.
-- If a not-CET application does fork(), and the child wants to turn on CET, it
-would be difficult to manage the stack frames, unless the child knows what is is
-doing.  The JIT examples I mentioned previously run with CET enabled from the
-beginning.  Do you have a reason to do this?  In other words, if the JIT code
-needs CET, the app could have started with CET in the first place.
-- If you are asking about dlopen(), the library will have the same setting as
-the main application.  Do you have any reason to have a library running with
-CET, but the application does not have CET?
+> jirka
+>
+> >                       if (!metric_events[i])
+> >                               metric_events[i] = ev;
+> >                       i++;
+> > @@ -118,7 +119,8 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+> >                       memset(metric_events, 0,
+> >                               sizeof(struct evsel *) * idnum);
 
-> Can different threads in a process have different CET enabling state?
+This re-check was unnecessary in the old code and unnecessary even
+more so now as the hashmap_find is given exactly the same arguments.
+I'll remove it in v3 while addressing Andrii's memory leak fixes.
 
-Yes, if the parent starts with CET, children can turn it off.  But for the same
-reason described above, it is difficult to turn on CET from the middle.
+Thanks,
+Ian
 
-> > > > Which JITs was this tested with?  I think as a bare minimum we need to
-> > > > know that this design can accommodate _a_ modern JIT.  It would be
-> > > > horrible if the browser javascript engines couldn't use this design, for
-> > > > instance.
-> > > 
-> > > JIT work is still in progress.  When that is available I will test it.
-> > 
-> > I found CET has been enabled in LLVM JIT, Mesa JIT as well as sljit which is
-> > used by jit.  So the current model works with JIT.
-> 
-> Great!  I'm glad the model works.  That's not what I asked, though.
-> 
-> Does this *code* work?  Could you please indicate which JITs have been
-> enabled to use the code in this series?  How much of the new ABI is in use?
-
-JIT does not necessarily use all of the ABI.  The JIT changes mainly fix stack
-frames and insert ENDBRs.  I do not work on JIT.  What I found is LLVM JIT fixes
-are tested and in the master branch.  Sljit fixes are in the release.
-
-> Where are the selftests/ for this new ABI?  Were you planning on
-> submitting any with this series?
-
-The ABI is more related to the application side, and therefore most suitable for
-GLIBC unit tests.  The more complicated areas such as pthreads, signals,
-ucontext, fork() are all included there.  I have been constantly running these
-tests without any problems.  I can provide more details if testing is the
-concern.
-
-Yu-cheng
-
+> > -                     if (!strcmp(ev->name, ids[i])) {
+> > +                     if (hashmap__find(&pctx->ids, ev->name,
+> > +                                       (void **)&val_ptr)) {
+> >                               if (!metric_events[i])
+> >                                       metric_events[i] = ev;
+>
+> SNIP
+>
