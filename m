@@ -2,87 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108791D5795
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 19:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C05AB1D579A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 19:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgEORWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 13:22:54 -0400
-Received: from smtprelay0040.hostedemail.com ([216.40.44.40]:38548 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726438AbgEORWy (ORCPT
+        id S1726714AbgEORXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 13:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726660AbgEORW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 13:22:54 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 0812D182CED5B;
-        Fri, 15 May 2020 17:22:53 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3867:3868:3870:3871:3872:3874:4321:5007:7903:10004:10400:10848:11026:11232:11658:11914:12296:12297:12555:12740:12760:12895:12986:13069:13311:13357:13439:14180:14659:14721:21060:21067:21080:21221:21324:21451:21627:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: able05_3631f4c4af504
-X-Filterd-Recvd-Size: 2261
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 15 May 2020 17:22:52 +0000 (UTC)
-Message-ID: <ba9cbced1ccb0e7da5593b587bb179328cecd80e.camel@perches.com>
-Subject: Re: get_maintainer.pl: unexpected behaviour for path/to//file
-From:   Joe Perches <joe@perches.com>
-To:     Emil Velikov <emil.l.velikov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Date:   Fri, 15 May 2020 10:22:51 -0700
-In-Reply-To: <134d34de7e35861f33d3a1d9ffd8a70b0f92df33.camel@perches.com>
-References: <20200515105203.2792466-1-emil.l.velikov@gmail.com>
-         <134d34de7e35861f33d3a1d9ffd8a70b0f92df33.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        Fri, 15 May 2020 13:22:58 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21447C05BD09;
+        Fri, 15 May 2020 10:22:58 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jZe2v-0005Tg-Bm; Fri, 15 May 2020 19:22:53 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 04E3E1C0440;
+        Fri, 15 May 2020 19:22:53 +0200 (CEST)
+Date:   Fri, 15 May 2020 17:22:52 -0000
+From:   "tip-bot2 for Sami Tolvanen" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: objtool/core] objtool: use gelf_getsymshndx to handle >64k sections
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200421220843.188260-2-samitolvanen@google.com>
+References: <20200421220843.188260-2-samitolvanen@google.com>
 MIME-Version: 1.0
+Message-ID: <158956337293.17951.13387427724649167304.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-05-15 at 05:31 -0700, Joe Perches wrote:
-> On Fri, 2020-05-15 at 11:52 +0100, Emil Velikov wrote:
-> > Hi Joe,
-> > 
-> > Recently I've noticed that get_maintainer behaves differently if there
-> > is a double, sequential, forward slash in the path.
-> > 
-> > AFAICT there should be no distinction between the two. Or at least many
-> > existing applications and scripts consider them one and the same.
-> > 
-> > I've tried fixing this, although my perl isn't quite up-to scratch.
-> > Is this some weird bug or some intended feature?
-> 
-> Not really an intended feature.
-> The code counts slashes for directory depth.
-> 
-> I suppose it might be simpler to do this:
+The following commit has been merged into the objtool/core branch of tip:
 
-Or perhaps a better alternative is:
+Commit-ID:     28fe1d7bf89f8ed5be70b98a33932dbaf99345dd
+Gitweb:        https://git.kernel.org/tip/28fe1d7bf89f8ed5be70b98a33932dbaf99345dd
+Author:        Sami Tolvanen <samitolvanen@google.com>
+AuthorDate:    Tue, 21 Apr 2020 15:08:42 -07:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 15 May 2020 10:35:13 +02:00
+
+objtool: use gelf_getsymshndx to handle >64k sections
+
+Currently, objtool fails to load the correct section for symbols when
+the index is greater than SHN_LORESERVE. Use gelf_getsymshndx instead
+of gelf_getsym to handle >64k sections.
+
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Link: https://lkml.kernel.org/r/20200421220843.188260-2-samitolvanen@google.com
 ---
- scripts/get_maintainer.pl | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/objtool/elf.c | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
-diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
-index 6d973f3685f9..484d2fbf5921 100755
---- a/scripts/get_maintainer.pl
-+++ b/scripts/get_maintainer.pl
-@@ -19,6 +19,7 @@ my $V = '0.26';
- use Getopt::Long qw(:config no_auto_abbrev);
- use Cwd;
- use File::Find;
-+use File::Spec::Functions;
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index b6349ca..8422567 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -343,12 +343,14 @@ static int read_sections(struct elf *elf)
  
- my $cur_path = fastgetcwd() . '/';
- my $lk_path = "./";
-@@ -532,6 +533,7 @@ if (!@ARGV) {
+ static int read_symbols(struct elf *elf)
+ {
+-	struct section *symtab, *sec;
++	struct section *symtab, *symtab_shndx, *sec;
+ 	struct symbol *sym, *pfunc;
+ 	struct list_head *entry;
+ 	struct rb_node *pnode;
+ 	int symbols_nr, i;
+ 	char *coldstr;
++	Elf_Data *shndx_data = NULL;
++	Elf32_Word shndx;
  
- foreach my $file (@ARGV) {
-     if ($file ne "&STDIN") {
-+	$file = canonpath($file);
- 	##if $file is a directory and it lacks a trailing slash, add one
- 	if ((-d $file)) {
- 	    $file =~ s@([^/])$@$1/@;
-
-
+ 	symtab = find_section_by_name(elf, ".symtab");
+ 	if (!symtab) {
+@@ -356,6 +358,10 @@ static int read_symbols(struct elf *elf)
+ 		return -1;
+ 	}
+ 
++	symtab_shndx = find_section_by_name(elf, ".symtab_shndx");
++	if (symtab_shndx)
++		shndx_data = symtab_shndx->data;
++
+ 	symbols_nr = symtab->sh.sh_size / symtab->sh.sh_entsize;
+ 
+ 	for (i = 0; i < symbols_nr; i++) {
+@@ -369,8 +375,9 @@ static int read_symbols(struct elf *elf)
+ 
+ 		sym->idx = i;
+ 
+-		if (!gelf_getsym(symtab->data, i, &sym->sym)) {
+-			WARN_ELF("gelf_getsym");
++		if (!gelf_getsymshndx(symtab->data, shndx_data, i, &sym->sym,
++				      &shndx)) {
++			WARN_ELF("gelf_getsymshndx");
+ 			goto err;
+ 		}
+ 
+@@ -384,10 +391,13 @@ static int read_symbols(struct elf *elf)
+ 		sym->type = GELF_ST_TYPE(sym->sym.st_info);
+ 		sym->bind = GELF_ST_BIND(sym->sym.st_info);
+ 
+-		if (sym->sym.st_shndx > SHN_UNDEF &&
+-		    sym->sym.st_shndx < SHN_LORESERVE) {
+-			sym->sec = find_section_by_index(elf,
+-							 sym->sym.st_shndx);
++		if ((sym->sym.st_shndx > SHN_UNDEF &&
++		     sym->sym.st_shndx < SHN_LORESERVE) ||
++		    (shndx_data && sym->sym.st_shndx == SHN_XINDEX)) {
++			if (sym->sym.st_shndx != SHN_XINDEX)
++				shndx = sym->sym.st_shndx;
++
++			sym->sec = find_section_by_index(elf, shndx);
+ 			if (!sym->sec) {
+ 				WARN("couldn't find section for symbol %s",
+ 				     sym->name);
