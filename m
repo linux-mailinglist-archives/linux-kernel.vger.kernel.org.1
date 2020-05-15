@@ -2,63 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0561D4B97
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFA11D4BB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbgEOKwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 06:52:06 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:46298 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726023AbgEOKwF (ORCPT
+        id S1726670AbgEOKyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 06:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726047AbgEOKyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 06:52:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589539925; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=WTO64yR7Gyv3bO/7Aolr2Ns3FQUteAECAxwuDLyZ4qg=; b=FG6bpRXgrraEznW1Ob5KlzXNgsfEZ44D7fF8gIMix13aWh1jp7iQVvY0eJ6XWZRKOef+c2Hr
- pDRY8vDNtwD8in5iFYHfApynf06KB9DtHBxKcAxqjqhtDlLQYNRsN4ZPjeMW1Fz3xddqrVw4
- +nZ8vYOXA+GVWyQSCM4uJni87P8=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5ebe74548ebbf95ecb8fc83e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 May 2020 10:52:04
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BC0EFC4478C; Fri, 15 May 2020 10:52:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-311.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4A776C433D2;
-        Fri, 15 May 2020 10:51:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4A776C433D2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, coresight@lists.linaro.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH 2/2] arm64: dts: qcom: sc7180: Add support to skip powering up of ETM
-Date:   Fri, 15 May 2020 16:21:37 +0530
-Message-Id: <7599d58142dcefbcb08a2eaff71c7f411a1d52b1.1589539293.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <cover.1589539293.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1589539293.git.saiprakash.ranjan@codeaurora.org>
+        Fri, 15 May 2020 06:54:49 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDAEC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:54:49 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id k13so901900wrx.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:54:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jrzatufmWMFK4nc+SyNHiLXMRZJb5huqueu1eUCpxaw=;
+        b=UNiEsHesxvLve4xIcfnKQRDlhKutjhuE1l+mIPf8lfPC95oL0CEDM4WHWzO5oS+BpJ
+         Uuby/iDGEsRPGOq6uU+njFsyfCbN7UtqCtqCJEU5Ye8TFdgNe3V+QeyliWyBesPaVDOF
+         0+ZH6RItlNXvsQBNXI6wzHttoHb+nHOFj8cr2/arRJuFVzn0a9E3WE9HJV+Kp877dpLj
+         SgX5YNKNhNXw8FkQKgvj8pqUNu/muER98dQ3S+9e6sLAiHWPpzws7QOtTttpxLeAFK68
+         ujG2qZAjxPN5aULyLiZQ+w8U+XUNCS5DGp94KzMQPVMh2UffSOhpZhVQHXpwg6OGS64y
+         UElQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jrzatufmWMFK4nc+SyNHiLXMRZJb5huqueu1eUCpxaw=;
+        b=IZDY7lgWxinzYEHXDpxIXZKPsJPiu9v3kR+o+vZFxfZpKa3WjISI9wxntTeGE+FEYr
+         cbKjDaMUbPY4Z4RVQjuZiBggIAw0vktHc2c2hPCIwtPtEKTzvTzYJcGwOFztPHVTLYp4
+         1/kljY4dqmGgQyRnaWsECvOQQMsAVkNIFtaMlBW0Cg9bzhpflOdlZ1BESmoMkYQy5lHa
+         kXH135HeqBZtelRYisv5F+fFy4NkJS9Zd1LA5qWvitO50eTI0QuGh41E4w6XcpVWF2DH
+         W0RtBkRBG0OAF3fzZT1M/merGTJpDok0Agb9uBA0IQA1DqZ4crtxLl+tNpHjfMpG7MIH
+         Ho+w==
+X-Gm-Message-State: AOAM530LNpbmQewkpzdGl0QAObZ4J3Qq77V2fYzP6di7cgBeR0rQi3Ux
+        jjf/cMN477IWVxcRxVNBfwwBxO/2
+X-Google-Smtp-Source: ABdhPJynJhkxBm8TgFfT7qhd1M+X+ZR4CQyrTHTNksxeadYFWLIyg+T9Lg/A0X+wXQnfO2rV/2D2lg==
+X-Received: by 2002:a5d:684a:: with SMTP id o10mr3528254wrw.311.1589540087512;
+        Fri, 15 May 2020 03:54:47 -0700 (PDT)
+Received: from localhost.localdomain (cpc91192-cmbg18-2-0-cust374.5-4.cable.virginm.net. [80.6.113.119])
+        by smtp.gmail.com with ESMTPSA id v205sm3102988wmg.11.2020.05.15.03.54.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 May 2020 03:54:46 -0700 (PDT)
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: get_maintainer.pl: unexpected behaviour for path/to//file
+Date:   Fri, 15 May 2020 11:52:03 +0100
+Message-Id: <20200515105203.2792466-1-emil.l.velikov@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,89 +62,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "qcom,skip-power-up" property to skip powering up ETM
-on SC7180 SoC to workaround a hardware errata where CPU
-watchdog counter is stopped when ETM power up bit is set
-(i.e., when TRCPDCR.PU = 1).
+Hi Joe,
 
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
+Recently I've noticed that get_maintainer behaves differently if there
+is a double, sequential, forward slash in the path.
 
-Depends on ETM driver change here - https://lore.kernel.org/patchwork/cover/1242100/
+AFAICT there should be no distinction between the two. Or at least many
+existing applications and scripts consider them one and the same.
 
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+I've tried fixing this, although my perl isn't quite up-to scratch.
+Is this some weird bug or some intended feature?
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 8b3707347547..de4bae4ec224 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -1657,6 +1657,7 @@
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
- 			arm,coresight-loses-context-with-cpu;
-+			qcom,skip-power-up;
- 
- 			out-ports {
- 				port {
-@@ -1676,6 +1677,7 @@
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
- 			arm,coresight-loses-context-with-cpu;
-+			qcom,skip-power-up;
- 
- 			out-ports {
- 				port {
-@@ -1695,6 +1697,7 @@
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
- 			arm,coresight-loses-context-with-cpu;
-+			qcom,skip-power-up;
- 
- 			out-ports {
- 				port {
-@@ -1714,6 +1717,7 @@
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
- 			arm,coresight-loses-context-with-cpu;
-+			qcom,skip-power-up;
- 
- 			out-ports {
- 				port {
-@@ -1733,6 +1737,7 @@
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
- 			arm,coresight-loses-context-with-cpu;
-+			qcom,skip-power-up;
- 
- 			out-ports {
- 				port {
-@@ -1752,6 +1757,7 @@
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
- 			arm,coresight-loses-context-with-cpu;
-+			qcom,skip-power-up;
- 
- 			out-ports {
- 				port {
-@@ -1771,6 +1777,7 @@
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
- 			arm,coresight-loses-context-with-cpu;
-+			qcom,skip-power-up;
- 
- 			out-ports {
- 				port {
-@@ -1790,6 +1797,7 @@
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
- 			arm,coresight-loses-context-with-cpu;
-+			qcom,skip-power-up;
- 
- 			out-ports {
- 				port {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Thanks
+Emil
 
+Example:
+
+./scripts/get_maintainer -F drivers/gpu/drm//lima
+
+David Airlie <airlied@linux.ie> (maintainer:DRM DRIVERS)
+Daniel Vetter <daniel@ffwll.ch> (maintainer:DRM DRIVERS,commit_signer:3/42=7%)
+Qiang Yu <yuq825@gmail.com> (commit_signer:36/42=86%,authored:24/42=57%)
+Vasily Khoruzhick <anarsoul@gmail.com> (commit_signer:26/42=62%)
+Krzysztof Kozlowski <krzk@kernel.org> (commit_signer:5/42=12%,authored:5/42=12%)
+Emil Velikov <emil.velikov@collabora.com> (commit_signer:4/42=10%)
+dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
+linux-kernel@vger.kernel.org (open list)
+
+./scripts/get_maintainer -F drivers/gpu/drm/lima
+
+Qiang Yu <yuq825@gmail.com> (maintainer:DRM DRIVERS FOR LIMA)
+David Airlie <airlied@linux.ie> (maintainer:DRM DRIVERS)
+Daniel Vetter <daniel@ffwll.ch> (maintainer:DRM DRIVERS)
+dri-devel@lists.freedesktop.org (open list:DRM DRIVERS FOR LIMA)
+lima@lists.freedesktop.org (moderated list:DRM DRIVERS FOR LIMA)
+linux-kernel@vger.kernel.org (open list)
