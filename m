@@ -2,129 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64DD1D556F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BBC1D557B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgEOQBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 12:01:42 -0400
-Received: from mail.efficios.com ([167.114.26.124]:45108 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726188AbgEOQBm (ORCPT
+        id S1726722AbgEOQEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 12:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726374AbgEOQEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 12:01:42 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id E905A2B0445;
-        Fri, 15 May 2020 12:01:40 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id WvDpZCgW7c8G; Fri, 15 May 2020 12:01:40 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 7EB7E2B02F4;
-        Fri, 15 May 2020 12:01:40 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 7EB7E2B02F4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1589558500;
-        bh=/aqNzZiWyuXVYAibug7RythgCs3Q8Lsdz16EIlb5Tyc=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=lbJ/D6GGU42tlfpmNiHbQmDA2jyTSVHkD/r+v0Ne6vau2uECkEqiFySquEg8nEv1D
-         2AdQRYRiVjNh4N+VOr+gQuozwq0PAEyDjRC9blnkdYY+TTXLKY6xywrtaBCSI8EEeE
-         qqODC6wnpJNxyN4RxClpXpoi68+XowlC9eyVuQFxDvFf1Llpeogc/wj/VwhZb7aXxW
-         uvD603+ZbHACpuc54Kred4ERD9IcIsD56scysS/I5aaDwNMZTU9oYofyIf9NOvaXQ/
-         LG7wjA+KRmEzQs2LANQrbTQGMZjg7a26S1S48aZACJqU6qk1ttlH5bJTkEmDjkmON8
-         Pg96C+qJ+uDGQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id yIvyBPwYL-ii; Fri, 15 May 2020 12:01:40 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 6B6552B0798;
-        Fri, 15 May 2020 12:01:40 -0400 (EDT)
-Date:   Fri, 15 May 2020 12:01:40 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, paulmck <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>, rostedt <rostedt@goodmis.org>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>, maz@kernel.org
-Message-ID: <1964654436.22367.1589558500351.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200515154525.GA23334@willie-the-truck>
-References: <20200505131602.633487962@linutronix.de> <20200505134100.771491291@linutronix.de> <427895535.20271.1589412514423.JavaMail.zimbra@efficios.com> <20200515140438.GA5974@lenoir> <20200515154525.GA23334@willie-the-truck>
-Subject: Re: [patch V4 part 1 27/36] arm64: Prepare arch_nmi_enter() for
- recursion
+        Fri, 15 May 2020 12:04:21 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3DEC061A0C;
+        Fri, 15 May 2020 09:04:21 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: evelikov)
+        with ESMTPSA id 4FCEF2A3495
+Date:   Fri, 15 May 2020 17:01:41 +0100
+From:   Emil Velikov <emil.velikov@collabora.com>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCHv1 03/19] power: supply: core: add manufacture date
+ properties
+Message-ID: <20200515160141.GF2836808@arch-x1c3>
+References: <20200513185615.508236-1-sebastian.reichel@collabora.com>
+ <20200513185615.508236-4-sebastian.reichel@collabora.com>
+ <20200515144732.GC2836808@arch-x1c3>
+ <20200515151408.vbj75fag6ya5g2bq@earth.universe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3928 (ZimbraWebClient - FF76 (Linux)/8.8.15_GA_3928)
-Thread-Topic: arm64: Prepare arch_nmi_enter() for recursion
-Thread-Index: Vn2wlOV3s1hSS0xvlByawy7gmci5vg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515151408.vbj75fag6ya5g2bq@earth.universe>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On May 15, 2020, at 11:45 AM, Will Deacon will@kernel.org wrote:
-
-> On Fri, May 15, 2020 at 04:04:39PM +0200, Frederic Weisbecker wrote:
->> On Wed, May 13, 2020 at 07:28:34PM -0400, Mathieu Desnoyers wrote:
->> > ----- On May 5, 2020, at 9:16 AM, Thomas Gleixner tglx@linutronix.de wrote:
->> > 
->> > > +#define arch_nmi_enter()						\
->> > [...]							\
->> > > +	___hcr = read_sysreg(hcr_el2);					\
->> > > +	if (!(___hcr & HCR_TGE)) {					\
->> > > +		write_sysreg(___hcr | HCR_TGE, hcr_el2);		\
->> > > +		isb();							\
->> > 
->> > Why is there an isb() above ^ ....
->> > 
->> > > +	}								\
->> > > +	/*								\
->> > [...]
->> > > -#define arch_nmi_exit()								\
->> > [...]
->> > > +	/*								\
->> > > +	 * Make sure ___ctx->cnt release is visible before we		\
->> > > +	 * restore the sysreg. Otherwise a new NMI occurring		\
->> > > +	 * right after write_sysreg() can be fooled and think		\
->> > > +	 * we secured things for it.					\
->> > > +	 */								\
->> > > +	barrier();							\
->> > > +	if (!___ctx->cnt && !(___hcr & HCR_TGE))			\
->> > > +		write_sysreg(___hcr, hcr_el2);				\
->> > 
->> > And not here ?
->> 
->> I have to defer to Will on this detail...
+On 2020/05/15, Sebastian Reichel wrote:
+> Hi,
 > 
-> I think it's because we have to make sure that the register update has
-> taken effect before we can safely run the NMI handler (and so an ISB is
-> needed), but on the return path the exception return back to the interrupted
-> context has an implicit ISB so there's no need for an extra one here.
+> On Fri, May 15, 2020 at 03:47:32PM +0100, Emil Velikov wrote:
+> > On 2020/05/13, Sebastian Reichel wrote:
+> > > Some smart batteries store their manufacture date, which is
+> > > useful to identify the battery and/or to know about the cell
+> > > quality.
+> > > 
+> > Have you considered exposing this as a single file? Say following
+> > the ISO8601 format - YYYY-MM-DD.
 > 
-> Make sense?
+> Yes. My initial implementation was exactly that. The thing is, that
+> I suspect some fuel gauge implementations may only expose the year
+> or just year + month. I chose 3 files, since receiving 'YYYY-MM'
+> instead of full ISO code might be more unexpected than not having
+> the DAY file available. But I don't have a strong opinion on this.
+> 
+Fwiw the ISO 8601 allows for YYYY-MM, although you're spot on. Having
+the three fields separate makes perfect sense.
 
-Sure, as long as instructions executed between write_sysreg() and return
-from exception do not care, which I think should be the case.
+Thanks
+Emil
 
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
