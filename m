@@ -2,110 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B611D58FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D181D58FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgEOSVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 14:21:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45978 "EHLO mail.kernel.org"
+        id S1726295AbgEOSWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 14:22:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:60726 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726191AbgEOSVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 14:21:24 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C75420728;
-        Fri, 15 May 2020 18:21:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589566884;
-        bh=ckBVg1MJiVxCyn1jj47za/KaV60o81y+aY8hdhxTv+Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SUFZPl9QG+I4sO2uHgaBRWO0H+NYBBemyg2JiqEHfu24RGQA70mbOne0B1OJdHGHS
-         xLZS7vxraN97lS4WEorIVxzbq69D68YIEDapFNN6Zr50BpVoR+wtpTRMPNEGwzmoGf
-         sfpUPlq3KwdhOB6PUcLXJun7s1kgOTM696A25Th4=
-Date:   Fri, 15 May 2020 19:21:21 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
-        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
-        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Allison Randal <allison@lohutok.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/19] spi: dw: Add generic DW DMA controller support
-Message-ID: <20200515182121.GP5066@sirena.org.uk>
-References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
- <20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru>
+        id S1726144AbgEOSWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 14:22:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF2591063;
+        Fri, 15 May 2020 11:22:07 -0700 (PDT)
+Received: from [192.168.0.14] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB72E3F71E;
+        Fri, 15 May 2020 11:22:06 -0700 (PDT)
+Subject: Re: [PATCH v2 09/10] x86/resctrl: Add arch_has_sparse_bitmaps to
+ explain AMD/Intel CAT difference
+To:     Babu Moger <babu.moger@amd.com>,
+        Reinette Chatre <reinette.chatre@intel.com>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>
+References: <20200430170400.21501-1-james.morse@arm.com>
+ <20200430170400.21501-10-james.morse@arm.com>
+ <8383ddd9-5849-d948-c391-aeb0cc927423@intel.com>
+ <980a693a-b823-96e1-9b4f-d7bbf4f09714@amd.com>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <a16561f5-e8e9-7d23-e332-38c5cbdfcfc8@arm.com>
+Date:   Fri, 15 May 2020 19:21:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="o41d8xLWOaLD8vYh"
-Content-Disposition: inline
-In-Reply-To: <20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru>
-X-Cookie: Avoid contact with eyes.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <980a693a-b823-96e1-9b4f-d7bbf4f09714@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi guys,
 
---o41d8xLWOaLD8vYh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 13/05/2020 21:03, Babu Moger wrote:
+>> From: Reinette Chatre <reinette.chatre@intel.com>
+>> On 4/30/2020 10:03 AM, James Morse wrote:
+>>> Intel expects the cache bitmap provided by user-space to have on a
+>>> single span of 1s, whereas AMD can support bitmaps like 0xf00f.
+>>> Arm's MPAM support also allows sparse bitmaps.
+>>>
+>>> To move resctrl out to /fs/ we need to explain platform differences
+>>> like this. Add a resource property arch_has_sparse_bitmaps. Test this
+>>> around the 'non-consecutive' test in cbm_validate().
+>>>
+>>> Merging the validate calls causes AMD top gain the min_cbm_bits test
 
-On Fri, May 15, 2020 at 01:47:39PM +0300, Serge Semin wrote:
+top -> to
 
-Appled:
+>>> needed for Haswell, but as it always sets this value to 1, it will
+>>> never match.
+>>>
+>>> CC: Babu Moger <Babu.Moger@amd.com>
+>>> Signed-off-by: James Morse <james.morse@arm.com>
+>>> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+>>
+>> The Intel bits do indeed look good to me but we should check the AMD
+>> portion ... I peeked at the AMD spec [1] and found "If an L3_MASK_n
+>> register is programmed with all 0’s, that COS will be prevented from
+>> allocating any lines in the L3 cache" ... so AMD does allow bitmasks of
+>> all 0's (Intel does not).
+>>
+>> Does MPAM also allow all 0's? Perhaps "arch_has_sparse_bitmaps" can be
+>> used to indicate that also?
 
->   dt-bindings: spi: dw: Add Tx/Rx DMA properties
->   spi: dw: Clear DMAC register when done or stopped
->   spi: dw: Fix native CS being unset
->   spi: dw: Initialize paddr in DW SPI MMIO private data
+It does...
 
-Thanks.  No issues from me with the other patches.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> That is right. AMD allows  L3 mask be all 0s.  I will be great if this
+> property can be indicated it here. Thanks
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Ah, this is a bug I didn't intend to introduce!
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Intel has:
+|       if (val == 0 || val > r->default_ctrl) {
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Whereas AMD:
+|       if (val > r->default_ctrl) {
 
---o41d8xLWOaLD8vYh
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+So this empty bitmap is permitted today with resctrl. (and, its another try-it-and-see).
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6+3aAACgkQJNaLcl1U
-h9AGPAf/VsoxJ5zaBMEYFMY7L9rknyrkpX4QpC4b+7Dqn/k9fDezq5tQfvzsSRT+
-c53PKsNYEJmdWAa06UJpLHroHf4Tgu/SythyLU5ad2eUg2hHqrtoy2pFDtn4qFKp
-deRuFD01wqSKVe8zgyJ3kVRNOwosZiNYY2odh3t09vp7Xhsm0IBhlus6uRJH7szG
-YkHF44v54fVuQvm5FD5QxTIMLN8inIJk+4oC5Xx+LQ5qf7hCInCmUgg7x/d9I2mC
-HxfMDDegEPXj22WtkOvNlOlnWhL1ddS9VHNXBf7e5QDIoVlwq+9ZyKAKNMWgCYRV
-uefRPVN+eOxdTIDgjo4ftLeW9I6E4g==
-=tbav
------END PGP SIGNATURE-----
+I'll add an 'arch_has_empty_bitmaps', I don't think overloading 'sparse' to mean 'sparse
+and empty' is a good idea.
 
---o41d8xLWOaLD8vYh--
+
+Thanks!
+
+James
