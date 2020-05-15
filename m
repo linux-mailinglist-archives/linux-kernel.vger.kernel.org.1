@@ -2,98 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E571D5632
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BE81D563A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgEOQgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 12:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
+        id S1726304AbgEOQiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 12:38:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726246AbgEOQgl (ORCPT
+        by vger.kernel.org with ESMTP id S1726231AbgEOQiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 12:36:41 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528B5C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 09:36:41 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id z1so1186876pfn.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 09:36:41 -0700 (PDT)
+        Fri, 15 May 2020 12:38:12 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E37BC05BD09
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 09:38:12 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id g35so1025189uad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 09:38:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Bh8ixcsDUuAv48rLKduFHjKYM7D8+5KBZ3dzDMIQTNo=;
-        b=ZhAOfp+UMX7lLYJr0/PzKOR6v3qyxcZXl6kAhItI0c2DozwmG3GHhsAqobF3tB1Jvd
-         J9KilAgtSIXAm4tsiWHhTQAd49AVoLwHeU0onuhtROXUoKNksqRkcWoiDMcSwMu7ECY6
-         slkOEZDJPkv89qedsX589SJUcHR0iwluBOh68DJUz591pQWXlJDhv0YuPMjrMsH4IzOb
-         A9Tjb+tkJUovBT14Jg6IR2YvPBvJ4qX23PG2Mqkh56Ql6OCE0uYq2OD8sqw37IY97Gw0
-         b4ZvA6YJfE2uVIADBY8mrnPQDDImVu2JeTffLG/JLbox29tZsIqWAO9YD9YLFVFmipUQ
-         SGbA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dsWS87oi/iCZiA7NcMAjL2FtmRuX/wXJ/5rlQnp6zmo=;
+        b=eJcK1GVzgHPtvBtl7+i8mN1qpqG8SB0hDnStaypr1OR9DbkSvrc8siXYG/buCjwsq8
+         jLPh8H/3sIUkFgicYCe+u1bnBMCswUGPYiaXUWGNAy19k9PyqIvLQ8Xi2N9GVMtZUwnu
+         qTpfoTHvj8l/TNVlZrH7R6nglxOwowCbETks8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Bh8ixcsDUuAv48rLKduFHjKYM7D8+5KBZ3dzDMIQTNo=;
-        b=XCe3fQFIT3gDIN0NUqz9t4rlhbZ/ExzYCf2/4yU/PrsbwuIXQZHNLIqqiAnuqkBLfs
-         uiJcJ2D4oO2MNuTiHqhJS5IGpqDGNs62NGqbgIBgqR6Q179R+eDD7gJRewI3fPd7Zb7L
-         Ea9c+5psfdicafch2DoKhxItQUUNcGG/+q7H7holOuZAWtrWKJ/ZIeZ6MyaUPVjgLJsR
-         Y+UNmxqFBTjE5jnEeQYVv8lf4yF9BbTbhKRqBaot96aDh3mvVEnX8upNZYi2VE8cNKJC
-         zA3GHaJp1C0Bvgl8Ip0ZUf4ZSAYBlfPEy6DASrNodeSvPeKe2CTG/oepinCz58MHjA7B
-         +MvA==
-X-Gm-Message-State: AOAM530ldjiM6xRi0DQ4m9VlxxjFsqBiygjNHzE2nBL7EyDlhvegehNO
-        bPaGyB33dBBMeCCVFyaLQiY=
-X-Google-Smtp-Source: ABdhPJwzdar/iwUxzCQU7H1yQOkxLGAdRa+i9xU4TgPUhSS8+Y06un4TwoVVGYWcRVTsTSJlSN0p4Q==
-X-Received: by 2002:a65:6799:: with SMTP id e25mr4100089pgr.9.1589560600837;
-        Fri, 15 May 2020 09:36:40 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id kr1sm1882333pjb.26.2020.05.15.09.36.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 09:36:40 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date:   Sat, 16 May 2020 01:36:38 +0900
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>
-Subject: Re: [PATCH] printk/kdb: Redirect printk messages into kdb in any
- context
-Message-ID: <20200515163638.GI42471@jagdpanzerIV.localdomain>
-References: <1589273314-12060-1-git-send-email-sumit.garg@linaro.org>
- <20200512142533.ta4uejwmq5gchtlx@holly.lan>
- <CAFA6WYOV7oPbYE=9fXueYMacb5wv0r9T6F8tmECt-Eafe-fctw@mail.gmail.com>
- <20200514084230.GO17734@linux-b0ei>
- <CAFA6WYPSsgdAB-wJC0e2YkVkW0XsqQsu5wrn4iB4M-cwvS7z2g@mail.gmail.com>
- <20200515085021.GS17734@linux-b0ei>
- <20200515103308.GD42471@jagdpanzerIV.localdomain>
- <CAFA6WYOBsimP1j8Fwq4OcePEug4MGoaY3wTTTVydHtTphZ-FTw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dsWS87oi/iCZiA7NcMAjL2FtmRuX/wXJ/5rlQnp6zmo=;
+        b=cbmCMGZiGYGYpMPk9r5rlOJnqNsq0yW2IIJNvRZVq+K0DI70p3SLNygPPKDDfAtm4N
+         Izb08eBtrWXg/a97y6vKl618dhRIaiHyZCWlcXtxJMhhVqRlROGAsbntA1YhAAvR8aGM
+         PZFq+68gXkxmEpNCbeRO8wVnvj/ayUPW8gQh5PMkoKSkL3TJK77VOQr1ZoEiT0cxJ9OB
+         blYhPAnFEt3Mn3s8qStLJnycLg6aDJkZoUgXF5QIKxZeAJJwYVOXzRni3OsP0uC6V/Z6
+         DBy4WYRFNRlHkGbIX2waMMx7swOME6Ol92GePG813g8TWAbuT88ZScME3+HwmnpF7F5B
+         7j4Q==
+X-Gm-Message-State: AOAM531nj3DTvR3ZfcHL149ONYFuSLBrC64xyJdpzb5CqHtqTiSwdhOL
+        u+bn2V4y03kqOviHAl2zO02Ic2eqypw=
+X-Google-Smtp-Source: ABdhPJx34YlhoQIY6w2ReB5qev7Mi3lHsxcP9Yg162KpuXdPCG2aYzo0Z/55wPQdqjrvC1C7P9UjbQ==
+X-Received: by 2002:a9f:3244:: with SMTP id y4mr3694358uad.49.1589560690522;
+        Fri, 15 May 2020 09:38:10 -0700 (PDT)
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
+        by smtp.gmail.com with ESMTPSA id h2sm702711vkn.12.2020.05.15.09.38.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 May 2020 09:38:09 -0700 (PDT)
+Received: by mail-ua1-f49.google.com with SMTP id 36so1009926uaf.9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 09:38:09 -0700 (PDT)
+X-Received: by 2002:ab0:69cc:: with SMTP id u12mr216029uaq.22.1589560688373;
+ Fri, 15 May 2020 09:38:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFA6WYOBsimP1j8Fwq4OcePEug4MGoaY3wTTTVydHtTphZ-FTw@mail.gmail.com>
+References: <1588339863-1322-1-git-send-email-kalyan_t@codeaurora.org>
+ <CAD=FV=UJGivCyp=t0J++1DbSFDVf+5zSCcXgh83VZtssBmavjg@mail.gmail.com> <32c01e9a5277bdbdbab868eb71688184@codeaurora.org>
+In-Reply-To: <32c01e9a5277bdbdbab868eb71688184@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 15 May 2020 09:37:57 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VVi6oUDx_2Yf543ZphS1oQJiQU8St0XNUHs7HyPkoTeg@mail.gmail.com>
+Message-ID: <CAD=FV=VVi6oUDx_2Yf543ZphS1oQJiQU8St0XNUHs7HyPkoTeg@mail.gmail.com>
+Subject: Re: [Freedreno] [PATCH] drm/msm/dpu: ensure device suspend happens
+ during PM sleep
+To:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        Sean Paul <seanpaul@chromium.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, mkrishn@codeaurora.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        travitej@codeaurora.org, LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@gmail.com>, nganji@codeaurora.org,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Jeykumar Sankaran <jsanka@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/05/15 17:32), Sumit Garg wrote:
-> > Can I please have some context what problem does this solve?
-> 
-> You can find the problem description here [1] which leads to this fix.
+Hi,
 
-[..]
+On Fri, May 15, 2020 at 5:06 AM <kalyan_t@codeaurora.org> wrote:
+>
+> On 2020-05-14 21:47, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Fri, May 1, 2020 at 6:31 AM Kalyan Thota <kalyan_t@codeaurora.org>
+> > wrote:
+> >>
+> >> "The PM core always increments the runtime usage counter
+> >> before calling the ->suspend() callback and decrements it
+> >> after calling the ->resume() callback"
+> >>
+> >> DPU and DSI are managed as runtime devices. When
+> >> suspend is triggered, PM core adds a refcount on all the
+> >> devices and calls device suspend, since usage count is
+> >> already incremented, runtime suspend was not getting called
+> >> and it kept the clocks on which resulted in target not
+> >> entering into XO shutdown.
+> >>
+> >> Add changes to force suspend on runtime devices during pm sleep.
+> >>
+> >> Changes in v1:
+> >>  - Remove unnecessary checks in the function
+> >>     _dpu_kms_disable_dpu (Rob Clark).
+> >>
+> >> Changes in v2:
+> >>  - Avoid using suspend_late to reset the usagecount
+> >>    as suspend_late might not be called during suspend
+> >>    call failures (Doug).
+> >>
+> >> Changes in v3:
+> >>  - Use force suspend instead of managing device usage_count
+> >>    via runtime put and get API's to trigger callbacks (Doug).
+> >>
+> >> Changes in v4:
+> >>  - Check the return values of pm_runtime_force_suspend and
+> >>    pm_runtime_force_resume API's and pass appropriately (Doug).
+> >>
+> >> Changes in v5:
+> >
+> > Can you please put the version number properly in your subject?  It's
+> > really hard to tell one version of your patch from another.
+> >
+> >
+> >>  - With v4 patch, test cycle has uncovered issues in device resume.
+> >>
+> >>    On bubs: cmd tx failures were seen as SW is sending panel off
+> >>    commands when the dsi resources are turned off.
+> >>
+> >>    Upon suspend, DRM driver will issue a NULL composition to the
+> >>    dpu, followed by turning off all the HW blocks.
+> >>
+> >>    v5 changes will serialize the NULL commit and resource unwinding
+> >>    by handling them under PM prepare and PM complete phases there by
+> >>    ensuring that clks are on when panel off commands are being
+> >>    processed.
+> >
+> > I'm still most definitely not an expert in how all the DRM pieces all
+> > hook up together, but the solution you have in this patch seems wrong
+> > to me.  As far as I can tell the "prepare" state isn't supposed to be
+> > actually doing the suspend work and here that's exactly what you're
+> > doing.  I think you should find a different solution to ensure
+> > ordering is correct.
+> >
+> > -Doug
+> >
+>
+> Hi,
 
-> [1] https://lkml.org/lkml/2020/5/12/213
+Quite honestly I'm probably not the right person to be reviewing this
+code.  I mostly just noticed one of your early patches and it looked
+strange to me.  Hopefully someone with actual experience in how all
+the DRM components work together can actually review and see if this
+makes sense.  Maybe Sean would know better?
 
-Thanks for the link. I'm slightly surprised it took so many years
-to notice the addition of printk_nmi/printk_safe :)
+That being said, let me at least look at what you're saying...
 
-	-ss
+
+> Prepare and Complete are callbacks defined as part of Sleep and Resume
+> sequence
+>
+> Entering PM SUSPEND the phases are : prepare --> suspend -->
+> suspend_late --> suspend_noirq.
+> While leaving PM SUSPEND the phases are: resume_noirq --> resume_early
+> --> resume --> complete.
+
+Sure, it's part of the sequence.  It's also documented in pm.h as:
+
+ * The principal role of this callback is to prevent new children of
+ * the device from being registered after it has returned (the driver's
+ * subsystem and generally the rest of the kernel is supposed to prevent
+ * new calls to the probe method from being made too once @prepare() has
+ * succeeded).
+
+It does not feel like that matches your usage of this call.
+
+
+> The reason to push drm suspend handling to PM prepare phase is that
+> parent here will trigger a modeset to turn off the timing and
+> subsequently the panel.
+> the child devices should not turn of their clocks before parent unwinds
+> the composition. Hence they are serialized as per the sequence mentioned
+> above.
+
+So the general model in Linux is that children suspend before their
+parents, right?  So you're saying that, in this case, the parent needs
+to act on the child before the child suspends.  Is that correct?
+
+Rather than hijacking the prepare/complete, I'd be at least slightly
+inclined to move the other driver to turn off its clocks in
+suspend_late and to turn them back on in resume_early?  That seems to
+be what was done in "analogix_dp-rockchip.c" to solve a similar
+problem.
+
+
+> A similar approach is taken by other driver that use drm framework. In
+> this driver, the device registers for prepare and complete callbacks to
+> handle drm_suspend and drm_resume.
+> https://gitlab.freedesktop.org/drm/msm/-/blob/msm-next/drivers/gpu/drm/exynos/exynos_drm_drv.c#L163
+
+OK, if there is another driver in DRM then I guess I won't object too
+strongly.  Note that when searching for other drivers I noticed this
+bit in todo.rst:
+
+* Most drivers (except i915 and nouveau) that use
+* drm_atomic_helper_suspend/resume() can probably be converted to use
+* drm_mode_config_helper_suspend/resume(). Also there's still open-coded version
+* of the atomic suspend/resume code in older atomic modeset drivers.
+
+Does anything get fixed if you do that?  It seems like it'd cleanup
+your code a bit so maybe worth doing anyway...
+
+---
+
+I guess the last question I'd want resolved is why you have this asymmetry:
+
+SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, msm_pm_resume)
+
+Why couldn't you use pm_runtime_force_resume()?
+
+
+-Doug
