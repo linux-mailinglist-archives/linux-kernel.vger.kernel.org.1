@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998091D42B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 03:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6599B1D42C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 03:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbgEOBFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 21:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726171AbgEOBFj (ORCPT
+        id S1728210AbgEOBK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 21:10:58 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:37608 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726216AbgEOBK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 21:05:39 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE946C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 18:05:37 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id q24so243977pjd.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 18:05:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6eDmVoxMjvhjUTcVq+QS+luvVgKfEd6UeTKYi0GYY/Q=;
-        b=nC6qh/RRtLo5YkFASVNTjzmS6hB2wcHOSlCr6oyH+TRQvoERZi7p4K1Xcm4kuC4zfI
-         IPZu7/uOH/jDh4/sS6a6Wl7/uYnk7PYrM5mxSbz3KCnEHIgK9FBWlUpMFggDwzTHihUK
-         oVuWf5zTDw/mr7UpS8XDlsrUQ8ldUVXmPUc90=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6eDmVoxMjvhjUTcVq+QS+luvVgKfEd6UeTKYi0GYY/Q=;
-        b=aemz4GOr3PRDGZG3WE2FmzhCxfS06hYgJ1MIV34YMjZtMPMB8xyuDgw1y0eChyWUjc
-         gN8dhPFvtn+FMWdj07gPFvoE+MVrU+1+bNQUcJhWZJElkLYqGfT2AwSbecRILxnSMQUa
-         +ppxsJTGyqEnkTMcp7MjIk5bDgHlA3Lnt01VMSi7oZV+hmXcNHRU3MElXnUDmw4DSdhX
-         WnHJOf5zrVmTNtr98yyDB4gORrwOyUSMbrGk2DDD97bHOsSfuT0vXC/4cJ/jCnZXZQgZ
-         jFTfgQZ8H4EaLfz4JBsP6pHG8oiecDmflmKLQLPUNK1M1bCzc8ucbhb9cOIOA+2AY3mK
-         Q+ig==
-X-Gm-Message-State: AOAM5336L/CsKOLwAzOjJobPWFeSmJa7wGDEPsIsVT9mHje3g/AKQ6oj
-        Lgw6gArPgJtGvuheiUufYC8kow==
-X-Google-Smtp-Source: ABdhPJwB6PAoOJYeS3qdfXHG1VARwSCyiTzJNK443oUUSG4LRJTMdwSgD9Whi8xkSHQq+C2mHa74PQ==
-X-Received: by 2002:a17:90b:c90:: with SMTP id o16mr717743pjz.59.1589504737439;
-        Thu, 14 May 2020 18:05:37 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
-        by smtp.gmail.com with ESMTPSA id g14sm363169pfh.49.2020.05.14.18.05.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 May 2020 18:05:36 -0700 (PDT)
-Date:   Thu, 14 May 2020 18:05:35 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sharat Masetty <smasetty@codeaurora.org>
-Cc:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jcrouse@codeaurora.org,
-        georgi.djakov@linaro.org
-Subject: Re: [PATCH 5/6] drm: msm: a6xx: use dev_pm_opp_set_bw to set DDR
- bandwidth
-Message-ID: <20200515010535.GX4525@google.com>
-References: <1589453659-27581-1-git-send-email-smasetty@codeaurora.org>
- <1589453659-27581-6-git-send-email-smasetty@codeaurora.org>
+        Thu, 14 May 2020 21:10:57 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04F13BTV130944;
+        Fri, 15 May 2020 01:10:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=uzWUKK8WSe769UBEv6C+kY5NI1d1U8HUxPG8v/sJW80=;
+ b=gU+howcSEUQ7AlT/CKnH5zts96yW/9T/6okbxANBpEgaYAy6lETJYL039gJGC+5szh6R
+ 1iRaFQfzYswZymyfLsB+gONFIPVEhPYCSNenayNga0lWsuOfSjx/WVMDnqQCNzWG8rym
+ 8ueWDwnsxoWGndqYheBAcuEQqXUQq144hw5LSXB5zNQVpyZZTTtR9bj/3rPz8VwEE0X4
+ J4b69sV+R+rWji7GiPfaB5m5BEZHX+Hq8K/phzXi4+ITlA/HmbJDNy1R/BnJnresKZrp
+ gkhRTgQdaVxjkvoSdsaqx37uIytL0pfFBxx8kkS7UQHpv9nEaidjhbEVrPBNk1f5JJ3F 0A== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 3100xwxp99-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 May 2020 01:10:35 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04F12kqR161267;
+        Fri, 15 May 2020 01:10:35 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 3100yqf3x0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 May 2020 01:10:35 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04F1AWJC017962;
+        Fri, 15 May 2020 01:10:33 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 14 May 2020 18:10:32 -0700
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     jejb@linux.ibm.com, matthias.bgg@gmail.com,
+        ChenTao <chentao107@huawei.com>, stanley.chu@mediatek.com
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] scsi: ufs-mediatek: Make ufs_mtk_fixup_dev_quirks static
+Date:   Thu, 14 May 2020 21:10:26 -0400
+Message-Id: <158950485295.8169.16456174061063737853.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200514012655.127202-1-chentao107@huawei.com>
+References: <20200514012655.127202-1-chentao107@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1589453659-27581-6-git-send-email-smasetty@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=941 adultscore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005150007
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 cotscore=-2147483648 bulkscore=0
+ phishscore=0 adultscore=0 mlxlogscore=970 lowpriorityscore=0
+ impostorscore=0 spamscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005150007
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 04:24:18PM +0530, Sharat Masetty wrote:
-> This patches replaces the previously used static DDR vote and uses
-> dev_pm_opp_set_bw() to scale GPU->DDR bandwidth along with scaling
-> GPU frequency.
-> 
-> Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> index 2d8124b..79433d3 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> @@ -141,11 +141,7 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
-> 
->  	gmu->freq = gmu->gpu_freqs[perf_index];
-> 
-> -	/*
-> -	 * Eventually we will want to scale the path vote with the frequency but
-> -	 * for now leave it at max so that the performance is nominal.
-> -	 */
-> -	icc_set_bw(gpu->icc_path, 0, MBps_to_icc(7216));
-> +	dev_pm_opp_set_bw(&gpu->pdev->dev, opp);
+On Thu, 14 May 2020 09:26:55 +0800, ChenTao wrote:
 
-Is there a particular reason to keep this one liner in a separate patch?
-I think it would make sense to squash it into "drm: msm: a6xx: send opp
-instead of a frequency" and change the subject of the combined patch to
-something like "drm: msm: a6xx: Scale the DDR bandwidth dynamically".
+> Fix the following warning:
+> 
+> drivers/scsi/ufs/ufs-mediatek.c:585:6: warning:
+> symbol 'ufs_mtk_fixup_dev_quirks' was not declared. Should it be static?
+
+Applied to 5.8/scsi-queue, thanks!
+
+[1/1] scsi: ufs-mediatek: Make ufs_mtk_fixup_dev_quirks static
+      https://git.kernel.org/mkp/scsi/c/21d2b76831fd
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
