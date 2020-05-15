@@ -2,188 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3D21D4B1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4367A1D4B0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728467AbgEOKdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 06:33:21 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:2002 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728156AbgEOKdT (ORCPT
+        id S1727966AbgEOKcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 06:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728144AbgEOKca (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 06:33:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1589538799; x=1621074799;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=6JyjevTXi30Ra8MJtEs+SOstBuSe182myQ1YtRcMwrs=;
-  b=SH86u7Z+RmssjW/UKcpFqBHoMz6WQszV86yxb1QH1s6A+F2Y0UJrFkbg
-   bcDPbb9YmA4zG6G41b++ffiKJ5xP2UESMy+RKI3CnMO1Idx575jAqX6VZ
-   W7X0A5KNOAQMbH1NunvFMeCqppuwzfyhkM4em1Ut8VcYQaMfKaqPNsA6K
-   VkOWKH1mlMGxnH20IYnPleNQzOVXHi/Zd9tElwnSbfi3NwSpnfxO6m5Mf
-   zMClmwY+9QzDOkq757cDbA+DUwijlL/ofb8dN43WkHqNRtODFyWtOjRFV
-   6WQD4XerEdTz4gnmHb6EphS+2meJpSD3A1/Ne8luf4ASXld3aZrWIuq4T
-   Q==;
-IronPort-SDR: sHtuxIsD4NU1WhzJAKJ4zvi4s7W39U1cycCxDoxEDN+wN18UAVaFwA+Mhaxckl6Vkl1jp/CDiP
- /4ynM1IADWP5DRXoC1WCpaWeYInUYaOB3NpeXl20eAhpn/CB4h+DPjwO1qfMSk9LPCErvnBUTQ
- m3i8Y5PDphomNvLM7D0hEZ6kYx2NPJD0dzpaoYvavQw5aIbpWzn3lBf2g83vPLnWme6Vzbgd6P
- hzkThsA2j4t0DTh3zTXuXcxgFVdklB6a15kDxoZYixFhK/aze1q/9s7+NhiiIlvbmyX9vHv0qK
- ILw=
-X-IronPort-AV: E=Sophos;i="5.73,394,1583164800"; 
-   d="scan'208";a="142113860"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 15 May 2020 18:33:19 +0800
-IronPort-SDR: tvi1LgUTx5wf84CQeqhaYQvgt2AvhCz736AVKc8v5TfjPX69eT1kwVpC0CmU4p0nBWxHh9Z2y5
- QKsP9B/0nglR2DBxNPZx8VOFmVOnMhJuE=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 03:23:29 -0700
-IronPort-SDR: O6V3SslWYV1kHoNF7CO9NcAHntwUzYct3jabOkhOsZGctm6NFncgkdJw09IsKH36WPdBZPeOy9
- ylqAAvE5A3uQ==
-WDCIronportException: Internal
-Received: from ile422988.sdcorp.global.sandisk.com ([10.0.231.246])
-  by uls-op-cesaip01.wdc.com with ESMTP; 15 May 2020 03:33:14 -0700
-From:   Avri Altman <avri.altman@wdc.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Bart Van Assche <bvanassche@acm.org>, alim.akhtar@samsung.com,
-        asutoshd@codeaurora.org, Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
-        stanley.chu@mediatek.com,
-        MOHAMMED RAFIQ KAMAL BASHA <md.rafiq@samsung.com>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: [RFC PATCH 13/13] scsi: scsi_dh: ufshpb: Add "Cold" subregions timer
-Date:   Fri, 15 May 2020 13:30:14 +0300
-Message-Id: <1589538614-24048-14-git-send-email-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589538614-24048-1-git-send-email-avri.altman@wdc.com>
-References: <1589538614-24048-1-git-send-email-avri.altman@wdc.com>
+        Fri, 15 May 2020 06:32:30 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F754C061A0C;
+        Fri, 15 May 2020 03:32:29 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id h10so2074784iob.10;
+        Fri, 15 May 2020 03:32:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mp1O72Xdq00O8JgDXWC/mDotxQHEbyc0hg/iAsVvAgY=;
+        b=vcmQAMrEzsV4FG1L5QpLXkqBOrQ5OWuYdGlR8+ygcxJg+F5fPgRqdFWYKvqJJgU4mT
+         zG2aAW2Aaxx8HmPIlfVGBlGU+Tu3x3HW3wNhOb0imgignadU5yAYy5edOXWWGXi/0Na4
+         0SCSsnOjKh6NZ89GJ/Z1th6BYn3bZVjgPzwjCcYTGdFvmRZ+d8292zz6Fa+rLu1nDRVS
+         nqtULSE9iytN1Ux/XqwoX0F6IiuTkU6cBgvLoTaXjmrYNhB/2fbpLk/00zSQBHvVF91s
+         Hv+b2E+JxXaSCT1p0PXKvweG2iD7xl6BSOXRJs6N8uGBGhhsdZ7fLsuZ6pWRxwXozdGD
+         zlCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mp1O72Xdq00O8JgDXWC/mDotxQHEbyc0hg/iAsVvAgY=;
+        b=tIxLynNDKCBNNubK2SV154a6aqgDs+TLD79/uYoyXwykQBAl08x80bK1Rzbpg09eMf
+         Lw0EYB9dGstitqYlA1JgmGr3yuXNnFOW4vm9gV62UYLT1/+/xow9EOje4kT8US1LXB9M
+         O5DFGNDpeLtdpx1YAOE1wtcubFaVGjqXKul+aoXG+0LNFmYV2eNTfE4bg+hTL7kS7KAk
+         TMAm8pWVN6gkakdyEkBEQ1XVmsgGL+xyzu2yJucpsAYVZgstbT92kGd9b3b8Gx6zV909
+         N/g92dAjO6zyeSD6BptW1cxk1zhs4PGMsiW4sSFUGspqMHr60lwFbRhNClYYTrSty+4R
+         5SuA==
+X-Gm-Message-State: AOAM530dhGc5N3Vtd8zmP2vyWO8UeqfMo+DNxoWhAjTk1k4INdNDbJZC
+        TbX4JPAPpbo682l9DibMZt3kL1PJZJmeOLQCkYM=
+X-Google-Smtp-Source: ABdhPJySFDwer7KjH89ACOdbQCrAFJYmz3PmcTnEmry2cPWkqSChoUu+TiNgN9tnSrdVOfv81ypAYcyv/WXFLRq7XEE=
+X-Received: by 2002:a02:ac1:: with SMTP id 184mr2566280jaw.137.1589538748835;
+ Fri, 15 May 2020 03:32:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <1589267017-17294-1-git-send-email-dillon.minfei@gmail.com>
+ <1589267017-17294-5-git-send-email-dillon.minfei@gmail.com> <158949014721.215346.12197373767247910756@swboyd.mtv.corp.google.com>
+In-Reply-To: <158949014721.215346.12197373767247910756@swboyd.mtv.corp.google.com>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Fri, 15 May 2020 18:31:52 +0800
+Message-ID: <CAL9mu0J7t5Qbe2VQexn8=ZDbcOiCzc0cSnfZRKTjeM5Uyi_x-A@mail.gmail.com>
+Subject: Re: [PATCH v3 4/5] clk: stm32: Fix stm32f429 ltdc driver loading hang
+ in clk set rate. keep ltdc clk running after kernel startup
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Dave Airlie <airlied@linux.ie>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>, thierry.reding@gmail.com,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order not to hang on to “cold” subregions, we shall inactivate a
-subregion that has no READ access for a predefined amount of time. For
-that purpose we shall attach to any active subregion a timer, triggering
-it on every READ to expire after 500msec. On timer expiry we shall make
-note of that event and call the state-machine worker to handle it.
+Hi Stephen,
 
-Timers will not be attached to a pinned region's subregions.
+thanks for reviewing.
 
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
----
- drivers/scsi/device_handler/scsi_dh_ufshpb.c | 47 +++++++++++++++++++++++++++-
- 1 file changed, 46 insertions(+), 1 deletion(-)
+On Fri, May 15, 2020 at 5:02 AM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting dillon.minfei@gmail.com (2020-05-12 00:03:36)
+> > From: dillon min <dillon.minfei@gmail.com>
+> >
+> > as store stm32f4_rcc_register_pll return to the wrong offset of clks,
+>
+> Use () on functions, i.e. stm32f4_rcc_register_pll().
+ok
+>
+> > so ltdc gate clk is null. need change clks[PLL_VCO_SAI] to clks[PLL_SAI]
+>
+> And quote variables like 'clks[PLL_VCO_SAI]'
+ok
+>
+> >
+> > add CLK_IGNORE_UNUSED for ltdc to make sure clk not be freed by
+> > clk_disable_unused
+>
+> clk_disable_unused() doesn't free anything. Why does ltdc not need to be
+> turned off if it isn't used? Is it critical to system operation? Should
+> it be marked with the critical clk flag then? The CLK_IGNORE_UNUSED flag
+> is almost always wrong to use.
 
-diff --git a/drivers/scsi/device_handler/scsi_dh_ufshpb.c b/drivers/scsi/device_handler/scsi_dh_ufshpb.c
-index 04e3d56..e89dd30 100644
---- a/drivers/scsi/device_handler/scsi_dh_ufshpb.c
-+++ b/drivers/scsi/device_handler/scsi_dh_ufshpb.c
-@@ -123,6 +123,8 @@ struct ufshpb_subregion {
- 	unsigned long event;
- 	struct mutex state_lock;
- 	struct work_struct hpb_work;
-+
-+	struct timer_list read_timer;
+Yes, you are right. thanks. CLK_IGNORE_UNUSED just hide the root
+cause. after deeper debugging.
+i need to drop the last changes , they are not the root cause.
+
+post diff and analyse here first, i will resubmit clk's changes in
+next patchset with gyro and ili9341.
+
+--- a/drivers/clk/clk-stm32f4.c
++++ b/drivers/clk/clk-stm32f4.c
+@@ -129,8 +129,6 @@ static const struct stm32f4_gate_data
+stm32f429_gates[] __initconst = {
+        { STM32F4_RCC_APB2ENR, 20,      "spi5",         "apb2_div" },
+        { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+        { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+-       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div",
+-               CLK_IGNORE_UNUSED },
  };
- 
- /**
-@@ -210,6 +212,31 @@ static unsigned int entries_per_region_mask;
- static unsigned int entries_per_subregion_shift;
- static unsigned int entries_per_subregion_mask;
- 
-+static void ufshpb_read_timeout(struct timer_list *t)
-+{
-+	struct ufshpb_subregion *s = from_timer(s, t, read_timer);
-+	enum ufshpb_state s_state;
-+
-+	rcu_read_lock();
-+	s_state = s->state;
-+	rcu_read_unlock();
-+
-+	if (WARN_ON_ONCE(s_state != HPB_STATE_ACTIVE))
-+		return;
-+
-+	if (atomic64_read(&s->writes) < SET_AS_DIRTY &&
-+	    !atomic_dec_and_test(&s->read_timeout_expiries)) {
-+		/* rewind the timer for clean subregions */
-+		mod_timer(&s->read_timer,
-+			  jiffies + msecs_to_jiffies(READ_TIMEOUT_MSEC));
-+		return;
-+	}
-+
-+	set_bit(SUBREGION_EVENT_TIMER, &s->event);
-+
-+	queue_work(s->hpb->wq, &s->hpb_work);
-+}
-+
- static inline unsigned int ufshpb_lba_to_region(u64 lba)
- {
- 	return lba >> entries_per_region_shift;
-@@ -376,6 +403,7 @@ static bool ufshpb_test_block_dirty(struct ufshpb_dh_data *h,
- 	struct ufshpb_region *r = hpb->region_tbl + region;
- 	struct ufshpb_subregion *s = r->subregion_tbl + subregion;
- 	enum ufshpb_state s_state;
-+	bool is_dirty;
- 
- 	__update_rw_counters(hpb, start_lba, end_lba, REQ_OP_READ);
- 
-@@ -386,7 +414,14 @@ static bool ufshpb_test_block_dirty(struct ufshpb_dh_data *h,
- 	if (s_state != HPB_STATE_ACTIVE)
- 		return true;
- 
--	return (atomic64_read(&s->writes) >= SET_AS_DIRTY);
-+	is_dirty = (atomic64_read(&s->writes) >= SET_AS_DIRTY);
-+	if (!is_dirty && !test_bit(region, hpb->pinned_map)) {
-+		mod_timer(&s->read_timer,
-+			  jiffies + msecs_to_jiffies(READ_TIMEOUT_MSEC));
-+		atomic_set(&s->read_timeout_expiries, READ_TIMEOUT_EXPIRIES);
-+	}
-+
-+	return is_dirty;
- }
- 
- /* Call this on write from prep_fn */
-@@ -456,6 +491,8 @@ static void __subregion_inactivate(struct ufshpb_dh_lun *hpb,
- 	list_add(&s->mctx->list, &hpb->lh_map_ctx);
- 	spin_unlock(&hpb->map_list_lock);
- 	s->mctx = NULL;
-+
-+	del_timer(&s->read_timer);
- }
- 
- static void ufshpb_subregion_inactivate(struct ufshpb_dh_lun *hpb,
-@@ -602,6 +639,13 @@ static int __subregion_activate(struct ufshpb_dh_lun *hpb,
- 	atomic64_sub(atomic64_read(&s->writes), &r->writes);
- 	atomic64_set(&s->writes, 0);
- 
-+	if (!test_bit(r->region, hpb->pinned_map)) {
-+		timer_setup(&s->read_timer, ufshpb_read_timeout, 0);
-+		mod_timer(&s->read_timer,
-+			  jiffies + msecs_to_jiffies(READ_TIMEOUT_MSEC));
-+		atomic_set(&s->read_timeout_expiries, READ_TIMEOUT_EXPIRIES);
-+	}
-+
- out:
- 	if (ret)
- 		__subregion_inactivate(hpb, r, s);
-@@ -1377,6 +1421,7 @@ static void ufshpb_region_tbl_remove(struct ufshpb_dh_lun *hpb)
- 							r->subregion_tbl + j;
- 
- 				cancel_work_sync(&s->hpb_work);
-+				del_timer(&s->read_timer);
- 			}
- 
- 			kfree(r->subregion_tbl);
--- 
-2.7.4
 
+ static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
+@@ -558,13 +556,13 @@ static const struct clk_div_table post_divr_table[] = {
+
+ #define MAX_POST_DIV 3
+ static const struct stm32f4_pll_post_div_data  post_div_data[MAX_POST_DIV] = {
+-       { CLK_I2SQ_PDIV, PLL_I2S, "plli2s-q-div", "plli2s-q",
++       { CLK_I2SQ_PDIV, PLL_VCO_I2S, "plli2s-q-div", "plli2s-q",
+                CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 0, 5, 0, NULL},
+
+-       { CLK_SAIQ_PDIV, PLL_SAI, "pllsai-q-div", "pllsai-q",
++       { CLK_SAIQ_PDIV, PLL_VCO_SAI, "pllsai-q-div", "pllsai-q",
+                CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 8, 5, 0, NULL },
+
+-       { NO_IDX, PLL_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
++       { NO_IDX, PLL_VCO_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
+                STM32F4_RCC_DCKCFGR, 16, 2, 0, post_divr_table },
+ };
+
+@@ -1758,7 +1756,7 @@ static void __init stm32f4_rcc_init(struct
+device_node *np)
+        clks[PLL_VCO_I2S] = stm32f4_rcc_register_pll("vco_in",
+                        &data->pll_data[1], &stm32f4_clk_lock);
+
+-       clks[PLL_SAI] = stm32f4_rcc_register_pll("vco_in",
++       clks[PLL_VCO_SAI] = stm32f4_rcc_register_pll("vco_in",
+                        &data->pll_data[2], &stm32f4_clk_lock);
+
+        for (n = 0; n < MAX_POST_DIV; n++) {
+
+issue 1: ili9341 hang in clk set rate, the root cause should be
+PLL_VCO_SAI, PLL_SAI mismatch
+for 'clks[]'
+
+1, first at stm32f4_rcc_init() ,
+    clks[PLL_VCO_SAI] = stm32f4_rcc_register_pll("vco_in",
+                        &data->pll_data[2], &stm32f4_clk_lock);
+   the clk_hw from stm32f4_rcc_register_pll() is store to 'clks[7]', defined in
+   'include/dt-bindings/clock/stm32fx-clock.h'
+
+2, next
+hw = clk_register_pll_div(post_div->name,
+                                post_div->parent,
+                                post_div->flag,
+                                base + post_div->offset,
+                                post_div->shift,
+                                post_div->width,
+                                post_div->flag_div,
+                                post_div->div_table,
+                                clks[post_div->pll_num],
+                                &stm32f4_clk_lock);
+the 'clks[post_div->pll_num]', the pll_num is PLL_SAI, the value is 2,
+defined at
+enum {
+        PLL,
+        PLL_I2S,
+        PLL_SAI,
+};
+'post_div_data[]'
+
+so 7 != 2 offset of 'clks[]', input the wrong 'clks[]' to
+clk_register_pll_div. cause to_clk_gate result is null,
+crashed in ltdc driver's loading.
+
+issue 2: clk_disable_unused() turn off ltdc clock.
+1, ltdc clk is defined in 'stm32f429_gates[]', register to clk core,
+but there is no user to use it.
+    ltdc driver use dts binding name "lcd", connect to CLK_LCD, then
+aux clk 'lcd-tft '
+2, as no one use 'stm32f429_gates[]' s ltdc clock , so the
+enable_count is zero, after kernel startup
+    it's been turn off by clk_disable_unused() is fine.
+
+my chages for this is remove the ltdc from 'stm32f429_gates[]'
+but this modification still need 'clk-stm32f4.c''s maintainer to check
+if there is side effect.
+
+>
+> >
+> > Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> > ---
+> >  drivers/clk/clk-stm32f4.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
+> > index 18117ce..0ba73de 100644
+> > --- a/drivers/clk/clk-stm32f4.c
+> > +++ b/drivers/clk/clk-stm32f4.c
+> > @@ -129,7 +129,8 @@ static const struct stm32f4_gate_data stm32f429_gates[] __initconst = {
+> >         { STM32F4_RCC_APB2ENR, 20,      "spi5",         "apb2_div" },
+> >         { STM32F4_RCC_APB2ENR, 21,      "spi6",         "apb2_div" },
+> >         { STM32F4_RCC_APB2ENR, 22,      "sai1",         "apb2_div" },
+> > -       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div" },
+> > +       { STM32F4_RCC_APB2ENR, 26,      "ltdc",         "apb2_div",
+> > +               CLK_IGNORE_UNUSED },
+> >  };
+> >
+> >  static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
+> > @@ -1757,7 +1758,7 @@ static void __init stm32f4_rcc_init(struct device_node *np)
+> >         clks[PLL_VCO_I2S] = stm32f4_rcc_register_pll("vco_in",
+> >                         &data->pll_data[1], &stm32f4_clk_lock);
+> >
+> > -       clks[PLL_VCO_SAI] = stm32f4_rcc_register_pll("vco_in",
+> > +       clks[PLL_SAI] = stm32f4_rcc_register_pll("vco_in",
+> >                         &data->pll_data[2], &stm32f4_clk_lock);
+> >
+> >         for (n = 0; n < MAX_POST_DIV; n++) {
