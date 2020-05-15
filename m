@@ -2,101 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0741D4BE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E77C1D4BF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 13:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgEOK7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 06:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726719AbgEOK7W (ORCPT
+        id S1727777AbgEOLAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 07:00:10 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:46439 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726016AbgEOLAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 06:59:22 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DC3C05BD09
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:59:22 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id i15so2979030wrx.10
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:59:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sW/5ZwfUkcrq8MNsWbZB8lRN7UAKxOnejMG35fACcpU=;
-        b=tqre/qi7LotrlOupGSzYt/UzPtBy6RKj8xVepwDzpdtgmD2j1I7oQ4kcPPdkV2ZGOJ
-         hkb6qLAW45uzBZeohJSLIXIGRY/7SVGY1leLVFJVuP4CMq9xSsZjxdeS5vfPPIJEl/y4
-         MHUYKk1DPQdCyvYh7bT9gvsdjIWCHy1cgZBKcG/RbceKT+P2dXPlyzEVONehZKyuPUXL
-         388pp6M15+gpipCoh7DAoq00mt0q5cZfUMfLfunZYQv4+z9cvbDoEj4JB4JSpO7k2DxO
-         V5ckh4Ftfrl4+RmZy2SzVWEqFvC/U1b7tjmCt7qIYEAU6yVfSEpjBRvfcTtbYrhOj0xo
-         KVHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sW/5ZwfUkcrq8MNsWbZB8lRN7UAKxOnejMG35fACcpU=;
-        b=N5pI410ffnDik0Zdrpn5MBESd4MXt12biQXp8lJS/jyfLMj0K4BvbXUKNMihhpAKZP
-         SRfH7C8KDM+OcKUXMaBhIxPaUuoyTqtL/9IF9cD1GveBTxNfdQS+HBjDp875Zr6Nf0JF
-         KxB8k4axWYnD6BlJ9FOgMwyf8/5ArQoAIWEUutMPk28YWnrGyND/YxW6skjYAxzW1R0/
-         brgBAURzm0JBdmgKWMmYLsUBvNSVd8sC/56PUZTQezmDHfPsA4zFvwMVVM/BBVTQjUGT
-         hhvWmCezqM3Y98H8e4FMwcaqlqfXLF2aACzYlMD+PonyyDutkG4dldDqc0pFLwKj+gAN
-         4v5g==
-X-Gm-Message-State: AOAM533YGQjjY45NQFOVaGsUlZYTqo6qJUYKwAxI6IclIvz17jF745nO
-        TscFafsEPjZ7AiKsnH77bRmw0g==
-X-Google-Smtp-Source: ABdhPJypINRB1vch83S8A4T3nKixjdrHNtaJjymSWdrumgmpTeVVmG20s6/LdGZ7yzPGLe/h25kr3w==
-X-Received: by 2002:adf:d4c6:: with SMTP id w6mr3816250wrk.92.1589540360508;
-        Fri, 15 May 2020 03:59:20 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8523:2d03:d11b:f847:8002:7411])
-        by smtp.gmail.com with ESMTPSA id f128sm3300011wme.1.2020.05.15.03.59.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 May 2020 03:59:19 -0700 (PDT)
-From:   David Brazdil <dbrazdil@google.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v2 14/14] arm64: kvm: Lift instrumentation restrictions on VHE
-Date:   Fri, 15 May 2020 11:58:41 +0100
-Message-Id: <20200515105841.73532-15-dbrazdil@google.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200515105841.73532-1-dbrazdil@google.com>
-References: <20200515105841.73532-1-dbrazdil@google.com>
+        Fri, 15 May 2020 07:00:08 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200515110003euoutp027155537899dab3c0d17cfd16c405ca0d~PLpMqg6-w1429214292euoutp02J;
+        Fri, 15 May 2020 11:00:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200515110003euoutp027155537899dab3c0d17cfd16c405ca0d~PLpMqg6-w1429214292euoutp02J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1589540403;
+        bh=u96tf/lf84rTvkxFVULsNIo4JxOyg98nNfFZ0ZqaRHY=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=VxKMdtB6ruuswNJT/KWPNOAm0h8POgMEbKOxF9rhqNUkjuCbCdjMqWTRl2RPhxz57
+         Os2WKp1juIlwBFpNCfWcZ5qTBqX9Rya1IFb7qzwIE6m80BCglb8NQo3Sj2bsteHxjp
+         lsyX4Rv2/wNkAYeW/e/c0a+lIYJ/cBpZPm96WzEQ=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200515110002eucas1p19dc80a5db02589f53d3a20ef60f387ca~PLpMSo7Mh3131731317eucas1p1W;
+        Fri, 15 May 2020 11:00:02 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 33.89.60698.2367EBE5; Fri, 15
+        May 2020 12:00:02 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200515110002eucas1p136759396d9b61f214d1f14856c009501~PLpL6haeA1854818548eucas1p13;
+        Fri, 15 May 2020 11:00:02 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200515110002eusmtrp2ee4e473afee7499807c6dff0e0748c3c~PLpL5k6Ts1230812308eusmtrp2u;
+        Fri, 15 May 2020 11:00:02 +0000 (GMT)
+X-AuditID: cbfec7f5-a0fff7000001ed1a-bc-5ebe7632ecf8
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 2C.C0.08375.2367EBE5; Fri, 15
+        May 2020 12:00:02 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200515110002eusmtip13a2ee4ecca8d54da3c99d8dfc1d00a1a~PLpLvgV0e2724027240eusmtip1K;
+        Fri, 15 May 2020 11:00:02 +0000 (GMT)
+From:   Lukasz Stelmach <l.stelmach@samsung.com>
+To:     Stephan Mueller <smueller@chronox.de>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Markus Elfring <elfring@users.sourceforge.net>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Stefan Wahren <wahrenst@gmx.net>, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH 1/2] hwrng: iproc-rng200 - Set the quality value
+Date:   Fri, 15 May 2020 12:59:45 +0200
+Message-ID: <dleftjv9kx79b2.fsf%l.stelmach@samsung.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
+        protocol="application/pgp-signature"
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SWUwTURTN6ywd0ZKxaHqDRmPVKBrBLfrEJZIQMzFx+dOYiFYZcWGKaQH3
+        gBvYVlBrUBlFURQQpMVSi4BSbARElLpQ9QNtYnGhoNQ1iqJSpyb+nXvOPefde/MYQnmWjmQ2
+        aVN5nVaTrKbDSEfTd/eU6en1CVPtmRNxv7lJjq+eslK4IqeRxG5DCYH73t+W4/1FVhqb/CPx
+        EV83gd3uSjm2+Z5Q2Pviuww/rj1D41PuehkuPN5J4UJHLsKv8qto/L68E+G81goSN98xEAsj
+        uB99ZsSJ3vs097G9XcbViM/lXJHNSXOOhvGcrcxAc86CK3Ku6mIGl2svQ1xuVyXirHYPye27
+        m01xn2yjloevCpuXyCdvSud1MQvWhm00e2+RWxvY7fliI52JbiqMaBAD7EzwfvwiN6IwRsmW
+        Ivga6KGk4jMCa9leUio+Iei/94H6Zzlw7GlIKEHQ7amTScUbBCWGLNqIGIZmo6GiYmXQMIyN
+        Ak/2OTrYQ7BtFPw8/YgIChFsPDwyHZMFMcmOh9sBHwpiBTsbTOW//vLD2Tlgf+uVS/xQaMnv
+        JIOYYAXId/egYCiw7Qw4C0RSGi8ebpmqaQlHgL/ZLpfwSPhdc04WHA7YDDhuniV5DyNwnPkW
+        8s6Fjra+kDcOmqrbKak/HJ69Gyq9Gw5mx0lCohVwKEspdY8Dy5EboZRIyPGXIglz0N3yJnSs
+        gwiKruWho2i0+N864n/riAOxxMC9rLUxEj0Zis93ExKeDxZLL1mIqDKk4tP0QhKvn6Hlt0Xr
+        NYI+TZsUvT5FsKGBn9r6q/nLdVT/c50LsQxSD1FMzbuZoKQ06fodgguNG0h6WVn+AEWS2hQt
+        rx6mWGqtS1AqEjU7dvK6lDW6tGRe70IjGFKtUsy40LVaySZpUvktPL+V1/1TZcygyExU2e+L
+        Kn6sEvY9VMUleLZvjnDGioIpgH/HrO1ackdY3nEpLjsjs4UmFxurVlxLK73/Whjjik111rge
+        pgcsBcuMs817L1yP2d3aZun84fP37rnR9dVbd7Bjg7txcrVoCkwakbUzcd2iE3G1Pt/gCbHz
+        4nsKZqkacsZe7t3V4jH4P6tJ/UbNtEmETq/5A2h510axAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTYRjG+XYum8vl5zT8GCE2NKho80xt3yKrP4wOhFEUYTdt6EFDt8k5
+        m2V/VKRhalkalg5Fwy6ozdk08ZJzmrcysTIXXUxJpbKoKLLSijZH0H8Pz/N7X94XHgkhL6UU
+        ksNGM8cb9RlKWkoO/RkYX6vJciZG3jgbgH+X9IvxrTI7hW3n+kg8kn+DwPMfe8U4p8ZO48LZ
+        5fj81HsCj4w0irFjyk3hiVc/RXi0vYLGZSNOEa6+OE3h6pYigGfKm2j8sX4a4NIhG4kHBvOJ
+        zUHswnwJYK0TwzT75ckTEdtmHRezNY4umm1xRbCOunya7aq8KWabrp5gi5rrAFv0rhGw9uYx
+        kj11P49ivzpCdyzdp9rAmyxmLizNJJhjlfsZrFExOqzSROtUTJT24HpNjFK9cUMKl3E4i+PV
+        Gw+p0komuslMFzxabu2jT4JOWQHwkyAYjXKLn5IFQCqRw2sAvbS1ggIg8QQKVFuZ6mOC0C93
+        Ae1jZgA6/XyS9DI0VCGbLcHLBMNVaCyvapEhYDuFXhS6KW8QBOPQ48JikVfLIYM6F7pJryZh
+        BOr9PAW8Wga1qLD+zyKzDOpQ89sJsc8PRPfKpxd5Aqajb/VviAsgwPpfZP0vsnpOIjx32NvV
+        PnsNun7lPeHTsaih4RNZDag6EMxZBEOqQWBUgt4gWIypqmSTwQE8NWjp/9nUCh7f2tUDoAQo
+        /WWRpZ2JckqfJWQbekC4Z83rxvqHQEEaTUZOGSzbbu9IlMtS9NnHON6UxFsyOKEHxHh+KyYU
+        y5JNnoIZzUlMDKPFOkYbpY1ah5UhsjOw+4AcpurNXDrHZXL8vzmRxE9xElQNDCbowyyjqCOn
+        xT+EyRX7P+/YUxuR65JOzQ1u6bhs3Dr8fVZ7ZLc7+nhzReylOF7qRKN3wrcNb74b6qxR971b
+        oJLIZ2Od+9xu16sZ+MHv0e0U197c8DyncsXKedeHyXjFjyX3s+Gk1BD64LV2VpfJnw1Ma2ib
+        uxKrjtfs3KQkhTQ9s5rgBf1fexr2PigDAAA=
+X-CMS-MailID: 20200515110002eucas1p136759396d9b61f214d1f14856c009501
+X-Msg-Generator: CA
+X-RootMTR: 20200515110002eucas1p136759396d9b61f214d1f14856c009501
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200515110002eucas1p136759396d9b61f214d1f14856c009501
+References: <3640422.T8yoyu11Ch@tauon.chronox.de>
+        <CGME20200515110002eucas1p136759396d9b61f214d1f14856c009501@eucas1p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With VHE and nVHE executable code completely separated, remove build config
-that disabled GCOV/KASAN/UBSAN/KCOV instrumentation for VHE as these now
-execute under the same memory mappings as the rest of the kernel.
+--=-=-=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-No violations are currently being reported by either KASAN or UBSAN.
+It was <2020-05-15 pi=C4=85 11:10>, when Stephan Mueller wrote:
+> As I mentioned, all that is or seems to be analyzed here is the
+> quality of the cryptographic post-processing. Thus none of the data
+> can be used for getting an idea of the entropy content.
+>
+> That said, the ent value indeed looks too low which seems to be an
+> issue in the tool itself.
+>
+> Note, for an entropy assessment commonly at least 1 million traces
+> from the raw noise source are needed.
 
-Signed-off-by: David Brazdil <dbrazdil@google.com>
----
- arch/arm64/kvm/hyp/Makefile | 8 --------
- 1 file changed, 8 deletions(-)
+I've got 1MiB from each source. Of course I used raw data from /dev/hwrng
+for tpm, exynos and rng200.
 
-diff --git a/arch/arm64/kvm/hyp/Makefile b/arch/arm64/kvm/hyp/Makefile
-index c9fd8618980d..69113bf193de 100644
---- a/arch/arm64/kvm/hyp/Makefile
-+++ b/arch/arm64/kvm/hyp/Makefile
-@@ -11,11 +11,3 @@ obj-$(CONFIG_KVM_INDIRECT_VECTORS) += smccc_wa.o
- 
- vhe-y := vgic-v3-sr.o timer-sr.o aarch32.o vgic-v2-cpuif-proxy.o sysreg-sr.o \
- 	 debug-sr.o entry.o switch.o fpsimd.o tlb.o hyp-entry.o
--
--# KVM code is run at a different exception code with a different map, so
--# compiler instrumentation that inserts callbacks or checks into the code may
--# cause crashes. Just disable it.
--GCOV_PROFILE	:= n
--KASAN_SANITIZE	:= n
--UBSAN_SANITIZE	:= n
--KCOV_INSTRUMENT	:= n
--- 
-2.26.2
+| Source       | ea_iid -i | ea_iid -c (h') |      ent |
+|--------------+-----------+----------------+----------|
+| /dev/random  |  7.875064 |       0.998166 | 7.999801 |
+| /dev/urandom |  7.879351 |       0.998373 | 7.999821 |
+| tpm-rng      |  7.880012 |       0.998118 | 7.999828 |
+| exynos-trng  |  7.435701 |       0.947574 | 7.991820 |
+| rng200       |  7.883320 |       0.998592 | 7.999824 |
 
+> See for examples on how such entropy assessments are conducted in the LRN=
+G=20
+> documentation [1] or the Linux /dev/random implementation in [2]
+
+Thanks a lot, I am reading.
+
+I will try to write somthing clever as soon as I parse and understand
+these documents (and do other stuff too). Thank you very much for your help.
+
+Kind regards,
+=2D-=20
+=C5=81ukasz Stelmach
+Samsung R&D Institute Poland
+Samsung Electronics
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl6+diIACgkQsK4enJil
+gBC/FQgAl9V5sUO9+a2EU1F1GXcue3fCC/itZ51mkOzD/1FjoM/tCPmsd3cVlfm8
+aiJxFzyQoZ8KqLSfZ+ccmg1XnMCrfc/MPUBqWznbtGeUKx/9esy9mx9PzU+1lZhm
+9BCYRnHqyUh+6nJo3hkNYErHCfJRhqtsUcYgQ0oesY2pFaDNK2Bbp2owbsKywYlN
+8S66mCKhuiFxPAQtEmdn3ftLO29WPdGD9tF+ADWRGEafXGQAG57oSJlWCydXV+9Q
+krMWf5XwwUgJ7SYQcRgdM2df2hWloZ0xTa3lMPC0i6/8R0u4Jb7AsvLASwLxEGJe
+8z+Fu9i/NvLcbuZjrsknq4XpbavSgQ==
+=HWTY
+-----END PGP SIGNATURE-----
+--=-=-=--
