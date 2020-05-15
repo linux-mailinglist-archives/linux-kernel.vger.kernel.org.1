@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27ADA1D43FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 05:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F00C1D4402
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 05:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbgEODS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 23:18:26 -0400
-Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17768 "EHLO
-        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727869AbgEODSZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 23:18:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1589512684; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=Kr82VYcwh3WX1pT2Oz1uE0TVVH+6tE7BKeDMG6WSj8nhIGEic/tb5AT080jfYk4Pqb71v13HBBK9pKrx5xre3BWuTUqkTISB0vsylpgZ4e1SlIuyWQY+gBjt2KrYh+EQ9tDdTnrr/BMSp6CFHUzx8Gan7YsdyCr03EKe2nXco5M=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1589512684; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=a9MfE+IX939f7XSiZya+c23GX+UUfpJI7N9HjGVXA54=; 
-        b=eJ5JcL/ZlMz4eaMd3GqcgEp6r20GUk1IVL9+wQunCYW9BKmaxCI3NSaKl8RCzN5FrsB0HBO2aW5eP4cHyHHQa7cMotSfw4Na/pw7DZ0U1UCt4CIVD8dl5DEZes4R8RlGT16MU+yPH9n7Chwq4PqPOxbSvomYrxZswQjkF9G9Nzc=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=flygoat.com;
-        spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
-        dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1589512684;
-        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
-        h=Date:From:To:CC:Subject:Reply-to:In-Reply-To:References:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=a9MfE+IX939f7XSiZya+c23GX+UUfpJI7N9HjGVXA54=;
-        b=MaEKK/Mb8RQAk6lxjVcnvoEMdPLX2BhCBsjt91L3kre/rspxvztpC+xf1443+Xvq
-        PJSPLMmdCZC/y5xktWkiGPG//Sip7wcFNMDIUb5whHJEi4/oXAxeuJC8QOQ8fEK775h
-        kZoLMsY2Vt6J4dg35RuIgIdZywx6xovyv1Bw8oHY=
-Received: from [127.0.0.1] (101.84.172.108 [101.84.172.108]) by mx.zoho.com.cn
-        with SMTPS id 15895126814021012.4116349819437; Fri, 15 May 2020 11:18:01 +0800 (CST)
-Date:   Fri, 15 May 2020 11:17:58 +0800
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>
-CC:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH 1/2] MIPS: Loongson: Fix fatal error during GPU init
-User-Agent: K-9 Mail for Android
-Reply-to: jiaxun.yang@flygoat.com
-In-Reply-To: <636ba812-3849-2667-d625-ab7e35d5ac36@loongson.cn>
-References: <1589508901-18077-1-git-send-email-yangtiezhu@loongson.cn> <ECE71DFC-57D3-4132-BB85-609448B29238@flygoat.com> <636ba812-3849-2667-d625-ab7e35d5ac36@loongson.cn>
-Message-ID: <F7BAD661-9D82-4063-B685-4A7192B7F172@flygoat.com>
+        id S1728289AbgEODT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 23:19:56 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:44664 "EHLO mail5.wrs.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727819AbgEODTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 23:19:55 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 04F3IDxZ026037
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Thu, 14 May 2020 20:18:34 -0700
+Received: from pek-lpggp4.wrs.com (128.224.153.77) by ALA-HCA.corp.ad.wrs.com
+ (147.11.189.50) with Microsoft SMTP Server id 14.3.487.0; Thu, 14 May 2020
+ 20:18:15 -0700
+From:   Xulin Sun <xulin.sun@windriver.com>
+To:     <alexandre.belloni@bootlin.com>, <UNGLinuxDriver@microchip.com>,
+        <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <xulinsun@gmail.com>, <xulin.sun@windriver.com>
+Subject: [PATCH] net: mscc: ocelot: replace readx_poll_timeout with readx_poll_timeout_atomic
+Date:   Fri, 15 May 2020 11:18:13 +0800
+Message-ID: <20200515031813.30283-1-xulin.sun@windriver.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This fixes call trace like below to use atomic safe API:
 
+BUG: sleeping function called from invalid context at drivers/net/ethernet/mscc/ocelot.c:59
+in_atomic(): 1, irqs_disabled(): 0, pid: 3778, name: ifconfig
+INFO: lockdep is turned off.
+Preemption disabled at:
+[<ffff2b163c83b78c>] dev_set_rx_mode+0x24/0x40
+Hardware name: LS1028A RDB Board (DT)
+Call trace:
+dump_backtrace+0x0/0x140
+show_stack+0x24/0x30
+dump_stack+0xc4/0x10c
+___might_sleep+0x194/0x230
+__might_sleep+0x58/0x90
+ocelot_mact_forget+0x74/0xf8
+ocelot_mc_unsync+0x2c/0x38
+__hw_addr_sync_dev+0x6c/0x130
+ocelot_set_rx_mode+0x8c/0xa0
+__dev_set_rx_mode+0x58/0xa0
+dev_set_rx_mode+0x2c/0x40
+__dev_open+0x120/0x190
+__dev_change_flags+0x168/0x1c0
+dev_change_flags+0x3c/0x78
+devinet_ioctl+0x6c4/0x7c8
+inet_ioctl+0x2b8/0x2f8
+sock_do_ioctl+0x54/0x260
+sock_ioctl+0x21c/0x4d0
+do_vfs_ioctl+0x6d4/0x968
+ksys_ioctl+0x84/0xb8
+__arm64_sys_ioctl+0x28/0x38
+el0_svc_common.constprop.0+0x78/0x190
+el0_svc_handler+0x70/0x90
+el0_svc+0x8/0xc
 
-=E4=BA=8E 2020=E5=B9=B45=E6=9C=8815=E6=97=A5 GMT+08:00 =E4=B8=8A=E5=8D=881=
-1:09:56, Tiezhu Yang <yangtiezhu@loongson=2Ecn> =E5=86=99=E5=88=B0:
->On 05/15/2020 10:33 AM, Jiaxun Yang wrote:
->>
->> =E4=BA=8E 2020=E5=B9=B45=E6=9C=8815=E6=97=A5 GMT+08:00 =E4=B8=8A=E5=8D=
-=8810:15:00, Tiezhu Yang <yangtiezhu@loongson=2Ecn> =E5=86=99=E5=88=B0:
->>> When ATI Radeon graphics card has been compiled directly into the kern=
-el
->>> instead of as a module, we should make sure the firmware for the model
->>> (check available ones in /lib/firmware/radeon) is built-in to the kern=
-el
->>> as well, otherwise there exists the following fatal error during GPU i=
-nit,
->>> change CONFIG_DRM_RADEON=3Dy to CONFIG_DRM_RADEON=3Dm to fix it=2E
->>>
->> The commit message looks shocking=2E
->>
->> You'd better reword it as "MIPS: Loongson64: Mark GPU driver as module =
-in Kconfig"
->
->OK, I will modify the patch subject and send v2=2E
+Signed-off-by: Xulin Sun <xulin.sun@windriver.com>
+---
+ drivers/net/ethernet/mscc/ocelot.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Sorry I meant defconfig not Kconfig=2E
->
->>
->> Thanks=2E
->
+diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
+index b4731df186f4..6c82ab1b3fa6 100644
+--- a/drivers/net/ethernet/mscc/ocelot.c
++++ b/drivers/net/ethernet/mscc/ocelot.c
+@@ -56,7 +56,7 @@ static inline int ocelot_mact_wait_for_completion(struct ocelot *ocelot)
+ {
+ 	u32 val;
+ 
+-	return readx_poll_timeout(ocelot_mact_read_macaccess,
++	return readx_poll_timeout_atomic(ocelot_mact_read_macaccess,
+ 		ocelot, val,
+ 		(val & ANA_TABLES_MACACCESS_MAC_TABLE_CMD_M) ==
+ 		MACACCESS_CMD_IDLE,
+-- 
+2.17.1
 
---=20
-Jiaxun Yang
