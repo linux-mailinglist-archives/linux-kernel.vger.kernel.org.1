@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1446E1D5098
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6821D503E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726275AbgEOOeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 10:34:31 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42454 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726185AbgEOOea (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 10:34:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589553267;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YPPW99mhER0DTLJrY7k7qjs6mYGaRfNuIWRsMS5DxD4=;
-        b=igt42rWm4p4EqajSx6DBEUjv6ehvL7SExGmclIV60PPw9lJBWQSlF3MU7M04fRlR6I9an5
-        E8B0xwENYfDolObOhWUvvKaLV7uK9s92HmsCNWruWYC1gIVJ2+EcjCJ7GI1/NF6p2DNZ8a
-        vO/lSnh3nzuNA532+W1HS3ZpC4/6aSw=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-LpXVMDVFP8SAa8_fWxfb_g-1; Fri, 15 May 2020 10:34:24 -0400
-X-MC-Unique: LpXVMDVFP8SAa8_fWxfb_g-1
-Received: by mail-wm1-f72.google.com with SMTP id v23so1090236wmj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 07:34:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YPPW99mhER0DTLJrY7k7qjs6mYGaRfNuIWRsMS5DxD4=;
-        b=jYOPTxRdshoaDNzwbbQa7NF6U0Iwkh3L+aR5OlGKmJYc2pdy7Blu6uC8hf2A6XCwEl
-         9LCL+FOAgUfwB6rVjyvja6WFbFgeDR6P0he0V9Hh9lJKxH5ZkqphOOe/GG6x+26oDObG
-         RtHrCfPGWd/Nq0fGiPTISpWKTrDtTM94oSOwKB7u3Ye6HXYCusUqf32BckNjMdDWBAHk
-         Kc3Ibgt6umW0b675OPk60DOtgT1TfX9rSlLHQN6pRJkYiYPjAZLLg+rNvJT8PpLLWu6T
-         m9Kv9tONxeZBkmwqgdy3pbU8h/E4YvfvY5zEk+a4nqWhfMHqbAl/EKyBpnkXk2DnuXWs
-         AgmA==
-X-Gm-Message-State: AOAM530GA1OLnsoA5v7dp/+eBbwfm5r2NNsf16677ACrgVj3rr3GsKig
-        6oDiT9qPw1bmnOo6IiXoFxqZ4bDGwajYruDsCZGXXIeyfHSCiPWED/vBn2bhuyMaA9CZDKVA70s
-        +Bojr+vJ6LteHBV4Yu+pXrq/z
-X-Received: by 2002:a05:600c:2146:: with SMTP id v6mr4491353wml.142.1589553263228;
-        Fri, 15 May 2020 07:34:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxswSXxzRjvhiNjXtgD2tyDEe9Vc6xVHhiMSsIK2eJA3hHSpV0QUQQqX9uJlYnALaP1QwuvJQ==
-X-Received: by 2002:a05:600c:2146:: with SMTP id v6mr4491326wml.142.1589553262983;
-        Fri, 15 May 2020 07:34:22 -0700 (PDT)
-Received: from steredhat ([79.49.207.108])
-        by smtp.gmail.com with ESMTPSA id a184sm3970985wmh.24.2020.05.15.07.34.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 07:34:22 -0700 (PDT)
-Date:   Fri, 15 May 2020 16:34:19 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 0/2] io_uring: add a CQ ring flag to enable/disable
- eventfd notification
-Message-ID: <20200515143419.f3uggj7h3nyolfqb@steredhat>
-References: <20200515105414.68683-1-sgarzare@redhat.com>
- <eaab5cc7-0297-a8f8-f7a9-e00bcf12b678@kernel.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eaab5cc7-0297-a8f8-f7a9-e00bcf12b678@kernel.dk>
+        id S1726231AbgEOOTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 10:19:42 -0400
+Received: from mga17.intel.com ([192.55.52.151]:33489 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgEOOTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 10:19:41 -0400
+IronPort-SDR: VbmSNRgpC1pktixqmSk0+ubFnnD+nYzK5kGxs0WGSip2lsy8HhqsZ05ekLATbzvjXlzExyx1Yn
+ r1leke1GbS8g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 07:19:41 -0700
+IronPort-SDR: X806o53qBM8MjR9VttUyfi0cXh5zmXgMlCiMmkMbtxsD8FcSWu76betx4xBGcK+BDkMubjUgtd
+ gTSBZRcOTssg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
+   d="scan'208";a="252388959"
+Received: from marshy.an.intel.com ([10.122.105.159])
+  by fmsmga007.fm.intel.com with ESMTP; 15 May 2020 07:19:40 -0700
+From:   richard.gong@linux.intel.com
+To:     mdf@kernel.org
+Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dinguyen@kernel.org, richard.gong@linux.intel.com,
+        Richard Gong <richard.gong@intel.com>
+Subject: [PATCHv2] fpga: stratix10-soc: remove the pre-set reconfiguration condition
+Date:   Fri, 15 May 2020 09:35:03 -0500
+Message-Id: <1589553303-7341-1-git-send-email-richard.gong@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 08:24:58AM -0600, Jens Axboe wrote:
-> On 5/15/20 4:54 AM, Stefano Garzarella wrote:
-> > The first patch adds the new 'cq_flags' field for the CQ ring. It
-> > should be written by the application and read by the kernel.
-> > 
-> > The second patch adds a new IORING_CQ_NEED_WAKEUP flag that can be
-> > used by the application to enable/disable eventfd notifications.
-> > 
-> > I'm not sure the name is the best one, an alternative could be
-> > IORING_CQ_NEED_EVENT.
-> > 
-> > This feature can be useful if the application are using eventfd to be
-> > notified when requests are completed, but they don't want a notification
-> > for every request.
-> > Of course the application can already remove the eventfd from the event
-> > loop, but as soon as it adds the eventfd again, it will be notified,
-> > even if it has already handled all the completed requests.
-> > 
-> > The most important use case is when the registered eventfd is used to
-> > notify a KVM guest through irqfd and we want a mechanism to
-> > enable/disable interrupts.
-> > 
-> > I also extended liburing API and added a test case here:
-> > https://github.com/stefano-garzarella/liburing/tree/eventfd-disable
-> 
-> Don't mind the feature, and I think the patches look fine. But the name
-> is really horrible, I'd have no idea what that flag does without looking
-> at the code or a man page. Why not call it IORING_CQ_EVENTFD_ENABLED or
-> something like that? Or maybe IORING_CQ_EVENTFD_DISABLED, and then you
-> don't have to muck with the default value either. The app would set the
-> flag to disable eventfd, temporarily, and clear it again when it wants
-> notifications again.
+From: Richard Gong <richard.gong@intel.com>
 
-You're clearly right! :-) The name was horrible.
+The reconfiguration mode is pre-set by driver as the full reconfiguration.
+As a result, user have to change code and recompile the drivers if he or
+she wants to perform a partial reconfiguration. Removing the pre-set
+reconfiguration condition so that user can select full or partial
+reconfiguration via overlay device tree without recompiling the drivers.
 
-I agree that IORING_CQ_EVENTFD_DISABLED should be the best.
-I'll send a v2 changing the name and removing the default value.
+Also add an error message if the configuration request is failure.
 
-Thanks,
-Stefano
+Signed-off-by: Richard Gong <richard.gong@intel.com>
+---
+v2: define and use constant values
+---
+ drivers/fpga/stratix10-soc.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
+index 44b7c56..4d52a80 100644
+--- a/drivers/fpga/stratix10-soc.c
++++ b/drivers/fpga/stratix10-soc.c
+@@ -14,9 +14,13 @@
+ /*
+  * FPGA programming requires a higher level of privilege (EL3), per the SoC
+  * design.
++ * SoC firmware supports full and partial reconfiguration.
+  */
+ #define NUM_SVC_BUFS	4
+ #define SVC_BUF_SIZE	SZ_512K
++#define FULL_RECONFIG_FLAG	0
++#define PARTIAL_RECONFIG_FLAG	1
++
+ 
+ /* Indicates buffer is in use if set */
+ #define SVC_BUF_LOCK	0
+@@ -182,12 +186,12 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
+ 	uint i;
+ 	int ret;
+ 
+-	ctype.flags = 0;
+ 	if (info->flags & FPGA_MGR_PARTIAL_RECONFIG) {
+ 		dev_dbg(dev, "Requesting partial reconfiguration.\n");
+-		ctype.flags |= BIT(COMMAND_RECONFIG_FLAG_PARTIAL);
++		ctype.flags = PARTIAL_RECONFIG_FLAG;
+ 	} else {
+ 		dev_dbg(dev, "Requesting full reconfiguration.\n");
++		ctype.flags = FULL_RECONFIG_FLAG;
+ 	}
+ 
+ 	reinit_completion(&priv->status_return_completion);
+@@ -210,6 +214,7 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
+ 
+ 	ret = 0;
+ 	if (!test_and_clear_bit(SVC_STATUS_OK, &priv->status)) {
++		dev_err(dev, "RECONFIG_REQUEST failed\n");
+ 		ret = -ETIMEDOUT;
+ 		goto init_done;
+ 	}
+-- 
+2.7.4
 
