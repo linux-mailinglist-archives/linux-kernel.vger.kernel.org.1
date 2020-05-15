@@ -2,81 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F581D516F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 303501D5111
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbgEOOib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 10:38:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728179AbgEOOiW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 10:38:22 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B76C061A0C;
-        Fri, 15 May 2020 07:38:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=9nkBbtmLvQl1eKzV5tIp1XNxgG4m4pb8wLV/D1oxyTY=; b=PrewDot91eBJtI4CmunBQt8auz
-        5Qf471gFdXaMKcMey4uvcCm1/zMSb7AxBI1tT91bJJlRm1ScK54gyxd4uAUXCbf03WqD9x+ol2NOj
-        UguMrDDZudEcN4LA49bcHmbdnURGtDw3k2BGxwBkRkR12N8iephTJqGeDSHQWQjM0Ow0WcLkL4gY/
-        NvIyYhsyq46MDhXpWE2O/X2e5CfxR+BoufSX/GEsGPR4xUs6W136aHYY0NicjX+NzxB21IB+GLTNj
-        zSG37nkB1058MbJlOxd8otsj2ePnMSqxje3+vd1BrLDKVnhnA+TDiS4ToD8fPt86HMsp5w6cR7CE2
-        3eV0aDWg==;
-Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZbTT-0005Dh-3V; Fri, 15 May 2020 14:38:07 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Roman Zippel <zippel@linux-m68k.org>
-Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
-        x86@kernel.org, linux-alpha@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH 26/29] exec: use flush_icache_user_range in read_code
-Date:   Fri, 15 May 2020 16:36:43 +0200
-Message-Id: <20200515143646.3857579-27-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
-References: <20200515143646.3857579-1-hch@lst.de>
+        id S1727898AbgEOOhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 10:37:51 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2214 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727811AbgEOOho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 10:37:44 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 89BACFEE6D83198421C0;
+        Fri, 15 May 2020 15:37:42 +0100 (IST)
+Received: from [127.0.0.1] (10.47.1.24) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Fri, 15 May
+ 2020 15:37:39 +0100
+Subject: Re: [PATCH 2/2] perf test: Improve pmu event metric testing
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Paul Clarke <pc@us.ibm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+References: <20200513062236.854-1-irogers@google.com>
+ <20200513062236.854-2-irogers@google.com>
+ <ac88604a-56c2-b632-57c2-3bee316dcea7@huawei.com>
+ <CAP-5=fVkD+0wCMcBBHWM8djsnn2KsshOyK_XcjNDTsiVo04vwQ@mail.gmail.com>
+ <5264e16c-fb1a-4bbc-96b5-1d867e38902e@huawei.com>
+ <CAP-5=fWt58UVTTj_qvirMhMOaUbur+HzxrTi5u1qvCA1ft9BEw@mail.gmail.com>
+ <799e8dde-6f56-7add-a177-3e21c0de03fc@huawei.com>
+ <20200515114827.GA3547844@krava>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <6a7f8e76-981e-0a84-0043-262c0e2d00d1@huawei.com>
+Date:   Fri, 15 May 2020 15:36:44 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200515114827.GA3547844@krava>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.1.24]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-read_code operates on user addresses.
+On 15/05/2020 12:48, Jiri Olsa wrote:
+> On Fri, May 15, 2020 at 10:09:10AM +0100, John Garry wrote:
+>> On 15/05/2020 00:02, Ian Rogers wrote:
+>>> On Thu, May 14, 2020 at 2:00 AM John Garry <john.garry@huawei.com> wrote:
+>>>>
+>>>> On 13/05/2020 17:10, Ian Rogers wrote:
+>>>>>> Out of interest, if we could move the validation of metrics to jevents,
+>>>>>> how much functionality would we still have here?
+>>>>> If we add checking to jevents then the MetricExpr would be known to be
+>>>>> valid, however, the events (aka ids) within the expression could be
+>>>>> invalid.
+>>>>
+>>>> So I think that has some value. I mean, just to detect syntax errors,
+>>>> like those remedied in "perf metrics: fix parse errors in power8 metrics".
+>>>>
+>>>>> I'm not sure we could realistically check the events at
+>>>>> jevents (build) time as there is no guarantee that the machine we run
+>>>>> on is the same as the one we compile on.
+>>>>
+>>>> But we could at least check that there are event aliases for that CPU,
+>>>> right? (by examining the JSONs for that cpu). If the event alias does
+>>>> not actually match on the target CPU, then that can't be helped.
+>>>
+>>> Agreed, I think there will be some cases where something more can be
+>>> done. Jiri has proposed fake pmus as well:
+>>> https://www.spinics.net/lists/linux-perf-users/msg11760.html
+>>> I don't know how much sense it makes trying to get this in jevents, as
+>>> long as 'perf test' is run.
+>>
+>> At a glance, that does not look like something we would want in jevents. But
+>> rather the metric expr parsing error detection and alias checking.
+>>
+>> About jirka's patch:
+>>
+>> --- a/tools/perf/tests/pmu-events.c
+>> +++ b/tools/perf/tests/pmu-events.c
+>> @@ -485,6 +485,102 @@ static int test_parsing(void)
+>>   	return ret == 0 ? TEST_OK : TEST_SKIP;
+>>   }
+>>
+>> +
+>> +static struct test_metric metrics[] = {
+>> +	{ .metric = "imx8_ddr0@read\\-cycles@ * 4 * 4", },
+>> +	{ .metric = "imx8_ddr0@axid\\-read\\,axi_mask\\=0xffff\\,axi_id\\=0x0000@
+>> * 4", },
+>> +	{ .metric = "(cstate_pkg@c2\\-residency@ / msr@tsc@) * 100", },
+>> +	{ .metric = "(imx8_ddr0@read\\-cycles@ + imx8_ddr0@write\\-cycles@)", },
+>> +};
+>>
+>> Maybe we could add these to pmu-events/arch/test/test_cpu/metric.json, and
+>> get at them that way.
+> 
+> that test sets the 'fake pmu' stuff.. could we do that in your test?
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/exec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'm not sure about a test comparable to the alias match testing, but at 
+least it should be possible to verify that jevents generates as-expected 
+metric events (as done in __test_pmu_event_table() for regular events).
 
-diff --git a/fs/exec.c b/fs/exec.c
-index a4f766f296f8f..c541867316a63 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1033,7 +1033,7 @@ ssize_t read_code(struct file *file, unsigned long addr, loff_t pos, size_t len)
- {
- 	ssize_t res = vfs_read(file, (void __user *)addr, len, &pos);
- 	if (res > 0)
--		flush_icache_range(addr, addr + len);
-+		flush_icache_user_range(addr, addr + len);
- 	return res;
- }
- EXPORT_SYMBOL(read_code);
--- 
-2.26.2
-
+Cheers,
+John
