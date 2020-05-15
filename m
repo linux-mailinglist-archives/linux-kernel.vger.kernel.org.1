@@ -2,99 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339221D436C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 04:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C651D4372
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 04:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727082AbgEOCPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 22:15:10 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:33770 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726112AbgEOCPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 22:15:09 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr9wl+71e7Ok0AA--.8S3;
-        Fri, 15 May 2020 10:15:02 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH 2/2] MIPS: Fix build errors under CONFIG_HAVE_STD_PC_SERIAL_PORT
-Date:   Fri, 15 May 2020 10:15:01 +0800
-Message-Id: <1589508901-18077-2-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1589508901-18077-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1589508901-18077-1-git-send-email-yangtiezhu@loongson.cn>
+        id S1727942AbgEOCP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 22:15:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726122AbgEOCP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 22:15:56 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD68D20671;
+        Fri, 15 May 2020 02:15:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589508956;
+        bh=L9+TTBBOKheIWuMPzBAUV5fbpWKbO78Ws7uOfGtM91U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=R4YIhfDdLDZQrkzG86difRUEi0nJs0K06eGeJBj3DCbc12JXuQXcl1LmlYzeyLTG8
+         Xs02DWrNtjheyiub5zZIQ+hhMePNJ8kAdd1lPHF8G77ol0smqi7ZjovaMtlpXEtekz
+         r6WF7wECD7wYI4QiSIsa4wliw/CM3hgSEzyeYJjI=
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH] f2fs: flush dirty meta pages when flushing them
+Date:   Thu, 14 May 2020 19:15:54 -0700
+Message-Id: <20200515021554.226835-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxr9wl+71e7Ok0AA--.8S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7KryUGryUWr4UKw4kAr1DZFb_yoW8uryDpr
-        WDC3WkGrWj9F4Dta92y34v9rWUZw45W3yjvasrCws7Aas0qryDAFs7XFn0vryIgrWjk3WY
-        gF12gr429w4vvaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-        8EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4U
-        JwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gr1l42
-        xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWU
-        GwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI4
-        8JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4U
-        MIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I
-        8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUnPEfUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_HAVE_STD_PC_SERIAL_PORT is set, include linux/module.h to fix
-the following build errors:
+Let's guarantee flusing dirty meta pages to avoid infinite loop.
 
-  CC      arch/mips/kernel/8250-platform.o
-arch/mips/kernel/8250-platform.c:42:1: error: data definition has no type or storage class [-Werror]
- module_init(uart8250_init);
- ^
-arch/mips/kernel/8250-platform.c:42:1: error: type defaults to ‘int’ in declaration of ‘module_init’ [-Werror=implicit-int]
-arch/mips/kernel/8250-platform.c:42:1: error: parameter names (without types) in function declaration [-Werror]
-arch/mips/kernel/8250-platform.c:44:15: error: expected declaration specifiers or ‘...’ before string constant
- MODULE_AUTHOR("Ralf Baechle <ralf@linux-mips.org>");
-               ^
-arch/mips/kernel/8250-platform.c:45:16: error: expected declaration specifiers or ‘...’ before string constant
- MODULE_LICENSE("GPL");
-                ^
-arch/mips/kernel/8250-platform.c:46:20: error: expected declaration specifiers or ‘...’ before string constant
- MODULE_DESCRIPTION("Generic 8250 UART probe driver");
-                    ^
-arch/mips/kernel/8250-platform.c:37:81: error: ‘uart8250_init’ defined but not used [-Werror=unused-function]
- static int __init uart8250_init(void)
-                                                                                 ^
-cc1: all warnings being treated as errors
-scripts/Makefile.build:267: recipe for target 'arch/mips/kernel/8250-platform.o' failed
-make[2]: *** [arch/mips/kernel/8250-platform.o] Error 1
-
-Fixes: 848484e2c412 ("mips: remove needless include of module.h from core kernel files.")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 ---
- arch/mips/kernel/8250-platform.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/f2fs/checkpoint.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/kernel/8250-platform.c b/arch/mips/kernel/8250-platform.c
-index 5c6b2ab..cbf3fe2 100644
---- a/arch/mips/kernel/8250-platform.c
-+++ b/arch/mips/kernel/8250-platform.c
-@@ -5,6 +5,7 @@
-  *
-  * Copyright (C) 2007 Ralf Baechle (ralf@linux-mips.org)
-  */
-+#include <linux/module.h>
- #include <linux/init.h>
- #include <linux/serial_8250.h>
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index 620a386d82c1a..9a7f695d5adb3 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -1266,6 +1266,9 @@ void f2fs_wait_on_all_pages(struct f2fs_sb_info *sbi, int type)
+ 		if (unlikely(f2fs_cp_error(sbi)))
+ 			break;
+ 
++		if (type == F2FS_DIRTY_META)
++			f2fs_sync_meta_pages(sbi, META, LONG_MAX,
++							FS_CP_META_IO);
+ 		io_schedule_timeout(DEFAULT_IO_TIMEOUT);
+ 	}
+ 	finish_wait(&sbi->cp_wait, &wait);
+@@ -1493,8 +1496,6 @@ static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+ 	sbi->last_valid_block_count = sbi->total_valid_block_count;
+ 	percpu_counter_set(&sbi->alloc_valid_block_count, 0);
+ 
+-	/* Here, we have one bio having CP pack except cp pack 2 page */
+-	f2fs_sync_meta_pages(sbi, META, LONG_MAX, FS_CP_META_IO);
+ 	/* Wait for all dirty meta pages to be submitted for IO */
+ 	f2fs_wait_on_all_pages(sbi, F2FS_DIRTY_META);
  
 -- 
-2.1.0
+2.26.2.761.g0e0b3e54be-goog
 
