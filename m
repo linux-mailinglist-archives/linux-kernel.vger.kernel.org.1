@@ -2,109 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1435E1D5964
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C60B1D597B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726632AbgEOSqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 14:46:47 -0400
-Received: from mga04.intel.com ([192.55.52.120]:21894 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726238AbgEOSqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 14:46:47 -0400
-IronPort-SDR: i3/ge2RAF+xNKhm6D8+xDGinQBkDxH/wavun5MkdP9n6FWxwyvo+1B9kRdpAw2nyiHl564Fut5
- Bb68AbU72tOg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 11:46:46 -0700
-IronPort-SDR: 3nFF7Vdveb0kAvH6CP5v3LJy6xFk/DYCbDl/wBEvvs7oko3gF2NS+Wzm9kfH2kVBksHuuF94k0
- dK+Lb67/9vQQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,396,1583222400"; 
-   d="scan'208";a="299130175"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by orsmga008.jf.intel.com with ESMTP; 15 May 2020 11:46:46 -0700
-Date:   Fri, 15 May 2020 11:46:46 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vivek Goyal <vgoyal@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        id S1726204AbgEOSvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 14:51:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbgEOSvw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 14:51:52 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B72CC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 11:51:51 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id g11so1271264plp.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 11:51:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Eb5cwHLliZRLZBurI99Btoz2BSvs/B+LB6BGuH6pjrc=;
+        b=ZC9+WMS9eUE0ec/Wnuj10ar+NP2CeNqLkIBJQrqqNkrGtMDN57qN91wmOKRmqf/cyS
+         SXZ8a+4U0nZ1vSQtrkOeGOeKNb+EkPD+aEnSC6iy9LQi046txejYoA+webr4zJND7LHF
+         UYIPC6IsiunTDWRtY0RhQv8LYyMe8FIPvbHZTaXgn+wGnYncbnZ5rszCTVZ1rIyCcvH8
+         2L+rBUxpQYVZp2bBI0IcnVZ4ZgEGsT5MBtaX+UAMXBgmFv9YG4XX2f1LxqAdxf1DxHrR
+         Y6pQkSmbTnsGw6Moztj2FInOmM8VVmLcGHOCmLi4zBCa4l/lsu4yiZqfqcmJZfxb84jM
+         m+dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Eb5cwHLliZRLZBurI99Btoz2BSvs/B+LB6BGuH6pjrc=;
+        b=kww7uPP7U2RRiWBHciuTcEaHhlV7xn70enUpYNBZPRlwd0uZe8ay7OXjh84zId6vMa
+         CtaRPaRjAUpze82Ol4/COcceNn0J7seoK74p6ZdgOPOkDUjCtpX6BTkr6w+J4MKs0sBw
+         Mkx8W4jC82NGN+/cyWD4oa0bUJNYkp8zPObYFWDTmDON17C83mrdFWhwB8mJCO7nbYTz
+         YtMchE1c0CvAZ/LFnSvS5a8v58y4TxRDuZEZ+h2SggArQ88SYgpRmfYxMOUH74mZ480g
+         6sir6jZk2qUbksM+3dhGxWPve+1TDuB9KQHzP+veyyw5PMuGyLwTPBmnSW9T8OQN0MR1
+         0cnw==
+X-Gm-Message-State: AOAM532AlJZNnJAkgofaEp0826LCB08xTf3767Ou5LQZK8qTESki8YeI
+        o/fsPzktjTe7xGg6SlkVHgb7Gg==
+X-Google-Smtp-Source: ABdhPJzfO5/bmKaV7u9vIvrtJvs+osN0UqN5IHnY5MTAwYLy8swzG1OWBRtVrWEOyOAeRTbP2OFluQ==
+X-Received: by 2002:a17:902:207:: with SMTP id 7mr4766081plc.331.1589568710834;
+        Fri, 15 May 2020 11:51:50 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id d126sm2657391pfc.81.2020.05.15.11.51.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 May 2020 11:51:50 -0700 (PDT)
+Date:   Fri, 15 May 2020 11:50:22 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Evan Green <evgreen@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Colin Cross <ccross@android.com>,
+        Kevin Hilman <khilman@ti.com>,
+        Santosh Shilimkar <santosh.shilimkar@ti.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/8] KVM: x86: extend struct kvm_vcpu_pv_apf_data with
- token info
-Message-ID: <20200515184646.GD17572@linux.intel.com>
-References: <20200511164752.2158645-1-vkuznets@redhat.com>
- <20200511164752.2158645-3-vkuznets@redhat.com>
- <20200512152709.GB138129@redhat.com>
- <87o8qtmaat.fsf@vitty.brq.redhat.com>
- <20200512155339.GD138129@redhat.com>
- <20200512175017.GC12100@linux.intel.com>
- <20200513125241.GA173965@redhat.com>
- <0733213c-9514-4b04-6356-cf1087edd9cf@redhat.com>
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 3/5] kernel/cpu_pm: Fix uninitted local in cpu_pm
+Message-ID: <20200515185022.GZ2165@builder.lan>
+References: <20200504104917.v6.1.Ic7096b3b9b7828cdd41cd5469a6dee5eb6abf549@changeid>
+ <20200504104917.v6.3.I2d44fc0053d019f239527a4e5829416714b7e299@changeid>
+ <CAD=FV=WpYm=1gUW2Tu4YMwDvn8r7_4xYQD2_bQFU=Po76xyowA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0733213c-9514-4b04-6356-cf1087edd9cf@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAD=FV=WpYm=1gUW2Tu4YMwDvn8r7_4xYQD2_bQFU=Po76xyowA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 05:59:43PM +0200, Paolo Bonzini wrote:
-> On 13/05/20 14:52, Vivek Goyal wrote:
-> >>> Also, type of event should not necessarily be tied to delivery method.
-> >>> For example if we end up introducing say, "KVM_PV_REASON_PAGE_ERROR", then
-> >>> I would think that event can be injected both using exception (#PF or #VE)
-> >>> as well as interrupt (depending on state of system).
-> >> Why bother preserving backwards compatibility?
-> > New machanism does not have to support old guests but old mechanism
-> > should probably continue to work and deprecated slowly, IMHO. Otherwise
-> > guests which were receiving async page faults will suddenly stop getting
-> > it over hypervisor upgrade and possibly see drop in performance.
+On Thu 14 May 19:32 PDT 2020, Doug Anderson wrote:
+
+> Hi,
 > 
-> Unfortunately, the old mechanism was broken enough, and in enough
-> different ways, that it's better to just drop it.
+> On Mon, May 4, 2020 at 10:50 AM Douglas Anderson <dianders@chromium.org> wrote:
+> >
+> > cpu_pm_notify() is basically a wrapper of notifier_call_chain().
+> > notifier_call_chain() doesn't initialize *nr_calls to 0 before it
+> > starts incrementing it--presumably it's up to the callers to do this.
+> >
+> > Unfortunately the callers of cpu_pm_notify() don't init *nr_calls.
+> > This potentially means you could get too many or two few calls to
+> > CPU_PM_ENTER_FAILED or CPU_CLUSTER_PM_ENTER_FAILED depending on the
+> > luck of the stack.
+> >
+> > Let's fix this.
+> >
+> > Fixes: ab10023e0088 ("cpu_pm: Add cpu power management notifiers")
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> > ---
+> > This seems to be an ownerless file.  I'm hoping this patch can just go
+> > through the Qualcomm tree.  It would be nice if we could get an Ack
+> > from Rafael or Greg KH though.
 > 
-> The new one using #VE is not coming very soon (we need to emulate it for
-> <Broadwell and AMD processors, so it's not entirely trivial) so we are
-> going to keep "page not ready" delivery using #PF for some time or even
-> forever.  However, page ready notification as #PF is going away for good.
+> Greg / Rafael: any thoughts on this patch?  Care to give it an Ack so
+> it could go through the Qualcomm tree?
+> 
+> Andrew: I think you are the adopter or orphan patches, usually.  If
+> nobody else will take this patch, will you consider taking it into
+> your tree?  It should be a super straightforward bugfix.  I'm happy to
+> re-post it CCing you if need be.
+> 
 
-And isn't hardware based EPT Violation #VE going to require a completely
-different protocol than what is implemented today?  For hardware based #VE,
-KVM won't intercept the fault, i.e. the guest will need to make an explicit
-hypercall to request the page.  That seems like it'll be as time consuming
-to implement as emulating EPT Violation #VE in KVM.
+Thanks for the patch and the reviews. I've picked all 5 patches through
+my tree, with the added stable@ Cc on this one.
 
-> That said, type1/type2 is quite bad. :)  Let's change that to page not
-> present / page ready.
-
-Why even bother using 'struct kvm_vcpu_pv_apf_data' for the #PF case?  VMX
-only requires error_code[31:16]==0 and SVM doesn't vet it at all, i.e. we
-can (ab)use the error code to indicate an async #PF by setting it to an
-impossible value, e.g. 0xaaaa (a is for async!).  That partciular error code
-is even enforced by the SDM, which states:
-
-  [SGX] this flag is set only if the P flag (bit 0) is 1 and the RSVD flag
-  (bit 3) and the PK flag (bit 5) are both 0.
-
-I.e. we've got bigger problems if hardware generates a !PRESENT, WRITE, RSVD,
-PK, SGX page fault :-)
-
-Then the page ready becomes the only guest-side consumer of the in-memory
-struct, e.g. it can be renamed to something like kvm_vcpu_pv_apf_ready and
-doesn't need a reason field (though it still needs a "busy" bit) as written.
-It'd also eliminate the apf_put_user() in kvm_arch_async_page_not_present().
-
-I believe it would also allow implementing (in the future) "async #PF ready"
-as a ring buffer, i.e. allow kvm_check_async_pf_completion() to coalesce all
-ready pages into a single injected interrupt.
+Regards,
+Bjorn
