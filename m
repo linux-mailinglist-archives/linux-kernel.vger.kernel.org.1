@@ -2,75 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675811D429D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 03:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580991D42AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 03:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728685AbgEOBBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 21:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726170AbgEOBBd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 21:01:33 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE4FCC061A0C;
-        Thu, 14 May 2020 18:01:33 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id CA3CD14DD553C;
-        Thu, 14 May 2020 18:01:32 -0700 (PDT)
-Date:   Thu, 14 May 2020 18:01:32 -0700 (PDT)
-Message-Id: <20200514.180132.1153550322947224128.davem@davemloft.net>
-To:     frextrite@gmail.com
-Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, kuba@kernel.org,
-        kaber@trash.net, sfr@canb.auug.org.au, cai@lca.pw,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        joel@joelfernandes.org, madhuparnabhowmik10@gmail.com,
-        paulmck@kernel.org,
-        syzbot+1519f497f2f9f08183c6@syzkaller.appspotmail.com
-Subject: Re: [PATCH net v2 2/2] ipmr: Add lockdep expression to
- ipmr_for_each_table macro
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200514180102.26425-2-frextrite@gmail.com>
-References: <20200514180102.26425-1-frextrite@gmail.com>
-        <20200514180102.26425-2-frextrite@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+        id S1728119AbgEOBFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 21:05:07 -0400
+Received: from mga17.intel.com ([192.55.52.151]:46557 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727084AbgEOBFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 21:05:07 -0400
+IronPort-SDR: dxEwKz5tfgJSB63G4KmSPazqecdSXwJzw5RrRo7l7WkN6e1UKKEXww1itfMZH2akJgXxQvmLqD
+ sP36g4hL/OSQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2020 18:05:05 -0700
+IronPort-SDR: AYRvp11Pc5HEpo+NJXF+QFbw5OWo1DhY/86LeyFxGIGf2xtYb+az13nP3hvVxmbZ3weePZQjRx
+ b8V1QiW3INNw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,393,1583222400"; 
+   d="scan'208";a="281051242"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by orsmga002.jf.intel.com with ESMTP; 14 May 2020 18:05:00 -0700
+Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v13 4/8] iommu/vt-d: Add bind guest PASID support
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Christoph Hellwig <hch@infradead.org>
+References: <1589410909-38925-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1589410909-38925-5-git-send-email-jacob.jun.pan@linux.intel.com>
+ <20200514055930.GD22388@infradead.org>
+ <20200514085745.105af4fb@jacob-builder>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <b21488f2-e389-72de-421f-71d2d9525c06@linux.intel.com>
+Date:   Fri, 15 May 2020 09:01:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200514085745.105af4fb@jacob-builder>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 14 May 2020 18:01:33 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amol Grover <frextrite@gmail.com>
-Date: Thu, 14 May 2020 23:31:03 +0530
+Hi Jacob,
 
-> During the initialization process, ipmr_new_table() is called
-> to create new tables which in turn calls ipmr_get_table() which
-> traverses net->ipv4.mr_tables without holding the writer lock.
-> However, this is safe to do so as no tables exist at this time.
-> Hence add a suitable lockdep expression to silence the following
-> false-positive warning:
+On 5/14/20 11:57 PM, Jacob Pan wrote:
+>>> +	/*
+>>> +	 * PASID table is per device for better security.
+>>> Therefore, for
+>>> +	 * each bind of a new device even with an existing PASID,
+>>> we need to
+>>> +	 * call the nested mode setup function here.
+>>> +	 */
+>>> +	spin_lock(&iommu->lock);
+>>> +	ret = intel_pasid_setup_nested(iommu,
+>>> +				       dev,
+>>> +				       (pgd_t *)data->gpgd,
+>>> +				       data->hpasid,
+>>> +				       &data->vtd,
+>>> +				       dmar_domain,
+>>> +				       data->addr_width);
+>> Why not:
+>>
+>> 	et = intel_pasid_setup_nested(iommu, dev, (pgd_t *)data->gpgd,
+>> 			data->hpasid, &data->vtd, dmar_domain,
+>> 			data->addr_width);
+>>
+>> ?
+>>
+> I thought we want to align the parentheses? Either way is fine.
+> Baolu?
 > 
-> =============================
-> WARNING: suspicious RCU usage
-> 5.7.0-rc3-next-20200428-syzkaller #0 Not tainted
-> -----------------------------
-> net/ipv4/ipmr.c:136 RCU-list traversed in non-reader section!!
-> 
-> ipmr_get_table+0x130/0x160 net/ipv4/ipmr.c:136
-> ipmr_new_table net/ipv4/ipmr.c:403 [inline]
-> ipmr_rules_init net/ipv4/ipmr.c:248 [inline]
-> ipmr_net_init+0x133/0x430 net/ipv4/ipmr.c:3089
-> 
-> Fixes: f0ad0860d01e ("ipv4: ipmr: support multiple tables")
-> Reported-by: syzbot+1519f497f2f9f08183c6@syzkaller.appspotmail.com
-> Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Amol Grover <frextrite@gmail.com>
 
-Applied.
+Let's keep the code style consistent in this file.
+
+Best regards,
+baolu
