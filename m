@@ -2,104 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37931D49C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E551D49BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgEOJhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 05:37:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41464 "EHLO mail.kernel.org"
+        id S1727989AbgEOJgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 05:36:25 -0400
+Received: from mga02.intel.com ([134.134.136.20]:41232 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727785AbgEOJhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 05:37:18 -0400
-Received: from e123331-lin.nice.arm.com (amontpellier-657-1-18-247.w109-210.abo.wanadoo.fr [109.210.65.247])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F222206B6;
-        Fri, 15 May 2020 09:37:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589535438;
-        bh=5flVIIVoCW9OqOrK26kxVVwyL8Cf+v7jca5MloG5TN8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=z1uivef2SOZo6Oz9O9V8EN4yuJnLd5w4nXZ/hCNRKtsVRJUq7EyBDjtjunKSCHEUM
-         umyJADPcDlAHskHgdGCbtZsEhbvHKx6BzfGp0bD4zSXDzdCoEc4mTXTKE7nR2mkqUX
-         m8yHxALCxAn4Lv7oWDnxle6FdKA4XLQVziZegHYE=
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH] ACPI: GED: add support for _Exx / _Lxx handler methods
-Date:   Fri, 15 May 2020 11:36:13 +0200
-Message-Id: <20200515093613.18691-1-ardb@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1727785AbgEOJgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 05:36:24 -0400
+IronPort-SDR: T9jsEDSHo1/ohLqBsSb6FQjAdSeEWb3JaCfcGj94AhzVE8Cp+5BD9ZO8EJwfZDOczxtiNyGUuy
+ zX/LP0bK5Cuw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 02:36:23 -0700
+IronPort-SDR: 6BhB9/u9DR8e/cGd/LUB14QOSmZ1rv+guUbsViPcJvd3iqtbfTXTM9s7pUjH5dJXpV0xSFf0+M
+ xmXXxWW1FhzA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,394,1583222400"; 
+   d="scan'208";a="281164078"
+Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
+  by orsmga002.jf.intel.com with ESMTP; 15 May 2020 02:36:23 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 15 May 2020 02:36:23 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 15 May 2020 02:36:22 -0700
+Received: from FMSEDG001.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 15 May 2020 02:36:22 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server (TLS) id
+ 14.3.439.0; Fri, 15 May 2020 02:36:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SC4oe2FiKsaJWEQ8egatIzSBknQg6xre9qfoGRLN7PvIoJ9jDgR3HLM03uunDVgTh83nqeD503QO75VZFRG45akEXOxMpsZ7QSv0H6JGGCwE2hzfEypwp3n2KVYrybFWnr6lt5dJO93jpCfQRei5ryV/+dLh8Keqp87YP2Gnz31cGz3+8oB/7EdrilNTiXeMJZ0p+xNjPzocH9i+EtVA7xkIiG94Z4kYZtPlesOJL+PBN3hvEigeaNVn7mxkgProAZ81d6vo6aTCKz+jo4GPXH4UinrWs0zAaca6OsYRrYyg6UhgUQCVjrTO4TAggeyfFoSz4Kb9/N+x0oBI3wY4VQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mc4oHmxLkj+COZgzHs4Hn0gUMMqKtQUcuyMmhRIl8yE=;
+ b=I4nDiYvtFKndYicd2QzUlpl/tJc0zLWBVetcWzqvHcqRLHAJmWAOnO6WVfZabWTQxk6rrmmUSwHBKJGA16WLTrGE0oAjGmk9FHot8twksWzgn9cHSs5QH09+JX7mWfbjf22nTEqd/yp9JY8vjL1HLYWjD90hFam5Slq3ZLFremzyU7Z+++2QFs7/bpHoPjC2BgbWmBUT5qF4tsapKT4p8s5qFmsL5hkUUWKRqy6ZTSV7c1xNZgQFvdYp0j05DbaxMCqBpQLXfgVa70Y5W3Vk9+q+Gj2cCs2sKDynbP/SGrQaYPGoNOEIxDVXiDWopYeC2ltQDpRAnX+687J0wF9vsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mc4oHmxLkj+COZgzHs4Hn0gUMMqKtQUcuyMmhRIl8yE=;
+ b=avdCBF2WPnH1XjVRMuBIvQnHlPHXDTYkYqDZKPFXoUDNWZMDajHD6/uNeYLYBfKJQp1XgdAbzQwnyCG72FcXqD7WPVY8ShJ8s5wbjckRGikpDb4ZsEghDpg9jnX6Uu0/q+SqHf5qOF7t07jHOMh5B/rQkW0FJIatha/75L5iI3c=
+Received: from BN6PR1101MB2132.namprd11.prod.outlook.com
+ (2603:10b6:405:5b::22) by BN6PR1101MB2276.namprd11.prod.outlook.com
+ (2603:10b6:405:4e::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.26; Fri, 15 May
+ 2020 09:36:19 +0000
+Received: from BN6PR1101MB2132.namprd11.prod.outlook.com
+ ([fe80::5419:a938:2a3:ee27]) by BN6PR1101MB2132.namprd11.prod.outlook.com
+ ([fe80::5419:a938:2a3:ee27%5]) with mapi id 15.20.3000.022; Fri, 15 May 2020
+ 09:36:19 +0000
+From:   "Lu, Brent" <brent.lu@intel.com>
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Richard Fontana <rfontana@redhat.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        paulhsia <paulhsia@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] ALSA: pcm: fix incorrect hw_base increase
+Thread-Topic: [PATCH] ALSA: pcm: fix incorrect hw_base increase
+Thread-Index: AQHWKm+bGJ7M/VYc4UytQzlLp6XFraiovfEAgAAdJVA=
+Date:   Fri, 15 May 2020 09:36:19 +0000
+Message-ID: <BN6PR1101MB213283BD74AA4477B18C96CD97BD0@BN6PR1101MB2132.namprd11.prod.outlook.com>
+References: <1589515779-20987-1-git-send-email-brent.lu@intel.com>
+ <s5htv0hoe8p.wl-tiwai@suse.de>
+In-Reply-To: <s5htv0hoe8p.wl-tiwai@suse.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.2.0.6
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: suse.de; dkim=none (message not signed)
+ header.d=none;suse.de; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [1.164.110.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4e7285f2-8025-4794-c04c-08d7f8b36c59
+x-ms-traffictypediagnostic: BN6PR1101MB2276:
+x-microsoft-antispam-prvs: <BN6PR1101MB22765261A764FD2B54A6650797BD0@BN6PR1101MB2276.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 04041A2886
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ZqUSGwm/q4rppWAFaL6qmujVCtOoqP5jbHFduFa2i2lMbZclLKmJX8jwr/eWrCNR34MZXiGtWvrhPWDqoRHjaRwCE8lRGf9MJQqAXdhQncUxZ8vkz3zJJu7MYoExnYEkYcRLJb4c62ypzNS63yA3JpEc7lzN6rygE4d/Gqu/XTOuh/10v3Q02oKIlaL843oXPfrWqL0QGDCJsqu9MU5QfsSI9Jp8Re2qWlK0gFQiAxYg3f8NOT6iDNP+He7YAcq9e07SYwhHzKZrN1CgES5Onp2W8k2hS3uomIphbsNtvD4fZ0sjActiUom8atgd/sselDoZyUSMJDVjguTGO/PI3q8gbq4r/j3E6f0e4aQWZ4GjAlwiL/1n1V4ShJvUXHeBPbIBOQNvRmvdg/amZ2gYNs6k2U0DRT5bAmc9gMQYCB5r/VUlctGZyJ6JOIsxzT8nfnolPRYjlG3FHXCcFo7XwiQDIcyggcB8xRbL5PCmBFAZqESiF1mwCAuuw99tY48YfQR4apyqBk8Ibg+WKsHnFA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR1101MB2132.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(376002)(366004)(39860400002)(346002)(136003)(2906002)(7416002)(66556008)(33656002)(86362001)(66946007)(5660300002)(4326008)(7696005)(52536014)(76116006)(6506007)(66476007)(64756008)(66446008)(316002)(71200400001)(26005)(54906003)(478600001)(8936002)(966005)(8676002)(9686003)(55016002)(186003)(6916009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: +dL070QRSsOw2JAjbuyjXGeud6/bevlRQahTakPNEGrhZ+1kZF3+7EA+M6GAY4goSwcNlhi3aUxsO4xSdYs0lCKWphm2ACl0afF1CvH+PuszXjEopQ0Pjiv+Yqkywio1K31Aei3OhlGbuwJ5uKZBz/tHrkFOt98GIAhEcBxC4m4OjqCQ6JzFegVVqpXKTFqXH31oefg1Y77X23r8G6THrMNdr/mTiAtvIT0VD4MJoE5a78fdUAKv3omC7sg8hBn9ugUxoIJl7KmouKxl6aeOK56hXPMkDnZJLvAbsh42q+GtFzgdmexfgH56Hyt0X07trc7qx8T0rJmtCGUzlj2wWZw2CIPgQfeOqP3b/R/TxYD4VtxvQoRi8f+tQ9gr4rtR1+suYGzy3u81NO90EIzCMDS6SIazDxvj5B4O+Yd/iOsB1cpyePxHkFTno5gFqoUbt99nabHsUNpDwY/zwzymjbM/hfJPG6fqfPd+i5QElqY=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e7285f2-8025-4794-c04c-08d7f8b36c59
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 May 2020 09:36:19.5270
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KGIVusJfUE1JjYC2T+nnS3yi7KwckDlQAK13yGWKRSq4w1YChTDc5NK1TC24Hrr3YdpB9se6j2Hn7wwGojR1ag==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1101MB2276
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Per the ACPI spec, interrupts in the range [0, 255] may be handled
-in AML using individual methods whose naming is based on the format
-_Exx or _Lxx, where xx is the hex representation of the interrupt
-index.
+>=20
+> Updating hw_ptr_jiffies at that code path looks correct, but it still lea=
+ves the
+> question why this condition happens.  It means that the actual hwptr isn'=
+t
+> changed and yet only jiffies increase significantly; it means that the ha=
+rdware
+> can't report proper pointer, and it should have set
+> SNDRV_PCM_INFO_BATCH flag, then the jiffies check is skipped.
+>=20
+> With which hardware and under which situation did it happen (and the patc=
+h
+> fixed)?
+>=20
+>=20
+> thanks,
+>=20
+> Takashi
+>=20
 
-Add support for this missing feature to our ACPI GED driver.
+From time to time we got questions from google about why sometimes the
+snd_pcm_avail() returns a value larger than buffer size. Recently we finall=
+y
+found reliable reproduce steps: it's on Intel GLK Chromebook Fleex with
+SOF firmware. There is a 1/20 chance the audio playback to HDMI fails.
 
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Len Brown <lenb@kernel.org>
-Cc: linux-acpi@vger.kernel.org
-Cc: <stable@vger.kernel.org> # v4.9+
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/acpi/evged.c | 22 +++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+From the FW side we observe a buffer runderrun, the FW is not able to
+recover it for some reason and stops the pipe.
 
-diff --git a/drivers/acpi/evged.c b/drivers/acpi/evged.c
-index aba0d0027586..6d7a522952bf 100644
---- a/drivers/acpi/evged.c
-+++ b/drivers/acpi/evged.c
-@@ -79,6 +79,8 @@ static acpi_status acpi_ged_request_interrupt(struct acpi_resource *ares,
- 	struct resource r;
- 	struct acpi_resource_irq *p = &ares->data.irq;
- 	struct acpi_resource_extended_irq *pext = &ares->data.extended_irq;
-+	char ev_name[5];
-+	u8 trigger;
- 
- 	if (ares->type == ACPI_RESOURCE_TYPE_END_TAG)
- 		return AE_OK;
-@@ -87,14 +89,28 @@ static acpi_status acpi_ged_request_interrupt(struct acpi_resource *ares,
- 		dev_err(dev, "unable to parse IRQ resource\n");
- 		return AE_ERROR;
- 	}
--	if (ares->type == ACPI_RESOURCE_TYPE_IRQ)
-+	if (ares->type == ACPI_RESOURCE_TYPE_IRQ) {
- 		gsi = p->interrupts[0];
--	else
-+		trigger = p->triggering;
-+	} else {
- 		gsi = pext->interrupts[0];
-+		trigger = p->triggering;
-+	}
- 
- 	irq = r.start;
- 
--	if (ACPI_FAILURE(acpi_get_handle(handle, "_EVT", &evt_handle))) {
-+	switch (gsi) {
-+	case 0 ... 255:
-+		sprintf(ev_name, "_%c%02hhX",
-+			trigger == ACPI_EDGE_SENSITIVE ? 'E' : 'L', gsi);
-+
-+		if (ACPI_SUCCESS(acpi_get_handle(handle, ev_name, &evt_handle)))
-+			break;
-+		/* fall through */
-+	default:
-+		if (ACPI_SUCCESS(acpi_get_handle(handle, "_EVT", &evt_handle)))
-+			break;
-+
- 		dev_err(dev, "cannot locate _EVT method\n");
- 		return AE_ERROR;
- 	}
--- 
-2.17.1
+From the Linux side we see the pos does not increase because the FW stops
+receiving data but suddenly the hw_prt is increased by buffer_size (16368).
+It could make snd_pcm_avail() reporting a false underrun to the caller like
+following log:
+
+2020-05-09T16:08:32.712042+08:00 DEBUG kernel: [  418.510086] sound pcmC0D5=
+p: pos 96 hw_ptr 96 appl_ptr 4096 avail 12368
+2020-05-09T16:08:32.712043+08:00 DEBUG kernel: [  418.510149] sound pcmC0D5=
+p: pos 96 hw_ptr 96 appl_ptr 6910 avail 9554
+...
+2020-05-09T16:08:32.883095+08:00 DEBUG kernel: [  418.680868] sound pcmC0D5=
+p: pos 96 hw_ptr 96 appl_ptr 15102 avail 1362
+2020-05-09T16:08:32.883104+08:00 DEBUG kernel: [  418.681052] sound pcmC0D5=
+p: pos 96 hw_ptr 96 appl_ptr 15102 avail 1362
+2020-05-09T16:08:32.883109+08:00 DEBUG kernel: [  418.681130] sound pcmC0D5=
+p: pos 96 hw_ptr 96 appl_ptr 16464 avail 0
+2020-05-09T16:08:32.929330+08:00 DEBUG kernel: [  418.726515] sound pcmC0D5=
+p: pos 96 hw_ptr 16464 appl_ptr 16464 avail 16368
+2020-05-09T16:08:32.929512+08:00 DEBUG kernel: [  418.727041] sound pcmC0D5=
+p: pos 96 hw_ptr 16464 appl_ptr 16464 avail 16368
+
+Or it could make snd_pcm_avail() returns an invalid number and confuses the
+Caller like following log:
+
+2020-05-09T16:08:33.054039+08:00 DEBUG kernel: [  418.851755] sound pcmC0D5=
+p: pos 96 hw_ptr 16464 appl_ptr 27390 avail 5442
+2020-05-09T16:08:33.129552+08:00 DEBUG kernel: [  418.926491] sound pcmC0D5=
+p: pos 96 hw_ptr 32832 appl_ptr 27390 avail 21810
+2020-05-09T16:08:33.131746+08:00 ERR cras_server[1907]: pcm_avail returned =
+frames larger than buf_size: sof-glkda7219max: :0,5: 21810 > 16368
+
+I've submitted a patch to fix the issue in SOF side. However, I think it's =
+also good
+to fix the incorrect hw_base increasement in Linux side.
+
+https://github.com/thesofproject/sof/pull/2926
+
+
+Regards,
+Brent
 
