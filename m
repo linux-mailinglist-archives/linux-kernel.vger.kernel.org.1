@@ -2,145 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1491D50CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2066A1D5191
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgEOOhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 10:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726718AbgEOOhT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 10:37:19 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D224C05BD0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 07:37:19 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 145so1015395pfw.13
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 07:37:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GkgSQWYyEHrVohFFMSyphZgO4DDabSVNfncbmH3+PSA=;
-        b=i7phLR6oslO+nKsuBoJMm/9bH/JqIgx0izgjVqNpzYrr5so+8tSWN9Yf5iu61KRlBK
-         Udu9CbA+KyxU6EBm8+gDNGEL/mh1EmL9zpEH2ZzYj91LqaHO8SRqBPJ4m+Ti1YEJzzGA
-         jofFicakkW+mtqfl3m559FLv+sFicL0eDLX0k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GkgSQWYyEHrVohFFMSyphZgO4DDabSVNfncbmH3+PSA=;
-        b=HMVHoYALVqMBjVYamBbGW+lM+QZADgNt+7gNveJRrMzDqAa2oRzDi+ErnRTaDArZDA
-         cxjte1WeI314pLKMUE27+hEqofQg/yKJlPo043WSyXKiy6/QH0ieOsOvhGhgS0uLBsfM
-         oyTEVVCEch8/+HHqUrijQZ4vg1izJ0KPqDBx6eEHTJYYhu+4F76BRM2xRMKh6dvwPdyA
-         gQmhTakZ8nyO5e8KwhASjIkId/GdxUHM3y1LVz3EgjGQnhthR/jiFCoSYUpMfpeqQ756
-         DSNB2yqKuPLqwWYp3NLL2cBsgfhqL4K1XZ9d+WUIJgNdB35jmPp3rojra89YVT9kTOMz
-         279w==
-X-Gm-Message-State: AOAM533gBFx8SHaRbw35LasgoaMGjnAQakRSCGKiQmAQgMJzK2CaN+Mp
-        KwiiT2YhXfZYUEwZZmYDuJ7l+g==
-X-Google-Smtp-Source: ABdhPJwe+mQWxHy+Y8MG1su17GDYNjf0sGvC5GumLd2b2yGuoh3drABp261K8+gyS8kDmn+Bp9fFfw==
-X-Received: by 2002:a62:18c1:: with SMTP id 184mr3649253pfy.277.1589553438673;
-        Fri, 15 May 2020 07:37:18 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q134sm2132257pfc.143.2020.05.15.07.37.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 07:37:17 -0700 (PDT)
-Date:   Fri, 15 May 2020 07:37:16 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Christian Heimes <christian@python.org>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        John Johansen <john.johansen@canonical.com>,
-        Kentaro Takeda <takedakn@nttdata.co.jp>,
-        "Lev R. Oshvang ." <levonshe@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Chiang <ericchiang@google.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mickael.salaun@ssi.gouv.fr>,
-        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Subject: Re: How about just O_EXEC? (was Re: [PATCH v5 3/6] fs: Enable to
- enforce noexec mounts or file exec through O_MAYEXEC)
-Message-ID: <202005150732.17C5EE0@keescook>
-References: <20200505153156.925111-4-mic@digikod.net>
- <CAEjxPJ7y2G5hW0WTH0rSrDZrorzcJ7nrQBjfps2OWV5t1BUYHw@mail.gmail.com>
- <202005131525.D08BFB3@keescook>
- <202005132002.91B8B63@keescook>
- <CAEjxPJ7WjeQAz3XSCtgpYiRtH+Jx-UkSTaEcnVyz_jwXKE3dkw@mail.gmail.com>
- <202005140830.2475344F86@keescook>
- <CAEjxPJ4R_juwvRbKiCg5OGuhAi1ZuVytK4fKCDT_kT6VKc8iRg@mail.gmail.com>
- <b740d658-a2da-5773-7a10-59a0ca52ac6b@digikod.net>
- <202005142343.D580850@keescook>
- <87a729wpu1.fsf@oldenburg2.str.redhat.com>
+        id S1728332AbgEOOiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 10:38:50 -0400
+Received: from mga07.intel.com ([134.134.136.100]:12181 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728305AbgEOOiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 10:38:46 -0400
+IronPort-SDR: VBdJGM+6FEOt7f270+tz0qAc9CQkkNw1/uXBETl1+XoghfSA/tFR/I/cJKvb8JYHR4lsuODwKD
+ ZYB7q8BL2AHw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 07:38:44 -0700
+IronPort-SDR: PD+AYiubg3C62FfKS8r9a0bj7vD8rH+SxOT6MhaEKi4ZHN5L0aST1DwpDrwFQjE7dmGEMLQQ5M
+ v4NPqCcAXmuw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
+   d="scan'208";a="252392201"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga007.fm.intel.com with ESMTP; 15 May 2020 07:38:39 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jZbU2-006tAz-3l; Fri, 15 May 2020 17:38:42 +0300
+Date:   Fri, 15 May 2020 17:38:42 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Allison Randal <allison@lohutok.net>,
+        Gareth Williams <gareth.williams.jx@renesas.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Clement Leger <cleger@kalray.eu>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 10/19] spi: dw: Use DMA max burst to set the request
+ thresholds
+Message-ID: <20200515143842.GG1634618@smile.fi.intel.com>
+References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
+ <20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru>
+ <20200515104758.6934-11-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87a729wpu1.fsf@oldenburg2.str.redhat.com>
+In-Reply-To: <20200515104758.6934-11-Sergey.Semin@baikalelectronics.ru>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 10:43:34AM +0200, Florian Weimer wrote:
-> * Kees Cook:
-> 
-> > Maybe I've missed some earlier discussion that ruled this out, but I
-> > couldn't find it: let's just add O_EXEC and be done with it. It actually
-> > makes the execve() path more like openat2() and is much cleaner after
-> > a little refactoring. Here are the results, though I haven't emailed it
-> > yet since I still want to do some more testing:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=kspp/o_exec/v1
-> 
-> I think POSIX specifies O_EXEC in such a way that it does not confer
-> read permissions.  This seems incompatible with what we are trying to
-> achieve here.
+On Fri, May 15, 2020 at 01:47:49PM +0300, Serge Semin wrote:
+> Each channel of DMA controller may have a limited length of burst
+> transaction (number of IO operations performed at ones in a single
+> DMA client request). This parameter can be used to setup the most
+> optimal DMA Tx/Rx data level values. In order to avoid the Tx buffer
+> overrun we can set the DMA Tx level to be of FIFO depth minus the
+> maximum burst transactions length. To prevent the Rx buffer underflow
+> the DMA Rx level should be set to the maximum burst transactions length.
+> This commit setups the DMA channels and the DW SPI DMA Tx/Rx levels
+> in accordance with these rules.
 
-I was trying to retain this behavior, since we already make this
-distinction between execve() and uselib() with the MAY_* flags:
+It's good one, but see my comments.
 
-execve():
-        struct open_flags open_exec_flags = {
-                .open_flag = O_LARGEFILE | O_RDONLY | __FMODE_EXEC,
-                .acc_mode = MAY_EXEC,
 
-uselib():
-        static const struct open_flags uselib_flags = {
-                .open_flag = O_LARGEFILE | O_RDONLY | __FMODE_EXEC,
-                .acc_mode = MAY_READ | MAY_EXEC,
+I think this patch should go before previous one.
+(and without changes regarding FIFO length)
 
-I tried to retain this in my proposal, in the O_EXEC does not imply
-MAY_READ:
+> +static void mid_spi_maxburst_init(struct dw_spi *dws)
+> +{
+> +	struct dma_slave_caps caps;
+> +	u32 max_burst, def_burst;
+> +	int ret;
+> +
+> +	def_burst = dws->fifo_len / 2;
+> +
+> +	ret = dma_get_slave_caps(dws->rxchan, &caps);
+> +	if (!ret && caps.max_burst)
+> +		max_burst = caps.max_burst;
+> +	else
+> +		max_burst = RX_BURST_LEVEL;
+> +
 
-+	/* Should execution permissions be checked on open? */
-+	if (flags & O_EXEC) {
-+		flags |= __FMODE_EXEC;
-+		acc_mode |= MAY_EXEC;
-+	}
+> +	dws->rxburst = (def_burst > max_burst) ? max_burst : def_burst;
+
+min() ?
+
+> +
+> +	ret = dma_get_slave_caps(dws->txchan, &caps);
+> +	if (!ret && caps.max_burst)
+> +		max_burst = caps.max_burst;
+> +	else
+> +		max_burst = TX_BURST_LEVEL;
+> +
+
+> +	dws->txburst = (def_burst > max_burst) ? max_burst : def_burst;
+
+Ditto.
+
+> +}
+> +
+>  static int mid_spi_dma_init_mfld(struct device *dev, struct dw_spi *dws)
+>  {
+>  	struct dw_dma_slave slave = {0};
+> @@ -67,6 +92,8 @@ static int mid_spi_dma_init_mfld(struct device *dev, struct dw_spi *dws)
+>  	dws->master->dma_rx = dws->rxchan;
+>  	dws->master->dma_tx = dws->txchan;
+>  
+> +	mid_spi_maxburst_init(dws);
+> +
+>  	return 0;
+>  
+>  free_rxchan:
+> @@ -92,6 +119,8 @@ static int mid_spi_dma_init_generic(struct device *dev, struct dw_spi *dws)
+>  	dws->master->dma_rx = dws->rxchan;
+>  	dws->master->dma_tx = dws->txchan;
+>  
+> +	mid_spi_maxburst_init(dws);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -195,7 +224,7 @@ static struct dma_async_tx_descriptor *dw_spi_dma_prepare_tx(struct dw_spi *dws,
+>  	memset(&txconf, 0, sizeof(txconf));
+>  	txconf.direction = DMA_MEM_TO_DEV;
+>  	txconf.dst_addr = dws->dma_addr;
+> -	txconf.dst_maxburst = TX_BURST_LEVEL;
+> +	txconf.dst_maxburst = dws->txburst;
+>  	txconf.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+>  	txconf.dst_addr_width = convert_dma_width(dws->n_bytes);
+>  	txconf.device_fc = false;
+> @@ -268,7 +297,7 @@ static struct dma_async_tx_descriptor *dw_spi_dma_prepare_rx(struct dw_spi *dws,
+>  	memset(&rxconf, 0, sizeof(rxconf));
+>  	rxconf.direction = DMA_DEV_TO_MEM;
+>  	rxconf.src_addr = dws->dma_addr;
+> -	rxconf.src_maxburst = RX_BURST_LEVEL;
+> +	rxconf.src_maxburst = dws->rxburst;
+>  	rxconf.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+>  	rxconf.src_addr_width = convert_dma_width(dws->n_bytes);
+>  	rxconf.device_fc = false;
+> @@ -293,8 +322,8 @@ static int mid_spi_dma_setup(struct dw_spi *dws, struct spi_transfer *xfer)
+>  {
+>  	u16 imr = 0, dma_ctrl = 0;
+>  
+> -	dw_writel(dws, DW_SPI_DMARDLR, RX_BURST_LEVEL - 1);
+> -	dw_writel(dws, DW_SPI_DMATDLR, dws->fifo_len - TX_BURST_LEVEL);
+> +	dw_writel(dws, DW_SPI_DMARDLR, dws->rxburst - 1);
+> +	dw_writel(dws, DW_SPI_DMATDLR, dws->fifo_len - dws->txburst);
+>  
+>  	if (xfer->tx_buf) {
+>  		dma_ctrl |= SPI_DMA_TDMAE;
+
+...
+
+>  	/* DMA info */
+>  	struct dma_chan		*txchan;
+> +	u32			txburst;
+>  	struct dma_chan		*rxchan;
+> +	u32			rxburst;
+
+Leave u32 together, it may be optimal on 64-bit architectures where ABIs require padding.
 
 -- 
-Kees Cook
+With Best Regards,
+Andy Shevchenko
+
+
