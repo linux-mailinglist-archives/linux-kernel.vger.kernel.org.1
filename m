@@ -2,67 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7256E1D589C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64251D58BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbgEOSGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 14:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726023AbgEOSGI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 14:06:08 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A23C061A0C;
-        Fri, 15 May 2020 11:06:08 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 0ACFE736;
-        Fri, 15 May 2020 18:06:08 +0000 (UTC)
-Date:   Fri, 15 May 2020 12:06:07 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh@kernel.org>,
+        id S1726297AbgEOSM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 14:12:57 -0400
+Received: from ja.ssi.bg ([178.16.129.10]:54538 "EHLO ja.ssi.bg"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726191AbgEOSM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 14:12:56 -0400
+X-Greylist: delayed 318 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 May 2020 14:12:55 EDT
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id 04FI79uk004885;
+        Fri, 15 May 2020 21:07:09 +0300
+Date:   Fri, 15 May 2020 21:07:09 +0300 (EEST)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     Andrew Sy Kim <kim.andrewsy@gmail.com>
+cc:     Wensong Zhang <wensong@linux-vs.org>,
+        Simon Horman <horms@verge.net.au>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
         "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-remoteproc@vger.kernel.org
-Subject: Re: [PATCH 10/14] docs: move locking-specific documenta to locking/
- directory
-Message-ID: <20200515120607.73ee1278@lwn.net>
-In-Reply-To: <dd833a10bbd0b2c1461d78913f5ec28a7e27f00b.1588345503.git.mchehab+huawei@kernel.org>
-References: <cover.1588345503.git.mchehab+huawei@kernel.org>
-        <dd833a10bbd0b2c1461d78913f5ec28a7e27f00b.1588345503.git.mchehab+huawei@kernel.org>
-Organization: LWN.net
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:IPVS" <netdev@vger.kernel.org>,
+        "open list:IPVS" <lvs-devel@vger.kernel.org>,
+        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
+        "open list:NETFILTER" <coreteam@netfilter.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] netfilter/ipvs: expire no destination UDP connections
+ when expire_nodest_conn=1
+In-Reply-To: <20200515013556.5582-1-kim.andrewsy@gmail.com>
+Message-ID: <alpine.LFD.2.21.2005152044380.3860@ja.home.ssi.bg>
+References: <20200515013556.5582-1-kim.andrewsy@gmail.com>
+User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  1 May 2020 17:37:54 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-> Several files under Documentation/*.txt describe some type of
-> locking API. Move them to locking/ subdir and add to the
-> locking/index.rst index file.
+	Hello,
+
+On Thu, 14 May 2020, Andrew Sy Kim wrote:
+
+> When expire_nodest_conn=1 and an IPVS destination is deleted, IPVS
+> doesn't expire connections with the IP_VS_CONN_F_ONE_PACKET flag set (any
+> UDP connection). If there are many UDP packets to a virtual server from a
+> single client and a destination is deleted, many packets are silently
+> dropped whenever an existing connection entry with the same source port
+> exists. This patch ensures IPVS also expires UDP connections when a
+> packet matches an existing connection with no destinations.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Signed-off-by: Andrew Sy Kim <kim.andrewsy@gmail.com>
+> ---
+>  net/netfilter/ipvs/ip_vs_core.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
+> index aa6a603a2425..f0535586fe75 100644
+> --- a/net/netfilter/ipvs/ip_vs_core.c
+> +++ b/net/netfilter/ipvs/ip_vs_core.c
+> @@ -2116,8 +2116,7 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
+>  		else
+>  			ip_vs_conn_put(cp);
 
-I've applied this, but it really seems like this belongs in the core-api
-manual someday.
+	Above ip_vs_conn_put() should free the ONE_PACKET
+connections because:
 
-Thanks,
+- such connections never start timer, they are designed
+to exist just to schedule the packet, then they are released.
+- noone takes extra references
 
-jon
+	So, ip_vs_conn_put() simply calls ip_vs_conn_expire()
+where connections should be released immediately. As result,
+we can not access cp after this point here. That is why we work
+just with 'flags' below...
+
+	Note that not every UDP connection has ONE_PACKET
+flag, it is present if you configure it for the service.
+Do you have -o/--ops flag? If not, the UDP connection
+should expire before the next jiffie. This is the theory,
+in practice, you may observe some problem...
+
+> -		if (sysctl_expire_nodest_conn(ipvs) &&
+> -		    !(flags & IP_VS_CONN_F_ONE_PACKET)) {
+> +		if (sysctl_expire_nodest_conn(ipvs)) {
+>  			/* try to expire the connection immediately */
+>  			ip_vs_conn_expire_now(cp);
+>  		}
+
+	You can also look at the discussion which resulted in
+the last patch for this place:
+
+http://archive.linuxvirtualserver.org/html/lvs-devel/2018-07/msg00014.html
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
