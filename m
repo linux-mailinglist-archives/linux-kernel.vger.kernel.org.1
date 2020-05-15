@@ -2,105 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804361D42FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 03:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2CC1D4304
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 03:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728140AbgEOBgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 21:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54816 "EHLO
+        id S1728230AbgEOBhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 21:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgEOBgM (ORCPT
+        with ESMTP id S1728166AbgEOBhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 21:36:12 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC30CC061A0C;
-        Thu, 14 May 2020 18:36:11 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id p21so213490pgm.13;
-        Thu, 14 May 2020 18:36:11 -0700 (PDT)
+        Thu, 14 May 2020 21:37:33 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F31C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 18:37:33 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x2so211236pfx.7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 18:37:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=0VjQ+Ma3qI88glsLS8F0bIG67DtfNMG5fSLchrZlPkw=;
-        b=BZH27tzHemzdhmeAt5qyR6/wV3Rep0NuG5yApKqgOQnaClXU3DcmTpxeToHmrIa15l
-         e/VU6aF7VhSU4G6nrw4DsMvQvfQn5gePKL/mL5Ip1KjkVJequxf52sqv4NWsvQrlyzIl
-         VQ8GsWnQ2KmNG4nUelqamCKaGM4nwe7OEROb4Mv33JGjGkhx/Ed70ZHgjJ2UAt3HbgWe
-         gLdBaa0JYh2H8FCFSy8Q3WEBJ7mcUCNK81II+EB30V2TJ8KFGzjS98HFmUz0+cNkAmBM
-         cuxIoNM2qoSTz/bTGviWjKAFqNQXMd2af7Xrp6THTo6nXJN9TexjHiE7l9BAYNLlpGpL
-         0dkQ==
+        bh=cFLXFjRR5A3gVgBRs/3cq91isvYI/YMEqHqKMfTLIfY=;
+        b=ST8ny/aTnC9mJCuv9OK8jmqlpZiMn5kyWYI0wvwNyygnON9LPxQvZtTqf0G/UTNsSJ
+         R+CgWeJuedGON5jyUbwwTsKFJW2xBRevUKUY4EsojOOYCogkX4O8OqVbH+jQYQ72qtXH
+         LzN9w+jTIbfNxqc6bFlU7ByWxZv8qa4BOq0iYNe6wCetd4n9NZQ7/FtSGKgFYC/EYTA6
+         nVR7pMlbnu/VsAQ7JWWd96ppdKWwbCfW62xJ0Wx9oAwr8Yw0AqV5S1pYDQ3c/7pbKbFL
+         BKJp7iozPW9djEeW+v8eB/hcGQtQ/A3Z/LbNB1hkGS5bQzLiimnhTjYyrWLHQn8dIOqN
+         KHDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=0VjQ+Ma3qI88glsLS8F0bIG67DtfNMG5fSLchrZlPkw=;
-        b=cJQx1RAZoznZUE6ejbNl7fo1/0PsBR730EKUdkZNhAqhl81rwqaXhO0yT2uZrdruz6
-         zqL93cxbEYpuwyAZgb2Xo7JuqetynVLHk4GE1bHPN+t8hHPH8rLq6xl8Va51DNP5IqhQ
-         9/vqXeltauQ1iMjBbF5jmQKRvFBb9Pq/UnMhmhuf8jurpppqosluFbV3e0cq00mU3jFC
-         mrKDm2u9W3XPKFpaujCT1NprReQz7jEi+lPbXPja+n+BObTim5z9IJeflkEKM3iR5Qtx
-         tQs5iGLZehvqkGZ9yDJ4VJhg9rVgTzJxUyTpHxMKfIvhyhMHO8G9KKNc6THE2uUNAkkb
-         RXJQ==
-X-Gm-Message-State: AOAM531oQopCifUVCbdgJeXsj/oS1mkG9bF0YLr3zdXrEe7PV3JCHpx+
-        AhaqKLAI14yCP1boDLYl10vF/ZHnAwF4NQ==
-X-Google-Smtp-Source: ABdhPJwCVmlezSMh86iw6O5zaChvYnG2ARTIL31CVxt25Oq99Z82FRfutcz2tDRog+5lMGN4YEQxKQ==
-X-Received: by 2002:a63:482:: with SMTP id 124mr880335pge.169.1589506571419;
-        Thu, 14 May 2020 18:36:11 -0700 (PDT)
-Received: from T480s.vmware.com (toroon0411w-lp130-03-174-95-146-183.dsl.bell.ca. [174.95.146.183])
-        by smtp.googlemail.com with ESMTPSA id e12sm364701pgi.40.2020.05.14.18.36.09
+        bh=cFLXFjRR5A3gVgBRs/3cq91isvYI/YMEqHqKMfTLIfY=;
+        b=XJhS4hL+lyqHHkRnZCSSn5a6oqIGSI1LXCVOLmVuiBCviYAfJQFURPrFc7ELlhdiQO
+         9GvK+JHE7xMj4kUK6zT0c7mOHhDaK7oEUD2csqPxSuqJzEcniWn/M8KxfksGiaKzQ0zX
+         jJ8x73WK/K1w8dPF5t0V0KpPbWfFeiVpxiydNYvPavUhCl1EJW19793eHku3a8q9yY8n
+         B1/HcSxeAti1lBYQn5ECZay/LlBXj4ihK/9Cc2wHvUjMN5KhIMOSJ8lTL6Ug+aacU8f0
+         vu1B9HEaohFCIEkNSgJcWxwY0WEe9glr5HzZTIU2Q19G9HY8SB55+8l4YTQvHkgh2R8s
+         I4iw==
+X-Gm-Message-State: AOAM53105oiNDNauWLqAxeeZjCW9hrypZdnj4Wfuy7cy9diDY9vW0yjZ
+        jj28OU+t3K2D5eODnssUztwdeQ==
+X-Google-Smtp-Source: ABdhPJwyvaj5ekFAeFD+ATcyuEVMe3JjX7TZN9DC+ER6jwn2dLMGDA5bm8BxjR+yi+0EZCWfn9Kn9w==
+X-Received: by 2002:a62:76c1:: with SMTP id r184mr1439871pfc.155.1589506652891;
+        Thu, 14 May 2020 18:37:32 -0700 (PDT)
+Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id c2sm402675pfp.118.2020.05.14.18.37.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 18:36:10 -0700 (PDT)
-From:   Andrew Sy Kim <kim.andrewsy@gmail.com>
-Cc:     kim.andrewsy@gmail.com, Wensong Zhang <wensong@linux-vs.org>,
-        Simon Horman <horms@verge.net.au>,
-        Julian Anastasov <ja@ssi.bg>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev@vger.kernel.org (open list:IPVS),
-        lvs-devel@vger.kernel.org (open list:IPVS),
-        netfilter-devel@vger.kernel.org (open list:NETFILTER),
-        coreteam@netfilter.org (open list:NETFILTER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] netfilter/ipvs: expire no destination UDP connections when expire_nodest_conn=1
-Date:   Thu, 14 May 2020 21:35:56 -0400
-Message-Id: <20200515013556.5582-1-kim.andrewsy@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 14 May 2020 18:37:32 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Wesley Cheng <wcheng@codeaurora.org>
+Cc:     Manu Gautam <mgautam@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] phy: qcom-qmp: Ensure register indirection arrays initialized
+Date:   Thu, 14 May 2020 18:36:43 -0700
+Message-Id: <20200515013643.2081941-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When expire_nodest_conn=1 and an IPVS destination is deleted, IPVS
-doesn't expire connections with the IP_VS_CONN_F_ONE_PACKET flag set (any
-UDP connection). If there are many UDP packets to a virtual server from a
-single client and a destination is deleted, many packets are silently
-dropped whenever an existing connection entry with the same source port
-exists. This patch ensures IPVS also expires UDP connections when a
-packet matches an existing connection with no destinations.
+It's possible that struct qmp_phy_cfg->regs references an array that is
+smaller than the possible register lookups that is going to be
+performed, with the resulting out-of-bounds read resulting in undefined
+behavior.
 
-Signed-off-by: Andrew Sy Kim <kim.andrewsy@gmail.com>
+One such example is when during qcom_qmp_phy_com_init() performs a
+qphy_setbits() on entry QPHY_PCS_POWER_DOWN_CONTROL (i.e. 17) with
+msm8996_ufsphy_regs_layout only being 12 entries long.
+
+Solve this by inflating all "regs_layout" arrays to ensure that any
+remaining entries are zero-initialized, as expected by the code.
+
+Fixes: e4d8b05ad5f9 ("phy: qcom-qmp: Use proper PWRDOWN offset for sm8150 USB")
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
- net/netfilter/ipvs/ip_vs_core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/phy/qualcomm/phy-qcom-qmp.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-index aa6a603a2425..f0535586fe75 100644
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -2116,8 +2116,7 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
- 		else
- 			ip_vs_conn_put(cp);
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
+index 5942167320a3..c4bf5fd26fa0 100644
+--- a/drivers/phy/qualcomm/phy-qcom-qmp.c
++++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+@@ -120,14 +120,16 @@ enum qphy_reg_layout {
+ 	QPHY_PCS_LFPS_RXTERM_IRQ_CLEAR,
+ 	QPHY_PCS_LFPS_RXTERM_IRQ_STATUS,
+ 	QPHY_PCS_POWER_DOWN_CONTROL,
++	/* Keep last to ensure regs_layout arrays are properly initialized */
++	QPHY_LAYOUT_SIZE
+ };
  
--		if (sysctl_expire_nodest_conn(ipvs) &&
--		    !(flags & IP_VS_CONN_F_ONE_PACKET)) {
-+		if (sysctl_expire_nodest_conn(ipvs)) {
- 			/* try to expire the connection immediately */
- 			ip_vs_conn_expire_now(cp);
- 		}
+-static const unsigned int msm8996_ufsphy_regs_layout[] = {
++static const unsigned int msm8996_ufsphy_regs_layout[QPHY_LAYOUT_SIZE] = {
+ 	[QPHY_START_CTRL]		= 0x00,
+ 	[QPHY_PCS_READY_STATUS]		= 0x168,
+ };
+ 
+-static const unsigned int pciephy_regs_layout[] = {
++static const unsigned int pciephy_regs_layout[QPHY_LAYOUT_SIZE] = {
+ 	[QPHY_COM_SW_RESET]		= 0x400,
+ 	[QPHY_COM_POWER_DOWN_CONTROL]	= 0x404,
+ 	[QPHY_COM_START_CONTROL]	= 0x408,
+@@ -143,7 +145,7 @@ static const unsigned int pciephy_regs_layout[] = {
+ 	[QPHY_PCS_STATUS]		= 0x174,
+ };
+ 
+-static const unsigned int usb3phy_regs_layout[] = {
++static const unsigned int usb3phy_regs_layout[QPHY_LAYOUT_SIZE] = {
+ 	[QPHY_FLL_CNTRL1]		= 0xc0,
+ 	[QPHY_FLL_CNTRL2]		= 0xc4,
+ 	[QPHY_FLL_CNT_VAL_L]		= 0xc8,
+@@ -157,7 +159,7 @@ static const unsigned int usb3phy_regs_layout[] = {
+ 	[QPHY_PCS_LFPS_RXTERM_IRQ_STATUS] = 0x178,
+ };
+ 
+-static const unsigned int qmp_v3_usb3phy_regs_layout[] = {
++static const unsigned int qmp_v3_usb3phy_regs_layout[QPHY_LAYOUT_SIZE] = {
+ 	[QPHY_SW_RESET]			= 0x00,
+ 	[QPHY_START_CTRL]		= 0x08,
+ 	[QPHY_PCS_STATUS]		= 0x174,
+@@ -166,31 +168,31 @@ static const unsigned int qmp_v3_usb3phy_regs_layout[] = {
+ 	[QPHY_PCS_LFPS_RXTERM_IRQ_STATUS] = 0x170,
+ };
+ 
+-static const unsigned int sdm845_qmp_pciephy_regs_layout[] = {
++static const unsigned int sdm845_qmp_pciephy_regs_layout[QPHY_LAYOUT_SIZE] = {
+ 	[QPHY_SW_RESET]			= 0x00,
+ 	[QPHY_START_CTRL]		= 0x08,
+ 	[QPHY_PCS_STATUS]		= 0x174,
+ };
+ 
+-static const unsigned int sdm845_qhp_pciephy_regs_layout[] = {
++static const unsigned int sdm845_qhp_pciephy_regs_layout[QPHY_LAYOUT_SIZE] = {
+ 	[QPHY_SW_RESET]			= 0x00,
+ 	[QPHY_START_CTRL]		= 0x08,
+ 	[QPHY_PCS_STATUS]		= 0x2ac,
+ };
+ 
+-static const unsigned int qmp_v4_usb3phy_regs_layout[] = {
++static const unsigned int qmp_v4_usb3phy_regs_layout[QPHY_LAYOUT_SIZE] = {
+ 	[QPHY_SW_RESET]			= 0x00,
+ 	[QPHY_START_CTRL]		= 0x44,
+ 	[QPHY_PCS_STATUS]		= 0x14,
+ 	[QPHY_PCS_POWER_DOWN_CONTROL]	= 0x40,
+ };
+ 
+-static const unsigned int sdm845_ufsphy_regs_layout[] = {
++static const unsigned int sdm845_ufsphy_regs_layout[QPHY_LAYOUT_SIZE] = {
+ 	[QPHY_START_CTRL]		= 0x00,
+ 	[QPHY_PCS_READY_STATUS]		= 0x160,
+ };
+ 
+-static const unsigned int sm8150_ufsphy_regs_layout[] = {
++static const unsigned int sm8150_ufsphy_regs_layout[QPHY_LAYOUT_SIZE] = {
+ 	[QPHY_START_CTRL]		= QPHY_V4_PCS_UFS_PHY_START,
+ 	[QPHY_PCS_READY_STATUS]		= QPHY_V4_PCS_UFS_READY_STATUS,
+ 	[QPHY_SW_RESET]			= QPHY_V4_PCS_UFS_SW_RESET,
 -- 
-2.20.1
+2.26.2
 
