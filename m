@@ -2,156 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F981D4B99
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B381D4B90
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726237AbgEOKwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 06:52:11 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:46298 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726204AbgEOKwK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 06:52:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589539929; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=Ee8NO6/5OJ52E2zUjD2OXevvWt6lIkUWaN1XFxYR8Yc=; b=uEGVpH8g3G3EPHT0dJF0JKO/JfeT84rfvono/aGfSXdgyFDCYMeRnP4mk+R9X9sPxV33eWlX
- JgBIxIxrfL+6PdpLk3dHDMg58HGBTb+S70hOcxRqIshK4hHOcbyrtJs5St9CLNkgfCib/NsV
- PjmsrvggwFAM4p9KKAPOkI5PFxw=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5ebe744f8ebbf95ecb8fbd5b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 May 2020 10:51:59
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 43333C43636; Fri, 15 May 2020 10:51:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-311.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C7D77C433F2;
-        Fri, 15 May 2020 10:51:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C7D77C433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>, devicetree@vger.kernel.org,
+        id S1728261AbgEOKvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 06:51:40 -0400
+Received: from mga04.intel.com ([192.55.52.120]:48323 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728053AbgEOKvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 06:51:39 -0400
+IronPort-SDR: 9FKqJQSzsTTp2bRC61Oa2xkR/B2/JxHpm7hnAfbG9Snxd8dejrqnqbU6BFTIniK3Z+GI4znv57
+ qatolTwWZ3cw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 03:51:39 -0700
+IronPort-SDR: bQmEm3KvsMGShLrikAYJH2NXMbSjsZgSZKRjHrRKH5W29Nm8n+oMC4cS7qpI0ezRzzQLgbLrth
+ yR0QAGXaCLaA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
+   d="scan'208";a="438270817"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005.jf.intel.com with ESMTP; 15 May 2020 03:51:34 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jZXwH-006qGW-B9; Fri, 15 May 2020 13:51:37 +0300
+Date:   Fri, 15 May 2020 13:51:37 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, coresight@lists.linaro.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH 1/2] arm64: dts: qcom: sc7180: Support ETMv4 power management
-Date:   Fri, 15 May 2020 16:21:36 +0530
-Message-Id: <b0a2ac4ffefe7d3e216a83ab56867620f120ff08.1589539293.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <cover.1589539293.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1589539293.git.saiprakash.ranjan@codeaurora.org>
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-mips@vger.kernel.org, dmaengine@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] dt-bindings: dma: dw: Add max burst transaction
+ length property
+Message-ID: <20200515105137.GK185537@smile.fi.intel.com>
+References: <20200508105304.14065-1-Sergey.Semin@baikalelectronics.ru>
+ <20200508105304.14065-3-Sergey.Semin@baikalelectronics.ru>
+ <20200508111242.GH185537@smile.fi.intel.com>
+ <20200511200528.nfkc2zkh3bvupn7l@mobilestation>
+ <20200511210138.GN185537@smile.fi.intel.com>
+ <20200511213531.wnywlljiulvndx6s@mobilestation>
+ <20200512090804.GR185537@smile.fi.intel.com>
+ <20200512114946.x777yb6bhe22ccn5@mobilestation>
+ <20200512123840.GY185537@smile.fi.intel.com>
+ <20200515060911.GF333670@vkoul-mobl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515060911.GF333670@vkoul-mobl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that deep idle states are properly supported on SC7180,
-we need to add "coresight-loses-context-with-cpu" property
-to avoid failure of trace session because of losing context
-on entering deep idle states.
+On Fri, May 15, 2020 at 11:39:11AM +0530, Vinod Koul wrote:
+> On 12-05-20, 15:38, Andy Shevchenko wrote:
+> > On Tue, May 12, 2020 at 02:49:46PM +0300, Serge Semin wrote:
+> > > On Tue, May 12, 2020 at 12:08:04PM +0300, Andy Shevchenko wrote:
+> > > > On Tue, May 12, 2020 at 12:35:31AM +0300, Serge Semin wrote:
+> > > > > On Tue, May 12, 2020 at 12:01:38AM +0300, Andy Shevchenko wrote:
+> > > > > > On Mon, May 11, 2020 at 11:05:28PM +0300, Serge Semin wrote:
+> > > > > > > On Fri, May 08, 2020 at 02:12:42PM +0300, Andy Shevchenko wrote:
+> > > > > > > > On Fri, May 08, 2020 at 01:53:00PM +0300, Serge Semin wrote:
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
+...
 
-Resending this because the last patch sent here - https://lore.kernel.org/patchwork/patch/1230367/
-seems to have added "coresight-loses-context-with-cpu" to
-replicator node instead of etm7 node.
+> > I leave it to Rob and Vinod.
+> > It won't break our case, so, feel free with your approach.
+> 
+> I agree the DT is about describing the hardware and looks like value of
+> 1 is not allowed. If allowed it should be added..
 
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+It's allowed at *run time*, it's illegal in *pre-silicon stage* when
+synthesizing the IP.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 4069bb1c93af..8b3707347547 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -1656,6 +1656,7 @@
- 
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
-+			arm,coresight-loses-context-with-cpu;
- 
- 			out-ports {
- 				port {
-@@ -1674,6 +1675,7 @@
- 
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
-+			arm,coresight-loses-context-with-cpu;
- 
- 			out-ports {
- 				port {
-@@ -1692,6 +1694,7 @@
- 
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
-+			arm,coresight-loses-context-with-cpu;
- 
- 			out-ports {
- 				port {
-@@ -1710,6 +1713,7 @@
- 
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
-+			arm,coresight-loses-context-with-cpu;
- 
- 			out-ports {
- 				port {
-@@ -1728,6 +1732,7 @@
- 
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
-+			arm,coresight-loses-context-with-cpu;
- 
- 			out-ports {
- 				port {
-@@ -1746,6 +1751,7 @@
- 
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
-+			arm,coresight-loses-context-with-cpu;
- 
- 			out-ports {
- 				port {
-@@ -1764,6 +1770,7 @@
- 
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
-+			arm,coresight-loses-context-with-cpu;
- 
- 			out-ports {
- 				port {
-@@ -1782,6 +1789,7 @@
- 
- 			clocks = <&aoss_qmp>;
- 			clock-names = "apb_pclk";
-+			arm,coresight-loses-context-with-cpu;
- 
- 			out-ports {
- 				port {
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+With Best Regards,
+Andy Shevchenko
+
 
