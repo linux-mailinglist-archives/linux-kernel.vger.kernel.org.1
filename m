@@ -2,64 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1491D57B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 19:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B221D57B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 19:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgEORYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726863AbgEORYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 13:24:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726372AbgEORYu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 May 2020 13:24:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:59964 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726023AbgEORYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 13:24:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2FEF1042;
-        Fri, 15 May 2020 10:24:48 -0700 (PDT)
-Received: from gaia (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 161EA3F305;
-        Fri, 15 May 2020 10:24:47 -0700 (PDT)
-Date:   Fri, 15 May 2020 18:24:45 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        hch@lst.de
-Subject: [GIT PULL] arm64 fixes for 5.7-rc6
-Message-ID: <20200515172443.GA1749@gaia>
+X-Greylist: delayed 91468 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 15 May 2020 10:24:49 PDT
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F3BC061A0C;
+        Fri, 15 May 2020 10:24:49 -0700 (PDT)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id DC103736;
+        Fri, 15 May 2020 17:24:48 +0000 (UTC)
+Date:   Fri, 15 May 2020 11:24:47 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Stephen Kitt <steve@sk2.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: sysctl/kernel: document ngroups_max
+Message-ID: <20200515112447.4838b7ba@lwn.net>
+In-Reply-To: <20200515160222.7994-1-steve@sk2.org>
+References: <20200515160222.7994-1-steve@sk2.org>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, 15 May 2020 18:02:22 +0200
+Stephen Kitt <steve@sk2.org> wrote:
 
-Please pull the arm64 fix below. Thanks.
+> This is a read-only export of NGROUPS_MAX, so this patch also changes
+> the declarations in kernel/sysctl.c to const.
+> 
+> Signed-off-by: Stephen Kitt <steve@sk2.org>
+> ---
+>  Documentation/admin-guide/sysctl/kernel.rst | 9 +++++++++
+>  kernel/sysctl.c                             | 4 ++--
+>  2 files changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+> index 0d427fd10941..5f12ee07665c 100644
+> --- a/Documentation/admin-guide/sysctl/kernel.rst
+> +++ b/Documentation/admin-guide/sysctl/kernel.rst
+> @@ -459,6 +459,15 @@ Notes:
+>       successful IPC object allocation. If an IPC object allocation syscall
+>       fails, it is undefined if the value remains unmodified or is reset to -1.
+>  
+> +
+> +ngroups_max
+> +===========
+> +
+> +Maximum number of supplementary groups, _i.e._ the maximum size which
+> +``setgroups`` will accept. Exports ``NGROUPS_MAX`` from the kernel.
 
-The following changes since commit 027d0c7101f50cf03aeea9eebf484afd4920c8d3:
+Applied, thanks.
 
-  arm64: hugetlb: avoid potential NULL dereference (2020-05-07 09:24:15 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
-
-for you to fetch changes up to d51c214541c5154dda3037289ee895ea3ded5ebd:
-
-  arm64: fix the flush_icache_range arguments in machine_kexec (2020-05-11 12:02:14 +0100)
-
-----------------------------------------------------------------
-Fix flush_icache_range() second argument in machine_kexec() to be an
-address rather than size.
-
-----------------------------------------------------------------
-Christoph Hellwig (1):
-      arm64: fix the flush_icache_range arguments in machine_kexec
-
- arch/arm64/kernel/machine_kexec.c | 1 +
- 1 file changed, 1 insertion(+)
-
--- 
-Catalin
+jon
