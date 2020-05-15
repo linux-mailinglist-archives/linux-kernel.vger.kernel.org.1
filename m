@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79ECC1D5D0E
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 02:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5791D5CFE
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 02:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728345AbgEPAMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 20:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41126 "EHLO
+        id S1728119AbgEPALL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 20:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728028AbgEPAK7 (ORCPT
+        by vger.kernel.org with ESMTP id S1728058AbgEPALE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 20:10:59 -0400
+        Fri, 15 May 2020 20:11:04 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5BAC05BD0A
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 17:10:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FDFC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 17:11:04 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jZkPV-0002Q1-79; Sat, 16 May 2020 02:10:37 +0200
+        id 1jZkPW-0002Rr-B8; Sat, 16 May 2020 02:10:38 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 9DFC6100605;
-        Sat, 16 May 2020 02:10:36 +0200 (CEST)
-Message-Id: <20200515235126.818063410@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id D89F9FF834;
+        Sat, 16 May 2020 02:10:37 +0200 (CEST)
+Message-Id: <20200515235126.912643204@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Sat, 16 May 2020 01:46:11 +0200
+Date:   Sat, 16 May 2020 01:46:12 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -50,7 +50,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V6 24/37] x86/entry: Convert APIC interrupts to IDTENTRY_SYSVEC
+Subject: [patch V6 25/37] x86/entry: Convert SMP system vectors to IDTENTRY_SYSVEC
 References: <20200515234547.710474468@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -64,7 +64,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Convert APIC interrupts to IDTENTRY_SYSVEC
+Convert SMP system vectors to IDTENTRY_SYSVEC
   - Implement the C entry point with DEFINE_IDTENTRY_SYSVEC
   - Emit the ASM stub with DECLARE_IDTENTRY_SYSVEC
   - Remove the ASM idtentries in 64bit
@@ -75,243 +75,209 @@ No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
+
 diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 2c0eb5c2100a..6e629e5d5047 100644
+index 6e629e5d5047..c1a47d37f29e 100644
 --- a/arch/x86/entry/entry_64.S
 +++ b/arch/x86/entry/entry_64.S
-@@ -965,9 +965,6 @@ apicinterrupt3 REBOOT_VECTOR			reboot_interrupt		smp_reboot_interrupt
+@@ -956,11 +956,6 @@ apicinterrupt3 \num \sym \do_sym
+ POP_SECTION_IRQENTRY
+ .endm
+ 
+-#ifdef CONFIG_SMP
+-apicinterrupt3 IRQ_MOVE_CLEANUP_VECTOR		irq_move_cleanup_interrupt	smp_irq_move_cleanup_interrupt
+-apicinterrupt3 REBOOT_VECTOR			reboot_interrupt		smp_reboot_interrupt
+-#endif
+-
+ #ifdef CONFIG_X86_UV
  apicinterrupt3 UV_BAU_MESSAGE			uv_bau_message_intr1		uv_bau_message_interrupt
  #endif
+@@ -984,8 +979,6 @@ apicinterrupt THERMAL_APIC_VECTOR		thermal_interrupt		smp_thermal_interrupt
+ #endif
  
--apicinterrupt LOCAL_TIMER_VECTOR		apic_timer_interrupt		smp_apic_timer_interrupt
--apicinterrupt X86_PLATFORM_IPI_VECTOR		x86_platform_ipi		smp_x86_platform_ipi
--
- #ifdef CONFIG_HAVE_KVM
- apicinterrupt3 POSTED_INTR_VECTOR		kvm_posted_intr_ipi		smp_kvm_posted_intr_ipi
- apicinterrupt3 POSTED_INTR_WAKEUP_VECTOR	kvm_posted_intr_wakeup_ipi	smp_kvm_posted_intr_wakeup_ipi
-@@ -992,9 +989,6 @@ apicinterrupt CALL_FUNCTION_VECTOR		call_function_interrupt		smp_call_function_i
+ #ifdef CONFIG_SMP
+-apicinterrupt CALL_FUNCTION_SINGLE_VECTOR	call_function_single_interrupt	smp_call_function_single_interrupt
+-apicinterrupt CALL_FUNCTION_VECTOR		call_function_interrupt		smp_call_function_interrupt
  apicinterrupt RESCHEDULE_VECTOR			reschedule_interrupt		smp_reschedule_interrupt
  #endif
  
--apicinterrupt ERROR_APIC_VECTOR			error_interrupt			smp_error_interrupt
--apicinterrupt SPURIOUS_APIC_VECTOR		spurious_apic_interrupt		smp_spurious_apic_interrupt
--
- #ifdef CONFIG_IRQ_WORK
- apicinterrupt IRQ_WORK_VECTOR			irq_work_interrupt		smp_irq_work_interrupt
- #endif
 diff --git a/arch/x86/include/asm/entry_arch.h b/arch/x86/include/asm/entry_arch.h
-index cd57ce6134c9..d10d6d807e73 100644
+index d10d6d807e73..2e2055bcfeb2 100644
 --- a/arch/x86/include/asm/entry_arch.h
 +++ b/arch/x86/include/asm/entry_arch.h
-@@ -33,11 +33,6 @@ BUILD_INTERRUPT(kvm_posted_intr_nested_ipi, POSTED_INTR_NESTED_VECTOR)
+@@ -12,10 +12,6 @@
   */
- #ifdef CONFIG_X86_LOCAL_APIC
- 
--BUILD_INTERRUPT(apic_timer_interrupt,LOCAL_TIMER_VECTOR)
--BUILD_INTERRUPT(error_interrupt,ERROR_APIC_VECTOR)
--BUILD_INTERRUPT(spurious_apic_interrupt,SPURIOUS_APIC_VECTOR)
--BUILD_INTERRUPT(x86_platform_ipi, X86_PLATFORM_IPI_VECTOR)
--
- #ifdef CONFIG_IRQ_WORK
- BUILD_INTERRUPT(irq_work_interrupt, IRQ_WORK_VECTOR)
+ #ifdef CONFIG_SMP
+ BUILD_INTERRUPT(reschedule_interrupt,RESCHEDULE_VECTOR)
+-BUILD_INTERRUPT(call_function_interrupt,CALL_FUNCTION_VECTOR)
+-BUILD_INTERRUPT(call_function_single_interrupt,CALL_FUNCTION_SINGLE_VECTOR)
+-BUILD_INTERRUPT(irq_move_cleanup_interrupt, IRQ_MOVE_CLEANUP_VECTOR)
+-BUILD_INTERRUPT(reboot_interrupt, REBOOT_VECTOR)
  #endif
+ 
+ #ifdef CONFIG_HAVE_KVM
 diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
-index 3213d36b92d3..1765993360e7 100644
+index 1765993360e7..36a38695f27f 100644
 --- a/arch/x86/include/asm/hw_irq.h
 +++ b/arch/x86/include/asm/hw_irq.h
-@@ -29,16 +29,12 @@
- #include <asm/sections.h>
- 
- /* Interrupt handlers registered during init_IRQ */
--extern asmlinkage void apic_timer_interrupt(void);
--extern asmlinkage void x86_platform_ipi(void);
- extern asmlinkage void kvm_posted_intr_ipi(void);
- extern asmlinkage void kvm_posted_intr_wakeup_ipi(void);
- extern asmlinkage void kvm_posted_intr_nested_ipi(void);
--extern asmlinkage void error_interrupt(void);
- extern asmlinkage void irq_work_interrupt(void);
- extern asmlinkage void uv_bau_message_intr1(void);
- 
--extern asmlinkage void spurious_apic_interrupt(void);
+@@ -38,14 +38,9 @@ extern asmlinkage void uv_bau_message_intr1(void);
  extern asmlinkage void thermal_interrupt(void);
  extern asmlinkage void reschedule_interrupt(void);
  
+-extern asmlinkage void irq_move_cleanup_interrupt(void);
+-extern asmlinkage void reboot_interrupt(void);
+ extern asmlinkage void threshold_interrupt(void);
+ extern asmlinkage void deferred_error_interrupt(void);
+ 
+-extern asmlinkage void call_function_interrupt(void);
+-extern asmlinkage void call_function_single_interrupt(void);
+-
+ #ifdef	CONFIG_X86_LOCAL_APIC
+ struct irq_data;
+ struct pci_dev;
 diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 43658fcedae8..6154d1e75fce 100644
+index 6154d1e75fce..20e47b8d4024 100644
 --- a/arch/x86/include/asm/idtentry.h
 +++ b/arch/x86/include/asm/idtentry.h
-@@ -567,6 +567,14 @@ DECLARE_IDTENTRY_IRQ(X86_TRAP_OTHER,	common_interrupt);
- DECLARE_IDTENTRY_IRQ(X86_TRAP_OTHER,	spurious_interrupt);
+@@ -575,6 +575,13 @@ DECLARE_IDTENTRY_SYSVEC(LOCAL_TIMER_VECTOR,		sysvec_apic_timer_interrupt);
+ DECLARE_IDTENTRY_SYSVEC(X86_PLATFORM_IPI_VECTOR,	sysvec_x86_platform_ipi);
  #endif
  
-+/* System vector entry points */
-+#ifdef CONFIG_X86_LOCAL_APIC
-+DECLARE_IDTENTRY_SYSVEC(ERROR_APIC_VECTOR,		sysvec_error_interrupt);
-+DECLARE_IDTENTRY_SYSVEC(SPURIOUS_APIC_VECTOR,		sysvec_spurious_apic_interrupt);
-+DECLARE_IDTENTRY_SYSVEC(LOCAL_TIMER_VECTOR,		sysvec_apic_timer_interrupt);
-+DECLARE_IDTENTRY_SYSVEC(X86_PLATFORM_IPI_VECTOR,	sysvec_x86_platform_ipi);
++#ifdef CONFIG_SMP
++DECLARE_IDTENTRY_SYSVEC(IRQ_MOVE_CLEANUP_VECTOR,	sysvec_irq_move_cleanup);
++DECLARE_IDTENTRY_SYSVEC(REBOOT_VECTOR,			sysvec_reboot);
++DECLARE_IDTENTRY_SYSVEC(CALL_FUNCTION_SINGLE_VECTOR,	sysvec_call_function_single);
++DECLARE_IDTENTRY_SYSVEC(CALL_FUNCTION_VECTOR,		sysvec_call_function);
 +#endif
 +
  #undef X86_TRAP_OTHER
  
  #endif
-diff --git a/arch/x86/include/asm/irq.h b/arch/x86/include/asm/irq.h
-index ae10083b7631..112c85673179 100644
---- a/arch/x86/include/asm/irq.h
-+++ b/arch/x86/include/asm/irq.h
-@@ -44,7 +44,6 @@ extern void __init init_IRQ(void);
- void arch_trigger_cpumask_backtrace(const struct cpumask *mask,
- 				    bool exclude_self);
- 
--extern __visible void smp_x86_platform_ipi(struct pt_regs *regs);
- #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
- #endif
- 
 diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
-index 97e6945bfce8..933934c3e173 100644
+index 933934c3e173..0c40f37f8cb7 100644
 --- a/arch/x86/include/asm/traps.h
 +++ b/arch/x86/include/asm/traps.h
-@@ -40,9 +40,6 @@ asmlinkage void smp_threshold_interrupt(struct pt_regs *regs);
+@@ -40,8 +40,6 @@ asmlinkage void smp_threshold_interrupt(struct pt_regs *regs);
  asmlinkage void smp_deferred_error_interrupt(struct pt_regs *regs);
  #endif
  
--void smp_apic_timer_interrupt(struct pt_regs *regs);
--void smp_error_interrupt(struct pt_regs *regs);
--void smp_spurious_apic_interrupt(struct pt_regs *regs);
- asmlinkage void smp_irq_move_cleanup_interrupt(void);
- 
+-asmlinkage void smp_irq_move_cleanup_interrupt(void);
+-
  #ifdef CONFIG_VMAP_STACK
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 66c3cfcd6d47..6a8e9f343a29 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -1121,23 +1121,14 @@ static void local_apic_timer_interrupt(void)
-  * [ if a single-CPU system runs an SMP kernel then we call the local
-  *   interrupt as well. Thus we cannot inline the local irq ... ]
-  */
--__visible void __irq_entry smp_apic_timer_interrupt(struct pt_regs *regs)
-+DEFINE_IDTENTRY_SYSVEC(sysvec_apic_timer_interrupt)
- {
- 	struct pt_regs *old_regs = set_irq_regs(regs);
+ void __noreturn handle_stack_overflow(const char *message,
+ 				      struct pt_regs *regs,
+diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
+index 67768e54438b..c48be6e1f676 100644
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -861,13 +861,13 @@ static void free_moved_vector(struct apic_chip_data *apicd)
+ 	apicd->move_in_progress = 0;
+ }
  
--	/*
--	 * NOTE! We'd better ACK the irq immediately,
--	 * because timer handling can be slow.
--	 *
--	 * update_process_times() expects us to have done irq_enter().
--	 * Besides, if we don't timer interrupts ignore the global
--	 * interrupt lock, which is the WrongThing (tm) to do.
--	 */
+-asmlinkage __visible void __irq_entry smp_irq_move_cleanup_interrupt(void)
++DEFINE_IDTENTRY_SYSVEC(sysvec_irq_move_cleanup)
+ {
+ 	struct hlist_head *clhead = this_cpu_ptr(&cleanup_list);
+ 	struct apic_chip_data *apicd;
+ 	struct hlist_node *tmp;
+ 
 -	entering_ack_irq();
 +	ack_APIC_irq();
- 	trace_local_timer_entry(LOCAL_TIMER_VECTOR);
- 	local_apic_timer_interrupt();
- 	trace_local_timer_exit(LOCAL_TIMER_VECTOR);
--	exiting_irq();
+ 	/* Prevent vectors vanishing under us */
+ 	raw_spin_lock(&vector_lock);
  
- 	set_irq_regs(old_regs);
- }
-@@ -2162,7 +2153,7 @@ void __init register_lapic_address(unsigned long address)
-  * trigger on an entry which is routed to the common_spurious idtentry
-  * point.
-  *
-- * Also called from smp_spurious_apic_interrupt().
-+ * Also called from sysvec_spurious_apic_interrupt().
-  */
- DEFINE_IDTENTRY_IRQ(spurious_interrupt)
- {
-@@ -2199,17 +2190,15 @@ DEFINE_IDTENTRY_IRQ(spurious_interrupt)
- 	trace_spurious_apic_exit(vector);
- }
+@@ -892,7 +892,6 @@ asmlinkage __visible void __irq_entry smp_irq_move_cleanup_interrupt(void)
+ 	}
  
--__visible void smp_spurious_apic_interrupt(struct pt_regs *regs)
-+DEFINE_IDTENTRY_SYSVEC(sysvec_spurious_apic_interrupt)
- {
--	entering_irq();
- 	__spurious_interrupt(regs, SPURIOUS_APIC_VECTOR);
+ 	raw_spin_unlock(&vector_lock);
 -	exiting_irq();
  }
  
- /*
-  * This interrupt should never happen with our APIC/SMP architecture
-  */
--__visible void __irq_entry smp_error_interrupt(struct pt_regs *regs)
-+DEFINE_IDTENTRY_SYSVEC(sysvec_error_interrupt)
- {
- 	static const char * const error_interrupt_reason[] = {
- 		"Send CS error",		/* APIC Error Bit 0 */
-@@ -2223,7 +2212,6 @@ __visible void __irq_entry smp_error_interrupt(struct pt_regs *regs)
- 	};
- 	u32 v, i = 0;
- 
--	entering_irq();
- 	trace_error_apic_entry(ERROR_APIC_VECTOR);
- 
- 	/* First tickle the hardware, only then report what went on. -- REW */
-@@ -2247,7 +2235,6 @@ __visible void __irq_entry smp_error_interrupt(struct pt_regs *regs)
- 	apic_printk(APIC_DEBUG, KERN_CONT "\n");
- 
- 	trace_error_apic_exit(ERROR_APIC_VECTOR);
--	exiting_irq();
- }
- 
- /**
+ static void __send_cleanup_vector(struct apic_chip_data *apicd)
 diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
-index 3e49e1fac1c6..7e38af51480d 100644
+index 7e38af51480d..95abcd52e5be 100644
 --- a/arch/x86/kernel/idt.c
 +++ b/arch/x86/kernel/idt.c
-@@ -129,8 +129,8 @@ static const __initconst struct idt_data apic_idts[] = {
- #endif
- 
- #ifdef CONFIG_X86_LOCAL_APIC
--	INTG(LOCAL_TIMER_VECTOR,	apic_timer_interrupt),
--	INTG(X86_PLATFORM_IPI_VECTOR,	x86_platform_ipi),
-+	INTG(LOCAL_TIMER_VECTOR,	asm_sysvec_apic_timer_interrupt),
-+	INTG(X86_PLATFORM_IPI_VECTOR,	asm_sysvec_x86_platform_ipi),
- # ifdef CONFIG_HAVE_KVM
- 	INTG(POSTED_INTR_VECTOR,	kvm_posted_intr_ipi),
- 	INTG(POSTED_INTR_WAKEUP_VECTOR, kvm_posted_intr_wakeup_ipi),
-@@ -142,8 +142,8 @@ static const __initconst struct idt_data apic_idts[] = {
- #ifdef CONFIG_X86_UV
- 	INTG(UV_BAU_MESSAGE,		uv_bau_message_intr1),
- #endif
--	INTG(SPURIOUS_APIC_VECTOR,	spurious_apic_interrupt),
--	INTG(ERROR_APIC_VECTOR,		error_interrupt),
-+	INTG(SPURIOUS_APIC_VECTOR,	asm_sysvec_spurious_apic_interrupt),
-+	INTG(ERROR_APIC_VECTOR,		asm_sysvec_error_interrupt),
- #endif
- };
- 
-diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
-index 63b848e1fe68..43f95ec5f131 100644
---- a/arch/x86/kernel/irq.c
-+++ b/arch/x86/kernel/irq.c
-@@ -14,6 +14,7 @@
- #include <linux/irq.h>
- 
- #include <asm/apic.h>
-+#include <asm/traps.h>
- #include <asm/io_apic.h>
- #include <asm/irq.h>
- #include <asm/mce.h>
-@@ -259,17 +260,16 @@ void (*x86_platform_ipi_callback)(void) = NULL;
- /*
-  * Handler for X86_PLATFORM_IPI_VECTOR.
+@@ -109,11 +109,11 @@ static const __initconst struct idt_data def_idts[] = {
   */
--__visible void __irq_entry smp_x86_platform_ipi(struct pt_regs *regs)
-+DEFINE_IDTENTRY_SYSVEC(sysvec_x86_platform_ipi)
- {
- 	struct pt_regs *old_regs = set_irq_regs(regs);
- 
--	entering_ack_irq();
-+	ack_APIC_irq();
- 	trace_x86_platform_ipi_entry(X86_PLATFORM_IPI_VECTOR);
- 	inc_irq_stat(x86_platform_ipis);
- 	if (x86_platform_ipi_callback)
- 		x86_platform_ipi_callback();
- 	trace_x86_platform_ipi_exit(X86_PLATFORM_IPI_VECTOR);
--	exiting_irq();
- 	set_irq_regs(old_regs);
- }
+ static const __initconst struct idt_data apic_idts[] = {
+ #ifdef CONFIG_SMP
+-	INTG(RESCHEDULE_VECTOR,		reschedule_interrupt),
+-	INTG(CALL_FUNCTION_VECTOR,	call_function_interrupt),
+-	INTG(CALL_FUNCTION_SINGLE_VECTOR, call_function_single_interrupt),
+-	INTG(IRQ_MOVE_CLEANUP_VECTOR,	irq_move_cleanup_interrupt),
+-	INTG(REBOOT_VECTOR,		reboot_interrupt),
++	INTG(RESCHEDULE_VECTOR,			reschedule_interrupt),
++	INTG(CALL_FUNCTION_VECTOR,		asm_sysvec_call_function),
++	INTG(CALL_FUNCTION_SINGLE_VECTOR,	asm_sysvec_call_function_single),
++	INTG(IRQ_MOVE_CLEANUP_VECTOR,		asm_sysvec_irq_move_cleanup),
++	INTG(REBOOT_VECTOR,			asm_sysvec_reboot),
  #endif
+ 
+ #ifdef CONFIG_X86_THERMAL_VECTOR
+diff --git a/arch/x86/kernel/smp.c b/arch/x86/kernel/smp.c
+index b8d4e9c3c070..e5647daa7e96 100644
+--- a/arch/x86/kernel/smp.c
++++ b/arch/x86/kernel/smp.c
+@@ -27,6 +27,7 @@
+ #include <asm/mmu_context.h>
+ #include <asm/proto.h>
+ #include <asm/apic.h>
++#include <asm/idtentry.h>
+ #include <asm/nmi.h>
+ #include <asm/mce.h>
+ #include <asm/trace/irq_vectors.h>
+@@ -130,13 +131,11 @@ static int smp_stop_nmi_callback(unsigned int val, struct pt_regs *regs)
+ /*
+  * this function calls the 'stop' function on all other CPUs in the system.
+  */
+-
+-asmlinkage __visible void smp_reboot_interrupt(void)
++DEFINE_IDTENTRY_SYSVEC(sysvec_reboot)
+ {
+-	ipi_entering_ack_irq();
++	ack_APIC_irq();
+ 	cpu_emergency_vmxoff();
+ 	stop_this_cpu(NULL);
+-	irq_exit();
+ }
+ 
+ static int register_stop_handler(void)
+@@ -227,7 +226,6 @@ __visible void __irq_entry smp_reschedule_interrupt(struct pt_regs *regs)
+ {
+ 	ack_APIC_irq();
+ 	inc_irq_stat(irq_resched_count);
+-	kvm_set_cpu_l1tf_flush_l1d();
+ 
+ 	if (trace_resched_ipi_enabled()) {
+ 		/*
+@@ -244,24 +242,22 @@ __visible void __irq_entry smp_reschedule_interrupt(struct pt_regs *regs)
+ 	scheduler_ipi();
+ }
+ 
+-__visible void __irq_entry smp_call_function_interrupt(struct pt_regs *regs)
++DEFINE_IDTENTRY_SYSVEC(sysvec_call_function)
+ {
+-	ipi_entering_ack_irq();
++	ack_APIC_irq();
+ 	trace_call_function_entry(CALL_FUNCTION_VECTOR);
+ 	inc_irq_stat(irq_call_count);
+ 	generic_smp_call_function_interrupt();
+ 	trace_call_function_exit(CALL_FUNCTION_VECTOR);
+-	exiting_irq();
+ }
+ 
+-__visible void __irq_entry smp_call_function_single_interrupt(struct pt_regs *r)
++DEFINE_IDTENTRY_SYSVEC(sysvec_call_function_single)
+ {
+-	ipi_entering_ack_irq();
++	ack_APIC_irq();
+ 	trace_call_function_single_entry(CALL_FUNCTION_SINGLE_VECTOR);
+ 	inc_irq_stat(irq_call_count);
+ 	generic_smp_call_function_single_interrupt();
+ 	trace_call_function_single_exit(CALL_FUNCTION_SINGLE_VECTOR);
+-	exiting_irq();
+ }
+ 
+ static int __init nonmi_ipi_setup(char *str)
 
