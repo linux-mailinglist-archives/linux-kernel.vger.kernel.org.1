@@ -2,132 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BD91D51B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569531D51BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728374AbgEOOjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 10:39:24 -0400
-Received: from mga12.intel.com ([192.55.52.136]:41217 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726185AbgEOOjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 10:39:22 -0400
-IronPort-SDR: zvOcTlVh0ChhPHD28o8CxNU7URMXlbPoaVcqpt1fju4Z/wVs4erDWBKojqv5of2KOK1kOtftmH
- beEK7Z409pKw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 07:39:21 -0700
-IronPort-SDR: s+Uj+MJhNmT8Ky4Zx3wWhU47RZ0AI+uwbIbC6qc9gcfpOg+ZvxxU8gIqKlAhGGjHcEKQ7FZ3vg
- FPVaUa/PQmuQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
-   d="scan'208";a="253807187"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008.fm.intel.com with ESMTP; 15 May 2020 07:39:17 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jZbUd-006tBY-F6; Fri, 15 May 2020 17:39:19 +0300
-Date:   Fri, 15 May 2020 17:39:19 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Allison Randal <allison@lohutok.net>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Jay Fang <f.fangjian@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Stephen Boyd <swboyd@chromium.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 11/19] spi: dw: Initialize paddr in DW SPI MMIO
- private data
-Message-ID: <20200515143919.GH1634618@smile.fi.intel.com>
-References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
- <20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru>
- <20200515104758.6934-12-Sergey.Semin@baikalelectronics.ru>
+        id S1728398AbgEOOjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 10:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726719AbgEOOjh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 10:39:37 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE8EC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 07:39:37 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id x5so2976631ioh.6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 07:39:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G4hpPbKuo/eM3pj3/8Bij0gexeSDdOJHguLYolZpnKs=;
+        b=EINNHW9tIkICYl47a8AU63VrYU5C2scpuARJTsP/TsQ5cQzHBrJb64es1TdQNfzB0Z
+         kx7VDchChuQupqL21ecTM6d/vWEDCBR9/Mj/T6gCVP0egVvjgWc7NmEIgxAoa3uMxKpz
+         /K88McJ4rzVlfbFGm6J2bLOCcOht/xcZvDaX00RYyCcawkdq3Actzuwtq2TK8fl4s2Lg
+         avUNEFz4X/u6f28O1W0p/sBimqX3ruf1yDupSHCBp+B2z/g1atEgcEquvjabpI5aDhUr
+         ADEyA1YhRpY5L0XbORk0kp3IMCV2isKMD5faV9CGzmeFxs+bulJlaVVu/F6kP1dZnPac
+         8d0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G4hpPbKuo/eM3pj3/8Bij0gexeSDdOJHguLYolZpnKs=;
+        b=WueS372cuLqqi1HfJkZW4Df43YqDUHW5Lw+xsscbEcsSJBA9r5Az3qzFPHDY0HshnS
+         XYgxLNC5FGqlgCDEdY6FkdBEDNn6mNwbCuKWx1wysTKqi652wxxjjO9GLP0u2zSKHBi3
+         YxHypDSzXrEHM5WENHi0SiCCV1W5CW/YiqJ65Y6ZetbKnfNE/6p/ELhhEd6xkcZAarXg
+         KZvZmDb8MmFR/jq8z5vzFZV2HHd6t9Wc2GWR4NA79YZFS/Ulfg0PAY9Hl8gJ4VEUbYbi
+         a1pIR5bbcT80ucatJAcyEfGp2/tiFxgO5Muo0Uhji5DWP5ksKEffQh+WQAb/ZevA+T0o
+         Homw==
+X-Gm-Message-State: AOAM533f+zSz6CfxNFreLBd6J/a0ImX79fahLq/fLRJ/+HO7g6iDj2qg
+        RWCeHNQSvgsm0rY+rfd7fCb/9cZugshGzfXkkrc=
+X-Google-Smtp-Source: ABdhPJwzD0QkHIguS5g7gqQWdRioLG5NpbqHvkBIRDn2sKkJGrf0li0RxdR/lDgkeQQFPY4463LkRvsZOTwKU4ubiHY=
+X-Received: by 2002:a05:6638:158:: with SMTP id y24mr3441021jao.43.1589553576465;
+ Fri, 15 May 2020 07:39:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515104758.6934-12-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200515124710.16439-1-laijs@linux.alibaba.com> <20200515130030.GV2957@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200515130030.GV2957@hirez.programming.kicks-ass.net>
+From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Date:   Fri, 15 May 2020 22:39:25 +0800
+Message-ID: <CAJhGHyAMOQ7Bp8kYF7urp572SguFjiLs5PmqQvTKAkwfwBrOKQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] rbtree_latch: quit searching when reaching to maximum depth
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Michel Lespinasse <walken@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Woodhouse <David.Woodhouse@intel.com>,
+        Rik van Riel <riel@redhat.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 01:47:50PM +0300, Serge Semin wrote:
-> This field is used only for the DW SPI DMA code initialization, that's
-> why there were no problems with it being uninitialized in Dw SPI MMIO
-> driver. Since in a further patch we are going to introduce the DW SPI DMA
-> support in the MMIO version of the driver, lets set the field with the
-> physical address of the DW SPI controller registers region.
+On Fri, May 15, 2020 at 9:04 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Fri, May 15, 2020 at 12:47:06PM +0000, Lai Jiangshan wrote:
+> > lib/rbtree.c has ensured that there is not possible to
+> > inadvertently cause (temporary) loops in the tree structure
+> > as seen in program order of the modifier. But loop is still
+> > possible to be seen in searcher due to CPU's reordering.
+> >
+> > for example:
+> > modifier                              searcher
+> >
+> > left rotate at parent
+> > parent->rb_right is node
+> >                                       search to parent
+> >                                       parent->rb_right is node
+> >                                    +->see node->rb_left changed
+> > WRITE_ONCE(parent->rb_right, tmp);-+ |  node->rb_left is parennt
+> > no smp_wmb(), some arch can        | |
+> > reorder these two writes           | |  loop long between
+> > WRITE_ONCE(node->rb_left, parent);-+-+  parent and node
+> >                                  |
+> >                                  +--->finally see
+> >                                       parent->rb_right
+> >
+> > The long loop won't stop until the modifer's CPU flushes
+> > its writes. Too avoid it, we should limit the searching depth.
+>
+> Cute, have you actually observed this? Did you have performance issues?
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+I can only test it on x86 by now, which implies smp_wmb() between
+writes. I haven't observed any thing wrong. I'm just imaging
+it on some other ARCHs.
 
-> 
-> Co-developed-by: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-> Signed-off-by: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-> Co-developed-by: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-> Signed-off-by: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Allison Randal <allison@lohutok.net>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Gareth Williams <gareth.williams.jx@renesas.com>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: linux-mips@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> ---
->  drivers/spi/spi-dw-mmio.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
-> index 398f7926cf92..0894b4c09496 100644
-> --- a/drivers/spi/spi-dw-mmio.c
-> +++ b/drivers/spi/spi-dw-mmio.c
-> @@ -184,6 +184,7 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
->  	int (*init_func)(struct platform_device *pdev,
->  			 struct dw_spi_mmio *dwsmmio);
->  	struct dw_spi_mmio *dwsmmio;
-> +	struct resource *mem;
->  	struct dw_spi *dws;
->  	int ret;
->  	int num_cs;
-> @@ -196,10 +197,12 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
->  	dws = &dwsmmio->dws;
->  
->  	/* Get basic io resource and map it */
-> -	dws->regs = devm_platform_ioremap_resource(pdev, 0);
-> +	dws->regs = devm_platform_get_and_ioremap_resource(pdev, 0, &mem);
->  	if (IS_ERR(dws->regs))
->  		return PTR_ERR(dws->regs);
->  
-> +	dws->paddr = mem->start;
-> +
->  	dws->irq = platform_get_irq(pdev, 0);
->  	if (dws->irq < 0)
->  		return dws->irq; /* -ENXIO */
-> -- 
-> 2.25.1
-> 
+I accidentally found this part of code when I searched for
+whether there is any attempt again to use rbtree with RCU, and
+whether there are the cases besides speculative page fault.
 
--- 
-With Best Regards,
-Andy Shevchenko
+>
+> > There are no more than (1<<BITS_PER_LONG)-1 nodes in the tree.
+> > And the max_depth of a tree is no more than 2*lg(node_count+1),
+> > which is no mare than 2*BITS_PER_LONG.
+> >
+> > So the serarch should stop when diving down up to
+> > 2*BITS_PER_LONG depth.
+>
+> Arguably you can have a larger key space, but I think due to memory
+> constraints this limit still isn't wrong. But I do feel you need a
+> comment with that.
 
+Sure, I will add some comments about why "2*BITS_PER_LONG" in code.
 
+But how it could be larger key space? there are not more than
+(1<<BITS_PER_LONG) bytes in the kernel dereferencable address
+space, and (1<<BITS_PER_LONG)/sizeof(rb_node) must be less than
+(1<<BITS_PER_LONG)-1.
