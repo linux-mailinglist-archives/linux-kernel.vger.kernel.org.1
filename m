@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E431D4F44
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C384D1D4F50
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726247AbgEONaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 09:30:17 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:35466 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgEONaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 09:30:16 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 49Nq5x0fTgz8j;
-        Fri, 15 May 2020 15:30:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1589549414; bh=YhB2JsZedxwN/B0OR0Q2lPRzMCO96sFs8wnazr66xiA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VUjaUsVKtUrnMR6cwbBIf5YkkpBfI3oQfiB7seL4Jr+YGEGDsR1TP/ynHi/NHLI8b
-         ZtlqWJL1ima5A6MTYIuf3T05sWlwe9Rkg6O9Biwc2jyxj7aDqMUviAuKmRMgisLYVg
-         xB9eAAsoPGso/w1GskeocPjPquQE9gqy9IxeFMBW5WDalHYDehVxzVLskMe1JDU8YV
-         LZXCwNw+Nb5QpeEbHm8Z+8vBdm/9e/DRsfMpeo1zXkIgTjTuD44czwTVXFUMK2XeDo
-         x8wE9jOJ1pToKB8OoMcRfWX0GIxJeXBG+gzZVcE9gU+ZswKiX/HgTTqZDpUSqEJCyi
-         2R3OJQeBXobNQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Fri, 15 May 2020 15:30:11 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Tony Lindgren <tony@atomide.com>, Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Zack Pearsall <zpearsall@yahoo.com>,
-        linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mfd: tps65910: Correct power-off programming sequence
-Message-ID: <20200515110754.GB20564@qmqm.qmqm.pl>
-References: <20200514205022.7024-1-digetx@gmail.com>
+        id S1726202AbgEONes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 09:34:48 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:42616 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbgEONes (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 09:34:48 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04FDHCaw189812;
+        Fri, 15 May 2020 13:34:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=bvCOtrlT3KuGFoRo5xNHnOKzuN1WQn5Zi9f9eT0ob+Y=;
+ b=OuObXm34KPeWvimMtlSeVVJ0BzpcvIzJ6513QjvVtZDrwFJ4R3umpZmzVneeJ6jHldSJ
+ Vetnu8gIjOES7FAmvCR87Ue1O4pnBPP+xs8OYEDFnV9lOk73DK09N2BhVmtkhTjk1sC4
+ PiiTo/TYU38xQYyKPIM/9CXZJGyPYwcuo/f52aWwF4Ql1/e6fhP1mTcGCFHdpKdaqOFz
+ rXetWniIg2tda9VdcXidJak/BdIpE8wv2oYKVbQy5JtHqiZHoixOfXKI5TN7L1mAW/6p
+ 9vK18QbBwKxSB08SBvev0u30pX80Wqzp6XQ0HXxBK3JvT6rKIxJF87Otm5epajcl1JkF Zg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 311nu5kgh2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 May 2020 13:34:33 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04FDI9qR059636;
+        Fri, 15 May 2020 13:32:33 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3100yk1rmx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 May 2020 13:32:33 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04FDWVJW030293;
+        Fri, 15 May 2020 13:32:31 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 15 May 2020 06:32:30 -0700
+Date:   Fri, 15 May 2020 16:32:24 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     John Oldman <john.oldman@polehill.co.uk>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        kai.heng.feng@canonical.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Staging: rtl8723bs: os_de: if-else coding style issues
+Message-ID: <20200515133224.GE2078@kadam>
+References: <20200515124930.3406-1-john.oldman@polehill.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200514205022.7024-1-digetx@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200515124930.3406-1-john.oldman@polehill.co.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
+ phishscore=0 suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005150116
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 mlxscore=0
+ adultscore=0 priorityscore=1501 mlxlogscore=999 impostorscore=0
+ suspectscore=0 spamscore=0 lowpriorityscore=0 cotscore=-2147483648
+ bulkscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005150116
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 11:50:21PM +0300, Dmitry Osipenko wrote:
-> This patch fixes system shutdown on a devices that use TPS65910 as a
-> system's power controller. In accordance to the TPS65910 datasheet, the
-> PMIC's state-machine transitions into the OFF state only when DEV_OFF
-> bit of DEVCTRL_REG is set. The ON / SLEEP states also should be cleared,
-> otherwise PMIC won't get into a proper state on shutdown. Devices like
-> Nexus 7 tablet and Ouya game console are now shutting down properly.
-> 
-> Tested-by: Zack Pearsall <zpearsall@yahoo.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/mfd/tps65910.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mfd/tps65910.c b/drivers/mfd/tps65910.c
-> index 11959021b50a..22116cee411d 100644
-> --- a/drivers/mfd/tps65910.c
-> +++ b/drivers/mfd/tps65910.c
-> @@ -440,8 +440,16 @@ static void tps65910_power_off(void)
->  			DEVCTRL_PWR_OFF_MASK) < 0)
->  		return;
->  
-> -	tps65910_reg_clear_bits(tps65910, TPS65910_DEVCTRL,
-> -			DEVCTRL_DEV_ON_MASK);
-> +	if (tps65910_reg_clear_bits(tps65910, TPS65910_DEVCTRL,
-> +			DEVCTRL_DEV_SLP_MASK) < 0)
-> +		return;
-> +
-> +	if (tps65910_reg_clear_bits(tps65910, TPS65910_DEVCTRL,
-> +			DEVCTRL_DEV_ON_MASK) < 0)
-> +		return;
-> +
-> +	tps65910_reg_set_bits(tps65910, TPS65910_DEVCTRL,
-> +			DEVCTRL_DEV_OFF_MASK);
->  }
+On Fri, May 15, 2020 at 01:49:30PM +0100, John Oldman wrote:
+> @@ -1167,9 +1166,8 @@ void rtw_dev_unload(struct adapter *padapter)
+>  			DBG_871X_LEVEL(_drv_always_, "%s: driver in IPS-FWLPS\n", __func__);
+>  			pdbgpriv->dbg_dev_unload_inIPS_cnt++;
+>  			LeaveAllPowerSaveMode(padapter);
+> -		} else {
+> +		} else
+>  			DBG_871X_LEVEL(_drv_always_, "%s: driver not in IPS\n", __func__);
+> -		}
 
-Isn't it enough to update the DEVCTRL with just one
-tps65910_reg_update_bits()?
+You didn't run checkpatch on this patch.  The rule is that if one side
+of the if else statement has curly braces then all sides get curly
+braces even if they're just one line long.
 
-Best Regards
-Micha³ Miros³aw
+regards,
+dan carpenter
+
