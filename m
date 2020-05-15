@@ -2,81 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94AD51D49B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D37931D49C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728101AbgEOJf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 05:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727803AbgEOJf1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 05:35:27 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C0AC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 02:35:27 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jZWjz-00049l-9B; Fri, 15 May 2020 11:34:51 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id B1E28100606; Fri, 15 May 2020 11:34:50 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
-        paulmck <paulmck@kernel.org>, Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>, rostedt <rostedt@goodmis.org>,
-        "Joel Fernandes\, Google" <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [patch V4 part 1 14/36] x86/entry: Get rid of ist_begin/end_non_atomic()
-In-Reply-To: <1777514130.20137.1589410645669.JavaMail.zimbra@efficios.com>
-References: <20200505131602.633487962@linutronix.de> <20200505134059.462640294@linutronix.de> <1777514130.20137.1589410645669.JavaMail.zimbra@efficios.com>
-Date:   Fri, 15 May 2020 11:34:50 +0200
-Message-ID: <877dxdy211.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+        id S1728088AbgEOJhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 05:37:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727785AbgEOJhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 05:37:18 -0400
+Received: from e123331-lin.nice.arm.com (amontpellier-657-1-18-247.w109-210.abo.wanadoo.fr [109.210.65.247])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F222206B6;
+        Fri, 15 May 2020 09:37:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589535438;
+        bh=5flVIIVoCW9OqOrK26kxVVwyL8Cf+v7jca5MloG5TN8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=z1uivef2SOZo6Oz9O9V8EN4yuJnLd5w4nXZ/hCNRKtsVRJUq7EyBDjtjunKSCHEUM
+         umyJADPcDlAHskHgdGCbtZsEhbvHKx6BzfGp0bD4zSXDzdCoEc4mTXTKE7nR2mkqUX
+         m8yHxALCxAn4Lv7oWDnxle6FdKA4XLQVziZegHYE=
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH] ACPI: GED: add support for _Exx / _Lxx handler methods
+Date:   Fri, 15 May 2020 11:36:13 +0200
+Message-Id: <20200515093613.18691-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> writes:
+Per the ACPI spec, interrupts in the range [0, 255] may be handled
+in AML using individual methods whose naming is based on the format
+_Exx or _Lxx, where xx is the hex representation of the interrupt
+index.
 
-> ----- On May 5, 2020, at 9:16 AM, Thomas Gleixner tglx@linutronix.de wrote:
->
->> This is completely overengineered and definitely not an interface which
->> should be made available to anything else than this particular MCE case.
->
-> This patch introduces a significant change under the radar (not explained
-> in the changelog): it turns preempt_enable_no_resched() into preempt_enable().
->
-> Why, and why was it a no_resched() in the first place ? Was it for performance
-> or correctness reasons ?
+Add support for this missing feature to our ACPI GED driver.
 
-_no_resched() is an optimization when in code which cannot schedule
-anyway. But #MC is definitely not a performance critical hotpath.
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Len Brown <lenb@kernel.org>
+Cc: linux-acpi@vger.kernel.org
+Cc: <stable@vger.kernel.org> # v4.9+
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ drivers/acpi/evged.c | 22 +++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-So yes, it's a change but really not significant.
+diff --git a/drivers/acpi/evged.c b/drivers/acpi/evged.c
+index aba0d0027586..6d7a522952bf 100644
+--- a/drivers/acpi/evged.c
++++ b/drivers/acpi/evged.c
+@@ -79,6 +79,8 @@ static acpi_status acpi_ged_request_interrupt(struct acpi_resource *ares,
+ 	struct resource r;
+ 	struct acpi_resource_irq *p = &ares->data.irq;
+ 	struct acpi_resource_extended_irq *pext = &ares->data.extended_irq;
++	char ev_name[5];
++	u8 trigger;
+ 
+ 	if (ares->type == ACPI_RESOURCE_TYPE_END_TAG)
+ 		return AE_OK;
+@@ -87,14 +89,28 @@ static acpi_status acpi_ged_request_interrupt(struct acpi_resource *ares,
+ 		dev_err(dev, "unable to parse IRQ resource\n");
+ 		return AE_ERROR;
+ 	}
+-	if (ares->type == ACPI_RESOURCE_TYPE_IRQ)
++	if (ares->type == ACPI_RESOURCE_TYPE_IRQ) {
+ 		gsi = p->interrupts[0];
+-	else
++		trigger = p->triggering;
++	} else {
+ 		gsi = pext->interrupts[0];
++		trigger = p->triggering;
++	}
+ 
+ 	irq = r.start;
+ 
+-	if (ACPI_FAILURE(acpi_get_handle(handle, "_EVT", &evt_handle))) {
++	switch (gsi) {
++	case 0 ... 255:
++		sprintf(ev_name, "_%c%02hhX",
++			trigger == ACPI_EDGE_SENSITIVE ? 'E' : 'L', gsi);
++
++		if (ACPI_SUCCESS(acpi_get_handle(handle, ev_name, &evt_handle)))
++			break;
++		/* fall through */
++	default:
++		if (ACPI_SUCCESS(acpi_get_handle(handle, "_EVT", &evt_handle)))
++			break;
++
+ 		dev_err(dev, "cannot locate _EVT method\n");
+ 		return AE_ERROR;
+ 	}
+-- 
+2.17.1
 
->> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->> ---
-< Remove useless gunk >
-
-Can you please trim your replies?
-
-Thanks,
-
-        tglx
