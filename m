@@ -2,113 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFF91D4AD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234491D4A7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728163AbgEOKYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 06:24:23 -0400
-Received: from mail-m971.mail.163.com ([123.126.97.1]:47828 "EHLO
-        mail-m971.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728060AbgEOKYX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 06:24:23 -0400
-X-Greylist: delayed 920 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 May 2020 06:24:21 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Tqawr
-        mDPq3bBcSlye5lx1tCeB2nEFRoYFenapfXH87A=; b=L7ckxl/rxr8dXhvoe31zB
-        HFCSWouIkW+rOTgUeE9O5ibFFPzKYRoTF32kp7fBVrx7t0sso3jyCCt3Z8tJfVxe
-        S81S7oK//nOKd5oQrMhMunnYW7avHRZB17SpucX80Wrnp7v1OyW1JYONXVTJezW5
-        JcfMaDIMwMay+g8CdUkQV0=
-Received: from localhost.localdomain.localdomain (unknown [103.244.59.3])
-        by smtp1 (Coremail) with SMTP id GdxpCgDH55sFar5ebFPaAA--.1521S2;
-        Fri, 15 May 2020 18:08:06 +0800 (CST)
-From:   Xiaochun Lee <lixiaochun.2888@163.com>
-To:     bhelgaas@google.com, linux-pci@vger.kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org,
-        Xiaochun Lee <lixc17@lenovo.com>
-Subject: [PATCH v2] x86/PCI: Mark Power Control Unit as having non-compliant BARs
-Date:   Fri, 15 May 2020 06:07:51 -0400
-Message-Id: <1589537271-46459-1-git-send-email-lixiaochun.2888@163.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1728127AbgEOKIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 06:08:38 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:48874 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727999AbgEOKIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 06:08:37 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 202F6BC4D3A5C439F8EB;
+        Fri, 15 May 2020 18:08:35 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Fri, 15 May 2020
+ 18:08:28 +0800
+From:   Cheng Jian <cj.chengjian@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <rostedt@goodmis.org>
+CC:     <xiexiuqi@huawei.com>, <bobo.shaobowang@huawei.com>,
+        <huawei.libin@huawei.com>, <cj.chengjian@huawei.com>,
+        <chenwandun@huawei.com>, <mingo@redhat.com>
+Subject: [PATCH] ftrace: show debugging information when panic_on_warn set
+Date:   Fri, 15 May 2020 10:08:28 +0000
+Message-ID: <20200515100828.7091-1-cj.chengjian@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GdxpCgDH55sFar5ebFPaAA--.1521S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxZw18Ww1DXFW7XF1DJw1kZrb_yoW5GFWfpF
-        45tay09rWkKas3KFs7uan7WF1DCanxXa1rC39xuw1jg3Z8AasIqFySka45ZFW5Jr1kWF47
-        ZrnIq348XayrXFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jov38UUUUU=
-X-Originating-IP: [103.244.59.3]
-X-CM-SenderInfo: 5ol0xtprfk30aosymmi6rwjhhfrp/1tbiQAclQFSIfGDw1QAAsH
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaochun Lee <lixc17@lenovo.com>
+When an anomaly is detected in the function call modification
+code, ftrace_bug() is called to disable function tracing as well
+as give some warn and information that may help debug the problem.
 
-The device [8086:a26c] is a Power Control Unit of
-Intel Ice Lake Server Processor and devices [8086:a1ec,a1ed]
-are the Power Control Unit of Intel Xeon Scalable Processor,
-kernel treats their pci BARs as a base address register that
-leading to a boot failure like:
-"pci 0000:00:11.0: [Firmware Bug]: reg 0x30: invalid BAR (can't size)".
+But currently, we call FTRACE_WARN_ON_ONCE() first in ftrace_bug(),
+so when panic_on_warn is set, we can't see the debugging information
+here. Call FTRACE_WARN_ON_ONCE() at the end of ftrace_bug() to ensure
+that the debugging information is displayed first.
 
-The symptoms in Ice Lake processor is:
-"QU99 ICE LAKE ES1 HCC 24C 185W 3200 L-0"
+after this patch, the dmesg looks like:
 
-The information of the device [8086:a26c] list as below:
-00:11.0 Unassigned class [ff00]: Intel Corporation Device a26c (rev 03)
-        Subsystem: Lenovo Device 7811
-        Flags: fast devsel, NUMA node 0
-        Expansion ROM at <ignored> [disabled]
-        Capabilities: [80] Power Management version 3
+	------------[ ftrace bug ]------------
+	ftrace failed to modify
+	[<ffff800010081004>] bcm2835_handle_irq+0x4/0x58
+	 actual:   1f:20:03:d5
+	Setting ftrace call site to call ftrace function
+	ftrace record flags: 80000001
+	 (1)
+	 expected tramp: ffff80001009d6f0
+	------------[ cut here ]------------
+	WARNING: CPU: 2 PID: 1635 at kernel/trace/ftrace.c:2078 ftrace_bug+0x204/0x238
+	Kernel panic - not syncing: panic_on_warn set ...
+	CPU: 2 PID: 1635 Comm: sh Not tainted 5.7.0-rc5-00033-gb922183867f5 #14
+	Hardware name: linux,dummy-virt (DT)
+	Call trace:
+	 dump_backtrace+0x0/0x1b0
+	 show_stack+0x20/0x30
+	 dump_stack+0xc0/0x10c
+	 panic+0x16c/0x368
+	 __warn+0x120/0x160
+	 report_bug+0xc8/0x160
+	 bug_handler+0x28/0x98
+	 brk_handler+0x70/0xd0
+	 do_debug_exception+0xcc/0x1ac
+	 el1_sync_handler+0xe4/0x120
+	 el1_sync+0x7c/0x100
+	 ftrace_bug+0x204/0x238
 
-The symptoms in Xeon Scalable Processor is:
-"Intel(R) Xeon(R) Gold 5117 CPU @ 2.00GHz"
-"Intel(R) Xeon(R) Gold 6252 CPU @ 2.00GHz"
-
-The information of the Device [8086:a1ec] list as below:
-00:11.0 Unassigned class [ff00]: Intel Corporation C620 Series Chipset Family MROM 0 [8086:a1ec] (rev 09)
-        Subsystem: Lenovo Device [17aa:7805]
-        Latency: 0, Cache Line Size: 64 bytes
-        NUMA node: 0
-        Expansion ROM at <ignored> [disabled]
-        Capabilities: [80] Power Management version 3
-
-There are no other BARs on this devices, so mark the PCU as having
-non-compliant BARs, therefore we don't try to probe any of them.
-
-Signed-off-by: Xiaochun Lee <lixc17@lenovo.com>
+Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
 ---
- arch/x86/pci/fixup.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/trace/ftrace.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/pci/fixup.c b/arch/x86/pci/fixup.c
-index e723559..d9abc67 100644
---- a/arch/x86/pci/fixup.c
-+++ b/arch/x86/pci/fixup.c
-@@ -563,6 +563,9 @@ static void twinhead_reserve_killing_zone(struct pci_dev *dev)
-  * Erratum BDF2
-  * PCI BARs in the Home Agent Will Return Non-Zero Values During Enumeration
-  * http://www.intel.com/content/www/us/en/processors/xeon/xeon-e5-v4-spec-update.html
-+ *
-+ * Device [8086:a26c]
-+ * Devices [8086:a1ec,a1ed]
-  */
- static void pci_invalid_bar(struct pci_dev *dev)
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index bd030b1b9514..cd39cbf3631a 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -2027,14 +2027,14 @@ void ftrace_bug(int failed, struct dyn_ftrace *rec)
  {
-@@ -572,6 +575,9 @@ static void pci_invalid_bar(struct pci_dev *dev)
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6f60, pci_invalid_bar);
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6fa0, pci_invalid_bar);
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6fc0, pci_invalid_bar);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa1ec, pci_invalid_bar);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa1ed, pci_invalid_bar);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa26c, pci_invalid_bar);
+ 	unsigned long ip = rec ? rec->ip : 0;
  
- /*
-  * Device [1022:7808]
++	pr_info("------------[ ftrace bug ]------------\n");
++
+ 	switch (failed) {
+ 	case -EFAULT:
+-		FTRACE_WARN_ON_ONCE(1);
+ 		pr_info("ftrace faulted on modifying ");
+ 		print_ip_sym(ip);
+ 		break;
+ 	case -EINVAL:
+-		FTRACE_WARN_ON_ONCE(1);
+ 		pr_info("ftrace failed to modify ");
+ 		print_ip_sym(ip);
+ 		print_ip_ins(" actual:   ", (unsigned char *)ip);
+@@ -2045,12 +2045,10 @@ void ftrace_bug(int failed, struct dyn_ftrace *rec)
+ 		}
+ 		break;
+ 	case -EPERM:
+-		FTRACE_WARN_ON_ONCE(1);
+ 		pr_info("ftrace faulted on writing ");
+ 		print_ip_sym(ip);
+ 		break;
+ 	default:
+-		FTRACE_WARN_ON_ONCE(1);
+ 		pr_info("ftrace faulted on unknown error ");
+ 		print_ip_sym(ip);
+ 	}
+@@ -2077,6 +2075,8 @@ void ftrace_bug(int failed, struct dyn_ftrace *rec)
+ 		ip = ftrace_get_addr_curr(rec);
+ 		pr_cont("\n expected tramp: %lx\n", ip);
+ 	}
++
++	FTRACE_WARN_ON_ONCE(1);
+ }
+ 
+ static int ftrace_check_record(struct dyn_ftrace *rec, bool enable, bool update)
 -- 
-1.8.3.1
+2.17.1
 
