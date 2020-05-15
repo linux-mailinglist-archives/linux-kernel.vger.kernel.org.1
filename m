@@ -2,123 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569531D51BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2261D51EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728398AbgEOOjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 10:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726719AbgEOOjh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 10:39:37 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE8EC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 07:39:37 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id x5so2976631ioh.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 07:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G4hpPbKuo/eM3pj3/8Bij0gexeSDdOJHguLYolZpnKs=;
-        b=EINNHW9tIkICYl47a8AU63VrYU5C2scpuARJTsP/TsQ5cQzHBrJb64es1TdQNfzB0Z
-         kx7VDchChuQupqL21ecTM6d/vWEDCBR9/Mj/T6gCVP0egVvjgWc7NmEIgxAoa3uMxKpz
-         /K88McJ4rzVlfbFGm6J2bLOCcOht/xcZvDaX00RYyCcawkdq3Actzuwtq2TK8fl4s2Lg
-         avUNEFz4X/u6f28O1W0p/sBimqX3ruf1yDupSHCBp+B2z/g1atEgcEquvjabpI5aDhUr
-         ADEyA1YhRpY5L0XbORk0kp3IMCV2isKMD5faV9CGzmeFxs+bulJlaVVu/F6kP1dZnPac
-         8d0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G4hpPbKuo/eM3pj3/8Bij0gexeSDdOJHguLYolZpnKs=;
-        b=WueS372cuLqqi1HfJkZW4Df43YqDUHW5Lw+xsscbEcsSJBA9r5Az3qzFPHDY0HshnS
-         XYgxLNC5FGqlgCDEdY6FkdBEDNn6mNwbCuKWx1wysTKqi652wxxjjO9GLP0u2zSKHBi3
-         YxHypDSzXrEHM5WENHi0SiCCV1W5CW/YiqJ65Y6ZetbKnfNE/6p/ELhhEd6xkcZAarXg
-         KZvZmDb8MmFR/jq8z5vzFZV2HHd6t9Wc2GWR4NA79YZFS/Ulfg0PAY9Hl8gJ4VEUbYbi
-         a1pIR5bbcT80ucatJAcyEfGp2/tiFxgO5Muo0Uhji5DWP5ksKEffQh+WQAb/ZevA+T0o
-         Homw==
-X-Gm-Message-State: AOAM533f+zSz6CfxNFreLBd6J/a0ImX79fahLq/fLRJ/+HO7g6iDj2qg
-        RWCeHNQSvgsm0rY+rfd7fCb/9cZugshGzfXkkrc=
-X-Google-Smtp-Source: ABdhPJwzD0QkHIguS5g7gqQWdRioLG5NpbqHvkBIRDn2sKkJGrf0li0RxdR/lDgkeQQFPY4463LkRvsZOTwKU4ubiHY=
-X-Received: by 2002:a05:6638:158:: with SMTP id y24mr3441021jao.43.1589553576465;
- Fri, 15 May 2020 07:39:36 -0700 (PDT)
+        id S1726553AbgEOOkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 10:40:55 -0400
+Received: from mga06.intel.com ([134.134.136.31]:28147 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726275AbgEOOky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 10:40:54 -0400
+IronPort-SDR: j7NeS0c8vCQJlJT0B2FckR9uTMK+3uKCEq7fK2xCmYs4hk97gMbrKHdv+5H9ie+moA734p+tll
+ iGb0VLQIp54w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 07:40:54 -0700
+IronPort-SDR: sE4KrJfb+F950VrQYghbTdseYseoCD3GtYpM+afg0mMFUPGBgSSsRVnmo6M9PHNfcRnmX+ydfZ
+ w+2wluTqA70Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
+   d="scan'208";a="263206144"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003.jf.intel.com with ESMTP; 15 May 2020 07:40:48 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jZbW6-006tCc-Uq; Fri, 15 May 2020 17:40:50 +0300
+Date:   Fri, 15 May 2020 17:40:50 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Allison Randal <allison@lohutok.net>,
+        Gareth Williams <gareth.williams.jx@renesas.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Clement Leger <cleger@kalray.eu>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        "wuxu.wu" <wuxu.wu@huawei.com>,
+        Phil Edworthy <phil.edworthy@renesas.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 12/19] spi: dw: Fix Rx-only DMA transfers
+Message-ID: <20200515144050.GI1634618@smile.fi.intel.com>
+References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
+ <20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru>
+ <20200515104758.6934-13-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-References: <20200515124710.16439-1-laijs@linux.alibaba.com> <20200515130030.GV2957@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200515130030.GV2957@hirez.programming.kicks-ass.net>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Fri, 15 May 2020 22:39:25 +0800
-Message-ID: <CAJhGHyAMOQ7Bp8kYF7urp572SguFjiLs5PmqQvTKAkwfwBrOKQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] rbtree_latch: quit searching when reaching to maximum depth
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Michel Lespinasse <walken@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Woodhouse <David.Woodhouse@intel.com>,
-        Rik van Riel <riel@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515104758.6934-13-Sergey.Semin@baikalelectronics.ru>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 9:04 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Fri, May 15, 2020 at 12:47:06PM +0000, Lai Jiangshan wrote:
-> > lib/rbtree.c has ensured that there is not possible to
-> > inadvertently cause (temporary) loops in the tree structure
-> > as seen in program order of the modifier. But loop is still
-> > possible to be seen in searcher due to CPU's reordering.
-> >
-> > for example:
-> > modifier                              searcher
-> >
-> > left rotate at parent
-> > parent->rb_right is node
-> >                                       search to parent
-> >                                       parent->rb_right is node
-> >                                    +->see node->rb_left changed
-> > WRITE_ONCE(parent->rb_right, tmp);-+ |  node->rb_left is parennt
-> > no smp_wmb(), some arch can        | |
-> > reorder these two writes           | |  loop long between
-> > WRITE_ONCE(node->rb_left, parent);-+-+  parent and node
-> >                                  |
-> >                                  +--->finally see
-> >                                       parent->rb_right
-> >
-> > The long loop won't stop until the modifer's CPU flushes
-> > its writes. Too avoid it, we should limit the searching depth.
->
-> Cute, have you actually observed this? Did you have performance issues?
+On Fri, May 15, 2020 at 01:47:51PM +0300, Serge Semin wrote:
+> Tx-only DMA transfers are working perfectly fine since in this case
+> the code just ignores the Rx FIFO overflow interrupts. But it turns
+> out the SPI Rx-only transfers are broken since nothing pushing any
+> data to the shift registers, so the Rx FIFO is left empty and the
+> SPI core subsystems just returns a timeout error. Since DW DMAC
+> driver doesn't support something like cyclic write operations of
+> a single byte to a device register, the only way to support the
+> Rx-only SPI transfers is to fake it by using a dummy Tx-buffer.
+> This is what we intend to fix in this commit by setting the
+> SPI_CONTROLLER_MUST_TX flag for DMA-capable platform.
 
-I can only test it on x86 by now, which implies smp_wmb() between
-writes. I haven't observed any thing wrong. I'm just imaging
-it on some other ARCHs.
+I'm fine with this if Mark considers this right thing to do.
+So, conditionally
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-I accidentally found this part of code when I searched for
-whether there is any attempt again to use rbtree with RCU, and
-whether there are the cases besides speculative page fault.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
+> Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Allison Randal <allison@lohutok.net>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Gareth Williams <gareth.williams.jx@renesas.com>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: linux-mips@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> ---
+>  drivers/spi/spi-dw.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
+> index 1edb8cdd11ee..31607b40147d 100644
+> --- a/drivers/spi/spi-dw.c
+> +++ b/drivers/spi/spi-dw.c
+> @@ -517,6 +517,7 @@ int dw_spi_add_host(struct device *dev, struct dw_spi *dws)
+>  			dev_warn(dev, "DMA init failed\n");
+>  		} else {
+>  			master->can_dma = dws->dma_ops->can_dma;
+> +			master->flags |= SPI_CONTROLLER_MUST_TX;
+>  		}
+>  	}
+>  
+> -- 
+> 2.25.1
+> 
 
->
-> > There are no more than (1<<BITS_PER_LONG)-1 nodes in the tree.
-> > And the max_depth of a tree is no more than 2*lg(node_count+1),
-> > which is no mare than 2*BITS_PER_LONG.
-> >
-> > So the serarch should stop when diving down up to
-> > 2*BITS_PER_LONG depth.
->
-> Arguably you can have a larger key space, but I think due to memory
-> constraints this limit still isn't wrong. But I do feel you need a
-> comment with that.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Sure, I will add some comments about why "2*BITS_PER_LONG" in code.
 
-But how it could be larger key space? there are not more than
-(1<<BITS_PER_LONG) bytes in the kernel dereferencable address
-space, and (1<<BITS_PER_LONG)/sizeof(rb_node) must be less than
-(1<<BITS_PER_LONG)-1.
