@@ -2,117 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475F31D5551
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C361D555C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgEOP6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 11:58:54 -0400
-Received: from mga11.intel.com ([192.55.52.93]:23856 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726407AbgEOP6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 11:58:53 -0400
-IronPort-SDR: 2mHQnDI+cDVuxPl4+6x4XzYcU9BCzxzHCrj7+4wEp8s+/sre3qQeA2EMi46obvskbTsdfHECEA
- YPKufeby6AzA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 08:58:53 -0700
-IronPort-SDR: HirYw8rAPztdjIA+/NI+F9pTHI7jr2RVdgGVqpP6A1KNTRdCnoAGKJuyB90njmSwKQdRaaUe4r
- 3Fk2+H3/lEUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
-   d="scan'208";a="263229930"
-Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.131.101]) ([10.249.131.101])
-  by orsmga003.jf.intel.com with ESMTP; 15 May 2020 08:58:48 -0700
-Subject: Re: [PATCH v2 20/20] cpufreq: Return zero on success in boost sw
- setting
-To:     Sergey.Semin@baikalelectronics.ru,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, stable@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Yue Hu <huyue2@yulong.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
- <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
- <20200506174238.15385-21-Sergey.Semin@baikalelectronics.ru>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-Message-ID: <c5109483-4c14-1a0c-efa9-51edf01c12de@intel.com>
-Date:   Fri, 15 May 2020 17:58:47 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727051AbgEOP7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 11:59:34 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:52103 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726607AbgEOP7d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 11:59:33 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0TydckkE_1589558367;
+Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0TydckkE_1589558367)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 15 May 2020 23:59:28 +0800
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Michel Lespinasse <walken@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Rik van Riel <riel@redhat.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH V2 1/2] rbtree_latch: quit searching when reaching to maximum depth
+Date:   Fri, 15 May 2020 15:59:08 +0000
+Message-Id: <20200515155912.1713-1-laijs@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200515150122.GY2957@hirez.programming.kicks-ass.net>
+References: <20200515150122.GY2957@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200506174238.15385-21-Sergey.Semin@baikalelectronics.ru>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/6/2020 7:42 PM, Sergey.Semin@baikalelectronics.ru wrote:
-> From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
->
-> Recent commit e61a41256edf ("cpufreq: dev_pm_qos_update_request() can
-> return 1 on success") fixed a problem when active policies traverse
-> was falsely stopped due to invalidly treating the non-zero return value
-> from freq_qos_update_request() method as an error. Yes, that function
-> can return positive values if the requested update actually took place.
-> The current problem is that the returned value is then passed to the
-> return cell of the cpufreq_boost_set_sw() (set_boost callback) method.
-> This value is then also analyzed for being non-zero, which is also
-> treated as having an error. As a result during the boost activation
-> we'll get an error returned while having the QOS frequency update
-> successfully performed. Fix this by returning a negative value from the
-> cpufreq_boost_set_sw() if actual error was encountered and zero
-> otherwise treating any positive values as the successful operations
-> completion.
->
-> Fixes: 18c49926c4bf ("cpufreq: Add QoS requests for userspace constraints")
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: linux-mips@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Cc: stable@vger.kernel.org
-> ---
->   drivers/cpufreq/cpufreq.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index 045f9fe157ce..5870cdca88cf 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -2554,7 +2554,7 @@ static int cpufreq_boost_set_sw(int state)
->   			break;
->   	}
->   
-> -	return ret;
-> +	return ret < 0 ? ret : 0;
->   }
->   
->   int cpufreq_boost_trigger_state(int state)
+lib/rbtree.c has ensured that there is not possible to
+inadvertently cause (temporary) loops in the tree structure
+as seen in program order of the modifier. But loop is still
+possible to be seen in searcher due to CPU's reordering.
 
-IMO it is better to update the caller of this function to handle the 
-positive value possibly returned by it correctly.
+for example:
+modifier				searcher
 
-Thanks!
+left rotate at parent
+parent->rb_right is node
+					search to parent
+					parent->rb_right is node
+				     +->see node->rb_left changed
+WRITE_ONCE(parent->rb_right, tmp);-+ |  node->rb_left is parennt
+no smp_wmb(), some ARCHs can       | |
+reorder these two writes           | |  loop long between
+WRITE_ONCE(node->rb_left, parent);-+-+  parent and node
+				   |
+				   +--->finally see
+					parent->rb_right
 
+The long loop won't stop until the modifer's CPU flushes
+its writes. Too avoid it, we should limit the searching depth.
+There are no more than (1<<BITS_PER_LONG)-1 nodes in the tree.
+And the max_depth of a tree is no more than 2*lg(node_count+1),
+which is no mare than 2*BITS_PER_LONG.
+
+So the searching should stop when diving down up to
+2*BITS_PER_LONG depth.
+
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Michel Lespinasse <walken@google.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Rik van Riel <riel@redhat.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+---
+ include/linux/rbtree_latch.h | 39 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+diff --git a/include/linux/rbtree_latch.h b/include/linux/rbtree_latch.h
+index 7d012faa509a..638942f53c0a 100644
+--- a/include/linux/rbtree_latch.h
++++ b/include/linux/rbtree_latch.h
+@@ -102,11 +102,47 @@ __lt_erase(struct latch_tree_node *ltn, struct latch_tree_root *ltr, int idx)
+ 	rb_erase(&ltn->node[idx], &ltr->tree[idx]);
+ }
+ 
++/*
++ * Beware when rbtree is being searched in RCU read sites.
++ *
++ * lib/rbtree.c has ensured that there is not possible to
++ * inadvertently cause (temporary) loops in the tree structure
++ * as seen in program order of the modifier. But loop is still
++ * possible to be seen in searcher due to CPU's reordering.
++ *
++ * for example:
++ * modifier				   searcher
++ *
++ * left rotate at parent		   search to parent
++ * parent->rb_right is node		   parent->rb_right is node
++ *					+->see node->rb_left changed
++ * WRITE_ONCE(parent->rb_right, tmp);-+ |  node->rb_left is parennt
++ * no smp_wmb(), some ARCHs can       | |
++ * reorder these two writes           | |  loop long between
++ * WRITE_ONCE(node->rb_left, parent);-+-+  parent and node
++ *				      |
++ *				      +--->finally see
++ *					   parent->rb_right
++ *
++ * The long loop won't stop until the searcher finally see the changes
++ * from the modifier. Too avoid it, we should limit the searching depth.
++ *
++ * Limited by the address space of the kernel, there are no more than
++ * (1<<BITS_PER_LONG)-1 nodes in the tree. And the max_depth of a tree is
++ * no more than 2*lg(node_count+1), which is no mare than 2*BITS_PER_LONG.
++ *
++ * So the searching should stop when diving down up to
++ * 2*BITS_PER_LONG depth.
++ *
++ * Note: the above problem is not subject to the TSO memory model, such as
++ * x86, which can dispense with the depth check.
++ */
+ static __always_inline struct latch_tree_node *
+ __lt_find(void *key, struct latch_tree_root *ltr, int idx,
+ 	  int (*comp)(void *key, struct latch_tree_node *node))
+ {
+ 	struct rb_node *node = rcu_dereference_raw(ltr->tree[idx].rb_node);
++	int depth = 2 * BITS_PER_LONG;
+ 	struct latch_tree_node *ltn;
+ 	int c;
+ 
+@@ -120,6 +156,9 @@ __lt_find(void *key, struct latch_tree_root *ltr, int idx,
+ 			node = rcu_dereference_raw(node->rb_right);
+ 		else
+ 			return ltn;
++
++		if (!IS_ENABLED(CONFIG_X86) && (--depth < 0))
++			break;
+ 	}
+ 
+ 	return NULL;
+-- 
+2.20.1
 
