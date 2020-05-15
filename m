@@ -2,387 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D431D4578
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 07:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D05521D4583
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 08:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbgEOFzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 01:55:23 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:26243 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725899AbgEOFzX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 01:55:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589522120;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U+aB1CA1Otl268pO9Az/r7NFdoYXk7JXT4NW4PKxozs=;
-        b=Y8jOUBhhP81UFNz5Tm3S5c1+ji7+BPVh/83HH4UuFhp7Y7ahLRbutG5HzqopRGpBkN3H10
-        N1mNLo3hoUKoZdoifZe7KetJb/8IYg5w+vlHpyuG8eLqQdpENYGi8wYn/z1zHSBlMhu3wC
-        7XRFPbjZg0MIluGEbvHtgs2clAzlaeQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-WogNCXuSNt2yBD9bCkrbwA-1; Fri, 15 May 2020 01:55:16 -0400
-X-MC-Unique: WogNCXuSNt2yBD9bCkrbwA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D8BC464;
-        Fri, 15 May 2020 05:55:14 +0000 (UTC)
-Received: from localhost (ovpn-12-34.pek2.redhat.com [10.72.12.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BD27360BE2;
-        Fri, 15 May 2020 05:55:12 +0000 (UTC)
-Date:   Fri, 15 May 2020 13:55:09 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Kristen Carlson Accardi <kristen@linux.intel.com>
-Cc:     keescook@chromium.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, Jonathan Corbet <corbet@lwn.net>,
-        x86@kernel.org, arjan@linux.intel.com,
-        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com,
-        rick.p.edgecomb@intel.com, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 7/9] x86: Add support for function granular KASLR
-Message-ID: <20200515055509.GA31243@MiWiFi-R3L-srv>
-References: <20200415210452.27436-1-kristen@linux.intel.com>
- <20200415210452.27436-8-kristen@linux.intel.com>
+        id S1726648AbgEOGA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 02:00:29 -0400
+Received: from mail-co1nam11on2053.outbound.protection.outlook.com ([40.107.220.53]:14173
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726496AbgEOGA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 02:00:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ES1qZLGte81VaptSpdV/owe4pY0VzgmpOWrJcHqkSkXzttvr+60dbhmro7DXOUuiO8MNLYwIN5bmKZAvmVzrgg3rRJoSSqFDcHqONDIPznt/Lj1qY3/ZcHRuuliiMM4npzCD2grvJURpYOT5DjldPYv7NgB1Ho3FapkZO0ozR6l2FuPYPob3Ca3wDs4aKc0qrD5xwChdePNHiA05Rr0ljUQEJMmtSNwtjsFIuYhLxGg154uVsEsKKGEPdGYa4xptCV+bC3VOtVOaxYXWVGZ9Cpcf8nzJBfksCz//g5R5QpMgbSUCHrpUwY4XSrN0CZ1CKaZ2r8qaogsaFd04pig5LQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3ZmphEWzFoXNSIimU8oVPZ9yl+6ZZsKgKw/fF+FxE2A=;
+ b=aaIHz8I6rUCLPsXtchn9MSuDcPYsLkmptzLtsVKbsXst618R7nDo8y/Q11RUntqzpv3/UFswDY7V3c2mJyvqmZ37KGOCFAdc4dmK1jWzXgRprXDuUfHge3yEZoDpux0k2YE+TxHSTl+nGJXj6X+HTHByeOMh/EqErl27Dzzeq6TCZSuz2NTtC2ZZD1cemDULWj2e5Fm0hxFPbF1yAn0SA0Bd1gW8WsfJ8WFh5ByhUOWzYNcTQQPb5Yvxjjjg/t/gcaM1TPe3NZ/l+wrdA5zWM2bpREIBRnAkQRfpJnzytoLPv2xRgDS9NvFC/tMCLfuOFybpMdbJEArq5qc5xFN/yQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3ZmphEWzFoXNSIimU8oVPZ9yl+6ZZsKgKw/fF+FxE2A=;
+ b=iL3k30LdiQRtJbN0KQ839F8dmsuKCv5M2H6p9qN06YNonW1lcgwYWDnNZsGNfLSZVYgzEMmsatjaTHglHgwVRzDTlDItv60pfeSrGXt0bWCIeatEgQjG5B7XSDBtWy5qrQ/i/1T0xQDojfAqLOQfvaCZoeuoItDiIZ2aOA70y/I=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=synaptics.com;
+Received: from BYAPR03MB3573.namprd03.prod.outlook.com (2603:10b6:a02:ae::15)
+ by BYAPR03MB4376.namprd03.prod.outlook.com (2603:10b6:a03:c9::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.34; Fri, 15 May
+ 2020 06:00:25 +0000
+Received: from BYAPR03MB3573.namprd03.prod.outlook.com
+ ([fe80::d1ae:8ea7:ea:8998]) by BYAPR03MB3573.namprd03.prod.outlook.com
+ ([fe80::d1ae:8ea7:ea:8998%7]) with mapi id 15.20.3000.016; Fri, 15 May 2020
+ 06:00:25 +0000
+Date:   Fri, 15 May 2020 14:00:08 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "mmc: sdhci-xenon: add runtime pm support and
+ reimplement standby"
+Message-ID: <20200515140008.6c8a8f2b@xhacker.debian>
+In-Reply-To: <CAPDyKFpUv=HGBAEchH25tdnRdUSAvbCgGGCgN8uuvPCQ92xwZg@mail.gmail.com>
+References: <20200513174706.3eeddb2b@xhacker.debian>
+        <CAPDyKFpE_uqiNQ22Fq9hDfb5pzMBdgmwgUbasEsEdXFkEOmq6A@mail.gmail.com>
+        <20200514134507.54c17936@xhacker.debian>
+        <CAPDyKFpUv=HGBAEchH25tdnRdUSAvbCgGGCgN8uuvPCQ92xwZg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TYAPR01CA0036.jpnprd01.prod.outlook.com
+ (2603:1096:404:28::24) To BYAPR03MB3573.namprd03.prod.outlook.com
+ (2603:10b6:a02:ae::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415210452.27436-8-kristen@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (124.74.246.114) by TYAPR01CA0036.jpnprd01.prod.outlook.com (2603:1096:404:28::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25 via Frontend Transport; Fri, 15 May 2020 06:00:23 +0000
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+X-Originating-IP: [124.74.246.114]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 58407cf0-73fc-4797-0a6f-08d7f895429c
+X-MS-TrafficTypeDiagnostic: BYAPR03MB4376:
+X-Microsoft-Antispam-PRVS: <BYAPR03MB437625E3A5B143A0578CA9DEEDBD0@BYAPR03MB4376.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 04041A2886
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lTN5dzrMY1/Qs0GglqOJVStDUjH5vtjqHKeJI7FyS+qL27JhxHDC9TivvKRP6yYOdLmQKwSvQQD0HRSx1l6mqcDS+4yORvOn3kgnCybiDPK34UJ8O72jvJ6kxwRE9EHP53b7FmBgOyVsyM+MnNNM2eipOpuAlhVOLyz2hgimntdtfAB7l7Y/5QEz1GdCqZPNukKjcZ36IMoBWNGXJvszeL+ErMY6vA+W6LZOYxcGHNp1fBCNJDFp8mZXqpQnfx9Un6hjMYYQD9sqQq+6ztLDrdo7uMCwL9VhmQV+kWJ10KGe744P2EfN2/t9quU6EkHu9h8l6ntrboE5gq5ZHeBCEiedO+8THfr86HOG48WotWwN9IA1uJnr+UiVpVT1l3G4V2A+MKMZy1lxnuCXMA7fjrW9XD/XDTFVZbAnc6vMH0yK5C6x+cMFxkD+4a8in/AO
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3573.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(136003)(346002)(376002)(396003)(366004)(66476007)(6916009)(8676002)(5660300002)(66556008)(956004)(86362001)(316002)(54906003)(7696005)(52116002)(16526019)(1076003)(478600001)(6666004)(26005)(186003)(55016002)(9686003)(8936002)(2906002)(4326008)(6506007)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: SBxkCJouT7mMWQ5naXxvQq3cj652HKDiuGPe288PSeygMVN8QkJf1YIKSOqiUYVCNET4zDziQ2eqR4TnzeshQa6EJr3pdibFHIHRybM5yfYoyx0ZVGum/B6eYVbbaG7Sj0gOLYL1NeaFI+xRVxD8GBbCNzrJj46czjfsugmPz08C5CBVPr/Orab/TdZIQoWplNl6ex0Mv7/X+FWCjTwniLBkhFwH3A/OVK6Y8/AkdCJgHr/v+RWcTeMerhKVvddn0pnhdrU+8x1oh/sbrL0BzQOii1SijAsodMiPDOJu3N5zKDxs7WRocDqiHci5+Qx+H/I1Nfn6mBN4480v4MDxh3qgKEgXtCSH6BaYBEojT73ccLB5IYMQk/6+pIYb/NE9wCSUHrC0P6h/ss7lRYVtV8RETtHPdr2O1vFp3Jhu63AnX50jGb3cEOll0/3MF/w4Xpes324TprMLBkCs6Ky1E6lbpFg5+YKwXx4t2X/x0ERRpz4IG9dOBeez1Z2Wk/n9
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 58407cf0-73fc-4797-0a6f-08d7f895429c
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 May 2020 06:00:24.9401
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ADqSttMrzoZ5rBHDoYvVbMvFn2GTL9WbcML3VchD4HqmuhdTt7KblZtyldXVlTsCFIVmrC70Yh5SrgvhQ3XhFA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB4376
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/15/20 at 02:04pm, Kristen Carlson Accardi wrote:
-...
-> diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
-> index 9652d5c2afda..2e108fdc7757 100644
-> --- a/arch/x86/boot/compressed/misc.c
-> +++ b/arch/x86/boot/compressed/misc.c
-> @@ -26,9 +26,6 @@
->   * it is not safe to place pointers in static structures.
->   */
->  
-> -/* Macros used by the included decompressor code below. */
-> -#define STATIC		static
-> -
+On Thu, 14 May 2020 12:18:58 +0200 Ulf Hansson wrote:
 
-Here removing STATIC definition might be the reason why the LKP
-reported build error to patch 7/9.
-
->  /*
->   * Use normal definitions of mem*() from string.c. There are already
->   * included header files which expect a definition of memset() and by
-> @@ -49,6 +46,8 @@ struct boot_params *boot_params;
->  
->  memptr free_mem_ptr;
->  memptr free_mem_end_ptr;
-> +unsigned long malloc_ptr;
-> +int malloc_count;
->  
->  static char *vidmem;
->  static int vidport;
-> @@ -203,10 +202,20 @@ static void handle_relocations(void *output, unsigned long output_len,
->  	if (IS_ENABLED(CONFIG_X86_64))
->  		delta = virt_addr - LOAD_PHYSICAL_ADDR;
->  
-> -	if (!delta) {
-> -		debug_putstr("No relocation needed... ");
-> -		return;
-> +	/*
-> +	 * it is possible to have delta be zero and
-> +	 * still have enabled fg kaslr. We need to perform relocations
-> +	 * for fgkaslr regardless of whether the base address has moved.
-> +	 */
-> +	if (!IS_ENABLED(CONFIG_FG_KASLR) || nokaslr) {
-> +		if (!delta) {
-> +			debug_putstr("No relocation needed... ");
-> +			return;
-> +		}
->  	}
-> +
-> +	pre_relocations_cleanup(map);
-> +
->  	debug_putstr("Performing relocations... ");
-
-I testes this patchset on x86_64 machine, it works well. Seems the
-debug printing need a little bit adjustment.
-
--  	debug_putstr("Performing relocations... ");
-+  	debug_putstr("\nPerforming relocations... ");
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Decompressing Linux... Parsing ELF... 
-Parsing ELF section headers... 
-Looking for symbols... 
-Re-sorting kallsyms ...Performing relocations... 
-                       ~~~~~~~~^
-Updating exception table...
-
-Re-sorting exception table...
-
->  
->  	/*
-> @@ -230,35 +239,106 @@ static void handle_relocations(void *output, unsigned long output_len,
->  	 */
->  	for (reloc = output + output_len - sizeof(*reloc); *reloc; reloc--) {
->  		long extended = *reloc;
-> +		long value;
-> +
-> +		/*
-> +		 * if using fgkaslr, we might have moved the address
-> +		 * of the relocation. Check it to see if it needs adjusting
-> +		 * from the original address.
-> +		 */
-> +		(void) adjust_address(&extended);
-> +
->  		extended += map;
->  
->  		ptr = (unsigned long)extended;
->  		if (ptr < min_addr || ptr > max_addr)
->  			error("32-bit relocation outside of kernel!\n");
->  
-> -		*(uint32_t *)ptr += delta;
-> +		value = *(int32_t *)ptr;
-> +
-> +		/*
-> +		 * If using fgkaslr, the value of the relocation
-> +		 * might need to be changed because it referred
-> +		 * to an address that has moved.
-> +		 */
-> +		adjust_address(&value);
-> +
-> +		value += delta;
-> +
-> +		*(uint32_t *)ptr = value;
->  	}
->  #ifdef CONFIG_X86_64
->  	while (*--reloc) {
->  		long extended = *reloc;
-> +		long value;
-> +		long oldvalue;
-> +		Elf64_Shdr *s;
-> +
-> +		/*
-> +		 * if using fgkaslr, we might have moved the address
-> +		 * of the relocation. Check it to see if it needs adjusting
-> +		 * from the original address.
-> +		 */
-> +		s = adjust_address(&extended);
-> +
->  		extended += map;
->  
->  		ptr = (unsigned long)extended;
->  		if (ptr < min_addr || ptr > max_addr)
->  			error("inverse 32-bit relocation outside of kernel!\n");
->  
-> -		*(int32_t *)ptr -= delta;
-> +		value = *(int32_t *)ptr;
-> +		oldvalue = value;
-> +
-> +		/*
-> +		 * If using fgkaslr, these relocs will contain
-> +		 * relative offsets which might need to be
-> +		 * changed because it referred
-> +		 * to an address that has moved.
-> +		 */
-> +		adjust_relative_offset(*reloc, &value, s);
-> +
-> +		/*
-> +		 * only percpu symbols need to have their values adjusted for
-> +		 * base address kaslr since relative offsets within the .text
-> +		 * and .text.* sections are ok wrt each other.
-> +		 */
-> +		if (is_percpu_addr(*reloc, oldvalue))
-> +			value -= delta;
-> +
-> +		*(int32_t *)ptr = value;
->  	}
->  	for (reloc--; *reloc; reloc--) {
->  		long extended = *reloc;
-> +		long value;
-> +
-> +		/*
-> +		 * if using fgkaslr, we might have moved the address
-> +		 * of the relocation. Check it to see if it needs adjusting
-> +		 * from the original address.
-> +		 */
-> +		(void) adjust_address(&extended);
-> +
->  		extended += map;
->  
->  		ptr = (unsigned long)extended;
->  		if (ptr < min_addr || ptr > max_addr)
->  			error("64-bit relocation outside of kernel!\n");
->  
-> -		*(uint64_t *)ptr += delta;
-> +		value = *(int64_t *)ptr;
-> +
-> +		/*
-> +		 * If using fgkaslr, the value of the relocation
-> +		 * might need to be changed because it referred
-> +		 * to an address that has moved.
-> +		 */
-> +		(void) adjust_address(&value);
-> +
-> +		value += delta;
-> +
-> +		*(uint64_t *)ptr = value;
->  	}
-> +	post_relocations_cleanup(map);
->  #endif
->  }
->  #else
-> @@ -296,6 +376,15 @@ static void parse_elf(void *output)
->  
->  	memcpy(phdrs, output + ehdr.e_phoff, sizeof(*phdrs) * ehdr.e_phnum);
->  
-> +	if (IS_ENABLED(CONFIG_FG_KASLR)) {
-> +		if (!nokaslr) {
-> +			parse_sections_headers(output, &ehdr, phdrs);
-> +			return;
-> +		} else {
-> +			warn("FG_KASLR disabled: 'nokaslr' on cmdline.");
-> +		}
-> +	}
-> +
->  	for (i = 0; i < ehdr.e_phnum; i++) {
->  		phdr = &phdrs[i];
->  
-> diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
-> index 726e264410ff..f68f7fc39543 100644
-> --- a/arch/x86/boot/compressed/misc.h
-> +++ b/arch/x86/boot/compressed/misc.h
-> @@ -39,7 +39,12 @@
->  /* misc.c */
->  extern memptr free_mem_ptr;
->  extern memptr free_mem_end_ptr;
-> +#define STATIC
-> +#define STATIC_RW_DATA extern
-> +#include <linux/decompress/mm.h>
-> +
->  extern struct boot_params *boot_params;
-> +extern int nokaslr;
->  void __putstr(const char *s);
->  void __puthex(unsigned long value);
->  #define error_putstr(__x)  __putstr(__x)
-> @@ -74,6 +79,32 @@ struct mem_vector {
->  	unsigned long long size;
->  };
->  
-> +#ifdef CONFIG_X86_64
-> +#define Elf_Ehdr Elf64_Ehdr
-> +#define Elf_Phdr Elf64_Phdr
-> +#define Elf_Shdr Elf64_Shdr
-> +#else
-> +#define Elf_Ehdr Elf32_Ehdr
-> +#define Elf_Phdr Elf32_Phdr
-> +#define Elf_Shdr Elf32_Shdr
-> +#endif
-> +
-> +#if CONFIG_FG_KASLR
-> +void parse_sections_headers(void *output, Elf_Ehdr *ehdr, Elf_Phdr *phdrs);
-> +void pre_relocations_cleanup(unsigned long map);
-> +void post_relocations_cleanup(unsigned long map);
-> +Elf_Shdr *adjust_address(long *address);
-> +void adjust_relative_offset(long pc, long *value, Elf_Shdr *section);
-> +bool is_percpu_addr(long pc, long offset);
-> +#else
-> +static inline void parse_sections_headers(void *output, Elf_Ehdr *ehdr, Elf_Phdr *phdrs) { }
-> +static inline void pre_relocations_cleanup(unsigned long map) { }
-> +static inline void post_relocations_cleanup(unsigned long map) { }
-> +static inline Elf_Shdr *adjust_address(long *address) { return NULL; }
-> +static inline void adjust_relative_offset(long pc, long *value, Elf_Shdr *section) { }
-> +static inline bool is_percpu_addr(long pc, long offset) { return true; }
-> +#endif /* CONFIG_FG_KASLR */
-> +
->  #if CONFIG_RANDOMIZE_BASE
->  /* kaslr.c */
->  void choose_random_location(unsigned long input,
-> diff --git a/arch/x86/boot/compressed/utils.c b/arch/x86/boot/compressed/utils.c
-> new file mode 100644
-> index 000000000000..ceefc58d7c71
-> --- /dev/null
-> +++ b/arch/x86/boot/compressed/utils.c
-> @@ -0,0 +1,12 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * utils.c
-> + *
-> + * This contains various libraries that are needed for fgkaslr
-> + */
-> +#define __DISABLE_EXPORTS
-> +#define _LINUX_KPROBES_H
-> +#define NOKPROBE_SYMBOL(fname)
-> +#include "../../../../lib/sort.c"
-> +#include "../../../../lib/bsearch.c"
-> +
-> diff --git a/arch/x86/boot/compressed/vmlinux.symbols b/arch/x86/boot/compressed/vmlinux.symbols
-> new file mode 100644
-> index 000000000000..f48a4c396966
-> --- /dev/null
-> +++ b/arch/x86/boot/compressed/vmlinux.symbols
-> @@ -0,0 +1,18 @@
-> +kallsyms_offsets
-> +kallsyms_addresses
-> +kallsyms_num_syms
-> +kallsyms_relative_base
-> +kallsyms_names
-> +kallsyms_token_table
-> +kallsyms_token_index
-> +kallsyms_markers
-> +__start___ex_table
-> +__stop___ex_table
-> +_sinittext
-> +_einittext
-> +_stext
-> +_etext
-> +__start_orc_unwind_ip
-> +__stop_orc_unwind_ip
-> +__stop_orc_unwind
-> +__start_orc_unwind
-> diff --git a/arch/x86/include/asm/boot.h b/arch/x86/include/asm/boot.h
-> index 680c320363db..6918d33eb5ef 100644
-> --- a/arch/x86/include/asm/boot.h
-> +++ b/arch/x86/include/asm/boot.h
-> @@ -26,8 +26,19 @@
->  
->  #ifdef CONFIG_KERNEL_BZIP2
->  # define BOOT_HEAP_SIZE		0x400000
-> -#else /* !CONFIG_KERNEL_BZIP2 */
-> -# define BOOT_HEAP_SIZE		 0x10000
-> +#elif CONFIG_FG_KASLR
-> +/*
-> + * We need extra boot heap when using fgkaslr because we make a copy
-> + * of the original decompressed kernel to avoid issues with writing
-> + * over ourselves when shuffling the sections. We also need extra
-> + * space for resorting kallsyms after shuffling. This value could
-> + * be decreased if free() would release memory properly, or if we
-> + * could avoid the kernel copy. It would need to be increased if we
-> + * find additional tables that need to be resorted.
-> + */
-> +# define BOOT_HEAP_SIZE		0x4000000
-> +#else /* !CONFIG_KERNEL_BZIP2 && !CONFIG_FG_KASLR */
-> +# define BOOT_HEAP_SIZE		0x10000
->  #endif
->  
->  #ifdef CONFIG_X86_64
-> diff --git a/include/uapi/linux/elf.h b/include/uapi/linux/elf.h
-> index 34c02e4290fe..a85d1792d5a8 100644
-> --- a/include/uapi/linux/elf.h
-> +++ b/include/uapi/linux/elf.h
-> @@ -298,6 +298,7 @@ typedef struct elf64_phdr {
->  #define SHN_LIVEPATCH	0xff20
->  #define SHN_ABS		0xfff1
->  #define SHN_COMMON	0xfff2
-> +#define SHN_XINDEX	0xffff
->  #define SHN_HIRESERVE	0xffff
->   
->  typedef struct elf32_shdr {
-> -- 
-> 2.20.1
 > 
+> 
+> On Thu, 14 May 2020 at 07:45, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+> >
+> > On Wed, 13 May 2020 14:15:21 +0200 Ulf Hansson wrote:
+> >  
+> > >
+> > >
+> > > On Wed, 13 May 2020 at 11:47, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:  
+> > > >
+> > > > This reverts commit a027b2c5fed78851e69fab395b02d127a7759fc7.
+> > > >
+> > > > The HW supports auto clock gating, so it's useless to do runtime pm
+> > > > in software.  
+> > >
+> > > Runtime PM isn't soley about clock gating. Moreover it manages the  
+> >
+> > Per my understanding, current xenon rpm implementation is just clock gating.
+
+what's your option about this? My point is the HW can auto clock
+gate, so what's the benefit of current rpm implementation given it only does
+clock gating. FWICT, when submitting the xenon rpm patch, I don't think the
+author  compared the power consumption. If the comparison is done, it's easy
+to find the rpm doesn't bring any power consumption benefit at all.
+
+> >  
+> > > "pltfm_host->clk", which means even if the controller supports auto
+> > > clock gating, gating/ungating the externally provided clock still
+> > > makes sense.  
+> >
+> >        clock -----------  xenon IP
+> >       |___ rpm           |__ HW Auto clock gate
+> >
+> > Per my understanding, with rpm, both clock and IP is clock gated; while with
+> > Auto clock gate, the IP is clock gated. So the only difference is clock itself.
+> > Considering the gain(suspect we have power consumption gain, see below), the
+> > pay -- 56 LoCs and latency doesn't deserve gain.
+> >
+> > Even if considering from power consumption POV, sdhci_runtime_suspend_host(),
+> > sdhci_runtime_resume_host(), and the retune process could be more than the clock
+> > itself.  
+> 
+> Right.
+> 
+> The re-tune may be costly, yes. However, whether the re-tune is
+> *really* needed actually varies depending on the sdhci variant and the
+> SoC. Additionally, re-tune isn't done for all types of (e)MMC/SD/SDIO
+> cards.
+> 
+> I see a few options that you can explore.
+> 
+> 1. There is no requirement to call sdhci_runtime_suspend|resume_host()
+> from sdhci-xenon's ->runtime_suspend|resume() callbacks - if that's
+> not explicitly needed. The point is, you can do other things there,
+> that suits your variant/SoC better.
+
+Yes, there's no requirement to call sdhci_runtime_suspend|resume_host().
+But simply removing the calls would break system suspend. How to handle
+this situation?
+
+> 
+> 2. Perhaps for embedded eMMCs, with a non-removable slot, the
+> re-tuning is costly. If you want to prevent the device from entering
+> runtime suspend for that slot, for example, just do an additional
+> pm_runtime_get_noresume() during ->probe().
+> 
+> [...]
+> 
+> Kind regards
+> Uffe
 
