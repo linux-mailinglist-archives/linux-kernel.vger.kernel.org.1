@@ -2,212 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9E31D441D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 05:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A201D4427
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 05:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728372AbgEODjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 23:39:00 -0400
-Received: from mga06.intel.com ([134.134.136.31]:46650 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726176AbgEODi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 23:38:59 -0400
-IronPort-SDR: fY68yZquNQDbS2A827prcLANqkwVChvpdZKEXUa/e7eTybr74/blePQGMbDkyvdj9O9CfD4jsd
- RvcW6JPkd+/A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2020 20:38:58 -0700
-IronPort-SDR: T4cM1uZ2flAItzX+MQz5ei98EtCAdtIwnVbjhkmIoV0zLm0ze9GZnWDMsuNauIFg2+EpfK9OwF
- myEPk3r620BA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,393,1583222400"; 
-   d="scan'208";a="372565874"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga001.fm.intel.com with ESMTP; 14 May 2020 20:38:58 -0700
-Date:   Thu, 14 May 2020 20:38:58 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V1 7/9] fs/ext4: Make DAX mount option a tri-state
-Message-ID: <20200515033858.GE2140786@iweiny-DESK2.sc.intel.com>
-References: <20200514065316.2500078-1-ira.weiny@intel.com>
- <20200514065316.2500078-8-ira.weiny@intel.com>
- <20200514150839.GB2077014@magnolia>
+        id S1728368AbgEODsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 23:48:16 -0400
+Received: from mail-eopbgr1320072.outbound.protection.outlook.com ([40.107.132.72]:61075
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726176AbgEODsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 23:48:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XcPsb97L1z7NRT7FvbDz8xnUjmJEyYeCmR258C2kCLajNaQFcOjpIzLu6OHbFlfr+ukEqHGPkqEVu8FyDOiAKEDPZR4COLLWqut+b8vTMSL3ZSb/QzTtswUC/Tjjch/HuF9BdsTHZmX+/ZnS2OYF9F67r6cyrgty3+obZ9So02OtUZweCPBLamtzgAPI1TgoiuI0w1FAzfGv6b7c3ig3X4+FuTge+D+WRZei6vZic1VL4PaKZTjR5/lhj0+y1nXc1trLJW3hKPcQSMLjWRLGZiaUW7DlkJ6BcRpOsL24jDgVzAyPD7QOWeWoee5XwLiDGPVvTpOyq00/sJF+8lxZcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bRa0sqwmZXtQirLHYe8GCnwWOQvtpoA5AZi91b4qO7Y=;
+ b=ccTZXcd+WjmGCzmiRMzG1ApOzCJNbLwB5NCpUTLECcQlH9NHi8uUNBRr8d/wyPlDaF2i6Ib+O0hWetYPldT5EdttpOvJ4+46VIFDmLw3n1OgEmZev0Bj9NKq61nuDnJfaVMKsabLHrB29wJZ+P7kuD46nK6ulV3/iCXTAEP7qg79XdkAACdrviUVw1gIHXkpYcMmwtLgc1koiMHIhO0rzcN6X83/8A5V0VO2nIa2P+e2wDMRp0MY6kSVHzX980HsEwW5B6Za0xfLNm2hUU10hGpCYapU0mPkMKX+qTPLnZv60op0ZI0/xKmBwXRkTW+1ThEcT0GwX+S8aEjgQ4ZHIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=necglobal.onmicrosoft.com; s=selector1-necglobal-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bRa0sqwmZXtQirLHYe8GCnwWOQvtpoA5AZi91b4qO7Y=;
+ b=L+ydJpXvQntIf8T07xqGg83ab/G5dCch4C3t8iWweGimtXkRa41D67qZKvsO0eOUu8CsQFiRm6ljb309Zl6s5YGzk8MTESaLugVvHluqveV3FyjXd4EKnnUuHObH+q+sJUzuS1WRsxQC3cw52ctrGXrjyq8uCWTNzlVBKKwLu58=
+Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com (20.177.98.142) by
+ TY2PR01MB2171.jpnprd01.prod.outlook.com (52.133.182.138) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2979.27; Fri, 15 May 2020 03:48:10 +0000
+Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com
+ ([fe80::3841:ec9f:5cdf:f58]) by TY2PR01MB3210.jpnprd01.prod.outlook.com
+ ([fe80::3841:ec9f:5cdf:f58%5]) with mapi id 15.20.2979.033; Fri, 15 May 2020
+ 03:48:10 +0000
+From:   =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
+        <naoya.horiguchi@nec.com>
+To:     Qian Cai <cai@lca.pw>
+CC:     Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: memory offline infinite loop after soft offline
+Thread-Topic: memory offline infinite loop after soft offline
+Thread-Index: AQHWKmMR+OImEsyoBU+Os1O8O47V2qiogoWA
+Date:   Fri, 15 May 2020 03:48:10 +0000
+Message-ID: <20200515034809.GA27576@hori.linux.bs1.fc.nec.co.jp>
+References: <20191018063222.GA15406@hori.linux.bs1.fc.nec.co.jp>
+ <64DC81FB-C1D2-44F2-981F-C6F766124B91@lca.pw>
+ <20191021031641.GA8007@hori.linux.bs1.fc.nec.co.jp>
+ <DE0721DF-9E5C-4719-B382-01A4A74C04AD@lca.pw>
+In-Reply-To: <DE0721DF-9E5C-4719-B382-01A4A74C04AD@lca.pw>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lca.pw; dkim=none (message not signed)
+ header.d=none;lca.pw; dmarc=none action=none header.from=nec.com;
+x-originating-ip: [165.225.110.202]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: adb44e31-0e48-4366-b323-08d7f882c973
+x-ms-traffictypediagnostic: TY2PR01MB2171:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TY2PR01MB217141AF07F24076D018A142E7BD0@TY2PR01MB2171.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 04041A2886
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: HjiExkaObhvVwhtl1WXTc0ueXYUnZX4P5sKjuFwgEuWYfYkA4uQkJdcidG+pq8w+te1JNUelDZwDvn4aUb2TU6fyzH/RU2I/Ob2hm5295X6f3BaFljHK4JKViogRgKwVNzbYCUn+3daxpkGIJveGkUnNvc6e5m2MhDQaHvMvdOSEGQIz42UqrKmqaDPkzT/JpFD4MpDS+qHKNHomxtgX3iCEHuHvQLM6OU5VLclv18TejkgSunBt8CuhcjsSUq331A2ZUZnKmZFpTWmZKD09S0BuK04vN4ZVA9nFtcgqjq1HLjxisNqSbpzREnAV6yW9Y+KaNS4JJvhe0HkTdhwQZUOtZSBcQhYm/qj7+XrXd+c7UvR96MxjsDgUdcZrmR6YJ7HsZG4LoI0MP9Lm913vwUP8wGZ1jSZTTIKHAbtT5SSXpqUNIzU/JpBr9z2170hPUjWGg6gYAxJhLWPNnQe8avoL6/J1w9/McpYPwRMMFht8uBq4aNjS9d51Ch54o67upjufCa18DYhQWnw9VtsPHA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3210.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(6506007)(498600001)(53546011)(54906003)(966005)(8676002)(186003)(6916009)(6486002)(26005)(1076003)(85182001)(4326008)(76116006)(86362001)(55236004)(2906002)(71200400001)(8936002)(66556008)(6512007)(9686003)(83080400001)(64756008)(33656002)(66476007)(66446008)(66946007)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: GvceLKeLMKG1kvHrq/rgKiZo4o+O4o0oPXwDrI22WnOp99Bdqqtg3IkKTx9IwlH/I8euvH1/cOpineSeNVxvLv53YpL0LTDlDh/YzW9s8nqvxjjIhjiDvzoLaxHvbJhf9mlARbEq9l4v+bJFTVQmiVc8iKSlLxElnxcCP5P5MFMhT88HPxavyX1fXuv4C4wnd/Qn/A4qU1r4PysVo9LH0uR4biP9BIe4mDoiD7M8tnXuVYC0MXre8/jQmgjM+gBPcLhnfCJgjU2akHqOIRigUK2ljZLGRxl/RCQWkHL1j/CyYk3tNUAeq0rj5ZIgJRDYJDnyFW82zKCpKP7xS5yrM8jdieSaQfaI33Z4puPcKA6Ac6J2e4K3DP5HizPdoN5VjwFiRRKEP2Vj8CogjjmtwVb5M7Bn/Z1Z7US+8tDlvYHTuq5PkXSVqfmQevzMPkyNsoeMDC93Nt+XxBt6jS7NfV9fg55XdQ4aUBKfKSNo7536GiNmwcuhHw3FGwZpUBPC
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-ID: <50CBFE582D1C6140995E0C2FFA112B47@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200514150839.GB2077014@magnolia>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: adb44e31-0e48-4366-b323-08d7f882c973
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 May 2020 03:48:10.4325
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mOpzZDBh2a3CBqNCaSxnWjaYFXGQa3BYKtXTMECjRND0QUldIyDzZUBiHS3FkKNZv4WlW+uqd513F1cqbQRbSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB2171
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 08:08:39AM -0700, Darrick J. Wong wrote:
-> On Wed, May 13, 2020 at 11:53:13PM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > We add 'always', 'never', and 'inode' (default).  '-o dax' continue to
-> > operate the same.
-> > 
-> > Specifically we introduce a 2nd DAX mount flag EXT4_MOUNT2_DAX_NEVER and set
-> > it and EXT4_MOUNT_DAX_ALWAYS appropriately.
-> > 
-> > We also force EXT4_MOUNT2_DAX_NEVER if !CONFIG_FS_DAX.
-> > 
-> > https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > ---
-> > Changes from RFC:
-> > 	Combine remount check for DAX_NEVER with DAX_ALWAYS
-> > 	Update ext4_should_enable_dax()
-> > ---
-> >  fs/ext4/ext4.h  |  1 +
-> >  fs/ext4/inode.c |  2 ++
-> >  fs/ext4/super.c | 43 +++++++++++++++++++++++++++++++++++++------
-> >  3 files changed, 40 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> > index 86a0994332ce..01d1de838896 100644
-> > --- a/fs/ext4/ext4.h
-> > +++ b/fs/ext4/ext4.h
-> > @@ -1168,6 +1168,7 @@ struct ext4_inode_info {
-> >  						      blocks */
-> >  #define EXT4_MOUNT2_HURD_COMPAT		0x00000004 /* Support HURD-castrated
-> >  						      file systems */
-> > +#define EXT4_MOUNT2_DAX_NEVER		0x00000008 /* Do not allow Direct Access */
-> >  
-> >  #define EXT4_MOUNT2_EXPLICIT_JOURNAL_CHECKSUM	0x00000008 /* User explicitly
-> >  						specified journal checksum */
-> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > index 23e42a223235..140b1930e2f4 100644
-> > --- a/fs/ext4/inode.c
-> > +++ b/fs/ext4/inode.c
-> > @@ -4400,6 +4400,8 @@ int ext4_get_inode_loc(struct inode *inode, struct ext4_iloc *iloc)
-> >  
-> >  static bool ext4_should_enable_dax(struct inode *inode)
-> >  {
-> > +	if (test_opt2(inode->i_sb, DAX_NEVER))
-> > +		return false;
-> >  	if (!S_ISREG(inode->i_mode))
-> >  		return false;
-> >  	if (ext4_should_journal_data(inode))
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index 5ec900fdf73c..e01a040a58a9 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -1505,6 +1505,7 @@ enum {
-> >  	Opt_jqfmt_vfsold, Opt_jqfmt_vfsv0, Opt_jqfmt_vfsv1, Opt_quota,
-> >  	Opt_noquota, Opt_barrier, Opt_nobarrier, Opt_err,
-> >  	Opt_usrquota, Opt_grpquota, Opt_prjquota, Opt_i_version, Opt_dax,
-> > +	Opt_dax_str,
-> >  	Opt_stripe, Opt_delalloc, Opt_nodelalloc, Opt_warn_on_error,
-> >  	Opt_nowarn_on_error, Opt_mblk_io_submit,
-> >  	Opt_lazytime, Opt_nolazytime, Opt_debug_want_extra_isize,
-> > @@ -1570,6 +1571,7 @@ static const match_table_t tokens = {
-> >  	{Opt_barrier, "barrier"},
-> >  	{Opt_nobarrier, "nobarrier"},
-> >  	{Opt_i_version, "i_version"},
-> > +	{Opt_dax_str, "dax=%s"},
-> >  	{Opt_dax, "dax"},
-> >  	{Opt_stripe, "stripe=%u"},
-> >  	{Opt_delalloc, "delalloc"},
-> > @@ -1767,6 +1769,7 @@ static const struct mount_opts {
-> >  	{Opt_min_batch_time, 0, MOPT_GTE0},
-> >  	{Opt_inode_readahead_blks, 0, MOPT_GTE0},
-> >  	{Opt_init_itable, 0, MOPT_GTE0},
-> > +	{Opt_dax_str, 0, MOPT_STRING},
-> >  	{Opt_dax, EXT4_MOUNT_DAX_ALWAYS, MOPT_SET},
-> >  	{Opt_stripe, 0, MOPT_GTE0},
-> >  	{Opt_resuid, 0, MOPT_GTE0},
-> > @@ -2076,13 +2079,32 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
-> >  		}
-> >  		sbi->s_jquota_fmt = m->mount_opt;
-> >  #endif
-> > -	} else if (token == Opt_dax) {
-> > +	} else if (token == Opt_dax || token == Opt_dax_str) {
-> >  #ifdef CONFIG_FS_DAX
-> > -		ext4_msg(sb, KERN_WARNING,
-> > -		"DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
-> > -		sbi->s_mount_opt |= m->mount_opt;
-> > +		char *tmp = match_strdup(&args[0]);
-> > +
-> > +		if (!tmp || !strcmp(tmp, "always")) {
-> > +			ext4_msg(sb, KERN_WARNING,
-> > +				"DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
-> > +			sbi->s_mount_opt |= EXT4_MOUNT_DAX_ALWAYS;
-> > +			sbi->s_mount_opt2 &= ~EXT4_MOUNT2_DAX_NEVER;
-> > +		} else if (!strcmp(tmp, "never")) {
-> > +			sbi->s_mount_opt2 |= EXT4_MOUNT2_DAX_NEVER;
-> > +			sbi->s_mount_opt &= ~EXT4_MOUNT_DAX_ALWAYS;
-> > +		} else if (!strcmp(tmp, "inode")) {
-> > +			sbi->s_mount_opt &= ~EXT4_MOUNT_DAX_ALWAYS;
-> > +			sbi->s_mount_opt2 &= ~EXT4_MOUNT2_DAX_NEVER;
-> > +		} else {
-> > +			ext4_msg(sb, KERN_WARNING, "DAX invalid option.");
-> > +			kfree(tmp);
-> > +			return -1;
-> > +		}
-> > +
-> > +		kfree(tmp);
-> >  #else
-> >  		ext4_msg(sb, KERN_INFO, "dax option not supported");
-> > +		sbi->s_mount_opt2 |= EXT4_MOUNT2_DAX_NEVER;
-> > +		sbi->s_mount_opt &= ~EXT4_MOUNT_DAX_ALWAYS;
-> >  		return -1;
-> >  #endif
-> >  	} else if (token == Opt_data_err_abort) {
-> > @@ -2306,6 +2328,13 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
-> >  	if (DUMMY_ENCRYPTION_ENABLED(sbi))
-> >  		SEQ_OPTS_PUTS("test_dummy_encryption");
-> >  
-> > +	if (test_opt2(sb, DAX_NEVER))
-> > +		SEQ_OPTS_PUTS("dax=never");
-> > +	else if (test_opt(sb, DAX_ALWAYS))
-> > +		SEQ_OPTS_PUTS("dax=always");
-> > +	else
-> > +		SEQ_OPTS_PUTS("dax=inode");
-> 
-> dax=inode is the default; do you need to show it?
-> 
-> (Especially since xfs doesn't...)
+On Thu, May 14, 2020 at 10:46:33PM -0400, Qian Cai wrote:
+>=20
+>=20
+> > On Oct 20, 2019, at 11:16 PM, Naoya Horiguchi <n-horiguchi@ah.jp.nec.co=
+m> wrote:
+> >=20
+> > On Fri, Oct 18, 2019 at 07:56:09AM -0400, Qian Cai wrote:
+> >>=20
+> >>=20
+> >>    On Oct 18, 2019, at 2:35 AM, Naoya Horiguchi <n-horiguchi@ah.jp.nec=
+.com>
+> >>    wrote:
+> >>=20
+> >>=20
+> >>    You're right, then I don't see how this happens. If the error hugep=
+age was
+> >>    isolated without having PG_hwpoison set, it's unexpected and proble=
+matic.
+> >>    I'm testing myself with v5.4-rc2 (simply ran move_pages12 and did h=
+otremove
+> >>    /hotadd)
+> >>    but don't reproduce the issue yet.  Do we need specific kernel vers=
+ion/
+> >>    config
+> >>    to trigger this?
+> >>=20
+> >>=20
+> >> This is reproducible on linux-next with the config. Not sure if it is
+> >> reproducible on x86.
+> >>=20
+> >> https://raw.githubusercontent.com/cailca/linux-mm/master/powerpc.confi=
+g
+> >>=20
+> >> and kernel cmdline if that matters
+> >>=20
+> >> page_poison=3Don page_owner=3Don numa_balancing=3Denable \
+> >> systemd.unified_cgroup_hierarchy=3D1 debug_guardpage_minorder=3D1 \
+> >> page_alloc.shuffle=3D1
+> >=20
+> > Thanks for the info.
+> >=20
+> >>=20
+> >> BTW, where does the code set PG_hwpoison for the head page?
+> >=20
+> > Precisely speaking, soft offline only sets PG_hwpoison after the target
+> > hugepage is successfully dissolved (then it's not a hugepage any more),
+> > so PG_hwpoison is set on the raw page in set_hwpoison_free_buddy_page()=
+.
+> >=20
+> > In move_pages12 case, madvise(MADV_SOFT_OFFLINE) is called for the rang=
+e
+> > of 2 hugepages, so the expected result is that page offset 0 and 512
+> > are marked as PG_hwpoison after injection.
+> >=20
+> > Looking at your dump_page() output, the end_pfn is page offset 1
+> > ("page:c00c000800458040" is likely to point to pfn 0x11601.)
+> > The page belongs to high order buddy free page, but doesn't have
+> > PageBuddy nor PageHWPoison because it was not the head page or
+> > the raw error page.
+> >=20
+> >> Unfortunately, this does not solve the problem. It looks to me that in=
+           =20
+> >> soft_offline_huge_page(), set_hwpoison_free_buddy_page() will only set=
+           =20
+> >> PG_hwpoison for buddy pages, so the even the compound_head() has no PG=
+_hwpoison  =20
+> >> set.                                                                  =
+           =20
+> >=20
+> > Your analysis is totally correct, and this behavior will be fixed by
+> > the change (https://lkml.org/lkml/2019/10/17/551) in Oscar's rework.
+> > The raw error page will be taken off from buddy system and the other
+> > subpages are properly split into lower orderer pages (we'll properly
+> > manage PageBuddy flags). So all possible cases would be covered by
+> > branches in __test_page_isolated_in_pageblock.
+>=20
+> Naoya, Oscar, it looks like this series was stuck.
+>=20
+> https://lkml.org/lkml/2019/10/17/551
+>=20
+> I can still reproduce this issue as today. Maybe it is best we could post=
+ a single patch (which one?) to fix the loop first?
 
-I'll only show it if -o dax or -o dax=inode was actually specified per earlier
-comments regarding ext4 behavior.
-
-Ira
-
-> 
-> --D
-> 
-> > +
-> >  	ext4_show_quota_options(seq, sb);
-> >  	return 0;
-> >  }
-> > @@ -5425,10 +5454,12 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
-> >  		goto restore_opts;
-> >  	}
-> >  
-> > -	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & EXT4_MOUNT_DAX_ALWAYS) {
-> > +	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & EXT4_MOUNT_DAX_ALWAYS ||
-> > +	    (sbi->s_mount_opt2 ^ old_opts.s_mount_opt2) & EXT4_MOUNT2_DAX_NEVER) {
-> >  		ext4_msg(sb, KERN_WARNING, "warning: refusing change of "
-> > -			"dax flag with busy inodes while remounting");
-> > +			"dax mount option with busy inodes while remounting");
-> >  		sbi->s_mount_opt ^= EXT4_MOUNT_DAX_ALWAYS;
-> > +		sbi->s_mount_opt2 ^= EXT4_MOUNT2_DAX_NEVER;
-> >  	}
-> >  
-> >  	if (sbi->s_mount_flags & EXT4_MF_FS_ABORTED)
-> > -- 
-> > 2.25.1
-> > 
+I'm very sorry to be quiet for long, but I think that I agree with
+this patchset and try to see what happend if merged into mmtom,
+although we need rebaseing to latest mmotm and some basic testing.=
