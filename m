@@ -2,104 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F191D5578
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1BD1D55A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgEOQD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 12:03:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726183AbgEOQD6 (ORCPT
+        id S1726438AbgEOQNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 12:13:13 -0400
+Received: from 8.mo3.mail-out.ovh.net ([87.98.172.249]:49924 "EHLO
+        8.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726183AbgEOQNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 12:03:58 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12004C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 09:03:57 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id s20so1040961plp.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 09:03:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=26j6mugXkifv9OznhflnKDPN13EyIMvO85x9VYvrewo=;
-        b=a5R1okyD9SFHDeV6TRe3Q1g8xfttKurC2131F6oXd1cQCRJMD0PBZMryKaAvh45Qsc
-         MHCs7/nEwKuluYb0EN1/fobj0my8160DZrEA86vvP4TU4pzej/2dHr/GdGEchi1cE5uU
-         NeewMmWWBkR4M5H0i8e5VvdwYtSpr3f+RIvhA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=26j6mugXkifv9OznhflnKDPN13EyIMvO85x9VYvrewo=;
-        b=k5YM2y5vpEBBJUk/W5vrNYok/BSovY4NjJ55RdVCJtIMcnehytPxITdbHYBXl0qSTE
-         uD5ZnO3nJeRtlMVI4lN2/18Qfjr2c+VNucYWgKFAP2G9hQSGlHXm0koeKO4OvX23ju8g
-         hyoQxNW3O6AFds3iMe+tCXQVK9A1BC+MH6HMG75UaQDYFPy+D01sBijaJ40BxzGM8tk1
-         2Wl3+DemCBOX2YcZtqmCDeatGTyNRrd3Wh+OzSWvZubWpZsWkSA0hB6ywhHqWInO77Nq
-         jTunz7B3EbR5WpSSdJs5y82t8IBMSCPsRGrQ1lDGUK0ILCIaQgE3+S5rVO/eisvWYTVA
-         CFaA==
-X-Gm-Message-State: AOAM533Wlnh6DFGo2itb5m1ZMw29LlLk9H1QCNuicPC81CnP/ht3RJ7W
-        dkyFsO18WSDniltEemDkur5/5w==
-X-Google-Smtp-Source: ABdhPJyziM+jU2CP/scXclsOHRPb3/N2euGeSuQyyVzMYnEcr7sfXfrF3dKUwXlkXO8UJjb7A1j1Lw==
-X-Received: by 2002:a17:90b:41d5:: with SMTP id jm21mr3919360pjb.96.1589558636642;
-        Fri, 15 May 2020 09:03:56 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id lj12sm1913431pjb.21.2020.05.15.09.03.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 09:03:55 -0700 (PDT)
-Date:   Fri, 15 May 2020 09:03:54 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     mcgrof@kernel.org, yzaikin@google.com, adobriyan@gmail.com,
-        mingo@kernel.org, peterz@infradead.org, akpm@linux-foundation.org,
-        yamada.masahiro@socionext.com, bauerman@linux.ibm.com,
-        gregkh@linuxfoundation.org, skhan@linuxfoundation.org,
-        dvyukov@google.com, svens@stackframe.org, joel@joelfernandes.org,
-        tglx@linutronix.de, Jisheng.Zhang@synaptics.com, pmladek@suse.com,
-        bigeasy@linutronix.de, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, wangle6@huawei.com
-Subject: Re: [PATCH 1/4] hung_task: Move hung_task sysctl interface to
- hung_task_sysctl.c
-Message-ID: <202005150902.9293E99B8@keescook>
-References: <1589517224-123928-1-git-send-email-nixiaoming@huawei.com>
- <1589517224-123928-2-git-send-email-nixiaoming@huawei.com>
- <202005150103.6DD6F07@keescook>
- <b72e0721-d08a-0fef-f55d-eb854483d04f@huawei.com>
+        Fri, 15 May 2020 12:13:12 -0400
+Received: from player168.ha.ovh.net (unknown [10.108.35.13])
+        by mo3.mail-out.ovh.net (Postfix) with ESMTP id EA731250E96
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 18:04:23 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player168.ha.ovh.net (Postfix) with ESMTPSA id 285AB1262277F;
+        Fri, 15 May 2020 16:04:19 +0000 (UTC)
+From:   Stephen Kitt <steve@sk2.org>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
+Subject: [PATCH] docs: sysctl/kernel: document unaligned controls
+Date:   Fri, 15 May 2020 18:04:06 +0200
+Message-Id: <20200515160406.8649-1-steve@sk2.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b72e0721-d08a-0fef-f55d-eb854483d04f@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 13656884397983419781
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrleekgdelfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofggtgfgsehtkeertdertdejnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeeikeethfdtfffgfeevhedujedvieelfeffvddtfeegffffhedukeduueehvdeludenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrudeikedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 04:56:34PM +0800, Xiaoming Ni wrote:
-> On 2020/5/15 16:04, Kees Cook wrote:
-> > On Fri, May 15, 2020 at 12:33:41PM +0800, Xiaoming Ni wrote:
-> > > Move hung_task sysctl interface to hung_task_sysctl.c.
-> > > Use register_sysctl() to register the sysctl interface to avoid
-> > > merge conflicts when different features modify sysctl.c at the same time.
-> > > 
-> > > Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
-> > > ---
-> > >   include/linux/sched/sysctl.h |  8 +----
-> > >   kernel/Makefile              |  4 ++-
-> > >   kernel/hung_task.c           |  6 ++--
-> > >   kernel/hung_task.h           | 21 ++++++++++++
-> > >   kernel/hung_task_sysctl.c    | 80 ++++++++++++++++++++++++++++++++++++++++++++
-> > 
-> > Why a separate file? That ends up needing changes to Makefile, the
-> > creation of a new header file, etc. Why not just put it all into
-> > hung_task.c directly?
-> > 
-> > -Kees
-> > 
-> But Luis Chamberlain's suggestion is to put the hung_task sysctl code in a
-> separate file. Details are in https://lkml.org/lkml/2020/5/13/762.
-> I am a little confused, not sure which way is better.
+This documents ignore-unaligned-usertrap, unaligned-dump-stack, and
+unaligned-trap, based on arch/arc/kernel/unaligned.c,
+arch/ia64/kernel/unaligned.c, and arch/parisc/kernel/unaligned.c.
 
-Ah, yes, I see now. Luis, I disagree with your recommendation here -- I
-think complicating the Makefile is much less intuitive than just
-wrapping this code in an #ifdef block in the existing .c file.
+While we’re at it, integrate unaligned-memory-access.txt into the docs
+tree.
 
+Signed-off-by: Stephen Kitt <steve@sk2.org>
+---
+ Documentation/admin-guide/sysctl/kernel.rst   | 51 +++++++++++++++++++
+ Documentation/index.rst                       |  1 +
+ ...access.txt => unaligned-memory-access.rst} |  0
+ 3 files changed, 52 insertions(+)
+ rename Documentation/{unaligned-memory-access.txt => unaligned-memory-access.rst} (100%)
+
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+index eb6bc9cc0318..4bb4d55f20ff 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -402,6 +402,25 @@ Controls whether the panic kmsg data should be reported to Hyper-V.
+ = =========================================================
+ 
+ 
++ignore-unaligned-usertrap
++=========================
++
++On architectures where unaligned accesses cause traps, and where this
++feature is supported (``CONFIG_SYSCTL_ARCH_UNALIGN_NO_WARN``;
++currently, ``arc`` and ``ia64``), controls whether all unaligned traps
++are logged.
++
++= =============================================================
++0 Log all unaligned accesses.
++1 Only warn the first time a process traps. This is the default
++  setting.
++= =============================================================
++
++See also `unaligned-trap`_ and `unaligned-dump-stack`_. On ``ia64``,
++this allows system administrators to override the
++``IA64_THREAD_UAC_NOPRINT`` ``prctl`` and avoid logs being flooded.
++
++
+ kexec_load_disabled
+ ===================
+ 
+@@ -1252,6 +1271,38 @@ See :doc:`/admin-guide/kernel-parameters` and
+ :doc:`/trace/boottime-trace`.
+ 
+ 
++.. _unaligned-dump-stack:
++
++unaligned-dump-stack (ia64)
++===========================
++
++When logging unaligned accesses, controls whether the stack is
++dumped.
++
++= ===================================================
++0 Do not dump the stack. This is the default setting.
++1 Dump the stack.
++= ===================================================
++
++See also `ignore-unaligned-usertrap`_.
++
++
++unaligned-trap
++==============
++
++On architectures where unaligned accesses cause traps, and where this
++feature is supported (``CONFIG_SYSCTL_ARCH_UNALIGN_ALLOW``; currently,
++``arc`` and ``parisc``), controls whether unaligned traps are caught
++and emulated (instead of failing).
++
++= ========================================================
++0 Do not emulate unaligned accesses.
++1 Emulate unaligned accesses. This is the default setting.
++= ========================================================
++
++See also `ignore-unaligned-usertrap`_.
++
++
+ unknown_nmi_panic
+ =================
+ 
+diff --git a/Documentation/index.rst b/Documentation/index.rst
+index 9599c0f3eea8..17c38d899572 100644
+--- a/Documentation/index.rst
++++ b/Documentation/index.rst
+@@ -143,6 +143,7 @@ Architecture-agnostic documentation
+    :maxdepth: 2
+ 
+    asm-annotations
++   unaligned-memory-access
+ 
+ Architecture-specific documentation
+ -----------------------------------
+diff --git a/Documentation/unaligned-memory-access.txt b/Documentation/unaligned-memory-access.rst
+similarity index 100%
+rename from Documentation/unaligned-memory-access.txt
+rename to Documentation/unaligned-memory-access.rst
+
+base-commit: 56b62540782bfde459acc8eb15b949eaf151c881
 -- 
-Kees Cook
+2.20.1
+
