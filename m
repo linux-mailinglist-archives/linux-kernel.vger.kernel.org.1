@@ -2,85 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A301D5C43
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5791D5C44
 	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 00:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgEOWS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 18:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727098AbgEOWS3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 18:18:29 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE428C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 15:18:28 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id a68so3178327otb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 15:18:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=OiLlyzm7NK6Yyje5dWntghfFt796h17Dq/AsO5doM7Q=;
-        b=snJFipVRfDK2znCyJA7zgz2Gj5Z1+Bd9O2+Pou+upd0sg4oQMgDSyNPxrpbluBYJx4
-         tGCTOUKqW1hLSlT0MUoBjDO3dsCeXTmpt1g5mwsKJzq5thohct78i3K1KsuOukrS886p
-         ySPdSk5lXviHZ6QjUQnqbEWJ1nhXP5Bs753KoobQwPX11UVjsbEbFr4i63HAafgCOFmN
-         VlOr6mqm+wuk6T1m+f80Lpkyzpidb0cWRPL/eBOKbgcC4hs5xDBEf3G6HQHhCLBW23rZ
-         Frcg9MQ7dKlFTmeDevz3znsvi3aBzsVROJjqevAg8tVTYa++SYEB39cuwTBgL4O+dMxC
-         NyYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=OiLlyzm7NK6Yyje5dWntghfFt796h17Dq/AsO5doM7Q=;
-        b=cGt0uPf+Im4ICF3acWHZWMBoxxGBDm4Q1U9R7wyGvoBX5owejW3u5zM6yI6cD2cb0I
-         5xA7RbhrIFhWgT1otYfF2hzBQ2ZX48x8/v4lrLcUmR6St6GgbvLA+6OB1wwTrYrkd0zr
-         qsEt4GjY3MJkfM5flXjrRHE4hICTLkLqYBrH3TopexblPQ7ghspwxvobg5zRT6WYtNNp
-         39RTPVL04AscqXSC0TNdVZsMbYXawMmBrUq66yK/kuRaOMfQo4+gIGYjvcdCc0E8w0pL
-         0vbMxP3A8C1pEh21bFL4f591s7ZEUt85N/38MK7arNkLV8Qp3gtmwgwW0Zpj/Zb+Y26A
-         FSjw==
-X-Gm-Message-State: AOAM5306acY3qJ6VxKzd4OiB7aTpeFrZ1Vpl/mSx1W8Wt2e+IDAFD23Q
-        /bgoVRBStD0HfBkF4nkN/qh75msYXrNWcWJhFhg=
-X-Google-Smtp-Source: ABdhPJxyerZqpNKdOqc1xdW468ZBis/2+Djkse3GH0MenH8xRTTHgTmpLbJNa1rDg7QnAomQOzYeQBXUaHTUTroGM/I=
-X-Received: by 2002:a9d:c65:: with SMTP id 92mr3883300otr.332.1589581108213;
- Fri, 15 May 2020 15:18:28 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a54:458f:0:0:0:0:0 with HTTP; Fri, 15 May 2020 15:18:27
- -0700 (PDT)
-Reply-To: scdo1@yandex.com
-From:   "Mr. Scott Donald" <ptsd383@gmail.com>
-Date:   Fri, 15 May 2020 15:18:27 -0700
-Message-ID: <CAPdjYacZrx=AW0TEHaJ3NP8fz_L8QD+071UB5dxiCZ8KBjMrkQ@mail.gmail.com>
-Subject: Urgent Reply,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1726668AbgEOWTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 18:19:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726183AbgEOWTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 18:19:22 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 100B820758;
+        Fri, 15 May 2020 22:19:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589581161;
+        bh=koZIFswSrjwiJ4jG44rNFzFttXBSJwBIimEBEGtqJCo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bMySVJyy/6fEWqrYhsHYQG6y7VOifw2FvmM2EMdsk/j8dPTZJXK4rEz+BTfQ3JZgP
+         a9NVi1L41C53U2psdXD0N15sWV4BuNNsX+WtA1Rlx6YhokeGN3K8fUY46Z9BtVisBT
+         arNe7ZBlh6zXsYk04pDDOK634tsIQimWuRX4iEw8=
+Date:   Fri, 15 May 2020 15:19:20 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH] swap: Add percpu cluster_next to reduce lock contention
+ on swap cache
+Message-Id: <20200515151920.34f147b7b0baa3017cd7a2bb@linux-foundation.org>
+In-Reply-To: <20200514070424.16017-1-ying.huang@intel.com>
+References: <20200514070424.16017-1-ying.huang@intel.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
-I'm Mr. Scott Donald a Successful business Man. dealing=C2=A0with
-Exportation, I got your email contact through search=C2=A0to let you know
-my Ugly Situation Am a dying Man here in=C2=A0California Los Angeles
-Hospital Bed in (USA), I Lost my=C2=A0Wife and my only Daughter for Corona
-virus and my Doctor said to me that i don't have enough time to live
-any=C2=A0more, i have a project that am about to handover to you.=C2=A0i ha=
-ve
-already instructed the Barclay Bank of London to=C2=A0transfer my fund sum
-of =C2=A33,7M GBP to you as to enable you=C2=A0give 50% to Charitable Home =
-and
-take 50% and i have=C2=A0already given all i have here in America to
-Charitable=C2=A0home I also ask my Doctor to help me get to you in case=C2=
-=A0you
-did not hear from me again, i want to you see on video very urgent
-here is my Doctor Whatsapp Number for urgent notice +13019692737
+On Thu, 14 May 2020 15:04:24 +0800 Huang Ying <ying.huang@intel.com> wrote:
 
-Hope To Hear From You. i really want to see you on Video call very
-urgent please.
+> In some swap scalability test, it is found that there are heavy lock
+> contention on swap cache even if we have split one swap cache radix
+> tree per swap device to one swap cache radix tree every 64 MB trunk in
+> commit 4b3ef9daa4fc ("mm/swap: split swap cache into 64MB trunks").
+> 
+> The reason is as follow.  After the swap device becomes fragmented so
+> that there's no free swap cluster, the swap device will be scanned
+> linearly to find the free swap slots.  swap_info_struct->cluster_next
+> is the next scanning base that is shared by all CPUs.  So nearby free
+> swap slots will be allocated for different CPUs.  The probability for
+> multiple CPUs to operate on the same 64 MB trunk is high.  This causes
+> the lock contention on the swap cache.
+> 
+> To solve the issue, in this patch, for SSD swap device, a percpu
+> version next scanning base (cluster_next_cpu) is added.  Every CPU
+> will use its own next scanning base.  So the probability for multiple
+> CPUs to operate on the same 64 MB trunk is reduced greatly.  Thus the
+> lock contention is reduced too.  For HDD, because sequential access is
+> more important for IO performance, the original shared next scanning
+> base is used.
+> 
+> To test the patch, we have run 16-process pmbench memory benchmark on
+> a 2-socket server machine with 48 cores.  One ram disk is configured
+> as the swap device per socket.  The pmbench working-set size is much
+> larger than the available memory so that swapping is triggered.  The
+> memory read/write ratio is 80/20 and the accessing pattern is random.
+> In the original implementation, the lock contention on the swap cache
+> is heavy.  The perf profiling data of the lock contention code path is
+> as following,
+> 
+> _raw_spin_lock_irq.add_to_swap_cache.add_to_swap.shrink_page_list:      7.93
+> _raw_spin_lock_irqsave.__remove_mapping.shrink_page_list: 		7.03
+> _raw_spin_lock_irq.mem_cgroup_commit_charge.do_swap_page: 		3.7
+> _raw_spin_lock.swapcache_free_entries.free_swap_slot.__swap_entry_free: 2.9
+> _raw_spin_lock_irq.shrink_inactive_list.shrink_lruvec.shrink_node:	1.32
+> _raw_spin_lock.free_pcppages_bulk.drain_pages_zone.drain_pages: 	1.01
+> _raw_spin_lock_irq.shrink_active_list.shrink_lruvec.shrink_node: 	0.87
+> 
+> After applying this patch, it becomes,
+> 
+> _raw_spin_lock_irq.mem_cgroup_commit_charge.do_swap_page:		3.99
+> _raw_spin_lock.swapcache_free_entries.free_swap_slot.__swap_entry_free: 3.0
+> _raw_spin_lock_irq.shrink_inactive_list.shrink_lruvec.shrink_node:      1.47
+> _raw_spin_lock_irq.shrink_active_list.shrink_lruvec.shrink_node: 	1.31
+> _raw_spin_lock.free_pcppages_bulk.drain_pages_zone.drain_pages: 	0.88
+> _raw_spin_lock.scan_swap_map_slots.get_swap_pages.get_swap_page: 	0.76
+> _raw_spin_lock_irq.add_to_swap_cache.add_to_swap.shrink_page_list:      0.53
+> 
+> The lock contention on the swap cache is almost eliminated.
+> 
+> And the pmbench score increases 15.9%.  The swapin throughput
+> increases 16.2% from 2.84 GB/s to 3.3 GB/s.  While the swapout
+> throughput increases 16.1% from 2.87 GB/s to 3.33 GB/s.
+> 
+> ...
+>
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -252,6 +252,7 @@ struct swap_info_struct {
+>  	unsigned int inuse_pages;	/* number of those currently in use */
+>  	unsigned int cluster_next;	/* likely index for next allocation */
+>  	unsigned int cluster_nr;	/* countdown to next cluster search */
+> +	unsigned int __percpu *cluster_next_cpu; /*percpu index for next allocation */
+>  	struct percpu_cluster __percpu *percpu_cluster; /* per cpu's swap location */
+>  	struct rb_root swap_extent_root;/* root of the swap extent rbtree */
+>  	struct block_device *bdev;	/* swap device or bdev of swap file */
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 35be7a7271f4..9f1343b066c1 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -746,7 +746,16 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+>  	 */
+>  
+>  	si->flags += SWP_SCANNING;
+> -	scan_base = offset = si->cluster_next;
+> +	/*
+> +	 * Use percpu scan base for SSD to reduce lock contention on
+> +	 * cluster and swap cache.  For HDD, sequential access is more
+> +	 * important.
+> +	 */
+> +	if (si->flags & SWP_SOLIDSTATE)
+> +		scan_base = this_cpu_read(*si->cluster_next_cpu);
+> +	else
+> +		scan_base = si->cluster_next;
+> +	offset = scan_base;
 
+Do we need to make SSD differ from spinning here?  Do bad things happen
+if !SWP_SOLIDSTATE devices use the per-cpu cache?
 
-Regards
+>  	/* SSD algorithm */
+>  	if (si->cluster_info) {
+> @@ -835,7 +844,10 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+>  	unlock_cluster(ci);
+>  
+>  	swap_range_alloc(si, offset, 1);
+> -	si->cluster_next = offset + 1;
+> +	if (si->flags & SWP_SOLIDSTATE)
+> +		this_cpu_write(*si->cluster_next_cpu, offset + 1);
+> +	else
+> +		si->cluster_next = offset + 1;
+>  	slots[n_ret++] = swp_entry(si->type, offset);
+>  
+>  	/* got enough slots or reach max slots? */
+> @@ -2828,6 +2840,11 @@ static struct swap_info_struct *alloc_swap_info(void)
+>  	p = kvzalloc(struct_size(p, avail_lists, nr_node_ids), GFP_KERNEL);
+>  	if (!p)
+>  		return ERR_PTR(-ENOMEM);
+> +	p->cluster_next_cpu = alloc_percpu(unsigned int);
+> +	if (!p->cluster_next_cpu) {
+> +		kvfree(p);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+>  
+>  	spin_lock(&swap_lock);
+>  	for (type = 0; type < nr_swapfiles; type++) {
+> @@ -2962,6 +2979,8 @@ static unsigned long read_swap_header(struct swap_info_struct *p,
+>  
+>  	p->lowest_bit  = 1;
+>  	p->cluster_next = 1;
+> +	for_each_possible_cpu(i)
+> +		per_cpu(*p->cluster_next_cpu, i) = 1;
+>  	p->cluster_nr = 0;
+>  
+>  	maxpages = max_swapfile_size();
+> @@ -3204,6 +3223,10 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>  		 * SSD
+>  		 */
+>  		p->cluster_next = 1 + prandom_u32_max(p->highest_bit);
 
-Mr. Scott Donald
+We shouldn't need to do this now?
+
+> +		for_each_possible_cpu(cpu) {
+> +			per_cpu(*p->cluster_next_cpu, cpu) =
+> +				1 + prandom_u32_max(p->highest_bit);
+> +		}
+
+Would there be any benefit in spreading these out evenly?  Intervals of
+(p->highest_bit/num_possible_cpus())?  That would reduce collisions,
+but not for very long I guess.
+
+Speaking of which, I wonder if there are failure modes in which all the
+CPUs end up getting into sync.
+
+And is it the case that if two or more CPUs have the same (or similar)
+per_cpu(*p->cluster_next_cpu, cpu), they'll each end up pointlessly
+scanning slots which another CPU has just scanned, thus rather
+defeating the purpose of having the cluster_next cache?
+
+IOW, should there be some additional collision avoidance scheme to
+prevent a CPU from pointing its cluster_ext into a 64MB trunk which
+another CPU is already using?
+
+And should it really be a per-cpu thing?  That's rather arbitrary. 
+Perhaps we would get better swap locality by making swap_cluster_next a
+per-process (per-mm_struct) thing?
+
+>  		nr_cluster = DIV_ROUND_UP(maxpages, SWAPFILE_CLUSTER);
+>  
+>  		cluster_info = kvcalloc(nr_cluster, sizeof(*cluster_info),
+
