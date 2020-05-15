@@ -2,125 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392591D5641
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064B21D5649
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbgEOQiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 12:38:21 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:57613 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726283AbgEOQiN (ORCPT
+        id S1726557AbgEOQkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 12:40:06 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56129 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726229AbgEOQkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 12:38:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589560692;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YZmrRZSpZSImU0ZWw6sQoh3piuQw6gdHG9URSW684/o=;
-        b=GcD2vNS8e3Lv9h8JGJhsQsUusMpyqIrAZknTxnOwRVzcQhA04/1BnY92z/Te+dIqU7hfPP
-        u3KL9X8IUuXG5bwMzIl05ZIybo6oSa2J/gZ6QsUaDVcpNu4wjGbxcg+0UyRGaUTwHycxL/
-        bWZIY0hXSd/nj8zX6+QP6BGdaR8OCF4=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-417-lpChFlDgMfyiKNAMYmouIA-1; Fri, 15 May 2020 12:38:11 -0400
-X-MC-Unique: lpChFlDgMfyiKNAMYmouIA-1
-Received: by mail-wr1-f70.google.com with SMTP id 37so1451867wrc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 09:38:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YZmrRZSpZSImU0ZWw6sQoh3piuQw6gdHG9URSW684/o=;
-        b=rWYxmUS4BOcB3LRXrSSxRZiFaRJcdWmAAreyFLKDqjy+rXNl+k32MCUIG9Y3zRyGdZ
-         h1YbpQI805uy4PXWln4eXhetezu6hzNy07HRjImtOqQ1tm4tbGIgPwtS2ezIkdEDwuT2
-         GLUUoT0NyEZSU57mFqBUmZDovyZUg7wRJ1z8WlX3Yx09VKYNbw4W4Kb8poLP+ntW5iLM
-         /wgNRAW1U5TrYoPupWaDyORalBrdoa+atKq8UkXnCh27QULSubzonFG6RetPGS46PUh4
-         lik5x+v/eIT2tlpw6ryxEiGbLWFkErZxkgkZXKDtjJubnQb+K0mHl2YrGy+IwPiTVpYG
-         MIyA==
-X-Gm-Message-State: AOAM530rTJC018GIACeUfnPN0AHK5PVnQx1N2/q6bDvRl1YqvIYkT/ls
-        D9ZH2hhsHppQSjkQVEwLrgq+bDDgZ8c2noibuxaoMACQcSZOPvJg5UaP2pU1HuLDiKXgCTOklWF
-        PDO86aPq901FlKRnFqlnl3JdQ
-X-Received: by 2002:adf:ed82:: with SMTP id c2mr5379927wro.255.1589560690177;
-        Fri, 15 May 2020 09:38:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwHkK+pYRdkGRoBHu7DvxKUQxjk5W5DN2qukBf2VTAqpWYC92WZ6RC31kIRR64YG+MD9jnxcw==
-X-Received: by 2002:adf:ed82:: with SMTP id c2mr5379900wro.255.1589560689927;
-        Fri, 15 May 2020 09:38:09 -0700 (PDT)
-Received: from steredhat.redhat.com ([79.49.207.108])
-        by smtp.gmail.com with ESMTPSA id b145sm4680274wme.41.2020.05.15.09.38.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 09:38:09 -0700 (PDT)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2 2/2] io_uring: add IORING_CQ_EVENTFD_DISABLED to the CQ ring flags
-Date:   Fri, 15 May 2020 18:38:05 +0200
-Message-Id: <20200515163805.235098-3-sgarzare@redhat.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200515163805.235098-1-sgarzare@redhat.com>
-References: <20200515163805.235098-1-sgarzare@redhat.com>
+        Fri, 15 May 2020 12:40:06 -0400
+Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 04FGdvAn026899
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 May 2020 12:39:57 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id E0C39420304; Fri, 15 May 2020 12:39:56 -0400 (EDT)
+Date:   Fri, 15 May 2020 12:39:56 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     linux-kernel@vger.kernel.org, inux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-block@vger.kernel.org
+Subject: Maintainers / Kernel Summit 2020 planning kick-off
+Message-ID: <20200515163956.GA2158595@mit.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This new flag should be set/clear from the application to
-disable/enable eventfd notifications when a request is completed
-and queued to the CQ ring.
+[ Feel free to forward this to other Linux kernel mailing lists as
+  appropriate -- Ted ]
 
-Before this patch, notifications were always sent if an eventfd is
-registered, so IORING_CQ_EVENTFD_DISABLED is not set during the
-initialization.
+This year, the Maintainers and Kernel Summit will NOT be held in
+Halifax, August 25 -- 28th, as a result of the COVID-19 pandemic.
+Instead, we will be pursuing a virtual conference format for both the
+Maintainers and Kernel Summit, around the last week of August.
 
-It will be up to the application to set the flag after initialization
-if no notifications are required at the beginning.
+As in previous years, the Maintainers Summit is invite-only, where the
+primary focus will be process issues around Linux Kernel Development.
+It will be limited to 30 invitees and a handful of sponsored
+attendees.
 
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
-v1 -> v2:
- - changed the flag name and behaviour from IORING_CQ_NEED_EVENT to
-   IORING_CQ_EVENTFD_DISABLED [Jens]
----
- fs/io_uring.c                 | 2 ++
- include/uapi/linux/io_uring.h | 7 +++++++
- 2 files changed, 9 insertions(+)
+The Kernel Summit is organized as a track which is run in parallel
+with the other tracks at the Linux Plumbers Conference (LPC), and is
+open to all registered attendees of LPC.
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 6e8158269f3c..a9b194e9b5bd 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1152,6 +1152,8 @@ static inline bool io_should_trigger_evfd(struct io_ring_ctx *ctx)
- {
- 	if (!ctx->cq_ev_fd)
- 		return false;
-+	if (READ_ONCE(ctx->rings->cq_flags) & IORING_CQ_EVENTFD_DISABLED)
-+		return false;
- 	if (!ctx->eventfd_async)
- 		return true;
- 	return io_wq_current_is_worker();
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index 602bb0ece607..8c5775df08b8 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -209,6 +209,13 @@ struct io_cqring_offsets {
- 	__u64 resv2;
- };
- 
-+/*
-+ * cq_ring->flags
-+ */
-+
-+/* disable eventfd notifications */
-+#define IORING_CQ_EVENTFD_DISABLED	(1U << 0)
-+
- /*
-  * io_uring_enter(2) flags
-  */
--- 
-2.25.4
+Linus will be generating a core list of people to be invited to the
+Maintainers Summit.  The top ten people from that list will receive
+invites, and then program committee will use the rest of Linus's list
+as a starting point of people to be considered.  People who suggest
+topics that should be discussed at the Maintainers Summit will also
+be added to the list for consideration.  To make topic suggestions for
+the Maintainers Summit, please send e-mail to the
+ksummit-discuss@lists.linuxfoundation.org list with a subject prefix
+of [MAINTAINERS SUMMIT].
 
+The other job of the program committee will be to organize the program
+for the Kernel Summit.  The goal of the Kernel Summit track will be to
+provide a forum to discuss specific technical issues that would be
+easier to resolve in person than over e-mail.  The program committee
+will also consider "information sharing" topics if they are clearly of
+interest to the wider development community (i.e., advanced training
+in topics that would be useful to kernel developers).
+
+To suggest a topic for the Kernel Summit, please do two things.
+First, please tag your e-mail with [TECH TOPIC].  As before, please
+use a separate e-mail for each topic, and send the topic suggestions
+to the ksummit-discuss list.
+
+Secondly, please create a topic at the Linux Plumbers Conference
+proposal submission site and target it to the Kernel Summit track.
+For your convenience you can use:
+
+	https://bit.ly/lpc20-submit
+
+Please do both steps.  I'll try to notice if someone forgets one or
+the other, but your chances of making sure your proposal gets the
+necessary attention and consideration are maximized by submitting both
+to the mailing list and the web site.
+
+People who submit topic suggestions before June 15th and which are
+accepted, will be given free admission to the Linux Plumbers
+Conference.
+
+We will be reserving roughly half of the Kernel Summit slots for
+last-minute discussions that will be scheduled during the week of
+Plumbers, in an "unconference style".  This allows last-minute ideas
+that come up to be given given slots for discussion.
+
+If you were not subscribed on to the kernel-discuss mailing list from
+last year (or if you had removed yourself after the kernel summit),
+you can subscribe to the discuss list using mailman:
+
+   https://lists.linuxfoundation.org/mailman/listinfo/ksummit-discuss
+
+The program committee this year is composed of the following people:
+
+Greg Kroah-Hartman
+Jens Axboe
+Jon Corbet
+Ted Ts'o
+Thomas Gleixner
