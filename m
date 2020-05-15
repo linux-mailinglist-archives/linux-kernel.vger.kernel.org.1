@@ -2,103 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4C31D4D6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 14:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF3B1D4D85
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 14:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726229AbgEOMIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 08:08:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:54982 "EHLO foss.arm.com"
+        id S1726198AbgEOMNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 08:13:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgEOMIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 08:08:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39021D6E;
-        Fri, 15 May 2020 05:08:16 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.24.119])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 195183F305;
-        Fri, 15 May 2020 05:08:13 -0700 (PDT)
-Date:   Fri, 15 May 2020 13:08:11 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
+        id S1726118AbgEOMNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 08:13:52 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 610E220657;
+        Fri, 15 May 2020 12:13:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589544831;
+        bh=wO3WfBzz3sXFu/UmGn0py5JO3lUtLdiDwLGHsADKYzQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OsxPPfg8b47Ez+Exn/r04LsRNi/MOD4RC8HIxKVhYoBXCknPhrB81UTnuY82bTnST
+         xjZFUoU/z4q1C6LQ2OtKCL9UCkY8wFJqidpfGSwzLxp3GbF9pGYjx0i+hlHR1148wq
+         h56oGW78rqtJVj2ZPA/uRZnJIASubirSvGrbrUtg=
+Date:   Fri, 15 May 2020 13:13:47 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Keno Fischer <keno@juliacomputing.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        harb@amperecomputing.com
-Subject: Re: [PATCH v3 6/7] firmware: smccc: Add function to fetch SMCCC
- version
-Message-ID: <20200515120811.GF67718@C02TD0UTHF1T.local>
-References: <20200506164411.3284-1-sudeep.holla@arm.com>
- <20200506164411.3284-7-sudeep.holla@arm.com>
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: PTRACE_SYSEMU behavior difference on arm64
+Message-ID: <20200515121346.GA22919@willie-the-truck>
+References: <CABV8kRyHrDMK4o=UZZZWJMuQNjPA8Xuoj-JFF-Lsx26fBTR0WA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200506164411.3284-7-sudeep.holla@arm.com>
+In-Reply-To: <CABV8kRyHrDMK4o=UZZZWJMuQNjPA8Xuoj-JFF-Lsx26fBTR0WA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 05:44:10PM +0100, Sudeep Holla wrote:
-> For backward compatibility reasons, PSCI maintains SMCCC version as
-> SMCCC didn't provide ARM_SMCCC_VERSION_FUNC_ID until v1.1
-> 
-> Let us provide accessors to fetch the SMCCC version in PSCI so that
-> other SMCCC v1.1+ features can use it.
+Hi Keno,
 
-Stale commit message? This was factored out of PSCI in the prior commit.
+On Fri, May 15, 2020 at 07:15:35AM -0400, Keno Fischer wrote:
+> The behavior of PTRACE_SYSEMU on arm64
+> appears to differ substantially from that of x86 and powerpc
+> (the other two architectures on which this feature is implemented).
+> In particular, after PTRACE_SYSEMU the syscall will always
+> be skipped on x86 and powerpc, but executed on arm64 unless
+> the syscall-entry stop was again continued using PTRACE_SYSEMU.
+> The skipping behavior is also documented in the manpage,
+> so I suspect this may just be a bug (the skipping behavior
+> makes sense to me and is what I would expect).
+> The reason this happens is that `syscall_trace_enter`
+> re-checks TIF_SYSCALL_EMU after the ptrace stop, but at that
+> point it may have already been superseded by a new ptrace
+> request. x86 and power save the original value of the flag,
+> rather than acting on the new value. I can submit a patch to
+> fix this, but wanted to check first whether this was intentional.
+> If it is, I can fix the man page instead.
 
-> Reviewed-by: Steven Price <steven.price@arm.com>
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
->  drivers/firmware/smccc/smccc.c | 4 ++++
->  include/linux/arm-smccc.h      | 9 +++++++++
->  2 files changed, 13 insertions(+)
-> 
-> diff --git a/drivers/firmware/smccc/smccc.c b/drivers/firmware/smccc/smccc.c
-> index 488699aae24f..672974df0dfe 100644
-> --- a/drivers/firmware/smccc/smccc.c
-> +++ b/drivers/firmware/smccc/smccc.c
-> @@ -24,3 +24,7 @@ enum arm_smccc_conduit arm_smccc_1_1_get_conduit(void)
->  	return smccc_conduit;
->  }
->  
-> +u32 arm_smccc_version_get(void)
-> +{
-> +	return smccc_version;
-> +}
+Please send a patch, since this looks like a silly bug to me. But it also
+means that nobody is using this on arm64, so we could also consider removing
+it entirely. Did you spot this because you are trying to use it for
+something or just by inspection/unit-testing?
 
-Could we please call this arm_smccc_get_version(), to align with the
-existing arm_smccc_1_1_get_conduit()?
-
-> diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
-> index 11fb20bfa8f7..8dd54dad1ec5 100644
-> --- a/include/linux/arm-smccc.h
-> +++ b/include/linux/arm-smccc.h
-> @@ -109,6 +109,15 @@ void __init arm_smccc_version_init(u32 version, enum arm_smccc_conduit conduit);
->   */
->  enum arm_smccc_conduit arm_smccc_1_1_get_conduit(void);
->  
-> +/**
-> + * arm_smccc_version_get()
-> + *
-> + * Returns the version to be used for SMCCCv1.1 or later.
-> + *
-> + * When SMCCCv1.1 or above is not present, assumes and returns SMCCCv1.0.
-> + */
-> +u32 arm_smccc_version_get(void);
-
-Can we please reword the last line to something like:
-
-| When SMCCCv1.1 or above is not present, returns SMCCCv1.0, but this
-| does not imply the presence of firmware or a valid conduit. Callers
-| handling SMCCCv1.0 must determine the conduit by other means.
-
-With all that:
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Thanks,
-Mark.
+Will
