@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43D71D5994
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 21:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 029F61D59A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 21:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726269AbgEOTBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 15:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49282 "EHLO
+        id S1726219AbgEOTFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 15:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbgEOTBR (ORCPT
+        with ESMTP id S1726179AbgEOTFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 15:01:17 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E50C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 12:01:16 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id y18so1399169pfl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 12:01:16 -0700 (PDT)
+        Fri, 15 May 2020 15:05:54 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB3CC05BD09
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 12:05:54 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id 62so1896415vsi.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 12:05:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:cc:from:to:message-id;
-        bh=Y4Tu4UqtalfMRN8mnNoM6mpqo/qALhm8HqxuxykVAjE=;
-        b=1uWs4zKf4rQGsgiboVezung6oJ1vpH+pnRdjBVMXfyDJyIS1CV4CGEncgYCMYLtvES
-         J64a013s9DcH76+W3dU+SmJg9kKInKG6ZE9zwbOwHHiEF+tWFwUc5DtppaydVC5Pgvpk
-         Vq5YwwtqTPtxl/CaAkIXHCZaKkgbWGm7TLEQBuU3MkjhHqlCiSuxEUG6v19ViH9O6Poh
-         honoDgGJO2bVhqjzz9OXcsfncuQjro2bAfQdZHJp7KU3aFgrYq3xUUlb4vI89dPqLOaI
-         lpHYhbWYiBEM/QtL78s/GHWVQBkGf9KAVUUIJdTi047noN0A7mKxlZfQ3pUi3kJFWrMD
-         fn0A==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ILTNxRMhVaU1ppwKtb504YY35g+lEq0QuWy+iVUE2z8=;
+        b=bMZEoYevT52u61nJD5we/u1JaG8jzU7khHbEmIItRoRo9c67denAC2dZI5n/GtGcte
+         O6CuOaJk4AYaDQX4yq+aRjJIGv63nxepgB4RHH9gODQ+rlXq7MTS7sE4DkPKkJ4+uXL+
+         cADO8rOPfT+7ANv5baePtF9UpQd+3uCS40EDw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:cc:from:to:message-id;
-        bh=Y4Tu4UqtalfMRN8mnNoM6mpqo/qALhm8HqxuxykVAjE=;
-        b=XxK7qLiaUvWJkhF2KZ0iS9/MwiYuhsIJdjSR/KmJZbHXfApXm7ghI/hGDBJV0XhhuQ
-         X1V22ppmpNIlmD8rnFVsrbcqU8LpITys11w9VaNqxKN7rUEkGADwlM2tmwepq7UV+r9X
-         WAA1K1w18+g4kT8OwkYPjTvZsYJ9ukHszBf2DstDk8Ag1esl5t6NU9srRjD18QnQc3mV
-         TrfiBxCwWFd9n2pySCDfhuFnFyOIe/LKMkXIhKRpwaXlENMvzhUcvhugkoW4V/O8Hk9D
-         3Pc/E6qR6oy7aqc5+y5NGYeYbA3x1Jv0P95iMQBjNq+uCBZCvtSaAg3NY92fe58U8fld
-         A1Mw==
-X-Gm-Message-State: AOAM530c3jmdGSw0rUaf6h+p/kxYBcT2p7t00vdGf2jAYOi/ckHEZFdw
-        2mqN+z53ZwS1WhBut1JqDq7qfA==
-X-Google-Smtp-Source: ABdhPJw6LoHwUAxm+l8/QIdvGoJTT2nBrVnwuMLOr03EUKhztvF58+XxCYARunlt/hIb7c53IltMGQ==
-X-Received: by 2002:a63:175c:: with SMTP id 28mr4243174pgx.44.1589569276342;
-        Fri, 15 May 2020 12:01:16 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id g1sm2574162pfb.191.2020.05.15.12.01.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 12:01:15 -0700 (PDT)
-Date:   Fri, 15 May 2020 12:01:15 -0700 (PDT)
-X-Google-Original-Date: Fri, 15 May 2020 11:58:33 PDT (-0700)
-Subject: [GIT PULL] RISC-V Fixes for 5.7-rc6
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-0786a015-369a-4f54-aa78-f4550588e4ef@palmerdabbelt-glaptop1>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ILTNxRMhVaU1ppwKtb504YY35g+lEq0QuWy+iVUE2z8=;
+        b=ERsRRs1tJQue/sigvg4XLsW6/U0zenunkyW+WIpq/SC7e0Ku+p5HhIKq4IkVDr9yr4
+         ImXm3UQ7fPUAahibE6t4WLntAXJJDbeSKDBkegxTdTzfQe643QYJQuZ0u9b3x43sp6E1
+         EntmYmO0x161fvhxWPbMwYKWolLAagj6UDvRsHFRaaa5/cuVw2NbmOnak91E9eo2DyNi
+         fNL4mWbSKFV+YjaCPGOaGNBD7XfLxlg/xoyZC773quoN3n6k//1ZVpRn61hzr5oei503
+         OIDYEut1p24y5IyvhPG0RkoWZBFJ/V+anyPp46NSZ92BBunjIeFpasNO1/J6Y5U/Bz0L
+         lQPQ==
+X-Gm-Message-State: AOAM530onulVMxSv/VTYCI1ffE8ufWLiA1l78XLvgCcZyW0rzxlG+YhZ
+        phJzyyfAcKc2n6spEwI3CV2kFQUAg5U=
+X-Google-Smtp-Source: ABdhPJysUzwpROWR/2ekHZFtp/osQdfbPkAOYAUDArLoHqZjvJDaXI8hGHIxLEyrXszDTxsa0dXqWg==
+X-Received: by 2002:a67:ec4a:: with SMTP id z10mr3533451vso.125.1589569552869;
+        Fri, 15 May 2020 12:05:52 -0700 (PDT)
+Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
+        by smtp.gmail.com with ESMTPSA id s130sm807801vka.17.2020.05.15.12.05.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 May 2020 12:05:52 -0700 (PDT)
+Received: by mail-vs1-f42.google.com with SMTP id v26so1900574vsa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 12:05:51 -0700 (PDT)
+X-Received: by 2002:a67:bd07:: with SMTP id y7mr3909984vsq.109.1589569551204;
+ Fri, 15 May 2020 12:05:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <1588329036-18732-1-git-send-email-smasetty@codeaurora.org> <1588329036-18732-2-git-send-email-smasetty@codeaurora.org>
+In-Reply-To: <1588329036-18732-2-git-send-email-smasetty@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 15 May 2020 12:05:39 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WXv9DYf7LWoFBvro=7Bzeb1_0bXAvRH-suzxnrCu+V2A@mail.gmail.com>
+Message-ID: <CAD=FV=WXv9DYf7LWoFBvro=7Bzeb1_0bXAvRH-suzxnrCu+V2A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: arm-smmu: Add sc7180 compatible string
+To:     Sharat Masetty <smasetty@codeaurora.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@freedesktop.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 2ef96a5bb12be62ef75b5828c0aab838ebb29cb8:
+Hi,
 
-  Linux 5.7-rc5 (2020-05-10 15:16:58 -0700)
+On Fri, May 1, 2020 at 3:30 AM Sharat Masetty <smasetty@codeaurora.org> wrote:
+>
+> This patch simply adds a new compatible string for SC7180 platform.
+>
+> Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> index 6515dbe..986098b 100644
+> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> @@ -28,6 +28,7 @@ properties:
+>            - enum:
+>                - qcom,msm8996-smmu-v2
+>                - qcom,msm8998-smmu-v2
+> +              - qcom,sc7180-smmu-v2
+>                - qcom,sdm845-smmu-v2
+>            - const: qcom,smmu-v2
 
-are available in the Git repository at:
+Is anything blocking this patch from landing now?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.7-rc6
-
-for you to fetch changes up to ed1ed4c0da5447c5e322481ce2ef9f03336c6ffb:
-
-  riscv: mmiowb: Fix implicit declaration of function 'smp_processor_id' (2020-05-13 17:11:46 -0700)
-
-----------------------------------------------------------------
-RISC-V Fixes for 5.7-rc6
-
-This consists of a handful of build fixes, all found by Huawei's autobuilder.
-None of these patches should have any functional impact on kernels that build,
-and they're mostly related to various features intermingling with !MMU.  While
-some of these might be better hoisted to generic code, it seems better to have
-the simple fixes in the meanwhile.
-
-As far as I know these are the only outstanding patches for 5.7.
-
-----------------------------------------------------------------
-Kefeng Wang (9):
-      riscv: perf_event: Make some funciton static
-      riscv: perf: RISCV_BASE_PMU should be independent
-      riscv: Fix unmet direct dependencies built based on SOC_VIRT
-      riscv: stacktrace: Fix undefined reference to `walk_stackframe'
-      riscv: Add pgprot_writecombine/device and PAGE_SHARED defination if NOMMU
-      riscv: Disable ARCH_HAS_DEBUG_VIRTUAL if NOMMU
-      riscv: Make SYS_SUPPORTS_HUGETLBFS depends on MMU
-      riscv: pgtable: Fix __kernel_map_pages build error if NOMMU
-      riscv: mmiowb: Fix implicit declaration of function 'smp_processor_id'
-
- arch/riscv/Kconfig                  |  3 ++-
- arch/riscv/Kconfig.socs             | 17 +++++++++--------
- arch/riscv/include/asm/mmio.h       |  2 ++
- arch/riscv/include/asm/mmiowb.h     |  1 +
- arch/riscv/include/asm/perf_event.h |  8 ++------
- arch/riscv/include/asm/pgtable.h    |  3 +++
- arch/riscv/kernel/Makefile          |  2 +-
- arch/riscv/kernel/perf_event.c      |  8 ++++----
- arch/riscv/kernel/stacktrace.c      |  2 +-
- 9 files changed, 25 insertions(+), 21 deletions(-)
+-Doug
