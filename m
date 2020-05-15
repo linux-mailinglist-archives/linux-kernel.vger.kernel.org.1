@@ -2,190 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7A81D5BB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 23:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1D51D5BBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 23:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgEOVf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 17:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
+        id S1727122AbgEOVnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 17:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726228AbgEOVf4 (ORCPT
+        by vger.kernel.org with ESMTP id S1726266AbgEOVnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 17:35:56 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22E4C05BD0A
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 14:35:55 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id o8so1841702ybc.11
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 14:35:55 -0700 (PDT)
+        Fri, 15 May 2020 17:43:31 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B287C061A0C;
+        Fri, 15 May 2020 14:43:31 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id s21so3461914ejd.2;
+        Fri, 15 May 2020 14:43:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sVQVIr84sLsAtEf+Ll1fioJb9v8WVaNtHmGOv4kP0R8=;
-        b=NfimAyTC/aIkfOHS2ufqPSllOkeKqp1ZK6kze94gN6kn1ADBKZD3dHs2eXsMiGzBR1
-         15TmsMiq4KlpeHxxUJ5YdLeKyW23BftJ/gMJmVwlsAn9wcJ8hNxPhlPYwpt5prr5Plzx
-         X43QaZjtrMfGtVTJ/ubc6mkEj6Ge5py3FKjasFZ+0KDaHQnCgsGN1GjqHijFAE+tqSUr
-         I0o2HfrLoen8lac1vJSzfPD+hjfINdbvGmnNZ+aYkTJtddLFqxcCrbqe6UPzgZVuVVHV
-         xDLercuanoXp8rDUc6rnzIa3P8yb045tTQv7jF96E3NAAxmFtOEQvwlMc35NBfkuYpr+
-         Seqg==
+        bh=I9ahSfeyShLOrWsmfKHouJCqywa7cbIcbln/4DdMMCU=;
+        b=Wn54dpHMi3XoICHM8rVqShWSCb2wOpkY5urudPAHJpFFfcELHrHdAttUP1YAR3w/6e
+         HdGtyDoz3jz+g6I32ZZIw9B5StLgFYW+e8Fz/iVCRTJyKb0SpQg/js7Iz4b6+LDTph6B
+         z+wmhFY/btS+s1BdhMd78yaCaN55Vw1Wg1fTn41/36BqOm1LWNg+a7lRU1nu/PHW+3xj
+         c6Z8R0aFKnr68+evwuUdKtZKx2IsrMSOSwsBM475ee5LPu/khr9lA6xA5oRJp9+o4plL
+         0HjaEjty8rY6DvlxlL0GeqdAfG9ySBYDrsE7lfGDsJPm3lrMPEXJoXZA9zmVCloHI/S/
+         o3Hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sVQVIr84sLsAtEf+Ll1fioJb9v8WVaNtHmGOv4kP0R8=;
-        b=XjxWbISpn+ZkzMhjIuVHSa+N9vHLiwL7kj3JtUQkkGYFfoUIThRYtnVrqriALozZ6v
-         8CZRVU8zUDPQH7uZ5ONBJH5UC5UX4W3ZxRbP7sNB01QIVtYpZYhIPEtpBUqWFFZP3+nr
-         v6vYkmjXaokqgEqGCLbjBWVcY2UvVzNjbfvTJoD0BTG92bDS5QAMt1Xfl1GYaRPiJPsF
-         JuHlPjdU45gv0XNKywr3UV5wlcUlTSREmCBY99Ym2eO+F3rhUvFYpolnOOp/6S8zEeNw
-         D7xx52PxFY/heCZdGSdWvbnjOYMEF4zJiZGl0mITSFIszQuDvPvPgoq6Jem01rCh1xE4
-         dmQQ==
-X-Gm-Message-State: AOAM533hJNMRdn37pcTFI8wAx6cDc/fZhrm5Oz7c+bUKruETzktPSPuZ
-        AjaYdh0fgSPPUEC71e2+aufQ+/ASAaHa3ypwIL/i0Q==
-X-Google-Smtp-Source: ABdhPJzO8Z79WAQPa+P8cIWRu5FYqccxVpUsubtP/BCBp9spOPnwntRjPW/UivBlIqcTjuFF/pHj3glO1AKf2bwUZSU=
-X-Received: by 2002:a25:d450:: with SMTP id m77mr9073716ybf.177.1589578554699;
- Fri, 15 May 2020 14:35:54 -0700 (PDT)
+        bh=I9ahSfeyShLOrWsmfKHouJCqywa7cbIcbln/4DdMMCU=;
+        b=OdGvtJ9hiW47BphfP6IUHDmMC+453bgFCDsjHtNTP4nVWLiJL503EIyWXICJl2q15V
+         dT5BC+JRbgZREdXscUIlYpGf2tQs4Ijf86RLF7WmudXlWarhNiRnICHcB7wYBi4/0Jrj
+         bHCnL3CTtMyZOpKkMxQWLHV8QXYr7LwPKzOHjvoVl6j0lDC/7OLct8MwNbDAR6VXDilV
+         1sbtil7JJdBRX9yRr/hifG7yqyz+Dfj6whpUGSpDSTBRPTEPlmmAGf/42HTo0Be7VFRx
+         G/3HqIABEtZakuqhBA8Th71IlIxi77Fc8C2nTBLdnz1lD8dFfEwSXylA+DscOSxnCs2H
+         zWOA==
+X-Gm-Message-State: AOAM532bLajpTTKqtlKqBQ95BORwt784C0A2KzbDZQt1Pcrvrq+0pOva
+        U7v9LmeZeY1PT11zN2bFXZpd+3sFn5TKul88q8A=
+X-Google-Smtp-Source: ABdhPJwnvn7N+iI77U+bO5uCLHA4ErVqBCG9iPTIw+yMIYf+68B5/Jxm7UW5cr1MDUQguyXPg0L56r3T7udQCzXaASU=
+X-Received: by 2002:a17:906:2503:: with SMTP id i3mr4539530ejb.293.1589579009383;
+ Fri, 15 May 2020 14:43:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200515165007.217120-1-irogers@google.com> <20200515165007.217120-8-irogers@google.com>
- <20200515194115.GA3577540@krava>
-In-Reply-To: <20200515194115.GA3577540@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 15 May 2020 14:35:43 -0700
-Message-ID: <CAP-5=fUp4ECBntUamWK53LhTbT9W5w5A0frFyOMxoWK0Q2o60A@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] perf expr: Migrate expr ids table to a hashmap
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
+References: <20200506140208.v2.1.Ibc8eeddcee94984a608d6900b46f9ffde4045da4@changeid>
+In-Reply-To: <20200506140208.v2.1.Ibc8eeddcee94984a608d6900b46f9ffde4045da4@changeid>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Fri, 15 May 2020 14:43:48 -0700
+Message-ID: <CAF6AEGvXkeOrHGMHo=C1zXhDc9rquQJc8oGDB4VDfhTfdtqyTg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] drm/bridge: ti-sn65dsi86: Implement lane
+ reordering + polarity
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 12:41 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Wed, May 6, 2020 at 2:03 PM Douglas Anderson <dianders@chromium.org> wrote:
 >
-> On Fri, May 15, 2020 at 09:50:07AM -0700, Ian Rogers wrote:
+> The ti-sn65dsi86 MIPI DSI to eDP bridge chip supports arbitrary
+> remapping of eDP lanes and also polarity inversion.  Both of these
+> features have been described in the device tree bindings for the
+> device since the beginning but were never implemented in the driver.
+> Implement both of them.
 >
-> SNIP
+> Part of this change also allows you to (via the same device tree
+> bindings) specify to use fewer than the max number of DP lanes that
+> the panel reports.  This could be useful if your display supports more
+> lanes but only a few are hooked up on your board.
 >
-> > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> > index b071df373f8b..37be5a368d6e 100644
-> > --- a/tools/perf/util/metricgroup.c
-> > +++ b/tools/perf/util/metricgroup.c
-> > @@ -85,8 +85,7 @@ static void metricgroup__rblist_init(struct rblist *metric_events)
-> >
-> >  struct egroup {
-> >       struct list_head nd;
-> > -     int idnum;
-> > -     const char **ids;
-> > +     struct expr_parse_ctx pctx;
-> >       const char *metric_name;
-> >       const char *metric_expr;
-> >       const char *metric_unit;
-> > @@ -94,19 +93,21 @@ struct egroup {
-> >  };
-> >
-> >  static struct evsel *find_evsel_group(struct evlist *perf_evlist,
-> > -                                   const char **ids,
-> > -                                   int idnum,
-> > +                                   struct expr_parse_ctx *pctx,
-> >                                     struct evsel **metric_events,
-> >                                     bool *evlist_used)
-> >  {
-> >       struct evsel *ev;
-> > -     int i = 0, j = 0;
-> >       bool leader_found;
-> > +     const size_t idnum = hashmap__size(&pctx->ids);
-> > +     size_t i = 0;
-> > +     int j = 0;
-> > +     double *val_ptr;
-> >
-> >       evlist__for_each_entry (perf_evlist, ev) {
-> >               if (evlist_used[j++])
-> >                       continue;
-> > -             if (!strcmp(ev->name, ids[i])) {
-> > +             if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+
+Reviewed-by: Rob Clark <robdclark@gmail.com>
+
+> ---
+> This patch is based upon my my outstanding series[1] not because there
+> is any real requirement but simply to avoid merge conflicts.  I
+> believe that my previous series is ready to land.  If, however, you'd
+> prefer that I rebase this patch somewhere atop something else then
+> please shout.
 >
-> hum, you sure it's doing the same thing as before?
+> [1] https://lore.kernel.org/r/20200430194617.197510-1-dianders@chromium.org
 >
-> hashmap__find will succede all the time in here, while the
-> previous code was looking for the start of the group ...
-> the logic in here is little convoluted, so maybe I'm
-> missing some point in here ;-)
-
-If we have a metric like "A + B" and another like "C / D" then by
-we'll generate a string (the extra_events strbuf in the code) like
-"{A,B}:W,{C,D}:W" from __metricgroup__add_metric. This will turn into
-an evlist in metricgroup__parse_groups of A,B,C,D. The code is trying
-to associate the events A,B with the first metric and C,D with the
-second. The code doesn't support sharing of events and events are
-marked as used and can't be part of other metrics. The evlist order is
-also reflective of the order of metrics, so if there were metrics "A +
-B + C" and "A + B", as the first metric is first in the evlist we
-don't run the risk of C being placed with A and B in a different
-group.
-
-The old code used the order of events to match within a metric and say
-for metric "A+B+C" we want to match A then B, and so on. The new code
-acts more like a set, so "A + B + C" becomes a set containing A, B and
-C, we check A is in the set then B and then C. For both pieces of code
-they are only working because of the evlist_used "bitmap" and that the
-order in the evlists and metrics matches.
-
-The current code could just use ordering to match first n1 events with
-the first metric, the next n2 events with the second and so on. So
-both the find now, and the strcmp before always return true in this
-branch.
-
-In the RFC patch set I want to share events and so I do checks related
-to the group leader so that I know when moving from one group to
-another in the evlist. The find/strcmp becomes load bearing as I will
-re-use events as long as they match.
-https://lore.kernel.org/lkml/20200508053629.210324-14-irogers@google.com/
-
-> jirka
+> Changes in v2:
+> - Use SN_MAX_DP_LANES instead of 4 in one place.
+> - Comment that we aren't doing full validation of dts params.
+> - Check dp_lanes <= SN_MAX_DP_LANES to avoid buffer overrun.
+> - Add missing of_node_put()
 >
-> >                       if (!metric_events[i])
-> >                               metric_events[i] = ev;
-> >                       i++;
-> > @@ -118,7 +119,8 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
-> >                       memset(metric_events, 0,
-> >                               sizeof(struct evsel *) * idnum);
-
-This re-check was unnecessary in the old code and unnecessary even
-more so now as the hashmap_find is given exactly the same arguments.
-I'll remove it in v3 while addressing Andrii's memory leak fixes.
-
-Thanks,
-Ian
-
-> > -                     if (!strcmp(ev->name, ids[i])) {
-> > +                     if (hashmap__find(&pctx->ids, ev->name,
-> > +                                       (void **)&val_ptr)) {
-> >                               if (!metric_events[i])
-> >                                       metric_events[i] = ev;
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 82 ++++++++++++++++++++++-----
+>  1 file changed, 68 insertions(+), 14 deletions(-)
 >
-> SNIP
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 1a125423eb07..534b712dccf8 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -50,8 +50,12 @@
+>  #define SN_CHA_VERTICAL_BACK_PORCH_REG         0x36
+>  #define SN_CHA_HORIZONTAL_FRONT_PORCH_REG      0x38
+>  #define SN_CHA_VERTICAL_FRONT_PORCH_REG                0x3A
+> +#define SN_LN_ASSIGN_REG                       0x59
+> +#define  LN_ASSIGN_WIDTH                       2
+>  #define SN_ENH_FRAME_REG                       0x5A
+>  #define  VSTREAM_ENABLE                                BIT(3)
+> +#define  LN_POLRS_OFFSET                       4
+> +#define  LN_POLRS_MASK                         0xf0
+>  #define SN_DATA_FORMAT_REG                     0x5B
+>  #define  BPP_18_RGB                            BIT(0)
+>  #define SN_HPD_DISABLE_REG                     0x5C
+> @@ -98,6 +102,7 @@
 >
+>  #define SN_REGULATOR_SUPPLY_NUM                4
+>
+> +#define SN_MAX_DP_LANES                        4
+>  #define SN_NUM_GPIOS                   4
+>
+>  /**
+> @@ -115,6 +120,8 @@
+>   * @enable_gpio:  The GPIO we toggle to enable the bridge.
+>   * @supplies:     Data for bulk enabling/disabling our regulators.
+>   * @dp_lanes:     Count of dp_lanes we're using.
+> + * @ln_assign:    Value to program to the LN_ASSIGN register.
+> + * @ln_polr:      Value for the 4-bit LN_POLRS field of SN_ENH_FRAME_REG.
+>   *
+>   * @gchip:        If we expose our GPIOs, this is used.
+>   * @gchip_output: A cache of whether we've set GPIOs to output.  This
+> @@ -140,6 +147,8 @@ struct ti_sn_bridge {
+>         struct gpio_desc                *enable_gpio;
+>         struct regulator_bulk_data      supplies[SN_REGULATOR_SUPPLY_NUM];
+>         int                             dp_lanes;
+> +       u8                              ln_assign;
+> +       u8                              ln_polrs;
+>
+>         struct gpio_chip                gchip;
+>         DECLARE_BITMAP(gchip_output, SN_NUM_GPIOS);
+> @@ -707,26 +716,20 @@ static void ti_sn_bridge_enable(struct drm_bridge *bridge)
+>         int dp_rate_idx;
+>         unsigned int val;
+>         int ret = -EINVAL;
+> +       int max_dp_lanes;
+>
+> -       /*
+> -        * Run with the maximum number of lanes that the DP sink supports.
+> -        *
+> -        * Depending use cases, we might want to revisit this later because:
+> -        * - It's plausible that someone may have run fewer lines to the
+> -        *   sink than the sink actually supports, assuming that the lines
+> -        *   will just be driven at a higher rate.
+> -        * - The DP spec seems to indicate that it's more important to minimize
+> -        *   the number of lanes than the link rate.
+> -        *
+> -        * If we do revisit, it would be important to measure the power impact.
+> -        */
+> -       pdata->dp_lanes = ti_sn_get_max_lanes(pdata);
+> +       max_dp_lanes = ti_sn_get_max_lanes(pdata);
+> +       pdata->dp_lanes = min(pdata->dp_lanes, max_dp_lanes);
+>
+>         /* DSI_A lane config */
+> -       val = CHA_DSI_LANES(4 - pdata->dsi->lanes);
+> +       val = CHA_DSI_LANES(SN_MAX_DP_LANES - pdata->dsi->lanes);
+>         regmap_update_bits(pdata->regmap, SN_DSI_LANES_REG,
+>                            CHA_DSI_LANES_MASK, val);
+>
+> +       regmap_write(pdata->regmap, SN_LN_ASSIGN_REG, pdata->ln_assign);
+> +       regmap_update_bits(pdata->regmap, SN_ENH_FRAME_REG, LN_POLRS_MASK,
+> +                          pdata->ln_polrs << LN_POLRS_OFFSET);
+> +
+>         /* set dsi clk frequency value */
+>         ti_sn_bridge_set_dsi_rate(pdata);
+>
+> @@ -1063,6 +1066,55 @@ static int ti_sn_setup_gpio_controller(struct ti_sn_bridge *pdata)
+>         return ret;
+>  }
+>
+> +static void ti_sn_bridge_parse_lanes(struct ti_sn_bridge *pdata,
+> +                                    struct device_node *np)
+> +{
+> +       u32 lane_assignments[SN_MAX_DP_LANES] = { 0, 1, 2, 3 };
+> +       u32 lane_polarities[SN_MAX_DP_LANES] = { };
+> +       struct device_node *endpoint;
+> +       u8 ln_assign = 0;
+> +       u8 ln_polrs = 0;
+> +       int dp_lanes;
+> +       int i;
+> +
+> +       /*
+> +        * Read config from the device tree about lane remapping and lane
+> +        * polarities.  These are optional and we assume identity map and
+> +        * normal polarity if nothing is specified.  It's OK to specify just
+> +        * data-lanes but not lane-polarities but not vice versa.
+> +        *
+> +        * Error checking is light (we just make sure we don't crash or
+> +        * buffer overrun) and we assume dts is well formed and specifying
+> +        * mappings that the hardware supports.
+> +        */
+> +       endpoint = of_graph_get_endpoint_by_regs(np, 1, -1);
+> +       dp_lanes = of_property_count_u32_elems(endpoint, "data-lanes");
+> +       if (dp_lanes > 0 && dp_lanes <= SN_MAX_DP_LANES) {
+> +               of_property_read_u32_array(endpoint, "data-lanes",
+> +                                          lane_assignments, dp_lanes);
+> +               of_property_read_u32_array(endpoint, "lane-polarities",
+> +                                          lane_polarities, dp_lanes);
+> +       } else {
+> +               dp_lanes = SN_MAX_DP_LANES;
+> +       }
+> +       of_node_put(endpoint);
+> +
+> +       /*
+> +        * Convert into register format.  Loop over all lanes even if
+> +        * data-lanes had fewer elements so that we nicely initialize
+> +        * the LN_ASSIGN register.
+> +        */
+> +       for (i = SN_MAX_DP_LANES - 1; i >= 0; i--) {
+> +               ln_assign = ln_assign << LN_ASSIGN_WIDTH | lane_assignments[i];
+> +               ln_polrs = ln_polrs << 1 | lane_polarities[i];
+> +       }
+> +
+> +       /* Stash in our struct for when we power on */
+> +       pdata->dp_lanes = dp_lanes;
+> +       pdata->ln_assign = ln_assign;
+> +       pdata->ln_polrs = ln_polrs;
+> +}
+> +
+>  static int ti_sn_bridge_probe(struct i2c_client *client,
+>                               const struct i2c_device_id *id)
+>  {
+> @@ -1105,6 +1157,8 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
+>                 return ret;
+>         }
+>
+> +       ti_sn_bridge_parse_lanes(pdata, client->dev.of_node);
+> +
+>         ret = ti_sn_bridge_parse_regulators(pdata);
+>         if (ret) {
+>                 DRM_ERROR("failed to parse regulators\n");
+> --
+> 2.26.2.645.ge9eca65c58-goog
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
