@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E6B1D5CF3
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 02:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6374D1D5D16
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 02:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbgEPAKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 20:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41048 "EHLO
+        id S1727772AbgEPAKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 20:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727817AbgEPAKk (ORCPT
+        by vger.kernel.org with ESMTP id S1726290AbgEPAKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 20:10:40 -0400
+        Fri, 15 May 2020 20:10:38 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A00DC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 17:10:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5E9C05BD0A
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 17:10:38 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jZkP5-00022O-1o; Sat, 16 May 2020 02:10:11 +0200
+        id 1jZkP6-00025f-El; Sat, 16 May 2020 02:10:12 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 89899100605;
-        Sat, 16 May 2020 02:10:10 +0200 (CEST)
-Message-Id: <20200515235124.673436293@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id C3057FF834;
+        Sat, 16 May 2020 02:10:11 +0200 (CEST)
+Message-Id: <20200515235124.783722942@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Sat, 16 May 2020 01:45:50 +0200
+Date:   Sat, 16 May 2020 01:45:51 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -50,7 +50,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V6 03/37] nmi, tracing: Provide nmi_enter/exit_notrace()
+Subject: [patch V6 04/37] x86: Make hardware latency tracing explicit
 References: <20200515234547.710474468@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -64,65 +64,132 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-To fully isolate #DB and #BP from instrumentable code it's necessary to
-avoid invoking the hardware latency tracer on nmi_enter/exit().
+The hardware latency tracer calls into trace_sched_clock and ends up in
+various instrumentable functions which is problemeatic vs. the kprobe
+handling especially the text poke machinery. It's invoked from
+nmi_enter/exit(), i.e. non-instrumentable code.
 
-Provide nmi_enter/exit() variants which are not invoking the hardware
-latency tracer. That allows to put calls explicitely into the call sites
-outside of the kprobe handling.
+Use nmi_enter/exit_notrace() instead. These variants do not invoke the
+hardware latency tracer which avoids chasing down complex callchains to
+make them non-instrumentable.
+
+The real interesting measurement is the actual NMI handler. Add an explicit
+invocation for the hardware latency tracer to it.
+
+#DB and #BP are uninteresting as they really should not be in use when
+analzying hardware induced latencies.
+
+If #DF hits, hardware latency is definitely not interesting anymore and in
+case of a machine check the hardware latency is not the most troublesome
+issue either.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 ---
- include/linux/hardirq.h |   23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+ arch/x86/kernel/cpu/mce/core.c |    4 ++--
+ arch/x86/kernel/nmi.c          |    6 ++++--
+ arch/x86/kernel/traps.c        |   12 +++++++-----
+ 3 files changed, 13 insertions(+), 9 deletions(-)
 
---- a/include/linux/hardirq.h
-+++ b/include/linux/hardirq.h
-@@ -76,8 +76,16 @@ extern void irq_exit(void);
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1916,7 +1916,7 @@ static __always_inline void exc_machine_
+ 	    mce_check_crashing_cpu())
+ 		return;
  
- /*
-  * nmi_enter() can nest up to 15 times; see NMI_BITS.
-+ *
-+ * ftrace_count_nmi() only increments a counter and is noinstr safe so it
-+ * can be invoked in nmi_enter_notrace(). ftrace_nmi_handler_enter/exit()
-+ * does time stamping and will be invoked in the actual NMI handling after
-+ * an instrumentable section has been reached.
-+ *
-+ * nmi_enter/exit() still calls into the tracer so existing callers
-+ * wont break.
-  */
--#define nmi_enter()						\
-+#define nmi_enter_notrace()					\
- 	do {							\
- 		arch_nmi_enter();				\
- 		printk_nmi_enter();				\
-@@ -87,10 +95,15 @@ extern void irq_exit(void);
- 		rcu_nmi_enter();				\
- 		lockdep_hardirq_enter();			\
- 		ftrace_count_nmi();				\
-+	} while (0)
-+
-+#define nmi_enter()						\
-+	do {							\
-+		nmi_enter_notrace();				\
- 		ftrace_nmi_handler_enter();			\
- 	} while (0)
+-	nmi_enter();
++	nmi_enter_notrace();
+ 	/*
+ 	 * The call targets are marked noinstr, but objtool can't figure
+ 	 * that out because it's an indirect call. Annotate it.
+@@ -1924,7 +1924,7 @@ static __always_inline void exc_machine_
+ 	instrumentation_begin();
+ 	machine_check_vector(regs);
+ 	instrumentation_end();
+-	nmi_exit();
++	nmi_exit_notrace();
+ }
  
--#define nmi_exit()						\
-+#define nmi_exit_notrace()					\
- 	do {							\
- 		ftrace_nmi_handler_exit();			\
- 		lockdep_hardirq_exit();				\
-@@ -102,4 +115,10 @@ extern void irq_exit(void);
- 		arch_nmi_exit();				\
- 	} while (0)
+ static __always_inline void exc_machine_check_user(struct pt_regs *regs)
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -334,6 +334,7 @@ static noinstr void default_do_nmi(struc
+ 	__this_cpu_write(last_nmi_rip, regs->ip);
  
-+#define nmi_exit()						\
-+	do {							\
-+		ftrace_nmi_handler_exit();			\
-+		nmi_exit_notrace();				\
-+	} while (0)
-+
- #endif /* LINUX_HARDIRQ_H */
+ 	instrumentation_begin();
++	ftrace_nmi_handler_enter();
+ 
+ 	handled = nmi_handle(NMI_LOCAL, regs);
+ 	__this_cpu_add(nmi_stats.normal, handled);
+@@ -420,6 +421,7 @@ static noinstr void default_do_nmi(struc
+ 		unknown_nmi_error(reason, regs);
+ 
+ out:
++	ftrace_nmi_handler_exit();
+ 	instrumentation_end();
+ }
+ 
+@@ -536,14 +538,14 @@ DEFINE_IDTENTRY_NMI(exc_nmi)
+ 	}
+ #endif
+ 
+-	nmi_enter();
++	nmi_enter_notrace();
+ 
+ 	inc_irq_stat(__nmi_count);
+ 
+ 	if (!ignore_nmis)
+ 		default_do_nmi(regs);
+ 
+-	nmi_exit();
++	nmi_exit_notrace();
+ 
+ #ifdef CONFIG_X86_64
+ 	if (unlikely(this_cpu_read(update_debug_stack))) {
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -387,7 +387,7 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
+ 	}
+ #endif
+ 
+-	nmi_enter();
++	nmi_enter_notrace();
+ 	instrumentation_begin();
+ 	notify_die(DIE_TRAP, str, regs, error_code, X86_TRAP_DF, SIGSEGV);
+ 
+@@ -632,12 +632,14 @@ DEFINE_IDTENTRY_RAW(exc_int3)
+ 		instrumentation_end();
+ 		idtentry_exit(regs);
+ 	} else {
+-		nmi_enter();
++		nmi_enter_notrace();
+ 		instrumentation_begin();
++		ftrace_nmi_handler_enter();
+ 		if (!do_int3(regs))
+ 			die("int3", regs, 0);
++		ftrace_nmi_handler_exit();
+ 		instrumentation_end();
+-		nmi_exit();
++		nmi_exit_notrace();
+ 	}
+ }
+ 
+@@ -849,7 +851,7 @@ static void noinstr handle_debug(struct
+ static __always_inline void exc_debug_kernel(struct pt_regs *regs,
+ 					     unsigned long dr6)
+ {
+-	nmi_enter();
++	nmi_enter_notrace();
+ 	/*
+ 	 * The SDM says "The processor clears the BTF flag when it
+ 	 * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
+@@ -871,7 +873,7 @@ static __always_inline void exc_debug_ke
+ 	if (dr6)
+ 		handle_debug(regs, dr6, false);
+ 
+-	nmi_exit();
++	nmi_exit_notrace();
+ }
+ 
+ static __always_inline void exc_debug_user(struct pt_regs *regs,
 
