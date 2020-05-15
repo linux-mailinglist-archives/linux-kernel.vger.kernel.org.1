@@ -2,105 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2BF1D49B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94AD51D49B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728128AbgEOJea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 05:34:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:52002 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727803AbgEOJe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 05:34:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BD32D2F;
-        Fri, 15 May 2020 02:34:28 -0700 (PDT)
-Received: from bogus (unknown [10.37.12.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 75A863F71E;
-        Fri, 15 May 2020 02:34:27 -0700 (PDT)
-Date:   Fri, 15 May 2020 10:34:24 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Etienne Carriere <etienne.carriere@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] firmware: arm_scmi: fix SMCCC_RET_NOT_SUPPORTED
- management
-Message-ID: <20200515093424.GC23671@bogus>
-References: <20200514082428.27864-1-etienne.carriere@linaro.org>
- <20200514142924.GC23401@bogus>
- <CAN5uoS_bimZsFqwaODRRWeCe15JMepQa2z9J0+dq7qNfwxRsug@mail.gmail.com>
+        id S1728101AbgEOJf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 05:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727803AbgEOJf1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 05:35:27 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C0AC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 02:35:27 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jZWjz-00049l-9B; Fri, 15 May 2020 11:34:51 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id B1E28100606; Fri, 15 May 2020 11:34:50 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
+        paulmck <paulmck@kernel.org>, Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>, rostedt <rostedt@goodmis.org>,
+        "Joel Fernandes\, Google" <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch V4 part 1 14/36] x86/entry: Get rid of ist_begin/end_non_atomic()
+In-Reply-To: <1777514130.20137.1589410645669.JavaMail.zimbra@efficios.com>
+References: <20200505131602.633487962@linutronix.de> <20200505134059.462640294@linutronix.de> <1777514130.20137.1589410645669.JavaMail.zimbra@efficios.com>
+Date:   Fri, 15 May 2020 11:34:50 +0200
+Message-ID: <877dxdy211.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAN5uoS_bimZsFqwaODRRWeCe15JMepQa2z9J0+dq7qNfwxRsug@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 05:06:22PM +0200, Etienne Carriere wrote:
-> On Thu, 14 May 2020 at 16:29, Sudeep Holla <sudeep.holla@arm.com> wrote:
-> >
-> > On Thu, May 14, 2020 at 10:24:28AM +0200, Etienne Carriere wrote:
-> > > Fix management of argument a0 output value of arm_smccc_1_1_invoke() that
-> > > should consider only SMCCC_RET_NOT_SUPPORTED as reporting an unsupported
-> > > function ID as correctly stated in the inline comment.
-> > >
-> >
-> > I agree on the comment part, but ...
-> >
-> > > Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
-> > > ---
-> > >  drivers/firmware/arm_scmi/smc.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
-> > > index 49bc4b0e8428..637ad439545f 100644
-> > > --- a/drivers/firmware/arm_scmi/smc.c
-> > > +++ b/drivers/firmware/arm_scmi/smc.c
-> > > @@ -115,7 +115,7 @@ static int smc_send_message(struct scmi_chan_info *cinfo,
-> > >       mutex_unlock(&scmi_info->shmem_lock);
-> > >
-> > >       /* Only SMCCC_RET_NOT_SUPPORTED is valid error code */
-> > > -     if (res.a0)
-> > > +     if (res.a0 == SMCCC_RET_NOT_SUPPORTED)
-> > >               return -EOPNOTSUPP;
-> >
-> > Now this will return 0 for all values other than SMCCC_RET_NOT_SUPPORTED.
-> > Is that what we need ? Or do you see non-zero res.a0 for a success case ?
-> > If later, we need some fixing, otherwise it is safer to leave it as is
-> > IMO.
-> 
-> Firmware following SMCCC v1.x for some OEM/SiP invocation may simply
-> not modify invocation register argument a0 on invocation with a
-> SCMI-SMC transport function ID.
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> writes:
 
-Yikes, I need to check specification again for this. I will also
-check with the firmware implementation team/
-
-> Resulting in res.a0 == scmi_info->func_id here. Which is, by SMCCC
-> v1.x not an error.
+> ----- On May 5, 2020, at 9:16 AM, Thomas Gleixner tglx@linutronix.de wrote:
 >
-
-But that may get fatal the result in some other cases, not here for sure.
-But I would rather flag that as error so that it is fixed. Anyways I will
-check on this again/
-
-> From SMCCC v1.x only SMCCC_RET_NOT_SUPPORTED (-1 signed extended is a
-> reserved ) is a generic return error whatever function ID value.
+>> This is completely overengineered and definitely not an interface which
+>> should be made available to anything else than this particular MCE case.
 >
-
-Not really, there are couple more I think now. But yes I need to check
-on the generic return part.
-
-> Or consider part of the SCMI-SMC transport API that output arg a0
-> shall be 0 on success, SMCCC_RET_NOT_SUPPORTED if function ID is not
-> supported and any non-zero value for non-generic **error** codes.
+> This patch introduces a significant change under the radar (not explained
+> in the changelog): it turns preempt_enable_no_resched() into preempt_enable().
 >
+> Why, and why was it a no_resched() in the first place ? Was it for performance
+> or correctness reasons ?
 
-I prefer that. Anyways I will check and if anything changes I will ping
-back on this thread.
+_no_resched() is an optimization when in code which cannot schedule
+anyway. But #MC is definitely not a performance critical hotpath.
 
---
-Regards,
-Sudeep
+So yes, it's a change but really not significant.
+
+>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>> ---
+< Remove useless gunk >
+
+Can you please trim your replies?
+
+Thanks,
+
+        tglx
