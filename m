@@ -2,233 +2,793 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379F11D4513
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 07:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3FF1D451F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 07:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgEOFSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 01:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33046 "EHLO
+        id S1726246AbgEOFVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 01:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726000AbgEOFSA (ORCPT
+        by vger.kernel.org with ESMTP id S1726000AbgEOFVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 01:18:00 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E8DC05BD09
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 22:17:58 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id k7so445127pjs.5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 22:17:58 -0700 (PDT)
+        Fri, 15 May 2020 01:21:37 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09686C05BD09
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 22:21:36 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id g20so499391qvb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 22:21:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hMleKhZRwYnYk8trdPGYl13OjWa3go/Bt1PhL2DTPXo=;
-        b=CpQAn/SFEFpBwXkURwgPzqVVevnZWk4x5rKIicMyToKZfczl/E4eQjP8SVh/hNwYcS
-         6DUz8bRV48Bj60vn5QXNut9LrXYxC5DIWKVN4GXxoF7r81tieIVTXvpM6xfcjl4MiAqp
-         xsXFqJ7QuY1mhPjKV63M1s3zHaSxdJzkxb5B8Gm5VhtawWhSMz7HmYs0rEQKUrcU7tg8
-         L+FYgtEvAq6ol8PfFZ3jjujajTO3kC9vaHWNOepSDCX2p0A0f2BOmmJljwfPsL52VLOD
-         1TUvc/YfYy2vDMezlAsJFblCi4WifLks0PTNWpwHwqDc1Wy4y+XjKYgUV1U5HNI8eqRj
-         1A3A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XEfEF4+dPRQahCgC6lS+4R8rkPZHOLYbEbtzjloUy74=;
+        b=Jkalpp91a3XJxryufk490eGnJSnXtlwDY0ojkMAx4a31U295AxMJxsr9nEjBLcGlD1
+         cxqgHiJbKDqdY+4ughjurHHFkKNBhVwCLjA94TYEmB0RCBLvGnp0VlWZ4iujBrOM6H1g
+         i/GZ/8sxwiYx9n49YCyAAF9VfE5788LgTiKfGnW7Bt04L84fFih5PuubW9QbC7535AGZ
+         SvdyxuaBj4ox+0FvbPS8/ZLGVSrxv7qPV7p7KJEz1GHp5qqzh6/PjkhkFvNnxC1Miwd1
+         yPx7gYlI8kEmRFG3CqS7ADaod/BlpfF9tG+4WQ/wnc6H0FqCqduSv9FkOj//O+jFok+r
+         YmUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hMleKhZRwYnYk8trdPGYl13OjWa3go/Bt1PhL2DTPXo=;
-        b=HS1RNSEiX6DjBU57oD0QbKFVAoE8dyrD/VudZu0coHJ8pFM3U7mV3X384YWrMpUiA+
-         FCMaKO0zg932kpddAlj5eyD0e9fx+Z4v1pDEJAsKo7oUt/1pNgfz8nP2E+IliVZ0yqry
-         PRZZpOBxKDY6vb8JrIQ9DfPU7e5iuSBWFDYvlMad/sExxNekbJmMSEHJyjZIU21K9B6y
-         xKlCL6tr73LEjtN/CLJNHiPlHNk4L5SS7Ck++VIW8p9BKK7Wh4BvBenhJMzjQLzkfF6q
-         EGofrEcAu0iO7zYaeFKCqhL9dJofIR+8aVdmTuuvB2EpjFvqhLuJ5g4+yYeO6vCXq0ey
-         7AKg==
-X-Gm-Message-State: AOAM532vIvIU2gHAJ/Ln0vLAILNf0Q/HeENkbJfWMKJEQoWZPV40T6lt
-        Det8tlbvh3TpVe9M0LmvVprZ2w==
-X-Google-Smtp-Source: ABdhPJylEXYFkUKbsA7pjWiU7zxQPtu31zx2CCb2GDHOcQAinrwKDrX/1WSJ+z2qGzzZjFhZ364V2A==
-X-Received: by 2002:a17:90a:e28c:: with SMTP id d12mr1611674pjz.19.1589519877981;
-        Thu, 14 May 2020 22:17:57 -0700 (PDT)
-Received: from localhost ([122.167.130.103])
-        by smtp.gmail.com with ESMTPSA id fh18sm39271712pjb.0.2020.05.14.22.17.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 May 2020 22:17:57 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC] dt-bindings: mailbox: add doorbell support to ARM MHU
-Date:   Fri, 15 May 2020 10:47:38 +0530
-Message-Id: <0a50f0cf5593baeb628dc8606c523665e5e2ae6c.1589519600.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XEfEF4+dPRQahCgC6lS+4R8rkPZHOLYbEbtzjloUy74=;
+        b=ImaMgZaTEs0aBE2zVEHIzmtTPTjl5PzjsnkvuE8klhkfG8JK3FQQtv6VXKbbi70htS
+         kRuJ/AcB1Tsvw/VIY1Ai/0dDz89iR7OR/S3YsIkmuSZJWPvvpmLEczWNYdc2Awzfn3xS
+         xNCNv0PiCSGqlG4hEYQzfWAkbLY44xh2S5rX8Sj7oUM4igmAQXOHPYhv2ATfjL83R7ad
+         wBfu2tTZlxj0arpQq0BVhAvP3XMqu/LbO71IiSGrk7gyGMSd2I4dp5iLAJWXExyCCcj4
+         XmvIWD1zrpZl9aq6Yce0WjVL/58Bg+A+6c8U17/Oa/P4mBvOXB+gXuUo8JbRBdHOpVmR
+         aDFA==
+X-Gm-Message-State: AOAM5305KsmovT5fF09xX74iOhT+Rnr+fafa2hcTeuKfBBLTPLp25pXX
+        oUHdSu6J+akq7krmELozxQg9qg+3ZZAlVR33CJXf6R5pEk9rHw==
+X-Google-Smtp-Source: ABdhPJxiU+Z+54J1LjaIFuOusK7vyg3ZVK0SHjiwUvrZI+dm7epF0b0JkGwo2TO/4vMYGRNGR+SLv1xKz6nAIMLGpDE=
+X-Received: by 2002:a0c:ee4b:: with SMTP id m11mr1929640qvs.218.1589520093159;
+ Thu, 14 May 2020 22:21:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200506084039.249977-1-eizan@chromium.org> <20200506184018.v2.1.I27dac0775ba64deff6a91837f39bfba83dccdf84@changeid>
+ <CAFqH_513GOtvB8Ydfe_Z3wfoLMgrJ70E1z4sZ6hOv_7L3fRn3g@mail.gmail.com>
+ <CAOak1e9os2RxEtsLkkFMfCpOxvmHg2B0UB+1cNt2nL=5CE8Mmg@mail.gmail.com> <7eb1d912-9115-ecd6-f1ca-28ac5063bcf0@collabora.com>
+In-Reply-To: <7eb1d912-9115-ecd6-f1ca-28ac5063bcf0@collabora.com>
+From:   Eizan Miyamoto <eizan@google.com>
+Date:   Fri, 15 May 2020 15:21:21 +1000
+Message-ID: <CAOak1e_OFzfmecRnQP9m3PPQ1cXQ7B_sK32WMyA_MVEZH=LfHg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] [media] mtk-mdp: add driver to probe mdp components
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        Eizan Miyamoto <eizan@chromium.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudeep Holla <sudeep.holla@arm.com>
+On Thu, May 7, 2020 at 11:44 PM Enric Balletbo i Serra
+<enric.balletbo@collabora.com> wrote:
+>
+> Hi Eizan,
+>
+> On 7/5/20 13:11, Eizan Miyamoto wrote:
+> > On Thu, May 7, 2020 at 2:54 AM Enric Balletbo Serra <eballetbo@gmail.com> wrote:
+> >>
+> >> Hi Eizan,
+> >>
+> >> Thank you for the patch.
+> >>
+> >> Missatge de Eizan Miyamoto <eizan@chromium.org> del dia dc., 6 de maig
+> >> 2020 a les 10:41:
+> >>>
+> >>> Broadly, this patch (1) adds a driver for various MTK MDP components to
+> >>> go alongside the main MTK MDP driver, and (2) hooks them all together
+> >>> using the component framework.
+> >>>
+> >>> (1) Up until now, the MTK MDP driver controls 8 devices in the device
+> >>> tree on its own. When running tests for the hardware video decoder, we
+> >>> found that the iommus and LARBs were not being properly configured. To
+> >>> configure them, a driver for each be added to mtk_mdp_comp so that
+> >>> mtk_iommu_add_device() can (eventually) be called from dma_configure()
+> >>> inside really_probe().
+> >>>
+> >>> (2) The integration into the component framework allows us to defer the
+> >>> registration with the v4l2 subsystem until all the MDP-related devices
+> >>> have been probed, so that the relevant device node does not become
+> >>> available until initialization of all the components is complete.
+> >>>
+> >>> Some notes about how the component framework has been integrated:
+> >>>
+> >>> - The driver for the rdma0 component serves double duty as the "master"
+> >>>   (aggregate) driver as well as a component driver. This is a non-ideal
+> >>>   compromise until a better solution is developed. This device is
+> >>>   differentiated from the rest by checking for a "mediatek,vpu" property
+> >>>   in the device node.
+> >>>
+> >>> - The list of mdp components remains hard-coded as mtk_mdp_comp_dt_ids[]
+> >>>   in mtk_mdp_core.c, and as mtk_mdp_comp_driver_dt_match[] in
+> >>>   mtk_mdp_comp.c. This unfortunate duplication of information is
+> >>>   addressed in a following patch in this series.
+> >>>
+> >>> - The component driver calls component_add() for each device that is
+> >>>   probed.
+> >>>
+> >>> - In mtk_mdp_probe (the "master" device), we scan the device tree for
+> >>>   any matching nodes against mtk_mdp_comp_dt_ids, and add component
+> >>>   matches for them. The match criteria is a matching device node
+> >>>   pointer.
+> >>>
+> >>> - When the set of components devices that have been probed corresponds
+> >>>   with the list that is generated by the "master", the callback to
+> >>>   mtk_mdp_master_bind() is made, which then calls the component bind
+> >>>   functions.
+> >>>
+> >>> - Inside mtk_mdp_master_bind(), once all the component bind functions
+> >>>   have been called, we can then register our device to the v4l2
+> >>>   subsystem.
+> >>>
+> >>> - The call to pm_runtime_enable() in the master device is called after
+> >>>   all the components have been registered by their bind() functions
+> >>>   called by mtk_mtp_master_bind(). As a result, the list of components
+> >>>   will not change while power management callbacks mtk_mdp_suspend()/
+> >>>   resume() are accessing the list of components.
+> >>>
+> >>> Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
+> >>> ---
+> >>>
+> >>> Changes in v2: None
+> >>>
+> >>
+> >> Not really true :-)
+> >>
+> >>>  drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 150 +++++++++++++--
+> >>>  drivers/media/platform/mtk-mdp/mtk_mdp_comp.h |  26 +--
+> >>>  drivers/media/platform/mtk-mdp/mtk_mdp_core.c | 176 +++++++++++++-----
+> >>>  drivers/media/platform/mtk-mdp/mtk_mdp_core.h |   1 +
+> >>>  4 files changed, 263 insertions(+), 90 deletions(-)
+> >>>
+> >>> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
+> >>> index 362fff924aef..5b4d482df778 100644
+> >>> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
+> >>> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
+> >>> @@ -5,14 +5,53 @@
+> >>>   */
+> >>>
+> >>>  #include <linux/clk.h>
+> >>> +#include <linux/component.h>
+> >>>  #include <linux/device.h>
+> >>> -#include <linux/of.h>
+> >>> +#include <linux/module.h>
+> >>>  #include <linux/of_address.h>
+> >>> +#include <linux/of_device.h>
+> >>> +#include <linux/of.h>
+> >>> +#include <linux/of_irq.h>
+> >>>  #include <linux/of_platform.h>
+> >>>  #include <soc/mediatek/smi.h>
+> >>> +#include <linux/platform_device.h>
+> >>>
+> >>>  #include "mtk_mdp_comp.h"
+> >>> -
+> >>> +#include "mtk_mdp_core.h"
+> >>> +
+> >>> +/**
+> >>> + * enum mtk_mdp_comp_type - the MDP component
+> >>> + * @MTK_MDP_RDMA:              Read DMA
+> >>> + * @MTK_MDP_RSZ:               Reszer
+> >>> + * @MTK_MDP_WDMA:              Write DMA
+> >>> + * @MTK_MDP_WROT:              Write DMA with rotation
+> >>> + * @MTK_MDP_COMP_TYPE_MAX:     Placeholder for num elems in this enum
+> >>> + */
+> >>> +enum mtk_mdp_comp_type {
+> >>> +       MTK_MDP_RDMA,
+> >>> +       MTK_MDP_RSZ,
+> >>> +       MTK_MDP_WDMA,
+> >>> +       MTK_MDP_WROT,
+> >>> +       MTK_MDP_COMP_TYPE_MAX,
+> >>> +};
+> >>> +
+> >>> +static const struct of_device_id mtk_mdp_comp_driver_dt_match[] = {
+> >>> +       {
+> >>> +               .compatible = "mediatek,mt8173-mdp-rdma",
+> >>> +               .data = (void *)MTK_MDP_RDMA
+> >>> +       }, {
+> >>> +               .compatible = "mediatek,mt8173-mdp-rsz",
+> >>> +               .data = (void *)MTK_MDP_RSZ
+> >>> +       }, {
+> >>> +               .compatible = "mediatek,mt8173-mdp-wdma",
+> >>> +               .data = (void *)MTK_MDP_WDMA
+> >>> +       }, {
+> >>> +               .compatible = "mediatek,mt8173-mdp-wrot",
+> >>> +               .data = (void *)MTK_MDP_WROT
+> >>> +       },
+> >>> +       { }
+> >>> +};
+> >>> +MODULE_DEVICE_TABLE(of, mtk_mdp_comp_driver_dt_match);
+> >>>
+> >>>  void mtk_mdp_comp_clock_on(struct device *dev, struct mtk_mdp_comp *comp)
+> >>>  {
+> >>> @@ -20,10 +59,14 @@ void mtk_mdp_comp_clock_on(struct device *dev, struct mtk_mdp_comp *comp)
+> >>>
+> >>>         if (comp->larb_dev) {
+> >>>                 err = mtk_smi_larb_get(comp->larb_dev);
+> >>> -               if (err)
+> >>> +               if (err) {
+> >>> +                       enum mtk_mdp_comp_type comp_type =
+> >>> +                               (enum mtk_mdp_comp_type)
+> >>> +                               of_device_get_match_data(dev);
+> >>>                         dev_err(dev,
+> >>>                                 "failed to get larb, err %d. type:%d\n",
+> >>> -                               err, comp->type);
+> >>> +                               err, comp_type);
+> >>> +               }
+> >>>         }
+> >>>
+> >>>         for (i = 0; i < ARRAY_SIZE(comp->clk); i++) {
+> >>> @@ -32,8 +75,8 @@ void mtk_mdp_comp_clock_on(struct device *dev, struct mtk_mdp_comp *comp)
+> >>>                 err = clk_prepare_enable(comp->clk[i]);
+> >>>                 if (err)
+> >>>                         dev_err(dev,
+> >>> -                       "failed to enable clock, err %d. type:%d i:%d\n",
+> >>> -                               err, comp->type, i);
+> >>> +                               "failed to enable clock, err %d. i:%d\n",
+> >>> +                               err, i);
+> >>>         }
+> >>>  }
+> >>>
+> >>> @@ -51,16 +94,41 @@ void mtk_mdp_comp_clock_off(struct device *dev, struct mtk_mdp_comp *comp)
+> >>>                 mtk_smi_larb_put(comp->larb_dev);
+> >>>  }
+> >>>
+> >>> -int mtk_mdp_comp_init(struct device *dev, struct device_node *node,
+> >>> -                     struct mtk_mdp_comp *comp,
+> >>> -                     enum mtk_mdp_comp_type comp_type)
+> >>> +static int mtk_mdp_comp_bind(struct device *dev, struct device *master,
+> >>> +                       void *data)
+> >>> +{
+> >>> +       struct mtk_mdp_comp *comp = dev_get_drvdata(dev);
+> >>> +       struct mtk_mdp_dev *mdp = data;
+> >>> +
+> >>> +       mtk_mdp_register_component(mdp, comp);
+> >>> +
+> >>> +       return 0;
+> >>> +}
+> >>> +
+> >>> +static void mtk_mdp_comp_unbind(struct device *dev, struct device *master,
+> >>> +                          void *data)
+> >>> +{
+> >>> +       struct mtk_mdp_dev *mdp = data;
+> >>> +       struct mtk_mdp_comp *comp = dev_get_drvdata(dev);
+> >>> +
+> >>> +       mtk_mdp_unregister_component(mdp, comp);
+> >>> +}
+> >>> +
+> >>> +static const struct component_ops mtk_mdp_component_ops = {
+> >>> +       .bind   = mtk_mdp_comp_bind,
+> >>> +       .unbind = mtk_mdp_comp_unbind,
+> >>> +};
+> >>> +
+> >>> +int mtk_mdp_comp_init(struct mtk_mdp_comp *comp, struct device *dev)
+> >>>  {
+> >>>         struct device_node *larb_node;
+> >>>         struct platform_device *larb_pdev;
+> >>>         int i;
+> >>> +       struct device_node *node = dev->of_node;
+> >>> +       enum mtk_mdp_comp_type comp_type =
+> >>> +                (enum mtk_mdp_comp_type)of_device_get_match_data(dev);
+> >>>
+> >>> -       comp->dev_node = of_node_get(node);
+> >>> -       comp->type = comp_type;
+> >>> +       INIT_LIST_HEAD(&comp->node);
+> >>>
+> >>>         for (i = 0; i < ARRAY_SIZE(comp->clk); i++) {
+> >>>                 comp->clk[i] = of_clk_get(node, i);
+> >>> @@ -72,15 +140,15 @@ int mtk_mdp_comp_init(struct device *dev, struct device_node *node,
+> >>>                 }
+> >>>
+> >>>                 /* Only RDMA needs two clocks */
+> >>> -               if (comp->type != MTK_MDP_RDMA)
+> >>> +               if (comp_type != MTK_MDP_RDMA)
+> >>>                         break;
+> >>>         }
+> >>>
+> >>>         /* Only DMA capable components need the LARB property */
+> >>>         comp->larb_dev = NULL;
+> >>> -       if (comp->type != MTK_MDP_RDMA &&
+> >>> -           comp->type != MTK_MDP_WDMA &&
+> >>> -           comp->type != MTK_MDP_WROT)
+> >>> +       if (comp_type != MTK_MDP_RDMA &&
+> >>> +           comp_type != MTK_MDP_WDMA &&
+> >>> +           comp_type != MTK_MDP_WROT)
+> >>>                 return 0;
+> >>>
+> >>>         larb_node = of_parse_phandle(node, "mediatek,larb", 0);
+> >>> @@ -103,7 +171,55 @@ int mtk_mdp_comp_init(struct device *dev, struct device_node *node,
+> >>>         return 0;
+> >>>  }
+> >>>
+> >>> -void mtk_mdp_comp_deinit(struct device *dev, struct mtk_mdp_comp *comp)
+> >>> +static int mtk_mdp_comp_probe(struct platform_device *pdev)
+> >>> +{
+> >>> +       struct device *dev = &pdev->dev;
+> >>> +       struct device_node *vpu_node;
+> >>> +       int status;
+> >>> +       struct mtk_mdp_comp *comp;
+> >>> +
+> >>> +       vpu_node = of_parse_phandle(dev->of_node, "mediatek,vpu", 0);
+> >>> +       if (vpu_node) {
+> >>> +               of_node_put(vpu_node);
+> >>> +               /*
+> >>> +                * The device tree node with a mediatek,vpu property is deemed
+> >>> +                * the MDP "master" device, we don't want to add a component
+> >>> +                * for it in this function because the initialization for the
+> >>> +                * master is done elsewhere.
+> >>> +                */
+> >>> +               dev_info(dev, "vpu node found, not probing\n");
+> >>
+> >> Could you explain a bit more this? When this can happen? I am
+> >> wondering if you are trying to solve a non-existing problem upstream.
+> >
+> > That line of code will be executed when probing for the rdma@14001000
+> > device, for which the probe function in mtk_mdp_core.c will also be run
+> > because there is a second '.compatible' string ("mediatek,mt8173-mdp") in
+> > that device node.
+> >
+>
+> Shouldn't we remove that second compatible then? (I don't think we break
+> compatibility, so should be safe)
 
-Hi Rob, Arnd and Jassi,
+Hmm, it is possible to remove it, but then I think we will need to add
+similar logic to the probe() function in mtk_mdp_core to return early as well
+but when the vpu node is *not* found. My rationale is that there are two
+device nodes with a .compatible = "mediatek,mt8173-mdp-rdma" property:
+rdma@14001000 and rdma@14002000 and so the probe functions for the different
+drivers need to be careful about what device they run for.
 
-This stuff has been doing rounds on the mailing list since several years
-now with no agreed conclusion by all the parties. And here is another
-attempt to get some feedback from everyone involved to close this once
-and for ever. Your comments will very much be appreciated.
+On the other hand, I wonder if our effort is better spent splitting the
+rdma@14001000 into two: one for a component device that retains just
+a .compatible = "mediatek,mt8173-mdp-rdma", and another for an aggregate
+that contains a .compatible = "mediatek,mt8173-mdp". If we go this way, I
+propose we do it in a subsequent change.
 
-The ARM MHU is defined here in the TRM [1] for your reference, which
-states following:
+>
+> FWIW I didn't see this message on my tests on Elm, do you know why?
 
-	"The MHU drives the signal using a 32-bit register, with all 32
-	bits logically ORed together. The MHU provides a set of
-	registers to enable software to set, clear, and check the status
-	of each of the bits of this register independently.  The use of
-	32 bits for each interrupt line enables software to provide more
-	information about the source of the interrupt. For example, each
-	bit of the register can be associated with a type of event that
-	can contribute to raising the interrupt."
+I think the reason is that the probe function in mtk_mdp_core.c is (by
+happenstance) called first, and because it succeeds, the probe function in
+mtk_mdp_comp.c won't get called for that device node.
 
-On few other platforms, like qcom, similar doorbell mechanism is present
-with separate interrupt for each of the bits (that's how I understood
-it), while in case of ARM MHU, there is a single interrupt line for all
-the 32 bits. Also in case of ARM MHU, these registers and interrupts
-have 3 copies for different priority levels, i.e. low priority
-non-secure, high priority non-secure and secure channels.
+Specifically, __driver_attach only calls driver_probe_device (through
+__driver_attach_async_helper) if dev->driver is NULL. dev->driver is set
+before the probe function is called from really_probe, and if the probe
+function fails, dev->driver is set to NULL.
 
-For ARM MHU, both the dt bindings and the Linux driver support 3
-channels for the different priorities right now and support sending a 32
-bit data on every transfer in a locked fashion, i.e. only one transfer
-can be done at once and the other have to wait for it to finish first.
-
-Here are the point of view of the parties involved on this subject:
-
-Jassi's viewpoint:
-
-- Virtualization of channels should be discouraged in software based on
-  specific usecases of the application. This may invite other mailbox
-  driver authors to ask for doing virtualization in their drivers.
-
-- In mailbox's terminology, every channel is equivalent to a signal,
-  since there is only one signal generated here by the MHU, there should
-  be only one channel per priority level.
-
-- The clients should send data (of just setting 1 bit or many in the 32
-  bit word) using the existing mechanism as the delays due to
-  serialization shouldn't be significant anyway.
-
-- The driver supports 90% of the users with the current implementation
-  and it shouldn't be extended to support doorbell and implement two
-  different modes by changing value of #mbox-cells field in bindings.
-
-Sudeep (ARM) and myself as well to some extent:
-
-- The hardware gives us the capability to write the register in
-  parallel, i.e. we can write 0x800 and 0x400 together without any
-  software locks, and so these 32 bits should be considered as separate
-  channel even if only one interrupt is issued by the hardware finally.
-  This shouldn't be called as virtualization of the channels, as the
-  hardware supports this (as clearly mentioned in the TRM) and it takes
-  care of handling the signal properly.
-
-- With serialization, if we use only one channel as today at every
-  priority, if there are 5 requests to send signal to the receiver and
-  the dvfs request is the last one in queue (which may be called from
-  scheduler's hot path with fast switching), it unnecessarily needs to
-  wait for the first four transfers to finish due to the software
-  locking imposed by the mailbox framework. This adds additional delay,
-  maybe of few ms only, which isn't required by the hardware but just by
-  the software and few ms can be important in scheduler's hotpath.
-
-- With the current approach it isn't possible to assign different bits
-  (or doorbell numbers) to clients from DT and the only way of doing
-  that without adding new bindings is by extending #mbox-cells to accept
-  a value of 2 as done in this patch.
-
-Jassi and Sudeep, I hope I was able to represent both the view points
-properly here. Please correct me if I have made a mistake here.
-
-This is it. It would be nice to get the views of everyone now on this
-and how should this be handled.
-
-Thanks.
-
-[1] http://infocenter.arm.com/help/topic/com.arm.doc.ddi0515f/DDI0515F_juno_arm_development_platform_soc_trm.pdf , section 3.4.4, page 3-38.
-
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- .../devicetree/bindings/mailbox/arm-mhu.txt   | 39 ++++++++++++++++++-
- 1 file changed, 37 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mailbox/arm-mhu.txt b/Documentation/devicetree/bindings/mailbox/arm-mhu.txt
-index 4971f03f0b33..ba659bcc7109 100644
---- a/Documentation/devicetree/bindings/mailbox/arm-mhu.txt
-+++ b/Documentation/devicetree/bindings/mailbox/arm-mhu.txt
-@@ -10,6 +10,15 @@ STAT register and the remote clears it after having read the data.
- The last channel is specified to be a 'Secure' resource, hence can't be
- used by Linux running NS.
- 
-+The MHU drives the interrupt signal using a 32-bit register, with all
-+32-bits logically ORed together. It provides a set of registers to
-+enable software to set, clear and check the status of each of the bits
-+of this register independently. The use of 32 bits per interrupt line
-+enables software to provide more information about the source of the
-+interrupt. For example, each bit of the register can be associated with
-+a type of event that can contribute to raising the interrupt. Each of
-+the 32-bits can be used as "doorbell" to alert the remote processor.
-+
- Mailbox Device Node:
- ====================
- 
-@@ -18,13 +27,21 @@ used by Linux running NS.
- - compatible:		Shall be "arm,mhu" & "arm,primecell"
- - reg:			Contains the mailbox register address range (base
- 			address and length)
--- #mbox-cells		Shall be 1 - the index of the channel needed.
-+- #mbox-cells		Shall be 1 - the index of the channel needed when
-+			not used as set of doorbell bits.
-+			Shall be 2 - the index of the channel needed, and
-+			the index of the doorbell bit within the channel
-+			when used in doorbell mode.
- - interrupts:		Contains the interrupt information corresponding to
--			each of the 3 links of MHU.
-+			each of the 3 physical channels of MHU namely low
-+			priority non-secure, high priority non-secure and
-+			secure channels.
- 
- Example:
- --------
- 
-+1. Controller which doesn't support doorbells
-+
- 	mhu: mailbox@2b1f0000 {
- 		#mbox-cells = <1>;
- 		compatible = "arm,mhu", "arm,primecell";
-@@ -41,3 +58,21 @@ used by Linux running NS.
- 		reg = <0 0x2e000000 0x4000>;
- 		mboxes = <&mhu 1>; /* HP-NonSecure */
- 	};
-+
-+2. Controller which supports doorbells
-+
-+	mhu: mailbox@2b1f0000 {
-+		#mbox-cells = <2>;
-+		compatible = "arm,mhu", "arm,primecell";
-+		reg = <0 0x2b1f0000 0x1000>;
-+		interrupts = <0 36 4>, /* LP-NonSecure */
-+			     <0 35 4>; /* HP-NonSecure */
-+		clocks = <&clock 0 2 1>;
-+		clock-names = "apb_pclk";
-+	};
-+
-+	mhu_client: scb@2e000000 {
-+		compatible = "arm,scpi";
-+		reg = <0 0x2e000000 0x200>;
-+		mboxes = <&mhu 1 4>; /* HP-NonSecure 5th doorbell bit */
-+	};
--- 
-2.25.0.rc1.19.g042ed3e048af
-
+>
+> > In the probe function in mtk_mdp_core.c, a component is initialized, which
+> > is component_add()ed separately by the master_bind function and so we don't
+> > need to go through the component creation/initialization/addition done
+> > here.
+> >
+> > I think, ideally, the master component wouldn't also be responsible for
+> > rdma@14001000 and we would split apart the device node. I'd like to propose
+> > that we work on that in a follow-up change while we make incremental
+> > progress. (There are also other changes we'd like to propose in the
+> > meantime, like not hard-coding the components that the master binds
+> > together into the driver but instead make it possible to specify that in
+> > the device tree itself).
+> >
+> >>
+> >>> +               return -ENODEV;
+> >>> +       }
+> >>> +
+> >>> +       comp = devm_kzalloc(dev, sizeof(*comp), GFP_KERNEL);
+> >>> +       if (!comp)
+> >>> +               return -ENOMEM;
+> >>> +
+> >>> +       status = mtk_mdp_comp_init(comp, dev);
+> >>> +       if (status) {
+> >>> +               dev_err(dev, "Failed to initialize component: %d\n", status);
+> >>> +               return status;
+> >>> +       }
+> >>> +
+> >>> +       dev_set_drvdata(dev, comp);
+> >>> +
+> >>> +       return component_add(dev, &mtk_mdp_component_ops);
+> >>> +}
+> >>> +
+> >>> +static int mtk_mdp_comp_remove(struct platform_device *pdev)
+> >>>  {
+> >>> -       of_node_put(comp->dev_node);
+> >>> +       struct device *dev = &pdev->dev;
+> >>> +
+> >>> +       component_del(dev, &mtk_mdp_component_ops);
+> >>> +       return 0;
+> >>>  }
+> >>> +
+> >>> +struct platform_driver mtk_mdp_component_driver = {
+> >>> +       .probe          = mtk_mdp_comp_probe,
+> >>> +       .remove         = mtk_mdp_comp_remove,
+> >>> +       .driver         = {
+> >>> +               .name   = "mediatek-mdp-comp",
+> >>> +               .owner  = THIS_MODULE,
+> >>> +               .of_match_table = mtk_mdp_comp_driver_dt_match,
+> >>> +       },
+> >>> +};
+> >>> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
+> >>> index 1bf0242cce46..b5a18fe567aa 100644
+> >>> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
+> >>> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
+> >>> @@ -7,43 +7,23 @@
+> >>>  #ifndef __MTK_MDP_COMP_H__
+> >>>  #define __MTK_MDP_COMP_H__
+> >>>
+> >>> -/**
+> >>> - * enum mtk_mdp_comp_type - the MDP component
+> >>> - * @MTK_MDP_RDMA:      Read DMA
+> >>> - * @MTK_MDP_RSZ:       Riszer
+> >>> - * @MTK_MDP_WDMA:      Write DMA
+> >>> - * @MTK_MDP_WROT:      Write DMA with rotation
+> >>> - */
+> >>> -enum mtk_mdp_comp_type {
+> >>> -       MTK_MDP_RDMA,
+> >>> -       MTK_MDP_RSZ,
+> >>> -       MTK_MDP_WDMA,
+> >>> -       MTK_MDP_WROT,
+> >>> -       MTK_MDP_COMP_TYPE_MAX,
+> >>> -};
+> >>> -
+> >>>  /**
+> >>>   * struct mtk_mdp_comp - the MDP's function component data
+> >>>   * @node:      list node to track sibing MDP components
+> >>> - * @dev_node:  component device node
+> >>>   * @clk:       clocks required for component
+> >>>   * @larb_dev:  SMI device required for component
+> >>> - * @type:      component type
+> >>>   */
+> >>>  struct mtk_mdp_comp {
+> >>>         struct list_head        node;
+> >>> -       struct device_node      *dev_node;
+> >>>         struct clk              *clk[2];
+> >>>         struct device           *larb_dev;
+> >>> -       enum mtk_mdp_comp_type  type;
+> >>>  };
+> >>>
+> >>> -int mtk_mdp_comp_init(struct device *dev, struct device_node *node,
+> >>> -                     struct mtk_mdp_comp *comp,
+> >>> -                     enum mtk_mdp_comp_type comp_type);
+> >>> -void mtk_mdp_comp_deinit(struct device *dev, struct mtk_mdp_comp *comp);
+> >>> +int mtk_mdp_comp_init(struct mtk_mdp_comp *comp, struct device *dev);
+> >>> +
+> >>>  void mtk_mdp_comp_clock_on(struct device *dev, struct mtk_mdp_comp *comp);
+> >>>  void mtk_mdp_comp_clock_off(struct device *dev, struct mtk_mdp_comp *comp);
+> >>>
+> >>> +extern struct platform_driver mtk_mdp_component_driver;
+> >>>
+> >>>  #endif /* __MTK_MDP_COMP_H__ */
+> >>> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
+> >>> index acbc5a01ae4c..539a7942e3cb 100644
+> >>> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
+> >>> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
+> >>> @@ -6,6 +6,7 @@
+> >>>   */
+> >>>
+> >>>  #include <linux/clk.h>
+> >>> +#include <linux/component.h>
+> >>>  #include <linux/device.h>
+> >>>  #include <linux/errno.h>
+> >>>  #include <linux/interrupt.h>
+> >>> @@ -19,6 +20,7 @@
+> >>>  #include <linux/workqueue.h>
+> >>>  #include <soc/mediatek/smi.h>
+> >>>
+> >>> +#include "mtk_mdp_comp.h"
+> >>>  #include "mtk_mdp_core.h"
+> >>>  #include "mtk_mdp_m2m.h"
+> >>>  #include "mtk_vpu.h"
+> >>> @@ -32,16 +34,12 @@ module_param(mtk_mdp_dbg_level, int, 0644);
+> >>>  static const struct of_device_id mtk_mdp_comp_dt_ids[] = {
+> >>>         {
+> >>>                 .compatible = "mediatek,mt8173-mdp-rdma",
+> >>> -               .data = (void *)MTK_MDP_RDMA
+> >>>         }, {
+> >>>                 .compatible = "mediatek,mt8173-mdp-rsz",
+> >>> -               .data = (void *)MTK_MDP_RSZ
+> >>>         }, {
+> >>>                 .compatible = "mediatek,mt8173-mdp-wdma",
+> >>> -               .data = (void *)MTK_MDP_WDMA
+> >>>         }, {
+> >>>                 .compatible = "mediatek,mt8173-mdp-wrot",
+> >>> -               .data = (void *)MTK_MDP_WROT
+> >>>         },
+> >>>         { },
+> >>>  };
+> >>> @@ -91,6 +89,64 @@ static void mtk_mdp_reset_handler(void *priv)
+> >>>         queue_work(mdp->wdt_wq, &mdp->wdt_work);
+> >>>  }
+> >>>
+> >>> +static int compare_of(struct device *dev, void *data)
+> >>> +{
+> >>> +       return dev->of_node == data;
+> >>> +}
+> >>> +
+> >>> +static void release_of(struct device *dev, void *data)
+> >>> +{
+> >>> +       of_node_put(data);
+> >>> +}
+> >>> +
+> >>> +static int mtk_mdp_master_bind(struct device *dev)
+> >>> +{
+> >>> +       int status;
+> >>> +       struct mtk_mdp_dev *mdp = dev_get_drvdata(dev);
+> >>> +
+> >>> +       mtk_mdp_register_component(mdp, &mdp->comp_self);
+> >>> +
+> >>> +       status = component_bind_all(dev, mdp);
+> >>> +       if (status) {
+> >>> +               dev_err(dev, "Failed to bind all components: %d\n", status);
+> >>> +               goto err_component_bind_all;
+> >>> +       }
+> >>> +
+> >>> +       status = mtk_mdp_register_m2m_device(mdp);
+> >>> +       if (status) {
+> >>> +               dev_err(dev, "Failed to register m2m device: %d\n", status);
+> >>> +               v4l2_err(&mdp->v4l2_dev, "Failed to init mem2mem device\n");
+> >>> +               goto err_mtk_mdp_register_m2m_device;
+> >>> +       }
+> >>> +
+> >>> +       pm_runtime_enable(dev);
+> >>> +
+> >>> +       return 0;
+> >>> +
+> >>> +err_mtk_mdp_register_m2m_device:
+> >>> +       component_unbind_all(dev, mdp);
+> >>> +
+> >>> +err_component_bind_all:
+> >>> +       mtk_mdp_unregister_component(mdp, &mdp->comp_self);
+> >>> +
+> >>> +       return status;
+> >>> +}
+> >>> +
+> >>> +static void mtk_mdp_master_unbind(struct device *dev)
+> >>> +{
+> >>> +       struct mtk_mdp_dev *mdp = dev_get_drvdata(dev);
+> >>> +
+> >>> +       pm_runtime_disable(dev);
+> >>> +       mtk_mdp_unregister_m2m_device(mdp);
+> >>> +       component_unbind_all(dev, mdp);
+> >>> +       mtk_mdp_unregister_component(mdp, &mdp->comp_self);
+> >>> +}
+> >>> +
+> >>> +static const struct component_master_ops mtk_mdp_com_ops = {
+> >>> +       .bind           = mtk_mdp_master_bind,
+> >>> +       .unbind         = mtk_mdp_master_unbind,
+> >>> +};
+> >>> +
+> >>>  void mtk_mdp_register_component(struct mtk_mdp_dev *mdp,
+> >>>                                 struct mtk_mdp_comp *comp)
+> >>>  {
+> >>> @@ -108,8 +164,8 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+> >>>         struct mtk_mdp_dev *mdp;
+> >>>         struct device *dev = &pdev->dev;
+> >>>         struct device_node *node, *parent;
+> >>> -       struct mtk_mdp_comp *comp, *comp_temp;
+> >>> -       int ret = 0;
+> >>> +       int i, ret = 0;
+> >>> +       struct component_match *match = NULL;
+> >>>
+> >>>         mdp = devm_kzalloc(dev, sizeof(*mdp), GFP_KERNEL);
+> >>>         if (!mdp)
+> >>> @@ -134,37 +190,43 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+> >>>         }
+> >>>
+> >>>         /* Iterate over sibling MDP function blocks */
+> >>> +       i = 0;
+> >>>         for_each_child_of_node(parent, node) {
+> >>> -               const struct of_device_id *of_id;
+> >>> -               enum mtk_mdp_comp_type comp_type;
+> >>> +               struct platform_device *pdev;
+> >>>
+> >>> -               of_id = of_match_node(mtk_mdp_comp_dt_ids, node);
+> >>> -               if (!of_id)
+> >>> +               if (!of_match_node(mtk_mdp_comp_dt_ids, node))
+> >>>                         continue;
+> >>>
+> >>> -               if (!of_device_is_available(node)) {
+> >>> -                       dev_err(dev, "Skipping disabled component %pOF\n",
+> >>> -                               node);
+> >>> +               if (!of_device_is_available(node))
+> >>>                         continue;
+> >>> -               }
+> >>> -
+> >>> -               comp_type = (enum mtk_mdp_comp_type)of_id->data;
+> >>>
+> >>> -
+> >>> -               comp = devm_kzalloc(dev, sizeof(*comp), GFP_KERNEL);
+> >>> -               if (!comp) {
+> >>> -                       ret = -ENOMEM;
+> >>> -                       of_node_put(node);
+> >>> -                       goto err_comp;
+> >>> +               pdev = of_find_device_by_node(node);
+> >>> +               if (!pdev) {
+> >>> +                       dev_warn(dev, "Unable to find comp device %s\n",
+> >>> +                                node->full_name);
+> >>> +                       continue;
+> >>>                 }
+> >>>
+> >>> -               ret = mtk_mdp_comp_init(dev, node, comp, comp_type);
+> >>> -               if (ret) {
+> >>> -                       of_node_put(node);
+> >>> -                       goto err_comp;
+> >>> +               /*
+> >>> +                * Do not add add a match for my own (rdma0) device node.
+> >>> +                * I will be managing it directly instead using comp_self.
+> >>> +                */
+> >>> +               if (&pdev->dev != dev) {
+> >>> +                       dev_dbg(dev, "adding match %d for: %pOF\n", i++, node);
+> >>> +                       component_match_add_release(dev, &match, release_of,
+> >>> +                                                   compare_of,
+> >>> +                                                   of_node_get(node));
+> >>>                 }
+> >>> +       }
+> >>>
+> >>> -               mtk_mdp_register_component(mdp, comp);
+> >>> +       /*
+> >>> +        * Create a component for myself so that clocks can be toggled in
+> >>> +        * clock_on().
+> >>> +        */
+> >>> +       ret = mtk_mdp_comp_init(&mdp->comp_self, dev);
+> >>> +       if (ret) {
+> >>> +               dev_err(dev, "Failed to initialize component\n");
+> >>> +               goto err_comp;
+> >>>         }
+> >>>
+> >>>         mdp->job_wq = create_singlethread_workqueue(MTK_MDP_MODULE_NAME);
+> >>> @@ -189,18 +251,12 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+> >>>                 goto err_dev_register;
+> >>>         }
+> >>>
+> >>> -       ret = mtk_mdp_register_m2m_device(mdp);
+> >>> -       if (ret) {
+> >>> -               v4l2_err(&mdp->v4l2_dev, "Failed to init mem2mem device\n");
+> >>> -               goto err_m2m_register;
+> >>> -       }
+> >>> -
+> >>>         mdp->vpu_dev = vpu_get_plat_device(pdev);
+> >>>         ret = vpu_wdt_reg_handler(mdp->vpu_dev, mtk_mdp_reset_handler, mdp,
+> >>>                                   VPU_RST_MDP);
+> >>>         if (ret) {
+> >>>                 dev_err(&pdev->dev, "Failed to register reset handler\n");
+> >>> -               goto err_m2m_register;
+> >>> +               goto err_wdt_reg;
+> >>>         }
+> >>>
+> >>>         platform_set_drvdata(pdev, mdp);
+> >>> @@ -208,15 +264,25 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+> >>>         ret = vb2_dma_contig_set_max_seg_size(&pdev->dev, DMA_BIT_MASK(32));
+> >>>         if (ret) {
+> >>>                 dev_err(&pdev->dev, "Failed to set vb2 dma mag seg size\n");
+> >>> -               goto err_m2m_register;
+> >>> +               goto err_set_max_seg_size;
+> >>> +       }
+> >>> +
+> >>> +       ret = component_master_add_with_match(dev, &mtk_mdp_com_ops, match);
+> >>> +       if (ret) {
+> >>> +               dev_err(dev, "Component master add failed\n");
+> >>> +               goto err_component_master_add;
+> >>>         }
+> >>>
+> >>> -       pm_runtime_enable(dev);
+> >>>         dev_dbg(dev, "mdp-%d registered successfully\n", mdp->id);
+> >>>
+> >>>         return 0;
+> >>>
+> >>> -err_m2m_register:
+> >>> +err_component_master_add:
+> >>> +       vb2_dma_contig_clear_max_seg_size(&pdev->dev);
+> >>> +
+> >>> +err_set_max_seg_size:
+> >>> +
+> >>> +err_wdt_reg:
+> >>
+> >> No need for two labels here, rework the above goto logic.
+> >>
+> >>>         v4l2_device_unregister(&mdp->v4l2_dev);
+> >>>
+> >>>  err_dev_register:
+> >>> @@ -228,11 +294,6 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+> >>>  err_alloc_job_wq:
+> >>>
+> >>>  err_comp:
+> >>> -       list_for_each_entry_safe(comp, comp_temp, &mdp->comp_list, node) {
+> >>> -               mtk_mdp_unregister_component(mdp, comp);
+> >>> -               mtk_mdp_comp_deinit(dev, comp);
+> >>> -       }
+> >>> -
+> >>>         dev_dbg(dev, "err %d\n", ret);
+> >>>         return ret;
+> >>>  }
+> >>> @@ -240,11 +301,10 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+> >>>  static int mtk_mdp_remove(struct platform_device *pdev)
+> >>>  {
+> >>>         struct mtk_mdp_dev *mdp = platform_get_drvdata(pdev);
+> >>> -       struct mtk_mdp_comp *comp, *comp_temp;
+> >>>
+> >>> -       pm_runtime_disable(&pdev->dev);
+> >>> +       component_master_del(&pdev->dev, &mtk_mdp_com_ops);
+> >>> +
+> >>>         vb2_dma_contig_clear_max_seg_size(&pdev->dev);
+> >>> -       mtk_mdp_unregister_m2m_device(mdp);
+> >>>         v4l2_device_unregister(&mdp->v4l2_dev);
+> >>>
+> >>>         flush_workqueue(mdp->wdt_wq);
+> >>> @@ -253,10 +313,8 @@ static int mtk_mdp_remove(struct platform_device *pdev)
+> >>>         flush_workqueue(mdp->job_wq);
+> >>>         destroy_workqueue(mdp->job_wq);
+> >>>
+> >>> -       list_for_each_entry_safe(comp, comp_temp, &mdp->comp_list, node) {
+> >>> -               mtk_mdp_unregister_component(mdp, comp);
+> >>> -               mtk_mdp_comp_deinit(&pdev->dev, comp);
+> >>> -       }
+> >>> +       if (!list_empty(&mdp->comp_list))
+> >>> +               dev_err(&pdev->dev, "not all components removed\n");
+> >>>
+> >>>         dev_dbg(&pdev->dev, "%s driver unloaded\n", pdev->name);
+> >>>         return 0;
+> >>> @@ -311,7 +369,25 @@ static struct platform_driver mtk_mdp_driver = {
+> >>>         }
+> >>>  };
+> >>>
+> >>> -module_platform_driver(mtk_mdp_driver);
+> >>> +static struct platform_driver * const mtk_mdp_drivers[] = {
+> >>> +       &mtk_mdp_driver,
+> >>> +       &mtk_mdp_component_driver,
+> >>> +};
+> >>> +
+> >>> +static int __init mtk_mdp_init(void)
+> >>> +{
+> >>> +       return platform_register_drivers(mtk_mdp_drivers,
+> >>> +                                        ARRAY_SIZE(mtk_mdp_drivers));
+> >>> +}
+> >>> +
+> >>> +static void __exit mtk_mdp_exit(void)
+> >>> +{
+> >>> +       platform_unregister_drivers(mtk_mdp_drivers,
+> >>> +                                   ARRAY_SIZE(mtk_mdp_drivers));
+> >>> +}
+> >>> +
+> >>> +module_init(mtk_mdp_init);
+> >>> +module_exit(mtk_mdp_exit);
+> >>>
+> >>>  MODULE_AUTHOR("Houlong Wei <houlong.wei@mediatek.com>");
+> >>>  MODULE_DESCRIPTION("Mediatek image processor driver");
+> >>> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.h b/drivers/media/platform/mtk-mdp/mtk_mdp_core.h
+> >>> index a7da14b97077..230f531400ca 100644
+> >>> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.h
+> >>> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.h
+> >>> @@ -155,6 +155,7 @@ struct mtk_mdp_dev {
+> >>>         struct mtk_mdp_variant          *variant;
+> >>>         u16                             id;
+> >>>         struct list_head                comp_list;
+> >>> +       struct mtk_mdp_comp             comp_self;
+> >>>         struct v4l2_m2m_dev             *m2m_dev;
+> >>>         struct list_head                ctx_list;
+> >>>         struct video_device             *vdev;
+> >>> --
+> >>> 2.26.2.526.g744177e7f7-goog
+> >>>
+> >>>
+> >>> _______________________________________________
+> >>> Linux-mediatek mailing list
+> >>> Linux-mediatek@lists.infradead.org
+> >>> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+> >
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> >
