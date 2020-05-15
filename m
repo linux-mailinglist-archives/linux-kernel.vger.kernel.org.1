@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45001D466D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 08:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBBC31D4681
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 08:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgEOG4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 02:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48352 "EHLO
+        id S1727857AbgEOG5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 02:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726656AbgEOG4f (ORCPT
+        by vger.kernel.org with ESMTP id S1726695AbgEOG4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 02:56:35 -0400
+        Fri, 15 May 2020 02:56:37 -0400
 Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD9CC05BD09
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 23:56:35 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id t11so418097qvv.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 23:56:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CF9C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 23:56:36 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id n36so1618870qvg.22
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 23:56:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=6zJdeczCxXIR05ROPjfL5M3I5d1ozekeF2WaxmhUPXo=;
-        b=l3OKb9/Pu0/xrbfvi4lE2TdFagJPZ+BcPCVUsNj1x3y0yxGzAHd4rZFb5smd6fBjNj
-         E5sWXxqdr81LqYGmCrXKMXD26Kg4w64KQ4PrQb0AMH475KRgrmYJgqfinUUapGN7Kz0+
-         JomMgqVpcsgelaft2fGQcqHV65twgmBNwO6YywGIvz5fFPrQKjW4r2P9MSpe+MLL9z0V
-         RQOYhDIkOX8dkiQyqL8tEyMl+XCpKwT8/zrxBEQJE6gVIki9Z/7z27Q3MngZfJG4k6yh
-         uyC+MInwMKFZubfIYfNfwhotQRMCL9SLOigBr4GX5+3V5evNYARi8ESBmeBfvf2faHMy
-         31Jw==
+         :cc:content-transfer-encoding;
+        bh=BlBgjK5xziAM5vwiVDuTtOoE4PbK5TxWadJH4JBlKYM=;
+        b=EZrZEXW7Viyk80Bux2NOOgwyk1D6bHXWVb/zlJ7c5MJdmc/2B55H2QFyMiG/6Jh3oe
+         5RwV0XnzkKjqLyJ4L1WTK03fYm0P4+W+zxkf5AbSvcWZdZoSbjUzSBroTZx8DEmMszcy
+         2V/caUMHX3fCDFKQWYvT+Q3i4j+VCljdEk41+w+qTQCMTbvXUAx43MobqI3DrMcNWeu4
+         bCszGbUeYdunqPsjaHsNJQXJwg39Lzr4M2imLnC5Tza+41rvDHVzTqB4rlMjoI11c9Uz
+         6zkfdg1u6D5ocppBaDpCnunArW32oHIUfartVuiUILVUWdgbSjz4M+TTCSI0AcY0XXG1
+         fd2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=6zJdeczCxXIR05ROPjfL5M3I5d1ozekeF2WaxmhUPXo=;
-        b=FU12GVyZ4i9BTLx2NLyIkD5vBpIuNv7cSH2niHCfVEH7/YphDFyxzNO2IGFzRoOvUp
-         WwNCBWw/liQb4EzNSRJSlqN0mxkElq/4hb2poRJ9BQ+6RM1GlFmCYm3Qf+15Fo0R9gel
-         O+3CaA0ELPDnx3PJ5I6kvDgB+T/XPaZ2YnnGKqpTE5BDb3McLkQzUkNaiuyZeVSrjuI6
-         Tfx2cPNQQoUGLifVLNfTargo0RIKVno7/3T+RfzH2zGAxXVHOk+0eAc0VJh+Biu1DLCw
-         8KEBmQ8j1HSFbz1VJM/Gv574Rx+UEgWF4GEyOxw6jxOwN7woSWH4rz3nkvzciYOj8gde
-         GDmQ==
-X-Gm-Message-State: AOAM532uIbCzRrFN+s6LDS9DS/1mZXnbIcpqwZvonR5KbPfPvLJPMunn
-        IIvT0Nd1Ru+o2Ov5baFreaXWis1Wefv6
-X-Google-Smtp-Source: ABdhPJxgP3QPfqhrDHlYbZvoBePrEE1LeamWczkyl3CHCs2p0Alr5VTy1rx2TlK6084IIR4Gb7TzZvSscmhG
-X-Received: by 2002:ad4:5584:: with SMTP id e4mr2000014qvx.191.1589525794216;
- Thu, 14 May 2020 23:56:34 -0700 (PDT)
-Date:   Thu, 14 May 2020 23:56:18 -0700
+         :references:subject:from:to:cc:content-transfer-encoding;
+        bh=BlBgjK5xziAM5vwiVDuTtOoE4PbK5TxWadJH4JBlKYM=;
+        b=KUEHHmqZFzOJLuo37q+baBGfTDpVLtvSrWVy86j64ckhagk0pVOgnp+PPbtq33DjvC
+         ldMQvBl7RuF/2RN5F3VQhrR372Q938ZHW1Zu2CpA8EnNnOx8R+xDbxOYadMKFteaKuw3
+         oip+rZpNeQIRfP9mAIgicpdjzz/D1iBsIhu3b6fPbGu7LZkAfxxtPHALLKYeN0YNyghP
+         QOYDB7koyHQhg3yZC3+D8ELeDUVFLaN1nuMYVSB2mMkqj622Iqv75clYsXbQq+pXOIQ/
+         UyApYzlKleqXh36kz/YBqoog5PJJFQY0GsxUREfb0Yg2CcuMt/Oewc2WBSfN1PGl424A
+         H1+w==
+X-Gm-Message-State: AOAM533pt6ptlDbliZ8CdXQvluSIaLxL5k1yj6ldXLt58j6AQJ4CPall
+        QnmB/dHDp6VZ39ZG34BCEaZVNkjc+aIU
+X-Google-Smtp-Source: ABdhPJz8XtegKSh8yOMx1iWS4vUX0ml1o219kpFcONA39sezAoXcY+JdpGmDcGCC+GD5zV3AYR4TQQRMVetq
+X-Received: by 2002:a0c:8262:: with SMTP id h89mr1968365qva.173.1589525796081;
+ Thu, 14 May 2020 23:56:36 -0700 (PDT)
+Date:   Thu, 14 May 2020 23:56:19 -0700
 In-Reply-To: <20200515065624.21658-1-irogers@google.com>
-Message-Id: <20200515065624.21658-3-irogers@google.com>
+Message-Id: <20200515065624.21658-4-irogers@google.com>
 Mime-Version: 1.0
 References: <20200515065624.21658-1-irogers@google.com>
 X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH 2/8] libbpf hashmap: Remove unused #include
+Subject: [PATCH 3/8] libbpf hashmap: Fix signedness warnings
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -79,32 +79,54 @@ To:     Peter Zijlstra <peterz@infradead.org>,
 Cc:     Stephane Eranian <eranian@google.com>,
         Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove #include of libbpf_internal.h that is unused.
-Discussed in this thread:
-https://lore.kernel.org/lkml/CAEf4BzZRmiEds_8R8g4vaAeWvJzPb4xYLnpF0X2VNY8oTzkphQ@mail.gmail.com/
+Fixes the following warnings:
+
+hashmap.c: In function =E2=80=98hashmap__clear=E2=80=99:
+hashmap.h:150:20: error: comparison of integer expressions of different sig=
+nedness: =E2=80=98int=E2=80=99 and =E2=80=98size_t=E2=80=99 {aka =E2=80=98l=
+ong unsigned int=E2=80=99} [-Werror=3Dsign-compare]
+  150 |  for (bkt =3D 0; bkt < map->cap; bkt++)        \
+
+hashmap.c: In function =E2=80=98hashmap_grow=E2=80=99:
+hashmap.h:150:20: error: comparison of integer expressions of different sig=
+nedness: =E2=80=98int=E2=80=99 and =E2=80=98size_t=E2=80=99 {aka =E2=80=98l=
+ong unsigned int=E2=80=99} [-Werror=3Dsign-compare]
+  150 |  for (bkt =3D 0; bkt < map->cap; bkt++)        \
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/lib/bpf/hashmap.h | 1 -
- 1 file changed, 1 deletion(-)
+ tools/lib/bpf/hashmap.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
-index bae8879cdf58..e823b35e7371 100644
---- a/tools/lib/bpf/hashmap.h
-+++ b/tools/lib/bpf/hashmap.h
-@@ -15,7 +15,6 @@
- #else
- #include <bits/reg.h>
- #endif
--#include "libbpf_internal.h"
- 
- static inline size_t hash_bits(size_t h, int bits)
+diff --git a/tools/lib/bpf/hashmap.c b/tools/lib/bpf/hashmap.c
+index cffb96202e0d..a405dad068f5 100644
+--- a/tools/lib/bpf/hashmap.c
++++ b/tools/lib/bpf/hashmap.c
+@@ -60,7 +60,7 @@ struct hashmap *hashmap__new(hashmap_hash_fn hash_fn,
+ void hashmap__clear(struct hashmap *map)
  {
--- 
+ 	struct hashmap_entry *cur, *tmp;
+-	int bkt;
++	size_t bkt;
+=20
+ 	hashmap__for_each_entry_safe(map, cur, tmp, bkt) {
+ 		free(cur);
+@@ -100,8 +100,7 @@ static int hashmap_grow(struct hashmap *map)
+ 	struct hashmap_entry **new_buckets;
+ 	struct hashmap_entry *cur, *tmp;
+ 	size_t new_cap_bits, new_cap;
+-	size_t h;
+-	int bkt;
++	size_t h, bkt;
+=20
+ 	new_cap_bits =3D map->cap_bits + 1;
+ 	if (new_cap_bits < HASHMAP_MIN_CAP_BITS)
+--=20
 2.26.2.761.g0e0b3e54be-goog
 
