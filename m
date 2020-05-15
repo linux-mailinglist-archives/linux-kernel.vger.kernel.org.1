@@ -2,77 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B101F1D4C3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 13:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 699DE1D4C38
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 13:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbgEOLQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 07:16:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgEOLQM (ORCPT
+        id S1726135AbgEOLPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 07:15:46 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:44598 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726023AbgEOLPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 07:16:12 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CFE8C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 04:16:12 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id o5so2218893iow.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 04:16:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=juliacomputing-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=fG9RJAdiQR3KRVbi1EfJRtogMSIdgoMp1F7l88z9wa0=;
-        b=jUWlX02LSQ11rfJ6ZVLTgF5Vcv9IS6E6Er1PynDV1jN57S0PWqVwaItvlozJwFC7wq
-         I2o04DU+ury1VNLTs5zv+Ojcq9fbllDEIydDEIFkKjMIll8OOfhn6joxrSIL+BDPCQNM
-         Tunz7m5SspKk55ADs3bHcuDmxn7r8iTgNBionwhxuI3qrF6lWkOvO52UKwcJ6pmxDm/E
-         JufS8YmlONgtbkXVWAgOEjLwvE71LJhxj6GpRzlROlLnB4+oCHHNZQficBhwSWRMJ5Kb
-         OH7Fymgk27yDeRVLkLBuHkJjEi7pO265hEen8YlNPfnA/mLpjkDAFsv0Tr+BM4s/B1AR
-         h0ow==
+        Fri, 15 May 2020 07:15:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589541344;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wj1hRCTkHQCZJH+c9WShqi9qUC8IADHSYNNh6gBVfN4=;
+        b=eg/D5YhuPDgxMiOCOPlEELCfbd5WRSx3JOd/psOKteqaqUDaO4/mzoZ8vL7/8IqYr4cdEn
+        JCKPPdMBJJH9t5ZKhl91mjUdP/Sm17ZTnei6RdlyeGiV2AHYiD0R70O80H64h6YbDZSW2s
+        dGCOc2TyGtkdNL6sj+nLp11x8i6xH/g=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-124-7fB8KjlANnWXBkPAbKVJZg-1; Fri, 15 May 2020 07:15:42 -0400
+X-MC-Unique: 7fB8KjlANnWXBkPAbKVJZg-1
+Received: by mail-qt1-f199.google.com with SMTP id o11so1999886qti.23
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 04:15:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=fG9RJAdiQR3KRVbi1EfJRtogMSIdgoMp1F7l88z9wa0=;
-        b=KUyRk24C/4JpPmtUy60V5aGYxJXI3AewCOoft+QZkdplCXrMWWlo9aEPBhnF7CTida
-         rzB0oVL4LYFkOGc0snI1xY4gVur/NXGp8/j0JqDLuEtb1xFMrvNHc+EVpELVmN70eOzL
-         9zlPRYwVkcwzSGdniTzKby8HIBMQ5k8wNin8aR2aYIJFkF0PGHtY4Ur7PgazYDywUv42
-         2JWJA5dlNyzB5AXNe1WVnhe4ZDJsGuVNcvjKg1q1uaQ24iAWuhBTNS4uOw+3FcRKRtke
-         NuDCWxvfVzVypSgfiAzDVuyfwkXlp4da8Od/errVjL+DT5tEHc6U70ETuUd+QX9uIs/I
-         TiSA==
-X-Gm-Message-State: AOAM531eQwN0I0t8aPERJsA45uGEHXHiwd4fwbAZzFLRfyg1/5zvNdEI
-        AiqqoBcowxQbw12SAWdhz9EWAR8bsS6ZDTIpM6RbeAUXfkE=
-X-Google-Smtp-Source: ABdhPJzR/BBg4yP9FlNiURi9PB43aqjraWAe8Mz6QOFhgtAH6GTFC0g6gOxZ0lmTiMqJgATJ2Mv6yW+UA4qIm8QKf5Q=
-X-Received: by 2002:a6b:6b04:: with SMTP id g4mr2398603ioc.75.1589541371180;
- Fri, 15 May 2020 04:16:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wj1hRCTkHQCZJH+c9WShqi9qUC8IADHSYNNh6gBVfN4=;
+        b=rweaQQZs4YKe9w7eKpz/YA8bfuduvWjIwZUQok3Q98DnPcYDf5VVEpimiyqM5Har/n
+         iXNUqLXh7LoDWWbP2wdAd5CJB1J6YDmL/ScWE/hrFEmQ6vn5Ua4krREJFCBljqakNsCE
+         EWsHdKVmzs5Ia1oCSq8pVKUt1Lis5CzcQV0NhICc7WDTwn5+c2CatF/FYhwySiMtN8df
+         3EIPH36Gr/Fn4yYyPsfb4eor7rjq/6fiEMAyfTd1Lzpc+CdPnaijzl1OSKtOVRoQAFmr
+         f++9AyE/HF1E6xIGtiYcy8GIO2DAASX57DVxWtKLxvhb5Upl2z12u5He82nXZUuqHWDW
+         fzzg==
+X-Gm-Message-State: AOAM531R7KDmLbY3tr+6DP/CLjuLGr1HQedizERF5YLtMGskMs6TbDQU
+        oVL3UX66EbYFoO6LMoTS4SNdWcFiminn8rMDS2UWyJAPN5gPO9hsvDKTpLtSyJd61999+aYUtNL
+        0E9ksY+4qwXfsbqmvDQLYdyb9
+X-Received: by 2002:a37:9bcf:: with SMTP id d198mr2701588qke.423.1589541342363;
+        Fri, 15 May 2020 04:15:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw6k0Wxp/fggTGTEhGVsnY3c8zWZpwXaG8sjFGKb5wDstAflNu6HHHSCA7aDXYrrL/lD2v3kw==
+X-Received: by 2002:a37:9bcf:: with SMTP id d198mr2701562qke.423.1589541342093;
+        Fri, 15 May 2020 04:15:42 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id t12sm1303890qkt.77.2020.05.15.04.15.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 May 2020 04:15:41 -0700 (PDT)
+Date:   Fri, 15 May 2020 07:15:39 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michael Tsirkin <mst@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, X86 ML <x86@kernel.org>
+Subject: Re: [PATCH RFC 0/5] KVM: x86: KVM_MEM_ALLONES memory
+Message-ID: <20200515111539.GA497380@xz-x1>
+References: <20200514180540.52407-1-vkuznets@redhat.com>
+ <20200514220516.GC449815@xz-x1>
+ <20200514225623.GF15847@linux.intel.com>
+ <CALCETrUf3qMgpYGfF=b6dt2gneodTv5eYGGwKZ=xDSYDa9aTVg@mail.gmail.com>
 MIME-Version: 1.0
-From:   Keno Fischer <keno@juliacomputing.com>
-Date:   Fri, 15 May 2020 07:15:35 -0400
-Message-ID: <CABV8kRyHrDMK4o=UZZZWJMuQNjPA8Xuoj-JFF-Lsx26fBTR0WA@mail.gmail.com>
-Subject: PTRACE_SYSEMU behavior difference on arm64
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>, Will Deacon <will.deacon@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CALCETrUf3qMgpYGfF=b6dt2gneodTv5eYGGwKZ=xDSYDa9aTVg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The behavior of PTRACE_SYSEMU on arm64
-appears to differ substantially from that of x86 and powerpc
-(the other two architectures on which this feature is implemented).
-In particular, after PTRACE_SYSEMU the syscall will always
-be skipped on x86 and powerpc, but executed on arm64 unless
-the syscall-entry stop was again continued using PTRACE_SYSEMU.
-The skipping behavior is also documented in the manpage,
-so I suspect this may just be a bug (the skipping behavior
-makes sense to me and is what I would expect).
-The reason this happens is that `syscall_trace_enter`
-re-checks TIF_SYSCALL_EMU after the ptrace stop, but at that
-point it may have already been superseded by a new ptrace
-request. x86 and power save the original value of the flag,
-rather than acting on the new value. I can submit a patch to
-fix this, but wanted to check first whether this was intentional.
-If it is, I can fix the man page instead.
+On Thu, May 14, 2020 at 06:03:20PM -0700, Andy Lutomirski wrote:
+> On Thu, May 14, 2020 at 3:56 PM Sean Christopherson
+> <sean.j.christopherson@intel.com> wrote:
+> >
+> > On Thu, May 14, 2020 at 06:05:16PM -0400, Peter Xu wrote:
+> > > On Thu, May 14, 2020 at 08:05:35PM +0200, Vitaly Kuznetsov wrote:
+> > > > The idea of the patchset was suggested by Michael S. Tsirkin.
+> > > >
+> > > > PCIe config space can (depending on the configuration) be quite big but
+> > > > usually is sparsely populated. Guest may scan it by accessing individual
+> > > > device's page which, when device is missing, is supposed to have 'pci
+> > > > holes' semantics: reads return '0xff' and writes get discarded. Currently,
+> > > > userspace has to allocate real memory for these holes and fill them with
+> > > > '0xff'. Moreover, different VMs usually require different memory.
+> > > >
+> > > > The idea behind the feature introduced by this patch is: let's have a
+> > > > single read-only page filled with '0xff' in KVM and map it to all such
+> > > > PCI holes in all VMs. This will free userspace of obligation to allocate
+> > > > real memory and also allow us to speed up access to these holes as we
+> > > > can aggressively map the whole slot upon first fault.
+> > > >
+> > > > RFC. I've only tested the feature with the selftest (PATCH5) on Intel/AMD
+> > > > with and wiuthout EPT/NPT. I haven't tested memslot modifications yet.
+> > > >
+> > > > Patches are against kvm/next.
+> > >
+> > > Hi, Vitaly,
+> > >
+> > > Could this be done in userspace with existing techniques?
+> > >
+> > > E.g., shm_open() with a handle and fill one 0xff page, then remap it to
+> > > anywhere needed in QEMU?
+> >
+> > Mapping that 4k page over and over is going to get expensive, e.g. each
+> > duplicate will need a VMA and a memslot, plus any PTE overhead.  If the
+> > total sum of the holes is >2mb it'll even overflow the mumber of allowed
+> > memslots.
+> 
+> How about a tiny character device driver /dev/ones?
 
-Keno
+Yeah, this looks very clean.
+
+Or I also like Sean's idea about using the slow path - I think the answer could
+depend on a better knowledge on the problem to solve (PCI scan for small VM
+boots) to firstly justify that the fast path is required.  E.g., could we even
+workaround that inefficient reading of 0xff's for our use case?  After all what
+the BIOS really needs is not those 0xff's, but some other facts.
+
+Thanks!
+
+-- 
+Peter Xu
+
