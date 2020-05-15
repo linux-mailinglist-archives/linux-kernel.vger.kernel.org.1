@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87DC61D4BF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 13:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C09481D4BDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgEOK7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 06:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57952 "EHLO
+        id S1726227AbgEOK7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 06:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725919AbgEOK67 (ORCPT
+        with ESMTP id S1726135AbgEOK67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 May 2020 06:58:59 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC5AC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:58:57 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id u188so2180048wmu.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:58:57 -0700 (PDT)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E3FC05BD09
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:58:59 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id l18so3022259wrn.6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:58:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=n0WmKLG9AhFHe1sx7/xWBbs910NkW2ou4PIf9/zvdZk=;
-        b=XH/o0H7oM78CWsMava6ImC+pDI6hF6ua9+7a+QgMxesqt0yvnk3qtmKK2Kdbnpgwn5
-         syN/+CbKjm6nWhTD4kIjUoLCKKDl0DlXsbkO5IvT0Ng63b17fu0k70ArZyIFneeBaLRz
-         raNSACI6WrwfkYHp+NLgayYvdjKyhhOPIG/9EnB9PD4u3xxQQz7jOb2yARtaUaugtPMx
-         f2om0EoHE2cV01n/1IlqoPq1I3NpnCfjdh4Irg94n2vsLyaQthwX7TH58GQap8aIibHq
-         HX/YAdJj4EJ54cR/YtNxaqTu/khLe/vqabq3I08duZ21GmKhMeAnn0qbb3oOZpPG1tZJ
-         FCcg==
+        bh=Ai6Fwl8UyJm6B87jvYHBuJcbjLJDaWpZZPVaPcXdfLA=;
+        b=u2DytUW7gTaWjKgKY0D29Drbg//IklH60EMwY3UFqgWODthsP3akJrIYzhlnI5FJKv
+         RNUVgMc+XbbpJVoDkByhNUhNdw9T7bxR6ZjOn0hrivmRGUWB8qbGL1mfRJ18I/0tACbJ
+         xeAuqFwIfPJp8vLLJXuTVyl27cwnBPE91ENGsEqjeMFv1vVmgE5F2C8Wh9+EkaIbSqar
+         cYFpZWx5UpuZwEqqAV5GKNOYKQdjT52uS1qNza/RpJ+CZUQEyO6g/W+JJVKg6K4E0vIu
+         Ql55gaM8m+fAEIqi1nqzANNnf0liHhnaKFjWRwDrVGkGM6t52MBlqnsp4q+zlQsDI4kQ
+         8Tqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=n0WmKLG9AhFHe1sx7/xWBbs910NkW2ou4PIf9/zvdZk=;
-        b=Of+9NH+TZQU6RfGp5N0PZOsW6bFMUDJt1PjvzNWM6adQN02VlA3CXv2eSEMfPSWWww
-         NX/m6TlqV1ZAdmJ7eJAb5Y07AbWY2WRC7uubiLNqA5CjbO/zsNWDUlYZBFC+BYRrhyDk
-         lit4spbTXSYuox6X9Os/s2gGdo8cYwujFuW7yin1Pl7EQfCbHODJluFyFbEa5Z2qAUae
-         p5Jcmp8sTLHE/79QQACgdQPPWJ3pkTlW24VXHvlnlR7yHnFlkkvKjaU1fIwWpL2Bi51P
-         aPnsMOzW/824CnF+KNDKNzn75810SnNVk1ffDpchklVsNz0MoJhXx5SQAWa6Na218ZWR
-         7cQQ==
-X-Gm-Message-State: AOAM531gZATlcsbDLRvQVMrK6d/73J5cftNt5fsPb5hD2MiAN6WVMAvs
-        3/22+cdSzs3v3KkzRpml/+Ijg7BnSEM=
-X-Google-Smtp-Source: ABdhPJyFi+//KaD2VusD1LXgNbdSGbxHqdar1dGWec/TaEPF0FrbkPG38tGqXW8/K5EnBa5mk9BeqA==
-X-Received: by 2002:a7b:ca53:: with SMTP id m19mr3574570wml.182.1589540335813;
-        Fri, 15 May 2020 03:58:55 -0700 (PDT)
+        bh=Ai6Fwl8UyJm6B87jvYHBuJcbjLJDaWpZZPVaPcXdfLA=;
+        b=dy7is2q6B11xZpeYdImxLU7XmVjZ6BP/Lu/dbYGr35hnaI6f/pIvm/PJmxpJU2BlU4
+         rVRcsXoh/zUykLidrp4pfCB0mExuMvbyMAq02onRhm7P3xOpuoMRnoXyX3uxIgOGj2YP
+         n3gsO8qBxpKmXSslyTqj75xzPLqLaO9g+FtEz5ZCpHFGUHsvQF3tPZtMtDGX+KLXj9c1
+         8KXP1r6g+LgJD2Z7b7ckCEHP0C5fcr2ZrLOk/meS7ehh5WCZnZrm8TXUW+WMzekAEjhY
+         QPVA0mpeqRyNcXp4bFK3vWxLxa+LsuB8hAOqGsnSufIgKYY4mCUVDk5HJMaHeR8YzD16
+         Gc3A==
+X-Gm-Message-State: AOAM530HG1c+FD0ULFASjFazBBucDJplxNj4nSrC3rOtf25YQ3IjmQUE
+        o2QG6s5e88O9ygCIsP6T8IHQjg==
+X-Google-Smtp-Source: ABdhPJxJSLJpRVMm0dV2T5Dk4zybjMjD8L0/aFOEv7m2OekpRetlA0SYTkbeLI0O0Ger9pleD5J2kA==
+X-Received: by 2002:adf:f84c:: with SMTP id d12mr3627382wrq.248.1589540337673;
+        Fri, 15 May 2020 03:58:57 -0700 (PDT)
 Received: from localhost ([2a01:4b00:8523:2d03:d11b:f847:8002:7411])
-        by smtp.gmail.com with ESMTPSA id x184sm3090403wmg.38.2020.05.15.03.58.54
+        by smtp.gmail.com with ESMTPSA id t7sm3106188wrq.39.2020.05.15.03.58.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 May 2020 03:58:55 -0700 (PDT)
+        Fri, 15 May 2020 03:58:56 -0700 (PDT)
 From:   David Brazdil <dbrazdil@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         James Morse <james.morse@arm.com>,
@@ -57,9 +57,9 @@ To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
 Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v2 01/14] arm64: kvm: Fix symbol dependency in __hyp_call_panic_nvhe
-Date:   Fri, 15 May 2020 11:58:28 +0100
-Message-Id: <20200515105841.73532-2-dbrazdil@google.com>
+Subject: [PATCH v2 02/14] arm64: kvm: Move __smccc_workaround_1_smc to .rodata
+Date:   Fri, 15 May 2020 11:58:29 +0100
+Message-Id: <20200515105841.73532-3-dbrazdil@google.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200515105841.73532-1-dbrazdil@google.com>
 References: <20200515105841.73532-1-dbrazdil@google.com>
@@ -70,33 +70,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__hyp_call_panic_nvhe contains inline assembly which did not declare
-its dependency on the __hyp_panic_string symbol.
-
-The static-declared string has previously been kept alive because of a use in
-__hyp_call_panic_vhe. Fix this in preparation for separating the source files
-between VHE and nVHE when the two users land in two different compilation
-units. The static variable otherwise gets dropped when compiling the nVHE
-source file, causing an undefined symbol linker error later.
+This snippet of assembly is used by cpu_errata.c to overwrite parts of KVM hyp
+vector. Move it to its own source file and change its ELF section to .rodata.
 
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/kvm/hyp/switch.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/kvm/hyp/Makefile    |  1 +
+ arch/arm64/kvm/hyp/hyp-entry.S | 16 ----------------
+ arch/arm64/kvm/hyp/smccc_wa.S  | 30 ++++++++++++++++++++++++++++++
+ 3 files changed, 31 insertions(+), 16 deletions(-)
+ create mode 100644 arch/arm64/kvm/hyp/smccc_wa.S
 
-diff --git a/arch/arm64/kvm/hyp/switch.c b/arch/arm64/kvm/hyp/switch.c
-index 8a1e81a400e0..7a7c08029d81 100644
---- a/arch/arm64/kvm/hyp/switch.c
-+++ b/arch/arm64/kvm/hyp/switch.c
-@@ -836,7 +836,7 @@ static void __hyp_text __hyp_call_panic_nvhe(u64 spsr, u64 elr, u64 par,
- 	 * making sure it is a kernel address and not a PC-relative
- 	 * reference.
- 	 */
--	asm volatile("ldr %0, =__hyp_panic_string" : "=r" (str_va));
-+	asm volatile("ldr %0, =%1" : "=r" (str_va) : "S" (__hyp_panic_string));
+diff --git a/arch/arm64/kvm/hyp/Makefile b/arch/arm64/kvm/hyp/Makefile
+index 8c9880783839..5d8357ddc234 100644
+--- a/arch/arm64/kvm/hyp/Makefile
++++ b/arch/arm64/kvm/hyp/Makefile
+@@ -7,6 +7,7 @@ ccflags-y += -fno-stack-protector -DDISABLE_BRANCH_PROFILING \
+ 		$(DISABLE_STACKLEAK_PLUGIN)
  
- 	__hyp_do_panic(str_va,
- 		       spsr, elr,
+ obj-$(CONFIG_KVM) += hyp.o
++obj-$(CONFIG_KVM_INDIRECT_VECTORS) += smccc_wa.o
+ 
+ hyp-y := vgic-v3-sr.o timer-sr.o aarch32.o vgic-v2-cpuif-proxy.o sysreg-sr.o \
+ 	 debug-sr.o entry.o switch.o fpsimd.o tlb.o hyp-entry.o
+diff --git a/arch/arm64/kvm/hyp/hyp-entry.S b/arch/arm64/kvm/hyp/hyp-entry.S
+index c2a13ab3c471..65ff99a7e02d 100644
+--- a/arch/arm64/kvm/hyp/hyp-entry.S
++++ b/arch/arm64/kvm/hyp/hyp-entry.S
+@@ -319,20 +319,4 @@ SYM_CODE_START(__bp_harden_hyp_vecs)
+ 1:	.org __bp_harden_hyp_vecs + __BP_HARDEN_HYP_VECS_SZ
+ 	.org 1b
+ SYM_CODE_END(__bp_harden_hyp_vecs)
+-
+-	.popsection
+-
+-SYM_CODE_START(__smccc_workaround_1_smc)
+-	esb
+-	sub	sp, sp, #(8 * 4)
+-	stp	x2, x3, [sp, #(8 * 0)]
+-	stp	x0, x1, [sp, #(8 * 2)]
+-	mov	w0, #ARM_SMCCC_ARCH_WORKAROUND_1
+-	smc	#0
+-	ldp	x2, x3, [sp, #(8 * 0)]
+-	ldp	x0, x1, [sp, #(8 * 2)]
+-	add	sp, sp, #(8 * 4)
+-1:	.org __smccc_workaround_1_smc + __SMCCC_WORKAROUND_1_SMC_SZ
+-	.org 1b
+-SYM_CODE_END(__smccc_workaround_1_smc)
+ #endif
+diff --git a/arch/arm64/kvm/hyp/smccc_wa.S b/arch/arm64/kvm/hyp/smccc_wa.S
+new file mode 100644
+index 000000000000..aa25b5428e77
+--- /dev/null
++++ b/arch/arm64/kvm/hyp/smccc_wa.S
+@@ -0,0 +1,30 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2015-2018 - ARM Ltd
++ * Author: Marc Zyngier <marc.zyngier@arm.com>
++ */
++
++#include <linux/arm-smccc.h>
++
++#include <asm/kvm_asm.h>
++#include <asm/kvm_mmu.h>
++
++	/*
++	 * This is not executed directly and is instead copied into the vectors
++	 * by install_bp_hardening_cb().
++	 */
++	.data
++	.pushsection	.rodata
++	.global		__smccc_workaround_1_smc
++__smccc_workaround_1_smc:
++	esb
++	sub	sp, sp, #(8 * 4)
++	stp	x2, x3, [sp, #(8 * 0)]
++	stp	x0, x1, [sp, #(8 * 2)]
++	mov	w0, #ARM_SMCCC_ARCH_WORKAROUND_1
++	smc	#0
++	ldp	x2, x3, [sp, #(8 * 0)]
++	ldp	x0, x1, [sp, #(8 * 2)]
++	add	sp, sp, #(8 * 4)
++1:	.org __smccc_workaround_1_smc + __SMCCC_WORKAROUND_1_SMC_SZ
++	.org 1b
 -- 
 2.26.2
 
