@@ -2,133 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E941D4849
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 10:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B681D486C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 10:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgEOIdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 04:33:25 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:30531 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726694AbgEOIdX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 04:33:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589531602;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AWBZW6PEKw6/UZUtcffoeHGKnskwQ+WAPGzslzn2sSs=;
-        b=MGnhzDVw1CQpOgM2RvtH3YRlgYD9s4fO2ZeGg9YoThJmwqGVVNoeuOryy26r1kxmoLrXQy
-        GJusKddypFuuru6qJBN1qP2dyoZhZAJ2LyfiG/KHKrC4K0Md3gHDL4Wzmwse7igSjDABf5
-        CHExeYLpg7jE1wH2sa346hOVjv/Kg2g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-469-zQLij6whPYGQlm8tJUIJKQ-1; Fri, 15 May 2020 04:33:18 -0400
-X-MC-Unique: zQLij6whPYGQlm8tJUIJKQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A80FDEC1AB;
-        Fri, 15 May 2020 08:33:16 +0000 (UTC)
-Received: from krava (unknown [10.40.194.127])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 54FDF7D971;
-        Fri, 15 May 2020 08:33:13 +0000 (UTC)
+        id S1728162AbgEOIeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 04:34:15 -0400
+Received: from mail-dm6nam11on2053.outbound.protection.outlook.com ([40.107.223.53]:55808
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727933AbgEOIeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 04:34:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LqFYdv/fg2ZKWoXNDrcfkdi5RIRF8LvCnIC+DIOTncwJ3yu+JtklFj1Vle5fBX8UzOMNQIiD3UApy3aaeKHmPE77xoiyOTBeGXIp27u+JBcYUx/G7es4EThg8ani016UI+oD+qtdCLbbgQcYu0Hvo20UueoACPXWcLmaHshLqIqEKF7+miFo5jksrjLcbmL1MzNiBMpwJYcNumtMA9eCu16Unw+KUtjQRIdL6f6Mi7kdZOgCyfaBpY47hwn3BUzWryfr7JyhVAfM4gVVlkexRS3OkskTbnBINvxDgzb33mZRVIW1+auctU/sFS3A3TURi+Bj4JXOMtY9j43j/EUQBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XiJtijyQah2+739rbh2zhSH+M8adLOJAGFU/ENZT2Y8=;
+ b=TuasE0BrNYBkALJK12VQ9CG2YdQPjUjO0XRY9OfqQ++AA1J74JsaEZRHou1bm4uaat86dv4gd42aXFtR6xlEB2mHlG3982Vbl72FJ6M5BJdUm1K3s1iK38aeHqY4UM2MbW0plBdBKnBCsh+TD0U96DTdTueRURuwXsb9PpTJonniLVJ18oqdfDAXBKYd8UODLfdRy6DcBo78lzzQnwfdYocppIOoX2JUECYltN7PbiuQf8N2I+mk95LDrfGTpfwjzVJsb59j55eO6btaUTcdQWmujydkz9CHKMA4qgE0i4im262tjuv8v+lzAPSx/fY+KrOAEo86in0uo7t4d7KCXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
+ dkim=pass header.d=silabs.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XiJtijyQah2+739rbh2zhSH+M8adLOJAGFU/ENZT2Y8=;
+ b=K4Ooj/T4n8odZGet5ajA1Ixc/SoBUUGemmNKqp4jbqLQjF/N4VhgjnZXCdLvWozam0vV9uRCIQbj4HuZZIzo3g6SE0sMrTo/+ZOWUJW7LyD0m7+MBUuqiNC/n1W3ewmS0o8KDF+tsIa/VFLzfaGDPSVwVhUeBdQSJTKlYJZZZic=
+Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
+ header.d=none;driverdev.osuosl.org; dmarc=none action=none
+ header.from=silabs.com;
+Received: from MWHPR11MB1775.namprd11.prod.outlook.com (2603:10b6:300:10e::14)
+ by MWHPR11MB1310.namprd11.prod.outlook.com (2603:10b6:300:28::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.26; Fri, 15 May
+ 2020 08:34:00 +0000
+Received: from MWHPR11MB1775.namprd11.prod.outlook.com
+ ([fe80::e055:3e6d:ff4:56da]) by MWHPR11MB1775.namprd11.prod.outlook.com
+ ([fe80::e055:3e6d:ff4:56da%5]) with mapi id 15.20.3000.022; Fri, 15 May 2020
+ 08:33:59 +0000
+From:   Jerome Pouiller <Jerome.Pouiller@silabs.com>
+To:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
+        <jerome.pouiller@silabs.com>
+Subject: [PATCH 06/19] staging: wfx: fix indentation
 Date:   Fri, 15 May 2020 10:33:12 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH] perf evsel: Get group fd from CPU0 for system wide event
-Message-ID: <20200515083312.GB3511648@krava>
-References: <20200430013451.17196-1-yao.jin@linux.intel.com>
- <20200501102337.GA1761222@krava>
- <b799b66a-42aa-6c55-647e-7b718473632a@linux.intel.com>
- <20200505000352.GH1916255@krava>
- <3e813227-4954-0d4b-bc7a-ca272b18454a@linux.intel.com>
- <68e53765-6f45-9483-7543-0a2f961cdc62@linux.intel.com>
+Message-Id: <20200515083325.378539-7-Jerome.Pouiller@silabs.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200515083325.378539-1-Jerome.Pouiller@silabs.com>
+References: <20200515083325.378539-1-Jerome.Pouiller@silabs.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-ClientProxiedBy: PR0P264CA0076.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:18::16) To MWHPR11MB1775.namprd11.prod.outlook.com
+ (2603:10b6:300:10e::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <68e53765-6f45-9483-7543-0a2f961cdc62@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc-42.home (82.67.86.106) by PR0P264CA0076.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:18::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.24 via Frontend Transport; Fri, 15 May 2020 08:33:58 +0000
+X-Mailer: git-send-email 2.26.2
+X-Originating-IP: [82.67.86.106]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 383b1453-9c77-419e-0bd2-08d7f8aab70e
+X-MS-TrafficTypeDiagnostic: MWHPR11MB1310:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR11MB13107B77B2F93416A6CB142993BD0@MWHPR11MB1310.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:393;
+X-Forefront-PRVS: 04041A2886
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Xk4dHKn9cmNl6JzkMt5Vc9WVmYaixg5/h2AaP7vdJ8hGPAqE5GQIfaPWfCTtF7LYRfbispBNpXJpQJDLkXJPNEV18yEqSZkGQci/uoeHtc79Qp8BQP2eJAmNMEi5om36Zhi1iKwSObfR+f0wE5DWdZoqLPHk8svWmXIJXbmVxCXdO3+qa6S3KpOnLDG+2Pl+eedQacKC/LUDw2HVBqmvk+jtsLr1fHfpRhqy1e9MqKUCJ0Z+9AIV8QO8GryqGB80kI4rKRBe8d+RZwm4wt5DOMMo16lI28vNIZ5fbBOdCo+dQJbr4jJEUsjddmaZvtkxKip8eRY2zm5vrRg0T5YeVLwx1VqgHxEO0cu9KA8BKWBVt9TY3Xftq18HtrFBfAPU74GT5b0nC1ImrrqpOVAh9rInaPeG7dEXfDMAXv88R14NcOUGP9tLtwZQlUfJp4IF
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1775.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(136003)(376002)(366004)(39850400004)(396003)(8886007)(66556008)(186003)(6512007)(4744005)(66946007)(6506007)(36756003)(316002)(66476007)(26005)(52116002)(16526019)(6666004)(54906003)(2906002)(2616005)(478600001)(107886003)(956004)(8936002)(86362001)(8676002)(6486002)(5660300002)(4326008)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: bt7jtJu/POM4ecK+ORrJbc+dY6phZKB+U0AXX5R65Ox5KMPlX494do8L3K4AyO2WAdjIaFRTSiVGSld6cQFInI9ht3meknYCWwrYn2e1B4FAzZPfBtuvYab+tbrCOfXKehybKck2KP5tQK7QivxiUwu/9r2E2An7X8gyo0aMSyPaxnM8GOtGImRxCHp319WdlP6hz2Dn/bNmXLFapW4w2XlqSCnvCVDRN6I2/3b34EZZtNLJEcuITcbdNMCAFyj8y8U0qR+1BQlZFgBhm2w/4SCFH4My2xEEw9wCBRa9Vxju3f/OjGfk/9ggC7yNPGIjfPqbozOrdePIxD0xhyHJm2pzEM7RlfKuKGTIUv+Yj69XoP4N/hiixX4WAH74zyZKwWl7qUzOb2JJRo20ur6FszUL+gtwO58P8BRPCkPwW+Rt00LWpIfDnpoM++2Y1kO1NZNWvAFj68zuXDB0IN+TEhCXj/vkAgLDOMvFENFxYbc=
+X-OriginatorOrg: silabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 383b1453-9c77-419e-0bd2-08d7f8aab70e
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 May 2020 08:33:59.8253
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Uwni32SPb4yzAUI1EHRc6Mh7eA63MPAwXLsUR9IK4LB8jAvMFnWrugMSeKR3VVskt6AuYXILd0Ajtm9712Rtkg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1310
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 02:04:57PM +0800, Jin, Yao wrote:
-
-SNIP
-
-> I think I get the root cause. That should be a serious bug in get_group_fd, access violation!
-> 
-> For a group mixed with system-wide event and per-core event and the group
-> leader is system-wide event, access violation will happen.
-> 
-> perf_evsel__alloc_fd allocates one FD member for system-wide event (only FD(evsel, 0, 0) is valid).
-> 
-> But for per core event, perf_evsel__alloc_fd allocates N FD members (N =
-> ncpus). For example, for ncpus is 8, FD(evsel, 0, 0) to FD(evsel, 7, 0) are
-> valid.
-> 
-> get_group_fd(struct evsel *evsel, int cpu, int thread)
-> {
->     struct evsel *leader = evsel->leader;
-> 
->     fd = FD(leader, cpu, thread);    /* access violation may happen here */
-> }
-> 
-> If leader is system-wide event, only the FD(leader, 0, 0) is valid.
-> 
-> When get_group_fd accesses FD(leader, 1, 0), access violation happens.
-> 
-> My fix is:
-> 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index 28683b0eb738..db05b8a1e1a8 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -1440,6 +1440,9 @@ static int get_group_fd(struct evsel *evsel, int cpu, int thread)
->         if (evsel__is_group_leader(evsel))
->                 return -1;
-> 
-> +       if (leader->core.system_wide && !evsel->core.system_wide)
-> +               return -2;
-
-so this effectively stops grouping system_wide events with others,
-and I think it's correct, how about events that differ in cpumask?
-
-should we perhaps ensure this before we call open? go throught all
-groups and check they are on the same cpus?
-
-thanks,
-jirka
-
-
-> +
->         /*
->          * Leader must be already processed/open,
->          * if not it's a bug.
-> @@ -1665,6 +1668,11 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->                                 pid = perf_thread_map__pid(threads, thread);
-> 
->                         group_fd = get_group_fd(evsel, cpu, thread);
-> +                       if (group_fd == -2) {
-> +                               errno = EINVAL;
-> +                               err = -EINVAL;
-> +                               goto out_close;
-> +                       }
->  retry_open:
->                         test_attr__ready();
-> 
-> It enables the perf_evlist__reset_weak_group. And in the second_pass (in
-> __run_perf_stat), the events will be opened successfully.
-> 
-> I have tested OK for this fix on cascadelakex.
-> 
-> Thanks
-> Jin Yao
-> 
-
+RnJvbTogSsOpcsO0bWUgUG91aWxsZXIgPGplcm9tZS5wb3VpbGxlckBzaWxhYnMuY29tPgoKRml4
+IGluZGVudGlvbiBvZiB3Znhfc2tiX2R0b3IoKS4KClNpZ25lZC1vZmYtYnk6IErDqXLDtG1lIFBv
+dWlsbGVyIDxqZXJvbWUucG91aWxsZXJAc2lsYWJzLmNvbT4KLS0tCiBkcml2ZXJzL3N0YWdpbmcv
+d2Z4L2RhdGFfdHguYyB8IDYgKysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCsp
+LCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3RhZ2luZy93ZngvZGF0YV90
+eC5jIGIvZHJpdmVycy9zdGFnaW5nL3dmeC9kYXRhX3R4LmMKaW5kZXggY2FjOGM5ZWNiYzM0Li5h
+MTI1OTAyMTRhNWQgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvc3RhZ2luZy93ZngvZGF0YV90eC5jCisr
+KyBiL2RyaXZlcnMvc3RhZ2luZy93ZngvZGF0YV90eC5jCkBAIC00ODQsOSArNDg0LDkgQEAgc3Rh
+dGljIHZvaWQgd2Z4X3NrYl9kdG9yKHN0cnVjdCB3ZnhfZGV2ICp3ZGV2LAogCXN0cnVjdCBoaWZf
+bXNnICpoaWYgPSAoc3RydWN0IGhpZl9tc2cgKilza2ItPmRhdGE7CiAJc3RydWN0IGhpZl9yZXFf
+dHggKnJlcSA9IChzdHJ1Y3QgaGlmX3JlcV90eCAqKWhpZi0+Ym9keTsKIAlzdHJ1Y3Qgd2Z4X3Zp
+ZiAqd3ZpZiA9IHdkZXZfdG9fd3ZpZih3ZGV2LCBoaWYtPmludGVyZmFjZSk7Ci0JdW5zaWduZWQg
+aW50IG9mZnNldCA9IHNpemVvZihzdHJ1Y3QgaGlmX3JlcV90eCkgKwotCQkJCXNpemVvZihzdHJ1
+Y3QgaGlmX21zZykgKwotCQkJCXJlcS0+ZGF0YV9mbGFncy5mY19vZmZzZXQ7CisJdW5zaWduZWQg
+aW50IG9mZnNldCA9IHNpemVvZihzdHJ1Y3QgaGlmX21zZykgKworCQkJICAgICAgc2l6ZW9mKHN0
+cnVjdCBoaWZfcmVxX3R4KSArCisJCQkgICAgICByZXEtPmRhdGFfZmxhZ3MuZmNfb2Zmc2V0Owog
+CiAJV0FSTl9PTighd3ZpZik7CiAJc2tiX3B1bGwoc2tiLCBvZmZzZXQpOwotLSAKMi4yNi4yCgo=
