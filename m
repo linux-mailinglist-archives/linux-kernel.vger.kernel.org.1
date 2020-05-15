@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFA11D4BB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092FF1D4BA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbgEOKyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 06:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726047AbgEOKyt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 06:54:49 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDAEC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:54:49 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id k13so901900wrx.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:54:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jrzatufmWMFK4nc+SyNHiLXMRZJb5huqueu1eUCpxaw=;
-        b=UNiEsHesxvLve4xIcfnKQRDlhKutjhuE1l+mIPf8lfPC95oL0CEDM4WHWzO5oS+BpJ
-         Uuby/iDGEsRPGOq6uU+njFsyfCbN7UtqCtqCJEU5Ye8TFdgNe3V+QeyliWyBesPaVDOF
-         0+ZH6RItlNXvsQBNXI6wzHttoHb+nHOFj8cr2/arRJuFVzn0a9E3WE9HJV+Kp877dpLj
-         SgX5YNKNhNXw8FkQKgvj8pqUNu/muER98dQ3S+9e6sLAiHWPpzws7QOtTttpxLeAFK68
-         ujG2qZAjxPN5aULyLiZQ+w8U+XUNCS5DGp94KzMQPVMh2UffSOhpZhVQHXpwg6OGS64y
-         UElQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jrzatufmWMFK4nc+SyNHiLXMRZJb5huqueu1eUCpxaw=;
-        b=IZDY7lgWxinzYEHXDpxIXZKPsJPiu9v3kR+o+vZFxfZpKa3WjISI9wxntTeGE+FEYr
-         cbKjDaMUbPY4Z4RVQjuZiBggIAw0vktHc2c2hPCIwtPtEKTzvTzYJcGwOFztPHVTLYp4
-         1/kljY4dqmGgQyRnaWsECvOQQMsAVkNIFtaMlBW0Cg9bzhpflOdlZ1BESmoMkYQy5lHa
-         kXH135HeqBZtelRYisv5F+fFy4NkJS9Zd1LA5qWvitO50eTI0QuGh41E4w6XcpVWF2DH
-         W0RtBkRBG0OAF3fzZT1M/merGTJpDok0Agb9uBA0IQA1DqZ4crtxLl+tNpHjfMpG7MIH
-         Ho+w==
-X-Gm-Message-State: AOAM530LNpbmQewkpzdGl0QAObZ4J3Qq77V2fYzP6di7cgBeR0rQi3Ux
-        jjf/cMN477IWVxcRxVNBfwwBxO/2
-X-Google-Smtp-Source: ABdhPJynJhkxBm8TgFfT7qhd1M+X+ZR4CQyrTHTNksxeadYFWLIyg+T9Lg/A0X+wXQnfO2rV/2D2lg==
-X-Received: by 2002:a5d:684a:: with SMTP id o10mr3528254wrw.311.1589540087512;
-        Fri, 15 May 2020 03:54:47 -0700 (PDT)
-Received: from localhost.localdomain (cpc91192-cmbg18-2-0-cust374.5-4.cable.virginm.net. [80.6.113.119])
-        by smtp.gmail.com with ESMTPSA id v205sm3102988wmg.11.2020.05.15.03.54.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 03:54:46 -0700 (PDT)
-From:   Emil Velikov <emil.l.velikov@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: get_maintainer.pl: unexpected behaviour for path/to//file
-Date:   Fri, 15 May 2020 11:52:03 +0100
-Message-Id: <20200515105203.2792466-1-emil.l.velikov@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726163AbgEOKxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 06:53:18 -0400
+Received: from mga12.intel.com ([192.55.52.136]:23818 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725968AbgEOKxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 06:53:18 -0400
+IronPort-SDR: ZEIiMclK4CAEABoksrY00BYJtZEszQm6oJIz4TqOPd+Uso7A/qffUDWVQXIXRNflsQX+Adfoad
+ SOMw5uegyY5Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 03:53:18 -0700
+IronPort-SDR: Z9jMbhI0bOSAkUctcFuR95gd0AMX/8Mg684Ffh1OGKjfyYJ8M6hkVl1s3Jyl+BbGleFFixE9ab
+ lPkSNLmIyqsQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
+   d="scan'208";a="341946497"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001.jf.intel.com with ESMTP; 15 May 2020 03:53:11 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jZXxp-006qHS-UQ; Fri, 15 May 2020 13:53:13 +0300
+Date:   Fri, 15 May 2020 13:53:13 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] dmaengine: dw: Set DMA device max segment size
+ parameter
+Message-ID: <20200515105313.GL185537@smile.fi.intel.com>
+References: <20200306131048.ADBE18030797@mail.baikalelectronics.ru>
+ <20200508105304.14065-1-Sergey.Semin@baikalelectronics.ru>
+ <20200508105304.14065-4-Sergey.Semin@baikalelectronics.ru>
+ <20200508112152.GI185537@smile.fi.intel.com>
+ <20200511211622.yuh3ls2ay76yaxrf@mobilestation>
+ <20200512123551.GX185537@smile.fi.intel.com>
+ <20200515061601.GG333670@vkoul-mobl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515061601.GG333670@vkoul-mobl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe,
+On Fri, May 15, 2020 at 11:46:01AM +0530, Vinod Koul wrote:
+> On 12-05-20, 15:35, Andy Shevchenko wrote:
+> > On Tue, May 12, 2020 at 12:16:22AM +0300, Serge Semin wrote:
+> > > On Fri, May 08, 2020 at 02:21:52PM +0300, Andy Shevchenko wrote:
+> > > > On Fri, May 08, 2020 at 01:53:01PM +0300, Serge Semin wrote:
 
-Recently I've noticed that get_maintainer behaves differently if there
-is a double, sequential, forward slash in the path.
+...
 
-AFAICT there should be no distinction between the two. Or at least many
-existing applications and scripts consider them one and the same.
+> > My point here that we probably can avoid complications till we have real
+> > hardware where it's different. As I said I don't remember a such, except
+> > *maybe* Intel Medfield, which is quite outdated and not supported for wider
+> > audience anyway.
+> 
+> IIRC Intel Medfield has couple of dma controller instances each one with
+> different parameters *but* each instance has same channel configuration.
 
-I've tried fixing this, although my perl isn't quite up-to scratch.
-Is this some weird bug or some intended feature?
+That's my memory too.
 
-Thanks
-Emil
+> I do not recall seeing that we have synthesis parameters per channel
+> basis... But I maybe wrong, it's been a while.
 
-Example:
+Exactly, that's why I think we better simplify things till we will have real
+issue with it. I.o.w. no need to solve the problem which doesn't exist.
 
-./scripts/get_maintainer -F drivers/gpu/drm//lima
+-- 
+With Best Regards,
+Andy Shevchenko
 
-David Airlie <airlied@linux.ie> (maintainer:DRM DRIVERS)
-Daniel Vetter <daniel@ffwll.ch> (maintainer:DRM DRIVERS,commit_signer:3/42=7%)
-Qiang Yu <yuq825@gmail.com> (commit_signer:36/42=86%,authored:24/42=57%)
-Vasily Khoruzhick <anarsoul@gmail.com> (commit_signer:26/42=62%)
-Krzysztof Kozlowski <krzk@kernel.org> (commit_signer:5/42=12%,authored:5/42=12%)
-Emil Velikov <emil.velikov@collabora.com> (commit_signer:4/42=10%)
-dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
-linux-kernel@vger.kernel.org (open list)
 
-./scripts/get_maintainer -F drivers/gpu/drm/lima
-
-Qiang Yu <yuq825@gmail.com> (maintainer:DRM DRIVERS FOR LIMA)
-David Airlie <airlied@linux.ie> (maintainer:DRM DRIVERS)
-Daniel Vetter <daniel@ffwll.ch> (maintainer:DRM DRIVERS)
-dri-devel@lists.freedesktop.org (open list:DRM DRIVERS FOR LIMA)
-lima@lists.freedesktop.org (moderated list:DRM DRIVERS FOR LIMA)
-linux-kernel@vger.kernel.org (open list)
