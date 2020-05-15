@@ -2,77 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CCE1D4612
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 08:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4D21D4620
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 08:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbgEOGmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 02:42:52 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:47166 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726215AbgEOGmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 02:42:51 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 443D0F559CF58DF50670;
-        Fri, 15 May 2020 14:42:48 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.55) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Fri, 15 May 2020
- 14:42:46 +0800
-Subject: Re: [PATCH v2 06/10] mm/swap: use npage_to_sectors() and PAGE_SECTORS
- to clean up code
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
-        "Sergey Senozhatsky" <sergey.senozhatsky.work@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        linux-block <linux-block@vger.kernel.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>, dm-devel <dm-devel@redhat.com>,
-        Song Liu <song@kernel.org>,
-        linux-raid <linux-raid@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200507075100.1779-1-thunder.leizhen@huawei.com>
- <20200507075100.1779-7-thunder.leizhen@huawei.com>
- <20200515041456.GD16070@bombadil.infradead.org>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <85ea7c5e-9879-8aa4-c0f4-c60f107d63e3@huawei.com>
-Date:   Fri, 15 May 2020 14:42:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726407AbgEOGu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 02:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726205AbgEOGu1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 02:50:27 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8107EC061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 23:50:27 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id z1so536906pfn.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 23:50:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:mime-version:message-id
+         :content-transfer-encoding;
+        bh=7XHHtEVCTq9EorQyCY4/UvWYJNsYHxtqr43sHEkAmWw=;
+        b=HX9dpDaWHlXuHM6lY8eDCQGhpbMQf3qtPGEUQfyO+SU8a+5FrPc9GMheuX7QwikzKc
+         /JfzAc/dal971cbYAgGsl3FZrm25dGi/um5phwKFPZNPohJ5YNfKIAtF3RwZCr7/cn+s
+         o9Zk/zZoxxQKae3m+4F7j2PuPLbVPHRUd76xQTePvGvlybUeFySfi0V8SIDWVLGTav5a
+         /lddvGb4c7N9e1ABTygLkqwvkQ1Oihv1qeKx/+EbcpG/Q5MP9g3poLEuqSazW7HSRrnC
+         YVoqJReUflB6OU2c/L+ofQ/n+aUBWkZysQklwztl8eynhkstmR1PQmynQsMT9SHORTzt
+         Z3sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:mime-version:message-id
+         :content-transfer-encoding;
+        bh=7XHHtEVCTq9EorQyCY4/UvWYJNsYHxtqr43sHEkAmWw=;
+        b=b9R7E0c0kC+SdFLP0/NbBpgtwO5j5NCPpTpdISuJD8lSXCPN9Xs4in1ppmIu62Bmr/
+         oBsYim1lL26xURTGHA+sjT1bvwyTTH5hKVGNX82zRD1+xrtCxdMiIl+N7FBn3glO8sfd
+         M5LPpZO57hYeedQiQuL3eNTLT4d58p+7oS+H6TbioB57LWlVFFoBy2bjlBr5sAgTcB7w
+         6jjq5T6UwCc4ALhIkTwWI1IrFUDZoNv52s9Xa/v6EDskeAUCIrUWuJXWq5DwOOb/uUhB
+         ra3F9U/R7nN8Cm64G8wJadGCczvMhcISN3ttSURpysCrC/zdF0surVU4n5fEkOKVRQm3
+         xRyw==
+X-Gm-Message-State: AOAM531uEkX/mUHrlL2OyEbIFJNQ0V169jgpvsXmHo9BWCytz6mj/idl
+        SHQ569PfQ2HT6OnVrFK/+YoiEtIc
+X-Google-Smtp-Source: ABdhPJwsPyoTCoo6JlALOTwHr0STJx1657ad1ODOumBxpC7KU7yIsP01keF2eGOOtO/Zn4G6jtEINw==
+X-Received: by 2002:a63:5a41:: with SMTP id k1mr1858578pgm.424.1589525426898;
+        Thu, 14 May 2020 23:50:26 -0700 (PDT)
+Received: from localhost ([61.68.67.54])
+        by smtp.gmail.com with ESMTPSA id p5sm964133pgk.28.2020.05.14.23.50.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 23:50:26 -0700 (PDT)
+Date:   Fri, 15 May 2020 16:50:19 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Possibility of conflicting memory types in lazier TLB mode?
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
 MIME-Version: 1.0
-In-Reply-To: <20200515041456.GD16070@bombadil.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.55]
-X-CFilter-Loop: Reflected
+Message-Id: <1589523957.s4pf3vd48l.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rik,
 
+Commit 145f573b89a62 ("Make lazy TLB mode lazier").
 
-On 2020/5/15 12:14, Matthew Wilcox wrote:
-> On Thu, May 07, 2020 at 03:50:56PM +0800, Zhen Lei wrote:
->> +++ b/mm/page_io.c
->> @@ -38,7 +38,7 @@ static struct bio *get_swap_bio(gfp_t gfp_flags,
->>  
->>  		bio->bi_iter.bi_sector = map_swap_page(page, &bdev);
->>  		bio_set_dev(bio, bdev);
->> -		bio->bi_iter.bi_sector <<= PAGE_SHIFT - 9;
->> +		bio->bi_iter.bi_sector *= PAGE_SECTORS;
->>  		bio->bi_end_io = end_io;
-> 
-> This just doesn't look right.  Why is map_swap_page() returning a sector_t
-> which isn't actually a sector_t?
+A couple of questions here (and I don't know the x86 architecture too=20
+well let alone the ASID stuff, so bear with me). I'm assuming, and it=20
+appears to be in the x86 manual that you can't map the same physical=20
+page with conflicting memory types on different processors in general
+(or in different ASIDs on the same processor?)
 
-I try to understand map_swap_page(). Here maybe a bug. Otherwise, it would be
-better to add a temporary variable to cache the return value of map_swap_page(page, &bdev).
+Firstly, the freed_tables check, that's to prevent CPUs in the lazy mode=20
+with this mm loaded in their ASID from bringing in new translations=20
+based on random "stuff" if they happen to speculatively load userspace=20
+addresses (but in lazy mode they would never explicitly load such=20
+addresses), right?
 
-> 
-> 
-> .
-> 
+I'm guessing that's a problem but the changed pte case is not, is=20
+because the table walker is going to barf if it sees garbage, but a=20
+valid pte is okay.
 
+Now the intel manual says conflicting attributes are bad because you'll=20
+lose cache coherency on stores. But the speculative accesses from the=20
+lazy thread will never push stores to cache coherency and result of the=20
+loads doesn't matter, so maybe that's how this special case avoids the
+problem.
+
+But what about if there are (real, not speculative) stores in the store=20
+queue still on the lazy thread from when it was switched, that have not=20
+yet become coherent? The page is freed by another CPU and reallocated
+for something that maps it as nocache. Do you have a coherency problem=20
+there?
+
+Ensuring the store queue is drained when switching to lazy seems like it=20
+would fix it, maybe context switch code does that already or you have=20
+some other trick or reason it's not a problem. Am I way off base here?
+
+Thanks,
+Nick
