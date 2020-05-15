@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CFB1D52A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA201D52C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbgEOOzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 10:55:42 -0400
-Received: from mail.kocurkovo.cz ([185.8.236.170]:59162 "EHLO
-        mail.kocurkovo.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgEOOzl (ORCPT
+        id S1726249AbgEOPAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 11:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726174AbgEOPAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 10:55:41 -0400
-Received: by mail.kocurkovo.cz (Postfix, from userid 1000)
-        id 78F5818CB; Fri, 15 May 2020 16:55:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.kocurkovo.cz 78F5818CB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kocurkovo.cz;
-        s=mail; t=1589554538;
-        bh=pDkXalda7bV0b2weLUQ604K7SfSCx5HTnM8p3DPSRY8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vi/1DPnb/yS/pv4FXIMYNIM2Ezna9PHr5bxhd4jfRcaJWgVlZrQJzB6CI4QlnoD37
-         F58jBUqi5S/i/pz3Wv23A6qXHRRh/ZmQUzBRkWeaJcVj5YktChvTCeapq1nicbdF3b
-         WhGIRwKN1eFN3jzQZytEKmlqjjiuInJMYw+bFd98=
-Date:   Fri, 15 May 2020 16:55:38 +0200
-From:   Matej Dujava <mdujava@kocurkovo.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Forest Bond <forest@alittletooquiet.net>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] staging: vt6655: vt6656: change order of makefile
- variable definitions
-Message-ID: <20200515145538.GA28808@new.kocurkovo.cz>
-Mail-Followup-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Forest Bond <forest@alittletooquiet.net>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <1589397351-24655-1-git-send-email-mdujava@kocurkovo.cz>
- <1589397351-24655-3-git-send-email-mdujava@kocurkovo.cz>
- <20200515134859.GA2112248@kroah.com>
+        Fri, 15 May 2020 11:00:35 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472FFC061A0C;
+        Fri, 15 May 2020 08:00:35 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: evelikov)
+        with ESMTPSA id A7C892A2DB7
+Date:   Fri, 15 May 2020 15:57:55 +0100
+From:   Emil Velikov <emil.velikov@collabora.com>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com,
+        Jean-Francois Dagenais <jeff.dagenais@gmail.com>
+Subject: Re: [PATCHv1 15/19] power: supply: sbs-battery: add ability to
+ disable charger broadcasts
+Message-ID: <20200515145755.GD2836808@arch-x1c3>
+References: <20200513185615.508236-1-sebastian.reichel@collabora.com>
+ <20200513185615.508236-16-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200515134859.GA2112248@kroah.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20200513185615.508236-16-sebastian.reichel@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 03:48:59PM +0200, Greg Kroah-Hartman wrote:
->I still fail to understand the need for this patch at all.  It doesn't
->clean anything up, nor change anything.  There is no rule that this has
->to be in one order or the other, and in fact, I like the order that the
->files currently have :)
->
->thanks,
->
->greg k-h
+On 2020/05/13, Sebastian Reichel wrote:
+> From: Jean-Francois Dagenais <jeff.dagenais@gmail.com>
+> 
+> In certain designs, it is possible to add a battery on a populated i2c
+> bus without an sbs compliant charger. In that case, the battery will
+> un-necessarily and sometimes un-desirably master the bus trying to write
+> info in the charger.
 
-Most of makefiles has pattern that `obj-${}` is before `driver-y` lines.
-If this is not something that was intentional, then this patch is not
-adding any value indeed.
+Nit: s/un-/un/
 
-Few examples that give me that impression:
+> 
+> It is observed in many occasion that these battery "broadcasts" are even
+> corrupting other ongoing master to slave communication. I.e. the
+> multi-master support in the battery is inadequate.
+> 
+> Thankfully, the CHARGER_MODE bit allows designers to disable that SBS
+> battery behaviour.
+> 
+> This needs to be done once when the battery is first seen on the bus.
+> 
+> Signed-off-by: Jean-Francois Dagenais <jeff.dagenais@gmail.com>
+> [rebased code]
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
 
-./gnss/Makefile-# SPDX-License-Identifier: GPL-2.0
-./gnss/Makefile-#
-./gnss/Makefile-# Makefile for the GNSS subsystem.
-./gnss/Makefile-#
-./gnss/Makefile-
-./gnss/Makefile:obj-$(CONFIG_GNSS)          += gnss.o
-./gnss/Makefile-gnss-y := core.o
-./gnss/Makefile-
-./gnss/Makefile:obj-$(CONFIG_GNSS_SERIAL)       += gnss-serial.o
-./gnss/Makefile-gnss-serial-y := serial.o
---snip end--
+> @@ -1017,6 +1043,9 @@ static int sbs_probe(struct i2c_client *client,
+>  	}
+>  	chip->i2c_retry_count = chip->i2c_retry_count + 1;
+>  
+> +	chip->charger_broadcasts = !of_property_read_bool(client->dev.of_node,
+> +					"sbs,disable-charger-broadcasts");
+> +
+This patch adds the of_property_read, only for it to be replaced in the next
+patch. Consider flipping the patch order?
 
-./.../go7007/Makefile-# SPDX-License-Identifier: GPL-2.0
-./.../go7007/Makefile:obj-$(CONFIG_VIDEO_GO7007) += go7007.o
-./.../go7007/Makefile:obj-$(CONFIG_VIDEO_GO7007_USB) += go7007-usb.o
-./.../go7007/Makefile:obj-$(CONFIG_VIDEO_GO7007_LOADER) += go7007-loader.o
-./.../go7007/Makefile:obj-$(CONFIG_VIDEO_GO7007_USB_S2250_BOARD) += s2250.o
-./.../go7007/Makefile-
-./.../go7007/Makefile-go7007-y := go7007-v4l2.o go7007-driver.o go7007-i2c.
-./.../go7007/Makefile-        snd-go7007.o
-./.../go7007/Makefile-
-./.../go7007/Makefile-s2250-y := s2250-board.o
---snip end--
-
-Thanks,
-Matej
+-Emil
