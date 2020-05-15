@@ -2,120 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1133D1D4878
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 10:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC891D489F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 10:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728412AbgEOIep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 04:34:45 -0400
-Received: from mail-dm6nam11on2086.outbound.protection.outlook.com ([40.107.223.86]:6138
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728305AbgEOIek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 04:34:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dN0uEAiJ+AFyi7SNEb6yH/0LGVsHyi8/A65N9Mz6jKJ3XiWqHdoj0fCkMCTlNRKHg/30W7NwizRd/SITPbUOT5Uaoj8QyYlmVsCwkyoddatuvrqFH99YigiNlszILLnCE5OfFHVImDIQocLYX9t7fkVRVcNoWiWEuYxMB2ggCIs3k5lOnedw3fVtzv03CyTkRQE9DADH+Vo+9QVedXRLlan5xser40gzvLsVsK34RzuKeGSn5Ru7ILzzsxiQLsr5LcK8rjrZCf4kgXPANgOgx9iFHMQvujoR0oXSmqg3y1m5mnKN8KGdVts9CMHCNpmFgWylsZWhqTE8c8hDdB38xg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HiN9WqBvuXb/S5iY+mscQrScVRKkiyxt6itUyF7ulLk=;
- b=lAgjcxPs3ls95LJO4rDxADmTMGC/phEpccOlsx8cxMWUIV84rNdKySmQ7x+WR9N42dCQ7J94sZz59n5Xg6aDbIBU8k83B3grPT1OSVFFPw7PCx5gyPKsBXX73gAPvlvU57M0dbM5+NGk8legaZIrfv2Kknw3VwuqlYAng86uNqI8Fv1eeuSB8gPPA2kCjIWTu3Ndhje8jFCUmXb4WXffTh3zFv7Fntecq9vxgyohSPqzeCMj6Mor/sonUWt/w8Gjcwkn4wTHCutlZzKK3gwtq6sGh7uacQyqFv/J+jNa2PeqtFIMCh3PDF+B24yYcWjXAefH1rOnlfYWhY3XX3JokQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HiN9WqBvuXb/S5iY+mscQrScVRKkiyxt6itUyF7ulLk=;
- b=KyPr5+EbEwMTxL/c0JdjnQal3c9T3umvMnCP35XkAARbepAq1dh6DtmwVnQCJ8uGdWkTw5dJhtsmdRuVo4or3qMQ4How/x9nCEC/Kodn9gRKm/Ki2s0VcbDp6F5KiLf0lEQU5zcdU5LmwjUthLA904ODM1wk18jnWm4nF2DI4KM=
-Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
- header.d=none;driverdev.osuosl.org; dmarc=none action=none
- header.from=silabs.com;
-Received: from MWHPR11MB1775.namprd11.prod.outlook.com (2603:10b6:300:10e::14)
- by MWHPR11MB1310.namprd11.prod.outlook.com (2603:10b6:300:28::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.26; Fri, 15 May
- 2020 08:34:24 +0000
-Received: from MWHPR11MB1775.namprd11.prod.outlook.com
- ([fe80::e055:3e6d:ff4:56da]) by MWHPR11MB1775.namprd11.prod.outlook.com
- ([fe80::e055:3e6d:ff4:56da%5]) with mapi id 15.20.3000.022; Fri, 15 May 2020
- 08:34:24 +0000
-From:   Jerome Pouiller <Jerome.Pouiller@silabs.com>
-To:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>
-Subject: [PATCH 19/19] staging: wfx: remove false positive warning
-Date:   Fri, 15 May 2020 10:33:25 +0200
-Message-Id: <20200515083325.378539-20-Jerome.Pouiller@silabs.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200515083325.378539-1-Jerome.Pouiller@silabs.com>
-References: <20200515083325.378539-1-Jerome.Pouiller@silabs.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-ClientProxiedBy: PR0P264CA0076.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:18::16) To MWHPR11MB1775.namprd11.prod.outlook.com
- (2603:10b6:300:10e::14)
+        id S1727946AbgEOIg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 04:36:27 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40990 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726885AbgEOIg0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 04:36:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589531784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rnCzWC+hepdVJSXgaCkvxN/iLlC4gaqxnaWCmO0365Y=;
+        b=ewvuW+p5/0H3LvYLVeKhoLQrY/oTtqexLMSHCkAeKLYCKQesltMyW0l/cha7mzzbNkQ2yM
+        MkY4g8s/Ul+5tUV4m5hHd0zC0pDZuKwORziYUTIFLOnW3/mDd41JSmr4Qm8xi+3/Uf4tc2
+        Cp5SF/PXCVWIhSuDxZgLmC0u49eg1ec=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-381-64juvt5hNxeFH1K6U-ab3A-1; Fri, 15 May 2020 04:36:23 -0400
+X-MC-Unique: 64juvt5hNxeFH1K6U-ab3A-1
+Received: by mail-wr1-f69.google.com with SMTP id i9so837377wrx.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 01:36:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=rnCzWC+hepdVJSXgaCkvxN/iLlC4gaqxnaWCmO0365Y=;
+        b=lKf2HHaXVqHkEW6Bzwbb1Y3pUk9bfThw4hh0TsK7suQo5z7/qa5gty6QH/4vf8mW2u
+         DmPjb7xdU8YtIp6zI3xVcIs8hFcQz7JgS1WfTBywVn8LJ0YFYzyueOjg6zjOTmfkdyB8
+         SlpANSOwQSdtcHM6YGEgVjynO5LPCD2qS/5Z9Jn53+46SG39+7FoPOggu2lBZdzH1GMJ
+         YrxpdkB7K+U/BmQ49CeY6MhP7qEwBd7Dm+ztEpJNN0N7Kaq4eLC+5O0KTwWaEYTBraHp
+         0SKihPlbZ/ztnCbkK2LCemomUSyNVONAyr+HATtShXVfxNf2Ogr+kSOADOJG0b7Qn97/
+         8nJQ==
+X-Gm-Message-State: AOAM532Bf7b1S2l7RS9Nl7ZkRKbROCBpGCTee/inrVIFLBkvOutfc7QA
+        mA9QhZTlro6LTNcT4DOcxzpt1ksMPh01EYbXAi4vApxMaXBL27/6BANZS8PdR4JpgN/n6FQSC9U
+        NnoWYYb7KhIWX1Fk0vQEH3y0q
+X-Received: by 2002:adf:94c2:: with SMTP id 60mr2956818wrr.366.1589531781835;
+        Fri, 15 May 2020 01:36:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwliq3q2MSh4hgu9dzVJHOMoWpDZHdQyryAZ8K6gfNKKYlAhOV2RGpxC9VHi80inuvkjj1wgA==
+X-Received: by 2002:adf:94c2:: with SMTP id 60mr2956801wrr.366.1589531781585;
+        Fri, 15 May 2020 01:36:21 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id b145sm2650206wme.41.2020.05.15.01.36.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 May 2020 01:36:20 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Tsirkin <mst@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, x86@kernel.org
+Subject: Re: [PATCH RFC 4/5] KVM: x86: aggressively map PTEs in KVM_MEM_ALLONES slots
+In-Reply-To: <20200514194624.GB15847@linux.intel.com>
+References: <20200514180540.52407-1-vkuznets@redhat.com> <20200514180540.52407-5-vkuznets@redhat.com> <20200514194624.GB15847@linux.intel.com>
+Date:   Fri, 15 May 2020 10:36:19 +0200
+Message-ID: <87ftc1wq64.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc-42.home (82.67.86.106) by PR0P264CA0076.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:18::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.24 via Frontend Transport; Fri, 15 May 2020 08:34:22 +0000
-X-Mailer: git-send-email 2.26.2
-X-Originating-IP: [82.67.86.106]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8d091337-e80d-4f96-bd4c-08d7f8aac5e2
-X-MS-TrafficTypeDiagnostic: MWHPR11MB1310:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR11MB1310A944230BE29A3DD14D3893BD0@MWHPR11MB1310.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:49;
-X-Forefront-PRVS: 04041A2886
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QGf/ub8g2yeGcCyJAZTcAemvIsLz3nSSRPKRRAQrevK09oUrmeC9xBqlok0r09wE/RXL1KhhdJs6f4glJpQSvzdpOcSEwF5DkWvGxgG+6s/tOr6grnjB75j6mmmZlTNs7oXqePtdCPnvzPOxrf3kn2qw2vGacAy5EBHV5i4ud3VQGytWvBU4l8joideGDVfaswgf5Nxpg9QwgN22kHssnejlCEC3QYsAiwJhBadsJkPaYXhRGJtJU4VWAGHBIxnL5O+UsKTHQS6iSDkL498IOeLG6iXwHgeVALo9y2XRnTN7vBFBFUtEIBdppTqxTXF1rCJUgrSmtcUUyOjTl9ZL8RHJT/5ojDZzM3D1eF5q9boeubj+BylgqsjaOShzLHARBmjyDk9B1lxznLG06Lc39uWm/+fNyVR8GQOAC4B6lya/s2DQYpTZPHusoquAwciZqvsWdQQlimYeFOcS4TteLzBI9/15AlcWuUbfc/NptFQ1xZppxopq7OFLXzgkMEH7TU0lb+2XM8hRCbpPiEoO1w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1775.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(136003)(376002)(366004)(39850400004)(396003)(8886007)(66556008)(186003)(6512007)(66946007)(966005)(6506007)(36756003)(316002)(66476007)(26005)(52116002)(16526019)(54906003)(2906002)(2616005)(478600001)(66574014)(107886003)(956004)(8936002)(86362001)(8676002)(6486002)(5660300002)(4326008)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: inATRghY4H5F+9Uql+MFY9jp0zrfEjwg5vqDQX2REFya+vuBcJaRBdTb3STcsxs3DpQI9GqDeTm54b472G0xVcp6F2riKUW5kvv7sZ5ViBBXTqDcUMURTvvS58B80Qd8fNN6ajaLykmYwPV2/bUPwtI4C/LFOgnGGvEdDIAzZxfWp99x/f6kXTTvlox4b6TCeQQwYD6lwWuNaBa2LNc3rwzprTTb/JYkiSOQ5qnw6iostwy820SMk43VbfJgelyuoJ5hTuaxh/lu4Oa1ycSYgSO4FkoEFZyF+0b/WPtgS0gXygZ0zavLrgN9qYJpLDdViFGcp7J3dRddnvSGfbXB6+5yUEGGJ/3GVfOlItc87yneRuuCCGJk4UkT8w//TSr7D450EEYr++3oggr78pXSuaLrbe0mjwIm7W01qRs1/gdOhsgAfX85nsc452eyCokpjSgI6cHAOBn/4Vv6JFqZKgiOUIKRNrVCUOiDwAeWgpw=
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d091337-e80d-4f96-bd4c-08d7f8aac5e2
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 May 2020 08:34:24.5324
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iu7dcBhK39srP+ZAcb6AqKAL9M7vfKlQ2yyZ29kLU4QRMkcJ3KwVZ83ZdZBx+VT/qUt5HEVQ4MTwwpyfScsoaQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1310
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSsOpcsO0bWUgUG91aWxsZXIgPGplcm9tZS5wb3VpbGxlckBzaWxhYnMuY29tPgoKV2hl
-biBhIHN0YXRpb24gaXMgcmVtb3ZlZCwgdGhlIGRyaXZlciBjaGVjayB0aGF0IGFsbCB0aGUgVHgg
-ZnJhbWVzIHdlcmUKY29ycmVjdGx5IHNlbnQuIEhvd2V2ZXIsIHRoZSBzdGF0aW9uIGNhbiBiZSBy
-ZW1vdmVkIGJlZm9yZSBhbGwgdGhlIFR4CmZyYW1lcyB3ZXJlIGFja25vd2xlZGdlZCBhbmQgYSBm
-YWxzZSBwb3NpdGl2ZSB3YXJuaW5nIGNhbiBiZSBlbWl0dGVkLgoKVGhlIHByZXZpb3VzIGNvbW1p
-dCBoYXMgYWRkZWQgYSB0cmFjZSB3aGVuIGRyaXZlciByZWNlaXZlZCBhbgphY2tub3dsZWRnZSBm
-b3IgYSBub24tZXhpc3RlbnQgc3RhdGlvbi4gSXQgYXBwZWFyIHRoYXQgdGhlc2UgZXZlbnRzCmFy
-ZSBwZXJmZWN0bHkgY29ycmVsYXRlZCBhbmQgdGhlcmUgaXMgbm8gbGVhay4KCk5vdywgdGhlIHN1
-YmplY3QgaXMgcGVyZmVjdGx5IHVuZGVyc3Rvb2QuIFJlbW92ZSB0aGUgd2FybmluZy4gSnVzdCBr
-ZWVwCmEgZGVidWcgdHJhY2UgaW4gY2FzZSB3ZSBoYXZlIGFueSBkb3VidCBpbiB0aGUgZnV0dXJl
-LgoKSW4gdGhlIHBhc3QsIHRoZSBzdWJqZWN0IGhhcyBhbHJlYWR5IGJlZW4gZGlzY3Vzc2VkIGhl
-cmU6CiAgIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2RyaXZlcmRldi1kZXZlbC82Mjg3OTI0Lmdo
-R0ZVTWszT0RAcGMtNDIvCgpGaXhlczogNGJiYzZhM2U3YWQwICgic3RhZ2luZzogd2Z4OiBtYWtl
-IHdhcm5pbmcgYWJvdXQgcGVuZGluZyBmcmFtZSBsZXNzIHNjYXJ5IikKU2lnbmVkLW9mZi1ieTog
-SsOpcsO0bWUgUG91aWxsZXIgPGplcm9tZS5wb3VpbGxlckBzaWxhYnMuY29tPgotLS0KIGRyaXZl
-cnMvc3RhZ2luZy93Zngvc3RhLmMgfCA2ICsrKystLQogMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0
-aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL3N0YWdpbmcvd2Z4
-L3N0YS5jIGIvZHJpdmVycy9zdGFnaW5nL3dmeC9zdGEuYwppbmRleCBmNDQ4OTU3YzFhOTIuLjYw
-MTVjZDJjNGQ4YSAxMDA2NDQKLS0tIGEvZHJpdmVycy9zdGFnaW5nL3dmeC9zdGEuYworKysgYi9k
-cml2ZXJzL3N0YWdpbmcvd2Z4L3N0YS5jCkBAIC00NDEsOCArNDQxLDEwIEBAIGludCB3Znhfc3Rh
-X3JlbW92ZShzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywgc3RydWN0IGllZWU4MDIxMV92aWYgKnZp
-ZiwKIAogCWZvciAoaSA9IDA7IGkgPCBBUlJBWV9TSVpFKHN0YV9wcml2LT5idWZmZXJlZCk7IGkr
-KykKIAkJaWYgKHN0YV9wcml2LT5idWZmZXJlZFtpXSkKLQkJCWRldl93YXJuKHd2aWYtPndkZXYt
-PmRldiwgInJlbGVhc2Ugc3RhdGlvbiB3aGlsZSAlZCBwZW5kaW5nIGZyYW1lIG9uIHF1ZXVlICVk
-IiwKLQkJCQkgc3RhX3ByaXYtPmJ1ZmZlcmVkW2ldLCBpKTsKKwkJCS8vIE5vdCBhbiBlcnJvciBp
-ZiBwYWlyZWQgd2l0aCB0cmFjZSBpbgorCQkJLy8gd2Z4X3R4X3VwZGF0ZV9zdGEoKQorCQkJZGV2
-X2RiZyh3dmlmLT53ZGV2LT5kZXYsICJyZWxlYXNlIHN0YXRpb24gd2hpbGUgJWQgcGVuZGluZyBm
-cmFtZSBvbiBxdWV1ZSAlZCIsCisJCQkJc3RhX3ByaXYtPmJ1ZmZlcmVkW2ldLCBpKTsKIAkvLyBT
-ZWUgbm90ZSBpbiB3Znhfc3RhX2FkZCgpCiAJaWYgKCFzdGFfcHJpdi0+bGlua19pZCkKIAkJcmV0
-dXJuIDA7Ci0tIAoyLjI2LjIKCg==
+Sean Christopherson <sean.j.christopherson@intel.com> writes:
+
+> On Thu, May 14, 2020 at 08:05:39PM +0200, Vitaly Kuznetsov wrote:
+>> All PTEs in KVM_MEM_ALLONES slots point to the same read-only page
+>> in KVM so instead of mapping each page upon first access we can map
+>> everything aggressively.
+>> 
+>> Suggested-by: Michael S. Tsirkin <mst@redhat.com>
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  arch/x86/kvm/mmu/mmu.c         | 20 ++++++++++++++++++--
+>>  arch/x86/kvm/mmu/paging_tmpl.h | 23 +++++++++++++++++++++--
+>>  2 files changed, 39 insertions(+), 4 deletions(-)
+>> 
+>> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+>> index 3db499df2dfc..e92ca9ed3ff5 100644
+>> --- a/arch/x86/kvm/mmu/mmu.c
+>> +++ b/arch/x86/kvm/mmu/mmu.c
+>> @@ -4154,8 +4154,24 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+>>  		goto out_unlock;
+>>  	if (make_mmu_pages_available(vcpu) < 0)
+>>  		goto out_unlock;
+>> -	r = __direct_map(vcpu, gpa, write, map_writable, max_level, pfn,
+>> -			 prefault, is_tdp && lpage_disallowed);
+>> +
+>> +	if (likely(!(slot->flags & KVM_MEM_ALLONES) || write)) {
+>
+> The 'write' check is wrong.  More specifically, patch 2/5 is missing code
+> to add KVM_MEM_ALLONES to memslot_is_readonly().  If we end up going with
+> an actual kvm_allones_pg backing, writes to an ALLONES memslots should be
+> handled same as writes to RO memslots; MMIO occurs but no MMIO spte is
+> created.
+>
+
+Missed that, thanks!
+
+>> +		r = __direct_map(vcpu, gpa, write, map_writable, max_level, pfn,
+>> +				 prefault, is_tdp && lpage_disallowed);
+>> +	} else {
+>> +		/*
+>> +		 * KVM_MEM_ALLONES are 4k only slots fully mapped to the same
+>> +		 * readonly 'allones' page, map all PTEs aggressively here.
+>> +		 */
+>> +		for (gfn = slot->base_gfn; gfn < slot->base_gfn + slot->npages;
+>> +		     gfn++) {
+>> +			r = __direct_map(vcpu, gfn << PAGE_SHIFT, write,
+>> +					 map_writable, max_level, pfn, prefault,
+>> +					 is_tdp && lpage_disallowed);
+>
+> IMO this is a waste of memory and TLB entries.  Why not treat the access as
+> the MMIO it is and emulate the access with a 0xff return value?  I think
+> it'd be a simple change to have __kvm_read_guest_page() stuff 0xff, i.e. a
+> kvm_allones_pg wouldn't be needed.  I would even vote to never create an
+> MMIO SPTE.  The guest has bigger issues if reading from a PCI hole is
+> performance sensitive.
+
+You're trying to defeat the sole purpose of the feature :-) I also saw
+the option you suggest but Michael convinced me we should go further.
+
+The idea (besides memory waste) was that the time we spend on PCI scan
+during boot is significant. Unfortunatelly, I don't have any numbers but
+we can certainly try to get them. With this feature (AFAIU) we're not
+aiming at 'classic' long-living VMs but rather at something like Kata
+containers/FaaS/... where boot time is crucial.
+
+>
+> Regarding memory, looping wantonly on __direct_map() will eventually trigger
+> the BUG_ON() in mmu_memory_cache_alloc().  mmu_topup_memory_caches() only
+> ensures there are enough objects available to map a single translation, i.e.
+> one entry per level, sans the root[*].
+>
+> [*] The gorilla math in mmu_topup_memory_caches() is horrendously misleading,
+>     e.g. the '8' pages is really 2*(ROOT_LEVEL - 1), but the 2x part has been
+>     obsolete for the better part of a decade, and the '- 1' wasn't actually
+>     originally intended or needed, but is now required because of 5-level
+>     paging.  I have the beginning of a series to clean up that mess; it was
+>     low on my todo list because I didn't expect anyone to be mucking with
+>     related code :-)
+
+I missed that too but oh well, this is famous KVM MMU, I should't feel
+that bad about it :-) Thanks for your review!
+
+>
+>> +			if (r)
+>> +				break;
+>> +		}
+>> +	}
+>
+
+-- 
+Vitaly
+
