@@ -2,91 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 425AD1D42C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 03:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D407C1D42CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 03:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbgEOBKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 21:10:55 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:37544 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgEOBKy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 21:10:54 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04F13Bi0130937;
-        Fri, 15 May 2020 01:10:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=TyrYiqH+VfGA6jGGAeVFMBRZ9nDOnNrJysU+L3STKvo=;
- b=pDGciFm9XOhkzHLEKW1j3p8x0Cw91o2/496QHQaynWPmEbodkGb3VQuJSRo5cMmsayEV
- 8z31eISIGPglK+S/ydF66IVQoczDO6JQWd71LlGHcpsK1Wu0Y1dfhpku4XhiXBOWk546
- PKQLBOH4rykfTavleSX0gnfwCSMcblEA6oMzyqC7EKp81YtC5FlEGHdW6NTXMNkeLxzC
- 7owIfQjpnkeHjIHPcEKjSRBScP/T3DDPyaWFB7P5I6JxSagzKO3/X2a3LEf4Dx/Pw1US
- J9yVpDL15ZiNT1t5wM8nEKkJy9zUtTNTuTfdS3fTyfn3lLrwToQfc7nnMK/dw6VOoaFP wQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 3100xwxpb4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 15 May 2020 01:10:41 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04F12l2s161327;
-        Fri, 15 May 2020 01:10:41 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 3100yqf440-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 May 2020 01:10:41 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04F1AcA0014071;
-        Fri, 15 May 2020 01:10:40 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 14 May 2020 18:10:37 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     john.garry@huawei.com, Jason Yan <yanaijie@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        jejb@linux.ibm.com
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>
-Subject: Re: [PATCH v2] scsi: hisi_sas: display proc_name in sysfs
-Date:   Thu, 14 May 2020 21:10:30 -0400
-Message-Id: <158932946186.30297.18353935418962789564.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200512113258.30781-1-yanaijie@huawei.com>
-References: <20200512113258.30781-1-yanaijie@huawei.com>
+        id S1728245AbgEOBQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 21:16:37 -0400
+Received: from smtp.h3c.com ([221.12.31.56]:33062 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726168AbgEOBQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 21:16:37 -0400
+Received: from DAG2EX04-BASE.srv.huawei-3com.com ([10.8.0.67])
+        by h3cspam02-ex.h3c.com with ESMTPS id 04F1FmFo031401
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 May 2020 09:15:48 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX04-BASE.srv.huawei-3com.com (10.8.0.67) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 15 May 2020 09:15:49 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%6]) with
+ mapi id 15.01.1713.004; Fri, 15 May 2020 09:15:49 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        "john.stultz@linaro.org" <john.stultz@linaro.org>,
+        "sboyd@kernel.org" <sboyd@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIHRpbWVyczogdXNlIHNldF9jdXJyZW50X3N0YXRl?=
+ =?utf-8?Q?_macro?=
+Thread-Topic: [PATCH] timers: use set_current_state macro
+Thread-Index: AQHWJN1i8nvFEDn09kuOWWA9opf9/6imCT8AgADM2eCAAYyy8A==
+Date:   Fri, 15 May 2020 01:15:48 +0000
+Message-ID: <d0f48048300d4cd0a2c23d5918eb0fe5@h3c.com>
+References: <20200508020222.15791-1-tian.xianting@h3c.com>
+ <875zcz1qf9.fsf@nanos.tec.linutronix.de> 
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=931 adultscore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005150007
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 cotscore=-2147483648 bulkscore=0
- phishscore=0 adultscore=0 mlxlogscore=974 lowpriorityscore=0
- impostorscore=0 spamscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
- suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005150007
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 04F1FmFo031401
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 May 2020 19:32:58 +0800, Jason Yan wrote:
-
-> The 'proc_name' entry in sysfs for hisi_sas is 'null' now becuase it is
-> not initialized in scsi_host_template. It looks like:
-> 
-> [root@localhost ~]# cat /sys/class/scsi_host/host2/proc_name
-> (null)
-> 
-> While the other driver's entry looks like:
-> 
-> [...]
-
-Applied to 5.8/scsi-queue, thanks!
-
-[1/1] scsi: hisi_sas: Display proc_name in sysfs
-      https://git.kernel.org/mkp/scsi/c/55ce24b3bfd7
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+UGxlYXNlIHJldmlldyB0aGlzIG9uZSwgdGhhbmtzLg0KaHR0cHM6Ly9sa21sLm9yZy9sa21sLzIw
+MjAvNS8xNC83OTYNCg0KLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0K5Y+R5Lu25Lq6OiB0aWFueGlh
+bnRpbmcgKFJEKQ0K5Y+R6YCB5pe26Ze0OiAyMDIw5bm0NeaciDE05pelIDk6NDYNCuaUtuS7tuS6
+ujogJ1Rob21hcyBHbGVpeG5lcicgPHRnbHhAbGludXRyb25peC5kZT47IGpvaG4uc3R1bHR6QGxp
+bmFyby5vcmc7IHNib3lkQGtlcm5lbC5vcmcNCuaKhOmAgTogbGludXgta2VybmVsQHZnZXIua2Vy
+bmVsLm9yZw0K5Li76aKYOiDnrZTlpI06IFtQQVRDSF0gdGltZXJzOiB1c2Ugc2V0X2N1cnJlbnRf
+c3RhdGUgbWFjcm8NCg0KSGkgVGhvbWFzDQpUaGFua3MgZm9yIHlvdXIgcmVwbHkgOikNCkkgYW0g
+c29ycnkgZm9yIGluY29udmVuaWVuY2luZyB5b3UgYWJvdXQgdGhpcy4NCnRpYW4ueGlhbnRpbmdA
+aDNjLmNvbSBpcyB0aGUgbWFpbCB3aGljaCBpcyBwcm92aWRlZCBieSBteSBjb21wYW55LCBNeSBj
+b21wYW55IG1heSBhZGRlZCBzb21lIGxpbWl0JnNpZ25hdHVyZSB3aGVuIEkgc2VuZCB0aGUgbWFp
+bCBvdXQgb2YgaXQsIEkgd2lsbCByZS1zZW5kIHRoZSBwYXRjaCB2aWEgbXkgcGVyc29uYWwgbWFp
+bCwgSSB1c2VkIGl0IHRvIHNlbmQgc2V2ZXJhbCBwYXRjaGVzIGJlZm9yZSwgYW5kIHBhdGNoZXMg
+d2VyZSBhY2NlcHRlZC4NCg0KLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0K5Y+R5Lu25Lq6OiBUaG9t
+YXMgR2xlaXhuZXIgW21haWx0bzp0Z2x4QGxpbnV0cm9uaXguZGVdDQrlj5HpgIHml7bpl7Q6IDIw
+MjDlubQ15pyIMTTml6UgNToyMg0K5pS25Lu25Lq6OiB0aWFueGlhbnRpbmcgKFJEKSA8dGlhbi54
+aWFudGluZ0BoM2MuY29tPjsgam9obi5zdHVsdHpAbGluYXJvLm9yZzsgc2JveWRAa2VybmVsLm9y
+Zw0K5oqE6YCBOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyB0aWFueGlhbnRpbmcgKFJE
+KSA8dGlhbi54aWFudGluZ0BoM2MuY29tPg0K5Li76aKYOiBSZTogW1BBVENIXSB0aW1lcnM6IHVz
+ZSBzZXRfY3VycmVudF9zdGF0ZSBtYWNybw0KDQpYaWFudGluZywNCg0KWGlhbnRpbmcgVGlhbiA8
+dGlhbi54aWFudGluZ0BoM2MuY29tPiB3cml0ZXM6DQoNCnRoYW5rcyBmb3IgeW91ciBwYXRjaC4N
+Cg0KQ2FuIHlvdSBwbGVhc2UgZml4IHlvdXIgbWFpbCBjbGllbnQgdG8gaGF2ZSBwcm9wZXIgbWFp
+bCBoZWFkZXJzPyBJdA0KcHJvdmlkZXM6DQoNCiAgQ29udGVudC1UeXBlOiB0ZXh0L3BsYWluDQog
+IENvbnRlbnQtVHJhbnNmZXItRW5jb2Rpbmc6IHF1b3RlZC1wcmludGFibGUNCg0KYnV0IGl0IGZh
+aWxzIHRvIHByb3ZpZGUgdGhlIGNoYXJzZXQgaW5mb3JtYXRpb24uIFRoYXQgY2F1c2VzIHRoZSBm
+b290ZXIgdG8gYmVjb21lIHVucmVhZGFibGUgZ2FyYmFnZSBub3Qgb25seSBpbiBteSBtYWlsIHJl
+YWRlci4gU2VlOg0KDQogIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMDA1MDgwMjAy
+MjIuMTU3OTEtMS10aWFuLnhpYW50aW5nQGgzYy5jb20vDQoNCldoYXQncyB3b3JzZSBpcyB0aGF0
+IGlzIGNhdXNlcyBteSBwYXRjaCBoYW5kbGluZyBzY3JpcHRzIHRvIGRlY29kZSB0aGUgbWFpbCBi
+b2R5IGNvcnJlY3RseS4gQW5kIEknbSBub3QgcmVhbGx5IGluY2xpbmVkIHRvIGZpZ3VyZSBvdXQg
+aG93IHRvIGhhbmRsZSB0aGlzIGNhc2UuDQoNCj4gLS0tIGEva2VybmVsL3RpbWUvdGltZXIuYw0K
+PiArKysgYi9rZXJuZWwvdGltZS90aW1lci5jDQo+IEBAIC0xODg1LDcgKzE4ODUsNyBAQCBzaWdu
+ZWQgbG9uZyBfX3NjaGVkIHNjaGVkdWxlX3RpbWVvdXQoc2lnbmVkIGxvbmcgdGltZW91dCkNCj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgcHJpbnRrKEtFUk5fRVJSICJzY2hlZHVsZV90aW1lb3V0
+OiB3cm9uZyB0aW1lb3V0ICINCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidmFs
+dWUgJWx4XG4iLCB0aW1lb3V0KTsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgZHVtcF9zdGFj
+aygpOw0KPiAtICAgICAgICAgICAgICAgICAgICAgICBjdXJyZW50LT5zdGF0ZSA9IFRBU0tfUlVO
+TklORzsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgc2V0X2N1cnJlbnRfc3RhdGUoVEFTS19S
+VU5OSU5HKTsNCg0KVGhhdCdzIG5vdCB0aGUgc2FtZSBhbmQgYWRkcyBhIGJhcnJpZXIgd2hpY2gg
+aXMgbm90IG5lZWRlZC4NCg0KTm90IGEgYmlnIHByb2JsZW0gaW4gdGhhdCBwYXJ0aWN1bGFyIGVy
+cm9yIGhhbmRsaW5nIGNvZGUgcGF0aCwgYnV0IGluIGdlbmVyYWwgeW91IHJlYWxseSBoYXZlIHRv
+IGxvb2sgd2hldGhlciB5b3VyIHJlcGxhY2VtZW50IGlzIHJlc3VsdGluZyBpbiB0aGUgc2FtZSBj
+b2RlLg0KDQpJZiBub3QgdGhlbiB5b3UgbmVlZCB0byBtYWtlIGFuIGFyZ3VtZW50IGluIHRoZSBj
+aGFuZ2Vsb2cgd2h5IHlvdSBhcmUgcmVwbGFjaW5nIGV4aXN0aW5nIGNvZGUgd2l0aCBzb21ldGhp
+bmcgd2hpY2ggaXMgbm90IGZ1bGx5IGVxdWl2YWxlbnQuDQoNCkZvciB0aGlzIHBhcnRpY3VsYXIg
+Y2FzZSwgcGxlYXNlIGNoZWNrIHRoZSBpbXBsZW1lbnRhdGlvbiBhbmQgcmVhZCB0aGUgZG9jdW1l
+bnRhdGlvbiBvZiBzZXRfY3VycmVudF9zdGF0ZSgpIGluIGluY2x1ZGUvbGludXgvc2NoZWQuaC4N
+Cg0KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tDQo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiDCscK+w5PDisK8w77CvMKww4bDpMK4wr3C
+vMO+wrrCrMOTw5DDkMOCwrvCqsOIw73CvMKvw43DhcK1w4TCscKjw4PDnMOQw4XDj8KiwqPCrMK9
+w7bDj8Oew5PDmsK3wqLDi8ONwrjDuMOJw4/Dg8OmwrXDmMOWwrfDlsOQw4HDkMKzw7YNCj4gwrXD
+hMK4w7bDiMOLwrvDssOIwrrDl8OpwqHCo8K9w7vDlsK5w4jDjsK6w47DhsOkw4vDu8OIw4vDksOU
+w4jDjsK6w47DkMOOw4rCvcOKwrnDk8ODwqPCqMKww7zDgMKowrXCq8KywrvDj8Oew5PDmsOIwqvC
+ssK/wrvDssKywr/Ct8OWwrXDmMOQwrkNCj4gw4LCtsKhwqLCuMK0w5bDhsKhwqINCj4gwrvDssOJ
+wqLCt8KiwqPCqcKxwr7Dk8OKwrzDvsOWw5DCtcOEw5DDhcOPwqLCocKjw4jDp8K5w7vDhMO6wrTD
+rcOKw5XDgcOLwrHCvsOTw4rCvMO+wqPCrMOHw6vDhMO6w4HCosK8wrTCtcOnwrvCsMK7w7LDk8OK
+wrzDvsONwqjDlsKqwrfCosK8w74NCj4gw4jDi8KywqLDicK+wrPDvcKxwr4NCj4gw5PDisK8w77C
+o8KhDQoNClRoaXMgaXMgdGhlIHJlc3VsdGluZyBnYXJiYWdlLiBOb3QgdGhhdCBJIGNvdWxkIGRl
+Y2lwaGVyIHRoZSBjaGluZXNlIGNoYXJhY3RlcnMgd2hpY2ggc2hvdWxkIGJlIGhlcmUgaW5zdGVh
+ZCwgYnV0IGF0IGxlYXN0IHRoZXkgd291bGQgbG9vayB3YXkgbmljZXIuIEJ1dCBzZWUgYmVsb3c6
+DQoNCj4gVGhpcyBlLW1haWwgYW5kIGl0cyBhdHRhY2htZW50cyBjb250YWluIGNvbmZpZGVudGlh
+bCBpbmZvcm1hdGlvbiBmcm9tDQo+IE5ldyBIM0MsIHdoaWNoIGlzIGludGVuZGVkIG9ubHkgZm9y
+IHRoZSBwZXJzb24gb3IgZW50aXR5IHdob3NlIGFkZHJlc3MNCj4gaXMgbGlzdGVkIGFib3ZlLiBB
+bnkgdXNlIG9mIHRoZSBpbmZvcm1hdGlvbiBjb250YWluZWQgaGVyZWluIGluIGFueQ0KPiB3YXkg
+KGluY2x1ZGluZywgYnV0IG5vdCBsaW1pdGVkIHRvLCB0b3RhbCBvciBwYXJ0aWFsIGRpc2Nsb3N1
+cmUsDQo+IHJlcHJvZHVjdGlvbiwgb3IgZGlzc2VtaW5hdGlvbikgYnkgcGVyc29ucyBvdGhlciB0
+aGFuIHRoZSBpbnRlbmRlZA0KPiByZWNpcGllbnQocykgaXMgcHJvaGliaXRlZC4gSWYgeW91IHJl
+Y2VpdmUgdGhpcyBlLW1haWwgaW4gZXJyb3IsDQo+IHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBi
+eSBwaG9uZSBvciBlbWFpbCBpbW1lZGlhdGVseSBhbmQgZGVsZXRlIGl0IQ0KDQpDYW4geW91IHBs
+ZWFzZSByZW1vdmUgdGhpcyBkaXNjbGFpbWVyIGNvbXBsZXRlbHkgKHdoaWNoIGF2b2lkcyB0aGUg
+Z2FyYmFnZSBpc3N1ZSBhcyB3ZWxsKSA/DQoNCkl0IGRvZXMgbm90IG1ha2UgYW55IHNlbnNlIGlm
+IHlvdSBzZW5kIG1haWwgdG8gYSBwdWJsaWMgbWFpbGluZyBsaXN0Og0KDQogMSkgSWYgeW91IHNl
+bmQgbWFpbCB0byBhIHB1YmxpYyBsaXN0IHdoaWNoIGlzIGFyY2hpdmVkIGluIHB1YmxpYyB0aGVu
+DQogICAgdGhlIGluZm9ybWF0aW9uIGNhbid0IGJlIGNvbmZpZGVudGlhbCBhbmQgcmVzdHJpY3Rl
+ZCB0byBhIHBhcnRpY3VsYXINCiAgICBhdWRpZW5jZS4gSXQgY2FuIGJlIGFjY2Vzc2VkIGJ5IGV2
+ZXJ5b25lIG9uIHRoaXMgcGxhbmV0IHdobyBoYXMNCiAgICBhY2Nlc3MgdG8gdGhlIGludGVybmV0
+Lg0KDQogMikgSWYgeW91IHJlYWxseSBzZW5kIGNvbmZpZGVudGFsIGluZm9ybWF0aW9uIGFjY2lk
+ZW50YWxseSB0aGVuIHRoZXJlDQogICAgaXMgbm8gd2F5IHRvIGRlbGV0ZSBpdC4gSXQncyBvdXQg
+dGhlcmUgaW4gdGhlIHB1YmxpYyBhbmQgaW4gYXJjaGl2ZXMNCiAgICBhbmQgeW91IGNhbid0IGNh
+bGwgaXQgYmFjay4NCg0KVGhhbmtzLA0KDQogICAgICAgIHRnbHgNCg0KDQotLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tDQrmnKzpgq7ku7blj4rlhbbpmYTku7blkKvmnInmlrDljY7kuInpm4blm6LnmoTkv53l
+r4bkv6Hmga/vvIzku4XpmZDkuo7lj5HpgIHnu5nkuIrpnaLlnLDlnYDkuK3liJflh7oNCueahOS4
+quS6uuaIlue+pOe7hOOAguemgeatouS7u+S9leWFtuS7luS6uuS7peS7u+S9leW9ouW8j+S9v+eU
+qO+8iOWMheaLrOS9huS4jemZkOS6juWFqOmDqOaIlumDqOWIhuWcsOazhOmcsuOAgeWkjeWItuOA
+gQ0K5oiW5pWj5Y+R77yJ5pys6YKu5Lu25Lit55qE5L+h5oGv44CC5aaC5p6c5oKo6ZSZ5pS25LqG
+5pys6YKu5Lu277yM6K+35oKo56uL5Y2z55S16K+d5oiW6YKu5Lu26YCa55+l5Y+R5Lu25Lq65bm2
+5Yig6Zmk5pysDQrpgq7ku7bvvIENClRoaXMgZS1tYWlsIGFuZCBpdHMgYXR0YWNobWVudHMgY29u
+dGFpbiBjb25maWRlbnRpYWwgaW5mb3JtYXRpb24gZnJvbSBOZXcgSDNDLCB3aGljaCBpcw0KaW50
+ZW5kZWQgb25seSBmb3IgdGhlIHBlcnNvbiBvciBlbnRpdHkgd2hvc2UgYWRkcmVzcyBpcyBsaXN0
+ZWQgYWJvdmUuIEFueSB1c2Ugb2YgdGhlDQppbmZvcm1hdGlvbiBjb250YWluZWQgaGVyZWluIGlu
+IGFueSB3YXkgKGluY2x1ZGluZywgYnV0IG5vdCBsaW1pdGVkIHRvLCB0b3RhbCBvciBwYXJ0aWFs
+DQpkaXNjbG9zdXJlLCByZXByb2R1Y3Rpb24sIG9yIGRpc3NlbWluYXRpb24pIGJ5IHBlcnNvbnMg
+b3RoZXIgdGhhbiB0aGUgaW50ZW5kZWQNCnJlY2lwaWVudChzKSBpcyBwcm9oaWJpdGVkLiBJZiB5
+b3UgcmVjZWl2ZSB0aGlzIGUtbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVy
+DQpieSBwaG9uZSBvciBlbWFpbCBpbW1lZGlhdGVseSBhbmQgZGVsZXRlIGl0IQ0K
