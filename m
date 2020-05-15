@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7A01D43FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 05:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193261D4405
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 05:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbgEODTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 23:19:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727856AbgEODTC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 23:19:02 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B63C061A0C;
-        Thu, 14 May 2020 20:19:01 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49NYXf04FMz9sT8;
-        Fri, 15 May 2020 13:18:57 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1589512738;
-        bh=t5TmQpn3DiV31DFC2sE1M61YrXj0NQ20tFn+T2BJ4dU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=r0FQL82H/5R6YfS7Q6aJVyRbY0jIJk9mbTFCMj3Vl0c8a/uQDHeOglezQcm2HvDmK
-         Lwm72/cjC5yiYkMbEsfPNZx73i/MBMnT0OtRcnt+dRyVF2wyDfPClcrJG0zznygFVZ
-         +lZB2Bhq76WYonCxqPL1P6ojSli6GFQh8+qWH/7GbxPdnDRnv/E74A4S6upClpEX68
-         NDiXZPp9lZQtxM3eFik5QX4VUlJtG006avuq8/edznoj5kNRpNNPkJZjxZ4U1Bwl3C
-         Tz4Dbp8pj8edama0/G35eMoM9LtXtZPbCuqlhRHQaSDRZcw57vVtaGwPTaZymjlGeh
-         lGrPXBdnn0oKQ==
-Date:   Fri, 15 May 2020 13:18:53 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>
-Subject: linux-next: manual merge of the bpf-next tree with the bpf tree
-Message-ID: <20200515131853.06375989@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/KiZE6h07nxf.M9k.R+KNNA2";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1728303AbgEODXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 23:23:12 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:46358 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727819AbgEODXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 23:23:11 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx32gaC75ehPA0AA--.47S2;
+        Fri, 15 May 2020 11:23:06 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v2 1/2] MIPS: Loongson: Build ATI Radeon GPU driver as module
+Date:   Fri, 15 May 2020 11:23:04 +0800
+Message-Id: <1589512985-27419-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx32gaC75ehPA0AA--.47S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFWUWr4kKrW7tFW5JF4ruFg_yoW8Xw1xpr
+        45Gan3JFWkGrnYkrZ7CrZ7WrWYvFs5JFW3ur40kry7Crs3Za40vry5tr1UJr4UXrZ8ta1S
+        9r93Gr1SkanrCa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
+        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
+        Gr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUUg_-PUUUU
+        U==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/KiZE6h07nxf.M9k.R+KNNA2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+When ATI Radeon GPU driver has been compiled directly into the kernel
+instead of as a module, we should make sure the firmware for the model
+(check available ones in /lib/firmware/radeon) is built-in to the kernel
+as well, otherwise there exists the following fatal error during GPU init,
+change CONFIG_DRM_RADEON=y to CONFIG_DRM_RADEON=m to fix it.
 
-Hi all,
+[    1.900997] [drm] Loading RS780 Microcode
+[    1.905077] radeon 0000:01:05.0: Direct firmware load for radeon/RS780_pfp.bin failed with error -2
+[    1.914140] r600_cp: Failed to load firmware "radeon/RS780_pfp.bin"
+[    1.920405] [drm:r600_init] *ERROR* Failed to load firmware!
+[    1.926069] radeon 0000:01:05.0: Fatal error during GPU init
+[    1.931729] [drm] radeon: finishing device.
 
-Today's linux-next merge of the bpf-next tree got a conflict in:
+Fixes: 024e6a8b5bb1 ("MIPS: Loongson: Add a Loongson-3 default config file")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
 
-  kernel/bpf/verifier.c
+v2:
+  - Modify the patch subject and update the commit message
 
-between commit:
+ arch/mips/configs/loongson3_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  e92888c72fbd ("bpf: Enforce returning 0 for fentry/fexit progs")
+diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
+index 6768c16..4df2434 100644
+--- a/arch/mips/configs/loongson3_defconfig
++++ b/arch/mips/configs/loongson3_defconfig
+@@ -230,7 +230,7 @@ CONFIG_MEDIA_CAMERA_SUPPORT=y
+ CONFIG_MEDIA_USB_SUPPORT=y
+ CONFIG_USB_VIDEO_CLASS=m
+ CONFIG_DRM=y
+-CONFIG_DRM_RADEON=y
++CONFIG_DRM_RADEON=m
+ CONFIG_FB_RADEON=y
+ CONFIG_LCD_CLASS_DEVICE=y
+ CONFIG_LCD_PLATFORM=m
+-- 
+2.1.0
 
-from the bpf tree and commit:
-
-  15d83c4d7cef ("bpf: Allow loading of a bpf_iter program")
-
-from the bpf-next tree.
-
-I fixed it up (I just used the latter version) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/KiZE6h07nxf.M9k.R+KNNA2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6+Ch0ACgkQAVBC80lX
-0GwMCgf/ePk6dVQIX2ko7nhfY5wNlC0MXFnGhnEv/9Hmzgw2QnKpngT02+83FhFK
-cJcDIMSNg5ex4WdypOcbrge+NlGgdHte/wOClLxMQIOuRaDsVkQG1CfkIpPguIxe
-oLDmwuSWi2bSh94hfae9gAcO/IpquSb2J7LOeyJprszsPzJnP0xlnbs38nW3+OcB
-w/3Ewa6FWhlrlhzyiI664tBERYHUo28dpFa0sSCAVafmbu9cqQ7j8NJB2/X/czKu
-A5OBv+dyYztfESS6vn6heP1ppc1JSN88QMWQB+Qq+k4rtxC38RWE/LHlCbirvXrv
-6ZfRAjVH0z13SLMRDUdguN8acN2DQg==
-=HsuW
------END PGP SIGNATURE-----
-
---Sig_/KiZE6h07nxf.M9k.R+KNNA2--
