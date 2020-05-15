@@ -2,152 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580ED1D4D49
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 14:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98141D4D50
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 14:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726240AbgEOMCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 08:02:01 -0400
-Received: from mga07.intel.com ([134.134.136.100]:1080 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726118AbgEOMCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 08:02:00 -0400
-IronPort-SDR: a2wK/qvcDhR7KL58VM+JL9Ij2JG7HTLPdRVaivCYqd9BT4JQ1H050sJ1T40dP1RgMWFz/7Sd83
- dcPwPAIOEn8A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 05:02:00 -0700
-IronPort-SDR: 52x/eYphv0+GwAeDB0GS795An+D42Z3563Tzv/uOBkJeCgUWsewkLO9fHSsB1zzLsK1rq8/CJK
- do3WYzhWBQOA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
-   d="scan'208";a="341961003"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001.jf.intel.com with ESMTP; 15 May 2020 05:01:55 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jZZ2M-006qsy-38; Fri, 15 May 2020 15:01:58 +0300
-Date:   Fri, 15 May 2020 15:01:58 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Allison Randal <allison@lohutok.net>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 03/19] spi: dw: Clear DMAC register when done or
- stopped
-Message-ID: <20200515120158.GW185537@smile.fi.intel.com>
-References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
- <20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru>
- <20200515104758.6934-4-Sergey.Semin@baikalelectronics.ru>
+        id S1726177AbgEOMDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 08:03:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726062AbgEOMDL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 08:03:11 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D3CC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 05:03:09 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id x27so1485692lfg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 05:03:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EQ+MSLCM1FfK9aeAp+m5Aux8g42PMTCx+zx8TzWAujU=;
+        b=xa/ToNKhDgoNnwHQ4aUO++Zmfp93IQTCpctnvYKOZTbKBjg4xMYYskVBTSvr6nAvHB
+         nSvIi9FkaPBtSTQ8y4plyLib2B0RhtLzqYFSD23tagBV9eqEGUReK2mo0tGa04bkpH6F
+         kx89QudofULMU8FOht++19CTimQ6s1VSdFX6FSM0rppyILJa27wxE0+p5ybtCfqDM9aw
+         WTT0vmim8nrF7cL1Gg9TlQ2CGoMYrzR9vp6XWSwcJJ/wkDLgKalGQRbshmbEsLVKmBh9
+         9QOFJhDh4wlFTH0i3xmcIe6+CC4xM1YhY6RCVFN9JYlrzO/p9qVwmIDDkTl2PHUAC841
+         dkrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EQ+MSLCM1FfK9aeAp+m5Aux8g42PMTCx+zx8TzWAujU=;
+        b=dVxwfxvMX2gxO3qGNsCNKpnbf85Spgqb+/glmKYtBRxNiXDQrz8Yt+Tcg4y4tv+GRk
+         BcwOF07HY4RPgUzr0YYW5yuGR55+Pw29HEa0VDUlWZ16XNJKC1OlOBmzbfoX4HY60057
+         E+YJdV9e43vCaLHpemMMSXgnKzzAJwykx/4NtHg0LCLvL6UstydDG1k/nOiFcmM4YqTB
+         e8Vvin8OF6WD7mm49ZgQy/cYC+PdWBAZUxati4fBw3ReRhH9MTahtbDRCZguq6YzZyM9
+         DM4dWeJjn2pI+GzifGW2WZCA4+H5DPPKprJydekYwrX341/0jbPi8vYVwQ84u9vs7R+n
+         tCGg==
+X-Gm-Message-State: AOAM533eHnH7gDgmsoSPWBqs9qZ36jmKzk435ffQPb86EZJ7VdQ7GyLa
+        CDmI4Wh8SDteE94/r75Vc9c5g27ruQXYQoOdrYviEg==
+X-Google-Smtp-Source: ABdhPJxhjqyZuPv0g6tGQeX8avCQMuPxQ1puafxoJ2BIH6FH5f31nNyevbuV+JgQFuHftu6ozilQnnji5MzHoFv4e2U=
+X-Received: by 2002:ac2:4293:: with SMTP id m19mr2245484lfh.204.1589544187846;
+ Fri, 15 May 2020 05:03:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515104758.6934-4-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <1589273314-12060-1-git-send-email-sumit.garg@linaro.org>
+ <20200512142533.ta4uejwmq5gchtlx@holly.lan> <CAFA6WYOV7oPbYE=9fXueYMacb5wv0r9T6F8tmECt-Eafe-fctw@mail.gmail.com>
+ <20200514084230.GO17734@linux-b0ei> <CAFA6WYPSsgdAB-wJC0e2YkVkW0XsqQsu5wrn4iB4M-cwvS7z2g@mail.gmail.com>
+ <20200515085021.GS17734@linux-b0ei> <20200515103308.GD42471@jagdpanzerIV.localdomain>
+In-Reply-To: <20200515103308.GD42471@jagdpanzerIV.localdomain>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri, 15 May 2020 17:32:56 +0530
+Message-ID: <CAFA6WYOBsimP1j8Fwq4OcePEug4MGoaY3wTTTVydHtTphZ-FTw@mail.gmail.com>
+Subject: Re: [PATCH] printk/kdb: Redirect printk messages into kdb in any context
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 01:47:42PM +0300, Serge Semin wrote:
-> If DMAC register is left uncleared any further DMAless transfers
-> may cause the DMAC hardware handshaking interface getting activated.
-> So the next DMA-based Rx/Tx transaction will be started right
-> after the dma_async_issue_pending() method is invoked even if no
-> DMATDLR/DMARDLR conditions are met. This at the same time may cause
-> the Tx/Rx FIFO buffers underrun/overrun. In order to fix this we
-> must clear DMAC register after a current DMA-based transaction is
-> finished.
+Hi Sergey,
 
-After adding a Fixes tag,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Fri, 15 May 2020 at 16:03, Sergey Senozhatsky
+<sergey.senozhatsky@gmail.com> wrote:
+>
+> On (20/05/15 10:50), Petr Mladek wrote:
+> > kdb is able to stop kernel even in NMI context where printk() is redirected
+> > to the printk_safe() lockless variant. Move the check and redirect to kdb
+> > even in this case.
+>
+> Can I please have some context what problem does this solve?
 
-> 
-> Co-developed-by: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-> Signed-off-by: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Allison Randal <allison@lohutok.net>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Gareth Williams <gareth.williams.jx@renesas.com>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: linux-mips@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> 
-> ---
-> 
-> Changelog v2:
-> - Move the patch to the head of the series so one could be picked up to
->   the stable kernels as a fix.
-> - Clear the DMACR in the DMA exit callback too.
-> ---
->  drivers/spi/spi-dw-mid.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/spi/spi-dw-mid.c b/drivers/spi/spi-dw-mid.c
-> index 7a5ae1506365..0c597b6bb154 100644
-> --- a/drivers/spi/spi-dw-mid.c
-> +++ b/drivers/spi/spi-dw-mid.c
-> @@ -108,6 +108,8 @@ static void mid_spi_dma_exit(struct dw_spi *dws)
->  		dmaengine_terminate_sync(dws->rxchan);
->  		dma_release_channel(dws->rxchan);
->  	}
-> +
-> +	dw_writel(dws, DW_SPI_DMACR, 0);
->  }
->  
->  static irqreturn_t dma_transfer(struct dw_spi *dws)
-> @@ -178,6 +180,8 @@ static void dw_spi_dma_tx_done(void *arg)
->  	clear_bit(TX_BUSY, &dws->dma_chan_busy);
->  	if (test_bit(RX_BUSY, &dws->dma_chan_busy))
->  		return;
-> +
-> +	dw_writel(dws, DW_SPI_DMACR, 0);
->  	spi_finalize_current_transfer(dws->master);
->  }
->  
-> @@ -249,6 +253,8 @@ static void dw_spi_dma_rx_done(void *arg)
->  	clear_bit(RX_BUSY, &dws->dma_chan_busy);
->  	if (test_bit(TX_BUSY, &dws->dma_chan_busy))
->  		return;
-> +
-> +	dw_writel(dws, DW_SPI_DMACR, 0);
->  	spi_finalize_current_transfer(dws->master);
->  }
->  
-> @@ -342,6 +348,8 @@ static void mid_spi_dma_stop(struct dw_spi *dws)
->  		dmaengine_terminate_sync(dws->rxchan);
->  		clear_bit(RX_BUSY, &dws->dma_chan_busy);
->  	}
-> +
-> +	dw_writel(dws, DW_SPI_DMACR, 0);
->  }
->  
->  static const struct dw_spi_dma_ops mfld_dma_ops = {
-> -- 
-> 2.25.1
-> 
+You can find the problem description here [1] which leads to this fix.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> I can see that vkdb_printf() calls into console drivers:
+>
+>         for_each_console(c) {
+>                 c->write(c, cp, retlen - (cp - kdb_buffer));
+>                 touch_nmi_watchdog();
+>         }
+>
+> Is this guaranteed that we never execute this path from NMI?
 
+Yes the above code could run in NMI context but it will only run after
+we stop the kernel (drop into debugger) and on a single CPU at a time.
+AFAIK, we drop into the debugger either via sysrq or during
+oops_in_progress. So I think it should be a lockless entry into the
+console driver for write operations.
 
+TBH, it's very much possible that I may miss some aspect. So please
+feel free to correct me.
+
+[1] https://lkml.org/lkml/2020/5/12/213
+
+-Sumit
+
+> If so, can this please be added to the commit message? A more
+> detailed commit message will help a lot.
+>
+>         -ss
