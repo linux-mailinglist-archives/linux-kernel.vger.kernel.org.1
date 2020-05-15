@@ -2,50 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604CC1D5573
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F76D1D557D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgEOQCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 12:02:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59038 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726183AbgEOQCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 12:02:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id CD6A9AC6E;
-        Fri, 15 May 2020 16:02:49 +0000 (UTC)
-Date:   Fri, 15 May 2020 18:02:45 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 0/3] lib/vsprintf: Introduce %ptT for time64_t
-Message-ID: <20200515160245.GW17734@linux-b0ei>
-References: <20200415170046.33374-1-andriy.shevchenko@linux.intel.com>
+        id S1727001AbgEOQEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 12:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726239AbgEOQEf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 12:04:35 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4127C061A0C;
+        Fri, 15 May 2020 09:04:34 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jZcoI-009AnZ-2z; Fri, 15 May 2020 16:03:42 +0000
+Date:   Fri, 15 May 2020 17:03:42 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Nate Karstens <nate.karstens@garmin.com>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Changli Gao <xiaosuo@gmail.com>
+Subject: Re: [PATCH v2] Implement close-on-fork
+Message-ID: <20200515160342.GE23230@ZenIV.linux.org.uk>
+References: <20200515152321.9280-1-nate.karstens@garmin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200415170046.33374-1-andriy.shevchenko@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200515152321.9280-1-nate.karstens@garmin.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2020-04-15 20:00:43, Andy Shevchenko wrote:
-> It is a logical continuation of previously applied %ptR for struct rtc_time.
-> We have few users of time64_t that would like to print it.
+On Fri, May 15, 2020 at 10:23:17AM -0500, Nate Karstens wrote:
 
-It seems that everything was explained and the patches look good to
-me. If we allowed %ptR then it makes sense to allow %ptT as well.
+> This functionality was approved by the Austin Common Standards
+> Revision Group for inclusion in the next revision of the POSIX
+> standard (see issue 1318 in the Austin Group Defect Tracker).
 
-For all three patches:
+It penalizes every call of fork() in the system (as well as adds
+an extra dirtied cacheline on each socket()/open()/etc.), adds
+memory footprint and complicates the API.  All of that - to deal
+with rather uncommon problem that already has a portable solution.
 
-Rewieved-by: Petr Mladek <pmladek@suse.com>
+As for the Austin Group, the only authority it has ever had derives
+from consensus between existing Unices.  "Solaris does it, Linux and
+*BSD do not" translates into "Austin Group is welcome to take a hike".
+BTW, contrary to the lovely bit of misrepresentation in that
+thread of theirs ("<LWN URL> suggests that" != "someone's comment
+under LWN article says it _appears_ that"), none of *BSD do it.
 
-Best Regards,
-Petr
+IMO it's a bad idea.
+
+NAKed-by: Al Viro <viro@zeniv.linux.org.uk>
