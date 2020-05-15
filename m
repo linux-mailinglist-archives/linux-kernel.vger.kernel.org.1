@@ -2,54 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901DF1D5664
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52E51D558A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726302AbgEOQnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 12:43:52 -0400
-Received: from o3.6le.shared.sendgrid.net ([167.89.100.246]:51103 "EHLO
-        o3.6le.shared.sendgrid.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726212AbgEOQnv (ORCPT
+        id S1726615AbgEOQHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 12:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726266AbgEOQHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 12:43:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sendgrid.net;
-        h=content-type:mime-version:content-transfer-encoding:
-        content-description:subject:from:reply-to:to;
-        s=smtpapi; bh=R18v/w75nzVEJUxDHttzaMT5kDPb5IYR+1bdoz2IZ08=;
-        b=PIuH9tv3aguzMwzPurfnsR4PJOwo9N9//NLtNuQ0vujTvNlCqYIJ1qvSfa98FbfagjUs
-        7b+YIlpf/lKGhsJBszAXFm9dBAXGcXBEGGLx23CjwT3d/vOTkOlUinUKL/5nOm0P7swUu6
-        VOCTJiFda7cQkVShe70USr3I0MTXjorYc=
-Received: by filter0072p3las1.sendgrid.net with SMTP id filter0072p3las1-6642-5EBEBDCD-E6
-        2020-05-15 16:05:33.617050319 +0000 UTC m=+2570617.150414337
-Received: from DESKTOP-QRP1NBJ.localdomain (unknown)
-        by ismtpd0004p1lon1.sendgrid.net (SG) with ESMTP
-        id qe_seC7_Qj6QrM4YiJ3GRA
-        Fri, 15 May 2020 16:05:33.080 +0000 (UTC)
-Content-Type: text/plain; charset=us-ascii
+        Fri, 15 May 2020 12:07:18 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F296BC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 09:07:17 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id u22so1034245plq.12
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 09:07:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9lk2egJhzBkTB4zC9tb4jrnU8imm78/hX23YMPbVKfQ=;
+        b=fMD+L8NK8FKpFxTEhw1RZGtfsQxfPUv7B+Cvvd8a8BlgkrWgF87cXb+NZpK1O8och0
+         XfqnfqEUkeLwHJF3tPhtEJtOyH2omo6rlv/aoGUWv9vxAoj2eMmpUfZQsHnGfZP656mJ
+         1uajo5Tr49Z0sLUbnHVBXmOg/cxIn/PaW/9Qk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9lk2egJhzBkTB4zC9tb4jrnU8imm78/hX23YMPbVKfQ=;
+        b=m9jsGXKoUpN+wcx/u8tZReex6WBdARA0STx/7v46o6D9yPCasPj6Huv7IO7o0hpvhH
+         0DgKcO6tfvBTiXQ41vlsLI62AfA8JzPCDIkxB4Ec7BnRO8NLICjJrCK2CWo99W8wbxCp
+         tjKdEsk9Er5dMzrCJg5OUtTp9jHu7/PKl3tkChppre3QlCUAfpCr96EbNdYPKbu+pWbl
+         mnX4trI2BHPQJSkb2e0Ft9z1YCiplbcsGmS16t7zdjUGM7GuZN6ZKcZ0d4s93qWUVZSM
+         bmcGlU87jjfDX1ls3AcQvYuGdiOVfuRMdH0LiGtEK5HJEC2ArE+AnTlrOd3P5DKRy43B
+         VbNQ==
+X-Gm-Message-State: AOAM531HOyuGMLBuAiE2WYpK+AQ4RpbZQIcAY2FeeDr8GyquaS9LtL/x
+        4vaFJleUAbAWvUXwFCs7zcrPSg==
+X-Google-Smtp-Source: ABdhPJy+0aSyniv8UGid5FsroMuBxpp31zjBJlhwWHhAQ+52X1FGJutpZXlwTXeZA8S/KPWONU3yig==
+X-Received: by 2002:a17:902:b945:: with SMTP id h5mr4328601pls.224.1589558837461;
+        Fri, 15 May 2020 09:07:17 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d184sm2233645pfc.130.2020.05.15.09.07.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 May 2020 09:07:16 -0700 (PDT)
+Date:   Fri, 15 May 2020 09:07:15 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Stephen Kitt <steve@sk2.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: sysctl/kernel: document ngroups_max
+Message-ID: <202005150907.9C685E5FD@keescook>
+References: <20200515160222.7994-1-steve@sk2.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: CATALOG
-From:   LISA YU <danihessource@hotmail.com>
-Date:   Fri, 15 May 2020 16:05:33 +0000 (UTC)
-Reply-To: danihessource@hotmail.com
-Message-ID: <qe_seC7_Qj6QrM4YiJ3GRA@ismtpd0004p1lon1.sendgrid.net>
-X-SG-EID: =?us-ascii?Q?Ipv5j7oIHISrpxeC5uzc7ox9FIQAAUCyw+cEg4f+kejK81+JTKIpBIVrgpNa9+?=
- =?us-ascii?Q?RHRjpOG=2F6pFtw=2FA7FVgztysHE=2Fz1ef=2FSXj7C7Js?=
- =?us-ascii?Q?4RVHSGDBqmy1LVQVqLmNXlXG3K+Um6Wjhz3VIiM?=
- =?us-ascii?Q?QuTNDUpACCL+t0gJ6ZU+s2zAZyUwpaFcUfLjNSq?=
- =?us-ascii?Q?lZK4sjzfmJlKrIqczroVbN3a7All8rG7ocT6Mzo?=
- =?us-ascii?Q?RKwt4rbmfJDpWaI7co4JuBbtghROXlSyCh7vYv?=
-To:     Recipients <danihessource@hotmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515160222.7994-1-steve@sk2.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-I'm LISA from NNA Holdings Hongkong,
-Please send your catalog and also Quote the best price,
+On Fri, May 15, 2020 at 06:02:22PM +0200, Stephen Kitt wrote:
+> This is a read-only export of NGROUPS_MAX, so this patch also changes
+> the declarations in kernel/sysctl.c to const.
+> 
+> Signed-off-by: Stephen Kitt <steve@sk2.org>
 
-my company want to place an order asap,
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Thanks.
+-- 
+Kees Cook
