@@ -2,106 +2,420 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B6F1D4AAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE731D4AA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgEOKOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 06:14:43 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:43398 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728047AbgEOKOi (ORCPT
+        id S1728326AbgEOKOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 06:14:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728047AbgEOKOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 06:14:38 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04FAEKJM120008;
-        Fri, 15 May 2020 05:14:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589537660;
-        bh=5VD+ZVOvXQx3TUmellcch5gik8b6+bYkOX6VNcCUEp0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=CSoxSEe2X9CPHZzR6JUpwFS5KEX2i05Nz07Z8cadYjaS+sdLoEwvxhlMHECWY3X+/
-         Z0l2m2SKD+bt6YVBGD7aaFXan0KhVTBi1gYIwtDK2L6AreFB55huoLLbhCflJq5x98
-         RGq7Gy3LtYqrNRFt8gbLlUjI52f1Q2IdY0qUCgj0=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04FAEK0D114544
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 15 May 2020 05:14:20 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
- May 2020 05:14:19 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 15 May 2020 05:14:19 -0500
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04FAEFE7038725;
-        Fri, 15 May 2020 05:14:18 -0500
-Subject: Re: [PATCH v2] arm64: dts: ti: k3-am654-main: Update otap-del-sel
- values
-To:     Faiz Abbas <faiz_abbas@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <robh+dt@kernel.org>, <nm@ti.com>
-References: <20200507181526.12529-1-faiz_abbas@ti.com>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <c59653d0-2e24-8917-f5b9-8c1044786bc9@ti.com>
-Date:   Fri, 15 May 2020 13:14:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Fri, 15 May 2020 06:14:33 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E0EC061A0C;
+        Fri, 15 May 2020 03:14:33 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Nkm75Fvfz9sTc;
+        Fri, 15 May 2020 20:14:31 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1589537672;
+        bh=/1zKFi9F8iKSZ06Lp7Ym8283SXKPfj8jQQxg/D2jDYo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lSebWezqZniNDVIVz6/diqLA87mmk3WkTgnc+qR2qIJin85Qf+K+BWYB0Dj8yluMc
+         ddqwUQatxAyjDkOwAZVMqCJf1oQ/WqhWWZPn29eF3c3t8dcU5LKwrzWlaENc6fgih6
+         z6nPBCmm0leVvdScnclHNfzQYTZTYVwUhVMVFWPP7x5aRE3cNkfO7KIl5sFHGREv7n
+         33U0IZ2Wwl5H9whfW9dAzhCeGkU7DjtwieJ/JDu3IGhBj4OKcEEdhDEqHh0UZNvTIL
+         lu/G3grgaFsNsSku1pMbKhU0FHMnHbBqyEX3dN1vTMll56Zp2rU6mmKxor0foOIOZC
+         KMt3NXPzkF97Q==
+Date:   Fri, 15 May 2020 20:14:30 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Howells <dhowells@redhat.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: linux-next: manual merge of the fsinfo tree with the vfs tree
+Message-ID: <20200515201430.3d8b2238@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20200507181526.12529-1-faiz_abbas@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; boundary="Sig_/IL.gFL_aoGg4qR7aGZ_Z6lN";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/05/2020 21:15, Faiz Abbas wrote:
-> According to the latest AM65x Data Manual[1], a different output tap
-> delay value is optimum for a given speed mode. Update these values.
-> 
-> [1] http://www.ti.com/lit/gpn/am6526
-> 
-> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
-> ---
-> v2: Rebased to the latest mainline kernel
-> 
->   arch/arm64/boot/dts/ti/k3-am65-main.dtsi | 12 +++++++++++-
->   1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> index 11887c72f23a..6cd9701e4ead 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> @@ -244,7 +244,17 @@
->   		interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>;
->   		mmc-ddr-1_8v;
->   		mmc-hs200-1_8v;
-> -		ti,otap-del-sel = <0x2>;
-> +		ti,otap-del-sel-legacy = <0x0>;
-> +		ti,otap-del-sel-mmc-hs = <0x0>;
-> +		ti,otap-del-sel-sd-hs = <0x0>;
-> +		ti,otap-del-sel-sdr12 = <0x0>;
-> +		ti,otap-del-sel-sdr25 = <0x0>;
-> +		ti,otap-del-sel-sdr50 = <0x8>;
-> +		ti,otap-del-sel-sdr104 = <0x5>;
+--Sig_/IL.gFL_aoGg4qR7aGZ_Z6lN
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Isn't this wrong? Doc claims the value for sdr104 should be 0x7?
+Hi all,
 
--Tero
+Today's linux-next merge of the fsinfo tree got conflicts in:
 
-> +		ti,otap-del-sel-ddr50 = <0x5>;
-> +		ti,otap-del-sel-ddr52 = <0x5>;
-> +		ti,otap-del-sel-hs200 = <0x5>;
-> +		ti,otap-del-sel-hs400 = <0x0>;
->   		ti,trm-icp = <0x8>;
->   		dma-coherent;
->   	};
-> 
+  arch/alpha/kernel/syscalls/syscall.tbl
+  arch/arm/tools/syscall.tbl
+  arch/ia64/kernel/syscalls/syscall.tbl
+  arch/m68k/kernel/syscalls/syscall.tbl
+  arch/microblaze/kernel/syscalls/syscall.tbl
+  arch/mips/kernel/syscalls/syscall_n32.tbl
+  arch/mips/kernel/syscalls/syscall_n64.tbl
+  arch/mips/kernel/syscalls/syscall_o32.tbl
+  arch/parisc/kernel/syscalls/syscall.tbl
+  arch/powerpc/kernel/syscalls/syscall.tbl
+  arch/s390/kernel/syscalls/syscall.tbl
+  arch/sh/kernel/syscalls/syscall.tbl
+  arch/sparc/kernel/syscalls/syscall.tbl
+  arch/x86/entry/syscalls/syscall_32.tbl
+  arch/x86/entry/syscalls/syscall_64.tbl
+  arch/xtensa/kernel/syscalls/syscall.tbl
 
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+between commit:
+
+  c8ffd8bcdd28 ("vfs: add faccessat2 syscall")
+
+from the vfs tree and commit:
+
+  1b3979fc0f0c ("fsinfo: Add fsinfo() syscall to query filesystem informati=
+on")
+
+from the fsinfo tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+I also added the following patch:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 15 May 2020 20:10:32 +1000
+Subject: [PATCH] extra syscall updates
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/arm64/include/asm/unistd.h   | 2 +-
+ arch/arm64/include/asm/unistd32.h | 2 +-
+ include/uapi/asm-generic/unistd.h | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unist=
+d.h
+index 86a9d7b3eabe..949788f5ba40 100644
+--- a/arch/arm64/include/asm/unistd.h
++++ b/arch/arm64/include/asm/unistd.h
+@@ -38,7 +38,7 @@
+ #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
+ #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
+=20
+-#define __NR_compat_syscalls		442
++#define __NR_compat_syscalls		443
+ #endif
+=20
+ #define __ARCH_WANT_SYS_CLONE
+diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/uni=
+std32.h
+index a524549e1e6b..d49b63db5b08 100644
+--- a/arch/arm64/include/asm/unistd32.h
++++ b/arch/arm64/include/asm/unistd32.h
+@@ -889,7 +889,7 @@ __SYSCALL(__NR_faccessat2, sys_faccessat2)
+ __SYSCALL(__NR_watch_mount, sys_watch_mount)
+ #define __NR_watch_sb 441
+ __SYSCALL(__NR_watch_sb, sys_watch_sb)
+-#define __NR_fsinfo 441
++#define __NR_fsinfo 442
+ __SYSCALL(__NR_fsinfo, sys_fsinfo)
+=20
+ /*
+diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/u=
+nistd.h
+index 4b676c2483f8..9018bb54bfa3 100644
+--- a/include/uapi/asm-generic/unistd.h
++++ b/include/uapi/asm-generic/unistd.h
+@@ -861,11 +861,11 @@ __SYSCALL(__NR_faccessat2, sys_faccessat2)
+ __SYSCALL(__NR_watch_mount, sys_watch_mount)
+ #define __NR_watch_sb 441
+ __SYSCALL(__NR_watch_sb, sys_watch_sb)
+-#define __NR_fsinfo 441
++#define __NR_fsinfo 442
+ __SYSCALL(__NR_fsinfo, sys_fsinfo)
+=20
+ #undef __NR_syscalls
+-#define __NR_syscalls 442
++#define __NR_syscalls 443
+=20
+ /*
+  * 32 bit systems traditionally used different
+--=20
+2.26.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/alpha/kernel/syscalls/syscall.tbl
+index 0dd59fd28c81,4d0b07dde12d..000000000000
+--- a/arch/alpha/kernel/syscalls/syscall.tbl
++++ b/arch/alpha/kernel/syscalls/syscall.tbl
+@@@ -477,6 -477,6 +477,7 @@@
+  # 545 reserved for clone3
+  547	common	openat2				sys_openat2
+  548	common	pidfd_getfd			sys_pidfd_getfd
+ -549	common	watch_mount			sys_watch_mount
+ -550	common	watch_sb			sys_watch_sb
+ -551	common	fsinfo				sys_fsinfo
+ +549	common	faccessat2			sys_faccessat2
+ +550	common	watch_mount			sys_watch_mount
+ +551	common	watch_sb			sys_watch_sb
+++552	common	fsinfo				sys_fsinfo
+diff --cc arch/arm/tools/syscall.tbl
+index df4aeba36c40,fdda8382b420..000000000000
+--- a/arch/arm/tools/syscall.tbl
++++ b/arch/arm/tools/syscall.tbl
+@@@ -451,6 -451,6 +451,7 @@@
+  435	common	clone3				sys_clone3
+  437	common	openat2				sys_openat2
+  438	common	pidfd_getfd			sys_pidfd_getfd
+ -439	common	watch_mount			sys_watch_mount
+ -440	common	watch_sb			sys_watch_sb
+ -441	common	fsinfo				sys_fsinfo
+ +439	common	faccessat2			sys_faccessat2
+ +440	common	watch_mount			sys_watch_mount
+ +441	common	watch_sb			sys_watch_sb
+++442	common	fsinfo				sys_fsinfo
+diff --cc arch/ia64/kernel/syscalls/syscall.tbl
+index 6e12406f2205,2316e60e031a..000000000000
+--- a/arch/ia64/kernel/syscalls/syscall.tbl
++++ b/arch/ia64/kernel/syscalls/syscall.tbl
+@@@ -358,6 -358,6 +358,7 @@@
+  # 435 reserved for clone3
+  437	common	openat2				sys_openat2
+  438	common	pidfd_getfd			sys_pidfd_getfd
+ -439	common	watch_mount			sys_watch_mount
+ -440	common	watch_sb			sys_watch_sb
+ -441	common	fsinfo				sys_fsinfo
+ +439	common	faccessat2			sys_faccessat2
+ +440	common	watch_mount			sys_watch_mount
+ +441	common	watch_sb			sys_watch_sb
+++442	common	fsinfo				sys_fsinfo
+diff --cc arch/m68k/kernel/syscalls/syscall.tbl
+index d6f020ba7c7a,efc2723ca91f..000000000000
+--- a/arch/m68k/kernel/syscalls/syscall.tbl
++++ b/arch/m68k/kernel/syscalls/syscall.tbl
+@@@ -437,6 -437,6 +437,7 @@@
+  435	common	clone3				__sys_clone3
+  437	common	openat2				sys_openat2
+  438	common	pidfd_getfd			sys_pidfd_getfd
+ -439	common	watch_mount			sys_watch_mount
+ -440	common	watch_sb			sys_watch_sb
+ -441	common	fsinfo				sys_fsinfo
+ +439	common	faccessat2			sys_faccessat2
+ +440	common	watch_mount			sys_watch_mount
+ +441	common	watch_sb			sys_watch_sb
+++442	common	fsinfo				sys_fsinfo
+diff --cc arch/microblaze/kernel/syscalls/syscall.tbl
+index d3db934ef48a,745c0f462fce..000000000000
+--- a/arch/microblaze/kernel/syscalls/syscall.tbl
++++ b/arch/microblaze/kernel/syscalls/syscall.tbl
+@@@ -443,6 -443,6 +443,7 @@@
+  435	common	clone3				sys_clone3
+  437	common	openat2				sys_openat2
+  438	common	pidfd_getfd			sys_pidfd_getfd
+ -439	common	watch_mount			sys_watch_mount
+ -440	common	watch_sb			sys_watch_sb
+ -441	common	fsinfo				sys_fsinfo
+ +439	common	faccessat2			sys_faccessat2
+ +440	common	watch_mount			sys_watch_mount
+ +441	common	watch_sb			sys_watch_sb
+++442	common	fsinfo				sys_fsinfo
+diff --cc arch/mips/kernel/syscalls/syscall_n32.tbl
+index 9a3aad3b0e33,499f83562a8c..000000000000
+--- a/arch/mips/kernel/syscalls/syscall_n32.tbl
++++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
+@@@ -376,6 -376,6 +376,7 @@@
+  435	n32	clone3				__sys_clone3
+  437	n32	openat2				sys_openat2
+  438	n32	pidfd_getfd			sys_pidfd_getfd
+ -439	n32	watch_mount			sys_watch_mount
+ -440	n32	watch_sb			sys_watch_sb
+ -441	n32	fsinfo				sys_fsinfo
+ +439	n32	faccessat2			sys_faccessat2
+ +440	n32	watch_mount			sys_watch_mount
+ +441	n32	watch_sb			sys_watch_sb
+++442	n32	fsinfo				sys_fsinfo
+diff --cc arch/mips/kernel/syscalls/syscall_n64.tbl
+index 430e7c05fea6,b3188bc3ab3c..000000000000
+--- a/arch/mips/kernel/syscalls/syscall_n64.tbl
++++ b/arch/mips/kernel/syscalls/syscall_n64.tbl
+@@@ -352,6 -352,6 +352,7 @@@
+  435	n64	clone3				__sys_clone3
+  437	n64	openat2				sys_openat2
+  438	n64	pidfd_getfd			sys_pidfd_getfd
+ -439	n64	watch_mount			sys_watch_mount
+ -440	n64	watch_sb			sys_watch_sb
+ -441	n64	fsinfo				sys_fsinfo
+ +439	n64	faccessat2			sys_faccessat2
+ +440	n64	watch_mount			sys_watch_mount
+ +441	n64	watch_sb			sys_watch_sb
+++442	n64	fsinfo				sys_fsinfo
+diff --cc arch/mips/kernel/syscalls/syscall_o32.tbl
+index f7404c028e03,1a3e8ed5e538..000000000000
+--- a/arch/mips/kernel/syscalls/syscall_o32.tbl
++++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
+@@@ -425,6 -425,6 +425,7 @@@
+  435	o32	clone3				__sys_clone3
+  437	o32	openat2				sys_openat2
+  438	o32	pidfd_getfd			sys_pidfd_getfd
+ -439	o32	watch_mount			sys_watch_mount
+ -440	o32	watch_sb			sys_watch_sb
+ -441	o32	fsinfo				sys_fsinfo
+ +439	o32	faccessat2			sys_faccessat2
+ +440	o32	watch_mount			sys_watch_mount
+ +441	o32	watch_sb			sys_watch_sb
+++442	o32	fsinfo				sys_fsinfo
+diff --cc arch/parisc/kernel/syscalls/syscall.tbl
+index 9841479242a5,2572c215d861..000000000000
+--- a/arch/parisc/kernel/syscalls/syscall.tbl
++++ b/arch/parisc/kernel/syscalls/syscall.tbl
+@@@ -435,6 -435,6 +435,7 @@@
+  435	common	clone3				sys_clone3_wrapper
+  437	common	openat2				sys_openat2
+  438	common	pidfd_getfd			sys_pidfd_getfd
+ -439	common	watch_mount			sys_watch_mount
+ -440	common	watch_sb			sys_watch_sb
+ -441	common	fsinfo				sys_fsinfo
+ +439	common	faccessat2			sys_faccessat2
+ +440	common	watch_mount			sys_watch_mount
+ +441	common	watch_sb			sys_watch_sb
+++442	common	fsinfo				sys_fsinfo
+diff --cc arch/powerpc/kernel/syscalls/syscall.tbl
+index f74b23ba70b2,1f318c68048b..000000000000
+--- a/arch/powerpc/kernel/syscalls/syscall.tbl
++++ b/arch/powerpc/kernel/syscalls/syscall.tbl
+@@@ -527,6 -527,6 +527,7 @@@
+  435	spu	clone3				sys_ni_syscall
+  437	common	openat2				sys_openat2
+  438	common	pidfd_getfd			sys_pidfd_getfd
+ -439	common	watch_mount			sys_watch_mount
+ -440	common	watch_sb			sys_watch_sb
+ -441	common	fsinfo				sys_fsinfo
+ +439	common	faccessat2			sys_faccessat2
+ +440	common	watch_mount			sys_watch_mount
+ +441	common	watch_sb			sys_watch_sb
+++442	common	fsinfo				sys_fsinfo
+diff --cc arch/s390/kernel/syscalls/syscall.tbl
+index 0e7fc0a9592b,ae4cefd3dd1b..000000000000
+--- a/arch/s390/kernel/syscalls/syscall.tbl
++++ b/arch/s390/kernel/syscalls/syscall.tbl
+@@@ -440,6 -440,6 +440,7 @@@
+  435  common	clone3			sys_clone3			sys_clone3
+  437  common	openat2			sys_openat2			sys_openat2
+  438  common	pidfd_getfd		sys_pidfd_getfd			sys_pidfd_getfd
+ -439	common	watch_mount		sys_watch_mount			sys_watch_mount
+ -440	common	watch_sb		sys_watch_sb			sys_watch_sb
+ -441  common	fsinfo			sys_fsinfo			sys_fsinfo
+ +439  common	faccessat2		sys_faccessat2			sys_faccessat2
+ +440	common	watch_mount		sys_watch_mount			sys_watch_mount
+ +441	common	watch_sb		sys_watch_sb			sys_watch_sb
+++442  common	fsinfo			sys_fsinfo			sys_fsinfo
+diff --cc arch/sh/kernel/syscalls/syscall.tbl
+index f283107b9d6b,05945b9aee4b..000000000000
+--- a/arch/sh/kernel/syscalls/syscall.tbl
++++ b/arch/sh/kernel/syscalls/syscall.tbl
+@@@ -440,6 -440,6 +440,7 @@@
+  # 435 reserved for clone3
+  437	common	openat2				sys_openat2
+  438	common	pidfd_getfd			sys_pidfd_getfd
+ -439	common	watch_mount			sys_watch_mount
+ -440	common	watch_sb			sys_watch_sb
+ -441	common	fsinfo				sys_fsinfo
+ +439	common	faccessat2			sys_faccessat2
+ +440	common	watch_mount			sys_watch_mount
+ +441	common	watch_sb			sys_watch_sb
+++442	common	fsinfo				sys_fsinfo
+diff --cc arch/sparc/kernel/syscalls/syscall.tbl
+index 408117c427bd,b71b34d4b45c..000000000000
+--- a/arch/sparc/kernel/syscalls/syscall.tbl
++++ b/arch/sparc/kernel/syscalls/syscall.tbl
+@@@ -483,6 -483,6 +483,7 @@@
+  # 435 reserved for clone3
+  437	common	openat2			sys_openat2
+  438	common	pidfd_getfd			sys_pidfd_getfd
+ -439	common	watch_mount			sys_watch_mount
+ -440	common	watch_sb			sys_watch_sb
+ -441	common	fsinfo				sys_fsinfo
+ +439	common	faccessat2			sys_faccessat2
+ +440	common	watch_mount			sys_watch_mount
+ +441	common	watch_sb			sys_watch_sb
+++442	common	fsinfo				sys_fsinfo
+diff --cc arch/x86/entry/syscalls/syscall_32.tbl
+index 41be37dcb8ea,e26b34e99850..000000000000
+--- a/arch/x86/entry/syscalls/syscall_32.tbl
++++ b/arch/x86/entry/syscalls/syscall_32.tbl
+@@@ -442,6 -442,6 +442,7 @@@
+  435	i386	clone3			sys_clone3
+  437	i386	openat2			sys_openat2
+  438	i386	pidfd_getfd		sys_pidfd_getfd
+ -439	i386	watch_mount		sys_watch_mount
+ -440	i386	watch_sb		sys_watch_sb
+ -441	i386	fsinfo			sys_fsinfo
+ +439	i386	faccessat2		sys_faccessat2
+ +440	i386	watch_mount		sys_watch_mount
+ +441	i386	watch_sb		sys_watch_sb
+++442	i386	fsinfo			sys_fsinfo
+diff --cc arch/x86/entry/syscalls/syscall_64.tbl
+index beb4e906f604,4578b3309c7f..000000000000
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@@ -359,9 -359,9 +359,10 @@@
+  435	common	clone3			sys_clone3
+  437	common	openat2			sys_openat2
+  438	common	pidfd_getfd		sys_pidfd_getfd
+ -439	common	watch_mount		sys_watch_mount
+ -440	common	watch_sb		sys_watch_sb
+ -441	common	fsinfo			sys_fsinfo
+ +439	common	faccessat2		sys_faccessat2
+ +440	common	watch_mount		sys_watch_mount
+ +441	common	watch_sb		sys_watch_sb
+++442	common	fsinfo			sys_fsinfo
+ =20
+  #
+  # x32-specific system call numbers start at 512 to avoid cache impact
+diff --cc arch/xtensa/kernel/syscalls/syscall.tbl
+index c35d13531382,e1ec25099d10..000000000000
+--- a/arch/xtensa/kernel/syscalls/syscall.tbl
++++ b/arch/xtensa/kernel/syscalls/syscall.tbl
+@@@ -408,6 -408,6 +408,7 @@@
+  435	common	clone3				sys_clone3
+  437	common	openat2				sys_openat2
+  438	common	pidfd_getfd			sys_pidfd_getfd
+ -439	common	watch_mount			sys_watch_mount
+ -440	common	watch_sb			sys_watch_sb
+ -441	common	fsinfo				sys_fsinfo
+ +439	common	faccessat2			sys_faccessat2
+ +440	common	watch_mount			sys_watch_mount
+ +441	common	watch_sb			sys_watch_sb
+++442	common	fsinfo				sys_fsinfo
+
+--Sig_/IL.gFL_aoGg4qR7aGZ_Z6lN
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6+a4YACgkQAVBC80lX
+0GyQqQf+JpFPbbsvYTTwmhhtsuAzzfUU3IyIXVGSmx5D00bhpod5jE0dH8Uj9zWn
+E+7PaapORQtOHsZBy4vGcdB1l0i8Qgx+GuGBt94X8nlWLDm3WFuJPijjjRB3387s
+mzbARdjnA1lk4zc6aMDwyp0AQhDxq1zT1bFoFMjaNWhhH2Jn038sdRWk0ruMRYuN
+fudZ2tb+pQgdWPpzccEQW9C+lRMr91Qyt3/05PS3avVuYD3swFmU4caC0UwwOwmg
+VKVPEihuz/OAxtEMdxZgtJ0T5S3C+pUM4Q+N2nEQ6QhrN9QiB5cQ8snkhz9+LNN7
+OO0TW+kePjO4pPlxgZw+dx7oq9NdtA==
+=M4e9
+-----END PGP SIGNATURE-----
+
+--Sig_/IL.gFL_aoGg4qR7aGZ_Z6lN--
