@@ -2,87 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA01F1D54D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAA21D54D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgEOPhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 11:37:14 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:56988 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgEOPhM (ORCPT
+        id S1726266AbgEOPg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 11:36:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726183AbgEOPg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 11:37:12 -0400
-Received: from fsav405.sakura.ne.jp (fsav405.sakura.ne.jp [133.242.250.104])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 04FFaX5p011041;
-        Sat, 16 May 2020 00:36:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav405.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp);
- Sat, 16 May 2020 00:36:33 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 04FFaXJU011017
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Sat, 16 May 2020 00:36:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: linux-next boot error: general protection fault in
- tomoyo_get_local_path
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-To:     Alexey Gladkov <gladkov.alexey@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     syzbot <syzbot+c1af344512918c61362c@syzkaller.appspotmail.com>,
-        jmorris@namei.org, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, linux-security-module@vger.kernel.org,
-        serge@hallyn.com, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <0000000000002f0c7505a5b0e04c@google.com>
- <c3461e26-1407-2262-c709-dac0df3da2d0@i-love.sakura.ne.jp>
-Message-ID: <72cb7aea-92bd-d71b-2f8a-63881a35fad8@i-love.sakura.ne.jp>
-Date:   Sat, 16 May 2020 00:36:28 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 15 May 2020 11:36:56 -0400
+Received: from forwardcorp1j.mail.yandex.net (forwardcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A97C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 08:36:56 -0700 (PDT)
+Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 231D22E14BF;
+        Fri, 15 May 2020 18:36:52 +0300 (MSK)
+Received: from sas2-32987e004045.qloud-c.yandex.net (sas2-32987e004045.qloud-c.yandex.net [2a02:6b8:c08:b889:0:640:3298:7e00])
+        by mxbackcorp2j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id aabq3ATbRs-ampGXsHa;
+        Fri, 15 May 2020 18:36:52 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1589557012; bh=6FY4knOleMpXky40W+HxLYfM4E1Bv3vZkreAoWAGMIg=;
+        h=Message-ID:Date:To:From:Subject:Cc;
+        b=Ot7oERu5ZSm7ZAxFFmwsShAPsbb4nYYg45KcoBQOtFvIJoaVOJgelxbt29bl2pKlP
+         c5+M3xibGZgBBAJT6mFZgDypjrFcNn3W4FOdGYETJYu/T1cmpS1yNPJ/yv1uNjYLQ3
+         VOjnnK6tZOIjkxuV7APba9/nTEfjGSBDTaVijeoQ=
+Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:8::1:9])
+        by sas2-32987e004045.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id v3Wo6qoLe5-amWCAVNL;
+        Fri, 15 May 2020 18:36:48 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: [PATCH] futex: send SIGBUS if argument is not aligned on a four-byte
+ boundary
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+To:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>
+Cc:     Maxim Samoylov <max7255@yandex-team.ru>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-api@vger.kernel.org
+Date:   Fri, 15 May 2020 18:36:47 +0300
+Message-ID: <158955700764.647498.18025770126733698386.stgit@buzz>
+User-Agent: StGit/0.22-39-gd257
 MIME-Version: 1.0
-In-Reply-To: <c3461e26-1407-2262-c709-dac0df3da2d0@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/05/16 0:18, Tetsuo Handa wrote:
-> This is
-> 
->         if (sb->s_magic == PROC_SUPER_MAGIC && *pos == '/') {
->                 char *ep;
->                 const pid_t pid = (pid_t) simple_strtoul(pos + 1, &ep, 10);
->                 struct pid_namespace *proc_pidns = proc_pid_ns(d_inode(dentry)); // <= here
-> 
->                 if (*ep == '/' && pid && pid ==
->                     task_tgid_nr_ns(current, proc_pidns)) {
-> 
-> which was added by commit c59f415a7cb6e1e1 ("Use proc_pid_ns() to get pid_namespace from the proc superblock").
-> 
-> @@ -161,9 +162,10 @@ static char *tomoyo_get_local_path(struct dentry *dentry, char * const buffer,
->         if (sb->s_magic == PROC_SUPER_MAGIC && *pos == '/') {
->                 char *ep;
->                 const pid_t pid = (pid_t) simple_strtoul(pos + 1, &ep, 10);
-> +               struct pid_namespace *proc_pidns = proc_pid_ns(d_inode(dentry));
-> 
->                 if (*ep == '/' && pid && pid ==
-> -                   task_tgid_nr_ns(current, sb->s_fs_info)) {
-> +                   task_tgid_nr_ns(current, proc_pidns)) {
->                         pos = ep - 5;
->                         if (pos < buffer)
->                                 goto out;
-> 
-> Alexey and Eric, any clue?
-> 
+Userspace implementations of mutexes (including glibc) in some cases
+retries operation without checking error code from syscall futex.
+This is good for performance because most errors are impossible when
+locking code trusts itself.
 
-A similar bug (racing inode destruction with open() on proc filesystem) was fixed as
-commit 6f7c41374b62fd80 ("tomoyo: Don't use nifty names on sockets."). Then, it might
-not be safe to replace dentry->d_sb->s_fs_info with dentry->d_inode->i_sb->s_fs_info .
+Some errors which could came from outer code are handled automatically,
+for example invalid address triggers SIGSEGV on atomic fast path.
+
+But one case turns into nasty busy-loop: when address is unaligned.
+futex(FUTEX_WAIT) returns EINVAL immediately and loop goes to retry.
+
+Example which loops inside second call rather than hung peacefully:
+
+#include <stdlib.h>
+#include <pthread.h>
+
+int main(int argc, char **argv)
+{
+	char buf[sizeof(pthread_mutex_t) + 1];
+	pthread_mutex_t *mutex = (pthread_mutex_t *)(buf + 1);
+
+	pthread_mutex_init(mutex, NULL);
+	pthread_mutex_lock(mutex);
+	pthread_mutex_lock(mutex);
+}
+
+It seems there is no practical usage for calling syscall futex for
+unaligned address. This may be only bug in user space. Let's help
+and handle this gracefully without adding extra code on fast path.
+
+This patch sends SIGBUS signal to slay task and break busy-loop.
+
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Reported-by: Maxim Samoylov <max7255@yandex-team.ru>
+---
+ kernel/futex.c |   13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/futex.c b/kernel/futex.c
+index b59532862bc0..8a6d35fa56bc 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -508,10 +508,21 @@ get_futex_key(u32 __user *uaddr, int fshared, union futex_key *key, enum futex_a
+ 
+ 	/*
+ 	 * The futex address must be "naturally" aligned.
++	 * Also send signal to break busy-loop if user-space ignore error.
++	 * EFAULT case should trigger SIGSEGV at access from user-space.
+ 	 */
+ 	key->both.offset = address % PAGE_SIZE;
+-	if (unlikely((address % sizeof(u32)) != 0))
++	if (unlikely((address % sizeof(u32)) != 0)) {
++		struct kernel_siginfo info;
++
++		clear_siginfo(&info);
++		info.si_signo = SIGBUS;
++		info.si_code  = BUS_ADRALN;
++		info.si_addr  = uaddr;
++		force_sig_info(&info);
++
+ 		return -EINVAL;
++	}
+ 	address -= key->both.offset;
+ 
+ 	if (unlikely(!access_ok(uaddr, sizeof(u32))))
+
