@@ -2,133 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403001D4ECE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3291D4F0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgEONRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 09:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726659AbgEONRG (ORCPT
+        id S1728119AbgEONTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 09:19:20 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:29896 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726283AbgEONTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 09:17:06 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53A1C05BD0C;
-        Fri, 15 May 2020 06:17:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=luxQMNxsjlyzL3dO3H8OF5FGGq+cc+hC23qWt+yodv4=; b=IrKApeK6phIQeXhoHj4kPI5S8S
-        XeGzPvU83JQejjMGg8APALZX1J1Q5EbV23IP/xOwbnUm1FMW2R4QIcamD1sleFTdLT3RYG0kx2fBW
-        bF9dq4KaFOXTD/Bqa0Vjf4PggEMMpTkKBoKcx3Jx1j+ENl2bbpz7yOC3eFHY0fq43mnn7x2b59Or7
-        bsNeUPBYbk79pxc31kviLIYJmuXH2YhyG/qbfxhx3p+86UO9tuU9/I//9EKKRAOnBAFC72tuhCOUA
-        gQhA19GX5d4X8Cpjvq7YmvG2bswxh09rloovGJNylk1BERy9swl/lARgJygMaRkRZ/kUrCvgSpZpq
-        Onefk2EQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZaD1-0005qC-2E; Fri, 15 May 2020 13:17:03 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     William Kucharski <william.kucharski@oracle.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v4 36/36] mm: Align THP mappings for non-DAX
-Date:   Fri, 15 May 2020 06:16:56 -0700
-Message-Id: <20200515131656.12890-37-willy@infradead.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200515131656.12890-1-willy@infradead.org>
-References: <20200515131656.12890-1-willy@infradead.org>
+        Fri, 15 May 2020 09:19:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589548753;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VVfnMaxbDJwdN3t1pb7+qmfm61G7CFVxjrzZ7nK0lKs=;
+        b=iEZQ1MA6zRRxiv/TBD4Pvm9wJ9cFasGQEftC/kxnKq3nAT9Jbi81XQ8ldCor0FR+dUCzgZ
+        ZXgwwYH5uRXqYZWV6ty0N8kgFB2tlmCuun4z4egxKkOy4V2Xs2RkSn6uAPiE2OGrRlsFjr
+        0jS6yWvtFjqhOSDzyXHyt/oXYYaOad4=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-370-GggsbnMGMgCTgZBiNb796A-1; Fri, 15 May 2020 09:19:11 -0400
+X-MC-Unique: GggsbnMGMgCTgZBiNb796A-1
+Received: by mail-qv1-f70.google.com with SMTP id w6so2575237qvj.4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 06:19:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VVfnMaxbDJwdN3t1pb7+qmfm61G7CFVxjrzZ7nK0lKs=;
+        b=WMYy3A/sNKJqKKVT5PRzJzMK0M/hCsx8afxvxZqgb3CzZ4RdOQbGt5eoPGpbKl6h9I
+         ucyxP6Q3VgMBZqdKk5irHEEwbBRFCjXv29gFoEHeqakfPUg9jlGyFO3OxUQePwYjFHIS
+         ZyAE0e38CSrprn0Vlq+pdjlaSq/c4g+uQXrpgBVmMMTCmlBeGr5Zv21qAtmdJ0xdpTsq
+         26rrWtia86QuRKbWpqMFLElpEdBlUAkHudphKMQnTQ30+gn55r0/mJE0ZrJ9ZQgvzXRB
+         wuD/Fd75Hb+aTkWIG+lnm/FNs9eRpD4BgAAcWIP7XdgQLE0ghztLYlQ+pD37hjECl7pR
+         T/Ug==
+X-Gm-Message-State: AOAM531IS19ACx7ERn0mddvV6wduROrao70VZ0h7hUUinb8+YNSwPDoQ
+        NFIerTIClJuF0ebjk7a1vjFm9MJJ3Q7vy+sp/sk/Tszpl/P9MGkrSIeYWNHSvD315I91sCSMIzq
+        1/MABpam92d1kdMgUFJGLcOuIGG0zlM8UYGomC0KO
+X-Received: by 2002:a37:2783:: with SMTP id n125mr2067398qkn.335.1589548751341;
+        Fri, 15 May 2020 06:19:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw2B+IpGj1TzoDwxhUOvlZ0BoV1h+b7uDLIOJqPAZ+BTQYyL5XS0xoOnJyMwQ5EcW6b+8bWBU1/WT/ceTDe9b8=
+X-Received: by 2002:a37:2783:: with SMTP id n125mr2067373qkn.335.1589548751140;
+ Fri, 15 May 2020 06:19:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAKgNAkioH1z-pVimHziWP=ZtyBgCOwoC7ekWGFwzaZ1FPYg-tA@mail.gmail.com>
+ <CAOssrKeNEdpY77xCWvPg-i4vQBoKLX3Y96gvf1kL7Pe29rmq_w@mail.gmail.com>
+In-Reply-To: <CAOssrKeNEdpY77xCWvPg-i4vQBoKLX3Y96gvf1kL7Pe29rmq_w@mail.gmail.com>
+From:   Miklos Szeredi <mszeredi@redhat.com>
+Date:   Fri, 15 May 2020 15:18:59 +0200
+Message-ID: <CAOssrKeDE5XKEA62Kygiis+6AVZodOzLifsaQY=eR0jAa8Z23g@mail.gmail.com>
+Subject: Re: Setting mount propagation type in new mount API
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Petr Vorel <pvorel@suse.cz>,
+        linux-man <linux-man@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: William Kucharski <william.kucharski@oracle.com>
+On Fri, May 15, 2020 at 3:04 PM Miklos Szeredi <mszeredi@redhat.com> wrote:
+>
+> On Fri, May 15, 2020 at 1:40 PM Michael Kerrisk (man-pages)
+> <mtk.manpages@gmail.com> wrote:
+> >
+> > Hello David, Miklos,
+> >
+> > I've been looking at the new mount API (fsopen(), fsconfig(),
+> > fsmount(), move_mount(), etc.) and among the details that remain
+> > mysterious to me is this: how does one set the propagation type
+> > (private/shared/slave/unbindable) of a new mount and change the
+> > propagation type of an existing mount?
+>
+> Existing mount can be chaged with mount(NULL, path, NULL, MS_$(propflag), NULL).
+>
+> To do that with a detached mount created by fsmount(2) the
+> "/proc/self/fd/$fd" trick can be used.
+>
+> The plan was to introduce a mount_setattr(2) syscall, but that hasn't
+> happened yet...  I'm not sure we should be adding propagation flags to
+> fsmount(2), since that is a less generic mechanism than
+> mount_setattr(2) or just plain mount(2) as shown above.
 
-When we have the opportunity to use transparent huge pages to map a
-file, we want to follow the same rules as DAX.
+Also note that only setting MS_SHARED makes sense on a new mount
+returned by fsmount(2) because
 
-Signed-off-by: William Kucharski <william.kucharski@oracle.com>
-[Inline __thp_get_unmapped_area() into thp_get_unmapped_area()]
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- mm/huge_memory.c | 40 +++++++++++++---------------------------
- 1 file changed, 13 insertions(+), 27 deletions(-)
+ - MS_PRIVATE is a no op, due to mount already being private
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 15a86b06befc..e78686b628ae 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -535,30 +535,30 @@ bool is_transparent_hugepage(struct page *page)
- }
- EXPORT_SYMBOL_GPL(is_transparent_hugepage);
- 
--static unsigned long __thp_get_unmapped_area(struct file *filp,
--		unsigned long addr, unsigned long len,
--		loff_t off, unsigned long flags, unsigned long size)
-+unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
-+		unsigned long len, unsigned long pgoff, unsigned long flags)
- {
-+	loff_t off = (loff_t)pgoff << PAGE_SHIFT;
- 	loff_t off_end = off + len;
--	loff_t off_align = round_up(off, size);
-+	loff_t off_align = round_up(off, PMD_SIZE);
- 	unsigned long len_pad, ret;
- 
--	if (off_end <= off_align || (off_end - off_align) < size)
--		return 0;
-+	if (off_end <= off_align || (off_end - off_align) < PMD_SIZE)
-+		goto regular;
- 
--	len_pad = len + size;
-+	len_pad = len + PMD_SIZE;
- 	if (len_pad < len || (off + len_pad) < off)
--		return 0;
-+		goto regular;
- 
- 	ret = current->mm->get_unmapped_area(filp, addr, len_pad,
- 					      off >> PAGE_SHIFT, flags);
- 
- 	/*
--	 * The failure might be due to length padding. The caller will retry
--	 * without the padding.
-+	 * The failure might be due to length padding.  Retry without
-+	 * the padding.
- 	 */
- 	if (IS_ERR_VALUE(ret))
--		return 0;
-+		goto regular;
- 
- 	/*
- 	 * Do not try to align to THP boundary if allocation at the address
-@@ -567,23 +567,9 @@ static unsigned long __thp_get_unmapped_area(struct file *filp,
- 	if (ret == addr)
- 		return addr;
- 
--	ret += (off - ret) & (size - 1);
-+	ret += (off - ret) & (PMD_SIZE - 1);
- 	return ret;
--}
--
--unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
--		unsigned long len, unsigned long pgoff, unsigned long flags)
--{
--	unsigned long ret;
--	loff_t off = (loff_t)pgoff << PAGE_SHIFT;
--
--	if (!IS_DAX(filp->f_mapping->host) || !IS_ENABLED(CONFIG_FS_DAX_PMD))
--		goto out;
--
--	ret = __thp_get_unmapped_area(filp, addr, len, off, flags, PMD_SIZE);
--	if (ret)
--		return ret;
--out:
-+regular:
- 	return current->mm->get_unmapped_area(filp, addr, len, pgoff, flags);
- }
- EXPORT_SYMBOL_GPL(thp_get_unmapped_area);
--- 
-2.26.2
+ - same for MS_SLAVE, since it's only different from MS_PRIVATE  on
+mounts receiving propagation, which a new mount by definition isn't
+
+ - MS_UNBINDABLE just prevents move_mount(2) from working so that's
+not really useful, though at least it does something
+
+A more interesting issue is whether we'd want to control the
+propagation of the target when moving into a shared tree.  I.e. should
+there be a MOVE_MOUNT_DONTPROPAGATE flag for move_mount(20 that
+prevents the new mount from being propagated...
+
+Thanks,
+Miklos
 
