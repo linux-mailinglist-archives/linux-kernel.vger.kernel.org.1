@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5661D4E93
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C221D4E9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbgEONM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 09:12:28 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:53422 "EHLO honk.sigxcpu.org"
+        id S1726385AbgEONMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 09:12:35 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:53450 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726140AbgEONMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726243AbgEONMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 May 2020 09:12:23 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 52D22FB09;
-        Fri, 15 May 2020 15:12:18 +0200 (CEST)
+        by honk.sigxcpu.org (Postfix) with ESMTP id 52834FB02;
+        Fri, 15 May 2020 15:12:19 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
 Received: from honk.sigxcpu.org ([127.0.0.1])
         by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id MkNYiLtyIAdX; Fri, 15 May 2020 15:12:16 +0200 (CEST)
+        with ESMTP id f2J9qBn8ahqL; Fri, 15 May 2020 15:12:16 +0200 (CEST)
 Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 5C6A9445A7; Fri, 15 May 2020 15:12:15 +0200 (CEST)
+        id 686394458A; Fri, 15 May 2020 15:12:15 +0200 (CEST)
 From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
 To:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
         David Airlie <airlied@linux.ie>,
@@ -38,10 +38,12 @@ To:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
         Robert Chiras <robert.chiras@nxp.com>,
         dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [RFC PATCH 0/6] drm/bridge: Add mux input selection bridge
-Date:   Fri, 15 May 2020 15:12:09 +0200
-Message-Id: <cover.1589548223.git.agx@sigxcpu.org>
+Subject: [RFC PATCH 1/6] dt-bindings: display/bridge: Add binding for input mux bridge
+Date:   Fri, 15 May 2020 15:12:10 +0200
+Message-Id: <14a44a664f40584ffa25c1764aab5ebf97809c71.1589548223.git.agx@sigxcpu.org>
 X-Mailer: git-send-email 2.26.1
+In-Reply-To: <cover.1589548223.git.agx@sigxcpu.org>
+References: <cover.1589548223.git.agx@sigxcpu.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -50,51 +52,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This bridge driver allows to select the input to a downstream bridge (or panel)
-via device tree.
+The bridge allows to select the input source via a mux controller.
 
-It can be useful to separate the pixel source selection from the actual bridge
-processing the pixel data. E.g. NXP's imx8mq has two display controllers. Both
-can feed the pixel data to the NWL DSI IP core. The input selection is done via
-a separate mux register elsewhere on the chip, so separating this out avoids SoC
-specific code in such drivers.
-
-The current implementation allows to select the input source via device tree.
-The long term goal is to allow to switch the input source at run time. This
-can be useful to e.g. use the less power hungry display controller for normal
-operation but switch to a the other display controller when running full screen
-games (since it can detile textures more efficiently).
-
-This was initially suggested by Laurent Pinchart¹. It is similar in spirit to
-the video-mux in the media subsystem but for DRM bridges.
-
-Besides the actual driver this series includes the necessary bits to demo the
-usage for the Librem5 devkit.
-
-The series is based on linux-next as of next-20200512.
-
-¹ https://lore.kernel.org/dri-devel/20200415021908.GH19819@pendragon.ideasonboard.com/
-
-Guido Günther (6):
-  dt-bindings: display/bridge: Add binding for input mux bridge
-  drm/bridge: Add mux-input bridge
-  dt-bindings: display/bridge/nwl-dsi: Drop mux handling
-  drm/bridge/nwl-dsi: Drop mux handling
-  arm64: dts: imx8mq: Add NWL dsi controller
-  arm64: dts: imx8mq-librem5-devkit: Enable MIPI DSI panel
-
- .../display/bridge/mux-input-bridge.yaml      | 123 +++++++++
- .../bindings/display/bridge/nwl-dsi.yaml      |   6 -
- .../dts/freescale/imx8mq-librem5-devkit.dts   |  81 ++++++
- arch/arm64/boot/dts/freescale/imx8mq.dtsi     |  31 +++
- drivers/gpu/drm/bridge/Kconfig                |  10 +-
- drivers/gpu/drm/bridge/Makefile               |   1 +
- drivers/gpu/drm/bridge/mux-input.c            | 238 ++++++++++++++++++
- drivers/gpu/drm/bridge/nwl-dsi.c              |  61 -----
- 8 files changed, 483 insertions(+), 68 deletions(-)
+Signed-off-by: Guido Günther <agx@sigxcpu.org>
+---
+ .../display/bridge/mux-input-bridge.yaml      | 123 ++++++++++++++++++
+ 1 file changed, 123 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/display/bridge/mux-input-bridge.yaml
- create mode 100644 drivers/gpu/drm/bridge/mux-input.c
 
+diff --git a/Documentation/devicetree/bindings/display/bridge/mux-input-bridge.yaml b/Documentation/devicetree/bindings/display/bridge/mux-input-bridge.yaml
+new file mode 100644
+index 000000000000..4029cf63ee5c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/bridge/mux-input-bridge.yaml
+@@ -0,0 +1,123 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/bridge/mux-input-bridge.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: DRM input source selection via multiplexer
++
++maintainers:
++  - Guido Gúnther <agx@sigxcpu.org>
++
++description: |
++  The input multiplexer bridge allows to select an input source
++  via an associated mux controller.
++
++properties:
++  compatible:
++    const: mux-input-bridge
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++  default-input:
++    description: The default input to use
++
++  mux-controls:
++    description:
++      mux controller node to use for operating the input mux
++
++  ports:
++    type: object
++    properties:
++      '#address-cells':
++        const: 1
++      '#size-cells':
++        const: 0
++
++    patternProperties:
++      "^port@[0-9]+":
++        type: object
++        description:
++          At least three nodes containing endpoints connecting to the
++          pixel data inputs and outputs. The last port is always the
++          output port.
++
++        properties:
++          reg:
++            maxItems: 1
++
++          endpoint:
++            description: sub-node describing the input
++            type: object
++
++        required:
++          - reg
++
++        additionalProperties: false
++
++    required:
++      - port@0
++      - port@1
++      - port@2
++
++    additionalProperties: false
++
++required:
++  - '#address-cells'
++  - '#size-cells'
++  - mux-controls
++  - ports
++
++additionalProperties: false
++
++examples:
++ - |
++   #include <dt-bindings/gpio/gpio.h>
++
++   mux: mux-controller {
++           compatible = "gpio-mux";
++           #mux-control-cells = <0>;
++
++           mux-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
++   };
++
++   mipi-mux {
++           compatible = "mux-input-bridge";
++           default-input = <0>;
++           mux-controls = <&mux 0>;
++           #address-cells = <1>;
++           #size-cells = <0>;
++
++           ports {
++                   #address-cells = <1>;
++                   #size-cells = <0>;
++
++                   port@0 {
++                           reg = <0>;
++
++                           dpi_mux_from_lcdif: endpoint {
++                                   remote-endpoint = <&lcdif_dpi_out>;
++                           };
++                   };
++
++                   port@1 {
++                           reg = <1>;
++
++                           dpi_mux_from_dccss: endpoint {
++                                   remote-endpoint = <&dcss_dpi_out>;
++                           };
++                   };
++
++                   port@2 {
++                           reg = <2>;
++
++                           dpi_mux_out: endpoint {
++                                   remote-endpoint = <&nwl_dpi_in>;
++                           };
++                   };
++           };
++   };
 -- 
 2.26.1
 
