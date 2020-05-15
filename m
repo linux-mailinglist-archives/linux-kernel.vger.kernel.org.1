@@ -2,78 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEA81D47C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 10:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 070FD1D48A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 10:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgEOIJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 04:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726648AbgEOIJc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 04:09:32 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81177C05BD09
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 01:09:32 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id y25so617154pfn.5
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 01:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1vyc3N6Wpm82JIZilzNLGJALVVKWdLUl/sk+JrP3SQY=;
-        b=WfQKqFbsR7j0aT0EBVSN2m33HEItYHviYT/e/Oyrp6O+5EmrwjqvbC5f+YgJHhS/Ml
-         5HZLGNLbbHysm+MGzdihZhtYNWYX/2aurTMWuP6AqSQFXitKJTySL+XS5PZt21DhvH1K
-         AkCIkBjKMNiC6QdGXn+Qi0B43psoWAOmYK2ZU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1vyc3N6Wpm82JIZilzNLGJALVVKWdLUl/sk+JrP3SQY=;
-        b=WNYU0jNtjZG3UOyqUixh36eSRljqtjumLjGwfbIpm7Psxiev3pLnNkYjN68ozGt2PD
-         sUm6+hRklB9NzT9M0gSKIXy1Jytv7vCPQhMhjhhqVMIEsc6IPGFv1QrdMi893iKULcby
-         URoxm/dI2kZMOcMsK8jxxgFPwCKwO7H8smTvkxtoTuj1aJ60oTBUuEnuSk9MYdUoXAvr
-         9sztV1vY7uZ8ux3bWLuZp8cmxtnHgNrIeg/VhjODqzxg74U7haDBuYHv8GZljtJu+gwG
-         T3ChyNoXgBfVoqYIULv4/I86Et3I+M650Y4F6FD0hwhOQ76bcpzjHob5FcO5ywFiBw5S
-         3gEg==
-X-Gm-Message-State: AOAM531JpFCcScCurRJNpVIIcQrrUQP3dktH7KHHJ+z+LLNx1J0hb8J2
-        lUqw3y1HSLl5gzlh7ukxdoyWjw==
-X-Google-Smtp-Source: ABdhPJzj1TkiQ319JdD4TFwt6e2PerHI09OJDhtWGz+jcdRwTxCJRsyCrrUnlx6JTEkb6ZP+l0+hDw==
-X-Received: by 2002:a62:ae13:: with SMTP id q19mr2697929pff.310.1589530171972;
-        Fri, 15 May 2020 01:09:31 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y14sm1222453pff.205.2020.05.15.01.09.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 01:09:30 -0700 (PDT)
-Date:   Fri, 15 May 2020 01:09:29 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     mcgrof@kernel.org, yzaikin@google.com, adobriyan@gmail.com,
-        mingo@kernel.org, peterz@infradead.org, akpm@linux-foundation.org,
-        yamada.masahiro@socionext.com, bauerman@linux.ibm.com,
-        gregkh@linuxfoundation.org, skhan@linuxfoundation.org,
-        dvyukov@google.com, svens@stackframe.org, joel@joelfernandes.org,
-        tglx@linutronix.de, Jisheng.Zhang@synaptics.com, pmladek@suse.com,
-        bigeasy@linutronix.de, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, wangle6@huawei.com
-Subject: Re: [PATCH 3/4] watchdog: move watchdog sysctl to watchdog.c
-Message-ID: <202005150107.DA3ABE3@keescook>
-References: <1589517224-123928-1-git-send-email-nixiaoming@huawei.com>
- <1589517224-123928-4-git-send-email-nixiaoming@huawei.com>
+        id S1727876AbgEOIiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 04:38:12 -0400
+Received: from elvis.franken.de ([193.175.24.41]:54118 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726894AbgEOIiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 04:38:12 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jZVr7-0007jn-00; Fri, 15 May 2020 10:38:09 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 324E6C04A1; Fri, 15 May 2020 10:10:46 +0200 (CEST)
+Date:   Fri, 15 May 2020 10:10:46 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [PATCH v1 1/2] MIPS: ath79: ar9331_dpt_module: update led nodes
+Message-ID: <20200515081046.GA8653@alpha.franken.de>
+References: <20200510060324.25134-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1589517224-123928-4-git-send-email-nixiaoming@huawei.com>
+In-Reply-To: <20200510060324.25134-1-o.rempel@pengutronix.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 12:33:43PM +0800, Xiaoming Ni wrote:
-> +static int sixty = 60;
+On Sun, May 10, 2020 at 08:03:23AM +0200, Oleksij Rempel wrote:
+> Fit led nodes to the latest naming schema.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  arch/mips/boot/dts/qca/ar9331_dpt_module.dts | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 
-This should be const. (Which will require a cast during extra2
-assignment.)
+both patches applied to mips-next.
+
+Thomas.
 
 -- 
-Kees Cook
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
