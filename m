@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66DE1D5960
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154321D5958
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727111AbgEOSpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 14:45:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
+        id S1727043AbgEOSot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 14:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbgEOSol (ORCPT
+        with ESMTP id S1726727AbgEOSom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 14:44:41 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992AFC05BD0A
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 11:44:40 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id b190so1385102pfg.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 11:44:40 -0700 (PDT)
+        Fri, 15 May 2020 14:44:42 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537E3C05BD0F
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 11:44:42 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id p21so1382888pgm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 11:44:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=peJsTqjtzZlMiQ6/hlyhWPfLomD22UhRmluRyXSzAqM=;
-        b=odyzMQV0MtWn4lHEcUbNe7/SQACylDgvPhRHGIoyKomvD/3z5ouRD/l5/zfv1dOmhq
-         NxkCsfaFWEwbotVggUkRs8NNA3DAwjLSBkZGbpGsRpcQV4554sI0v28SCXGJLGoBiqyw
-         TBsdNh4fLBiObsU7hXtjF8FcMcaOXWUzTNA3k=
+        bh=0jdcunXv3pqO3EZGEjVZoYTNjFacyriadazWIgCIza0=;
+        b=dJGXyum44KSJaIJ6ilVk6F+MrANEv/lMa+3vHZEw+Ee/F1S+Khae+6am+JJqjUAiur
+         xBltba6noayGshrr5DxfoWxBOGFddZ2Q6/7usxSbkmXzsQ6VuUbv+3k9rY0wEFNMFtsi
+         hEwaIVZ0ywvmhwEBIyI/X+3TR4cdCOeMAROUM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=peJsTqjtzZlMiQ6/hlyhWPfLomD22UhRmluRyXSzAqM=;
-        b=WhMzxgz6oLMKWJG+LOWN7UjWD3izqbU+3KouK7ZtN6EIMD3i/DUZwtBLcnnrMOdByh
-         LZPs6fQqDNjyqlmTDTRLCZPxtuW/aQEXTC5mKTZ7tr/P1l017IdZINKyBubh3Qj3coQ4
-         fRakcFjnDdTM6/nKXkUFc5/vISaa8e8FruR7OpyRkrwe6SUfMVwKXMapsEy7tBnk/m8O
-         nVq5wgommaBAz1H5sSysTgWPGVEBCJQUYgfvsoCmJdf6nBQjyjYxGYfRI0oS6hF6ElAB
-         ofK4BoqwBZdlv6uiqRgz8mnyeiOmF/X8SfUz8mPAeZNW1EeJguLiOn5VoPdOiQyR+9Bq
-         cz+A==
-X-Gm-Message-State: AOAM532OYxwUgTf/t6L25m0oqRiie5nghdgrrV50dmnUU2UiPcV9GSAi
-        aj+pJ4qYMjuEFjfVpyZkvn0dNg==
-X-Google-Smtp-Source: ABdhPJwHvkUqt7aY1ys8FJyyIpV2sU/MV5A7WjetunJbfb+VaZrSZ8GTZCL7/OPgum1aJcyxju5OJg==
-X-Received: by 2002:a63:7d3:: with SMTP id 202mr4282979pgh.279.1589568279879;
-        Fri, 15 May 2020 11:44:39 -0700 (PDT)
+        bh=0jdcunXv3pqO3EZGEjVZoYTNjFacyriadazWIgCIza0=;
+        b=XhQOubKdTSfsjXRT8mve1Fmnf0yxeKmfyqBt5NgTGNj+bZn3yaM3Bnzcq7kAc86BkQ
+         IskyhxscbPN4WB9VIxnELscLyzLeUL12oodsn5upjwXwg1LDw3EF3t6t6UDN5f2lG4DH
+         aCtugICxPivdN3Wm4Ger89qmGHGqAFNpIzU9kxszqZYMsoNzocI6X5JJhAEXfZwBwTJ4
+         zgiMmhetygzkuY9JB0IeIumuIK4DXKlIiBVdNHJZhv7Jqpt2oxHYcFTmL4hGRaEbhLcO
+         bcECSW4FhivQKAF1bpKnDBSA7yi6qwoeNP1JQYpqxTLJAZT3vElHEXEwnEATYJE9koeM
+         TaCw==
+X-Gm-Message-State: AOAM532pQkcbv8eJVGbY18Yabi42ixllwKlUZWpcC4CVQTnoKxMaMn/i
+        01vvL0nnvodSNkswU0TscBw1Yg==
+X-Google-Smtp-Source: ABdhPJzok71/4xx3xqYrVEUNk01rjmmUYSquuxTkQe96RfbVBWJ4Kp4ARtspqkm/dg5KXVU82P9AJA==
+X-Received: by 2002:a63:d60a:: with SMTP id q10mr4555654pgg.37.1589568281921;
+        Fri, 15 May 2020 11:44:41 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 131sm2304275pgf.49.2020.05.15.11.44.38
+        by smtp.gmail.com with ESMTPSA id mu17sm2243430pjb.53.2020.05.15.11.44.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 15 May 2020 11:44:38 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -62,9 +62,9 @@ Cc:     Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v4 1/6] printk: Collapse shutdown types into a single dump reason
-Date:   Fri, 15 May 2020 11:44:29 -0700
-Message-Id: <20200515184434.8470-2-keescook@chromium.org>
+Subject: [PATCH v4 2/6] printk: honor the max_reason field in kmsg_dumper
+Date:   Fri, 15 May 2020 11:44:30 -0700
+Message-Id: <20200515184434.8470-3-keescook@chromium.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200515184434.8470-1-keescook@chromium.org>
 References: <20200515184434.8470-1-keescook@chromium.org>
@@ -75,100 +75,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To turn the KMSG_DUMP_* reasons into a more ordered list, collapse
-the redundant KMSG_DUMP_(RESTART|HALT|POWEROFF) reasons into
-KMSG_DUMP_SHUTDOWN. The current users already don't meaningfully
-distinguish between them, so there's no need to, as discussed here:
-https://lore.kernel.org/lkml/CA+CK2bAPv5u1ih5y9t5FUnTyximtFCtDYXJCpuyjOyHNOkRdqw@mail.gmail.com/
+From: Pavel Tatashin <pasha.tatashin@soleen.com>
 
+kmsg_dump() allows to dump kmesg buffer for various system events: oops,
+panic, reboot, etc. It provides an interface to register a callback call
+for clients, and in that callback interface there is a field "max_reason"
+which gets ignored unless always_kmsg_dump is passed as kernel parameter.
+
+Allow clients to decide max_reason, and keep the current behavior when
+max_reason is not set.
+
+Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+Link: https://lore.kernel.org/lkml/20200506211523.15077-2-keescook@chromium.org/
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/powerpc/kernel/nvram_64.c | 4 +---
- fs/pstore/platform.c           | 8 ++------
- include/linux/kmsg_dump.h      | 4 +---
- kernel/reboot.c                | 6 +++---
- 4 files changed, 7 insertions(+), 15 deletions(-)
+ include/linux/kmsg_dump.h |  1 +
+ kernel/printk/printk.c    | 15 +++++++++++----
+ 2 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/arch/powerpc/kernel/nvram_64.c b/arch/powerpc/kernel/nvram_64.c
-index fb4f61096613..0cd1c88bfc8b 100644
---- a/arch/powerpc/kernel/nvram_64.c
-+++ b/arch/powerpc/kernel/nvram_64.c
-@@ -655,9 +655,7 @@ static void oops_to_nvram(struct kmsg_dumper *dumper,
- 	int rc = -1;
- 
- 	switch (reason) {
--	case KMSG_DUMP_RESTART:
--	case KMSG_DUMP_HALT:
--	case KMSG_DUMP_POWEROFF:
-+	case KMSG_DUMP_SHUTDOWN:
- 		/* These are almost always orderly shutdowns. */
- 		return;
- 	case KMSG_DUMP_OOPS:
-diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
-index 072440457c08..90d74ebaa70a 100644
---- a/fs/pstore/platform.c
-+++ b/fs/pstore/platform.c
-@@ -144,12 +144,8 @@ static const char *get_reason_str(enum kmsg_dump_reason reason)
- 		return "Oops";
- 	case KMSG_DUMP_EMERG:
- 		return "Emergency";
--	case KMSG_DUMP_RESTART:
--		return "Restart";
--	case KMSG_DUMP_HALT:
--		return "Halt";
--	case KMSG_DUMP_POWEROFF:
--		return "Poweroff";
-+	case KMSG_DUMP_SHUTDOWN:
-+		return "Shutdown";
- 	default:
- 		return "Unknown";
- 	}
 diff --git a/include/linux/kmsg_dump.h b/include/linux/kmsg_dump.h
-index 2e7a1e032c71..3f82b5cb2d82 100644
+index 3f82b5cb2d82..9826014771ab 100644
 --- a/include/linux/kmsg_dump.h
 +++ b/include/linux/kmsg_dump.h
-@@ -25,9 +25,7 @@ enum kmsg_dump_reason {
- 	KMSG_DUMP_PANIC,
+@@ -26,6 +26,7 @@ enum kmsg_dump_reason {
  	KMSG_DUMP_OOPS,
  	KMSG_DUMP_EMERG,
--	KMSG_DUMP_RESTART,
--	KMSG_DUMP_HALT,
--	KMSG_DUMP_POWEROFF,
-+	KMSG_DUMP_SHUTDOWN,
+ 	KMSG_DUMP_SHUTDOWN,
++	KMSG_DUMP_MAX
  };
  
  /**
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index c4d472b7f1b4..491f1347bf43 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -250,7 +250,7 @@ void kernel_restart(char *cmd)
- 		pr_emerg("Restarting system\n");
- 	else
- 		pr_emerg("Restarting system with command '%s'\n", cmd);
--	kmsg_dump(KMSG_DUMP_RESTART);
-+	kmsg_dump(KMSG_DUMP_SHUTDOWN);
- 	machine_restart(cmd);
- }
- EXPORT_SYMBOL_GPL(kernel_restart);
-@@ -274,7 +274,7 @@ void kernel_halt(void)
- 	migrate_to_reboot_cpu();
- 	syscore_shutdown();
- 	pr_emerg("System halted\n");
--	kmsg_dump(KMSG_DUMP_HALT);
-+	kmsg_dump(KMSG_DUMP_SHUTDOWN);
- 	machine_halt();
- }
- EXPORT_SYMBOL_GPL(kernel_halt);
-@@ -292,7 +292,7 @@ void kernel_power_off(void)
- 	migrate_to_reboot_cpu();
- 	syscore_shutdown();
- 	pr_emerg("Power down\n");
--	kmsg_dump(KMSG_DUMP_POWEROFF);
-+	kmsg_dump(KMSG_DUMP_SHUTDOWN);
- 	machine_power_off();
- }
- EXPORT_SYMBOL_GPL(kernel_power_off);
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 9a9b6156270b..a121c2255737 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3157,12 +3157,19 @@ void kmsg_dump(enum kmsg_dump_reason reason)
+ 	struct kmsg_dumper *dumper;
+ 	unsigned long flags;
+ 
+-	if ((reason > KMSG_DUMP_OOPS) && !always_kmsg_dump)
+-		return;
+-
+ 	rcu_read_lock();
+ 	list_for_each_entry_rcu(dumper, &dump_list, list) {
+-		if (dumper->max_reason && reason > dumper->max_reason)
++		enum kmsg_dump_reason max_reason = dumper->max_reason;
++
++		/*
++		 * If client has not provided a specific max_reason, default
++		 * to KMSG_DUMP_OOPS, unless always_kmsg_dump was set.
++		 */
++		if (max_reason == KMSG_DUMP_UNDEF) {
++			max_reason = always_kmsg_dump ? KMSG_DUMP_MAX :
++							KMSG_DUMP_OOPS;
++		}
++		if (reason > max_reason)
+ 			continue;
+ 
+ 		/* initialize iterator with data about the stored records */
 -- 
 2.20.1
 
