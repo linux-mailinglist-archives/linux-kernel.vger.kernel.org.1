@@ -2,106 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3EA1D5900
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73501D5901
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgEOSWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 14:22:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgEOSWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 14:22:44 -0400
-Received: from tzanussi-mobl (c-98-220-238-81.hsd1.il.comcast.net [98.220.238.81])
+        id S1726632AbgEOSWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 14:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbgEOSWz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 14:22:55 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175E8C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 11:22:55 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d67004cd1c8a6a574a4fa.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6700:4cd1:c8a6:a574:a4fa])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D478020727;
-        Fri, 15 May 2020 18:22:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589566964;
-        bh=8Rdr4KgCe61j3i5Gbg/0zblgtQpNudQNhrLSoEf4e9M=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=QXuk8PkzHnECJQ8yekOoDSj+Y/YT9AwK93su5BXadrMnGDmV6QG347OVXI5kZmQRA
-         8lCWfklXYoF6UO3AwaXWTILlInW3lMPgZwKMh0u5jyr00iZVX30SIjcC3CgiO4Qf1c
-         OZfThZ1w95WtD/uQSPHIOj0bSODH63Gx7voR8pXA=
-Message-ID: <2449de9a39bd09510f75bd2358cc7ddfd397e93f.camel@kernel.org>
-Subject: Re: Documentation/trace/events.rst: wrong numbering of sections
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Li Xinhai <lixinhai.lxh@gmail.com>
-Cc:     linux-trace-devel <linux-trace-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Theodore Ts'o <tytso@mit.edu>
-Date:   Fri, 15 May 2020 13:22:42 -0500
-In-Reply-To: <20200515091126.75db6ec9@gandalf.local.home>
-References: <2020051515434115672512@gmail.com>
-         <20200515091126.75db6ec9@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 922ED1EC028D;
+        Fri, 15 May 2020 20:22:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1589566973;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=Sq9tviaQNeT+bKn+8y6t6z3482J+xIgqd1tFGIStlew=;
+        b=nbGpSns76YiTYHagolg68Lk4njOIOqjRS7tOrqLQ7D4tdCqZdPj/naAbE4JGrzJBUrGAYw
+        PumSX9/TA82TI5/Pb3FIgt7NcwvuWWhueUwLL5n0K0zTFoueQ5wyHOwNx8eCrNPVgig3C5
+        CxHAhMJpJTRneNx+bZrSljIZyQAlsao=
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] x86/nmi: Remove edac.h include leftover
+Date:   Fri, 15 May 2020 20:22:46 +0200
+Message-Id: <20200515182246.3553-1-bp@alien8.de>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Borislav Petkov <bp@suse.de>
 
-On Fri, 2020-05-15 at 09:11 -0400, Steven Rostedt wrote:
-> It's best to Cc the maintainers of the file. Nobody reads linux-
-> kernel (it
-> produces 800 emails a day!). Luckily, I happen to monitor the
-> linux-trace-devel list (which is mostly for userland tools),
-> otherwise this
-> email would have been lost to the LKML abyss.
-> 
-> On Fri, 15 May 2020 15:43:43 +0800
-> "Li Xinhai" <lixinhai.lxh@gmail.com> wrote:
-> 
-> > This document has below numbering of its sections:
-> > 
-> > 1. Introduction
-> > 2. Using Event Tracing
-> > 2.1 Via the 'set_event' interface
-> > 2.2 Via the 'enable' toggle
-> > 2.3 Boot option
-> > 3. Defining an event-enabled tracepoint
-> > 4. Event formats
-> > 5. Event filtering
-> > 5.1 Expression syntax
-> > 5.2 Setting filters
-> > 5.3 Clearing filters
-> > 5.3 Subsystem filters
-> > 5.4 PID filtering
-> > 6. Event triggers
-> > 6.1 Expression syntax
-> > 6.2 Supported trigger commands
-> > 6.3 In-kernel trace event API
-> > 6.3.1 Dyamically creating synthetic event definitions
-> > 6.3.3 Tracing synthetic events from in-kernel code
-> > 6.3.3.1 Tracing a synthetic event all at once
-> > 6.3.3.1 Tracing a synthetic event piecewise
-> > 6.3.4 Dyamically creating kprobe and kretprobe event definitions
-> > 6.3.4 The "dynevent_cmd" low-level API
-> > 
-> > It seems wrong numbering within 6.3 section. 
-> > or, would it be better to have separated chapter #7, for 'In-kernel 
-> > trace
-> > event API'? it seems not belong to 'Event triggers'.
-> 
-> Yeah, 6.3.4 (both of them) probably should have been under a new top
-> level
-> section. (#7).
-> 
+... which
 
-Yeah, aside from duplicate numbering in a couple of places, it would
-make more sense for everything starting from '6.3 In-kernel trace event
-API' to be in a section 7.
+  db47d5f85646 ("x86/nmi, EDAC: Get rid of DRAM error reporting thru PCI SERR NMI")
 
-Would you like to submit a patch for that, Li, or should I?
+forgot to remove.
 
-Thanks,
+No functional changes.
 
-Tom
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ arch/x86/kernel/nmi.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-> -- Steve
+diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
+index 6407ea21fa1b..bdcc5146de96 100644
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -25,10 +25,6 @@
+ #include <linux/atomic.h>
+ #include <linux/sched/clock.h>
+ 
+-#if defined(CONFIG_EDAC)
+-#include <linux/edac.h>
+-#endif
+-
+ #include <asm/cpu_entry_area.h>
+ #include <asm/traps.h>
+ #include <asm/mach_traps.h>
+-- 
+2.21.0
 
