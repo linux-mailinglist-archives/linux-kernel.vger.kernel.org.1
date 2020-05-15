@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643011D5028
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA8C1D5034
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726223AbgEOOPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 10:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
+        id S1726266AbgEOORu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 10:17:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726016AbgEOOPH (ORCPT
+        by vger.kernel.org with ESMTP id S1726160AbgEOORr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 10:15:07 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FCFC05BD09
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 07:15:06 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id 79so2899602iou.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 07:15:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4Vc6zetwP6+V6hm8FQe6RbS/l4eRIu3Ah4JCuV/PbuI=;
-        b=hKBf3EEFOcPEiSyCVBNCGrUN55mtqZDnXEMs91YKh3J/kddvuN4mGwrT/B/7tryAP7
-         lfv2MTggP7Kk/Df4GxkdIkoWXNJZu9PCbBhCd1phg4+1bNFPg+2ZaOPmtMGGmSH20hAD
-         3t3icSe2FiR1CKCYpR5WfB3C2PN2/iaZynzlU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4Vc6zetwP6+V6hm8FQe6RbS/l4eRIu3Ah4JCuV/PbuI=;
-        b=lY0shnzYjVS9Hv+wIAyRaVkpTbtT3CMZeFSTar64bnPOsnKo55sYLSIZ/lm9q5kxiT
-         OV595UHDLQ6RTa0m1bznFgb4x0OQSW1qeyHLabrXFaFXK9IR0uo6Hh9Bpa2REcs8WATn
-         khxueZv4qglLbLcp2sMVz96/aqcNw3ILx5njd/jKOWtt4dLq4dBYfDSnA/nZsdbkL5yP
-         V/WuB6EdD7ZSiH0cuGUUTZkNQ0a73UuJHYUaFCFHWPWJSN20jyPN2Fx/a1uL7CsUiXe4
-         5ofbSRBq6ruAcyechfRNHbVdutkzh3qL3ztM8c8QcoxQsQaofZCanKsTSl+S6Zb9JGxN
-         jvAg==
-X-Gm-Message-State: AOAM53300ZSq+8WLNtDQZGMAFjNkeOTaTwS6yTwLGiPq1xGQEnSvVN5q
-        mtgW8f+ceEPmScSSIH36JaASng==
-X-Google-Smtp-Source: ABdhPJxUWoLgEw9pDcP5zoizEWrT9AfP7Dr+SeOivEeaMsHN4oDP8N2KSFbXjeQjNoWaCo0YjWqqLw==
-X-Received: by 2002:a05:6638:3af:: with SMTP id z15mr1842637jap.4.1589552105324;
-        Fri, 15 May 2020 07:15:05 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id r80sm960355ilk.65.2020.05.15.07.15.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 May 2020 07:15:04 -0700 (PDT)
-Subject: Re: [PATCH 1/4] selftests: Fix kselftest O=objdir build from
- cluttering top level objdir
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Kevin Hilman <khilman@baylibre.com>, shuah@kernel.org
-Cc:     mpe@ellerman.id.au, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1583358715.git.skhan@linuxfoundation.org>
- <58d954867391c90fe0792d87e09a82bda26ba4fc.1583358715.git.skhan@linuxfoundation.org>
- <7hwo7qijn0.fsf@baylibre.com>
- <ceb910b1-2ab7-b27f-7e53-c445d96cdeb1@linuxfoundation.org>
- <11765b79-f19c-4aea-5c4a-d9ad24e550de@infradead.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <d9a50dff-f634-f8d0-a25b-7f33ccf46d9f@linuxfoundation.org>
-Date:   Fri, 15 May 2020 08:15:03 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 15 May 2020 10:17:47 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B39C061A0C;
+        Fri, 15 May 2020 07:17:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=v1b+koX9aKkCpLP5KsbA1c0ns2JdCdDM2wQyt2wy9Nw=; b=UCgyVCrLlY2GcbgEUFlxjexZvP
+        X13+Bvt5Sm10QJmbkpFC1yqWZ0sAV93SeLj9hIHCPrBJQhtGifoVVqLXkkVmVR3ggXKvb3yAGxjMl
+        cJenei+aE7tY8vixRd8femgEShi1xghEBxzR5PnP0aNnzxrm/qBS7/C5tk8efpIKAP0/35Uem6tvP
+        yKztd0CBKbKSMlO3SPXagJeQHb+dNEy0Xel0VZ27ymdl+WB7dLEyZVxy+E6Wyy2T+k2ep7iX4TiKz
+        jO0oNVtpNCynaAzhjtqe67zFmBtDHJngqrSzyLpQ2iRu5OOVAVER+2AwqMGnR79ZDIu2rGKIcVQnz
+        /7E2PLGg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jZb92-0002JY-HL; Fri, 15 May 2020 14:17:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5CB40300455;
+        Fri, 15 May 2020 16:16:57 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 47D1320267E67; Fri, 15 May 2020 16:16:57 +0200 (CEST)
+Date:   Fri, 15 May 2020 16:16:57 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, hpa@zytor.com,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, rjw@rjwysocki.net,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v3 0/7] mm: Get rid of vmalloc_sync_(un)mappings()
+Message-ID: <20200515141657.GF2940@hirez.programming.kicks-ass.net>
+References: <20200515140023.25469-1-joro@8bytes.org>
 MIME-Version: 1.0
-In-Reply-To: <11765b79-f19c-4aea-5c4a-d9ad24e550de@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515140023.25469-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/20 8:27 PM, Randy Dunlap wrote:
-> On 3/11/20 4:31 PM, Shuah Khan wrote:
->> On 3/11/20 4:58 PM, Kevin Hilman wrote:
->>> Shuah Khan <skhan@linuxfoundation.org> writes:
->>>
->>>> make kselftest-all O=objdir builds create generated objects in objdir.
->>>> This clutters the top level directory with kselftest objects. Fix it
->>>> to create sub-directory under objdir for kselftest objects.
->>>>
->>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
->>>
->>> Only somewhat related to this patch, another problem that wasn't in your
->>> doci is that the current O= support doesn't support relative paths.
->>>
->>
->> Yes I am aware of it and it is in the document as something that will
->> be addressed later.
->>
->> "Note: Relative paths don’t work - supporting relative paths breaks work-flows e.g:
->> powerpc. Explore fix. Compile work-flows. Not planning to support at the moment."
+On Fri, May 15, 2020 at 04:00:16PM +0200, Joerg Roedel wrote:
+> Joerg Roedel (7):
+>   mm: Add functions to track page directory modifications
+>   mm/vmalloc: Track which page-table levels were modified
+>   mm/ioremap: Track which page-table levels were modified
+>   x86/mm/64: Implement arch_sync_kernel_mappings()
+>   x86/mm/32: Implement arch_sync_kernel_mappings()
+>   mm: Remove vmalloc_sync_(un)mappings()
+>   x86/mm: Remove vmalloc faulting
 > 
+>  arch/x86/include/asm/pgtable-2level_types.h |   2 +
+>  arch/x86/include/asm/pgtable-3level_types.h |   2 +
+>  arch/x86/include/asm/pgtable_64_types.h     |   2 +
+>  arch/x86/include/asm/switch_to.h            |  23 ---
+>  arch/x86/kernel/setup_percpu.c              |   6 +-
+>  arch/x86/mm/fault.c                         | 176 +-------------------
+>  arch/x86/mm/init_64.c                       |   5 +
+>  arch/x86/mm/pti.c                           |   8 +-
+>  arch/x86/mm/tlb.c                           |  37 ----
+>  drivers/acpi/apei/ghes.c                    |   6 -
+>  include/asm-generic/5level-fixup.h          |   5 +-
+>  include/asm-generic/pgtable.h               |  23 +++
+>  include/linux/mm.h                          |  46 +++++
+>  include/linux/vmalloc.h                     |  18 +-
+>  kernel/notifier.c                           |   1 -
+>  kernel/trace/trace.c                        |  12 --
+>  lib/ioremap.c                               |  46 +++--
+>  mm/nommu.c                                  |  12 --
+>  mm/vmalloc.c                                | 109 +++++++-----
+>  19 files changed, 204 insertions(+), 335 deletions(-)
 
-I attempted to fix it once and had to revert the patch. This relative
-problem needs to be fixed and being tracked as a bug.
+I'm thinking this improves the status-quo, so:
 
->>
->> I am looking to address build and install issues first.
->>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-As I said above, there were higher priority test build and install
-failures in cross-build and native build use-cases when I made this
-call to prioritize fixing them first. I fixed all the known issues.
-
-As of Linux 5.7-rc5 all of the know issues related test build and
-install failures have been fixed.
-
-With tha done, it is time to work on the relative path fix. I have
-my reverted patch to start with and get it to work with the
-workflows so it doesn't break them.
-
-I also have the following patch you gave me as reference for fixing
-the relative path problem:
-
-https://lore.kernel.org/lkml/158351957799.3363.15269768530697526765.stgit@devnote2/
-
-In any case, based on my previous experience fixing this problem,
-I plan to take the fix in rc1 to allow enough time to fix any
-problems that show up. It will be fixed for sure.
-
-Hope this helps addresses any concerns you may have on whether or
-not this problem will be fixed.
-
-thanks,
--- Shuah
-
+Like Andy, I think I'd like x86_64 to pre-populate, but that can easily
+be done on top and should not hold this back.
