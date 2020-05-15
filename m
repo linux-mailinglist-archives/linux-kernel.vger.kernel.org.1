@@ -2,123 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3869B1D4438
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 05:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4A31D443C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 06:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728389AbgEOD5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 23:57:31 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39895 "EHLO ozlabs.org"
+        id S1725986AbgEOEEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 00:04:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:48226 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728228AbgEOD5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 23:57:31 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49NZP230Cjz9sTc;
-        Fri, 15 May 2020 13:57:26 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1589515048;
-        bh=12E0Ox0MyQw9cxT/z4meYK73nLWFlNO8zC70oLHAhUc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FNKSQ+ZYBLfP3AA2TdZRkgqeKFKxwncnhQrn2lM7Gr6UznLLjnZPkUnKy6yAiu1Fg
-         r7yVyZYABvlb5WAXTxpA3u3HaoOO49sFjRnJZs7lTj3BnxeOgTnZT+wMjnE0oCHGmy
-         PrkINelclN1Qvfe8PfYEeJP8kz6SLb/DV+lYqtFyE6MRuvRdFJF9iUnFRbho2U3jXl
-         xlRdElKXB25T2UxyOVqwlO1qCgO+wp+oDAlFe7FdFz7ao94cTOXMwxw5jM7QKk5tQy
-         +QagFh6LLigEdF/uzZDEIHZS4l/l8J5S4Ve81TA6rIDE9yaZz4NQHMnr/AVbI60FHn
-         Ue8svm0QE4FQQ==
-Date:   Fri, 15 May 2020 13:57:25 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Subject: Re: linux-next: manual merge of the amdgpu tree with the pm tree
-Message-ID: <20200515135725.0b1c86f4@canb.auug.org.au>
-In-Reply-To: <20200508143457.14acfc46@canb.auug.org.au>
-References: <20200508143457.14acfc46@canb.auug.org.au>
+        id S1725616AbgEOEEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 00:04:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A82351042;
+        Thu, 14 May 2020 21:04:29 -0700 (PDT)
+Received: from [192.168.0.129] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 96C0F3F305;
+        Thu, 14 May 2020 21:04:27 -0700 (PDT)
+Subject: Re: [RFC] mm/vmstat: Add events for THP migration without split
+To:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, linux-kernel@vger.kernel.org
+References: <1589257372-29576-1-git-send-email-anshuman.khandual@arm.com>
+ <8be2c517-ba87-400b-dfbe-461bd6065c2d@nvidia.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <9cac0480-210c-28de-259e-c17c88e8c899@arm.com>
+Date:   Fri, 15 May 2020 09:33:54 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/.UUGG4uWAFbeatE5ZxxWGWU";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <8be2c517-ba87-400b-dfbe-461bd6065c2d@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/.UUGG4uWAFbeatE5ZxxWGWU
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-On Fri, 8 May 2020 14:34:57 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> Today's linux-next merge of the amdgpu tree got a conflict in:
->=20
->   drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
->=20
-> between commit:
->=20
->   e07515563d01 ("PM: sleep: core: Rename DPM_FLAG_NEVER_SKIP")
->=20
-> from the pm tree and commit:
->=20
->   500bd19a7e5d ("drm/amdgpu: only set DPM_FLAG_NEVER_SKIP for legacy ATPX=
- BOCO")
->=20
-> from the amdgpu tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-> index c201bc827389,4e4c9550dcf8..000000000000
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-> @@@ -189,10 -188,12 +188,12 @@@ int amdgpu_driver_load_kms(struct drm_d
->   		dev_dbg(&dev->pdev->dev, "Error during ACPI methods call\n");
->  =20
->   	if (adev->runpm) {
-> - 		dev_pm_set_driver_flags(dev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
-> + 		/* only need to skip on ATPX */
-> + 		if (amdgpu_device_supports_boco(dev) &&
-> + 		    !amdgpu_is_atpx_hybrid())
->  -			dev_pm_set_driver_flags(dev->dev, DPM_FLAG_NEVER_SKIP);
-> ++			dev_pm_set_driver_flags(dev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
->   		pm_runtime_use_autosuspend(dev->dev);
->   		pm_runtime_set_autosuspend_delay(dev->dev, 5000);
-> - 		pm_runtime_set_active(dev->dev);
->   		pm_runtime_allow(dev->dev);
->   		pm_runtime_mark_last_busy(dev->dev);
->   		pm_runtime_put_autosuspend(dev->dev);
+On 05/14/2020 11:59 PM, John Hubbard wrote:
+> On 2020-05-11 21:22, Anshuman Khandual wrote:
+>> Add the following new trace events which will help in validating
+>> migration events involving PMD based THP pages.
+>> 
+>> 1. THP_PMD_MIGRATION_ENTRY_SET 2. THP_PMD_MIGRATION_ENTRY_REMOVE
+>> 
+>> There are no clear method to confirm whether a THP migration
+>> happened with out involving it's split. These trace events along
+>> with PGMIGRATE_SUCCESS and PGMIGRATE_FAILURE will provide
+>> additional insights. After this change,
+>> 
+> 
+> 
+> Hi Anshuman,
+> 
+> It's very nice to see this work, and I think that reporting a bit
+> more about THP migration stats is going to make development and
+> performance debugging a lot more efficient (and pleasant).
 
-This is now a conflict between the drm tree and the pm tree.
+That is definitely one of the motivations for these events here.
 
---=20
-Cheers,
-Stephen Rothwell
+> 
+> 
+>> A single 2M THP (2K base page) when migrated
+>> 
+>> 1. Without split
+>> 
+>> ................ pgmigrate_success 1 pgmigrate_fail 0 
+>> ................ thp_pmd_migration_entry_set 1 
+>> thp_pmd_migration_entry_remove 1 ................
+>> 
+> 
+> I do think we should decouple the trace event name(s) just a *little*
+> more, from the mechanisms used to migrate THPs. In other words, let's
+> report the number of THP migration successes, and name it
+> accordingly--rather than "set" and "remove", which are pretty
+> low-level and furthermore depend on today's exact code.
 
---Sig_/.UUGG4uWAFbeatE5ZxxWGWU
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Agreed, the events are low level and follows the implementation very
+closely. Hence posted as a RFC instead, as I was not very sure about
+these events.
 
------BEGIN PGP SIGNATURE-----
+> 
+> Maybe Zi Yan's recommended name is exactly right, in fact:
+> 
+> THP_PMD_MIGRATION_SUCCESS
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6+EyUACgkQAVBC80lX
-0Gxtpwf5ARnjH24OgC6q7HQG4R4ArdGvSQZUTc/rpSUhV2tsRhmTUXBGXkWd8+ve
-1c+x2BP2fhwSdQSAjSHsae1b1dP96CbEulGcsIlprKWaU8+7qgXE3cW9gXCNrSXd
-r78YrIzv45HjYDnXeGxSD++AIiT7MLEh+gNcZ5cNROZNxeBGxW5jaAfITZE4SdF0
-oaDkwt4/pA+u9RQaLzi/Kp9QI2LnMZovp+/yw5PRJaPL85b3oWJbE3uzHdqC6R3e
-lN7V7KQvbJOtx0QydK+KMSUOBwJbqbLcbj7d7YxbDwc6OGo2IPEOVyYqqf2zaWpC
-KRWZTUJObUzwHHU3wbhEJU949df/yA==
-=N9JX
------END PGP SIGNATURE-----
-
---Sig_/.UUGG4uWAFbeatE5ZxxWGWU--
+Will also add another THP_PMD_MIGRATION_FAILURE even in migrate_pages()
+when a huge page could not be allocated and THP gets split.
