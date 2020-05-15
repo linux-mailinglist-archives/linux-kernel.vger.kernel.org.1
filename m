@@ -2,122 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941F11D4E8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5661D4E93
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726241AbgEONMT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 May 2020 09:12:19 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:46405 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726140AbgEONMT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 09:12:19 -0400
-Received: from mail-qv1-f52.google.com ([209.85.219.52]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MlsWZ-1irCxX2oex-00j3ld; Fri, 15 May 2020 15:12:16 +0200
-Received: by mail-qv1-f52.google.com with SMTP id l3so1010890qvo.7;
-        Fri, 15 May 2020 06:12:16 -0700 (PDT)
-X-Gm-Message-State: AOAM530LkO6Ejh7NLH/YllxbvXRsA0epdjGiwFt5cehSdCFbS8SzU0dp
-        V7p7FUM8Wu4CihVnDBaASbRXTCCbey/Gu5qEqU4=
-X-Google-Smtp-Source: ABdhPJzL0kbPaWt/UYw2Uz2rNIXYk/KnlaMI5B0hSICGSdegHY/AByOI15lsImUtudCP8+CPlNhdx49cfpzs91/rvyQ=
-X-Received: by 2002:a05:6214:1392:: with SMTP id g18mr3170818qvz.210.1589548335328;
- Fri, 15 May 2020 06:12:15 -0700 (PDT)
+        id S1726294AbgEONM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 09:12:28 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:53422 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgEONMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 09:12:23 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 52D22FB09;
+        Fri, 15 May 2020 15:12:18 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id MkNYiLtyIAdX; Fri, 15 May 2020 15:12:16 +0200 (CEST)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 5C6A9445A7; Fri, 15 May 2020 15:12:15 +0200 (CEST)
+From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Peng Fan <peng.fan@nxp.com>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [RFC PATCH 0/6] drm/bridge: Add mux input selection bridge
+Date:   Fri, 15 May 2020 15:12:09 +0200
+Message-Id: <cover.1589548223.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-References: <20200514075942.10136-1-brgl@bgdev.pl> <20200514075942.10136-11-brgl@bgdev.pl>
- <CAK8P3a3=xgbvqrSpCK5h96eRH32AA7xnoK2ossvT0-cLFLzmXA@mail.gmail.com>
- <CAMRc=MeypzZBHo6dJGKm4JujYyejqHxtdo7Ts95DXuL0VuMYCw@mail.gmail.com>
- <CAK8P3a0u53rHSW=72CnnbhrY28Z+9f=Yv2K-bbj5OD+2Ds4unA@mail.gmail.com> <CAMRc=Mf_vYt1J-cc6aZ2-Qv_YDEymVoC7ZiwuG9BrXoGMsXepw@mail.gmail.com>
-In-Reply-To: <CAMRc=Mf_vYt1J-cc6aZ2-Qv_YDEymVoC7ZiwuG9BrXoGMsXepw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 15 May 2020 15:11:59 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a13k+X0XkkX=12x+22qVt_xxTBZr52ONQGdAY2T6XbpyA@mail.gmail.com>
-Message-ID: <CAK8P3a13k+X0XkkX=12x+22qVt_xxTBZr52ONQGdAY2T6XbpyA@mail.gmail.com>
-Subject: Re: [PATCH v3 10/15] net: ethernet: mtk-eth-mac: new driver
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Edwin Peer <edwin.peer@broadcom.com>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        Stephane Le Provost <stephane.leprovost@mediatek.com>,
-        Pedro Tsai <pedro.tsai@mediatek.com>,
-        Andrew Perepech <andrew.perepech@mediatek.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:Fbbb/Tu1JEHdbirs7W2eZ4b5soDWkcqrpUNCd5AaHYPNk6HxGy2
- OSilgEREmRLlSUYRmbxeJZ85CkgnfW4dK1joqZ3jpfDTq4NRC0izCAffyT40kiZzV1i9FLq
- A1yhR0K89YColUJjT0UhQ4vNN3yQPnVsQWWCcE6V8NNBW00qi1BgU9sK72ZD8AynvMdl1zz
- ZMyZoFoeBfDDXmQBmG6hQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/aU9I5jDUPI=:U4e6GhX/+tv+OxvqBwcDO/
- b0pfnGyT5+zIonA26dv83VamYMMs3WmnG/ofxiOzpfRB6WRvdJQDM+vbQr4ZeamjIb6kOOXoR
- PWkqIe5XJL8jJBv0cyZ9gfFVqUSVokQel8BQA5G2OA5Lv4M7WDo8UMdAekijVV+xqIMtft+4k
- Coo2Rtdm4vGG3ApnDOa7MsPIXUnHuZI0sPOFn/xgaB1rtHzIcl2sN8xtQPjvtZ33t7Atpk9ht
- djwz+V6SnN1KbXT5HEPYiKXJQ2GPX825lmd/gvjW3V/afKjhqCmhCj7ZRNDvsJ58wLPQqJgev
- Ez0u6D5IsNRXaugy6jHJe5sP0dIGs/cSeNeQJcSZgx2RLIda96pMxCM5E1Jf7Sc7GIBGD9iLP
- fP+hpCBfqjUxbdtp2tpSTtHuHRR0wiV8wUNjqr66UullH+sjzH5EdK6ZVJPNRNKIVuT5za3UU
- sBedh6JGQ325SVv05i/3v5IsjR6YUidCGjVKmUl9AFXMNuXJtfr+bMHBsc4MvdfaQn725yvTt
- CFYobvYhrDZAa/gW4txI9C2/4yppbom8TPCwslmd+kHIRmzqoiQOVtXQBE+Uzw4t4iIKuTdmH
- aLp+0K9DK3L4n+cMiAzH/uKBaFSC8r4+twq62UpOxRlHDcQqloDgwxEzPVn6aMMH/6i5ofFug
- qtEtxxXQB2L39Pi+gevNMvv6iAgtl+S2ZwMjlNDYxc6mnkCLLDOWGLMXtvdzLtKAnqYIEyV9Q
- FyYkH2LOrLxakAQGI9lIER04XlKrtLuC1jXYLJvh6Oav62Jcj51NbJht/gvLaJrn0qjLX8WAp
- UuVCzeHLdEK/xMBQs5hosTYMq/9z7yVIqRZ+qSVl+A5uhx0ZjI=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 2:56 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> pt., 15 maj 2020 o 14:04 Arnd Bergmann <arnd@arndb.de> napisał(a):
-> > On Fri, May 15, 2020 at 9:11 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+This bridge driver allows to select the input to a downstream bridge (or panel)
+via device tree.
 
-> > > >
-> > > > It looks like most of the stuff inside of the loop can be pulled out
-> > > > and only done once here.
-> > > >
-> > >
-> > > I did that in one of the previous submissions but it was pointed out
-> > > to me that a parallel TX path may fill up the queue before I wake it.
-> >
-> > Right, I see you plugged that hole, however the way you hold the
-> > spinlock across the expensive DMA management but then give it
-> > up in each loop iteration feels like this is not the most efficient
-> > way.
-> >
->
-> Maybe my thinking is wrong here, but I assumed that with a spinlock
-> it's better to give other threads the chance to run in between each
-> iteration. I didn't benchmark it though.
+It can be useful to separate the pixel source selection from the actual bridge
+processing the pixel data. E.g. NXP's imx8mq has two display controllers. Both
+can feed the pixel data to the NWL DSI IP core. The input selection is done via
+a separate mux register elsewhere on the chip, so separating this out avoids SoC
+specific code in such drivers.
 
-It depends. You want to avoid lock contention (two threads trying to
-get the lock at the same time) but you also want to avoid bouncing
-around the spinlock between the caches.
+The current implementation allows to select the input source via device tree.
+The long term goal is to allow to switch the input source at run time. This
+can be useful to e.g. use the less power hungry display controller for normal
+operation but switch to a the other display controller when running full screen
+games (since it can detile textures more efficiently).
 
-In the contention case, what I think would happen here is that the
-cleanup thread gives up the lock and the xmit function gets it, but
-then the cleanup thread is spinning again, so you are still blocked
-on one of the two CPUs but also pay the overhead of synchronizing
-between the two.
+This was initially suggested by Laurent Pinchart¹. It is similar in spirit to
+the video-mux in the media subsystem but for DRM bridges.
 
-Holding the lock the whole time would speed up both the good case
-(no contention) and the bad case (bouncing the lock) a little bit
-because it saves some overhead. Holding the lock for shorter
-times (i.e. not during the cache operations) would reduce the
-amount of lock-contention but not help in the good case.
+Besides the actual driver this series includes the necessary bits to demo the
+usage for the Librem5 devkit.
 
-Not needing a lock at all is generally best, but getting it right
-is tricky ;-)
+The series is based on linux-next as of next-20200512.
 
-      Arnd
+¹ https://lore.kernel.org/dri-devel/20200415021908.GH19819@pendragon.ideasonboard.com/
+
+Guido Günther (6):
+  dt-bindings: display/bridge: Add binding for input mux bridge
+  drm/bridge: Add mux-input bridge
+  dt-bindings: display/bridge/nwl-dsi: Drop mux handling
+  drm/bridge/nwl-dsi: Drop mux handling
+  arm64: dts: imx8mq: Add NWL dsi controller
+  arm64: dts: imx8mq-librem5-devkit: Enable MIPI DSI panel
+
+ .../display/bridge/mux-input-bridge.yaml      | 123 +++++++++
+ .../bindings/display/bridge/nwl-dsi.yaml      |   6 -
+ .../dts/freescale/imx8mq-librem5-devkit.dts   |  81 ++++++
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi     |  31 +++
+ drivers/gpu/drm/bridge/Kconfig                |  10 +-
+ drivers/gpu/drm/bridge/Makefile               |   1 +
+ drivers/gpu/drm/bridge/mux-input.c            | 238 ++++++++++++++++++
+ drivers/gpu/drm/bridge/nwl-dsi.c              |  61 -----
+ 8 files changed, 483 insertions(+), 68 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/mux-input-bridge.yaml
+ create mode 100644 drivers/gpu/drm/bridge/mux-input.c
+
+-- 
+2.26.1
+
