@@ -2,80 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A6A1D5A04
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 21:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CCAE1D5A2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 21:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726242AbgEOTbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 15:31:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726179AbgEOTbF (ORCPT
+        id S1726680AbgEOTlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 15:41:24 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:59022 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726278AbgEOTlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 15:31:05 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A16C05BD09
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 12:31:04 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id g16so3178522eds.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 12:31:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vErvnQoqbf5Meaqtse3zpzTQXTThCj+PlNibNhhv2Uo=;
-        b=FKh4uRFuzk6LWrSXDP88E2gJbQI+bBtvd2Vrw7lgHu5eyGOb+HDjTj2KDYFJxLUWzB
-         PeZd/YkHHi25f64qU7/fLCFVGlERXsCjnxhlPRoAPpUYPCS+rmfQlU95K29FzuDaYRU1
-         DB5aTnj3yrcjckhA/nS5y/+P1iauWWrbkRD5BHYJlSy71m6X61xPbEfO0sKbRrA75lmQ
-         0SV5LPanC51ygC4iYuKyA1gPRqiKOWdHrmIvWhdmUpTWlJnEH8lXicDlYcgQ98lpSm5+
-         cRmYG4HbwPlg1LKXAdiwuFNu/WuRc8kWB33kOw6rB15rTCvWOEmMSbQwGdErqx0Gd1vf
-         3/hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vErvnQoqbf5Meaqtse3zpzTQXTThCj+PlNibNhhv2Uo=;
-        b=KWaya2CLQx9MXTvAAtq8Bsduc2HUrfMbzTClo7BzM4TpYnPJDlPk2R6rozdm34ABKS
-         sa3iWYFlSVMWrunZDaHs6UhoczDkpnYZDx32ufYIsAWx1wZCtTOtFDC6qfOjE0GjyEFj
-         UxA6XtlQvtHDYx2QDoOhhYSwla7xRWYRHtWK9qMWN4c7lLVmVGLgcJZln/V0eh8jwkNN
-         p374KRfUiP+Yf0vt+SNmII2VdOTh+I/cCUBZvwQiTwx1AcJgDruK6H8qV0bkM6UFruAT
-         ptjotDBbIh/lrvqANJg6SzsgwzHxsKuUAw+hzvuduglS3q7zdUApSdHvybD6R/kSCf42
-         evbA==
-X-Gm-Message-State: AOAM531Iew4et4lJ1M2WhfGR1IZauRhbT64yjzKBiNbjdSc6tUrqhNwx
-        YCKPwg3+CfwCcAlnlcd3FMUyf3D4mlrIOzNtKabGYA==
-X-Google-Smtp-Source: ABdhPJxVNhuoHXSVLn9PLNKxdspcJcNGGfAsekctXnv0fKnHI35D8TQO83ALfAlxb/fVSimNFlN5uGf+30lkrJL6Cxw=
-X-Received: by 2002:aa7:da04:: with SMTP id r4mr4302843eds.346.1589571063296;
- Fri, 15 May 2020 12:31:03 -0700 (PDT)
+        Fri, 15 May 2020 15:41:24 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04FJfLXD056154;
+        Fri, 15 May 2020 14:41:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589571681;
+        bh=Vrkuh1qw/+LAqzEbWTPvI7ZY7UhYrsZSZ8panFOF68c=;
+        h=From:To:CC:Subject:Date;
+        b=REQ/t1H1H8Wz0XLgzTeD+l5GV8K+DPDy01LEGDP6K5ImLJT7PjPScATsTlkxhJ43E
+         A5yWdQYCtqLmRiJrKoxnmx+SKOeQLQbQKsiW5VQuyJ9X/a8IdzzX1WXK9hMMb2uRNg
+         28EooCOQTzONop0lODysu30rE/V0MLMBdHA2KvJw=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04FJfL0O081567
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 May 2020 14:41:21 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
+ May 2020 14:41:21 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 15 May 2020 14:41:21 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04FJfLCP015667;
+        Fri, 15 May 2020 14:41:21 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <sre@kernel.org>
+CC:     <sspatil@android.com>, <linux-pm@vger.kernel.org>,
+        <robh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH 0/3] Add JEITA properties and introduce the bq2515x charger
+Date:   Fri, 15 May 2020 14:31:45 -0500
+Message-ID: <20200515193148.8502-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200515184434.8470-1-keescook@chromium.org> <20200515184434.8470-6-keescook@chromium.org>
-In-Reply-To: <20200515184434.8470-6-keescook@chromium.org>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Fri, 15 May 2020 15:30:27 -0400
-Message-ID: <CA+CK2bAvTo1=oLH32-Wdz07F3OP=T+gA6GgzkBH1Q9W8upHkNg@mail.gmail.com>
-Subject: Re: [PATCH v4 5/6] pstore/ram: Introduce max_reason and convert dump_oops
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Petr Mladek <pmladek@suse.com>, Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Benson Leung <bleung@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->  #define parse_u32(name, field, default_value) {                                \
->                 ret = ramoops_parse_dt_u32(pdev, name, default_value,   \
+Hello,
 
-The series seems to be missing the patch where ramoops_parse_dt_size
--> ramoops_parse_dt_u32 get renamed, and updated to handle default
-value.
+This patchset adds additional health properties to the power_supply header.
+These additional properties are taken from the JEITA specification. This 
+patchset also introduces the bq2515x family of charging ICs.
+
+Dan Murphy (1):
+  power_supply: Add additional health properties to the header
+
+Ricardo Rivera-Matos (2):
+  Add the bindings for the bq25150 and bq25155 500mA charging ICs from
+    Texas Instruments.
+  power: supply: bq25150 introduce the bq25150
+
+ Documentation/ABI/testing/sysfs-class-power   |    2 +-
+ .../bindings/power/supply/bq2515x.yaml        |  106 ++
+ drivers/power/supply/Kconfig                  |   13 +
+ drivers/power/supply/Makefile                 |    1 +
+ drivers/power/supply/bq2515x_charger.c        | 1176 +++++++++++++++++
+ drivers/power/supply/power_supply_sysfs.c     |    2 +-
+ include/linux/power_supply.h                  |    3 +
+ 7 files changed, 1301 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq2515x.yaml
+ create mode 100644 drivers/power/supply/bq2515x_charger.c
+
+-- 
+2.26.2
+
