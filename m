@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FEC1D452C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 07:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9F71D452E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 07:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgEOFY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 01:24:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33086 "EHLO mail.kernel.org"
+        id S1726444AbgEOFZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 01:25:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgEOFY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 01:24:59 -0400
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+        id S1726139AbgEOFZq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 01:25:46 -0400
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A9798207CB
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 05:24:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB0B5206F1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 05:25:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589520298;
-        bh=0p4MU9sh09UIkFcUSyxNYENjUyCA8wdnYR5djowsWds=;
+        s=default; t=1589520346;
+        bh=jkC+6grw0Xb6y7mrrbxbff/lYlWdmY3NyQrQQ0x8tko=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ikwtUa/gDF6fJgChKS0y0UollW3L4h//gNNj6zLIgUyaQylRw/Hb/4m/YJfpyRXjY
-         ftWzMFVS0cyZ3hU+wPi9BmpQ8SBEDsUr0zY1EJy8UfAbNNBeZFTkMcc4ykAPvAl06V
-         vw8ZGi74SHtKSkhugFP9sUu452R4gY0Yt4g8Slc8=
-Received: by mail-wm1-f43.google.com with SMTP id f13so906442wmc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 22:24:58 -0700 (PDT)
-X-Gm-Message-State: AOAM531Dq/haussTaZCACVB7Wjk/KRSITOemoSjDtqYu0LDdD4+rNHg6
-        Pmk9keMLdNF15qGic5NcbPHX3E574pyesZhP31Wj0A==
-X-Google-Smtp-Source: ABdhPJwEqHdowY9NniUCQHeBVoG3ZlWxFICr2MtxsYmj4V8ZPbATgegyODakKp4Ov6wnJ/I4JqmkRmafHJCXi/2wkoc=
-X-Received: by 2002:a1c:8141:: with SMTP id c62mr1024333wmd.21.1589520297084;
- Thu, 14 May 2020 22:24:57 -0700 (PDT)
+        b=uGHJKeSCesxjBWZwHRcDTb5IuLKU7E5VkuSxGhxiCN/UolfpfEMDHPMmo+s7nKj0l
+         RQV8qd7KO+xV+Q4n+oCX4ZPpS8pVVFnk49fJt6a5/Iv0wV85u2woB3uTh5NWB+GT11
+         aomXygxcSys4+k/olBK+/Z7OJCFSIHqtaneBaInE=
+Received: by mail-wm1-f47.google.com with SMTP id f134so933227wmf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 May 2020 22:25:45 -0700 (PDT)
+X-Gm-Message-State: AOAM53105M+mmz42vwqxauCRT3QGx+MZWqXjQC4rjm5yZ+eywaJuBkaV
+        EcCdWHQtUZEPHd8zN/3GGji9P5WYQL2PQvpg1mPBng==
+X-Google-Smtp-Source: ABdhPJz23w97d8vSG9PZ3lyzo9DWo5X07tm4ohOe+BXqc49jA1L6wgu+SfyVRyNPdjaJyvvd7+Q0lA0B2Hla6yQ3B8Y=
+X-Received: by 2002:a1c:b3c1:: with SMTP id c184mr1927530wmf.36.1589520344402;
+ Thu, 14 May 2020 22:25:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200505134926.578885807@linutronix.de> <20200505135314.426347351@linutronix.de>
-In-Reply-To: <20200505135314.426347351@linutronix.de>
+References: <20200505134926.578885807@linutronix.de> <20200505135314.518622698@linutronix.de>
+In-Reply-To: <20200505135314.518622698@linutronix.de>
 From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 14 May 2020 22:24:45 -0700
-X-Gmail-Original-Message-ID: <CALCETrU0Kc9Rj6i1U10eiD5fD2c-f=vA3dAbhmFSorBB_a-Ypw@mail.gmail.com>
-Message-ID: <CALCETrU0Kc9Rj6i1U10eiD5fD2c-f=vA3dAbhmFSorBB_a-Ypw@mail.gmail.com>
-Subject: Re: [patch V4 part 4 11/24] x86/mce: Use untraced rd/wrmsr in the MCE
- offline/crash check
+Date:   Thu, 14 May 2020 22:25:32 -0700
+X-Gmail-Original-Message-ID: <CALCETrX9B=0+MyrJyvGDW40O0VRDPPLBAuiH-Om8YaV4nhOMNg@mail.gmail.com>
+Message-ID: <CALCETrX9B=0+MyrJyvGDW40O0VRDPPLBAuiH-Om8YaV4nhOMNg@mail.gmail.com>
+Subject: Re: [patch V4 part 4 12/24] x86/idtentry: Provide IDTENTRY_XEN for XEN/PV
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
@@ -65,15 +64,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, May 5, 2020 at 7:16 AM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
-> mce_check_crashing_cpu() is called right at the entry of the MCE
-> handler. It uses mce_rdmsr() and mce_wrmsr() which are wrappers around
-> rdmsr() and wrmsr() to handle the MCE error injection mechanism, which is
-> pointless in this context, i.e. when the MCE hits an offline CPU or the
-> system is already marked crashing.
->
-> The MSR access can also be traced, so use the untraceable variants. This
-> is also safe vs. XEN paravirt as these MSRs are not affected by XEN PV
-> modifications.
+> XEN/PV has special wrappers for NMI and DB exceptions. They redirect these
+> exceptions through regular IDTENTRY points. Provide the necessary IDTENTRY
+> macros to make this work
 
 
 Acked-by: Andy Lutomirski <luto@kernel.org>
