@@ -2,250 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DCE1D583B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 19:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCAE1D585A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 19:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727113AbgEORmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 13:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726948AbgEORmd (ORCPT
+        id S1726497AbgEORya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 13:54:30 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:38842 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbgEORya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 13:42:33 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C84C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 10:42:33 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id 79so3634365iou.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 10:42:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language;
-        bh=kbz+a7Ana/YpiS97SnU2yCU3oWm5l70NClekg1sSYX0=;
-        b=QecfGUnpZA54+h22b3dmbpxn6J/pei7LP7Ci/GKCuh91Uu2w+j2sECO+I/YCbtHdRU
-         Z2APnq52h7RmgsNHaLAB/GEetuxrDU1mTk8GGIvs6JgDhqv8WaTmj9K1Pj/OZrzKUdeP
-         fsbCl9fwFOxkCQZXlmzP5mHV6VKWdCitFh+JM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language;
-        bh=kbz+a7Ana/YpiS97SnU2yCU3oWm5l70NClekg1sSYX0=;
-        b=iwEVzVz1CNelGSSksLPc/V6QUS5GLTFr3io1K6zD35IZmGA0aY7HRVhuMNsm+EeQ8X
-         nWPOoW1smKTWh+hkXJJ1KzBOYo3/Box4z0pX0kGpEwlEFT5OkSrWx0vcWmof4Xgf1JLK
-         JhrASOdOpyc8vxHo9u6xqDDbfxwOEPl6aVcjraTgqIp4wEx/r+44jqLtoXIP0yZV2n5W
-         7Uv50mpS2CcNVghxUMSRHXyyNakKtZyYrZgt9P8GC6SFXvyqFdf4oKcnCr/H5IBfXMY6
-         s+2O8zg7U0bLRUUKnl/3XfF0jLEmeXuqNPUz5e340qbgfMtWsO53f3C2aJc2u282gK2S
-         6l/w==
-X-Gm-Message-State: AOAM530mQMzj54SXr+unT4CVr98iKS8bJMfZd+7aRhedGQqbXtaLQrEW
-        WqwRlO3Qpenz0Zx9ZKo5DaefPg==
-X-Google-Smtp-Source: ABdhPJy9mEwxgkBjK+X3qlQCx34qqPGIFsQmw8+/SE2MW76LXRWTQE49t4vHSagKfBWkE0ZeB3Yyhw==
-X-Received: by 2002:a02:2708:: with SMTP id g8mr4390363jaa.52.1589564552985;
-        Fri, 15 May 2020 10:42:32 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c13sm1157502ilu.81.2020.05.15.10.42.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 May 2020 10:42:32 -0700 (PDT)
-To:     torvalds@linux-foundation.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, mpe@ellerman.id.au,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rostedt@goodmis.org, Kees Cook <keescook@chromium.org>,
-        shuah <shuah@kernel.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] Kselftest update for Linux 5.7-rc6
-Message-ID: <0cb258e7-e5ef-b42d-ef9b-2ee979a91aa0@linuxfoundation.org>
-Date:   Fri, 15 May 2020 11:42:30 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 15 May 2020 13:54:30 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04FHsSQ8026307;
+        Fri, 15 May 2020 12:54:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589565268;
+        bh=AWDUQu0QFnxVy5SWiLTaeBRuwXtOx2e3RIxvvbK9Sag=;
+        h=From:To:CC:Subject:Date;
+        b=asjNuXFn2RzhN8qrL2xtoKlv5EIsDk+Kcs9/dy0VveKAGXqBJSwG9J+UjAfr6DWkr
+         00FPt2mOcFUIo08WeX/37qz27qbFQ2LyctTuC6KJNi9mPDZzMIWDQkOJIHU+pVtusg
+         vCFsCMmKYjdN+Qv/FtNTMJrzK7yXHPL9C5K/jxBw=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04FHsSZO035903
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 May 2020 12:54:28 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 15
+ May 2020 12:54:28 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 15 May 2020 12:54:27 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04FHsRwS084752;
+        Fri, 15 May 2020 12:54:27 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <sre@kernel.org>, <afd@ti.com>, <pali@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <robh@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH 1/2] dt-bindings: power: Add BQ27561 compatible
+Date:   Fri, 15 May 2020 12:44:53 -0500
+Message-ID: <20200515174454.21866-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------94BD8472E23703DFEF42AF49"
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------94BD8472E23703DFEF42AF49
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Add the Texas Instruments bq27561 battery monitor to the bq27xxx
+binding.
 
-Hi Linus,
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+This patch has a dependency on the yaml conversion - https://lore.kernel.org/patchwork/patch/1240876/
 
-Please pull the following Kselftest update for Linux 5.7-rc6.
+ Documentation/devicetree/bindings/power/supply/bq27xxx.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-This Kselftest update for Linux 5.7-rc6 consists of
-
-- lkdtm runner fixes to prevent dmesg clearing and shellcheck errors
-- ftrace test handling when test module doesn't exist
-- nsfs test fix to replace zero-length array with flexible-array
-- dmabuf-heaps test fix to return clear error value
-
-diff is attached.
-
-thanks,
--- Shuah
-
-----------------------------------------------------------------
-The following changes since commit 0e698dfa282211e414076f9dc7e83c1c288314fd:
-
-   Linux 5.7-rc4 (2020-05-03 14:56:04 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest 
-tags/linux-kselftest-5.7-rc6
-
-for you to fetch changes up to 851c4df54dc1bcae41d07e46e3d89e035b0a7140:
-
-   selftests/lkdtm: Use grep -E instead of egrep (2020-05-08 09:46:17 -0600)
-
-----------------------------------------------------------------
-linux-kselftest-5.7-rc6
-
-This Kselftest update for Linux 5.7-rc6 consists of
-
-- lkdtm runner fixes to prevent dmesg clearing and shellcheck errors
-- ftrace test handling when test module doesn't exist
-- nsfs test fix to replace zero-length array with flexible-array
-- dmabuf-heaps test fix to return clear error value
-
-----------------------------------------------------------------
-Gustavo A. R. Silva (1):
-       tools/testing: Replace zero-length array with flexible-array
-
-John Stultz (1):
-       kselftests: dmabuf-heaps: Fix confused return value on expected 
-error testing
-
-Michael Ellerman (2):
-       selftests/lkdtm: Don't clear dmesg when running tests
-       selftests/lkdtm: Use grep -E instead of egrep
-
-Po-Hsu Lin (1):
-       selftests/ftrace: mark irqsoff_tracer.tc test as unresolved if 
-the test module does not exist
-
-  tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c |  1 +
-  .../ftrace/test.d/preemptirq/irqsoff_tracer.tc     |  9 ++++++++-
-  tools/testing/selftests/lkdtm/run.sh               | 22 
-++++++++++++----------
-  tools/testing/selftests/nsfs/pidns.c               |  2 +-
-  4 files changed, 22 insertions(+), 12 deletions(-)
-----------------------------------------------------------------
-
---------------94BD8472E23703DFEF42AF49
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-kselftest-5.7-rc6.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="linux-kselftest-5.7-rc6.diff"
-
-diff --git a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
-index cd5e1f602ac9..909da9cdda97 100644
---- a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
-+++ b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
-@@ -351,6 +351,7 @@ static int test_alloc_errors(char *heap_name)
- 	}
+diff --git a/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml b/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
+index 03d1020a2e47..51cb1f685dcf 100644
+--- a/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
++++ b/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
+@@ -49,6 +49,7 @@ properties:
+       - ti,bq27426
+       - ti,bq27441
+       - ti,bq27621
++      - ti,bq27561
  
- 	printf("Expected error checking passed\n");
-+	ret = 0;
- out:
- 	if (dmabuf_fd >= 0)
- 		close(dmabuf_fd);
-diff --git a/tools/testing/selftests/ftrace/test.d/preemptirq/irqsoff_tracer.tc b/tools/testing/selftests/ftrace/test.d/preemptirq/irqsoff_tracer.tc
-index cbd174334a48..2b82c80edf69 100644
---- a/tools/testing/selftests/ftrace/test.d/preemptirq/irqsoff_tracer.tc
-+++ b/tools/testing/selftests/ftrace/test.d/preemptirq/irqsoff_tracer.tc
-@@ -17,7 +17,14 @@ unsup() { #msg
-     exit_unsupported
- }
- 
--modprobe $MOD || unsup "$MOD module not available"
-+unres() { #msg
-+    reset_tracer
-+    rmmod $MOD || true
-+    echo $1
-+    exit_unresolved
-+}
-+
-+modprobe $MOD || unres "$MOD module not available"
- rmmod $MOD
- 
- grep -q "preemptoff" available_tracers || unsup "preemptoff tracer not enabled"
-diff --git a/tools/testing/selftests/lkdtm/run.sh b/tools/testing/selftests/lkdtm/run.sh
-index dadf819148a4..ee64ff8df8f4 100755
---- a/tools/testing/selftests/lkdtm/run.sh
-+++ b/tools/testing/selftests/lkdtm/run.sh
-@@ -25,13 +25,13 @@ fi
- # Figure out which test to run from our script name.
- test=$(basename $0 .sh)
- # Look up details about the test from master list of LKDTM tests.
--line=$(egrep '^#?'"$test"'\b' tests.txt)
-+line=$(grep -E '^#?'"$test"'\b' tests.txt)
- if [ -z "$line" ]; then
- 	echo "Skipped: missing test '$test' in tests.txt"
- 	exit $KSELFTEST_SKIP_TEST
- fi
- # Check that the test is known to LKDTM.
--if ! egrep -q '^'"$test"'$' "$TRIGGER" ; then
-+if ! grep -E -q '^'"$test"'$' "$TRIGGER" ; then
- 	echo "Skipped: test '$test' missing in $TRIGGER!"
- 	exit $KSELFTEST_SKIP_TEST
- fi
-@@ -59,30 +59,32 @@ if [ -z "$expect" ]; then
- 	expect="call trace:"
- fi
- 
--# Clear out dmesg for output reporting
--dmesg -c >/dev/null
--
- # Prepare log for report checking
--LOG=$(mktemp --tmpdir -t lkdtm-XXXXXX)
-+LOG=$(mktemp --tmpdir -t lkdtm-log-XXXXXX)
-+DMESG=$(mktemp --tmpdir -t lkdtm-dmesg-XXXXXX)
- cleanup() {
--	rm -f "$LOG"
-+	rm -f "$LOG" "$DMESG"
- }
- trap cleanup EXIT
- 
-+# Save existing dmesg so we can detect new content below
-+dmesg > "$DMESG"
-+
- # Most shells yell about signals and we're expecting the "cat" process
- # to usually be killed by the kernel. So we have to run it in a sub-shell
- # and silence errors.
- ($SHELL -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
- 
- # Record and dump the results
--dmesg -c >"$LOG"
-+dmesg | diff --changed-group-format='%>' --unchanged-group-format='' "$DMESG" - > "$LOG" || true
-+
- cat "$LOG"
- # Check for expected output
--if egrep -qi "$expect" "$LOG" ; then
-+if grep -E -qi "$expect" "$LOG" ; then
- 	echo "$test: saw '$expect': ok"
- 	exit 0
- else
--	if egrep -qi XFAIL: "$LOG" ; then
-+	if grep -E -qi XFAIL: "$LOG" ; then
- 		echo "$test: saw 'XFAIL': [SKIP]"
- 		exit $KSELFTEST_SKIP_TEST
- 	else
-diff --git a/tools/testing/selftests/nsfs/pidns.c b/tools/testing/selftests/nsfs/pidns.c
-index e0d86e1668c0..e3c772c6a7c7 100644
---- a/tools/testing/selftests/nsfs/pidns.c
-+++ b/tools/testing/selftests/nsfs/pidns.c
-@@ -27,7 +27,7 @@
- #define __stack_aligned__	__attribute__((aligned(16)))
- struct cr_clone_arg {
- 	char stack[128] __stack_aligned__;
--	char stack_ptr[0];
-+	char stack_ptr[];
- };
- 
- static int child(void *args)
+   reg:
+     maxItems: 1
+-- 
+2.26.2
 
---------------94BD8472E23703DFEF42AF49--
