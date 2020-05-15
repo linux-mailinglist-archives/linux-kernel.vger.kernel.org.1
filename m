@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ABC81D58B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56BB1D58BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgEOSKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 14:10:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgEOSKL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 14:10:11 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A1FC061A0C;
-        Fri, 15 May 2020 11:10:11 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
+        id S1726250AbgEOSMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 14:12:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726144AbgEOSMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 14:12:22 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id A0FC572D;
-        Fri, 15 May 2020 18:10:09 +0000 (UTC)
-Date:   Fri, 15 May 2020 12:10:08 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Peter Xu <peterx@redhat.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexandre Ghiti <alex@ghiti.fr>, Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tejun Heo <tj@kernel.org>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org
-Subject: Re: [PATCH 11/14] docs: move other kAPI documents to core-api
-Message-ID: <20200515121008.4debe669@lwn.net>
-In-Reply-To: <70cca102282ccd36b107487c60346f414011c684.1588345503.git.mchehab+huawei@kernel.org>
-References: <cover.1588345503.git.mchehab+huawei@kernel.org>
-        <70cca102282ccd36b107487c60346f414011c684.1588345503.git.mchehab+huawei@kernel.org>
-Organization: LWN.net
+        by mail.kernel.org (Postfix) with ESMTPSA id 1757720657;
+        Fri, 15 May 2020 18:12:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589566341;
+        bh=73OlL8aAHw/qHS2fhCK5bC0tPIfPWjo8BAd8n2Rsg9k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RZq+4m+MbmcsUOmuWiIVeaZON/FBTdHa1RnObTVIaWt6Rmq3Wv/kSMsA7Vvk3KNbJ
+         UQOmt6xDMmB4mzUjJzwQL3WBA6KSWnmVV5zrUR1ah5riGqHwJYFFDM0KVQFjcCC0iU
+         Ne1sOeXJWpel+EDgkO2zlleExbBA9zZm5tiK3/8s=
+Date:   Fri, 15 May 2020 19:12:19 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] spi: dw: Clear DMAC register when done or stopped
+Message-ID: <20200515181219.GN5066@sirena.org.uk>
+References: <20200515174856.1406-1-Sergey.Semin@baikalelectronics.ru>
+ <20200515175100.GL5066@sirena.org.uk>
+ <20200515175420.qgejailgnzswxtdz@mobilestation>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="i6vqABX3nJKXLk01"
+Content-Disposition: inline
+In-Reply-To: <20200515175420.qgejailgnzswxtdz@mobilestation>
+X-Cookie: Avoid contact with eyes.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  1 May 2020 17:37:55 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-> There are a number of random documents that seem to be
-> describing some aspects of the core-api. Move them to such
-> directory, adding them at the core-api/index.rst file.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/admin-guide/sysctl/vm.rst                     | 2 +-
->  Documentation/core-api/index.rst                            | 6 ++++++
->  Documentation/{mailbox.txt => core-api/mailbox.rst}         | 0
->  Documentation/{nommu-mmap.txt => core-api/nommu-mmap.rst}   | 0
->  .../{this_cpu_ops.txt => core-api/this_cpu_ops.rst}         | 0
->  .../unaligned-memory-access.rst}                            | 0
->  Documentation/gpu/drm-mm.rst                                | 2 +-
->  arch/Kconfig                                                | 2 +-
->  init/Kconfig                                                | 2 +-
->  mm/Kconfig                                                  | 2 +-
->  mm/nommu.c                                                  | 2 +-
->  11 files changed, 12 insertions(+), 6 deletions(-)
->  rename Documentation/{mailbox.txt => core-api/mailbox.rst} (100%)
->  rename Documentation/{nommu-mmap.txt => core-api/nommu-mmap.rst} (100%)
->  rename Documentation/{this_cpu_ops.txt => core-api/this_cpu_ops.rst} (100%)
->  rename Documentation/{unaligned-memory-access.txt => core-api/unaligned-memory-access.rst} (100%)
+--i6vqABX3nJKXLk01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This one doesn't apply for me.  Beyond that, I'm not entirely convinced
-about a couple of the moves...
+On Fri, May 15, 2020 at 08:54:20PM +0300, Serge Semin wrote:
+> On Fri, May 15, 2020 at 06:51:00PM +0100, Mark Brown wrote:
+> > On Fri, May 15, 2020 at 08:48:54PM +0300, Serge Semin wrote:
 
- - mailbox.txt seems like driver-api stuff to me?
- - nommu-mmap.txt is mostly (though not completely) about the semantic of
-   mmap() options as seen by user space, so perhaps belongs in that
-   manual...?
+> > > Acked-by: Mark Brown <broonie@kernel.org>
 
-Thanks,
+> > I didn't ack this but Andy did (or at least the for-5.8 version)?
 
-jon
+> Andy said he needs Fixes field to get his RB tag. You said:
+> "This and patch 4 look good ..." Normally this means to get Acked-by.
+
+Unless someone explicitly gives you a tag for something you shouldn't
+usually assume that one applies, especially with maintainers giving acks
+on their own trees since that has process meaning - it's saying that the
+maintainer is OK with it being applied to some other tree which is
+something it's worth being careful about.
+
+On the other hand if someone says "if you do X you can add tag Y" and
+you do X then you can generally add the tag if you do Y.
+
+--i6vqABX3nJKXLk01
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6+24IACgkQJNaLcl1U
+h9AKRAf9FsLiuXXPimqzs6k+kUCNB8ERlZ4CxGz8nUE7UOpRTNEsyRIyynHZv1Lp
+e7wbn+UswCncBf5PYsdMdJUa2UVf0QdQNJYRlorJJjH2vwqC5P0jkURrkLwDX/tP
+w0lRYJYDNGxsGq2Zqqhl60mfC2+HkJ0SBoAPyFQQP4VKzaRwZu1F4FHtR/VoZpnn
+2mdbGO4m+8bydtXRhybs/7vzdS4Wtpd+G10xfJhqztuJc0YdapJ7eRJ29UDzVfT7
+l4Wd/gNrqFNHtKF4P9ihO346Chcu42RzmkpCVQt37sdhJ7q/y6JmHst5rrtOCC17
+VGe1HTV3eC8Jfn9BZLom8+vvewHLRw==
+=yXEI
+-----END PGP SIGNATURE-----
+
+--i6vqABX3nJKXLk01--
