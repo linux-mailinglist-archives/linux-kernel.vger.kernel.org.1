@@ -2,88 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBAC21D5563
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64DD1D556F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727770AbgEOQAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 12:00:04 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([146.101.78.151]:40552 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726731AbgEOQAD (ORCPT
+        id S1726723AbgEOQBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 12:01:42 -0400
+Received: from mail.efficios.com ([167.114.26.124]:45108 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726188AbgEOQBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 12:00:03 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-191-y5Fl4E8aPDKcjCqIKAcCLg-1; Fri, 15 May 2020 16:59:59 +0100
-X-MC-Unique: y5Fl4E8aPDKcjCqIKAcCLg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 15 May 2020 16:59:59 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 15 May 2020 16:59:59 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Eric Dumazet' <edumazet@google.com>,
-        Nate Karstens <nate.karstens@garmin.com>
-CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Changli Gao <xiaosuo@gmail.com>
-Subject: RE: [PATCH v2] Implement close-on-fork
-Thread-Topic: [PATCH v2] Implement close-on-fork
-Thread-Index: AQHWKs3XtzboIRikkEGFUIZCiGNyAqipTHmg
-Date:   Fri, 15 May 2020 15:59:58 +0000
-Message-ID: <480b831115724107ab5a0cab9d7caafc@AcuMS.aculab.com>
-References: <20200515152321.9280-1-nate.karstens@garmin.com>
- <CANn89iKr_9MyRpdB4pcHm08ccH_M42etDnrOzpVKUYfhSKvxQw@mail.gmail.com>
-In-Reply-To: <CANn89iKr_9MyRpdB4pcHm08ccH_M42etDnrOzpVKUYfhSKvxQw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 15 May 2020 12:01:42 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id E905A2B0445;
+        Fri, 15 May 2020 12:01:40 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id WvDpZCgW7c8G; Fri, 15 May 2020 12:01:40 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 7EB7E2B02F4;
+        Fri, 15 May 2020 12:01:40 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 7EB7E2B02F4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1589558500;
+        bh=/aqNzZiWyuXVYAibug7RythgCs3Q8Lsdz16EIlb5Tyc=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=lbJ/D6GGU42tlfpmNiHbQmDA2jyTSVHkD/r+v0Ne6vau2uECkEqiFySquEg8nEv1D
+         2AdQRYRiVjNh4N+VOr+gQuozwq0PAEyDjRC9blnkdYY+TTXLKY6xywrtaBCSI8EEeE
+         qqODC6wnpJNxyN4RxClpXpoi68+XowlC9eyVuQFxDvFf1Llpeogc/wj/VwhZb7aXxW
+         uvD603+ZbHACpuc54Kred4ERD9IcIsD56scysS/I5aaDwNMZTU9oYofyIf9NOvaXQ/
+         LG7wjA+KRmEzQs2LANQrbTQGMZjg7a26S1S48aZACJqU6qk1ttlH5bJTkEmDjkmON8
+         Pg96C+qJ+uDGQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id yIvyBPwYL-ii; Fri, 15 May 2020 12:01:40 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 6B6552B0798;
+        Fri, 15 May 2020 12:01:40 -0400 (EDT)
+Date:   Fri, 15 May 2020 12:01:40 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, paulmck <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>, rostedt <rostedt@goodmis.org>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>, maz@kernel.org
+Message-ID: <1964654436.22367.1589558500351.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200515154525.GA23334@willie-the-truck>
+References: <20200505131602.633487962@linutronix.de> <20200505134100.771491291@linutronix.de> <427895535.20271.1589412514423.JavaMail.zimbra@efficios.com> <20200515140438.GA5974@lenoir> <20200515154525.GA23334@willie-the-truck>
+Subject: Re: [patch V4 part 1 27/36] arm64: Prepare arch_nmi_enter() for
+ recursion
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3928 (ZimbraWebClient - FF76 (Linux)/8.8.15_GA_3928)
+Thread-Topic: arm64: Prepare arch_nmi_enter() for recursion
+Thread-Index: Vn2wlOV3s1hSS0xvlByawy7gmci5vg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRXJpYyBEdW1hemV0DQo+IFNlbnQ6IDE1IE1heSAyMDIwIDE2OjMxDQouLi4NCj4gRmFz
-dCBwYXRoIGluIGJpZyBhbmQgcGVyZm9ybWFuY2Ugc2Vuc2l0aXZlIGFwcGxpY2F0aW9ucyBpcyBu
-b3QgZm9yaygpDQo+IGFuZC9vciBleGVjKCkuDQo+IA0KPiBUaGlzIGlzIG9wZW4oKS9jbG9zZSgp
-IGFuZCBvdGhlcnMgKHNvY2tldCgpLCBhY2NlcHQoKSwgLi4uKQ0KPiANCj4gV2UgZG8gbm90IHdh
-bnQgdGhlbSB0byBhY2Nlc3MgZXh0cmEgY2FjaGUgbGluZXMgZm9yIHRoaXMgbmV3IGZlYXR1cmUu
-DQo+IA0KPiBTb3JyeSwgSSB3aWxsIHNheSBubyB0byB0aGVzZSBwYXRjaGVzIGluIHRoZWlyIGN1
-cnJlbnQgZm9ybS4NCg0KSXMgaXQgd29ydGggY29tcGxldGVseSByZW1vdmluZyB0aGUgYml0bWFw
-cyBhbmQganVzdCByZW1lbWJlcmluZw0KdGhlIGxvd2VzdCBmZCB0aGF0IGhhcyBoYWQgZWFjaCBi
-aXQgc2V0IChkb24ndCB3b3JyeSBhYm91dCBjbGVhcnMpLg0KDQpUaGVuIGxldmVyYWdlIHRoZSBj
-bG9zZV9hbGwoKSBjb2RlIHRoYXQgY2xvc2VzIGFsbCBmZCBhYm92ZQ0KYSBzcGVjaWZpZWQgbnVt
-YmVyIHRvIGNsb3NlIG9ubHkgdGhvc2Ugd2l0aCB0aGUgJ2Nsb3NlIG9uIGV4ZWMnDQpvciAnY2xv
-c2Ugb24gZm9yaycgZmxhZyBzZXQuDQoNCkFmdGVyIGFsbCBhbiBhcHBsaWNhdGlvbiBpcyBjdXJy
-ZW50bHkgdmVyeSBsaWtlbHkgdG8gaGF2ZSBzZXQNCidjbG9zZSBvbiBleGVjJyBvbiBhbGwgb3Bl
-biBmZCBhYm92ZSAyLg0KDQpTbyB0aGUgbnVtYmVyIG9mIGZkIHRoYXQgZG9uJ3QgbmVlZCBjbG9z
-aW5nIGlzIHNtYWxsLg0KDQpUaGlzIHB1dHMgYWxsIHRoZSBleHBlbnNpdmUgY29kZSBpbiB0aGUg
-YWxyZWFkeSBzbG93IGZvcmsvZXhlYw0KcGF0aHMuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVk
-IEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5l
-cywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+----- On May 15, 2020, at 11:45 AM, Will Deacon will@kernel.org wrote:
 
+> On Fri, May 15, 2020 at 04:04:39PM +0200, Frederic Weisbecker wrote:
+>> On Wed, May 13, 2020 at 07:28:34PM -0400, Mathieu Desnoyers wrote:
+>> > ----- On May 5, 2020, at 9:16 AM, Thomas Gleixner tglx@linutronix.de wrote:
+>> > 
+>> > > +#define arch_nmi_enter()						\
+>> > [...]							\
+>> > > +	___hcr = read_sysreg(hcr_el2);					\
+>> > > +	if (!(___hcr & HCR_TGE)) {					\
+>> > > +		write_sysreg(___hcr | HCR_TGE, hcr_el2);		\
+>> > > +		isb();							\
+>> > 
+>> > Why is there an isb() above ^ ....
+>> > 
+>> > > +	}								\
+>> > > +	/*								\
+>> > [...]
+>> > > -#define arch_nmi_exit()								\
+>> > [...]
+>> > > +	/*								\
+>> > > +	 * Make sure ___ctx->cnt release is visible before we		\
+>> > > +	 * restore the sysreg. Otherwise a new NMI occurring		\
+>> > > +	 * right after write_sysreg() can be fooled and think		\
+>> > > +	 * we secured things for it.					\
+>> > > +	 */								\
+>> > > +	barrier();							\
+>> > > +	if (!___ctx->cnt && !(___hcr & HCR_TGE))			\
+>> > > +		write_sysreg(___hcr, hcr_el2);				\
+>> > 
+>> > And not here ?
+>> 
+>> I have to defer to Will on this detail...
+> 
+> I think it's because we have to make sure that the register update has
+> taken effect before we can safely run the NMI handler (and so an ISB is
+> needed), but on the return path the exception return back to the interrupted
+> context has an implicit ISB so there's no need for an extra one here.
+> 
+> Make sense?
+
+Sure, as long as instructions executed between write_sysreg() and return
+from exception do not care, which I think should be the case.
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
