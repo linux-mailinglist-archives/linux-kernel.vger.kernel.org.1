@@ -2,53 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E7C1D57E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 19:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE7D1D57EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 19:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727117AbgEORaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 13:30:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgEORaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 13:30:04 -0400
-Subject: Re: [GIT PULL] sound fixes for 5.6-rc6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589563804;
-        bh=sKBIIpmUArzEbXtx6N4yrREvSy9ewVLv83iA/yhW/NM=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=z5khTK+e9Xv0Rj5py1DcbRkp47vkF5CrzBkovdqfl0mweDo9oE9z/LLznuz9lVEJL
-         Ej/02EVk2tMSvu/bUfdNyS7btFmDlzBDBg7HztAdUyFrsS0D+i4lWqYyQjpOhIy5o8
-         R4P+aVu3kn/UuyP8u2LCxtCNQ1ArHlicIlBxPvIs=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <s5hblmpmol5.wl-tiwai@suse.de>
-References: <s5hblmpmol5.wl-tiwai@suse.de>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <s5hblmpmol5.wl-tiwai@suse.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
- tags/sound-5.7-rc6
-X-PR-Tracked-Commit-Id: b590b38ca305d6d7902ec7c4f7e273e0069f3bcc
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 1742bcd0cb3047d86e9d17d07fd46710c7ffad1e
-Message-Id: <158956380440.31776.1970436753823558373.pr-tracker-bot@kernel.org>
-Date:   Fri, 15 May 2020 17:30:04 +0000
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S1727799AbgEORaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 13:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726233AbgEORaR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 13:30:17 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40EAC061A0C;
+        Fri, 15 May 2020 10:30:17 -0700 (PDT)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 3A084736;
+        Fri, 15 May 2020 17:30:17 +0000 (UTC)
+Date:   Fri, 15 May 2020 11:30:16 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Wang Wenhu <wenhu.wang@vivo.com>
+Cc:     alex.shi@linux.alibaba.com, harryxiyou@gmail.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com, luochucheng@vivo.com
+Subject: Re: [PATCH] doc: zh_CN: add translatation for debugfs.txt
+Message-ID: <20200515113016.43c12464@lwn.net>
+In-Reply-To: <20200509080535.7625-1-wenhu.wang@vivo.com>
+References: <20200408021528.14062-1-luochucheng@vivo.com>
+        <20200509080535.7625-1-wenhu.wang@vivo.com>
+Organization: LWN.net
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 15 May 2020 13:20:38 +0200:
+On Sat,  9 May 2020 01:05:35 -0700
+Wang Wenhu <wenhu.wang@vivo.com> wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.7-rc6
+> From: Chucheng Luo <luochucheng@vivo.com>
+> 
+> Translate Documentation/filesystems/debugfs.txt into Chinese.
+> 
+> Signed-off-by: Chucheng Luo <luochucheng@vivo.com>
+> Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
+> [rebase for upstream conflict and minor change of subject]
+> Link: https://lore.kernel.org/linux-doc/20200408021528.14062-1-luochucheng@vivo.com/
+> ---
+> Note:
+>  * Did rebase as asked by Jonathan for the conflict when applied.
+>  * Also ajusted the subject description.
+>  * For their is no modification of new translated file, I appended
+>    the "Reviewed-by" tag from Alex.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/1742bcd0cb3047d86e9d17d07fd46710c7ffad1e
+Applied, thanks.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+jon
