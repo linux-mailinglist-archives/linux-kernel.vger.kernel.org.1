@@ -2,100 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE34D1D5B8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 23:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FC11D5B98
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 23:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgEOV3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 17:29:20 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:38031 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727972AbgEOV3J (ORCPT
+        id S1728133AbgEOV3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 17:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726653AbgEOV3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 17:29:09 -0400
-Received: by mail-pf1-f193.google.com with SMTP id y25so1601914pfn.5;
-        Fri, 15 May 2020 14:29:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wyaNKYj+csWx0v5/RRrrvPiG/GlOrf9rCpyGTc2gDv0=;
-        b=PNU2WB7xGk4aeo9LqsRnFBNqh2ufNpsh3E2UmToKGNuzHfu5s+ztk+s6S6VUKmq0C/
-         iwuKhe46HL2A2VjsuMCiBG1UUq668ruWKtTYFkzSo6RRrX/zBJOPXhRKnsWG3B0dZ2hW
-         bWS2BRDcZKdi0ogAgjbkHYrTzBOU4NRKRmSTPmsBmzjqEpdkwG3CiEBpgHGmHoGOpB6R
-         79oBGxLCemAvW7+V9HRYSkPx8A6zubaw+QyShr460zkG2LBJNAtE7VyZ2ppalO/b0PTK
-         iMKzu8k478e+nghLjgvLqcZuQkCqBKzZEUEUe5QfMFc988OM7X2xv4dSblScsJRps6Fl
-         5B1A==
-X-Gm-Message-State: AOAM531hGbKW+WC3F5TKCbWmueDzmsXgOmOREtXk4XgjwqnH/lMZEyw5
-        Y6Oh5B+/fqtxcGWbDJ81iE4=
-X-Google-Smtp-Source: ABdhPJzT8OuJIcMz4maB705Q5rp4ih5zCp5ALUBnEyTPR7+PH8X96oQqmCWUmGTpOQxsyRkd6WhDeA==
-X-Received: by 2002:aa7:8a92:: with SMTP id a18mr5990105pfc.0.1589578148396;
-        Fri, 15 May 2020 14:29:08 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id 19sm2216513pjl.52.2020.05.15.14.28.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 14:29:04 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 7975D4238B; Fri, 15 May 2020 21:28:50 +0000 (UTC)
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     jeyu@kernel.org
-Cc:     akpm@linux-foundation.org, arnd@arndb.de, rostedt@goodmis.org,
-        mingo@redhat.com, aquini@redhat.com, cai@lca.pw, dyoung@redhat.com,
-        bhe@redhat.com, peterz@infradead.org, tglx@linutronix.de,
-        gpiccoli@canonical.com, pmladek@suse.com, tiwai@suse.de,
-        schlad@suse.de, andriy.shevchenko@linux.intel.com,
-        keescook@chromium.org, daniel.vetter@ffwll.ch, will@kernel.org,
-        mchehab+samsung@kernel.org, kvalo@codeaurora.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        linux-wireless@vger.kernel.org,
-        Lennert Buytenhek <buytenh@wantstofly.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>
-Subject: [PATCH v2 15/15] mwl8k: use new module_firmware_crashed()
-Date:   Fri, 15 May 2020 21:28:46 +0000
-Message-Id: <20200515212846.1347-16-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.23.0.rc1
-In-Reply-To: <20200515212846.1347-1-mcgrof@kernel.org>
-References: <20200515212846.1347-1-mcgrof@kernel.org>
+        Fri, 15 May 2020 17:29:49 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773ABC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 14:29:49 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jZhtK-0000R7-1f; Fri, 15 May 2020 23:29:14 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 6ECFC100606; Fri, 15 May 2020 23:29:13 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [patch V4 part 1 27/36] arm64: Prepare arch_nmi_enter() for recursion
+In-Reply-To: <20200505134100.771491291@linutronix.de>
+References: <20200505131602.633487962@linutronix.de> <20200505134100.771491291@linutronix.de>
+Date:   Fri, 15 May 2020 23:29:13 +0200
+Message-ID: <873680evkm.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This makes use of the new module_firmware_crashed() to help
-annotate when firmware for device drivers crash. When firmware
-crashes devices can sometimes become unresponsive, and recovery
-sometimes requires a driver unload / reload and in the worst cases
-a reboot.
+Thomas Gleixner <tglx@linutronix.de> writes:
 
-Using a taint flag allows us to annotate when this happens clearly.
+> From: Frederic Weisbecker <frederic@kernel.org>
 
-Cc: linux-wireless@vger.kernel.org
-Cc: Lennert Buytenhek <buytenh@wantstofly.org>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Johannes Berg <johannes.berg@intel.com>
-Cc: Ganapathi Bhat <ganapathi.bhat@nxp.com>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/net/wireless/marvell/mwl8k.c | 1 +
- 1 file changed, 1 insertion(+)
+This changelog was very empty. Here is what Peter provided:
 
-diff --git a/drivers/net/wireless/marvell/mwl8k.c b/drivers/net/wireless/marvell/mwl8k.c
-index 97f23f93f6e7..d609ef1bb879 100644
---- a/drivers/net/wireless/marvell/mwl8k.c
-+++ b/drivers/net/wireless/marvell/mwl8k.c
-@@ -1551,6 +1551,7 @@ static int mwl8k_tx_wait_empty(struct ieee80211_hw *hw)
- 	 * the firmware has crashed
- 	 */
- 	if (priv->hw_restart_in_progress) {
-+		module_firmware_crashed();
- 		if (priv->hw_restart_owner == current)
- 			return 0;
- 		else
--- 
-2.26.2
+ When using nmi_enter() recursively, arch_nmi_enter() must also be recursion
+ safe. In particular, it must be ensured that HCR_TGE is always set while in
+ NMI context when in HYP mode, and be restored to it's former state when
+ done.
+
+ The current code fails this when interleaved wrong. Notably it overwrites
+ the original hcr state on nesting.
+
+ Introduce a nesting counter to make sure to store the original value.
 
