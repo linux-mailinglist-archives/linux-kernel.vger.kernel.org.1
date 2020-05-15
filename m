@@ -2,123 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344E41D59D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 21:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CFB1D59DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 21:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbgEOTSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 15:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726227AbgEOTSX (ORCPT
+        id S1726249AbgEOTTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 15:19:22 -0400
+Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:57940 "EHLO
+        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726023AbgEOTTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 15:18:23 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EB8C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 12:18:21 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id o134so1685991ybg.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 12:18:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=BmOnRbcR3AFYYV75I99OpKgERiPbjcBnWxKWXN2nC7c=;
-        b=Skg2EB4P+xqChQ+yZLz8eFl0BQuMKb7cIFnQjRedA/4JLPEpYmDFtzydvfju3zSGqC
-         8CSzIuFWaAWvgVPLgmj54r/G/c1gt2fh12Gf1jjJZcbP2F6L5qyN/Xg64b2xR4XOXAPb
-         TLpyVPrNhVkz0U4XXoRGVjTwiN4Y0vyPVjHjVtzP/zdICdsZ2mtwdP1jD8UT8uZWHf+/
-         VugJOOochwEluZzhQjxUndls10g8vSOA5UXR+wVW513NQGG6hL15aK9fi+ejsEFneEnr
-         TEOiISZEb78pFSsJQ+jQ7LzGn3Rd4QubfVaLfiafjKWeeEAOiCvVbFNz8EQwaR20gwvM
-         LPlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=BmOnRbcR3AFYYV75I99OpKgERiPbjcBnWxKWXN2nC7c=;
-        b=ud57ZLBRz7VKF2KjggqfOm+ONJM13MZCWxM0girbuWXTuhuNA/TTbG/Mh9OcQg1ONB
-         PuH3+H2NmN794tzLY1U3DlTe/IoxBls/d8xrfhEUw6+097vL+dH3kDTtdbEYHAIly4+S
-         1YyzfAhSy6h+aI6hE0KGCubtGMFQYGpL4H/5ValjEcB4n1C+jeL39GvADzy5+wNI8vkJ
-         RBvcNrOSrm8UUUCFSFQaUUKT7IDjrYz7Pn3DPUZ29XFLALKbVq91nRb5wnQRvZasg9y7
-         ck/8HHzuoRHa6iWgdmnq+S4xVo2YRS60Dkru6163YksH1DkYBfC2lbeUrvx93t5rIW7G
-         09zA==
-X-Gm-Message-State: AOAM530H//kcDoFpMeYTv/B4udQs6LaMMNofnL7L8lv0KWXJWkQb86Y3
-        c6s6BDSyLX7B9oYkecMw63OtSE/D0Jj4FUzRuUs=
-X-Google-Smtp-Source: ABdhPJxXZSblZzudNZnOpBn2DcY0+MJn7LmyDNhiZc5/6BhoN5muDciXwUJxiZIglQjPmVAZnyHM8IugtCyH9zczRbE=
-X-Received: by 2002:a25:7903:: with SMTP id u3mr8452020ybc.251.1589570300838;
- Fri, 15 May 2020 12:18:20 -0700 (PDT)
-MIME-Version: 1.0
-Reply-To: daniellal3eloch@gmail.com
-Received: by 2002:a05:6900:2f2:0:0:0:0 with HTTP; Fri, 15 May 2020 12:18:19
- -0700 (PDT)
-From:   "Mrs.Daniella Leloch" <daniella2leloch@gmail.com>
-Date:   Fri, 15 May 2020 12:18:19 -0700
-X-Google-Sender-Auth: M-vM2MLXBEVe13O_152Ckm-XeJo
-Message-ID: <CAC74ftVTcnuBafZvzL45UawihBaTPZXWpLjS8Nw=CyZxmWCaHw@mail.gmail.com>
-Subject: WU urgent
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 15 May 2020 15:19:22 -0400
+Received: from pps.filterd (m0170393.ppops.net [127.0.0.1])
+        by mx0a-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04FJ2E1G009198;
+        Fri, 15 May 2020 15:19:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=smtpout1;
+ bh=w1JgK4rbqOvIOtRWZu06erfuapJPkbsJ8S0JdANsSWI=;
+ b=jK1tOwcAV206wsldnv7r1nAwgB/klqldLFpGqRogk833feBjQltiiArUR29i/3xvQVoa
+ orzoYXwPxx3/3zwt3pIIdAKDjybuStlBkU/JJcNewMIbJsmg+Iw3EgGYXqPYKtUQEhhr
+ owuTuJypucq6LzoJQ06i2ZdI/dZmj1+xnmVNOlkM8AmuCYxNVJZzO+obRF2/lJONHLda
+ v3ulkcskMl26SzNtPTttI/TlS3+IUcRoo4LU1mIanTbpvM+DIb7fn10D4mv5Oq2tnz11
+ /pPl0uPMJhSOeDuurZVLixCHQ/82tmEk3ulaOCReBZLvEYDde0Pz+NoY0T542XVO7IC7 AQ== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0a-00154904.pphosted.com with ESMTP id 310v23pa1n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 May 2020 15:19:21 -0400
+Received: from pps.filterd (m0090351.ppops.net [127.0.0.1])
+        by mx0b-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04FJ32k9032193;
+        Fri, 15 May 2020 15:19:21 -0400
+Received: from ausxippc106.us.dell.com (AUSXIPPC106.us.dell.com [143.166.85.156])
+        by mx0b-00154901.pphosted.com with ESMTP id 310v04pwcv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 May 2020 15:19:21 -0400
+X-LoopCount0: from 10.166.132.130
+X-PREM-Routing: D-Outbound
+X-IronPort-AV: E=Sophos;i="5.60,349,1549951200"; 
+   d="scan'208";a="549483479"
+From:   <Mario.Limonciello@dell.com>
+To:     <hdegoede@redhat.com>, <dvhart@infradead.org>, <andy@infradead.org>
+CC:     <platform-driver-x86@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] platform/x86: intel-vbtn: Only blacklist SW_TABLET_MODE
+ on the 9 / "Laptop" chasis-type
+Thread-Topic: [PATCH] platform/x86: intel-vbtn: Only blacklist SW_TABLET_MODE
+ on the 9 / "Laptop" chasis-type
+Thread-Index: AQHWKugoWL5KWuDzakGq29JspYoi/6iphYEg
+Date:   Fri, 15 May 2020 19:19:18 +0000
+Message-ID: <2de269e40ca34597815ba7af05693e6a@AUSX13MPC105.AMER.DELL.COM>
+References: <20200515183916.82919-1-hdegoede@redhat.com>
+In-Reply-To: <20200515183916.82919-1-hdegoede@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-05-15T19:19:08.2290680Z;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=59f198eb-568b-4a04-b9e2-50feb09ad3be;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [143.166.24.40]
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-15_07:2020-05-15,2020-05-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 mlxscore=0 clxscore=1015 spamscore=0
+ cotscore=-2147483648 mlxlogscore=999 malwarescore=0 suspectscore=0
+ phishscore=0 impostorscore=0 priorityscore=1501 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005150159
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005150159
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-WELCOME TO WESTERN UNION MONEY TRANSFER
-THIS MAIL IS ONLY FOR THE OWNER OF THIS E-MAIL ADDRESS:
+> -----Original Message-----
+> From: Hans de Goede <hdegoede@redhat.com>
+> Sent: Friday, May 15, 2020 1:39 PM
+> To: Darren Hart; Andy Shevchenko
+> Cc: Hans de Goede; Limonciello, Mario; platform-driver-x86@vger.kernel.or=
+g;
+> linux-kernel@vger.kernel.org
+> Subject: [PATCH] platform/x86: intel-vbtn: Only blacklist SW_TABLET_MODE =
+on the
+> 9 / "Laptop" chasis-type
+>=20
+>=20
+> [EXTERNAL EMAIL]
+>=20
+> The HP Stream x360 11-p000nd no longer report SW_TABLET_MODE state / even=
+ts
+> with recent kernels. This model reports a chassis-type of 10 / "Notebook"
+> which is not on the recently introduced chassis-type whitelist
+>=20
+> Commit de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode
+> switch on 2-in-1's") added a chassis-type whitelist and only listed 31 /
+> "Convertible" as being capable of generating valid SW_TABLET_MOD events.
+>=20
+> Commit 1fac39fd0316 ("platform/x86: intel-vbtn: Also handle tablet-mode
+> switch on "Detachable" and "Portable" chassis-types") extended the
+> whitelist with chassis-types 8 / "Portable" and 32 / "Detachable".
+>=20
+> And now we need to exten the whitelist again with 10 / "Notebook"...
+>=20
+> The issue original fixed by the whitelist is really a ACPI DSDT bug on
+> the Dell XPS 9360 where it has a VGBS which reports it is in tablet mode
+> even though it is not a 2-in-1 at all, but a regular laptop.
+>=20
+> So since this is a workaround for a DSDT issue on that specific model,
+> instead of extending the whitelist over and over again, lets switch to
+> a blacklist and only blacklist the chassis-type of the model for which
+> the chassis-type check was added.
+>=20
+> Note this also fixes the current version of the code no longer checking
+> if dmi_get_system_info(DMI_CHASSIS_TYPE) returns NULL.
 
-Below is the information of your first payments $5000 Dollars sent to you t=
-oday.
-But unfortunately, the managing Director of this department called us this
-morning and reported that you have not paid the required fee $156 which you=
- are
-supposed to pay earlier for the purchasing and updating of your transfer fi=
-les
-but we have already sent out the payment out but not yet been putting on yo=
-ur
-name as the receiver. You will be receiving $5000 daily until your total am=
-ount
-of funds $520,000 is fully paid to you.
+Makes sense, thanks.
 
-Since you are finding it difficult to get the $156 we have decided that you=
- are
-to go ahead and pay whatever you have out of the total fee $156 required. B=
-ut
-mind you, no amount below $95 will be accepted so we expect you to pay what=
-ever
-amount from $95 and above. You are to pay what ever you have and we will
-activate your mtcn number and direct the transfer to your name as the recei=
-ver.
+Reviewed-by: Mario Limonciello <Mario.limonciello@dell.com>
 
-Send it to this information below:
-Name:__________Chintuwa ThankGod chisom
-Address:________Burkina Faso
-Text Question____Transfer?
-Answer_____________Yes
-Please any amount you send let us know but remember, any amount below $95 w=
-ill
-not be accepted. Send us the payment information=E2=80=99s immediately afte=
-r you send
-it.
-HERE IS THE MONEY DETAILS MADE TO YOU!!!
-MTCN: 6839222328
-Sender=E2=80=99s First Name: Kark
-Sender=E2=80=99s Last Name: Heinrich
-Test Question: Color
-Answer: Blue
-Amount: $5000.00
+>=20
+> Fixes: 1fac39fd0316 ("platform/x86: intel-vbtn: Also handle tablet-mode s=
+witch
+> on "Detachable" and "Portable" chassis-types")
+> Cc: Mario Limonciello <mario.limonciello@dell.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+> Note I can even see there being 2-in-1s using intel-vbtn to report
+> SW_TABLET_MODE with a chassis-type of 9. So maybe we should make the
+> quirk / blacklist stricter by combining it with a
+> dmi_name_in_vendors("Dell") check ?
+> ---
+>  drivers/platform/x86/intel-vbtn.c | 19 ++++++++-----------
+>  1 file changed, 8 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/int=
+el-
+> vbtn.c
+> index ef92c1c3adbd..0487b606a274 100644
+> --- a/drivers/platform/x86/intel-vbtn.c
+> +++ b/drivers/platform/x86/intel-vbtn.c
+> @@ -170,21 +170,18 @@ static bool intel_vbtn_has_buttons(acpi_handle hand=
+le)
+>  static bool intel_vbtn_has_switches(acpi_handle handle)
+>  {
+>  	const char *chassis_type =3D dmi_get_system_info(DMI_CHASSIS_TYPE);
+> -	unsigned long chassis_type_int;
+>  	unsigned long long vgbs;
+>  	acpi_status status;
+>=20
+> -	if (kstrtoul(chassis_type, 10, &chassis_type_int))
+> -		return false;
+> -
+> -	switch (chassis_type_int) {
+> -	case  8: /* Portable */
+> -	case 31: /* Convertible */
+> -	case 32: /* Detachable */
+> -		break;
+> -	default:
+> +	/*
+> +	 * Some normal laptops have a VGBS method despite being non-convertible
+> +	 * and their VGBS method always returns 0, causing detect_tablet_mode()
+> +	 * to report SW_TABLET_MODE=3D1 to userspace, which causes issues.
+> +	 * These laptops have a DMI chassis_type of 9 ("Laptop"), do not report
+> +	 * switches on any devices with a DMI chassis_type of 9.
+> +	 */
+> +	if (chassis_type && strcmp(chassis_type, "9") =3D=3D 0)
+>  		return false;
+> -	}
+>=20
+>  	status =3D acpi_evaluate_integer(handle, "VGBS", NULL, &vgbs);
+>  	return ACPI_SUCCESS(status);
+> --
+> 2.26.0
 
-Don=E2=80=99t expose this numbers to anybody else. If you need to check the=
- transfer
-online to see that the money is posted online for you:
-https://wumt.westernunion.com/asp/orderStatus.asp?country=3DBJ
-Note that the money detail given to you does not bear your name as the rece=
-iver
-yet. As soon as we receive the fee from you, we will immediately activate y=
-our
-mtcn# and put your name as the receiver. Please take note; you need to go a=
-long
-with your passport ID or Drivers license when you need to pick up the trans=
-fer
-okay. We look forward hearing from you.
-
-REGARDS,
-Mrs Daniella Leloch
-WESTERN UNION BENIN -TRANSFER AGEN
