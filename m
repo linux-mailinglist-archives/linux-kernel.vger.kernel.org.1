@@ -2,161 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928421D5AE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 22:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405671D5B00
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 22:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgEOUrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 16:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726727AbgEOUrt (ORCPT
+        id S1726362AbgEOUvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 16:51:44 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:36250 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726183AbgEOUvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 16:47:49 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FE7C061A0C;
-        Fri, 15 May 2020 13:47:49 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g14so17661980wme.1;
-        Fri, 15 May 2020 13:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Htr9aP0MdmZMA6tHRCPfn7CVcfVXmM6eKysrnP4vvx4=;
-        b=nn2YC4tuAlxMOpmulipXR1B4lwciUn/Hjzcoy/YWxZyXiKVSyB9kWA6ws1ryBoH+sN
-         tT0GQ8XabQvBbddAZG7M8jVWkou2cGY6OCU5a/MCuGv3G3bLsWfPyvAxe0wGf3JbjczO
-         BPYoW87ZGyY8gUW21K8klitq1D7S2sGbTtq6baBS8hMTrDDt6VDXLMtxYOUQvKclUeii
-         h13Yv0vlfGxzQEjJSP6PRYKWBqymBqInc8lqAqkE22TGw9wmpsN3t6jGD3PRogDOQbgp
-         X4c3zp4uvZnOF7iPbplxWxcpzjCshmolNiSVkKeQ07yhRSxCuzkd/x/rk7m+0Q8jgR+h
-         +p+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Htr9aP0MdmZMA6tHRCPfn7CVcfVXmM6eKysrnP4vvx4=;
-        b=H5ka5Qj5rBXvx+t5a2Zd0l0gsbruqq+wIp3jqKRBQshXbz3oiCti+Qxa9JQxFMuGRA
-         aMnHOzYS8ApoOlw/ap4uwauwTcMAN/ME5dpo0/adZtbKnfP58aVIWbUulXvWNvbimkO5
-         /lNEz7RnP11gUd9fEo+vopS91uazfwXwYZvQE7et4gAy6UVXcQFbtdh9240kLSCTZjyH
-         mt3c6Jm8VtFkNBua7M2Ec/DTWW4Hv+DGlpVIwMpQeGyMWvqjKPXyU+LmCxhBwaFyVkCo
-         7hzxaTmoTPH/wnCZSFoN8jGJGUGtq56UPDpIKVp3mGE8jdF+q8tp8iaTD9LoZP5HiGzA
-         BQEw==
-X-Gm-Message-State: AOAM530DAjxeH9IqeoQOvKSSrEOCFFGd/nPc0EpfYwQ3z5WirX9XHmT6
-        3glAdJe1i+nFD01d9UyVQoxDEkj2
-X-Google-Smtp-Source: ABdhPJwPG5IbBwRFaBO+atkF2dV5bW8f4t0HRbsX7IPZ7+5FbEpFOtLhRU26PA/xGJ1TAkXSspYOUw==
-X-Received: by 2002:a1c:4641:: with SMTP id t62mr5604215wma.37.1589575667954;
-        Fri, 15 May 2020 13:47:47 -0700 (PDT)
-Received: from localhost.localdomain (p200300F137132E00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3713:2e00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id r11sm5296211wma.35.2020.05.15.13.47.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 13:47:47 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     khilman@baylibre.com, linux-amlogic@lists.infradead.org
-Cc:     robh+dt@kernel.org, narmstrong@baylibre.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v4 4/4] soc: amlogic: meson-ee-pwrc: add support for the Meson GX SoCs
-Date:   Fri, 15 May 2020 22:47:09 +0200
-Message-Id: <20200515204709.1505498-5-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200515204709.1505498-1-martin.blumenstingl@googlemail.com>
-References: <20200515204709.1505498-1-martin.blumenstingl@googlemail.com>
+        Fri, 15 May 2020 16:51:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589575903;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FHPcJo3/hUrokZL+DP7WLakvS6EX9QMKXwY5VRZtidY=;
+        b=CN/hLDPVem+NeRmh3E4uw5biXn9uWqf7qVkG7stxEi7WKzETl7zVE1yig2Cl2eDCLwFkPS
+        nyh3w8Z8DbZe5/x9LTkyJbbZ0bWNKpUl2gzDPMyAVjkqZO//ucAtZIqq49vxNPudJMU0hw
+        FzEoWthv7NCdZ6sQ8Q3IhfNox8SLjEw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-25-ZKC5u3TfPteBbGqUTTJjEQ-1; Fri, 15 May 2020 16:51:39 -0400
+X-MC-Unique: ZKC5u3TfPteBbGqUTTJjEQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 084C4460;
+        Fri, 15 May 2020 20:51:38 +0000 (UTC)
+Received: from treble (ovpn-117-151.rdu2.redhat.com [10.10.117.151])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1FAFC5D9C9;
+        Fri, 15 May 2020 20:51:37 +0000 (UTC)
+Date:   Fri, 15 May 2020 15:51:35 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Julien Thierry <jthierry@redhat.com>
+Cc:     Matt Helsley <mhelsley@vmware.com>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RFC][PATCH 4/5] objtool: Enable compilation of objtool for all
+ architectures
+Message-ID: <20200515205135.5pknexlld53oicu5@treble>
+References: <cover.1588888003.git.mhelsley@vmware.com>
+ <9f709ea2ae66cc03b3ff3329baa8f670ccd0e368.1588888003.git.mhelsley@vmware.com>
+ <f9eedb02-54fe-fb96-fbcc-5f40f41e571a@redhat.com>
+ <20200513155948.GI9040@rlwimi.vmware.com>
+ <e369f0a9-30fc-5754-8cff-bf238ab0b716@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e369f0a9-30fc-5754-8cff-bf238ab0b716@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the Meson GX SoCs to the meson-ee-pwrc driver.
+On Wed, May 13, 2020 at 05:55:31PM +0100, Julien Thierry wrote:
+> > > Since the stuff under arch/missing is only weak symbols to make up for
+> > > missing subcmd implementations, can we put everything in a file
+> > > subcmd_defaults.c (name up for debate!) that would be always be compiled an
+> > > linked. And some SUBCMD_XXX is set to "y", the corresponding object file
+> > > gets compiled and overrides the weak symbols from subcmd_defaults.c .
+> > 
+> > Hmm, I like keeping them separated along similar lines to the other
+> > code because it makes it easier to see the intended correspondence and
+> > likely will keep the files more readable / smaller. I could
+> > just move them out of arch/missing and into missing_check.c and so forth.
+> > 
+> > What do you think of that?
+> > 
+> 
+> I do prefer that to the introduction of an arch/missing.
+> 
+> Still, I'm not sure I see much benefit in splitting those small
+> implementations in separate files, but it's not a problem either. This seems
+> more a matter of taste rather than one approach working better than the
+> other. So it's more up to what the maintainer prefer! :)
 
-The power domains on the GX SoCs are very similar to G12A. The only
-known differences so far are:
-- The GX SoCs do not have the HHI_VPU_MEM_PD_REG2 register (for the
-  VPU power-domain)
-- The GX SoCs have an additional reset line called "dvin"
+For now I'd prefer getting rid of the 'missing' arch and just having a
+single top-level weak.c which has all the weak functions in it.  Keeps
+the clutter down :-)
 
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/soc/amlogic/meson-ee-pwrc.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+Down the road, if the number of weak functions got out of hand then we
+could look at splitting them up into multiple files.
 
-diff --git a/drivers/soc/amlogic/meson-ee-pwrc.c b/drivers/soc/amlogic/meson-ee-pwrc.c
-index 390eb0dd0a79..43665b77aa9e 100644
---- a/drivers/soc/amlogic/meson-ee-pwrc.c
-+++ b/drivers/soc/amlogic/meson-ee-pwrc.c
-@@ -16,6 +16,7 @@
- #include <linux/clk.h>
- #include <dt-bindings/power/meson8-power.h>
- #include <dt-bindings/power/meson-g12a-power.h>
-+#include <dt-bindings/power/meson-gxbb-power.h>
- #include <dt-bindings/power/meson-sm1-power.h>
- 
- /* AO Offsets */
-@@ -75,7 +76,7 @@ struct meson_ee_pwrc_domain_data {
- 
- /* TOP Power Domains */
- 
--static struct meson_ee_pwrc_top_domain g12a_pwrc_vpu = {
-+static struct meson_ee_pwrc_top_domain gx_pwrc_vpu = {
- 	.sleep_reg = GX_AO_RTI_GEN_PWR_SLEEP0,
- 	.sleep_mask = BIT(8),
- 	.iso_reg = GX_AO_RTI_GEN_PWR_SLEEP0,
-@@ -140,6 +141,12 @@ static struct meson_ee_pwrc_mem_domain g12a_pwrc_mem_vpu[] = {
- 	VPU_HHI_MEMPD(HHI_MEM_PD_REG0),
- };
- 
-+static struct meson_ee_pwrc_mem_domain gxbb_pwrc_mem_vpu[] = {
-+	VPU_MEMPD(HHI_VPU_MEM_PD_REG0),
-+	VPU_MEMPD(HHI_VPU_MEM_PD_REG1),
-+	VPU_HHI_MEMPD(HHI_MEM_PD_REG0),
-+};
-+
- static struct meson_ee_pwrc_mem_domain meson_pwrc_mem_eth[] = {
- 	{ HHI_MEM_PD_REG0, GENMASK(3, 2) },
- };
-@@ -225,11 +232,17 @@ static struct meson_ee_pwrc_mem_domain sm1_pwrc_mem_audio[] = {
- static bool pwrc_ee_get_power(struct meson_ee_pwrc_domain *pwrc_domain);
- 
- static struct meson_ee_pwrc_domain_desc g12a_pwrc_domains[] = {
--	[PWRC_G12A_VPU_ID]  = VPU_PD("VPU", &g12a_pwrc_vpu, g12a_pwrc_mem_vpu,
-+	[PWRC_G12A_VPU_ID]  = VPU_PD("VPU", &gx_pwrc_vpu, g12a_pwrc_mem_vpu,
- 				     pwrc_ee_get_power, 11, 2),
- 	[PWRC_G12A_ETH_ID] = MEM_PD("ETH", meson_pwrc_mem_eth),
- };
- 
-+static struct meson_ee_pwrc_domain_desc gxbb_pwrc_domains[] = {
-+	[PWRC_GXBB_VPU_ID]  = VPU_PD("VPU", &gx_pwrc_vpu, gxbb_pwrc_mem_vpu,
-+				     pwrc_ee_get_power, 12, 2),
-+	[PWRC_GXBB_ETHERNET_MEM_ID] = MEM_PD("ETH", meson_pwrc_mem_eth),
-+};
-+
- static struct meson_ee_pwrc_domain_desc meson8_pwrc_domains[] = {
- 	[PWRC_MESON8_VPU_ID]  = VPU_PD("VPU", &meson8_pwrc_vpu,
- 				       meson8_pwrc_mem_vpu, pwrc_ee_get_power,
-@@ -516,6 +529,11 @@ static struct meson_ee_pwrc_domain_data meson_ee_g12a_pwrc_data = {
- 	.domains = g12a_pwrc_domains,
- };
- 
-+static struct meson_ee_pwrc_domain_data meson_ee_gxbb_pwrc_data = {
-+	.count = ARRAY_SIZE(gxbb_pwrc_domains),
-+	.domains = gxbb_pwrc_domains,
-+};
-+
- static struct meson_ee_pwrc_domain_data meson_ee_m8_pwrc_data = {
- 	.count = ARRAY_SIZE(meson8_pwrc_domains),
- 	.domains = meson8_pwrc_domains,
-@@ -544,6 +562,10 @@ static const struct of_device_id meson_ee_pwrc_match_table[] = {
- 		.compatible = "amlogic,meson8m2-pwrc",
- 		.data = &meson_ee_m8b_pwrc_data,
- 	},
-+	{
-+		.compatible = "amlogic,meson-gxbb-pwrc",
-+		.data = &meson_ee_gxbb_pwrc_data,
-+	},
- 	{
- 		.compatible = "amlogic,meson-g12a-pwrc",
- 		.data = &meson_ee_g12a_pwrc_data,
 -- 
-2.26.2
+Josh
 
