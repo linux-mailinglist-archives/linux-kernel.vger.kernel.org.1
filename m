@@ -2,72 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E110E1D55A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0F41D55A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgEOQMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 12:12:17 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:36675 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgEOQMR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 12:12:17 -0400
-Received: by mail-pg1-f196.google.com with SMTP id c75so152558pga.3;
-        Fri, 15 May 2020 09:12:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RG70TiJYGoEhXnutlb3L5GkzC6tQ3GVdkLhBrlshdRc=;
-        b=le6gK+2szxzUe3okL707hN83kAI6L1BHiXdaYvkCIZsgJPmQtXSkTVDVt+0QbB4+Li
-         2guwDpwFyAlUUI9o1wD/vly9Lly606zw/dxbV3SMTB5zVJ+zJtWpIXBXwq/uLS13FIkT
-         B0JNF+ePEIO13alU9q5soFRDXiP3e8hOcB6q9Jkf9elPWA44+wpjip9H2kp4GApdwPm5
-         nt6vZsMPN1zsJSOti3QRBE6zmz1na5UkCKHCgSo552AHi9aPf2OESmltnbCAb+C0icAw
-         Vic1d7FvTvUoeI98UHFKRqdVlyb6R9uP+AGOWNk+IWcOE+2Z0CR44evvIYMVwZMl8Dwj
-         qQWw==
-X-Gm-Message-State: AOAM532AdlWkyMV+bQkOtHQViF+ivZYkKIqGZ99rbTnm3MmPNfibJfjg
-        ghygAdhWOTFCcSfYp6iJAK8=
-X-Google-Smtp-Source: ABdhPJx8zcxmnT0TMR2UidZqY315uPbUbguSKVo3CU18gfFFYDZgANXm3krJvhNTyWsshEDNnemDDA==
-X-Received: by 2002:a63:b402:: with SMTP id s2mr3999993pgf.322.1589559135312;
-        Fri, 15 May 2020 09:12:15 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id gb6sm1867054pjb.56.2020.05.15.09.12.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 09:12:14 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 5B37940246; Fri, 15 May 2020 16:12:13 +0000 (UTC)
-Date:   Fri, 15 May 2020 16:12:13 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     viro@zeniv.linux.org.uk, axboe@kernel.dk, zohar@linux.vnet.ibm.com,
-        keescook@chromium.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] fs: avoid fdput() after failed fdget() in
- ksys_sync_file_range()
-Message-ID: <20200515161213.GV11244@42.do-not-panic.com>
-References: <cover.1589411496.git.skhan@linuxfoundation.org>
- <5945f42e08ee037c4d1d0492622defb5904f4850.1589411496.git.skhan@linuxfoundation.org>
+        id S1726550AbgEOQOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 12:14:03 -0400
+Received: from 8bytes.org ([81.169.241.247]:43514 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726283AbgEOQOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 12:14:03 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id C35FA3C3; Fri, 15 May 2020 18:14:01 +0200 (CEST)
+Date:   Fri, 15 May 2020 18:14:00 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     iommu@lists.linux-foundation.org, jroedel@suse.de,
+        linux-kernel@vger.kernel.org, Tom Murphy <murphyt7@tcd.ie>,
+        jsnitsel@redhat.com
+Subject: Re: [PATCH] iommu: Implement deferred domain attachment
+Message-ID: <20200515161400.GZ18353@8bytes.org>
+References: <20200515094519.20338-1-joro@8bytes.org>
+ <d4e1cd9e-fc83-d41a-49c0-8f14f44b2701@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5945f42e08ee037c4d1d0492622defb5904f4850.1589411496.git.skhan@linuxfoundation.org>
+In-Reply-To: <d4e1cd9e-fc83-d41a-49c0-8f14f44b2701@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 05:33:20PM -0600, Shuah Khan wrote:
-> Fix ksys_sync_file_range() to avoid fdput() after a failed fdget().
-> fdput() doesn't do fput() on this file since FDPUT_FPUT isn't set
-> in fd.flags.
+On Fri, May 15, 2020 at 04:42:23PM +0100, Robin Murphy wrote:
+> >   struct iommu_domain *iommu_get_dma_domain(struct device *dev)
+> >   {
+> > -	return dev->iommu_group->default_domain;
+> > +	struct iommu_domain *domain = dev->iommu_group->default_domain;
+> > +
+> > +	if (__iommu_is_attach_deferred(domain, dev))
+> > +		__iommu_attach_device_no_defer(domain, dev);
 > 
-> Change it anyway since failed fdget() doesn't require a fdput(). Refine
-> the code path a bit for it to read more clearly.
-> Reference: 22f96b3808c1 ("fs: add sync_file_range() helper")
-> 
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> This raises a red flag, since iommu-dma already has explicit deferred attach
+> handling where it should need it, immediately after this is called to
+> retrieve the domain. The whole thing smells to me like we should have an
+> explicit special-case in iommu_probe_device() rather than hooking
+> __iommu_attach_device() in general then having to bodge around the fallout
+> elsewhere.
 
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+Good point, I missed that. But it didn't work for its only user, the
+AMD IOMMU driver, the reason is that it calls iommu_attach_device(),
+which in its code-path checks for deferred attaching again and bails
+out, without do the real attachment.
 
-  Luis
+But below updated fix should work. Jerry, could you please test it
+again?
+
+From 4e262dedcd36c7572312c65e66416da74fc78047 Mon Sep 17 00:00:00 2001
+From: Joerg Roedel <jroedel@suse.de>
+Date: Fri, 15 May 2020 11:25:03 +0200
+Subject: [PATCH] iommu: Fix deferred domain attachment
+
+The IOMMU core code has support for deferring the attachment of a domain
+to a device. This is needed in kdump kernels where the new domain must
+not be attached to a device before the device driver takes it over.
+
+When the AMD IOMMU driver got converted to use the dma-iommu
+implementation, the deferred attaching got lost. The code in
+dma-iommu.c has support for deferred attaching, but it calls into
+iommu_attach_device() to actually do it. But iommu_attach_device()
+will check if the device should be deferred in it code-path and do
+nothing, breaking deferred attachment.
+
+Provide a function in IOMMU core code to reliably attach a device to a
+domain without any deferred checks and also without other safe-guards.
+
+Cc: Jerry Snitselaar <jsnitsel@redhat.com>
+Cc: Tom Murphy <murphyt7@tcd.ie>
+Reported-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Fixes: 795bbbb9b6f8 ("iommu/dma-iommu: Handle deferred devices")
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+---
+ drivers/iommu/dma-iommu.c |  4 ++--
+ drivers/iommu/iommu.c     | 37 ++++++++++++++++++++++++++++++++-----
+ include/linux/iommu.h     |  2 ++
+ 3 files changed, 36 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index ba128d1cdaee..403fda04ea98 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -362,8 +362,8 @@ static int iommu_dma_deferred_attach(struct device *dev,
+ 		return 0;
+ 
+ 	if (unlikely(ops->is_attach_deferred &&
+-			ops->is_attach_deferred(domain, dev)))
+-		return iommu_attach_device(domain, dev);
++		     ops->is_attach_deferred(domain, dev)))
++		return iommu_attach_device_no_defer(domain, dev);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 4050569188be..91dbdbc6d640 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -23,6 +23,7 @@
+ #include <linux/property.h>
+ #include <linux/fsl/mc.h>
+ #include <linux/module.h>
++#include <linux/crash_dump.h>
+ #include <trace/events/iommu.h>
+ 
+ static struct kset *iommu_group_kset;
+@@ -1889,13 +1890,19 @@ void iommu_domain_free(struct iommu_domain *domain)
+ }
+ EXPORT_SYMBOL_GPL(iommu_domain_free);
+ 
+-static int __iommu_attach_device(struct iommu_domain *domain,
+-				 struct device *dev)
++static bool __iommu_is_attach_deferred(struct iommu_domain *domain,
++				       struct device *dev)
++{
++	if (!domain->ops->is_attach_deferred)
++		return false;
++
++	return domain->ops->is_attach_deferred(domain, dev);
++}
++
++static int __iommu_attach_device_no_defer(struct iommu_domain *domain,
++					  struct device *dev)
+ {
+ 	int ret;
+-	if ((domain->ops->is_attach_deferred != NULL) &&
+-	    domain->ops->is_attach_deferred(domain, dev))
+-		return 0;
+ 
+ 	if (unlikely(domain->ops->attach_dev == NULL))
+ 		return -ENODEV;
+@@ -1903,9 +1910,29 @@ static int __iommu_attach_device(struct iommu_domain *domain,
+ 	ret = domain->ops->attach_dev(domain, dev);
+ 	if (!ret)
+ 		trace_attach_device_to_domain(dev);
++
+ 	return ret;
+ }
+ 
++static int __iommu_attach_device(struct iommu_domain *domain,
++				 struct device *dev)
++{
++	if (__iommu_is_attach_deferred(domain, dev))
++		return 0;
++
++	return __iommu_attach_device_no_defer(domain, dev);
++}
++
++int iommu_attach_device_no_defer(struct iommu_domain *domain,
++				 struct device *dev)
++{
++	/* Safe-Guard to only call this when needed */
++	if (!is_kdump_kernel())
++		return -ENODEV;
++
++	return __iommu_attach_device_no_defer(domain, dev);
++}
++
+ int iommu_attach_device(struct iommu_domain *domain, struct device *dev)
+ {
+ 	struct iommu_group *group;
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index 7cfd2dddb49d..f82b20a61d0b 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -449,6 +449,8 @@ extern struct iommu_group *iommu_group_get_by_id(int id);
+ extern void iommu_domain_free(struct iommu_domain *domain);
+ extern int iommu_attach_device(struct iommu_domain *domain,
+ 			       struct device *dev);
++extern int iommu_attach_device_no_defer(struct iommu_domain *domain,
++					struct device *dev);
+ extern void iommu_detach_device(struct iommu_domain *domain,
+ 				struct device *dev);
+ extern int iommu_cache_invalidate(struct iommu_domain *domain,
+-- 
+2.25.1
+
