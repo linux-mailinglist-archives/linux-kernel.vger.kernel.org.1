@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E02C1D42F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 03:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B311D42FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 03:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgEOBcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 May 2020 21:32:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35650 "EHLO mail.kernel.org"
+        id S1727912AbgEOBf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 May 2020 21:35:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726141AbgEOBcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 May 2020 21:32:35 -0400
+        id S1726090AbgEOBf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 May 2020 21:35:27 -0400
 Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58C9B20671;
-        Fri, 15 May 2020 01:32:32 +0000 (UTC)
-Date:   Thu, 14 May 2020 21:32:30 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 758AC2065F;
+        Fri, 15 May 2020 01:35:24 +0000 (UTC)
+Date:   Thu, 14 May 2020 21:35:22 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
@@ -42,10 +42,11 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
 Subject: Re: [patch V5 03/38] nmi, tracing: Provide nmi_enter/exit_notrace()
-Message-ID: <20200514213230.02c13bd2@oasis.local.home>
-In-Reply-To: <20200512213809.678944067@linutronix.de>
+Message-ID: <20200514213522.59f8de4d@oasis.local.home>
+In-Reply-To: <20200514213230.02c13bd2@oasis.local.home>
 References: <20200512210059.056244513@linutronix.de>
         <20200512213809.678944067@linutronix.de>
+        <20200514213230.02c13bd2@oasis.local.home>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -55,81 +56,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 May 2020 23:01:02 +0200
-Thomas Gleixner <tglx@linutronix.de> wrote:
+On Thu, 14 May 2020 21:32:30 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> To fully isolate #DB and #BP from instrumentable code it's necessary to
-> avoid invoking the hardware latency tracer on nmi_enter/exit().
-> 
-> Provide nmi_enter/exit() variants which are not invoking the hardware
-> latency tracer. That allows to put calls explicitely into the call sites
-> outside of the kprobe handling.
+> It's accounting only. Now it does use a per-cpu variable (which I see
+> in other patches can be an issue) and calls time_get().
 
-The only thing the hardware latency tracer is using this for is to
-denote that something happened while it was timing "nothing" happening.
-
-It's accounting only. Now it does use a per-cpu variable (which I see
-in other patches can be an issue) and calls time_get().
-
-Now if per-cpu nor time_get() can not be called in noinstr, then I'm
-perfectly fine with this patch. But if they are allowed, I don't think
-that this patch is necessary, and we could perhaps mark the hardware
-latency hook as noinstr instead?
+time_get() being defined as trace_clock_local(). And this in only
+called if CONFIG_GENERIC_SCHED_CLOCK is not true, as that isn't NMI
+safe.
 
 -- Steve
-
-
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
-> V5: New patch
-> ---
->  include/linux/hardirq.h |   18 ++++++++++++++----
->  1 file changed, 14 insertions(+), 4 deletions(-)
-> 
-> --- a/include/linux/hardirq.h
-> +++ b/include/linux/hardirq.h
-> @@ -77,28 +77,38 @@ extern void irq_exit(void);
->  /*
->   * nmi_enter() can nest up to 15 times; see NMI_BITS.
->   */
-> -#define nmi_enter()						\
-> +#define nmi_enter_notrace()					\
->  	do {							\
->  		arch_nmi_enter();				\
->  		printk_nmi_enter();				\
->  		lockdep_off();					\
-> -		ftrace_nmi_enter();				\
->  		BUG_ON(in_nmi() == NMI_MASK);			\
->  		__preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET);	\
->  		rcu_nmi_enter();				\
->  		lockdep_hardirq_enter();			\
->  	} while (0)
->  
-> -#define nmi_exit()						\
-> +#define nmi_enter()						\
-> +	do {							\
-> +		nmi_enter_notrace();				\
-> +		ftrace_nmi_enter();				\
-> +	} while (0)
-> +
-> +#define nmi_exit_notrace()					\
->  	do {							\
->  		lockdep_hardirq_exit();				\
->  		rcu_nmi_exit();					\
->  		BUG_ON(!in_nmi());				\
->  		__preempt_count_sub(NMI_OFFSET + HARDIRQ_OFFSET);	\
-> -		ftrace_nmi_exit();				\
->  		lockdep_on();					\
->  		printk_nmi_exit();				\
->  		arch_nmi_exit();				\
->  	} while (0)
->  
-> +#define nmi_exit()						\
-> +	do {							\
-> +		ftrace_nmi_exit();				\
-> +		nmi_exit_notrace();				\
-> +	} while (0)
-> +
->  #endif /* LINUX_HARDIRQ_H */
-
