@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF141D5C9F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 01:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B9A1D5CA2
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 01:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgEOXGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 19:06:15 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:8082 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgEOXGP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 19:06:15 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.3]) by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee85ebf206220e-0987f; Sat, 16 May 2020 07:06:11 +0800 (CST)
-X-RM-TRANSID: 2ee85ebf206220e-0987f
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.1.172.85])
-        by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee25ebf205f232-0733c;
-        Sat, 16 May 2020 07:06:10 +0800 (CST)
-X-RM-TRANSID: 2ee25ebf205f232-0733c
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     saeedm@mellanox.com, davem@davemloft.net, leon@kernel.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: [PATCH v2] net/mlx5e: Use IS_ERR() to check and simplify code
-Date:   Sat, 16 May 2020 07:06:33 +0800
-Message-Id: <20200515230633.2832-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S1727030AbgEOXHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 19:07:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726183AbgEOXHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 19:07:41 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 54ACA205CB;
+        Fri, 15 May 2020 23:07:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589584061;
+        bh=vz66ht54cMc3RYpWc41W0EyO97eRJNrUFQiUdZuTX8Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ujca5DMsp5Ik4R1EtDjzKw0mhCv7WrtoYDRjqs8b0TI8lUUM8G7qPe/H4xd4N5O6X
+         96zYkBHO3RrHizOqBG4L9Y1HqKjiW8woLZdB34jcoLQS4XbP2i6JwBmVx4oU3uajml
+         koXsISBbdfq/IR/lpp7X5NoGZQxP5tTjFiiI+p9o=
+Date:   Fri, 15 May 2020 19:07:40 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
+        luto@kernel.org, hpa@zytor.com, dave.hansen@intel.com,
+        tony.luck@intel.com, ravi.v.shankar@intel.com,
+        chang.seok.bae@intel.com
+Subject: Re: [PATCH v12 00/18] Enable FSGSBASE instructions
+Message-ID: <20200515230740.GG29995@sasha-vm>
+References: <20200511045311.4785-1-sashal@kernel.org>
+ <0186c22a8a6be1516df0703c421faaa581041774.camel@linux.intel.com>
+ <20200515164013.GF29995@sasha-vm>
+ <20200515175550.GP3538@tassilo.jf.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200515175550.GP3538@tassilo.jf.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use IS_ERR() and PTR_ERR() instead of PTR_ERR_OR_ZERO() to
-simplify code, avoid redundant judgements.
+On Fri, May 15, 2020 at 10:55:50AM -0700, Andi Kleen wrote:
+>> Indeed, we've seen a few hacks that basically just enable FSGSBASE:
+>>
+>> - https://github.com/oscarlab/graphene-sgx-driver
+>> - https://github.com/occlum/enable_rdfsbase
+>>
+>> And would very much like to get rid of them...
+>
+>These are insecure and open root holes without the patches
+>used here.
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
----
-Changes from v1
- - fix the commit message for typo.
----
- drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+It's sad that these hacks are being used alongside SGX on "secure"
+systems.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
-index af4ebd295..00e7add0b 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
-@@ -93,9 +93,8 @@ static int mlx5e_route_lookup_ipv4(struct mlx5e_priv *priv,
- 	}
- 
- 	rt = ip_route_output_key(dev_net(mirred_dev), fl4);
--	ret = PTR_ERR_OR_ZERO(rt);
--	if (ret)
--		return ret;
-+	if (IS_ERR(rt))
-+		return PTR_ERR(rt);
- 
- 	if (mlx5_lag_is_multipath(mdev) && rt->rt_gw_family != AF_INET) {
- 		ip_rt_put(rt);
 -- 
-2.20.1.windows.1
-
-
-
+Thanks,
+Sasha
