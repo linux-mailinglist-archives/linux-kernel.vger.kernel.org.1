@@ -2,87 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4B31D4BCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F4A1D4BD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726713AbgEOK5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 06:57:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726233AbgEOK5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 06:57:04 -0400
-Received: from localhost (unknown [122.178.196.30])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79CEE20709;
-        Fri, 15 May 2020 10:57:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589540223;
-        bh=Kgg+Dz7YYYCNO25bLu1uPRJYR5eSTQcswIqaUpnoW7g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BI2Ru00w9RJBYHRds2Xq2Mkxr4W3LfhVlSyAywdh9J29ayepyZOjzpmQNA5e82s/l
-         JGIWdKxJ32vIiyZJ+BYhvF+cuQ6YlObvkiOWorw1o6PLwEuWDvApbXHMF4sSW+7XqV
-         JW7JA7ufXZkELpNXiq4XJ60LNVGEHtwcRpeDGJwo=
-Date:   Fri, 15 May 2020 16:26:58 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-mips@vger.kernel.org, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] dt-bindings: dma: dw: Add max burst transaction
- length property
-Message-ID: <20200515105658.GR333670@vkoul-mobl>
-References: <20200508105304.14065-3-Sergey.Semin@baikalelectronics.ru>
- <20200508111242.GH185537@smile.fi.intel.com>
- <20200511200528.nfkc2zkh3bvupn7l@mobilestation>
- <20200511210138.GN185537@smile.fi.intel.com>
- <20200511213531.wnywlljiulvndx6s@mobilestation>
- <20200512090804.GR185537@smile.fi.intel.com>
- <20200512114946.x777yb6bhe22ccn5@mobilestation>
- <20200512123840.GY185537@smile.fi.intel.com>
- <20200515060911.GF333670@vkoul-mobl>
- <20200515105137.GK185537@smile.fi.intel.com>
+        id S1726097AbgEOK65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 06:58:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725919AbgEOK65 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 06:58:57 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA22C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:58:55 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id m12so1881489wmc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:58:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nz5T7Ti8J6fFByDN7jOu8omjWEMvQxD/kfVl2PcIzCU=;
+        b=T+jG2gdoHAiFMGlPBUlnH03zcMMorDiITXPXucXkn/GIGjnkQO+jeBVCZ2a5wadM5r
+         moE4Sx4biP9FnWYkKowwtGpFns0jtPDK9cYB0VrB6HSWaAHHSifPvmDwq6pKLyoRtvag
+         MaKowrZyO66h/EL1u/mBdDVvZDI+jlSkCYyd7p+rN7LhxzUUqiBzFik/3rAwwMeCUDHb
+         YCsAzblgWg8QrIGJzlpH1dNC7EklX67Qs4MW8egbDagsgAmbA+bYX2erCDO5+pRXPw3P
+         pXuGoQj5cFaYfmwHWU6Klmm/PsF4wGtEeRSQ9U6AVPZBz9NZ9koDinlhv96IKplT7LhI
+         Omrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nz5T7Ti8J6fFByDN7jOu8omjWEMvQxD/kfVl2PcIzCU=;
+        b=RcdGOXQfk9F04nSatU2LRBP/mKcysYXS1pkru0dmkb2vbnV7fce/mpr1NytdZb6Woj
+         wXWOdMj/j9Cqxp3t7Rr6YXiGLsKVjMynyjBMDF1KxZ82L4Ekh5UB+tP5JqzRn/Jew/UY
+         f2BSwN9K9RY1AHPJJKafsRujLg5/wwv4MTP3O6vJdzLy5yqI5jagKc4qqRFyWclBwH/D
+         5b6lR4/W0cZmmwGPd76Jhiq3srCdFFTL/j+CJHnaHTL+bP74bzOXvi3pD+eUZ5H4kJk8
+         LghFtAr7rxDUL7RzaIlX+G4EgodPAYUVPus1yj+xRbUZVHKt2ymZYqS19pRO47qiMDhj
+         Z35Q==
+X-Gm-Message-State: AOAM5305yvlic0EnZmy1VCXzLrdHSh1VqSRsx05qyNATy8onZP+QiwgJ
+        pQvW6AYnjAtN60TxPhjYRTfpCw==
+X-Google-Smtp-Source: ABdhPJxWMYThFcLucYF0IjewRo2gtUyqiGrfOuZ3Lj0ioN+1L/iHTKXER/IB0GkMggNvnKrZEH6YSw==
+X-Received: by 2002:a05:600c:2dd0:: with SMTP id e16mr3626689wmh.121.1589540333968;
+        Fri, 15 May 2020 03:58:53 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8523:2d03:d11b:f847:8002:7411])
+        by smtp.gmail.com with ESMTPSA id y3sm3005132wrm.64.2020.05.15.03.58.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 May 2020 03:58:52 -0700 (PDT)
+From:   David Brazdil <dbrazdil@google.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, David Brazdil <dbrazdil@google.com>
+Subject: [PATCH v2 00/14] Split off nVHE hyp code
+Date:   Fri, 15 May 2020 11:58:27 +0100
+Message-Id: <20200515105841.73532-1-dbrazdil@google.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515105137.GK185537@smile.fi.intel.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-05-20, 13:51, Andy Shevchenko wrote:
-> On Fri, May 15, 2020 at 11:39:11AM +0530, Vinod Koul wrote:
-> > On 12-05-20, 15:38, Andy Shevchenko wrote:
-> > > On Tue, May 12, 2020 at 02:49:46PM +0300, Serge Semin wrote:
-> > > > On Tue, May 12, 2020 at 12:08:04PM +0300, Andy Shevchenko wrote:
-> > > > > On Tue, May 12, 2020 at 12:35:31AM +0300, Serge Semin wrote:
-> > > > > > On Tue, May 12, 2020 at 12:01:38AM +0300, Andy Shevchenko wrote:
-> > > > > > > On Mon, May 11, 2020 at 11:05:28PM +0300, Serge Semin wrote:
-> > > > > > > > On Fri, May 08, 2020 at 02:12:42PM +0300, Andy Shevchenko wrote:
-> > > > > > > > > On Fri, May 08, 2020 at 01:53:00PM +0300, Serge Semin wrote:
-> 
-> ...
-> 
-> > > I leave it to Rob and Vinod.
-> > > It won't break our case, so, feel free with your approach.
-> > 
-> > I agree the DT is about describing the hardware and looks like value of
-> > 1 is not allowed. If allowed it should be added..
-> 
-> It's allowed at *run time*, it's illegal in *pre-silicon stage* when
-> synthesizing the IP.
+Refactor files in arch/arm64/kvm/hyp to compile all code which runs in EL2
+under nVHE into separate object files from the rest of KVM. This is done in
+preparation for being able to unmap hyp code from EL1 and kernel code/data
+from EL2 but has other benefits too, notably:
+ * safe use of KASAN/UBSAN/GCOV instrumentation on VHE code,
+ * cleaner HVC API,
+ * no need for __hyp_text annotations.
 
-Then it should be added ..
+nVHE-specific code is moved to hyp/nvhe and compiled with custom build rules
+similar to those used by EFI stub. Shared source files are compiled under both
+VHE and nVHE build rules. Where a source file contained both VHE and nVHE code,
+it is split into a shared header file and two C source files. This is done one
+file per commit to make review easier.
+
+All nVHE symbols are prefixed with "__kvm_nvhe_" to avoid collisions with VHE
+variants (also inspired by EFI stub). Since this prefixes unresolved symbols
+too, image-vars.h contains a list of kernel symbol aliases where nVHE code
+still refers to kernel proper. The list grows fairly large as the patch series
+progresses and code is moved around, but at the end contains 17 symbols. These
+remaining dependencies on kernel proper will be further reduced in the future.
+
+No functional changes are intended but code was simplified whenever the
+refactoring made it possible.
+
+Tested by running kvm-unit-tests on QEMU 5.0 with VHE/nVHE and GIC v2/v3.
+
+Dual compilation of code shared by VHE/nVHE increase the size of the kernel.
+Bloat-o-meter vmlinux diff shows an increase of 21 KB on the ELF symbol level.
+Size of Image.gz is up by 10 KB; size of Image is unchanged, presumably due
+to ELF section alignment.
+
+This is based off Fuad Tabba's patch series "KVM: arm64: Tidy up arch Kconfig
+and Makefiles". Available in branch 'topic/el2-obj-v2' of git repo:
+  https://android-kvm.googlesource.com/linux
+
+Changes v1 -> v2:
+ * change nVHE symbol prefix from __hyp_text_ to __kvm_nvhe_
+ * rename __HYPERVISOR__ macro to __KVM_NVHE_HYPERVISOR__
+ * use hcall jump table instead of array of function pointers
+ * drop patch to unify HVC callers
+ * move __smccc_workaround_1_smc to own file
+ * header guards for hyp/*.h
+ * improve helpers for handling VHE/nVHE hyp syms in kernel proper
+ * improve commit messages, cover letter
+
+-David
+
+David Brazdil (14):
+  arm64: kvm: Fix symbol dependency in __hyp_call_panic_nvhe
+  arm64: kvm: Move __smccc_workaround_1_smc to .rodata
+  arm64: kvm: Formalize hypcall ABI
+  arm64: kvm: Add build rules for separate nVHE object files
+  arm64: kvm: Build hyp-entry.S separately for VHE/nVHE
+  arm64: kvm: Split hyp/tlb.c to VHE/nVHE
+  arm64: kvm: Split hyp/switch.c to VHE/nVHE
+  arm64: kvm: Split hyp/debug-sr.c to VHE/nVHE
+  arm64: kvm: Split hyp/sysreg-sr.c to VHE/nVHE
+  arm64: kvm: Split hyp/timer-sr.c to VHE/nVHE
+  arm64: kvm: Compile remaining hyp/ files for both VHE/nVHE
+  arm64: kvm: Add comments around __kvm_nvhe_ symbol aliases
+  arm64: kvm: Remove __hyp_text macro, use build rules instead
+  arm64: kvm: Lift instrumentation restrictions on VHE
+
+ arch/arm64/include/asm/kvm_asm.h             |  29 +-
+ arch/arm64/include/asm/kvm_emulate.h         |   2 +-
+ arch/arm64/include/asm/kvm_host.h            |  12 +-
+ arch/arm64/include/asm/kvm_host_hypercalls.h |  59 ++
+ arch/arm64/include/asm/kvm_hyp.h             |  15 +-
+ arch/arm64/include/asm/kvm_mmu.h             |  16 +-
+ arch/arm64/include/asm/mmu.h                 |   7 -
+ arch/arm64/kernel/cpu_errata.c               |   4 +-
+ arch/arm64/kernel/image-vars.h               |  43 ++
+ arch/arm64/kvm/arm.c                         |   6 +-
+ arch/arm64/kvm/hyp.S                         |  18 +-
+ arch/arm64/kvm/hyp/Makefile                  |  13 +-
+ arch/arm64/kvm/hyp/aarch32.c                 |   6 +-
+ arch/arm64/kvm/hyp/debug-sr.c                | 214 +-----
+ arch/arm64/kvm/hyp/debug-sr.h                | 170 +++++
+ arch/arm64/kvm/hyp/entry.S                   |   1 -
+ arch/arm64/kvm/hyp/fpsimd.S                  |   1 -
+ arch/arm64/kvm/hyp/hyp-entry.S               |  77 +--
+ arch/arm64/kvm/hyp/nvhe/Makefile             |  42 ++
+ arch/arm64/kvm/hyp/nvhe/debug-sr.c           |  77 +++
+ arch/arm64/kvm/hyp/nvhe/switch.c             | 271 ++++++++
+ arch/arm64/kvm/hyp/nvhe/sysreg-sr.c          |  56 ++
+ arch/arm64/kvm/hyp/nvhe/timer-sr.c           |  43 ++
+ arch/arm64/kvm/hyp/nvhe/tlb.c                |  67 ++
+ arch/arm64/kvm/hyp/smccc_wa.S                |  30 +
+ arch/arm64/kvm/hyp/switch.c                  | 688 +------------------
+ arch/arm64/kvm/hyp/switch.h                  | 443 ++++++++++++
+ arch/arm64/kvm/hyp/sysreg-sr.c               | 233 +------
+ arch/arm64/kvm/hyp/sysreg-sr.h               | 216 ++++++
+ arch/arm64/kvm/hyp/timer-sr.c                |  38 +-
+ arch/arm64/kvm/hyp/tlb.c                     | 168 +----
+ arch/arm64/kvm/hyp/tlb.h                     | 131 ++++
+ arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c     |   4 +-
+ arch/arm64/kvm/hyp/vgic-v3-sr.c              | 130 ++--
+ arch/arm64/kvm/va_layout.c                   |   2 +-
+ scripts/kallsyms.c                           |   1 +
+ 36 files changed, 1867 insertions(+), 1466 deletions(-)
+ create mode 100644 arch/arm64/include/asm/kvm_host_hypercalls.h
+ create mode 100644 arch/arm64/kvm/hyp/debug-sr.h
+ create mode 100644 arch/arm64/kvm/hyp/nvhe/Makefile
+ create mode 100644 arch/arm64/kvm/hyp/nvhe/debug-sr.c
+ create mode 100644 arch/arm64/kvm/hyp/nvhe/switch.c
+ create mode 100644 arch/arm64/kvm/hyp/nvhe/sysreg-sr.c
+ create mode 100644 arch/arm64/kvm/hyp/nvhe/timer-sr.c
+ create mode 100644 arch/arm64/kvm/hyp/nvhe/tlb.c
+ create mode 100644 arch/arm64/kvm/hyp/smccc_wa.S
+ create mode 100644 arch/arm64/kvm/hyp/switch.h
+ create mode 100644 arch/arm64/kvm/hyp/sysreg-sr.h
+ create mode 100644 arch/arm64/kvm/hyp/tlb.h
 
 -- 
-~Vinod
+2.26.2
+
