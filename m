@@ -2,112 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6881D5BB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 23:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4301D5B58
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 23:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbgEOVge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 17:36:34 -0400
-Received: from 9.mo69.mail-out.ovh.net ([46.105.56.78]:37851 "EHLO
-        9.mo69.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726228AbgEOVgd (ORCPT
+        id S1727012AbgEOVTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 17:19:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726183AbgEOVTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 17:36:33 -0400
-Received: from player730.ha.ovh.net (unknown [10.110.208.124])
-        by mo69.mail-out.ovh.net (Postfix) with ESMTP id 324A58D1ED
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 23:17:22 +0200 (CEST)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player730.ha.ovh.net (Postfix) with ESMTPSA id 6DB3312444F3A;
-        Fri, 15 May 2020 21:17:17 +0000 (UTC)
-Date:   Fri, 15 May 2020 23:17:01 +0200
-From:   Stephen Kitt <steve@sk2.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: sysctl/kernel: document unaligned controls
-Message-ID: <20200515231701.7dc1e6b2@heffalump.sk2.org>
-In-Reply-To: <20200515203601.401a46a9@heffalump.sk2.org>
-References: <20200515160406.8649-1-steve@sk2.org>
-        <20200515112735.67ee1148@lwn.net>
-        <20200515203601.401a46a9@heffalump.sk2.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 15 May 2020 17:19:07 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A617C061A0C;
+        Fri, 15 May 2020 14:19:06 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id x12so3240292qts.9;
+        Fri, 15 May 2020 14:19:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:from:date:user-agent:in-reply-to:references:mime-version
+         :content-transfer-encoding:subject:to:cc;
+        bh=srt7QXlq4v2mVg2Pcb9Nrsj43p0okN5hPOgneLc3kDU=;
+        b=IC9yJMxMC2Bc6jWNDzMmlDB3+fmkmwHp/GWWHThRou0USteQZjoXvCa34feLiTCRPN
+         dNOQYkuPLcaKLQ2We2ulkNlRwkMMmhx806CbAZ9kqYqCxubYJcM2Sv0AgQ2WuhvN1vry
+         bj/pQzLlWwep0QtWwhaLgCxiu1pg+1P3BXOMJ7s5hNFL4H7WSgkS8heVf55vmEXwNLLR
+         9D7vXoMh2Vl7M4/dAE97wulo0+0v6qrh6Xck/V53alDcLm77Tf3Tc9KkK4VgLQxSPMQb
+         +6fLLcND3PXxIwflu/ffcUfn5qBNK1WA8oHUpGIfjbs1ZHbMHnivwVKvFE1cxJYo0uQC
+         /lfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:from:date:user-agent:in-reply-to
+         :references:mime-version:content-transfer-encoding:subject:to:cc;
+        bh=srt7QXlq4v2mVg2Pcb9Nrsj43p0okN5hPOgneLc3kDU=;
+        b=ZIsMR9Ifqi3KOg+DhznC6GbHNGQjNtf7DHU0zfiFm3u1KKp4kJFsZvdOKqIH+MYYyu
+         B4adPQT5y2+f3+dkHYq4qoYprI2exzH5CrLw+LjJH38TE2YPbU6i+UOSVa8ppmyjtelD
+         t2348rMZbhMVmTLjkJvAX9x6q9weJTQ3A8yzTqsUZlxu4OmLPvxyRvl/T1nkDChzDxhS
+         zbrgjB0+ABEoBkx1bOEqo8e+tU/NSUPkIplvCzhYdI2MK3egVGCDWCdyQKRtfXUXU0Mv
+         Uo7joT2BZMD49WQ65w3LqmAa7U+hbnIXELkCXOFLNGaxqyxX3OSjaPSubUmfr9EsiuuN
+         K/rg==
+X-Gm-Message-State: AOAM531WHtYjfVA4b2eEa67DsivK3UaQ/rb2F12SnEIwAck7XnCqqm1+
+        ZPIaR6AnwtinjqGSaUONSlU=
+X-Google-Smtp-Source: ABdhPJyzrzazSLyxQqTYcTXRILBssVzRq+eZQpILUE2lrhccijlaN/BQkScN0/xmxqKfyyqk5ZtR3A==
+X-Received: by 2002:ac8:6b8a:: with SMTP id z10mr5471891qts.373.1589577545145;
+        Fri, 15 May 2020 14:19:05 -0700 (PDT)
+Received: from [192.168.86.185] ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id d7sm2420093qkk.26.2020.05.15.14.19.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 15 May 2020 14:19:04 -0700 (PDT)
+Message-ID: <5ebf0748.1c69fb81.f8310.eef3@mx.google.com>
+From:   arnaldo.melo@gmail.com
+Date:   Fri, 15 May 2020 18:18:45 -0300
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAEf4BzZ5=_yu1kL77n+Oc0K9oaDi4J=c+7CV8D0AXs2hBxhNbw@mail.gmail.com>
+References: <20200515165007.217120-1-irogers@google.com> <20200515170036.GA10230@kernel.org> <CAEf4BzZ5=_yu1kL77n+Oc0K9oaDi4J=c+7CV8D0AXs2hBxhNbw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/9ft7adtb_zW.icq2dphbXhV"; protocol="application/pgp-signature"
-X-Ovh-Tracer-Id: 495958913122520453
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrleekgdduheejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtsehgtderreertdejnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeevledvueefvdeivefftdeugeekveethefftdffteelheejkeejjeduffeiudetkeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeeftddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 0/7] Copy hashmap to tools/perf/util, use in perf expr
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9ft7adtb_zW.icq2dphbXhV
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+<bpf@vger.kernel.org>,Stephane Eranian <eranian@google.com>
+From: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Message-ID: <79BCBAF7-BF5F-4556-A923-56E9D82FB570@gmail.com>
 
-On Fri, 15 May 2020 20:36:01 +0200, Stephen Kitt <steve@sk2.org> wrote:
 
-> On Fri, 15 May 2020 11:27:35 -0600, Jonathan Corbet <corbet@lwn.net> wrot=
-e:
-> > On Fri, 15 May 2020 18:04:06 +0200
-> > Stephen Kitt <steve@sk2.org> wrote:
-> >  =20
-> > > diff --git a/Documentation/index.rst b/Documentation/index.rst
-> > > index 9599c0f3eea8..17c38d899572 100644
-> > > --- a/Documentation/index.rst
-> > > +++ b/Documentation/index.rst
-> > > @@ -143,6 +143,7 @@ Architecture-agnostic documentation
-> > >     :maxdepth: 2
-> > > =20
-> > >     asm-annotations
-> > > +   unaligned-memory-access
-> > > =20
-> > >  Architecture-specific documentation
-> > >  -----------------------------------
-> > > diff --git a/Documentation/unaligned-memory-access.txt
-> > > b/Documentation/unaligned-memory-access.rst similarity index 100%
-> > > rename from Documentation/unaligned-memory-access.txt
-> > > rename to Documentation/unaligned-memory-access.rst   =20
-> >=20
-> > Adding this to the toctree is great, but I'd just as soon not leave it =
-in
-> > the top-level directory while we do that.  Since you're renaming it
-> > anyway, can you move it into process/?  It's not a perfect fit, but tha=
-t's
-> > where that type of material has been going so far. =20
->=20
-> I can indeed. Should it still be listed in the main toctree, or in the
-> process toctree?
 
-Never mind, I found the answer, =E2=80=9Csome overall technical guides that=
- have been
-put here for now for lack of a better place=E2=80=9D ;-).
+On May 15, 2020 4:42:46 PM GMT-03:00, Andrii Nakryiko <andrii=2Enakryiko@g=
+mail=2Ecom> wrote:
+>On Fri, May 15, 2020 at 10:01 AM Arnaldo Carvalho de Melo
+><arnaldo=2Emelo@gmail=2Ecom> wrote:
+>>
+>> Em Fri, May 15, 2020 at 09:50:00AM -0700, Ian Rogers escreveu:
+>> > Perf's expr code currently builds an array of strings then removes
+>> > duplicates=2E The array is larger than necessary and has recently
+>been
+>> > increased in size=2E When this was done it was commented that a
+>hashmap
+>> > would be preferable=2E
+>> >
+>> > libbpf has a hashmap but libbpf isn't currently required to build
+>> > perf=2E To satisfy various concerns this change copies libbpf's
+>hashmap
+>> > into tools/perf/util, it then adds a check in perf that the two are
+>in
+>> > sync=2E
+>> >
+>> > Andrii's patch to hashmap from bpf-next is brought into this set to
+>> > fix issues with hashmap__clear=2E
+>> >
+>> > Two minor changes to libbpf's hashmap are made that remove an
+>unused
+>> > dependency and fix a compiler warning=2E
+>>
+>> Andrii/Alexei/Daniel, what do you think about me merging these fixes
+>in my
+>> perf-tools-next branch?
+>
+>I'm ok with the idea, but it's up to maintainers to coordinate this :)
 
-Regards,
+Good to know, do I'll take all patches except the ones touching libppf, wi=
+ll just make sure the copy is done with the patches applied=2E
 
-Stephen
+At some point they'll land in libbpf and the warning from check_headers=2E=
+sh will be resolved=2E
 
---Sig_/9ft7adtb_zW.icq2dphbXhV
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Thanks,
 
------BEGIN PGP SIGNATURE-----
+- Arnaldo
 
-iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl6/Bs0ACgkQgNMC9Yht
-g5ywhw/7Bu2YpW1FvW89RSQHRuV7ZdECufLxUkKFP7tUo+q0ocnt9pY4qiQfJCuu
-nZCJUtCjNX9eietABq9szmiOg5wXuJCDSgcJ/WGEcZ+FSqXsMIod8/rnnycOcdAr
-7ofwrWGUNkN51sDYowtNK2+/kaRj1xDIwKmciR1qI3P6EX2owLf7G6mrzm7V3QBi
-lfrEZKOjzfurMGosMDH27oomJKSZXzrGiR8ozJcX23jiAIw2R6Vt+wlBG6oyeM6x
-NKHibprJFNU6eXlQRHaxjo1Q/eSYv2y4KmkISvy6J26cJuW3RgxJWbVAUq7V4dDE
-D1t7f09GWYPBv5iZewZvJAUkE+UhwwPUvWZ0OvWT/3rg13ddsaI4dB9ywQdN0Iy4
-hs9izvpZlZEj/jUxumm99F3Y2gOac0xwVUSg45qwuy/RvK81ZNTL9f84UA2T37pp
-fN2YY6KXQHsKwda4WqeDS7GstgmU1GXWlE2iR1d/MRwo0TsrP4FuiV/g/HGmUeed
-Pg0jftUKnkjdZ52Ch2TNmSYhyBqDib84y/nhuDvoUyG5TJxIE8bjWF4xg7iiXFhq
-6PAbgg5pYuhgqWaJECiHd+GGYf7SvnyYP8LswYoYdhXdn3W5Rh+4q0iaFiNA3P+1
-mFDzvfgGShFzjK2Sntg6+a0l9c2Sf6QNBi4krTRooB44gM50JZw=
-=7I5b
------END PGP SIGNATURE-----
-
---Sig_/9ft7adtb_zW.icq2dphbXhV--
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
