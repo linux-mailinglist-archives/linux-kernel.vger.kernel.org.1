@@ -2,79 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA201D52C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A7C1D52BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726249AbgEOPAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 11:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726174AbgEOPAf (ORCPT
+        id S1726385AbgEOO6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 10:58:53 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:26615 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726263AbgEOO6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 11:00:35 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472FFC061A0C;
-        Fri, 15 May 2020 08:00:35 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: evelikov)
-        with ESMTPSA id A7C892A2DB7
-Date:   Fri, 15 May 2020 15:57:55 +0100
-From:   Emil Velikov <emil.velikov@collabora.com>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com,
-        Jean-Francois Dagenais <jeff.dagenais@gmail.com>
-Subject: Re: [PATCHv1 15/19] power: supply: sbs-battery: add ability to
- disable charger broadcasts
-Message-ID: <20200515145755.GD2836808@arch-x1c3>
-References: <20200513185615.508236-1-sebastian.reichel@collabora.com>
- <20200513185615.508236-16-sebastian.reichel@collabora.com>
+        Fri, 15 May 2020 10:58:51 -0400
+X-Originating-IP: 90.65.91.255
+Received: from localhost (lfbn-lyo-1-1912-bdcst.w90-65.abo.wanadoo.fr [90.65.91.255])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id BAC78240089;
+        Fri, 15 May 2020 14:58:49 +0000 (UTC)
+Date:   Fri, 15 May 2020 16:58:49 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        nicolas.ferre@microchip.com, ludovic.desroches@microchip.com
+Subject: Re: [PATCH] ARM: dts: at91: Configure I2C SCL gpio as open drain
+Message-ID: <20200515145849.GV34497@piout.net>
+References: <20200515140001.287932-1-codrin.ciubotariu@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200513185615.508236-16-sebastian.reichel@collabora.com>
+In-Reply-To: <20200515140001.287932-1-codrin.ciubotariu@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/05/13, Sebastian Reichel wrote:
-> From: Jean-Francois Dagenais <jeff.dagenais@gmail.com>
+On 15/05/2020 17:00:01+0300, Codrin Ciubotariu wrote:
+> The SCL gpio pin used by I2C bus for recovery needs to be configured as
+> open drain.
 > 
-> In certain designs, it is possible to add a battery on a populated i2c
-> bus without an sbs compliant charger. In that case, the battery will
-> un-necessarily and sometimes un-desirably master the bus trying to write
-> info in the charger.
-
-Nit: s/un-/un/
-
-> 
-> It is observed in many occasion that these battery "broadcasts" are even
-> corrupting other ongoing master to slave communication. I.e. the
-> multi-master support in the battery is inadequate.
-> 
-> Thankfully, the CHARGER_MODE bit allows designers to disable that SBS
-> battery behaviour.
-> 
-> This needs to be done once when the battery is first seen on the bus.
-> 
-> Signed-off-by: Jean-Francois Dagenais <jeff.dagenais@gmail.com>
-> [rebased code]
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Fixes: 455fec938bbb ("ARM: dts: at91: sama5d2: add i2c gpio pinctrl")
+> Fixes: a4bd8da893a3 ("ARM: dts: at91: sama5d3: add i2c gpio pinctrl")
+> Fixes: 8fb82f050cf6 ("ARM: dts: at91: sama5d4: add i2c gpio pinctrl")
+> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 > ---
+>  arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts   | 6 +++---
+>  arch/arm/boot/dts/at91-sama5d2_xplained.dts | 6 +++---
+>  arch/arm/boot/dts/sama5d3.dtsi              | 6 +++---
+>  arch/arm/boot/dts/sama5d4.dtsi              | 6 +++---
+>  4 files changed, 12 insertions(+), 12 deletions(-)
+> 
 
-> @@ -1017,6 +1043,9 @@ static int sbs_probe(struct i2c_client *client,
->  	}
->  	chip->i2c_retry_count = chip->i2c_retry_count + 1;
->  
-> +	chip->charger_broadcasts = !of_property_read_bool(client->dev.of_node,
-> +					"sbs,disable-charger-broadcasts");
-> +
-This patch adds the of_property_read, only for it to be replaced in the next
-patch. Consider flipping the patch order?
+Applied, thanks. There was a small conflict in the sama5d2 board dts,
+please check.
 
--Emil
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
