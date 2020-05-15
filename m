@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BCA1D584F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 19:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B730D1D5853
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 19:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbgEORwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 13:52:20 -0400
-Received: from ms.lwn.net ([45.79.88.28]:53540 "EHLO ms.lwn.net"
+        id S1726283AbgEORxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 13:53:23 -0400
+Received: from ms.lwn.net ([45.79.88.28]:53558 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726183AbgEORwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 13:52:20 -0400
+        id S1726144AbgEORxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 13:53:23 -0400
 Received: from lwn.net (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id CD95A72D;
-        Fri, 15 May 2020 17:52:19 +0000 (UTC)
-Date:   Fri, 15 May 2020 11:52:18 -0600
+        by ms.lwn.net (Postfix) with ESMTPSA id 0071E736;
+        Fri, 15 May 2020 17:53:22 +0000 (UTC)
+Date:   Fri, 15 May 2020 11:53:21 -0600
 From:   Jonathan Corbet <corbet@lwn.net>
 To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         linux-kernel@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Simon Horman <horms+renesas@verge.net.au>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mike Rapoport <rppt@linux.ibm.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
         Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>
-Subject: Re: [PATCH 01/14] docs: move DMA kAPI to Documentation/core-api
-Message-ID: <20200515115218.4d805685@lwn.net>
-In-Reply-To: <a1517185418cb9d987f566ef85a5dd5c7c99f34e.1588345503.git.mchehab+huawei@kernel.org>
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH 02/14] docs: add bus-virt-phys-mapping.txt to core-api
+Message-ID: <20200515115321.6e00ba57@lwn.net>
+In-Reply-To: <ccd32aa5231b0e235a555fdecc4c0d274e5a6161.1588345503.git.mchehab+huawei@kernel.org>
 References: <cover.1588345503.git.mchehab+huawei@kernel.org>
-        <a1517185418cb9d987f566ef85a5dd5c7c99f34e.1588345503.git.mchehab+huawei@kernel.org>
+        <ccd32aa5231b0e235a555fdecc4c0d274e5a6161.1588345503.git.mchehab+huawei@kernel.org>
 Organization: LWN.net
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -41,25 +38,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  1 May 2020 17:37:45 +0200
+On Fri,  1 May 2020 17:37:46 +0200
 Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-> Move those files to the core-api, where they belong, renaming
-> them to ReST and adding to the core API index file.
+> This describes an old interface used prior the new DMA-API
+> interfaces. Add it to the core-api guide, just after the
+> DMA stuff.
 > 
 > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  .../{DMA-API-HOWTO.txt => core-api/dma-api-howto.rst}         | 0
->  Documentation/{DMA-API.txt => core-api/dma-api.rst}           | 0
->  .../{DMA-attributes.txt => core-api/dma-attributes.rst}       | 0
->  Documentation/{DMA-ISA-LPC.txt => core-api/dma-isa-lpc.rst}   | 0
->  Documentation/core-api/index.rst                              | 4 ++++
->  5 files changed, 4 insertions(+)
->  rename Documentation/{DMA-API-HOWTO.txt => core-api/dma-api-howto.rst} (100%)
->  rename Documentation/{DMA-API.txt => core-api/dma-api.rst} (100%)
->  rename Documentation/{DMA-attributes.txt => core-api/dma-attributes.rst} (100%)
->  rename Documentation/{DMA-ISA-LPC.txt => core-api/dma-isa-lpc.rst} (100%)
+>  .../bus-virt-phys-mapping.rst}                                   | 0
+>  Documentation/core-api/index.rst                                 | 1 +
+>  2 files changed, 1 insertion(+)
+>  rename Documentation/{bus-virt-phys-mapping.txt => core-api/bus-virt-phys-mapping.rst} (100%)
 
-This one seems obvious, applied.
+For this one, I think we should maybe just delete the file.  It contains a
+warning from *20 years ago* saying not to use it, and talks about
+functions like isa_readl() that haven't existed i the kernel for some
+time.  Is there any reason to keep dragging it around?
 
 jon
