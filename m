@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B690B1D505A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 339CB1D5065
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbgEOOZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 10:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33782 "EHLO
+        id S1726213AbgEOO10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 10:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726140AbgEOOZj (ORCPT
+        by vger.kernel.org with ESMTP id S1726144AbgEOO10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 10:25:39 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A478C061A0C;
-        Fri, 15 May 2020 07:25:39 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id g11so952659plp.1;
-        Fri, 15 May 2020 07:25:39 -0700 (PDT)
+        Fri, 15 May 2020 10:27:26 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA5FC061A0C;
+        Fri, 15 May 2020 07:27:26 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id a4so1037397pgc.0;
+        Fri, 15 May 2020 07:27:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=49t3MoXqM17BH4PLPJ14eJW4i3hdwXhMbbVc4qSxdOU=;
-        b=Fz2bWsiqdptvWYwhZebHUhc7rMuBMDCX4uTwcs5ceuql0+cViaytGDFp/j9mBgjdWW
-         lRJNX/naOqb3ZSYr1mWFWT1wdMxJ1lWqpcAbqnSYBcvtRmGFn6y8lcWtwVEkiAXYdyvT
-         eGUh577Y3lREjPqwr3l7usDOHyyeGQcktBjQTwlXiHUrLG4F4cy5pMupnxw9sGvFjrWF
-         8MO8KYjxjVcKlnpXq64N9CTY4TGlRdnHlAzQ9V2z87BDaWh4Q1W4/9Pl1bRZifXrVcab
-         YPLygDao+UrsS7bgmi26QPlbVm7Ux5yHOo5vG4WuKwwjsoz/Tt6Ll7sPAAHd1LMnoIBb
-         mD0Q==
+        bh=53n0NXxNogGd/faDRXKVA/bWobWfXTC9lWKhBDbKv8I=;
+        b=mehKCxEZtPNkQpDx0oskocLvG7NqA4fkwi1nzfp/DL6XUhZeUGQyhh8OKJqroIdvcc
+         f0Z02rs/kq5fx8LwLA/4HMHsnIWyjjYfp3vMuZrrcjiLZUE6IMugbRUxlLBHlsL7Od64
+         8fqJQnGVKGzQrYU8DXxxzIRJEJ+Q+3uSdg8YOyBL/K9fxgyp26zcPuk/Etkkxnf4PGg2
+         rX36wn8V/tZty5sO4IdIra7L5yyDQ6LTzlr7zjakz/+POV/t0Vo4GcP607WF2ftVXS8L
+         GGAGDKBDF+vsh8P+k9/O9E4Z1xrAa9/X4FylchFHv5pGteJdUJCMl4MvWvaZTM+3CeIB
+         y3MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=49t3MoXqM17BH4PLPJ14eJW4i3hdwXhMbbVc4qSxdOU=;
-        b=NvXxUw320wG+UecGtB88k2v40pOuRTuSUhxRwdLNy31PNdOqfvtvWYrOwYtra8ig9y
-         dlh/CO8q2ntnBNzYjTGRSYLQL9+3iOcynbaOrG8BsocnvmOslxZGSi0kJ1hIfFg64+qi
-         cfsjkiFFoBckG/XN9AYux4yvopKf++//oxkr5BzrcHjCEOBErdXBV3w2q6B5kYXFnkXT
-         VIlXVnAl0oEQccnuQW5gy963gDjNtKHB4w4lWYAKFaW6ELy4U0QCPPKXQ2sAnspmAIkY
-         MgKVqfJQqblfnaqKI01c8q8iLgbq7eiQsV1fhRJ/0sYV9zxmBTxnKx8R7RWwvhdroGnI
-         BsUQ==
-X-Gm-Message-State: AOAM532moFL543r0MchCE3rUYngQS1l56Bul42zrDCk16pKkA/jpjEbz
-        RnS9Xv5tvx84ZOcBOOtf1dRAJXjLGT6UbYSQAd8ELCzC
-X-Google-Smtp-Source: ABdhPJx9WsseUUaDU5aQqbAWqexIuw50ii00Xe8pgIuJOUKQiPtL7+0zN6dlHyzFIKqHVICZ6VuV7lnKAhfkRv72a4M=
-X-Received: by 2002:a17:90b:3717:: with SMTP id mg23mr3921780pjb.129.1589552738686;
- Fri, 15 May 2020 07:25:38 -0700 (PDT)
+        bh=53n0NXxNogGd/faDRXKVA/bWobWfXTC9lWKhBDbKv8I=;
+        b=JqpOLdgrZevS8EPikxczfgrl0auX36DRJUN2C8XX2HFAcU9fCJqU2CnwOa0k3dldAC
+         dmD/ux+vq2pOwYspmUrlSiFgAcmimLC0VeUmBqQwcuN8NQZRhX7YJAbe4Z5whMmaFukR
+         6Xlv8ivYNsnBWcjnYNLBx8ovIwu4tVSx60dWoufi15rpAbR4iibYGlTx8V/FvTEYtoFF
+         Wau6B4hNyL8f+TXfGjbnbzLCzVBR2qLwGS7VCtlXM2pylhZN5HLkZTy2++Yt+EwmB8vs
+         +N7t8+gE4FMOlahM+atJ2bkIc7ybofpsJDjYwAQAi3YIqJWN3N0gDN9z34CE7JgKpzUY
+         WTpw==
+X-Gm-Message-State: AOAM532nIXvpLzr3b0PSZDRWtygOayv2LpJdwvmm09atRrjkMPVdgsMn
+        84KRtR62GaO0ja2EGJiLn4UQPiw3EdmnWASUGvw=
+X-Google-Smtp-Source: ABdhPJzS92KlQk6vGXcM8Vw9uXpx1E9E3au/e/+UxJQc18uHeaoAkWxn4K/nuitAUBEbmThwq+nxIpkDbhjQiOMUJLo=
+X-Received: by 2002:a62:f908:: with SMTP id o8mr4096022pfh.170.1589552845598;
+ Fri, 15 May 2020 07:27:25 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200515105537.4876-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <202005152142.AWvx4xc5%lkp@intel.com>
-In-Reply-To: <202005152142.AWvx4xc5%lkp@intel.com>
+ <202005152142.AWvx4xc5%lkp@intel.com> <CAHp75Ven9q-6dDYtP_uXigeS_r2uvpUZVR5Mh0RdEd36MbTG+Q@mail.gmail.com>
+In-Reply-To: <CAHp75Ven9q-6dDYtP_uXigeS_r2uvpUZVR5Mh0RdEd36MbTG+Q@mail.gmail.com>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 15 May 2020 17:25:32 +0300
-Message-ID: <CAHp75Ven9q-6dDYtP_uXigeS_r2uvpUZVR5Mh0RdEd36MbTG+Q@mail.gmail.com>
+Date:   Fri, 15 May 2020 17:27:19 +0300
+Message-ID: <CAHp75VdUWaEAuStEQZD4yOWcxBT0EkxiX90u1_9vppFb5JniGQ@mail.gmail.com>
 Subject: Re: [PATCH v7 2/2] mtd: rawnand: Add NAND controller support on Intel
  LGM SoC
 To:     kbuild test robot <lkp@intel.com>
@@ -73,33 +73,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 4:48 PM kbuild test robot <lkp@intel.com> wrote:
+On Fri, May 15, 2020 at 5:25 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Fri, May 15, 2020 at 4:48 PM kbuild test robot <lkp@intel.com> wrote:
 
-> sparse warnings: (new ones prefixed by >>)
+> >    440                  reg = cpu_to_be32(*pdata++);
+> >  > 441                  writel(reg, ebu_host->hsnand + HSNAND_CMSG_0);
+> >    442
+> >    443                  reg = cpu_to_be32(*pdata);
+> >    444                  writel(reg, ebu_host->hsnand + HSNAND_CMSG_1);
 >
-> >> drivers/mtd/nand/raw/intel-nand-controller.c:441:24: sparse: sparse: incorrect type in argument 1 (different base types) @@    expected unsigned int val @@    got restricted __be32 [assignedunsigned int val @@
-> >> drivers/mtd/nand/raw/intel-nand-controller.c:441:24: sparse:    expected unsigned int val
-> >> drivers/mtd/nand/raw/intel-nand-controller.c:441:24: sparse:    got restricted __be32 [assigned] [usertype] reg
->    drivers/mtd/nand/raw/intel-nand-controller.c:444:24: sparse: sparse: incorrect type in argument 1 (different base types) @@    expected unsigned int val @@    got restricted __be32 [assignedunsigned int val @@
->    drivers/mtd/nand/raw/intel-nand-controller.c:444:24: sparse:    expected unsigned int val
->    drivers/mtd/nand/raw/intel-nand-controller.c:444:24: sparse:    got restricted __be32 [assigned] [usertype] reg
+> On BE:
+> cpu_to_be32 -> no-op
+> writel() -> converts reg to LE
 >
->    440                  reg = cpu_to_be32(*pdata++);
->  > 441                  writel(reg, ebu_host->hsnand + HSNAND_CMSG_0);
->    442
->    443                  reg = cpu_to_be32(*pdata);
->    444                  writel(reg, ebu_host->hsnand + HSNAND_CMSG_1);
+> On LE:
+> cpu_to_be32 -> converts to BE
+> writel() -> no-op (in terms of conversion)
+>
+> Seems to me that the proper API (if above is intended) should be swab32().
+> But something tells me that above is broken (or my understanding is wrong).
 
-On BE:
-cpu_to_be32 -> no-op
-writel() -> converts reg to LE
-
-On LE:
-cpu_to_be32 -> converts to BE
-writel() -> no-op (in terms of conversion)
-
-Seems to me that the proper API (if above is intended) should be swab32().
-But something tells me that above is broken (or my understanding is wrong).
+And perhaps it should use lo_hi_writeq() or something like that.
 
 -- 
 With Best Regards,
