@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55FF1D4E2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 14:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEDA1D4E2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 14:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbgEOMyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 08:54:41 -0400
-Received: from [66.170.99.2] ([66.170.99.2]:42628 "EHLO
+        id S1726212AbgEOMyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 08:54:43 -0400
+Received: from [66.170.99.2] ([66.170.99.2]:34154 "EHLO
         sid-build-box.eng.vmware.com" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726168AbgEOMyk (ORCPT
+        by vger.kernel.org with ESMTP id S1726245AbgEOMyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 08:54:40 -0400
+        Fri, 15 May 2020 08:54:41 -0400
 Received: by sid-build-box.eng.vmware.com (Postfix, from userid 1000)
-        id 46702BA20C7; Fri, 15 May 2020 18:24:39 +0530 (IST)
+        id 69622BA20C9; Fri, 15 May 2020 18:24:40 +0530 (IST)
 From:   Siddharth Chandrasekaran <csiddharth@vmware.com>
 To:     gregkh@linuxfoundation.org
 Cc:     srostedt@vmware.com, linux-kernel@vger.kernel.org,
         stable@kernel.org, srivatsab@vmware.com, csiddharth@vmware.com,
         siddharth@embedjournal.com, dchinner@redhat.com,
         darrick.wong@oracle.com, srivatsa@csail.mit.edu
-Subject: [PATCH 4.4 v2] xfs: validate cached inodes are free when allocated
-Date:   Fri, 15 May 2020 18:24:12 +0530
-Message-Id: <76dad64209a2a477a757d6b235b461d78dadea43.1589544531.git.csiddharth@vmware.com>
+Subject: [PATCH 4.9 v2] xfs: validate cached inodes are free when allocated
+Date:   Fri, 15 May 2020 18:24:13 +0530
+Message-Id: <3f8268eea9c4a430273b2202d711f2b1bf0c321b.1589544531.git.csiddharth@vmware.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1589544531.git.csiddharth@vmware.com>
 References: <cover.1589544531.git.csiddharth@vmware.com>
@@ -84,10 +84,10 @@ Signed-off-by: Siddharth Chandrasekaran <csiddharth@vmware.com>
  1 file changed, 50 insertions(+), 7 deletions(-)
 
 diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-index adbc1f5..7efeefb 100644
+index 86a4911..d668d30 100644
 --- a/fs/xfs/xfs_icache.c
 +++ b/fs/xfs/xfs_icache.c
-@@ -135,6 +135,46 @@ xfs_inode_free(
+@@ -308,6 +308,46 @@ xfs_reinit_inode(
  }
  
  /*
@@ -134,7 +134,7 @@ index adbc1f5..7efeefb 100644
   * Check the validity of the inode we just found it the cache
   */
  static int
-@@ -183,12 +223,12 @@ xfs_iget_cache_hit(
+@@ -356,12 +396,12 @@ xfs_iget_cache_hit(
  	}
  
  	/*
@@ -142,7 +142,7 @@ index adbc1f5..7efeefb 100644
 +	 * Check the inode free state is valid. This also detects lookup
 +	 * racing with unlinks.
  	 */
--	if (ip->i_d.di_mode == 0 && !(flags & XFS_IGET_CREATE)) {
+-	if (VFS_I(ip)->i_mode == 0 && !(flags & XFS_IGET_CREATE)) {
 -		error = -ENOENT;
 +	error = xfs_iget_check_free_state(ip, flags);
 +	if (error)
@@ -151,11 +151,11 @@ index adbc1f5..7efeefb 100644
  
  	/*
  	 * If IRECLAIMABLE is set, we've torn down the VFS inode already.
-@@ -298,10 +338,13 @@ xfs_iget_cache_miss(
+@@ -471,10 +511,13 @@ xfs_iget_cache_miss(
  
  	trace_xfs_iget_miss(ip);
  
--	if ((ip->i_d.di_mode == 0) && !(flags & XFS_IGET_CREATE)) {
+-	if ((VFS_I(ip)->i_mode == 0) && !(flags & XFS_IGET_CREATE)) {
 -		error = -ENOENT;
 +	/*
 +	 * Check the inode free state is valid. This also detects lookup
