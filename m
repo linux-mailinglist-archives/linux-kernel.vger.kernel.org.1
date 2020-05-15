@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8F71D4FE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087C01D4FF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726233AbgEOOEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 10:04:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55950 "EHLO mail.kernel.org"
+        id S1726250AbgEOOFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 10:05:53 -0400
+Received: from mga05.intel.com ([192.55.52.43]:23421 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726168AbgEOOEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 10:04:42 -0400
-Received: from localhost (lfbn-ncy-1-985-231.w90-101.abo.wanadoo.fr [90.101.63.231])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9DA220671;
-        Fri, 15 May 2020 14:04:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589551482;
-        bh=EEX+c10pvx1tTgNdD7lS1Z94pCP3SSWPPV1YZ5LkrVU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dD0OXKZZGwAE3FiOGLamkc51twhUdCT/JYhFF+nX+NQmvUFlaDQ7i+PMfYCP58zxO
-         3igUJomFLiAXxPeq5nNpM09MdQV+033lu92WfCqWFcj57fM49XJsw6a1G+gdkGHkB4
-         zAmeRR0DrAJGlT2pQF4ZIk1gwllANpAYQfZiRh8s=
-Date:   Fri, 15 May 2020 16:04:39 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, paulmck <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>, rostedt <rostedt@goodmis.org>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [patch V4 part 1 27/36] arm64: Prepare arch_nmi_enter() for
- recursion
-Message-ID: <20200515140438.GA5974@lenoir>
-References: <20200505131602.633487962@linutronix.de>
- <20200505134100.771491291@linutronix.de>
- <427895535.20271.1589412514423.JavaMail.zimbra@efficios.com>
+        id S1726188AbgEOOFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 10:05:52 -0400
+IronPort-SDR: 1n8Pzfki/4TgoqjTLfpMyMKiYgMdKVuG5fzt33o588IB3vEsraX/tkJWC0YRQzo+MID7a3glde
+ cNU47MfO3C2Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 07:05:51 -0700
+IronPort-SDR: j1Q0bRRVSaWAmZFGS8vch5frswSS1RBL2pvNRiS+svM1m7u39vjRO0yCTw2lu0wUihPV6RvRj2
+ fU0qJiS54CBw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
+   d="scan'208";a="341988727"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001.jf.intel.com with ESMTP; 15 May 2020 07:05:45 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jZayB-006soL-RN; Fri, 15 May 2020 17:05:47 +0300
+Date:   Fri, 15 May 2020 17:05:47 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Long Cheng <long.cheng@mediatek.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] serial: 8250_dw: Simplify the ref clock rate
+ setting procedure
+Message-ID: <20200515140547.GE1634618@smile.fi.intel.com>
+References: <20200323024611.16039-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506233136.11842-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506233136.11842-4-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <427895535.20271.1589412514423.JavaMail.zimbra@efficios.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200506233136.11842-4-Sergey.Semin@baikalelectronics.ru>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 07:28:34PM -0400, Mathieu Desnoyers wrote:
-> ----- On May 5, 2020, at 9:16 AM, Thomas Gleixner tglx@linutronix.de wrote:
-> 
-> > +#define arch_nmi_enter()						\
-> [...]							\
-> > +	___hcr = read_sysreg(hcr_el2);					\
-> > +	if (!(___hcr & HCR_TGE)) {					\
-> > +		write_sysreg(___hcr | HCR_TGE, hcr_el2);		\
-> > +		isb();							\
-> 
-> Why is there an isb() above ^ ....
-> 
-> > +	}								\
-> > +	/*								\
-> [...]
-> > -#define arch_nmi_exit()								\
-> [...]
-> > +	/*								\
-> > +	 * Make sure ___ctx->cnt release is visible before we		\
-> > +	 * restore the sysreg. Otherwise a new NMI occurring		\
-> > +	 * right after write_sysreg() can be fooled and think		\
-> > +	 * we secured things for it.					\
-> > +	 */								\
-> > +	barrier();							\
-> > +	if (!___ctx->cnt && !(___hcr & HCR_TGE))			\
-> > +		write_sysreg(___hcr, hcr_el2);				\
-> 
-> And not here ?
+On Thu, May 07, 2020 at 02:31:34AM +0300, Serge Semin wrote:
+> Really instead of twice checking the clk_round_rate() return value
+> we could do it once, and if it isn't error the clock rate can be changed.
+> By doing so we decrease a number of ret-value tests and remove a weird
+> goto-based construction implemented in the dw8250_set_termios() method.
 
-I have to defer to Will on this detail...
+>  	rate = clk_round_rate(d->clk, baud * 16);
+> -	if (rate < 0)
+> -		ret = rate;
+
+> -	else if (rate == 0)
+> -		ret = -ENOENT;
+
+This case now handled differently.
+I don't think it's good idea to change semantics.
+
+So, I don't see how this, after leaving the rate==0 case, would be better than
+original one.
+
+> -	else
+> +	if (rate > 0) {
+>  		ret = clk_set_rate(d->clk, rate);
+> +		if (!ret)
+> +			p->uartclk = rate;
+> +	}
+>  	clk_prepare_enable(d->clk);
+>  
+> -	if (ret)
+> -		goto out;
+> -
+> -	p->uartclk = rate;
+> -
+> -out:
+>  	p->status &= ~UPSTAT_AUTOCTS;
+>  	if (termios->c_cflag & CRTSCTS)
+>  		p->status |= UPSTAT_AUTOCTS;
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
