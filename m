@@ -2,93 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC771D4A2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079F71D4A3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbgEOJ6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 05:58:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:52370 "EHLO foss.arm.com"
+        id S1728190AbgEOJ7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 05:59:20 -0400
+Received: from mx.socionext.com ([202.248.49.38]:29835 "EHLO mx.socionext.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728032AbgEOJ6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 05:58:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F5B92F;
-        Fri, 15 May 2020 02:58:14 -0700 (PDT)
-Received: from bogus (unknown [10.37.12.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AAD183F71E;
-        Fri, 15 May 2020 02:58:12 -0700 (PDT)
-Date:   Fri, 15 May 2020 10:58:02 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Lukasz Luba <lukasz.luba@arm.com>, rui.zhang@intel.com,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        id S1728032AbgEOJ7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 05:59:19 -0400
+Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
+  by mx.socionext.com with ESMTP; 15 May 2020 18:59:17 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id 9C924180B60;
+        Fri, 15 May 2020 18:59:17 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 15 May 2020 18:59:17 +0900
+Received: from plum.e01.socionext.com (unknown [10.213.132.32])
+        by kinkan.css.socionext.com (Postfix) with ESMTP id D1E971A12D0;
+        Fri, 15 May 2020 18:59:16 +0900 (JST)
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "open list:CPU IDLE TIME MANAGEMENT FRAMEWORK" 
-        <linux-pm@vger.kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CPUIDLE DRIVER - ARM PSCI" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v4 4/4] thermal: cpuidle: Register cpuidle cooling device
-Message-ID: <20200515095751.GA25267@bogus>
-References: <20200429103644.5492-1-daniel.lezcano@linaro.org>
- <20200429103644.5492-4-daniel.lezcano@linaro.org>
- <99b3bc79-f48a-3d51-a8ae-8b9ca4856d36@arm.com>
- <04b5da25-d591-b08a-e554-6e084d7ea908@linaro.org>
- <f3cee834-4946-10bd-a504-df6cf62d9e90@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f3cee834-4946-10bd-a504-df6cf62d9e90@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: [PATCH v2 0/5] PCI: uniphier: Add features for UniPhier PCIe host controller
+Date:   Fri, 15 May 2020 18:58:58 +0900
+Message-Id: <1589536743-6684-1-git-send-email-hayashi.kunihiko@socionext.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 08:00:01PM +0200, Daniel Lezcano wrote:
->
-> Hi,
->
-> On 29/04/2020 23:01, Daniel Lezcano wrote:
-> > On 29/04/2020 22:02, Lukasz Luba wrote:
-> >>
-> >>
-> >> On 4/29/20 11:36 AM, Daniel Lezcano wrote:
-> >>> The cpuidle driver can be used as a cooling device by injecting idle
-> >>> cycles. The DT binding for the idle state added an optional
-> >>>
-> >>> When the property is set, register the cpuidle driver with the idle
-> >>> state node pointer as a cooling device. The thermal framework will do
-> >>> the association automatically with the thermal zone via the
-> >>> cooling-device defined in the device tree cooling-maps section.
-> >>>
-> >>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> >>> ---
-> >>>   - V4:
-> >>>     - Do not check the return value as the function does no longer
-> >>> return one
-> >>> ---
-> >
-> > [ ... ]
-> >
-> >> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-> >
-> > Thanks Lukasz for the review.
-> >
-> > Rafael, as Lorenzo and Sudeep are not responsive, could you consider ack
-> > this patch so I can merge the series through the thermal tree ?
->
-> Gentle ping ... Sudeep, Lorenzo or Rafael ?
->
+This series adds some features for UniPhier PCIe host controller.
 
-Sorry for the delay. I ignore this as it was generic and I was fine with
-it. Didn't know you were waiting me, sorry for that.
+- Add support for PME and AER invoked by MSI interrupt
+- Add iATU register view support for PCIe version >= 4.80
+- Add an error message when failing to get phy driver
 
-FWIW:
+This adds a new function called by MSI handler in DesignWare PCIe framework,
+that invokes PME and AER funcions to detect the factor from SoC-dependent
+registers.
 
-Acked-by: Sudeep Holla <sudeep.holla@arm.com>
+Changes since v1:
+- Add check if struct resource is NULL
+- Fix warning in the type of dev_err() argument
 
---
-Regards,
-Sudeep
+Kunihiko Hayashi (5):
+  PCI: dwc: Add msi_host_isr() callback
+  PCI: uniphier: Add misc interrupt handler to invoke PME and AER
+  dt-bindings: PCI: uniphier: Add iATU register description
+  PCI: uniphier: Add iATU register support
+  PCI: uniphier: Add error message when failed to get phy
+
+ .../devicetree/bindings/pci/uniphier-pcie.txt      |  1 +
+ drivers/pci/controller/dwc/pcie-designware-host.c  |  8 +--
+ drivers/pci/controller/dwc/pcie-designware.h       |  1 +
+ drivers/pci/controller/dwc/pcie-uniphier.c         | 67 +++++++++++++++++-----
+ 4 files changed, 60 insertions(+), 17 deletions(-)
+
+-- 
+2.7.4
+
