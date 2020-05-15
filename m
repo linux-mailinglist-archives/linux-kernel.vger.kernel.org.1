@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084761D4C2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 13:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B101F1D4C3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 13:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726206AbgEOLLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 07:11:17 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:36082 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgEOLLR (ORCPT
+        id S1726216AbgEOLQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 07:16:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgEOLQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 07:11:17 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 44F708029EC9;
-        Fri, 15 May 2020 11:11:14 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 54LBlF8pMoKn; Fri, 15 May 2020 14:11:13 +0300 (MSK)
-Date:   Fri, 15 May 2020 14:11:12 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        <linux-mips@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/6] dt-bindings: dma: dw: Add max burst transaction
- length property
-Message-ID: <20200515111112.4umynrpgzjnca223@mobilestation>
-References: <20200508111242.GH185537@smile.fi.intel.com>
- <20200511200528.nfkc2zkh3bvupn7l@mobilestation>
- <20200511210138.GN185537@smile.fi.intel.com>
- <20200511213531.wnywlljiulvndx6s@mobilestation>
- <20200512090804.GR185537@smile.fi.intel.com>
- <20200512114946.x777yb6bhe22ccn5@mobilestation>
- <20200512123840.GY185537@smile.fi.intel.com>
- <20200515060911.GF333670@vkoul-mobl>
- <20200515105137.GK185537@smile.fi.intel.com>
- <20200515105658.GR333670@vkoul-mobl>
+        Fri, 15 May 2020 07:16:12 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CFE8C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 04:16:12 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id o5so2218893iow.8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 04:16:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=juliacomputing-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=fG9RJAdiQR3KRVbi1EfJRtogMSIdgoMp1F7l88z9wa0=;
+        b=jUWlX02LSQ11rfJ6ZVLTgF5Vcv9IS6E6Er1PynDV1jN57S0PWqVwaItvlozJwFC7wq
+         I2o04DU+ury1VNLTs5zv+Ojcq9fbllDEIydDEIFkKjMIll8OOfhn6joxrSIL+BDPCQNM
+         Tunz7m5SspKk55ADs3bHcuDmxn7r8iTgNBionwhxuI3qrF6lWkOvO52UKwcJ6pmxDm/E
+         JufS8YmlONgtbkXVWAgOEjLwvE71LJhxj6GpRzlROlLnB4+oCHHNZQficBhwSWRMJ5Kb
+         OH7Fymgk27yDeRVLkLBuHkJjEi7pO265hEen8YlNPfnA/mLpjkDAFsv0Tr+BM4s/B1AR
+         h0ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=fG9RJAdiQR3KRVbi1EfJRtogMSIdgoMp1F7l88z9wa0=;
+        b=KUyRk24C/4JpPmtUy60V5aGYxJXI3AewCOoft+QZkdplCXrMWWlo9aEPBhnF7CTida
+         rzB0oVL4LYFkOGc0snI1xY4gVur/NXGp8/j0JqDLuEtb1xFMrvNHc+EVpELVmN70eOzL
+         9zlPRYwVkcwzSGdniTzKby8HIBMQ5k8wNin8aR2aYIJFkF0PGHtY4Ur7PgazYDywUv42
+         2JWJA5dlNyzB5AXNe1WVnhe4ZDJsGuVNcvjKg1q1uaQ24iAWuhBTNS4uOw+3FcRKRtke
+         NuDCWxvfVzVypSgfiAzDVuyfwkXlp4da8Od/errVjL+DT5tEHc6U70ETuUd+QX9uIs/I
+         TiSA==
+X-Gm-Message-State: AOAM531eQwN0I0t8aPERJsA45uGEHXHiwd4fwbAZzFLRfyg1/5zvNdEI
+        AiqqoBcowxQbw12SAWdhz9EWAR8bsS6ZDTIpM6RbeAUXfkE=
+X-Google-Smtp-Source: ABdhPJzR/BBg4yP9FlNiURi9PB43aqjraWAe8Mz6QOFhgtAH6GTFC0g6gOxZ0lmTiMqJgATJ2Mv6yW+UA4qIm8QKf5Q=
+X-Received: by 2002:a6b:6b04:: with SMTP id g4mr2398603ioc.75.1589541371180;
+ Fri, 15 May 2020 04:16:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200515105658.GR333670@vkoul-mobl>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+From:   Keno Fischer <keno@juliacomputing.com>
+Date:   Fri, 15 May 2020 07:15:35 -0400
+Message-ID: <CABV8kRyHrDMK4o=UZZZWJMuQNjPA8Xuoj-JFF-Lsx26fBTR0WA@mail.gmail.com>
+Subject: PTRACE_SYSEMU behavior difference on arm64
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>, Will Deacon <will.deacon@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 04:26:58PM +0530, Vinod Koul wrote:
-> On 15-05-20, 13:51, Andy Shevchenko wrote:
-> > On Fri, May 15, 2020 at 11:39:11AM +0530, Vinod Koul wrote:
-> > > On 12-05-20, 15:38, Andy Shevchenko wrote:
-> > > > On Tue, May 12, 2020 at 02:49:46PM +0300, Serge Semin wrote:
-> > > > > On Tue, May 12, 2020 at 12:08:04PM +0300, Andy Shevchenko wrote:
-> > > > > > On Tue, May 12, 2020 at 12:35:31AM +0300, Serge Semin wrote:
-> > > > > > > On Tue, May 12, 2020 at 12:01:38AM +0300, Andy Shevchenko wrote:
-> > > > > > > > On Mon, May 11, 2020 at 11:05:28PM +0300, Serge Semin wrote:
-> > > > > > > > > On Fri, May 08, 2020 at 02:12:42PM +0300, Andy Shevchenko wrote:
-> > > > > > > > > > On Fri, May 08, 2020 at 01:53:00PM +0300, Serge Semin wrote:
-> > 
-> > ...
-> > 
-> > > > I leave it to Rob and Vinod.
-> > > > It won't break our case, so, feel free with your approach.
-> > > 
-> > > I agree the DT is about describing the hardware and looks like value of
-> > > 1 is not allowed. If allowed it should be added..
-> > 
-> > It's allowed at *run time*, it's illegal in *pre-silicon stage* when
-> > synthesizing the IP.
-> 
-> Then it should be added ..
+The behavior of PTRACE_SYSEMU on arm64
+appears to differ substantially from that of x86 and powerpc
+(the other two architectures on which this feature is implemented).
+In particular, after PTRACE_SYSEMU the syscall will always
+be skipped on x86 and powerpc, but executed on arm64 unless
+the syscall-entry stop was again continued using PTRACE_SYSEMU.
+The skipping behavior is also documented in the manpage,
+so I suspect this may just be a bug (the skipping behavior
+makes sense to me and is what I would expect).
+The reason this happens is that `syscall_trace_enter`
+re-checks TIF_SYSCALL_EMU after the ptrace stop, but at that
+point it may have already been superseded by a new ptrace
+request. x86 and power save the original value of the flag,
+rather than acting on the new value. I can submit a patch to
+fix this, but wanted to check first whether this was intentional.
+If it is, I can fix the man page instead.
 
-Vinod, max-burst-len is "MAXimum" burst length not "run-time or current or any
-other" burst length. It's a constant defined at the IP-core synthesis stage and
-according to the Data Book, MAX burst length can't be 1. The allowed values are
-exactly as I described in the binding [4, 8, 16, 32, ...]. MAX burst length
-defines the upper limit of the run-time burst length. So setting it to 1 isn't
-about describing a hardware, but using DT for the software convenience.
-
--Sergey
-
-> 
-> -- 
-> ~Vinod
+Keno
