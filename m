@@ -2,158 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6371D4D5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 14:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7381D4D65
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 14:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726237AbgEOMFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 08:05:25 -0400
-Received: from mga07.intel.com ([134.134.136.100]:1322 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726168AbgEOMFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 08:05:24 -0400
-IronPort-SDR: Ugf58e9f/6IPi/RDFs/Mb64SEO1EI8c/y3qJ+SFQSq6faO1m1YqCX10uSDKgk3N0s2Hs2pIFzh
- 5Tednkmq6FMA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 05:05:17 -0700
-IronPort-SDR: I6Wn7AwZIvcUrD++sALforAjGf8WE4z/6KSboxCDBePEIuvcpJ7kd2ah2WcEj3fHXBSB/+5QhO
- K7rFjQh8eXBQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
-   d="scan'208";a="253779837"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008.fm.intel.com with ESMTP; 15 May 2020 05:05:12 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jZZ5W-006quz-9s; Fri, 15 May 2020 15:05:14 +0300
-Date:   Fri, 15 May 2020 15:05:14 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Allison Randal <allison@lohutok.net>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Clement Leger <cleger@kalray.eu>,
-        Phil Edworthy <phil.edworthy@renesas.com>,
-        "wuxu.wu" <wuxu.wu@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 04/19] spi: dw: Fix native CS being unset
-Message-ID: <20200515120514.GX185537@smile.fi.intel.com>
-References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
- <20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru>
- <20200515104758.6934-5-Sergey.Semin@baikalelectronics.ru>
+        id S1726254AbgEOMGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 08:06:14 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:31551 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726240AbgEOMGO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 08:06:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589544372; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=SPYp2YDyVuaw6uCp5OOGpG4DBGumTLBzvLR2arIhqlY=;
+ b=McV/fMz0PCoin/nlXeYB2MO8zsmas1dgDyxS713KT84D8Ue4BOHw+yVjCursv74AOAS+Dv41
+ mOhWBYqGuSgWHQD8q07Wz7wJJ0Iy/OQOnvgNRv06mGSBUU0jbQnnLKnTlXMR7YWAouAi4fUG
+ 7f5T3dVkXiaBePXyAGfQaXmgoq4=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ebe85a1.7fd5b5a07768-smtp-out-n03;
+ Fri, 15 May 2020 12:05:53 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 027D7C43636; Fri, 15 May 2020 12:05:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kalyan_t)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6D22AC433D2;
+        Fri, 15 May 2020 12:05:51 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515104758.6934-5-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 15 May 2020 17:35:51 +0530
+From:   kalyan_t@codeaurora.org
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, mkrishn@codeaurora.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        travitej@codeaurora.org, LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@gmail.com>, nganji@codeaurora.org,
+        Sean Paul <seanpaul@chromium.org>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Jeykumar Sankaran <jsanka@codeaurora.org>
+Subject: Re: [Freedreno] [PATCH] drm/msm/dpu: ensure device suspend happens
+ during PM sleep
+In-Reply-To: <CAD=FV=UJGivCyp=t0J++1DbSFDVf+5zSCcXgh83VZtssBmavjg@mail.gmail.com>
+References: <1588339863-1322-1-git-send-email-kalyan_t@codeaurora.org>
+ <CAD=FV=UJGivCyp=t0J++1DbSFDVf+5zSCcXgh83VZtssBmavjg@mail.gmail.com>
+Message-ID: <32c01e9a5277bdbdbab868eb71688184@codeaurora.org>
+X-Sender: kalyan_t@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 01:47:43PM +0300, Serge Semin wrote:
-> Commit 6e0a32d6f376 ("spi: dw: Fix default polarity of native
-> chipselect") attempted to fix the problem when GPIO active-high
-> chip-select is utilized to communicate with some SPI slave. It fixed
-> the problem, but broke the normal native CS support. At the same time
-> the reversion commit ada9e3fcc175 ("spi: dw: Correct handling of native
-> chipselect") didn't solve the problem either, since it just inverted
-> the set_cs() polarity perception without taking into account that
-> CS-high might be applicable. Here is what is done to finally fix the
-> problem.
+On 2020-05-14 21:47, Doug Anderson wrote:
+> Hi,
 > 
-> DW SPI controller demands any native CS being set in order to proceed
-> with data transfer. So in order to activate the SPI communications we
-> must set any bit in the Slave Select DW SPI controller register no
-> matter whether the platform requests the GPIO- or native CS. Preferably
-> it should be the bit corresponding to the SPI slave CS number. But
-> currently the dw_spi_set_cs() method activates the chip-select
-> only if the second argument is false. Since the second argument of the
-> set_cs callback is expected to be a boolean with "is-high" semantics
-> (actual chip-select pin state value), the bit in the DW SPI Slave
-> Select register will be set only if SPI core requests the driver
-> to set the CS in the low state. So this will work for active-low
-> GPIO-based CS case, and won't work for active-high CS setting
-> the bit when SPI core actually needs to deactivate the CS.
+> On Fri, May 1, 2020 at 6:31 AM Kalyan Thota <kalyan_t@codeaurora.org> 
+> wrote:
+>> 
+>> "The PM core always increments the runtime usage counter
+>> before calling the ->suspend() callback and decrements it
+>> after calling the ->resume() callback"
+>> 
+>> DPU and DSI are managed as runtime devices. When
+>> suspend is triggered, PM core adds a refcount on all the
+>> devices and calls device suspend, since usage count is
+>> already incremented, runtime suspend was not getting called
+>> and it kept the clocks on which resulted in target not
+>> entering into XO shutdown.
+>> 
+>> Add changes to force suspend on runtime devices during pm sleep.
+>> 
+>> Changes in v1:
+>>  - Remove unnecessary checks in the function
+>>     _dpu_kms_disable_dpu (Rob Clark).
+>> 
+>> Changes in v2:
+>>  - Avoid using suspend_late to reset the usagecount
+>>    as suspend_late might not be called during suspend
+>>    call failures (Doug).
+>> 
+>> Changes in v3:
+>>  - Use force suspend instead of managing device usage_count
+>>    via runtime put and get API's to trigger callbacks (Doug).
+>> 
+>> Changes in v4:
+>>  - Check the return values of pm_runtime_force_suspend and
+>>    pm_runtime_force_resume API's and pass appropriately (Doug).
+>> 
+>> Changes in v5:
 > 
-> This commit fixes the problem for all described cases. So no matter
-> whether an SPI slave needs GPIO- or native-based CS with active-high
-> or low signal the corresponding bit will be set in SER.
-
-Nice catch!
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Fixes: ada9e3fcc175 ("spi: dw: Correct handling of native chipselect")
-> Fixes: 6e0a32d6f376 ("spi: dw: Fix default polarity of native chipselect")
-> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-> Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Allison Randal <allison@lohutok.net>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Gareth Williams <gareth.williams.jx@renesas.com>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: linux-mips@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
+> Can you please put the version number properly in your subject?  It's
+> really hard to tell one version of your patch from another.
 > 
-> ---
 > 
-> Changelog v2:
-> - Add a comment about SER register, that it must be set to activate the
->   SPI communications.
-> ---
->  drivers/spi/spi-dw.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
+>>  - With v4 patch, test cycle has uncovered issues in device resume.
+>> 
+>>    On bubs: cmd tx failures were seen as SW is sending panel off
+>>    commands when the dsi resources are turned off.
+>> 
+>>    Upon suspend, DRM driver will issue a NULL composition to the
+>>    dpu, followed by turning off all the HW blocks.
+>> 
+>>    v5 changes will serialize the NULL commit and resource unwinding
+>>    by handling them under PM prepare and PM complete phases there by
+>>    ensuring that clks are on when panel off commands are being
+>>    processed.
 > 
-> diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
-> index 6de196df9c96..450c8218caeb 100644
-> --- a/drivers/spi/spi-dw.c
-> +++ b/drivers/spi/spi-dw.c
-> @@ -124,8 +124,16 @@ static inline void dw_spi_debugfs_remove(struct dw_spi *dws)
->  void dw_spi_set_cs(struct spi_device *spi, bool enable)
->  {
->  	struct dw_spi *dws = spi_controller_get_devdata(spi->controller);
-> +	bool cs_high = !!(spi->mode & SPI_CS_HIGH);
->  
-> -	if (!enable)
-> +	/*
-> +	 * DW SPI controller demands any native CS being set in order to
-> +	 * proceed with data transfer. So in order to activate the SPI
-> +	 * communications we must set a corresponding bit in the Slave
-> +	 * Enable register no matter whether the SPI core is configured to
-> +	 * support active-high or active-low CS level.
-> +	 */
-> +	if (cs_high == enable)
->  		dw_writel(dws, DW_SPI_SER, BIT(spi->chip_select));
->  	else if (dws->cs_override)
->  		dw_writel(dws, DW_SPI_SER, 0);
-> -- 
-> 2.25.1
+> I'm still most definitely not an expert in how all the DRM pieces all
+> hook up together, but the solution you have in this patch seems wrong
+> to me.  As far as I can tell the "prepare" state isn't supposed to be
+> actually doing the suspend work and here that's exactly what you're
+> doing.  I think you should find a different solution to ensure
+> ordering is correct.
+> 
+> -Doug
 > 
 
--- 
-With Best Regards,
-Andy Shevchenko
+Hi,
+
+Prepare and Complete are callbacks defined as part of Sleep and Resume 
+sequence
+
+Entering PM SUSPEND the phases are : prepare --> suspend --> 
+suspend_late --> suspend_noirq.
+While leaving PM SUSPEND the phases are: resume_noirq --> resume_early 
+--> resume --> complete.
+
+The reason to push drm suspend handling to PM prepare phase is that 
+parent here will trigger a modeset to turn off the timing and 
+subsequently the panel.
+the child devices should not turn of their clocks before parent unwinds 
+the composition. Hence they are serialized as per the sequence mentioned 
+above.
+
+A similar approach is taken by other driver that use drm framework. In 
+this driver, the device registers for prepare and complete callbacks to 
+handle drm_suspend and drm_resume.
+https://gitlab.freedesktop.org/drm/msm/-/blob/msm-next/drivers/gpu/drm/exynos/exynos_drm_drv.c#L163
 
 
+Kalyan
+
+
+_______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
