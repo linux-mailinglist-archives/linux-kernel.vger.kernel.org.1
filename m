@@ -2,136 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD0B1D4820
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 10:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856FD1D4833
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 10:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726922AbgEOI37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 04:29:59 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:35826 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726694AbgEOI37 (ORCPT
+        id S1727896AbgEOIck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 04:32:40 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:46892 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726730AbgEOIcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 04:29:59 -0400
-Received: by mail-wm1-f66.google.com with SMTP id n5so1683111wmd.0;
-        Fri, 15 May 2020 01:29:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AffiWICTihWrD0jhH/25k+Jany7wx9bJeNI7R897D5A=;
-        b=pPrK8V4Bvs2P/6Up5OEof3JuOkE+GAsxF303ofEiR56PcMIqluYiUk+ylVyfn3vHa/
-         Ho7gtRbOSYnw+swh6bqAGnDnxZEDy4bPMYZLSdq7iuwSQPh4ozB1Hs92xQscGyLH11vM
-         Qgg14FBBjXITUcE4Dz5XDDRD9axxRcGbOtHNSMxjJgtYMKV219Iyz2oum5/2WxGWLPhc
-         c2qSYkchZS4hDLDemLWJyDY2nodgpPUNpt+WplT6mrZ+pkuVp42pa1CKIroj+wY54XSe
-         UZv4spn/Iq10FbJeCuPEWlC3NU/o6LtPL2cGNo+ZqXwmHt/472QBqwkBVicFCJ5Gp39q
-         y2/w==
-X-Gm-Message-State: AOAM531oho4D6yDWvvztZ6ZrbrRXypDRskR9wB0QercZnnfOQFXhzfVZ
-        9z6XRrfzlCrYnrsxh2cG+Yg=
-X-Google-Smtp-Source: ABdhPJwIeOGeKtkO402/Kz2PFC3Ze6Zk4Xt5gmJSEXDWr6dlaKMniPW1X/R4tk3nopbtZrNkt/8Dyg==
-X-Received: by 2002:a05:600c:231a:: with SMTP id 26mr2882752wmo.59.1589531396993;
-        Fri, 15 May 2020 01:29:56 -0700 (PDT)
-Received: from localhost (ip-37-188-249-36.eurotel.cz. [37.188.249.36])
-        by smtp.gmail.com with ESMTPSA id h137sm54689649wme.0.2020.05.15.01.29.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 01:29:56 -0700 (PDT)
-Date:   Fri, 15 May 2020 10:29:55 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Mel Gorman <mgorman@suse.de>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: expose root cgroup's memory.stat
-Message-ID: <20200515082955.GJ29153@dhcp22.suse.cz>
-References: <20200508170630.94406-1-shakeelb@google.com>
- <20200508214405.GA226164@cmpxchg.org>
- <CALvZod5VHHUV+_AXs4+5sLOPGyxm709kQ1q=uHMPVxW8pwXZ=g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod5VHHUV+_AXs4+5sLOPGyxm709kQ1q=uHMPVxW8pwXZ=g@mail.gmail.com>
+        Fri, 15 May 2020 04:32:39 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04F8WaCV061056;
+        Fri, 15 May 2020 08:32:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id; s=corp-2020-01-29;
+ bh=qabFLrPBdCY3XzQ1h1tsRNJ4eGD+6UXRbZdhAcUiFI4=;
+ b=hNoS6Mtp3jr5/HiRadwKCuRNDibTlfSTKmSX3zVlln2xorHymhFdluq4r4rM6o0ZegcE
+ Qc3z5H4/waSb8c+rYF6OCknwMeGf289CEl6ca34tFt8PYfCVTtLs9sZgwL1XnvaWGZPb
+ sjXMkN8ca8inddOsT0EuwTfyG6g9vT7Q686AKH9sh0fBrES2U+VCuXyB1FNBMBKZYpzA
+ QJK/BKtuHYUiRSff1LxM0RxY/2IYKMtRDp+w2EYUC7vOsAaHf5WltXA6iBEmnRTbRKRc
+ J6oa70PhEWIInzoBaee0cp9hoN0facjCK2NMtKNNSS6ARco2IPxKNMOJLNfx6ZVl8e3p KQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 3100yg986d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 May 2020 08:32:36 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04F8Sk8J123706;
+        Fri, 15 May 2020 08:30:31 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 3100yr3jp5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 May 2020 08:30:31 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04F8UUCh002457;
+        Fri, 15 May 2020 08:30:30 GMT
+Received: from gms-target-03.osdevelopmeniad.oraclevcn.com (/100.100.242.162)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 15 May 2020 01:30:30 -0700
+From:   Gulam Mohamed <gulam.mohamed@oracle.com>
+To:     gulam.mohamed@oracle.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: Correct-the-type-of-arg-to-scsi_host_lookup
+Date:   Fri, 15 May 2020 08:30:16 +0000
+Message-Id: <1589531416-3852-1-git-send-email-gulam.mohamed@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005150074
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ cotscore=-2147483648 mlxscore=0 suspectscore=0 spamscore=0 impostorscore=0
+ mlxlogscore=999 malwarescore=0 clxscore=1011 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005150075
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 09-05-20 07:06:38, Shakeel Butt wrote:
-> On Fri, May 8, 2020 at 2:44 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Fri, May 08, 2020 at 10:06:30AM -0700, Shakeel Butt wrote:
-> > > One way to measure the efficiency of memory reclaim is to look at the
-> > > ratio (pgscan+pfrefill)/pgsteal. However at the moment these stats are
-> > > not updated consistently at the system level and the ratio of these are
-> > > not very meaningful. The pgsteal and pgscan are updated for only global
-> > > reclaim while pgrefill gets updated for global as well as cgroup
-> > > reclaim.
-> > >
-> > > Please note that this difference is only for system level vmstats. The
-> > > cgroup stats returned by memory.stat are actually consistent. The
-> > > cgroup's pgsteal contains number of reclaimed pages for global as well
-> > > as cgroup reclaim. So, one way to get the system level stats is to get
-> > > these stats from root's memory.stat, so, expose memory.stat for the root
-> > > cgroup.
-> > >
-> > >       from Johannes Weiner:
-> > >       There are subtle differences between /proc/vmstat and
-> > >       memory.stat, and cgroup-aware code that wants to watch the full
-> > >       hierarchy currently has to know about these intricacies and
-> > >       translate semantics back and forth.
+The data type of the argument, hostnum, to function
+scsi_host_lookup(unsigned short hostnum) is unsigned short but the
+hostnum sent to this function from callers functions is uint32_t or
+unsigned int. Correct the data type to unsigned int to avoid the
+wrapping of the hostnum value after 65535. Also change the data type of
+local variable hostnum of the function __scsi_host_match() to unsigned
+int.
 
-Can we have those subtle differences documented please?
+Signed-off-by: Gulam Mohamed <gulam.mohamed@oracle.com>
+Reviewed-by: Joe Jin <joe.jin@oracle.com>
+Reviewed-by: Fred Herard <fred.herard@oracle.com>
+---
+ drivers/scsi/hosts.c     | 4 ++--
+ include/scsi/scsi_host.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-> > >
-> > >       Generally having the fully recursive memory.stat at the root
-> > >       level could help a broader range of usecases.
-> >
-> > The changelog begs the question why we don't just "fix" the
-> > system-level stats. It may be useful to include the conclusions from
-> > that discussion, and why there is value in keeping the stats this way.
-> >
-> 
-> Right. Andrew, can you please add the following para to the changelog?
-> 
-> Why not fix the stats by including both the global and cgroup reclaim
-> activity instead of exposing root cgroup's memory.stat? The reason is
-> the benefit of having metrics exposing the activity that happens
-> purely due to machine capacity rather than localized activity that
-> happens due to the limits throughout the cgroup tree. Additionally
-> there are userspace tools like sysstat(sar) which reads these stats to
-> inform about the system level reclaim activity. So, we should not
-> break such use-cases.
-> 
-> > > Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> > > Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> >
-> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> Thanks a lot.
-
-I was quite surprised that the patch is so simple TBH. For some reason
-I've still had memories that we do not account for root memcg (likely
-because mem_cgroup_is_root(memcg) bail out in the try_charge. But stats
-are slightly different here. I have started looking at different stat
-counters because they are not really all the same. E.g. 
-- mem_cgroup_charge_statistics accounts for each memcg
-- memcg_charge_kernel_stack relies on pages being associated with a
-  memcg and that in turn relies on __memcg_kmem_charge_page which bails
-  out on root memcg
-- memcg_charge_slab (NR_SLAB*) skips over root memcg as well
-- __mod_lruvec_page_state relies on page->mem_cgroup as well but this
-  one is ok for paths which go through commit_charge path.
-
-That being said we should really double check which stats are
-accounted properly. At least MEMCG_KERNEL_STACK_KB won't unless I am
-misreading the code.
-
-I do not mind displaying the root's memcg stats but a) a closer look had
-to be done for each counter and b) a clarification of differences from
-the global vmstat counters would be really handy.
-
+diff --git a/drivers/scsi/hosts.c b/drivers/scsi/hosts.c
+index 7ec91c3a66ca..c5c1534eb6e7 100644
+--- a/drivers/scsi/hosts.c
++++ b/drivers/scsi/hosts.c
+@@ -510,7 +510,7 @@ struct Scsi_Host *scsi_host_alloc(struct scsi_host_template *sht, int privsize)
+ static int __scsi_host_match(struct device *dev, const void *data)
+ {
+ 	struct Scsi_Host *p;
+-	const unsigned short *hostnum = data;
++	const unsigned int *hostnum = data;
+ 
+ 	p = class_to_shost(dev);
+ 	return p->host_no == *hostnum;
+@@ -527,7 +527,7 @@ static int __scsi_host_match(struct device *dev, const void *data)
+  *	that scsi_host_get() took. The put_device() below dropped
+  *	the reference from class_find_device().
+  **/
+-struct Scsi_Host *scsi_host_lookup(unsigned short hostnum)
++struct Scsi_Host *scsi_host_lookup(unsigned int hostnum)
+ {
+ 	struct device *cdev;
+ 	struct Scsi_Host *shost = NULL;
+diff --git a/include/scsi/scsi_host.h b/include/scsi/scsi_host.h
+index 822e8cda8d9b..59742fb6fcd7 100644
+--- a/include/scsi/scsi_host.h
++++ b/include/scsi/scsi_host.h
+@@ -731,7 +731,7 @@ extern int __must_check scsi_add_host_with_dma(struct Scsi_Host *,
+ extern struct Scsi_Host *scsi_host_get(struct Scsi_Host *);
+ extern int scsi_host_busy(struct Scsi_Host *shost);
+ extern void scsi_host_put(struct Scsi_Host *t);
+-extern struct Scsi_Host *scsi_host_lookup(unsigned short);
++extern struct Scsi_Host *scsi_host_lookup(unsigned int);
+ extern const char *scsi_host_state_name(enum scsi_host_state);
+ extern void scsi_host_complete_all_commands(struct Scsi_Host *shost,
+ 					    int status);
 -- 
-Michal Hocko
-SUSE Labs
+1.8.3.1
+
