@@ -2,78 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308531D56CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D862A1D56D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726339AbgEOQyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 12:54:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726179AbgEOQyb (ORCPT
+        id S1726244AbgEOQzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 12:55:35 -0400
+Received: from mailomta32-re.btinternet.com ([213.120.69.125]:13414 "EHLO
+        re-prd-fep-049.btinternet.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726183AbgEOQze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 12:54:31 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D2EC061A0C;
-        Fri, 15 May 2020 09:54:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=35Zii6i4JvBVIwt++4MobD5fmQN+0ZMev0/6oq2FWlU=; b=sKR9XMpoy2Gw1a2SclRMC7M5h8
-        dMp9OGfIHk5Dlc7qP+GJC4+TnUureCvxAkkgmKj5uRtXS9xTYkOwVK7icAvyKpnV151QOsZgjY+D2
-        /eIByASXq4bSkMug0HXGMPHw6P5QaFQJcPBU0j2s5CshFkryj1cwDNk1u41QiswTvKnmWNunaaBX0
-        6xfKMup1PgYGaEFkVWxIPfS8N1WzfnETFfQhVe877oDiBFjeOW9+xAPEL8WF5NZ1KUK5ayVbAv8uK
-        npS+VpLD1Xuun6BIyNMLPkMyzNQw9B9NXK501OWWVpE5mMyJqGjWT3kDn/98+wZ850EEn+UVc07CG
-        dEa3UJEA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZdbR-0001p8-IH; Fri, 15 May 2020 16:54:29 +0000
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@ZenIV.linux.org.uk>,
-        David Howells <dhowells@redhat.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH -next] fs: fix namespace.c build error when
- CONFIG_MOUNT_NOTIFICATIONS is not set
-Message-ID: <f1ada6bd-5d57-eaf2-f834-9975361b2a21@infradead.org>
-Date:   Fri, 15 May 2020 09:54:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 15 May 2020 12:55:34 -0400
+Received: from re-prd-rgout-002.btmx-prd.synchronoss.net ([10.2.54.5])
+          by re-prd-fep-049.btinternet.com with ESMTP
+          id <20200515165532.IPEA8801.re-prd-fep-049.btinternet.com@re-prd-rgout-002.btmx-prd.synchronoss.net>;
+          Fri, 15 May 2020 17:55:32 +0100
+Authentication-Results: btinternet.com;
+    auth=pass (LOGIN) smtp.auth=j.oldman998@btinternet.com
+X-Originating-IP: [31.53.141.224]
+X-OWM-Source-IP: 31.53.141.224 (GB)
+X-OWM-Env-Sender: j.oldman998@btinternet.com
+X-VadeSecure-score: verdict=clean score=0/300, class=clean
+X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgeduhedrleekgddutdehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuueftkffvkffujffvgffngfevqffopdfqfgfvnecuuegrihhlohhuthemuceftddunecunecujfgurhephffvufffkffosedttdertdertddtnecuhfhrohhmpeflohhhnhcuqfhlughmrghnuceojhhohhhnrdholhgumhgrnhesphholhgvhhhilhhlrdgtohdruhhkqeenucggtffrrghtthgvrhhnpeegfedthfefueeihffgkeefteehuddttdefudetveelveefvdefhfejieejhffggfenucfkphepfedurdehfedrudeguddrvddvgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhephhgvlhhopehhvghnrhihrdhhohhmvgdpihhnvghtpeefuddrheefrddugedurddvvdegpdhmrghilhhfrhhomhepoehjohhhnhdrohhlughmrghnsehpohhlvghhihhllhdrtghordhukheqpdhrtghpthhtohepoeguvghvvghlsegurhhivhgvrhguvghvrdhoshhuohhslhdrohhrgheqpdhrtghpthhtohepoehgrhgvghhkhheslhhinhhugihfohhunhgurghtihhonhdrohhrgheqpdhrtghpthhtohepoehjohhhnhdrohhlughmrghnsehpohhlvghhihhllhdrtghordhukheqpdhrtghpthhtohepoehkrghirdhhvghnghdrfhgvnhhgsegtrghnohhnihgtrghlrdgtohhmqedprhgtphhtthhopeeolhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgqe
+X-RazorGate-Vade-Verdict: clean 0
+X-RazorGate-Vade-Classification: clean
+Received: from henry.home (31.53.141.224) by re-prd-rgout-002.btmx-prd.synchronoss.net (5.8.340) (authenticated as j.oldman998@btinternet.com)
+        id 5E3A15B610AAE225; Fri, 15 May 2020 17:55:32 +0100
+From:   John Oldman <john.oldman@polehill.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     kai.heng.feng@canonical.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        John Oldman <john.oldman@polehill.co.uk>
+Subject: [PATCH] Staging: rtl8723bs: os_de: if-else coding style issue
+Date:   Fri, 15 May 2020 17:54:31 +0100
+Message-Id: <20200515165431.12819-1-john.oldman@polehill.co.uk>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+Coding style issues:
+This patch clears the checkpatch.pl "braces {} are not necessary for
+single statement blocks" and "else_should_follow_close_brace"
+warnings.
 
-Fix build error when CONFIG_MOUNT_NOTIFICATIONS is not set/enabled.
-
-../fs/namespace.c:4320:42: error: 'struct mount' has no member named 'mnt_topology_changes'
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: David Howells <dhowells@redhat.com>
-Cc: linux-fsdevel@vger.kernel.org
+Signed-off-by: John Oldman <john.oldman@polehill.co.uk>
 ---
- fs/namespace.c |    4 ++++
- 1 file changed, 4 insertions(+)
+v1: First attempt
+v2: Followed The rule is that "if one side of the if else statement
+has curly braces then all sides get curly braces even if they're
+just one line long."
 
---- linux-next-20200515.orig/fs/namespace.c
-+++ linux-next-20200515/fs/namespace.c
-@@ -4317,7 +4317,11 @@ int fsinfo_generic_mount_topology(struct
+ drivers/staging/rtl8723bs/os_dep/os_intfs.c | 33 ++++++++-------------
+ 1 file changed, 12 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/os_dep/os_intfs.c b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
+index d29f59bbb613..50a3c2c3a8d2 100644
+--- a/drivers/staging/rtl8723bs/os_dep/os_intfs.c
++++ b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
+@@ -1057,9 +1057,9 @@ static int pm_netdev_open(struct net_device *pnetdev, u8 bnormal)
+ 			status = _netdev_open(pnetdev);
+ 			mutex_unlock(&(adapter_to_dvobj(padapter)->hw_init_mutex));
+ 		}
+-	}
+-	else
++	} else {
+ 		status =  (_SUCCESS == ips_netdrv_open(padapter)) ? (0) : (-1);
++	}
  
- 	m = real_mount(path->mnt);
+ 	return status;
+ }
+@@ -1192,8 +1192,7 @@ void rtw_dev_unload(struct adapter *padapter)
+ 		padapter->bup = false;
  
-+#ifdef CONFIG_MOUNT_NOTIFICATIONS
- 	p->mnt_topology_changes	= atomic_read(&m->mnt_topology_changes);
-+#else
-+	p->mnt_topology_changes	= 0;
-+#endif
- 	p->parent_id = m->mnt_parent->mnt_id;
+ 		DBG_871X("<=== %s\n", __func__);
+-	}
+-	else {
++	} else {
+ 		RT_TRACE(_module_hci_intfs_c_, _drv_notice_, ("%s: bup ==false\n", __func__));
+ 		DBG_871X("%s: bup ==false\n", __func__);
+ 	}
+@@ -1223,8 +1222,7 @@ static int rtw_suspend_free_assoc_resource(struct adapter *padapter)
+ 		rtw_disassoc_cmd(padapter, 0, false);
+ 		/* s2-2.  indicate disconnect to os */
+ 		rtw_indicate_disconnect(padapter);
+-	}
+-	else if (check_fwstate(pmlmepriv, WIFI_AP_STATE)) {
++	} else if (check_fwstate(pmlmepriv, WIFI_AP_STATE)) {
+ 		rtw_sta_flush(padapter);
+ 	}
  
- 	if (path->mnt == root.mnt) {
+@@ -1270,9 +1268,8 @@ void rtw_suspend_wow(struct adapter *padapter)
+ 		padapter->bDriverStopped = false;	/* for 32k command */
+ 
+ 		/*  2. disable interrupt */
+-		if (padapter->intf_stop) {
++		if (padapter->intf_stop)
+ 			padapter->intf_stop(padapter);
+-		}
+ 
+ 		/*  2.1 clean interrupt */
+ 		if (padapter->HalFunc.clear_interrupt)
+@@ -1448,14 +1445,13 @@ int rtw_suspend_common(struct adapter *padapter)
+ 
+ 	if (check_fwstate(pmlmepriv, WIFI_STATION_STATE) == true) {
+ 	#ifdef CONFIG_WOWLAN
+-		if (check_fwstate(pmlmepriv, _FW_LINKED)) {
++		if (check_fwstate(pmlmepriv, _FW_LINKED))
+ 			pwrpriv->wowlan_mode = true;
+-		} else if (pwrpriv->wowlan_pno_enable == true) {
++		else if (pwrpriv->wowlan_pno_enable == true)
+ 			pwrpriv->wowlan_mode |= pwrpriv->wowlan_pno_enable;
+-		}
+ 
+ 		if (pwrpriv->wowlan_mode == true)
+-		rtw_suspend_wow(padapter);
++			rtw_suspend_wow(padapter);
+ 		else
+ 			rtw_suspend_normal(padapter);
+ 
+@@ -1522,9 +1518,8 @@ int rtw_resume_process_wow(struct adapter *padapter)
+ 
+ 		pwrpriv->bFwCurrentInPSMode = false;
+ 
+-		if (padapter->intf_stop) {
++		if (padapter->intf_stop)
+ 			padapter->intf_stop(padapter);
+-		}
+ 
+ 		if (padapter->HalFunc.clear_interrupt)
+ 			padapter->HalFunc.clear_interrupt(padapter);
+@@ -1541,18 +1536,15 @@ int rtw_resume_process_wow(struct adapter *padapter)
+ 		padapter->HalFunc.SetHwRegHandler(padapter, HW_VAR_WOWLAN, (u8 *)&poidparam);
+ 
+ 		psta = rtw_get_stainfo(&padapter->stapriv, get_bssid(&padapter->mlmepriv));
+-		if (psta) {
++		if (psta)
+ 			set_sta_rate(padapter, psta);
+-		}
+-
+ 
+ 		padapter->bDriverStopped = false;
+ 		DBG_871X("%s: wowmode resuming, DriverStopped:%d\n", __func__, padapter->bDriverStopped);
+ 		rtw_start_drv_threads(padapter);
+ 
+-		if (padapter->intf_start) {
++		if (padapter->intf_start)
+ 			padapter->intf_start(padapter);
+-		}
+ 
+ 		/*  start netif queue */
+ 		if (pnetdev) {
+@@ -1656,9 +1648,8 @@ int rtw_resume_process_ap_wow(struct adapter *padapter)
+ 	DBG_871X("%s: wowmode resuming, DriverStopped:%d\n", __func__, padapter->bDriverStopped);
+ 	rtw_start_drv_threads(padapter);
+ 
+-	if (padapter->intf_start) {
++	if (padapter->intf_start)
+ 		padapter->intf_start(padapter);
+-	}
+ 
+ 	/*  start netif queue */
+ 	if (pnetdev) {
+-- 
+2.17.1
 
