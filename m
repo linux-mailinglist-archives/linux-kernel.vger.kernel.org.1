@@ -2,77 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E681D4E74
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4EE1D4E4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 15:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgEONHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 09:07:34 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:45142 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726140AbgEONHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 09:07:33 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 25BC11A06F9;
-        Fri, 15 May 2020 15:07:32 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BA7571A06CB;
-        Fri, 15 May 2020 15:07:29 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 31B13402A6;
-        Fri, 15 May 2020 21:07:26 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     gregkh@linuxfoundation.org, jslaby@suse.com,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH] tty: serial: fsl_lpuart: Use __maybe_unused instead of #if CONFIG_PM_SLEEP
-Date:   Fri, 15 May 2020 20:58:01 +0800
-Message-Id: <1589547481-25932-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726191AbgEONBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 09:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726122AbgEONBB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 09:01:01 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69555C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 06:01:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=h2owgyYDbTAlYqnctNoL/S3qPxaT1kcJhxurcXxw10o=; b=GV1f5TcNia61n2ZO7zfukMn4ut
+        uDX9S1Nlpr8L2Br5bOxQLG/83xdIZENw80kP5o44MoEZRWlB09/m6NbgRJLTy/tsTHLQZ+8yXaygS
+        FsNq0ZeVs4Z9cPm/zROCvZ/+5/cA4ih1ohVyZTnSLGonD0L8k+L6EkDuu+T89NpqA2MB6P3w4fHP9
+        Mqj3DtKmEhHmUMkKv6CmNbGSVSPKqlrwteLtDwLsxloKX5Dv3LQ24DSKYU8h8nmGqj0AsBjB7xd0C
+        STLHfPvxmi+YXIsxtBieaqxPS53FbnkrWCrrDvbgxkf7hL5XQRRtj+1ml4UiqLgOydhCEIxLEg2Oy
+        4UQap32w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jZZx2-0000DP-MY; Fri, 15 May 2020 13:00:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AD5713007CD;
+        Fri, 15 May 2020 15:00:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1768A2024968B; Fri, 15 May 2020 15:00:30 +0200 (CEST)
+Date:   Fri, 15 May 2020 15:00:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lai Jiangshan <laijs@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Michel Lespinasse <walken@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Woodhouse <David.Woodhouse@intel.com>,
+        Rik van Riel <riel@redhat.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH 1/2] rbtree_latch: quit searching when reaching to
+ maximum depth
+Message-ID: <20200515130030.GV2957@hirez.programming.kicks-ass.net>
+References: <20200515124710.16439-1-laijs@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515124710.16439-1-laijs@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use __maybe_unused for power management related functions to simplify
-the code.
+On Fri, May 15, 2020 at 12:47:06PM +0000, Lai Jiangshan wrote:
+> lib/rbtree.c has ensured that there is not possible to
+> inadvertently cause (temporary) loops in the tree structure
+> as seen in program order of the modifier. But loop is still
+> possible to be seen in searcher due to CPU's reordering.
+> 
+> for example:
+> modifier				searcher
+> 
+> left rotate at parent
+> parent->rb_right is node
+> 					search to parent
+> 					parent->rb_right is node
+> 				     +->see node->rb_left changed
+> WRITE_ONCE(parent->rb_right, tmp);-+ |  node->rb_left is parennt
+> no smp_wmb(), some arch can        | |
+> reorder these two writes           | |  loop long between
+> WRITE_ONCE(node->rb_left, parent);-+-+  parent and node
+> 				   |
+> 				   +--->finally see
+> 					parent->rb_right
+> 
+> The long loop won't stop until the modifer's CPU flushes
+> its writes. Too avoid it, we should limit the searching depth.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- drivers/tty/serial/fsl_lpuart.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Cute, have you actually observed this? Did you have performance issues?
 
-diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
-index 6a9909e..cca485d 100644
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -2662,8 +2662,7 @@ static int lpuart_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--#ifdef CONFIG_PM_SLEEP
--static int lpuart_suspend(struct device *dev)
-+static int __maybe_unused lpuart_suspend(struct device *dev)
- {
- 	struct lpuart_port *sport = dev_get_drvdata(dev);
- 	unsigned long temp;
-@@ -2721,7 +2720,7 @@ static int lpuart_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int lpuart_resume(struct device *dev)
-+static int __maybe_unused lpuart_resume(struct device *dev)
- {
- 	struct lpuart_port *sport = dev_get_drvdata(dev);
- 	bool irq_wake = irqd_is_wakeup_set(irq_get_irq_data(sport->port.irq));
-@@ -2752,7 +2751,6 @@ static int lpuart_resume(struct device *dev)
- 
- 	return 0;
- }
--#endif
- 
- static SIMPLE_DEV_PM_OPS(lpuart_pm_ops, lpuart_suspend, lpuart_resume);
- 
--- 
-2.7.4
+> There are no more than (1<<BITS_PER_LONG)-1 nodes in the tree.
+> And the max_depth of a tree is no more than 2*lg(node_count+1),
+> which is no mare than 2*BITS_PER_LONG.
+> 
+> So the serarch should stop when diving down up to
+> 2*BITS_PER_LONG depth.
 
+Arguably you can have a larger key space, but I think due to memory
+constraints this limit still isn't wrong. But I do feel you need a
+comment with that.
