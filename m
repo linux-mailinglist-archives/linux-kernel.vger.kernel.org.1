@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269A31D4BDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B753B1D4BF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 13:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbgEOK7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 06:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
+        id S1726362AbgEOK7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 06:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726249AbgEOK7F (ORCPT
+        with ESMTP id S1726283AbgEOK7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 06:59:05 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE89FC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:59:04 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id w64so2161676wmg.4
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:59:04 -0700 (PDT)
+        Fri, 15 May 2020 06:59:07 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029A9C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:59:07 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id i15so2978327wrx.10
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:59:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/saoxLzK90JZJFKv9cA9pNeOmBHJRKCJDK5y22zbNZc=;
-        b=kORIAiHIEKPrF1Kyrlm7Vftogj3IZCDUZqDv/LsKMvCHMe7gpfJeCeZ6r9AIGiOWq3
-         8ONVDRsIOCg3Kfji0CcMwVU2iFxNX3WKFVKPXHCSFrB0AHDtAUiwOwvNFjqjRIaeCCcD
-         L7F5zbQzmbl5QWfYfKuzXoXH2u83K7a/U8QfJY7wdOTCqYGv+dSQsAFUqPp8X8S90Q2o
-         icSBcBGJ1EWEdDt/Uo4OWdCuy99B7GosMhBl2bA2oCbUQnWt6Cu7NoRpuH52INYTdMU/
-         k6yCWnUhAl++Udm59+ZZCN1/nx6Xk9A/LL+hwAQIzp5rHbUPVtvH7UVy5Ehls4KzBBVe
-         ijjA==
+        bh=tabIxhAS7YNuq5iCO/oFZ2hYhqRnLr3yUyNvBgRfCZI=;
+        b=Cv2Z3CuGJLkWoPoCimitXSrNUULHZxg1cIHDIbhkX9ythTDj6NPfhsSKwZfQMAad7R
+         G8L8qGHU2YdJSJs0vMwW0bHciNFnynqNqifp9zUqPK8jvxI0+FrCWHWLl5GKZ7kiQuq+
+         2Ct0mAyOeRk7Vfi+KB2MVlbHyKMLXAwB8AWaY6jx/tMnkkYy6Jqr6RwcPTT6lEsSuBdU
+         d0Ytjdh5mz9lTlZep52k8KAq+aey6p69CRiy2wcG3bQxAm7g7uempDZEOngS+LaLfWxO
+         xXWJbeoD+BxMKhWq98ygvo2MJK3RfqowrM2Z7UEr1SpDAIhXDcpirBfCPfxNAVQnQPH5
+         fm6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/saoxLzK90JZJFKv9cA9pNeOmBHJRKCJDK5y22zbNZc=;
-        b=oZNPW0INkDSz13lQc0f7TYCn+6spPMaI4znZTfTcf3iEl4/ImSAl3wQxd4MDHEeXDC
-         /Q0p0uC8b/Z+cwYxXS2MLpNohclMhJhUubYSQY0Ye1ACna8oF4w7HmKyyPuv9utKg22C
-         BWt2JRPMrkTTj+cwcksKF1GLGx7/U9SFSWUQh0TysnV9Ix8FB+a3szcbeki23PrKSvw2
-         us9bY/FL/Mf+ZE25YwT22b9H7AS/tZbikpVTDtCm8UVEg7lsDUGCmOChdsHlH+dfKJfb
-         /A6OBudWbjTnV/RPEMlV/9XubnAm9m9CV4jmgGCEcRsId5UjxNfv5rU0Ed152kDRY0Xo
-         UuBQ==
-X-Gm-Message-State: AOAM531WVjIxmgKbN2vXJi7kLzKx5dkk18Wwz/gbW0ADiedFvM9DAAcg
-        /ZTtbbCqlCtH/DtlUZGehfClhw==
-X-Google-Smtp-Source: ABdhPJwwB0QO6cu9C49/M2CcaZGeJ8tiKTHqKxWYqZyiwYIjWsb3eUnN+QIM17TGSNwwkdlefEG+TA==
-X-Received: by 2002:a1c:7d43:: with SMTP id y64mr3548231wmc.46.1589540343004;
-        Fri, 15 May 2020 03:59:03 -0700 (PDT)
+        bh=tabIxhAS7YNuq5iCO/oFZ2hYhqRnLr3yUyNvBgRfCZI=;
+        b=D9Ira+OdvcsWqYD0VlF2FShyOJLBuypdCE3i6OEpZOxjTAvKVc12B2P4op5PIahp4h
+         XfSIctGL8+GM8Ka7cTHUOF6qLtdtWI21BmOQhmtTQSA4FHXPgzJ5MELH8qxy7Llpyp2p
+         yBYFXJtXiceESqMCrCO0zxcfNK+3KdaC7XfBx9+Fr98WL8d87Dbcg1OE8OO9IhE0FPey
+         mfegukg3Rs6J/yscccy0CiTISlKCzAQ/bgyM83/LLX9G+gqrhGWMkzITq03joImLocQv
+         pMDJZOmd6KMJN3na4ltxKrD06LoLz2N7B8KlXMKnJQCPcTZKh18Zk+bWI/V9qqOHSm3p
+         KxMg==
+X-Gm-Message-State: AOAM5317wmyBx6CQNWHRcHHjV++9GjHBbrbcOTIuenNfitIWnQUoToBg
+        Ej7XznNWITk2UVS8nw4H43spHQ==
+X-Google-Smtp-Source: ABdhPJxZuvOZCjCg1QHmgjP/CO6h4HqfQEUTFoOeBq82tqx37xijcHNEIVHnSkTzffpIwQpq9a0jhQ==
+X-Received: by 2002:adf:8403:: with SMTP id 3mr3511259wrf.186.1589540345053;
+        Fri, 15 May 2020 03:59:05 -0700 (PDT)
 Received: from localhost ([2a01:4b00:8523:2d03:d11b:f847:8002:7411])
-        by smtp.gmail.com with ESMTPSA id c16sm2991865wrv.62.2020.05.15.03.59.01
+        by smtp.gmail.com with ESMTPSA id p10sm3072695wrn.10.2020.05.15.03.59.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 May 2020 03:59:02 -0700 (PDT)
+        Fri, 15 May 2020 03:59:04 -0700 (PDT)
 From:   David Brazdil <dbrazdil@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         James Morse <james.morse@arm.com>,
@@ -57,9 +57,9 @@ To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
 Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v2 05/14] arm64: kvm: Build hyp-entry.S separately for VHE/nVHE
-Date:   Fri, 15 May 2020 11:58:32 +0100
-Message-Id: <20200515105841.73532-6-dbrazdil@google.com>
+Subject: [PATCH v2 06/14] arm64: kvm: Split hyp/tlb.c to VHE/nVHE
+Date:   Fri, 15 May 2020 11:58:33 +0100
+Message-Id: <20200515105841.73532-7-dbrazdil@google.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200515105841.73532-1-dbrazdil@google.com>
 References: <20200515105841.73532-1-dbrazdil@google.com>
@@ -73,247 +73,488 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 This patch is part of a series which builds KVM's non-VHE hyp code separately
 from VHE and the rest of the kernel.
 
-hyp-entry.S contains implementation of KVM hyp vectors. This code is mostly
-shared between VHE/nVHE, therefore compile it under both VHE and nVHE build
-rules. nVHE-specific host HVC handler is hidden behind __KVM_NVHE_HYPERVISOR__.
+tlb.c contains code for flushing the TLB, with parts shared between VHE/nVHE.
+These common routines are moved into a header file tlb.h, VHE-specific code
+remains in tlb.c and nVHE-specific code is moved to nvhe/tlb.c.
 
-Adjust code which selects which KVM hyp vecs to install to choose the correct
-VHE/nVHE symbol.
+The header file expects its users to implement two helper functions declared
+at the top of the file.
 
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/include/asm/kvm_asm.h | 25 ++++++++++++++++++++++++-
- arch/arm64/include/asm/kvm_mmu.h | 16 ++++++++++------
- arch/arm64/include/asm/mmu.h     |  7 -------
- arch/arm64/kernel/cpu_errata.c   |  4 +++-
- arch/arm64/kernel/image-vars.h   | 29 ++++++++++++++++++++++++++++-
- arch/arm64/kvm/hyp/hyp-entry.S   |  2 ++
- arch/arm64/kvm/hyp/nvhe/Makefile |  2 +-
- arch/arm64/kvm/va_layout.c       |  2 +-
- 8 files changed, 69 insertions(+), 18 deletions(-)
+ arch/arm64/kernel/image-vars.h   |   8 +-
+ arch/arm64/kvm/hyp/nvhe/Makefile |   2 +-
+ arch/arm64/kvm/hyp/nvhe/tlb.c    |  69 +++++++++++++
+ arch/arm64/kvm/hyp/tlb.c         | 170 +++----------------------------
+ arch/arm64/kvm/hyp/tlb.h         | 134 ++++++++++++++++++++++++
+ 5 files changed, 221 insertions(+), 162 deletions(-)
+ create mode 100644 arch/arm64/kvm/hyp/nvhe/tlb.c
+ create mode 100644 arch/arm64/kvm/hyp/tlb.h
 
-diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
-index 7c7eeeaab9fa..01242f54c48f 100644
---- a/arch/arm64/include/asm/kvm_asm.h
-+++ b/arch/arm64/include/asm/kvm_asm.h
-@@ -42,6 +42,22 @@
- 
- #include <linux/mm.h>
- 
-+/*
-+ * Translate name of a symbol defined in VHE/nVHE hyp implementations
-+ * to the name seen by kernel proper. All nVHE symbols are prefixed by
-+ * the build system to avoid clashes with the VHE variants.
-+ */
-+#define __kvm_vhe_sym(sym)	sym
-+#define __kvm_nvhe_sym(sym)	__kvm_nvhe_##sym
-+
-+/*
-+ * Define a pair of symbols sharing the same name but one defined in
-+ * VHE and the other in nVHE hyp implementations.
-+ */
-+#define DECLARE_KVM_HYP_SYM(sym)		\
-+	extern char __kvm_vhe_sym(sym)[];	\
-+	extern char __kvm_nvhe_sym(sym)[]
-+
- /* Translate a kernel address of @sym into its equivalent linear mapping */
- #define kvm_ksym_ref(sym)						\
- 	({								\
-@@ -50,6 +66,8 @@
- 			val = lm_alias(&sym);				\
- 		val;							\
- 	 })
-+#define kvm_ksym_ref_vhe(sym)	kvm_ksym_ref(__kvm_vhe_sym(sym))
-+#define kvm_ksym_ref_nvhe(sym)	kvm_ksym_ref(__kvm_nvhe_sym(sym))
- 
- struct kvm;
- struct kvm_vcpu;
-@@ -57,7 +75,12 @@ struct kvm_vcpu;
- extern char __kvm_hyp_init[];
- extern char __kvm_hyp_init_end[];
- 
--extern char __kvm_hyp_vector[];
-+DECLARE_KVM_HYP_SYM(__kvm_hyp_vector);
-+
-+#ifdef CONFIG_KVM_INDIRECT_VECTORS
-+DECLARE_KVM_HYP_SYM(__bp_harden_hyp_vecs);
-+extern atomic_t arm64_el2_vector_last_slot;
-+#endif
- 
- extern void __kvm_flush_vm_context(void);
- extern void __kvm_tlb_flush_vmid_ipa(struct kvm *kvm, phys_addr_t ipa);
-diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
-index 30b0e8d6b895..871ef591042c 100644
---- a/arch/arm64/include/asm/kvm_mmu.h
-+++ b/arch/arm64/include/asm/kvm_mmu.h
-@@ -477,11 +477,15 @@ extern int __kvm_harden_el2_vector_slot;
- static inline void *kvm_get_hyp_vector(void)
- {
- 	struct bp_hardening_data *data = arm64_get_bp_hardening_data();
--	void *vect = kern_hyp_va(kvm_ksym_ref(__kvm_hyp_vector));
- 	int slot = -1;
-+	void *vect = kern_hyp_va(has_vhe()
-+		? kvm_ksym_ref_vhe(__kvm_hyp_vector)
-+		: kvm_ksym_ref_nvhe(__kvm_hyp_vector));
- 
- 	if (cpus_have_const_cap(ARM64_HARDEN_BRANCH_PREDICTOR) && data->fn) {
--		vect = kern_hyp_va(kvm_ksym_ref(__bp_harden_hyp_vecs));
-+		vect = kern_hyp_va(has_vhe()
-+			? kvm_ksym_ref_vhe(__bp_harden_hyp_vecs)
-+			: kvm_ksym_ref_nvhe(__bp_harden_hyp_vecs));
- 		slot = data->hyp_vectors_slot;
- 	}
- 
-@@ -510,12 +514,11 @@ static inline int kvm_map_vectors(void)
- 	 *  HBP +  HEL2 -> use hardened vertors and use exec mapping
- 	 */
- 	if (cpus_have_const_cap(ARM64_HARDEN_BRANCH_PREDICTOR)) {
--		__kvm_bp_vect_base = kvm_ksym_ref(__bp_harden_hyp_vecs);
--		__kvm_bp_vect_base = kern_hyp_va(__kvm_bp_vect_base);
-+		__kvm_bp_vect_base = kern_hyp_va(kvm_ksym_ref_nvhe(__bp_harden_hyp_vecs));
- 	}
- 
- 	if (cpus_have_const_cap(ARM64_HARDEN_EL2_VECTORS)) {
--		phys_addr_t vect_pa = __pa_symbol(__bp_harden_hyp_vecs);
-+		phys_addr_t vect_pa = __pa_symbol(__kvm_nvhe_sym(__bp_harden_hyp_vecs));
- 		unsigned long size = __BP_HARDEN_HYP_VECS_SZ;
- 
- 		/*
-@@ -534,7 +537,8 @@ static inline int kvm_map_vectors(void)
- #else
- static inline void *kvm_get_hyp_vector(void)
- {
--	return kern_hyp_va(kvm_ksym_ref(__kvm_hyp_vector));
-+	return kern_hyp_va(has_vhe() ? kvm_ksym_ref_vhe(__kvm_hyp_vector)
-+				     : kvm_ksym_ref_nvhe(__kvm_hyp_vector));
- }
- 
- static inline int kvm_map_vectors(void)
-diff --git a/arch/arm64/include/asm/mmu.h b/arch/arm64/include/asm/mmu.h
-index 68140fdd89d6..4d913f6dd366 100644
---- a/arch/arm64/include/asm/mmu.h
-+++ b/arch/arm64/include/asm/mmu.h
-@@ -42,13 +42,6 @@ struct bp_hardening_data {
- 	bp_hardening_cb_t	fn;
- };
- 
--#if (defined(CONFIG_HARDEN_BRANCH_PREDICTOR) ||	\
--     defined(CONFIG_HARDEN_EL2_VECTORS))
--
--extern char __bp_harden_hyp_vecs[];
--extern atomic_t arm64_el2_vector_last_slot;
--#endif  /* CONFIG_HARDEN_BRANCH_PREDICTOR || CONFIG_HARDEN_EL2_VECTORS */
--
- #ifdef CONFIG_HARDEN_BRANCH_PREDICTOR
- DECLARE_PER_CPU_READ_MOSTLY(struct bp_hardening_data, bp_hardening_data);
- 
-diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
-index a102321fc8a2..94af3af12f44 100644
---- a/arch/arm64/kernel/cpu_errata.c
-+++ b/arch/arm64/kernel/cpu_errata.c
-@@ -117,7 +117,9 @@ DEFINE_PER_CPU_READ_MOSTLY(struct bp_hardening_data, bp_hardening_data);
- static void __copy_hyp_vect_bpi(int slot, const char *hyp_vecs_start,
- 				const char *hyp_vecs_end)
- {
--	void *dst = lm_alias(__bp_harden_hyp_vecs + slot * SZ_2K);
-+	char *vec = has_vhe() ? __kvm_vhe_sym(__bp_harden_hyp_vecs)
-+			      : __kvm_nvhe_sym(__bp_harden_hyp_vecs);
-+	void *dst = lm_alias(vec + slot * SZ_2K);
- 	int i;
- 
- 	for (i = 0; i < SZ_2K; i += 0x80)
 diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-index 13850134fc28..dc9c14d91d39 100644
+index dc9c14d91d39..7cafa0266847 100644
 --- a/arch/arm64/kernel/image-vars.h
 +++ b/arch/arm64/kernel/image-vars.h
-@@ -54,13 +54,40 @@ __efistub__ctype		= _ctype;
- #ifdef CONFIG_KVM
- 
- /*
-- * KVM nVHE code has its own symbol namespace prefixed by __hyp_text_, to
-+ * KVM nVHE code has its own symbol namespace prefixed by __kvm_nvhe_, to
-  * isolate it from the kernel proper. The following symbols are legally
-  * accessed by it, therefore provide aliases to make them linkable.
-  * Do not include symbols which may not be safely accessed under hypervisor
-  * memory mappings.
+@@ -62,14 +62,11 @@ __efistub__ctype		= _ctype;
   */
  
-+__kvm_nvhe___guest_exit = __guest_exit;
-+__kvm_nvhe___kvm_enable_ssbs = __kvm_enable_ssbs;
-+__kvm_nvhe___kvm_flush_vm_context = __kvm_flush_vm_context;
-+__kvm_nvhe___kvm_get_mdcr_el2 = __kvm_get_mdcr_el2;
-+__kvm_nvhe___kvm_handle_stub_hvc = __kvm_handle_stub_hvc;
-+__kvm_nvhe___kvm_timer_set_cntvoff = __kvm_timer_set_cntvoff;
-+__kvm_nvhe___kvm_tlb_flush_local_vmid = __kvm_tlb_flush_local_vmid;
-+__kvm_nvhe___kvm_tlb_flush_vmid = __kvm_tlb_flush_vmid;
-+__kvm_nvhe___kvm_tlb_flush_vmid_ipa = __kvm_tlb_flush_vmid_ipa;
-+__kvm_nvhe___kvm_vcpu_run_nvhe = __kvm_vcpu_run_nvhe;
-+__kvm_nvhe___vgic_v3_get_ich_vtr_el2 = __vgic_v3_get_ich_vtr_el2;
-+__kvm_nvhe___vgic_v3_init_lrs = __vgic_v3_init_lrs;
-+__kvm_nvhe___vgic_v3_read_vmcr = __vgic_v3_read_vmcr;
-+__kvm_nvhe___vgic_v3_restore_aprs = __vgic_v3_restore_aprs;
-+__kvm_nvhe___vgic_v3_save_aprs = __vgic_v3_save_aprs;
-+__kvm_nvhe___vgic_v3_write_vmcr = __vgic_v3_write_vmcr;
-+__kvm_nvhe_abort_guest_exit_end = abort_guest_exit_end;
-+__kvm_nvhe_abort_guest_exit_start = abort_guest_exit_start;
-+__kvm_nvhe_arm64_enable_wa2_handling = arm64_enable_wa2_handling;
-+__kvm_nvhe_arm64_ssbd_callback_required = arm64_ssbd_callback_required;
-+__kvm_nvhe_hyp_panic = hyp_panic;
-+__kvm_nvhe_kimage_voffset = kimage_voffset;
-+__kvm_nvhe_kvm_host_data = kvm_host_data;
-+__kvm_nvhe_kvm_patch_vector_branch = kvm_patch_vector_branch;
-+__kvm_nvhe_kvm_update_va_mask = kvm_update_va_mask;
-+__kvm_nvhe_panic = panic;
-+
- #endif /* CONFIG_KVM */
- 
- #endif /* __ARM64_KERNEL_IMAGE_VARS_H */
-diff --git a/arch/arm64/kvm/hyp/hyp-entry.S b/arch/arm64/kvm/hyp/hyp-entry.S
-index ab14de8d0131..81c65fa65183 100644
---- a/arch/arm64/kvm/hyp/hyp-entry.S
-+++ b/arch/arm64/kvm/hyp/hyp-entry.S
-@@ -27,6 +27,7 @@ el1_sync:				// Guest trapped into EL2
- 	ccmp	x0, #ESR_ELx_EC_HVC32, #4, ne
- 	b.ne	el1_trap
- 
-+#ifdef __KVM_NVHE_HYPERVISOR__
- 	mrs	x1, vttbr_el2		// If vttbr is valid, the guest
- 	cbnz	x1, el1_hvc_guest	// called HVC
- 
-@@ -86,6 +87,7 @@ el1_host_invalid_hvc:
- 	mov	x0, -ENOSYS
- 	eret
- 	sb
-+#endif /* __KVM_NVHE_HYPERVISOR__ */
- 
- el1_hvc_guest:
- 	/*
+ __kvm_nvhe___guest_exit = __guest_exit;
++__kvm_nvhe___icache_flags = __icache_flags;
+ __kvm_nvhe___kvm_enable_ssbs = __kvm_enable_ssbs;
+-__kvm_nvhe___kvm_flush_vm_context = __kvm_flush_vm_context;
+ __kvm_nvhe___kvm_get_mdcr_el2 = __kvm_get_mdcr_el2;
+ __kvm_nvhe___kvm_handle_stub_hvc = __kvm_handle_stub_hvc;
+ __kvm_nvhe___kvm_timer_set_cntvoff = __kvm_timer_set_cntvoff;
+-__kvm_nvhe___kvm_tlb_flush_local_vmid = __kvm_tlb_flush_local_vmid;
+-__kvm_nvhe___kvm_tlb_flush_vmid = __kvm_tlb_flush_vmid;
+-__kvm_nvhe___kvm_tlb_flush_vmid_ipa = __kvm_tlb_flush_vmid_ipa;
+ __kvm_nvhe___kvm_vcpu_run_nvhe = __kvm_vcpu_run_nvhe;
+ __kvm_nvhe___vgic_v3_get_ich_vtr_el2 = __vgic_v3_get_ich_vtr_el2;
+ __kvm_nvhe___vgic_v3_init_lrs = __vgic_v3_init_lrs;
+@@ -79,8 +76,11 @@ __kvm_nvhe___vgic_v3_save_aprs = __vgic_v3_save_aprs;
+ __kvm_nvhe___vgic_v3_write_vmcr = __vgic_v3_write_vmcr;
+ __kvm_nvhe_abort_guest_exit_end = abort_guest_exit_end;
+ __kvm_nvhe_abort_guest_exit_start = abort_guest_exit_start;
++__kvm_nvhe_arm64_const_caps_ready = arm64_const_caps_ready;
+ __kvm_nvhe_arm64_enable_wa2_handling = arm64_enable_wa2_handling;
+ __kvm_nvhe_arm64_ssbd_callback_required = arm64_ssbd_callback_required;
++__kvm_nvhe_cpu_hwcap_keys = cpu_hwcap_keys;
++__kvm_nvhe_cpu_hwcaps = cpu_hwcaps;
+ __kvm_nvhe_hyp_panic = hyp_panic;
+ __kvm_nvhe_kimage_voffset = kimage_voffset;
+ __kvm_nvhe_kvm_host_data = kvm_host_data;
 diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-index 7d64235dba62..c68801e24950 100644
+index c68801e24950..bed7260097f5 100644
 --- a/arch/arm64/kvm/hyp/nvhe/Makefile
 +++ b/arch/arm64/kvm/hyp/nvhe/Makefile
 @@ -7,7 +7,7 @@ asflags-y := -D__KVM_NVHE_HYPERVISOR__
  ccflags-y := -D__KVM_NVHE_HYPERVISOR__ -fno-stack-protector \
  	     -DDISABLE_BRANCH_PROFILING $(DISABLE_STACKLEAK_PLUGIN)
  
--obj-y :=
-+obj-y := ../hyp-entry.o
+-obj-y := ../hyp-entry.o
++obj-y := tlb.o ../hyp-entry.o
  
  obj-y := $(patsubst %.o,%.hyp.o,$(obj-y))
  extra-y := $(patsubst %.hyp.o,%.hyp.tmp.o,$(obj-y))
-diff --git a/arch/arm64/kvm/va_layout.c b/arch/arm64/kvm/va_layout.c
-index a4f48c1ac28c..157d106235f7 100644
---- a/arch/arm64/kvm/va_layout.c
-+++ b/arch/arm64/kvm/va_layout.c
-@@ -150,7 +150,7 @@ void kvm_patch_vector_branch(struct alt_instr *alt,
- 	/*
- 	 * Compute HYP VA by using the same computation as kern_hyp_va()
- 	 */
--	addr = (uintptr_t)kvm_ksym_ref(__kvm_hyp_vector);
-+	addr = (uintptr_t)kvm_ksym_ref_nvhe(__kvm_hyp_vector);
- 	addr &= va_mask;
- 	addr |= tag_val << tag_lsb;
+diff --git a/arch/arm64/kvm/hyp/nvhe/tlb.c b/arch/arm64/kvm/hyp/nvhe/tlb.c
+new file mode 100644
+index 000000000000..1b8f4000f98c
+--- /dev/null
++++ b/arch/arm64/kvm/hyp/nvhe/tlb.c
+@@ -0,0 +1,69 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2015 - ARM Ltd
++ * Author: Marc Zyngier <marc.zyngier@arm.com>
++ */
++
++#include <linux/irqflags.h>
++
++#include <asm/kvm_hyp.h>
++#include <asm/kvm_mmu.h>
++#include <asm/tlbflush.h>
++
++#include "../tlb.h"
++
++static void __hyp_text __tlb_switch_to_guest(struct kvm *kvm,
++					     struct tlb_inv_context *cxt)
++{
++	if (cpus_have_final_cap(ARM64_WORKAROUND_SPECULATIVE_AT_NVHE)) {
++		u64 val;
++
++		/*
++		 * For CPUs that are affected by ARM 1319367, we need to
++		 * avoid a host Stage-1 walk while we have the guest's
++		 * VMID set in the VTTBR in order to invalidate TLBs.
++		 * We're guaranteed that the S1 MMU is enabled, so we can
++		 * simply set the EPD bits to avoid any further TLB fill.
++		 */
++		val = cxt->tcr = read_sysreg_el1(SYS_TCR);
++		val |= TCR_EPD1_MASK | TCR_EPD0_MASK;
++		write_sysreg_el1(val, SYS_TCR);
++		isb();
++	}
++
++	__load_guest_stage2(kvm);
++	isb();
++}
++
++static void __hyp_text __tlb_switch_to_host(struct kvm *kvm,
++					    struct tlb_inv_context *cxt)
++{
++	write_sysreg(0, vttbr_el2);
++
++	if (cpus_have_final_cap(ARM64_WORKAROUND_SPECULATIVE_AT_NVHE)) {
++		/* Ensure write of the host VMID */
++		isb();
++		/* Restore the host's TCR_EL1 */
++		write_sysreg_el1(cxt->tcr, SYS_TCR);
++	}
++}
++
++void __hyp_text __kvm_tlb_flush_vmid_ipa(struct kvm *kvm, phys_addr_t ipa)
++{
++	__tlb_flush_vmid_ipa(kvm, ipa);
++}
++
++void __hyp_text __kvm_tlb_flush_vmid(struct kvm *kvm)
++{
++	__tlb_flush_vmid(kvm);
++}
++
++void __hyp_text __kvm_tlb_flush_local_vmid(struct kvm_vcpu *vcpu)
++{
++	__tlb_flush_local_vmid(vcpu);
++}
++
++void __hyp_text __kvm_flush_vm_context(void)
++{
++	__tlb_flush_vm_context();
++}
+diff --git a/arch/arm64/kvm/hyp/tlb.c b/arch/arm64/kvm/hyp/tlb.c
+index ceaddbe4279f..ab55b0c4a80c 100644
+--- a/arch/arm64/kvm/hyp/tlb.c
++++ b/arch/arm64/kvm/hyp/tlb.c
+@@ -10,14 +10,10 @@
+ #include <asm/kvm_mmu.h>
+ #include <asm/tlbflush.h>
  
+-struct tlb_inv_context {
+-	unsigned long	flags;
+-	u64		tcr;
+-	u64		sctlr;
+-};
++#include "tlb.h"
+ 
+-static void __hyp_text __tlb_switch_to_guest_vhe(struct kvm *kvm,
+-						 struct tlb_inv_context *cxt)
++static void __hyp_text __tlb_switch_to_guest(struct kvm *kvm,
++					     struct tlb_inv_context *cxt)
+ {
+ 	u64 val;
+ 
+@@ -60,40 +56,8 @@ static void __hyp_text __tlb_switch_to_guest_vhe(struct kvm *kvm,
+ 	isb();
+ }
+ 
+-static void __hyp_text __tlb_switch_to_guest_nvhe(struct kvm *kvm,
+-						  struct tlb_inv_context *cxt)
+-{
+-	if (cpus_have_final_cap(ARM64_WORKAROUND_SPECULATIVE_AT_NVHE)) {
+-		u64 val;
+-
+-		/*
+-		 * For CPUs that are affected by ARM 1319367, we need to
+-		 * avoid a host Stage-1 walk while we have the guest's
+-		 * VMID set in the VTTBR in order to invalidate TLBs.
+-		 * We're guaranteed that the S1 MMU is enabled, so we can
+-		 * simply set the EPD bits to avoid any further TLB fill.
+-		 */
+-		val = cxt->tcr = read_sysreg_el1(SYS_TCR);
+-		val |= TCR_EPD1_MASK | TCR_EPD0_MASK;
+-		write_sysreg_el1(val, SYS_TCR);
+-		isb();
+-	}
+-
+-	__load_guest_stage2(kvm);
+-	isb();
+-}
+-
+-static void __hyp_text __tlb_switch_to_guest(struct kvm *kvm,
+-					     struct tlb_inv_context *cxt)
+-{
+-	if (has_vhe())
+-		__tlb_switch_to_guest_vhe(kvm, cxt);
+-	else
+-		__tlb_switch_to_guest_nvhe(kvm, cxt);
+-}
+-
+-static void __hyp_text __tlb_switch_to_host_vhe(struct kvm *kvm,
+-						struct tlb_inv_context *cxt)
++static void __hyp_text __tlb_switch_to_host(struct kvm *kvm,
++					    struct tlb_inv_context *cxt)
+ {
+ 	/*
+ 	 * We're done with the TLB operation, let's restore the host's
+@@ -112,130 +76,22 @@ static void __hyp_text __tlb_switch_to_host_vhe(struct kvm *kvm,
+ 	local_irq_restore(cxt->flags);
+ }
+ 
+-static void __hyp_text __tlb_switch_to_host_nvhe(struct kvm *kvm,
+-						 struct tlb_inv_context *cxt)
++void __kvm_tlb_flush_vmid_ipa(struct kvm *kvm, phys_addr_t ipa)
+ {
+-	write_sysreg(0, vttbr_el2);
+-
+-	if (cpus_have_final_cap(ARM64_WORKAROUND_SPECULATIVE_AT_NVHE)) {
+-		/* Ensure write of the host VMID */
+-		isb();
+-		/* Restore the host's TCR_EL1 */
+-		write_sysreg_el1(cxt->tcr, SYS_TCR);
+-	}
++	__tlb_flush_vmid_ipa(kvm, ipa);
+ }
+ 
+-static void __hyp_text __tlb_switch_to_host(struct kvm *kvm,
+-					    struct tlb_inv_context *cxt)
++void __kvm_tlb_flush_vmid(struct kvm *kvm)
+ {
+-	if (has_vhe())
+-		__tlb_switch_to_host_vhe(kvm, cxt);
+-	else
+-		__tlb_switch_to_host_nvhe(kvm, cxt);
++	__tlb_flush_vmid(kvm);
+ }
+ 
+-void __hyp_text __kvm_tlb_flush_vmid_ipa(struct kvm *kvm, phys_addr_t ipa)
++void __kvm_tlb_flush_local_vmid(struct kvm_vcpu *vcpu)
+ {
+-	struct tlb_inv_context cxt;
+-
+-	dsb(ishst);
+-
+-	/* Switch to requested VMID */
+-	kvm = kern_hyp_va(kvm);
+-	__tlb_switch_to_guest(kvm, &cxt);
+-
+-	/*
+-	 * We could do so much better if we had the VA as well.
+-	 * Instead, we invalidate Stage-2 for this IPA, and the
+-	 * whole of Stage-1. Weep...
+-	 */
+-	ipa >>= 12;
+-	__tlbi(ipas2e1is, ipa);
+-
+-	/*
+-	 * We have to ensure completion of the invalidation at Stage-2,
+-	 * since a table walk on another CPU could refill a TLB with a
+-	 * complete (S1 + S2) walk based on the old Stage-2 mapping if
+-	 * the Stage-1 invalidation happened first.
+-	 */
+-	dsb(ish);
+-	__tlbi(vmalle1is);
+-	dsb(ish);
+-	isb();
+-
+-	/*
+-	 * If the host is running at EL1 and we have a VPIPT I-cache,
+-	 * then we must perform I-cache maintenance at EL2 in order for
+-	 * it to have an effect on the guest. Since the guest cannot hit
+-	 * I-cache lines allocated with a different VMID, we don't need
+-	 * to worry about junk out of guest reset (we nuke the I-cache on
+-	 * VMID rollover), but we do need to be careful when remapping
+-	 * executable pages for the same guest. This can happen when KSM
+-	 * takes a CoW fault on an executable page, copies the page into
+-	 * a page that was previously mapped in the guest and then needs
+-	 * to invalidate the guest view of the I-cache for that page
+-	 * from EL1. To solve this, we invalidate the entire I-cache when
+-	 * unmapping a page from a guest if we have a VPIPT I-cache but
+-	 * the host is running at EL1. As above, we could do better if
+-	 * we had the VA.
+-	 *
+-	 * The moral of this story is: if you have a VPIPT I-cache, then
+-	 * you should be running with VHE enabled.
+-	 */
+-	if (!has_vhe() && icache_is_vpipt())
+-		__flush_icache_all();
+-
+-	__tlb_switch_to_host(kvm, &cxt);
++	__tlb_flush_local_vmid(vcpu);
+ }
+ 
+-void __hyp_text __kvm_tlb_flush_vmid(struct kvm *kvm)
++void __kvm_flush_vm_context(void)
+ {
+-	struct tlb_inv_context cxt;
+-
+-	dsb(ishst);
+-
+-	/* Switch to requested VMID */
+-	kvm = kern_hyp_va(kvm);
+-	__tlb_switch_to_guest(kvm, &cxt);
+-
+-	__tlbi(vmalls12e1is);
+-	dsb(ish);
+-	isb();
+-
+-	__tlb_switch_to_host(kvm, &cxt);
+-}
+-
+-void __hyp_text __kvm_tlb_flush_local_vmid(struct kvm_vcpu *vcpu)
+-{
+-	struct kvm *kvm = kern_hyp_va(kern_hyp_va(vcpu)->kvm);
+-	struct tlb_inv_context cxt;
+-
+-	/* Switch to requested VMID */
+-	__tlb_switch_to_guest(kvm, &cxt);
+-
+-	__tlbi(vmalle1);
+-	dsb(nsh);
+-	isb();
+-
+-	__tlb_switch_to_host(kvm, &cxt);
+-}
+-
+-void __hyp_text __kvm_flush_vm_context(void)
+-{
+-	dsb(ishst);
+-	__tlbi(alle1is);
+-
+-	/*
+-	 * VIPT and PIPT caches are not affected by VMID, so no maintenance
+-	 * is necessary across a VMID rollover.
+-	 *
+-	 * VPIPT caches constrain lookup and maintenance to the active VMID,
+-	 * so we need to invalidate lines with a stale VMID to avoid an ABA
+-	 * race after multiple rollovers.
+-	 *
+-	 */
+-	if (icache_is_vpipt())
+-		asm volatile("ic ialluis");
+-
+-	dsb(ish);
++	__tlb_flush_vm_context();
+ }
+diff --git a/arch/arm64/kvm/hyp/tlb.h b/arch/arm64/kvm/hyp/tlb.h
+new file mode 100644
+index 000000000000..841ef400c8ec
+--- /dev/null
++++ b/arch/arm64/kvm/hyp/tlb.h
+@@ -0,0 +1,134 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2015 - ARM Ltd
++ * Author: Marc Zyngier <marc.zyngier@arm.com>
++ */
++
++#ifndef __ARM64_KVM_HYP_TLB_H__
++#define __ARM64_KVM_HYP_TLB_H__
++
++#include <linux/irqflags.h>
++
++#include <asm/kvm_hyp.h>
++#include <asm/kvm_mmu.h>
++#include <asm/tlbflush.h>
++
++struct tlb_inv_context {
++	unsigned long	flags;
++	u64		tcr;
++	u64		sctlr;
++};
++
++static void __hyp_text __tlb_switch_to_guest(struct kvm *kvm,
++					     struct tlb_inv_context *cxt);
++static void __hyp_text __tlb_switch_to_host(struct kvm *kvm,
++					    struct tlb_inv_context *cxt);
++
++static inline void __hyp_text
++__tlb_flush_vmid_ipa(struct kvm *kvm, phys_addr_t ipa)
++{
++	struct tlb_inv_context cxt;
++
++	dsb(ishst);
++
++	/* Switch to requested VMID */
++	kvm = kern_hyp_va(kvm);
++	__tlb_switch_to_guest(kvm, &cxt);
++
++	/*
++	 * We could do so much better if we had the VA as well.
++	 * Instead, we invalidate Stage-2 for this IPA, and the
++	 * whole of Stage-1. Weep...
++	 */
++	ipa >>= 12;
++	__tlbi(ipas2e1is, ipa);
++
++	/*
++	 * We have to ensure completion of the invalidation at Stage-2,
++	 * since a table walk on another CPU could refill a TLB with a
++	 * complete (S1 + S2) walk based on the old Stage-2 mapping if
++	 * the Stage-1 invalidation happened first.
++	 */
++	dsb(ish);
++	__tlbi(vmalle1is);
++	dsb(ish);
++	isb();
++
++	/*
++	 * If the host is running at EL1 and we have a VPIPT I-cache,
++	 * then we must perform I-cache maintenance at EL2 in order for
++	 * it to have an effect on the guest. Since the guest cannot hit
++	 * I-cache lines allocated with a different VMID, we don't need
++	 * to worry about junk out of guest reset (we nuke the I-cache on
++	 * VMID rollover), but we do need to be careful when remapping
++	 * executable pages for the same guest. This can happen when KSM
++	 * takes a CoW fault on an executable page, copies the page into
++	 * a page that was previously mapped in the guest and then needs
++	 * to invalidate the guest view of the I-cache for that page
++	 * from EL1. To solve this, we invalidate the entire I-cache when
++	 * unmapping a page from a guest if we have a VPIPT I-cache but
++	 * the host is running at EL1. As above, we could do better if
++	 * we had the VA.
++	 *
++	 * The moral of this story is: if you have a VPIPT I-cache, then
++	 * you should be running with VHE enabled.
++	 */
++	if (!has_vhe() && icache_is_vpipt())
++		__flush_icache_all();
++
++	__tlb_switch_to_host(kvm, &cxt);
++}
++
++static inline void __hyp_text __tlb_flush_vmid(struct kvm *kvm)
++{
++	struct tlb_inv_context cxt;
++
++	dsb(ishst);
++
++	/* Switch to requested VMID */
++	kvm = kern_hyp_va(kvm);
++	__tlb_switch_to_guest(kvm, &cxt);
++
++	__tlbi(vmalls12e1is);
++	dsb(ish);
++	isb();
++
++	__tlb_switch_to_host(kvm, &cxt);
++}
++
++static inline void __hyp_text __tlb_flush_local_vmid(struct kvm_vcpu *vcpu)
++{
++	struct kvm *kvm = kern_hyp_va(kern_hyp_va(vcpu)->kvm);
++	struct tlb_inv_context cxt;
++
++	/* Switch to requested VMID */
++	__tlb_switch_to_guest(kvm, &cxt);
++
++	__tlbi(vmalle1);
++	dsb(nsh);
++	isb();
++
++	__tlb_switch_to_host(kvm, &cxt);
++}
++
++static inline void __hyp_text __tlb_flush_vm_context(void)
++{
++	dsb(ishst);
++	__tlbi(alle1is);
++
++	/*
++	 * VIPT and PIPT caches are not affected by VMID, so no maintenance
++	 * is necessary across a VMID rollover.
++	 *
++	 * VPIPT caches constrain lookup and maintenance to the active VMID,
++	 * so we need to invalidate lines with a stale VMID to avoid an ABA
++	 * race after multiple rollovers.
++	 *
++	 */
++	if (icache_is_vpipt())
++		asm volatile("ic ialluis");
++
++	dsb(ish);
++}
++
++#endif /* __ARM64_KVM_HYP_TLB_H__ */
 -- 
 2.26.2
 
