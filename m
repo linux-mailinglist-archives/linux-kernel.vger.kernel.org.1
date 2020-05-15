@@ -2,71 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881F91D474E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 09:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5B21D4756
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 09:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgEOHpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 03:45:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:50554 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726622AbgEOHpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 03:45:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68E841042;
-        Fri, 15 May 2020 00:45:14 -0700 (PDT)
-Received: from nicgas01-03-arm-vm (nicgas01-03-arm-vm.shanghai.arm.com [10.169.138.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BDBE23F68F;
-        Fri, 15 May 2020 00:45:11 -0700 (PDT)
-References: <20200427061520.24905-1-nick.gasson@arm.com>
- <20200427103505.GA1476763@krava> <85lflu7v4o.fsf@arm.com>
- <20200514132337.GM5583@kernel.org>
- <CAP-5=fX-dV+VHaPMO2Sw0DFB72YtuSyc23X5S3EvxGxYhAT4kQ@mail.gmail.com>
-User-agent: mu4e 1.4.5; emacs 27.0.91
-From:   Nick Gasson <nick.gasson@arm.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Stephane Eranian <eranian@google.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Arnaldo Carvalho de Melo" <arnaldo.melo@gmail.com>
-Subject: Re: [PATCH 0/3] perf jvmti: Various fixes to JVMTI agent
-In-reply-to: <CAP-5=fX-dV+VHaPMO2Sw0DFB72YtuSyc23X5S3EvxGxYhAT4kQ@mail.gmail.com>
-Date:   Fri, 15 May 2020 15:45:09 +0800
-Message-ID: <858sht3am2.fsf@arm.com>
+        id S1726889AbgEOHso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 03:48:44 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:34292 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726694AbgEOHso (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 03:48:44 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 9F08D8030791;
+        Fri, 15 May 2020 07:48:38 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Z5eapfVpeB6f; Fri, 15 May 2020 10:48:33 +0300 (MSK)
+Date:   Fri, 15 May 2020 10:48:27 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 18/20] mips: csrc-r4k: Decrease r4k-clocksource rating
+ if CPU_FREQ enabled
+Message-ID: <20200515074827.6p5zx4sb3bmavjih@mobilestation>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506174238.15385-19-Sergey.Semin@baikalelectronics.ru>
+ <20200508154150.GB22247@alpha.franken.de>
+ <20200511133121.cz5axbwynhmqkx7x@mobilestation>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200511133121.cz5axbwynhmqkx7x@mobilestation>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/15/20 06:41 am, Ian Rogers wrote:
->
-> If you are looking at this code I believe there is a bug in that the
-> loop handling jvmtiCompiledMethodLoadInlineRecord is writing out the
-> entire line number table before a pc and not just the line number
-> table at the pc. This loop in do_get_line_numbers:
->
-> if (loc_tab[i].start_location < bci) {
-> tab[lines].pc = (unsigned long)pc;
-> tab[lines].line_number = loc_tab[i].line_number;
-> tab[lines].discrim = 0; /* not yet used */
-> tab[lines].methodID = m;
-> lines++;
-> } else {
->
-> It could possibly make sense if it were iterating over the inline data
-> in the jvmtiCompiledMethodLoadInlineRecord rather than the line number
-> table.
-> Fixing this is toward the end of a list of things I need to look at.
->
+Thomas,
+Could you take a look at my comment below so I could proceed with the
+patchset v3 development?
 
-OK sure, I'll have a look at this. Thanks for the reviews.
+-Sergey
 
---
-Thanks,
-Nick
+On Mon, May 11, 2020 at 04:31:21PM +0300, Serge Semin wrote:
+> On Fri, May 08, 2020 at 05:41:50PM +0200, Thomas Bogendoerfer wrote:
+> > On Wed, May 06, 2020 at 08:42:36PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
+> > > From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > > 
+> > > Commit 07d69579e7fe ("MIPS: Don't register r4k sched clock when
+> > > CPUFREQ enabled") disabled the r4k-clock usage for scheduler ticks
+> > > counting due to the scheduler being non-tolerant for unstable
+> > > clocks sources. For the same reason the clock should be used
+> > > in the system clocksource framework only as a last resort if CPU
+> > > frequency may change.
+> > > 
+> > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> > > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > > Cc: Paul Burton <paulburton@kernel.org>
+> > > Cc: Ralf Baechle <ralf@linux-mips.org>
+> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Cc: Arnd Bergmann <arnd@arndb.de>
+> > > Cc: Rob Herring <robh+dt@kernel.org>
+> > > Cc: linux-pm@vger.kernel.org
+> > > Cc: devicetree@vger.kernel.org
+> > > ---
+> > >  arch/mips/kernel/csrc-r4k.c | 4 ++++
+> > >  1 file changed, 4 insertions(+)
+> > > 
+> > > diff --git a/arch/mips/kernel/csrc-r4k.c b/arch/mips/kernel/csrc-r4k.c
+> > > index 437dda64fd7a..d81fb374f477 100644
+> > > --- a/arch/mips/kernel/csrc-r4k.c
+> > > +++ b/arch/mips/kernel/csrc-r4k.c
+> > > @@ -71,7 +71,11 @@ int __init init_r4k_clocksource(void)
+> > >  		return -ENXIO;
+> > >  
+> > >  	/* Calculate a somewhat reasonable rating value */
+> > > +#ifndef CONFIG_CPU_FREQ
+> > >  	clocksource_mips.rating = 200 + mips_hpt_frequency / 10000000;
+> > > +#else
+> > > +	clocksource_mips.rating = 99;
+> > > +#endif
+> > 
+> > I dislike this patch. Assuming you have an other clocksource, why not
+> > simply disable csrc-r4k, if CPU_FREQ is enabled ?
+> 
+> Me neither and the best way would be to update the clocksource frequency
+> dynamically the same way it's done for cevt-r4k and MIPS GIC timers. Alas the
+> clocksource doesn't support it. Due to this together with CPU-freq facility
+> enabled we have to use a very slow DW APB Timer instead of the fast embedded
+> into the CPU core r4k and MIPS GIC timers. Just note the difference: it takes
+> 220 ns to read the counter from DW APB Timer in comparison to a few nanoseconds
+> reading from MIPS GIC and R4K. So IMO disabling the timer as you suggest isn't
+> the best option. By making the CPUFREQ and CSRC_R4K mutual exclusive we'd
+> assume a use-case that the system will always use the CPU-freq facility changing
+> the CPU reference frequency. This is obviously not true. Noone prevents the
+> system administrator to leave the default setting of the CPU-freq with fixed
+> frequency and select a faster, more accurate timer like in our case.
+> 
+> My idea was not to try to predict how the system would be used, but to let the
+> system administration to choose which timer is applicable in particular usecase
+> enabling a safest one by default. So if CPUFREQ is available, then we fallback
+> to the external timer as safest one. If the system user wouldn't need to have
+> the CPUFREQ facility utilized, then the system administrator would want to
+> leave the default CPU-freq governor with pre-defined CPU frequency and
+> select either R4K (MIPS) or MIPS GIC timer just by writing its name into
+> /sys/bus/clocksource/devices/clocksource0/current_clocksource .
+>  
+> I should note, that currently CPU_FREQ won't be available if there is no
+> MIPS_EXTERNAL_TIMER available for the platform. It's prohibited by means of the
+> conditional kbuild config inclusion declared in the arch/mips/Kconfig:
+> + if CPU_SUPPORTS_CPUFREQ && MIPS_EXTERNAL_TIMER
+> + source "drivers/cpufreq/Kconfig"
+> + endif
+> So if there is no external timer working independently from the CPU core clock
+> source, the CPUFREQ won't be available to select for the kernel. Though currently
+> this limitation is supposed to be applicable for the R4K/MIPS GIC clocksource
+> timers only since clockevents must work fine in unstable reference clock conditions.
+> 
+> So what can we do to improve the patch? First one is a solution I suggested in
+> this patch but it could be a bit altered by using IS_ENABLED() macro to:
+> + clocksource_mips.rating = !IS_ENABLED(CONFIG_CPU_FREQ) ?
+> +			    200 + mips_hpt_frequency / 10000000 : 99;
+> 
+> Another idea I discovered when have been searching through the x86 arch code.
+> x86's got the same problem with TSC timer, but it doesn't disable it if
+> CPU-frequency is switched on. Instead it just marks it as unstable by calling
+> the clocksource_mark_unstable() method if CPU frequency changes. I suggest to
+> implement the same approach in our case of MIPS GIC (another patchset
+> I've sent, see "clocksource: Fix MIPS GIC and DW APB Timer for Baikal-T1 SoC
+> support" in your email client) and R4K timers. We'll subscribe to the CPU
+> frequency change and if it changes we'll call clocksource_mark_unstable() with
+> MIPS GIC and R4K clocksource handlers passed. This shall reduce their rating and
+> cause selecting a clocksource with better one. BTW I suppose it won't be
+> necessary to initially lower the rating of the MIPS GIC and R4K clocksource
+> timers if this is implemented.
+> 
+> So, what do you think?
+> 
+> -Sergey
+> 
+> > 
+> > Thomas.
+> > 
+> > -- 
+> > Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+> > good idea.                                                [ RFC1925, 2.3 ]
