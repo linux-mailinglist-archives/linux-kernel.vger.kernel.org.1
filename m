@@ -2,106 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8979B1D496D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145791D4976
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727958AbgEOJZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 05:25:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:51828 "EHLO foss.arm.com"
+        id S1728079AbgEOJZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 05:25:47 -0400
+Received: from ozlabs.org ([203.11.71.1]:45893 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727116AbgEOJZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 05:25:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C428C2F;
-        Fri, 15 May 2020 02:25:03 -0700 (PDT)
-Received: from bogus (unknown [10.37.12.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF31D3F71E;
-        Fri, 15 May 2020 02:25:00 -0700 (PDT)
-Date:   Fri, 15 May 2020 10:24:57 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Etienne Carriere <etienne.carriere@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        lorenzo.pieralisi@arm.com, maz@kernel.org,
-        Steven Price <steven.price@arm.com>, alexios.zavras@intel.com,
-        Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 2/2] firmware: psci: support SMCCC v1.2 for SMCCC conduit
-Message-ID: <20200515092457.GB23671@bogus>
-References: <20200514082109.27573-1-etienne.carriere@linaro.org>
- <20200514082109.27573-2-etienne.carriere@linaro.org>
- <20200514142442.GB23401@bogus>
- <CAN5uoS9gZ7820Fg-6dmm4BO5GW+Y6D3O5Xt3gUQtYVZGafm_XA@mail.gmail.com>
+        id S1727116AbgEOJZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 05:25:47 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Njgq5ZcLz9sSF;
+        Fri, 15 May 2020 19:25:43 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1589534745;
+        bh=muRLTUUOnYbHS5PIqo+UvMZCb0F7z3QuHuwqATdQsjY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cXzxL1TscSm0gRAqy2KIZOL2igmFAa9KmiNN0sKEH9T+raSu5iLJx70KhcCFOJo7b
+         SKYYyfzl4da5wQw0LHjWKMmPq/yuiXdqCaIogXvnPmfT02pPyn0/WsC3RIFMi5ep+6
+         d7uaq7VyMTmoh7WUvfuq+iYH4UMRU8h20gqHkHBEb5GG0ysSUprQpRs3wUih69E1Wz
+         1uf+d/tZjCRXpVvO5IsxzRiT78g8PpFRFzCoA9bUexIWcNnilQ20T+lEqfuERdd1Li
+         trtI9QWMWxp1lLyYnDJ4nkxFlP92Pej4vBQtnl9zV5Dzx+Pjz6oEqlj025IQJr1Vsa
+         DUjWm5qh2pUyA==
+Date:   Fri, 15 May 2020 19:25:41 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Howells <dhowells@redhat.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: linux-next: manual merge of the notifications tree with the vfs
+ tree
+Message-ID: <20200515192541.41b263e9@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAN5uoS9gZ7820Fg-6dmm4BO5GW+Y6D3O5Xt3gUQtYVZGafm_XA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/vRB8DqTHPTLJVuIbUWj=jR4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 04:56:53PM +0200, Etienne Carriere wrote:
-> On Thu, 14 May 2020 at 16:24, Sudeep Holla <sudeep.holla@arm.com> wrote:
-> >
-> > On Thu, May 14, 2020 at 10:21:09AM +0200, Etienne Carriere wrote:
-> > > Update PSCI driver to support SMCCC v1.2 reported by secure firmware
-> > > and indirectly make SMCCC conduit properly set when so. TF-A release
-> > > v2.3 implements and reports SMCCC v1.2 since commit [1].
-> > >
-> > > Link: [1] https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/commit/?id=e34cc0cedca6e229847c232fe58d37fad2610ce9
-> > > Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
-> > > ---
-> > >  drivers/firmware/psci/psci.c | 14 ++++++++++----
-> > >  include/linux/psci.h         |  1 +
-> > >  2 files changed, 11 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-> > > index 2937d44b5df4..80cf73bea4b0 100644
-> > > --- a/drivers/firmware/psci/psci.c
-> > > +++ b/drivers/firmware/psci/psci.c
-> > > @@ -409,11 +409,17 @@ static void __init psci_init_smccc(void)
-> > >       feature = psci_features(ARM_SMCCC_VERSION_FUNC_ID);
-> > >
-> > >       if (feature != PSCI_RET_NOT_SUPPORTED) {
-> > > -             u32 ret;
-> > > -             ret = invoke_psci_fn(ARM_SMCCC_VERSION_FUNC_ID, 0, 0, 0);
-> > > -             if (ret == ARM_SMCCC_VERSION_1_1) {
-> > > +             ver = invoke_psci_fn(ARM_SMCCC_VERSION_FUNC_ID, 0, 0, 0);
-> > > +
-> > > +             switch (ver) {
-> > > +             case ARM_SMCCC_VERSION_1_1:
-> > >                       psci_ops.smccc_version = SMCCC_VERSION_1_1;
-> > > -                     ver = ret;
-> > > +                     break;
-> > > +             case ARM_SMCCC_VERSION_1_2:
-> > > +                     psci_ops.smccc_version = SMCCC_VERSION_1_2;
-> > > +                     break;
-> > > +             default:
-> > > +                     break;
-> > >               }
-> > >       }
-> > >
-> > > diff --git a/include/linux/psci.h b/include/linux/psci.h
-> > > index a67712b73b6c..c7d99b7f34ed 100644
-> > > --- a/include/linux/psci.h
-> > > +++ b/include/linux/psci.h
-> > > @@ -24,6 +24,7 @@ bool psci_has_osi_support(void);
-> > >  enum smccc_version {
-> > >       SMCCC_VERSION_1_0,
-> > >       SMCCC_VERSION_1_1,
-> > > +     SMCCC_VERSION_1_2,
-> >
-> > I took approach to kill this completely [1] instead of having to keep
-> > expanding it for ever.
->
-> Yes, I've been pointed to [1]. Discard this change. Sorry for the
-> (little) noise.
->
+--Sig_/vRB8DqTHPTLJVuIbUWj=jR4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-No worries, it's not a noise, just different approach.
+Hi all,
 
---
-Regards,
-Sudeep
+Today's linux-next merge of the notifications tree got a conflict in:
+
+  fs/mount.h
+
+between commit:
+
+  9f6c61f96f2d ("proc/mounts: add cursor")
+
+from the vfs tree and commit:
+
+  cd7109637b0b ("watch_queue: Implement mount topology and attribute change=
+ notifications")
+
+from the notifications tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/mount.h
+index c7abb7b394d8,9a49ea1e7365..000000000000
+--- a/fs/mount.h
++++ b/fs/mount.h
+@@@ -158,4 -161,16 +165,18 @@@ static inline bool is_anon_ns(struct mn
+  	return ns->seq =3D=3D 0;
+  }
+ =20
+ +extern void mnt_cursor_del(struct mnt_namespace *ns, struct mount *cursor=
+);
+++
++ #ifdef CONFIG_MOUNT_NOTIFICATIONS
++ extern void notify_mount(struct mount *triggered,
++ 			 struct mount *aux,
++ 			 enum mount_notification_subtype subtype,
++ 			 u32 info_flags);
++ #else
++ static inline void notify_mount(struct mount *triggered,
++ 				struct mount *aux,
++ 				enum mount_notification_subtype subtype,
++ 				u32 info_flags)
++ {
++ }
++ #endif
+
+--Sig_/vRB8DqTHPTLJVuIbUWj=jR4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6+YBUACgkQAVBC80lX
+0GyKYgf/VYfmeQnDJWjVMtojtpnAKXS38U7KlUREBn7Ok6croZHAoIjKI/gR8Lrm
+xLIaXcfCMmrJKS0XcUVcCyDLCnSoqt2JF7VfmPEy9vfPdBOOQt1wyZ6Z5eje1Ss7
+MvQBXBbSndEQS3cEY7rtWKfWmgiDBOQbq4MXRaKdmsFyBKY5Twib1LGyNUSCdSlI
+ra5i9q1vffXuoSdCUts3dHarwUjX0zCsgmgBmGOgTSFNeWFFNeE4dxBMl+Ma4Ss1
+aqQewcLptnBKnaSEsgc7dPhh53KWigSSreKGvmpNrumenCakF/mTK7zI27hbre+B
+jTlVnps+prSsYzcb5mnFH9ScyC6p9g==
+=oo3F
+-----END PGP SIGNATURE-----
+
+--Sig_/vRB8DqTHPTLJVuIbUWj=jR4--
