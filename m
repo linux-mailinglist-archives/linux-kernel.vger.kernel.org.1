@@ -2,74 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF4A1D584A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 19:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BCA1D584F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 19:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbgEORvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 13:51:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36584 "EHLO mail.kernel.org"
+        id S1726257AbgEORwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 13:52:20 -0400
+Received: from ms.lwn.net ([45.79.88.28]:53540 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgEORvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 13:51:03 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1726183AbgEORwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 13:52:20 -0400
+Received: from lwn.net (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC86C206D8;
-        Fri, 15 May 2020 17:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589565063;
-        bh=tcvAYJHglzwUNfNTWbEPrAeLOSbX+1crX3AKhXvoL5Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aRzyo3nUmxd8NpKUMnioyB/kziXRo5fJ+uPX0zWb/ZU+Yooi03NiG3naVx/tj//jz
-         /mRfY1nzCj0CM2YoShJ9RJmbzLUS/LK2c8IeplSGvGAV2rYJo40Z4qRe/9dGhDZKnR
-         qvRDUrGb5N6uiOnVK0MX3E/MNUHZGcXMB2Z5FWY0=
-Date:   Fri, 15 May 2020 18:51:00 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] spi: dw: Clear DMAC register when done or stopped
-Message-ID: <20200515175100.GL5066@sirena.org.uk>
-References: <20200515174856.1406-1-Sergey.Semin@baikalelectronics.ru>
+        by ms.lwn.net (Postfix) with ESMTPSA id CD95A72D;
+        Fri, 15 May 2020 17:52:19 +0000 (UTC)
+Date:   Fri, 15 May 2020 11:52:18 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Simon Horman <horms+renesas@verge.net.au>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Subject: Re: [PATCH 01/14] docs: move DMA kAPI to Documentation/core-api
+Message-ID: <20200515115218.4d805685@lwn.net>
+In-Reply-To: <a1517185418cb9d987f566ef85a5dd5c7c99f34e.1588345503.git.mchehab+huawei@kernel.org>
+References: <cover.1588345503.git.mchehab+huawei@kernel.org>
+        <a1517185418cb9d987f566ef85a5dd5c7c99f34e.1588345503.git.mchehab+huawei@kernel.org>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7vAdt9JsdkkzRPKN"
-Content-Disposition: inline
-In-Reply-To: <20200515174856.1406-1-Sergey.Semin@baikalelectronics.ru>
-X-Cookie: Avoid contact with eyes.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri,  1 May 2020 17:37:45 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
---7vAdt9JsdkkzRPKN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Move those files to the core-api, where they belong, renaming
+> them to ReST and adding to the core API index file.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../{DMA-API-HOWTO.txt => core-api/dma-api-howto.rst}         | 0
+>  Documentation/{DMA-API.txt => core-api/dma-api.rst}           | 0
+>  .../{DMA-attributes.txt => core-api/dma-attributes.rst}       | 0
+>  Documentation/{DMA-ISA-LPC.txt => core-api/dma-isa-lpc.rst}   | 0
+>  Documentation/core-api/index.rst                              | 4 ++++
+>  5 files changed, 4 insertions(+)
+>  rename Documentation/{DMA-API-HOWTO.txt => core-api/dma-api-howto.rst} (100%)
+>  rename Documentation/{DMA-API.txt => core-api/dma-api.rst} (100%)
+>  rename Documentation/{DMA-attributes.txt => core-api/dma-attributes.rst} (100%)
+>  rename Documentation/{DMA-ISA-LPC.txt => core-api/dma-isa-lpc.rst} (100%)
 
-On Fri, May 15, 2020 at 08:48:54PM +0300, Serge Semin wrote:
+This one seems obvious, applied.
 
-> Acked-by: Mark Brown <broonie@kernel.org>
-
-I didn't ack this but Andy did (or at least the for-5.8 version)?
-
---7vAdt9JsdkkzRPKN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6+1oMACgkQJNaLcl1U
-h9CKggf8DwgS+z/RTKKCOSWkzy5KUqsXHelAyHkx/m4g22mXx2lAUIO/JRtskyqN
-bw6XePwD9D3G4HqYStuMKJ9eumQ+sV2/GGkAwwQoPqNhr4RH/Y/W2qVOVHXW7mYy
-eNVMr0Vt3Y4NouV5wKo3KVnZ3U7uV9TrHgqT0uDXNJDL6bO+8ZskMDOE6XHzVrA4
-DWuTr5cd+f9i05eWrmXazAxREUcnrcXpVr9qhwcplO8NQx99uGQSSiFcnFUJkCN+
-9j/6KEvvYscKcmYg/M8FH0tGcLk3ok7T4sxUu+Gvm+F6oW5Ol5ioVVR34o95mhNb
-L1U9jBBY4G0VL5LDPX1197nV5qQF8g==
-=LKb+
------END PGP SIGNATURE-----
-
---7vAdt9JsdkkzRPKN--
+jon
