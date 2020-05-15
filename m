@@ -2,103 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A691D5977
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0271D5985
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 20:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726302AbgEOSu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 14:50:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47658 "EHLO
+        id S1726236AbgEOSzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 14:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbgEOSu7 (ORCPT
+        with ESMTP id S1726144AbgEOSzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 14:50:59 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B89C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 11:50:56 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d67004cd1c8a6a574a4fa.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6700:4cd1:c8a6:a574:a4fa])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 27A941EC02DD;
-        Fri, 15 May 2020 20:50:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1589568655;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=YP9RZMqjeJZdVRtJI2gZU8UCFpzgV4mlHCpsx0w8oyQ=;
-        b=Hup5ZOpB1Xg26Fj3NIW+wcvZivoPvwYsr5cO9V6lKmE+EyALZrZuI/JCrQWx9dsN2FGObm
-        XZq9Rpw1QKsBdbI9egp4rs2K11bEJR9iWtYaH8BxR8i6lTx/L0CQyD3bYI4CmxCANmA1kg
-        G3mvDAhosBfq27HSXduiQinmStc7k1c=
-Date:   Fri, 15 May 2020 20:50:51 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dmitry Golovin <dima@golovin.in>
-Cc:     clang-built-linux@googlegroups.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/boot: allow a relocatable kernel to be linked with
- lld
-Message-ID: <20200515185051.GC19017@zn.tnic>
-References: <20200501084215.242-1-dima@golovin.in>
+        Fri, 15 May 2020 14:55:53 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819FDC061A0C;
+        Fri, 15 May 2020 11:55:53 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id j145so3146940oib.5;
+        Fri, 15 May 2020 11:55:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VvMtgHIRLykxmhWLdZJQYZ0krOC9vXjMfTK6g/AZbUA=;
+        b=ErHcxT+mAoqp7ksTgGa9KWZE69wefN59b50K++XYxGuilOr/0/UNUbODmS9b7vehP2
+         GcDlCVyo34Jqu4ZS6FVuMpFADa7ICKUupguIPKLT1kNPfOIxBQ3ZlqH7GQCWd/DjISyi
+         IlZKBpHC2yesBPkDwvGGUPwUQI9eKzkL/oYB8Bskz9ohCXh+LHQe+/4dlNCdrShSoJHn
+         D1qmYBvDpYrzOtki0/3ygKjl7y7uTwPhNAwdF7LKc7uqTd6IjPT3SHMEXKzoqpTqWKPb
+         D+uh1ZiCWOpJsDmfIJ9UfYSr9P+3tR/UdrEZ3KqJiK/o4t7THq8fLqsFSWWotqaFzeMS
+         wK4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VvMtgHIRLykxmhWLdZJQYZ0krOC9vXjMfTK6g/AZbUA=;
+        b=rRRkVWflh3GbOTIWaTHmAw45gVWJaTfxsxeQGLNt+I7WHyH86T+jx1OOpEor3P05Uz
+         04aoFxVn1HPN+DCYhYOl85EnmQF1s/uULwjXvT5bHlKu0e2+95ZBc/yHQPr9j04mxw+Q
+         QI18nI0Zoby2pu1rMGfTTwYkbC6oMHrXEq/OouL/VaMP6Oxv1Q8EUR0dl0Atyvu2k5UA
+         W33A6oLv8wxLlqXr7wKxcpd/WiHMtmXM1t3Iczdg/BGOPpFU3PNiWW3J8zHSHwefsvIj
+         ++j8YyK9KeRICN0nAOSJqzGn9jycn9nhSzkuVQiEPR4SFVwp/itzeek7MbQLmVUGobdf
+         H5yQ==
+X-Gm-Message-State: AOAM533dXdc+HE69K6YLUPc0NpDSw7IAOr5eryZP7IMU73u0UYT8Nwkd
+        eYoijmLQCdKaOQwiXtqjC3VFtcwKhiG5SQzu5QRwEO37
+X-Google-Smtp-Source: ABdhPJzY4volsN0uHSJFmoFggMhaZdolh0W7pFgZ1qIQk13JeIs49jjw8dYtyQry1Dj4ljshCyilGrGGvb+jkPIBADo=
+X-Received: by 2002:aca:210a:: with SMTP id 10mr3055246oiz.92.1589568952881;
+ Fri, 15 May 2020 11:55:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200501084215.242-1-dima@golovin.in>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAEjxPJ6pFdDfm55pv9bT3CV5DTFF9VqzRmG_Xi5bKNxPaGuOLg@mail.gmail.com>
+ <158932282880.2885325.2688622278854566047.stgit@warthog.procyon.org.uk>
+ <CAEjxPJ4=ZN_jKP2nX5mrMA3OxC8XLsYEmCPCD-78H4XQw=_hCA@mail.gmail.com>
+ <3999877.1589475539@warthog.procyon.org.uk> <CAEjxPJ5wW2qHYDsqKr5rjnRJ++4f2LXobCQkKZvWCSb_j0WN6w@mail.gmail.com>
+ <196730.1589561109@warthog.procyon.org.uk>
+In-Reply-To: <196730.1589561109@warthog.procyon.org.uk>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Fri, 15 May 2020 14:55:42 -0400
+Message-ID: <CAEjxPJ6JGZxF_G63Y7M-CQpmt5Sqp2uFF4oEKS6NpNLZxXhXcA@mail.gmail.com>
+Subject: Re: [PATCH] keys: Move permissions checking decisions into the
+ checking code
+To:     David Howells <dhowells@redhat.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        keyrings@vger.kernel.org, SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 08:42:13AM +0000, Dmitry Golovin wrote:
-> LLD by default disallows relocations in read-only segments. For a
+On Fri, May 15, 2020 at 12:45 PM David Howells <dhowells@redhat.com> wrote:
+> I can go back to the enum patch for the moment if you and Casey can put up
+> with that for the moment?
 
-I need more info here about which segment is read-only?
-
-Is this something LLD does by default or what's happening?
-
-Because my BFD-linked vmlinux has:
-
-Program Headers:
-  Type           Offset             VirtAddr           PhysAddr
-                 FileSiz            MemSiz              Flags  Align
-  LOAD           0x0000000000001000 0x0000000000000000 0x0000000000000000
-                 0x000000000070fa28 0x0000000000726b00  RWE    0x1000
-  LOAD           0x0000000000000000 0x0000000000727000 0x0000000000727000
-                 0x0000000000000000 0x0000000000007000  RW     0x1000
-  DYNAMIC        0x00000000007108f8 0x000000000070f8f8 0x000000000070f8f8
-                 0x0000000000000130 0x0000000000000130  RW     0x8
-  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000
-                 0x0000000000000000 0x0000000000000000  RWE    0x10
-
-so what's up?
-
-> relocatable kernel, we pass -z notext to the linker to explicitly
-> allow relocations. This behavior is the default for BFD.
-
-Or are you saying that ld.bfd makes the text segment by default RW while
-ld.lld makes it read-only like the elf manpage says:
-
-"p_flags
-              This member holds a bit mask of flags relevant to the segment:
-
-              PF_X   An executable segment.
-              PF_W   A writable segment.
-              PF_R   A readable segment.
-
-              A text segment commonly has the flags PF_X and PF_R."
-
-IOW, don't be afraid to be more verbose in the commit message. :)
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Yes, let's do that.
