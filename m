@@ -2,105 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF1B1D54CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AC21D54DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 17:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgEOPd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 11:33:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23496 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726246AbgEOPd5 (ORCPT
+        id S1726763AbgEOPhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 11:37:42 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45144 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726614AbgEOPhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 11:33:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589556835;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=0q1Y8ePvKhM4R3+rVYPWm7Pu+FP0VGkrqM/os2Y0oAI=;
-        b=a1eDNabfdJ/mv/Wkdl9a8WVvXIvQ2iR9P+ZHXEFFxw/gD7Utw4ma+5HHtBD8kyF7JYxg4y
-        urdKdsMBpLavQHdav0U/M3GmwBIr5XibOEGmDsW0WhTG2ZXy5r8bA9uGw7bMDPHzSh02ro
-        6CkkwG4R++jABGnc/opUj0oxRdvFVjU=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-420-dt4NoZgUMeWlEEnxb-eUig-1; Fri, 15 May 2020 11:33:54 -0400
-X-MC-Unique: dt4NoZgUMeWlEEnxb-eUig-1
-Received: by mail-wm1-f69.google.com with SMTP id f62so1352762wme.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 08:33:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=0q1Y8ePvKhM4R3+rVYPWm7Pu+FP0VGkrqM/os2Y0oAI=;
-        b=mYpQGonuff8gc4sWstgslUXaiQq1DEfSUOq3vJH2D8iwbq6grB/InDUZsD4ktFqg3a
-         0y81zfUPfHFCbQlH8ByfsfCW8WAt6WsaHht8gMUtpvT5vGrwwsY/w5KVp6am8hmymnit
-         nTJggQpEtKb9nlF28QTw5wft538MshGQhn8sd6RrTFzCadbNVgCi/t5FUQhiW6zlgo5/
-         61jxWxUhcEe4aak3/HzQCtQ+BeRnzxhe+Wr3/J9gcz2vw55clhBdJHY9KLjCxSszWaAL
-         1kJifwMdpwfBfjrYZguEPQpDmGFTzotcAgoRgkJWi79xoJ9umFpWZ+VLRltQ+pYLNbj7
-         dn9Q==
-X-Gm-Message-State: AOAM531T//FeGJ3SU98QbSHYrThPR95hR7WVnKggi1HzFKmgF+Yo9rpl
-        UQOHqktRX+IB9eZ/KvyE0L6LVR6YHissX25jA4lJZ+/dsF6JBeQGhyX/bFsA0P0XY0XyZsz6blj
-        jf0LmaP5a6x1TngzqHf0vIVEX
-X-Received: by 2002:a1c:2087:: with SMTP id g129mr4503998wmg.126.1589556832766;
-        Fri, 15 May 2020 08:33:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwz/KlciQFx1rHU1J+UL9igbunQtTe0UZESWhBj7gKnvBR65GITM/RzOMxXTQwccrKqsnawtA==
-X-Received: by 2002:a1c:2087:: with SMTP id g129mr4503978wmg.126.1589556832581;
-        Fri, 15 May 2020 08:33:52 -0700 (PDT)
-Received: from redhat.com (bzq-79-179-68-225.red.bezeqint.net. [79.179.68.225])
-        by smtp.gmail.com with ESMTPSA id c16sm4048373wrv.62.2020.05.15.08.33.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 08:33:51 -0700 (PDT)
-Date:   Fri, 15 May 2020 11:33:50 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kbuild test robot <lkp@intel.com>,
-        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: [PATCH] vhost: missing __user tags
-Message-ID: <20200515153347.1092235-1-mst@redhat.com>
+        Fri, 15 May 2020 11:37:42 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: evelikov)
+        with ESMTPSA id 560F02A3375
+Date:   Fri, 15 May 2020 16:35:02 +0100
+From:   Emil Velikov <emil.velikov@collabora.com>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCHv1 13/19] power: supply: sbs-battery: add
+ POWER_SUPPLY_HEALTH_CALIBRATION_REQUIRED support
+Message-ID: <20200515153502.GE2836808@arch-x1c3>
+References: <20200513185615.508236-1-sebastian.reichel@collabora.com>
+ <20200513185615.508236-14-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email 2.24.1.751.gd10ce2899c
-X-Mutt-Fcc: =sent
+In-Reply-To: <20200513185615.508236-14-sebastian.reichel@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sparse warns about converting void * to void __user *. This is not new
-but only got noticed now that vhost is built on more systems.
-This is just a question of __user tags missing in a couple of places,
-so fix it up.
+On 2020/05/13, Sebastian Reichel wrote:
+> Add support for reporting the SBS battery's condition flag
+> to userspace using the new "Calibration required" health status.
+> 
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+>  drivers/power/supply/sbs-battery.c | 27 ++++++++++++++++++++++++---
+>  1 file changed, 24 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sbs-battery.c
+> index 4fa553d61db2..2a2b926ad75c 100644
+> --- a/drivers/power/supply/sbs-battery.c
+> +++ b/drivers/power/supply/sbs-battery.c
+> @@ -23,6 +23,7 @@
+>  
+>  enum {
+>  	REG_MANUFACTURER_DATA,
+> +	REG_BATTERY_MODE,
+>  	REG_TEMPERATURE,
+>  	REG_VOLTAGE,
+>  	REG_CURRENT_NOW,
+> @@ -94,6 +95,8 @@ static const struct chip_data {
+>  } sbs_data[] = {
+>  	[REG_MANUFACTURER_DATA] =
+>  		SBS_DATA(POWER_SUPPLY_PROP_PRESENT, 0x00, 0, 65535),
+> +	[REG_BATTERY_MODE] =
+> +		SBS_DATA(-1, 0x03, 0, 65535),
 
-Fixes: f88949138058 ("vhost: introduce O(1) vq metadata cache")
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- drivers/vhost/vhost.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Fwiw I really like how neatly the driver is split into components. One thing
+which makes me wonder, have you considered reshuffling the sbs_data struct.
 
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index d450e16c5c25..21a59b598ed8 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -730,7 +730,7 @@ static inline void __user *vhost_vq_meta_fetch(struct vhost_virtqueue *vq,
- 	if (!map)
- 		return NULL;
- 
--	return (void *)(uintptr_t)(map->addr + addr - map->start);
-+	return (void __user *)(uintptr_t)(map->addr + addr - map->start);
- }
- 
- /* Can we switch to this memory table? */
-@@ -869,7 +869,7 @@ static void __user *__vhost_get_user_slow(struct vhost_virtqueue *vq,
-  * not happen in this case.
-  */
- static inline void __user *__vhost_get_user(struct vhost_virtqueue *vq,
--					    void *addr, unsigned int size,
-+					    void __user *addr, unsigned int size,
- 					    int type)
- {
- 	void __user *uaddr = vhost_vq_meta_fetch(vq,
--- 
-MST
+In particular:
+ - index POWER_SUPPLY_PROP, kill off the REG_ enum
+   - sbs_get_property_index() can go, alongside a couple of unreachable paths
+   - replace batter_mode (needs calibration) with with PROP_HEALTH + comment
+   - perhaps even add REG_ADDR_SPEC_INFO 0x1a under POWER_SUPPLY_PROP_PRESENT
+ - using the min/max seems wasteful, considering only one register is in s16
+   range while everything else is within u16
 
+
+Regardless of the questions and trivial suggestions, the series looks spot on.
+
+For the lot:
+Reviewed-by: Emil Velikov <emil.velikov@collabora.com>
+
+
+-Emil
+P.S. The reg table is nearly complete only 0x01-0x07, 0x0E, 0x11, 0x1d-0x1f
+remain o/
