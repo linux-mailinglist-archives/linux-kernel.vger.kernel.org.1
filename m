@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03CC1D5CF4
+	by mail.lfdr.de (Postfix) with ESMTP id 60E6B1D5CF3
 	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 02:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727867AbgEPAKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 20:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41050 "EHLO
+        id S1727839AbgEPAKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 20:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727838AbgEPAKk (ORCPT
+        by vger.kernel.org with ESMTP id S1727817AbgEPAKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 May 2020 20:10:40 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDE3C061A0C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A00DC061A0C
         for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 17:10:40 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jZkP3-00022L-Pw; Sat, 16 May 2020 02:10:09 +0200
+        id 1jZkP5-00022O-1o; Sat, 16 May 2020 02:10:11 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 4E953100605;
-        Sat, 16 May 2020 02:10:09 +0200 (CEST)
-Message-Id: <20200515235124.577025789@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 89899100605;
+        Sat, 16 May 2020 02:10:10 +0200 (CEST)
+Message-Id: <20200515235124.673436293@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Sat, 16 May 2020 01:45:49 +0200
+Date:   Sat, 16 May 2020 01:45:50 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -50,7 +50,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V6 02/37] tracing/hwlat: Split ftrace_nmi_enter/exit()
+Subject: [patch V6 03/37] nmi, tracing: Provide nmi_enter/exit_notrace()
 References: <20200515234547.710474468@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -63,136 +63,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hardware latency tracer calls into timekeeping and ends up in
-various instrumentable functions which is problematic vs. the kprobe
-handling especially the text poke machinery. It's invoked from
-nmi_enter/exit(), i.e. non-instrumentable code.
 
-Split it into two parts:
+To fully isolate #DB and #BP from instrumentable code it's necessary to
+avoid invoking the hardware latency tracer on nmi_enter/exit().
 
- 1) NMI counter, only invoked on nmi_enter() and noinstr safe
+Provide nmi_enter/exit() variants which are not invoking the hardware
+latency tracer. That allows to put calls explicitely into the call sites
+outside of the kprobe handling.
 
- 2) NMI timestamping, to be invoked from instrumentable code
-
-Move it into the rcu is watching regions of nmi_enter/exit() even
-if there is no actual RCU dependency right now but there is also
-no point in having it early.
-
-The actual split of nmi_enter/exit() is done in a separate step.
-
-Requested-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- include/linux/ftrace_irq.h |   31 +++++++++++++++++++------------
- include/linux/hardirq.h    |    5 +++--
- kernel/trace/trace_hwlat.c |   19 ++++++++++++-------
- 3 files changed, 34 insertions(+), 21 deletions(-)
 
---- a/include/linux/ftrace_irq.h
-+++ b/include/linux/ftrace_irq.h
-@@ -4,23 +4,30 @@
- 
- #ifdef CONFIG_HWLAT_TRACER
- extern bool trace_hwlat_callback_enabled;
--extern void trace_hwlat_callback(bool enter);
--#endif
-+extern void trace_hwlat_count_nmi(void);
-+extern void trace_hwlat_timestamp(bool enter);
- 
--static inline void ftrace_nmi_enter(void)
-+static __always_inline void ftrace_count_nmi(void)
- {
--#ifdef CONFIG_HWLAT_TRACER
--	if (trace_hwlat_callback_enabled)
--		trace_hwlat_callback(true);
--#endif
-+	if (unlikely(trace_hwlat_callback_enabled))
-+		trace_hwlat_count_nmi();
- }
- 
--static inline void ftrace_nmi_exit(void)
-+static __always_inline void ftrace_nmi_handler_enter(void)
- {
--#ifdef CONFIG_HWLAT_TRACER
--	if (trace_hwlat_callback_enabled)
--		trace_hwlat_callback(false);
--#endif
-+	if (unlikely(trace_hwlat_callback_enabled))
-+		trace_hwlat_timestamp(true);
- }
- 
-+static __always_inline void ftrace_nmi_handler_exit(void)
-+{
-+	if (unlikely(trace_hwlat_callback_enabled))
-+		trace_hwlat_timestamp(false);
-+}
-+#else /* CONFIG_HWLAT_TRACER */
-+static inline void ftrace_count_nmi(void) {}
-+static inline void ftrace_nmi_handler_enter(void) {}
-+static inline void ftrace_nmi_handler_exit(void) {}
-+#endif
-+
- #endif /* _LINUX_FTRACE_IRQ_H */
+---
+ include/linux/hardirq.h |   23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
+
 --- a/include/linux/hardirq.h
 +++ b/include/linux/hardirq.h
-@@ -82,20 +82,21 @@ extern void irq_exit(void);
- 		arch_nmi_enter();				\
- 		printk_nmi_enter();				\
- 		lockdep_off();					\
--		ftrace_nmi_enter();				\
- 		BUG_ON(in_nmi() == NMI_MASK);			\
- 		__preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET);	\
- 		rcu_nmi_enter();				\
- 		lockdep_hardirq_enter();			\
-+		ftrace_count_nmi();				\
-+		ftrace_nmi_handler_enter();			\
- 	} while (0)
- 
- #define nmi_exit()						\
- 	do {							\
-+		ftrace_nmi_handler_exit();			\
- 		lockdep_hardirq_exit();				\
- 		rcu_nmi_exit();					\
- 		BUG_ON(!in_nmi());				\
- 		__preempt_count_sub(NMI_OFFSET + HARDIRQ_OFFSET);	\
--		ftrace_nmi_exit();				\
- 		lockdep_on();					\
- 		printk_nmi_exit();				\
- 		arch_nmi_exit();				\
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -132,21 +132,26 @@ static void trace_hwlat_sample(struct hw
- }
+@@ -76,8 +76,16 @@ extern void irq_exit(void);
  
  /*
-+ * Count NMIs in nmi_enter(). Does not take timestamps
-+ * because the timestamping callchain cannot be invoked
-+ * from noinstr sections.
-+ */
-+noinstr void trace_hwlat_count_nmi(void)
-+{
-+	if (smp_processor_id() == nmi_cpu)
-+		nmi_count++;
-+}
-+
-+/*
-  * Timestamping uses ktime_get_mono_fast(), the NMI safe access to
-  * CLOCK_MONOTONIC.
+  * nmi_enter() can nest up to 15 times; see NMI_BITS.
++ *
++ * ftrace_count_nmi() only increments a counter and is noinstr safe so it
++ * can be invoked in nmi_enter_notrace(). ftrace_nmi_handler_enter/exit()
++ * does time stamping and will be invoked in the actual NMI handling after
++ * an instrumentable section has been reached.
++ *
++ * nmi_enter/exit() still calls into the tracer so existing callers
++ * wont break.
   */
--void trace_hwlat_callback(bool enter)
-+void trace_hwlat_timestamp(bool enter)
- {
--	if (smp_processor_id() != nmi_cpu)
--		return;
--
- 	if (enter)
- 		nmi_ts_start = ktime_get_mono_fast_ns();
- 	else
- 		nmi_total_ts += ktime_get_mono_fast_ns() - nmi_ts_start;
--
--	if (enter)
--		nmi_count++;
- }
+-#define nmi_enter()						\
++#define nmi_enter_notrace()					\
+ 	do {							\
+ 		arch_nmi_enter();				\
+ 		printk_nmi_enter();				\
+@@ -87,10 +95,15 @@ extern void irq_exit(void);
+ 		rcu_nmi_enter();				\
+ 		lockdep_hardirq_enter();			\
+ 		ftrace_count_nmi();				\
++	} while (0)
++
++#define nmi_enter()						\
++	do {							\
++		nmi_enter_notrace();				\
+ 		ftrace_nmi_handler_enter();			\
+ 	} while (0)
  
- /**
+-#define nmi_exit()						\
++#define nmi_exit_notrace()					\
+ 	do {							\
+ 		ftrace_nmi_handler_exit();			\
+ 		lockdep_hardirq_exit();				\
+@@ -102,4 +115,10 @@ extern void irq_exit(void);
+ 		arch_nmi_exit();				\
+ 	} while (0)
+ 
++#define nmi_exit()						\
++	do {							\
++		ftrace_nmi_handler_exit();			\
++		nmi_exit_notrace();				\
++	} while (0)
++
+ #endif /* LINUX_HARDIRQ_H */
 
