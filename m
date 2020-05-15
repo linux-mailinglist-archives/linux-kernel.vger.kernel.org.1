@@ -2,101 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D55451D4B1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB37E1D4B1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 12:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728451AbgEOKdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 06:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53926 "EHLO
+        id S1728477AbgEOKd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 06:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728048AbgEOKdL (ORCPT
+        with ESMTP id S1728110AbgEOKd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 06:33:11 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B397C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:33:11 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id q9so765732pjm.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:33:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+XVj7Vn4q7UWK0rXA2mfb7XaH4le6Oj5JDX0rkTcjv8=;
-        b=QQepBCDYSozWfCOr/eFEkoIrW01LVBw3ONlO+lac/N4lGJUp/URE0OM0R9XXbLQIJ3
-         YYf2/4K2rm8OLRPVubTJZFyO50CLzcAWr8nckIRaOLY+1f/vjSs2lR+Y5Y9bYDVQr+pO
-         Fnas1I2V70MShXTLQFzApJ2ybjosMrusIzmosj5ERNkD0FNvl2r7xEpN3u7aiDcdK0tr
-         JLoFrbFbEqVnmjAqh84lWcO60Bmd564ZmkSBEo0e8Y39SfjqK2Z8OgAUv8FeW0UIIq7Y
-         6HRB59wBCV00RZ4X9L92ig7LTwJGuZxKJZFNvgtQjZp6S88j5dMkuyDY9bSxQbZ/13/F
-         /JTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+XVj7Vn4q7UWK0rXA2mfb7XaH4le6Oj5JDX0rkTcjv8=;
-        b=qpALtZVVHyhnxdR8erxrpZ/GB3XByRrj1qz/TVNuuDPs6wg2fqAHVC7qguqL8GYH0k
-         2wFUQdOy6fgdktEQMbOqu4LAp4PTxEOfZyOcFAtZrSANESzSzJNm3Y+oZiIj6cujpBtX
-         HwmFWFwi12ZirvsZvgGgMg5dRXq1/ZegbpekdfcASEOLRkbHiW1X++P+1vpGVf5W6rKl
-         nSMPw9Gr+doaZOsLTSKZC3D7rrBqlVKMdM5xhAoVDvIqqiMu191tChz/wLcpLhzpwrsl
-         Qvn57TmuYHda4sRP0fjPIMFrnc+cZjadnB/4n1RCqDWdEIH51uMjEj4AjjAJo/bipWIe
-         Vz9w==
-X-Gm-Message-State: AOAM5327nl+9CZHLOMlafkP8Ie3/WM4iJ6ioS4JfYaegLx/RRt4INMd/
-        iaQ+tP77urJ+U5xa0kbJ6/g=
-X-Google-Smtp-Source: ABdhPJweTKamypY9HN33QeOPRzMIehLxFsMWkxcut7xNXPUoTEgrKmllHE13oLf4hSc73mfTruAatA==
-X-Received: by 2002:a17:90a:1aa2:: with SMTP id p31mr2625068pjp.233.1589538791105;
-        Fri, 15 May 2020 03:33:11 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id j23sm1316378pjz.13.2020.05.15.03.33.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 03:33:10 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date:   Fri, 15 May 2020 19:33:08 +0900
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>
-Subject: Re: [PATCH] printk/kdb: Redirect printk messages into kdb in any
- context
-Message-ID: <20200515103308.GD42471@jagdpanzerIV.localdomain>
-References: <1589273314-12060-1-git-send-email-sumit.garg@linaro.org>
- <20200512142533.ta4uejwmq5gchtlx@holly.lan>
- <CAFA6WYOV7oPbYE=9fXueYMacb5wv0r9T6F8tmECt-Eafe-fctw@mail.gmail.com>
- <20200514084230.GO17734@linux-b0ei>
- <CAFA6WYPSsgdAB-wJC0e2YkVkW0XsqQsu5wrn4iB4M-cwvS7z2g@mail.gmail.com>
- <20200515085021.GS17734@linux-b0ei>
+        Fri, 15 May 2020 06:33:28 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBE6C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 03:33:27 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=localhost)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1jZXeg-00074l-0A; Fri, 15 May 2020 12:33:26 +0200
+Message-ID: <ed4688343e443ff76644051be544c70fd8c5345b.camel@pengutronix.de>
+Subject: Re: [PATCH] drm/etnaviv: fix perfmon domain interation
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Christian Gmeiner <christian.gmeiner@gmail.com>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        The etnaviv authors <etnaviv@lists.freedesktop.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>
+Date:   Fri, 15 May 2020 12:33:24 +0200
+In-Reply-To: <CAH9NwWc6zUvoJ0xep9zO2Ocm8BzR7nRNx9=EQuwb5DXsX-J0Zw@mail.gmail.com>
+References: <20200511123846.96594-1-christian.gmeiner@gmail.com>
+         <CAH9NwWcJNhUVkzd0KAfJyxNZJ9a71KLzipW+qRwhgEWUmnnxmg@mail.gmail.com>
+         <X0BDAQ.L99CTJZCDEJE3@crapouillou.net>
+         <a51cb70623c4c2441bb8df8385f56c99392b8435.camel@pengutronix.de>
+         <CAH9NwWc6zUvoJ0xep9zO2Ocm8BzR7nRNx9=EQuwb5DXsX-J0Zw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515085021.GS17734@linux-b0ei>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/05/15 10:50), Petr Mladek wrote:
-> kdb is able to stop kernel even in NMI context where printk() is redirected
-> to the printk_safe() lockless variant. Move the check and redirect to kdb
-> even in this case.
+Am Freitag, den 15.05.2020, 12:27 +0200 schrieb Christian Gmeiner:
+> Am Fr., 15. Mai 2020 um 12:24 Uhr schrieb Lucas Stach <l.stach@pengutronix.de>:
+> > Am Freitag, den 15.05.2020, 12:12 +0200 schrieb Paul Cercueil:
+> > > Hi Christian,
+> > > 
+> > > Le ven. 15 mai 2020 à 12:09, Christian Gmeiner
+> > > <christian.gmeiner@gmail.com> a écrit :
+> > > > Am Mo., 11. Mai 2020 um 14:38 Uhr schrieb Christian Gmeiner
+> > > > <christian.gmeiner@gmail.com>:
+> > > > >  The GC860 has one GPU device which has a 2d and 3d core. In this
+> > > > > case
+> > > > >  we want to expose perfmon information for both cores.
+> > > > > 
+> > > > >  The driver has one array which contains all possible perfmon domains
+> > > > >  with some meta data - doms_meta. Here we can see that for the GC860
+> > > > >  two elements of that array are relevant:
+> > > > > 
+> > > > >    doms_3d: is at index 0 in the doms_meta array with 8 perfmon
+> > > > > domains
+> > > > >    doms_2d: is at index 1 in the doms_meta array with 1 perfmon
+> > > > > domain
+> > > > > 
+> > > > >  The userspace driver wants to get a list of all perfmon domains and
+> > > > >  their perfmon signals. This is done by iterating over all domains
+> > > > > and
+> > > > >  their signals. If the userspace driver wants to access the domain
+> > > > > with
+> > > > >  id 8 the kernel driver fails and returns invalid data from doms_3d
+> > > > > with
+> > > > >  and invalid offset.
+> > > > > 
+> > > > >  This results in:
+> > > > >    Unable to handle kernel paging request at virtual address 00000000
+> > > > > 
+> > > > >  On such a device it is not possible to use the userspace driver at
+> > > > > all.
+> > > > > 
+> > > > >  The fix for this off-by-one error is quite simple.
+> > > > > 
+> > > > >  Reported-by: Paul Cercueil <paul@crapouillou.net>
+> > > > >  Tested-by: Paul Cercueil <paul@crapouillou.net>
+> > > > >  Fixes: ed1dd899baa3 ("drm/etnaviv: rework perfmon query
+> > > > > infrastructure")
+> > > > >  Cc: stable@vger.kernel.org
+> > > > >  Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+> > > > >  ---
+> > > > >   drivers/gpu/drm/etnaviv/etnaviv_perfmon.c | 2 +-
+> > > > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > 
+> > > > >  diff --git a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
+> > > > > b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
+> > > > >  index e6795bafcbb9..35f7171e779a 100644
+> > > > >  --- a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
+> > > > >  +++ b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
+> > > > >  @@ -453,7 +453,7 @@ static const struct etnaviv_pm_domain
+> > > > > *pm_domain(const struct etnaviv_gpu *gpu,
+> > > > >                  if (!(gpu->identity.features & meta->feature))
+> > > > >                          continue;
+> > > > > 
+> > > > >  -               if (meta->nr_domains < (index - offset)) {
+> > > > >  +               if ((meta->nr_domains - 1) < (index - offset)) {
+> > > > >                          offset += meta->nr_domains;
+> > > > >                          continue;
+> > > > >                  }
+> > > > >  --
+> > > > >  2.26.2
+> > > > > 
+> > > > 
+> > > > ping
+> > > 
+> > > I'll merge it tomorrow if there's no further feedback.
+> > 
+> > Huh? Etnaviv patches are going through the etnaviv tree.
+> > 
+> > We now have two different solutions to the same issue. I first want to
+> > dig into the code to see why two developers can get confused enough by
+> > the code to come up with totally different fixes.
+> > 
+> 
+> You will see that the solutions are not totally different. I really hoped to
+> get this fixed in the 5.7 release.. but I think its now too late.
 
-Can I please have some context what problem does this solve?
-I can see that vkdb_printf() calls into console drivers:
+I didn't have time to look at the full picture, yet. We still have at
+least a week until the final 5.7 release, why would it be too late to
+get a fix upstream?
 
-	for_each_console(c) {
-		c->write(c, cp, retlen - (cp - kdb_buffer));
-		touch_nmi_watchdog();
-	}
+Regards,
+Lucas
 
-Is this guaranteed that we never execute this path from NMI?
-If so, can this please be added to the commit message? A more
-detailed commit message will help a lot.
-
-	-ss
