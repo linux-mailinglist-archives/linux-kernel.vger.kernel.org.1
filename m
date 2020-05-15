@@ -2,51 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B521D4711
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 09:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A28E1D46F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 09:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726700AbgEOHaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 03:30:05 -0400
-Received: from elvis.franken.de ([193.175.24.41]:54056 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726434AbgEOHaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 03:30:04 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jZUnC-0007EJ-01; Fri, 15 May 2020 09:30:02 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CB717C04A0; Fri, 15 May 2020 09:22:03 +0200 (CEST)
-Date:   Fri, 15 May 2020 09:22:03 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: ralink: Don't include objects twice
-Message-ID: <20200515072203.GB6722@alpha.franken.de>
-References: <20200514143401.66888-1-tsbogend@alpha.franken.de>
+        id S1726653AbgEOHWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 03:22:14 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:39901 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726541AbgEOHWN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 03:22:13 -0400
+Received: by mail-wr1-f67.google.com with SMTP id l18so2262112wrn.6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 00:22:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wWbNW8kbMyNjSXbBam4c4gSY4otg46mxe59LKoz0OF8=;
+        b=VLbXMBbtTSe3t/bDtzSuJTxytWH9OGWqxlQXPhyVcpqOhvtX3/A0JomO5TPgSfujWD
+         ZoCvjk4p0Wm+eYR4rb4K8T8HCKlo1zmHA5uPpJmD8+qs6xV0epGALdzVStvRDFBVyMsI
+         AnpnZfTtISiwnEyzalKGdHjJpZIX0CVX+yVZ7A5UHVAvEpfXleBzyfVe8qaP+wRCMCWh
+         9PhCGuZ/FS/cqHHfYki7BGDbG4j+xVmpIvE01z5i7Mv3ddj8kgPI/gSW+HihawktNBv+
+         QRuX20CvDEgHEukfq1xSU1kQj/zy1Z4+LIt2xohp+Ixc736ggNJrLAYvv+uIv75+dxks
+         TLaA==
+X-Gm-Message-State: AOAM533Zfbm+iCLrQvgoIfUWWFTrYIS4sTKzTbofmvb78GcDW4NjAyRV
+        XsDmnmJ6JgIaka9OF6UzBlw=
+X-Google-Smtp-Source: ABdhPJwNTmCMUmKiYMOk+Ml322N9pT1hmc/pcQdWgRnBrHGVidmJLilnZQwB3PGJVF+EXOHBLeyM7g==
+X-Received: by 2002:a5d:6705:: with SMTP id o5mr2746406wru.426.1589527331467;
+        Fri, 15 May 2020 00:22:11 -0700 (PDT)
+Received: from localhost (ip-37-188-249-36.eurotel.cz. [37.188.249.36])
+        by smtp.gmail.com with ESMTPSA id z18sm2109678wmk.46.2020.05.15.00.22.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 May 2020 00:22:10 -0700 (PDT)
+Date:   Fri, 15 May 2020 09:22:09 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>, andi.kleen@intel.com,
+        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] proc/meminfo: avoid open coded reading of
+ vm_committed_as
+Message-ID: <20200515072209.GF29153@dhcp22.suse.cz>
+References: <1588922717-63697-1-git-send-email-feng.tang@intel.com>
+ <1588922717-63697-2-git-send-email-feng.tang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200514143401.66888-1-tsbogend@alpha.franken.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <1588922717-63697-2-git-send-email-feng.tang@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 04:34:00PM +0200, Thomas Bogendoerfer wrote:
-> With the change of platform file inclusion object were included via
-> platform-y and core-y. Remove the core-y part to fix it.
+On Fri 08-05-20 15:25:15, Feng Tang wrote:
+> Use the existing vm_memory_committed() instead, which is also
+> convenient for future change.
 > 
-> Fixes: 26bff9eb49201aeb ("MIPS: Only include the platformfile needed")
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Signed-off-by: Feng Tang <feng.tang@intel.com>
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
 > ---
->  arch/mips/ralink/Platform | 1 -
->  1 file changed, 1 deletion(-)
-
-applied to mips-next.
-
-Thomas.
+>  fs/proc/meminfo.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+> index 8c1f1bb..578c0b8 100644
+> --- a/fs/proc/meminfo.c
+> +++ b/fs/proc/meminfo.c
+> @@ -42,7 +42,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+>  
+>  	si_meminfo(&i);
+>  	si_swapinfo(&i);
+> -	committed = percpu_counter_read_positive(&vm_committed_as);
+> +	committed = vm_memory_committed();
+>  
+>  	cached = global_node_page_state(NR_FILE_PAGES) -
+>  			total_swapcache_pages() - i.bufferram;
+> -- 
+> 2.7.4
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Michal Hocko
+SUSE Labs
