@@ -2,53 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C97691D56E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC52A1D56DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 18:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726372AbgEOQ4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 12:56:36 -0400
-Received: from elvis.franken.de ([193.175.24.41]:54429 "EHLO elvis.franken.de"
+        id S1726388AbgEOQ4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 12:56:08 -0400
+Received: from sauhun.de ([88.99.104.3]:37868 "EHLO pokefinder.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgEOQ4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 12:56:35 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jZddK-0003Kr-00; Fri, 15 May 2020 18:56:26 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 20A7AC04A2; Fri, 15 May 2020 18:55:57 +0200 (CEST)
-Date:   Fri, 15 May 2020 18:55:57 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     jiaxun.yang@flygoat.com, Huacai Chen <chenhc@lemote.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v2 2/2] MIPS: Fix build errors under
- CONFIG_HAVE_STD_PC_SERIAL_PORT
-Message-ID: <20200515165557.GA19106@alpha.franken.de>
-References: <1589512985-27419-1-git-send-email-yangtiezhu@loongson.cn>
- <1589512985-27419-2-git-send-email-yangtiezhu@loongson.cn>
- <20200515073938.GA8289@alpha.franken.de>
- <7715fe64-5d28-f8c8-3b04-0bf2b9f16497@loongson.cn>
- <5AA0EB3A-DF33-4BE7-804C-45F6B51A0CF7@flygoat.com>
- <db6fda56-27da-3705-1270-805e61defe4b@loongson.cn>
+        id S1726257AbgEOQ4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 12:56:08 -0400
+Received: from localhost (p5486CC07.dip0.t-ipconnect.de [84.134.204.7])
+        by pokefinder.org (Postfix) with ESMTPSA id 1297F2C1F6B;
+        Fri, 15 May 2020 18:56:06 +0200 (CEST)
+Date:   Fri, 15 May 2020 18:56:05 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        adamboardman@gmail.com
+Subject: Re: [PATCH 1/4] dt-bindings: i2c: Document I2C controller binding
+ for MT6797 SoC
+Message-ID: <20200515165605.GA19423@ninjato>
+References: <20200222162444.11590-1-manivannan.sadhasivam@linaro.org>
+ <20200222162444.11590-2-manivannan.sadhasivam@linaro.org>
+ <20200226222330.GA9392@bogus>
+ <aa9ea456-dbee-229c-aea0-4860c6eb7adf@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
 Content-Disposition: inline
-In-Reply-To: <db6fda56-27da-3705-1270-805e61defe4b@loongson.cn>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <aa9ea456-dbee-229c-aea0-4860c6eb7adf@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 04:54:09PM +0800, Tiezhu Yang wrote:
-> Because CONFIG_HAVE_STD_PC_SERIAL_PORT is not used anymore,
-> (2) Should we remove this arch/mips/kernel/8250-platform.c?
 
-lets get rid of it.
+--SLDf9lqlvOQaIe6s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thomas.
+On Fri, May 15, 2020 at 04:48:28PM +0200, Matthias Brugger wrote:
+> Hi Wolfram,
+>=20
+> On 26/02/2020 23:23, Rob Herring wrote:
+> > On Sat, 22 Feb 2020 21:54:41 +0530, Manivannan Sadhasivam wrote:
+> >> I2C controller driver for MT6577 SoC is reused for MT6797 SoC. Hence,
+> >> document that in DT binding.
+> >>
+> >> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> >> ---
+> >>  Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt | 1 +
+> >>  1 file changed, 1 insertion(+)
+> >>
+> >=20
+> > Acked-by: Rob Herring <robh@kernel.org>
+> >=20
+>=20
+> Do you want to take this thorough your tree or are you OK if I take it th=
+orough
+> mine?
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+The I2C list is neither in the CC field, nor is the patch in patchwork.
+I suggest you take it.
+
+Acked-by: Wolfram Sang <wsa@kernel.org>
+
+
+--SLDf9lqlvOQaIe6s
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6+yaEACgkQFA3kzBSg
+KbZzoxAAmChj28HYksgpo/MWV/BUG0pk9pOZqJPw/klKVXwQthuLR5VhB8skNnKX
+ZJK0R4lBqOiTUkt9ASzuuXtA3Is/YlvAfyL6Q53pKcuaMJBIEl3xgf+hJxeUv8tv
+xKv2nXRtIIcnuVCfK3D6WmxR4De3vVYjZmg4YrCmdl6JUzDc/vXRXCPdeGI3HzXV
+S4thVcwulxtW77EVbZtbK7DObPVXQb6CFb8oPYblIBqAQRers0/s+zag9j6suBFF
+nRCr9uNrec1IPhnIwqSqe5uPqsr02kEaVFg0DCyXmR+l4FuM3yu19W9e1Jxxp/1Q
+RqIJ+OfCgiVgoG5SUHREIkOWbivBgy7sAdQ41PEQ91Wxa4Qjmvk+YhBn7SK/12za
+wYfD2FxikaYWlOW2vlMFIlHnXxjXuCQeMZl3BbHejgaNdYtGaxcp1mtFsLsG/acR
+a6VMR635bMGETBg4aN/8c0A4KAKDEhzL/ucn/JtKBK6LwGCdmNnIYpi+VOQ9YfVw
+8q6gVA88+MMK+pfOtPPLXnv8I9UU08oijKG3W+K1WS/ewL/bOI484C95s3yXg25Q
+9gpslUUdYlNy9SQilZ65IjjsjIDmF0v6bbSaygHqw8HWeMaRu4YV6leIOu51+yFK
+4OnklpdFEd+YwLSYVUyPZ3IK+4D2heK9etKViSs8HDCpSTBs1Po=
+=Vxiu
+-----END PGP SIGNATURE-----
+
+--SLDf9lqlvOQaIe6s--
