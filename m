@@ -2,66 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DFC1D45F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 08:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EB81D4600
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 08:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgEOGd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 02:33:27 -0400
-Received: from verein.lst.de ([213.95.11.211]:55034 "EHLO verein.lst.de"
+        id S1726444AbgEOGhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 02:37:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726205AbgEOGd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 02:33:27 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 499BB68BFE; Fri, 15 May 2020 08:33:24 +0200 (CEST)
-Date:   Fri, 15 May 2020 08:33:24 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     David Miller <davem@davemloft.net>
-Cc:     hch@lst.de, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, netdev@vger.kernel.org,
+        id S1726191AbgEOGhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 02:37:41 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 718992065F;
+        Fri, 15 May 2020 06:37:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589524660;
+        bh=/sejV8BirlA+9XJW7afKnpotS1fQXEqPb8/TeQ6TDYA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xxppYZUv2kisbDZrnltv/c6K4fzrP9l7WQz1h1yifRH3No6IR1HFWaAEvQdB6QxOn
+         Yo376PHcJjyyqnHjzp8yJ5swSubvROWSCeI4gp/Q3z0YET3LnSw8T8+nnlJxz3Qt7V
+         +V7jy71pWwfHu+RtWWNHDBIB7V8aJJi57utGHspQ=
+Date:   Fri, 15 May 2020 08:37:38 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     arnd@arndb.de, manivannan.sadhasivam@linaro.org,
+        bjorn.andersson@linaro.org, wufan@codeaurora.org,
+        pratanan@codeaurora.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] ipv6: symbol_get to access a sit symbol
-Message-ID: <20200515063324.GA31377@lst.de>
-References: <20200514145101.3000612-1-hch@lst.de> <20200514145101.3000612-5-hch@lst.de> <20200514.175355.167885308958584692.davem@davemloft.net>
+Subject: Re: [RFC PATCH 1/8] qaic: Add skeleton driver
+Message-ID: <20200515063738.GA1006524@kroah.com>
+References: <1589465266-20056-1-git-send-email-jhugo@codeaurora.org>
+ <1589465266-20056-2-git-send-email-jhugo@codeaurora.org>
+ <bc74cb1d-cd97-819c-5e0d-e9cd1e01dbf4@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200514.175355.167885308958584692.davem@davemloft.net>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <bc74cb1d-cd97-819c-5e0d-e9cd1e01dbf4@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 05:53:55PM -0700, David Miller wrote:
-> You're not undoing one, but two levels of abstraction here.
+On Thu, May 14, 2020 at 06:43:06PM -0600, Jeffrey Hugo wrote:
+> On 5/14/2020 8:07 AM, Jeffrey Hugo wrote:
+> > +#define QAIC_NAME			"Qualcomm Cloud AI 100"
+> <snip>
+> > +static struct pci_driver qaic_pci_driver = {
+> > +	.name = QAIC_NAME,
 > 
-> Is this "ipip6_tunnel_locate()" call part of the SIT ioctl implementation?
+> A question about the community's preference here.
+> 
+> Our driver name is very verbose due to the desire to have the proper
+> "branding".  However, I can see it being a bit obtuse, particularly in logs.
+> 
+> Would the community prefer something more succinct here, such as "qaic"?
 
-Yes.  Take a look at the convoluted case handling the
-SIOCADDTUNNEL and SIOCCHGTUNNEL commands in ipip6_tunnel_ioctl.
+Make it the same a KBUILD_MODNAME and then no one can complain :)
 
-> Where did it come from?   Why are ->ndo_do_ioctl() implementations no longer
-> allowed from here?
+thanks,
 
-The problem is that we feed kernel pointers to it, which requires
-set_fs address space overrides that I plan to kill off entirely.
-
-> Honestly, this feels like a bit much.
-
-My initial plan was to add a ->tunnel_ctl method to the net_device_ops,
-and lift the copy_{to,from}_user for SIOCADDTUNNEL, SIOCCHGTUNNEL,
-SIOCDELTUNNEL and maybe SIOCGETTUNNEL to net/socket.c.  But that turned
-out to have two problems:
-
- - first these ioctls names use SIOCDEVPRIVATE range, that can also
-   be implemented by other drivers
- - the ip_tunnel_parm struture is only used by the ipv4 tunneling
-   drivers (including sit), the "real" ipv6 tunnels use a
-   ip6_tnl_parm or ip6_tnl_parm structure instead
-
-But if you don't like the symbol_get approach, I could do the
-tunnel_ctl operation, just for the іpv4-ish tunnels, and only for
-the kernel callers.
-
----end quoted text---
+greg k-h
