@@ -2,120 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1231D5AC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 22:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8C61D5AC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 22:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbgEOUd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 16:33:58 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:55758 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726168AbgEOUd6 (ORCPT
+        id S1726607AbgEOUj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 16:39:59 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:56812 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgEOUj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 16:33:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589574836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YepsSy2nLjL3UBd0hK7w9B2v+2qjHsLKYJjpSq7VWdI=;
-        b=YnXpcSYSI4+F6EqxUNRf5q5tr2HNAnkYwC07qCXu1g/sY52cEaWpC40NGvlhEoT0l9j5rS
-        u7j4/KscBWJTnxl7H7oYTLTlOP2yhbog5r1uaU8iN+C5gRi8FjBqFV0qJcYtzCOqvVZAF7
-        uzMgCPdnMkpKIGKcuJ0ZWnUBjT8jvlU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-378-77DuAAtVN5i8PC8RuTtcZA-1; Fri, 15 May 2020 16:33:55 -0400
-X-MC-Unique: 77DuAAtVN5i8PC8RuTtcZA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22339460;
-        Fri, 15 May 2020 20:33:53 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-114-113.rdu2.redhat.com [10.10.114.113])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 86A3A60C05;
-        Fri, 15 May 2020 20:33:52 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 1E9DD220206; Fri, 15 May 2020 16:33:52 -0400 (EDT)
-Date:   Fri, 15 May 2020 16:33:52 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/8] KVM: x86: extend struct kvm_vcpu_pv_apf_data with
- token info
-Message-ID: <20200515203352.GC235744@redhat.com>
-References: <20200511164752.2158645-1-vkuznets@redhat.com>
- <20200511164752.2158645-3-vkuznets@redhat.com>
- <20200512152709.GB138129@redhat.com>
- <87o8qtmaat.fsf@vitty.brq.redhat.com>
- <20200512155339.GD138129@redhat.com>
- <20200512175017.GC12100@linux.intel.com>
- <20200513125241.GA173965@redhat.com>
- <0733213c-9514-4b04-6356-cf1087edd9cf@redhat.com>
- <20200515184646.GD17572@linux.intel.com>
- <d84b6436-9630-1474-52e5-ffcc4d2bd70a@redhat.com>
+        Fri, 15 May 2020 16:39:58 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jZh7a-0007OX-H5; Fri, 15 May 2020 14:39:54 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jZh7V-0007gL-4O; Fri, 15 May 2020 14:39:54 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        syzbot <syzbot+c1af344512918c61362c@syzkaller.appspotmail.com>,
+        jmorris@namei.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org, linux-security-module@vger.kernel.org,
+        serge@hallyn.com, sfr@canb.auug.org.au,
+        syzkaller-bugs@googlegroups.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <0000000000002f0c7505a5b0e04c@google.com>
+        <c3461e26-1407-2262-c709-dac0df3da2d0@i-love.sakura.ne.jp>
+        <72cb7aea-92bd-d71b-2f8a-63881a35fad8@i-love.sakura.ne.jp>
+        <20200515201357.GG23230@ZenIV.linux.org.uk>
+Date:   Fri, 15 May 2020 15:36:13 -0500
+In-Reply-To: <20200515201357.GG23230@ZenIV.linux.org.uk> (Al Viro's message of
+        "Fri, 15 May 2020 21:13:57 +0100")
+Message-ID: <87o8qpaqbm.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d84b6436-9630-1474-52e5-ffcc4d2bd70a@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain
+X-XM-SPF: eid=1jZh7V-0007gL-4O;;;mid=<87o8qpaqbm.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/PGgvqQtmtGb1PoHqp2pZ/qQlUc5KbPks=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMGappySubj_01,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.5 XMGappySubj_01 Very gappy subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Al Viro <viro@zeniv.linux.org.uk>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 4955 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 11 (0.2%), b_tie_ro: 9 (0.2%), parse: 1.08 (0.0%),
+         extract_message_metadata: 13 (0.3%), get_uri_detail_list: 1.70 (0.0%),
+         tests_pri_-1000: 5 (0.1%), tests_pri_-950: 1.39 (0.0%),
+        tests_pri_-900: 1.11 (0.0%), tests_pri_-90: 81 (1.6%), check_bayes: 79
+        (1.6%), b_tokenize: 8 (0.2%), b_tok_get_all: 8 (0.2%), b_comp_prob:
+        2.7 (0.1%), b_tok_touch_all: 56 (1.1%), b_finish: 1.00 (0.0%),
+        tests_pri_0: 279 (5.6%), check_dkim_signature: 0.63 (0.0%),
+        check_dkim_adsp: 2.5 (0.1%), poll_dns_idle: 4538 (91.6%),
+        tests_pri_10: 2.2 (0.0%), tests_pri_500: 4557 (92.0%), rewrite_mail:
+        0.00 (0.0%)
+Subject: Re: linux-next boot error: general protection fault in tomoyo_get_local_path
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 09:18:07PM +0200, Paolo Bonzini wrote:
-> On 15/05/20 20:46, Sean Christopherson wrote:
-> >> The new one using #VE is not coming very soon (we need to emulate it for
-> >> <Broadwell and AMD processors, so it's not entirely trivial) so we are
-> >> going to keep "page not ready" delivery using #PF for some time or even
-> >> forever.  However, page ready notification as #PF is going away for good.
-> > 
-> > And isn't hardware based EPT Violation #VE going to require a completely
-> > different protocol than what is implemented today?  For hardware based #VE,
-> > KVM won't intercept the fault, i.e. the guest will need to make an explicit
-> > hypercall to request the page.
-> 
-> Yes, but it's a fairly simple hypercall to implement.
-> 
-> >> That said, type1/type2 is quite bad. :)  Let's change that to page not
-> >> present / page ready.
-> > 
-> > Why even bother using 'struct kvm_vcpu_pv_apf_data' for the #PF case?  VMX
-> > only requires error_code[31:16]==0 and SVM doesn't vet it at all, i.e. we
-> > can (ab)use the error code to indicate an async #PF by setting it to an
-> > impossible value, e.g. 0xaaaa (a is for async!).  That partciular error code
-> > is even enforced by the SDM, which states:
-> 
-> Possibly, but it's water under the bridge now.
-> And the #PF mechanism also has the problem with NMIs that happen before
-> the error code is read
-> and page faults happening in the handler (you may connect some dots now).
+Al Viro <viro@zeniv.linux.org.uk> writes:
 
-I understood that following was racy.
+> On Sat, May 16, 2020 at 12:36:28AM +0900, Tetsuo Handa wrote:
+>> On 2020/05/16 0:18, Tetsuo Handa wrote:
+>> > This is
+>> > 
+>> >         if (sb->s_magic == PROC_SUPER_MAGIC && *pos == '/') {
+>> >                 char *ep;
+>> >                 const pid_t pid = (pid_t) simple_strtoul(pos + 1, &ep, 10);
+>> >                 struct pid_namespace *proc_pidns = proc_pid_ns(d_inode(dentry)); // <= here
+>> > 
+>> >                 if (*ep == '/' && pid && pid ==
+>> >                     task_tgid_nr_ns(current, proc_pidns)) {
+>> > 
+>> > which was added by commit c59f415a7cb6e1e1 ("Use proc_pid_ns() to get pid_namespace from the proc superblock").
+>> > 
+>> > @@ -161,9 +162,10 @@ static char *tomoyo_get_local_path(struct dentry *dentry, char * const buffer,
+>> >         if (sb->s_magic == PROC_SUPER_MAGIC && *pos == '/') {
+>> >                 char *ep;
+>> >                 const pid_t pid = (pid_t) simple_strtoul(pos + 1, &ep, 10);
+>> > +               struct pid_namespace *proc_pidns = proc_pid_ns(d_inode(dentry));
+>> > 
+>> >                 if (*ep == '/' && pid && pid ==
+>> > -                   task_tgid_nr_ns(current, sb->s_fs_info)) {
+>> > +                   task_tgid_nr_ns(current, proc_pidns)) {
+>> >                         pos = ep - 5;
+>> >                         if (pos < buffer)
+>> >                                 goto out;
+>> > 
+>> > Alexey and Eric, any clue?
+>> > 
+>> 
+>> A similar bug (racing inode destruction with open() on proc filesystem) was fixed as
+>> commit 6f7c41374b62fd80 ("tomoyo: Don't use nifty names on sockets."). Then, it might
+>> not be safe to replace dentry->d_sb->s_fs_info with dentry->d_inode->i_sb->s_fs_info .
+>
+> Could you explain why do you want to bother with d_inode() anyway?  Anything that
+> does dentry->d_inode->i_sb can bloody well use dentry->d_sb.  And that's never
+> changed over the struct dentry lifetime - ->d_sb is set on allocation and never
+> modified afterwards.
 
-do_async_page_fault <--- kvm injected async page fault
-  NMI happens (Before kvm_read_and_reset_pf_reason() is done)
-   ->do_async_page_fault() (This is regular page fault but it will read
-   			    reason from shared area and will treat itself
-			    as async page fault)
+Wanting to bother with d_inode is a bit strong.
 
-So this is racy.
+It was just a matter of the helper function proc_pid_ns was built to
+work against inodes.  And working with inodes looks reasonable as
+in all of the places in proc where it was originally called it had
+an inode, and did not have a dentry.
 
-But if we get rid of the notion of reading from shared region in page
-fault handler, will we not get rid of this race.
+I don't think there was any strong design to it.
 
-I am assuming that error_code is not racy as it is pushed on stack.
-What am I missing.
+Before changing the s_fs_info in proc we found Tomoyo accessing it
+without any helpers, and used the helper we had.  Which looked
+reasonable.  Now we have discovered it wasn't.
 
-Thanks
-Vivek
+It probably makes most sense just to have the helper go from the
+super_block, and not worry about inodes or dentries.
+
+Alexey Gladkov is already looking at fixing this.
+
+Eric
 
