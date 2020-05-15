@@ -2,149 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4819B1D496A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7DA1D4972
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgEOJYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 05:24:20 -0400
-Received: from mga03.intel.com ([134.134.136.65]:45578 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727825AbgEOJYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 05:24:20 -0400
-IronPort-SDR: W6EVZav80yoFPmH41Cv8PmNun3rZsblxc3QQI1JtYB6nHxNk6FwL7PMlT5t1ziTKdbeNJ4TpTJ
- JDTGOZPNlWcw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 02:24:19 -0700
-IronPort-SDR: F0AKFMJPL4EX/lvNyOWlwpRD2P3asI/5LY0GhP76dw1Wgu9K9JrMiXpkFDbLQadd8G2afu0qL+
- HIXoBhuA3Jvg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,394,1583222400"; 
-   d="scan'208";a="438251000"
-Received: from mgpinon-mobl.ger.corp.intel.com ([10.252.55.74])
-  by orsmga005.jf.intel.com with ESMTP; 15 May 2020 02:24:15 -0700
-Message-ID: <0186c22a8a6be1516df0703c421faaa581041774.camel@linux.intel.com>
-Subject: Re: [PATCH v12 00/18] Enable FSGSBASE instructions
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, bp@alien8.de, luto@kernel.org
-Cc:     hpa@zytor.com, dave.hansen@intel.com, tony.luck@intel.com,
-        ak@linux.intel.com, ravi.v.shankar@intel.com,
-        chang.seok.bae@intel.com
-Date:   Fri, 15 May 2020 12:24:14 +0300
-In-Reply-To: <20200511045311.4785-1-sashal@kernel.org>
-References: <20200511045311.4785-1-sashal@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.1-2 
+        id S1728061AbgEOJZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 05:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727116AbgEOJZH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 05:25:07 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBF2C061A0C;
+        Fri, 15 May 2020 02:25:07 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id x5so1900681ioh.6;
+        Fri, 15 May 2020 02:25:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cc4MG6c747g2GpEAJm056wqMJo63ltnWhdsdBk/YjvU=;
+        b=ScyKUI9YtsU9p9A901j1O1w7H7TdnTlwcnuWzKYRo3T+bqoIZc8vOQ9X95sdz82tnm
+         urIdlt/GUp9Yfq/9xFWZj8mjEJR05XCX47NoY/P6Qt0R26F6a4+luq3nyePE1nmFInMi
+         6BAfAKoBoWEhG6za8fIQD/VCbuJv1yUxDeWf/yoarFgULSJjRsGjQawtvMMXahIIItR+
+         KspUduc8eOvKKZ1LH2ZaKUn870ew37S9JgdauJkgRN1oLquW5K4IJPZ6HqXyZzq+NGxx
+         sE/WbC8Y9Ybw+RAytAcJEnTXxxp56g590pE4tr+7ttn7UIBYdlYCf8fDbzQ8qu7KV+M1
+         0QRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Cc4MG6c747g2GpEAJm056wqMJo63ltnWhdsdBk/YjvU=;
+        b=bqDRC6qrgHNSLoIbdI08eyjFl5boo4tyhw0ECAM/gjLv3SBFUvYLQT1Q6oeOK8mDQF
+         vFYCcTj7UdaalLcVV249irNPwy62KRl5KYP3h+c6PhU11aZd7YPm6Ensu86n5ZU0KbZ3
+         Z6ifHdWCafQlLtMIkUmct04cr9HYmuioi8RzyIDFTPXnJeDneAVno3z8uw57f1+lvU/1
+         qxyErMXx/2jVTNDdGsnfJ9DaY4JisWVROayaitkswvw+q9hPLce93IKLUR75fajdehlC
+         tK0SANhGl8kMBSLnUmyi7Eh9sUhy4tyvJ9g7CV9tFkiO9NomdJJ+CltV4aCvED6bX5T/
+         aJpg==
+X-Gm-Message-State: AOAM533Oax1RJPL989pmSnl56QH9JpauNArbUCs4Du+mf+elBJjicLrS
+        2GwVfggeo80r8tWCRiWm2MmY5cTIO5sw/XS6mO4=
+X-Google-Smtp-Source: ABdhPJyr7Q+WoA1oeyUp1TGmDyNR7js+O5d1aEorqbluWDehBMJqofjEnccsNnqBusTGHRHYyHOE+n76LGnfJ7BM2as=
+X-Received: by 2002:a05:6638:1121:: with SMTP id f1mr2281062jar.62.1589534706577;
+ Fri, 15 May 2020 02:25:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <1589267017-17294-1-git-send-email-dillon.minfei@gmail.com>
+ <1589267017-17294-4-git-send-email-dillon.minfei@gmail.com>
+ <CACRpkda5VjjBdbruXTi33QBNb=VU6vK2zDE8yyQXoWw7=NQFeg@mail.gmail.com>
+ <a4ebd7cd-5756-0683-135f-0f96be8a4a7b@st.com> <CAL9mu0Jt_xwo5pJfcx6G3grBuOaxLXvakpEjiB4gV3=bkiq2fg@mail.gmail.com>
+ <818b93b4-4431-8338-cd90-ed125ecac615@st.com>
+In-Reply-To: <818b93b4-4431-8338-cd90-ed125ecac615@st.com>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Fri, 15 May 2020 17:24:29 +0800
+Message-ID: <CAL9mu0L6d2V5qypPfOSeMdhc=DdHkcsaF4GysNG-vfDe5npkhw@mail.gmail.com>
+Subject: Re: [Linux-stm32] [PATCH v3 3/5] ARM: dts: stm32: enable ltdc binding
+ with ili9341 on stm32429-disco board
+To:     Benjamin GAIGNARD <benjamin.gaignard@st.com>
+Cc:     Alexandre TORGUE <alexandre.torgue@st.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@linux.ie>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-05-11 at 00:52 -0400, Sasha Levin wrote:
-> Benefits:
-> Currently a user process that wishes to read or write the FS/GS base must
-> make a system call. But recent X86 processors have added new instructions
-> for use in 64-bit mode that allow direct access to the FS and GS segment
-> base addresses.  The operating system controls whether applications can
-> use these instructions with a %cr4 control bit.
-> 
-> In addition to benefits to applications, performance improvements to the
-> OS context switch code are possible by making use of these instructions. A
-> third party reported out promising performance numbers out of their
-> initial benchmarking of the previous version of this patch series [9].
-> 
-> Enablement check:
-> The kernel provides information about the enabled state of FSGSBASE to
-> applications using the ELF_AUX vector. If the HWCAP2_FSGSBASE bit is set in
-> the AUX vector, the kernel has FSGSBASE instructions enabled and
-> applications can use them.
-> 
-> Kernel changes:
-> Major changes made in the kernel are in context switch, paranoid path, and
-> ptrace. In a context switch, a task's FS/GS base will be secured regardless
-> of its selector. In the paranoid path, GS base is unconditionally
-> overwritten to the kernel GS base on entry and the original GS base is
-> restored on exit. Ptrace includes divergence of FS/GS index and base
-> values.
-> 
-> Security:
-> For mitigating the Spectre v1 SWAPGS issue, LFENCE instructions were added
-> on most kernel entries. Those patches are dependent on previous behaviors
-> that users couldn't load a kernel address into the GS base. These patches
-> change that assumption since the user can load any address into GS base.
-> The changes to the kernel entry path in this patch series take account of
-> the SWAPGS issue.
-> 
-> Changes from v11:
-> 
->  - Rebase to v5.7-rc5, fix 32bit compilation error.
-> 
-> 
-> Andi Kleen (2):
->   x86/fsgsbase/64: Add intrinsics for FSGSBASE instructions
->   x86/elf: Enumerate kernel FSGSBASE capability in AT_HWCAP2
-> 
-> Andy Lutomirski (4):
->   x86/cpu: Add 'unsafe_fsgsbase' to enable CR4.FSGSBASE
->   x86/entry/64: Clean up paranoid exit
->   x86/fsgsbase/64: Use FSGSBASE in switch_to() if available
->   x86/fsgsbase/64: Enable FSGSBASE on 64bit by default and add a chicken
->     bit
-> 
-> Chang S. Bae (9):
->   x86/ptrace: Prevent ptrace from clearing the FS/GS selector
->   selftests/x86/fsgsbase: Test GS selector on ptracer-induced GS base
->     write
->   x86/entry/64: Switch CR3 before SWAPGS in paranoid entry
->   x86/entry/64: Introduce the FIND_PERCPU_BASE macro
->   x86/entry/64: Handle FSGSBASE enabled paranoid entry/exit
->   x86/entry/64: Document GSBASE handling in the paranoid path
->   x86/fsgsbase/64: Enable FSGSBASE instructions in helper functions
->   x86/fsgsbase/64: Use FSGSBASE instructions on thread copy and ptrace
->   selftests/x86/fsgsbase: Test ptracer-induced GS base write with
->     FSGSBASE
-> 
-> Sasha Levin (1):
->   x86/fsgsbase/64: move save_fsgs to header file
-> 
-> Thomas Gleixner (1):
->   Documentation/x86/64: Add documentation for GS/FS addressing mode
-> 
-> Tony Luck (1):
->   x86/speculation/swapgs: Check FSGSBASE in enabling SWAPGS mitigation
-> 
->  .../admin-guide/kernel-parameters.txt         |   2 +
->  Documentation/x86/entry_64.rst                |   9 +
->  Documentation/x86/x86_64/fsgs.rst             | 199 ++++++++++++++++++
->  Documentation/x86/x86_64/index.rst            |   1 +
->  arch/x86/entry/calling.h                      |  40 ++++
->  arch/x86/entry/entry_64.S                     | 131 +++++++++---
->  arch/x86/include/asm/fsgsbase.h               |  45 +++-
->  arch/x86/include/asm/inst.h                   |  15 ++
->  arch/x86/include/uapi/asm/hwcap2.h            |   3 +
->  arch/x86/kernel/cpu/bugs.c                    |   6 +-
->  arch/x86/kernel/cpu/common.c                  |  22 ++
->  arch/x86/kernel/process.c                     |   9 +-
->  arch/x86/kernel/process.h                     |  72 +++++++
->  arch/x86/kernel/process_64.c                  | 142 +++++++------
->  arch/x86/kernel/ptrace.c                      |  17 +-
->  tools/testing/selftests/x86/fsgsbase.c        |  24 ++-
->  16 files changed, 608 insertions(+), 129 deletions(-)
->  create mode 100644 Documentation/x86/x86_64/fsgs.rst
-> 
+Hi Benjamin,
 
-Can you put me to the CC-loop for this patches. Some SGX-enabled
-frameworks such as Graphene use out-of-tree changes to achieve this.
-That's where the interest to possibly test this comes from.
+thanks for reply.
 
-Thanks.
+On Fri, May 15, 2020 at 4:31 PM Benjamin GAIGNARD
+<benjamin.gaignard@st.com> wrote:
+>
+>
+>
+> On 5/14/20 3:07 PM, dillon min wrote:
+> > Hi Alexandre,
+> >
+> > On Thu, May 14, 2020 at 8:53 PM Alexandre Torgue
+> > <alexandre.torgue@st.com> wrote:
+> >>
+> >>
+> >> On 5/14/20 10:24 AM, Linus Walleij wrote:
+> >>> On Tue, May 12, 2020 at 9:04 AM <dillon.minfei@gmail.com> wrote:
+> >>>
+> >>>> From: dillon min <dillon.minfei@gmail.com>
+> >>>>
+> >>>> Enable the ltdc & ili9341 on stm32429-disco board.
+> >>>>
+> >>>> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> >>> This mostly looks good but...
+> >>>
+> >>>> +&spi5 {
+> >>>> +       status = "okay";
+> >>>> +       pinctrl-0 = <&spi5_pins>;
+> >>>> +       pinctrl-names = "default";
+> >>>> +       #address-cells = <1>;
+> >>>> +       #size-cells = <0>;
+> >>>> +       cs-gpios = <&gpioc 2 GPIO_ACTIVE_LOW>;
+> >>>> +       dmas = <&dma2 3 2 0x400 0x0>,
+> >>>> +              <&dma2 4 2 0x400 0x0>;
+> >>>> +       dma-names = "rx", "tx";
+> >>> These DMA assignments seem to be SoC things and should
+> >>> rather be in the DTS(I) file where &spi5 is defined, right?
+> >>> stm32f429.dtsi I suppose?
+> >> I agree with Linus, DMA have to be defined in SoC dtsi. And if a board
+> >> doesn't want to use it, we use the "delete-property".
+> > Yes, will move to Soc dtsi in next submits.
+> >
+> > i'm working on write a v4l2-m2m driver for dma2d of stm32 to support
+> > pixel conversion
+> > alpha blending between foreground and background graphics.
+> >
+> > as you know, some soc's engineer trying to add this function to drm system.
+> >
+> > do you know st's planning about soc's hardware accelerator driver on stm32mp?
+> > such as chrom-art, will add to drm subsystem via ioctl to access, or to v4l2,
+> On stm32mp we do not plan to use chrom-art in drm or v4l2 because it
+> does fit
+> with userland way of working. We use the GPU to do conversion, scaling,
+> blending
+> and composition in only one go.
+> As explain here [1] DRM subsytem it isn't a solution and v4l2-m2m isn't
+> used in any
+> mainline compositors like Weston or android surfaceflinger.
+>
+> Benjamin
+>
 
-[*] https://github.com/oscarlab/graphene
+After check stm32mp's datasheets, they don't have chrom-art ip inside. sorry for
+didn't check it yet.
 
-/Jarkko
+for stm32h7 series with chrom-art, jpeg hardware accelerator inside.
+does st has plan to
+setup a driver to support it ? i prefer v4l2-m2m should be easier to
+implement it.
+co work with dcmi, fbdev.
 
+thanks.
+
+best regards.
+
+Dillon
+> [1]
+> https://www.phoronix.com/scan.php?page=news_item&px=Linux-DRM-No-2D-Accel-API
+> >
+> > thanks.
+> >
+> >>> It is likely the same no matter which device is using spi5.
+> >>>
+> >>> Yours,
+> >>> Linus Walleij
+> >>>
+> > _______________________________________________
+> > Linux-stm32 mailing list
+> > Linux-stm32@st-md-mailman.stormreply.com
+> > https://st-md-mailman.stormreply.com/mailman/listinfo/linux-stm32
