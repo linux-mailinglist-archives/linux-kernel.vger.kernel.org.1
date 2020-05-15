@@ -2,100 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6821D503E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976091D50B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 16:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726231AbgEOOTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 10:19:42 -0400
-Received: from mga17.intel.com ([192.55.52.151]:33489 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726140AbgEOOTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 10:19:41 -0400
-IronPort-SDR: VbmSNRgpC1pktixqmSk0+ubFnnD+nYzK5kGxs0WGSip2lsy8HhqsZ05ekLATbzvjXlzExyx1Yn
- r1leke1GbS8g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 07:19:41 -0700
-IronPort-SDR: X806o53qBM8MjR9VttUyfi0cXh5zmXgMlCiMmkMbtxsD8FcSWu76betx4xBGcK+BDkMubjUgtd
- gTSBZRcOTssg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
-   d="scan'208";a="252388959"
-Received: from marshy.an.intel.com ([10.122.105.159])
-  by fmsmga007.fm.intel.com with ESMTP; 15 May 2020 07:19:40 -0700
-From:   richard.gong@linux.intel.com
-To:     mdf@kernel.org
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dinguyen@kernel.org, richard.gong@linux.intel.com,
-        Richard Gong <richard.gong@intel.com>
-Subject: [PATCHv2] fpga: stratix10-soc: remove the pre-set reconfiguration condition
-Date:   Fri, 15 May 2020 09:35:03 -0500
-Message-Id: <1589553303-7341-1-git-send-email-richard.gong@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726550AbgEOOg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 10:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726163AbgEOOg4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 10:36:56 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D3CC05BD09;
+        Fri, 15 May 2020 07:36:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=HKx/QpgyxJ6c+gcZJNfN2/GfGMIbydRitmrecAV7LdM=; b=e40fHlJwbNPK/oCRkiewUZHtoZ
+        JJJ+t1x8X3QV2n0Lukko+n8nlbWQFaqkAm9bXmAn0LEAHvsYtXA/ED46Qkhd3Wo4dC3lj9Cdjnhn4
+        2GMxO3l2bcfk8hCFGEkyKo79dCHF0dW0wzug2S7fOVDqqdxBiNErPRWKoqoW7a+vMOTzwhiXqzxde
+        yarxr8pniYHBW0nkAaHpSU30+qCnpw33gjGTv0zo9wd+L3+ubP8fVYYd3Mao0Mvo1SPygjDTG4M6W
+        uLpEub5zhVYe+GOr38SOefuPOEjNKqgIjZD47gM0x/vngs4vSjlwFW8ylRDeR9zXZutwV9Xx9BczP
+        T5GGltuQ==;
+Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jZbSC-0003n6-BC; Fri, 15 May 2020 14:36:49 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Roman Zippel <zippel@linux-m68k.org>
+Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
+        x86@kernel.org, linux-alpha@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linux-fsdevel@vger.kernel.org
+Subject: sort out the flush_icache_range mess v2
+Date:   Fri, 15 May 2020 16:36:17 +0200
+Message-Id: <20200515143646.3857579-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Gong <richard.gong@intel.com>
+Hi all,
 
-The reconfiguration mode is pre-set by driver as the full reconfiguration.
-As a result, user have to change code and recompile the drivers if he or
-she wants to perform a partial reconfiguration. Removing the pre-set
-reconfiguration condition so that user can select full or partial
-reconfiguration via overlay device tree without recompiling the drivers.
+flush_icache_range is mostly used for kernel address, except for the following
+cases:
 
-Also add an error message if the configuration request is failure.
+ - the nommu brk and mmap implementations,
+ - the read_code helper that is only used for binfmt_flat, binfmt_elf_fdpic,
+   and binfmt_aout including the broken ia32 compat version
+ - binfmt_flat itself,
 
-Signed-off-by: Richard Gong <richard.gong@intel.com>
----
-v2: define and use constant values
----
- drivers/fpga/stratix10-soc.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+none of which really are used by a typical MMU enabled kernel, as a.out can
+only be build for alpha and m68k to start with.
 
-diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
-index 44b7c56..4d52a80 100644
---- a/drivers/fpga/stratix10-soc.c
-+++ b/drivers/fpga/stratix10-soc.c
-@@ -14,9 +14,13 @@
- /*
-  * FPGA programming requires a higher level of privilege (EL3), per the SoC
-  * design.
-+ * SoC firmware supports full and partial reconfiguration.
-  */
- #define NUM_SVC_BUFS	4
- #define SVC_BUF_SIZE	SZ_512K
-+#define FULL_RECONFIG_FLAG	0
-+#define PARTIAL_RECONFIG_FLAG	1
-+
- 
- /* Indicates buffer is in use if set */
- #define SVC_BUF_LOCK	0
-@@ -182,12 +186,12 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
- 	uint i;
- 	int ret;
- 
--	ctype.flags = 0;
- 	if (info->flags & FPGA_MGR_PARTIAL_RECONFIG) {
- 		dev_dbg(dev, "Requesting partial reconfiguration.\n");
--		ctype.flags |= BIT(COMMAND_RECONFIG_FLAG_PARTIAL);
-+		ctype.flags = PARTIAL_RECONFIG_FLAG;
- 	} else {
- 		dev_dbg(dev, "Requesting full reconfiguration.\n");
-+		ctype.flags = FULL_RECONFIG_FLAG;
- 	}
- 
- 	reinit_completion(&priv->status_return_completion);
-@@ -210,6 +214,7 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
- 
- 	ret = 0;
- 	if (!test_and_clear_bit(SVC_STATUS_OK, &priv->status)) {
-+		dev_err(dev, "RECONFIG_REQUEST failed\n");
- 		ret = -ETIMEDOUT;
- 		goto init_done;
- 	}
--- 
-2.7.4
+But strangely enough commit ae92ef8a4424 ("PATCH] flush icache in correct
+context") added a "set_fs(KERNEL_DS)" around the flush_icache_range call
+in the module loader, because apparently m68k assumed user pointers.
 
+This series first cleans up the cacheflush implementations, largely by
+switching as much as possible to the asm-generic version after a few
+preparations, then moves the misnamed current flush_icache_user_range to
+a new name, to finally introduce a real flush_icache_user_range to be used
+for the above use cases to flush the instruction cache for a userspace
+address range.  The last patch then drops the set_fs in the module code
+and moves it into the m68k implementation.
+
+A git tree is available here:
+
+    git://git.infradead.org/users/hch/misc.git flush_icache_range.2
+
+Gitweb:
+
+    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/flush_icache_range.2
+
+Changes since v1:
+ - fix pmem.c compilation on some s390 configs
+ - drop two patches picked up by the arch maintainers
