@@ -2,131 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E948D1D4914
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260D81D491C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 May 2020 11:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbgEOJI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 May 2020 05:08:26 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:44148 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726922AbgEOJIZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 May 2020 05:08:25 -0400
-Received: by mail-wr1-f67.google.com with SMTP id 50so2582070wrc.11
-        for <linux-kernel@vger.kernel.org>; Fri, 15 May 2020 02:08:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J28ctCQPdtuyBJRgZtHzD140QCC+2jwNn3ZnYypquyw=;
-        b=jqPYQ6GT3bveSQlucNajYxEMuiRRPSiCAl8gSIfDoC4RfUMjtfAGFSdriXERSpnUCb
-         0pqkTDKndezcNfA+ErPqMus5oDJQNLHqO/vPW2ZkHgRnALbfBlSQrexNKzMLrGionUQf
-         ais7lW05ha3Yasb1+xaiPHSkwtYluhMy+G1mgW+BNqtiMOsgQYf16ECn6IcxaSFTNqFl
-         Dkr155XWt/6hey74UellxKu1ejvkkDVRj3Nz/a6+qwu2KhjC7ySiwyihJsqjVI6JSs98
-         wtj+KyvrZoUwoc/c6GKUTLJbOSmJ3u/2GqxAl0UXN4qxrEDG/VSGoUE635AOFu2h6Cmw
-         iRmQ==
-X-Gm-Message-State: AOAM5310IZtnqJFSDHUFFjOV0Yml59WNUrTRncFlENAeMPOqZJraEBvg
-        b7n8uFVriTVo/WDxg0106vU=
-X-Google-Smtp-Source: ABdhPJx52WtvVOeMhy79X8+1BQZbsLlO7skCUfOYdMSwb8omCOfuZ6kNO9SujbtzJKeho92KCscVgQ==
-X-Received: by 2002:a05:6000:110b:: with SMTP id z11mr3315478wrw.16.1589533703612;
-        Fri, 15 May 2020 02:08:23 -0700 (PDT)
-Received: from localhost (ip-37-188-249-36.eurotel.cz. [37.188.249.36])
-        by smtp.gmail.com with ESMTPSA id r11sm2760862wro.15.2020.05.15.02.08.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 02:08:22 -0700 (PDT)
-Date:   Fri, 15 May 2020 11:08:21 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Chen, Tim C" <tim.c.chen@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] mm: adjust vm_committed_as_batch according to vm
- overcommit policy
-Message-ID: <20200515090821.GO29153@dhcp22.suse.cz>
-References: <1588922717-63697-1-git-send-email-feng.tang@intel.com>
- <1588922717-63697-4-git-send-email-feng.tang@intel.com>
- <20200515074125.GH29153@dhcp22.suse.cz>
- <20200515080210.GC69177@shbuild999.sh.intel.com>
+        id S1727858AbgEOJKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 May 2020 05:10:09 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2211 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726922AbgEOJKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 May 2020 05:10:08 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id DB2A597F4B563AF90316;
+        Fri, 15 May 2020 10:10:06 +0100 (IST)
+Received: from [127.0.0.1] (10.47.1.24) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Fri, 15 May
+ 2020 10:10:05 +0100
+Subject: Re: [PATCH 2/2] perf test: Improve pmu event metric testing
+To:     Ian Rogers <irogers@google.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Paul Clarke <pc@us.ibm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+References: <20200513062236.854-1-irogers@google.com>
+ <20200513062236.854-2-irogers@google.com>
+ <ac88604a-56c2-b632-57c2-3bee316dcea7@huawei.com>
+ <CAP-5=fVkD+0wCMcBBHWM8djsnn2KsshOyK_XcjNDTsiVo04vwQ@mail.gmail.com>
+ <5264e16c-fb1a-4bbc-96b5-1d867e38902e@huawei.com>
+ <CAP-5=fWt58UVTTj_qvirMhMOaUbur+HzxrTi5u1qvCA1ft9BEw@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <799e8dde-6f56-7add-a177-3e21c0de03fc@huawei.com>
+Date:   Fri, 15 May 2020 10:09:10 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515080210.GC69177@shbuild999.sh.intel.com>
+In-Reply-To: <CAP-5=fWt58UVTTj_qvirMhMOaUbur+HzxrTi5u1qvCA1ft9BEw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.1.24]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 15-05-20 16:02:10, Feng Tang wrote:
-> Hi Michal,
+On 15/05/2020 00:02, Ian Rogers wrote:
+> On Thu, May 14, 2020 at 2:00 AM John Garry <john.garry@huawei.com> wrote:
+>>
+>> On 13/05/2020 17:10, Ian Rogers wrote:
+>>>> Out of interest, if we could move the validation of metrics to jevents,
+>>>> how much functionality would we still have here?
+>>> If we add checking to jevents then the MetricExpr would be known to be
+>>> valid, however, the events (aka ids) within the expression could be
+>>> invalid.
+>>
+>> So I think that has some value. I mean, just to detect syntax errors,
+>> like those remedied in "perf metrics: fix parse errors in power8 metrics".
+>>
+>>> I'm not sure we could realistically check the events at
+>>> jevents (build) time as there is no guarantee that the machine we run
+>>> on is the same as the one we compile on.
+>>
+>> But we could at least check that there are event aliases for that CPU,
+>> right? (by examining the JSONs for that cpu). If the event alias does
+>> not actually match on the target CPU, then that can't be helped.
 > 
-> Thanks for the thorough reviews for these 3 patches!
-> 
-> On Fri, May 15, 2020 at 03:41:25PM +0800, Michal Hocko wrote:
-> > On Fri 08-05-20 15:25:17, Feng Tang wrote:
-> > > When checking a performance change for will-it-scale scalability
-> > > mmap test [1], we found very high lock contention for spinlock of
-> > > percpu counter 'vm_committed_as':
-> > > 
-> > >     94.14%     0.35%  [kernel.kallsyms]         [k] _raw_spin_lock_irqsave
-> > >     48.21% _raw_spin_lock_irqsave;percpu_counter_add_batch;__vm_enough_memory;mmap_region;do_mmap;
-> > >     45.91% _raw_spin_lock_irqsave;percpu_counter_add_batch;__do_munmap;
-> > > 
-> > > Actually this heavy lock contention is not always necessary. The
-> > > 'vm_committed_as' needs to be very precise when the strict
-> > > OVERCOMMIT_NEVER policy is set, which requires a rather small batch
-> > > number for the percpu counter.
-> > > 
-> > > So lift the batch number to 16X for OVERCOMMIT_ALWAYS and
-> > > OVERCOMMIT_GUESS policies, and add a sysctl handler to adjust it
-> > > when the policy is reconfigured.
-> > 
-> > Increasing the batch size for weaker overcommit modes makes sense. But
-> > your patch is also tuning OVERCOMMIT_NEVER without any explanation why
-> > that is still "small enough to be precise".
-> 
-> Actually, it keeps the batch algorithm for "OVERCOMMIT_NEVER", but
-> change the other 2 policies, which I should set it clear in the
-> commit log.
+> Agreed, I think there will be some cases where something more can be
+> done. Jiri has proposed fake pmus as well:
+> https://www.spinics.net/lists/linux-perf-users/msg11760.html
+> I don't know how much sense it makes trying to get this in jevents, as
+> long as 'perf test' is run.
 
-Yeah, I have misread that part. Sorry about that.
+At a glance, that does not look like something we would want in jevents. 
+But rather the metric expr parsing error detection and alias checking.
 
-[...]
-> > > +void mm_compute_batch(void)
-> > >  {
-> > >  	u64 memsized_batch;
-> > >  	s32 nr = num_present_cpus();
-> > >  	s32 batch = max_t(s32, nr*2, 32);
-> > > -
-> > > -	/* batch size set to 0.4% of (total memory/#cpus), or max int32 */
-> > > -	memsized_batch = min_t(u64, (totalram_pages()/nr)/256, 0x7fffffff);
-> > > +	unsigned long ram_pages = totalram_pages();
-> > > +
-> > > +	/*
-> > > +	 * For policy of OVERCOMMIT_NEVER, set batch size to 0.4%
-> > > +	 * of (total memory/#cpus), and lift it to 6.25% for other
-> > > +	 * policies to easy the possible lock contention for percpu_counter
-> > > +	 * vm_committed_as, while the max limit is INT_MAX
-> > > +	 */
-> > > +	if (sysctl_overcommit_memory == OVERCOMMIT_NEVER)
-> > > +		memsized_batch = min_t(u64, ram_pages/nr/256, INT_MAX);
-> > > +	else
-> > > +		memsized_batch = min_t(u64, ram_pages/nr/16, INT_MAX);
-> 
-> Also as you mentioned there are real-world work loads with big mmap
-> size and multi-threading, can we lift it even further ?
-> 	memsized_batch = min_t(u64, ram_pages/nr/4, INT_MAX)
+About jirka's patch:
 
-Try to measure those and see what numbers look like.
--- 
-Michal Hocko
-SUSE Labs
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -485,6 +485,102 @@ static int test_parsing(void)
+  	return ret == 0 ? TEST_OK : TEST_SKIP;
+  }
+
++
++static struct test_metric metrics[] = {
++	{ .metric = "imx8_ddr0@read\\-cycles@ * 4 * 4", },
++	{ .metric = 
+"imx8_ddr0@axid\\-read\\,axi_mask\\=0xffff\\,axi_id\\=0x0000@ * 4", },
++	{ .metric = "(cstate_pkg@c2\\-residency@ / msr@tsc@) * 100", },
++	{ .metric = "(imx8_ddr0@read\\-cycles@ + imx8_ddr0@write\\-cycles@)", },
++};
+
+Maybe we could add these to pmu-events/arch/test/test_cpu/metric.json, 
+and get at them that way.
+
+Thanks,
+John
