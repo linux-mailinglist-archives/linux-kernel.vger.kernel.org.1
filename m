@@ -2,101 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C121D64A7
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 01:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 502281DAE9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 11:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgEPXMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 19:12:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726670AbgEPXMz (ORCPT
+        id S1726893AbgETJU5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 May 2020 05:20:57 -0400
+Received: from mail3.sumicity.com.br ([189.113.72.105]:59626 "EHLO
+        mail3.sumicity.com.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgETJU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 19:12:55 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C28EEC061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 16:12:54 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id 190so6606605qki.1
-        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 16:12:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/FA08ie9Q9raMBDAvUVW1EsIFcuMMqEv2UfWS7IrUiU=;
-        b=k6shKcOPsbBc4xyf8foNzLKYLQ5MSGfEucWlwiBn/c50HNAicIZCJcHPORCaUjj8PO
-         yfpmzsGaoFxzh1nU5Ny6R+7jTYSHlOBk6pMCfsSBSkjLGooKfZms4a618ur8d1mIWRXM
-         Y7nzhgC9YyhbOQc+1T90dg6QLONfEOO5m5c9jNBlio1cXzNv1l0golOU7i1GnMWPOJbK
-         Huqq3/PD6G9aeXchdHrJrHKx4rzq/flziJFGZow3EKF3eb1erjs1mCREexZE3qcg/NBo
-         fTiAOV9tO/TEWP6HXJXg1nFLAHl8TwkgsuS/phHx+LqdXzv+OwfagKXG19Qvvf/K5ngd
-         XHoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=/FA08ie9Q9raMBDAvUVW1EsIFcuMMqEv2UfWS7IrUiU=;
-        b=Ut/pgeF+miIIFMah3cWqNm2ogpPIub0nkZ6uCqHdWaXA9l/8OL7BqR5YFksiwPKHnb
-         KT+4QTnvvW5uWQPONgz/rVgt9O3XpYvPSrRO4V09zHMlX8Tm4BoR87Isz1IO4/QEnd3k
-         43E34sLx1DjxusOvkK5mHpd7FblsD4BeMeH89a4OXjPKmeicCKAAC5IxoxvWZHRj5w99
-         HbTyXhUsroWNXQwntcU6lWsTSNGbDOcUXIT1n/PvzplrtpM+HhDTCrkpo3m4D4Z0BbL9
-         iQmSckopnQI1Ao1oj7OE2J9m5uomCpaf5TkwXd27yyuYsrLdS+J3Bu2Aqu+bE4NsszJ/
-         wUnQ==
-X-Gm-Message-State: AOAM532dzX0OnCeKkiymBiZSiXDi5bW4cea4bbESBc7jciVBdEPKC7v2
-        TSlVy0+hCxN2wXpXN5rXWO8=
-X-Google-Smtp-Source: ABdhPJyiM3dLsgTH98851rg9lWzY83YCpfTp7GUozsuZAuW/V+tMoA+76Acp8GmA15K9uljLsD0D7Q==
-X-Received: by 2002:a37:38e:: with SMTP id 136mr9689173qkd.247.1589670772641;
-        Sat, 16 May 2020 16:12:52 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id v78sm4845494qkb.62.2020.05.16.16.12.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 May 2020 16:12:52 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Sat, 16 May 2020 19:12:50 -0400
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, "H.J. Lu" <hjl.tools@gmail.com>
-Subject: Re: [PATCH v2] x86/boot: Correct relocation destination on old
- linkers
-Message-ID: <20200516231250.GA630703@rani.riverdale.lan>
-References: <20200111190015.3257863-1-nivedita@alum.mit.edu>
- <20200207214926.3564079-1-nivedita@alum.mit.edu>
- <20200313183349.GA1544820@rani.riverdale.lan>
+        Wed, 20 May 2020 05:20:56 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail3.sumicity.com.br (Postfix) with ESMTP id B290B960CD6;
+        Sat, 16 May 2020 20:17:14 -0300 (-03)
+Received: from mail3.sumicity.com.br ([127.0.0.1])
+        by localhost (mail3.sumicity.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 94GLfCjE4qjZ; Sat, 16 May 2020 20:17:14 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail3.sumicity.com.br (Postfix) with ESMTP id 0E09B960CE3;
+        Sat, 16 May 2020 20:17:11 -0300 (-03)
+X-Virus-Scanned: amavisd-new at sumicity.com.br
+Received: from mail3.sumicity.com.br ([127.0.0.1])
+        by localhost (mail3.sumicity.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id V6rg_eqq2NTF; Sat, 16 May 2020 20:17:10 -0300 (-03)
+Received: from [192.168.0.199] (unknown [106.202.68.79])
+        by mail3.sumicity.com.br (Postfix) with ESMTPSA id 1876F960CD7;
+        Sat, 16 May 2020 20:17:03 -0300 (-03)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200313183349.GA1544820@rani.riverdale.lan>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Dear Friend,
+To:     Recipients <pinheiromodas@sumicity.com.br>
+From:   "Mr Saeed Ahmed" <pinheiromodas@sumicity.com.br>
+Date:   Sun, 17 May 2020 04:46:55 +0530
+Reply-To: saeedasutanahmed@gmail.com
+Message-Id: <20200516231704.1876F960CD7@mail3.sumicity.com.br>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 02:33:50PM -0400, Arvind Sankar wrote:
-> On Fri, Feb 07, 2020 at 04:49:26PM -0500, Arvind Sankar wrote:
-> > For the 32-bit kernel, as described in commit 6d92bc9d483a ("x86/build:
-> > Build compressed x86 kernels as PIE"), pre-2.26 binutils generates
-> > R_386_32 relocations in PIE mode.  Since the startup code does not
-> > perform relocation, any reloc entry with R_386_32 will remain as 0 in
-> > the executing code.
-> > 
-> > Commit 974f221c84b0 ("x86/boot: Move compressed kernel to the end of the
-> > decompression buffer") added a new symbol _end but did not mark it
-> > hidden, which doesn't give the correct offset on older linkers. This
-> > causes the compressed kernel to be copied beyond the end of the
-> > decompression buffer, rather than flush against it. This region of
-> > memory may be reserved or already allocated for other purposes by the
-> > bootloader.
-> > 
-> > Mark _end as hidden to fix. This changes the relocation from R_386_32 to
-> > R_386_RELATIVE even on the pre-2.26 binutils.
-> > 
-> > For 64-bit, this is not strictly necessary, as the 64-bit kernel is only
-> > built as PIE if the linker supports -z noreloc-overflow, which implies
-> > binutils-2.27+, but for consistency, mark _end as hidden here too.
-> > 
-> 
-> Gentle reminder.
-> 
-> https://lore.kernel.org/lkml/20200207214926.3564079-1-nivedita@alum.mit.edu/
+Dear Friend,
 
-Ping.
+I want you to be honest and truthful with me that you will help me with all your effort and time for just seven to fourteen workings of your time
+
+Please kindly reply to my most confidential email if you are really interested in helping me please: saeedasutanahmed@gmail.com
+                                 
+God be with you
+Mr Saeed Ahmed
