@@ -2,94 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA311D6015
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 11:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147021D601A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 11:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgEPJlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 05:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725997AbgEPJlq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 05:41:46 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC96C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 02:41:44 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id f18so4754051lja.13
-        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 02:41:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ETnQEurEj2D9S0skz5vWgXCGMnqttYf8X7vq+AyGws4=;
-        b=hbdzU3b1sUtVTpY94DKNXrGnHP3CM6+4lLyAdYNx6YAjjHqouc3xqKHTr1Kora27l8
-         s+PGJ/ZkScqc5OhvSCPkV40a/pB2zVYyJ4k7SlmIs1O71UYd27JLlmN0EVhourGSv2kJ
-         GR7Jd+MZqulDetVv923CZqSAmratk3mzrAawCcTdNNNPtcXOjL8ro4Z9S4scL0CHunwv
-         aiK6LXOUXNNdlWwbNsQkqm4RMrRR10z/NKwzL0wPK2vJ06ACPNFoVi6OirpuEnOCrwoH
-         WhTQKduxvKAkMo4jyO7pDUZFCth2yvlIGaD3Igog/6fpitpBsqJjNvQ3vn8OGGdRhmrj
-         /r2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ETnQEurEj2D9S0skz5vWgXCGMnqttYf8X7vq+AyGws4=;
-        b=GEWi8tcXgsGsYy8Org0OOJ99FTu64IXFvpnDkvjaD/p6GQwAPLPDdlSHOOwpZ87khs
-         beJ3nJPI4Qa2E5XUX7kDyi/uHY2vKigrWujwoIfibLoocZ3YxUGUog7dQ4bJ56KrRnpv
-         +BtJHuAsoyqjRULJWy2N74z4TZMxE5Q7AermWmEfRRnxkDkVxNKETR6mPrLKC0L6vLId
-         m9VcPsbkMsb4OukPhaJtxVnO5ymaMD2/i8WwSjNTjr8vJTB/jMH9Dr8G/ReM8wGEI1fp
-         AImPBBspdJOPBRGYmmWQN8fMhqEenDhxOW82teF3hlhnYhgXKMw4duD2ulT0vj3NuHK2
-         Cn9A==
-X-Gm-Message-State: AOAM532/wzdGdVJI40cy4p2JWCkAXIqrlPq6vIZyDiVgzDUt45CONBkN
-        fwRqjF5ZfSjolWQzPBgUKHKfqN8XJysNlO+YtzRzGQ==
-X-Google-Smtp-Source: ABdhPJxDkwfUTvewS4ROJo+TNf5A2Ro2WwL7rcwxC/8KOUEXpWDdaTekM+CoT//aGEX0bP7RFp6SZcRNMEiVw0qQ2+Y=
-X-Received: by 2002:a2e:8805:: with SMTP id x5mr5010874ljh.223.1589622100904;
- Sat, 16 May 2020 02:41:40 -0700 (PDT)
+        id S1727020AbgEPJne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 05:43:34 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:56674 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727006AbgEPJne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 May 2020 05:43:34 -0400
+Received: from [10.20.42.25] (unknown [10.20.42.25])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf9+ftb9eyGs1AA--.4S3;
+        Sat, 16 May 2020 17:42:56 +0800 (CST)
+Subject: Re: [PATCH 2/3] mm/memory.c: Update local TLB if PTE entry exists
+To:     Andrew Morton <akpm@linux-foundation.org>
+References: <1589515809-32422-1-git-send-email-maobibo@loongson.cn>
+ <1589515809-32422-2-git-send-email-maobibo@loongson.cn>
+ <20200515134046.cf107c6a13b9604c46ad71b8@linux-foundation.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Dmitry Korotin <dkorotin@wavecomp.com>,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org
+From:   maobibo <maobibo@loongson.cn>
+Message-ID: <61ebeb0a-89cf-834f-1d20-765a2ab43161@loongson.cn>
+Date:   Sat, 16 May 2020 17:42:55 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-References: <20200511101828.30046-1-geert+renesas@glider.be> <CAMpxmJXD9WgrFnKvS2a=iOCVuYiqdTGwp+r2BjOv2RJH2R=s1Q@mail.gmail.com>
-In-Reply-To: <CAMpxmJXD9WgrFnKvS2a=iOCVuYiqdTGwp+r2BjOv2RJH2R=s1Q@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 16 May 2020 11:41:30 +0200
-Message-ID: <CACRpkdaJk2G8MF6UMVSc2LdFPdpm9L2hox3c-rxD6RhyMg_25Q@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: Document that GPIO line names are not globally unique
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200515134046.cf107c6a13b9604c46ad71b8@linux-foundation.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Dxf9+ftb9eyGs1AA--.4S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJryxGry5Ww47Cr1xXr4DCFg_yoW8CFy7pr
+        9aka9FqFs7tw18Wr4xXr1qqr18Z342qFy5C34fta4Yk3sFqrs5tFWrGw4F9rW5Zr1fuF4q
+        ya1jgr17Zan7ZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9mb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xK
+        xwCYjI0SjxkI62AI1cAE67vIY487MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2IqxV
+        CFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r10
+        6r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxV
+        WUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG
+        6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
+        0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07b0NVkUUUUU=
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 12:43 PM Bartosz Golaszewski
-<bgolaszewski@baylibre.com> wrote:
-> pon., 11 maj 2020 o 12:18 Geert Uytterhoeven <geert+renesas@glider.be>
-> napisa=C5=82(a):
-> >
-> > gpiochip_set_desc_names() no longer rejects GPIO line name collisions.
-> > Hence GPIO line names are not guaranteed to be globally unique.
-> > In case of multiple GPIO lines with the same name, gpio_name_to_desc()
-> > will return the first match found.
-(...)
-> This makes me wonder whether I should do something about this in
-> libgpiod? Looks to me like gpiod_chip_find_line() and the global
-> gpiod_line_find() are no longer reliable and should probably return
-> all lines whose names match.
 
-Hm. You probably know how consumers of libgpiod work better than me.
 
-The background is historical and this happens because gpiolib had a
-mechanism to name lines before I even took over maintenance, and
-that did not require line names to be unique. So
-when I created the character device I had to face the fact.
+On 05/16/2020 04:40 AM, Andrew Morton wrote:
+> On Fri, 15 May 2020 12:10:08 +0800 Bibo Mao <maobibo@loongson.cn> wrote:
+> 
+>> If there are two threads hitting page fault at the same page,
+>> one thread updates PTE entry and local TLB, the other can
+>> update local tlb also, rather than give up and do page fault
+>> again.
+>>
+>> ...
+>>
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -1770,8 +1770,8 @@ static vm_fault_t insert_pfn(struct vm_area_struct *vma, unsigned long addr,
+>>  			}
+>>  			entry = pte_mkyoung(*pte);
+>>  			entry = maybe_mkwrite(pte_mkdirty(entry), vma);
+>> -			if (ptep_set_access_flags(vma, addr, pte, entry, 1))
+>> -				update_mmu_cache(vma, addr, pte);
+>> +			ptep_set_access_flags(vma, addr, pte, entry, 1);
+>> +			update_mmu_cache(vma, addr, pte);
+> 
+> Presumably these changes mean that other architectures will run
+> update_mmu_cache() more frequently than they used to.  How much more
+> frequently, and what will be the impact of this change?  (Please fully
+> explain all this in the changelog).
+> 
+It is only useful for those architects where software can update tlb, if the  function update_mmu_cache is used for other reason, it will bring out somewhat impact, and I will explain it in the changelog.
 
-We also had to deal with the fact that when naming lines, the
-"NULL alternative" (no name on the line at all) is always a valid
-fallback.
+>>  		}
+>>  		goto out_unlock;
+>>  	}
+>>
+>> ...
+>>
+>> @@ -2463,7 +2462,8 @@ static inline bool cow_user_page(struct page *dst, struct page *src,
+>>  		vmf->pte = pte_offset_map_lock(mm, vmf->pmd, addr, &vmf->ptl);
+>>  		locked = true;
+>>  		if (!likely(pte_same(*vmf->pte, vmf->orig_pte))) {
+>> -			/* The PTE changed under us. Retry page fault. */
+>> +			/* The PTE changed under us, update local tlb */
+>> +			pdate_mmu_cache(vma, addr, vmf->pte);
+> 
+> Missing a 'u' there.  Which tells me this patch isn't the one which you
+> tested!
+> 
+Sorry about it, I will refresh the patch and add modification about this obvious typo
 
-And all lines named NULL are still valid and all have the same name
-so...
+regards
+bibo, mao
+>>  			ret = false;
+>>  			goto pte_unlock;
+>>  		}
+>>
+>> ...
+>>
 
-Yours,
-Linus Walleij
