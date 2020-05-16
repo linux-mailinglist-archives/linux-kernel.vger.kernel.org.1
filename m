@@ -2,54 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAC51D6401
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 22:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF951D6404
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 22:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgEPUaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 16:30:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726720AbgEPUaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 16:30:03 -0400
-Subject: Re: [GIT PULL] Pin control fixes for the v5.7 series
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589661003;
-        bh=NsRtbbK41tjrYgFdMXoo6T5LBeAraKLbGQwp8bAa8RM=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=HtBWcrJD9noLS08yQ4B50jv+c9CCbfHljaPrJl2KPXH81/bTnaNfl3eJ7gGgRNDwV
-         ErtVXkKPliMZnXDkMl/ojJpZ3QGzlWbwYPLKRfyhXG/HPfl88+S6+jz2R9o1NeBMQ1
-         nlm8i1pQFy5Vjv8CzqG+cx8CWBxOJhecNc9wLt2Y=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CACRpkdbpt9GGegm1TZSQ1-ohDB6682cLpQbipHT24dpuKHLBvQ@mail.gmail.com>
-References: <CACRpkdbpt9GGegm1TZSQ1-ohDB6682cLpQbipHT24dpuKHLBvQ@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CACRpkdbpt9GGegm1TZSQ1-ohDB6682cLpQbipHT24dpuKHLBvQ@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
- tags/pinctrl-v5.7-2
-X-PR-Tracked-Commit-Id: dca4f40742e09ec5d908a7fc2862498e6cf9d911
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cf0ca701a01cf631333855831fe48b717ed1f20b
-Message-Id: <158966100318.3231.3656320232076146308.pr-tracker-bot@kernel.org>
-Date:   Sat, 16 May 2020 20:30:03 +0000
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+        id S1726695AbgEPUfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 16:35:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726460AbgEPUfK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 May 2020 16:35:10 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2321DC061A0C;
+        Sat, 16 May 2020 13:35:10 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 6F4081194478D;
+        Sat, 16 May 2020 13:35:09 -0700 (PDT)
+Date:   Sat, 16 May 2020 13:35:08 -0700 (PDT)
+Message-Id: <20200516.133508.2302524641917348540.davem@davemloft.net>
+To:     luobin9@huawei.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        luoxianjun@huawei.com, yin.yinshi@huawei.com,
+        cloud.wangxiaoyun@huawei.com
+Subject: Re: [PATCH net-next v1] hinic: add set_channels ethtool_ops support
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200515194212.10381-1-luobin9@huawei.com>
+References: <20200515194212.10381-1-luobin9@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sat, 16 May 2020 13:35:09 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 16 May 2020 11:16:21 +0200:
+From: Luo bin <luobin9@huawei.com>
+Date: Fri, 15 May 2020 19:42:12 +0000
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.7-2
+> add support to change TX/RX queue number with ethtool -L
+> 
+> Signed-off-by: Luo bin <luobin9@huawei.com>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cf0ca701a01cf631333855831fe48b717ed1f20b
+I don't think you are properly following the semantics of this
+ethtool command with your changes.
 
-Thank you!
+In fact, you are breaking the hinic_get_channels() function which
+is properly advertising the ->max_* values currently.  Now it will
+return zero.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+Whatever is advertised in ->max_* should be the driver's maximum
+capabilities.
+
+This means that the user can request anything in the range from '1'
+to these max values.
+
+Whatever the user asks for in ->combined_count and elsewhere, you
+_MUST_ provide or return an error.
+
+That is not what hinic_set_channels() is doing.  It is using
+combined_count as a "limit" rather than the value to use.
