@@ -2,100 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513EC1D6364
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 20:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE4D1D6365
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 20:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbgEPSAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 14:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726263AbgEPSAW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 14:00:22 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB515C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 11:00:20 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id f18so514467otq.11
-        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 11:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=PM7h0o5+tqE9ZrLd8+q3bJz68SKdYlGdGtXKk3ISW+k=;
-        b=K04I8IqOczZH1AaZWdpXMNHXUBXe/G0xWTINRAoRcubI34/BsiF2Eo9Ye3ZdrdSkzU
-         hNmgIVQ4FxMYuKEtFUuCQeNk/Myn1GOMYyZ+ahXs06MvyIxhZ9gYYSlEFIwzaERHeimB
-         L27mxfsB6RWRdL2FSa8r+ZjAPJUmTXmkCgHxPLQ+Xomh12OCcrXelB0VLwcdDew2e3Qs
-         5TaJKuteA/ImN3akphYAwhVqqPF2MH5XWCzqPg7nrI4+gsiq0lXzPTMaYUKS8aQq7V/0
-         xCAfzkqhbgsO/5Cbu9q5UeLziv9H5bmejo4c1UHtRzKE2zqAujjHMC/SDOHS7Xdn55bI
-         Ci3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=PM7h0o5+tqE9ZrLd8+q3bJz68SKdYlGdGtXKk3ISW+k=;
-        b=J0zFUZh3dEA4OuUnU9VLVKlWxjzv7xMeg+Rf6EsJcTrGbQSdQ931+Fqc+40MUTpB+W
-         bj08ZIaHHJ625we7FFQueyzCI4RXJs52uqRd2GVHYLqdDxhMFDl32/mUb0Qt/0AI8GRT
-         ciDKg3sGWJSUK4qdbrEwdwJH/MvOL95JJ03c88GMKuF9WGwkhs0VGGLrF4P5yoqwEqNP
-         5jXnMeQTXB6UVI/7Y4d3qGUGnVDsrdJJzj009xiDa9Vkp28lR3CwAu9HZwP4EUiVoovN
-         YACMP3Dwh1+nnC+kbFpnbDhsuNknb+s3D7XgiCnVp9rENam4kQMNUcWAj991fSqUuVtT
-         by3g==
-X-Gm-Message-State: AOAM530CHaslJ4x9/VpAEMlfbNcnch5vFiVLoS3SIQAfGa5+OACKrpUn
-        RnFO6HGWNqX1GoHwE3zFmwoicYzZDeNpCZ+Z1uU=
-X-Google-Smtp-Source: ABdhPJw+hoTwRAKTAYN9O8urzlDc9gDPl5bOk5AvPhyeqkwGkPxrGN+vxvWPh9irDTlAv27ES/3D9OVVZVWmNfnb6zU=
-X-Received: by 2002:a9d:53c7:: with SMTP id i7mr6446687oth.307.1589652020150;
- Sat, 16 May 2020 11:00:20 -0700 (PDT)
+        id S1726537AbgEPSAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 14:00:34 -0400
+Received: from mga18.intel.com ([134.134.136.126]:5480 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726263AbgEPSAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 May 2020 14:00:34 -0400
+IronPort-SDR: uEk/vv/NBozba/i9IPbvOIogg+v83LeHju5sLXJPZqf1kHzQPlBtg146IN2fFWVPn7e+Y8Iw9A
+ Hper7QXRQu/w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2020 11:00:33 -0700
+IronPort-SDR: 6Ncuwp52H3YV7YOKHf0OgxkPcmlJ3eJS6aXB3h1iYaMgz6a1ArvDp0N4iGx1G6WjE7+mTg0VaQ
+ LkbjQEKukkNw==
+X-IronPort-AV: E=Sophos;i="5.73,400,1583222400"; 
+   d="scan'208";a="465311294"
+Received: from rchatre-mobl.amr.corp.intel.com (HELO [10.251.21.145]) ([10.251.21.145])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2020 11:00:32 -0700
+Subject: Re: [PATCH V3 1/4] x86/resctrl: Enable user to view and select thread
+ throttling mode
+To:     Babu Moger <babu.moger@amd.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tony.luck@intel.com" <tony.luck@intel.com>
+Cc:     "kuo-lang.tseng@intel.com" <kuo-lang.tseng@intel.com>,
+        "ravi.v.shankar@intel.com" <ravi.v.shankar@intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <cover.1588808537.git.reinette.chatre@intel.com>
+ <56f9ee29b04599cdf502565dc223a70912a449f6.1588808538.git.reinette.chatre@intel.com>
+ <0d1fc0a8-7544-861e-a2f6-42c34ad798d9@amd.com>
+ <591cfbf0-fe1d-d96c-9842-79e62e76fbfe@intel.com>
+ <18d277fd-6523-319c-d560-66b63ff606b8@amd.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <39416f57-f6be-bffe-8971-d1698003797a@intel.com>
+Date:   Sat, 16 May 2020 11:00:31 -0700
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Received: by 2002:ac9:e23:0:0:0:0:0 with HTTP; Sat, 16 May 2020 11:00:19 -0700 (PDT)
-Reply-To: mrssophia.robin.75@inbox.ru
-From:   "Mrs. Sophia Robin" <agencydirectorwu@gmail.com>
-Date:   Sat, 16 May 2020 11:00:19 -0700
-Message-ID: <CAMTsjJcTrHsQOmK3T1YBuY2xHOtHcUk=w+XpNE3PViyBfGLDUw@mail.gmail.com>
-Subject: Hello My Dearest
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <18d277fd-6523-319c-d560-66b63ff606b8@amd.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello My Dearest
+Hi Babu,
 
-Please I appeal to you to exercise a little patience and read through
-my mail carefully, I am contacting you personally for investment
-assistance and a long term business relationship in your Country.
+On 5/14/2020 1:06 PM, Babu Moger wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Reinette Chatre <reinette.chatre@intel.com>
+>> Sent: Thursday, May 14, 2020 1:11 PM
+>> To: Moger, Babu <Babu.Moger@amd.com>; tglx@linutronix.de;
+>> fenghua.yu@intel.com; bp@alien8.de; tony.luck@intel.com
+>> Cc: kuo-lang.tseng@intel.com; ravi.v.shankar@intel.com; mingo@redhat.com;
+>> hpa@zytor.com; x86@kernel.org; linux-kernel@vger.kernel.org
+>> Subject: Re: [PATCH V3 1/4] x86/resctrl: Enable user to view and select thread
+>> throttling mode
+>>
+>> Hi Babu,
+>>
+>> Thank you very much for taking a look.
+>>
+>> On 5/14/2020 9:45 AM, Babu Moger wrote:
+>>> Hi Reinnette,
+>>>
+>>> The patches did not apply on my tree. I got the latest tree today. You
+>>
+>> Which tree did you use as baseline? These patches should apply cleanly
+>> on top of the other resctrl patches already queued for inclusion into
+>> v5.8 as found on the x86/cache branch of the tip repo.
+> 
+> Oh. Ok. I was using linux master.  Never mind..
 
-I am Mrs. Sophia Robin  a citizen of the united state of America ,  I
-work in HSBC Bank in Milan Italy  as a Telex Manager charge of wire
-transfer department.
+My apologies, I neglected to include the repo to which these patches
+apply into the cover letter. Will make sure to do it for next version.
 
-I am contacting you for an important and  urgent business transaction,
-I  want the bank to transfer the money left by Dr. Cheng Chao,  A
-Chinese   Politicians who  died, March 17th 2020 without any trace of
-his family member,  he used our bank to launder money overseas through
-the help of their Political advisers. And most of the funds which they
-transferred out of the shores of China  were gold and oil money that
-was supposed to have been used to develop the continent.
 
-Can you invest this money and also help the poor ? The amount value at
-($10.5million Dollars), left in his account still unclaimed, if you
-know that you are capable to invest this fund into any   profitable
-business in your country kindly send me your details information as
-listed below to enable me draft you an application form of claim along
-with the deposit certificate which you are going to fill with your
-bank account detail necessary and contact the HSBC Bank in Italy  for
-immediate transfer of the Amounted sum into your bank account direct.
-	
-Percentage share will be 60,for me/ 40, for you.
+>>>> -----Original Message-----
+>>>> From: Reinette Chatre <reinette.chatre@intel.com>
+>>>> Sent: Wednesday, May 6, 2020 6:50 PM
+>>>> To: tglx@linutronix.de; fenghua.yu@intel.com; bp@alien8.de;
+>>>> tony.luck@intel.com
+>>>> Cc: kuo-lang.tseng@intel.com; ravi.v.shankar@intel.com;
+>> mingo@redhat.com;
+>>>> Moger, Babu <Babu.Moger@amd.com>; hpa@zytor.com; x86@kernel.org;
+>>>> linux-kernel@vger.kernel.org; Reinette Chatre <reinette.chatre@intel.com>
+>>>> Subject: [PATCH V3 1/4] x86/resctrl: Enable user to view and select thread
+>>>> throttling mode
+>>>>
+>>
+>> ...
+>>
 
-(1) Your full name..................................................
-(2) Your address....................................................
-(3) Your Nationality.................................................
-(4) Your Age / Sex.....................................................
-(5) Your  Occupation............................................
-(6) Your marital status......................................
-(7) Your direct telephone number..................
-(8) Your photo.......................................
+...
 
-Thanks with my best regards.
-Mrs. Sophia Robin
-Telex Manager
-Milan Italy  (H.S.B.C)
+>>
+>>> make it as a property in rdt_resource. Set it only once during the
+>>> init(may be in get_mem_config_intel). Then you can use it wherever
+>>> required. This also probably help James to make everything architecture
+>>> independent. What do you think?
+>>
+>> If I understand correctly this would require understanding how each
+>> architecture behaves in this regard to ensure the property within
+>> rdt_resource is initialized correctly. While it could just be set within
+>> get_mem_config_intel as you suggest, this property would be present in
+>> AMD's resource and thus need a value ... could you please provide
+>> guidance what this property should be on AMD? I looked at the bandwidth
+>> enforcement section of
+>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fdevelop
+>> er.amd.com%2Fwp-
+>> content%2Fresources%2F56375.pdf&amp;data=02%7C01%7Cbabu.moger%40a
+>> md.com%7C5e7d546489d54002870808d7f8322934%7C3dd8961fe4884e608e11
+>> a82d994e183d%7C0%7C0%7C637250766898923893&amp;sdata=hQ6usFmXiUX
+>> p%2BZCrM2qdVn2Z3Ggx1c2g4nVwrEqrzG4%3D&amp;reserved=0 but it is not
+>> obvious to me where bandwidth is actually enforced and how this
+>> enforcement is affected when threads and/or cores are running tasks with
+>> different CLOS that have different bandwidth limits assigned.
+>>
+>> With AMD's properties understood then the new "thread_throttle_mode"
+>> file could be visible on all platforms, not just Intel, and display
+>> accurate values for all and be architecture independent.
+>>
+>> Alternatively, the new property could have values: UNDEFINED, MIN, MAX,
+>> or PER_THREAD ... with AMD having UNDEFINED and the
+>> "thread_throttle_mode" continues to be visible on Intel platforms only.
+>>
+>> I would appreciate your thoughts on this.
+> 
+> Here is the text from spec.
+> "Platform QOS features are implemented on a logical processor basis.
+> Therefore, multiple hardware threads of a single physical CPU core may
+> have independent resource monitoring and enforcement configurations."
+> 
+> So, bandwidth allocation is already at thread level. But AMD does not use
+> memory delay throttle model to control the allocation like Intel does. So,
+> I would say you can initialize it as UNDEFINED not to cause any confusion.
+
+Will do. The next version intends to follow your guidance and moves to
+treating this platform feature as a property of the memory bandwidth
+resource using the "arch_.." prefix that James also follows and is
+intended to be architecture independent.
+
+Thank you very much for your valuable feedback. I look forward to hear
+what you think about the next version.
+
+Reinette
