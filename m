@@ -2,293 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0433F1D5FD0
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 10:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8FD1D5FD5
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 10:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbgEPIzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 04:55:39 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:50398 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726414AbgEPIzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 04:55:35 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 66C2482B441B830347B6;
-        Sat, 16 May 2020 16:55:25 +0800 (CST)
-Received: from use12-sp2.huawei.com (10.67.189.174) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 16 May 2020 16:55:19 +0800
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-To:     <mcgrof@kernel.org>, <keescook@chromium.org>, <yzaikin@google.com>,
-        <adobriyan@gmail.com>, <peterz@infradead.org>, <mingo@kernel.org>,
-        <patrick.bellasi@arm.com>, <gregkh@linuxfoundation.org>,
-        <tglx@linutronix.de>, <Jisheng.Zhang@synaptics.com>,
-        <bigeasy@linutronix.de>, <pmladek@suse.com>,
-        <ebiederm@xmission.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <nixiaoming@huawei.com>, <wangle6@huawei.com>
-Subject: [PATCH v2 4/4] watchdog: move watchdog sysctl interface to watchdog.c
-Date:   Sat, 16 May 2020 16:55:15 +0800
-Message-ID: <1589619315-65827-5-git-send-email-nixiaoming@huawei.com>
-X-Mailer: git-send-email 1.8.5.6
-In-Reply-To: <1589619315-65827-1-git-send-email-nixiaoming@huawei.com>
-References: <1589619315-65827-1-git-send-email-nixiaoming@huawei.com>
+        id S1726957AbgEPI5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 04:57:51 -0400
+Received: from mga03.intel.com ([134.134.136.65]:28230 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725997AbgEPI5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 May 2020 04:57:51 -0400
+IronPort-SDR: 1W4P9j6CfYWtrG/X+WJEjMhNtyq6Hw/h+vuSpehk3+fqTHtPS/6Th+B7QoxuWFp93zWwqmXq3w
+ AemBOkvdr+GA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2020 01:57:48 -0700
+IronPort-SDR: in0yoFGzJjUIkU1B28SpdR5XFmYKLgi2naD49dLDLaJ7AtWqlV/JOUmaXbA+44jObhP4JnZzpK
+ eeRKqb2bLgPg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,398,1583222400"; 
+   d="scan'208";a="266860185"
+Received: from dbobocel-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.55.115])
+  by orsmga006.jf.intel.com with ESMTP; 16 May 2020 01:57:39 -0700
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: [PATCH] x86/cpu/intel: Add nosgx kernel parameter
+Date:   Sat, 16 May 2020 11:57:37 +0300
+Message-Id: <20200516085737.10838-1-jarkko.sakkinen@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200515004410.723949-1-jarkko.sakkinen@linux.intel.com>
+References: <20200515004410.723949-1-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.189.174]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move watchdog syscl interface to watchdog.c.
-Use register_sysctl() to register the sysctl interface to avoid
-merge conflicts when different features modify sysctl.c at the same time.
+Add kernel parameter to disable Intel SGX kernel support.
 
-Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+Tested-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 ---
- kernel/sysctl.c   |  96 ---------------------------------------------------
- kernel/watchdog.c | 101 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 101 insertions(+), 96 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt | 2 ++
+ arch/x86/kernel/cpu/feat_ctl.c                  | 9 +++++++++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 49e9541..efe6172 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -97,9 +97,6 @@
- #ifdef CONFIG_STACKLEAK_RUNTIME_DISABLE
- #include <linux/stackleak.h>
- #endif
--#ifdef CONFIG_LOCKUP_DETECTOR
--#include <linux/nmi.h>
--#endif
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 7bc83f3d9bdf..9f7202a54db6 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -3268,6 +3268,8 @@
  
- #if defined(CONFIG_SYSCTL)
+ 	nosep		[BUGS=X86-32] Disables x86 SYSENTER/SYSEXIT support.
  
-@@ -120,9 +117,6 @@
- #endif
++	nosgx		[X86-64,SGX] Disables Intel SGX kernel support.
++
+ 	nosmp		[SMP] Tells an SMP kernel to act as a UP kernel,
+ 			and disable the IO APIC.  legacy for "maxcpus=0".
  
- /* Constants used for minimum and  maximum */
--#ifdef CONFIG_LOCKUP_DETECTOR
--static int sixty = 60;
--#endif
- 
- static unsigned long zero_ul;
- static unsigned long one_ul = 1;
-@@ -883,96 +877,6 @@ static int sysrq_sysctl_handler(struct ctl_table *table, int write,
- 		.mode		= 0444,
- 		.proc_handler	= proc_dointvec,
- 	},
--#if defined(CONFIG_LOCKUP_DETECTOR)
--	{
--		.procname       = "watchdog",
--		.data		= &watchdog_user_enabled,
--		.maxlen		= sizeof(int),
--		.mode		= 0644,
--		.proc_handler   = proc_watchdog,
--		.extra1		= SYSCTL_ZERO,
--		.extra2		= SYSCTL_ONE,
--	},
--	{
--		.procname	= "watchdog_thresh",
--		.data		= &watchdog_thresh,
--		.maxlen		= sizeof(int),
--		.mode		= 0644,
--		.proc_handler	= proc_watchdog_thresh,
--		.extra1		= SYSCTL_ZERO,
--		.extra2		= &sixty,
--	},
--	{
--		.procname       = "nmi_watchdog",
--		.data		= &nmi_watchdog_user_enabled,
--		.maxlen		= sizeof(int),
--		.mode		= NMI_WATCHDOG_SYSCTL_PERM,
--		.proc_handler   = proc_nmi_watchdog,
--		.extra1		= SYSCTL_ZERO,
--		.extra2		= SYSCTL_ONE,
--	},
--	{
--		.procname	= "watchdog_cpumask",
--		.data		= &watchdog_cpumask_bits,
--		.maxlen		= NR_CPUS,
--		.mode		= 0644,
--		.proc_handler	= proc_watchdog_cpumask,
--	},
--#ifdef CONFIG_SOFTLOCKUP_DETECTOR
--	{
--		.procname       = "soft_watchdog",
--		.data		= &soft_watchdog_user_enabled,
--		.maxlen		= sizeof(int),
--		.mode		= 0644,
--		.proc_handler   = proc_soft_watchdog,
--		.extra1		= SYSCTL_ZERO,
--		.extra2		= SYSCTL_ONE,
--	},
--	{
--		.procname	= "softlockup_panic",
--		.data		= &softlockup_panic,
--		.maxlen		= sizeof(int),
--		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ZERO,
--		.extra2		= SYSCTL_ONE,
--	},
--#ifdef CONFIG_SMP
--	{
--		.procname	= "softlockup_all_cpu_backtrace",
--		.data		= &sysctl_softlockup_all_cpu_backtrace,
--		.maxlen		= sizeof(int),
--		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ZERO,
--		.extra2		= SYSCTL_ONE,
--	},
--#endif /* CONFIG_SMP */
--#endif
--#ifdef CONFIG_HARDLOCKUP_DETECTOR
--	{
--		.procname	= "hardlockup_panic",
--		.data		= &hardlockup_panic,
--		.maxlen		= sizeof(int),
--		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ZERO,
--		.extra2		= SYSCTL_ONE,
--	},
--#ifdef CONFIG_SMP
--	{
--		.procname	= "hardlockup_all_cpu_backtrace",
--		.data		= &sysctl_hardlockup_all_cpu_backtrace,
--		.maxlen		= sizeof(int),
--		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ZERO,
--		.extra2		= SYSCTL_ONE,
--	},
--#endif /* CONFIG_SMP */
--#endif
--#endif
--
- #if defined(CONFIG_X86_LOCAL_APIC) && defined(CONFIG_X86)
- 	{
- 		.procname       = "unknown_nmi_panic",
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index b6b1f54..f5d19be 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -756,6 +756,106 @@ int proc_watchdog_cpumask(struct ctl_table *table, int write,
- 	mutex_unlock(&watchdog_mutex);
- 	return err;
+diff --git a/arch/x86/kernel/cpu/feat_ctl.c b/arch/x86/kernel/cpu/feat_ctl.c
+index c3afcd2e4342..1837df39527f 100644
+--- a/arch/x86/kernel/cpu/feat_ctl.c
++++ b/arch/x86/kernel/cpu/feat_ctl.c
+@@ -101,6 +101,15 @@ static void clear_sgx_caps(void)
+ 	setup_clear_cpu_cap(X86_FEATURE_SGX2);
  }
-+
-+static const int sixty = 60;
-+
-+static struct ctl_table watchdog_sysctls[] = {
-+	{
-+		.procname       = "watchdog",
-+		.data		= &watchdog_user_enabled,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler   = proc_watchdog,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_ONE,
-+	},
-+	{
-+		.procname	= "watchdog_thresh",
-+		.data		= &watchdog_thresh,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_watchdog_thresh,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= &sixty,
-+	},
-+	{
-+		.procname       = "nmi_watchdog",
-+		.data		= &nmi_watchdog_user_enabled,
-+		.maxlen		= sizeof(int),
-+		.mode		= NMI_WATCHDOG_SYSCTL_PERM,
-+		.proc_handler   = proc_nmi_watchdog,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_ONE,
-+	},
-+	{
-+		.procname	= "watchdog_cpumask",
-+		.data		= &watchdog_cpumask_bits,
-+		.maxlen		= NR_CPUS,
-+		.mode		= 0644,
-+		.proc_handler	= proc_watchdog_cpumask,
-+	},
-+#ifdef CONFIG_SOFTLOCKUP_DETECTOR
-+	{
-+		.procname       = "soft_watchdog",
-+		.data		= &soft_watchdog_user_enabled,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler   = proc_soft_watchdog,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_ONE,
-+	},
-+	{
-+		.procname	= "softlockup_panic",
-+		.data		= &softlockup_panic,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_ONE,
-+	},
-+#ifdef CONFIG_SMP
-+	{
-+		.procname	= "softlockup_all_cpu_backtrace",
-+		.data		= &sysctl_softlockup_all_cpu_backtrace,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_ONE,
-+	},
-+#endif /* CONFIG_SMP */
-+#endif
-+#ifdef CONFIG_HARDLOCKUP_DETECTOR
-+	{
-+		.procname	= "hardlockup_panic",
-+		.data		= &hardlockup_panic,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_ONE,
-+	},
-+#ifdef CONFIG_SMP
-+	{
-+		.procname	= "hardlockup_all_cpu_backtrace",
-+		.data		= &sysctl_hardlockup_all_cpu_backtrace,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_ONE,
-+	},
-+#endif /* CONFIG_SMP */
-+#endif
-+	{}
-+};
-+
-+static void __init watchdog_sysctl_init(void)
+ 
++static int __init nosgx(char *str)
 +{
-+	register_sysctl_init("kernel", watchdog_sysctls, "watchdog_sysctls");
++	clear_sgx_caps();
++
++	return 0;
 +}
-+#else
-+#define watchdog_sysctl_init() do { } while (0)
- #endif /* CONFIG_SYSCTL */
- 
- void __init lockup_detector_init(void)
-@@ -769,4 +869,5 @@ void __init lockup_detector_init(void)
- 	if (!watchdog_nmi_probe())
- 		nmi_watchdog_available = true;
- 	lockup_detector_setup();
-+	watchdog_sysctl_init();
- }
++
++early_param("nosgx", nosgx);
++
+ void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
+ {
+ 	bool tboot = tboot_enabled();
 -- 
-1.8.5.6
+2.25.1
 
