@@ -2,106 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8E51D617B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 15:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C39571D6181
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 16:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726425AbgEPN6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 09:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726298AbgEPN6v (ORCPT
+        id S1726512AbgEPOGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 10:06:34 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:40236 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726298AbgEPOGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 09:58:51 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3B8C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 06:58:51 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id fu13so2369167pjb.5
-        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 06:58:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2BY2MeLSpblRsT2HXMrnj+8RTEHYsF/7I5WsuiZ4e0A=;
-        b=g23b0tzlxh5U/Q+b1TlCSIoFD1b7ijt7m+aIeCA9SmYHEzdY0luaNze2zJdRrpMGYr
-         B0IixNNgblhDV3KwWKPwxo6txNaJt917whiSTfAkaEKCtn4mxJSGBczM99kjjb5EtBsJ
-         hBLmZuc2ZTs2OI7V5xn1DgiSnCc25UNiDNjWSH40q2aHTHYzavuXkvYd50hLFOqtOHoz
-         pps0oqMLkRADJDbb5rwOURa9EWn2lYR29+WM6pSmPD+0VJpUjjtOIjjiEHGqUDNjET5p
-         4WLI2GW8IrOiFCu3J31zav+oS9Z6u5LbYy/4dzfnqIlrpQanCJOtWpyOUasQztmsYjpq
-         NXcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2BY2MeLSpblRsT2HXMrnj+8RTEHYsF/7I5WsuiZ4e0A=;
-        b=QU2gDQNvZL0FPgIb5xBhM1n0jNMiSVLVpYIbDXiAnxrFG1ZvCHcgp4ZMbT2aG4NLi3
-         ijLjW13vzb9469iBVNWkcOUbZ8EjTOqGHsgBrgrf5Z/PdBWXyQZq4XwjKN/H/WlqW76G
-         UQ5CCqQJ9IcOxK/3/jM1hOBM6wTAe86ZlVtK5cRGmGYoCZxTIIm9w5Xqw5hytsl0Ix2c
-         kuPNX5A564zYpJnvptA48FnCXcjuHxTEvNAJb/lCrM92O8u0s5coUdDITvY8h3k7AjBD
-         mkkpEQyZV3vmZvEby7G3ETp1COc4kH51l0NSFd4CsAPfMCV42kbZuKy4LglVlU4qsN5T
-         W6vg==
-X-Gm-Message-State: AOAM530ynroYHJ5uHxY/i0p4e8IaOFygo5b6k0YSg6/hpnCNitgUn7lh
-        Edmslzh4QZBKsETP3PUn2SAo0gdQqg1k
-X-Google-Smtp-Source: ABdhPJxtjTOQlMVwHc6XBjCPMpxiD+/uWxir6Qcgj72yx4sXRkrxQB9IhupN/NwOTUwgwgSHAQeZbg==
-X-Received: by 2002:a17:90a:ee85:: with SMTP id i5mr8866034pjz.165.1589637530724;
-        Sat, 16 May 2020 06:58:50 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:216:faa9:20af:7888:5f3d:69ce])
-        by smtp.gmail.com with ESMTPSA id d35sm3914205pgd.29.2020.05.16.06.58.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 16 May 2020 06:58:49 -0700 (PDT)
-Date:   Sat, 16 May 2020 19:28:42 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Kent Gibson <warthog618@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH] gpiolib: notify user-space about line status changes
- after flags are set
-Message-ID: <20200516135842.GA17153@Mani-XPS-13-9360>
-References: <20200509141507.19531-1-brgl@bgdev.pl>
- <CACRpkdZ2WGs=aWjwS=vk6-PDMvXMLppfBBF-8rs42F=ko3biNg@mail.gmail.com>
+        Sat, 16 May 2020 10:06:33 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id B8B9C8030809;
+        Sat, 16 May 2020 14:06:30 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id kzvn8ktOIz_p; Sat, 16 May 2020 17:06:28 +0300 (MSK)
+Date:   Sat, 16 May 2020 17:06:27 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Allison Randal <allison@lohutok.net>,
+        Gareth Williams <gareth.williams.jx@renesas.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 05/19] spi: dw: Enable interrupts in accordance with
+ DMA xfer mode
+Message-ID: <20200516140627.zwigqoz335lhkxns@mobilestation>
+References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
+ <20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru>
+ <20200515104758.6934-6-Sergey.Semin@baikalelectronics.ru>
+ <20200515122700.GY185537@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CACRpkdZ2WGs=aWjwS=vk6-PDMvXMLppfBBF-8rs42F=ko3biNg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200515122700.GY185537@smile.fi.intel.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 16, 2020 at 11:30:36AM +0200, Linus Walleij wrote:
-> On Sat, May 9, 2020 at 4:15 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+On Fri, May 15, 2020 at 03:27:00PM +0300, Andy Shevchenko wrote:
+> On Fri, May 15, 2020 at 01:47:44PM +0300, Serge Semin wrote:
+> > It's pointless to track the Tx overrun interrupts if Rx-only SPI
+> > transfer is issued. Similarly there is no need in handling the Rx
+> > overrun/underrun interrupts if Tx-only SPI transfer is executed.
+> > So lets unmask the interrupts only if corresponding SPI
+> > transactions are implied.
 > 
-> > Since the flags can be configured in different ways depending on how the
-> > line is being requested - we need to call the notifier chain in different
-> > places separately.
+> My comments below.
 > 
-> Ooops.
+> > Co-developed-by: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
+> > Signed-off-by: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+> > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > Cc: Paul Burton <paulburton@kernel.org>
+> > Cc: Ralf Baechle <ralf@linux-mips.org>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: Allison Randal <allison@lohutok.net>
+> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Cc: Gareth Williams <gareth.williams.jx@renesas.com>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: linux-mips@vger.kernel.org
+> > Cc: devicetree@vger.kernel.org
 > 
-> > This comes late in the release cycle but I only recently got down to
-> > writing libgpiod support for this new ioctl(). When writing test cases
-> > I noticed this doesn't really work as expected.
+> I think you really need to revisit Cc list in all patches (DT people hardly
+> interested in this one, though ones where properties are being used might be
+> point of interest).
 > 
-> This is why I am so grateful about the tests you are doing with
-> libgpiod! We actually find these problems quickly and not after
-> years. Thanks!
+> ...
+> 
+> >  	/* Set the interrupt mask */
+> > -	spi_umask_intr(dws, SPI_INT_TXOI | SPI_INT_RXUI | SPI_INT_RXOI);
+> > +	spi_umask_intr(dws, imr);
 > 
 
-This forces me to add tests for chardev in MRAA ;) (Don't ask me about other
-interfaces)
-
-Thanks,
-Mani
-
-> > This patch fixes the
-> > issue I identified this week. There may be more coming the following
-> > week though...
+> Can we rather do like this
 > 
-> I will pull in your pull request once the next -rc is out as I had already
-> sent my first pull request, but do not hesitate to bug me about this.
+> 	/* Set the interrupt mask */
+> 	if (xfer->tx_buf)
+> 		imr |= SPI_INT_TXOI;
+> 	if (xfer->rx_buf)
+> 		imr |= SPI_INT_RXUI | SPI_INT_RXOI;
+> 	spi_umask_intr(dws, imr);
 > 
-> Yours,
-> Linus Walleij
+> ?
+> 
+> (First block sets DMA, second one IRQ)
+
+I'd rather leave it as is.
+
+-Sergey
+
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
