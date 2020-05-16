@@ -2,237 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D691D644F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 23:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FE71D6473
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 00:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbgEPVvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 17:51:12 -0400
-Received: from retiisi.org.uk ([95.216.213.190]:54420 "EHLO
-        hillosipuli.retiisi.org.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726668AbgEPVvL (ORCPT
+        id S1726730AbgEPWOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 18:14:20 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:35058 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726660AbgEPWOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 17:51:11 -0400
-Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.org.uk (Postfix) with ESMTPS id 5153E634C87;
-        Sun, 17 May 2020 00:51:03 +0300 (EEST)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1ja4hz-0000O6-9a; Sun, 17 May 2020 00:51:03 +0300
-Date:   Sun, 17 May 2020 00:51:03 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     linux-renesas-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>, Hans Verkuil <hverkuil@xs4all.nl>,
-        Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>
-Subject: Re: [PATCH v9 2/4] media: i2c: Add MAX9286 driver
-Message-ID: <20200516215103.GA857@valkosipuli.retiisi.org.uk>
-References: <20200512155105.1068064-1-kieran.bingham+renesas@ideasonboard.com>
- <20200512155105.1068064-3-kieran.bingham+renesas@ideasonboard.com>
+        Sat, 16 May 2020 18:14:19 -0400
+Received: by linux.microsoft.com (Postfix, from userid 1029)
+        id BE57820B717B; Sat, 16 May 2020 15:14:17 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BE57820B717B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1589667257;
+        bh=snQA8e5UPF7RYST6vOttqczg0QEhodtAgr/CG72qmDM=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=GFQEkSUChdP9ijldDnE99RaLqe60G9nu/YTSOJFYny8tH8UKXrCoY2ccZSWVc3+ed
+         pskmycAVpYpiG4WbQdPOE/yMc9QzuJ3CYkqkIhQseJzCvk4z/TsdChZcUdJdlJGtu7
+         jGvncEl7hvygYUJat3OkxsA998irsOIYxcVKTUDo=
+Received: from localhost (localhost [127.0.0.1])
+        by linux.microsoft.com (Postfix) with ESMTP id B34633070322;
+        Sat, 16 May 2020 15:14:17 -0700 (PDT)
+Date:   Sat, 16 May 2020 15:14:17 -0700 (PDT)
+From:   Jaskaran Singh Khurana <jaskarankhurana@linux.microsoft.com>
+X-X-Sender: jaskarankhurana@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net
+To:     =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+cc:     Deven Bowers <deven.desai@linux.microsoft.com>, agk@redhat.com,
+        axboe@kernel.dk, snitzer@redhat.com, jmorris@namei.org,
+        serge@hallyn.com, zohar@linux.ibm.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, jannh@google.com,
+        tyhicks@linux.microsoft.com, pasha.tatashin@soleen.com,
+        sashal@kernel.org, nramas@linux.microsoft.com,
+        mdsakib@linux.microsoft.com, linux-kernel@vger.kernel.org,
+        corbet@lwn.net
+Subject: Re: [RFC PATCH v3 00/12] Integrity Policy Enforcement LSM (IPE)
+In-Reply-To: <44fb36ae-959d-4ff7-ed1f-ccfc2e292232@digikod.net>
+Message-ID: <alpine.LRH.2.21.2005161420490.8455@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.inter>
+References: <20200415162550.2324-1-deven.desai@linux.microsoft.com> <b07ac7e1-7cf5-92c9-81d0-64174c3d5024@digikod.net> <0001755a-6b2a-b13b-960c-eb0b065c8e3c@linux.microsoft.com> <8ba7b15f-de91-40f7-fc95-115228345fce@linux.microsoft.com>
+ <44fb36ae-959d-4ff7-ed1f-ccfc2e292232@digikod.net>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512155105.1068064-3-kieran.bingham+renesas@ideasonboard.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/mixed; boundary="656392-2094691721-1589667257=:8455"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Thanks for the update.
+--656392-2094691721-1589667257=:8455
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Transfer-Encoding: 8BIT
 
-On Tue, May 12, 2020 at 04:51:03PM +0100, Kieran Bingham wrote:
 
-...
+Hello Mickael,
 
-> +static int max9286_enum_mbus_code(struct v4l2_subdev *sd,
-> +				  struct v4l2_subdev_pad_config *cfg,
-> +				  struct v4l2_subdev_mbus_code_enum *code)
-> +{
-> +	if (code->pad || code->index > 0)
-> +		return -EINVAL;
-> +
-> +	code->code = MEDIA_BUS_FMT_UYVY8_2X8;
+On Thu, 14 May 2020, Mickaël Salaün wrote:
 
-Why UYVY8_2X8 and not UYVY8_1X16? In general, the single sample / pixel
-variant of the format is generally used on the serial busses. This choice
-was made when serial busses were introduced.
+>
+> On 12/05/2020 22:46, Deven Bowers wrote:
+>>
+>>
+>> On 5/11/2020 11:03 AM, Deven Bowers wrote:
+>>>
+>>>
+>>> On 5/10/2020 2:28 AM, Mickaël Salaün wrote:
+>>>
+>>> [...snip]
+>>>
+>>>>>
+>>>>> Additionally, rules are evaluated top-to-bottom. As a result, any
+>>>>> revocation rules, or denies should be placed early in the file to
+>>>>> ensure
+>>>>> that these rules are evaluated before a rule with "action=ALLOW" is
+>>>>> hit.
+>>>>>
+>>>>> IPE policy is designed to be forward compatible and backwards
+>>>>> compatible,
+>>>>> thus any failure to parse a rule will result in the line being ignored,
+>>>>> and a warning being emitted. If backwards compatibility is not
+>>>>> required,
+>>>>> the kernel commandline parameter and sysctl, ipe.strict_parse can be
+>>>>> enabled, which will cause these warnings to be fatal.
+>>>>
+>>>> Ignoring unknown command may lead to inconsistent beaviors. To achieve
+>>>> forward compatibility, I think it would be better to never ignore
+>>>> unknown rule but to give a way to userspace to known what is the current
+>>>> kernel ABI. This could be done with a securityfs file listing the
+>>>> current policy grammar.
+>>>>
+>>>
+>>> That's a fair point. From a manual perspective, I think this is fine.
+>>> A human-user can interpret a grammar successfully on their own when new
+>>> syntax is introduced.
+>>>
+>>>  From a producing API perspective, I'd have to think about it a bit
+>>> more. Ideally, the grammar would be structured in such a way that the
+>>> userland
+>>> interpreter of this grammar would not have to be updated once new syntax
+>>> is introduced, avoiding the need to update the userland binary. To do so
+>>> generically ("op=%s") is easy, but doesn't necessarily convey sufficient
+>>> information (what happens when a new "op" token is introduced?). I think
+>>> this may come down to regular expression representations of valid values
+>>> for these tokens, which worries me as regular expressions are incredibly
+>>> error-prone[1].
+>>>
+>>> I'll see what I can come up with regarding this.
+>>
+>> I have not found a way that I like to expose some kind of grammar
+>> through securityfs that can be understood by usermode to parse the
+>> policy. Here's what I propose as a compromise:
+>>
+>>     1. I remove the unknown command behavior. This address your
+>> first point about inconsistent behaviors, and effectively removes the
+>> strict_parse sysctl (as it is always enabled).
+>>
+>>     2. I introduce a versioning system for the properties
+>> themselves. The valid set of properties and their versions
+>> can be found in securityfs, under say, ipe/config in a key=value
+>> format where `key` indicates the understood token, and `value`
+>> indicates their current version. For example:
+>>
+>>     $ cat $SECURITYFS/ipe/config
+>>     op=1
+>>     action=1
+>>     policy_name=1
+>>     policy_version=1
+>>     dmverity_signature=1
+>>     dmverity_roothash=1
+>>     boot_verified=1
+>
+> The name ipe/config sounds like a file to configure IPE. Maybe something
+> like ipe/config_abi or ipe/config_grammar?
+>
+>>
+>> if new syntax is introduced, the version number is increased.
+>>
+>>     3. The format of those versions are documented as part of
+>> the admin-guide around IPE. If user-mode at that point wants to rip
+>> the documentation formats and correlate with the versioning, then
+>> it fulfills the same functionality as above, with out the complexity
+>> around exposing a parsing grammar and interpreting it on-the-fly.
+>> Many of these are unlikely to move past version 1, however.
+>>
+>> Thoughts?
+>>
+>
+> That seems reasonable.
+>
 
-> +
-> +	return 0;
-> +}
-> +
-> +static struct v4l2_mbus_framefmt *
-> +max9286_get_pad_format(struct max9286_priv *priv,
-> +		       struct v4l2_subdev_pad_config *cfg,
-> +		       unsigned int pad, u32 which)
-> +{
-> +	switch (which) {
-> +	case V4L2_SUBDEV_FORMAT_TRY:
-> +		return v4l2_subdev_get_try_format(&priv->sd, cfg, pad);
-> +	case V4L2_SUBDEV_FORMAT_ACTIVE:
-> +		return &priv->fmt[pad];
-> +	default:
-> +		return NULL;
-> +	}
-> +}
-> +
-> +static int max9286_set_fmt(struct v4l2_subdev *sd,
-> +			   struct v4l2_subdev_pad_config *cfg,
-> +			   struct v4l2_subdev_format *format)
-> +{
-> +	struct max9286_priv *priv = sd_to_max9286(sd);
-> +	struct v4l2_mbus_framefmt *cfg_fmt;
-> +
-> +	if (format->pad >= MAX9286_SRC_PAD)
-> +		return -EINVAL;
+There is a use case for not having strict parsing in the cloud world where 
+there are multiple versions of OS deployed across a large number of 
+systems say 100,000 nodes. An OS update can take weeks to complete 
+across all the nodes, and we end up having a heterogeneous mix of OS 
+versions.
 
-You can remove these checks; it's been already done by the caller.
+Without non-strict parsing, to fix an issue in a policy we will need to 
+update the various versions of the policy (one each for all OS versions
+which have different IPE policy schema). We will lose the agility we 
+need to fix and deploy something urgently in the policy, the nodes might 
+be failing some critical workloads meanwhile. All the various versions of 
+the policy will need to be changed and production signed then deployed 
+etc. Further some versions might introduce newer issues and we will need 
+to see what all versions of the policy have that bug.
 
-...
+I propose keeping the non-strict option as well to cater to this use case. 
+Let me know your thoughts on this.
 
-> +static int max9286_parse_dt(struct max9286_priv *priv)
-> +{
-> +	struct device *dev = &priv->client->dev;
-> +	struct device_node *i2c_mux;
-> +	struct device_node *node = NULL;
-> +	unsigned int i2c_mux_mask = 0;
-> +
-> +	of_node_get(dev->of_node);
-> +	i2c_mux = of_find_node_by_name(dev->of_node, "i2c-mux");
-> +	if (!i2c_mux) {
-> +		dev_err(dev, "Failed to find i2c-mux node\n");
-> +		of_node_put(dev->of_node);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Identify which i2c-mux channels are enabled */
-> +	for_each_child_of_node(i2c_mux, node) {
-> +		u32 id = 0;
-> +
-> +		of_property_read_u32(node, "reg", &id);
-> +		if (id >= MAX9286_NUM_GMSL)
-> +			continue;
-> +
-> +		if (!of_device_is_available(node)) {
-> +			dev_dbg(dev, "Skipping disabled I2C bus port %u\n", id);
-> +			continue;
-> +		}
-> +
-> +		i2c_mux_mask |= BIT(id);
-> +	}
-> +	of_node_put(node);
-> +	of_node_put(i2c_mux);
-> +
-> +	/* Parse the endpoints */
-> +	for_each_endpoint_of_node(dev->of_node, node) {
-> +		struct max9286_source *source;
-> +		struct of_endpoint ep;
-> +
-> +		of_graph_parse_endpoint(node, &ep);
-> +		dev_dbg(dev, "Endpoint %pOF on port %d",
-> +			ep.local_node, ep.port);
-> +
-> +		if (ep.port > MAX9286_NUM_GMSL) {
-> +			dev_err(dev, "Invalid endpoint %s on port %d",
-> +				of_node_full_name(ep.local_node), ep.port);
-> +			continue;
-> +		}
-> +
-> +		/* For the source endpoint just parse the bus configuration. */
-> +		if (ep.port == MAX9286_SRC_PAD) {
-> +			struct v4l2_fwnode_endpoint vep = {
-> +				.bus_type = V4L2_MBUS_CSI2_DPHY
-> +			};
-> +			int ret;
-> +
-> +			ret = v4l2_fwnode_endpoint_parse(
-> +					of_fwnode_handle(node), &vep);
-> +			if (ret) {
-> +				of_node_put(node);
-> +				of_node_put(dev->of_node);
-> +				return ret;
-> +			}
-> +
-> +			if (vep.bus_type != V4L2_MBUS_CSI2_DPHY) {
-
-This won't happen, the bus type will stay if you set it to a non-zero
-value.
-
-> +				dev_err(dev,
-> +					"Media bus %u type not supported\n",
-> +					vep.bus_type);
-> +				v4l2_fwnode_endpoint_free(&vep);
-> +				of_node_put(node);
-> +				of_node_put(dev->of_node);
-> +				return -EINVAL;
-> +			}
-> +
-> +			priv->csi2_data_lanes =
-> +				vep.bus.mipi_csi2.num_data_lanes;
-> +			v4l2_fwnode_endpoint_free(&vep);
-
-No need to call this unless you use v4l2_fwnode_endpoint_alloc_parse().
-
-And as you don't, you also won't know which frequencies are known to be
-safe to use. That said, perhaps where this device is used having a random
-frequency on that bus could not be an issue. Perhaps.
-
-> +
-> +			continue;
-> +		}
-> +
-> +		/* Skip if the corresponding GMSL link is unavailable. */
-> +		if (!(i2c_mux_mask & BIT(ep.port)))
-> +			continue;
-> +
-> +		if (priv->sources[ep.port].fwnode) {
-> +			dev_err(dev,
-> +				"Multiple port endpoints are not supported: %d",
-> +				ep.port);
-> +
-> +			continue;
-> +		}
-> +
-> +		source = &priv->sources[ep.port];
-> +		source->fwnode = fwnode_graph_get_remote_endpoint(
-> +						of_fwnode_handle(node));
-> +		if (!source->fwnode) {
-> +			dev_err(dev,
-> +				"Endpoint %pOF has no remote endpoint connection\n",
-> +				ep.local_node);
-> +
-> +			continue;
-> +		}
-> +
-> +		priv->source_mask |= BIT(ep.port);
-> +		priv->nsources++;
-> +	}
-> +	of_node_put(node);
-> +	of_node_put(dev->of_node);
-> +
-> +	priv->route_mask = priv->source_mask;
-> +
-> +	return 0;
-> +}
-
--- 
-Kind regards,
-
-Sakari Ailus
+Regards,
+JK
+--656392-2094691721-1589667257=:8455--
