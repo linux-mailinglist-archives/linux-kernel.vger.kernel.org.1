@@ -2,235 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453711D63D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 21:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E429F1D63D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 21:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgEPTUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 15:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51560 "EHLO
+        id S1726663AbgEPTYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 15:24:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726695AbgEPTUp (ORCPT
+        by vger.kernel.org with ESMTP id S1726360AbgEPTYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 15:20:45 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05A6C061A0C;
-        Sat, 16 May 2020 12:20:44 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id d7so4855312qtn.11;
-        Sat, 16 May 2020 12:20:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VwCAFe7MBCqJ2a3UC8HemYjtQtYkC6zmx8xai56rLfc=;
-        b=fbL3q6avYx3M4P/cPgZcdIzEGnk6vehyBCli11hV3Wksa00cJmRvC5npEJwONngXvf
-         M3obtU/uKlPmhiGi8MPXLeQdNY/fXaPcJqVDmdaxCm+qHAzhabob/nSgZ0AzEYI89GZV
-         3RxjJINcfVKvL/y40rhATW7mTT2sSC0CFUYXhBesM9gEqOz8HBeU3aT2lUX9xFmx5Lx1
-         vG26CYvW2Cy2OpUIG4cWmUg+78ydQZ4wEXREg+LhLlUqtFfYVpA+eZmD4+y2Enh3B2Av
-         bJXgBWK49dxmEIQ3PCeyuFpY8uE801G7gfas4jkxeJioISFCsF6g9pQUI7Bk8zNC+2eA
-         q3kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VwCAFe7MBCqJ2a3UC8HemYjtQtYkC6zmx8xai56rLfc=;
-        b=IXurVljzVR/tYxGKqgSiYOWyemFTqDpgy5RyHHn6IZpPO+q++krpUcI1f25DsWCZEP
-         HTsUnmPTq+V2P03xffUZbuqaGKlij6a0jmdxN5Jitt/zW+ofOdCGfZFqT5ZusGLhkqy5
-         /2S1fgowFCE6/7RwOTqck0/2r0h5dqWYsIj6hW/JnGCleBPs59bAbheR15sdmbH2W55y
-         2aT6rdmAYhFsPvnk+RBszG8AO223xc+R5HKDXkDmQ5dH9AP3zOvW/S3lwfl+SQd/lA6Q
-         ZedZYh5fEGfgLV8jm3AbKeTdpYVjRMZNYYzybtfRk3QuQ4gFlcQZz+04vMIwJ8Ewtwch
-         EeGA==
-X-Gm-Message-State: AOAM532TjeKAJ4SDn+ou0Z7hylTH99QCy5T8djGraaOYf3jka5/OpB58
-        vE3tZ+7B41nhZVF9PHWBy6c=
-X-Google-Smtp-Source: ABdhPJzo2+BnZF7E3lsdOjU0oT5HoCFBnq5wOVRK4nYC/5f97QFj0Ggf8cSSDoGXGVI7c9IUtE053Q==
-X-Received: by 2002:ac8:7b35:: with SMTP id l21mr9455431qtu.21.1589656844149;
-        Sat, 16 May 2020 12:20:44 -0700 (PDT)
-Received: from localhost.localdomain (072-189-064-225.res.spectrum.com. [72.189.64.225])
-        by smtp.gmail.com with ESMTPSA id g19sm3160409qke.32.2020.05.16.12.20.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 May 2020 12:20:43 -0700 (PDT)
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     jic23@kernel.org
-Cc:     kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, david@lechnology.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        William Breathitt Gray <vilhelm.gray@gmail.com>
-Subject: [PATCH v2 4/4] docs: counter: Document character device interface
-Date:   Sat, 16 May 2020 15:20:02 -0400
-Message-Id: <db0a9206d31c82f8381316ef5ff9872bfb53665b.1589654470.git.vilhelm.gray@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1589654470.git.vilhelm.gray@gmail.com>
-References: <cover.1589654470.git.vilhelm.gray@gmail.com>
+        Sat, 16 May 2020 15:24:50 -0400
+Received: from wp148.webpack.hosteurope.de (wp148.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:849b::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C5AC061A0C;
+        Sat, 16 May 2020 12:24:49 -0700 (PDT)
+Received: from ip1f126570.dynamic.kabel-deutschland.de ([31.18.101.112] helo=pengu.fritz.box); authenticated
+        by wp148.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1ja2QE-000668-8m; Sat, 16 May 2020 21:24:34 +0200
+From:   Roelof Berg <rberg@berg-solutions.de>
+To:     rberg@berg-solutions.de
+Cc:     andrew@lunn.ch, Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] lan743x: Added fixed link support
+Date:   Sat, 16 May 2020 21:24:01 +0200
+Message-Id: <20200516192402.4201-1-rberg@berg-solutions.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;rberg@berg-solutions.de;1589657090;71ce8ce2;
+X-HE-SMSGID: 1ja2QE-000668-8m
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds high-level documentation about the Counter subsystem
-character device interface.
+Microchip lan7431 is frequently connected to a phy. However, it
+can also be directly connected to a MII remote peer without
+any phy in between. For supporting such a phyless hardware setup
+in Linux we added the capability to the driver to understand
+the fixed-link and the phy-connection-type entries in the device
+tree.
 
-Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+If a fixed-link node is configured in the device tree the lan7431
+device will deactivate auto negotiation and uses the speed and
+duplex settings configured in the fixed-link node.
+
+Also the phy-connection-type can be configured in the device tree
+and in case of a fixed-link connection the RGMII mode can be
+configured, all other modes fall back to the default: GMII.
+
+Example:
+
+ &pcie {
+	status = "okay";
+
+	host@0 {
+		reg = <0 0 0 0 0>;
+
+		#address-cells = <3>;
+		#size-cells = <2>;
+
+		ethernet@0 {
+			compatible = "weyland-yutani,noscom1", "microchip,lan743x";
+			status = "okay";
+			reg = <0 0 0 0 0>;
+			phy-connection-type = "rgmii";
+
+			fixed-link {
+				speed = <100>;
+				full-duplex;
+			};
+		};
+	};
+};
+
+Signed-off-by: Roelof Berg <rberg@berg-solutions.de>
 ---
- Documentation/driver-api/generic-counter.rst | 112 +++++++++++++------
- 1 file changed, 76 insertions(+), 36 deletions(-)
+ drivers/net/ethernet/microchip/lan743x_main.c | 93 +++++++++++++++++--
+ drivers/net/ethernet/microchip/lan743x_main.h |  4 +
+ 2 files changed, 89 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/driver-api/generic-counter.rst b/Documentation/driver-api/generic-counter.rst
-index 8f85c30dea0b..58045b33b576 100644
---- a/Documentation/driver-api/generic-counter.rst
-+++ b/Documentation/driver-api/generic-counter.rst
-@@ -223,19 +223,6 @@ whether an input line is differential or single-ended) and instead focus
- on the core idea of what the data and process represent (e.g. position
- as interpreted from quadrature encoding data).
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index a43140f7b5eb..278765dfc3b3 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -9,9 +9,12 @@
+ #include <linux/microchipphy.h>
+ #include <linux/net_tstamp.h>
+ #include <linux/phy.h>
++#include <linux/phy_fixed.h>
+ #include <linux/rtnetlink.h>
+ #include <linux/iopoll.h>
+ #include <linux/crc16.h>
++#include <linux/of_mdio.h>
++#include <linux/of_net.h>
+ #include "lan743x_main.h"
+ #include "lan743x_ethtool.h"
  
--Userspace Interface
--===================
--
--Several sysfs attributes are generated by the Generic Counter interface,
--and reside under the /sys/bus/counter/devices/counterX directory, where
--counterX refers to the respective counter device. Please see
--Documentation/ABI/testing/sysfs-bus-counter for detailed
--information on each Generic Counter interface sysfs attribute.
--
--Through these sysfs attributes, programs and scripts may interact with
--the Generic Counter paradigm Counts, Signals, and Synapses of respective
--counter devices.
--
- Driver API
- ==========
+@@ -946,6 +949,9 @@ static void lan743x_phy_link_status_change(struct net_device *netdev)
+ {
+ 	struct lan743x_adapter *adapter = netdev_priv(netdev);
+ 	struct phy_device *phydev = netdev->phydev;
++	struct device_node *phynode;
++	phy_interface_t phyifc = PHY_INTERFACE_MODE_GMII;
++	u32 data;
  
-@@ -377,13 +364,13 @@ driver can be exemplified by the following::
-                 +----------------------------+          |
-                 | Processes data from device |   -------------------
-                 |----------------------------|  / driver callbacks /
--                | Type: unsigned long        |  -------------------
-+                | Type: u64                  |  -------------------
-                 | Value: 42                  |          |
-                 +----------------------------+          |
-                         |                               |
--                 ----------------                       |
--                / unsigned long /                       |
--                ----------------                        |
-+                 ----------                             |
-+                / u64     /                             |
-+                ----------                              |
-                         |                               |
-                         |                               V
-                         |               +----------------------+
-@@ -398,25 +385,32 @@ driver can be exemplified by the following::
-                         |               / driver callbacks /
-                         |               -------------------
-                         |                       |
--                +-------+                       |
-+                +-------+---------------+       |
-+                |                       |       |
-+                |               +-------|-------+
-+                |               |       |
-+                V               |       V
-+        +--------------------+  |  +---------------------+
-+        | Counter sysfs      |<-+->| Counter chrdev      |
-+        +--------------------+     +---------------------+
-+        | Translates to the  |     | Translates to the   |
-+        | standard Counter   |     | standard Counter    |
-+        | sysfs output       |     | character device    |
-+        |--------------------|     |---------------------+
-+        | Type: const char * |     | Type: u64           |
-+        | Value: "42"        |     | Value: 42           |
-+        +--------------------+     +---------------------+
-                 |                               |
--                |               +---------------+
--                |               |
--                V               |
--        +--------------------+  |
--        | Counter sysfs      |<-+
--        +--------------------+
--        | Translates to the  |
--        | standard Counter   |
--        | sysfs output       |
--        |--------------------|
--        | Type: const char * |
--        | Value: "42"        |
--        +--------------------+
--                |
--         ---------------
--        / const char * /
--        ---------------
-+         ---------------                 ----------
-+        / const char * /                / u64     /
-+        ---------------                 ----------
-+                |                               |
-+                |                               V
-+                |                       +-----------+
-+                |                       | read      |
-+                |                       +-----------+
-+                |                       \ Count: 42 /
-+                |                        -----------
-                 |
-                 V
-         +--------------------------------------------------+
-@@ -425,7 +419,7 @@ driver can be exemplified by the following::
-         \ Count: "42"                                      /
-          --------------------------------------------------
+ 	phy_print_status(phydev);
+ 	if (phydev->state == PHY_RUNNING) {
+@@ -953,6 +959,48 @@ static void lan743x_phy_link_status_change(struct net_device *netdev)
+ 		int remote_advertisement = 0;
+ 		int local_advertisement = 0;
  
--There are three primary components involved:
-+There are four primary components involved:
++		/* check if a fixed-link is defined in device-tree */
++		phynode = of_node_get(adapter->pdev->dev.of_node);
++		if (phynode && of_phy_is_fixed_link(phynode)) {
++			/* Configure MAC to fixed link parameters */
++			data = lan743x_csr_read(adapter, MAC_CR);
++			/* Disable auto negotiation */
++			data &= ~(MAC_CR_ADD_ | MAC_CR_ASD_);
++			/* Set duplex mode */
++			if (phydev->duplex)
++				data |= MAC_CR_DPX_;
++			else
++				data &= ~MAC_CR_DPX_;
++			/* Set bus speed */
++			switch (phydev->speed) {
++			case 10:
++				data &= ~MAC_CR_CFG_H_;
++				data &= ~MAC_CR_CFG_L_;
++				break;
++			case 100:
++				data &= ~MAC_CR_CFG_H_;
++				data |= MAC_CR_CFG_L_;
++				break;
++			case 1000:
++				data |= MAC_CR_CFG_H_;
++				data |= MAC_CR_CFG_L_;
++				break;
++			}
++			/* Set interface mode */
++			of_get_phy_mode(phynode, &phyifc);
++			if (phyifc == PHY_INTERFACE_MODE_RGMII ||
++			    phyifc == PHY_INTERFACE_MODE_RGMII_ID ||
++			    phyifc == PHY_INTERFACE_MODE_RGMII_RXID ||
++			    phyifc == PHY_INTERFACE_MODE_RGMII_TXID)
++				/* RGMII */
++				data &= ~MAC_CR_MII_EN_;
++			else
++				/* GMII */
++				data |= MAC_CR_MII_EN_;
++			lan743x_csr_write(adapter, MAC_CR, data);
++		}
++		of_node_put(phynode);
++
+ 		memset(&ksettings, 0, sizeof(ksettings));
+ 		phy_ethtool_get_link_ksettings(netdev, &ksettings);
+ 		local_advertisement =
+@@ -974,6 +1022,8 @@ static void lan743x_phy_close(struct lan743x_adapter *adapter)
  
- Counter device driver
- ---------------------
-@@ -445,3 +439,49 @@ and vice versa.
- Please refer to the `Documentation/ABI/testing/sysfs-bus-counter` file
- for a detailed breakdown of the available Generic Counter interface
- sysfs attributes.
+ 	phy_stop(netdev->phydev);
+ 	phy_disconnect(netdev->phydev);
++	if (of_phy_is_fixed_link(adapter->pdev->dev.of_node))
++		of_phy_deregister_fixed_link(adapter->pdev->dev.of_node);
+ 	netdev->phydev = NULL;
+ }
+ 
+@@ -982,18 +1032,44 @@ static int lan743x_phy_open(struct lan743x_adapter *adapter)
+ 	struct lan743x_phy *phy = &adapter->phy;
+ 	struct phy_device *phydev;
+ 	struct net_device *netdev;
++	struct device_node *phynode = NULL;
++	phy_interface_t phyifc = PHY_INTERFACE_MODE_GMII;
+ 	int ret = -EIO;
+ 
+ 	netdev = adapter->netdev;
+-	phydev = phy_find_first(adapter->mdiobus);
+-	if (!phydev)
+-		goto return_error;
+ 
+-	ret = phy_connect_direct(netdev, phydev,
+-				 lan743x_phy_link_status_change,
+-				 PHY_INTERFACE_MODE_GMII);
+-	if (ret)
+-		goto return_error;
++	/* check if a fixed-link is defined in device-tree */
++	phynode = of_node_get(adapter->pdev->dev.of_node);
++	if (phynode && of_phy_is_fixed_link(phynode)) {
++		netdev_dbg(netdev, "fixed-link detected\n");
 +
-+Counter chrdev
-+--------------
-+Translates counter data to the standard Counter character device; data
-+is transferred via standard character device read/write calls.
++		ret = of_phy_register_fixed_link(phynode);
++		if (ret) {
++			netdev_err(netdev, "cannot register fixed PHY\n");
++			goto return_error;
++		}
 +
-+Sysfs Interface
-+===============
++		of_get_phy_mode(phynode, &phyifc);
++		phydev = of_phy_connect(netdev, phynode,
++					lan743x_phy_link_status_change,
++					0, phyifc);
++		if (!phydev)
++			goto return_error;
++	} else {
++		phydev = phy_find_first(adapter->mdiobus);
++		if (!phydev)
++			goto return_error;
 +
-+Several sysfs attributes are generated by the Generic Counter interface,
-+and reside under the `/sys/bus/counter/devices/counterX` directory,
-+where `X` is to the respective counter device id. Please see
-+Documentation/ABI/testing/sysfs-bus-counter for detailed information on
-+each Generic Counter interface sysfs attribute.
-+
-+Through these sysfs attributes, programs and scripts may interact with
-+the Generic Counter paradigm Counts, Signals, and Synapses of respective
-+counter devices.
-+
-+Counter Character Device
-+========================
-+
-+Counter character device nodes are created under the `/dev` directory as
-+`counterX`, where `X` is the respective counter device id. Defines for
-+the standard Counter data types are exposed via the userspace
-+`include/uapi/linux/counter-types.h` file.
-+
-+The first 196095 bytes of the character device serve as a control
-+selection area where control exposure of desired Counter components and
-+extensions may be selected. Each byte serves as a boolean selection
-+indicator for a respective Counter component or extension. The format of
-+this area is as follows:
-+
-+* For each device extension, a byte is required.
-+* For each Signal, a byte is reserved for the Signal component, and a
-+  byte is reserved for each Signal extension.
-+* For each Count, a byte is reserved for the Count component, a byte is
-+  reserved for the count function, a byte is reserved for each Synapse
-+  action, and byte is reserved for each Count extension.
-+
-+The selected Counter components and extensions may then be interfaced
-+after the first 196095 bytes via standard character device read/write
-+operations. The number of bytes available for each component or
-+extension is dependent on their respective data type: u8 will have 1
-+byte available, u64 will have 8 bytes available, strings will have 64
-+bytes available, etc.
++		ret = phy_connect_direct(netdev, phydev,
++					 lan743x_phy_link_status_change,
++					 PHY_INTERFACE_MODE_GMII);
++		/* Note: We cannot use phyifc here because this would be SGMII
++		 * on a standard PC.
++		 */
++		if (ret)
++			goto return_error;
++	}
++	of_node_put(phynode);
+ 
+ 	/* MAC doesn't support 1000T Half */
+ 	phy_remove_link_mode(phydev, ETHTOOL_LINK_MODE_1000baseT_Half_BIT);
+@@ -1008,6 +1084,7 @@ static int lan743x_phy_open(struct lan743x_adapter *adapter)
+ 	return 0;
+ 
+ return_error:
++	of_node_put(phynode);
+ 	return ret;
+ }
+ 
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.h b/drivers/net/ethernet/microchip/lan743x_main.h
+index 3b02eeae5f45..e49f6b6cd440 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.h
++++ b/drivers/net/ethernet/microchip/lan743x_main.h
+@@ -104,10 +104,14 @@
+ 	((value << 0) & FCT_FLOW_CTL_ON_THRESHOLD_)
+ 
+ #define MAC_CR				(0x100)
++#define MAC_CR_MII_EN_			BIT(19)
+ #define MAC_CR_EEE_EN_			BIT(17)
+ #define MAC_CR_ADD_			BIT(12)
+ #define MAC_CR_ASD_			BIT(11)
+ #define MAC_CR_CNTR_RST_		BIT(5)
++#define MAC_CR_DPX_			BIT(3)
++#define MAC_CR_CFG_H_			BIT(2)
++#define MAC_CR_CFG_L_			BIT(1)
+ #define MAC_CR_RST_			BIT(0)
+ 
+ #define MAC_RX				(0x104)
 -- 
-2.26.2
+2.20.1
 
