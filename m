@@ -2,100 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0CE1D637F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 20:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2C61D6381
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 20:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbgEPSSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 14:18:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726341AbgEPSSr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 14:18:47 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962F0C061A0C;
-        Sat, 16 May 2020 11:18:47 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id s3so5190865eji.6;
-        Sat, 16 May 2020 11:18:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=51NZmWw8OgodGFU6Kwk+1cHIUOclm2JMHWgqoLAcNto=;
-        b=vdVL1oGOOCFNBnvnlLIFS59MY8Zba5m/lomLUqa2xGj9MprTK15U9qOHtzZVZGXMki
-         SRN/aRKYtdCByVFzAojZ+XpUchGlaufRsvLH4w6QYnpoIB/13LLwh0DXVQoOqvTKRRc+
-         groVxEd9/Nw5xIgB34HgKy0XZB57mqx0iKOZoknX88EYycJCqcjl6FFL65siJsJFwWBV
-         ikUNwN8YdC3l8It0+L9bzbGKXcWn+1BxDWPaCZHuQTwjhGfv0C9oetzA7JqSfdkfwptx
-         U5aI2RX6UfOokaz6JXDSAZ4VjK+i5BYcIyMe3aAH740tOG3iGlR0vf0ebzASP4lDZcVa
-         m9CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=51NZmWw8OgodGFU6Kwk+1cHIUOclm2JMHWgqoLAcNto=;
-        b=Sx2/47ggQg/wnsWIU7LxmkQNl90UFW1bBbNbE8s/NfdW/dykVdowIzXIsHieLb79m2
-         SCXGBb3K12X2Y2SoxW8fysbXUcvBA8gesY56yIGd03gaLSRcPg4NkW/y4/Eb+dnKY+vz
-         zHTmhihV4w+E/KJIO/4XVPA1pk2EvTXazXncW5S9WBrhUttdO/IrpU69SbyNDvwmVdV9
-         Vun3UwNmkJL3jMLwOJqW2f6rrHVTC0ORrZ25bSiwOXnb6YzzauYz4aTkKAyN9ttTNyb9
-         JgwZAlJx8sqTvwN2zgay5vmRNgLKcZeFkIBDPWAEpppNE8cfcN6WkBF/x8wR42TjatZZ
-         ZLsw==
-X-Gm-Message-State: AOAM531wS/t7mMilV7eyANQwZRpbg/tAUwtdLZU3I7zzEhJO22009Qbp
-        nLdZVocB9j8PRIFUVGnKdzSZyV1gsvtBAkMAj9M=
-X-Google-Smtp-Source: ABdhPJwQWIgkduRjpke8VQImqkOHtcDvKOuMb3iSs2Z68bR+4jBb3XiYccBtJSOORYXmN3huf0xtevqJXXpDGN86/Zw=
-X-Received: by 2002:a17:906:ca14:: with SMTP id jt20mr7861078ejb.233.1589653126099;
- Sat, 16 May 2020 11:18:46 -0700 (PDT)
+        id S1726563AbgEPSTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 14:19:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726341AbgEPSTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 May 2020 14:19:35 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B861206F4;
+        Sat, 16 May 2020 18:19:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589653174;
+        bh=Gyc9t3X2urr60eF4Vay6002sHovimEfau4gtnVMx/xc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=H4U+gUAdlba1/cy756hvthqXryByavE0vCKoIQG/ujKlKqbo5epV9pTc3Vrw6KRCp
+         AWADzyhnSiPaGeECjcntEsH8H+y+YvuknqenX2cAHJUvlmwIW/FxMLq8ZO/22OORuV
+         IqAIOHlzTKnhC05IeSJsgGvaizadnOHS/vTKZ94Q=
+Date:   Sat, 16 May 2020 19:19:14 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Jonathan Bakker <xc-racer2@live.ca>, knaack.h@gmx.de,
+        lars@metafoo.de, pmeerw@pmeerw.net, kgene@kernel.org,
+        cw00.choi@samsung.com, kstewart@linuxfoundation.org,
+        mpe@ellerman.id.au, m.szyprowski@samsung.com, swboyd@chromium.org,
+        tglx@linutronix.de, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: adc: Add scaling support to exynos adc driver
+Message-ID: <20200516191914.3b028794@archlinux>
+In-Reply-To: <20200511074232.GA7134@kozik-lap>
+References: <BN6PR04MB066058A68D6471E7F6AFCFF7A3A20@BN6PR04MB0660.namprd04.prod.outlook.com>
+        <20200510112417.1e54d66e@archlinux>
+        <20200511074232.GA7134@kozik-lap>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <CAFBinCBHuPLS8BDzO4Gb86TG3tNTtqmW5BSWy8jhPuN3STOTUA@mail.gmail.com>
- <158948864581.215346.7236327959062539884@swboyd.mtv.corp.google.com>
-In-Reply-To: <158948864581.215346.7236327959062539884@swboyd.mtv.corp.google.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 16 May 2020 20:18:35 +0200
-Message-ID: <CAFBinCD6XiSnp=9vcFnztKobaq-Do9qd7WEi5Yvi5pvcw197og@mail.gmail.com>
-Subject: Re: clk_hw.init and -EPROBE_DEFER / driver re-load
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, mturquette@baylibre.com,
-        linux-kernel@vger.kernel.org, jbrunet@baylibre.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On Mon, 11 May 2020 09:42:32 +0200
+Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-On Thu, May 14, 2020 at 10:37 PM Stephen Boyd <sboyd@kernel.org> wrote:
-[...]
-> Do you have some sort of array of clk_hw pointers to register? Maybe we
-> could make a new clk registration structure to simplify this for users,
-> but I'm not super interested in introducing yet another registration
-> API! :/
->
-> struct clk_hw_desc {
->         struct clk_hw *hw;
->         struct clk_init_data *init;
-> };
-I could make an array of clk_hw pointers but I think it will make
-things more complicated then they have to be.
-In another version of my MMC controller patches I had a dedicated
-array of clk_init_data: [0]
+> On Sun, May 10, 2020 at 11:24:17AM +0100, Jonathan Cameron wrote:
+> > On Fri,  8 May 2020 14:14:00 -0700
+> > Jonathan Bakker <xc-racer2@live.ca> wrote:
+> >   
+> > > Currently the driver only exposes the raw counts.  As we
+> > > have the regulator voltage and the maximum value (stored in
+> > > the data mask), we can trivially produce a scaling fraction
+> > > of voltage / max value.
+> > > 
+> > > This assumes that the regulator voltage is in fact the max
+> > > voltage, which appears to be the case for all mainline dts
+> > > and cross referenced with the public Exynos4412 and S5PV210
+> > > datasheets.
+> > > 
+> > > Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>  
+> > 
+> > Seems reasonable to me. I'd like an exynos Ack though before applying.  
+> 
+> 
+> It's correct, at least with ARMv7 Exynos datasheets
+> 
+> The few ARMv8 Exynos chips are silent about the voltage levels. The
+> Exynos 7 DTS board in mainline kernel does not have regulator but it
+> looks clearly like mistake.
+> 
+> I think they behave the same, so for Exynos:
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Applied to the togreg branch of iio.git and pushed out as testing
+for the autobuilders to poke at it.
 
-compare this with the latest version (which has made it to linux-next
-yesterday) where I'm initializing all clocks inside a few functions
-(meson_mx_sdhc_register_clkc, rather than a static table): [1]
-it's not great because it means I can't use a loop to register
-everything. but it's fairly easy to read so I think it's the best I
-can do for now.
+Thanks,
 
-With the "solution" from [1] I also don't run into the issue which I
-described in my original mail because now clk_init_data only exists on
-the stack.
-I'm not sure if this is a recurring pattern or not, but for now I feel
-like a new API is not needed.
+Jonathan
 
+> 
+> Best regards,
+> Krzysztof
+> 
+> > thanks,
+> > 
+> > Jonathan
+> > 
+> >   
 
-Thank you for your time,
-Martin
-
-
-[0] https://patchwork.kernel.org/patch/11515631/
-[1] https://patchwork.kernel.org/patch/11543939/
