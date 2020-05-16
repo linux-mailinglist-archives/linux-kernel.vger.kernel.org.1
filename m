@@ -2,158 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7EF1D6063
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 12:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A301D6072
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 12:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726248AbgEPKfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 06:35:00 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:39985 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726206AbgEPKe6 (ORCPT
+        id S1726227AbgEPKx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 06:53:56 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:50672 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726044AbgEPKxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 06:34:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1589625298; x=1621161298;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=cVDMJB0V69N/ERG1QjOibR3boSPJLVANnsa6lUHRia0=;
-  b=iPmDYyKnF6DQf+Cu/vP90jPiQjECZxcV2Y4jyBrflpy4yY8Etp5I5hpo
-   rXMJt717I3uBp4VWqbIgF9P6Bqi5Avwapl9lkwAt5mNtLp89sA2HxPygS
-   8jyW/wBVxLNXENd3gVAdoESEH4cr9aQSdZujCamwfjhKY/4z+YFgfkVWs
-   g=;
-IronPort-SDR: NKhafI7VX0wXECoSUxVeij0Q/LKQnWx2NeHwWSnaHPX9QhBVxXfQqpf2bKXVmiLXAOuV2MB2/6
- RKnH/BODUqJg==
-X-IronPort-AV: E=Sophos;i="5.73,398,1583193600"; 
-   d="scan'208";a="43784268"
-Received: from sea32-co-svc-lb4-vlan2.sea.corp.amazon.com (HELO email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com) ([10.47.23.34])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 16 May 2020 10:34:57 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com (Postfix) with ESMTPS id 267EFA16E3;
-        Sat, 16 May 2020 10:34:56 +0000 (UTC)
-Received: from EX13D01UWA004.ant.amazon.com (10.43.160.99) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sat, 16 May 2020 10:34:55 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
- EX13d01UWA004.ant.amazon.com (10.43.160.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sat, 16 May 2020 10:34:55 +0000
-Received: from localhost (10.85.1.185) by mail-relay.amazon.com
- (10.43.160.118) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 16 May 2020 10:34:54 +0000
-From:   Balbir Singh <sblbir@amazon.com>
-To:     <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>
-CC:     <jpoimboe@redhat.com>, <tony.luck@intel.com>,
-        <keescook@chromium.org>, <benh@kernel.crashing.org>,
-        <x86@kernel.org>, <dave.hansen@intel.com>,
-        <thomas.lendacky@amd.com>, Balbir Singh <sblbir@amazon.com>
-Subject: [PATCH v7 3/3] Documentation: Add L1D flushing Documentation
-Date:   Sat, 16 May 2020 20:34:30 +1000
-Message-ID: <20200516103430.26527-4-sblbir@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200516103430.26527-1-sblbir@amazon.com>
-References: <20200516103430.26527-1-sblbir@amazon.com>
+        Sat, 16 May 2020 06:53:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589626434;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Sgk4L76+G8NMqHYS6ddlBe3JD0wGPSl87Vyk1kROUo=;
+        b=OPdJwO2wxM8IJNmWFz+qq5Ifmn534kfTeiCd/fhSOuzR5Vhepy2wXyfECg1vvpacmv7SRl
+        XSrcvaF8/V8qs8s2xrRMBYFPqJzmyJJba+rS4K5d5x2VlWvnbZQ9h+QGVvM4Trv8QbfxCl
+        VAXyevdltaHhWzVp9/lH1ObK9w53laI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-13-GcqHfzqTMWmxPdkJ6SiDpg-1; Sat, 16 May 2020 06:53:50 -0400
+X-MC-Unique: GcqHfzqTMWmxPdkJ6SiDpg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BD92F1005512;
+        Sat, 16 May 2020 10:53:48 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-95.rdu2.redhat.com [10.10.112.95])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 10CCB5C6CA;
+        Sat, 16 May 2020 10:53:46 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <7c446f9f404135f0f4109e03646c4ce598484cae.camel@hammerspace.com>
+References: <7c446f9f404135f0f4109e03646c4ce598484cae.camel@hammerspace.com> <f91b8f29-271a-b5cd-410b-a43a399d34aa@infradead.org>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     dhowells@redhat.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "viro@ZenIV.linux.org.uk" <viro@ZenIV.linux.org.uk>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
+Subject: Re: [PATCH -next] nfs: fsinfo: fix build when CONFIG_NFS_V4 is not enabled
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <537091.1589626426.1@warthog.procyon.org.uk>
+Date:   Sat, 16 May 2020 11:53:46 +0100
+Message-ID: <537092.1589626426@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation of l1d flushing, explain the need for the
-feature and how it can be used.
+Trond Myklebust <trondmy@hammerspace.com> wrote:
 
-[tglx: Reword the documentation]
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Balbir Singh <sblbir@amazon.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- Documentation/admin-guide/hw-vuln/index.rst   |  1 +
- .../admin-guide/hw-vuln/l1d_flush.rst         | 51 +++++++++++++++++++
- Documentation/userspace-api/spec_ctrl.rst     |  7 +++
- 3 files changed, 59 insertions(+)
- create mode 100644 Documentation/admin-guide/hw-vuln/l1d_flush.rst
+> This whole thing needs to be reviewed and acked by the NFS community,
+> and quite frankly I'm inclined to NAK this. This is the second time
+> David tries to push this unwanted rewrite of totally unrelated code.
 
-diff --git a/Documentation/admin-guide/hw-vuln/index.rst b/Documentation/admin-guide/hw-vuln/index.rst
-index 0795e3c2643f..35633b299d45 100644
---- a/Documentation/admin-guide/hw-vuln/index.rst
-+++ b/Documentation/admin-guide/hw-vuln/index.rst
-@@ -14,3 +14,4 @@ are configurable at compile, boot or run time.
-    mds
-    tsx_async_abort
-    multihit.rst
-+   l1d_flush
-diff --git a/Documentation/admin-guide/hw-vuln/l1d_flush.rst b/Documentation/admin-guide/hw-vuln/l1d_flush.rst
-new file mode 100644
-index 000000000000..530a1e0ffbd3
---- /dev/null
-+++ b/Documentation/admin-guide/hw-vuln/l1d_flush.rst
-@@ -0,0 +1,51 @@
-+L1D Flushing for the paranoid
-+=============================
-+
-+With an increasing number of vulnerabilities being reported around data
-+leaks from the Level 1 Data cache (L1D) the kernel provides an opt-in
-+mechanism to flush the L1D cache on context switch.
-+
-+This mechanism can be used to address e.g. CVE-2020-0550. For paranoid
-+applications the mechanism keeps them safe from any yet to be discovered
-+vulnerabilities, related to leaks from the L1D cache.
-+
-+
-+Related CVEs
-+------------
-+At the present moment, the following CVEs can be addressed by this
-+mechanism
-+
-+    =============       ========================     ==================
-+    CVE-2020-0550       Improper Data Forwarding     OS related aspects
-+    =============       ========================     ==================
-+
-+Usage Guidelines
-+----------------
-+
-+Please see document: :ref:`Documentation/userspace-api/spec_ctrl.rst` for
-+details.
-+
-+**NOTE**: The feature is disabled by default, applications need to
-+specifically opt into the feature to enable it.
-+
-+Mitigation
-+----------
-+
-+When PR_SET_L1D_FLUSH is enabled for a task a flush of the L1D cache is
-+performed when the task is scheduled out and the incoming task belongs to a
-+different process and therefore to a different address space.
-+
-+If the underlying CPU supports L1D flushing in hardware, the hardware
-+mechanism is used, otherwise a software fallback, similar to the L1TF
-+mitigation, is invoked.
-+
-+Limitations
-+-----------
-+
-+The mechanism does not mitigate L1D data leaks between tasks belonging to
-+different processes which are concurrently executing on sibling threads of
-+a physical CPU core when SMT is enabled on the system.
-+
-+This can be addressed by controlled placement of processes on physical CPU
-+cores or by disabling SMT. See the relevant chapter in the L1TF mitigation
-+document: :ref:`Documentation/admin-guide/hw-vuln/l1tf.rst <smt_control>`.
-diff --git a/Documentation/userspace-api/spec_ctrl.rst b/Documentation/userspace-api/spec_ctrl.rst
-index 7ddd8f667459..b40afe97dbfb 100644
---- a/Documentation/userspace-api/spec_ctrl.rst
-+++ b/Documentation/userspace-api/spec_ctrl.rst
-@@ -106,3 +106,10 @@ Speculation misfeature controls
-    * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_INDIRECT_BRANCH, PR_SPEC_ENABLE, 0, 0);
-    * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_INDIRECT_BRANCH, PR_SPEC_DISABLE, 0, 0);
-    * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_INDIRECT_BRANCH, PR_SPEC_FORCE_DISABLE, 0, 0);
-+
-+- PR_SPEC_L1D_FLUSH_OUT: Flush L1D Cache on context switch out of the task
-+
-+  Invocations:
-+   * prctl(PR_GET_SPECULATION_CTRL, PR_SPEC_L1D_FLUSH_OUT, 0, 0, 0);
-+   * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_L1D_FLUSH_OUT, PR_SPEC_ENABLE, 0, 0);
-+   * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_L1D_FLUSH_OUT, PR_SPEC_DISABLE, 0, 0);
--- 
-2.17.1
+Rewrite?  What?
+
+It's example code of what NFS could export through this interface.  I didn't
+submit it to Linus with the rest of the patches as it's only an example; same
+for the ext4 example.  I've tried running it past you and other NFS people a
+couple of times to try and elicit a response and wanted to try and ask you
+about it at LSF:-(
+
+Anyway, I've dropped it for now.
+
+David
 
