@@ -2,192 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 888E61D622B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 17:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D591D6263
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 17:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgEPPhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 11:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45218 "EHLO
+        id S1726304AbgEPPoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 11:44:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726695AbgEPPhQ (ORCPT
+        with ESMTP id S1726206AbgEPPoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 11:37:16 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF06C061A0C;
-        Sat, 16 May 2020 08:37:15 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id q11so4419045oti.6;
-        Sat, 16 May 2020 08:37:15 -0700 (PDT)
+        Sat, 16 May 2020 11:44:21 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB58C061A0C;
+        Sat, 16 May 2020 08:44:20 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id e125so3556484lfd.1;
+        Sat, 16 May 2020 08:44:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QOdQPhactMNYx+K6jcC2qpt1HbOWUydWFj161zelHf8=;
-        b=mJWKENB9adXPcpbGhUYy/BPS7y+JJa1jph/49WJPSWdkPNnhYaBkngSLGt1G44Dm8k
-         D66hR8eLpYiMCTXmGDgJJ5nAGSSdLJRgrQMCGKluTM6TZ+j3KF3157tTagNJmICTwU9Y
-         Xq+1Z3UGFsaU67wBnwwQC6VaojhGzgEragHsdFOOl1qGICJBQeZ161KPxHcFIGoa4pDY
-         hqij0e70YOjRTYfHtwc+gLMkQQE/oIooPD0awE/26gdTS75rZnU3lSeHQBx6RmqMpoz4
-         bra7K1sbti/NP08KEJAlctCq6u+kMnHSX5SpHoj7gvZhxykn3HFiQR/0GvSq2nOS6lH5
-         ptFg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v/VX1vyjPaZkfuYoHi0upfiopwVhKsLaoMAnz354uIg=;
+        b=e21cNtvcbU9P2bVOYcM0XDuiUivXQQzLsTpXzYYxIaoehSCHurHfJOJpaitIaVLIRR
+         hq3nIN0eCqTI2ngL/OS4FNmXTEHRvDuCLuU9P0FcmW5cTS6rPf0IOHdbmKAdHyixOLcQ
+         4tcQvaNEF3noc5bh+KDSSGmlT7JEb5Uo7g2ST6mXkQPQ1q6pX/bJfjLAOeIMaqupUl4g
+         gF8sNbe2/rixQ9tNSR6Ia0PptW7K+HMRlM6Cd3aQDPBMa0k6/jtWZGVvMZ2PgMQbYGrc
+         /jXetNJiuE1cHqSyVZ2+Yvj3Q2x4aX5ZcREANi2TMuZWztanfSWT23dxZmebeoAxF3eY
+         RvGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=QOdQPhactMNYx+K6jcC2qpt1HbOWUydWFj161zelHf8=;
-        b=NXRbxSTRZrs+sJZp9xzNYWyPbqnB5n2sRfLPvdwHEQRQro7ptIhKTBKPDBitOOO2ue
-         4SmWyDqW9IZTtR9BgrtgF7cfdrvWUsZYDyzOFpeC5W/07Sc+jK/n8IVm+D/3WHWBxjz6
-         eNjAVCfAuB+fYkWzXQv9B7+O+dWz7xlWaTZ8YJsgMty8ebe12uOt66nb3oHsKgqJYw6s
-         8b3dyMjjOLyliEsbKSgO7V3f/KuG29vfb3Fio50fJN8ybZL3FoNnMdJPUPWafD/doShD
-         tjgohXhiDY8FGeUsxAa3O6y6FdWNk0SgfsnSVtoAEZZHPJxCT4+0GdWQV7zZkHvkeV5e
-         ZteA==
-X-Gm-Message-State: AOAM533swgZVM1P1QwgkB03urZb6gYJfh/qosAzCuaCOEz640uGYrumE
-        ijuO+AxKs1LcFdtB38rZthdNjPU3
-X-Google-Smtp-Source: ABdhPJz/dLu2FtR/qvaCVyzCFgiac06bhsJKwhD5V58+PukhVRoDFdBM8Bjtfk9q/USkY05FC0LIfA==
-X-Received: by 2002:a05:6830:1551:: with SMTP id l17mr6413015otp.153.1589643435309;
-        Sat, 16 May 2020 08:37:15 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.113.243])
-        by smtp.gmail.com with ESMTPSA id 22sm1438888otc.34.2020.05.16.08.37.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 May 2020 08:37:14 -0700 (PDT)
-Subject: Re: [RESEND,v2,1/1] arm: dts: mediatek: add mt7629 pwm support
-To:     Sam Shih <sam.shih@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-References: <1581474926-28633-1-git-send-email-sam.shih@mediatek.com>
- <1581474926-28633-2-git-send-email-sam.shih@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Autocrypt: addr=matthias.bgg@gmail.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <d59e900b-d0a1-e17a-c948-320eb3f4e343@gmail.com>
-Date:   Sat, 16 May 2020 17:37:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v/VX1vyjPaZkfuYoHi0upfiopwVhKsLaoMAnz354uIg=;
+        b=Ud9JD+GH0IKbuR+9hwA0vtg85/Le51cwdas+qbDIAIMxSAwH5iSsBhBg7g4//StahD
+         DcZZyq9gj8AZLlqBA59F235PY739Ub9htgj+wqPffdgDd6XA+O4hjZgcgL8f5l4V+9EW
+         /njTa/HSjPo5tg44XxENfP16FhMnDYDG1orR6TWce0ESj3qOZFBAA4ty15eohtCMW4ys
+         /BW9vY+bYwVSjyI0OPPLHFb7lrN8qu5MXTV4LVL55lNo2BerrYxJbKi0gH93EKlFMAbO
+         pJyYWp8r44hHnmkV7exkFmDBo2rEo6W/wwREonNdRAmAnExTj9eDU7cqHOu858kuxTZC
+         Cigw==
+X-Gm-Message-State: AOAM5319Qb9oWNV3WeN54QIiAOquDO04a5Q7lVqUCrq86A8Lqvl2/3Oc
+        tEUaSKl/X+jpkO3KmrRz3Mg=
+X-Google-Smtp-Source: ABdhPJw4/hyk4jMm+lUZN4PMDAtHP6vSDhQO/jmufuSCzzNnE1IBgC5QfaLZXm/AHPShBxx3ZTuaHQ==
+X-Received: by 2002:a05:6512:44e:: with SMTP id y14mr5963865lfk.190.1589643859115;
+        Sat, 16 May 2020 08:44:19 -0700 (PDT)
+Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.gmail.com with ESMTPSA id h3sm3399288lfk.3.2020.05.16.08.44.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 May 2020 08:44:18 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] sdhci: tegra: Remove warnings about missing device-tree properties
+Date:   Sat, 16 May 2020 18:43:14 +0300
+Message-Id: <20200516154314.14769-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-In-Reply-To: <1581474926-28633-2-git-send-email-sam.shih@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Several people asked me about the MMC warnings in the KMSG log and
+I had to tell to ignore them because these warning are irrelevant to
+pre-Tegra210 SoCs. It should be up to a board's device-tree writer to
+properly describe all the necessary properties. Secondly, eventually all
+device-tree bindings will be converted to YAML, which allows to validate
+board DT files, giving a warning about missing properties. Hence let's
+remove the noisy warnings to stop the confusion.
 
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/mmc/host/sdhci-tegra.c | 28 ++++------------------------
+ 1 file changed, 4 insertions(+), 24 deletions(-)
 
-On 12/02/2020 03:35, Sam Shih wrote:
-> This adds pwm support for MT7629.
-> Used:
-> https://patchwork.kernel.org/patch/11160851/
-> 
-> Change since v1:
-> remove unused property num-pwm
-> 
-> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
+index 3e2c5101291d..83867629013d 100644
+--- a/drivers/mmc/host/sdhci-tegra.c
++++ b/drivers/mmc/host/sdhci-tegra.c
+@@ -607,46 +607,26 @@ static void tegra_sdhci_parse_pad_autocal_dt(struct sdhci_host *host)
+ 	err = device_property_read_u32(host->mmc->parent,
+ 			"nvidia,pad-autocal-pull-up-offset-3v3-timeout",
+ 			&autocal->pull_up_3v3_timeout);
+-	if (err) {
+-		if (!IS_ERR(tegra_host->pinctrl_state_3v3) &&
+-			(tegra_host->pinctrl_state_3v3_drv == NULL))
+-			pr_warn("%s: Missing autocal timeout 3v3-pad drvs\n",
+-				mmc_hostname(host->mmc));
++	if (err)
+ 		autocal->pull_up_3v3_timeout = 0;
+-	}
+ 
+ 	err = device_property_read_u32(host->mmc->parent,
+ 			"nvidia,pad-autocal-pull-down-offset-3v3-timeout",
+ 			&autocal->pull_down_3v3_timeout);
+-	if (err) {
+-		if (!IS_ERR(tegra_host->pinctrl_state_3v3) &&
+-			(tegra_host->pinctrl_state_3v3_drv == NULL))
+-			pr_warn("%s: Missing autocal timeout 3v3-pad drvs\n",
+-				mmc_hostname(host->mmc));
++	if (err)
+ 		autocal->pull_down_3v3_timeout = 0;
+-	}
+ 
+ 	err = device_property_read_u32(host->mmc->parent,
+ 			"nvidia,pad-autocal-pull-up-offset-1v8-timeout",
+ 			&autocal->pull_up_1v8_timeout);
+-	if (err) {
+-		if (!IS_ERR(tegra_host->pinctrl_state_1v8) &&
+-			(tegra_host->pinctrl_state_1v8_drv == NULL))
+-			pr_warn("%s: Missing autocal timeout 1v8-pad drvs\n",
+-				mmc_hostname(host->mmc));
++	if (err)
+ 		autocal->pull_up_1v8_timeout = 0;
+-	}
+ 
+ 	err = device_property_read_u32(host->mmc->parent,
+ 			"nvidia,pad-autocal-pull-down-offset-1v8-timeout",
+ 			&autocal->pull_down_1v8_timeout);
+-	if (err) {
+-		if (!IS_ERR(tegra_host->pinctrl_state_1v8) &&
+-			(tegra_host->pinctrl_state_1v8_drv == NULL))
+-			pr_warn("%s: Missing autocal timeout 1v8-pad drvs\n",
+-				mmc_hostname(host->mmc));
++	if (err)
+ 		autocal->pull_down_1v8_timeout = 0;
+-	}
+ 
+ 	err = device_property_read_u32(host->mmc->parent,
+ 			"nvidia,pad-autocal-pull-up-offset-sdr104",
+-- 
+2.26.0
 
-Applied now to v5.7-next/dts32
-
-Thanks!
-
-> ---
->  arch/arm/boot/dts/mt7629.dtsi | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/mt7629.dtsi b/arch/arm/boot/dts/mt7629.dtsi
-> index 867b88103b9d..ce2a30a24017 100644
-> --- a/arch/arm/boot/dts/mt7629.dtsi
-> +++ b/arch/arm/boot/dts/mt7629.dtsi
-> @@ -241,6 +241,20 @@
->  			status = "disabled";
->  		};
->  
-> +		pwm: pwm@11006000 {
-> +			compatible = "mediatek,mt7629-pwm";
-> +			reg = <0x11006000 0x1000>;
-> +			interrupts = <GIC_SPI 77 IRQ_TYPE_LEVEL_LOW>;
-> +			clocks = <&topckgen CLK_TOP_PWM_SEL>,
-> +				 <&pericfg CLK_PERI_PWM_PD>,
-> +				 <&pericfg CLK_PERI_PWM1_PD>;
-> +			clock-names = "top", "main", "pwm1";
-> +			assigned-clocks = <&topckgen CLK_TOP_PWM_SEL>;
-> +			assigned-clock-parents =
-> +					<&topckgen CLK_TOP_UNIVPLL2_D4>;
-> +			status = "disabled";
-> +		};
-> +
->  		i2c: i2c@11007000 {
->  			compatible = "mediatek,mt7629-i2c",
->  				     "mediatek,mt2712-i2c";
-> 
