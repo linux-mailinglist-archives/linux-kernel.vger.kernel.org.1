@@ -2,61 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A3E1D64A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 01:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E371D64A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 01:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbgEPXKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 19:10:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37394 "EHLO mail.kernel.org"
+        id S1726918AbgEPXNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 19:13:22 -0400
+Received: from mga18.intel.com ([134.134.136.126]:21336 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726695AbgEPXKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 19:10:31 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A9269206D4;
-        Sat, 16 May 2020 23:10:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589670630;
-        bh=OJgqkK0rKAP+mwon52BaWOh3v322o3dOF5imDlRm2IE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=w1yNczdk+bhXx0qPJVnr29TxeJolNtEt0Oj9mCsb+Cd3FdsKV7nKJ97DKj4p6JgcR
-         0TtkLLmwXTfu7652sqC8cJsCX7hYS/0bRrSIHLZq4kxQA57dg8KXVrydAcKJzU06Xb
-         tNQRX/nXebKrP7ZV8OBQqq7gcaOctJpZEpjLXMaM=
-Date:   Sat, 16 May 2020 19:10:29 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        linux-nfs@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.4 26/35] SUNRPC: defer slow parts of
- rpc_free_client() to a workqueue.
-Message-ID: <20200516231029.GI29995@sasha-vm>
-References: <20200507142830.26239-1-sashal@kernel.org>
- <20200507142830.26239-26-sashal@kernel.org>
- <878si3cuki.fsf@notabene.neil.brown.name>
+        id S1726670AbgEPXNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 May 2020 19:13:22 -0400
+IronPort-SDR: H70TAAeNG0+eTTEc7sO3uwJsC3OSXNLfKPBOKVjkPutJ8g/On3Eb6J3Veb9LFK4CRobwKpdC9t
+ Z7DPqR/2ud2w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2020 16:13:21 -0700
+IronPort-SDR: zUN/i6sVbdJ00Rjezck/JbRh0IFpVwDAQ+JM4UsNO3i9Qm8dEaeX8igRlspE8ySVSLMItu2VhG
+ KkcTim0pt2DQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,400,1583222400"; 
+   d="scan'208";a="288174039"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 16 May 2020 16:13:20 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1ja5zb-0004C0-Sj; Sun, 17 May 2020 07:13:19 +0800
+Date:   Sun, 17 May 2020 07:12:45 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/fpu] BUILD SUCCESS
+ 55e00fb66fd5048f4a3ee357018fd26fc527abca
+Message-ID: <5ec0736d.vN7JX1uQTwG6c1GD%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <878si3cuki.fsf@notabene.neil.brown.name>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 07:18:53AM +1000, NeilBrown wrote:
->On Thu, May 07 2020, Sasha Levin wrote:
->
->> From: NeilBrown <neilb@suse.de>
->>
->> [ Upstream commit 7c4310ff56422ea43418305d22bbc5fe19150ec4 ]
->
->This one is buggy - it introduces a use-after-free.  Best delay it for
->now.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/fpu
+branch HEAD: 55e00fb66fd5048f4a3ee357018fd26fc527abca  x86/fpu/xstate: Restore supervisor states for signal return
 
-I've dropped it, thanks!
+elapsed time: 481m
 
--- 
-Thanks,
-Sasha
+configs tested: 95
+configs skipped: 91
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+m68k                             allyesconfig
+sparc                            allyesconfig
+mips                             allyesconfig
+mips                malta_kvm_guest_defconfig
+arc                            hsdk_defconfig
+arc                           tb10x_defconfig
+h8300                            alldefconfig
+powerpc                           allnoconfig
+xtensa                    xip_kc705_defconfig
+mips                 pnx8335_stb225_defconfig
+xtensa                              defconfig
+ia64                             allyesconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a005-20200517
+x86_64               randconfig-a003-20200517
+x86_64               randconfig-a006-20200517
+x86_64               randconfig-a004-20200517
+x86_64               randconfig-a001-20200517
+x86_64               randconfig-a002-20200517
+i386                 randconfig-a006-20200517
+i386                 randconfig-a005-20200517
+i386                 randconfig-a003-20200517
+i386                 randconfig-a001-20200517
+i386                 randconfig-a004-20200517
+i386                 randconfig-a002-20200517
+i386                 randconfig-a012-20200517
+i386                 randconfig-a016-20200517
+i386                 randconfig-a014-20200517
+i386                 randconfig-a011-20200517
+i386                 randconfig-a013-20200517
+i386                 randconfig-a015-20200517
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+x86_64                              defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
