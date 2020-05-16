@@ -2,86 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766B81D611A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 14:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044EB1D6109
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 14:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgEPMzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 08:55:43 -0400
-Received: from mga09.intel.com ([134.134.136.24]:44093 "EHLO mga09.intel.com"
+        id S1726833AbgEPMyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 08:54:15 -0400
+Received: from mga07.intel.com ([134.134.136.100]:47574 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726237AbgEPMzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 08:55:42 -0400
-IronPort-SDR: 5VDLdr00A4ic7OpXSkaNZdKMh7MD0FHLH/HZXDERePDS7SbSoiCF0jXjJSw0sjyp/Z1M7IEapf
- rbirqJPnelqQ==
+        id S1726727AbgEPMyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 May 2020 08:54:11 -0400
+IronPort-SDR: 6b79BH64DYEl80K0sRQBUI4hi6au2naNifJh2fYaFnu6NJlaLU+4blWRhmvOL06qLjvF+bukyU
+ jbBWIf2bG8aQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2020 05:55:42 -0700
-IronPort-SDR: yvN0SmOZJHqQmoYtjm5IXoaI46heARkHG7baRSf11Og0i45uTzKHgSDrNEzfOajO8f78C1Q4Kq
- YnuBNvBDDdlQ==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2020 05:54:10 -0700
+IronPort-SDR: MJo07iisMKJsHLVColE+rvMMYvQhsVNUKFjvwiHVgPKu2vUcUCE4tgaBJ2iCMRmHr0yO1cJHlm
+ Htr0EKpfHOyA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,398,1583222400"; 
-   d="scan'208";a="410756982"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 16 May 2020 05:55:39 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jZwLr-000AZ3-5p; Sat, 16 May 2020 20:55:39 +0800
+   d="scan'208";a="288076613"
+Received: from local-michael-cet-test.sh.intel.com ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 16 May 2020 05:54:08 -0700
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, jmattson@google.com,
+        sean.j.christopherson@intel.com
+Cc:     yu.c.zhang@linux.intel.com, alazar@bitdefender.com,
+        edwin.zhai@intel.com, ssicleru@bitdefender.com,
+        Yang Weijiang <weijiang.yang@intel.com>
+Subject: [PATCH v12 09/11] x86: spp: Add SPP protection check in instruction emulation
 Date:   Sat, 16 May 2020 20:55:05 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rui.zhang@intel.com
-Cc:     kbuild-all@lists.01.org, amit.kucheria@verdurent.com,
-        srinivas.pandruvada@linux.intel.com, arnd@arndb.de,
-        rkumbako@codeaurora.org, ilina@codeaurora.org,
-        linux-pm@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH] thermal: core: thermal_genl_sampling_temp() can be static
-Message-ID: <20200516125505.GA16652@aae4cc650884>
-References: <20200515141034.19154-4-daniel.lezcano@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515141034.19154-4-daniel.lezcano@linaro.org>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-Id: <20200516125507.5277-10-weijiang.yang@intel.com>
+X-Mailer: git-send-email 2.17.2
+In-Reply-To: <20200516125507.5277-1-weijiang.yang@intel.com>
+References: <20200516125507.5277-1-weijiang.yang@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In instruction/mmio emulation cases, if the target write memroy
+is SPP protected, "fake" an vmexit to userspace to let application
+handle it.
 
-Signed-off-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
 ---
- thermal_netlink.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/kvm/x86.c | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-diff --git a/drivers/thermal/thermal_netlink.c b/drivers/thermal/thermal_netlink.c
-index a2bce846771e4..851db26e66465 100644
---- a/drivers/thermal/thermal_netlink.c
-+++ b/drivers/thermal/thermal_netlink.c
-@@ -66,7 +66,7 @@ static struct genl_family thermal_gnl_family;
- 
- /************************** Sampling encoding *******************************/
- 
--int thermal_genl_sampling_temp(int id, int temp)
-+static int thermal_genl_sampling_temp(int id, int temp)
- {
- 	struct sk_buff *skb;
- 	void *hdr;
-@@ -506,7 +506,7 @@ static cb_t cmd_cb[] = {
- 	[THERMAL_GENL_CMD_CDEV_GET]	= thermal_genl_cmd_cdev_get,
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 4b033a39d6c3..e3999a3ab911 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5788,6 +5788,37 @@ static const struct read_write_emulator_ops write_emultor = {
+ 	.write = true,
  };
  
--int thermal_genl_cmd_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
-+static int thermal_genl_cmd_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
- {
- 	struct param p = { .msg = skb };
- 	const struct genl_dumpit_info *info = genl_dumpit_info(cb);
-@@ -532,7 +532,7 @@ int thermal_genl_cmd_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
- 	return ret;
- }
++static bool is_emulator_spp_protected(struct kvm_vcpu *vcpu,
++				      gpa_t gpa,
++				      unsigned int bytes)
++{
++	gfn_t gfn, gfn_start, gfn_end;
++	struct kvm *kvm = vcpu->kvm;
++	struct kvm_memory_slot *slot;
++	u32 *access;
++
++	if (!kvm->arch.spp_active)
++		return false;
++
++	gfn_start = gpa_to_gfn(gpa);
++	gfn_end = gpa_to_gfn(gpa + bytes);
++	for (gfn = gfn_start; gfn <= gfn_end; gfn++) {
++		slot = gfn_to_memslot(kvm, gfn);
++		if (slot) {
++			access = gfn_to_subpage_wp_info(slot, gfn);
++			if (access && *access != FULL_SPP_ACCESS) {
++				vcpu->run->exit_reason = KVM_EXIT_SPP;
++				vcpu->run->spp.addr = gfn;
++				vcpu->run->spp.insn_len =
++					kvm_x86_ops.get_insn_len(vcpu);
++				return true;
++			}
++		}
++	}
++
++	return false;
++}
++
+ static int emulator_read_write_onepage(unsigned long addr, void *val,
+ 				       unsigned int bytes,
+ 				       struct x86_exception *exception,
+@@ -5817,6 +5848,9 @@ static int emulator_read_write_onepage(unsigned long addr, void *val,
+ 			return X86EMUL_PROPAGATE_FAULT;
+ 	}
  
--int thermal_genl_cmd_doit(struct sk_buff *skb, struct genl_info *info)
-+static int thermal_genl_cmd_doit(struct sk_buff *skb, struct genl_info *info)
- {
- 	struct param p = { .attrs = info->attrs };
- 	struct sk_buff *msg;
++	if (write && is_emulator_spp_protected(vcpu, gpa, bytes))
++		return X86EMUL_UNHANDLEABLE;
++
+ 	if (!ret && ops->read_write_emulate(vcpu, gpa, val, bytes))
+ 		return X86EMUL_CONTINUE;
+ 
+@@ -6963,6 +6997,9 @@ int x86_emulate_instruction(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+ 		return 1;
+ 
+ 	if (r == EMULATION_FAILED) {
++		if (vcpu->run->exit_reason == KVM_EXIT_SPP)
++			return 0;
++
+ 		if (reexecute_instruction(vcpu, cr2_or_gpa, write_fault_to_spt,
+ 					emulation_type))
+ 			return 1;
+-- 
+2.17.2
+
