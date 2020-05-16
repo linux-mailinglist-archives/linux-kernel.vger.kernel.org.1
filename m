@@ -2,212 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E9E1D613A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 15:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730D01D6140
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 15:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbgEPNQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 09:16:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726202AbgEPNQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 09:16:27 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E45520727;
-        Sat, 16 May 2020 13:16:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589634984;
-        bh=C14vxvov6HGxmSsHUWr0zAt9J6Vf/M86i7cQcIUctU8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JESFpGmV/3BOQ98QT7/spdCpsIychyOBJQUKypKaqWAEq+Avnky+Jh8kXP3rRaUG7
-         EaImIWyyNZnWiqgiiQGI2S6a82PETfdfMeLUCYGfeF0Oj8GPS4hM8rxx1MSw1dp3eN
-         hdbNCq4VvQGV4rs4NX3cVVxDy3kot+66sjFlv0jo=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jZwfu-00Cp2p-Mf; Sat, 16 May 2020 14:16:22 +0100
+        id S1726557AbgEPNZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 09:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726302AbgEPNZD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 May 2020 09:25:03 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C71C061A0C;
+        Sat, 16 May 2020 06:25:03 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.93)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1jZwnO-00EBvX-6E; Sat, 16 May 2020 15:24:06 +0200
+Message-ID: <2b74a35c726e451b2fab2b5d0d301e80d1f4cdc7.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 12/15] ath10k: use new module_firmware_crashed()
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Luis Chamberlain <mcgrof@kernel.org>, jeyu@kernel.org
+Cc:     akpm@linux-foundation.org, arnd@arndb.de, rostedt@goodmis.org,
+        mingo@redhat.com, aquini@redhat.com, cai@lca.pw, dyoung@redhat.com,
+        bhe@redhat.com, peterz@infradead.org, tglx@linutronix.de,
+        gpiccoli@canonical.com, pmladek@suse.com, tiwai@suse.de,
+        schlad@suse.de, andriy.shevchenko@linux.intel.com,
+        keescook@chromium.org, daniel.vetter@ffwll.ch, will@kernel.org,
+        mchehab+samsung@kernel.org, kvalo@codeaurora.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        ath10k@lists.infradead.org
+Date:   Sat, 16 May 2020 15:24:01 +0200
+In-Reply-To: <20200515212846.1347-13-mcgrof@kernel.org> (sfid-20200515_233205_994687_1F26BDAB)
+References: <20200515212846.1347-1-mcgrof@kernel.org>
+         <20200515212846.1347-13-mcgrof@kernel.org>
+         (sfid-20200515_233205_994687_1F26BDAB)
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Sat, 16 May 2020 14:16:22 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Anup Patel <Anup.Patel@wdc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] irqchip/sifive-plic: Separate irq_chip for muiltiple
- PLIC instances
-In-Reply-To: <DM6PR04MB6201FD64C78C51A94C4776558DBA0@DM6PR04MB6201.namprd04.prod.outlook.com>
-References: <20200516063901.18365-1-anup.patel@wdc.com>
- <20200516063901.18365-4-anup.patel@wdc.com>
- <577f9a16b3dddfadb7c5487ffaef31d8@kernel.org>
- <DM6PR04MB6201FD64C78C51A94C4776558DBA0@DM6PR04MB6201.namprd04.prod.outlook.com>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <6fbfca8f084f6cd0dc6818c4bbf58843@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: Anup.Patel@wdc.com, palmer@dabbelt.com, paul.walmsley@sifive.com, tglx@linutronix.de, jason@lakedaemon.net, Atish.Patra@wdc.com, Alistair.Francis@wdc.com, anup@brainfault.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-16 14:01, Anup Patel wrote:
->> -----Original Message-----
->> From: Marc Zyngier <maz@kernel.org>
->> Sent: 16 May 2020 17:59
->> To: Anup Patel <Anup.Patel@wdc.com>
->> Cc: Palmer Dabbelt <palmer@dabbelt.com>; Paul Walmsley
->> <paul.walmsley@sifive.com>; Thomas Gleixner <tglx@linutronix.de>; 
->> Jason
->> Cooper <jason@lakedaemon.net>; Atish Patra <Atish.Patra@wdc.com>; 
->> Alistair
->> Francis <Alistair.Francis@wdc.com>; Anup Patel <anup@brainfault.org>; 
->> linux-
->> riscv@lists.infradead.org; linux-kernel@vger.kernel.org
->> Subject: Re: [PATCH 3/4] irqchip/sifive-plic: Separate irq_chip for 
->> muiltiple PLIC
->> instances
->> 
->> On 2020-05-16 07:39, Anup Patel wrote:
->> > To distinguish interrupts from multiple PLIC instances, we use a
->> > per-PLIC irq_chip instance with a different name.
->> >
->> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
->> > ---
->> >  drivers/irqchip/irq-sifive-plic.c | 28 +++++++++++++++-------------
->> >  1 file changed, 15 insertions(+), 13 deletions(-)
->> >
->> > diff --git a/drivers/irqchip/irq-sifive-plic.c
->> > b/drivers/irqchip/irq-sifive-plic.c
->> > index 2d3db927a551..e42fc082ad18 100644
->> > --- a/drivers/irqchip/irq-sifive-plic.c
->> > +++ b/drivers/irqchip/irq-sifive-plic.c
->> > @@ -60,6 +60,7 @@
->> >  #define	PLIC_ENABLE_THRESHOLD		0
->> >
->> >  struct plic_priv {
->> > +	struct irq_chip chip;
->> >  	struct cpumask lmask;
->> >  	struct irq_domain *irqdomain;
->> >  	void __iomem *regs;
->> > @@ -76,6 +77,7 @@ struct plic_handler {
->> >  	void __iomem		*enable_base;
->> >  	struct plic_priv	*priv;
->> >  };
->> > +static unsigned int plic_count;
->> >  static bool plic_cpuhp_setup_done;
->> >  static DEFINE_PER_CPU(struct plic_handler, plic_handlers);
->> >
->> > @@ -164,20 +166,12 @@ static void plic_irq_eoi(struct irq_data *d)
->> >  	writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);  }
->> >
->> > -static struct irq_chip plic_chip = {
->> > -	.name		= "SiFive PLIC",
->> > -	.irq_mask	= plic_irq_mask,
->> > -	.irq_unmask	= plic_irq_unmask,
->> > -	.irq_eoi	= plic_irq_eoi,
->> > -#ifdef CONFIG_SMP
->> > -	.irq_set_affinity = plic_set_affinity,
->> > -#endif
->> > -};
->> > -
->> >  static int plic_irqdomain_map(struct irq_domain *d, unsigned int irq,
->> >  			      irq_hw_number_t hwirq)
->> >  {
->> > -	irq_domain_set_info(d, irq, hwirq, &plic_chip, d->host_data,
->> > +	struct plic_priv *priv = d->host_data;
->> > +
->> > +	irq_domain_set_info(d, irq, hwirq, &priv->chip, d->host_data,
->> >  			    handle_fasteoi_irq, NULL, NULL);
->> >  	irq_set_noprobe(irq);
->> >  	return 0;
->> > @@ -294,6 +288,14 @@ static int __init plic_init(struct device_node
->> > *node,
->> >  	if (!priv)
->> >  		return -ENOMEM;
->> >
->> > +	priv->chip.name = kasprintf(GFP_KERNEL, "PLIC%d", plic_count++);
->> > +	priv->chip.irq_mask = plic_irq_mask,
->> > +	priv->chip.irq_unmask = plic_irq_unmask,
->> > +	priv->chip.irq_eoi = plic_irq_eoi,
->> > +#ifdef CONFIG_SMP
->> > +	priv->chip.irq_set_affinity = plic_set_affinity, #endif
->> > +
->> >  	priv->regs = of_iomap(node, 0);
->> >  	if (WARN_ON(!priv->regs)) {
->> >  		error = -EIO;
->> > @@ -383,9 +385,9 @@ static int __init plic_init(struct device_node
->> > *node,
->> >  	}
->> >
->> >  	pr_info("interrupt-controller at 0x%llx "
->> > -		"(interrupts=%d, contexts=%d, handlers=%d)\n",
->> > +		"(interrupts=%d, contexts=%d, handlers=%d) (%s)\n",
->> >  		(unsigned long long)iores.start, nr_irqs,
->> > -		nr_contexts, nr_handlers);
->> > +		nr_contexts, nr_handlers, priv->chip.name);
->> >  	set_handle_irq(plic_handle_irq);
->> >  	return 0;
->> 
->> I really dislike this patch for multiple reasons:
->> 
->> - Allocating a new struc irq_chip just for a string seems over the 
->> top,
->>    specially as all the *useful* stuff stays the same.
->> 
->> - Even if I hate it, /proc is API. I'm sure something, somewhere is
->>    parsing this. Changing the string is likely to confuse it.
-> 
-> AFAIK, we don't have scripts in RISC-V world that depend on
-> /proc/interrupts content. May be in future such scripts will show up.
+On Fri, 2020-05-15 at 21:28 +0000, Luis Chamberlain wrote:> module_firmware_crashed
 
-How do you know that? Do you keep an exhaustive repository of all
-the possible parsers of /proc/cpuinfo (rhetorical question)?
+You didn't CC me or the wireless list on the rest of the patches, so I'm
+replying to a random one, but ...
 
-> For system with multiple PLICs, we are seeing same "SiFive PLIC"
-> string for all PLIC interrupts in "cat /proc/interrupts". I am trying 
-> to
-> assign different string based on PLIC instance. This is similar to
-> what GICv2 driver is doing (e.g. GIC-0, GIC-1, ... in 
-> /proc/interrupts).
+What is the point here?
 
-Which was a *very* bad idea the first place, and I wish I could get
-rid of it. I cannot, for the reason outlined above (it's ABI).
-Furthermore, in this case, the GICs are different (they are cascaded).
-In your case, they have the same position in the interrupt hierarchy.
+This should in no way affect the integrity of the system/kernel, for
+most devices anyway.
 
-> Is there a better way to do this ?
-> 
->> 
->> - If you do this for debug purposes, then CONFIG_GENERIC_IRQ_DEBUGFS
->>    is the right way to look up the information.
->> 
->> - If, for reasons that are beyond me, you actually *need* this, then
->>    implementing irq_print_chip in your irq_chip structure is the way
->>    to go.
->> 
->> But frankly, I'd rather you drop this altogether.
-> 
-> I just want to differentiate which interrupt belongs to which PLIC
-> Instance in /proc/interrupts. I can take a different approach if you
-> suggest.
+So what if ath10k's firmware crashes? If there's a driver bug it will
+not handle it right (and probably crash, WARN_ON, or something else),
+but if the driver is working right then that will not affect the kernel
+at all.
 
-I *have* given you a way to implement that in a better way. But again,
-I'd rather you *don't* do it for the reason I have outlined above.
+So maybe I can understand that maybe you want an easy way to discover -
+per device - that the firmware crashed, but that still doesn't warrant a
+complete kernel taint.
 
-Thanks,
+Instead of the kernel taint, IMHO you should provide an annotation in
+sysfs (or somewhere else) for the *struct device* that had its firmware
+crash. Or maybe, if it's too complex to walk the entire hierarchy
+checking for that, have a uevent, or add the ability for the kernel to
+print out elsewhere in debugfs the list of devices that crashed at some
+point... All of that is fine, but a kernel taint?
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+johannes
+
