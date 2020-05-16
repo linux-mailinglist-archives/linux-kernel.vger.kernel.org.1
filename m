@@ -2,272 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D522B1D6243
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 17:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566DE1D621E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 17:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgEPPhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 11:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727823AbgEPPh0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 11:37:26 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464AEC05BD0B;
-        Sat, 16 May 2020 08:37:26 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id a21so5336509ljj.11;
-        Sat, 16 May 2020 08:37:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VCfDgD0BOTw7K9rKkuVs5dDCTL68za+UymQx9p6OCAo=;
-        b=Tu95+p9LzkryZ16vSFZZQPj7/Fw+f6F4Qd52s6KxDrpoMlLM6glOlN/7FxCAdHIxgm
-         vSbowE8l/GmXrqZgkQ9FoNdCoCcXSr6WwbgF85fOMhy502POhoZcHbGULKcxZC7sLx+P
-         mF3xhaiD8ijbJVKjyhetN1hE3spflbHWTDgdr+WUvzISCsCl2y3gO036TN3A+R4l25WD
-         yN8kZHV5l7j1gtfJr/T9pqqsu7UB+OMCffo9W5wo/26Do1RLJjsWH4HxijkvhYsRlxAO
-         DQnxGCqvldqp3xRObAOuL80oefJfL6Hy+qF/K7RO8bz8FeRyAcSxzJsav1oBjLMxQYw6
-         VNLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VCfDgD0BOTw7K9rKkuVs5dDCTL68za+UymQx9p6OCAo=;
-        b=un31ORivh+G4dUM4AxtVAIzISF765TxBUKxghU/sL+QWbf+0QaB/Y7hvXfRC9O9xMh
-         qnBXI5k8X1vXZk91ByfU5iIwuyCUP5MlH0WhboquzKeBKnHWOg7wdJ9zqvuJxoniu+Dq
-         aODQVmRPge0I3xplEcroSFcNur96nysiVo3TC5nq2hGxuxU4xmtAGCVz3B5/xm2oUNmA
-         S0MAhg7AzC9ONPDE0JQy1wQY0a+uibGeE5fp68aFEQgVWPCTuareZYqo8ff0mkyW2OEk
-         37kDaUX0PVMIppEdFUsZv3InhInU+gOVoubCV75s9TtiFTo/xQyt70iYrF9iFnftkIgc
-         fT0Q==
-X-Gm-Message-State: AOAM532ebaP/1Fp3S1DWHFyJrkxS8Jns3zsToNl3/mgWfc+loVjG9oLd
-        NDMuEmZslGzMSS9BIs/kqWw=
-X-Google-Smtp-Source: ABdhPJyjz6TSw1+Q50zR2PhQEFqRV9q4+gSgAVTNYqnkDFl5nbJo2ngLzGQ96G1iDJ8aI7KbZ9oO7w==
-X-Received: by 2002:a2e:3a10:: with SMTP id h16mr4897156lja.49.1589643444763;
-        Sat, 16 May 2020 08:37:24 -0700 (PDT)
-Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.gmail.com with ESMTPSA id a12sm2845356ljj.64.2020.05.16.08.37.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 May 2020 08:37:24 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        David Heidelberg <david@ixit.cz>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Billy Laws <blaws05@gmail.com>,
-        =?UTF-8?q?Nils=20=C3=96stlund?= <nils@naltan.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Cc:     linux-tegra@vger.kernel.org, linux-block@vger.kernel.org,
-        Andrey Danin <danindrey@mail.ru>,
-        Gilles Grandou <gilles@grandou.net>,
-        Ryan Grachek <ryan@edited.us>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Steve McIntyre <steve@einval.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-Subject: [PATCH v5 6/6] soc/tegra: Expose Boot Configuration Table via sysfs
-Date:   Sat, 16 May 2020 18:36:44 +0300
-Message-Id: <20200516153644.13748-7-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200516153644.13748-1-digetx@gmail.com>
-References: <20200516153644.13748-1-digetx@gmail.com>
+        id S1727009AbgEPPgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 11:36:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726695AbgEPPgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 May 2020 11:36:52 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FAC520727;
+        Sat, 16 May 2020 15:36:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589643411;
+        bh=zfBU1IWpkQBvNmTBIKKrHwm1RzQ5E2IL5ncgKrz/5Sg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MZGF+892d2LsFM0NMl4IIElfgRPC73dcp4ko+QetcoSa84mAJleGJY/h1t9n4TyZ+
+         E/VxqIIvOIN/nYahMCpi6JK3iagjRmfzBvByOwc4/psnRDFn3RR4NhVxTaRvWSVEyW
+         bi1hqkbpPDw68pJPQhg8evCvPnmPWhuxrwJd6fLA=
+Date:   Sat, 16 May 2020 16:36:47 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] iio: dac: vf610_dac: Replace indio_dev->mlock with own
+ device lock
+Message-ID: <20200516163647.5e3b7415@archlinux>
+In-Reply-To: <20200514085835.80275-1-sergiu.cuciurean@analog.com>
+References: <20200514085835.80275-1-sergiu.cuciurean@analog.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's quite useful to have unencrypted BCT exposed to userspace for
-debugging purposes, so let's expose it via sysfs.  The BCT data will be
-present in '/sys/tegra/boot_config_table' binary file if BCT is available.
+On Thu, 14 May 2020 11:58:15 +0300
+Sergiu Cuciurean <sergiu.cuciurean@analog.com> wrote:
 
-Suggested-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/mach-tegra/tegra.c  |  4 +++
- drivers/soc/tegra/Makefile   |  1 +
- drivers/soc/tegra/bootdata.c | 51 ++++++++++++++++++++++++++++++++++++
- drivers/soc/tegra/common.c   | 17 ++++++++++++
- include/soc/tegra/bootdata.h |  2 ++
- include/soc/tegra/common.h   |  3 +++
- 6 files changed, 78 insertions(+)
- create mode 100644 drivers/soc/tegra/bootdata.c
+> As part of the general cleanup of indio_dev->mlock, this change replaces
+> it with a local lock on the device's state structure.
+> 
+> Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
 
-diff --git a/arch/arm/mach-tegra/tegra.c b/arch/arm/mach-tegra/tegra.c
-index da6bcd85398b..5f40463f1b97 100644
---- a/arch/arm/mach-tegra/tegra.c
-+++ b/arch/arm/mach-tegra/tegra.c
-@@ -72,6 +72,7 @@ static void __init tegra_boot_config_table_init(void)
- 	u32 iram_end   = TEGRA_IRAM_BASE + TEGRA_IRAM_SIZE;
- 	u32 iram_start = TEGRA_IRAM_BASE;
- 	u32 pt_addr, pt_size, bct_size;
-+	void __iomem *bct_ptr;
- 
- 	t20_bit = IO_ADDRESS(TEGRA_IRAM_BASE);
- 
-@@ -90,6 +91,7 @@ static void __init tegra_boot_config_table_init(void)
- 
- 		pt_addr = t20_bct->partition_table_logical_sector_address;
- 		pt_size = t20_bct->partition_table_num_logical_sectors;
-+		bct_ptr = t20_bct;
- 
- 	} else if (of_machine_is_compatible("nvidia,tegra30")) {
- 		bct_size = sizeof(*t30_bct);
-@@ -106,12 +108,14 @@ static void __init tegra_boot_config_table_init(void)
- 
- 		pt_addr = t30_bct->partition_table_logical_sector_address;
- 		pt_size = t30_bct->partition_table_num_logical_sectors;
-+		bct_ptr = t30_bct;
- 	} else {
- 		return;
- 	}
- 
- 	pr_info("%s: BCT found in IRAM\n", __func__);
- 
-+	tegra_bootdata_bct_setup(bct_ptr, bct_size);
- 	tegra_partition_table_setup(pt_addr, pt_size);
- }
- 
-diff --git a/drivers/soc/tegra/Makefile b/drivers/soc/tegra/Makefile
-index 9c809c1814bd..8be2bfb4d95d 100644
---- a/drivers/soc/tegra/Makefile
-+++ b/drivers/soc/tegra/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-y += fuse/
- 
-+obj-y += bootdata.o
- obj-y += common.o
- obj-$(CONFIG_SOC_TEGRA_FLOWCTRL) += flowctrl.o
- obj-$(CONFIG_SOC_TEGRA_PMC) += pmc.o
-diff --git a/drivers/soc/tegra/bootdata.c b/drivers/soc/tegra/bootdata.c
-new file mode 100644
-index 000000000000..e18a27b74023
---- /dev/null
-+++ b/drivers/soc/tegra/bootdata.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/sizes.h>
-+#include <linux/slab.h>
-+#include <linux/sysfs.h>
-+#include <linux/types.h>
-+
-+#include <soc/tegra/bootdata.h>
-+#include <soc/tegra/common.h>
-+
-+/*
-+ * spare_bct[] will be released once kernel is booted, hence not wasting
-+ * kernel space if BCT is missing. The tegra_bct can't be allocated during
-+ * of BCT setting up because it's too early for the slab allocator.
-+ */
-+static u8 spare_bct[SZ_8K] __initdata;
-+static u8 *tegra_bct;
-+
-+static ssize_t boot_config_table_read(struct file *filp,
-+				      struct kobject *kobj,
-+				      struct bin_attribute *bin_attr,
-+				      char *buf, loff_t off, size_t count)
-+{
-+	memcpy(buf, tegra_bct + off, count);
-+	return count;
-+}
-+static BIN_ATTR_RO(boot_config_table, 0);
-+
-+static int __init tegra_bootdata_bct_sysfs_init(void)
-+{
-+	if (!bin_attr_boot_config_table.size)
-+		return 0;
-+
-+	tegra_bct = kmalloc(GFP_KERNEL, bin_attr_boot_config_table.size);
-+	if (!tegra_bct)
-+		return -ENOMEM;
-+
-+	memcpy(tegra_bct, spare_bct, bin_attr_boot_config_table.size);
-+
-+	return sysfs_create_bin_file(tegra_soc_kobj,
-+				     &bin_attr_boot_config_table);
-+}
-+late_initcall(tegra_bootdata_bct_sysfs_init)
-+
-+void __init tegra_bootdata_bct_setup(void __iomem *bct_ptr, size_t bct_size)
-+{
-+	memcpy_fromio(spare_bct, bct_ptr, bct_size);
-+	bin_attr_boot_config_table.size = bct_size;
-+}
-diff --git a/drivers/soc/tegra/common.c b/drivers/soc/tegra/common.c
-index 3dc54f59cafe..2b4b49eacb2e 100644
---- a/drivers/soc/tegra/common.c
-+++ b/drivers/soc/tegra/common.c
-@@ -3,10 +3,15 @@
-  * Copyright (C) 2014 NVIDIA CORPORATION.  All rights reserved.
-  */
- 
-+#include <linux/init.h>
-+#include <linux/kernel.h>
- #include <linux/of.h>
-+#include <linux/sysfs.h>
- 
- #include <soc/tegra/common.h>
- 
-+struct kobject *tegra_soc_kobj;
-+
- static const struct of_device_id tegra_machine_match[] = {
- 	{ .compatible = "nvidia,tegra20", },
- 	{ .compatible = "nvidia,tegra30", },
-@@ -31,3 +36,15 @@ bool soc_is_tegra(void)
- 
- 	return match != NULL;
- }
-+
-+static int __init tegra_soc_sysfs_init(void)
-+{
-+	if (!soc_is_tegra())
-+		return 0;
-+
-+	tegra_soc_kobj = kobject_create_and_add("tegra", NULL);
-+	WARN_ON(!tegra_soc_kobj);
-+
-+	return 0;
-+}
-+arch_initcall(tegra_soc_sysfs_init)
-diff --git a/include/soc/tegra/bootdata.h b/include/soc/tegra/bootdata.h
-index 7be207cb2519..d5c7a251517d 100644
---- a/include/soc/tegra/bootdata.h
-+++ b/include/soc/tegra/bootdata.h
-@@ -43,4 +43,6 @@ struct tegra30_boot_config_table {
- 	u32 unused_data[3];
- } __packed;
- 
-+void tegra_bootdata_bct_setup(void __iomem *bct_ptr, size_t bct_size);
-+
- #endif /* __SOC_TEGRA_BOOTDATA_H__ */
-diff --git a/include/soc/tegra/common.h b/include/soc/tegra/common.h
-index 744280ecab5f..0bc11b45c98e 100644
---- a/include/soc/tegra/common.h
-+++ b/include/soc/tegra/common.h
-@@ -7,8 +7,11 @@
- #define __SOC_TEGRA_COMMON_H__
- 
- #include <linux/types.h>
-+#include <linux/sysfs.h>
- 
- #ifdef CONFIG_ARCH_TEGRA
-+extern struct kobject *tegra_soc_kobj;
-+
- bool soc_is_tegra(void);
- #else
- static inline bool soc_is_tegra(void)
--- 
-2.26.0
+Applied, thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/dac/vf610_dac.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iio/dac/vf610_dac.c b/drivers/iio/dac/vf610_dac.c
+> index 71f8a5c471c4..c1e15ede0e8e 100644
+> --- a/drivers/iio/dac/vf610_dac.c
+> +++ b/drivers/iio/dac/vf610_dac.c
+> @@ -36,6 +36,7 @@ struct vf610_dac {
+>  	struct device *dev;
+>  	enum vf610_conversion_mode_sel conv_mode;
+>  	void __iomem *regs;
+> +	struct mutex lock;
+>  };
+>  
+>  static void vf610_dac_init(struct vf610_dac *info)
+> @@ -64,7 +65,7 @@ static int vf610_set_conversion_mode(struct iio_dev *indio_dev,
+>  	struct vf610_dac *info = iio_priv(indio_dev);
+>  	int val;
+>  
+> -	mutex_lock(&indio_dev->mlock);
+> +	mutex_lock(&info->lock);
+>  	info->conv_mode = mode;
+>  	val = readl(info->regs + VF610_DACx_STATCTRL);
+>  	if (mode)
+> @@ -72,7 +73,7 @@ static int vf610_set_conversion_mode(struct iio_dev *indio_dev,
+>  	else
+>  		val &= ~VF610_DAC_LPEN;
+>  	writel(val, info->regs + VF610_DACx_STATCTRL);
+> -	mutex_unlock(&indio_dev->mlock);
+> +	mutex_unlock(&info->lock);
+>  
+>  	return 0;
+>  }
+> @@ -147,9 +148,9 @@ static int vf610_write_raw(struct iio_dev *indio_dev,
+>  
+>  	switch (mask) {
+>  	case IIO_CHAN_INFO_RAW:
+> -		mutex_lock(&indio_dev->mlock);
+> +		mutex_lock(&info->lock);
+>  		writel(VF610_DAC_DAT0(val), info->regs);
+> -		mutex_unlock(&indio_dev->mlock);
+> +		mutex_unlock(&info->lock);
+>  		return 0;
+>  
+>  	default:
+> @@ -205,6 +206,8 @@ static int vf610_dac_probe(struct platform_device *pdev)
+>  	indio_dev->channels = vf610_dac_iio_channels;
+>  	indio_dev->num_channels = ARRAY_SIZE(vf610_dac_iio_channels);
+>  
+> +	mutex_init(&info->lock);
+> +
+>  	ret = clk_prepare_enable(info->clk);
+>  	if (ret) {
+>  		dev_err(&pdev->dev,
 
