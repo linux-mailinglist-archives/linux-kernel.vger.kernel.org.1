@@ -2,83 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6501D61A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 17:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B15B1D61A9
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 May 2020 17:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbgEPPD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 11:03:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726674AbgEPPD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 11:03:27 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B25220709;
-        Sat, 16 May 2020 15:03:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589641407;
-        bh=vmqjWNPF3wBSUqNyxlTElGLKLTWtQdztUyIEeSwpXpc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RdC8chvRhQY35hYmCfpLD6mRFctSXzCG57wWyR4xleM3rzhG1a8+oQLP7nmD7xrCU
-         kPlsUQp3ddcB3LSLYcDmubANx/sVvanyGYwftVS087Ouhllk3QyL4s9Xv2TmNO9kJZ
-         k0Of9ewgQuRIhpZQsb1gh4CgKvUVF5Q8au2e40+8=
-Date:   Sat, 16 May 2020 16:03:22 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jonathan Bakker <xc-racer2@live.ca>
-Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        robh+dt@kernel.org, linus.walleij@linaro.org,
-        kstewart@linuxfoundation.org, tglx@linutronix.de,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v2 4/7] dt-bindings: iio: accel: Add required regulators
- to bma180
-Message-ID: <20200516160322.14be7ee9@archlinux>
-In-Reply-To: <BN6PR04MB066073FD4A47219484D9C258A3BC0@BN6PR04MB0660.namprd04.prod.outlook.com>
-References: <20200514204901.3199-1-xc-racer2@live.ca>
-        <BN6PR04MB066073FD4A47219484D9C258A3BC0@BN6PR04MB0660.namprd04.prod.outlook.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726908AbgEPPFB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 16 May 2020 11:05:01 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:38784 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726294AbgEPPFA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 May 2020 11:05:00 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-16-wTkXdC20MN--lnUe8tS_XQ-1; Sat, 16 May 2020 16:04:56 +0100
+X-MC-Unique: wTkXdC20MN--lnUe8tS_XQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sat, 16 May 2020 16:04:55 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sat, 16 May 2020 16:04:55 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: RE: move the SIOCDELRT and SIOCADDRT compat_ioctl handlers v2
+Thread-Topic: move the SIOCDELRT and SIOCADDRT compat_ioctl handlers v2
+Thread-Index: AQHWKruRvQLEg1gZy0+5cm/GoTu+NqiqzzwA
+Date:   Sat, 16 May 2020 15:04:55 +0000
+Message-ID: <b2fe264bfbd34aa28da7de0a1cb2ddbf@AcuMS.aculab.com>
+References: <20200515131925.3855053-1-hch@lst.de>
+In-Reply-To: <20200515131925.3855053-1-hch@lst.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 May 2020 13:48:58 -0700
-Jonathan Bakker <xc-racer2@live.ca> wrote:
+From: Christoph Hellwig
+> Sent: 15 May 2020 14:19
+>
+> this series moves the compat_ioctl handlers into the protocol handlers,
+> avoiding the need to override the address space limited as in the current
+> handler.
 
-> The bma180 and related chips should have two registers attached to
-registers-> regulators.
+Is it worth moving the user copies for the main ioctl buffer
+into the sys_ioctl() entry code?
+(As is done by the BSD kernels.)
 
-I'll fix that up.
+This would allow the compat code to adjust the buffers and pass them on.
+Most ioctls don't have indirect data buffers so wouldn't need to
+do any further user copies.
 
-J
-> them.  The IIO driver currently uses them, document them here as
-> well.
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
-> ---
-> Changes from v1
-> - Added A-b and R-b tags
-> ---
->  Documentation/devicetree/bindings/iio/accel/bma180.txt | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/accel/bma180.txt b/Documentation/devicetree/bindings/iio/accel/bma180.txt
-> index cfbfc6276b3c..33da4a6fdb39 100644
-> --- a/Documentation/devicetree/bindings/iio/accel/bma180.txt
-> +++ b/Documentation/devicetree/bindings/iio/accel/bma180.txt
-> @@ -14,6 +14,8 @@ Required properties:
->      "bosch,bma254"
->      "bosch,smb380"
->    - reg : the I2C address of the sensor
-> +  - vdd-supply : regulator phandle connected to the VDD pin
-> +  - vddio-supply : regulator phandle connected to the VDDIO pin
->  
->  Optional properties:
->  
+This would be, of course, require far more changes (and require
+more external modules be fixed) than the similar change I suggested
+for [sg]et_sockopt().
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
