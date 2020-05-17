@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC6E1D6CC2
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 22:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CFFB1D6CC3
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 22:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbgEQUPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 16:15:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726550AbgEQUPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726659AbgEQUPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 17 May 2020 16:15:04 -0400
-Subject: Re: [GIT PULL] Please pull exec fix for v5.7
+Received: from mail.kernel.org ([198.145.29.99]:45766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726271AbgEQUPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 May 2020 16:15:03 -0400
+Subject: Re: [GIT PULL] USB driver fixes for 5.7-rc6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1589746503;
-        bh=j/AwKnTpUgFy8aXOjDQHEvtIZJQbknoqa+joHEaEqG8=;
+        bh=8mPt4wJ4k2Dem1PmleitEdPEIWW6/Cfq4iHD7Rvnino=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=cljdGm3KQGj2YodMp+y22aAN173Uj6c3NBt60egV882EDhwxkcvvuBcc4Eq4pDnbc
-         bnmvHZC8/DnXkw70tRjccUnbVFkSyfkf8yF0N1CVZiquBkKJ0mlaKC3DNDA2XDZT6V
-         iUqTWFgP6WvKrIqrWdLSaHWc7054nBqfnImhnFUk=
+        b=FOudaRf/5AhvOBRZDFfuz9X0eP71Gtavp5uwsA7WVgZm3sTP7GbclDwT+hW0idbcB
+         oMS736IOKwo0rpFyqX4ycYZATVELDWegzD34/xFzXts6PkvnFqUuPFfEXS5afozoG+
+         s8cTccmWZfZnLVk1aSsxB6TVbLMKWu2A6PNeYQHE=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <87imgu7dio.fsf@x220.int.ebiederm.org>
-References: <87imgu7dio.fsf@x220.int.ebiederm.org>
+In-Reply-To: <20200517094041.GA3392057@kroah.com>
+References: <20200517094041.GA3392057@kroah.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <87imgu7dio.fsf@x220.int.ebiederm.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git
- exec-linus
-X-PR-Tracked-Commit-Id: f87d1c9559164294040e58f5e3b74a162bf7c6e8
+X-PR-Tracked-Message-Id: <20200517094041.GA3392057@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.7-rc6
+X-PR-Tracked-Commit-Id: 15753588bcd4bbffae1cca33c8ced5722477fe1f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b48397cb75ac17a5c6f99b3b41fab0ab1f879826
-Message-Id: <158974650372.31612.727158402282060572.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: fb27bc034df1e2c7930f606928b65aca652fed6a
+Message-Id: <158974650321.31612.15350563902135460206.pr-tracker-bot@kernel.org>
 Date:   Sun, 17 May 2020 20:15:03 +0000
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
-        Willy Tarreau <w@1wt.eu>, Kees Cook <keescook@chromium.org>
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 17 May 2020 11:05:35 -0500:
+The pull request you sent on Sun, 17 May 2020 11:40:41 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exec-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.7-rc6
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b48397cb75ac17a5c6f99b3b41fab0ab1f879826
+https://git.kernel.org/torvalds/c/fb27bc034df1e2c7930f606928b65aca652fed6a
 
 Thank you!
 
