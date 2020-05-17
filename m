@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02181D6DA5
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CB81D6D8A
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727801AbgEQVsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 17:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
+        id S1726936AbgEQVrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 17:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726703AbgEQVr1 (ORCPT
+        with ESMTP id S1726803AbgEQVr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 17:47:27 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC05C061A0C
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:47:27 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g14so20994666wme.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:47:27 -0700 (PDT)
+        Sun, 17 May 2020 17:47:29 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719B6C05BD09
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:47:28 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id g14so20994683wme.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:47:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=+NNOaVE9c9xGGuOYwwS94f/tcLOCL8JkmWYJIg2IYGE=;
-        b=W4RlgQDEM4dTeXyi2mptdIu5T2CvqwRG+TKlWVbkMelzNIfaff9Wmw0PAXMiyfwhWW
-         yJAe47ZFLz3pYPOG9I3Il9qsRPlFq0oKinV6U9c1odAv8brONkSKQKblNq8dfw6SdEge
-         qERSqJUwmaypO56h4G7DMc66bvjPx0fvQO9yOAmgusWYGI4DsNcSBiA08ndHk8UDn9Eo
-         BkGzmsf7dVh1lNVUwGgJCxs9MRBYBkgb+9Jlka1rcfFw+IHqrgMTQk554+4nG7sZ8+fl
-         d4ekX1CRU5P96jm1pxMRkllf8WkXhLbACTVHqQvDLQ36sdL8tVIO1XW7/hkyyr3mri9G
-         tS3A==
+        bh=WyfshxYosCgau1zTEoWowNAhvi8t2lUhv/c0HzUyrKk=;
+        b=Bs05wU9wzW1d2HEtTlH1j1H8fyfeFw+pw5GoU+zVKtLvAVHhoZH6uIMduo9fweSrzP
+         +wSr4pJOnToFw6FVyd0uCOgdBLBaINBDRgwtvtzdGRmvapBfTsWwwL7jcC39dvsUW3tX
+         enN8R20xnUzqf68gk90uh69SUHAsLLDNCA1vu9VrD3Cs2s4BBaVwV89YaJSfddwHbQrx
+         hA2qKEkYkhcO0kArDZh06TzsowxDg+zeG3Dw6oMaC/tnnbr7mryttQLMPjsxLH0kskAc
+         Qv6XSpt3PsNrmBZgI/a+GlfPKz7D9j1weMqtx3ZX8xldHJSNWXAVZGQTwXFYHzoTDAA6
+         WAXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=+NNOaVE9c9xGGuOYwwS94f/tcLOCL8JkmWYJIg2IYGE=;
-        b=I7hztI2buIVzrgF3N7HMGhP+KUdyCzn7W9XZNQevoAxT8GDoYZsFKu5hHbYu6ltZ7B
-         bRL/FBm4gTjzplWbzZ8bC+pKmO8/z/71yIMMinImItqKh7om/rikcTgMOq/5IsWpOtaN
-         aQnXC22SCNydvWqwEbaiNR0tHFk/oCfGJhmQyRQJWSyv1pI2bB6JUhwv3NoftMGwPiBR
-         FAEB1XSGBpF6X+M82bfzRs+4R0CjCxEw0w5/8T+vSEuM620kpEqnXNcSOcZP6aFJzpLY
-         /qtIvos0pCi4vfLdUIP00IqyhmOJ5PNWoRE/np1IP3/O1XBUbAyQVV/Xr0P3IJ5VsYAm
-         ejUw==
-X-Gm-Message-State: AOAM530hXPOpAoJnhEbPrPNHfITPUkpcNORDiBvCJQiKXQAx5cHxpVJd
-        Ayo2wOawEfhTKx2FFq48fzi0lw==
-X-Google-Smtp-Source: ABdhPJwFvf8yPjIIkLewjmPunGXmJjDmpB+fcd9N0uP58czfZv7ot6xefo997dox8kuTcZtlMepuSQ==
-X-Received: by 2002:a7b:ce01:: with SMTP id m1mr4221199wmc.116.1589752046199;
-        Sun, 17 May 2020 14:47:26 -0700 (PDT)
+        bh=WyfshxYosCgau1zTEoWowNAhvi8t2lUhv/c0HzUyrKk=;
+        b=F+5ujlK0HHxN/PJXPH+MIfXKIz7D2zd4mWLfG8b1SLc6gPl5oFjHebxoHhMRmzKeiR
+         twUv1jmW8Pra7RuVHuGuJORyC35G42t+X7xamWZwno9EOFgAK/kfEQzj8iv3mBWMY76z
+         kN76uvQga6pJv/dgV8rnCtOa/ppNRPx00egGC7zTZ+wEO9gXRZoSEcz/qpGLKUAv3uXF
+         z5EsD/8AejrSDjrsos2JOBvspB4VXaOTV04YQaqyuzOyQbOTmQuTnfAoa0gpNaApD4hc
+         Dq5bq8B9dNBbVYr72dMChxzpze/MMp0BgY9kqKy+C/3gw3meu8gypuz5+y834M3VALuD
+         hLLg==
+X-Gm-Message-State: AOAM532r/C6GRXMR9O5To5r4Px7bZfc35pSqy0sHhNHxOy528HWq4HCh
+        tU4mzNwZpWFFc+PaI/9bonBWJg==
+X-Google-Smtp-Source: ABdhPJysVCvJ86kV1LLnsHsIYN/+fRuQ/BR+JjvyWf0DCIbENehPVGDAU2/G1LZ0Ba3H3c8j+G0oBQ==
+X-Received: by 2002:a7b:cb13:: with SMTP id u19mr3492289wmj.86.1589752047212;
+        Sun, 17 May 2020 14:47:27 -0700 (PDT)
 Received: from ls00508.pb.local ([2001:1438:4010:2540:bc3e:92a1:7010:2763])
-        by smtp.gmail.com with ESMTPSA id v126sm14441244wmb.4.2020.05.17.14.47.25
+        by smtp.gmail.com with ESMTPSA id v126sm14441244wmb.4.2020.05.17.14.47.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 May 2020 14:47:25 -0700 (PDT)
+        Sun, 17 May 2020 14:47:26 -0700 (PDT)
 From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 To:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk
 Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         david@fromorbit.com, hch@infradead.org, willy@infradead.org,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 03/10] btrfs: use attach/detach_page_private
-Date:   Sun, 17 May 2020 23:47:11 +0200
-Message-Id: <20200517214718.468-4-guoqing.jiang@cloud.ionos.com>
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Subject: [PATCH 04/10] fs/buffer.c: use attach/detach_page_private
+Date:   Sun, 17 May 2020 23:47:12 +0200
+Message-Id: <20200517214718.468-5-guoqing.jiang@cloud.ionos.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200517214718.468-1-guoqing.jiang@cloud.ionos.com>
 References: <20200517214718.468-1-guoqing.jiang@cloud.ionos.com>
@@ -66,12 +64,9 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Since the new pair function is introduced, we can call them to clean the
-code in btrfs.
+code in buffer.c.
 
-Cc: Chris Mason <clm@fb.com>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 ---
 No change since RFC V3.
@@ -81,121 +76,65 @@ RFC V2 -> RFC V3
 
 RFC -> RFC V2
 1. change the name of new functions to attach/clear_page_private.
-2. call attach_page_private(newpage, clear_page_private(page)) to
-   cleanup code further as suggested by Dave Chinner.
 
- fs/btrfs/disk-io.c   |  4 +---
- fs/btrfs/extent_io.c | 21 ++++++---------------
- fs/btrfs/inode.c     | 23 +++++------------------
- 3 files changed, 12 insertions(+), 36 deletions(-)
+ fs/buffer.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 714b57553ed6..44745d5e05cf 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -976,9 +976,7 @@ static void btree_invalidatepage(struct page *page, unsigned int offset,
- 		btrfs_warn(BTRFS_I(page->mapping->host)->root->fs_info,
- 			   "page private not zero on page %llu",
- 			   (unsigned long long)page_offset(page));
--		ClearPagePrivate(page);
--		set_page_private(page, 0);
--		put_page(page);
-+		detach_page_private(page);
+diff --git a/fs/buffer.c b/fs/buffer.c
+index 85b4be1939ce..fc8831c392d7 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -123,14 +123,6 @@ void __wait_on_buffer(struct buffer_head * bh)
+ }
+ EXPORT_SYMBOL(__wait_on_buffer);
+ 
+-static void
+-__clear_page_buffers(struct page *page)
+-{
+-	ClearPagePrivate(page);
+-	set_page_private(page, 0);
+-	put_page(page);
+-}
+-
+ static void buffer_io_error(struct buffer_head *bh, char *msg)
+ {
+ 	if (!test_bit(BH_Quiet, &bh->b_state))
+@@ -906,7 +898,7 @@ link_dev_buffers(struct page *page, struct buffer_head *head)
+ 		bh = bh->b_this_page;
+ 	} while (bh);
+ 	tail->b_this_page = head;
+-	attach_page_buffers(page, head);
++	attach_page_private(page, head);
+ }
+ 
+ static sector_t blkdev_max_block(struct block_device *bdev, unsigned int size)
+@@ -1624,7 +1616,7 @@ void create_empty_buffers(struct page *page,
+ 			bh = bh->b_this_page;
+ 		} while (bh != head);
  	}
+-	attach_page_buffers(page, head);
++	attach_page_private(page, head);
+ 	spin_unlock(&page->mapping->private_lock);
+ }
+ EXPORT_SYMBOL(create_empty_buffers);
+@@ -2611,7 +2603,7 @@ static void attach_nobh_buffers(struct page *page, struct buffer_head *head)
+ 			bh->b_this_page = head;
+ 		bh = bh->b_this_page;
+ 	} while (bh != head);
+-	attach_page_buffers(page, head);
++	attach_page_private(page, head);
+ 	spin_unlock(&page->mapping->private_lock);
  }
  
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 451d17bfafd8..704239546093 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3099,22 +3099,16 @@ static int submit_extent_page(unsigned int opf,
- static void attach_extent_buffer_page(struct extent_buffer *eb,
- 				      struct page *page)
- {
--	if (!PagePrivate(page)) {
--		SetPagePrivate(page);
--		get_page(page);
--		set_page_private(page, (unsigned long)eb);
--	} else {
-+	if (!PagePrivate(page))
-+		attach_page_private(page, eb);
-+	else
- 		WARN_ON(page->private != (unsigned long)eb);
--	}
- }
- 
- void set_page_extent_mapped(struct page *page)
- {
--	if (!PagePrivate(page)) {
--		SetPagePrivate(page);
--		get_page(page);
--		set_page_private(page, EXTENT_PAGE_PRIVATE);
--	}
-+	if (!PagePrivate(page))
-+		attach_page_private(page, (void *)EXTENT_PAGE_PRIVATE);
- }
- 
- static struct extent_map *
-@@ -4935,10 +4929,7 @@ static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
- 			 * We need to make sure we haven't be attached
- 			 * to a new eb.
- 			 */
--			ClearPagePrivate(page);
--			set_page_private(page, 0);
--			/* One for the page private */
--			put_page(page);
-+			detach_page_private(page);
- 		}
- 
- 		if (mapped)
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 037efc25d993..6c2d6ecedd6a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7927,11 +7927,8 @@ static void btrfs_readahead(struct readahead_control *rac)
- static int __btrfs_releasepage(struct page *page, gfp_t gfp_flags)
- {
- 	int ret = try_release_extent_mapping(page, gfp_flags);
--	if (ret == 1) {
--		ClearPagePrivate(page);
--		set_page_private(page, 0);
--		put_page(page);
--	}
-+	if (ret == 1)
-+		detach_page_private(page);
- 	return ret;
- }
- 
-@@ -7953,14 +7950,8 @@ static int btrfs_migratepage(struct address_space *mapping,
- 	if (ret != MIGRATEPAGE_SUCCESS)
- 		return ret;
- 
--	if (page_has_private(page)) {
--		ClearPagePrivate(page);
--		get_page(newpage);
--		set_page_private(newpage, page_private(page));
--		set_page_private(page, 0);
--		put_page(page);
--		SetPagePrivate(newpage);
--	}
-+	if (page_has_private(page))
-+		attach_page_private(newpage, detach_page_private(page));
- 
- 	if (PagePrivate2(page)) {
- 		ClearPagePrivate2(page);
-@@ -8082,11 +8073,7 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
- 	}
- 
- 	ClearPageChecked(page);
--	if (PagePrivate(page)) {
--		ClearPagePrivate(page);
--		set_page_private(page, 0);
--		put_page(page);
--	}
+@@ -3276,7 +3268,7 @@ drop_buffers(struct page *page, struct buffer_head **buffers_to_free)
+ 		bh = next;
+ 	} while (bh != head);
+ 	*buffers_to_free = head;
+-	__clear_page_buffers(page);
 +	detach_page_private(page);
- }
- 
- /*
+ 	return 1;
+ failed:
+ 	return 0;
 -- 
 2.17.1
 
