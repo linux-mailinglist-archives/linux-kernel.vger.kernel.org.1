@@ -2,205 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5371D6B6C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 19:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346C01D6B4D
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 19:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgEQR2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 13:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
+        id S1726297AbgEQRRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 13:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726244AbgEQR2F (ORCPT
+        with ESMTP id S1726242AbgEQRRj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 13:28:05 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F01C061A0C;
-        Sun, 17 May 2020 10:28:05 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id e8so7561977ilm.7;
-        Sun, 17 May 2020 10:28:05 -0700 (PDT)
+        Sun, 17 May 2020 13:17:39 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6884DC061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 10:17:38 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id r10so3614469pgv.8
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 10:17:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ezHFvOY0sk+1uJqHoIJwBLf+T1Zrvf/LHooFVb1kJ2Y=;
-        b=okKoVE8ecn6B4uVqvhL84Q4qeJcLgXDfYK/x5Hqw5wZNxZ10k/dFZhpHV811uy/eDu
-         fi4cCFdtlgB+hE2zqjsAvihscnXuYA+SwrdxlTU903oawUTyocqmnItkk3SIS+uUVXbH
-         szy+ErfKRnVuHjkGwdGP6/9x1EsYLLaJb0cyP/Ueyrjov9ye7cHOEF15kF0paGAGdelA
-         Zo9YqbaZ4Lduizehwy2aaVCXhwXZUYiesPZp1E1Ct8cjwzlb+t5Kj+FDouzRXKSKx8YZ
-         72SEpSBAbR0QCVGPPoxixFcFjnnnrYV5WcajpxUUsjFo04ozM1Urw6W+KmC6Q/aYnQyx
-         BKnA==
+        h=from:to:cc:subject:date:message-id;
+        bh=irZJO6pbVEj3U3ABtpGtJ2F3x8dJhV+kA+LvCOkLQAM=;
+        b=g4qVqQ6ZkbUaOpYMrTZnqO73gxbWCwKvh5D7cyC6sEpkb31VApFUJkeiVXI8OV4/I1
+         +II/WcosEgv/XjaqGGWrfVCvq3R3g3WHkJVOpq+TfiYFNttx15tf1PIFpIswIdT17d/n
+         aNVp37XfX3SjQxAcB5AjdVfsnOAokJaofT0BdJUeqewMCcgvauxoZ1v6rhbKhObFU1Pp
+         atXYjCPXzvEwZ3t9+0KzI3ExOVD7flHH93pbSejT24Iw6b9OpwyONSO3lU4TzS6xRgF2
+         BkSx6z1lUFttB+UrEnN6boxXJeKmx18dRAGawqdPUO2XiUESaNJ/M71Ks/jxzi+enHWw
+         rCwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ezHFvOY0sk+1uJqHoIJwBLf+T1Zrvf/LHooFVb1kJ2Y=;
-        b=mplAmVBRLZJ9rj6fg8GGU2QMZsOOFQfZ+ZgwpEC2oIUaELMP5fi7DBcsmmsoii4EkS
-         T88aZNofUJjYQr82+lPP/dIXDI4oGNBjWNkYznI72LoCntKAWNkjLZTAsp2+TEYBUegV
-         B40c7bixrKt41EbAqGnmApMs8EipQcSGcpfJBQlGPHijVv0bmOlZYt0Qfl+soMhepTHv
-         fRtHyuhvyZb71R6U6DZ7JxGWmUqsnEbHnkQ/QgY6DetW02NlD4J1s0eEq+4Grc5KoVQq
-         nZhP7diWOdbP672gwNmKEJG3x1vr/QgaQ6o3tzzGMMzCvV7+swYoaHnmSXnfY9KJFlH9
-         yvNA==
-X-Gm-Message-State: AOAM5335XBUMk5ueUAsoOj76I+TyJQAPh8XoJ5BB2msAbQi3BiTpR2fs
-        8qqt66fGlpkxoBNzzp2E6a0=
-X-Google-Smtp-Source: ABdhPJzRdjh8HbHfagb3ZqTdlewqZSJUGRBscEEtrhDvtZK9Nr2i35qO7EXrw6Xl6V6in80mxq4cOQ==
-X-Received: by 2002:a92:9f4b:: with SMTP id u72mr11359892ili.273.1589736484888;
-        Sun, 17 May 2020 10:28:04 -0700 (PDT)
-Received: from localhost.localdomain (toroon0411w-lp130-03-174-95-146-183.dsl.bell.ca. [174.95.146.183])
-        by smtp.googlemail.com with ESMTPSA id f17sm3103724iol.26.2020.05.17.10.28.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 May 2020 10:28:04 -0700 (PDT)
-From:   Andrew Sy Kim <kim.andrewsy@gmail.com>
-Cc:     kim.andrewsy@gmail.com, "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Wensong Zhang <wensong@linux-vs.org>,
-        Simon Horman <horms@verge.net.au>,
-        Julian Anastasov <ja@ssi.bg>, Jakub Kicinski <kuba@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
-Subject: [PATCH] netfilter/ipvs: immediately expire UDP connections matching unavailable destination if expire_nodest_conn=1
-Date:   Sun, 17 May 2020 13:16:53 -0400
-Message-Id: <20200517171654.8194-1-kim.andrewsy@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200515013556.5582-1-kim.andrewsy@gmail.com>
-References: <20200515013556.5582-1-kim.andrewsy@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=irZJO6pbVEj3U3ABtpGtJ2F3x8dJhV+kA+LvCOkLQAM=;
+        b=XQ7yNR9L/1k9INsVi1y6pXavV7uMz+YdZcw4vUAFc77xQdiBn8radOgy8we6EI12zi
+         fyWp+9pEWCxAVbgICzPqzjHCjfS04E9vFQQy71tn6lye6buVkNtxQnmyfGRdKYfpK0+U
+         H2z60InErURyf4ePz9slJvHtmw0tLJkcDNj3U1MyzcjXokkx9oL+xS0cZooqRBvMNp0K
+         mqrIJu1ajc8nyKFeV+ws7q+71+1YkFw/cVbKYUSE8OZliaxz6t/qbGM3rEZrGsY+fTvp
+         n8bIFC5Oa0LxHk/DBJmA6qXrbK4rYZp4PeoaTBsrWS6oolxGDcNXl5/3jAKf9WX5D4wd
+         uBhQ==
+X-Gm-Message-State: AOAM533pXdvTFDIPoKmumDq54DXoIy3FTaQhfPYLDiz25bYW7QJxxbOJ
+        xOSJm1zD2LXxTz/Nd5PxFk4=
+X-Google-Smtp-Source: ABdhPJzDMqylgG25aUmEbtkKs3TZE0hUCFM05gws1ASXnZY92+suPYvDM/e5hNgUGz7wh+/sWDgzuQ==
+X-Received: by 2002:a62:4e87:: with SMTP id c129mr13264991pfb.178.1589735856985;
+        Sun, 17 May 2020 10:17:36 -0700 (PDT)
+Received: from cvds-vagarw7.iind.intel.com (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
+        by smtp.googlemail.com with ESMTPSA id n69sm6513900pjc.8.2020.05.17.10.17.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 May 2020 10:17:36 -0700 (PDT)
+From:   Vaibhav Agarwal <vaibhav.sr@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Mark Greer <mgreer@animalcreek.com>
+Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Vaibhav Agarwal <vaibhav.sr@gmail.com>
+Subject: [PATCH V1 0/6] Enable Greybus Audio codec driver
+Date:   Sun, 17 May 2020 22:47:15 +0530
+Message-Id: <cover.1589734179.git.vaibhav.sr@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If expire_nodest_conn=1 and a UDP destination is deleted, IPVS should
-also expire all matching connections immiediately instead of waiting for
-the next matching packet. This is particulary useful when there are a
-lot of packets coming from a few number of clients. Those clients are
-likely to match against existing entries if a source port in the
-connection hash is reused. When the number of entries in the connection
-tracker is large, we can significantly reduce the number of dropped
-packets by expiring all connections upon deletion.
+The existing GB Audio codec driver is dependent on MSM8994 Audio driver.
+During the development stage, this depdency was configured due to
+various changes involved in MSM Audio driver to enable addtional codec
+card and some of the changes proposed in mainline ASoC framework.
+However, these are not the real dependencies and some of them can be
+easily removed.
 
-Signed-off-by: Andrew Sy Kim <kim.andrewsy@gmail.com>
----
- include/net/ip_vs.h             |  7 ++++++
- net/netfilter/ipvs/ip_vs_conn.c | 38 +++++++++++++++++++++++++++++++++
- net/netfilter/ipvs/ip_vs_core.c |  5 -----
- net/netfilter/ipvs/ip_vs_ctl.c  |  9 ++++++++
- 4 files changed, 54 insertions(+), 5 deletions(-)
+The folowing patch series includes the changes to resolve unnecessary
+depedencies and make the codec driver functional with the latest kernel.
 
-diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
-index 83be2d93b407..deecf1344676 100644
---- a/include/net/ip_vs.h
-+++ b/include/net/ip_vs.h
-@@ -1049,6 +1049,11 @@ static inline int sysctl_conn_reuse_mode(struct netns_ipvs *ipvs)
- 	return ipvs->sysctl_conn_reuse_mode;
- }
- 
-+static inline int sysctl_expire_nodest_conn(struct netns_ipvs *ipvs)
-+{
-+	return ipvs->sysctl_expire_nodest_conn;
-+}
-+
- static inline int sysctl_schedule_icmp(struct netns_ipvs *ipvs)
- {
- 	return ipvs->sysctl_schedule_icmp;
-@@ -1209,6 +1214,8 @@ struct ip_vs_conn * ip_vs_conn_out_get_proto(struct netns_ipvs *ipvs, int af,
- 					     const struct sk_buff *skb,
- 					     const struct ip_vs_iphdr *iph);
- 
-+void ip_vs_conn_flush_dest(struct netns_ipvs *ipvs, struct ip_vs_dest *dest);
-+
- /* Get reference to gain full access to conn.
-  * By default, RCU read-side critical sections have access only to
-  * conn fields and its PE data, see ip_vs_conn_rcu_free() for reference.
-diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
-index 02f2f636798d..c69dfbbc3416 100644
---- a/net/netfilter/ipvs/ip_vs_conn.c
-+++ b/net/netfilter/ipvs/ip_vs_conn.c
-@@ -1366,6 +1366,44 @@ static void ip_vs_conn_flush(struct netns_ipvs *ipvs)
- 		goto flush_again;
- 	}
- }
-+
-+/*	Flush all the connection entries in the ip_vs_conn_tab with a
-+ *	matching destination.
-+ */
-+void ip_vs_conn_flush_dest(struct netns_ipvs *ipvs, struct ip_vs_dest *dest)
-+{
-+	int idx;
-+	struct ip_vs_conn *cp, *cp_c;
-+
-+	rcu_read_lock();
-+	for (idx = 0; idx < ip_vs_conn_tab_size; idx++) {
-+		hlist_for_each_entry_rcu(cp, &ip_vs_conn_tab[idx], c_list) {
-+			if (cp->ipvs != ipvs)
-+				continue;
-+
-+			if (cp->dest != dest)
-+				continue;
-+
-+			/* As timers are expired in LIFO order, restart
-+			 * the timer of controlling connection first, so
-+			 * that it is expired after us.
-+			 */
-+			cp_c = cp->control;
-+			/* cp->control is valid only with reference to cp */
-+			if (cp_c && __ip_vs_conn_get(cp)) {
-+				IP_VS_DBG(4, "del controlling connection\n");
-+				ip_vs_conn_expire_now(cp_c);
-+				__ip_vs_conn_put(cp);
-+			}
-+			IP_VS_DBG(4, "del connection\n");
-+			ip_vs_conn_expire_now(cp);
-+		}
-+		cond_resched_rcu();
-+	}
-+	rcu_read_unlock();
-+}
-+EXPORT_SYMBOL_GPL(ip_vs_conn_flush_dest);
-+
- /*
-  * per netns init and exit
-  */
-diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-index aa6a603a2425..0139fa597d76 100644
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -694,11 +694,6 @@ static int sysctl_nat_icmp_send(struct netns_ipvs *ipvs)
- 	return ipvs->sysctl_nat_icmp_send;
- }
- 
--static int sysctl_expire_nodest_conn(struct netns_ipvs *ipvs)
--{
--	return ipvs->sysctl_expire_nodest_conn;
--}
--
- #else
- 
- static int sysctl_snat_reroute(struct netns_ipvs *ipvs) { return 0; }
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index 8d14a1acbc37..f87c03622874 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -1225,6 +1225,15 @@ ip_vs_del_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
- 	 */
- 	__ip_vs_del_dest(svc->ipvs, dest, false);
- 
-+	/*	If expire_nodest_conn is enabled and protocol is UDP,
-+	 *	attempt best effort flush of all connections with this
-+	 *	destination.
-+	 */
-+	if (sysctl_expire_nodest_conn(svc->ipvs) &&
-+	    dest->protocol == IPPROTO_UDP) {
-+		ip_vs_conn_flush_dest(svc->ipvs, dest);
-+	}
-+
- 	LeaveFunction(2);
- 
- 	return 0;
+Patch 1,2: Incudes jack framework related changes.
+Patch 3,4,5: Resolves compilation error observed with the latest kernel and
+also provides helper APIs required to allow dynamic addition/removal of
+modules.
+Patch 6: Finally provides config options and related Makefile changes to
+enable GB Codec driver.
+
+Thanks to Alexandre for raising the headsup [1] and motivating me to provide
+the necessary changes.
+
+[1] https://lore.kernel.org/lkml/20200507212912.599433-1-alexandre.belloni@bootlin.com/
+
+Vaibhav Agarwal (6):
+  staging: greybus: audio: Update snd_jack FW usage as per new APIs
+  staging: greybus: audio: Maintain jack list within GB Audio module
+  staging: greybus: audio: Resolve compilation errors for GB codec
+    module
+  staging: greybus: audio: Resolve compilation error in topology parser
+  staging: greybus: audio: Add helper APIs for dynamic audio modules
+  staging: greybus: audio: Enable GB codec, audio module compilation.
+
+ drivers/staging/greybus/Kconfig          |  14 ++-
+ drivers/staging/greybus/Makefile         |   6 +-
+ drivers/staging/greybus/audio_codec.c    | 187 ++++++++++++++++++-----------
+ drivers/staging/greybus/audio_codec.h    |  12 +-
+ drivers/staging/greybus/audio_helper.c   | 197 +++++++++++++++++++++++++++++++
+ drivers/staging/greybus/audio_helper.h   |  17 +++
+ drivers/staging/greybus/audio_module.c   |  20 ++--
+ drivers/staging/greybus/audio_topology.c | 130 ++++++++++----------
+ 8 files changed, 427 insertions(+), 156 deletions(-)
+ create mode 100644 drivers/staging/greybus/audio_helper.c
+ create mode 100644 drivers/staging/greybus/audio_helper.h
+
 -- 
-2.20.1
+2.7.4
 
