@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93ABE1D6D8B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D596B1D6D9E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgEQVrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 17:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
+        id S1727076AbgEQVrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 17:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726806AbgEQVr3 (ORCPT
+        with ESMTP id S1726889AbgEQVrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 17:47:29 -0400
+        Sun, 17 May 2020 17:47:31 -0400
 Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32ABC05BD0A
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:47:29 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e1so9578950wrt.5
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:47:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84038C05BD0C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:47:30 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id e16so9562775wra.7
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:47:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=OFT0iCFHjK0nh8uePEVriaTeaCB6BcpTAMIRJKLJOK8=;
-        b=b2OunlJb1CqG4qMvf91CNV+d8tunFadtVS8JCoT8WqCC9BY9AeF54XVDVBqhqjfXF/
-         8OPXXY8BQ3dm7EE/i+F4/9JmQtxgkNDL5deNYT17giGKWgdRYlaG3i6daLy5HIsw/PfM
-         20vdfTALNGIdNIiamhNH0OdiJmHmrzuDPCcl2Q1mjWwTDMJktm4aF7kdIxdy0DI3mayq
-         0K35ZpmTBYtxEJOs63UQgGJfbmZNvtcvtVvm076xjtcI2succM5Q8iou6S3qSQ3C5Vl0
-         FjJL13aUg0ZvNStsIAe4mAz1kVDyZ14fOCMqUqqszcwIVyNJAwF8wSko6zY+IN9q/m4/
-         GWhQ==
+        bh=KhLF+EAo4dGVe9BW/cZoXpOODpgV89tLSnKlct0jr14=;
+        b=OnCwteZT1cB8ocCGH1aeVFrR4EgF5VX00CwdKk8KWUvXv5ftfo0fsjEkaKXrYyqAko
+         mv8QW8YvOau+ddNZijQJPWJlc875CMZRCq5jPs47LtKcK0iAs7w4XKAdfWadVkwF5yh0
+         vbZ8lxoep7MmAuEH6k47PeqCAdK68/ugEpDe30/qtwZ9iClzkmuyh8DAmed8tdkPBipP
+         jtwANFKLPWtFlbDtTJ0ozTDQyrJ/8MF+yVMxoywDnUPV0eAnzFwGIvF1UFAWTh1jfkPy
+         frPno0kwJWfIWzY+KzjmatENTMD8D9ajyV22QBav5R+pK9+lpGb7JXY4w7s1coccPTEN
+         Jq9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=OFT0iCFHjK0nh8uePEVriaTeaCB6BcpTAMIRJKLJOK8=;
-        b=UeOfTW9KfxpTUYpHIdpbOF+NqzRJZBFDtnKo6FGE3Ek59vP/86BYFua7YMGLGs8xSP
-         GtfH3DGx6mG7nZePX0mw/AiJH0CuTm0/hS1Q+pNXRdg6Ea7TDZUyfw1AYi7oMhq0+f8R
-         ZAy4tbB7gWvRSuhY1dEqk48Rg93+dT2jtpbUpWfvNtM9o35ZiBdAnESnN/sB+qAmJW2h
-         PAu/mr/AVhKDgvZX4XqSXD1h9bwmvpGMWNdye4FD5YZMcm/RVzgKxRb8yLS20YgiUAge
-         1xShNSNSbw2YOR1/6PM7X5MrtN/7/D1juka27XPfUODTaY/PE08TOX/q1el35rWVXDST
-         LcyA==
-X-Gm-Message-State: AOAM531eD7Zr2mOAIZB/hPmkP59a3Mh43wDpKq54wF6N1YPgBXAq5Xa6
-        tIkmQtl4CjdMCkq3WGhH1M1pVg==
-X-Google-Smtp-Source: ABdhPJzk2oag1WV/Akj3+q9BtXJaV2V1BQcaFlIJ4suSs38gE/ChmFbqJosJ60jwzmp0vo3buD/jog==
-X-Received: by 2002:adf:ea90:: with SMTP id s16mr16142123wrm.19.1589752048332;
-        Sun, 17 May 2020 14:47:28 -0700 (PDT)
+        bh=KhLF+EAo4dGVe9BW/cZoXpOODpgV89tLSnKlct0jr14=;
+        b=dd2hWhUj496UTtIBmSvthhYEHZhhlPBYzLBCaf5CFwYwV7STkMKZTk2GJ4eH1Vh5HF
+         JmDiBVlhsL6V7X8z0BBca4PP/KUzVQWpIgb5R+vODQ9pdeKE0eJqdMK3j+4PVIvOFs6R
+         iwNhKVqovVqXLii74TyMtkDfwK1pgKwUoafhAtbg+hl+NduGWwZVXnSlWJjv03mqvmSN
+         iw54xTKn4Z7apsp0wKQ7jV8K6fABzhbimbzX3OdOhsOXMeVQv9NEZgSHWEmtLP+wd+ed
+         yXsJFbOj9AlFOmIR5Rwvv+GjzYJ8ZfC3E0fMjaDwuExLALyJU8JZZEQunbw4YO+VR+50
+         kmbg==
+X-Gm-Message-State: AOAM530iuB/mIoLwgG+sYjwxt363Jv2mDVdq5U9oU45eGgkVn2tjPzpD
+        dXbBcwn+A8jz9LOdOwzmpBaeSA==
+X-Google-Smtp-Source: ABdhPJxxkRT4OGk3cy6v3FeXQDoR5/LNYOrP29Np5Cq4jtgQoATViCQkp2walv4nqYI4LHoZCE16MQ==
+X-Received: by 2002:a5d:5228:: with SMTP id i8mr16279223wra.359.1589752049269;
+        Sun, 17 May 2020 14:47:29 -0700 (PDT)
 Received: from ls00508.pb.local ([2001:1438:4010:2540:bc3e:92a1:7010:2763])
-        by smtp.gmail.com with ESMTPSA id v126sm14441244wmb.4.2020.05.17.14.47.27
+        by smtp.gmail.com with ESMTPSA id v126sm14441244wmb.4.2020.05.17.14.47.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 May 2020 14:47:27 -0700 (PDT)
+        Sun, 17 May 2020 14:47:28 -0700 (PDT)
 From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 To:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk
 Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         david@fromorbit.com, hch@infradead.org, willy@infradead.org,
         Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: [PATCH 05/10] f2fs: use attach/detach_page_private
-Date:   Sun, 17 May 2020 23:47:13 +0200
-Message-Id: <20200517214718.468-6-guoqing.jiang@cloud.ionos.com>
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org
+Subject: [PATCH 06/10] iomap: use attach/detach_page_private
+Date:   Sun, 17 May 2020 23:47:14 +0200
+Message-Id: <20200517214718.468-7-guoqing.jiang@cloud.ionos.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200517214718.468-1-guoqing.jiang@cloud.ionos.com>
 References: <20200517214718.468-1-guoqing.jiang@cloud.ionos.com>
@@ -66,12 +66,11 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Since the new pair function is introduced, we can call them to clean the
-code in f2fs.h.
+code in iomap.
 
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: Chao Yu <chao@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net
-Acked-by: Chao Yu <yuchao0@huawei.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: linux-xfs@vger.kernel.org
 Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 ---
 No change since RFC V3.
@@ -81,36 +80,62 @@ RFC V2 -> RFC V3
 
 RFC -> RFC V2
 1. change the name of new functions to attach/clear_page_private.
+2. call attach_page_private(newpage, clear_page_private(page)) to
+   cleanup code further as suggested by Matthew Wilcox.
+3. don't return attach_page_private in iomap_page_create per the
+   comment from Christoph Hellwig.
 
- fs/f2fs/f2fs.h | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ fs/iomap/buffered-io.c | 19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 3574629b75ba..a4d4a947f603 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3128,19 +3128,12 @@ static inline void f2fs_set_page_private(struct page *page,
- 	if (PagePrivate(page))
- 		return;
- 
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 890c8fcda4f3..a1ed7620fbac 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -59,24 +59,19 @@ iomap_page_create(struct inode *inode, struct page *page)
+ 	 * migrate_page_move_mapping() assumes that pages with private data have
+ 	 * their count elevated by 1.
+ 	 */
 -	get_page(page);
+-	set_page_private(page, (unsigned long)iop);
 -	SetPagePrivate(page);
--	set_page_private(page, data);
-+	attach_page_private(page, (void *)data);
++	attach_page_private(page, iop);
+ 	return iop;
  }
  
- static inline void f2fs_clear_page_private(struct page *page)
+ static void
+ iomap_page_release(struct page *page)
  {
--	if (!PagePrivate(page))
--		return;
--
--	set_page_private(page, 0);
+-	struct iomap_page *iop = to_iomap_page(page);
++	struct iomap_page *iop = detach_page_private(page);
+ 
+ 	if (!iop)
+ 		return;
+ 	WARN_ON_ONCE(atomic_read(&iop->read_count));
+ 	WARN_ON_ONCE(atomic_read(&iop->write_count));
 -	ClearPagePrivate(page);
--	f2fs_put_page(page, 0);
-+	detach_page_private(page);
+-	set_page_private(page, 0);
+-	put_page(page);
+ 	kfree(iop);
  }
  
- /*
+@@ -526,14 +521,8 @@ iomap_migrate_page(struct address_space *mapping, struct page *newpage,
+ 	if (ret != MIGRATEPAGE_SUCCESS)
+ 		return ret;
+ 
+-	if (page_has_private(page)) {
+-		ClearPagePrivate(page);
+-		get_page(newpage);
+-		set_page_private(newpage, page_private(page));
+-		set_page_private(page, 0);
+-		put_page(page);
+-		SetPagePrivate(newpage);
+-	}
++	if (page_has_private(page))
++		attach_page_private(newpage, detach_page_private(page));
+ 
+ 	if (mode != MIGRATE_SYNC_NO_COPY)
+ 		migrate_page_copy(newpage, page);
 -- 
 2.17.1
 
