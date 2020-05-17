@@ -2,232 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DCA1D6D6C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A094D1D6D5E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbgEQVKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 17:10:53 -0400
-Received: from mail79c50.megamailservers.eu ([91.136.10.89]:49510 "EHLO
-        mail70c50.megamailservers.eu" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726288AbgEQVKx (ORCPT
+        id S1726563AbgEQVIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 17:08:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726288AbgEQVIQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 17:10:53 -0400
-X-Greylist: delayed 336 seconds by postgrey-1.27 at vger.kernel.org; Sun, 17 May 2020 17:10:49 EDT
-X-Authenticated-User: 017623705678@o2online.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megamailservers.eu;
-        s=maildub; t=1589749491;
-        bh=p4sG9cN5zzgpQ4HhTY3LyZsWnVF2yYTFVyqzXOHaD2c=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=JPmXLT5FtTEh3Pfi5M5LQ6jawFODqwCTvkgCxvniD8XtzfUEGI4nx7rzO/7nuok6/
-         PDF01ikBuyfWCVfHo8P62KPu78ubReWRiK/jKXUAYL1IgBITPjRl9jWxugdG8jIg5B
-         kJW+2zXQ2iARwqji15hc+sULYqk18+mnvVRF72p8=
-Feedback-ID: 017623705678@o2
-Received: from [192.168.2.2] (dslb-178-011-017-047.178.011.pools.vodafone-ip.de [178.11.17.47])
-        (authenticated bits=0)
-        by mail70c50.megamailservers.eu (8.14.9/8.13.1) with ESMTP id 04HL4nHX028791;
-        Sun, 17 May 2020 21:04:50 +0000
-Subject: Re: RTL8723BS driver doesn't work for,me but I can help testing
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-References: <bcefba5b-107c-716b-bb60-5b4b2476894b@o2online.de>
- <CAFBinCD8-tr97GCVhBi5R1nzxLhy=_6VuLY8ubUO1SDTFjiELw@mail.gmail.com>
- <22af498b-44a0-ced3-86f3-114427a73910@o2online.de>
- <CAFBinCCGAkhPCwOW=mAvsV2qdixq8Gf8yQw1gYErHpz7KmuAZg@mail.gmail.com>
- <5de6db87-a71f-d14c-390d-b0caeab5d650@o2online.de>
- <CAFBinCDB9c2uMRXO9DKSX4hC7EBgnRfBa+BM5-VdEPZeieKn_w@mail.gmail.com>
- <813dfc08-f13a-dcac-0bd9-821d188bba08@o2online.de>
- <CAFBinCCgZF5Pu944q-_+V0yQ-nc6q82xDjJHjsnj6=uOQL+DEw@mail.gmail.com>
-From:   Tobias Baumann <017623705678@o2online.de>
-Message-ID: <8cbbf90c-54ba-8fa3-3386-022c9c997a20@o2online.de>
-Date:   Sun, 17 May 2020 23:04:48 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Sun, 17 May 2020 17:08:16 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EA7C061A0C;
+        Sun, 17 May 2020 14:08:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZI/wjrmoE8yo1UlRT1uixmxXyXCoD/JXvDZ9ydl0TeI=; b=FKKl0/dyT7xRj9bORWp9hLMHn7
+        A3bq1CAcKdeF1Czdpl53nc1IhsVa/goilCVb2nU3qTcV2R7c8KVz9zscA8siHQPRZ8NTyF46azvl0
+        r4TVGOnaS6QpG3Js4MK4GPKpGkcKdO0CBb79HXcRR2iM+vAkYD7jVoYEvrJb0saOdeuf4lWGse6dx
+        N6nTggIgo8zj4sho1cK05NlX+X1Avp7SNjIZVU7vLsTqZCObnfLJTIDXIK/S2PfpLdwryVtDJVZcO
+        /LS3lIQ5QduVOAOOgrGHd/a/lM7R30aBmg59Ku30ibB/KvoxaRunX2u+cG5HxwfVEqC60tSlTgl/f
+        bFQbbY8A==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jaQW3-0003ri-60; Sun, 17 May 2020 21:08:11 +0000
+Date:   Sun, 17 May 2020 14:08:11 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] afs: Don't unlock fetched data pages until the op
+ completes successfully
+Message-ID: <20200517210811.GQ16070@bombadil.infradead.org>
+References: <158974686528.785191.2525276665446566911.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCCgZF5Pu944q-_+V0yQ-nc6q82xDjJHjsnj6=uOQL+DEw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: de-DE
-X-Antivirus: AVG (VPS 200517-0, 17.05.2020), Outbound message
-X-Antivirus-Status: Clean
-X-CTCH-RefID: str=0001.0A782F1D.5EC1A69D.005A,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
-X-CTCH-VOD: Unknown
-X-CTCH-Spam: Unknown
-X-CTCH-Score: 0.000
-X-CTCH-Rules: 
-X-CTCH-Flags: 0
-X-CTCH-ScoreCust: 0.000
-X-CSC:  0
-X-CHA:  v=2.3 cv=OKBZIhSB c=1 sm=1 tr=0 a=cfXdPu6Ul6OsnrHrce2WRQ==:117
-        a=cfXdPu6Ul6OsnrHrce2WRQ==:17 a=IkcTkHD0fZMA:10 a=oCcaPWc0AAAA:8
-        a=hbnA-Jtt2x6C5LeqMAYA:9 a=jDO3NsJ6IUqjoHgf:21 a=NzB4BBNG6loES4P3:21
-        a=QEXdDO2ut3YA:10
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <158974686528.785191.2525276665446566911.stgit@warthog.procyon.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi martin
+On Sun, May 17, 2020 at 09:21:05PM +0100, David Howells wrote:
+> Don't call req->page_done() on each page as we finish filling it with the
+> data coming from the network.  Whilst this might speed up the application a
+> bit, it's a problem if there's a network failure and the operation has to
+> be reissued.
 
-sorry for cc -problem it was my fault in thunderbird
+It's readpages, which by definition is called for pages that the
+application is _not_ currently waiting for.  Now, if the application
+is multithreaded and happens to want pages that are currently under
+->readpages, then that's going to be a problem (but also unlikely).
+Also if the application overruns the readahead window then it'll have
+to wait a little longer (but we ramp up the readahead window, so this
+should be a self-correcting problem).
 
-thanks for dtb file but this file has problem kernel stop with
+> If this happens, an oops occurs because afs_readpages_page_done() clears
+> the pointer to each page it unlocks and when a retry happens, the pointers
+> to the pages it wants to fill are now NULL (and the pages have been
+> unlocked anyway).
 
-[    6.122092] mmc0: new high speed SDIO card at address 0001
-[   35.804258] VCCK: disabling
-[   35.808781] platform pwmleds: deferred probe pending
-[   35.812625] platform sound: deferred probe pending
+I mean, you could check for NULL pointers and not issue the I/O for that
+region ... but it doesn't seem necessary.
 
-[  215.804295] random: crng init done
+> Instead, wait till the operation completes successfully and only then
+> release all the pages after clearing any terminal gap (the server can give
+> us less data than we requested as we're allowed to ask for more than is
+> available).
 
-(last time deferred probe was gcc problem )
+s/release/mark up to date/
 
-please can you provide me with dts file and i complile at my linux box 
-or maybe only the change line and i use the dtb from image and edit the 
-lines like the usb patch
+> +	if (req->page_done)
+> +		for (req->index = 0; req->index < req->nr_pages; req->index++)
+> +			req->page_done(req);
+> +
 
-thanks
+I'd suggest doing one call rather than N and putting the page iteration
+inside the callback.  But this patch is appropriate for this late in
+the -rc series, just something to consider for the future.
 
-Tobias
+You might even want to use a bit in the req to indicate whether this is
+a readahead request ... that's the only user of the ->page_done callback
+that I can find.
 
-Am 17.05.2020 um 22:28 schrieb Martin Blumenstingl:
-> Hi Tobias,
->
-> (adding back the original Cc list since that got lost at some point.
-> please keep them included)
->
-> On Sun, May 17, 2020 at 9:57 PM Tobias Baumann <017623705678@o2online.de> wrote:
->> hi Martin
->>
->>
->> i know what you mean with many modules from Arduino sensor modules not
->> all datasheet are correct
->>
->> ok i got into uboot env
->>
->> i could not get GPIOA0 write because of unknowm pin number
-> GPIOAO_0 should work though (the underscore is important)
->
->> but GPIOX works
->>
->> now my measurmant show that out high = signal high (3.3V) and out low
->> =singnal low (0.0V)
->>
->> without any instruction the S812 pins show something betwen 0.2V and 0.8v
->>
->> and that GPIOX_11 (old gpio-123 ; new gpio-402) the one to PIN12
->> WLAN-DIS of r8723bs modul
->>
->> and like you saw on my kernel cat print it is set to low
-> I have updated the GPIOs polarity of GPIOAO_6 and GPIOX_11 (since both
-> are showing inverse polarity compared to the Android kernel).
-> since I don't know if you build mainline yourself or if you use builds
-> from other people: I attached the updated .dtb so you can use that if
-> you want to
->
-> Please let me know if that fixes wifi for you.
->
->
->> thanks for you uboot gset instruction thats helps
->>
->> Am 17.05.2020 um 20:09 schrieb Martin Blumenstingl:
->>> Hi Tobias,
->>>
->>> On Sun, May 17, 2020 at 8:53 AM Tobias Baumann <017623705678@o2online.de> wrote:
->>>> hi Martin
->>>>
->>>>
->>>> yes i mean rtw_antsel=1 or rtw_ansel=2 with cold start
->>>>
->>>> i got hands on pine64 rtl8723bs pdf file with datasheet i attached it there i found the pinout and found a hint that maybe help !!!
->>> it *may* help. beware that there are *many* RTL8723BS modules out
->>> there, which may or may not follow the same pattern.
->>>
->>> Realtek only sells the RTL8723BS chip on it's own. But it needs some
->>> extra components (crystals, resistors, capacitors, ...)
->>> When changing some of these components you need to certify (FCC / CE /
->>> some other regulatory) the wifi card again (to ensure it follows the
->>> specification and does not interfere with other devices).
->>> Thus there are manufacturers (for example FN-LINK) that sell certified
->>> RTL8723BS modules.
->>>
->>> Also one datasheet can describe the signal as "active low".
->>> However, if there is a small transistor circuit on the module PCB (or
->>> the main SoC PCB) then that can "flip" the signal, meaning: the SoC
->>> outputs HIGH but the module gets LOW - or vice versa.
->>> Thus we describe the GPIOs from the GPIO controller (in this case:
->>> Amlogic SoC) perspective.
->>>
->>>> GPIOs 0-135:(from 3.10.99 Kernel )
->>>>    gpio-3   (gpio_key            ) in  hi
->>>>    gpio-6   (sdio_wifi           ) out hi ->
->>> this one is GPIOAO_6 and called "gpio-382" in your 5.7 kernel GPIO dump
->>>
->>>>    gpio-14  (amlsd               ) in  lo
->>>>    gpio-15  (DWC_OTG             ) out hi
->>>>    gpio-64  (amlsd               ) in  lo
->>>>    gpio-122 (sdio_wifi           ) out hi
->>> this one is GPIOX_10. I don't know why the vendor kernel requests this as GPIO
->>> because actually it is using the xtal_32k_out mux on the pin controller.
->>> I assume this is what you have for pin24 below (32k/RTC clock/WLAN
->>> clock), because it's output is 32.768kHz (or rounded: 32kHz)
->>>
->>>>    gpio-123 (sdio_wifi           ) out hi
->>> this one is GPIOX_11 and called "gpio-402" in your 5.7 kernel GPIO dump
->>>
->>>>    gpio-132 (bt_rfkill           ) out hi -> pin 34 Bt_dis (Bluetooth disable)
->>> this one is GPIOX_20 and not part of your 5.7 kernel GPIO dump
->>> Linux 5.8 will gain RTL8723BS Bluetooth support -> with that the GPIO
->>> will show up as well
->>>
->>> do you know if this is related to the wifi part somehow?
->>>
->>>>    gpio-133 (sdio_wifi           ) in  hi
->>> this one is GPIOX_21 and not part of your 5.7 kernel GPIO dump either.
->>> It is the "wifi host wake" and should not be related to your issue.
->>> the SDIO wifi card uses it to let the host know that data is available
->>> and the host should resume from suspend.
->>>
->>> [...]
->>>> GPIO Kernel 5.7
->>>>
->>>> gpiochip1: GPIOs 376-390, parent: platform/c8100084.pinctrl, ao-bank:
->>>>    gpio-382 (                    |reset               ) out lo
->>>>
->>>> gpiochip0: GPIOs 391-511, parent: platform/c1109880.pinctrl, cbus-banks:
->>>>    gpio-402 (                    |reset               ) out lo
->>>>    gpio-484 (                    |snps,reset          ) out hi ACTIVE LOW
->>> you can ignore gpio-484 (snps,reset) for the current issue.
->>> This is for the Ethernet PHY and has nothing to do with wifi.
->>>
->>>>    gpio-491 (                    |cd                  ) in  lo ACTIVE LOW
->>>>
->>>>
->>>> i think i do not have a pull down gpio pin i need the pins high state
->>> which one do you mean exactly?
->>>
->>> since you are measuring with a multimeter anyways: can you please find
->>> out the pin from the Amlogic SoC which is routed to the WLAN_DIS pin
->>> of the WIFI module along with the polarity (high/low)?
->>> in Amlogic's vendor u-boot you can use:
->>>     gset GPIO_NAME out high/low
->>> for example:
->>>     gset GPIOX_11 out low
->>>
->>>
->>> Best regards,
->>> Martin
->>>
->> --
->> Diese E-Mail wurde von AVG auf Viren geprüft.
->> http://www.avg.com
->>
->
-> Best regards,
-> Martin
-
--- 
-Diese E-Mail wurde von AVG auf Viren geprüft.
-http://www.avg.com
-
+Anyway,
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
