@@ -2,58 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2BE1D6D73
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58801D6D7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgEQVZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 17:25:27 -0400
-Received: from mail.hallyn.com ([178.63.66.53]:56782 "EHLO mail.hallyn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbgEQVZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 17:25:27 -0400
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id 45C1A6C9; Sun, 17 May 2020 16:25:25 -0500 (CDT)
-Date:   Sun, 17 May 2020 16:25:25 -0500
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     James.Bottomley@HansenPartnership.com
-Cc:     Christian Brauner <christian.brauner@canonical.com>,
-        lkml <linux-kernel@vger.kernel.org>, serge@hallyn.com
-Subject: [PATCH 1/1] shiftfs: specify struct members
-Message-ID: <20200517212525.GA29858@mail.hallyn.com>
+        id S1726675AbgEQVbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 17:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726458AbgEQVbC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 May 2020 17:31:02 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA654C05BD09
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:31:00 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id b8so3833252pgi.11
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:31:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Nl1jPUv4ba/yAtewxEYF9Vx5ehHzan7FcPOetz1sGxI=;
+        b=clGboMqEVH0oyyAstusWn9pLsPGuJI2qTXOqf/fLKtmNWoo8PU8U4KP2i1KZsbuaVt
+         ZVGmYLRPYusSG7WQp27LnGotSSiVFtdWBjg36zFTERbOW+EMPqf6y69jWaRLHHT/vias
+         cVIIdpg0UDwKIC22zDZF7idLsYnz1Rns+G0xQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Nl1jPUv4ba/yAtewxEYF9Vx5ehHzan7FcPOetz1sGxI=;
+        b=UqhQRdOxepogutGZj+9FK+wRtrYYK6zoil+9G7FTeHO0/kePu1uONW2KWi8KJNWIhM
+         YzrohQHViGVxMKG4t3mnw5APxjJD/QZIxWWZCQpJ7M45jCrL33DMZSntW71f2npYAFXa
+         p7n/pMLqhHrMzsJxEbV7QHs+grJKDo3y53w1havr+ndZQaE/ZHWv6KE7CTsi9lGKs44O
+         ErM8EhU+xoVQm//BTFv8ysuhQF2pmFM6XIZcbR13Wg26UQWmXrGgSIGc38EA9gq9aA13
+         ojgv6cAZLluJaUe8twLvR/8haSpdNGiWXnkBV8pem4P/TrlDNlzO7EhzZHP9Zu4TqUPB
+         L6LQ==
+X-Gm-Message-State: AOAM533EodS41jyC24Bks2cQEeWgYvkp+a8EjG2IhHCXD72wP1dGzT1o
+        hAJoV0Qxn3pifiGyJ4BwZB4lV1/dtYA=
+X-Google-Smtp-Source: ABdhPJzCfFU0gNS2Aq6V0833NEvmUA1835E1WIVVA7nMgWzPKZOvAUqjmi04Tqob8alVDia22+egKA==
+X-Received: by 2002:a62:6041:: with SMTP id u62mr7558083pfb.62.1589751060296;
+        Sun, 17 May 2020 14:31:00 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b74sm6106085pga.31.2020.05.17.14.30.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 May 2020 14:30:59 -0700 (PDT)
+Date:   Sun, 17 May 2020 14:30:57 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Tycho Andersen <tycho@tycho.ws>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Aleksa Sarai <asarai@suse.de>, linux-api@vger.kernel.org,
+        containers@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] seccomp: Add group_leader pid to seccomp_notif
+Message-ID: <202005171428.68F30AA0@keescook>
+References: <20200515234005.32370-1-sargun@sargun.me>
+ <202005162344.74A02C2D@keescook>
+ <20200517104701.bbn2d2rqaplwchdw@wittgenstein>
+ <20200517112156.cphs2h33hx2wfcs4@yavin.dot.cyphar.com>
+ <20200517142316.GA1996744@cisco>
+ <20200517143311.fmxaf3pnopuaezl4@wittgenstein>
+ <20200517144603.GD1996744@cisco>
+ <20200517150215.GE1996744@cisco>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200517150215.GE1996744@cisco>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct path is declared as randomize_layout, so specify the
-struct members when initializing to avoid build failure.
+On Sun, May 17, 2020 at 09:02:15AM -0600, Tycho Andersen wrote:
+> On Sun, May 17, 2020 at 08:46:03AM -0600, Tycho Andersen wrote:
+> > On Sun, May 17, 2020 at 04:33:11PM +0200, Christian Brauner wrote:
+> > > struct seccomp_notif2 {
+> > > 	__u32 notif_size;
+> > > 	__u64 id;
+> > > 	__u32 pid;
+> > > 	__u32 flags;
+> > > 	struct seccomp_data data;
+> > > 	__u32 data_size;
+> > > };
+> > 
+> > I guess you need to put data_size before data, otherwise old userspace
+> > with a smaller struct seccomp_data will look in the wrong place.
+> > 
+> > But yes, that'll work if you put two sizes in, which is probably
+> > reasonable since we're talking about two structs.
+> 
+> Well, no, it doesn't either. Suppose we add a new field first to
+> struct seccomp_notif2:
+> 
+> struct seccomp_notif2 {
+>     __u32 notif_size;
+>     __u64 id;
+>     __u32 pid;
+>     __u32 flags;
+>     struct seccomp_data data;
+>     __u32 data_size;
+>     __u32 new_field;
+> };
+> 
+> And next we add a new field to struct secccomp_data. When a userspace
+> compiled with just the new seccomp_notif2 field does:
+> 
+> seccomp_notif2.new_field = ...;
+> 
+> the compiler will put it in the wrong place for the kernel with the
+> new seccomp_data field too.
+> 
+> Sort of feels like we should do:
+> 
+> struct seccomp_notif2 {
+>     struct seccomp_notif *notif;
+>     struct seccomp_data *data;
+> };
 
-Signed-off-by: Serge Hallyn <shallyn@cisco.com>
----
+I'm going read this thread more carefully tomorrow, but I just wanted to
+mention that I'd *like* to extend seccomp_data for doing deep argument
+inspection of the new syscalls. I think it's the least bad of many
+designs, and I'll write that up in more detail. (I would *really* like
+to avoid extending seccomp's BPF language, and instead allow probing
+into the struct copied from userspace, etc.)
 
-[ this is for https://git.kernel.org/pub/scm/linux/kernel/git/jejb/binfmt_misc.git/commit/?h=shiftfs-v3 ,
-which i was just building for an experiment ]
+Anyway, it's very related to this, so, yeah, probably we need a v2 of the
+notif API, but I'll try to get all the ideas here collected in one place.
 
- fs/shiftfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/shiftfs.c b/fs/shiftfs.c
-index 7984a93745d2..6028244c2f42 100644
---- a/fs/shiftfs.c
-+++ b/fs/shiftfs.c
-@@ -535,7 +535,7 @@ static int shiftfs_getattr(const struct path *path, struct kstat *stat,
- 	struct dentry *real = path->dentry->d_fsdata;
- 	struct inode *reali = real->d_inode;
- 	const struct inode_operations *iop = reali->i_op;
--	struct path newpath = { path->dentry->d_sb->s_fs_info, real };
-+	struct path newpath = { .mnt = path->dentry->d_sb->s_fs_info, .dentry = real };
- 	int err = 0;
- 
- 	if (iop->getattr)
 -- 
-2.17.1
-
+Kees Cook
