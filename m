@@ -2,96 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EA71D6668
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 09:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163D81D666C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 09:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbgEQHOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 03:14:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727002AbgEQHOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 03:14:21 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA36520735;
-        Sun, 17 May 2020 07:14:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589699660;
-        bh=1NXTVdhTm9Mn+zSk8eASvguz0HCxxJOBrSMmsTfIQVI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bv4DPDZOcNzVDkNjkMZatlVIPdoV/UuqP7zB8RS5rDQcXXrmL3Qr8FZC32ri0gIZx
-         leh3hrxSDHo48OtoglmI26OAHK7Ghi0FAf0tI5NmDGM5z7b4pUkkR3frNAoFDJt5Pg
-         9vYQ042UJnIqxzOvd7NW0Gwq3md1D4EP9m0SM1n0=
-Date:   Sun, 17 May 2020 09:14:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     arnd@arndb.de, manivannan.sadhasivam@linaro.org,
-        bjorn.andersson@linaro.org, wufan@codeaurora.org,
-        pratanan@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 3/8] qaic: Create char dev
-Message-ID: <20200517071417.GA3090070@kroah.com>
-References: <1589465266-20056-1-git-send-email-jhugo@codeaurora.org>
- <1589465266-20056-4-git-send-email-jhugo@codeaurora.org>
- <20200514141211.GA2643665@kroah.com>
- <0421a64a-10f3-08df-9ef1-14fdb570db0d@codeaurora.org>
- <20200514155615.GA2963499@kroah.com>
- <4be546d3-b571-0659-0140-f34ec88f95ff@codeaurora.org>
- <4683046a-c6b5-30a5-ef02-2f610523ae1c@codeaurora.org>
- <20200516070131.GB3964535@kroah.com>
- <8e06c718-8b8a-f09a-4685-11c0c1581a0c@codeaurora.org>
+        id S1727063AbgEQHRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 03:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726980AbgEQHRS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 May 2020 03:17:18 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3342C061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 00:17:16 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a5so3188056pjh.2
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 00:17:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aftZV1cdZqqyo7nEiKFeSuPiJj3pGPrb2uZIVEZjg8Y=;
+        b=KBiEhBvlYFCV1jPF9d8iOLqAJGzwh7eNPC6bjw/QP/iuqlMtONiBt8ZFUtB7iWgxNv
+         3pH86rVMJSygxDx2PXR0qO93TSylEmJ6BdzZUxPFC1Iaw37nlMFHzeSkczNnXl04sDBA
+         OeNg4gtoFkA7/VEElrs4D0V5Balkk+TMuIXlM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aftZV1cdZqqyo7nEiKFeSuPiJj3pGPrb2uZIVEZjg8Y=;
+        b=LI6hDQE8OKAgZzqFBkVeuc0s4p7xF63MOMX3YIIdwwv++zS9WjoA5b86dS3ecXlE9f
+         k5fgdG9WQXTnZBEWcF9xU8gju64hQgpmMCM7nZuYxmUD+15YmWSSaWsg/cAQ1FmHcxTB
+         sE7XnPFXV++iYRKKg4cM59P9xkBIESJnOlgo0r/NpIrh+teB2DbEhVYOEDbM8FE2K1uR
+         QcRvxmnj0j6zVJ/bdpZtLHVYyuuJ3X86NNtAzN6zIzbsbiDVJ8Xupc4vP6juPq7nQueg
+         RTAyuxNjhj52W/pRbdZGTwXEYJrhqYws/aLxHeWBDF9VdNcF27TTf4WeNT3WZRvk17A1
+         KHeA==
+X-Gm-Message-State: AOAM530lpxDxfVyY2rLvqnJLvD3dd1PapoUuHwzMDyWQN3pK59bjks6x
+        7gBhL0IiGCaa7D8C5wG8FptW9Q==
+X-Google-Smtp-Source: ABdhPJwd6+CN8t5Wf5VOPsRqc5VmU2ipOXvGUOi+z9ARyAEWm4JDbbZbPMN/aZWXpfoSMN4hIEL32w==
+X-Received: by 2002:a17:90a:d506:: with SMTP id t6mr357751pju.49.1589699836216;
+        Sun, 17 May 2020 00:17:16 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d2sm5649154pfa.164.2020.05.17.00.17.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 May 2020 00:17:15 -0700 (PDT)
+Date:   Sun, 17 May 2020 00:17:14 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     linux-kernel@vger.kernel.org,
+        containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
+        christian.brauner@ubuntu.com, tycho@tycho.ws, cyphar@cyphar.com
+Subject: Re: [PATCH] seccomp: Add group_leader pid to seccomp_notif
+Message-ID: <202005162344.74A02C2D@keescook>
+References: <20200515234005.32370-1-sargun@sargun.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8e06c718-8b8a-f09a-4685-11c0c1581a0c@codeaurora.org>
+In-Reply-To: <20200515234005.32370-1-sargun@sargun.me>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 16, 2020 at 03:29:19PM -0600, Jeffrey Hugo wrote:
-> On 5/16/2020 1:01 AM, Greg KH wrote:
-> > On Fri, May 15, 2020 at 03:08:59PM -0600, Jeffrey Hugo wrote:
-> > > 2. There are a limited number of dynamic minor numbers for misc devs (64),
-> > > so if you are expecting more devices than that, a misc dev is not
-> > > appropiate.  Also, these minors are shared with other misc dev users, so
-> > > depending on the system configuration, you might have significantly less
-> > > than 64 minors available for use.
-> > 
-> > I'm pretty sure we can have more than 64 misc devices, that limitation
-> > should have been removed a while ago.  Try it and see :)
+On Fri, May 15, 2020 at 04:40:05PM -0700, Sargun Dhillon wrote:
+> This includes the thread group leader ID in the seccomp_notif. This is
+> immediately useful for opening up a pidfd for the group leader, as
+> pidfds only work on group leaders.
 > 
-> In total, there can be more tha 64 misc devices.  However my previous
-> comment was specific to dynamic minors (ie devices which do not have an
-> assigned minor).  The limit on dynamic minors still apears to be 64. Looking
-> at the code -
+> Previously, it was considered to include an actual pidfd in the
+> seccomp_notif structure[1], but it was suggested to avoid proliferating
+> mechanisms to create pidfds[2].
 > 
-> DYNAMIC_MINORS is still 64
-> https://elixir.bootlin.com/linux/v5.7-rc5/source/drivers/char/misc.c#L63
+> [1]: https://lkml.org/lkml/2020/1/24/133
+> [2]: https://lkml.org/lkml/2020/5/15/481
+
+nit: please use lore.kernel.org/lkml/ URLs
+
+> Suggested-by: Christian Brauner <christian.brauner@ubuntu.com>
+> Signed-off-by: Sargun Dhillon <sargun@sargun.me>
+> ---
+>  include/uapi/linux/seccomp.h                  |  2 +
+>  kernel/seccomp.c                              |  1 +
+>  tools/testing/selftests/seccomp/seccomp_bpf.c | 50 +++++++++++++++++++
+>  3 files changed, 53 insertions(+)
 > 
-> I see the same in -next
-> 
-> DYNAMIC_MINORS is used to size a bitmap - one bit for each dynamic minor
-> misc device that exists at one particular point in time.  After all 64 bits
-> are consumed by misc_register() by clients requesting a dynamic minor, no
-> more dynamic minor misc devices can be registered until some are
-> unregistered.
-> 
-> What am I missing?
+> diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
+> index c1735455bc53..f0c272ef0f1e 100644
+> --- a/include/uapi/linux/seccomp.h
+> +++ b/include/uapi/linux/seccomp.h
+> @@ -75,6 +75,8 @@ struct seccomp_notif {
+>  	__u32 pid;
+>  	__u32 flags;
+>  	struct seccomp_data data;
+> +	__u32 tgid;
+> +	__u8 pad0[4];
+>  };
 
-Oops, nothing, my fault.  We fixed up the allocation of more dynamic
-majors for chardev in 2017 and for some reason I thought we also
-increased the number of misc dynamic minors at the same time, but that
-was incorrect.
+I think we need to leave off padding and instead use __packed. If we
+don't then userspace can't tell when "pad0" changes its "meaning" (i.e.
+the size of seccomp_notif becomes 88 bytes with above -- either via
+explicit padding like you've got or via implicit by the compiler. If
+some other u32 gets added in the future, user space will still see "88"
+as the size.
 
-I'll gladly take patches that bump up the number of misc minors if
-needed.
+So I *think* the right change here is:
 
-But to get back to the main issue here, you are only going to have 1 or
-maybe 2 of these devices in a system at a time, right?  So "burning" a
-whole major number for that feels like a waste.
+-};
++	__u32 tgid;
++} __packed;
 
-thanks,
+Though tgid may need to go above seccomp_data... for when it grows.
+Agh...
 
-greg k-h
+_However_, unfortunately, I appear to have no thought this through very
+well, and there is actually no sanity-checking in the kernel for dealing
+with an old userspace when sizes change. :( For example, if a userspace
+doesn't check sizes and calls an ioctl, etc, the kernel will clobber the
+user buffer if it's too small.
+
+Even the SECCOMP_GET_NOTIF_SIZES command lacks a buffer size argument.
+:(
+
+So:
+
+- should we just declare such userspace as "wrong"? I don't think
+  that'll work, especially since what if we ever change the size of
+  seccomp_data...  that predated the ..._SIZES command.
+
+- should we add a SECCOMP_SET_SIZES command to tell the kernel what
+  we're expecting? There's no "state" associated across seccomp(2)
+  calls, but maybe that doesn't matter because only user_notif writes
+  back to userspace. For the ioctl, the state could be part of the
+  private file data? Sending seccomp_data back to userspace only
+  happens here, and any changes in seccomp_data size will just be seen
+  as allowing a filter to query further into it.
+
+- should GET_SIZES report "useful" size? (i.e. exclude padding?)
+
+> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+
+Yay test updates! :)
+
+> +TEST(user_notification_groupleader)
+
+In my first pass of review I was going to say "can you please also check
+the sizes used by the ioctl?" But that triggered the above size checking
+mess in my mind.
+
+Let me look at this more closely on Monday, and I'll proposed something.
+:P
+
+Thanks!
+
+-Kees
+
+-- 
+Kees Cook
