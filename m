@@ -2,272 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194841D6544
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 04:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19751D6551
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 04:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727059AbgEQCNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 22:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59094 "EHLO
+        id S1726952AbgEQCTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 22:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727008AbgEQCNa (ORCPT
+        with ESMTP id S1726880AbgEQCTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 22:13:30 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B36FC05BD09;
-        Sat, 16 May 2020 19:13:30 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id x27so4877924lfg.9;
-        Sat, 16 May 2020 19:13:30 -0700 (PDT)
+        Sat, 16 May 2020 22:19:15 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27646C061A0C
+        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 19:19:15 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id a4so3107189qvj.3
+        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 19:19:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HQ8AmMMgiKGBwAmrHreN8EaXDjlamrkD+mKYrGRi3iw=;
-        b=QJN92KDqmDMu9pICqi5FVOzIFiqsy0DAQ+emMfOI9USC6MorK8JTXBhZm4cFeR6QUY
-         uibvdzmiObvXYEtggw+uNDS9lyihMPOWj6twVGHFBDJ2SCVIEGLCjWM87hqG+9INsBbS
-         2F3T3kdsYqFIU/kGkC1EH5XRcKUFIE/Em0gnEKq0/lazGvDHKm9APlChBGIs5rDoNbW2
-         HzeYJdNoZJfxanNeAI2qVq81qGGs076DjGz/M2eeTUybjxmz5N2f2JAj0ffoD5POn5so
-         46Optu5jqN7COF4LG3+j3ucWE7RwNzDnqPAsQLS3zU3x03xvxvZxqLbGRpLV8IjrWcjN
-         Y+nw==
+        d=lca.pw; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=reILY0Vqckz9zOXZI1PQPYQDzXOJemhFua89GW65fy0=;
+        b=pIAwb2eoYglLwoftFfZRHOH1Iauxv47DwFt8guUDUzepmhBtdWKnf6tj+cBDhU9OTF
+         kECfnujvTJKr8YeroaSRIiYeVy5KG310PnOC4OsyxQQpkXo6JV8KUh6wHeidXXdnYJLi
+         2urTKHfOv2+fh2Z/drc7aLYPMpFOhLMO8thHY7q6ZR2EHH3E3rk2TZMBw375QmdTfjhS
+         WVxV5sKNACulZvEq6O83Mxk6dZiv9ieiAuoy2dCn3CpaWCc0E4KZvCOUTZwVthhcZqmp
+         hwBOf1zuiZPtXjLHkbZSyw6nLiwrG/RWBgQdUOmCje4sXZHYx8G88VLOW5OwZabR568J
+         jUkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HQ8AmMMgiKGBwAmrHreN8EaXDjlamrkD+mKYrGRi3iw=;
-        b=Q7JFaYausmYRbseAAK0Vj7rnf2Hx4a3IgGTaFkwS0HdP0O0x6IAuMvZCFD26f+Q3Qo
-         ITWpZNd7WEXm6u/3VClEAsr2xpe0cKpGzmfz8v7D5zQS71ww4CeTQIixQN5L3waA2MOA
-         Eb7gH7MzKYPcVAzut4BPt+D4QxbeUWsWzN0XipdOGKTAOvlznJO55wyMu2LkEtMvkHm4
-         g6GHYA25lNrbHcGeOw0Se9L5jBVXLa21fu2bBAza2g2hR3fgDuYaH6VS85ZCjNjTBHwC
-         VfvBZrPWjqtI+R7w/yIXc72XMd2isr+54LWlC7g5MEpQa0zCAW6HG1CoctwdiCiSIsij
-         YKNQ==
-X-Gm-Message-State: AOAM533npob3TFoYUioZJG2bXmzsx+B1fQUJi6U4vOnfHzxjIRhtzhod
-        K4Zp9+PVqfcn70FteENvTmU=
-X-Google-Smtp-Source: ABdhPJwNB+DOfPnfjMdMyEQfRn1OPT7cD2J2qFLU087KeTLdY3QWvvpd/hbdDF5K9kmTOS3RITjr7A==
-X-Received: by 2002:a19:ed07:: with SMTP id y7mr7157277lfy.31.1589681608595;
-        Sat, 16 May 2020 19:13:28 -0700 (PDT)
-Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.gmail.com with ESMTPSA id z5sm3463149lji.30.2020.05.16.19.13.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 May 2020 19:13:28 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        David Heidelberg <david@ixit.cz>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Billy Laws <blaws05@gmail.com>,
-        =?UTF-8?q?Nils=20=C3=96stlund?= <nils@naltan.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-tegra@vger.kernel.org, linux-block@vger.kernel.org,
-        Andrey Danin <danindrey@mail.ru>,
-        Gilles Grandou <gilles@grandou.net>,
-        Ryan Grachek <ryan@edited.us>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Steve McIntyre <steve@einval.com>,
-        linux-efi <linux-efi@vger.kernel.org>
-Subject: [PATCH v6 7/7] soc/tegra: Expose Boot Configuration Table via sysfs
-Date:   Sun, 17 May 2020 05:12:25 +0300
-Message-Id: <20200517021225.22890-8-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200517021225.22890-1-digetx@gmail.com>
-References: <20200517021225.22890-1-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=reILY0Vqckz9zOXZI1PQPYQDzXOJemhFua89GW65fy0=;
+        b=RretUece9frA990hspM3i0i/u3/JHbVSuRWzpnvcSTJfgyISprao8sg3jCFPssjNQ7
+         yW8a2v5oAh2RtG1QpB9mb1Hf62Dyf6FzHZv1BHt8Kn8mjU92cUMQqF/9SXqzHFuUJPGW
+         IpS5Bnlm585+PAK4o2tG8sWg+rLIXnt6xnk36Ip7JRk0Gck1f/4qOFMuGA35rbPRvkLv
+         OWuI8Oro9D50v/G8GzJcB4RWGKMnZQpf8l7euMyq8Cp/lz68wwaxmvssrlxF1kdwPLUq
+         IpoGEMyrYfEj4+ntvBAkosNuifXNf884KP2JdqzX8/qt+jarqwotR1k0Gpby3D6ZS91o
+         WKsg==
+X-Gm-Message-State: AOAM531C78UAmhLIbFuPdyQ+8QxB075YMVnvtvX4Gjcf/qfmhyMxqlqB
+        8MNao+6CDdSrE0w0AbR8fv5eZg==
+X-Google-Smtp-Source: ABdhPJy7zq2cEJTHKf+ULmWoR9KyBs8LT1Fv40ERTKM0O92tvWYebzQUeSdYbCbxP/SqXcLR53UE4g==
+X-Received: by 2002:a0c:f590:: with SMTP id k16mr7536598qvm.81.1589681954242;
+        Sat, 16 May 2020 19:19:14 -0700 (PDT)
+Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id p2sm5057375qkm.41.2020.05.16.19.19.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 May 2020 19:19:13 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+From:   Qian Cai <cai@lca.pw>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2 3/4] mm/slub: Fix another circular locking dependency in slab_attr_store()
+Date:   Sat, 16 May 2020 22:19:12 -0400
+Message-Id: <F1FA6654-C07C-42FD-B497-61EB635B264C@lca.pw>
+References: <20200427235621.7823-4-longman@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>
+In-Reply-To: <20200427235621.7823-4-longman@redhat.com>
+To:     Waiman Long <longman@redhat.com>
+X-Mailer: iPhone Mail (17E262)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's quite useful to have unencrypted BCT exposed to userspace for
-debugging purposes, so let's expose it via sysfs.  The BCT data will be
-present in '/sys/tegra/boot_config_table' binary file if BCT is available.
 
-Suggested-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/mach-tegra/tegra.c  |  4 +++
- drivers/soc/tegra/Makefile   |  1 +
- drivers/soc/tegra/bootdata.c | 51 ++++++++++++++++++++++++++++++++++++
- drivers/soc/tegra/common.c   | 17 ++++++++++++
- include/soc/tegra/bootdata.h |  2 ++
- include/soc/tegra/common.h   |  3 +++
- 6 files changed, 78 insertions(+)
- create mode 100644 drivers/soc/tegra/bootdata.c
 
-diff --git a/arch/arm/mach-tegra/tegra.c b/arch/arm/mach-tegra/tegra.c
-index da6bcd85398b..5f40463f1b97 100644
---- a/arch/arm/mach-tegra/tegra.c
-+++ b/arch/arm/mach-tegra/tegra.c
-@@ -72,6 +72,7 @@ static void __init tegra_boot_config_table_init(void)
- 	u32 iram_end   = TEGRA_IRAM_BASE + TEGRA_IRAM_SIZE;
- 	u32 iram_start = TEGRA_IRAM_BASE;
- 	u32 pt_addr, pt_size, bct_size;
-+	void __iomem *bct_ptr;
- 
- 	t20_bit = IO_ADDRESS(TEGRA_IRAM_BASE);
- 
-@@ -90,6 +91,7 @@ static void __init tegra_boot_config_table_init(void)
- 
- 		pt_addr = t20_bct->partition_table_logical_sector_address;
- 		pt_size = t20_bct->partition_table_num_logical_sectors;
-+		bct_ptr = t20_bct;
- 
- 	} else if (of_machine_is_compatible("nvidia,tegra30")) {
- 		bct_size = sizeof(*t30_bct);
-@@ -106,12 +108,14 @@ static void __init tegra_boot_config_table_init(void)
- 
- 		pt_addr = t30_bct->partition_table_logical_sector_address;
- 		pt_size = t30_bct->partition_table_num_logical_sectors;
-+		bct_ptr = t30_bct;
- 	} else {
- 		return;
- 	}
- 
- 	pr_info("%s: BCT found in IRAM\n", __func__);
- 
-+	tegra_bootdata_bct_setup(bct_ptr, bct_size);
- 	tegra_partition_table_setup(pt_addr, pt_size);
- }
- 
-diff --git a/drivers/soc/tegra/Makefile b/drivers/soc/tegra/Makefile
-index 9c809c1814bd..8be2bfb4d95d 100644
---- a/drivers/soc/tegra/Makefile
-+++ b/drivers/soc/tegra/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-y += fuse/
- 
-+obj-y += bootdata.o
- obj-y += common.o
- obj-$(CONFIG_SOC_TEGRA_FLOWCTRL) += flowctrl.o
- obj-$(CONFIG_SOC_TEGRA_PMC) += pmc.o
-diff --git a/drivers/soc/tegra/bootdata.c b/drivers/soc/tegra/bootdata.c
-new file mode 100644
-index 000000000000..3d028e0d343d
---- /dev/null
-+++ b/drivers/soc/tegra/bootdata.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/sizes.h>
-+#include <linux/slab.h>
-+#include <linux/sysfs.h>
-+#include <linux/types.h>
-+
-+#include <soc/tegra/bootdata.h>
-+#include <soc/tegra/common.h>
-+
-+/*
-+ * spare_bct[] will be released once kernel is booted, hence not wasting
-+ * kernel space if BCT is missing. The tegra_bct can't be allocated during
-+ * of BCT setting up because it's too early for the slab allocator.
-+ */
-+static u8 spare_bct[SZ_8K] __initdata;
-+static u8 *tegra_bct;
-+
-+static ssize_t boot_config_table_read(struct file *filp,
-+				      struct kobject *kobj,
-+				      struct bin_attribute *bin_attr,
-+				      char *buf, loff_t off, size_t count)
-+{
-+	memcpy(buf, tegra_bct + off, count);
-+	return count;
-+}
-+static BIN_ATTR_RO(boot_config_table, 0);
-+
-+static int __init tegra_bootdata_bct_sysfs_init(void)
-+{
-+	if (!bin_attr_boot_config_table.size)
-+		return 0;
-+
-+	tegra_bct = kmalloc(bin_attr_boot_config_table.size, GFP_KERNEL);
-+	if (!tegra_bct)
-+		return -ENOMEM;
-+
-+	memcpy(tegra_bct, spare_bct, bin_attr_boot_config_table.size);
-+
-+	return sysfs_create_bin_file(tegra_soc_kobj,
-+				     &bin_attr_boot_config_table);
-+}
-+late_initcall(tegra_bootdata_bct_sysfs_init)
-+
-+void __init tegra_bootdata_bct_setup(void __iomem *bct_ptr, size_t bct_size)
-+{
-+	memcpy_fromio(spare_bct, bct_ptr, bct_size);
-+	bin_attr_boot_config_table.size = bct_size;
-+}
-diff --git a/drivers/soc/tegra/common.c b/drivers/soc/tegra/common.c
-index 3dc54f59cafe..2b4b49eacb2e 100644
---- a/drivers/soc/tegra/common.c
-+++ b/drivers/soc/tegra/common.c
-@@ -3,10 +3,15 @@
-  * Copyright (C) 2014 NVIDIA CORPORATION.  All rights reserved.
-  */
- 
-+#include <linux/init.h>
-+#include <linux/kernel.h>
- #include <linux/of.h>
-+#include <linux/sysfs.h>
- 
- #include <soc/tegra/common.h>
- 
-+struct kobject *tegra_soc_kobj;
-+
- static const struct of_device_id tegra_machine_match[] = {
- 	{ .compatible = "nvidia,tegra20", },
- 	{ .compatible = "nvidia,tegra30", },
-@@ -31,3 +36,15 @@ bool soc_is_tegra(void)
- 
- 	return match != NULL;
- }
-+
-+static int __init tegra_soc_sysfs_init(void)
-+{
-+	if (!soc_is_tegra())
-+		return 0;
-+
-+	tegra_soc_kobj = kobject_create_and_add("tegra", NULL);
-+	WARN_ON(!tegra_soc_kobj);
-+
-+	return 0;
-+}
-+arch_initcall(tegra_soc_sysfs_init)
-diff --git a/include/soc/tegra/bootdata.h b/include/soc/tegra/bootdata.h
-index 7be207cb2519..d5c7a251517d 100644
---- a/include/soc/tegra/bootdata.h
-+++ b/include/soc/tegra/bootdata.h
-@@ -43,4 +43,6 @@ struct tegra30_boot_config_table {
- 	u32 unused_data[3];
- } __packed;
- 
-+void tegra_bootdata_bct_setup(void __iomem *bct_ptr, size_t bct_size);
-+
- #endif /* __SOC_TEGRA_BOOTDATA_H__ */
-diff --git a/include/soc/tegra/common.h b/include/soc/tegra/common.h
-index 744280ecab5f..0bc11b45c98e 100644
---- a/include/soc/tegra/common.h
-+++ b/include/soc/tegra/common.h
-@@ -7,8 +7,11 @@
- #define __SOC_TEGRA_COMMON_H__
- 
- #include <linux/types.h>
-+#include <linux/sysfs.h>
- 
- #ifdef CONFIG_ARCH_TEGRA
-+extern struct kobject *tegra_soc_kobj;
-+
- bool soc_is_tegra(void);
- #else
- static inline bool soc_is_tegra(void)
--- 
-2.26.0
+> On Apr 27, 2020, at 7:56 PM, Waiman Long <longman@redhat.com> wrote:
+>=20
+> It turns out that switching from slab_mutex to memcg_cache_ids_sem in
+> slab_attr_store() does not completely eliminate circular locking dependenc=
+y
+> as shown by the following lockdep splat when the system is shut down:
+>=20
+> [ 2095.079697] Chain exists of:
+> [ 2095.079697]   kn->count#278 --> memcg_cache_ids_sem --> slab_mutex
+> [ 2095.079697]
+> [ 2095.090278]  Possible unsafe locking scenario:
+> [ 2095.090278]
+> [ 2095.096227]        CPU0                    CPU1
+> [ 2095.100779]        ----                    ----
+> [ 2095.105331]   lock(slab_mutex);
+> [ 2095.108486]                                lock(memcg_cache_ids_sem);
+> [ 2095.114961]                                lock(slab_mutex);
+> [ 2095.120649]   lock(kn->count#278);
+> [ 2095.124068]
+> [ 2095.124068]  *** DEADLOCK ***
 
+Can you show the full splat?
+
+>=20
+> To eliminate this possibility, we have to use trylock to acquire
+> memcg_cache_ids_sem. Unlikely slab_mutex which can be acquired in
+> many places, the memcg_cache_ids_sem write lock is only acquired
+> in memcg_alloc_cache_id() to double the size of memcg_nr_cache_ids.
+> So the chance of successive calls to memcg_alloc_cache_id() within
+> a short time is pretty low. As a result, we can retry the read lock
+> acquisition a few times if the first attempt fails.
+>=20
+> Signed-off-by: Waiman Long <longman@redhat.com>
+
+The code looks a bit hacky and probably not that robust. Since it is the shu=
+tdown path which is not all that important without lockdep, maybe you could d=
+rop this single patch for now until there is a better solution?
+
+> ---
+> include/linux/memcontrol.h |  1 +
+> mm/memcontrol.c            |  5 +++++
+> mm/slub.c                  | 25 +++++++++++++++++++++++--
+> 3 files changed, 29 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index d275c72c4f8e..9285f14965b1 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1379,6 +1379,7 @@ extern struct workqueue_struct *memcg_kmem_cache_wq;=
+
+> extern int memcg_nr_cache_ids;
+> void memcg_get_cache_ids(void);
+> void memcg_put_cache_ids(void);
+> +int  memcg_tryget_cache_ids(void);
+>=20
+> /*
+>  * Helper macro to loop through all memcg-specific caches. Callers must st=
+ill
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 5beea03dd58a..9fa8535ff72a 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -279,6 +279,11 @@ void memcg_get_cache_ids(void)
+>    down_read(&memcg_cache_ids_sem);
+> }
+>=20
+> +int memcg_tryget_cache_ids(void)
+> +{
+> +    return down_read_trylock(&memcg_cache_ids_sem);
+> +}
+> +
+> void memcg_put_cache_ids(void)
+> {
+>    up_read(&memcg_cache_ids_sem);
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 44cb5215c17f..cf2114ca27f7 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -34,6 +34,7 @@
+> #include <linux/prefetch.h>
+> #include <linux/memcontrol.h>
+> #include <linux/random.h>
+> +#include <linux/delay.h>
+>=20
+> #include <trace/events/kmem.h>
+>=20
+> @@ -5572,6 +5573,7 @@ static ssize_t slab_attr_store(struct kobject *kobj,=
+
+>        !list_empty(&s->memcg_params.children)) {
+>        struct kmem_cache *c, **pcaches;
+>        int idx, max, cnt =3D 0;
+> +        int retries =3D 3;
+>        size_t size, old =3D s->max_attr_size;
+>        struct memcg_cache_array *arr;
+>=20
+> @@ -5585,9 +5587,28 @@ static ssize_t slab_attr_store(struct kobject *kobj=
+,
+>            old =3D cmpxchg(&s->max_attr_size, size, len);
+>        } while (old !=3D size);
+>=20
+> -        memcg_get_cache_ids();
+> -        max =3D memcg_nr_cache_ids;
+> +        /*
+> +         * To avoid the following circular lock chain
+> +         *
+> +         *   kn->count#278 --> memcg_cache_ids_sem --> slab_mutex
+> +         *
+> +         * We need to use trylock to acquire memcg_cache_ids_sem.
+> +         *
+> +         * Since the write lock is acquired only in
+> +         * memcg_alloc_cache_id() to double the size of
+> +         * memcg_nr_cache_ids. The chance of successive
+> +         * memcg_alloc_cache_id() calls within a short time is
+> +         * very low except at the beginning where the number of
+> +         * memory cgroups is low. So we retry a few times to get
+> +         * the memcg_cache_ids_sem read lock.
+> +         */
+> +        while (!memcg_tryget_cache_ids()) {
+> +            if (retries-- <=3D 0)
+> +                return -EBUSY;
+> +            msleep(100);
+> +        }
+>=20
+> +        max =3D memcg_nr_cache_ids;
+>        pcaches =3D kmalloc_array(max, sizeof(void *), GFP_KERNEL);
+>        if (!pcaches) {
+>            memcg_put_cache_ids();
