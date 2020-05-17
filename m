@@ -2,118 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149291D6D84
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C38D51D6D87
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbgEQVjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 17:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
+        id S1726657AbgEQVrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 17:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726444AbgEQVjv (ORCPT
+        with ESMTP id S1726297AbgEQVrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 17:39:51 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B09BC061A0C
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:39:51 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id c24so6585803qtw.7
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:39:51 -0700 (PDT)
+        Sun, 17 May 2020 17:47:25 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8087C061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:47:23 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id h4so7387216wmb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VXQSpo5cOSVhswku2XbziWLym4GqZt6GcybWhlW7HkQ=;
-        b=IRCvmfBkpaRfxNOUPPCR/hBNAViX/cvtUaNm27KNkJ/l9DmhNzD66nZJb12UbMAAHS
-         DhpX1THLXZ9brLgO6YCFm4ymQikeG2HM8O4UmjmjevM3DSxP88f/sokRBfCoeLrYqQqw
-         fWVWdVcxjnNRaFLLyNa3WqQk0pKKcVqGqxowFVsQsvSI4Ty1+NNhTXk5KrKcpp3XB7wL
-         wklWF49OvbBYbBJ6+TN9Kx6E3MLPeAFsXcP/IYFQY80lXXGmdAyRoT0sVbfzgj5rObqi
-         bQM4hJooDpbHZ8lLbKMB3tQMPvkZGXUKcqCRiqMHSXezddtFBdQhHtZQqMmVvvKI8oPP
-         invQ==
+        d=cloud.ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=/66Q+jWEKaVzaANJQrJ1aosdAcx3vTMrVmbrCAkWcIc=;
+        b=Nh6nIwgMiHyOKSXIXrkxyg6h4r1BqAxzS0PC879X4g/NMz8yKEN9eFrgTPhobK9Loq
+         nXrMwJkULWxg1iAgX82GF93KXlbTnVoD8ZW2Y98BizMccCYQVJV74xIAuYzdZyDKPn4j
+         JyYKbcRA2raiYPw8yKhOG0kl1SgH7bOS40sx63sRVeR9Tu3Flyb5UPlAhULtks5znzTZ
+         x2nxtuSYCcgdC+BekliM+Od5t3tDIcirXncgRwc4GNz+BHxJhpzPe5GP7riVXyzNcxyE
+         kipQHsJiWZjyAxbN/21K9VieDYSsRbz8XUu4Tq/OrVy7c3p7sN43pV10w5JCvgpjwb0Z
+         Tv0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VXQSpo5cOSVhswku2XbziWLym4GqZt6GcybWhlW7HkQ=;
-        b=hBAzM7IPAUyPj9ozbzv241AzLeXAEs72kTYrKN2XbuSJL4eoebIGEoLhqO6qF5kWhq
-         NvNpbpYAY6g4+aW7vhTDyTMYXVKEWNYwOZ1omfLDagPBTRymlRCVgGud+/dc3FLUnHkY
-         YmVKJhp66MhG1rjiCAG4OQwW6KQqb191T/fkqjbpOJDpQjUDjpH/q81+4WIzeS8vjBRp
-         lCjRaEC3/i8zyo+wkB9R0AVdX5dFzLH7aNnf3N9xJCVl/i4EL4kK1NWUWE/i3cqC0MQN
-         8mXLNlW0mCoI41OErP2kY7ifWguuXsAXwIJQKR4GVULckup65j1wZcZ4uNUuZLE1kmhf
-         4RwA==
-X-Gm-Message-State: AOAM532J/gMzNHNJaYzQAHjp20/YmuKYen5bgaYtZECsY7Mbfx4ypwnU
-        qgk+cc1i/KkLpWlWiOekWSa4gogWKBbDpcvWy0LUJw==
-X-Google-Smtp-Source: ABdhPJyu1/pp1+dd5u1Mh4CvToq01YPVEZoUBmwc4NcKE5KzMsrD9d2oBzS123FiHqkqb7CUyPMK6xR0zLlyHFn0U4A=
-X-Received: by 2002:ac8:fb5:: with SMTP id b50mr13533689qtk.164.1589751590455;
- Sun, 17 May 2020 14:39:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200502124802.9758-1-richard@nod.at>
-In-Reply-To: <20200502124802.9758-1-richard@nod.at>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Sun, 17 May 2020 23:39:39 +0200
-Message-ID: <CAFLxGvw9Tc9dr+=Dyuut9gXeLfUg2aUROGdZ4-g5=_OtS_hnLA@mail.gmail.com>
-Subject: Re: [PATCH] ubi: Fix seq_file usage in detailed_erase_block_info
- debugfs file
-To:     Richard Weinberger <richard@nod.at>
-Cc:     linux-mtd@lists.infradead.org, ben.shelton@ni.com,
-        LKML <linux-kernel@vger.kernel.org>, zach.brown@ni.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/66Q+jWEKaVzaANJQrJ1aosdAcx3vTMrVmbrCAkWcIc=;
+        b=dvitJRXUoJFLabIz2ZsAS/zE+1zzhpOAiJbQGe5YhzPFIdqlg9asn7PUE3T4dZj7N4
+         L53LfmDTUGGiCBJHFwGNdnpMc1zi/rlt0m1fEtQlHGpQZ7MsanMGXIOhIQpxBoWvGZNA
+         UiklmhZzQSPNhoQNHV0hoyCgYQVe3zpHslUKEGokA20AMpoSWcVgqykQQFYHK5Zmkdd0
+         NMkvwdiGPWbrJmtaQpXVl2D9NO2ddbDcSRA7WYeKs9inhvOSDxcLHzqMdLSUpQApVHK6
+         XACKGcERXIYQudNmEhF/TxPPsxWVCGYN/GoDZ8HwhT+lYO0kfHucZmze1FtKZ3Ji7tuN
+         UWyg==
+X-Gm-Message-State: AOAM532+YH3zsgaTWpdmItL2RRnw+xRUXnZW7gN/z1QzSMeAoNrdUbb7
+        IdFvwlBv+qZ2E3F5I2BjEoKuRg==
+X-Google-Smtp-Source: ABdhPJykv0hPTOO8SWPrgIv19eiT5W7uOOLBSoT/g/C4P4s+o3VbWEN31O/jaeh0pIghqPK+8K76Fg==
+X-Received: by 2002:a05:600c:2219:: with SMTP id z25mr15529781wml.128.1589752042279;
+        Sun, 17 May 2020 14:47:22 -0700 (PDT)
+Received: from ls00508.pb.local ([2001:1438:4010:2540:bc3e:92a1:7010:2763])
+        by smtp.gmail.com with ESMTPSA id v126sm14441244wmb.4.2020.05.17.14.47.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 May 2020 14:47:21 -0700 (PDT)
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+To:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        david@fromorbit.com, hch@infradead.org, willy@infradead.org,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Subject: [PATCH 00/10] Introduce attach/detach_page_private to cleanup code
+Date:   Sun, 17 May 2020 23:47:08 +0200
+Message-Id: <20200517214718.468-1-guoqing.jiang@cloud.ionos.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 2, 2020 at 2:48 PM Richard Weinberger <richard@nod.at> wrote:
->
-> 3bfa7e141b0b ("fs/seq_file.c: seq_read(): add info message about buggy .next functions")
-> showed that we don't use seq_file correctly.
-> So make sure that our ->next function always updates the position.
->
-> Fixes: 7bccd12d27b7 ("ubi: Add debugfs file for tracking PEB state")
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  drivers/mtd/ubi/debug.c | 12 ++----------
->  1 file changed, 2 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-> index 54646c2c2744..ac2bdba8bb1a 100644
-> --- a/drivers/mtd/ubi/debug.c
-> +++ b/drivers/mtd/ubi/debug.c
-> @@ -393,9 +393,6 @@ static void *eraseblk_count_seq_start(struct seq_file *s, loff_t *pos)
->  {
->         struct ubi_device *ubi = s->private;
->
-> -       if (*pos == 0)
-> -               return SEQ_START_TOKEN;
-> -
->         if (*pos < ubi->peb_count)
->                 return pos;
->
-> @@ -409,8 +406,6 @@ static void *eraseblk_count_seq_next(struct seq_file *s, void *v, loff_t *pos)
->  {
->         struct ubi_device *ubi = s->private;
->
-> -       if (v == SEQ_START_TOKEN)
-> -               return pos;
->         (*pos)++;
->
->         if (*pos < ubi->peb_count)
-> @@ -432,11 +427,8 @@ static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
->         int err;
->
->         /* If this is the start, print a header */
-> -       if (iter == SEQ_START_TOKEN) {
-> -               seq_puts(s,
-> -                        "physical_block_number\terase_count\tblock_status\tread_status\n");
-> -               return 0;
-> -       }
-> +       if (*block_number == 0)
-> +               seq_puts(s, "physical_block_number\terase_count\n");
->
->         err = ubi_io_is_bad(ubi, *block_number);
->         if (err)
-> --
+Hell Andrew and Al,
 
-Applied!
+Since no more feedback from RFC V3, I suppose the series could be ready
+for merge. And Song has already acked the md patch, then all the rest
+patches are for fs and mm. 
+
+So, if no further comments for the patchset, could you consider to queue
+them from either of your tree to avoid potential build issue? Thank you!
+
+RFC V3: https://lore.kernel.org/lkml/20200507214400.15785-1-guoqing.jiang@cloud.ionos.com/
+RFC V3: https://lore.kernel.org/lkml/20200430214450.10662-1-guoqing.jiang@cloud.ionos.com/
+RFC: https://lore.kernel.org/lkml/20200426214925.10970-1-guoqing.jiang@cloud.ionos.com/
+
+Thanks,
+Guoqing
+
+No change since RFC V3.
+
+RFC V2 -> RFC V3:
+1. rename clear_page_private to detach_page_private.
+2. Update the comments for attach/detach_page_private from Mattew.
+3. add one patch to call new function in mm/migrate.c as suggested by Mattew, but
+   use the conservative way to keep the orginal semantics [2].
+
+
+RFC -> RFC V2:
+1. rename the new functions and add comments for them.
+2. change the return type of attach_page_private.
+3. call attach_page_private(newpage, clear_page_private(page)) to cleanup code further.
+4. avoid potential use-after-free in orangefs.
+
+[1]. https://lore.kernel.org/linux-fsdevel/20200420221424.GH5820@bombadil.infradead.org/
+[2]. https://lore.kernel.org/lkml/e4d5ddc0-877f-6499-f697-2b7c0ddbf386@cloud.ionos.com/
+
+Guoqing Jiang (10):
+  include/linux/pagemap.h: introduce attach/detach_page_private
+  md: remove __clear_page_buffers and use attach/detach_page_private
+  btrfs: use attach/detach_page_private
+  fs/buffer.c: use attach/detach_page_private
+  f2fs: use attach/detach_page_private
+  iomap: use attach/detach_page_private
+  ntfs: replace attach_page_buffers with attach_page_private
+  orangefs: use attach/detach_page_private
+  buffer_head.h: remove attach_page_buffers
+  mm/migrate.c: call detach_page_private to cleanup code
+
+ drivers/md/md-bitmap.c      | 12 ++----------
+ fs/btrfs/disk-io.c          |  4 +---
+ fs/btrfs/extent_io.c        | 21 ++++++---------------
+ fs/btrfs/inode.c            | 23 +++++------------------
+ fs/buffer.c                 | 16 ++++------------
+ fs/f2fs/f2fs.h              | 11 ++---------
+ fs/iomap/buffered-io.c      | 19 ++++---------------
+ fs/ntfs/aops.c              |  2 +-
+ fs/ntfs/mft.c               |  2 +-
+ fs/orangefs/inode.c         | 32 ++++++--------------------------
+ include/linux/buffer_head.h |  8 --------
+ include/linux/pagemap.h     | 37 +++++++++++++++++++++++++++++++++++++
+ mm/migrate.c                |  5 +----
+ 13 files changed, 70 insertions(+), 122 deletions(-)
 
 -- 
-Thanks,
-//richard
+2.17.1
+
