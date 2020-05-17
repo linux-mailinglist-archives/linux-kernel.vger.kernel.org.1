@@ -2,241 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40131D665F
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 08:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C931D6669
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 09:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727015AbgEQGjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 02:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726956AbgEQGjZ (ORCPT
+        id S1727046AbgEQHQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 03:16:20 -0400
+Received: from pv50p00im-ztbu10021601.me.com ([17.58.6.57]:48101 "EHLO
+        pv50p00im-ztbu10021601.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727002AbgEQHQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 02:39:25 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0C5C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 23:39:25 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id y198so1629958pfb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 23:39:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=giiyGxJpm87EbQlUnTEEY4T8mtfUuD9q9mhH9A0THMY=;
-        b=KZNd9WxGab+Wxx2FQYpQK99sEhKX0EoKcsTEvjvPB2y7NMoUBoKvcSkv/v7QP331tU
-         e7dKpZXYUuyFm2A/aNXm06Aznk0GzKC0K0Am1PGl3RkaVdFNo4vKQhxgs0988c7wx34D
-         jDvN0kI+j4vwpSac+x/zh69hjXxP2U4DI4Xu+AW7RWR01urRVl87VyYNZJd802nvta/k
-         wfVEkrY3BeUMOjhlZF0tO+xAlFPTm2f5BcMEMEaJkdC6EqVGI7AcMTSfPRKJWM1d/iKr
-         cXSlLOPPkDJo8rwy3R9/Oe9CQvTfi4K2ak7rUHsObV6Cspny7FsZ1zxgMGDd0dURsxDU
-         kCZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=giiyGxJpm87EbQlUnTEEY4T8mtfUuD9q9mhH9A0THMY=;
-        b=sgY0iS0Q+EcR1vPJCaHCg4MZE8mX2F3TeFXA3fZrt2E/lwHZe6UsntSO7RUhQTdWip
-         q26PtNLX4XzwhWfaogVdSm0c+tgsO8zQ3HCVpffnROSlenQHvAaN3bbirk66brjkbWhR
-         pxuxwWz6cmhR4qyHDDl0zgbwVOmZdFA8zV1cjInkWzElhPP7Z7zQ0jzYFA95AFmj/tVT
-         JP+eAvJLHoTTc5CnJUGwaSJfjsXjWPgPdnHev4sRLAIK3Y0Y++rRuiVFfORVayPvKKvK
-         TLILjMq4epOVVswFg8T6m5IKCMd7fPZQTHvVh6Pf+KnOj6QZiPLxCDjNkVHjqxrV8Mz9
-         vogQ==
-X-Gm-Message-State: AOAM531SYpgHqbarTEyBwwLcGyIYzPFE4ejG65EapIOkqYm6G84F3N6Z
-        d0sHKmdwgE6P+Q6q4xpAWAafEjRqW6Be6g3G6MGbKV6e
-X-Google-Smtp-Source: ABdhPJz9Wc0b/rXgXC6zFchEKbbitNBEl08NrzHB+VnONl/exhhVxqMdiNhlz3AsS5yawpaD9vqc40/WfnFbO0q8OHQ=
-X-Received: by 2002:a62:e51a:: with SMTP id n26mr11295162pff.301.1589697564158;
- Sat, 16 May 2020 23:39:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200516124857.75004-1-lecopzer@gmail.com> <20200516124857.75004-2-lecopzer@gmail.com>
-In-Reply-To: <20200516124857.75004-2-lecopzer@gmail.com>
-From:   Lecopzer Chen <lecopzer@gmail.com>
-Date:   Sun, 17 May 2020 14:39:13 +0800
-Message-ID: <CANr2M1_Jzw1Z6A2Gw4DgcKiZqUd1-Bzn-GM+g1CCHgQP597FBQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] arm_pmu: Add support for perf NMI interrupts registration
-To:     linux-kernel@vger.kernel.org
-Cc:     Jian-Lin Chen <lecopzer.chen@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, matthias.bgg@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
-        mingo@redhat.com, acme@kernel.org, jolsa@redhat.com,
-        namhyung@kernel.org, linux-mediatek@lists.infradead.org,
-        alexander.shishkin@linux.intel.com, peterz@infradead.org,
-        yj.chiang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 17 May 2020 03:16:20 -0400
+X-Greylist: delayed 334 seconds by postgrey-1.27 at vger.kernel.org; Sun, 17 May 2020 03:16:20 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1589699446;
+        bh=on02TmoKtdgOncp6E9k3HdtNsGqN133gVxjq69i9C/Y=;
+        h=Content-Type:From:Subject:Date:Message-Id:To;
+        b=k9OGzAAZ736R1MxXDttqxbvadG1pNiei3p2efEoj5uivuczBCpHeNg7pe30bsAZ9C
+         xzYXBu1te2TlD+UB85lxvR/igExrFdYvMZMLeLNZu8lH5k2GcRWcN+y5RaKg2goDM9
+         GzA0I9lAzcv+NblJq2mkrSnqT7GQuh2ELEYvI8kpVGxXNQoj76Q2wGsBcnZ0ushNkb
+         cbhHXP+U4/PnpWbiaNtBNCCNe2WIWgCo+s2fTyC8rM8Lv4yh82T//uZL7dLzEq97/2
+         TVcl6pKUtZFqrodi0R2fQbrGZ+Fr5DLr9CremeJBkFqzDO3NfievKOrpibiXIm/FQh
+         jFEu40+tUDeTA==
+Received: from [192.168.0.103] (unknown [113.173.234.229])
+        by pv50p00im-ztbu10021601.me.com (Postfix) with ESMTPSA id A85686E04A8;
+        Sun, 17 May 2020 07:10:45 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+From:   Trinh tanLoc <trnhtanloc@icloud.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: Linux Kernel Code of Conduct Committee: August 2019 to November 2019 report
+Date:   Sun, 17 May 2020 14:10:40 +0700
+Message-Id: <4BC53B2F-A22C-4736-B5F6-B1C8C6E4B236@icloud.com>
+Cc:     linux-kernel@vger.kernel.org,
+        tech-board-discuss@lists.linuxfoundation.org
+To:     gregkh@linuxfoundation.org
+X-Mailer: iPad Mail (16G183)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-17_01:2020-05-15,2020-05-17 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ mlxlogscore=733 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2002250000 definitions=main-2005170064
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There was some mistakes when merging this patch.
-The free nmi part is not present :(
-
-The following part will be added in V2 next weekend.
-
-diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
-index fa37b72d19e2..aa9ed09e5303 100644
---- a/drivers/perf/arm_pmu.c
-+++ b/drivers/perf/arm_pmu.c
-@@ -544,6 +544,38 @@ static int armpmu_count_irq_users(const int irq)
-        return count;
- }
-
-+static void armpmu_teardown_percpu_nmi_other(void* info)
-+{
-+       /*
-+        * We don't need to disable preemption since smp_call_function()
-+        * did this for us.
-+        */
-+       teardown_percpu_nmi((uintptr_t) info);
-+}
-+
-+static void _armpmu_free_irq(unsigned int irq, void *dev_id)
-+{
-+       if (armpmu_support_nmi())
-+               free_nmi(irq, dev_id);
-+       else
-+               free_irq(irq, dev_id);
-+}
-+
-+static void _armpmu_free_percpu_irq(unsigned int irq, void __percpu *dev_i=
-d)
-+{
-+       if (armpmu_support_nmi()) {
-+               preempt_disable();
-+               teardown_percpu_nmi(irq);
-+               smp_call_function(armpmu_teardown_percpu_nmi_other,
-+                                 (void *)(uintptr_t) irq, true);
-+               preempt_enable();
-+
-+               free_percpu_nmi(irq, dev_id);
-+       }
-+       else
-+               free_percpu_irq(irq, dev_id);
-+}
-+
- void armpmu_free_irq(int irq, int cpu)
- {
-        if (per_cpu(cpu_irq, cpu) =3D=3D 0)
-@@ -552,9 +584,9 @@ void armpmu_free_irq(int irq, int cpu)
-                return;
-
-        if (!irq_is_percpu_devid(irq))
--               free_irq(irq, per_cpu_ptr(&cpu_armpmu, cpu));
-+               _armpmu_free_irq(irq, per_cpu_ptr(&cpu_armpmu, cpu));
-        else if (armpmu_count_irq_users(irq) =3D=3D 1)
--               free_percpu_irq(irq, &cpu_armpmu);
-+               _armpmu_free_percpu_irq(irq, &cpu_armpmu);
-
-        per_cpu(cpu_irq, cpu) =3D 0;
- }
 
 
-
-
-Thanks,
-Lecopzer
-
-Lecopzer Chen <lecopzer@gmail.com> =E6=96=BC 2020=E5=B9=B45=E6=9C=8816=E6=
-=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8B=E5=8D=888:50=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Register perf interrupts by request_nmi()/percpu_nmi() when both
-> ARM64_PSEUDO_NMI and ARM64_PSEUDO_NMI_PERF are enabled and nmi
-> cpufreature is active.
->
-> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> ---
->  drivers/perf/arm_pmu.c       | 51 +++++++++++++++++++++++++++++++-----
->  include/linux/perf/arm_pmu.h |  6 +++++
->  2 files changed, 51 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
-> index df352b334ea7..fa37b72d19e2 100644
-> --- a/drivers/perf/arm_pmu.c
-> +++ b/drivers/perf/arm_pmu.c
-> @@ -559,6 +559,48 @@ void armpmu_free_irq(int irq, int cpu)
->         per_cpu(cpu_irq, cpu) =3D 0;
->  }
->
-> +static void armpmu_prepare_percpu_nmi_other(void *info)
-> +{
-> +       /*
-> +        * We don't need to disable preemption since smp_call_function()
-> +        * did this for us.
-> +        */
-> +       prepare_percpu_nmi((uintptr_t) info);
-> +}
-> +
-> +static int _armpmu_request_irq(unsigned int irq, irq_handler_t handler,
-> +                              unsigned long flags, int cpu)
-> +{
-> +       if (armpmu_support_nmi())
-> +               return request_nmi(irq, handler, flags, "arm-pmu",
-> +                                  per_cpu_ptr(&cpu_armpmu, cpu));
-> +       return request_irq(irq, handler, flags, "arm-pmu",
-> +                          per_cpu_ptr(&cpu_armpmu, cpu));
-> +}
-> +
-> +static int _armpmu_request_percpu_irq(unsigned int irq, irq_handler_t ha=
-ndler)
-> +{
-> +       if (armpmu_support_nmi()) {
-> +               int err;
-> +
-> +               err =3D request_percpu_nmi(irq, handler, "arm-pmu",
-> +                                        &cpu_armpmu);
-> +               if (err)
-> +                       return err;
-> +
-> +               preempt_disable();
-> +               err =3D prepare_percpu_nmi(irq);
-> +               if (err) {
-> +                       return err;
-> +                       preempt_enable();
-> +               }
-> +               smp_call_function(armpmu_prepare_percpu_nmi_other,
-> +                                 (void *)(uintptr_t) irq, true);
-> +               preempt_enable();
-> +       }
-> +       return request_percpu_irq(irq, handler, "arm-pmu",
-> +                                 &cpu_armpmu);
-> +}
-> +
->  int armpmu_request_irq(int irq, int cpu)
->  {
->         int err =3D 0;
-> @@ -582,12 +624,9 @@ int armpmu_request_irq(int irq, int cpu)
->                             IRQF_NO_THREAD;
->
->                 irq_set_status_flags(irq, IRQ_NOAUTOEN);
-> -               err =3D request_irq(irq, handler, irq_flags, "arm-pmu",
-> -                                 per_cpu_ptr(&cpu_armpmu, cpu));
-> -       } else if (armpmu_count_irq_users(irq) =3D=3D 0) {
-> -               err =3D request_percpu_irq(irq, handler, "arm-pmu",
-> -                                        &cpu_armpmu);
-> -       }
-> +               err =3D _armpmu_request_irq(irq, handler, irq_flags, cpu)=
-;
-> +       } else if (armpmu_count_irq_users(irq) =3D=3D 0)
-> +               err =3D _armpmu_request_percpu_irq(irq, handler);
->
->         if (err)
->                 goto err_out;
-> diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
-> index 5b616dde9a4c..5b878b5a22aa 100644
-> --- a/include/linux/perf/arm_pmu.h
-> +++ b/include/linux/perf/arm_pmu.h
-> @@ -160,6 +160,12 @@ int arm_pmu_acpi_probe(armpmu_init_fn init_fn);
->  static inline int arm_pmu_acpi_probe(armpmu_init_fn init_fn) { return 0;=
- }
->  #endif
->
-> +static inline bool armpmu_support_nmi(void)
-> +{
-> +       return IS_ENABLED(CONFIG_ARM64_PSEUDO_NMI_PERF) &&
-> +              system_uses_irq_prio_masking();
-> +}
-> +
->  /* Internal functions only for core arm_pmu code */
->  struct arm_pmu *armpmu_alloc(void);
->  struct arm_pmu *armpmu_alloc_atomic(void);
-> --
-> 2.25.1
->
+=C4=90=C6=B0=E1=BB=A3c g=E1=BB=ADi t=E1=BB=AB iPad c=E1=BB=A7a t=C3=B4i=
