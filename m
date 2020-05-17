@@ -2,538 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF881D68D9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 18:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8A51D6B48
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 19:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728115AbgEQQ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 12:27:48 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:51431 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728035AbgEQQ1s (ORCPT
+        id S1726288AbgEQRPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 13:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726164AbgEQRPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 12:27:48 -0400
-X-Originating-IP: 91.175.115.186
-Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id E27A220006;
-        Sun, 17 May 2020 16:27:44 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Pawel Dembicki <paweldembicki@gmail.com>
-Cc:     Pawel Dembicki <paweldembicki@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3] ARM: dts: kirkwood: Add Check Point L-50 board
-In-Reply-To: <20200422150007.29119-1-paweldembicki@gmail.com>
-References: <20200422150007.29119-1-paweldembicki@gmail.com>
-Date:   Sun, 17 May 2020 18:27:44 +0200
-Message-ID: <878shqh6gv.fsf@FE-laptop>
+        Sun, 17 May 2020 13:15:31 -0400
+X-Greylist: delayed 2439 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 17 May 2020 10:15:31 PDT
+Received: from mail.default.ilande.uk0.bigv.io (mail.ilande.co.uk [IPv6:2001:41c9:1:41f::167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75374C061A0C;
+        Sun, 17 May 2020 10:15:31 -0700 (PDT)
+Received: from host109-156-104-24.range109-156.btcentralplus.com ([109.156.104.24] helo=[192.168.1.65])
+        by mail.default.ilande.uk0.bigv.io with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <mark.cave-ayland@ilande.co.uk>)
+        id 1jaMFU-0001BY-4U; Sun, 17 May 2020 17:34:53 +0100
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        David Miller <davem@davemloft.net>
+Cc:     arnd@arndb.de, guoren@kernel.org, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20200512171527.570109-1-christian.brauner@ubuntu.com>
+ <20200512.130633.293867428547074800.davem@davemloft.net>
+ <20200517150123.sl36ug27gwnyz6gf@wittgenstein>
+From:   Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>
+Autocrypt: addr=mark.cave-ayland@ilande.co.uk; keydata=
+ mQENBFQJuzwBCADAYvxrwUh1p/PvUlNFwKosVtVHHplgWi5p29t58QlOUkceZG0DBYSNqk93
+ 3JzBTbtd4JfFcSupo6MNNOrCzdCbCjZ64ik8ycaUOSzK2tKbeQLEXzXoaDL1Y7vuVO7nL9bG
+ E5Ru3wkhCFc7SkoypIoAUqz8EtiB6T89/D9TDEyjdXUacc53R5gu8wEWiMg5MQQuGwzbQy9n
+ PFI+mXC7AaEUqBVc2lBQVpAYXkN0EyqNNT12UfDLdxaxaFpUAE2pCa2LTyo5vn5hEW+i3VdN
+ PkmjyPvL6DdY03fvC01PyY8zaw+UI94QqjlrDisHpUH40IUPpC/NB0LwzL2aQOMkzT2NABEB
+ AAG0ME1hcmsgQ2F2ZS1BeWxhbmQgPG1hcmsuY2F2ZS1heWxhbmRAaWxhbmRlLmNvLnVrPokB
+ OAQTAQIAIgUCVAm7PAIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQW8LFb64PMh9f
+ NAgAuc3ObOEY8NbZko72AGrg2tWKdybcMVITxmcor4hb9155o/OWcA4IDbeATR6cfiDL/oxU
+ mcmtXVgPqOwtW3NYAKr5g/FrZZ3uluQ2mtNYAyTFeALy8YF7N3yhs7LOcpbFP7tEbkSzoXNG
+ z8iYMiYtKwttt40WaheWuRs0ZOLbs6yoczZBDhna3Nj0LA3GpeJKlaV03O4umjKJgACP1c/q
+ T2Pkg+FCBHHFP454+waqojHp4OCBo6HyK+8I4wJRa9Z0EFqXIu8lTDYoggeX0Xd6bWeCFHK3
+ DhD0/Xi/kegSW33unsp8oVcM4kcFxTkpBgj39dB4KwAUznhTJR0zUHf63LkBDQRUCbs8AQgA
+ y7kyevA4bpetM/EjtuqQX4U05MBhEz/2SFkX6IaGtTG2NNw5wbcAfhOIuNNBYbw6ExuaJ3um
+ 2uLseHnudmvN4VSJ5Hfbd8rhqoMmmO71szgT/ZD9MEe2KHzBdmhmhxJdp+zQNivy215j6H27
+ 14mbC2dia7ktwP1rxPIX1OOfQwPuqlkmYPuVwZP19S4EYnCELOrnJ0m56tZLn5Zj+1jZX9Co
+ YbNLMa28qsktYJ4oU4jtn6V79H+/zpERZAHmH40IRXdR3hA+Ye7iC/ZpWzT2VSDlPbGY9Yja
+ Sp7w2347L5G+LLbAfaVoejHlfy/msPeehUcuKjAdBLoEhSPYzzdvEQARAQABiQEfBBgBAgAJ
+ BQJUCbs8AhsMAAoJEFvCxW+uDzIfabYIAJXmBepHJpvCPiMNEQJNJ2ZSzSjhic84LTMWMbJ+
+ opQgr5cb8SPQyyb508fc8b4uD8ejlF/cdbbBNktp3BXsHlO5BrmcABgxSP8HYYNsX0n9kERv
+ NMToU0oiBuAaX7O/0K9+BW+3+PGMwiu5ml0cwDqljxfVN0dUBZnQ8kZpLsY+WDrIHmQWjtH+
+ Ir6VauZs5Gp25XLrL6bh/SL8aK0BX6y79m5nhfKI1/6qtzHAjtMAjqy8ChPvOqVVVqmGUzFg
+ KPsrrIoklWcYHXPyMLj9afispPVR8e0tMKvxzFBWzrWX1mzljbBlnV2n8BIwVXWNbgwpHSsj
+ imgcU9TTGC5qd9g=
+Message-ID: <cfc07b63-29e6-cda9-c611-235e37970763@ilande.co.uk>
+Date:   Sun, 17 May 2020 17:34:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200517150123.sl36ug27gwnyz6gf@wittgenstein>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 109.156.104.24
+X-SA-Exim-Mail-From: mark.cave-ayland@ilande.co.uk
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on
+        mail.default.ilande.uk0.bigv.io
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        SURBL_BLOCKED,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH 0/3] sparc: port to copy_thread_tls() and struct
+ kernel_clone_args
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.default.ilande.uk0.bigv.io)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Pawel,
+On 17/05/2020 16:01, Christian Brauner wrote:
 
-> This patch adds dts for the Check Point L-50 from 600/1100 series
-> routers.
->
-> Specification:
-> -CPU: Marvell Kirkwood 88F6821 1200MHz
-> -RAM: 512MB
-> -Flash: NAND 512MB
-> -WiFi: mPCIe card based on Atheros AR9287 b/g/n
-> -WAN: 1 Gigabit Port (Marvell 88E1116R PHY)
-> -LAN: 9 Gigabit Ports (2x Marvell 88E6171(5+4))
-> -USB: 2x USB2.0
-> -Express card slot
-> -SD card slot
-> -Serial console: RJ-45 115200 8n1
-> -Unsupported DSL
->
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
+> On Tue, May 12, 2020 at 01:06:33PM -0700, David Miller wrote:
+>> From: Christian Brauner <christian.brauner@ubuntu.com>
+>> Date: Tue, 12 May 2020 19:15:24 +0200
+>>
+>>> I've tested this series with qemu-system-sparc64 and a Debian Sid image
+>>> and it comes up no problem (Here's a little recording
+>>> https://asciinema.org/a/329510 ).
+>>
+>> Can you show how you put this environment together and also what
+>> compilation tools you used?  Looks great.
+> 
+> Sorry for the delay. That mail somehow got lost in my inbox.
+> 
+> So in general, I used qemu-system-sparc64 which is available in Universe
+> with either Debian or Ubuntu and that's what I've been using as host
+> distro. So you need a 
+> 
+> deb http://us.archive.ubuntu.com/ubuntu/ <release-name> universe
+> deb-src http://us.archive.ubuntu.com/ubuntu/ <release-name> universe
+> deb http://us.archive.ubuntu.com/ubuntu/ <release-name>-updates universe
+> deb-src http://us.archive.ubuntu.com/ubuntu/ <release-name>-updates universe
+> 
+> int /etc/apt/sources.list
+> 
+> So after this, you should be able to install
+> 
+> apt install qemu-system-sparc
+> 
+> Now we need an image and believe it or not there's a guy who lives in
+> Berlin too who builds Debian images for all crazy architectures. You can
+> download them from:
+> 
+> https://cdimage.debian.org/cdimage/ports/
+> 
+> They're built quite frequently. Sometimes you get unlucky because a new
+> kernel won't boot anymore then going a couple of months back usually
+> helps. So for this experiment I downloaded:
+> 
+> https://cdimage.debian.org/cdimage/ports/9.0/sparc64/iso-cd/debian-9.0-sparc64-NETINST-1.iso
+> 
+> then I did:
+> 
+> cd .local/share/qemu
+> truncate -s 15GB sparc64.img
+> 
+> And then to _install_:
+> 
+> qemu-system-sparc64 \
+>         -m 4096 \
+>   	-device virtio-blk-pci,bus=pciB,drive=hd \
+>   	-drive file=/home/brauner/Downloads/debian-9.0-sparc64-NETINST-1.iso,format=raw,if=ide,bus=1,unit=0,media=cdrom,readonly=on \
+> 	-drive file=/home/brauner/.local/share/qemu/sparc64.img,format=raw,if=none,id=hd \
+> 	-boot order=d \
+>         -net nic \
+> 	-net user \
+> 	-nographic \
+> 
+> Then the Debian install will run after it finishes you can boot with:
+> 
+> qemu-system-sparc64 \
+> 	-name debian-unstable-sparc64 -machine sun4u,accel=tcg,usb=off -m 4096 \
+> 	-smp 1,sockets=1,cores=1,threads=1 \
+> 	-uuid ccd8b5c2-b8e4-4d5e-af19-9322cd8e55bf -rtc base=utc -no-reboot -no-shutdown \
+> 	-boot strict=on \
+> 	-drive file=/home/brauner/.local/share/qemu/sparc64.img,if=none,id=drive-ide0-0-1,format=raw,cache=none,aio=native \
+> 	-device ide-hd,bus=ide.0,unit=0,drive=drive-ide0-0-1,id=ide0-0-1 \
+> 	-msg timestamp=on -nographic
+> 
+> If the install isn't setting up the repos right and you can't install
+> stuff the correct url is:
+> http://ftp.ports.debian.org/debian-ports/
+> to put into sources.list
 
-I've missed there was a v3, so I replaced the v2 patch by this patch.
+FWIW if you're running a more recent version of QEMU (>=3.1) then you can also boot
+from the virtio-blk-pci device directly instead of having to switch back to the IDE
+device after installation as you have done above. Should be something like:
 
-Gregory
+qemu-system-sparc64 \
+         -m 4096 \
+   	-device virtio-blk-pci,bus=pciB,drive=hd \
+ 	-drive
+file=/home/brauner/.local/share/qemu/sparc64.img,format=raw,if=none,id=hd,bootindex=0 \
+        -net nic \
+ 	-net user \
+ 	-nographic
 
-> ---
-> Changes in v3:
-> - fix typo and code style issues pointed by OpenWrt guys
-> Changes in v2:
-> - none
->
->  arch/arm/boot/dts/Makefile          |   1 +
->  arch/arm/boot/dts/kirkwood-l-50.dts | 438 ++++++++++++++++++++++++++++
->  2 files changed, 439 insertions(+)
->  create mode 100644 arch/arm/boot/dts/kirkwood-l-50.dts
->
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index e8dd99201397..eba030b3ba69 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -279,6 +279,7 @@ dtb-$(CONFIG_MACH_KIRKWOOD) += \
->  	kirkwood-iomega_ix2_200.dtb \
->  	kirkwood-is2.dtb \
->  	kirkwood-km_kirkwood.dtb \
-> +	kirkwood-l-50.dtb \
->  	kirkwood-laplug.dtb \
->  	kirkwood-linkstation-lsqvl.dtb \
->  	kirkwood-linkstation-lsvl.dtb \
-> diff --git a/arch/arm/boot/dts/kirkwood-l-50.dts b/arch/arm/boot/dts/kirkwood-l-50.dts
-> new file mode 100644
-> index 000000000000..0d81c43a6a73
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/kirkwood-l-50.dts
-> @@ -0,0 +1,438 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Check Point L-50 Board Description
-> + * Copyright 2020 Pawel Dembicki <paweldembicki@gmail.com>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "kirkwood.dtsi"
-> +#include "kirkwood-6281.dtsi"
-> +
-> +/ {
-> +	model = "Check Point L-50";
-> +	compatible = "checkpoint,l-50", "marvell,kirkwood-88f6281", "marvell,kirkwood";
-> +
-> +	memory {
-> +		device_type = "memory";
-> +		reg = <0x00000000 0x20000000>;
-> +	};
-> +
-> +	chosen {
-> +		bootargs = "console=ttyS0,115200n8";
-> +		stdout-path = &uart0;
-> +	};
-> +
-> +	ocp@f1000000 {
-> +		pinctrl: pin-controller@10000 {
-> +			pinctrl-0 = <&pmx_led38 &pmx_sysrst &pmx_button29>;
-> +			pinctrl-names = "default";
-> +
-> +			pmx_sysrst: pmx-sysrst {
-> +				marvell,pins = "mpp6";
-> +				marvell,function = "sysrst";
-> +			};
-> +
-> +			pmx_button29: pmx_button29 {
-> +				marvell,pins = "mpp29";
-> +				marvell,function = "gpio";
-> +			};
-> +
-> +			pmx_led38: pmx_led38 {
-> +				marvell,pins = "mpp38";
-> +				marvell,function = "gpio";
-> +			};
-> +
-> +			pmx_sdio_cd: pmx-sdio-cd {
-> +				marvell,pins = "mpp46";
-> +				marvell,function = "gpio";
-> +			};
-> +		};
-> +
-> +		serial@12000 {
-> +			status = "okay";
-> +		};
-> +
-> +		mvsdio@90000 {
-> +			status = "okay";
-> +			cd-gpios = <&gpio1 14 9>;
-> +		};
-> +
-> +		i2c@11000 {
-> +			status = "okay";
-> +			clock-frequency = <400000>;
-> +
-> +			gpio2: gpio-expander@20{
-> +				#gpio-cells = <2>;
-> +				#interrupt-cells = <2>;
-> +				compatible = "semtech,sx1505q";
-> +				reg = <0x20>;
-> +
-> +				gpio-controller;
-> +			};
-> +
-> +			/* Three GPIOs from 0x21 exp. are undescribed in dts:
-> +			 * 1: DSL module reset (active low)
-> +			 * 5: mPCIE reset (active low)
-> +			 * 6: Express card reset (active low)
-> +			 */
-> +			gpio3: gpio-expander@21{
-> +				#gpio-cells = <2>;
-> +				#interrupt-cells = <2>;
-> +				compatible = "semtech,sx1505q";
-> +				reg = <0x21>;
-> +
-> +				gpio-controller;
-> +			};
-> +
-> +			rtc@30 {
-> +				compatible = "s35390a";
-> +				reg = <0x30>;
-> +			};
-> +		};
-> +	};
-> +
-> +	leds {
-> +		compatible = "gpio-leds";
-> +
-> +		status_green {
-> +			label = "l-50:green:status";
-> +			gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		status_red {
-> +			label = "l-50:red:status";
-> +			gpios = <&gpio3 2 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		wifi {
-> +			label = "l-50:green:wifi";
-> +			gpios = <&gpio2 7 GPIO_ACTIVE_LOW>;
-> +			linux,default-trigger = "phy0tpt";
-> +		};
-> +
-> +		internet_green {
-> +			label = "l-50:green:internet";
-> +			gpios = <&gpio2 3 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		internet_red {
-> +			label = "l-50:red:internet";
-> +			gpios = <&gpio2 1 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		usb1_green {
-> +			label = "l-50:green:usb1";
-> +			gpios = <&gpio2 0 GPIO_ACTIVE_LOW>;
-> +			linux,default-trigger = "usbport";
-> +			trigger-sources = <&hub_port3>;
-> +		};
-> +
-> +		usb1_red {
-> +			label = "l-50:red:usb1";
-> +			gpios = <&gpio2 4 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		usb2_green {
-> +			label = "l-50:green:usb2";
-> +			gpios = <&gpio2 2 GPIO_ACTIVE_LOW>;
-> +			linux,default-trigger = "usbport";
-> +			trigger-sources = <&hub_port1>;
-> +		};
-> +
-> +		usb2_red {
-> +			label = "l-50:red:usb2";
-> +			gpios = <&gpio2 5 GPIO_ACTIVE_LOW>;
-> +		};
-> +	};
-> +
-> +	usb2_pwr {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "usb2_pwr";
-> +
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		gpio = <&gpio3 3 GPIO_ACTIVE_LOW>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	usb1_pwr {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "usb1_pwr";
-> +
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		gpio = <&gpio3 4 GPIO_ACTIVE_LOW>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	mpcie_pwr {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "mpcie_pwr";
-> +
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		gpio = <&gpio3 5 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +	};
-> +
-> +	express_card_pwr {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "express_card_pwr";
-> +
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		gpio = <&gpio3 7 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +	};
-> +
-> +	keys {
-> +		compatible = "gpio-keys";
-> +
-> +		factory_defaults {
-> +			label = "factory_defaults";
-> +			gpios = <&gpio0 29 GPIO_ACTIVE_LOW>;
-> +			linux,code = <KEY_RESTART>;
-> +		};
-> +	};
-> +};
-> +
-> +&mdio {
-> +	status = "okay";
-> +
-> +	ethphy8: ethernet-phy@8 {
-> +		reg = <0x08>;
-> +	};
-> +
-> +	switch0: switch@10 {
-> +		compatible = "marvell,mv88e6085";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		reg = <0x10>;
-> +		dsa,member = <0 0>;
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			port@0 {
-> +				reg = <0>;
-> +				label = "lan5";
-> +			};
-> +
-> +			port@1 {
-> +			       reg = <1>;
-> +			       label = "lan1";
-> +			};
-> +
-> +			port@2 {
-> +			       reg = <2>;
-> +			       label = "lan6";
-> +			};
-> +
-> +			port@3 {
-> +			       reg = <3>;
-> +			       label = "lan2";
-> +			};
-> +
-> +			port@4 {
-> +				reg = <4>;
-> +				label = "lan7";
-> +			};
-> +
-> +			switch0port5: port@5 {
-> +				reg = <5>;
-> +				phy-mode = "rgmii-txid";
-> +				link = <&switch1port5>;
-> +				fixed-link {
-> +					speed = <1000>;
-> +					full-duplex;
-> +				};
-> +			};
-> +
-> +			port@6 {
-> +				reg = <6>;
-> +				label = "cpu";
-> +				phy-mode = "rgmii-id";
-> +				ethernet = <&eth1port>;
-> +				fixed-link {
-> +					speed = <1000>;
-> +					full-duplex;
-> +				};
-> +			};
-> +		};
-> +	};
-> +
-> +	switch@11 {
-> +		compatible = "marvell,mv88e6085";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		reg = <0x11>;
-> +		dsa,member = <0 1>;
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			port@0 {
-> +				reg = <0>;
-> +				label = "lan3";
-> +			};
-> +
-> +			port@1 {
-> +			       reg = <1>;
-> +			       label = "lan8";
-> +			};
-> +
-> +			port@2 {
-> +			       reg = <2>;
-> +			       label = "lan4";
-> +			};
-> +
-> +			port@3 {
-> +			       reg = <3>;
-> +			       label = "dmz";
-> +			};
-> +
-> +			switch1port5: port@5 {
-> +				reg = <5>;
-> +				phy-mode = "rgmii-txid";
-> +				link = <&switch0port5>;
-> +				fixed-link {
-> +					speed = <1000>;
-> +					full-duplex;
-> +				};
-> +			};
-> +
-> +			port@6 {
-> +				reg = <6>;
-> +				label = "dsl";
-> +				fixed-link {
-> +					speed = <100>;
-> +					full-duplex;
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&eth0 {
-> +	status = "okay";
-> +	ethernet0-port@0 {
-> +		phy-handle = <&ethphy8>;
-> +	};
-> +};
-> +
-> +&eth1 {
-> +	status = "okay";
-> +	ethernet1-port@0 {
-> +		speed = <1000>;
-> +		duplex = <1>;
-> +	};
-> +};
-> +
-> +&nand {
-> +	status = "okay";
-> +	pinctrl-0 = <&pmx_nand>;
-> +	pinctrl-names = "default";
-> +
-> +	partition@0 {
-> +		label = "u-boot";
-> +		reg = <0x00000000 0x000c0000>;
-> +	};
-> +
-> +	partition@a0000 {
-> +		label = "bootldr-env";
-> +		reg = <0x000c0000 0x00040000>;
-> +	};
-> +
-> +	partition@100000 {
-> +		label = "kernel-1";
-> +		reg = <0x00100000 0x00800000>;
-> +	};
-> +
-> +	partition@900000 {
-> +		label = "rootfs-1";
-> +		reg = <0x00900000 0x07100000>;
-> +	};
-> +
-> +	partition@7a00000 {
-> +		label = "kernel-2";
-> +		reg = <0x07a00000 0x00800000>;
-> +	};
-> +
-> +	partition@8200000 {
-> +		label = "rootfs-2";
-> +		reg = <0x08200000 0x07100000>;
-> +	};
-> +
-> +	partition@f300000 {
-> +		label = "default_sw";
-> +		reg = <0x0f300000 0x07900000>;
-> +	};
-> +
-> +	partition@16c00000 {
-> +		label = "logs";
-> +		reg = <0x16c00000 0x01800000>;
-> +	};
-> +
-> +	partition@18400000 {
-> +		label = "preset_cfg";
-> +		reg = <0x18400000 0x00100000>;
-> +	};
-> +
-> +	partition@18500000 {
-> +		label = "adsl";
-> +		reg = <0x18500000 0x00100000>;
-> +	};
-> +
-> +	partition@18600000 {
-> +		label = "storage";
-> +		reg = <0x18600000 0x07a00000>;
-> +	};
-> +};
-> +
-> +&rtc {
-> +	status = "disabled";
-> +};
-> +
-> +&pciec {
-> +	status = "okay";
-> +};
-> +
-> +&pcie0 {
-> +	status = "okay";
-> +};
-> +
-> +&sata_phy0 {
-> +	status = "disabled";
-> +};
-> +
-> +&sata_phy1 {
-> +	status = "disabled";
-> +};
-> +
-> +&usb0 {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	status = "okay";
-> +
-> +	port@1 {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		reg = <1>;
-> +		#trigger-source-cells = <0>;
-> +
-> +		hub_port1: port@1 {
-> +			reg = <1>;
-> +			#trigger-source-cells = <0>;
-> +		};
-> +
-> +		hub_port3: port@3 {
-> +			reg = <3>;
-> +			#trigger-source-cells = <0>;
-> +		};
-> +	};
-> +};
-> --
-> 2.20.1
->
+Note the removal of the legacy -boot argument and the addition of "bootindex=0" to
+the -drive argument.
 
--- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+
+ATB,
+
+Mark.
