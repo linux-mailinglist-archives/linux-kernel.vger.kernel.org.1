@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A8D1D6DB5
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9B71D6DBA
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726936AbgEQV4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 17:56:39 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:45146 "EHLO gloria.sntech.de"
+        id S1726966AbgEQV4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 17:56:50 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:45122 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726693AbgEQV4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 17:56:37 -0400
+        id S1726444AbgEQV4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 May 2020 17:56:34 -0400
 Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.sntech)
         by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <heiko@sntech.de>)
-        id 1jaRGf-0002am-0i; Sun, 17 May 2020 23:56:21 +0200
+        id 1jaRGf-0002am-CV; Sun, 17 May 2020 23:56:21 +0200
 From:   Heiko Stuebner <heiko@sntech.de>
 To:     gregkh@linuxfoundation.org
 Cc:     jslaby@suse.com, andriy.shevchenko@linux.intel.com,
@@ -24,9 +24,9 @@ Cc:     jslaby@suse.com, andriy.shevchenko@linux.intel.com,
         linux-kernel@vger.kernel.org,
         christoph.muellner@theobroma-systems.com, heiko@sntech.de,
         Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Subject: [PATCH v3 3/5] serial: 8250: Support separate rs485 rx-enable GPIO
-Date:   Sun, 17 May 2020 23:56:08 +0200
-Message-Id: <20200517215610.2131618-4-heiko@sntech.de>
+Subject: [PATCH v3 4/5] serial: 8250: Handle implementations not having TEMT interrupt using em485
+Date:   Sun, 17 May 2020 23:56:09 +0200
+Message-Id: <20200517215610.2131618-5-heiko@sntech.de>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200517215610.2131618-1-heiko@sntech.de>
 References: <20200517215610.2131618-1-heiko@sntech.de>
@@ -37,97 +37,188 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+From: Giulio Benetti <giulio.benetti@micronovasrl.com>
 
-The RE signal is used to control the duplex mode of transmissions,
-aka receiving data while sending in full duplex mode, while stopping
-receiving data in half-duplex mode.
+Some 8250 ports have a TEMT interrupt but it's not a part of the 8250
+standard, instead only available on some implementations.
 
-On a number of boards the !RE signal is tied to ground so reception
-is always enabled except if the UART allows disabling the receiver.
-This can be taken advantage of to implement half-duplex mode - like
-done on 8250_bcm2835aux.
+The current em485 implementation does not work on ports without it.
+The only chance to make it work is to loop-read on LSR register.
 
-Another solution is to tie !RE to RTS always forcing half-duplex mode.
+So add UART_CAP_TEMT to mark 8250 uarts having this interrupt,
+update all current em485 users with that capability and add
+a loop-reading during  __stop_tx_rs485() on uarts not having it.
 
-And finally there is the option to control the RE signal separately,
-like done here by introducing a new rs485-specific gpio that can be
-set depending on the RX_DURING_TX setting in the common em485 callbacks.
+As __stop_tx_rs485() can also be called from a hard-irq context the
+loop-reading is split. If the fifo clears in under 100us in
+__stop_tx_rs485() itself just the regular stop calls get executed.
+If it takes longer, re-use the existing stop-timer infrastructure
+but with only a 10us timer to again poll the LSR registers.
 
+Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
+[moved to use added UART_CAP_TEMT, use readx_poll_timeout]
 Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 ---
- drivers/tty/serial/8250/8250_port.c |  7 ++++++-
- drivers/tty/serial/serial_core.c    | 10 ++++++++++
- include/linux/serial_core.h         |  1 +
- 3 files changed, 17 insertions(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250.h            |  1 +
+ drivers/tty/serial/8250/8250_bcm2835aux.c |  2 +-
+ drivers/tty/serial/8250/8250_of.c         |  2 +
+ drivers/tty/serial/8250/8250_omap.c       |  2 +-
+ drivers/tty/serial/8250/8250_port.c       | 51 ++++++++++++++++++++---
+ 5 files changed, 51 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8250.h
+index 0df02c055107..50c88dd3f857 100644
+--- a/drivers/tty/serial/8250/8250.h
++++ b/drivers/tty/serial/8250/8250.h
+@@ -82,6 +82,7 @@ struct serial8250_config {
+ #define UART_CAP_MINI	(1 << 17)	/* Mini UART on BCM283X family lacks:
+ 					 * STOP PARITY EPAR SPAR WLEN5 WLEN6
+ 					 */
++#define UART_CAP_TEMT	(1 << 18)	/* UART has TEMT interrupt */
+ 
+ #define UART_BUG_QUOT	(1 << 0)	/* UART has buggy quot LSB */
+ #define UART_BUG_TXEN	(1 << 1)	/* UART has buggy TX IIR status */
+diff --git a/drivers/tty/serial/8250/8250_bcm2835aux.c b/drivers/tty/serial/8250/8250_bcm2835aux.c
+index 1cc0620b596c..c2226f1fd6ac 100644
+--- a/drivers/tty/serial/8250/8250_bcm2835aux.c
++++ b/drivers/tty/serial/8250/8250_bcm2835aux.c
+@@ -91,7 +91,7 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	/* initialize data */
+-	up.capabilities = UART_CAP_FIFO | UART_CAP_MINI;
++	up.capabilities = UART_CAP_FIFO | UART_CAP_MINI | UART_CAP_TEMT;
+ 	up.port.dev = &pdev->dev;
+ 	up.port.regshift = 2;
+ 	up.port.type = PORT_16550;
+diff --git a/drivers/tty/serial/8250/8250_of.c b/drivers/tty/serial/8250/8250_of.c
+index 0b89954a3781..e96abd51454c 100644
+--- a/drivers/tty/serial/8250/8250_of.c
++++ b/drivers/tty/serial/8250/8250_of.c
+@@ -223,6 +223,8 @@ static int of_platform_serial_probe(struct platform_device *ofdev)
+ 			&port8250.overrun_backoff_time_ms) != 0)
+ 		port8250.overrun_backoff_time_ms = 0;
+ 
++	port8250.capabilities |= UART_CAP_TEMT;
++
+ 	ret = serial8250_register_8250_port(&port8250);
+ 	if (ret < 0)
+ 		goto err_dispose;
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
+index 6cae3782e5fa..241d7307c38f 100644
+--- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -1144,7 +1144,7 @@ static int omap8250_probe(struct platform_device *pdev)
+ 	up.port.regshift = 2;
+ 	up.port.fifosize = 64;
+ 	up.tx_loadsz = 64;
+-	up.capabilities = UART_CAP_FIFO;
++	up.capabilities = UART_CAP_FIFO | UART_CAP_TEMT;
+ #ifdef CONFIG_PM
+ 	/*
+ 	 * Runtime PM is mostly transparent. However to do it right we need to a
 diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index 6975bd3ecb7d..9e8fec85d1a3 100644
+index 9e8fec85d1a3..a456e81d3e0b 100644
 --- a/drivers/tty/serial/8250/8250_port.c
 +++ b/drivers/tty/serial/8250/8250_port.c
-@@ -1444,6 +1444,7 @@ static void serial8250_stop_rx(struct uart_port *port)
- void serial8250_em485_stop_tx(struct uart_8250_port *p)
- {
- 	unsigned char mcr = serial8250_in_MCR(p);
-+	struct uart_port *port = &p->port;
- 
- 	if (p->port.rs485.flags & SER_RS485_RTS_AFTER_SEND)
- 		mcr |= UART_MCR_RTS;
-@@ -1457,6 +1458,7 @@ void serial8250_em485_stop_tx(struct uart_8250_port *p)
- 	 * Enable previously disabled RX interrupts.
- 	 */
- 	if (!(p->port.rs485.flags & SER_RS485_RX_DURING_TX)) {
-+		gpiod_set_value(port->rs485_re_gpio, 1);
- 		serial8250_clear_and_reinit_fifos(p);
- 
- 		p->ier |= UART_IER_RLSI | UART_IER_RDI;
-@@ -1597,9 +1599,12 @@ static inline void __start_tx(struct uart_port *port)
- void serial8250_em485_start_tx(struct uart_8250_port *up)
- {
- 	unsigned char mcr = serial8250_in_MCR(up);
-+	struct uart_port *port = &up->port;
- 
--	if (!(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
-+	if (!(up->port.rs485.flags & SER_RS485_RX_DURING_TX)) {
-+		gpiod_set_value(port->rs485_re_gpio, 0);
- 		serial8250_stop_rx(&up->port);
-+	}
- 
- 	if (up->port.rs485.flags & SER_RS485_RTS_ON_SEND)
- 		mcr |= UART_MCR_RTS;
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-index 15ad8737b72b..c0d3ab32b49a 100644
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -3149,6 +3149,16 @@ int uart_get_rs485_mode(struct uart_port *port)
- 		return ret;
- 	}
- 
-+	port->rs485_re_gpio = devm_gpiod_get_optional(dev, "rs485-rx-enable",
-+						      GPIOD_OUT_HIGH);
-+	if (IS_ERR(port->rs485_re_gpio)) {
-+		ret = PTR_ERR(port->rs485_re_gpio);
-+		port->rs485_re_gpio = NULL;
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "Cannot get rs485-rx-enable-gpios\n");
-+		return ret;
-+	}
-+
- 	return 0;
+@@ -19,6 +19,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/ioport.h>
+ #include <linux/init.h>
++#include <linux/iopoll.h>
+ #include <linux/console.h>
+ #include <linux/sysrq.h>
+ #include <linux/delay.h>
+@@ -1467,11 +1468,26 @@ void serial8250_em485_stop_tx(struct uart_8250_port *p)
  }
- EXPORT_SYMBOL_GPL(uart_get_rs485_mode);
-diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
-index 108f95411471..dfe18ddb1674 100644
---- a/include/linux/serial_core.h
-+++ b/include/linux/serial_core.h
-@@ -253,6 +253,7 @@ struct uart_port {
- 	const struct attribute_group **tty_groups;	/* all attributes (serial core use only) */
- 	struct serial_rs485     rs485;
- 	struct gpio_desc	*rs485_term_gpio;	/* enable RS485 bus termination */
-+	struct gpio_desc	*rs485_re_gpio;		/* gpio RS485 receive enable */
- 	struct serial_iso7816   iso7816;
- 	void			*private_data;		/* generic platform data pointer */
- };
+ EXPORT_SYMBOL_GPL(serial8250_em485_stop_tx);
+ 
++static inline int __get_lsr(struct uart_8250_port *p)
++{
++	return serial_in(p, UART_LSR);
++}
++
++static inline int __wait_for_empty(struct uart_8250_port *p, u64 timeout_us)
++{
++	int lsr;
++
++	return readx_poll_timeout(__get_lsr, p, lsr,
++				  (lsr & BOTH_EMPTY) == BOTH_EMPTY,
++				  0, timeout_us);
++}
++
+ static enum hrtimer_restart serial8250_em485_handle_stop_tx(struct hrtimer *t)
+ {
+ 	struct uart_8250_em485 *em485;
+ 	struct uart_8250_port *p;
+ 	unsigned long flags;
++	enum hrtimer_restart restart = HRTIMER_NORESTART;
+ 
+ 	em485 = container_of(t, struct uart_8250_em485, stop_tx_timer);
+ 	p = em485->port;
+@@ -1479,13 +1495,27 @@ static enum hrtimer_restart serial8250_em485_handle_stop_tx(struct hrtimer *t)
+ 	serial8250_rpm_get(p);
+ 	spin_lock_irqsave(&p->port.lock, flags);
+ 	if (em485->active_timer == &em485->stop_tx_timer) {
++		/*
++		 * On 8250 without TEMT interrupt, check LSR state and
++		 * restart timer if not empty yet.
++		 */
++		if (!(p->capabilities & UART_CAP_TEMT)) {
++			int ret = __wait_for_empty(p, 100);
++
++			if (ret < 0) {
++				restart = HRTIMER_RESTART;
++				goto out;
++			}
++		}
++
+ 		p->rs485_stop_tx(p);
+ 		em485->active_timer = NULL;
+ 		em485->tx_stopped = true;
+ 	}
++out:
+ 	spin_unlock_irqrestore(&p->port.lock, flags);
+ 	serial8250_rpm_put(p);
+-	return HRTIMER_NORESTART;
++	return restart;
+ }
+ 
+ static void start_hrtimer_ms(struct hrtimer *hrt, unsigned long msec)
+@@ -1509,6 +1539,13 @@ static void __stop_tx_rs485(struct uart_8250_port *p)
+ 		em485->active_timer = &em485->stop_tx_timer;
+ 		start_hrtimer_ms(&em485->stop_tx_timer,
+ 				   p->port.rs485.delay_rts_after_send);
++	} else if (!(p->capabilities & UART_CAP_TEMT) &&
++		   __wait_for_empty(p, 100)) {
++		/* Short timer of 1us to check for clear fifos */
++		ktime_t tim = ktime_set(0, 1000);
++
++		em485->active_timer = &em485->stop_tx_timer;
++		hrtimer_start(&em485->stop_tx_timer, tim, HRTIMER_MODE_REL);
+ 	} else {
+ 		p->rs485_stop_tx(p);
+ 		em485->active_timer = NULL;
+@@ -1531,11 +1568,15 @@ static inline void __stop_tx(struct uart_8250_port *p)
+ 		/*
+ 		 * To provide required timeing and allow FIFO transfer,
+ 		 * __stop_tx_rs485() must be called only when both FIFO and
+-		 * shift register are empty. It is for device driver to enable
+-		 * interrupt on TEMT.
++		 * shift register are empty. If 8250 port supports it,
++		 * it is for device driver to enable interrupt on TEMT.
++		 * Otherwise must loop-read until TEMT and THRE flags are set,
++		 * which happens in __stop_tx_rs485()
+ 		 */
+-		if ((lsr & BOTH_EMPTY) != BOTH_EMPTY)
+-			return;
++		if (p->capabilities & UART_CAP_TEMT) {
++			if ((lsr & BOTH_EMPTY) != BOTH_EMPTY)
++				return;
++		}
+ 
+ 		__stop_tx_rs485(p);
+ 	}
 -- 
 2.25.1
 
