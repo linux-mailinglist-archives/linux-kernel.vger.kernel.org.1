@@ -2,169 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3A81D682A
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 15:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EE41D6837
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 15:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727981AbgEQNIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 09:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47300 "EHLO
+        id S1728033AbgEQNN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 09:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727893AbgEQNIe (ORCPT
+        with ESMTP id S1727929AbgEQNNP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 09:08:34 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC3BC061A0C;
-        Sun, 17 May 2020 06:08:34 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id z22so5649468lfd.0;
-        Sun, 17 May 2020 06:08:34 -0700 (PDT)
+        Sun, 17 May 2020 09:13:15 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D2FC05BD09
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 06:13:14 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id u188so7338259wmu.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 06:13:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aKLX6VTSdRiK9YTLmZQPvCDlkSARMjWiCKvL6+N4SsM=;
-        b=ARxbEcTMlApvt0jToNOC++bf5g9cpZWXPfXh2ZQ4yILhpPXcpx+KnOpcEIVWUIduux
-         78WCdMKEhpwQXPlmc6EJAVwgPNMQh53lfauVqhJMtOCvJiKLjapck68/f/vaS+jbndrz
-         6jr+MwnvXvV9AamXrumbnoq1Q7iH65v4UgnA0o6YisRDm5xiZMzZFWyukZTkmTv0/uC6
-         B9KXIYSCtoR6BfBYMTzKYS7PNFJ21QQ1I8HT5ISjNc+KZ2bg57e/W4qeF6Sj0072N3jr
-         r4JhG9UW6mo0v6DMLhUBfWdmGFeC3XfxA1lJInlboU7+zk0unaGHt7W9VmL7BIGnSTjd
-         N2gg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xbx4AAvUu+PImpbbOyBz7usygROnOomrJpTLkIJ23N0=;
+        b=i5eAJGHqhepJuY5F2o5LNzQ8qvuNQ04n2slXSGTKH++XkQtTYgZ40Ahbzg/r+zL4PB
+         Cx8/QZ4+tE3lHCwB06PAPtf3PB+k7X0Eu8gEWRB0nZIqX/9Hffetm3dK2r8qCbC9/lcE
+         F/ctmyPX4NT/hFTPGtnPAqBE/QMxDb2OCuV/aImIK6+ILpGgEyimZ4hbvLriHbjz430m
+         q6MVpZr+vRbgSLl9yVz6HN7j23f+1vIOew9RwJBlI4UzqOGDnjRS2eDaL5dKy8o534Kh
+         6S5t9onBBZWaIgiM0yjOKsPDZclMmmMZ1Wmr+5OZyKGgubw2KVEaryTVvu+smFRBODOV
+         9mDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=aKLX6VTSdRiK9YTLmZQPvCDlkSARMjWiCKvL6+N4SsM=;
-        b=NYXQNfZN+mUV8DNsgrRcsrHxQ1bvJri20BbfaPBtpUV8ZeBgrOR4OsFHByV691oDYz
-         hnt4rT0UvxIvip2q7+6QmPOtUB4XGrlh8PiPLPInsP5xwdwvAg8ugr+125KflyMPh0WS
-         SEEG15du6NGl8I9sfPc0f+nv/g0lhHaCi/MdRCzg7GBZoNK438E+reQ4LyInNCq4Ppvl
-         0VKx6Tw1vot3OC+oMRhXmsIga4oP8N+jtGPGZBDCjMIk1xETKhvmOwIEvBZqj/Pjc1Lo
-         TseHz/OcxdFVh56BvNp9buh7IoyvOBTz4T0vb0n685R+Uhy5P7SL5aO3qFoI9tk5r/eB
-         nn5w==
-X-Gm-Message-State: AOAM533i0QKjhY2+mqN6tsWbAu7i6461GtDs7K4pQynTtBISsCE2EKk7
-        vx+yskPGwzMm0YHy8/DhNvs=
-X-Google-Smtp-Source: ABdhPJwzGiXoJSyYrOM4t1lYkY/l5h0javR+XPysJOQttuqzPuboHKC4FPW4dbKr1xcQ6sKh9P/iEg==
-X-Received: by 2002:a19:c04:: with SMTP id 4mr8457763lfm.17.1589720912837;
-        Sun, 17 May 2020 06:08:32 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id j15sm4098636lja.71.2020.05.17.06.08.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 May 2020 06:08:32 -0700 (PDT)
-Subject: Re: [PATCH v11 33/56] Input: atmel_mxt_ts - delay enabling IRQ when
- not using regulators
-To:     "Wang, Jiada" <jiada_wang@mentor.com>
-Cc:     nick@shmanahar.org, dmitry.torokhov@gmail.com, jikos@kernel.org,
-        benjamin.tissoires@redhat.com, bsz@semihalf.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        erosca@de.adit-jv.com, Andrew_Gabbasov@mentor.com
-References: <20200508055656.96389-1-jiada_wang@mentor.com>
- <20200508055656.96389-34-jiada_wang@mentor.com>
- <3a942afa-c047-2c88-1c8e-a90fa018738e@gmail.com>
- <6af23ae6-2f1c-0459-d2b6-1b01ddb0c3dc@mentor.com>
- <c88d24ef-e0e0-db3b-1000-b21af906eb4f@gmail.com>
- <aaf99a11-037e-93d8-93e4-d83e3aa4a42e@mentor.com>
- <63c93fc0-ac09-ec77-c590-08e419734205@gmail.com>
- <8c6f73a2-f613-b402-d727-5cb7fb3e1f09@mentor.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <2e41656c-e7e4-5dcb-1156-bcfcbc8ea595@gmail.com>
-Date:   Sun, 17 May 2020 16:08:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        bh=xbx4AAvUu+PImpbbOyBz7usygROnOomrJpTLkIJ23N0=;
+        b=J2zwN5rhlUThN0qMbZ3+jAicCzd265tH07oGwR1gldwI7MUZ6MMvDalSMcAidqhoa8
+         CMInxdpSr7KQUmMLkiCVwqw95PXQRuTNSLu61xdlH/te5Q8jDCxE+L/reO8BqJvlVVPc
+         4JV9qjfT3pQA+Ys1/Smmv4DJ+t4I4j4aNwEyYTgU/Oecb/gKpym++G4vY2goMUo//uaR
+         2qNSU/T1u2+aoVEBp5qPQPyFPvU0+gJG6ueJQEsNs+HvB6hrLWbBLDaq39bFKcoji/hu
+         w6jjfcf2f9nWFB1lAx4K+uyiHO3jLOjeWcuj+7IWQB9q3tokmUnisdkL5x9cbN7guhR8
+         PAkg==
+X-Gm-Message-State: AOAM532epy73/8wvCsEPno2UNmabCgWtXQe0PDYdTKEQffU7kfTg1bXg
+        6gW/1W2kspFN+RTIhGfXoJOXZg==
+X-Google-Smtp-Source: ABdhPJxNO/826caXBkww9KVSmNWQtlu/p2qQaVMMhAqWUmhvt4lH1qWiwY1D49vFYz3rd5lMNgf6BA==
+X-Received: by 2002:a1c:307:: with SMTP id 7mr3409917wmd.104.1589721191385;
+        Sun, 17 May 2020 06:13:11 -0700 (PDT)
+Received: from localhost.localdomain ([176.61.57.127])
+        by smtp.gmail.com with ESMTPSA id i21sm10962271wml.5.2020.05.17.06.13.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 May 2020 06:13:10 -0700 (PDT)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        shawn.guo@linaro.org, p.zabel@pengutronix.de,
+        vincent.knecht@mailoo.org, konradybcio@gmail.com,
+        bryan.odonoghue@linaro.org
+Subject: [PATCH v5 0/2] Add Qualcomm MSM8939 GCC binding and driver
+Date:   Sun, 17 May 2020 14:13:46 +0100
+Message-Id: <20200517131348.688405-1-bryan.odonoghue@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <8c6f73a2-f613-b402-d727-5cb7fb3e1f09@mentor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.05.2020 06:32, Wang, Jiada пишет:
-> Hello Dmitry
-> 
-> On 2020/05/14 13:53, Dmitry Osipenko wrote:
->> 13.05.2020 08:07, Wang, Jiada пишет:
->>> Hello Dmitry
->>>
->>> On 2020/05/12 8:13, Dmitry Osipenko wrote:
->>>> 11.05.2020 05:05, Wang, Jiada пишет:
->>>>> Hello Dmitry
->>>>>
->>>>> Thanks for your comment and test,
->>>>>
->>>>> can you let me know which platform (board) you are using for test,
->>>>> and DTS changes if you have added any.
->>>>
->>>> That's this device-tree [1] without any extra changes.
->>>>
->>> I am using Samsung Chromebook Pro for testing,
->>> but obviously some of the use cases it can't cover.
->>>
->>> I also would like to test on same device you are using,
->>> would you please let me know how to boot Acer Iconia Tab A500
->>> with custom images. Are you booting Linux or Android on it?
->>
->> I'm using Ubuntu 20.04 on it at the moment. In order to boot custom
->> images you'll need at least to install a custom recovery, which will
->> allow to flash boot.img on eMMC storage.
->>
->> Ideally, you'll need to install an unlocked bootloader that will enable
->> Android's fastboot, and thus, allow to easily boot kernel zImage without
->> messing with flashing boot images.
->>
->> Could you please tell what is the current state of yours device: does it
->> have a stock Android installed? is it rooted? is custom recovery
->> installed?
->>
-> Thanks for your information
-> 
-> By following instructions found in XDA forums,
-> now I am able to install an unlocked bootloader,
-> boot among primary kernel, recovery kernel or fastboot,
-> an Android custom stock rom also has been installed
+V5:
+- Drops unnecessary .name = "xo" - Stephen
+- Re-orders probe to put PLL configuration and regmap before
+  qcom_cc_really_probe() - Stephen
+- Removes MODULE_ALIAS("platform:gcc-msm8939"); - Stephen
+- Marks Shawn's contribution as Co-developed-by - Stephen
+- https://github.com/bryanodonoghue/linux/pull/new/clk-next+msm8939-v4
+- https://github.com/bryanodonoghue/linux/pull/new/clk-next+msm8939-v5
+- https://github.com/bryanodonoghue/linux/pull/new/clk-next+msm8939-tip-v5
 
-Awesome!
+V4:
+- Moves headers from 1/1 to 0/1 - patch squashing error - Rob
+- Identifies licensing as GPL v2.0-only, thanks for pointing this out. - Rob
+- Adds Tested-by: Vincent Knecht <vincent.knecht@mailoo.org>, thanks for
+  testing this. - Vincent
+- https://github.com/bryanodonoghue/linux/pull/new/clk-next+msm8939-v2.1
+- https://github.com/bryanodonoghue/linux/pull/new/clk-next+msm8939-v4
 
-> Could you please let me know how to install local built ubuntu images
+V3:
+This update removes the old clock name arrays which I forgot to prune in
+the previous V2.
 
-Sure, please follow these steps:
+git diff bod/clk-next+msm8939 bod/clk-next+msm8939-v2.1
 
-1. Download rootfs from
-http://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04-base-armhf.tar.gz
+V2:
+This update does the following
 
-2. Extract it wherever you want yours root to be, like ExternalSD card
-or eMMC /data partition or even NFS directory if you'll use usbnet.
+1. Drops code in the probe routine to add xo and sleep_clk. Instead
+   the DTS for the GCC will need to declare both of those clocks for the
+   GCC controller.
 
-3. Clone this kernel https://github.com/grate-driver/linux which is a
-recent upstream linux-next + work-in-progress patches that haven't been
-merged into upstream yet. For example DRM bridges and Tegra Partition
-Table patches are under review now.
+2. Supplants parent_names for parent_data for all clocks.
 
-4. Select tegra_defconfig:
+3. Squashes down the previous three patches into two.
 
-	ARCH=arm make tegra_defconfig
+4. Drops the git log of copying files. The git log makes clear the silicon
+   is highly similar, so, you can just as easily read the log and do a
+   diff.
 
-5. Compile kernel:
+5. Doesn't update the MSM8916 with parent_data.
+   Happy to do this at a later date but, don't have the time to validate
+   this properly at the moment. This set focuses on the MSM8939 alone.
 
-	ARCH=arm make
+6. Dropped comment and boilerplate license text as indicated.
 
-6. Append DTB to zImage:
+7. Dropped dependency on COMMON_CLK_QCOM seems to not be needed.
 
-	cat arch/arm/boot/zImage
-arch/arm/boot/dts/tegra20-acer-a500-picasso.dtb > arch/arm/boot/zImage-dtb
+8. Easily view the changes here:
+   git add bod https://github.com/bryanodonoghue/linux.git
+   git fetch bod
+   git diff bod/clk-next+msm8939 bod/clk-next+msm8939-v2   
 
-7. Turn on A500 and select 'fastboot' option in the bootloader's menu.
+V1:
+These three patches add support for the MSM8939 Global Clock Controller.
+The MSM8939 is a derivation of the MSM8916 sharing the large majority of
+its clock settings with MSM8916, however, there are enough changes, in some
+cases mutually incompatible changes that necessitate a separate driver.
 
-8. Boot compiled kernel:
+I thought it was both important and useful to show in the git log the
+differences between MSM8916 and MSM8939 so, one patch copies the MSM8916
+driver while another patch applies the entire gamut of MSM8939 changes,
+squashing down from a git log of approximately 31 separate commits.
 
-	fastboot -c "root=/dev/mmcblk2p8 gpt tegraboot=sdmmc" boot
-arch/arm/boot/zImage-dtb
+For reference that log is here:
+https://github.com/bryanodonoghue/linux/pull/new/msm8939-clk-next-reference-log
 
-9. Grab touchscreen/WiFi/Bluetooth firmware files from
-https://github.com/digetx/linux-firmware
+Generally speaking MSM8939 differes from MSM8916 in two key ways.
 
-10. Grab ALSA UCM rule from https://github.com/digetx/alsa-ucm-conf
+- New and higher clock frequencies for existing IP blocks.
+- New PLLs to drive those higher frequencies
 
-11. Enjoy!
+Bryan O'Donoghue (2):
+  clk: qcom: Add DT bindings for MSM8939 GCC
+  clk: qcom: gcc-msm8939: Add MSM8939 Generic Clock Controller
 
-Please let me know you'll experience any problems, I'll be glad to help.
+ .../devicetree/bindings/clock/qcom,gcc.yaml   |    3 +
+ drivers/clk/qcom/Kconfig                      |    8 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/gcc-msm8939.c                | 3989 +++++++++++++++++
+ include/dt-bindings/clock/qcom,gcc-msm8939.h  |  206 +
+ include/dt-bindings/reset/qcom,gcc-msm8939.h  |  110 +
+ 6 files changed, 4317 insertions(+)
+ create mode 100644 drivers/clk/qcom/gcc-msm8939.c
+ create mode 100644 include/dt-bindings/clock/qcom,gcc-msm8939.h
+ create mode 100644 include/dt-bindings/reset/qcom,gcc-msm8939.h
+
+-- 
+2.25.1
+
