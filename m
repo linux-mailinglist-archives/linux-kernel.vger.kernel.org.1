@@ -2,54 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA901D650C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 03:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D180A1D6510
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 03:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726956AbgEQBSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 21:18:40 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15880 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726891AbgEQBSk (ORCPT
+        id S1726959AbgEQBXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 21:23:39 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11725 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726797AbgEQBXj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 21:18:40 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ec090640000>; Sat, 16 May 2020 18:16:20 -0700
+        Sat, 16 May 2020 21:23:39 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ec091cd0000>; Sat, 16 May 2020 18:22:22 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
   by hqpgpgate101.nvidia.com (PGP Universal service);
-  Sat, 16 May 2020 18:18:39 -0700
+  Sat, 16 May 2020 18:23:38 -0700
 X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Sat, 16 May 2020 18:18:39 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 17 May
- 2020 01:18:39 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
+        by hqpgpgate101.nvidia.com on Sat, 16 May 2020 18:23:38 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 17 May
+ 2020 01:23:38 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL111.nvidia.com
  (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Sun, 17 May 2020 01:18:39 +0000
-Received: from sandstorm.nvidia.com (Not Verified[10.2.48.175]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ec090ef0001>; Sat, 16 May 2020 18:18:39 -0700
+ Transport; Sun, 17 May 2020 01:23:38 +0000
+Received: from sandstorm.nvidia.com (Not Verified[10.2.48.175]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5ec092190001>; Sat, 16 May 2020 18:23:37 -0700
 From:   John Hubbard <jhubbard@nvidia.com>
 To:     LKML <linux-kernel@vger.kernel.org>
-CC:     John Hubbard <jhubbard@nvidia.com>, Wu Hao <hao.wu@intel.com>,
-        Moritz Fischer <mdf@kernel.org>, <linux-fpga@vger.kernel.org>
-Subject: [PATCH] fpga: dfl: afu: convert get_user_pages() --> pin_user_pages()
-Date:   Sat, 16 May 2020 18:18:37 -0700
-Message-ID: <20200517011837.382189-1-jhubbard@nvidia.com>
+CC:     John Hubbard <jhubbard@nvidia.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>
+Subject: [PATCH] rds: convert get_user_pages() --> pin_user_pages()
+Date:   Sat, 16 May 2020 18:23:36 -0700
+Message-ID: <20200517012336.382624-1-jhubbard@nvidia.com>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 X-NVConfidentiality: public
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1589678180; bh=sy5Ui646d3AglpuvJNOHEZAV8PuLDjy03kGDT/+711M=;
+        t=1589678542; bh=7TXMCvjqbZxuHVM5y97rS09KLJM6SOiZujb09twA/Dk=;
         h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
          MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
          Content-Type;
-        b=DgTc3wEMsvu2GAVTe6yofPjfTj/tyiextWIZRdMbPXhkzSY/yAA5OoUXktRiPhoRv
-         0BjkGKWXewSnc4RMorHErEMcKvvNQgDvZQtsgaEE/BovLIivQKFw8gsC7HCnuPkzYO
-         ER8kWAXH14Cz3Zs9HExShG40WMtQvLEnXOHurO6aCcvFSpPo3gvt574Bp4EYm4I0Ag
-         AbnypOmDR8lEtyb5oNrCosXh0MuW//q7GGNn4ZORbCW4iNRjpXotitBIzqibmIjeFY
-         u5yMkyQnjhr10tRkhT7g+1BoJrqeEPw6KUYSF9yiK62Xj5aPW96xhMLgaDASfZdyAd
-         AnEs8xyOkoO1A==
+        b=p0pBPkQo7mb5Cwoe2du0glhdJwKo1677mvVSBz22sE9cCQM3wGXIlE5laIOCpyHYr
+         3qa8VtddbcJJhPx9D+WMM0oxMHvZR38SI08df83Ab9p7pnBmsuhWAIpgl4xV3PBtFa
+         KmsStxBTAZzOOuN/qKmICrQuaqSOPsDArBzf7+rLWbiu9xXJ7/Wvc15sev8rRw/Nba
+         ogtop5i930W9FQEhrNP73FVSCcYjNYgM7sU1FXzygboz+d+uKyT0Z50TedeVRoiInM
+         xkgR8Yv5tGyF5UfbyoXwQE4no8zx1mhMLQRR9lUIB9qGCdxfwU6Yr11M/3oO8C1CXk
+         L0IYKYw6T1CYw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -69,65 +71,50 @@ file systems' use of those pages.
 [2] "Explicit pinning of user-space pages":
     https://lwn.net/Articles/807108/
 
-Cc: Wu Hao <hao.wu@intel.com>
-Cc: Moritz Fischer <mdf@kernel.org>
-Cc: linux-fpga@vger.kernel.org
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org
+Cc: linux-rdma@vger.kernel.org
+Cc: rds-devel@oss.oracle.com
 Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 ---
- drivers/fpga/dfl-afu-dma-region.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+ net/rds/info.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/fpga/dfl-afu-dma-region.c b/drivers/fpga/dfl-afu-dma-r=
-egion.c
-index 62f924489db5..84f696d5ba82 100644
---- a/drivers/fpga/dfl-afu-dma-region.c
-+++ b/drivers/fpga/dfl-afu-dma-region.c
-@@ -16,15 +16,6 @@
-=20
- #include "dfl-afu.h"
-=20
--static void put_all_pages(struct page **pages, int npages)
--{
--	int i;
--
--	for (i =3D 0; i < npages; i++)
--		if (pages[i])
--			put_page(pages[i]);
--}
--
- void afu_dma_region_init(struct dfl_feature_platform_data *pdata)
- {
- 	struct dfl_afu *afu =3D dfl_fpga_pdata_get_private(pdata);
-@@ -57,7 +48,7 @@ static int afu_dma_pin_pages(struct dfl_feature_platform_=
-data *pdata,
- 		goto unlock_vm;
+diff --git a/net/rds/info.c b/net/rds/info.c
+index 03f6fd56d237..e1d63563e81c 100644
+--- a/net/rds/info.c
++++ b/net/rds/info.c
+@@ -162,7 +162,6 @@ int rds_info_getsockopt(struct socket *sock, int optnam=
+e, char __user *optval,
+ 	struct rds_info_lengths lens;
+ 	unsigned long nr_pages =3D 0;
+ 	unsigned long start;
+-	unsigned long i;
+ 	rds_info_func func;
+ 	struct page **pages =3D NULL;
+ 	int ret;
+@@ -193,7 +192,7 @@ int rds_info_getsockopt(struct socket *sock, int optnam=
+e, char __user *optval,
+ 		ret =3D -ENOMEM;
+ 		goto out;
  	}
+-	ret =3D get_user_pages_fast(start, nr_pages, FOLL_WRITE, pages);
++	ret =3D pin_user_pages_fast(start, nr_pages, FOLL_WRITE, pages);
+ 	if (ret !=3D nr_pages) {
+ 		if (ret > 0)
+ 			nr_pages =3D ret;
+@@ -235,8 +234,7 @@ int rds_info_getsockopt(struct socket *sock, int optnam=
+e, char __user *optval,
+ 		ret =3D -EFAULT;
 =20
--	pinned =3D get_user_pages_fast(region->user_addr, npages, FOLL_WRITE,
-+	pinned =3D pin_user_pages_fast(region->user_addr, npages, FOLL_WRITE,
- 				     region->pages);
- 	if (pinned < 0) {
- 		ret =3D pinned;
-@@ -72,7 +63,7 @@ static int afu_dma_pin_pages(struct dfl_feature_platform_=
-data *pdata,
- 	return 0;
+ out:
+-	for (i =3D 0; pages && i < nr_pages; i++)
+-		put_page(pages[i]);
++	unpin_user_pages(pages, nr_pages);
+ 	kfree(pages);
 =20
- put_pages:
--	put_all_pages(region->pages, pinned);
-+	unpin_user_pages(region->pages, pinned);
- free_pages:
- 	kfree(region->pages);
- unlock_vm:
-@@ -94,7 +85,7 @@ static void afu_dma_unpin_pages(struct dfl_feature_platfo=
-rm_data *pdata,
- 	long npages =3D region->length >> PAGE_SHIFT;
- 	struct device *dev =3D &pdata->dev->dev;
-=20
--	put_all_pages(region->pages, npages);
-+	unpin_user_pages(region->pages, npages);
- 	kfree(region->pages);
- 	account_locked_vm(current->mm, npages, false);
-=20
+ 	return ret;
 
 base-commit: 3d1c1e5931ce45b3a3f309385bbc00c78e9951c6
 --=20
