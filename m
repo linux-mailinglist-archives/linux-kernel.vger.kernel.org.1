@@ -2,148 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11D91D68BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 18:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B85DA1D68BF
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 18:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728034AbgEQQCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 12:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727979AbgEQQCs (ORCPT
+        id S1728038AbgEQQJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 12:09:16 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:36642 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727979AbgEQQJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 12:02:48 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169CBC061A0C
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 09:02:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=E9G0K1xzYmVUjRPXAZZB5OxYfrHyxpKU/RdYiB/52Ug=; b=KOFm0Jp32Y0Oe1wtaukenFyRr
-        8d18iO22LgaBq+Z18aOew3tkghELlKKJhz1ZWvhcmxgrZFHhyT5yAWQV0UWCoUZLUGmgNYfvYjriP
-        auzEDF8wBhKu54qfoF8SvhpjKDBSl2NedyViOcjdtZdV41iCDNgmihaQXnPdTKrzVl7vlz8OMkP7F
-        /RylV8Aif2uC3YUVP7Ui/eJZTJldYMsD5KbMwGXQnWUVzposGv2mxf/7SAXEtWVIO/2HHtspPo1j9
-        9jKd3HFspWywYMbZ50T8JQIKEHJ2WknacGWPjxnKuvi+ev/ysfDOEnRGZlcx5IKyob5BPtFz47ach
-        +VBphNApw==;
-Received: from shell.armlinux.org.uk ([2002:4e20:1eda:1:5054:ff:fe00:4ec]:59208)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        Sun, 17 May 2020 12:09:15 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jaLkE-0005iI-86; Sun, 17 May 2020 17:02:30 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jaLkB-0003oG-6i; Sun, 17 May 2020 17:02:27 +0100
-Date:   Sun, 17 May 2020 17:02:27 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     linux-arm-kernel@lists.infradead.org, keescook@chromium.org,
-        mhiramat@kernel.org, labbott@redhat.com,
-        mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: kprobes: Avoid fortify_panic() when copying
- optprobe template
-Message-ID: <20200517160227.GU1551@shell.armlinux.org.uk>
-References: <20200517153959.293224-1-andrew@aj.id.au>
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jaLqk-0007sp-1s; Sun, 17 May 2020 10:09:14 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jaLqj-0008VG-1v; Sun, 17 May 2020 10:09:13 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     <linux-kernel@vger.kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+        Willy Tarreau <w@1wt.eu>, Kees Cook <keescook@chromium.org>
+Date:   Sun, 17 May 2020 11:05:35 -0500
+Message-ID: <87imgu7dio.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200517153959.293224-1-andrew@aj.id.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-XM-SPF: eid=1jaLqj-0008VG-1v;;;mid=<87imgu7dio.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/V3gXJx7hQNIV5VkJ+RzUCl7Md0bFRkyQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubMetaSxObfu_03,
+        XMSubMetaSx_00 autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 0; Body=1 Fuz1=1 Fuz2=1]
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+X-Spam-DCC: ; sa08 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 574 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 14 (2.4%), b_tie_ro: 12 (2.1%), parse: 1.00
+        (0.2%), extract_message_metadata: 12 (2.2%), get_uri_detail_list: 2.4
+        (0.4%), tests_pri_-1000: 12 (2.1%), tests_pri_-950: 1.33 (0.2%),
+        tests_pri_-900: 1.10 (0.2%), tests_pri_-90: 271 (47.3%), check_bayes:
+        269 (46.9%), b_tokenize: 6 (1.0%), b_tok_get_all: 110 (19.1%),
+        b_comp_prob: 4.1 (0.7%), b_tok_touch_all: 144 (25.1%), b_finish: 1.44
+        (0.3%), tests_pri_0: 248 (43.2%), check_dkim_signature: 0.43 (0.1%),
+        check_dkim_adsp: 3.1 (0.5%), poll_dns_idle: 1.45 (0.3%), tests_pri_10:
+        2.4 (0.4%), tests_pri_500: 7 (1.3%), rewrite_mail: 0.00 (0.0%)
+Subject: [GIT PULL] Please pull exec fix for v5.7
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 01:09:59AM +0930, Andrew Jeffery wrote:
-> Setting both CONFIG_KPROBES=y and CONFIG_FORTIFY_SOURCE=y on ARM leads
-> to a panic in memcpy() when injecting a kprobe despite the fixes found
-> in commit e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with
-> FORTIFY_SOURCE") and commit 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes:
-> optimized kprobes illegal instruction").
-> 
-> arch/arm/include/asm/kprobes.h effectively declares
-> the target type of the optprobe_template_entry assembly label as a u32,
-> which leads memcpy()'s __builtin_object_size() call to determine that
-> the pointed-to object is of size four. In practical terms the symbol is
-> used as a handle for the optimised probe assembly template that is at
-> least 96 bytes in size. The symbol's use despite its type blows up the
-> memcpy() in ARM's arch_prepare_optimized_kprobe() with a false-positive
-> fortify_panic() when it should instead copy the optimised probe template
-> into place.
-> 
-> As mentioned, a couple of attempts have been made to address the issue
-> by casting a pointer to optprobe_template_entry before providing it to
-> memcpy(), however gccs such as Ubuntu 20.04's arm-linux-gnueabi-gcc
-> 9.3.0 (Ubuntu 9.3.0-10ubuntu1) see through these efforts.
-> 
-> Squash the false-positive by aliasing the template assembly with a new
-> symbol 'arm_optprobe_template'; declare it as a function object and
-> pass the function object as the argument to memcpy() such that
-> __builtin_object_size() cannot immediately determine the object size.
-> 
-> Fixes: e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with FORTIFY_SOURCE")
-> Fixes: 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes: optimized kprobes illegal instruction")
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> ---
->  arch/arm/include/asm/kprobes.h    | 7 +++++++
->  arch/arm/probes/kprobes/opt-arm.c | 4 +++-
->  2 files changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/include/asm/kprobes.h b/arch/arm/include/asm/kprobes.h
-> index 213607a1f45c..94db8bf25f9c 100644
-> --- a/arch/arm/include/asm/kprobes.h
-> +++ b/arch/arm/include/asm/kprobes.h
-> @@ -43,6 +43,13 @@ int kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr);
->  int kprobe_exceptions_notify(struct notifier_block *self,
->  			     unsigned long val, void *data);
->  
-> +/*
-> + * The optprobe template buffer is not anything that should be called directly,
-> + * however describe it as a function to give ourselves a handle to it that
-> + * bypasses CONFIG_FORTIFY_SOURCE=y sanity checks in memcpy().
-> + */
-> +extern __visible void arm_optprobe_template(void);
 
-Does this really need to be globally visible to anything that happens
-to include this header?
+Linus,
 
-While we may abhor "extern" declarations and prototypes in .c files, it
-seems to me to be entirely reasonable for this to live in opt-arm.c and
-remove the .global for this symbol, thereby making this symbol local to
-opt-arm.c
+Please pull the exec-linus branch from the git tree:
 
-> +
->  /* optinsn template addresses */
->  extern __visible kprobe_opcode_t optprobe_template_entry;
->  extern __visible kprobe_opcode_t optprobe_template_val;
-> diff --git a/arch/arm/probes/kprobes/opt-arm.c b/arch/arm/probes/kprobes/opt-arm.c
-> index 7a449df0b359..59133d59616a 100644
-> --- a/arch/arm/probes/kprobes/opt-arm.c
-> +++ b/arch/arm/probes/kprobes/opt-arm.c
-> @@ -31,6 +31,8 @@
->   * to the stack cost of the instruction.
->   */
->  asm (
-> +			".global arm_optprobe_template\n"
-> +			"arm_optprobe_template:\n"
->  			".global optprobe_template_entry\n"
->  			"optprobe_template_entry:\n"
->  			".global optprobe_template_sub_sp\n"
-> @@ -234,7 +236,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *or
->  	}
->  
->  	/* Copy arch-dep-instance from template. */
-> -	memcpy(code, (unsigned long *)&optprobe_template_entry,
-> +	memcpy(code, arm_optprobe_template,
->  			TMPL_END_IDX * sizeof(kprobe_opcode_t));
->  
->  	/* Adjust buffer according to instruction. */
-> -- 
-> 2.25.1
-> 
-> 
+   git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exec-linus
 
+   HEAD: f87d1c9559164294040e58f5e3b74a162bf7c6e8 exec: Move would_dump into flush_old_exec
+
+While working on my exec cleanups I found a bug in exec that I
+introduced by accident a couple of years ago.  I apparently missed the
+fact that bprm->file can change.
+
+Now I have a very personal motive to clean up exec and make it more
+approachable.
+
+The change is just moving woud_dump to where it acts on the final
+bprm->file not the initial bprm->file.   I have been careful and
+tested and verify this fix works.
+
+Eric
+
+---
+
+From f87d1c9559164294040e58f5e3b74a162bf7c6e8 Mon Sep 17 00:00:00 2001
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Sat, 16 May 2020 16:29:20 -0500
+Subject: [PATCH] exec: Move would_dump into flush_old_exec
+
+I goofed when I added mm->user_ns support to would_dump.  I missed the
+fact that in the case of binfmt_loader, binfmt_em86, binfmt_misc, and
+binfmt_script bprm->file is reassigned.  Which made the move of
+would_dump from setup_new_exec to __do_execve_file before exec_binprm
+incorrect as it can result in would_dump running on the script instead
+of the interpreter of the script.
+
+The net result is that the code stopped making unreadable interpreters
+undumpable.  Which allows them to be ptraced and written to disk
+without special permissions.  Oops.
+
+The move was necessary because the call in set_new_exec was after
+bprm->mm was no longer valid.
+
+To correct this mistake move the misplaced would_dump from
+__do_execve_file into flos_old_exec, before exec_mmap is called.
+
+I tested and confirmed that without this fix I can attach with gdb to
+a script with an unreadable interpreter, and with this fix I can not.
+
+Cc: stable@vger.kernel.org
+Fixes: f84df2a6f268 ("exec: Ensure mm->user_ns contains the execed files")
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ fs/exec.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/exec.c b/fs/exec.c
+index 06b4c550af5d..2c465119affc 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1317,6 +1317,8 @@ int flush_old_exec(struct linux_binprm * bprm)
+ 	 */
+ 	set_mm_exe_file(bprm->mm, bprm->file);
+ 
++	would_dump(bprm, bprm->file);
++
+ 	/*
+ 	 * Release all of the old mmap stuff
+ 	 */
+@@ -1876,8 +1878,6 @@ static int __do_execve_file(int fd, struct filename *filename,
+ 	if (retval < 0)
+ 		goto out;
+ 
+-	would_dump(bprm, bprm->file);
+-
+ 	retval = exec_binprm(bprm);
+ 	if (retval < 0)
+ 		goto out;
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
+2.20.1
+
