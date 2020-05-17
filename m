@@ -2,121 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D180A1D6510
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 03:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFCB1D6513
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 03:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726959AbgEQBXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 21:23:39 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11725 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726797AbgEQBXj (ORCPT
+        id S1726908AbgEQBou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 21:44:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726797AbgEQBou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 21:23:39 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ec091cd0000>; Sat, 16 May 2020 18:22:22 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Sat, 16 May 2020 18:23:38 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Sat, 16 May 2020 18:23:38 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 17 May
- 2020 01:23:38 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Sun, 17 May 2020 01:23:38 +0000
-Received: from sandstorm.nvidia.com (Not Verified[10.2.48.175]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ec092190001>; Sat, 16 May 2020 18:23:37 -0700
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-CC:     John Hubbard <jhubbard@nvidia.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>
-Subject: [PATCH] rds: convert get_user_pages() --> pin_user_pages()
-Date:   Sat, 16 May 2020 18:23:36 -0700
-Message-ID: <20200517012336.382624-1-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.26.2
+        Sat, 16 May 2020 21:44:50 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE9FC061A0C
+        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 18:44:50 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id k18so6927602ion.0
+        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 18:44:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=sE2ntjSj8zdn9TyyMvlIbv6XfbJd3noAjCoGqSiheSY=;
+        b=KKS40m63nPudDqA9bcD3XLBT8ShHnIJKtMoj9eA5t1zroDoeYha3ijAt83uLeWkiLK
+         QekOYBTh326Wel/3s66dvQNVawtLqIcR8NHxbSDWHmrJkTDNg9lymsjmrNxEd4LxSMSa
+         ey0+NIYkmMZKEGdsDMoaKjXEuiMU5YAuMqxSR6ifZXZCn9utjocm3FpfIzgQ9WZOTzyD
+         qEBtzsvKpV1Hqy+S9nzal/ANr3lXshR5+Qq3saaPhh5ynAM7fD4+2qUh4zHX/ncAO22K
+         M+s8U+bUA59D8kttmdenoQ0Kc53AcbWTFCarxgG+L4NPgxX1rjC88dgOGhVaucRu32ZK
+         bU0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=sE2ntjSj8zdn9TyyMvlIbv6XfbJd3noAjCoGqSiheSY=;
+        b=KdL0PB4lLxajR/XcDp5+Z3q+loZnpU53g4jC5/+mHg/yL3+MMIRTwnRNFtCyK+6B9g
+         YtQLgT89duOcfoQXRi1jkVDsrABi1uTictfMZt6LeSD+TL0WLBGOp+mfiK0PPdGxTeC6
+         FGuh4Hi3gVaJSLwoKEiPCTJJ7enek+Hv78tBAA1101X/C4WgXYAlUyiTGsmgziLrZRKG
+         HYT3E+iDBDS0WzhPQfiV8+XDjAfFI6ar2buCgJGzz3KYkpCnO3jdYkb+bD0voYFZVSfE
+         IZvGyls6ZVuiRLk4Q66rbB+LJNRdRUYxuS2IaAz28sMhe84B3ThNgjAXinKY3Voi9J4o
+         4ODg==
+X-Gm-Message-State: AOAM533NiTPctW/oGVk63GXSc9Ck+2C/OXq+KGJfE4LjvUeqeVvrTu46
+        nB8F7P2E76s3IrkWKIFwK2Xy4TgBXv+nyQyw+Vs=
+X-Google-Smtp-Source: ABdhPJyZCRo22j+hpeJPQbWWN95ZUSiLSvR00sYFofNpWldAWFjDk/23JlEDdd7/gMxeBTGi0EaPsaesIsBrfI4dT6k=
+X-Received: by 2002:a02:2704:: with SMTP id g4mr9490555jaa.77.1589679889467;
+ Sat, 16 May 2020 18:44:49 -0700 (PDT)
 MIME-Version: 1.0
-X-NVConfidentiality: public
+Received: by 2002:a92:dc43:0:0:0:0:0 with HTTP; Sat, 16 May 2020 18:44:49
+ -0700 (PDT)
+Reply-To: lbill9287@gmail.com
+From:   "David Yax." <dg012639@gmail.com>
+Date:   Sat, 16 May 2020 18:44:49 -0700
+Message-ID: <CAAjN4O1FXAg31_AO=H7jUzeyJ2fcvzu3CY0fu6m5jFsz-nD8nQ@mail.gmail.com>
+Subject: Gute Nachrichten. Bitte lesen Sie
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1589678542; bh=7TXMCvjqbZxuHVM5y97rS09KLJM6SOiZujb09twA/Dk=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
-         Content-Type;
-        b=p0pBPkQo7mb5Cwoe2du0glhdJwKo1677mvVSBz22sE9cCQM3wGXIlE5laIOCpyHYr
-         3qa8VtddbcJJhPx9D+WMM0oxMHvZR38SI08df83Ab9p7pnBmsuhWAIpgl4xV3PBtFa
-         KmsStxBTAZzOOuN/qKmICrQuaqSOPsDArBzf7+rLWbiu9xXJ7/Wvc15sev8rRw/Nba
-         ogtop5i930W9FQEhrNP73FVSCcYjNYgM7sU1FXzygboz+d+uKyT0Z50TedeVRoiInM
-         xkgR8Yv5tGyF5UfbyoXwQE4no8zx1mhMLQRR9lUIB9qGCdxfwU6Yr11M/3oO8C1CXk
-         L0IYKYw6T1CYw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code was using get_user_pages_fast(), in a "Case 2" scenario
-(DMA/RDMA), using the categorization from [1]. That means that it's
-time to convert the get_user_pages_fast() + put_page() calls to
-pin_user_pages_fast() + unpin_user_pages() calls.
-
-There is some helpful background in [2]: basically, this is a small
-part of fixing a long-standing disconnect between pinning pages, and
-file systems' use of those pages.
-
-[1] Documentation/core-api/pin_user_pages.rst
-
-[2] "Explicit pinning of user-space pages":
-    https://lwn.net/Articles/807108/
-
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: linux-rdma@vger.kernel.org
-Cc: rds-devel@oss.oracle.com
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- net/rds/info.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/net/rds/info.c b/net/rds/info.c
-index 03f6fd56d237..e1d63563e81c 100644
---- a/net/rds/info.c
-+++ b/net/rds/info.c
-@@ -162,7 +162,6 @@ int rds_info_getsockopt(struct socket *sock, int optnam=
-e, char __user *optval,
- 	struct rds_info_lengths lens;
- 	unsigned long nr_pages =3D 0;
- 	unsigned long start;
--	unsigned long i;
- 	rds_info_func func;
- 	struct page **pages =3D NULL;
- 	int ret;
-@@ -193,7 +192,7 @@ int rds_info_getsockopt(struct socket *sock, int optnam=
-e, char __user *optval,
- 		ret =3D -ENOMEM;
- 		goto out;
- 	}
--	ret =3D get_user_pages_fast(start, nr_pages, FOLL_WRITE, pages);
-+	ret =3D pin_user_pages_fast(start, nr_pages, FOLL_WRITE, pages);
- 	if (ret !=3D nr_pages) {
- 		if (ret > 0)
- 			nr_pages =3D ret;
-@@ -235,8 +234,7 @@ int rds_info_getsockopt(struct socket *sock, int optnam=
-e, char __user *optval,
- 		ret =3D -EFAULT;
-=20
- out:
--	for (i =3D 0; pages && i < nr_pages; i++)
--		put_page(pages[i]);
-+	unpin_user_pages(pages, nr_pages);
- 	kfree(pages);
-=20
- 	return ret;
-
-base-commit: 3d1c1e5931ce45b3a3f309385bbc00c78e9951c6
 --=20
-2.26.2
+=E2=82=AC 40.000,00 Euro wurden Ihnen von David Yax gespendet. Bin der
+Gewinner der $ 80 Millionen Jackpot Powerball Ziehung. Die =E2=82=AC 40.000=
+,00
+Euro werden Ihnen aufgrund von COVID-19 gespendet, um sicherzustellen,
+dass Sie und alle in Ihnen die beste Pflege erhalten. Mailen Sie mir
+f=C3=BCr weitere Informationen.
 
+Mr. David Yax.
+E-Mail: lbill9287@gmail.com
