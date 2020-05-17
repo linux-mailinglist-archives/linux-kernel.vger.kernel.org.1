@@ -2,97 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A291E1D6631
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 07:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4231DC146
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 23:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgEQFhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 01:37:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726279AbgEQFhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 01:37:10 -0400
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF9D7207F5
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 05:37:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589693830;
-        bh=Q5JOORAgFjJINGCBacajTvqUgliOjpbJB0rVNrTkx9g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EEzGI5OSGU5h+W2756RDp09wHippUuEcC9xLRJN//nAKhepuqaIGXAzl26DN+g7w5
-         fUV7cmCV1qwnKGsOFUkD2c3YHPbxGoLX73IMVEbwyv6zVqD9X36I2ZQo7PaB4p2jbT
-         5iZ49nJRgktGbYropGbit/4q90e+/X0sb+KlAAyc=
-Received: by mail-wr1-f52.google.com with SMTP id l11so8007284wru.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 22:37:09 -0700 (PDT)
-X-Gm-Message-State: AOAM531cM8mIAugFSQYV6vB6tLqiNs1bpZ12cPyQakDxPBeNRzApU5IF
-        nDfn3ogqtiZ11zc/7LwL5SuPRT76ynE1B5qxkHoamA==
-X-Google-Smtp-Source: ABdhPJxabyBe5VXC+uSpFQtBIbsioCXzbDZMAEGm3KRmQf+2eLcttRc6KbfcYsc6itH/XTlQi6c3RSidoOaJo9YIwkI=
-X-Received: by 2002:adf:a389:: with SMTP id l9mr12959069wrb.18.1589693828439;
- Sat, 16 May 2020 22:37:08 -0700 (PDT)
+        id S1728372AbgETVU5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 May 2020 17:20:57 -0400
+Received: from mail3.sumicity.com.br ([189.113.72.105]:40430 "EHLO
+        mail3.sumicity.com.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727006AbgETVU4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 17:20:56 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail3.sumicity.com.br (Postfix) with ESMTP id C2DF396B826;
+        Sun, 17 May 2020 02:44:28 -0300 (-03)
+Received: from mail3.sumicity.com.br ([127.0.0.1])
+        by localhost (mail3.sumicity.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id OrZl8gZHProc; Sun, 17 May 2020 02:44:28 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail3.sumicity.com.br (Postfix) with ESMTP id 92BA996B7E8;
+        Sun, 17 May 2020 02:44:24 -0300 (-03)
+X-Virus-Scanned: amavisd-new at sumicity.com.br
+Received: from mail3.sumicity.com.br ([127.0.0.1])
+        by localhost (mail3.sumicity.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id DXAVXmcJQcTC; Sun, 17 May 2020 02:44:24 -0300 (-03)
+Received: from [192.168.0.199] (unknown [106.210.60.184])
+        by mail3.sumicity.com.br (Postfix) with ESMTPSA id 4865F96B7A9;
+        Sun, 17 May 2020 02:44:14 -0300 (-03)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-References: <20200515234547.710474468@linutronix.de> <20200515235124.783722942@linutronix.de>
-In-Reply-To: <20200515235124.783722942@linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sat, 16 May 2020 22:36:57 -0700
-X-Gmail-Original-Message-ID: <CALCETrW2negGYRSQ8dqFVdiWGtYpYf6nKe5_hkotNv0e5mNBxA@mail.gmail.com>
-Message-ID: <CALCETrW2negGYRSQ8dqFVdiWGtYpYf6nKe5_hkotNv0e5mNBxA@mail.gmail.com>
-Subject: Re: [patch V6 04/37] x86: Make hardware latency tracing explicit
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Dear Friend
+To:     Recipients <pinheiromodas@sumicity.com.br>
+From:   "Mr Saeed Ahmed" <pinheiromodas@sumicity.com.br>
+Date:   Sun, 17 May 2020 11:14:05 +0530
+Reply-To: saeedasutanahmed@gmail.com
+Message-Id: <20200517054415.4865F96B7A9@mail3.sumicity.com.br>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 5:10 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
->
-> The hardware latency tracer calls into trace_sched_clock and ends up in
-> various instrumentable functions which is problemeatic vs. the kprobe
-> handling especially the text poke machinery. It's invoked from
-> nmi_enter/exit(), i.e. non-instrumentable code.
->
-> Use nmi_enter/exit_notrace() instead. These variants do not invoke the
-> hardware latency tracer which avoids chasing down complex callchains to
-> make them non-instrumentable.
->
-> The real interesting measurement is the actual NMI handler. Add an explicit
-> invocation for the hardware latency tracer to it.
->
-> #DB and #BP are uninteresting as they really should not be in use when
-> analzying hardware induced latencies.
->
+Dear Friend,
 
-> @@ -849,7 +851,7 @@ static void noinstr handle_debug(struct
->  static __always_inline void exc_debug_kernel(struct pt_regs *regs,
->                                              unsigned long dr6)
->  {
-> -       nmi_enter();
-> +       nmi_enter_notrace();
+I want you to be honest and truthful with me that you will help me with all your effort and time for just seven to fourteen workings of your time
 
-Why can't exc_debug_kernel() handle instrumentation?  We shouldn't
-recurse into #DB since we've already cleared DR7, right?
+Please kindly reply to my most confidential email if you are really interested in helping me please: saeedasutanahmed@gmail.com
+                                 
+God be with you
+Mr Saeed Ahmed
