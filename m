@@ -2,101 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CD81D67D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 13:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512681D67E6
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 14:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbgEQLuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 07:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727833AbgEQLuJ (ORCPT
+        id S1727998AbgEQMGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 08:06:03 -0400
+Received: from h2.fbrelay.privateemail.com ([131.153.2.43]:43659 "EHLO
+        h2.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727915AbgEQMGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 07:50:09 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092BCC061A0C;
-        Sun, 17 May 2020 04:50:09 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id f15so2980279plr.3;
-        Sun, 17 May 2020 04:50:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=RQqCyR4bauMcLEGGbKHO9FQ26y1JMcu6L0Mz2chabH4=;
-        b=TPK6UhYz1SmNZpLvbYJP2NFkB4VEnM1LAp3SFhb6dijjHxHPOVYj6mPJCuzeut/Ihd
-         CdfrZacKNWM2ik+Z1ra2/zwMjcP1as1cGPQMnZRqA8x4/3lwqQB5wdHepYJynSn+7u7e
-         bgDtKINcFBGn7wpsLvdT3iwn5VLR5hYjIx9BYTg2vD/4N2vCHWvR9vCL5qa0xXZELQ55
-         rFZayqMTXCSRoE87RGCc1v7hvQJ6QXSctqeApFtHISQH3Dir/ZfDOIKM/LnYMQiXHrd2
-         8CHb47vAyVcRcdImLO4QO2/ZX0JWuAF/ldMJSNAJpEUrxj1hNPXdvKrkWjvb7eGsn6mQ
-         0ubQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=RQqCyR4bauMcLEGGbKHO9FQ26y1JMcu6L0Mz2chabH4=;
-        b=IaMBK4ICpDekRQcZXNx5nf5shavli7haCf57aam/CZouuhYJFv24SqdP54u9nMziab
-         OSUw28wjxt9+/+UymL+2790Eo+3lXqxLVWR9dldQJLGzF1aI6pM9rryU0yVTHQWcZpTL
-         3tAbETJVeKU+SRVj1XJsQrBm5SzuowUmcd+Wm3WTJfJSCvtrvg+jN2OUaYVf1nrI4r1+
-         PVWkTW1lbVoOCDoCLudW7FEFoaS6BzX/Q0O0esMiXd9/batA0CV/D+FB+8J6P91uStY5
-         9Ud1obY+t5AEReEJv+OupKEXv6zrN1JN4h9zKj/fgHhepYnUCIga0OFJyrg8VNAY4vc+
-         Lc1g==
-X-Gm-Message-State: AOAM531vO/6ECR3skm9O99U1myRAyHglrYMDdHMsEXSdxaA+1tsWR3RR
-        10P+lcSdigC9uVNmC1SOiSg0oWIw
-X-Google-Smtp-Source: ABdhPJxbrMBUtFQL05TFgNGN60nbsF7yRGsKFZzFSbjieqrezfN5QeSD8vdp7GegJlpcQMlCWDposQ==
-X-Received: by 2002:a17:90a:2610:: with SMTP id l16mr13174341pje.219.1589716208483;
-        Sun, 17 May 2020 04:50:08 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.16])
-        by smtp.gmail.com with ESMTPSA id cc8sm5842593pjb.11.2020.05.17.04.50.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 May 2020 04:50:07 -0700 (PDT)
-From:   Baolin Wang <baolin.wang7@gmail.com>
-To:     axboe@kernel.dk
-Cc:     baolin.wang7@gmail.com, linux-block@vger.kernel.org,
+        Sun, 17 May 2020 08:06:03 -0400
+Received: from MTA-05-3.privateemail.com (mta-05.privateemail.com [198.54.127.60])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h1.fbrelay.privateemail.com (Postfix) with ESMTPS id 073E4805AB;
+        Sun, 17 May 2020 07:54:32 -0400 (EDT)
+Received: from MTA-05.privateemail.com (localhost [127.0.0.1])
+        by MTA-05.privateemail.com (Postfix) with ESMTP id 9D2016004B;
+        Sun, 17 May 2020 07:54:29 -0400 (EDT)
+Received: from localhost.localdomain (unknown [10.20.151.204])
+        by MTA-05.privateemail.com (Postfix) with ESMTPA id 19FDA60049;
+        Sun, 17 May 2020 11:54:29 +0000 (UTC)
+From:   Eli Riggs <eli@rje.li>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] block: Remove unused flush_queue_delayed in struct blk_flush_queue
-Date:   Sun, 17 May 2020 19:49:41 +0800
-Message-Id: <d4104441539e9d8d2bc29a9c970713ba1ef2105d.1589715744.git.baolin.wang7@gmail.com>
-X-Mailer: git-send-email 2.17.1
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, Eli Riggs <eli@rje.li>
+Subject: [PATCH 1/3] dt-bindings: arm: qcom: Add sm6125 SoC and xiaomi,willow
+Date:   Sun, 17 May 2020 04:54:06 -0700
+Message-Id: <20200517115410.3374-1-eli@rje.li>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The flush_queue_delayed was introdued to hold queue if flush is
-running for non-queueable flush drive by commit 3ac0cc450870
-("hold queue if flush is running for non-queueable flush drive"),
-but the non mq parts of the flush code had been removed by
-commit 7e992f847a08 ("block: remove non mq parts from the flush code"),
-as well as removing the usage of the flush_queue_delayed flag.
-Thus remove the unused flush_queue_delayed flag.
+Add compatibles for SM6125 aka SDM665 aka Snapdragon 665, as well
+as xiaomi,willow aka Xiaomi Redmi Note 8T, the international
+edition of the Note 8.
 
-Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+Signed-off-by: Eli Riggs <eli@rje.li>
 ---
- block/blk-flush.c | 1 -
- block/blk.h       | 1 -
- 2 files changed, 2 deletions(-)
+ Documentation/devicetree/bindings/arm/qcom.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/block/blk-flush.c b/block/blk-flush.c
-index c7f396e3d5e2..b733f7ac75c7 100644
---- a/block/blk-flush.c
-+++ b/block/blk-flush.c
-@@ -258,7 +258,6 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
- 		blk_flush_complete_seq(rq, fq, seq, error);
- 	}
+diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+index 64ddae3bd39fd..4142e38a353ef 100644
+--- a/Documentation/devicetree/bindings/arm/qcom.yaml
++++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+@@ -38,6 +38,7 @@ description: |
+         msm8996
+         sc7180
+         sdm845
++        sm6125
  
--	fq->flush_queue_delayed = 0;
- 	spin_unlock_irqrestore(&fq->mq_flush_lock, flags);
- }
+   The 'board' element must be one of the following strings:
  
-diff --git a/block/blk.h b/block/blk.h
-index fc00537026a0..6cab33a11f90 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -19,7 +19,6 @@ extern struct dentry *blk_debugfs_root;
- #endif
+@@ -158,4 +159,9 @@ properties:
+               - qcom,ipq6018-cp01-c1
+           - const: qcom,ipq6018
  
- struct blk_flush_queue {
--	unsigned int		flush_queue_delayed:1;
- 	unsigned int		flush_pending_idx:1;
- 	unsigned int		flush_running_idx:1;
- 	blk_status_t 		rq_status;
++      - items:
++          - enum:
++              - xiaomi,willow
++          - const: qcom,sm6125
++
+ ...
 -- 
-2.17.1
+2.20.1
 
