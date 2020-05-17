@@ -2,152 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F071D6B6A
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 19:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1291D6B86
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 19:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726301AbgEQR1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 13:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbgEQR1V (ORCPT
+        id S1726373AbgEQRgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 13:36:21 -0400
+Received: from mail.micronovasrl.com ([212.103.203.10]:58348 "EHLO
+        mail.micronovasrl.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726248AbgEQRgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 13:27:21 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD757C061A0C;
-        Sun, 17 May 2020 10:27:19 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id d7so6313874eja.7;
-        Sun, 17 May 2020 10:27:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZrODtRB0VLzrBc0RiUggWA8TbcBvamughhphUXIIDnI=;
-        b=OWcozBcrckvqmx+/XIfmse8QLxEeqmaWyCOO/jKLQLj2TDXXN5IjwpwhtWPEpKu5m3
-         lQY52URCBLhpuUfdfIGaIpaQDVF4zFJCqR0PTg4iiKzQ0+Kx0gG08Hi+kd3h/pijJ6tf
-         Np05CwEE8luF6DnxGe8VnCkd2Lh9cCWujTZ4Gz5N2DTXxbUe8oUH5992ti5GaiBTAHkT
-         9s5Bec0nurKDvb2cn6JggXx5PjrE/DxC8I4J0iUu+cq9JuyDumAlTfwajMgJWcRX1RF0
-         Noca6ySUEHVbe04JrXZwJI4+yCVfaZS0UJFeVGnTOK2HB8RDsmAwS2ldA7Qu5HV7oITV
-         fabA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZrODtRB0VLzrBc0RiUggWA8TbcBvamughhphUXIIDnI=;
-        b=j9yxwUmZh1/1pmYtC4ZHIEUb7GZD6w1JT9aseV2AHz9EkbSOiQz5sopuIBIxj9CO0r
-         h87egjZaba6jmbFmmlJsf2FidRSo3KzXR+J7TkAD6M/sqa3kL1O8dqDIMgbDbb/HTKP0
-         tGtN4elWxJVjp61lPYnETacr8fB/3F5EFyfSVTWKTnAlXAz3lNST4wzfmcC72U3HgIlS
-         eziKko2LW+k8p5I1eDvC1U5CEyLwE4dMluKs/FphXCIZQFSAken1UlP/4tL6qes6fLLW
-         InsyQSCyztnZI/eAfN0IXcPX4FXea4XepMtRjtpmuFqkoUtkAifj/F5/2GuOCRd0656w
-         0AzA==
-X-Gm-Message-State: AOAM532kqBO5azVYu5T7lBfobNG0Q4xqasSm4/9EV2lPd9Khw6UQauwt
-        s1g/9BMWw/jTIHQVC09ElU/nVKfsxNoI+g/kGnY=
-X-Google-Smtp-Source: ABdhPJwWHN0CABb2lA8LG/MSvk2r7IdvC3Y1JevSk4pFpxDUpN3q1KLVeCkKlTTl9oMdIZZrnKHaKLUD5WupPI0iOKc=
-X-Received: by 2002:a17:907:39b:: with SMTP id ss27mr9661079ejb.209.1589736438146;
- Sun, 17 May 2020 10:27:18 -0700 (PDT)
+        Sun, 17 May 2020 13:36:21 -0400
+Received: from mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1])
+        by mail.micronovasrl.com (Postfix) with ESMTP id A044AB033E9
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 19:28:07 +0200 (CEST)
+Authentication-Results: mail.micronovasrl.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=micronovasrl.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=micronovasrl.com;
+         h=content-transfer-encoding:content-language:content-type
+        :content-type:in-reply-to:mime-version:user-agent:date:date
+        :message-id:from:from:references:to:subject:subject; s=dkim; t=
+        1589736487; x=1590600488; bh=BTMk5YTSUT9CYUvfxuhhjtuD3oQXc0xwa2+
+        R9dvv3Gg=; b=EpT6X1/ScxgFvbYJfKKn6NJJuZgEMW2G5vdSm1TPAtTuBkmUC8K
+        4CFSsVjztkNpEaclA/GQJ8rII93yNEpbu2iQUsHlopcbESyvTRQCBV40Rz3EZJb9
+        ULJqZ1PVEl/xc6hwXhiCwZ6CBFE6nUF2lsd7z5M/Rg3xFMZ10A0yRLXQ=
+X-Virus-Scanned: Debian amavisd-new at mail.micronovasrl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.899 tagged_above=-10 required=4.5
+        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, LOTS_OF_MONEY=0.001]
+        autolearn=unavailable autolearn_force=no
+Received: from mail.micronovasrl.com ([127.0.0.1])
+        by mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id xYKZj1p4JBYJ for <linux-kernel@vger.kernel.org>;
+        Sun, 17 May 2020 19:28:07 +0200 (CEST)
+Received: from [192.168.2.105] (146-241-10-121.dyn.eolo.it [146.241.10.121])
+        by mail.micronovasrl.com (Postfix) with ESMTPSA id 0F597B033DB;
+        Sun, 17 May 2020 19:28:06 +0200 (CEST)
+Subject: Re: [PATCH v2 4/7] serial: 8250: Handle implementations not having
+ TEMT interrupt using em485
+To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
+Cc:     gregkh@linuxfoundation.org, jslaby@suse.com,
+        andriy.shevchenko@linux.intel.com, matwey.kornilov@gmail.com,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lukas@wunner.de, christoph.muellner@theobroma-systems.com
+References: <20200325231422.1502366-1-heiko@sntech.de>
+ <12195570.sTQbgxCmNy@diego>
+ <ac74f702-9444-f660-974b-85a006805070@micronovasrl.com>
+ <3036126.9QgpAzkLCg@diego>
+From:   Giulio Benetti <giulio.benetti@micronovasrl.com>
+Message-ID: <d7723588-3df8-10f4-45a3-2e061cd06dc2@micronovasrl.com>
+Date:   Sun, 17 May 2020 19:28:09 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200515013556.5582-1-kim.andrewsy@gmail.com> <alpine.LFD.2.21.2005152044380.3860@ja.home.ssi.bg>
-In-Reply-To: <alpine.LFD.2.21.2005152044380.3860@ja.home.ssi.bg>
-From:   Andrew Kim <kim.andrewsy@gmail.com>
-Date:   Sun, 17 May 2020 13:27:06 -0400
-Message-ID: <CABc050G5HRaTNp1r0P7HahAUu+RA_Gk2XZBbjDWQsQ40O4VGyw@mail.gmail.com>
-Subject: Re: [PATCH] netfilter/ipvs: expire no destination UDP connections
- when expire_nodest_conn=1
-To:     Julian Anastasov <ja@ssi.bg>
-Cc:     Wensong Zhang <wensong@linux-vs.org>,
-        Simon Horman <horms@verge.net.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:IPVS" <netdev@vger.kernel.org>,
-        "open list:IPVS" <lvs-devel@vger.kernel.org>,
-        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
-        "open list:NETFILTER" <coreteam@netfilter.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3036126.9QgpAzkLCg@diego>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: it
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Julian,
+Hi Heiko,
 
-Thanks for getting back to me, that makes sense.
+Il 17/05/2020 17:04, Heiko Stübner ha scritto:
+> Hi Giulio,
+> 
+> Am Donnerstag, 26. März 2020, 03:02:39 CEST schrieb Giulio Benetti:
+>> Il 26/03/2020 01:05, Heiko Stübner ha scritto:
+>>> Am Donnerstag, 26. März 2020, 00:47:38 CET schrieb Giulio Benetti:
+>>>> very cleaner way to handle TEMT as a capability!
+>>>> And I've found one thing...
+>>>>
+>>>> Il 26/03/2020 00:14, Heiko Stuebner ha scritto:
+>>>>> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
+>>>>>
+>>>>> Some 8250 ports have a TEMT interrupt but it's not a part of the 8250
+>>>>> standard, instead only available on some implementations.
+>>>>>
+>>>>> The current em485 implementation does not work on ports without it.
+>>>>> The only chance to make it work is to loop-read on LSR register.
+>>>>>
+>>>>> So add UART_CAP_TEMT to mark 8250 uarts having this interrupt,
+>>>>> update all current em485 users with that capability and make
+>>>>> the stop_tx function loop-read on uarts not having it.
+>>>>>
+>>>>> Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
+>>>>> [moved to use added UART_CAP_TEMT, use readx_poll_timeout]
+>>>>> Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+>>>>> ---
+>>>>>     drivers/tty/serial/8250/8250.h            |  1 +
+>>>>>     drivers/tty/serial/8250/8250_bcm2835aux.c |  2 +-
+>>>>>     drivers/tty/serial/8250/8250_of.c         |  2 ++
+>>>>>     drivers/tty/serial/8250/8250_omap.c       |  2 +-
+>>>>>     drivers/tty/serial/8250/8250_port.c       | 25 +++++++++++++++++++----
+>>>>>     5 files changed, 26 insertions(+), 6 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8250.h
+>>>>> index 52bb21205bb6..770eb00db497 100644
+>>>>> --- a/drivers/tty/serial/8250/8250.h
+>>>>> +++ b/drivers/tty/serial/8250/8250.h
+>>>>> @@ -82,6 +82,7 @@ struct serial8250_config {
+>>>>>     #define UART_CAP_MINI	(1 << 17)	/* Mini UART on BCM283X family lacks:
+>>>>>     					 * STOP PARITY EPAR SPAR WLEN5 WLEN6
+>>>>>     					 */
+>>>>> +#define UART_CAP_TEMT	(1 << 18)	/* UART has TEMT interrupt */
+>>>>>     
+>>>>>     #define UART_BUG_QUOT	(1 << 0)	/* UART has buggy quot LSB */
+>>>>>     #define UART_BUG_TXEN	(1 << 1)	/* UART has buggy TX IIR status */
+>>>>> diff --git a/drivers/tty/serial/8250/8250_bcm2835aux.c b/drivers/tty/serial/8250/8250_bcm2835aux.c
+>>>>> index 12d03e678295..3881242424ca 100644
+>>>>> --- a/drivers/tty/serial/8250/8250_bcm2835aux.c
+>>>>> +++ b/drivers/tty/serial/8250/8250_bcm2835aux.c
+>>>>> @@ -91,7 +91,7 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
+>>>>>     		return -ENOMEM;
+>>>>>     
+>>>>>     	/* initialize data */
+>>>>> -	up.capabilities = UART_CAP_FIFO | UART_CAP_MINI;
+>>>>> +	up.capabilities = UART_CAP_FIFO | UART_CAP_MINI | UART_CAP_TEMT;
+>>>>>     	up.port.dev = &pdev->dev;
+>>>>>     	up.port.regshift = 2;
+>>>>>     	up.port.type = PORT_16550;
+>>>>> diff --git a/drivers/tty/serial/8250/8250_of.c b/drivers/tty/serial/8250/8250_of.c
+>>>>> index 65e9045dafe6..841f6fcb2878 100644
+>>>>> --- a/drivers/tty/serial/8250/8250_of.c
+>>>>> +++ b/drivers/tty/serial/8250/8250_of.c
+>>>>> @@ -225,6 +225,8 @@ static int of_platform_serial_probe(struct platform_device *ofdev)
+>>>>>     			&port8250.overrun_backoff_time_ms) != 0)
+>>>>>     		port8250.overrun_backoff_time_ms = 0;
+>>>>>     
+>>>>> +	port8250.capabilities |= UART_CAP_TEMT;
+>>>>> +
+>>>>
+>>>> Shouldn't this be NOT UART_CAP_TEMT set by default? On all other
+>>>> vendor specific files you enable it, I think here you shouldn't enable
+>>>> it too by default. Right?
+>>>
+>>> 8250_of does use the em485 emulation - see of_platform_serial_setup()
+>>> So I did go by the lazy assumption that any 8250 driver using rs485
+>>> before my series always used the interrupt driver code path, so
+>>> implicitly required to have the TEMT interrupt.
+>>>
+>>> Of course, you're right that with the 8250_of maybe not all variants
+>>> actually do have this interrupt, so falling back to the polling here might
+>>> be safer.
+>>
+>> Probably here it's worth introducing a dt boolean property like
+>> "temt-capability", then you set or not UART_CAP_TEMT according to its
+>> presence in dts. This way all cases are covered and we can act
+>> completely through dts files.
+>>
+>> What about that?
+> 
+> Sorry that this was sitting around for over a month.
 
-Would you be opposed to trying to expire all UDP connections matching
-a deleted destination only if expire_nodest_conn=1?
-Even today with `expire_nodest_conn=1`, many packets could be dropped
-if there are many requests from a single client
-trying to reuse client ports matching a deleted destination. Setting
-`expire_nodest_conn=1` and reducing the UDP timeout
-helps but deleting all connections when the destination is deleted
-seems more efficient.
+np at all
 
-Looking forward to hearing your thoughts,
+> I think there are two problems with this:
+> 
+> (1) this would break backwards compatibility ... right now the whole code
+> just assumes that everyone does support the TEMT interrupt, so adding
+> a property to keep it working would break old DTs, which is something that
+> should not happen ... I guess one option would be to use the inverse
+> no-temt-interrupt
+> 
+> (2) uarts handled by 8250_of are still identified by their compatible
+> though and there is no generic 8250-of compatible, so the
+> presence / absence of the temt capability should actually just be
+> bound to the relevant compatible.
+> 
+> 
+> So my "gut feeling" is to just keep the current way
+> (was expecting temt-capability before anyway) until an uart
+> variant without temt comes along
 
-Andrew Sy Kim
+I agree with you, what I was proposing is another thing more to do an
+can be done when needed.
 
+Best regards
+-- 
+Giulio Benetti
+CTO
 
-On Fri, May 15, 2020 at 2:07 PM Julian Anastasov <ja@ssi.bg> wrote:
->
->
->         Hello,
->
-> On Thu, 14 May 2020, Andrew Sy Kim wrote:
->
-> > When expire_nodest_conn=1 and an IPVS destination is deleted, IPVS
-> > doesn't expire connections with the IP_VS_CONN_F_ONE_PACKET flag set (any
-> > UDP connection). If there are many UDP packets to a virtual server from a
-> > single client and a destination is deleted, many packets are silently
-> > dropped whenever an existing connection entry with the same source port
-> > exists. This patch ensures IPVS also expires UDP connections when a
-> > packet matches an existing connection with no destinations.
-> >
-> > Signed-off-by: Andrew Sy Kim <kim.andrewsy@gmail.com>
-> > ---
-> >  net/netfilter/ipvs/ip_vs_core.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-> > index aa6a603a2425..f0535586fe75 100644
-> > --- a/net/netfilter/ipvs/ip_vs_core.c
-> > +++ b/net/netfilter/ipvs/ip_vs_core.c
-> > @@ -2116,8 +2116,7 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
-> >               else
-> >                       ip_vs_conn_put(cp);
->
->         Above ip_vs_conn_put() should free the ONE_PACKET
-> connections because:
->
-> - such connections never start timer, they are designed
-> to exist just to schedule the packet, then they are released.
-> - noone takes extra references
->
->         So, ip_vs_conn_put() simply calls ip_vs_conn_expire()
-> where connections should be released immediately. As result,
-> we can not access cp after this point here. That is why we work
-> just with 'flags' below...
->
->         Note that not every UDP connection has ONE_PACKET
-> flag, it is present if you configure it for the service.
-> Do you have -o/--ops flag? If not, the UDP connection
-> should expire before the next jiffie. This is the theory,
-> in practice, you may observe some problem...
->
-> > -             if (sysctl_expire_nodest_conn(ipvs) &&
-> > -                 !(flags & IP_VS_CONN_F_ONE_PACKET)) {
-> > +             if (sysctl_expire_nodest_conn(ipvs)) {
-> >                       /* try to expire the connection immediately */
-> >                       ip_vs_conn_expire_now(cp);
-> >               }
->
->         You can also look at the discussion which resulted in
-> the last patch for this place:
->
-> http://archive.linuxvirtualserver.org/html/lvs-devel/2018-07/msg00014.html
->
-> Regards
->
-> --
-> Julian Anastasov <ja@ssi.bg>
+MICRONOVA SRL
+Sede: Via A. Niedda 3 - 35010 Vigonza (PD)
+Tel. 049/8931563 - Fax 049/8931346
+Cod.Fiscale - P.IVA 02663420285
+Capitale Sociale ¤ 26.000 i.v.
+Iscritta al Reg. Imprese di Padova N. 02663420285
+Numero R.E.A. 258642
