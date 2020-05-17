@@ -2,92 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 617EF1D6D8F
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683241D6DA6
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727012AbgEQVro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 17:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
+        id S1727811AbgEQVsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 17:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726948AbgEQVrf (ORCPT
+        with ESMTP id S1726301AbgEQVsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 17:47:35 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB71C05BD0A
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:47:35 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id z72so8211685wmc.2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:47:34 -0700 (PDT)
+        Sun, 17 May 2020 17:48:54 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7250AC061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:48:54 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id b12so3363569plz.13
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:48:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=lR1LCvSA9ocOsPLtqrXXi3mTOw1gLUQvTrYWGpkyxaw=;
-        b=a/T5o12+72KN0Xmgv+tDC1icraJLfq7GrNfFH121SZeKS9A3+wf4wtGCgZWkT/rJKc
-         RxRihgg6z+CxcgAT4l6LjZyLWnodM/GunE3LJZjXezzHprpr73yGBvtE7TAAzOQGaNS9
-         FJDsbE3fdNpXWDphsiZ5aNH1//IYzOUmprBzXC05lju4U38+cePkX44Rd+fo/EP93xVW
-         jaCywtCdeVJ2/fC6O3ZQZd3FPJk3/Ehiu7VYHFWGxpsjZUELLSO1QKRleugK0R7l1Bg+
-         SxW6yGrKeaMMxuDLGiRJkvGYKYj9Yzi8spEJ/TSdeJ6hlbPbewj2ry5Wu9pY4K0zQBzw
-         NhXw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TseoBxNXqkGmc0BKeUpNhNoekdY6lwjjJANkYe94qbs=;
+        b=fXmuXfld1C+1UPw1bv9c3bwmjxXKQ31A0dYo8c5KzRXgHDVDq/BETl1kTkVyzT4Izt
+         vP9YW8g7iuXzdYnOt9Tx31MSyhBkvlqnenYGMaitwycLw4gdiHYi66Dl4OiTkwb0oTH9
+         F1q76kq5IFts9C62noNssP5sjvsEmychJJIgY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=lR1LCvSA9ocOsPLtqrXXi3mTOw1gLUQvTrYWGpkyxaw=;
-        b=dTJsgd/xy9eBg8QIzW7O8yIsZM/22LZZQ/XS6TLyrMUTTHn9Rp7Gcwikws3227LJ7l
-         fO1buHRFxKzbqNUDGzU+6LULgWYNgnPkZNxNag6OIVSqWjK8Bh4lrEO1ON5mfECd0BF1
-         y0RwcR/Wuw/AP655b4TJ50J99YiDTFN9x842kLX1KjimzUnPUBwqhmV1g9mlYL+aAysv
-         yDi5S8O58m8CTNvpq4MxknjJJdgbngjDiT+CiuGxfHF2C2izL/QkM+fV3GMm8uoyxkuT
-         5z/zV00oGEq8ccdvD/Ob+zIdM2veB8BLhTvO10F0VLK4zWcIoAenlyyvzmr9VoXPsILr
-         VOtA==
-X-Gm-Message-State: AOAM5326aJy8Ic5KQikdJPRySCMMZ5I//eYgzRj4kewyf3DevIhHwEIl
-        DsbN1QSqxQvyss/tmArBnuff9A==
-X-Google-Smtp-Source: ABdhPJw3NLqm+FD5LnZosOiR2OArkmy/YSCBZFg1G1IO3rkHSBH0goV/RgPLqGdUiTAM+eJ0QrVADA==
-X-Received: by 2002:a1c:9c0a:: with SMTP id f10mr15910191wme.139.1589752053782;
-        Sun, 17 May 2020 14:47:33 -0700 (PDT)
-Received: from ls00508.pb.local ([2001:1438:4010:2540:bc3e:92a1:7010:2763])
-        by smtp.gmail.com with ESMTPSA id v126sm14441244wmb.4.2020.05.17.14.47.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TseoBxNXqkGmc0BKeUpNhNoekdY6lwjjJANkYe94qbs=;
+        b=GoNgo3I4bczlLl8NRaJrp84brjQS5TXnxlqzEptAwLeMUTITe3Yf8rYom+fTYO88Dy
+         Nnn7e2mCNK769HBRSpjTlPtOEKc8ehwobU4Ny3Q1mlasuRhCTwvKq+mnBqQZsxNQbxcw
+         Sce4YnQcaJmMrKXEG512GacMh/nhGOMfGoHNIYLwjthYD7SbdUCqrAcyNs2J3QtVUJH6
+         2SsVSpprdgY2AEvy6wdyRqfXtUhsuPTL7uXTBSQM7Pp8uGHJk5lDQRBehBnWCp28QPLe
+         NYP1KsKn6gUkjz8FOSRapuM5iq+o1AqVzddNUJS2LN6t8d7ftsLdHUntTIdER0E2lxEk
+         LG6w==
+X-Gm-Message-State: AOAM5338kgRJ7CD60Tb/VNtsuSyOI8KWp6kF+xG+6H/Droc7Hs2LYodA
+        4Xmbn4q0R3e4gMDCv7V9RiyeCA==
+X-Google-Smtp-Source: ABdhPJwu0BwlUzPfekehCQs1ka3ojGBVEk1UZ0Rcu5atUYqn4c22iHglE7ZsiOSiXntjAfphkl4Hcw==
+X-Received: by 2002:a17:90a:dc83:: with SMTP id j3mr15509573pjv.59.1589752133982;
+        Sun, 17 May 2020 14:48:53 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i184sm6443327pgc.36.2020.05.17.14.48.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 May 2020 14:47:33 -0700 (PDT)
-From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-To:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        david@fromorbit.com, hch@infradead.org, willy@infradead.org,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Subject: [PATCH 10/10] mm/migrate.c: call detach_page_private to cleanup code
-Date:   Sun, 17 May 2020 23:47:18 +0200
-Message-Id: <20200517214718.468-11-guoqing.jiang@cloud.ionos.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200517214718.468-1-guoqing.jiang@cloud.ionos.com>
-References: <20200517214718.468-1-guoqing.jiang@cloud.ionos.com>
+        Sun, 17 May 2020 14:48:53 -0700 (PDT)
+Date:   Sun, 17 May 2020 14:48:52 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
+        mhiramat@kernel.org, labbott@redhat.com,
+        mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: kprobes: Avoid fortify_panic() when copying
+ optprobe template
+Message-ID: <202005171447.00CFE0C@keescook>
+References: <20200517153959.293224-1-andrew@aj.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200517153959.293224-1-andrew@aj.id.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can cleanup code a little by call detach_page_private here.
+On Mon, May 18, 2020 at 01:09:59AM +0930, Andrew Jeffery wrote:
+> As mentioned, a couple of attempts have been made to address the issue
+> by casting a pointer to optprobe_template_entry before providing it to
+> memcpy(), however gccs such as Ubuntu 20.04's arm-linux-gnueabi-gcc
+> 9.3.0 (Ubuntu 9.3.0-10ubuntu1) see through these efforts.
 
-Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
----
-No change since RFC V3.
+Ah, dang. :P
 
- mm/migrate.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+How about converting them all to unsized arrays, which would also allow
+the code to drop the "&" everywhere, I think. This is untested:
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 5fed0305d2ec..f99502bc113c 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -804,10 +804,7 @@ static int __buffer_migrate_page(struct address_space *mapping,
- 	if (rc != MIGRATEPAGE_SUCCESS)
- 		goto unlock_buffers;
+
+diff --git a/arch/arm/include/asm/kprobes.h b/arch/arm/include/asm/kprobes.h
+index 213607a1f45c..e26a278d301a 100644
+--- a/arch/arm/include/asm/kprobes.h
++++ b/arch/arm/include/asm/kprobes.h
+@@ -44,20 +44,20 @@ int kprobe_exceptions_notify(struct notifier_block *self,
+ 			     unsigned long val, void *data);
  
--	ClearPagePrivate(page);
--	set_page_private(newpage, page_private(page));
--	set_page_private(page, 0);
--	put_page(page);
-+	set_page_private(newpage, detach_page_private(page));
- 	get_page(newpage);
+ /* optinsn template addresses */
+-extern __visible kprobe_opcode_t optprobe_template_entry;
+-extern __visible kprobe_opcode_t optprobe_template_val;
+-extern __visible kprobe_opcode_t optprobe_template_call;
+-extern __visible kprobe_opcode_t optprobe_template_end;
+-extern __visible kprobe_opcode_t optprobe_template_sub_sp;
+-extern __visible kprobe_opcode_t optprobe_template_add_sp;
+-extern __visible kprobe_opcode_t optprobe_template_restore_begin;
+-extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn;
+-extern __visible kprobe_opcode_t optprobe_template_restore_end;
++extern __visible kprobe_opcode_t optprobe_template_entry[];
++extern __visible kprobe_opcode_t optprobe_template_val[];
++extern __visible kprobe_opcode_t optprobe_template_call[];
++extern __visible kprobe_opcode_t optprobe_template_end[];
++extern __visible kprobe_opcode_t optprobe_template_sub_sp[];
++extern __visible kprobe_opcode_t optprobe_template_add_sp[];
++extern __visible kprobe_opcode_t optprobe_template_restore_begin[];
++extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn[];
++extern __visible kprobe_opcode_t optprobe_template_restore_end[];
  
- 	bh = head;
+ #define MAX_OPTIMIZED_LENGTH	4
+ #define MAX_OPTINSN_SIZE				\
+-	((unsigned long)&optprobe_template_end -	\
+-	 (unsigned long)&optprobe_template_entry)
++	((unsigned long)optprobe_template_end -	\
++	 (unsigned long)optprobe_template_entry)
+ #define RELATIVEJUMP_SIZE	4
+ 
+ struct arch_optimized_insn {
+diff --git a/arch/arm/probes/kprobes/opt-arm.c b/arch/arm/probes/kprobes/opt-arm.c
+index 7a449df0b359..c78180172120 100644
+--- a/arch/arm/probes/kprobes/opt-arm.c
++++ b/arch/arm/probes/kprobes/opt-arm.c
+@@ -85,21 +85,21 @@ asm (
+ 			"optprobe_template_end:\n");
+ 
+ #define TMPL_VAL_IDX \
+-	((unsigned long *)&optprobe_template_val - (unsigned long *)&optprobe_template_entry)
++	((unsigned long *)optprobe_template_val - (unsigned long *)optprobe_template_entry)
+ #define TMPL_CALL_IDX \
+-	((unsigned long *)&optprobe_template_call - (unsigned long *)&optprobe_template_entry)
++	((unsigned long *)optprobe_template_call - (unsigned long *)optprobe_template_entry)
+ #define TMPL_END_IDX \
+-	((unsigned long *)&optprobe_template_end - (unsigned long *)&optprobe_template_entry)
++	((unsigned long *)optprobe_template_end - (unsigned long *)optprobe_template_entry)
+ #define TMPL_ADD_SP \
+-	((unsigned long *)&optprobe_template_add_sp - (unsigned long *)&optprobe_template_entry)
++	((unsigned long *)optprobe_template_add_sp - (unsigned long *)optprobe_template_entry)
+ #define TMPL_SUB_SP \
+-	((unsigned long *)&optprobe_template_sub_sp - (unsigned long *)&optprobe_template_entry)
++	((unsigned long *)optprobe_template_sub_sp - (unsigned long *)optprobe_template_entry)
+ #define TMPL_RESTORE_BEGIN \
+-	((unsigned long *)&optprobe_template_restore_begin - (unsigned long *)&optprobe_template_entry)
++	((unsigned long *)optprobe_template_restore_begin - (unsigned long *)optprobe_template_entry)
+ #define TMPL_RESTORE_ORIGN_INSN \
+-	((unsigned long *)&optprobe_template_restore_orig_insn - (unsigned long *)&optprobe_template_entry)
++	((unsigned long *)optprobe_template_restore_orig_insn - (unsigned long *)optprobe_template_entry)
+ #define TMPL_RESTORE_END \
+-	((unsigned long *)&optprobe_template_restore_end - (unsigned long *)&optprobe_template_entry)
++	((unsigned long *)optprobe_template_restore_end - (unsigned long *)optprobe_template_entry)
+ 
+ /*
+  * ARM can always optimize an instruction when using ARM ISA, except
+@@ -234,7 +234,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *or
+ 	}
+ 
+ 	/* Copy arch-dep-instance from template. */
+-	memcpy(code, (unsigned long *)&optprobe_template_entry,
++	memcpy(code, (unsigned long *)optprobe_template_entry,
+ 			TMPL_END_IDX * sizeof(kprobe_opcode_t));
+ 
+ 	/* Adjust buffer according to instruction. */
+
 -- 
-2.17.1
-
+Kees Cook
