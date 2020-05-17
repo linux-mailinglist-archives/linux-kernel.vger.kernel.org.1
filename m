@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125371D67E2
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 14:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929631D67F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 14:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgEQMDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 08:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727911AbgEQMDv (ORCPT
+        id S1727957AbgEQMT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 08:19:28 -0400
+Received: from outils.crapouillou.net ([89.234.176.41]:45644 "EHLO
+        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727833AbgEQMT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 08:03:51 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C6FC061A0C
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 05:03:50 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=localhost)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1jaI1D-0006Nw-6U; Sun, 17 May 2020 14:03:47 +0200
-Message-ID: <79f9e841042bf1c0fca39366d95cfb6f74da07bd.camel@pengutronix.de>
-Subject: Re: [PATCH] drm/etnaviv: fix perfmon domain interation
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Christian Gmeiner <christian.gmeiner@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, etnaviv@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Date:   Sun, 17 May 2020 14:03:44 +0200
-In-Reply-To: <20200511123744.96246-1-christian.gmeiner@gmail.com>
-References: <20200511123744.96246-1-christian.gmeiner@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+        Sun, 17 May 2020 08:19:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1589717965; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m6rR31/j2rzqBrfWiu7P6GCD7jhwshKtwnMGtC/OSLY=;
+        b=fuS89dnmSKIjpFcz/qNlJ+E8jHHaHdPlWnM24ibfuN+m1Jqhubn8n0Bh4nKT4jncckq/lQ
+        FWcQUBihGzB60pDmo3T87kL/WrnWkNYFcrYwRsupHAJEDdKNKUTvdCTZgau7p1pudvpXTE
+        gum5raRCQxfIwdDXQNnqai/sCrm6VPk=
+Date:   Sun, 17 May 2020 14:19:14 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 04/12] gpu/drm: ingenic: Fix bogus crtc_atomic_check
+ callback
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, od@zcrc.me, dri-devel@lists.freedesktop.org
+Message-Id: <286HAQ.VQDCISW6S4DW2@crapouillou.net>
+In-Reply-To: <20200517061737.GC609600@ravnborg.org>
+References: <20200516215057.392609-1-paul@crapouillou.net>
+        <20200516215057.392609-4-paul@crapouillou.net>
+        <20200517061737.GC609600@ravnborg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
+Hi Sam,
 
-Am Montag, den 11.05.2020, 14:37 +0200 schrieb Christian Gmeiner:
-> The GC860 has one GPU device which has a 2d and 3d core. In this case
-> we want to expose perfmon information for both cores.
-> 
-> The driver has one array which contains all possible perfmon domains
-> with some meta data - doms_meta. Here we can see that for the GC860
-> two elements of that array are relevant:
-> 
->   doms_3d: is at index 0 in the doms_meta array with 8 perfmon domains
->   doms_2d: is at index 1 in the doms_meta array with 1 perfmon domain
-> 
-> The userspace driver wants to get a list of all perfmon domains and
-> their perfmon signals. This is done by iterating over all domains and
-> their signals. If the userspace driver wants to access the domain with
-> id 8 the kernel driver fails and returns invalid data from doms_3d with
-> and invalid offset.
-> 
-> This results in:
->   Unable to handle kernel paging request at virtual address 00000000
-> 
-> On such a device it is not possible to use the userspace driver at all.
-> 
-> The fix for this off-by-one error is quite simple.
-> 
-> Reported-by: Paul Cercueil <paul@crapouillou.net>
-> Tested-by: Paul Cercueil <paul@crapouillou.net>
-> Fixes: ed1dd899baa3 ("drm/etnaviv: rework perfmon query infrastructure")
-> Cc: stable@vger.kernel.or
+Le dim. 17 mai 2020 =E0 8:17, Sam Ravnborg <sam@ravnborg.org> a =E9crit :
+> On Sat, May 16, 2020 at 11:50:49PM +0200, Paul Cercueil wrote:
+>>  The code was comparing the SoC's maximum height with the mode's=20
+>> width,
+>>  and vice-versa. D'oh.
+>>=20
+>>  Cc: stable@vger.kernel.org # v5.6
+>>  Fixes: a7c909b7c037 ("gpu/drm: ingenic: Check for display size in=20
+>> CRTC atomic check")
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>=20
+> Looks correct.
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
 
-Missing last letter of the TLD.
+Pushed to drm-misc-fixes, thanks for the review.
 
-> Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
-> ---
->  drivers/gpu/drm/etnaviv/etnaviv_perfmon.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
-> index e6795bafcbb9..35f7171e779a 100644
-> --- a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
-> +++ b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
-> @@ -453,7 +453,7 @@ static const struct etnaviv_pm_domain *pm_domain(const struct etnaviv_gpu *gpu,
->  		if (!(gpu->identity.features & meta->feature))
->  			continue;
->  
-> -		if (meta->nr_domains < (index - offset)) {
-> +		if ((meta->nr_domains - 1) < (index - offset)) {
+-Paul
 
-While the logic is correct, I find this quite hard to read. A more
-idiomatic way to write this (which is much easier to grok when reading
-the code IMHO) would be:
+>>  ---
+>>=20
+>>  Notes:
+>>      This patch was previously sent standalone.
+>>      I marked it as superseded in patchwork.
+>>      Nothing has been changed here.
+>>=20
+>>   drivers/gpu/drm/ingenic/ingenic-drm.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>=20
+>>  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.c=20
+>> b/drivers/gpu/drm/ingenic/ingenic-drm.c
+>>  index 632d72177123..0c472382a08b 100644
+>>  --- a/drivers/gpu/drm/ingenic/ingenic-drm.c
+>>  +++ b/drivers/gpu/drm/ingenic/ingenic-drm.c
+>>  @@ -330,8 +330,8 @@ static int ingenic_drm_crtc_atomic_check(struct=20
+>> drm_crtc *crtc,
+>>   	if (!drm_atomic_crtc_needs_modeset(state))
+>>   		return 0;
+>>=20
+>>  -	if (state->mode.hdisplay > priv->soc_info->max_height ||
+>>  -	    state->mode.vdisplay > priv->soc_info->max_width)
+>>  +	if (state->mode.hdisplay > priv->soc_info->max_width ||
+>>  +	    state->mode.vdisplay > priv->soc_info->max_height)
+>>   		return -EINVAL;
+>>=20
+>>   	rate =3D clk_round_rate(priv->pix_clk,
+>>  --
+>>  2.26.2
+>>=20
+>>  _______________________________________________
+>>  dri-devel mailing list
+>>  dri-devel@lists.freedesktop.org
+>>  https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-if (index - offset >= meta->nr_domains)
-
-If you agree, please send a v2 of this patch.
-
-Regards,
-Lucas
->  			offset += meta->nr_domains;
->  			continue;
->  		}
 
