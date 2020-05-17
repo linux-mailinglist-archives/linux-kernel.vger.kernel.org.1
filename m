@@ -2,130 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8C71D6776
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 12:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1351D6784
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 12:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgEQKrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 06:47:04 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:19161 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727836AbgEQKrD (ORCPT
+        id S1727990AbgEQKrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 06:47:32 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56066 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727957AbgEQKra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 06:47:03 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589712423; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=bpYRKGxi7S4lmPb9T2zE3w/nH3uH2ZxR+FnFM4pHa+Y=; b=oDEVZsp6Rhnu7YcSUIGZk9j/Xn/bJMrnaQ7kUCcMvMjGeFYWFjNgYJfXfkPKircuRFqzKXX8
- Pdd+xIbmn77T4EZCb0x4qqSEtlUUnKif4GWKS6R7fIlBIyg8Oo1zgD2ROQ1Mr8UE9fF9rAHf
- xu0DcTuPM+/i1Fl9E0rgZChWmfM=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ec11626.7f9b1f1e1570-smtp-out-n01;
- Sun, 17 May 2020 10:47:02 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2BE57C433D2; Sun, 17 May 2020 10:47:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from pillair-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B753DC433F2;
-        Sun, 17 May 2020 10:46:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B753DC433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pillair@codeaurora.org
-From:   Rakesh Pillai <pillair@codeaurora.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH v9] arm64: dts: qcom: sc7180: Add WCN3990 WLAN module device node
-Date:   Sun, 17 May 2020 16:16:51 +0530
-Message-Id: <1589712411-26718-1-git-send-email-pillair@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Sun, 17 May 2020 06:47:30 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jaGpB-0006im-8W; Sun, 17 May 2020 10:47:17 +0000
+Date:   Sun, 17 May 2020 12:47:01 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Sargun Dhillon <sargun@sargun.me>, linux-kernel@vger.kernel.org,
+        containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
+        tycho@tycho.ws, cyphar@cyphar.com
+Subject: Re: [PATCH] seccomp: Add group_leader pid to seccomp_notif
+Message-ID: <20200517104701.bbn2d2rqaplwchdw@wittgenstein>
+References: <20200515234005.32370-1-sargun@sargun.me>
+ <202005162344.74A02C2D@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202005162344.74A02C2D@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device node for the ath10k SNOC platform driver probe
-and add resources required for WCN3990 on sc7180 soc.
+On Sun, May 17, 2020 at 12:17:14AM -0700, Kees Cook wrote:
+> On Fri, May 15, 2020 at 04:40:05PM -0700, Sargun Dhillon wrote:
+> > This includes the thread group leader ID in the seccomp_notif. This is
+> > immediately useful for opening up a pidfd for the group leader, as
+> > pidfds only work on group leaders.
+> > 
+> > Previously, it was considered to include an actual pidfd in the
+> > seccomp_notif structure[1], but it was suggested to avoid proliferating
+> > mechanisms to create pidfds[2].
+> > 
+> > [1]: https://lkml.org/lkml/2020/1/24/133
+> > [2]: https://lkml.org/lkml/2020/5/15/481
+> 
+> nit: please use lore.kernel.org/lkml/ URLs
+> 
+> > Suggested-by: Christian Brauner <christian.brauner@ubuntu.com>
+> > Signed-off-by: Sargun Dhillon <sargun@sargun.me>
+> > ---
+> >  include/uapi/linux/seccomp.h                  |  2 +
+> >  kernel/seccomp.c                              |  1 +
+> >  tools/testing/selftests/seccomp/seccomp_bpf.c | 50 +++++++++++++++++++
+> >  3 files changed, 53 insertions(+)
+> > 
+> > diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
+> > index c1735455bc53..f0c272ef0f1e 100644
+> > --- a/include/uapi/linux/seccomp.h
+> > +++ b/include/uapi/linux/seccomp.h
+> > @@ -75,6 +75,8 @@ struct seccomp_notif {
+> >  	__u32 pid;
+> >  	__u32 flags;
+> >  	struct seccomp_data data;
+> > +	__u32 tgid;
+> > +	__u8 pad0[4];
+> >  };
+> 
+> I think we need to leave off padding and instead use __packed. If we
+> don't then userspace can't tell when "pad0" changes its "meaning" (i.e.
+> the size of seccomp_notif becomes 88 bytes with above -- either via
+> explicit padding like you've got or via implicit by the compiler. If
+> some other u32 gets added in the future, user space will still see "88"
+> as the size.
+> 
+> So I *think* the right change here is:
+> 
+> -};
+> +	__u32 tgid;
+> +} __packed;
+> 
+> Though tgid may need to go above seccomp_data... for when it grows.
+> Agh...
+> 
+> _However_, unfortunately, I appear to have no thought this through very
+> well, and there is actually no sanity-checking in the kernel for dealing
+> with an old userspace when sizes change. :( For example, if a userspace
+> doesn't check sizes and calls an ioctl, etc, the kernel will clobber the
+> user buffer if it's too small.
 
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
-Changes from v8:
-- Removed the qcom,msa-fixed-perm
----
- arch/arm64/boot/dts/qcom/sc7180-idp.dts |  7 +++++++
- arch/arm64/boot/dts/qcom/sc7180.dtsi    | 27 +++++++++++++++++++++++++++
- 2 files changed, 34 insertions(+)
+I'd just argue that that's just userspace messing up.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-index 4e9149d..38b102e 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-@@ -389,6 +389,13 @@
- 	};
- };
- 
-+&wifi {
-+	status = "okay";
-+	wifi-firmware {
-+		iommus = <&apps_smmu 0xc2 0x1>;
-+	};
-+};
-+
- /* PINCTRL - additions to nodes defined in sc7180.dtsi */
- 
- &qspi_clk {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index f1280e0..dd4e095 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -63,6 +63,11 @@
- 			clock-frequency = <32764>;
- 			#clock-cells = <0>;
- 		};
-+
-+		wlan_fw_mem: memory@94100000 {
-+			reg = <0 0x94100000 0 0x200000>;
-+			no-map;
-+		};
- 	};
- 
- 	reserved_memory: reserved-memory {
-@@ -944,6 +949,28 @@
- 			};
- 		};
- 
-+		wifi: wifi@18800000 {
-+			compatible = "qcom,wcn3990-wifi";
-+			reg = <0 0x18800000 0 0x800000>;
-+			reg-names = "membase";
-+			iommus = <&apps_smmu 0xc0 0x1>;
-+			interrupts =
-+				<GIC_SPI 414 IRQ_TYPE_LEVEL_HIGH /* CE0 */ >,
-+				<GIC_SPI 415 IRQ_TYPE_LEVEL_HIGH /* CE1 */ >,
-+				<GIC_SPI 416 IRQ_TYPE_LEVEL_HIGH /* CE2 */ >,
-+				<GIC_SPI 417 IRQ_TYPE_LEVEL_HIGH /* CE3 */ >,
-+				<GIC_SPI 418 IRQ_TYPE_LEVEL_HIGH /* CE4 */ >,
-+				<GIC_SPI 419 IRQ_TYPE_LEVEL_HIGH /* CE5 */ >,
-+				<GIC_SPI 420 IRQ_TYPE_LEVEL_HIGH /* CE6 */ >,
-+				<GIC_SPI 421 IRQ_TYPE_LEVEL_HIGH /* CE7 */ >,
-+				<GIC_SPI 422 IRQ_TYPE_LEVEL_HIGH /* CE8 */ >,
-+				<GIC_SPI 423 IRQ_TYPE_LEVEL_HIGH /* CE9 */ >,
-+				<GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH /* CE10 */>,
-+				<GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH /* CE11 */>;
-+			memory-region = <&wlan_fw_mem>;
-+			status = "disabled";
-+		};
-+
- 		config_noc: interconnect@1500000 {
- 			compatible = "qcom,sc7180-config-noc";
- 			reg = <0 0x01500000 0 0x28000>;
--- 
-2.7.4
+> 
+> Even the SECCOMP_GET_NOTIF_SIZES command lacks a buffer size argument.
+> :(
+> 
+> So:
+> 
+> - should we just declare such userspace as "wrong"? I don't think
+>   that'll work, especially since what if we ever change the size of
+>   seccomp_data...  that predated the ..._SIZES command.
+
+Yeah, that's nasty since the struct member in seccomp_notif would now
+clobber each other.
+
+> 
+> - should we add a SECCOMP_SET_SIZES command to tell the kernel what
+>   we're expecting? There's no "state" associated across seccomp(2)
+>   calls, but maybe that doesn't matter because only user_notif writes
+>   back to userspace. For the ioctl, the state could be part of the
+>   private file data? Sending seccomp_data back to userspace only
+>   happens here, and any changes in seccomp_data size will just be seen
+>   as allowing a filter to query further into it.
+
+Sounds ok-ish in my opinion.
+
+> 
+> - should GET_SIZES report "useful" size? (i.e. exclude padding?)
+
+Or... And that's more invasive but ultimately cleaner we v2 the whole
+thing so e.g. SECCOMP_IOCTL_NOTIF_RECV2, SECCOMP_IOCTL_NOTIF_SEND2, and
+embedd the size argument in the structs. Userspace sets the size
+argument, we use get_user() to get the size first and then
+copy_struct_from_user() to handle it cleanly based on that. A similar
+model as with sched (has other unrelated quirks because they messed up
+something too):
+
+static int sched_copy_attr(struct sched_attr __user *uattr, struct sched_attr *attr)
+{
+	u32 size;
+	int ret;
+
+	/* Zero the full structure, so that a short copy will be nice: */
+	memset(attr, 0, sizeof(*attr));
+
+	ret = get_user(size, &uattr->size);
+	if (ret)
+		return ret;
+
+	/* ABI compatibility quirk: */
+	if (!size)
+		size = SCHED_ATTR_SIZE_VER0;
+	if (size < SCHED_ATTR_SIZE_VER0 || size > PAGE_SIZE)
+		goto err_size;
+
+	ret = copy_struct_from_user(attr, sizeof(*attr), uattr, size);
+	if (ret) {
+		if (ret == -E2BIG)
+			goto err_size;
+		return ret;
+	}
+
+We're probably the biggest user of this right now and I'd be ok with
+that change. If it's a v2 than whatever. :)
+
+Christian
