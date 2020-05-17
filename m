@@ -2,72 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F14B1D6D86
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7D31D6D8C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726550AbgEQVrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 17:47:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40924 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726297AbgEQVrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 17:47:17 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3B1320671;
-        Sun, 17 May 2020 21:47:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589752036;
-        bh=PNWctZk9pMdFlRDTenYl+JHp5npRYe1kEdnmws7kakU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=0pYJcjwjUWt2iMR1Fzx4eiXRxNMJtNzQN1ic9wt17ujnkd86ZbwOxWEtwOpiFJZ50
-         ayFOa3Nl1r6SLO58+RA0zxc2hA3GMTOurtjhW4G6e7CxkE/R9IMd1CX1Jq3Z0HACuI
-         f4zL2mj4RGhLcQdUiBUPhIsdeKHNvboalXxNRnwA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B93DB35233BC; Sun, 17 May 2020 14:47:16 -0700 (PDT)
-Date:   Sun, 17 May 2020 14:47:16 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Amol Grover <frextrite@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>, philip.li@intel.com,
-        lkp@intel.com, fengguang.wu@intel.com, rong.a.chen@intel.com
-Subject: Re: Default enable RCU list lockdep debugging with PROVE_RCU
-Message-ID: <20200517214716.GT2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200514181305.GT2869@paulmck-ThinkPad-P72>
- <CA610F47-290E-4826-B1D9-7CE09D7CEA6D@lca.pw>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA610F47-290E-4826-B1D9-7CE09D7CEA6D@lca.pw>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726992AbgEQVrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 17:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726945AbgEQVrf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 May 2020 17:47:35 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7797C05BD09
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:47:33 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id y3so9612421wrt.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 14:47:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=YYgWnESh6GA5v0OESDXoG2vIRhhETFyg3jLhszcc4vQ=;
+        b=Hlzv4zqWCxXGdAcTxIc9OS1xN3LebUTz2MMDfJR6xLkhfwU0aFx8WwBuj5L8Pj7jxt
+         2ccD3GeoS2fsl4G1rY/ZSnT8Pg17X34UDACNqtLfaaVtvyBO4M+A7M5K7XMk0H1xwdQ6
+         +0E07C1OE8fURg4557sLDZEkGl5bEpA/VwsVioBLsuSUcZD3VzHAJvgFPkuSPX8yqYOo
+         9gEdbzs0lUYVU6mKPQkVU1ypkau7ic6QY3GbCGV1EJjGBavcrai+nuRh2PNo8wqtCHW8
+         pM4LYrujE5Iz7sf+fMlkZKbNwrI15Jt1U8Aiy1/aL8mGKUkjO3FRl+tD60Ye2uePMotY
+         bwrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=YYgWnESh6GA5v0OESDXoG2vIRhhETFyg3jLhszcc4vQ=;
+        b=nWk0i3Yc26oHE/t273BsoDyzOGXYw37TArzqJHHrv5xvrIq039PWP2JwinzxMcW3EW
+         9NcZhKcK8GbA+elZztjw408vBe9izdjfsrhMI/KHXH9YDwtTNXBNNxH8FRyk4rmPAM4f
+         wTkSIRlZfaNoAIyKxpN7cYVht9iJaFeiFDvcz7BGSfAlgcA9wioVHUaexJgU9nW/FHn1
+         DJg4wVp8mbIs175h37ZwgL4kSnC+Ilo7k0laaM9lhn34EMDERxz9iFXEMToyuDJOPNGP
+         7pKXGUnw6qfnoJI0RgWOyIqfE1S6B+u6oLRpBj0EOZrVqPPVZeEiSZXui0gCvthEjAHN
+         Vc9g==
+X-Gm-Message-State: AOAM532oAatfHZVFpXIy1Ieq7CL7cJ3CTp1cU4LjQUiYzpGVbNnx4jmJ
+        IzcNXa4L0bA9gW4ANug7PCKHYg==
+X-Google-Smtp-Source: ABdhPJzHC+j/C6W12BV0RZXccBWkgsR740m9gvaarHvrA3NRnsXUBi80uvh/EszrG9my18vXu5gKnA==
+X-Received: by 2002:adf:fa92:: with SMTP id h18mr16312653wrr.260.1589752052451;
+        Sun, 17 May 2020 14:47:32 -0700 (PDT)
+Received: from ls00508.pb.local ([2001:1438:4010:2540:bc3e:92a1:7010:2763])
+        by smtp.gmail.com with ESMTPSA id v126sm14441244wmb.4.2020.05.17.14.47.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 May 2020 14:47:31 -0700 (PDT)
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+To:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        david@fromorbit.com, hch@infradead.org, willy@infradead.org,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Roman Gushchin <guro@fb.com>,
+        Andreas Dilger <adilger@dilger.ca>
+Subject: [PATCH 09/10] buffer_head.h: remove attach_page_buffers
+Date:   Sun, 17 May 2020 23:47:17 +0200
+Message-Id: <20200517214718.468-10-guoqing.jiang@cloud.ionos.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200517214718.468-1-guoqing.jiang@cloud.ionos.com>
+References: <20200517214718.468-1-guoqing.jiang@cloud.ionos.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 02:36:26PM -0400, Qian Cai wrote:
-> 
-> 
-> > On May 14, 2020, at 2:13 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > 
-> > Fair enough!  And yes, the Linux kernel is quite large, so I certainly am
-> > not asking you to test the whole thing yourself.
-> 
-> Ok, I saw 0day bot also started to report those which is good. For example,
-> 
-> lkml.org/lkml/2020/5/12/1358
-> 
-> which so far is nit blocking 0day on linux-next since it does not use panic_on_warn yet (while syzbot does).
-> 
-> Thus, I am more convinced that we should not revert the commit just for syzbot until someone could also convince 0day to select RCU_EXPERT and then DEBUG_RCU_LIST?
+All the callers have replaced attach_page_buffers with the new function
+attach_page_private, so remove it.
 
-Let's ask the 0day people, now CCed, if they would be willing to
-build with CONFIG_RCU_EXPERT=y and CONFIG_DEBUG_RCU_LIST=y on some
-fraction of their testing.  ;-)
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Andreas Dilger <adilger@dilger.ca>
+Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+---
+No change since RFC.
 
-							Thanx, Paul
+ include/linux/buffer_head.h | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+index 15b765a181b8..22fb11e2d2e0 100644
+--- a/include/linux/buffer_head.h
++++ b/include/linux/buffer_head.h
+@@ -272,14 +272,6 @@ void buffer_init(void);
+  * inline definitions
+  */
+ 
+-static inline void attach_page_buffers(struct page *page,
+-		struct buffer_head *head)
+-{
+-	get_page(page);
+-	SetPagePrivate(page);
+-	set_page_private(page, (unsigned long)head);
+-}
+-
+ static inline void get_bh(struct buffer_head *bh)
+ {
+         atomic_inc(&bh->b_count);
+-- 
+2.17.1
+
