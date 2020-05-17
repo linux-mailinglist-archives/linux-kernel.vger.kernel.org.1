@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B255C1D6DB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0CD1D6DB6
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 23:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726700AbgEQV4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 17:56:35 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:45118 "EHLO gloria.sntech.de"
+        id S1726729AbgEQV4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 17:56:36 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:45126 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726552AbgEQV4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726458AbgEQV4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 17 May 2020 17:56:34 -0400
 Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.sntech)
         by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <heiko@sntech.de>)
-        id 1jaRGe-0002am-9B; Sun, 17 May 2020 23:56:20 +0200
+        id 1jaRGe-0002am-L3; Sun, 17 May 2020 23:56:20 +0200
 From:   Heiko Stuebner <heiko@sntech.de>
 To:     gregkh@linuxfoundation.org
 Cc:     jslaby@suse.com, andriy.shevchenko@linux.intel.com,
@@ -23,11 +23,10 @@ Cc:     jslaby@suse.com, andriy.shevchenko@linux.intel.com,
         lukas@wunner.de, linux-serial@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         christoph.muellner@theobroma-systems.com, heiko@sntech.de,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v3 1/5] serial: 8520_port: Fix function param documentation
-Date:   Sun, 17 May 2020 23:56:06 +0200
-Message-Id: <20200517215610.2131618-2-heiko@sntech.de>
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Subject: [PATCH v3 2/5] dt-bindings: serial: Add binding for rs485 receiver enable GPIO
+Date:   Sun, 17 May 2020 23:56:07 +0200
+Message-Id: <20200517215610.2131618-3-heiko@sntech.de>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200517215610.2131618-1-heiko@sntech.de>
 References: <20200517215610.2131618-1-heiko@sntech.de>
@@ -40,29 +39,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 
-The parameter is named p while the documentation talks about up.
-Fix the doc to be in line with the code.
+RS485 has two signals to control transmissions "driver enable" (DE) and
+"receiver enable" (RE). DE is already handled via the uarts RTS signal
+while the RE signal on most implementations doesn't get handled
+separately at all.
 
-Fixes: 058bc104f7ca ("serial: 8250: Generalize rs485 software emulation")
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+As there still will be cases where this is needed though add a gpio
+property for declaring this signal pin.
+
 Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 ---
- drivers/tty/serial/8250/8250_port.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/serial/rs485.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index 9c0457e74d21..6975bd3ecb7d 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -1437,7 +1437,7 @@ static void serial8250_stop_rx(struct uart_port *port)
+diff --git a/Documentation/devicetree/bindings/serial/rs485.yaml b/Documentation/devicetree/bindings/serial/rs485.yaml
+index a9ad17864889..c61226c235f0 100644
+--- a/Documentation/devicetree/bindings/serial/rs485.yaml
++++ b/Documentation/devicetree/bindings/serial/rs485.yaml
+@@ -44,6 +44,10 @@ properties:
+    description: enables the receiving of data even while sending data.
+    $ref: /schemas/types.yaml#/definitions/flag
  
- /**
-  * serial8250_em485_stop_tx() - generic ->rs485_stop_tx() callback
-- * @up: uart 8250 port
-+ * @p: uart 8250 port
-  *
-  * Generic callback usable by 8250 uart drivers to stop rs485 transmission.
-  */
++  rs485-rx-enable-gpios:
++    description: GPIO to handle a separate RS485 receive enable signal
++    maxItems: 1
++
+   rs485-term-gpios:
+     description: GPIO pin to enable RS485 bus termination.
+     maxItems: 1
 -- 
 2.25.1
 
