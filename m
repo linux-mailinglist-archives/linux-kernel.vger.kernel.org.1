@@ -2,71 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFCB1D6513
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 03:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23191D6515
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 May 2020 03:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgEQBou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 May 2020 21:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54676 "EHLO
+        id S1726947AbgEQBqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 May 2020 21:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726797AbgEQBou (ORCPT
+        with ESMTP id S1726918AbgEQBqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 May 2020 21:44:50 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE9FC061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 18:44:50 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id k18so6927602ion.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 18:44:50 -0700 (PDT)
+        Sat, 16 May 2020 21:46:09 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7F6C05BD09
+        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 18:46:09 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id z80so6800785qka.0
+        for <linux-kernel@vger.kernel.org>; Sat, 16 May 2020 18:46:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=sE2ntjSj8zdn9TyyMvlIbv6XfbJd3noAjCoGqSiheSY=;
-        b=KKS40m63nPudDqA9bcD3XLBT8ShHnIJKtMoj9eA5t1zroDoeYha3ijAt83uLeWkiLK
-         QekOYBTh326Wel/3s66dvQNVawtLqIcR8NHxbSDWHmrJkTDNg9lymsjmrNxEd4LxSMSa
-         ey0+NIYkmMZKEGdsDMoaKjXEuiMU5YAuMqxSR6ifZXZCn9utjocm3FpfIzgQ9WZOTzyD
-         qEBtzsvKpV1Hqy+S9nzal/ANr3lXshR5+Qq3saaPhh5ynAM7fD4+2qUh4zHX/ncAO22K
-         M+s8U+bUA59D8kttmdenoQ0Kc53AcbWTFCarxgG+L4NPgxX1rjC88dgOGhVaucRu32ZK
-         bU0Q==
+        d=lca.pw; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=v8/1I95wcTj1mWlxsoep0Hvc73TKsH79uHMoZbzZUWA=;
+        b=mTuyBRurXQZEK9utptTiC11aN2pRP5dmNcE3mS9JBiWGvq+XHi1IprBG0ma5RZ8d1B
+         mq/y+wqaSGx+FRZ55wJjSWJknBkFCrIAqsYJSJG+IJNbVLUiZY0PjS65iNMYjH5poapJ
+         ano66ITpWYc7rAQifzLH5VBHZaDrUFXLp87bcqJILV29+PDGdX7D8K7W9M26JKqOX6FC
+         aQiPnMJf1SdeDID06QRXlqxWkRGX8BJvxwE8AUiQJvRghyyLv3dtN/xklxayHY2TAiOW
+         QudmNWPFzxw7MllH6ftOp0wvqb3tMAV8Mda48M/0Wy7idJzc4TBrjXekP9QxEtS5uGvd
+         wtyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=sE2ntjSj8zdn9TyyMvlIbv6XfbJd3noAjCoGqSiheSY=;
-        b=KdL0PB4lLxajR/XcDp5+Z3q+loZnpU53g4jC5/+mHg/yL3+MMIRTwnRNFtCyK+6B9g
-         YtQLgT89duOcfoQXRi1jkVDsrABi1uTictfMZt6LeSD+TL0WLBGOp+mfiK0PPdGxTeC6
-         FGuh4Hi3gVaJSLwoKEiPCTJJ7enek+Hv78tBAA1101X/C4WgXYAlUyiTGsmgziLrZRKG
-         HYT3E+iDBDS0WzhPQfiV8+XDjAfFI6ar2buCgJGzz3KYkpCnO3jdYkb+bD0voYFZVSfE
-         IZvGyls6ZVuiRLk4Q66rbB+LJNRdRUYxuS2IaAz28sMhe84B3ThNgjAXinKY3Voi9J4o
-         4ODg==
-X-Gm-Message-State: AOAM533NiTPctW/oGVk63GXSc9Ck+2C/OXq+KGJfE4LjvUeqeVvrTu46
-        nB8F7P2E76s3IrkWKIFwK2Xy4TgBXv+nyQyw+Vs=
-X-Google-Smtp-Source: ABdhPJyZCRo22j+hpeJPQbWWN95ZUSiLSvR00sYFofNpWldAWFjDk/23JlEDdd7/gMxeBTGi0EaPsaesIsBrfI4dT6k=
-X-Received: by 2002:a02:2704:: with SMTP id g4mr9490555jaa.77.1589679889467;
- Sat, 16 May 2020 18:44:49 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a92:dc43:0:0:0:0:0 with HTTP; Sat, 16 May 2020 18:44:49
- -0700 (PDT)
-Reply-To: lbill9287@gmail.com
-From:   "David Yax." <dg012639@gmail.com>
-Date:   Sat, 16 May 2020 18:44:49 -0700
-Message-ID: <CAAjN4O1FXAg31_AO=H7jUzeyJ2fcvzu3CY0fu6m5jFsz-nD8nQ@mail.gmail.com>
-Subject: Gute Nachrichten. Bitte lesen Sie
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=v8/1I95wcTj1mWlxsoep0Hvc73TKsH79uHMoZbzZUWA=;
+        b=R3dtu+NwRDydQRRgfuKGGp8f5Qw1K966j+JviOGwKqP/VaaNEKMIX5uCNlG+tVzmmY
+         t5zYwEI6cZV6yU2JWflpIdC2PJLa6b4Hshhn8TCkikTCebIGUv0PuVdWvSibFzqS980B
+         LNJbdy15enTbwQQZ3sjFaeb1CzJ9m5P5y6tPNFs6u51o+SrDTuO2ca7s1y1Q4/qj3olh
+         SmdnyyLYMOKhLRubmFzvAyC8bsYWtemZcRw+o4oP8eUcugRwbgPIjTKIodmPeFeUtkuK
+         J/dFtIEHef4LPgJM8xGq9DsbP8RekJD5DSafcGQyRZx4+WmtRNiziq3kujiLbIcohf67
+         fY5Q==
+X-Gm-Message-State: AOAM530WgIrvPDwzE+s3NS8qS3xsHKeiXPbtpVj0aBSxGOESwqU0ngfb
+        3hgAPPNWTU079tGRXIv4DNPq4MpzNn/uZQ==
+X-Google-Smtp-Source: ABdhPJzStOu9xj05KLKxunZry1UUBpBOKseoEyDnnEQBwPMBKvyZuLowmwoxKqJL+Hq9l1aoJW48+Q==
+X-Received: by 2002:ae9:e858:: with SMTP id a85mr10042251qkg.478.1589679967192;
+        Sat, 16 May 2020 18:46:07 -0700 (PDT)
+Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id g66sm5186785qkb.122.2020.05.16.18.46.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 May 2020 18:46:06 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+From:   Qian Cai <cai@lca.pw>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2 4/4] mm/slub: Fix sysfs shrink circular locking dependency
+Date:   Sat, 16 May 2020 21:46:05 -0400
+Message-Id: <62C1A69E-A14F-42EE-970F-ABAEA2782256@lca.pw>
+References: <56327de0-fa44-d5f3-2409-69cf2b97a209@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>
+In-Reply-To: <56327de0-fa44-d5f3-2409-69cf2b97a209@redhat.com>
+To:     Waiman Long <longman@redhat.com>
+X-Mailer: iPhone Mail (17E262)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-=E2=82=AC 40.000,00 Euro wurden Ihnen von David Yax gespendet. Bin der
-Gewinner der $ 80 Millionen Jackpot Powerball Ziehung. Die =E2=82=AC 40.000=
-,00
-Euro werden Ihnen aufgrund von COVID-19 gespendet, um sicherzustellen,
-dass Sie und alle in Ihnen die beste Pflege erhalten. Mailen Sie mir
-f=C3=BCr weitere Informationen.
 
-Mr. David Yax.
-E-Mail: lbill9287@gmail.com
+
+> On Apr 28, 2020, at 10:07 AM, Waiman Long <longman@redhat.com> wrote:
+>=20
+> Trylock is handled differently from lockdep's perspective as trylock can f=
+ailed. When trylock succeeds, the critical section is executed. As long as i=
+t doesn't try to acquire another lock in the circular chain, the execution w=
+ill finish at some point and release the lock. On the other hand, if another=
+ task has already held all those locks, the trylock will fail and held locks=
+ should be released. Again, no deadlock will happen.
+
+Ok, I can see that in validate_chain() especially mentioned,
+
+=E2=80=9CTrylock needs to maintain the stack of held locks, but it does not a=
+dd new dependencies, because trylock can be done in any order.=E2=80=9D
+
+So, I agree this trylock trick could really work. Especially, I don=E2=80=99=
+t know any other better way to fix this.=
