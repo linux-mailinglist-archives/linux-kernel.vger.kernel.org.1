@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A6B1D826C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D825E1D80C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731618AbgERR4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:56:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33968 "EHLO mail.kernel.org"
+        id S1728766AbgERRmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:42:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731064AbgERR4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:56:13 -0400
+        id S1728567AbgERRlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:41:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B0FA20715;
-        Mon, 18 May 2020 17:56:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E85820715;
+        Mon, 18 May 2020 17:41:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824572;
-        bh=ciG8w8cKxIJSo6VsQnYjbuVR9juBWq8ObAuDUIa5xhs=;
+        s=default; t=1589823709;
+        bh=sSvJHe06iRpb5deyo+DbN4FZgAprwvRWcz2+nK5hBAU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vaOymP2lL4jeOjWs3JUPBPncKo60RJL4hyH0FAvcB9kL9mVlRBgr24rYhTWZE5Noe
-         8ZN8FE3Awzb8aVjnlTmtk52JrkCE5JajC7CDma8hiQpeSXceHo5uCMvw2Qk9Uc1+y8
-         9aGUKbsr3jXbGMYnsPA+wvAQp2YfIVhC6w/tybrI=
+        b=nXFNOexOmphMGq/Cp3ZPrqTVZZOKrsw+rDgqbZPBdPYyF8A6pEjjPj9K+nxbacn0C
+         vGsa7XlgDf5wCdonVcIlDV5+G1LjGDgQMDOSNONcsbe4tqBZiCE98ePeC3cDZpyEdn
+         pMeVVxZ7wOf7mKXRyQ7USK1C5YcLfhnJDX+gb59s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 065/147] bpf, sockmap: bpf_tcp_ingress needs to subtract bytes from sg.size
+        stable@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: [PATCH 4.4 57/86] kbuild: compute false-positive -Wmaybe-uninitialized cases in Kconfig
 Date:   Mon, 18 May 2020 19:36:28 +0200
-Message-Id: <20200518173522.152559254@linuxfoundation.org>
+Message-Id: <20200518173502.003533957@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,80 +45,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Fastabend <john.fastabend@gmail.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-[ Upstream commit 81aabbb9fb7b4b1efd073b62f0505d3adad442f3 ]
+commit b303c6df80c9f8f13785aa83a0471fca7e38b24d upstream.
 
-In bpf_tcp_ingress we used apply_bytes to subtract bytes from sg.size
-which is used to track total bytes in a message. But this is not
-correct because apply_bytes is itself modified in the main loop doing
-the mem_charge.
+Since -Wmaybe-uninitialized was introduced by GCC 4.7, we have patched
+various false positives:
 
-Then at the end of this we have sg.size incorrectly set and out of
-sync with actual sk values. Then we can get a splat if we try to
-cork the data later and again try to redirect the msg to ingress. To
-fix instead of trying to track msg.size do the easy thing and include
-it as part of the sk_msg_xfer logic so that when the msg is moved the
-sg.size is always correct.
+ - commit e74fc973b6e5 ("Turn off -Wmaybe-uninitialized when building
+   with -Os") turned off this option for -Os.
 
-To reproduce the below users will need ingress + cork and hit an
-error path that will then try to 'free' the skmsg.
+ - commit 815eb71e7149 ("Kbuild: disable 'maybe-uninitialized' warning
+   for CONFIG_PROFILE_ALL_BRANCHES") turned off this option for
+   CONFIG_PROFILE_ALL_BRANCHES
 
-[  173.699981] BUG: KASAN: null-ptr-deref in sk_msg_free_elem+0xdd/0x120
-[  173.699987] Read of size 8 at addr 0000000000000008 by task test_sockmap/5317
+ - commit a76bcf557ef4 ("Kbuild: enable -Wmaybe-uninitialized warning
+   for "make W=1"") turned off this option for GCC < 4.9
+   Arnd provided more explanation in https://lkml.org/lkml/2017/3/14/903
 
-[  173.700000] CPU: 2 PID: 5317 Comm: test_sockmap Tainted: G          I       5.7.0-rc1+ #43
-[  173.700005] Hardware name: Dell Inc. Precision 5820 Tower/002KVM, BIOS 1.9.2 01/24/2019
-[  173.700009] Call Trace:
-[  173.700021]  dump_stack+0x8e/0xcb
-[  173.700029]  ? sk_msg_free_elem+0xdd/0x120
-[  173.700034]  ? sk_msg_free_elem+0xdd/0x120
-[  173.700042]  __kasan_report+0x102/0x15f
-[  173.700052]  ? sk_msg_free_elem+0xdd/0x120
-[  173.700060]  kasan_report+0x32/0x50
-[  173.700070]  sk_msg_free_elem+0xdd/0x120
-[  173.700080]  __sk_msg_free+0x87/0x150
-[  173.700094]  tcp_bpf_send_verdict+0x179/0x4f0
-[  173.700109]  tcp_bpf_sendpage+0x3ce/0x5d0
+I think this looks better by shifting the logic from Makefile to Kconfig.
 
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Link: https://lore.kernel.org/bpf/158861290407.14306.5327773422227552482.stgit@john-Precision-5820-Tower
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://github.com/ClangBuiltLinux/linux/issues/350
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- include/linux/skmsg.h | 1 +
- net/ipv4/tcp_bpf.c    | 1 -
- 2 files changed, 1 insertion(+), 1 deletion(-)
+ Makefile             |    5 ++++-
+ init/Kconfig         |   17 +++++++++++++++++
+ kernel/trace/Kconfig |    1 +
+ 3 files changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index 7eb6a8754f19a..a3adbe593505d 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -186,6 +186,7 @@ static inline void sk_msg_xfer(struct sk_msg *dst, struct sk_msg *src,
- 	dst->sg.data[which] = src->sg.data[which];
- 	dst->sg.data[which].length  = size;
- 	dst->sg.size		   += size;
-+	src->sg.size		   -= size;
- 	src->sg.data[which].length -= size;
- 	src->sg.data[which].offset += size;
- }
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 8a01428f80c1c..19bd10e6ab830 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -200,7 +200,6 @@ static int bpf_tcp_ingress(struct sock *sk, struct sk_psock *psock,
+--- a/Makefile
++++ b/Makefile
+@@ -631,7 +631,6 @@ ARCH_CFLAGS :=
+ include arch/$(SRCARCH)/Makefile
  
- 	if (!ret) {
- 		msg->sg.start = i;
--		msg->sg.size -= apply_bytes;
- 		sk_psock_queue_msg(psock, tmp);
- 		sk_psock_data_ready(sk, psock);
- 	} else {
--- 
-2.20.1
-
+ KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
+-KBUILD_CFLAGS	+= $(call cc-disable-warning,maybe-uninitialized,)
+ KBUILD_CFLAGS	+= $(call cc-disable-warning,frame-address,)
+ KBUILD_CFLAGS	+= $(call cc-disable-warning, format-truncation)
+ KBUILD_CFLAGS	+= $(call cc-disable-warning, format-overflow)
+@@ -649,6 +648,10 @@ KBUILD_CFLAGS   += -O2
+ endif
+ endif
+ 
++ifdef CONFIG_CC_DISABLE_WARN_MAYBE_UNINITIALIZED
++KBUILD_CFLAGS   += -Wno-maybe-uninitialized
++endif
++
+ # Tell gcc to never replace conditional load with a non-conditional one
+ KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
+ 
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -16,6 +16,22 @@ config DEFCONFIG_LIST
+ 	default "$ARCH_DEFCONFIG"
+ 	default "arch/$ARCH/defconfig"
+ 
++config CC_HAS_WARN_MAYBE_UNINITIALIZED
++	def_bool $(cc-option,-Wmaybe-uninitialized)
++	help
++	  GCC >= 4.7 supports this option.
++
++config CC_DISABLE_WARN_MAYBE_UNINITIALIZED
++	bool
++	depends on CC_HAS_WARN_MAYBE_UNINITIALIZED
++	default CC_IS_GCC && GCC_VERSION < 40900  # unreliable for GCC < 4.9
++	help
++	  GCC's -Wmaybe-uninitialized is not reliable by definition.
++	  Lots of false positive warnings are produced in some cases.
++
++	  If this option is enabled, -Wno-maybe-uninitialzed is passed
++	  to the compiler to suppress maybe-uninitialized warnings.
++
+ config CONSTRUCTORS
+ 	bool
+ 	depends on !UML
+@@ -1331,6 +1347,7 @@ config CC_OPTIMIZE_FOR_PERFORMANCE
+ 
+ config CC_OPTIMIZE_FOR_SIZE
+ 	bool "Optimize for size"
++	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
+ 	help
+ 	  Enabling this option will pass "-Os" instead of "-O2" to
+ 	  your compiler resulting in a smaller kernel.
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -312,6 +312,7 @@ config PROFILE_ANNOTATED_BRANCHES
+ config PROFILE_ALL_BRANCHES
+ 	bool "Profile all if conditionals"
+ 	select TRACE_BRANCH_PROFILING
++	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
+ 	help
+ 	  This tracer profiles all branch conditions. Every if ()
+ 	  taken in the kernel is recorded whether it hit or miss.
 
 
