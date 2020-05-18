@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9E01D831B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8642E1D823C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732475AbgERSCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:02:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45070 "EHLO mail.kernel.org"
+        id S1730857AbgERRyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:54:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732466AbgERSCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:02:04 -0400
+        id S1731317AbgERRyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:54:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C70F320899;
-        Mon, 18 May 2020 18:02:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61B7A207C4;
+        Mon, 18 May 2020 17:54:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824924;
-        bh=g8MXi/Qh+MMLXU3CQUCfIqQ+603ZewnyD4kz1EXjib0=;
+        s=default; t=1589824472;
+        bh=xURob6Yxsaifegk/rKDVTt3iGfWy/FpxpLBBuq79G/w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WgGSmYW+R+HGWWdpeKGT4ft4ohVmN8ErD/SG1SkEF392br+N6QuG7tjbZRGqcnzFw
-         lEp1VXEKHCMHPVqp2zb8YeOYRZPQahQkLG6yxPP45ZqpROQLE3X6Wz4daOdCvSnw/Z
-         HgviB/1WzVSb4cx/ylKuzFcsHCVzTVjHU2l89K1M=
+        b=EdX/mPRxpDylEb7KWoPODm70aDdHLYz2zrFgpVvV4QnrVOabIUAIdo9sNlUEqcpGi
+         X7XSCCV4B4kkwipz/LEJzMxErPaHpeuwrzlwgtanov8l59cjI88CjdHvxMnRPoL9zL
+         j0bJfxzDGA2UCh8qilQhcQq2Ad1vAHOGTmD3v9U8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 058/194] cpufreq: intel_pstate: Only mention the BIOS disabling turbo mode once
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 025/147] tcp: fix error recovery in tcp_zerocopy_receive()
 Date:   Mon, 18 May 2020 19:35:48 +0200
-Message-Id: <20200518173536.566385530@linuxfoundation.org>
+Message-Id: <20200518173516.952261293@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +45,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 8c539776ac83c0857395e1ccc9c6b516521a2d32 ]
+[ Upstream commit e776af608f692a7a647455106295fa34469e7475 ]
 
-Make a note of the first time we discover the turbo mode has been
-disabled by the BIOS, as otherwise we complain every time we try to
-update the mode.
+If user provides wrong virtual address in TCP_ZEROCOPY_RECEIVE
+operation we want to return -EINVAL error.
 
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+But depending on zc->recv_skip_hint content, we might return
+-EIO error if the socket has SOCK_DONE set.
+
+Make sure to return -EINVAL in this case.
+
+BUG: KMSAN: uninit-value in tcp_zerocopy_receive net/ipv4/tcp.c:1833 [inline]
+BUG: KMSAN: uninit-value in do_tcp_getsockopt+0x4494/0x6320 net/ipv4/tcp.c:3685
+CPU: 1 PID: 625 Comm: syz-executor.0 Not tainted 5.7.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1c9/0x220 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+ tcp_zerocopy_receive net/ipv4/tcp.c:1833 [inline]
+ do_tcp_getsockopt+0x4494/0x6320 net/ipv4/tcp.c:3685
+ tcp_getsockopt+0xf8/0x1f0 net/ipv4/tcp.c:3728
+ sock_common_getsockopt+0x13f/0x180 net/core/sock.c:3131
+ __sys_getsockopt+0x533/0x7b0 net/socket.c:2177
+ __do_sys_getsockopt net/socket.c:2192 [inline]
+ __se_sys_getsockopt+0xe1/0x100 net/socket.c:2189
+ __x64_sys_getsockopt+0x62/0x80 net/socket.c:2189
+ do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:297
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45c829
+Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f1deeb72c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000037
+RAX: ffffffffffffffda RBX: 00000000004e01e0 RCX: 000000000045c829
+RDX: 0000000000000023 RSI: 0000000000000006 RDI: 0000000000000009
+RBP: 000000000078bf00 R08: 0000000020000200 R09: 0000000000000000
+R10: 00000000200001c0 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 00000000000001d8 R14: 00000000004d3038 R15: 00007f1deeb736d4
+
+Local variable ----zc@do_tcp_getsockopt created at:
+ do_tcp_getsockopt+0x1a74/0x6320 net/ipv4/tcp.c:3670
+ do_tcp_getsockopt+0x1a74/0x6320 net/ipv4/tcp.c:3670
+
+Fixes: 05255b823a61 ("tcp: add TCP_ZEROCOPY_RECEIVE support for zerocopy receive")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/cpufreq/intel_pstate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv4/tcp.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index c81e1ff290697..b4c014464a208 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -1058,7 +1058,7 @@ static ssize_t store_no_turbo(struct kobject *a, struct kobj_attribute *b,
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -1757,10 +1757,11 @@ static int tcp_zerocopy_receive(struct s
  
- 	update_turbo_state();
- 	if (global.turbo_disabled) {
--		pr_warn("Turbo disabled by BIOS or unavailable on processor\n");
-+		pr_notice_once("Turbo disabled by BIOS or unavailable on processor\n");
- 		mutex_unlock(&intel_pstate_limits_lock);
- 		mutex_unlock(&intel_pstate_driver_lock);
- 		return -EPERM;
--- 
-2.20.1
-
+ 	down_read(&current->mm->mmap_sem);
+ 
+-	ret = -EINVAL;
+ 	vma = find_vma(current->mm, address);
+-	if (!vma || vma->vm_start > address || vma->vm_ops != &tcp_vm_ops)
+-		goto out;
++	if (!vma || vma->vm_start > address || vma->vm_ops != &tcp_vm_ops) {
++		up_read(&current->mm->mmap_sem);
++		return -EINVAL;
++	}
+ 	zc->length = min_t(unsigned long, zc->length, vma->vm_end - address);
+ 
+ 	tp = tcp_sk(sk);
 
 
