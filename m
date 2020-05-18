@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0E01D8585
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877661D808E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728534AbgERSTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:19:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59242 "EHLO mail.kernel.org"
+        id S1729051AbgERRkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:40:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731311AbgERRyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:54:31 -0400
+        id S1729029AbgERRkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:40:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E81CF207F5;
-        Mon, 18 May 2020 17:54:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4634207FB;
+        Mon, 18 May 2020 17:40:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824470;
-        bh=rzC9MGi2S9HCI1wE1EFNRig2v1+cv7Lofvm0RsNonKA=;
+        s=default; t=1589823618;
+        bh=rI69ELdrINCHlnyvofm74tGYIw+cV8yJBh7GJpNNMKA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FUsLEwERB1bU9hy+ZotabFhp+qCiXwi+tqvudxhK/TLIAhM8rkWdAL0jouWA0MIK9
-         8oIEqwrrNPGjB7YmqAy+BTjVv3mihIrLzDScZTrFSKlEzvhKDFeM3+fH/kZZMPeCqQ
-         Kn5GdzhjWe5fo+0f371SLj7z8fsoqkcSSFrR63y0=
+        b=TY9bXI6gzfFcxHp526oLrQBIup8fSCtv0u1zhU4WdFfLuDw7QG/gBPyRRjnr3RQMu
+         PKN7TA8SRhl2LhFzL8cjdedLB7IpzT0YrYxmVYk1TCu1cgsCSwBM7IrI7tHtEQAf1w
+         XxAt0eBIfqKJnfqSvC9ACFmcz8LXndLz66/n5AUA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Hannes Frederic Sowa <hannes@stressinduktion.org>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 024/147] Revert "ipv6: add mtu lock check in __ip6_rt_update_pmtu"
+        stable@vger.kernel.org, Ivan Delalande <colona@arista.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 16/86] scripts/decodecode: fix trapping instruction formatting
 Date:   Mon, 18 May 2020 19:35:47 +0200
-Message-Id: <20200518173516.836413313@linuxfoundation.org>
+Message-Id: <20200518173453.793425023@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,63 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Maciej Żenczykowski" <maze@google.com>
+From: Ivan Delalande <colona@arista.com>
 
-[ Upstream commit 09454fd0a4ce23cb3d8af65066c91a1bf27120dd ]
+commit e08df079b23e2e982df15aa340bfbaf50f297504 upstream.
 
-This reverts commit 19bda36c4299ce3d7e5bce10bebe01764a655a6d:
+If the trapping instruction contains a ':', for a memory access through
+segment registers for example, the sed substitution will insert the '*'
+marker in the middle of the instruction instead of the line address:
 
-| ipv6: add mtu lock check in __ip6_rt_update_pmtu
-|
-| Prior to this patch, ipv6 didn't do mtu lock check in ip6_update_pmtu.
-| It leaded to that mtu lock doesn't really work when receiving the pkt
-| of ICMPV6_PKT_TOOBIG.
-|
-| This patch is to add mtu lock check in __ip6_rt_update_pmtu just as ipv4
-| did in __ip_rt_update_pmtu.
+	2b:   65 48 0f c7 0f          cmpxchg16b %gs:*(%rdi)          <-- trapping instruction
 
-The above reasoning is incorrect.  IPv6 *requires* icmp based pmtu to work.
-There's already a comment to this effect elsewhere in the kernel:
+I started to think I had forgotten some quirk of the assembly syntax
+before noticing that it was actually coming from the script.  Fix it to
+add the address marker at the right place for these instructions:
 
-  $ git grep -p -B1 -A3 'RTAX_MTU lock'
-  net/ipv6/route.c=4813=
+	28:   49 8b 06                mov    (%r14),%rax
+	2b:*  65 48 0f c7 0f          cmpxchg16b %gs:(%rdi)           <-- trapping instruction
+	30:   0f 94 c0                sete   %al
 
-  static int rt6_mtu_change_route(struct fib6_info *f6i, void *p_arg)
-  ...
-    /* In IPv6 pmtu discovery is not optional,
-       so that RTAX_MTU lock cannot disable it.
-       We still use this lock to block changes
-       caused by addrconf/ndisc.
-    */
-
-This reverts to the pre-4.9 behaviour.
-
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Willem de Bruijn <willemb@google.com>
-Cc: Xin Long <lucien.xin@gmail.com>
-Cc: Hannes Frederic Sowa <hannes@stressinduktion.org>
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
-Fixes: 19bda36c4299 ("ipv6: add mtu lock check in __ip6_rt_update_pmtu")
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 18ff44b189e2 ("scripts/decodecode: make faulting insn ptr more robust")
+Signed-off-by: Ivan Delalande <colona@arista.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Borislav Petkov <bp@suse.de>
+Link: http://lkml.kernel.org/r/20200419223653.GA31248@visor
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv6/route.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -2728,8 +2728,10 @@ static void __ip6_rt_update_pmtu(struct
- 	const struct in6_addr *daddr, *saddr;
- 	struct rt6_info *rt6 = (struct rt6_info *)dst;
+---
+ scripts/decodecode |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/scripts/decodecode
++++ b/scripts/decodecode
+@@ -98,7 +98,7 @@ faultlinenum=$(( $(wc -l $T.oo  | cut -d
+ faultline=`cat $T.dis | head -1 | cut -d":" -f2-`
+ faultline=`echo "$faultline" | sed -e 's/\[/\\\[/g; s/\]/\\\]/g'`
  
--	if (dst_metric_locked(dst, RTAX_MTU))
--		return;
-+	/* Note: do *NOT* check dst_metric_locked(dst, RTAX_MTU)
-+	 * IPv6 pmtu discovery isn't optional, so 'mtu lock' cannot disable it.
-+	 * [see also comment in rt6_mtu_change_route()]
-+	 */
- 
- 	if (iph) {
- 		daddr = &iph->daddr;
+-cat $T.oo | sed -e "${faultlinenum}s/^\(.*:\)\(.*\)/\1\*\2\t\t<-- trapping instruction/"
++cat $T.oo | sed -e "${faultlinenum}s/^\([^:]*:\)\(.*\)/\1\*\2\t\t<-- trapping instruction/"
+ echo
+ cat $T.aa
+ cleanup
 
 
