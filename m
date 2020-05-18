@@ -2,46 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA57A1D8680
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97FAF1D8111
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730161AbgERRrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:47:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46950 "EHLO mail.kernel.org"
+        id S1729756AbgERRo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:44:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730149AbgERRqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:46:54 -0400
+        id S1729736AbgERRoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:44:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F229420715;
-        Mon, 18 May 2020 17:46:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BB2C2083E;
+        Mon, 18 May 2020 17:44:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824013;
-        bh=1WbaTJpCskWe+VDdU5uH9XMNgsIAJxBGSgPlR8VHLZE=;
+        s=default; t=1589823863;
+        bh=jXxum+FmUUGILJRGxLjczPGmCfLYinVX7ZXMCgYkQ8E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a0X4g+w3rGgxnzscO089ZzYmlF0Pd6eicOFJTPF11/Brv8AM4xZWWdiHEjCRxdHrW
-         lvJHmqPBa3er0ke7Lfl+ba4XYDxrLDVF37KhuIl3fT/q/saLMWRq5E7loPxn8b9cLu
-         QoQ8WJvgSB+RRL7SDBI3wurMZYGmGmxEwOkf/07s=
+        b=vx/4++j7WLlaUdcje1pj7u1cdt+tGDTSQLJgrOrb0dq42WEvj5yKhXwA2l4cdj0e3
+         GOsxFeMk17oaVcQ+pwmAQ97114sf4bpnPLObDsQcBRzw10yljQLitn4vX03tXslPC0
+         4kJeNWJVciq+eN8L+Xmqt9C80dqrtoBJoOilltZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vince Weaver <vincent.weaver@maine.edu>,
-        Dave Jones <dsj@fb.com>, Steven Rostedt <rostedt@goodmis.org>,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        Joe Mario <jmario@redhat.com>, Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 4.14 035/114] objtool: Fix stack offset tracking for indirect CFAs
+        stable@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+        Waiman Long <longman@redhat.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 29/90] blktrace: Fix potential deadlock between delete & sysfs ops
 Date:   Mon, 18 May 2020 19:36:07 +0200
-Message-Id: <20200518173509.967486986@linuxfoundation.org>
+Message-Id: <20200518173457.150429785@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,50 +47,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Waiman Long <longman@redhat.com>
 
-commit d8dd25a461e4eec7190cb9d66616aceacc5110ad upstream.
+commit 5acb3cc2c2e9d3020a4fee43763c6463767f1572 upstream.
 
-When the current frame address (CFA) is stored on the stack (i.e.,
-cfa->base == CFI_SP_INDIRECT), objtool neglects to adjust the stack
-offset when there are subsequent pushes or pops.  This results in bad
-ORC data at the end of the ENTER_IRQ_STACK macro, when it puts the
-previous stack pointer on the stack and does a subsequent push.
+The lockdep code had reported the following unsafe locking scenario:
 
-This fixes the following unwinder warning:
+       CPU0                    CPU1
+       ----                    ----
+  lock(s_active#228);
+                               lock(&bdev->bd_mutex/1);
+                               lock(s_active#228);
+  lock(&bdev->bd_mutex);
 
-  WARNING: can't dereference registers at 00000000f0a6bdba for ip interrupt_entry+0x9f/0xa0
+ *** DEADLOCK ***
 
-Fixes: 627fce14809b ("objtool: Add ORC unwind table generation")
-Reported-by: Vince Weaver <vincent.weaver@maine.edu>
-Reported-by: Dave Jones <dsj@fb.com>
-Reported-by: Steven Rostedt <rostedt@goodmis.org>
-Reported-by: Vegard Nossum <vegard.nossum@oracle.com>
-Reported-by: Joe Mario <jmario@redhat.com>
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Jann Horn <jannh@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/853d5d691b29e250333332f09b8e27410b2d9924.1587808742.git.jpoimboe@redhat.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The deadlock may happen when one task (CPU1) is trying to delete a
+partition in a block device and another task (CPU0) is accessing
+tracing sysfs file (e.g. /sys/block/dm-1/trace/act_mask) in that
+partition.
 
+The s_active isn't an actual lock. It is a reference count (kn->count)
+on the sysfs (kernfs) file. Removal of a sysfs file, however, require
+a wait until all the references are gone. The reference count is
+treated like a rwsem using lockdep instrumentation code.
+
+The fact that a thread is in the sysfs callback method or in the
+ioctl call means there is a reference to the opended sysfs or device
+file. That should prevent the underlying block structure from being
+removed.
+
+Instead of using bd_mutex in the block_device structure, a new
+blk_trace_mutex is now added to the request_queue structure to protect
+access to the blk_trace structure.
+
+Suggested-by: Christoph Hellwig <hch@infradead.org>
+Signed-off-by: Waiman Long <longman@redhat.com>
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+Fix typo in patch subject line, and prune a comment detailing how
+the code used to work.
+
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/objtool/check.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/blk-core.c        |  3 +++
+ include/linux/blkdev.h  |  1 +
+ kernel/trace/blktrace.c | 18 ++++++++++++------
+ 3 files changed, 16 insertions(+), 6 deletions(-)
 
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1291,7 +1291,7 @@ static int update_insn_state_regs(struct
- 	struct cfi_reg *cfa = &state->cfa;
- 	struct stack_op *op = &insn->stack_op;
+diff --git a/block/blk-core.c b/block/blk-core.c
+index bdb906bbfe198..4987f312a95f4 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -729,6 +729,9 @@ struct request_queue *blk_alloc_queue_node(gfp_t gfp_mask, int node_id)
  
--	if (cfa->base != CFI_SP)
-+	if (cfa->base != CFI_SP && cfa->base != CFI_SP_INDIRECT)
- 		return 0;
+ 	kobject_init(&q->kobj, &blk_queue_ktype);
  
- 	/* push */
++#ifdef CONFIG_BLK_DEV_IO_TRACE
++	mutex_init(&q->blk_trace_mutex);
++#endif
+ 	mutex_init(&q->sysfs_lock);
+ 	spin_lock_init(&q->__queue_lock);
+ 
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 2fc4ba6fa07f9..a8dfbad42d1b0 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -446,6 +446,7 @@ struct request_queue {
+ 	int			node;
+ #ifdef CONFIG_BLK_DEV_IO_TRACE
+ 	struct blk_trace	*blk_trace;
++	struct mutex		blk_trace_mutex;
+ #endif
+ 	/*
+ 	 * for flush operations
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index bfa8bb3a6e196..ff1384c5884c5 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -644,6 +644,12 @@ int blk_trace_startstop(struct request_queue *q, int start)
+ }
+ EXPORT_SYMBOL_GPL(blk_trace_startstop);
+ 
++/*
++ * When reading or writing the blktrace sysfs files, the references to the
++ * opened sysfs or device files should prevent the underlying block device
++ * from being removed. So no further delete protection is really needed.
++ */
++
+ /**
+  * blk_trace_ioctl: - handle the ioctls associated with tracing
+  * @bdev:	the block device
+@@ -661,7 +667,7 @@ int blk_trace_ioctl(struct block_device *bdev, unsigned cmd, char __user *arg)
+ 	if (!q)
+ 		return -ENXIO;
+ 
+-	mutex_lock(&bdev->bd_mutex);
++	mutex_lock(&q->blk_trace_mutex);
+ 
+ 	switch (cmd) {
+ 	case BLKTRACESETUP:
+@@ -687,7 +693,7 @@ int blk_trace_ioctl(struct block_device *bdev, unsigned cmd, char __user *arg)
+ 		break;
+ 	}
+ 
+-	mutex_unlock(&bdev->bd_mutex);
++	mutex_unlock(&q->blk_trace_mutex);
+ 	return ret;
+ }
+ 
+@@ -1656,7 +1662,7 @@ static ssize_t sysfs_blk_trace_attr_show(struct device *dev,
+ 	if (q == NULL)
+ 		goto out_bdput;
+ 
+-	mutex_lock(&bdev->bd_mutex);
++	mutex_lock(&q->blk_trace_mutex);
+ 
+ 	if (attr == &dev_attr_enable) {
+ 		ret = sprintf(buf, "%u\n", !!q->blk_trace);
+@@ -1675,7 +1681,7 @@ static ssize_t sysfs_blk_trace_attr_show(struct device *dev,
+ 		ret = sprintf(buf, "%llu\n", q->blk_trace->end_lba);
+ 
+ out_unlock_bdev:
+-	mutex_unlock(&bdev->bd_mutex);
++	mutex_unlock(&q->blk_trace_mutex);
+ out_bdput:
+ 	bdput(bdev);
+ out:
+@@ -1717,7 +1723,7 @@ static ssize_t sysfs_blk_trace_attr_store(struct device *dev,
+ 	if (q == NULL)
+ 		goto out_bdput;
+ 
+-	mutex_lock(&bdev->bd_mutex);
++	mutex_lock(&q->blk_trace_mutex);
+ 
+ 	if (attr == &dev_attr_enable) {
+ 		if (!!value == !!q->blk_trace) {
+@@ -1747,7 +1753,7 @@ static ssize_t sysfs_blk_trace_attr_store(struct device *dev,
+ 	}
+ 
+ out_unlock_bdev:
+-	mutex_unlock(&bdev->bd_mutex);
++	mutex_unlock(&q->blk_trace_mutex);
+ out_bdput:
+ 	bdput(bdev);
+ out:
+-- 
+2.20.1
+
 
 
