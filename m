@@ -2,119 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E7F1D7A65
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFEDE1D7A6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgERNuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 09:50:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:41130 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726918AbgERNuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 09:50:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3AEF101E;
-        Mon, 18 May 2020 06:50:09 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 782F53F52E;
-        Mon, 18 May 2020 06:50:08 -0700 (PDT)
-Date:   Mon, 18 May 2020 14:50:06 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     robh+dt@kernel.org, amurray@thegoodpenguin.co.uk,
-        bhelgaas@google.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V2] arm64: tegra: Fix flag for 64-bit resources in
- 'ranges' property
-Message-ID: <20200518135006.GB31554@e121166-lin.cambridge.arm.com>
-References: <20200513191627.8533-1-vidyas@nvidia.com>
- <20200514135437.29814-1-vidyas@nvidia.com>
+        id S1727823AbgERNvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 09:51:15 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33907 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726895AbgERNvP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 09:51:15 -0400
+Received: from mail-ej1-f72.google.com ([209.85.218.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <guilherme.piccoli@canonical.com>)
+        id 1jagAj-0002Ma-3a
+        for linux-kernel@vger.kernel.org; Mon, 18 May 2020 13:51:13 +0000
+Received: by mail-ej1-f72.google.com with SMTP id u24so5279045ejg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 06:51:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c7hu+iWhNpwsjT8JCVNUPdNUhRLVOPLZBCQR9T/nGBw=;
+        b=VnjWZq1Nc05jSNaYq72Fl1isA6NR1YAHk8vjyQW2eQtoGXbKm4gZCCVE24ZJTnz9gf
+         tjaUBy81yeSRGiVipZUMcJ0jmX9uAWWl6jzqgPoGxtlNgIgUTKH/C+SeQyeuo1UTgWmp
+         RkuFdSFrqaVY4nrlE1zSHYCg8v7aTMQOClUmoycaZEesnWRPDendKqWiQiPJrjtOdRbj
+         W5dbtJKzVQf9wIkpyq+iKf8PrsKGwlXh4vX1oBThPMaI9GRqvBt0m86tbx+nIyE34GaH
+         /f6YOWcC5lWFGZxCu2FfIYW2+3OZXTav9AVmMzLeITAd6JUmM/npQWlORvkc8Htd+ZfY
+         xfvA==
+X-Gm-Message-State: AOAM532OIUXcf6V11Dwx2TWhJ7ZbSq6mQ3pdS+EHd2BkCrSML90dnb8O
+        3Dk8r31Dnyxv0NS7IKKFURIi9n5FOvomVNTpoFR8kG1rDQE0HXmQNVx4sOLJBvkc6awqEHECAzX
+        iI02BTjO3tCkWzpRg40I9Ub5B88HANUpTWPrxBmitq72n3QydYyuPE74pjg==
+X-Received: by 2002:a50:dac4:: with SMTP id s4mr1154931edj.84.1589809872826;
+        Mon, 18 May 2020 06:51:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwgbq5M3t9GyFs8CX1A2dVN1oxIyEH0opyQqFB6u1APwAyHroua3cFI3LrqWIumMgzIw6tcjVsFSADLRenfwsY=
+X-Received: by 2002:a50:dac4:: with SMTP id s4mr1154911edj.84.1589809872621;
+ Mon, 18 May 2020 06:51:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200514135437.29814-1-vidyas@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200507215946.22589-1-gpiccoli@canonical.com>
+ <20200507160438.ed336a1e00c23c6863d75ae5@linux-foundation.org>
+ <CALJn8nNDqWwanhmutCiP-WBLN1eSg2URrG2j5R4kzgHTYObs7Q@mail.gmail.com>
+ <alpine.DEB.2.22.394.2005081129100.236131@chino.kir.corp.google.com>
+ <CAHD1Q_wF6Mzf5JipXGZKvn2YDR+FQ6ePuKOe-1W-t_VapxMCxg@mail.gmail.com>
+ <alpine.DEB.2.22.394.2005101821160.172131@chino.kir.corp.google.com>
+ <CAHD1Q_zrQmUTRpdW3bZ0CRKuu2dKgueXUjqCNtC5oyZ67CGp2A@mail.gmail.com>
+ <6bf5e178-f2c8-f453-9035-93e31995bb53@sony.com> <CAHD1Q_yk4GhUgTMc5KcvpaW-oMNEfvSj7vxOCOQGALs4qe8VUQ@mail.gmail.com>
+ <cd43b4d6-7a2e-3e92-0a15-19597e9df4fd@sony.com>
+In-Reply-To: <cd43b4d6-7a2e-3e92-0a15-19597e9df4fd@sony.com>
+From:   Guilherme Piccoli <gpiccoli@canonical.com>
+Date:   Mon, 18 May 2020 10:50:36 -0300
+Message-ID: <CAHD1Q_wF_ZoS2xuiTJo5P4f1_1ZEyx3jY0bN+Qsm7rZo2x9C6Q@mail.gmail.com>
+Subject: Re: [PATCH] mm, compaction: Indicate when compaction is manually
+ triggered by sysctl
+To:     "Enderborg, Peter" <Peter.Enderborg@sony.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        "Guilherme G. Piccoli" <kernel@gpiccoli.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Gavin Guo <gavin.guo@canonical.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 07:24:37PM +0530, Vidya Sagar wrote:
-> Fix flag in PCIe controllers device-tree nodes 'ranges' property to correctly
-> represent 64-bit resources.
-> 
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> ---
-> V2:
-> * Extended the change to cover other controllers as well
-> 
->  arch/arm64/boot/dts/nvidia/tegra194.dtsi | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+On Mon, May 18, 2020 at 9:54 AM Enderborg, Peter
+<Peter.Enderborg@sony.com> wrote:
+> Usually change existing causes confusion. It should not be a problem but it happen.
+>
 
-We don't apply DTS patches - so no need to CC linux-pci from now
-onwards on these. Marked as not-applicable.
-
-Lorenzo
-
-> diff --git a/arch/arm64/boot/dts/nvidia/tegra194.dtsi b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-> index e1ae01c2d039..4bc187a4eacd 100644
-> --- a/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-> +++ b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-> @@ -1405,7 +1405,7 @@
->  
->  		bus-range = <0x0 0xff>;
->  		ranges = <0x81000000 0x0  0x30100000 0x0  0x30100000 0x0 0x00100000   /* downstream I/O (1MB) */
-> -			  0xc2000000 0x12 0x00000000 0x12 0x00000000 0x0 0x30000000   /* prefetchable memory (768MB) */
-> +			  0xc3000000 0x12 0x00000000 0x12 0x00000000 0x0 0x30000000   /* prefetchable memory (768MB) */
->  			  0x82000000 0x0  0x40000000 0x12 0x30000000 0x0 0x10000000>; /* non-prefetchable memory (256MB) */
->  	};
->  
-> @@ -1450,7 +1450,7 @@
->  
->  		bus-range = <0x0 0xff>;
->  		ranges = <0x81000000 0x0  0x32100000 0x0  0x32100000 0x0 0x00100000   /* downstream I/O (1MB) */
-> -			  0xc2000000 0x12 0x40000000 0x12 0x40000000 0x0 0x30000000   /* prefetchable memory (768MB) */
-> +			  0xc3000000 0x12 0x40000000 0x12 0x40000000 0x0 0x30000000   /* prefetchable memory (768MB) */
->  			  0x82000000 0x0  0x40000000 0x12 0x70000000 0x0 0x10000000>; /* non-prefetchable memory (256MB) */
->  	};
->  
-> @@ -1495,7 +1495,7 @@
->  
->  		bus-range = <0x0 0xff>;
->  		ranges = <0x81000000 0x0  0x34100000 0x0  0x34100000 0x0 0x00100000   /* downstream I/O (1MB) */
-> -			  0xc2000000 0x12 0x80000000 0x12 0x80000000 0x0 0x30000000   /* prefetchable memory (768MB) */
-> +			  0xc3000000 0x12 0x80000000 0x12 0x80000000 0x0 0x30000000   /* prefetchable memory (768MB) */
->  			  0x82000000 0x0  0x40000000 0x12 0xb0000000 0x0 0x10000000>; /* non-prefetchable memory (256MB) */
->  	};
->  
-> @@ -1540,7 +1540,7 @@
->  
->  		bus-range = <0x0 0xff>;
->  		ranges = <0x81000000 0x0  0x36100000 0x0  0x36100000 0x0 0x00100000   /* downstream I/O (1MB) */
-> -			  0xc2000000 0x14 0x00000000 0x14 0x00000000 0x3 0x40000000   /* prefetchable memory (13GB) */
-> +			  0xc3000000 0x14 0x00000000 0x14 0x00000000 0x3 0x40000000   /* prefetchable memory (13GB) */
->  			  0x82000000 0x0  0x40000000 0x17 0x40000000 0x0 0xc0000000>; /* non-prefetchable memory (3GB) */
->  	};
->  
-> @@ -1585,7 +1585,7 @@
->  
->  		bus-range = <0x0 0xff>;
->  		ranges = <0x81000000 0x0  0x38100000 0x0  0x38100000 0x0 0x00100000   /* downstream I/O (1MB) */
-> -			  0xc2000000 0x18 0x00000000 0x18 0x00000000 0x3 0x40000000   /* prefetchable memory (13GB) */
-> +			  0xc3000000 0x18 0x00000000 0x18 0x00000000 0x3 0x40000000   /* prefetchable memory (13GB) */
->  			  0x82000000 0x0  0x40000000 0x1b 0x40000000 0x0 0xc0000000>; /* non-prefetchable memory (3GB) */
->  	};
->  
-> @@ -1634,7 +1634,7 @@
->  
->  		bus-range = <0x0 0xff>;
->  		ranges = <0x81000000 0x0  0x3a100000 0x0  0x3a100000 0x0 0x00100000   /* downstream I/O (1MB) */
-> -			  0xc2000000 0x1c 0x00000000 0x1c 0x00000000 0x3 0x40000000   /* prefetchable memory (13GB) */
-> +			  0xc3000000 0x1c 0x00000000 0x1c 0x00000000 0x3 0x40000000   /* prefetchable memory (13GB) */
->  			  0x82000000 0x0  0x40000000 0x1f 0x40000000 0x0 0xc0000000>; /* non-prefetchable memory (3GB) */
->  	};
->  
-> -- 
-> 2.17.1
-> 
+I am sorry, but I really didn't understand your statement, can you be
+more specific?
+Thanks again!
