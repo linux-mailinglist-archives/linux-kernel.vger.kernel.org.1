@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D115A1D8542
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 573601D8119
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733002AbgERSRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:17:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35474 "EHLO mail.kernel.org"
+        id S1729810AbgERRou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:44:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731161AbgERR5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:57:09 -0400
+        id S1729773AbgERRoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:44:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1016020884;
-        Mon, 18 May 2020 17:57:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86E5120829;
+        Mon, 18 May 2020 17:44:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824627;
-        bh=91tBj2hhqc++9j+sjqp/UDyBo96MSzo1RqiQ9zJ2CME=;
+        s=default; t=1589823878;
+        bh=7Rk3dkiwRft2E+yMeP72ukGIM/B290+0Kj4EJOs1NUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bdPXaEROXdHuBQ/j8TjET76X2dSCFIBrjqqYokMT5pIEZUl8ZzqbV8LUlQXCeL609
-         dweAbUV03LPytQPhLf70ZNBCET87rhXLckYQs6zZwghnh+ESxSF6GyDmakwaNYieZu
-         Fbzhw0OmlBMHVDR3K7mXdQVJ6DgFis4u8mU0mAA8=
+        b=ekT/dYTIWaYLsqRH2fDgWoVGGco3gM+xvkxVwqgOhGycseu7qhU52XQQi9hYWyDRd
+         nv1+W+CyuO/wzPIt1lUTZ3sWX3bCmX0xOqg0Xt9mw0+XI6PKKVIK6aGLsozQrtGDZG
+         gRiFCVdkh+McWsrGPL5dyfGI5SYagaMQaC2673pQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 088/147] RDMA/iw_cxgb4: Fix incorrect function parameters
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 73/90] ALSA: hda/realtek - Limit int mic boost for Thinkpad T530
 Date:   Mon, 18 May 2020 19:36:51 +0200
-Message-Id: <20200518173524.540038658@linuxfoundation.org>
+Message-Id: <20200518173506.169552391@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +42,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Potnuri Bharat Teja <bharat@chelsio.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit c8b1f340e54158662acfa41d6dee274846370282 ]
+commit b590b38ca305d6d7902ec7c4f7e273e0069f3bcc upstream.
 
-While reading the TCB field in t4_tcb_get_field32() the wrong mask is
-passed as a parameter which leads the driver eventually to a kernel
-panic/app segfault from access to an illegal SRQ index while flushing the
-SRQ completions during connection teardown.
+Lenovo Thinkpad T530 seems to have a sensitive internal mic capture
+that needs to limit the mic boost like a few other Thinkpad models.
+Although we may change the quirk for ALC269_FIXUP_LENOVO_DOCK, this
+hits way too many other laptop models, so let's add a new fixup model
+that limits the internal mic boost on top of the existing quirk and
+apply to only T530.
 
-Fixes: 11a27e2121a5 ("iw_cxgb4: complete the cached SRQ buffers")
-Link: https://lore.kernel.org/r/20200511185608.5202-1-bharat@chelsio.com
-Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1171293
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200514160533.10337-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/infiniband/hw/cxgb4/cm.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/pci/hda/patch_realtek.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-index d82e0589cfd26..6b4e7235d2f56 100644
---- a/drivers/infiniband/hw/cxgb4/cm.c
-+++ b/drivers/infiniband/hw/cxgb4/cm.c
-@@ -2891,8 +2891,7 @@ static int peer_abort(struct c4iw_dev *dev, struct sk_buff *skb)
- 			srqidx = ABORT_RSS_SRQIDX_G(
- 					be32_to_cpu(req->srqidx_status));
- 			if (srqidx) {
--				complete_cached_srq_buffers(ep,
--							    req->srqidx_status);
-+				complete_cached_srq_buffers(ep, srqidx);
- 			} else {
- 				/* Hold ep ref until finish_peer_abort() */
- 				c4iw_get_ep(&ep->com);
-@@ -3878,8 +3877,8 @@ static int read_tcb_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
- 		return 0;
- 	}
- 
--	ep->srqe_idx = t4_tcb_get_field32(tcb, TCB_RQ_START_W, TCB_RQ_START_W,
--			TCB_RQ_START_S);
-+	ep->srqe_idx = t4_tcb_get_field32(tcb, TCB_RQ_START_W, TCB_RQ_START_M,
-+					  TCB_RQ_START_S);
- cleanup:
- 	pr_debug("ep %p tid %u %016x\n", ep, ep->hwtid, ep->srqe_idx);
- 
--- 
-2.20.1
-
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4890,6 +4890,7 @@ enum {
+ 	ALC269_FIXUP_HP_LINE1_MIC1_LED,
+ 	ALC269_FIXUP_INV_DMIC,
+ 	ALC269_FIXUP_LENOVO_DOCK,
++	ALC269_FIXUP_LENOVO_DOCK_LIMIT_BOOST,
+ 	ALC269_FIXUP_NO_SHUTUP,
+ 	ALC286_FIXUP_SONY_MIC_NO_PRESENCE,
+ 	ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT,
+@@ -5157,6 +5158,12 @@ static const struct hda_fixup alc269_fix
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT
+ 	},
++	[ALC269_FIXUP_LENOVO_DOCK_LIMIT_BOOST] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc269_fixup_limit_int_mic_boost,
++		.chained = true,
++		.chain_id = ALC269_FIXUP_LENOVO_DOCK,
++	},
+ 	[ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
+@@ -5820,7 +5827,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
+ 	SND_PCI_QUIRK(0x17aa, 0x21ca, "Thinkpad L412", ALC269_FIXUP_SKU_IGNORE),
+ 	SND_PCI_QUIRK(0x17aa, 0x21e9, "Thinkpad Edge 15", ALC269_FIXUP_SKU_IGNORE),
+-	SND_PCI_QUIRK(0x17aa, 0x21f6, "Thinkpad T530", ALC269_FIXUP_LENOVO_DOCK),
++	SND_PCI_QUIRK(0x17aa, 0x21f6, "Thinkpad T530", ALC269_FIXUP_LENOVO_DOCK_LIMIT_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x21fa, "Thinkpad X230", ALC269_FIXUP_LENOVO_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x21f3, "Thinkpad T430", ALC269_FIXUP_LENOVO_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x21fb, "Thinkpad T430s", ALC269_FIXUP_LENOVO_DOCK),
+@@ -5945,6 +5952,7 @@ static const struct hda_model_fixup alc2
+ 	{.id = ALC269_FIXUP_HEADSET_MODE, .name = "headset-mode"},
+ 	{.id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC, .name = "headset-mode-no-hp-mic"},
+ 	{.id = ALC269_FIXUP_LENOVO_DOCK, .name = "lenovo-dock"},
++	{.id = ALC269_FIXUP_LENOVO_DOCK_LIMIT_BOOST, .name = "lenovo-dock-limit-boost"},
+ 	{.id = ALC269_FIXUP_HP_GPIO_LED, .name = "hp-gpio-led"},
+ 	{.id = ALC269_FIXUP_HP_DOCK_GPIO_MIC1_LED, .name = "hp-dock-gpio-mic1-led"},
+ 	{.id = ALC269_FIXUP_DELL1_MIC_NO_PRESENCE, .name = "dell-headset-multi"},
 
 
