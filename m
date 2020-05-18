@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D148B1D812D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBAE1D845B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729971AbgERRpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:45:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44284 "EHLO mail.kernel.org"
+        id S1732821AbgERSEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:04:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729926AbgERRp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:45:28 -0400
+        id S1732335AbgERSE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:04:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D8EC20674;
-        Mon, 18 May 2020 17:45:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81378207D3;
+        Mon, 18 May 2020 18:04:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823927;
-        bh=fSRau1pAiWHNJbmlUH/uhaszxFG174FpSD9tnHCsz6Y=;
+        s=default; t=1589825068;
+        bh=ez2yiaLPZoIhBALY+D2vaAgcAuhJq9y6IBu3Sg2n3zg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uWFwuKQTfTGhSuTDM4cJLNl4DkviQDsovAnMBu7gA/WMYVTmT67FaXyFmz9GeFh1W
-         Po0/mgCs7H509nJ/ruVL+TfS2h+iJvuKYhhxGI1SDDnao0Sly04CxeMzmuo63FYCYy
-         8B6lYQ9pS1vKVed19N0D56NEtMs83VU1kokpMYo0=
+        b=EUgxiOaJL6R4J/Clo0C2rf4btvpMb3XM8HT5WLNlj3hA+VkhU8sYN3xilt1u0RFBu
+         tw14MZiJd86ddnV9grnHNf06OWYnM+k9bKxmEXbSOXf5GHhLtrcJ4iJaaFP5VHn580
+         zqcRXmAnhqMlta58x+EU71HmJyx0hg89vXu3JrJg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 67/90] gcc-10: disable restrict warning for now
+        stable@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 115/194] RDMA/iw_cxgb4: Fix incorrect function parameters
 Date:   Mon, 18 May 2020 19:36:45 +0200
-Message-Id: <20200518173504.854092505@linuxfoundation.org>
+Message-Id: <20200518173541.287296912@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,66 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Potnuri Bharat Teja <bharat@chelsio.com>
 
-commit adc71920969870dfa54e8f40dac8616284832d02 upstream.
+[ Upstream commit c8b1f340e54158662acfa41d6dee274846370282 ]
 
-gcc-10 now warns about passing aliasing pointers to functions that take
-restricted pointers.
+While reading the TCB field in t4_tcb_get_field32() the wrong mask is
+passed as a parameter which leads the driver eventually to a kernel
+panic/app segfault from access to an illegal SRQ index while flushing the
+SRQ completions during connection teardown.
 
-That's actually a great warning, and if we ever start using 'restrict'
-in the kernel, it might be quite useful.  But right now we don't, and it
-turns out that the only thing this warns about is an idiom where we have
-declared a few functions to be "printf-like" (which seems to make gcc
-pick up the restricted pointer thing), and then we print to the same
-buffer that we also use as an input.
-
-And people do that as an odd concatenation pattern, with code like this:
-
-    #define sysfs_show_gen_prop(buffer, fmt, ...) \
-        snprintf(buffer, PAGE_SIZE, "%s"fmt, buffer, __VA_ARGS__)
-
-where we have 'buffer' as both the destination of the final result, and
-as the initial argument.
-
-Yes, it's a bit questionable.  And outside of the kernel, people do have
-standard declarations like
-
-    int snprintf( char *restrict buffer, size_t bufsz,
-                  const char *restrict format, ... );
-
-where that output buffer is marked as a restrict pointer that cannot
-alias with any other arguments.
-
-But in the context of the kernel, that 'use snprintf() to concatenate to
-the end result' does work, and the pattern shows up in multiple places.
-And we have not marked our own version of snprintf() as taking restrict
-pointers, so the warning is incorrect for now, and gcc picks it up on
-its own.
-
-If we do start using 'restrict' in the kernel (and it might be a good
-idea if people find places where it matters), we'll need to figure out
-how to avoid this issue for snprintf and friends.  But in the meantime,
-this warning is not useful.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 11a27e2121a5 ("iw_cxgb4: complete the cached SRQ buffers")
+Link: https://lore.kernel.org/r/20200511185608.5202-1-bharat@chelsio.com
+Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/hw/cxgb4/cm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
---- a/Makefile
-+++ b/Makefile
-@@ -802,6 +802,9 @@ KBUILD_CFLAGS += $(call cc-disable-warni
- KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
- KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index d69dece3b1d54..30e08bcc9afb5 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -2891,8 +2891,7 @@ static int peer_abort(struct c4iw_dev *dev, struct sk_buff *skb)
+ 			srqidx = ABORT_RSS_SRQIDX_G(
+ 					be32_to_cpu(req->srqidx_status));
+ 			if (srqidx) {
+-				complete_cached_srq_buffers(ep,
+-							    req->srqidx_status);
++				complete_cached_srq_buffers(ep, srqidx);
+ 			} else {
+ 				/* Hold ep ref until finish_peer_abort() */
+ 				c4iw_get_ep(&ep->com);
+@@ -3878,8 +3877,8 @@ static int read_tcb_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
+ 		return 0;
+ 	}
  
-+# Another good warning that we'll want to enable eventually
-+KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
-+
- # Enabled with W=2, disabled by default as noisy
- KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
+-	ep->srqe_idx = t4_tcb_get_field32(tcb, TCB_RQ_START_W, TCB_RQ_START_W,
+-			TCB_RQ_START_S);
++	ep->srqe_idx = t4_tcb_get_field32(tcb, TCB_RQ_START_W, TCB_RQ_START_M,
++					  TCB_RQ_START_S);
+ cleanup:
+ 	pr_debug("ep %p tid %u %016x\n", ep, ep->hwtid, ep->srqe_idx);
  
+-- 
+2.20.1
+
 
 
