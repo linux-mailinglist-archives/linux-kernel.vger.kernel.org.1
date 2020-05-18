@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C741D8108
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56BF1D8277
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729710AbgERRoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:44:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42284 "EHLO mail.kernel.org"
+        id S1731674AbgERR4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:56:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729689AbgERRoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:44:11 -0400
+        id S1731662AbgERR4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:56:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2493D20715;
-        Mon, 18 May 2020 17:44:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 951AD20674;
+        Mon, 18 May 2020 17:56:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823850;
-        bh=8hZ1KY2ktCRnmX5lVEHA9dWYI6psi4gmI/TimZiuqBw=;
+        s=default; t=1589824600;
+        bh=s5dKiON6sWwu8xyTCzaIeRFcTC0uj7VFpLEAgChKdtk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NS3Skm2wZLIzKwjNPn0dVg3MZLHz18b6bhxElwoWuSrgEthJJHcAEjvlo6PxTKEBq
-         V5uqa9WgL6HMg1AW2E8c4RkxsgoZdI5HFKmvTFB0VnNk8XIsGruR5nMMZ0FSoE2bMW
-         PNLuMKmPWrSrKGAe7LXTGprPmR01ZT6EIvBE1SRk=
+        b=twqQYhmIQTcewPapN4H5SgKYXo7LJYNdddEtO5jgv5TuQadJSNLf2eNzFq3YghYeK
+         AFCgJemwORzD0jO2YSoboQRFfM+xkS6kDjDo/Ds7jiHZKJXHzGtqGblHBsPQ8lnhgY
+         4YBs47Nm0QYIKa8o47+GJA9iFOTrJlyEAz2Oc4H8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH 4.9 60/90] kbuild: compute false-positive -Wmaybe-uninitialized cases in Kconfig
+        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 075/147] nfs: fscache: use timespec64 in inode auxdata
 Date:   Mon, 18 May 2020 19:36:38 +0200
-Message-Id: <20200518173503.312877683@linuxfoundation.org>
+Message-Id: <20200518173523.209431838@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,104 +43,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit b303c6df80c9f8f13785aa83a0471fca7e38b24d upstream.
+[ Upstream commit 6e31ded6895adfca97211118cc9b72236e8f6d53 ]
 
-Since -Wmaybe-uninitialized was introduced by GCC 4.7, we have patched
-various false positives:
+nfs currently behaves differently on 32-bit and 64-bit kernels regarding
+the on-disk format of nfs_fscache_inode_auxdata.
 
- - commit e74fc973b6e5 ("Turn off -Wmaybe-uninitialized when building
-   with -Os") turned off this option for -Os.
+That format should really be the same on any kernel, and we should avoid
+the 'timespec' type in order to remove that from the kernel later on.
 
- - commit 815eb71e7149 ("Kbuild: disable 'maybe-uninitialized' warning
-   for CONFIG_PROFILE_ALL_BRANCHES") turned off this option for
-   CONFIG_PROFILE_ALL_BRANCHES
+Using plain 'timespec64' would not be good here, since that includes
+implied padding and would possibly leak kernel stack data to the on-disk
+format on 32-bit architectures.
 
- - commit a76bcf557ef4 ("Kbuild: enable -Wmaybe-uninitialized warning
-   for "make W=1"") turned off this option for GCC < 4.9
-   Arnd provided more explanation in https://lkml.org/lkml/2017/3/14/903
+struct __kernel_timespec would work as a replacement, but open-coding
+the two struct members in nfs_fscache_inode_auxdata makes it more
+obvious what's going on here, and keeps the current format for 64-bit
+architectures.
 
-I think this looks better by shifting the logic from Makefile to Kconfig.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/350
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Cc: David Howells <dhowells@redhat.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile             |   11 ++++-------
- init/Kconfig         |   17 +++++++++++++++++
- kernel/trace/Kconfig |    1 +
- 3 files changed, 22 insertions(+), 7 deletions(-)
+ fs/nfs/fscache-index.c |  6 ++++--
+ fs/nfs/fscache.c       | 18 ++++++++++++------
+ fs/nfs/fscache.h       |  8 +++++---
+ 3 files changed, 21 insertions(+), 11 deletions(-)
 
---- a/Makefile
-+++ b/Makefile
-@@ -658,17 +658,14 @@ KBUILD_CFLAGS	+= $(call cc-option,-fdata
- endif
+diff --git a/fs/nfs/fscache-index.c b/fs/nfs/fscache-index.c
+index 15f271401dcca..573b1da9342c1 100644
+--- a/fs/nfs/fscache-index.c
++++ b/fs/nfs/fscache-index.c
+@@ -84,8 +84,10 @@ enum fscache_checkaux nfs_fscache_inode_check_aux(void *cookie_netfs_data,
+ 		return FSCACHE_CHECKAUX_OBSOLETE;
  
- ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
--KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
--else
--ifdef CONFIG_PROFILE_ALL_BRANCHES
--KBUILD_CFLAGS	+= -O2 $(call cc-disable-warning,maybe-uninitialized,)
-+KBUILD_CFLAGS   += -Os
- else
- KBUILD_CFLAGS   += -O2
- endif
--endif
+ 	memset(&auxdata, 0, sizeof(auxdata));
+-	auxdata.mtime = timespec64_to_timespec(nfsi->vfs_inode.i_mtime);
+-	auxdata.ctime = timespec64_to_timespec(nfsi->vfs_inode.i_ctime);
++	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
++	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
++	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
++	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
  
--KBUILD_CFLAGS += $(call cc-ifversion, -lt, 0409, \
--			$(call cc-disable-warning,maybe-uninitialized,))
-+ifdef CONFIG_CC_DISABLE_WARN_MAYBE_UNINITIALIZED
-+KBUILD_CFLAGS   += -Wno-maybe-uninitialized
-+endif
+ 	if (NFS_SERVER(&nfsi->vfs_inode)->nfs_client->rpc_ops->version == 4)
+ 		auxdata.change_attr = inode_peek_iversion_raw(&nfsi->vfs_inode);
+diff --git a/fs/nfs/fscache.c b/fs/nfs/fscache.c
+index 3184063322d48..d0c629f97789e 100644
+--- a/fs/nfs/fscache.c
++++ b/fs/nfs/fscache.c
+@@ -241,8 +241,10 @@ void nfs_fscache_init_inode(struct inode *inode)
+ 		return;
  
- # Tell gcc to never replace conditional load with a non-conditional one
- KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -16,6 +16,22 @@ config DEFCONFIG_LIST
- 	default "$ARCH_DEFCONFIG"
- 	default "arch/$ARCH/defconfig"
+ 	memset(&auxdata, 0, sizeof(auxdata));
+-	auxdata.mtime = timespec64_to_timespec(nfsi->vfs_inode.i_mtime);
+-	auxdata.ctime = timespec64_to_timespec(nfsi->vfs_inode.i_ctime);
++	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
++	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
++	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
++	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
  
-+config CC_HAS_WARN_MAYBE_UNINITIALIZED
-+	def_bool $(cc-option,-Wmaybe-uninitialized)
-+	help
-+	  GCC >= 4.7 supports this option.
-+
-+config CC_DISABLE_WARN_MAYBE_UNINITIALIZED
-+	bool
-+	depends on CC_HAS_WARN_MAYBE_UNINITIALIZED
-+	default CC_IS_GCC && GCC_VERSION < 40900  # unreliable for GCC < 4.9
-+	help
-+	  GCC's -Wmaybe-uninitialized is not reliable by definition.
-+	  Lots of false positive warnings are produced in some cases.
-+
-+	  If this option is enabled, -Wno-maybe-uninitialzed is passed
-+	  to the compiler to suppress maybe-uninitialized warnings.
-+
- config CONSTRUCTORS
- 	bool
- 	depends on !UML
-@@ -1333,6 +1349,7 @@ config CC_OPTIMIZE_FOR_PERFORMANCE
+ 	if (NFS_SERVER(&nfsi->vfs_inode)->nfs_client->rpc_ops->version == 4)
+ 		auxdata.change_attr = inode_peek_iversion_raw(&nfsi->vfs_inode);
+@@ -266,8 +268,10 @@ void nfs_fscache_clear_inode(struct inode *inode)
+ 	dfprintk(FSCACHE, "NFS: clear cookie (0x%p/0x%p)\n", nfsi, cookie);
  
- config CC_OPTIMIZE_FOR_SIZE
- 	bool "Optimize for size"
-+	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
- 	help
- 	  Enabling this option will pass "-Os" instead of "-O2" to
- 	  your compiler resulting in a smaller kernel.
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -342,6 +342,7 @@ config PROFILE_ANNOTATED_BRANCHES
- config PROFILE_ALL_BRANCHES
- 	bool "Profile all if conditionals"
- 	select TRACE_BRANCH_PROFILING
-+	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
- 	help
- 	  This tracer profiles all branch conditions. Every if ()
- 	  taken in the kernel is recorded whether it hit or miss.
+ 	memset(&auxdata, 0, sizeof(auxdata));
+-	auxdata.mtime = timespec64_to_timespec(nfsi->vfs_inode.i_mtime);
+-	auxdata.ctime = timespec64_to_timespec(nfsi->vfs_inode.i_ctime);
++	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
++	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
++	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
++	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
+ 	fscache_relinquish_cookie(cookie, &auxdata, false);
+ 	nfsi->fscache = NULL;
+ }
+@@ -308,8 +312,10 @@ void nfs_fscache_open_file(struct inode *inode, struct file *filp)
+ 		return;
+ 
+ 	memset(&auxdata, 0, sizeof(auxdata));
+-	auxdata.mtime = timespec64_to_timespec(nfsi->vfs_inode.i_mtime);
+-	auxdata.ctime = timespec64_to_timespec(nfsi->vfs_inode.i_ctime);
++	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
++	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
++	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
++	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
+ 
+ 	if (inode_is_open_for_write(inode)) {
+ 		dfprintk(FSCACHE, "NFS: nfsi 0x%p disabling cache\n", nfsi);
+diff --git a/fs/nfs/fscache.h b/fs/nfs/fscache.h
+index ad041cfbf9ec0..6754c8607230b 100644
+--- a/fs/nfs/fscache.h
++++ b/fs/nfs/fscache.h
+@@ -62,9 +62,11 @@ struct nfs_fscache_key {
+  * cache object.
+  */
+ struct nfs_fscache_inode_auxdata {
+-	struct timespec	mtime;
+-	struct timespec	ctime;
+-	u64		change_attr;
++	s64	mtime_sec;
++	s64	mtime_nsec;
++	s64	ctime_sec;
++	s64	ctime_nsec;
++	u64	change_attr;
+ };
+ 
+ /*
+-- 
+2.20.1
+
 
 
