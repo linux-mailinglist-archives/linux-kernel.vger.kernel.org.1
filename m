@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0651D8607
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECED1D8714
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731583AbgERSWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:22:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52240 "EHLO mail.kernel.org"
+        id S1730422AbgERS3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:29:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730643AbgERRuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:50:12 -0400
+        id S1729272AbgERRl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:41:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0258C20715;
-        Mon, 18 May 2020 17:50:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08BEE2083E;
+        Mon, 18 May 2020 17:41:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824212;
-        bh=BGrUQXV/yqAhlRe7H5uRdVG7HYZS4HWVg5llJ9rmNZ0=;
+        s=default; t=1589823687;
+        bh=JLwt2QAOm1wDlWCfZPVnnYPNnyM3OYsA0xWfyD8tsvc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RaPoVRr9iVvTCxDaw48YFsuy4Br8pDvvf2ccmy+z/vEjAh2NfweyvdmPSrAXFd50l
-         8dtUhl3nWvxRjEvYJJWDkxHJFrvTqxyG18W+KdiBnkUAVkfy3lRHDBQime/l5wbOWL
-         4erSdQEDh/BKVOs+v0lYt30x+iqcFvkW36H/uwNM=
+        b=td5dFi3TwzkHqC1xRKVYiFngLGAHzQUAZc97w4Z6MzgGfS8H/37lqS1vNc6JPALT7
+         DW13iZwR2VwrF8GGrhFqalr2ryU2usudk7e54tkbHrPRbe1/2zyaFlX+n/BRcl7ACW
+         3Tgxa8GzPo62f2JzJhOAflqRDbE00HZTb3cZLnwg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 080/114] net: phy: micrel: Use strlcpy() for ethtool::get_strings
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 4.4 81/86] usb: gadget: legacy: fix error return code in gncm_bind()
 Date:   Mon, 18 May 2020 19:36:52 +0200
-Message-Id: <20200518173516.999983111@linuxfoundation.org>
+Message-Id: <20200518173506.994251162@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-commit 55f53567afe5f0cd2fd9e006b174c08c31c466f8 upstream.
+commit e27d4b30b71c66986196d8a1eb93cba9f602904a upstream.
 
-Our statistics strings are allocated at initialization without being
-bound to a specific size, yet, we would copy ETH_GSTRING_LEN bytes using
-memcpy() which would create out of bounds accesses, this was flagged by
-KASAN. Replace this with strlcpy() to make sure we are bound the source
-buffer size and we also always NUL-terminate strings.
+If 'usb_otg_descriptor_alloc()' fails, we must return a
+negative error code -ENOMEM, not 0.
 
-Fixes: 2b2427d06426 ("phy: micrel: Add ethtool statistics counters")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 1156e91dd7cc ("usb: gadget: ncm: allocate and init otg descriptor by otg capabilities")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/phy/micrel.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/legacy/ncm.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -674,8 +674,8 @@ static void kszphy_get_strings(struct ph
- 	int i;
+--- a/drivers/usb/gadget/legacy/ncm.c
++++ b/drivers/usb/gadget/legacy/ncm.c
+@@ -162,8 +162,10 @@ static int gncm_bind(struct usb_composit
+ 		struct usb_descriptor_header *usb_desc;
  
- 	for (i = 0; i < ARRAY_SIZE(kszphy_hw_stats); i++) {
--		memcpy(data + i * ETH_GSTRING_LEN,
--		       kszphy_hw_stats[i].string, ETH_GSTRING_LEN);
-+		strlcpy(data + i * ETH_GSTRING_LEN,
-+			kszphy_hw_stats[i].string, ETH_GSTRING_LEN);
- 	}
- }
- 
+ 		usb_desc = usb_otg_descriptor_alloc(gadget);
+-		if (!usb_desc)
++		if (!usb_desc) {
++			status = -ENOMEM;
+ 			goto fail;
++		}
+ 		usb_otg_descriptor_init(gadget, usb_desc);
+ 		otg_desc[0] = usb_desc;
+ 		otg_desc[1] = NULL;
 
 
