@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C751D804B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45321D80CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728580AbgERRil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:38:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32842 "EHLO mail.kernel.org"
+        id S1729387AbgERRmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:42:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728566AbgERRij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:38:39 -0400
+        id S1728742AbgERRl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:41:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98078207C4;
-        Mon, 18 May 2020 17:38:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 218CE207C4;
+        Mon, 18 May 2020 17:41:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823519;
-        bh=I7x4hEt+td/apd6fnTsATVe5BaQSVa0UKEXNXolXzYY=;
+        s=default; t=1589823719;
+        bh=Dxtp7wZr+KCgB4BFiDjfvZsiwpeRcjrdT8Aibw8qr8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V7O3v5jvPjVYpyJlwLNF6m7UTrbeTdKyRVxTqcYi/NqkOEb6ChjdOOZrANg445fqk
-         +dRYDWnHbuDx9uVS8mxVx92DFT8+maXbaPrO8/hasYoBW4M4Qe15E+oLmX1C9VxD3p
-         9/yww1eQeYFjfCtkzod9sBvIcK2rB8x4tl59MVf0=
+        b=KMfRCmm3mheiNcfqWKrRHTCuYaY1ZmJmmYV0GtDcLSMEU1alK5q1Km2gJYhoBvQfw
+         ID3vBQV0vCCLdXGc9w/uzFlH9Jxm0jPQEChqFZdoicegevE2KlmSXDgamSddwfkG9d
+         AP0u01lEdMQLe0pgeN/a4Gc94vNsGmy1v+A/2RmM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 07/86] Revert "ACPI / video: Add force_native quirk for HP Pavilion dv6"
-Date:   Mon, 18 May 2020 19:35:38 +0200
-Message-Id: <20200518173451.797165848@linuxfoundation.org>
+        stable@vger.kernel.org, Matt Jolly <Kangie@footclan.ninja>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 01/90] USB: serial: qcserial: Add DW5816e support
+Date:   Mon, 18 May 2020 19:35:39 +0200
+Message-Id: <20200518173451.222554323@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,61 +45,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Matt Jolly <Kangie@footclan.ninja>
 
-commit fd25ea29093e275195d0ae8b2573021a1c98959f upstream.
+commit 78d6de3cfbd342918d31cf68d0d2eda401338aef upstream.
 
-Revert commit 6276e53fa8c0 (ACPI / video: Add force_native quirk for
-HP Pavilion dv6).
+Add support for Dell Wireless 5816e to drivers/usb/serial/qcserial.c
 
-In the commit message for the quirk this revert removes I wrote:
-
-"Note that there are quite a few HP Pavilion dv6 variants, some
-woth ATI and some with NVIDIA hybrid gfx, both seem to need this
-quirk to have working backlight control. There are also some versions
-with only Intel integrated gfx, these may not need this quirk, but it
-should not hurt there."
-
-Unfortunately that seems wrong, I've already received 2 reports of
-this commit causing regressions on some dv6 variants (at least one
-of which actually has a nvidia GPU). So it seems that HP has made a
-mess here by using the same model-name both in marketing and in the
-DMI data for many different variants. Some of which need
-acpi_backlight=native for functional backlight control (as the
-quirk this commit reverts was doing), where as others are broken by
-it. So lets get back to the old sitation so as to avoid regressing
-on models which used to work without any kernel cmdline arguments
-before.
-
-Fixes: 6276e53fa8c0 (ACPI / video: Add force_native quirk for HP Pavilion dv6)
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Matt Jolly <Kangie@footclan.ninja>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/acpi/video_detect.c |   11 -----------
- 1 file changed, 11 deletions(-)
+ drivers/usb/serial/qcserial.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/acpi/video_detect.c
-+++ b/drivers/acpi/video_detect.c
-@@ -289,17 +289,6 @@ static const struct dmi_system_id video_
- 		DMI_MATCH(DMI_PRODUCT_NAME, "Dell System XPS L702X"),
- 		},
- 	},
--	{
--	/* https://bugzilla.redhat.com/show_bug.cgi?id=1204476 */
--	/* https://bugs.launchpad.net/ubuntu/+source/linux-lts-trusty/+bug/1416940 */
--	.callback = video_detect_force_native,
--	.ident = "HP Pavilion dv6",
--	.matches = {
--		DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
--		DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion dv6 Notebook PC"),
--		},
--	},
--
- 	{ },
- };
- 
+--- a/drivers/usb/serial/qcserial.c
++++ b/drivers/usb/serial/qcserial.c
+@@ -177,6 +177,7 @@ static const struct usb_device_id id_tab
+ 	{DEVICE_SWI(0x413c, 0x81b3)},	/* Dell Wireless 5809e Gobi(TM) 4G LTE Mobile Broadband Card (rev3) */
+ 	{DEVICE_SWI(0x413c, 0x81b5)},	/* Dell Wireless 5811e QDL */
+ 	{DEVICE_SWI(0x413c, 0x81b6)},	/* Dell Wireless 5811e QDL */
++	{DEVICE_SWI(0x413c, 0x81cc)},	/* Dell Wireless 5816e */
+ 	{DEVICE_SWI(0x413c, 0x81cf)},   /* Dell Wireless 5819 */
+ 	{DEVICE_SWI(0x413c, 0x81d0)},   /* Dell Wireless 5819 */
+ 	{DEVICE_SWI(0x413c, 0x81d1)},   /* Dell Wireless 5818 */
 
 
