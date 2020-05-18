@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DAC1D847A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858951D8261
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732661AbgERSDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:03:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48600 "EHLO mail.kernel.org"
+        id S1730717AbgERRzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:55:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732636AbgERSDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:03:18 -0400
+        id S1731494AbgERRzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:55:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D93A2207F5;
-        Mon, 18 May 2020 18:03:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA4BC20853;
+        Mon, 18 May 2020 17:55:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824998;
-        bh=lVcD8Iglm5L3dUlMBoeQCYLzsmbVnShCoMIN3gjOd98=;
+        s=default; t=1589824550;
+        bh=t+cVUEWBAPXsQjH+Tn8Zh++09MrccH0dYs2jgv7JMb4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=elUqaXpWf1IdypHceBIspo+L+fUJLKmrHh+GOHnj9TN5sFswNbd6X7jCF3WSjna3W
-         TPRlT2SdOCnDDFZv6w2+NbvhyHR/waLoP3IqT/hUpR53JoIThG8wsA5yahKyVtIclY
-         9rm6UiJ3oR+JgGo7wa0NKx7gcJ/rU2GmligDi+Kg=
+        b=1oyFJrauC9TtcpW84iDXstrfnjSyd070kJtEX/3ElG8JGslztorWcHUlMXEJSFYJ3
+         SDc4mZ+WQ/wT9EbtWZP9f/qNa4qMETil/dLNiPTtXEC0XZ0Rmr30GZ1iYdVggR3naC
+         1aGh8Uh3R6OLyYV2/G6sQfGGTS1hQfHJ7u/iCurI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 089/194] mmc: alcor: Fix a resource leak in the error path for ->probe()
+Subject: [PATCH 5.4 056/147] pinctrl: sunrisepoint: Fix PAD lock register offset for SPT-H
 Date:   Mon, 18 May 2020 19:36:19 +0200
-Message-Id: <20200518173539.059404611@linuxfoundation.org>
+Message-Id: <20200518173520.948346356@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,47 +45,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 7c277dd2b0ff6a16f1732a66c2c52a29f067163e ]
+[ Upstream commit 6b7275c87717652daace4c0b8131eb184c7d7516 ]
 
-If devm_request_threaded_irq() fails, the allocated struct mmc_host needs
-to be freed via calling mmc_free_host(), so let's do that.
+It appears that SPT-H variant has different offset for PAD locking registers.
+Fix it here.
 
-Fixes: c5413ad815a6 ("mmc: add new Alcor Micro Cardreader SD/MMC driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20200426202355.43055-1-christophe.jaillet@wanadoo.fr
-Cc: stable@vger.kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 551fa5801ef1 ("pinctrl: intel: sunrisepoint: Add Intel Sunrisepoint-H support")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/alcor.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/pinctrl/intel/pinctrl-sunrisepoint.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mmc/host/alcor.c b/drivers/mmc/host/alcor.c
-index 1aee485d56d4c..026ca9194ce5b 100644
---- a/drivers/mmc/host/alcor.c
-+++ b/drivers/mmc/host/alcor.c
-@@ -1104,7 +1104,7 @@ static int alcor_pci_sdmmc_drv_probe(struct platform_device *pdev)
+diff --git a/drivers/pinctrl/intel/pinctrl-sunrisepoint.c b/drivers/pinctrl/intel/pinctrl-sunrisepoint.c
+index d936e7aa74c4b..7b7736abe9d86 100644
+--- a/drivers/pinctrl/intel/pinctrl-sunrisepoint.c
++++ b/drivers/pinctrl/intel/pinctrl-sunrisepoint.c
+@@ -15,17 +15,18 @@
  
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to get irq for data line\n");
--		return ret;
-+		goto free_host;
- 	}
+ #include "pinctrl-intel.h"
  
- 	mutex_init(&host->cmd_mutex);
-@@ -1116,6 +1116,10 @@ static int alcor_pci_sdmmc_drv_probe(struct platform_device *pdev)
- 	dev_set_drvdata(&pdev->dev, host);
- 	mmc_add_host(mmc);
- 	return 0;
-+
-+free_host:
-+	mmc_free_host(mmc);
-+	return ret;
- }
+-#define SPT_PAD_OWN	0x020
+-#define SPT_PADCFGLOCK	0x0a0
+-#define SPT_HOSTSW_OWN	0x0d0
+-#define SPT_GPI_IS	0x100
+-#define SPT_GPI_IE	0x120
++#define SPT_PAD_OWN		0x020
++#define SPT_H_PADCFGLOCK	0x090
++#define SPT_LP_PADCFGLOCK	0x0a0
++#define SPT_HOSTSW_OWN		0x0d0
++#define SPT_GPI_IS		0x100
++#define SPT_GPI_IE		0x120
  
- static int alcor_pci_sdmmc_drv_remove(struct platform_device *pdev)
+ #define SPT_COMMUNITY(b, s, e)				\
+ 	{						\
+ 		.barno = (b),				\
+ 		.padown_offset = SPT_PAD_OWN,		\
+-		.padcfglock_offset = SPT_PADCFGLOCK,	\
++		.padcfglock_offset = SPT_LP_PADCFGLOCK,	\
+ 		.hostown_offset = SPT_HOSTSW_OWN,	\
+ 		.is_offset = SPT_GPI_IS,		\
+ 		.ie_offset = SPT_GPI_IE,		\
+@@ -47,7 +48,7 @@
+ 	{						\
+ 		.barno = (b),				\
+ 		.padown_offset = SPT_PAD_OWN,		\
+-		.padcfglock_offset = SPT_PADCFGLOCK,	\
++		.padcfglock_offset = SPT_H_PADCFGLOCK,	\
+ 		.hostown_offset = SPT_HOSTSW_OWN,	\
+ 		.is_offset = SPT_GPI_IS,		\
+ 		.ie_offset = SPT_GPI_IE,		\
 -- 
 2.20.1
 
