@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8001D845D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055B91D820B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387565AbgERSLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:11:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51846 "EHLO mail.kernel.org"
+        id S1731077AbgERRxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:53:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732820AbgERSEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:04:41 -0400
+        id S1731067AbgERRw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:52:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07DD7207F5;
-        Mon, 18 May 2020 18:04:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13E422083E;
+        Mon, 18 May 2020 17:52:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825080;
-        bh=QA6KwN2HxVjSW1OaLDLvstj9FVTWX1Ucrz1lsQ1LabI=;
+        s=default; t=1589824378;
+        bh=GbpSiMG/QbFnfn4dJDJoLRmBqopDdpnZg3qrxmblx/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D19YABdyjpuSxX3WRapOxUweHdAQ/6q2PDWtPfSJ2z+s7LR8VSk5ZSWHfhO9mXwdN
-         oxbKeUt+ZDCrvQS0qcSzLdnpipExX1PWnv5cGazcZerDqDcTjX0B60eYP9BmKgbMSd
-         gs9O1BOjmcuSpwio5nOO5PUAzFnJazHi5n2R+PFM=
+        b=GK0gcGp8CvDwmNwktydY6vTyYwDRRAyj3qDcHg32GUzrmv03sAPx5atjgxaBesGTW
+         iLxVRFBqxBZS1ipgT0qhEPCEC6Yr/b16pK+k3APSszvZc1UniOaOH8r9MChbv27zt4
+         OZILlwa2BOf/3ZMnGx912orL3Z7DKVgwF42IghWU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 119/194] drm/i915: Handle idling during i915_gem_evict_something busy loops
+Subject: [PATCH 4.19 31/80] pinctrl: baytrail: Enable pin configuration setting for GPIO chip
 Date:   Mon, 18 May 2020 19:36:49 +0200
-Message-Id: <20200518173541.555283900@linuxfoundation.org>
+Message-Id: <20200518173456.718913464@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
+References: <20200518173450.097837707@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,78 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 955da9d77435acac066139e9d7f7723ce7204a1d ]
+[ Upstream commit ccd025eaddaeb99e982029446197c544252108e2 ]
 
-i915_gem_evict_something() is charged with finding a slot within the GTT
-that we may reuse. Since our goal is not to stall, we first look for a
-slot that only overlaps idle vma. To this end, on the first pass we move
-any active vma to the end of the search list. However, we only stopped
-moving active vma after we see the first active vma twice. If during the
-search, that first active vma completed, we would not notice and keep on
-extending the search list.
+It appears that pin configuration for GPIO chip hasn't been enabled yet
+due to absence of ->set_config() callback.
 
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/1746
-Fixes: 2850748ef876 ("drm/i915: Pull i915_vma_pin under the vm->mutex")
-Fixes: b1e3177bd1d8 ("drm/i915: Coordinate i915_active with its own mutex")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Cc: <stable@vger.kernel.org> # v5.5+
-Reviewed-by: Mika Kuoppala <mika.kuoppala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200509115217.26853-1-chris@chris-wilson.co.uk
-(cherry picked from commit 73e28cc40bf00b5d168cb8f5cff1ae63e9097446)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Enable it here for Intel Baytrail.
+
+Fixes: c501d0b149de ("pinctrl: baytrail: Add pin control operations")
+Depends-on: 2956b5d94a76 ("pinctrl / gpio: Introduce .set_config() callback for GPIO chips")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/i915/i915_gem_evict.c | 26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
+ drivers/pinctrl/intel/pinctrl-baytrail.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/i915/i915_gem_evict.c b/drivers/gpu/drm/i915/i915_gem_evict.c
-index 0697bedebeef2..d99df9c337089 100644
---- a/drivers/gpu/drm/i915/i915_gem_evict.c
-+++ b/drivers/gpu/drm/i915/i915_gem_evict.c
-@@ -130,6 +130,13 @@ i915_gem_evict_something(struct i915_address_space *vm,
- 	active = NULL;
- 	INIT_LIST_HEAD(&eviction_list);
- 	list_for_each_entry_safe(vma, next, &vm->bound_list, vm_link) {
-+		if (vma == active) { /* now seen this vma twice */
-+			if (flags & PIN_NONBLOCK)
-+				break;
-+
-+			active = ERR_PTR(-EAGAIN);
-+		}
-+
- 		/*
- 		 * We keep this list in a rough least-recently scanned order
- 		 * of active elements (inactive elements are cheap to reap).
-@@ -145,21 +152,12 @@ i915_gem_evict_something(struct i915_address_space *vm,
- 		 * To notice when we complete one full cycle, we record the
- 		 * first active element seen, before moving it to the tail.
- 		 */
--		if (i915_vma_is_active(vma)) {
--			if (vma == active) {
--				if (flags & PIN_NONBLOCK)
--					break;
--
--				active = ERR_PTR(-EAGAIN);
--			}
--
--			if (active != ERR_PTR(-EAGAIN)) {
--				if (!active)
--					active = vma;
-+		if (active != ERR_PTR(-EAGAIN) && i915_vma_is_active(vma)) {
-+			if (!active)
-+				active = vma;
+diff --git a/drivers/pinctrl/intel/pinctrl-baytrail.c b/drivers/pinctrl/intel/pinctrl-baytrail.c
+index a760d8bda0af7..acb02a7aa9496 100644
+--- a/drivers/pinctrl/intel/pinctrl-baytrail.c
++++ b/drivers/pinctrl/intel/pinctrl-baytrail.c
+@@ -1495,6 +1495,7 @@ static const struct gpio_chip byt_gpio_chip = {
+ 	.direction_output	= byt_gpio_direction_output,
+ 	.get			= byt_gpio_get,
+ 	.set			= byt_gpio_set,
++	.set_config		= gpiochip_generic_config,
+ 	.dbg_show		= byt_gpio_dbg_show,
+ };
  
--				list_move_tail(&vma->vm_link, &vm->bound_list);
--				continue;
--			}
-+			list_move_tail(&vma->vm_link, &vm->bound_list);
-+			continue;
- 		}
- 
- 		if (mark_free(&scan, vma, flags, &eviction_list))
 -- 
 2.20.1
 
