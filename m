@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2C31D80EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47831D86C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729587AbgERRna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:43:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40958 "EHLO mail.kernel.org"
+        id S2387943AbgERS1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:27:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729567AbgERRnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:43:24 -0400
+        id S1729645AbgERRnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:43:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F246D20715;
-        Mon, 18 May 2020 17:43:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E9A9207C4;
+        Mon, 18 May 2020 17:43:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823803;
-        bh=zyeyKeHzoQB4z3mEqUUGw7iDBKNzKrBvabHIzqeR+HI=;
+        s=default; t=1589823831;
+        bh=QIKMjtwTJQ+GASKxHYDiRjpIjenb5FKuaNAqFegCf6s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rQV7iuwdUadOMyaJcGYp0TgUzKtSestv/llfF6vr9gIsGvyShKW9zHiO0ifkNCZBb
-         /TCnnWMcQWWBFMlnWCw0+ZXSiPScmkKmj8+AJypJoDczLCi/6jiM9zISA07wIoJ6Om
-         ak5FHKCkroJWuOr+ixWD3obQLGTTF0DIS1FwVq/E=
+        b=QP0TP4eYcp0ayp14jXKSOWyuYoTe3kvm0FGY4CbAUg2ftSTqmbP1OJ1Mq24V10z3i
+         OtkdhEigj5NvpdOhujG7+effDcrR8lzsoFAc1apjsDNvOwOfVxvKl36vK+0gmd3j8F
+         gg6TUZwiv24Ovi6ucWY/YR1N98HRgSa5ywsaygdg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Richard Kojedzinszky <richard@kojedz.in>
-Subject: [PATCH 4.9 25/90] binfmt_elf: Do not move brk for INTERP-less ET_EXEC
-Date:   Mon, 18 May 2020 19:36:03 +0200
-Message-Id: <20200518173456.322832435@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Shijie Luo <luoshijie1@huawei.com>,
+        Theodore Tso <tytso@mit.edu>, stable@kernel.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 26/90] ext4: add cond_resched() to ext4_protect_reserved_inode
+Date:   Mon, 18 May 2020 19:36:04 +0200
+Message-Id: <20200518173456.533046245@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
 References: <20200518173450.930655662@linuxfoundation.org>
@@ -45,39 +46,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Shijie Luo <luoshijie1@huawei.com>
 
-commit 7be3cb019db1cbd5fd5ffe6d64a23fefa4b6f229 upstream.
+commit af133ade9a40794a37104ecbcc2827c0ea373a3c upstream.
 
-When brk was moved for binaries without an interpreter, it should have
-been limited to ET_DYN only. In other words, the special case was an
-ET_DYN that lacks an INTERP, not just an executable that lacks INTERP.
-The bug manifested for giant static executables, where the brk would end
-up in the middle of the text area on 32-bit architectures.
+When journal size is set too big by "mkfs.ext4 -J size=", or when
+we mount a crafted image to make journal inode->i_size too big,
+the loop, "while (i < num)", holds cpu too long. This could cause
+soft lockup.
 
-Reported-and-tested-by: Richard Kojedzinszky <richard@kojedz.in>
-Fixes: bbdc6076d2e5 ("binfmt_elf: move brk out of mmap when doing direct loader exec")
-Cc: stable@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[  529.357541] Call trace:
+[  529.357551]  dump_backtrace+0x0/0x198
+[  529.357555]  show_stack+0x24/0x30
+[  529.357562]  dump_stack+0xa4/0xcc
+[  529.357568]  watchdog_timer_fn+0x300/0x3e8
+[  529.357574]  __hrtimer_run_queues+0x114/0x358
+[  529.357576]  hrtimer_interrupt+0x104/0x2d8
+[  529.357580]  arch_timer_handler_virt+0x38/0x58
+[  529.357584]  handle_percpu_devid_irq+0x90/0x248
+[  529.357588]  generic_handle_irq+0x34/0x50
+[  529.357590]  __handle_domain_irq+0x68/0xc0
+[  529.357593]  gic_handle_irq+0x6c/0x150
+[  529.357595]  el1_irq+0xb8/0x140
+[  529.357599]  __ll_sc_atomic_add_return_acquire+0x14/0x20
+[  529.357668]  ext4_map_blocks+0x64/0x5c0 [ext4]
+[  529.357693]  ext4_setup_system_zone+0x330/0x458 [ext4]
+[  529.357717]  ext4_fill_super+0x2170/0x2ba8 [ext4]
+[  529.357722]  mount_bdev+0x1a8/0x1e8
+[  529.357746]  ext4_mount+0x44/0x58 [ext4]
+[  529.357748]  mount_fs+0x50/0x170
+[  529.357752]  vfs_kern_mount.part.9+0x54/0x188
+[  529.357755]  do_mount+0x5ac/0xd78
+[  529.357758]  ksys_mount+0x9c/0x118
+[  529.357760]  __arm64_sys_mount+0x28/0x38
+[  529.357764]  el0_svc_common+0x78/0x130
+[  529.357766]  el0_svc_handler+0x38/0x78
+[  529.357769]  el0_svc+0x8/0xc
+[  541.356516] watchdog: BUG: soft lockup - CPU#0 stuck for 23s! [mount:18674]
 
+Link: https://lore.kernel.org/r/20200211011752.29242-1-luoshijie1@huawei.com
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/binfmt_elf.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/ext4/block_validity.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -1107,7 +1107,8 @@ static int load_elf_binary(struct linux_
- 		 * (since it grows up, and may collide early with the stack
- 		 * growing down), and into the unused ELF_ET_DYN_BASE region.
- 		 */
--		if (IS_ENABLED(CONFIG_ARCH_HAS_ELF_RANDOMIZE) && !interpreter)
-+		if (IS_ENABLED(CONFIG_ARCH_HAS_ELF_RANDOMIZE) &&
-+		    loc->elf_ex.e_type == ET_DYN && !interpreter)
- 			current->mm->brk = current->mm->start_brk =
- 				ELF_ET_DYN_BASE;
- 
+diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+index d31d93ee5e76f..45c7b0f9a8e3f 100644
+--- a/fs/ext4/block_validity.c
++++ b/fs/ext4/block_validity.c
+@@ -152,6 +152,7 @@ static int ext4_protect_reserved_inode(struct super_block *sb, u32 ino)
+ 		return PTR_ERR(inode);
+ 	num = (inode->i_size + sb->s_blocksize - 1) >> sb->s_blocksize_bits;
+ 	while (i < num) {
++		cond_resched();
+ 		map.m_lblk = i;
+ 		map.m_len = num - i;
+ 		n = ext4_map_blocks(NULL, inode, &map, 0);
+-- 
+2.20.1
+
 
 
