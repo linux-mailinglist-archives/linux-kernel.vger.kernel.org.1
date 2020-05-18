@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9B91D840E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D16E1D853B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732988AbgERSFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:05:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52984 "EHLO mail.kernel.org"
+        id S1731754AbgERR5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:57:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732953AbgERSF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:05:26 -0400
+        id S1731740AbgERR5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:57:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAC9E20873;
-        Mon, 18 May 2020 18:05:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87E8D20674;
+        Mon, 18 May 2020 17:57:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825125;
-        bh=KPQ5ee/rVhZdwHtanFh23NNG/VV1y3tWvTV40prfyPs=;
+        s=default; t=1589824630;
+        bh=VFi5CkaO2DwUtxZQxQco5fy/+XpBrOt7pEBYtSTIFN4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d6S83y4ch699cGelMEDzCiZtEfqrBvGfZZQSNpRRbdYEp+6gI+n5ooTPLioMIWzFF
-         RPLU0jPWmogalcuDbuEuwtCOOQ0q8RTquYhw2vVfO2yxMZ/EXu2AAJ+4KrWq+ap4HL
-         lt4Z1MANmlBXL1iFmy0BDTK7Dr+JP9PR0RkXrXNI=
+        b=dpjnUJrie9Yj4ZGxksoZZ8i7o+w1jNojpnsaHgKkCR5j9R3nt2zcDTvDl2WC/guD8
+         TfVWzWCO3wlOIISa0f1mDJZIuc+bxp0gR9HHKthM9F8DhnuNrMgZ/D0ctQCIEUZGVP
+         DZH0Jp4nbana3+8jLJFrhnLcTxDsUAACnHKEvgsE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 122/194] bpf: Fix bug in mmap() implementation for BPF array map
+        stable@vger.kernel.org, Samu Nuutamo <samu.nuutamo@vincit.fi>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 089/147] hwmon: (da9052) Synchronize access with mfd
 Date:   Mon, 18 May 2020 19:36:52 +0200
-Message-Id: <20200518173541.756566468@linuxfoundation.org>
+Message-Id: <20200518173524.639851373@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,63 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit 333291ce5055f2039afc907badaf5b66bc1adfdc ]
+From: Samu Nuutamo <samu.nuutamo@vincit.fi>
 
-mmap() subsystem allows user-space application to memory-map region with
-initial page offset. This wasn't taken into account in initial implementation
-of BPF array memory-mapping. This would result in wrong pages, not taking into
-account requested page shift, being memory-mmaped into user-space. This patch
-fixes this gap and adds a test for such scenario.
+[ Upstream commit 333e22db228f0bd0c839553015a6a8d3db4ba569 ]
 
-Fixes: fc9702273e2e ("bpf: Add mmap() support for BPF_MAP_TYPE_ARRAY")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20200512235925.3817805-1-andriin@fb.com
+When tsi-as-adc is configured it is possible for in7[0123]_input read to
+return an incorrect value if a concurrent read to in[456]_input is
+performed. This is caused by a concurrent manipulation of the mux
+channel without proper locking as hwmon and mfd use different locks for
+synchronization.
+
+Switch hwmon to use the same lock as mfd when accessing the TSI channel.
+
+Fixes: 4f16cab19a3d5 ("hwmon: da9052: Add support for TSI channel")
+Signed-off-by: Samu Nuutamo <samu.nuutamo@vincit.fi>
+[rebase to current master, reword commit message slightly]
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/arraymap.c                         | 7 ++++++-
- tools/testing/selftests/bpf/prog_tests/mmap.c | 9 +++++++++
- 2 files changed, 15 insertions(+), 1 deletion(-)
+ drivers/hwmon/da9052-hwmon.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 95d77770353c9..1d6120fd5ba68 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -486,7 +486,12 @@ static int array_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
- 	if (!(map->map_flags & BPF_F_MMAPABLE))
- 		return -EINVAL;
+diff --git a/drivers/hwmon/da9052-hwmon.c b/drivers/hwmon/da9052-hwmon.c
+index 53b517dbe7e6e..4af2fc309c286 100644
+--- a/drivers/hwmon/da9052-hwmon.c
++++ b/drivers/hwmon/da9052-hwmon.c
+@@ -244,9 +244,9 @@ static ssize_t da9052_tsi_show(struct device *dev,
+ 	int channel = to_sensor_dev_attr(devattr)->index;
+ 	int ret;
  
--	return remap_vmalloc_range(vma, array_map_vmalloc_addr(array), pgoff);
-+	if (vma->vm_pgoff * PAGE_SIZE + (vma->vm_end - vma->vm_start) >
-+	    PAGE_ALIGN((u64)array->map.max_entries * array->elem_size))
-+		return -EINVAL;
-+
-+	return remap_vmalloc_range(vma, array_map_vmalloc_addr(array),
-+				   vma->vm_pgoff + pgoff);
- }
+-	mutex_lock(&hwmon->hwmon_lock);
++	mutex_lock(&hwmon->da9052->auxadc_lock);
+ 	ret = __da9052_read_tsi(dev, channel);
+-	mutex_unlock(&hwmon->hwmon_lock);
++	mutex_unlock(&hwmon->da9052->auxadc_lock);
  
- const struct bpf_map_ops array_map_ops = {
-diff --git a/tools/testing/selftests/bpf/prog_tests/mmap.c b/tools/testing/selftests/bpf/prog_tests/mmap.c
-index 16a814eb4d645..b0e789678aa46 100644
---- a/tools/testing/selftests/bpf/prog_tests/mmap.c
-+++ b/tools/testing/selftests/bpf/prog_tests/mmap.c
-@@ -197,6 +197,15 @@ void test_mmap(void)
- 	CHECK_FAIL(map_data->val[far] != 3 * 321);
- 
- 	munmap(tmp2, 4 * page_size);
-+
-+	/* map all 4 pages, but with pg_off=1 page, should fail */
-+	tmp1 = mmap(NULL, 4 * page_size, PROT_READ, MAP_SHARED | MAP_FIXED,
-+		    data_map_fd, page_size /* initial page shift */);
-+	if (CHECK(tmp1 != MAP_FAILED, "adv_mmap7", "unexpected success")) {
-+		munmap(tmp1, 4 * page_size);
-+		goto cleanup;
-+	}
-+
- cleanup:
- 	if (bss_mmaped)
- 		CHECK_FAIL(munmap(bss_mmaped, bss_sz));
+ 	if (ret < 0)
+ 		return ret;
 -- 
 2.20.1
 
