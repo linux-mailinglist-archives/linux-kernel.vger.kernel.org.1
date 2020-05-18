@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABF11D8558
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8D61D8490
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733234AbgERSSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:18:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34096 "EHLO mail.kernel.org"
+        id S2387579AbgERSMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:12:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731610AbgERR4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:56:17 -0400
+        id S1732691AbgERSDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:03:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0044520826;
-        Mon, 18 May 2020 17:56:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41A8F2083E;
+        Mon, 18 May 2020 18:03:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824577;
-        bh=lVcD8Iglm5L3dUlMBoeQCYLzsmbVnShCoMIN3gjOd98=;
+        s=default; t=1589825025;
+        bh=mlbO5mkj8hkwmhIlSyW83zoCEI0BCQ9bqtui9lyhn44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RdbK2iYSf66R+UNsN406tSwf+sJ8nYJ3Rp8hhS5Dt5POz9Gj5tz5GmqxSXeQk+JND
-         tdNFN8MI5iCtYU6TEq2IS91/NwQ7ZRQLnDsaCMuai6Q7/N2O4M5YV87kRSP7oVs8Ko
-         EN4qaJGfa8V7yEAA0E9wUnX+Zm2IYD2fadEx6DGI=
+        b=cd5rAHFeboe26Gn9iRxSatHL2mwQL+G86YheF8/R8Qgr1SFsyNounPi0tWpSUlWH/
+         sl8p2z5yenX7M3gFNavvnScHABoluzSGjErknqzGlpI80Vwzr6Suyh9MC9b/XXHnfM
+         QMXKA1uzODhMSFAv+Bo9CThAPA2E6zzQdjumJJCw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Dave Wysochanski <dwysocha@redhat.com>,
+        David Howells <dhowells@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 066/147] mmc: alcor: Fix a resource leak in the error path for ->probe()
+Subject: [PATCH 5.6 099/194] NFSv4: Fix fscache cookie aux_data to ensure change_attr is included
 Date:   Mon, 18 May 2020 19:36:29 +0200
-Message-Id: <20200518173522.255300152@linuxfoundation.org>
+Message-Id: <20200518173540.233891908@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,47 +44,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Dave Wysochanski <dwysocha@redhat.com>
 
-[ Upstream commit 7c277dd2b0ff6a16f1732a66c2c52a29f067163e ]
+[ Upstream commit 50eaa652b54df1e2b48dc398d9e6114c9ed080eb ]
 
-If devm_request_threaded_irq() fails, the allocated struct mmc_host needs
-to be freed via calling mmc_free_host(), so let's do that.
+Commit 402cb8dda949 ("fscache: Attach the index key and aux data to
+the cookie") added the aux_data and aux_data_len to parameters to
+fscache_acquire_cookie(), and updated the callers in the NFS client.
+In the process it modified the aux_data to include the change_attr,
+but missed adding change_attr to a couple places where aux_data was
+used.  Specifically, when opening a file and the change_attr is not
+added, the following attempt to lookup an object will fail inside
+cachefiles_check_object_xattr() = -116 due to
+nfs_fscache_inode_check_aux() failing memcmp on auxdata and returning
+FSCACHE_CHECKAUX_OBSOLETE.
 
-Fixes: c5413ad815a6 ("mmc: add new Alcor Micro Cardreader SD/MMC driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20200426202355.43055-1-christophe.jaillet@wanadoo.fr
-Cc: stable@vger.kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fix this by adding nfs_fscache_update_auxdata() to set the auxdata
+from all relevant fields in the inode, including the change_attr.
+
+Fixes: 402cb8dda949 ("fscache: Attach the index key and aux data to the cookie")
+Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/alcor.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/nfs/fscache.c | 34 ++++++++++++++++------------------
+ 1 file changed, 16 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mmc/host/alcor.c b/drivers/mmc/host/alcor.c
-index 1aee485d56d4c..026ca9194ce5b 100644
---- a/drivers/mmc/host/alcor.c
-+++ b/drivers/mmc/host/alcor.c
-@@ -1104,7 +1104,7 @@ static int alcor_pci_sdmmc_drv_probe(struct platform_device *pdev)
- 
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to get irq for data line\n");
--		return ret;
-+		goto free_host;
+diff --git a/fs/nfs/fscache.c b/fs/nfs/fscache.c
+index f517184156068..a60df88efc404 100644
+--- a/fs/nfs/fscache.c
++++ b/fs/nfs/fscache.c
+@@ -225,6 +225,19 @@ void nfs_fscache_release_super_cookie(struct super_block *sb)
  	}
- 
- 	mutex_init(&host->cmd_mutex);
-@@ -1116,6 +1116,10 @@ static int alcor_pci_sdmmc_drv_probe(struct platform_device *pdev)
- 	dev_set_drvdata(&pdev->dev, host);
- 	mmc_add_host(mmc);
- 	return 0;
-+
-+free_host:
-+	mmc_free_host(mmc);
-+	return ret;
  }
  
- static int alcor_pci_sdmmc_drv_remove(struct platform_device *pdev)
++static void nfs_fscache_update_auxdata(struct nfs_fscache_inode_auxdata *auxdata,
++				  struct nfs_inode *nfsi)
++{
++	memset(auxdata, 0, sizeof(*auxdata));
++	auxdata->mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
++	auxdata->mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
++	auxdata->ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
++	auxdata->ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
++
++	if (NFS_SERVER(&nfsi->vfs_inode)->nfs_client->rpc_ops->version == 4)
++		auxdata->change_attr = inode_peek_iversion_raw(&nfsi->vfs_inode);
++}
++
+ /*
+  * Initialise the per-inode cache cookie pointer for an NFS inode.
+  */
+@@ -238,14 +251,7 @@ void nfs_fscache_init_inode(struct inode *inode)
+ 	if (!(nfss->fscache && S_ISREG(inode->i_mode)))
+ 		return;
+ 
+-	memset(&auxdata, 0, sizeof(auxdata));
+-	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
+-	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
+-	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
+-	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
+-
+-	if (NFS_SERVER(&nfsi->vfs_inode)->nfs_client->rpc_ops->version == 4)
+-		auxdata.change_attr = inode_peek_iversion_raw(&nfsi->vfs_inode);
++	nfs_fscache_update_auxdata(&auxdata, nfsi);
+ 
+ 	nfsi->fscache = fscache_acquire_cookie(NFS_SB(inode->i_sb)->fscache,
+ 					       &nfs_fscache_inode_object_def,
+@@ -265,11 +271,7 @@ void nfs_fscache_clear_inode(struct inode *inode)
+ 
+ 	dfprintk(FSCACHE, "NFS: clear cookie (0x%p/0x%p)\n", nfsi, cookie);
+ 
+-	memset(&auxdata, 0, sizeof(auxdata));
+-	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
+-	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
+-	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
+-	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
++	nfs_fscache_update_auxdata(&auxdata, nfsi);
+ 	fscache_relinquish_cookie(cookie, &auxdata, false);
+ 	nfsi->fscache = NULL;
+ }
+@@ -309,11 +311,7 @@ void nfs_fscache_open_file(struct inode *inode, struct file *filp)
+ 	if (!fscache_cookie_valid(cookie))
+ 		return;
+ 
+-	memset(&auxdata, 0, sizeof(auxdata));
+-	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
+-	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
+-	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
+-	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
++	nfs_fscache_update_auxdata(&auxdata, nfsi);
+ 
+ 	if (inode_is_open_for_write(inode)) {
+ 		dfprintk(FSCACHE, "NFS: nfsi 0x%p disabling cache\n", nfsi);
 -- 
 2.20.1
 
