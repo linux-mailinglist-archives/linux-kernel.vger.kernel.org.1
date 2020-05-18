@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E391D82D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51F51D83B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732073AbgERR7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:59:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40018 "EHLO mail.kernel.org"
+        id S1732617AbgERSHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:07:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732063AbgERR73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:59:29 -0400
+        id S1733233AbgERSG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:06:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ECDA020873;
-        Mon, 18 May 2020 17:59:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB0EA20897;
+        Mon, 18 May 2020 18:06:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824769;
-        bh=KZFGpym89vL+pkYsJKw1YvGqavgp7Flu1HyOh8N8L3w=;
+        s=default; t=1589825217;
+        bh=YSPe1livLa9ajmbYeUYS17498NRPX2FUCt/YUQrxklU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lm9gDaXLEskMpKAL5hDNJgmpd/diYNqaaznkOKiAkZ5SKgA8bYdXWJRlM4V9wmEpi
-         Pr0rrAi/FbLeQpiaO9FXR9fo9c4lxiXO6G70SQPazWhp6apTYIsTmV8j0ZiDa8uJwQ
-         VeOY1eZRFwhnfVpREjIE9S5zKE6w2izDhoJrbB14=
+        b=I/HXI8x/Ba40Cmp1zidzSipheAE9Pu5aXBYvA3ENoTnKiVYkdNYYChoYAsgf/DKQY
+         qLQeB9koo989n+YYSUJ/f+6GHwsAmfYyZiwb23dcblekHVrrFQrQdXqPDnFGLPCq9r
+         Dqi7/OBjzsVFUdymCTHQphbjxsbr+9XlVyMILVZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Thomas Backlund <tmb@mageia.org>
-Subject: [PATCH 5.4 144/147] Makefile: disallow data races on gcc-10 as well
+        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Heiko Stuebner <heiko@sntech.de>
+Subject: [PATCH 5.6 177/194] arm64: dts: rockchip: Rename dwc3 device nodes on rk3399 to make dtc happy
 Date:   Mon, 18 May 2020 19:37:47 +0200
-Message-Id: <20200518173530.903242359@linuxfoundation.org>
+Message-Id: <20200518173546.292240485@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,34 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergei Trofimovich <slyfox@gentoo.org>
+From: Chen-Yu Tsai <wens@csie.org>
 
-commit b1112139a103b4b1101d0d2d72931f2d33d8c978 upstream.
+commit 190c7f6fd43a776d4a6da1dac44408104649e9b7 upstream.
 
-gcc-10 will rename --param=allow-store-data-races=0
-to -fno-allow-store-data-races.
+The device tree compiler complains that the dwc3 nodes have regs
+properties but no matching unit addresses.
 
-The flag change happened at https://gcc.gnu.org/PR92046.
+Add the unit addresses to the device node name. While at it, also rename
+the nodes from "dwc3" to "usb", as guidelines require device nodes have
+generic names.
 
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-Acked-by: Jiri Kosina <jkosina@suse.cz>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Thomas Backlund <tmb@mageia.org>
+Fixes: 7144224f2c2b ("arm64: dts: rockchip: support dwc3 USB for rk3399")
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Link: https://lore.kernel.org/r/20200327030414.5903-7-wens@kernel.org
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- Makefile |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/Makefile
-+++ b/Makefile
-@@ -709,6 +709,7 @@ endif
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -410,7 +410,7 @@
+ 		reset-names = "usb3-otg";
+ 		status = "disabled";
  
- # Tell gcc to never replace conditional load with a non-conditional one
- KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
-+KBUILD_CFLAGS	+= $(call cc-option,-fno-allow-store-data-races)
+-		usbdrd_dwc3_0: dwc3 {
++		usbdrd_dwc3_0: usb@fe800000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0xfe800000 0x0 0x100000>;
+ 			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH 0>;
+@@ -446,7 +446,7 @@
+ 		reset-names = "usb3-otg";
+ 		status = "disabled";
  
- include scripts/Makefile.kcov
- include scripts/Makefile.gcc-plugins
+-		usbdrd_dwc3_1: dwc3 {
++		usbdrd_dwc3_1: usb@fe900000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0xfe900000 0x0 0x100000>;
+ 			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH 0>;
 
 
