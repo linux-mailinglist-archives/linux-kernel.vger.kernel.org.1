@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6821D822E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E3D1D8154
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731253AbgERRyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:54:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58516 "EHLO mail.kernel.org"
+        id S1730187AbgERRrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:47:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728981AbgERRyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:54:05 -0400
+        id S1730174AbgERRrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:47:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3A1A207F5;
-        Mon, 18 May 2020 17:54:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21CB9207C4;
+        Mon, 18 May 2020 17:47:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824445;
-        bh=4obmFbAA/DVvTb4BHmCCLVDrga54rTsJEGqlCpJWLQU=;
+        s=default; t=1589824023;
+        bh=8MovxxCcEK1CGKWHnV9yi9bYCAtEDPUYWRFY7IJQFGY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hkC/N9BpkSKpXnqehgmT9JJDWzw4sYiDJfWjibwMgeG1iiVIckHcxhym18OzcqSRX
-         8TDSi6nC62KUMoLkVimx048vtWwnOzyJFD8g6ikmGzzECkkuXonqB1IGWPZIdT+/0T
-         g20LSjRDJdkXXFpZ95ChUPIBLyDm/4gCxCB1Y9iE=
+        b=ndu0kMir0bUwWMKNCU+n3M58X6tVR0Z+hBuzT/qe5gJiUsV9sRZDL9dYm2nnWvlAg
+         fXCBtEmyDShcR/phBoAAD2ffUkI+ZjotgiVWDjJiXE0IFrbBg/VnlZKTNK3xpSIW8g
+         2zmsXic0bnSUrBPlbq28YD5Rp0T/RqX0ThRoS8hk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Gilbert <dgilbert@interlog.com>,
-        Wu Bo <wubo40@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 5.4 015/147] scsi: sg: add sg_remove_request in sg_write
+        stable@vger.kernel.org, Matt Jolly <Kangie@footclan.ninja>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 006/114] net: usb: qmi_wwan: add support for DW5816e
 Date:   Mon, 18 May 2020 19:35:38 +0200
-Message-Id: <20200518173515.636749011@linuxfoundation.org>
+Message-Id: <20200518173504.264566242@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,39 +44,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wu Bo <wubo40@huawei.com>
+From: Matt Jolly <Kangie@footclan.ninja>
 
-commit 83c6f2390040f188cc25b270b4befeb5628c1aee upstream.
+[ Upstream commit 57c7f2bd758eed867295c81d3527fff4fab1ed74 ]
 
-If the __copy_from_user function failed we need to call sg_remove_request
-in sg_write.
+Add support for Dell Wireless 5816e to drivers/net/usb/qmi_wwan.c
 
-Link: https://lore.kernel.org/r/610618d9-e983-fd56-ed0f-639428343af7@huawei.com
-Acked-by: Douglas Gilbert <dgilbert@interlog.com>
-Signed-off-by: Wu Bo <wubo40@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-[groeck: Backport to v5.4.y and older kernels]
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Matt Jolly <Kangie@footclan.ninja>
+Acked-by: Bjørn Mork <bjorn@mork.no>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/scsi/sg.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/usb/qmi_wwan.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/scsi/sg.c
-+++ b/drivers/scsi/sg.c
-@@ -689,8 +689,10 @@ sg_write(struct file *filp, const char _
- 	hp->flags = input_size;	/* structure abuse ... */
- 	hp->pack_id = old_hdr.pack_id;
- 	hp->usr_ptr = NULL;
--	if (__copy_from_user(cmnd, buf, cmd_size))
-+	if (__copy_from_user(cmnd, buf, cmd_size)) {
-+		sg_remove_request(sfp, srp);
- 		return -EFAULT;
-+	}
- 	/*
- 	 * SG_DXFER_TO_FROM_DEV is functionally equivalent to SG_DXFER_FROM_DEV,
- 	 * but is is possible that the app intended SG_DXFER_TO_DEV, because there
+--- a/drivers/net/usb/qmi_wwan.c
++++ b/drivers/net/usb/qmi_wwan.c
+@@ -1283,6 +1283,7 @@ static const struct usb_device_id produc
+ 	{QMI_FIXED_INTF(0x413c, 0x81b3, 8)},	/* Dell Wireless 5809e Gobi(TM) 4G LTE Mobile Broadband Card (rev3) */
+ 	{QMI_FIXED_INTF(0x413c, 0x81b6, 8)},	/* Dell Wireless 5811e */
+ 	{QMI_FIXED_INTF(0x413c, 0x81b6, 10)},	/* Dell Wireless 5811e */
++	{QMI_FIXED_INTF(0x413c, 0x81cc, 8)},	/* Dell Wireless 5816e */
+ 	{QMI_FIXED_INTF(0x413c, 0x81d7, 0)},	/* Dell Wireless 5821e */
+ 	{QMI_FIXED_INTF(0x413c, 0x81d7, 1)},	/* Dell Wireless 5821e preproduction config */
+ 	{QMI_FIXED_INTF(0x413c, 0x81e0, 0)},	/* Dell Wireless 5821e with eSIM support*/
 
 
