@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645FA1D81F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA101D86AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730488AbgERRwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:52:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55334 "EHLO mail.kernel.org"
+        id S2387802AbgERS02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:26:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730914AbgERRwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:52:12 -0400
+        id S1729912AbgERRpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:45:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 572B020715;
-        Mon, 18 May 2020 17:52:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC87320657;
+        Mon, 18 May 2020 17:45:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824331;
-        bh=mbshnHENIYRB/FCVM459hXbxASVXtHsDAXUwyCDDyBQ=;
+        s=default; t=1589823920;
+        bh=5+gaK2ZjATYYSKkQ1x1eK4JtR4CVS+bhoUsM5ty/0yE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OziNCjWPuBW+xLloKa62AvDOrj7eClBljeA2uAY0AWs7CXjbwjoVQGslMgL3o17rj
-         /lt7F5Fq+5EBp9AFCYy92QP32xjnZzjM1vrJkYcCBhfdlTeyBPHg9jYZG5RNQHuajc
-         Ef6556VcqTLRA6QANrf0HQgJUxVE9imGh5XYiIc4=
+        b=O0r2VEzoqJB2e0Qb+nwinlpOFADXSg21JJ7rUbrpkzQNSKfhhayWzt+sqcWwiYc5w
+         KUzJM6rU7ShJGnXufnslYfv3NP/U0Yd2TMk1rIocQX+eJd7uRhWnv5iQUkw/52i/Ff
+         +eJgu6j6Nr9L5aL3t1dzXnMA69WX5O25to9o6Ars=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 49/80] gcc-10: disable array-bounds warning for now
+        stable@vger.kernel.org, Jue Wang <juew@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter Shier <pshier@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.9 89/90] KVM: x86: Fix off-by-one error in kvm_vcpu_ioctl_x86_setup_mce
 Date:   Mon, 18 May 2020 19:37:07 +0200
-Message-Id: <20200518173500.338372416@linuxfoundation.org>
+Message-Id: <20200518173509.157337939@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +46,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Jim Mattson <jmattson@google.com>
 
-commit 44720996e2d79e47d508b0abe99b931a726a3197 upstream.
+commit c4e0e4ab4cf3ec2b3f0b628ead108d677644ebd9 upstream.
 
-This is another fine warning, related to the 'zero-length-bounds' one,
-but hitting the same historical code in the kernel.
+Bank_num is a one-based count of banks, not a zero-based index. It
+overflows the allocated space only when strictly greater than
+KVM_MAX_MCE_BANKS.
 
-Because C didn't historically support flexible array members, we have
-code that instead uses a one-sized array, the same way we have cases of
-zero-sized arrays.
-
-The one-sized arrays come from either not wanting to use the gcc
-zero-sized array extension, or from a slight convenience-feature, where
-particularly for strings, the size of the structure now includes the
-allocation for the final NUL character.
-
-So with a "char name[1];" at the end of a structure, you can do things
-like
-
-       v = my_malloc(sizeof(struct vendor) + strlen(name));
-
-and avoid the "+1" for the terminator.
-
-Yes, the modern way to do that is with a flexible array, and using
-'offsetof()' instead of 'sizeof()', and adding the "+1" by hand.  That
-also technically gets the size "more correct" in that it avoids any
-alignment (and thus padding) issues, but this is another long-term
-cleanup thing that will not happen for 5.7.
-
-So disable the warning for now, even though it's potentially quite
-useful.  Having a slew of warnings that then hide more urgent new issues
-is not an improvement.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: a9e38c3e01ad ("KVM: x86: Catch potential overrun in MCE setup")
+Signed-off-by: Jue Wang <juew@google.com>
+Signed-off-by: Jim Mattson <jmattson@google.com>
+Reviewed-by: Peter Shier <pshier@google.com>
+Message-Id: <20200511225616.19557-1-jmattson@google.com>
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- Makefile |    1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kvm/x86.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/Makefile
-+++ b/Makefile
-@@ -794,6 +794,7 @@ KBUILD_CFLAGS += $(call cc-disable-warni
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3128,7 +3128,7 @@ static int kvm_vcpu_ioctl_x86_setup_mce(
+ 	unsigned bank_num = mcg_cap & 0xff, bank;
  
- # We'll want to enable this eventually, but it's not going away for 5.7 at least
- KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
-+KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
- 
- # Enabled with W=2, disabled by default as noisy
- KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
+ 	r = -EINVAL;
+-	if (!bank_num || bank_num >= KVM_MAX_MCE_BANKS)
++	if (!bank_num || bank_num > KVM_MAX_MCE_BANKS)
+ 		goto out;
+ 	if (mcg_cap & ~(kvm_mce_cap_supported | 0xff | 0xff0000))
+ 		goto out;
 
 
