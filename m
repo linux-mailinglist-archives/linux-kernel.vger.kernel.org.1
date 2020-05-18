@@ -2,59 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BE71D757C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 12:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B341D759B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 12:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726919AbgERKqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 06:46:32 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:10929 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbgERKqc (ORCPT
+        id S1726730AbgERKvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 06:51:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726270AbgERKvw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 06:46:32 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.17]) by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee95ec2676f8b4-36cf1; Mon, 18 May 2020 18:46:08 +0800 (CST)
-X-RM-TRANSID: 2ee95ec2676f8b4-36cf1
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [172.20.146.121] (unknown[112.25.154.146])
-        by rmsmtp-syy-appsvr09-12009 (RichMail) with SMTP id 2ee95ec2676e50b-b7d11;
-        Mon, 18 May 2020 18:46:07 +0800 (CST)
-X-RM-TRANSID: 2ee95ec2676e50b-b7d11
-Subject: Re: [PATCH] ASoC: fsl_micfil: Fix format and unused assignment
-To:     Mark Brown <broonie@kernel.org>
-Cc:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        perex@perex.cz, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20200518074405.14880-1-tangbin@cmss.chinamobile.com>
- <20200518102513.GA8699@sirena.org.uk>
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <9ab0ef1f-6acf-ac5a-9d16-e00fbb39ae11@cmss.chinamobile.com>
-Date:   Mon, 18 May 2020 18:47:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 18 May 2020 06:51:52 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C8FC061A0C;
+        Mon, 18 May 2020 03:51:52 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id v192so2279734vkd.3;
+        Mon, 18 May 2020 03:51:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MpjSkkn7ApK5Yq+n7OuT8kXvOD7uu7gT865+wNXuHVM=;
+        b=TIdzmN5Zyod2KpKoraBArfu7HJ/dEL5tffIucTv8YuRzLkeoU8FiBg7P7XovUQxL/D
+         PNj0R8Ys14RDTqKJWOpbotZAsy2DF9HvMohwoUIcrtsRtdZ1KhYQRu5S1a3jtL2keuQ9
+         n01+J9BhdUvlIGWd3QV7N8Ct+r8CCv5twPyzFL9jzrRF8UIlaU90fZAB11X4PCvWuvCs
+         HuJ3DiC7taPGk51xKRGbeKVrv1LRbWsxwT5zP8w20Oqj/OPmx8/wp4OrKUkO3aBtzmtG
+         dByNMjEIU75bxzxx5lR95RTEk8A9XIQ80QnpUDh4BaEbvqGlAoOTnd8U+zSTQZ6gIxx4
+         fkHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MpjSkkn7ApK5Yq+n7OuT8kXvOD7uu7gT865+wNXuHVM=;
+        b=GEcT5+nVu9wKVn1vTu5i8SRHuEeAjD8YMZ7iYWGasdXGEL0TTvIx0U3Q+eaIeIkNvt
+         7f7lZSTTqA0JPrUPUav1We0XjyPMQPNPmSo3+SiewOYelX9cBWaZ5oGBb5Ow8/2raxuK
+         lPXVHinb+1S+BdmyPhhvBMwe6psj7vzG8vu7tC+TeBbQ9BQSGWDvxpbLZCIZRcI4enOp
+         1lB5SKP/92Gsj/S8FoD1piAy2Sm5q2TvF40Q7/wxp1tC5rrUMBr36kDTqbXkxUuJfDf/
+         CKgB/OO3VfFf9w+YJOW98mT+JzrxtKW86qg2GX/1vZsZJ4u+KwLYC6yoNBlM2SjwleqC
+         miEw==
+X-Gm-Message-State: AOAM531Ze3WRKsvdVM9Ox94/k7S3vpewWf9MZn6EQu4R5eRMgtHnTSDN
+        a9K1CduxbGnKHECf+8o2DXtFmBqevqqFyn8UBn8=
+X-Google-Smtp-Source: ABdhPJyJoE3DeUp5mRCR4/NwPKcB+0c9bpy1Jfu2Pe+bafT+c8kQlQDsW0FnkxaYd3hr8PrATmPVX23jWINoG1EwtPc=
+X-Received: by 2002:a1f:2bd7:: with SMTP id r206mr790067vkr.28.1589799110526;
+ Mon, 18 May 2020 03:51:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200518102513.GA8699@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200516215057.392609-1-paul@crapouillou.net> <20200516215057.392609-11-paul@crapouillou.net>
+In-Reply-To: <20200516215057.392609-11-paul@crapouillou.net>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Mon, 18 May 2020 11:48:59 +0100
+Message-ID: <CACvgo50q=qJXk3nFSCm+S6JHBMxpY0C_HwH8KGB2EAcKwgL0oQ@mail.gmail.com>
+Subject: Re: [PATCH 11/12] gpu/drm: Ingenic: Add support for the IPU
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>, od@zcrc.me,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Paul,
 
-On 2020/5/18 18:25, Mark Brown wrote:
-> On Mon, May 18, 2020 at 03:44:05PM +0800, Tang Bin wrote:
->> In the function fsl_micfil_startup(), the two lines of dev_err()
->> can be shortened to one line. And delete unused initialized value
->> of 'ret', because it will be assigned by the function
->> fsl_micfil_set_mclk_rate().
-> This is two separate changes with no overlap so would have been better
-> sent as separate patches.
+Disclaimer: I don't know much about the hardware :-P
 
-Got it, Thanks
+On Sun, 17 May 2020 at 00:31, Paul Cercueil <paul@crapouillou.net> wrote:
+>
+> Add support for the Image Processing Unit (IPU) found in all Ingenic
+> SoCs.
+>
+Since the IPU is present on all devices supported, does it make sense
+to have it as separate module?
+Didn't check closely although I suspect doing that will remove the
+need for the component patch.
 
-Tang Bin
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm.c
+> @@ -50,7 +50,7 @@ struct jz_soc_info {
+>
+>  struct ingenic_drm {
+>         struct drm_device drm;
+> -       struct drm_plane f0, f1;
+> +       struct drm_plane f0, f1, *ipu_plane;
+>         struct drm_crtc crtc;
+>         struct drm_encoder encoder;
+>
+> @@ -186,13 +186,16 @@ static void ingenic_drm_crtc_update_timings(struct ingenic_drm *priv,
+>         regmap_update_bits(priv->map, JZ_REG_LCD_CTRL,
+>                            JZ_LCD_CTRL_OFUP | JZ_LCD_CTRL_BURST_16,
+>                            JZ_LCD_CTRL_OFUP | JZ_LCD_CTRL_BURST_16);
+> +
+> +       regmap_write(priv->map, JZ_REG_LCD_IPUR, JZ_LCD_IPUR_IPUREN |
+> +                    (ht * vpe / 3) << JZ_LCD_IPUR_IPUR_LSB);
 
+This hunk also indicates that it may be better to merge the IPU within
+the existing driver.
 
-
+-Emil
