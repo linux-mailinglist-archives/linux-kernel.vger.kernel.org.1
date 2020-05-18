@@ -2,85 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF011D726D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C313A1D725F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727803AbgERIBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 04:01:30 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:56012 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726489AbgERIBa (ORCPT
+        id S1726997AbgERH60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 03:58:26 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:46559 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbgERH6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 04:01:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aDKxDJZ/qZ1vmOI+jxTFnYHJknWNLi0bRyCoqCFOLwM=; b=rxcFsOE+JyNoqI/GUYEUadKR+0
-        zhiJXye7AAB9w6UlXrNyVTptUwJDHPP5EvlB3aMqbUhc+K06Zlp+56BSBLjrWXmhFlRm4ffkgLYZc
-        OfszTqFFSU4WbGkiH32YiWSK67LcnuXD5+G+lAM0PKth56wEG7gmMdKJIqgFa4fzvTwFmY60zaYw1
-        eLx30A+GyyFobB4qlI9tlBzZybi76CXrDJ8KbMuBA8lBHHFt+oJKNNXhaxaEwljBCm08xwlm7tt78
-        0RTotjBEAGezhYi65jopDbFDcT3sOhikZC04vRy68PxKwbFmSM8/CiPmE0/PN2pr6EiTjbMMjtI6H
-        1LylQvgw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jaadE-0003JR-86; Mon, 18 May 2020 07:56:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DD5DC3011E8;
-        Mon, 18 May 2020 09:56:07 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C5E152B3CDC70; Mon, 18 May 2020 09:56:07 +0200 (CEST)
-Date:   Mon, 18 May 2020 09:56:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Borislav Petkov <bp@alien8.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org
-Subject: Re: [for-linus][PATCH 1/3] x86/ftrace: Have ftrace trampolines turn
- read-only at the end of system boot up
-Message-ID: <20200518075607.GH2940@hirez.programming.kicks-ass.net>
-References: <20200514125817.850882486@goodmis.org>
- <20200514125842.392454557@goodmis.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200514125842.392454557@goodmis.org>
+        Mon, 18 May 2020 03:58:25 -0400
+Received: from marcel-macbook.fritz.box (p4FEFC5A7.dip0.t-ipconnect.de [79.239.197.167])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 86539CECE2;
+        Mon, 18 May 2020 10:08:06 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH] Bluetooth: L2CAP: Replace zero-length array with
+ flexible-array
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20200513171556.GA21969@embeddedor>
+Date:   Mon, 18 May 2020 09:58:22 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        BlueZ <linux-bluetooth@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Transfer-Encoding: 7bit
+Message-Id: <5C6DAE24-2E3B-4E89-AFA2-9B0E27B40815@holtmann.org>
+References: <20200513171556.GA21969@embeddedor>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 08:58:18AM -0400, Steven Rostedt wrote:
-> +			start_offset = (unsigned long)ftrace_caller;
-> +			end_offset = (unsigned long)ftrace_epilogue;
+Hi Gustavo,
 
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>        int stuff;
+>        struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+> include/net/bluetooth/l2cap.h | 6 +++---
+> 1 file changed, 3 insertions(+), 3 deletions(-)
 
----
-Subject: x86/ftrace: Fix compile error
+patch has been applied to bluetooth-next tree.
 
-When building x86-64 kernels, my compiler is sad about a missing symbol.
+Regards
 
-Fixes: 59566b0b622e ("x86/ftrace: Have ftrace trampolines turn read-only at the end of system boot up")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/kernel/ftrace.c | 1 +
- 1 file changed, 1 insertion(+)
+Marcel
 
-diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-index f8917a6f25b7..1cf7d69402e2 100644
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -286,6 +286,7 @@ extern void ftrace_regs_caller_ret(void);
- extern void ftrace_caller_end(void);
- extern void ftrace_caller_op_ptr(void);
- extern void ftrace_regs_caller_op_ptr(void);
-+extern void ftrace_epilogue(void);
- 
- /* movq function_trace_op(%rip), %rdx */
- /* 0x48 0x8b 0x15 <offset-to-ftrace_trace_op (4 bytes)> */
