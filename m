@@ -2,483 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D611D72FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 890141D7330
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbgERIc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 04:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726424AbgERIc3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 04:32:29 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8795BC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 01:32:28 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id l20so8988677ilj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 01:32:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3mvLAgECqlJWVhq8+1/O9VvCMUnBRGh8ISOkeMhSW+s=;
-        b=pL7MAsa4t1SnK8s7l0bRUzZyh8rkVLmYmLLYhaNlyn15EvAV1kLg3GQ4adn/ZnRQny
-         pSSmGNMKTkme3OK0O58NBKEPDCBBBRb9yJVsloZN36EF0WQLagpHB4iHzaIgLFF+VFav
-         uYs56ixpPczsfO+UeWIUF/iQpMM1gWfQCKal0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3mvLAgECqlJWVhq8+1/O9VvCMUnBRGh8ISOkeMhSW+s=;
-        b=mFtRpR9zQUjUweDmZqQb+vI1uH639PD9m68jg8FWUy165VwHWxn61VeijaRQCxn3+U
-         N7suBdEZoXnHuNj3uvuGvS1YesYsjrFsPFCseBbQTFW40y7827JZxnKj+xmR8YN15Dtb
-         xiKFxnoSluJ3LxBZvzuZZMWC94tmbSTG4TlrhAiiRPx7c/L4dFtBp7sKaSgpJV0jqCqG
-         Gk8ljfkpJI7a+m3Sapd5zDx7TWUraO2Xe8S/abAW3W5g0WYfxoaA4T31Xr/a1D5JiwkU
-         1qeTcJT1EQhxw4ijYrZ6G1j+rWWtf/60+z83YIyUY6HFExALJgANB/CIp7s80vptXVZ5
-         yLPg==
-X-Gm-Message-State: AOAM533i9DrcM2/aK5qUi/P1Zh7uJx3L6ULAd2PkXTIBH7knwNaP1IvA
-        7kHyhYrdnHx6EZthY7qmyBBXcA==
-X-Google-Smtp-Source: ABdhPJzND5S3JzjJSN3NfDQX+PGbBU7+gR0wbx28LlZP3UFCiXyU03/J8WmPLtROTZzY8ZeacbwvzQ==
-X-Received: by 2002:a92:3c49:: with SMTP id j70mr8073984ila.286.1589790747478;
-        Mon, 18 May 2020 01:32:27 -0700 (PDT)
-Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
-        by smtp.gmail.com with ESMTPSA id d12sm4551792ill.80.2020.05.18.01.32.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 18 May 2020 01:32:26 -0700 (PDT)
-Date:   Mon, 18 May 2020 08:32:25 +0000
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Tycho Andersen <tycho@tycho.ws>, linux-api@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        containers@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] seccomp: Add group_leader pid to seccomp_notif
-Message-ID: <20200518083224.GA16270@ircssh-2.c.rugged-nimbus-611.internal>
-References: <20200515234005.32370-1-sargun@sargun.me>
- <202005162344.74A02C2D@keescook>
- <20200517104701.bbn2d2rqaplwchdw@wittgenstein>
- <20200517112156.cphs2h33hx2wfcs4@yavin.dot.cyphar.com>
- <20200517142316.GA1996744@cisco>
- <20200517143311.fmxaf3pnopuaezl4@wittgenstein>
- <20200517144603.GD1996744@cisco>
- <20200517150215.GE1996744@cisco>
- <202005171428.68F30AA0@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202005171428.68F30AA0@keescook>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726990AbgERIpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 04:45:40 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:35088 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726285AbgERIpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 04:45:39 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E359220099B;
+        Mon, 18 May 2020 10:45:37 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4938520097C;
+        Mon, 18 May 2020 10:45:34 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id A85C6402A8;
+        Mon, 18 May 2020 16:45:29 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
+        robh+dt@kernel.org, l.stach@pengutronix.de,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V3] dt-bindings: interrupt-controller: Convert imx irqsteer to json-schema
+Date:   Mon, 18 May 2020 16:35:57 +0800
+Message-Id: <1589790957-7904-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 17, 2020 at 02:30:57PM -0700, Kees Cook wrote:
-> On Sun, May 17, 2020 at 09:02:15AM -0600, Tycho Andersen wrote:
-> 
-> I'm going read this thread more carefully tomorrow, but I just wanted to
-> mention that I'd *like* to extend seccomp_data for doing deep argument
-> inspection of the new syscalls. I think it's the least bad of many
-> designs, and I'll write that up in more detail. (I would *really* like
-> to avoid extending seccomp's BPF language, and instead allow probing
-> into the struct copied from userspace, etc.)
-> 
-> Anyway, it's very related to this, so, yeah, probably we need a v2 of the
-> notif API, but I'll try to get all the ideas here collected in one place.
-I scratched together a proposal of what I think would make a not-terrible
-V2 API. I'm sure there's bugs in this code, but I think it's workable --
-or at least a place to start. The biggest thing I think we should consider
-is unrolling seccomp_data if we don't intend to add new BPF-accessible
-fields.
+Convert the i.MX IRQSTEER binding to DT schema format using json-schema.
 
-If also uses read(2), so we get to take advantage of read(2)'s ability
-to pass a size along with the read, as opposed to doing ioctl tricks.
-It also makes programming from against it slightly simpler. I can imagine
-that the send API could be similar, in that it could support write, and
-thus making it 100% usable from Go (and the like) without requiring
-a separate OS-thread be spun up to interact with the listener.
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
+---
+Changes since V2:
+	- Improve the interrupt items description.
+---
+ .../bindings/interrupt-controller/fsl,irqsteer.txt | 35 ---------
+ .../interrupt-controller/fsl,irqsteer.yaml         | 89 ++++++++++++++++++++++
+ 2 files changed, 89 insertions(+), 35 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
 
-diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
-index c1735455bc53..db6e5335ec6a 100644
---- a/include/uapi/linux/seccomp.h
-+++ b/include/uapi/linux/seccomp.h
-@@ -113,6 +113,41 @@ struct seccomp_notif_resp {
- 	__u32 flags;
- };
- 
-+#define SECCOMP_DATA_SIZE_VER0	64
-+
-+#define SECCOMP_NOTIF_CONFIG_SIZE_VER0	16
-+
-+/* Optional seccomp return fields */
-+/* __u32 for triggering pid */
-+#define SECCOMP_NOTIF_FIELD_PID		(1UL << 1)
-+/* __u32 for triggering  thread group leader id */
-+#define SECCOMP_NOTIF_FIELD_TGID	(1UL << 1)
-+
-+struct seccomp_notif_config {
-+	__u32 size;
-+	/*
-+	 * The supported SECCOMP_DATA_SIZE to be returned. If the size passed in
-+	 * is unsupported (seccomp_data is too small or if it is larger than the
-+	 * currently supported size), EINVAL or E2BIG will be, respectively,
-+	 * returned, and this will be set to the latest supported size.
-+	 */
-+	__u32 seccomp_data_size;
-+	/*
-+	 * This is an OR'd together list of SECCOMP_NOTIF_FIELD_*. If an
-+	 * unsupported field is requested, ENOTSUPP will be returned.
-+	 */
-+	__u64 optional_fields;
-+};
-+
-+/* read(2) Notification format example:
-+ * struct seccomp_notif_read {
-+ *	__u64 id;
-+ *	__u32 pid; if SECCOMP_NOTIF_FIELD_PID
-+ *	__u32 tgid; if SECCOMP_NOTIF_FIELD_TGID
-+ *	struct seccomp_data data;
-+ * };
-+ */
-+
- #define SECCOMP_IOC_MAGIC		'!'
- #define SECCOMP_IO(nr)			_IO(SECCOMP_IOC_MAGIC, nr)
- #define SECCOMP_IOR(nr, type)		_IOR(SECCOMP_IOC_MAGIC, nr, type)
-@@ -124,4 +159,10 @@ struct seccomp_notif_resp {
- #define SECCOMP_IOCTL_NOTIF_SEND	SECCOMP_IOWR(1,	\
- 						struct seccomp_notif_resp)
- #define SECCOMP_IOCTL_NOTIF_ID_VALID	SECCOMP_IOR(2, __u64)
-+/*
-+ * Configure the data structure to be returned by read(2).
-+ * Returns the size of the data structure which will be returned.
-+ */
-+#define SECCOMP_IOCTL_NOTIF_CONFIG	SECCOMP_IOR(3,	\
-+						struct seccomp_notif_config)
- #endif /* _UAPI_LINUX_SECCOMP_H */
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 55a6184f5990..4670cb03c390 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -95,12 +95,19 @@ struct seccomp_knotif {
-  * @next_id: The id of the next request.
-  * @notifications: A list of struct seccomp_knotif elements.
-  * @wqh: A wait queue for poll.
-+ * @read_size: The size of the expected read. If it is set to 0, it means that
-+ *             reading notifications via read(2) is not yet configured. Until
-+ *             then, EINVAL will be returned via read(2).
-+ * @data_size: The supported size of seccomp_data.
-+ * @optional_fields: The optional fields to return on read
-  */
- struct notification {
- 	struct semaphore request;
- 	u64 next_id;
- 	struct list_head notifications;
- 	wait_queue_head_t wqh;
-+	u32 read_size;
-+	u64 optional_fields;
- };
- 
- /**
-@@ -1021,79 +1028,160 @@ static int seccomp_notify_release(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
--static long seccomp_notify_recv(struct seccomp_filter *filter,
--				void __user *buf)
-+static void seccomp_reset_notif(struct seccomp_filter *filter,
-+				u64 id)
- {
--	struct seccomp_knotif *knotif = NULL, *cur;
--	struct seccomp_notif unotif;
--	ssize_t ret;
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.txt b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.txt
+deleted file mode 100644
+index 582991c..0000000
+--- a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.txt
++++ /dev/null
+@@ -1,35 +0,0 @@
+-Freescale IRQSTEER Interrupt multiplexer
 -
--	/* Verify that we're not given garbage to keep struct extensible. */
--	ret = check_zeroed_user(buf, sizeof(unotif));
--	if (ret < 0)
--		return ret;
--	if (!ret)
--		return -EINVAL;
-+	struct seccomp_knotif *cur;
- 
--	memset(&unotif, 0, sizeof(unotif));
-+	/*
-+	 * Something went wrong. To make sure that we keep this
-+	 * notification alive, let's reset it back to INIT. It
-+	 * may have died when we released the lock, so we need to make
-+	 * sure it's still around.
-+	 */
-+	mutex_lock(&filter->notify_lock);
-+	list_for_each_entry(cur, &filter->notif->notifications, list) {
-+		if (cur->id == id) {
-+			cur->state = SECCOMP_NOTIFY_INIT;
-+			up(&filter->notif->request);
-+			break;
-+		}
-+	}
-+	mutex_unlock(&filter->notify_lock);
-+}
-+/*
-+ * Returns the next knotif available. If the return is a non-error, it will
-+ * be with notify_lock held. It is up to the caller to unlock it.
-+ */
-+static struct seccomp_knotif *seccomp_get_notif(struct seccomp_filter *filter)
-+{
-+	struct seccomp_knotif *cur;
-+	int ret;
- 
- 	ret = down_interruptible(&filter->notif->request);
- 	if (ret < 0)
--		return ret;
-+		return ERR_PTR(ret);
- 
- 	mutex_lock(&filter->notify_lock);
- 	list_for_each_entry(cur, &filter->notif->notifications, list) {
- 		if (cur->state == SECCOMP_NOTIFY_INIT) {
--			knotif = cur;
--			break;
-+			cur->state = SECCOMP_NOTIFY_SENT;
-+			wake_up_poll(&filter->notif->wqh,
-+				     EPOLLOUT | EPOLLWRNORM);
-+			return cur;
- 		}
- 	}
+-Required properties:
 -
-+	mutex_unlock(&filter->notify_lock);
- 	/*
- 	 * If we didn't find a notification, it could be that the task was
- 	 * interrupted by a fatal signal between the time we were woken and
- 	 * when we were able to acquire the rw lock.
- 	 */
--	if (!knotif) {
--		ret = -ENOENT;
--		goto out;
--	}
-+	return ERR_PTR(-ENOENT);
-+}
+-- compatible: should be:
+-	- "fsl,imx8m-irqsteer"
+-	- "fsl,imx-irqsteer"
+-- reg: Physical base address and size of registers.
+-- interrupts: Should contain the up to 8 parent interrupt lines used to
+-  multiplex the input interrupts. They should be specified sequentially
+-  from output 0 to 7.
+-- clocks: Should contain one clock for entry in clock-names
+-  see Documentation/devicetree/bindings/clock/clock-bindings.txt
+-- clock-names:
+-   - "ipg": main logic clock
+-- interrupt-controller: Identifies the node as an interrupt controller.
+-- #interrupt-cells: Specifies the number of cells needed to encode an
+-  interrupt source. The value must be 1.
+-- fsl,channel: The output channel that all input IRQs should be steered into.
+-- fsl,num-irqs: Number of input interrupts of this channel.
+-  Should be multiple of 32 input interrupts and up to 512 interrupts.
+-
+-Example:
+-
+-	interrupt-controller@32e2d000 {
+-		compatible = "fsl,imx8m-irqsteer", "fsl,imx-irqsteer";
+-		reg = <0x32e2d000 0x1000>;
+-		interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&clk IMX8MQ_CLK_DISP_APB_ROOT>;
+-		clock-names = "ipg";
+-		fsl,channel = <0>;
+-		fsl,num-irqs = <64>;
+-		interrupt-controller;
+-		#interrupt-cells = <1>;
+-	};
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
+new file mode 100644
+index 0000000..360a575
+--- /dev/null
++++ b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
+@@ -0,0 +1,89 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/interrupt-controller/fsl,irqsteer.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+static long seccomp_notify_recv(struct seccomp_filter *filter,
-+				void __user *buf)
-+{
-+	struct seccomp_knotif *knotif;
-+	struct seccomp_notif unotif;
-+	ssize_t ret;
++title: Freescale IRQSTEER Interrupt Multiplexer
 +
-+	/* Verify that we're not given garbage to keep struct extensible. */
-+	ret = check_zeroed_user(buf, sizeof(unotif));
-+	if (ret < 0)
-+		return ret;
-+	if (!ret)
-+		return -EINVAL;
++maintainers:
++  - Lucas Stach <l.stach@pengutronix.de>
 +
-+	memset(&unotif, 0, sizeof(unotif));
++properties:
++  compatible:
++    enum:
++      - fsl,imx8m-irqsteer
++      - fsl,imx-irqsteer
 +
-+	knotif = seccomp_get_notif(filter);
-+	if (IS_ERR(knotif))
-+		return PTR_ERR(knotif);
- 
- 	unotif.id = knotif->id;
- 	unotif.pid = task_pid_vnr(knotif->task);
- 	unotif.data = *(knotif->data);
- 
--	knotif->state = SECCOMP_NOTIFY_SENT;
--	wake_up_poll(&filter->notif->wqh, EPOLLOUT | EPOLLWRNORM);
--	ret = 0;
--out:
- 	mutex_unlock(&filter->notify_lock);
- 
--	if (ret == 0 && copy_to_user(buf, &unotif, sizeof(unotif))) {
--		ret = -EFAULT;
-+	if (!copy_to_user(buf, &unotif, sizeof(unotif)))
-+		return 0;
- 
--		/*
--		 * Userspace screwed up. To make sure that we keep this
--		 * notification alive, let's reset it back to INIT. It
--		 * may have died when we released the lock, so we need to make
--		 * sure it's still around.
--		 */
--		knotif = NULL;
--		mutex_lock(&filter->notify_lock);
--		list_for_each_entry(cur, &filter->notif->notifications, list) {
--			if (cur->id == unotif.id) {
--				knotif = cur;
--				break;
--			}
--		}
-+	seccomp_reset_notif(filter, unotif.id);
-+	return -EFAULT;
-+}
- 
--		if (knotif) {
--			knotif->state = SECCOMP_NOTIFY_INIT;
--			up(&filter->notif->request);
--		}
--		mutex_unlock(&filter->notify_lock);
-+/* Append the src value to the dst, and return the new cursor */
-+#define append(dst, src)	({		\
-+	typeof(src) _src = src;			\
-+	memcpy(dst, &_src, sizeof(_src));	\
-+	dst + sizeof(_src);			\
-+})
++  reg:
++    maxItems: 1
 +
-+/*
-+ * Append the value pointer to by the pointer, src, to the dst
-+ * and return the new cursor
-+ */
-+#define append_ptr(dst, src)	({		\
-+	typeof(src) _src = src;			\
-+	memcpy(dst, _src, sizeof(*_src));	\
-+	dst + sizeof(*_src);			\
-+})
++  interrupts:
++    description: |
++      should contain the up to 8 parent interrupt lines used to multiplex
++      the input interrupts. They should be specified sequentially from
++      output 0 to 7.
++    items:
++      - description: output interrupt 0
++      - description: output interrupt 1
++      - description: output interrupt 2
++      - description: output interrupt 3
++      - description: output interrupt 4
++      - description: output interrupt 5
++      - description: output interrupt 6
++      - description: output interrupt 7
++    minItems: 1
++    maxItems: 8
 +
-+static ssize_t seccomp_notify_read(struct file *file, char __user *buf,
-+				   size_t count, loff_t *ppos)
-+{
-+	struct seccomp_filter *filter = file->private_data;
-+	u32 optional_fields, read_size;
-+	struct seccomp_knotif *knotif;
-+	void *kbuf, *cursor;
-+	int ret;
-+	u64 id;
++  clocks:
++    maxItems: 1
 +
-+	ret = mutex_lock_interruptible(&filter->notify_lock);
-+	if (ret)
-+		return ret;
-+	read_size = filter->notif->read_size;
-+	optional_fields = filter->notif->optional_fields;
-+	mutex_unlock(&filter->notify_lock);
++  clock-names:
++    const: ipg
 +
-+	if (read_size == 0)
-+		return -EINVAL;
-+	if (count < read_size)
-+		return -ENOSPC;
++  interrupt-controller: true
 +
-+	knotif = seccomp_get_notif(filter);
-+	if (IS_ERR(knotif))
-+		return PTR_ERR(knotif);
++  "#interrupt-cells":
++    const: 1
 +
-+	id = knotif->id;
-+	kbuf = kzalloc(read_size, GFP_KERNEL);
-+	if (!kbuf) {
-+		ret = -ENOMEM;
-+		goto out;
- 	}
- 
-+	cursor = kbuf;
-+	cursor = append(cursor, knotif->id);
-+	if (filter->notif->optional_fields & SECCOMP_NOTIF_FIELD_PID)
-+		cursor = append(cursor, task_pid_vnr(knotif->task));
-+	if (filter->notif->optional_fields & SECCOMP_NOTIF_FIELD_TGID)
-+		cursor = append(cursor, task_tgid_vnr(knotif->task));
-+	cursor = append_ptr(cursor, knotif->data);
-+	WARN_ON_ONCE(cursor != kbuf + read_size);
++  fsl,channel:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: |
++      u32 value representing the output channel that all input IRQs should be
++      steered into.
 +
-+	ret = copy_to_user(buf, kbuf, read_size);
-+	if (!ret)
-+		ret = read_size;
++  fsl,num-irqs:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: |
++      u32 value representing the number of input interrupts of this channel,
++      should be multiple of 32 input interrupts and up to 512 interrupts.
 +
-+	kfree(kbuf);
-+out:
-+	mutex_unlock(&filter->notify_lock);
-+	if (ret < 0)
-+		seccomp_reset_notif(filter, id);
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - interrupt-controller
++  - "#interrupt-cells"
++  - fsl,channel
++  - fsl,num-irqs
 +
- 	return ret;
- }
- 
-@@ -1175,6 +1263,70 @@ static long seccomp_notify_id_valid(struct seccomp_filter *filter,
- 	return ret;
- }
- 
-+static long seccomp_notif_config(struct seccomp_filter *filter,
-+				 struct seccomp_notif_config __user *uconfig)
-+{
-+	struct seccomp_notif_config config;
-+	/* ret_size is a minimum of 8, given id */
-+	int ret, notification_size = 8;
-+	u32 size;
++additionalProperties: false
 +
++examples:
++  - |
++    #include <dt-bindings/clock/imx8mq-clock.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
 +
-+	ret = get_user(size, &uconfig->size);
-+	if (ret)
-+		return ret;
-+	ret = copy_struct_from_user(&config, sizeof(config), uconfig, size);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * This needs to be bumped every time we change seccomp_data's size
-+	 */
-+	BUILD_BUG_ON(sizeof(struct seccomp_data) != SECCOMP_DATA_SIZE_VER0);
-+	if (config.seccomp_data_size < SECCOMP_DATA_SIZE_VER0) {
-+		ret = -EINVAL;
-+		goto invalid_seccomp_data_size;
-+	}
-+	if (config.seccomp_data_size > SECCOMP_DATA_SIZE_VER0) {
-+		ret = -E2BIG;
-+		goto invalid_seccomp_data_size;
-+	}
-+	notification_size += config.seccomp_data_size;
-+
-+	if (config.optional_fields & ~(SECCOMP_NOTIF_FIELD_PID|SECCOMP_NOTIF_FIELD_TGID))
-+		return -ENOTSUPP;
-+
-+	if (config.optional_fields & SECCOMP_NOTIF_FIELD_PID)
-+		notification_size += 4;
-+	if (config.optional_fields & SECCOMP_NOTIF_FIELD_TGID)
-+		notification_size += 4;
-+
-+
-+	ret = mutex_lock_interruptible(&filter->notify_lock);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (filter->notif->read_size) {
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
-+	ret = notification_size;
-+	filter->notif->read_size = notification_size;
-+	filter->notif->optional_fields = config.optional_fields;
-+
-+out:
-+	mutex_unlock(&filter->notify_lock);
-+
-+	return ret;
-+
-+invalid_seccomp_data_size:
-+	if (put_user(SECCOMP_DATA_SIZE_VER0, &uconfig->seccomp_data_size))
-+		return -EFAULT;
-+
-+	return ret;
-+}
-+
- static long seccomp_notify_ioctl(struct file *file, unsigned int cmd,
- 				 unsigned long arg)
- {
-@@ -1188,6 +1340,8 @@ static long seccomp_notify_ioctl(struct file *file, unsigned int cmd,
- 		return seccomp_notify_send(filter, buf);
- 	case SECCOMP_IOCTL_NOTIF_ID_VALID:
- 		return seccomp_notify_id_valid(filter, buf);
-+	case SECCOMP_IOCTL_NOTIF_CONFIG:
-+		return seccomp_notif_config(filter, buf);
- 	default:
- 		return -EINVAL;
- 	}
-@@ -1224,6 +1378,7 @@ static const struct file_operations seccomp_notify_ops = {
- 	.release = seccomp_notify_release,
- 	.unlocked_ioctl = seccomp_notify_ioctl,
- 	.compat_ioctl = seccomp_notify_ioctl,
-+	.read = seccomp_notify_read,
- };
- 
- static struct file *init_listener(struct seccomp_filter *filter)
++    interrupt-controller@32e2d000 {
++        compatible = "fsl,imx-irqsteer";
++        reg = <0x32e2d000 0x1000>;
++        interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&clk IMX8MQ_CLK_DISP_APB_ROOT>;
++        clock-names = "ipg";
++        fsl,channel = <0>;
++        fsl,num-irqs = <64>;
++        interrupt-controller;
++        #interrupt-cells = <1>;
++    };
+-- 
+2.7.4
 
-
-> 
-> -- 
-> Kees Cook
-> _______________________________________________
-> Containers mailing list
-> Containers@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/containers
