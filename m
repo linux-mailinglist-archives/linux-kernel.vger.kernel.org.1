@@ -2,80 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BFE1D7086
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 07:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E80F1D7092
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 07:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgERFyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 01:54:36 -0400
-Received: from mga18.intel.com ([134.134.136.126]:30951 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726040AbgERFyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 01:54:36 -0400
-IronPort-SDR: dtH13p3NVYAhuj2dYUIND2xANb5a0hb8SIl+nCt3NAZKcr4B/+6XDu9OhXSOeuQoxdPKEkU8lP
- EqpPHAL66VlQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2020 22:54:35 -0700
-IronPort-SDR: ejyi4xJ0RNdgmh84jww5CqsEMq5fUCfoxTz3lNpMxC1Z+wSMv8Lxxx0+cNAnfwotYb8g5GBUNn
- lH9LD2vjHavA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,406,1583222400"; 
-   d="scan'208";a="263843818"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.3]) ([10.239.13.3])
-  by orsmga003.jf.intel.com with ESMTP; 17 May 2020 22:54:32 -0700
-Subject: Re: Default enable RCU list lockdep debugging with PROVE_RCU
-To:     paulmck@kernel.org, Qian Cai <cai@lca.pw>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Amol Grover <frextrite@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>, philip.li@intel.com,
-        lkp@intel.com, fengguang.wu@intel.com
-References: <20200514181305.GT2869@paulmck-ThinkPad-P72>
- <CA610F47-290E-4826-B1D9-7CE09D7CEA6D@lca.pw>
- <20200517214716.GT2869@paulmck-ThinkPad-P72>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <659206f4-d326-4fd6-3091-085c7eabf280@intel.com>
-Date:   Mon, 18 May 2020 13:54:13 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726953AbgERFzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 01:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726813AbgERFzH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 01:55:07 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5C2C05BD0D
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 22:55:06 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id q24so4515936pjd.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 22:55:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=APDZcTihvmp7cHgWc/okOQoKAjV6ESC0p6FoG4/I2RA=;
+        b=B9zQ4JN8AYIxyezeNdzE6GbwPImYuyTUTkgaOcnyMLt8drlkAFBp16GCi7zqrrzQLS
+         8cfO9dxZUQ1n2upwY50jdxeXPLHMYTEgyOk5KPR1DbyAlCJGW0UAcLW7PB3jp/iRXGsT
+         B9XN9hHhnUnR6ItW4QHqc4AmFpJzkGeqGudHQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=APDZcTihvmp7cHgWc/okOQoKAjV6ESC0p6FoG4/I2RA=;
+        b=j1bsj+F7y85Om8RBkC+SINSndIcQxVqw0TiQVg49L1mRa74VV9aqRlKFlrfk95tX6R
+         5O9UCvHLjGSz2Vlt7MleexMGINaQpmYz0O9IKM0aKGMNwNZCmGKH3AmAK1Rxz7BBTgQs
+         nSK0RR+wypBkIG82sJ1Go4jFcSZJWPTRFwzmkOIN3pvsXPWzlGPkUVG9v2uw4Li/Y/A1
+         R0x8rz0E2m1AIpvSr5N97ASIkofefAhu8GVbdhn6SpPiu+THTVejkQ1s9bVVs0qd1aSi
+         CHobTv3//jRNiVDzl/Us+djumeY9kqhUNuMkK26udj7HKnkwzmZiL79yhB+1O+HLj/VS
+         2ODQ==
+X-Gm-Message-State: AOAM533UeFBmhxtxAgHQu4KzLPpV2agfp2vsIisiGzwpGNGQoBdabuIj
+        IESI6oyNRZDnKfVIllQP+ofIuw==
+X-Google-Smtp-Source: ABdhPJxQAZtu/2s0TyYmdgb6LuY/0MGp2laY52exkkKqAzqWmG8gDpAARGenRF6/As3BMdDnDVFHyQ==
+X-Received: by 2002:a17:90b:3650:: with SMTP id nh16mr16068611pjb.135.1589781305588;
+        Sun, 17 May 2020 22:55:05 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g14sm6734674pfk.174.2020.05.17.22.55.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 May 2020 22:55:03 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Eric Biggers <ebiggers3@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] Relocate execve() sanity checks
+Date:   Sun, 17 May 2020 22:54:53 -0700
+Message-Id: <20200518055457.12302-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200517214716.GT2869@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/18/20 5:47 AM, Paul E. McKenney wrote:
-> On Fri, May 15, 2020 at 02:36:26PM -0400, Qian Cai wrote:
->>
->>> On May 14, 2020, at 2:13 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
->>>
->>> Fair enough!  And yes, the Linux kernel is quite large, so I certainly am
->>> not asking you to test the whole thing yourself.
->> Ok, I saw 0day bot also started to report those which is good. For example,
->>
->> lkml.org/lkml/2020/5/12/1358
->>
->> which so far is nit blocking 0day on linux-next since it does not use panic_on_warn yet (while syzbot does).
->>
->> Thus, I am more convinced that we should not revert the commit just for syzbot until someone could also convince 0day to select RCU_EXPERT and then DEBUG_RCU_LIST?
-> Let's ask the 0day people, now CCed, if they would be willing to
-> build with CONFIG_RCU_EXPERT=y and CONFIG_DEBUG_RCU_LIST=y on some
-> fraction of their testing.  ;-)
->
-> 							Thanx, Paul
-
 Hi,
 
-Thanks for your advice, we'll support it in the near future.
+While looking at the code paths for the proposed O_MAYEXEC flag, I saw
+some things that looked like they should be fixed up.
 
-Best Regards,
-Rong Chen
+  exec: Change uselib(2) IS_SREG() failure to EACCES
+	This just regularizes the return code on uselib(2).
+
+  exec: Relocate S_ISREG() check
+	This moves the S_ISREG() check even earlier than it was already.
+
+  exec: Relocate path_noexec() check
+	This adds the path_noexec() check to the same place as the
+	S_ISREG() check.
+
+  fs: Include FMODE_EXEC when converting flags to f_mode
+	This seemed like an oversight, but I suspect there is some
+	reason I couldn't find for why FMODE_EXEC doesn't get set in
+	f_mode and just stays in f_flags.
+
+Thanks!
+
+-Kees
+
+
+Kees Cook (4):
+  exec: Change uselib(2) IS_SREG() failure to EACCES
+  exec: Relocate S_ISREG() check
+  exec: Relocate path_noexec() check
+  fs: Include FMODE_EXEC when converting flags to f_mode
+
+ fs/exec.c                | 13 +++++++++----
+ fs/namei.c               |  5 +++++
+ fs/open.c                |  6 ------
+ include/linux/fs.h       |  3 ++-
+ include/linux/fsnotify.h |  4 ++--
+ 5 files changed, 18 insertions(+), 13 deletions(-)
+
+-- 
+2.20.1
+
