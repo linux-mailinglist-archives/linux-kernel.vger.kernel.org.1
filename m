@@ -2,76 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D521D7825
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 14:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14A61D7815
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 14:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgERMJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 08:09:12 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:46436 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgERMJK (ORCPT
+        id S1727005AbgERMDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 08:03:20 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:44846 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726557AbgERMDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 08:09:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2VGBdxQS+aq5Aez0CmebGynNgZc/bdd+iTJZs2pkOaw=; b=g4W6H63ZwAfRo19i0iOUdrAmU0
-        8k3m9gA7ijSIm5dzuH8YEqIjrGjJFukLa1QKT7NlU0NtkMBMdkgvHy9ZPpi7FjAbQCWujfq3zStBL
-        dqkmGDoUJYsfrqXLJUxOFJ6o8C/z0FsEp25I9zXP0qNghdPAuF4mKHFFtm/gKkJ42D4C5BAAP7iTf
-        1MeU224jjU7NfRAgtX+p13AW/+hbwtaEoJF80z95vaoT3jsEr7Gix2PjvGint6VBA0u+GE9gE+RAq
-        PB/f6VXpvYGCCLuTSum2yzeAweOTBvJkJD2jmlc3PFsuYSXX2/o7J9kfqqfAPNylxayb/nY5MKNza
-        /bT6fWgg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jaeTH-0001Sh-5l; Mon, 18 May 2020 12:02:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 21AB23011E8;
-        Mon, 18 May 2020 14:02:06 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0519C2B3D1C58; Mon, 18 May 2020 14:02:05 +0200 (CEST)
-Date:   Mon, 18 May 2020 14:02:05 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>, ak@linux.intel.com,
-        wei.w.wang@intel.com
-Subject: Re: [PATCH v11 05/11] perf/x86: Keep LBR stack unchanged in host
- context for guest LBR event
-Message-ID: <20200518120205.GF277222@hirez.programming.kicks-ass.net>
-References: <20200514083054.62538-1-like.xu@linux.intel.com>
- <20200514083054.62538-6-like.xu@linux.intel.com>
+        Mon, 18 May 2020 08:03:19 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04IC2rku010157;
+        Mon, 18 May 2020 14:02:54 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=STMicroelectronics;
+ bh=tAbl2axdddZlaaXG2CNspEZUt31JN+F0gHWw9tO/rHM=;
+ b=ddgt4qxdT4oWVbfbhnLDLAFXbH9hijDV73qOYcZaPn45NL3bumpy8wLhX3mQ5Ty8Rnwe
+ Pw/wCLNK1hvokjk4gya24QRhEdq3qzzhUHo2amAWd+SCgiwsuoJWVOdlG/QND/4+sq3N
+ 5jLqzkCN4R7NsLwsozz2ISXgisXhvDnd/YfoWobYpTTwHGLE44CKN6D575ojATSSd8yh
+ bAPNfjZdCpCRfQQrS/5nnimfEQtpfn25tR48a6FX/1nC32MjP6wiP6KgKjuygx7erOLx
+ GvKmSrG19BHK8PrE2Aa0sR5sntD9/GrYvVY5vQspxGiw/RTUtF0Y+bIuCsta2yWpbh0n zg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3125n3bm24-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 14:02:54 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E74D810002A;
+        Mon, 18 May 2020 14:02:47 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag4node3.st.com [10.75.127.12])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CAC522BF9CF;
+        Mon, 18 May 2020 14:02:47 +0200 (CEST)
+Received: from SFHDAG5NODE1.st.com (10.75.127.13) by SFHDAG4NODE3.st.com
+ (10.75.127.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 18 May
+ 2020 14:02:47 +0200
+Received: from SFHDAG5NODE1.st.com ([fe80::cc53:528c:36c8:95f6]) by
+ SFHDAG5NODE1.st.com ([fe80::cc53:528c:36c8:95f6%20]) with mapi id
+ 15.00.1473.003; Mon, 18 May 2020 14:02:47 +0200
+From:   Christophe ROULLIER <christophe.roullier@st.com>
+To:     "robh@kernel.org" <robh@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "joabreu@synopsys.com" <joabreu@synopsys.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        Peppe CAVALLARO <peppe.cavallaro@st.com>
+CC:     "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>
+Subject: Re: [PATCH v3 0/1] net: ethernet: stmmac: simplify phy modes
+ management for stm32
+Thread-Topic: [PATCH v3 0/1] net: ethernet: stmmac: simplify phy modes
+ management for stm32
+Thread-Index: AQHWHHq3aaIPOA/wFEi5Ev+u/GvPiaitvfmA
+Date:   Mon, 18 May 2020 12:02:47 +0000
+Message-ID: <3aaadf75-5399-4961-248a-c77c719155d4@st.com>
+References: <20200427100038.19252-1-christophe.roullier@st.com>
+In-Reply-To: <20200427100038.19252-1-christophe.roullier@st.com>
+Accept-Language: fr-FR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.47]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <CD3A060E2D09364A9ED8F23EAD3F016B@st.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200514083054.62538-6-like.xu@linux.intel.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-18_05:2020-05-15,2020-05-18 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 14, 2020 at 04:30:48PM +0800, Like Xu wrote:
-> @@ -544,7 +562,12 @@ void intel_pmu_lbr_enable_all(bool pmi)
->  {
->  	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
->  
-> -	if (cpuc->lbr_users)
-> +	/*
-> +	 * When the LBR hardware is scheduled for a guest LBR event,
-> +	 * the guest will dis/enables LBR itself at the appropriate time,
-> +	 * including configuring MSR_LBR_SELECT.
-> +	 */
-> +	if (cpuc->lbr_users && !cpuc->guest_lbr_enabled)
->  		__intel_pmu_lbr_enable(pmi);
->  }
-
-No!, that should be done through perf_event_attr::exclude_host, as I
-believe all the other KVM event do it.
+SGksDQoNCkp1c3QgYSAiZ2VudGxlbWFuIHBpbmciDQoNClJlZ2FyZHMsDQoNCkNocmlzdG9waGUu
+DQoNCk9uIDI3LzA0LzIwMjAgMTI6MDAsIENocmlzdG9waGUgUm91bGxpZXIgd3JvdGU6DQo+IE5v
+IG5ldyBmZWF0dXJlLCBqdXN0IHRvIHNpbXBsaWZ5IHN0bTMyIHBhcnQgdG8gYmUgZWFzaWVyIHRv
+IHVzZS4NCj4gQWRkIGJ5IGRlZmF1bHQgYWxsIEV0aGVybmV0IGNsb2NrcyBpbiBEVCwgYW5kIGFj
+dGl2YXRlIG9yIG5vdCBpbiBmdW5jdGlvbg0KPiBvZiBwaHkgbW9kZSwgY2xvY2sgZnJlcXVlbmN5
+LCBpZiBwcm9wZXJ0eSAic3QsZXh0LXBoeWNsayIgaXMgc2V0IG9yIG5vdC4NCj4gS2VlcCBiYWNr
+d2FyZCBjb21wYXRpYmlsaXR5DQo+DQo+IHZlcnNpb24gMzoNCj4gQWRkIGFja2VkIGZyb20gQWxl
+eGFuZHJlIFRvcmd1ZQ0KPiBSZWJhc2VkIG9uIHRvcCBvZiB2NS43LXJjMg0KPg0KPiBDaHJpc3Rv
+cGhlIFJvdWxsaWVyICgxKToNCj4gICAgbmV0OiBldGhlcm5ldDogc3RtbWFjOiBzaW1wbGlmeSBw
+aHkgbW9kZXMgbWFuYWdlbWVudCBmb3Igc3RtMzINCj4NCj4gICAuLi4vbmV0L2V0aGVybmV0L3N0
+bWljcm8vc3RtbWFjL2R3bWFjLXN0bTMyLmMgfCA3NCArKysrKysrKysrKy0tLS0tLS0tDQo+ICAg
+MSBmaWxlIGNoYW5nZWQsIDQ0IGluc2VydGlvbnMoKyksIDMwIGRlbGV0aW9ucygtKQ0KPg==
