@@ -2,136 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0217A1D848C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C91A1D84A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387522AbgERSMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:12:08 -0400
-Received: from mga04.intel.com ([192.55.52.120]:52605 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733191AbgERSL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:11:59 -0400
-IronPort-SDR: J7lJHpi9Bn2FDwYipCbFVsWQctskGUN1RT5vtQ5XQXv11B6nf87aGpNXckkZB51/SLrwubZyKW
- qVSsxLYUdY1g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 11:11:59 -0700
-IronPort-SDR: ZuNQWmTQ1nLBxtu+5TE/j+AXF8rFdc6kEiAmzXEFcKTfs6vyQ9ShsZPXaT/ddSnQv64auWHBNE
- rrbMWn7+V4eA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
-   d="scan'208";a="373470912"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga001.fm.intel.com with ESMTP; 18 May 2020 11:11:59 -0700
-Date:   Mon, 18 May 2020 11:11:59 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Mike Rapoport <rppt@kernel.org>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, elver@google.com, tglx@linutronix.de,
-        paulmck@kernel.org, mingo@kernel.org, peterz@infradead.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v5 04/18] sparc32: mm: Reduce allocation size for PMD and
- PTE tables
-Message-ID: <20200518181158.GA3028105@iweiny-DESK2.sc.intel.com>
-References: <20200511204150.27858-1-will@kernel.org>
- <20200511204150.27858-5-will@kernel.org>
- <20200517000050.GA87467@roeck-us.net>
- <20200517000750.GA157503@roeck-us.net>
- <20200518083715.GA31383@willie-the-truck>
- <418aa44b-6fb3-c3d8-a920-1a26e5edec62@roeck-us.net>
- <20200518142310.GC1118872@kernel.org>
- <20200518160811.GA66689@roeck-us.net>
+        id S2387623AbgERSNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731456AbgERSNM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:13:12 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0E0C05BD09
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:13:12 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id k4so3807023uaq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:13:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YR1d4UXEmFjNR7Y1gBIt8dbUg7S85JgRbyJVZPiIUNk=;
+        b=AEy766LoSKCS9tRJqLmQ8eXHjd6CTGkG13kkjyRfr8RerSWhhwwtAQutlNvpijGw+g
+         tAyMZi/q4UPtECrrPB7WdElU6oPs6M7zJdUK6GJXj2vTn5iRSEbnwcWAZ0OlhiuZv+Po
+         1dwYV7bHLxCqNFwps10f6CT7PHXDI0v7N6MeU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YR1d4UXEmFjNR7Y1gBIt8dbUg7S85JgRbyJVZPiIUNk=;
+        b=ozzl3BR5JqFxFTZFWuJCgMjAY5thSmIariDkCiBZCADZ/Afn2JVBHkVKcXQvodaXBf
+         HthyEqpwY1VMhztz8kxIRV/+QEfCDejIw2mteZWqlGDTcc3xMgMVfCpZZxj9Nqr3Kr4V
+         ov1ncS3aMqnuCJTPsvE/0r6Muo2deTvdECQy4awVrlWDGtYn175V2OEUSDJKZxkJ4otf
+         yQTpgDgJiTa4xV84mKW+IWXDURB7D5FoGz+XqkG/IzIggZEVVPl3b1gQ2dz9NKNPYyUr
+         v+3u0u7EijnUPYrimddZuh/Xm2o0H6NKtDGQjEpj+yM56Z3dbBNXDm/uP7fSnHvPE5wl
+         U2MA==
+X-Gm-Message-State: AOAM533wjtjGhHF6R+mN73B3FYL9CXqot7CtMEEuFL3+XldQ3Y6AjfPV
+        JdQE9Js0B2gbPpph/XB9xtbCQ8sroyZr32lbWeL2tA==
+X-Google-Smtp-Source: ABdhPJwfNlsAPqdUXufA61B/Ydm/oJiD59x98ZHXZ4VEeSGl7nby7Ozpmih+bLDyGLq7VRWMT69tGjfOcWtFRuhNFVg=
+X-Received: by 2002:ab0:6605:: with SMTP id r5mr4696251uam.115.1589825591243;
+ Mon, 18 May 2020 11:13:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200518160811.GA66689@roeck-us.net>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20200514131338.v2.1.I68404fc395a3dbc57c8a89ca02490013e8003a87@changeid>
+ <8BFF0708-07AF-4034-8FEF-C1D95975404B@holtmann.org>
+In-Reply-To: <8BFF0708-07AF-4034-8FEF-C1D95975404B@holtmann.org>
+From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Date:   Mon, 18 May 2020 11:12:59 -0700
+Message-ID: <CANFp7mUUJS9kxz5U+EMetfmDb=-Vn+Foz2G0ZuHTyuLCJmtDuQ@mail.gmail.com>
+Subject: Re: [PATCH v2] Bluetooth: hci_qca: Enable WBS support for wcn3991
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     BlueZ <linux-bluetooth@vger.kernel.org>, bgodavar@codeaurora.org,
+        Alain Michaud <alainm@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        ChromeOS Bluetooth Upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 09:08:11AM -0700, Guenter Roeck wrote:
-> On Mon, May 18, 2020 at 05:23:10PM +0300, Mike Rapoport wrote:
-> > On Mon, May 18, 2020 at 02:48:18AM -0700, Guenter Roeck wrote:
-> > > On 5/18/20 1:37 AM, Will Deacon wrote:
-> > > > On Sat, May 16, 2020 at 05:07:50PM -0700, Guenter Roeck wrote:
-> > > >> On Sat, May 16, 2020 at 05:00:50PM -0700, Guenter Roeck wrote:
-> > > >>> On Mon, May 11, 2020 at 09:41:36PM +0100, Will Deacon wrote:
-> > > >>>> Now that the page table allocator can free page table allocations
-> > > >>>> smaller than PAGE_SIZE, reduce the size of the PMD and PTE allocations
-> > > >>>> to avoid needlessly wasting memory.
-> > > >>>>
-> > > >>>> Cc: "David S. Miller" <davem@davemloft.net>
-> > > >>>> Cc: Peter Zijlstra <peterz@infradead.org>
-> > > >>>> Signed-off-by: Will Deacon <will@kernel.org>
-> > > >>>
-> > > >>> Something in the sparc32 patches in linux-next causes all my sparc32 emulations
-> > > >>> to crash. bisect points to this patch, but reverting it doesn't help, and neither
-> > > >>> does reverting the rest of the series.
-> > > >>>
-> > > >> Actually, turns out I see the same pattern (lots of scheduling while atomic
-> > > >> followed by 'killing interrupt handler' in cryptomgr_test) with several
-> > > >> powerpc boot tests.  I am currently bisecting those crashes. I'll report
-> > > >> the results here as well as soon as I have it.
-> > > > 
-> > > > FWIW, I retested my sparc32 patches with PREEMPT=y and I don't see any
-> > > > issues. However, linux-next is a different story, where I don't get very far
-> > > > at all:
-> > > > 
-> > > > BUG: Bad page state in process swapper  pfn:005b4
-> > 
-> > This one seems to be due to commit 24aab577764f ("mm: memmap_init:
-> > iterate over memblock regions rather that check each PFN") and reverting
-> > it and partially reverting the next cleanup commits makes those
-> > dissapear. sparc32 boot still fails on today's linux-next and mmotm for me with
-> > 
-> > Run /sbin/init as init process
-> >   with arguments:
-> >     /sbin/init
-> >   with environment:
-> >     HOME=/
-> >     TERM=linux
-> > Starting init: /sbin/init exists but couldn't execute it (error -14)
-> > 
-> 
-> Interesting; that is also seen on microblazeel:petalogix-ml605. Bisect there
-> suggests 'arch/kmap_atomic: consolidate duplicate code' as the culprit,
-> which is part of Ira's series.
-> 
-> Today's -next is even worse, unfortunately; now all microblaze boot tests
-> (both little and big endian) fail, plus everything that failed last
-> time, plus new compile failures. Another round of bisects ...
+Thanks Marcel.
 
-I've found this bug in microblaze for sure still looking through the other archs...
-
-commit 82c284b2bb74ca195dfcd35b70a175f010b9fd46 (HEAD -> lm-kmap17)
-Author: Ira Weiny <ira.weiny@intel.com>
-Date:   Mon May 18 11:01:10 2020 -0700
-
-    microblaze/kmap: Don't enable pagefault/preempt twice
-    
-    The kunmap_atomic clean up failed to remove the pagefault/preempt
-    enables on this path.
-    
-    Fixes: bee2128a09e6 ("arch/kunmap_atomic: consolidate duplicate code")
-    Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
-diff --git a/arch/microblaze/mm/highmem.c b/arch/microblaze/mm/highmem.c
-index ee8a422b2b76..92e0890416c9 100644
---- a/arch/microblaze/mm/highmem.c
-+++ b/arch/microblaze/mm/highmem.c
-@@ -57,11 +57,8 @@ void kunmap_atomic_high(void *kvaddr)
-        int type;
-        unsigned int idx;
- 
--       if (vaddr < __fix_to_virt(FIX_KMAP_END)) {
--               pagefault_enable();
--               preempt_enable();
-+       if (vaddr < __fix_to_virt(FIX_KMAP_END))
-                return;
--       }
- 
-        type = kmap_atomic_idx();
-
+On Mon, May 18, 2020 at 1:03 AM Marcel Holtmann <marcel@holtmann.org> wrote:
+>
+> Hi Abhishek,
+>
+> > WCN3991 supports transparent WBS (host encoded mSBC). Add a flag to the
+> > device match data to show WBS is supported.
+> >
+> > This requires the matching firmware for WCN3991 in linux-firmware:
+> >        1a8b0dc00f77 (qca: Enable transparent WBS for WCN3991)
+> >
+> > Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> > ---
+> >
+> > Changes in v2:
+> > - Rename struct to qca_capabilities and fix enum naming
+> >
+> > drivers/bluetooth/hci_qca.c | 23 +++++++++++++++++------
+> > 1 file changed, 17 insertions(+), 6 deletions(-)
+>
+> patch has been applied to bluetooth-next tree.
+>
+> Regards
+>
+> Marcel
+>
