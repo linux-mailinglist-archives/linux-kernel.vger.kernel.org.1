@@ -2,114 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6B91D7F13
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 18:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9C11D7F1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 18:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728280AbgERQs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 12:48:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726958AbgERQs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 12:48:56 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E534D207E8;
-        Mon, 18 May 2020 16:48:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589820536;
-        bh=Jx8nf/EgIhxGdlg3HG0ckJca5UAE0ipauKjQ6fAvZPU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=m2/es2Gix1aoeKoJ28NAr5em74Q0a/xT3EGpqwsbMXU36F0NuEhKWZZo4L0RCPUyh
-         TL+Z4YDbGZwG3shMOBnyvYXCVlt2zv9l+J7EInMQ93nI7Zh5fOJZI9nXXghBDswbut
-         QOeT9QZo+2qy6SY4wrqa/k6GGvQc0Py0Xy1BeS0U=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id CC1FB3522764; Mon, 18 May 2020 09:48:55 -0700 (PDT)
-Date:   Mon, 18 May 2020 09:48:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu: fix some kernel-doc warnings
-Message-ID: <20200518164855.GA2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <de9528975d99606936d4c5f7d1ab29ded03e8ade.1588595698.git.mchehab+huawei@kernel.org>
+        id S1728419AbgERQtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 12:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727942AbgERQtu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 12:49:50 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B15EC05BD09
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 09:49:50 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id z18so2397987lji.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 09:49:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KygdLUcTs6knBX0F3T/JLZYcVgSrVEzt6jZyrJ+boZQ=;
+        b=S9bunU4mXjCTchqmsktCwiUzwrjCVNgd8YdFx6fqrfQbJSITfJ3Gfe0UZSPKy1COMq
+         XgtV3MuVzYZ10FDt3fKxp2DI4i0KU99M1qsxjthk3kmKU65B8LYjZ+6gpdV3oGSJtrEX
+         CvNN34lX+RlxUFi8ZDs+UvDfbUaWrrsJnAN1A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KygdLUcTs6knBX0F3T/JLZYcVgSrVEzt6jZyrJ+boZQ=;
+        b=GcOBtPFhDGF0kWP28Di/lSCJjiZ+r5+5W8fDCconW+TIjV/KTT4edWWcFINUJH4Vn0
+         A8lUheeZQWoOol/OHGwyfvwhifsNuXYGualSuVIVppnl/z93+yTkITpq+RkNVaghqW6e
+         6t2cnAXGmqNvR9J1qXc/0z9vJd/q6sY5jvHjQTvRqwyVsfkJ6OHUAnOiev3VVCr/AzUo
+         SNC4Ej9p1rkcaUs8WhGu4VHx16cKpA8Wiqldh+pEqwgwEZGVJ+0hCJt6100noKqrTUii
+         eSuFgJIX9xFYxsSb1YtJQs3aj+YzpfllgASHrN577dzKQZCntE3E7m9MwWH+olAdHWR/
+         ZCsg==
+X-Gm-Message-State: AOAM5321cqhj71tc794/UTpyMYbAR47u2jr1NsYltVnOG8snALw90baw
+        Ll3l0trVJIHIHkY5u6Ivm3brnUPTKqM=
+X-Google-Smtp-Source: ABdhPJw/Q+aDT4utOIuzhRRU/TPFw3qRnpuZAEIvRDiq7ybUqCTndff0hIFJdGnuDQ40rZ/younkhA==
+X-Received: by 2002:a2e:7807:: with SMTP id t7mr11108457ljc.151.1589820588381;
+        Mon, 18 May 2020 09:49:48 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id s12sm4145008ljo.70.2020.05.18.09.49.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 May 2020 09:49:47 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id v5so8648774lfp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 09:49:47 -0700 (PDT)
+X-Received: by 2002:a05:6512:62:: with SMTP id i2mr3329357lfo.152.1589820586909;
+ Mon, 18 May 2020 09:49:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <de9528975d99606936d4c5f7d1ab29ded03e8ade.1588595698.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200518145723.65b89375@canb.auug.org.au> <968394.1589817650@warthog.procyon.org.uk>
+In-Reply-To: <968394.1589817650@warthog.procyon.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 18 May 2020 09:49:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj6J-iqrCr_7oLDCbS8qXQ69EF=nPLWmvBiDmgdNWZ6KA@mail.gmail.com>
+Message-ID: <CAHk-=wj6J-iqrCr_7oLDCbS8qXQ69EF=nPLWmvBiDmgdNWZ6KA@mail.gmail.com>
+Subject: Re: How should we handle a bool depending on a tristate?
+To:     David Howells <dhowells@redhat.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 02:35:00PM +0200, Mauro Carvalho Chehab wrote:
-> There are some kernel-doc warnings:
-> 
-> 	./kernel/rcu/tree.c:2915: warning: Function parameter or member 'count' not described in 'kfree_rcu_cpu'
-> 	./include/linux/rculist.h:517: warning: bad line:                           [@right ][node2 ... ]
-> 	./include/linux/rculist.h:2: WARNING: Unexpected indentation.
-> 
-> Move the comment for "count" to the kernel-doc markup and add
-> a missing "*" on one kernel-doc continuation line.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  include/linux/rculist.h | 2 +-
->  kernel/rcu/tree.c       | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-> index 2ebd112f86f7..7a6fc9956510 100644
-> --- a/include/linux/rculist.h
-> +++ b/include/linux/rculist.h
-> @@ -514,7 +514,7 @@ static inline void hlist_replace_rcu(struct hlist_node *old,
->   * @right: The hlist head on the right
->   *
->   * The lists start out as [@left  ][node1 ... ] and
-> -                          [@right ][node2 ... ]
-> + *                        [@right ][node2 ... ]
->   * The lists end up as    [@left  ][node2 ... ]
->   *                        [@right ][node1 ... ]
->   */
+On Mon, May 18, 2020 at 9:01 AM David Howells <dhowells@redhat.com> wrote:
+>
+>
+> Blech.  Yeah.  "depends on" doesn't work either.  The problem actually lies
+> within the Kconfig framework.  It doesn't know how to handle a bool depending
+> on a tristate.
 
-This one has a prerequisite not in my tree, so I dropped this hunk.
-Please point me at the prerequisite if it is something that I should
-be queueing.
+No problem with Kconfig. It knows exactly how to let a bool depend on
+a tristate.
 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 8ed0fe57d5fb..ada4f914fa60 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2895,6 +2895,7 @@ struct kfree_rcu_cpu_work {
->   * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
->   * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
->   * @initialized: The @lock and @rcu_work fields have been initialized
-> + * @count: Number of objects for which GP not started
->   *
->   * This is a per-CPU structure.  The reason that it is not included in
->   * the rcu_data structure is to permit this code to be extracted from
-> @@ -2910,7 +2911,6 @@ struct kfree_rcu_cpu {
->  	struct delayed_work monitor_work;
->  	bool monitor_todo;
->  	bool initialized;
-> -	// Number of objects for which GP not started
->  	int count;
->  };
->  
+It's just that there are two different kinds of dependencies.
 
-I queued this one.
+For example, the dependency can be a hard and absolute dependency
+(linking doesn't work, or whatever), and then obviously built-in code
+cannot be enabled if the thing it depends on is a loadable module.
 
-If this is going up some other path, please feel free to add:
+But the dependency can also be a conceptual one: "This option doesn't
+make sense unless that option is set". Then a bool can make sense even
+if the other config is a modular one.
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+And Kconfig can deal with either situation just fine.
 
-And let me know so that I can drop my version.
+Do
 
-							Thanx, Paul
+    depends on XYZ = y
+
+or
+
+    depends on XYZ != n
+
+to clarify the choice. One requires a hard dependency, the other
+requires that the  option just be enabled.
+
+Now, if you just do "depends on XYZ", it allows a bool to be enabled
+even for just a module (ie that second case). That makes sense for a
+lot of "allow this feature in the module" kind of options, where it
+would be pointless to even ask about a boolean feature if the parent
+module isn't even enabled.
+
+But that "depends on XYZ=y" is not uncommon. It basically says "this
+option makes sense only when built in". Either because it requires it
+for linking, or just because it doesn't work or make sense without it.
+
+                     Linus
