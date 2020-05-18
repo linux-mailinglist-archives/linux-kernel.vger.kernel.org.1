@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBFE1D8381
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AACFE1D8124
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732954AbgERSFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:05:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52726 "EHLO mail.kernel.org"
+        id S1729917AbgERRpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:45:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732915AbgERSFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:05:16 -0400
+        id S1729904AbgERRpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:45:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E04DA20671;
-        Mon, 18 May 2020 18:05:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 592BC20674;
+        Mon, 18 May 2020 17:45:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825115;
-        bh=Bf23uZnLV3OlKoZqeEjp8dJdg25q3YALsYaxnGvftpM=;
+        s=default; t=1589823917;
+        bh=3jL/axdTlYd33laaCHBdmLeN7tXf5UZO0qK9ao31xS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pXQDxTREor8w7WS1DgiQsO0W4C/JPmUhgYT721s7tgPgkWywkypghSySHD6e+UZjK
-         ZFwcCagB7VmD9UglLUlaeJHFTJ/fRPjKQT4NLXXgAG+k5ZYjvTwAZ6OBGdFuubz/cP
-         QBsDF/8BFP42PKGZJhJyGYlMHP+jlXrZE1zy7hiw=
+        b=EVOlXONd44p4UM+7mZ89/msAxuJVkh2zhT2xYtdJ6wl5GWKR/BmkqrBA8JdXgO/bF
+         FXnLbsJx1JyOIVAjiEfoBFDTUY/OXiRaYm6nXuY7dgZoILuUiX60ZkpN4d7hKKUXBo
+         qC2b81o2lmGfTbqMAYOCwBzDe4OJn4svTkVLaZLU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeremy Linton <jeremy.linton@arm.com>
-Subject: [PATCH 5.6 136/194] usb: usbfs: correct kernel->user page attribute mismatch
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Ulrich Hecht <uli+renesas@fpond.eu>
+Subject: [PATCH 4.9 88/90] ARM: dts: r8a7740: Add missing extal2 to CPG node
 Date:   Mon, 18 May 2020 19:37:06 +0200
-Message-Id: <20200518173542.716290256@linuxfoundation.org>
+Message-Id: <20200518173508.964978138@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,61 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Linton <jeremy.linton@arm.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit 2bef9aed6f0e22391c8d4570749b1acc9bc3981e upstream.
+commit e47cb97f153193d4b41ca8d48127da14513d54c7 upstream.
 
-On some architectures (e.g. arm64) requests for
-IO coherent memory may use non-cachable attributes if
-the relevant device isn't cache coherent. If these
-pages are then remapped into userspace as cacheable,
-they may not be coherent with the non-cacheable mappings.
+The Clock Pulse Generator (CPG) device node lacks the extal2 clock.
+This may lead to a failure registering the "r" clock, or to a wrong
+parent for the "usb24s" clock, depending on MD_CK2 pin configuration and
+boot loader CPG_USBCKCR register configuration.
 
-In particular this happens with libusb, when it attempts
-to create zero-copy buffers for use by rtl-sdr
-(https://github.com/osmocom/rtl-sdr/). On low end arm
-devices with non-coherent USB ports, the application will
-be unexpectedly killed, while continuing to work fine on
-arm machines with coherent USB controllers.
+This went unnoticed, as this does not affect the single upstream board
+configuration, which relies on the first clock input only.
 
-This bug has been discovered/reported a few times over
-the last few years. In the case of rtl-sdr a compile time
-option to enable/disable zero copy was implemented to
-work around it.
-
-Rather than relaying on application specific workarounds,
-dma_mmap_coherent() can be used instead of remap_pfn_range().
-The page cache/etc attributes will then be correctly set in
-userspace to match the kernel mapping.
-
-Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200504201348.1183246-1-jeremy.linton@arm.com
+Fixes: d9ffd583bf345e2e ("ARM: shmobile: r8a7740: add SoC clocks to DTS")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Ulrich Hecht <uli+renesas@fpond.eu>
+Link: https://lore.kernel.org/r/20200508095918.6061-1-geert+renesas@glider.be
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/usb/core/devio.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/core/devio.c
-+++ b/drivers/usb/core/devio.c
-@@ -217,6 +217,7 @@ static int usbdev_mmap(struct file *file
- {
- 	struct usb_memory *usbm = NULL;
- 	struct usb_dev_state *ps = file->private_data;
-+	struct usb_hcd *hcd = bus_to_hcd(ps->dev->bus);
- 	size_t size = vma->vm_end - vma->vm_start;
- 	void *mem;
- 	unsigned long flags;
-@@ -250,9 +251,7 @@ static int usbdev_mmap(struct file *file
- 	usbm->vma_use_count = 1;
- 	INIT_LIST_HEAD(&usbm->memlist);
- 
--	if (remap_pfn_range(vma, vma->vm_start,
--			virt_to_phys(usbm->mem) >> PAGE_SHIFT,
--			size, vma->vm_page_prot) < 0) {
-+	if (dma_mmap_coherent(hcd->self.sysdev, vma, mem, dma_handle, size)) {
- 		dec_usb_memory_use_count(usbm, &usbm->vma_use_count);
- 		return -EAGAIN;
- 	}
+---
+ arch/arm/boot/dts/r8a7740.dtsi |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/arm/boot/dts/r8a7740.dtsi
++++ b/arch/arm/boot/dts/r8a7740.dtsi
+@@ -467,7 +467,7 @@
+ 		cpg_clocks: cpg_clocks@e6150000 {
+ 			compatible = "renesas,r8a7740-cpg-clocks";
+ 			reg = <0xe6150000 0x10000>;
+-			clocks = <&extal1_clk>, <&extalr_clk>;
++			clocks = <&extal1_clk>, <&extal2_clk>, <&extalr_clk>;
+ 			#clock-cells = <1>;
+ 			clock-output-names = "system", "pllc0", "pllc1",
+ 					     "pllc2", "r",
 
 
