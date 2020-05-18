@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC451D80E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59BBC1D84AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729508AbgERRnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:43:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39890 "EHLO mail.kernel.org"
+        id S2387640AbgERSNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:13:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728943AbgERRmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:42:46 -0400
+        id S1731641AbgERSBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:01:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 80FFC20657;
-        Mon, 18 May 2020 17:42:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 936FA207D3;
+        Mon, 18 May 2020 18:01:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823766;
-        bh=P0lxkl9s3GlC3cewuWXxg05Kz+tb30Ge+n4wF50XGi4=;
+        s=default; t=1589824914;
+        bh=NkGVLDt7e/D8KdRrZgwzwNyk2H8fpV+MMg/0WLe2bMs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sjuPYOiMkAcmdkcz3lvrPdnoY/8Kw1BXTIK8BRtJDPERlQetHym2Mq+ivo1idniLB
-         EWeOoVPbC1Ck2cSG1eha2FjwuZtp45hGhE0kuP1cz7Ltw6m8ceSShLMrQbmpV2r4zz
-         QyUqVQZYupJk2ZCoDrI6O6BY2VF6a05SLoUGt1/M=
+        b=ANFuMC9F39WnGq2cuqMWopUVoc1c3sQTXcGY3M5guJcufN+13Rs0ryCe29nPoPPUw
+         0qZ+/ZPwHEUid0ZrzkupMOll4NfwGqVPwQK/ZJy40bfttY//KfS0dnsn9rzHQzH1CM
+         OWNRgHQn/4JZ6407ozVcZoGH7kKUyQpCtNeShln4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 07/90] sch_choke: avoid potential panic in choke_reset()
+        stable@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 055/194] dmaengine: mmp_tdma: Reset channel error on release
 Date:   Mon, 18 May 2020 19:35:45 +0200
-Message-Id: <20200518173452.682172408@linuxfoundation.org>
+Message-Id: <20200518173536.328744885@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,69 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Lubomir Rintel <lkundrak@v3.sk>
 
-[ Upstream commit 8738c85c72b3108c9b9a369a39868ba5f8e10ae0 ]
+[ Upstream commit 0c89446379218698189a47871336cb30286a7197 ]
 
-If choke_init() could not allocate q->tab, we would crash later
-in choke_reset().
+When a channel configuration fails, the status of the channel is set to
+DEV_ERROR so that an attempt to submit it fails. However, this status
+sticks until the heat end of the universe, making it impossible to
+recover from the error.
 
-BUG: KASAN: null-ptr-deref in memset include/linux/string.h:366 [inline]
-BUG: KASAN: null-ptr-deref in choke_reset+0x208/0x340 net/sched/sch_choke.c:326
-Write of size 8 at addr 0000000000000000 by task syz-executor822/7022
+Let's reset it when the channel is released so that further use of the
+channel with correct configuration is not impacted.
 
-CPU: 1 PID: 7022 Comm: syz-executor822 Not tainted 5.7.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- __kasan_report.cold+0x5/0x4d mm/kasan/report.c:515
- kasan_report+0x33/0x50 mm/kasan/common.c:625
- check_memory_region_inline mm/kasan/generic.c:187 [inline]
- check_memory_region+0x141/0x190 mm/kasan/generic.c:193
- memset+0x20/0x40 mm/kasan/common.c:85
- memset include/linux/string.h:366 [inline]
- choke_reset+0x208/0x340 net/sched/sch_choke.c:326
- qdisc_reset+0x6b/0x520 net/sched/sch_generic.c:910
- dev_deactivate_queue.constprop.0+0x13c/0x240 net/sched/sch_generic.c:1138
- netdev_for_each_tx_queue include/linux/netdevice.h:2197 [inline]
- dev_deactivate_many+0xe2/0xba0 net/sched/sch_generic.c:1195
- dev_deactivate+0xf8/0x1c0 net/sched/sch_generic.c:1233
- qdisc_graft+0xd25/0x1120 net/sched/sch_api.c:1051
- tc_modify_qdisc+0xbab/0x1a00 net/sched/sch_api.c:1670
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5454
- netlink_rcv_skb+0x15a/0x410 net/netlink/af_netlink.c:2469
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0x537/0x740 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x882/0xe10 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6bf/0x7e0 net/socket.c:2362
- ___sys_sendmsg+0x100/0x170 net/socket.c:2416
- __sys_sendmsg+0xec/0x1b0 net/socket.c:2449
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
-
-Fixes: 77e62da6e60c ("sch_choke: drop all packets in queue during reset")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Cc: Cong Wang <xiyou.wangcong@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+Link: https://lore.kernel.org/r/20200419164912.670973-5-lkundrak@v3.sk
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_choke.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/dma/mmp_tdma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/net/sched/sch_choke.c
-+++ b/net/sched/sch_choke.c
-@@ -382,7 +382,8 @@ static void choke_reset(struct Qdisc *sc
+diff --git a/drivers/dma/mmp_tdma.c b/drivers/dma/mmp_tdma.c
+index 51e08c16756ae..d683232d7fea0 100644
+--- a/drivers/dma/mmp_tdma.c
++++ b/drivers/dma/mmp_tdma.c
+@@ -363,6 +363,8 @@ static void mmp_tdma_free_descriptor(struct mmp_tdma_chan *tdmac)
+ 		gen_pool_free(gpool, (unsigned long)tdmac->desc_arr,
+ 				size);
+ 	tdmac->desc_arr = NULL;
++	if (tdmac->status == DMA_ERROR)
++		tdmac->status = DMA_COMPLETE;
  
- 	sch->q.qlen = 0;
- 	sch->qstats.backlog = 0;
--	memset(q->tab, 0, (q->tab_mask + 1) * sizeof(struct sk_buff *));
-+	if (q->tab)
-+		memset(q->tab, 0, (q->tab_mask + 1) * sizeof(struct sk_buff *));
- 	q->head = q->tail = 0;
- 	red_restart(&q->vars);
+ 	return;
  }
+-- 
+2.20.1
+
 
 
