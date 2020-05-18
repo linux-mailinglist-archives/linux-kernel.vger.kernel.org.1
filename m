@@ -2,45 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B91701D828A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC0B1D81E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731770AbgERR5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:57:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35670 "EHLO mail.kernel.org"
+        id S1730731AbgERRvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:51:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731755AbgERR5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:57:16 -0400
+        id S1730330AbgERRvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:51:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 435E620715;
-        Mon, 18 May 2020 17:57:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA0FD20829;
+        Mon, 18 May 2020 17:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824634;
-        bh=Je6FXSInJLYZf+/pTUnJ/qAOarZaMmrEhM75kIpLwPk=;
+        s=default; t=1589824297;
+        bh=SH8FZeK1r0kMgLiWFQS1MyVZECWgi/jMC86bQKXOmz8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ikd1JI3Z4al1YDYK5N6p0Y4eMU5agmD9rmZIR3CmQfphWINHLhrEj7KejAOaLejtL
-         Fo5sSJfikd4+h0hCGr8Pfmlh4KaKIgxBrU5vbfrBK8nvkb1WBi57XNLja/vhjNnCo/
-         kKxHCH0Y4MpbeKCHNzUK54NQGRepyQJMBfe48yU0=
+        b=NRMXiK2yxZvQ5bdkT6uQxFJ2yGe7d7FGSNmqLi1VaVKVJP3xdgG/aCtpnJ7SKgrBX
+         aOh0OBMV/xp8vi5jL1+NkQaqfPV+zzyQpUdUyqkR8O6XAdqfOstP1/faljnuq5YgDN
+         adVEZU69luHUom3GcMSHAaR0uW376Y3RN8nyIwi8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Chris Down <chris@chrisdown.name>,
-        Michal Hocko <mhocko@suse.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Dave Wysochanski <dwysocha@redhat.com>,
+        David Howells <dhowells@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 091/147] mm, memcg: fix inconsistent oom event behavior
+Subject: [PATCH 4.19 36/80] NFS: Fix fscache super_cookie index_key from changing after umount
 Date:   Mon, 18 May 2020 19:36:54 +0200
-Message-Id: <20200518173524.885853433@linuxfoundation.org>
+Message-Id: <20200518173457.689854455@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
+References: <20200518173450.097837707@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,76 +44,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yafang Shao <laoar.shao@gmail.com>
+From: Dave Wysochanski <dwysocha@redhat.com>
 
-[ Upstream commit 04fd61a4e01028210a91f0efc408c8bc61a3018c ]
+[ Upstream commit d9bfced1fbcb35b28d8fbed4e785d2807055ed2b ]
 
-A recent commit 9852ae3fe529 ("mm, memcg: consider subtrees in
-memory.events") changed the behavior of memcg events, which will now
-consider subtrees in memory.events.
+Commit 402cb8dda949 ("fscache: Attach the index key and aux data to
+the cookie") added the index_key and index_key_len parameters to
+fscache_acquire_cookie(), and updated the callers in the NFS client.
+One of the callers was inside nfs_fscache_get_super_cookie()
+and was changed to use the full struct nfs_fscache_key as the
+index_key.  However, a couple members of this structure contain
+pointers and thus will change each time the same NFS share is
+remounted.  Since index_key is used for fscache_cookie->key_hash
+and this subsequently is used to compare cookies, the effectiveness
+of fscache with NFS is reduced to the point at which a umount
+occurs.   Any subsequent remount of the same share will cause a
+unique NFS super_block index_key and key_hash to be generated for
+the same data, rendering any prior fscache data unable to be
+found.  A simple reproducer demonstrates the problem.
 
-But oom_kill event is a special one as it is used in both cgroup1 and
-cgroup2.  In cgroup1, it is displayed in memory.oom_control.  The file
-memory.oom_control is in both root memcg and non root memcg, that is
-different with memory.event as it only in non-root memcg.  That commit
-is okay for cgroup2, but it is not okay for cgroup1 as it will cause
-inconsistent behavior between root memcg and non-root memcg.
+1. Mount share with 'fsc', create a file, drop page cache
+systemctl start cachefilesd
+mount -o vers=3,fsc 127.0.0.1:/export /mnt
+dd if=/dev/zero of=/mnt/file1.bin bs=4096 count=1
+echo 3 > /proc/sys/vm/drop_caches
 
-Here's an example on why this behavior is inconsistent in cgroup1.
+2. Read file into page cache and fscache, then unmount
+dd if=/mnt/file1.bin of=/dev/null bs=4096 count=1
+umount /mnt
 
-       root memcg
-       /
-    memcg foo
-     /
-  memcg bar
+3. Remount and re-read which should come from fscache
+mount -o vers=3,fsc 127.0.0.1:/export /mnt
+echo 3 > /proc/sys/vm/drop_caches
+dd if=/mnt/file1.bin of=/dev/null bs=4096 count=1
 
-Suppose there's an oom_kill in memcg bar, then the oon_kill will be
+4. Check for READ ops in mountstats - there should be none
+grep READ: /proc/self/mountstats
 
-       root memcg : memory.oom_control(oom_kill)  0
-       /
-    memcg foo : memory.oom_control(oom_kill)  1
-     /
-  memcg bar : memory.oom_control(oom_kill)  1
+Looking at the history and the removed function, nfs_super_get_key(),
+we should only use nfs_fscache_key.key plus any uniquifier, for
+the fscache index_key.
 
-For the non-root memcg, its memory.oom_control(oom_kill) includes its
-descendants' oom_kill, but for root memcg, it doesn't include its
-descendants' oom_kill.  That means, memory.oom_control(oom_kill) has
-different meanings in different memcgs.  That is inconsistent.  Then the
-user has to know whether the memcg is root or not.
-
-If we can't fully support it in cgroup1, for example by adding
-memory.events.local into cgroup1 as well, then let's don't touch its
-original behavior.
-
-Fixes: 9852ae3fe529 ("mm, memcg: consider subtrees in memory.events")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Chris Down <chris@chrisdown.name>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200502141055.7378-1-laoar.shao@gmail.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 402cb8dda949 ("fscache: Attach the index key and aux data to the cookie")
+Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/memcontrol.h | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/nfs/fscache.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 8faca7b525438..fb5b2a41bd456 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -793,6 +793,8 @@ static inline void memcg_memory_event(struct mem_cgroup *memcg,
- 		atomic_long_inc(&memcg->memory_events[event]);
- 		cgroup_file_notify(&memcg->events_file);
- 
-+		if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-+			break;
- 		if (cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_LOCAL_EVENTS)
- 			break;
- 	} while ((memcg = parent_mem_cgroup(memcg)) &&
+diff --git a/fs/nfs/fscache.c b/fs/nfs/fscache.c
+index 6f45b1a957397..b931169c2bb24 100644
+--- a/fs/nfs/fscache.c
++++ b/fs/nfs/fscache.c
+@@ -192,7 +192,8 @@ void nfs_fscache_get_super_cookie(struct super_block *sb, const char *uniq, int
+ 	/* create a cache index for looking up filehandles */
+ 	nfss->fscache = fscache_acquire_cookie(nfss->nfs_client->fscache,
+ 					       &nfs_fscache_super_index_def,
+-					       key, sizeof(*key) + ulen,
++					       &key->key,
++					       sizeof(key->key) + ulen,
+ 					       NULL, 0,
+ 					       nfss, 0, true);
+ 	dfprintk(FSCACHE, "NFS: get superblock cookie (0x%p/0x%p)\n",
 -- 
 2.20.1
 
