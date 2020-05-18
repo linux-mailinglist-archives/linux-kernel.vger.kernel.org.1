@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876DD1D8230
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE001D804D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731262AbgERRyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:54:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58574 "EHLO mail.kernel.org"
+        id S1728592AbgERRio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:38:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731245AbgERRyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:54:08 -0400
+        id S1728582AbgERRim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:38:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7390F207C4;
-        Mon, 18 May 2020 17:54:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08D9D20835;
+        Mon, 18 May 2020 17:38:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824447;
-        bh=0bGfIT093qQ9vQN8ZTgqObBdEYENQQ1lD1pDuR4jFqA=;
+        s=default; t=1589823521;
+        bh=aFUTyjB84LtmFYdF74WD3KpQt5EZkYCI96cgLucpqz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=erdnY+359YOtGOncEsLcvdwHl+tfn5y9IUW2hcLWuzv7+lJiWhf880TZEUEpeJmQL
-         rgT9TCL99a8uHlBNYpILjtPzApmX/FflfFo9xCjAh836V5Xu2ktlFGIVWw5Y6F0DfG
-         zzvt/20cN2kmmDSYWk2rfu2QywDWEiMF3Ki3DyJw=
+        b=p+EQbk4YslU+Rxgv/ij5vJ6h1owPaAoqRZxbLhAEhPiGODlIycDJmZfvQMjGovw11
+         r05TbIIA1SqL/UmOxRXesWC18tYNX4oQxN5Lvst6zFsrord1w7qE37ZcfpEwK3g0mZ
+         BcHBtiJ+cvW2F6Z7cIXzAigHa6md5LZnNj85RH9Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <rong.a.chen@intel.com>,
-        Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCH 5.4 016/147] selftests/bpf: fix goto cleanup label not defined
+        stable@vger.kernel.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Govindarajulu Varadarajan <gvaradar@cisco.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.4 08/86] enic: do not overwrite error code
 Date:   Mon, 18 May 2020 19:35:39 +0200
-Message-Id: <20200518173515.782204255@linuxfoundation.org>
+Message-Id: <20200518173452.013849689@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +46,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+From: Govindarajulu Varadarajan <gvaradar@cisco.com>
 
-kernel test robot found a warning when build bpf selftest for 5.4.y stable
-tree:
+commit 56f772279a762984f6e9ebbf24a7c829faba5712 upstream.
 
-prog_tests/stacktrace_build_id_nmi.c:55:3: error: label ‘cleanup’ used but not defined
-   goto cleanup;
-   ^~~~
+In failure path, we overwrite err to what vnic_rq_disable() returns. In
+case it returns 0, enic_open() returns success in case of error.
 
-This is because we are lacking upstream commit dde53c1b763b
-("selftests/bpf: Convert few more selftest to skeletons"). But this
-commit is too large and need more backports. To fix it, the
-easiest way is just use the current goto label 'close_prog'.
-
-Reported-by: kernel test robot <rong.a.chen@intel.com>
-Fixes: da43712a7262 ("selftests/bpf: Skip perf hw events test if the setup disabled it")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Reported-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Fixes: e8588e268509 ("enic: enable rq before updating rq descriptors")
+Signed-off-by: Govindarajulu Varadarajan <gvaradar@cisco.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/cisco/enic/enic_main.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-@@ -52,7 +52,7 @@ retry:
- 	if (pmu_fd < 0 && errno == ENOENT) {
- 		printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
- 		test__skip();
--		goto cleanup;
-+		goto close_prog;
+--- a/drivers/net/ethernet/cisco/enic/enic_main.c
++++ b/drivers/net/ethernet/cisco/enic/enic_main.c
+@@ -1708,7 +1708,7 @@ static int enic_open(struct net_device *
+ {
+ 	struct enic *enic = netdev_priv(netdev);
+ 	unsigned int i;
+-	int err;
++	int err, ret;
+ 
+ 	err = enic_request_intr(enic);
+ 	if (err) {
+@@ -1766,10 +1766,9 @@ static int enic_open(struct net_device *
+ 
+ err_out_free_rq:
+ 	for (i = 0; i < enic->rq_count; i++) {
+-		err = vnic_rq_disable(&enic->rq[i]);
+-		if (err)
+-			return err;
+-		vnic_rq_clean(&enic->rq[i], enic_free_rq_buf);
++		ret = vnic_rq_disable(&enic->rq[i]);
++		if (!ret)
++			vnic_rq_clean(&enic->rq[i], enic_free_rq_buf);
  	}
- 	if (CHECK(pmu_fd < 0, "perf_event_open", "err %d errno %d\n",
- 		  pmu_fd, errno))
+ 	enic_dev_notify_unset(enic);
+ err_out_free_intr:
 
 
