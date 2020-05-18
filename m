@@ -2,170 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D8B1D700F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 07:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E711D700B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 07:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgERFDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 01:03:17 -0400
-Received: from mga12.intel.com ([192.55.52.136]:56575 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726127AbgERFDQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 01:03:16 -0400
-IronPort-SDR: /tnj4bQjdTs8NRxoa7h1ut5yU/w7o/RGuD1lLEcZCLuGOhBA35sZ6sQ0QEgH3kc5UVmzfkqAeH
- n6fYajJDlIwg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2020 22:03:15 -0700
-IronPort-SDR: 9ufmNh8mqDO79BHCNYP9XySbx/nxhCPkvJhSzFy/yTOzq4r2/iAyZPXCEyg7DAFrlgdZsvV3/f
- s/9cRM04vYSw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,406,1583222400"; 
-   d="scan'208";a="342681737"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by orsmga001.jf.intel.com with ESMTP; 17 May 2020 22:03:15 -0700
-Date:   Sun, 17 May 2020 22:03:15 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/9] fs/ext4: Disallow encryption if inode is DAX
-Message-ID: <20200518050315.GA3025231@iweiny-DESK2.sc.intel.com>
-References: <20200513054324.2138483-1-ira.weiny@intel.com>
- <20200513054324.2138483-4-ira.weiny@intel.com>
- <20200516020253.GG1009@sol.localdomain>
+        id S1726510AbgERE61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 00:58:27 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:38447 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726040AbgERE60 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 00:58:26 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200518045823epoutp02bb62b0235f6e3fe6a4773db62439b79b~QBpSTkArP1897918979epoutp02n
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 04:58:23 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200518045823epoutp02bb62b0235f6e3fe6a4773db62439b79b~QBpSTkArP1897918979epoutp02n
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1589777903;
+        bh=2vKXIIAYOJgXhTtQivWEVpWzLzbMQ4ucMNU0uUTwl/U=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=MmZzi/foElZN65Xwgb+7uAHNZDSVtBp7834w3bfhDGim/dXViessWyDHK0CzGsh8/
+         eAWpyge7LQPM3wc9BIpf48hE3w3ntiuJYP8o+NlrffMkjgATKu6vzgLElf+MFeYhsh
+         rArozyONz5XD2mZS6cT1sUV2Cm/JhboBV2wn/3m4=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200518045822epcas1p210f4b5c58774a0d81bf33380b4a9e7fe~QBpRn_InW2079620796epcas1p2P;
+        Mon, 18 May 2020 04:58:22 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.153]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 49QRbv2j2kzMqYkX; Mon, 18 May
+        2020 04:58:19 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        23.9D.04402.BE512CE5; Mon, 18 May 2020 13:58:19 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20200518045818epcas1p39ac7fcb92fd73391c1c3746c17e34b58~QBpN9eY0i3065630656epcas1p3x;
+        Mon, 18 May 2020 04:58:18 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200518045818epsmtrp1ba3d66b3ebbc2bea915377d691a1fd53~QBpN7x5dT1824518245epsmtrp13;
+        Mon, 18 May 2020 04:58:18 +0000 (GMT)
+X-AuditID: b6c32a35-753ff70000001132-eb-5ec215ebf79b
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        45.34.18461.AE512CE5; Mon, 18 May 2020 13:58:18 +0900 (KST)
+Received: from [10.113.221.211] (unknown [10.113.221.211]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200518045818epsmtip132883eeffa5658720ed2b7a889712bea~QBpNpdb3G0973109731epsmtip1k;
+        Mon, 18 May 2020 04:58:18 +0000 (GMT)
+Subject: Re: [PATCH v2] drm/exynos: dsi: Remove bridge node reference in
+ error handling path in probe function
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        jy0922.shim@samsung.com, sw0312.kim@samsung.com,
+        kyungmin.park@samsung.com, airlied@linux.ie, daniel@ffwll.ch,
+        kgene@kernel.org, krzk@kernel.org
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+From:   Inki Dae <inki.dae@samsung.com>
+Message-ID: <4555b0a8-b919-b5c1-cacb-1e6aec8a1aa8@samsung.com>
+Date:   Mon, 18 May 2020 14:03:38 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200516020253.GG1009@sol.localdomain>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200516105736.269669-1-christophe.jaillet@wanadoo.fr>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01TfUgUaRzmnZmdHaXtplXrh0HpHAUapqOuTZfGcUUNfYBQXGXgNqyTK+7H
+        MLMbeQRtdeeZ2tlixeppCVl4excrW9qHqGRRWaZGH9ZibbQSlZHZokVxHzsOcf73vM/z/N7n
+        93s/KNw4RCZTZQ6XKDsEG0PGE53X0jIzxpP6irM855K4I4P9GNdxtVnH/dvpxbkHUxMk9+rZ
+        PYLrCC3k6iLjODc01K7n7h58q+eCkUc67v6VJpLzDfVgnK/+Nfm9ge+ebiH4oP8wyV+cfq7j
+        wzU3Mf58637+twt+xEeDi/jo04CukCoqz7eKQokop4gOi7OkzFFawGzcYl5jNuVlsRnsSm4F
+        k+IQ7GIBs3ZTYca6MlusYyZlj2Bzx6hCQVGYzNX5stPtElOsTsVVwIhSiU1aKS1XBLvidpQu
+        tzjt37FZWdmmmHFXubU6/Ide+idxb03nOOFB7+lqFEcBnQuVt1tRNYqnjPQlBF1tTbgqGOkP
+        CEYez9WEaQS9wV91XysmPo9imtCNINx7TactJhC8H25AqiuBlqCr3zcjJNIDCAKtr2ZCcDqA
+        oObWx5kQkl4C3rYwqWIDvRq6a/v1KiZi/MB0e6yAopLo7XBnStAs86C/YYxQ6Th6LZyIbFNp
+        nF4AobFTmIYXw6GO33Gt0wcUfDptUe0Qs/sP8hqdAG9uXtBrOBle11Xq1c6APoTA67uDaYsq
+        BE8jI4TmyoHeM/WYuhFOp0HgSqZGp8LlL81Iy50L76ZqdVqWAaoqjZqFgRv3HiMNAwy3ekkN
+        8xC5fVJ/FKU2zhqscdY0jbOmafw/uAURfjRflBR7qaiwEjv7soNo5jGnmy6hY4Ob+hBNIWaO
+        YbjoarFRJ+xRKux9CCicSTTsiPYUGw0lQsVPouw0y26bqPQhU+zYvXhyksUZ+xoOl5k1Zefk
+        5HC5bJ6JZZkFhuMjtmIjXSq4xHJRlET5ax1GxSV70LK/j+1MH8119AQrF02u/2WfFyPSrQd2
+        dG0efPlNW0fFyKexorpvb5nzcn88fTR0dv+pxZ4vLc8z/SfWp11+U783GzX8vPHDuoTDu0OS
+        T3R2vrhYa7ellb/464emDQVPJgfCD+Wt/ubQ5lT3vvbJ6KOARx78c9XZqrbr+fHyUsvH0eh5
+        hlCsApuOy4rwHy7gdrXiAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIIsWRmVeSWpSXmKPExsWy7bCSnO4r0UNxBrPfGVv0njvJZLH14FxW
+        i//bJjJbXPn6ns3ixb2LLBZbb0lb9D9+zWxx/vwGdouzTW/YLTY9vsZqcXnXHDaLGef3MVnM
+        mPySzYHXY++3BSwem1Z1snls//aA1eN+93Emj81L6j36tqxi9Pi8Sc7j8931rAEcUVw2Kak5
+        mWWpRfp2CVwZXfdXshf8E6no3vaapYHxg0AXIyeHhICJxPtfd5i6GLk4hAR2M0os2/aYsYuR
+        AyghIbFlKweEKSxx+HAxRMlbRokp/xYzgfQKCxRI/F/7lhnEFhE4wygxdWMmSBGzwHpGiV1P
+        n7JDdExnlNj6fCpYB5uAqsTEFffZQGxeATuJvT0n2UFsFqD4mW8bGEFsUYEIiefbbzBC1AhK
+        nJz5hAXkCk4BF4lpj8NBwswC6hJ/5l1ihrDFJW49mc8EYctLNG+dzTyBUWgWku5ZSFpmIWmZ
+        haRlASPLKkbJ1ILi3PTcYsMCw7zUcr3ixNzi0rx0veT83E2M4FjU0tzBuH3VB71DjEwcjIcY
+        JTiYlUR4Iz/vixPiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6NwYZyQQHpiSWp2ampBahFMlomD
+        U6qByWTLEt21OScOXl33pjZsbWBl7eylVh8fOPwSq7zkFTJv54obH2f93pn5oirqSZXC/0/C
+        aew56z31C/8Gphqs1+CXeRQWredXyqY7RyXl7/e0HuXlppKnt1/OOX/F0LlCTunBwYLW5Xzz
+        /RcHJT7PrVmRf01HuuR68PrX33qiD4m9PPBRP31mgoqRpNfSPxJb32yfU7DA4IK32MS1xzaJ
+        yQTk3WuKD+47ZLP5VNFrxh3fZJ/IsaUGZuXrb15v8c07//+drym7GQVnrMvff/ZBlsSc6VWT
+        qlWmHf3y1aeA9YNf7dXPXlX3Tv/6e9fydt7vFQ/q0kIX5/FdTj669PnJDiVhnkcTtjVNOTHr
+        nqnOqhQlluKMREMt5qLiRAAYCeXcNAMAAA==
+X-CMS-MailID: 20200518045818epcas1p39ac7fcb92fd73391c1c3746c17e34b58
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200516105750epcas1p2227417d4e2387a0f6aec4a96b1ba7ae4
+References: <CGME20200516105750epcas1p2227417d4e2387a0f6aec4a96b1ba7ae4@epcas1p2.samsung.com>
+        <20200516105736.269669-1-christophe.jaillet@wanadoo.fr>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 07:02:53PM -0700, Eric Biggers wrote:
-> On Tue, May 12, 2020 at 10:43:18PM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > Encryption and DAX are incompatible.  Changing the DAX mode due to a
-> > change in Encryption mode is wrong without a corresponding
-> > address_space_operations update.
-> > 
-> > Make the 2 options mutually exclusive by returning an error if DAX was
-> > set first.
-> > 
-> > Furthermore, clarify the documentation of the exclusivity and how that
-> > will work.
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > ---
-> > Changes:
-> > 	remove WARN_ON_ONCE
-> > 	Add documentation to the encrypt doc WRT DAX
-> > ---
-> >  Documentation/filesystems/fscrypt.rst |  4 +++-
-> >  fs/ext4/super.c                       | 10 +---------
-> >  2 files changed, 4 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-> > index aa072112cfff..1475b8d52fef 100644
-> > --- a/Documentation/filesystems/fscrypt.rst
-> > +++ b/Documentation/filesystems/fscrypt.rst
-> > @@ -1038,7 +1038,9 @@ astute users may notice some differences in behavior:
-> >  - The ext4 filesystem does not support data journaling with encrypted
-> >    regular files.  It will fall back to ordered data mode instead.
-> >  
-> > -- DAX (Direct Access) is not supported on encrypted files.
-> > +- DAX (Direct Access) is not supported on encrypted files.  Attempts to enable
-> > +  DAX on an encrypted file will fail.  Mount options will _not_ enable DAX on
-> > +  encrypted files.
-> >  
-> >  - The st_size of an encrypted symlink will not necessarily give the
-> >    length of the symlink target as required by POSIX.  It will actually
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index bf5fcb477f66..9873ab27e3fa 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -1320,7 +1320,7 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
-> >  	if (inode->i_ino == EXT4_ROOT_INO)
-> >  		return -EPERM;
-> >  
-> > -	if (WARN_ON_ONCE(IS_DAX(inode) && i_size_read(inode)))
-> > +	if (IS_DAX(inode))
-> >  		return -EINVAL;
-> >  
-> >  	res = ext4_convert_inline_data(inode);
-> > @@ -1344,10 +1344,6 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
-> >  			ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
-> >  			ext4_clear_inode_state(inode,
-> >  					EXT4_STATE_MAY_INLINE_DATA);
-> > -			/*
-> > -			 * Update inode->i_flags - S_ENCRYPTED will be enabled,
-> > -			 * S_DAX may be disabled
-> > -			 */
-> >  			ext4_set_inode_flags(inode);
-> >  		}
-> >  		return res;
-> > @@ -1371,10 +1367,6 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
-> >  				    ctx, len, 0);
-> >  	if (!res) {
-> >  		ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
-> > -		/*
-> > -		 * Update inode->i_flags - S_ENCRYPTED will be enabled,
-> > -		 * S_DAX may be disabled
-> > -		 */
-> >  		ext4_set_inode_flags(inode);
-> >  		res = ext4_mark_inode_dirty(handle, inode);
-> >  		if (res)
-> 
-> I'm confused by the ext4_set_context() change.
-> 
-> ext4_set_context() is only called when FS_IOC_SET_ENCRYPTION_POLICY sets an
-> encryption policy on an empty directory, *or* when a new inode (regular, dir, or
-> symlink) is created in an encrypted directory (thus inheriting encryption from
-> its parent).
 
-I don't see the check which prevents FS_IOC_SET_ENCRYPTION_POLICY on a file?
 
-On inode creation, encryption will always usurp S_DAX...
+20. 5. 16. 오후 7:57에 Christophe JAILLET 이(가) 쓴 글:
+> 'exynos_dsi_parse_dt()' takes a reference to 'dsi->in_bridge_node'.
+> This must be released in the error handling path.
+
+Picked it up.
+
+Thanks,
+Inki Dae
 
 > 
-> So when is it reachable when IS_DAX()?  Is the issue that the DAX flag can now
-> be set on directories?  The commit message doesn't seem to be talking about
-> directories.  Is the behavior we want is that on an (empty) directory with the
-> DAX flag set, FS_IOC_SET_ENCRYPTION_POLICY should fail with EINVAL?
-
-We would want that but AFIAK S_DAX is never set on directories.  Perhaps this
-is another place where S_DAX needs to be changed to the new inode flag?
-However, this would not be appropriate at this point in the series.  At this
-point in the series S_DAX is still set based on the mount option and I'm 99%
-sure that only happens on regular files, not directories.  So I'm confused now.
-
-This is, AFAICS, not going to affect correctness.  It will only be confusing
-because the user will be able to set both DAX and encryption on the directory
-but files there will only see encryption being used...  :-(
-
-Assuming you are correct about this call path only being valid on directories.
-It seems this IS_DAX() needs to be changed to check for EXT4_DAX_FL in
-"fs/ext4: Introduce DAX inode flag"?  Then at that point we can prevent DAX and
-encryption on a directory.  ...  and at this point IS_DAX() could be removed at
-this point in the series???
-
+> In order to do that, add an error handling path and move the
+> 'exynos_dsi_parse_dt()' call from the beginning to the end of the probe
+> function to ease the error handling path.
+> This function only sets some variables which are used only in the
+> 'transfer' function.
 > 
-> I don't see why the i_size_read(inode) check is there though, so I think you're
-> at least right to remove that.
-
-Agreed.
-Ira
-
+> The call chain is:
+>    .transfer
+>     --> exynos_dsi_host_transfer
+>       --> exynos_dsi_init
+>         --> exynos_dsi_enable_clock  (use burst_clk_rate and esc_clk_rate)
+>           --> exynos_dsi_set_pll     (use pll_clk_rate)
 > 
-> - Eric
+> While at it, also handle cases where 'component_add()' fails.
+> 
+> This patch is similar to commit 70505c2ef94b ("drm/exynos: dsi: Remove bridge node reference in removal")
+> which fixed the issue in the remove function.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> A Fixes tag could be required, but I've not been able to figure out which
+> one to use.
+> 
+> v2: move around 'exynos_dsi_parse_dt' instead of adding many gotos
+>     handle component_add failures
+> ---
+>  drivers/gpu/drm/exynos/exynos_drm_dsi.c | 20 +++++++++++++++-----
+>  1 file changed, 15 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/exynos/exynos_drm_dsi.c b/drivers/gpu/drm/exynos/exynos_drm_dsi.c
+> index 902938d2568f..a9d24402fabf 100644
+> --- a/drivers/gpu/drm/exynos/exynos_drm_dsi.c
+> +++ b/drivers/gpu/drm/exynos/exynos_drm_dsi.c
+> @@ -1759,10 +1759,6 @@ static int exynos_dsi_probe(struct platform_device *pdev)
+>  	dsi->dev = dev;
+>  	dsi->driver_data = of_device_get_match_data(dev);
+>  
+> -	ret = exynos_dsi_parse_dt(dsi);
+> -	if (ret)
+> -		return ret;
+> -
+>  	dsi->supplies[0].supply = "vddcore";
+>  	dsi->supplies[1].supply = "vddio";
+>  	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(dsi->supplies),
+> @@ -1823,11 +1819,25 @@ static int exynos_dsi_probe(struct platform_device *pdev)
+>  		return ret;
+>  	}
+>  
+> +	ret = exynos_dsi_parse_dt(dsi);
+> +	if (ret)
+> +		return ret;
+> +
+>  	platform_set_drvdata(pdev, &dsi->encoder);
+>  
+>  	pm_runtime_enable(dev);
+>  
+> -	return component_add(dev, &exynos_dsi_component_ops);
+> +	ret = component_add(dev, &exynos_dsi_component_ops);
+> +	if (ret)
+> +		goto err_disable_runtime;
+> +
+> +	return 0;
+> +
+> +err_disable_runtime:
+> +	pm_runtime_disable(dev);
+> +	of_node_put(dsi->in_bridge_node);
+> +
+> +	return ret;
+>  }
+>  
+>  static int exynos_dsi_remove(struct platform_device *pdev)
+> 
