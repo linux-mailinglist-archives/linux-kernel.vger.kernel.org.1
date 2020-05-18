@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4FC1D8070
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 413E91D8169
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728907AbgERRjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:39:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34790 "EHLO mail.kernel.org"
+        id S1730279AbgERRrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:47:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728897AbgERRjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:39:48 -0400
+        id S1730261AbgERRrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:47:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B237A20872;
-        Mon, 18 May 2020 17:39:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3345F20835;
+        Mon, 18 May 2020 17:47:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823588;
-        bh=bWWUvqAbGRBNZ8OjnEhsfV6kumY5GE42gY2oRDgzrAg=;
+        s=default; t=1589824065;
+        bh=1YqJ8DeqJXMlgEc1ELrfj/EAODkaBVufJMnrx/jj3vU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z5f8sOFTDhA4xZo31LNOWC0ADhvNkGr1HVPBISkuHb7vlZcZYnE3jp7kFiI+kvpdz
-         1f3t55lxW+OaMrMBk+kd3MynmQ+/ESMQtRorjoywMdzXDK8+D4P1asioJ29sdfRUbM
-         LXDeOlF/x4x38sKEe4yzGg0ELItytdo50cOR7t8c=
+        b=TaXp/+JqAFrKYiB0DeALoYDZEgczNMxjyIfi/eYk8v9cJcQTU+GBadktGDVcqHmBF
+         PwxgfYpqsrtx36UgEKA807VPrv1M/dX4vqE7aFeF8E1nRCx6IkKgurR9tA88aIPutU
+         PGwlJcrzebcujYRxrKEYsdEIfYkVRcNm5OeJKQfw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Samuel Cabrero <scabrero@suse.de>,
-        =?UTF-8?q?Aur=C3=A9lien=20Aptel?= <aaptel@suse.de>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <smfrench@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 41/86] cifs: Check for timeout on Negotiate stage
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>
+Subject: [PATCH 4.14 040/114] blktrace: fix trace mutex deadlock
 Date:   Mon, 18 May 2020 19:36:12 +0200
-Message-Id: <20200518173458.701109514@linuxfoundation.org>
+Message-Id: <20200518173510.751929221@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,121 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Cabrero <scabrero@suse.de>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 76e752701a8af4404bbd9c45723f7cbd6e4a251e ]
+commit 2967acbb257a6a9bf912f4778b727e00972eac9b upstream.
 
-Some servers seem to accept connections while booting but never send
-the SMBNegotiate response neither close the connection, causing all
-processes accessing the share hang on uninterruptible sleep state.
+A previous commit changed the locking around registration/cleanup,
+but direct callers of blk_trace_remove() were missed. This means
+that if we hit the error path in setup, we will deadlock on
+attempting to re-acquire the queue trace mutex.
 
-This happens when the cifs_demultiplex_thread detects the server is
-unresponsive so releases the socket and start trying to reconnect.
-At some point, the faulty server will accept the socket and the TCP
-status will be set to NeedNegotiate. The first issued command accessing
-the share will start the negotiation (pid 5828 below), but the response
-will never arrive so other commands will be blocked waiting on the mutex
-(pid 55352).
-
-This patch checks for unresponsive servers also on the negotiate stage
-releasing the socket and reconnecting if the response is not received
-and checking again the tcp state when the mutex is acquired.
-
-PID: 55352  TASK: ffff880fd6cc02c0  CPU: 0   COMMAND: "ls"
- #0 [ffff880fd9add9f0] schedule at ffffffff81467eb9
- #1 [ffff880fd9addb38] __mutex_lock_slowpath at ffffffff81468fe0
- #2 [ffff880fd9addba8] mutex_lock at ffffffff81468b1a
- #3 [ffff880fd9addbc0] cifs_reconnect_tcon at ffffffffa042f905 [cifs]
- #4 [ffff880fd9addc60] smb_init at ffffffffa042faeb [cifs]
- #5 [ffff880fd9addca0] CIFSSMBQPathInfo at ffffffffa04360b5 [cifs]
- ....
-
-Which is waiting a mutex owned by:
-
-PID: 5828   TASK: ffff880fcc55e400  CPU: 0   COMMAND: "xxxx"
- #0 [ffff880fbfdc19b8] schedule at ffffffff81467eb9
- #1 [ffff880fbfdc1b00] wait_for_response at ffffffffa044f96d [cifs]
- #2 [ffff880fbfdc1b60] SendReceive at ffffffffa04505ce [cifs]
- #3 [ffff880fbfdc1bb0] CIFSSMBNegotiate at ffffffffa0438d79 [cifs]
- #4 [ffff880fbfdc1c50] cifs_negotiate_protocol at ffffffffa043b383 [cifs]
- #5 [ffff880fbfdc1c80] cifs_reconnect_tcon at ffffffffa042f911 [cifs]
- #6 [ffff880fbfdc1d20] smb_init at ffffffffa042faeb [cifs]
- #7 [ffff880fbfdc1d60] CIFSSMBQFSInfo at ffffffffa0434eb0 [cifs]
- ....
-
-Signed-off-by: Samuel Cabrero <scabrero@suse.de>
-Reviewed-by: Aurélien Aptel <aaptel@suse.de>
-Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Steve French <smfrench@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 1f2cac107c59 ("blktrace: fix unlocked access to init/start-stop/teardown")
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/cifs/cifssmb.c | 12 ++++++++++++
- fs/cifs/connect.c |  3 ++-
- fs/cifs/smb2pdu.c | 12 ++++++++++++
- 3 files changed, 26 insertions(+), 1 deletion(-)
+ kernel/trace/blktrace.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/cifs/cifssmb.c b/fs/cifs/cifssmb.c
-index b9b8f19dce0e1..fa07f7cb85a51 100644
---- a/fs/cifs/cifssmb.c
-+++ b/fs/cifs/cifssmb.c
-@@ -184,6 +184,18 @@ cifs_reconnect_tcon(struct cifs_tcon *tcon, int smb_command)
- 	 * reconnect the same SMB session
- 	 */
- 	mutex_lock(&ses->session_mutex);
-+
-+	/*
-+	 * Recheck after acquire mutex. If another thread is negotiating
-+	 * and the server never sends an answer the socket will be closed
-+	 * and tcpStatus set to reconnect.
-+	 */
-+	if (server->tcpStatus == CifsNeedReconnect) {
-+		rc = -EHOSTDOWN;
-+		mutex_unlock(&ses->session_mutex);
-+		goto out;
-+	}
-+
- 	rc = cifs_negotiate_protocol(0, ses);
- 	if (rc == 0 && ses->need_reconnect)
- 		rc = cifs_setup_session(0, ses, nls_codepage);
-diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-index c9793ce0d3368..7022750cae2fd 100644
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -558,7 +558,8 @@ server_unresponsive(struct TCP_Server_Info *server)
- 	 * 65s kernel_recvmsg times out, and we see that we haven't gotten
- 	 *     a response in >60s.
- 	 */
--	if (server->tcpStatus == CifsGood &&
-+	if ((server->tcpStatus == CifsGood ||
-+	    server->tcpStatus == CifsNeedNegotiate) &&
- 	    time_after(jiffies, server->lstrp + 2 * SMB_ECHO_INTERVAL)) {
- 		cifs_dbg(VFS, "Server %s has not responded in %d seconds. Reconnecting...\n",
- 			 server->hostname, (2 * SMB_ECHO_INTERVAL) / HZ);
-diff --git a/fs/cifs/smb2pdu.c b/fs/cifs/smb2pdu.c
-index d4472a4947581..4ffd5e177288e 100644
---- a/fs/cifs/smb2pdu.c
-+++ b/fs/cifs/smb2pdu.c
-@@ -249,6 +249,18 @@ smb2_reconnect(__le16 smb2_command, struct cifs_tcon *tcon)
- 	 * the same SMB session
- 	 */
- 	mutex_lock(&tcon->ses->session_mutex);
-+
-+	/*
-+	 * Recheck after acquire mutex. If another thread is negotiating
-+	 * and the server never sends an answer the socket will be closed
-+	 * and tcpStatus set to reconnect.
-+	 */
-+	if (server->tcpStatus == CifsNeedReconnect) {
-+		rc = -EHOSTDOWN;
-+		mutex_unlock(&tcon->ses->session_mutex);
-+		goto out;
-+	}
-+
- 	rc = cifs_negotiate_protocol(0, tcon->ses);
- 	if (!rc && tcon->ses->need_reconnect) {
- 		rc = cifs_setup_session(0, tcon->ses, nls_codepage);
--- 
-2.20.1
-
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -591,7 +591,7 @@ static int __blk_trace_setup(struct requ
+ 		return ret;
+ 
+ 	if (copy_to_user(arg, &buts, sizeof(buts))) {
+-		blk_trace_remove(q);
++		__blk_trace_remove(q);
+ 		return -EFAULT;
+ 	}
+ 	return 0;
+@@ -637,7 +637,7 @@ static int compat_blk_trace_setup(struct
+ 		return ret;
+ 
+ 	if (copy_to_user(arg, &buts.name, ARRAY_SIZE(buts.name))) {
+-		blk_trace_remove(q);
++		__blk_trace_remove(q);
+ 		return -EFAULT;
+ 	}
+ 
 
 
