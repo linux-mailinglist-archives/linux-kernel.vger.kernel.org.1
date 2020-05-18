@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A821D80FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735811D870C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729644AbgERRnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:43:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41566 "EHLO mail.kernel.org"
+        id S1730234AbgERS3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:29:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729631AbgERRnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:43:46 -0400
+        id S1729345AbgERRlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:41:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4ED8620715;
-        Mon, 18 May 2020 17:43:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C115620829;
+        Mon, 18 May 2020 17:41:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823825;
-        bh=yrf3570OBu5h8HxEqgfHQx3jMZEKbBNA9EJShkhX+tg=;
+        s=default; t=1589823712;
+        bh=f56+l4dwkKcFTQ+uEGhzoT9VkfwA/0IyYfCcohnFL9M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f2Ojgfx3Xl+p/eCIN1Y8rM4R4+gnPWj3MTn+N7pd1OyuIxFl2s/A45lAp1FIvXssi
-         3y7cxZYKOC78Y1Pw3hWvopUGIOaGGCYxDQ7Aux8zui1uQWGEtNohHc89TzyPnznJzn
-         +z+ofYFpi5S08hLLG6iGOmgBiNy/x9RbGHmIWgqU=
+        b=yvn8AhpWVGvssqSzIuZFfjRfBr0pmkKHRTIZyGX/FkfPOfSPKvT8iWvcj6VGcZox2
+         QBaQAcROn5krEuLkZj11ZldeJc4MNqMnyAu77ywkH6S98YSJzMX+ycnu2zsNOQ3ber
+         4pBMJrQPw+9t+JbUHP3kQ18GJqTScwK70Bdu3q2g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 51/90] ALSA: hda/hdmi: fix race in monitor detection during probe
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 58/86] Stop the ad-hoc games with -Wno-maybe-initialized
 Date:   Mon, 18 May 2020 19:36:29 +0200
-Message-Id: <20200518173501.555862582@linuxfoundation.org>
+Message-Id: <20200518173502.183017530@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +43,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit ca76282b6faffc83601c25bd2a95f635c03503ef ]
+commit 78a5255ffb6a1af189a83e493d916ba1c54d8c75 upstream.
 
-A race exists between build_pcms() and build_controls() phases of codec
-setup. Build_pcms() sets up notifier for jack events. If a monitor event
-is received before build_controls() is run, the initial jack state is
-lost and never reported via mixer controls.
+We have some rather random rules about when we accept the
+"maybe-initialized" warnings, and when we don't.
 
-The problem can be hit at least with SOF as the controller driver. SOF
-calls snd_hda_codec_build_controls() in its workqueue-based probe and
-this can be delayed enough to hit the race condition.
+For example, we consider it unreliable for gcc versions < 4.9, but also
+if -O3 is enabled, or if optimizing for size.  And then various kernel
+config options disabled it, because they know that they trigger that
+warning by confusing gcc sufficiently (ie PROFILE_ALL_BRANCHES).
 
-Fix the issue by invalidating the per-pin ELD information when
-build_controls() is called. The existing call to hdmi_present_sense()
-will update the ELD contents. This ensures initial monitor state is
-correctly reflected via mixer controls.
+And now gcc-10 seems to be introducing a lot of those warnings too, so
+it falls under the same heading as 4.9 did.
 
-BugLink: https://github.com/thesofproject/linux/issues/1687
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200428123836.24512-1-kai.vehmanen@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+At the same time, we have a very straightforward way to _enable_ that
+warning when wanted: use "W=2" to enable more warnings.
+
+So stop playing these ad-hoc games, and just disable that warning by
+default, with the known and straight-forward "if you want to work on the
+extra compiler warnings, use W=123".
+
+Would it be great to have code that is always so obvious that it never
+confuses the compiler whether a variable is used initialized or not?
+Yes, it would.  In a perfect world, the compilers would be smarter, and
+our source code would be simpler.
+
+That's currently not the world we live in, though.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/pci/hda/patch_hdmi.c | 2 ++
- 1 file changed, 2 insertions(+)
+ Makefile             |    7 +++----
+ init/Kconfig         |   17 -----------------
+ kernel/trace/Kconfig |    1 -
+ 3 files changed, 3 insertions(+), 22 deletions(-)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index e19f447e27ae1..a866a20349c32 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2044,7 +2044,9 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
+--- a/Makefile
++++ b/Makefile
+@@ -648,10 +648,6 @@ KBUILD_CFLAGS   += -O2
+ endif
+ endif
  
- 	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
- 		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
-+		struct hdmi_eld *pin_eld = &per_pin->sink_eld;
+-ifdef CONFIG_CC_DISABLE_WARN_MAYBE_UNINITIALIZED
+-KBUILD_CFLAGS   += -Wno-maybe-uninitialized
+-endif
+-
+ # Tell gcc to never replace conditional load with a non-conditional one
+ KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
  
-+		pin_eld->eld_valid = false;
- 		hdmi_present_sense(per_pin, 0);
- 	}
+@@ -799,6 +795,9 @@ KBUILD_CFLAGS += $(call cc-disable-warni
+ # disable stringop warnings in gcc 8+
+ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
  
--- 
-2.20.1
-
++# Enabled with W=2, disabled by default as noisy
++KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
++
+ # disable invalid "can't wrap" optimizations for signed / pointers
+ KBUILD_CFLAGS	+= $(call cc-option,-fno-strict-overflow)
+ 
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -16,22 +16,6 @@ config DEFCONFIG_LIST
+ 	default "$ARCH_DEFCONFIG"
+ 	default "arch/$ARCH/defconfig"
+ 
+-config CC_HAS_WARN_MAYBE_UNINITIALIZED
+-	def_bool $(cc-option,-Wmaybe-uninitialized)
+-	help
+-	  GCC >= 4.7 supports this option.
+-
+-config CC_DISABLE_WARN_MAYBE_UNINITIALIZED
+-	bool
+-	depends on CC_HAS_WARN_MAYBE_UNINITIALIZED
+-	default CC_IS_GCC && GCC_VERSION < 40900  # unreliable for GCC < 4.9
+-	help
+-	  GCC's -Wmaybe-uninitialized is not reliable by definition.
+-	  Lots of false positive warnings are produced in some cases.
+-
+-	  If this option is enabled, -Wno-maybe-uninitialzed is passed
+-	  to the compiler to suppress maybe-uninitialized warnings.
+-
+ config CONSTRUCTORS
+ 	bool
+ 	depends on !UML
+@@ -1347,7 +1331,6 @@ config CC_OPTIMIZE_FOR_PERFORMANCE
+ 
+ config CC_OPTIMIZE_FOR_SIZE
+ 	bool "Optimize for size"
+-	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
+ 	help
+ 	  Enabling this option will pass "-Os" instead of "-O2" to
+ 	  your compiler resulting in a smaller kernel.
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -312,7 +312,6 @@ config PROFILE_ANNOTATED_BRANCHES
+ config PROFILE_ALL_BRANCHES
+ 	bool "Profile all if conditionals"
+ 	select TRACE_BRANCH_PROFILING
+-	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
+ 	help
+ 	  This tracer profiles all branch conditions. Every if ()
+ 	  taken in the kernel is recorded whether it hit or miss.
 
 
