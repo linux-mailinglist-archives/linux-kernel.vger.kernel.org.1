@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49AF1D8498
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49FE01D86E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387604AbgERSMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:12:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48670 "EHLO mail.kernel.org"
+        id S1729021AbgERRkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:40:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731073AbgERSDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:03:21 -0400
+        id S1728988AbgERRkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:40:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E4B120853;
-        Mon, 18 May 2020 18:03:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D76B120874;
+        Mon, 18 May 2020 17:40:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825000;
-        bh=qPiPvnOGJzhRxWccUafyKknE9pRDCl2DUrjtZb6VY4k=;
+        s=default; t=1589823610;
+        bh=wu0tYu0TTHvg7GYeJXWNFmDKe2/uOXqi3m4LRTZNwUE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E1snMUohdoan0/P+MKbqUQ4U/ur3mu2vp4bV6Vy6JGFGhxWcH4XFqWaO0gg8BBrdH
-         RQfTpz8rqLvncqWpVSQxpfk9dsHmWZX5EtS/Bg3ZdpX2WUIOwqYOB033r97SILQn1P
-         PUUtM981Krj7HSNOgYWiMPxR2KgBjyOmndaKh8Qo=
+        b=sQL7UfIJOwK+D46r8ShftT2xr21w7xmaOFuL6xvdiS9q5AvcZCA6sWXOvPCXJJXHI
+         RW4XpgY2E+LCQE5QE70V3LCh9rG4Nv9IRP2Tl0c51QOYBsppXVPuMrFbTZwExNeZbo
+         3jEX7iSGDO3VSylVQBfIo0AdRQ3EGh4dOOtDJIks=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Grzegorz Kowal <custos.mentis@gmail.com>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, zhong jiang <zhongjiang@huawei.com>,
+        Toshi Kani <toshi.kani@hpe.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 090/194] mmc: sdhci-pci-gli: Fix can not access GL9750 after reboot from Windows 10
+Subject: [PATCH 4.4 49/86] mm/memory_hotplug.c: fix overflow in test_pages_in_a_zone()
 Date:   Mon, 18 May 2020 19:36:20 +0200
-Message-Id: <20200518173539.125024739@linuxfoundation.org>
+Message-Id: <20200518173500.525311459@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,49 +48,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+From: zhong jiang <zhongjiang@huawei.com>
 
-[ Upstream commit b56ff195c317ad28c05d354aeecbb9995b8e08c1 ]
+[ Upstream commit d6d8c8a48291b929b2e039f220f0b62958cccfea ]
 
-Need to clear some bits in a vendor-defined register after reboot from
-Windows 10.
+When mainline introduced commit a96dfddbcc04 ("base/memory, hotplug: fix
+a kernel oops in show_valid_zones()"), it obtained the valid start and
+end pfn from the given pfn range.  The valid start pfn can fix the
+actual issue, but it introduced another issue.  The valid end pfn will
+may exceed the given end_pfn.
 
-Fixes: e51df6ce668a ("mmc: host: sdhci-pci: Add Genesys Logic GL975x support")
-Reported-by: Grzegorz Kowal <custos.mentis@gmail.com>
-Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Tested-by: Grzegorz Kowal <custos.mentis@gmail.com>
-Link: https://lore.kernel.org/r/20200504063957.6638-1-benchuanggli@gmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Although the incorrect overflow will not result in actual problem at
+present, but I think it need to be fixed.
+
+[toshi.kani@hpe.com: remove assumption that end_pfn is aligned by MAX_ORDER_NR_PAGES]
+Fixes: a96dfddbcc04 ("base/memory, hotplug: fix a kernel oops in show_valid_zones()")
+Link: http://lkml.kernel.org/r/1486467299-22648-1-git-send-email-zhongjiang@huawei.com
+Signed-off-by: zhong jiang <zhongjiang@huawei.com>
+Signed-off-by: Toshi Kani <toshi.kani@hpe.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-pci-gli.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ mm/memory_hotplug.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-index ff39d81a5742c..fd76aa672e020 100644
---- a/drivers/mmc/host/sdhci-pci-gli.c
-+++ b/drivers/mmc/host/sdhci-pci-gli.c
-@@ -26,6 +26,9 @@
- #define   SDHCI_GLI_9750_DRIVING_2    GENMASK(27, 26)
- #define   GLI_9750_DRIVING_1_VALUE    0xFFF
- #define   GLI_9750_DRIVING_2_VALUE    0x3
-+#define   SDHCI_GLI_9750_SEL_1        BIT(29)
-+#define   SDHCI_GLI_9750_SEL_2        BIT(31)
-+#define   SDHCI_GLI_9750_ALL_RST      (BIT(24)|BIT(25)|BIT(28)|BIT(30))
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 804cbfe9132dd..5fa8a3606f409 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -1397,7 +1397,7 @@ int test_pages_in_a_zone(unsigned long start_pfn, unsigned long end_pfn,
+ 			while ((i < MAX_ORDER_NR_PAGES) &&
+ 				!pfn_valid_within(pfn + i))
+ 				i++;
+-			if (i == MAX_ORDER_NR_PAGES)
++			if (i == MAX_ORDER_NR_PAGES || pfn + i >= end_pfn)
+ 				continue;
+ 			/* Check if we got outside of the zone */
+ 			if (zone && !zone_spans_pfn(zone, pfn + i))
+@@ -1414,7 +1414,7 @@ int test_pages_in_a_zone(unsigned long start_pfn, unsigned long end_pfn,
  
- #define SDHCI_GLI_9750_PLL	      0x864
- #define   SDHCI_GLI_9750_PLL_TX2_INV    BIT(23)
-@@ -122,6 +125,8 @@ static void gli_set_9750(struct sdhci_host *host)
- 				    GLI_9750_DRIVING_1_VALUE);
- 	driving_value |= FIELD_PREP(SDHCI_GLI_9750_DRIVING_2,
- 				    GLI_9750_DRIVING_2_VALUE);
-+	driving_value &= ~(SDHCI_GLI_9750_SEL_1|SDHCI_GLI_9750_SEL_2|SDHCI_GLI_9750_ALL_RST);
-+	driving_value |= SDHCI_GLI_9750_SEL_2;
- 	sdhci_writel(host, driving_value, SDHCI_GLI_9750_DRIVING);
- 
- 	sw_ctrl_value &= ~SDHCI_GLI_9750_SW_CTRL_4;
+ 	if (zone) {
+ 		*valid_start = start;
+-		*valid_end = end;
++		*valid_end = min(end, end_pfn);
+ 		return 1;
+ 	} else {
+ 		return 0;
 -- 
 2.20.1
 
