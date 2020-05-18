@@ -2,116 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF161D723B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01C31D7242
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgERHup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 03:50:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726489AbgERHup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 03:50:45 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5D6C20787;
-        Mon, 18 May 2020 07:50:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589788245;
-        bh=lqHej4TeaH/h0N1U2FkK0BZnCpJw7cuBwYsE1+Z+y/U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LnqTXJ6Xz9beUnIik6bXpG/2hpaTRmYbocdh91cTI0NjQ6MO3VllE9fT0qW/g6uLS
-         xtGr1V+cqVk3tN/5qbWYSM6UOuOiSZ0xliYoUeLXOGX4VG3eSOVWBveH5ouY1UhxBF
-         6AgF/Wen5TNtdYHkLq6rn987ul1SmmgIrE4jCP0I=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jaaXr-00DBDP-48; Mon, 18 May 2020 08:50:43 +0100
+        id S1727839AbgERHvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 03:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726573AbgERHvj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 03:51:39 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A313C061A0C;
+        Mon, 18 May 2020 00:51:38 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id g1so8745734ljk.7;
+        Mon, 18 May 2020 00:51:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=j+XLZ770aayqNoW5d4BlZKSy7t5I9Qm2RnTjcbWff+w=;
+        b=unolLHR2GOwwZox7hA9MdHNY/i+B/kkEvMFY2W8hZtb8LR04154RvMy+t152D3BMm5
+         DtPrrH+3UefzUadWPZ+n/4SDb1h5ewHECDhxp+aiadMJx+KPG7XbqhWk9tuU0IoL0GqR
+         ilMQSTW+7EO4EJXWpuGiyjT/3MX1OJYtyMi+6eisywEVR0nMLegJs6kBnAjGlTGwcAHl
+         YafJMiKPixCOHQycT+wEh0cavdBpom1obqnDIUTGVk8q9JxDgDSVUjkW2v62BCA2DO0T
+         7gcj6j+q2Lr/506YODapWd00m7dgAj5aAzajd9aNIQ5ymocZXSBkh6F4iOMGhVqaVJ2F
+         lfsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=j+XLZ770aayqNoW5d4BlZKSy7t5I9Qm2RnTjcbWff+w=;
+        b=g/mCb0RuktKgYltIYs6J4y5idoLVBkzArOSvAXcaIrsEDo4C6M/a5CHH+lO47DDMCA
+         uedSQabP+DjkB7QMZ6D7skhSDIxDBwmcMo/Y8RlbxBin7p1Iq62+LrMy6aeqXdq3lnL6
+         3dKpVdhwnjklyqqf6IBbDNZbkN1PP8aiZSdKudsewXNzt/JF+slS2wLBDhbUa1e00GRF
+         53RdCN1ikEopQphpfzYBZ2HmJa9ig7fXQ8WbMZQMYy3E9ipuRcQSMZQ85lZeCpf5IyAQ
+         vbpwhPZ99JD0I1OFb0Ex7DkyqvGJfEMW/HpWFqjrzAWwsAETDS9nmSFpz21YmwotKMiT
+         oenA==
+X-Gm-Message-State: AOAM532xe+IzaCi3nJnfoS2wyDPzFw2h5C9rzJoQmcz8Yulz+8dzGyzZ
+        yPmKoPShvQCUVjmvp6Jfu0wb2AuF
+X-Google-Smtp-Source: ABdhPJwuCPpx9lOKnvsBTiPL744FnZ7MTvYQhkr7TMA1L5ipbfiZVQF5cWQrN9uCGxWUU1vEJeoTIg==
+X-Received: by 2002:a05:651c:1131:: with SMTP id e17mr10027353ljo.79.1589788296661;
+        Mon, 18 May 2020 00:51:36 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id l14sm195773lfk.30.2020.05.18.00.51.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 May 2020 00:51:35 -0700 (PDT)
+Subject: Re: [PATCH v6 2/7] mmc: block: Add mmc_bdev_to_card() helper
+To:     Ulf Hansson <ulf.hansson@linaro.org>, Jens Axboe <axboe@kernel.dk>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        David Heidelberg <david@ixit.cz>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Billy Laws <blaws05@gmail.com>,
+        =?UTF-8?Q?Nils_=c3=96stlund?= <nils@naltan.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrey Danin <danindrey@mail.ru>,
+        Gilles Grandou <gilles@grandou.net>,
+        Ryan Grachek <ryan@edited.us>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steve McIntyre <steve@einval.com>,
+        linux-efi <linux-efi@vger.kernel.org>
+References: <20200517021225.22890-1-digetx@gmail.com>
+ <20200517021225.22890-3-digetx@gmail.com>
+ <7bddacf1-5fe0-5119-48ac-6a0cc65c5af0@gmail.com>
+ <CAPDyKFrGbKSx=afZCNBN_r_6iNm_TX0tZVRLK05ZUTDBGvAuyA@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <41f4739f-5fd4-b6d8-9b3b-953411d31b97@gmail.com>
+Date:   Mon, 18 May 2020 10:51:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 18 May 2020 08:50:42 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Anastassios Nanos <ananos@nubificus.co.uk>
-Cc:     kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH 0/2] Expose KVM API to Linux Kernel
-In-Reply-To: <cover.1589784221.git.ananos@nubificus.co.uk>
-References: <cover.1589784221.git.ananos@nubificus.co.uk>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <c1124c27293769f8e4836fb8fdbd5adf@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: ananos@nubificus.co.uk, kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, pbonzini@redhat.com, sean.j.christopherson@intel.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <CAPDyKFrGbKSx=afZCNBN_r_6iNm_TX0tZVRLK05ZUTDBGvAuyA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-18 07:58, Anastassios Nanos wrote:
-> To spawn KVM-enabled Virtual Machines on Linux systems, one has to use
-> QEMU, or some other kind of VM monitor in user-space to host the vCPU
-> threads, I/O threads and various other book-keeping/management 
-> mechanisms.
-> This is perfectly fine for a large number of reasons and use cases: for
-> instance, running generic VMs, running general purpose Operating 
-> systems
-> that need some kind of emulation for legacy boot/hardware etc.
+18.05.2020 10:24, Ulf Hansson пишет:
+> On Mon, 18 May 2020 at 01:55, Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> 17.05.2020 05:12, Dmitry Osipenko пишет:
+>>> NVIDIA Tegra Partition Table takes into account MMC card's BOOT_SIZE_MULT
+>>> parameter, and thus, the partition parser needs to retrieve that EXT_CSD
+>>> value from the block device.  There are also some other parts of struct
+>>> mmc_card that are needed for the partition parser in order to calculate
+>>> the eMMC offset and verify different things.  This patch introduces new
+>>> helper which takes block device for the input argument and returns the
+>>> corresponding MMC card.
+>>>
+>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>> ---
+>>>  drivers/mmc/core/block.c   | 15 +++++++++++++++
+>>>  include/linux/mmc/blkdev.h | 13 +++++++++++++
+>>>  2 files changed, 28 insertions(+)
+>>>  create mode 100644 include/linux/mmc/blkdev.h
+>>>
+>>> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+>>> index c5367e2c8487..99298e888381 100644
+>>> --- a/drivers/mmc/core/block.c
+>>> +++ b/drivers/mmc/core/block.c
+>>> @@ -40,6 +40,7 @@
+>>>  #include <linux/debugfs.h>
+>>>
+>>>  #include <linux/mmc/ioctl.h>
+>>> +#include <linux/mmc/blkdev.h>
+>>>  #include <linux/mmc/card.h>
+>>>  #include <linux/mmc/host.h>
+>>>  #include <linux/mmc/mmc.h>
+>>> @@ -305,6 +306,20 @@ static ssize_t force_ro_store(struct device *dev, struct device_attribute *attr,
+>>>       return ret;
+>>>  }
+>>>
+>>> +struct mmc_card *mmc_bdev_to_card(struct block_device *bdev)
+>>> +{
+>>> +     struct mmc_blk_data *md;
+>>> +
+>>> +     if (bdev->bd_disk->major != MMC_BLOCK_MAJOR)
+>>> +             return NULL;
+>>> +
+>>> +     md = mmc_blk_get(bdev->bd_disk);
+>>> +     if (!md)
+>>> +             return NULL;
+>>> +
+>>> +     return md->queue.card;
+>>> +}
+>>> +
+>>>  static int mmc_blk_open(struct block_device *bdev, fmode_t mode)
+>>>  {
+>>>       struct mmc_blk_data *md = mmc_blk_get(bdev->bd_disk);
+>>> diff --git a/include/linux/mmc/blkdev.h b/include/linux/mmc/blkdev.h
+>>> new file mode 100644
+>>> index 000000000000..67608c58de70
+>>> --- /dev/null
+>>> +++ b/include/linux/mmc/blkdev.h
+>>> @@ -0,0 +1,13 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>>> +/*
+>>> + *  linux/include/linux/mmc/blkdev.h
+>>> + */
+>>> +#ifndef LINUX_MMC_BLOCK_DEVICE_H
+>>> +#define LINUX_MMC_BLOCK_DEVICE_H
+>>> +
+>>> +struct block_device;
+>>> +struct mmc_card;
+>>> +
+>>> +struct mmc_card *mmc_bdev_to_card(struct block_device *bdev);
+>>> +
+>>> +#endif /* LINUX_MMC_BLOCK_DEVICE_H */
+>>>
+>>
+>> Hello Ulf / Jens and everyone,
 > 
-> What if we wanted to execute a small piece of code as a guest instance,
-> without the involvement of user-space? The KVM functions are already 
-> doing
-> what they should: VM and vCPU setup is already part of the kernel, the 
-> only
-> missing piece is memory handling.
+> Hi Dmitry,
 > 
-> With these series, (a) we expose to the Linux Kernel the bare minimum 
-> KVM
-> API functions in order to spawn a guest instance without the 
-> intervention
-> of user-space; and (b) we tweak the memory handling code of KVM-related
-> functions to account for another kind of guest, spawned in 
-> kernel-space.
+>>
+>> Guys, what do you think about this change?
 > 
-> PATCH #1 exposes the needed stub functions, whereas PATCH #2 introduces 
-> the
-> changes in the KVM memory handling code for x86_64 and aarch64.
+> As I stated in an earlier reply, I am deferring the review from mmc
+> point of view, until I see some confirmation from Jens that he is okay
+> with adding a new partition format.
 > 
-> An example of use is provided based on kvmtest.c
-> [https://lwn.net/Articles/658512/] at
-> https://github.com/cloudkernels/kvmmtest
+> Otherwise I may just waste my time on reviews. I hope you understand.
 
-You don't explain *why* we would want this. What is the overhead of 
-having
-a userspace if your guest doesn't need any userspace handling? The 
-kvmtest
-example indeed shows that the KVM userspace API is usable  without any 
-form
-of emulation, hence has almost no cost.
+Hello Ulf,
 
-Without a clear description of the advantages of your solution, as well
-as a full featured in-tree use case, I find it pretty hard to support 
-this.
+I understand yours concerns. However, since the v6 of this series, the
+information about MMC card is also needed if we'll want to support
+devices that have GPT entry and use an older bootloader version.
 
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Jens, could you please let us know whether we aren't wasting our time
+here? :) If it's not desirable to support hacks that are needed for
+consumer-grade Tegra-based Android devices in upstream kernel for the
+case of the eMMC storage, then I'll stop this effort and won't bother
+you again with these patches.
