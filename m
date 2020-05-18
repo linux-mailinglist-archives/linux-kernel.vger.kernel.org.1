@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034911D8129
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179E21D85BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728832AbgERRpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:45:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44204 "EHLO mail.kernel.org"
+        id S1732290AbgERSUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:20:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729922AbgERRpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:45:25 -0400
+        id S1730966AbgERRwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:52:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B02B420671;
-        Mon, 18 May 2020 17:45:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4AC2B20674;
+        Mon, 18 May 2020 17:52:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823925;
-        bh=TkyQUb/hHwF5Zmma86qgaGPQM3IxEGf+vjAG8OOTAOU=;
+        s=default; t=1589824341;
+        bh=He+A6CTlKyr17xpE/1/977g8PsjHdNLClOrWgkyMqLo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P12pIEqPU9Y2R3hvSjzEzu7yWym/iJm/sSpyiyn6HI9zzqAAsPunhcsOp0fhLWkXK
-         0YZGE481DpdGNlBgGdrWXwAFAqGNW6ogkZwS2YGhWnSCu3/u2K1zOuo7DKngdiWeyl
-         7OhzwMbiFpcAN6QTQ36sZwzKHD9hNPlpZEz0uAaU=
+        b=H0Lb0J1lHGLotF3R0FhzEaMJ1RvwSAtdSNtldCxmqQeMKybLVY6ROnvsoNK0v2jgi
+         TAvt4m5O0ik6pudmYSmCOj2J4WrOqODl+F7J+uIPfEk/PGRDuijE/iCe9uua29ziLF
+         WCLpqmaAQS/w1EiZBcpar1vimVTx66PXFpGGGctg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 66/90] gcc-10: disable stringop-overflow warning for now
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 26/80] ALSA: hda/hdmi: fix race in monitor detection during probe
 Date:   Mon, 18 May 2020 19:36:44 +0200
-Message-Id: <20200518173504.566882619@linuxfoundation.org>
+Message-Id: <20200518173455.620680477@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
+References: <20200518173450.097837707@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,32 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-commit 5a76021c2eff7fcf2f0918a08fd8a37ce7922921 upstream.
+[ Upstream commit ca76282b6faffc83601c25bd2a95f635c03503ef ]
 
-This is the final array bounds warning removal for gcc-10 for now.
+A race exists between build_pcms() and build_controls() phases of codec
+setup. Build_pcms() sets up notifier for jack events. If a monitor event
+is received before build_controls() is run, the initial jack state is
+lost and never reported via mixer controls.
 
-Again, the warning is good, and we should re-enable all these warnings
-when we have converted all the legacy array declaration cases to
-flexible arrays. But in the meantime, it's just noise.
+The problem can be hit at least with SOF as the controller driver. SOF
+calls snd_hda_codec_build_controls() in its workqueue-based probe and
+this can be delayed enough to hit the race condition.
 
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix the issue by invalidating the per-pin ELD information when
+build_controls() is called. The existing call to hdmi_present_sense()
+will update the ELD contents. This ensures initial monitor state is
+correctly reflected via mixer controls.
 
+BugLink: https://github.com/thesofproject/linux/issues/1687
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20200428123836.24512-1-kai.vehmanen@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile |    1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_hdmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/Makefile
-+++ b/Makefile
-@@ -800,6 +800,7 @@ KBUILD_CFLAGS += $(call cc-disable-warni
- # We'll want to enable this eventually, but it's not going away for 5.7 at least
- KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
- KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
-+KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 12a064f994b1a..1d83c3c59e1ac 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2211,7 +2211,9 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
  
- # Enabled with W=2, disabled by default as noisy
- KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
+ 	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+ 		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
++		struct hdmi_eld *pin_eld = &per_pin->sink_eld;
+ 
++		pin_eld->eld_valid = false;
+ 		hdmi_present_sense(per_pin, 0);
+ 	}
+ 
+-- 
+2.20.1
+
 
 
