@@ -2,91 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCF61D783A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 14:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2BD1D783E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 14:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgERMOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 08:14:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:39320 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726448AbgERMOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 08:14:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DE3F6106F;
-        Mon, 18 May 2020 05:14:46 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D4383F305;
-        Mon, 18 May 2020 05:14:44 -0700 (PDT)
-Date:   Mon, 18 May 2020 13:14:41 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@am.com>,
-        Jann Horn <jannh@google.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@android.com
-Subject: Re: [PATCH 6/6] scs: Move DEFINE_SCS macro into core code
-Message-ID: <20200518121441.GE1957@C02TD0UTHF1T.local>
-References: <20200515172756.27185-1-will@kernel.org>
- <20200515172756.27185-7-will@kernel.org>
+        id S1727777AbgERMPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 08:15:30 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:58858 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgERMP3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 08:15:29 -0400
+Received: from mail-ej1-f71.google.com ([209.85.218.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <guilherme.piccoli@canonical.com>)
+        id 1jaeg3-0002Sl-OE
+        for linux-kernel@vger.kernel.org; Mon, 18 May 2020 12:15:27 +0000
+Received: by mail-ej1-f71.google.com with SMTP id 7so5131930ejy.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 05:15:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wSKPyI+z3/ghuKiiEStd7yz61AaHIt29YcTLEMnoHhI=;
+        b=iimwJRkchuktEIHGHmNlFw+OBVKtGVkDGwJBpDN84TeyoU7yNIbHfdNtvrS9GfLaWH
+         RHH/5LgUyvecq2D9S8w9erIsDU3cJ8ajvXeloq6FMGBd8jFXRzXFzJlDlo6D+7VBWaEI
+         0UOZMYvpN5b/Dnvz/cUGOoB4jmafm2TwE9J1/nJubqMKSup/J/U2fXe/ehB2boBpaNM6
+         Ylh/ROQSOFk0wT0sH44mept1RoB79YT3dgH1YMdGT37H50N2j7H0nZdHnX1YhY1H+7SV
+         ffqzGWsx1t7jc8Ulw+BN9pfUo2hQMNbQ21U2gI6f+J/aNylQWRDA11J9aVfDkOgCO36r
+         sjJA==
+X-Gm-Message-State: AOAM531ZdPvXCwoRQnUrmbxjMplBrdVnSv7BgFL1tzxBMDDQRkmz3puY
+        XNn9FOB3fsda0e2fdD5cgpJpqGYJS7BOjN1k6BBQK1muNbB8IbztpdalapB3sTHU8elkZXNeGDF
+        wXgdMQswCtaMRCCHIv5hhdYbh1OpJ+ePdZfbJCXLhRq58PaFF10y7NwNd7A==
+X-Received: by 2002:a17:906:6a43:: with SMTP id n3mr1847781ejs.33.1589804127431;
+        Mon, 18 May 2020 05:15:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyx92b8+cJv+vIkG6WlGqCQiI3XfGvfpzW4RZyHWBrMioHzcq9k6+bFhU+3dVoZWZJfIhb/0GfPnVM2t/ZkDik=
+X-Received: by 2002:a17:906:6a43:: with SMTP id n3mr1847757ejs.33.1589804127148;
+ Mon, 18 May 2020 05:15:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515172756.27185-7-will@kernel.org>
+References: <20200507215946.22589-1-gpiccoli@canonical.com>
+ <20200507160438.ed336a1e00c23c6863d75ae5@linux-foundation.org>
+ <CALJn8nNDqWwanhmutCiP-WBLN1eSg2URrG2j5R4kzgHTYObs7Q@mail.gmail.com>
+ <alpine.DEB.2.22.394.2005081129100.236131@chino.kir.corp.google.com>
+ <CAHD1Q_wF6Mzf5JipXGZKvn2YDR+FQ6ePuKOe-1W-t_VapxMCxg@mail.gmail.com>
+ <alpine.DEB.2.22.394.2005101821160.172131@chino.kir.corp.google.com>
+ <CAHD1Q_zrQmUTRpdW3bZ0CRKuu2dKgueXUjqCNtC5oyZ67CGp2A@mail.gmail.com> <6bf5e178-f2c8-f453-9035-93e31995bb53@sony.com>
+In-Reply-To: <6bf5e178-f2c8-f453-9035-93e31995bb53@sony.com>
+From:   Guilherme Piccoli <gpiccoli@canonical.com>
+Date:   Mon, 18 May 2020 09:14:51 -0300
+Message-ID: <CAHD1Q_yk4GhUgTMc5KcvpaW-oMNEfvSj7vxOCOQGALs4qe8VUQ@mail.gmail.com>
+Subject: Re: [PATCH] mm, compaction: Indicate when compaction is manually
+ triggered by sysctl
+To:     peter enderborg <peter.enderborg@sony.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        "Guilherme G. Piccoli" <kernel@gpiccoli.net>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Gavin Guo <gavin.guo@canonical.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 06:27:56PM +0100, Will Deacon wrote:
-> Defining static shadow call stacks is not architecture-specific, so move
-> the DEFINE_SCS() macro into the core header file.
-> 
-> Signed-off-by: Will Deacon <will@kernel.org>
+Hi Peter, thanks for the feedback. What do you mean by "trace
+notification" ? We seem to have a trace event in that function you
+mentioned. Also, accounting for that function is enough to
+differentiate when the compaction is triggered by the kernel itself or
+by the user (which is our use case here) ?
 
-I think that we'll have to pull this back into arch code if/when we deal
-with VMAP'd stacks, so I'm not sure this is worthwhile given the
-diffstat is balanced.
+Cheers,
 
-Mark.
 
-> ---
->  arch/arm64/kernel/scs.c | 4 ----
->  include/linux/scs.h     | 4 ++++
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/scs.c b/arch/arm64/kernel/scs.c
-> index 955875dff9e1..e8f7ff45dd8f 100644
-> --- a/arch/arm64/kernel/scs.c
-> +++ b/arch/arm64/kernel/scs.c
-> @@ -8,10 +8,6 @@
->  #include <linux/percpu.h>
->  #include <linux/scs.h>
->  
-> -/* Allocate a static per-CPU shadow stack */
-> -#define DEFINE_SCS(name)						\
-> -	DEFINE_PER_CPU(unsigned long [SCS_SIZE/sizeof(long)], name)	\
-> -
->  DEFINE_SCS(irq_shadow_call_stack);
->  
->  #ifdef CONFIG_ARM_SDE_INTERFACE
-> diff --git a/include/linux/scs.h b/include/linux/scs.h
-> index 2fd3df50e93e..6dec390cf154 100644
-> --- a/include/linux/scs.h
-> +++ b/include/linux/scs.h
-> @@ -26,6 +26,10 @@
->  /* An illegal pointer value to mark the end of the shadow stack. */
->  #define SCS_END_MAGIC		(0x5f6UL + POISON_POINTER_DELTA)
->  
-> +/* Allocate a static per-CPU shadow stack */
-> +#define DEFINE_SCS(name)						\
-> +	DEFINE_PER_CPU(unsigned long [SCS_SIZE/sizeof(long)], name)	\
-> +
->  #define task_scs(tsk)		(task_thread_info(tsk)->scs_base)
->  #define task_scs_sp(tsk)	(task_thread_info(tsk)->scs_sp)
->  
-> -- 
-> 2.26.2.761.g0e0b3e54be-goog
-> 
+Guilherme
