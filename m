@@ -2,97 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2761D862E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E201D8720
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730973AbgERSXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:23:38 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:33279 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730523AbgERSXT (ORCPT
+        id S2388054AbgERSaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729240AbgERSaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:23:19 -0400
-Received: by mail-il1-f198.google.com with SMTP id b29so10765361ilb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:23:18 -0700 (PDT)
+        Mon, 18 May 2020 14:30:07 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44465C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:30:07 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id b8so5222419pgi.11
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=66BENZkKJdscrKXw0ODwzFcr1IXdRBxhdFQSFMOWssw=;
+        b=BbisGLjf3FNDMjbQcmYHxKKASqShM9Q38fh+ZAm2fNnRRbEZE92f5+zgkfkWsT6lzP
+         Y6UYWsK2IzFEBWi0s8uR39LnFO7d6cgo+9iao9K8JC9jHGO0f5tSauFodWvkfSjYOpST
+         bff0D8UDAWveJEHNLUFT1N2rh+cvyKIZNzXVg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=5GDXvHftE40qhmbLit/31FtiAnQnj7YGrZQtgyNVNzo=;
-        b=mhPzZwW/DpfF0SB+f2bN0TYQF6m6eWyUGzHgfOPIxvEQE2wugUN2hCubgcJGEi7ta4
-         /xcPil9AUV1g5uTffB468oN8xwqBXK730qqABjx/JPxYA0OnazwmTPWB9TIvcBQ0PV2U
-         eXEtRkt8lSuL0mvSPSOeEqH6e7jmdNJ87htn95dMe9qqaXTEWaq5hjfgpYSlWWUW+YO+
-         A7p1PGEA/SVdymEX1Mj90Cy15lWP4Is/OPTGY/ASlDuZFFNWG8xY7PMUrZZZB9Uhscr6
-         ujzm/m6u7WHyTIbnlcZ85BaXK/0DUCKceVPEr+S2NwJlelwxuko4EslbdrASPEMnb1Hw
-         k23w==
-X-Gm-Message-State: AOAM533awAMSBq4Qt7r5E92lU6ziX8VnwV5haLfwkxqfm8SJ40KLdOk6
-        zNTk5QK/qnktapOLkgdm/WQmVQzE97YM0dadOrVhAyaSlw7n
-X-Google-Smtp-Source: ABdhPJz6jvTBhzuO2kUg4MtSU0NvJqHYnHhWe7phBqOIpbNawC/RTHy4kiwFQGpTluxeMeHx/JQvrVWZmg3jKp6cwrUtABmOoCbp
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=66BENZkKJdscrKXw0ODwzFcr1IXdRBxhdFQSFMOWssw=;
+        b=Ye0+2SQ8+n95Yju5FnwufOkjddCK8bOgaE8jBDaiOeaDcbBki0sjXW/fA5+l2PbQRT
+         DJZ07jKjTchwjBt0xqzBSgcygZCsk9qy4vcMxLn4Lfw317K5F3n6BylWQDhKUtvcIBuf
+         p0RpfrDzfun5XdE6xYONMyjoxMo62yGLNpTPJ5ipJVsRJVZOzZfHQGefdiZgdIpOpwTX
+         SJLDwNQ0h3HF8PPdqZWI8ZW8JdJ8f9GKVj06eR9s2L33Q/88cVkfMgZ7WX1kWrMEjIA3
+         +C7DXegSUXJXjIAqfr58+EzOFqIQsCTdA1svI5dKdXEDH7Yrjn8Kymri4MDGIwhC6mJl
+         nqHQ==
+X-Gm-Message-State: AOAM530QvbPbLrv5lBnsvRTUO0Zi56RAo56zr5eOpmRClpmwkseuzZ8T
+        rPwngNpoMd2SoV/4nlW5IPzU/RgP/rg=
+X-Google-Smtp-Source: ABdhPJzck1NyP/ujlthN1xTgEpPDHl6SqkzLwawIouGGPku0X6jcedoebsr/OYB2YsfNZ8LwxDgm/w==
+X-Received: by 2002:a65:40c5:: with SMTP id u5mr15791324pgp.425.1589826606534;
+        Mon, 18 May 2020 11:30:06 -0700 (PDT)
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com. [209.85.214.180])
+        by smtp.gmail.com with ESMTPSA id s102sm198758pjb.57.2020.05.18.11.30.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 May 2020 11:30:06 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id f15so4580059plr.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:30:06 -0700 (PDT)
+X-Received: by 2002:a67:e952:: with SMTP id p18mr5212098vso.73.1589826235405;
+ Mon, 18 May 2020 11:23:55 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:77c7:: with SMTP id g190mr16476344jac.14.1589826198161;
- Mon, 18 May 2020 11:23:18 -0700 (PDT)
-Date:   Mon, 18 May 2020 11:23:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cbcdae05a5f041db@google.com>
-Subject: INFO: trying to register non-static key in clear_inode
-From:   syzbot <syzbot+78cf4962d1cf5f23a0c9@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <20200504213225.1.I21646c7c37ff63f52ae6cdccc9bc829fbc3d9424@changeid>
+ <CAF6AEGs0qpzgGW8rYdmFqKW=QBbRxxzCWjO0LXsbm6hA0AJNyQ@mail.gmail.com>
+In-Reply-To: <CAF6AEGs0qpzgGW8rYdmFqKW=QBbRxxzCWjO0LXsbm6hA0AJNyQ@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 18 May 2020 11:23:44 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WQ2HtnWFyhachm9QyhkXVhMzRoiR=rWbmukmVYciL3Gw@mail.gmail.com>
+Message-ID: <CAD=FV=WQ2HtnWFyhachm9QyhkXVhMzRoiR=rWbmukmVYciL3Gw@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: Fix off-by-one error in clock choice
+To:     Rob Clark <robdclark@gmail.com>, Sam Ravnborg <sam@ravnborg.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Sandeep Panda <spanda@codeaurora.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Sam,
 
-syzbot found the following crash on:
+On Fri, May 15, 2020 at 2:49 PM Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Mon, May 4, 2020 at 9:32 PM Douglas Anderson <dianders@chromium.org> wrote:
+> >
+> > If the rate in our table is _equal_ to the rate we want then it's OK
+> > to pick it.  It doesn't need to be greater than the one we want.
+> >
+> > Fixes: a095f15c00e2 ("drm/bridge: add support for sn65dsi86 bridge driver")
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>
+> Reviewed-by: Rob Clark <robdclark@gmail.com>
 
-HEAD commit:    5a9ffb95 Merge tag '5.7-rc5-smb3-fixes' of git://git.samba..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=175e90d6100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c14212794ed9ad24
-dashboard link: https://syzkaller.appspot.com/bug?extid=78cf4962d1cf5f23a0c9
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+...and I think this is the last of the patches I stupidly didn't CC
+you on that's ready to go.
 
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+78cf4962d1cf5f23a0c9@syzkaller.appspotmail.com
-
-INFO: trying to register non-static key.
-the code is fine but needs lockdep annotation.
-turning off the locking correctness validator.
-CPU: 1 PID: 235 Comm: kworker/u4:5 Not tainted 5.7.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: krdsd rds_tcp_accept_worker
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- assign_lock_key kernel/locking/lockdep.c:913 [inline]
- register_lock_class+0x1664/0x1760 kernel/locking/lockdep.c:1225
- __lock_acquire+0x104/0x4c50 kernel/locking/lockdep.c:4234
- lock_acquire+0x1f2/0x8f0 kernel/locking/lockdep.c:4934
- __raw_spin_lock_irq include/linux/spinlock_api_smp.h:128 [inline]
- _raw_spin_lock_irq+0x5b/0x80 kernel/locking/spinlock.c:167
- spin_lock_irq include/linux/spinlock.h:378 [inline]
- clear_inode+0x1b/0x1e0 fs/inode.c:529
- evict+0x4ee/0x650 fs/inode.c:579
- iput_final fs/inode.c:1572 [inline]
- iput+0x536/0x8c0 fs/inode.c:1598
- __sock_release+0x20c/0x280 net/socket.c:617
- rds_tcp_accept_one+0x582/0xb70 net/rds/tcp_listen.c:251
- rds_tcp_accept_worker+0x50/0x80 net/rds/tcp.c:525
- process_one_work+0x965/0x16a0 kernel/workqueue.c:2268
- worker_thread+0x96/0xe20 kernel/workqueue.c:2414
- kthread+0x388/0x470 kernel/kthread.c:268
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:351
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-Doug
