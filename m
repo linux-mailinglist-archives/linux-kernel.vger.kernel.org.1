@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D6D1D8103
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2AF1D86EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729670AbgERRoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:44:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41892 "EHLO mail.kernel.org"
+        id S1729160AbgERRkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:40:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729657AbgERRn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:43:56 -0400
+        id S1728456AbgERRkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:40:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F76620835;
-        Mon, 18 May 2020 17:43:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93CF2207C4;
+        Mon, 18 May 2020 17:40:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823835;
-        bh=EHKhD3gXwdngNPGPb9pG6smmQeya9nmvVhYi+tzowL8=;
+        s=default; t=1589823633;
+        bh=hvR9PGMW0+0i+AIKy5t6gOSeg6h2dDfOUwDLAe8jPwI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NZbG6t32H+ehh0sRe1DVqczC5c5rnjoyuqchDVSS9vy6n/5uM13jQtSrWDuDOvlRL
-         t5jwUg69UGkADTeg7ydVPSGHIZ7U+IkpFcOK4N44ImRk6COt6wlhIpcE24b6dmaaci
-         tjYxbbdJ4m+lYhaQgtb8DBfle1Cejfk2BggCnszU=
+        b=hGI1tppAZd2xFXVw7junM8PrjDY9KCrbLSEPFMR5NVnCllXAzRkOcqOa1bdribgZ6
+         et2WHEi2Pu1POCLlvFt6pLIJIkuAGBPyE57KV7d1muJyt6lHR3qd3H68PsQoaCOhqM
+         T8jMyN2+gD/a7wrcJoIUf7HaUbaxu4Pkc7FS/rd8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Grace Kao <grace.kao@intel.com>,
-        Brian Norris <briannorris@chromium.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 54/90] pinctrl: cherryview: Add missing spinlock usage in chv_gpio_irq_handler
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 61/86] gcc-10: disable stringop-overflow warning for now
 Date:   Mon, 18 May 2020 19:36:32 +0200
-Message-Id: <20200518173502.111936595@linuxfoundation.org>
+Message-Id: <20200518173502.783417822@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,50 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grace Kao <grace.kao@intel.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 69388e15f5078c961b9e5319e22baea4c57deff1 ]
+commit 5a76021c2eff7fcf2f0918a08fd8a37ce7922921 upstream.
 
-According to Braswell NDA Specification Update (#557593),
-concurrent read accesses may result in returning 0xffffffff and write
-instructions may be dropped. We have an established format for the
-commit references, i.e.
-cdca06e4e859 ("pinctrl: baytrail: Add missing spinlock usage in
-byt_gpio_irq_handler")
+This is the final array bounds warning removal for gcc-10 for now.
 
-Fixes: 0bd50d719b00 ("pinctrl: cherryview: prevent concurrent access to GPIO controllers")
-Signed-off-by: Grace Kao <grace.kao@intel.com>
-Reported-by: Brian Norris <briannorris@chromium.org>
-Reviewed-by: Brian Norris <briannorris@chromium.org>
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Again, the warning is good, and we should re-enable all these warnings
+when we have converted all the legacy array declaration cases to
+flexible arrays. But in the meantime, it's just noise.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/pinctrl/intel/pinctrl-cherryview.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ Makefile |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pinctrl/intel/pinctrl-cherryview.c b/drivers/pinctrl/intel/pinctrl-cherryview.c
-index e8c08eb975301..d1a99b2e2d4c3 100644
---- a/drivers/pinctrl/intel/pinctrl-cherryview.c
-+++ b/drivers/pinctrl/intel/pinctrl-cherryview.c
-@@ -1509,11 +1509,15 @@ static void chv_gpio_irq_handler(struct irq_desc *desc)
- 	struct chv_pinctrl *pctrl = gpiochip_get_data(gc);
- 	struct irq_chip *chip = irq_desc_get_chip(desc);
- 	unsigned long pending;
-+	unsigned long flags;
- 	u32 intr_line;
+--- a/Makefile
++++ b/Makefile
+@@ -798,6 +798,7 @@ KBUILD_CFLAGS += $(call cc-disable-warni
+ # We'll want to enable this eventually, but it's not going away for 5.7 at least
+ KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
+ KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
++KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
  
- 	chained_irq_enter(chip, desc);
- 
-+	raw_spin_lock_irqsave(&chv_lock, flags);
- 	pending = readl(pctrl->regs + CHV_INTSTAT);
-+	raw_spin_unlock_irqrestore(&chv_lock, flags);
-+
- 	for_each_set_bit(intr_line, &pending, pctrl->community->nirqs) {
- 		unsigned irq, offset;
- 
--- 
-2.20.1
-
+ # Enabled with W=2, disabled by default as noisy
+ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
 
 
