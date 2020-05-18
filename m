@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93811D85D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0C21D8669
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387831AbgERSVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:21:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54982 "EHLO mail.kernel.org"
+        id S1729882AbgERRpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:45:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730903AbgERRv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:51:57 -0400
+        id S1729829AbgERRpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:45:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 606D020674;
-        Mon, 18 May 2020 17:51:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C5E820715;
+        Mon, 18 May 2020 17:45:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824316;
-        bh=B1k6/ieFLe0du67HPDRc6ybeufLWj68xmLG/knItTo8=;
+        s=default; t=1589823905;
+        bh=Dy9+yzzQGv8TwSLbXo42Lz/TB6+TmkvJluwUjIXx7IM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IFU66lg/e2gTW/mdydsBgB45yLOMKoOUHaU9FKqYGbCoAB4wp5ObUGsdi529kNtqt
-         hc+C5o2yAEw+/bpHDe9rRxyz3Y3Uo2u2mLEuhokm5JpoqMRTrVQWGZPJdVAPCY3WzT
-         C9HA8CV6Xv9eZ8A/7dojAlqpumBtw4dGN7lICJ44=
+        b=D9XSC8lbJPoROAda3dAkJBDPeAOLKDnfVlltEw4bm/dIFwcPwCYJNKc8Ig9UUkG/Q
+         c7P37hoeo8PPb8XvfKhBbDm0hsJ7Q5j98y7gbKi6ITJ2ZkeSUYO319mnVpZ4mLXXA1
+         I0a0PQxAjq7RC3JnTVrQ2Y+ozJ4V4XjgABpNfO2c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Samu Nuutamo <samu.nuutamo@vincit.fi>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 43/80] hwmon: (da9052) Synchronize access with mfd
+        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 4.9 83/90] usb: gadget: audio: Fix a missing error return value in audio_bind()
 Date:   Mon, 18 May 2020 19:37:01 +0200
-Message-Id: <20200518173459.011448976@linuxfoundation.org>
+Message-Id: <20200518173508.076631904@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samu Nuutamo <samu.nuutamo@vincit.fi>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 333e22db228f0bd0c839553015a6a8d3db4ba569 ]
+commit 19b94c1f9c9a16d41a8de3ccbdb8536cf1aecdbf upstream.
 
-When tsi-as-adc is configured it is possible for in7[0123]_input read to
-return an incorrect value if a concurrent read to in[456]_input is
-performed. This is caused by a concurrent manipulation of the mux
-channel without proper locking as hwmon and mfd use different locks for
-synchronization.
+If 'usb_otg_descriptor_alloc()' fails, we must return an error code, not 0.
 
-Switch hwmon to use the same lock as mfd when accessing the TSI channel.
+Fixes: 56023ce0fd70 ("usb: gadget: audio: allocate and init otg descriptor by otg capabilities")
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 4f16cab19a3d5 ("hwmon: da9052: Add support for TSI channel")
-Signed-off-by: Samu Nuutamo <samu.nuutamo@vincit.fi>
-[rebase to current master, reword commit message slightly]
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/da9052-hwmon.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/legacy/audio.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/da9052-hwmon.c b/drivers/hwmon/da9052-hwmon.c
-index a973eb6a28908..9e44d2385e6f9 100644
---- a/drivers/hwmon/da9052-hwmon.c
-+++ b/drivers/hwmon/da9052-hwmon.c
-@@ -250,9 +250,9 @@ static ssize_t da9052_read_tsi(struct device *dev,
- 	int channel = to_sensor_dev_attr(devattr)->index;
- 	int ret;
+--- a/drivers/usb/gadget/legacy/audio.c
++++ b/drivers/usb/gadget/legacy/audio.c
+@@ -249,8 +249,10 @@ static int audio_bind(struct usb_composi
+ 		struct usb_descriptor_header *usb_desc;
  
--	mutex_lock(&hwmon->hwmon_lock);
-+	mutex_lock(&hwmon->da9052->auxadc_lock);
- 	ret = __da9052_read_tsi(dev, channel);
--	mutex_unlock(&hwmon->hwmon_lock);
-+	mutex_unlock(&hwmon->da9052->auxadc_lock);
- 
- 	if (ret < 0)
- 		return ret;
--- 
-2.20.1
-
+ 		usb_desc = usb_otg_descriptor_alloc(cdev->gadget);
+-		if (!usb_desc)
++		if (!usb_desc) {
++			status = -ENOMEM;
+ 			goto fail;
++		}
+ 		usb_otg_descriptor_init(cdev->gadget, usb_desc);
+ 		otg_desc[0] = usb_desc;
+ 		otg_desc[1] = NULL;
 
 
