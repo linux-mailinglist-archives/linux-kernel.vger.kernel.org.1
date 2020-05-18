@@ -2,154 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1281D73D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 11:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C331D73E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 11:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgERJVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 05:21:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36902 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726279AbgERJVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 05:21:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7A7F2AF57;
-        Mon, 18 May 2020 09:21:44 +0000 (UTC)
-Date:   Mon, 18 May 2020 11:21:39 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>
-Subject: Re: [PATCH] printk/kdb: Redirect printk messages into kdb in any
- context
-Message-ID: <20200518092139.GK7340@linux-b0ei>
-References: <1589273314-12060-1-git-send-email-sumit.garg@linaro.org>
- <20200512142533.ta4uejwmq5gchtlx@holly.lan>
- <CAFA6WYOV7oPbYE=9fXueYMacb5wv0r9T6F8tmECt-Eafe-fctw@mail.gmail.com>
- <20200514084230.GO17734@linux-b0ei>
- <CAFA6WYPSsgdAB-wJC0e2YkVkW0XsqQsu5wrn4iB4M-cwvS7z2g@mail.gmail.com>
- <20200515085021.GS17734@linux-b0ei>
- <20200515103308.GD42471@jagdpanzerIV.localdomain>
- <20200515134806.5cw4xxnxw7k3223l@holly.lan>
+        id S1726694AbgERJXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 05:23:12 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:27234 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726279AbgERJXL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 05:23:11 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04I9H17F018541;
+        Mon, 18 May 2020 11:22:44 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=ed8LSXnQG+tlux2FuhY3S6F1qF+O17NCCBESiZMzfGE=;
+ b=khcA87sH9LWjScV6dovE2U6oev5OAExticOqX0cSt+p4QiY4ex87jHH3HhgebjiAOIsA
+ FRyFF9cZUrrwiTkpk+ZC1F6h8z1HnannGbiQSmeF14JsINshSkROZPAWCZsuhBo+qj5M
+ r2ZJwKCsEkS1UBDDZMRmxO1CNcakFxYd0YidEtnzSuHArvVuZmSBPhrbAemzbpo5dcXd
+ V+c1hnIPSsL5yobGjEalTXk/RTBIAmvfmSB2WsrkCeA/eDDrsj7G8yVLoL7wW5MYtHaa
+ 0ap/LGgI3KIfH+TS9FQTsLhZeurf8R4++OxC1ZvvAVJGwHskkWuSxtU3uiyS7AtECIHq 7A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3125xxjta7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 11:22:44 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C0E3E10002A;
+        Mon, 18 May 2020 11:22:42 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag5node1.st.com [10.75.127.13])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A5CB42AE6BD;
+        Mon, 18 May 2020 11:22:42 +0200 (CEST)
+Received: from [10.211.8.57] (10.75.127.46) by SFHDAG5NODE1.st.com
+ (10.75.127.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 18 May
+ 2020 11:22:41 +0200
+Subject: Re: [PATCH] iio: stm32-dac: Replace indio_dev->mlock with own device
+ lock
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20200514085018.79948-1-sergiu.cuciurean@analog.com>
+ <20200516163521.2812cf86@archlinux>
+From:   Fabrice Gasnier <fabrice.gasnier@st.com>
+Message-ID: <9f271d8d-4ee9-1633-fb90-faca53072716@st.com>
+Date:   Mon, 18 May 2020 11:22:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515134806.5cw4xxnxw7k3223l@holly.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200516163521.2812cf86@archlinux>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG5NODE3.st.com (10.75.127.15) To SFHDAG5NODE1.st.com
+ (10.75.127.13)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-18_03:2020-05-15,2020-05-18 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-05-15 14:48:06, Daniel Thompson wrote:
-> On Fri, May 15, 2020 at 07:33:08PM +0900, Sergey Senozhatsky wrote:
-> > On (20/05/15 10:50), Petr Mladek wrote:
-> > > kdb is able to stop kernel even in NMI context where printk() is redirected
-> > > to the printk_safe() lockless variant. Move the check and redirect to kdb
-> > > even in this case.
-> > 
-> > Can I please have some context what problem does this solve?
-> > I can see that vkdb_printf() calls into console drivers:
-> > 
-> > 	for_each_console(c) {
-> > 		c->write(c, cp, retlen - (cp - kdb_buffer));
-> > 		touch_nmi_watchdog();
-> > 	}
-> > 
-> > Is this guaranteed that we never execute this path from NMI?
-
-Good question!
-
-> Absolutely not.
+On 5/16/20 5:35 PM, Jonathan Cameron wrote:
+> On Thu, 14 May 2020 11:50:12 +0300
+> Sergiu Cuciurean <sergiu.cuciurean@analog.com> wrote:
 > 
-> The execution context for kdb is pretty much unique... we are running a
-> debug mode with all CPUs parked in a holding loop with interrupts
-> disabled. One CPU is at an unknown exception state and the others are
-> either handling an IRQ or NMI depending on architecture[1].
-
-This is similar to the situation in panic() when other CPUs are
-stopped. It is more safe when the CPUs are stopped using IRQ.
-There is higher danger of a deadlock when NMI is used.
-
-bust_spinlock() is used in panic() to increase the chance to go over
-the deadlock and actually see the messages. It is not enough when
-more locks are used by the console (VT/TTY is good example). And
-it is not guaranteed that the console will still work after
-the hack is disabled by bust_spinlocks(0).
-
-
-> However there are a number of factors that IMHO weigh in favour of
-> allowing kdb to intercept here.
+>> As part of the general cleanup of indio_dev->mlock, this change replaces
+>> it with a local lock on the device's state structure.
+>>
+>> Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+>> ---
+>>  drivers/iio/dac/stm32-dac.c | 12 ++++++++----
+>>  1 file changed, 8 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/iio/dac/stm32-dac.c b/drivers/iio/dac/stm32-dac.c
+>> index f22c1d9129b2..74b9474c8590 100644
+>> --- a/drivers/iio/dac/stm32-dac.c
+>> +++ b/drivers/iio/dac/stm32-dac.c
+>> @@ -26,9 +26,11 @@
+>>  /**
+>>   * struct stm32_dac - private data of DAC driver
+>>   * @common:		reference to DAC common data
+>> + * @lock: lock to protect the data buffer during regmap ops
 > 
-> 1. kgdb/kdb are designed to work from NMI, modulo the bugs that are
->    undoubtedly present.
+> In this particular case I'm not sure that's what mlock was being used for.
+> I think it's about avoiding races around checking if powered down and
+> actually doing it.
 
-There is definitely a risk of deadlock when console drivers are called
-by KDB. There are plans to create some lockless console drivers to
-handle panic(). It might be usable in KDB as well.
+Hi Sergiu,
 
-The question is what are the expectations of KDB users. How often does
-it happen that KDB does not work or that the system does not longer
-work when continue is called in KDB?
+Indeed, purpose is to protect against a race here when reading CR, and
+updating it via regmap (this also makes the subsequent pm_runtime calls
+to be balanced based on this).
+(Side note: there is no data buffer involved for the DAC.)
+Could you please update the comment ?
 
-
-> 2. A synchronous breakpoint (including an implicit breakpoint-on-oops)
->    from any code that executes with irqs disabled will exhibit most of
->    the same problems as an NMI but without waking up all the NMI logic.
-
-Makes sense.
-
-
-> 3. kdb_trap_printk is only set for *very* narrow time intervals by the
->    debug master (the single CPU in the system that is *not* in a
->    holding loop). Thus in all cases the system has already successfully
->    executed kdb_printf() several times before we ever call the printk()
->    interception code.
->
->    Or put another way, even if we did tickle a bug speculated about in
->    #1, it won't be the call to printk() that triggers it; we'd never
->    get that far!
-
-Good point. I would say that this patch will not make the situation
-worse. The code is called when KDB already uses consoles. It is just
-a trick how to use existing code to print even more messages in
-KDB context.
+Thanks,
+Fabrice
 
 > 
-> > If so, can this please be added to the commit message? A more
-> > detailed commit message will help a lot.
-
-What about?
-
-"KDB has to get messages on consoles even when the system is stopped.
-It uses kdb_printf() internally and calls console drivers on its own.
-
-It uses a hack to reuse an existing code. It sets "kdb_trap_printk"
-global variable to redirect even the normal printk() into the
-kdb_printf() variant.
-
-The variable "kdb_trap_printk" is checked in printk_default() and
-it is ignored when printk is redirected to printk_safe in NMI context.
-Solve this by moving the check into printk_func().
-
-It is obvious that it is not fully safe. But it does not make things
-worse. The console drivers are already called in this context by
-kdb_printf() direct calls."
-
-> I suspect Petr might prefer any future flames about kdb_printf() to be
-> pointed at me rather than him ;-) so if adding anything to the commit
-> message then I'd suggest it be based on the reasoning in #3 above.
-
-This is fair :-)
-
-Best Regards,
-Petr
+> 
+>>   */
+>>  struct stm32_dac {
+>>  	struct stm32_dac_common *common;
+>> +	struct mutex		lock;
+>>  };
+>>  
+>>  static int stm32_dac_is_enabled(struct iio_dev *indio_dev, int channel)
+>> @@ -58,10 +60,10 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
+>>  	int ret;
+>>  
+>>  	/* already enabled / disabled ? */
+>> -	mutex_lock(&indio_dev->mlock);
+>> +	mutex_lock(&dac->lock);
+>>  	ret = stm32_dac_is_enabled(indio_dev, ch);
+>>  	if (ret < 0 || enable == !!ret) {
+>> -		mutex_unlock(&indio_dev->mlock);
+>> +		mutex_unlock(&dac->lock);
+>>  		return ret < 0 ? ret : 0;
+>>  	}
+>>  
+>> @@ -69,13 +71,13 @@ static int stm32_dac_set_enable_state(struct iio_dev *indio_dev, int ch,
+>>  		ret = pm_runtime_get_sync(dev);
+>>  		if (ret < 0) {
+>>  			pm_runtime_put_noidle(dev);
+>> -			mutex_unlock(&indio_dev->mlock);
+>> +			mutex_unlock(&dac->lock);
+>>  			return ret;
+>>  		}
+>>  	}
+>>  
+>>  	ret = regmap_update_bits(dac->common->regmap, STM32_DAC_CR, msk, en);
+>> -	mutex_unlock(&indio_dev->mlock);
+>> +	mutex_unlock(&dac->lock);
+>>  	if (ret < 0) {
+>>  		dev_err(&indio_dev->dev, "%s failed\n", en ?
+>>  			"Enable" : "Disable");
+>> @@ -328,6 +330,8 @@ static int stm32_dac_probe(struct platform_device *pdev)
+>>  	indio_dev->info = &stm32_dac_iio_info;
+>>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>>  
+>> +	mutex_init(&dac->lock);
+>> +
+>>  	ret = stm32_dac_chan_of_init(indio_dev);
+>>  	if (ret < 0)
+>>  		return ret;
+> 
