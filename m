@@ -2,107 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5FC1D7385
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 11:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45D81D7389
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 11:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbgERJKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 05:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726040AbgERJKr (ORCPT
+        id S1726920AbgERJLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 05:11:21 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:60028 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726505AbgERJLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 05:10:47 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FA5C061A0C;
-        Mon, 18 May 2020 02:10:45 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id g1so8993399ljk.7;
-        Mon, 18 May 2020 02:10:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OR1MlZbml98F+x4zMQoY9JCyPXQQC5+BHqeUK/5YSAc=;
-        b=BeCL82iYscMJtBM85Z9cMHdCMME7CXRkt/BKVCWO7IVd4KHyB7dXT+WaGl9LB1kfYT
-         5fkZgGsq5AWxHEnbmZYqv+qGfSi2wj2mG2zS+3TvqV5r9CO/PW+WNun8z0GPv5fCM5NE
-         B8X/SzVz+lnFnoRW81YvCoggcHbTYBsRVic+KdS2qBEOn5Lf8Zg8jwXSgSiizuxT5q58
-         jyZi1jIYCbWpxOya3dYjM5N9SmqltYaPX+6lAey20QQMtutijuKG2KvOrny+l5mBCBrT
-         wp4Wq+sokuxP+XaWQ2z4ujVFHp/Ij1d6qdbLSxNLZR5jmvC6rCyq6h7Z7GmBpg/8/OX8
-         p6Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OR1MlZbml98F+x4zMQoY9JCyPXQQC5+BHqeUK/5YSAc=;
-        b=swxCoPr0ljbnMjDxgqWjCeXrV8OSLR0sSON2L22omUDkQgIBu6yl7BQeXPGX32JbWo
-         fVhZ7pcrXTasShlihv65qAql6nLI1lw41QcbAkrCn6UKj3tnJBPZdb8qXpnuDS9Qo5Bx
-         VneZ+hxHAJA32difiFYwJeiadqifFO2yL3hEKCJg2BXcTTMg3S0Zgog8FAKhkCUMjcfK
-         bbeBYIVutK8jbXvXzHYW2rTRGCvR4Idf78vWAQObu+6hFyXWPOtiQezRio4KxPYakXNB
-         jecNPdwxRoD6azP1O/8WLeaSJ8QK+MShBoTltrUkASBvw57h8PjDeWXGUN/CIqoW08Ac
-         FplQ==
-X-Gm-Message-State: AOAM5310wSwRs+xsyeCOZrAoxLZEvi3ad2IFlDhUgBOGPTKZIhsWBONO
-        vihzj59fTMHFJsXft/5PM7DqZh42
-X-Google-Smtp-Source: ABdhPJwuPHFD2sdqR79/zFl7AfcJqYKpVUC++wN8CSF1gVCBQeOhSCG0RQBdFvv2sYslNp1iPvTLcQ==
-X-Received: by 2002:a2e:a211:: with SMTP id h17mr10302139ljm.289.1589793043958;
-        Mon, 18 May 2020 02:10:43 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id h2sm6127709ljb.45.2020.05.18.02.10.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 May 2020 02:10:43 -0700 (PDT)
-Subject: Re: [PATCH v5 07/10] input: elants: support 0x66 reply opcode for
- reporting touches
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Johnny Chuang <johnny.chuang@emc.com.tw>
-Cc:     David Heidelberg <david@ixit.cz>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        James Chen <james.chen@emc.com.tw>,
-        Rob Herring <robh+dt@kernel.org>,
-        Scott Liu <scott.liu@emc.com.tw>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1587923061.git.mirq-linux@rere.qmqm.pl>
- <02dc25c5851e50d77bc707a2e1b44caf9d6354eb.1587923061.git.mirq-linux@rere.qmqm.pl>
- <20200518040532.GP89269@dtor-ws>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <268f009f-7bf7-28ce-ff2c-00d033a7bf5f@gmail.com>
-Date:   Mon, 18 May 2020 12:10:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 18 May 2020 05:11:20 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04I93ATR173287;
+        Mon, 18 May 2020 09:10:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=Rvkso+0xj+PaZPCgO7NcqlP3hcldz8TuQZ/t643+Io8=;
+ b=mqABSTJEenM30vsxFxjbAMut5oKHKCuD7bKCGWQ42NqBm0nm++F+hoWtMwoK4wBeWK94
+ T6twSyP80Unnh+6nQQX27JJjxLeQ54BqYzNTtvM45pG71Rk7fdme6UwZrZ1PyXRXaXgM
+ 5+tZGQwj/nSq51Ie8gR7Ki99ikUtPX9f/ZTeRpZ7XgIiBn2fE51RcDYPu3xNcy9ClBBW
+ 31cnpS00srfEXmwSqVChOFdXI+S0DdBXOchqTNTY8wX3h0Xqx7cap9JtdtcIEUACFUVX
+ HuKms+yjaw2OX/Mp8+j3RlAzN5Xpu/qF3893fuXBXl8I8GVwfSrFh19UrgKxgz4iWBDX qA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 3127kqwn1x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 18 May 2020 09:10:59 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04I94KsA115300;
+        Mon, 18 May 2020 09:10:58 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 312t3v7w3e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 May 2020 09:10:58 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04I9Ar6c001535;
+        Mon, 18 May 2020 09:10:53 GMT
+Received: from dhcp-10-175-184-176.vpn.oracle.com (/10.175.184.176)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 18 May 2020 02:10:52 -0700
+Date:   Mon, 18 May 2020 10:10:44 +0100 (BST)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
+To:     Yonghong Song <yhs@fb.com>
+cc:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
+        daniel@iogearbox.net, bpf@vger.kernel.org, joe@perches.com,
+        linux@rasmusvillemoes.dk, arnaldo.melo@gmail.com, kafai@fb.com,
+        songliubraving@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v2 bpf-next 6/7] bpf: add support for %pT format specifier
+ for bpf_trace_printk() helper
+In-Reply-To: <040b71a1-9bbf-9a55-6f1a-e7b8c36f8c6e@fb.com>
+Message-ID: <alpine.LRH.2.21.2005181000520.893@localhost>
+References: <1589263005-7887-1-git-send-email-alan.maguire@oracle.com> <1589263005-7887-7-git-send-email-alan.maguire@oracle.com> <040b71a1-9bbf-9a55-6f1a-e7b8c36f8c6e@fb.com>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20200518040532.GP89269@dtor-ws>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9624 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
+ phishscore=0 bulkscore=0 suspectscore=3 mlxscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005180081
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9624 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
+ bulkscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 impostorscore=0
+ suspectscore=3 mlxlogscore=999 malwarescore=0 cotscore=-2147483648
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005180081
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.05.2020 07:05, Dmitry Torokhov пишет:
-> On Sun, Apr 26, 2020 at 07:47:52PM +0200, Michał Mirosław wrote:
->> From: Dmitry Osipenko <digetx@gmail.com>
->>
->> eKTF3624 touchscreen firmware uses two variants of the reply opcodes for
->> reporting touch events: one is 0x63 (used by older firmware) and other is
->> 0x66 (used by newer firmware). The 0x66 variant is equal to 0x63 of
->> eKTH3500, while 0x63 needs small adjustment of the touch pressure value.
->>
->> Nexus 7 tablet device has eKTF3624 touchscreen and it uses 0x66 opcode for
->> reporting touch events, let's support it now. Other devices, eg. ASUS TF300T,
->> use 0x63.
->>
->> Note: CMD_HEADER_REK is used for replying to calibration requests, it has
->> the same 0x66 opcode number which eKTF3624 uses for reporting touches.
->> The calibration replies are handled separately from the the rest of the
->> commands in the driver by entering into ELAN_WAIT_RECALIBRATION state
->> and thus this change shouldn't change the old behavior.
+On Wed, 13 May 2020, Yonghong Song wrote:
+
 > 
-> Is it possible to know what format a device will use by querying it at
-> probe time?
+> > +				while (isbtffmt(fmt[i]))
+> > +					i++;
+> 
+> The pointer passed to the helper may not be valid pointer. I think you
+> need to do a probe_read_kernel() here. Do an atomic memory allocation
+> here should be okay as this is mostly for debugging only.
+> 
 
-I guess only somebody from Elan could answer this question. AFAIK,
-neither touchscreen firmware sources nor technical documentation aren't
-publicly available.
+Are there other examples of doing allocations in program execution
+context? I'd hate to be the first to introduce one if not. I was hoping
+I could get away with some per-CPU scratch space. Most data structures
+will fit within a small per-CPU buffer, but if multiple copies
+are required, performance isn't the key concern. It will make traversing
+the buffer during display a bit more complex but I think avoiding 
+allocation might make that complexity worth it. The other thought I had 
+was we could carry out an allocation associated with the attach, 
+but that's messy as it's possible run-time might determine the type for
+display (and thus the amount of the buffer we need to copy safely).
 
-Downstream kernel driver is the only source of information in our case
-and it does the same thing as we do in this patch.
+Great news about LLVM support for __builtin_btf_type_id()!
+
+Thanks!
+
+Alan
