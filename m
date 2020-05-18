@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0C21D8669
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5761D8296
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729882AbgERRpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:45:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43734 "EHLO mail.kernel.org"
+        id S1731828AbgERR5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:57:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729829AbgERRpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:45:06 -0400
+        id S1729474AbgERR5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:57:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C5E820715;
-        Mon, 18 May 2020 17:45:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8968A207D3;
+        Mon, 18 May 2020 17:57:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823905;
-        bh=Dy9+yzzQGv8TwSLbXo42Lz/TB6+TmkvJluwUjIXx7IM=;
+        s=default; t=1589824655;
+        bh=LhDEdDnPsiUb9bDl6qpKzJTWWl0NBJfBqLAFPrqIEug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D9XSC8lbJPoROAda3dAkJBDPeAOLKDnfVlltEw4bm/dIFwcPwCYJNKc8Ig9UUkG/Q
-         c7P37hoeo8PPb8XvfKhBbDm0hsJ7Q5j98y7gbKi6ITJ2ZkeSUYO319mnVpZ4mLXXA1
-         I0a0PQxAjq7RC3JnTVrQ2Y+ozJ4V4XjgABpNfO2c=
+        b=nDI9PW1vv9FUENiRBcO8LpAHZ0B54vzJwas8YxZHY9OVbP1Zsxu/ISTm60iEPWPcZ
+         Ibl5slpGZT/YfvSW/eBZzzD7NmT5jzLZahPtG9/goJR4oDNwE+iCpIt9EzROfW5Inc
+         W0Cx/vQu3KNC3M/8RrenYxx95V4V1XaxDn1D3tX4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 4.9 83/90] usb: gadget: audio: Fix a missing error return value in audio_bind()
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 098/147] gcc-10: disable stringop-overflow warning for now
 Date:   Mon, 18 May 2020 19:37:01 +0200
-Message-Id: <20200518173508.076631904@linuxfoundation.org>
+Message-Id: <20200518173525.677490455@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit 19b94c1f9c9a16d41a8de3ccbdb8536cf1aecdbf upstream.
+commit 5a76021c2eff7fcf2f0918a08fd8a37ce7922921 upstream.
 
-If 'usb_otg_descriptor_alloc()' fails, we must return an error code, not 0.
+This is the final array bounds warning removal for gcc-10 for now.
 
-Fixes: 56023ce0fd70 ("usb: gadget: audio: allocate and init otg descriptor by otg capabilities")
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Again, the warning is good, and we should re-enable all these warnings
+when we have converted all the legacy array declaration cases to
+flexible arrays. But in the meantime, it's just noise.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/legacy/audio.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Makefile |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/gadget/legacy/audio.c
-+++ b/drivers/usb/gadget/legacy/audio.c
-@@ -249,8 +249,10 @@ static int audio_bind(struct usb_composi
- 		struct usb_descriptor_header *usb_desc;
+--- a/Makefile
++++ b/Makefile
+@@ -859,6 +859,7 @@ KBUILD_CFLAGS += $(call cc-disable-warni
+ # We'll want to enable this eventually, but it's not going away for 5.7 at least
+ KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
+ KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
++KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
  
- 		usb_desc = usb_otg_descriptor_alloc(cdev->gadget);
--		if (!usb_desc)
-+		if (!usb_desc) {
-+			status = -ENOMEM;
- 			goto fail;
-+		}
- 		usb_otg_descriptor_init(cdev->gadget, usb_desc);
- 		otg_desc[0] = usb_desc;
- 		otg_desc[1] = NULL;
+ # Enabled with W=2, disabled by default as noisy
+ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
 
 
