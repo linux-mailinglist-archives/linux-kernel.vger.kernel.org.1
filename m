@@ -2,232 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029C61D8855
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 21:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB7F1D8859
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 21:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728331AbgERTkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 15:40:05 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:45562 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727987AbgERTkE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 15:40:04 -0400
-Received: from ravnborg.org (unknown [158.248.194.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 754DB20053;
-        Mon, 18 May 2020 21:39:59 +0200 (CEST)
-Date:   Mon, 18 May 2020 21:39:58 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        robdclark@chromium.org, linux-arm-msm@vger.kernel.org,
-        swboyd@chromium.org, seanpaul@chromium.org,
-        Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [REPOST PATCH v2] drm/bridge: ti-sn65dsi86: Implement lane
- reordering + polarity
-Message-ID: <20200518193958.GA888662@ravnborg.org>
-References: <20200518114656.REPOST.v2.1.Ibc8eeddcee94984a608d6900b46f9ffde4045da4@changeid>
+        id S1728365AbgERTkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 15:40:43 -0400
+Received: from mga09.intel.com ([134.134.136.24]:62509 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728333AbgERTkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 15:40:43 -0400
+IronPort-SDR: WB8l8ozWCnHeOLi3XqAFNk9h5gqR3A+PdP8SpDoQ/69QJXCh1X3k/Dq4QmTCqqXJIyFZLDrr83
+ nbey5Z89+HhQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 12:40:42 -0700
+IronPort-SDR: FCQwbrmoNEmzkd3AhjNBNBeJvHvlerjbIyby+1tbu20wFou110yI+AoNFVVTvpMwkSEyQf98iV
+ uwHJV3pzkjog==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
+   d="scan'208";a="267632562"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 18 May 2020 12:40:41 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jalcu-0002pt-7p; Tue, 19 May 2020 03:40:40 +0800
+Date:   Tue, 19 May 2020 03:40:06 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ bba413deb1065f1291cb1f366247513f11215520
+Message-ID: <5ec2e496.Nvf13P0/CgQEVToV%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200518114656.REPOST.v2.1.Ibc8eeddcee94984a608d6900b46f9ffde4045da4@changeid>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=ULXz4hXy c=1 sm=1 tr=0
-        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
-        a=kj9zAlcOel0A:10 a=cm27Pg_UAAAA:8 a=pGLkceISAAAA:8
-        a=8XhiRY50PI37qDso4jsA:9 a=6bwV8OXODjhHDt9b:21 a=zV5TzvQiLlDj4gTl:21
-        a=CjuIK1q_8ugA:10 a=xmb-EsYY8bH0VWELuYED:22
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Douglas.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: bba413deb1065f1291cb1f366247513f11215520  Merge branch 'core/core'
 
-On Mon, May 18, 2020 at 11:47:17AM -0700, Douglas Anderson wrote:
-> The ti-sn65dsi86 MIPI DSI to eDP bridge chip supports arbitrary
-> remapping of eDP lanes and also polarity inversion.  Both of these
-> features have been described in the device tree bindings for the
-> device since the beginning but were never implemented in the driver.
-> Implement both of them.
-> 
-> Part of this change also allows you to (via the same device tree
-> bindings) specify to use fewer than the max number of DP lanes that
-> the panel reports.  This could be useful if your display supports more
-> lanes but only a few are hooked up on your board.
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Reviewed-by: Rob Clark <robdclark@gmail.com>
-> ---
-> Re-posting patch v2, patch #1.  I added tags and put Sam in the "To"
-> list.  Patch #2 was dropped since it was squashed elsewhere.  This now
-> applies to the top of drm-misc-next.
-> 
-> Changes in v2:
-> - Use SN_MAX_DP_LANES instead of 4 in one place.
-> - Comment that we aren't doing full validation of dts params.
-> - Check dp_lanes <= SN_MAX_DP_LANES to avoid buffer overrun.
-> - Add missing of_node_put()
+elapsed time: 566m
 
-Applied to drm-misc-next.
+configs tested: 99
+configs skipped: 4
 
-	Sam
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> 
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 82 ++++++++++++++++++++++-----
->  1 file changed, 68 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 1855fb9f09f2..2240e9973178 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -50,8 +50,12 @@
->  #define SN_CHA_VERTICAL_BACK_PORCH_REG		0x36
->  #define SN_CHA_HORIZONTAL_FRONT_PORCH_REG	0x38
->  #define SN_CHA_VERTICAL_FRONT_PORCH_REG		0x3A
-> +#define SN_LN_ASSIGN_REG			0x59
-> +#define  LN_ASSIGN_WIDTH			2
->  #define SN_ENH_FRAME_REG			0x5A
->  #define  VSTREAM_ENABLE				BIT(3)
-> +#define  LN_POLRS_OFFSET			4
-> +#define  LN_POLRS_MASK				0xf0
->  #define SN_DATA_FORMAT_REG			0x5B
->  #define  BPP_18_RGB				BIT(0)
->  #define SN_HPD_DISABLE_REG			0x5C
-> @@ -98,6 +102,7 @@
->  
->  #define SN_REGULATOR_SUPPLY_NUM		4
->  
-> +#define SN_MAX_DP_LANES			4
->  #define SN_NUM_GPIOS			4
->  #define SN_GPIO_PHYSICAL_OFFSET		1
->  
-> @@ -116,6 +121,8 @@
->   * @enable_gpio:  The GPIO we toggle to enable the bridge.
->   * @supplies:     Data for bulk enabling/disabling our regulators.
->   * @dp_lanes:     Count of dp_lanes we're using.
-> + * @ln_assign:    Value to program to the LN_ASSIGN register.
-> + * @ln_polr:      Value for the 4-bit LN_POLRS field of SN_ENH_FRAME_REG.
->   *
->   * @gchip:        If we expose our GPIOs, this is used.
->   * @gchip_output: A cache of whether we've set GPIOs to output.  This
-> @@ -141,6 +148,8 @@ struct ti_sn_bridge {
->  	struct gpio_desc		*enable_gpio;
->  	struct regulator_bulk_data	supplies[SN_REGULATOR_SUPPLY_NUM];
->  	int				dp_lanes;
-> +	u8				ln_assign;
-> +	u8				ln_polrs;
->  
->  	struct gpio_chip		gchip;
->  	DECLARE_BITMAP(gchip_output, SN_NUM_GPIOS);
-> @@ -708,26 +717,20 @@ static void ti_sn_bridge_enable(struct drm_bridge *bridge)
->  	int dp_rate_idx;
->  	unsigned int val;
->  	int ret = -EINVAL;
-> +	int max_dp_lanes;
->  
-> -	/*
-> -	 * Run with the maximum number of lanes that the DP sink supports.
-> -	 *
-> -	 * Depending use cases, we might want to revisit this later because:
-> -	 * - It's plausible that someone may have run fewer lines to the
-> -	 *   sink than the sink actually supports, assuming that the lines
-> -	 *   will just be driven at a higher rate.
-> -	 * - The DP spec seems to indicate that it's more important to minimize
-> -	 *   the number of lanes than the link rate.
-> -	 *
-> -	 * If we do revisit, it would be important to measure the power impact.
-> -	 */
-> -	pdata->dp_lanes = ti_sn_get_max_lanes(pdata);
-> +	max_dp_lanes = ti_sn_get_max_lanes(pdata);
-> +	pdata->dp_lanes = min(pdata->dp_lanes, max_dp_lanes);
->  
->  	/* DSI_A lane config */
-> -	val = CHA_DSI_LANES(4 - pdata->dsi->lanes);
-> +	val = CHA_DSI_LANES(SN_MAX_DP_LANES - pdata->dsi->lanes);
->  	regmap_update_bits(pdata->regmap, SN_DSI_LANES_REG,
->  			   CHA_DSI_LANES_MASK, val);
->  
-> +	regmap_write(pdata->regmap, SN_LN_ASSIGN_REG, pdata->ln_assign);
-> +	regmap_update_bits(pdata->regmap, SN_ENH_FRAME_REG, LN_POLRS_MASK,
-> +			   pdata->ln_polrs << LN_POLRS_OFFSET);
-> +
->  	/* set dsi clk frequency value */
->  	ti_sn_bridge_set_dsi_rate(pdata);
->  
-> @@ -1089,6 +1092,55 @@ static int ti_sn_setup_gpio_controller(struct ti_sn_bridge *pdata)
->  	return ret;
->  }
->  
-> +static void ti_sn_bridge_parse_lanes(struct ti_sn_bridge *pdata,
-> +				     struct device_node *np)
-> +{
-> +	u32 lane_assignments[SN_MAX_DP_LANES] = { 0, 1, 2, 3 };
-> +	u32 lane_polarities[SN_MAX_DP_LANES] = { };
-> +	struct device_node *endpoint;
-> +	u8 ln_assign = 0;
-> +	u8 ln_polrs = 0;
-> +	int dp_lanes;
-> +	int i;
-> +
-> +	/*
-> +	 * Read config from the device tree about lane remapping and lane
-> +	 * polarities.  These are optional and we assume identity map and
-> +	 * normal polarity if nothing is specified.  It's OK to specify just
-> +	 * data-lanes but not lane-polarities but not vice versa.
-> +	 *
-> +	 * Error checking is light (we just make sure we don't crash or
-> +	 * buffer overrun) and we assume dts is well formed and specifying
-> +	 * mappings that the hardware supports.
-> +	 */
-> +	endpoint = of_graph_get_endpoint_by_regs(np, 1, -1);
-> +	dp_lanes = of_property_count_u32_elems(endpoint, "data-lanes");
-> +	if (dp_lanes > 0 && dp_lanes <= SN_MAX_DP_LANES) {
-> +		of_property_read_u32_array(endpoint, "data-lanes",
-> +					   lane_assignments, dp_lanes);
-> +		of_property_read_u32_array(endpoint, "lane-polarities",
-> +					   lane_polarities, dp_lanes);
-> +	} else {
-> +		dp_lanes = SN_MAX_DP_LANES;
-> +	}
-> +	of_node_put(endpoint);
-> +
-> +	/*
-> +	 * Convert into register format.  Loop over all lanes even if
-> +	 * data-lanes had fewer elements so that we nicely initialize
-> +	 * the LN_ASSIGN register.
-> +	 */
-> +	for (i = SN_MAX_DP_LANES - 1; i >= 0; i--) {
-> +		ln_assign = ln_assign << LN_ASSIGN_WIDTH | lane_assignments[i];
-> +		ln_polrs = ln_polrs << 1 | lane_polarities[i];
-> +	}
-> +
-> +	/* Stash in our struct for when we power on */
-> +	pdata->dp_lanes = dp_lanes;
-> +	pdata->ln_assign = ln_assign;
-> +	pdata->ln_polrs = ln_polrs;
-> +}
-> +
->  static int ti_sn_bridge_probe(struct i2c_client *client,
->  			      const struct i2c_device_id *id)
->  {
-> @@ -1131,6 +1183,8 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
->  		return ret;
->  	}
->  
-> +	ti_sn_bridge_parse_lanes(pdata, client->dev.of_node);
-> +
->  	ret = ti_sn_bridge_parse_regulators(pdata);
->  	if (ret) {
->  		DRM_ERROR("failed to parse regulators\n");
-> -- 
-> 2.26.2.761.g0e0b3e54be-goog
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+mips                             allyesconfig
+powerpc                      tqm8xx_defconfig
+arm                       omap2plus_defconfig
+sh                         apsh4a3a_defconfig
+mips                   sb1250_swarm_defconfig
+c6x                        evmc6457_defconfig
+arm                           corgi_defconfig
+mips                     cu1000-neo_defconfig
+mips                           xway_defconfig
+arm                          ixp4xx_defconfig
+arm                            mps2_defconfig
+mips                 pnx8335_stb225_defconfig
+arc                              alldefconfig
+sh                          lboxre2_defconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                              allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20200518
+i386                 randconfig-a005-20200518
+i386                 randconfig-a001-20200518
+i386                 randconfig-a003-20200518
+i386                 randconfig-a004-20200518
+i386                 randconfig-a002-20200518
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+x86_64                              defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
