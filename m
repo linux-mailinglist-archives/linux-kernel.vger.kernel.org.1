@@ -2,70 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5051D786C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 14:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A281D78D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 14:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726940AbgERMWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 08:22:44 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4812 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726585AbgERMWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 08:22:44 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id C07DBD3A8A3B99E9CC35;
-        Mon, 18 May 2020 20:22:41 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Mon, 18 May 2020
- 20:22:33 +0800
-From:   Wu Bo <wubo40@huawei.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <Markus.Elfring@web.de>, <linux-kernel@vger.kernel.org>,
-        <liuzhiqiang26@huawei.com>, <linfeilong@huawei.com>,
-        <wubo40@huawei.com>
-Subject: [PATCH] blkcg:Fix memory leaks in blkg_conf_prep()
-Date:   Mon, 18 May 2020 20:36:06 +0800
-Message-ID: <1589805366-328489-1-git-send-email-wubo40@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1727109AbgERMmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 08:42:36 -0400
+Received: from wrqvzcbt.outbound-mail.sendgrid.net ([149.72.236.183]:34035
+        "EHLO wrqvzcbt.outbound-mail.sendgrid.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726739AbgERMmg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 08:42:36 -0400
+X-Greylist: delayed 337 seconds by postgrey-1.27 at vger.kernel.org; Mon, 18 May 2020 08:42:35 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sendgrid.net; 
+        h=reply-to:from:to:subject:mime-version:content-type:content-transfer-encoding; 
+        s=smtpapi; bh=m1XLIw5LGZxCpAYtBrTdWH++MGggL0usDaCLAoyAdvA=; b=xd
+        NNeWV0jCMZoWvS2qgj97tDqr1KfZpsabhqlYOmhMlCM5m7MBtfnfib6ou1fwblHW
+        wFEiJ+t4/QRDFYUcJURsVrvIa5y6LhWzNgXvMOvd0YaMd15CpdNhFlnqPa3Vw3I8
+        uhM/8w0zV86WGTi70wTS5upJoqtCuQFL1fOmPPBPM=
+Received: by filter0362p1iad2.sendgrid.net with SMTP id filter0362p1iad2-25691-5EC2816A-1
+        2020-05-18 12:36:58.083443533 +0000 UTC m=+220364.904245777
+Received: from mail.com (unknown)
+        by ismtpd0015p1iad1.sendgrid.net (SG) with ESMTP id jY64jmW6T6CtV5FMnF_n0g
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 12:36:57.996 +0000 (UTC)
+Reply-To: adelenebreton@gmail.com
+From:   Richard Wahl <wahl-Richy@mail.com>
+To:     linux-kernel@vger.kernel.org
+Subject: DONATION!!!
+Date:   Mon, 18 May 2020 12:36:58 +0000 (UTC)
+Message-ID: <20200518123642.693A7B5CD58CFD5D@mail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-SG-EID: UsLXQ589HNP4HLBydmD9pgHURQozLYm9XliudupI8YusB5eprdwlMqmJg1eYouCQCQJGit362FAXr3
+ 9l2zAvNez65a8a5OZtfKJJVO/LII61nWpwVFocWOvzynPignZBu9WW35A5Q0zirzQNhQY47l18uSJV
+ XDJ1oGAysizbmTJAoU1dFpVLby3c0aijycZr6bEainW39i8/uwU+icCn9O3ZwVjBLxhBcJX2uXaFrl
+ E=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wu Bo <wubo40@huawei.com>
+Hello linux-kernel,
 
-If a call of the function blkg_lookup_check() failed,
-we should be release the previously allocated block group 
-before jumping to the lable 'fail_unlock' in the implementation of 
-the function blkg_conf_prep().
+you have a donation of $3,000,000.00 ( 3 million dollars).
+My name is Richard Wahl from the united states. I won the America=20
+lottery worth $533 million and I am donating a portion of it to=20
+just 10 lucky people and a few Orphanage homes as a memorandum of=20
+goodwill to humanity. and also as a way of assistance over the=20
+COVID 19 Pandemic.
+If you are a recipient of this mail linux-kernel@vger.kernel.org=20=20
+contact me on  adelenebreton@gmail.com for more details and=20
+claim.
 
-Suggested-by: Markus Elfring <Markus.Elfring@web.de>
-Signed-off-by: Wu Bo <wubo40@huawei.com>
-
----
-V2: omit the source code quotation from 
-    the change description
-
----
- block/blk-cgroup.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 930212c..afeb769 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -682,6 +682,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 		blkg = blkg_lookup_check(pos, pol, q);
- 		if (IS_ERR(blkg)) {
- 			ret = PTR_ERR(blkg);
-+			blkg_free(new_blkg);
- 			goto fail_unlock;
- 		}
- 
--- 
-1.8.3.1
-
+ I may be very busy but I will take out time to respond to you.
