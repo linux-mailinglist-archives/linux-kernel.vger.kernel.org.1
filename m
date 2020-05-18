@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F081D8390
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5681D85DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733086AbgERSF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:05:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53666 "EHLO mail.kernel.org"
+        id S2387805AbgERSVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:21:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733042AbgERSFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:05:53 -0400
+        id S1730879AbgERRvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:51:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 418FE207D3;
-        Mon, 18 May 2020 18:05:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 285D720826;
+        Mon, 18 May 2020 17:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825152;
-        bh=kOd0bcbUg8fHPHC0USq6DxLSQK0hSCY2zfafB+/Tfwg=;
+        s=default; t=1589824294;
+        bh=Yci84up+VDf4LFh3i5lZgGmVwgZzDWVjnLjyFZsAH0g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HGZlOH/pKz7UhuZDNt4QVuGFA0dnwq37KvJeYuWY0IKxbxTc296qQMNt+5Rv1SRZV
-         o/3/rathz59NcvhJ6gV2gX12fBukXVqqzejOX0AqnaEj+WIM3iQF+OfDHpe/bm0Y/K
-         Pln3DetEUzaHinqQqAHbTK8iA8s+KzESc0fgAM2M=
+        b=CusfaS9ShRPaZyD9vTpGkRC8IUROSW/baMDfZmZdk1VfQHaKJF2HNSkWqZqELvCHF
+         krUcUzEnEbyPgI2YLyU1wbndTgj7PDyE0FPl1W4tnFbrpf/0+9oj1+b44MNNB4EdnX
+         SIARkLqk5poqiwe9HQKZi9s0renhjKNc78ZPL74s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Olga Kornievskaia <kolga@netapp.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 123/194] NFSv3: fix rpc receive buffer size for MOUNT call
+Subject: [PATCH 4.19 35/80] mmc: block: Fix request completion in the CQE timeout path
 Date:   Mon, 18 May 2020 19:36:53 +0200
-Message-Id: <20200518173541.823374362@linuxfoundation.org>
+Message-Id: <20200518173457.510515989@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
+References: <20200518173450.097837707@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Olga Kornievskaia <olga.kornievskaia@gmail.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit 8eed292bc8cbf737e46fb1c119d4c8f6dcb00650 ]
+[ Upstream commit c077dc5e0620508a29497dac63a2822324ece52a ]
 
-Prior to commit e3d3ab64dd66 ("SUNRPC: Use au_rslack when
-computing reply buffer size"), there was enough slack in the reply
-buffer to commodate filehandles of size 60bytes. However, the real
-problem was that the reply buffer size for the MOUNT operation was
-not correctly calculated. Received buffer size used the filehandle
-size for NFSv2 (32bytes) which is much smaller than the allowed
-filehandle size for the v3 mounts.
+First, it should be noted that the CQE timeout (60 seconds) is substantial
+so a CQE request that times out is really stuck, and the race between
+timeout and completion is extremely unlikely. Nevertheless this patch
+fixes an issue with it.
 
-Fix the reply buffer size (decode arguments size) for the MNT command.
+Commit ad73d6feadbd7b ("mmc: complete requests from ->timeout")
+preserved the existing functionality, to complete the request.
+However that had only been necessary because the block layer
+timeout handler had been marking the request to prevent it from being
+completed normally. That restriction was removed at the same time, the
+result being that a request that has gone will have been completed anyway.
+That is, the completion was unnecessary.
 
-Fixes: 2c94b8eca1a2 ("SUNRPC: Use au_rslack when computing reply buffer size")
-Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+At the time, the unnecessary completion was harmless because the block
+layer would ignore it, although that changed in kernel v5.0.
+
+Note for stable, this patch will not apply cleanly without patch "mmc:
+core: Fix recursive locking issue in CQE recovery path"
+
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: ad73d6feadbd7b ("mmc: complete requests from ->timeout")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200508062227.23144-1-adrian.hunter@intel.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/mount_clnt.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mmc/core/queue.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/nfs/mount_clnt.c b/fs/nfs/mount_clnt.c
-index 35c8cb2d76372..dda5c3e65d8d6 100644
---- a/fs/nfs/mount_clnt.c
-+++ b/fs/nfs/mount_clnt.c
-@@ -30,6 +30,7 @@
- #define encode_dirpath_sz	(1 + XDR_QUADLEN(MNTPATHLEN))
- #define MNT_status_sz		(1)
- #define MNT_fhandle_sz		XDR_QUADLEN(NFS2_FHSIZE)
-+#define MNT_fhandlev3_sz	XDR_QUADLEN(NFS3_FHSIZE)
- #define MNT_authflav3_sz	(1 + NFS_MAX_SECFLAVORS)
- 
- /*
-@@ -37,7 +38,7 @@
-  */
- #define MNT_enc_dirpath_sz	encode_dirpath_sz
- #define MNT_dec_mountres_sz	(MNT_status_sz + MNT_fhandle_sz)
--#define MNT_dec_mountres3_sz	(MNT_status_sz + MNT_fhandle_sz + \
-+#define MNT_dec_mountres3_sz	(MNT_status_sz + MNT_fhandlev3_sz + \
- 				 MNT_authflav3_sz)
- 
- /*
+diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+index becc6594a8a47..03f3d9c80fbac 100644
+--- a/drivers/mmc/core/queue.c
++++ b/drivers/mmc/core/queue.c
+@@ -111,8 +111,7 @@ static enum blk_eh_timer_return mmc_cqe_timed_out(struct request *req)
+ 				__mmc_cqe_recovery_notifier(mq);
+ 			return BLK_EH_RESET_TIMER;
+ 		}
+-		/* No timeout (XXX: huh? comment doesn't make much sense) */
+-		blk_mq_complete_request(req);
++		/* The request has gone already */
+ 		return BLK_EH_DONE;
+ 	default:
+ 		/* Timeout is handled by mmc core */
 -- 
 2.20.1
 
