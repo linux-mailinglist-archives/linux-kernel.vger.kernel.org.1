@@ -2,80 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131F81D72D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF161D723B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726624AbgERIUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 04:20:41 -0400
-Received: from elvis.franken.de ([193.175.24.41]:57600 "EHLO elvis.franken.de"
+        id S1727098AbgERHup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 03:50:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726292AbgERIUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 04:20:40 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jab0k-0002ih-00; Mon, 18 May 2020 10:20:34 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 804ADC00F7; Mon, 18 May 2020 09:50:17 +0200 (CEST)
-Date:   Mon, 18 May 2020 09:50:17 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v2] MIPS: Loongson: Enable devicetree based probing for
- 8250 ports in defconfig
-Message-ID: <20200518075017.GA7697@alpha.franken.de>
-References: <1589767861-9784-1-git-send-email-yangtiezhu@loongson.cn>
+        id S1726489AbgERHup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 03:50:45 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5D6C20787;
+        Mon, 18 May 2020 07:50:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589788245;
+        bh=lqHej4TeaH/h0N1U2FkK0BZnCpJw7cuBwYsE1+Z+y/U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LnqTXJ6Xz9beUnIik6bXpG/2hpaTRmYbocdh91cTI0NjQ6MO3VllE9fT0qW/g6uLS
+         xtGr1V+cqVk3tN/5qbWYSM6UOuOiSZ0xliYoUeLXOGX4VG3eSOVWBveH5ouY1UhxBF
+         6AgF/Wen5TNtdYHkLq6rn987ul1SmmgIrE4jCP0I=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jaaXr-00DBDP-48; Mon, 18 May 2020 08:50:43 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1589767861-9784-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 18 May 2020 08:50:42 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anastassios Nanos <ananos@nubificus.co.uk>
+Cc:     kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 0/2] Expose KVM API to Linux Kernel
+In-Reply-To: <cover.1589784221.git.ananos@nubificus.co.uk>
+References: <cover.1589784221.git.ananos@nubificus.co.uk>
+User-Agent: Roundcube Webmail/1.4.4
+Message-ID: <c1124c27293769f8e4836fb8fdbd5adf@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: ananos@nubificus.co.uk, kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, pbonzini@redhat.com, sean.j.christopherson@intel.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 10:11:01AM +0800, Tiezhu Yang wrote:
-> After commit 87fcfa7b7fe6 ("MIPS: Loongson64: Add generic dts"),
-> there already exists the node and property of Loongson CPU UART0
-> in loongson3-package.dtsi:
+On 2020-05-18 07:58, Anastassios Nanos wrote:
+> To spawn KVM-enabled Virtual Machines on Linux systems, one has to use
+> QEMU, or some other kind of VM monitor in user-space to host the vCPU
+> threads, I/O threads and various other book-keeping/management 
+> mechanisms.
+> This is perfectly fine for a large number of reasons and use cases: for
+> instance, running generic VMs, running general purpose Operating 
+> systems
+> that need some kind of emulation for legacy boot/hardware etc.
 > 
-> cpu_uart0: serial@1fe001e0 {
->         compatible = "ns16550a";
->         reg = <0 0x1fe001e0 0x8>;
->         clock-frequency = <33000000>;
->         interrupt-parent = <&liointc>;
->         interrupts = <10 IRQ_TYPE_LEVEL_HIGH>;
->         no-loopback-test;
-> };
+> What if we wanted to execute a small piece of code as a guest instance,
+> without the involvement of user-space? The KVM functions are already 
+> doing
+> what they should: VM and vCPU setup is already part of the kernel, the 
+> only
+> missing piece is memory handling.
 > 
-> In order to support for serial console on the Loongson platform,
-> add CONFIG_SERIAL_OF_PLATFORM=y to loongson3_defconfig.
+> With these series, (a) we expose to the Linux Kernel the bare minimum 
+> KVM
+> API functions in order to spawn a guest instance without the 
+> intervention
+> of user-space; and (b) we tweak the memory handling code of KVM-related
+> functions to account for another kind of guest, spawned in 
+> kernel-space.
 > 
-> With this patch, we can see the following boot messages:
+> PATCH #1 exposes the needed stub functions, whereas PATCH #2 introduces 
+> the
+> changes in the KVM memory handling code for x86_64 and aarch64.
 > 
-> [    1.877745] printk: console [ttyS0] disabled
-> [    1.881979] 1fe001e0.serial: ttyS0 at MMIO 0x1fe001e0 (irq = 16, base_baud = 2062500) is a 16550A
-> [    1.890838] printk: console [ttyS0] enabled
-> 
-> And also, we can login normally from the serial console.
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
-> 
-> v2:
->   - Modify the patch subject
-> 
->  arch/mips/configs/loongson3_defconfig | 1 +
->  1 file changed, 1 insertion(+)
+> An example of use is provided based on kvmtest.c
+> [https://lwn.net/Articles/658512/] at
+> https://github.com/cloudkernels/kvmmtest
 
-applied to mips-next.
+You don't explain *why* we would want this. What is the overhead of 
+having
+a userspace if your guest doesn't need any userspace handling? The 
+kvmtest
+example indeed shows that the KVM userspace API is usable  without any 
+form
+of emulation, hence has almost no cost.
 
-Thomas.
+Without a clear description of the advantages of your solution, as well
+as a full featured in-tree use case, I find it pretty hard to support 
+this.
 
+Thanks,
+
+         M.
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Jazz is not dead. It just smells funny...
