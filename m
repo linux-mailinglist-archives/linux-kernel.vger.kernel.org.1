@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097F71D846B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C91D1D8318
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732451AbgERSB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:01:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44580 "EHLO mail.kernel.org"
+        id S1732469AbgERSCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:02:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729294AbgERSB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:01:57 -0400
+        id S1732459AbgERSCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:02:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15853207D3;
-        Mon, 18 May 2020 18:01:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5553B20872;
+        Mon, 18 May 2020 18:02:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824916;
-        bh=n1mz1mu8yVWyo3xoJFTGzVFj2+WDzOfgdPH4m6e8cBY=;
+        s=default; t=1589824921;
+        bh=iI6/4pieNmhea6dG1LXDMXm/LdTJkwUeGnsdS5TIGu4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VcxpvjxgWmCNQuZN51UowBrmPeO83K3ELKViWD13KuOCbcMFwVD0Cai4UsNAw6Ygw
-         gRj/bkMCy2qliXDEUb8vPhejlatWsHVfMC/qanPnZ9lT40kFOIc6HWdLoLBcyeC5pR
-         mtY6rdeUxFim34/6ucEZjKjZtlmURbiHMzvxpIZQ=
+        b=J1qfnGqCAzbTfCmte00XSjgYxyTOQQ8/f+gQpk7x8abj/NDRUN1amWOZ8yzBRAR0R
+         Pp7OHDadt2BI3Yz9ReRs1PsIDdcqgTgYB31gM3k24XZqTKDjeMcdwHD96rx/fYNnr0
+         O1OLvBB0tAsWyY9duZR3VNsJnhKekaGgSvVZk+7Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiaodong Yan <Xiaodong.Yan@amd.com>,
-        Tony Cheng <Tony.Cheng@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Xiao Yang <yangx.jy@cn.fujitsu.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 056/194] drm/amd/display: blank dp stream before re-train the link
-Date:   Mon, 18 May 2020 19:35:46 +0200
-Message-Id: <20200518173536.399457226@linuxfoundation.org>
+Subject: [PATCH 5.6 057/194] selftests/ftrace: Check the first record for kprobe_args_type.tc
+Date:   Mon, 18 May 2020 19:35:47 +0200
+Message-Id: <20200518173536.471309562@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
 References: <20200518173531.455604187@linuxfoundation.org>
@@ -46,57 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaodong Yan <Xiaodong.Yan@amd.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
 
-[ Upstream commit 718a5569b6fa6e1f49f1ae76a3c18acb4ddb74f1 ]
+[ Upstream commit f0c0d0cf590f71b2213b29a7ded2cde3d0a1a0ba ]
 
-[Why]
-When link loss happened, monitor can not light up if only re-train the
-link.
+It is possible to get multiple records from trace during test and then more
+than 4 arguments are assigned to ARGS.  This situation results in the failure
+of kprobe_args_type.tc.  For example:
+-----------------------------------------------------------
+grep testprobe trace
+   ftracetest-5902  [001] d... 111195.682227: testprobe: (_do_fork+0x0/0x460) arg1=334823024 arg2=334823024 arg3=0x13f4fe70 arg4=7
+     pmlogger-5949  [000] d... 111195.709898: testprobe: (_do_fork+0x0/0x460) arg1=345308784 arg2=345308784 arg3=0x1494fe70 arg4=7
+ grep testprobe trace
+ sed -e 's/.* arg1=\(.*\) arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'
+ARGS='334823024 334823024 0x13f4fe70 7
+345308784 345308784 0x1494fe70 7'
+-----------------------------------------------------------
 
-[How]
-Blank all the DP streams on this link before re-train the link, and then
-unblank the stream
+We don't care which process calls do_fork so just check the first record to
+fix the issue.
 
-Signed-off-by: Xiaodong Yan <Xiaodong.Yan@amd.com>
-Reviewed-by: Tony Cheng <Tony.Cheng@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ .../testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-index fd9e69634c50a..1b6c75a4dd60a 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-@@ -2885,6 +2885,12 @@ bool dc_link_handle_hpd_rx_irq(struct dc_link *link, union hpd_irq_data *out_hpd
- 					sizeof(hpd_irq_dpcd_data),
- 					"Status: ");
+diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
+index 1bcb67dcae267..81490ecaaa927 100644
+--- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
++++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
+@@ -38,7 +38,7 @@ for width in 64 32 16 8; do
+   echo 0 > events/kprobes/testprobe/enable
  
-+		for (i = 0; i < MAX_PIPES; i++) {
-+			pipe_ctx = &link->dc->current_state->res_ctx.pipe_ctx[i];
-+			if (pipe_ctx && pipe_ctx->stream && pipe_ctx->stream->link == link)
-+				link->dc->hwss.blank_stream(pipe_ctx);
-+		}
-+
- 		for (i = 0; i < MAX_PIPES; i++) {
- 			pipe_ctx = &link->dc->current_state->res_ctx.pipe_ctx[i];
- 			if (pipe_ctx && pipe_ctx->stream && pipe_ctx->stream->link == link)
-@@ -2904,6 +2910,12 @@ bool dc_link_handle_hpd_rx_irq(struct dc_link *link, union hpd_irq_data *out_hpd
- 		if (pipe_ctx->stream->signal == SIGNAL_TYPE_DISPLAY_PORT_MST)
- 			dc_link_reallocate_mst_payload(link);
+   : "Confirm the arguments is recorded in given types correctly"
+-  ARGS=`grep "testprobe" trace | sed -e 's/.* arg1=\(.*\) arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
++  ARGS=`grep "testprobe" trace | head -n 1 | sed -e 's/.* arg1=\(.*\) arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
+   check_types $ARGS $width
  
-+		for (i = 0; i < MAX_PIPES; i++) {
-+			pipe_ctx = &link->dc->current_state->res_ctx.pipe_ctx[i];
-+			if (pipe_ctx && pipe_ctx->stream && pipe_ctx->stream->link == link)
-+				link->dc->hwss.unblank_stream(pipe_ctx, &previous_link_settings);
-+		}
-+
- 		status = false;
- 		if (out_link_loss)
- 			*out_link_loss = true;
+   : "Clear event for next loop"
 -- 
 2.20.1
 
