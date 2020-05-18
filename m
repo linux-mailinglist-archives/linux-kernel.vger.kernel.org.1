@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3991D8181
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D47951D8451
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730397AbgERRsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:48:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49564 "EHLO mail.kernel.org"
+        id S1732425AbgERSFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:05:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729864AbgERRsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:48:36 -0400
+        id S1732850AbgERSEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:04:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B55B020671;
-        Mon, 18 May 2020 17:48:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C26E4208B6;
+        Mon, 18 May 2020 18:04:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824115;
-        bh=DxDsfTkgOjqCFH1Q/5NfOZvR63TeurMxxpGVjJ6sUto=;
+        s=default; t=1589825090;
+        bh=apGMZq366a0oOF8+eEi0umUJZjbbxo91gheL+SKekas=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tVIbj0Ehoee1YH/3B5mJxPdLTCXvs983bv0N1ofjrsEJAavJlNEVmuekCnCZ6NWCp
-         3DhosmPLUmKR8QN9ASGFwN9nTjYb9vOmJeyTf8u3/2S8RHKizUlmz8+6jJzJen3RNM
-         +Ujyyd0MI8tFq3oYZBM8UTybWp9OD/6mEL4B7bjA=
+        b=BBVs4hOgG2DkT2xTV3D1pfoaGEOwXn2vxUYC+ZNCas9zwf9O0VX3zsJBwcs8OBidF
+         ++fjh8yRuo/3EnyCNi74TiZA711mf+Jq93PkrcyrqfHjNLgQWrqK5Wn1bNPrBr8Oq1
+         gdXPAo/JgBhjmEBwAVueASaxgLLEvR2WzOrPE9wE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: [PATCH 4.14 044/114] f2fs: introduce read_xattr_block
+        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 086/194] bpf, sockmap: msg_pop_data can incorrecty set an sge length
 Date:   Mon, 18 May 2020 19:36:16 +0200
-Message-Id: <20200518173511.349444101@linuxfoundation.org>
+Message-Id: <20200518173538.855990598@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,109 +46,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+From: John Fastabend <john.fastabend@gmail.com>
 
-commit 63840695f68c20735df8861062343cf1faa3768d upstream.
+[ Upstream commit 3e104c23816220919ea1b3fd93fabe363c67c484 ]
 
-Commit ba38c27eb93e ("f2fs: enhance lookup xattr") introduces
-lookup_all_xattrs duplicating from read_all_xattrs, which leaves
-lots of similar codes in between them, so introduce new help
-read_xattr_block to clean up redundant codes.
+When sk_msg_pop() is called where the pop operation is working on
+the end of a sge element and there is no additional trailing data
+and there _is_ data in front of pop, like the following case,
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+   |____________a_____________|__pop__|
+
+We have out of order operations where we incorrectly set the pop
+variable so that instead of zero'ing pop we incorrectly leave it
+untouched, effectively. This can cause later logic to shift the
+buffers around believing it should pop extra space. The result is
+we have 'popped' more data then we expected potentially breaking
+program logic.
+
+It took us a while to hit this case because typically we pop headers
+which seem to rarely be at the end of a scatterlist elements but
+we can't rely on this.
+
+Fixes: 7246d8ed4dcce ("bpf: helper to pop data from messages")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/158861288359.14306.7654891716919968144.stgit@john-Precision-5820-Tower
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/xattr.c |   50 ++++++++++++++++++++++++--------------------------
- 1 file changed, 24 insertions(+), 26 deletions(-)
+ net/core/filter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/f2fs/xattr.c
-+++ b/fs/f2fs/xattr.c
-@@ -264,12 +264,31 @@ static int read_inline_xattr(struct inod
- 	return 0;
- }
- 
-+static int read_xattr_block(struct inode *inode, void *txattr_addr)
-+{
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-+	nid_t xnid = F2FS_I(inode)->i_xattr_nid;
-+	unsigned int inline_size = inline_xattr_size(inode);
-+	struct page *xpage;
-+	void *xattr_addr;
-+
-+	/* The inode already has an extended attribute block. */
-+	xpage = get_node_page(sbi, xnid);
-+	if (IS_ERR(xpage))
-+		return PTR_ERR(xpage);
-+
-+	xattr_addr = page_address(xpage);
-+	memcpy(txattr_addr + inline_size, xattr_addr, VALID_XATTR_BLOCK_SIZE);
-+	f2fs_put_page(xpage, 1);
-+
-+	return 0;
-+}
-+
- static int lookup_all_xattrs(struct inode *inode, struct page *ipage,
- 				unsigned int index, unsigned int len,
- 				const char *name, struct f2fs_xattr_entry **xe,
- 				void **base_addr)
- {
--	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
- 	void *cur_addr, *txattr_addr, *last_addr = NULL;
- 	nid_t xnid = F2FS_I(inode)->i_xattr_nid;
- 	unsigned int size = xnid ? VALID_XATTR_BLOCK_SIZE : 0;
-@@ -298,19 +317,9 @@ static int lookup_all_xattrs(struct inod
- 
- 	/* read from xattr node block */
- 	if (xnid) {
--		struct page *xpage;
--		void *xattr_addr;
--
--		/* The inode already has an extended attribute block. */
--		xpage = get_node_page(sbi, xnid);
--		if (IS_ERR(xpage)) {
--			err = PTR_ERR(xpage);
-+		err = read_xattr_block(inode, txattr_addr);
-+		if (err)
- 			goto out;
--		}
--
--		xattr_addr = page_address(xpage);
--		memcpy(txattr_addr + inline_size, xattr_addr, size);
--		f2fs_put_page(xpage, 1);
+diff --git a/net/core/filter.c b/net/core/filter.c
+index c180871e606d8..083fbe92662ec 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -2590,8 +2590,8 @@ BPF_CALL_4(bpf_msg_pop_data, struct sk_msg *, msg, u32, start,
+ 			}
+ 			pop = 0;
+ 		} else if (pop >= sge->length - a) {
+-			sge->length = a;
+ 			pop -= (sge->length - a);
++			sge->length = a;
+ 		}
  	}
  
- 	if (last_addr)
-@@ -335,7 +344,6 @@ out:
- static int read_all_xattrs(struct inode *inode, struct page *ipage,
- 							void **base_addr)
- {
--	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
- 	struct f2fs_xattr_header *header;
- 	nid_t xnid = F2FS_I(inode)->i_xattr_nid;
- 	unsigned int size = VALID_XATTR_BLOCK_SIZE;
-@@ -357,19 +365,9 @@ static int read_all_xattrs(struct inode
- 
- 	/* read from xattr node block */
- 	if (xnid) {
--		struct page *xpage;
--		void *xattr_addr;
--
--		/* The inode already has an extended attribute block. */
--		xpage = get_node_page(sbi, xnid);
--		if (IS_ERR(xpage)) {
--			err = PTR_ERR(xpage);
-+		err = read_xattr_block(inode, txattr_addr);
-+		if (err)
- 			goto fail;
--		}
--
--		xattr_addr = page_address(xpage);
--		memcpy(txattr_addr + inline_size, xattr_addr, size);
--		f2fs_put_page(xpage, 1);
- 	}
- 
- 	header = XATTR_HDR(txattr_addr);
+-- 
+2.20.1
+
 
 
