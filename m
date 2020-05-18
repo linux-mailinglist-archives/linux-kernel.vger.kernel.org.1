@@ -2,38 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3861D8532
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4EC81D814D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731682AbgERR4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:56:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34818 "EHLO mail.kernel.org"
+        id S1730144AbgERRqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:46:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730672AbgERR4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:56:42 -0400
+        id S1730123AbgERRqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:46:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05E4B20715;
-        Mon, 18 May 2020 17:56:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A1A120715;
+        Mon, 18 May 2020 17:46:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824602;
-        bh=MKIyheyNGViV/MgpHcPvLYxIi6TdIFMAtGgTC0w2VSQ=;
+        s=default; t=1589824004;
+        bh=1IxgM8qSTOEdrK1L9TS8wCO2BnquIDeqgkd91GqoSFY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ASSkrb5wi/g8lMhbgXywFaSmmuOLSuxkCSfXq6EurrEIJ5fY7D9NHiGJcNzliBWR5
-         cijE6R/KLLcRgB7rAYjwRPi3MsQ59fKeILt9MkSpkoaf4u5v5d4q695EV1eQ5Ps2fa
-         MpNmmlDhrW2Pjv5Bk5QO7OUo/38+/RM/IVbDEnrw=
+        b=xm6TcISxypH8/w75zPTNGTZEohsVw4/gKJz5i58314tmVyCh0ZeYu0bwh5MqYV8qO
+         xA67rFr07nO3uJyyBvrb7KNCI2CTsmnwuzO0UqqLg9cY2KfhWnD1BlZ7l+qywithdn
+         hjHVsKYcFiuzSlcqv5cw0s8HiGRbcGn1GhiT9rVg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 040/147] dmaengine: mmp_tdma: Reset channel error on release
+        stable@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>, Dave Jones <dsj@fb.com>,
+        Jann Horn <jannh@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vince Weaver <vincent.weaver@maine.edu>
+Subject: [PATCH 4.14 031/114] x86/unwind/orc: Dont skip the first frame for inactive tasks
 Date:   Mon, 18 May 2020 19:36:03 +0200
-Message-Id: <20200518173519.070973682@linuxfoundation.org>
+Message-Id: <20200518173509.357209406@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +49,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lubomir Rintel <lkundrak@v3.sk>
+From: Miroslav Benes <mbenes@suse.cz>
 
-[ Upstream commit 0c89446379218698189a47871336cb30286a7197 ]
+commit f1d9a2abff66aa8156fbc1493abed468db63ea48 upstream.
 
-When a channel configuration fails, the status of the channel is set to
-DEV_ERROR so that an attempt to submit it fails. However, this status
-sticks until the heat end of the universe, making it impossible to
-recover from the error.
+When unwinding an inactive task, the ORC unwinder skips the first frame
+by default.  If both the 'regs' and 'first_frame' parameters of
+unwind_start() are NULL, 'state->sp' and 'first_frame' are later
+initialized to the same value for an inactive task.  Given there is a
+"less than or equal to" comparison used at the end of __unwind_start()
+for skipping stack frames, the first frame is skipped.
 
-Let's reset it when the channel is released so that further use of the
-channel with correct configuration is not impacted.
+Drop the equal part of the comparison and make the behavior equivalent
+to the frame pointer unwinder.
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-Link: https://lore.kernel.org/r/20200419164912.670973-5-lkundrak@v3.sk
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Signed-off-by: Miroslav Benes <mbenes@suse.cz>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Dave Jones <dsj@fb.com>
+Cc: Jann Horn <jannh@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vince Weaver <vincent.weaver@maine.edu>
+Link: https://lore.kernel.org/r/7f08db872ab59e807016910acdbe82f744de7065.1587808742.git.jpoimboe@redhat.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/dma/mmp_tdma.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kernel/unwind_orc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/mmp_tdma.c b/drivers/dma/mmp_tdma.c
-index 4d5b987e4841a..89d90c456c0ce 100644
---- a/drivers/dma/mmp_tdma.c
-+++ b/drivers/dma/mmp_tdma.c
-@@ -363,6 +363,8 @@ static void mmp_tdma_free_descriptor(struct mmp_tdma_chan *tdmac)
- 		gen_pool_free(gpool, (unsigned long)tdmac->desc_arr,
- 				size);
- 	tdmac->desc_arr = NULL;
-+	if (tdmac->status == DMA_ERROR)
-+		tdmac->status = DMA_COMPLETE;
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -574,7 +574,7 @@ void __unwind_start(struct unwind_state
+ 	/* Otherwise, skip ahead to the user-specified starting frame: */
+ 	while (!unwind_done(state) &&
+ 	       (!on_stack(&state->stack_info, first_frame, sizeof(long)) ||
+-			state->sp <= (unsigned long)first_frame))
++			state->sp < (unsigned long)first_frame))
+ 		unwind_next_frame(state);
  
  	return;
- }
--- 
-2.20.1
-
 
 
