@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605B01D81C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32321D8185
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730706AbgERRue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:50:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52692 "EHLO mail.kernel.org"
+        id S1728850AbgERRsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:48:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728907AbgERRua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:50:30 -0400
+        id S1730416AbgERRsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:48:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2953920674;
-        Mon, 18 May 2020 17:50:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A6AE20671;
+        Mon, 18 May 2020 17:48:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824229;
-        bh=nBbrIivAPlOsYkCOCIweAJk+9Fv0sCwKtYP491W2//U=;
+        s=default; t=1589824122;
+        bh=1fHF5grwxTgTWwfq9Mfn5XKvs5M5XYY8AvnqEOnJuws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sFghHwpD8q78YDUFITO5BI2zN4wn+EUzs/A5ZUSS8r8M2t2cdoWK2Qy1NSn/59oP7
-         E/wO1kZse1UUHQxS8we/R2dEcft6I+4d0ZJSEe/koS7QpqTnRkvYbJ4B6yZ/76fYzA
-         +83UJADCEIZrkJSkii75cH2MvbW2Lo8Tozi1Y+aA=
+        b=XT5M0lJhQYywbkP8kfyU7IWlSLur5ZMQPLax6dPFnE0HHiRVqtROrolYAGHlFqdgX
+         whjJkg0rrWVh9AF7L6UK/3swWusDC93xMNxT/YsEwx/CKrJCcRqlu6g7MQxTPGdVYe
+         sO6BeO/DrG8Hv9+YoY1c9fxZLw/0o/ec9JlSxNMs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 01/80] net: dsa: Do not make user port errors fatal
+        stable@vger.kernel.org, Randall Huang <huangrandall@google.com>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>
+Subject: [PATCH 4.14 047/114] f2fs: fix to avoid memory leakage in f2fs_listxattr
 Date:   Mon, 18 May 2020 19:36:19 +0200
-Message-Id: <20200518173450.419156571@linuxfoundation.org>
+Message-Id: <20200518173511.830041124@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,36 +44,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Randall Huang <huangrandall@google.com>
 
-commit 86f8b1c01a0a537a73d2996615133be63cdf75db upstream.
+commit 688078e7f36c293dae25b338ddc9e0a2790f6e06 upstream.
 
-Prior to 1d27732f411d ("net: dsa: setup and teardown ports"), we would
-not treat failures to set-up an user port as fatal, but after this
-commit we would, which is a regression for some systems where interfaces
-may be declared in the Device Tree, but the underlying hardware may not
-be present (pluggable daughter cards for instance).
+In f2fs_listxattr, there is no boundary check before
+memcpy e_name to buffer.
+If the e_name_len is corrupted,
+unexpected memory contents may be returned to the buffer.
 
-Fixes: 1d27732f411d ("net: dsa: setup and teardown ports")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Randall Huang <huangrandall@google.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+[bwh: Backported to 4.14: Use f2fs_msg() instead of f2fs_err()]
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- net/dsa/dsa2.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/f2fs/xattr.c |   15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
---- a/net/dsa/dsa2.c
-+++ b/net/dsa/dsa2.c
-@@ -412,7 +412,7 @@ static int dsa_tree_setup_switches(struc
+--- a/fs/f2fs/xattr.c
++++ b/fs/f2fs/xattr.c
+@@ -516,8 +516,9 @@ out:
+ ssize_t f2fs_listxattr(struct dentry *dentry, char *buffer, size_t buffer_size)
+ {
+ 	struct inode *inode = d_inode(dentry);
++	nid_t xnid = F2FS_I(inode)->i_xattr_nid;
+ 	struct f2fs_xattr_entry *entry;
+-	void *base_addr;
++	void *base_addr, *last_base_addr;
+ 	int error = 0;
+ 	size_t rest = buffer_size;
  
- 		err = dsa_switch_setup(ds);
- 		if (err)
--			return err;
-+			continue;
+@@ -527,6 +528,8 @@ ssize_t f2fs_listxattr(struct dentry *de
+ 	if (error)
+ 		return error;
  
- 		for (port = 0; port < ds->num_ports; port++) {
- 			dp = &ds->ports[port];
++	last_base_addr = (void *)base_addr + XATTR_SIZE(xnid, inode);
++
+ 	list_for_each_xattr(entry, base_addr) {
+ 		const struct xattr_handler *handler =
+ 			f2fs_xattr_handler(entry->e_name_index);
+@@ -534,6 +537,16 @@ ssize_t f2fs_listxattr(struct dentry *de
+ 		size_t prefix_len;
+ 		size_t size;
+ 
++		if ((void *)(entry) + sizeof(__u32) > last_base_addr ||
++			(void *)XATTR_NEXT_ENTRY(entry) > last_base_addr) {
++			f2fs_msg(dentry->d_sb, KERN_ERR,
++				 "inode (%lu) has corrupted xattr",
++				 inode->i_ino);
++			set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_FSCK);
++			error = -EFSCORRUPTED;
++			goto cleanup;
++		}
++
+ 		if (!handler || (handler->list && !handler->list(dentry)))
+ 			continue;
+ 
 
 
