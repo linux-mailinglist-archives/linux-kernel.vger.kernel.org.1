@@ -2,378 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F58A1D8BBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 01:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612631D8BBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 01:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728209AbgERXnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 19:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
+        id S1728081AbgERXnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 19:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726407AbgERXnu (ORCPT
+        with ESMTP id S1726407AbgERXnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 19:43:50 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C2AC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 16:43:48 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id i14so12445498qka.10
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 16:43:48 -0700 (PDT)
+        Mon, 18 May 2020 19:43:13 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D8AC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 16:43:13 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x13so5668478pfn.11
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 16:43:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CUmDYYkpZZOxZeHj4v6l0yPrVRqjR13kh8tdRl3yxno=;
-        b=Jp3x4rNk0J679pkAT5jaLNrusPLmDIZ3t4rX3NMb4+IXXxWv/OvFFcQMu3oZhK5qL3
-         VzsLwZwzZWZ/GosJbRSQZFWYd4FIE1rHK1PXbp6IZJ1fPuJkb3XZiLGOsE0nn4yjax+i
-         71PrZlPV0mpcNjQXQqDxVO6h7q9aWZ12PDhitNUhGqTp8LAmz0cSMzSNu9mcF5VPoRcy
-         yjq8wnMBpcWa6kRYsRZ0G1A5szJp7xtDwmQq4umSY/mzD5L1r8Nn3B9YUq/2EMcbFF2b
-         grzBNf1gEzXMKokvlgkNniuAWn4F+Irae6Bx2BmMFEBZmgyUUOWNzvyV14OnTzsP0MKe
-         lWaQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8muLYD1xgYtE5+3MTylpFgEPs9F6TZH1Nw2fhOJgUio=;
+        b=IGQEVj7L/R7z4ITm2v8CeDn1w+RbyUDjXMunf10w3Z8NaBiy9G43an36FyXjdKBwpw
+         /1EeObQZCUW6aDh9DRDR0DfW16kw4hn/s5jD6kGNDoQBxREtinKAvdjHJEaw7w61uu4/
+         cxEi0o/dFKz7DMrDYJ3DuOdrDclYd+GCEG3Z5FJssl1qC8VNzaaxcL42rA081QNBbtl0
+         TfM/mFGOaqUrzVAa3BbmvWqb7scrhwRB1abSBtvILZHnZCKsfrFluWIuMhl473xB31uV
+         jq2NSeLUKPiBDXpYob/HlDZCVrZwuB2DZtKqERkQ3Ahb1ZJ1sBFHb+e96f5hukFKvUi6
+         t+6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CUmDYYkpZZOxZeHj4v6l0yPrVRqjR13kh8tdRl3yxno=;
-        b=HWsJcNDrGm+o05Q+YKZxXaVOp+FyNUuDJ3+XTagbZz+Fkve4GmmM5b23uTT2HoiVZt
-         fP5vSHt79H9fL77yr7nduWaQKdDvXF38a5+7WCKwjQ40x46mi1r4xRkrpgK5gcOUq8v3
-         cGHifg1d8NtMSopFz2Rn1bciQaZ/2GDy5PHoALHZrZ9dF/PO/Pax1xn6fNik3ovAuusz
-         8LBwZLyoW3pLPZWNisv11LelkfkTkjCgK5dxAnF1AbB3hsEv4W+2h6V0zr+hqljRUI3l
-         ot8EYDL2CI7OQPFtkZ1DPY0NRNDY+c6x+/LcDZBR43g4lDUzn1nXkikUbWyxgJeWA/04
-         xchw==
-X-Gm-Message-State: AOAM532sGmNWfk+9X//e7eSPrUYcww41hyMbecGkYGXeNZtGvHOU/s60
-        +AF9CLu6FhEFiE6w9DToUbQ=
-X-Google-Smtp-Source: ABdhPJycsClsOF68LKleOCgmbIDRMjlWKkKgRyVQ78rDlgkCX3KDNZ//oJedZJ8wtpL3HBwlUMF2ow==
-X-Received: by 2002:a37:f50e:: with SMTP id l14mr19273189qkk.482.1589845427796;
-        Mon, 18 May 2020 16:43:47 -0700 (PDT)
-Received: from LeoBras.aus.stglabs.ibm.com (177-131-65-239.dynamic.desktop.com.br. [177.131.65.239])
-        by smtp.gmail.com with ESMTPSA id 145sm9135772qkm.110.2020.05.18.16.43.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2020 16:43:47 -0700 (PDT)
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Allison Randal <allison@lohutok.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Anshuman Khandual <khandual@linux.vnet.ibm.com>,
-        Daniel Axtens <dja@axtens.net>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Nadav Amit <namit@vmware.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 2/2] powerpc/rtas: Implement reentrant rtas call
-Date:   Mon, 18 May 2020 20:42:45 -0300
-Message-Id: <20200518234245.200672-3-leobras.c@gmail.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200518234245.200672-1-leobras.c@gmail.com>
-References: <20200518234245.200672-1-leobras.c@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8muLYD1xgYtE5+3MTylpFgEPs9F6TZH1Nw2fhOJgUio=;
+        b=FBud0Z0VbT+LoDl7PXMhfblcJ+bg7MaXujTga91JZr/jatjSi3gVzlMQcmt3uHyWqy
+         ohzR+UVNdyngXhf5vjDy2HU0uuzVWUxgA/eRs7q/5S97GqpUgs9Eq0crnrZ2RkimHg+Y
+         P6Cv28BjHMxWNrXUKTD4FgJaJZdXuuFA4GNsTbppqdFyhxsTzQ4vvy1YYucS4YwiZuOa
+         k8Uamj/M+qjsgWdQneuSdB0UXT+pPdOW5GAdnMUeZV+noXJRdW5nNaAW2WsJWSZFOWAJ
+         tiMGJg4nNSD2+4Pz15yqfPADePdO+Sbl0IeLy3tfO2gSnHSwDu0q9G1DFYD778QRT7dP
+         pyTw==
+X-Gm-Message-State: AOAM532ZpVRhsJ2/bnftFHvnKVnuYl3x3ihcawtcFO0zMBzVXzZZLDAr
+        iLPpMHTyqdIYRg0DLhUDXGJ/U8JVGrR9jhM8FtRbyg==
+X-Google-Smtp-Source: ABdhPJx/7JXccs6kAtgKdajeCzLDEtupuHGNAhqB7XW+i8WRmsGBUog7+xFYvXTtFil4FWMQEUkq/ZBa9eLbk5kl+bs=
+X-Received: by 2002:a63:d010:: with SMTP id z16mr7031605pgf.381.1589845392505;
+ Mon, 18 May 2020 16:43:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200517152916.3146539-1-brgerst@gmail.com> <20200517152916.3146539-5-brgerst@gmail.com>
+In-Reply-To: <20200517152916.3146539-5-brgerst@gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 18 May 2020 16:42:58 -0700
+Message-ID: <CAKwvOdnVU3kZnGzkYjEFJWMPuVjOmAHuRSB8FJ-Ks+FWzX2M_Q@mail.gmail.com>
+Subject: Re: [PATCH 4/7] x86/percpu: Clean up percpu_add_op()
+To:     Brian Gerst <brgerst@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement rtas_call_reentrant() for reentrant rtas-calls:
-"ibm,int-on", "ibm,int-off",ibm,get-xive" and  "ibm,set-xive".
+On Sun, May 17, 2020 at 8:29 AM Brian Gerst <brgerst@gmail.com> wrote:
+>
+> The core percpu macros already have a switch on the data size, so the switch
+> in the x86 code is redundant and produces more dead code.
+>
+> Also use appropriate types for the width of the instructions.  This avoids
+> errors when compiling with Clang.
+>
+> Signed-off-by: Brian Gerst <brgerst@gmail.com>
+> ---
+>  arch/x86/include/asm/percpu.h | 99 ++++++++---------------------------
+>  1 file changed, 22 insertions(+), 77 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+> index 93f33202492d..21c5013a681a 100644
+> --- a/arch/x86/include/asm/percpu.h
+> +++ b/arch/x86/include/asm/percpu.h
+> @@ -130,64 +130,32 @@ do {                                                                      \
+>             : [val] __pcpu_reg_imm_##size(pto_val__));                  \
+>  } while (0)
+>
+> +#define percpu_unary_op(size, qual, op, _var)                          \
+> +({                                                                     \
+> +       asm qual (__pcpu_op1_##size(op, __percpu_arg([var]))            \
+> +           : [var] "+m" (_var));                                       \
+> +})
+> +
+>  /*
+>   * Generate a percpu add to memory instruction and optimize code
+>   * if one is added or subtracted.
+>   */
+> -#define percpu_add_op(qual, var, val)                                  \
+> +#define percpu_add_op(size, qual, var, val)                            \
+>  do {                                                                   \
+> -       typedef typeof(var) pao_T__;                                    \
+>         const int pao_ID__ = (__builtin_constant_p(val) &&              \
+>                               ((val) == 1 || (val) == -1)) ?            \
+>                                 (int)(val) : 0;                         \
+>         if (0) {                                                        \
+> -               pao_T__ pao_tmp__;                                      \
+> +               typeof(var) pao_tmp__;                                  \
+>                 pao_tmp__ = (val);                                      \
+>                 (void)pao_tmp__;                                        \
+>         }                                                               \
 
-On LoPAPR Version 1.1 (March 24, 2016), from 7.3.10.1 to 7.3.10.4,
-items 2 and 3 say:
+Prefer __same_type() from include/linux/compiler_types.h here as well.
+Nice elimination of the typedef.
 
-2 - For the PowerPC External Interrupt option: The * call must be
-reentrant to the number of processors on the platform.
-3 - For the PowerPC External Interrupt option: The * argument call
-buffer for each simultaneous call must be physically unique.
+> -       switch (sizeof(var)) {                                          \
+> -       case 1:                                                         \
+> -               if (pao_ID__ == 1)                                      \
+> -                       asm qual ("incb "__percpu_arg(0) : "+m" (var)); \
+> -               else if (pao_ID__ == -1)                                \
+> -                       asm qual ("decb "__percpu_arg(0) : "+m" (var)); \
+> -               else                                                    \
+> -                       asm qual ("addb %1, "__percpu_arg(0)            \
+> -                           : "+m" (var)                                \
+> -                           : "qi" ((pao_T__)(val)));                   \
+> -               break;                                                  \
+> -       case 2:                                                         \
+> -               if (pao_ID__ == 1)                                      \
+> -                       asm qual ("incw "__percpu_arg(0) : "+m" (var)); \
+> -               else if (pao_ID__ == -1)                                \
+> -                       asm qual ("decw "__percpu_arg(0) : "+m" (var)); \
+> -               else                                                    \
+> -                       asm qual ("addw %1, "__percpu_arg(0)            \
+> -                           : "+m" (var)                                \
+> -                           : "ri" ((pao_T__)(val)));                   \
+> -               break;                                                  \
+> -       case 4:                                                         \
+> -               if (pao_ID__ == 1)                                      \
+> -                       asm qual ("incl "__percpu_arg(0) : "+m" (var)); \
+> -               else if (pao_ID__ == -1)                                \
+> -                       asm qual ("decl "__percpu_arg(0) : "+m" (var)); \
+> -               else                                                    \
+> -                       asm qual ("addl %1, "__percpu_arg(0)            \
+> -                           : "+m" (var)                                \
+> -                           : "ri" ((pao_T__)(val)));                   \
+> -               break;                                                  \
+> -       case 8:                                                         \
+> -               if (pao_ID__ == 1)                                      \
+> -                       asm qual ("incq "__percpu_arg(0) : "+m" (var)); \
+> -               else if (pao_ID__ == -1)                                \
+> -                       asm qual ("decq "__percpu_arg(0) : "+m" (var)); \
+> -               else                                                    \
+> -                       asm qual ("addq %1, "__percpu_arg(0)            \
+> -                           : "+m" (var)                                \
+> -                           : "re" ((pao_T__)(val)));                   \
+> -               break;                                                  \
+> -       default: __bad_percpu_size();                                   \
+> -       }                                                               \
+> +       if (pao_ID__ == 1)                                              \
+> +               percpu_unary_op(size, qual, "inc", var);                \
+> +       else if (pao_ID__ == -1)                                        \
+> +               percpu_unary_op(size, qual, "dec", var);                \
+> +       else                                                            \
+> +               percpu_to_op(size, qual, "add", var, val);              \
 
-So, these rtas-calls can be called in a lockless way, if using
-a different buffer for each cpu doing such rtas call.
+Nice simplification, and it was clever of you to reuse percpu_to_op()
+for the case of addition!
 
-For this, it was suggested to add the buffer (struct rtas_args)
-in the PACA struct, so each cpu can have it's own buffer.
-The PACA struct received a pointer to rtas buffer, which is
-allocated in the memory range available to rtas 32-bit.
+In terms of the 0day bot test failures:
+>> include/linux/percpu-rwsem.h:91:17: sparse: sparse: cast truncates bits from constant value (ffffffff becomes ffff)
+>> include/net/tcp.h:1521:9: sparse: sparse: cast truncates bits from constant value (1d4c0 becomes d4c0)
+>> include/net/sch_generic.h:888:9: sparse: sparse: cast truncates bits from constant value (ffffffff becomes ffff)
+>> drivers/infiniband/hw/hfi1/pio_copy.c:164:9: sparse: sparse: cast truncates bits from constant value (ffffffff becomes ffff)
+which is reminiscent of our discussion in:
+https://lore.kernel.org/lkml/CAMzpN2gu4stkRKTsMTVxyzckO3SMhfA+dmCnSu6-aMg5QAA_JQ@mail.gmail.com/
 
-Reentrant rtas calls are useful to avoid deadlocks in crashing,
-where rtas-calls are needed, but some other thread crashed holding
-the rtas.lock.
+I'm not able to repro with i386_defconfig, but it looks like one
+report was i386_allmodconfig, the other was (64b) allyesconfig.
+I am able to repro with:
+$ rm -f drivers/infiniband/hw/hfi1/pio_copy.o
+$ make -j71 CC=clang allyesconfig
+$ make -j71 CC=clang C=1 drivers/infiniband/hw/hfi1/pio_copy.o
 
-This is a backtrace of a deadlock from a kdump testing environment:
+It's not immediately clear to me from this diff which cast sparse is
+complaining about.  Looking at the report and expanding this_cpu_dec()
+seems to eventually expand to `this_cpu_add_<number>, so the reporting
+does look potentially against the right patch in the series.  (Seeing
+`(typeof((ptr) + 0))NULL` in __verify_pcpu_ptr() in
+include/linux/percpu-defs.h is a real WTF, though the comment
+explains).
 
-  #0 arch_spin_lock
-  #1  lock_rtas ()
-  #2  rtas_call (token=8204, nargs=1, nret=1, outputs=0x0)
-  #3  ics_rtas_mask_real_irq (hw_irq=4100)
-  #4  machine_kexec_mask_interrupts
-  #5  default_machine_crash_shutdown
-  #6  machine_crash_shutdown
-  #7  __crash_kexec
-  #8  crash_kexec
-  #9  oops_end
+Indeed, if I checkout before the series is applied, the warnings
+disappear.  So let's follow up tomorrow on where this is coming from.
 
-Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
----
- arch/powerpc/include/asm/paca.h     |  4 +++
- arch/powerpc/include/asm/rtas.h     |  1 +
- arch/powerpc/kernel/paca.c          | 34 +++++++++++++++++++
- arch/powerpc/kernel/rtas.c          | 52 +++++++++++++++++++++++++++++
- arch/powerpc/sysdev/xics/ics-rtas.c | 22 ++++++------
- 5 files changed, 102 insertions(+), 11 deletions(-)
+>  } while (0)
+>
+>  #define percpu_from_op(size, qual, op, _var)                           \
+> @@ -228,29 +196,6 @@ do {                                                                       \
+>         pfo_ret__;                                      \
+>  })
+>
+> -#define percpu_unary_op(qual, op, var)                 \
+> -({                                                     \
+> -       switch (sizeof(var)) {                          \
+> -       case 1:                                         \
+> -               asm qual (op "b "__percpu_arg(0)        \
+> -                   : "+m" (var));                      \
+> -               break;                                  \
+> -       case 2:                                         \
+> -               asm qual (op "w "__percpu_arg(0)        \
+> -                   : "+m" (var));                      \
+> -               break;                                  \
+> -       case 4:                                         \
+> -               asm qual (op "l "__percpu_arg(0)        \
+> -                   : "+m" (var));                      \
+> -               break;                                  \
+> -       case 8:                                         \
+> -               asm qual (op "q "__percpu_arg(0)        \
+> -                   : "+m" (var));                      \
+> -               break;                                  \
+> -       default: __bad_percpu_size();                   \
+> -       }                                               \
+> -})
+> -
+>  /*
+>   * Add return operation
+>   */
+> @@ -388,9 +333,9 @@ do {                                                                        \
+>  #define raw_cpu_write_1(pcp, val)      percpu_to_op(1, , "mov", (pcp), val)
+>  #define raw_cpu_write_2(pcp, val)      percpu_to_op(2, , "mov", (pcp), val)
+>  #define raw_cpu_write_4(pcp, val)      percpu_to_op(4, , "mov", (pcp), val)
+> -#define raw_cpu_add_1(pcp, val)                percpu_add_op(, (pcp), val)
+> -#define raw_cpu_add_2(pcp, val)                percpu_add_op(, (pcp), val)
+> -#define raw_cpu_add_4(pcp, val)                percpu_add_op(, (pcp), val)
+> +#define raw_cpu_add_1(pcp, val)                percpu_add_op(1, , (pcp), val)
+> +#define raw_cpu_add_2(pcp, val)                percpu_add_op(2, , (pcp), val)
+> +#define raw_cpu_add_4(pcp, val)                percpu_add_op(4, , (pcp), val)
+>  #define raw_cpu_and_1(pcp, val)                percpu_to_op(1, , "and", (pcp), val)
+>  #define raw_cpu_and_2(pcp, val)                percpu_to_op(2, , "and", (pcp), val)
+>  #define raw_cpu_and_4(pcp, val)                percpu_to_op(4, , "and", (pcp), val)
+> @@ -419,9 +364,9 @@ do {                                                                        \
+>  #define this_cpu_write_1(pcp, val)     percpu_to_op(1, volatile, "mov", (pcp), val)
+>  #define this_cpu_write_2(pcp, val)     percpu_to_op(2, volatile, "mov", (pcp), val)
+>  #define this_cpu_write_4(pcp, val)     percpu_to_op(4, volatile, "mov", (pcp), val)
+> -#define this_cpu_add_1(pcp, val)       percpu_add_op(volatile, (pcp), val)
+> -#define this_cpu_add_2(pcp, val)       percpu_add_op(volatile, (pcp), val)
+> -#define this_cpu_add_4(pcp, val)       percpu_add_op(volatile, (pcp), val)
+> +#define this_cpu_add_1(pcp, val)       percpu_add_op(1, volatile, (pcp), val)
+> +#define this_cpu_add_2(pcp, val)       percpu_add_op(2, volatile, (pcp), val)
+> +#define this_cpu_add_4(pcp, val)       percpu_add_op(4, volatile, (pcp), val)
+>  #define this_cpu_and_1(pcp, val)       percpu_to_op(1, volatile, "and", (pcp), val)
+>  #define this_cpu_and_2(pcp, val)       percpu_to_op(2, volatile, "and", (pcp), val)
+>  #define this_cpu_and_4(pcp, val)       percpu_to_op(4, volatile, "and", (pcp), val)
+> @@ -470,7 +415,7 @@ do {                                                                        \
+>  #ifdef CONFIG_X86_64
+>  #define raw_cpu_read_8(pcp)                    percpu_from_op(8, , "mov", pcp)
+>  #define raw_cpu_write_8(pcp, val)              percpu_to_op(8, , "mov", (pcp), val)
+> -#define raw_cpu_add_8(pcp, val)                        percpu_add_op(, (pcp), val)
+> +#define raw_cpu_add_8(pcp, val)                        percpu_add_op(8, , (pcp), val)
+>  #define raw_cpu_and_8(pcp, val)                        percpu_to_op(8, , "and", (pcp), val)
+>  #define raw_cpu_or_8(pcp, val)                 percpu_to_op(8, , "or", (pcp), val)
+>  #define raw_cpu_add_return_8(pcp, val)         percpu_add_return_op(, pcp, val)
+> @@ -479,7 +424,7 @@ do {                                                                        \
+>
+>  #define this_cpu_read_8(pcp)                   percpu_from_op(8, volatile, "mov", pcp)
+>  #define this_cpu_write_8(pcp, val)             percpu_to_op(8, volatile, "mov", (pcp), val)
+> -#define this_cpu_add_8(pcp, val)               percpu_add_op(volatile, (pcp), val)
+> +#define this_cpu_add_8(pcp, val)               percpu_add_op(8, volatile, (pcp), val)
+>  #define this_cpu_and_8(pcp, val)               percpu_to_op(8, volatile, "and", (pcp), val)
+>  #define this_cpu_or_8(pcp, val)                        percpu_to_op(8, volatile, "or", (pcp), val)
+>  #define this_cpu_add_return_8(pcp, val)                percpu_add_return_op(volatile, pcp, val)
+> --
+> 2.25.4
+>
 
-diff --git a/arch/powerpc/include/asm/paca.h b/arch/powerpc/include/asm/paca.h
-index e3cc9eb9204d..1e2d45f3f84c 100644
---- a/arch/powerpc/include/asm/paca.h
-+++ b/arch/powerpc/include/asm/paca.h
-@@ -29,6 +29,7 @@
- #include <asm/hmi.h>
- #include <asm/cpuidle.h>
- #include <asm/atomic.h>
-+#include <asm/rtas-types.h>
- 
- #include <asm-generic/mmiowb_types.h>
- 
-@@ -270,6 +271,9 @@ struct paca_struct {
- #ifdef CONFIG_MMIOWB
- 	struct mmiowb_state mmiowb_state;
- #endif
-+#ifdef CONFIG_PPC_RTAS
-+	struct rtas_args *rtas_args_reentrant;
-+#endif /* CONFIG_PPC_RTAS */
- } ____cacheline_aligned;
- 
- extern void copy_mm_to_paca(struct mm_struct *mm);
-diff --git a/arch/powerpc/include/asm/rtas.h b/arch/powerpc/include/asm/rtas.h
-index c35c5350b7e4..fa7509c85881 100644
---- a/arch/powerpc/include/asm/rtas.h
-+++ b/arch/powerpc/include/asm/rtas.h
-@@ -236,6 +236,7 @@ extern struct rtas_t rtas;
- extern int rtas_token(const char *service);
- extern int rtas_service_present(const char *service);
- extern int rtas_call(int token, int, int, int *, ...);
-+int rtas_call_reentrant(int token, int nargs, int nret, int *outputs, ...);
- void rtas_call_unlocked(struct rtas_args *args, int token, int nargs,
- 			int nret, ...);
- extern void __noreturn rtas_restart(char *cmd);
-diff --git a/arch/powerpc/kernel/paca.c b/arch/powerpc/kernel/paca.c
-index 3f91ccaa9c74..04855ad455c7 100644
---- a/arch/powerpc/kernel/paca.c
-+++ b/arch/powerpc/kernel/paca.c
-@@ -16,6 +16,7 @@
- #include <asm/kexec.h>
- #include <asm/svm.h>
- #include <asm/ultravisor.h>
-+#include <asm/rtas.h>
- 
- #include "setup.h"
- 
-@@ -164,6 +165,32 @@ static struct slb_shadow * __init new_slb_shadow(int cpu, unsigned long limit)
- 
- #endif /* CONFIG_PPC_BOOK3S_64 */
- 
-+#ifdef CONFIG_PPC_RTAS
-+
-+/**
-+ * new_rtas_args() - Allocates rtas args
-+ * @cpu:	CPU number
-+ * @limit:	Memory limit for this allocation
-+ *
-+ * Allocates a struct rtas_args and return it's pointer,
-+ * if not in Hypervisor mode
-+ *
-+ * Return:	Pointer to allocated rtas_args
-+ *		NULL if CPU in Hypervisor Mode
-+ */
-+static struct rtas_args * __init new_rtas_args(int cpu, unsigned long limit)
-+{
-+	limit = min_t(unsigned long, limit, RTAS_INSTANTIATE_MAX);
-+
-+	if (early_cpu_has_feature(CPU_FTR_HVMODE))
-+		return NULL;
-+
-+	return alloc_paca_data(sizeof(struct rtas_args), L1_CACHE_BYTES,
-+			       limit, cpu);
-+}
-+
-+#endif /*CONFIG_PPC_RTAS*/
-+
- /* The Paca is an array with one entry per processor.  Each contains an
-  * lppaca, which contains the information shared between the
-  * hypervisor and Linux.
-@@ -202,6 +229,10 @@ void __init __nostackprotector initialise_paca(struct paca_struct *new_paca, int
- 	/* For now -- if we have threads this will be adjusted later */
- 	new_paca->tcd_ptr = &new_paca->tcd;
- #endif
-+
-+#ifdef CONFIG_PPC_RTAS
-+	new_paca->rtas_args_reentrant = NULL;
-+#endif
- }
- 
- /* Put the paca pointer into r13 and SPRG_PACA */
-@@ -273,6 +304,9 @@ void __init allocate_paca(int cpu)
- #endif
- #ifdef CONFIG_PPC_BOOK3S_64
- 	paca->slb_shadow_ptr = new_slb_shadow(cpu, limit);
-+#endif
-+#ifdef CONFIG_PPC_RTAS
-+	paca->rtas_args_reentrant = new_rtas_args(cpu, limit);
- #endif
- 	paca_struct_size += sizeof(struct paca_struct);
- }
-diff --git a/arch/powerpc/kernel/rtas.c b/arch/powerpc/kernel/rtas.c
-index c5fa251b8950..7b8864abd1ab 100644
---- a/arch/powerpc/kernel/rtas.c
-+++ b/arch/powerpc/kernel/rtas.c
-@@ -41,6 +41,7 @@
- #include <asm/time.h>
- #include <asm/mmu.h>
- #include <asm/topology.h>
-+#include <asm/paca.h>
- 
- /* This is here deliberately so it's only used in this file */
- void enter_rtas(unsigned long);
-@@ -483,6 +484,57 @@ int rtas_call(int token, int nargs, int nret, int *outputs, ...)
- }
- EXPORT_SYMBOL(rtas_call);
- 
-+/**
-+ * rtas_call_reentrant() - Used for reentrant rtas calls
-+ * @token:	Token for desired reentrant RTAS call
-+ * @nargs:	Number of Input Parameters
-+ * @nret:	Number of Output Parameters
-+ * @outputs:	Array of outputs
-+ * @...:	Inputs for desired RTAS call
-+ *
-+ * According to LoPAR documentation, only "ibm,int-on", "ibm,int-off",
-+ * "ibm,get-xive" and "ibm,set-xive" are currently reentrant.
-+ * Reentrant calls need their own rtas_args buffer, so not using rtas.args, but
-+ * PACA one instead.
-+ *
-+ * Return:	-1 on error,
-+ *		First output value of RTAS call if (nret > 0),
-+ *		0 otherwise,
-+ */
-+
-+int rtas_call_reentrant(int token, int nargs, int nret, int *outputs, ...)
-+{
-+	va_list list;
-+	struct rtas_args *args;
-+	unsigned long flags;
-+	int i, ret = 0;
-+
-+	if (!rtas.entry || token == RTAS_UNKNOWN_SERVICE)
-+		return -1;
-+
-+	local_irq_save(flags);
-+	preempt_disable();
-+
-+	/* We use the per-cpu (PACA) rtas args buffer */
-+	args = local_paca->rtas_args_reentrant;
-+
-+	va_start(list, outputs);
-+	va_rtas_call_unlocked(args, token, nargs, nret, list);
-+	va_end(list);
-+
-+	if (nret > 1 && outputs)
-+		for (i = 0; i < nret - 1; ++i)
-+			outputs[i] = be32_to_cpu(args->rets[i + 1]);
-+
-+	if (nret > 0)
-+		ret = be32_to_cpu(args->rets[0]);
-+
-+	local_irq_restore(flags);
-+	preempt_enable();
-+
-+	return ret;
-+}
-+
- /* For RTAS_BUSY (-2), delay for 1 millisecond.  For an extended busy status
-  * code of 990n, perform the hinted delay of 10^n (last digit) milliseconds.
-  */
-diff --git a/arch/powerpc/sysdev/xics/ics-rtas.c b/arch/powerpc/sysdev/xics/ics-rtas.c
-index 6aabc74688a6..4cf18000f07c 100644
---- a/arch/powerpc/sysdev/xics/ics-rtas.c
-+++ b/arch/powerpc/sysdev/xics/ics-rtas.c
-@@ -50,8 +50,8 @@ static void ics_rtas_unmask_irq(struct irq_data *d)
- 
- 	server = xics_get_irq_server(d->irq, irq_data_get_affinity_mask(d), 0);
- 
--	call_status = rtas_call(ibm_set_xive, 3, 1, NULL, hw_irq, server,
--				DEFAULT_PRIORITY);
-+	call_status = rtas_call_reentrant(ibm_set_xive, 3, 1, NULL, hw_irq,
-+					  server, DEFAULT_PRIORITY);
- 	if (call_status != 0) {
- 		printk(KERN_ERR
- 			"%s: ibm_set_xive irq %u server %x returned %d\n",
-@@ -60,7 +60,7 @@ static void ics_rtas_unmask_irq(struct irq_data *d)
- 	}
- 
- 	/* Now unmask the interrupt (often a no-op) */
--	call_status = rtas_call(ibm_int_on, 1, 1, NULL, hw_irq);
-+	call_status = rtas_call_reentrant(ibm_int_on, 1, 1, NULL, hw_irq);
- 	if (call_status != 0) {
- 		printk(KERN_ERR "%s: ibm_int_on irq=%u returned %d\n",
- 			__func__, hw_irq, call_status);
-@@ -91,7 +91,7 @@ static void ics_rtas_mask_real_irq(unsigned int hw_irq)
- 	if (hw_irq == XICS_IPI)
- 		return;
- 
--	call_status = rtas_call(ibm_int_off, 1, 1, NULL, hw_irq);
-+	call_status = rtas_call_reentrant(ibm_int_off, 1, 1, NULL, hw_irq);
- 	if (call_status != 0) {
- 		printk(KERN_ERR "%s: ibm_int_off irq=%u returned %d\n",
- 			__func__, hw_irq, call_status);
-@@ -99,8 +99,8 @@ static void ics_rtas_mask_real_irq(unsigned int hw_irq)
- 	}
- 
- 	/* Have to set XIVE to 0xff to be able to remove a slot */
--	call_status = rtas_call(ibm_set_xive, 3, 1, NULL, hw_irq,
--				xics_default_server, 0xff);
-+	call_status = rtas_call_reentrant(ibm_set_xive, 3, 1, NULL, hw_irq,
-+					  xics_default_server, 0xff);
- 	if (call_status != 0) {
- 		printk(KERN_ERR "%s: ibm_set_xive(0xff) irq=%u returned %d\n",
- 			__func__, hw_irq, call_status);
-@@ -131,7 +131,7 @@ static int ics_rtas_set_affinity(struct irq_data *d,
- 	if (hw_irq == XICS_IPI || hw_irq == XICS_IRQ_SPURIOUS)
- 		return -1;
- 
--	status = rtas_call(ibm_get_xive, 1, 3, xics_status, hw_irq);
-+	status = rtas_call_reentrant(ibm_get_xive, 1, 3, xics_status, hw_irq);
- 
- 	if (status) {
- 		printk(KERN_ERR "%s: ibm,get-xive irq=%u returns %d\n",
-@@ -146,8 +146,8 @@ static int ics_rtas_set_affinity(struct irq_data *d,
- 		return -1;
- 	}
- 
--	status = rtas_call(ibm_set_xive, 3, 1, NULL,
--			   hw_irq, irq_server, xics_status[1]);
-+	status = rtas_call_reentrant(ibm_set_xive, 3, 1, NULL,
-+				     hw_irq, irq_server, xics_status[1]);
- 
- 	if (status) {
- 		printk(KERN_ERR "%s: ibm,set-xive irq=%u returns %d\n",
-@@ -179,7 +179,7 @@ static int ics_rtas_map(struct ics *ics, unsigned int virq)
- 		return -EINVAL;
- 
- 	/* Check if RTAS knows about this interrupt */
--	rc = rtas_call(ibm_get_xive, 1, 3, status, hw_irq);
-+	rc = rtas_call_reentrant(ibm_get_xive, 1, 3, status, hw_irq);
- 	if (rc)
- 		return -ENXIO;
- 
-@@ -198,7 +198,7 @@ static long ics_rtas_get_server(struct ics *ics, unsigned long vec)
- {
- 	int rc, status[2];
- 
--	rc = rtas_call(ibm_get_xive, 1, 3, status, vec);
-+	rc = rtas_call_reentrant(ibm_get_xive, 1, 3, status, vec);
- 	if (rc)
- 		return -1;
- 	return status[0];
+
 -- 
-2.25.4
-
+Thanks,
+~Nick Desaulniers
