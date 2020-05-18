@@ -2,126 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B2C1D6EB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 04:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781E91D6EB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 04:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726726AbgERCCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 22:02:05 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4854 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726670AbgERCCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 22:02:04 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 2492B96AE11DC98A6DF1;
-        Mon, 18 May 2020 10:01:59 +0800 (CST)
-Received: from [127.0.0.1] (10.74.221.148) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Mon, 18 May 2020
- 10:01:52 +0800
-Subject: Re: [RFC PATCH] fs: Move @f_count to different cacheline with @f_mode
-To:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1588217132-41242-1-git-send-email-zhangshaokun@hisilicon.com>
-CC:     Yuqi Jin <jinyuqi@huawei.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-Message-ID: <e2b2ccb2-e0a3-6dc9-25fe-490cbfacd583@hisilicon.com>
-Date:   Mon, 18 May 2020 10:01:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.1.1
-MIME-Version: 1.0
-In-Reply-To: <1588217132-41242-1-git-send-email-zhangshaokun@hisilicon.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.221.148]
-X-CFilter-Loop: Reflected
+        id S1726726AbgERCUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 22:20:25 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:50154 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726680AbgERCUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 May 2020 22:20:24 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 438601A0040;
+        Mon, 18 May 2020 04:20:22 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9C5421A00EC;
+        Mon, 18 May 2020 04:20:18 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C1B57402A8;
+        Mon, 18 May 2020 10:20:13 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
+        robh+dt@kernel.org, l.stach@pengutronix.de,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] dt-bindings: interrupt-controller: Convert imx irqsteer to json-schema
+Date:   Mon, 18 May 2020 10:10:41 +0800
+Message-Id: <1589767841-4213-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi maintainers,
+Convert the i.MX IRQSTEER binding to DT schema format using json-schema.
 
-A gentle ping.
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ .../bindings/interrupt-controller/fsl,irqsteer.txt | 35 ---------
+ .../interrupt-controller/fsl,irqsteer.yaml         | 87 ++++++++++++++++++++++
+ 2 files changed, 87 insertions(+), 35 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
 
-Thanks,
-Shaokun
-
-On 2020/4/30 11:25, Shaokun Zhang wrote:
-> From: Yuqi Jin <jinyuqi@huawei.com>
-> 
-> __fget_files does check the @f_mode with mask variable and will do some
-> atomic operations on @f_count while both are on the same cacheline.
-> Many CPU cores do file access and it will cause much conflicts on @f_count. 
-> If we could make the two members into different cachelines, it shall relax
-> the siutations.
-> 
-> We have tested this on ARM64 and X86, the result is as follows:
-> 
-> Syscall of unixbench has been run on Huawei Kunpeng920 with this patch:
-> 24 x System Call Overhead  1
-> 
-> System Call Overhead                    3160841.4 lps   (10.0 s, 1 samples)
-> 
-> System Benchmarks Partial Index              BASELINE       RESULT    INDEX
-> System Call Overhead                          15000.0    3160841.4   2107.2
->                                                                    ========
-> System Benchmarks Index Score (Partial Only)                         2107.2
-> 
-> Without this patch:
-> 24 x System Call Overhead  1
-> 
-> System Call Overhead                    2222456.0 lps   (10.0 s, 1 samples)
-> 
-> System Benchmarks Partial Index              BASELINE       RESULT    INDEX
-> System Call Overhead                          15000.0    2222456.0   1481.6
->                                                                    ========
-> System Benchmarks Index Score (Partial Only)                         1481.6
-> 
-> And on Intel 6248 platform with this patch:
-> 40 CPUs in system; running 24 parallel copies of tests
-> 
-> System Call Overhead                        4288509.1 lps   (10.0 s, 1 samples)
-> 
-> System Benchmarks Partial Index              BASELINE       RESULT    INDEX
-> System Call Overhead                          15000.0    4288509.1   2859.0
->                                                                    ========
-> System Benchmarks Index Score (Partial Only)                         2859.0
-> 
-> Without this patch:
-> 40 CPUs in system; running 24 parallel copies of tests
-> 
-> System Call Overhead                        3666313.0 lps   (10.0 s, 1 samples)
-> 
-> System Benchmarks Partial Index              BASELINE       RESULT    INDEX
-> System Call Overhead                          15000.0    3666313.0   2444.2
->                                                                    ========
-> System Benchmarks Index Score (Partial Only)                         2444.2
-> 
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Signed-off-by: Yuqi Jin <jinyuqi@huawei.com>
-> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
-> ---
->  include/linux/fs.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 4f6f59b4f22a..90e76283f0fd 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -953,7 +953,6 @@ struct file {
->  	 */
->  	spinlock_t		f_lock;
->  	enum rw_hint		f_write_hint;
-> -	atomic_long_t		f_count;
->  	unsigned int 		f_flags;
->  	fmode_t			f_mode;
->  	struct mutex		f_pos_lock;
-> @@ -976,6 +975,7 @@ struct file {
->  #endif /* #ifdef CONFIG_EPOLL */
->  	struct address_space	*f_mapping;
->  	errseq_t		f_wb_err;
-> +	atomic_long_t		f_count;
->  } __randomize_layout
->    __attribute__((aligned(4)));	/* lest something weird decides that 2 is OK */
->  
-> 
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.txt b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.txt
+deleted file mode 100644
+index 582991c..0000000
+--- a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.txt
++++ /dev/null
+@@ -1,35 +0,0 @@
+-Freescale IRQSTEER Interrupt multiplexer
+-
+-Required properties:
+-
+-- compatible: should be:
+-	- "fsl,imx8m-irqsteer"
+-	- "fsl,imx-irqsteer"
+-- reg: Physical base address and size of registers.
+-- interrupts: Should contain the up to 8 parent interrupt lines used to
+-  multiplex the input interrupts. They should be specified sequentially
+-  from output 0 to 7.
+-- clocks: Should contain one clock for entry in clock-names
+-  see Documentation/devicetree/bindings/clock/clock-bindings.txt
+-- clock-names:
+-   - "ipg": main logic clock
+-- interrupt-controller: Identifies the node as an interrupt controller.
+-- #interrupt-cells: Specifies the number of cells needed to encode an
+-  interrupt source. The value must be 1.
+-- fsl,channel: The output channel that all input IRQs should be steered into.
+-- fsl,num-irqs: Number of input interrupts of this channel.
+-  Should be multiple of 32 input interrupts and up to 512 interrupts.
+-
+-Example:
+-
+-	interrupt-controller@32e2d000 {
+-		compatible = "fsl,imx8m-irqsteer", "fsl,imx-irqsteer";
+-		reg = <0x32e2d000 0x1000>;
+-		interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&clk IMX8MQ_CLK_DISP_APB_ROOT>;
+-		clock-names = "ipg";
+-		fsl,channel = <0>;
+-		fsl,num-irqs = <64>;
+-		interrupt-controller;
+-		#interrupt-cells = <1>;
+-	};
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
+new file mode 100644
+index 0000000..a2bc723
+--- /dev/null
++++ b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
+@@ -0,0 +1,87 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/interrupt-controller/fsl,irqsteer.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale IRQSTEER Interrupt multiplexer
++
++maintainers:
++  - Lucas Stach <l.stach@pengutronix.de>
++
++properties:
++  compatible:
++    const: fsl,imx-irqsteer
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    description: |
++      should contain the up to 8 parent interrupt lines used to multiplex
++      the input interrupts. They should be specified sequentially from
++      output 0 to 7.
++    items:
++      - description: irqsteer channel 0
++      - description: irqsteer channel 1
++      - description: irqsteer channel 2
++      - description: irqsteer channel 3
++      - description: irqsteer channel 4
++      - description: irqsteer channel 5
++      - description: irqsteer channel 6
++      - description: irqsteer channel 7
++    minItems: 1
++    maxItems: 8
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: ipg
++
++  interrupt-controller: true
++
++  "#interrupt-cells":
++    const: 1
++
++  fsl,channel:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: |
++      u32 value representing the output channel that all input IRQs should be
++      steered into.
++
++  fsl,num-irqs:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: |
++      u32 value representing the number of input interrupts of this channel,
++      should be multiple of 32 input interrupts and up to 512 interrupts.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - interrupt-controller
++  - "#interrupt-cells"
++  - fsl,channel
++  - fsl,num-irqs
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/imx8mq-clock.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    interrupt-controller@32e2d000 {
++        compatible = "fsl,imx-irqsteer";
++        reg = <0x32e2d000 0x1000>;
++        interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&clk IMX8MQ_CLK_DISP_APB_ROOT>;
++        clock-names = "ipg";
++        fsl,channel = <0>;
++        fsl,num-irqs = <64>;
++        interrupt-controller;
++        #interrupt-cells = <1>;
++    };
+-- 
+2.7.4
 
