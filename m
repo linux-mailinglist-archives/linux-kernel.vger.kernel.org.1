@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2031D811E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32DA1D8527
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729868AbgERRpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:45:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43598 "EHLO mail.kernel.org"
+        id S2387642AbgERSRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:17:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728704AbgERRpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:45:00 -0400
+        id S1731805AbgERR5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:57:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E56C020715;
-        Mon, 18 May 2020 17:44:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08C81207C4;
+        Mon, 18 May 2020 17:57:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823900;
-        bh=IQGRJknKyaZjCOxSLRNNYP/kisqa8Fs/sQW+wF75x1g=;
+        s=default; t=1589824652;
+        bh=wJ83Aa/krfODHRG3CrpUcfs0wKQF3Hb1hqV/wfhwlF8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z2YqUTA2p35SA8/PwF4yu+SyXLZymX50JTb+9klpAFaem88GtJw4OYfrFSI9B8zOW
-         Kbd/sqcLPUFhKCK7d8vBQv6Dkqqmb4ee0VV0oMd0TuGQDV9qZr3GtRRWnO8FBlJuKm
-         5hNBDF5YOgqF6mWHgutcniT93jTiMBXquIY89dsY=
+        b=f1WIQbnw6S9EQSjdzKHJYbzUJ8V1osQNA7Tvj3nyr5agjBPekic8L/ZuAVGzIGB6U
+         1dPNgamgx0oX5iSUBV+QBIimNhrOQsl2mmraBxkByvjL3aMmB0AGNUU7lr5xFipOyE
+         KbEQCY3SzxWFalQJrOz3e3jE1i322RN3IzWbZT10=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 4.9 82/90] usb: gadget: net2272: Fix a memory leak in an error handling path in net2272_plat_probe()
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 097/147] gcc-10: disable array-bounds warning for now
 Date:   Mon, 18 May 2020 19:37:00 +0200
-Message-Id: <20200518173507.888495926@linuxfoundation.org>
+Message-Id: <20200518173525.578271833@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,33 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit ccaef7e6e354fb65758eaddd3eae8065a8b3e295 upstream.
+commit 44720996e2d79e47d508b0abe99b931a726a3197 upstream.
 
-'dev' is allocated in 'net2272_probe_init()'. It must be freed in the error
-handling path, as already done in the remove function (i.e.
-'net2272_plat_remove()')
+This is another fine warning, related to the 'zero-length-bounds' one,
+but hitting the same historical code in the kernel.
 
-Fixes: 90fccb529d24 ("usb: gadget: Gadget directory cleanup - group UDC drivers")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Because C didn't historically support flexible array members, we have
+code that instead uses a one-sized array, the same way we have cases of
+zero-sized arrays.
+
+The one-sized arrays come from either not wanting to use the gcc
+zero-sized array extension, or from a slight convenience-feature, where
+particularly for strings, the size of the structure now includes the
+allocation for the final NUL character.
+
+So with a "char name[1];" at the end of a structure, you can do things
+like
+
+       v = my_malloc(sizeof(struct vendor) + strlen(name));
+
+and avoid the "+1" for the terminator.
+
+Yes, the modern way to do that is with a flexible array, and using
+'offsetof()' instead of 'sizeof()', and adding the "+1" by hand.  That
+also technically gets the size "more correct" in that it avoids any
+alignment (and thus padding) issues, but this is another long-term
+cleanup thing that will not happen for 5.7.
+
+So disable the warning for now, even though it's potentially quite
+useful.  Having a slew of warnings that then hide more urgent new issues
+is not an improvement.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/udc/net2272.c |    2 ++
- 1 file changed, 2 insertions(+)
+ Makefile |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/gadget/udc/net2272.c
-+++ b/drivers/usb/gadget/udc/net2272.c
-@@ -2666,6 +2666,8 @@ net2272_plat_probe(struct platform_devic
-  err_req:
- 	release_mem_region(base, len);
-  err:
-+	kfree(dev);
-+
- 	return ret;
- }
+--- a/Makefile
++++ b/Makefile
+@@ -858,6 +858,7 @@ KBUILD_CFLAGS += $(call cc-disable-warni
  
+ # We'll want to enable this eventually, but it's not going away for 5.7 at least
+ KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
++KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
+ 
+ # Enabled with W=2, disabled by default as noisy
+ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
 
 
