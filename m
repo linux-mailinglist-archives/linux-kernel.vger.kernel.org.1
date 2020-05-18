@@ -2,99 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3183A1D8950
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5941D8955
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727966AbgERUf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 16:35:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726367AbgERUf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 16:35:26 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA71720643;
-        Mon, 18 May 2020 20:35:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589834125;
-        bh=EebWMw2/BKiwkL0PdmpH4pmdEuuBamIWeyLtE/PbjDM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0NV+O35TlHkZPw5ugdanjgmtCGbOX0t0hFYRBxjBtzDNjth/O3q+acWeLbthxRWNw
-         SNKAZd0DdRSjYTHrZ0PZRjHHhDLSPqY0xusmfSDo0mYGrDhJRMT7+40ZzFowp5D85t
-         Jh8T14s82+k6v/rjkjLSG3OwrgsvmAEAHZrw7WH8=
-Date:   Mon, 18 May 2020 13:35:21 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Steve deRosier <derosier@gmail.com>,
-        Ben Greear <greearb@candelatech.com>, jeyu@kernel.org,
-        akpm@linux-foundation.org, arnd@arndb.de, rostedt@goodmis.org,
-        mingo@redhat.com, aquini@redhat.com, cai@lca.pw, dyoung@redhat.com,
-        bhe@redhat.com, peterz@infradead.org, tglx@linutronix.de,
-        gpiccoli@canonical.com, pmladek@suse.com,
-        Takashi Iwai <tiwai@suse.de>, schlad@suse.de,
-        andriy.shevchenko@linux.intel.com, keescook@chromium.org,
-        daniel.vetter@ffwll.ch, will@kernel.org,
-        mchehab+samsung@kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        ath10k@lists.infradead.org
-Subject: Re: [PATCH v2 12/15] ath10k: use new module_firmware_crashed()
-Message-ID: <20200518133521.6052042e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <8d7a3bed242ac9d3ec55a4c97e008081230f1f6d.camel@sipsolutions.net>
-References: <20200515212846.1347-1-mcgrof@kernel.org>
-        <20200515212846.1347-13-mcgrof@kernel.org>
-        <2b74a35c726e451b2fab2b5d0d301e80d1f4cdc7.camel@sipsolutions.net>
-        <20200518165154.GH11244@42.do-not-panic.com>
-        <4ad0668d-2de9-11d7-c3a1-ad2aedd0c02d@candelatech.com>
-        <20200518170934.GJ11244@42.do-not-panic.com>
-        <abf22ef3-93cb-61a4-0af2-43feac6d7930@candelatech.com>
-        <20200518171801.GL11244@42.do-not-panic.com>
-        <CALLGbR+ht2V3m5f-aUbdwEMOvbsX8ebmzdWgX4jyWTbpHrXZ0Q@mail.gmail.com>
-        <20200518190930.GO11244@42.do-not-panic.com>
-        <e3d978c8fa6a4075f12e843548d41e2c8ab537d1.camel@sipsolutions.net>
-        <20200518132828.553159d9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <8d7a3bed242ac9d3ec55a4c97e008081230f1f6d.camel@sipsolutions.net>
+        id S1727975AbgERUfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 16:35:46 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:43242 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726358AbgERUfq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 16:35:46 -0400
+Received: by mail-io1-f68.google.com with SMTP id h10so12150358iob.10;
+        Mon, 18 May 2020 13:35:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JjYSpin899Gjim3f+QGoxZ4qTSeE2J/qf7iPbcWzPDE=;
+        b=DbucJSVz/4utqvp0B/5RNXmetr0hh1ZPSXUzoteNtDDFY7S+RpD6PGwORIdeuAuKXB
+         8EBLZ+uJ/IWlACHel13d9gScuv/ODr13F769KKcPO7loQcr1r4n1j5IQLtB3F0rcZo4z
+         Ixe2nYAZzN41Lgw3DV4/Bp5zf3eptPVOWC2y6jTHzKMFxDT8UMU22JO8X6FRPBdHZAPD
+         kmUDmL6g8ftfjWO6MYe5lyaFLNF4SCGi8xIMhgJoKhAfDFzHZ++neRrhuJanjOLrcHyv
+         HDca5vZEr02V2CDItuWTbLzq/l3QSYp7zYaZ9nbTKYgv746qTlRuEu8PBz2DM68C+o4h
+         VMCg==
+X-Gm-Message-State: AOAM530s9j6omPBt+gd6WWwR0bDKIbpwvWeI5JRH0fTk9bNbUoI293Tu
+        qc0HPQ+ttD0vGf1H2ihBPg==
+X-Google-Smtp-Source: ABdhPJy+XxeBOrpK4uX07ks+Fl38Z36Sl0DOE11M4s2qvytoWNII6l9sRNIAJb9dbzonRTzVBICiJg==
+X-Received: by 2002:a5e:8705:: with SMTP id y5mr16376190ioj.142.1589834145037;
+        Mon, 18 May 2020 13:35:45 -0700 (PDT)
+Received: from rob-hp-laptop ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id u25sm4187718iob.19.2020.05.18.13.35.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 13:35:44 -0700 (PDT)
+Received: (nullmailer pid 2414 invoked by uid 1000);
+        Mon, 18 May 2020 20:35:42 -0000
+Date:   Mon, 18 May 2020 14:35:42 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        linux-watchdog@vger.kernel.org, linux-mips@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 1/7] dt-bindings: watchdog: Convert DW WDT binding to
+ DT schema
+Message-ID: <20200518203542.GA2375@bogus>
+References: <20200306132758.703FC8030704@mail.baikalelectronics.ru>
+ <20200510105807.880-1-Sergey.Semin@baikalelectronics.ru>
+ <20200510105807.880-2-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200510105807.880-2-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 May 2020 22:29:53 +0200 Johannes Berg wrote:
-> On Mon, 2020-05-18 at 13:28 -0700, Jakub Kicinski wrote:
-> > On Mon, 18 May 2020 21:25:09 +0200 Johannes Berg wrote:  
-> > > It's pretty clear, but even then, first of all I doubt this is the case
-> > > for many of the places that you've sprinkled the annotation on, and
-> > > secondly it actually hides useful information.
-> > > 
-> > > Regardless of the support issue, I think this hiding of information is
-> > > also problematic.
-> > > 
-> > > I really think we'd all be better off if you just made a sysfs file (I
-> > > mistyped debugfs in some other email, sorry, apparently you didn't see
-> > > the correction in time) that listed which device(s) crashed and how many
-> > > times. That would actually be useful. Because honestly, if a random
-> > > device crashed for some random reason, that's pretty much a non-event.
-> > > If it keeps happening, then we might even want to know about it.  
-> > 
-> > Johannes - have you seen devlink health? I think we should just use
-> > that interface, since it supports all the things you're requesting,
-> > rather than duplicate it in sysfs.  
+On Sun, 10 May 2020 13:58:01 +0300, Serge Semin wrote:
+> Modern device tree bindings are supposed to be created as YAML-files
+> in accordance with dt-schema. This commit replaces the DW Watchdog
+> legacy bare text bindings with YAML file. As before the binding states
+> that the corresponding dts node is supposed to have a registers
+> range, a watchdog timer references clock source, optional reset line and
+> pre-timeout interrupt.
 > 
-> I haven't, and I'm glad to hear that's there, sounds good!
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: linux-mips@vger.kernel.org
 > 
-> I suspect that Luis wants something more generic though, that isn't just
-> applicable to netdevices, unless devlink grew some kind of non-netdev
-> stuff while I wasn't looking? :)
+> ---
+> 
+> Changelog v2:
+> - Rearrange SoBs.
+> - Discard BE copyright header.
+> - Replace "additionalProperties: false" with "unevaluatedProperties: false"
+>   property.
+> - Discard interrupts property from the required properties list.
+> - Remove a label definition from the binding example.
+> - Move the asynchronous APB3 clock support into a dedicated patch.
+> ---
+>  .../devicetree/bindings/watchdog/dw_wdt.txt   | 24 ---------
+>  .../bindings/watchdog/snps,dw-wdt.yaml        | 50 +++++++++++++++++++
+>  2 files changed, 50 insertions(+), 24 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/watchdog/dw_wdt.txt
+>  create mode 100644 Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> 
 
-It's intended to be a generic netlink channel for configuring devices.
-
-All the firmware-related interfaces have no dependencies on netdevs,
-in fact that's one of the reasons we moved to devlink - we don't want
-to hold rtnl lock just for talking to device firmware.
+Reviewed-by: Rob Herring <robh@kernel.org>
