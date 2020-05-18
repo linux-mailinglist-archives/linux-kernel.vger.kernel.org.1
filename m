@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66FE1D81F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECC61D840F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730978AbgERRw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:52:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55662 "EHLO mail.kernel.org"
+        id S1733026AbgERSFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:05:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730198AbgERRwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:52:24 -0400
+        id S1732472AbgERSFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:05:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFFA620674;
-        Mon, 18 May 2020 17:52:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3DAE20671;
+        Mon, 18 May 2020 18:05:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824344;
-        bh=Hu6rY2+B+FsZyOlVEIjwnv983HFrsjYCoZu3AjQrEyE=;
+        s=default; t=1589825130;
+        bh=O9xcISJN/z1FNJAF1HxhOJkTIsQ+vTAHx4xaTb60ltw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rCnh2EfsTCfV4pV29qcR0AqL99MJ9LucX8f061wAqFzuDMPxc39/NVdAQdafiurw5
-         Jk7cX1WvbAIWv6Ak7h2ogmYrk7hTzBbGx5cLxHqiW2eeW9V7HUB5qglTI8iQbvyWCC
-         r4RPailfHoBcV7wD3KeNFAaLSUDwxbEUMtq2B7Jk=
+        b=zLoAitBfy75mnspJNMoArozFtYYFDQ2qTTTCLK5fnrwiyTVpbPo1ZTR6sIxhiad9H
+         qy3zDOFOXZ426vzJxvQJRu+pKZixSkUG/GjIohY0r/cXdavVHHY8qycjz6N15sYCNS
+         RbvKluYjU6cJXfcp1OVC6qpfXylAqqLBWG9n1MLQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 53/80] ALSA: hda/realtek - Limit int mic boost for Thinkpad T530
+        stable@vger.kernel.org, Jesus Ramos <jesus-ramos@live.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.6 141/194] ALSA: usb-audio: Add control message quirk delay for Kingston HyperX headset
 Date:   Mon, 18 May 2020 19:37:11 +0200
-Message-Id: <20200518173501.132932239@linuxfoundation.org>
+Message-Id: <20200518173543.047990857@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,66 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Jesus Ramos <jesus-ramos@live.com>
 
-commit b590b38ca305d6d7902ec7c4f7e273e0069f3bcc upstream.
+commit 073919e09ca445d4486968e3f851372ff44cf2b5 upstream.
 
-Lenovo Thinkpad T530 seems to have a sensitive internal mic capture
-that needs to limit the mic boost like a few other Thinkpad models.
-Although we may change the quirk for ALC269_FIXUP_LENOVO_DOCK, this
-hits way too many other laptop models, so let's add a new fixup model
-that limits the internal mic boost on top of the existing quirk and
-apply to only T530.
+Kingston HyperX headset with 0951:16ad also needs the same quirk for
+delaying the frequency controls.
 
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1171293
+Signed-off-by: Jesus Ramos <jesus-ramos@live.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200514160533.10337-1-tiwai@suse.de
+Link: https://lore.kernel.org/r/BY5PR19MB3634BA68C7CCA23D8DF428E796AF0@BY5PR19MB3634.namprd19.prod.outlook.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |   10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ sound/usb/quirks.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5616,6 +5616,7 @@ enum {
- 	ALC269_FIXUP_HP_LINE1_MIC1_LED,
- 	ALC269_FIXUP_INV_DMIC,
- 	ALC269_FIXUP_LENOVO_DOCK,
-+	ALC269_FIXUP_LENOVO_DOCK_LIMIT_BOOST,
- 	ALC269_FIXUP_NO_SHUTUP,
- 	ALC286_FIXUP_SONY_MIC_NO_PRESENCE,
- 	ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT,
-@@ -5928,6 +5929,12 @@ static const struct hda_fixup alc269_fix
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT
- 	},
-+	[ALC269_FIXUP_LENOVO_DOCK_LIMIT_BOOST] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc269_fixup_limit_int_mic_boost,
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_LENOVO_DOCK,
-+	},
- 	[ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
-@@ -7013,7 +7020,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
- 	SND_PCI_QUIRK(0x17aa, 0x21ca, "Thinkpad L412", ALC269_FIXUP_SKU_IGNORE),
- 	SND_PCI_QUIRK(0x17aa, 0x21e9, "Thinkpad Edge 15", ALC269_FIXUP_SKU_IGNORE),
--	SND_PCI_QUIRK(0x17aa, 0x21f6, "Thinkpad T530", ALC269_FIXUP_LENOVO_DOCK),
-+	SND_PCI_QUIRK(0x17aa, 0x21f6, "Thinkpad T530", ALC269_FIXUP_LENOVO_DOCK_LIMIT_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x21fa, "Thinkpad X230", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x21f3, "Thinkpad T430", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x21fb, "Thinkpad T430s", ALC269_FIXUP_LENOVO_DOCK),
-@@ -7150,6 +7157,7 @@ static const struct hda_model_fixup alc2
- 	{.id = ALC269_FIXUP_HEADSET_MODE, .name = "headset-mode"},
- 	{.id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC, .name = "headset-mode-no-hp-mic"},
- 	{.id = ALC269_FIXUP_LENOVO_DOCK, .name = "lenovo-dock"},
-+	{.id = ALC269_FIXUP_LENOVO_DOCK_LIMIT_BOOST, .name = "lenovo-dock-limit-boost"},
- 	{.id = ALC269_FIXUP_HP_GPIO_LED, .name = "hp-gpio-led"},
- 	{.id = ALC269_FIXUP_HP_DOCK_GPIO_MIC1_LED, .name = "hp-dock-gpio-mic1-led"},
- 	{.id = ALC269_FIXUP_DELL1_MIC_NO_PRESENCE, .name = "dell-headset-multi"},
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1592,13 +1592,14 @@ void snd_usb_ctl_msg_quirk(struct usb_de
+ 	    && (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
+ 		msleep(20);
+ 
+-	/* Zoom R16/24, Logitech H650e, Jabra 550a needs a tiny delay here,
+-	 * otherwise requests like get/set frequency return as failed despite
+-	 * actually succeeding.
++	/* Zoom R16/24, Logitech H650e, Jabra 550a, Kingston HyperX needs a tiny
++	 * delay here, otherwise requests like get/set frequency return as
++	 * failed despite actually succeeding.
+ 	 */
+ 	if ((chip->usb_id == USB_ID(0x1686, 0x00dd) ||
+ 	     chip->usb_id == USB_ID(0x046d, 0x0a46) ||
+-	     chip->usb_id == USB_ID(0x0b0e, 0x0349)) &&
++	     chip->usb_id == USB_ID(0x0b0e, 0x0349) ||
++	     chip->usb_id == USB_ID(0x0951, 0x16ad)) &&
+ 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
+ 		usleep_range(1000, 2000);
+ }
 
 
