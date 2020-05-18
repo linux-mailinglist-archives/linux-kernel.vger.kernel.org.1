@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628371D871D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1691D86AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388044AbgERSaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:30:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37528 "EHLO mail.kernel.org"
+        id S2387760AbgERS0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:26:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729240AbgERRlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:41:18 -0400
+        id S1729973AbgERRph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:45:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 003C620657;
-        Mon, 18 May 2020 17:41:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE6E620671;
+        Mon, 18 May 2020 17:45:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823677;
-        bh=A25UkX+LNU+bFEj/V3UMxcD4oN7hAO1PbVZSumhT3+k=;
+        s=default; t=1589823937;
+        bh=YNrWYBeTxYdb0O+DbcPxCij4hDjcu6RrXCU7kSPbevw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EWbevy8TcV7ITEKeEvFF0QsTgVF082bsjS9H5iIVxYMAefl0sAjgPDy1BPjBgqldN
-         3241+5Hkn9qAh5a5Ko369xuiF7K6L1xOOJ5JjAdBZ3Kkl3zUI/07We77f8Fm3fKW9W
-         aOxqyCyruz+QiYh68qqAFY9yex5swSlocyi00/Gs=
+        b=a1Gx3ZTN8SWf5lSY2NQjFYWsL00GpXLCSVb+W5oD80LjIyLz+mr6hqKH2jlAS6Tpx
+         zgRyaz8e7QgZaXgf0h3QCd57O0Tf6Ihi4/hOfghxh1px44phYQsSSe6hKq9JHLMXZ1
+         vAyLUmSw6SU0/EyhyIO9LdZ2NKoRJ3OUkJ5lN4IM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 4.4 78/86] exec: Move would_dump into flush_old_exec
+        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Colin Walters <walters@redhat.com>
+Subject: [PATCH 4.9 71/90] net: ipv4: really enforce backoff for redirects
 Date:   Mon, 18 May 2020 19:36:49 +0200
-Message-Id: <20200518173506.359614795@linuxfoundation.org>
+Message-Id: <20200518173505.712038047@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,58 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+From: Paolo Abeni <pabeni@redhat.com>
 
-commit f87d1c9559164294040e58f5e3b74a162bf7c6e8 upstream.
+[ Upstream commit 57644431a6c2faac5d754ebd35780cf43a531b1a ]
 
-I goofed when I added mm->user_ns support to would_dump.  I missed the
-fact that in the case of binfmt_loader, binfmt_em86, binfmt_misc, and
-binfmt_script bprm->file is reassigned.  Which made the move of
-would_dump from setup_new_exec to __do_execve_file before exec_binprm
-incorrect as it can result in would_dump running on the script instead
-of the interpreter of the script.
+In commit b406472b5ad7 ("net: ipv4: avoid mixed n_redirects and
+rate_tokens usage") I missed the fact that a 0 'rate_tokens' will
+bypass the backoff algorithm.
 
-The net result is that the code stopped making unreadable interpreters
-undumpable.  Which allows them to be ptraced and written to disk
-without special permissions.  Oops.
+Since rate_tokens is cleared after a redirect silence, and never
+incremented on redirects, if the host keeps receiving packets
+requiring redirect it will reply ignoring the backoff.
 
-The move was necessary because the call in set_new_exec was after
-bprm->mm was no longer valid.
+Additionally, the 'rate_last' field will be updated with the
+cadence of the ingress packet requiring redirect. If that rate is
+high enough, that will prevent the host from generating any
+other kind of ICMP messages
 
-To correct this mistake move the misplaced would_dump from
-__do_execve_file into flos_old_exec, before exec_mmap is called.
+The check for a zero 'rate_tokens' value was likely a shortcut
+to avoid the more complex backoff algorithm after a redirect
+silence period. Address the issue checking for 'n_redirects'
+instead, which is incremented on successful redirect, and
+does not interfere with other ICMP replies.
 
-I tested and confirmed that without this fix I can attach with gdb to
-a script with an unreadable interpreter, and with this fix I can not.
-
-Cc: stable@vger.kernel.org
-Fixes: f84df2a6f268 ("exec: Ensure mm->user_ns contains the execed files")
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Fixes: b406472b5ad7 ("net: ipv4: avoid mixed n_redirects and rate_tokens usage")
+Reported-and-tested-by: Colin Walters <walters@redhat.com>
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- fs/exec.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/ipv4/route.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1124,6 +1124,8 @@ int flush_old_exec(struct linux_binprm *
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -898,7 +898,7 @@ void ip_rt_send_redirect(struct sk_buff
+ 	/* Check for load limit; set rate_last to the latest sent
+ 	 * redirect.
  	 */
- 	set_mm_exe_file(bprm->mm, bprm->file);
- 
-+	would_dump(bprm, bprm->file);
-+
- 	/*
- 	 * Release all of the old mmap stuff
- 	 */
-@@ -1632,8 +1634,6 @@ static int do_execveat_common(int fd, st
- 	if (retval < 0)
- 		goto out;
- 
--	would_dump(bprm, bprm->file);
--
- 	retval = exec_binprm(bprm);
- 	if (retval < 0)
- 		goto out;
+-	if (peer->rate_tokens == 0 ||
++	if (peer->n_redirects == 0 ||
+ 	    time_after(jiffies,
+ 		       (peer->rate_last +
+ 			(ip_rt_redirect_load << peer->n_redirects)))) {
 
 
