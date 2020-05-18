@@ -2,116 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6111D7B0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 16:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95ADB1D7B16
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 16:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728034AbgEROWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 10:22:53 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:43845 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726918AbgEROWw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 10:22:52 -0400
-Received: by mail-il1-f195.google.com with SMTP id l20so9962537ilj.10;
-        Mon, 18 May 2020 07:22:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OBcPiRkFf2HqCBrlS/cgfO6TiTzCErqXJ+wgd+Jl1A0=;
-        b=YmsVn3AXDFZdD0iwwbOy6E8Qqbo3eYhnyy8p1ZNNEBMuxsz8UA9TDSxJluvba8+do3
-         BrFDD0zom1gWjW2YC2M5M24VeGDgKdtXBzBrTAWh8m7M3seEGuZntlpT+5zGBhbCYXui
-         OU+yvZCntS9hxtuTj/AtA8HE8BMhqWnyrEL+uAWaJ5ivE93vQcf00P1wPl9uJzzWmYI0
-         RDwFSwjW9jLZazGXusUrX4Pz79k7nsvPp8z8nqvLAkMtkiKt+d25NRIsVbYCPMyTs9HS
-         Q38/FlmHyKemf1CBooJkMHkzmKrvVUQXR1OhTtDgiINSCstnkMBSkoanGCRF0IwxLQ4C
-         Nmrg==
-X-Gm-Message-State: AOAM533eLpkFQzagXU28P4OaG0QnERqUudFeIjNo/u7WDYjxtP464wMl
-        jp4vI6dPKBQVXr5BZkwW1A==
-X-Google-Smtp-Source: ABdhPJzV6KNOjj8p+ww1n7tkHaJxwgQNVgNaGd9L1aIW1QqJKwwO89/xnJnvqKKO6gIiVKDYrGe3tA==
-X-Received: by 2002:a92:6b10:: with SMTP id g16mr16567750ilc.29.1589811771270;
-        Mon, 18 May 2020 07:22:51 -0700 (PDT)
-Received: from rob-hp-laptop ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id l16sm3364985ils.64.2020.05.18.07.22.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2020 07:22:50 -0700 (PDT)
-Received: (nullmailer pid 10442 invoked by uid 1000);
-        Mon, 18 May 2020 14:22:49 -0000
-Date:   Mon, 18 May 2020 08:22:49 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Artur Rojek <contact@artur-rojek.eu>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>, linux-input@vger.kernel.org,
-        linux-iio@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        devicetree@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v7 6/7] dt-bindings: input: Add docs for ADC driven
- joystick.
-Message-ID: <20200518142249.GA10125@bogus>
-References: <20200517194904.34758-1-contact@artur-rojek.eu>
- <20200517194904.34758-6-contact@artur-rojek.eu>
+        id S1728103AbgEROXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 10:23:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727122AbgEROXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 10:23:19 -0400
+Received: from kernel.org (unknown [87.71.47.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D48D20787;
+        Mon, 18 May 2020 14:23:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589811798;
+        bh=2193pa4cDaJ05W+PoMM6FOz41dWOhqWIPZqN5DMrq8w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t+3y2L1vRTyrrindjdPtWzByUSxMz2btBASj1aNYZ6uoWIVAmmjtMBPDLD2x9GIft
+         gvoF9aVsqsnl6FdlaRmZMgl46Ty1FY/1y40Z+NfcRuwtLoNUUQuBw9pM/3a2dsDA2M
+         92hym2/QdetWr/5bV1Q/pavNaE7ACbfVrdWfnz1c=
+Date:   Mon, 18 May 2020 17:23:10 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, elver@google.com, tglx@linutronix.de,
+        paulmck@kernel.org, mingo@kernel.org, peterz@infradead.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v5 04/18] sparc32: mm: Reduce allocation size for PMD and
+ PTE tables
+Message-ID: <20200518142310.GC1118872@kernel.org>
+References: <20200511204150.27858-1-will@kernel.org>
+ <20200511204150.27858-5-will@kernel.org>
+ <20200517000050.GA87467@roeck-us.net>
+ <20200517000750.GA157503@roeck-us.net>
+ <20200518083715.GA31383@willie-the-truck>
+ <418aa44b-6fb3-c3d8-a920-1a26e5edec62@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200517194904.34758-6-contact@artur-rojek.eu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <418aa44b-6fb3-c3d8-a920-1a26e5edec62@roeck-us.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 May 2020 21:49:03 +0200, Artur Rojek wrote:
-> Add documentation for the adc-joystick driver, used to provide support
-> for joysticks connected over ADC.
+On Mon, May 18, 2020 at 02:48:18AM -0700, Guenter Roeck wrote:
+> On 5/18/20 1:37 AM, Will Deacon wrote:
+> > On Sat, May 16, 2020 at 05:07:50PM -0700, Guenter Roeck wrote:
+> >> On Sat, May 16, 2020 at 05:00:50PM -0700, Guenter Roeck wrote:
+> >>> On Mon, May 11, 2020 at 09:41:36PM +0100, Will Deacon wrote:
+> >>>> Now that the page table allocator can free page table allocations
+> >>>> smaller than PAGE_SIZE, reduce the size of the PMD and PTE allocations
+> >>>> to avoid needlessly wasting memory.
+> >>>>
+> >>>> Cc: "David S. Miller" <davem@davemloft.net>
+> >>>> Cc: Peter Zijlstra <peterz@infradead.org>
+> >>>> Signed-off-by: Will Deacon <will@kernel.org>
+> >>>
+> >>> Something in the sparc32 patches in linux-next causes all my sparc32 emulations
+> >>> to crash. bisect points to this patch, but reverting it doesn't help, and neither
+> >>> does reverting the rest of the series.
+> >>>
+> >> Actually, turns out I see the same pattern (lots of scheduling while atomic
+> >> followed by 'killing interrupt handler' in cryptomgr_test) with several
+> >> powerpc boot tests.  I am currently bisecting those crashes. I'll report
+> >> the results here as well as soon as I have it.
+> > 
+> > FWIW, I retested my sparc32 patches with PREEMPT=y and I don't see any
+> > issues. However, linux-next is a different story, where I don't get very far
+> > at all:
+> > 
+> > BUG: Bad page state in process swapper  pfn:005b4
+
+This one seems to be due to commit 24aab577764f ("mm: memmap_init:
+iterate over memblock regions rather that check each PFN") and reverting
+it and partially reverting the next cleanup commits makes those
+dissapear. sparc32 boot still fails on today's linux-next and mmotm for me with
+
+Run /sbin/init as init process
+  with arguments:
+    /sbin/init
+  with environment:
+    HOME=/
+    TERM=linux
+Starting init: /sbin/init exists but couldn't execute it (error -14)
+
+I've tried to bisect mmotm and I've got the first bad commits in
+different places in the middle of arch/kmap series [1] so I've added Ira
+to CC as well :)
+
+I'll continue to look into "bad page" on sparc32
+
+[1] https://lore.kernel.org/dri-devel/20200507150004.1423069-11-ira.weiny@intel.com/
+
+> Here are the bisect results for ppc:
 > 
-> Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
-> Tested-by: Paul Cercueil <paul@crapouillou.net>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
+> # bad: [bdecf38f228bcca73b31ada98b5b7ba1215eb9c9] Add linux-next specific files for 20200515
+> # good: [2ef96a5bb12be62ef75b5828c0aab838ebb29cb8] Linux 5.7-rc5
+> git bisect start 'HEAD' 'v5.7-rc5'
+
+...
+
+> # good: [9b5aa5b43f957f03a1f4a9aff5f7924e2ebbc011] arch-kmap_atomic-consolidate-duplicate-code-checkpatch-fixes
+> git bisect good 9b5aa5b43f957f03a1f4a9aff5f7924e2ebbc011
+> # bad: [89194ba5ee31567eeee9c81101b334c8e3248198] arch/kmap: define kmap_atomic_prot() for all arch's
+> git bisect bad 89194ba5ee31567eeee9c81101b334c8e3248198
+> # good: [022785d2bea99f8bc2a37b7b6c525eea26f6ac59] arch-kunmap_atomic-consolidate-duplicate-code-checkpatch-fixes
+> git bisect good 022785d2bea99f8bc2a37b7b6c525eea26f6ac59
+> # good: [a13c2f39e3f0519ddee57d26cc66ec70e3546106] arch/kmap: don't hard code kmap_prot values
+> git bisect good a13c2f39e3f0519ddee57d26cc66ec70e3546106
+> # first bad commit: [89194ba5ee31567eeee9c81101b334c8e3248198] arch/kmap: define kmap_atomic_prot() for all arch's
 > 
->  Changes:
-> 
->  v2: - Add `reg` property to axis subnode in order to enumerate the axes,
->      - rename `linux,abs-code` property to `linux,code`,
->      - drop `linux,` prefix from the remaining properties of axis subnode
-> 
->  v3: no change
-> 
->  v4: - remove "bindings" from the unique identifier string,
->      - replace `|` with `>` for all description properties,
->      - specify the number of items for `io-channels`,
->      - correct the regex pattern of `axis` property,
->      - specify the value range of `reg` property for each axis,
->      - put `abs-range` properties under `allOf`
-> 
->  v5: add `a-f` to the regex pattern of `axis` property
-> 
->  v6-v7: no change
-> 
->  .../bindings/input/adc-joystick.yaml          | 121 ++++++++++++++++++
->  1 file changed, 121 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/adc-joystick.yaml
-> 
+> I don't know if that is accurate either. Maybe things are so broken
+> that bisect gets confused, or the problem is due to interaction
+> between different patch series.
+
+My results with the workaround for sparc32 boot look similar:
+
+# bad: [2bbf0589bfeb27800c730b76eacf34528eee5418] pci: test for unexpectedly disabled bridges
+git bisect bad 2bbf0589bfeb27800c730b76eacf34528eee5418
+# good: [2ef96a5bb12be62ef75b5828c0aab838ebb29cb8] Linux 5.7-rc5
+git bisect good 2ef96a5bb12be62ef75b5828c0aab838ebb29cb8
+# bad: [e4592f53440c6fd2288e2dcb8c6f5b4d9d40fd35] mm-add-debug_wx-support-fix
+git bisect bad e4592f53440c6fd2288e2dcb8c6f5b4d9d40fd35
+# bad: [e4592f53440c6fd2288e2dcb8c6f5b4d9d40fd35] mm-add-debug_wx-support-fix
+git bisect bad e4592f53440c6fd2288e2dcb8c6f5b4d9d40fd35
+# good: [e27369856a2d42ae4d84bc2c4ddac1e696c40d7c] mm: remove the prot argument from vm_map_ram
+git bisect good e27369856a2d42ae4d84bc2c4ddac1e696c40d7c
+# good: [6911f2b29f6daae2c4b51e6a37f794056d8afabd] mm/page_alloc.c: clear out zone->lowmem_reserve[] if the zone is empty
+git bisect good 6911f2b29f6daae2c4b51e6a37f794056d8afabd
+# good: [8cef4726f20ae37c3cf3f7a449f5b8a088247a27] hugetlbfs: clean up command line processing
+git bisect good 8cef4726f20ae37c3cf3f7a449f5b8a088247a27
+# good: [94f38895e0a68ceac3ceece6528123ed3129cedd] arch/kmap: ensure kmap_prot visibility
+git bisect good 94f38895e0a68ceac3ceece6528123ed3129cedd
+# skip: [fcc77c28bf9155c681712b25c0f5e6125d10ba2e] kmap: consolidate kmap_prot definitions
+git bisect skip fcc77c28bf9155c681712b25c0f5e6125d10ba2e
+# bad: [175a67be7ee750b2aa2a4a2fedeff18fdce787ac] kmap-consolidate-kmap_prot-definitions-checkpatch-fixes
+git bisect bad 175a67be7ee750b2aa2a4a2fedeff18fdce787ac
+# bad: [54db8ed321d66a00b6c69bbd5bf7c59809b3fd42] drm: vmwgfx: include linux/highmem.h
+git bisect bad 54db8ed321d66a00b6c69bbd5bf7c59809b3fd42
+# bad: [6671299c829d19c6ceb0fd1a14b690f6115c6d3d] arch/kmap: define kmap_atomic_prot() for all arch's
+git bisect bad 6671299c829d19c6ceb0fd1a14b690f6115c6d3d
+# bad: [f800fb6e517710e04391821e4b1908606c8a6b24] arch/kmap: don't hard code kmap_prot values
+git bisect bad f800fb6e517710e04391821e4b1908606c8a6b24
+# first bad commit: [f800fb6e517710e04391821e4b1908606c8a6b24] arch/kmap: don't hard code kmap_prot values
 
 
-My bot found errors running 'make dt_binding_check' on your patch:
+> Guenter
 
-Error: Documentation/devicetree/bindings/input/adc-joystick.example.dts:24.31-32 syntax error
-FATAL ERROR: Unable to parse input tree
-scripts/Makefile.lib:312: recipe for target 'Documentation/devicetree/bindings/input/adc-joystick.example.dt.yaml' failed
-make[1]: *** [Documentation/devicetree/bindings/input/adc-joystick.example.dt.yaml] Error 1
-Makefile:1300: recipe for target 'dt_binding_check' failed
-make: *** [dt_binding_check] Error 2
-
-See https://patchwork.ozlabs.org/patch/1292230
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+-- 
+Sincerely yours,
+Mike.
