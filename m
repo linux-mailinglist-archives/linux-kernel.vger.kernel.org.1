@@ -2,111 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE261D6E95
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 03:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4991D6E99
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 03:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727890AbgERBWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 21:22:22 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:41310 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727825AbgERBWO (ORCPT
+        id S1726720AbgERB10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 21:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726665AbgERB1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 21:22:14 -0400
-Received: by mail-il1-f200.google.com with SMTP id f65so8389056ilh.8
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 18:22:14 -0700 (PDT)
+        Sun, 17 May 2020 21:27:25 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E280C061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 18:27:24 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id g14so21212660wme.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 18:27:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uZfH/yW2EkwOl9gEcet4jN7ZXi9BLKHqqQrfr1sC6ac=;
+        b=vDcWgigWf+8ZKsquN2u4JqfQ8umHJX5fe46rUTGhJECREweESiSfWnUn0R+kFnVYzL
+         Po+JjR2lydKpGPNuAuKUfwyrCt05L9FE2SiboNT/Di3jcIyohybAZ7DEy0Rfme5FXmov
+         hLdWtACwrYRBlLG0QN8oUbUrydmDczxFu2izF8ScEASNprtdB5wc/pnUdJmba6hRwV9n
+         aHCMGNU+KjzWjQTSpCRhc4bWnVvgd0rJg1YDnGNoSnyOoDtovxLu56C1biuKkr+dRjvW
+         tJZ3MvsoObtcyH+Pvwi+VeXvwxYehRqFZ5a/TM/TAH2YVIfFH9U6+mtgTNk5l3SnaaaD
+         oGZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ap8i6E0yrJQAtmU9MgshgOvQ1VBY3o/WHGCOKeuX4nc=;
-        b=E477BTiBmgC6fWyaB05QYJVHQTZP+9/l7P+e6nuCLnJbiCMTVEpsq96i3YnVAIJBQC
-         HgL1OTICsLPTSbiWTamAXvzIjbhA0/a7joqDMZB8ddhe7hdkDxwpPV/xqh8Pt/x4JuvN
-         z/UVhtNeYGkE4yMwMmlqClpzXsBcM2HEb+5S9e9txYR5KjQ5kjeLGiJctFj9UXfmzzjE
-         M4kQFFFpyARWlAirrLXLCYtVq47HvxPb5kx4BTgu7PwobcabTOsMNIYC3q+qEQf3aSAh
-         Glba0q4m9qr0WoqagyG/5ofeBl3QEr7UCcE9PC/bro0HTtds+iUF0Y7Ey4TqrvkupsPM
-         ZwYQ==
-X-Gm-Message-State: AOAM532uVN8b6PFXEMl00Z6sstyU055C/Cky1zquHMaMH70/n64ZkHXl
-        /zIIaPYwrh+KWRb99iYm/iJZWtwE4h4ijsDYEsojqZPvto8z
-X-Google-Smtp-Source: ABdhPJx3Rtos3rtwRka74QnG8oJkX6dZbfUmTZP+c6Q9rnRW8WUn6+HOHNDULTl1z0EQ9gaNdX3Rj6KcgInTcoBOQ8s9c7QPUizi
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uZfH/yW2EkwOl9gEcet4jN7ZXi9BLKHqqQrfr1sC6ac=;
+        b=IfHtw0nAmxkPO1GiDOLzCvJo2aaV//Vk7MSqQdRyoCxAwz+bwcBMTRmsPMbvIJJfGg
+         BioOF2obPmprcvbQ+WV+K2d0WOtp29ilt7I+5gId6imI8OxcKvFd/a22Usiis5py27DJ
+         BHiux9X9wcvXetyJGlSuX1pMYaRazi/ir2tcB9IMbH/4RS/IQgMgLf92Vd3RFCrR03l6
+         mBDcwyVaFAZB6GvwRqB8JylSpuPBXopipJfnlQqT531ZYsKPJrRilYAst8jLwdnfCf6f
+         +gFiIsMcEx7r1B+xeDUnvqsDmI4SVcD2UxHB4aZO163GwZ/zGwAEZeOjocV2XkwsTMcp
+         8PLA==
+X-Gm-Message-State: AOAM5306Kq3sfdMnoGR42CCg3OqjakJbA3QAg3UjrWMne9UhOlhZqU7O
+        2uLdzfHsfMkDTHkQ3wcTDI+SKh89/R9P8yMvkh8o7EBBvWM=
+X-Google-Smtp-Source: ABdhPJwYXjut1W+agJe7qHIAazerG/VY4Qh5rG0NKf6TSwEA+kmhHmC2ZVellCufA3F7oGA23ea+FfJqOJUfr5uzS0A=
+X-Received: by 2002:a05:600c:2255:: with SMTP id a21mr17035637wmm.67.1589765242888;
+ Sun, 17 May 2020 18:27:22 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:1d49:: with SMTP id d70mr13345443ild.188.1589764933763;
- Sun, 17 May 2020 18:22:13 -0700 (PDT)
-Date:   Sun, 17 May 2020 18:22:13 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002746f005a5e1fe6b@google.com>
-Subject: BUG: sleeping function called from invalid context in console_lock
-From:   syzbot <syzbot+f8589c355cdce42b2446@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, jslaby@suse.com,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20200513132114.6046-1-m.szyprowski@samsung.com>
+ <CGME20200513133305eucas1p15187ed8fa1e4af181cafa5c65ddab4cd@eucas1p1.samsung.com>
+ <20200513133245.6408-1-m.szyprowski@samsung.com> <20200513133245.6408-13-m.szyprowski@samsung.com>
+In-Reply-To: <20200513133245.6408-13-m.szyprowski@samsung.com>
+From:   Qiang Yu <yuq825@gmail.com>
+Date:   Mon, 18 May 2020 09:27:11 +0800
+Message-ID: <CAKGbVbsSPhQY5zEBGPQtyhLu38w=Hw73OQr6UiV_dHC46DescQ@mail.gmail.com>
+Subject: Re: [PATCH v5 13/38] drm: lima: fix common struct sg_table related issues
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        iommu@lists.linux-foundation.org, linaro-mm-sig@lists.linaro.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-arm-kernel@lists.infradead.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, lima@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Looks good for me, patch is:
+Reviewed-by: Qiang Yu <yuq825@gmail.com>
 
-syzbot found the following crash on:
+Regards,
+Qiang
 
-HEAD commit:    3d1c1e59 Merge tag 'block-5.7-2020-05-16' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11a8d202100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c14212794ed9ad24
-dashboard link: https://syzkaller.appspot.com/bug?extid=f8589c355cdce42b2446
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+f8589c355cdce42b2446@syzkaller.appspotmail.com
-
-BUG: sleeping function called from invalid context at kernel/printk/printk.c:2312
-in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 21174, name: syz-executor.5
-3 locks held by syz-executor.5/21174:
- #0: ffff8880a965c098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:267
- #1: ffff8880a965c3f8 (&tty->flow_lock){....}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:378 [inline]
- #1: ffff8880a965c3f8 (&tty->flow_lock){....}-{2:2}, at: n_tty_ioctl_helper drivers/tty/tty_ioctl.c:914 [inline]
- #1: ffff8880a965c3f8 (&tty->flow_lock){....}-{2:2}, at: n_tty_ioctl_helper+0xcc/0x3b0 drivers/tty/tty_ioctl.c:894
- #2: ffff8880a965c098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref+0x1d/0x80 drivers/tty/tty_ldisc.c:288
-irq event stamp: 46
-hardirqs last  enabled at (45): [<ffffffff81b0ba8b>] kfree+0x1eb/0x2b0 mm/slab.c:3758
-hardirqs last disabled at (46): [<ffffffff87d08f35>] __raw_spin_lock_irq include/linux/spinlock_api_smp.h:126 [inline]
-hardirqs last disabled at (46): [<ffffffff87d08f35>] _raw_spin_lock_irq+0x35/0x80 kernel/locking/spinlock.c:167
-softirqs last  enabled at (0): [<ffffffff8143deb7>] copy_process+0x1ae7/0x7110 kernel/fork.c:2031
-softirqs last disabled at (0): [<0000000000000000>] 0x0
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 0 PID: 21174 Comm: syz-executor.5 Not tainted 5.7.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- ___might_sleep.cold+0x1f4/0x23d kernel/sched/core.c:6801
- console_lock+0x19/0x80 kernel/printk/printk.c:2312
- do_con_write.part.0+0x95/0x1dc0 drivers/tty/vt/vt.c:2596
- do_con_write drivers/tty/vt/vt.c:2593 [inline]
- con_write+0x41/0xe0 drivers/tty/vt/vt.c:3159
- n_hdlc_send_frames+0x22d/0x3d0 drivers/tty/n_hdlc.c:289
- tty_wakeup+0xe1/0x120 drivers/tty/tty_io.c:536
- __start_tty+0x5c/0x70 drivers/tty/tty_io.c:803
- n_tty_ioctl_helper drivers/tty/tty_ioctl.c:917 [inline]
- n_tty_ioctl_helper+0x34e/0x3b0 drivers/tty/tty_ioctl.c:894
- n_hdlc_tty_ioctl+0xd3/0x2f0 drivers/tty/n_hdlc.c:615
- tty_ioctl+0xf88/0x1440 drivers/tty/tty_io.c:2665
- tty_compat_ioctl+0x2bf/0x410 drivers/tty/tty_io.c:2834
- __do_compat_sys_ioctl fs/ioctl.c:865 [inline]
- __se_compat_sys_ioctl fs/ioctl.c:816 [inline]
- __ia32_compat_sys_ioctl+0x23d/0x2b0 fs/ioctl.c:816
- do_syscall_32_irqs_on arch/x86/entry/common.c:337 [inline]
- do_fast_syscall_32+0x270/0xe90 arch/x86/entry/common.c:396
- entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On Wed, May 13, 2020 at 9:33 PM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+>
+> The Documentation/DMA-API-HOWTO.txt states that the dma_map_sg() function
+> returns the number of the created entries in the DMA address space.
+> However the subsequent calls to the dma_sync_sg_for_{device,cpu}() and
+> dma_unmap_sg must be called with the original number of the entries
+> passed to the dma_map_sg().
+>
+> struct sg_table is a common structure used for describing a non-contiguous
+> memory buffer, used commonly in the DRM and graphics subsystems. It
+> consists of a scatterlist with memory pages and DMA addresses (sgl entry),
+> as well as the number of scatterlist entries: CPU pages (orig_nents entry)
+> and DMA mapped pages (nents entry).
+>
+> It turned out that it was a common mistake to misuse nents and orig_nents
+> entries, calling DMA-mapping functions with a wrong number of entries or
+> ignoring the number of mapped entries returned by the dma_map_sg()
+> function.
+>
+> To avoid such issues, lets use a common dma-mapping wrappers operating
+> directly on the struct sg_table objects and use scatterlist page
+> iterators where possible. This, almost always, hides references to the
+> nents and orig_nents entries, making the code robust, easier to follow
+> and copy/paste safe.
+>
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+> For more information, see '[PATCH v5 00/38] DRM: fix struct sg_table nents
+> vs. orig_nents misuse' thread:
+> https://lore.kernel.org/linux-iommu/20200513132114.6046-1-m.szyprowski@samsung.com/T/
+> ---
+>  drivers/gpu/drm/lima/lima_gem.c | 11 ++++++++---
+>  drivers/gpu/drm/lima/lima_vm.c  |  5 ++---
+>  2 files changed, 10 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/lima/lima_gem.c b/drivers/gpu/drm/lima/lima_gem.c
+> index 5404e0d..cda43f6 100644
+> --- a/drivers/gpu/drm/lima/lima_gem.c
+> +++ b/drivers/gpu/drm/lima/lima_gem.c
+> @@ -69,8 +69,7 @@ int lima_heap_alloc(struct lima_bo *bo, struct lima_vm *vm)
+>                 return ret;
+>
+>         if (bo->base.sgt) {
+> -               dma_unmap_sg(dev, bo->base.sgt->sgl,
+> -                            bo->base.sgt->nents, DMA_BIDIRECTIONAL);
+> +               dma_unmap_sgtable(dev, bo->base.sgt, DMA_BIDIRECTIONAL, 0);
+>                 sg_free_table(bo->base.sgt);
+>         } else {
+>                 bo->base.sgt = kmalloc(sizeof(*bo->base.sgt), GFP_KERNEL);
+> @@ -80,7 +79,13 @@ int lima_heap_alloc(struct lima_bo *bo, struct lima_vm *vm)
+>                 }
+>         }
+>
+> -       dma_map_sg(dev, sgt.sgl, sgt.nents, DMA_BIDIRECTIONAL);
+> +       ret = dma_map_sgtable(dev, &sgt, DMA_BIDIRECTIONAL, 0);
+> +       if (ret) {
+> +               sg_free_table(&sgt);
+> +               kfree(bo->base.sgt);
+> +               bo->base.sgt = NULL;
+> +               return ret;
+> +       }
+>
+>         *bo->base.sgt = sgt;
+>
+> diff --git a/drivers/gpu/drm/lima/lima_vm.c b/drivers/gpu/drm/lima/lima_vm.c
+> index 5b92fb8..2b2739a 100644
+> --- a/drivers/gpu/drm/lima/lima_vm.c
+> +++ b/drivers/gpu/drm/lima/lima_vm.c
+> @@ -124,7 +124,7 @@ int lima_vm_bo_add(struct lima_vm *vm, struct lima_bo *bo, bool create)
+>         if (err)
+>                 goto err_out1;
+>
+> -       for_each_sg_dma_page(bo->base.sgt->sgl, &sg_iter, bo->base.sgt->nents, 0) {
+> +       for_each_sgtable_dma_page(bo->base.sgt, &sg_iter, 0) {
+>                 err = lima_vm_map_page(vm, sg_page_iter_dma_address(&sg_iter),
+>                                        bo_va->node.start + offset);
+>                 if (err)
+> @@ -298,8 +298,7 @@ int lima_vm_map_bo(struct lima_vm *vm, struct lima_bo *bo, int pageoff)
+>         mutex_lock(&vm->lock);
+>
+>         base = bo_va->node.start + (pageoff << PAGE_SHIFT);
+> -       for_each_sg_dma_page(bo->base.sgt->sgl, &sg_iter,
+> -                            bo->base.sgt->nents, pageoff) {
+> +       for_each_sgtable_dma_page(bo->base.sgt, &sg_iter, pageoff) {
+>                 err = lima_vm_map_page(vm, sg_page_iter_dma_address(&sg_iter),
+>                                        base + offset);
+>                 if (err)
+> --
+> 1.9.1
+>
