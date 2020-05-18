@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2BA1D873D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 296FE1D86E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388065AbgERSbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:31:40 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:42794 "EHLO
+        id S1728500AbgERRkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:40:39 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:42800 "EHLO
         bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728779AbgERRjY (ORCPT
+        with ESMTP id S1729029AbgERRk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:39:24 -0400
+        Mon, 18 May 2020 13:40:26 -0400
 Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 3E3FF2A10C1
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>
-Cc:     narmstrong@baylibre.com, a.hajda@samsung.com,
-        boris.brezillon@collabora.com, laurent.pinchart@ideasonboard.com,
-        matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [RESEND PATCH 3/3] drm/mediatek: mtk_dpi: Use simple encoder
-Date:   Mon, 18 May 2020 19:39:09 +0200
-Message-Id: <20200518173909.2259259-4-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173909.2259259-1-enric.balletbo@collabora.com>
-References: <20200518173909.2259259-1-enric.balletbo@collabora.com>
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 0978C2A0C85
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        gustavo.padovan@collabora.com,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH v4 0/3] media: rkvdec: Add a VP9 backend
+Date:   Mon, 18 May 2020 14:40:08 -0300
+Message-Id: <20200518174011.15543-1-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.26.0.rc2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -41,55 +38,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mtk_dpi driver uses an empty implementation for its encoder. Replace
-the code with the generic simple encoder.
+Fourth iteration of the VP9 stateless codec uAPI, plus
+support for Rockchip VDEC, just minor changes since v3.
 
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
----
+Thanks!
+Ezequiel
 
- drivers/gpu/drm/mediatek/mtk_dpi.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+Changelog
+---------
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index baad198c69eb..80778b2aac2a 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -20,6 +20,7 @@
- #include <drm/drm_bridge.h>
- #include <drm/drm_crtc.h>
- #include <drm/drm_of.h>
-+#include <drm/drm_simple_kms_helper.h>
- 
- #include "mtk_dpi_regs.h"
- #include "mtk_drm_ddp_comp.h"
-@@ -510,15 +511,6 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
- 	return 0;
- }
- 
--static void mtk_dpi_encoder_destroy(struct drm_encoder *encoder)
--{
--	drm_encoder_cleanup(encoder);
--}
--
--static const struct drm_encoder_funcs mtk_dpi_encoder_funcs = {
--	.destroy = mtk_dpi_encoder_destroy,
--};
--
- static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
- 				 enum drm_bridge_attach_flags flags)
- {
-@@ -591,8 +583,8 @@ static int mtk_dpi_bind(struct device *dev, struct device *master, void *data)
- 		return ret;
- 	}
- 
--	ret = drm_encoder_init(drm_dev, &dpi->encoder, &mtk_dpi_encoder_funcs,
--			       DRM_MODE_ENCODER_TMDS, NULL);
-+	ret = drm_simple_encoder_init(drm_dev, &dpi->encoder,
-+				      DRM_MODE_ENCODER_TMDS);
- 	if (ret) {
- 		dev_err(dev, "Failed to initialize decoder: %d\n", ret);
- 		goto err_unregister;
+v4:
+
+* Drop color_space field from the VP9 interface.
+  V4L2 API should be used for it.
+* Clarified Segment-ID comments.
+* Moved motion vector probabilities to a separate
+  struct.
+
+v3:
+
+* Fix documentation issues found by Hans.
+* Fix smatch detected issues as pointed out by Hans.
+* Added patch to fix wrong bytesused set on .buf_prepare.
+
+v2:
+
+* Documentation style issues pointed out by Nicolas internally.
+* s/VP9_PROFILE_MAX/V4L2_VP9_PROFILE_MAX/
+* Fix wrong kfree(ctx).
+* constify a couple structs on rkvdec-vp9.c
+
+
+*** BLURB HERE ***
+
+Boris Brezillon (2):
+  media: uapi: Add VP9 stateless decoder controls
+  media: rkvdec: Add the VP9 backend
+
+Ezequiel Garcia (1):
+  media: rkvdec: Fix .buf_prepare
+
+ .../userspace-api/media/v4l/biblio.rst        |   10 +
+ .../media/v4l/ext-ctrls-codec.rst             |  550 ++++++
+ drivers/media/v4l2-core/v4l2-ctrls.c          |  239 +++
+ drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
+ drivers/staging/media/rkvdec/Makefile         |    2 +-
+ drivers/staging/media/rkvdec/rkvdec-vp9.c     | 1577 +++++++++++++++++
+ drivers/staging/media/rkvdec/rkvdec.c         |   66 +-
+ drivers/staging/media/rkvdec/rkvdec.h         |    6 +
+ include/media/v4l2-ctrls.h                    |    1 +
+ include/media/vp9-ctrls.h                     |  485 +++++
+ 10 files changed, 2932 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
+ create mode 100644 include/media/vp9-ctrls.h
+
 -- 
-2.26.2
+2.26.0.rc2
 
