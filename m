@@ -2,45 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B1C1D86CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C251D85E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387979AbgERS2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:28:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40584 "EHLO mail.kernel.org"
+        id S1730875AbgERRva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:51:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729537AbgERRnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:43:15 -0400
+        id S1730860AbgERRvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:51:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 025FC20849;
-        Mon, 18 May 2020 17:43:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 318A32083E;
+        Mon, 18 May 2020 17:51:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823793;
-        bh=QVkd45fHqvvoOTvxdHJcpb/dBYTtNAeFOhj1Zcs+jE8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HDTjwA7YHZsUiUp6+r9zAqh+Jes+TWEtsUwBISxjAnC6NQ17Bo1aEJ0Wyz0GHfAgl
-         aESsbCireDxibtYSg/fWCrNg01x3LKL2oYDYfITPvvPsNufGaeTqyi4ELJHB5tMK6h
-         2mTUqLuwhL2wLbWlDf5lG3mV2e8nTVvqzXXC7QdE=
+        s=default; t=1589824284;
+        bh=suizgqnfNPmIPvPNa7tKCyv0Jp3Gbtl1MSa41kN93ks=;
+        h=From:To:Cc:Subject:Date:From;
+        b=n57906JyfpCgMBOdATvaxGfmCz4lJM9BcUsX7vB+s3JURP85p+UFlPTVrIWBwR6nb
+         QE/NlLLLPcs1kVnms1fTcIM6gmPdfIM64jHLMwgqOoFTNaUbStYk+meWi6wdaV95sx
+         jtY1Q0/ct+bEyfC7CKWgEYWabqfAbcmnkC5YOsDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladis Dronov <vdronov@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        Sasha Levin <sashal@kernel.org>,
-        Stephen Johnston <sjohnsto@redhat.com>,
-        Vern Lovejoy <vlovejoy@redhat.com>
-Subject: [PATCH 4.9 39/90] ptp: fix the race between the release of ptp_clock and cdev
-Date:   Mon, 18 May 2020 19:36:17 +0200
-Message-Id: <20200518173459.047021496@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: [PATCH 4.19 00/80] 4.19.124-rc1 review
+Date:   Mon, 18 May 2020 19:36:18 +0200
+Message-Id: <20200518173450.097837707@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.124-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.124-rc1
+X-KernelTest-Deadline: 2020-05-20T17:35+00:00
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -48,329 +51,359 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladis Dronov <vdronov@redhat.com>
+This is the start of the stable review cycle for the 4.19.124 release.
+There are 80 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-commit a33121e5487b424339636b25c35d3a180eaa5f5e upstream.
+Responses should be made by Wed, 20 May 2020 17:32:42 +0000.
+Anything received after that time might be too late.
 
-In a case when a ptp chardev (like /dev/ptp0) is open but an underlying
-device is removed, closing this file leads to a race. This reproduces
-easily in a kvm virtual machine:
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.124-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
 
-ts# cat openptp0.c
-int main() { ... fp = fopen("/dev/ptp0", "r"); ... sleep(10); }
-ts# uname -r
-5.5.0-rc3-46cf053e
-ts# cat /proc/cmdline
-... slub_debug=FZP
-ts# modprobe ptp_kvm
-ts# ./openptp0 &
-[1] 670
-opened /dev/ptp0, sleeping 10s...
-ts# rmmod ptp_kvm
-ts# ls /dev/ptp*
-ls: cannot access '/dev/ptp*': No such file or directory
-ts# ...woken up
-[   48.010809] general protection fault: 0000 [#1] SMP
-[   48.012502] CPU: 6 PID: 658 Comm: openptp0 Not tainted 5.5.0-rc3-46cf053e #25
-[   48.014624] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ...
-[   48.016270] RIP: 0010:module_put.part.0+0x7/0x80
-[   48.017939] RSP: 0018:ffffb3850073be00 EFLAGS: 00010202
-[   48.018339] RAX: 000000006b6b6b6b RBX: 6b6b6b6b6b6b6b6b RCX: ffff89a476c00ad0
-[   48.018936] RDX: fffff65a08d3ea08 RSI: 0000000000000247 RDI: 6b6b6b6b6b6b6b6b
-[   48.019470] ...                                              ^^^ a slub poison
-[   48.023854] Call Trace:
-[   48.024050]  __fput+0x21f/0x240
-[   48.024288]  task_work_run+0x79/0x90
-[   48.024555]  do_exit+0x2af/0xab0
-[   48.024799]  ? vfs_write+0x16a/0x190
-[   48.025082]  do_group_exit+0x35/0x90
-[   48.025387]  __x64_sys_exit_group+0xf/0x10
-[   48.025737]  do_syscall_64+0x3d/0x130
-[   48.026056]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   48.026479] RIP: 0033:0x7f53b12082f6
-[   48.026792] ...
-[   48.030945] Modules linked in: ptp i6300esb watchdog [last unloaded: ptp_kvm]
-[   48.045001] Fixing recursive fault but reboot is needed!
+thanks,
 
-This happens in:
+greg k-h
 
-static void __fput(struct file *file)
-{   ...
-    if (file->f_op->release)
-        file->f_op->release(inode, file); <<< cdev is kfree'd here
-    if (unlikely(S_ISCHR(inode->i_mode) && inode->i_cdev != NULL &&
-             !(mode & FMODE_PATH))) {
-        cdev_put(inode->i_cdev); <<< cdev fields are accessed here
+-------------
+Pseudo-Shortlog of commits:
 
-Namely:
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.124-rc1
 
-__fput()
-  posix_clock_release()
-    kref_put(&clk->kref, delete_clock) <<< the last reference
-      delete_clock()
-        delete_ptp_clock()
-          kfree(ptp) <<< cdev is embedded in ptp
-  cdev_put
-    module_put(p->owner) <<< *p is kfree'd, bang!
+Sergei Trofimovich <slyfox@gentoo.org>
+    Makefile: disallow data races on gcc-10 as well
 
-Here cdev is embedded in posix_clock which is embedded in ptp_clock.
-The race happens because ptp_clock's lifetime is controlled by two
-refcounts: kref and cdev.kobj in posix_clock. This is wrong.
+Jim Mattson <jmattson@google.com>
+    KVM: x86: Fix off-by-one error in kvm_vcpu_ioctl_x86_setup_mce
 
-Make ptp_clock's sysfs device a parent of cdev with cdev_device_add()
-created especially for such cases. This way the parent device with its
-ptp_clock is not released until all references to the cdev are released.
-This adds a requirement that an initialized but not exposed struct
-device should be provided to posix_clock_register() by a caller instead
-of a simple dev_t.
+Geert Uytterhoeven <geert+renesas@glider.be>
+    ARM: dts: r8a7740: Add missing extal2 to CPG node
 
-This approach was adopted from the commit 72139dfa2464 ("watchdog: Fix
-the race between the release of watchdog_core_data and cdev"). See
-details of the implementation in the commit 233ed09d7fda ("chardev: add
-helper function to register char devs with a struct device").
+Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+    arm64: dts: renesas: r8a77980: Fix IPMMU VIP[01] nodes
 
-Link: https://lore.kernel.org/linux-fsdevel/20191125125342.6189-1-vdronov@redhat.com/T/#u
-Analyzed-by: Stephen Johnston <sjohnsto@redhat.com>
-Analyzed-by: Vern Lovejoy <vlovejoy@redhat.com>
-Signed-off-by: Vladis Dronov <vdronov@redhat.com>
-Acked-by: Richard Cochran <richardcochran@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/ptp/ptp_clock.c     | 31 ++++++++++++++-----------------
- drivers/ptp/ptp_private.h   |  2 +-
- include/linux/posix-clock.h | 19 +++++++++++--------
- kernel/time/posix-clock.c   | 31 +++++++++++++------------------
- 4 files changed, 39 insertions(+), 44 deletions(-)
+Geert Uytterhoeven <geert+renesas@glider.be>
+    ARM: dts: r8a73a4: Add missing CMT1 interrupts
 
-diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
-index b87b7b0867a4c..2c1ae324da182 100644
---- a/drivers/ptp/ptp_clock.c
-+++ b/drivers/ptp/ptp_clock.c
-@@ -171,9 +171,9 @@ static struct posix_clock_operations ptp_clock_ops = {
- 	.read		= ptp_read,
- };
- 
--static void delete_ptp_clock(struct posix_clock *pc)
-+static void ptp_clock_release(struct device *dev)
- {
--	struct ptp_clock *ptp = container_of(pc, struct ptp_clock, clock);
-+	struct ptp_clock *ptp = container_of(dev, struct ptp_clock, dev);
- 
- 	mutex_destroy(&ptp->tsevq_mux);
- 	mutex_destroy(&ptp->pincfg_mux);
-@@ -205,7 +205,6 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
- 	}
- 
- 	ptp->clock.ops = ptp_clock_ops;
--	ptp->clock.release = delete_ptp_clock;
- 	ptp->info = info;
- 	ptp->devid = MKDEV(major, index);
- 	ptp->index = index;
-@@ -218,15 +217,6 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
- 	if (err)
- 		goto no_pin_groups;
- 
--	/* Create a new device in our class. */
--	ptp->dev = device_create_with_groups(ptp_class, parent, ptp->devid,
--					     ptp, ptp->pin_attr_groups,
--					     "ptp%d", ptp->index);
--	if (IS_ERR(ptp->dev)) {
--		err = PTR_ERR(ptp->dev);
--		goto no_device;
--	}
--
- 	/* Register a new PPS source. */
- 	if (info->pps) {
- 		struct pps_source_info pps;
-@@ -242,8 +232,18 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
- 		}
- 	}
- 
--	/* Create a posix clock. */
--	err = posix_clock_register(&ptp->clock, ptp->devid);
-+	/* Initialize a new device of our class in our clock structure. */
-+	device_initialize(&ptp->dev);
-+	ptp->dev.devt = ptp->devid;
-+	ptp->dev.class = ptp_class;
-+	ptp->dev.parent = parent;
-+	ptp->dev.groups = ptp->pin_attr_groups;
-+	ptp->dev.release = ptp_clock_release;
-+	dev_set_drvdata(&ptp->dev, ptp);
-+	dev_set_name(&ptp->dev, "ptp%d", ptp->index);
-+
-+	/* Create a posix clock and link it to the device. */
-+	err = posix_clock_register(&ptp->clock, &ptp->dev);
- 	if (err) {
- 		pr_err("failed to create posix clock\n");
- 		goto no_clock;
-@@ -255,8 +255,6 @@ no_clock:
- 	if (ptp->pps_source)
- 		pps_unregister_source(ptp->pps_source);
- no_pps:
--	device_destroy(ptp_class, ptp->devid);
--no_device:
- 	ptp_cleanup_pin_groups(ptp);
- no_pin_groups:
- 	mutex_destroy(&ptp->tsevq_mux);
-@@ -278,7 +276,6 @@ int ptp_clock_unregister(struct ptp_clock *ptp)
- 	if (ptp->pps_source)
- 		pps_unregister_source(ptp->pps_source);
- 
--	device_destroy(ptp_class, ptp->devid);
- 	ptp_cleanup_pin_groups(ptp);
- 
- 	posix_clock_unregister(&ptp->clock);
-diff --git a/drivers/ptp/ptp_private.h b/drivers/ptp/ptp_private.h
-index d95888974d0c6..15346e840caa9 100644
---- a/drivers/ptp/ptp_private.h
-+++ b/drivers/ptp/ptp_private.h
-@@ -40,7 +40,7 @@ struct timestamp_event_queue {
- 
- struct ptp_clock {
- 	struct posix_clock clock;
--	struct device *dev;
-+	struct device dev;
- 	struct ptp_clock_info *info;
- 	dev_t devid;
- 	int index; /* index into clocks.map */
-diff --git a/include/linux/posix-clock.h b/include/linux/posix-clock.h
-index 83b22ae9ae12a..b39420a0321c3 100644
---- a/include/linux/posix-clock.h
-+++ b/include/linux/posix-clock.h
-@@ -104,29 +104,32 @@ struct posix_clock_operations {
-  *
-  * @ops:     Functional interface to the clock
-  * @cdev:    Character device instance for this clock
-- * @kref:    Reference count.
-+ * @dev:     Pointer to the clock's device.
-  * @rwsem:   Protects the 'zombie' field from concurrent access.
-  * @zombie:  If 'zombie' is true, then the hardware has disappeared.
-- * @release: A function to free the structure when the reference count reaches
-- *           zero. May be NULL if structure is statically allocated.
-  *
-  * Drivers should embed their struct posix_clock within a private
-  * structure, obtaining a reference to it during callbacks using
-  * container_of().
-+ *
-+ * Drivers should supply an initialized but not exposed struct device
-+ * to posix_clock_register(). It is used to manage lifetime of the
-+ * driver's private structure. It's 'release' field should be set to
-+ * a release function for this private structure.
-  */
- struct posix_clock {
- 	struct posix_clock_operations ops;
- 	struct cdev cdev;
--	struct kref kref;
-+	struct device *dev;
- 	struct rw_semaphore rwsem;
- 	bool zombie;
--	void (*release)(struct posix_clock *clk);
- };
- 
- /**
-  * posix_clock_register() - register a new clock
-- * @clk:   Pointer to the clock. Caller must provide 'ops' and 'release'
-- * @devid: Allocated device id
-+ * @clk:   Pointer to the clock. Caller must provide 'ops' field
-+ * @dev:   Pointer to the initialized device. Caller must provide
-+ *         'release' field
-  *
-  * A clock driver calls this function to register itself with the
-  * clock device subsystem. If 'clk' points to dynamically allocated
-@@ -135,7 +138,7 @@ struct posix_clock {
-  *
-  * Returns zero on success, non-zero otherwise.
-  */
--int posix_clock_register(struct posix_clock *clk, dev_t devid);
-+int posix_clock_register(struct posix_clock *clk, struct device *dev);
- 
- /**
-  * posix_clock_unregister() - unregister a clock
-diff --git a/kernel/time/posix-clock.c b/kernel/time/posix-clock.c
-index e24008c098c6b..45a0a26023d4b 100644
---- a/kernel/time/posix-clock.c
-+++ b/kernel/time/posix-clock.c
-@@ -25,8 +25,6 @@
- #include <linux/syscalls.h>
- #include <linux/uaccess.h>
- 
--static void delete_clock(struct kref *kref);
--
- /*
-  * Returns NULL if the posix_clock instance attached to 'fp' is old and stale.
-  */
-@@ -168,7 +166,7 @@ static int posix_clock_open(struct inode *inode, struct file *fp)
- 		err = 0;
- 
- 	if (!err) {
--		kref_get(&clk->kref);
-+		get_device(clk->dev);
- 		fp->private_data = clk;
- 	}
- out:
-@@ -184,7 +182,7 @@ static int posix_clock_release(struct inode *inode, struct file *fp)
- 	if (clk->ops.release)
- 		err = clk->ops.release(clk);
- 
--	kref_put(&clk->kref, delete_clock);
-+	put_device(clk->dev);
- 
- 	fp->private_data = NULL;
- 
-@@ -206,38 +204,35 @@ static const struct file_operations posix_clock_file_operations = {
- #endif
- };
- 
--int posix_clock_register(struct posix_clock *clk, dev_t devid)
-+int posix_clock_register(struct posix_clock *clk, struct device *dev)
- {
- 	int err;
- 
--	kref_init(&clk->kref);
- 	init_rwsem(&clk->rwsem);
- 
- 	cdev_init(&clk->cdev, &posix_clock_file_operations);
-+	err = cdev_device_add(&clk->cdev, dev);
-+	if (err) {
-+		pr_err("%s unable to add device %d:%d\n",
-+			dev_name(dev), MAJOR(dev->devt), MINOR(dev->devt));
-+		return err;
-+	}
- 	clk->cdev.owner = clk->ops.owner;
--	err = cdev_add(&clk->cdev, devid, 1);
-+	clk->dev = dev;
- 
--	return err;
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(posix_clock_register);
- 
--static void delete_clock(struct kref *kref)
--{
--	struct posix_clock *clk = container_of(kref, struct posix_clock, kref);
--
--	if (clk->release)
--		clk->release(clk);
--}
--
- void posix_clock_unregister(struct posix_clock *clk)
- {
--	cdev_del(&clk->cdev);
-+	cdev_device_del(&clk->cdev, clk->dev);
- 
- 	down_write(&clk->rwsem);
- 	clk->zombie = true;
- 	up_write(&clk->rwsem);
- 
--	kref_put(&clk->kref, delete_clock);
-+	put_device(clk->dev);
- }
- EXPORT_SYMBOL_GPL(posix_clock_unregister);
- 
--- 
-2.20.1
+Chen-Yu Tsai <wens@csie.org>
+    arm64: dts: rockchip: Rename dwc3 device nodes on rk3399 to make dtc happy
 
+Chen-Yu Tsai <wens@csie.org>
+    arm64: dts: rockchip: Replace RK805 PMIC node name with "pmic" on rk3328 boards
+
+Marc Zyngier <maz@kernel.org>
+    clk: Unlink clock if failed to prepare or enable
+
+Kai-Heng Feng <kai.heng.feng@canonical.com>
+    Revert "ALSA: hda/realtek: Fix pop noise on ALC225"
+
+Wei Yongjun <weiyongjun1@huawei.com>
+    usb: gadget: legacy: fix error return code in cdc_bind()
+
+Wei Yongjun <weiyongjun1@huawei.com>
+    usb: gadget: legacy: fix error return code in gncm_bind()
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    usb: gadget: audio: Fix a missing error return value in audio_bind()
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    usb: gadget: net2272: Fix a memory leak in an error handling path in 'net2272_plat_probe()'
+
+John Stultz <john.stultz@linaro.org>
+    dwc3: Remove check for HWO flag in dwc3_gadget_ep_reclaim_trb_sg()
+
+Justin Swartz <justin.swartz@risingedge.co.za>
+    clk: rockchip: fix incorrect configuration of rk3228 aclk_gpu* clocks
+
+Eric W. Biederman <ebiederm@xmission.com>
+    exec: Move would_dump into flush_old_exec
+
+Josh Poimboeuf <jpoimboe@redhat.com>
+    x86/unwind/orc: Fix error handling in __unwind_start()
+
+Borislav Petkov <bp@suse.de>
+    x86: Fix early boot crash on gcc-10, third try
+
+Adam McCoy <adam@forsedomani.com>
+    cifs: fix leaked reference on requeued write
+
+Fabio Estevam <festevam@gmail.com>
+    ARM: dts: imx27-phytec-phycard-s-rdk: Fix the I2C1 pinctrl entries
+
+Kishon Vijay Abraham I <kishon@ti.com>
+    ARM: dts: dra7: Fix bus_dma_limit for PCIe
+
+Sriharsha Allenki <sallenki@codeaurora.org>
+    usb: xhci: Fix NULL pointer dereference when enqueuing trbs from urb sg list
+
+Kyungtae Kim <kt0755@gmail.com>
+    USB: gadget: fix illegal array access in binding with UDC
+
+Li Jun <jun.li@nxp.com>
+    usb: host: xhci-plat: keep runtime active when removing host
+
+Eugeniu Rosca <erosca@de.adit-jv.com>
+    usb: core: hub: limit HUB_QUIRK_DISABLE_AUTOSUSPEND to USB5534B
+
+Jesus Ramos <jesus-ramos@live.com>
+    ALSA: usb-audio: Add control message quirk delay for Kingston HyperX headset
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: rawmidi: Fix racy buffer resize under concurrent accesses
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: hda/realtek - Limit int mic boost for Thinkpad T530
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    gcc-10: avoid shadowing standard library 'free()' in crypto
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    gcc-10: disable 'restrict' warning for now
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    gcc-10: disable 'stringop-overflow' warning for now
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    gcc-10: disable 'array-bounds' warning for now
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    gcc-10: disable 'zero-length-bounds' warning for now
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    Stop the ad-hoc games with -Wno-maybe-initialized
+
+Masahiro Yamada <yamada.masahiro@socionext.com>
+    kbuild: compute false-positive -Wmaybe-uninitialized cases in Kconfig
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    gcc-10 warnings: fix low-hanging fruit
+
+Jason Gunthorpe <jgg@ziepe.ca>
+    pnp: Use list_for_each_entry() instead of open coding
+
+Samu Nuutamo <samu.nuutamo@vincit.fi>
+    hwmon: (da9052) Synchronize access with mfd
+
+Jack Morgenstein <jackm@dev.mellanox.co.il>
+    IB/mlx4: Test return value of calls to ib_get_cached_pkey
+
+Stefano Brivio <sbrivio@redhat.com>
+    netfilter: nft_set_rbtree: Introduce and use nft_rbtree_interval_start()
+
+Christoph Hellwig <hch@lst.de>
+    arm64: fix the flush_icache_range arguments in machine_kexec
+
+Arnd Bergmann <arnd@arndb.de>
+    netfilter: conntrack: avoid gcc-10 zero-length-bounds warning
+
+Dave Wysochanski <dwysocha@redhat.com>
+    NFSv4: Fix fscache cookie aux_data to ensure change_attr is included
+
+Arnd Bergmann <arnd@arndb.de>
+    nfs: fscache: use timespec64 in inode auxdata
+
+Dave Wysochanski <dwysocha@redhat.com>
+    NFS: Fix fscache super_cookie index_key from changing after umount
+
+Adrian Hunter <adrian.hunter@intel.com>
+    mmc: block: Fix request completion in the CQE timeout path
+
+Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+    mmc: core: Check request type before completing the request
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    i40iw: Fix error handling in i40iw_manage_arp_cache()
+
+Grace Kao <grace.kao@intel.com>
+    pinctrl: cherryview: Add missing spinlock usage in chv_gpio_irq_handler
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    pinctrl: baytrail: Enable pin configuration setting for GPIO chip
+
+Andreas Gruenbacher <agruenba@redhat.com>
+    gfs2: Another gfs2_walk_metadata fix
+
+Kai-Heng Feng <kai.heng.feng@canonical.com>
+    ALSA: hda/realtek - Fix S3 pop noise on Dell Wyse
+
+Vasily Averin <vvs@virtuozzo.com>
+    ipc/util.c: sysvipc_find_ipc() incorrectly updates position index
+
+Vasily Averin <vvs@virtuozzo.com>
+    drm/qxl: lost qxl_bo_kunmap_atomic_page in qxl_image_init_helper()
+
+Kai Vehmanen <kai.vehmanen@linux.intel.com>
+    ALSA: hda/hdmi: fix race in monitor detection during probe
+
+Chris Wilson <chris@chris-wilson.co.uk>
+    cpufreq: intel_pstate: Only mention the BIOS disabling turbo mode once
+
+Lubomir Rintel <lkundrak@v3.sk>
+    dmaengine: mmp_tdma: Reset channel error on release
+
+Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+    dmaengine: pch_dma.c: Avoid data race between probe and irq handler
+
+Ilie Halip <ilie.halip@gmail.com>
+    riscv: fix vdso build with lld
+
+Eric Dumazet <edumazet@google.com>
+    tcp: fix SO_RCVLOWAT hangs with fat skbs
+
+Kelly Littlepage <kelly@onechronos.com>
+    net: tcp: fix rx timestamp behavior for tcp_recvmsg
+
+Zefan Li <lizefan@huawei.com>
+    netprio_cgroup: Fix unlimited memory leak of v2 cgroups
+
+Paolo Abeni <pabeni@redhat.com>
+    net: ipv4: really enforce backoff for redirects
+
+Florian Fainelli <f.fainelli@gmail.com>
+    net: dsa: loop: Add module soft dependency
+
+Luo bin <luobin9@huawei.com>
+    hinic: fix a bug of ndo_stop
+
+Michael S. Tsirkin <mst@redhat.com>
+    virtio_net: fix lockdep warning on 32 bit
+
+Eric Dumazet <edumazet@google.com>
+    tcp: fix error recovery in tcp_zerocopy_receive()
+
+Maciej Żenczykowski <maze@google.com>
+    Revert "ipv6: add mtu lock check in __ip6_rt_update_pmtu"
+
+Guillaume Nault <gnault@redhat.com>
+    pppoe: only process PADT targeted at local interfaces
+
+Heiner Kallweit <hkallweit1@gmail.com>
+    net: phy: fix aneg restart in phy_ethtool_set_eee
+
+Paolo Abeni <pabeni@redhat.com>
+    netlabel: cope with NULL catmap
+
+Cong Wang <xiyou.wangcong@gmail.com>
+    net: fix a potential recursive NETDEV_FEAT_CHANGE
+
+Raul E Rangel <rrangel@chromium.org>
+    mmc: sdhci-acpi: Add SDHCI_QUIRK2_BROKEN_64_BIT_DMA for AMDI0040
+
+Wu Bo <wubo40@huawei.com>
+    scsi: sg: add sg_remove_request in sg_write
+
+Stefan Hajnoczi <stefanha@redhat.com>
+    virtio-blk: handle block_device_operations callbacks after hot unplug
+
+Arnd Bergmann <arnd@arndb.de>
+    drop_monitor: work around gcc-10 stringop-overflow warning
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    net: moxa: Fix a potential double 'free_irq()'
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    net/sonic: Fix a resource leak in an error handling path in 'jazz_sonic_probe()'
+
+Hugh Dickins <hughd@google.com>
+    shmem: fix possible deadlocks on shmlock_user_lock
+
+Florian Fainelli <f.fainelli@gmail.com>
+    net: dsa: Do not make user port errors fatal
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                          | 25 ++++---
+ arch/arm/boot/dts/dra7.dtsi                       |  4 +-
+ arch/arm/boot/dts/imx27-phytec-phycard-s-rdk.dts  |  4 +-
+ arch/arm/boot/dts/r8a73a4.dtsi                    |  9 ++-
+ arch/arm/boot/dts/r8a7740.dtsi                    |  2 +-
+ arch/arm64/boot/dts/renesas/r8a77980.dtsi         |  2 +
+ arch/arm64/boot/dts/rockchip/rk3328-evb.dts       |  2 +-
+ arch/arm64/boot/dts/rockchip/rk3328-rock64.dts    |  2 +-
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi          |  4 +-
+ arch/arm64/kernel/machine_kexec.c                 |  1 +
+ arch/riscv/kernel/vdso/Makefile                   |  6 +-
+ arch/x86/include/asm/stackprotector.h             |  7 +-
+ arch/x86/kernel/smpboot.c                         |  8 +++
+ arch/x86/kernel/unwind_orc.c                      | 16 +++--
+ arch/x86/kvm/x86.c                                |  2 +-
+ arch/x86/xen/smp_pv.c                             |  1 +
+ crypto/lrw.c                                      |  4 +-
+ crypto/xts.c                                      |  4 +-
+ drivers/block/virtio_blk.c                        | 86 ++++++++++++++++++++---
+ drivers/clk/clk.c                                 |  3 +
+ drivers/clk/rockchip/clk-rk3228.c                 | 17 ++---
+ drivers/cpufreq/intel_pstate.c                    |  2 +-
+ drivers/dma/mmp_tdma.c                            |  2 +
+ drivers/dma/pch_dma.c                             |  2 +-
+ drivers/gpu/drm/qxl/qxl_image.c                   |  3 +-
+ drivers/hwmon/da9052-hwmon.c                      |  4 +-
+ drivers/infiniband/hw/i40iw/i40iw_hw.c            |  2 +-
+ drivers/infiniband/hw/mlx4/qp.c                   | 14 +++-
+ drivers/mmc/core/block.c                          |  3 +-
+ drivers/mmc/core/queue.c                          |  3 +-
+ drivers/mmc/host/sdhci-acpi.c                     | 10 +--
+ drivers/net/dsa/dsa_loop.c                        |  1 +
+ drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c | 16 +++--
+ drivers/net/ethernet/huawei/hinic/hinic_main.c    | 16 +----
+ drivers/net/ethernet/moxa/moxart_ether.c          |  2 +-
+ drivers/net/ethernet/natsemi/jazzsonic.c          |  6 +-
+ drivers/net/phy/phy.c                             |  8 ++-
+ drivers/net/ppp/pppoe.c                           |  3 +
+ drivers/net/virtio_net.c                          |  6 +-
+ drivers/pinctrl/intel/pinctrl-baytrail.c          |  1 +
+ drivers/pinctrl/intel/pinctrl-cherryview.c        |  4 ++
+ drivers/scsi/sg.c                                 |  4 +-
+ drivers/usb/core/hub.c                            |  6 +-
+ drivers/usb/dwc3/gadget.c                         |  3 -
+ drivers/usb/gadget/configfs.c                     |  3 +
+ drivers/usb/gadget/legacy/audio.c                 |  4 +-
+ drivers/usb/gadget/legacy/cdc2.c                  |  4 +-
+ drivers/usb/gadget/legacy/ncm.c                   |  4 +-
+ drivers/usb/gadget/udc/net2272.c                  |  2 +
+ drivers/usb/host/xhci-plat.c                      |  4 +-
+ drivers/usb/host/xhci-ring.c                      |  4 +-
+ fs/cifs/cifssmb.c                                 |  2 +-
+ fs/exec.c                                         |  4 +-
+ fs/gfs2/bmap.c                                    | 16 +++--
+ fs/nfs/fscache-index.c                            |  6 +-
+ fs/nfs/fscache.c                                  | 31 ++++----
+ fs/nfs/fscache.h                                  |  8 ++-
+ include/linux/compiler.h                          |  6 ++
+ include/linux/fs.h                                |  2 +-
+ include/linux/pnp.h                               | 29 +++-----
+ include/linux/tty.h                               |  2 +-
+ include/net/netfilter/nf_conntrack.h              |  2 +-
+ include/net/tcp.h                                 | 13 ++++
+ include/sound/rawmidi.h                           |  1 +
+ init/main.c                                       |  2 +
+ ipc/util.c                                        | 12 ++--
+ mm/shmem.c                                        |  7 +-
+ net/core/dev.c                                    |  4 +-
+ net/core/drop_monitor.c                           | 11 +--
+ net/core/netprio_cgroup.c                         |  2 +
+ net/dsa/dsa2.c                                    |  2 +-
+ net/ipv4/cipso_ipv4.c                             |  6 +-
+ net/ipv4/route.c                                  |  2 +-
+ net/ipv4/tcp.c                                    | 27 ++++---
+ net/ipv4/tcp_input.c                              |  3 +-
+ net/ipv6/calipso.c                                |  3 +-
+ net/ipv6/route.c                                  |  6 +-
+ net/netfilter/nf_conntrack_core.c                 |  4 +-
+ net/netfilter/nft_set_rbtree.c                    | 17 +++--
+ net/netlabel/netlabel_kapi.c                      |  6 ++
+ sound/core/rawmidi.c                              | 31 ++++++--
+ sound/pci/hda/patch_hdmi.c                        |  2 +
+ sound/pci/hda/patch_realtek.c                     | 28 +++++++-
+ sound/usb/quirks.c                                |  9 +--
+ 84 files changed, 452 insertions(+), 209 deletions(-)
 
 
