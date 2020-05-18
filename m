@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD8F1D8299
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D07731D8198
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731509AbgERR5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:57:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36486 "EHLO mail.kernel.org"
+        id S1730505AbgERRtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:49:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731837AbgERR5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:57:43 -0400
+        id S1729506AbgERRtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:49:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE49220674;
-        Mon, 18 May 2020 17:57:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6432420671;
+        Mon, 18 May 2020 17:49:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824662;
-        bh=MT8t/Y/qjbY9lEmvs0LhPBNuEWj5pnEFucUdNsbCr0E=;
+        s=default; t=1589824149;
+        bh=typIq0/seAP8Czi1rdqH4ZdtGRHRMXR+6Z2dgm9bv+g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qZMQfDiq2IXiqd8kaDRqUUPyYyDhfvts1jRPPN4iAxDv4DKjCixkV4s1VmuUOrWPe
-         esYt2/wYQiNrVTwnRryD0v1ah8hOtFp/YwdF/o8Iv6v251PMdn2jSa4BdpmZpF2roZ
-         Vjldm/KG2ZA1obnH0fB4tTixSPQQCNXk7DAdA/ec=
+        b=PGeB2E8G1kDb/WKcOmt8XSDvjdeugzB9wOybZAxsvbZfc+QYWc5nDo+KMjkd02Akq
+         lffTmNmz1IlIcBZEf2yLsBCGiIDejy1+m7zw7xqN1SvGGABeK450vmii3rmV1n21Zt
+         NunalyG19vVfZE0zJLEVUoCHdONw6jy415Ec4+Sg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 101/147] gcc-10: mark more functions __init to avoid section mismatch warnings
+        stable@vger.kernel.org, butt3rflyh4ck <butterflyhuangxx@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 092/114] ALSA: rawmidi: Fix racy buffer resize under concurrent accesses
 Date:   Mon, 18 May 2020 19:37:04 +0200
-Message-Id: <20200518173525.986717228@linuxfoundation.org>
+Message-Id: <20200518173518.719876322@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +43,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit e99332e7b4cda6e60f5b5916cf9943a79dbef902 upstream.
+commit c1f6e3c818dd734c30f6a7eeebf232ba2cf3181d upstream.
 
-It seems that for whatever reason, gcc-10 ends up not inlining a couple
-of functions that used to be inlined before.  Even if they only have one
-single callsite - it looks like gcc may have decided that the code was
-unlikely, and not worth inlining.
+The rawmidi core allows user to resize the runtime buffer via ioctl,
+and this may lead to UAF when performed during concurrent reads or
+writes: the read/write functions unlock the runtime lock temporarily
+during copying form/to user-space, and that's the race window.
 
-The code generation difference is harmless, but caused a few new section
-mismatch errors, since the (now no longer inlined) function wasn't in
-the __init section, but called other init functions:
+This patch fixes the hole by introducing a reference counter for the
+runtime buffer read/write access and returns -EBUSY error when the
+resize is performed concurrently against read/write.
 
-   Section mismatch in reference from the function kexec_free_initrd() to the function .init.text:free_initrd_mem()
-   Section mismatch in reference from the function tpm2_calc_event_log_size() to the function .init.text:early_memremap()
-   Section mismatch in reference from the function tpm2_calc_event_log_size() to the function .init.text:early_memunmap()
+Note that the ref count field is a simple integer instead of
+refcount_t here, since the all contexts accessing the buffer is
+basically protected with a spinlock, hence we need no expensive atomic
+ops.  Also, note that this busy check is needed only against read /
+write functions, and not in receive/transmit callbacks; the race can
+happen only at the spinlock hole mentioned in the above, while the
+whole function is protected for receive / transmit callbacks.
 
-So add the appropriate __init annotation to make modpost not complain.
-In both cases there were trivially just a single callsite from another
-__init function.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/CAFcO6XMWpUVK_yzzCpp8_XP7+=oUpQvuBeCbMffEDkpe8jWrfg@mail.gmail.com
+Link: https://lore.kernel.org/r/s5heerw3r5z.wl-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/firmware/efi/tpm.c |    2 +-
- init/initramfs.c           |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ include/sound/rawmidi.h |    1 +
+ sound/core/rawmidi.c    |   31 +++++++++++++++++++++++++++----
+ 2 files changed, 28 insertions(+), 4 deletions(-)
 
---- a/drivers/firmware/efi/tpm.c
-+++ b/drivers/firmware/efi/tpm.c
-@@ -16,7 +16,7 @@
- int efi_tpm_final_log_size;
- EXPORT_SYMBOL(efi_tpm_final_log_size);
- 
--static int tpm2_calc_event_log_size(void *data, int count, void *size_info)
-+static int __init tpm2_calc_event_log_size(void *data, int count, void *size_info)
- {
- 	struct tcg_pcr_event2_head *header;
- 	int event_size, size = 0;
---- a/init/initramfs.c
-+++ b/init/initramfs.c
-@@ -534,7 +534,7 @@ void __weak free_initrd_mem(unsigned lon
+--- a/include/sound/rawmidi.h
++++ b/include/sound/rawmidi.h
+@@ -76,6 +76,7 @@ struct snd_rawmidi_runtime {
+ 	size_t avail_min;	/* min avail for wakeup */
+ 	size_t avail;		/* max used buffer for wakeup */
+ 	size_t xruns;		/* over/underruns counter */
++	int buffer_ref;		/* buffer reference count */
+ 	/* misc */
+ 	spinlock_t lock;
+ 	wait_queue_head_t sleep;
+--- a/sound/core/rawmidi.c
++++ b/sound/core/rawmidi.c
+@@ -108,6 +108,17 @@ static void snd_rawmidi_input_event_work
+ 		runtime->event(runtime->substream);
  }
  
- #ifdef CONFIG_KEXEC_CORE
--static bool kexec_free_initrd(void)
-+static bool __init kexec_free_initrd(void)
++/* buffer refcount management: call with runtime->lock held */
++static inline void snd_rawmidi_buffer_ref(struct snd_rawmidi_runtime *runtime)
++{
++	runtime->buffer_ref++;
++}
++
++static inline void snd_rawmidi_buffer_unref(struct snd_rawmidi_runtime *runtime)
++{
++	runtime->buffer_ref--;
++}
++
+ static int snd_rawmidi_runtime_create(struct snd_rawmidi_substream *substream)
  {
- 	unsigned long crashk_start = (unsigned long)__va(crashk_res.start);
- 	unsigned long crashk_end   = (unsigned long)__va(crashk_res.end);
+ 	struct snd_rawmidi_runtime *runtime;
+@@ -654,6 +665,11 @@ int snd_rawmidi_output_params(struct snd
+ 		if (!newbuf)
+ 			return -ENOMEM;
+ 		spin_lock_irq(&runtime->lock);
++		if (runtime->buffer_ref) {
++			spin_unlock_irq(&runtime->lock);
++			kfree(newbuf);
++			return -EBUSY;
++		}
+ 		oldbuf = runtime->buffer;
+ 		runtime->buffer = newbuf;
+ 		runtime->buffer_size = params->buffer_size;
+@@ -962,8 +978,10 @@ static long snd_rawmidi_kernel_read1(str
+ 	long result = 0, count1;
+ 	struct snd_rawmidi_runtime *runtime = substream->runtime;
+ 	unsigned long appl_ptr;
++	int err = 0;
+ 
+ 	spin_lock_irqsave(&runtime->lock, flags);
++	snd_rawmidi_buffer_ref(runtime);
+ 	while (count > 0 && runtime->avail) {
+ 		count1 = runtime->buffer_size - runtime->appl_ptr;
+ 		if (count1 > count)
+@@ -982,16 +1000,19 @@ static long snd_rawmidi_kernel_read1(str
+ 		if (userbuf) {
+ 			spin_unlock_irqrestore(&runtime->lock, flags);
+ 			if (copy_to_user(userbuf + result,
+-					 runtime->buffer + appl_ptr, count1)) {
+-				return result > 0 ? result : -EFAULT;
+-			}
++					 runtime->buffer + appl_ptr, count1))
++				err = -EFAULT;
+ 			spin_lock_irqsave(&runtime->lock, flags);
++			if (err)
++				goto out;
+ 		}
+ 		result += count1;
+ 		count -= count1;
+ 	}
++ out:
++	snd_rawmidi_buffer_unref(runtime);
+ 	spin_unlock_irqrestore(&runtime->lock, flags);
+-	return result;
++	return result > 0 ? result : err;
+ }
+ 
+ long snd_rawmidi_kernel_read(struct snd_rawmidi_substream *substream,
+@@ -1262,6 +1283,7 @@ static long snd_rawmidi_kernel_write1(st
+ 			return -EAGAIN;
+ 		}
+ 	}
++	snd_rawmidi_buffer_ref(runtime);
+ 	while (count > 0 && runtime->avail > 0) {
+ 		count1 = runtime->buffer_size - runtime->appl_ptr;
+ 		if (count1 > count)
+@@ -1293,6 +1315,7 @@ static long snd_rawmidi_kernel_write1(st
+ 	}
+       __end:
+ 	count1 = runtime->avail < runtime->buffer_size;
++	snd_rawmidi_buffer_unref(runtime);
+ 	spin_unlock_irqrestore(&runtime->lock, flags);
+ 	if (count1)
+ 		snd_rawmidi_output_trigger(substream, 1);
 
 
