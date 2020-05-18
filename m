@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C840E1D810B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DACE91D866F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729731AbgERRoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:44:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42406 "EHLO mail.kernel.org"
+        id S1729137AbgERRpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:45:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728632AbgERRoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:44:16 -0400
+        id S1729941AbgERRpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:45:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D60E20715;
-        Mon, 18 May 2020 17:44:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D309420674;
+        Mon, 18 May 2020 17:45:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823855;
-        bh=QO9TZvUO7IE6Ksg12DGblAXw8sMQrH5Vu4SkEHvgSEQ=;
+        s=default; t=1589823942;
+        bh=jgKVkBAKQZxvGj6w3pk1H7Oxesk44ZI5TjFzvsiDUy8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QZWW0NQjPRsGmGZEIAIgP8l1KU5L8OUAEODQlXPyxK1v7n4r5eGEyJlt+GOGv+KbZ
-         Tt0jkEFL9dgMRy2gub+mfkR+P8h2O9jEgt4qyFL7v2lPSuoNHZW+48E17OMNQ78yvw
-         +GgtZ5XS4dKE7SUT2IxkbAZL5YOZWjfg833nCmlE=
+        b=DzANFc6RUIoRQtvUM1TML4/5o9bqJEXIApF6fflP2QtSZ04XwDSjqVK4q1VkwoBte
+         zURNB4BQdx9czNOe4iGicnLjbSAyfZGwycltvfRmsKB2x+r7+19nJYSqpceqR+ehCU
+         BLhn9TUDFZNnRuwypptJ4YxBhCiP/0svFNf4l1gI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 62/90] net: phy: micrel: Use strlcpy() for ethtool::get_strings
-Date:   Mon, 18 May 2020 19:36:40 +0200
-Message-Id: <20200518173503.737543425@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 63/90] gcc-10: avoid shadowing standard library free() in crypto
+Date:   Mon, 18 May 2020 19:36:41 +0200
+Message-Id: <20200518173503.938419336@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
 References: <20200518173450.930655662@linuxfoundation.org>
@@ -43,37 +43,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit 55f53567afe5f0cd2fd9e006b174c08c31c466f8 upstream.
+commit 1a263ae60b04de959d9ce9caea4889385eefcc7b upstream.
 
-Our statistics strings are allocated at initialization without being
-bound to a specific size, yet, we would copy ETH_GSTRING_LEN bytes using
-memcpy() which would create out of bounds accesses, this was flagged by
-KASAN. Replace this with strlcpy() to make sure we are bound the source
-buffer size and we also always NUL-terminate strings.
+gcc-10 has started warning about conflicting types for a few new
+built-in functions, particularly 'free()'.
 
-Fixes: 2b2427d06426 ("phy: micrel: Add ethtool statistics counters")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This results in warnings like:
+
+   crypto/xts.c:325:13: warning: conflicting types for built-in function ‘free’; expected ‘void(void *)’ [-Wbuiltin-declaration-mismatch]
+
+because the crypto layer had its local freeing functions called
+'free()'.
+
+Gcc-10 is in the wrong here, since that function is marked 'static', and
+thus there is no chance of confusion with any standard library function
+namespace.
+
+But the simplest thing to do is to just use a different name here, and
+avoid this gcc mis-feature.
+
+[ Side note: gcc knowing about 'free()' is in itself not the
+  mis-feature: the semantics of 'free()' are special enough that a
+  compiler can validly do special things when seeing it.
+
+  So the mis-feature here is that gcc thinks that 'free()' is some
+  restricted name, and you can't shadow it as a local static function.
+
+  Making the special 'free()' semantics be a function attribute rather
+  than tied to the name would be the much better model ]
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/phy/micrel.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ crypto/lrw.c |    4 ++--
+ crypto/xts.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -677,8 +677,8 @@ static void kszphy_get_strings(struct ph
- 	int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(kszphy_hw_stats); i++) {
--		memcpy(data + i * ETH_GSTRING_LEN,
--		       kszphy_hw_stats[i].string, ETH_GSTRING_LEN);
-+		strlcpy(data + i * ETH_GSTRING_LEN,
-+			kszphy_hw_stats[i].string, ETH_GSTRING_LEN);
- 	}
+--- a/crypto/lrw.c
++++ b/crypto/lrw.c
+@@ -377,7 +377,7 @@ out_put_alg:
+ 	return inst;
  }
+ 
+-static void free(struct crypto_instance *inst)
++static void free_inst(struct crypto_instance *inst)
+ {
+ 	crypto_drop_spawn(crypto_instance_ctx(inst));
+ 	kfree(inst);
+@@ -386,7 +386,7 @@ static void free(struct crypto_instance
+ static struct crypto_template crypto_tmpl = {
+ 	.name = "lrw",
+ 	.alloc = alloc,
+-	.free = free,
++	.free = free_inst,
+ 	.module = THIS_MODULE,
+ };
+ 
+--- a/crypto/xts.c
++++ b/crypto/xts.c
+@@ -329,7 +329,7 @@ out_put_alg:
+ 	return inst;
+ }
+ 
+-static void free(struct crypto_instance *inst)
++static void free_inst(struct crypto_instance *inst)
+ {
+ 	crypto_drop_spawn(crypto_instance_ctx(inst));
+ 	kfree(inst);
+@@ -338,7 +338,7 @@ static void free(struct crypto_instance
+ static struct crypto_template crypto_tmpl = {
+ 	.name = "xts",
+ 	.alloc = alloc,
+-	.free = free,
++	.free = free_inst,
+ 	.module = THIS_MODULE,
+ };
  
 
 
