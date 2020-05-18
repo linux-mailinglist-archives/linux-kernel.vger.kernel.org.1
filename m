@@ -2,104 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9447E1D6F07
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 04:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CD11D6F1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 04:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgERCjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 22:39:48 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:22855 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726680AbgERCjs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 22:39:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589769587;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7BmqVj8mU9rcSdcf5+RisNrhRwO2BSlPP3QfZ4VXAm0=;
-        b=cwEvrV8hNPR2zgNfHExM09iCW1bHLtNNuiqsln333ry3/h0Won+Pw1+u8g1jNbPyvpx405
-        qUn7YcyxE3Ce2r1JGws7NnSF3ty+l0UWG0yf9gFvwBZmemi8cMqCMypUsn/q8XgDF7SjU2
-        x3xfSh40Z+d6wuQYqAby0WADPwJLoK0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-208-ltZH9LsiM3eX2tKIFqX5iw-1; Sun, 17 May 2020 22:39:43 -0400
-X-MC-Unique: ltZH9LsiM3eX2tKIFqX5iw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F4711800D42;
-        Mon, 18 May 2020 02:39:41 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-112-120.rdu2.redhat.com [10.10.112.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 260985C1B2;
-        Mon, 18 May 2020 02:39:39 +0000 (UTC)
-Subject: Re: [PATCH v3] mm: Add kvfree_sensitive() for freeing sensitive data
- objects
-To:     Balbir Singh <bsingharora@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-mm@kvack.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joe Perches <joe@perches.com>,
-        David Rientjes <rientjes@google.com>
-References: <20200407200318.11711-1-longman@redhat.com>
- <1158ff38-c65d-379f-8ae7-6f507d9fc8dd@gmail.com>
- <20200514120018.GA16070@bombadil.infradead.org>
- <f779dea1-3b50-e354-3914-7394b4473f5b@gmail.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <365c8e0c-5d92-f032-b9ff-f64a8d314dfe@redhat.com>
-Date:   Sun, 17 May 2020 22:39:38 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <f779dea1-3b50-e354-3914-7394b4473f5b@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        id S1726891AbgERCwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 22:52:19 -0400
+Received: from mga03.intel.com ([134.134.136.65]:24736 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726639AbgERCwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 May 2020 22:52:19 -0400
+IronPort-SDR: SmoqznO1D0dVkBH3AVfpSvsozgkXwBaEdEXwtE9Ub9mCKUgL1HQVMjET40QHv7iO1XV9tL2xfV
+ oEnV6VTRDc3w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2020 19:52:18 -0700
+IronPort-SDR: dGpONDL4XINzTKKYCkvwOCfkoLHItmlDUewrlGxjlXzMlcvILb+Ls18jDQ6NBVLjVAZWKaO2sb
+ TyupXRUwlv2w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,405,1583222400"; 
+   d="scan'208";a="267371304"
+Received: from joy-optiplex-7040.sh.intel.com ([10.239.13.16])
+  by orsmga006.jf.intel.com with ESMTP; 17 May 2020 19:52:15 -0700
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     alex.williamson@redhat.com, cohuck@redhat.com,
+        zhenyuw@linux.intel.com, zhi.a.wang@intel.com,
+        kevin.tian@intel.com, shaopeng.he@intel.com, yi.l.liu@intel.com,
+        xin.zeng@intel.com, hang.yuan@intel.com,
+        Yan Zhao <yan.y.zhao@intel.com>
+Subject: [RFC PATCH v4 00/10] Introduce vendor ops in vfio-pci
+Date:   Sun, 17 May 2020 22:42:02 -0400
+Message-Id: <20200518024202.13996-1-yan.y.zhao@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/16/20 8:27 PM, Balbir Singh wrote:
->
-> On 14/5/20 10:00 pm, Matthew Wilcox wrote:
->> On Thu, May 14, 2020 at 09:00:40PM +1000, Balbir Singh wrote:
->>> I wonder if the right thing to do is also to disable pre-emption, just so that the thread does not linger on with sensitive data.
->>>
->>> void kvfree_sensitive(const void *addr, size_t len)
->>> {
->>> 	preempt_disable();
->>> 	if (likely(!ZERO_OR_NULL_PTR(addr))) {
->>> 		memzero_explicit((void *)addr, len);
->>> 		kvfree(addr);
->>> 	}
->>> 	preempt_enable();
->>> }
->>> EXPORT_SYMBOL(kvfree_sensitive);
->> If it's _that_ sensitive then the caller should have disabled preemption.
->> Because preemption could otherwise have occurred immediately before
->> kvfree_sensitive() was called.
->>
-> May be, but the callers of the API have to be explictly aware of the contract.
-> I don't disagree with you on what you've said, but I was referring to the
-> intent of freeing sensitive data vs the turn around time for doing so.
+When using vfio-pci to pass through devices, though it's desired to use
+its default implementations in most of time, it is also sometimes
+necessary to call vendors specific operations.
+For example, in order to do device live migration, the way of dirty
+pages detection and device state save-restore may be varied from device
+to device.
+Vendors may want to add a vendor device region or may want to
+intercept writes to a BAR region.
+So, in this series, we introduce a way to allow vendors to provide vendor
+specific ops for VFIO devices and meanwhile export several vfio-pci
+interfaces as default implementations to simplify code of vendor driver
+and avoid duplication.
 
-We can't disable preemption like that. The vfree() call may potentially 
-sleep. It could be a mess to keep track of the preemption state to make 
-that works.
+Vendor driver registration/unregistration goes like this:
+(1) macros are provided to let vendor drivers register/unregister
+vfio_pci_vendor_driver_ops to vfio_pci in their module_init() and
+module_exit().
+vfio_pci_vendor_driver_ops contains callbacks probe() and remove() and a
+pointer to vfio_device_ops.
 
-The purpose of this API is to make sure that a newly allocated memory 
-block won't contain secret left behind from another task. There is no 
-guarantee on how long the freeing process will take.
+(2) vendor drivers define their module aliases as
+"vfio-pci:$vendor_id-$device_id".
+E.g. A vendor module for VF devices of Intel(R) Ethernet Controller XL710
+family can define its module alias as MODULE_ALIAS("vfio-pci:8086-154c").
 
-Cheers,
-Longman
+(3) when module vfio_pci is bound to a device, it would call modprobe in
+user space for modules of alias "vfio-pci:$vendor_id-$device_id", which
+would trigger unloaded vendor drivers to register their
+vfio_pci_vendor_driver_ops to vfio_pci.
+Then it searches registered ops list and calls probe() to test whether this
+vendor driver supports this physical device.
+A success probe() would make bind vfio device to vendor provided
+vfio_device_ops, which would call exported default implementations in
+vfio_pci_ops if necessary. 
+
+
+                                        _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+                                  
+ __________   (un)register vendor ops  |  ___________    ___________   |
+|          |<----------------------------|    VF    |   |           |   
+| vfio-pci |                           | |  vendor  |   | PF driver |  |
+|__________|---------------------------->|  driver  |   |___________|   
+     |           probe/remove()        |  -----------          |       |
+     |                                                         |         
+     |                                 |_ _ _ _ _ _ _ _ _ _ _ _|_ _ _ _|
+    \|/                                                       \|/
+-----------                                              ------------
+|    VF   |                                              |    PF    |
+-----------                                              ------------
+                   a typical usage in SRIOV
+
+
+
+Ref counts:
+(1) vendor drivers must be a module and compiled to depend on module
+vfio_pci.
+(2) In vfio_pci, a successful register would add refs of itself, and a
+successful unregister would derefs of itself.
+(3) In vfio_pci, a successful probe() of a vendor driver would add ref of
+the vendor module. It derefs of the vendor module after calling remove().
+(4) macro provided to make sure vendor module always unregister itself in
+its module_exit
+
+Those are to prevent below conditions:
+a. vfio_pci is unloaded after a successful register from vendor driver.
+   Though vfio_pci would later call modprobe to ask the vendor module to
+   register again, it cannot help if vendor driver remain as loaded
+   across unloading-loading of vfio_pci.
+b. vendor driver unregisters itself after successfully probed by vfio_pci.
+c. circular dependency between vfio_pci and the vendor driver.
+   if vfio_pci adds refs to both vfio_pci and vendor driver on a successful
+   register and if vendor driver only do the unregistration in its module_exit,
+   then it would have no chance to do the unregistration.
+
+
+Patch Overview
+patches 1-2 provide register/unregister interfaces for vendor drivers
+Patch 3     exports several members in vdev, including vendor_data, and
+            exports functions in vfio_pci_ops to allow them accessible
+	    from vendor drivers.
+patches 4-5 export some more vdev members to vendor driver to simplify
+            their implementations.
+patch 6     is from Tina Zhang to define vendor specific Irq type
+            capability.
+patch 7     introduces a new vendor defined irq type
+            VFIO_IRQ_TYPE_REMAP_BAR_REGION.
+patches 8-10
+            use VF live migration driver for Intel's 710 SRIOV devices
+            as an example of how to implement this vendor ops interface.
+    patch 8 first let the vendor ops pass through VFs.
+    patch 9 implements a migration region based on migration protocol
+            defined in [1][2].
+            (Some dirty page tracking functions are intentionally
+            commented out and would send out later in future.)
+    patch 10 serves as an example of how to define vendor specific irq
+            type. This irq will trigger qemu to dynamic map BAR regions
+	    in order to implement software based dirty page track.
+
+Changelog:
+RFC v3- RFC v4:
+- use exported function to make vendor driver access internal fields of
+  vdev rather than make struct vfio_pci_device public. (Alex)
+- add a new interface vfio_pci_get_barmap() to call vfio_pci_setup_barma()
+  and let vfio_pci_setup_barmap() still able to return detailed errno.
+  (Alex)
+- removed sample code to pass through igd devices. instead, use the
+  first patch (patch 8/10) of i40e vf migration as an mere pass-through
+  example.
+- rebased code to 5.7 and VFIO migration kernel patches v17 and qemu
+  patches v16.
+- added a demo of vendor defined irq type.
+
+RFC v2- RFC v3:
+- embedding struct vfio_pci_device into struct vfio_pci_device_private.
+(Alex)
+
+RFC v1- RFC v2:
+- renamed mediate ops to vendor ops
+- use of request_module and module alias to manage vendor driver load
+  (Alex)
+- changed from vfio_pci_ops calling vendor ops
+  to vendor ops calling default vfio_pci_ops  (Alex)
+- dropped patches for dynamic traps of BARs. will submit them later.
+
+Links:
+[1] VFIO migration kernel v17:
+    https://patchwork.kernel.org/cover/11466129/
+[2] VFIO migration qemu v16:
+    https://patchwork.kernel.org/cover/11456557/
+
+Previous versions:
+RFC v3: https://lkml.org/lkml/2020/2/11/142
+
+RFC v2: https://lkml.org/lkml/2020/1/30/956
+
+RFC v1:
+kernel part: https://www.spinics.net/lists/kernel/msg3337337.html.
+qemu part: https://www.spinics.net/lists/kernel/msg3337337.html.
+
+
+Tina Zhang (1):
+  vfio: Define device specific irq type capability
+
+Yan Zhao (9):
+  vfio/pci: register/unregister vfio_pci_vendor_driver_ops
+  vfio/pci: macros to generate module_init and module_exit for vendor
+    modules
+  vfio/pci: export vendor_data, irq_type, num_regions, pdev and
+    functions in vfio_pci_ops
+  vfio/pci: let vfio_pci know number of vendor regions and vendor irqs
+  vfio/pci: export vfio_pci_get_barmap
+  vfio/pci: introduce a new irq type VFIO_IRQ_TYPE_REMAP_BAR_REGION
+  i40e/vf_migration: VF live migration - pass-through VF first
+  i40e/vf_migration: register a migration vendor region
+  i40e/vf_migration: vendor defined irq_type to support dynamic bar map
+
+ drivers/net/ethernet/intel/Kconfig            |  10 +
+ drivers/net/ethernet/intel/i40e/Makefile      |   2 +
+ .../ethernet/intel/i40e/i40e_vf_migration.c   | 904 ++++++++++++++++++
+ .../ethernet/intel/i40e/i40e_vf_migration.h   | 119 +++
+ drivers/vfio/pci/vfio_pci.c                   | 181 +++-
+ drivers/vfio/pci/vfio_pci_private.h           |   9 +
+ drivers/vfio/pci/vfio_pci_rdwr.c              |  10 +
+ include/linux/vfio.h                          |  58 ++
+ include/uapi/linux/vfio.h                     |  30 +-
+ 9 files changed, 1311 insertions(+), 12 deletions(-)
+ create mode 100644 drivers/net/ethernet/intel/i40e/i40e_vf_migration.c
+ create mode 100644 drivers/net/ethernet/intel/i40e/i40e_vf_migration.h
+
+-- 
+2.17.1
 
