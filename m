@@ -2,104 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967F41D6F16
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 04:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3431D6F25
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 04:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726700AbgERCoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 22:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726639AbgERCon (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 22:44:43 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D9BC061A0C
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 19:44:43 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id s21so7592750ejd.2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 19:44:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=8K0sJqpLsIUnKAf2a0bGvl0VcjUMX3pFm+WYrpBq63U=;
-        b=bal608dPtmHgZjr230fo5HEIQmZpWNKbe748W5U7xWtCbMjZR+nm3oALJ/HWSvd00x
-         83Wr8YV8MLCO4AybYUDW7NOBlyfw1CrXTNq0We7cDoJwgzwt3P6Lz+g7EDAp9PxqyPXv
-         i3ImAkB3WHEXwi7X6SfYulCiLO1feN+hFQhesKRoawqlcX7mtVgElmQ56aZ0asEczKmB
-         hBUVItIYqiY+w0vbptHflC6eieNVeHjtNd3dShU8xW2hAnKqy7ZLWe5vl9vxhCAhQBoy
-         yNLIx++JyjzrrmoSnZ6lGx7w/q0GB2d/ld+CzDsrU/X2eU4wIBOh9WPL4rw/0kM/6RNx
-         YByA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=8K0sJqpLsIUnKAf2a0bGvl0VcjUMX3pFm+WYrpBq63U=;
-        b=Ozwbk2eOylS4VH3/kbGHWiy+DODhYgBmlxALmdWoICYJ8e/kj8Brt6MJYlMbviLJe0
-         EBNJcBU618YxvDfawyR6NtfoKksLjIA8e7aACnzE5Hr3lS7TeS34fwCGwKD65ytfWw/a
-         RYIHV0KwavrWSzCHqzth9qyKdhqB2WGJOuFRreJSedhRCUDh199upvS6xwOgNN9qOJy9
-         OYxWs79QK/C6z5eJEmVj1vBg11E4u5gtmjSE3PoWSwslJcxdkTcUi1ToxeDqMsBhdQ9L
-         JDpEByV0Gd2IRD2QZ5Z/og8wvDP//5hGzSEdT8bT7q7kQQQZaxh2hHWNmnZM2hS4Ivn2
-         zQhw==
-X-Gm-Message-State: AOAM5333GTUF9yuJ6CWZHTXWH1AJNirP3tMS7fqbvkskSaV4X77HyW5C
-        sepTlq23nKCiEvJFNBHEv7uZqX+rXmT/toXx+D9rKA==
-X-Google-Smtp-Source: ABdhPJx2MV4ozWTjAy3YkqSEAkabXYFR7xDpxOWtddtOc7wQFoLofcxQF1JcxJiDynszv4GIEWR6UtA2NTgGyNxrpSw=
-X-Received: by 2002:a17:906:3952:: with SMTP id g18mr13610750eje.191.1589769882137;
- Sun, 17 May 2020 19:44:42 -0700 (PDT)
-MIME-Version: 1.0
-From:   Qian Cai <cai@lca.pw>
-Date:   Sun, 17 May 2020 22:44:31 -0400
-Message-ID: <CAG=TAF6mfrwxF1-xEJJ9dL675uMUa7RZrOa_eL2mJizZJ-U7iQ@mail.gmail.com>
-Subject: UBSAN: array-index-out-of-bounds in kernel/bpf/arraymap.c:177
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726953AbgERCzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 22:55:23 -0400
+Received: from mga18.intel.com ([134.134.136.126]:29280 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726639AbgERCzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 May 2020 22:55:22 -0400
+IronPort-SDR: jEwfjgTW73c42okrEuuT7PBqz32zu76m2cohSCWJFZRDuINEgQgzmNLC3eCO3UCr4XP+cKmxfp
+ iWq+Gw3begWw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2020 19:55:21 -0700
+IronPort-SDR: OglWgLH78bA92/WGFbFfRAjAgOZ3+ncDSkAz2DVB2civwg7YxMXX52i0cJOEpn49OAm94bmAL6
+ sKi6ocpyuOWA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,405,1583222400"; 
+   d="scan'208";a="411104064"
+Received: from joy-optiplex-7040.sh.intel.com ([10.239.13.16])
+  by orsmga004.jf.intel.com with ESMTP; 17 May 2020 19:55:18 -0700
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     alex.williamson@redhat.com, cohuck@redhat.com,
+        zhenyuw@linux.intel.com, zhi.a.wang@intel.com,
+        kevin.tian@intel.com, shaopeng.he@intel.com, yi.l.liu@intel.com,
+        xin.zeng@intel.com, hang.yuan@intel.com,
+        Yan Zhao <yan.y.zhao@intel.com>
+Subject: [RFC PATCH v4 02/10] vfio/pci: macros to generate module_init and module_exit for vendor modules
+Date:   Sun, 17 May 2020 22:45:10 -0400
+Message-Id: <20200518024510.14115-1-yan.y.zhao@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200518024202.13996-1-yan.y.zhao@intel.com>
+References: <20200518024202.13996-1-yan.y.zhao@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With Clang 9.0.1,
+vendor modules call macro module_vfio_pci_register_vendor_handler to
+generate module_init and module_exit.
+It is necessary to ensure that vendor modules always call
+vfio_pci_register_vendor_driver() on driver loading and
+vfio_pci_unregister_vendor_driver on driver unloading,
+because
+(1) at compiling time, there's only a dependency of vendor modules on
+vfio_pci.
+(2) at runtime,
+- vendor modules add refs of vfio_pci on a successful calling of
+  vfio_pci_register_vendor_driver() and deref of vfio_pci on a
+  successful calling of vfio_pci_unregister_vendor_driver().
+- vfio_pci only adds refs of vendor module on a successful probe of vendor
+  driver.
+  vfio_pci derefs vendor module when unbinding from a device.
 
-return array->value + array->elem_size * (index & array->index_mask);
+So, after vfio_pci is unbound from a device, the vendor module to that
+device is free to get unloaded. However, if that vendor module does not
+call vfio_pci_unregister_vendor_driver() in its module_exit, vfio_pci may
+hold a stale pointer to vendor module.
 
-but array->value is,
+Cc: Kevin Tian <kevin.tian@intel.com>
+Suggested-by: Alex Williamson <alex.williamson@redhat.com>
+Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+---
+ include/linux/vfio.h | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-char value[0] __aligned(8);
+diff --git a/include/linux/vfio.h b/include/linux/vfio.h
+index 3e53deb012b6..f3746608c2d9 100644
+--- a/include/linux/vfio.h
++++ b/include/linux/vfio.h
+@@ -223,4 +223,31 @@ struct vfio_pci_vendor_driver_ops {
+ };
+ int __vfio_pci_register_vendor_driver(struct vfio_pci_vendor_driver_ops *ops);
+ void vfio_pci_unregister_vendor_driver(struct vfio_device_ops *device_ops);
++
++#define vfio_pci_register_vendor_driver(__name, __probe, __remove,	\
++					__device_ops)			\
++static struct vfio_pci_vendor_driver_ops  __ops ## _node = {		\
++	.owner		= THIS_MODULE,					\
++	.name		= __name,					\
++	.probe		= __probe,					\
++	.remove		= __remove,					\
++	.device_ops	= __device_ops,					\
++};									\
++__vfio_pci_register_vendor_driver(&__ops ## _node)
++
++#define module_vfio_pci_register_vendor_handler(name, probe, remove,	\
++						device_ops)		\
++static int __init device_ops ## _module_init(void)			\
++{									\
++	vfio_pci_register_vendor_driver(name, probe, remove,		\
++					device_ops);			\
++	return 0;							\
++};									\
++static void __exit device_ops ## _module_exit(void)			\
++{									\
++	vfio_pci_unregister_vendor_driver(device_ops);			\
++};									\
++module_init(device_ops ## _module_init);				\
++module_exit(device_ops ## _module_exit)
++
+ #endif /* VFIO_H */
+-- 
+2.17.1
 
-[  506.031548][ T4134] LTP: starting bpf_prog02
-[  506.125326][ T4352]
-================================================================================
-[  506.134603][ T4352] UBSAN: array-index-out-of-bounds in
-kernel/bpf/arraymap.c:177:22
-[  506.142521][ T4352] index 8 is out of range for type 'char [0]'
-[  506.148613][ T4352] CPU: 222 PID: 4352 Comm: bpf_prog02 Tainted: G
-           L    5.7.0-rc5-next-20200515 #2
-[  506.158632][ T4352] Hardware name: HPE Apollo 70
-/C01_APACHE_MB         , BIOS L50_5.13_1.11 06/18/2019
-[  506.169084][ T4352] Call trace:
-[  506.172256][ T4352]  dump_backtrace+0x0/0x22c
-[  506.176634][ T4352]  show_stack+0x28/0x34
-[  506.180666][ T4352]  dump_stack+0x104/0x194
-[  506.184877][ T4352]  __ubsan_handle_out_of_bounds+0xf0/0x120
-[  506.190565][ T4352]  array_map_lookup_elem+0x90/0x94
-[  506.195560][ T4352]  bpf_map_lookup_elem+0x48/0x60
-[  506.200383][ T4352]  ___bpf_prog_run+0xe9c/0x2840
-[  506.205109][ T4352]  __bpf_prog_run32+0x80/0xac
-[  506.209673][ T4352]  __bpf_prog_run_save_cb+0x104/0x46c
-[  506.214919][ T4352]  sk_filter_trim_cap+0x21c/0x2c4
-[  506.219823][ T4352]  unix_dgram_sendmsg+0x45c/0x860
-[  506.224725][ T4352]  sock_sendmsg+0x4c/0x74
-[  506.228935][ T4352]  sock_write_iter+0x158/0x1a4
-[  506.233584][ T4352]  __vfs_write+0x190/0x1d8
-[  506.237874][ T4352]  vfs_write+0x13c/0x1b8
-[  506.241992][ T4352]  ksys_write+0xb0/0x120
-[  506.246108][ T4352]  __arm64_sys_write+0x54/0x88
-[  506.250747][ T4352]  do_el0_svc+0x128/0x1dc
-[  506.254957][ T4352]  el0_sync_handler+0xd0/0x268
-[  506.259594][ T4352]  el0_sync+0x164/0x180
-[  506.263747][ T4352]
