@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5661D8189
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F721D852E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730447AbgERRsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:48:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50022 "EHLO mail.kernel.org"
+        id S2387725AbgERSRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:17:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729933AbgERRsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:48:53 -0400
+        id S1731778AbgERR5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:57:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D166320671;
-        Mon, 18 May 2020 17:48:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0382720715;
+        Mon, 18 May 2020 17:57:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824132;
-        bh=OEMasGLuz+c2UXS9PLCnzW0dw2a1bMpm1NDuXLWIZXI=;
+        s=default; t=1589824642;
+        bh=LMPH2QjOI+Enc5cMTVOmYGkwoFRvNBy3QoLbbmwcozk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZW5g3LGsZKQgujUxd2OsVmi3x6csOz0a0OKchEzMP2NqbA+Bf8gtruDgrlqR6QcV8
-         N0rqAnD7FoikwFGv7em/8b/BSqIVAHquzhL+UZlYKGYBAzrh12hEVGmHPb9T4O7exS
-         KA627pZbYRzUiSOoBcuMeIa/hgtzH9fQkbb+Xk/8=
+        b=FjP40WLsNlfzDC8Tfu17c3ciDhypdWIapZj8WqfmCfwhT3+j/mPZJRV1NGkEX4UTl
+         +y0n6gc7mYhgenprwf0upwXm4cJukBdUmM5KipwfKYa8e+xFn1JGa3g/25famAYMR5
+         9Y3Lk/XfsAPbCuWfYEm2xWQQ5oXGb9RAU07o8XKM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luo bin <luobin9@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 085/114] hinic: fix a bug of ndo_stop
+        stable@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 094/147] net/rds: Use ERR_PTR for rds_message_alloc_sgs()
 Date:   Mon, 18 May 2020 19:36:57 +0200
-Message-Id: <20200518173517.690851421@linuxfoundation.org>
+Message-Id: <20200518173525.256011622@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,119 +44,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo bin <luobin9@huawei.com>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-[ Upstream commit e8a1b0efd632d1c9db7d4e93da66377c7b524862 ]
+commit 7dba92037baf3fa00b4880a31fd532542264994c upstream.
 
-if some function in ndo_stop interface returns failure because of
-hardware fault, must go on excuting rest steps rather than return
-failure directly, otherwise will cause memory leak.And bump the
-timeout for SET_FUNC_STATE to ensure that cmd won't return failure
-when hw is busy. Otherwise hw may stomp host memory if we free
-memory regardless of the return value of SET_FUNC_STATE.
+Returning the error code via a 'int *ret' when the function returns a
+pointer is very un-kernely and causes gcc 10's static analysis to choke:
 
-Fixes: 51ba902a16e6 ("net-next/hinic: Initialize hw interface")
-Signed-off-by: Luo bin <luobin9@huawei.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+net/rds/message.c: In function ‘rds_message_map_pages’:
+net/rds/message.c:358:10: warning: ‘ret’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+  358 |   return ERR_PTR(ret);
+
+Use a typical ERR_PTR return instead.
+
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c |   16 ++++++++++++----
- drivers/net/ethernet/huawei/hinic/hinic_main.c    |   18 +++---------------
- 2 files changed, 15 insertions(+), 19 deletions(-)
 
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
-@@ -54,6 +54,8 @@
- 
- #define MGMT_MSG_TIMEOUT                5000
- 
-+#define SET_FUNC_PORT_MGMT_TIMEOUT	25000
-+
- #define mgmt_to_pfhwdev(pf_mgmt)        \
- 		container_of(pf_mgmt, struct hinic_pfhwdev, pf_to_mgmt)
- 
-@@ -247,12 +249,13 @@ static int msg_to_mgmt_sync(struct hinic
- 			    u8 *buf_in, u16 in_size,
- 			    u8 *buf_out, u16 *out_size,
- 			    enum mgmt_direction_type direction,
--			    u16 resp_msg_id)
-+			    u16 resp_msg_id, u32 timeout)
+---
+ net/rds/message.c |   19 ++++++-------------
+ net/rds/rdma.c    |   12 ++++++++----
+ net/rds/rds.h     |    3 +--
+ net/rds/send.c    |    6 ++++--
+ 4 files changed, 19 insertions(+), 21 deletions(-)
+
+--- a/net/rds/message.c
++++ b/net/rds/message.c
+@@ -308,26 +308,20 @@ out:
+ /*
+  * RDS ops use this to grab SG entries from the rm's sg pool.
+  */
+-struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents,
+-					  int *ret)
++struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents)
  {
- 	struct hinic_hwif *hwif = pf_to_mgmt->hwif;
- 	struct pci_dev *pdev = hwif->pdev;
- 	struct hinic_recv_msg *recv_msg;
- 	struct completion *recv_done;
-+	unsigned long timeo;
- 	u16 msg_id;
- 	int err;
+ 	struct scatterlist *sg_first = (struct scatterlist *) &rm[1];
+ 	struct scatterlist *sg_ret;
  
-@@ -276,8 +279,9 @@ static int msg_to_mgmt_sync(struct hinic
- 		goto unlock_sync_msg;
- 	}
- 
--	if (!wait_for_completion_timeout(recv_done,
--					 msecs_to_jiffies(MGMT_MSG_TIMEOUT))) {
-+	timeo = msecs_to_jiffies(timeout ? timeout : MGMT_MSG_TIMEOUT);
-+
-+	if (!wait_for_completion_timeout(recv_done, timeo)) {
- 		dev_err(&pdev->dev, "MGMT timeout, MSG id = %d\n", msg_id);
- 		err = -ETIMEDOUT;
- 		goto unlock_sync_msg;
-@@ -351,6 +355,7 @@ int hinic_msg_to_mgmt(struct hinic_pf_to
- {
- 	struct hinic_hwif *hwif = pf_to_mgmt->hwif;
- 	struct pci_dev *pdev = hwif->pdev;
-+	u32 timeout = 0;
- 
- 	if (sync != HINIC_MGMT_MSG_SYNC) {
- 		dev_err(&pdev->dev, "Invalid MGMT msg type\n");
-@@ -362,9 +367,12 @@ int hinic_msg_to_mgmt(struct hinic_pf_to
- 		return -EINVAL;
- 	}
- 
-+	if (cmd == HINIC_PORT_CMD_SET_FUNC_STATE)
-+		timeout = SET_FUNC_PORT_MGMT_TIMEOUT;
-+
- 	return msg_to_mgmt_sync(pf_to_mgmt, mod, cmd, buf_in, in_size,
- 				buf_out, out_size, MGMT_DIRECT_SEND,
--				MSG_NOT_RESP);
-+				MSG_NOT_RESP, timeout);
- }
- 
- /**
---- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-@@ -473,7 +473,6 @@ static int hinic_close(struct net_device
- {
- 	struct hinic_dev *nic_dev = netdev_priv(netdev);
- 	unsigned int flags;
--	int err;
- 
- 	down(&nic_dev->mgmt_lock);
- 
-@@ -487,20 +486,9 @@ static int hinic_close(struct net_device
- 
- 	up(&nic_dev->mgmt_lock);
- 
--	err = hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
--	if (err) {
--		netif_err(nic_dev, drv, netdev,
--			  "Failed to set func port state\n");
--		nic_dev->flags |= (flags & HINIC_INTF_UP);
--		return err;
--	}
+-	if (WARN_ON(!ret))
+-		return NULL;
 -
--	err = hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
--	if (err) {
--		netif_err(nic_dev, drv, netdev, "Failed to set port state\n");
--		nic_dev->flags |= (flags & HINIC_INTF_UP);
--		return err;
--	}
-+	hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
-+
-+	hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
+ 	if (nents <= 0) {
+ 		pr_warn("rds: alloc sgs failed! nents <= 0\n");
+-		*ret = -EINVAL;
+-		return NULL;
++		return ERR_PTR(-EINVAL);
+ 	}
  
- 	free_rxqs(nic_dev);
- 	free_txqs(nic_dev);
+ 	if (rm->m_used_sgs + nents > rm->m_total_sgs) {
+ 		pr_warn("rds: alloc sgs failed! total %d used %d nents %d\n",
+ 			rm->m_total_sgs, rm->m_used_sgs, nents);
+-		*ret = -ENOMEM;
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 	}
+ 
+ 	sg_ret = &sg_first[rm->m_used_sgs];
+@@ -343,7 +337,6 @@ struct rds_message *rds_message_map_page
+ 	unsigned int i;
+ 	int num_sgs = DIV_ROUND_UP(total_len, PAGE_SIZE);
+ 	int extra_bytes = num_sgs * sizeof(struct scatterlist);
+-	int ret;
+ 
+ 	rm = rds_message_alloc(extra_bytes, GFP_NOWAIT);
+ 	if (!rm)
+@@ -352,10 +345,10 @@ struct rds_message *rds_message_map_page
+ 	set_bit(RDS_MSG_PAGEVEC, &rm->m_flags);
+ 	rm->m_inc.i_hdr.h_len = cpu_to_be32(total_len);
+ 	rm->data.op_nents = DIV_ROUND_UP(total_len, PAGE_SIZE);
+-	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs, &ret);
+-	if (!rm->data.op_sg) {
++	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
++	if (IS_ERR(rm->data.op_sg)) {
+ 		rds_message_put(rm);
+-		return ERR_PTR(ret);
++		return ERR_CAST(rm->data.op_sg);
+ 	}
+ 
+ 	for (i = 0; i < rm->data.op_nents; ++i) {
+--- a/net/rds/rdma.c
++++ b/net/rds/rdma.c
+@@ -624,9 +624,11 @@ int rds_cmsg_rdma_args(struct rds_sock *
+ 	op->op_active = 1;
+ 	op->op_recverr = rs->rs_recverr;
+ 	WARN_ON(!nr_pages);
+-	op->op_sg = rds_message_alloc_sgs(rm, nr_pages, &ret);
+-	if (!op->op_sg)
++	op->op_sg = rds_message_alloc_sgs(rm, nr_pages);
++	if (IS_ERR(op->op_sg)) {
++		ret = PTR_ERR(op->op_sg);
+ 		goto out_pages;
++	}
+ 
+ 	if (op->op_notify || op->op_recverr) {
+ 		/* We allocate an uninitialized notifier here, because
+@@ -828,9 +830,11 @@ int rds_cmsg_atomic(struct rds_sock *rs,
+ 	rm->atomic.op_silent = !!(args->flags & RDS_RDMA_SILENT);
+ 	rm->atomic.op_active = 1;
+ 	rm->atomic.op_recverr = rs->rs_recverr;
+-	rm->atomic.op_sg = rds_message_alloc_sgs(rm, 1, &ret);
+-	if (!rm->atomic.op_sg)
++	rm->atomic.op_sg = rds_message_alloc_sgs(rm, 1);
++	if (IS_ERR(rm->atomic.op_sg)) {
++		ret = PTR_ERR(rm->atomic.op_sg);
+ 		goto err;
++	}
+ 
+ 	/* verify 8 byte-aligned */
+ 	if (args->local_addr & 0x7) {
+--- a/net/rds/rds.h
++++ b/net/rds/rds.h
+@@ -849,8 +849,7 @@ rds_conn_connecting(struct rds_connectio
+ 
+ /* message.c */
+ struct rds_message *rds_message_alloc(unsigned int nents, gfp_t gfp);
+-struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents,
+-					  int *ret);
++struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents);
+ int rds_message_copy_from_user(struct rds_message *rm, struct iov_iter *from,
+ 			       bool zcopy);
+ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned int total_len);
+--- a/net/rds/send.c
++++ b/net/rds/send.c
+@@ -1274,9 +1274,11 @@ int rds_sendmsg(struct socket *sock, str
+ 
+ 	/* Attach data to the rm */
+ 	if (payload_len) {
+-		rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs, &ret);
+-		if (!rm->data.op_sg)
++		rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
++		if (IS_ERR(rm->data.op_sg)) {
++			ret = PTR_ERR(rm->data.op_sg);
+ 			goto out;
++		}
+ 		ret = rds_message_copy_from_user(rm, &msg->msg_iter, zcopy);
+ 		if (ret)
+ 			goto out;
 
 
