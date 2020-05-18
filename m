@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D84551D868E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A391D8738
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387897AbgERSY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:24:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47798 "EHLO mail.kernel.org"
+        id S1731891AbgERSb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:31:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729713AbgERRr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:47:28 -0400
+        id S1729182AbgERRkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:40:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DEA7120657;
-        Mon, 18 May 2020 17:47:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 700B32087D;
+        Mon, 18 May 2020 17:40:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824048;
-        bh=9GzWxBO8/iHAr1o73uXtof/2xhJKnVVU1Oqw6f6kE+4=;
+        s=default; t=1589823654;
+        bh=wqAq2HhOHtSM7NLL0bwtPXkoYRUSd/oZsyTma1y0pF8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o2yimBu64fry0C7Z4H593sHYT5ngP46dBnbiXhz9bez/QOzxF56cawZoBCyvsuPk3
-         jKTCUk7jLqA977rTui8WldjRu8AcGtR4/rfPLLKQP5l8d8Gu8vLY+XmFRWs3C67DqA
-         pibl2JEVEH5gUPHoZT4Y3C3fZyyskuE789FQWbS4=
+        b=n7ejdc2ljDW1V/fL3doinggDs0JHNqcVlvQU5natPBL4i0bEiF+PlSMU/WudVkRkZ
+         gskSohynRXms9FgOkUbShmfRleTmt3c/1eFdGTZ/xGLY/z1pzSbXgrpIbdDb3+pd0o
+         Wjw0oTJP6UkH0NEhSLOFWx+sryEfB1oKPXXfoIWg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Gal Pressman <galp@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 051/114] net: moxa: Fix a potential double free_irq()
+Subject: [PATCH 4.4 52/86] net/mlx5: Fix driver load error flow when firmware is stuck
 Date:   Mon, 18 May 2020 19:36:23 +0200
-Message-Id: <20200518173512.515410865@linuxfoundation.org>
+Message-Id: <20200518173501.068720455@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,34 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Gal Pressman <galp@mellanox.com>
 
-[ Upstream commit ee8d2267f0e39a1bfd95532da3a6405004114b27 ]
+[ Upstream commit 8ce59b16b4b6eacedaec1f7b652b4781cdbfe15f ]
 
-Should an irq requested with 'devm_request_irq' be released explicitly,
-it should be done by 'devm_free_irq()', not 'free_irq()'.
+When wait for firmware init fails, previous code would mistakenly
+return success and cause inconsistency in the driver state.
 
-Fixes: 6c821bd9edc9 ("net: Add MOXA ART SoCs ethernet driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 6c780a0267b8 ("net/mlx5: Wait for FW readiness before initializing command interface")
+Signed-off-by: Gal Pressman <galp@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/moxa/moxart_ether.c | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/main.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/moxa/moxart_ether.c b/drivers/net/ethernet/moxa/moxart_ether.c
-index 2e4effa9fe456..beb730ff5d421 100644
---- a/drivers/net/ethernet/moxa/moxart_ether.c
-+++ b/drivers/net/ethernet/moxa/moxart_ether.c
-@@ -561,7 +561,7 @@ static int moxart_remove(struct platform_device *pdev)
- 	struct net_device *ndev = platform_get_drvdata(pdev);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index bf4447581072f..e88605de84cca 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -933,7 +933,7 @@ static int mlx5_load_one(struct mlx5_core_dev *dev, struct mlx5_priv *priv)
+ 	if (err) {
+ 		dev_err(&dev->pdev->dev, "Firmware over %d MS in pre-initializing state, aborting\n",
+ 			FW_PRE_INIT_TIMEOUT_MILI);
+-		goto out;
++		goto out_err;
+ 	}
  
- 	unregister_netdev(ndev);
--	free_irq(ndev->irq, ndev);
-+	devm_free_irq(&pdev->dev, ndev->irq, ndev);
- 	moxart_mac_free_memory(ndev);
- 	free_netdev(ndev);
- 
+ 	err = mlx5_cmd_init(dev);
 -- 
 2.20.1
 
