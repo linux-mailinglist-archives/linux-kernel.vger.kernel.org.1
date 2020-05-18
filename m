@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E571D8249
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669371D8316
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730767AbgERRzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:55:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60244 "EHLO mail.kernel.org"
+        id S1732460AbgERSCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:02:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731389AbgERRzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:55:05 -0400
+        id S1732447AbgERSB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:01:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7303E20715;
-        Mon, 18 May 2020 17:55:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 880DE20899;
+        Mon, 18 May 2020 18:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824504;
-        bh=ESOYWcCGu4d7CtEt3/MpT+J1apvIHKiIcZD5hwqrtRo=;
+        s=default; t=1589824919;
+        bh=VwcmmItEjqVTBSgKSIWyVmPAdQWcY785X7BPHFtUoPI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=icrwPkoUYtW1fr+fNZdjmG5ZMRClseiYPjvbYDaaTmADqGSBnE06Uzn1ZiZZAMR3c
-         A/qKkWo+NtqobObaAo/EZGUXW6fq9D+7p0/QDt91fNOj3N+sNSVg+TNgXbLz5rYRnk
-         w0J/L/chUgPdFDwceJQJiqOVeaRZQyb6yTRgD2Ao=
+        b=uF42elj52YYAgYKZhrFIFRMvCDqvItewBZ9ItO0125iwF/BVC2FMe4ijnDr/X19Aa
+         hpj28zi/03uYbQdgLglgaEq6rXVdJioQL9XnWWTkvmmy4/+7cH24HWLSeERaxjyrkR
+         gxTeszlQ474+gEvOHh14vglpto1S+TXNiIISv8YQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 005/147] gpio: pca953x: Fix pca953x_gpio_set_config
-Date:   Mon, 18 May 2020 19:35:28 +0200
-Message-Id: <20200518173513.867666840@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 039/194] tcp: fix SO_RCVLOWAT hangs with fat skbs
+Date:   Mon, 18 May 2020 19:35:29 +0200
+Message-Id: <20200518173534.998445474@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +44,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adam Ford <aford173@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit dc87f6dd058a648cd2a35e4aa04592dccdc9f0c2 ]
+[ Upstream commit 24adbc1676af4e134e709ddc7f34cf2adc2131e4 ]
 
-pca953x_gpio_set_config is setup to support pull-up/down
-bias.  Currently the driver uses a variable called 'config' to
-determine which options to use.  Unfortunately, this is incorrect.
+We autotune rcvbuf whenever SO_RCVLOWAT is set to account for 100%
+overhead in tcp_set_rcvlowat()
 
-This patch uses function pinconf_to_config_param(config), which
-converts this 'config' parameter back to pinconfig to determine
-which option to use.
+This works well when skb->len/skb->truesize ratio is bigger than 0.5
 
-Fixes: 15add06841a3 ("gpio: pca953x: add ->set_config implementation")
-Signed-off-by: Adam Ford <aford173@gmail.com>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+But if we receive packets with small MSS, we can end up in a situation
+where not enough bytes are available in the receive queue to satisfy
+RCVLOWAT setting.
+As our sk_rcvbuf limit is hit, we send zero windows in ACK packets,
+preventing remote peer from sending more data.
+
+Even autotuning does not help, because it only triggers at the time
+user process drains the queue. If no EPOLLIN is generated, this
+can not happen.
+
+Note poll() has a similar issue, after commit
+c7004482e8dc ("tcp: Respect SO_RCVLOWAT in tcp_poll().")
+
+Fixes: 03f45c883c6f ("tcp: avoid extra wakeups for SO_RCVLOWAT users")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpio/gpio-pca953x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/net/tcp.h    |   13 +++++++++++++
+ net/ipv4/tcp.c       |   14 +++++++++++---
+ net/ipv4/tcp_input.c |    3 ++-
+ 3 files changed, 26 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
-index de5d1383f28da..3edc1762803ac 100644
---- a/drivers/gpio/gpio-pca953x.c
-+++ b/drivers/gpio/gpio-pca953x.c
-@@ -528,7 +528,7 @@ static int pca953x_gpio_set_config(struct gpio_chip *gc, unsigned int offset,
- {
- 	struct pca953x_chip *chip = gpiochip_get_data(gc);
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -1421,6 +1421,19 @@ static inline int tcp_full_space(const s
+ 	return tcp_win_from_space(sk, READ_ONCE(sk->sk_rcvbuf));
+ }
  
--	switch (config) {
-+	switch (pinconf_to_config_param(config)) {
- 	case PIN_CONFIG_BIAS_PULL_UP:
- 	case PIN_CONFIG_BIAS_PULL_DOWN:
- 		return pca953x_gpio_set_pull_up_down(chip, offset, config);
--- 
-2.20.1
-
++/* We provision sk_rcvbuf around 200% of sk_rcvlowat.
++ * If 87.5 % (7/8) of the space has been consumed, we want to override
++ * SO_RCVLOWAT constraint, since we are receiving skbs with too small
++ * len/truesize ratio.
++ */
++static inline bool tcp_rmem_pressure(const struct sock *sk)
++{
++	int rcvbuf = READ_ONCE(sk->sk_rcvbuf);
++	int threshold = rcvbuf - (rcvbuf >> 3);
++
++	return atomic_read(&sk->sk_rmem_alloc) > threshold;
++}
++
+ extern void tcp_openreq_init_rwin(struct request_sock *req,
+ 				  const struct sock *sk_listener,
+ 				  const struct dst_entry *dst);
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -476,9 +476,17 @@ static void tcp_tx_timestamp(struct sock
+ static inline bool tcp_stream_is_readable(const struct tcp_sock *tp,
+ 					  int target, struct sock *sk)
+ {
+-	return (READ_ONCE(tp->rcv_nxt) - READ_ONCE(tp->copied_seq) >= target) ||
+-		(sk->sk_prot->stream_memory_read ?
+-		sk->sk_prot->stream_memory_read(sk) : false);
++	int avail = READ_ONCE(tp->rcv_nxt) - READ_ONCE(tp->copied_seq);
++
++	if (avail > 0) {
++		if (avail >= target)
++			return true;
++		if (tcp_rmem_pressure(sk))
++			return true;
++	}
++	if (sk->sk_prot->stream_memory_read)
++		return sk->sk_prot->stream_memory_read(sk);
++	return false;
+ }
+ 
+ /*
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -4761,7 +4761,8 @@ void tcp_data_ready(struct sock *sk)
+ 	const struct tcp_sock *tp = tcp_sk(sk);
+ 	int avail = tp->rcv_nxt - tp->copied_seq;
+ 
+-	if (avail < sk->sk_rcvlowat && !sock_flag(sk, SOCK_DONE))
++	if (avail < sk->sk_rcvlowat && !tcp_rmem_pressure(sk) &&
++	    !sock_flag(sk, SOCK_DONE))
+ 		return;
+ 
+ 	sk->sk_data_ready(sk);
 
 
