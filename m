@@ -2,40 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C071D8061
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D99CA1D8118
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728777AbgERRjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:39:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33854 "EHLO mail.kernel.org"
+        id S1729306AbgERRop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:44:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728747AbgERRjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:39:19 -0400
+        id S1729164AbgERRod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:44:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE29B20873;
-        Mon, 18 May 2020 17:39:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 439FA207C4;
+        Mon, 18 May 2020 17:44:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823558;
-        bh=Q5vjR3A42sT572+2XiUaWuDAb7OcxXQ3NdwNQGDIreo=;
+        s=default; t=1589823872;
+        bh=YJ+ZL8Gk6sA7MQHo52M5Pih7/8OQABFuySkueOQZfW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R2s6iiiQb3NHneSU1kZx44uq89LRh3eWudcqH+Ti61iU+Pjdix/8TL7GWgUNiY9nS
-         cwb19xlBKraIDG8mrm+wSbeSIqYwGx3osmdkxqeyfHzuyeZtFeNakkB4xOJ4QvLgP0
-         UdL1AhIDiVFM92T0MRuqH26k/AKDU+FmAeLKkVRY=
+        b=Svn5KNGX9Q/G21lydwIy1X+W55yeVXoNm1riLhpp2CBHZDt8nRoo7cwY51Tp33VsJ
+         V+udtrLY+kxTtOO732LgTv9UzF3Jj5347U7jEiQ5FfRzsjGmpBS3QrNJv1Kl2kdaFo
+         wru5N3yYtOeC7O+F9xRtpSmnYrzShlZJIHEwm+sY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: [PATCH 4.4 30/86] ptp: create "pins" together with the rest of attributes
+        stable@vger.kernel.org, Vince Weaver <vincent.weaver@maine.edu>,
+        Dave Jones <dsj@fb.com>, Steven Rostedt <rostedt@goodmis.org>,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Joe Mario <jmario@redhat.com>, Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 4.9 23/90] objtool: Fix stack offset tracking for indirect CFAs
 Date:   Mon, 18 May 2020 19:36:01 +0200
-Message-Id: <20200518173456.604969976@linuxfoundation.org>
+Message-Id: <20200518173455.871408373@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,162 +51,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-commit 85a66e55019583da1e0f18706b7a8281c9f6de5b upstream.
+commit d8dd25a461e4eec7190cb9d66616aceacc5110ad upstream.
 
-Let's switch to using device_create_with_groups(), which will allow us to
-create "pins" attribute group together with the rest of ptp device
-attributes, and before userspace gets notified about ptp device creation.
+When the current frame address (CFA) is stored on the stack (i.e.,
+cfa->base == CFI_SP_INDIRECT), objtool neglects to adjust the stack
+offset when there are subsequent pushes or pops.  This results in bad
+ORC data at the end of the ENTER_IRQ_STACK macro, when it puts the
+previous stack pointer on the stack and does a subsequent push.
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-[bwh: Backported to 4.9: adjust context]
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+This fixes the following unwinder warning:
+
+  WARNING: can't dereference registers at 00000000f0a6bdba for ip interrupt_entry+0x9f/0xa0
+
+Fixes: 627fce14809b ("objtool: Add ORC unwind table generation")
+Reported-by: Vince Weaver <vincent.weaver@maine.edu>
+Reported-by: Dave Jones <dsj@fb.com>
+Reported-by: Steven Rostedt <rostedt@goodmis.org>
+Reported-by: Vegard Nossum <vegard.nossum@oracle.com>
+Reported-by: Joe Mario <jmario@redhat.com>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Jann Horn <jannh@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/853d5d691b29e250333332f09b8e27410b2d9924.1587808742.git.jpoimboe@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/ptp/ptp_clock.c   |   20 +++++++++++---------
- drivers/ptp/ptp_private.h |    7 ++++---
- drivers/ptp/ptp_sysfs.c   |   39 +++++++++------------------------------
- 3 files changed, 24 insertions(+), 42 deletions(-)
 
---- a/drivers/ptp/ptp_clock.c
-+++ b/drivers/ptp/ptp_clock.c
-@@ -214,16 +214,17 @@ struct ptp_clock *ptp_clock_register(str
- 	mutex_init(&ptp->pincfg_mux);
- 	init_waitqueue_head(&ptp->tsev_wq);
+---
+ tools/objtool/check.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1264,7 +1264,7 @@ static int update_insn_state_regs(struct
+ 	struct cfi_reg *cfa = &state->cfa;
+ 	struct stack_op *op = &insn->stack_op;
  
-+	err = ptp_populate_pin_groups(ptp);
-+	if (err)
-+		goto no_pin_groups;
-+
- 	/* Create a new device in our class. */
--	ptp->dev = device_create(ptp_class, parent, ptp->devid, ptp,
--				 "ptp%d", ptp->index);
-+	ptp->dev = device_create_with_groups(ptp_class, parent, ptp->devid,
-+					     ptp, ptp->pin_attr_groups,
-+					     "ptp%d", ptp->index);
- 	if (IS_ERR(ptp->dev))
- 		goto no_device;
+-	if (cfa->base != CFI_SP)
++	if (cfa->base != CFI_SP && cfa->base != CFI_SP_INDIRECT)
+ 		return 0;
  
--	err = ptp_populate_sysfs(ptp);
--	if (err)
--		goto no_sysfs;
--
- 	/* Register a new PPS source. */
- 	if (info->pps) {
- 		struct pps_source_info pps;
-@@ -251,10 +252,10 @@ no_clock:
- 	if (ptp->pps_source)
- 		pps_unregister_source(ptp->pps_source);
- no_pps:
--	ptp_cleanup_sysfs(ptp);
--no_sysfs:
- 	device_destroy(ptp_class, ptp->devid);
- no_device:
-+	ptp_cleanup_pin_groups(ptp);
-+no_pin_groups:
- 	mutex_destroy(&ptp->tsevq_mux);
- 	mutex_destroy(&ptp->pincfg_mux);
- no_slot:
-@@ -272,8 +273,9 @@ int ptp_clock_unregister(struct ptp_cloc
- 	/* Release the clock's resources. */
- 	if (ptp->pps_source)
- 		pps_unregister_source(ptp->pps_source);
--	ptp_cleanup_sysfs(ptp);
-+
- 	device_destroy(ptp_class, ptp->devid);
-+	ptp_cleanup_pin_groups(ptp);
- 
- 	posix_clock_unregister(&ptp->clock);
- 	return 0;
---- a/drivers/ptp/ptp_private.h
-+++ b/drivers/ptp/ptp_private.h
-@@ -54,6 +54,8 @@ struct ptp_clock {
- 	struct device_attribute *pin_dev_attr;
- 	struct attribute **pin_attr;
- 	struct attribute_group pin_attr_group;
-+	/* 1st entry is a pointer to the real group, 2nd is NULL terminator */
-+	const struct attribute_group *pin_attr_groups[2];
- };
- 
- /*
-@@ -94,8 +96,7 @@ uint ptp_poll(struct posix_clock *pc,
- 
- extern const struct attribute_group *ptp_groups[];
- 
--int ptp_cleanup_sysfs(struct ptp_clock *ptp);
--
--int ptp_populate_sysfs(struct ptp_clock *ptp);
-+int ptp_populate_pin_groups(struct ptp_clock *ptp);
-+void ptp_cleanup_pin_groups(struct ptp_clock *ptp);
- 
- #endif
---- a/drivers/ptp/ptp_sysfs.c
-+++ b/drivers/ptp/ptp_sysfs.c
-@@ -268,25 +268,14 @@ static ssize_t ptp_pin_store(struct devi
- 	return count;
- }
- 
--int ptp_cleanup_sysfs(struct ptp_clock *ptp)
-+int ptp_populate_pin_groups(struct ptp_clock *ptp)
- {
--	struct device *dev = ptp->dev;
--	struct ptp_clock_info *info = ptp->info;
--
--	if (info->n_pins) {
--		sysfs_remove_group(&dev->kobj, &ptp->pin_attr_group);
--		kfree(ptp->pin_attr);
--		kfree(ptp->pin_dev_attr);
--	}
--	return 0;
--}
--
--static int ptp_populate_pins(struct ptp_clock *ptp)
--{
--	struct device *dev = ptp->dev;
- 	struct ptp_clock_info *info = ptp->info;
- 	int err = -ENOMEM, i, n_pins = info->n_pins;
- 
-+	if (!n_pins)
-+		return 0;
-+
- 	ptp->pin_dev_attr = kzalloc(n_pins * sizeof(*ptp->pin_dev_attr),
- 				    GFP_KERNEL);
- 	if (!ptp->pin_dev_attr)
-@@ -310,28 +299,18 @@ static int ptp_populate_pins(struct ptp_
- 	ptp->pin_attr_group.name = "pins";
- 	ptp->pin_attr_group.attrs = ptp->pin_attr;
- 
--	err = sysfs_create_group(&dev->kobj, &ptp->pin_attr_group);
--	if (err)
--		goto no_group;
-+	ptp->pin_attr_groups[0] = &ptp->pin_attr_group;
-+
- 	return 0;
- 
--no_group:
--	kfree(ptp->pin_attr);
- no_pin_attr:
- 	kfree(ptp->pin_dev_attr);
- no_dev_attr:
- 	return err;
- }
- 
--int ptp_populate_sysfs(struct ptp_clock *ptp)
-+void ptp_cleanup_pin_groups(struct ptp_clock *ptp)
- {
--	struct ptp_clock_info *info = ptp->info;
--	int err;
--
--	if (info->n_pins) {
--		err = ptp_populate_pins(ptp);
--		if (err)
--			return err;
--	}
--	return 0;
-+	kfree(ptp->pin_attr);
-+	kfree(ptp->pin_dev_attr);
- }
+ 	/* push */
 
 
