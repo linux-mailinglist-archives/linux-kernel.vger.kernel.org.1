@@ -2,188 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504901D88E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E257D1D88F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726432AbgERUKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 16:10:22 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14786 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726270AbgERUKW (ORCPT
+        id S1726489AbgERUNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 16:13:40 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:59293 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726283AbgERUNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 16:10:22 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ec2eb1f0002>; Mon, 18 May 2020 13:07:59 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 18 May 2020 13:10:21 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 18 May 2020 13:10:21 -0700
-Received: from [10.2.48.175] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 18 May
- 2020 20:10:21 +0000
-Subject: Re: [RFC V2] mm/vmstat: Add events for PMD based THP migration
- without split
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, <linux-mm@kvack.org>
-CC:     Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Zi Yan <ziy@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1589784156-28831-1-git-send-email-anshuman.khandual@arm.com>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <67be2597-c019-63c1-b551-d4571a44f1a5@nvidia.com>
-Date:   Mon, 18 May 2020 13:10:20 -0700
+        Mon, 18 May 2020 16:13:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589832817;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+FuqqfaCRxkXrkU1XoQZ3g0hbXKUiq+yLL3TVWqu58Q=;
+        b=f48qGWWxLuD97QvcgSgPGZBCd0+//O74YGsHA/4BEgG/qyJDn+xm4mCx/QDJs0nwJF6GiF
+        295PkirWZQFnITJKvJd9dEdn0V32MeKHRoA0gNT6/UrLLFIteikb9rqfhX9vX2mwlZAotr
+        v0unftTLBt5G7sFhI/8uTFyEbgGWUyA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-luE8sTc0OTehOItDnvy-qw-1; Mon, 18 May 2020 16:13:33 -0400
+X-MC-Unique: luE8sTc0OTehOItDnvy-qw-1
+Received: by mail-wm1-f69.google.com with SMTP id 23so310081wma.8
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 13:13:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+FuqqfaCRxkXrkU1XoQZ3g0hbXKUiq+yLL3TVWqu58Q=;
+        b=KW/5kXTQmY298hlxf2X3MJWMgylAbSAbmzkM0axChKSZM4K3DW8oHfKvHaDmnLO6qq
+         evCiPzNpeo1FJbjQEj+fFld2Y/BT/2wbalTp/prNW0oa064XHZsy56mFHHpc5M5vxBmN
+         ja4A9VZnoGvESyFMsfGl3OGm8lP5BcFOLjctK9ozZlgY5pfHIB8pfs9/a+BsLd0fIC5n
+         vH5xkDe4Sb9O2qiJHNIlqJU6Ggib3ZjprSVvyxzikqfx8zs4HpNol/0PaQxCiSKPSCFt
+         a/NA3CjDGrbNaEZ1GKIzGoxUJXh3d0IxrhM/GmsOZHyKiv/l2YHAFrDlnrVrurmUbCN0
+         zMQA==
+X-Gm-Message-State: AOAM533WIgbioyEEwCja66beycJ4UYU0RoX8WOXuDLaLBsQiymjx8fX7
+        wV6fMNlV2TRW+8ZZ4iOTLfbcCLmSlJHhRklZx/eWz8YgQUyDji643fUqzHjVmxeNPAanOdguL1z
+        R6yndWM7nHbKuWkSouerttxE2
+X-Received: by 2002:a1c:1b4d:: with SMTP id b74mr1108148wmb.123.1589832812305;
+        Mon, 18 May 2020 13:13:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwUyDuJ6hpGGEfbOxOxaYcBTBkFm+hP/HaXtAGSHA1Y+klLKmw+76JaCIxqRMzLPb3V5yiySg==
+X-Received: by 2002:a1c:1b4d:: with SMTP id b74mr1108115wmb.123.1589832812024;
+        Mon, 18 May 2020 13:13:32 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id w82sm810750wmg.28.2020.05.18.13.13.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 May 2020 13:13:31 -0700 (PDT)
+Subject: Re: [PATCH 0/7] KVM: SVM: baby steps towards nested state migration
+To:     Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Cathy Avery <cavery@redhat.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Jim Mattson <jmattson@google.com>
+References: <20200515174144.1727-1-pbonzini@redhat.com>
+ <27c7526c-4d02-c9ba-7d3b-7416dbe4cdbb@oracle.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <ff8ca8ca-bc2c-5188-7024-7d4a18b02759@redhat.com>
+Date:   Mon, 18 May 2020 22:11:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <1589784156-28831-1-git-send-email-anshuman.khandual@arm.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <27c7526c-4d02-c9ba-7d3b-7416dbe4cdbb@oracle.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1589832479; bh=1z6kses1IYzBnV/KtBizIk4pEwFasA/+isDtngaC6jU=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=Ujn3EHPgluHWuBnN1PL0JpJoP/orRUamQbJZFpQrwUwVWnSP4esAhc+l4kGF32gWP
-         Ymca9YAT3fi9tnyUQrliR8I32n+fr6ZiSAl0PbmyrnTAC9C3WR4atGZGufWK4aGUX3
-         TWa0PqVJ4wMBDhH72CTMJyiVsxOerk2jFxZjE+iVnKaqorbEY/NxGcGTd+OX+7SOnf
-         Wj/n5K0EF4L+3fPPTpH+6xq61lfAnx59EFAZZyeFYVwtOqwSL/BXzsSls5CwKB1saP
-         WoOTWDHC2qG+WWNGYRYbsKtVnM0ubTBL6c+nNy381NyZllVW/fxvxShgddDEtqDs6K
-         Xuxdf8/4IcNAw==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-17 23:42, Anshuman Khandual wrote:
-...
-> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-> index ffef0f279747..23d8f9884c2b 100644
-> --- a/include/linux/vm_event_item.h
-> +++ b/include/linux/vm_event_item.h
-> @@ -91,6 +91,10 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
->   		THP_ZERO_PAGE_ALLOC_FAILED,
->   		THP_SWPOUT,
->   		THP_SWPOUT_FALLBACK,
-> +#ifdef CONFIG_ARCH_ENABLE_THP_MIGRATION
+On 18/05/20 22:07, Krish Sadhukhan wrote:
+>>
+>>
+>> Paolo Bonzini (7):
+>>    KVM: SVM: move map argument out of enter_svm_guest_mode
+>>    KVM: SVM: extract load_nested_vmcb_control
+>>    KVM: SVM: extract preparation of VMCB for nested run
+>>    KVM: SVM: save all control fields in svm->nested
+>>    KVM: nSVM: remove HF_VINTR_MASK
+>>    KVM: nSVM: do not reload pause filter fields from VMCB
+>>    KVM: SVM: introduce data structures for nested virt state
+>>
+>>   arch/x86/include/asm/kvm_host.h |   1 -
+>>   arch/x86/include/uapi/asm/kvm.h |  26 +++++++-
+>>   arch/x86/kvm/svm/nested.c       | 115 +++++++++++++++++---------------
+>>   arch/x86/kvm/svm/svm.c          |  11 ++-
+>>   arch/x86/kvm/svm/svm.h          |  28 +++++---
+>>   5 files changed, 116 insertions(+), 65 deletions(-)
+>>
+> Reviewed-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
 
+Thanks!  Note that (while these patches should be okay) they are not
+really ready to be committed because more cleanups and refactorings will
+become evident through the rest of the work.
 
-Hi Anshuman,
+Paolo
 
-These new events look great to me. I have some nits below, plus one
-lightly controversial suggestion which I'd really like to have someone
-more experienced weigh in on, which is:
-
-How about not being quite so granular on the THP config options, and
-just guarding these events with the overall CONFIG_TRANSPARENT_HUGEPAGE
-option, instead of the sub-option CONFIG_ARCH_ENABLE_THP_MIGRATION?
-
-I tentatively think it's harmless and not really misleading to have
-/proc/vmstat showing this in all THP-enabled configurations:
-
-thp_pmd_migration_success 0
-thp_pmd_migration_failure 0
-
-...if THP is enabled, and *whether or not* _THP_MIGRATION is enabled.
-And this simplifies things a bit. Given how the .config options can get,
-I think simplifying would be nice.
-
-However, I'm ready to be corrected on that, if it's a bad idea for
-other API reasons perhaps.  Can anyone please comment?
-
-
-> +		THP_PMD_MIGRATION_SUCCESS,
-> +		THP_PMD_MIGRATION_FAILURE,
-> +#endif
->   #endif
->   #ifdef CONFIG_MEMORY_BALLOON
->   		BALLOON_INFLATE,
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 7160c1556f79..5325700a3e90 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1170,6 +1170,18 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
->   #define ICE_noinline
->   #endif
->   
-> +#ifdef CONFIG_ARCH_ENABLE_THP_MIGRATION
-> +static inline void thp_migration_success(bool success)
-
-
-I think this should be named
-
-     thp_pmd_migration_success()
-
-, since that's what you're really counting. Or, you could
-name the events THP_MIGRATION_SUCCESS|FAILURE. Either way,
-just so the function name matches the events it's counting.
-
-
-> +{
-> +	if (success)
-> +		count_vm_event(THP_PMD_MIGRATION_SUCCESS);
-> +	else
-> +		count_vm_event(THP_PMD_MIGRATION_FAILURE);
-> +}
-> +#else
-> +static inline void thp_migration_success(bool success) { }
-
-
-This whole ifdef clause would disappear if my suggestion above is
-accepted. However, if not, then I believe the convention for this
-kind of situation is:
-
-static inline void thp_migration_success(bool success)
-{
-}
-
-
-> +#endif
-> +
->   /*
->    * Obtain the lock on page, remove all ptes and migrate the page
->    * to the newly allocated page in newpage.
-> @@ -1232,6 +1244,8 @@ static ICE_noinline int unmap_and_move(new_page_t get_new_page,
->   	 * we want to retry.
->   	 */
->   	if (rc == MIGRATEPAGE_SUCCESS) {
-> +		if (PageTransHuge(newpage))
-> +			thp_migration_success(true);
->   		put_page(page);
->   		if (reason == MR_MEMORY_FAILURE) {
->   			/*
-> @@ -1474,6 +1488,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
->   					unlock_page(page);
->   					if (!rc) {
->   						list_safe_reset_next(page, page2, lru);
-> +						thp_migration_success(false);
->   						goto retry;
->   					}
->   				}
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 96d21a792b57..e258c782fd3a 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1274,6 +1274,10 @@ const char * const vmstat_text[] = {
->   	"thp_zero_page_alloc_failed",
->   	"thp_swpout",
->   	"thp_swpout_fallback",
-> +#ifdef CONFIG_ARCH_ENABLE_THP_MIGRATION
-> +	"thp_pmd_migration_success",
-> +	"thp_pmd_migration_failure",
-> +#endif
->   #endif
->   #ifdef CONFIG_MEMORY_BALLOON
->   	"balloon_inflate",
-> 
-
-thanks,
--- 
-John Hubbard
-NVIDIA
