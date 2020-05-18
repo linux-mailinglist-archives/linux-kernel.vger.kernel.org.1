@@ -2,40 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57161D8074
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C1A1D8564
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728922AbgERRjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:39:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34862 "EHLO mail.kernel.org"
+        id S1731540AbgERRzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:55:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728883AbgERRjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:39:51 -0400
+        id S1731454AbgERRzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:55:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6CE4F2083E;
-        Mon, 18 May 2020 17:39:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14FA3207C4;
+        Mon, 18 May 2020 17:55:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823590;
-        bh=zZkOHLlY0C4rzlyING27MznEU+bpSrDuBYLW1QwahNw=;
+        s=default; t=1589824532;
+        bh=BEUWMUQxwatFeo/5l8VvlQUF3ITZ2kX7a3zK9Hqp7dw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O7C9j1xblen4afFFbUZ1HXPgwfRDwbN85anoy8EmLvxE1ImDRCd3HHQEOJJwo0hMt
-         en0gbPJGnVnAaJe9GkyFuW+cNNbx/1n2M4pnE/5IKn8eRpxDzwvSpVSPhToUGbguVX
-         m7bAseA5bGH+ZqEU/s9x7ud2iFMugUDJficz9jDs=
+        b=N5tWIC67FPjwt1xw9fyhBcv4lGi5Etoza48WISMRGyZN8+KSVKig9k7eo5F9lssKh
+         3hdGv13IKYtnyMWEhKqqRBLDlMQuRrNBr6Q+dC/veOaw2Ow+GtAI/LLXWyF6nsZD5w
+         FZWuN5v3r8gty2pO0kHihu/bHTPGPFhzO8drWow8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
-        Pavel Shilovsky <pshilov@microsoft.com>,
-        Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org, Andreas Schwab <schwab@suse.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Waiman Long <longman@redhat.com>, NeilBrown <neilb@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Manfred Spraul <manfred@colorfullife.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 42/86] cifs: Fix a race condition with cifs_echo_request
+Subject: [PATCH 5.4 050/147] ipc/util.c: sysvipc_find_ipc() incorrectly updates position index
 Date:   Mon, 18 May 2020 19:36:13 +0200
-Message-Id: <20200518173458.913521023@linuxfoundation.org>
+Message-Id: <20200518173520.206794779@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,63 +53,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronnie Sahlberg <lsahlber@redhat.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit f2caf901c1b7ce65f9e6aef4217e3241039db768 ]
+[ Upstream commit 5e698222c70257d13ae0816720dde57c56f81e15 ]
 
-There is a race condition with how we send (or supress and don't send)
-smb echos that will cause the client to incorrectly think the
-server is unresponsive and thus needs to be reconnected.
+Commit 89163f93c6f9 ("ipc/util.c: sysvipc_find_ipc() should increase
+position index") is causing this bug (seen on 5.6.8):
 
-Summary of the race condition:
- 1) Daisy chaining scheduling creates a gap.
- 2) If traffic comes unfortunate shortly after
-    the last echo, the planned echo is suppressed.
- 3) Due to the gap, the next echo transmission is delayed
-    until after the timeout, which is set hard to twice
-    the echo interval.
+   # ipcs -q
 
-This is fixed by changing the timeouts from 2 to three times the echo interval.
+   ------ Message Queues --------
+   key        msqid      owner      perms      used-bytes   messages
 
-Detailed description of the bug: https://lutz.donnerhacke.de/eng/Blog/Groundhog-Day-with-SMB-remount
+   # ipcmk -Q
+   Message queue id: 0
+   # ipcs -q
 
-Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+   ------ Message Queues --------
+   key        msqid      owner      perms      used-bytes   messages
+   0x82db8127 0          root       644        0            0
+
+   # ipcmk -Q
+   Message queue id: 1
+   # ipcs -q
+
+   ------ Message Queues --------
+   key        msqid      owner      perms      used-bytes   messages
+   0x82db8127 0          root       644        0            0
+   0x76d1fb2a 1          root       644        0            0
+
+   # ipcrm -q 0
+   # ipcs -q
+
+   ------ Message Queues --------
+   key        msqid      owner      perms      used-bytes   messages
+   0x76d1fb2a 1          root       644        0            0
+   0x76d1fb2a 1          root       644        0            0
+
+   # ipcmk -Q
+   Message queue id: 2
+   # ipcrm -q 2
+   # ipcs -q
+
+   ------ Message Queues --------
+   key        msqid      owner      perms      used-bytes   messages
+   0x76d1fb2a 1          root       644        0            0
+   0x76d1fb2a 1          root       644        0            0
+
+   # ipcmk -Q
+   Message queue id: 3
+   # ipcrm -q 1
+   # ipcs -q
+
+   ------ Message Queues --------
+   key        msqid      owner      perms      used-bytes   messages
+   0x7c982867 3          root       644        0            0
+   0x7c982867 3          root       644        0            0
+   0x7c982867 3          root       644        0            0
+   0x7c982867 3          root       644        0            0
+
+Whenever an IPC item with a low id is deleted, the items with higher ids
+are duplicated, as if filling a hole.
+
+new_pos should jump through hole of unused ids, pos can be updated
+inside "for" cycle.
+
+Fixes: 89163f93c6f9 ("ipc/util.c: sysvipc_find_ipc() should increase position index")
+Reported-by: Andreas Schwab <schwab@suse.de>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Waiman Long <longman@redhat.com>
+Cc: NeilBrown <neilb@suse.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: Manfred Spraul <manfred@colorfullife.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/4921fe9b-9385-a2b4-1dc4-1099be6d2e39@virtuozzo.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/connect.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ ipc/util.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-index 7022750cae2fd..21ddfd77966eb 100644
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -548,10 +548,10 @@ static bool
- server_unresponsive(struct TCP_Server_Info *server)
- {
- 	/*
--	 * We need to wait 2 echo intervals to make sure we handle such
-+	 * We need to wait 3 echo intervals to make sure we handle such
- 	 * situations right:
- 	 * 1s  client sends a normal SMB request
--	 * 2s  client gets a response
-+	 * 3s  client gets a response
- 	 * 30s echo workqueue job pops, and decides we got a response recently
- 	 *     and don't need to send another
- 	 * ...
-@@ -560,9 +560,9 @@ server_unresponsive(struct TCP_Server_Info *server)
- 	 */
- 	if ((server->tcpStatus == CifsGood ||
- 	    server->tcpStatus == CifsNeedNegotiate) &&
--	    time_after(jiffies, server->lstrp + 2 * SMB_ECHO_INTERVAL)) {
-+	    time_after(jiffies, server->lstrp + 3 * SMB_ECHO_INTERVAL)) {
- 		cifs_dbg(VFS, "Server %s has not responded in %d seconds. Reconnecting...\n",
--			 server->hostname, (2 * SMB_ECHO_INTERVAL) / HZ);
-+			 server->hostname, (3 * SMB_ECHO_INTERVAL) / HZ);
- 		cifs_reconnect(server);
- 		wake_up(&server->response_q);
- 		return true;
+diff --git a/ipc/util.c b/ipc/util.c
+index 594871610d454..1821b6386d3b4 100644
+--- a/ipc/util.c
++++ b/ipc/util.c
+@@ -764,21 +764,21 @@ static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
+ 			total++;
+ 	}
+ 
+-	*new_pos = pos + 1;
++	ipc = NULL;
+ 	if (total >= ids->in_use)
+-		return NULL;
++		goto out;
+ 
+ 	for (; pos < ipc_mni; pos++) {
+ 		ipc = idr_find(&ids->ipcs_idr, pos);
+ 		if (ipc != NULL) {
+ 			rcu_read_lock();
+ 			ipc_lock_object(ipc);
+-			return ipc;
++			break;
+ 		}
+ 	}
+-
+-	/* Out of range - return NULL to terminate iteration */
+-	return NULL;
++out:
++	*new_pos = pos + 1;
++	return ipc;
+ }
+ 
+ static void *sysvipc_proc_next(struct seq_file *s, void *it, loff_t *pos)
 -- 
 2.20.1
 
