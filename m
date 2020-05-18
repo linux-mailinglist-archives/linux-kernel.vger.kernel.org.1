@@ -2,126 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171331D78F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 14:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9725F1D78F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 14:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727067AbgERMtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 08:49:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726709AbgERMtF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 08:49:05 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C90342065F;
-        Mon, 18 May 2020 12:49:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589806144;
-        bh=YhXil7G3mbaDMu8tDVkgqWslhG+wcACKZ4FFSNgSFZo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OUZLiH47yWEmJ3l+ePMFFL7hveeFQuU6RLFqd73gN7s+dID8Io/PUstiG/NrV4SAu
-         RQD/lW/up0UdZ6adMWL10hDRIMh5CA+OzlzjgoEQhN4p8TuVOgcziihqlgW3sSObdi
-         ZrBux+rQdI4DlBs9fGGxJGDTC7xEuNcXU+cErlSc=
-Received: by pali.im (Postfix)
-        id 74EBD89D; Mon, 18 May 2020 14:49:02 +0200 (CEST)
-Date:   Mon, 18 May 2020 14:49:02 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Missing CLOCK_BOOTTIME_RAW?
-Message-ID: <20200518124902.yuw2rtmjndi7nbd2@pali>
-References: <20200508213122.f7srcd2gnduamtvs@pali>
- <87zhah4evs.fsf@nanos.tec.linutronix.de>
- <20200518111103.sj73h5j3r75zv2wp@pali>
- <87ftbxxz55.fsf@nanos.tec.linutronix.de>
- <20200518113522.y6sj7ypunsu6pi3s@pali>
- <87d071xwxv.fsf@nanos.tec.linutronix.de>
+        id S1727020AbgERMvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 08:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726726AbgERMvH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 08:51:07 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C970C05BD09
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 05:51:07 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id l15so3575038vsr.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 05:51:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F3BUSKbo828h2E1EKD/0gfSxmOX3Dp5mHkq+oGuT5sI=;
+        b=oTCaHa41n3YsHvrUG3Lxk+lujs7RebbyKCNZ3sEbVUV/crDFTEKHeGz6fw9MAX2JfX
+         ORwZBLb3PzGSOed7tDwbzYuos6/X0oHYuUCkA6iyZqGIUr5Gsf7g/RP/DTfEIc6HQixT
+         HrTYr1bK2AJ8HeZkCpdw4vTP6xA8sFJdQZhhbI9SEy18qjBfCx+vOpG8Wk7iSpg/nH7d
+         0IkjOkpuRneLILNLn3TctQD34kabBXD/Badd5aZRjm2dcB0DzpjARh7NpDENhdCYn/tT
+         Z7qpWJbhsGthWk7p0ILhMPdetX7sw0fJ1FViHTBDwSDvrldIh0/Mn4JzgPYhkSPnqxHX
+         LFSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F3BUSKbo828h2E1EKD/0gfSxmOX3Dp5mHkq+oGuT5sI=;
+        b=EIm8WigGSvIZTBfKKGV32iGjWCMhL9BTcCFtTHK6Fh/jjtPBHw60gQVBlZZV7SHT6V
+         +c27wLlYrQxINJxHgn0cZxbn89d8YikpBQWhT/dd27saj8NeoRqTkdJ19YwJhgbJR9TQ
+         EDy7I4DMMUy7zvsfz65sLqy6sxe1b65tCNBUuscfkESgTh4lejVYnCrGNne4gZZCGnJ+
+         MnwW6WCLUTNEh9wvBQrN1EVgT6CPiz/LD89PIjh4b3/XgYHT+QDpo+dV5DOirNyd9TS6
+         zVyIp+3JpqE3TKq2t45LsjJyruCFXfjQr3CNMOCFgMzl97n0IdlPEq+6NfzkolWkZgPz
+         K0FQ==
+X-Gm-Message-State: AOAM531Ig7jRgFJTdY2/gdkv+pNZkocsEmWnMQ0NxZ0FRCa0fuUUpAaN
+        HjLFl0yLAyeJIEkWjKeJkeYwyM5yE42ay2xtUWIUpw==
+X-Google-Smtp-Source: ABdhPJy51OGGplkyUbHUeHsNQH1b7HeY7QZvnWmpssXL38U2Xe6u/GNafSzxw8l5wwGBugpr0QHWMT5mAJVAQf8bE48=
+X-Received: by 2002:a67:690e:: with SMTP id e14mr4184975vsc.34.1589806266292;
+ Mon, 18 May 2020 05:51:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87d071xwxv.fsf@nanos.tec.linutronix.de>
-User-Agent: NeoMutt/20180716
+References: <1588772671-19675-1-git-send-email-sartgarg@codeaurora.org>
+ <1588772671-19675-2-git-send-email-sartgarg@codeaurora.org>
+ <CAPDyKFo0CabC_O-NusH4tUzjnG37_XQhY=QNhgnkQMoTokfaQg@mail.gmail.com> <4db354d7-fff4-048e-dde5-647e8ba89a7d@intel.com>
+In-Reply-To: <4db354d7-fff4-048e-dde5-647e8ba89a7d@intel.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 18 May 2020 14:50:30 +0200
+Message-ID: <CAPDyKFqN8CeniJq5S9zCdYYR38DFyk0vKnCw3fi548tXvwbseg@mail.gmail.com>
+Subject: Re: [PATCH V1 1/2] mmc: sdhci: Introduce new quirk to use reserved timeout
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Sarthak Garg <sartgarg@codeaurora.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Sahitya Tummala <stummala@codeaurora.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 18 May 2020 14:13:48 Thomas Gleixner wrote:
-> Pali Rohár <pali@kernel.org> writes:
-> > On Monday 18 May 2020 13:26:14 Thomas Gleixner wrote:
-> >> System clock shifted by one hour? You mean DST change?
+On Mon, 18 May 2020 at 13:45, Adrian Hunter <adrian.hunter@intel.com> wrote:
+>
+> On 18/05/20 12:39 pm, Ulf Hansson wrote:
+> > On Wed, 6 May 2020 at 15:53, Sarthak Garg <sartgarg@codeaurora.org> wrote:
+> >>
+> >> Introduce a new quirk for letting vendor drivers to use reserved
+> >> timeout value (0xF) in timeout control register.
+> >>
+> >> Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+> >> Signed-off-by: Sarthak Garg <sartgarg@codeaurora.org>
+> >> ---
+> >>  drivers/mmc/host/sdhci.c | 3 ++-
+> >>  drivers/mmc/host/sdhci.h | 5 +++++
+> >>  2 files changed, 7 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> >> index 1bb6b67..07528a9 100644
+> >> --- a/drivers/mmc/host/sdhci.c
+> >> +++ b/drivers/mmc/host/sdhci.c
+> >> @@ -967,7 +967,8 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd,
+> >>         }
+> >>
+> >>         if (count >= 0xF) {
+> >> -               if (!(host->quirks2 & SDHCI_QUIRK2_DISABLE_HW_TIMEOUT))
+> >> +               if (!(host->quirks2 & SDHCI_QUIRK2_DISABLE_HW_TIMEOUT) ||
+> >> +               !(host->quirks2 & SDHCI_QUIRK2_USE_RESERVED_MAX_TIMEOUT))
 > >
-> > Yes, clock was shifted by one hour.
+> > I don't quite get how this can make your variant use 0xF rather than 0xE?
 > >
-> >> If chronyd
-> >> adjusts that by smoothing the frequency, that's just broken and really
-> >> not the kernel's problem.
-> >
-> > And what other can time synchronization daemon does?
-> 
-> DST switching is a matter of switching time zones and has absolutely
-> nothing to do with frequencies. In fact smearing DST is a blantant
-> violation of the timekeeping guarantees.
+> > To me it looks like an updated conditional check to print a debug message, no?
+>
+> Probably need to introduce host->max_timeout_count, set it to 0xE in
+> sdhci_alloc_host(), and change sdhci_calc_timeout() to use it in place of
+> all the 0xE and 0xF constants.
 
-Problem was that "external source" changed RTC.
+Yep, that seems like a reasonable approach to me as well.
 
-But I think this is irrelevant here.
+[...]
 
-Important was state of machine. Machine was in state that had incorrect
-system clock, had running NTP daemon and there was need to somehow make
-system clock again correct.
-
-And such situation may happen at any time. Either user unintentionally
-change "current time" in his desktop GUI application or call "date"
-application with "set" parameter (instead of get), ...
-
-> I've never heard about that before. All I know is that chronyd can be
-> configured to smear leap seconds, but that doesn't take 6 hours and does
-> not screw with the time accuracy in the range of 20 minutes.
-> 
-> > Well, I think this is not related to chronyd. Any userspace application
-> > may call adjtime(). It is not privilege that only chronyd is allowed to
-> > use that syscall.
-> 
-> Of course not, but the kernel relies on that application behaving
-> sanely. If it does not then the time stamps you are complaining about
-> are the least of your worries.
-
-I do not thing it is too bad... When I needed to deal in userspace with
-time/date/clock I just needed either "current time in UTC" to show it to
-user (possible in different timezone and pretty formatted) or I needed
-"timestamp since some epoch" suitable for measuring time differences.
-
-For first case I used CLOCK_REALTIME and for second case I used
-CLOCK_MONOTONIC_RAW (as it was not affected by adjtime()).
-
-And I would like to know, it is correct to use these two clocks in those
-situations?
-
-> > I agree that this is not a kernel problem.
-> >
-> > But I'm asking, how my userspace application can measure time difference?
-> > As I wrote CLOCK_MONITONIC is not suitable as it is affected by those
-> > NTP adjustments and that is why I thought that CLOCK_MONITONIC_RAW is
-> > better as it is not affected by these NTP problems.
-> >
-> > But CLOCK_MONITONIC_RAW has a problem that is stopped during system
-> > sleep and that is why I thought that CLOCK_BOOTTIME_RAW should be there.
-> 
-> And how do you make CLOCK_BOOTTIME_RAW accurate? The clock hardware
-> can stop accross suspend/resume and the kernel then uses RTC or some
-> other hardware to inject the sleep time. That injection is not and
-> cannot be correct vs. the raw clock.
-> 
-> So exposing CLOCK_BOOTTIME_RAW would just provide yet another illusion
-> of time.
-
-Now I see. Usage of external source during suspend would just lead to
-another problems. So idea about CLOCK_BOOTTIME_RAW is nice but there is
-no way how to provide it.
-
-Anyway, what would happen with CLOCK_BOOTTIME when during suspend is
-that external RTC source shifted back? Is kernel guarantee that
-CLOCK_BOOTTIME is always monotonic even in this case?
+Kind regards
+Uffe
