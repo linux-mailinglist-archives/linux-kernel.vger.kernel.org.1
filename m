@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27071D8093
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617AC1D80D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729091AbgERRkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:40:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35900 "EHLO mail.kernel.org"
+        id S1729410AbgERRmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:42:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729046AbgERRkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:40:23 -0400
+        id S1729376AbgERRmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:42:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B94DF207FB;
-        Mon, 18 May 2020 17:40:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F1F8207C4;
+        Mon, 18 May 2020 17:42:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823623;
-        bh=MnXWXZU26+4+NeIY9AqrocqOaxDKw36ByaZ0bariZvM=;
+        s=default; t=1589823726;
+        bh=Rb7UxkR8SUT5Bw8UAQG6g2rq3U0rT6XFV6zgMx0mh2o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ipGjf7I9W/5RqvfT6YJtTh0TVnXQCKWu/jF0CAeIrj+OZQ+gdOwyZdJG/+Mq4v6OX
-         n8CSBglQ8d4FGdNs6K3tcjXspRN9tXYXDHSTA8sT/7sr0djpwCPxMrbysClADByD9C
-         uVmMml4ZYkK0JEURuZcqgYYg6LEr0bEtl/Nk+Eo8=
+        b=QCiyrKRKz+NazSHenuN755lfMi2REW1ZV3UobIqw8BqaeGo37xlIBfLWJSBulyys4
+         M2fsGxuwy+AgoxzuVeFwZLciuRdlXxX8JFMU2rFsQpPWsw9GO3bJq23Yx9ycHiA6QY
+         b/7ucnELhaz31rcbWn2Ag8jm2HzLsAAVbw2o73/M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@free-electrons.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 18/86] phy: micrel: Ensure interrupts are reenabled on resume
-Date:   Mon, 18 May 2020 19:35:49 +0200
-Message-Id: <20200518173454.160717267@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 12/90] bnxt_en: Improve AER slot reset.
+Date:   Mon, 18 May 2020 19:35:50 +0200
+Message-Id: <20200518173453.713553654@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,62 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+From: Michael Chan <michael.chan@broadcom.com>
 
-[ Upstream commit f5aba91d7f186cba84af966a741a0346de603cd4 ]
+[ Upstream commit bae361c54fb6ac6eba3b4762f49ce14beb73ef13 ]
 
-At least on ksz8081, when getting back from power down, interrupts are
-disabled. ensure they are reenabled if they were previously enabled.
+Improve the slot reset sequence by disabling the device to prevent bad
+DMAs if slot reset fails.  Return the proper result instead of always
+PCI_ERS_RESULT_RECOVERED to the caller.
 
-This fixes resuming which is failing on the xplained boards from atmel
-since 321beec5047a (net: phy: Use interrupts when available in NOLINK
-state)
-
-Fixes: 321beec5047a (net: phy: Use interrupts when available in NOLINK state)
-Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Fixes: 6316ea6db93d ("bnxt_en: Enable AER support.")
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/phy/micrel.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index 98166e144f2dd..48788ef0ac639 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -603,6 +603,21 @@ ksz9021_wr_mmd_phyreg(struct phy_device *phydev, int ptrad, int devnum,
- {
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -7166,8 +7166,11 @@ static pci_ers_result_t bnxt_io_slot_res
+ 			result = PCI_ERS_RESULT_RECOVERED;
+ 	}
+ 
+-	if (result != PCI_ERS_RESULT_RECOVERED && netif_running(netdev))
+-		dev_close(netdev);
++	if (result != PCI_ERS_RESULT_RECOVERED) {
++		if (netif_running(netdev))
++			dev_close(netdev);
++		pci_disable_device(pdev);
++	}
+ 
+ 	rtnl_unlock();
+ 
+@@ -7178,7 +7181,7 @@ static pci_ers_result_t bnxt_io_slot_res
+ 			 err); /* non-fatal, continue */
+ 	}
+ 
+-	return PCI_ERS_RESULT_RECOVERED;
++	return result;
  }
  
-+static int kszphy_resume(struct phy_device *phydev)
-+{
-+	int value;
-+
-+	mutex_lock(&phydev->lock);
-+
-+	value = phy_read(phydev, MII_BMCR);
-+	phy_write(phydev, MII_BMCR, value & ~BMCR_PDOWN);
-+
-+	kszphy_config_intr(phydev);
-+	mutex_unlock(&phydev->lock);
-+
-+	return 0;
-+}
-+
- static int kszphy_probe(struct phy_device *phydev)
- {
- 	const struct kszphy_type *type = phydev->drv->driver_data;
-@@ -794,7 +809,7 @@ static struct phy_driver ksphy_driver[] = {
- 	.ack_interrupt	= kszphy_ack_interrupt,
- 	.config_intr	= kszphy_config_intr,
- 	.suspend	= genphy_suspend,
--	.resume		= genphy_resume,
-+	.resume		= kszphy_resume,
- 	.driver		= { .owner = THIS_MODULE,},
- }, {
- 	.phy_id		= PHY_ID_KSZ8061,
--- 
-2.20.1
-
+ /**
 
 
