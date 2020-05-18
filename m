@@ -2,129 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47C31D798E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5E11D799E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727973AbgERNTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 09:19:46 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37096 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727857AbgERNTk (ORCPT
+        id S1728102AbgERNUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 09:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726999AbgERNUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 09:19:40 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04ID41Rg048222;
-        Mon, 18 May 2020 09:19:31 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31292e683m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 May 2020 09:19:30 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04ID4Hbw049355;
-        Mon, 18 May 2020 09:19:30 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31292e6831-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 May 2020 09:19:30 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04IDFZKe007011;
-        Mon, 18 May 2020 13:19:27 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 3127t5hpg8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 May 2020 13:19:27 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04IDIDoW61145520
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 May 2020 13:18:13 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 38D2442042;
-        Mon, 18 May 2020 13:19:25 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 43BF742041;
-        Mon, 18 May 2020 13:19:24 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.67.24])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 18 May 2020 13:19:24 +0000 (GMT)
-Subject: Re: [PATCH v5 02/10] MMU notifier: use the new mmap locking API
-To:     Michel Lespinasse <walken@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Liam Howlett <Liam.Howlett@oracle.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        David Rientjes <rientjes@google.com>,
-        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>
-References: <20200422001422.232330-1-walken@google.com>
- <20200422001422.232330-3-walken@google.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <4e68719f-2b4f-307b-f29f-e1858efc409a@linux.ibm.com>
-Date:   Mon, 18 May 2020 15:19:24 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
+        Mon, 18 May 2020 09:20:22 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3E2C061A0C;
+        Mon, 18 May 2020 06:20:22 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x15so4944018pfa.1;
+        Mon, 18 May 2020 06:20:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VOhtb6aDUYF/bby4eFhEdjPKdJJNHZhrs2dy1zRqvRg=;
+        b=rDsKryn799wrGML6USURKvFtsAV/uzTijzNVu9hI6FTQEj3AFhZ911irHK3ovzhsUH
+         gY5LA7X6RURa29N0a9uH5OFLBvFxKgmCVL+S2LHar2ZloaGB+HW7AjVNvR4EFgCBxpsy
+         po8m+4EEsdKOq83PhP0pKwMOFemPBi2NghEI8xaASNmmmpuisFOXxp8CYt4r9RUzxxu1
+         M3GB8LGBpgcFswMHRmJSEf6wc8sgbA4QBO4WBLxXI/N36soCP3yyMdGiZf7r3pEYznqk
+         6vi0oRLO6oAzTU8/YQKG1+FHZVrR4xGNGcqOGbViiKsPYwbG3i5aRhnYKp6FmwbGWmsi
+         ut+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VOhtb6aDUYF/bby4eFhEdjPKdJJNHZhrs2dy1zRqvRg=;
+        b=pJgTHGpUWBLOfOik5MMvYbjSRYYfclikW/Zt/Fc9ihoEBjp0dW/S+idO8QiOxzCW47
+         jkqllKUN1lEmsJnN0et5DRfzQ4A3322qwcIgqG+jObqlzS6m1TIrlSYTEEQnjKUQIGfu
+         c64yCx/SNDD0SQ1ARGQK6XXDQ+HbowC7NLxv5hnthZhBDQvXjzhrJU+irFAg62ikEjWc
+         JJzH/UaPYhjhezCJsqqhgE2O/Jsz7LSdb6QTRgdKrDUHZlJWFf1fdqza/OqBXV8rfRts
+         6he309FNV049jSmnbK0fUoSW3j8dPkRYCZqLVXtVg3kAiRZmTVLuPVHlxmSNPON/6sio
+         JBbg==
+X-Gm-Message-State: AOAM5329nrl/7ygyMHDR6KSrNXHlF+NoxJ6CefEVF7ccDsJaweVIkelr
+        U/B8ar/rvMoqlsNsKIEyENYkvwyd6dTCQZsq0Fc=
+X-Google-Smtp-Source: ABdhPJxEWo37sbtLGrnXVQllcXNP02GCyiWRVMGVtQCaOaZDXATQdRF9Fzdajl4gBo0tRari+NEpX4OkjNg1wYKmxcw=
+X-Received: by 2002:a63:1c1:: with SMTP id 184mr15312040pgb.203.1589808022426;
+ Mon, 18 May 2020 06:20:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200422001422.232330-3-walken@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-18_06:2020-05-15,2020-05-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- lowpriorityscore=0 adultscore=0 impostorscore=0 bulkscore=0
- priorityscore=1501 mlxlogscore=999 mlxscore=0 suspectscore=0 spamscore=0
- malwarescore=0 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005180117
+References: <20200515105537.4876-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <202005152142.AWvx4xc5%lkp@intel.com> <CAHp75Ven9q-6dDYtP_uXigeS_r2uvpUZVR5Mh0RdEd36MbTG+Q@mail.gmail.com>
+ <CAK8P3a3RKJo-C5=19oAppx212s7T8NdnKJVmkj+h=34a8aKMNA@mail.gmail.com>
+ <5180e734-ff56-db5a-ab49-8a55cfa2f2c0@linux.intel.com> <CAHp75Ve_XjvvGBEQyhy=qVVJMFS+18j3aKxNxSQpGK5qJmzfBg@mail.gmail.com>
+ <CAK8P3a25GbMwbtvkxgmuGss6nEfAW4_vVbOXPxOYuDOaU_zcjA@mail.gmail.com>
+In-Reply-To: <CAK8P3a25GbMwbtvkxgmuGss6nEfAW4_vVbOXPxOYuDOaU_zcjA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 18 May 2020 16:20:10 +0300
+Message-ID: <CAHp75VfFsdjAT0P4m3O=VQ1e_L7cVyQx6HB7MCN+G_XcFisqZQ@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] mtd: rawnand: Add NAND controller support on Intel
+ LGM SoC
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        kbuild test robot <lkp@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>, kbuild-all@lists.01.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh R <vigneshr@ti.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        masonccyang@mxic.com.tw
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 22/04/2020 à 02:14, Michel Lespinasse a écrit :
-> This use is converted manually ahead of the next patch in the series,
-> as it requires including a new header which the automated conversion
-> would miss.
-> 
-> Signed-off-by: Michel Lespinasse <walken@google.com>
-> Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-> Reviewed-by: Davidlohr Bueso <dbueso@suse.de>
+On Mon, May 18, 2020 at 2:57 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Mon, May 18, 2020 at 1:43 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Mon, May 18, 2020 at 2:39 PM Ramuthevar, Vadivel MuruganX
+> > <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
+> > > On 15/5/2020 10:30 pm, Arnd Bergmann wrote:
+> > > > On Fri, May 15, 2020 at 4:25 PM Andy Shevchenko
+> > > > <andy.shevchenko@gmail.com> wrote:
+> > > >> On Fri, May 15, 2020 at 4:48 PM kbuild test robot <lkp@intel.com> wrote:
+> >
+> > > > iowrite_be32() is the correct way to store word into a big-endian mmio register,
+> > > > if that is the intention here.
+> > > Thank you for suggestions to use iowrite32be(), it suits exactly.
+> >
+> > Can you before doing this comment what is the real intention here?
+> >
+> > And note, if you are going to use iowrite*() / ioread*() in one place,
+> > you will probably need to replace all of the read*() / write*() to
+> > respective io* API.
+>
+> The way that ioread/iowrite are defined, they are required to be a superset
+> of what readl/writel do and can take __iomem pointers from either
+> ioremap() or ioport_map()/pci_iomap() style mappings, while readl/writel
+> are only required to work with ioremap().
+>
+> There is no technical requirement to stick to one set or the other for
+> ioremap(), but the overhead of ioread/iowrite is also small enough
+> that it generally does not hurt.
 
-Reviewed-by: Laurent Dufour <ldufour@linux.ibm.com>
+Right, my suggestion is solely for consistency. It would be a bit
+weird to see readl() along with ioread32() in the same driver (in case
+there are no differentiated callbacks specifically for different type
+of IP).
 
-> ---
->   include/linux/mmu_notifier.h | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
-> index 736f6918335e..2f462710a1a4 100644
-> --- a/include/linux/mmu_notifier.h
-> +++ b/include/linux/mmu_notifier.h
-> @@ -5,6 +5,7 @@
->   #include <linux/list.h>
->   #include <linux/spinlock.h>
->   #include <linux/mm_types.h>
-> +#include <linux/mmap_lock.h>
->   #include <linux/srcu.h>
->   #include <linux/interval_tree.h>
->   
-> @@ -277,9 +278,9 @@ mmu_notifier_get(const struct mmu_notifier_ops *ops, struct mm_struct *mm)
->   {
->   	struct mmu_notifier *ret;
->   
-> -	down_write(&mm->mmap_sem);
-> +	mmap_write_lock(mm);
->   	ret = mmu_notifier_get_locked(ops, mm);
-> -	up_write(&mm->mmap_sem);
-> +	mmap_write_unlock(mm);
->   	return ret;
->   }
->   void mmu_notifier_put(struct mmu_notifier *subscription);
-> 
-
+-- 
+With Best Regards,
+Andy Shevchenko
