@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 151DA1D832E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9D01D86A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732548AbgERSCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:02:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46744 "EHLO mail.kernel.org"
+        id S2387938AbgERSZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:25:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732537AbgERSCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:02:32 -0400
+        id S1730095AbgERRq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:46:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4318B21582;
-        Mon, 18 May 2020 18:02:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECFB220674;
+        Mon, 18 May 2020 17:46:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824951;
-        bh=SzXkSbZLavbpySA8SPOGSVH6HZgXsI0Fz963gWwXshQ=;
+        s=default; t=1589823989;
+        bh=pW4V60f9TCg33wug+NcMM3l2jUpbcC/+CQ5JRKz0l/o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YBljnOdtdmZJKm1Eq9ZcTvA+LKYVT8Cb+/PZVjWMy9M9XfVUUMpzkUqg+yaQTbj/U
-         5o5iYdcAA2dioY/gotZYAXF1NRWiE3OS1gQCtkk13xKie9TPMh/V5YNLXv7/DHUXaX
-         UF9V9Ro7bgZl1tv8FnnsVGKjAFamZaVh1OKKN/Fc=
+        b=CB4JoAw9zHbaHPETygMsDfvhziPjNTAb6F1kIC+GtkH/vHa1B/RNZZl6U+Vh+iEMh
+         fj78RInXyzUhOcnC+j8z468FM5RPG/q4S8Gb80WimfI3AAUZsde2I92XPXgO23jO9k
+         OiU5uKn3XVu1RNPe7ARMWUEZm7vohf/eq4814KhM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 068/194] io_uring: check non-sync defer_list carefully
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Sven Eckelmann <sven@narfation.org>,
+        Simon Wunderlich <sw@simonwunderlich.de>
+Subject: [PATCH 4.14 026/114] batman-adv: Fix refcnt leak in batadv_show_throughput_override
 Date:   Mon, 18 May 2020 19:35:58 +0200
-Message-Id: <20200518173537.403295842@linuxfoundation.org>
+Message-Id: <20200518173508.436821979@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-[ Upstream commit 4ee3631451c9a62e6b6bc7ee51fb9a5b34e33509 ]
+commit f872de8185acf1b48b954ba5bd8f9bc0a0d14016 upstream.
 
-io_req_defer() do double-checked locking. Use proper helpers for that,
-i.e. list_empty_careful().
+batadv_show_throughput_override() invokes batadv_hardif_get_by_netdev(),
+which gets a batadv_hard_iface object from net_dev with increased refcnt
+and its reference is assigned to a local pointer 'hard_iface'.
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+When batadv_show_throughput_override() returns, "hard_iface" becomes
+invalid, so the refcount should be decreased to keep refcount balanced.
+
+The issue happens in the normal path of
+batadv_show_throughput_override(), which forgets to decrease the refcnt
+increased by batadv_hardif_get_by_netdev() before the function returns,
+causing a refcnt leak.
+
+Fix this issue by calling batadv_hardif_put() before the
+batadv_show_throughput_override() returns in the normal path.
+
+Fixes: 0b5ecc6811bd ("batman-adv: add throughput override attribute to hard_ifaces")
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/io_uring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/batman-adv/sysfs.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 01f71b9efb88f..832e042531bc4 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -4258,7 +4258,7 @@ static int io_req_defer(struct io_kiocb *req, const struct io_uring_sqe *sqe)
- 	int ret;
+--- a/net/batman-adv/sysfs.c
++++ b/net/batman-adv/sysfs.c
+@@ -1114,6 +1114,7 @@ static ssize_t batadv_show_throughput_ov
  
- 	/* Still need defer if there is pending req in defer list. */
--	if (!req_need_defer(req) && list_empty(&ctx->defer_list))
-+	if (!req_need_defer(req) && list_empty_careful(&ctx->defer_list))
- 		return 0;
+ 	tp_override = atomic_read(&hard_iface->bat_v.throughput_override);
  
- 	if (!req->io && io_alloc_async_ctx(req))
--- 
-2.20.1
-
++	batadv_hardif_put(hard_iface);
+ 	return sprintf(buff, "%u.%u MBit\n", tp_override / 10,
+ 		       tp_override % 10);
+ }
 
 
