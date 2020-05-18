@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511531D8647
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7491D872A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730296AbgERRr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:47:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48344 "EHLO mail.kernel.org"
+        id S2388061AbgERSau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:30:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730276AbgERRrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:47:51 -0400
+        id S1728376AbgERRkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:40:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3145020715;
-        Mon, 18 May 2020 17:47:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1EB57207C4;
+        Mon, 18 May 2020 17:40:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824070;
-        bh=hrN4jo85YX8bUHMiL0SJw51uMtj6bE77uz+J0atkXvc=;
+        s=default; t=1589823630;
+        bh=RBtMrab00h/AfiPj6f36tLb+wuyzRhdgxgtjsWfA3y4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mMjvK82hbtSPRFvTQSDZ6xyMDP0cOiFioXuX+UmLVdvPCeH2M2YezFU6HOw1jMP8c
-         vQZzl1+6/XoeEYkOsoIa0Z6cWLUxSuqT6uAwmoSplyXy6BIKxMPTfNhDQgkjBAjJno
-         aQ6h8dqYEFC65byRYAHyzsCvMwvN3avg909d1eug=
+        b=Q4BHQv3rNhR4lKAzbqeg03/gmJpHEdW1zigDYo9R47V2yI5lcmuln5UVlNA1Jfe5r
+         mu5dK+f29yaXtFTh2Ey1xgFHeucyTVgB9VdcI32BzONPtOldKdC/Wp4vlXkxm74vf9
+         LFAPaROjCrXKcjcSV6B9jn2fwB+hXuWXRZfKo9Lc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 059/114] drm/qxl: lost qxl_bo_kunmap_atomic_page in qxl_image_init_helper()
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 60/86] gcc-10: disable array-bounds warning for now
 Date:   Mon, 18 May 2020 19:36:31 +0200
-Message-Id: <20200518173513.810784310@linuxfoundation.org>
+Message-Id: <20200518173502.586773004@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 5b5703dbafae74adfbe298a56a81694172caf5e6 ]
+commit 44720996e2d79e47d508b0abe99b931a726a3197 upstream.
 
-v2: removed TODO reminder
+This is another fine warning, related to the 'zero-length-bounds' one,
+but hitting the same historical code in the kernel.
 
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Link: http://patchwork.freedesktop.org/patch/msgid/a4e0ae09-a73c-1c62-04ef-3f990d41bea9@virtuozzo.com
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Because C didn't historically support flexible array members, we have
+code that instead uses a one-sized array, the same way we have cases of
+zero-sized arrays.
+
+The one-sized arrays come from either not wanting to use the gcc
+zero-sized array extension, or from a slight convenience-feature, where
+particularly for strings, the size of the structure now includes the
+allocation for the final NUL character.
+
+So with a "char name[1];" at the end of a structure, you can do things
+like
+
+       v = my_malloc(sizeof(struct vendor) + strlen(name));
+
+and avoid the "+1" for the terminator.
+
+Yes, the modern way to do that is with a flexible array, and using
+'offsetof()' instead of 'sizeof()', and adding the "+1" by hand.  That
+also technically gets the size "more correct" in that it avoids any
+alignment (and thus padding) issues, but this is another long-term
+cleanup thing that will not happen for 5.7.
+
+So disable the warning for now, even though it's potentially quite
+useful.  Having a slew of warnings that then hide more urgent new issues
+is not an improvement.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/qxl/qxl_image.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ Makefile |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/qxl/qxl_image.c b/drivers/gpu/drm/qxl/qxl_image.c
-index 7fbcc35e8ad35..c89c10055641e 100644
---- a/drivers/gpu/drm/qxl/qxl_image.c
-+++ b/drivers/gpu/drm/qxl/qxl_image.c
-@@ -210,7 +210,8 @@ qxl_image_init_helper(struct qxl_device *qdev,
- 		break;
- 	default:
- 		DRM_ERROR("unsupported image bit depth\n");
--		return -EINVAL; /* TODO: cleanup */
-+		qxl_bo_kunmap_atomic_page(qdev, image_bo, ptr);
-+		return -EINVAL;
- 	}
- 	image->u.bitmap.flags = QXL_BITMAP_TOP_DOWN;
- 	image->u.bitmap.x = width;
--- 
-2.20.1
-
+--- a/Makefile
++++ b/Makefile
+@@ -797,6 +797,7 @@ KBUILD_CFLAGS += $(call cc-disable-warni
+ 
+ # We'll want to enable this eventually, but it's not going away for 5.7 at least
+ KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
++KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
+ 
+ # Enabled with W=2, disabled by default as noisy
+ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
 
 
