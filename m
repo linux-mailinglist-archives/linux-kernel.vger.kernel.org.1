@@ -2,105 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD161D74AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 12:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC961D74B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 12:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgERKEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 06:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726274AbgERKEx (ORCPT
+        id S1726997AbgERKFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 06:05:30 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:30137 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726274AbgERKF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 06:04:53 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABA8C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 03:04:53 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id t15so3078661ios.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 03:04:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RKROO8T8T/wRvHNAyo40LMuoZm+6bud6XqpTFz5/h4w=;
-        b=fy0kdcuoeSucOVpB37b28WEy2Z7BTjSQPoaSXSZqfWX5PynLzWLa06IIOmSb47HQfk
-         Nk7Lz8qUhRmZt6Uqw/+gbocUoU6pJc8rWwzPJwyXSzPNmym88rVnFeD71u5olQiXqTch
-         i6vC8EcjOjdQRWfG5xjD03JaXffn85wsZgbw4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RKROO8T8T/wRvHNAyo40LMuoZm+6bud6XqpTFz5/h4w=;
-        b=qAklO3my9QS6yYWLk0hXYrpoIyCRpAjHIxi9njiFEm6tDkNg4CeIGb7NohQdiu21Lm
-         LKqPa2rOqSpPAMADDjP/jz+CEcltUDOI3J3ZZ2oweolDsR8yHlqfbiUSeV8r41mvshey
-         qkHr093w1bPS76UQAIEPVKFP3ghpzWtwGWHiOCoszVRxSoNXy5vbZ3k0aNlEWpXewuX8
-         wpzm2J6gJl4LkO2Ue56rCkBF8MSsLFetn1Yx2CSinr2EkoNAL+nwFCiosGU8J/x6fGOC
-         x9VV9gb1HttLKZuQEcdUzT9zl/pKdUKfrK1XHV8r4oxKaT8D0KGrk9CFPkbkx7/9M18t
-         g3HA==
-X-Gm-Message-State: AOAM5316Uz9FAQPiZhpDTcrmAzb+1DQ7BnXyxVill6H1ETIan6FG/rCX
-        BkQwmuByIzR/909lGU2zJds1jI6te0s=
-X-Google-Smtp-Source: ABdhPJyzCyk9LQ0CYTpq5J35JaxAbdvLpLzVw/ZMJAuB5NmY7Q5EnVQZLtfq0QVtFhtifRoXpvXsJA==
-X-Received: by 2002:a6b:e911:: with SMTP id u17mr13588535iof.29.1589796292687;
-        Mon, 18 May 2020 03:04:52 -0700 (PDT)
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com. [209.85.166.179])
-        by smtp.gmail.com with ESMTPSA id f9sm3722934iow.47.2020.05.18.03.04.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 May 2020 03:04:51 -0700 (PDT)
-Received: by mail-il1-f179.google.com with SMTP id j3so9204077ilk.11
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 03:04:51 -0700 (PDT)
-X-Received: by 2002:a92:b001:: with SMTP id x1mr5174498ilh.18.1589796290578;
- Mon, 18 May 2020 03:04:50 -0700 (PDT)
+        Mon, 18 May 2020 06:05:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589796327;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=Za7fjQxZACKJjDltMjyMqwc1e+IzrhgqtXCvMmBS57g=;
+        b=iBrIcwCUrJHpneaXcrUK6MbbPw6WWZt42HoqbDJI0r/vzyeLYLcfjQxRG2JB8J9X0AXfpr
+        W4PrmlyTtTg1SSBNhw1Jd5C59liqshbm/ukNLfslZ/Y6vl4L+ftyvzLLwSJAjzk4Praw2/
+        6tzHsXs68zltANtMKGUFvr5Uos6v/ok=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-279-x-pLVFO2MzSBvxH8D4ZNCg-1; Mon, 18 May 2020 06:05:24 -0400
+X-MC-Unique: x-pLVFO2MzSBvxH8D4ZNCg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00F6F1800D42;
+        Mon, 18 May 2020 10:05:23 +0000 (UTC)
+Received: from [10.36.113.224] (ovpn-113-224.ams2.redhat.com [10.36.113.224])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CAC1582A16;
+        Mon, 18 May 2020 10:05:21 +0000 (UTC)
+Subject: Re: [PATCH] mm/page_alloc: Restrict and formalize
+ compound_page_dtors[]
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+References: <1589795958-19317-1-git-send-email-anshuman.khandual@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+Organization: Red Hat GmbH
+Message-ID: <3261e416-2454-d6c5-a962-724df39cdbab@redhat.com>
+Date:   Mon, 18 May 2020 12:05:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200506072314.112409-1-tientzu@chromium.org> <20200506072314.112409-2-tientzu@chromium.org>
- <20200515124621.GB1888557@kroah.com>
-In-Reply-To: <20200515124621.GB1888557@kroah.com>
-From:   Claire Chang <tientzu@chromium.org>
-Date:   Mon, 18 May 2020 18:04:39 +0800
-X-Gmail-Original-Message-ID: <CALiNf2_ukL1Ogk3MW5_DSCXHcVxTaE2Rv_JkF+hi7E-8XfrBxw@mail.gmail.com>
-Message-ID: <CALiNf2_ukL1Ogk3MW5_DSCXHcVxTaE2Rv_JkF+hi7E-8XfrBxw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] serdev: ttyport: add devt for tty port
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     robh@kernel.org, jslaby@suse.com, long.cheng@mediatek.com,
-        changqi.hu@mediatek.com, linux-serial@vger.kernel.org,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1589795958-19317-1-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 8:46 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Wed, May 06, 2020 at 03:23:12PM +0800, Claire Chang wrote:
-> > serial_match_port() uses devt to match devices. However, when serdev
-> > registers a tty port, devt has never been set. This makes
-> > device_find_child() always return NULL.
-> >
-> > Assign devt in serdev_tty_port_register() to fix this.
-> >
-> > Signed-off-by: Claire Chang <tientzu@chromium.org>
-> > ---
-> >  drivers/tty/serdev/serdev-ttyport.c | 2 ++
-> >  1 file changed, 2 insertions(+)
->
-> So is existing code broken because of this?  Or does no one ever call
-> device_find_child() on this?  Who needs/uses this?
->
-> thanks,
->
-> greg k-h
+On 18.05.20 11:59, Anshuman Khandual wrote:
+> Restrict elements in compound_page_dtors[] array per NR_COMPOUND_DTORS and
+> explicitly position them according to enum compound_dtor_id. This improves
+> protection against possible misalignment between compound_page_dtors[] and
+> enum compound_dtor_id later on.
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  include/linux/mm.h |  2 +-
+>  mm/page_alloc.c    | 10 +++++-----
+>  2 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 688558c57751..d1bd7736a5e5 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -856,7 +856,7 @@ enum compound_dtor_id {
+>  #endif
+>  	NR_COMPOUND_DTORS,
+>  };
+> -extern compound_page_dtor * const compound_page_dtors[];
+> +extern compound_page_dtor * const compound_page_dtors[NR_COMPOUND_DTORS];
+>  
+>  static inline void set_compound_page_dtor(struct page *page,
+>  		enum compound_dtor_id compound_dtor)
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index cef05d3a23f5..2e4c23b34940 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -302,14 +302,14 @@ const char * const migratetype_names[MIGRATE_TYPES] = {
+>  #endif
+>  };
+>  
+> -compound_page_dtor * const compound_page_dtors[] = {
+> -	NULL,
+> -	free_compound_page,
+> +compound_page_dtor * const compound_page_dtors[NR_COMPOUND_DTORS] = {
+> +	[NULL_COMPOUND_DTOR] = NULL,
+> +	[COMPOUND_PAGE_DTOR] = free_compound_page,
+>  #ifdef CONFIG_HUGETLB_PAGE
+> -	free_huge_page,
+> +	[HUGETLB_PAGE_DTOR] = free_huge_page,
+>  #endif
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -	free_transhuge_page,
+> +	[TRANSHUGE_PAGE_DTOR] = free_transhuge_page,
+>  #endif
+>  };
+>  
+> 
 
-I'm not sure. Our use case is to control the wake on bluetooth
-behavior by the power/wakeup node.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-`readlink -f /sys/class/bluetooth/hci0`
-/sys/devices/platform/soc/11003000.serial/serial0/serial0-0/bluetooth/hci0
-
-and we'd like to use
-`/sys/devices/platform/soc/11003000.serial/serial0/power/wakeup` to
-decide whether to enable the in-band wakeup on uart host side.
-
+-- 
 Thanks,
-Claire
+
+David / dhildenb
+
