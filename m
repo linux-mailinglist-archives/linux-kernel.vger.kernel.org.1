@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EA21D82C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106B91D83DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731234AbgERR7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:59:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39194 "EHLO mail.kernel.org"
+        id S2387478AbgERSIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:08:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731999AbgERR7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:59:07 -0400
+        id S2387457AbgERSH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:07:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1C69207D3;
-        Mon, 18 May 2020 17:59:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEEA620671;
+        Mon, 18 May 2020 18:07:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824747;
-        bh=YSPe1livLa9ajmbYeUYS17498NRPX2FUCt/YUQrxklU=;
+        s=default; t=1589825277;
+        bh=PohRqmfAs2f/sUR7D6+FHLMFJ38MEbs5ngp267iS3Bg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vRs8gL0luwJ+25rqlne7E9dlVYqdU3lpQguca0gh7E2Ct2XDgxd8+QZjzG6xbPF/f
-         V9mcJFXXoRuoWPgKyra1hmm6RCfhqeqC/a4SmtXOR3/Jz683CWdLugas2vcIjmMKtk
-         IfLCNIWE4ZeyMwtsXMWY4qX0SAA30cle+Qz7HowQ=
+        b=wLQ7CxJ4lVPZtjoTSN0vI+lYQS6miDoyxdeSvNb8ooyF9QHkO9yIJyhUHGR2DIHao
+         fL89vM0BbTcaCuNUVHrDFEAIKre0pU+I8zHZpY5W3P/PDjBemVK3bioICvcYOHpdaG
+         3+ZMyS+MdAFFKbnQJ7sQ3WmVuZ3yJanEwL9omHPo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH 5.4 136/147] arm64: dts: rockchip: Rename dwc3 device nodes on rk3399 to make dtc happy
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 5.6 169/194] usb: gadget: legacy: fix error return code in cdc_bind()
 Date:   Mon, 18 May 2020 19:37:39 +0200
-Message-Id: <20200518173530.153616983@linuxfoundation.org>
+Message-Id: <20200518173545.294329710@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen-Yu Tsai <wens@csie.org>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-commit 190c7f6fd43a776d4a6da1dac44408104649e9b7 upstream.
+commit e8f7f9e3499a6d96f7f63a4818dc7d0f45a7783b upstream.
 
-The device tree compiler complains that the dwc3 nodes have regs
-properties but no matching unit addresses.
+If 'usb_otg_descriptor_alloc()' fails, we must return a
+negative error code -ENOMEM, not 0.
 
-Add the unit addresses to the device node name. While at it, also rename
-the nodes from "dwc3" to "usb", as guidelines require device nodes have
-generic names.
-
-Fixes: 7144224f2c2b ("arm64: dts: rockchip: support dwc3 USB for rk3399")
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-Link: https://lore.kernel.org/r/20200327030414.5903-7-wens@kernel.org
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Fixes: ab6796ae9833 ("usb: gadget: cdc2: allocate and init otg descriptor by otg capabilities")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/boot/dts/rockchip/rk3399.dtsi |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/legacy/cdc2.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -410,7 +410,7 @@
- 		reset-names = "usb3-otg";
- 		status = "disabled";
+--- a/drivers/usb/gadget/legacy/cdc2.c
++++ b/drivers/usb/gadget/legacy/cdc2.c
+@@ -179,8 +179,10 @@ static int cdc_bind(struct usb_composite
+ 		struct usb_descriptor_header *usb_desc;
  
--		usbdrd_dwc3_0: dwc3 {
-+		usbdrd_dwc3_0: usb@fe800000 {
- 			compatible = "snps,dwc3";
- 			reg = <0x0 0xfe800000 0x0 0x100000>;
- 			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH 0>;
-@@ -446,7 +446,7 @@
- 		reset-names = "usb3-otg";
- 		status = "disabled";
- 
--		usbdrd_dwc3_1: dwc3 {
-+		usbdrd_dwc3_1: usb@fe900000 {
- 			compatible = "snps,dwc3";
- 			reg = <0x0 0xfe900000 0x0 0x100000>;
- 			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH 0>;
+ 		usb_desc = usb_otg_descriptor_alloc(gadget);
+-		if (!usb_desc)
++		if (!usb_desc) {
++			status = -ENOMEM;
+ 			goto fail1;
++		}
+ 		usb_otg_descriptor_init(gadget, usb_desc);
+ 		otg_desc[0] = usb_desc;
+ 		otg_desc[1] = NULL;
 
 
