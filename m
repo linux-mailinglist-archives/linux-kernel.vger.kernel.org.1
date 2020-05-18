@@ -2,235 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5D31D6EF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 04:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9AB61D6F04
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 04:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbgERCea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 22:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726639AbgERCeY (ORCPT
+        id S1726730AbgERCg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 22:36:59 -0400
+Received: from [115.28.160.31] ([115.28.160.31]:47348 "EHLO
+        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S1726675AbgERCg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 22:34:24 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24ECBC061A0C;
-        Sun, 17 May 2020 19:34:24 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id v16so4094344ljc.8;
-        Sun, 17 May 2020 19:34:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ZobNRLV9OWt6qIUL1QmRkgHnNT9DqVov1qFrkfSpiCI=;
-        b=PevFPDYwTg51DhCU0WRAtF8Z9CWyayamnL10HfK/7K5D1rq4p6VwiSCbESN8VENPE9
-         yHb+rQ1ovfl5JfcuqX5naqvWLQXcHe4LQgN3WevhRMjql5vJ8AT+KDcm3aXg2WyCcV9F
-         jGNcmSOhVLpcRw+uPEa7z5qacOzt4t+b8S//2tHh/vRca8fWOeSfRvnpB7ssRWXai9mN
-         Mb59FjRz83c17rnrlgn54leQ4X5Cb5YDl8WV0l3CoLf6mmJLa9zZNrCTWV2yf2edjyIw
-         DFOz054bKsPQblOzAGm1h4c6q5kejWW8rDYL8DvaLwJfMNyUcUc44hxusJcfbrE9mfTS
-         IdEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ZobNRLV9OWt6qIUL1QmRkgHnNT9DqVov1qFrkfSpiCI=;
-        b=uTAF5ffEAvg0pH0J1vZakI75D7fMfwuSMeCIINju+GPe5QYNr6wCnL6IPR9ORN/0nY
-         qkk7fxooKNunh2YeJW4kEIJ1r1Sl/LBObGRCE8Dy5IVv3u9T9ifSZtXKe2/AhGRMnxC8
-         3IEAL+vXOtCgSPVywH2TM8Xr4dscJYwoJUAd5JPXoP6I5hP50onfU+FsOIQo4ma9GCRh
-         cIYX+RP/mX+gIHTZBdJQkXs/AkdEDcduDO5CPANyG0SNCzIFvRSEbJp5SlM+oxU/aeIk
-         4EakCJ8835Mr+PvBT355IqBJlYmLk3EPBVz72MfyrFSRylk0BcK6+/RPHpGAaiFKcknd
-         mTFQ==
-X-Gm-Message-State: AOAM5338mMjbDZ0nl62G81JJmoio2MCiTPSZl9AeQjySxB4jJ3JGSvIV
-        ZGc28T11Tie3ks7qtzdavg8=
-X-Google-Smtp-Source: ABdhPJysCVGFHawMTSPlh1SZPjYAZ2UlgS4CLocXXMABHW3XAGJAzP1znfMugoyPXMakrnGdxkenug==
-X-Received: by 2002:a2e:3517:: with SMTP id z23mr8912474ljz.147.1589769262610;
-        Sun, 17 May 2020 19:34:22 -0700 (PDT)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id l25sm5937498lfh.71.2020.05.17.19.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 May 2020 19:34:22 -0700 (PDT)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH v3 5/5] arm64: dts: meson-g12b-gtking-pro: add initial device-tree
-Date:   Mon, 18 May 2020 02:34:04 +0000
-Message-Id: <20200518023404.15166-6-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200518023404.15166-1-christianshewitt@gmail.com>
-References: <20200518023404.15166-1-christianshewitt@gmail.com>
+        Sun, 17 May 2020 22:36:58 -0400
+Received: from hanazono.local (unknown [116.236.177.50])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 84462600B4;
+        Mon, 18 May 2020 10:36:55 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
+        t=1589769415; bh=454XuQiZGJz74cqtV7Y1qbVoNSIrGmbj8yrfjhw0qtA=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=r3dnNW0elBCA4uWOORwzxVfGu+MZYQZY5rf9WnjOjHMW4w1ENP0tmK2bxFzTxCRQF
+         buFI2C018iaYYJtrMtnOZhcE/N9aAjs/MHQGNu9umix9eCXGTfLUj7JjhV+ZYvPQ1L
+         AIIpkezGmUSwdws1Ks2PmJ0jy3WxMR2ieZIiU+Es=
+Subject: Re: [PATCH] MIPS: Loongson: Add support for serial console
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+References: <1589612588-29196-1-git-send-email-yangtiezhu@loongson.cn>
+ <5aadf1a7-51c7-453e-beaa-3df6ceca5354@xen0n.name>
+ <d5fde4bc-69a9-c9c0-70de-106968ecc7c4@loongson.cn>
+From:   WANG Xuerui <kernel@xen0n.name>
+Message-ID: <b9317e89-24e6-8ed1-96c2-12f82b8a7049@xen0n.name>
+Date:   Mon, 18 May 2020 10:36:55 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.0a1
+MIME-Version: 1.0
+In-Reply-To: <d5fde4bc-69a9-c9c0-70de-106968ecc7c4@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Shenzen AZW (Beelink) GT-King Pro is based on the Amlogic W400
-reference board with an S922X chip.
+On 2020/5/18 09:08, Tiezhu Yang wrote:
 
-- 4GB LPDDR4 RAM
-- 64GB eMMC storage
-- 10/100/1000 Base-T Ethernet
-- AP6356S Wireless (802.11 a/b/g/n/ac, BT 4.1)
-- HDMI 2.1 video
-- Analogue audio output
-- 1x RS232 port
-- 2x USB 2.0 port
-- 2x USB 3.0 ports
-- IR receiver
-- 1x micro SD card slot
-- 1x Power on/off button
+> On 05/16/2020 07:09 PM, WANG Xuerui wrote:
+>> On 5/16/20 3:03 PM, Tiezhu Yang wrote:
+>>
+>>> After commit 87fcfa7b7fe6 ("MIPS: Loongson64: Add generic dts"),
+>>> there already exists the node and property of Loongson CPU UART0
+>>> in loongson3-package.dtsi:
+>>>
+>>> cpu_uart0: serial@1fe001e0 {
+>>>          compatible = "ns16550a";
+>>>          reg = <0 0x1fe001e0 0x8>;
+>>>          clock-frequency = <33000000>;
+>>>          interrupt-parent = <&liointc>;
+>>>          interrupts = <10 IRQ_TYPE_LEVEL_HIGH>;
+>>>          no-loopback-test;
+>>> };
+>>>
+>>> In order to support for serial console on the Loongson platform,
+>>> add CONFIG_SERIAL_OF_PLATFORM=y to loongson3_defconfig.
+>>>
+>>> With this patch, we can see the following boot message:
+>>>
+>>> [    1.877745] printk: console [ttyS0] disabled
+>>> [    1.881979] 1fe001e0.serial: ttyS0 at MMIO 0x1fe001e0 (irq = 16, 
+>>> base_baud = 2062500) is a 16550A
+>>> [    1.890838] printk: console [ttyS0] enabled
+>>>
+>>> And also, we can login normally from the serial console.
+>>>
+>>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>>> ---
+>>>
+>>> Hi Jiaxun,
+>>>
+>>> Thank you very much for your suggestion.
+>>>
+>>>   arch/mips/configs/loongson3_defconfig | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/arch/mips/configs/loongson3_defconfig 
+>>> b/arch/mips/configs/loongson3_defconfig
+>>> index 6768c16..cd95f08 100644
+>>> --- a/arch/mips/configs/loongson3_defconfig
+>>> +++ b/arch/mips/configs/loongson3_defconfig
+>>> @@ -217,6 +217,7 @@ CONFIG_SERIAL_8250_EXTENDED=y
+>>>   CONFIG_SERIAL_8250_MANY_PORTS=y
+>>>   CONFIG_SERIAL_8250_SHARE_IRQ=y
+>>>   CONFIG_SERIAL_8250_RSA=y
+>>> +CONFIG_SERIAL_OF_PLATFORM=y
+>>>   CONFIG_HW_RANDOM=y
+>>>   CONFIG_RAW_DRIVER=m
+>>>   CONFIG_I2C_CHARDEV=y
+>>
+>> Hi,
+>>
+>> The patch title is again exaggerating things. This is a defconfig 
+>> change, so please refer to `git log` output of `arch/mips/configs` 
+>> and use something like "MIPS: Loongson: loongson3_defconfig: enable 
+>> serial console" or "MIPS: Loongson: enable serial console in 
+>> defconfig". The current title reads as if Loongson kernels never were 
+>> able to use a serial console in the past.
+>
+> Hi Xuerui,
+>
+> Thanks for your suggestion.
+>
+> We can not use the serial console without this patch,
+> so I use the current patch subject.
 
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
----
- arch/arm64/boot/dts/amlogic/Makefile          |   1 +
- .../dts/amlogic/meson-g12b-gtking-pro.dts     | 125 ++++++++++++++++++
- 2 files changed, 126 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-gtking-pro.dts
+One can always use their own config to build in whatever support they 
+want. Only people blindly following defconfig are affected. That's why I 
+think the original patch title is exaggerating.
 
-diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-index 66691090b30c..38bb1f6e6ef6 100644
---- a/arch/arm64/boot/dts/amlogic/Makefile
-+++ b/arch/arm64/boot/dts/amlogic/Makefile
-@@ -5,6 +5,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-g12a-tanix-tx5max.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12a-u200.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12a-x96-max.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gtking.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gtking-pro.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-a311d-khadas-vim3.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-s922x-khadas-vim3.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-odroid-n2.dtb
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-gtking-pro.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-gtking-pro.dts
-new file mode 100644
-index 000000000000..f0c56a16af3d
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-gtking-pro.dts
-@@ -0,0 +1,125 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2019 BayLibre, SAS
-+ * Author: Neil Armstrong <narmstrong@baylibre.com>
-+ * Copyright (c) 2019 Christian Hewitt <christianshewitt@gmail.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include "meson-g12b-w400.dtsi"
-+#include <dt-bindings/sound/meson-g12a-tohdmitx.h>
-+
-+/ {
-+	compatible = "azw,gtking", "amlogic,g12b";
-+	model = "Beelink GT-King Pro";
-+
-+	gpio-keys-polled {
-+		compatible = "gpio-keys-polled";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		poll-interval = <100>;
-+
-+		power-button {
-+			label = "power";
-+			linux,code = <KEY_POWER>;
-+			gpios = <&gpio_ao GPIOAO_3 GPIO_ACTIVE_HIGH>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		white {
-+			label = "power:white";
-+			gpios = <&gpio_ao GPIOAO_11 GPIO_ACTIVE_HIGH>;
-+			default-state = "on";
-+		};
-+	};
-+
-+	sound {
-+		compatible = "amlogic,axg-sound-card";
-+		model = "G12B-GTKING-PRO";
-+		audio-aux-devs = <&tdmout_b>;
-+		audio-routing = "TDMOUT_B IN 0", "FRDDR_A OUT 1",
-+				"TDMOUT_B IN 1", "FRDDR_B OUT 1",
-+				"TDMOUT_B IN 2", "FRDDR_C OUT 1",
-+				"TDM_B Playback", "TDMOUT_B OUT";
-+
-+		assigned-clocks = <&clkc CLKID_MPLL2>,
-+				  <&clkc CLKID_MPLL0>,
-+				  <&clkc CLKID_MPLL1>;
-+		assigned-clock-parents = <0>, <0>, <0>;
-+		assigned-clock-rates = <294912000>,
-+				       <270950400>,
-+				       <393216000>;
-+		status = "okay";
-+
-+		dai-link-0 {
-+			sound-dai = <&frddr_a>;
-+		};
-+
-+		dai-link-1 {
-+			sound-dai = <&frddr_b>;
-+		};
-+
-+		dai-link-2 {
-+			sound-dai = <&frddr_c>;
-+		};
-+
-+		/* 8ch hdmi interface */
-+		dai-link-3 {
-+			sound-dai = <&tdmif_b>;
-+			dai-format = "i2s";
-+			dai-tdm-slot-tx-mask-0 = <1 1>;
-+			dai-tdm-slot-tx-mask-1 = <1 1>;
-+			dai-tdm-slot-tx-mask-2 = <1 1>;
-+			dai-tdm-slot-tx-mask-3 = <1 1>;
-+			mclk-fs = <256>;
-+
-+			codec {
-+				sound-dai = <&tohdmitx TOHDMITX_I2S_IN_B>;
-+			};
-+		};
-+
-+		dai-link-4 {
-+			sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
-+
-+			codec {
-+				sound-dai = <&hdmi_tx>;
-+			};
-+		};
-+	};
-+};
-+
-+&arb {
-+	status = "okay";
-+};
-+
-+&clkc_audio {
-+	status = "okay";
-+};
-+
-+&frddr_a {
-+	status = "okay";
-+};
-+
-+&frddr_b {
-+	status = "okay";
-+};
-+
-+&frddr_c {
-+	status = "okay";
-+};
-+
-+&tdmif_b {
-+	status = "okay";
-+};
-+
-+&tdmout_b {
-+	status = "okay";
-+};
-+
-+&tohdmitx {
-+	status = "okay";
-+};
--- 
-2.17.1
-
+>
+> Anyway, let me modify the patch subject to make it more accurate,
+> I think the following is better:
+> "MIPS: Loongson: Enable devicetree based probing for 8250 ports"
+>
+> drivers/tty/serial/8250/Kconfig:
+> config SERIAL_OF_PLATFORM
+>         tristate "Devicetree based probing for 8250 ports"
+>
+> I will send v2 later.
+>
+No problem. Just make it clear that these are defconfig changes so 
+people don't misunderstand, even if they're otherwise unfamiliar with 
+the current state of things.
+> Thanks,
+> Tiezhu Yang
+>
