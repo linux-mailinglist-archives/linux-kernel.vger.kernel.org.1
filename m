@@ -2,80 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203111D7A6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4751D7A79
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgERNwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 09:52:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726800AbgERNwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 09:52:34 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 359B620674;
-        Mon, 18 May 2020 13:52:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589809953;
-        bh=FoiYOz4QyATjVtvdKit+fH6+X62jW8zsWpf3orvuR0o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TAlJYXMMZPIGoj5i+W8MUJP0XoNSSMUHGxPeM8QWX0jg1p1dZCt0MNfdW6ku7MAv8
-         y8r2GTZLOg48MhSu4Bag6l3x0GlK+TU0MFOj71N8O7J9FvkIYcM0H8NjXqv5qf2Tlp
-         uctkHwR5+RSeZrcCawxBQYukK+AmCsmSqTaLFkhE=
-Date:   Mon, 18 May 2020 14:52:29 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@am.com>,
-        Jann Horn <jannh@google.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@android.com
-Subject: Re: [PATCH 0/6] Clean up Shadow Call Stack patches for 5.8
-Message-ID: <20200518135228.GI32394@willie-the-truck>
-References: <20200515172756.27185-1-will@kernel.org>
- <CABCJKucXmMD82mQ0rSMjfByXD42htTjkde3TsKTVP-jvuqkZwQ@mail.gmail.com>
+        id S1727911AbgERNzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 09:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726940AbgERNzF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 09:55:05 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6279DC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 06:55:05 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 10B08386; Mon, 18 May 2020 15:55:04 +0200 (CEST)
+Date:   Mon, 18 May 2020 15:55:02 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Joerg Roedel <jroedel@suse.de>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v2 23/33] iommu/mediatek-v1 Convert to
+ probe/release_device() call-backs
+Message-ID: <20200518135502.GE18353@8bytes.org>
+References: <20200414131542.25608-1-joro@8bytes.org>
+ <20200414131542.25608-24-joro@8bytes.org>
+ <1589528699.26119.9.camel@mhfsdcap03>
+ <20200515100718.GS18353@8bytes.org>
+ <1589784680.15083.19.camel@mhfsdcap03>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABCJKucXmMD82mQ0rSMjfByXD42htTjkde3TsKTVP-jvuqkZwQ@mail.gmail.com>
+In-Reply-To: <1589784680.15083.19.camel@mhfsdcap03>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 01:42:40PM -0700, Sami Tolvanen wrote:
-> On Fri, May 15, 2020 at 10:28 AM Will Deacon <will@kernel.org> wrote:
-> > Will Deacon (6):
-> >   arm64: scs: Store absolute SCS stack pointer value in thread_info
-> >   scs: Move accounting into alloc/free functions
-> >   arm64: scs: Use 'scs_sp' register alias for x18
-> >   scs: Move scs_overflow_check() out of architecture code
-> >   scs: Remove references to asm/scs.h from core code
-> >   scs: Move DEFINE_SCS macro into core code
-> >
-> >  arch/Kconfig                         |  4 +--
-> >  arch/arm64/include/asm/scs.h         | 29 ++++------------
-> >  arch/arm64/include/asm/thread_info.h |  4 +--
-> >  arch/arm64/kernel/asm-offsets.c      |  2 +-
-> >  arch/arm64/kernel/entry.S            | 10 +++---
-> >  arch/arm64/kernel/head.S             |  2 +-
-> >  arch/arm64/kernel/process.c          |  2 --
-> >  arch/arm64/kernel/scs.c              |  6 +---
-> >  include/linux/scs.h                  | 16 +++++----
-> >  kernel/sched/core.c                  |  3 ++
-> >  kernel/scs.c                         | 52 +++++++++++++---------------
-> >  11 files changed, 55 insertions(+), 75 deletions(-)
-> >
-> > --
-> > 2.26.2.761.g0e0b3e54be-goog
+Hi,
+
+On Mon, May 18, 2020 at 02:51:20PM +0800, Yong Wu wrote:
+> below is my local patch. split "dma_attach" to attach_device and
+> probe_finalize. About attach_device, Use the existed
+> __iommu_attach_group instead. Then rename from the "dma_attach" to
+> "probe_finalize" to do the probe_finalize job. And move it outside of
+> the mutex_unlock.
 > 
-> Thanks, Will. I tested these on my SCS tree and didn't run into any
-> issues. Looks good to me.
+> I'm not sure if it is right. and of course I will test if you have any
+> other solution. Thanks.
+> 
+> 
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -1665,26 +1665,20 @@ static void probe_alloc_default_domain(struct
+> bus_type *bus,
+>  
+>  }
+>  
+> -static int iommu_group_do_dma_attach(struct device *dev, void *data)
+> +static int iommu_group_do_probe_finalize(struct device *dev, void
+> *data)
+>  {
+>  	struct iommu_domain *domain = data;
+> -	const struct iommu_ops *ops;
+> -	int ret;
+> -
+> -	ret = __iommu_attach_device(domain, dev);
+> -
+> -	ops = domain->ops;
+> +	const struct iommu_ops *ops = domain->ops;
+>  
+> -	if (ret == 0 && ops->probe_finalize)
+> +	if (ops->probe_finalize)
+>  		ops->probe_finalize(dev);
+> -
+> -	return ret;
+> +	return 0;
+>  }
+>  
+> -static int __iommu_group_dma_attach(struct iommu_group *group)
+> +static int iommu_group_probe_finalize(struct iommu_group *group)
+>  {
+>  	return __iommu_group_for_each_dev(group, group->default_domain,
+> -					  iommu_group_do_dma_attach);
+> +					  iommu_group_do_probe_finalize);
+>  }
+>  
+>  static int iommu_do_create_direct_mappings(struct device *dev, void
+> *data)
+> @@ -1731,12 +1725,14 @@ int bus_iommu_probe(struct bus_type *bus)
+>  
+>  		iommu_group_create_direct_mappings(group);
+>  
+> -		ret = __iommu_group_dma_attach(group);
+> +		ret = __iommu_attach_group(group->default_domain, group);
+>  
+>  		mutex_unlock(&group->mutex);
+>  
+>  		if (ret)
+>  			break;
+> +
+> +		iommu_group_probe_finalize(group);
+>  	}
+>  
+>  	return ret;
+> -- 
 
-Cheers, Sami. Can I add your 'Tested-by' to the patches, please?
+Yes, I think moving the probe_finalize call out of the group->mutex
+section is the right fix for this issue.
 
-Will
+Thanks for reporting it and working on a fix.
+
+
+Regards,
+
+	Joerg
