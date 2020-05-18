@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B2E1D8645
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169391D86EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730955AbgERSYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:24:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49104 "EHLO mail.kernel.org"
+        id S1729236AbgERRlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:41:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729179AbgERRsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:48:18 -0400
+        id S1728547AbgERRk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:40:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3CEAD20671;
-        Mon, 18 May 2020 17:48:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1ED2520657;
+        Mon, 18 May 2020 17:40:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824097;
-        bh=B1k6/ieFLe0du67HPDRc6ybeufLWj68xmLG/knItTo8=;
+        s=default; t=1589823657;
+        bh=YNrWYBeTxYdb0O+DbcPxCij4hDjcu6RrXCU7kSPbevw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ovWZOqirt4qeabivLvTwX6tGqkhrQadAEUzOwA8iB3jD39Jb8Ac2NBj8a8dlPtlqI
-         9eB95Fu9/f9UOlC6Nk70mLdIW5YbZAStZKwcpFJMnf4fq6s3la0kt2HlHSSJ65F1PA
-         ZrAwGp5nhi2zKOzvvZRszM1X91cZktR8/5dld9QQ=
+        b=XArpVYw1UUGEX0OXRCNPFAJV/0SOriWcfHweIhBnJq45AwAiukg3T7ZUxDtj+ikWU
+         aswbBRk07MOVvxMrkhIlhx5Cr2HCPhqrryX9F5H6v3MMPfdf35fNo2Ck95j0Uz53JX
+         zt0NPx5f/utQ0EyDqWGf3GfbVu52to8LXwIxbZ/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Samu Nuutamo <samu.nuutamo@vincit.fi>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 069/114] hwmon: (da9052) Synchronize access with mfd
+        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Colin Walters <walters@redhat.com>
+Subject: [PATCH 4.4 70/86] net: ipv4: really enforce backoff for redirects
 Date:   Mon, 18 May 2020 19:36:41 +0200
-Message-Id: <20200518173515.539219851@linuxfoundation.org>
+Message-Id: <20200518173504.516498385@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samu Nuutamo <samu.nuutamo@vincit.fi>
+From: Paolo Abeni <pabeni@redhat.com>
 
-[ Upstream commit 333e22db228f0bd0c839553015a6a8d3db4ba569 ]
+[ Upstream commit 57644431a6c2faac5d754ebd35780cf43a531b1a ]
 
-When tsi-as-adc is configured it is possible for in7[0123]_input read to
-return an incorrect value if a concurrent read to in[456]_input is
-performed. This is caused by a concurrent manipulation of the mux
-channel without proper locking as hwmon and mfd use different locks for
-synchronization.
+In commit b406472b5ad7 ("net: ipv4: avoid mixed n_redirects and
+rate_tokens usage") I missed the fact that a 0 'rate_tokens' will
+bypass the backoff algorithm.
 
-Switch hwmon to use the same lock as mfd when accessing the TSI channel.
+Since rate_tokens is cleared after a redirect silence, and never
+incremented on redirects, if the host keeps receiving packets
+requiring redirect it will reply ignoring the backoff.
 
-Fixes: 4f16cab19a3d5 ("hwmon: da9052: Add support for TSI channel")
-Signed-off-by: Samu Nuutamo <samu.nuutamo@vincit.fi>
-[rebase to current master, reword commit message slightly]
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Additionally, the 'rate_last' field will be updated with the
+cadence of the ingress packet requiring redirect. If that rate is
+high enough, that will prevent the host from generating any
+other kind of ICMP messages
+
+The check for a zero 'rate_tokens' value was likely a shortcut
+to avoid the more complex backoff algorithm after a redirect
+silence period. Address the issue checking for 'n_redirects'
+instead, which is incremented on successful redirect, and
+does not interfere with other ICMP replies.
+
+Fixes: b406472b5ad7 ("net: ipv4: avoid mixed n_redirects and rate_tokens usage")
+Reported-and-tested-by: Colin Walters <walters@redhat.com>
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hwmon/da9052-hwmon.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/ipv4/route.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/da9052-hwmon.c b/drivers/hwmon/da9052-hwmon.c
-index a973eb6a28908..9e44d2385e6f9 100644
---- a/drivers/hwmon/da9052-hwmon.c
-+++ b/drivers/hwmon/da9052-hwmon.c
-@@ -250,9 +250,9 @@ static ssize_t da9052_read_tsi(struct device *dev,
- 	int channel = to_sensor_dev_attr(devattr)->index;
- 	int ret;
- 
--	mutex_lock(&hwmon->hwmon_lock);
-+	mutex_lock(&hwmon->da9052->auxadc_lock);
- 	ret = __da9052_read_tsi(dev, channel);
--	mutex_unlock(&hwmon->hwmon_lock);
-+	mutex_unlock(&hwmon->da9052->auxadc_lock);
- 
- 	if (ret < 0)
- 		return ret;
--- 
-2.20.1
-
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -898,7 +898,7 @@ void ip_rt_send_redirect(struct sk_buff
+ 	/* Check for load limit; set rate_last to the latest sent
+ 	 * redirect.
+ 	 */
+-	if (peer->rate_tokens == 0 ||
++	if (peer->n_redirects == 0 ||
+ 	    time_after(jiffies,
+ 		       (peer->rate_last +
+ 			(ip_rt_redirect_load << peer->n_redirects)))) {
 
 
