@@ -2,87 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326AC1D82BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D881D82D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731971AbgERR6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:58:52 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11062 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731953AbgERR6r (ORCPT
+        id S1732091AbgERR7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:59:39 -0400
+Received: from rcdn-iport-8.cisco.com ([173.37.86.79]:28443 "EHLO
+        rcdn-iport-8.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732068AbgERR7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:58:47 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04IHWN5m007797;
-        Mon, 18 May 2020 13:58:46 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 312btudkax-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 May 2020 13:58:45 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04IHuMJv014543;
-        Mon, 18 May 2020 17:58:42 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 313xehg28h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 May 2020 17:58:42 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04IHwedg65339580
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 May 2020 17:58:40 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3A97B5204E;
-        Mon, 18 May 2020 17:58:40 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.145.145])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id B5FBF52050;
-        Mon, 18 May 2020 17:58:39 +0000 (GMT)
-Message-ID: <1589824719.5111.126.camel@linux.ibm.com>
-Subject: Re: [GIT PULL] integrity subsystem fixes for v5.7
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Mon, 18 May 2020 13:58:39 -0400
-In-Reply-To: <CAHk-=wh_Zw7ug+iMALAKfQkdyVAUWC0UB0bfRRPMOCC7U5uTFQ@mail.gmail.com>
-References: <1589816971.5111.113.camel@linux.ibm.com>
-         <CAHk-=wh_Zw7ug+iMALAKfQkdyVAUWC0UB0bfRRPMOCC7U5uTFQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-18_06:2020-05-15,2020-05-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- priorityscore=1501 malwarescore=0 mlxscore=0 mlxlogscore=812
- impostorscore=0 spamscore=0 clxscore=1015 cotscore=-2147483648
- lowpriorityscore=0 adultscore=0 phishscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005180143
+        Mon, 18 May 2020 13:59:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=3585; q=dns/txt; s=iport;
+  t=1589824772; x=1591034372;
+  h=from:to:cc:subject:date:message-id;
+  bh=E6wUvoksm92tkLhsV1QtOJo4fFsp8OB5V3olcAzEjgg=;
+  b=Bq6LSuSWVMotaEP+8pzwkcyHPVffmS2ILZfzRQBhAXcx5epuTQDy5uyY
+   qf/v0/4B2cBs2/aDHG303Ayrsfj7dOXp5r/4rp55nN4gY+5aKBNF7yV5b
+   c4l38+sa+lWU9VKm4J5+gpPAnqP729NbBwoGtp40eQQ95Ivv2blvTX+EO
+   s=;
+X-IronPort-AV: E=Sophos;i="5.73,407,1583193600"; 
+   d="scan'208";a="768458442"
+Received: from rcdn-core-10.cisco.com ([173.37.93.146])
+  by rcdn-iport-8.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 18 May 2020 17:59:31 +0000
+Received: from zorba.cisco.com ([10.24.1.223])
+        by rcdn-core-10.cisco.com (8.15.2/8.15.2) with ESMTP id 04IHxUGK000659;
+        Mon, 18 May 2020 17:59:31 GMT
+From:   Daniel Walker <danielwa@cisco.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Bobby Liu <bobbliu@cisco.com>, xe-linux-external@cisco.com,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] mtd: spi-nor: create/Export parameter softwareseq for intel-spi driver to user
+Date:   Mon, 18 May 2020 10:59:29 -0700
+Message-Id: <20200518175930.10948-1-danielwa@cisco.com>
+X-Mailer: git-send-email 2.17.1
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 10.24.1.223, [10.24.1.223]
+X-Outbound-Node: rcdn-core-10.cisco.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-05-18 at 10:47 -0700, Linus Torvalds wrote:
-> On Mon, May 18, 2020 at 8:49 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
-> >
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git next-integrity.fixes
-> 
-> No such head.
-> 
-> It looks like the plain 'fixes' branch has the same commit ID, but
-> there's no next-integrity.fixes.
+From: Bobby Liu <bobbliu@cisco.com>
 
-Ugh, that's the name of my local branch.  The remote branch is "fixes"
-as you figured out.
+How to use:
+append softwareseq=1 while probe the driver.
+example:
+modprobe intel-spi writeable=1 softwareseq=1
+it will let driver use software sequence to write register for opt=EN4B
+by default it's 0 if not specified, driver will do usual HW cycle
 
-> 
-> Btw, any chance you could start using signed tags? I've been
-> encouraging people to do that even on kernel.org, and we've got fairly
-> high coverage these days..
+Why this parameter is posted to user:
+Intel PCH provides two groups of registers for SPI flash operation,
+Hard Sequence registers and Software Sequence registers,
+corresponding to intel_spi_hw_cycle() and intel_spi_sw_cycle()
+respectively in driver code. But HW sequence register won't send EN4B
+opcode to SPI flash. BIOS code use SW register to send EN4B.
 
-Sure, will figure out how in time for the next open window, if that is
-Ok.
+On some Cisco routers, two 32M SPI flashes, which require 4-byte address mode enabled,
+are physically connected to an FPGA, one flash is active and one is inactive.
+When we do BIOS upgrade, we need switch to the inactive one,
+but unfortunately, this one is still 3-byte address mode as default,
+after we do real-time switch, we need reload SPI driver to send EN4B code to
+enable 4-byte address mode.
 
-Mimi
+Refering to our BIOS code, Software sequence register is processed
+while sending EN4B opcode. So here we use sw_cycle in driver for EN4B as well.
+
+Why I don't just easily use software sequence for all:
+1.It will impact all flash operation, include flash W/R, high risk
+2.The only SPI type I can use is INTEL_SPI_BXT according to datasheet,
+  this will require using hw seq.
+  I tried to specify other SPI type, it couldn't work with Intel PCH.
+  If I force SW seq for all, during boot up, sw_cycle fails to read
+  vendor ID.
+
+In conclusion, I only use SW cycle for EN4B opcode to minimize impact.
+It won't impact other users as well.
+
+Why the default flash can work at 4-byte address mode:
+BIOS sets 4-byte address mode for the current active SPI flash with SW seq registers.
+So we don't need append softwareseq=1 for normal boot up script,
+it will only be used in BIOS upgrade script.
+
+Cc: xe-linux-external@cisco.com
+Signed-off-by: Bobby Liu <bobbliu@cisco.com>
+[ danielwa: edited the commit message a little. ]
+Signed-off-by: Daniel Walker <danielwa@cisco.com>
+---
+ drivers/mtd/spi-nor/controllers/intel-spi.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+index 61d2a0ad2131..e5a3d51a2e4d 100644
+--- a/drivers/mtd/spi-nor/controllers/intel-spi.c
++++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+@@ -163,6 +163,10 @@ static bool writeable;
+ module_param(writeable, bool, 0);
+ MODULE_PARM_DESC(writeable, "Enable write access to SPI flash chip (default=0)");
+ 
++static bool softwareseq;
++module_param(softwareseq, bool, 0);
++MODULE_PARM_DESC(softwareseq, "Use software sequence for register write (default=0)");
++
+ static void intel_spi_dump_regs(struct intel_spi *ispi)
+ {
+ 	u32 value;
+@@ -619,6 +623,18 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
+ 	if (ret)
+ 		return ret;
+ 
++	/*
++	 * Intel Skylake will not send EN4B to SPI flash if we use HW sequence
++	 * Here export one interface "softwareseq" to OS,
++	 * let driver user decide if use SW sequence or not
++	 */
++	if (opcode == SPINOR_OP_EN4B && softwareseq) {
++	    dev_info(ispi->dev,
++		"Write register opcode is SPINOR_OP_EN4B, do SW cycle\n");
++	    return intel_spi_sw_cycle(ispi, opcode, len,
++		OPTYPE_WRITE_NO_ADDR);
++	}
++
+ 	if (ispi->swseq_reg)
+ 		return intel_spi_sw_cycle(ispi, opcode, len,
+ 					  OPTYPE_WRITE_NO_ADDR);
+-- 
+2.17.1
+
