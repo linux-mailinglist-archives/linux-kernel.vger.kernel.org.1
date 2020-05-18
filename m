@@ -2,92 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFCE1D8AA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 00:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EEF11D8A85
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 00:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728470AbgERWSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 18:18:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33760 "EHLO mail.kernel.org"
+        id S1728087AbgERWOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 18:14:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726640AbgERWSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 18:18:30 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        id S1726386AbgERWOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 18:14:18 -0400
+Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D7BC62081A;
-        Mon, 18 May 2020 22:18:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC2062081A;
+        Mon, 18 May 2020 22:14:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589840309;
-        bh=GAsP72OzLRqNeGGIYQczDNH78GgALiPWljn3TChp7vo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zZ+klVAaZtV27MGlVb0LzirdC6IcRNdxtR8vdL8+p1v703lmi5J9HVBsa59wZfYS2
-         rcHhIFOwmI6Yc/w9iEWdmxMN/U7GWNm4qd9W6owTNY+8aCiuJZFmriA8jGFyro1lnf
-         B2QLoucZDhxzU0xGGj8zNn76nXG71emZmJGgdURs=
-Date:   Mon, 18 May 2020 15:18:28 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org, hpa@zytor.com,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, rjw@rjwysocki.net,
-        Arnd Bergmann <arnd@arndb.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v3 2/7] mm/vmalloc: Track which page-table levels were
- modified
-Message-Id: <20200518151828.ad3c714a29209b359e326ec4@linux-foundation.org>
-In-Reply-To: <20200516125641.GK8135@suse.de>
-References: <20200515140023.25469-1-joro@8bytes.org>
-        <20200515140023.25469-3-joro@8bytes.org>
-        <20200515130142.4ca90ee590e9d8ab88497676@linux-foundation.org>
-        <20200516125641.GK8135@suse.de>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=default; t=1589840057;
+        bh=onfFTV2EHN95M3D7dQOFHRH3PPQXSDCcX3o8p3KOPZ0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ZRWpi2SmYbpuYdb5oz+hDLU8XiiN4QEZj2hJutTRJftiKi1WLPyBj7tPr9UzuoBwS
+         VO6qxp10IIaWhM85ElMDSGVMilvYdd2XmeQ/Nyl4U63CWKMUpry0y9pg+dy2yC7PEX
+         3C5oLaFwGgIUbzZeStStjKDxlFAWo+VT8ykoUIq4=
+Date:   Mon, 18 May 2020 17:19:04 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH] soc: fsl: qe: Replace one-element array and use
+ struct_size() helper
+Message-ID: <20200518221904.GA22274@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 May 2020 14:56:41 +0200 Joerg Roedel <jroedel@suse.de> wrote:
+The current codebase makes use of one-element arrays in the following
+form:
 
-> Hi Andrew,
-> 
-> On Fri, May 15, 2020 at 01:01:42PM -0700, Andrew Morton wrote:
-> > On Fri, 15 May 2020 16:00:18 +0200 Joerg Roedel <joro@8bytes.org> wrote:
-> > Lots of collisions here with Christoph's "decruft the vmalloc API" series
-> > (http://lkml.kernel.org/r/20200414131348.444715-1-hch@lst.de).
-> > 
-> > I attempted to fix things up.
-> > 
-> > unmap_kernel_range_noflush() needed to be redone.
-> > 
-> > map_kernel_range_noflush() might need the arch_sync_kernel_mappings() call?
-> 
-> Yes, map_kernel_range_noflush() needs the arch_sync_kernel_mappings()
-> call as well.
-> 
+struct something {
+    int length;
+    u8 data[1];
+};
 
-This?
+struct something *instance;
 
---- a/mm/vmalloc.c~mm-vmalloc-track-which-page-table-levels-were-modified-fix
-+++ a/mm/vmalloc.c
-@@ -309,6 +309,9 @@ int map_kernel_range_noflush(unsigned lo
- 			return err;
- 	} while (pgd++, addr = next, addr != end);
+instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
+instance->length = size;
+memcpy(instance->data, source, size);
+
+but the preferred mechanism to declare variable-length types such as
+these ones is a flexible array member[1][2], introduced in C99:
+
+struct foo {
+        int stuff;
+        struct boo array[];
+};
+
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on. So, replace
+the one-element array with a flexible-array member.
+
+Also, make use of the new struct_size() helper to properly calculate the
+size of struct qe_firmware.
+
+This issue was found with the help of Coccinelle and, audited and fixed
+_manually_.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/soc/fsl/qe/qe.c | 4 ++--
+ include/soc/fsl/qe/qe.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/soc/fsl/qe/qe.c b/drivers/soc/fsl/qe/qe.c
+index 447146861c2c1..2df20d6f85fa4 100644
+--- a/drivers/soc/fsl/qe/qe.c
++++ b/drivers/soc/fsl/qe/qe.c
+@@ -448,7 +448,7 @@ int qe_upload_firmware(const struct qe_firmware *firmware)
+ 	unsigned int i;
+ 	unsigned int j;
+ 	u32 crc;
+-	size_t calc_size = sizeof(struct qe_firmware);
++	size_t calc_size;
+ 	size_t length;
+ 	const struct qe_header *hdr;
  
-+	if (mask & ARCH_PAGE_TABLE_SYNC_MASK)
-+		arch_sync_kernel_mappings(start, end);
-+
- 	return 0;
- }
+@@ -480,7 +480,7 @@ int qe_upload_firmware(const struct qe_firmware *firmware)
+ 	}
  
+ 	/* Validate the length and check if there's a CRC */
+-	calc_size += (firmware->count - 1) * sizeof(struct qe_microcode);
++	calc_size = struct_size(firmware, microcode, firmware->count);
+ 
+ 	for (i = 0; i < firmware->count; i++)
+ 		/*
+diff --git a/include/soc/fsl/qe/qe.h b/include/soc/fsl/qe/qe.h
+index e282ac01ec081..3feddfec9f87d 100644
+--- a/include/soc/fsl/qe/qe.h
++++ b/include/soc/fsl/qe/qe.h
+@@ -307,7 +307,7 @@ struct qe_firmware {
+ 		u8 revision;		/* The microcode version revision */
+ 		u8 padding;		/* Reserved, for alignment */
+ 		u8 reserved[4];		/* Reserved, for future expansion */
+-	} __attribute__ ((packed)) microcode[1];
++	} __packed microcode[];
+ 	/* All microcode binaries should be located here */
+ 	/* CRC32 should be located here, after the microcode binaries */
+ } __attribute__ ((packed));
+-- 
+2.26.2
 
-It would be nice to get all this (ie, linux-next) retested before we
-send it upstream, please.  
