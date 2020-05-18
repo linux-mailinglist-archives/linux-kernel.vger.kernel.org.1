@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D031D7233
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9FF1D7237
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727835AbgERHsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 03:48:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726489AbgERHsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 03:48:06 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0076A20825;
-        Mon, 18 May 2020 07:48:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589788085;
-        bh=B8BZX1tEa8YFlmLQI8RzC6u6+knqEquuZ1Wxf4akJ5Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aXNt7F9MPKx+9varfW/wXddmdWJT70EBEbOPdVzPiqIF619UoaR6Hp3G/bIqv6IJV
-         gawia3MBS58OU1kldkeoPy5E9vyw9yE82VP1BUq+g6IlgkYiDoer6sC1KJRiNirycA
-         /hSZ/wxnHX1jG5DpgSPDaJXKZhXTB/yk7+OmHKs0=
-Date:   Mon, 18 May 2020 09:48:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc:     Jiri Slaby <jslaby@suse.com>, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 1/3] tty: n_gsm: Improve debug output
-Message-ID: <20200518074803.GA3095136@kroah.com>
-References: <20200512115323.1447922-1-gregory.clement@bootlin.com>
- <20200512115323.1447922-2-gregory.clement@bootlin.com>
- <f957eb74-cdbe-848f-b345-7c9fb3d7b1e6@suse.com>
- <87tv0dg0ii.fsf@FE-laptop>
- <20200518073829.GA3055513@kroah.com>
- <87o8qlg00b.fsf@FE-laptop>
+        id S1727844AbgERHtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 03:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726828AbgERHtT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 03:49:19 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003B0C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 00:49:18 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id d191so8198575oib.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 00:49:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9Kg9Ix3G7gt7x5w/7wJrycMf+fayHlF4h5k5vb0LVNE=;
+        b=gus+oTfRxh3dY9mcRGgv3VOc5RsBFCunI6dbDnm8adq9ral2CBEqTqlLwgGZxLm+vC
+         ziYG7DBHGzpTHqRd83GWYvVnGeYWg9smIvSXqP5cyK/iu7h5UQBMjjhltZiDQWNeVx6a
+         66AWjtaqp1SsfXdxM56EJ48c7p3hz8fW9o0sh9Dr7PmZiGAeXNCazO5b+ff1+o8dq9io
+         k0pr0szNYEf8Cxe4cIYeIeKRbHNX66FHH2jcNZmosYXup3Kc8XpgnOakF4ujC281AOzU
+         D2zf1hyCLD05cRgt/INkOKnbu97DFMfcRV9R1eZDR+TTmcDTvLCns9Poal2NPZ2pRGNS
+         lgSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9Kg9Ix3G7gt7x5w/7wJrycMf+fayHlF4h5k5vb0LVNE=;
+        b=gZCEQx5+qMiBRd0oEkIZnskGXQ8mnX5ljfBHvIuvoxKM/zjrUywCxymniO+sHCAq17
+         QkNgKOPoLEI0ad70UqR49CVR3p2KrCiVEJjOAx9PKsQkqjOBgq3fGJBGZFVlDwxKFu3u
+         uRkipiObf89qFBRX0IibE2v/V7Mt9Z3zh5GTrc6O2HT1jjAqx7jpF4qsSzV2fVys9b3b
+         oESNbrzoyE0s2R8jg+5W8uJVOHATQoXXTgnqO60NSK3xKWHZbT7IRiq2ODkEbRqJ7b0I
+         zYG+oq2U3l84h2ad7WE4POoF4jyaoo1KaGDyCz8fcLA2u/QAO6poU6D4iv8Bt1w0n6ac
+         vB2g==
+X-Gm-Message-State: AOAM530N/lxcPGV1+mx3pF2VGYTYroEIyMnNJc8/toEN48k/QA6+M0ea
+        wpUPkqNeSs0xORydJWuq6uLr4J8lbBeZdSJvdUcAfg==
+X-Google-Smtp-Source: ABdhPJzGlx8lai6LNz1Oy0wFUl8yeME9wOla1JSZsaTpsJyonIKVxhd06lQMams06G8wlnYAhhrBg89+S3pwR+SytsU=
+X-Received: by 2002:aca:f1c2:: with SMTP id p185mr3962337oih.69.1589788158197;
+ Mon, 18 May 2020 00:49:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o8qlg00b.fsf@FE-laptop>
+References: <20200516080718.166676-1-saravanak@google.com>
+In-Reply-To: <20200516080718.166676-1-saravanak@google.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 18 May 2020 00:48:42 -0700
+Message-ID: <CAGETcx8Ro_tsmYEQwzZKsm2xzimw=MBcChbSW5Nx9arUni53wQ@mail.gmail.com>
+Subject: Re: [PATCH v1] driver core: Fix memory leak when adding
+ SYNC_STATE_ONLY device links
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     stable <stable@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 09:44:52AM +0200, Gregory CLEMENT wrote:
-> Hello Greg,
-> 
-> > On Mon, May 18, 2020 at 09:33:57AM +0200, Gregory CLEMENT wrote:
-> >> Hello Jiri,
-> >> 
-> >> > On 12. 05. 20, 13:53, Gregory CLEMENT wrote:
-> >> >> Use appropriate print helpers for debug messages.
-> >> >> 
-> >> >> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> >> >> ---
-> >> >>  drivers/tty/n_gsm.c | 14 ++------------
-> >> >>  1 file changed, 2 insertions(+), 12 deletions(-)
-> >> >> 
-> >> >> diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-> >> >> index d77ed82a4840..67c8f8173023 100644
-> >> >> --- a/drivers/tty/n_gsm.c
-> >> >> +++ b/drivers/tty/n_gsm.c
-> >> >> @@ -504,18 +504,8 @@ static void gsm_print_packet(const char *hdr, int addr, int cr,
-> >> >>  	else
-> >> >>  		pr_cont("(F)");
-> >> >>  
-> >> >> -	if (dlen) {
-> >> >> -		int ct = 0;
-> >> >> -		while (dlen--) {
-> >> >> -			if (ct % 8 == 0) {
-> >> >> -				pr_cont("\n");
-> >> >> -				pr_debug("    ");
-> >> >> -			}
-> >> >> -			pr_cont("%02X ", *data++);
-> >> >> -			ct++;
-> >> >> -		}
-> >> >> -	}
-> >> >> -	pr_cont("\n");
-> >> >> +	if (dlen)
-> >> >
-> >> > This test is superfluous. print_hex_dump_* won't write anything when
-> >> > zero length is passed to it.
-> >> 
-> >> As I will send a v3 due to the issue found on the last patch, I am also
-> >> going to fix this.
-> >
-> > Ugh, as I already applied this series, should I just revert them all, or
-> > are you going to send fix-ups on top of what I have applied instead?
-> 
-> I was about to send a new series, but I can just send fix-ups. It's up
-> to you.
+On Sat, May 16, 2020 at 1:07 AM Saravana Kannan <saravanak@google.com> wrote:
+>
+> When SYNC_STATE_ONLY support was added in commit 05ef983e0d65 ("driver
+> core: Add device link support for SYNC_STATE_ONLY flag"),
+> device_link_add() incorrectly skipped adding the new SYNC_STATE_ONLY
+> device link to the supplier's and consumer's "device link" list. So the
+> "device link" is lost forever from driver core if the caller didn't keep
+> track of it (typically isn't expected to).
+>
+> If the same SYNC_STATE_ONLY device link is created again using
+> device_link_add(), instead of returning the pointer to the previously
+> created device link, a new device link is created and returned. This can
+> cause memory leaks in conjunction with fw_devlinks.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 05ef983e0d65 ("driver core: Add device link support for SYNC_STATE_ONLY flag")
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
 
-fix-ups are less work for me :)
+Greg/Rafael,
+
+This patch causes a warning for SYNC_STATE_ONLY links because they
+allow consumers to probe before suppliers but the device link
+status/state change code wasn't written with that possibility in mind.
+So I need to fix up that warning or state change code.
+
+Depending on how urgent you think memory leak fixes are, you can take
+it as is for now and I can send a separate patch to fix the
+warning/state change code later. Or if we can sit on this memory leak
+for a week, I might be able to fix the warning before then.
+
+Thanks,
+Saravana
