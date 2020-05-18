@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1131D820E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0E91D8368
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731093AbgERRxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:53:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56804 "EHLO mail.kernel.org"
+        id S1732788AbgERSEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:04:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731081AbgERRxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:53:03 -0400
+        id S1732765AbgERSES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:04:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB91420674;
-        Mon, 18 May 2020 17:53:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 709ED20715;
+        Mon, 18 May 2020 18:04:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824383;
-        bh=wafRwZl9fucQ6Kdo8iS7pAL+wKFsNGDbbPPINuz48ZM=;
+        s=default; t=1589825057;
+        bh=wjNCLJm8je2dfTo3Dnvetm+uHr8DjiIVmachTBfbvW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=da8Fe5lHHQJaDKXPJwQbOSHBP8iBsKEf6jbXrfLhFr6yi2f5Ifh/C7GlaiFNhD26J
-         zKrvPVhd1VUr56BDjCuvB1vIkQdtqexV8xNrdGKSuT+wTA70vplMhMZVW385hPZvCq
-         Z5Cz6z/VZKofXsv8aRFt7yJ+uHsFzII0CbLmDoeM=
+        b=OS2lbltMMlra5FU+Bc4AQlNDZxqNz+PmsOT+xSydwlczd9vvbpIb0kpZHdRUax1mO
+         OZ5K0NhEiz7HYsHIYPWUS/+zaXcvkt3AKLpp4ojQ4Nnj6ApeqlA1R8dJXpKnmcZNGy
+         RgyPhFPcXwctjsL7VWf31NSRKtti+1m05agmzLG0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 23/80] dmaengine: pch_dma.c: Avoid data race between probe and irq handler
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 111/194] RDMA/rxe: Always return ERR_PTR from rxe_create_mmap_info()
 Date:   Mon, 18 May 2020 19:36:41 +0200
-Message-Id: <20200518173455.035907064@linuxfoundation.org>
+Message-Id: <20200518173541.021424362@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +46,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 
-[ Upstream commit 2e45676a4d33af47259fa186ea039122ce263ba9 ]
+[ Upstream commit bb43c8e382e5da0ee253e3105d4099820ff4d922 ]
 
-pd->dma.dev is read in irq handler pd_irq().
-However, it is set to pdev->dev after request_irq().
-Therefore, set pd->dma.dev to pdev->dev before request_irq() to
-avoid data race between pch_dma_probe() and pd_irq().
+The commit below modified rxe_create_mmap_info() to return ERR_PTR's but
+didn't update the callers to handle them. Modify rxe_create_mmap_info() to
+only return ERR_PTR and fix all error checking after
+rxe_create_mmap_info() is called.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+Ensure that all other exit paths properly set the error return.
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Link: https://lore.kernel.org/r/20200416062335.29223-1-madhuparnabhowmik10@gmail.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: ff23dfa13457 ("IB: Pass only ib_udata in function prototypes")
+Link: https://lore.kernel.org/r/20200425233545.17210-1-sudipm.mukherjee@gmail.com
+Link: https://lore.kernel.org/r/20200511183742.GB225608@mwanda
+Cc: stable@vger.kernel.org [5.4+]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/pch_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/sw/rxe/rxe_mmap.c  |  2 +-
+ drivers/infiniband/sw/rxe/rxe_queue.c | 11 +++++++----
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/dma/pch_dma.c b/drivers/dma/pch_dma.c
-index afd8f27bda969..6e91584c36770 100644
---- a/drivers/dma/pch_dma.c
-+++ b/drivers/dma/pch_dma.c
-@@ -873,6 +873,7 @@ static int pch_dma_probe(struct pci_dev *pdev,
- 	}
+diff --git a/drivers/infiniband/sw/rxe/rxe_mmap.c b/drivers/infiniband/sw/rxe/rxe_mmap.c
+index 48f48122ddcb8..6a413d73b95dd 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mmap.c
++++ b/drivers/infiniband/sw/rxe/rxe_mmap.c
+@@ -151,7 +151,7 @@ struct rxe_mmap_info *rxe_create_mmap_info(struct rxe_dev *rxe, u32 size,
  
- 	pci_set_master(pdev);
-+	pd->dma.dev = &pdev->dev;
+ 	ip = kmalloc(sizeof(*ip), GFP_KERNEL);
+ 	if (!ip)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
  
- 	err = request_irq(pdev->irq, pd_irq, IRQF_SHARED, DRV_NAME, pd);
- 	if (err) {
-@@ -888,7 +889,6 @@ static int pch_dma_probe(struct pci_dev *pdev,
- 		goto err_free_irq;
- 	}
+ 	size = PAGE_ALIGN(size);
  
--	pd->dma.dev = &pdev->dev;
+diff --git a/drivers/infiniband/sw/rxe/rxe_queue.c b/drivers/infiniband/sw/rxe/rxe_queue.c
+index ff92704de32ff..245040c3a35d0 100644
+--- a/drivers/infiniband/sw/rxe/rxe_queue.c
++++ b/drivers/infiniband/sw/rxe/rxe_queue.c
+@@ -45,12 +45,15 @@ int do_mmap_info(struct rxe_dev *rxe, struct mminfo __user *outbuf,
  
- 	INIT_LIST_HEAD(&pd->dma.channels);
+ 	if (outbuf) {
+ 		ip = rxe_create_mmap_info(rxe, buf_size, udata, buf);
+-		if (!ip)
++		if (IS_ERR(ip)) {
++			err = PTR_ERR(ip);
+ 			goto err1;
++		}
  
+-		err = copy_to_user(outbuf, &ip->info, sizeof(ip->info));
+-		if (err)
++		if (copy_to_user(outbuf, &ip->info, sizeof(ip->info))) {
++			err = -EFAULT;
+ 			goto err2;
++		}
+ 
+ 		spin_lock_bh(&rxe->pending_lock);
+ 		list_add(&ip->pending_mmaps, &rxe->pending_mmaps);
+@@ -64,7 +67,7 @@ int do_mmap_info(struct rxe_dev *rxe, struct mminfo __user *outbuf,
+ err2:
+ 	kfree(ip);
+ err1:
+-	return -EINVAL;
++	return err;
+ }
+ 
+ inline void rxe_queue_reset(struct rxe_queue *q)
 -- 
 2.20.1
 
