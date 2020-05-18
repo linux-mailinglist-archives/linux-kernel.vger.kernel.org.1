@@ -2,229 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FE11D799C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FD41D79A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgERNUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 09:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46744 "EHLO
+        id S1728113AbgERNUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 09:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727917AbgERNUQ (ORCPT
+        with ESMTP id S1726872AbgERNUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 09:20:16 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F64C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 06:20:16 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Qfl1694vz9sTS;
-        Mon, 18 May 2020 23:20:13 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1589808015;
-        bh=RloeE0LdmqKAFSvpaXbVeVj8qQSByHsMtpiN5OEN8FA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=bwhULTYedxiW3vCTcPq1HpvpTZ/liHivPDSALic6bvBzZec6hbQyS7NnzjoHOCG/I
-         3XFfQuQXNzQP02yVygvIzzynBObCLbOcNjLOdFMbdpHhjhAI/JcjWuJ/53kLefYZrU
-         pFoeXYTnLUYJEHbOzoEBNLL2Zl1sr5/AT5lbVwSI1cIIafoy3soMr0elcJiCf0mSkc
-         1lGqYgY1hWJxzONtuO8S2HH9K+79wds1tzyjnkngLz16OyXPJIqzITYyd7cAxVHBdE
-         VeQb7ldLtjKDQyZbe68K2osL/ckc8LgtrqiH1cTw/mGjH+ZJdepen5zpLGYKAnXOKK
-         vyU6PWLjzbhyg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Nathan Chancellor <natechancellor@gmail.com>,
-        kbuild test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Remove WALNUT hacks in serio/i8042 (was Re: ld.lld: error: undefined symbol: kb_cs)
-In-Reply-To: <20200514030149.GA1841966@ubuntu-s3-xlarge-x86>
-References: <202005140845.lthaPgxR%lkp@intel.com> <20200514030149.GA1841966@ubuntu-s3-xlarge-x86>
-Date:   Mon, 18 May 2020 23:20:30 +1000
-Message-ID: <87a7254bxd.fsf@mpe.ellerman.id.au>
+        Mon, 18 May 2020 09:20:40 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9D6C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 06:20:40 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id e8so9739119ilm.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 06:20:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tycho-ws.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fgpdOynF6cHr+f7BfLRTcoqsZLiHJjSZb3oyMsov/Ak=;
+        b=JLuJ5EyJnmImXOc3M2tKKSPI6B+PcA3dWkQ4oWB1yJLUGsMbea2I99AQvsy6jxwBcQ
+         qNVhv6uqiP7/IC/qmcMSzpxqKau1sUzKlPuU+R9xvDB32WwKbCBYIXx2Uui6PbMev5m+
+         Qv9O7KKI4REUBmO8NdXYlPh3q0kt6I64aefaM6irfkREpk1yB85ScH3gsX/icETPRC9S
+         8R27qEENMhVWyXW0HjAvVl2VcYhagtg31vqk1rp3KgZ86NCcF5PjCSwKYR8a1VnZM0ax
+         hhjfEaxGek1yFrzCSuPtOnTSkK4AN0ImEr3mGaeQJ83SsDA88BOOID+LscKjXhkE5ksB
+         Nd/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fgpdOynF6cHr+f7BfLRTcoqsZLiHJjSZb3oyMsov/Ak=;
+        b=X5d/++Bi+f0W/Ubf8Kcu0k/TtcGnEazLuTaEoSq8ZNinxZzo4+Z2vMpqnaSKEY+Trk
+         +yLQdAbehBD9msFae3F0S9mRltQbF2JYbJHqhNbq1rT1+kxejTcLqRswRYxhIjSZ9HZr
+         faD+7bu+01RUdSTFfViST2TSqoBZjv0IFpr/29qpqbNnrdtZVU6SEWYiYQTtF2m/Edmu
+         rcZvgUKWBq5Cyl9DhcfWx3Ski770TxpXss9beQUpazX7iWMGYPmwFD6oWToxsYifKfK6
+         OBTxquuvuwQ/DjcsHn3Y5vF0zxQJNw9RNUq06irZh9wq5umIVUhcidA+ZZjRg2N9xgZN
+         OOJA==
+X-Gm-Message-State: AOAM531KgTsXFa4r5PYhg7GmwvBLa3E01MVZmrf0vY/rXYavYAtWN0yw
+        baucpFEzdItXYpTGEAjicmnxFg==
+X-Google-Smtp-Source: ABdhPJyWutT81wIg9rwCkewuHKPqF07LUmx39cfM8OceBawpWLgFLbl7IiIAzFVfr8YTYknhJn3+Jg==
+X-Received: by 2002:a92:507:: with SMTP id q7mr15605515ile.150.1589808039529;
+        Mon, 18 May 2020 06:20:39 -0700 (PDT)
+Received: from cisco ([2601:282:b02:8120:6155:7c8c:3dc0:c56e])
+        by smtp.gmail.com with ESMTPSA id y12sm2715736ilk.16.2020.05.18.06.20.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 06:20:38 -0700 (PDT)
+Date:   Mon, 18 May 2020 07:20:38 -0600
+From:   Tycho Andersen <tycho@tycho.ws>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Aleksa Sarai <asarai@suse.de>, Kees Cook <keescook@chromium.org>,
+        linux-api@vger.kernel.org, containers@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] seccomp: Add group_leader pid to seccomp_notif
+Message-ID: <20200518132038.GA2405879@cisco>
+References: <20200515234005.32370-1-sargun@sargun.me>
+ <202005162344.74A02C2D@keescook>
+ <20200517104701.bbn2d2rqaplwchdw@wittgenstein>
+ <20200517112156.cphs2h33hx2wfcs4@yavin.dot.cyphar.com>
+ <20200517142316.GA1996744@cisco>
+ <20200517143311.fmxaf3pnopuaezl4@wittgenstein>
+ <20200517144603.GD1996744@cisco>
+ <20200517150215.GE1996744@cisco>
+ <20200518125325.l2lpixp3ch7zuiwx@wittgenstein>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200518125325.l2lpixp3ch7zuiwx@wittgenstein>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Cc += linuxppc-dev ]
+On Mon, May 18, 2020 at 02:53:25PM +0200, Christian Brauner wrote:
+> On Sun, May 17, 2020 at 09:02:15AM -0600, Tycho Andersen wrote:
+> > On Sun, May 17, 2020 at 08:46:03AM -0600, Tycho Andersen wrote:
+> > > On Sun, May 17, 2020 at 04:33:11PM +0200, Christian Brauner wrote:
+> > > > struct seccomp_notif2 {
+> > > > 	__u32 notif_size;
+> > > > 	__u64 id;
+> > > > 	__u32 pid;
+> > > > 	__u32 flags;
+> > > > 	struct seccomp_data data;
+> > > > 	__u32 data_size;
+> > > > };
+> > > 
+> > > I guess you need to put data_size before data, otherwise old userspace
+> > > with a smaller struct seccomp_data will look in the wrong place.
+> > > 
+> > > But yes, that'll work if you put two sizes in, which is probably
+> > > reasonable since we're talking about two structs.
+> > 
+> > Well, no, it doesn't either. Suppose we add a new field first to
+> > struct seccomp_notif2:
+> > 
+> > struct seccomp_notif2 {
+> >     __u32 notif_size;
+> >     __u64 id;
+> >     __u32 pid;
+> >     __u32 flags;
+> >     struct seccomp_data data;
+> >     __u32 data_size;
+> >     __u32 new_field;
+> > };
+> > 
+> > And next we add a new field to struct secccomp_data. When a userspace
+> > compiled with just the new seccomp_notif2 field does:
+> > 
+> > seccomp_notif2.new_field = ...;
+> > 
+> > the compiler will put it in the wrong place for the kernel with the
+> > new seccomp_data field too.
+> > 
+> > Sort of feels like we should do:
+> > 
+> > struct seccomp_notif2 {
+> >     struct seccomp_notif *notif;
+> >     struct seccomp_data *data;
+> > };
+> > 
+> > ?
+> 
+> Oh yes of course, sorry that was my stupid typo. I meant:
+> 
+> struct seccomp_notif2 {
+>     __u32 notif_size;
+>     __u64 id;
+>     __u32 pid;
+>     __u32 flags;
+>     struct seccomp_data *data;
+>     __u32 data_size;
+>     __u32 new_field;
+> }
+> 
+> at which point things should just work imho.
 
-Nathan Chancellor <natechancellor@gmail.com> writes:
-> On Thu, May 14, 2020 at 08:13:48AM +0800, kbuild test robot wrote:
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   24085f70a6e1b0cb647ec92623284641d8270637
->> commit: 5990cdee689c6885b27c6d969a3d58b09002b0bc lib/mpi: Fix building for powerpc with clang
->
-> I am certain that this patch did nothing to cause this... Maybe exposed
-> it but not the root cause.
->
->> date:   3 weeks ago
->> config: powerpc-randconfig-r034-20200514 (attached as .config)
->> compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project 310d32cb80a611e6384a921e85607fea05841f26)
->> reproduce:
->>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>         chmod +x ~/bin/make.cross
->>         # install powerpc cross compiling tool for clang build
->>         # apt-get install binutils-powerpc-linux-gnu
->>         git checkout 5990cdee689c6885b27c6d969a3d58b09002b0bc
->>         # save the attached .config to linux build tree
->>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc 
->> 
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kbuild test robot <lkp@intel.com>
->> 
->> All errors (new ones prefixed by >>):
->> 
->> >> ld.lld: error: undefined symbol: kb_cs
->> >>> referenced by i8042-ppcio.h:28 (drivers/input/serio/i8042-ppcio.h:28)
->> >>> input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
->> >>> referenced by i8042-ppcio.h:28 (drivers/input/serio/i8042-ppcio.h:28)
->> >>> input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
->> >>> referenced by i8042-ppcio.h:28 (drivers/input/serio/i8042-ppcio.h:28)
->> >>> input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
->> >>> referenced 45 more times
->> --
->> >> ld.lld: error: undefined symbol: kb_data
->> >>> referenced by i8042.c:309 (drivers/input/serio/i8042.c:309)
->> >>> input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
->> >>> referenced by i8042-ppcio.h:33 (drivers/input/serio/i8042-ppcio.h:33)
->> >>> input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
->> >>> referenced by i8042.c:319 (drivers/input/serio/i8042.c:319)
->> >>> input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
->> >>> referenced 15 more times
->
-> kb_cs and kb_data are declared as extern void pointers when
-> CONFIG_WALNUT is set, which this config does. However, it looks like
-> the definitions of these variables were removed in
-> commit  917f0af9e5a9 ("powerpc: Remove arch/ppc and include/asm-ppc"),
-> way back in 2.6.27-rc1... So presumably, this has been broken for 12
-> years and nobody noticed?
+Are you saying that data_size is an input? Because I don't think they
+Just Work otherwise.
 
-Hmm, nice. 12 years is a pretty typical time frame for finding bugs in
-the powerpc tree ... o_O
-
-Our ppc40x_defconfig has CONFIG_SERIO=m, but explicitly disables
-CONFIG_SERIO_I8042. And walnut_defconfig disables CONFIG_SERIO.
-
-So I guess it has a PS2 controller but most folks didn't use it?
-
-> Probably means there is a good amount of dead
-> code that can be removed, or we could just avoid ever selecting this
-> driver with CONFIG_WALNUT (if it does not actually work without the
-> special handling from i8042-ppcio.h) while removing the dead code.
-
-I'm inclined to let the driver be selected, rather than carry a wart for
-it. I doubt anyone will ever turn it on explicitly, and if they do they
-can have fun debugging it.
-
-> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> index 924c541a9260..59b2f655e39e 100644
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -138,7 +138,7 @@ config PPC
->  	select ARCH_HAVE_NMI_SAFE_CMPXCHG
->  	select ARCH_KEEP_MEMBLOCK
->  	select ARCH_MIGHT_HAVE_PC_PARPORT
-> -	select ARCH_MIGHT_HAVE_PC_SERIO
-> +	select ARCH_MIGHT_HAVE_PC_SERIO if !WALNUT
->  	select ARCH_OPTIONAL_KERNEL_RWX		if ARCH_HAS_STRICT_KERNEL_RWX
->  	select ARCH_SUPPORTS_ATOMIC_RMW
->  	select ARCH_USE_BUILTIN_BSWAP
-
-So I'd drop this hunk.
-
-> diff --git a/drivers/input/serio/i8042-ppcio.h b/drivers/input/serio/i8042-ppcio.h
-> deleted file mode 100644
-> index 391f94d9e47d..000000000000
-> --- a/drivers/input/serio/i8042-ppcio.h
-> +++ /dev/null
-> @@ -1,57 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0-only */
-> -#ifndef _I8042_PPCIO_H
-> -#define _I8042_PPCIO_H
-> -
-> -
-> -#if defined(CONFIG_WALNUT)
-> -
-> -#define I8042_KBD_IRQ 25
-> -#define I8042_AUX_IRQ 26
-> -
-> -#define I8042_KBD_PHYS_DESC "walnutps2/serio0"
-> -#define I8042_AUX_PHYS_DESC "walnutps2/serio1"
-> -#define I8042_MUX_PHYS_DESC "walnutps2/serio%d"
-> -
-> -extern void *kb_cs;
-> -extern void *kb_data;
-> -
-> -#define I8042_COMMAND_REG (*(int *)kb_cs)
-> -#define I8042_DATA_REG (*(int *)kb_data)
-> -
-> -static inline int i8042_read_data(void)
-> -{
-> -	return readb(kb_data);
-> -}
-> -
-> -static inline int i8042_read_status(void)
-> -{
-> -	return readb(kb_cs);
-> -}
-> -
-> -static inline void i8042_write_data(int val)
-> -{
-> -	writeb(val, kb_data);
-> -}
-> -
-> -static inline void i8042_write_command(int val)
-> -{
-> -	writeb(val, kb_cs);
-> -}
-> -
-> -static inline int i8042_platform_init(void)
-> -{
-> -	i8042_reset = I8042_RESET_ALWAYS;
-> -	return 0;
-> -}
-> -
-> -static inline void i8042_platform_exit(void)
-> -{
-> -}
-> -
-> -#else
-> -
-> -#include "i8042-io.h"
-> -
-> -#endif
-> -
-> -#endif /* _I8042_PPCIO_H */
-> diff --git a/drivers/input/serio/i8042.h b/drivers/input/serio/i8042.h
-> index 38dc27ad3c18..eb376700dfff 100644
-> --- a/drivers/input/serio/i8042.h
-> +++ b/drivers/input/serio/i8042.h
-> @@ -17,8 +17,6 @@
->  #include "i8042-ip22io.h"
->  #elif defined(CONFIG_SNI_RM)
->  #include "i8042-snirm.h"
-> -#elif defined(CONFIG_PPC)
-> -#include "i8042-ppcio.h"
->  #elif defined(CONFIG_SPARC)
->  #include "i8042-sparcio.h"
->  #elif defined(CONFIG_X86) || defined(CONFIG_IA64)
-
-#elif defined(CONFIG_UNICORE32)
-#include "i8042-unicore32io.h"
-#else
-#include "i8042-io.h"
-#endif
-
-The rest of the context is ^
-
-Which makes it clear that your removal of the entire file results in no
-change when WALNUT=n.
-
-I'm not sure if anyone really maintains that code, but this is all PPC
-really so I think we could merge it.
-
-Do you want to send a proper SOB'ed patch?
-
-cheers
+Tycho
