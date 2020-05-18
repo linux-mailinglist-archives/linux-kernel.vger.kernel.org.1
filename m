@@ -2,77 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD851D83D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E331D874D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387447AbgERSHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:07:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733068AbgERSHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:07:45 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B8C220826;
-        Mon, 18 May 2020 18:07:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825264;
-        bh=CIq2PPOSmWi4JHR64jSM3ji9I2BJ5a3qOEkHQhHiRQk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O89FJJM1xFLlekOzaFNnGuHf7QbkZgxeeD2LztbcPwcjvkN0OBmR5ztbOMgHELBTv
-         QlJ9UjQW4TY5QH4idvShkwPDny8R8jhVcKhkmFs0kdDbgTiNZs7Wg4/RX0jgrggS7M
-         s0HH7QzdRlE6Zjh+fRePZCGoD5/usVVGUf8m4iVc=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Thomas Backlund <tmb@mageia.org>
-Subject: [PATCH 5.6 194/194] Makefile: disallow data races on gcc-10 as well
-Date:   Mon, 18 May 2020 19:38:04 +0200
-Message-Id: <20200518173547.533880996@linuxfoundation.org>
+        id S1728764AbgERRjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728738AbgERRjT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:39:19 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581A2C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:39:19 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 614452A0C85
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>
+Cc:     narmstrong@baylibre.com, a.hajda@samsung.com,
+        boris.brezillon@collabora.com, laurent.pinchart@ideasonboard.com,
+        matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [RESEND PATCH 0/3] Convert mtk-dpi to drm_bridge API
+Date:   Mon, 18 May 2020 19:39:06 +0200
+Message-Id: <20200518173909.2259259-1-enric.balletbo@collabora.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergei Trofimovich <slyfox@gentoo.org>
+The reason for this resend is because I forget to add some bridge
+maintainers. So adding them and collect the actual tags.
 
-commit b1112139a103b4b1101d0d2d72931f2d33d8c978 upstream.
+The mtk-dpi driver still uses the drm_encoder API which is now somewhat
+deprecated. We started to move all the Mediatek drivers to the drm_bridge API,
+like we did for the mtk-dsi driver [1], this is another small step to be able to
+fully convert the DRM Mediatek drivers to the drm_bridge API. A dummy
+drm_encoder is maintained in the mtk-dpi driver but the end goal is move all the
+dummy drm_encoder (mtk-dsi, mtk-dpi, etc) to the main mtk_drm_drv driver.
 
-gcc-10 will rename --param=allow-store-data-races=0
-to -fno-allow-store-data-races.
+[1] https://lore.kernel.org/patchwork/project/lkml/list/?series=441559
 
-The flag change happened at https://gcc.gnu.org/PR92046.
 
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-Acked-by: Jiri Kosina <jkosina@suse.cz>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Thomas Backlund <tmb@mageia.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Enric Balletbo i Serra (3):
+  drm/mediatek: mtk_dpi: Rename bridge to next_bridge
+  drm/mediatek: mtk_dpi: Convert to bridge driver
+  drm/mediatek: mtk_dpi: Use simple encoder
 
----
- Makefile |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/mediatek/mtk_dpi.c | 84 ++++++++++++++----------------
+ 1 file changed, 39 insertions(+), 45 deletions(-)
 
---- a/Makefile
-+++ b/Makefile
-@@ -710,6 +710,7 @@ endif
- 
- # Tell gcc to never replace conditional load with a non-conditional one
- KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
-+KBUILD_CFLAGS	+= $(call cc-option,-fno-allow-store-data-races)
- 
- include scripts/Makefile.kcov
- include scripts/Makefile.gcc-plugins
-
+-- 
+2.26.2
 
