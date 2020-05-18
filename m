@@ -2,117 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B731D78F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 14:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADCE1D78CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 14:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727801AbgERMth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 08:49:37 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:54258 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727006AbgERMth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 08:49:37 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DB0552009B8;
-        Mon, 18 May 2020 14:49:34 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 14E5A200844;
-        Mon, 18 May 2020 14:49:31 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 11BBE402AD;
-        Mon, 18 May 2020 20:49:26 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH] ARM: dts: imx: make src node name generic
-Date:   Mon, 18 May 2020 20:39:53 +0800
-Message-Id: <1589805593-14164-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727036AbgERMlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 08:41:07 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:47220 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726739AbgERMlH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 08:41:07 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 7BF6C8030875;
+        Mon, 18 May 2020 12:41:04 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id PZtu6njJ1E1I; Mon, 18 May 2020 15:41:03 +0300 (MSK)
+Date:   Mon, 18 May 2020 15:41:02 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Allison Randal <allison@lohutok.net>,
+        Gareth Williams <gareth.williams.jx@renesas.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 09/19] spi: dw: Parameterize the DMA Rx/Tx burst length
+Message-ID: <20200518124102.vg4eb53wp4toyti3@mobilestation>
+References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
+ <20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru>
+ <20200515104758.6934-10-Sergey.Semin@baikalelectronics.ru>
+ <20200515140129.GD1634618@smile.fi.intel.com>
+ <20200516143353.hw6nny5hbwgiyxfw@mobilestation>
+ <20200518110150.GX1634618@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200518110150.GX1634618@smile.fi.intel.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Node name should be generic, use "reset-controller" instead of "src" for
-i.MX6/i.MX7 SoCs src nodes.
+On Mon, May 18, 2020 at 02:01:50PM +0300, Andy Shevchenko wrote:
+> On Sat, May 16, 2020 at 05:33:53PM +0300, Serge Semin wrote:
+> > On Fri, May 15, 2020 at 05:01:29PM +0300, Andy Shevchenko wrote:
+> > > On Fri, May 15, 2020 at 01:47:48PM +0300, Serge Semin wrote:
+> > > > It isn't good to have numeric literals in the code especially if there
+> > > > are multiple of them and they are related. Moreover in current
+> > > > implementation the Tx DMA transfer activation level isn't optimal,
+> > > > since it's hardwired to be at 16-32 bytes level, while it's better
+> > > > to keep the SPI FIFO buffer as full as possible until all available
+> > > > data is submitted. So lets introduce the DMA burst level
+> > > > parametrization macros with optimal values - issue Rx transfer if at
+> > > > least 16 bytes are available in the buffer and execute Tx transaction
+> > > > if at least 16 bytes room is opened in SPI Tx FIFO.
+> > > 
+> > > > -	dw_writel(dws, DW_SPI_DMARDLR, 0xf);
+> > > > -	dw_writel(dws, DW_SPI_DMATDLR, 0x10);
+> > > > +	dw_writel(dws, DW_SPI_DMARDLR, RX_BURST_LEVEL - 1);
+> > > > +	dw_writel(dws, DW_SPI_DMATDLR, dws->fifo_len - TX_BURST_LEVEL);
+> > > 
+> > > ...and if FIFO length is less than TX_BURST_LEVEL?
+> > > 
+> > > For the patch that introduces definitions, i.e. keeping the last line here as
+> > > 
+> > > 	dw_writel(dws, DW_SPI_DMATDLR, TX_BURST_LEVEL);
+> > > 
+> > > I'm good. You may put your tag in that case. For fifo_len case we need to
+> > > discuss in separate patch, perhaps.
+> > 
+> > It's fixed in a consequent patch anyway. Though if v3 is required I'll remove
+> > this change from here.
+> 
+> I consider that here you might have introduced a regression and actually doing
+> two things in one patch. Why not to split?
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- arch/arm/boot/dts/imx6qdl.dtsi | 2 +-
- arch/arm/boot/dts/imx6sl.dtsi  | 2 +-
- arch/arm/boot/dts/imx6sx.dtsi  | 2 +-
- arch/arm/boot/dts/imx6ul.dtsi  | 2 +-
- arch/arm/boot/dts/imx7s.dtsi   | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+Theoretically I could, but only for a hardware with FIFO smaller than 16 bytes.
+So did I, seeing this module has been dedicated for the Intel Medfield/Elkhart chips
+only?
 
-diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
-index 1763c2b..39d4afd 100644
---- a/arch/arm/boot/dts/imx6qdl.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl.dtsi
-@@ -858,7 +858,7 @@
- 				interrupts = <0 57 IRQ_TYPE_LEVEL_HIGH>;
- 			};
- 
--			src: src@20d8000 {
-+			src: reset-controller@20d8000 {
- 				compatible = "fsl,imx6q-src", "fsl,imx51-src";
- 				reg = <0x020d8000 0x4000>;
- 				interrupts = <0 91 IRQ_TYPE_LEVEL_HIGH>,
-diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
-index fcb84fe..911d8cf 100644
---- a/arch/arm/boot/dts/imx6sl.dtsi
-+++ b/arch/arm/boot/dts/imx6sl.dtsi
-@@ -678,7 +678,7 @@
- 				interrupts = <0 57 IRQ_TYPE_LEVEL_HIGH>;
- 			};
- 
--			src: src@20d8000 {
-+			src: reset-controller@20d8000 {
- 				compatible = "fsl,imx6sl-src", "fsl,imx51-src";
- 				reg = <0x020d8000 0x4000>;
- 				interrupts = <0 91 IRQ_TYPE_LEVEL_HIGH>,
-diff --git a/arch/arm/boot/dts/imx6sx.dtsi b/arch/arm/boot/dts/imx6sx.dtsi
-index d6f8317..e031337 100644
---- a/arch/arm/boot/dts/imx6sx.dtsi
-+++ b/arch/arm/boot/dts/imx6sx.dtsi
-@@ -754,7 +754,7 @@
- 				interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
- 			};
- 
--			src: src@20d8000 {
-+			src: reset-controller@20d8000 {
- 				compatible = "fsl,imx6sx-src", "fsl,imx51-src";
- 				reg = <0x020d8000 0x4000>;
- 				interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>,
-diff --git a/arch/arm/boot/dts/imx6ul.dtsi b/arch/arm/boot/dts/imx6ul.dtsi
-index 2ccf67c..35e7301 100644
---- a/arch/arm/boot/dts/imx6ul.dtsi
-+++ b/arch/arm/boot/dts/imx6ul.dtsi
-@@ -676,7 +676,7 @@
- 				interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
- 			};
- 
--			src: src@20d8000 {
-+			src: reset-controller@20d8000 {
- 				compatible = "fsl,imx6ul-src", "fsl,imx51-src";
- 				reg = <0x020d8000 0x4000>;
- 				interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>,
-diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
-index 76e3ffb..8bac491 100644
---- a/arch/arm/boot/dts/imx7s.dtsi
-+++ b/arch/arm/boot/dts/imx7s.dtsi
-@@ -624,7 +624,7 @@
- 				clock-names = "ckil", "osc";
- 			};
- 
--			src: src@30390000 {
-+			src: reset-controller@30390000 {
- 				compatible = "fsl,imx7d-src", "syscon";
- 				reg = <0x30390000 0x10000>;
- 				interrupts = <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>;
--- 
-2.7.4
+Anyway as I said this change is mostly redundant, since further in this patchset I'll
+replace the constants used here with burst length properly calculated based on the
+fifo-length and max-burst-length specific to the DMA.
 
+-Sergey
+
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
