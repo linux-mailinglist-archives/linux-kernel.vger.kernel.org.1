@@ -2,145 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A67E1D855D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326AC1D82BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731704AbgERSS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731559AbgERRz4 (ORCPT
+        id S1731971AbgERR6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:58:52 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11062 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731953AbgERR6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:55:56 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F3C3C05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:55:56 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id g14so542520wme.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:55:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brauner.io; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bAdNBlANOE194kXAkMzs8wkwLbdmMZKVzS7nRAabSx0=;
-        b=gzTIjf10gpIkG8zPGdhSboUtjnxE2wdlyz+lcTb6y+vDqZANzuEWOloXv/+55QJx3P
-         Id/QaiwCpZNSFbDSLMi750vq3rM4sB7FtcXIFBDjtjy2r6amW5caSDAaO74p9eR7GQ4V
-         GKPquEbSy/LdmHP89ioSUV5vzb6Sx6k0weZMRoHrJJpQ+llJ5Nud8Qh6SaKzJ7h9yO+h
-         23wERq3aVksJk/PoeACaB0WtZD5CFPVObYqaIq/xe2qq7LPHezjXlfY7Y0i6AwqnFFCK
-         zrwJkcM1+rgKkMNnGz6K9tIQrvurV+dMIBStlFk8C1ucRIddZurStfA/ui5OL38PkMQN
-         CSTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bAdNBlANOE194kXAkMzs8wkwLbdmMZKVzS7nRAabSx0=;
-        b=VvbY2k9PbDN7lUMbYMtSiGSCzbo8WlHqWx5jplgcwsSM5ifUgu+apb701DfxpzAZBQ
-         Bb0UL07A0S2ZGTyraSfA7rbfVieMYUPCHrM7P/yLByV4DFbuFjSZWWoxg59/qzJQE2rv
-         RHWxFI03gHeuxtBNlHCdZemiMsy4Ft/hcSaVfFYrGrmew1UFAx80yZUrFQCG82ASW/Pu
-         FX7eTPTIGQVOVAKN0HQkkqaOitLDP/Ab7R0bW2NaeusJEzJIs33q/+qbJr/gCECHHXCJ
-         U2L7BXvzwhOot+KuFbm5J3BIMWfGn7F3rao8ohsvMWdrSui8EVWOzUiDDrugkpxnp7dD
-         1fDQ==
-X-Gm-Message-State: AOAM532HqOaScrB36jcQAZeyczimn487cUnqoYLyJT7qOxXUD73+SIkC
-        dxqXIjnHTDjVf/ETXjdjFdb2hw==
-X-Google-Smtp-Source: ABdhPJyVhEVa6wUfN5Iclx7RIJ1MPf7e+9V56eLAnJDuJP2dgTk8ixex8477YXQfniRzR3z2bqxrnQ==
-X-Received: by 2002:a1c:7212:: with SMTP id n18mr555920wmc.129.1589824554821;
-        Mon, 18 May 2020 10:55:54 -0700 (PDT)
-Received: from wittgenstein.fritz.box (ip5f5af183.dynamic.kabel-deutschland.de. [95.90.241.131])
-        by smtp.gmail.com with ESMTPSA id w9sm19178579wrc.27.2020.05.18.10.55.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2020 10:55:54 -0700 (PDT)
-From:   Christian Brauner <christian@brauner.io>
-To:     mtk.manpages@gmail.com
-Cc:     cgroups@vger.kernel.org, christian.brauner@ubuntu.com,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-man@vger.kernel.org, oleg@redhat.com, tj@kernel.org
-Subject: [PATCH v2] clone.2: Document CLONE_INTO_CGROUP
-Date:   Mon, 18 May 2020 19:55:49 +0200
-Message-Id: <20200518175549.3400948-1-christian@brauner.io>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <CAKgNAkhL0zCj11LS9vfae872YVeRsxdz20sZWuXdi+UjH21=0g@mail.gmail.com>
-References: <CAKgNAkhL0zCj11LS9vfae872YVeRsxdz20sZWuXdi+UjH21=0g@mail.gmail.com>
-MIME-Version: 1.0
+        Mon, 18 May 2020 13:58:47 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04IHWN5m007797;
+        Mon, 18 May 2020 13:58:46 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 312btudkax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 13:58:45 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04IHuMJv014543;
+        Mon, 18 May 2020 17:58:42 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 313xehg28h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 17:58:42 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04IHwedg65339580
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 May 2020 17:58:40 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A97B5204E;
+        Mon, 18 May 2020 17:58:40 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.145.145])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id B5FBF52050;
+        Mon, 18 May 2020 17:58:39 +0000 (GMT)
+Message-ID: <1589824719.5111.126.camel@linux.ibm.com>
+Subject: Re: [GIT PULL] integrity subsystem fixes for v5.7
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Mon, 18 May 2020 13:58:39 -0400
+In-Reply-To: <CAHk-=wh_Zw7ug+iMALAKfQkdyVAUWC0UB0bfRRPMOCC7U5uTFQ@mail.gmail.com>
+References: <1589816971.5111.113.camel@linux.ibm.com>
+         <CAHk-=wh_Zw7ug+iMALAKfQkdyVAUWC0UB0bfRRPMOCC7U5uTFQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-18_06:2020-05-15,2020-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 malwarescore=0 mlxscore=0 mlxlogscore=812
+ impostorscore=0 spamscore=0 clxscore=1015 cotscore=-2147483648
+ lowpriorityscore=0 adultscore=0 phishscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005180143
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Brauner <christian.brauner@ubuntu.com>
+On Mon, 2020-05-18 at 10:47 -0700, Linus Torvalds wrote:
+> On Mon, May 18, 2020 at 8:49 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> >
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git next-integrity.fixes
+> 
+> No such head.
+> 
+> It looks like the plain 'fixes' branch has the same commit ID, but
+> there's no next-integrity.fixes.
 
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
----
-/* v2 */
-- Michael Kerrisk (man-pages) <mtk.manpages@gmail.com>:
-  - Fix various types and add examples and how to specify the file
-    descriptor.
----
- man2/clone.2 | 43 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
+Ugh, that's the name of my local branch.  The remote branch is "fixes"
+as you figured out.
 
-diff --git a/man2/clone.2 b/man2/clone.2
-index 8b70b78a4..33594ddc5 100644
---- a/man2/clone.2
-+++ b/man2/clone.2
-@@ -197,6 +197,7 @@ struct clone_args {
-     u64 tls;          /* Location of new TLS */
-     u64 set_tid;      /* Pointer to a \fIpid_t\fP array */
-     u64 set_tid_size; /* Number of elements in \fIset_tid\fP */
-+    u64 cgroup;       /* Target cgroup file descriptor for the child process */
- };
- .EE
- .in
-@@ -448,6 +449,48 @@ Specifying this flag together with
- .B CLONE_SIGHAND
- is nonsensical and disallowed.
- .TP
-+.BR CLONE_INTO_CGROUP " (since Linux 5.7)"
-+.\" commit ef2c41cf38a7559bbf91af42d5b6a4429db8fc68
-+By default, the child process will be placed in the same version 2
-+cgroup as its parent.
-+If this flag is specified the child process will be created in a
-+different cgroup than its parent.
-+Note, that
-+.BR CLONE_INTO_CGROUP
-+is limited to version 2 cgroups. To use this feature, callers
-+need to raise
-+.BR CLONE_INTO_CGROUP
-+in
-+.I cl_args.flags
-+and pass a directory file descriptor (see the
-+.BR O_DIRECTORY
-+flag for the
-+.BR open (2)
-+syscall) in the
-+.I cl_args.cgroup.
-+The caller may also pass an
-+.BR O_PATH
-+(see
-+.BR open (2))
-+file descriptor for the target cgroup.
-+Note, that all usual version 2 cgroup migration restrictions (see
-+.BR cgroups (7)
-+for details) apply.
-+
-+Spawning a process into a cgroup different from the parent's cgroup
-+makes it possible for a service manager to directly spawn new
-+services into dedicated cgroups. This allows eliminating accounting
-+jitter which would be caused by the new process living in the
-+parent's cgroup for a short amount of time before being
-+moved into the target cgroup. This flag also allows the creation of
-+frozen child process by spawning them into a frozen cgroup (see
-+.BR cgroups (7)
-+for a description of the freezer feature in version 2 cgroups).
-+For threaded applications or even thread implementations which
-+make use of cgroups to limit individual threads it is possible to
-+establish a fixed cgroup layout before spawning each thread
-+directly into its target cgroup.
-+.TP
- .BR CLONE_DETACHED " (historical)"
- For a while (during the Linux 2.5 development series)
- .\" added in 2.5.32; removed in 2.6.0-test4
+> 
+> Btw, any chance you could start using signed tags? I've been
+> encouraging people to do that even on kernel.org, and we've got fairly
+> high coverage these days..
 
-base-commit: aa02339ca45030711b42a1af12e3ee3405c1c5c7
--- 
-2.26.2
+Sure, will figure out how in time for the next open window, if that is
+Ok.
 
+Mimi
