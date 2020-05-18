@@ -2,140 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30041D7ADA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 16:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4497D1D7AB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 16:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgEROQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 10:16:47 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:45430 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726998AbgEROQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 10:16:46 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5ADF42009BA;
-        Mon, 18 May 2020 16:16:44 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 069E3200941;
-        Mon, 18 May 2020 16:16:39 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 47DC9402A8;
-        Mon, 18 May 2020 22:16:32 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, Frank.Li@freescale.com,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH] dt-bindings: clock: Convert i.MX7D clock to json-schema
-Date:   Mon, 18 May 2020 22:06:59 +0800
-Message-Id: <1589810819-19851-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727796AbgEROHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 10:07:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727006AbgEROHf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 10:07:35 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D632C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 07:07:35 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id w25so10617113iol.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 07:07:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=88kserzSxBEIDjdSt5lOO0U4rUg4np+0t0E9MSvOSs4=;
+        b=y9jCMQ+BCO5bCs8V3KsG5KK/VGobVsgkQjY5AVz6q9lOYoUJM+8UK0wcbWXbI8xF3J
+         prvbfUFKweWoR6i7a/sKx8hd+VDVivXpCogr+13TXNGWTzBZpoaT3G04gbQTXtnAwNKm
+         b2zIgm05cKPpwTzQZBzWTIfeMmi6lp+iJJXuFHrQJEVyf70Wd/i8BU+zd33WziDDBQrr
+         1aDDD33/n5PpFBKnqs55DxtGDOKC++20oqW8SMvEt6g64DqxmPH3Ynmu/dkM2TvOboRT
+         smliBL1UFi7+UPGOT4cDY3LUQc1+4WEkr22dkDohlTcdglusE9AOIuhVsW1qLQbe12qf
+         X+2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=88kserzSxBEIDjdSt5lOO0U4rUg4np+0t0E9MSvOSs4=;
+        b=UPUKqhhCAD4dNv8j9OssCXNfsJ3kxCVSvId3NOPb6+4HNsXyChnElCG1dsAtB6qbe5
+         UIXJY6kkKDZ7nBtiQdbqRA8CBFx6ZmanGq7axpTw3X7ikiy3glxoUkGoZ/ZzQrgOFp+Z
+         k12y0mdDiZtAhYevIZzQpABnb6RS1HxfIXudvIUnfbi7DP5eoWSfsVT3g172b1PjPeVY
+         7wiIHWq8fo1quyVvrAUB05F3Jz4l2/DMZly7PWG6zfoR442lXuVPtNnZaI7V1dRHJMkX
+         3/RsH7NST+tjsWVemW18MTSxQPtvJtw7qQKqR1PkmN8VqUuNKxQPPJX5kUseIcr8ULtI
+         /y8A==
+X-Gm-Message-State: AOAM533MWhfHaVViBgaEJ4rZ7DiW4fN10RG5h73PB3L9m91LM440ZbW6
+        NTGBejok3xqMGYLJcP+9XeTDIQe+SYFzj+YZwDHx4w==
+X-Google-Smtp-Source: ABdhPJz7TVBqL0o8reZpmOjcpmNU0hBkhjlx8exFERPwwjlGWCDBsQrggYZf+B/u4J3tppWJHADctBPzuEotkI8yI7U=
+X-Received: by 2002:a6b:7c45:: with SMTP id b5mr14815810ioq.31.1589810854135;
+ Mon, 18 May 2020 07:07:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200514075942.10136-1-brgl@bgdev.pl> <20200514075942.10136-11-brgl@bgdev.pl>
+ <CAK8P3a0XgJtZNKePZUUpzADO25-JZKyDiVHFS_yuHRXTjvjDwg@mail.gmail.com>
+In-Reply-To: <CAK8P3a0XgJtZNKePZUUpzADO25-JZKyDiVHFS_yuHRXTjvjDwg@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 18 May 2020 16:07:23 +0200
+Message-ID: <CAMRc=MeVyNzTWw_hk=J9kX1NE9reCE_O4P3wrNpMMc9z4xA_DA@mail.gmail.com>
+Subject: Re: [PATCH v3 10/15] net: ethernet: mtk-eth-mac: new driver
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Edwin Peer <edwin.peer@broadcom.com>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        Stephane Le Provost <stephane.leprovost@mediatek.com>,
+        Pedro Tsai <pedro.tsai@mediatek.com>,
+        Andrew Perepech <andrew.perepech@mediatek.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX7D clock binding to DT schema format using json-schema.
+pt., 15 maj 2020 o 15:32 Arnd Bergmann <arnd@arndb.de> napisa=C5=82(a):
+>
+> On Thu, May 14, 2020 at 10:00 AM Bartosz Golaszewski <brgl@bgdev.pl> wrot=
+e:
+> > +static int mtk_mac_ring_pop_tail(struct mtk_mac_ring *ring,
+> > +                                struct mtk_mac_ring_desc_data *desc_da=
+ta)
+>
+> I took another look at this function because of your comment on the locki=
+ng
+> the descriptor updates, which seemed suspicious as the device side does n=
+ot
+> actually use the locks to access them
+>
+> > +{
+> > +       struct mtk_mac_ring_desc *desc =3D &ring->descs[ring->tail];
+> > +       unsigned int status;
+> > +
+> > +       /* Let the device release the descriptor. */
+> > +       dma_rmb();
+> > +       status =3D desc->status;
+> > +       if (!(status & MTK_MAC_DESC_BIT_COWN))
+> > +               return -1;
+>
+> The dma_rmb() seems odd here, as I don't see which prior read
+> is being protected by this.
+>
+> > +       desc_data->len =3D status & MTK_MAC_DESC_MSK_LEN;
+> > +       desc_data->flags =3D status & ~MTK_MAC_DESC_MSK_LEN;
+> > +       desc_data->dma_addr =3D ring->dma_addrs[ring->tail];
+> > +       desc_data->skb =3D ring->skbs[ring->tail];
+> > +
+> > +       desc->data_ptr =3D 0;
+> > +       desc->status =3D MTK_MAC_DESC_BIT_COWN;
+> > +       if (status & MTK_MAC_DESC_BIT_EOR)
+> > +               desc->status |=3D MTK_MAC_DESC_BIT_EOR;
+> > +
+> > +       /* Flush writes to descriptor memory. */
+> > +       dma_wmb();
+>
+> The comment and the barrier here seem odd as well. I would have expected
+> a barrier after the update to the data pointer, and only a single store
+> but no read of the status flag instead of the read-modify-write,
+> something like
+>
+>       desc->data_ptr =3D 0;
+>       dma_wmb(); /* make pointer update visible before status update */
+>       desc->status =3D MTK_MAC_DESC_BIT_COWN | (status & MTK_MAC_DESC_BIT=
+_EOR);
+>
+> > +       ring->tail =3D (ring->tail + 1) % MTK_MAC_RING_NUM_DESCS;
+> > +       ring->count--;
+>
+> I would get rid of the 'count' here, as it duplicates the information
+> that is already known from the difference between head and tail, and you
+> can't update it atomically without holding a lock around the access to
+> the ring. The way I'd do this is to have the head and tail pointers
+> in separate cache lines, and then use READ_ONCE/WRITE_ONCE
+> and smp barriers to access them, with each one updated on one
+> thread but read by the other.
+>
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- .../devicetree/bindings/clock/imx7d-clock.txt      | 13 -----
- .../devicetree/bindings/clock/imx7d-clock.yaml     | 64 ++++++++++++++++++++++
- 2 files changed, 64 insertions(+), 13 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/clock/imx7d-clock.txt
- create mode 100644 Documentation/devicetree/bindings/clock/imx7d-clock.yaml
+Your previous solution seems much more reliable though. For instance
+in the above: when we're doing the TX cleanup (we got the TX ready
+irq, we're iterating over descriptors until we know there are no more
+packets scheduled (count =3D=3D 0) or we encounter one that's still owned
+by DMA), a parallel TX path can schedule new packets to be sent and I
+don't see how we can atomically check the count (understood as a
+difference between tail and head) and run a new iteration (where we'd
+modify the head or tail) without risking the other path getting in the
+way. We'd have to always check the descriptor.
 
-diff --git a/Documentation/devicetree/bindings/clock/imx7d-clock.txt b/Documentation/devicetree/bindings/clock/imx7d-clock.txt
-deleted file mode 100644
-index 9d3026d..0000000
---- a/Documentation/devicetree/bindings/clock/imx7d-clock.txt
-+++ /dev/null
-@@ -1,13 +0,0 @@
--* Clock bindings for Freescale i.MX7 Dual
--
--Required properties:
--- compatible: Should be "fsl,imx7d-ccm"
--- reg: Address and length of the register set
--- #clock-cells: Should be <1>
--- clocks: list of clock specifiers, must contain an entry for each required
--  entry in clock-names
--- clock-names: should include entries "ckil", "osc"
--
--The clock consumer should specify the desired clock by having the clock
--ID in its "clocks" phandle cell.  See include/dt-bindings/clock/imx7d-clock.h
--for the full list of i.MX7 Dual clock IDs.
-diff --git a/Documentation/devicetree/bindings/clock/imx7d-clock.yaml b/Documentation/devicetree/bindings/clock/imx7d-clock.yaml
-new file mode 100644
-index 0000000..72eb13f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/imx7d-clock.yaml
-@@ -0,0 +1,64 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/imx7d-clock.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Clock bindings for Freescale i.MX7 Dual
-+
-+maintainers:
-+  - Frank Li <Frank.Li@freescale.com>
-+  - Anson Huang <Anson.Huang@nxp.com>
-+
-+description: |
-+  The clock consumer should specify the desired clock by having the clock
-+  ID in its "clocks" phandle cell. See include/dt-bindings/clock/imx7d-clock.h
-+  for the full list of i.MX7 Dual clock IDs.
-+
-+properties:
-+  compatible:
-+    const: fsl,imx7d-ccm
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    items:
-+      - description: CCM interrupt request 1
-+      - description: CCM interrupt request 2
-+    maxItems: 2
-+
-+  '#clock-cells':
-+    const: 1
-+
-+  clocks:
-+    items:
-+      - description: 32k osc
-+      - description: 24m osc
-+
-+  clock-names:
-+    items:
-+      - const: ckil
-+      - const: osc
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - '#clock-cells'
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    clock-controller@30380000 {
-+        compatible = "fsl,imx7d-ccm";
-+        reg = <0x30380000 0x10000>;
-+        interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
-+        #clock-cells = <1>;
-+        clocks = <&ckil>, <&osc>;
-+        clock-names = "ckil", "osc";
-+    };
--- 
-2.7.4
+I experimented a bit with this and couldn't come up with anything that
+would pass any stress test.
 
+On the other hand: spin_lock_bh() works fine and I like your approach
+from the previous e-mail - except for the work for updating stats as
+we could potentially lose some stats when we're updating in process
+context with RX/TX paths running in parallel in napi context but that
+would be rare enough to overlook it.
+
+I hope v4 will be good enough even with spinlocks. :)
+
+Bart
