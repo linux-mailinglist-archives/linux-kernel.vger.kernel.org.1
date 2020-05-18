@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1F51D8113
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4562A1D8731
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729764AbgERRoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:44:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42732 "EHLO mail.kernel.org"
+        id S1728875AbgERRjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:39:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729743AbgERRo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:44:26 -0400
+        id S1728840AbgERRjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:39:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1439C20853;
-        Mon, 18 May 2020 17:44:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BB21207C4;
+        Mon, 18 May 2020 17:39:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823865;
-        bh=Wt0BE6DdX2nSOZNimgGDzjTqchGZmtsE+LKulxdaQ2s=;
+        s=default; t=1589823576;
+        bh=R2+G2g70Z5guBITJdADg/p7YFldTOiznc75Jb28esL0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ACler6s5xlEQMbdnmpRm/q8j7qSh4Y+rIKZ/0Rdevum7DRKAMPvBYqmxttMHKDI9y
-         S8ZfnPz9POz8zaWhKz9iwE0UUL5DGNeSFmM3czoaKGD11C9FK/bSijDLSl2INahf8u
-         X6GhyBSqAmlcVHMtXMmt2FqEwkLY+Rjjqp83ElYU=
+        b=IF0KFhKTt6ACQJXTnc+TuktuYW2IIFZQFJZfc3I3pYffj0ILyLcZbGDIzssLbWcEX
+         B6Cj7rieXybq9sJXJZFAzWEx61P0atKT7hlGp4P1mzgSHA+tw4PfqZEffyZh/DDIQ2
+         SRpCCtJ5BMMcPlpwHoXfIYdc252VN0UQPx42ZhjY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 30/90] blktrace: fix unlocked access to init/start-stop/teardown
+Subject: [PATCH 4.4 37/86] net: moxa: Fix a potential double free_irq()
 Date:   Mon, 18 May 2020 19:36:08 +0200
-Message-Id: <20200518173457.324311593@linuxfoundation.org>
+Message-Id: <20200518173457.982415582@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,154 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 1f2cac107c591c24b60b115d6050adc213d10fc0 upstream.
+[ Upstream commit ee8d2267f0e39a1bfd95532da3a6405004114b27 ]
 
-sg.c calls into the blktrace functions without holding the proper queue
-mutex for doing setup, start/stop, or teardown.
+Should an irq requested with 'devm_request_irq' be released explicitly,
+it should be done by 'devm_free_irq()', not 'free_irq()'.
 
-Add internal unlocked variants, and export the ones that do the proper
-locking.
-
-Fixes: 6da127ad0918 ("blktrace: Add blktrace ioctls to SCSI generic devices")
-Tested-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Fixes: 6c821bd9edc9 ("net: Add MOXA ART SoCs ethernet driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/blktrace.c | 58 ++++++++++++++++++++++++++++++++++-------
- 1 file changed, 48 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/moxa/moxart_ether.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index ff1384c5884c5..55337d797deb1 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -329,7 +329,7 @@ static void blk_trace_cleanup(struct blk_trace *bt)
- 	put_probe_ref();
- }
+diff --git a/drivers/net/ethernet/moxa/moxart_ether.c b/drivers/net/ethernet/moxa/moxart_ether.c
+index f1dde59c9fa6c..374e691b11da6 100644
+--- a/drivers/net/ethernet/moxa/moxart_ether.c
++++ b/drivers/net/ethernet/moxa/moxart_ether.c
+@@ -541,7 +541,7 @@ static int moxart_remove(struct platform_device *pdev)
+ 	struct net_device *ndev = platform_get_drvdata(pdev);
  
--int blk_trace_remove(struct request_queue *q)
-+static int __blk_trace_remove(struct request_queue *q)
- {
- 	struct blk_trace *bt;
+ 	unregister_netdev(ndev);
+-	free_irq(ndev->irq, ndev);
++	devm_free_irq(&pdev->dev, ndev->irq, ndev);
+ 	moxart_mac_free_memory(ndev);
+ 	free_netdev(ndev);
  
-@@ -342,6 +342,17 @@ int blk_trace_remove(struct request_queue *q)
- 
- 	return 0;
- }
-+
-+int blk_trace_remove(struct request_queue *q)
-+{
-+	int ret;
-+
-+	mutex_lock(&q->blk_trace_mutex);
-+	ret = __blk_trace_remove(q);
-+	mutex_unlock(&q->blk_trace_mutex);
-+
-+	return ret;
-+}
- EXPORT_SYMBOL_GPL(blk_trace_remove);
- 
- static ssize_t blk_dropped_read(struct file *filp, char __user *buffer,
-@@ -546,9 +557,8 @@ err:
- 	return ret;
- }
- 
--int blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
--		    struct block_device *bdev,
--		    char __user *arg)
-+static int __blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
-+			     struct block_device *bdev, char __user *arg)
- {
- 	struct blk_user_trace_setup buts;
- 	int ret;
-@@ -567,6 +577,19 @@ int blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
- 	}
- 	return 0;
- }
-+
-+int blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
-+		    struct block_device *bdev,
-+		    char __user *arg)
-+{
-+	int ret;
-+
-+	mutex_lock(&q->blk_trace_mutex);
-+	ret = __blk_trace_setup(q, name, dev, bdev, arg);
-+	mutex_unlock(&q->blk_trace_mutex);
-+
-+	return ret;
-+}
- EXPORT_SYMBOL_GPL(blk_trace_setup);
- 
- #if defined(CONFIG_COMPAT) && defined(CONFIG_X86_64)
-@@ -603,7 +626,7 @@ static int compat_blk_trace_setup(struct request_queue *q, char *name,
- }
- #endif
- 
--int blk_trace_startstop(struct request_queue *q, int start)
-+static int __blk_trace_startstop(struct request_queue *q, int start)
- {
- 	int ret;
- 	struct blk_trace *bt = q->blk_trace;
-@@ -642,6 +665,17 @@ int blk_trace_startstop(struct request_queue *q, int start)
- 
- 	return ret;
- }
-+
-+int blk_trace_startstop(struct request_queue *q, int start)
-+{
-+	int ret;
-+
-+	mutex_lock(&q->blk_trace_mutex);
-+	ret = __blk_trace_startstop(q, start);
-+	mutex_unlock(&q->blk_trace_mutex);
-+
-+	return ret;
-+}
- EXPORT_SYMBOL_GPL(blk_trace_startstop);
- 
- /*
-@@ -672,7 +706,7 @@ int blk_trace_ioctl(struct block_device *bdev, unsigned cmd, char __user *arg)
- 	switch (cmd) {
- 	case BLKTRACESETUP:
- 		bdevname(bdev, b);
--		ret = blk_trace_setup(q, b, bdev->bd_dev, bdev, arg);
-+		ret = __blk_trace_setup(q, b, bdev->bd_dev, bdev, arg);
- 		break;
- #if defined(CONFIG_COMPAT) && defined(CONFIG_X86_64)
- 	case BLKTRACESETUP32:
-@@ -683,10 +717,10 @@ int blk_trace_ioctl(struct block_device *bdev, unsigned cmd, char __user *arg)
- 	case BLKTRACESTART:
- 		start = 1;
- 	case BLKTRACESTOP:
--		ret = blk_trace_startstop(q, start);
-+		ret = __blk_trace_startstop(q, start);
- 		break;
- 	case BLKTRACETEARDOWN:
--		ret = blk_trace_remove(q);
-+		ret = __blk_trace_remove(q);
- 		break;
- 	default:
- 		ret = -ENOTTY;
-@@ -704,10 +738,14 @@ int blk_trace_ioctl(struct block_device *bdev, unsigned cmd, char __user *arg)
-  **/
- void blk_trace_shutdown(struct request_queue *q)
- {
-+	mutex_lock(&q->blk_trace_mutex);
-+
- 	if (q->blk_trace) {
--		blk_trace_startstop(q, 0);
--		blk_trace_remove(q);
-+		__blk_trace_startstop(q, 0);
-+		__blk_trace_remove(q);
- 	}
-+
-+	mutex_unlock(&q->blk_trace_mutex);
- }
- 
- /*
 -- 
 2.20.1
 
