@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA721D85EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A091D810A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732515AbgERSWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:22:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53518 "EHLO mail.kernel.org"
+        id S1729718AbgERRoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:44:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730275AbgERRvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:51:03 -0400
+        id S1729704AbgERRoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:44:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6F8A20715;
-        Mon, 18 May 2020 17:51:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 930AF20835;
+        Mon, 18 May 2020 17:44:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824262;
-        bh=5DKwiWJyRxq7YiGnGwAaSbObySpsOz8YE1NrzOWGdHQ=;
+        s=default; t=1589823853;
+        bh=FVLgpGr8qex7mofHgRNQMo+UaiHfOrUMGaBPTCsnP+Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BwQ8/uIwJqll5CRea7UXaQcxOaY7iIu0R2eb7jqiKtKzxSImFB1c9FQUFP9WNUr0q
-         oqdvR6yeCli3m9TebIW5vBndgCMJG0voyw7hS1X+dwwKxIVrju9XiYL7tq+YUwxXKD
-         Ci7GepW9d1MXrXLvOWHqETbeSBLdqTfHRJSjnReg=
+        b=YVwSh0UcozbEvk+Z9SBff4MkW8Bal3iH/DXTWRHOqiX8MTRucHMRbXxWlSbMa0HWf
+         5PH1FF1sS3u82YXCODiC2EE2IkcvVIpsV6sLI0Kzj0h/D4XJfzmJzxZ2Er9J2oOa9g
+         yYfaGQW6Fuq+xNP2UEucUdSLXVJhcXSFFUbeFNSA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 21/80] tcp: fix SO_RCVLOWAT hangs with fat skbs
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 61/90] Stop the ad-hoc games with -Wno-maybe-initialized
 Date:   Mon, 18 May 2020 19:36:39 +0200
-Message-Id: <20200518173454.663518050@linuxfoundation.org>
+Message-Id: <20200518173503.542960889@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,95 +43,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 24adbc1676af4e134e709ddc7f34cf2adc2131e4 ]
+commit 78a5255ffb6a1af189a83e493d916ba1c54d8c75 upstream.
 
-We autotune rcvbuf whenever SO_RCVLOWAT is set to account for 100%
-overhead in tcp_set_rcvlowat()
+We have some rather random rules about when we accept the
+"maybe-initialized" warnings, and when we don't.
 
-This works well when skb->len/skb->truesize ratio is bigger than 0.5
+For example, we consider it unreliable for gcc versions < 4.9, but also
+if -O3 is enabled, or if optimizing for size.  And then various kernel
+config options disabled it, because they know that they trigger that
+warning by confusing gcc sufficiently (ie PROFILE_ALL_BRANCHES).
 
-But if we receive packets with small MSS, we can end up in a situation
-where not enough bytes are available in the receive queue to satisfy
-RCVLOWAT setting.
-As our sk_rcvbuf limit is hit, we send zero windows in ACK packets,
-preventing remote peer from sending more data.
+And now gcc-10 seems to be introducing a lot of those warnings too, so
+it falls under the same heading as 4.9 did.
 
-Even autotuning does not help, because it only triggers at the time
-user process drains the queue. If no EPOLLIN is generated, this
-can not happen.
+At the same time, we have a very straightforward way to _enable_ that
+warning when wanted: use "W=2" to enable more warnings.
 
-Note poll() has a similar issue, after commit
-c7004482e8dc ("tcp: Respect SO_RCVLOWAT in tcp_poll().")
+So stop playing these ad-hoc games, and just disable that warning by
+default, with the known and straight-forward "if you want to work on the
+extra compiler warnings, use W=123".
 
-Fixes: 03f45c883c6f ("tcp: avoid extra wakeups for SO_RCVLOWAT users")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Would it be great to have code that is always so obvious that it never
+confuses the compiler whether a variable is used initialized or not?
+Yes, it would.  In a perfect world, the compilers would be smarter, and
+our source code would be simpler.
+
+That's currently not the world we live in, though.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/net/tcp.h    |   13 +++++++++++++
- net/ipv4/tcp.c       |   14 +++++++++++---
- net/ipv4/tcp_input.c |    3 ++-
- 3 files changed, 26 insertions(+), 4 deletions(-)
 
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -1373,6 +1373,19 @@ static inline int tcp_full_space(const s
- 	return tcp_win_from_space(sk, sk->sk_rcvbuf);
- }
+---
+ Makefile             |    7 +++----
+ init/Kconfig         |   17 -----------------
+ kernel/trace/Kconfig |    1 -
+ 3 files changed, 3 insertions(+), 22 deletions(-)
+
+--- a/Makefile
++++ b/Makefile
+@@ -663,10 +663,6 @@ else
+ KBUILD_CFLAGS   += -O2
+ endif
  
-+/* We provision sk_rcvbuf around 200% of sk_rcvlowat.
-+ * If 87.5 % (7/8) of the space has been consumed, we want to override
-+ * SO_RCVLOWAT constraint, since we are receiving skbs with too small
-+ * len/truesize ratio.
-+ */
-+static inline bool tcp_rmem_pressure(const struct sock *sk)
-+{
-+	int rcvbuf = READ_ONCE(sk->sk_rcvbuf);
-+	int threshold = rcvbuf - (rcvbuf >> 3);
+-ifdef CONFIG_CC_DISABLE_WARN_MAYBE_UNINITIALIZED
+-KBUILD_CFLAGS   += -Wno-maybe-uninitialized
+-endif
+-
+ # Tell gcc to never replace conditional load with a non-conditional one
+ KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
+ 
+@@ -801,6 +797,9 @@ KBUILD_CFLAGS += $(call cc-disable-warni
+ # disable stringop warnings in gcc 8+
+ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
+ 
++# Enabled with W=2, disabled by default as noisy
++KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
 +
-+	return atomic_read(&sk->sk_rmem_alloc) > threshold;
-+}
-+
- extern void tcp_openreq_init_rwin(struct request_sock *req,
- 				  const struct sock *sk_listener,
- 				  const struct dst_entry *dst);
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -488,9 +488,17 @@ static void tcp_tx_timestamp(struct sock
- static inline bool tcp_stream_is_readable(const struct tcp_sock *tp,
- 					  int target, struct sock *sk)
- {
--	return (READ_ONCE(tp->rcv_nxt) - tp->copied_seq >= target) ||
--		(sk->sk_prot->stream_memory_read ?
--		sk->sk_prot->stream_memory_read(sk) : false);
-+	int avail = READ_ONCE(tp->rcv_nxt) - READ_ONCE(tp->copied_seq);
-+
-+	if (avail > 0) {
-+		if (avail >= target)
-+			return true;
-+		if (tcp_rmem_pressure(sk))
-+			return true;
-+	}
-+	if (sk->sk_prot->stream_memory_read)
-+		return sk->sk_prot->stream_memory_read(sk);
-+	return false;
- }
+ # disable invalid "can't wrap" optimizations for signed / pointers
+ KBUILD_CFLAGS	+= $(call cc-option,-fno-strict-overflow)
  
- /*
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -4683,7 +4683,8 @@ void tcp_data_ready(struct sock *sk)
- 	const struct tcp_sock *tp = tcp_sk(sk);
- 	int avail = tp->rcv_nxt - tp->copied_seq;
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -16,22 +16,6 @@ config DEFCONFIG_LIST
+ 	default "$ARCH_DEFCONFIG"
+ 	default "arch/$ARCH/defconfig"
  
--	if (avail < sk->sk_rcvlowat && !sock_flag(sk, SOCK_DONE))
-+	if (avail < sk->sk_rcvlowat && !tcp_rmem_pressure(sk) &&
-+	    !sock_flag(sk, SOCK_DONE))
- 		return;
+-config CC_HAS_WARN_MAYBE_UNINITIALIZED
+-	def_bool $(cc-option,-Wmaybe-uninitialized)
+-	help
+-	  GCC >= 4.7 supports this option.
+-
+-config CC_DISABLE_WARN_MAYBE_UNINITIALIZED
+-	bool
+-	depends on CC_HAS_WARN_MAYBE_UNINITIALIZED
+-	default CC_IS_GCC && GCC_VERSION < 40900  # unreliable for GCC < 4.9
+-	help
+-	  GCC's -Wmaybe-uninitialized is not reliable by definition.
+-	  Lots of false positive warnings are produced in some cases.
+-
+-	  If this option is enabled, -Wno-maybe-uninitialzed is passed
+-	  to the compiler to suppress maybe-uninitialized warnings.
+-
+ config CONSTRUCTORS
+ 	bool
+ 	depends on !UML
+@@ -1349,7 +1333,6 @@ config CC_OPTIMIZE_FOR_PERFORMANCE
  
- 	sk->sk_data_ready(sk);
+ config CC_OPTIMIZE_FOR_SIZE
+ 	bool "Optimize for size"
+-	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
+ 	help
+ 	  Enabling this option will pass "-Os" instead of "-O2" to
+ 	  your compiler resulting in a smaller kernel.
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -342,7 +342,6 @@ config PROFILE_ANNOTATED_BRANCHES
+ config PROFILE_ALL_BRANCHES
+ 	bool "Profile all if conditionals"
+ 	select TRACE_BRANCH_PROFILING
+-	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
+ 	help
+ 	  This tracer profiles all branch conditions. Every if ()
+ 	  taken in the kernel is recorded whether it hit or miss.
 
 
