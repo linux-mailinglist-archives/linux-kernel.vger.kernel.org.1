@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E257D1D88F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100D41D88FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgERUNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 16:13:40 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:59293 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726283AbgERUNj (ORCPT
+        id S1727000AbgERUQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 16:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726367AbgERUQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 16:13:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589832817;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+FuqqfaCRxkXrkU1XoQZ3g0hbXKUiq+yLL3TVWqu58Q=;
-        b=f48qGWWxLuD97QvcgSgPGZBCd0+//O74YGsHA/4BEgG/qyJDn+xm4mCx/QDJs0nwJF6GiF
-        295PkirWZQFnITJKvJd9dEdn0V32MeKHRoA0gNT6/UrLLFIteikb9rqfhX9vX2mwlZAotr
-        v0unftTLBt5G7sFhI/8uTFyEbgGWUyA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-luE8sTc0OTehOItDnvy-qw-1; Mon, 18 May 2020 16:13:33 -0400
-X-MC-Unique: luE8sTc0OTehOItDnvy-qw-1
-Received: by mail-wm1-f69.google.com with SMTP id 23so310081wma.8
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 13:13:33 -0700 (PDT)
+        Mon, 18 May 2020 16:16:53 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B836C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 13:16:53 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id v26so6433077vsa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 13:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2L5t1Sp95sqTVtR6AkRUlfVW8JMFNazZ3b7/dWgmdc8=;
+        b=lRN84o1P2f4cfUorpdVHKEFMmmGBZQXD3/THcziCpkhwowpSJz9mGQ2ehXmxCkh8oc
+         pOW86mIRYwu+9fWgatuAJwruTnN2l5B5fxBv5tktzAmD4GKJWx8s3aWb8Bec1zsYZRV9
+         s/glNUkXcauOZiJ6R4rPMaMSd386/y7VGOh3GZvhdJwEQLOM/lwFcRWGA1Nue1iuI/Jy
+         ILQDFIMUphst8PxHU2lyktW3i19RyvKdNN06v/8ej1Lnm4kRDBarQO5FoIz2dZ8SLphK
+         mZy3gOu8rxCusU8vVTwsigC3qdMnHKKSSQXh+O6X0g36Zl428GSRiM/Ya+zDJbbGToEx
+         boZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+FuqqfaCRxkXrkU1XoQZ3g0hbXKUiq+yLL3TVWqu58Q=;
-        b=KW/5kXTQmY298hlxf2X3MJWMgylAbSAbmzkM0axChKSZM4K3DW8oHfKvHaDmnLO6qq
-         evCiPzNpeo1FJbjQEj+fFld2Y/BT/2wbalTp/prNW0oa064XHZsy56mFHHpc5M5vxBmN
-         ja4A9VZnoGvESyFMsfGl3OGm8lP5BcFOLjctK9ozZlgY5pfHIB8pfs9/a+BsLd0fIC5n
-         vH5xkDe4Sb9O2qiJHNIlqJU6Ggib3ZjprSVvyxzikqfx8zs4HpNol/0PaQxCiSKPSCFt
-         a/NA3CjDGrbNaEZ1GKIzGoxUJXh3d0IxrhM/GmsOZHyKiv/l2YHAFrDlnrVrurmUbCN0
-         zMQA==
-X-Gm-Message-State: AOAM533WIgbioyEEwCja66beycJ4UYU0RoX8WOXuDLaLBsQiymjx8fX7
-        wV6fMNlV2TRW+8ZZ4iOTLfbcCLmSlJHhRklZx/eWz8YgQUyDji643fUqzHjVmxeNPAanOdguL1z
-        R6yndWM7nHbKuWkSouerttxE2
-X-Received: by 2002:a1c:1b4d:: with SMTP id b74mr1108148wmb.123.1589832812305;
-        Mon, 18 May 2020 13:13:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwUyDuJ6hpGGEfbOxOxaYcBTBkFm+hP/HaXtAGSHA1Y+klLKmw+76JaCIxqRMzLPb3V5yiySg==
-X-Received: by 2002:a1c:1b4d:: with SMTP id b74mr1108115wmb.123.1589832812024;
-        Mon, 18 May 2020 13:13:32 -0700 (PDT)
-Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id w82sm810750wmg.28.2020.05.18.13.13.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 May 2020 13:13:31 -0700 (PDT)
-Subject: Re: [PATCH 0/7] KVM: SVM: baby steps towards nested state migration
-To:     Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Cathy Avery <cavery@redhat.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Jim Mattson <jmattson@google.com>
-References: <20200515174144.1727-1-pbonzini@redhat.com>
- <27c7526c-4d02-c9ba-7d3b-7416dbe4cdbb@oracle.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <ff8ca8ca-bc2c-5188-7024-7d4a18b02759@redhat.com>
-Date:   Mon, 18 May 2020 22:11:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2L5t1Sp95sqTVtR6AkRUlfVW8JMFNazZ3b7/dWgmdc8=;
+        b=H4Btoj/3de87Sdq6jw9a6rIUvXRfMEq4oXnL7j6VHq4HS5/CJo1HTsjq4FA3v+6PTU
+         XgBquAe+Dlpe88iIs4WLDHWkga2+uSNv6ajjxoA986oZaKhG5S8FGdcbqCU463j3qk/L
+         +1tHQkH2XRuZtlJWXRgYNLDXEvjtN6RhFXPoe2U5/Dh2af4zqoHC7583erIJfBOLz7pS
+         /0Ob7hK6JRnDmCRHp1SEWnQy5E4hmTkEZ10+/R947Mj8ye8utyk9Momt3NVAUoe4XlhP
+         ZUXOSQpfueXTtzHXDPNGqPrKxqHLNp7wEoVvW0XnelXDZF3Al5kNiEUlGdxufdRrrJRV
+         EwUw==
+X-Gm-Message-State: AOAM530WOwLRxx3zzcU4joFrwSLVyHO72QSATjrGqPbWI3hggCHLRfXf
+        p6V70gde8zJfjXLv3IyquFbZ6tnNfJPzjfc+dCpNTg==
+X-Google-Smtp-Source: ABdhPJw+AcUDhLRBTX9JpNUTxsZ7Ig4UDXf8LfIgGLCMsDdhtI6mrkvkFNe2juMyPsdcJA8XVnnXYnjEvDXx8ikG1nU=
+X-Received: by 2002:a67:d981:: with SMTP id u1mr648823vsj.240.1589833012258;
+ Mon, 18 May 2020 13:16:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <27c7526c-4d02-c9ba-7d3b-7416dbe4cdbb@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200515215733.20647-1-eranian@google.com> <20200515215733.20647-4-eranian@google.com>
+ <20200518093402.GB277222@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200518093402.GB277222@hirez.programming.kicks-ass.net>
+From:   Stephane Eranian <eranian@google.com>
+Date:   Mon, 18 May 2020 13:16:41 -0700
+Message-ID: <CABPqkBQt0a7Pi7X2cLz601TJEqasDXrOZcwuBhDCjcZ+ishPMw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] perf/x86/rapl: add AMD Fam17h RAPL support
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, mingo@elte.hu,
+        Ian Rogers <irogers@google.com>,
+        "Phillips, Kim" <kim.phillips@amd.com>,
+        Jiri Olsa <jolsa@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/05/20 22:07, Krish Sadhukhan wrote:
->>
->>
->> Paolo Bonzini (7):
->>    KVM: SVM: move map argument out of enter_svm_guest_mode
->>    KVM: SVM: extract load_nested_vmcb_control
->>    KVM: SVM: extract preparation of VMCB for nested run
->>    KVM: SVM: save all control fields in svm->nested
->>    KVM: nSVM: remove HF_VINTR_MASK
->>    KVM: nSVM: do not reload pause filter fields from VMCB
->>    KVM: SVM: introduce data structures for nested virt state
->>
->>   arch/x86/include/asm/kvm_host.h |   1 -
->>   arch/x86/include/uapi/asm/kvm.h |  26 +++++++-
->>   arch/x86/kvm/svm/nested.c       | 115 +++++++++++++++++---------------
->>   arch/x86/kvm/svm/svm.c          |  11 ++-
->>   arch/x86/kvm/svm/svm.h          |  28 +++++---
->>   5 files changed, 116 insertions(+), 65 deletions(-)
->>
-> Reviewed-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
+On Mon, May 18, 2020 at 2:34 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Fri, May 15, 2020 at 02:57:33PM -0700, Stephane Eranian wrote:
+>
+> > +static struct perf_msr amd_rapl_msrs[] = {
+> > +     [PERF_RAPL_PP0]  = { 0, &rapl_events_cores_group, NULL},
+> > +     [PERF_RAPL_PKG]  = { MSR_AMD_PKG_ENERGY_STATUS,  &rapl_events_pkg_group,   test_msr },
+> > +     [PERF_RAPL_RAM]  = { 0, &rapl_events_ram_group,   NULL},
+> > +     [PERF_RAPL_PP1]  = { 0, &rapl_events_gpu_group,   NULL},
+> > +     [PERF_RAPL_PSYS] = { 0, &rapl_events_psys_group,  NULL},
+> > +};
+>
+> Why have those !PKG things initialized? Wouldn't they default to 0
+> anyway? If not, surely { 0, } is sufficient.
 
-Thanks!  Note that (while these patches should be okay) they are not
-really ready to be committed because more cleanups and refactorings will
-become evident through the rest of the work.
-
-Paolo
-
+Yes, but that assumes that perf_msr_probe() is fixed to not expect a grp.
+I think it is best to fix perf_msr_probe(). I already fixed one
+problem, I'll fix this one as well.
