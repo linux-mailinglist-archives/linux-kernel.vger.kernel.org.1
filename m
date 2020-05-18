@@ -2,195 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B507B1D727B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF011D726D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727927AbgERIEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 04:04:47 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:40212 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726828AbgERIEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 04:04:47 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1CD4420096C;
-        Mon, 18 May 2020 10:04:45 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CEA28200977;
-        Mon, 18 May 2020 10:04:41 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id AC46C402B4;
-        Mon, 18 May 2020 16:04:37 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        paul.liu@linaro.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH] dt-bindings: regulator: Convert anatop regulator to json-schema
-Date:   Mon, 18 May 2020 15:55:05 +0800
-Message-Id: <1589788505-18024-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727803AbgERIBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 04:01:30 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:56012 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbgERIBa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 04:01:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=aDKxDJZ/qZ1vmOI+jxTFnYHJknWNLi0bRyCoqCFOLwM=; b=rxcFsOE+JyNoqI/GUYEUadKR+0
+        zhiJXye7AAB9w6UlXrNyVTptUwJDHPP5EvlB3aMqbUhc+K06Zlp+56BSBLjrWXmhFlRm4ffkgLYZc
+        OfszTqFFSU4WbGkiH32YiWSK67LcnuXD5+G+lAM0PKth56wEG7gmMdKJIqgFa4fzvTwFmY60zaYw1
+        eLx30A+GyyFobB4qlI9tlBzZybi76CXrDJ8KbMuBA8lBHHFt+oJKNNXhaxaEwljBCm08xwlm7tt78
+        0RTotjBEAGezhYi65jopDbFDcT3sOhikZC04vRy68PxKwbFmSM8/CiPmE0/PN2pr6EiTjbMMjtI6H
+        1LylQvgw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jaadE-0003JR-86; Mon, 18 May 2020 07:56:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DD5DC3011E8;
+        Mon, 18 May 2020 09:56:07 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C5E152B3CDC70; Mon, 18 May 2020 09:56:07 +0200 (CEST)
+Date:   Mon, 18 May 2020 09:56:07 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Borislav Petkov <bp@alien8.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org
+Subject: Re: [for-linus][PATCH 1/3] x86/ftrace: Have ftrace trampolines turn
+ read-only at the end of system boot up
+Message-ID: <20200518075607.GH2940@hirez.programming.kicks-ass.net>
+References: <20200514125817.850882486@goodmis.org>
+ <20200514125842.392454557@goodmis.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200514125842.392454557@goodmis.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the anatop regulator binding to DT schema format using json-schema.
+On Thu, May 14, 2020 at 08:58:18AM -0400, Steven Rostedt wrote:
+> +			start_offset = (unsigned long)ftrace_caller;
+> +			end_offset = (unsigned long)ftrace_epilogue;
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+
 ---
- .../bindings/regulator/anatop-regulator.txt        | 40 ---------
- .../bindings/regulator/anatop-regulator.yaml       | 94 ++++++++++++++++++++++
- 2 files changed, 94 insertions(+), 40 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/regulator/anatop-regulator.txt
- create mode 100644 Documentation/devicetree/bindings/regulator/anatop-regulator.yaml
+Subject: x86/ftrace: Fix compile error
 
-diff --git a/Documentation/devicetree/bindings/regulator/anatop-regulator.txt b/Documentation/devicetree/bindings/regulator/anatop-regulator.txt
-deleted file mode 100644
-index a3106c7..0000000
---- a/Documentation/devicetree/bindings/regulator/anatop-regulator.txt
-+++ /dev/null
-@@ -1,40 +0,0 @@
--Anatop Voltage regulators
--
--Required properties:
--- compatible: Must be "fsl,anatop-regulator"
--- regulator-name: A string used as a descriptive name for regulator outputs
--- anatop-reg-offset: Anatop MFD register offset
--- anatop-vol-bit-shift: Bit shift for the register
--- anatop-vol-bit-width: Number of bits used in the register
--- anatop-min-bit-val: Minimum value of this register
--- anatop-min-voltage: Minimum voltage of this regulator
--- anatop-max-voltage: Maximum voltage of this regulator
--
--Optional properties:
--- anatop-delay-reg-offset: Anatop MFD step time register offset
--- anatop-delay-bit-shift: Bit shift for the step time register
--- anatop-delay-bit-width: Number of bits used in the step time register
--- vin-supply: The supply for this regulator
--- anatop-enable-bit: Regulator enable bit offset
--
--Any property defined as part of the core regulator
--binding, defined in regulator.txt, can also be used.
--
--Example:
--
--	regulator-vddpu {
--		compatible = "fsl,anatop-regulator";
--		regulator-name = "vddpu";
--		regulator-min-microvolt = <725000>;
--		regulator-max-microvolt = <1300000>;
--		regulator-always-on;
--		anatop-reg-offset = <0x140>;
--		anatop-vol-bit-shift = <9>;
--		anatop-vol-bit-width = <5>;
--		anatop-delay-reg-offset = <0x170>;
--		anatop-delay-bit-shift = <24>;
--		anatop-delay-bit-width = <2>;
--		anatop-min-bit-val = <1>;
--		anatop-min-voltage = <725000>;
--		anatop-max-voltage = <1300000>;
--	};
-diff --git a/Documentation/devicetree/bindings/regulator/anatop-regulator.yaml b/Documentation/devicetree/bindings/regulator/anatop-regulator.yaml
-new file mode 100644
-index 0000000..a8c9dd0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/anatop-regulator.yaml
-@@ -0,0 +1,94 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/anatop-regulator.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale Anatop Voltage Regulators
-+
-+maintainers:
-+  - Ying-Chun Liu (PaulLiu) <paul.liu@linaro.org>
-+
-+allOf:
-+  - $ref: "regulator.yaml#"
-+
-+properties:
-+  compatible:
-+    const: fsl,anatop-regulator
-+
-+  regulator-name:
-+    $ref: '/schemas/types.yaml#/definitions/string'
-+    description: string used as a descriptive name for regulator outputs
-+
-+  anatop-reg-offset:
-+    $ref: '/schemas/types.yaml#/definitions/uint32'
-+    description: u32 value representing the anatop MFD register offset.
-+
-+  anatop-vol-bit-shift:
-+    $ref: '/schemas/types.yaml#/definitions/uint32'
-+    description: u32 value representing the bit shift for the register.
-+
-+  anatop-vol-bit-width:
-+    $ref: '/schemas/types.yaml#/definitions/uint32'
-+    description: u32 value representing the number of bits used in the register.
-+
-+  anatop-min-bit-val:
-+    $ref: '/schemas/types.yaml#/definitions/uint32'
-+    description: u32 value representing the minimum value of this register.
-+
-+  anatop-min-voltage:
-+    $ref: '/schemas/types.yaml#/definitions/uint32'
-+    description: u32 value representing the minimum voltage of this regulator.
-+
-+  anatop-max-voltage:
-+    $ref: '/schemas/types.yaml#/definitions/uint32'
-+    description: u32 value representing the maximum voltage of this regulator.
-+
-+  anatop-delay-reg-offset:
-+    $ref: '/schemas/types.yaml#/definitions/uint32'
-+    description: u32 value representing the anatop MFD step time register offset.
-+
-+  anatop-delay-bit-shift:
-+    $ref: '/schemas/types.yaml#/definitions/uint32'
-+    description: u32 value representing the bit shift for the step time register.
-+
-+  anatop-delay-bit-width:
-+    $ref: '/schemas/types.yaml#/definitions/uint32'
-+    description: u32 value representing the number of bits used in the step time register.
-+
-+  anatop-enable-bit:
-+    $ref: '/schemas/types.yaml#/definitions/uint32'
-+    description: u32 value representing regulator enable bit offset.
-+
-+  vin-supply:
-+    $ref: '/schemas/types.yaml#/definitions/phandle'
-+    description: input supply phandle.
-+
-+required:
-+  - compatible
-+  - regulator-name
-+  - anatop-reg-offset
-+  - anatop-vol-bit-shift
-+  - anatop-vol-bit-width
-+  - anatop-min-bit-val
-+  - anatop-min-voltage
-+  - anatop-max-voltage
-+
-+examples:
-+  - |
-+    regulator-vddpu {
-+        compatible = "fsl,anatop-regulator";
-+        regulator-name = "vddpu";
-+        regulator-min-microvolt = <725000>;
-+        regulator-max-microvolt = <1300000>;
-+        regulator-always-on;
-+        anatop-reg-offset = <0x140>;
-+        anatop-vol-bit-shift = <9>;
-+        anatop-vol-bit-width = <5>;
-+        anatop-delay-reg-offset = <0x170>;
-+        anatop-delay-bit-shift = <24>;
-+        anatop-delay-bit-width = <2>;
-+        anatop-min-bit-val = <1>;
-+        anatop-min-voltage = <725000>;
-+        anatop-max-voltage = <1300000>;
-+    };
--- 
-2.7.4
+When building x86-64 kernels, my compiler is sad about a missing symbol.
 
+Fixes: 59566b0b622e ("x86/ftrace: Have ftrace trampolines turn read-only at the end of system boot up")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/kernel/ftrace.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+index f8917a6f25b7..1cf7d69402e2 100644
+--- a/arch/x86/kernel/ftrace.c
++++ b/arch/x86/kernel/ftrace.c
+@@ -286,6 +286,7 @@ extern void ftrace_regs_caller_ret(void);
+ extern void ftrace_caller_end(void);
+ extern void ftrace_caller_op_ptr(void);
+ extern void ftrace_regs_caller_op_ptr(void);
++extern void ftrace_epilogue(void);
+ 
+ /* movq function_trace_op(%rip), %rdx */
+ /* 0x48 0x8b 0x15 <offset-to-ftrace_trace_op (4 bytes)> */
