@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4851D83EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4848C1D83D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387520AbgERSIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:08:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56518 "EHLO mail.kernel.org"
+        id S2387454AbgERSHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:07:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387419AbgERSHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:07:35 -0400
+        id S2387436AbgERSHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:07:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6110820826;
-        Mon, 18 May 2020 18:07:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A906220C09;
+        Mon, 18 May 2020 18:07:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825254;
-        bh=RwtWXpxjsYCHwzvvSeug+dz9JtaWMYFqL9TctgSNbfk=;
+        s=default; t=1589825267;
+        bh=LKxni0uILG5TbrYILoYC0DaokGze+8/lhCaMHSWGj5E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VxaYoAE5nJJMxKqZNGLry+vEG+AcPsRg7a7xlI6wq7xTQP3LPyYUaX4tlYOJeWMvy
-         6DMmD3s2VmMCfMp3yOIVxyEXAAjyUAtpFO0SGA5A40H7iBnqDQfkaoi7WP4KxDsrkr
-         /trVT1XkuLq+XI9oSiEs7wuF54Sh4kthsg//MVrA=
+        b=1PyirHsl7TmhFkNWdiy7zr5JVGKHYThIXfQlu1yVlkVld7tuns3gLQ4d9B70r+64y
+         9EclEndWW8wFEg1ZlSF3wUq+LiLSBWu/zuv6d8Qyk9jBIGqPDSisM53jdCyYKeIRhg
+         OXmhlUKEoowcYQBhKMLK0A/dyPAW3TIbmhdaLeHU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 5.6 164/194] arm64: dts: meson-g12b-ugoos-am6: fix usb vbus-supply
-Date:   Mon, 18 May 2020 19:37:34 +0200
-Message-Id: <20200518173544.876058311@linuxfoundation.org>
+        stable@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 5.6 165/194] usb: gadget: tegra-xudc: Fix idle suspend/resume
+Date:   Mon, 18 May 2020 19:37:35 +0200
+Message-Id: <20200518173544.955691616@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
 References: <20200518173531.455604187@linuxfoundation.org>
@@ -44,34 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neil Armstrong <narmstrong@baylibre.com>
+From: Thierry Reding <treding@nvidia.com>
 
-commit 4e025fd91ba32a16ed8131158aa63cd37d141cbb upstream.
+commit 0534d40160cb9505073b0ecf5e7210daee319a66 upstream.
 
-The USB supply used the wrong property, fixing:
-meson-g12b-ugoos-am6.dt.yaml: usb@ffe09000: 'vbus-regulator' does not match any of the regexes: '^usb@[0-9a-f]+$', 'pinctrl-[0-9]+'
+When the XUDC device is idle (i.e. powergated), care must be taken not
+to access any registers because that would lead to a crash.
 
-Fixes: 2cd2310fca4c ("arm64: dts: meson-g12b-ugoos-am6: add initial device-tree")
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Link: https://lore.kernel.org/r/20200326160857.11929-2-narmstrong@baylibre.com
+Move the call to tegra_xudc_device_mode_off() into the same conditional
+as the tegra_xudc_powergate() call to make sure we only force device
+mode off if the XUDC is actually powered up.
+
+Fixes: 49db427232fe ("usb: gadget: Add UDC driver for tegra XUSB device mode controller")
+Acked-by: Jon Hunter <jonathanh@nvidia.com>
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/gadget/udc/tegra-xudc.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts
-@@ -545,7 +545,7 @@
- &usb {
- 	status = "okay";
- 	dr_mode = "host";
--	vbus-regulator = <&usb_pwr_en>;
-+	vbus-supply = <&usb_pwr_en>;
- };
+--- a/drivers/usb/gadget/udc/tegra-xudc.c
++++ b/drivers/usb/gadget/udc/tegra-xudc.c
+@@ -3740,11 +3740,11 @@ static int __maybe_unused tegra_xudc_sus
  
- &usb2_phy0 {
+ 	flush_work(&xudc->usb_role_sw_work);
+ 
+-	/* Forcibly disconnect before powergating. */
+-	tegra_xudc_device_mode_off(xudc);
+-
+-	if (!pm_runtime_status_suspended(dev))
++	if (!pm_runtime_status_suspended(dev)) {
++		/* Forcibly disconnect before powergating. */
++		tegra_xudc_device_mode_off(xudc);
+ 		tegra_xudc_powergate(xudc);
++	}
+ 
+ 	pm_runtime_disable(dev);
+ 
 
 
