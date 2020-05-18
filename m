@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0077F1D820F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 168E51D8612
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731100AbgERRxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:53:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56874 "EHLO mail.kernel.org"
+        id S2387690AbgERSWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:22:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731091AbgERRxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:53:06 -0400
+        id S1730606AbgERRuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:50:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83F2120674;
-        Mon, 18 May 2020 17:53:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C5F3220671;
+        Mon, 18 May 2020 17:49:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824386;
-        bh=T1OAPeukIdF5VQ0JwobETmzgOyFKkSGUwDZibjSbjvg=;
+        s=default; t=1589824200;
+        bh=7RdiGFIp5UL+5y035NbNbQTQfYo5Av4cxfCQEZZ+cbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ytSltdgXDmmcP2FEs2BauZcIVncN9uplr4gywJoWb2lYMfGENr1EZkYawlJ2hAdzP
-         oufv6qu2omgx7paIKpW1/u05bbtC943ngkavCsmIel7Pjo5/8p8pacyU7P9U+GOxGa
-         fIiJWMcIm6Np7yUWYe7UmEPsezhe2JXmbDHKRGeE=
+        b=AuRSjmp3yImbKZuyIhz4Vn8KHM9bdwAUvb8Tft5SQWmv+sj9bF5SAFendXz5RjAps
+         PCWXNOGYce/vmvP/PY8bNX+g9G2ERI8Kv0f+3Lf0qkkWl4K4TcYmUCRseDnzo1tYAq
+         dCkR0lH82OXNQZjF8lFL9vc3+xwU1VLLBjJiYiGM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Machek <pavel@denx.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 4.19 64/80] x86/unwind/orc: Fix error handling in __unwind_start()
+        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Heiko Stuebner <heiko@sntech.de>
+Subject: [PATCH 4.14 110/114] arm64: dts: rockchip: Rename dwc3 device nodes on rk3399 to make dtc happy
 Date:   Mon, 18 May 2020 19:37:22 +0200
-Message-Id: <20200518173503.277659802@linuxfoundation.org>
+Message-Id: <20200518173520.865358589@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,81 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Chen-Yu Tsai <wens@csie.org>
 
-commit 71c95825289f585014fe9741b051d32a7a916680 upstream.
+commit 190c7f6fd43a776d4a6da1dac44408104649e9b7 upstream.
 
-The unwind_state 'error' field is used to inform the reliable unwinding
-code that the stack trace can't be trusted.  Set this field for all
-errors in __unwind_start().
+The device tree compiler complains that the dwc3 nodes have regs
+properties but no matching unit addresses.
 
-Also, move the zeroing out of the unwind_state struct to before the ORC
-table initialization check, to prevent the caller from reading
-uninitialized data if the ORC table is corrupted.
+Add the unit addresses to the device node name. While at it, also rename
+the nodes from "dwc3" to "usb", as guidelines require device nodes have
+generic names.
 
-Fixes: af085d9084b4 ("stacktrace/x86: add function for detecting reliable stack traces")
-Fixes: d3a09104018c ("x86/unwinder/orc: Dont bail on stack overflow")
-Fixes: 98d0c8ebf77e ("x86/unwind/orc: Prevent unwinding before ORC initialization")
-Reported-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/d6ac7215a84ca92b895fdd2e1aa546729417e6e6.1589487277.git.jpoimboe@redhat.com
+Fixes: 7144224f2c2b ("arm64: dts: rockchip: support dwc3 USB for rk3399")
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Link: https://lore.kernel.org/r/20200327030414.5903-7-wens@kernel.org
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/unwind_orc.c |   16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -589,23 +589,23 @@ EXPORT_SYMBOL_GPL(unwind_next_frame);
- void __unwind_start(struct unwind_state *state, struct task_struct *task,
- 		    struct pt_regs *regs, unsigned long *first_frame)
- {
--	if (!orc_init)
--		goto done;
--
- 	memset(state, 0, sizeof(*state));
- 	state->task = task;
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -402,7 +402,7 @@
+ 			      "bus_clk", "grf_clk";
+ 		status = "disabled";
  
-+	if (!orc_init)
-+		goto err;
-+
- 	/*
- 	 * Refuse to unwind the stack of a task while it's executing on another
- 	 * CPU.  This check is racy, but that's ok: the unwinder has other
- 	 * checks to prevent it from going off the rails.
- 	 */
- 	if (task_on_another_cpu(task))
--		goto done;
-+		goto err;
+-		usbdrd_dwc3_0: dwc3 {
++		usbdrd_dwc3_0: usb@fe800000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0xfe800000 0x0 0x100000>;
+ 			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH 0>;
+@@ -430,7 +430,7 @@
+ 			      "bus_clk", "grf_clk";
+ 		status = "disabled";
  
- 	if (regs) {
- 		if (user_mode(regs))
--			goto done;
-+			goto the_end;
- 
- 		state->ip = regs->ip;
- 		state->sp = kernel_stack_pointer(regs);
-@@ -638,6 +638,7 @@ void __unwind_start(struct unwind_state
- 		 * generate some kind of backtrace if this happens.
- 		 */
- 		void *next_page = (void *)PAGE_ALIGN((unsigned long)state->sp);
-+		state->error = true;
- 		if (get_stack_info(next_page, state->task, &state->stack_info,
- 				   &state->stack_mask))
- 			return;
-@@ -663,8 +664,9 @@ void __unwind_start(struct unwind_state
- 
- 	return;
- 
--done:
-+err:
-+	state->error = true;
-+the_end:
- 	state->stack_info.type = STACK_TYPE_UNKNOWN;
--	return;
- }
- EXPORT_SYMBOL_GPL(__unwind_start);
+-		usbdrd_dwc3_1: dwc3 {
++		usbdrd_dwc3_1: usb@fe900000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0xfe900000 0x0 0x100000>;
+ 			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH 0>;
 
 
