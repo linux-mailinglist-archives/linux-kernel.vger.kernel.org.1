@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75751D81D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963601D8640
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730804AbgERRvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:51:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53570 "EHLO mail.kernel.org"
+        id S1728866AbgERRsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:48:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730807AbgERRvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:51:05 -0400
+        id S1729517AbgERRsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:48:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6533820674;
-        Mon, 18 May 2020 17:51:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D112920671;
+        Mon, 18 May 2020 17:48:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824264;
-        bh=WmONSK4ctFdQWjz26WZgwfs5SpenNY5/I3xlW0g0H4U=;
+        s=default; t=1589824095;
+        bh=y/aX+JlJ1/Um5fwc1TEGEE4stW2ob/ossdMASJdymvE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nSoHist7/jqWI0XlRi95ZYfvIjBdhez75e7bz0DYFU6sN8jO9EwmAyPIEQPEQpd66
-         CC5j9Fynee6AsPH1hKWnhHA7MUnSOGq7scnzCRvFbGZ+Fv0Q+zfjiwnao+EEblMAgF
-         42g7mDOkFbz3oqMHvMEjVrummft9JvN9Rdp1VKuw=
+        b=hGa6CCwkLeARzfg2N/bAqXxYEyIhedGIcdDs4KUomN+PxYrwy+/G8SgPX+8kTzhXt
+         /LWkFJqjqMnhKE4e8RtlprXJ6LXZGs3s7Pwo6Nv1rNHTfotf67KCTFJqKiIzSErbvt
+         COPNEc71bS7o7zS5vbxhS9CbhqwDYwseTcq1Qtgk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Golovin <dima@golovin.in>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ilie Halip <ilie.halip@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
+        stable@vger.kernel.org,
+        Jack Morgenstein <jackm@dev.mellanox.co.il>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 22/80] riscv: fix vdso build with lld
+Subject: [PATCH 4.14 068/114] IB/mlx4: Test return value of calls to ib_get_cached_pkey
 Date:   Mon, 18 May 2020 19:36:40 +0200
-Message-Id: <20200518173454.857080221@linuxfoundation.org>
+Message-Id: <20200518173515.389339610@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,53 +46,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilie Halip <ilie.halip@gmail.com>
+From: Jack Morgenstein <jackm@dev.mellanox.co.il>
 
-[ Upstream commit 3c1918c8f54166598195d938564072664a8275b1 ]
+[ Upstream commit 6693ca95bd4330a0ad7326967e1f9bcedd6b0800 ]
 
-When building with the LLVM linker this error occurrs:
-    LD      arch/riscv/kernel/vdso/vdso-syms.o
-  ld.lld: error: no input files
+In the mlx4_ib_post_send() flow, some functions call ib_get_cached_pkey()
+without checking its return value. If ib_get_cached_pkey() returns an
+error code, these functions should return failure.
 
-This happens because the lld treats -R as an alias to -rpath, as opposed
-to ld where -R means --just-symbols.
-
-Use the long option name for compatibility between the two.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/805
-Reported-by: Dmitry Golovin <dima@golovin.in>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Ilie Halip <ilie.halip@gmail.com>
-Reviewed-by: Fangrui Song <maskray@google.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Fixes: 1ffeb2eb8be9 ("IB/mlx4: SR-IOV IB context objects and proxy/tunnel SQP support")
+Fixes: 225c7b1feef1 ("IB/mlx4: Add a driver Mellanox ConnectX InfiniBand adapters")
+Fixes: e622f2f4ad21 ("IB: split struct ib_send_wr")
+Link: https://lore.kernel.org/r/20200426075921.130074-1-leon@kernel.org
+Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/kernel/vdso/Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/mlx4/qp.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-index 87f71a6cd3ef8..1dd134fc0d84a 100644
---- a/arch/riscv/kernel/vdso/Makefile
-+++ b/arch/riscv/kernel/vdso/Makefile
-@@ -30,15 +30,15 @@ $(obj)/vdso.so.dbg: $(src)/vdso.lds $(obj-vdso) FORCE
- 	$(call if_changed,vdsold)
+diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+index e10c3d915e389..df1ecd29057f8 100644
+--- a/drivers/infiniband/hw/mlx4/qp.c
++++ b/drivers/infiniband/hw/mlx4/qp.c
+@@ -2917,6 +2917,7 @@ static int build_sriov_qp0_header(struct mlx4_ib_sqp *sqp,
+ 	int send_size;
+ 	int header_size;
+ 	int spc;
++	int err;
+ 	int i;
  
- # We also create a special relocatable object that should mirror the symbol
--# table and layout of the linked DSO.  With ld -R we can then refer to
--# these symbols in the kernel code rather than hand-coded addresses.
-+# table and layout of the linked DSO. With ld --just-symbols we can then
-+# refer to these symbols in the kernel code rather than hand-coded addresses.
+ 	if (wr->wr.opcode != IB_WR_SEND)
+@@ -2951,7 +2952,9 @@ static int build_sriov_qp0_header(struct mlx4_ib_sqp *sqp,
  
- SYSCFLAGS_vdso.so.dbg = -shared -s -Wl,-soname=linux-vdso.so.1 \
-                             $(call cc-ldoption, -Wl$(comma)--hash-style=both)
- $(obj)/vdso-dummy.o: $(src)/vdso.lds $(obj)/rt_sigreturn.o FORCE
- 	$(call if_changed,vdsold)
- 
--LDFLAGS_vdso-syms.o := -r -R
-+LDFLAGS_vdso-syms.o := -r --just-symbols
- $(obj)/vdso-syms.o: $(obj)/vdso-dummy.o FORCE
- 	$(call if_changed,ld)
- 
+ 	sqp->ud_header.lrh.virtual_lane    = 0;
+ 	sqp->ud_header.bth.solicited_event = !!(wr->wr.send_flags & IB_SEND_SOLICITED);
+-	ib_get_cached_pkey(ib_dev, sqp->qp.port, 0, &pkey);
++	err = ib_get_cached_pkey(ib_dev, sqp->qp.port, 0, &pkey);
++	if (err)
++		return err;
+ 	sqp->ud_header.bth.pkey = cpu_to_be16(pkey);
+ 	if (sqp->qp.mlx4_ib_qp_type == MLX4_IB_QPT_TUN_SMI_OWNER)
+ 		sqp->ud_header.bth.destination_qpn = cpu_to_be32(wr->remote_qpn);
+@@ -3240,9 +3243,14 @@ static int build_mlx_header(struct mlx4_ib_sqp *sqp, struct ib_ud_wr *wr,
+ 	}
+ 	sqp->ud_header.bth.solicited_event = !!(wr->wr.send_flags & IB_SEND_SOLICITED);
+ 	if (!sqp->qp.ibqp.qp_num)
+-		ib_get_cached_pkey(ib_dev, sqp->qp.port, sqp->pkey_index, &pkey);
++		err = ib_get_cached_pkey(ib_dev, sqp->qp.port, sqp->pkey_index,
++					 &pkey);
+ 	else
+-		ib_get_cached_pkey(ib_dev, sqp->qp.port, wr->pkey_index, &pkey);
++		err = ib_get_cached_pkey(ib_dev, sqp->qp.port, wr->pkey_index,
++					 &pkey);
++	if (err)
++		return err;
++
+ 	sqp->ud_header.bth.pkey = cpu_to_be16(pkey);
+ 	sqp->ud_header.bth.destination_qpn = cpu_to_be32(wr->remote_qpn);
+ 	sqp->ud_header.bth.psn = cpu_to_be32((sqp->send_psn++) & ((1 << 24) - 1));
 -- 
 2.20.1
 
