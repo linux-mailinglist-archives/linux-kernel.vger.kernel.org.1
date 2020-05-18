@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB3EB1D803D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E789F1D843C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728455AbgERRhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:37:14 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:51149 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727006AbgERRhO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:37:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589823433;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pW1EBLelNH4xkOAfewry7ROyh0LG2QQK4g8hD3z33Eg=;
-        b=KDvmkEp/qCnxBfFjYFSKEORJ+zXqEyOcqU3TXyEZcd9DCCk95Zuw1iLHbAVqzaJubZM6vP
-        qep8yhdgJ5asqbRibveqLmiVPL+NAyVvpTpuloSUfeWHNILwp7D34thtTNYdil4J0yX59F
-        RaWDrcXbgAjxFqtX8wzqNwAs6liJTSE=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-486-LflvGdE4O6u8m88md7xazA-1; Mon, 18 May 2020 13:37:11 -0400
-X-MC-Unique: LflvGdE4O6u8m88md7xazA-1
-Received: by mail-wr1-f69.google.com with SMTP id d16so5939764wrv.18
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:37:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pW1EBLelNH4xkOAfewry7ROyh0LG2QQK4g8hD3z33Eg=;
-        b=MiBddNnAScbE8D/qx7idao8p/e6oaOH5UINmWVG9VJ7Ggwmn2aL62qNwF8PEY6dJJ+
-         lUVyUVLzNBCxzktW44MsVncPMWF2T4NTB4KQhn0POGWz5A9AMay4FFKv9cTb1tUgIOAr
-         nJH1t6nu8OBHVVF/QTCKb9zKbuNxy1zrFEbLLXg4bI2b0+0s0rnlFXn3UgnrupsvwgwQ
-         rqJYkVQXf6NoGyHd/MrcY+264uPEKSIWhLOvB+wwUjrcInZwxO0JbDTNEE0XmMHvwYwB
-         Bhs2spqfXbYCRuVCHEsRrTNURDacJgjM/2+RNHq1KBWnhwUEHrmwqx4PlrZfX04zv2zG
-         wvJA==
-X-Gm-Message-State: AOAM531j2TZo6y3we/QBTvdKsI9cmSG014xr8QFqileYf9fmNwaDPHZC
-        XEpLRx6v1Z9gE4qCO7XvsPNFy3kBBb/6Ndfndh0petRwUAPy/rYy1INByEXp6qLBKwuV4eyP0r8
-        rpVxdr8Pb14QnEFxairmS6P21
-X-Received: by 2002:a1c:f207:: with SMTP id s7mr440847wmc.123.1589823430113;
-        Mon, 18 May 2020 10:37:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzHziqAUOZpnpSyz0zm5tqYhlwsJ/sYOxewftDlo7x0v61iHrJcJcl48zpv1zYNxvv9vqXjDw==
-X-Received: by 2002:a1c:f207:: with SMTP id s7mr440825wmc.123.1589823429893;
-        Mon, 18 May 2020 10:37:09 -0700 (PDT)
-Received: from [192.168.178.58] ([151.30.90.67])
-        by smtp.gmail.com with ESMTPSA id k13sm265994wmj.40.2020.05.18.10.37.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 May 2020 10:37:09 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86: emulate reserved nops from 0f/18 to 0f/1f
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20200515161919.29249-1-pbonzini@redhat.com>
- <20200518160720.GB3632@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <57d9da9b-00ec-3fe0-c69a-f7f00c68a90d@redhat.com>
+        id S2387558AbgERSKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:10:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732933AbgERSFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:05:21 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F79F20671;
+        Mon, 18 May 2020 18:05:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589825120;
+        bh=qPHsgWoFLk4NPnZi5Ufy/BdEGqUt4vkX6hmOfYFIzsg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=cVdHxchjKWJfOqzft5v/XmnGgqPzoLQxErlqwgyFSqSsKABmUffrJWdoK8aGsHe+E
+         hGkzTpptP+LAVpmwAADIesgwgRdalvpUMZaFYQWJRUCGDtdJT5p9hd4FCEod1z1Jg6
+         CDa6FelO/6/PzIPxQfXZD4Mnpjq+97Je5TEM7SQ8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.6 138/194] ALSA: hda/realtek - Limit int mic boost for Thinkpad T530
 Date:   Mon, 18 May 2020 19:37:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+Message-Id: <20200518173542.846812514@linuxfoundation.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-In-Reply-To: <20200518160720.GB3632@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/05/20 18:07, Sean Christopherson wrote:
-> On Fri, May 15, 2020 at 12:19:19PM -0400, Paolo Bonzini wrote:
->> Instructions starting with 0f18 up to 0f1f are reserved nops, except those
->> that were assigned to MPX.
-> Well, they're probably reserved NOPs again :-D.
+From: Takashi Iwai <tiwai@suse.de>
 
-So are you suggesting adding them back to the list as well?
+commit b590b38ca305d6d7902ec7c4f7e273e0069f3bcc upstream.
 
->> These include the endbr markers used by CET.
-> And RDSPP.  Wouldn't it make sense to treat RDSPP as a #UD even though it's
-> a NOP if CET is disabled?  The logic being that a sane guest will execute
-> RDSSP iff CET is enabled, and in that case it'd be better to inject a #UD
-> than to silently break the guest.
+Lenovo Thinkpad T530 seems to have a sensitive internal mic capture
+that needs to limit the mic boost like a few other Thinkpad models.
+Although we may change the quirk for ALC269_FIXUP_LENOVO_DOCK, this
+hits way too many other laptop models, so let's add a new fixup model
+that limits the internal mic boost on top of the existing quirk and
+apply to only T530.
 
-We cannot assume that guests will bother checking CPUID before invoking
-RDSPP.  This is especially true userspace, which needs to check if CET
-is enable for itself and can only use RDSPP to do so.
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1171293
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200514160533.10337-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Paolo
+---
+ sound/pci/hda/patch_realtek.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5856,6 +5856,7 @@ enum {
+ 	ALC269_FIXUP_HP_LINE1_MIC1_LED,
+ 	ALC269_FIXUP_INV_DMIC,
+ 	ALC269_FIXUP_LENOVO_DOCK,
++	ALC269_FIXUP_LENOVO_DOCK_LIMIT_BOOST,
+ 	ALC269_FIXUP_NO_SHUTUP,
+ 	ALC286_FIXUP_SONY_MIC_NO_PRESENCE,
+ 	ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT,
+@@ -6175,6 +6176,12 @@ static const struct hda_fixup alc269_fix
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT
+ 	},
++	[ALC269_FIXUP_LENOVO_DOCK_LIMIT_BOOST] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc269_fixup_limit_int_mic_boost,
++		.chained = true,
++		.chain_id = ALC269_FIXUP_LENOVO_DOCK,
++	},
+ 	[ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
+@@ -7317,7 +7324,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
+ 	SND_PCI_QUIRK(0x17aa, 0x21ca, "Thinkpad L412", ALC269_FIXUP_SKU_IGNORE),
+ 	SND_PCI_QUIRK(0x17aa, 0x21e9, "Thinkpad Edge 15", ALC269_FIXUP_SKU_IGNORE),
+-	SND_PCI_QUIRK(0x17aa, 0x21f6, "Thinkpad T530", ALC269_FIXUP_LENOVO_DOCK),
++	SND_PCI_QUIRK(0x17aa, 0x21f6, "Thinkpad T530", ALC269_FIXUP_LENOVO_DOCK_LIMIT_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x21fa, "Thinkpad X230", ALC269_FIXUP_LENOVO_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x21f3, "Thinkpad T430", ALC269_FIXUP_LENOVO_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x21fb, "Thinkpad T430s", ALC269_FIXUP_LENOVO_DOCK),
+@@ -7456,6 +7463,7 @@ static const struct hda_model_fixup alc2
+ 	{.id = ALC269_FIXUP_HEADSET_MODE, .name = "headset-mode"},
+ 	{.id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC, .name = "headset-mode-no-hp-mic"},
+ 	{.id = ALC269_FIXUP_LENOVO_DOCK, .name = "lenovo-dock"},
++	{.id = ALC269_FIXUP_LENOVO_DOCK_LIMIT_BOOST, .name = "lenovo-dock-limit-boost"},
+ 	{.id = ALC269_FIXUP_HP_GPIO_LED, .name = "hp-gpio-led"},
+ 	{.id = ALC269_FIXUP_HP_DOCK_GPIO_MIC1_LED, .name = "hp-dock-gpio-mic1-led"},
+ 	{.id = ALC269_FIXUP_DELL1_MIC_NO_PRESENCE, .name = "dell-headset-multi"},
+
 
