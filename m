@@ -2,39 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC61D1D82B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF341D85AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731927AbgERR6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:58:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38034 "EHLO mail.kernel.org"
+        id S1731061AbgERRw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:52:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731919AbgERR6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:58:32 -0400
+        id S1731052AbgERRww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:52:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B3FE20835;
-        Mon, 18 May 2020 17:58:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC90920715;
+        Mon, 18 May 2020 17:52:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824712;
-        bh=7MdQddoJEFfGf81S5tG2f0tnk49guqQ1rC60ry4HOBg=;
+        s=default; t=1589824371;
+        bh=7ibfb7MZ5Rbo43/qIurP+pCgmu+s1/H3wWWJxSi86sw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U6o+dlZmWxcn/xbvbgkcZljorkmYJMXaVYjQ/s+mcft5GRsF37j1Zd8lCeaBb9Szj
-         iscLL9ZXl6JtXm8w4dFC5e5d9L+3ibQdPIaF60Y94Y0Az881h3l8X3VediU5VI/1JF
-         cC8B+UsCeK6HpIrThO/uCCMmg8ws4ps6iYhDHOAw=
+        b=1TeetxkrfJx65r5AGr/2eYRfnlbJ4OBOhKyzrkyLf04AKG0zgLhBmYOfnAkaJ0LSK
+         0CbsDMdKWLh+KGa21mk7+trtcpwQPlvKrSiBZiFz8djiRK8YzVlKCeFcpfeUYcjSvr
+         kNm8x8MGl14bycsucM0uvMKoeRmT17t4GuYtZkOE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Andreas Schwab <schwab@suse.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Waiman Long <longman@redhat.com>, NeilBrown <neilb@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Manfred Spraul <manfred@colorfullife.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 083/147] netfilter: nft_set_rbtree: Add missing expired checks
+Subject: [PATCH 4.19 28/80] ipc/util.c: sysvipc_find_ipc() incorrectly updates position index
 Date:   Mon, 18 May 2020 19:36:46 +0200
-Message-Id: <20200518173523.990186693@linuxfoundation.org>
+Message-Id: <20200518173456.062491514@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
+References: <20200518173450.097837707@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,72 +53,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phil Sutter <phil@nwl.cc>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit 340eaff651160234bdbce07ef34b92a8e45cd540 ]
+[ Upstream commit 5e698222c70257d13ae0816720dde57c56f81e15 ]
 
-Expired intervals would still match and be dumped to user space until
-garbage collection wiped them out. Make sure they stop matching and
-disappear (from users' perspective) as soon as they expire.
+Commit 89163f93c6f9 ("ipc/util.c: sysvipc_find_ipc() should increase
+position index") is causing this bug (seen on 5.6.8):
 
-Fixes: 8d8540c4f5e03 ("netfilter: nft_set_rbtree: add timeout support")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+   # ipcs -q
+
+   ------ Message Queues --------
+   key        msqid      owner      perms      used-bytes   messages
+
+   # ipcmk -Q
+   Message queue id: 0
+   # ipcs -q
+
+   ------ Message Queues --------
+   key        msqid      owner      perms      used-bytes   messages
+   0x82db8127 0          root       644        0            0
+
+   # ipcmk -Q
+   Message queue id: 1
+   # ipcs -q
+
+   ------ Message Queues --------
+   key        msqid      owner      perms      used-bytes   messages
+   0x82db8127 0          root       644        0            0
+   0x76d1fb2a 1          root       644        0            0
+
+   # ipcrm -q 0
+   # ipcs -q
+
+   ------ Message Queues --------
+   key        msqid      owner      perms      used-bytes   messages
+   0x76d1fb2a 1          root       644        0            0
+   0x76d1fb2a 1          root       644        0            0
+
+   # ipcmk -Q
+   Message queue id: 2
+   # ipcrm -q 2
+   # ipcs -q
+
+   ------ Message Queues --------
+   key        msqid      owner      perms      used-bytes   messages
+   0x76d1fb2a 1          root       644        0            0
+   0x76d1fb2a 1          root       644        0            0
+
+   # ipcmk -Q
+   Message queue id: 3
+   # ipcrm -q 1
+   # ipcs -q
+
+   ------ Message Queues --------
+   key        msqid      owner      perms      used-bytes   messages
+   0x7c982867 3          root       644        0            0
+   0x7c982867 3          root       644        0            0
+   0x7c982867 3          root       644        0            0
+   0x7c982867 3          root       644        0            0
+
+Whenever an IPC item with a low id is deleted, the items with higher ids
+are duplicated, as if filling a hole.
+
+new_pos should jump through hole of unused ids, pos can be updated
+inside "for" cycle.
+
+Fixes: 89163f93c6f9 ("ipc/util.c: sysvipc_find_ipc() should increase position index")
+Reported-by: Andreas Schwab <schwab@suse.de>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Waiman Long <longman@redhat.com>
+Cc: NeilBrown <neilb@suse.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: Manfred Spraul <manfred@colorfullife.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/4921fe9b-9385-a2b4-1dc4-1099be6d2e39@virtuozzo.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nft_set_rbtree.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ ipc/util.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
-index 95fcba34bfd35..ee7c29e0a9d7b 100644
---- a/net/netfilter/nft_set_rbtree.c
-+++ b/net/netfilter/nft_set_rbtree.c
-@@ -79,6 +79,10 @@ static bool __nft_rbtree_lookup(const struct net *net, const struct nft_set *set
- 				parent = rcu_dereference_raw(parent->rb_left);
- 				continue;
- 			}
-+
-+			if (nft_set_elem_expired(&rbe->ext))
-+				return false;
-+
- 			if (nft_rbtree_interval_end(rbe)) {
- 				if (nft_set_is_anonymous(set))
- 					return false;
-@@ -94,6 +98,7 @@ static bool __nft_rbtree_lookup(const struct net *net, const struct nft_set *set
+diff --git a/ipc/util.c b/ipc/util.c
+index b111e792b3125..af1b572effb14 100644
+--- a/ipc/util.c
++++ b/ipc/util.c
+@@ -735,21 +735,21 @@ static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
+ 			total++;
+ 	}
  
- 	if (set->flags & NFT_SET_INTERVAL && interval != NULL &&
- 	    nft_set_elem_active(&interval->ext, genmask) &&
-+	    !nft_set_elem_expired(&interval->ext) &&
- 	    nft_rbtree_interval_start(interval)) {
- 		*ext = &interval->ext;
- 		return true;
-@@ -154,6 +159,9 @@ static bool __nft_rbtree_get(const struct net *net, const struct nft_set *set,
- 				continue;
- 			}
+-	*new_pos = pos + 1;
++	ipc = NULL;
+ 	if (total >= ids->in_use)
+-		return NULL;
++		goto out;
  
-+			if (nft_set_elem_expired(&rbe->ext))
-+				return false;
-+
- 			if (!nft_set_ext_exists(&rbe->ext, NFT_SET_EXT_FLAGS) ||
- 			    (*nft_set_ext_flags(&rbe->ext) & NFT_SET_ELEM_INTERVAL_END) ==
- 			    (flags & NFT_SET_ELEM_INTERVAL_END)) {
-@@ -170,6 +178,7 @@ static bool __nft_rbtree_get(const struct net *net, const struct nft_set *set,
+ 	for (; pos < IPCMNI; pos++) {
+ 		ipc = idr_find(&ids->ipcs_idr, pos);
+ 		if (ipc != NULL) {
+ 			rcu_read_lock();
+ 			ipc_lock_object(ipc);
+-			return ipc;
++			break;
+ 		}
+ 	}
+-
+-	/* Out of range - return NULL to terminate iteration */
+-	return NULL;
++out:
++	*new_pos = pos + 1;
++	return ipc;
+ }
  
- 	if (set->flags & NFT_SET_INTERVAL && interval != NULL &&
- 	    nft_set_elem_active(&interval->ext, genmask) &&
-+	    !nft_set_elem_expired(&interval->ext) &&
- 	    ((!nft_rbtree_interval_end(interval) &&
- 	      !(flags & NFT_SET_ELEM_INTERVAL_END)) ||
- 	     (nft_rbtree_interval_end(interval) &&
-@@ -355,6 +364,8 @@ static void nft_rbtree_walk(const struct nft_ctx *ctx,
- 
- 		if (iter->count < iter->skip)
- 			goto cont;
-+		if (nft_set_elem_expired(&rbe->ext))
-+			goto cont;
- 		if (!nft_set_elem_active(&rbe->ext, iter->genmask))
- 			goto cont;
- 
+ static void *sysvipc_proc_next(struct seq_file *s, void *it, loff_t *pos)
 -- 
 2.20.1
 
