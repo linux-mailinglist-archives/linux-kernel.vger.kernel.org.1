@@ -2,181 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6731D83F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846531D83E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733270AbgERSHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733245AbgERSHF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:07:05 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77217C061A0C;
-        Mon, 18 May 2020 11:07:05 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id ee19so5162244qvb.11;
-        Mon, 18 May 2020 11:07:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FGe0cYU7QRQrBub6kPg7LS2mMokuizGPeM+/vsZpJ0c=;
-        b=DDZsqjev9pPgykILD6UPID2QV3+WLOgbGPXNX7VGKiD5foIMBD6Ig3QA44tRzLmGib
-         1mKKZilQ5ETaljO5EYgpRnJptRjnAUOLxPH4gdu5+sMzcEgSRjVuhvaeSTM9YoycCwCk
-         2A+TY4cjxjhxNxZiLYT2ruZPcxJNu7umH6Vu9aSZIYrrv9XJn+MInwstXFCAlIHw1WUb
-         sCqyfCtYVo5dQrNv3xg086881Zd5saQlxNJu53IiQDzlfrTSmR2Y3bav8kaCWopJzt5B
-         qVeDKeGSnlwZcimXa9kVFJ6abIibigsiCpI3x/x/V3LmORYeovnqdMuYBqB3p76Djc/9
-         VAsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FGe0cYU7QRQrBub6kPg7LS2mMokuizGPeM+/vsZpJ0c=;
-        b=N8n9cidacfPNCPKXAuQxcgxY9bNR2V9T+GfNzusWJseoq/sQSZxLxUBH7V86HL46uI
-         SmxLrTQTeTQ8ZBAS3UeboP3um3h7wQBhfViNQISIS4MP/ZxAYDsDBSEGdPETyFYTe+jW
-         g5Zzx/scUnjlb/cg6tn6gcCTYpD7RRMwFjFT2LWxzz731CgkOi6z07KMyrPLUNLjItYm
-         M+//i5ijhClVuAVsOXVTAQUA2xczG6un++lNHpUYrpgA/BFSFCS5WMMrygqWxQpCORrI
-         CfsgXhNHjdobSU1/D6e0zXM0+mLm4sxcBvaneSl8P/uqiOkoOTUeLhkykIDOJ670Ffl2
-         CbJA==
-X-Gm-Message-State: AOAM531q3REZQiPyl2pYxkGVno1EMfmkSh6baP/rN/Q7xMsu85LRoAsK
-        J9IRKwC2q8NWD6LYqYbY1HiEkGoOjJUawOc2AAo=
-X-Google-Smtp-Source: ABdhPJx7gFJZCHG8pAYfJs0PbDVHs9Ww5BXdE3nVr2Ovp/YWIgWIKSJgkqjadmT/fF2jdRU64gjBY21G4Xm8cOd52zo=
-X-Received: by 2002:a0c:e48f:: with SMTP id n15mr15724904qvl.73.1589825224064;
- Mon, 18 May 2020 11:07:04 -0700 (PDT)
+        id S2387500AbgERSIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:08:24 -0400
+Received: from raptor.unsafe.ru ([5.9.43.93]:35962 "EHLO raptor.unsafe.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733067AbgERSHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:07:51 -0400
+Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-89-102-33-211.net.upcbroadband.cz [89.102.33.211])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id 9201D20479;
+        Mon, 18 May 2020 18:07:42 +0000 (UTC)
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzbot <syzbot+c1af344512918c61362c@syzkaller.appspotmail.com>,
+        jmorris@namei.org, linux-next@vger.kernel.org,
+        linux-security-module@vger.kernel.org, serge@hallyn.com,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: [PATCH v4] proc: proc_pid_ns takes super_block as an argument
+Date:   Mon, 18 May 2020 20:07:38 +0200
+Message-Id: <20200518180738.2939611-1-gladkov.alexey@gmail.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <87lfltcbc4.fsf@x220.int.ebiederm.org>
+References: <87lfltcbc4.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-References: <20200515212846.1347-1-mcgrof@kernel.org> <20200515212846.1347-13-mcgrof@kernel.org>
- <2b74a35c726e451b2fab2b5d0d301e80d1f4cdc7.camel@sipsolutions.net>
- <20200518165154.GH11244@42.do-not-panic.com> <4ad0668d-2de9-11d7-c3a1-ad2aedd0c02d@candelatech.com>
- <20200518170934.GJ11244@42.do-not-panic.com> <abf22ef3-93cb-61a4-0af2-43feac6d7930@candelatech.com>
- <20200518171801.GL11244@42.do-not-panic.com>
-In-Reply-To: <20200518171801.GL11244@42.do-not-panic.com>
-From:   Steve deRosier <derosier@gmail.com>
-Date:   Mon, 18 May 2020 11:06:27 -0700
-Message-ID: <CALLGbR+ht2V3m5f-aUbdwEMOvbsX8ebmzdWgX4jyWTbpHrXZ0Q@mail.gmail.com>
-Subject: Re: [PATCH v2 12/15] ath10k: use new module_firmware_crashed()
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Ben Greear <greearb@candelatech.com>,
-        Johannes Berg <johannes@sipsolutions.net>, jeyu@kernel.org,
-        akpm@linux-foundation.org, arnd@arndb.de, rostedt@goodmis.org,
-        mingo@redhat.com, aquini@redhat.com, cai@lca.pw, dyoung@redhat.com,
-        bhe@redhat.com, peterz@infradead.org, tglx@linutronix.de,
-        gpiccoli@canonical.com, pmladek@suse.com,
-        Takashi Iwai <tiwai@suse.de>, schlad@suse.de,
-        andriy.shevchenko@linux.intel.com, keescook@chromium.org,
-        daniel.vetter@ffwll.ch, will@kernel.org,
-        mchehab+samsung@kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        ath10k@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Mon, 18 May 2020 18:07:45 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 10:19 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> On Mon, May 18, 2020 at 10:15:45AM -0700, Ben Greear wrote:
-> >
-> >
-> > On 05/18/2020 10:09 AM, Luis Chamberlain wrote:
-> > > On Mon, May 18, 2020 at 09:58:53AM -0700, Ben Greear wrote:
-> > > >
-> > > >
-> > > > On 05/18/2020 09:51 AM, Luis Chamberlain wrote:
-> > > > > On Sat, May 16, 2020 at 03:24:01PM +0200, Johannes Berg wrote:
-> > > > > > On Fri, 2020-05-15 at 21:28 +0000, Luis Chamberlain wrote:> module_firmware_crashed
-> > > > > >
-> > > > > > You didn't CC me or the wireless list on the rest of the patches, so I'm
-> > > > > > replying to a random one, but ...
-> > > > > >
-> > > > > > What is the point here?
-> > > > > >
-> > > > > > This should in no way affect the integrity of the system/kernel, for
-> > > > > > most devices anyway.
-> > > > >
-> > > > > Keyword you used here is "most device". And in the worst case, *who*
-> > > > > knows what other odd things may happen afterwards.
-> > > > >
-> > > > > > So what if ath10k's firmware crashes? If there's a driver bug it will
-> > > > > > not handle it right (and probably crash, WARN_ON, or something else),
-> > > > > > but if the driver is working right then that will not affect the kernel
-> > > > > > at all.
-> > > > >
-> > > > > Sometimes the device can go into a state which requires driver removal
-> > > > > and addition to get things back up.
-> > > >
-> > > > It would be lovely to be able to detect this case in the driver/system
-> > > > somehow!  I haven't seen any such cases recently,
-> > >
-> > > I assure you that I have run into it. Once it does again I'll report
-> > > the crash, but the problem with some of this is that unless you scrape
-> > > the log you won't know. Eventually, a uevent would indeed tell inform
-> > > me.
-> > >
-> > > > but in case there is
-> > > > some common case you see, maybe we can think of a way to detect it?
-> > >
-> > > ath10k is just one case, this patch series addresses a simple way to
-> > > annotate this tree-wide.
-> > >
-> > > > > > So maybe I can understand that maybe you want an easy way to discover -
-> > > > > > per device - that the firmware crashed, but that still doesn't warrant a
-> > > > > > complete kernel taint.
-> > > > >
-> > > > > That is one reason, another is that a taint helps support cases *fast*
-> > > > > easily detect if the issue was a firmware crash, instead of scraping
-> > > > > logs for driver specific ways to say the firmware has crashed.
-> > > >
-> > > > You can listen for udev events (I think that is the right term),
-> > > > and find crashes that way.  You get the actual crash info as well.
-> > >
-> > > My follow up to this was to add uevent to add_taint() as well, this way
-> > > these could generically be processed by userspace.
-> >
-> > I'm not opposed to the taint, though I have not thought much on it.
-> >
-> > But, if you can already get the crash info from uevent, and it automatically
-> > comes without polling or scraping logs, then what benefit beyond that does
-> > the taint give you?
->
-> From a support perspective it is a *crystal* clear sign that the device
-> and / or device driver may be in a very bad state, in a generic way.
->
+syzbot found that
 
-Unfortunately a "taint" is interpreted by many users as: "your kernel
-is really F#*D up, you better do something about it right now."
-Assuming they're paying attention at all in the first place of course.
+  touch /proc/testfile
 
-The fact is, WiFi chip firmware crashes, and in most cases the driver
-is able to recover seamlessly. At least that is the case with most QCA
-chipsets I work with. And the users or our ability to do anything
-about it is minimal to none as we don't have access to firmware
-source. It's too bad and I wish it weren't the case, but we have
-embraced reality and most drivers have a recovery mechanism built in
-for this case. In short, it's a non-event. I fear that elevating this
-to a kernel taint will significantly increase "support" requests that
-really are nothing but noise; similar to how the firmware load failure
-messages (fail to load fw-2.bin, fail to load fw-1.bin, yay loaded
-fw-0.bin) cause a lot of noise.
+causes NULL pointer dereference at tomoyo_get_local_path()
+because inode of the dentry is NULL.
 
-Not specifically opposed, but I wonder what it really accomplishes in
-a world where the firmware crashing is pretty much a normal
-occurrence.
+Before c59f415a7cb6, Tomoyo received pid_ns from proc's s_fs_info
+directly. Since proc_pid_ns() can only work with inode, using it in
+the tomoyo_get_local_path() was wrong.
 
-If it goes in, I think that the drivers shouldn't trigger the taint if
-they're able to recover normally. Only trigger on failure to come back
-up.  In other words, the ideal place in the ath10k driver isn't where
-you have proposed as at that point operation is normal and we're doing
-a routine recovery.
+To avoid creating more functions for getting proc_ns, change the
+argument type of the proc_pid_ns() function. Then, Tomoyo can use
+the existing super_block to get pid_ns.
 
-- Steve
+Reported-by: syzbot+c1af344512918c61362c@syzkaller.appspotmail.com
+Fixes: c59f415a7cb6 ("Use proc_pid_ns() to get pid_namespace from the proc superblock")
+Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
+---
+ fs/locks.c                 |  4 ++--
+ fs/proc/array.c            |  2 +-
+ fs/proc/base.c             | 10 +++++-----
+ fs/proc/self.c             |  2 +-
+ fs/proc/thread_self.c      |  2 +-
+ include/linux/proc_fs.h    |  4 ++--
+ kernel/fork.c              |  2 +-
+ net/ipv6/ip6_flowlabel.c   |  2 +-
+ security/tomoyo/realpath.c |  2 +-
+ 9 files changed, 15 insertions(+), 15 deletions(-)
 
+diff --git a/fs/locks.c b/fs/locks.c
+index 399c5dbb72c4..ab702d6efb55 100644
+--- a/fs/locks.c
++++ b/fs/locks.c
+@@ -2823,7 +2823,7 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
+ {
+ 	struct inode *inode = NULL;
+ 	unsigned int fl_pid;
+-	struct pid_namespace *proc_pidns = proc_pid_ns(file_inode(f->file));
++	struct pid_namespace *proc_pidns = proc_pid_ns(file_inode(f->file)->i_sb);
+ 
+ 	fl_pid = locks_translate_pid(fl, proc_pidns);
+ 	/*
+@@ -2901,7 +2901,7 @@ static int locks_show(struct seq_file *f, void *v)
+ {
+ 	struct locks_iterator *iter = f->private;
+ 	struct file_lock *fl, *bfl;
+-	struct pid_namespace *proc_pidns = proc_pid_ns(file_inode(f->file));
++	struct pid_namespace *proc_pidns = proc_pid_ns(file_inode(f->file)->i_sb);
+ 
+ 	fl = hlist_entry(v, struct file_lock, fl_link);
+ 
+diff --git a/fs/proc/array.c b/fs/proc/array.c
+index 8e16f14bb05a..043311014db2 100644
+--- a/fs/proc/array.c
++++ b/fs/proc/array.c
+@@ -728,7 +728,7 @@ static int children_seq_show(struct seq_file *seq, void *v)
+ {
+ 	struct inode *inode = file_inode(seq->file);
+ 
+-	seq_printf(seq, "%d ", pid_nr_ns(v, proc_pid_ns(inode)));
++	seq_printf(seq, "%d ", pid_nr_ns(v, proc_pid_ns(inode->i_sb)));
+ 	return 0;
+ }
+ 
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 5a307b3bb2d1..30c9fceca0b7 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -754,7 +754,7 @@ static const struct inode_operations proc_def_inode_operations = {
+ static int proc_single_show(struct seq_file *m, void *v)
+ {
+ 	struct inode *inode = m->private;
+-	struct pid_namespace *ns = proc_pid_ns(inode);
++	struct pid_namespace *ns = proc_pid_ns(inode->i_sb);
+ 	struct pid *pid = proc_pid(inode);
+ 	struct task_struct *task;
+ 	int ret;
+@@ -1423,7 +1423,7 @@ static const struct file_operations proc_fail_nth_operations = {
+ static int sched_show(struct seq_file *m, void *v)
+ {
+ 	struct inode *inode = m->private;
+-	struct pid_namespace *ns = proc_pid_ns(inode);
++	struct pid_namespace *ns = proc_pid_ns(inode->i_sb);
+ 	struct task_struct *p;
+ 
+ 	p = get_proc_task(inode);
+@@ -2466,7 +2466,7 @@ static int proc_timers_open(struct inode *inode, struct file *file)
+ 		return -ENOMEM;
+ 
+ 	tp->pid = proc_pid(inode);
+-	tp->ns = proc_pid_ns(inode);
++	tp->ns = proc_pid_ns(inode->i_sb);
+ 	return 0;
+ }
+ 
+@@ -3377,7 +3377,7 @@ int proc_pid_readdir(struct file *file, struct dir_context *ctx)
+ {
+ 	struct tgid_iter iter;
+ 	struct proc_fs_info *fs_info = proc_sb_info(file_inode(file)->i_sb);
+-	struct pid_namespace *ns = proc_pid_ns(file_inode(file));
++	struct pid_namespace *ns = proc_pid_ns(file_inode(file)->i_sb);
+ 	loff_t pos = ctx->pos;
+ 
+ 	if (pos >= PID_MAX_LIMIT + TGID_OFFSET)
+@@ -3730,7 +3730,7 @@ static int proc_task_readdir(struct file *file, struct dir_context *ctx)
+ 	/* f_version caches the tgid value that the last readdir call couldn't
+ 	 * return. lseek aka telldir automagically resets f_version to 0.
+ 	 */
+-	ns = proc_pid_ns(inode);
++	ns = proc_pid_ns(inode->i_sb);
+ 	tid = (int)file->f_version;
+ 	file->f_version = 0;
+ 	for (task = first_tid(proc_pid(inode), tid, ctx->pos - 2, ns);
+diff --git a/fs/proc/self.c b/fs/proc/self.c
+index 309301ac0136..ca5158fa561c 100644
+--- a/fs/proc/self.c
++++ b/fs/proc/self.c
+@@ -12,7 +12,7 @@ static const char *proc_self_get_link(struct dentry *dentry,
+ 				      struct inode *inode,
+ 				      struct delayed_call *done)
+ {
+-	struct pid_namespace *ns = proc_pid_ns(inode);
++	struct pid_namespace *ns = proc_pid_ns(inode->i_sb);
+ 	pid_t tgid = task_tgid_nr_ns(current, ns);
+ 	char *name;
+ 
+diff --git a/fs/proc/thread_self.c b/fs/proc/thread_self.c
+index 2493cbbdfa6f..ac284f409568 100644
+--- a/fs/proc/thread_self.c
++++ b/fs/proc/thread_self.c
+@@ -12,7 +12,7 @@ static const char *proc_thread_self_get_link(struct dentry *dentry,
+ 					     struct inode *inode,
+ 					     struct delayed_call *done)
+ {
+-	struct pid_namespace *ns = proc_pid_ns(inode);
++	struct pid_namespace *ns = proc_pid_ns(inode->i_sb);
+ 	pid_t tgid = task_tgid_nr_ns(current, ns);
+ 	pid_t pid = task_pid_nr_ns(current, ns);
+ 	char *name;
+diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
+index 2cb424e6f36a..6ec524d8842c 100644
+--- a/include/linux/proc_fs.h
++++ b/include/linux/proc_fs.h
+@@ -202,9 +202,9 @@ int open_related_ns(struct ns_common *ns,
+ 		   struct ns_common *(*get_ns)(struct ns_common *ns));
+ 
+ /* get the associated pid namespace for a file in procfs */
+-static inline struct pid_namespace *proc_pid_ns(const struct inode *inode)
++static inline struct pid_namespace *proc_pid_ns(struct super_block *sb)
+ {
+-	return proc_sb_info(inode->i_sb)->pid_ns;
++	return proc_sb_info(sb)->pid_ns;
+ }
+ 
+ #endif /* _LINUX_PROC_FS_H */
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 4385f3d639f2..e7bdaccad942 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1745,7 +1745,7 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
+ 	pid_t nr = -1;
+ 
+ 	if (likely(pid_has_task(pid, PIDTYPE_PID))) {
+-		ns = proc_pid_ns(file_inode(m->file));
++		ns = proc_pid_ns(file_inode(m->file)->i_sb);
+ 		nr = pid_nr_ns(pid, ns);
+ 	}
+ 
+diff --git a/net/ipv6/ip6_flowlabel.c b/net/ipv6/ip6_flowlabel.c
+index d64b83e85642..ce4fbba4acce 100644
+--- a/net/ipv6/ip6_flowlabel.c
++++ b/net/ipv6/ip6_flowlabel.c
+@@ -779,7 +779,7 @@ static void *ip6fl_seq_start(struct seq_file *seq, loff_t *pos)
+ {
+ 	struct ip6fl_iter_state *state = ip6fl_seq_private(seq);
+ 
+-	state->pid_ns = proc_pid_ns(file_inode(seq->file));
++	state->pid_ns = proc_pid_ns(file_inode(seq->file)->i_sb);
+ 
+ 	rcu_read_lock_bh();
+ 	return *pos ? ip6fl_get_idx(seq, *pos - 1) : SEQ_START_TOKEN;
+diff --git a/security/tomoyo/realpath.c b/security/tomoyo/realpath.c
+index 08b096e2f7e3..df4798980416 100644
+--- a/security/tomoyo/realpath.c
++++ b/security/tomoyo/realpath.c
+@@ -162,7 +162,7 @@ static char *tomoyo_get_local_path(struct dentry *dentry, char * const buffer,
+ 	if (sb->s_magic == PROC_SUPER_MAGIC && *pos == '/') {
+ 		char *ep;
+ 		const pid_t pid = (pid_t) simple_strtoul(pos + 1, &ep, 10);
+-		struct pid_namespace *proc_pidns = proc_pid_ns(d_inode(dentry));
++		struct pid_namespace *proc_pidns = proc_pid_ns(sb);
+ 
+ 		if (*ep == '/' && pid && pid ==
+ 		    task_tgid_nr_ns(current, proc_pidns)) {
+-- 
+2.25.4
 
-
-
-
->   Luis
