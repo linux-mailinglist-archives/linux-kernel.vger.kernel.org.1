@@ -2,392 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069361D843A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0B91D843F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387556AbgERSKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36040 "EHLO
+        id S1732987AbgERSKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732991AbgERSKY (ORCPT
+        with ESMTP id S1729609AbgERSKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:10:24 -0400
-X-Greylist: delayed 65 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 18 May 2020 11:10:23 PDT
-Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC736C061A0C;
-        Mon, 18 May 2020 11:10:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
-         s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
-        :To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=AbyQlLTgT9N6dnHMOx2feZtNUM31THpZV6Gi5OUra7o=; b=O9dZDvVbze5d5QwrWR1VB6dsos
-        Jvr+FLendqrn2L8zU0c+3f6G/zEqbmrUsAyAVL6+3sANjzvL2zae6NA4TSVDnqPuHc55+lmzPbzTA
-        MtR/4F3WzgjFkJfgdsKrxF6WL0bC22GzbrrcN/1IEEea58rlzCi3oirGz1JSk4Nu6azPVxhkFnDr6
-        rU3tuoLDcf7qBzBH8PX6/cGLZ2eCyuBq7OtAv+YwKvvt1ec8/JjWMmPvSCs3qDNbJQbF8y9M5TQnW
-        ggyGwKVDwnwQrV2SueCO9f6U6Z8juHmKtwdysx3zkwoF4ezFQrk4RVKcyVnXa+3dXj9H6FzxDApjE
-        J7LqM/bA==;
-Received: from [2001:4d48:ad59:1409:4::2] (helo=youmian.o362.us)
-        by the.earth.li with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <noodles@earth.li>)
-        id 1jakDW-0008Ou-Le; Mon, 18 May 2020 19:10:22 +0100
-Date:   Mon, 18 May 2020 19:10:14 +0100
-From:   Jonathan McDowell <noodles@earth.li>
-To:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] ARM: dts: qcom: Add MikroTik RB3011
-Message-ID: <75390e66c9e6e36ddd42dc7f54cac28dfd7a24b9.1589824955.git.noodles@earth.li>
-References: <cover.1589824955.git.noodles@earth.li>
+        Mon, 18 May 2020 14:10:46 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385B5C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:10:46 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id d7so2521647ote.6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:10:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=dZxD1YrOrHOLHOKBWQNSGC/hDMCUT9Jgny3VoBoayC0=;
+        b=rgY0C0TxLfXX74YNZwA4VgzP454UWEwbM/tZyy31ob24Ee4XFMN6Rix6QE4ltW0OWG
+         Qj5mgRkU05rz5D51ZtpCGQ8e3sUS+clBEam1iTRP1a0f7n8RBN0bhA4sMPbqDxzBeytU
+         tF2BDnPUfBtEW/21kSTdpTKgLh7wQzoZnC88kqbxQFxBdsI2AYVtzXvD9is6D/p4pDsx
+         nXP0GAYQgVWbIo5TF6UF0PkiicakjgzzTeWX4iRZr3BddcvO1GGf9Z98OmUpKQG5F0Bk
+         HI12SyWjxRsNmL5wMqUMLsUSNHtlvtqiCUEikkFfJXtVxvNI6nj1GCjS4vTtmKTGvgK5
+         6hiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=dZxD1YrOrHOLHOKBWQNSGC/hDMCUT9Jgny3VoBoayC0=;
+        b=KIQewwOmm0cUlzIGRr3JCRrGPVYjZcAWK9LW9cLpJiujZziAZGMY+4XrmeaLJC4nnf
+         Ti/2pOwUPUrTkYddUxVzr3ZtARPzta/sCZSAC2QbcGHukWuudi8UFhuvyrwQlOe0e+9/
+         oKdjqhC/v+7dZCxRcoiD8d3tz6drBYY5IBTPFa0WBUO4baWc4kz1/LmxatOlQpTykd/u
+         r+HCXjVagtILRn3USWsujWRdAHq82RcbVym2LBzOnPsttRJ4idS+Mk0B+bR37tUh+jzc
+         v5cGAEJ3vtQgp+4g9WFgY+tfOgc2sq8Tplv6JRd9+2Fh9ujnr8pPZFFmEfbrFXMJ4NB/
+         t5BQ==
+X-Gm-Message-State: AOAM530I1ZT8jy6zZrmNpbqeTEcTi4FfVZ1eIYmfC6aIZ6wfg4bLAm/Y
+        FEyo8S4qCkLzlm2mtneQqZLeJmNS
+X-Google-Smtp-Source: ABdhPJyaAm9aVKpeNqS9nc9LMsHNSDoAZXomzsHfqr9mAnU1CS9TL17kMcTO/zK8nuEcBt5aPPiiCQ==
+X-Received: by 2002:a9d:a4c:: with SMTP id 70mr13974434otg.334.1589825445493;
+        Mon, 18 May 2020 11:10:45 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id t22sm3217760oij.2.2020.05.18.11.10.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 11:10:45 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: [PATCH] input: i8042: Remove special PowerPC handling
+Date:   Mon, 18 May 2020 11:10:43 -0700
+Message-Id: <20200518181043.3363953-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.27.0.rc0
+In-Reply-To: <87a7254bxd.fsf@mpe.ellerman.id.au>
+References: <87a7254bxd.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1589824955.git.noodles@earth.li>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a DTS file for the MikroTik RouterBoard 3011, which is a
-1U rackmount router based on the IPQ8064, supporting the serial UART,
-dual QCA8337 Gigabit ethernet switches, boot loader NOR and user LED
-device.
+This causes a build error with CONFIG_WALNUT because kb_cs and kb_data
+were removed in commit 917f0af9e5a9 ("powerpc: Remove arch/ppc and
+include/asm-ppc").
 
-Signed-off-by: Jonathan McDowell <noodles@earth.li>
+ld.lld: error: undefined symbol: kb_cs
+> referenced by i8042-ppcio.h:28 (drivers/input/serio/i8042-ppcio.h:28)
+> input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
+> referenced by i8042-ppcio.h:28 (drivers/input/serio/i8042-ppcio.h:28)
+> input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
+> referenced by i8042-ppcio.h:28 (drivers/input/serio/i8042-ppcio.h:28)
+> input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
+
+ld.lld: error: undefined symbol: kb_data
+> referenced by i8042.c:309 (drivers/input/serio/i8042.c:309)
+> input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
+> referenced by i8042-ppcio.h:33 (drivers/input/serio/i8042-ppcio.h:33)
+> input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
+> referenced by i8042.c:319 (drivers/input/serio/i8042.c:319)
+> input/serio/i8042.o:(__i8042_command) in archive drivers/built-in.a
+> referenced 15 more times
+
+Presumably since nobody has noticed this for the last 12 years, there is
+not anyone actually trying to use this driver so we can just remove this
+special walnut code and use the generic header so it builds for all
+configurations.
+
+Fixes: 917f0af9e5a9 ("powerpc: Remove arch/ppc and include/asm-ppc")
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 ---
- arch/arm/boot/dts/Makefile                |   1 +
- arch/arm/boot/dts/qcom-ipq8064-rb3011.dts | 308 ++++++++++++++++++++++
- 2 files changed, 309 insertions(+)
- create mode 100644 arch/arm/boot/dts/qcom-ipq8064-rb3011.dts
+ drivers/input/serio/i8042-ppcio.h | 57 -------------------------------
+ drivers/input/serio/i8042.h       |  2 --
+ 2 files changed, 59 deletions(-)
+ delete mode 100644 drivers/input/serio/i8042-ppcio.h
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index e8dd99201397..e697a4bd7426 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -884,6 +884,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
- 	qcom-ipq4019-ap.dk07.1-c1.dtb \
- 	qcom-ipq4019-ap.dk07.1-c2.dtb \
- 	qcom-ipq8064-ap148.dtb \
-+	qcom-ipq8064-rb3011.dtb \
- 	qcom-msm8660-surf.dtb \
- 	qcom-msm8960-cdp.dtb \
- 	qcom-msm8974-fairphone-fp2.dtb \
-diff --git a/arch/arm/boot/dts/qcom-ipq8064-rb3011.dts b/arch/arm/boot/dts/qcom-ipq8064-rb3011.dts
-new file mode 100644
-index 000000000000..282b89ce3d45
---- /dev/null
-+++ b/arch/arm/boot/dts/qcom-ipq8064-rb3011.dts
-@@ -0,0 +1,308 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "qcom-ipq8064.dtsi"
-+#include <dt-bindings/input/input.h>
-+
-+/ {
-+	model = "MikroTik RB3011UiAS-RM";
-+	compatible = "mikrotik,rb3011";
-+
-+	aliases {
-+		serial0 = &gsbi7_serial;
-+		ethernet0 = &gmac0;
-+		ethernet1 = &gmac3;
-+		mdio-gpio0 = &mdio0;
-+		mdio-gpio1 = &mdio1;
-+	};
-+
-+	chosen {
-+		bootargs = "loglevel=8 console=ttyMSM0,115200";
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory@0 {
-+		reg = <0x42000000 0x3e000000>;
-+		device_type = "memory";
-+	};
-+
-+	mdio0: mdio@0 {
-+		status = "okay";
-+		compatible = "virtual,mdio-gpio";
-+		gpios = <&qcom_pinmux 1 GPIO_ACTIVE_HIGH>,
-+			<&qcom_pinmux 0 GPIO_ACTIVE_HIGH>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		pinctrl-0 = <&mdio0_pins>;
-+		pinctrl-names = "default";
-+
-+		switch0: switch@10 {
-+			compatible = "qca,qca8337";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			dsa,member = <0 0>;
-+
-+			pinctrl-0 = <&sw0_reset_pin>;
-+			pinctrl-names = "default";
-+
-+			reset-gpios = <&qcom_pinmux 16 GPIO_ACTIVE_LOW>;
-+			reg = <0x10>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				switch0cpu: port@0 {
-+					reg = <0>;
-+					label = "cpu";
-+					ethernet = <&gmac0>;
-+					phy-mode = "rgmii-id";
-+					fixed-link {
-+						speed = <1000>;
-+						full-duplex;
-+					};
-+				};
-+
-+				port@1 {
-+					reg = <1>;
-+					label = "sw1";
-+				};
-+
-+				port@2 {
-+					reg = <2>;
-+					label = "sw2";
-+				};
-+
-+				port@3 {
-+					reg = <3>;
-+					label = "sw3";
-+				};
-+
-+				port@4 {
-+					reg = <4>;
-+					label = "sw4";
-+				};
-+
-+				port@5 {
-+					reg = <5>;
-+					label = "sw5";
-+				};
-+			};
-+		};
-+	};
-+
-+	mdio1: mdio@1 {
-+		status = "okay";
-+		compatible = "virtual,mdio-gpio";
-+		gpios = <&qcom_pinmux 11 GPIO_ACTIVE_HIGH>,
-+			<&qcom_pinmux 10 GPIO_ACTIVE_HIGH>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		pinctrl-0 = <&mdio1_pins>;
-+		pinctrl-names = "default";
-+
-+		switch1: switch@14 {
-+			compatible = "qca,qca8337";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			dsa,member = <1 0>;
-+
-+			pinctrl-0 = <&sw1_reset_pin>;
-+			pinctrl-names = "default";
-+
-+			reset-gpios = <&qcom_pinmux 17 GPIO_ACTIVE_LOW>;
-+			reg = <0x10>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				switch1cpu: port@0 {
-+					reg = <0>;
-+					label = "cpu";
-+					ethernet = <&gmac3>;
-+					phy-mode = "sgmii";
-+					fixed-link {
-+						speed = <1000>;
-+						full-duplex;
-+					};
-+				};
-+
-+				port@1 {
-+					reg = <1>;
-+					label = "sw6";
-+				};
-+
-+				port@2 {
-+					reg = <2>;
-+					label = "sw7";
-+				};
-+
-+				port@3 {
-+					reg = <3>;
-+					label = "sw8";
-+				};
-+
-+				port@4 {
-+					reg = <4>;
-+					label = "sw9";
-+				};
-+
-+				port@5 {
-+					reg = <5>;
-+					label = "sw10";
-+				};
-+			};
-+		};
-+	};
-+
-+	soc {
-+		gsbi5: gsbi@1a200000 {
-+			qcom,mode = <GSBI_PROT_SPI>;
-+			status = "okay";
-+
-+			spi4: spi@1a280000 {
-+				status = "okay";
-+				spi-max-frequency = <50000000>;
-+
-+				pinctrl-0 = <&spi_pins>;
-+				pinctrl-names = "default";
-+
-+				cs-gpios = <&qcom_pinmux 20 GPIO_ACTIVE_HIGH>;
-+
-+				norflash: s25fl016k@0 {
-+					compatible = "jedec,spi-nor";
-+					#address-cells = <1>;
-+					#size-cells = <1>;
-+					spi-max-frequency = <50000000>;
-+					reg = <0>;
-+
-+					partition@0 {
-+						label = "RouterBoot";
-+						reg = <0x0 0x40000>;
-+					};
-+				};
-+			};
-+		};
-+
-+		gpio_keys {
-+			compatible = "gpio-keys";
-+			pinctrl-0 = <&buttons_pins>;
-+			pinctrl-names = "default";
-+
-+			button@1 {
-+				label = "reset";
-+				linux,code = <KEY_RESTART>;
-+				gpios = <&qcom_pinmux 66 GPIO_ACTIVE_LOW>;
-+				linux,input-type = <1>;
-+				debounce-interval = <60>;
-+			};
-+		};
-+
-+		leds {
-+			compatible = "gpio-leds";
-+			pinctrl-0 = <&leds_pins>;
-+			pinctrl-names = "default";
-+
-+			led@7 {
-+				label = "rb3011:green:user";
-+				gpios = <&qcom_pinmux 33 GPIO_ACTIVE_HIGH>;
-+				default-state = "off";
-+			};
-+		};
-+
-+	};
-+};
-+
-+&gmac0 {
-+	status = "okay";
-+
-+	phy-mode = "rgmii";
-+	qcom,id = <0>;
-+	phy-handle = <&switch0cpu>;
-+
-+	fixed-link {
-+		speed = <1000>;
-+		full-duplex;
-+	};
-+};
-+
-+&gmac3 {
-+	status = "okay";
-+
-+	phy-mode = "sgmii";
-+	qcom,id = <3>;
-+	phy-handle = <&switch1cpu>;
-+
-+	fixed-link {
-+		speed = <1000>;
-+		full-duplex;
-+	};
-+};
-+
-+&gsbi7 {
-+	status = "okay";
-+	qcom,mode = <GSBI_PROT_I2C_UART>;
-+};
-+
-+&gsbi7_serial {
-+	status = "okay";
-+};
-+
-+&qcom_pinmux {
-+	buttons_pins: buttons_pins {
-+		mux {
-+			pins = "gpio66";
-+			drive-strength = <16>;
-+			bias-disable;
-+		};
-+	};
-+
-+	leds_pins: leds_pins {
-+		mux {
-+			pins = "gpio33";
-+			drive-strength = <16>;
-+			bias-disable;
-+		};
-+	};
-+
-+	mdio0_pins: mdio0_pins {
-+		mux {
-+			pins = "gpio0", "gpio1";
-+			function = "gpio";
-+			drive-strength = <8>;
-+			bias-disable;
-+		};
-+	};
-+
-+	mdio1_pins: mdio1_pins {
-+		mux {
-+			pins = "gpio10", "gpio11";
-+			function = "gpio";
-+			drive-strength = <8>;
-+			bias-disable;
-+		};
-+	};
-+
-+	sw0_reset_pin: sw0_reset_pin {
-+		mux {
-+			pins = "gpio16";
-+			drive-strength = <16>;
-+			function = "gpio";
-+			bias-disable;
-+			input-disable;
-+		};
-+	};
-+
-+	sw1_reset_pin: sw1_reset_pin {
-+		mux {
-+			pins = "gpio17";
-+			drive-strength = <16>;
-+			function = "gpio";
-+			bias-disable;
-+			input-disable;
-+		};
-+	};
-+};
+diff --git a/drivers/input/serio/i8042-ppcio.h b/drivers/input/serio/i8042-ppcio.h
+deleted file mode 100644
+index 391f94d9e47d..000000000000
+--- a/drivers/input/serio/i8042-ppcio.h
++++ /dev/null
+@@ -1,57 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-#ifndef _I8042_PPCIO_H
+-#define _I8042_PPCIO_H
+-
+-
+-#if defined(CONFIG_WALNUT)
+-
+-#define I8042_KBD_IRQ 25
+-#define I8042_AUX_IRQ 26
+-
+-#define I8042_KBD_PHYS_DESC "walnutps2/serio0"
+-#define I8042_AUX_PHYS_DESC "walnutps2/serio1"
+-#define I8042_MUX_PHYS_DESC "walnutps2/serio%d"
+-
+-extern void *kb_cs;
+-extern void *kb_data;
+-
+-#define I8042_COMMAND_REG (*(int *)kb_cs)
+-#define I8042_DATA_REG (*(int *)kb_data)
+-
+-static inline int i8042_read_data(void)
+-{
+-	return readb(kb_data);
+-}
+-
+-static inline int i8042_read_status(void)
+-{
+-	return readb(kb_cs);
+-}
+-
+-static inline void i8042_write_data(int val)
+-{
+-	writeb(val, kb_data);
+-}
+-
+-static inline void i8042_write_command(int val)
+-{
+-	writeb(val, kb_cs);
+-}
+-
+-static inline int i8042_platform_init(void)
+-{
+-	i8042_reset = I8042_RESET_ALWAYS;
+-	return 0;
+-}
+-
+-static inline void i8042_platform_exit(void)
+-{
+-}
+-
+-#else
+-
+-#include "i8042-io.h"
+-
+-#endif
+-
+-#endif /* _I8042_PPCIO_H */
+diff --git a/drivers/input/serio/i8042.h b/drivers/input/serio/i8042.h
+index 38dc27ad3c18..eb376700dfff 100644
+--- a/drivers/input/serio/i8042.h
++++ b/drivers/input/serio/i8042.h
+@@ -17,8 +17,6 @@
+ #include "i8042-ip22io.h"
+ #elif defined(CONFIG_SNI_RM)
+ #include "i8042-snirm.h"
+-#elif defined(CONFIG_PPC)
+-#include "i8042-ppcio.h"
+ #elif defined(CONFIG_SPARC)
+ #include "i8042-sparcio.h"
+ #elif defined(CONFIG_X86) || defined(CONFIG_IA64)
+
+base-commit: 72bc15d0018ebfbc9c389539d636e2e9a9002b3b
 -- 
-2.20.1
+2.27.0.rc0
 
