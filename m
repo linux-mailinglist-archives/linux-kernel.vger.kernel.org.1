@@ -2,82 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0340F1D8756
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A47F1D8762
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729222AbgERSdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:33:36 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:32870 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728490AbgERSdf (ORCPT
+        id S1728948AbgERSgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728152AbgERSgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:33:35 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Mon, 18 May 2020 11:33:34 -0700
-Received: from localhost (unknown [10.200.192.41])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 1C66D40909;
-        Mon, 18 May 2020 11:33:35 -0700 (PDT)
-Date:   Mon, 18 May 2020 11:33:34 -0700
-From:   Matt Helsley <mhelsley@vmware.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Julien Thierry <jthierry@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC][PATCH 1/5] objtool: Exit successfully when requesting help
-Message-ID: <20200518183334.GN9040@rlwimi.vmware.com>
-Mail-Followup-To: Matt Helsley <mhelsley@vmware.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Julien Thierry <jthierry@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <cover.1588888003.git.mhelsley@vmware.com>
- <10618c5e40b34a6af62c183feb5cd474c95e06fa.1588888003.git.mhelsley@vmware.com>
- <20200515195253.c5yzjyigxzhjflsd@treble>
+        Mon, 18 May 2020 14:36:36 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83EC1C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:36:36 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id q8so3541990pfu.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:36:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gvKKfXKVwXyHM5zyQzU2yfD82YJ/ssxteenCSL12PQo=;
+        b=SP6KFNP8GBJH4Y0iu8AifmlsrJrIDmqF86ly0zVJjsY9edGxCLOGJgRntsHb0RHjQG
+         gATe1S/lNrSEnPx6+nA/9Db0kPWSNByB+aLbETP0I7rvxRd5Pg5ppv5wkwn5hjz58cu/
+         /58rWXz8O5y2llnAhz2PnD1PepCOMtPQz0wlcWd4cCLGYB8YoMdMS4KqF902+qJ/GrWu
+         rYOlTmXrrdAjjv2aIxMNhSrdaKjlbrB4OS5ce1/H/hEo88g4KjJQ31AE7yroPGtfE9G0
+         GSPSNWOTyxVLaXh8veu7K3K0s5sMenbgG1ZDSnf8416Sc5oeIX+1pRsFFZpq8ADiflTg
+         Yiqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gvKKfXKVwXyHM5zyQzU2yfD82YJ/ssxteenCSL12PQo=;
+        b=k0aoTP4rOfHBnpxkVahyisBdthMNgk3C+zSiQODE08onnhrK34Cc8CNXa2TdlfSAzf
+         9m/aI2+/SW1BAO6xzmk6QwuRDy0px6+AbpnsYhi0jSNqbXzAlIIHdUOu3aqK3kIGJGia
+         0lv3Vbbc972vxAF0XBtK6ZH+YyrWn7wPvkhOTCuq522ymPaKIamNOVJ5hYCp2x5sffxO
+         MGlEvbziPC5I3XW+gcRQzMqNZldovjsjqd76rLZb5MXSuvnZUp3ow0CB4DfYcBF7+T/l
+         CO+6as+qDyPGKgSO/EhoJX+iWhmaupWxpe/lD7OHvOYrpxJSiZO4Opzi5wvhFD4aWipp
+         wN3g==
+X-Gm-Message-State: AOAM532FGCEzploMQOVscylesIrUh5wLKkFgujR2JZReWMLxtlUXutEi
+        8A6xYS1L0qHcjHgHwDjeblHQhw==
+X-Google-Smtp-Source: ABdhPJwzQPbROOk4HuXutlusmWdCXG1o7ldok+fY8PJ23k2eDMM1tiiAiGoPeKkibIa2gifPhE5rpA==
+X-Received: by 2002:a65:5186:: with SMTP id h6mr17090119pgq.453.1589826995952;
+        Mon, 18 May 2020 11:36:35 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id z1sm209932pjn.43.2020.05.18.11.36.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 11:36:35 -0700 (PDT)
+Date:   Mon, 18 May 2020 11:35:12 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [PATCH v7 2/4] usb: dwc3: qcom: Add interconnect support in dwc3
+ driver
+Message-ID: <20200518183512.GE2165@builder.lan>
+References: <1585718145-29537-1-git-send-email-sanm@codeaurora.org>
+ <1585718145-29537-3-git-send-email-sanm@codeaurora.org>
+ <878shu4uwk.fsf@kernel.org>
+ <875zcy4uuj.fsf@kernel.org>
+ <20200514171352.GP4525@google.com>
+ <abbc3f8c-c8c9-c189-735e-f8058dab3e40@linaro.org>
+ <87tv0h3fpv.fsf@kernel.org>
+ <090e48d7-7988-eea1-bf39-f6820578d354@linaro.org>
+ <87r1vl3e42.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200515195253.c5yzjyigxzhjflsd@treble>
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: mhelsley@vmware.com does not
- designate permitted sender hosts)
+In-Reply-To: <87r1vl3e42.fsf@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 02:52:53PM -0500, Josh Poimboeuf wrote:
-> On Mon, May 11, 2020 at 10:35:09AM -0700, Matt Helsley wrote:
-> > When the user requests help it's not an error so do not exit with
-> > a non-zero exit code. This is not especially useful for a user but
-> > any script that might wish to check that objtool --help is at least
-> > available can't rely on the exit code to crudely check that, for
-> > example building an objtool executable succeeds.
-> > 
-> > Signed-off-by: Matt Helsley <mhelsley@vmware.com>
-> > ---
-> >  tools/objtool/objtool.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/objtool/objtool.c b/tools/objtool/objtool.c
-> > index 0b3528f05053..593ec85915a9 100644
-> > --- a/tools/objtool/objtool.c
-> > +++ b/tools/objtool/objtool.c
-> > @@ -58,7 +58,10 @@ static void cmd_usage(void)
-> >  
-> >  	printf("\n");
-> >  
-> > -	exit(129);
-> > +	if (!help)
-> > +		exit(129);
-> > +	else
-> > +		exit(0);
+On Thu 14 May 23:29 PDT 2020, Felipe Balbi wrote:
+
 > 
-> Looks fine, though the 'else' isn't needed.
+> Hi,
+> 
+> Georgi Djakov <georgi.djakov@linaro.org> writes:
+> >>>>>> Sandeep Maheswaram <sanm@codeaurora.org> writes:
+> >>>>>>> +static int dwc3_qcom_interconnect_init(struct dwc3_qcom *qcom)
+> >>>>>>> +{
+> >>>>>>> +	struct device *dev = qcom->dev;
+> >>>>>>> +	int ret;
+> >>>>>>> +
+> >>>>>>> +	if (!device_is_bound(&qcom->dwc3->dev))
+> >>>>>>> +		return -EPROBE_DEFER;
+> >>>>>>
+> >>>>>> this breaks allmodconfig. I'm dropping this series from my queue for
+> >>>>>> this merge window.
+> >>>>>
+> >>>>> Sorry, I meant this patch ;-)
+> >>>>
+> >>>> I guess that's due to INTERCONNECT being a module. There is currently a
+> >>>
+> >>> I believe it's because of this:
+> >>> ERROR: modpost: "device_is_bound" [drivers/usb/dwc3/dwc3-qcom.ko] undefined!
+> >>>
+> >>>> discussion about this  with Viresh and Georgi in response to another
+> >>>> automated build failure. Viresh suggests changing CONFIG_INTERCONNECT
+> >>>> from tristate to bool, which seems sensible to me given that interconnect
+> >>>> is a core subsystem.
+> >>>
+> >>> The problem you are talking about would arise when INTERCONNECT=m and
+> >>> USB_DWC3_QCOM=y and it definitely exists here and could be triggered with
+> >>> randconfig build. So i suggest to squash also the diff below.
+> >>>
+> >>> Thanks,
+> >>> Georgi
+> >>>
+> >>> ---8<---
+> >>> diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
+> >>> index 206caa0ea1c6..6661788b1a76 100644
+> >>> --- a/drivers/usb/dwc3/Kconfig
+> >>> +++ b/drivers/usb/dwc3/Kconfig
+> >>> @@ -129,6 +129,7 @@ config USB_DWC3_QCOM
+> >>>  	tristate "Qualcomm Platform"
+> >>>  	depends on ARCH_QCOM || COMPILE_TEST
+> >>>  	depends on EXTCON || !EXTCON
+> >>> +	depends on INTERCONNECT || !INTERCONNECT
+> >> 
+> >> I would prefer to see a patch adding EXPORT_SYMBOL_GPL() to device_is_bound()
+> >
+> > Agree, but just to clarify, that these are two separate issues that need to
+> > be fixed. The device_is_bound() is the first one and USB_DWC3_QCOM=y combined
+> > with INTERCONNECT=m is the second one.
+> 
+> If INTERCONNECT=m, QCOM3 shouldn't be y. I think the following is
+> enough:
+> 
+> 	depends on INTERCONNECT=y || INTERCONNECT=USB_DWC3_QCOM
+> 
 
-OK, removed the 'else'.
+This misses the case where INTERCONNECT=n and USB_DWC3_QCOM=[ym] which
+I don't see a reason for breaking.
 
-Cheers,
-    -Matt Helsley
+But if only INTERCONNECT where a bool, then we don't need to specify a
+depends on, because it will either be there, or the stubs will.
+We've come to this conclusion in a lot of different frameworks and I
+don't see why we should do this differently with INTERCONNECT.
+
+Regards,
+Bjorn
