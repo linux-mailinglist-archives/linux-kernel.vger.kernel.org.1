@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72AE91D826E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B191D80CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731627AbgERR4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:56:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34176 "EHLO mail.kernel.org"
+        id S1729369AbgERRmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:42:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730827AbgERR4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:56:20 -0400
+        id S1729350AbgERRlz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:41:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B412207C4;
-        Mon, 18 May 2020 17:56:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A2E120715;
+        Mon, 18 May 2020 17:41:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824579;
-        bh=qPiPvnOGJzhRxWccUafyKknE9pRDCl2DUrjtZb6VY4k=;
+        s=default; t=1589823714;
+        bh=3kUzS88wbvWSNANmKPvDyZcpEetAwjUqPcFkjDQLwo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jubR3iFZ18W8xBdy2fBzQMKcLKN+5w9nfi0Iba2DsN6xaT6EFgvLIXNSirOMWpBoe
-         a+ADFBYDBE8lV/+HdVKJmj5viyWXrWOHlq2yfb9dwJ4POwQ79dWH1EntFsSe7fVStq
-         jx7pLf1gb6W25PYafnGykmVqo9tgApX66fDHEgsE=
+        b=1dCm5AF3n30ggEA/oxov/V68ge7FGFfsni1/+4n50hUCE00nUliI6/d4vCS8xBdok
+         RSeeyiwB6rLN/AXtDvp64yyex/QRk+Ct17WBJuL87Xw2zGUCjby+fTpO/CBLkhE9ot
+         4XvcS6LVEQ9QnbAU3A+poaaU4MK+hYEW5jmKLQ0s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Grzegorz Kowal <custos.mentis@gmail.com>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 067/147] mmc: sdhci-pci-gli: Fix can not access GL9750 after reboot from Windows 10
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 59/86] gcc-10: disable zero-length-bounds warning for now
 Date:   Mon, 18 May 2020 19:36:30 +0200
-Message-Id: <20200518173522.359872335@linuxfoundation.org>
+Message-Id: <20200518173502.383357168@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,51 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit b56ff195c317ad28c05d354aeecbb9995b8e08c1 ]
+commit 5c45de21a2223fe46cf9488c99a7fbcf01527670 upstream.
 
-Need to clear some bits in a vendor-defined register after reboot from
-Windows 10.
+This is a fine warning, but we still have a number of zero-length arrays
+in the kernel that come from the traditional gcc extension.  Yes, they
+are getting converted to flexible arrays, but in the meantime the gcc-10
+warning about zero-length bounds is very verbose, and is hiding other
+issues.
 
-Fixes: e51df6ce668a ("mmc: host: sdhci-pci: Add Genesys Logic GL975x support")
-Reported-by: Grzegorz Kowal <custos.mentis@gmail.com>
-Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Tested-by: Grzegorz Kowal <custos.mentis@gmail.com>
-Link: https://lore.kernel.org/r/20200504063957.6638-1-benchuanggli@gmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+I missed one actual build failure because it was hidden among hundreds
+of lines of warning.  Thankfully I caught it on the second go before
+pushing things out, but it convinced me that I really need to disable
+the new warnings for now.
+
+We'll hopefully be all done with our conversion to flexible arrays in
+the not too distant future, and we can then re-enable this warning.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/mmc/host/sdhci-pci-gli.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ Makefile |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-index ff39d81a5742c..fd76aa672e020 100644
---- a/drivers/mmc/host/sdhci-pci-gli.c
-+++ b/drivers/mmc/host/sdhci-pci-gli.c
-@@ -26,6 +26,9 @@
- #define   SDHCI_GLI_9750_DRIVING_2    GENMASK(27, 26)
- #define   GLI_9750_DRIVING_1_VALUE    0xFFF
- #define   GLI_9750_DRIVING_2_VALUE    0x3
-+#define   SDHCI_GLI_9750_SEL_1        BIT(29)
-+#define   SDHCI_GLI_9750_SEL_2        BIT(31)
-+#define   SDHCI_GLI_9750_ALL_RST      (BIT(24)|BIT(25)|BIT(28)|BIT(30))
+--- a/Makefile
++++ b/Makefile
+@@ -795,6 +795,9 @@ KBUILD_CFLAGS += $(call cc-disable-warni
+ # disable stringop warnings in gcc 8+
+ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
  
- #define SDHCI_GLI_9750_PLL	      0x864
- #define   SDHCI_GLI_9750_PLL_TX2_INV    BIT(23)
-@@ -122,6 +125,8 @@ static void gli_set_9750(struct sdhci_host *host)
- 				    GLI_9750_DRIVING_1_VALUE);
- 	driving_value |= FIELD_PREP(SDHCI_GLI_9750_DRIVING_2,
- 				    GLI_9750_DRIVING_2_VALUE);
-+	driving_value &= ~(SDHCI_GLI_9750_SEL_1|SDHCI_GLI_9750_SEL_2|SDHCI_GLI_9750_ALL_RST);
-+	driving_value |= SDHCI_GLI_9750_SEL_2;
- 	sdhci_writel(host, driving_value, SDHCI_GLI_9750_DRIVING);
++# We'll want to enable this eventually, but it's not going away for 5.7 at least
++KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
++
+ # Enabled with W=2, disabled by default as noisy
+ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
  
- 	sw_ctrl_value &= ~SDHCI_GLI_9750_SW_CTRL_4;
--- 
-2.20.1
-
 
 
