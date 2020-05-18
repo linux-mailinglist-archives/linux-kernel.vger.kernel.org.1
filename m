@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E80F1D7092
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 07:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B311D7098
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 07:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726953AbgERFzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 01:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        id S1727007AbgERFzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 01:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726813AbgERFzH (ORCPT
+        with ESMTP id S1726907AbgERFzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 May 2020 01:55:07 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5C2C05BD0D
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94802C061A0C
         for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 22:55:06 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id q24so4515936pjd.1
+Received: by mail-pf1-x442.google.com with SMTP id v63so4450692pfb.10
         for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 22:55:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=APDZcTihvmp7cHgWc/okOQoKAjV6ESC0p6FoG4/I2RA=;
-        b=B9zQ4JN8AYIxyezeNdzE6GbwPImYuyTUTkgaOcnyMLt8drlkAFBp16GCi7zqrrzQLS
-         8cfO9dxZUQ1n2upwY50jdxeXPLHMYTEgyOk5KPR1DbyAlCJGW0UAcLW7PB3jp/iRXGsT
-         B9XN9hHhnUnR6ItW4QHqc4AmFpJzkGeqGudHQ=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rPKPZdLWYhVxpx5jrV/H8h0jtqWmPX7wH6A62qnOkus=;
+        b=Kdpre7Exr/pMZGU8QiObZ4ZYPthvQzzf5UzH9ShzOMaqB7qV271cLqRWRlDhna2jMb
+         DVm/UT04r0HB83+/3jJJjOf0vEXktU3iLJWXT+ixvegZsUIA5oFmKv2L6Qos/AG5/Kr4
+         NUb7howiZnwR14Y8/i+ox9g0yzgIzizw7d/L0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=APDZcTihvmp7cHgWc/okOQoKAjV6ESC0p6FoG4/I2RA=;
-        b=j1bsj+F7y85Om8RBkC+SINSndIcQxVqw0TiQVg49L1mRa74VV9aqRlKFlrfk95tX6R
-         5O9UCvHLjGSz2Vlt7MleexMGINaQpmYz0O9IKM0aKGMNwNZCmGKH3AmAK1Rxz7BBTgQs
-         nSK0RR+wypBkIG82sJ1Go4jFcSZJWPTRFwzmkOIN3pvsXPWzlGPkUVG9v2uw4Li/Y/A1
-         R0x8rz0E2m1AIpvSr5N97ASIkofefAhu8GVbdhn6SpPiu+THTVejkQ1s9bVVs0qd1aSi
-         CHobTv3//jRNiVDzl/Us+djumeY9kqhUNuMkK26udj7HKnkwzmZiL79yhB+1O+HLj/VS
-         2ODQ==
-X-Gm-Message-State: AOAM533UeFBmhxtxAgHQu4KzLPpV2agfp2vsIisiGzwpGNGQoBdabuIj
-        IESI6oyNRZDnKfVIllQP+ofIuw==
-X-Google-Smtp-Source: ABdhPJxQAZtu/2s0TyYmdgb6LuY/0MGp2laY52exkkKqAzqWmG8gDpAARGenRF6/As3BMdDnDVFHyQ==
-X-Received: by 2002:a17:90b:3650:: with SMTP id nh16mr16068611pjb.135.1589781305588;
-        Sun, 17 May 2020 22:55:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rPKPZdLWYhVxpx5jrV/H8h0jtqWmPX7wH6A62qnOkus=;
+        b=Q87ba5NihBW/vAAmVnsIkmckiCLjhy98yyVtzKYq8Cr2pB6toqiPfprYnZcxLCjNLh
+         WTbc+zuV9klDncRKZh8UHpdcUtPX+zaUE2LU7QrjgZDy+56jonxzCq1UWX3xKjXjw3pf
+         A648F82ntC8CfIZYMvYqvO6IsWQui3z/InPJrLnxVymxnfEUCt9kdNRxmJtH87bulJ5a
+         7A7YwDJeIyvATUBfiMTi5k8Q6WCI0ZF2VO6FnL8P99CnVNEb5cLZ4HD4clCMnME0UrvQ
+         0vXeOjyaMgkZIkCVe9/bhPhCyPmvoVC+x1EqZ1EhjFqOHOygvy1jvTYQmp2/DCAitEcA
+         weLA==
+X-Gm-Message-State: AOAM531J21YQsoh9LHvx0AMygExb5QjY/mD8p09nfj6bK5ysDq/P2Jwt
+        6rLEug0b473Ma9QvqVc/xmuiOw==
+X-Google-Smtp-Source: ABdhPJxhtS996OCWMkgpeKohWlQufYcB+/tWiUrVycuLTEmz6Rc2lRetBKELSdXVfqF4RuGByiW3Pw==
+X-Received: by 2002:a63:2bd3:: with SMTP id r202mr13454738pgr.130.1589781306161;
+        Sun, 17 May 2020 22:55:06 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g14sm6734674pfk.174.2020.05.17.22.55.03
+        by smtp.gmail.com with ESMTPSA id k5sm7490235pjl.32.2020.05.17.22.55.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Sun, 17 May 2020 22:55:03 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -55,10 +55,12 @@ Cc:     Kees Cook <keescook@chromium.org>,
         linux-fsdevel@vger.kernel.org,
         linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 0/4] Relocate execve() sanity checks
-Date:   Sun, 17 May 2020 22:54:53 -0700
-Message-Id: <20200518055457.12302-1-keescook@chromium.org>
+Subject: [PATCH 1/4] exec: Change uselib(2) IS_SREG() failure to EACCES
+Date:   Sun, 17 May 2020 22:54:54 -0700
+Message-Id: <20200518055457.12302-2-keescook@chromium.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200518055457.12302-1-keescook@chromium.org>
+References: <20200518055457.12302-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,44 +68,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Change uselib(2)' S_ISREG() error return to EACCES instead of EINVAL so
+the behavior matches execve(2), and the seemingly documented value.
+The "not a regular file" failure mode of execve(2) is explicitly
+documented[1], but it is not mentioned in uselib(2)[2] which does,
+however, say that open(2) and mmap(2) errors may apply. The documentation
+for open(2) does not include a "not a regular file" error[3], but mmap(2)
+does[4], and it is EACCES.
 
-While looking at the code paths for the proposed O_MAYEXEC flag, I saw
-some things that looked like they should be fixed up.
+[1] http://man7.org/linux/man-pages/man2/execve.2.html#ERRORS
+[2] http://man7.org/linux/man-pages/man2/uselib.2.html#ERRORS
+[3] http://man7.org/linux/man-pages/man2/open.2.html#ERRORS
+[4] http://man7.org/linux/man-pages/man2/mmap.2.html#ERRORS
 
-  exec: Change uselib(2) IS_SREG() failure to EACCES
-	This just regularizes the return code on uselib(2).
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ fs/exec.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-  exec: Relocate S_ISREG() check
-	This moves the S_ISREG() check even earlier than it was already.
-
-  exec: Relocate path_noexec() check
-	This adds the path_noexec() check to the same place as the
-	S_ISREG() check.
-
-  fs: Include FMODE_EXEC when converting flags to f_mode
-	This seemed like an oversight, but I suspect there is some
-	reason I couldn't find for why FMODE_EXEC doesn't get set in
-	f_mode and just stays in f_flags.
-
-Thanks!
-
--Kees
-
-
-Kees Cook (4):
-  exec: Change uselib(2) IS_SREG() failure to EACCES
-  exec: Relocate S_ISREG() check
-  exec: Relocate path_noexec() check
-  fs: Include FMODE_EXEC when converting flags to f_mode
-
- fs/exec.c                | 13 +++++++++----
- fs/namei.c               |  5 +++++
- fs/open.c                |  6 ------
- include/linux/fs.h       |  3 ++-
- include/linux/fsnotify.h |  4 ++--
- 5 files changed, 18 insertions(+), 13 deletions(-)
-
+diff --git a/fs/exec.c b/fs/exec.c
+index 06b4c550af5d..30735ce1dc0e 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -139,11 +139,10 @@ SYSCALL_DEFINE1(uselib, const char __user *, library)
+ 	if (IS_ERR(file))
+ 		goto out;
+ 
+-	error = -EINVAL;
++	error = -EACCES;
+ 	if (!S_ISREG(file_inode(file)->i_mode))
+ 		goto exit;
+ 
+-	error = -EACCES;
+ 	if (path_noexec(&file->f_path))
+ 		goto exit;
+ 
 -- 
 2.20.1
 
