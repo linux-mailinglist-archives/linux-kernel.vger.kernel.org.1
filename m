@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB5B1D86CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CAC1D8257
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729544AbgERRnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:43:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40198 "EHLO mail.kernel.org"
+        id S1731468AbgERRzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:55:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729499AbgERRm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:42:59 -0400
+        id S1731453AbgERRz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:55:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3584A207C4;
-        Mon, 18 May 2020 17:42:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 521F8207C4;
+        Mon, 18 May 2020 17:55:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823778;
-        bh=DtZk9N0jACzETeARCKHK0Dvij7sIsuRxKR5jxQ1/l2g=;
+        s=default; t=1589824527;
+        bh=ojTCDQRwP9wu3Su04Ln7NJUNO3cMlEDTawPCWWCKniU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kojuri1zkpxIBr5hf5cgOs//yndKtGjTpZdOzdWJW18OVE/PIEC251KHqtuZrdx/9
-         i5JuDYOkaQnyUuHPORjuG4PTCQjwGLDbRxVoJ5pNZo8t+bHdT0KoPMR/da9tDlLai3
-         +fzg/YIVu5Zx2dv3YgVpIJxwQDCWTfFCE1X+8ST8=
+        b=lzJHkVty7INZWdfBDMTkR6QrqWjA9pvm/BkMR0qa2SZ6waS/BXg1H3hGNiicASkTC
+         /3GDmboHAM/xyC+V+N39vRyDmFxgr9l3Z+unlxjKORgnfTDPzvRF7vrkaqvWG/jG7/
+         GhMO6X5x0h1nX40GaiuruWO9XNd60Odqnh76YO+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Bob Liu <bob.liu@oracle.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Cengiz Can <cengiz@kernel.wtf>, Jens Axboe <axboe@kernel.dk>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        stable@vger.kernel.org, Luben Tuikov <luben.tuikov@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 33/90] blktrace: fix dereference after null check
+Subject: [PATCH 5.4 048/147] drm/amdgpu: simplify padding calculations (v2)
 Date:   Mon, 18 May 2020 19:36:11 +0200
-Message-Id: <20200518173457.869823680@linuxfoundation.org>
+Message-Id: <20200518173519.982019557@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,68 +45,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cengiz Can <cengiz@kernel.wtf>
+From: Luben Tuikov <luben.tuikov@amd.com>
 
-commit 153031a301bb07194e9c37466cfce8eacb977621 upstream.
+[ Upstream commit ce73516d42c9ab011fad498168b892d28e181db4 ]
 
-There was a recent change in blktrace.c that added a RCU protection to
-`q->blk_trace` in order to fix a use-after-free issue during access.
+Simplify padding calculations.
 
-However the change missed an edge case that can lead to dereferencing of
-`bt` pointer even when it's NULL:
+v2: Comment update and spacing.
 
-Coverity static analyzer marked this as a FORWARD_NULL issue with CID
-1460458.
-
-```
-/kernel/trace/blktrace.c: 1904 in sysfs_blk_trace_attr_store()
-1898            ret = 0;
-1899            if (bt == NULL)
-1900                    ret = blk_trace_setup_queue(q, bdev);
-1901
-1902            if (ret == 0) {
-1903                    if (attr == &dev_attr_act_mask)
->>>     CID 1460458:  Null pointer dereferences  (FORWARD_NULL)
->>>     Dereferencing null pointer "bt".
-1904                            bt->act_mask = value;
-1905                    else if (attr == &dev_attr_pid)
-1906                            bt->pid = value;
-1907                    else if (attr == &dev_attr_start_lba)
-1908                            bt->start_lba = value;
-1909                    else if (attr == &dev_attr_end_lba)
-```
-
-Added a reassignment with RCU annotation to fix the issue.
-
-Fixes: c780e86dd48 ("blktrace: Protect q->blk_trace with RCU")
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Reviewed-by: Bob Liu <bob.liu@oracle.com>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/blktrace.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/cik_sdma.c  |  4 ++--
+ drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c |  4 ++--
+ drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c |  4 ++--
+ drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c |  4 ++--
+ drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c | 17 ++++++++++++-----
+ 5 files changed, 20 insertions(+), 13 deletions(-)
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index 78a896acd21ac..6d3b432a748a6 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -1826,8 +1826,11 @@ static ssize_t sysfs_blk_trace_attr_store(struct device *dev,
- 	}
+diff --git a/drivers/gpu/drm/amd/amdgpu/cik_sdma.c b/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
+index c45304f1047c5..4af9acc2dc4f9 100644
+--- a/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
++++ b/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
+@@ -228,7 +228,7 @@ static void cik_sdma_ring_emit_ib(struct amdgpu_ring *ring,
+ 	u32 extra_bits = vmid & 0xf;
  
- 	ret = 0;
--	if (bt == NULL)
-+	if (bt == NULL) {
- 		ret = blk_trace_setup_queue(q, bdev);
-+		bt = rcu_dereference_protected(q->blk_trace,
-+				lockdep_is_held(&q->blk_trace_mutex));
-+	}
+ 	/* IB packet must end on a 8 DW boundary */
+-	cik_sdma_ring_insert_nop(ring, (12 - (lower_32_bits(ring->wptr) & 7)) % 8);
++	cik_sdma_ring_insert_nop(ring, (4 - lower_32_bits(ring->wptr)) & 7);
  
- 	if (ret == 0) {
- 		if (attr == &dev_attr_act_mask)
+ 	amdgpu_ring_write(ring, SDMA_PACKET(SDMA_OPCODE_INDIRECT_BUFFER, 0, extra_bits));
+ 	amdgpu_ring_write(ring, ib->gpu_addr & 0xffffffe0); /* base must be 32 byte aligned */
+@@ -811,7 +811,7 @@ static void cik_sdma_ring_pad_ib(struct amdgpu_ring *ring, struct amdgpu_ib *ib)
+ 	u32 pad_count;
+ 	int i;
+ 
+-	pad_count = (8 - (ib->length_dw & 0x7)) % 8;
++	pad_count = (-ib->length_dw) & 7;
+ 	for (i = 0; i < pad_count; i++)
+ 		if (sdma && sdma->burst_nop && (i == 0))
+ 			ib->ptr[ib->length_dw++] =
+diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c b/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c
+index a101758380130..b6af67f6f2149 100644
+--- a/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c
++++ b/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c
+@@ -255,7 +255,7 @@ static void sdma_v2_4_ring_emit_ib(struct amdgpu_ring *ring,
+ 	unsigned vmid = AMDGPU_JOB_GET_VMID(job);
+ 
+ 	/* IB packet must end on a 8 DW boundary */
+-	sdma_v2_4_ring_insert_nop(ring, (10 - (lower_32_bits(ring->wptr) & 7)) % 8);
++	sdma_v2_4_ring_insert_nop(ring, (2 - lower_32_bits(ring->wptr)) & 7);
+ 
+ 	amdgpu_ring_write(ring, SDMA_PKT_HEADER_OP(SDMA_OP_INDIRECT) |
+ 			  SDMA_PKT_INDIRECT_HEADER_VMID(vmid & 0xf));
+@@ -750,7 +750,7 @@ static void sdma_v2_4_ring_pad_ib(struct amdgpu_ring *ring, struct amdgpu_ib *ib
+ 	u32 pad_count;
+ 	int i;
+ 
+-	pad_count = (8 - (ib->length_dw & 0x7)) % 8;
++	pad_count = (-ib->length_dw) & 7;
+ 	for (i = 0; i < pad_count; i++)
+ 		if (sdma && sdma->burst_nop && (i == 0))
+ 			ib->ptr[ib->length_dw++] =
+diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c b/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c
+index 5f4e2c616241f..cd3ebed46d05f 100644
+--- a/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c
+@@ -429,7 +429,7 @@ static void sdma_v3_0_ring_emit_ib(struct amdgpu_ring *ring,
+ 	unsigned vmid = AMDGPU_JOB_GET_VMID(job);
+ 
+ 	/* IB packet must end on a 8 DW boundary */
+-	sdma_v3_0_ring_insert_nop(ring, (10 - (lower_32_bits(ring->wptr) & 7)) % 8);
++	sdma_v3_0_ring_insert_nop(ring, (2 - lower_32_bits(ring->wptr)) & 7);
+ 
+ 	amdgpu_ring_write(ring, SDMA_PKT_HEADER_OP(SDMA_OP_INDIRECT) |
+ 			  SDMA_PKT_INDIRECT_HEADER_VMID(vmid & 0xf));
+@@ -1021,7 +1021,7 @@ static void sdma_v3_0_ring_pad_ib(struct amdgpu_ring *ring, struct amdgpu_ib *ib
+ 	u32 pad_count;
+ 	int i;
+ 
+-	pad_count = (8 - (ib->length_dw & 0x7)) % 8;
++	pad_count = (-ib->length_dw) & 7;
+ 	for (i = 0; i < pad_count; i++)
+ 		if (sdma && sdma->burst_nop && (i == 0))
+ 			ib->ptr[ib->length_dw++] =
+diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c b/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
+index 4554e72c83786..23de332f3c6ed 100644
+--- a/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
+@@ -698,7 +698,7 @@ static void sdma_v4_0_ring_emit_ib(struct amdgpu_ring *ring,
+ 	unsigned vmid = AMDGPU_JOB_GET_VMID(job);
+ 
+ 	/* IB packet must end on a 8 DW boundary */
+-	sdma_v4_0_ring_insert_nop(ring, (10 - (lower_32_bits(ring->wptr) & 7)) % 8);
++	sdma_v4_0_ring_insert_nop(ring, (2 - lower_32_bits(ring->wptr)) & 7);
+ 
+ 	amdgpu_ring_write(ring, SDMA_PKT_HEADER_OP(SDMA_OP_INDIRECT) |
+ 			  SDMA_PKT_INDIRECT_HEADER_VMID(vmid & 0xf));
+@@ -1579,7 +1579,7 @@ static void sdma_v4_0_ring_pad_ib(struct amdgpu_ring *ring, struct amdgpu_ib *ib
+ 	u32 pad_count;
+ 	int i;
+ 
+-	pad_count = (8 - (ib->length_dw & 0x7)) % 8;
++	pad_count = (-ib->length_dw) & 7;
+ 	for (i = 0; i < pad_count; i++)
+ 		if (sdma && sdma->burst_nop && (i == 0))
+ 			ib->ptr[ib->length_dw++] =
+diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c b/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
+index 8493bfbbc1484..2a792d7abe007 100644
+--- a/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
+@@ -382,8 +382,15 @@ static void sdma_v5_0_ring_emit_ib(struct amdgpu_ring *ring,
+ 	unsigned vmid = AMDGPU_JOB_GET_VMID(job);
+ 	uint64_t csa_mc_addr = amdgpu_sdma_get_csa_mc_addr(ring, vmid);
+ 
+-	/* IB packet must end on a 8 DW boundary */
+-	sdma_v5_0_ring_insert_nop(ring, (10 - (lower_32_bits(ring->wptr) & 7)) % 8);
++	/* An IB packet must end on a 8 DW boundary--the next dword
++	 * must be on a 8-dword boundary. Our IB packet below is 6
++	 * dwords long, thus add x number of NOPs, such that, in
++	 * modular arithmetic,
++	 * wptr + 6 + x = 8k, k >= 0, which in C is,
++	 * (wptr + 6 + x) % 8 = 0.
++	 * The expression below, is a solution of x.
++	 */
++	sdma_v5_0_ring_insert_nop(ring, (2 - lower_32_bits(ring->wptr)) & 7);
+ 
+ 	amdgpu_ring_write(ring, SDMA_PKT_HEADER_OP(SDMA_OP_INDIRECT) |
+ 			  SDMA_PKT_INDIRECT_HEADER_VMID(vmid & 0xf));
+@@ -1086,10 +1093,10 @@ static void sdma_v5_0_vm_set_pte_pde(struct amdgpu_ib *ib,
+ }
+ 
+ /**
+- * sdma_v5_0_ring_pad_ib - pad the IB to the required number of dw
+- *
++ * sdma_v5_0_ring_pad_ib - pad the IB
+  * @ib: indirect buffer to fill with padding
+  *
++ * Pad the IB with NOPs to a boundary multiple of 8.
+  */
+ static void sdma_v5_0_ring_pad_ib(struct amdgpu_ring *ring, struct amdgpu_ib *ib)
+ {
+@@ -1097,7 +1104,7 @@ static void sdma_v5_0_ring_pad_ib(struct amdgpu_ring *ring, struct amdgpu_ib *ib
+ 	u32 pad_count;
+ 	int i;
+ 
+-	pad_count = (8 - (ib->length_dw & 0x7)) % 8;
++	pad_count = (-ib->length_dw) & 0x7;
+ 	for (i = 0; i < pad_count; i++)
+ 		if (sdma && sdma->burst_nop && (i == 0))
+ 			ib->ptr[ib->length_dw++] =
 -- 
 2.20.1
 
