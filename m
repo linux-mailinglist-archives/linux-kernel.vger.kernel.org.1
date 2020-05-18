@@ -2,86 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254381D8BB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 01:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 205F01D8BBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 01:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgERXlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 19:41:42 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:40883 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726407AbgERXll (ORCPT
+        id S1728129AbgERXn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 19:43:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726407AbgERXn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 19:41:41 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 35437AF9;
-        Mon, 18 May 2020 19:41:40 -0400 (EDT)
-Received: from imap10 ([10.202.2.60])
-  by compute1.internal (MEProxy); Mon, 18 May 2020 19:41:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=J1AR48
-        /Bqor8PSknA+RS5/aKkcT8MxVKSlgexmnnodk=; b=Gx65fZNsPlulb/wmjgwQnn
-        gTP7oNnJH22elYHhP4vVlNG7ccXkIQyVb0dO68AWobSWeIXSVk01mtfdBPJaBWNB
-        amvxrJRWZn95E8xxn6Nzh7V5MdbYcD7qRGXRioxa1iFVNPskAMp4oTCQHvYWPsB9
-        9F3pOa6ovJkUjuLLOqGBZmp9ozwqPbkIl3OOUx09+us5KdyAIiEzaXSLKliHv7TU
-        Q7zt4wVhUQ10Fgkv5iRrM+aSE1DDdII11dRqm1PX0ZDUTz8cmY9bzHFBJB1h6ErY
-        AswrTuTZSbpj5rYaeTXrteVC4WnSDtlx5WnKYzAN9fvnq5/Gn8BFcHATqWPkvzHA
-        ==
-X-ME-Sender: <xms:Mh3DXgBBd0nGbBVTdcfNgvya-PFyUwirjsLn650H7VoeQbWNhz4M-w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddtiedgvdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdevohhl
-    ihhnucghrghlthgvrhhsfdcuoeifrghlthgvrhhssehvvghrsghumhdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepheegheehieeludegleelteekieejheeuteetgefgiedvkedugefh
-    hfeuffelvddvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepfigrlhhtvghrshesvhgvrhgsuhhmrdhorhhg
-X-ME-Proxy: <xmx:Mh3DXijJIqCcFmAs1yKayzoQX_qBuzDrVP99DtISBYsylFDScncmzw>
-    <xmx:Mh3DXjnuyYfrLH6GNoE_Nhq4X3zCoyafdV8ipVN72jsEuRSKy--tHA>
-    <xmx:Mh3DXmwQcYxFiJDUwBS54HQ6wzcTa2mhGgUQALYwnMK7JPzGwyI-NQ>
-    <xmx:Mx3DXuJVM_Cn79aYmNQYN1Dt6wRt3Pz1FOx6Pstg1WTFv8SB5liEvA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 421B62005D; Mon, 18 May 2020 19:41:38 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-dev0-464-g810d66a-fmstable-20200518v1
-Mime-Version: 1.0
-Message-Id: <bb232cfa-5965-42d0-88cf-46d13f7ebda3@www.fastmail.com>
-In-Reply-To: <CAJfpegtVca6H1JPW00OF-7sCwpomMCo=A2qr5K=9uGKEGjEp3w@mail.gmail.com>
-References: <000000000000b4684e05a2968ca6@google.com>
- <aa7812b8-60ae-8578-40db-e71ad766b4d3@oracle.com>
- <CAJfpegtVca6H1JPW00OF-7sCwpomMCo=A2qr5K=9uGKEGjEp3w@mail.gmail.com>
-Date:   Mon, 18 May 2020 19:41:18 -0400
-From:   "Colin Walters" <walters@verbum.org>
-To:     "Miklos Szeredi" <miklos@szeredi.hu>,
-        "Mike Kravetz" <mike.kravetz@oracle.com>
-Cc:     syzbot <syzbot+d6ec23007e951dadf3de@syzkaller.appspotmail.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, "Miklos Szeredi" <mszeredi@redhat.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Al Viro" <viro@zeniv.linux.org.uk>
-Subject: Re: kernel BUG at mm/hugetlb.c:LINE!
-Content-Type: text/plain
+        Mon, 18 May 2020 19:43:26 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD19C05BD09
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 16:43:25 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id i14so12444361qka.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 16:43:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s/BUTFWn5tjRK73c5c6DPEmUZHTVf4XstVliLRILe5w=;
+        b=ZCUbSwtPCuF4NIgCIGuEqn70DPQqUz32xVhcv4TDzPsN/k3+ij3z61pgBvxWGkJ9fB
+         ntR1/FjZyAeOL04hWOzK6/cxhIPOhwjlHEVxZDHqPblGHkP8szZuHk1kIKXI6R4qsOFY
+         BNOLuJvxUHv05n05OBIenTnitjMrwZhXn3r04JXXGSgm/bP05n6dvfT3pOvU3jNoYLrE
+         1O4KwyBo/N2xD8c2tCWr/aMMiTsT5HHbaqig/SqC20NBtDJsIucaOP9SU0yDHsIcK7K6
+         iaMEBtUlnHbwejUnbu4EPiAfv8lI6fRx4/ow/8L5xPlaUFbLEK695m4GgkxwQoXg5ryy
+         PkrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s/BUTFWn5tjRK73c5c6DPEmUZHTVf4XstVliLRILe5w=;
+        b=UNRHwrgiDsGxbA4NeKmSiFftk1x13EEv0vyCbCTnjdc8kKh8J/saLi6nlP+1SZ8d3m
+         NmbGzPMVsTBuf9GePtnwlb+/ue1POKT9OqeLvVWITXdijDeoSLw7npK3ArV7uIVyLlhP
+         9VxbrVhiTZE/rYGQI3xaakUQMT5rPtxqz5dmRx4eo21WPTt9p04aTbRqXPiDwhYK+6L0
+         jRI9F4wUbawVGW+5JVZloBCTuZXUMrQbQ1Mxxio7JrA/jur6/W/x4pl73UUFLGgDPxFf
+         eObivy7QErcnrWTh9OEghB1oHJZsKfvIAe0fimgDHSDnbIb3sCWcWi0JIlazX4+yXI6c
+         H4jw==
+X-Gm-Message-State: AOAM531NsilXM57fh4BVi9gCwAmr9L+lY95gts/aoHCgNLsraBOF6wKx
+        dikxeqgrvjqsGuopLYLaXoA=
+X-Google-Smtp-Source: ABdhPJyT8AKxWIpnr+Aac7V1r5WQmrYgwAqTbmGOqqa0qW7AR0PzEgVaFSLZiKr6BStMnrw33p02oQ==
+X-Received: by 2002:a37:7904:: with SMTP id u4mr18362247qkc.297.1589845404813;
+        Mon, 18 May 2020 16:43:24 -0700 (PDT)
+Received: from LeoBras.aus.stglabs.ibm.com (177-131-65-239.dynamic.desktop.com.br. [177.131.65.239])
+        by smtp.gmail.com with ESMTPSA id 145sm9135772qkm.110.2020.05.18.16.43.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 16:43:24 -0700 (PDT)
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Allison Randal <allison@lohutok.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Nadav Amit <namit@vmware.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/2] Implement reentrant rtas call
+Date:   Mon, 18 May 2020 20:42:43 -0300
+Message-Id: <20200518234245.200672-1-leobras.c@gmail.com>
+X-Mailer: git-send-email 2.25.4
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Patch 2 implement rtas_call_reentrant() for reentrant rtas-calls:
+"ibm,int-on", "ibm,int-off",ibm,get-xive" and  "ibm,set-xive",
+according to LoPAPR Version 1.1 (March 24, 2016).
+
+For that, it's necessary that every call uses a different
+rtas buffer (rtas_args). Paul Mackerras suggested using the PACA
+structure for creating a per-cpu buffer for these calls.
+
+Patch 1 was necessary to make PACA have a 'struct rtas_args' member.
+
+Reentrant rtas calls can be useful to avoid deadlocks in crashing,
+where rtas-calls are needed, but some other thread crashed holding
+the rtas.lock.
+
+This is a backtrace of a deadlock from a kdump testing environment:
+
+  #0 arch_spin_lock
+  #1  lock_rtas () 
+  #2  rtas_call (token=8204, nargs=1, nret=1, outputs=0x0)
+  #3  ics_rtas_mask_real_irq (hw_irq=4100) 
+  #4  machine_kexec_mask_interrupts
+  #5  default_machine_crash_shutdown
+  #6  machine_crash_shutdown 
+  #7  __crash_kexec
+  #8  crash_kexec
+  #9  oops_end
+
+Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+
+Special thanks to Nick Piggin, who have been helping me a lot with
+this series!
+
+---
+Changes since v5:
+- Renames new paca member from reentrant_args to rtas_args_reentrant
+- Compile out rtas_args_reentrant if CONFIG_PPC_RTAS=n
+- new_rtas_args() is skipped (returns NULL) if CPU_FTR_HVMODE
+
+Changes since v4:
+- Insted of having the full buffer on PACA, adds only a pointer and
+  allocate it during allocate_paca(), making sure it's in a memory
+  range available for RTAS (32-bit). (Thanks Nick Piggin!)
+
+Changes since v3:
+- Adds protection from preemption and interruption
+
+Changes since v2:
+- Fixed build failure from ppc64e, by including spinlock_types.h on 
+  rtas-types.h
+- Improved commit messages
+
+Changes since v1:
+- Moved buffer from stack to PACA (as suggested by Paul Mackerras)
+- Added missing output bits
+- Improve documentation following kernel-doc format (as suggested by
+  Nathan Lynch)
 
 
-On Tue, May 12, 2020, at 11:04 AM, Miklos Szeredi wrote:
+Leonardo Bras (2):
+  powerpc/rtas: Move type/struct definitions from rtas.h into
+    rtas-types.h
+  powerpc/rtas: Implement reentrant rtas call
 
-> > However, in this syzbot test case the 'file' is in an overlayfs filesystem
-> > created as follows:
-> >
-> > mkdir("./file0", 000)                   = 0
-> > mount(NULL, "./file0", "hugetlbfs", MS_MANDLOCK|MS_POSIXACL, NULL) = 0
-> > chdir("./file0")                        = 0
-> > mkdir("./file1", 000)                   = 0
-> > mkdir("./bus", 000)                     = 0
-> > mkdir("./file0", 000)                   = 0
-> > mount("\177ELF\2\1\1", "./bus", "overlay", 0, "lowerdir=./bus,workdir=./file1,u"...) = 0
+ arch/powerpc/include/asm/paca.h       |   2 +
+ arch/powerpc/include/asm/rtas-types.h | 126 ++++++++++++++++++++++++++
+ arch/powerpc/include/asm/rtas.h       | 119 +-----------------------
+ arch/powerpc/kernel/rtas.c            |  42 +++++++++
+ arch/powerpc/sysdev/xics/ics-rtas.c   |  22 ++---
+ 5 files changed, 183 insertions(+), 128 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/rtas-types.h
 
-Is there any actual valid use case for mounting an overlayfs on top of hugetlbfs?  I can't think of one.  Why isn't the response to this to instead only allow mounting overlayfs on top of basically a set of whitelisted filesystems?
+-- 
+2.25.4
 
