@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BD41D8271
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E0C1D8728
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731111AbgERR4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:56:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34364 "EHLO mail.kernel.org"
+        id S1732835AbgERSap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:30:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731630AbgERR42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:56:28 -0400
+        id S1729100AbgERRkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:40:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F26FA20715;
-        Mon, 18 May 2020 17:56:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17E33207C4;
+        Mon, 18 May 2020 17:40:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824587;
-        bh=Svaos6vxxlnOv44Wz/7DLBgu5pGY5TzjWg76st8tLXc=;
+        s=default; t=1589823635;
+        bh=1kDKxjJeg1LfNC3E7RurznKrh41PNTnWt9redWavVb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cLWLfFWel16YgumHuarIDdkN7WjdREr+r6JfCQ21sGIupw4ly4aK7/LQlXYZ6eoE0
-         SUasX8i81gmBl7XHVF00yBT0pyCmGIqlBjjWQqWSsIGpnsgYfRPF1wseDcSxYuUNZf
-         BieNrDHQcZy/9ylJ1orMMPl25l4/8W7pOkba4qRM=
+        b=QU+qRjjni5MdeE74tabqBsoCwqH2Fj80tO/RcaOWt80PtojXwSqgvwZnSE/ZAvqPH
+         2bNCnmjw/N4tfXKyNhzHmaCkqf5FfZvzFBPo4o4Lc91Lr4h8n7/4o81DYMkVjpD4Fu
+         bNI1i6FgHk/kzaZgWbsqybjrbAsnzxlG0voJgsU0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 070/147] mmc: block: Fix request completion in the CQE timeout path
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 62/86] gcc-10: disable restrict warning for now
 Date:   Mon, 18 May 2020 19:36:33 +0200
-Message-Id: <20200518173522.721555003@linuxfoundation.org>
+Message-Id: <20200518173502.967629916@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +43,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit c077dc5e0620508a29497dac63a2822324ece52a ]
+commit adc71920969870dfa54e8f40dac8616284832d02 upstream.
 
-First, it should be noted that the CQE timeout (60 seconds) is substantial
-so a CQE request that times out is really stuck, and the race between
-timeout and completion is extremely unlikely. Nevertheless this patch
-fixes an issue with it.
+gcc-10 now warns about passing aliasing pointers to functions that take
+restricted pointers.
 
-Commit ad73d6feadbd7b ("mmc: complete requests from ->timeout")
-preserved the existing functionality, to complete the request.
-However that had only been necessary because the block layer
-timeout handler had been marking the request to prevent it from being
-completed normally. That restriction was removed at the same time, the
-result being that a request that has gone will have been completed anyway.
-That is, the completion was unnecessary.
+That's actually a great warning, and if we ever start using 'restrict'
+in the kernel, it might be quite useful.  But right now we don't, and it
+turns out that the only thing this warns about is an idiom where we have
+declared a few functions to be "printf-like" (which seems to make gcc
+pick up the restricted pointer thing), and then we print to the same
+buffer that we also use as an input.
 
-At the time, the unnecessary completion was harmless because the block
-layer would ignore it, although that changed in kernel v5.0.
+And people do that as an odd concatenation pattern, with code like this:
 
-Note for stable, this patch will not apply cleanly without patch "mmc:
-core: Fix recursive locking issue in CQE recovery path"
+    #define sysfs_show_gen_prop(buffer, fmt, ...) \
+        snprintf(buffer, PAGE_SIZE, "%s"fmt, buffer, __VA_ARGS__)
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Fixes: ad73d6feadbd7b ("mmc: complete requests from ->timeout")
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200508062227.23144-1-adrian.hunter@intel.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+where we have 'buffer' as both the destination of the final result, and
+as the initial argument.
+
+Yes, it's a bit questionable.  And outside of the kernel, people do have
+standard declarations like
+
+    int snprintf( char *restrict buffer, size_t bufsz,
+                  const char *restrict format, ... );
+
+where that output buffer is marked as a restrict pointer that cannot
+alias with any other arguments.
+
+But in the context of the kernel, that 'use snprintf() to concatenate to
+the end result' does work, and the pattern shows up in multiple places.
+And we have not marked our own version of snprintf() as taking restrict
+pointers, so the warning is incorrect for now, and gcc picks it up on
+its own.
+
+If we do start using 'restrict' in the kernel (and it might be a good
+idea if people find places where it matters), we'll need to figure out
+how to avoid this issue for snprintf and friends.  But in the meantime,
+this warning is not useful.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/mmc/core/queue.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ Makefile |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-index 4d1e468d39823..9c0ccb3744c28 100644
---- a/drivers/mmc/core/queue.c
-+++ b/drivers/mmc/core/queue.c
-@@ -110,8 +110,7 @@ static enum blk_eh_timer_return mmc_cqe_timed_out(struct request *req)
- 				mmc_cqe_recovery_notifier(mrq);
- 			return BLK_EH_RESET_TIMER;
- 		}
--		/* No timeout (XXX: huh? comment doesn't make much sense) */
--		blk_mq_complete_request(req);
-+		/* The request has gone already */
- 		return BLK_EH_DONE;
- 	default:
- 		/* Timeout is handled by mmc core */
--- 
-2.20.1
-
+--- a/Makefile
++++ b/Makefile
+@@ -800,6 +800,9 @@ KBUILD_CFLAGS += $(call cc-disable-warni
+ KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
+ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
+ 
++# Another good warning that we'll want to enable eventually
++KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
++
+ # Enabled with W=2, disabled by default as noisy
+ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
+ 
 
 
