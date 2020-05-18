@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D07731D8198
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6A81D81ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730505AbgERRtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:49:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50574 "EHLO mail.kernel.org"
+        id S1730937AbgERRwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:52:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729506AbgERRtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:49:10 -0400
+        id S1730925AbgERRwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:52:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6432420671;
-        Mon, 18 May 2020 17:49:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04F7D20826;
+        Mon, 18 May 2020 17:52:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824149;
-        bh=typIq0/seAP8Czi1rdqH4ZdtGRHRMXR+6Z2dgm9bv+g=;
+        s=default; t=1589824324;
+        bh=H3lARfiaXtBGdgWpOv2deCtz4iA5GbK5Cy1r8oPgU3o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PGeB2E8G1kDb/WKcOmt8XSDvjdeugzB9wOybZAxsvbZfc+QYWc5nDo+KMjkd02Akq
-         lffTmNmz1IlIcBZEf2yLsBCGiIDejy1+m7zw7xqN1SvGGABeK450vmii3rmV1n21Zt
-         NunalyG19vVfZE0zJLEVUoCHdONw6jy415Ec4+Sg=
+        b=BU7QVo2BevLFvqCm4OpzlOL5asmiAYM1WyRL8ikgSwCdC0kb/p3GJKhtAUf6w/5ZS
+         Oct7NP3t2B6K+AYQfQphR86AhEcgOOf2kRZtNmzYGTyDoNdYqSH2qedjR0lJbCoQYV
+         RhOowsggt7nULcQp3nW1jrBhOZXtSll/nBCdiXZc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, butt3rflyh4ck <butterflyhuangxx@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 092/114] ALSA: rawmidi: Fix racy buffer resize under concurrent accesses
+        stable@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: [PATCH 4.19 46/80] kbuild: compute false-positive -Wmaybe-uninitialized cases in Kconfig
 Date:   Mon, 18 May 2020 19:37:04 +0200
-Message-Id: <20200518173518.719876322@linuxfoundation.org>
+Message-Id: <20200518173459.723033759@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
+References: <20200518173450.097837707@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,131 +45,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-commit c1f6e3c818dd734c30f6a7eeebf232ba2cf3181d upstream.
+commit b303c6df80c9f8f13785aa83a0471fca7e38b24d upstream.
 
-The rawmidi core allows user to resize the runtime buffer via ioctl,
-and this may lead to UAF when performed during concurrent reads or
-writes: the read/write functions unlock the runtime lock temporarily
-during copying form/to user-space, and that's the race window.
+Since -Wmaybe-uninitialized was introduced by GCC 4.7, we have patched
+various false positives:
 
-This patch fixes the hole by introducing a reference counter for the
-runtime buffer read/write access and returns -EBUSY error when the
-resize is performed concurrently against read/write.
+ - commit e74fc973b6e5 ("Turn off -Wmaybe-uninitialized when building
+   with -Os") turned off this option for -Os.
 
-Note that the ref count field is a simple integer instead of
-refcount_t here, since the all contexts accessing the buffer is
-basically protected with a spinlock, hence we need no expensive atomic
-ops.  Also, note that this busy check is needed only against read /
-write functions, and not in receive/transmit callbacks; the race can
-happen only at the spinlock hole mentioned in the above, while the
-whole function is protected for receive / transmit callbacks.
+ - commit 815eb71e7149 ("Kbuild: disable 'maybe-uninitialized' warning
+   for CONFIG_PROFILE_ALL_BRANCHES") turned off this option for
+   CONFIG_PROFILE_ALL_BRANCHES
 
-Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/CAFcO6XMWpUVK_yzzCpp8_XP7+=oUpQvuBeCbMffEDkpe8jWrfg@mail.gmail.com
-Link: https://lore.kernel.org/r/s5heerw3r5z.wl-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+ - commit a76bcf557ef4 ("Kbuild: enable -Wmaybe-uninitialized warning
+   for "make W=1"") turned off this option for GCC < 4.9
+   Arnd provided more explanation in https://lkml.org/lkml/2017/3/14/903
+
+I think this looks better by shifting the logic from Makefile to Kconfig.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/350
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/sound/rawmidi.h |    1 +
- sound/core/rawmidi.c    |   31 +++++++++++++++++++++++++++----
- 2 files changed, 28 insertions(+), 4 deletions(-)
+ Makefile             |   11 ++++-------
+ init/Kconfig         |   17 +++++++++++++++++
+ kernel/trace/Kconfig |    1 +
+ 3 files changed, 22 insertions(+), 7 deletions(-)
 
---- a/include/sound/rawmidi.h
-+++ b/include/sound/rawmidi.h
-@@ -76,6 +76,7 @@ struct snd_rawmidi_runtime {
- 	size_t avail_min;	/* min avail for wakeup */
- 	size_t avail;		/* max used buffer for wakeup */
- 	size_t xruns;		/* over/underruns counter */
-+	int buffer_ref;		/* buffer reference count */
- 	/* misc */
- 	spinlock_t lock;
- 	wait_queue_head_t sleep;
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -108,6 +108,17 @@ static void snd_rawmidi_input_event_work
- 		runtime->event(runtime->substream);
- }
+--- a/Makefile
++++ b/Makefile
+@@ -657,17 +657,14 @@ KBUILD_CFLAGS	+= $(call cc-disable-warni
+ KBUILD_CFLAGS	+= $(call cc-disable-warning, address-of-packed-member)
  
-+/* buffer refcount management: call with runtime->lock held */
-+static inline void snd_rawmidi_buffer_ref(struct snd_rawmidi_runtime *runtime)
-+{
-+	runtime->buffer_ref++;
-+}
+ ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
+-KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
+-else
+-ifdef CONFIG_PROFILE_ALL_BRANCHES
+-KBUILD_CFLAGS	+= -O2 $(call cc-disable-warning,maybe-uninitialized,)
++KBUILD_CFLAGS   += -Os
+ else
+ KBUILD_CFLAGS   += -O2
+ endif
+-endif
+ 
+-KBUILD_CFLAGS += $(call cc-ifversion, -lt, 0409, \
+-			$(call cc-disable-warning,maybe-uninitialized,))
++ifdef CONFIG_CC_DISABLE_WARN_MAYBE_UNINITIALIZED
++KBUILD_CFLAGS   += -Wno-maybe-uninitialized
++endif
+ 
+ # Tell gcc to never replace conditional load with a non-conditional one
+ KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -26,6 +26,22 @@ config CLANG_VERSION
+ config CC_HAS_ASM_GOTO
+ 	def_bool $(success,$(srctree)/scripts/gcc-goto.sh $(CC))
+ 
++config CC_HAS_WARN_MAYBE_UNINITIALIZED
++	def_bool $(cc-option,-Wmaybe-uninitialized)
++	help
++	  GCC >= 4.7 supports this option.
 +
-+static inline void snd_rawmidi_buffer_unref(struct snd_rawmidi_runtime *runtime)
-+{
-+	runtime->buffer_ref--;
-+}
++config CC_DISABLE_WARN_MAYBE_UNINITIALIZED
++	bool
++	depends on CC_HAS_WARN_MAYBE_UNINITIALIZED
++	default CC_IS_GCC && GCC_VERSION < 40900  # unreliable for GCC < 4.9
++	help
++	  GCC's -Wmaybe-uninitialized is not reliable by definition.
++	  Lots of false positive warnings are produced in some cases.
 +
- static int snd_rawmidi_runtime_create(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_rawmidi_runtime *runtime;
-@@ -654,6 +665,11 @@ int snd_rawmidi_output_params(struct snd
- 		if (!newbuf)
- 			return -ENOMEM;
- 		spin_lock_irq(&runtime->lock);
-+		if (runtime->buffer_ref) {
-+			spin_unlock_irq(&runtime->lock);
-+			kfree(newbuf);
-+			return -EBUSY;
-+		}
- 		oldbuf = runtime->buffer;
- 		runtime->buffer = newbuf;
- 		runtime->buffer_size = params->buffer_size;
-@@ -962,8 +978,10 @@ static long snd_rawmidi_kernel_read1(str
- 	long result = 0, count1;
- 	struct snd_rawmidi_runtime *runtime = substream->runtime;
- 	unsigned long appl_ptr;
-+	int err = 0;
++	  If this option is enabled, -Wno-maybe-uninitialzed is passed
++	  to the compiler to suppress maybe-uninitialized warnings.
++
+ config CONSTRUCTORS
+ 	bool
+ 	depends on !UML
+@@ -1083,6 +1099,7 @@ config CC_OPTIMIZE_FOR_PERFORMANCE
  
- 	spin_lock_irqsave(&runtime->lock, flags);
-+	snd_rawmidi_buffer_ref(runtime);
- 	while (count > 0 && runtime->avail) {
- 		count1 = runtime->buffer_size - runtime->appl_ptr;
- 		if (count1 > count)
-@@ -982,16 +1000,19 @@ static long snd_rawmidi_kernel_read1(str
- 		if (userbuf) {
- 			spin_unlock_irqrestore(&runtime->lock, flags);
- 			if (copy_to_user(userbuf + result,
--					 runtime->buffer + appl_ptr, count1)) {
--				return result > 0 ? result : -EFAULT;
--			}
-+					 runtime->buffer + appl_ptr, count1))
-+				err = -EFAULT;
- 			spin_lock_irqsave(&runtime->lock, flags);
-+			if (err)
-+				goto out;
- 		}
- 		result += count1;
- 		count -= count1;
- 	}
-+ out:
-+	snd_rawmidi_buffer_unref(runtime);
- 	spin_unlock_irqrestore(&runtime->lock, flags);
--	return result;
-+	return result > 0 ? result : err;
- }
- 
- long snd_rawmidi_kernel_read(struct snd_rawmidi_substream *substream,
-@@ -1262,6 +1283,7 @@ static long snd_rawmidi_kernel_write1(st
- 			return -EAGAIN;
- 		}
- 	}
-+	snd_rawmidi_buffer_ref(runtime);
- 	while (count > 0 && runtime->avail > 0) {
- 		count1 = runtime->buffer_size - runtime->appl_ptr;
- 		if (count1 > count)
-@@ -1293,6 +1315,7 @@ static long snd_rawmidi_kernel_write1(st
- 	}
-       __end:
- 	count1 = runtime->avail < runtime->buffer_size;
-+	snd_rawmidi_buffer_unref(runtime);
- 	spin_unlock_irqrestore(&runtime->lock, flags);
- 	if (count1)
- 		snd_rawmidi_output_trigger(substream, 1);
+ config CC_OPTIMIZE_FOR_SIZE
+ 	bool "Optimize for size"
++	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
+ 	help
+ 	  Enabling this option will pass "-Os" instead of "-O2" to
+ 	  your compiler resulting in a smaller kernel.
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -370,6 +370,7 @@ config PROFILE_ANNOTATED_BRANCHES
+ config PROFILE_ALL_BRANCHES
+ 	bool "Profile all if conditionals" if !FORTIFY_SOURCE
+ 	select TRACE_BRANCH_PROFILING
++	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
+ 	help
+ 	  This tracer profiles all branch conditions. Every if ()
+ 	  taken in the kernel is recorded whether it hit or miss.
 
 
