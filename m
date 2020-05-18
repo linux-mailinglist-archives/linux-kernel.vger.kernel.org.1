@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FDBB1D8459
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 073F91D86D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733049AbgERSLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:11:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52008 "EHLO mail.kernel.org"
+        id S2387915AbgERS2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:28:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732840AbgERSEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:04:48 -0400
+        id S1729005AbgERRnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:43:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 587C820715;
-        Mon, 18 May 2020 18:04:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81D8D20835;
+        Mon, 18 May 2020 17:43:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825087;
-        bh=FiutH8jg+tuRC8/Eo6Re2MpIXW0t6I7R4ZD2Wfsn7xs=;
+        s=default; t=1589823791;
+        bh=HTvCiCacoig81YMwJ45KDFRvX3U18f9IXR+DcRXlePE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S6QsPZdHI395g94aBmY+nrMLqB+LPSiDozw9IKTfu0gPj9aGM1lDJ8L7eJZI3Wl4H
-         2HsFLduO/jHtdH23IBhbldeqvUksskJ/5wAN8NXQKPp35S6GhH7paO1MAyAb1NOp7A
-         f3YZOk3x5gNcrwBP7T9KLgKgNE2p+pdBf0Wos97g=
+        b=KO7KFgqJMillacUs/ajWS/N2JE4j7ktF9ElAgWQRVZ+Tl7h6+/DT5AEBG4XkgA/Xn
+         4vAKN/2r17DT8d6EfgLoEEo8jnSuyiL58TnVOetl4G/Lgv0MN/xb6cbtM8ZUAIviGk
+         UnnHITXK0McPFC+KNplQFHsSUrfIyyENpMWi96XY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sultan Alsawaf <sultan@kerneltoast.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 085/194] drm/i915: Dont enable WaIncreaseLatencyIPCEnabled when IPC is disabled
-Date:   Mon, 18 May 2020 19:36:15 +0200
-Message-Id: <20200518173538.787800283@linuxfoundation.org>
+Subject: [PATCH 4.9 38/90] ptp: Fix pass zero to ERR_PTR() in ptp_clock_register
+Date:   Mon, 18 May 2020 19:36:16 +0200
+Message-Id: <20200518173458.838117489@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,40 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sultan Alsawaf <sultan@kerneltoast.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit 421abe200321a2c907ede1a6208c558284ba0b75 ]
+commit aea0a897af9e44c258e8ab9296fad417f1bc063a upstream.
 
-In commit 5a7d202b1574, a logical AND was erroneously changed to an OR,
-causing WaIncreaseLatencyIPCEnabled to be enabled unconditionally for
-kabylake and coffeelake, even when IPC is disabled. Fix the logic so
-that WaIncreaseLatencyIPCEnabled is only used when IPC is enabled.
+Fix smatch warning:
 
-Fixes: 5a7d202b1574 ("drm/i915: Drop WaIncreaseLatencyIPCEnabled/1140 for cnl")
-Cc: stable@vger.kernel.org # 5.3.x+
-Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
-Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200430214654.51314-1-sultan@kerneltoast.com
-(cherry picked from commit 690d22dafa88b82453516387b475664047a6bd14)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+drivers/ptp/ptp_clock.c:298 ptp_clock_register() warn:
+ passing zero to 'ERR_PTR'
+
+'err' should be set while device_create_with_groups and
+pps_register_source fails
+
+Fixes: 85a66e550195 ("ptp: create "pins" together with the rest of attributes")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Acked-by: Richard Cochran <richardcochran@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/i915/intel_pm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/ptp/ptp_clock.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
-index bd2d30ecc030f..53c7b1a1b3551 100644
---- a/drivers/gpu/drm/i915/intel_pm.c
-+++ b/drivers/gpu/drm/i915/intel_pm.c
-@@ -4722,7 +4722,7 @@ static void skl_compute_plane_wm(const struct intel_crtc_state *crtc_state,
- 	 * WaIncreaseLatencyIPCEnabled: kbl,cfl
- 	 * Display WA #1141: kbl,cfl
- 	 */
--	if ((IS_KABYLAKE(dev_priv) || IS_COFFEELAKE(dev_priv)) ||
-+	if ((IS_KABYLAKE(dev_priv) || IS_COFFEELAKE(dev_priv)) &&
- 	    dev_priv->ipc_enabled)
- 		latency += 4;
+diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
+index d5ac33350889e..b87b7b0867a4c 100644
+--- a/drivers/ptp/ptp_clock.c
++++ b/drivers/ptp/ptp_clock.c
+@@ -222,8 +222,10 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 	ptp->dev = device_create_with_groups(ptp_class, parent, ptp->devid,
+ 					     ptp, ptp->pin_attr_groups,
+ 					     "ptp%d", ptp->index);
+-	if (IS_ERR(ptp->dev))
++	if (IS_ERR(ptp->dev)) {
++		err = PTR_ERR(ptp->dev);
+ 		goto no_device;
++	}
  
+ 	/* Register a new PPS source. */
+ 	if (info->pps) {
+@@ -234,6 +236,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 		pps.owner = info->owner;
+ 		ptp->pps_source = pps_register_source(&pps, PTP_PPS_DEFAULTS);
+ 		if (!ptp->pps_source) {
++			err = -EINVAL;
+ 			pr_err("failed to register pps source\n");
+ 			goto no_pps;
+ 		}
 -- 
 2.20.1
 
