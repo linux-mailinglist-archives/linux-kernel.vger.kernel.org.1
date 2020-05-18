@@ -2,79 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76291D7C88
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072BF1D7C90
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728152AbgERPQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 11:16:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727006AbgERPQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 11:16:06 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED2A420671;
-        Mon, 18 May 2020 15:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589814966;
-        bh=5opz+foPit1dH2Iwf+ULro2z9H3PIrgkxp5mEKF1PRI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vd5NIW+PIgRZpJFFltoGmbc3oaa1v9PZburPWhRNtRxE8F+EE82sEfPbuKvW7qqTx
-         YoCVEljaw9eOCfGXyoeVdodWrzfLCHHV5vFeukYytkv7pQrIbJvDwsSd8iapXLj2ia
-         9r9ga1MqzhKmCIxoYQ1bfLxz22GJyvl72NJgeX1E=
-Date:   Mon, 18 May 2020 11:16:04 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, bp@alien8.de, luto@kernel.org,
-        hpa@zytor.com, dave.hansen@intel.com, tony.luck@intel.com,
-        ak@linux.intel.com, ravi.v.shankar@intel.com,
-        chang.seok.bae@intel.com
-Subject: Re: [PATCH v12 00/18] Enable FSGSBASE instructions
-Message-ID: <20200518151604.GC33628@sasha-vm>
-References: <20200511045311.4785-1-sashal@kernel.org>
- <0186c22a8a6be1516df0703c421faaa581041774.camel@linux.intel.com>
- <20200515164013.GF29995@sasha-vm>
- <87o8qly3jo.fsf@nanos.tec.linutronix.de>
+        id S1727036AbgERPSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 11:18:41 -0400
+Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:34243 "EHLO
+        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726918AbgERPSl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 11:18:41 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id ahXGjvLYt8hmdahXKjhJ8z; Mon, 18 May 2020 17:18:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1589815118; bh=n0fFGCGdi818S+XdCRml9VArGU71ZuuWGQf3y8cVenM=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=MzvkyNhR3+1xg9AJ1h0OcyOrrxCoEWkSUTzgh5VuX3AoGLhjn1B0dqZAeS/cFc6pI
+         kWBr3VTRLnsRgQe6HvGJMYqkkEOkIRE3DhyzxZzpC/m+pufUpCfFPfFGz9Vh1kpVja
+         1GQg/86BG71p7CkX601+bKjh3esf/3MYj1mWsZjBC8BaMe1Rqlk+2U6lmGdl6zgTIo
+         8XCv/fYlzAkZdF5jiylQSOtUiTOUq4LYMZb8Mk/R0RSCCbTwE/NKZFtx4sTBQEHCAy
+         /C8zSqiUYTwbwv0e82I3eZTh3s/wVaVN6r86EMtRX+MaVjt2MAVuS5YEO7UyWs41ZM
+         5Z4cgBEOAmvZg==
+Subject: Re: [PATCH v6 00/14] Implement V4L2_BUF_FLAG_NO_CACHE_* flags
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200514160153.3646-1-sergey.senozhatsky@gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <3fee9a3d-30fe-826a-7a36-b4c9720a94db@xs4all.nl>
+Date:   Mon, 18 May 2020 17:18:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <87o8qly3jo.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20200514160153.3646-1-sergey.senozhatsky@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfI6Lht0ujiOXn8w5y/udiDLlkwMRqX60HUf+iJ7HJGUpwLICDz656fqMWX//dHjq1DNJuQh7kF3onp42CadT3ClOKvouGOMf5oKLKuIeja2xByT9mRdh
+ WKXrOGq72IFFDv1SEeMOQs0ZEwqEY7RjYh3senwLjJEjLaYB6WJHezFte8Lb/ns/erZ5w2Dnvt2mc9w8n33seQAbw+D66kWiBDl+cchpqeUsALXPN1GE8ljF
+ PygvybUsvwXN0RFiuA6hX2xoOLhQO6yRN3UgB90to+OYrqOSXciaHs3uEISQ84dR1mNe0egY0JnLygyvaOIQ/Ih8SgjEtr3e5itS7dL8lV1Yi+tQzjYGAuB7
+ Bk5ZDrl8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 11:51:07AM +0200, Thomas Gleixner wrote:
->Sasha Levin <sashal@kernel.org> writes:
->> On Fri, May 15, 2020 at 12:24:14PM +0300, Jarkko Sakkinen wrote:
->>>
->>>Can you put me to the CC-loop for this patches. Some SGX-enabled
->>>frameworks such as Graphene use out-of-tree changes to achieve this.
->>>That's where the interest to possibly test this comes from.
->>
->> Indeed, we've seen a few hacks that basically just enable FSGSBASE:
->>
->>  - https://github.com/oscarlab/graphene-sgx-driver
->>  - https://github.com/occlum/enable_rdfsbase
->
->I'm really amazed by all these security experts enabling a full root
->hole. It clearly puts the SGX hypocrisy into perspective.
+Hi Sergey,
 
-We can bash Intel all we want here, but sadly there are users in the
-"wild" who just enable these root holes thinking they're secure, and
-those users are the ones running very sensitive workloads. Here's an
-example from a book called "Responsible Genomic Data Sharing":
+On 14/05/2020 18:01, Sergey Senozhatsky wrote:
+> Hello
+> 
+> v6 changes:
+> The design has been slightly reworked. The cache-hints capability has
+> been renamed to SUPPORTS_MMAP_CACHE_HINTS and is reported for all queues
+> that support MMAP and allow cache hints. However, the actual hints and
+> memory consistency are ignored unless the queue is used for the MMAP
+> streaming I/O. Plus some cleanups, documentation updates, and so on.
 
-	https://books.google.com/books?id=y6zWDwAAQBAJ&pg=PA184#v=onepage&q&f=false
+This looks good. If there are no new comments then I plan to make a PR for 5.9 in
+two weeks.
 
-That explains how to use Graphene-SGX which just enables FSGSBASE with
-root holes.
+Thank you for all your work on this!
 
-Maybe it's just me, but I'd love to have my genomic data stored and
-processed on systems that are actually secure :)
+Regards,
 
--- 
-Thanks,
-Sasha
+	Hans
+
+> 
+> Previous versions:
+> v5 link: https://lore.kernel.org/lkml/20200424092920.4801-1-sergey.senozhatsky@gmail.com
+> v4 link: https://lore.kernel.org/lkml/20200302041213.27662-1-senozhatsky@chromium.org/
+> v3 link: https://lore.kernel.org/lkml/20200226111529.180197-1-senozhatsky@chromium.org
+> v2 link: https://lore.kernel.org/lkml/20200204025641.218376-1-senozhatsky@chromium.org/
+> v1 link: https://lore.kernel.org/lkml/20191217032034.54897-1-senozhatsky@chromium.org/
+> 
+> Series Intro
+> ========================================================================
+> 
+>         This is a reworked version of the vb2 cache hints
+> (V4L2_BUF_FLAG_NO_CACHE_INVALIDATE / V4L2_BUF_FLAG_NO_CACHE_CLEAN)
+> support patch series which previsouly was developed by Sakari and
+> Laurent [0].
+> 
+> The patch set attempts to preserve the existing behvaiour - cache
+> sync is performed in ->prepare() and ->finish() (unless the buffer
+> is DMA exported). User space can request “default behavior” override
+> with cache management hints, which are handled on a per-buffer basis
+> and should be supplied with v4l2_buffer ->flags during buffer
+> preparation. There are two possible hints:
+> 
+> - V4L2_BUF_FLAG_NO_CACHE_INVALIDATE
+>         No cache sync on ->finish()
+> 
+> - V4L2_BUF_FLAG_NO_CACHE_CLEAN
+>         No cache sync on ->prepare()
+> 
+> In order to keep things on the safe side, we also require driver
+> to explicitly state which of its queues (if any) support user space
+> cache management hints (such queues should have ->allow_cache_hints
+> bit set).
+> 
+> The patch set also (to some extent) simplifies allocators' ->prepare()
+> and ->finish() callbacks. Namely, we move cache management decision
+> making to the upper - core - layer. For example, if, previously, we
+> would have something like this
+> 
+>         vb2_buffer_done()
+>           vb2_dc_finish()
+>             if (buf->db_attach)
+>               return;
+> 
+> where each allocators' ->finish() callback would either bail
+> out (DMA exported buffer, for instance) or sync, now that "bail
+> out or sync" decision is made before we call into the allocator.
+> 
+> Along with cache management hints, user space is also able to
+> adjust queue's memory consistency attributes. Memory consistency
+> attribute (dma_attrs) is per-queue, yet it plays its role on the
+> allocator level, when we allocate buffers’ private memory (planes).
+> For the time being, only one consistency attribute is supported:
+> DMA_ATTR_NON_CONSISTENT.
+> 
+> [0] https://www.mail-archive.com/linux-media@vger.kernel.org/msg112459.html
+> 
+> Sergey Senozhatsky (14):
+>   videobuf2: use explicit unsigned int in vb2_queue
+>   videobuf2: add cache management members
+>   videobuf2: handle V4L2 buffer cache flags
+>   videobuf2: add V4L2_FLAG_MEMORY_NON_CONSISTENT flag
+>   videobuf2: add queue memory consistency parameter
+>   videobuf2: handle V4L2_FLAG_MEMORY_NON_CONSISTENT flag
+>   videobuf2: factor out planes prepare/finish functions
+>   videobuf2: do not sync caches when we are allowed not to
+>   videobuf2: check ->synced flag in prepare() and finish()
+>   videobuf2: add begin/end cpu_access callbacks to dma-contig
+>   videobuf2: add begin/end cpu_access callbacks to dma-sg
+>   videobuf2: don't test db_attach in dma-contig prepare and finish
+>   videobuf2: remove redundant if-statement
+>   media: vivid: add cache_hints module param
+> 
+>  Documentation/admin-guide/media/vivid.rst     |   9 ++
+>  .../userspace-api/media/v4l/buffer.rst        |  40 +++++-
+>  .../media/v4l/vidioc-create-bufs.rst          |   7 +-
+>  .../media/v4l/vidioc-reqbufs.rst              |  21 ++-
+>  .../media/common/videobuf2/videobuf2-core.c   | 121 +++++++++++++-----
+>  .../common/videobuf2/videobuf2-dma-contig.c   |  44 ++++++-
+>  .../media/common/videobuf2/videobuf2-dma-sg.c |  38 ++++--
+>  .../media/common/videobuf2/videobuf2-v4l2.c   |  72 ++++++++++-
+>  drivers/media/dvb-core/dvb_vb2.c              |   2 +-
+>  drivers/media/test-drivers/vivid/vivid-core.c |   9 ++
+>  drivers/media/v4l2-core/v4l2-compat-ioctl32.c |  10 +-
+>  drivers/media/v4l2-core/v4l2-ioctl.c          |   5 +-
+>  include/media/videobuf2-core.h                |  47 +++++--
+>  include/uapi/linux/videodev2.h                |  14 +-
+>  14 files changed, 366 insertions(+), 73 deletions(-)
+> 
+
