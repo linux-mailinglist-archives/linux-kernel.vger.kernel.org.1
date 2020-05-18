@@ -2,178 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF1C1D7BDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 16:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1331D7C2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728127AbgEROvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 10:51:36 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:40673 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726918AbgEROvg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 10:51:36 -0400
-Received: by mail-io1-f66.google.com with SMTP id s10so10854299iog.7;
-        Mon, 18 May 2020 07:51:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7Gn4YlK7kUoPp9dtG/ayb4X1H6fNbTT3yU13bYuwlvE=;
-        b=p/OVFRkMnqwrnw9RDeowmz1C5yNh7DhwGzwnxRQrA4dguXAqJobHnqh8S8cQiq86i2
-         2ae7JQ+aSsoaHB+huNZKlvpHru72TxCwe0GZcZk1p6BgwU/RXNHsCgHoKyH2+29OtUDm
-         tdMj7z/rM12hMsJZ2BVs5o21HUrGgxh1oMdXx0V/6B7cke0xkkFz1/9LZYZzxoT9U3+u
-         qyPCri+HBHuVPwoXyeN0Y7g6wE7MOPxmoiCfmHYD5mXaTzPlSu9BN+Nx1HmLOnXTIkLL
-         W68CWtvlEPpD3OA8w0Or/AzkSON6ZjFe2/BTh/hhaOMGM/p4LsB87pC+LuCn56RAD/s+
-         sMtQ==
-X-Gm-Message-State: AOAM532giTylmZPB3qQvz8t4M/wkBaVfu+dWMGDSCd/GFQZ2XwHqy2JX
-        CmYb5SUSodCud952W51yQg==
-X-Google-Smtp-Source: ABdhPJxP6hmZ29im/bZWGYdsZGSQGyDZT5FiNmO3e8HqPcv23kCcqg2yfEAMokjjGRF3R93jjNHzdw==
-X-Received: by 2002:a6b:b586:: with SMTP id e128mr14709413iof.168.1589813494724;
-        Mon, 18 May 2020 07:51:34 -0700 (PDT)
-Received: from rob-hp-laptop ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id c10sm4038351ioc.24.2020.05.18.07.51.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2020 07:51:34 -0700 (PDT)
-Received: (nullmailer pid 21742 invoked by uid 1000);
-        Mon, 18 May 2020 14:51:33 -0000
-Date:   Mon, 18 May 2020 08:51:33 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Roger Quadros <rogerq@ti.com>
-Cc:     t-kristo@ti.com, kishon@ti.com, nm@ti.com, nsekhar@ti.com,
-        vigneshr@ti.com, devicetree@vger.kernel.org,
+        id S1728097AbgERPCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 11:02:22 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:37808 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726918AbgERPCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 11:02:21 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6344A200941;
+        Mon, 18 May 2020 17:02:19 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 290352009C2;
+        Mon, 18 May 2020 17:02:14 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 6D2F9402AF;
+        Mon, 18 May 2020 23:02:07 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, Frank.Li@nxp.com, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/7] dt-bindings: mdf: ti,j721e-syscon.yaml: Add J721e
- system controller
-Message-ID: <20200518145133.GA2280@bogus>
-References: <20200508082937.14171-1-rogerq@ti.com>
- <20200508082937.14171-3-rogerq@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508082937.14171-3-rogerq@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2] dt-bindings: clock: Convert i.MX7D clock to json-schema
+Date:   Mon, 18 May 2020 22:52:34 +0800
+Message-Id: <1589813554-20929-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 11:29:32AM +0300, Roger Quadros wrote:
-> Add DT binding schema for J721e system controller.
-> 
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
-> ---
->  .../bindings/mfd/ti,j721e-syscon.yaml         | 69 +++++++++++++++++++
->  1 file changed, 69 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/ti,j721e-syscon.yaml
+Convert the i.MX7D clock binding to DT schema format using json-schema.
 
-Use the compatible string for filename.
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+Changes since V1:
+	- Update maintainer's e-mail address.
+---
+ .../devicetree/bindings/clock/imx7d-clock.txt      | 13 -----
+ .../devicetree/bindings/clock/imx7d-clock.yaml     | 64 ++++++++++++++++++++++
+ 2 files changed, 64 insertions(+), 13 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/imx7d-clock.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/imx7d-clock.yaml
 
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/ti,j721e-syscon.yaml b/Documentation/devicetree/bindings/mfd/ti,j721e-syscon.yaml
-> new file mode 100644
-> index 000000000000..e832fb43f884
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/ti,j721e-syscon.yaml
-> @@ -0,0 +1,69 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com/
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/ti,j721e-syscon.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: TI J721e System Controller Registers R/W Device Tree Bindings
-> +
-> +description: |
-> +  This represents the Control Module registers (CTRL_MMR0) on the SoC.
-> +  System controller node represents a register region containing a set
-> +  of miscellaneous registers. The registers are not cohesive enough to
-> +  represent as any specific type of device. The typical use-case is
-> +  for some other node's driver, or platform-specific code, to acquire
-> +  a reference to the syscon node (e.g. by phandle, node path, or
-> +  search using a specific compatible value), interrogate the node (or
-> +  associated OS driver) to determine the location of the registers,
-> +  and access the registers directly.
-> +
-> +maintainers:
-> +  - Kishon Vijay Abraham I <kishon@ti.com>
-> +  - Roger Quadros <rogerq@ti.com
-> +
-> +allOf:
-> +  - $ref: "syscon.yaml#"
+diff --git a/Documentation/devicetree/bindings/clock/imx7d-clock.txt b/Documentation/devicetree/bindings/clock/imx7d-clock.txt
+deleted file mode 100644
+index 9d3026d..0000000
+--- a/Documentation/devicetree/bindings/clock/imx7d-clock.txt
++++ /dev/null
+@@ -1,13 +0,0 @@
+-* Clock bindings for Freescale i.MX7 Dual
+-
+-Required properties:
+-- compatible: Should be "fsl,imx7d-ccm"
+-- reg: Address and length of the register set
+-- #clock-cells: Should be <1>
+-- clocks: list of clock specifiers, must contain an entry for each required
+-  entry in clock-names
+-- clock-names: should include entries "ckil", "osc"
+-
+-The clock consumer should specify the desired clock by having the clock
+-ID in its "clocks" phandle cell.  See include/dt-bindings/clock/imx7d-clock.h
+-for the full list of i.MX7 Dual clock IDs.
+diff --git a/Documentation/devicetree/bindings/clock/imx7d-clock.yaml b/Documentation/devicetree/bindings/clock/imx7d-clock.yaml
+new file mode 100644
+index 0000000..8cd0573
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/imx7d-clock.yaml
+@@ -0,0 +1,64 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/imx7d-clock.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Clock bindings for Freescale i.MX7 Dual
++
++maintainers:
++  - Frank Li <Frank.Li@nxp.com>
++  - Anson Huang <Anson.Huang@nxp.com>
++
++description: |
++  The clock consumer should specify the desired clock by having the clock
++  ID in its "clocks" phandle cell. See include/dt-bindings/clock/imx7d-clock.h
++  for the full list of i.MX7 Dual clock IDs.
++
++properties:
++  compatible:
++    const: fsl,imx7d-ccm
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    items:
++      - description: CCM interrupt request 1
++      - description: CCM interrupt request 2
++    maxItems: 2
++
++  '#clock-cells':
++    const: 1
++
++  clocks:
++    items:
++      - description: 32k osc
++      - description: 24m osc
++
++  clock-names:
++    items:
++      - const: ckil
++      - const: osc
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - '#clock-cells'
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    clock-controller@30380000 {
++        compatible = "fsl,imx7d-ccm";
++        reg = <0x30380000 0x10000>;
++        interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
++        #clock-cells = <1>;
++        clocks = <&ckil>, <&osc>;
++        clock-names = "ckil", "osc";
++    };
+-- 
+2.7.4
 
-Drop this as it is not needed.
-
-> +
-> +properties:
-> +  compatible:
-> +    anyOf:
-> +      - items:
-> +        - enum:
-> +          - ti,j721e-system-controller
-> +
-> +        - const: syscon
-
-What about simple-mfd?
-
-> +
-> +      - contains:
-> +          const: syscon
-> +        additionalItems: true
-
-Should be dropped.
-
-You are going to need a 'select' entry or this will match on any syscon 
-or simple-mfd node:
-
-select:
-  properties:
-    compatible:
-      contains:
-        const: ti,j721e-system-controller
-  required:
-    - compatible
-
-
-> +
-> +# Optional children
-> +
-> +  "^serdes-ln-ctrl@[0-9a-f]+$":
-> +    type: object
-> +    description: |
-> +      This is the SERDES lane control mux. It should follow the bindings
-> +      specified in
-> +      Documentation/devicetree/bindings/mux/reg-mux.txt
-
-Really this should reference a 'reg-mux' schema, but fine for now. Bonus 
-points if you do convert reg-mux.txt though. 
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    scm_conf: scm-conf@100000 {
-> +        compatible = "ti,j721e-system-controller", "syscon", "simple-mfd";
-> +        reg = <0x00100000 0x1c000>;
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-
-These aren't documented and you need 'ranges' for the child address to 
-be translatable.
-
-> +
-> +        serdes_ln_ctrl: serdes-ln-ctrl@4080 {
-> +            compatible = "mmio-mux";
-> +            reg = <0x00004080 0x50>;
-> +        };
-> +    };
-> +...
-> -- 
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-> 
