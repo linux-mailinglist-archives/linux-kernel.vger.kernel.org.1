@@ -2,81 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318511D7310
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56801D7321
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgERIhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 04:37:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726454AbgERIhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 04:37:20 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2E9420657;
-        Mon, 18 May 2020 08:37:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589791040;
-        bh=GfXmtofJRfQqgkk4PPH1+7PyZDSRmTw8B2hV1RDSVGA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vnucEISVMAu27LDa3Z3ZP43l+qLnKsbUyeDD4giG5LhaX1hT2GQtLcG0CY3Vmscu7
-         bPTh6sWoUFyKZmuqsW6basXTJM9HrTrFMuHi6u4h8EAHPmA05vAEUOLn3KIHImAbg+
-         SYMhCfKSc/yx7xVejS5L4lnRF2aKAMWNJPd+LwjQ=
-Date:   Mon, 18 May 2020 09:37:15 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, elver@google.com, tglx@linutronix.de,
-        paulmck@kernel.org, mingo@kernel.org, peterz@infradead.org,
-        "David S. Miller" <davem@davemloft.net>, rppt@kernel.org
-Subject: Re: [PATCH v5 04/18] sparc32: mm: Reduce allocation size for PMD and
- PTE tables
-Message-ID: <20200518083715.GA31383@willie-the-truck>
-References: <20200511204150.27858-1-will@kernel.org>
- <20200511204150.27858-5-will@kernel.org>
- <20200517000050.GA87467@roeck-us.net>
- <20200517000750.GA157503@roeck-us.net>
+        id S1726779AbgERIll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 04:41:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726680AbgERIll (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 04:41:41 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88520C05BD0A
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 01:41:39 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id b6so8932817ljj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 01:41:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gW1rAjHfmYzKLo3+HNuQ6JT9ne1hXLbLfKgSgNPGdgg=;
+        b=K5EwfpGGJek8HJALQ5BBP4EhM5+TcmvJ0549ZPJXQ1LBqqDkcK7A34/aoz+3/Ha3cU
+         BAlungwwWdbRz4uXzKryZ7Th8aWhwLWhiHelsPyZkqwP+W8QP31ScEiVaHOxIrRwSZhL
+         IkPW0UgVydkXTjEq8upjCKbEJuBnPzMsb3V+UgDSPAtyxM0ffQ0RrHpSgBRzrk7W2J+y
+         gmYRTTe7dn/vzEpwL0bDvGjdrLjhjFjBwOTw2PIj03u5zXIwnNLuTpd3LmYOlRvtvydN
+         FodQ/0qYPbzeK4GoENZpUx6XspQKlLcOAhvJw4YlNVFghb+uPUz0VSOODL1YVdeYmp2D
+         H6sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gW1rAjHfmYzKLo3+HNuQ6JT9ne1hXLbLfKgSgNPGdgg=;
+        b=ADTN5pKOyVDILD3Akyi44cNKgOMiB1FAa0IIuh3SCIQ7cNmsco3j5D0y8iFAFZn2Mq
+         6mu3cMNrR4GfSGyNCdKrJ7SkCoFVW4XqEDtpuLdj9tw7XS5ZiV6ilG+ll1ARiTVXO+S0
+         rCeaxJ2owtVm18lW7SUo13ph4sL0u6ukk3ZGIjguHsBTKMYKVRmBUl091e4obgStJ0jb
+         MzRwBuUgzF+S1SXK8CSWCobnclL9rVxZZW4obieyyRqxX3pnd2T/AObShPxOGujs5+m7
+         T8KGccx/sBU1bL3tarABZS0JtGD/zB2/GqNF24nEC7X21lKAAyZ4Zq9vY7WxCdyKZBUh
+         1hkg==
+X-Gm-Message-State: AOAM530fK6gatSpmdhqOGT0MaBiN3NHLObZis4R1R3LCC/E2kzDFgKnu
+        UDRDv8ygfuY32dN4Sww0c/v3T/dMTnfLmYEIxD8sKg==
+X-Google-Smtp-Source: ABdhPJwJqNAucGKak9tmuVXvkrW85iL40m6qGay/OUsbR1TLGL+cqw9EeIxK3o4zm/Fx0/yqOfMZHysGsnS4dRTj5ko=
+X-Received: by 2002:a05:651c:154:: with SMTP id c20mr9091003ljd.99.1589791297948;
+ Mon, 18 May 2020 01:41:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200517000750.GA157503@roeck-us.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200508165821.GA14555@x1> <CACRpkdb+ZP6rfjGg6Ef9_wYvNf6qmSc7LZyYBVKA3XWCtxPfqQ@mail.gmail.com>
+ <875zcty7tt.fsf@kernel.org>
+In-Reply-To: <875zcty7tt.fsf@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 18 May 2020 10:41:27 +0200
+Message-ID: <CACRpkdZnnRXwv0-71t93HX42jL-muty4yJx5gW6_P3yOM-sGAg@mail.gmail.com>
+Subject: Re: [PATCH] arm: dts: am33xx-bone-common: add gpio-line-names
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 16, 2020 at 05:07:50PM -0700, Guenter Roeck wrote:
-> On Sat, May 16, 2020 at 05:00:50PM -0700, Guenter Roeck wrote:
-> > On Mon, May 11, 2020 at 09:41:36PM +0100, Will Deacon wrote:
-> > > Now that the page table allocator can free page table allocations
-> > > smaller than PAGE_SIZE, reduce the size of the PMD and PTE allocations
-> > > to avoid needlessly wasting memory.
-> > > 
-> > > Cc: "David S. Miller" <davem@davemloft.net>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Signed-off-by: Will Deacon <will@kernel.org>
-> > 
-> > Something in the sparc32 patches in linux-next causes all my sparc32 emulations
-> > to crash. bisect points to this patch, but reverting it doesn't help, and neither
-> > does reverting the rest of the series.
-> > 
-> Actually, turns out I see the same pattern (lots of scheduling while atomic
-> followed by 'killing interrupt handler' in cryptomgr_test) with several
-> powerpc boot tests.  I am currently bisecting those crashes. I'll report
-> the results here as well as soon as I have it.
+On Mon, May 18, 2020 at 10:18 AM Felipe Balbi <balbi@kernel.org> wrote:
+> Linus Walleij <linus.walleij@linaro.org> writes:
+> >> gpiochip0 - 32 lines:
+> >>         line   0:   "ethernet"       unused   input  active-high
+> >>         line   1:   "ethernet"       unused   input  active-high
+> >
+> > Why are the ethernet lines not tagged with respective signal name
+> > when right below the SPI lines are explicitly tagged with
+> > sclk, cs0 etc?
+> >
+> > Ethernet is usually RGMII and has signal names like
+> > tx_clk, tx_d0, tx_en etc.
+> >
+> > Also some lines seem to be tagged with the pin number
+> > like P9_22, P2_21 below, it seems a bit inconsistent
+> > to have much information on some pins and very sketchy
+> > information on some.
+>
+> the pin names match the beagle bone documentation and would help users
+> figure out which pins on the expansion headers match to a gpio signal.
 
-FWIW, I retested my sparc32 patches with PREEMPT=y and I don't see any
-issues. However, linux-next is a different story, where I don't get very far
-at all:
+OK if it is how it looks in the documentation I agree that is what
+users need, maybe the documentation is confusing but there is not
+much to do about that.
 
-BUG: Bad page state in process swapper  pfn:005b4
-
-If you're seeing this on powerpc too, I wonder if it's related to:
-
-https://lore.kernel.org/r/20200514170327.31389-1-rppt@kernel.org
-
-since I think it just hit -next and the diffstat is all over the place. I've
-added Mike to CC just in case.
-
-Will
+Yours,
+Linus Walleij
