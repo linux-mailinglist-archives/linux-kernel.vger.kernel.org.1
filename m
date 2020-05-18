@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628781D894C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3183A1D8950
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727844AbgERUex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 16:34:53 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:35910 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726367AbgERUew (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 16:34:52 -0400
-Received: by mail-io1-f67.google.com with SMTP id k6so12201697iob.3;
-        Mon, 18 May 2020 13:34:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FPMBwfiZVk3j4Ctqnv2H9eGRXj7eNBfK/u6YKzz2+rM=;
-        b=JDj+W0mErdE2JQeolvKrKmQqHPG50OfY7u+9jdrW9MZf5JpO849iCmz0GVUpxsB9xx
-         VxHIKX0shWIfWx06Iw1JxboLoB/Nya4+GqaiOUqKsBOoCqx3YWtyCGEwQjZtNOGeyUwq
-         9pSLsdAZ/xQVS/D9W2XgeitLjCPhPi9PdpDoGAuCFgsiDQPKTIMcX1kqXYKe5dm3NNQl
-         0vT5vJoxmK8jNb1QaRgB54E0qqTIvjOnTXu6VFjPhwGW2KCPIDS25n3pI1AtJo7iDQc+
-         M7kUhQNOgzDIMqqAalgY5GzlgHEZ2V0+Ez/7YDtR+7nX6yN8AsOdDz/eO9SyLIZB0ojS
-         maRw==
-X-Gm-Message-State: AOAM532Hc5/xAsf5ZNOit3shQQjOntDO8Y+BAL78CfrKqUlYJxtdlv2m
-        yMJswSqkdMyXRxNNbFi5gw==
-X-Google-Smtp-Source: ABdhPJxPAQ/6uPUZ1zru5yJ1OYVX0KAbu5hmv/CV4Yru4mW2940N2L7A/OQbxrTC3KlWuB7X6GzEYg==
-X-Received: by 2002:a6b:d219:: with SMTP id q25mr14825078iob.202.1589834091409;
-        Mon, 18 May 2020 13:34:51 -0700 (PDT)
-Received: from rob-hp-laptop ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id i78sm5194353ile.87.2020.05.18.13.34.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2020 13:34:50 -0700 (PDT)
-Received: (nullmailer pid 1050 invoked by uid 1000);
-        Mon, 18 May 2020 20:34:49 -0000
-Date:   Mon, 18 May 2020 14:34:49 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Paul Burton <paulburton@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Maxim Kaurkin <maxim.kaurkin@baikalelectronics.ru>,
-        linux-hwmon@vger.kernel.org, Serge Semin <fancer.lancer@gmail.com>,
-        linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        linux-mips@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: Add Baikal-T1 PVT sensor
- binding
-Message-ID: <20200518203449.GA989@bogus>
-References: <20200306132611.103408030701@mail.baikalelectronics.ru>
- <20200510103211.27905-1-Sergey.Semin@baikalelectronics.ru>
- <20200510103211.27905-2-Sergey.Semin@baikalelectronics.ru>
+        id S1727966AbgERUf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 16:35:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726367AbgERUf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 16:35:26 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA71720643;
+        Mon, 18 May 2020 20:35:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589834125;
+        bh=EebWMw2/BKiwkL0PdmpH4pmdEuuBamIWeyLtE/PbjDM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=0NV+O35TlHkZPw5ugdanjgmtCGbOX0t0hFYRBxjBtzDNjth/O3q+acWeLbthxRWNw
+         SNKAZd0DdRSjYTHrZ0PZRjHHhDLSPqY0xusmfSDo0mYGrDhJRMT7+40ZzFowp5D85t
+         Jh8T14s82+k6v/rjkjLSG3OwrgsvmAEAHZrw7WH8=
+Date:   Mon, 18 May 2020 13:35:21 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Steve deRosier <derosier@gmail.com>,
+        Ben Greear <greearb@candelatech.com>, jeyu@kernel.org,
+        akpm@linux-foundation.org, arnd@arndb.de, rostedt@goodmis.org,
+        mingo@redhat.com, aquini@redhat.com, cai@lca.pw, dyoung@redhat.com,
+        bhe@redhat.com, peterz@infradead.org, tglx@linutronix.de,
+        gpiccoli@canonical.com, pmladek@suse.com,
+        Takashi Iwai <tiwai@suse.de>, schlad@suse.de,
+        andriy.shevchenko@linux.intel.com, keescook@chromium.org,
+        daniel.vetter@ffwll.ch, will@kernel.org,
+        mchehab+samsung@kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        ath10k@lists.infradead.org
+Subject: Re: [PATCH v2 12/15] ath10k: use new module_firmware_crashed()
+Message-ID: <20200518133521.6052042e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <8d7a3bed242ac9d3ec55a4c97e008081230f1f6d.camel@sipsolutions.net>
+References: <20200515212846.1347-1-mcgrof@kernel.org>
+        <20200515212846.1347-13-mcgrof@kernel.org>
+        <2b74a35c726e451b2fab2b5d0d301e80d1f4cdc7.camel@sipsolutions.net>
+        <20200518165154.GH11244@42.do-not-panic.com>
+        <4ad0668d-2de9-11d7-c3a1-ad2aedd0c02d@candelatech.com>
+        <20200518170934.GJ11244@42.do-not-panic.com>
+        <abf22ef3-93cb-61a4-0af2-43feac6d7930@candelatech.com>
+        <20200518171801.GL11244@42.do-not-panic.com>
+        <CALLGbR+ht2V3m5f-aUbdwEMOvbsX8ebmzdWgX4jyWTbpHrXZ0Q@mail.gmail.com>
+        <20200518190930.GO11244@42.do-not-panic.com>
+        <e3d978c8fa6a4075f12e843548d41e2c8ab537d1.camel@sipsolutions.net>
+        <20200518132828.553159d9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <8d7a3bed242ac9d3ec55a4c97e008081230f1f6d.camel@sipsolutions.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200510103211.27905-2-Sergey.Semin@baikalelectronics.ru>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 May 2020 13:32:10 +0300, Serge Semin wrote:
-> Baikal-T1 SoC is equipped with an embedded process, voltage and
-> temperature sensor to monitor the chip internal environment like
-> temperature, supply voltage and transistors performance.
+On Mon, 18 May 2020 22:29:53 +0200 Johannes Berg wrote:
+> On Mon, 2020-05-18 at 13:28 -0700, Jakub Kicinski wrote:
+> > On Mon, 18 May 2020 21:25:09 +0200 Johannes Berg wrote:  
+> > > It's pretty clear, but even then, first of all I doubt this is the case
+> > > for many of the places that you've sprinkled the annotation on, and
+> > > secondly it actually hides useful information.
+> > > 
+> > > Regardless of the support issue, I think this hiding of information is
+> > > also problematic.
+> > > 
+> > > I really think we'd all be better off if you just made a sysfs file (I
+> > > mistyped debugfs in some other email, sorry, apparently you didn't see
+> > > the correction in time) that listed which device(s) crashed and how many
+> > > times. That would actually be useful. Because honestly, if a random
+> > > device crashed for some random reason, that's pretty much a non-event.
+> > > If it keeps happening, then we might even want to know about it.  
+> > 
+> > Johannes - have you seen devlink health? I think we should just use
+> > that interface, since it supports all the things you're requesting,
+> > rather than duplicate it in sysfs.  
 > 
-> This bindings describes the external Baikal-T1 PVT control interfaces
-> like MMIO registers space, interrupt request number and clocks source.
-> These are then used by the corresponding hwmon device driver to
-> implement the sysfs files-based access to the sensors functionality.
+> I haven't, and I'm glad to hear that's there, sounds good!
 > 
-> Co-developed-by: Maxim Kaurkin <maxim.kaurkin@baikalelectronics.ru>
-> Signed-off-by: Maxim Kaurkin <maxim.kaurkin@baikalelectronics.ru>
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-mips@vger.kernel.org
-> 
-> ---
-> 
-> Changelog v2:
-> - Lowercase the node-name in the example.
-> - Add dual-license header.
-> - Don't use a multi-arg clock phandle reference in the examples dt-binding
->   property. Thus reundant include pre-processor statement can be removed.
-> - Replace "additionalProperties: false" property with
->   "unevaluatedProperties: false".
-> - Discard label definition from the example.
-> - Align settings of the "#thermal-sensor-cells" property with two spaces
->   ahead of the property line start.
-> ---
->  .../bindings/hwmon/baikal,bt1-pvt.yaml        | 95 +++++++++++++++++++
->  1 file changed, 95 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/baikal,bt1-pvt.yaml
-> 
+> I suspect that Luis wants something more generic though, that isn't just
+> applicable to netdevices, unless devlink grew some kind of non-netdev
+> stuff while I wasn't looking? :)
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+It's intended to be a generic netlink channel for configuring devices.
+
+All the firmware-related interfaces have no dependencies on netdevs,
+in fact that's one of the reasons we moved to devlink - we don't want
+to hold rtnl lock just for talking to device firmware.
