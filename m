@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C8B1D8684
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633651D818C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729693AbgERRrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:47:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53750 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729715AbgERRra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:47:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 027DCACE6;
-        Mon, 18 May 2020 17:47:30 +0000 (UTC)
-Received: from localhost (webern.olymp [local])
-        by webern.olymp (OpenSMTPD) with ESMTPA id 1911f9ee;
-        Mon, 18 May 2020 18:47:26 +0100 (WEST)
-Date:   Mon, 18 May 2020 18:47:26 +0100
-From:   Luis Henriques <lhenriques@suse.com>
-To:     Jeff Layton <jlayton@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Ilya Dryomov <idryomov@gmail.com>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ceph: don't return -ESTALE if there's still an open file
-Message-ID: <20200518174726.GA84496@suse.com>
+        id S1730464AbgERRtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:49:01 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:40232 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729906AbgERRs5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:48:57 -0400
+Received: from ravnborg.org (unknown [158.248.194.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 4F54380512;
+        Mon, 18 May 2020 19:48:49 +0200 (CEST)
+Date:   Mon, 18 May 2020 19:48:47 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Enric Balletbo Serra <eballetbo@gmail.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 7/7] drm/mediatek: mtk_dsi: Create connector for
+ bridges
+Message-ID: <20200518174847.GA770263@ravnborg.org>
+References: <20200501152335.1805790-1-enric.balletbo@collabora.com>
+ <20200501152335.1805790-8-enric.balletbo@collabora.com>
+ <CAFqH_53h=3OXzwLnw1XT3rHYkMPOPNFBdQdPeFmNubN9qq_Twg@mail.gmail.com>
+ <CAAOTY_-pOUuM7LQ1jm6gqpg8acMqDWOHxGucY5XOjq0ctGUkzA@mail.gmail.com>
+ <53683f2d-23c7-57ab-2056-520c50795ffe@collabora.com>
+ <CAAOTY__b6V12fS2xTKGjB1fQTfRjX7AQyBqDPXzshfhkjjSkeQ@mail.gmail.com>
+ <37191700-5832-2931-5764-7f7fddd023b9@collabora.com>
+ <e1ac7d75-c46a-445a-5fcf-5253548f2707@collabora.com>
+ <CAAOTY_-w0V0iQgjZ0n26KKs_MdB-im9+LC2EDTmGo0wMG9p_Vw@mail.gmail.com>
+ <CAFqH_52YJEnuoXmJVq1TgH5Ay76p-feVQPZ6s4h-1TMBDQ8fDA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CAFqH_52YJEnuoXmJVq1TgH5Ay76p-feVQPZ6s4h-1TMBDQ8fDA@mail.gmail.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=MOBOZvRl c=1 sm=1 tr=0
+        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
+        a=kj9zAlcOel0A:10 a=33rsfa9LKxz_d3rkTGwA:9 a=mxk1C73UtW0IAQGh:21
+        a=CjuIK1q_8ugA:10
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similarly to commit 03f219041fdb ("ceph: check i_nlink while converting
-a file handle to dentry"), this fixes another corner case with
-name_to_handle_at/open_by_handle_at.  The issue has been detected by
-xfstest generic/467, when doing:
+Hi Enric/Chun-Kuang.
 
- - name_to_handle_at("/cephfs/myfile")
- - open("/cephfs/myfile")
- - unlink("/cephfs/myfile")
- - sync; sync;
- - drop caches
- - open_by_handle_at()
+> >
+> > My point is: when do you attach panel to a connector?
+> > In this patch,
+> >
+> > ret = drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL,
+> >                                           DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+> >
+> > it would call into mtk_dsi_bridge_attach() with
+> > DRM_BRIDGE_ATTACH_NO_CONNECTOR, and call into panel_bridge_attach()
+> > with DRM_BRIDGE_ATTACH_NO_CONNECTOR.
+> 
+> My understanding is that the DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is to
+> ease transition between the old and the new model. The drivers that
+> support the new model shall set that flag.
+Yes, right now we have fous on migrating all bridge drivers to the new
+model and next step is to make the transition for the display drivers
+one by one.
+Display drivers that uses the old model rely on the bridge driver to
+create the connector, whereas display drivers using the new model will
+create the connector themself.
+Display drivers following the new model will pass DRM_BRIDGE_ATTACH_NO_CONNECTOR
+to tell the bridge drive that no connector shall be created by the
+bridge driver.
 
-The call to open_by_handle_at should not fail because the file hasn't been
-deleted yet (only unlinked) and we do have a valid handle to it.  -ESTALE
-shall be returned only if i_nlink is 0 *and* i_count is 1.
+For this driver where only the new model is needed there is no
+reason to try to support both models.
+So the display driver shall always create the connector, and never
+ask the bridge driver to do it (always pass
+DRM_BRIDGE_ATTACH_NO_CONNECTOR).
 
-This patch also makes sure we have LINK caps before checking i_nlink.
+I hope this confirm and clarifies it.
 
-Signed-off-by: Luis Henriques <lhenriques@suse.com>
----
-Hi!
-
-(and sorry for the delay in my reply!)
-
-So, from the discussion thread and some IRC chat with Jeff, I'm sending
-v2.  What changed?  Everything! :-)
-
-- Use i_count instead of __ceph_is_file_opened to check for open files
-- Add call to ceph_do_getattr to make sure we have LINK caps before
-  accessing i_nlink
-
-Cheers,
---
-Luis
-
- fs/ceph/export.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ceph/export.c b/fs/ceph/export.c
-index 79dc06881e78..e088843a7734 100644
---- a/fs/ceph/export.c
-+++ b/fs/ceph/export.c
-@@ -172,9 +172,16 @@ struct inode *ceph_lookup_inode(struct super_block *sb, u64 ino)
- static struct dentry *__fh_to_dentry(struct super_block *sb, u64 ino)
- {
- 	struct inode *inode = __lookup_inode(sb, ino);
-+	int err;
-+
- 	if (IS_ERR(inode))
- 		return ERR_CAST(inode);
--	if (inode->i_nlink == 0) {
-+	/* We need LINK caps to reliably check i_nlink */
-+	err = ceph_do_getattr(inode, CEPH_CAP_LINK_SHARED, false);
-+	if (err)
-+		return ERR_PTR(err);
-+	/* -ESTALE if inode as been unlinked and no file is open */
-+	if ((inode->i_nlink == 0) && (atomic_read(&inode->i_count) == 1)) {
- 		iput(inode);
- 		return ERR_PTR(-ESTALE);
- 	}
-
+	Sam
