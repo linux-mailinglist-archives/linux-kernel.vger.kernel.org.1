@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612631D8BBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 01:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432591D8BC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 01:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgERXnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 19:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59816 "EHLO
+        id S1728301AbgERXqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 19:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726407AbgERXnN (ORCPT
+        with ESMTP id S1726407AbgERXqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 19:43:13 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D8AC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 16:43:13 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id x13so5668478pfn.11
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 16:43:13 -0700 (PDT)
+        Mon, 18 May 2020 19:46:07 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B98C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 16:46:07 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id x5so12661664ioh.6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 16:46:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8muLYD1xgYtE5+3MTylpFgEPs9F6TZH1Nw2fhOJgUio=;
-        b=IGQEVj7L/R7z4ITm2v8CeDn1w+RbyUDjXMunf10w3Z8NaBiy9G43an36FyXjdKBwpw
-         /1EeObQZCUW6aDh9DRDR0DfW16kw4hn/s5jD6kGNDoQBxREtinKAvdjHJEaw7w61uu4/
-         cxEi0o/dFKz7DMrDYJ3DuOdrDclYd+GCEG3Z5FJssl1qC8VNzaaxcL42rA081QNBbtl0
-         TfM/mFGOaqUrzVAa3BbmvWqb7scrhwRB1abSBtvILZHnZCKsfrFluWIuMhl473xB31uV
-         jq2NSeLUKPiBDXpYob/HlDZCVrZwuB2DZtKqERkQ3Ahb1ZJ1sBFHb+e96f5hukFKvUi6
-         t+6g==
+        bh=Qear2Z9MWJSv6xobtZ0lLKyEiYjp+BthQ29ye9795uY=;
+        b=deM17WMiXP0CoYPaNk0pYJs43JINW49Urrf5LNJBRlsZG5RJ3SB1+aMaCZr/AklygQ
+         /fNjFg1qadh2FFaLRArKILcpDTxiZsORp+rFx7sIKnRJD0mb8PBC5iCwsE3ImQUy2k0X
+         eofTxRLUyx2q4tr8o8lOkrCDyf50C9jzGDLYg+erfsrL404SAWSV5TKXhf4mGUFqKp3O
+         0iEufgPGfKjPhCgR8Sxs6ssFHm7M81g/f+V5A/oolaC6FJRLcggtVK3JYrdI1k/p2fsv
+         BesAtgMEXGppBUMAcNxRYgZhQhQ+iIicdIxoiRm+vZ1FUSUeFltFFqQfcEDH0q1VH4K1
+         flYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8muLYD1xgYtE5+3MTylpFgEPs9F6TZH1Nw2fhOJgUio=;
-        b=FBud0Z0VbT+LoDl7PXMhfblcJ+bg7MaXujTga91JZr/jatjSi3gVzlMQcmt3uHyWqy
-         ohzR+UVNdyngXhf5vjDy2HU0uuzVWUxgA/eRs7q/5S97GqpUgs9Eq0crnrZ2RkimHg+Y
-         P6Cv28BjHMxWNrXUKTD4FgJaJZdXuuFA4GNsTbppqdFyhxsTzQ4vvy1YYucS4YwiZuOa
-         k8Uamj/M+qjsgWdQneuSdB0UXT+pPdOW5GAdnMUeZV+noXJRdW5nNaAW2WsJWSZFOWAJ
-         tiMGJg4nNSD2+4Pz15yqfPADePdO+Sbl0IeLy3tfO2gSnHSwDu0q9G1DFYD778QRT7dP
-         pyTw==
-X-Gm-Message-State: AOAM532ZpVRhsJ2/bnftFHvnKVnuYl3x3ihcawtcFO0zMBzVXzZZLDAr
-        iLPpMHTyqdIYRg0DLhUDXGJ/U8JVGrR9jhM8FtRbyg==
-X-Google-Smtp-Source: ABdhPJx/7JXccs6kAtgKdajeCzLDEtupuHGNAhqB7XW+i8WRmsGBUog7+xFYvXTtFil4FWMQEUkq/ZBa9eLbk5kl+bs=
-X-Received: by 2002:a63:d010:: with SMTP id z16mr7031605pgf.381.1589845392505;
- Mon, 18 May 2020 16:43:12 -0700 (PDT)
+        bh=Qear2Z9MWJSv6xobtZ0lLKyEiYjp+BthQ29ye9795uY=;
+        b=tsZmqhygISplr6/paoIJCTkuuTUw3+MOQLF90UDWPpsqJE3c6/sLCmymzUOkGRhM+6
+         Uf/3ibkhYMw+Ed/E3n6entfIi/CjI8VXFZM2uDGyBTsOi3i4HZwj/aGYXGEPiUnbLOCu
+         eI3bJl/iXsdIuaYL9s/SsNMaKjixUc7mFArynVMQGbGqPVxceVFiTQqKFjTHwJMk52Gr
+         2oq58GYS1mNogWJVSgy7uPjVfy/88PVJYrrJBufih94pZ5MJZxuWxO6msKUV+iKIBYi6
+         ooB/PfhWQt1/jDjg4B+iIAgE5xgwJKg1cX1iB2pRUMdG2aRF7TQrdXdOgMt95HbJDYiJ
+         zDAw==
+X-Gm-Message-State: AOAM533UQNof0kU6wqT00zsPb11YsmNGDEy2NmjLEM2I8w9mXaq+qUw/
+        8r9Nnfmgnf/qinuHIVclwm40B6Hp8AjbxBdjCQ==
+X-Google-Smtp-Source: ABdhPJw8J+Z2zEbU8SZPU/0GZktYf64Jy9OR4OTfTsFAPLX9xwIPzkAFytSBNqkJR1oQOU3Q8G/e005mVwkkRp5A/OY=
+X-Received: by 2002:a02:c6c5:: with SMTP id r5mr17898566jan.133.1589845565837;
+ Mon, 18 May 2020 16:46:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200517152916.3146539-1-brgerst@gmail.com> <20200517152916.3146539-5-brgerst@gmail.com>
-In-Reply-To: <20200517152916.3146539-5-brgerst@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 18 May 2020 16:42:58 -0700
-Message-ID: <CAKwvOdnVU3kZnGzkYjEFJWMPuVjOmAHuRSB8FJ-Ks+FWzX2M_Q@mail.gmail.com>
-Subject: Re: [PATCH 4/7] x86/percpu: Clean up percpu_add_op()
-To:     Brian Gerst <brgerst@gmail.com>
+References: <20200517152916.3146539-1-brgerst@gmail.com> <20200517152916.3146539-6-brgerst@gmail.com>
+ <CAKwvOdn7yC1GVA+6gtNewBSq2BK09y9iNWhv1dPFF5i4kT1+6A@mail.gmail.com>
+In-Reply-To: <CAKwvOdn7yC1GVA+6gtNewBSq2BK09y9iNWhv1dPFF5i4kT1+6A@mail.gmail.com>
+From:   Brian Gerst <brgerst@gmail.com>
+Date:   Mon, 18 May 2020 19:45:53 -0400
+Message-ID: <CAMzpN2j6gp-+zwa+meWbGC_TCEJF0GSC-xQ3mdMU07DxDR+pmA@mail.gmail.com>
+Subject: Re: [PATCH 5/7] x86/percpu: Clean up percpu_add_return_op()
+To:     Nick Desaulniers <ndesaulniers@google.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -65,215 +66,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 17, 2020 at 8:29 AM Brian Gerst <brgerst@gmail.com> wrote:
+On Mon, May 18, 2020 at 6:46 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
 >
-> The core percpu macros already have a switch on the data size, so the switch
-> in the x86 code is redundant and produces more dead code.
+> On Sun, May 17, 2020 at 8:29 AM Brian Gerst <brgerst@gmail.com> wrote:
+> >
+> > The core percpu macros already have a switch on the data size, so the switch
+> > in the x86 code is redundant and produces more dead code.
+> >
+> > Also use appropriate types for the width of the instructions.  This avoids
+> > errors when compiling with Clang.
+> >
+> > Signed-off-by: Brian Gerst <brgerst@gmail.com>
+> > ---
+> >  arch/x86/include/asm/percpu.h | 51 +++++++++++------------------------
+> >  1 file changed, 16 insertions(+), 35 deletions(-)
+> >
+> > diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+> > index 21c5013a681a..ac8c391a190e 100644
+> > --- a/arch/x86/include/asm/percpu.h
+> > +++ b/arch/x86/include/asm/percpu.h
+> > @@ -199,34 +199,15 @@ do {                                                                      \
+> >  /*
+> >   * Add return operation
+> >   */
+> > -#define percpu_add_return_op(qual, var, val)                           \
+> > +#define percpu_add_return_op(size, qual, _var, _val)                   \
+> >  ({                                                                     \
+> > -       typeof(var) paro_ret__ = val;                                   \
+> > -       switch (sizeof(var)) {                                          \
+> > -       case 1:                                                         \
+> > -               asm qual ("xaddb %0, "__percpu_arg(1)                   \
+> > -                           : "+q" (paro_ret__), "+m" (var)             \
+> > -                           : : "memory");                              \
+> > -               break;                                                  \
+> > -       case 2:                                                         \
+> > -               asm qual ("xaddw %0, "__percpu_arg(1)                   \
+> > -                           : "+r" (paro_ret__), "+m" (var)             \
+> > -                           : : "memory");                              \
+> > -               break;                                                  \
+> > -       case 4:                                                         \
+> > -               asm qual ("xaddl %0, "__percpu_arg(1)                   \
+> > -                           : "+r" (paro_ret__), "+m" (var)             \
+> > -                           : : "memory");                              \
+> > -               break;                                                  \
+> > -       case 8:                                                         \
+> > -               asm qual ("xaddq %0, "__percpu_arg(1)                   \
+> > -                           : "+re" (paro_ret__), "+m" (var)            \
 >
-> Also use appropriate types for the width of the instructions.  This avoids
-> errors when compiling with Clang.
+> ^ before we use the "+re" constraint for 8B input.
 >
-> Signed-off-by: Brian Gerst <brgerst@gmail.com>
-> ---
->  arch/x86/include/asm/percpu.h | 99 ++++++++---------------------------
->  1 file changed, 22 insertions(+), 77 deletions(-)
+> > -                           : : "memory");                              \
+> > -               break;                                                  \
+> > -       default: __bad_percpu_size();                                   \
 >
-> diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-> index 93f33202492d..21c5013a681a 100644
-> --- a/arch/x86/include/asm/percpu.h
-> +++ b/arch/x86/include/asm/percpu.h
-> @@ -130,64 +130,32 @@ do {                                                                      \
->             : [val] __pcpu_reg_imm_##size(pto_val__));                  \
->  } while (0)
+> Comment on the series as a whole.  After applying the series, the
+> final reference to __bad_percpu_size and switch statement in
+> arch/x86/include/asm/percpu.h in the definition of the
+> percpu_stable_op() macro.  If you clean that up, too, then the rest of
+> this file feels more consistent with your series, even if it's not a
+> blocker for Clang i386 support. Then you can get rid of
+> __bad_percpu_size, too!
+
+I haven't yet figured out what to do with percpu_stable_op().  It's
+x86-specific, so there isn't another switch in the core code.  I think
+it is supposed to be similar to READ_ONCE() but for percpu variables,
+but I'm not 100% sure.
+
+> > -       }                                                               \
+> > -       paro_ret__ += val;                                              \
+> > -       paro_ret__;                                                     \
+> > +       __pcpu_type_##size paro_tmp__ = __pcpu_cast_##size(_val);       \
+> > +       asm qual (__pcpu_op2_##size("xadd", "%[tmp]",                   \
+> > +                                    __percpu_arg([var]))               \
+> > +                 : [tmp] __pcpu_reg_##size("+", paro_tmp__),           \
 >
-> +#define percpu_unary_op(size, qual, op, _var)                          \
-> +({                                                                     \
-> +       asm qual (__pcpu_op1_##size(op, __percpu_arg([var]))            \
-> +           : [var] "+m" (_var));                                       \
-> +})
-> +
->  /*
->   * Generate a percpu add to memory instruction and optimize code
->   * if one is added or subtracted.
->   */
-> -#define percpu_add_op(qual, var, val)                                  \
-> +#define percpu_add_op(size, qual, var, val)                            \
->  do {                                                                   \
-> -       typedef typeof(var) pao_T__;                                    \
->         const int pao_ID__ = (__builtin_constant_p(val) &&              \
->                               ((val) == 1 || (val) == -1)) ?            \
->                                 (int)(val) : 0;                         \
->         if (0) {                                                        \
-> -               pao_T__ pao_tmp__;                                      \
-> +               typeof(var) pao_tmp__;                                  \
->                 pao_tmp__ = (val);                                      \
->                 (void)pao_tmp__;                                        \
->         }                                                               \
-
-Prefer __same_type() from include/linux/compiler_types.h here as well.
-Nice elimination of the typedef.
-
-> -       switch (sizeof(var)) {                                          \
-> -       case 1:                                                         \
-> -               if (pao_ID__ == 1)                                      \
-> -                       asm qual ("incb "__percpu_arg(0) : "+m" (var)); \
-> -               else if (pao_ID__ == -1)                                \
-> -                       asm qual ("decb "__percpu_arg(0) : "+m" (var)); \
-> -               else                                                    \
-> -                       asm qual ("addb %1, "__percpu_arg(0)            \
-> -                           : "+m" (var)                                \
-> -                           : "qi" ((pao_T__)(val)));                   \
-> -               break;                                                  \
-> -       case 2:                                                         \
-> -               if (pao_ID__ == 1)                                      \
-> -                       asm qual ("incw "__percpu_arg(0) : "+m" (var)); \
-> -               else if (pao_ID__ == -1)                                \
-> -                       asm qual ("decw "__percpu_arg(0) : "+m" (var)); \
-> -               else                                                    \
-> -                       asm qual ("addw %1, "__percpu_arg(0)            \
-> -                           : "+m" (var)                                \
-> -                           : "ri" ((pao_T__)(val)));                   \
-> -               break;                                                  \
-> -       case 4:                                                         \
-> -               if (pao_ID__ == 1)                                      \
-> -                       asm qual ("incl "__percpu_arg(0) : "+m" (var)); \
-> -               else if (pao_ID__ == -1)                                \
-> -                       asm qual ("decl "__percpu_arg(0) : "+m" (var)); \
-> -               else                                                    \
-> -                       asm qual ("addl %1, "__percpu_arg(0)            \
-> -                           : "+m" (var)                                \
-> -                           : "ri" ((pao_T__)(val)));                   \
-> -               break;                                                  \
-> -       case 8:                                                         \
-> -               if (pao_ID__ == 1)                                      \
-> -                       asm qual ("incq "__percpu_arg(0) : "+m" (var)); \
-> -               else if (pao_ID__ == -1)                                \
-> -                       asm qual ("decq "__percpu_arg(0) : "+m" (var)); \
-> -               else                                                    \
-> -                       asm qual ("addq %1, "__percpu_arg(0)            \
-> -                           : "+m" (var)                                \
-> -                           : "re" ((pao_T__)(val)));                   \
-> -               break;                                                  \
-> -       default: __bad_percpu_size();                                   \
-> -       }                                                               \
-> +       if (pao_ID__ == 1)                                              \
-> +               percpu_unary_op(size, qual, "inc", var);                \
-> +       else if (pao_ID__ == -1)                                        \
-> +               percpu_unary_op(size, qual, "dec", var);                \
-> +       else                                                            \
-> +               percpu_to_op(size, qual, "add", var, val);              \
-
-Nice simplification, and it was clever of you to reuse percpu_to_op()
-for the case of addition!
-
-In terms of the 0day bot test failures:
->> include/linux/percpu-rwsem.h:91:17: sparse: sparse: cast truncates bits from constant value (ffffffff becomes ffff)
->> include/net/tcp.h:1521:9: sparse: sparse: cast truncates bits from constant value (1d4c0 becomes d4c0)
->> include/net/sch_generic.h:888:9: sparse: sparse: cast truncates bits from constant value (ffffffff becomes ffff)
->> drivers/infiniband/hw/hfi1/pio_copy.c:164:9: sparse: sparse: cast truncates bits from constant value (ffffffff becomes ffff)
-which is reminiscent of our discussion in:
-https://lore.kernel.org/lkml/CAMzpN2gu4stkRKTsMTVxyzckO3SMhfA+dmCnSu6-aMg5QAA_JQ@mail.gmail.com/
-
-I'm not able to repro with i386_defconfig, but it looks like one
-report was i386_allmodconfig, the other was (64b) allyesconfig.
-I am able to repro with:
-$ rm -f drivers/infiniband/hw/hfi1/pio_copy.o
-$ make -j71 CC=clang allyesconfig
-$ make -j71 CC=clang C=1 drivers/infiniband/hw/hfi1/pio_copy.o
-
-It's not immediately clear to me from this diff which cast sparse is
-complaining about.  Looking at the report and expanding this_cpu_dec()
-seems to eventually expand to `this_cpu_add_<number>, so the reporting
-does look potentially against the right patch in the series.  (Seeing
-`(typeof((ptr) + 0))NULL` in __verify_pcpu_ptr() in
-include/linux/percpu-defs.h is a real WTF, though the comment
-explains).
-
-Indeed, if I checkout before the series is applied, the warnings
-disappear.  So let's follow up tomorrow on where this is coming from.
-
->  } while (0)
+> ^ after, for `size == 8`, we use "+r". [0] says for "e":
 >
->  #define percpu_from_op(size, qual, op, _var)                           \
-> @@ -228,29 +196,6 @@ do {                                                                       \
->         pfo_ret__;                                      \
->  })
+> 32-bit signed integer constant, or a symbolic reference known to fit
+> that range (for immediate operands in sign-extending x86-64
+> instructions).
 >
-> -#define percpu_unary_op(qual, op, var)                 \
-> -({                                                     \
-> -       switch (sizeof(var)) {                          \
-> -       case 1:                                         \
-> -               asm qual (op "b "__percpu_arg(0)        \
-> -                   : "+m" (var));                      \
-> -               break;                                  \
-> -       case 2:                                         \
-> -               asm qual (op "w "__percpu_arg(0)        \
-> -                   : "+m" (var));                      \
-> -               break;                                  \
-> -       case 4:                                         \
-> -               asm qual (op "l "__percpu_arg(0)        \
-> -                   : "+m" (var));                      \
-> -               break;                                  \
-> -       case 8:                                         \
-> -               asm qual (op "q "__percpu_arg(0)        \
-> -                   : "+m" (var));                      \
-> -               break;                                  \
-> -       default: __bad_percpu_size();                   \
-> -       }                                               \
-> -})
-> -
->  /*
->   * Add return operation
->   */
-> @@ -388,9 +333,9 @@ do {                                                                        \
->  #define raw_cpu_write_1(pcp, val)      percpu_to_op(1, , "mov", (pcp), val)
->  #define raw_cpu_write_2(pcp, val)      percpu_to_op(2, , "mov", (pcp), val)
->  #define raw_cpu_write_4(pcp, val)      percpu_to_op(4, , "mov", (pcp), val)
-> -#define raw_cpu_add_1(pcp, val)                percpu_add_op(, (pcp), val)
-> -#define raw_cpu_add_2(pcp, val)                percpu_add_op(, (pcp), val)
-> -#define raw_cpu_add_4(pcp, val)                percpu_add_op(, (pcp), val)
-> +#define raw_cpu_add_1(pcp, val)                percpu_add_op(1, , (pcp), val)
-> +#define raw_cpu_add_2(pcp, val)                percpu_add_op(2, , (pcp), val)
-> +#define raw_cpu_add_4(pcp, val)                percpu_add_op(4, , (pcp), val)
->  #define raw_cpu_and_1(pcp, val)                percpu_to_op(1, , "and", (pcp), val)
->  #define raw_cpu_and_2(pcp, val)                percpu_to_op(2, , "and", (pcp), val)
->  #define raw_cpu_and_4(pcp, val)                percpu_to_op(4, , "and", (pcp), val)
-> @@ -419,9 +364,9 @@ do {                                                                        \
->  #define this_cpu_write_1(pcp, val)     percpu_to_op(1, volatile, "mov", (pcp), val)
->  #define this_cpu_write_2(pcp, val)     percpu_to_op(2, volatile, "mov", (pcp), val)
->  #define this_cpu_write_4(pcp, val)     percpu_to_op(4, volatile, "mov", (pcp), val)
-> -#define this_cpu_add_1(pcp, val)       percpu_add_op(volatile, (pcp), val)
-> -#define this_cpu_add_2(pcp, val)       percpu_add_op(volatile, (pcp), val)
-> -#define this_cpu_add_4(pcp, val)       percpu_add_op(volatile, (pcp), val)
-> +#define this_cpu_add_1(pcp, val)       percpu_add_op(1, volatile, (pcp), val)
-> +#define this_cpu_add_2(pcp, val)       percpu_add_op(2, volatile, (pcp), val)
-> +#define this_cpu_add_4(pcp, val)       percpu_add_op(4, volatile, (pcp), val)
->  #define this_cpu_and_1(pcp, val)       percpu_to_op(1, volatile, "and", (pcp), val)
->  #define this_cpu_and_2(pcp, val)       percpu_to_op(2, volatile, "and", (pcp), val)
->  #define this_cpu_and_4(pcp, val)       percpu_to_op(4, volatile, "and", (pcp), val)
-> @@ -470,7 +415,7 @@ do {                                                                        \
->  #ifdef CONFIG_X86_64
->  #define raw_cpu_read_8(pcp)                    percpu_from_op(8, , "mov", pcp)
->  #define raw_cpu_write_8(pcp, val)              percpu_to_op(8, , "mov", (pcp), val)
-> -#define raw_cpu_add_8(pcp, val)                        percpu_add_op(, (pcp), val)
-> +#define raw_cpu_add_8(pcp, val)                        percpu_add_op(8, , (pcp), val)
->  #define raw_cpu_and_8(pcp, val)                        percpu_to_op(8, , "and", (pcp), val)
->  #define raw_cpu_or_8(pcp, val)                 percpu_to_op(8, , "or", (pcp), val)
->  #define raw_cpu_add_return_8(pcp, val)         percpu_add_return_op(, pcp, val)
-> @@ -479,7 +424,7 @@ do {                                                                        \
->
->  #define this_cpu_read_8(pcp)                   percpu_from_op(8, volatile, "mov", pcp)
->  #define this_cpu_write_8(pcp, val)             percpu_to_op(8, volatile, "mov", (pcp), val)
-> -#define this_cpu_add_8(pcp, val)               percpu_add_op(volatile, (pcp), val)
-> +#define this_cpu_add_8(pcp, val)               percpu_add_op(8, volatile, (pcp), val)
->  #define this_cpu_and_8(pcp, val)               percpu_to_op(8, volatile, "and", (pcp), val)
->  #define this_cpu_or_8(pcp, val)                        percpu_to_op(8, volatile, "or", (pcp), val)
->  #define this_cpu_add_return_8(pcp, val)                percpu_add_return_op(volatile, pcp, val)
-> --
-> 2.25.4
->
+> I'm guessing we're restricting the input to not allow for 64b signed
+> integer constants?  Looking at the documentation for `xadd` (ie.
+> "exchange and add") [1], it looks like immediates are not allowed as
+> operands, only registers or memory addresses.  So it seems that "e"
+> was never necessary.  It might be helpful to note that in the commit
+> message, should you end up sending a v2 of the series.  Maybe some
+> folks with more x86 inline asm experience can triple check/verify?
 
+That is correct.  The "e" constraint shouldn't have been there, since
+XADD doesn't allow immediates.  I'll make that clearer in V2.
 
--- 
-Thanks,
-~Nick Desaulniers
+--
+Brian Gerst
