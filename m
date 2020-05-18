@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FECC1D85CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBFE1D8381
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387807AbgERSVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:21:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55286 "EHLO mail.kernel.org"
+        id S1732954AbgERSFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:05:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730293AbgERRwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:52:10 -0400
+        id S1732915AbgERSFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:05:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D49A320715;
-        Mon, 18 May 2020 17:52:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E04DA20671;
+        Mon, 18 May 2020 18:05:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824329;
-        bh=hvqqDYaM6AyhaXkWz7Zgch97q9DfaBBza48GIAW7nbU=;
+        s=default; t=1589825115;
+        bh=Bf23uZnLV3OlKoZqeEjp8dJdg25q3YALsYaxnGvftpM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bNreGVXLzIAlPjc6ThxNLAVIwYvjoeu8HJAeeiNVCFnwjIDhxcnNMopUcIsCeoWYP
-         MAXqxH7ZtlUUmcbaCDRMnpAIexmsnST/IMVBhKK+zh8vP4iPXT+iCFa/D/N/eDx/Ia
-         F2EwTVFxPLkyX269g2K3TX/ohCgv+vH2rgYMEfKo=
+        b=pXQDxTREor8w7WS1DgiQsO0W4C/JPmUhgYT721s7tgPgkWywkypghSySHD6e+UZjK
+         ZFwcCagB7VmD9UglLUlaeJHFTJ/fRPjKQT4NLXXgAG+k5ZYjvTwAZ6OBGdFuubz/cP
+         QBsDF/8BFP42PKGZJhJyGYlMHP+jlXrZE1zy7hiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 48/80] gcc-10: disable zero-length-bounds warning for now
+        stable@vger.kernel.org, Jeremy Linton <jeremy.linton@arm.com>
+Subject: [PATCH 5.6 136/194] usb: usbfs: correct kernel->user page attribute mismatch
 Date:   Mon, 18 May 2020 19:37:06 +0200
-Message-Id: <20200518173500.146875633@linuxfoundation.org>
+Message-Id: <20200518173542.716290256@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +42,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Jeremy Linton <jeremy.linton@arm.com>
 
-commit 5c45de21a2223fe46cf9488c99a7fbcf01527670 upstream.
+commit 2bef9aed6f0e22391c8d4570749b1acc9bc3981e upstream.
 
-This is a fine warning, but we still have a number of zero-length arrays
-in the kernel that come from the traditional gcc extension.  Yes, they
-are getting converted to flexible arrays, but in the meantime the gcc-10
-warning about zero-length bounds is very verbose, and is hiding other
-issues.
+On some architectures (e.g. arm64) requests for
+IO coherent memory may use non-cachable attributes if
+the relevant device isn't cache coherent. If these
+pages are then remapped into userspace as cacheable,
+they may not be coherent with the non-cacheable mappings.
 
-I missed one actual build failure because it was hidden among hundreds
-of lines of warning.  Thankfully I caught it on the second go before
-pushing things out, but it convinced me that I really need to disable
-the new warnings for now.
+In particular this happens with libusb, when it attempts
+to create zero-copy buffers for use by rtl-sdr
+(https://github.com/osmocom/rtl-sdr/). On low end arm
+devices with non-coherent USB ports, the application will
+be unexpectedly killed, while continuing to work fine on
+arm machines with coherent USB controllers.
 
-We'll hopefully be all done with our conversion to flexible arrays in
-the not too distant future, and we can then re-enable this warning.
+This bug has been discovered/reported a few times over
+the last few years. In the case of rtl-sdr a compile time
+option to enable/disable zero copy was implemented to
+work around it.
 
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Rather than relaying on application specific workarounds,
+dma_mmap_coherent() can be used instead of remap_pfn_range().
+The page cache/etc attributes will then be correctly set in
+userspace to match the kernel mapping.
+
+Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200504201348.1183246-1-jeremy.linton@arm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- Makefile |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/core/devio.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/Makefile
-+++ b/Makefile
-@@ -792,6 +792,9 @@ KBUILD_CFLAGS += $(call cc-disable-warni
- # disable stringop warnings in gcc 8+
- KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
+--- a/drivers/usb/core/devio.c
++++ b/drivers/usb/core/devio.c
+@@ -217,6 +217,7 @@ static int usbdev_mmap(struct file *file
+ {
+ 	struct usb_memory *usbm = NULL;
+ 	struct usb_dev_state *ps = file->private_data;
++	struct usb_hcd *hcd = bus_to_hcd(ps->dev->bus);
+ 	size_t size = vma->vm_end - vma->vm_start;
+ 	void *mem;
+ 	unsigned long flags;
+@@ -250,9 +251,7 @@ static int usbdev_mmap(struct file *file
+ 	usbm->vma_use_count = 1;
+ 	INIT_LIST_HEAD(&usbm->memlist);
  
-+# We'll want to enable this eventually, but it's not going away for 5.7 at least
-+KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
-+
- # Enabled with W=2, disabled by default as noisy
- KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
- 
+-	if (remap_pfn_range(vma, vma->vm_start,
+-			virt_to_phys(usbm->mem) >> PAGE_SHIFT,
+-			size, vma->vm_page_prot) < 0) {
++	if (dma_mmap_coherent(hcd->self.sysdev, vma, mem, dma_handle, size)) {
+ 		dec_usb_memory_use_count(usbm, &usbm->vma_use_count);
+ 		return -EAGAIN;
+ 	}
 
 
