@@ -2,99 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCFD1D86FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FFD1D8702
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730353AbgERS2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:28:35 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:44046 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728986AbgERS2d (ORCPT
+        id S2388004AbgERS2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:28:48 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:39320 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387852AbgERS2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:28:33 -0400
-Received: from ravnborg.org (unknown [158.248.194.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 4C81380674;
-        Mon, 18 May 2020 20:28:27 +0200 (CEST)
-Date:   Mon, 18 May 2020 20:28:25 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     LinusW <linus.walleij@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Mon, 18 May 2020 14:28:46 -0400
+Received: by mail-io1-f66.google.com with SMTP id x5so11736276ioh.6;
+        Mon, 18 May 2020 11:28:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/p9YM/GnXrG9SKVwxPAWMOdMPZXYXdovPfbgwwKorf0=;
+        b=uTdl7pZOW8+uirJ3eO/GWJwnWxrfAzJUIbEElcUSMKU+sIVDYzSiBXubBIFSp5au0O
+         +GhBp3u+JwUFs30BhMReStMIs3sxPwNzjJ7z7IanEixBk3Kt0Gpewsc2jJ9Y8kh1UjbZ
+         HJpmGglImj/rYWH2QD97u6HoF61H3/f2yK0BBK6HZMHwhV3s+KI1VBbWIv/u3TX4Yl4a
+         yhLIqbPQ+/CRGqqxLSrru9LqzZWFb4WyWg6SRUK55r+Dv+42G5/AShhnrghncwvfrgnz
+         SpeSAw5zNKkEO1utlGz6z/1TVVeKljd2E6endhC/OO36wGT+SzC+Jaj5DqBTs27ADCCG
+         dKlw==
+X-Gm-Message-State: AOAM530T7Eq/0EebV/XYrG5aEDxTlkPhRKNP5OkqJKyWyOO3IMfZEJcf
+        9Rbu1byRVb+P2cGLsF0R+w==
+X-Google-Smtp-Source: ABdhPJyQMHKgCPUCeovV3BchpiRD9KADEVI8p81q+CRYTGF8ksnKQdsZoo8KTJr7NyfISNcmJcVulQ==
+X-Received: by 2002:a5e:c303:: with SMTP id a3mr15796959iok.15.1589826525234;
+        Mon, 18 May 2020 11:28:45 -0700 (PDT)
+Received: from rob-hp-laptop ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id j2sm4147519ioo.8.2020.05.18.11.28.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 11:28:44 -0700 (PDT)
+Received: (nullmailer pid 5690 invoked by uid 1000);
+        Mon, 18 May 2020 18:28:43 -0000
+Date:   Mon, 18 May 2020 12:28:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     srk@48.io
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
-        David Airlie <airlied@linux.ie>,
-        Sandeep Panda <spanda@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Gross <agross@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 0/6] drm: Prepare to use a GPIO on ti-sn65dsi86 for
- Hot Plug Detect
-Message-ID: <20200518182825.GA862982@ravnborg.org>
-References: <20200507213500.241695-1-dianders@chromium.org>
- <20200509201511.GD30802@ravnborg.org>
- <CAD=FV=VBU7JmTdvgWjyj_ytrFmz6Gkx2OjVr1FxLh9DBG_jN6w@mail.gmail.com>
- <CAD=FV=UNuwb+YYJKw9+HNMKUNfuNFxj+Gr+yB9tXANbXAvDgCg@mail.gmail.com>
- <20200518175939.GA770425@ravnborg.org>
- <CAD=FV=XmUrF3nCZF4dDom5RrWrdVe-iJocenU3cJEDx-gGkDRA@mail.gmail.com>
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sean Cross <xobs@kosagi.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Fabio Estevam <fabio.estevam@nxp.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: n133hse-ea1: Add Innolux N133HSE panel
+Message-ID: <20200518182843.GA4265@bogus>
+References: <20200509111834.26335-1-srk@48.io>
+ <20200509111834.26335-2-srk@48.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD=FV=XmUrF3nCZF4dDom5RrWrdVe-iJocenU3cJEDx-gGkDRA@mail.gmail.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=MOBOZvRl c=1 sm=1 tr=0
-        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
-        a=kj9zAlcOel0A:10 a=7gkXJVJtAAAA:8 a=VwQbUJbxAAAA:8 a=cm27Pg_UAAAA:8
-        a=hm5wBbS1sMirQhL_k6wA:9 a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22
-        a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
+In-Reply-To: <20200509111834.26335-2-srk@48.io>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Douglas,
-On Mon, May 18, 2020 at 11:05:58AM -0700, Doug Anderson wrote:
-> Sam,
+On Sat, May 09, 2020 at 01:18:33PM +0200, srk@48.io wrote:
+> From: Sean Cross <xobs@kosagi.com>
 > 
-> On Mon, May 18, 2020 at 10:59 AM Sam Ravnborg <sam@ravnborg.org> wrote:
-> >
-> > Hi Douglas.
-> >
-> > > > Given the previous feedback from Linus W, Stephen, and Laurent I
-> > > > expect things are good enough to land now, but it'd be good to get
-> > > > confirmation (I removed some of the previous tags just to get
-> > > > confirmation).  If we can get review tags early next week maybe it'll
-> > > > still be in time to land for 5.8?
-> > >
-> > > I think all the others have reviews now.  Is there anything blocking
-> > > them from getting applied?
-> > Applied, including the small fix pointed out by Linus.
+> The Innolux N133HSE panel is a 13.3" 1920x1080 panel that contains an
+> integrated backlight, and connects via eDP.
 > 
-> Thanks!  Ugh, I just realized what the problem was.  I posted a v6
-> with this fix but insanely somehow didn't CC you (!!!).  It was here:
+> It is used in the Kosagi Novena.
 > 
-> https://lore.kernel.org/r/20200513215902.261547-1-dianders@chromium.org
+> Signed-off-by: Sean Cross <xobs@kosagi.com>
+> Signed-off-by: Richard Marko <srk@48.io>
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: Fabio Estevam <fabio.estevam@nxp.com>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> To: dri-devel@lists.freedesktop.org
+> ---
+>  .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> I'm super sorry about that and thanks for fixing the nit.  That was
-> the only difference between v5 and v6.  I just checked what you pushed
-> and it looks great, thank you.
-No worries as long as what hits drm-misc-next is OK, which it was in
-this case.
+> diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+> index 393ffc6acbba..756bf6a48e8d 100644
+> --- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+> +++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+> @@ -139,6 +139,8 @@ properties:
+>        - innolux,g121i1-l01
+>          # Innolux Corporation 12.1" G121X1-L03 XGA (1024x768) TFT LCD panel
+>        - innolux,g121x1-l03
+> +        # Innolux Corporation 13.3" FHD (1920x1080) TFT LCD panel
+> +      - innolux,n133hse-ea1
+>          # Innolux Corporation 11.6" WXGA (1366x768) TFT LCD panel
+>        - innolux,n116bge
 
-	Sam
+Alpha-numeric order please.
+
+>          # InnoLux 15.6" WXGA TFT LCD panel
+> -- 
+> 2.25.1
+> 
