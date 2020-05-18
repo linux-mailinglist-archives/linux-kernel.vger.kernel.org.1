@@ -2,142 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19221D84C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216741D84EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732842AbgERSO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:14:27 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:38994 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732376AbgERSOR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:14:17 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04IIE3BI085441;
-        Mon, 18 May 2020 13:14:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589825643;
-        bh=krVs+kruRFwBMP7hMokQq0Nkw7/V8H8gRqCagZh3dMk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=OZFCYDYUsyAybe9//eGhtoCVs8IV8NXx3pd2a2vjw+kBWic6ilQCNWTYnzgjMrpzR
-         /qCoSe1QECSHfETpYPE9xPzX+IKCxLLZ6UGOG2g2/3zFEJQr2FvocnyY22gOaUlL+g
-         AFIYZrprgtGMkMNPf6RtaHZ+uCr9XYwZtCCuCFUU=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04IIE2X3115908
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 18 May 2020 13:14:03 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 18
- May 2020 13:14:02 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 18 May 2020 13:14:02 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04IIDx9N088498;
-        Mon, 18 May 2020 13:14:00 -0500
-Subject: Re: [PATCH 5.6 019/194] net: Make PTP-specific drivers depend on
- PTP_1588_CLOCK
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <stable@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Clay McClure <clay@daemons.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-References: <20200518173531.455604187@linuxfoundation.org>
- <20200518173533.160651742@linuxfoundation.org>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <05fd5be4-a969-2b7f-52e4-754d9651a280@ti.com>
-Date:   Mon, 18 May 2020 21:13:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1732296AbgERSOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:14:42 -0400
+Received: from mga18.intel.com ([134.134.136.126]:24475 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729719AbgERSOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:14:40 -0400
+IronPort-SDR: vBQ0B9julmD6isB6NfxKj+yO+jKgoDUjV4PXdHwBVR6c2kYJYUC4sR6rde6+ThEEaF37MRfjfd
+ vaTwz5TUuQqA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 11:14:39 -0700
+IronPort-SDR: j/46IT6eWsYwOW6sl5zbmbDriMKsrikLjOU+dd+Mo3hYvrfmQry4QGbMj8Pq+j5gpPUs8S5RPK
+ s6GoooRqllGg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
+   d="scan'208";a="253133530"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by fmsmga007.fm.intel.com with ESMTP; 18 May 2020 11:14:39 -0700
+Date:   Mon, 18 May 2020 11:14:39 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Mike Rapoport <rppt@kernel.org>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, elver@google.com, tglx@linutronix.de,
+        paulmck@kernel.org, mingo@kernel.org, peterz@infradead.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v5 04/18] sparc32: mm: Reduce allocation size for PMD and
+ PTE tables
+Message-ID: <20200518181438.GB3028105@iweiny-DESK2.sc.intel.com>
+References: <20200511204150.27858-1-will@kernel.org>
+ <20200511204150.27858-5-will@kernel.org>
+ <20200517000050.GA87467@roeck-us.net>
+ <20200517000750.GA157503@roeck-us.net>
+ <20200518083715.GA31383@willie-the-truck>
+ <418aa44b-6fb3-c3d8-a920-1a26e5edec62@roeck-us.net>
+ <20200518142310.GC1118872@kernel.org>
+ <20200518160811.GA66689@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <20200518173533.160651742@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200518160811.GA66689@roeck-us.net>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Mon, May 18, 2020 at 09:08:11AM -0700, Guenter Roeck wrote:
+> On Mon, May 18, 2020 at 05:23:10PM +0300, Mike Rapoport wrote:
+> > On Mon, May 18, 2020 at 02:48:18AM -0700, Guenter Roeck wrote:
+> > > On 5/18/20 1:37 AM, Will Deacon wrote:
+> > > > On Sat, May 16, 2020 at 05:07:50PM -0700, Guenter Roeck wrote:
+> > > >> On Sat, May 16, 2020 at 05:00:50PM -0700, Guenter Roeck wrote:
+> > > >>> On Mon, May 11, 2020 at 09:41:36PM +0100, Will Deacon wrote:
+> > > >>>> Now that the page table allocator can free page table allocations
+> > > >>>> smaller than PAGE_SIZE, reduce the size of the PMD and PTE allocations
+> > > >>>> to avoid needlessly wasting memory.
+> > > >>>>
+> > > >>>> Cc: "David S. Miller" <davem@davemloft.net>
+> > > >>>> Cc: Peter Zijlstra <peterz@infradead.org>
+> > > >>>> Signed-off-by: Will Deacon <will@kernel.org>
+> > > >>>
+> > > >>> Something in the sparc32 patches in linux-next causes all my sparc32 emulations
+> > > >>> to crash. bisect points to this patch, but reverting it doesn't help, and neither
+> > > >>> does reverting the rest of the series.
+> > > >>>
+> > > >> Actually, turns out I see the same pattern (lots of scheduling while atomic
+> > > >> followed by 'killing interrupt handler' in cryptomgr_test) with several
+> > > >> powerpc boot tests.  I am currently bisecting those crashes. I'll report
+> > > >> the results here as well as soon as I have it.
+> > > > 
+> > > > FWIW, I retested my sparc32 patches with PREEMPT=y and I don't see any
+> > > > issues. However, linux-next is a different story, where I don't get very far
+> > > > at all:
+> > > > 
+> > > > BUG: Bad page state in process swapper  pfn:005b4
+> > 
+> > This one seems to be due to commit 24aab577764f ("mm: memmap_init:
+> > iterate over memblock regions rather that check each PFN") and reverting
+> > it and partially reverting the next cleanup commits makes those
+> > dissapear. sparc32 boot still fails on today's linux-next and mmotm for me with
+> > 
+> > Run /sbin/init as init process
+> >   with arguments:
+> >     /sbin/init
+> >   with environment:
+> >     HOME=/
+> >     TERM=linux
+> > Starting init: /sbin/init exists but couldn't execute it (error -14)
+> > 
+> 
+> Interesting; that is also seen on microblazeel:petalogix-ml605. Bisect there
+> suggests 'arch/kmap_atomic: consolidate duplicate code' as the culprit,
+> which is part of Ira's series.
+> 
+> Today's -next is even worse, unfortunately; now all microblaze boot tests
+> (both little and big endian) fail, plus everything that failed last
+> time, plus new compile failures. Another round of bisects ...
 
-On 18/05/2020 20:35, Greg Kroah-Hartman wrote:
-> From: Clay McClure <clay@daemons.net>
-> 
-> [ Upstream commit b6d49cab44b567b3e0a5544b3d61e516a7355fad ]
-> 
-> Commit d1cbfd771ce8 ("ptp_clock: Allow for it to be optional") changed
-> all PTP-capable Ethernet drivers from `select PTP_1588_CLOCK` to `imply
-> PTP_1588_CLOCK`, "in order to break the hard dependency between the PTP
-> clock subsystem and ethernet drivers capable of being clock providers."
-> As a result it is possible to build PTP-capable Ethernet drivers without
-> the PTP subsystem by deselecting PTP_1588_CLOCK. Drivers are required to
-> handle the missing dependency gracefully.
-> 
-> Some PTP-capable Ethernet drivers (e.g., TI_CPSW) factor their PTP code
-> out into separate drivers (e.g., TI_CPTS_MOD). The above commit also
-> changed these PTP-specific drivers to `imply PTP_1588_CLOCK`, making it
-> possible to build them without the PTP subsystem. But as Grygorii
-> Strashko noted in [1]:
-> 
-> On Wed, Apr 22, 2020 at 02:16:11PM +0300, Grygorii Strashko wrote:
-> 
->> Another question is that CPTS completely nonfunctional in this case and
->> it was never expected that somebody will even try to use/run such
->> configuration (except for random build purposes).
-> 
-> In my view, enabling a PTP-specific driver without the PTP subsystem is
-> a configuration error made possible by the above commit. Kconfig should
-> not allow users to create a configuration with missing dependencies that
-> results in "completely nonfunctional" drivers.
-> 
-> I audited all network drivers that call ptp_clock_register() but merely
-> `imply PTP_1588_CLOCK` and found five PTP-specific drivers that are
-> likely nonfunctional without PTP_1588_CLOCK:
-> 
->      NET_DSA_MV88E6XXX_PTP
->      NET_DSA_SJA1105_PTP
->      MACB_USE_HWSTAMP
->      CAVIUM_PTP
->      TI_CPTS_MOD
-> 
-> Note how these symbols all reference PTP or timestamping in their name;
-> this is a clue that they depend on PTP_1588_CLOCK.
-> 
-> Change them from `imply PTP_1588_CLOCK` [2] to `depends on PTP_1588_CLOCK`.
-> I'm not using `select PTP_1588_CLOCK` here because PTP_1588_CLOCK has
-> its own dependencies, which `select` would not transitively apply.
-> 
-> Additionally, remove the `select NET_PTP_CLASSIFY` from CPTS_TI_MOD;
-> PTP_1588_CLOCK already selects that.
-> 
-> [1]: https://lore.kernel.org/lkml/c04458ed-29ee-1797-3a11-7f3f560553e6@ti.com/
-> 
-> [2]: NET_DSA_SJA1105_PTP had never declared any type of dependency on
-> PTP_1588_CLOCK (`imply` or otherwise); adding a `depends on PTP_1588_CLOCK`
-> here seems appropriate.
-> 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Richard Cochran <richardcochran@gmail.com>
-> Cc: Nicolas Pitre <nico@fluxnic.net>
-> Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Fixes: d1cbfd771ce8 ("ptp_clock: Allow for it to be optional")
-> Signed-off-by: Clay McClure <clay@daemons.net>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
+Sparc had the same problem...
 
-Could you drop this patch, pls?
-it's not for stable and can cause build failures.
 
--- 
-Best regards,
-grygorii
+commit 6e5c523370c510f5fae3436b193ab5dabe0fef06 (HEAD -> lm-kmap17)
+Author: Ira Weiny <ira.weiny@intel.com>
+Date:   Mon May 18 11:13:16 2020 -0700
+
+    arch/sparc: Don't enable pagefault/preempt twice
+    
+    The kunmap_atomic clean up failed to remove the pagefault/preempt
+    enables on this path.
+    
+    Fixes: bee2128a09e6 ("arch/kunmap_atomic: consolidate duplicate code")
+    Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+diff --git a/arch/sparc/mm/highmem.c b/arch/sparc/mm/highmem.c
+index d237d902f9c3..13fb197bb26c 100644
+--- a/arch/sparc/mm/highmem.c
++++ b/arch/sparc/mm/highmem.c
+@@ -86,11 +86,8 @@ void kunmap_atomic_high(void *kvaddr)
+        unsigned long vaddr = (unsigned long) kvaddr & PAGE_MASK;
+        int type;
+ 
+-       if (vaddr < FIXADDR_START) { // FIXME
+-               pagefault_enable();
+-               preempt_enable();
++       if (vaddr < FIXADDR_START) // FIXME
+                return;
+-       }
+ 
+        type = kmap_atomic_idx();
+ 
