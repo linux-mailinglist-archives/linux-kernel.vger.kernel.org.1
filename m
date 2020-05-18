@@ -2,144 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED5E1D842E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6731D83F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387540AbgERSJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
+        id S1733270AbgERSHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733125AbgERSGN (ORCPT
+        with ESMTP id S1733245AbgERSHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:06:13 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09211C061A0C;
-        Mon, 18 May 2020 11:06:13 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jak9O-00008n-KX; Mon, 18 May 2020 20:06:06 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 2A2751C009C;
-        Mon, 18 May 2020 20:06:06 +0200 (CEST)
-Date:   Mon, 18 May 2020 18:06:06 -0000
-From:   "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] x86/cpu: Use RDRAND and RDSEED mnemonics in archrandom.h
-Cc:     Uros Bizjak <ubizjak@gmail.com>, Borislav Petkov <bp@suse.de>,
-        "H. Peter Anvin (Intel)" <hpa@zytor.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200508105817.207887-1-ubizjak@gmail.com>
-References: <20200508105817.207887-1-ubizjak@gmail.com>
+        Mon, 18 May 2020 14:07:05 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77217C061A0C;
+        Mon, 18 May 2020 11:07:05 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id ee19so5162244qvb.11;
+        Mon, 18 May 2020 11:07:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FGe0cYU7QRQrBub6kPg7LS2mMokuizGPeM+/vsZpJ0c=;
+        b=DDZsqjev9pPgykILD6UPID2QV3+WLOgbGPXNX7VGKiD5foIMBD6Ig3QA44tRzLmGib
+         1mKKZilQ5ETaljO5EYgpRnJptRjnAUOLxPH4gdu5+sMzcEgSRjVuhvaeSTM9YoycCwCk
+         2A+TY4cjxjhxNxZiLYT2ruZPcxJNu7umH6Vu9aSZIYrrv9XJn+MInwstXFCAlIHw1WUb
+         sCqyfCtYVo5dQrNv3xg086881Zd5saQlxNJu53IiQDzlfrTSmR2Y3bav8kaCWopJzt5B
+         qVeDKeGSnlwZcimXa9kVFJ6abIibigsiCpI3x/x/V3LmORYeovnqdMuYBqB3p76Djc/9
+         VAsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FGe0cYU7QRQrBub6kPg7LS2mMokuizGPeM+/vsZpJ0c=;
+        b=N8n9cidacfPNCPKXAuQxcgxY9bNR2V9T+GfNzusWJseoq/sQSZxLxUBH7V86HL46uI
+         SmxLrTQTeTQ8ZBAS3UeboP3um3h7wQBhfViNQISIS4MP/ZxAYDsDBSEGdPETyFYTe+jW
+         g5Zzx/scUnjlb/cg6tn6gcCTYpD7RRMwFjFT2LWxzz731CgkOi6z07KMyrPLUNLjItYm
+         M+//i5ijhClVuAVsOXVTAQUA2xczG6un++lNHpUYrpgA/BFSFCS5WMMrygqWxQpCORrI
+         CfsgXhNHjdobSU1/D6e0zXM0+mLm4sxcBvaneSl8P/uqiOkoOTUeLhkykIDOJ670Ffl2
+         CbJA==
+X-Gm-Message-State: AOAM531q3REZQiPyl2pYxkGVno1EMfmkSh6baP/rN/Q7xMsu85LRoAsK
+        J9IRKwC2q8NWD6LYqYbY1HiEkGoOjJUawOc2AAo=
+X-Google-Smtp-Source: ABdhPJx7gFJZCHG8pAYfJs0PbDVHs9Ww5BXdE3nVr2Ovp/YWIgWIKSJgkqjadmT/fF2jdRU64gjBY21G4Xm8cOd52zo=
+X-Received: by 2002:a0c:e48f:: with SMTP id n15mr15724904qvl.73.1589825224064;
+ Mon, 18 May 2020 11:07:04 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <158982516602.17951.15035547991791218308.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <20200515212846.1347-1-mcgrof@kernel.org> <20200515212846.1347-13-mcgrof@kernel.org>
+ <2b74a35c726e451b2fab2b5d0d301e80d1f4cdc7.camel@sipsolutions.net>
+ <20200518165154.GH11244@42.do-not-panic.com> <4ad0668d-2de9-11d7-c3a1-ad2aedd0c02d@candelatech.com>
+ <20200518170934.GJ11244@42.do-not-panic.com> <abf22ef3-93cb-61a4-0af2-43feac6d7930@candelatech.com>
+ <20200518171801.GL11244@42.do-not-panic.com>
+In-Reply-To: <20200518171801.GL11244@42.do-not-panic.com>
+From:   Steve deRosier <derosier@gmail.com>
+Date:   Mon, 18 May 2020 11:06:27 -0700
+Message-ID: <CALLGbR+ht2V3m5f-aUbdwEMOvbsX8ebmzdWgX4jyWTbpHrXZ0Q@mail.gmail.com>
+Subject: Re: [PATCH v2 12/15] ath10k: use new module_firmware_crashed()
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Ben Greear <greearb@candelatech.com>,
+        Johannes Berg <johannes@sipsolutions.net>, jeyu@kernel.org,
+        akpm@linux-foundation.org, arnd@arndb.de, rostedt@goodmis.org,
+        mingo@redhat.com, aquini@redhat.com, cai@lca.pw, dyoung@redhat.com,
+        bhe@redhat.com, peterz@infradead.org, tglx@linutronix.de,
+        gpiccoli@canonical.com, pmladek@suse.com,
+        Takashi Iwai <tiwai@suse.de>, schlad@suse.de,
+        andriy.shevchenko@linux.intel.com, keescook@chromium.org,
+        daniel.vetter@ffwll.ch, will@kernel.org,
+        mchehab+samsung@kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        ath10k@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cpu branch of tip:
+On Mon, May 18, 2020 at 10:19 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>
+> On Mon, May 18, 2020 at 10:15:45AM -0700, Ben Greear wrote:
+> >
+> >
+> > On 05/18/2020 10:09 AM, Luis Chamberlain wrote:
+> > > On Mon, May 18, 2020 at 09:58:53AM -0700, Ben Greear wrote:
+> > > >
+> > > >
+> > > > On 05/18/2020 09:51 AM, Luis Chamberlain wrote:
+> > > > > On Sat, May 16, 2020 at 03:24:01PM +0200, Johannes Berg wrote:
+> > > > > > On Fri, 2020-05-15 at 21:28 +0000, Luis Chamberlain wrote:> module_firmware_crashed
+> > > > > >
+> > > > > > You didn't CC me or the wireless list on the rest of the patches, so I'm
+> > > > > > replying to a random one, but ...
+> > > > > >
+> > > > > > What is the point here?
+> > > > > >
+> > > > > > This should in no way affect the integrity of the system/kernel, for
+> > > > > > most devices anyway.
+> > > > >
+> > > > > Keyword you used here is "most device". And in the worst case, *who*
+> > > > > knows what other odd things may happen afterwards.
+> > > > >
+> > > > > > So what if ath10k's firmware crashes? If there's a driver bug it will
+> > > > > > not handle it right (and probably crash, WARN_ON, or something else),
+> > > > > > but if the driver is working right then that will not affect the kernel
+> > > > > > at all.
+> > > > >
+> > > > > Sometimes the device can go into a state which requires driver removal
+> > > > > and addition to get things back up.
+> > > >
+> > > > It would be lovely to be able to detect this case in the driver/system
+> > > > somehow!  I haven't seen any such cases recently,
+> > >
+> > > I assure you that I have run into it. Once it does again I'll report
+> > > the crash, but the problem with some of this is that unless you scrape
+> > > the log you won't know. Eventually, a uevent would indeed tell inform
+> > > me.
+> > >
+> > > > but in case there is
+> > > > some common case you see, maybe we can think of a way to detect it?
+> > >
+> > > ath10k is just one case, this patch series addresses a simple way to
+> > > annotate this tree-wide.
+> > >
+> > > > > > So maybe I can understand that maybe you want an easy way to discover -
+> > > > > > per device - that the firmware crashed, but that still doesn't warrant a
+> > > > > > complete kernel taint.
+> > > > >
+> > > > > That is one reason, another is that a taint helps support cases *fast*
+> > > > > easily detect if the issue was a firmware crash, instead of scraping
+> > > > > logs for driver specific ways to say the firmware has crashed.
+> > > >
+> > > > You can listen for udev events (I think that is the right term),
+> > > > and find crashes that way.  You get the actual crash info as well.
+> > >
+> > > My follow up to this was to add uevent to add_taint() as well, this way
+> > > these could generically be processed by userspace.
+> >
+> > I'm not opposed to the taint, though I have not thought much on it.
+> >
+> > But, if you can already get the crash info from uevent, and it automatically
+> > comes without polling or scraping logs, then what benefit beyond that does
+> > the taint give you?
+>
+> From a support perspective it is a *crystal* clear sign that the device
+> and / or device driver may be in a very bad state, in a generic way.
+>
 
-Commit-ID:     3d81b3d1e55a518837c3d1f722c6d93abe34aa85
-Gitweb:        https://git.kernel.org/tip/3d81b3d1e55a518837c3d1f722c6d93abe34aa85
-Author:        Uros Bizjak <ubizjak@gmail.com>
-AuthorDate:    Fri, 08 May 2020 12:58:17 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 18 May 2020 19:50:47 +02:00
+Unfortunately a "taint" is interpreted by many users as: "your kernel
+is really F#*D up, you better do something about it right now."
+Assuming they're paying attention at all in the first place of course.
 
-x86/cpu: Use RDRAND and RDSEED mnemonics in archrandom.h
+The fact is, WiFi chip firmware crashes, and in most cases the driver
+is able to recover seamlessly. At least that is the case with most QCA
+chipsets I work with. And the users or our ability to do anything
+about it is minimal to none as we don't have access to firmware
+source. It's too bad and I wish it weren't the case, but we have
+embraced reality and most drivers have a recovery mechanism built in
+for this case. In short, it's a non-event. I fear that elevating this
+to a kernel taint will significantly increase "support" requests that
+really are nothing but noise; similar to how the firmware load failure
+messages (fail to load fw-2.bin, fail to load fw-1.bin, yay loaded
+fw-0.bin) cause a lot of noise.
 
-Current minimum required version of binutils is 2.23,
-which supports RDRAND and RDSEED instruction mnemonics.
+Not specifically opposed, but I wonder what it really accomplishes in
+a world where the firmware crashing is pretty much a normal
+occurrence.
 
-Replace the byte-wise specification of RDRAND and
-RDSEED with these proper mnemonics.
+If it goes in, I think that the drivers shouldn't trigger the taint if
+they're able to recover normally. Only trigger on failure to come back
+up.  In other words, the ideal place in the ath10k driver isn't where
+you have proposed as at that point operation is normal and we're doing
+a routine recovery.
 
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200508105817.207887-1-ubizjak@gmail.com
----
- arch/x86/include/asm/archrandom.h | 26 ++++++++------------------
- 1 file changed, 8 insertions(+), 18 deletions(-)
+- Steve
 
-diff --git a/arch/x86/include/asm/archrandom.h b/arch/x86/include/asm/archrandom.h
-index 7a4bb1b..ebc248e 100644
---- a/arch/x86/include/asm/archrandom.h
-+++ b/arch/x86/include/asm/archrandom.h
-@@ -15,16 +15,6 @@
- 
- #define RDRAND_RETRY_LOOPS	10
- 
--#define RDRAND_INT	".byte 0x0f,0xc7,0xf0"
--#define RDSEED_INT	".byte 0x0f,0xc7,0xf8"
--#ifdef CONFIG_X86_64
--# define RDRAND_LONG	".byte 0x48,0x0f,0xc7,0xf0"
--# define RDSEED_LONG	".byte 0x48,0x0f,0xc7,0xf8"
--#else
--# define RDRAND_LONG	RDRAND_INT
--# define RDSEED_LONG	RDSEED_INT
--#endif
--
- /* Unconditional execution of RDRAND and RDSEED */
- 
- static inline bool __must_check rdrand_long(unsigned long *v)
-@@ -32,9 +22,9 @@ static inline bool __must_check rdrand_long(unsigned long *v)
- 	bool ok;
- 	unsigned int retry = RDRAND_RETRY_LOOPS;
- 	do {
--		asm volatile(RDRAND_LONG
-+		asm volatile("rdrand %[out]"
- 			     CC_SET(c)
--			     : CC_OUT(c) (ok), "=a" (*v));
-+			     : CC_OUT(c) (ok), [out] "=r" (*v));
- 		if (ok)
- 			return true;
- 	} while (--retry);
-@@ -46,9 +36,9 @@ static inline bool __must_check rdrand_int(unsigned int *v)
- 	bool ok;
- 	unsigned int retry = RDRAND_RETRY_LOOPS;
- 	do {
--		asm volatile(RDRAND_INT
-+		asm volatile("rdrand %[out]"
- 			     CC_SET(c)
--			     : CC_OUT(c) (ok), "=a" (*v));
-+			     : CC_OUT(c) (ok), [out] "=r" (*v));
- 		if (ok)
- 			return true;
- 	} while (--retry);
-@@ -58,18 +48,18 @@ static inline bool __must_check rdrand_int(unsigned int *v)
- static inline bool __must_check rdseed_long(unsigned long *v)
- {
- 	bool ok;
--	asm volatile(RDSEED_LONG
-+	asm volatile("rdseed %[out]"
- 		     CC_SET(c)
--		     : CC_OUT(c) (ok), "=a" (*v));
-+		     : CC_OUT(c) (ok), [out] "=r" (*v));
- 	return ok;
- }
- 
- static inline bool __must_check rdseed_int(unsigned int *v)
- {
- 	bool ok;
--	asm volatile(RDSEED_INT
-+	asm volatile("rdseed %[out]"
- 		     CC_SET(c)
--		     : CC_OUT(c) (ok), "=a" (*v));
-+		     : CC_OUT(c) (ok), [out] "=r" (*v));
- 	return ok;
- }
- 
+
+
+
+
+>   Luis
