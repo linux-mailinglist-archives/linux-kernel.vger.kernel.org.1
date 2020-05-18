@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19BA1D828C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F38F1D81E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731790AbgERR5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:57:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35848 "EHLO mail.kernel.org"
+        id S1730762AbgERRvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:51:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731772AbgERR5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:57:20 -0400
+        id S1730330AbgERRvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:51:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 918C4207C4;
-        Mon, 18 May 2020 17:57:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB50120829;
+        Mon, 18 May 2020 17:51:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824640;
-        bh=ASD+fFzp4NJHBwKGUBzfOTPXS0YJQ2vb0CTvZsbplXk=;
+        s=default; t=1589824302;
+        bh=plqYo22biTGHgNsqsufKV0Ht2FGCe/Y2/qOpDAwRLo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XFr8zmvopksZ2zjWyO8KlYswoJvOTgGHNpPcIM8Engst8qu/5KnLcrX6ZuPxSh/pJ
-         XvO4yHou6jOI7o3dYnW7WAmYiTwZX7olUG6vdkHTsalYwcOqQzeI0jj4PaGSs+6MGn
-         NEXDqky0Hy1r3XJd+GW66W+J/6muuVR9LThSNTWM=
+        b=md9UwGjptTlt2edX345D92kKHSrbVvm/LSH7jQxqBB9NoGI3s0ftF+qtV4zRTrfh/
+         nGnPQumBdKfFCJQ2amxNgryfHQVuPlljtZMtjl0W34hNmQD+eL050iwwqGgjvddpHq
+         ERXGYibA1qOcyVONacPyq4+G/E8r0UHU2677N2g8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.4 093/147] pnp: Use list_for_each_entry() instead of open coding
+        stable@vger.kernel.org, Dave Wysochanski <dwysocha@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 38/80] NFSv4: Fix fscache cookie aux_data to ensure change_attr is included
 Date:   Mon, 18 May 2020 19:36:56 +0200
-Message-Id: <20200518173525.143262436@linuxfoundation.org>
+Message-Id: <20200518173458.056584883@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
+References: <20200518173450.097837707@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,90 +44,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Dave Wysochanski <dwysocha@redhat.com>
 
-commit 01b2bafe57b19d9119413f138765ef57990921ce upstream.
+[ Upstream commit 50eaa652b54df1e2b48dc398d9e6114c9ed080eb ]
 
-Aside from good practice, this avoids a warning from gcc 10:
+Commit 402cb8dda949 ("fscache: Attach the index key and aux data to
+the cookie") added the aux_data and aux_data_len to parameters to
+fscache_acquire_cookie(), and updated the callers in the NFS client.
+In the process it modified the aux_data to include the change_attr,
+but missed adding change_attr to a couple places where aux_data was
+used.  Specifically, when opening a file and the change_attr is not
+added, the following attempt to lookup an object will fail inside
+cachefiles_check_object_xattr() = -116 due to
+nfs_fscache_inode_check_aux() failing memcmp on auxdata and returning
+FSCACHE_CHECKAUX_OBSOLETE.
 
-./include/linux/kernel.h:997:3: warning: array subscript -31 is outside array bounds of ‘struct list_head[1]’ [-Warray-bounds]
-  997 |  ((type *)(__mptr - offsetof(type, member))); })
-      |  ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./include/linux/list.h:493:2: note: in expansion of macro ‘container_of’
-  493 |  container_of(ptr, type, member)
-      |  ^~~~~~~~~~~~
-./include/linux/pnp.h:275:30: note: in expansion of macro ‘list_entry’
-  275 | #define global_to_pnp_dev(n) list_entry(n, struct pnp_dev, global_list)
-      |                              ^~~~~~~~~~
-./include/linux/pnp.h:281:11: note: in expansion of macro ‘global_to_pnp_dev’
-  281 |  (dev) != global_to_pnp_dev(&pnp_global); \
-      |           ^~~~~~~~~~~~~~~~~
-arch/x86/kernel/rtc.c:189:2: note: in expansion of macro ‘pnp_for_each_dev’
-  189 |  pnp_for_each_dev(dev) {
+Fix this by adding nfs_fscache_update_auxdata() to set the auxdata
+from all relevant fields in the inode, including the change_attr.
 
-Because the common code doesn't cast the starting list_head to the
-containing struct.
-
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-[ rjw: Whitespace adjustments ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 402cb8dda949 ("fscache: Attach the index key and aux data to the cookie")
+Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/pnp.h |   29 +++++++++--------------------
- 1 file changed, 9 insertions(+), 20 deletions(-)
+ fs/nfs/fscache.c | 34 ++++++++++++++++------------------
+ 1 file changed, 16 insertions(+), 18 deletions(-)
 
---- a/include/linux/pnp.h
-+++ b/include/linux/pnp.h
-@@ -220,10 +220,8 @@ struct pnp_card {
- #define global_to_pnp_card(n) list_entry(n, struct pnp_card, global_list)
- #define protocol_to_pnp_card(n) list_entry(n, struct pnp_card, protocol_list)
- #define to_pnp_card(n) container_of(n, struct pnp_card, dev)
--#define pnp_for_each_card(card) \
--	for((card) = global_to_pnp_card(pnp_cards.next); \
--	(card) != global_to_pnp_card(&pnp_cards); \
--	(card) = global_to_pnp_card((card)->global_list.next))
-+#define pnp_for_each_card(card)	\
-+	list_for_each_entry(card, &pnp_cards, global_list)
+diff --git a/fs/nfs/fscache.c b/fs/nfs/fscache.c
+index 0a4d6b35545a3..7dfa45a380882 100644
+--- a/fs/nfs/fscache.c
++++ b/fs/nfs/fscache.c
+@@ -231,6 +231,19 @@ void nfs_fscache_release_super_cookie(struct super_block *sb)
+ 	}
+ }
  
- struct pnp_card_link {
- 	struct pnp_card *card;
-@@ -276,14 +274,9 @@ struct pnp_dev {
- #define card_to_pnp_dev(n) list_entry(n, struct pnp_dev, card_list)
- #define protocol_to_pnp_dev(n) list_entry(n, struct pnp_dev, protocol_list)
- #define	to_pnp_dev(n) container_of(n, struct pnp_dev, dev)
--#define pnp_for_each_dev(dev) \
--	for((dev) = global_to_pnp_dev(pnp_global.next); \
--	(dev) != global_to_pnp_dev(&pnp_global); \
--	(dev) = global_to_pnp_dev((dev)->global_list.next))
--#define card_for_each_dev(card,dev) \
--	for((dev) = card_to_pnp_dev((card)->devices.next); \
--	(dev) != card_to_pnp_dev(&(card)->devices); \
--	(dev) = card_to_pnp_dev((dev)->card_list.next))
-+#define pnp_for_each_dev(dev) list_for_each_entry(dev, &pnp_global, global_list)
-+#define card_for_each_dev(card, dev)	\
-+	list_for_each_entry(dev, &(card)->devices, card_list)
- #define pnp_dev_name(dev) (dev)->name
++static void nfs_fscache_update_auxdata(struct nfs_fscache_inode_auxdata *auxdata,
++				  struct nfs_inode *nfsi)
++{
++	memset(auxdata, 0, sizeof(*auxdata));
++	auxdata->mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
++	auxdata->mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
++	auxdata->ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
++	auxdata->ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
++
++	if (NFS_SERVER(&nfsi->vfs_inode)->nfs_client->rpc_ops->version == 4)
++		auxdata->change_attr = inode_peek_iversion_raw(&nfsi->vfs_inode);
++}
++
+ /*
+  * Initialise the per-inode cache cookie pointer for an NFS inode.
+  */
+@@ -244,14 +257,7 @@ void nfs_fscache_init_inode(struct inode *inode)
+ 	if (!(nfss->fscache && S_ISREG(inode->i_mode)))
+ 		return;
  
- static inline void *pnp_get_drvdata(struct pnp_dev *pdev)
-@@ -437,14 +430,10 @@ struct pnp_protocol {
- };
+-	memset(&auxdata, 0, sizeof(auxdata));
+-	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
+-	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
+-	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
+-	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
+-
+-	if (NFS_SERVER(&nfsi->vfs_inode)->nfs_client->rpc_ops->version == 4)
+-		auxdata.change_attr = inode_peek_iversion_raw(&nfsi->vfs_inode);
++	nfs_fscache_update_auxdata(&auxdata, nfsi);
  
- #define to_pnp_protocol(n) list_entry(n, struct pnp_protocol, protocol_list)
--#define protocol_for_each_card(protocol,card) \
--	for((card) = protocol_to_pnp_card((protocol)->cards.next); \
--	(card) != protocol_to_pnp_card(&(protocol)->cards); \
--	(card) = protocol_to_pnp_card((card)->protocol_list.next))
--#define protocol_for_each_dev(protocol,dev) \
--	for((dev) = protocol_to_pnp_dev((protocol)->devices.next); \
--	(dev) != protocol_to_pnp_dev(&(protocol)->devices); \
--	(dev) = protocol_to_pnp_dev((dev)->protocol_list.next))
-+#define protocol_for_each_card(protocol, card)	\
-+	list_for_each_entry(card, &(protocol)->cards, protocol_list)
-+#define protocol_for_each_dev(protocol, dev)	\
-+	list_for_each_entry(dev, &(protocol)->devices, protocol_list)
+ 	nfsi->fscache = fscache_acquire_cookie(NFS_SB(inode->i_sb)->fscache,
+ 					       &nfs_fscache_inode_object_def,
+@@ -271,11 +277,7 @@ void nfs_fscache_clear_inode(struct inode *inode)
  
- extern struct bus_type pnp_bus_type;
+ 	dfprintk(FSCACHE, "NFS: clear cookie (0x%p/0x%p)\n", nfsi, cookie);
  
+-	memset(&auxdata, 0, sizeof(auxdata));
+-	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
+-	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
+-	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
+-	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
++	nfs_fscache_update_auxdata(&auxdata, nfsi);
+ 	fscache_relinquish_cookie(cookie, &auxdata, false);
+ 	nfsi->fscache = NULL;
+ }
+@@ -315,11 +317,7 @@ void nfs_fscache_open_file(struct inode *inode, struct file *filp)
+ 	if (!fscache_cookie_valid(cookie))
+ 		return;
+ 
+-	memset(&auxdata, 0, sizeof(auxdata));
+-	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
+-	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
+-	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
+-	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
++	nfs_fscache_update_auxdata(&auxdata, nfsi);
+ 
+ 	if (inode_is_open_for_write(inode)) {
+ 		dfprintk(FSCACHE, "NFS: nfsi 0x%p disabling cache\n", nfsi);
+-- 
+2.20.1
+
 
 
