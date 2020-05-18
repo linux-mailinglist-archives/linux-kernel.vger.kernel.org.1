@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF001D85BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F230D1D82A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730987AbgERRwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:52:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55718 "EHLO mail.kernel.org"
+        id S1731378AbgERR6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:58:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730977AbgERRw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:52:27 -0400
+        id S1731861AbgERR6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:58:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 559A420674;
-        Mon, 18 May 2020 17:52:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4925420826;
+        Mon, 18 May 2020 17:58:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824346;
-        bh=oDwcpv/8V8kB+Z21IAF/pMlJObdn91w86k2jINRfYTE=;
+        s=default; t=1589824684;
+        bh=LnLghrpkiXkZxc4mghN+U/ZB0oWcDxHaMgo41YTF53o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vlpwEJ2DBfD9EELgTKuG8yUB9EdBCk2WKXKTtdQUJXFlAcMZhKELfkBOx8fbePKzo
-         smV9BAUS7yRPENBmauxabq2jmSNigmzAkqqqmEPdw7VDdntpsmwGABVRmLRmm2qQ2h
-         56VZ6xIdcDf5kKFgYZqNenvZ65JUB9vzOS6BbXrM=
+        b=mMDVrYfrWHTTXXnyesUCpeV1eSPPjmYgT9dARNOBIIX4Dts1HBx6uPC8NTqaLpx9W
+         LdbHcKRAwpFi+zFL3zgLZeQK9772hCNp9ROelV1Wf6oXmkBf5ceO8QvCpY5vWWSsag
+         pJm7tsdsFrvDkCoTtvhx5dkpjwoCDe3I/vjU4wJg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, butt3rflyh4ck <butterflyhuangxx@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 54/80] ALSA: rawmidi: Fix racy buffer resize under concurrent accesses
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Hardik Gajjar <hgajjar@de.adit-jv.com>,
+        linux-renesas-soc@vger.kernel.org, linux-usb@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>
+Subject: [PATCH 5.4 109/147] usb: core: hub: limit HUB_QUIRK_DISABLE_AUTOSUSPEND to USB5534B
 Date:   Mon, 18 May 2020 19:37:12 +0200
-Message-Id: <20200518173501.318402400@linuxfoundation.org>
+Message-Id: <20200518173526.765169555@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,131 +46,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Eugeniu Rosca <erosca@de.adit-jv.com>
 
-commit c1f6e3c818dd734c30f6a7eeebf232ba2cf3181d upstream.
+commit 76e1ef1d81a4129d7e2fb8c48c83b166d1c8e040 upstream.
 
-The rawmidi core allows user to resize the runtime buffer via ioctl,
-and this may lead to UAF when performed during concurrent reads or
-writes: the read/write functions unlock the runtime lock temporarily
-during copying form/to user-space, and that's the race window.
+On Tue, May 12, 2020 at 09:36:07PM +0800, Kai-Heng Feng wrote [1]:
+> This patch prevents my Raven Ridge xHCI from getting runtime suspend.
 
-This patch fixes the hole by introducing a reference counter for the
-runtime buffer read/write access and returns -EBUSY error when the
-resize is performed concurrently against read/write.
+The problem described in v5.6 commit 1208f9e1d758c9 ("USB: hub: Fix the
+broken detection of USB3 device in SMSC hub") applies solely to the
+USB5534B hub [2] present on the Kingfisher Infotainment Carrier Board,
+manufactured by Shimafuji Electric Inc [3].
 
-Note that the ref count field is a simple integer instead of
-refcount_t here, since the all contexts accessing the buffer is
-basically protected with a spinlock, hence we need no expensive atomic
-ops.  Also, note that this busy check is needed only against read /
-write functions, and not in receive/transmit callbacks; the race can
-happen only at the spinlock hole mentioned in the above, while the
-whole function is protected for receive / transmit callbacks.
+Despite that, the aforementioned commit applied the quirk to _all_ hubs
+carrying vendor ID 0x424 (i.e. SMSC), of which there are more [4] than
+initially expected. Consequently, the quirk is now enabled on platforms
+carrying SMSC/Microchip hub models which potentially don't exhibit the
+original issue.
 
-Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/CAFcO6XMWpUVK_yzzCpp8_XP7+=oUpQvuBeCbMffEDkpe8jWrfg@mail.gmail.com
-Link: https://lore.kernel.org/r/s5heerw3r5z.wl-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+To avoid reports like [1], further limit the quirk's scope to
+USB5534B [2], by employing both Vendor and Product ID checks.
+
+Tested on H3ULCB + Kingfisher rev. M05.
+
+[1] https://lore.kernel.org/linux-renesas-soc/73933975-6F0E-40F5-9584-D2B8F615C0F3@canonical.com/
+[2] https://www.microchip.com/wwwproducts/en/USB5534B
+[3] http://www.shimafuji.co.jp/wp/wp-content/uploads/2018/08/SBEV-RCAR-KF-M06Board_HWSpecificationEN_Rev130.pdf
+[4] https://devicehunt.com/search/type/usb/vendor/0424/device/any
+
+Fixes: 1208f9e1d758c9 ("USB: hub: Fix the broken detection of USB3 device in SMSC hub")
+Cc: stable@vger.kernel.org # v4.14+
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: Hardik Gajjar <hgajjar@de.adit-jv.com>
+Cc: linux-renesas-soc@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Reported-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Link: https://lore.kernel.org/r/20200514220246.13290-1-erosca@de.adit-jv.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/sound/rawmidi.h |    1 +
- sound/core/rawmidi.c    |   31 +++++++++++++++++++++++++++----
- 2 files changed, 28 insertions(+), 4 deletions(-)
+ drivers/usb/core/hub.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/include/sound/rawmidi.h
-+++ b/include/sound/rawmidi.h
-@@ -76,6 +76,7 @@ struct snd_rawmidi_runtime {
- 	size_t avail_min;	/* min avail for wakeup */
- 	size_t avail;		/* max used buffer for wakeup */
- 	size_t xruns;		/* over/underruns counter */
-+	int buffer_ref;		/* buffer reference count */
- 	/* misc */
- 	spinlock_t lock;
- 	wait_queue_head_t sleep;
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -112,6 +112,17 @@ static void snd_rawmidi_input_event_work
- 		runtime->event(runtime->substream);
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -38,6 +38,7 @@
+ 
+ #define USB_VENDOR_GENESYS_LOGIC		0x05e3
+ #define USB_VENDOR_SMSC				0x0424
++#define USB_PRODUCT_USB5534B			0x5534
+ #define HUB_QUIRK_CHECK_PORT_AUTOSUSPEND	0x01
+ #define HUB_QUIRK_DISABLE_AUTOSUSPEND		0x02
+ 
+@@ -5506,8 +5507,11 @@ out_hdev_lock:
  }
  
-+/* buffer refcount management: call with runtime->lock held */
-+static inline void snd_rawmidi_buffer_ref(struct snd_rawmidi_runtime *runtime)
-+{
-+	runtime->buffer_ref++;
-+}
-+
-+static inline void snd_rawmidi_buffer_unref(struct snd_rawmidi_runtime *runtime)
-+{
-+	runtime->buffer_ref--;
-+}
-+
- static int snd_rawmidi_runtime_create(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_rawmidi_runtime *runtime;
-@@ -661,6 +672,11 @@ static int resize_runtime_buffer(struct
- 		if (!newbuf)
- 			return -ENOMEM;
- 		spin_lock_irq(&runtime->lock);
-+		if (runtime->buffer_ref) {
-+			spin_unlock_irq(&runtime->lock);
-+			kvfree(newbuf);
-+			return -EBUSY;
-+		}
- 		oldbuf = runtime->buffer;
- 		runtime->buffer = newbuf;
- 		runtime->buffer_size = params->buffer_size;
-@@ -960,8 +976,10 @@ static long snd_rawmidi_kernel_read1(str
- 	long result = 0, count1;
- 	struct snd_rawmidi_runtime *runtime = substream->runtime;
- 	unsigned long appl_ptr;
-+	int err = 0;
- 
- 	spin_lock_irqsave(&runtime->lock, flags);
-+	snd_rawmidi_buffer_ref(runtime);
- 	while (count > 0 && runtime->avail) {
- 		count1 = runtime->buffer_size - runtime->appl_ptr;
- 		if (count1 > count)
-@@ -980,16 +998,19 @@ static long snd_rawmidi_kernel_read1(str
- 		if (userbuf) {
- 			spin_unlock_irqrestore(&runtime->lock, flags);
- 			if (copy_to_user(userbuf + result,
--					 runtime->buffer + appl_ptr, count1)) {
--				return result > 0 ? result : -EFAULT;
--			}
-+					 runtime->buffer + appl_ptr, count1))
-+				err = -EFAULT;
- 			spin_lock_irqsave(&runtime->lock, flags);
-+			if (err)
-+				goto out;
- 		}
- 		result += count1;
- 		count -= count1;
- 	}
-+ out:
-+	snd_rawmidi_buffer_unref(runtime);
- 	spin_unlock_irqrestore(&runtime->lock, flags);
--	return result;
-+	return result > 0 ? result : err;
- }
- 
- long snd_rawmidi_kernel_read(struct snd_rawmidi_substream *substream,
-@@ -1261,6 +1282,7 @@ static long snd_rawmidi_kernel_write1(st
- 			return -EAGAIN;
- 		}
- 	}
-+	snd_rawmidi_buffer_ref(runtime);
- 	while (count > 0 && runtime->avail > 0) {
- 		count1 = runtime->buffer_size - runtime->appl_ptr;
- 		if (count1 > count)
-@@ -1292,6 +1314,7 @@ static long snd_rawmidi_kernel_write1(st
- 	}
-       __end:
- 	count1 = runtime->avail < runtime->buffer_size;
-+	snd_rawmidi_buffer_unref(runtime);
- 	spin_unlock_irqrestore(&runtime->lock, flags);
- 	if (count1)
- 		snd_rawmidi_output_trigger(substream, 1);
+ static const struct usb_device_id hub_id_table[] = {
+-    { .match_flags = USB_DEVICE_ID_MATCH_VENDOR | USB_DEVICE_ID_MATCH_INT_CLASS,
++    { .match_flags = USB_DEVICE_ID_MATCH_VENDOR
++                   | USB_DEVICE_ID_MATCH_PRODUCT
++                   | USB_DEVICE_ID_MATCH_INT_CLASS,
+       .idVendor = USB_VENDOR_SMSC,
++      .idProduct = USB_PRODUCT_USB5534B,
+       .bInterfaceClass = USB_CLASS_HUB,
+       .driver_info = HUB_QUIRK_DISABLE_AUTOSUSPEND},
+     { .match_flags = USB_DEVICE_ID_MATCH_VENDOR
 
 
