@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47AB1D8166
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A821D80FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730260AbgERRrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:47:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48170 "EHLO mail.kernel.org"
+        id S1729644AbgERRnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:43:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730249AbgERRrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:47:43 -0400
+        id S1729631AbgERRnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:43:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 76E6C20657;
-        Mon, 18 May 2020 17:47:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4ED8620715;
+        Mon, 18 May 2020 17:43:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824063;
-        bh=HmyanbqIU+mg0HbgtYSUBECyKESgiVSnXXzJzAHboeo=;
+        s=default; t=1589823825;
+        bh=yrf3570OBu5h8HxEqgfHQx3jMZEKbBNA9EJShkhX+tg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yrD2Md7UVEIsKIHbqL856NTgxRBJa9l24f6vTyITe7EHXQBcpH5uz1VLJQtg2R3Q4
-         mkMc7NTfGmNzlYgmRzofWJn/bYMhWIwnMXGwwabu3TH8qf9vQcViKCgFAoCNL9fAi9
-         tNcs8o1SojSHpQ3k8DdV8QRi4uPFjb8SofYFanu0=
+        b=f2Ojgfx3Xl+p/eCIN1Y8rM4R4+gnPWj3MTn+N7pd1OyuIxFl2s/A45lAp1FIvXssi
+         3y7cxZYKOC78Y1Pw3hWvopUGIOaGGCYxDQ7Aux8zui1uQWGEtNohHc89TzyPnznJzn
+         +z+ofYFpi5S08hLLG6iGOmgBiNy/x9RbGHmIWgqU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 057/114] cpufreq: intel_pstate: Only mention the BIOS disabling turbo mode once
+        stable@vger.kernel.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 51/90] ALSA: hda/hdmi: fix race in monitor detection during probe
 Date:   Mon, 18 May 2020 19:36:29 +0200
-Message-Id: <20200518173513.479980002@linuxfoundation.org>
+Message-Id: <20200518173501.555862582@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,34 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-[ Upstream commit 8c539776ac83c0857395e1ccc9c6b516521a2d32 ]
+[ Upstream commit ca76282b6faffc83601c25bd2a95f635c03503ef ]
 
-Make a note of the first time we discover the turbo mode has been
-disabled by the BIOS, as otherwise we complain every time we try to
-update the mode.
+A race exists between build_pcms() and build_controls() phases of codec
+setup. Build_pcms() sets up notifier for jack events. If a monitor event
+is received before build_controls() is run, the initial jack state is
+lost and never reported via mixer controls.
 
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+The problem can be hit at least with SOF as the controller driver. SOF
+calls snd_hda_codec_build_controls() in its workqueue-based probe and
+this can be delayed enough to hit the race condition.
+
+Fix the issue by invalidating the per-pin ELD information when
+build_controls() is called. The existing call to hdmi_present_sense()
+will update the ELD contents. This ensures initial monitor state is
+correctly reflected via mixer controls.
+
+BugLink: https://github.com/thesofproject/linux/issues/1687
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20200428123836.24512-1-kai.vehmanen@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/intel_pstate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_hdmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index 7a5662425b291..1aa0b05c8cbdf 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -935,7 +935,7 @@ static ssize_t store_no_turbo(struct kobject *a, struct kobj_attribute *b,
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index e19f447e27ae1..a866a20349c32 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2044,7 +2044,9 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
  
- 	update_turbo_state();
- 	if (global.turbo_disabled) {
--		pr_warn("Turbo disabled by BIOS or unavailable on processor\n");
-+		pr_notice_once("Turbo disabled by BIOS or unavailable on processor\n");
- 		mutex_unlock(&intel_pstate_limits_lock);
- 		mutex_unlock(&intel_pstate_driver_lock);
- 		return -EPERM;
+ 	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+ 		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
++		struct hdmi_eld *pin_eld = &per_pin->sink_eld;
+ 
++		pin_eld->eld_valid = false;
+ 		hdmi_present_sense(per_pin, 0);
+ 	}
+ 
 -- 
 2.20.1
 
