@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA8C1D86D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183E31D8087
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729497AbgERRm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:42:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39824 "EHLO mail.kernel.org"
+        id S1729007AbgERRkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:40:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729464AbgERRmo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:42:44 -0400
+        id S1728978AbgERRkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:40:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18E3F20829;
-        Mon, 18 May 2020 17:42:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7208120853;
+        Mon, 18 May 2020 17:40:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823763;
-        bh=3k78Qb1XKkUiTDkjbig5PF1UkReCGo2LTb5+63ariSs=;
+        s=default; t=1589823607;
+        bh=XP312QEKG9ACypwj04DGBWos0WkM813/41HdoPyONdo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YfC/1glbeNSfWQqZ5Jrqrwc6XzDDQ58683YPw29mFCpEvcNzmINqjgIL0VluglYl1
-         06CM82j+VE3Y2bs3EBnQ8hcFLLmUkEmrQe1F1UuSSU1NMwDtFgOU/mWyYCcZ8SMD4Z
-         lY2HuCs92ya4Bf1XdLjgpYLgl7lNQlEJi3P+zL4o=
+        b=TCXyPh+TPJ/fLOIXW0x/f564mHO+AFCmULgQXz/q2boRRAQ+IoT83S5iXz9Xdc5C2
+         NhfAoHHDEff72J8Q5zkbnPaXBxfMW25eBBWzi3pxlb+UI1ZzAPLJ6DRTk9dDXajED+
+         vKVHu10nW+ZJXmYTnBSB1zeq1tzhgseVRrmJ2TBM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matt Jolly <Kangie@footclan.ninja>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 06/90] net: usb: qmi_wwan: add support for DW5816e
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        =?UTF-8?q?Julian=20Gro=C3=9F?= <julian.g@posteo.de>
+Subject: [PATCH 4.4 13/86] USB: uas: add quirk for LaCie 2Big Quadra
 Date:   Mon, 18 May 2020 19:35:44 +0200
-Message-Id: <20200518173452.380779041@linuxfoundation.org>
+Message-Id: <20200518173453.216712227@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,29 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matt Jolly <Kangie@footclan.ninja>
+From: Oliver Neukum <oneukum@suse.com>
 
-[ Upstream commit 57c7f2bd758eed867295c81d3527fff4fab1ed74 ]
+commit 9f04db234af691007bb785342a06abab5fb34474 upstream.
 
-Add support for Dell Wireless 5816e to drivers/net/usb/qmi_wwan.c
+This device needs US_FL_NO_REPORT_OPCODES to avoid going
+through prolonged error handling on enumeration.
 
-Signed-off-by: Matt Jolly <Kangie@footclan.ninja>
-Acked-by: Bjørn Mork <bjorn@mork.no>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Reported-by: Julian Groß <julian.g@posteo.de>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200429155218.7308-1-oneukum@suse.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/usb/qmi_wwan.c |    1 +
- 1 file changed, 1 insertion(+)
 
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -950,6 +950,7 @@ static const struct usb_device_id produc
- 	{QMI_FIXED_INTF(0x413c, 0x81b3, 8)},	/* Dell Wireless 5809e Gobi(TM) 4G LTE Mobile Broadband Card (rev3) */
- 	{QMI_FIXED_INTF(0x413c, 0x81b6, 8)},	/* Dell Wireless 5811e */
- 	{QMI_FIXED_INTF(0x413c, 0x81b6, 10)},	/* Dell Wireless 5811e */
-+	{QMI_FIXED_INTF(0x413c, 0x81cc, 8)},	/* Dell Wireless 5816e */
- 	{QMI_FIXED_INTF(0x413c, 0x81d7, 0)},	/* Dell Wireless 5821e */
- 	{QMI_FIXED_INTF(0x413c, 0x81d7, 1)},	/* Dell Wireless 5821e preproduction config */
- 	{QMI_FIXED_INTF(0x413c, 0x81e0, 0)},	/* Dell Wireless 5821e with eSIM support*/
+---
+ drivers/usb/storage/unusual_uas.h |    7 +++++++
+ 1 file changed, 7 insertions(+)
+
+--- a/drivers/usb/storage/unusual_uas.h
++++ b/drivers/usb/storage/unusual_uas.h
+@@ -40,6 +40,13 @@
+  * and don't forget to CC: the USB development list <linux-usb@vger.kernel.org>
+  */
+ 
++/* Reported-by: Julian Groß <julian.g@posteo.de> */
++UNUSUAL_DEV(0x059f, 0x105f, 0x0000, 0x9999,
++		"LaCie",
++		"2Big Quadra USB3",
++		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
++		US_FL_NO_REPORT_OPCODES),
++
+ /*
+  * Apricorn USB3 dongle sometimes returns "USBSUSBSUSBS" in response to SCSI
+  * commands in UAS mode.  Observed with the 1.28 firmware; are there others?
 
 
