@@ -2,110 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 741821D77AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5123A1D77C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728131AbgERLrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 07:47:41 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:45592 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728073AbgERLre (ORCPT
+        id S1727035AbgERLt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 07:49:27 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:45699 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726413AbgERLt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 07:47:34 -0400
-Received: by mail-ot1-f66.google.com with SMTP id c3so7715825otr.12;
-        Mon, 18 May 2020 04:47:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qir9cbaQHXVGA1/iOYKuzF6odjOmx8lAyNZpRQv2tdQ=;
-        b=pac8S5O9hfO9GzSPea8N30VEeh5U4p2whwuRjCjRtsIPxO5HjxrQlQ/6QA8cdAOCDs
-         wv7rhviq+OGfOVGtvKz1HXHBjvbnAvbadjKPw6Sz6/tI7zg4nmpSfZ34szbo7yqAQnnj
-         BNmQgVfgje4RdWhoSOvIuBDa1nc/VowFE+T470OIz9NXaoVB8ZQQu5wy/OSMkPN9zqFE
-         +eQy7vC/r4Tqr1ixxgkunmfdZ/zs2gyD919/2MeX3hFmHNSs5bUQk02eDcFswC1Zwart
-         vPYR3Ks9AAhpi99XL/LGkck8WAvr2NZocYcvnhxNW+5QFEyq2eIRdJlZWPH+Xq3/yAyg
-         w/8w==
-X-Gm-Message-State: AOAM5321tk2W51TXs1rnixEh84mRQdX7kUzO4waTfD9IrrOIi4u6CEil
-        vXsj5z9paRgePJq+6GrAfUQN8O8A7e/lc8+Momc=
-X-Google-Smtp-Source: ABdhPJz2O4DBISUCLAR/kMEi9tuaM6RkZ5fY65PyWK3fsl2Xw8Rol1/2G9QYKQWCwWde1YPgoARYOiu95keFbjPun1E=
-X-Received: by 2002:a9d:564:: with SMTP id 91mr11986786otw.250.1589802453218;
- Mon, 18 May 2020 04:47:33 -0700 (PDT)
+        Mon, 18 May 2020 07:49:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1589802566; x=1621338566;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=JQ0NAO/GtfI7p2wQggXC6fNNXetSUF0RmF3Qo+o4/KE=;
+  b=hBUpv7wqKSabOpHd6qMvpCp5qbu5XrVpZwpT19nmN7jApcIsrldGhg/e
+   2I/6M/DvP6sxmwsfVmogRyOLO+wqTJRU5D1AFQKN4ju4McQ3bkTIVoKw4
+   6Fjw5bfdGrUhmAFyHuc0ADBA14+ilsGcC5WPI1MXaazs8tPW+g6eLVnWl
+   Jyt1ISZglk1JfGNLBZrD2UxwwU3X6QkCfK7/UDQHfZXJA3PUhCfMM43t2
+   aD1d8DgBP+SWeNXxRoNBIEsLRF+XeRCKcBP3FmvVIrp609D19v+SHRKrJ
+   7vQ7ejNsjQMiGYr5k/Q8yozkm1kcF6W76LOJlsD3t72ND0lO3lALQelv6
+   Q==;
+IronPort-SDR: 7JlGoEpwLqsVTx6ahRjFajvtgBseb/xhAoifPjvkRspLLZEvC7EIGcmlcNg1uygyvSMpwDm6x1
+ nI3ouhg4RrZGowmsov6ry3AgKc8ZhyGWAHOJ4oeWOgW7i43Ds3V2XNHKrYUQiD7fJj+VgvMEeQ
+ BYZ1Yod0U/gRQXvE2sZHo5CCTZxoSzpjn3hY6YsBrJNaTDeuLCIWUAYNuXtqu0yrf7qfXtcuRx
+ 2yf7YukXheleu94yDQQGuTTUcy32gDWwhxchvGNEDwX1tCt1gIK9Q7TspA23GZLn6ua9EgElkL
+ ClA=
+X-IronPort-AV: E=Sophos;i="5.73,407,1583218800"; 
+   d="scan'208";a="77017507"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 May 2020 04:49:26 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 18 May 2020 04:49:30 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Mon, 18 May 2020 04:49:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UnsXvnP+fAy+rbaYyglK19VYTANZsiCyQGW09tJ86Az9VxXjoaqMJxVuI5/yLoq9dBh+qjJogFI7mB/QNbm7cN9qKQqyZ40zJWhrFTUlGNXnqOnzlbGP0d4z0px4ueSm5zdCZ0oVK6WZqCJ8276tBSTrfhNxjhKOxDhi8ryWYS0QxnoVqW7gjUUWgdy6BGIpYK+E1npS7hh9XtK/TWTIE/f58nwDCC5ezPNKIb1CudrZsw74EMsa4BkMKIa9zsxPFItqf41TzZN7i+E5VfGPylGvf2Hv42qedPTU6WLn8vMWcdpo8haG/5LI7qRPFY4X6hKILsc5FUK8e5JA2Adg6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a5fAA5BSfKpVFTNEtwZa8SkJDizMP/Hcb7mhzrYAlR4=;
+ b=CwgyP1Sx+SQZs7mehhGQM1fEMuyGDcrtzkUmS36QFJif5K5saa7jaI4g1/2BF2PUZx6xgKEDwmlPdAi7waSmre6fKMdq9pGC6mHBDHQveEizNil+dclcWPzZT5w86ahqid702btpWmqpEtMQr53f6BCrehUceCTqc5oOCioaKvNZCkZRelpYXuHDcnx77Bwt4tYKuZLc3AEUSPfLMKB3vcI3dfyQ2C4fqbbHOigEJm/Oid+a6P85Kn3mjlpYu1R4WCmCecQ56f+7FLo5uk+0LPUjkftA6Iuvd9dFIjprlbxjNFghLTEhYAJ94EV7I676zd4kABIy/lYt5twrKOijlw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a5fAA5BSfKpVFTNEtwZa8SkJDizMP/Hcb7mhzrYAlR4=;
+ b=najrLRyRjNrpd00la07YiGY7ksgOavr0u4q7c0FZzFBj9ofbn/mCgKQ+0LNgNja6ezsQHB/nuvLad1F5ojHGttnzgEknL2CXEXxoZyQI2mATZSOZUfyFUBGCJ7ILOSGjrw+Ac9mjfBHErCzyExgiW2G9FAGeMvPKIKmMEvzmSkk=
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com (2603:10b6:a03:1c8::13)
+ by BY5PR11MB4102.namprd11.prod.outlook.com (2603:10b6:a03:181::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20; Mon, 18 May
+ 2020 11:49:22 +0000
+Received: from BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536]) by BY5PR11MB4419.namprd11.prod.outlook.com
+ ([fe80::d847:5d58:5325:c536%7]) with mapi id 15.20.3000.034; Mon, 18 May 2020
+ 11:49:22 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <alexandre.belloni@bootlin.com>, <Nicolas.Ferre@microchip.com>,
+        <Ludovic.Desroches@microchip.com>
+CC:     <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <Tudor.Ambarus@microchip.com>
+Subject: [PATCH] ARM: dts: at91: sama5d2_xplained: Add aliases for the
+ dedicated I2C IPs
+Thread-Topic: [PATCH] ARM: dts: at91: sama5d2_xplained: Add aliases for the
+ dedicated I2C IPs
+Thread-Index: AQHWLQpeiYvdwjy7WESHl6IsEN1h9A==
+Date:   Mon, 18 May 2020 11:49:21 +0000
+Message-ID: <20200518114802.253660-1-tudor.ambarus@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: bootlin.com; dkim=none (message not signed)
+ header.d=none;bootlin.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [94.177.32.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 69d04bd6-dcbf-40c1-bb4b-08d7fb218179
+x-ms-traffictypediagnostic: BY5PR11MB4102:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR11MB4102755933BC4A3CED5AE708F0B80@BY5PR11MB4102.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-forefront-prvs: 04073E895A
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xhFuCK5DNNnSgel839jOz8GynoM7CBwIol4oYkf2pcvN7ASNZ9O6VBlTswV2+4QNW3naT+LuqO7550o3sN8usdD+84E3hwyVilsUmAKlgufxVJIgXaKwo6pfuDBJdqv4UhwOMX9ZAgfDJeHxHtbHr2g9IIjDe2f/WKLTOyMJsG/GLwaxshKFML8bFfaKADxwE3Nh7P79+8PzyDYmfzDJXQ+uZh0eETR+PNFn937J4H9xCIufytTMPV4ukwrQmf2iHUT/vPPkDiedAxL/N/mPjik77UAePQWeWT/TRPBQjcFohyOtCelNMDh90obPhN+4QSAo/Yg/E35fsK6fRUPILDk2KKz2CO42P5v1HCzU4g87a8n8HD2EhIuGOW90JQWT7+1+coo2p4IxBFUh5L48n/6IyRPvgkVtvc48rgHDUp0Oa7QEu97YI4bOIB3S9zt5
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4419.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(136003)(366004)(346002)(396003)(376002)(8676002)(6506007)(4326008)(2906002)(6512007)(6636002)(107886003)(6486002)(36756003)(71200400001)(8936002)(2616005)(26005)(5660300002)(110136005)(66556008)(66446008)(86362001)(64756008)(1076003)(66476007)(91956017)(66946007)(54906003)(76116006)(186003)(4744005)(316002)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 2PGXPQluRbAz2OegNuRm/BIFTynAREp/XT7VvEBVPnrPukxvpGbxP7+hSvrwkR6nBV0RgfsBTV9WRVOXdHfKBSeAE9FQeXaudaC7bynCrlhLZlc0/fCCFFZFl6n2k5PRBUhEdepliWtUINFNJtTaXvQZcZyUgui6soTxjeI/2K+93HNJ5S0O8VWATjylPrDCKa/oCIvKXuW8cginBTjkAx4AS6DIxPpz2VYIymiZg4YQeohc+7NiuKX/37bhgE2gjBQxJuSaGYkHlX8Z8TevdTyDz82FUN0of/4i5KkXdzbPpoaAbyZl1JJhEx3TEh/tSn0JosVZs6U0j6R78evlPuLBQfEKEEULIUDNoJbbRYc4DzLEesusRK7168NX59hpAYTzSJcAPH/xL+d99mi+oZYAvolDoNa+8KYcxyE7G4Hv2UMYGUQ0eFeRkO13VjuAsD69rUJby93AOLzIW3Iu85YAmmqttL7eW+ez5NG3kmA=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <1589555337-5498-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1589555337-5498-18-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1589555337-5498-18-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 18 May 2020 13:47:19 +0200
-Message-ID: <CAMuHMdVV+2HsgmBytCOFg4pri4XinT_SPWT_Ac6n7FMZN3dR3w@mail.gmail.com>
-Subject: Re: [PATCH 17/17] ARM: dts: r8a7742: Add RWDT node
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-ide@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69d04bd6-dcbf-40c1-bb4b-08d7fb218179
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 May 2020 11:49:22.0226
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Cs27xMgAQvBTh+kcDlps1CdjMtP9rv7JXnrh7+AmwuyIwFjW1K8o3nQQAmCU/7L0svEe0wFfuhH/05bB45EybSvS9+wC1IlRIYr8c0L9UFY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4102
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-On Fri, May 15, 2020 at 5:10 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add a device node for the Watchdog Timer (RWDT) controller on the Renesas
-> RZ/G1H (r8a7742) SoC.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+The sama5d2 SoC has two dedicated I2C IPs that are enabled on
+sama5d2_xplained. Add alias for the i2c devices to not rely on
+probe order for the i2c device numbering.
 
-Thanks for your patch!
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+ arch/arm/boot/dts/at91-sama5d2_xplained.dts | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> --- a/arch/arm/boot/dts/r8a7742.dtsi
-> +++ b/arch/arm/boot/dts/r8a7742.dtsi
-> @@ -201,6 +201,16 @@
->                 #size-cells = <2>;
->                 ranges;
->
-> +               rwdt: watchdog@e6020000 {
-> +                       compatible = "renesas,r8a7742-wdt",
-> +                                    "renesas,rcar-gen2-wdt";
-> +                       reg = <0 0xe6020000 0 0x0c>;
-> +                       clocks = <&cpg CPG_MOD 402>;
-> +                       power-domains = <&sysc R8A7742_PD_ALWAYS_ON>;
-> +                       resets = <&cpg 402>;
-> +                       status = "disabled";
-
-Missing "interrupts" property.
-
-> +               };
-> +
->                 gpio0: gpio@e6050000 {
->                         compatible = "renesas,gpio-r8a7742",
->                                      "renesas,rcar-gen2-gpio";
-
-The rest looks fine, so with the above fixed:
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/arm/boot/dts/at91-sama5d2_xplained.dts b/arch/arm/boot/dt=
+s/at91-sama5d2_xplained.dts
+index 851b8587068b..a927165ea7c2 100644
+--- a/arch/arm/boot/dts/at91-sama5d2_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+@@ -18,6 +18,8 @@
+=20
+ 	aliases {
+ 		serial0 =3D &uart1;	/* DBGU */
++		i2c0 =3D &i2c0;
++		i2c1 =3D &i2c1;
+ 		i2c2 =3D &i2c2;		/* XPRO EXT2 */
+ 	};
+=20
+--=20
+2.23.0
