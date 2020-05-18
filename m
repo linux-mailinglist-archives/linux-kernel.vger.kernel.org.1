@@ -2,98 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C8D1D8907
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0471D88FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgERURc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 16:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726367AbgERURc (ORCPT
+        id S1726916AbgERUQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 16:16:51 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:33120 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726367AbgERUQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 16:17:32 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD41C061A0C;
-        Mon, 18 May 2020 13:17:30 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id z6so285514ljm.13;
-        Mon, 18 May 2020 13:17:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZuljtQBpIL0qjGzLVg3jHlIfvzyQopbP8u18XmNvs2w=;
-        b=c/68PRJxvHcj3DE/yxZ0a6MERGu0//5Ick75ODI7dCtgrU5zBHrqVRNU4HqhHXpuZv
-         d2t6doF3mTYCazJIDoW5wNqAvo295xPtO6XMe5O9De+h+U2GvwsbB9oRjv5mppLTNPiG
-         IXXQ3kJPrN76Emfux8S/bccsLYFUG1rGlmLzl91IA3xyDGnNPQQwaB/xDvr7HfWHV7jG
-         O+JQOi7F1hmaLXSoPNAE8hpr+hRZIOYwTkoTOe3MGG1R6c+S2gGHrdKZsu01ochO6/Hx
-         s8HTJm6/tPmJeNBQuT+sIVCT81imNzDF4ndGjREky+I0LgIlKoYZosdlQ118PqrjndwO
-         DrEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZuljtQBpIL0qjGzLVg3jHlIfvzyQopbP8u18XmNvs2w=;
-        b=IlxpTFvaE8OdsWc5srF8l+3e7K3LrhtK5czmXw1WClpCPXMm7ob+zo72/DM7j1c7+x
-         TInqZE1k16CpsJZuxxfZkIiK2Rom44Q6vbUeKvF91W+WrKabvLMYfGGc7HVQEgVfy+QT
-         AjUhP/7Sa6aM747H9uzfUbD0/G6om7uJpCw+QQsgxhxajSLtWRMHTb5apGjRShnzCon9
-         y9br9D04AURHH10PnjAMx+CyiaRPyxYE4IzHYuY8oEVGkV+ABvDEUdyOkoFCtaXsDH8c
-         7QIXZoo7iWLsubX1ZxvUzIlCqBXuUQm3h8NkVy9frKQQ0EsS3g6U1QQmcRuDrWXz24bd
-         vyGQ==
-X-Gm-Message-State: AOAM533HMIbYBzvRG6iDiZTOGbP3rEoBgxbK+CvFFjXzEkdvEGdIbGi8
-        vA1qSN3uhQcbStwmMJTpyk8=
-X-Google-Smtp-Source: ABdhPJzuP8HWeS92/QB/RT+ANHc+zhMPanKEN1AyPO8zGrOkYxuf1y3OyGB+GMp7sTVVMOa9zz/V8w==
-X-Received: by 2002:a2e:8ec9:: with SMTP id e9mr3069561ljl.204.1589833049193;
-        Mon, 18 May 2020 13:17:29 -0700 (PDT)
-Received: from polark.local (62-243-86-95-cable.dk.customer.tdc.net. [62.243.86.95])
-        by smtp.gmail.com with ESMTPSA id r13sm6249279ljh.66.2020.05.18.13.17.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2020 13:17:28 -0700 (PDT)
-From:   Daniel Gomez <dagmcr@gmail.com>
-To:     daniel@ffwll.ch, airlied@linux.ie
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart@ideasonboard.com, dri-devel@lists.freedesktop.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Gomez <dagmcr@gmail.com>
-Subject: [PATCH] drm: rcar-du: Fix build error
-Date:   Mon, 18 May 2020 22:16:46 +0200
-Message-Id: <20200518201646.48312-1-dagmcr@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 18 May 2020 16:16:50 -0400
+Received: from [10.0.0.249] (c-24-19-135-168.hsd1.wa.comcast.net [24.19.135.168])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B920020B717B;
+        Mon, 18 May 2020 13:16:47 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B920020B717B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1589833008;
+        bh=AiI1FEEKEhOSrRhQ3c3bzHp2AdpU5JROR/niu6Z306c=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Q9rpHpZs48Mpes4cY2X39QKx5IHfkdJ2/ypAKpCbktJA44bsoqYL1qMcBcBSTW9p5
+         LHN4E3zh7SF3PFrLthW/mOP2AZ4w/yRpivRy3xr3z1z6XI3XZsB+CoVnEK8V9BVqd7
+         xBcJTcqKWHBuaojsIpeQnTElvTyd/b7Z6be2k15E=
+Subject: Re: [RFC][PATCH 0/2] Add support for using reserved memory for ima
+ buffer pass
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, frowand.list@gmail.com, zohar@linux.ibm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, vincenzo.frascino@arm.com,
+        masahiroy@kernel.org, james.morse@arm.com, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr, gregkh@linuxfoundation.org,
+        nramas@linux.microsoft.com, tusharsu@linux.microsoft.com,
+        balajib@linux.microsoft.com
+References: <20200504203829.6330-1-prsriva@linux.microsoft.com>
+ <20200505095620.GA82424@C02TD0UTHF1T.local>
+ <e8c7d74e-74bf-caa3-452d-23faa649e825@linux.microsoft.com>
+ <20200512230509.GA2654@bogus>
+From:   Prakhar Srivastava <prsriva@linux.microsoft.com>
+Message-ID: <7701df90-a68b-b710-4279-9d64e45ee792@linux.microsoft.com>
+Date:   Mon, 18 May 2020 13:16:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200512230509.GA2654@bogus>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Select DRM_KMS_HELPER dependency.
 
-Build error when DRM_KMS_HELPER is not selected:
 
-drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xd48): undefined reference to `drm_atomic_helper_bridge_duplicate_state'
-drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xd50): undefined reference to `drm_atomic_helper_bridge_destroy_state'
-drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xd70): undefined reference to `drm_atomic_helper_bridge_reset'
-drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xdc8): undefined reference to `drm_atomic_helper_connector_reset'
-drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xde0): undefined reference to `drm_helper_probe_single_connector_modes'
-drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xe08): undefined reference to `drm_atomic_helper_connector_duplicate_state'
-drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xe10): undefined reference to `drm_atomic_helper_connector_destroy_state'
+On 5/12/20 4:05 PM, Rob Herring wrote:
+> On Wed, May 06, 2020 at 10:50:04PM -0700, Prakhar Srivastava wrote:
+>> Hi Mark,
+> 
+> Please don't top post.
+> 
+>> This patch set currently only address the Pure DT implementation.
+>> EFI and ACPI implementations will be posted in subsequent patchsets.
+>>
+>> The logs are intended to be carried over the kexec and once read the
+>> logs are no longer needed and in prior conversation with James(
+>> https://lore.kernel.org/linux-arm-kernel/0053eb68-0905-4679-c97a-00c5cb6f1abb@arm.com/)
+>> the apporach of using a chosen node doesn't
+>> support the case.
+>>
+>> The DT entries make the reservation permanent and thus doesnt need kernel
+>> segments to be used for this, however using a chosen-node with
+>> reserved memory only changes the node information but memory still is
+>> reserved via reserved-memory section.
+> 
+> I think Mark's point was whether it needs to be permanent. We don't
+> hardcode the initrd address for example.
+> 
+Thankyou for clarifying my misunderstanding, i am modelling this keeping 
+to the TPM log implementation that uses a reserved memory. I will rev up 
+the version with chosen-node support.
+That will make the memory reservation free after use.
 
-Signed-off-by: Daniel Gomez <dagmcr@gmail.com>
----
- drivers/gpu/drm/rcar-du/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/rcar-du/Kconfig b/drivers/gpu/drm/rcar-du/Kconfig
-index 0919f1f159a4..f65d1489dc50 100644
---- a/drivers/gpu/drm/rcar-du/Kconfig
-+++ b/drivers/gpu/drm/rcar-du/Kconfig
-@@ -31,6 +31,7 @@ config DRM_RCAR_DW_HDMI
- config DRM_RCAR_LVDS
- 	tristate "R-Car DU LVDS Encoder Support"
- 	depends on DRM && DRM_BRIDGE && OF
-+	select DRM_KMS_HELPER
- 	select DRM_PANEL
- 	select OF_FLATTREE
- 	select OF_OVERLAY
--- 
-2.26.2
+>> On 5/5/20 2:59 AM, Mark Rutland wrote:
+>>> Hi Prakhar,
+>>>
+>>> On Mon, May 04, 2020 at 01:38:27PM -0700, Prakhar Srivastava wrote:
+>>>> IMA during kexec(kexec file load) verifies the kernel signature and measures
+> 
+> What's IMAIMA is a LSM attempting to detect if files have been accidentally or 
+maliciously altered, both remotely and locally, it can also be used
+to appraise a file's measurement against a "good" value stored as an 
+extended attribute, and enforce local file integrity.
 
+IMA also validates and measures the signers of the kernel and initrd
+during kexec. The measurements are extended to PCR 10(configurable) and 
+the logs stored in memory, however once kexec'd the logs are lost. Kexec 
+is used as secondary boot loader in may use cases and loosing the signer
+creates a security hole.
+
+This patch is an implementation to carry over the logs and making it
+possible to remotely validate the signers of the kernel and initrd. Such 
+a support exits only in powerpc.
+This patch makes the carry over of logs architecture independent and 
+puts the complexity in a driver.
+
+Thanks,
+Prakhar
+> 
+>>>> the signature of the kernel. The signature in the logs can be used to verfiy the
+>>>> authenticity of the kernel. The logs don not get carried over kexec and thus
+>>>> remote attesation cannot verify the signature of the running kernel.
+>>>>
+>>>> Introduce an ABI to carry forward the ima logs over kexec.
+>>>> Memory reserved via device tree reservation can be used to store and read
+>>>> via the of_* functions.
+>>>
+>>> This flow needs to work for:
+>>>
+>>> 1) Pure DT
+>>> 2) DT + EFI memory map
+>>> 3) ACPI + EFI memory map
+>>>
+>>> ... and if this is just for transiently passing the log, I don't think
+>>> that a reserved memory region is the right thing to use, since they're
+>>> supposed to be more permanent.
+>>>
+>>> This sounds analogous to passing the initrd, and should probably use
+>>> properties under the chosen node (which can be used for all three boot
+>>> flows above).
+>>>
+>>> For reference, how big is the IMA log likely to be? Does it need
+>>> physically contiguous space?
+>>
+>> It purely depends on the policy used and the modules/files that are accessed
+>> for my local testing over a kexec session the log in
+>> about 30KB.
+>>
+>> Current implementation expects enough contiguous memory to allocated to
+>> carry forward the logs. If the log size exceeds the reserved memory the
+>> call will fail.
+>>
+>> Thanks,
+>> Prakhar Srivastava
+>>>
+>>> Thanks,
+>>> Mark.
+>>>
+>>>>
+>>>> Reserved memory stores the size(sizeof(size_t)) of the buffer in the starting
+>>>> address, followed by the IMA log contents.
+>>>>
+>>>> Tested on:
+>>>>     arm64 with Uboot
+>>>>
+>>>> Prakhar Srivastava (2):
+>>>>     Add a layer of abstraction to use the memory reserved by device tree
+>>>>       for ima buffer pass.
+>>>>     Add support for ima buffer pass using reserved memory for arm64 kexec.
+>>>>       Update the arch sepcific code path in kexec file load to store the
+>>>>       ima buffer in the reserved memory. The same reserved memory is read
+>>>>       on kexec or cold boot.
+>>>>
+>>>>    arch/arm64/Kconfig                     |   1 +
+>>>>    arch/arm64/include/asm/ima.h           |  22 ++++
+>>>>    arch/arm64/include/asm/kexec.h         |   5 +
+>>>>    arch/arm64/kernel/Makefile             |   1 +
+>>>>    arch/arm64/kernel/ima_kexec.c          |  64 ++++++++++
+>>>>    arch/arm64/kernel/machine_kexec_file.c |   1 +
+>>>>    arch/powerpc/include/asm/ima.h         |   3 +-
+>>>>    arch/powerpc/kexec/ima.c               |  14 ++-
+>>>>    drivers/of/Kconfig                     |   6 +
+>>>>    drivers/of/Makefile                    |   1 +
+>>>>    drivers/of/of_ima.c                    | 165 +++++++++++++++++++++++++
+>>>>    include/linux/of.h                     |  34 +++++
+>>>>    security/integrity/ima/ima_kexec.c     |  15 ++-
+>>>>    13 files changed, 325 insertions(+), 7 deletions(-)
+>>>>    create mode 100644 arch/arm64/include/asm/ima.h
+>>>>    create mode 100644 arch/arm64/kernel/ima_kexec.c
+>>>>    create mode 100644 drivers/of/of_ima.c
+>>>>
+>>>> -- 
+>>>> 2.25.1
+>>>>
