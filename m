@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045CC1D8354
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A24E1D81C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732709AbgERSDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:03:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49404 "EHLO mail.kernel.org"
+        id S1730774AbgERRuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:50:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732685AbgERSDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:03:44 -0400
+        id S1730714AbgERRuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:50:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA0BE20715;
-        Mon, 18 May 2020 18:03:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A7B320715;
+        Mon, 18 May 2020 17:50:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825023;
-        bh=UGI9ls1iXRh4lmBl2zbAQTK+9l9Pllhav6NmdI97tjc=;
+        s=default; t=1589824234;
+        bh=NBIKDTiQeAI7UtqVKPP26UgCJsIPKYa+MHApbtTnKFE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gJO8axukWI4FWqxDbT4r792UKvJBrRpNvERP7yhfNDvL4qqFWV1kg80wZC7vrwsm2
-         TVDxVAvS7BuUpd+SF0s4CUg1Fb014pP3SS4suM+fUmXGo9jYOJnPpFpDnoKPwtHHHg
-         t/AxF3xMYRhjeDD2GtUxOjqcG90i2f8rVAX++rUI=
+        b=Z5FeN9ogE1EpCINfP3fbOcsAF2zAzQvzEN9Lg9u+NWqChZRQNaeERwqW/brJ5jfAR
+         ekTkSl34qnYloPlTyj9PZ3I17IOIPKEirzA6gv7C6iB0+6fhDPLuTt9Mj35byeCNos
+         cBL2kYVYJhbzHXNUuKaiJUO4FOyBNVyeabyVdmQs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Wysochanski <dwysocha@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 098/194] NFS: Fix fscache super_cookie allocation
-Date:   Mon, 18 May 2020 19:36:28 +0200
-Message-Id: <20200518173540.177761246@linuxfoundation.org>
+        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 11/80] net: phy: fix aneg restart in phy_ethtool_set_eee
+Date:   Mon, 18 May 2020 19:36:29 +0200
+Message-Id: <20200518173452.573001655@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
+References: <20200518173450.097837707@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,56 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Wysochanski <dwysocha@redhat.com>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit 15751612734ca0c419ac43ce986c9badcb5e2829 ]
+[ Upstream commit 9de5d235b60a7cdfcdd5461e70c5663e713fde87 ]
 
-Commit f2aedb713c28 ("NFS: Add fs_context support.") reworked
-NFS mount code paths for fs_context support which included
-super_block initialization.  In the process there was an extra
-return left in the code and so we never call
-nfs_fscache_get_super_cookie even if 'fsc' is given on as mount
-option.  In addition, there is an extra check inside
-nfs_fscache_get_super_cookie for the NFS_OPTION_FSCACHE which
-is unnecessary since the only caller nfs_get_cache_cookie
-checks this flag.
+phy_restart_aneg() enables aneg in the PHY. That's not what we want
+if phydev->autoneg is disabled. In this case still update EEE
+advertisement register, but don't enable aneg and don't trigger an
+aneg restart.
 
-Fixes: f2aedb713c28 ("NFS: Add fs_context support.")
-Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: f75abeb8338e ("net: phy: restart phy autonegotiation after EEE advertisment change")
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/fscache.c | 2 --
- fs/nfs/super.c   | 1 -
- 2 files changed, 3 deletions(-)
+ drivers/net/phy/phy.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/fs/nfs/fscache.c b/fs/nfs/fscache.c
-index 8eff1fd806b1c..f517184156068 100644
---- a/fs/nfs/fscache.c
-+++ b/fs/nfs/fscache.c
-@@ -118,8 +118,6 @@ void nfs_fscache_get_super_cookie(struct super_block *sb, const char *uniq, int
- 
- 	nfss->fscache_key = NULL;
- 	nfss->fscache = NULL;
--	if (!(nfss->options & NFS_OPTION_FSCACHE))
--		return;
- 	if (!uniq) {
- 		uniq = "";
- 		ulen = 1;
-diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-index dada09b391c65..c0d5240b8a0ac 100644
---- a/fs/nfs/super.c
-+++ b/fs/nfs/super.c
-@@ -1154,7 +1154,6 @@ static void nfs_get_cache_cookie(struct super_block *sb,
- 			uniq = ctx->fscache_uniq;
- 			ulen = strlen(ctx->fscache_uniq);
- 		}
--		return;
+--- a/drivers/net/phy/phy.c
++++ b/drivers/net/phy/phy.c
+@@ -1302,9 +1302,11 @@ int phy_ethtool_set_eee(struct phy_devic
+ 		/* Restart autonegotiation so the new modes get sent to the
+ 		 * link partner.
+ 		 */
+-		ret = phy_restart_aneg(phydev);
+-		if (ret < 0)
+-			return ret;
++		if (phydev->autoneg == AUTONEG_ENABLE) {
++			ret = phy_restart_aneg(phydev);
++			if (ret < 0)
++				return ret;
++		}
  	}
  
- 	nfs_fscache_get_super_cookie(sb, uniq, ulen);
--- 
-2.20.1
-
+ 	return 0;
 
 
