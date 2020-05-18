@@ -2,24 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82EF1D7A1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 340E01D7A22
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728176AbgERNh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 09:37:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:40820 "EHLO foss.arm.com"
+        id S1727922AbgERNh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 09:37:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728148AbgERNhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 09:37:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C84A101E;
-        Mon, 18 May 2020 06:37:21 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.29.34])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 28C743F305;
-        Mon, 18 May 2020 06:37:18 -0700 (PDT)
-Date:   Mon, 18 May 2020 14:37:16 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
+        id S1726958AbgERNh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 09:37:56 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4079206D4;
+        Mon, 18 May 2020 13:37:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589809075;
+        bh=qWLypqUxpjq+PWGqvdA08FUoyMUiPmK0wN1hOQJH8Kw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B9UkcbY2jDAacUffVg4mgBVmOKNJgjBIi9QGO696HJhKqFVyxDCAnTe5VWZVmqFQA
+         6j/W5aBaup71jjp72bsEitt3GUeKjV7zBGm4M0D5NoERvarSIdTMvuih9Et4m+G9DE
+         pNf9ckZXrxfozI/DNEFAo41VOq8rV7P52/nvKMkg=
+Date:   Mon, 18 May 2020 14:37:50 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Sami Tolvanen <samitolvanen@google.com>,
         Kees Cook <keescook@chromium.org>,
@@ -27,44 +33,70 @@ Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Mark Rutland <mark.rutland@am.com>,
         Jann Horn <jannh@google.com>, Ard Biesheuvel <ardb@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>, kernel-team@android.com
-Subject: Re: [PATCH 6/6] scs: Move DEFINE_SCS macro into core code
-Message-ID: <20200518133716.GD2787@C02TD0UTHF1T.local>
+Subject: Re: [PATCH 1/6] arm64: scs: Store absolute SCS stack pointer value
+ in thread_info
+Message-ID: <20200518133750.GF32394@willie-the-truck>
 References: <20200515172756.27185-1-will@kernel.org>
- <20200515172756.27185-7-will@kernel.org>
- <20200518121441.GE1957@C02TD0UTHF1T.local>
- <20200518132612.GE32394@willie-the-truck>
+ <20200515172756.27185-2-will@kernel.org>
+ <20200518113710.GA1957@C02TD0UTHF1T.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200518132612.GE32394@willie-the-truck>
+In-Reply-To: <20200518113710.GA1957@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 02:26:12PM +0100, Will Deacon wrote:
-> On Mon, May 18, 2020 at 01:14:41PM +0100, Mark Rutland wrote:
-> > On Fri, May 15, 2020 at 06:27:56PM +0100, Will Deacon wrote:
-> > > Defining static shadow call stacks is not architecture-specific, so move
-> > > the DEFINE_SCS() macro into the core header file.
-> > > 
-> > > Signed-off-by: Will Deacon <will@kernel.org>
+On Mon, May 18, 2020 at 12:37:10PM +0100, Mark Rutland wrote:
+> On Fri, May 15, 2020 at 06:27:51PM +0100, Will Deacon wrote:
+> > Storing the SCS information in thread_info as a {base,offset} pair
+> > introduces an additional load instruction on the ret-to-user path,
+> > since the SCS stack pointer in x18 has to be converted back to an offset
+> > by subtracting the base.
 > > 
-> > I think that we'll have to pull this back into arch code if/when we deal
-> > with VMAP'd stacks, so I'm not sure this is worthwhile given the
-> > diffstat is balanced.
+> > Replace the offset with the absolute SCS stack pointer value instead
+> > and avoid the redundant load.
+> > 
+> > Signed-off-by: Will Deacon <will@kernel.org>
 > 
-> I dunno, if another architecture wants to use this then having the stuff
-> in the core code makes sense to me. I also want to kill asm/scs.h entirely
-> and move our asm macros somewhere else where they're not mixed up with the
-> C headers.
+> One trivial nit below, but regardless this looks sound to me, and I
+> certainly prefer having the absolute address rather than an offset, so:
+> 
+> Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+> 
+> > diff --git a/kernel/scs.c b/kernel/scs.c
+> > index 9389c28f0853..5ff8663e4a67 100644
+> > --- a/kernel/scs.c
+> > +++ b/kernel/scs.c
+> > @@ -60,8 +60,7 @@ int scs_prepare(struct task_struct *tsk, int node)
+> >  	if (!s)
+> >  		return -ENOMEM;
+> >  
+> > -	task_scs(tsk) = s;
+> > -	task_scs_offset(tsk) = 0;
+> > +	task_scs(tsk) = task_scs_sp(tsk) = s;
+> 
+> I think this would be more legible as two statements:
+> 
+> |	task_sys(tsk) = s;
+> |	task_scs_sp(tsk) = s;
 
-Thinking about it a bit further, we'd have to make bigger changes anyhow
-(to dynamically allocate), but given we can do that for regular stacks
-we can probably do something similar here.
+I think it's nice to be able to say:
 
-So no strong feelings either way on this patch.
+	task_scs(tsk) = task_scs_sp(tsk);
 
-Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+because it makes it very clear that they are initialised to the same thing.
+Having it as two statements means somebody will update one and forget to
+update the other one.
 
-Mark.
+> ... as we usually save `foo = bar = baz` stuff for the start of a
+> function or within loop conditions.
+
+Hmm, I can't really find anything consistent in that regard, to be honest
+with you. Did I miss something in the coding style doc?
+
+I'll leave it as-is for now.
+
+Will
