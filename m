@@ -2,137 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD981D78B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 14:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8BF1D78B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 14:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727040AbgERMeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 08:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
+        id S1727812AbgERMer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 08:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726800AbgERMeb (ORCPT
+        with ESMTP id S1726797AbgERMer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 08:34:31 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 101D1C061A0C;
-        Mon, 18 May 2020 05:34:31 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id o14so9671300ljp.4;
-        Mon, 18 May 2020 05:34:30 -0700 (PDT)
+        Mon, 18 May 2020 08:34:47 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC28C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 05:34:45 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id a4so7870824lfh.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 05:34:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=tpIXCdN3gj595qpUOD6MxaqO71H7TphyzCikrM53G/Q=;
-        b=lTLCYazhegtr2OT4Z0FOfyNO6zqXE18vxQ8pMI+ZQGG1mHGvS9K9SUCY5cUcdWGchE
-         i0yvWTXO0PGccyB5QFr2bgNoWLPm/fLw85m9tI/yQDXfXTVKHKr1xYG/8nChy+0FZkPv
-         k+2Pb5zD148x5EldXXohPOXsPzKHEc702IclWCE9JvOZRXpLoTOCZKuVNhmtjf5yq1gb
-         7/GMmSc9mRP86cMOcKRSWiLD5pmmpvzu2+jyLAE913mKj8F18iPheL3SpIHUwhKhM2KX
-         dPmd5JDFKAsLs3/eQskcTwyaRpkv6sATfjCOTgT6L+Mmz3dvM41l7JH7l7dLyZ7EVWvA
-         i3wg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eSPwRcqIEUzwnsX+6a1/rCx7QnyIswo4ef56fDP+XJQ=;
+        b=K5o1+KcxWilzNS0/SHukgu2PTQNU5j8LR+M3EH4/fEeODROqMFQoC76wWoJBmhBpXG
+         RCBTfGFDxGdjpmagjAIg+equaPzVEMYnkG/2633Hx6g2L5TUtj23TsKnKhiXDBNo75Tl
+         4y+1kjuBhiFaLihUT6IFqaPVvWs/atx4NBW6DlS7TtduLkn8HFxbYyVOPHxSUgTnunJi
+         k2N5tNWUA5wG7YMcMXiuAeEotdrDot3DhcXCUtNPk3MYOS1OMcO12tGm2Vx7l3ySESB7
+         /nKzRc9AUCrVtwxKkhfNgr3CffJDXT/jfqMuPdup0aTR5kMK7z6oUTP8dUrqQTv2N1/t
+         yiUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :date:message-id:mime-version;
-        bh=tpIXCdN3gj595qpUOD6MxaqO71H7TphyzCikrM53G/Q=;
-        b=G3RJNnZ3eXmf+ZXRP03XIajGl1Dt/PH/lzTv/ns21+rp2NdRckHlffZ3UUXdJlL2A3
-         t5UMb3jACpmQbQc5/KH/8XPtAHo0KYg0tF0Oh/FTZje/JiO6m17TpP9HpUPQzH5f9F9Z
-         L5nNxiknvxw+YHbnUsR1r4PzNpZCZ56Hsd21uv6nvmHsb0fN7Fof9d24vYpucFTmm+N0
-         KvSqnpKfHJFI9IiU+lyYh5/1gnPMC197jT3Gl8z9+5xcK2Be33FBAHR9zNkpcIEaIdbA
-         q9j47aC8yygzK0eOE5NV1IppoKrPBwEqTzn+LIEBZmG80gg4KfF70eGRzEdWcxR2bDFv
-         2+wA==
-X-Gm-Message-State: AOAM531LRckdblXd0B7zHb0vwy/LPEQbYKbWbX9uMgKQPWs9pFq/pkEM
-        mnnP++vTPumck2bpeYi9YMY=
-X-Google-Smtp-Source: ABdhPJxQTk33pnsR2sFs2XCrcVmecXuim2j8pHd5sogu/7KpL5KOGEKB7yJtg7B+GE3xMMjg9aIL6w==
-X-Received: by 2002:a2e:920f:: with SMTP id k15mr9580600ljg.131.1589805269354;
-        Mon, 18 May 2020 05:34:29 -0700 (PDT)
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
-        by smtp.gmail.com with ESMTPSA id f5sm6773079lfh.84.2020.05.18.05.34.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 18 May 2020 05:34:28 -0700 (PDT)
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Drew Fustini <drew@beagleboard.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        "open list\:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>
-Subject: Re: [PATCH] arm: dts: am33xx-bone-common: add gpio-line-names
-In-Reply-To: <CACRpkdZnnRXwv0-71t93HX42jL-muty4yJx5gW6_P3yOM-sGAg@mail.gmail.com>
-References: <20200508165821.GA14555@x1> <CACRpkdb+ZP6rfjGg6Ef9_wYvNf6qmSc7LZyYBVKA3XWCtxPfqQ@mail.gmail.com> <875zcty7tt.fsf@kernel.org> <CACRpkdZnnRXwv0-71t93HX42jL-muty4yJx5gW6_P3yOM-sGAg@mail.gmail.com>
-Date:   Mon, 18 May 2020 15:34:23 +0300
-Message-ID: <87zha5whf4.fsf@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eSPwRcqIEUzwnsX+6a1/rCx7QnyIswo4ef56fDP+XJQ=;
+        b=WBS3X+pkdxZDBu0/nkZimGfmUyoQXF3RdJjnMxibNFbkRZ3Q+snUXplz7ZVuV2KpuX
+         7pAu7r39nXYBH6kcTEbekeuOMiYeUNntU6WJuaEcB+RL1AW/GHRtURJqERMTjwZLzDp6
+         wPZf/oKsfjacziTaPzDgNg7NOhzkjU5eRQeSVZn/aHRvrnmG2Ew0TZagqIgmQszXZmZT
+         UmTg3pafRJJboWQH6N1f8P1XDf31Lhm4WA62K3Jp5jxxE+TEoh9GSLOJmYrh8zvqOQ5e
+         rxO/dRhT05RgnISS7haOD8uRfSi2fFvOiV8NaXvVRvtINiqAOwgy5atsGY/Zl1ZPPd9i
+         RYwg==
+X-Gm-Message-State: AOAM532FAO9xXq9/B/q7CFCoRL6kQh1pEletUxphFrhSdeSi5FSQB7VB
+        eY5ZywJAh5RRCaa2yA2SZXPFPkPEL/rR48No4OrxOQ==
+X-Google-Smtp-Source: ABdhPJwS4vAqRfB2Mc/Wu5XLYS5nfyJNk9m09z9ZVmCkKEs3gMi9T/GM+ekq2djUdnN47dc0XQJ6rhxmrEKr0IT4mZk=
+X-Received: by 2002:ac2:560f:: with SMTP id v15mr6415706lfd.160.1589805284317;
+ Mon, 18 May 2020 05:34:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+References: <20200513003430.651232-1-vlad.babchuk@gmail.com>
+ <20200513003625.651340-1-vlad.babchuk@gmail.com> <CAHUa44E968nR1toCGn0_k6ABw_By7Z8EqB2rGSgiTmseo8oL-Q@mail.gmail.com>
+ <CAFA6WYNOAwSaaaCCf0qoQ=gGBEsCkbdrWUzabkn3XnM7hndsow@mail.gmail.com>
+ <CAOcqxo3vbv40QtK_R2m2ROyk8zXk9fJRszA6zG+f5_rse9qBDw@mail.gmail.com>
+ <CAFA6WYOzzBx4CjyQQCyHgkPbOdqPMOAw54G9MK6DwhfrCHxLzQ@mail.gmail.com>
+ <CAOcqxo2-G+k_E0Yg__aH_pTokpv8j4V+F0whjJKU49MeZaZ3fQ@mail.gmail.com>
+ <CAFA6WYNwJ9SahZw0bh9WAr=2ofX2fpzW+bG1b7zCcov9h9qnag@mail.gmail.com> <CAOcqxo39kDDJ0FRYVkSLvdijkpF-nkm398Nrdm7pjWGzEgMKKQ@mail.gmail.com>
+In-Reply-To: <CAOcqxo39kDDJ0FRYVkSLvdijkpF-nkm398Nrdm7pjWGzEgMKKQ@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 18 May 2020 18:04:32 +0530
+Message-ID: <CAFA6WYPuEjx1WD5JBhiMJsCpTPrpLKJXg=K5Q841qF1qCHQOgA@mail.gmail.com>
+Subject: Re: [PATCH] optee: don't fail on unsuccessful device enumeration
+To:     Volodymyr Babchuk <vlad.babchuk@gmail.com>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
+        Jerome Forissier <jerome@forissier.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi Volodymyr,
 
-Linus Walleij <linus.walleij@linaro.org> writes:
-
-> On Mon, May 18, 2020 at 10:18 AM Felipe Balbi <balbi@kernel.org> wrote:
->> Linus Walleij <linus.walleij@linaro.org> writes:
->> >> gpiochip0 - 32 lines:
->> >>         line   0:   "ethernet"       unused   input  active-high
->> >>         line   1:   "ethernet"       unused   input  active-high
->> >
->> > Why are the ethernet lines not tagged with respective signal name
->> > when right below the SPI lines are explicitly tagged with
->> > sclk, cs0 etc?
->> >
->> > Ethernet is usually RGMII and has signal names like
->> > tx_clk, tx_d0, tx_en etc.
->> >
->> > Also some lines seem to be tagged with the pin number
->> > like P9_22, P2_21 below, it seems a bit inconsistent
->> > to have much information on some pins and very sketchy
->> > information on some.
->>
->> the pin names match the beagle bone documentation and would help users
->> figure out which pins on the expansion headers match to a gpio signal.
+On Mon, 18 May 2020 at 15:57, Volodymyr Babchuk <vlad.babchuk@gmail.com> wrote:
 >
-> OK if it is how it looks in the documentation I agree that is what
-> users need, maybe the documentation is confusing but there is not
-> much to do about that.
+> Hi Sumit,
+>
+> On Fri, 15 May 2020 at 07:55, Sumit Garg <sumit.garg@linaro.org> wrote:
+> >
+> > Hi Volodymyr,
+> >
+> > On Fri, 15 May 2020 at 06:32, Volodymyr Babchuk <vlad.babchuk@gmail.com> wrote:
+> > >
+> > > Hi Sumit,
+> > >
+> > > On Thu, 14 May 2020 at 08:38, Sumit Garg <sumit.garg@linaro.org> wrote:
+> > > >
+> > > > Hi Volodymyr,
+> > > >
+> > > > On Thu, 14 May 2020 at 06:48, Volodymyr Babchuk <vlad.babchuk@gmail.com> wrote:
+> > > > >
+> > > > > Hi Sumit,
+> > > > >
+> > > > > On Wed, 13 May 2020 at 11:24, Sumit Garg <sumit.garg@linaro.org> wrote:
+> > > > > >
+> > > > > > Hi Volodymyr,
+> > > > > >
+> > > > > > On Wed, 13 May 2020 at 13:30, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+> > > > > > >
+> > > > > > > Hi Volodymyr,
+> > > > > > >
+> > > > > > > On Wed, May 13, 2020 at 2:36 AM Volodymyr Babchuk
+> > > > > > > <vlad.babchuk@gmail.com> wrote:
+> > > > > > > >
+> > > > > > > > optee_enumerate_devices() can fail for multiple of reasons. For
+> > > > > > > > example, I encountered issue when Xen OP-TEE mediator NACKed
+> > > > > > > > PTA_CMD_GET_DEVICES call.
+> > > > > >
+> > > > > > Could you share a detailed description of the issue which you are
+> > > > > > facing? optee_enumerate_devices() is a simple invocation of pseudo TA
+> > > > > > and cases where OP-TEE doesn't provide corresponding pseudo TA are
+> > > > > > handled very well.
+> > > > >
+> > > > > Yes, I did some research and looks like issue is broader, than I
+> > > > > expected.  It is my fault, that I wasn't paying attention to the tee
+> > > > > client support in the kernel.  Basically, it is incompatible with the
+> > > > > virtualization feature. You see, the main issue with virtual machines
+> > > > > is the second stage MMU. Intermediate physical address, that appear to
+> > > > > be contiguous for the kernel may be not contiguous in the real
+> > > > > physical memory due to 2nd stage MMU mappings. This is the reason I
+> > > > > introduced OPTEE_MSG_ATTR_NONCONTIG in the kernel driver.
+> > > > >
+> > > > > But, looks like kernel-side optee client does not use this feature. It
+> > > > > tries to provide SHM buffer as a simple contiguous span of memory. Xen
+> > > > > blocks calls with OPTEE_MSG_ATTR_TYPE_TMEM_*   but without
+> > > > > OPTEE_MSG_ATTR_NONCONTIG , because it can't translate IPAs to PAs for
+> > > > > such buffers. This is why call to  PTA_CMD_GET_DEVICES fails.
+> > > > >
+> > > > > Valid fix would be to use OPTEE_MSG_ATTR_NONCONTIG whenever possible.
+> > > > >
+> > > >
+> > > > Thanks for the detailed analysis. It looks like you are missing the
+> > > > following fix patch in your tree which basically fixed broken
+> > > > tee_shm_alloc() in case dynamic shared memory is enabled (IIRC
+> > > > virtualization only supports dynamic shared memory).
+> > > >
+> > > > commit a249dd200d03791cab23e47571f3e13d9c72af6c
+> > >
+> > > Actually, I have this patch in my tree. So, it does not fixes the
+> > > issue. Which is weird, actually. I'm planning to look deeper into
+> > > this.
+> >
+> > AFAICT, the only difference here is that it's the kernel memory
+> > registered rather than user-space memory. But I am not very conversant
+> > with the Xen environment. So I hope you will be able to find the root
+> > cause as to why Xen is blocking this invocation.
+>
+> Yes. I have found issue in Xen mediator code. It didn't allowed TMEM
+> with NULL buf_ptr and without ATTR_NONCONTIG flag. This is clearly
+> a bug and I already sent the patch to Xen ML.
+>
 
-the board has two expansion headers, P1 and P2:
+Glad to hear that you were able to find the bug and fix it.
 
-https://github.com/beagleboard/pocketbeagle/wiki/System-Reference-Manual#53=
-1_Expansion_Headers
+BTW, I guess the reason you didn't notice this bug in user-space
+(xtest 1025) is due to missing kernel patch [1] (not yet in upstream)
+from your kernel tree.
 
-Pins are always the pin number on the header, hence P2_21 and P1_10 and
-so on.
+[1] https://github.com/linaro-swg/linux/commit/1149e7d06a009e5dacf6aaa29bd087da64bfbed2
 
-=2D-=20
-balbi
+-Sumit
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl7CgM8ACgkQzL64meEa
-mQa02A//W7ZWqA6ND2rDES1cxSEAwXyx02mdXu96eVdXV+2Q9FXd/OJvXrWSZDGa
-xf0Yu7ve9EMUVbzq5kwINzMBL6nN7F2rtEtyfZkAcTFFSnedjHeWJqpqB1aKfZHs
-/e+iy8NIcdVmCR9SAbW2Lfm0729cCBK/jSKLqnOeZIEzDn7Cg3VPtzzGNKUWqz2R
-oiUq5GceYpHhOlQ+EuTDv1e5i/lr/UvQ08XWU08Mw7xQxTkdAUThM5Z0w3oi3BPo
-zZ3rG7teke3+yUflzUX1fh9Uoa3aJeq2msafROF45kSeYTl7GBwXDB528sLtWAai
-YX/f+z7LgdGd/vVNgRd+m/qv0qfnaCvDf/bJqqyI1JKRL+aYmv3j/T72ebgAw7EV
-LpQfP6/mA7vVvVEJ78rJMgn5nkexXvs7vV34nAZ45H+Zyp+rHUfhYFVw8MEGOBZb
-M4xzKfE40amu05zPkRMkVddTfjsBDpFD7biZu9aJREzi564Hnt8CQ/SUqq2fOVRw
-5OQsIsSi8paC797xILnFHaM1PK/NaNqp8qKsF/dv98k1sELP1SAi9k+oJJ4KhWJ8
-zdxnU9+1mbjd5AgrLac153LyaPX8z/W3TrjvvPpA9bHok2+vizWuVRDQl1dgcj16
-n5OuWeutgO3DIi+iBhJtVtV1RUK7ywUHoYuZ3NM23VfFYA8bVAI=
-=8tVN
------END PGP SIGNATURE-----
---=-=-=--
+> --
+> WBR Volodymyr Babchuk aka lorc [+380976646013]
+> mailto: vlad.babchuk@gmail.com
