@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676751D823E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27071D8093
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731331AbgERRyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:54:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59408 "EHLO mail.kernel.org"
+        id S1729091AbgERRkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:40:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731322AbgERRyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:54:36 -0400
+        id S1729046AbgERRkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:40:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6E0520829;
-        Mon, 18 May 2020 17:54:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B94DF207FB;
+        Mon, 18 May 2020 17:40:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824475;
-        bh=/BcYTFxhp9faC8o2IxkdEy/uKhITvfBagAlcvm74Qdo=;
+        s=default; t=1589823623;
+        bh=MnXWXZU26+4+NeIY9AqrocqOaxDKw36ByaZ0bariZvM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qBkeSgcB4ujzywdCOJyXoqUYlIAcFtx1kxPe7SE26Wb/rSdGddYI1BJ+6aVVN2iQG
-         Amenr+NIESasydMC5fBQb0f3ZronM1GOhc3gbgqPZAAwJmdxEVStxyDEmaQmFnANT3
-         ffjxxkJdo2gEwkAhad7G2LL5cJy1dne6FleMuXB0=
+        b=ipGjf7I9W/5RqvfT6YJtTh0TVnXQCKWu/jF0CAeIrj+OZQ+gdOwyZdJG/+Mq4v6OX
+         n8CSBglQ8d4FGdNs6K3tcjXspRN9tXYXDHSTA8sT/7sr0djpwCPxMrbysClADByD9C
+         uVmMml4ZYkK0JEURuZcqgYYg6LEr0bEtl/Nk+Eo8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 026/147] tcp: fix SO_RCVLOWAT hangs with fat skbs
+        stable@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 18/86] phy: micrel: Ensure interrupts are reenabled on resume
 Date:   Mon, 18 May 2020 19:35:49 +0200
-Message-Id: <20200518173517.069991648@linuxfoundation.org>
+Message-Id: <20200518173454.160717267@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,95 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 
-[ Upstream commit 24adbc1676af4e134e709ddc7f34cf2adc2131e4 ]
+[ Upstream commit f5aba91d7f186cba84af966a741a0346de603cd4 ]
 
-We autotune rcvbuf whenever SO_RCVLOWAT is set to account for 100%
-overhead in tcp_set_rcvlowat()
+At least on ksz8081, when getting back from power down, interrupts are
+disabled. ensure they are reenabled if they were previously enabled.
 
-This works well when skb->len/skb->truesize ratio is bigger than 0.5
+This fixes resuming which is failing on the xplained boards from atmel
+since 321beec5047a (net: phy: Use interrupts when available in NOLINK
+state)
 
-But if we receive packets with small MSS, we can end up in a situation
-where not enough bytes are available in the receive queue to satisfy
-RCVLOWAT setting.
-As our sk_rcvbuf limit is hit, we send zero windows in ACK packets,
-preventing remote peer from sending more data.
-
-Even autotuning does not help, because it only triggers at the time
-user process drains the queue. If no EPOLLIN is generated, this
-can not happen.
-
-Note poll() has a similar issue, after commit
-c7004482e8dc ("tcp: Respect SO_RCVLOWAT in tcp_poll().")
-
-Fixes: 03f45c883c6f ("tcp: avoid extra wakeups for SO_RCVLOWAT users")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
+Fixes: 321beec5047a (net: phy: Use interrupts when available in NOLINK state)
+Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/tcp.h    |   13 +++++++++++++
- net/ipv4/tcp.c       |   14 +++++++++++---
- net/ipv4/tcp_input.c |    3 ++-
- 3 files changed, 26 insertions(+), 4 deletions(-)
+ drivers/net/phy/micrel.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -1401,6 +1401,19 @@ static inline int tcp_full_space(const s
- 	return tcp_win_from_space(sk, READ_ONCE(sk->sk_rcvbuf));
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index 98166e144f2dd..48788ef0ac639 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -603,6 +603,21 @@ ksz9021_wr_mmd_phyreg(struct phy_device *phydev, int ptrad, int devnum,
+ {
  }
  
-+/* We provision sk_rcvbuf around 200% of sk_rcvlowat.
-+ * If 87.5 % (7/8) of the space has been consumed, we want to override
-+ * SO_RCVLOWAT constraint, since we are receiving skbs with too small
-+ * len/truesize ratio.
-+ */
-+static inline bool tcp_rmem_pressure(const struct sock *sk)
++static int kszphy_resume(struct phy_device *phydev)
 +{
-+	int rcvbuf = READ_ONCE(sk->sk_rcvbuf);
-+	int threshold = rcvbuf - (rcvbuf >> 3);
++	int value;
 +
-+	return atomic_read(&sk->sk_rmem_alloc) > threshold;
++	mutex_lock(&phydev->lock);
++
++	value = phy_read(phydev, MII_BMCR);
++	phy_write(phydev, MII_BMCR, value & ~BMCR_PDOWN);
++
++	kszphy_config_intr(phydev);
++	mutex_unlock(&phydev->lock);
++
++	return 0;
 +}
 +
- extern void tcp_openreq_init_rwin(struct request_sock *req,
- 				  const struct sock *sk_listener,
- 				  const struct dst_entry *dst);
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -477,9 +477,17 @@ static void tcp_tx_timestamp(struct sock
- static inline bool tcp_stream_is_readable(const struct tcp_sock *tp,
- 					  int target, struct sock *sk)
+ static int kszphy_probe(struct phy_device *phydev)
  {
--	return (READ_ONCE(tp->rcv_nxt) - READ_ONCE(tp->copied_seq) >= target) ||
--		(sk->sk_prot->stream_memory_read ?
--		sk->sk_prot->stream_memory_read(sk) : false);
-+	int avail = READ_ONCE(tp->rcv_nxt) - READ_ONCE(tp->copied_seq);
-+
-+	if (avail > 0) {
-+		if (avail >= target)
-+			return true;
-+		if (tcp_rmem_pressure(sk))
-+			return true;
-+	}
-+	if (sk->sk_prot->stream_memory_read)
-+		return sk->sk_prot->stream_memory_read(sk);
-+	return false;
- }
- 
- /*
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -4751,7 +4751,8 @@ void tcp_data_ready(struct sock *sk)
- 	const struct tcp_sock *tp = tcp_sk(sk);
- 	int avail = tp->rcv_nxt - tp->copied_seq;
- 
--	if (avail < sk->sk_rcvlowat && !sock_flag(sk, SOCK_DONE))
-+	if (avail < sk->sk_rcvlowat && !tcp_rmem_pressure(sk) &&
-+	    !sock_flag(sk, SOCK_DONE))
- 		return;
- 
- 	sk->sk_data_ready(sk);
+ 	const struct kszphy_type *type = phydev->drv->driver_data;
+@@ -794,7 +809,7 @@ static struct phy_driver ksphy_driver[] = {
+ 	.ack_interrupt	= kszphy_ack_interrupt,
+ 	.config_intr	= kszphy_config_intr,
+ 	.suspend	= genphy_suspend,
+-	.resume		= genphy_resume,
++	.resume		= kszphy_resume,
+ 	.driver		= { .owner = THIS_MODULE,},
+ }, {
+ 	.phy_id		= PHY_ID_KSZ8061,
+-- 
+2.20.1
+
 
 
