@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB351D8303
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126B31D8305
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732379AbgERSBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:01:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43276 "EHLO mail.kernel.org"
+        id S1732386AbgERSBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:01:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732362AbgERSBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:01:10 -0400
+        id S1732372AbgERSBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:01:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F76C20826;
-        Mon, 18 May 2020 18:01:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 79C0F20826;
+        Mon, 18 May 2020 18:01:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824869;
-        bh=q+c7ReZyw8cKraevnY75es7TAUo/GWn3VMPlGiTmqps=;
+        s=default; t=1589824871;
+        bh=cSOA4nXQTFILwRd19tKaqvgDg6DpcB+y8g5TZKDYP7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jSjr0OPQA2vXkmQfdd/U4FqLql0ZS+9DX/LmYYY6Rmx+FBfx0ZWwoKil+j0YEikbe
-         5w8GjePkpsGu0Z4LKkxvlOUAUSbJF1A3nLv8UEcFbxVRYtIXBGv84VrU7hdCbEqEeK
-         DfDS2+R7usVtnd2hjXWRZ10HJjdEsJlq6kU1y3kA=
+        b=hxeqqqBdqP8uKbwn2Lh3hjNOwF6IXB5ZFxb9glVhVuN/DJ80M5EADTfvfVf6Q0hi9
+         iQ4e6DJkXAvWPgoeJAbIX1zQfKO32rd2P1YQAFMtfrq/KyMV3bppNtelDXyDvc0usN
+         CWgRxb2yLxqHbvRrp4vvvVNj8pGmJgBuBFbtgbCA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Rahul Ankushrao Kawadgave <rahulak@qti.qualcomm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
+        =?UTF-8?q?David=20Bala=C5=BEic?= <xerces9@gmail.com>,
+        Guillaume Nault <gnault@redhat.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 035/194] net: stmmac: fix num_por initialization
-Date:   Mon, 18 May 2020 19:35:25 +0200
-Message-Id: <20200518173534.557926933@linuxfoundation.org>
+Subject: [PATCH 5.6 036/194] pppoe: only process PADT targeted at local interfaces
+Date:   Mon, 18 May 2020 19:35:26 +0200
+Message-Id: <20200518173534.666397513@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
 References: <20200518173531.455604187@linuxfoundation.org>
@@ -46,78 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinod Koul <vkoul@kernel.org>
+From: Guillaume Nault <gnault@redhat.com>
 
-[ Upstream commit fd4a5177382230d39e0d95632d98103fb2938383 ]
+[ Upstream commit b8c158395119be62294da73646a3953c29ac974b ]
 
-Driver missed initializing num_por which is one of the por values that
-driver configures to hardware. In order to get these values, add a new
-structure ethqos_emac_driver_data which holds por and num_por values
-and populate that in driver probe.
+We don't want to disconnect a session because of a stray PADT arriving
+while the interface is in promiscuous mode.
+Furthermore, multicast and broadcast packets make no sense here, so
+only PACKET_HOST is accepted.
 
-Fixes: a7c30e62d4b8 ("net: stmmac: Add driver for Qualcomm ethqos")
-Reported-by: Rahul Ankushrao Kawadgave <rahulak@qti.qualcomm.com>
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
+Reported-by: David Balažic <xerces9@gmail.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Guillaume Nault <gnault@redhat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c |   17 ++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ drivers/net/ppp/pppoe.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-@@ -75,6 +75,11 @@ struct ethqos_emac_por {
- 	unsigned int value;
- };
+--- a/drivers/net/ppp/pppoe.c
++++ b/drivers/net/ppp/pppoe.c
+@@ -490,6 +490,9 @@ static int pppoe_disc_rcv(struct sk_buff
+ 	if (!skb)
+ 		goto out;
  
-+struct ethqos_emac_driver_data {
-+	const struct ethqos_emac_por *por;
-+	unsigned int num_por;
-+};
++	if (skb->pkt_type != PACKET_HOST)
++		goto abort;
 +
- struct qcom_ethqos {
- 	struct platform_device *pdev;
- 	void __iomem *rgmii_base;
-@@ -171,6 +176,11 @@ static const struct ethqos_emac_por emac
- 	{ .offset = RGMII_IO_MACRO_CONFIG2,	.value = 0x00002060 },
- };
+ 	if (!pskb_may_pull(skb, sizeof(struct pppoe_hdr)))
+ 		goto abort;
  
-+static const struct ethqos_emac_driver_data emac_v2_3_0_data = {
-+	.por = emac_v2_3_0_por,
-+	.num_por = ARRAY_SIZE(emac_v2_3_0_por),
-+};
-+
- static int ethqos_dll_configure(struct qcom_ethqos *ethqos)
- {
- 	unsigned int val;
-@@ -442,6 +452,7 @@ static int qcom_ethqos_probe(struct plat
- 	struct device_node *np = pdev->dev.of_node;
- 	struct plat_stmmacenet_data *plat_dat;
- 	struct stmmac_resources stmmac_res;
-+	const struct ethqos_emac_driver_data *data;
- 	struct qcom_ethqos *ethqos;
- 	struct resource *res;
- 	int ret;
-@@ -471,7 +482,9 @@ static int qcom_ethqos_probe(struct plat
- 		goto err_mem;
- 	}
- 
--	ethqos->por = of_device_get_match_data(&pdev->dev);
-+	data = of_device_get_match_data(&pdev->dev);
-+	ethqos->por = data->por;
-+	ethqos->num_por = data->num_por;
- 
- 	ethqos->rgmii_clk = devm_clk_get(&pdev->dev, "rgmii");
- 	if (IS_ERR(ethqos->rgmii_clk)) {
-@@ -526,7 +539,7 @@ static int qcom_ethqos_remove(struct pla
- }
- 
- static const struct of_device_id qcom_ethqos_match[] = {
--	{ .compatible = "qcom,qcs404-ethqos", .data = &emac_v2_3_0_por},
-+	{ .compatible = "qcom,qcs404-ethqos", .data = &emac_v2_3_0_data},
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, qcom_ethqos_match);
 
 
