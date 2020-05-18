@@ -2,143 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218DD1D7995
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47C31D798E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgERNT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 09:19:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:40502 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728008AbgERNTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 09:19:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7BBEF11FB;
-        Mon, 18 May 2020 06:19:51 -0700 (PDT)
-Received: from melchizedek.cambridge.arm.com (melchizedek.cambridge.arm.com [10.1.196.50])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A1CC3F305;
-        Mon, 18 May 2020 06:19:50 -0700 (PDT)
-From:   James Morse <james.morse@arm.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        James Morse <james.morse@arm.com>
-Subject: [PATCH v3 10/10] cacheinfo: Move resctrl's get_cache_id() to the cacheinfo header file
-Date:   Mon, 18 May 2020 14:19:23 +0100
-Message-Id: <20200518131924.7741-11-james.morse@arm.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20200518131924.7741-1-james.morse@arm.com>
-References: <20200518131924.7741-1-james.morse@arm.com>
+        id S1727973AbgERNTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 09:19:46 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37096 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727857AbgERNTk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 09:19:40 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04ID41Rg048222;
+        Mon, 18 May 2020 09:19:31 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31292e683m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 09:19:30 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04ID4Hbw049355;
+        Mon, 18 May 2020 09:19:30 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31292e6831-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 09:19:30 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04IDFZKe007011;
+        Mon, 18 May 2020 13:19:27 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 3127t5hpg8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 13:19:27 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04IDIDoW61145520
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 May 2020 13:18:13 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 38D2442042;
+        Mon, 18 May 2020 13:19:25 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 43BF742041;
+        Mon, 18 May 2020 13:19:24 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.67.24])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 18 May 2020 13:19:24 +0000 (GMT)
+Subject: Re: [PATCH v5 02/10] MMU notifier: use the new mmap locking API
+To:     Michel Lespinasse <walken@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Liam Howlett <Liam.Howlett@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        David Rientjes <rientjes@google.com>,
+        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>
+References: <20200422001422.232330-1-walken@google.com>
+ <20200422001422.232330-3-walken@google.com>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <4e68719f-2b4f-307b-f29f-e1858efc409a@linux.ibm.com>
+Date:   Mon, 18 May 2020 15:19:24 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <20200422001422.232330-3-walken@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-18_06:2020-05-15,2020-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
+ lowpriorityscore=0 adultscore=0 impostorscore=0 bulkscore=0
+ priorityscore=1501 mlxlogscore=999 mlxscore=0 suspectscore=0 spamscore=0
+ malwarescore=0 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005180117
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-resctrl/core.c defines get_cache_id() for use in its cpu-hotplug
-callbacks. This gets the id attribute of the cache at the corresponding
-level of a cpu.
+Le 22/04/2020 à 02:14, Michel Lespinasse a écrit :
+> This use is converted manually ahead of the next patch in the series,
+> as it requires including a new header which the automated conversion
+> would miss.
+> 
+> Signed-off-by: Michel Lespinasse <walken@google.com>
+> Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+> Reviewed-by: Davidlohr Bueso <dbueso@suse.de>
 
-Later rework means this private function needs to be shared. Move
-it to the header file.
+Reviewed-by: Laurent Dufour <ldufour@linux.ibm.com>
 
-The name conflicts with a different definition in intel_cacheinfo.c,
-name it get_cpu_cacheinfo_id() to show its relation with
-get_cpu_cacheinfo().
-
-Now this is visible on other architectures, check the id attribute
-has actually been set.
-
-Signed-off-by: James Morse <james.morse@arm.com>
-Reviewed-by: Babu Moger <babu.moger@amd.com>
----
- arch/x86/kernel/cpu/resctrl/core.c | 17 ++---------------
- include/linux/cacheinfo.h          | 21 +++++++++++++++++++++
- 2 files changed, 23 insertions(+), 15 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 587f9791d2a6..3cc0fe435d19 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -350,19 +350,6 @@ static void rdt_get_cdp_l2_config(void)
- 	rdt_get_cdp_config(RDT_RESOURCE_L2, RDT_RESOURCE_L2CODE);
- }
- 
--static int get_cache_id(int cpu, int level)
--{
--	struct cpu_cacheinfo *ci = get_cpu_cacheinfo(cpu);
--	int i;
--
--	for (i = 0; i < ci->num_leaves; i++) {
--		if (ci->info_list[i].level == level)
--			return ci->info_list[i].id;
--	}
--
--	return -1;
--}
--
- static void
- mba_wrmsr_amd(struct rdt_domain *d, struct msr_param *m, struct rdt_resource *r)
- {
-@@ -560,7 +547,7 @@ static int domain_setup_mon_state(struct rdt_resource *r, struct rdt_domain *d)
-  */
- static void domain_add_cpu(int cpu, struct rdt_resource *r)
- {
--	int id = get_cache_id(cpu, r->cache_level);
-+	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
- 	struct list_head *add_pos = NULL;
- 	struct rdt_domain *d;
- 
-@@ -606,7 +593,7 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
- 
- static void domain_remove_cpu(int cpu, struct rdt_resource *r)
- {
--	int id = get_cache_id(cpu, r->cache_level);
-+	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
- 	struct rdt_domain *d;
- 
- 	d = rdt_find_domain(r, id, NULL);
-diff --git a/include/linux/cacheinfo.h b/include/linux/cacheinfo.h
-index 46b92cd61d0c..4f72b47973c3 100644
---- a/include/linux/cacheinfo.h
-+++ b/include/linux/cacheinfo.h
-@@ -3,6 +3,7 @@
- #define _LINUX_CACHEINFO_H
- 
- #include <linux/bitops.h>
-+#include <linux/cpu.h>
- #include <linux/cpumask.h>
- #include <linux/smp.h>
- 
-@@ -119,4 +120,24 @@ int acpi_find_last_cache_level(unsigned int cpu);
- 
- const struct attribute_group *cache_get_priv_group(struct cacheinfo *this_leaf);
- 
-+/*
-+ * Get the id of the cache associated with @cpu at level @level.
-+ * cpuhp lock must be held.
-+ */
-+static inline int get_cpu_cacheinfo_id(int cpu, int level)
-+{
-+	struct cpu_cacheinfo *ci = get_cpu_cacheinfo(cpu);
-+	int i;
-+
-+	for (i = 0; i < ci->num_leaves; i++) {
-+		if (ci->info_list[i].level == level) {
-+			if (ci->info_list[i].attributes & CACHE_ID)
-+				return ci->info_list[i].id;
-+			return -1;
-+		}
-+	}
-+
-+	return -1;
-+}
-+
- #endif /* _LINUX_CACHEINFO_H */
--- 
-2.19.1
+> ---
+>   include/linux/mmu_notifier.h | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+> index 736f6918335e..2f462710a1a4 100644
+> --- a/include/linux/mmu_notifier.h
+> +++ b/include/linux/mmu_notifier.h
+> @@ -5,6 +5,7 @@
+>   #include <linux/list.h>
+>   #include <linux/spinlock.h>
+>   #include <linux/mm_types.h>
+> +#include <linux/mmap_lock.h>
+>   #include <linux/srcu.h>
+>   #include <linux/interval_tree.h>
+>   
+> @@ -277,9 +278,9 @@ mmu_notifier_get(const struct mmu_notifier_ops *ops, struct mm_struct *mm)
+>   {
+>   	struct mmu_notifier *ret;
+>   
+> -	down_write(&mm->mmap_sem);
+> +	mmap_write_lock(mm);
+>   	ret = mmu_notifier_get_locked(ops, mm);
+> -	up_write(&mm->mmap_sem);
+> +	mmap_write_unlock(mm);
+>   	return ret;
+>   }
+>   void mmu_notifier_put(struct mmu_notifier *subscription);
+> 
 
