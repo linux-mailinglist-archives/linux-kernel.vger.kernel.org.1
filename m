@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEA31D8067
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA49E1D827D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728848AbgERRji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:39:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34324 "EHLO mail.kernel.org"
+        id S1731716AbgERR4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:56:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728833AbgERRjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:39:33 -0400
+        id S1731705AbgERR4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:56:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 207D720835;
-        Mon, 18 May 2020 17:39:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 253E020674;
+        Mon, 18 May 2020 17:56:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823573;
-        bh=2K8/xX5qPz/2GkBEO4hSwzpuw4kzPYUm1BPA9HRbYuE=;
+        s=default; t=1589824612;
+        bh=qQJ8XuGD1yqiYvBBlA+XTk9Ka7sBVbNnfFgy4ubIWrU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bfdVMAI2KFI+MOlJcIbX6JaCXgyULVo64JMuvKG9uSL7ywTPOTfaiYy1dTMLRprW+
-         +lzHdlyXrkYkCZOgKi1VIZ21WEvks1FVd2+/n/6b81G1LJgRum5WfWgjuJHlVHkIEx
-         /1UnHK+b8RgC3VLnX3CybuB1a443x7fgjG+MtjUY=
+        b=qg1gSl5a+YwEJlTbPJMdTUNVAgyG2xoeAEej3HIGjJhPYQKBIWUAr2yXD6idGdE7x
+         H9aF13CBDXiWoIOd2CCCvyfTYuLZx5JyDiH7xsgLx0POFNJoEtRRXVcCe1vjiu4iLM
+         c7h9BvrJYi5MGK7v9EAY+QJ0dL/G06htDk2fCZm0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Tiecheng Zhou <Tiecheng.Zhou@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 36/86] net/sonic: Fix a resource leak in an error handling path in jazz_sonic_probe()
+Subject: [PATCH 5.4 044/147] drm/amd/powerplay: avoid using pm_en before it is initialized revised
 Date:   Mon, 18 May 2020 19:36:07 +0200
-Message-Id: <20200518173457.806751751@linuxfoundation.org>
+Message-Id: <20200518173519.543648334@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Tiecheng Zhou <Tiecheng.Zhou@amd.com>
 
-[ Upstream commit 10e3cc180e64385edc9890c6855acf5ed9ca1339 ]
+[ Upstream commit 690ae30be163d5262feae01335b2a6f30569e5aa ]
 
-A call to 'dma_alloc_coherent()' is hidden in 'sonic_alloc_descriptors()',
-called from 'sonic_probe1()'.
+hwmgr->pm_en is initialized at hwmgr_hw_init.
 
-This is correctly freed in the remove function, but not in the error
-handling path of the probe function.
-Fix it and add the missing 'dma_free_coherent()' call.
+during amdgpu_device_init, there is amdgpu_asic_reset that calls to
+soc15_asic_reset (for V320 usecase, Vega10 asic), in which:
+1) soc15_asic_reset_method calls to pp_get_asic_baco_capability (pm_en)
+2) soc15_asic_baco_reset calls to pp_set_asic_baco_state (pm_en)
 
-While at it, rename a label in order to be slightly more informative.
+pm_en is used in the above two cases while it has not yet been initialized
 
-Fixes: efcce839360f ("[PATCH] macsonic/jazzsonic network drivers update")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+So avoid using pm_en in the above two functions for V320 passthrough.
+
+Reviewed-by: Evan Quan <evan.quan@amd.com>
+Signed-off-by: Tiecheng Zhou <Tiecheng.Zhou@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/natsemi/jazzsonic.c | 6 ++++--
+ drivers/gpu/drm/amd/powerplay/amd_powerplay.c | 6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/natsemi/jazzsonic.c b/drivers/net/ethernet/natsemi/jazzsonic.c
-index acf3f11e38cc1..68d2f31921ff8 100644
---- a/drivers/net/ethernet/natsemi/jazzsonic.c
-+++ b/drivers/net/ethernet/natsemi/jazzsonic.c
-@@ -247,13 +247,15 @@ static int jazz_sonic_probe(struct platform_device *pdev)
- 		goto out;
- 	err = register_netdev(dev);
- 	if (err)
--		goto out1;
-+		goto undo_probe1;
+diff --git a/drivers/gpu/drm/amd/powerplay/amd_powerplay.c b/drivers/gpu/drm/amd/powerplay/amd_powerplay.c
+index d306cc7119976..8bb5fbef7de0f 100644
+--- a/drivers/gpu/drm/amd/powerplay/amd_powerplay.c
++++ b/drivers/gpu/drm/amd/powerplay/amd_powerplay.c
+@@ -1425,7 +1425,8 @@ static int pp_get_asic_baco_capability(void *handle, bool *cap)
+ 	if (!hwmgr)
+ 		return -EINVAL;
  
- 	printk("%s: MAC %pM IRQ %d\n", dev->name, dev->dev_addr, dev->irq);
+-	if (!hwmgr->pm_en || !hwmgr->hwmgr_func->get_asic_baco_capability)
++	if (!(hwmgr->not_vf && amdgpu_dpm) ||
++		!hwmgr->hwmgr_func->get_asic_baco_capability)
+ 		return 0;
  
- 	return 0;
+ 	mutex_lock(&hwmgr->smu_lock);
+@@ -1459,7 +1460,8 @@ static int pp_set_asic_baco_state(void *handle, int state)
+ 	if (!hwmgr)
+ 		return -EINVAL;
  
--out1:
-+undo_probe1:
-+	dma_free_coherent(lp->device, SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
-+			  lp->descriptors, lp->descriptors_laddr);
- 	release_mem_region(dev->base_addr, SONIC_MEM_SIZE);
- out:
- 	free_netdev(dev);
+-	if (!hwmgr->pm_en || !hwmgr->hwmgr_func->set_asic_baco_state)
++	if (!(hwmgr->not_vf && amdgpu_dpm) ||
++		!hwmgr->hwmgr_func->set_asic_baco_state)
+ 		return 0;
+ 
+ 	mutex_lock(&hwmgr->smu_lock);
 -- 
 2.20.1
 
