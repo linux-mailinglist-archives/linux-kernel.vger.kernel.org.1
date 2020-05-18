@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D051D834D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628EC1D80F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732669AbgERSDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:03:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48744 "EHLO mail.kernel.org"
+        id S1729597AbgERRnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:43:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731507AbgERSDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:03:24 -0400
+        id S1729584AbgERRn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:43:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B69CA207F5;
-        Mon, 18 May 2020 18:03:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 387FE20657;
+        Mon, 18 May 2020 17:43:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825003;
-        bh=eJDONeSSXm5ZMoCXxAaEjZbpOF+GULwXMkGcQKEsyTE=;
+        s=default; t=1589823808;
+        bh=fGBROYDxdQQozDWu/J6DkYIQUBAR/xN0ABEzDiLWZuc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=srTp3nI1luXSxkg+1sU4Ok6GdpDWfNPsDKnUSU0kQX57cTresHUVCP1ipAdlXK2R9
-         M+RRk4errJvXkyprJzrZV4jRoiwJygdKIRLLKr93Ini5iC44SHHg3+XH5fKHjNZT8R
-         t7eW0mZfiDs3H0jQlf6UEtSOGLhXp4SJLBjM6Lgk=
+        b=U+tpmqBlkDoMgXfVIkrym8vLlfduqDyFNbEkUZJlTgqMJSh0/Z87hsfqcfkOJ8DYL
+         7Nqm4Qqc3yCRlLDW0CTIytwUceVIZ2KZGF1WI4h9Q+Nzp+wMku73rmdHkaNoq9RFhm
+         Z4pL4AKm1u5mTc3S+BK/1EFoIzbRX6QdoDFf2jAY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 091/194] mmc: core: Check request type before completing the request
-Date:   Mon, 18 May 2020 19:36:21 +0200
-Message-Id: <20200518173539.193412523@linuxfoundation.org>
+Subject: [PATCH 4.9 44/90] drop_monitor: work around gcc-10 stringop-overflow warning
+Date:   Mon, 18 May 2020 19:36:22 +0200
+Message-Id: <20200518173500.248110788@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,54 +45,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit e6bfb1bf00852b55f4c771f47ae67004c04d3c87 ]
+[ Upstream commit dc30b4059f6e2abf3712ab537c8718562b21c45d ]
 
-In the request completion path with CQE, request type is being checked
-after the request is getting completed. This is resulting in returning
-the wrong request type and leading to the IO hang issue.
+The current gcc-10 snapshot produces a false-positive warning:
 
-ASYNC request type is getting returned for DCMD type requests.
-Because of this mismatch, mq->cqe_busy flag is never getting cleared
-and the driver is not invoking blk_mq_hw_run_queue. So requests are not
-getting dispatched to the LLD from the block layer.
+net/core/drop_monitor.c: In function 'trace_drop_common.constprop':
+cc1: error: writing 8 bytes into a region of size 0 [-Werror=stringop-overflow=]
+In file included from net/core/drop_monitor.c:23:
+include/uapi/linux/net_dropmon.h:36:8: note: at offset 0 to object 'entries' with size 4 declared here
+   36 |  __u32 entries;
+      |        ^~~~~~~
 
-All these eventually leading to IO hang issues.
-So, get the request type before completing the request.
+I reported this in the gcc bugzilla, but in case it does not get
+fixed in the release, work around it by using a temporary variable.
 
-Cc: <stable@vger.kernel.org>
-Fixes: 1e8e55b67030 ("mmc: block: Add CQE support")
-Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Link: https://lore.kernel.org/r/1588775643-18037-2-git-send-email-vbadigan@codeaurora.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 9a8afc8d3962 ("Network Drop Monitor: Adding drop monitor implementation & Netlink protocol")
+Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=94881
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Neil Horman <nhorman@tuxdriver.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/core/block.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/core/drop_monitor.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index 663d87924e5e8..32db16f6debc7 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -1417,6 +1417,7 @@ static void mmc_blk_cqe_complete_rq(struct mmc_queue *mq, struct request *req)
- 	struct mmc_request *mrq = &mqrq->brq.mrq;
- 	struct request_queue *q = req->q;
- 	struct mmc_host *host = mq->card->host;
-+	enum mmc_issue_type issue_type = mmc_issue_type(mq, req);
- 	unsigned long flags;
- 	bool put_card;
- 	int err;
-@@ -1446,7 +1447,7 @@ static void mmc_blk_cqe_complete_rq(struct mmc_queue *mq, struct request *req)
+diff --git a/net/core/drop_monitor.c b/net/core/drop_monitor.c
+index ca2c9c8b9a3e9..6d7ff117f3792 100644
+--- a/net/core/drop_monitor.c
++++ b/net/core/drop_monitor.c
+@@ -159,6 +159,7 @@ static void sched_send_work(unsigned long _data)
+ static void trace_drop_common(struct sk_buff *skb, void *location)
+ {
+ 	struct net_dm_alert_msg *msg;
++	struct net_dm_drop_point *point;
+ 	struct nlmsghdr *nlh;
+ 	struct nlattr *nla;
+ 	int i;
+@@ -177,11 +178,13 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
+ 	nlh = (struct nlmsghdr *)dskb->data;
+ 	nla = genlmsg_data(nlmsg_data(nlh));
+ 	msg = nla_data(nla);
++	point = msg->points;
+ 	for (i = 0; i < msg->entries; i++) {
+-		if (!memcmp(&location, msg->points[i].pc, sizeof(void *))) {
+-			msg->points[i].count++;
++		if (!memcmp(&location, &point->pc, sizeof(void *))) {
++			point->count++;
+ 			goto out;
+ 		}
++		point++;
+ 	}
+ 	if (msg->entries == dm_hit_limit)
+ 		goto out;
+@@ -190,8 +193,8 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
+ 	 */
+ 	__nla_reserve_nohdr(dskb, sizeof(struct net_dm_drop_point));
+ 	nla->nla_len += NLA_ALIGN(sizeof(struct net_dm_drop_point));
+-	memcpy(msg->points[msg->entries].pc, &location, sizeof(void *));
+-	msg->points[msg->entries].count = 1;
++	memcpy(point->pc, &location, sizeof(void *));
++	point->count = 1;
+ 	msg->entries++;
  
- 	spin_lock_irqsave(&mq->lock, flags);
- 
--	mq->in_flight[mmc_issue_type(mq, req)] -= 1;
-+	mq->in_flight[issue_type] -= 1;
- 
- 	put_card = (mmc_tot_in_flight(mq) == 0);
- 
+ 	if (!timer_pending(&data->send_timer)) {
 -- 
 2.20.1
 
