@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2620B1D8239
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80AE1D8138
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731308AbgERRya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:54:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59098 "EHLO mail.kernel.org"
+        id S1730018AbgERRqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:46:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731296AbgERRyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:54:25 -0400
+        id S1729998AbgERRp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:45:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 174AC20715;
-        Mon, 18 May 2020 17:54:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E18EC20674;
+        Mon, 18 May 2020 17:45:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824465;
-        bh=q+c7ReZyw8cKraevnY75es7TAUo/GWn3VMPlGiTmqps=;
+        s=default; t=1589823957;
+        bh=OieQ1O9n5MvWlMhty8zIfO6HjQ6PPi8mI7Vrkk0pb68=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RKgVDkV3O6APrXrd6fKKy0pTdFYGSj1Rr61OuXT1dVfSNA0Z20T2w1xAN8I7KG/GF
-         rKxmSd8NZNkeYwllBV4gbXTuxs4V9nsVkiV7ILpRdqpyot0KzDpql21sLqVEafO9Fe
-         Z2PqHglsm5wQJ6ZRn3Ml+aMqm6C/zcV7FeZcnrYQ=
+        b=ffQz3j4uj8ILsVIhEtarxS3GCz92Q0/qwzdUj+6PKxoGR2azv2MFx4foVmznIJ7U+
+         afu2pAI+GTuwWaaPNh4fGb72pcJ9YpsEL0wBbU4p16Q+Y4MoA2cGcuZsXL9rABZm5I
+         JLNzxxIQKAnu6RAAD3RPb0MD9b7IjVmjqXILo24Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Rahul Ankushrao Kawadgave <rahulak@qti.qualcomm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
+        stable@vger.kernel.org, syzbot <syzkaller@googlegroups.com>,
+        Willem de Bruijn <willemb@google.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 022/147] net: stmmac: fix num_por initialization
-Date:   Mon, 18 May 2020 19:35:45 +0200
-Message-Id: <20200518173516.584828161@linuxfoundation.org>
+Subject: [PATCH 4.14 014/114] net: stricter validation of untrusted gso packets
+Date:   Mon, 18 May 2020 19:35:46 +0200
+Message-Id: <20200518173506.216684812@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,78 +44,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinod Koul <vkoul@kernel.org>
+From: Willem de Bruijn <willemb@google.com>
 
-[ Upstream commit fd4a5177382230d39e0d95632d98103fb2938383 ]
+[ Upstream commit 9274124f023b5c56dc4326637d4f787968b03607 ]
 
-Driver missed initializing num_por which is one of the por values that
-driver configures to hardware. In order to get these values, add a new
-structure ethqos_emac_driver_data which holds por and num_por values
-and populate that in driver probe.
+Syzkaller again found a path to a kernel crash through bad gso input:
+a packet with transport header extending beyond skb_headlen(skb).
 
-Fixes: a7c30e62d4b8 ("net: stmmac: Add driver for Qualcomm ethqos")
-Reported-by: Rahul Ankushrao Kawadgave <rahulak@qti.qualcomm.com>
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
+Tighten validation at kernel entry:
+
+- Verify that the transport header lies within the linear section.
+
+    To avoid pulling linux/tcp.h, verify just sizeof tcphdr.
+    tcp_gso_segment will call pskb_may_pull (th->doff * 4) before use.
+
+- Match the gso_type against the ip_proto found by the flow dissector.
+
+Fixes: bfd5f4a3d605 ("packet: Add GSO/csum offload support.")
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: Willem de Bruijn <willemb@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c |   17 ++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ include/linux/virtio_net.h |   24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-@@ -75,6 +75,11 @@ struct ethqos_emac_por {
- 	unsigned int value;
- };
+--- a/include/linux/virtio_net.h
++++ b/include/linux/virtio_net.h
+@@ -3,6 +3,8 @@
+ #define _LINUX_VIRTIO_NET_H
  
-+struct ethqos_emac_driver_data {
-+	const struct ethqos_emac_por *por;
-+	unsigned int num_por;
-+};
-+
- struct qcom_ethqos {
- 	struct platform_device *pdev;
- 	void __iomem *rgmii_base;
-@@ -171,6 +176,11 @@ static const struct ethqos_emac_por emac
- 	{ .offset = RGMII_IO_MACRO_CONFIG2,	.value = 0x00002060 },
- };
+ #include <linux/if_vlan.h>
++#include <uapi/linux/tcp.h>
++#include <uapi/linux/udp.h>
+ #include <uapi/linux/virtio_net.h>
  
-+static const struct ethqos_emac_driver_data emac_v2_3_0_data = {
-+	.por = emac_v2_3_0_por,
-+	.num_por = ARRAY_SIZE(emac_v2_3_0_por),
-+};
-+
- static int ethqos_dll_configure(struct qcom_ethqos *ethqos)
+ static inline int virtio_net_hdr_set_proto(struct sk_buff *skb,
+@@ -28,17 +30,25 @@ static inline int virtio_net_hdr_to_skb(
+ 					bool little_endian)
  {
- 	unsigned int val;
-@@ -442,6 +452,7 @@ static int qcom_ethqos_probe(struct plat
- 	struct device_node *np = pdev->dev.of_node;
- 	struct plat_stmmacenet_data *plat_dat;
- 	struct stmmac_resources stmmac_res;
-+	const struct ethqos_emac_driver_data *data;
- 	struct qcom_ethqos *ethqos;
- 	struct resource *res;
- 	int ret;
-@@ -471,7 +482,9 @@ static int qcom_ethqos_probe(struct plat
- 		goto err_mem;
+ 	unsigned int gso_type = 0;
++	unsigned int thlen = 0;
++	unsigned int ip_proto;
+ 
+ 	if (hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE) {
+ 		switch (hdr->gso_type & ~VIRTIO_NET_HDR_GSO_ECN) {
+ 		case VIRTIO_NET_HDR_GSO_TCPV4:
+ 			gso_type = SKB_GSO_TCPV4;
++			ip_proto = IPPROTO_TCP;
++			thlen = sizeof(struct tcphdr);
+ 			break;
+ 		case VIRTIO_NET_HDR_GSO_TCPV6:
+ 			gso_type = SKB_GSO_TCPV6;
++			ip_proto = IPPROTO_TCP;
++			thlen = sizeof(struct tcphdr);
+ 			break;
+ 		case VIRTIO_NET_HDR_GSO_UDP:
+ 			gso_type = SKB_GSO_UDP;
++			ip_proto = IPPROTO_UDP;
++			thlen = sizeof(struct udphdr);
+ 			break;
+ 		default:
+ 			return -EINVAL;
+@@ -57,16 +67,20 @@ static inline int virtio_net_hdr_to_skb(
+ 
+ 		if (!skb_partial_csum_set(skb, start, off))
+ 			return -EINVAL;
++
++		if (skb_transport_offset(skb) + thlen > skb_headlen(skb))
++			return -EINVAL;
+ 	} else {
+ 		/* gso packets without NEEDS_CSUM do not set transport_offset.
+ 		 * probe and drop if does not match one of the above types.
+ 		 */
+ 		if (gso_type && skb->network_header) {
++			struct flow_keys keys;
++
+ 			if (!skb->protocol)
+ 				virtio_net_hdr_set_proto(skb, hdr);
+ retry:
+-			skb_probe_transport_header(skb, -1);
+-			if (!skb_transport_header_was_set(skb)) {
++			if (!skb_flow_dissect_flow_keys(skb, &keys, 0)) {
+ 				/* UFO does not specify ipv4 or 6: try both */
+ 				if (gso_type & SKB_GSO_UDP &&
+ 				    skb->protocol == htons(ETH_P_IP)) {
+@@ -75,6 +89,12 @@ retry:
+ 				}
+ 				return -EINVAL;
+ 			}
++
++			if (keys.control.thoff + thlen > skb_headlen(skb) ||
++			    keys.basic.ip_proto != ip_proto)
++				return -EINVAL;
++
++			skb_set_transport_header(skb, keys.control.thoff);
+ 		}
  	}
  
--	ethqos->por = of_device_get_match_data(&pdev->dev);
-+	data = of_device_get_match_data(&pdev->dev);
-+	ethqos->por = data->por;
-+	ethqos->num_por = data->num_por;
- 
- 	ethqos->rgmii_clk = devm_clk_get(&pdev->dev, "rgmii");
- 	if (IS_ERR(ethqos->rgmii_clk)) {
-@@ -526,7 +539,7 @@ static int qcom_ethqos_remove(struct pla
- }
- 
- static const struct of_device_id qcom_ethqos_match[] = {
--	{ .compatible = "qcom,qcs404-ethqos", .data = &emac_v2_3_0_por},
-+	{ .compatible = "qcom,qcs404-ethqos", .data = &emac_v2_3_0_data},
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, qcom_ethqos_match);
 
 
