@@ -2,46 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B85F1D8586
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4A71D8310
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387679AbgERST3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:19:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58800 "EHLO mail.kernel.org"
+        id S1731661AbgERSBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:01:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731268AbgERRyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:54:15 -0400
+        id S1732286AbgERSBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:01:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF29F207C4;
-        Mon, 18 May 2020 17:54:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47D62207F5;
+        Mon, 18 May 2020 18:01:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824455;
-        bh=G39XeJgKsFQKD6l++4rTfPIrCA35P4H72OQ6BSkkFaQ=;
+        s=default; t=1589824906;
+        bh=8ZRbF1oT0PlniE7k0j5hKHHVmF3lXbnS8elI06OuwuY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tjXqzGUHaUuQbLzhhnltcfOs6We9uxMSBPRLh4eD4+UmNzDoPRfogFW3xQ1f5FQhf
-         yhfiDFEFAneVDH5/5SC4+hWalZv6z3OC79nGpHZrD3QNjSviiS+oZIkzS/x8pI4Uhm
-         +eSIjRe3CidUPn1aIuIMquiXCbQY+2FMDAvWVDA0=
+        b=0pWsOhyQJdD1RdSRQDjYwBlnNOh0xtD9GZA0WTseYJkWclMBK+Y0xCXFkLjN+WaL6
+         CrEjWlJzi0GlSq2D0lEqmoOYqQAvzpVLIhIMw0ZICswDklv9UL71LU+hYnUf/XFQbn
+         UgukYlryB2tSuw319/gXtt00lNhF8QneKWynKbEs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+e73ceacfd8560cc8a3ca@syzkaller.appspotmail.com,
-        syzbot+c2fb6f9ddcea95ba49b5@syzkaller.appspotmail.com,
-        Jarod Wilson <jarod@redhat.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 019/147] net: fix a potential recursive NETDEV_FEAT_CHANGE
+        stable@vger.kernel.org, Dmitry Golovin <dima@golovin.in>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ilie Halip <ilie.halip@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 052/194] riscv: fix vdso build with lld
 Date:   Mon, 18 May 2020 19:35:42 +0200
-Message-Id: <20200518173516.176813757@linuxfoundation.org>
+Message-Id: <20200518173536.112258675@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,66 +47,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <xiyou.wangcong@gmail.com>
+From: Ilie Halip <ilie.halip@gmail.com>
 
-[ Upstream commit dd912306ff008891c82cd9f63e8181e47a9cb2fb ]
+[ Upstream commit 3c1918c8f54166598195d938564072664a8275b1 ]
 
-syzbot managed to trigger a recursive NETDEV_FEAT_CHANGE event
-between bonding master and slave. I managed to find a reproducer
-for this:
+When building with the LLVM linker this error occurrs:
+    LD      arch/riscv/kernel/vdso/vdso-syms.o
+  ld.lld: error: no input files
 
-  ip li set bond0 up
-  ifenslave bond0 eth0
-  brctl addbr br0
-  ethtool -K eth0 lro off
-  brctl addif br0 bond0
-  ip li set br0 up
+This happens because the lld treats -R as an alias to -rpath, as opposed
+to ld where -R means --just-symbols.
 
-When a NETDEV_FEAT_CHANGE event is triggered on a bonding slave,
-it captures this and calls bond_compute_features() to fixup its
-master's and other slaves' features. However, when syncing with
-its lower devices by netdev_sync_lower_features() this event is
-triggered again on slaves when the LRO feature fails to change,
-so it goes back and forth recursively until the kernel stack is
-exhausted.
+Use the long option name for compatibility between the two.
 
-Commit 17b85d29e82c intentionally lets __netdev_update_features()
-return -1 for such a failure case, so we have to just rely on
-the existing check inside netdev_sync_lower_features() and skip
-NETDEV_FEAT_CHANGE event only for this specific failure case.
-
-Fixes: fd867d51f889 ("net/core: generic support for disabling netdev features down stack")
-Reported-by: syzbot+e73ceacfd8560cc8a3ca@syzkaller.appspotmail.com
-Reported-by: syzbot+c2fb6f9ddcea95ba49b5@syzkaller.appspotmail.com
-Cc: Jarod Wilson <jarod@redhat.com>
-Cc: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Jann Horn <jannh@google.com>
-Reviewed-by: Jay Vosburgh <jay.vosburgh@canonical.com>
-Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
-Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://github.com/ClangBuiltLinux/linux/issues/805
+Reported-by: Dmitry Golovin <dima@golovin.in>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Ilie Halip <ilie.halip@gmail.com>
+Reviewed-by: Fangrui Song <maskray@google.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/dev.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/riscv/kernel/vdso/Makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -8595,11 +8595,13 @@ static void netdev_sync_lower_features(s
- 			netdev_dbg(upper, "Disabling feature %pNF on lower dev %s.\n",
- 				   &feature, lower->name);
- 			lower->wanted_features &= ~feature;
--			netdev_update_features(lower);
-+			__netdev_update_features(lower);
+diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+index 33b16f4212f7a..a4ee3a0e7d20d 100644
+--- a/arch/riscv/kernel/vdso/Makefile
++++ b/arch/riscv/kernel/vdso/Makefile
+@@ -33,15 +33,15 @@ $(obj)/vdso.so.dbg: $(src)/vdso.lds $(obj-vdso) FORCE
+ 	$(call if_changed,vdsold)
  
- 			if (unlikely(lower->features & feature))
- 				netdev_WARN(upper, "failed to disable %pNF on %s!\n",
- 					    &feature, lower->name);
-+			else
-+				netdev_features_change(lower);
- 		}
- 	}
- }
+ # We also create a special relocatable object that should mirror the symbol
+-# table and layout of the linked DSO.  With ld -R we can then refer to
+-# these symbols in the kernel code rather than hand-coded addresses.
++# table and layout of the linked DSO. With ld --just-symbols we can then
++# refer to these symbols in the kernel code rather than hand-coded addresses.
+ 
+ SYSCFLAGS_vdso.so.dbg = -shared -s -Wl,-soname=linux-vdso.so.1 \
+ 	-Wl,--build-id -Wl,--hash-style=both
+ $(obj)/vdso-dummy.o: $(src)/vdso.lds $(obj)/rt_sigreturn.o FORCE
+ 	$(call if_changed,vdsold)
+ 
+-LDFLAGS_vdso-syms.o := -r -R
++LDFLAGS_vdso-syms.o := -r --just-symbols
+ $(obj)/vdso-syms.o: $(obj)/vdso-dummy.o FORCE
+ 	$(call if_changed,ld)
+ 
+-- 
+2.20.1
+
 
 
