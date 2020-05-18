@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586701D8433
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D2E1D8204
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733220AbgERSKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:10:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53542 "EHLO mail.kernel.org"
+        id S1731034AbgERRwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:52:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733052AbgERSFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:05:48 -0400
+        id S1729079AbgERRwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:52:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C9D6207D3;
-        Mon, 18 May 2020 18:05:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2436207C4;
+        Mon, 18 May 2020 17:52:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825147;
-        bh=z2CwPlf7bz18Akb6Y2vLQl3VvY12zCFv4kN7QHx18fs=;
+        s=default; t=1589824361;
+        bh=hs2nE6Wrb7NabB66Yo0yGF0wfgyhxK7+lzV506mq0DU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HeAGg3nQpACZG+3lcQg9s+A8bmtdWqhZLK4/s69Jvsr2rlkneBSffqk6n8aB8AXil
-         cpLmqdDX62x3r42mgj9DwR0Gw7FAGbAuUsaS8bbNkfpwOlT05V8PfWjjKRf6QEsDB2
-         s7F1E7LeWl2STmzX5M/VnJbsnScNUGD/23vnrFFk=
+        b=uMM1qV+AuyJr8L9O5Q3qEcUcng1LbEjDMToEemQUXP9qmVwC6wHZ3MkQQ+BTRnMq7
+         6jB9aFG1Hiu99eUMox4PJTcfGv9n1xdglc4eHkquA/ox5k++W29D+KNk7tav3T3k7v
+         mw5FWx1HDFvx/6IGlaidLhaddOSrBepzz3so38iw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, stable@kernel.org,
         Kishon Vijay Abraham I <kishon@ti.com>,
         Tony Lindgren <tony@atomide.com>
-Subject: [PATCH 5.6 148/194] ARM: dts: dra7: Fix bus_dma_limit for PCIe
+Subject: [PATCH 4.19 60/80] ARM: dts: dra7: Fix bus_dma_limit for PCIe
 Date:   Mon, 18 May 2020 19:37:18 +0200
-Message-Id: <20200518173543.585798075@linuxfoundation.org>
+Message-Id: <20200518173502.552525229@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
+References: <20200518173450.097837707@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -66,7 +66,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/arch/arm/boot/dts/dra7.dtsi
 +++ b/arch/arm/boot/dts/dra7.dtsi
-@@ -172,6 +172,7 @@
+@@ -312,6 +312,7 @@
  			#address-cells = <1>;
  			ranges = <0x51000000 0x51000000 0x3000
  				  0x0	     0x20000000 0x10000000>;
@@ -74,7 +74,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			/**
  			 * To enable PCI endpoint mode, disable the pcie1_rc
  			 * node and enable pcie1_ep mode.
-@@ -185,7 +186,6 @@
+@@ -325,7 +326,6 @@
  				device_type = "pci";
  				ranges = <0x81000000 0 0          0x03000 0 0x00010000
  					  0x82000000 0 0x20013000 0x13000 0 0xffed000>;
@@ -82,7 +82,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  				bus-range = <0x00 0xff>;
  				#interrupt-cells = <1>;
  				num-lanes = <1>;
-@@ -230,6 +230,7 @@
+@@ -368,6 +368,7 @@
  			#address-cells = <1>;
  			ranges = <0x51800000 0x51800000 0x3000
  				  0x0	     0x30000000 0x10000000>;
@@ -90,7 +90,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			status = "disabled";
  			pcie2_rc: pcie@51800000 {
  				reg = <0x51800000 0x2000>, <0x51802000 0x14c>, <0x1000 0x2000>;
-@@ -240,7 +241,6 @@
+@@ -378,7 +379,6 @@
  				device_type = "pci";
  				ranges = <0x81000000 0 0          0x03000 0 0x00010000
  					  0x82000000 0 0x30013000 0x13000 0 0xffed000>;
